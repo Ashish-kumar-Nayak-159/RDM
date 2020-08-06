@@ -1,0 +1,94 @@
+<!-- Page Heading -->
+<!-- <div class="d-sm-flex align-items-center justify-content-between mb-4 pt-3">
+  <h1 class="h3 mb-0 text-gray-800">Access Control</h1>
+</div> -->
+<div class="row col-xl-12 col-lg-3 mt-3">
+
+  <ul class="nav ml-n4">
+    <li class="nav-item">
+      <a class="nav-link" href="#" data-toggle="modal" data-target="#roleassigmenModal">
+        <i class="fas fa-fw fa-plus"></i>
+        <span class="text-secondary">Add</span></a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">
+        <i class="fas fa-fw fa-list"></i>
+        <span class="text-secondary">Role Assignments</span></a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">
+        <i class="fas fa-fw fa">&#xf021;</i>
+        <span class="text-secondary">Refresh</span></a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">
+        <i class="fas fa-fw fa-times"></i>
+        <span class="text-secondary delete-row">Remove</span></a>
+    </li>
+  </ul>
+  <!-- Divider
+    <hr class="sidebar-divider d-none d-md-block mt-n1">-->
+
+</div>
+<!--https://editor.datatables.net/examples/api/checkbox.html-->
+<div class="table-responsive mt-3">
+  <table class="table" id="dataTable">
+    <thead>
+      <tr>
+        <th>Select</th>
+        <th>Email</th>
+        <th>Role</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><input type="checkbox" name="record"></td>
+        <td>sombabu@kemsys.com</td>
+        <td>App Admin</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal right fade" id="roleassigmenModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Add Role Assignment</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="form-group">
+          <label for="recipient-name" class="col-form-label">Role:</label>
+          <select class="custom-select" id="role">
+      <option selected>Select a role..</option>
+      <option value="App Admin">App Admin</option>
+      <option value="Device Manager">Device Manager</option>
+    </select>
+        </div>
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">Assign access to:</label>
+          <input type="text" class="form-control" id="email" placeholder="Search by name or email address">
+
+        </div>
+      </form>
+
+   <div class="container my-auto">
+        <div class="text-gray-400">
+          <span>Selected Members:
+   No members selected. Search for and add  one or more members you want to assign to the role for this resource.</span>
+        </div>
+      </div>
+
+
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">Discard</button>
+      <button type="button" class="btn btn-primary add-row" data-dismiss="modal">Save</button>
+    </div>
+  </div>
+  </div>
+</div>

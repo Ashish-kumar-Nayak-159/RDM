@@ -1,0 +1,116 @@
+<!-- <div class="d-sm-flex align-items-center justify-content-between mb-4 pt-3">
+  <h1 class="h3 mb-0 text-gray-800">D2C Heartbeat</h1>
+</div> -->
+
+<!-- <div class="row mx-auto mt-3">
+
+  <ul class="nav" style="line-height:1.25;font-size:0.80rem;">
+       <div class="row col-xl-7 mb-2">
+     <li class="nav-item col-2">
+      <a href="#">Latest</a>
+     </li>
+     <li class="nav-item col-2">
+      <a href="#">Last <br/>5mins</a>
+     </li>
+     <li class="nav-item col-2">
+      <a href="#">Last <br/>30mins</a>
+     </li>
+     <li class="nav-item col-2">
+      <a href="#">Last <br/>1hour</a>
+     </li>
+     <li class="nav-item col-2">
+      <a href="#">Last <br/>24hours</a>
+     </li>
+     <li class="nav-item col-2">Custom</li>
+     </div>
+     <li class="nav-item col-xl-5">
+     <form>
+      <div class="form-row">
+      <div class="form-group form-horizontal col-lg-4 col-sm-4 col-xs-1 mb-1">
+
+        <mat-date-range-input [rangePicker]="picker">
+            <input matStartDate [(ngModel)]="heartBeatFilter.from_date" name="from_date">
+            <input matEndDate [(ngModel)]="heartBeatFilter.to_date" name="to_date">
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+      </div>
+      <div class="form-group col-lg-4 col-sm-4 col-xs-1 mb-1">
+         <input type="text" class="form-control form-control-sm" id="inputEmail4" [(ngModel)]="heartBeatFilter.message_id"
+         name="message_id" placeholder="Message ID">
+      </div>
+      <div class="form-group form-horizontal col-lg-4 col-sm-4 col-xs-1">
+        <button type="button" class="form-control btn btn-warning btn-sm mb-1" (click)="onClickOfSearchHeartBeat()">Search</button>
+        <button type="button" class="form-control btn btn-light btn-sm" >Clear</button>
+      </div>
+      </div>
+     </form>
+    </li>
+   </ul>
+
+</div> -->
+<app-filter [filterObj]="heartBeatFilter" (filterSearch)="searchHeartBeat($event)"></app-filter>
+
+
+<div class="row mx-auto mt-3">
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr class="bg-secondary text-white">
+          <th>Time Stamp</th>
+          <th>Message ID</th>
+          <th>Heartbeat Message</th>
+
+        </tr>
+      </thead>
+      <!--<tfoot>
+              <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Office</th>
+                <th>Age</th>
+                <th>Start date</th>
+                <th>Salary</th>
+              </tr>
+            </tfoot>-->
+      <tbody>
+        <ng-container *ngIf="heartbeats.length > 0 && !isHeartbeatLoading">
+          <tr *ngFor="let heartbeat of heartbeats">
+            <td>{{heartbeat.created_date}}</td>
+            <td>{{heartbeat.message_id}}</td>
+            <td>
+              <a (click)="selectedHeartbeat = heartbeat;" href="javascript:void(0)" data-toggle="modal"
+                data-target="#heartbeatMessageModal" data-backdrop="static" data-keyboard="false">
+                <i class="fas fa-fw fa-eye"></i>
+              </a>
+            </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="heartbeats.length === 0 && !isHeartbeatLoading && isFilterSelected">
+          <tr>
+            <td colspan="6">No Heartbeat data found.</td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="heartbeats.length === 0 && !isHeartbeatLoading && !isFilterSelected">
+          <tr>
+            <td colspan="6">Select filter and press search button to load the heartbeat data.</td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="isHeartbeatLoading">
+          <tr>
+            <td colspan="6">
+              <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="modal right fade" id="heartbeatMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <app-message-modal [bodyMessage]="selectedHeartbeat?.message" [headerMessage]="'Heartbeat Message'"
+    (modalEvents)="onModalEvents($event)"></app-message-modal>
+  </div>
+</div>

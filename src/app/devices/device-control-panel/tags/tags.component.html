@@ -1,0 +1,130 @@
+<!-- Page Heading -->
+<!-- <div class="d-sm-flex align-items-center justify-content-between mb-4 pt-3">
+  <h1 class="h3 mb-0 text-gray-800">Tags</h1>
+</div> -->
+<div class="row col-xl-12 col-lg-3 mt-3">
+
+  <ul class="nav">
+    <!-- <li class="nav-item">
+      <a class="nav-link" href="javascript:void(0)">
+        <i class="fas fa-fw fa-eye"></i>
+        <span class="text-secondary">View</span></a>
+    </li> -->
+    <li class="nav-item">
+      <a class="nav-link" href="javascript:void(0)" (click)="updateDeviceTags()">
+        <i class="fas fa-fw fa-save"></i>
+        <span class="text-secondary">Save</span></a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="javascript:void(0)" (click)="deleteAllDeviceTags()">
+        <i class="fas fa-fw fa-trash"></i>
+        <span class="text-secondary">Delete all</span></a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="javascript:void(0)" (click)="resetDeviceTags()">
+        <i class="fas fa-fw fa-undo"></i>
+        <span class="text-secondary delete-row">Revert Changes</span></a>
+    </li>
+  </ul>
+
+
+</div>
+<div class="row mx-auto mt-n3">
+  <div class="col-lg-12">
+    <hr class="solid">
+  </div>
+</div>
+
+<div class="row mt-1 mx-auto">
+
+  <div class="col-xl-6 col-lg-7">
+    <!-- Page Heading -->
+    <h1 class="h6 mb-3 text-secondary-400">Reserved Tags:</h1>
+
+
+    <div class="table-responsive">
+      <table class="table table-bordered  table-striped text-gray-800" id="dataTable" width="100%" cellspacing="0">
+
+        <tbody>
+          <tr>
+            <td>Created By</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Created On</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Device Manager</td>
+            <td>{{device?.tags?.device_manager}}</td>
+          </tr>
+          <tr>
+            <td>Device Type</td>
+            <td>{{device?.tags?.device_type}}</td>
+          </tr>
+          <tr>
+            <td>Location</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Location Coordinates</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Manufacturer</td>
+            <td>{{device?.tags?.issued_by}}</td>
+          </tr>
+          <tr>
+            <td>Serial No</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>MAC ID</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Protocol</td>
+            <td>{{device?.tags?.protocol}}</td>
+          </tr>
+
+          <tr *ngFor="let tag of reservedTagsList">
+            <td>{{tag}}</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col-xl-6 col-lg-5">
+    <!-- Page Heading -->
+    <div class="row col-12 d-sm-inline-block">
+      <h1 class="h6 mb-3 text-secondary-800">Custom Tags:</h1>
+      <!-- <span class="float-right">
+      <i class="fa fa-check mr-2" (click)="updateDeviceTags()"></i>
+      <i class="fa fa-times " (click)="resetDeviceTags()"></i>
+      </span> -->
+    </div>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped text-black-800 table-striped" id="dataTable" width="100%" cellspacing="0">
+
+        <tbody>
+          <tr *ngFor="let tag of deviceCustomTags;">
+            <ng-container *ngIf="!tag.editable; else lastRowTemplate">
+            <td >{{tag.name}}</td>
+            <td>{{tag.value}}</td>
+            </ng-container>
+            <ng-template #lastRowTemplate>
+              <td>
+                <input type="text" class="form-control bg-light border-0 small mr-3" placeholder="Name"
+                aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name" (input)="onCustomTagInputChange()">
+              </td>
+              <td><input type="text" class="form-control bg-light border-0 small mr-3" placeholder="Value"
+                aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.value" name="value"  (input)="onCustomTagInputChange()"></td>
+            </ng-template>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

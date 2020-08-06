@@ -1,0 +1,65 @@
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+  <!-- Sidebar - Brand -->
+  <a class="sidebar-brand d-flex align-items-center justify-content-center" [routerLink]="['/home/applications/ccd']" routerLinkActive="active" >
+    <img src="../../assets/img/logo-kemsys.jpg" style="height:3rem" class="mx-auto d-block img-fluid">
+  </a>
+
+  <!-- Divider -->
+  <hr class="sidebar-divider my-0">
+
+  <div class="text-center d-none d-md-inline">
+   <button class="rounded-circle border-0 my-2" id="sidebarToggle" (click)="onSidebarToggle()"></button>
+  </div>
+
+  <!-- Nav Item - Dashboard -->
+  <li class="nav-item" routerLinkActive="active">
+    <a class="nav-link collapsed" [routerLink]="['/applications/ccd']"  >
+      <i class="fas fa-fw fa-home"></i>
+      <span>Home</span></a>
+  </li>
+
+  <!-- Nav Item - Charts -->
+  <li class="nav-item" routerLinkActive="active">
+    <a class="nav-link" [routerLink]="['/applications/ccd/devices']">
+
+      <i class="fas fa-fw fa-desktop"></i>
+      <span>Devices</span></a>
+  </li>
+
+  <!-- Nav Item - Tables -->
+  <!-- <li class="nav-item">
+    <a class="nav-link" href="devices-control-panel.html">
+      <i class="fas fa-fw fa-table"></i>
+      <span>Device Control Panel</span></a>
+  </li> -->
+
+  <!-- Nav Item - Pages Collapse Menu -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+      <i class="fas fa-fw fa-folder"></i>
+      <span>Groups</span>
+    </a>
+    <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <!--<h6 class="collapse-header">Login Screens:</h6>
+        <a class="collapse-item" href="login.html">Login</a>
+        <a class="collapse-item" href="register.html">Register</a>
+        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+        <div class="collapse-divider"></div>
+        <h6 class="collapse-header">Other Pages:</h6>-->
+        <a class="collapse-item" href="#">Group Jobs</a>
+        <a class="collapse-item" href="#">Group Type</a>
+      </div>
+    </div>
+  </li>
+
+  <!-- Divider -->
+  <hr class="sidebar-divider d-none d-md-block">
+
+   <!-- Sidebar Toggler (Sidebar) -->
+  <div class="text-center d-none d-md-inline">
+
+  </div>
+
+</ul>

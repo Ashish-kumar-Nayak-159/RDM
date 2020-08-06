@@ -1,0 +1,34 @@
+<div class="row">
+<div class="col-xl-12 col-md-12 mb-12 mt-3" >
+  <div class="card shadow h-100 py-2 px-2">
+    <form>
+      <div class="form-group form-inline my-1">
+        <input type="number" min="1" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="No of Records"
+        [(ngModel)]="filterObj.count" name="count">
+        <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="MessageId"
+        [(ngModel)]="filterObj.message_id" name="message_id">
+        <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
+        placeholder="Date Options" [(ngModel)]="filterObj.dateOption" name="dateOptions">
+          <option [ngValue]="undefined">Date Options</option>
+          <option [ngValue]="'5 mins'">Last 5 minutes</option>
+          <option [ngValue]="'30 mins'">Last 30 minutes</option>
+          <option [ngValue]="'1 hour'">Last 1 hour</option>
+          <option [ngValue]="'24 hour'">Last 24 hours</option>
+          <option [ngValue]="'custom'">Custom</option>
+        </select>
+        <ng-container *ngIf="filterObj?.dateOption === 'custom'">
+          <mat-date-range-picker   #picker></mat-date-range-picker>
+          <mat-date-range-input [rangePicker]="picker" class="form-control form-control-sm mx-1 my-1 col-md-2">
+            <input matStartDate [(ngModel)]="filterObj.from_date" name="from_date">
+            <input matEndDate [(ngModel)]="filterObj.to_date" name="to_date">
+          </mat-date-range-input>
+
+        <mat-datepicker-toggle  matSuffix [for]="picker"></mat-datepicker-toggle>
+      </ng-container>
+        <button type="button" class="form-control btn btn-warning btn-sm mx-1 my-1" (click)="search()" >Search</button>
+        <button type="button" class="form-control btn btn-light btn-sm mx-1 my-1" (click)="clear()">Clear</button>
+      </div>
+     </form>
+  </div>
+</div>
+</div>

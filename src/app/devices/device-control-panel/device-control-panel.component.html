@@ -1,0 +1,148 @@
+<div id="wrapper">
+  <!-- Sidebar -->
+
+  <ul class="navbar-nav bg-white sidebar1 mb-3" id="controlPanelSidebar">
+
+    <div class="text-center d-none d-md-inline">
+      <button class="rounded-circle border-0 my-2" id="sidebar1Toggle" (click)="onSidebarToggle()"></button>
+    </div>
+
+    <!-- Heading -->
+    <div class="sidebar1-heading bg-warning pt-3 pb-2 text-white">
+      <h6>Control Panel</h6>
+    </div>
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item" [ngClass]="{'active': activeTab === 'overview'}">
+      <a class="nav-link collapsed" href="#overview" data-toggle="tab" aria-expanded="false"
+        (click)="setActiveTab('overview')">
+        <i class="fas fa-fw fa-life-ring"></i>
+        <span>Overview</span></a>
+    </li>
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item" [ngClass]="{'active': activeTab === 'access_control'}">
+      <a class="nav-link collapsed" href="#access_control" data-toggle="tab" aria-expanded="false"
+        (click)="setActiveTab('access_control')">
+        <i class="fas fa-fw fa-users"></i>
+        <span>Access Control (IAM)</span></a>
+    </li>
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item" [ngClass]="{'active': activeTab === 'tags'}">
+      <a class="nav-link collapsed" href="#tags" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('tags')">
+        <i class="fas fa-fw fa-tags"></i>
+        <span>Tags</span></a>
+    </li>
+
+
+
+    <!-- Heading -->
+    <div class="sidebar1-heading ">
+      D2C
+    </div>
+    <!-- Divider -->
+    <hr class="sidebar1-divider">
+    <!-- Nav Item - Charts -->
+    <li class="nav-item" [ngClass]="{'active': activeTab === 'heartbeat'}">
+      <a class="nav-link" href="#heartbeat" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('heartbeat')">
+
+        <i class="fas fa-fw fa-heartbeat"></i>
+        <span>Heartbeat</span></a>
+    </li>
+
+    <!-- Nav Item - Tables -->
+    <li class="nav-item" [ngClass]="{'active': activeTab === 'notifications'}">
+      <a class="nav-link" href="#notifications" data-toggle="tab" aria-expanded="false"
+        (click)="setActiveTab('notifications')">
+        <i class="fas fa-fw fa-bell"></i>
+        <span>Notifications</span></a>
+    </li>
+
+    <!-- Nav Item - Charts -->
+    <li class="nav-item" [ngClass]="{'active': activeTab === 'alerts'}">
+      <a class="nav-link" href="#alerts" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('alerts')">
+
+        <i class="fas fa-fw fa-bolt"></i>
+        <span>Alerts</span></a>
+    </li>
+
+    <!-- Nav Item - Tables -->
+    <li class="nav-item" [ngClass]="{'active': activeTab === 'telemetry'}">
+      <a class="nav-link" href="#telemetry" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('telemetry')">
+        <i class="fas fa-fw fa-file"></i>
+        <span>Telemetry</span></a>
+    </li>
+
+
+
+    <!-- Heading -->
+    <div class="sidebar1-heading">
+      C2D
+    </div>
+    <!-- Divider -->
+    <hr class="sidebar1-divider">
+    <!-- Nav Item - Charts -->
+    <li class="nav-item" [ngClass]="{'active': activeTab === 'commands'}">
+      <a class="nav-link" href="#commands" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('commands')">
+
+        <i class="fas fa-fw fa-angle-right"></i>
+        <span>General Commands</span></a>
+    </li>
+
+    <!-- Nav Item - Tables -->
+    <li class="nav-item" [ngClass]="{'active': activeTab === 'purge'}">
+      <a class="nav-link" href="#purge" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('purge')">
+        <i class="fas fa-fw fa-trash"></i>
+        <span>Purge</span></a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar1-divider d-none d-md-block">
+
+  </ul>
+  <!-- End of Sidebar -->
+  <div  class="container1-fluid bg-white ml-3 mb-3" *ngIf="isDeviceDataLoading">
+    <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+  </div>
+  <div class="container1-fluid bg-white ml-3 mb-3" *ngIf="!isDeviceDataLoading">
+
+    <!-- Sidebar Toggle (Topbar) -->
+    <button id="sidebar1ToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="tab-content">
+
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'overview'}" id="overview" role="tabpanel">
+        <app-overview *ngIf="activeTab === 'overview'" [device]="device"></app-overview>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'access_control'}" role="tabpanel" id="access_control">
+        <app-access-control *ngIf="activeTab === 'access_control'"></app-access-control>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="tags">
+        <app-tags *ngIf="activeTab === 'tags'" [device]="device"></app-tags>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'heartbeat'}" role="tabpanel" id="heartbeat">
+        <app-heartbeat *ngIf="activeTab === 'heartbeat'" [device]="device"></app-heartbeat>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel" id="notifications">
+        <app-notification *ngIf="activeTab === 'notifications'" [device]="device"></app-notification>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'telemetry'}" role="tabpanel" id="telemetry">
+        <app-telemetry *ngIf="activeTab === 'telemetry'" [device]="device"></app-telemetry>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'alerts'}" role="tabpanel" id="alerts">
+        <app-alerts *ngIf="activeTab === 'alerts'" [device]="device"></app-alerts>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'commands'}" role="tabpanel" id="commands">
+        <app-commands *ngIf="activeTab === 'commands'" [device]="device"></app-commands>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'purge'}" role="tabpanel" id="purge">
+        <app-c2d-purge *ngIf="activeTab === 'purge'" [device]="device"></app-c2d-purge>
+      </div>
+      <!-- /.container1-fluid -->
+
+    </div>
+  </div>
+
+</div>

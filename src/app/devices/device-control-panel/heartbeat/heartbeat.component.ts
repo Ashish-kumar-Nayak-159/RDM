@@ -3,7 +3,7 @@ import { DeviceService } from 'src/app/services/devices/device.service';
 import { Device } from 'src/app/models/device.model';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
-
+declare var $: any;
 @Component({
   selector: 'app-heartbeat',
   templateUrl: './heartbeat.component.html',
@@ -27,6 +27,7 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
   }
 
   searchHeartBeat(filterObj) {
+    console.log(filterObj);
     this.isFilterSelected = true;
     this.isHeartbeatLoading = true;
     const obj = {...filterObj};
@@ -66,6 +67,7 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
   onModalEvents(eventType) {
     if (eventType === 'close') {
       this.selectedHeartbeat = undefined;
+      $('#heartbeatMessageModal').modal('hide');
     }
   }
 

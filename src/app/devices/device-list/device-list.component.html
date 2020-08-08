@@ -41,12 +41,12 @@
       <form>
         <div class="form-group form-inline my-1">
 
-          <input type="email" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="Device Name"
+          <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="Device Name"
           [(ngModel)]="deviceFilterObj.name" name="name">
-          <input type="password" class="form-control form-control-sm mx-1 my-1" id="inputPassword4" placeholder="Device Manager"
+          <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputPassword4" placeholder="Device Manager"
           [(ngModel)]="deviceFilterObj.device_manager" name="device_manager">
 
-          <input type="email" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="Location"
+          <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="Location"
           [(ngModel)]="deviceFilterObj.location" name="location">
           <!-- <input type="email" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="Device Status"
           [(ngModel)]="deviceFilterObj.status" name="status"> -->
@@ -109,7 +109,8 @@
               <td>{{device.tags?.connectivity?.network}}</td>
               <td>{{device.tags?.issued_by}}</td>
               <td>{{device.tags?.location}}</td>
-              <td><a [routerLink]="[device.device_id, 'control-panel']" routerLinkActive="router-link-active" ><i class="fas fa-fw fa-table"></i></a></td>
+              <td><a [routerLink]="[device.device_id, 'control-panel']" routerLinkActive="router-link-active" title="Control panel">
+                <i class="fas fa-fw fa-table"></i></a></td>
             </tr>
           </ng-container>
           <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading">

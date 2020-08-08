@@ -14,18 +14,26 @@
 
   <!-- Nav Item - Dashboard -->
   <li class="nav-item" routerLinkActive="active">
-    <a class="nav-link collapsed" [routerLink]="['/applications/ccd']"  >
+    <a class="nav-link collapsed" [routerLink]="['applications', userData.app]"  >
       <i class="fas fa-fw fa-home"></i>
       <span>Home</span></a>
   </li>
 
   <!-- Nav Item - Charts -->
   <li class="nav-item" routerLinkActive="active">
-    <a class="nav-link" [routerLink]="['/applications/ccd/devices']">
+    <a class="nav-link" [routerLink]="['/applications', userData.app, 'devices']">
 
       <i class="fas fa-fw fa-desktop"></i>
       <span>Devices</span></a>
   </li>
+
+  <li class="nav-item" >
+    <a class="nav-link" href="javascript:void(0)">
+
+      <i class="fas fa-fw fa-desktop"></i>
+      <span>Device Type</span></a>
+  </li>
+
 
   <!-- Nav Item - Tables -->
   <!-- <li class="nav-item">
@@ -38,7 +46,7 @@
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
       <i class="fas fa-fw fa-folder"></i>
-      <span>Groups</span>
+      <span>Device Groups</span>
     </a>
     <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">

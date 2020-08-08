@@ -1,0 +1,6 @@
+.record-input {
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="90" height="30"><text x="5" y="19" style="font: bold 10px">N Records:</text></svg>') no-repeat;
+  box-sizing: border-box;
+  padding-left: 80px;
+  width: 125px;
+}

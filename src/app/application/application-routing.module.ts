@@ -7,10 +7,6 @@ const routes: Routes = [
   {
     path: ':applicationId',
     component: ApplicationDashboardComponent
-  },
-  {
-    path: ':applicationId/devices',
-    loadChildren: () => import('../devices/devices.module').then(module => module.DevicesModule)
   }
 ];
 

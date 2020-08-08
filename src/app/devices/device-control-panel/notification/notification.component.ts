@@ -3,7 +3,7 @@ import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import * as moment from 'moment';
-
+declare var $: any;
 @Component({
   selector: 'app-notification',
   templateUrl: './notification.component.html',
@@ -67,6 +67,7 @@ export class NotificationComponent implements OnInit {
   onModalEvents(eventType) {
     if (eventType === 'close') {
       this.selectedNotification = undefined;
+      $('#notificationMessageModal').modal('hide');
     }
   }
 

@@ -18,6 +18,12 @@ export class FilterComponent implements OnInit {
     this.originalFilterObj = {...this.filterObj};
   }
 
+  onDateOptionChange() {
+    if (this.filterObj.dateOption !== 'custom') {
+      this.filterObj.from_date = undefined;
+      this.filterObj.to_date = undefined;
+    }
+  }
 
   search() {
     this.filterSearch.emit(this.filterObj);

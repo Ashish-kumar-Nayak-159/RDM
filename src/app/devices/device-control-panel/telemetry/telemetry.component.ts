@@ -3,7 +3,7 @@ import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import * as moment from 'moment';
-
+declare var $: any;
 @Component({
   selector: 'app-telemetry',
   templateUrl: './telemetry.component.html',
@@ -68,6 +68,7 @@ export class TelemetryComponent implements OnInit {
   onModalEvents(eventType) {
     if (eventType === 'close') {
       this.selectedTelemetry = undefined;
+      $('#telemetryMessageModal').modal('hide');
     }
   }
 

@@ -22,7 +22,7 @@
               <div class="text-center">
                 <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>
                 <span *ngIf="!isDashboardSnapshotLoading">{{dashboardSnapshot?.device_count}}</span> </div>
-              <div class="text-black-50 text-center small">Devices </div>
+              <div class="text-black-50 text-center small">Devices</div>
             </a>
           </div>
         </div>
@@ -148,10 +148,9 @@
             <div class="timeline-item border-info" *ngFor="let notification of lastGeneratedNotifications">
               <div class="item--content">
                 <div class="text--muted">{{notification.device_id}} | {{notification.time_diff}}</div>
-                <p>{{notification.type}}</p>
+                <p>{{notification.message?.message}}</p>
               </div>
             </div>
-
           </div>
         </div>
       </div>

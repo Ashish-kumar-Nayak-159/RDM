@@ -3,12 +3,12 @@
   <div class="card shadow h-100 py-2 px-2">
     <form>
       <div class="form-group form-inline my-1">
-        <input type="number" min="1" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="No of Records"
+        <input type="number" min="1" class="form-control form-control-sm mx-1 my-1 record-input" id="inputEmail4" placeholder="No of Records"
         [(ngModel)]="filterObj.count" name="count">
         <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="MessageId"
         [(ngModel)]="filterObj.message_id" name="message_id">
         <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
-        placeholder="Date Options" [(ngModel)]="filterObj.dateOption" name="dateOptions">
+        placeholder="Date Options" [(ngModel)]="filterObj.dateOption" name="dateOptions" (change)="onDateOptionChange()">
           <option [ngValue]="undefined">Date Options</option>
           <option [ngValue]="'5 mins'">Last 5 minutes</option>
           <option [ngValue]="'30 mins'">Last 30 minutes</option>

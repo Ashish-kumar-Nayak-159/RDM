@@ -53,12 +53,14 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
   lastGeneratedNotifications: Notification[] = []; // last generated notifications for application
   isLastNotificationDataLoading = false; // flag to identify last {noOfRecordsToDisplay} notifications API call is completed or not
   apiSubscriptions: Subscription[] = [] // to store all the API subscriptions
+  userData: any = {};
   constructor(
     private applicationService: ApplicationService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
+    this.userData = JSON.parse(localStorage.getItem('userData'));
     this.getDashboardSnapshot();
     this.getLastNotificationData();
     this.getLastAlertData();
@@ -70,7 +72,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
    */
   getDashboardSnapshot() {
     this.isDashboardSnapshotLoading = true;
-    this.apiSubscriptions.push(this.applicationService.getApplicationDashboardSnapshot()
+    this.apiSubscriptions.push(this.applicationService.getApplicationDashboardSnapshot(this.userData.app)
     .subscribe(
       (response: ApplicationDashboardSnapshot) => {
         this.dashboardSnapshot = response;
@@ -86,7 +88,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
    */
   getLastAlertData() {
     this.isLastAlertDataLoading = true;
-    this.apiSubscriptions.push(this.applicationService.getLastAlerts(this.noOfRecordsToDisplay)
+    this.apiSubscriptions.push(this.applicationService.getLastAlerts(this.noOfRecordsToDisplay, this.userData.app)
     .subscribe(
       (response: any) => {
         if (response.data) {
@@ -105,7 +107,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
    */
   getLastNotificationData() {
     this.isLastNotificationDataLoading = true;
-    this.apiSubscriptions.push(this.applicationService.getLastNotifications(this.noOfRecordsToDisplay)
+    this.apiSubscriptions.push(this.applicationService.getLastNotifications(this.noOfRecordsToDisplay, this.userData.app)
     .subscribe(
       (response: any) => {
         if (response.data) {
@@ -124,7 +126,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
    */
   getLastEventData() {
     this.isLastEventDataLoading = true;
-    this.apiSubscriptions.push(this.applicationService.getLastEvents(this.noOfRecordsToDisplay)
+    this.apiSubscriptions.push(this.applicationService.getLastEvents(this.noOfRecordsToDisplay, this.userData.app)
     .subscribe(
       (response: any) => {
         if (response.data) {
@@ -162,7 +164,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
         state: type
       }
     }
-    this.router.navigate(['applications/ccd/devices'], {queryParams: obj});
+    this.router.navigate(['applications', this.userData.app, 'devices'], {queryParams: obj});
   }
 
   /**

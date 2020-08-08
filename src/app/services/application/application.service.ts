@@ -13,22 +13,27 @@ export class ApplicationService {
     private http: HttpClient
   ) { }
 
-  getApplicationDashboardSnapshot() {
-    return this.http.get(this.url + APP_URLS.GET_APPLICATION_DASHBOARD_SNAPSHOT);
+  getApplicationDashboardSnapshot(app) {
+    let params = new HttpParams();
+    params = params.set('app', app);
+    return this.http.get(this.url + APP_URLS.GET_APPLICATION_DASHBOARD_SNAPSHOT, {params});
   }
 
-  getLastAlerts(limit: number) {
-    const params = new HttpParams().set('count', limit.toString());
+  getLastAlerts(limit: number, app) {
+    let params = new HttpParams().set('count', limit.toString());
+    params = params.set('app', app);
     return this.http.get(this.url + APP_URLS.GET_LAST_N_ALERTS, { params });
   }
 
-  getLastNotifications(limit: number) {
-    const params = new HttpParams().set('count', limit.toString());
+  getLastNotifications(limit: number, app) {
+    let params = new HttpParams().set('count', limit.toString());
+    params = params.set('app', app);
     return this.http.get(this.url + APP_URLS.GET_LAST_N_NOTIFICATIONS, { params });
   }
 
-  getLastEvents(limit: number) {
-    const params = new HttpParams().set('count', limit.toString());
+  getLastEvents(limit: number, app) {
+    let params = new HttpParams().set('count', limit.toString());
+    params = params.set('app', app);
     return this.http.get(this.url + APP_URLS.GET_LAST_N_EVENTS, { params });
   }
 }

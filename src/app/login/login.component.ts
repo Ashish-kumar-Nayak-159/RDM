@@ -14,17 +14,20 @@ export class LoginComponent implements OnInit {
     {
       email: 'sombabu@kemsys.com',
       username: 'Sombabu Gunithi',
-      password: 'admin'
+      password: 'admin',
+      app: 'IDEX'
     },
     {
       email: 'yash@kemsys.com',
       username: 'Yash Mochi',
-      password: 'admin'
+      password: 'admin',
+      app: 'ccd'
     },
     {
       email: 'urvisha@kemsys.com',
       username: 'Urvisha Seladiya',
-      password: 'admin'
+      password: 'admin',
+      app: 'ccd'
     }
   ]
   constructor(
@@ -49,7 +52,7 @@ export class LoginComponent implements OnInit {
           console.log(obj);
           localStorage.setItem('userData', JSON.stringify(obj));
           console.log(localStorage.getItem('userData'));
-          this.router.navigate(['applications', 'ccd']);
+          this.router.navigate(['applications', obj.app]);
         }
       });
       if (!flag) {

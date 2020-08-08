@@ -8,12 +8,12 @@ const routes: Routes = [
     path: 'applications',
     loadChildren: () => import('./application/application.module').then(module => module.ApplicationModule)
   },
-  // {
-  //   path: 'devices',
-  //   loadChildren: () => import('./devices/devices.module').then(module => {
-  //     console.log('hereee    ', module);
-  //     return module.DevicesModule})
-  // },
+  {
+    path: 'applications/:applicationId/devices',
+    loadChildren: () => import('./devices/devices.module').then(module => {
+      console.log('hereee    ', module);
+      return module.DevicesModule})
+  },
   {
     path: 'login',
     component: LoginComponent

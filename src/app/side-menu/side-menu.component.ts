@@ -8,11 +8,14 @@ import { DOCUMENT } from '@angular/common';
 })
 export class SideMenuComponent implements OnInit {
 
+  userData: any = {};
   constructor(
     @Inject(DOCUMENT) private document: Document
   ) { }
 
   ngOnInit(): void {
+    this.userData = JSON.parse(localStorage.getItem('userData'));
+
   }
 
   onSidebarToggle() {

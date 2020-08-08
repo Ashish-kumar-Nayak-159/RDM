@@ -5,7 +5,7 @@
         <div class="card bg-warning text-white shadow">
           <div class="card-body">
             <div class="text-center">
-              <img class="img-fluid px-3 px-sm-2 mt-3 mb-4" style="width: 25rem;" src="../../../assets/img/ccd.png"
+              <img class="img-fluid px-3 px-sm-2 mt-3 mb-4" style="width: 25rem;" src="../../../assets/img/pump1.svg"
                 alt="">
             </div>
           </div>
@@ -17,7 +17,7 @@
             <a href="javascript:void(0)" (click)="redirectToDevice()" >
               <div class="text-center">
                 <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
-                  src="../../../assets/img/coffee-machine.svg" alt="">
+                  src="../../../assets/img/pump.svg" alt="">
               </div>
               <div class="text-center">
                 <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>
@@ -34,7 +34,7 @@
             <a href="javascript:void(0)" (click)="redirectToDevice('connected')">
               <div class="text-center">
                 <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
-                  src="../../../assets/img/coffee-machine.svg" alt="">
+                  src="../../../assets/img/pump.svg" alt="">
               </div>
               <div class="text-center">
                 <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>
@@ -52,7 +52,7 @@
             <a href="javascript:void(0)" (click)="redirectToDevice('disconnected')">
               <div class="text-center">
                 <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
-                  src="../../../assets/img/coffee-machine.svg" alt="">
+                  src="../../../assets/img/pump.svg" alt="">
               </div>
               <div class="text-center">
                 <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>
@@ -142,7 +142,7 @@
       </div>
 
       <div class="card-body">
-        <div class="timeline-body">
+        <div class="timeline-body notifications">
           <i *ngIf="isLastNotificationDataLoading" class="fa fa-spinner fa-spin fa-2x fa-fw"></i>
           <div class="timeline m-border" *ngIf="!isLastNotificationDataLoading">
             <div class="timeline-item border-info" *ngFor="let notification of lastGeneratedNotifications">
@@ -171,7 +171,7 @@
         </h6>
       </div>
       <div class="card-body">
-        <div class="timeline-body">
+        <div class="timeline-body notifications">
           <i *ngIf="isLastAlertDataLoading" class="fa fa-spinner fa-spin fa-2x fa-fw"></i>
           <div class="timeline m-border" *ngIf="!isLastAlertDataLoading">
 
@@ -202,7 +202,7 @@
         </h6>
       </div>
       <div class="card-body">
-        <div class="timeline-body">
+        <div class="timeline-body notifications">
           <i *ngIf="isLastEventDataLoading" class="fa fa-spinner fa-spin fa-2x fa-fw"></i>
           <div class="timeline m-border" *ngIf="!isLastEventDataLoading">
 

@@ -9872,6 +9872,11 @@ a:focus {
   -webkit-animation-timing-function: opacity cubic-bezier(0, 1, 0.4, 1);
   animation-timing-function: opacity cubic-bezier(0, 1, 0.4, 1);
 }
+.bg-gradient-login {
+  background-color: #4e73df;
+  background-image: linear-gradient(180deg,#809eb9 10%,#505c80 100%);
+  background-size: cover;
+}
 
 .bg-gradient-primary {
   background-color: #cfd8dc;
@@ -11223,6 +11228,18 @@ body.sidebar-toggled footer.sticky-footer {
   width: 100%;
 }
 
+/*#body.sidebar-collapse .container,.container-fluid,.container-lg,.container-md,.container-sm,.container-xl {
+	padding-left: 1.5rem !important;	 
+}
+
+#body.sidebar-toggled .container,.container-fluid,.container-lg,.container-md,.container-sm,.container-xl {
+	padding-left: 5rem !important;	 
+}
+
+#body.sidebar .container,.container-fluid,.container-lg,.container-md,.container-sm,.container-xl {
+	padding-left: 16rem !important;	 
+}*/
+
 
 .container-fluid .sidebar1 .sidebar1-heading {
   text-transform: uppercase !important;
@@ -11275,8 +11292,11 @@ body.sidebar-toggled footer.sticky-footer {
 }
 
 .container-fluid .sidebar1 {
-  width: 6.5rem;
-  min-height: 100vh;
+  width: 3.5rem;
+  min-height: 140vh;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .container-fluid .sidebar1 .nav-item {
@@ -11290,12 +11310,24 @@ body.sidebar-toggled footer.sticky-footer {
 .container-fluid .sidebar1 .nav-item .nav-link {
   text-align: center;
   padding: 0.75rem 1rem;
-  width: 6.5rem;
+  width: 3.5rem;
 }
 
 .container-fluid .sidebar1 .nav-item .nav-link span {
   font-size: 0.65rem;
+  display: none;
+}
+
+.container-fluid .sidebar1 .sidebar1-heading span {
+  font-size: 0.75rem;
+  display: none;
+}
+
+.container-fluid .sidebar1 .sidebar1-heading i {
+  font-size: 0.75rem;
   display: block;
+  text-align:center;
+
 }
 
 .container-fluid .sidebar1 .nav-item.active .nav-link {
@@ -11304,7 +11336,7 @@ body.sidebar-toggled footer.sticky-footer {
 
 .container-fluid .sidebar1 .nav-item .collapse {
   position: absolute;
-  left: calc(6.5rem + 1.5rem / 2);
+  left: calc(3.5rem + 1.5rem / 2);
   z-index: 1;
   top: 2px;
 }
@@ -11366,8 +11398,8 @@ body.sidebar-toggled footer.sticky-footer {
 }
 
 .container-fluid .sidebar1 #sidebar1Toggle {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2rem;
+  height: 2rem;
   text-align: center;
   margin-bottom: 1rem;
   cursor: pointer;
@@ -11420,15 +11452,14 @@ body.sidebar-toggled footer.sticky-footer {
 }
 
 .container-fluid .sidebar1 hr.sidebar1-divider {
-  margin: 0 1rem 1rem;
+  margin: 0 1rem 0.25rem;
 }
 
 .container-fluid .sidebar1 .sidebar1-heading {
   text-align: center;
-  padding: 0.5rem 1rem;
+  padding: 1.25rem 1rem 0.25rem;
   font-weight: 800;
   font-size: 0.75rem;
-  color: #f3b006;
 }
 
 .container-fluid .topbar #sidebar1ToggleTop {
@@ -11484,6 +11515,14 @@ body.sidebar-toggled footer.sticky-footer {
     font-size: 0.8rem;
     display: inline;
   }
+  .container-fluid .sidebar1 .sidebar1-heading span {
+    font-size: 0.75rem;
+    display: inline;
+  }
+  .container-fluid .sidebar1 .sidebar1-heading i {
+    font-size: 0.75rem;
+    display: none;
+  }
   .container-fluid .sidebar1 .nav-item .nav-link[data-toggle="collapse"]::after {
     width: 1rem;
     text-align: center;
@@ -11507,12 +11546,15 @@ body.sidebar-toggled footer.sticky-footer {
     text-align: left;
   }
   .container-fluid .sidebar1.toggled {
-    overflow: visible;
-    width: 6.5rem !important;
+    width: 4.5rem !important;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 140vh;
   }
   .container-fluid .sidebar1.toggled .nav-item .collapse {
     position: absolute;
-    left: calc(6.5rem + 1.5rem / 2);
+    left: calc(3.5rem + 1.5rem / 2);
     z-index: 1;
     top: 2px;
     -webkit-animation-name: growIn;
@@ -11540,11 +11582,22 @@ body.sidebar-toggled footer.sticky-footer {
   .container-fluid .sidebar1.toggled .nav-item .nav-link {
     text-align: center;
     padding: 0.75rem 1rem;
-    width: 6.5rem;
+    width: 3.5rem;
   }
   .container-fluid .sidebar1.toggled .nav-item .nav-link span {
     font-size: 0.65rem;
+    display: none;
+  }
+  .container-fluid .sidebar1.toggled .sidebar1-heading span {
+    font-size: 0.65rem;
+    display: none;
+  }
+  .container-fluid .sidebar1.toggled .sidebar1-heading i {
+    font-size: 0.75rem;
     display: block;
+	text-align: center;
+	padding-left:0.25rem;
+	font-family: Nunito, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   }
   .container-fluid .sidebar1.toggled .nav-item .nav-link i {
     margin-right: 0;
@@ -11683,6 +11736,11 @@ body.sidebar1-toggled footer.sticky-footer {
   padding-left: 0.75rem;
   margin-right: auto;
   margin-left: auto;
+  
+  /*max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 140vh;*/
 }
 
 .container-fluid .navbar .container1,
@@ -12121,6 +12179,12 @@ body.sidebar1-toggled footer.sticky-footer {
   }
 }
 
+.notifications {
+	height: 200px;
+    position: relative;
+    overflow-y: auto;
+}
+
 .modal.left .modal-dialog,
 	.modal.right .modal-dialog {
 		position: fixed;
@@ -12136,12 +12200,15 @@ body.sidebar1-toggled footer.sticky-footer {
 	.modal.left .modal-content,
 	.modal.right .modal-content {
 		height: 100%;
-		overflow-y: auto;
+		overflow: hidden;
 	}
 
 	.modal.left .modal-body,
 	.modal.right .modal-body {
 		padding: 15px 15px 80px;
+		position: relative;
+		height: 100%;
+		overflow-y: auto;
 	}
 
 /*Left*/

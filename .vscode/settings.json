@@ -1,0 +1,9 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/7f147e07-7483-4495-80c5-923ea25a5852/resourceGroups/KemsysRDM/providers/Microsoft.Web/sites/kemsys-azure-rdm",
+    "appService.deploySubpath": "dist\\RDM",
+    "appService.showBuildDuringDeployPrompt": false
+}

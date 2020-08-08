@@ -28,9 +28,9 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     {
       data: [65, 59, 32, 81, 56, 55, 30],
       label: 'D2C Messages',
-      backgroundColor: '#959595',
-      hoverBackgroundColor: '#959595',
-      hoverBorderColor: '#959595',
+      backgroundColor: '#505c80',
+      hoverBackgroundColor: '#809eb9',
+      hoverBorderColor: '#505c80',
       hoverBorderWidth: 2,
     }
   ];
@@ -38,8 +38,9 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     {
       data: [15, 29, 10, 41, 72, 15, 30],
       label: 'C2D Messages',
-      backgroundColor: '#959595',
-      hoverBackgroundColor: '#959595'
+      backgroundColor: '#505c80',
+      hoverBackgroundColor: '#809eb9',
+      hoverBorderColor: '#505c80',
     }
   ]
   dashboardSnapshot: ApplicationDashboardSnapshot; // to store application dashboard snapshot

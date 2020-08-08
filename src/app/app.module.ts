@@ -13,6 +13,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { MatNativeDateModule } from '@angular/material/core';
 import { LoginComponent } from './login/login.component';
+import { RDMHomeComponent } from './rdmhome/rdmhome.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { LoginComponent } from './login/login.component';
     FooterComponent,
     SideMenuComponent,
     LoginComponent,
+    RDMHomeComponent,
 
   ],
   imports: [

@@ -1,0 +1,5 @@
+Application URL -  https://kemsys-azure-rdm.azurewebsites.net
+Valid users for login -
+1. sombabu@kemsys.com - admin
+2. urvisha@kemsys.com - admin
+3. yash@kemsys.com - admin

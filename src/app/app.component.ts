@@ -23,13 +23,13 @@ export class AppComponent {
         if (event.url.includes('login')) {
           console.log('here');
           this.isLoginRoute = true;
-          if (!this.document.body.classList.contains('bg-gradient-primary')) {
-            this.document.body.classList.add('bg-gradient-primary');
+          if (!this.document.body.classList.contains('bg-gradient-login')) {
+            this.document.body.classList.add('bg-gradient-login');
           }
         } else {
           this.isLoginRoute = false;
-          if (this.document.body.classList.contains('bg-gradient-primary')) {
-            this.document.body.classList.remove('bg-gradient-primary');
+          if (this.document.body.classList.contains('bg-gradient-login')) {
+            this.document.body.classList.remove('bg-gradient-login');
           }
         }
       }

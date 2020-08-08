@@ -109,7 +109,7 @@
               <td>{{device.tags?.connectivity?.network}}</td>
               <td>{{device.tags?.issued_by}}</td>
               <td>{{device.tags?.location}}</td>
-              <td><a [routerLink]="[device.device_id, 'control-panel']" routerLinkActive="router-link-active" >Control Panel</a></td>
+              <td><a [routerLink]="[device.device_id, 'control-panel']" routerLinkActive="router-link-active" ><i class="fas fa-fw fa-table"></i></a></td>
             </tr>
           </ng-container>
           <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading">

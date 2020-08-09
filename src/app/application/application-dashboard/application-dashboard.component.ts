@@ -4,6 +4,7 @@ import { ApplicationDashboardSnapshot, Alert, Event, Notification } from 'src/ap
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
 import { Router } from '@angular/router';
+import { CommonService } from 'src/app/services/common.service';
 
 
 @Component({
@@ -56,7 +57,9 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
   userData: any = {};
   constructor(
     private applicationService: ApplicationService,
-    private router: Router
+    private router: Router,
+    private commonService: CommonService,
+
   ) { }
 
   ngOnInit(): void {
@@ -65,6 +68,8 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     this.getLastNotificationData();
     this.getLastAlertData();
     this.getLastEventData();
+    this.commonService.breadcrumbEvent.emit(this.userData.app);
+
   }
 
   /**
@@ -141,8 +146,11 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
   }
 
   calculateTimeDifference(startDate) {
+    const date = new Date().toUTCString();
     const today = moment();
     const startime = moment(startDate);
+    // console.log(today);
+    // console.log(startime);
     let timeString = '';
     let diff = today.diff(startime, "minute");
     timeString = diff + ' minutes ago';
@@ -154,6 +162,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
         timeString = diff + ' days ago';
       }
     }
+    // console.log(timeString);
     return timeString;
   }
 

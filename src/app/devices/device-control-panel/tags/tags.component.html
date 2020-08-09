@@ -48,11 +48,11 @@
         <tbody>
           <tr>
             <td>Created By</td>
-            <td></td>
+            <td>{{device?.tags?.created_by}}</td>
           </tr>
           <tr>
             <td>Created On</td>
-            <td></td>
+            <td>{{device?.tags?.created_date}}</td>
           </tr>
           <tr>
             <td>Device Manager</td>
@@ -64,27 +64,27 @@
           </tr>
           <tr>
             <td>Location</td>
-            <td></td>
+            <td>{{device?.tags?.location}}</td>
           </tr>
           <tr>
             <td>Location Coordinates</td>
-            <td></td>
+            <td>{{device?.tags?.location_coordinates}}</td>
           </tr>
           <tr>
             <td>Manufacturer</td>
-            <td>{{device?.tags?.issued_by}}</td>
+            <td>{{device?.tags?.manufacturer}}</td>
           </tr>
           <tr>
             <td>Serial No</td>
-            <td></td>
+            <td>{{device?.tags?.serial_number}}</td>
           </tr>
           <tr>
             <td>MAC ID</td>
-            <td></td>
+            <td>{{device?.tags?.manufacturer}}</td>
           </tr>
           <tr>
             <td>Protocol</td>
-            <td>{{device?.tags?.protocol}}</td>
+            <td>{{device?.tags?.mac_address}}</td>
           </tr>
 
           <tr *ngFor="let tag of reservedTagsList">

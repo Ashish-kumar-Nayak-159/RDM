@@ -3,6 +3,7 @@ import { DeviceListFilter, Device } from 'src/app/models/device.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DeviceService } from './../../services/devices/device.service';
 import { ThrowStmt } from '@angular/compiler';
+import { CommonService } from 'src/app/services/common.service';
 
 @Component({
   selector: 'app-device-list',
@@ -14,20 +15,18 @@ export class DeviceListComponent implements OnInit {
   deviceFilterObj: DeviceListFilter = new DeviceListFilter();
   devicesList: Device[] = [];
   isDeviceListLoading = false;
+  userData: any = {};
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private deviceService: DeviceService
+    private deviceService: DeviceService,
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(
-      params => {
-        if (params.get('applicationId')) {
-          this.deviceFilterObj.app = params.get('applicationId');
-        }
-      }
-    );
+    this.userData = JSON.parse(localStorage.getItem('userData'));
+    this.commonService.breadcrumbEvent.emit(this.userData.app + ' / Devices');
+    this.deviceFilterObj.app = this.userData.app;
     this.route.queryParamMap.subscribe(
       params => {
         if (params.get('state')) {

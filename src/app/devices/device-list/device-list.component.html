@@ -86,7 +86,7 @@
             <th>Device Name</th>
             <th>Device Manager</th>
             <th>Connectivity</th>
-            <th>Issued By</th>
+            <th>Powered By</th>
             <th>Location</th>
             <th>Actions</th>
           </tr>
@@ -106,7 +106,7 @@
             <tr *ngFor="let device of devicesList">
               <td>{{device.device_id}}</td>
               <td>{{device.tags?.device_manager}}</td>
-              <td>{{device.tags?.connectivity?.network}}</td>
+              <td>{{device.tags?.cloud_connectivity}}</td>
               <td>{{device.tags?.issued_by}}</td>
               <td>{{device.tags?.location}}</td>
               <td><a [routerLink]="[device.device_id, 'control-panel']" routerLinkActive="router-link-active" title="Control panel">

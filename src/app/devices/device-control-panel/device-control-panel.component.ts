@@ -3,6 +3,7 @@ import { DOCUMENT } from '@angular/common';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { Device } from 'src/app/models/device.model';
 import { ActivatedRoute } from '@angular/router';
+import { CommonService } from 'src/app/services/common.service';
 
 @Component({
   selector: 'app-device-control-panel',
@@ -14,17 +15,22 @@ export class DeviceControlPanelComponent implements OnInit {
   activeTab: string;
   device: Device = new Device;
   isDeviceDataLoading = false;
+  userData: any = {};
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private deviceService: DeviceService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private commonService: CommonService
+
   ) { }
 
   ngOnInit(): void {
+    this.userData = JSON.parse(localStorage.getItem('userData'));
     this.route.paramMap.subscribe(
       params => {
         if (params.get('deviceId')) {
           this.device.device_id = params.get('deviceId');
+          this.commonService.breadcrumbEvent.emit(this.userData.app + ' / Devices / ' + this.device.device_id + ' / Control Panel');
           this.getDeviceDetail();
         }
       }

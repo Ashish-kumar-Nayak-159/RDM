@@ -19,6 +19,8 @@ import { CommandsComponent } from './device-control-panel/commands/commands.comp
 import { C2dPurgeComponent } from './device-control-panel/c2d-purge/c2d-purge.component';
 import { FilterComponent } from './device-control-panel/filter/filter.component';
 import { MessageModalComponent } from './device-control-panel/message-modal/message-modal.component';
+import { SettingsComponent } from './device-control-panel/settings/settings.component';
+import { LiveDataComponent } from './device-control-panel/live-data/live-data.component';
 
 
 @NgModule({
@@ -35,7 +37,9 @@ import { MessageModalComponent } from './device-control-panel/message-modal/mess
     CommandsComponent,
     C2dPurgeComponent,
     FilterComponent,
-    MessageModalComponent
+    MessageModalComponent,
+    SettingsComponent,
+    LiveDataComponent
   ],
   imports: [
     CommonModule,

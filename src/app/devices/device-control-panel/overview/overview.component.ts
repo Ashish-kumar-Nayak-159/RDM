@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class OverviewComponent implements OnInit {
 
-  @Input() device: Device = new Device;
+  @Input() device: Device = new Device();
   deviceCredentials: any;
   deviceConnectionStatus: any;
   userData: any;
@@ -47,12 +47,12 @@ export class OverviewComponent implements OnInit {
   copyConnectionString() {
     this.isCopyClicked = true;
     navigator.clipboard.writeText(this.deviceCredentials.primary_connection_string);
-    setTimeout(() => { this.isCopyClicked = false }, 1000);
+    setTimeout(() => this.isCopyClicked = false, 1000);
   }
 
   viewonnectionString() {
     this.isViewClicked = true;
-    setTimeout(() => { this.isViewClicked = false }, 3000);
+    setTimeout(() => this.isViewClicked = false, 3000);
   }
 
 

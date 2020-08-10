@@ -34,7 +34,7 @@ export class C2dPurgeComponent implements OnInit {
       response => {
         this.toasterServie.showSuccess('Messages purged successfully', 'Purge Messages');
       }, error => this.toasterServie.showError('Error in purging messages', 'Purge messages')
-    )
+    );
   }
 
 }

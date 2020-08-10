@@ -1,4 +1,4 @@
-export class APP_URLS {
+export class AppUrls {
   public static GET_APPLICATION_DASHBOARD_SNAPSHOT = 'Device_GetDashboardSnapshot';
   public static GET_LAST_N_ALERTS = 'D2C_GetLastNAlerts';
   public static GET_LAST_N_NOTIFICATIONS = 'D2C_GetLastNNotifications';

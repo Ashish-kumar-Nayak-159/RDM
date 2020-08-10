@@ -1,7 +1,8 @@
 import { Component, Inject, HostListener, NgZone, OnInit, AfterViewInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
-declare var $:any;
+declare var $: any;
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -13,31 +14,30 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   constructor(
     private router: Router,
-    @Inject(DOCUMENT) private document: Document,
-    private ngZone:NgZone
+    @Inject(DOCUMENT) private document: Document
   ) {
   }
   ngAfterViewInit(): void {
     setTimeout(() => {
-      const $containerDiv = $(".container-fluid");
-      const $container1Div = $(".container1-fluid");
+      const $containerDiv = $('.container-fluid');
+      const $container1Div = $('.container1-fluid');
 
-      $(window).resize(function () {
+      $(window).resize(() => {
         // console.log($(window).width());
         if ($(window).width() < 750) {
-          $containerDiv.removeClass("sb-notoggle");
-          $containerDiv.addClass("sb-toggle");
+          $containerDiv.removeClass('sb-notoggle');
+          $containerDiv.addClass('sb-toggle');
 
-          $container1Div.removeClass("sb1-notoggle");
-          $container1Div.addClass("sb1-toggle");
+          $container1Div.removeClass('sb1-notoggle');
+          $container1Div.addClass('sb1-toggle');
         } else {
-          $containerDiv.removeClass("sb-toggle");
-          $containerDiv.addClass("sb-notoggle");
-          $container1Div.removeClass("sb1-toggle");
-          $container1Div.addClass("sb1-notoggle");
+          $containerDiv.removeClass('sb-toggle');
+          $containerDiv.addClass('sb-notoggle');
+          $container1Div.removeClass('sb1-toggle');
+          $container1Div.addClass('sb1-notoggle');
         }
       });
-    }, 100)
+    }, 100);
   }
 
 
@@ -56,24 +56,24 @@ export class AppComponent implements OnInit, AfterViewInit {
             this.document.body.classList.remove('bg-gradient-login');
           }
           setTimeout(() => {
-            const $containerDiv = $(".container-fluid");
-            const $container1Div = $(".container1-fluid");
+            const $containerDiv = $('.container-fluid');
+            const $container1Div = $('.container1-fluid');
             if ($(window).width() < 750) {
-              $containerDiv.removeClass("sb-notoggle");
-              $containerDiv.addClass("sb-toggle");
+              $containerDiv.removeClass('sb-notoggle');
+              $containerDiv.addClass('sb-toggle');
 
-              $container1Div.removeClass("sb1-notoggle");
-              $container1Div.addClass("sb1-toggle");
+              $container1Div.removeClass('sb1-notoggle');
+              $container1Div.addClass('sb1-toggle');
             } else {
-              $containerDiv.removeClass("sb-toggle");
-              $containerDiv.addClass("sb-notoggle");
-              $container1Div.removeClass("sb1-toggle");
-              $container1Div.addClass("sb1-notoggle");
+              $containerDiv.removeClass('sb-toggle');
+              $containerDiv.addClass('sb-notoggle');
+              $container1Div.removeClass('sb1-toggle');
+              $container1Div.addClass('sb1-notoggle');
             }
           }, 200);
         }
       }
-    })
+    });
 
   }
 

@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonService } from '../services/common.service';
 import { DOCUMENT } from '@angular/common';
-declare var $:any;
+declare var $: any;
 
 @Component({
   selector: 'app-header',
@@ -25,20 +25,20 @@ export class HeaderComponent implements OnInit {
   }
 
   onSideBarToggleTopClick() {
-    $("body").toggleClass("sidebar-toggled"),
-    $(".sidebar").toggleClass("toggled"),
-    $(".sidebar").hasClass("toggled") &&
-    $(".sidebar .collapse").collapse("hide");
+    $('body').toggleClass('sidebar-toggled'),
+    $('.sidebar').toggleClass('toggled'),
+    $('.sidebar').hasClass('toggled') &&
+    $('.sidebar .collapse').collapse('hide');
     const pageTop = this.document.getElementById('page-top');
     const containerDiv = this.document.getElementsByClassName('container-fluid')[0];
-    if (pageTop.classList.contains("sidebar-toggled")) {
-      containerDiv.classList.remove("sb-notoggle");
-      containerDiv.classList.remove("sb-toggle");
-      containerDiv.classList.add("sb-collapse");
+    if (pageTop.classList.contains('sidebar-toggled')) {
+      containerDiv.classList.remove('sb-notoggle');
+      containerDiv.classList.remove('sb-toggle');
+      containerDiv.classList.add('sb-collapse');
     } else {
-      containerDiv.classList.add("sb-toggle");
-      containerDiv.classList.remove("sb-notoggle");
-      containerDiv.classList.remove("sb-collapse");
+      containerDiv.classList.add('sb-toggle');
+      containerDiv.classList.remove('sb-notoggle');
+      containerDiv.classList.remove('sb-collapse');
     }
   }
 

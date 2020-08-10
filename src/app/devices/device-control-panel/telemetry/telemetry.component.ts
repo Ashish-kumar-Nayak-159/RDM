@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
@@ -9,7 +9,7 @@ declare var $: any;
   templateUrl: './telemetry.component.html',
   styleUrls: ['./telemetry.component.css']
 })
-export class TelemetryComponent implements OnInit {
+export class TelemetryComponent implements OnInit, OnDestroy {
 
   telemetryFilter: any = {};
   telemetry: any[] = [];

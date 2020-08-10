@@ -16,6 +16,7 @@
     "component-class-suffix": true,
     "contextual-lifecycle": true,
     "directive-class-suffix": true,
+    "no-unused-expression": true,
     "directive-selector": [
       true,
       "attribute",
@@ -114,9 +115,10 @@
     },
     "variable-name": {
       "options": [
-        "ban-keywords",
+        true,
         "check-format",
-        "allow-pascal-case"
+        "allow-pascal-case",
+        "allow-snake-case"
       ]
     },
     "whitespace": {

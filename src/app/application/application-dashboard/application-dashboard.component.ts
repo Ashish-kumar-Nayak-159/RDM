@@ -43,7 +43,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
       hoverBackgroundColor: '#809eb9',
       hoverBorderColor: '#505c80',
     }
-  ]
+  ];
   dashboardSnapshot: ApplicationDashboardSnapshot; // to store application dashboard snapshot
   isDashboardSnapshotLoading = false; // flag to identify dashboard snapshot API call is completed or not
   noOfRecordsToDisplay = 5; // for alerts, notifications and events
@@ -53,7 +53,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
   isLastEventDataLoading = false; // flag to identify last {noOfRecordsToDisplay} events API call is completed or not
   lastGeneratedNotifications: Notification[] = []; // last generated notifications for application
   isLastNotificationDataLoading = false; // flag to identify last {noOfRecordsToDisplay} notifications API call is completed or not
-  apiSubscriptions: Subscription[] = [] // to store all the API subscriptions
+  apiSubscriptions: Subscription[] = []; // to store all the API subscriptions
   userData: any;
   constructor(
     private applicationService: ApplicationService,
@@ -117,7 +117,9 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response.data) {
           this.lastGeneratedNotifications = response.data;
-          this.lastGeneratedNotifications.forEach(notification => notification.time_diff = this.calculateTimeDifference(notification.created_date));
+          this.lastGeneratedNotifications.forEach(
+            notification => notification.time_diff = this.calculateTimeDifference(notification.created_date)
+          );
         }
         this.isLastNotificationDataLoading = false;
       }, error => {
@@ -152,13 +154,13 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     // console.log(today);
     // console.log(startime);
     let timeString = '';
-    let diff = today.diff(startime, "minute");
+    let diff = today.diff(startime, 'minute');
     timeString = diff + ' minutes ago';
     if (diff > 60) {
-      diff = today.diff(startime, "hours");
+      diff = today.diff(startime, 'hours');
       timeString = diff + ' hours ago';
       if (diff > 24) {
-        diff = today.diff(startime, "days");
+        diff = today.diff(startime, 'days');
         timeString = diff + ' days ago';
       }
     }
@@ -166,12 +168,12 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     return timeString;
   }
 
-  redirectToDevice(type = undefined) {
+  redirectToDevice(type?: string) {
     let obj;
     if (type) {
       obj = {
         state: type
-      }
+      };
     }
     this.router.navigate(['applications', this.userData.app, 'devices'], {queryParams: obj});
   }

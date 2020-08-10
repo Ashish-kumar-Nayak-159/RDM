@@ -88,8 +88,8 @@
           </tr>
 
           <tr *ngFor="let tag of reservedTagsList">
-            <td>{{tag}}</td>
-            <td></td>
+            <td>{{tag.name}}</td>
+            <td>{{device?.tags[tag.key]}}</td>
           </tr>
         </tbody>
       </table>

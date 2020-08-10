@@ -29,6 +29,17 @@ export class DeviceService {
     return this.http.get(this.url + APP_URLS.GET_DEVICE_DATA, { params });
   }
 
+  getDeviceCredentials(deviceId, appId) {
+    let params = new HttpParams().set('device_id', deviceId);
+    params = params.set('app', appId);
+    return this.http.get(this.url + APP_URLS.GET_DEVICE_CREDENTIALS, { params });
+  }
+
+  getDeviceConnectionStatus(deviceId) {
+    let params = new HttpParams().set('device_id', deviceId);
+    return this.http.get(this.url + APP_URLS.GET_DEVICE_CONNECTION_STATUS, { params });
+  }
+
   updateDeviceTags(deviceObj) {
     return this.http.post(this.url + APP_URLS.UPDATE_DEVICE_TAGS, deviceObj);
   }

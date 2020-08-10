@@ -9,8 +9,6 @@
 
 <!-- Content Row -->
 <div class="row">
-
-
   <div class="col-xl-12 col-md-12 mb-12">
     <div class="card h-100 py-2 px-2">
       <!-- <div class="card-body">
@@ -113,9 +111,14 @@
                 <i class="fas fa-fw fa-table"></i></a></td>
             </tr>
           </ng-container>
-          <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading">
+          <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading && isFilterSelected">
             <tr>
               <td colspan="6">No Devices found.</td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading && !isFilterSelected">
+            <tr>
+              <td colspan="6">Select filter and press search button to load the device data.</td>
             </tr>
           </ng-container>
           <ng-container *ngIf="isDeviceListLoading">

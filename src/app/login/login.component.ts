@@ -29,15 +29,19 @@ export class LoginComponent implements OnInit {
       password: 'admin',
       app: 'ccd'
     }
-  ]
+  ];
+  userData: any;
   constructor(
     private router: Router,
     private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
-    if (localStorage.getItem('userData')) {
-      this.router.navigate(['applications', 'ccd']);
+    this.userData = JSON.parse(localStorage.getItem('userData'));
+    if (this.userData) {
+
+      console.log('in if');
+      this.router.navigate(['applications', this.userData.app]);
     }
   }
 

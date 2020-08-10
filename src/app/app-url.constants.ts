@@ -15,4 +15,6 @@ export class APP_URLS {
   public static PURGE_QUEUE_MESSAGE = 'C2D_PurgeQueueMessages';
   public static GET_C2D_MESSAGE_JSON = 'C2D_GetDeviceMessage';
   public static GET_C2D_RESPONSE_JSON = 'D2C_GetDeviceResponses';
+  public static GET_DEVICE_CREDENTIALS = 'DLM_GetDeviceCredentials';
+  public static GET_DEVICE_CONNECTION_STATUS = 'DLM_GetDeviceConnectionStatus';
 }

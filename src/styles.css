@@ -5,5 +5,13 @@ thead {
   color: white!important;
 } */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
+
+.blue-font {
+  color: #4e73df;
+  text-decoration: none;
+  background-color: transparent
+}
+
+

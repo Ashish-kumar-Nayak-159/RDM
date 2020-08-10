@@ -1,7 +1,19 @@
 
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4 pt-3">
-  <h1 class="h3 mb-0 text-gray-800">Welcome to {{device?.device_id}}</h1>
+  <h1 class="h3 mb-0 text-gray-800">Welcome to {{device?.device_id}}</h1><br/>
+  <a class="d-none d-sm-inline-block btn-sm shadow-sm ml-4 white-font"
+  [ngClass]="{'btn-success': deviceConnectionStatus.connection_state === 'Connected',
+              'btn-danger': deviceConnectionStatus.connection_state === 'Disconnected'}">
+    {{deviceConnectionStatus.connection_state + ' @ ' + deviceConnectionStatus.updated_date}}
+  </a>
+</div>
+<div *ngIf="deviceCredentials">
+    <h6>Connection String:
+      <a class="blue-font" href="javascript:void(0)" (click)="viewonnectionString()"> View</a>
+      <a class="blue-font" href="javascript:void(0)" (click)="copyConnectionString()"> {{isCopyClicked ? 'Copied' : 'Copy'}}</a>
+    </h6>
+    <h6 *ngIf="isViewClicked">{{deviceCredentials.primary_connection_string}}</h6>
 </div>
 <div class="text-center">
   <img class="img-fluid px-3 px-sm-2 mt-3 mb-4" style="width: 15rem;" src="../../../../assets/img/pump1.svg" alt="">

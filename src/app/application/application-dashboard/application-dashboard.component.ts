@@ -54,7 +54,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
   lastGeneratedNotifications: Notification[] = []; // last generated notifications for application
   isLastNotificationDataLoading = false; // flag to identify last {noOfRecordsToDisplay} notifications API call is completed or not
   apiSubscriptions: Subscription[] = [] // to store all the API subscriptions
-  userData: any = {};
+  userData: any;
   constructor(
     private applicationService: ApplicationService,
     private router: Router,

@@ -1,6 +1,36 @@
 export class CONSTANTS {
   public static DEVICE_TAGS_LIST = {
-    "IP Device (SIM)": ["SIM No", "SIM Service Provider", "SIM IMEI No", "2G/3G/4G"],
-    "LoRa": ["LoRa Class Type", "LoRa Service Provider", "Activation Type", "DevEUI", "DevAddr", "AppEUI", "GatewayEUI"]
+    "IP Device (SIM)": [
+      {
+        name: "SIM No",
+        key: "sim_no"
+      },{
+        name: "SIM Service Provider",
+        key: "sim_service_provider"
+      },{
+        name: "SIM IMEI No",
+        key: "sim_imei"
+      }, {
+        name: "2G/3G/4G",
+        key: "network_option"
+      }
+      ],
+    "LoRa": [
+      {
+        name: "LoRa Class Type"
+      },{
+        name: "LoRa Service Provider"
+      },{
+        name: "Activation Type"
+      },{
+        name: "DevEUI"
+      },{
+        name: "DevAddr"
+      },{
+        name: "AppEUI"
+      }, {
+        name: "GatewayEUI"
+      }
+    ]
   }
 }

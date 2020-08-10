@@ -70,6 +70,7 @@ export class TagsComponent implements OnInit {
     if (this.device.tags && this.device.tags.protocol) {
       this.reservedTagsList = CONSTANTS.DEVICE_TAGS_LIST[this.device.tags.protocol] ? CONSTANTS.DEVICE_TAGS_LIST[this.device.tags.protocol] : [];
     }
+    console.log(this.reservedTagsList);
     this.originalDevice = null;
     this.originalDevice = {...this.device};
   }

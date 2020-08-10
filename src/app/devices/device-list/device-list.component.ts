@@ -15,7 +15,8 @@ export class DeviceListComponent implements OnInit {
   deviceFilterObj: DeviceListFilter = new DeviceListFilter();
   devicesList: Device[] = [];
   isDeviceListLoading = false;
-  userData: any = {};
+  userData: any;
+  isFilterSelected = false;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -25,12 +26,13 @@ export class DeviceListComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = JSON.parse(localStorage.getItem('userData'));
-    this.commonService.breadcrumbEvent.emit(this.userData.app + ' / Devices');
+    this.commonService.breadcrumbEvent.emit(this.userData.app + '/Devices');
     this.deviceFilterObj.app = this.userData.app;
     this.route.queryParamMap.subscribe(
       params => {
         if (params.get('state')) {
           this.deviceFilterObj.connection_state = params.get('state');
+          this.searchDevices();
         }
       }
     );
@@ -39,6 +41,7 @@ export class DeviceListComponent implements OnInit {
 
   searchDevices() {
     this.isDeviceListLoading = true;
+    this.isFilterSelected = true;
     this.deviceService.getDeviceList(this.deviceFilterObj).subscribe(
       (response: any) => {
         if (response.data) {

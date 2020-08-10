@@ -7,15 +7,17 @@ import { Router } from '@angular/router';
   styleUrls: ['./rdmhome.component.css']
 })
 export class RDMHomeComponent implements OnInit {
+  userData: any;
 
   constructor(
     private router: Router
   ) { }
 
   ngOnInit(): void {
+    this.userData = JSON.parse(localStorage.getItem('userData'));
     console.log(localStorage.getItem('userData'));
-    if (localStorage.getItem('userData')) {
-      this.router.navigate(['applications', 'ccd']);
+    if (this.userData) {
+      this.router.navigate(['applications', this.userData.app]);
     } else {
       this.router.navigate(['login']);
     }

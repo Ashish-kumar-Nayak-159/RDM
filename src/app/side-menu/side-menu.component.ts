@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-
+declare var $:any;
 @Component({
   selector: 'app-side-menu',
   templateUrl: './side-menu.component.html',
@@ -8,7 +8,7 @@ import { DOCUMENT } from '@angular/common';
 })
 export class SideMenuComponent implements OnInit {
 
-  userData: any = {};
+  userData: any;
   constructor(
     @Inject(DOCUMENT) private document: Document
   ) { }
@@ -19,17 +19,22 @@ export class SideMenuComponent implements OnInit {
   }
 
   onSidebarToggle() {
-    console.log(this.document.body.classList.length);
-    if (!this.document.body.classList.contains('sidebar-toggled')) {
-      this.document.body.classList.add('sidebar-toggled');
+    $("body").toggleClass("sidebar-toggled"),
+    $(".sidebar").toggleClass("toggled"),
+    $(".sidebar").hasClass("toggled") &&
+    $(".sidebar .collapse").collapse("hide");
+    const body = this.document.body;
+    const sidebar = this.document.getElementsByClassName('sidebar')[0];
+    const containerDiv = this.document.getElementsByClassName('container-fluid')[0];
+    if (
+      body.classList.contains("sidebar-toggled") ||
+      sidebar.classList.contains("toggled")
+    ) {
+      containerDiv.classList.remove("sb-notoggle");
+      containerDiv.classList.add("sb-toggle");
     } else {
-      this.document.body.classList.remove('sidebar-toggled');
-    }
-    const elem = this.document.getElementById('accordionSidebar');
-    if (!elem.classList.contains('toggled')) {
-      elem.classList.add('toggled');
-    } else {
-      elem.classList.remove('toggled');
+      containerDiv.classList.remove("sb-toggle");
+      containerDiv.classList.add("sb-notoggle");
     }
   }
 

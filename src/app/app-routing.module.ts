@@ -10,9 +10,7 @@ const routes: Routes = [
   },
   {
     path: 'applications/:applicationId/devices',
-    loadChildren: () => import('./devices/devices.module').then(module => {
-      console.log('hereee    ', module);
-      return module.DevicesModule})
+    loadChildren: () => import('./devices/devices.module').then(module => module.DevicesModule)
   },
   {
     path: 'login',

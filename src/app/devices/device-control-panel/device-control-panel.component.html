@@ -1,128 +1,135 @@
 <div id="wrapper">
   <!-- Sidebar -->
-
-  <ul class="navbar-nav bg-white sidebar1 sidebar-light mb-3" id="controlPanelSidebar">
-
-    <div class="text-center d-none d-md-inline">
+  <div class="sidebar1 sidebar-light mb-3 mt-n4">
+    <div class="center d-none d-md-inline">
       <button class="rounded-circle border-0 my-2" id="sidebar1Toggle" (click)="onSidebarToggle()"></button>
     </div>
-
-    <!-- Heading -->
-    <div class="sidebar1-heading bg-warning text-white py-3">
-      <i class="fas fa-fw fa">CP</i>
-      <span>Control Panel</span>
-    </div>
-
-    <!-- Nav Item - Dashboard -->
-    <li class="nav-item" [ngClass]="{'active': activeTab === 'overview'}">
-      <a class="nav-link collapsed" href="#overview" data-toggle="tab" aria-expanded="false"
-        (click)="setActiveTab('overview')">
-        <i class="fas fa-fw fa-life-ring"></i>
-        <span>Overview</span></a>
-    </li>
-
-    <!-- Nav Item - Dashboard -->
-    <li class="nav-item" [ngClass]="{'active': activeTab === 'access_control'}">
-      <a class="nav-link collapsed" href="#access_control" data-toggle="tab" aria-expanded="false"
-        (click)="setActiveTab('access_control')">
-        <i class="fas fa-fw fa-users"></i>
-        <span>Access Control (IAM)</span></a>
-    </li>
-
-    <!-- Nav Item - Dashboard -->
-    <li class="nav-item" [ngClass]="{'active': activeTab === 'tags'}">
-      <a class="nav-link collapsed" href="#tags" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('tags')">
-        <i class="fas fa-fw fa-tags"></i>
-        <span>Tags</span></a>
-    </li>
-
-    <li class="nav-item" [ngClass]="{'active': activeTab === 'setting'}">
-      <a class="nav-link" href="#setting" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('setting')">
-        <i class="fas fa-fw fa-cog"></i>
-        <span>Settings</span></a>
-    </li>
+    <ul class="navbar-nav bg-white sidebar1 sidebar-light mb-3" id="controlPanelSidebar">
 
 
 
+      <!-- Heading -->
+      <div class="sidebar1-heading bg-warning text-white py-3">
+        <i class="fas fa-fw fa">CP</i>
+        <span>Control Panel</span>
+      </div>
 
-    <!-- Heading -->
-    <div class="sidebar1-heading ">
-      D2C
-    </div>
-    <!-- Divider -->
-    <hr class="sidebar1-divider">
-    <!-- Nav Item - Charts -->
-    <li class="nav-item" [ngClass]="{'active': activeTab === 'heartbeat'}">
-      <a class="nav-link" href="#heartbeat" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('heartbeat')">
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item" [ngClass]="{'active': activeTab === 'overview'}">
+        <a class="nav-link collapsed" href="#overview" data-toggle="tab" aria-expanded="false"
+          (click)="setActiveTab('overview')">
+          <i class="fas fa-fw fa-life-ring"></i>
+          <span>Overview</span></a>
+      </li>
 
-        <i class="fas fa-fw fa-heartbeat"></i>
-        <span>Heartbeat</span></a>
-    </li>
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item" [ngClass]="{'active': activeTab === 'access_control'}">
+        <a class="nav-link collapsed" href="#access_control" data-toggle="tab" aria-expanded="false"
+          (click)="setActiveTab('access_control')">
+          <i class="fas fa-fw fa-users"></i>
+          <span>Access Control (IAM)</span></a>
+      </li>
 
-    <!-- Nav Item - Tables -->
-    <li class="nav-item" [ngClass]="{'active': activeTab === 'notifications'}">
-      <a class="nav-link" href="#notifications" data-toggle="tab" aria-expanded="false"
-        (click)="setActiveTab('notifications')">
-        <i class="fas fa-fw fa-bell"></i>
-        <span>Notifications</span></a>
-    </li>
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item" [ngClass]="{'active': activeTab === 'tags'}">
+        <a class="nav-link collapsed" href="#tags" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('tags')">
+          <i class="fas fa-fw fa-tags"></i>
+          <span>Tags</span></a>
+      </li>
 
-    <!-- Nav Item - Charts -->
-    <li class="nav-item" [ngClass]="{'active': activeTab === 'alerts'}">
-      <a class="nav-link" href="#alerts" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('alerts')">
-
-        <i class="fas fa-fw fa-bolt"></i>
-        <span>Alerts</span></a>
-    </li>
-
-    <!-- Nav Item - Tables -->
-    <li class="nav-item" [ngClass]="{'active': activeTab === 'telemetry'}">
-      <a class="nav-link" href="#telemetry" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('telemetry')">
-        <i class="fas fa-fw fa-file"></i>
-        <span>Telemetry</span></a>
-    </li>
-
-    <li class="nav-item"  [ngClass]="{'active': activeTab === 'liveData'}">
-      <a class="nav-link" href="#liveData"  data-toggle="tab" aria-expanded="false" (click)="setActiveTab('liveData')">
-        <i class="fas fa-fw fa-file"></i>
-        <span>Live</span></a>
-    </li>
+      <li class="nav-item" [ngClass]="{'active': activeTab === 'setting'}">
+        <a class="nav-link" href="#setting" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('setting')">
+          <i class="fas fa-fw fa-cog"></i>
+          <span>Settings</span></a>
+      </li>
 
 
-    <!-- Heading -->
-    <div class="sidebar1-heading">
-      C2D
-    </div>
-    <!-- Divider -->
-    <hr class="sidebar1-divider">
-    <!-- Nav Item - Charts -->
-    <li class="nav-item" [ngClass]="{'active': activeTab === 'commands'}">
-      <a class="nav-link" href="#commands" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('commands')">
-
-        <i class="fas fa-fw fa-angle-right"></i>
-        <span>General Commands</span></a>
-    </li>
-
-    <!-- Nav Item - Tables -->
-    <li class="nav-item" [ngClass]="{'active': activeTab === 'purge'}">
-      <a class="nav-link" href="#purge" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('purge')">
-        <i class="fas fa-fw fa-trash"></i>
-        <span>Purge</span></a>
-    </li>
 
 
-    <!-- Divider -->
-    <hr class="sidebar1-divider d-none d-md-block">
+      <!-- Heading -->
+      <div class="sidebar1-heading ">
+        D2C
+      </div>
+      <!-- Divider -->
+      <hr class="sidebar1-divider">
+      <!-- Nav Item - Charts -->
+      <li class="nav-item" [ngClass]="{'active': activeTab === 'heartbeat'}">
+        <a class="nav-link" href="#heartbeat" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('heartbeat')">
 
-  </ul>
+          <i class="fas fa-fw fa-heartbeat"></i>
+          <span>Heartbeat</span></a>
+      </li>
+
+      <!-- Nav Item - Tables -->
+      <li class="nav-item" [ngClass]="{'active': activeTab === 'notifications'}">
+        <a class="nav-link" href="#notifications" data-toggle="tab" aria-expanded="false"
+          (click)="setActiveTab('notifications')">
+          <i class="fas fa-fw fa-bell"></i>
+          <span>Notifications</span></a>
+      </li>
+
+      <!-- Nav Item - Charts -->
+      <li class="nav-item" [ngClass]="{'active': activeTab === 'alerts'}">
+        <a class="nav-link" href="#alerts" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('alerts')">
+
+          <i class="fas fa-fw fa-bolt"></i>
+          <span>Alerts</span></a>
+      </li>
+
+      <!-- Nav Item - Tables -->
+      <li class="nav-item" [ngClass]="{'active': activeTab === 'telemetry'}">
+        <a class="nav-link" href="#telemetry" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('telemetry')">
+          <i class="fas fa-fw fa-file"></i>
+          <span>Telemetry</span></a>
+      </li>
+
+      <li class="nav-item"  [ngClass]="{'active': activeTab === 'liveData'}">
+        <a class="nav-link" href="#liveData"  data-toggle="tab" aria-expanded="false" (click)="setActiveTab('liveData')">
+          <i class="fas fa-fw fa-file"></i>
+          <span>Live</span></a>
+      </li>
+
+
+      <!-- Heading -->
+      <div class="sidebar1-heading">
+        C2D
+      </div>
+      <!-- Divider -->
+      <hr class="sidebar1-divider">
+      <!-- Nav Item - Charts -->
+      <li class="nav-item" [ngClass]="{'active': activeTab === 'commands'}">
+        <a class="nav-link" href="#commands" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('commands')">
+
+          <i class="fas fa-fw fa-angle-right"></i>
+          <span>General Commands</span></a>
+      </li>
+
+      <!-- Nav Item - Tables -->
+      <li class="nav-item" [ngClass]="{'active': activeTab === 'purge'}">
+        <a class="nav-link" href="#purge" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('purge')">
+          <i class="fas fa-fw fa-trash"></i>
+          <span>Purge</span></a>
+      </li>
+
+
+      <!-- Divider -->
+      <hr class="sidebar1-divider d-none d-md-block">
+
+    </ul>
+  </div>
   <!-- End of Sidebar -->
-  <div  class="container1-fluid bg-white ml-3 mb-3" *ngIf="isDeviceDataLoading">
+   <!-- Content Wrapper -->
+   <div id="content-wrapper" class="d-flex flex-column">
+
+    <!-- Main Content -->
+    <div id="content">
+  <div  class="container1-fluid bg-white pb-3 mt-4 mb-3" *ngIf="isDeviceDataLoading">
     <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
   </div>
-  <div class="container1-fluid bg-white ml-3 mb-3" *ngIf="!isDeviceDataLoading">
+  <div class="container1-fluid bg-white pb-3 mt-4 mb-3" *ngIf="!isDeviceDataLoading">
 
     <!-- Sidebar Toggle (Topbar) -->
-    <button id="sidebar1ToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+    <button id="sidebar1ToggleTop" class="btn btn-link d-md-none rounded-circle mr-3" (click)="onSideBarToggleTopClick()">
       <i class="fa fa-bars"></i>
     </button>
     <div class="tab-content">
@@ -163,6 +170,8 @@
       <!-- /.container1-fluid -->
 
     </div>
+  </div>
+  </div>
   </div>
 
 </div>

@@ -4,7 +4,7 @@ import { DeviceService } from 'src/app/services/devices/device.service';
 import { Device } from 'src/app/models/device.model';
 import { ActivatedRoute } from '@angular/router';
 import { CommonService } from 'src/app/services/common.service';
-
+declare var $:any;
 @Component({
   selector: 'app-device-control-panel',
   templateUrl: './device-control-panel.component.html',
@@ -15,7 +15,7 @@ export class DeviceControlPanelComponent implements OnInit {
   activeTab: string;
   device: Device = new Device;
   isDeviceDataLoading = false;
-  userData: any = {};
+  userData: any;
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private deviceService: DeviceService,
@@ -30,7 +30,7 @@ export class DeviceControlPanelComponent implements OnInit {
       params => {
         if (params.get('deviceId')) {
           this.device.device_id = params.get('deviceId');
-          this.commonService.breadcrumbEvent.emit(this.userData.app + ' / Devices / ' + this.device.device_id + ' / Control Panel');
+          this.commonService.breadcrumbEvent.emit(this.userData.app + '/Devices/' + this.device.device_id + '/Control Panel');
           this.getDeviceDetail();
         }
       }
@@ -46,23 +46,69 @@ export class DeviceControlPanelComponent implements OnInit {
     )
   }
 
+  ngAfterViewInit(): void {
+    //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
+    //Add 'implements AfterViewInit' to the class.
+    this.setToggleClassForMenu();
+  }
+
+  setToggleClassForMenu() {
+    const $containerDiv = $(".container-fluid");
+    const $container1Div = $(".container1-fluid");
+    if ($(window).width() < 750) {
+      $containerDiv.removeClass("sb-notoggle");
+      $containerDiv.addClass("sb-toggle");
+
+      $container1Div.removeClass("sb1-notoggle");
+      $container1Div.addClass("sb1-toggle");
+    } else {
+      $containerDiv.removeClass("sb-toggle");
+      $containerDiv.addClass("sb-notoggle");
+
+      $container1Div.removeClass("sb1-toggle");
+      $container1Div.addClass("sb1-notoggle");
+    }
+  }
+
   setActiveTab(tab) {
     this.activeTab = tab;
     window.location.hash = tab;
   }
 
   onSidebarToggle() {
-    console.log(this.document.body.classList.length);
-    if (!this.document.body.classList.contains('sidebar-toggled')) {
-      this.document.body.classList.add('sidebar-toggled');
+    $("body").toggleClass("sidebar1-toggled"),
+    $(".sidebar1").toggleClass("toggled"),
+    $(".sidebar1").hasClass("toggled") &&
+    $(".sidebar1 .collapse").collapse("hide");
+
+    const sidebar1 = this.document.getElementsByClassName('sidebar1')[0];
+    const container1Div = this.document.getElementsByClassName('container1-fluid')[0];
+    if (
+      sidebar1.classList.contains("toggled")
+    ) {
+      container1Div.classList.remove("sb1-notoggle");
+      container1Div.classList.add("sb1-toggle");
     } else {
-      this.document.body.classList.remove('sidebar-toggled');
+      container1Div.classList.remove("sb1-toggle");
+      container1Div.classList.add("sb1-notoggle");
     }
-    const elem = this.document.getElementById('controlPanelSidebar');
-    if (!elem.classList.contains('toggled')) {
-      elem.classList.add('toggled');
+  }
+
+  onSideBarToggleTopClick() {
+    $("body").toggleClass("sidebar1-toggled"),
+    $(".sidebar1").toggleClass("toggled"),
+    $(".sidebar1").hasClass("toggled") &&
+    $(".sidebar1 .collapse").collapse("hide");
+    const pageTop = this.document.getElementById('page-top');
+    const container1Div = this.document.getElementsByClassName('container1-fluid')[0];
+    if (pageTop.classList.contains("sidebar1-toggled")) {
+      container1Div.classList.remove("sb1-notoggle");
+      container1Div.classList.remove("sb1-toggle");
+      container1Div.classList.add("sb1-collapse");
     } else {
-      elem.classList.remove('toggled');
+      container1Div.classList.add("sb1-toggle");
+      container1Div.classList.remove("sb1-notoggle");
+      container1Div.classList.remove("sb1-collapse");
     }
   }
 
@@ -72,6 +118,11 @@ export class DeviceControlPanelComponent implements OnInit {
       (response: any) => {
         this.device = response;
         this.isDeviceDataLoading = false;
+        setTimeout(
+          () => {
+            this.setToggleClassForMenu();
+          }, 50
+        );
       }, () => this.isDeviceDataLoading = false
     )
   }

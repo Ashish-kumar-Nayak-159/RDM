@@ -37,10 +37,10 @@
           <span>Tags</span></a>
       </li>
 
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'setting'}">
-        <a class="nav-link" href="#setting" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('setting')">
+      <li class="nav-item" [ngClass]="{'active': activeTab === 'manage'}">
+        <a class="nav-link" href="#setting" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('manage')">
           <i class="fas fa-fw fa-cog"></i>
-          <span>Settings</span></a>
+          <span>Manage</span></a>
       </li>
 
 
@@ -143,8 +143,8 @@
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="tags">
         <app-tags *ngIf="activeTab === 'tags'" [device]="device"></app-tags>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'setting'}" role="tabpanel" id="setting">
-        <app-settings *ngIf="activeTab === 'setting'"></app-settings>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'manage'}" role="tabpanel" id="setting">
+        <app-settings *ngIf="activeTab === 'manage'" [device]="device"></app-settings>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'heartbeat'}" role="tabpanel" id="heartbeat">
         <app-heartbeat *ngIf="activeTab === 'heartbeat'" [device]="device"></app-heartbeat>

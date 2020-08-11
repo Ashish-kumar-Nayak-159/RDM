@@ -7,20 +7,23 @@
         <span class="text-secondary">View</span></a>
     </li> -->
     <li class="nav-item">
-      <a class="nav-link" href="javascript:void(0)" >
-        <!-- <i class="fas fa-fw fa-toggle-on"></i> -->
-        <span class="text-secondary">Enable</span></a>
+      <a class="nav-link" href="javascript:void(0)" (click)="enableDevice()"  [class.disabled]="isAPILoading || device?.status?.toLowerCase() === 'enabled'">
+        <i class="fas fa-fw fa-toggle-on"></i>
+        <span class="text-secondary"> Enable</span></a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="javascript:void(0)">
-        <!-- <i class="fas fa-fw fa-toggle-off"></i> -->
-        <span class="text-secondary">Disable</span></a>
+      <a class="nav-link" href="javascript:void(0)" (click)="disableDevice()"  [class.disabled]="isAPILoading || device?.status?.toLowerCase() === 'disabled'">
+        <i class="fas fa-fw fa-toggle-off"></i>
+        <span class="text-secondary"> Disable</span></a>
     </li>
-    <!-- <li class="nav-item">
-      <a class="nav-link" href="javascript:void(0)" (click)="resetDeviceTags()">
-        <i class="fas fa-fw fa-undo"></i>
-        <span class="text-secondary delete-row">Revert Changes</span></a>
-    </li> -->
+    <li class="nav-item">
+      <a class="nav-link" href="javascript:void(0)" (click)="deleteDevice()"  [class.disabled]="isAPILoading">
+        <i class="fas fa-fw fa-trash"></i>
+        <span class="text-secondary delete-row">Delete</span></a>
+    </li>
+    <li *ngIf="isAPILoading">
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+    </li>
   </ul>
 
 

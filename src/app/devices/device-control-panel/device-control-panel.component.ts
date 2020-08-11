@@ -44,6 +44,11 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
         }
       }
     );
+    this.deviceService.reloadDeviceInControlPanelEmitter.subscribe(
+      () => {
+        this.getDeviceDetail(true);
+      }
+    );
   }
 
   ngAfterViewInit(): void {
@@ -109,17 +114,21 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getDeviceDetail() {
-    this.isDeviceDataLoading = true;
+  getDeviceDetail(callFromMenu = false) {
+    if (!callFromMenu) {
+      this.isDeviceDataLoading = true;
+    }
     this.deviceService.getDeviceData(this.device.device_id).subscribe(
       (response: any) => {
         this.device = response;
         this.isDeviceDataLoading = false;
-        setTimeout(
-          () => {
-            this.setToggleClassForMenu();
-          }, 50
-        );
+        if (!callFromMenu) {
+          setTimeout(
+            () => {
+              this.setToggleClassForMenu();
+            }, 50
+          );
+        }
       }, () => this.isDeviceDataLoading = false
     );
   }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppUrls } from '../../app-url.constants';
@@ -9,6 +9,7 @@ import { AppUrls } from '../../app-url.constants';
 export class DeviceService {
 
   url = environment.appServerURL;
+  reloadDeviceInControlPanelEmitter: EventEmitter<any> = new EventEmitter<any>();
   constructor(
     private http: HttpClient
   ) { }
@@ -27,6 +28,24 @@ export class DeviceService {
   getDeviceData(deviceId) {
     const params = new HttpParams().set('device_id', deviceId);
     return this.http.get(this.url + AppUrls.GET_DEVICE_DATA, { params });
+  }
+
+  enableDevice(deviceId, appId) {
+    let params = new HttpParams().set('device_id', deviceId);
+    params = params.set('app', appId);
+    return this.http.patch(this.url + AppUrls.ENABLE_DEVICE, {}, { params });
+  }
+
+  disableDevice(deviceId, appId) {
+    let params = new HttpParams().set('device_id', deviceId);
+    params = params.set('app', appId);
+    return this.http.patch(this.url + AppUrls.DISABLE_DEVICE, {}, { params });
+  }
+
+  deleteDevice(deviceId, appId) {
+    let params = new HttpParams().set('device_id', deviceId);
+    params = params.set('app', appId);
+    return this.http.delete(this.url + AppUrls.DELETE_DEVICE, { params });
   }
 
   getDeviceCredentials(deviceId, appId) {

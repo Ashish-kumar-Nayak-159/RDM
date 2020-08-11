@@ -17,4 +17,8 @@ export class AppUrls {
   public static GET_C2D_RESPONSE_JSON = 'D2C_GetDeviceResponses';
   public static GET_DEVICE_CREDENTIALS = 'DLM_GetDeviceCredentials';
   public static GET_DEVICE_CONNECTION_STATUS = 'DLM_GetDeviceConnectionStatus';
+  public static ENABLE_DEVICE = 'DLM_EnableDevice';
+  public static DISABLE_DEVICE = 'DLM_DisableDevice';
+  public static DELETE_DEVICE = 'DLM_DeleteDevice';
+
 }

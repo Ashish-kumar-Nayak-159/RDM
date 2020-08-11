@@ -11101,7 +11101,7 @@ body.sidebar1-toggled footer.sticky-footer {
   margin-bottom: 0;
   list-style: none;
   /*min-height: 140vh;*/
-  max-height: calc(100vh - 40px);
+  max-height: calc(100vh - 120px);
   overflow-y: auto;
   overflow-x: hidden;
 }

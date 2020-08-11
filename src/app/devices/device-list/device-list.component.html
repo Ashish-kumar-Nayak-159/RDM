@@ -62,8 +62,8 @@
           <option [ngValue]="'connected'">Connected</option>
           <option [ngValue]="'disconnected'">Disconnected</option>
           </select>
-          <button type="button" class="form-control btn btn-warning btn-sm mx-1 my-1" (click)="searchDevices()" >Search</button>
-          <button type="button" class="form-control btn btn-light btn-sm mx-1 my-1" >Clear</button>
+          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="searchDevices()" ><i class="fas fa-search fa-sm"></i></button>
+          <button type="button" class="btn btn-light btn-sm mx-1 my-1" ><i class="fas fa-eraser  fa-sm"></i></button>
 
         </div>
        </form>
@@ -74,7 +74,7 @@
 <!-- Content Row -->
 
 <!-- DataTales Example -->
-<div class="card mb-4 mt-3">
+<div class="card mb-4 ">
 
   <div class="card-body">
     <div class="table-responsive">
@@ -84,7 +84,7 @@
             <th>Device Name</th>
             <th>Device Manager</th>
             <th>Connectivity</th>
-            <th>Powered By</th>
+
             <th>Location</th>
             <th>Actions</th>
           </tr>
@@ -105,7 +105,6 @@
               <td>{{device.device_id}}</td>
               <td>{{device.tags?.device_manager}}</td>
               <td>{{device.tags?.cloud_connectivity}}</td>
-              <td>{{device.tags?.issued_by}}</td>
               <td>{{device.tags?.location}}</td>
               <td><a [routerLink]="[device.device_id, 'control-panel']" routerLinkActive="router-link-active" title="Control panel">
                 <i class="fas fa-fw fa-table"></i></a></td>

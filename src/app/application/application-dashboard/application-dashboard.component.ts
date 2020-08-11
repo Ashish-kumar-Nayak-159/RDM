@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { CommonService } from 'src/app/services/common.service';
+import { CONSTANTS } from './../../app.constants';
 
 
 @Component({
@@ -55,6 +56,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
   isLastNotificationDataLoading = false; // flag to identify last {noOfRecordsToDisplay} notifications API call is completed or not
   apiSubscriptions: Subscription[] = []; // to store all the API subscriptions
   userData: any;
+  applicationData: {logo: string, icon: string};
   constructor(
     private applicationService: ApplicationService,
     private router: Router,
@@ -64,6 +66,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userData = JSON.parse(localStorage.getItem('userData'));
+    this.applicationData = CONSTANTS.APP_DATA[this.userData.app];
     this.getDashboardSnapshot();
     this.getLastNotificationData();
     this.getLastAlertData();

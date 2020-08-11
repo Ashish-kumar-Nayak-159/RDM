@@ -1,5 +1,15 @@
 Application URL -  https://kemsys-azure-rdm.azurewebsites.net
 Valid users for login -
-1. sombabu@kemsys.com - admin
-2. urvisha@kemsys.com - admin
-3. yash@kemsys.com - admin
+1. sombabu@kemsys.com - admin - Adani
+2. urvisha@kemsys.com - admin - IDEX
+3. yash@kemsys.com - admin - ccd
+
+
+Pending tasks
+- UTC to Local time display
+- reserved tags editable
+- API integration for Enable/disbale/delete device
+- Error (D2C) menu item add... table data -> timestamp, message id, error code, error message
+- create device
+- code commenting
+- remove commented code

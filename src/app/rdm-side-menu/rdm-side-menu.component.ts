@@ -2,11 +2,11 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 declare var $: any;
 @Component({
-  selector: 'app-side-menu',
-  templateUrl: './side-menu.component.html',
-  styleUrls: ['./side-menu.component.css']
+  selector: 'app-rdm-side-menu',
+  templateUrl: './rdm-side-menu.component.html',
+  styleUrls: ['./rdm-side-menu.component.css']
 })
-export class SideMenuComponent implements OnInit {
+export class RDMSideMenuComponent implements OnInit {
 
   userData: any;
   constructor(

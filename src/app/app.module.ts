@@ -7,12 +7,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
-import { SideMenuComponent } from './side-menu/side-menu.component';
+import { RDMSideMenuComponent } from './rdm-side-menu/rdm-side-menu.component';
 import { HttpInterceptorProviders } from './Interceptor';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { MatNativeDateModule } from '@angular/material/core';
-import { LoginComponent } from './login/login.component';
+import { RDMLoginComponent } from './rdm-login/rdm-login.component';
 import { RDMHomeComponent } from './rdmhome/rdmhome.component';
 
 @NgModule({
@@ -20,8 +20,8 @@ import { RDMHomeComponent } from './rdmhome/rdmhome.component';
     AppComponent,
     HeaderComponent,
     FooterComponent,
-    SideMenuComponent,
-    LoginComponent,
+    RDMSideMenuComponent,
+    RDMLoginComponent,
     RDMHomeComponent,
 
   ],

@@ -5,7 +5,7 @@
         <div class="card bg-warning text-white shadow">
           <div class="card-body">
             <div class="text-center">
-              <img class="img-fluid px-3 px-sm-2 mt-3 mb-4" style="width: 25rem;" src="../../../assets/img/pump1.svg"
+              <img class="img-fluid px-3 px-sm-2 mt-3 mb-4" style="width: 25rem;" src="{{applicationData.logo}}"
                 alt="">
             </div>
           </div>
@@ -17,7 +17,7 @@
             <a href="javascript:void(0)" (click)="redirectToDevice()" >
               <div class="text-center">
                 <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
-                  src="../../../assets/img/pump.svg" alt="">
+                  src="{{applicationData.icon}}" alt="">
               </div>
               <div class="text-center">
                 <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>
@@ -34,7 +34,7 @@
             <a href="javascript:void(0)" (click)="redirectToDevice('connected')">
               <div class="text-center">
                 <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
-                  src="../../../assets/img/pump.svg" alt="">
+                  src="{{applicationData.icon}}" alt="">
               </div>
               <div class="text-center">
                 <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>
@@ -52,7 +52,7 @@
             <a href="javascript:void(0)" (click)="redirectToDevice('disconnected')">
               <div class="text-center">
                 <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
-                  src="../../../assets/img/pump.svg" alt="">
+                  src="{{applicationData.icon}}" alt="">
               </div>
               <div class="text-center">
                 <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>

@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { DeviceService } from './../../../services/devices/device.service';
 import { Device } from 'src/app/models/device.model';
 import { ActivatedRoute } from '@angular/router';
+import { CONSTANTS } from './../../../app.constants';
 
 @Component({
   selector: 'app-overview',
@@ -16,12 +17,14 @@ export class OverviewComponent implements OnInit {
   userData: any;
   isCopyClicked = false;
   isViewClicked = false;
+  applicationData: {logo: string, icon: string};
   constructor(
     private devieService: DeviceService
   ) { }
 
   ngOnInit(): void {
     this.userData = JSON.parse(localStorage.getItem('userData'));
+    this.applicationData = CONSTANTS.APP_DATA[this.userData.app];
     this.getDeviceCredentials();
     this.getDeviceConnectionStatus();
   }

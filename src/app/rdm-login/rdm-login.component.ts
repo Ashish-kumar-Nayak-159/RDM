@@ -1,35 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ToasterService } from './../services/toaster.service';
+import { ToasterService } from '../services/toaster.service';
+import { CONSTANTS } from './../app.constants';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector: 'app-rdm-login',
+  templateUrl: './rdm-login.component.html',
+  styleUrls: ['./rdm-login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class RDMLoginComponent implements OnInit {
 
   loginForm: any = {};
-  usersList = [
-    {
-      email: 'sombabu@kemsys.com',
-      username: 'Sombabu Gunithi',
-      password: 'admin',
-      app: 'IDEX'
-    },
-    {
-      email: 'yash@kemsys.com',
-      username: 'Yash Mochi',
-      password: 'admin',
-      app: 'ccd'
-    },
-    {
-      email: 'urvisha@kemsys.com',
-      username: 'Urvisha Seladiya',
-      password: 'admin',
-      app: 'ccd'
-    }
-  ];
+  usersList: any[] = [];
   userData: any;
   constructor(
     private router: Router,
@@ -38,6 +20,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = JSON.parse(localStorage.getItem('userData'));
+    this.usersList = CONSTANTS.USERS_LIST;
     if (this.userData) {
 
       console.log('in if');

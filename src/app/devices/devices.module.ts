@@ -21,6 +21,7 @@ import { FilterComponent } from './device-control-panel/filter/filter.component'
 import { MessageModalComponent } from './device-control-panel/message-modal/message-modal.component';
 import { SettingsComponent } from './device-control-panel/settings/settings.component';
 import { LiveDataComponent } from './device-control-panel/live-data/live-data.component';
+import { RDMDeviceControlPanelErrorComponent } from './device-control-panel/rdmdevice-control-panel-error/rdmdevice-control-panel-error.component';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { LiveDataComponent } from './device-control-panel/live-data/live-data.co
     FilterComponent,
     MessageModalComponent,
     SettingsComponent,
-    LiveDataComponent
+    LiveDataComponent,
+    RDMDeviceControlPanelErrorComponent
   ],
   imports: [
     CommonModule,

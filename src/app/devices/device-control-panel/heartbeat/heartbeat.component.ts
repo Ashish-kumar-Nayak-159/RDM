@@ -3,6 +3,7 @@ import { DeviceService } from 'src/app/services/devices/device.service';
 import { Device } from 'src/app/models/device.model';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
+import { CommonService } from 'src/app/services/common.service';
 declare var $: any;
 @Component({
   selector: 'app-heartbeat',
@@ -19,7 +20,8 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
   selectedHeartbeat: any;
   isFilterSelected = false;
   constructor(
-    private deviceService: DeviceService
+    private deviceService: DeviceService,
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
@@ -58,6 +60,7 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response && response.data) {
           this.heartbeats = response.data;
+          this.heartbeats.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date));
         }
         this.isHeartbeatLoading = false;
       }, error => this.isHeartbeatLoading = false
@@ -70,6 +73,8 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
       $('#heartbeatMessageModal').modal('hide');
     }
   }
+
+
 
   ngOnDestroy() {
     this.apiSubscriptions.forEach(subscribe => subscribe.unsubscribe());

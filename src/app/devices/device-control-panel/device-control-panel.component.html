@@ -83,6 +83,12 @@
           <span>Telemetry</span></a>
       </li>
 
+      <li class="nav-item" [ngClass]="{'active': activeTab === 'error'}">
+        <a class="nav-link" href="#error" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('error')">
+          <i class="fas fa-fw fa-file"></i>
+          <span>Error</span></a>
+      </li>
+
       <li class="nav-item"  [ngClass]="{'active': activeTab === 'liveData'}">
         <a class="nav-link" href="#liveData"  data-toggle="tab" aria-expanded="false" (click)="setActiveTab('liveData')">
           <i class="fas fa-fw fa-file"></i>
@@ -157,6 +163,9 @@
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'alerts'}" role="tabpanel" id="alerts">
         <app-alerts *ngIf="activeTab === 'alerts'" [device]="device"></app-alerts>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'error'}" role="tabpanel" id="error">
+        <app-rdmdevice-control-panel-error *ngIf="activeTab === 'error'" [device]="device"></app-rdmdevice-control-panel-error>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'liveData'}" role="tabpanel" id="liveData">
         <app-live-data *ngIf="activeTab === 'liveData'" ></app-live-data>

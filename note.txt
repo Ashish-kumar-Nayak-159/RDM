@@ -7,7 +7,6 @@ Valid users for login -
 
 Pending tasks
 - UTC to Local time display
-- Error (D2C) menu item add... table data -> timestamp, message id, error code, error message
 - create device
 - code commenting
 - remove commented code

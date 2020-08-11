@@ -88,7 +88,7 @@
   </div>
 </div> -->
 
-<app-filter [filterObj]="notificationFilter" (filterSearch)="searchNotifications($event)"></app-filter>
+<app-filter [filterObj]="errorFilter" (filterSearch)="searchError($event)"></app-filter>
 
 <div class="row mx-auto mt-3">
 
@@ -98,7 +98,8 @@
         <tr class="bg-secondary text-white">
           <th>Time Stamp</th>
           <th>Message ID</th>
-          <th>Notification Message</th>
+          <th>Error Code</th>
+          <th>Error Message</th>
 
         </tr>
       </thead>
@@ -113,29 +114,30 @@
               </tr>
             </tfoot>-->
       <tbody>
-        <ng-container *ngIf="notifications.length > 0 && !isNotificationLoading">
-          <tr *ngFor="let notification of notifications">
-            <td>{{notification.local_created_date}}</td>
-            <td>{{notification.message_id}}</td>
+        <ng-container *ngIf="errors.length > 0 && !isErrorLoading">
+          <tr *ngFor="let error of errors">
+            <td>{{error.local_created_date}}</td>
+            <td>{{error.message_id}}</td>
+            <td></td>
             <td>
-              <a (click)="selectedNotification = notification;" href="javascript:void(0)" data-toggle="modal"
+              <a (click)="selectedError = error;" href="javascript:void(0)" data-toggle="modal"
                 data-target="#notificationMessageModal" data-backdrop="static" data-keyboard="false">
               <i  class="fas fa-fw fa-eye"></i>
               </a>
             </td>
           </tr>
         </ng-container>
-        <ng-container *ngIf="notifications.length === 0 && !isNotificationLoading && isFilterSelected">
+        <ng-container *ngIf="errors.length === 0 && !isErrorLoading && isFilterSelected">
           <tr>
-            <td colspan="6">No Notification data found.</td>
+            <td colspan="6">No Error data found.</td>
           </tr>
         </ng-container>
-        <ng-container *ngIf="notifications.length === 0 && !isNotificationLoading && !isFilterSelected">
+        <ng-container *ngIf="errors.length === 0 && !isErrorLoading && !isFilterSelected">
           <tr>
-            <td colspan="6">Select filter and press search button to load the notification data.</td>
+            <td colspan="6">Select filter and press search button to load the error data.</td>
           </tr>
         </ng-container>
-        <ng-container *ngIf="isNotificationLoading">
+        <ng-container *ngIf="isErrorLoading">
           <tr>
             <td colspan="6">
               <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>

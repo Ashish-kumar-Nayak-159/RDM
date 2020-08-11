@@ -77,7 +77,7 @@
       <tbody>
         <ng-container *ngIf="heartbeats.length > 0 && !isHeartbeatLoading">
           <tr *ngFor="let heartbeat of heartbeats">
-            <td>{{heartbeat.created_date}}</td>
+            <td>{{heartbeat.local_created_date}}</td>
             <td>{{heartbeat.message_id}}</td>
             <td>
               <a (click)="selectedHeartbeat = heartbeat;" href="javascript:void(0)" data-toggle="modal"

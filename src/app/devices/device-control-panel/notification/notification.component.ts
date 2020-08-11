@@ -3,6 +3,7 @@ import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import * as moment from 'moment';
+import { CommonService } from 'src/app/services/common.service';
 declare var $: any;
 @Component({
   selector: 'app-notification',
@@ -19,7 +20,8 @@ export class NotificationComponent implements OnInit, OnDestroy {
   selectedNotification: any;
   isFilterSelected = false;
   constructor(
-    private deviceService: DeviceService
+    private deviceService: DeviceService,
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
@@ -58,6 +60,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response && response.data) {
           this.notifications = response.data;
+          this.notifications.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date));
         }
         this.isNotificationLoading = false;
       }, error => this.isNotificationLoading = false

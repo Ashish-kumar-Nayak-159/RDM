@@ -114,7 +114,7 @@
       <tbody>
         <ng-container *ngIf="telemetry.length > 0 && !isTelemetryLoading">
           <tr *ngFor="let telemetryObj of telemetry">
-            <td>{{telemetryObj.created_date}}</td>
+            <td>{{telemetryObj.local_created_date}}</td>
             <td>{{telemetryObj.message_id}}</td>
             <td>
               <a (click)="selectedTelemetry = telemetryObj" href="javascript:void(0)" data-toggle="modal"

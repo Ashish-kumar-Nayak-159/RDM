@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { ToasterService } from './../../../services/toaster.service';
 import { CONSTANTS } from './../../../app.constants';
+import { CommonService } from 'src/app/services/common.service';
 
 @Component({
   selector: 'app-tags',
@@ -20,7 +21,8 @@ export class TagsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private deviceService: DeviceService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
@@ -70,6 +72,9 @@ export class TagsComponent implements OnInit {
       });
     }
     if (this.device.tags && this.device.tags.protocol) {
+      if (this.device.tags.created_date) {
+        this.device.tags.created_date = this.commonService.convertUTCDateToLocal(this.device.tags.created_date);
+      }
       this.reservedTagsBasedOnProtocol = CONSTANTS.DEVICE_PROTOCOL_BASED_TAGS_LIST[this.device.tags.protocol]
       ? CONSTANTS.DEVICE_PROTOCOL_BASED_TAGS_LIST[this.device.tags.protocol] : [];
     }

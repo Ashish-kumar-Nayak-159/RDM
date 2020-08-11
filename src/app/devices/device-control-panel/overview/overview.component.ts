@@ -3,6 +3,7 @@ import { DeviceService } from './../../../services/devices/device.service';
 import { Device } from 'src/app/models/device.model';
 import { ActivatedRoute } from '@angular/router';
 import { CONSTANTS } from './../../../app.constants';
+import { CommonService } from 'src/app/services/common.service';
 
 @Component({
   selector: 'app-overview',
@@ -19,7 +20,8 @@ export class OverviewComponent implements OnInit {
   isViewClicked = false;
   applicationData: {logo: string, icon: string};
   constructor(
-    private devieService: DeviceService
+    private devieService: DeviceService,
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
@@ -43,6 +45,8 @@ export class OverviewComponent implements OnInit {
     this.devieService.getDeviceConnectionStatus(this.device.device_id).subscribe(
       response => {
         this.deviceConnectionStatus = response;
+        this.deviceConnectionStatus.local_updated_date =
+          this.commonService.convertUTCDateToLocal(this.deviceConnectionStatus.updated_date);
       }
     );
   }

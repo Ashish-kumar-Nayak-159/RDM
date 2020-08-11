@@ -114,7 +114,7 @@
       <tbody>
         <ng-container *ngIf="alerts.length > 0 && !isAlertLoading">
           <tr *ngFor="let alert of alerts">
-            <td>{{alert.created_date}}</td>
+            <td>{{alert.local_created_date}}</td>
             <td>{{alert.message_id}}</td>
             <td>
               <a (click)="selectedAlert = alert;" href="javascript:void(0)" data-toggle="modal"

@@ -3,6 +3,7 @@ import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import * as moment from 'moment';
+import { CommonService } from 'src/app/services/common.service';
 declare var $: any;
 
 
@@ -23,7 +24,8 @@ export class CommandsComponent implements OnInit, OnDestroy {
   c2dMessageDetail: any;
   c2dResponseDetail: any[];
   constructor(
-    private deviceService: DeviceService
+    private deviceService: DeviceService,
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
@@ -64,6 +66,7 @@ export class CommandsComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response && response.data) {
           this.c2dMsgs = response.data;
+          this.c2dMsgs.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date));
         }
         this.isC2dMsgsLoading = false;
       }, error => this.isC2dMsgsLoading = false

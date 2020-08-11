@@ -15,7 +15,8 @@ export class TagsComponent implements OnInit {
   @Input() device: Device = new Device();
   originalDevice: Device = new Device();
   deviceCustomTags: any[] = [];
-  reservedTagsList: any[] = [];
+  reservedTags: any[] = [];
+  reservedTagsBasedOnProtocol: any[] = [];
   constructor(
     private route: ActivatedRoute,
     private deviceService: DeviceService,
@@ -23,6 +24,7 @@ export class TagsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.reservedTags = CONSTANTS.DEVICE_RESERVED_TAGS_LIST;
     this.getDeviceDetail();
   }
 
@@ -68,12 +70,12 @@ export class TagsComponent implements OnInit {
       });
     }
     if (this.device.tags && this.device.tags.protocol) {
-      this.reservedTagsList = CONSTANTS.DEVICE_TAGS_LIST[this.device.tags.protocol]
-      ? CONSTANTS.DEVICE_TAGS_LIST[this.device.tags.protocol] : [];
+      this.reservedTagsBasedOnProtocol = CONSTANTS.DEVICE_PROTOCOL_BASED_TAGS_LIST[this.device.tags.protocol]
+      ? CONSTANTS.DEVICE_PROTOCOL_BASED_TAGS_LIST[this.device.tags.protocol] : [];
     }
-    console.log(this.reservedTagsList);
+    console.log(this.reservedTagsBasedOnProtocol);
     this.originalDevice = null;
-    this.originalDevice = {...this.device};
+    this.originalDevice = JSON.parse(JSON.stringify(this.device));
   }
 
   onCustomTagInputChange() {
@@ -95,7 +97,7 @@ export class TagsComponent implements OnInit {
 
   resetDeviceTags() {
     this.device = null;
-    this.device = {...this.originalDevice};
+    this.device = JSON.parse(JSON.stringify(this.originalDevice));
     this.getDeviceDetail();
   }
 

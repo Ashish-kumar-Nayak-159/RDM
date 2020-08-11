@@ -35,8 +35,51 @@ export class CONSTANTS {
       app: 'ccd'
     }
   ];
+
+  public static DEVICE_RESERVED_TAGS_LIST = [
+    {
+      name: 'Created By',
+      key: 'created_by'
+    },
+    {
+      name: 'Created On',
+      key: 'created_date'
+    },
+    {
+      name: 'Device Manager',
+      key: 'device_manager'
+    },
+    {
+      name: 'Device Type',
+      key: 'device_type'
+    },
+    {
+      name: 'Location',
+      key: 'location'
+    },
+    {
+      name: 'Location Coordinates',
+      key: 'location_coordinates'
+    },
+    {
+      name: 'Manufacturer',
+      key: 'manufacturer'
+    },
+    {
+      name: 'Serial No',
+      key: 'serial_number'
+    },
+    {
+      name: 'MAC ID',
+      key: 'mac_address'
+    },
+    {
+      name: 'Protocol',
+      key: 'protocol'
+    }
+  ]
   // device tags list based on device protocol
-  public static DEVICE_TAGS_LIST = {
+  public static DEVICE_PROTOCOL_BASED_TAGS_LIST = {
     'IP Device (SIM)': [
       {
         name: 'SIM No',

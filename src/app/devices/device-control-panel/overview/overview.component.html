@@ -3,9 +3,9 @@
 <div class="d-sm-flex align-items-center justify-content-between mb-4 pt-3">
   <h1 class="h3 mb-0 text-gray-800">Welcome to {{device?.device_id}}</h1><br/>
   <a class="d-none d-sm-inline-block btn-sm shadow-sm ml-4 white-font"
-  [ngClass]="{'btn-success': deviceConnectionStatus.connection_state === 'Connected',
-              'btn-danger': deviceConnectionStatus.connection_state === 'Disconnected'}">
-    {{deviceConnectionStatus.connection_state + ' @ ' + deviceConnectionStatus.local_updated_date}}
+  [ngClass]="{'btn-success': deviceConnectionStatus?.connection_state === 'Connected',
+              'btn-danger': deviceConnectionStatus?.connection_state === 'Disconnected'}">
+    {{deviceConnectionStatus?.connection_state + ' @ ' + deviceConnectionStatus?.local_updated_date}}
   </a>
 </div>
 <div *ngIf="deviceCredentials">

@@ -141,17 +141,15 @@
 
       </div>
 
-      <div class="card-body">
-        <div class="timeline-body notifications">
+      <div class="card-body1">
+        <div class="notifications">
           <i *ngIf="isLastNotificationDataLoading" class="fa fa-spinner fa-spin fa-2x fa-fw"></i>
-          <div class="timeline m-border" *ngIf="!isLastNotificationDataLoading">
-            <div class="timeline-item border-info" *ngFor="let notification of lastGeneratedNotifications">
-              <div class="item--content">
-                <div class="text--muted">{{notification.device_id}} | {{notification.time_diff}}</div>
+          <ul class="timeline" *ngIf="!isLastNotificationDataLoading">
+            <li *ngFor="let notification of lastGeneratedNotifications">
+                <p >{{notification.device_id}} | {{notification.time_diff}}</p>
                 <p>{{notification.message?.message}}</p>
-              </div>
-            </div>
-          </div>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -169,20 +167,20 @@
           </span>
         </h6>
       </div>
-      <div class="card-body">
-        <div class="timeline-body notifications">
+      <div class="card-body1">
+        <div class="notifications">
           <i *ngIf="isLastAlertDataLoading" class="fa fa-spinner fa-spin fa-2x fa-fw"></i>
-          <div class="timeline m-border" *ngIf="!isLastAlertDataLoading">
+          <ul class="timeline" *ngIf="!isLastAlertDataLoading">
 
-            <div class="timeline-item border-warning" *ngFor="let alert of lastGeneratedAlerts">
-              <div class="item--content">
-                <div class="text--muted">{{alert.device_id}} | {{alert.time_diff}}</div>
+            <li  *ngFor="let alert of lastGeneratedAlerts">
+
+                <div>{{alert.device_id}} | {{alert.time_diff}}</div>
                 <p>{{alert.message?.message}}</p>
-              </div>
-            </div>
+
+            </li>
 
 
-          </div>
+          </ul>
         </div>
       </div>
     </div>
@@ -200,19 +198,19 @@
           </span>
         </h6>
       </div>
-      <div class="card-body">
-        <div class="timeline-body notifications">
+      <div class="card-body1">
+        <div class="notifications">
           <i *ngIf="isLastEventDataLoading" class="fa fa-spinner fa-spin fa-2x fa-fw"></i>
-          <div class="timeline m-border" *ngIf="!isLastEventDataLoading">
+          <ul class="timeline" *ngIf="!isLastEventDataLoading">
 
-            <div class="timeline-item border-info" *ngFor="let event of lastGeneratedEvents">
-              <div class="item--content">
-                <div class="text--muted">{{event.device_id}} | {{event.time_diff}} </div>
+            <li *ngFor="let event of lastGeneratedEvents">
+
+                <div >{{event.device_id}} | {{event.time_diff}} </div>
                 <p>{{event.event_type}}</p>
-              </div>
-            </div>
 
-          </div>
+            </li>
+
+          </ul>
         </div>
       </div>
     </div>

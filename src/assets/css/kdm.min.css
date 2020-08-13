@@ -10556,7 +10556,7 @@ form.user .btn-user {
 }
 
 footer.sticky-footer {
-  padding: 2rem 0;
+  padding: 0.2rem 0;
   flex-shrink: 0
 }
 
@@ -11650,7 +11650,7 @@ ul.timeline>li:before {
 }
 
 .container1-fluid .con-pad {
-  padding-top: 5rem;
+  padding-top: 7rem;
 }
 
 body {
@@ -11659,7 +11659,7 @@ body {
 }
 
 .container-fluid {
-  max-height: calc(100vh - 6rem);
+  max-height: calc(100vh - 4.5rem);
   overflow-y: auto;
   overflow-x: hidden;
 }

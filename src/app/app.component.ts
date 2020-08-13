@@ -21,7 +21,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       const $containerDiv = $('.container-fluid');
       const $container1Div = $('.container1-fluid');
-
+      console.log($containerDiv);
+      console.log($container1Div);
       $(window).resize(() => {
         // console.log($(window).width());
         if ($(window).width() < 750) {

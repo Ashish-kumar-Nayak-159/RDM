@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { ActivatedRoute } from '@angular/router';
 import { DeviceService } from 'src/app/services/devices/device.service';
@@ -14,6 +14,7 @@ import { CommonService } from 'src/app/services/common.service';
 export class TagsComponent implements OnInit {
 
   @Input() device: Device = new Device();
+  @Output() sidebarClickEvent: EventEmitter<any> = new EventEmitter<any>();
   originalDevice: Device = new Device();
   deviceCustomTags: any[] = [];
   reservedTags: any[] = [];
@@ -146,6 +147,10 @@ export class TagsComponent implements OnInit {
 
       }, error => this.toasterService.showError('Error in deleting tags', 'Delete Tags')
     );
+  }
+
+  onSideBarClick() {
+    this.sidebarClickEvent.emit();
   }
 
 }

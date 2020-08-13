@@ -1,18 +1,14 @@
 <div id="wrapper">
   <!-- Sidebar -->
-  <div class="sidebar1 sidebar-light mb-3 mt-n4">
-    <div class="center d-none d-md-inline">
-      <button class="rounded-circle border-0 my-2" id="sidebar1Toggle" (click)="onSidebarToggle()"></button>
-    </div>
-    <ul class="navbar-nav bg-white sidebar1 sidebar-light mb-3" id="controlPanelSidebar">
+  <div class="sidebar1 sidebar-light mb-3">
+    <div class="sidebar1-heading bg-warning text-white py-2">
+			<span style="font-size:0.9rem; margin-right:2rem;">Control Panel </span>
+<button class="d-none d-md-inline rounded-circle border-0 mb-0" id="sidebar1Toggle" (click)="onSidebarToggle()"></button>
+<i class="fas fa-fw fa" style="font-size:1rem; margin-top:0.5rem;margin-left:0.3rem">CP</i>
+</div>
 
+    <ul class="navbar-nav bg-white" id="controlPanelSidebar">
 
-
-      <!-- Heading -->
-      <div class="sidebar1-heading bg-warning text-white py-3">
-        <i class="fas fa-fw fa">CP</i>
-        <span>Control Panel</span>
-      </div>
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item" [ngClass]="{'active': activeTab === 'overview'}">
@@ -85,15 +81,15 @@
 
       <li class="nav-item" [ngClass]="{'active': activeTab === 'error'}">
         <a class="nav-link" href="#error" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('error')">
-          <i class="fas fa-fw fa-file"></i>
+          <i class="fas fa-fw fa-exclamation-triangle"></i>
           <span>Error</span></a>
       </li>
 
       <li class="nav-item"  [ngClass]="{'active': activeTab === 'liveData'}">
         <a class="nav-link" href="#liveData"  data-toggle="tab" aria-expanded="false" (click)="setActiveTab('liveData')">
-          <i class="fas fa-fw fa-file"></i>
+          <i class="fas fa-fw fa-stream"></i>
           <span>Live</span></a>
-      </li>
+    </li>
 
 
       <!-- Heading -->
@@ -129,56 +125,56 @@
 
     <!-- Main Content -->
     <div id="content">
-  <div  class="container1-fluid bg-white pb-3 mt-4 mb-3" *ngIf="isDeviceDataLoading">
+  <div  class="container1-fluid bg-white pb-3 mb-3" *ngIf="isDeviceDataLoading">
     <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
   </div>
-  <div class="container1-fluid bg-white pb-3 mt-4 mb-3" *ngIf="!isDeviceDataLoading">
+  <div class="container1-fluid bg-white pb-3 mb-3" *ngIf="!isDeviceDataLoading">
 
-    <!-- Sidebar Toggle (Topbar) -->
+    <!-- <div class="topnavbar bg-white py-2" >
     <button id="sidebar1ToggleTop" class="btn btn-link d-md-none rounded-circle mr-3" (click)="onSideBarToggleTopClick()">
       <i class="fa fa-bars"></i>
-    </button>
-    <div class="tab-content">
+    </button> -->
 
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'overview'}" id="overview" role="tabpanel">
-        <app-overview *ngIf="activeTab === 'overview'" [device]="device"></app-overview>
+
+      <div [ngClass]="{'active': activeTab === 'overview'}" id="overview" role="tabpanel">
+        <app-overview *ngIf="activeTab === 'overview'" [device]="device" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-overview>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'access_control'}" role="tabpanel" id="access_control">
-        <app-access-control *ngIf="activeTab === 'access_control'"></app-access-control>
+      <div [ngClass]="{'active': activeTab === 'access_control'}" role="tabpanel" id="access_control">
+        <app-access-control *ngIf="activeTab === 'access_control'" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-access-control>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="tags">
-        <app-tags *ngIf="activeTab === 'tags'" [device]="device"></app-tags>
+      <div [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="tags">
+        <app-tags *ngIf="activeTab === 'tags'" [device]="device" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-tags>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'manage'}" role="tabpanel" id="setting">
-        <app-settings *ngIf="activeTab === 'manage'" [device]="device"></app-settings>
+      <div [ngClass]="{'active': activeTab === 'manage'}" role="tabpanel" id="setting">
+        <app-settings *ngIf="activeTab === 'manage'" [device]="device" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-settings>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'heartbeat'}" role="tabpanel" id="heartbeat">
-        <app-heartbeat *ngIf="activeTab === 'heartbeat'" [device]="device"></app-heartbeat>
+      <div [ngClass]="{'active': activeTab === 'heartbeat'}" role="tabpanel" id="heartbeat">
+        <app-heartbeat *ngIf="activeTab === 'heartbeat'" [device]="device" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-heartbeat>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel" id="notifications">
-        <app-notification *ngIf="activeTab === 'notifications'" [device]="device"></app-notification>
+      <div [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel" id="notifications">
+        <app-notification *ngIf="activeTab === 'notifications'" [device]="device" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-notification>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'telemetry'}" role="tabpanel" id="telemetry">
-        <app-telemetry *ngIf="activeTab === 'telemetry'" [device]="device"></app-telemetry>
+      <div [ngClass]="{'active': activeTab === 'telemetry'}" role="tabpanel" id="telemetry">
+        <app-telemetry *ngIf="activeTab === 'telemetry'" [device]="device" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-telemetry>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'alerts'}" role="tabpanel" id="alerts">
-        <app-alerts *ngIf="activeTab === 'alerts'" [device]="device"></app-alerts>
+      <div [ngClass]="{'active': activeTab === 'alerts'}" role="tabpanel" id="alerts">
+        <app-alerts *ngIf="activeTab === 'alerts'" [device]="device" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-alerts>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'error'}" role="tabpanel" id="error">
-        <app-rdmdevice-control-panel-error *ngIf="activeTab === 'error'" [device]="device"></app-rdmdevice-control-panel-error>
+      <div [ngClass]="{'active': activeTab === 'error'}" role="tabpanel" id="error">
+        <app-rdmdevice-control-panel-error *ngIf="activeTab === 'error'" [device]="device" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-rdmdevice-control-panel-error>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'liveData'}" role="tabpanel" id="liveData">
-        <app-live-data *ngIf="activeTab === 'liveData'" ></app-live-data>
+      <div [ngClass]="{'active': activeTab === 'liveData'}" role="tabpanel" id="liveData">
+        <app-live-data *ngIf="activeTab === 'liveData'" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-live-data>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'commands'}" role="tabpanel" id="commands">
-        <app-commands *ngIf="activeTab === 'commands'" [device]="device"></app-commands>
+      <div [ngClass]="{'active': activeTab === 'commands'}" role="tabpanel" id="commands">
+        <app-commands *ngIf="activeTab === 'commands'" [device]="device" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-commands>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'purge'}" role="tabpanel" id="purge">
-        <app-c2d-purge *ngIf="activeTab === 'purge'" [device]="device"></app-c2d-purge>
+      <div [ngClass]="{'active': activeTab === 'purge'}" role="tabpanel" id="purge">
+        <app-c2d-purge *ngIf="activeTab === 'purge'" [device]="device" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-c2d-purge>
       </div>
       <!-- /.container1-fluid -->
 
-    </div>
+
   </div>
   </div>
   </div>

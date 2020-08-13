@@ -1,95 +1,12 @@
-<!-- <div class="d-sm-flex align-items-center justify-content-between mb-4 pt-3">
-  <h1 class="h3 mb-0 text-gray-800">D2C Telemetry</h1>
-</div> -->
 
-<!-- <div class="row mx-auto mt-3">
-
-  <ul class="nav" style="line-height:1.25;font-size:0.80rem;">
-       <div class="row col-xl-7 mb-2">
-     <li class="nav-item col-2">
-      <a href="#">Latest</a>
-     </li>
-     <li class="nav-item col-2">
-      <a href="#">Last <br/>5mins</a>
-     </li>
-     <li class="nav-item col-2">
-      <a href="#">Last <br/>30mins</a>
-     </li>
-     <li class="nav-item col-2">
-      <a href="#">Last <br/>1hour</a>
-     </li>
-     <li class="nav-item col-2">
-      <a href="#">Last <br/>24hours</a>
-     </li>
-     <li class="nav-item col-2">Custom</li>
-     </div>
-     <li class="nav-item col-xl-5">
-     <form>
-      <div class="form-row">
-      <div class="form-group form-horizontal col-lg-4 col-sm-4 col-xs-1 mb-1">
-
-        <mat-date-range-input [rangePicker]="picker">
-            <input matStartDate [(ngModel)]="heartBeatFilter.from_date" name="from_date">
-            <input matEndDate [(ngModel)]="heartBeatFilter.to_date" name="to_date">
-          </mat-date-range-input>
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-date-range-picker #picker></mat-date-range-picker>
-      </div>
-      <div class="form-group col-lg-4 col-sm-4 col-xs-1 mb-1">
-         <input type="text" class="form-control form-control-sm" id="inputEmail4" [(ngModel)]="heartBeatFilter.message_id"
-         name="message_id" placeholder="Message ID">
-      </div>
-      <div class="form-group form-horizontal col-lg-4 col-sm-4 col-xs-1">
-        <button type="button" class="form-control btn btn-warning btn-sm mb-1" (click)="onClickOfSearchHeartBeat()">Search</button>
-        <button type="button" class="form-control btn btn-light btn-sm" >Clear</button>
-      </div>
-      </div>
-     </form>
-    </li>
-   </ul>
-
-</div> -->
-
-<!-- <div class="row col-xl-12 col-md-12 mb-12 mt-3">
-  <div class="card shadow h-100 py-2 px-2">
-    <form>
-      <div class="form-group form-inline my-1">
-        <input type="number" min="1" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="No of Records"
-        [(ngModel)]="telemetryFilter.count" name="count">
-        <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="MessageId"
-        [(ngModel)]="telemetryFilter.message_id" name="message_id">
-        <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
-        placeholder="Date Options" [(ngModel)]="telemetryFilter.dateOption" name="dateOptions">
-          <option value="5 mins">Last 5 minutes</option>
-          <option value="30 mins">Last 30 minutes</option>
-          <option value="1 hour">Last 1 hour</option>
-          <option value="24 hour">Last 24 hours</option>
-          <option value="custom">Custom</option>
-        </select>
-        <ng-container *ngIf="telemetryFilter?.dateOption === 'custom'">
-          <mat-date-range-picker   #picker></mat-date-range-picker>
-          <mat-date-range-input [rangePicker]="picker" class="form-control form-control-sm mx-1 my-1">
-            <input matStartDate [(ngModel)]="telemetryFilter.from_date" name="from_date">
-            <input matEndDate [(ngModel)]="telemetryFilter.to_date" name="to_date">
-          </mat-date-range-input>
-
-        <mat-datepicker-toggle  matSuffix [for]="picker"></mat-datepicker-toggle>
-      </ng-container>
-        <button type="button" class="form-control btn btn-warning btn-sm mx-1 my-1" (click)="searchHeartBeat()" >Search</button>
-        <button type="button" class="form-control btn btn-light btn-sm mx-1 my-1" >Clear</button>
-
-      </div>
-     </form>
-  </div>
-</div>
- <div class="row mx-auto mt-n3">
-  <div class="col-lg-12">
-    <hr class="solid">
-  </div>
-</div> -->
+<div class="topnavbar bg-white py-2" >
+  <button id="sidebar1ToggleTop" class="btn btn-link d-md-none rounded-circle mr-3" (click)="onSideBarClick()">
+    <i class="fa fa-bars"></i>
+  </button>
 <app-filter [filterObj]="telemetryFilter" (filterSearch)="searchTelemetry($event)"></app-filter>
-
-<div class="row mx-auto mt-3">
+</div>
+<div class="con-pad">
+<div class="row mx-auto">
 
   <div class="table-responsive">
     <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
@@ -117,8 +34,7 @@
             <td>{{telemetryObj.local_created_date}}</td>
             <td>{{telemetryObj.message_id}}</td>
             <td>
-              <a (click)="selectedTelemetry = telemetryObj" href="javascript:void(0)" data-toggle="modal"
-                data-target="#telemetryMessageModal" data-backdrop="static" data-keyboard="false">
+              <a (click)="selectedTelemetry = telemetryObj" href="javascript:void(0)" (click)="openTelemetryMessageModal()">
               <i class="fas fa-fw fa-eye"></i>
               </a>
             </td>
@@ -145,9 +61,10 @@
     </table>
   </div>
 </div>
+</div>
 <div class="modal right fade" id="telemetryMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <app-message-modal [bodyMessage]="selectedTelemetry?.message" [headerMessage]="'Telemetry Message'"
-      (modalEvents)="onModalEvents($event)"></app-message-modal>
+      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
   </div>
 </div>

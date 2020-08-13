@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DeviceService } from './../../../services/devices/device.service';
 import { Device } from 'src/app/models/device.model';
 import { ActivatedRoute } from '@angular/router';
@@ -13,6 +13,7 @@ import { CommonService } from 'src/app/services/common.service';
 export class OverviewComponent implements OnInit {
 
   @Input() device: Device = new Device();
+  @Output() sidebarClickEvent: EventEmitter<any> = new EventEmitter<any>();
   deviceCredentials: any;
   deviceConnectionStatus: any;
   userData: any;
@@ -60,6 +61,10 @@ export class OverviewComponent implements OnInit {
   viewonnectionString() {
     this.isViewClicked = true;
     setTimeout(() => this.isViewClicked = false, 3000);
+  }
+
+  onSideBarClick() {
+    this.sidebarClickEvent.emit();
   }
 
 

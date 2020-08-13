@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
@@ -15,10 +15,12 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   telemetryFilter: any = {};
   telemetry: any[] = [];
   @Input() device: Device = new Device();
+  @Output() sidebarClickEvent: EventEmitter<any> = new EventEmitter<any>();
   isTelemetryLoading = false;
   apiSubscriptions: Subscription[] = [];
   selectedTelemetry: any;
   isFilterSelected = false;
+  modalConfig: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService
@@ -68,12 +70,25 @@ export class TelemetryComponent implements OnInit, OnDestroy {
     ));
   }
 
+  openTelemetryMessageModal() {
+    $('#telemetryMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    this.modalConfig = {
+      jsonDisplay: true,
+      isDisplaySave: false,
+      isDisplayCancel: true
+    }
+  }
+
 
   onModalEvents(eventType) {
     if (eventType === 'close') {
       this.selectedTelemetry = undefined;
       $('#telemetryMessageModal').modal('hide');
     }
+  }
+
+  onSideBarClick() {
+    this.sidebarClickEvent.emit();
   }
 
 

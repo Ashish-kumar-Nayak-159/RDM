@@ -1,10 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { DeviceService } from './../../../services/devices/device.service';
 import { ToasterService } from './../../../services/toaster.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-
+declare var $: any;
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
@@ -13,9 +13,13 @@ import { Router } from '@angular/router';
 export class SettingsComponent implements OnInit {
 
   @Input() device = new Device();
+  @Output() sidebarClickEvent: EventEmitter<any> = new EventEmitter<any>();
   apiSubscriptions: Subscription[] = [];
   isAPILoading = false;
   userData: any;
+  modalConfig: any;
+  btnClickType: string;
+  confirmModalMessage: string;
   constructor(
     private deviceService: DeviceService,
     private toasterService: ToasterService,
@@ -38,6 +42,33 @@ export class SettingsComponent implements OnInit {
         this.isAPILoading = false;
       }
     );
+  }
+
+  openConfirmDialog(type) {
+    this.btnClickType = type;
+    this.modalConfig = {
+      isDisplaySave: true,
+      isDisplayCancel: true,
+      saveBtnText: 'Yes',
+      cancelBtnText: 'No',
+      stringDisplay: true
+    };
+    $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onModalEvents(eventType) {
+    console.log(eventType);
+    if (eventType === 'save'){
+      console.log(this.btnClickType);
+      if (this.btnClickType === 'Disable') {
+        this.disableDevice();
+        this.btnClickType = undefined;
+      } else if (this.btnClickType === 'Delete') {
+        this.deleteDevice();
+        this.btnClickType = undefined;
+      }
+    }
+    $('#confirmMessageModal').modal('hide');
   }
 
   disableDevice() {
@@ -66,6 +97,10 @@ export class SettingsComponent implements OnInit {
         this.isAPILoading = false;
       }
     );
+  }
+
+  onSideBarClick() {
+    this.sidebarClickEvent.emit();
   }
 
 }

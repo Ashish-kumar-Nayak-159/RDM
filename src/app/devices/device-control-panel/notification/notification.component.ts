@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
@@ -15,10 +15,12 @@ export class NotificationComponent implements OnInit, OnDestroy {
   notificationFilter: any = {};
   notifications: any[] = [];
   @Input() device: Device = new Device();
+  @Output() sidebarClickEvent: EventEmitter<any> = new EventEmitter<any>();
   isNotificationLoading = false;
   apiSubscriptions: Subscription[] = [];
   selectedNotification: any;
   isFilterSelected = false;
+  modalConfig: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService
@@ -67,11 +69,24 @@ export class NotificationComponent implements OnInit, OnDestroy {
     ));
   }
 
+  openNotificationMessageModal() {
+    $('#notificationMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    this.modalConfig = {
+      jsonDisplay: true,
+      isDisplaySave: false,
+      isDisplayCancel: true
+    }
+  }
+
   onModalEvents(eventType) {
     if (eventType === 'close') {
       this.selectedNotification = undefined;
       $('#notificationMessageModal').modal('hide');
     }
+  }
+
+  onSideBarClick() {
+    this.sidebarClickEvent.emit();
   }
 
   ngOnDestroy() {

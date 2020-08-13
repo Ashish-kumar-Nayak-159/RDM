@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
@@ -18,11 +18,13 @@ export class CommandsComponent implements OnInit, OnDestroy {
   c2dMsgs: any[] = [];
   isC2dMsgsLoading = false;
   @Input() device: Device = new Device();
+  @Output() sidebarClickEvent: EventEmitter<any> = new EventEmitter<any>();
   apiSubscriptions: Subscription[] = [];
   displayMode: string;
   isFilterSelected = false;
   c2dMessageDetail: any;
   c2dResponseDetail: any[];
+  modalConfig: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService
@@ -78,6 +80,7 @@ export class CommandsComponent implements OnInit, OnDestroy {
     this.deviceService.getC2dMessageJSON(message.message_id).subscribe(
       response => {
         this.c2dMessageDetail = response;
+        this.openC2DMessageModal();
       }
     );
   }
@@ -88,9 +91,19 @@ export class CommandsComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response.data) {
           this.c2dResponseDetail = response.data;
+          this.openC2DMessageModal();
         }
       }
     );
+  }
+
+  openC2DMessageModal() {
+    $('#c2dmessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    this.modalConfig = {
+      jsonDisplay: true,
+      isDisplaySave: false,
+      isDisplayCancel: true
+    }
   }
 
   onModalEvents(eventType) {
@@ -99,6 +112,10 @@ export class CommandsComponent implements OnInit, OnDestroy {
       this.c2dMessageDetail = undefined;
       this.c2dResponseDetail = undefined;
     }
+  }
+
+  onSideBarClick() {
+    this.sidebarClickEvent.emit();
   }
 
   ngOnDestroy() {

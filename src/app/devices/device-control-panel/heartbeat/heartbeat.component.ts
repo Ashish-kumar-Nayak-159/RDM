@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { Device } from 'src/app/models/device.model';
 import * as moment from 'moment';
@@ -15,10 +15,12 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
   heartBeatFilter: any = {};
   heartbeats: any[] = [];
   @Input() device: Device = new Device();
+  @Output() sidebarClickEvent: EventEmitter<any> = new EventEmitter<any>();
   isHeartbeatLoading = false;
   apiSubscriptions: Subscription[] = [];
   selectedHeartbeat: any;
   isFilterSelected = false;
+  modalConfig: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService
@@ -67,6 +69,16 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
     ));
   }
 
+  openHeratbeatMessageModal() {
+    $('#heartbeatMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    this.modalConfig = {
+      jsonDisplay: true,
+      isDisplaySave: false,
+      isDisplayCancel: true
+    }
+  }
+
+
   onModalEvents(eventType) {
     if (eventType === 'close') {
       this.selectedHeartbeat = undefined;
@@ -74,6 +86,9 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
     }
   }
 
+  onSideBarClick() {
+    this.sidebarClickEvent.emit();
+  }
 
 
   ngOnDestroy() {

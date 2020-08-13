@@ -10,13 +10,14 @@ export class MessageModalComponent implements OnInit {
   @Input() bodyMessage: any;
   @Input() headerMessage: any;
   @Output() modalEvents: EventEmitter<any> = new EventEmitter<any>();
+  @Input() modalConfig: any;
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  onCloseModal() {
-    this.modalEvents.emit('close');
+  onCloseModal(type) {
+    this.modalEvents.emit(type);
   }
 
 }

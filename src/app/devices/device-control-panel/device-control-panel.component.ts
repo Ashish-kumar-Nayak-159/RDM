@@ -58,6 +58,8 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
   setToggleClassForMenu() {
     const $containerDiv = $('.container-fluid');
     const $container1Div = $('.container1-fluid');
+    console.log($containerDiv);
+    console.log($container1Div);
     if ($(window).width() < 750) {
       $containerDiv.removeClass('sb-notoggle');
       $containerDiv.addClass('sb-toggle');
@@ -85,6 +87,8 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
     $('.sidebar1 .collapse').collapse('hide');
     const sidebar1 = this.document.getElementsByClassName('sidebar1')[0];
     const container1Div = this.document.getElementsByClassName('container1-fluid')[0];
+    console.log(sidebar1);
+    console.log(container1Div);
     if (
       sidebar1.classList.contains('toggled')
     ) {
@@ -103,6 +107,8 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
     $('.sidebar1 .collapse').collapse('hide');
     const pageTop = this.document.getElementById('page-top');
     const container1Div = this.document.getElementsByClassName('container1-fluid')[0];
+    console.log(pageTop);
+    console.log(container1Div);
     if (pageTop.classList.contains('sidebar1-toggled')) {
       container1Div.classList.remove('sb1-notoggle');
       container1Div.classList.remove('sb1-toggle');

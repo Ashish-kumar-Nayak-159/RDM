@@ -3,7 +3,11 @@
   <h1 class="h3 mb-0 text-gray-800">C2D</h1>
 </div> -->
 
-<div class="row mx-auto mt-3">
+<div class="topnavbar bg-white py-2" >
+  <button id="sidebar1ToggleTop" class="btn btn-link d-md-none rounded-circle mr-3" (click)="onSideBarClick()">
+    <i class="fa fa-bars"></i>
+  </button>
+<div class="row mx-auto">
 
   <ul class="nav">
       <!-- Nav Item - Tables -->
@@ -28,49 +32,16 @@
     <hr class="solid">
   </div>
 </div>
-
 <ng-container *ngIf="displayMode === 'view'">
-<!-- <div class="col-xl-12 col-md-12 mb-12">
-  <div class="card shadow h-100 py-2 px-2">
-    <form>
-      <div class="form-group form-inline my-1">
-        <input type="number" min="1" class="form-control form-control-sm mx-1 my-1" id="inputEmail4"
-          placeholder="No of Records" [(ngModel)]="c2dMsgFilter.count" name="count">
-        <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="MessageId"
-          [(ngModel)]="c2dMsgFilter.message_id" name="message_id">
-        <select class="form-control form-control-sm mx-1 my-1" id="dateoptions" placeholder="Date Options"
-          [(ngModel)]="c2dMsgFilter.dateOption" name="dateOptions">
-          <option value="5 mins">Last 5 minutes</option>
-          <option value="30 mins">Last 30 minutes</option>
-          <option value="1 hour">Last 1 hour</option>
-          <option value="24 hour">Last 24 hours</option>
-          <option value="custom">Custom</option>
-        </select>
-        <ng-container *ngIf="c2dMsgFilter?.dateOption === 'custom'">
-          <mat-date-range-picker #picker></mat-date-range-picker>
-          <mat-date-range-input [rangePicker]="picker" class="form-control form-control-sm mx-1 my-1">
-            <input matStartDate [(ngModel)]="c2dMsgFilter.from_date" name="from_date">
-            <input matEndDate [(ngModel)]="c2dMsgFilter.to_date" name="to_date">
-          </mat-date-range-input>
+  <app-filter [filterObj]="c2dMsgFilter" (filterSearch)="searchC2DMessages($event)"></app-filter>
 
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        </ng-container>
-        <button type="button" class="form-control btn btn-warning btn-sm mx-1 my-1"
-          (click)="searchHeartBeat()">Search</button>
-        <button type="button" class="form-control btn btn-light btn-sm mx-1 my-1">Clear</button>
-
-      </div>
-    </form>
-  </div>
+</ng-container>
 </div>
-<div class="row mt-n3">
-  <div class="col-lg-12">
-    <hr class="solid">
-  </div>
-</div> -->
-<app-filter [filterObj]="c2dMsgFilter" (filterSearch)="searchC2DMessages($event)"></app-filter>
+<div class="con-pad">
+<ng-container *ngIf="displayMode === 'view'">
 
-<div class="row  mx-auto mt-3">
+
+<div class="row  mx-auto">
 
   <div class="table-responsive">
     <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
@@ -100,11 +71,11 @@
           <td>{{msg?.feedback}}</td>
           <td></td>
           <td>
-            <a (click)="loadMessageDetail(msg)" href="javascript:void(0)" data-toggle="modal"
-            data-target="#c2dmessageModal" data-backdrop="static" data-keyboard="false"><i class="fas fa-fw fa-eye"></i></a></td>
+            <a (click)="loadMessageDetail(msg)" href="javascript:void(0)">
+              <i class="fas fa-fw fa-eye"></i></a></td>
           <td>
-            <a (click)="loadResponseDetail(msg)" href="javascript:void(0)" data-toggle="modal"
-            data-target="#c2dmessageModal" data-backdrop="static" data-keyboard="false"><i class="fas fa-fw fa-eye"></i></a></td>
+            <a (click)="loadResponseDetail(msg)" href="javascript:void(0)">
+              <i class="fas fa-fw fa-eye"></i></a></td>
         </tr>
       </ng-container>
         <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading && isFilterSelected">
@@ -223,12 +194,12 @@
 
 </div>
 </ng-container>
-
+</div>
 <div class="modal right fade" id="c2dmessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <app-message-modal *ngIf="c2dMessageDetail" [bodyMessage]="c2dMessageDetail" [headerMessage]="'C2D Message'"
-    (modalEvents)="onModalEvents($event)"></app-message-modal>
+    (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
     <app-message-modal *ngIf="c2dResponseDetail" [bodyMessage]="c2dResponseDetail" [headerMessage]="'C2D Response'"
-    (modalEvents)="onModalEvents($event)"></app-message-modal>
+    (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
   </div>
 </div>

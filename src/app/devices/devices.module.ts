@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule} from '@angular/material-moment-adapter';
 
+import {MatTableModule} from '@angular/material/table';
 
 import { DeviceControlPanelComponent } from './device-control-panel/device-control-panel.component';
 import { OverviewComponent } from './device-control-panel/overview/overview.component';
@@ -22,6 +23,9 @@ import { MessageModalComponent } from './device-control-panel/message-modal/mess
 import { SettingsComponent } from './device-control-panel/settings/settings.component';
 import { LiveDataComponent } from './device-control-panel/live-data/live-data.component';
 import { RDMDeviceControlPanelErrorComponent } from './device-control-panel/rdmdevice-control-panel-error/rdmdevice-control-panel-error.component';
+import { TableComponent } from './device-control-panel/table/table.component';
+import { OthersComponent } from './device-control-panel/others/others.component';
+import { LogsComponent } from './device-control-panel/logs/logs.component';
 
 
 @NgModule({
@@ -41,7 +45,10 @@ import { RDMDeviceControlPanelErrorComponent } from './device-control-panel/rdmd
     MessageModalComponent,
     SettingsComponent,
     LiveDataComponent,
-    RDMDeviceControlPanelErrorComponent
+    RDMDeviceControlPanelErrorComponent,
+    TableComponent,
+    OthersComponent,
+    LogsComponent
   ],
   imports: [
     CommonModule,
@@ -49,7 +56,8 @@ import { RDMDeviceControlPanelErrorComponent } from './device-control-panel/rdmd
     FormsModule,
     ReactiveFormsModule,
     MatDatepickerModule,
-    MatMomentDateModule
+    MatMomentDateModule,
+    MatTableModule,
   ],
   providers: [
     {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}

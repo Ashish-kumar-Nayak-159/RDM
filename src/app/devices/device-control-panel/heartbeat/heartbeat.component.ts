@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { Device } from 'src/app/models/device.model';
 import * as moment from 'moment';
@@ -15,12 +15,12 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
   heartBeatFilter: any = {};
   heartbeats: any[] = [];
   @Input() device: Device = new Device();
-  @Output() sidebarClickEvent: EventEmitter<any> = new EventEmitter<any>();
   isHeartbeatLoading = false;
   apiSubscriptions: Subscription[] = [];
   selectedHeartbeat: any;
   isFilterSelected = false;
   modalConfig: any;
+  heartbeatTableConfig: any = {};
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService
@@ -28,6 +28,24 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.heartBeatFilter.device_id = this.device.device_id;
+    this.heartbeatTableConfig = {
+      type: 'heartbeat',
+      headers: ['Timestamp', 'Message ID', 'Heartbeat Message'],
+      data: [
+        {
+          name: 'Timestamp',
+          key: 'local_created_date',
+        },
+        {
+          name: 'Message ID',
+          key: 'message_id',
+        },
+        {
+          name: 'Heartbeat Message',
+          key: undefined,
+        }
+      ]
+    };
   }
 
   searchHeartBeat(filterObj) {
@@ -69,26 +87,25 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
     ));
   }
 
-  openHeratbeatMessageModal() {
-    $('#heartbeatMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  openHeratbeatMessageModal(heartbeat) {
+    this.selectedHeartbeat = heartbeat;
     this.modalConfig = {
       jsonDisplay: true,
       isDisplaySave: false,
       isDisplayCancel: true
-    }
+    };
+    $('#heartbeatMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+
   }
 
 
   onModalEvents(eventType) {
     if (eventType === 'close') {
-      this.selectedHeartbeat = undefined;
       $('#heartbeatMessageModal').modal('hide');
+      this.selectedHeartbeat = undefined;
     }
   }
 
-  onSideBarClick() {
-    this.sidebarClickEvent.emit();
-  }
 
 
   ngOnDestroy() {

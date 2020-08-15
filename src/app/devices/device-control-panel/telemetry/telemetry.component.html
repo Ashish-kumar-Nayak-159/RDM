@@ -1,33 +1,19 @@
-
 <div class="topnavbar bg-white py-2" >
-  <button id="sidebar1ToggleTop" class="btn btn-link d-md-none rounded-circle mr-3" (click)="onSideBarClick()">
-    <i class="fa fa-bars"></i>
-  </button>
 <app-filter [filterObj]="telemetryFilter" (filterSearch)="searchTelemetry($event)"></app-filter>
 </div>
 <div class="con-pad">
 <div class="row mx-auto">
 
   <div class="table-responsive">
-    <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
+    <!-- <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
       <thead>
         <tr class="bg-secondary text-white">
           <th>Time Stamp</th>
           <th>Message ID</th>
-          <th>Message</th>
+          <th>Telemetry Message</th>
 
         </tr>
       </thead>
-      <!--<tfoot>
-              <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Age</th>
-                <th>Start date</th>
-                <th>Salary</th>
-              </tr>
-            </tfoot>-->
       <tbody>
         <ng-container *ngIf="telemetry.length > 0 && !isTelemetryLoading">
           <tr *ngFor="let telemetryObj of telemetry">
@@ -58,7 +44,9 @@
           </tr>
         </ng-container>
       </tbody>
-    </table>
+    </table> -->
+    <app-table [tableData]="telemetry" [tableConfig]="telemetryTableConfig" [isTableFilterSelected]="isFilterSelected"
+    [isTableDataLoading]="isTelemetryLoading" (viewMessageEvent)="openTelemetryMessageModal($event)"></app-table>
   </div>
 </div>
 </div>

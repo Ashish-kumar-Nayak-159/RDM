@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { DeviceService } from './../../../services/devices/device.service';
 import { ToasterService } from './../../../services/toaster.service';
@@ -13,7 +13,6 @@ declare var $: any;
 export class SettingsComponent implements OnInit {
 
   @Input() device = new Device();
-  @Output() sidebarClickEvent: EventEmitter<any> = new EventEmitter<any>();
   apiSubscriptions: Subscription[] = [];
   isAPILoading = false;
   userData: any;
@@ -97,10 +96,6 @@ export class SettingsComponent implements OnInit {
         this.isAPILoading = false;
       }
     );
-  }
-
-  onSideBarClick() {
-    this.sidebarClickEvent.emit();
   }
 
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
@@ -15,12 +15,12 @@ export class AlertsComponent implements OnInit, OnDestroy {
   alertFilter: any = {};
   alerts: any[] = [];
   @Input() device: Device = new Device();
-  @Output() sidebarClickEvent: EventEmitter<any> = new EventEmitter<any>();
   isAlertLoading = false;
   apiSubscriptions: Subscription[] = [];
   selectedAlert: any;
   isFilterSelected = false;
   modalConfig: any;
+  alertTableConfig: any = {};
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService
@@ -29,6 +29,24 @@ export class AlertsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.alertFilter.device_id = this.device.device_id;
     this.alertFilter.epoch = true;
+    this.alertTableConfig = {
+      type: 'alert',
+      headers: ['Timestamp', 'Message ID', 'Alert Message'],
+      data: [
+        {
+          name: 'Timestamp',
+          key: 'local_created_date',
+        },
+        {
+          name: 'Message ID',
+          key: 'message_id',
+        },
+        {
+          name: 'Alert Message',
+          key: undefined,
+        }
+      ]
+    };
   }
 
   searchAlerts(filterObj) {
@@ -69,24 +87,21 @@ export class AlertsComponent implements OnInit, OnDestroy {
     ));
   }
 
-  openAlertMessageModal() {
-    $('#alertMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  openAlertMessageModal(alert) {
     this.modalConfig = {
       jsonDisplay: true,
       isDisplaySave: false,
       isDisplayCancel: true
     }
+    this.selectedAlert = alert;
+    $('#alertMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
   onModalEvents(eventType) {
     if (eventType === 'close') {
-      this.selectedAlert = undefined;
       $('#alertMessageModal').modal('hide');
+      this.selectedAlert = undefined;
     }
-  }
-
-  onSideBarClick() {
-    this.sidebarClickEvent.emit();
   }
 
   ngOnDestroy() {

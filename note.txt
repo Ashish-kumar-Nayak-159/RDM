@@ -6,7 +6,7 @@ Valid users for login -
 
 
 Pending tasks
-- UTC to Local time display
+ - breadcrub
 - create device
 - code commenting
 - remove commented code

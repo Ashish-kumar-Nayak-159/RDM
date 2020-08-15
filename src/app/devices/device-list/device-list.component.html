@@ -1,3 +1,7 @@
+
+<div class="topnavbar" >
+  <div class="card row shadow bg-light" style="margin-left:0rem">
+    <div class="col-xl-12 col-md-12 mb-12 my-1">
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-start mb-4">
   <h1 class="h3 mb-0 text-gray-800">Device Management</h1>
@@ -11,91 +15,53 @@
   >
 </div>
 
-<!-- Content Row -->
-<div class="row">
-  <div class="col-xl-12 col-md-12 mb-12">
-    <div class="card h-100 py-2 px-2">
+
+
       <form>
         <div class="form-group form-inline my-1">
-          <input
-            type="text"
-            class="form-control form-control-sm mx-1 my-1"
-            id="inputEmail4"
-            placeholder="Device Name"
-            [(ngModel)]="deviceFilterObj.name"
-            name="name"
-          />
-          <input
-            type="text"
-            class="form-control form-control-sm mx-1 my-1"
-            id="inputPassword4"
-            placeholder="Device Manager"
-            [(ngModel)]="deviceFilterObj.device_manager"
-            name="device_manager"
-          />
 
-          <input
-            type="text"
-            class="form-control form-control-sm mx-1 my-1"
-            id="inputEmail4"
-            placeholder="Location"
-            [(ngModel)]="deviceFilterObj.location"
-            name="location"
-          />
+          <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="Device Name"
+          [(ngModel)]="deviceFilterObj.name" name="name">
+          <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputPassword4" placeholder="Device Manager"
+          [(ngModel)]="deviceFilterObj.device_manager" name="device_manager">
+
+          <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="Location"
+          [(ngModel)]="deviceFilterObj.location" name="location">
           <!-- <input type="email" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="Device Status"
           [(ngModel)]="deviceFilterObj.status" name="status"> -->
-          <select
-            class="form-control form-control-sm mx-1 my-1"
-            id="dateoptions"
-            [(ngModel)]="deviceFilterObj.status"
-            name="status"
-          >
-            <option [ngValue]="undefined">Device Status</option>
-            <option [ngValue]="'enabled'">Enabled</option>
-            <option [ngValue]="'disabled'">Disabled</option>
+          <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
+          [(ngModel)]="deviceFilterObj.status" name="status">
+          <option [ngValue]="undefined">Device Status</option>
+          <option [ngValue]="'enabled'">Enabled</option>
+          <option [ngValue]="'disabled'">Disabled</option>
           </select>
           <!-- <input type="email" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="Connection State"
           [(ngModel)]="deviceFilterObj.connection_state" name="connection_state"> -->
-          <select
-            class="form-control form-control-sm mx-1 my-1"
-            id="connection_state"
-            [(ngModel)]="deviceFilterObj.connection_state"
-            name="connection_state"
-          >
-            <option [ngValue]="undefined">Connection State</option>
-            <option [ngValue]="'connected'">Connected</option>
-            <option [ngValue]="'disconnected'">Disconnected</option>
+          <select class="form-control form-control-sm mx-1 my-1" id="connection_state"
+          [(ngModel)]="deviceFilterObj.connection_state" name="connection_state">
+          <option [ngValue]="undefined">Connection State</option>
+          <option [ngValue]="'connected'">Connected</option>
+          <option [ngValue]="'disconnected'">Disconnected</option>
           </select>
-          <button
-            type="button"
-            class="btn btn-warning btn-sm mx-1 my-1"
-            (click)="searchDevices()"
-          >
-            <i class="fas fa-search fa-sm"></i>
-          </button>
-          <button type="button" class="btn btn-light btn-sm mx-1 my-1">
-            <i class="fas fa-eraser fa-sm"></i>
-          </button>
+          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="searchDevices()" ><i class="fas fa-search fa-sm"></i></button>
+          <button type="button" class="btn btn-light btn-sm mx-1 my-1" (click)="clearFilter()"><i class="fas fa-trash  fa-sm"></i></button>
+
         </div>
-      </form>
-    </div>
+       </form>
   </div>
 </div>
-
+</div>
 <!-- Content Row -->
 
 <!-- DataTales Example -->
-<div class="card mb-4">
-  <div class="card-body">
+<div class="con-pad" style="margin-top:12.5rem;">
+<div class="mb-4 ">
+
+  <div class="">
     <div class="table-responsive">
-      <table
-        class="table table-bordered table-striped"
-        id="dataTable"
-        width="100%"
-        cellspacing="0"
-      >
+      <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
         <thead>
-          <tr class="bg-secondary text-white">
+          <tr  class="bg-secondary text-white">
             <th>Device Name</th>
             <th>Device Manager</th>
             <th>Connectivity</th>
@@ -117,43 +83,22 @@
         <tbody>
           <ng-container *ngIf="devicesList.length > 0 && !isDeviceListLoading">
             <tr *ngFor="let device of devicesList">
-              <td>{{ device.device_id }}</td>
-              <td>{{ device.tags?.device_manager }}</td>
-              <td>{{ device.tags?.cloud_connectivity }}</td>
-              <td>{{ device.tags?.location }}</td>
-              <td>
-                <a
-                  [routerLink]="[device.device_id, 'control-panel']"
-                  routerLinkActive="router-link-active"
-                  title="Control panel"
-                >
-                  <i class="fas fa-fw fa-table"></i
-                ></a>
-              </td>
+              <td>{{device.device_id}}</td>
+              <td>{{device.tags?.device_manager}}</td>
+              <td>{{device.tags?.cloud_connectivity}}</td>
+              <td>{{device.tags?.location}}</td>
+              <td><a [routerLink]="[device.device_id, 'control-panel']" routerLinkActive="router-link-active" title="Control panel">
+                <i class="fas fa-fw fa-table"></i></a></td>
             </tr>
           </ng-container>
-          <ng-container
-            *ngIf="
-              devicesList.length === 0 &&
-              !isDeviceListLoading &&
-              isFilterSelected
-            "
-          >
+          <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading && isFilterSelected">
             <tr>
               <td colspan="6">No Devices found.</td>
             </tr>
           </ng-container>
-          <ng-container
-            *ngIf="
-              devicesList.length === 0 &&
-              !isDeviceListLoading &&
-              !isFilterSelected
-            "
-          >
+          <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading && !isFilterSelected">
             <tr>
-              <td colspan="6">
-                Select filter and press search button to load the device data.
-              </td>
+              <td colspan="6">Select filter and press search button to load the device data.</td>
             </tr>
           </ng-container>
           <ng-container *ngIf="isDeviceListLoading">
@@ -168,7 +113,7 @@
     </div>
   </div>
 </div>
-
+</div>
 
 <div class="modal right fade" id="createDeviceModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
   <div class="modal-dialog" role="document">

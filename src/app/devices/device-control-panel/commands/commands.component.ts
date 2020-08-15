@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
@@ -18,7 +18,6 @@ export class CommandsComponent implements OnInit, OnDestroy {
   c2dMsgs: any[] = [];
   isC2dMsgsLoading = false;
   @Input() device: Device = new Device();
-  @Output() sidebarClickEvent: EventEmitter<any> = new EventEmitter<any>();
   apiSubscriptions: Subscription[] = [];
   displayMode: string;
   isFilterSelected = false;
@@ -112,10 +111,6 @@ export class CommandsComponent implements OnInit, OnDestroy {
       this.c2dMessageDetail = undefined;
       this.c2dResponseDetail = undefined;
     }
-  }
-
-  onSideBarClick() {
-    this.sidebarClickEvent.emit();
   }
 
   ngOnDestroy() {

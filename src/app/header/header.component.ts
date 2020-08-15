@@ -25,20 +25,17 @@ export class HeaderComponent implements OnInit {
   }
 
   onSideBarToggleTopClick() {
-    $('body').toggleClass('sidebar-toggled'),
-    $('.sidebar').toggleClass('toggled'),
-    $('.sidebar').hasClass('toggled') &&
-    $('.sidebar .collapse').collapse('hide');
-    const pageTop = this.document.getElementById('page-top');
-    const containerDiv = this.document.getElementsByClassName('container-fluid')[0];
-    if (pageTop.classList.contains('sidebar-toggled')) {
-      containerDiv.classList.remove('sb-notoggle');
-      containerDiv.classList.remove('sb-toggle');
-      containerDiv.classList.add('sb-collapse');
-    } else {
-      containerDiv.classList.add('sb-toggle');
-      containerDiv.classList.remove('sb-notoggle');
-      containerDiv.classList.remove('sb-collapse');
+    $("body").toggleClass("sidebar-toggled");
+    $(".sidebar").toggleClass("toggled");
+    if ($(".sidebar").hasClass("toggled")) {
+      $(".sidebar .collapse").collapse("hide");
+      $(".container-fluid").addClass("sb-collapse");
+      $(".container-fluid").removeClass("sb-toggle");
+    }
+    if (!$(".sidebar").hasClass("toggled")) {
+      $(".sidebar .collapse").collapse("show");
+      $(".container-fluid").removeClass("sb-collapse");
+      $(".container-fluid").addClass("sb-toggle");
     }
   }
 

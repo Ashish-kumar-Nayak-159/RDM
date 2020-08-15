@@ -1,63 +1,12 @@
 <div class="topnavbar bg-white py-2" >
-  <button id="sidebar1ToggleTop" class="btn btn-link d-md-none rounded-circle mr-3" (click)="onSideBarClick()">
-    <i class="fa fa-bars"></i>
-  </button>
 <app-filter [filterObj]="notificationFilter" (filterSearch)="searchNotifications($event)"></app-filter>
 </div>
 <div class="con-pad">
 <div class="row mx-auto">
 
   <div class="table-responsive">
-    <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
-      <thead>
-        <tr class="bg-secondary text-white">
-          <th>Time Stamp</th>
-          <th>Message ID</th>
-          <th>Notification Message</th>
-
-        </tr>
-      </thead>
-      <!--<tfoot>
-              <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Age</th>
-                <th>Start date</th>
-                <th>Salary</th>
-              </tr>
-            </tfoot>-->
-      <tbody>
-        <ng-container *ngIf="notifications.length > 0 && !isNotificationLoading">
-          <tr *ngFor="let notification of notifications">
-            <td>{{notification.local_created_date}}</td>
-            <td>{{notification.message_id}}</td>
-            <td>
-              <a (click)="selectedNotification = notification;" href="javascript:void(0)" (click)="openNotificationMessageModal()">
-              <i  class="fas fa-fw fa-eye"></i>
-              </a>
-            </td>
-          </tr>
-        </ng-container>
-        <ng-container *ngIf="notifications.length === 0 && !isNotificationLoading && isFilterSelected">
-          <tr>
-            <td colspan="6">No Notification data found.</td>
-          </tr>
-        </ng-container>
-        <ng-container *ngIf="notifications.length === 0 && !isNotificationLoading && !isFilterSelected">
-          <tr>
-            <td colspan="6">Select filter and press search button to load the notification data.</td>
-          </tr>
-        </ng-container>
-        <ng-container *ngIf="isNotificationLoading">
-          <tr>
-            <td colspan="6">
-              <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-            </td>
-          </tr>
-        </ng-container>
-      </tbody>
-    </table>
+    <app-table [tableData]="notifications" [tableConfig]="notificationTableConfig" [isTableFilterSelected]="isFilterSelected"
+    [isTableDataLoading]="isNotificationLoading" (viewMessageEvent)="openNotificationMessageModal($event)"></app-table>
   </div>
 </div>
 </div>

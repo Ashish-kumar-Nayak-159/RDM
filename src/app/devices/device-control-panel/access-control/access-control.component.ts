@@ -1,5 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Device } from 'src/app/models/device.model';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-access-control',
@@ -8,15 +7,9 @@ import { Device } from 'src/app/models/device.model';
 })
 export class AccessControlComponent implements OnInit {
 
-  @Input() device: Device = new Device();
-  @Output() sidebarClickEvent: EventEmitter<any> = new EventEmitter<any>();
   constructor() { }
 
   ngOnInit(): void {
-  }
-
-  onSideBarClick() {
-    this.sidebarClickEvent.emit();
   }
 
 }

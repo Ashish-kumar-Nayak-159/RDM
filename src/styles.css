@@ -8,6 +8,18 @@ thead {
 /* html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
 
+
+.watch-eye i {
+  color: #999;
+  font-size: 18px;
+  position: relative;
+  cursor: pointer;
+}
+
+.li.nav-item.active {
+  text-decoration: underline;
+  color: blue;
+}
 .blue-font {
   color: #4e73df;
   text-decoration: none;
@@ -18,5 +30,36 @@ a.disabled {
   cursor: not-allowed;
   opacity: .65;
 }
+table {
+  width: 100%;
+}
+
+.table-device {
+  max-height: 60vh;
+}
 
 
+.scroll-container {
+  max-height: 70vh;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.mat-header-cell {
+  color: #fff!important;
+  padding-left: 20px;
+  border-right: 1px solid #fff;
+  font-size: 16px;
+}
+
+.mat-row {
+  border-bottom: 0px;
+
+}
+
+.mat-cell {
+  border: 1px solid #e3e6f0;
+  padding-left: 20px;
+  color: #858796!important;
+}

@@ -1,41 +1,41 @@
 <div id="wrapper">
   <!-- Sidebar -->
-  <div class="sidebar1 sidebar-light mb-3">
-    <div class="sidebar1-heading bg-warning text-white py-2">
-			<span style="font-size:0.9rem; margin-right:2rem;">Control Panel </span>
-<button class="d-none d-md-inline rounded-circle border-0 mb-0" id="sidebar1Toggle" (click)="onSidebarToggle()"></button>
-<i class="fas fa-fw fa" style="font-size:1rem; margin-top:0.5rem;margin-left:0.3rem">CP</i>
-</div>
+  <div class="sidebar1 sidebar-light mb-3 ">
 
+    <div class="sidebar1-heading bg-warning text-white py-2">
+      <span style="font-size:0.9rem; margin-right:2rem;">Control Panel </span>
+      <button class="d-none d-md-inline rounded-circle border-0 mb-0" id="sidebar1Toggle" title="Minimize" (click)="onSidebarToggle()"></button>
+      <i class="fas fa-fw fa" style="font-size:1rem; margin-top:0.5rem;margin-left:0.3rem">CP</i>
+		</div>
     <ul class="navbar-nav bg-white" id="controlPanelSidebar">
 
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item" [ngClass]="{'active': activeTab === 'overview'}">
-        <a class="nav-link collapsed" href="#overview" data-toggle="tab" aria-expanded="false"
+        <a class="nav-link collapsed" href="#device_overview" data-toggle="tab" aria-expanded="false"
           (click)="setActiveTab('overview')">
-          <i class="fas fa-fw fa-life-ring"></i>
+          <i class="fas fa-fw fa-life-ring" title="Overview"></i>
           <span>Overview</span></a>
       </li>
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item" [ngClass]="{'active': activeTab === 'access_control'}">
-        <a class="nav-link collapsed" href="#access_control" data-toggle="tab" aria-expanded="false"
+        <a class="nav-link collapsed" href="#device_access_control" data-toggle="tab" aria-expanded="false"
           (click)="setActiveTab('access_control')">
-          <i class="fas fa-fw fa-users"></i>
+          <i class="fas fa-fw fa-users" title="Access Control (IAM)"></i>
           <span>Access Control (IAM)</span></a>
       </li>
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item" [ngClass]="{'active': activeTab === 'tags'}">
-        <a class="nav-link collapsed" href="#tags" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('tags')">
-          <i class="fas fa-fw fa-tags"></i>
+        <a class="nav-link collapsed" href="#device_tags" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('tags')">
+          <i class="fas fa-fw fa-tags" title="Tags"></i>
           <span>Tags</span></a>
       </li>
 
       <li class="nav-item" [ngClass]="{'active': activeTab === 'manage'}">
-        <a class="nav-link" href="#setting" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('manage')">
-          <i class="fas fa-fw fa-cog"></i>
+        <a class="nav-link" href="#device_setting" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('manage')">
+          <i class="fas fa-fw fa-cog" title="Manage Device"></i>
           <span>Manage</span></a>
       </li>
 
@@ -50,46 +50,58 @@
       <hr class="sidebar1-divider">
       <!-- Nav Item - Charts -->
       <li class="nav-item" [ngClass]="{'active': activeTab === 'heartbeat'}">
-        <a class="nav-link" href="#heartbeat" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('heartbeat')">
+        <a class="nav-link" href="#device_heartbeat" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('heartbeat')">
 
-          <i class="fas fa-fw fa-heartbeat"></i>
+          <i class="fas fa-fw fa-heartbeat" title="Heartbeat"></i>
           <span>Heartbeat</span></a>
       </li>
 
       <!-- Nav Item - Tables -->
       <li class="nav-item" [ngClass]="{'active': activeTab === 'notifications'}">
-        <a class="nav-link" href="#notifications" data-toggle="tab" aria-expanded="false"
+        <a class="nav-link" href="#device_notifications" data-toggle="tab" aria-expanded="false"
           (click)="setActiveTab('notifications')">
-          <i class="fas fa-fw fa-bell"></i>
+          <i class="fas fa-fw fa-bell" title="Notifications"></i>
           <span>Notifications</span></a>
       </li>
 
       <!-- Nav Item - Charts -->
       <li class="nav-item" [ngClass]="{'active': activeTab === 'alerts'}">
-        <a class="nav-link" href="#alerts" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('alerts')">
+        <a class="nav-link" href="#device_alerts" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('alerts')">
 
-          <i class="fas fa-fw fa-bolt"></i>
+          <i class="fas fa-fw fa-bolt" title="Alerts"></i>
           <span>Alerts</span></a>
       </li>
 
       <!-- Nav Item - Tables -->
       <li class="nav-item" [ngClass]="{'active': activeTab === 'telemetry'}">
-        <a class="nav-link" href="#telemetry" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('telemetry')">
-          <i class="fas fa-fw fa-file"></i>
+        <a class="nav-link" href="#device_telemetry" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('telemetry')">
+          <i class="fas fa-fw fa-history" title="Telemetry"></i>
           <span>Telemetry</span></a>
       </li>
 
       <li class="nav-item" [ngClass]="{'active': activeTab === 'error'}">
-        <a class="nav-link" href="#error" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('error')">
-          <i class="fas fa-fw fa-exclamation-triangle"></i>
+        <a class="nav-link" href="#device_error" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('error')">
+          <i class="fas fa-fw fa-exclamation-triangle" title="Error"></i>
           <span>Error</span></a>
       </li>
 
+      <li class="nav-item" [ngClass]="{'active': activeTab === 'other'}">
+        <a class="nav-link" href="#device_other" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('other')">
+          <i class="fas fa-fw fa-poll-h" title="Other"></i>
+          <span>Other</span></a>
+      </li>
+
+      <li class="nav-item" [ngClass]="{'active': activeTab === 'logs'}">
+        <a class="nav-link" href="#device_logs" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('logs')">
+          <i class="fas fa-fw fa-file" title="Logs"></i>
+          <span>Logs</span></a>
+      </li>
+
       <li class="nav-item"  [ngClass]="{'active': activeTab === 'liveData'}">
-        <a class="nav-link" href="#liveData"  data-toggle="tab" aria-expanded="false" (click)="setActiveTab('liveData')">
-          <i class="fas fa-fw fa-stream"></i>
+        <a class="nav-link" href="#device_live_data"  data-toggle="tab" aria-expanded="false" (click)="setActiveTab('liveData')">
+          <i class="fas fa-fw fa-stream" title="Live Data"></i>
           <span>Live</span></a>
-    </li>
+      </li>
 
 
       <!-- Heading -->
@@ -100,16 +112,16 @@
       <hr class="sidebar1-divider">
       <!-- Nav Item - Charts -->
       <li class="nav-item" [ngClass]="{'active': activeTab === 'commands'}">
-        <a class="nav-link" href="#commands" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('commands')">
+        <a class="nav-link" href="#device_commands" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('commands')">
 
-          <i class="fas fa-fw fa-angle-right"></i>
+          <i class="fas fa-fw fa-angle-right" title="General Commands"></i>
           <span>General Commands</span></a>
       </li>
 
       <!-- Nav Item - Tables -->
       <li class="nav-item" [ngClass]="{'active': activeTab === 'purge'}">
-        <a class="nav-link" href="#purge" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('purge')">
-          <i class="fas fa-fw fa-trash"></i>
+        <a class="nav-link" href="#device_purge" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('purge')">
+          <i class="fas fa-fw fa-trash" title="Purge"></i>
           <span>Purge</span></a>
       </li>
 
@@ -126,55 +138,63 @@
     <!-- Main Content -->
     <div id="content">
   <div  class="container1-fluid bg-white pb-3 mb-3" *ngIf="isDeviceDataLoading">
-    <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+    <div class="topnavbar bg-white py-2" >
+    <i class="fa fa-spinner fa-spin fa-fw fa-2x text-center"></i>
+  </div>
   </div>
   <div class="container1-fluid bg-white pb-3 mb-3" *ngIf="!isDeviceDataLoading">
 
-    <!-- <div class="topnavbar bg-white py-2" >
-    <button id="sidebar1ToggleTop" class="btn btn-link d-md-none rounded-circle mr-3" (click)="onSideBarToggleTopClick()">
+    <!-- Sidebar Toggle (Topbar) -->
+    <!-- <button id="sidebar1ToggleTop" class="btn btn-link d-md-none rounded-circle mr-3" (click)="onSideBarToggleTopClick()">
       <i class="fa fa-bars"></i>
     </button> -->
+    <div class="">
 
-
-      <div [ngClass]="{'active': activeTab === 'overview'}" id="overview" role="tabpanel">
-        <app-overview *ngIf="activeTab === 'overview'" [device]="device" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-overview>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'overview'}" id="device_overview" role="tabpanel">
+        <app-overview *ngIf="activeTab === 'overview'" [device]="device"></app-overview>
       </div>
-      <div [ngClass]="{'active': activeTab === 'access_control'}" role="tabpanel" id="access_control">
-        <app-access-control *ngIf="activeTab === 'access_control'" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-access-control>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'access_control'}" role="tabpanel" id="device_access_control">
+        <app-access-control *ngIf="activeTab === 'access_control'"></app-access-control>
       </div>
-      <div [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="tags">
-        <app-tags *ngIf="activeTab === 'tags'" [device]="device" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-tags>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="device_device_tags">
+        <app-tags *ngIf="activeTab === 'tags'" [device]="device"></app-tags>
       </div>
-      <div [ngClass]="{'active': activeTab === 'manage'}" role="tabpanel" id="setting">
-        <app-settings *ngIf="activeTab === 'manage'" [device]="device" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-settings>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'manage'}" role="tabpanel" id="device_setting">
+        <app-settings *ngIf="activeTab === 'manage'" [device]="device"></app-settings>
       </div>
-      <div [ngClass]="{'active': activeTab === 'heartbeat'}" role="tabpanel" id="heartbeat">
-        <app-heartbeat *ngIf="activeTab === 'heartbeat'" [device]="device" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-heartbeat>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'heartbeat'}" role="tabpanel" id="device_heartbeat">
+        <app-heartbeat *ngIf="activeTab === 'heartbeat'" [device]="device"></app-heartbeat>
       </div>
-      <div [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel" id="notifications">
-        <app-notification *ngIf="activeTab === 'notifications'" [device]="device" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-notification>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel" id="device_notifications">
+        <app-notification *ngIf="activeTab === 'notifications'" [device]="device"></app-notification>
       </div>
-      <div [ngClass]="{'active': activeTab === 'telemetry'}" role="tabpanel" id="telemetry">
-        <app-telemetry *ngIf="activeTab === 'telemetry'" [device]="device" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-telemetry>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'telemetry'}" role="tabpanel" id="device_telemetry">
+        <app-telemetry *ngIf="activeTab === 'telemetry'" [device]="device"></app-telemetry>
       </div>
-      <div [ngClass]="{'active': activeTab === 'alerts'}" role="tabpanel" id="alerts">
-        <app-alerts *ngIf="activeTab === 'alerts'" [device]="device" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-alerts>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'alerts'}" role="tabpanel" id="device_alerts">
+        <app-alerts *ngIf="activeTab === 'alerts'" [device]="device"></app-alerts>
       </div>
-      <div [ngClass]="{'active': activeTab === 'error'}" role="tabpanel" id="error">
-        <app-rdmdevice-control-panel-error *ngIf="activeTab === 'error'" [device]="device" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-rdmdevice-control-panel-error>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'error'}" role="tabpanel" id="device_error">
+        <app-rdmdevice-control-panel-error *ngIf="activeTab === 'error'" [device]="device"></app-rdmdevice-control-panel-error>
       </div>
-      <div [ngClass]="{'active': activeTab === 'liveData'}" role="tabpanel" id="liveData">
-        <app-live-data *ngIf="activeTab === 'liveData'" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-live-data>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'other'}" role="tabpanel" id="device_other">
+        <app-others *ngIf="activeTab === 'other'" [device]="device"></app-others>
       </div>
-      <div [ngClass]="{'active': activeTab === 'commands'}" role="tabpanel" id="commands">
-        <app-commands *ngIf="activeTab === 'commands'" [device]="device" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-commands>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'logs'}" role="tabpanel" id="device_logs">
+        <app-logs *ngIf="activeTab === 'logs'" [device]="device"></app-logs>
       </div>
-      <div [ngClass]="{'active': activeTab === 'purge'}" role="tabpanel" id="purge">
-        <app-c2d-purge *ngIf="activeTab === 'purge'" [device]="device" (sidebarClickEvent)="onSideBarToggleTopClick()"></app-c2d-purge>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'liveData'}" role="tabpanel" id="device_live_data">
+        <app-live-data *ngIf="activeTab === 'liveData'" ></app-live-data>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'commands'}" role="tabpanel" id="device_commands">
+        <app-commands *ngIf="activeTab === 'commands'" [device]="device"></app-commands>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'purge'}" role="tabpanel" id="device_purge">
+        <app-c2d-purge *ngIf="activeTab === 'purge'" [device]="device"></app-c2d-purge>
       </div>
       <!-- /.container1-fluid -->
 
-
+    </div>
   </div>
   </div>
   </div>

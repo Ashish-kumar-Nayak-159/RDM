@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { ActivatedRoute } from '@angular/router';
 import { DeviceService } from 'src/app/services/devices/device.service';
@@ -14,11 +14,11 @@ import { CommonService } from 'src/app/services/common.service';
 export class TagsComponent implements OnInit {
 
   @Input() device: Device = new Device();
-  @Output() sidebarClickEvent: EventEmitter<any> = new EventEmitter<any>();
   originalDevice: Device = new Device();
   deviceCustomTags: any[] = [];
   reservedTags: any[] = [];
   reservedTagsBasedOnProtocol: any[] = [];
+  isTagsEditable = false;
   constructor(
     private route: ActivatedRoute,
     private deviceService: DeviceService,
@@ -123,7 +123,7 @@ export class TagsComponent implements OnInit {
       response => {
         this.toasterService.showSuccess('Tags updated successfully', 'Set Tags');
         this.getDeviceData();
-
+        this.isTagsEditable = false;
       }, error => this.toasterService.showError('Error in updating tags', 'Set Tags')
     );
   }
@@ -136,6 +136,12 @@ export class TagsComponent implements OnInit {
       }
     });
     this.device.tags.custom_tags = tagObj;
+    if (this.device.tags.created_date) {
+      delete this.device.tags.created_date;
+    }
+    if (this.device.tags.created_by) {
+      delete this.device.tags.created_by;
+    }
     const obj = {
       device_id: this.device.device_id,
       tags: this.device.tags
@@ -147,10 +153,6 @@ export class TagsComponent implements OnInit {
 
       }, error => this.toasterService.showError('Error in deleting tags', 'Delete Tags')
     );
-  }
-
-  onSideBarClick() {
-    this.sidebarClickEvent.emit();
   }
 
 }

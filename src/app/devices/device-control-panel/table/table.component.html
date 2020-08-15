@@ -1,0 +1,44 @@
+<div class="table-responsive" >
+
+  <table  class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0" *ngIf="tableData.length === 0">
+    <thead>
+      <tr class="bg-secondary text-white">
+        <th  *ngFor="let item of tableConfig?.headers">{{item}}</th>
+      </tr>
+    </thead>
+    <tbody>
+    <ng-container *ngIf="tableData.length === 0 && !isTableDataLoading && isTableFilterSelected">
+      <tr>
+        <td colspan="6">No Heartbeat data found.</td>
+      </tr>
+    </ng-container>
+    <ng-container *ngIf="tableData.length === 0 && !isTableDataLoading && !isTableFilterSelected">
+      <tr>
+        <td colspan="6">Select filter and press search button to load the {{tableConfig.type}} data.</td>
+      </tr>
+    </ng-container>
+    <ng-container *ngIf="isTableDataLoading">
+      <tr>
+        <td colspan="6">
+          <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+        </td>
+      </tr>
+    </ng-container>
+  </tbody>
+  </table>
+  <mat-table [dataSource]="tableData" class="mat-elevation-z8 table-device" *ngIf="tableData.length > 0">
+    <ng-container matColumnDef="{{item.name}}" *ngFor="let item of tableConfig?.data">
+      <mat-header-cell *matHeaderCellDef> {{item.name}} </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <span *ngIf="item.key">{{element[item.key]}} </span>
+        <a *ngIf="!item.key" (click)="viewMessageEvent.emit(element)">
+          <i class="fas fa-fw fa-eye" title="View {{tableConfig?.type}} message"></i>
+        </a>
+      </mat-cell>
+    </ng-container>
+
+
+    <mat-header-row class="bg-secondary text-white" *matHeaderRowDef="tableConfig?.headers; sticky: true"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: tableConfig?.headers;"></mat-row>
+  </mat-table>
+</div>

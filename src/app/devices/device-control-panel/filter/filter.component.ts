@@ -30,7 +30,7 @@ export class FilterComponent implements OnInit {
   }
 
   clear() {
-    this.filterSearch.emit(this.originalFilterObj);
+    // this.filterSearch.emit(this.originalFilterObj);
     this.filterObj = {};
     this.filterObj = {...this.originalFilterObj};
   }

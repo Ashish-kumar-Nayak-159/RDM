@@ -19,22 +19,17 @@ export class RDMSideMenuComponent implements OnInit {
   }
 
   onSidebarToggle() {
-    $('body').toggleClass('sidebar-toggled'),
-    $('.sidebar').toggleClass('toggled'),
-    $('.sidebar').hasClass('toggled') &&
-    $('.sidebar .collapse').collapse('hide');
-    const body = this.document.body;
-    const sidebar = this.document.getElementsByClassName('sidebar')[0];
-    const containerDiv = this.document.getElementsByClassName('container-fluid')[0];
-    if (
-      body.classList.contains('sidebar-toggled') ||
-      sidebar.classList.contains('toggled')
-    ) {
-      containerDiv.classList.remove('sb-notoggle');
-      containerDiv.classList.add('sb-toggle');
-    } else {
-      containerDiv.classList.remove('sb-toggle');
-      containerDiv.classList.add('sb-notoggle');
+    $("body").toggleClass("sidebar-toggled");
+    $(".sidebar").toggleClass("toggled");
+    if ($(".sidebar").hasClass("toggled")) {
+      $(".sidebar .collapse").collapse("hide");
+      $(".container-fluid").removeClass("sb-notoggle");
+      $(".container-fluid").addClass("sb-toggle");
+    }
+    if (!$(".sidebar").hasClass("toggled")) {
+      $(".sidebar .collapse").collapse("show");
+      $(".container-fluid").addClass("sb-notoggle");
+      $(".container-fluid").removeClass("sb-toggle");
     }
   }
 

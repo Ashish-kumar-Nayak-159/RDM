@@ -2,12 +2,8 @@
 <!-- <div class="d-sm-flex align-items-center justify-content-between mb-2 pt-3">
   <h1 class="h3 mb-0 text-gray-800">C2D</h1>
 </div> -->
-
 <div class="topnavbar bg-white py-2" >
-  <button id="sidebar1ToggleTop" class="btn btn-link d-md-none rounded-circle mr-3" (click)="onSideBarClick()">
-    <i class="fa fa-bars"></i>
-  </button>
-<div class="row mx-auto">
+<div class="row">
 
   <ul class="nav">
       <!-- Nav Item - Tables -->
@@ -32,14 +28,11 @@
     <hr class="solid">
   </div>
 </div>
-<ng-container *ngIf="displayMode === 'view'">
-  <app-filter [filterObj]="c2dMsgFilter" (filterSearch)="searchC2DMessages($event)"></app-filter>
-
-</ng-container>
 </div>
 <div class="con-pad">
 <ng-container *ngIf="displayMode === 'view'">
 
+<app-filter [filterObj]="c2dMsgFilter" (filterSearch)="searchC2DMessages($event)"></app-filter>
 
 <div class="row  mx-auto">
 

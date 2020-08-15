@@ -13,6 +13,7 @@ import { CommonService } from 'src/app/services/common.service';
 export class DeviceListComponent implements OnInit {
 
   deviceFilterObj: DeviceListFilter = new DeviceListFilter();
+  originalDeviceFilterObj: DeviceListFilter = new DeviceListFilter();
   devicesList: Device[] = [];
   isDeviceListLoading = false;
   userData: any;
@@ -32,6 +33,7 @@ export class DeviceListComponent implements OnInit {
       params => {
         if (params.get('state')) {
           this.deviceFilterObj.connection_state = params.get('state');
+          this.originalDeviceFilterObj = JSON.parse(JSON.stringify(this.deviceFilterObj));
           this.searchDevices();
         }
       }
@@ -51,5 +53,10 @@ export class DeviceListComponent implements OnInit {
       }, error => {
         this.isDeviceListLoading = false;
     });
+  }
+
+  clearFilter() {
+    this.deviceFilterObj = undefined;
+    this.deviceFilterObj = JSON.parse(JSON.stringify(this.originalDeviceFilterObj));
   }
 }

@@ -178,6 +178,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
         state: type
       };
     }
+    console.log(obj);
     this.router.navigate(['applications', this.userData.app, 'devices'], {queryParams: obj});
   }
 

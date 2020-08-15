@@ -103,6 +103,26 @@ export class DeviceService {
     return this.http.get(this.url + AppUrls.GET_TELEMETRY_LIST, { params });
   }
 
+  getDeviceError(filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + AppUrls.GET_ERROR_LIST, { params });
+  }
+
+  getDeviceotherMessagesList(filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + AppUrls.GET_OTHER_MESSAGE_LIST, { params });
+  }
+
   getDeviceC2DMessages(filterObj) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {

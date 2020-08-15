@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
@@ -15,12 +15,12 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   telemetryFilter: any = {};
   telemetry: any[] = [];
   @Input() device: Device = new Device();
-  @Output() sidebarClickEvent: EventEmitter<any> = new EventEmitter<any>();
   isTelemetryLoading = false;
   apiSubscriptions: Subscription[] = [];
   selectedTelemetry: any;
   isFilterSelected = false;
   modalConfig: any;
+  telemetryTableConfig: any = {};
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService
@@ -29,6 +29,24 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.telemetryFilter.device_id = this.device.device_id;
     this.telemetryFilter.epoch = true;
+    this.telemetryTableConfig = {
+      type: 'telemetry',
+      headers: ['Timestamp', 'Message ID', 'Telemetry Message'],
+      data: [
+        {
+          name: 'Timestamp',
+          key: 'local_created_date',
+        },
+        {
+          name: 'Message ID',
+          key: 'message_id',
+        },
+        {
+          name: 'Telemetry Message',
+          key: undefined,
+        }
+      ]
+    };
   }
 
   searchTelemetry(filterObj) {
@@ -70,25 +88,22 @@ export class TelemetryComponent implements OnInit, OnDestroy {
     ));
   }
 
-  openTelemetryMessageModal() {
-    $('#telemetryMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  openTelemetryMessageModal(telemetry) {
     this.modalConfig = {
       jsonDisplay: true,
       isDisplaySave: false,
       isDisplayCancel: true
-    }
+    };
+    this.selectedTelemetry = telemetry;
+    $('#telemetryMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
 
   onModalEvents(eventType) {
     if (eventType === 'close') {
-      this.selectedTelemetry = undefined;
       $('#telemetryMessageModal').modal('hide');
+      this.selectedTelemetry = undefined;
     }
-  }
-
-  onSideBarClick() {
-    this.sidebarClickEvent.emit();
   }
 
 

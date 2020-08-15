@@ -10,9 +10,9 @@
     <div *ngIf="modalConfig?.stringDisplay">{{bodyMessage}}</div>
   </div>
   <div class="modal-footer">
-    <button *ngIf="modalConfig?.isDisplaySave" type="button" class="btn btn-primary mr-auto" (click)="onCloseModal('save')">
+    <button *ngIf="modalConfig?.isDisplaySave" type="button" class="btn btn-primary" (click)="onCloseModal('save')">
       {{modalConfig?.saveBtnText ? modalConfig?.saveBtnText : 'Save'}}</button>
-    <button *ngIf="modalConfig?.isDisplayCancel" type="button" class="btn btn-secondary mr-auto" (click)="onCloseModal('close')">
+    <button *ngIf="modalConfig?.isDisplayCancel" type="button" class="btn btn-secondary" (click)="onCloseModal('close')">
       {{modalConfig?.cancelBtnText ? modalConfig?.cancelBtnText : 'Cancel'}}
     </button>
   </div>

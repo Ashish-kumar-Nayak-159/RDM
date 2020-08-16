@@ -71,7 +71,14 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     this.getLastNotificationData();
     this.getLastAlertData();
     this.getLastEventData();
-    this.commonService.breadcrumbEvent.emit(this.userData.app);
+    this.commonService.breadcrumbEvent.emit({
+      data: [
+        {
+          title: this.userData.app,
+          url: 'applications/' + this.userData.app
+        }
+      ]
+    });
 
   }
 

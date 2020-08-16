@@ -15,7 +15,13 @@
 
   <nav aria-label="breadcrumb" class="d-none d-xl-block">
     <ol class="breadcrumb py-2 mb-1">
-      <li class="breadcrumb-item active" aria-current="page">{{breadcrumbData}}</li>
+      <li class="breadcrumb-item active" aria-current="page">
+        <ng-container *ngFor="let data of breadcrumbData?.data; last as isLast;">
+        <a *ngIf="!isLast" [routerLink]="[data.url]" routerLinkActive="active" >{{data.title}}</a>
+        <span *ngIf="!isLast">&nbsp;/&nbsp;</span>
+        <a *ngIf="isLast">{{data.title}}</a>
+      </ng-container>
+      </li>
     </ol>
   </nav>
 

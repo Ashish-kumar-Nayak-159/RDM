@@ -27,7 +27,18 @@ export class DeviceListComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = JSON.parse(localStorage.getItem('userData'));
-    this.commonService.breadcrumbEvent.emit(this.userData.app + '/Devices');
+    this.commonService.breadcrumbEvent.emit({
+      data: [
+          {
+            title: this.userData.app,
+            url: 'applications/' + this.userData.app
+          },
+          {
+            title: 'devices',
+            url: 'applications/' + this.userData.app + '/devices'
+          }
+      ]
+    });
     this.deviceFilterObj.app = this.userData.app;
     this.route.queryParamMap.subscribe(
       params => {

@@ -6,7 +6,7 @@ import * as moment from 'moment';
 })
 export class CommonService {
 
-  breadcrumbEvent: EventEmitter<string> = new EventEmitter<string>();
+  breadcrumbEvent: EventEmitter<any> = new EventEmitter<any>();
   constructor() { }
 
   convertUTCDateToLocal(utcDate) {

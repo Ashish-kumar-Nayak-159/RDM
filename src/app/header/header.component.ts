@@ -10,18 +10,19 @@ declare var $: any;
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  breadcrumbData: string;
+  breadcrumbData: any;
   userData: any;
   constructor(
     private router: Router,
     private commonService: CommonService,
     @Inject(DOCUMENT) private document: Document
-  ) { }
+  ) {
+    this.commonService.breadcrumbEvent.subscribe(data => this.breadcrumbData = data);
+   }
 
   ngOnInit(): void {
     this.userData = JSON.parse(localStorage.getItem('userData'));
     console.log(this.userData);
-    this.commonService.breadcrumbEvent.subscribe(data => this.breadcrumbData = data);
   }
 
   onSideBarToggleTopClick() {

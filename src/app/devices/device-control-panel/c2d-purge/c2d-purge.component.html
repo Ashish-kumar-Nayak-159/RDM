@@ -1,37 +1,44 @@
- <!-- Page Heading
-          <div class="d-sm-flex align-items-center justify-content-between mb-2 pt-3">
-            <h1 class="h3 mb-0 text-gray-800">C2D Pu</h1>
-		  </div>-->
-		  <div class="row mx-auto mt-3">
-        <div class="col-xl-12 col-lg-12">
-          <ul class="nav ml-n3">
-           <!-- Nav Item - Charts -->
-           <li class="nav-item">
-          <a class="nav-link" href="javascript:void(0)" (click)="verifyQueueMessages()">
-
+<div class="topnavbar bg-white py-2">
+  <div class="row">
+    <div class="col-xl-12 col-lg-12">
+      <ul class="nav">
+        <!-- Nav Item - Charts -->
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            href="javascript:void(0)"
+            (click)="verifyQueueMessages()"
+          >
             <i class="fas fa-fw fa-check-circle"></i>
-            <span>Verify Queue Messages</span></a>
-           </li>
+            <span>Verify Queue Messages</span></a
+          >
+        </li>
 
-           <!-- Nav Item - Tables -->
-           <li class="nav-item">
-          <a class="nav-link delete-table" href="javascript:void(0)" (click)="purgeQueueMessages()">
+        <!-- Nav Item - Tables -->
+        <li class="nav-item">
+          <a
+            class="nav-link delete-table"
+            href="javascript:void(0)"
+            (click)="purgeQueueMessages()"
+          >
             <i class="fas fa-fw fa-trash"></i>
-            <span>Purge Queue Messages</span></a>
-           </li>
-           </ul>
-
-        </div>
-        </div>
-        <div class="row mt-n3">
-          <div class="col-lg-12">
-            <hr class="solid">
-          </div>
-        </div>
-
-        <div class="row mx-auto" *ngIf="messageCount.toString().length > 0">
-
-        <!-- Page Heading -->
-        <div class="d-sm-flex align-items-center justify-content-between mb-2 pt-3">
-          <h6 class="h6 mb-0">Total Messages: {{messageCount}}</h6>
-        </div>
+            <span>Purge Queue Messages</span></a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <hr class="solid" />
+    </div>
+  </div>
+</div>
+<div class="con-pad">
+  <div class="row mx-auto" *ngIf="messageCount.toString().length > 0">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-2 pt-3">
+      <h6 class="h6 mb-0">Total Messages: {{ messageCount }}</h6>
+    </div>
+  </div>
+</div>

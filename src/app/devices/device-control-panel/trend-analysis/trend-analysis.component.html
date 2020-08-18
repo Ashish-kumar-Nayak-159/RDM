@@ -1,0 +1,38 @@
+<div class="topnavbar bg-white py-2" >
+  <div class="row">
+
+    <ul class="nav">
+      <!-- <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)">
+          <i class="fas fa-fw fa-eye"></i>
+          <span class="text-secondary">View</span></a>
+      </li> -->
+      <li class="nav-item" [ngClass]="{'active': viewType === 'history'}">
+        <a class="nav-link" href="javascript:void(0)" (click)="viewType = 'history'">
+          <i class="fas fa-fw fa-history"></i>
+          <span class="text-secondary">History</span></a>
+      </li>
+      <li class="nav-item" [ngClass]="{'active': viewType === 'live'}">
+        <a class="nav-link" href="javascript:void(0)" (click)="viewType = 'live'">
+          <i class="fas fa-fw fa-stream"></i>
+          <span class="text-secondary">Live</span></a>
+      </li>
+    </ul>
+  </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <hr class="solid">
+      </div>
+    </div>
+
+  </div>
+  <div class="con-pad">
+    <div class="row mt-1 mx-auto">
+      <ng-container *ngIf="viewType === 'history'">
+        <app-history></app-history>
+      </ng-container>
+      <ng-container *ngIf="viewType === 'live'">
+        <app-live-data></app-live-data>
+      </ng-container>
+    </div>
+  </div>

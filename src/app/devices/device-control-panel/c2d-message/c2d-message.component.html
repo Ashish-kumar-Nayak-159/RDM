@@ -1,0 +1,67 @@
+<app-filter *ngIf="type === 'all'" [filterObj]="c2dMsgFilter" (filterSearch)="searchC2DMessages($event)"></app-filter>
+
+<div class="row  mx-auto">
+
+  <div class="table-responsive">
+    <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr class="bg-secondary text-white">
+          <th>Time Stamp</th>
+          <th class="border-left">Message ID</th>
+          <th class="border-left">TTL</th>
+          <th class="border-left">ACK</th>
+          <th class="border-left">Feedback</th>
+          <!-- <th class="border-left">F Time Stamp</th> -->
+          <th class="border-left" style="width:7%">Message</th>
+          <th class="border-left" style="width:7%">Response</th>
+
+        </tr>
+      </thead>
+
+      <tbody>
+        <ng-container *ngIf="c2dMsgs.length > 0 && !isC2dMsgsLoading">
+        <tr *ngFor="let msg of c2dMsgs">
+          <td>{{msg.local_created_date}}</td>
+          <td>{{msg.message_id}}</td>
+          <td>{{msg?.application_properties?.expire_in_min}}</td>
+          <td>{{msg?.application_properties?.acknowledge}}</td>
+          <td>{{msg?.feedback}}</td>
+          <!-- <td></td> -->
+          <td>
+            <a (click)="loadMessageDetail(msg, true)" href="javascript:void(0)">
+              <i class="fas fa-fw fa-eye"></i></a></td>
+          <td>
+            <a (click)="loadResponseDetail(msg, true)" href="javascript:void(0)">
+              <i class="fas fa-fw fa-eye"></i></a></td>
+        </tr>
+      </ng-container>
+        <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading && isFilterSelected">
+          <tr>
+            <td colspan="9">No messages found.</td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading && !isFilterSelected">
+          <tr>
+            <td colspan="9">Select filter and press search button to load the C2D messages.</td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="isC2dMsgsLoading">
+          <tr>
+            <td colspan="9">
+              <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal right fade" id="c2dmessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <app-message-modal *ngIf="c2dMessageDetail" [bodyMessage]="c2dMessageDetail" [headerMessage]="'C2D Message'"
+    (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
+    <app-message-modal *ngIf="c2dResponseDetail" [bodyMessage]="c2dResponseDetail" [headerMessage]="'C2D Response'"
+    (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
+  </div>
+</div>

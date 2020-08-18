@@ -36,12 +36,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     node.charset = 'utf-8';
     document.getElementsByTagName('head')[0].appendChild(node);
     }, 500);
-
   }
 
 
   ngOnInit(): void {
-    console.log(localStorage.getItem('userData'));
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         if (event.url.includes('login')) {

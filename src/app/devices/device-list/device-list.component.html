@@ -1,19 +1,19 @@
 
 <div class="topnavbar" >
+  <div class="d-sm-flex align-items-center justify-content-start mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Device Management</h1>
+
+    <a
+
+      class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-4"
+      href="javascript:void(0)" (click)="openCreateDeviceModal()"
+      ><i class="fas fa- fa-sm text-white-50"></i> Add Device</a
+    >
+  </div>
   <div class="card row shadow bg-light" style="margin-left:0rem">
     <div class="col-xl-12 col-md-12 mb-12 my-1">
 <!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-start mb-4">
-  <h1 class="h3 mb-0 text-gray-800">Device Management</h1>
 
-  <a
-
-    class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-4"
-    href="javascript:void(0)" data-toggle="modal"
-    data-target="#createDeviceModal" data-backdrop="static" data-keyboard="false"
-    ><i class="fas fa- fa-sm text-white-50"></i> Add Device</a
-  >
-</div>
 
 
 
@@ -54,7 +54,7 @@
 <!-- Content Row -->
 
 <!-- DataTales Example -->
-<div class="con-pad" style="margin-top:12.5rem;">
+<div class="con-pad" style="margin-top:13.5rem;">
 <div class="mb-4 ">
 
   <div class="">
@@ -120,11 +120,11 @@
     <div class="modal-content">
     <div class="modal-header">
       <h5 class="modal-title" id="exampleModalLabel">Create Device</h5>
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <button type="button" class="close"  (click)="onCloseCreateDeviceModal()" aria-label="Close" [disabled]="isCreateDeviceAPILoading">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" *ngIf="deviceDetail">
       <form>
         <div class="form-group">
           <label for="message-text" class="col-form-label">App name:</label>
@@ -132,39 +132,60 @@
         </div>
         <div class="form-group">
           <label for="message-text" class="col-form-label">Device name:</label>
-          <input type="text" class="form-control" id="device_name" >
+          <input type="text" class="form-control" id="device_name" name="device_id" [(ngModel)]="deviceDetail.device_id">
+        </div>
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">Device Manager:</label>
+          <input type="text" class="form-control" id="device_manager" name="device_manager" [(ngModel)]="deviceDetail.tags.device_manager">
         </div>
         <div class="form-group">
           <label for="recipient-name" class="col-form-label">Device Type:</label>
-          <select class="custom-select" id="role">
-          <option value="IP Device">IP Device</option>
-          <option value="LoRa Device">LoRa Device</option>
-          </select>
+          <select class="custom-select" id="device_type" name="device_type" [(ngModel)]="deviceDetail.tags.device_type">
+          <option value="CCD ASTA">CCD ASTA</option>
+          <option value="Feeder">Feeder</option>
+          <option value="Pump">Pump</option>
+        </select>
         </div>
         <div class="form-group">
           <label for="recipient-name" class="col-form-label">Protocol:</label>
-          <select class="custom-select" id="role">
+          <select class="custom-select" id="protocol" name="protocol" [(ngModel)]="deviceDetail.tags.protocol">
           <option value="BLE">BLE</option>
-          <option value="Zigbee">Zigbee</option>
+          <option value="IP Device (Wifi)">IP Device (Wifi)</option>
+          <option value="IP Device (SIM)">IP Device (SIM)</option>
+          <option value="LoRa">LoRa</option>
+          <option value="LwM2M">LwM2M</option>
+          <option value="NB-IOT">NB-IOT</option>
+
           </select>
         </div>
         <div class="form-group">
-          <label for="recipient-name" class="col-form-label">Template followed by the device:</label>
-          <select class="custom-select" id="role">
-          <option value="template 1">Template 1</option>
-          <option value="template 2">Template 2</option>
+          <label for="recipient-name" class="col-form-label">Cloud Connectivity followed by the device:</label>
+          <select class="custom-select" id="template" name="connectivity" [(ngModel)]="deviceDetail.tags.cloud_connectivity">
+          <option value="BLE Device -> Mobile App -> Azure IOT Hub SDK -> Azure Cloud">
+            BLE Device -> Mobile App -> Azure IOT Hub SDK -> Azure Cloud</option>
+          <option value="IP Device -> MQTT Client -> SIM -> Cloud">
+            IP Device -> MQTT Client -> SIM -> Cloud</option>
+            <option value="IP Device -> Azure IoT Hub SDK -> SIM -> Cloud">
+              IP Device -> Azure IoT Hub SDK -> SIM -> Cloud</option>
+
           </select>
         </div>
         <div class="form-group">
           <label for="message-text" class="col-form-label">Manufactured By:</label>
-          <input type="text" class="form-control" id="manufactured_by" >
-
+          <input type="text" class="form-control" id="manufactured_by" name="manufacturer"  [(ngModel)]="deviceDetail.tags.manufacturer">
+        </div>
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">Location:</label>
+          <input type="text" class="form-control" id="location" name="location" [(ngModel)]="deviceDetail.tags.location">
         </div>
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-primary add-row mr-auto" data-dismiss="modal">Save</button>
-
+      <button type="button" class="btn btn-primary add-row" [disabled]="isCreateDeviceAPILoading" (click)="onCreateDevice()">Save</button>
+      <button type="button" class="btn btn-secondary" [disabled]="isCreateDeviceAPILoading" (click)="onCloseCreateDeviceModal()">
+        Cancel
+      </button>
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateDeviceAPILoading"></i>
     </div>
   </div>
   </div>

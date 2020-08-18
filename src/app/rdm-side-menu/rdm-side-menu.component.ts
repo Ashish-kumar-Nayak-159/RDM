@@ -1,5 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { CommonService } from 'src/app/services/common.service';
+import { CONSTANTS } from '../app.constants';
 declare var $: any;
 @Component({
   selector: 'app-rdm-side-menu',
@@ -10,11 +12,12 @@ export class RDMSideMenuComponent implements OnInit {
 
   userData: any;
   constructor(
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
-    this.userData = JSON.parse(localStorage.getItem('userData'));
+    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
 
   }
 

@@ -4,6 +4,7 @@ import { DeviceService } from 'src/app/services/devices/device.service';
 import { Device } from 'src/app/models/device.model';
 import { ActivatedRoute } from '@angular/router';
 import { CommonService } from 'src/app/services/common.service';
+import { CONSTANTS } from 'src/app/app.constants';
 declare var $: any;
 @Component({
   selector: 'app-device-control-panel',
@@ -25,7 +26,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
-    this.userData = JSON.parse(localStorage.getItem('userData'));
+    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.route.paramMap.subscribe(
       params => {
         if (params.get('deviceId')) {
@@ -148,7 +149,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
     if (!callFromMenu) {
       this.isDeviceDataLoading = true;
     }
-    this.deviceService.getDeviceData(this.device.device_id).subscribe(
+    this.deviceService.getDeviceData(this.device.device_id, this.userData.app).subscribe(
       (response: any) => {
         this.device = response;
         this.isDeviceDataLoading = false;

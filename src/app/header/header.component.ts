@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonService } from '../services/common.service';
 import { DOCUMENT } from '@angular/common';
+import { CONSTANTS } from '../app.constants';
 declare var $: any;
 
 @Component({
@@ -21,8 +22,7 @@ export class HeaderComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    this.userData = JSON.parse(localStorage.getItem('userData'));
-    console.log(this.userData);
+    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
   }
 
   onSideBarToggleTopClick() {

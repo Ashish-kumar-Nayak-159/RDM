@@ -6,8 +6,8 @@ Valid users for login -
 
 
 Pending tasks
- - breadcrub
-- create device
 - code commenting
 - remove commented code
 - super admin UI
+- Send C2d message
+

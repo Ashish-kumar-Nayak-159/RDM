@@ -1,12 +1,24 @@
 <div class="table-responsive" >
 
-  <table  class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0" *ngIf="tableData.length === 0">
+  <table  class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
     <thead>
       <tr class="bg-secondary text-white">
-        <th  *ngFor="let item of tableConfig?.headers">{{item}}</th>
+        <th  *ngFor="let item of tableConfig?.data;let i = index;" [ngClass]="{'w-20': !item.key, 'w-30': i === 0}">
+          {{item.name}}</th>
       </tr>
     </thead>
     <tbody>
+      <ng-container *ngIf="tableData.length > 0 && !isTableDataLoading && isTableFilterSelected">
+        <tr *ngFor="let data of tableData">
+          <td *ngFor="let header of tableConfig?.data">
+            <span *ngIf="header.key">{{data[header.key]}} </span>
+            <a href="javascript:void(0)" *ngIf="!header.key" (click)="viewMessageEvent.emit(data)">
+              <i class="fas fa-fw fa-eye" title="View {{tableConfig?.type}} message"></i>
+            </a>
+          </td>
+
+        </tr>
+      </ng-container>
     <ng-container *ngIf="tableData.length === 0 && !isTableDataLoading && isTableFilterSelected">
       <tr>
         <td colspan="6">No Heartbeat data found.</td>
@@ -26,9 +38,9 @@
     </ng-container>
   </tbody>
   </table>
-  <mat-table [dataSource]="tableData" class="mat-elevation-z8 table-device" *ngIf="tableData.length > 0">
+  <!-- <mat-table [dataSource]="tableData" class="mat-elevation-z8 table-device" *ngIf="tableData.length > 0">
     <ng-container matColumnDef="{{item.name}}" *ngFor="let item of tableConfig?.data">
-      <mat-header-cell *matHeaderCellDef> {{item.name}} </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef [ngClass]="{'w-10': !item.key}"> {{item.name}} </mat-header-cell>
       <mat-cell *matCellDef="let element">
         <span *ngIf="item.key">{{element[item.key]}} </span>
         <a *ngIf="!item.key" (click)="viewMessageEvent.emit(element)">
@@ -40,5 +52,5 @@
 
     <mat-header-row class="bg-secondary text-white" *matHeaderRowDef="tableConfig?.headers; sticky: true"></mat-header-row>
     <mat-row *matRowDef="let row; columns: tableConfig?.headers;"></mat-row>
-  </mat-table>
+  </mat-table> -->
 </div>

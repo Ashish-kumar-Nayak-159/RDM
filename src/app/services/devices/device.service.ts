@@ -25,9 +25,16 @@ export class DeviceService {
     return this.http.get(this.url + AppUrls.GET_DEVICE_FILTER_LIST, { params });
   }
 
-  getDeviceData(deviceId) {
-    const params = new HttpParams().set('device_id', deviceId);
+  getDeviceData(deviceId, app) {
+    let params = new HttpParams().set('device_id', deviceId);
+    params = params.set('app', app);
     return this.http.get(this.url + AppUrls.GET_DEVICE_DATA, { params });
+  }
+
+  createDevice(deviceObj, app) {
+    let params = new HttpParams();
+    params = params.set('app', app);
+    return this.http.post(this.url + AppUrls.CREATE_DEVICE, deviceObj, {params});
   }
 
   enableDevice(deviceId, appId) {
@@ -54,13 +61,16 @@ export class DeviceService {
     return this.http.get(this.url + AppUrls.GET_DEVICE_CREDENTIALS, { params });
   }
 
-  getDeviceConnectionStatus(deviceId) {
-    const params = new HttpParams().set('device_id', deviceId);
+  getDeviceConnectionStatus(deviceId, app) {
+    let params = new HttpParams().set('device_id', deviceId);
+    params = params.set('app', app);
     return this.http.get(this.url + AppUrls.GET_DEVICE_CONNECTION_STATUS, { params });
   }
 
-  updateDeviceTags(deviceObj) {
-    return this.http.post(this.url + AppUrls.UPDATE_DEVICE_TAGS, deviceObj);
+  updateDeviceTags(deviceObj, app) {
+    let params = new HttpParams();
+    params = params.set('app', app);
+    return this.http.post(this.url + AppUrls.UPDATE_DEVICE_TAGS, deviceObj, {params});
   }
 
   getDeviceHeartBeats(filterObj) {
@@ -133,27 +143,37 @@ export class DeviceService {
     return this.http.get(this.url + AppUrls.GET_C2D_MESSAGE_LIST, { params });
   }
 
-  getQueueMessagesCount(deviceId) {
+  getQueueMessagesCount(deviceId, app) {
     let params = new HttpParams();
     params = params.set('device_id', deviceId);
+    params = params.set('app', app);
     return this.http.get(this.url + AppUrls.GET_QUEUE_MESSAGE_COUNT, { params });
   }
 
-  purgeQueueMessages(deviceId) {
+  purgeQueueMessages(deviceId, app) {
     let params = new HttpParams();
     params = params.set('device_id', deviceId);
+    params = params.set('app', app);
     return this.http.get(this.url + AppUrls.PURGE_QUEUE_MESSAGE, { params });
   }
 
-  getC2dMessageJSON(messageId) {
+  getC2dMessageJSON(messageId, app) {
     let params = new HttpParams();
     params = params.set('message_id', messageId);
+    params = params.set('app', app);
     return this.http.get(this.url + AppUrls.GET_C2D_MESSAGE_JSON, { params });
   }
 
-  getC2dResponseJSON(messageId) {
+  getC2dResponseJSON(messageId, app) {
     let params = new HttpParams();
     params = params.set('correlation_id', messageId);
+    params = params.set('app', app);
     return this.http.get(this.url + AppUrls.GET_C2D_RESPONSE_JSON, { params });
+  }
+
+  sendC2DMessage(message, app) {
+    let params = new HttpParams();
+    params = params.set('app', app);
+    return this.http.post(this.url + AppUrls.SEND_C2D_MESSAGE, message, {params});
   }
 }

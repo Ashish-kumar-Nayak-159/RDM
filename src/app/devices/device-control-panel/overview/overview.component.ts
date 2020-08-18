@@ -25,7 +25,7 @@ export class OverviewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.userData = JSON.parse(localStorage.getItem('userData'));
+    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.applicationData = CONSTANTS.APP_DATA[this.userData.app];
     this.getDeviceCredentials();
     this.getDeviceConnectionStatus();
@@ -42,7 +42,7 @@ export class OverviewComponent implements OnInit {
 
   getDeviceConnectionStatus() {
     this.deviceConnectionStatus = undefined;
-    this.devieService.getDeviceConnectionStatus(this.device.device_id).subscribe(
+    this.devieService.getDeviceConnectionStatus(this.device.device_id, this.userData.app).subscribe(
       response => {
         this.deviceConnectionStatus = response;
         this.deviceConnectionStatus.local_updated_date =

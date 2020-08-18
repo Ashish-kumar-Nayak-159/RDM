@@ -1,18 +1,36 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import * as moment from 'moment';
+import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { AppUrls } from '../app-url.constants';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonService {
 
+  url = environment.appServerURL;
   breadcrumbEvent: EventEmitter<any> = new EventEmitter<any>();
-  constructor() { }
+  constructor(
+    private http: HttpClient
+  ) { }
 
   convertUTCDateToLocal(utcDate) {
     if (utcDate) {
       return (moment.utc(utcDate, "M/DD/YYYY h:mm:ss A")).local().format('DD-MMM-YYYY hh:mm:ss A');
     }
     return null;
+  }
+
+  loginUser(obj) {
+    return this.http.post(this.url + AppUrls.LOGIN,  obj);
+  }
+
+  getItemFromLocalStorage(key) {
+    return JSON.parse(localStorage.getItem(key));
+  }
+
+  setItemInLocalStorage(key, value) {
+    return localStorage.setItem(key, JSON.stringify(value));
   }
 }

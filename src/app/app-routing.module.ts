@@ -18,13 +18,13 @@ const routes: Routes = [
   },
   {
     path: '',
-    component: RDMHomeComponent
+    component: RDMHomeComponent,
   }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, {
-  preloadingStrategy: PreloadAllModules
+    preloadingStrategy: PreloadAllModules
   })],
   exports: [RouterModule]
 })

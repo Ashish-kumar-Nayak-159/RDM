@@ -1,66 +1,16 @@
-
+<div class="topnavbar bg-white py-2" >
 <app-filter [filterObj]="otherFilter" (filterSearch)="searchOther($event)"></app-filter>
 
-
-<div class="row mx-auto mt-3">
+</div>
+<div class="con-pad">
+<div class="row mx-auto">
 
   <div class="table-responsive" >
 
-    <!-- <table  class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0" *ngIf="heartbeats.length === 0">
-      <thead>
-        <tr class="bg-secondary text-white">
-          <th>Time Stamp</th>
-          <th>Message ID</th>
-          <th>Heartbeat Message</th>
-
-        </tr>
-      </thead>
-      <tbody>
-      <ng-container *ngIf="heartbeats.length === 0 && !isHeartbeatLoading && isFilterSelected">
-        <tr>
-          <td colspan="6">No Heartbeat data found.</td>
-        </tr>
-      </ng-container>
-      <ng-container *ngIf="heartbeats.length === 0 && !isHeartbeatLoading && !isFilterSelected">
-        <tr>
-          <td colspan="6">Select filter and press search button to load the heartbeat data.</td>
-        </tr>
-      </ng-container>
-      <ng-container *ngIf="isHeartbeatLoading">
-        <tr>
-          <td colspan="6">
-            <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-          </td>
-        </tr>
-      </ng-container>
-    </tbody>
-    </table>
-    <mat-table [dataSource]="heartbeats" class="mat-elevation-z8 table-device" *ngIf="heartbeats.length > 0">
-      <ng-container matColumnDef="Timestamp">
-        <mat-header-cell *matHeaderCellDef> Timestamp </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.local_created_date}} </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="Message ID">
-        <mat-header-cell *matHeaderCellDef> Message ID </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.message_id}} </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="Message">
-        <mat-header-cell *matHeaderCellDef> Message </mat-header-cell>
-        <mat-cell *matCellDef="let element">
-          <a (click)="openHeratbeatMessageModal(element)">
-          <i class="fas fa-fw fa-eye"></i>
-        </a> </mat-cell>
-      </ng-container>
-
-
-      <mat-header-row class="bg-secondary text-white" *matHeaderRowDef="['Timestamp', 'Message ID', 'Message']; sticky: true"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: ['Timestamp', 'Message ID', 'Message'];"></mat-row>
-    </mat-table> -->
     <app-table [tableData]="othersList" [tableConfig]="otherTableConfig" [isTableFilterSelected]="isFilterSelected"
     [isTableDataLoading]="isOthersLoading" (viewMessageEvent)="openOtherMessageModal($event)"></app-table>
   </div>
+</div>
 </div>
 <div class="modal right fade" id="heartbeatMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">

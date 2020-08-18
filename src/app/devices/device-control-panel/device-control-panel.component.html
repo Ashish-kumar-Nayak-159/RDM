@@ -97,10 +97,10 @@
           <span>Logs</span></a>
       </li>
 
-      <li class="nav-item"  [ngClass]="{'active': activeTab === 'liveData'}">
-        <a class="nav-link" href="#device_live_data"  data-toggle="tab" aria-expanded="false" (click)="setActiveTab('liveData')">
+      <li class="nav-item"  [ngClass]="{'active': activeTab === 'trendAnalysis'}">
+        <a class="nav-link" href="#device_trend_analysis"  data-toggle="tab" aria-expanded="false" (click)="setActiveTab('trendAnalysis')">
           <i class="fas fa-fw fa-stream" title="Live Data"></i>
-          <span>Live</span></a>
+          <span>Trend Analysis</span></a>
       </li>
 
 
@@ -183,8 +183,8 @@
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'logs'}" role="tabpanel" id="device_logs">
         <app-logs *ngIf="activeTab === 'logs'" [device]="device"></app-logs>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'liveData'}" role="tabpanel" id="device_live_data">
-        <app-live-data *ngIf="activeTab === 'liveData'" ></app-live-data>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'trendAnalysis'}" role="tabpanel" id="device_trend_analysis">
+        <app-trend-analysis *ngIf="activeTab === 'trendAnalysis'" ></app-trend-analysis>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'commands'}" role="tabpanel" id="device_commands">
         <app-commands *ngIf="activeTab === 'commands'" [device]="device"></app-commands>

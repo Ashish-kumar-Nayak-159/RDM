@@ -7226,7 +7226,7 @@ a.bg-dark:focus, a.bg-dark:hover, button.bg-dark:focus, button.bg-dark:hover {
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 1030
+  z-index: 10;
 }
 
 @supports ((position:-webkit-sticky) or (position:sticky)) {
@@ -11606,7 +11606,7 @@ ul.timeline > li:before {
 
 .topnavbar {
     position: fixed;
-    z-index: 3;
+    z-index: 1;
     top: 6rem;
     width: 100%;
     margin-left: -1.5rem;

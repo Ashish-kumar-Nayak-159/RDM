@@ -123,4 +123,6 @@ export class CONSTANTS {
     ]
   };
 
+  public static USER_DETAILS = 'userData';
+
 }

@@ -147,7 +147,7 @@
           <i *ngIf="isLastNotificationDataLoading" class="fa fa-spinner fa-spin fa-2x fa-fw"></i>
           <ul class="timeline" *ngIf="!isLastNotificationDataLoading">
             <li *ngFor="let notification of lastGeneratedNotifications">
-                <p >{{notification.device_id}} | {{notification.time_diff}}</p>
+                <div class="device-name-text">{{notification.device_id}} | {{notification.time_diff}}</div>
                 <p>{{notification.message?.message}}</p>
             </li>
           </ul>
@@ -175,7 +175,7 @@
 
             <li  *ngFor="let alert of lastGeneratedAlerts">
 
-                <div>{{alert.device_id}} | {{alert.time_diff}}</div>
+                <div class="device-name-text">{{alert.device_id}} | {{alert.time_diff}}</div>
                 <p>{{alert.message?.message}}</p>
 
             </li>
@@ -206,7 +206,7 @@
 
             <li *ngFor="let event of lastGeneratedEvents">
 
-                <div >{{event.device_id}} | {{event.time_diff}} </div>
+                <div class="device-name-text">{{event.device_id}} | {{event.time_diff}} </div>
                 <p>{{event.event_type}}</p>
 
             </li>

@@ -1,0 +1,12 @@
+
+.shadow-sm {
+  box-shadow: 0 .125rem .25rem 0 rgba(58, 59, 69, .2)!important;
+}
+
+.shadow {
+  box-shadow: 0 .15rem 1.75rem 0 rgba(58, 59, 69, .15)!important;
+}
+
+.shadow-lg {
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, .175)!important;
+}

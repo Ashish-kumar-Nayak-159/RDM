@@ -21,7 +21,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
         if (error.status === 500) {
           // toaster to display data of 500
         }
-        return throwError(error);
+        return throwError(error.error);
       }),
       map((event: HttpResponse<any>) => {
         if (event instanceof HttpResponse) {

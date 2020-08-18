@@ -1,4 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { CommonService } from 'src/app/services/common.service';
+import { CONSTANTS } from './../../../app.constants';
 
 @Component({
   selector: 'app-filter',
@@ -9,10 +11,15 @@ export class FilterComponent implements OnInit {
 
   @Input() filterObj: any;
   originalFilterObj: any = {};
+  userData: any;
   @Output() filterSearch: EventEmitter<any> = new EventEmitter<any>();
-  constructor() { }
+  constructor(
+    private commonService: CommonService
+  ) { }
 
   ngOnInit(): void {
+    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.filterObj.app = this.userData.app;
     this.filterObj.count = 10;
     this.originalFilterObj = {};
     this.originalFilterObj = {...this.filterObj};

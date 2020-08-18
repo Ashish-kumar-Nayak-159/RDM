@@ -19,6 +19,7 @@ export class TagsComponent implements OnInit {
   reservedTags: any[] = [];
   reservedTagsBasedOnProtocol: any[] = [];
   isTagsEditable = false;
+  userData: any;
   constructor(
     private route: ActivatedRoute,
     private deviceService: DeviceService,
@@ -27,12 +28,13 @@ export class TagsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.reservedTags = CONSTANTS.DEVICE_RESERVED_TAGS_LIST;
     this.getDeviceDetail();
   }
 
   getDeviceData() {
-    this.deviceService.getDeviceData(this.device.device_id).subscribe(
+    this.deviceService.getDeviceData(this.device.device_id, this.userData.app).subscribe(
       (response: any) => {
         this.device = response;
         this.getDeviceDetail();
@@ -119,12 +121,12 @@ export class TagsComponent implements OnInit {
       device_id: this.device.device_id,
       tags: this.device.tags
     };
-    this.deviceService.updateDeviceTags(obj).subscribe(
-      response => {
-        this.toasterService.showSuccess('Tags updated successfully', 'Set Tags');
+    this.deviceService.updateDeviceTags(obj, this.userData.app).subscribe(
+      (response: any) => {
+        this.toasterService.showSuccess(response.message, 'Set Tags');
         this.getDeviceData();
         this.isTagsEditable = false;
-      }, error => this.toasterService.showError('Error in updating tags', 'Set Tags')
+      }, error => this.toasterService.showError(error.message, 'Set Tags')
     );
   }
 
@@ -146,12 +148,12 @@ export class TagsComponent implements OnInit {
       device_id: this.device.device_id,
       tags: this.device.tags
     };
-    this.deviceService.updateDeviceTags(obj).subscribe(
-      response => {
-        this.toasterService.showSuccess('Tags deleted successfully', 'Delete Tags');
+    this.deviceService.updateDeviceTags(obj, this.userData.app).subscribe(
+      (response: any) => {
+        this.toasterService.showSuccess(response.message, 'Delete Tags');
         this.getDeviceData();
 
-      }, error => this.toasterService.showError('Error in deleting tags', 'Delete Tags')
+      }, error => this.toasterService.showError(error.message, 'Delete Tags')
     );
   }
 

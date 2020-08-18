@@ -26,6 +26,10 @@ import { RDMDeviceControlPanelErrorComponent } from './device-control-panel/rdmd
 import { TableComponent } from './device-control-panel/table/table.component';
 import { OthersComponent } from './device-control-panel/others/others.component';
 import { LogsComponent } from './device-control-panel/logs/logs.component';
+import { ComposeC2DMessageComponent } from './device-control-panel/compose-c2d-message/compose-c2d-message.component';
+import { TrendAnalysisComponent } from './device-control-panel/trend-analysis/trend-analysis.component';
+import { HistoryComponent } from './device-control-panel/history/history.component';
+import { C2dMessageComponent } from './device-control-panel/c2d-message/c2d-message.component';
 
 
 @NgModule({
@@ -48,7 +52,11 @@ import { LogsComponent } from './device-control-panel/logs/logs.component';
     RDMDeviceControlPanelErrorComponent,
     TableComponent,
     OthersComponent,
-    LogsComponent
+    LogsComponent,
+    ComposeC2DMessageComponent,
+    TrendAnalysisComponent,
+    HistoryComponent,
+    C2dMessageComponent
   ],
   imports: [
     CommonModule,

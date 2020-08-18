@@ -4,6 +4,8 @@ import { DeviceService } from './../../../services/devices/device.service';
 import { ToasterService } from './../../../services/toaster.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { CONSTANTS } from 'src/app/app.constants';
+import { CommonService } from 'src/app/services/common.service';
 declare var $: any;
 @Component({
   selector: 'app-settings',
@@ -22,22 +24,23 @@ export class SettingsComponent implements OnInit {
   constructor(
     private deviceService: DeviceService,
     private toasterService: ToasterService,
-    private router: Router
+    private router: Router,
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
-    this.userData = JSON.parse(localStorage.getItem('userData'));
+    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
   }
 
   enableDevice() {
     this.isAPILoading = true;
     this.deviceService.enableDevice(this.device.device_id, this.userData.app).subscribe(
-      response => {
-        this.toasterService.showSuccess('Device Enabled Successfully', 'Enable Device');
+      (response: any) => {
+        this.toasterService.showSuccess(response.message, 'Enable Device');
         this.isAPILoading = false;
         this.deviceService.reloadDeviceInControlPanelEmitter.emit();
       }, error => {
-        this.toasterService.showError('Error in enabling device', 'Enable Device');
+        this.toasterService.showError(error.message, 'Enable Device');
         this.isAPILoading = false;
       }
     );
@@ -73,12 +76,12 @@ export class SettingsComponent implements OnInit {
   disableDevice() {
     this.isAPILoading = true;
     this.deviceService.disableDevice(this.device.device_id, this.userData.app).subscribe(
-      response => {
-        this.toasterService.showSuccess('Device disabled Successfully', 'Disable Device');
+      (response: any) => {
+        this.toasterService.showSuccess(response.message, 'Disable Device');
         this.isAPILoading = false;
         this.deviceService.reloadDeviceInControlPanelEmitter.emit();
       }, error => {
-        this.toasterService.showError('Error in disabling device', 'Disable Device');
+        this.toasterService.showError(error.message, 'Disable Device');
         this.isAPILoading = false;
       }
     );
@@ -87,12 +90,12 @@ export class SettingsComponent implements OnInit {
   deleteDevice() {
     this.isAPILoading = true;
     this.deviceService.deleteDevice(this.device.device_id, this.userData.app).subscribe(
-      response => {
-        this.toasterService.showSuccess('Device deleted Successfully', 'Delete Device');
+      (response: any) => {
+        this.toasterService.showSuccess(response.message, 'Delete Device');
         this.isAPILoading = false;
         this.router.navigate(['applications', this.userData.app, 'devices']);
       }, error => {
-        this.toasterService.showError('Error in deleting device', 'Delete Device');
+        this.toasterService.showError(error.message, 'Delete Device');
         this.isAPILoading = false;
       }
     );

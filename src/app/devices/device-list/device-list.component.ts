@@ -4,7 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DeviceService } from './../../services/devices/device.service';
 import { ThrowStmt } from '@angular/compiler';
 import { CommonService } from 'src/app/services/common.service';
-
+import { CONSTANTS } from 'src/app/app.constants';
+import { ToasterService } from './../../services/toaster.service';
+import * as moment from 'moment';
+declare var $: any;
 @Component({
   selector: 'app-device-list',
   templateUrl: './device-list.component.html',
@@ -18,15 +21,18 @@ export class DeviceListComponent implements OnInit {
   isDeviceListLoading = false;
   userData: any;
   isFilterSelected = false;
+  deviceDetail: Device;
+  isCreateDeviceAPILoading = false;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private deviceService: DeviceService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
-    this.userData = JSON.parse(localStorage.getItem('userData'));
+    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.commonService.breadcrumbEvent.emit({
       data: [
           {
@@ -69,5 +75,36 @@ export class DeviceListComponent implements OnInit {
   clearFilter() {
     this.deviceFilterObj = undefined;
     this.deviceFilterObj = JSON.parse(JSON.stringify(this.originalDeviceFilterObj));
+  }
+
+  openCreateDeviceModal() {
+    this.deviceDetail = new Device();
+    this.deviceDetail.tags = {
+    };
+    this.deviceDetail.tags.app = this.userData.app;
+    $('#createDeviceModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onCreateDevice() {
+    this.isCreateDeviceAPILoading = true;
+    console.log(this.deviceDetail);
+    this.deviceDetail.tags.created_by = this.userData.email;
+    this.deviceDetail.tags.created_date = moment().utc().format('M/DD/YYYY h:mm:ss A');
+    this.deviceService.createDevice(this.deviceDetail, this.userData.app).subscribe(
+      (response: any) => {
+        this.isCreateDeviceAPILoading = false;
+        this.toasterService.showSuccess(response.message, 'Create Device');
+        this.onCloseCreateDeviceModal();
+      }, error => {
+        this.isCreateDeviceAPILoading = false;
+        this.toasterService.showError(error.message, 'Create Device');
+        this.onCloseCreateDeviceModal();
+      }
+    )
+  }
+
+  onCloseCreateDeviceModal() {
+    $('#createDeviceModal').modal('hide');
+    this.deviceDetail = undefined;
   }
 }

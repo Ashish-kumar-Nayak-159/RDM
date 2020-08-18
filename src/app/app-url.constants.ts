@@ -22,5 +22,8 @@ export class AppUrls {
   public static ENABLE_DEVICE = 'DLM_EnableDevice';
   public static DISABLE_DEVICE = 'DLM_DisableDevice';
   public static DELETE_DEVICE = 'DLM_DeleteDevice';
+  public static CREATE_DEVICE = 'DLM_CreateDevice';
+  public static SEND_C2D_MESSAGE = 'C2D_SendMessage';
+  public static LOGIN = 'App_Login';
 
 }

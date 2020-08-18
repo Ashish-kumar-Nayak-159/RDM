@@ -65,7 +65,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.userData = JSON.parse(localStorage.getItem('userData'));
+    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.applicationData = CONSTANTS.APP_DATA[this.userData.app];
     this.getDashboardSnapshot();
     this.getLastNotificationData();
@@ -80,6 +80,17 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
       ]
     });
 
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      let node = document.createElement('script');
+      node.src = './assets/js/kdm.min.js';
+      node.type = 'text/javascript';
+      node.async = false;
+      node.charset = 'utf-8';
+      document.getElementsByTagName('head')[0].appendChild(node);
+      }, 500);
   }
 
   /**

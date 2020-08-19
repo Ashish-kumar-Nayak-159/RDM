@@ -59,7 +59,7 @@
 
 <div class="modal right fade" id="c2dmessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
-    <app-message-modal *ngIf="c2dMessageDetail" [bodyMessage]="c2dMessageDetail" [headerMessage]="'C2D Message'"
+    <app-message-modal *ngIf="c2dMessageDetail" [bodyMessage]="c2dMessageDetail.message" [headerMessage]="'C2D Message'"
     (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
     <app-message-modal *ngIf="c2dResponseDetail" [bodyMessage]="c2dResponseDetail" [headerMessage]="'C2D Response'"
     (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>

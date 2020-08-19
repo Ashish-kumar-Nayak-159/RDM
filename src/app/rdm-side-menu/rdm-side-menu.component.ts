@@ -25,12 +25,12 @@ export class RDMSideMenuComponent implements OnInit {
     $("body").toggleClass("sidebar-toggled");
     $(".sidebar").toggleClass("toggled");
     if ($(".sidebar").hasClass("toggled")) {
-      $(".sidebar .collapse").collapse("hide");
+      // $(".sidebar .collapse").collapse("hide");
       $(".container-fluid").removeClass("sb-notoggle");
       $(".container-fluid").addClass("sb-toggle");
     }
     if (!$(".sidebar").hasClass("toggled")) {
-      $(".sidebar .collapse").collapse("show");
+      // $(".sidebar .collapse").collapse("show");
       $(".container-fluid").addClass("sb-notoggle");
       $(".container-fluid").removeClass("sb-toggle");
     }

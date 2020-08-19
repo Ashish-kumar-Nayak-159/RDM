@@ -120,12 +120,12 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
   onSidebarToggle() {
     $(".sidebar1").toggleClass("toggled");
     if ($(".sidebar1").hasClass("toggled")) {
-      $(".sidebar1 .collapse").collapse("hide");
+      // $(".sidebar1 .collapse").collapse("hide");
       $(".container1-fluid").removeClass("sb1-notoggle");
       $(".container1-fluid").addClass("sb1-toggle");
     }
     if (!$(".sidebar1").hasClass("toggled")) {
-      $(".sidebar1 .collapse").collapse("show");
+      // $(".sidebar1 .collapse").collapse("show");
       $(".container1-fluid").addClass("sb1-notoggle");
       $(".container1-fluid").removeClass("sb1-toggle");
     }
@@ -134,12 +134,12 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
   onSideBarToggleTopClick() {
     $(".sidebar1").toggleClass("toggled");
     if ($(".sidebar1").hasClass("toggled")) {
-      $(".sidebar1 .collapse").collapse("hide");
+      // $(".sidebar1 .collapse").collapse("hide");
       $(".container1-fluid").addClass("sb1-collapse");
       $(".container1-fluid").removeClass("sb1-toggle");
     }
     if (!$(".sidebar1").hasClass("toggled")) {
-      $(".sidebar1 .collapse").collapse("show");
+      // $(".sidebar1 .collapse").collapse("show");
       $(".container1-fluid").removeClass("sb1-collapse");
       $(".container1-fluid").addClass("sb1-toggle");
     }

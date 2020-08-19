@@ -1,23 +1,23 @@
 <div class="container-pad">
 <div class="row">
-  <div class="col-xl-4 col-lg-5">
+  <!-- <div class="col-xl-4 col-lg-5">
     <div class="row">
-      <div class="col-lg-6 mb-4">
+      <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4">
         <div class="card bg-warning text-white shadow">
           <div class="card-body">
             <div class="text-center">
-              <img class="img-fluid px-3 px-sm-2 mt-3 mb-4" style="width: 25rem;height: 10rem;" src="{{applicationData.logo}}"
+              <img class="img-fluid px-2 mt-3 mb-3 img-szsm"  src="{{applicationData.logo}}"
                 alt="">
             </div>
           </div>
         </div>
       </div>
-      <div class="col-lg-6 mb-4">
+      <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4">
         <div class="card border-left-secondary shadow h-100">
           <div class="card-body">
             <a href="javascript:void(0)" (click)="redirectToDevice()" >
               <div class="text-center">
-                <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;height: 7rem;"
+                <img class="img-fluid px-2 mt-2 mb-3 img-szsm"
                   src="{{applicationData.icon}}" alt="">
               </div>
               <div class="text-center">
@@ -29,12 +29,12 @@
         </div>
       </div>
 
-      <div class="col-lg-6 mb-4">
+      <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4">
         <div class="card border-left-success shadow h-100">
           <div class="card-body">
             <a href="javascript:void(0)" (click)="redirectToDevice('connected')">
               <div class="text-center">
-                <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;height: 7rem;"
+                <img class="img-fluid px-2 mt-2 mb-3 img-szsm"
                   src="{{applicationData.icon}}" alt="">
               </div>
               <div class="text-center">
@@ -47,12 +47,12 @@
         </div>
       </div>
 
-      <div class="col-lg-6 mb-4">
+      <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4">
         <div class="card border-left-danger shadow h-100">
           <div class="card-body">
             <a href="javascript:void(0)" (click)="redirectToDevice('disconnected')">
               <div class="text-center">
-                <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;height: 7rem;"
+                <img class="img-fluid px-2 mt-2 mb-3 img-szsm"
                   src="{{applicationData.icon}}" alt="">
               </div>
               <div class="text-center">
@@ -66,14 +66,73 @@
       </div>
     </div>
 
-  </div>
+  </div> -->
 
+  <div class="col-xl-4 col-lg-5">
+    <div class="row">
+
+          <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4" >
+            <div class="card bg-warning text-white shadow" >
+              <div class="card-body">
+                <div class="text-center">
+              <img class="img-fluid px-2 mt-3 mb-3 img-szmd"  src="{{applicationData.logo}}" alt="">
+            </div>
+              </div>
+            </div>
+          </div>
+  <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4" >
+            <div class="card border-left-secondary shadow h-100">
+              <div class="card-body">
+                <a href="javascript:void(0)" (click)="redirectToDevice()" ><div class="text-center">
+        <img class="img-fluid px-2 mt-2 mb-3 img-szsm" src="{{applicationData.icon}}" alt="">
+      </div>
+      <div class="text-center">
+        <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>
+        <span *ngIf="!isDashboardSnapshotLoading">{{dashboardSnapshot?.device_count}}</span> </div>
+      <div class="text-black-50 text-center small">Devices </div></a>
+              </div>
+            </div>
+          </div>
+
+  <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4" >
+            <div class="card border-left-success shadow h-100" >
+              <div class="card-body">
+                <a href="javascript:void(0)" (click)="redirectToDevice('connected')"><div class="text-center">
+        <img class="img-fluid px-2 mt-2 mb-3 img-szsm" src="{{applicationData.icon}}" alt="">
+      </div>
+      <div class="text-center">
+        <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>
+        <span *ngIf="!isDashboardSnapshotLoading">{{dashboardSnapshot?.connected_device_count}}</span> </div>
+      <div class="text-black-50 text-center small">Connected</div></a>
+
+              </div>
+            </div>
+          </div>
+
+  <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4" >
+            <div class="card border-left-danger shadow h-100" >
+    <div class="card-body">
+      <a href="javascript:void(0)" (click)="redirectToDevice('disconnected')"><div class="text-center">
+        <img class="img-fluid px-2 mt-2 mb-3 img-szsm" src="{{applicationData.icon}}" alt="">
+      </div>
+      <div class="text-center">
+        <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>
+        <span *ngIf="!isDashboardSnapshotLoading">{{dashboardSnapshot?.disconnected_device_count}}</span> </div>
+      <div class="text-black-50 text-center small">Disconnected</div></a>
+
+              </div>
+            </div>
+          </div>
+    </div>
+
+      </div>
   <!-- Area Chart -->
   <div class="col-xl-8 col-lg-7">
 
     <!-- Bar Chart -->
     <div class="card shadow mb-4">
-      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+      style="max-height:5rem;">
         <h6 class="m-0 font-weight-bold text-primary">IoT Hub Overall Statistics</h6>
         <ul class="nav">
           <li class="nav-item active">
@@ -93,13 +152,13 @@
 
       </div>
 
-      <div class="card-body">
+      <div class="card-body" style="max-height:22rem;">
 
         <div class="tab-content">
           <div class="tab-pane active" id="D2C">
             <div role="tabpanel" class="tab-pane active no-padding" id="home">
               <div>
-                <canvas  baseChart  #d2cChart [datasets]="barChartData" [labels]="barChartLabels"
+                <canvas  style="height: 20rem;" baseChart  #d2cChart [datasets]="barChartData" [labels]="barChartLabels"
                   [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType">
                 </canvas>
               </div>

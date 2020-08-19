@@ -2504,6 +2504,20 @@ a.btn.disabled, fieldset:disabled a.btn {
   box-shadow: 0 0 0 .2rem rgba(220, 221, 225, .5)
 }
 
+
+.btn-white {
+  color: #3a3b45;
+  background-color: #dde2f1;
+  border-color: #d4daed
+}
+
+.btn-white:hover {
+  color: #3a3b45;
+  background-color: #fff;
+  border-color: #fff
+}
+
+
 .btn-dark {
   color: #fff;
   background-color: #5a5c69;
@@ -11507,7 +11521,7 @@ ul.timeline {
   position: relative;
 }
 
-ul.timeline: before {
+ul.timeline:before {
     content: ' ';
     background: #d4d9df;
     display: inline-block;
@@ -11636,4 +11650,10 @@ body {
     overflow-y: auto;
     overflow-x: hidden;
     padding-bottom: 1.5rem;
+}
+.img-szmd {
+	width:7.5rem; height:7.5rem;
+}
+.img-szsm {
+	width:5rem; height:5rem;
 }

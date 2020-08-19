@@ -29,12 +29,12 @@ export class HeaderComponent implements OnInit {
     $("body").toggleClass("sidebar-toggled");
     $(".sidebar").toggleClass("toggled");
     if ($(".sidebar").hasClass("toggled")) {
-      $(".sidebar .collapse").collapse("hide");
+      // $(".sidebar .collapse").collapse("hide");
       $(".container-fluid").addClass("sb-collapse");
       $(".container-fluid").removeClass("sb-toggle");
     }
     if (!$(".sidebar").hasClass("toggled")) {
-      $(".sidebar .collapse").collapse("show");
+      // $(".sidebar .collapse").collapse("show");
       $(".container-fluid").removeClass("sb-collapse");
       $(".container-fluid").addClass("sb-toggle");
     }

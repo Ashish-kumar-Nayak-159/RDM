@@ -19,7 +19,8 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
   @ViewChildren('d2cChart') d2cChart: ElementRef;
   public barChartOptions = {
     scaleShowVerticalLines: false,
-    responsive: true
+    responsive: true,
+    maintainAspectRatio: false
   };
   public barChartLabels = [
     'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Device } from 'src/app/models/device.model';
 
 @Component({
   selector: 'app-trend-analysis',
@@ -8,6 +9,7 @@ import { Component, OnInit } from '@angular/core';
 export class TrendAnalysisComponent implements OnInit {
 
   viewType: string;
+  @Input() device = new Device();
   constructor() { }
 
   ngOnInit(): void {

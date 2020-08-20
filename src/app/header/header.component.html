@@ -7,7 +7,12 @@
   </button>
 
   <!-- Sidebar - Brand -->
-  <a class="d-flex align-items-center justify-content-center mx-3" [routerLink]="['applications', userData?.app]">
+  <a class="d-flex align-items-center justify-content-center mx-3" *ngIf="!userData?.is_super_admin"
+  [routerLink]="['applications', userData?.app]">
+    <img src="../../assets/img/logo-kemsys.png" class="d-block img-fluid">
+  </a>
+  <a class="d-flex align-items-center justify-content-center mx-3" *ngIf="userData?.is_super_admin"
+  [routerLink]="['applications']">
     <img src="../../assets/img/logo-kemsys.png" class="d-block img-fluid">
   </a>
 

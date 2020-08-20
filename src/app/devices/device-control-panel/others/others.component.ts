@@ -100,7 +100,6 @@ export class OthersComponent implements OnInit {
       isDisplayCancel: true
     };
     $('#otherMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
-
   }
 
 

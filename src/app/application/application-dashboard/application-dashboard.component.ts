@@ -160,7 +160,11 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response.data) {
           this.lastGeneratedEvents = response.data;
-          this.lastGeneratedEvents.forEach(event => event.time_diff = this.calculateTimeDifference(event.created_date));
+          this.lastGeneratedEvents.forEach(event => {
+            event.time_diff = this.calculateTimeDifference(event.created_date);
+            const eventMsg = event.event_type.split('.');
+            event.event_type = eventMsg[eventMsg.length - 1];
+          });
         }
         this.isLastEventDataLoading = false;
       }, error => {

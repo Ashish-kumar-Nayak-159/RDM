@@ -10,8 +10,8 @@ export class CONSTANTS {
       icon: './assets/img/ccd_icon.svg'
     },
     Adani: {
-      logo: './assets/img/adani_logo.jpg',
-      icon: './assets/img/adani_icon.jpg'
+      logo: './assets/img/adani_logo.png',
+      icon: './assets/img/adani_icon.png'
     }
   };
   // user list for login check
@@ -120,6 +120,22 @@ export class CONSTANTS {
       {
         name: 'GatewayEUI'
       }
+    ]
+  };
+
+  public static APP_PROP_LIST = {
+    IDEX: [
+      'Temperature',
+      'Flow',
+      'Pressure'
+    ],
+    Adani: [
+    'R_Bus_Temperature',
+    'Y_Bus_Temperature',
+    'B_Bus_Temperature',
+    'R_Bus_Voltage',
+    'Y_Bus_Voltage',
+    'B_Bus_Voltage'
     ]
   };
 

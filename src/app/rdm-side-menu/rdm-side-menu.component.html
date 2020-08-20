@@ -14,20 +14,23 @@
 
   <!-- Nav Item - Dashboard -->
   <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-    <a class="nav-link collapsed" [routerLink]="['applications', userData?.app]"  >
+    <a class="nav-link collapsed" [routerLink]="['applications', userData?.app]" *ngIf="!userData?.is_super_admin" >
       <i class="fas fa-fw fa-home" title="Home"></i>
       <span>Home</span></a>
+      <a class="nav-link collapsed" [routerLink]="['applications']" *ngIf="userData?.is_super_admin" >
+        <i class="fas fa-fw fa-th-large" title="Applications"></i>
+        <span>Apps</span></a>
   </li>
 
   <!-- Nav Item - Charts -->
-  <li class="nav-item" routerLinkActive="active" >
+  <li class="nav-item" routerLinkActive="active"  *ngIf="!userData?.is_super_admin">
     <a class="nav-link" [routerLink]="['/applications', userData?.app, 'devices']">
 
       <i class="fas fa-fw fa-desktop" title="Devices"></i>
       <span>Devices</span></a>
   </li>
 
-  <li class="nav-item" >
+  <li class="nav-item"  *ngIf="!userData?.is_super_admin">
     <a class="nav-link" href="javascript:void(0)">
 
       <i class="fas fa-fw fa-desktop" title="Device Type"></i>
@@ -43,7 +46,7 @@
   </li> -->
 
   <!-- Nav Item - Pages Collapse Menu -->
-  <li class="nav-item">
+  <li class="nav-item"  *ngIf="!userData?.is_super_admin">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
     aria-expanded="true" aria-controls="collapsePages">
       <i class="fas fa-fw fa-folder" title="Device Groups"></i>

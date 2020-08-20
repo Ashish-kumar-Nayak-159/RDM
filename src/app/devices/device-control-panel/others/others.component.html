@@ -12,7 +12,7 @@
   </div>
 </div>
 </div>
-<div class="modal right fade" id="heartbeatMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+<div class="modal right fade" id="otherMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <app-message-modal *ngIf="modalConfig" [bodyMessage]="selectedOther?.message" [headerMessage]="'Other Message'"
     (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>

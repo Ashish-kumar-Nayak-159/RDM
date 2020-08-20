@@ -27,12 +27,8 @@
 
   </div>
   <div class="con-pad">
-    <div class="row mt-1 mx-auto">
-      <ng-container *ngIf="viewType === 'history'">
-        <app-history></app-history>
-      </ng-container>
-      <ng-container *ngIf="viewType === 'live'">
-        <app-live-data></app-live-data>
-      </ng-container>
-    </div>
+        <app-history *ngIf="viewType === 'history'" [device]="device"></app-history>
+
+        <app-live-data *ngIf="viewType === 'live'"></app-live-data>
+
   </div>

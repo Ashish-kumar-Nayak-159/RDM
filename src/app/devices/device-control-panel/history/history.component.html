@@ -1,4 +1,103 @@
+<div class="row mt-1 mx-auto">
+<div class="topnavbar bg-white py-2" style="margin-top: 5rem;">
+  <div class="row">
+    <div class="col-xl-12 col-md-12 mb-12" >
+        <form>
+          <div class="form-group form-inline my-1">
+            <!-- <select  class="form-control form-control-sm mx-1 my-1" id="y1AxisProperty"
+             [(ngModel)]="historyFilter.y1AxisProperty" name="y1AxisProperty">
+              <option [ngValue]="undefined">Y1 Axis Property</option>
+              <ng-container  *ngFor="let prop of propertyList">
+              <option [ngValue]="prop"
+                *ngIf="historyFilter?.y2AxisProperty !== prop">{{prop}}
+                </option>
+              </ng-container>
+            </select>
+            <select  class="form-control form-control-sm mx-1 my-1" id="y2AxisProperty"
+             [(ngModel)]="historyFilter.y2AxisProperty" name="y2AxisProperty">
+              <option [ngValue]="undefined">Y2 Axis Property</option>
+              <ng-container  *ngFor="let prop of propertyList">
+                <option [ngValue]="prop"
+                  *ngIf="historyFilter?.y1AxisProperty !== prop">{{prop}}
+                  </option>
+                </ng-container>
+            </select> -->
+            <ng-select class="custom w-14 mx-1 my-1"  id="y1AxisProperty"
+            [(ngModel)]="historyFilter.y1AxisProperty" name="y1AxisProperty" [items]="propertyList"
+            [multiple]="true" placeholder="Y1 Axis Property" [searchable]="true">
+            <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+              <div class="ng-value" *ngFor="let item of items | slice:0:1">
+                <span class="ng-value-label">{{item}}</span>
 
-  <h1 class="text-center">Work in progress</h1>
+              </div>
+              <div class="ng-value" *ngIf="items.length > 1">
+                <span class="ng-value-label">+ {{items.length - 1}}</span>
+              </div>
+            </ng-template>
+            </ng-select>
+            <ng-select class="custom w-14 mx-1 my-1"  id="y2AxisProperty"
+            [(ngModel)]="historyFilter.y2AxisProperty" name="y2AxisProperty" [items]="propertyList"
+            [multiple]="true" placeholder="Y2 Axis Property" [searchable]="true">
+            <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+              <div class="ng-value" *ngFor="let item of items | slice:0:1">
+                <span class="ng-value-label">{{item}}</span>
+
+              </div>
+              <div class="ng-value" *ngIf="items.length > 1">
+                <span class="ng-value-label">+ {{items.length - 1}}</span>
+              </div>
+            </ng-template>
+            </ng-select>
+            <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
+               [(ngModel)]="historyFilter.dateOption" name="dateOptions" (change)="onDateOptionChange()">
+                <option [ngValue]="undefined">Date Options</option>
+                <option [ngValue]="'5 mins'">Last 5 minutes</option>
+                <option [ngValue]="'30 mins'">Last 30 minutes</option>
+                <option [ngValue]="'1 hour'">Last 1 hour</option>
+                <option [ngValue]="'24 hour'">Last 24 hours</option>
+                <option [ngValue]="'custom'">Custom</option>
+              </select>
+              <ng-container *ngIf="historyFilter?.dateOption === 'custom'">
+              <mat-date-range-picker   #picker></mat-date-range-picker>
+              <mat-date-range-input [rangePicker]="picker" class="form-control form-control-sm mx-1 my-1 col-md-2">
+                <input matStartDate [(ngModel)]="historyFilter.from_date" name="from_date">
+                <input matEndDate [(ngModel)]="historyFilter.to_date" name="to_date">
+              </mat-date-range-input>
+            <mat-datepicker-toggle  matSuffix [for]="picker"></mat-datepicker-toggle>
+          </ng-container>
+            <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="searchHistory()" ><i class="fas fa-search fa-sm"></i></button>
+            <button type="button" class="btn btn-light btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fas fa-trash  fa-sm"></i></button>
+          </div>
+         </form>
+    </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <hr class="solid">
+      </div>
+    </div>
+
+</div>
+
+    <div style="margin-top: 5rem;">
+      <!-- <canvas baseChart
+      [datasets]="lineChartData"
+      [labels]="lineChartLabels"
+      [options]="lineChartOptions"
+      [colors]="lineChartColors"
+      [legend]="lineChartLegend"
+      [chartType]="lineChartType"
+      [plugins]="lineChartPlugins">
+    </canvas>-->
+    <google-chart  *ngIf="lineGoogleChartData.dataTable.length > 1 && !isHistoryAPILoading" [data]="lineGoogleChartData"></google-chart>
+    <h6 *ngIf="historyData.length === 0 && isFilterSelected && !isHistoryAPILoading" >No data found.</h6>
+    <h6 *ngIf="historyData.length === 0 && !isFilterSelected && !isHistoryAPILoading" >
+      Select filter and press search button to load the chart.
+    </h6>
+    <i *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+  </div>
+
+</div>
+
 
 

@@ -28,6 +28,7 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.heartBeatFilter.device_id = this.device.device_id;
+    this.heartBeatFilter.epoch = true;
     this.heartbeatTableConfig = {
       type: 'heartbeat',
       headers: ['Timestamp', 'Message ID', 'Heartbeat Message'],

@@ -43,24 +43,13 @@ export class RDMLoginComponent implements OnInit {
       this.commonService.loginUser(this.loginForm).subscribe(
         (response: any) => {
           localStorage.setItem('userData', JSON.stringify(response));
-          console.log(localStorage.getItem('userData'));
-          this.router.navigate(['applications', response.app]);
+          if (response.is_super_admin) {
+            this.router.navigate['applications'];
+          } else {
+            this.router.navigate(['applications', response.app]);
+          }
         }, error => this.toasterService.showError(error.message, 'Login')
       );
-      // let flag = false;
-      // this.usersList.forEach(user => {
-      //   if (user.email === this.loginForm.email && user.password === this.loginForm.password) {
-      //     flag = true;
-      //     const obj = {...user};
-      //     delete obj.password;
-      //     console.log(obj);
-      //     this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, obj);
-      //     this.router.navigate(['applications', obj.app]);
-      //   }
-      // });
-      // if (!flag) {
-      //   this.toasterService.showError('Invalid email or password', 'Login');
-      // }
     } else {
       this.toasterService.showError('Please enter username and password', 'Login');
     }

@@ -22,18 +22,18 @@ export class ApplicationService {
   getLastAlerts(limit: number, app) {
     let params = new HttpParams().set('count', limit.toString());
     params = params.set('app', app);
-    return this.http.get(this.url + AppUrls.GET_LAST_N_ALERTS, { params });
+    return this.http.get(this.url + AppUrls.GET_ALERTS_LIST, { params });
   }
 
   getLastNotifications(limit: number, app) {
     let params = new HttpParams().set('count', limit.toString());
     params = params.set('app', app);
-    return this.http.get(this.url + AppUrls.GET_LAST_N_NOTIFICATIONS, { params });
+    return this.http.get(this.url + AppUrls.GET_NOTIFICAION_LIST, { params });
   }
 
   getLastEvents(limit: number, app) {
     let params = new HttpParams().set('count', limit.toString());
     params = params.set('app', app);
-    return this.http.get(this.url + AppUrls.GET_LAST_N_EVENTS, { params });
+    return this.http.get(this.url + AppUrls.GET_DEVICE_LIFECYCLE_EVENTS, { params });
   }
 }

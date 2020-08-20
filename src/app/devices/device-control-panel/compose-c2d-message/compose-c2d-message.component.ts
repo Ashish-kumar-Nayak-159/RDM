@@ -42,15 +42,13 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
     this.c2dMessageData = {
       device_id: this.device.device_id,
       app: this.userData.app,
-      message: {
-        message_id: this.device.device_id + '_' + moment().unix(),
-        message: null
-      },
+      message_id: this.device.device_id + '_' + moment().unix(),
+      message: null,
       acknowledge: 'Full',
       expire_in_min: 1
     };
     this.messageIdInterval = setInterval(() => {
-      this.c2dMessageData.message.message_id = this.device.device_id + '_' + moment().unix();
+      this.c2dMessageData.message_id = this.device.device_id + '_' + moment().unix();
     }, 1000);
   }
 
@@ -59,13 +57,13 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
     this.remainingTime = null;
     this.sentMessageData = undefined;
     this.isMessageValidated = undefined;
-    if (!this.c2dMessageData.message.message) {
+    if (!this.c2dMessageData.message) {
       this.toasterService.showError('Please type JSON in given box', "Validate Message Detail");
       return;
     }
     try {
       this.isMessageValidated = 'valid';
-      JSON.parse(this.c2dMessageData.message.message);
+      JSON.parse(this.c2dMessageData.message);
     } catch (e) {
       console.log('in catch');
         this.isMessageValidated = 'invalid';
@@ -77,11 +75,12 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
     this.isMessageValidated = undefined;
     this.remainingTime = null;
     this.sentMessageData = undefined;
-    if (!this.c2dMessageData.message.message) {
+    if (!this.c2dMessageData.message) {
       this.toasterService.showError('Please type JSON in given box', "Validate Message Detail");
       return;
     }
     this.sentMessageData = JSON.parse(JSON.stringify(this.c2dMessageData));
+    this.sentMessageData.message = JSON.parse(this.sentMessageData.message);
     this.isSendC2DMessageAPILoading = true;
     this.deviceService.sendC2DMessage(this.sentMessageData, this.userData.app).subscribe(
       (response: any) => {

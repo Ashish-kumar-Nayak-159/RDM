@@ -67,7 +67,7 @@
           </tr>
           <tr>
             <td>Message ID</td>
-            <td>{{c2dMessageData.message.message_id}}</td>
+            <td>{{c2dMessageData.message_id}}</td>
           </tr>
           <tr>
             <td>TTL (In minutes)</td>
@@ -126,7 +126,7 @@
           rows="13"
           placeholder="Please type your JSON here.."
           name="message"
-          [(ngModel)]="c2dMessageData.message.message"
+          [(ngModel)]="c2dMessageData.message"
         ></textarea>
       </div>
     </form>

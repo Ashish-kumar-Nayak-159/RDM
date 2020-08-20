@@ -30,6 +30,9 @@ import { ComposeC2DMessageComponent } from './device-control-panel/compose-c2d-m
 import { TrendAnalysisComponent } from './device-control-panel/trend-analysis/trend-analysis.component';
 import { HistoryComponent } from './device-control-panel/history/history.component';
 import { C2dMessageComponent } from './device-control-panel/c2d-message/c2d-message.component';
+import { ChartsModule } from 'ng2-charts';
+import { Ng2GoogleChartsModule } from 'ng2-google-charts';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 @NgModule({
@@ -66,6 +69,9 @@ import { C2dMessageComponent } from './device-control-panel/c2d-message/c2d-mess
     MatDatepickerModule,
     MatMomentDateModule,
     MatTableModule,
+    NgSelectModule,
+    ChartsModule,
+    Ng2GoogleChartsModule,
   ],
   providers: [
     {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}

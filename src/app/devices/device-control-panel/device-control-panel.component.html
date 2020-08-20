@@ -184,7 +184,7 @@
         <app-logs *ngIf="activeTab === 'logs'" [device]="device"></app-logs>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'trendAnalysis'}" role="tabpanel" id="device_trend_analysis">
-        <app-trend-analysis *ngIf="activeTab === 'trendAnalysis'" ></app-trend-analysis>
+        <app-trend-analysis *ngIf="activeTab === 'trendAnalysis'" [device]="device"></app-trend-analysis>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'commands'}" role="tabpanel" id="device_commands">
         <app-commands *ngIf="activeTab === 'commands'" [device]="device"></app-commands>

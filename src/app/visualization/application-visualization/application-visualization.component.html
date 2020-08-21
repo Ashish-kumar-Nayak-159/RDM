@@ -1,0 +1,66 @@
+<div class="container-pad">
+  <div class="row">
+    <div class="col-lg-12 mb-1">
+      <!-- Project Card Example -->
+      <div class="card shadow mb-1">
+        <div class="card-header">
+          <h6 class="m-0 font-weight-bold text-primary">Most Recent Alerts</h6>
+        </div>
+
+        <div class="card-body1 alert-container p-0">
+          <div class="table-responsive">
+            <table
+              class="table table-bordered table-striped"
+              id="dataTable"
+              width="100%"
+              cellspacing="0"
+            >
+            <ng-container *ngIf="latestAlerts.length > 0 && !isAlertAPILoading">
+            <tr *ngFor="let alert of latestAlerts" [ngClass]="{'bg-info': alert.message_id === this.selectedAlert?.message_id}">
+
+              <td>{{alert.local_created_date}}</td>
+              <td>{{alert.device_id}}</td>
+              <td>{{alert.message?.message}}</td>
+              <td>
+                <a href="javascript:void(0)" (click)="onClickOfViewGraph(alert)">
+                  <i class="fa fa-search"></i>
+                </a>
+              </td>
+            </tr>
+            </ng-container>
+            <ng-container *ngIf="latestAlerts.length === 0 && !isAlertAPILoading">
+              <tr>
+              <td colspan="4">No Alert data available.</td>
+            </tr>
+            </ng-container>
+            <ng-container *ngIf="isAlertAPILoading">
+            <tr>
+              <td colspan="4">
+                <i class="fa fa-fw fa-2x fa-spinner"></i>
+              </td>
+            </tr>
+            </ng-container>
+
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-8 mb-1">
+      <!-- Project Card Example -->
+      <div class="card shadow mb-1">
+        <div class="card-body1" style="max-height: 20rem;overflow-y: auto;">
+          <google-chart  *ngIf="lineGoogleChartConfig.dataTable.length > 1" [data]="lineGoogleChartConfig"></google-chart>
+        </div>
+        </div>
+        </div>
+        <div class="col-lg-4 mb-1">
+          <!-- Project Card Example -->
+          <div class="card shadow mb-1">
+            <div class="card-body1" style="max-height: 20rem;overflow-y: auto;">
+              <google-chart [data]="barGoogleChartConfig"></google-chart>
+            </div>
+            </div>
+            </div>
+  </div>
+</div>

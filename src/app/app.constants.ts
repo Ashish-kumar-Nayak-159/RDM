@@ -125,9 +125,9 @@ export class CONSTANTS {
 
   public static APP_PROP_LIST = {
     IDEX: [
-      'Temperature',
-      'Flow',
-      'Pressure'
+      'temperature',
+      'flow',
+      'pressure'
     ],
     Adani: [
     'R_Bus_Temperature',

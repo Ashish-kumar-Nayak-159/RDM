@@ -25,31 +25,6 @@ export class HistoryComponent implements OnInit {
   userData: any;
   isFilterSelected = false;
   propertyList: any[] = [];
-  // chart.js
-  public lineChartData: ChartDataSets[] = [
-    { data: [], label: 'Temperature', fill: false },
-    { data: [], label: 'Flow', fill: false },
-    { data: [], label: 'Pressure', fill: false }
-  ];
-  public lineChartLabels: Label[] = [];
-  public lineChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    tooltips: {
-      mode: 'index',
-      intersect: false
-   },
-   hover: {
-      mode: 'index',
-      intersect: false
-   }
-  };
-  public lineChartColors: Color[] = [
-  ];
-  public lineChartLegend = true;
-  public lineChartType = 'line';
-  public lineChartPlugins = [];
-
   //google chart
   public lineGoogleChartData: GoogleChartInterface = {  // use :any or :GoogleChartInterface
     chartType: 'LineChart',

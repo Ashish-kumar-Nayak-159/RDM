@@ -120,7 +120,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
     <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">Create Device</h5>
+      <h5 class="modal-title" id="exampleModalLabel">Create New Device</h5>
       <button type="button" class="close"  (click)="onCloseCreateDeviceModal()" aria-label="Close" [disabled]="isCreateDeviceAPILoading">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -133,51 +133,51 @@
         </div>
         <div class="form-group">
           <label for="message-text" class="col-form-label">Device name:</label>
-          <input type="text" class="form-control" id="device_name" name="device_id" [(ngModel)]="deviceDetail.device_id">
+          <input type="text" class="form-control" id="device_name" name="device_id" [(ngModel)]="deviceDetail.device_id"
+          placeholder="Enter Device name">
         </div>
         <div class="form-group">
           <label for="message-text" class="col-form-label">Device Manager:</label>
-          <input type="text" class="form-control" id="device_manager" name="device_manager" [(ngModel)]="deviceDetail.tags.device_manager">
+          <input type="email" title="Invalid email address" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+          placeholder="Enter Device Manager"
+           class="form-control" id="device_manager" name="device_manager" [(ngModel)]="deviceDetail.tags.device_manager">
         </div>
         <div class="form-group">
           <label for="recipient-name" class="col-form-label">Device Type:</label>
-          <select class="custom-select" id="device_type" name="device_type" [(ngModel)]="deviceDetail.tags.device_type">
-          <option value="CCD ASTA">CCD ASTA</option>
+          <select class="custom-select" id="device_type" name="device_type" [(ngModel)]="deviceDetail.tags.device_type"
+          >
+            <option [ngValue]="undefined"> Select Device Type</option>
+          <!-- <option value="CCD ASTA">CCD ASTA</option>
           <option value="Feeder">Feeder</option>
-          <option value="Pump">Pump</option>
+          <option value="Pump">Pump</option> -->
         </select>
         </div>
         <div class="form-group">
           <label for="recipient-name" class="col-form-label">Protocol:</label>
-          <select class="custom-select" id="protocol" name="protocol" [(ngModel)]="deviceDetail.tags.protocol">
-          <option value="BLE">BLE</option>
-          <option value="IP Device (Wifi)">IP Device (Wifi)</option>
-          <option value="IP Device (SIM)">IP Device (SIM)</option>
-          <option value="LoRa">LoRa</option>
-          <option value="LwM2M">LwM2M</option>
-          <option value="NB-IOT">NB-IOT</option>
-
+          <select class="custom-select" id="protocol" name="protocol" (change)="getConnectivityData()" [(ngModel)]="deviceDetail.tags.protocol">
+            <option [ngValue]="undefined"> Select Protocol</option>
+            <ng-container *ngFor="let protocol of protocolList">
+              <option [ngValue]="protocol.name" *ngIf="protocol.display">{{protocol.name}}</option>
+            </ng-container>
           </select>
         </div>
         <div class="form-group">
           <label for="recipient-name" class="col-form-label">Cloud Connectivity followed by the device:</label>
           <select class="custom-select" id="template" name="connectivity" [(ngModel)]="deviceDetail.tags.cloud_connectivity">
-          <option value="BLE Device -> Mobile App -> Azure IOT Hub SDK -> Azure Cloud">
-            BLE Device -> Mobile App -> Azure IOT Hub SDK -> Azure Cloud</option>
-          <option value="IP Device -> MQTT Client -> SIM -> Cloud">
-            IP Device -> MQTT Client -> SIM -> Cloud</option>
-            <option value="IP Device -> Azure IoT Hub SDK -> SIM -> Cloud">
-              IP Device -> Azure IoT Hub SDK -> SIM -> Cloud</option>
-
+            <option [ngValue]="undefined"> Select Connectivity</option>
+          <option *ngFor="let item of connectivityList" [ngValue]="item">
+            {{item}}</option>
           </select>
         </div>
         <div class="form-group">
           <label for="message-text" class="col-form-label">Manufactured By:</label>
-          <input type="text" class="form-control" id="manufactured_by" name="manufacturer"  [(ngModel)]="deviceDetail.tags.manufacturer">
+          <input type="text" class="form-control" id="manufactured_by" name="manufacturer"
+          placeholder="Enter Manufacturer" [(ngModel)]="deviceDetail.tags.manufacturer">
         </div>
         <div class="form-group">
           <label for="message-text" class="col-form-label">Location:</label>
-          <input type="text" class="form-control" id="location" name="location" [(ngModel)]="deviceDetail.tags.location">
+          <input type="text" class="form-control" id="location" name="location"
+          placeholder="Enter Location" [(ngModel)]="deviceDetail.tags.location">
         </div>
       </form>
     </div>

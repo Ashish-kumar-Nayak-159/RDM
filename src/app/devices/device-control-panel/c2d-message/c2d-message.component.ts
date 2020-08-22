@@ -36,10 +36,10 @@ export class C2dMessageComponent implements OnInit {
     this.c2dMsgFilter.device_id = this.device.device_id;
     this.c2dMsgFilter.epoch = true;
     if (this.type === 'feedback') {
-      this.loadMessageDetail(this.message.message, false);
+      this.loadMessageDetail(this.message, false);
       this.isFilterSelected = true;
     } else if (this.type === 'response') {
-      this.loadResponseDetail(this.message.message, false);
+      this.loadResponseDetail(this.message, false);
       this.isFilterSelected = true;
     }
   }
@@ -85,6 +85,7 @@ export class C2dMessageComponent implements OnInit {
   }
 
   loadMessageDetail(message, openModalFlag) {
+    console.log(message);
     if (!openModalFlag) {
       this.isC2dMsgsLoading = true;
     }

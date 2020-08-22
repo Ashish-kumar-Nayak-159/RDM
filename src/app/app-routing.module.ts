@@ -10,7 +10,7 @@ const routes: Routes = [
   },
   {
     path: 'applications/:applicationId/devices',
-    loadChildren: () => import('./devices/devices.module').then(module => module.DevicesModule)
+    loadChildren: () => import('./devices/devices.module').then(module => module.DevicesModule),
   },
   {
     path: 'applications/:applicationId/visualization',

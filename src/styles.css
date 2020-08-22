@@ -27,7 +27,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
 }
 
 a.disabled {
-  cursor: not-allowed;
+  pointer-events: none;
+  cursor: default;
   opacity: .65;
 }
 table {
@@ -62,4 +63,8 @@ table {
   border: 1px solid #e3e6f0;
   padding-left: 20px;
   color: #858796!important;
+}
+
+input:invalid {
+  border: 1px solid red;
 }

@@ -43,7 +43,7 @@ export class CONSTANTS {
     },
     {
       name: 'Created On',
-      key: 'created_date'
+      key: 'local_created_date'
     },
     {
       name: 'Device Manager',
@@ -138,6 +138,42 @@ export class CONSTANTS {
     'B_Bus_Voltage'
     ]
   };
+
+  public static PROTOCOL_CONNECTIVITY_LIST = [
+    {
+      name: 'IP Device (Wifi)',
+      connectivity: ['IP Device -> Azure IOT Hub SDK -> WiFi -> Cloud', 'IP Device -> MQTT Client -> WiFi -> Cloud'],
+      display: true
+    },
+    {
+      name: 'IP Device (SIM)',
+      connectivity: ['IP Device -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Device -> MQTT Client -> SIM -> Cloud'],
+      display: true
+    },
+    {
+      name: 'BLE',
+      connectivity: ['BLE Device -> Mobile App -> Azure IOT Hub SDK -> Cloud', 'BLE Device -> Mobile App -> MQTT Client -> Cloud',
+    'BLE Device -> Gateway -> Azure IOT Hub SDK -> Cloud', 'BLE Device -> Gateway -> MQTT Client -> Cloud'],
+      display: false
+    },
+    {
+      name: 'LoRa',
+      connectivity: ['LoRa Node -> LoRa Public Gateway -> Azure Integration -> Cloud',
+      'LoRa Node -> LoRa Private Gateway -> Azure IOT Hub SDK -> Cloud',
+      'LoRa Node -> LoRa Private Gateway -> MQTT Client -> Cloud'],
+      display: false
+    },
+    {
+      name: 'NB-IoT',
+      connectivity: ['NB-IoT Node -> Public Gateway -> Azure Integration -> Cloud'],
+      display: false
+    },
+    {
+      name: 'LwM2M',
+      connectivity: ['LwM2M Node -> LwM2M Server -> Azure Integration -> Cloud'],
+      display: false
+    }
+  ]
 
   public static USER_DETAILS = 'userData';
 

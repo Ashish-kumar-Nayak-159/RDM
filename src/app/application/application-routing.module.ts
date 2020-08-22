@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ApplicationDashboardComponent } from './application-dashboard/application-dashboard.component';
 import { AuthGuardService } from './../services/auth-guard/auth-guard.service';
 import { ApplicationListComponent } from './application-list/application-list.component';
+import { ApplicationNotificationComponent } from './application-notification/application-notification.component';
 
 const routes: Routes = [
   {
@@ -14,6 +15,11 @@ const routes: Routes = [
   {
     path: ':applicationId',
     component: ApplicationDashboardComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: ':applicationId/notifications',
+    component: ApplicationNotificationComponent,
     canActivate: [AuthGuardService]
   }
 ];

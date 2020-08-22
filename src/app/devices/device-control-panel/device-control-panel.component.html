@@ -85,16 +85,22 @@
           <span>Error</span></a>
       </li>
 
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'other'}">
-        <a class="nav-link" href="#device_other" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('other')">
-          <i class="fas fa-fw fa-poll-h" title="Other"></i>
-          <span>Other</span></a>
+      <li class="nav-item" [ngClass]="{'active': activeTab === 'battery_message'}">
+        <a class="nav-link" href="#device_battery_message" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('battery_message')">
+          <i class="fas fa-fw fa-battery-full" title="Battery Message"></i>
+          <span>Battery</span></a>
       </li>
 
       <li class="nav-item" [ngClass]="{'active': activeTab === 'logs'}">
         <a class="nav-link" href="#device_logs" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('logs')">
           <i class="fas fa-fw fa-file" title="Logs"></i>
           <span>Logs</span></a>
+      </li>
+
+      <li class="nav-item" [ngClass]="{'active': activeTab === 'other'}">
+        <a class="nav-link" href="#device_other" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('other')">
+          <i class="fas fa-fw fa-poll-h" title="Other"></i>
+          <span>Other</span></a>
       </li>
 
       <li class="nav-item"  [ngClass]="{'active': activeTab === 'trendAnalysis'}">
@@ -179,6 +185,9 @@
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'other'}" role="tabpanel" id="device_other">
         <app-others *ngIf="activeTab === 'other'" [device]="device"></app-others>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'battery_message'}" role="tabpanel" id="device_battery_message">
+        <app-battery-messages *ngIf="activeTab === 'battery_message'" [device]="device"></app-battery-messages>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'logs'}" role="tabpanel" id="device_logs">
         <app-logs *ngIf="activeTab === 'logs'" [device]="device"></app-logs>

@@ -10,6 +10,7 @@ export class AppUrls {
   public static GET_TELEMETRY_LIST = 'D2C_GetDeviceTelemetry';
   public static GET_ERROR_LIST = 'D2C_GetDeviceErrors';
   public static GET_OTHER_MESSAGE_LIST = 'D2C_GetDeviceOtherMessages';
+  public static GET_DEVICE_BATTERY_LIST = 'D2C_GetDeviceBatteryMessages';
   public static GET_C2D_MESSAGE_LIST = 'C2D_GetDeviceMessages';
   public static GET_QUEUE_MESSAGE_COUNT = 'C2D_GetQueueMessageCount';
   public static PURGE_QUEUE_MESSAGE = 'C2D_PurgeQueueMessages';

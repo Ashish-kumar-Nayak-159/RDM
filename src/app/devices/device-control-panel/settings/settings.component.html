@@ -37,10 +37,23 @@
 </div>
 <div class="con-pad">
 <div class="row mx-auto ">
-    <p>Currently, device is
-      <span [ngClass]="{ 'enabled-font' : device?.status?.toLowerCase() === 'enabled' || device?.connection_state?.toLowerCase() === 'connected',
-      'disabled-font' : device?.status?.toLowerCase() === 'disabled'  || device?.connection_state?.toLowerCase() === 'disconnected'}">
-        {{device?.status}} & {{device?.connection_state}}.</span></p>
+    <p *ngIf="device?.status?.toLowerCase() === 'enabled' && device?.connection_state?.toLowerCase() === 'connected'">
+      Currently, device is
+      <span class="enabled-font">
+        {{device?.status}} & {{device?.connection_state}}.</span>
+    </p>
+    <p *ngIf="device?.status?.toLowerCase() === 'enabled' && device?.connection_state?.toLowerCase() === 'disconnected'">
+      Currently, device is
+      <span class="enabled-font">
+        {{device?.status}}</span>, but it is
+        <span class="disabled-font">
+          {{device?.connection_state}}</span>
+    </p>
+    <p *ngIf="device?.status?.toLowerCase() === 'disabled' && device?.connection_state?.toLowerCase() === 'disconnected'">
+      Currently, device is
+      <span class="disabled-font">
+        {{device?.status}} & {{device?.connection_state}}.</span>
+    </p>
   </div>
 </div>
 <div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">

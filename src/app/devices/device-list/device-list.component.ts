@@ -23,6 +23,8 @@ export class DeviceListComponent implements OnInit {
   isFilterSelected = false;
   deviceDetail: Device;
   isCreateDeviceAPILoading = false;
+  protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
+  connectivityList: any[] = [];
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -75,6 +77,13 @@ export class DeviceListComponent implements OnInit {
   clearFilter() {
     this.deviceFilterObj = undefined;
     this.deviceFilterObj = JSON.parse(JSON.stringify(this.originalDeviceFilterObj));
+  }
+
+  getConnectivityData() {
+    this.deviceDetail.tags.cloud_connectivity = undefined;
+    if (this.deviceDetail && this.deviceDetail.tags && this.deviceDetail.tags.protocol) {
+      this.connectivityList = (this.protocolList.filter(protocol => protocol.name === this.deviceDetail.tags.protocol)[0]).connectivity;
+    }
   }
 
   openCreateDeviceModal() {

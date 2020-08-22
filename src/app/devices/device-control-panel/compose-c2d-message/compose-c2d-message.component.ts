@@ -47,9 +47,9 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
       acknowledge: 'Full',
       expire_in_min: 1
     };
-    this.messageIdInterval = setInterval(() => {
-      this.c2dMessageData.message_id = this.device.device_id + '_' + moment().unix();
-    }, 1000);
+    // this.messageIdInterval = setInterval(() => {
+    //   this.c2dMessageData.message_id = this.device.device_id + '_' + moment().unix();
+    // }, 1000);
   }
 
   validateMessage() {

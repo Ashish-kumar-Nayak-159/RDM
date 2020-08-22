@@ -1,6 +1,6 @@
 <div class="row ml-1">
   <div>
-    <a href="javascript:void(0)" (click)="validateMessage()"
+    <a href="javascript:void(0)" [class.disabled]="sentMessageData" (click)="validateMessage()"
       ><button type="button" class="btn btn-warning contact-form" >
         1. Validate
       </button></a
@@ -9,7 +9,7 @@
   <div class="col-sm-1 px-0"><hr /></div>
 
   <div>
-    <a href="javascript:void(0)" (click)="sentC2DMessage()"
+    <a href="javascript:void(0)" [class.disabled]="sentMessageData" (click)="sentC2DMessage()"
       ><button type="button" class="btn btn-warning" >2. Send
         <i class="fa fa-spinner fa-spin fa-fw " *ngIf="isSendC2DMessageAPILoading"></i>
       </button></a

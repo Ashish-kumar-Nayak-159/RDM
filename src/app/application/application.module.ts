@@ -6,10 +6,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApplicationRoutingModule } from './application-routing.module';
 import { ApplicationDashboardComponent } from './application-dashboard/application-dashboard.component';
 import { ApplicationListComponent } from './application-list/application-list.component';
+import { ApplicationNotificationComponent } from './application-notification/application-notification.component';
 
 
 @NgModule({
-  declarations: [ApplicationDashboardComponent, ApplicationListComponent],
+  declarations: [ApplicationDashboardComponent, ApplicationListComponent, ApplicationNotificationComponent],
   imports: [
   CommonModule,
     ApplicationRoutingModule,

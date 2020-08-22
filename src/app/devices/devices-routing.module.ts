@@ -6,12 +6,12 @@ import { AuthGuardService } from '../services/auth-guard/auth-guard.service';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'devices',
     component: DeviceListComponent,
     canActivate: [AuthGuardService]
   },
   {
-    path: ':deviceId/control-panel',
+    path: 'devices/:deviceId/control-panel',
     component: DeviceControlPanelComponent,
     canActivate: [AuthGuardService]
   }

@@ -33,6 +33,7 @@ import { C2dMessageComponent } from './device-control-panel/c2d-message/c2d-mess
 import { ChartsModule } from 'ng2-charts';
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { BatteryMessagesComponent } from './device-control-panel/battery-messages/battery-messages.component';
 
 
 @NgModule({
@@ -48,18 +49,17 @@ import { NgSelectModule } from '@ng-select/ng-select';
     TelemetryComponent,
     CommandsComponent,
     C2dPurgeComponent,
-    FilterComponent,
     MessageModalComponent,
     SettingsComponent,
     LiveDataComponent,
     RDMDeviceControlPanelErrorComponent,
-    TableComponent,
     OthersComponent,
     LogsComponent,
     ComposeC2DMessageComponent,
     TrendAnalysisComponent,
     HistoryComponent,
-    C2dMessageComponent
+    C2dMessageComponent,
+    BatteryMessagesComponent
   ],
   imports: [
     CommonModule,
@@ -72,9 +72,6 @@ import { NgSelectModule } from '@ng-select/ng-select';
     NgSelectModule,
     ChartsModule,
     Ng2GoogleChartsModule,
-  ],
-  providers: [
-    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}
   ]
 })
 export class DevicesModule { }

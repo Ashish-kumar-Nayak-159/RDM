@@ -43,8 +43,8 @@
   <div class="col-xl-6 col-lg-7">
     <!-- Page Heading -->
     <h1 class="h6 mb-3 text-secondary-400">Reserved Tags:
-      <a href="javascript:void(0)" title="Edit Tags" *ngIf="!isTagsEditable" (click)="isTagsEditable = true;"><i class="fa fa-edit"></i></a>
-      <a href="javascript:void(0)" title="Cancel" *ngIf="isTagsEditable" (click)="isTagsEditable = false;"><i class="fa fa-times"></i></a>
+      <a href="javascript:void(0)" title="Edit Tags" *ngIf="!isReservedTagsEditable" (click)="isReservedTagsEditable = true;"><i class="fa fa-edit"></i></a>
+      <a href="javascript:void(0)" title="Cancel" *ngIf="isReservedTagsEditable" (click)="isReservedTagsEditable = false;"><i class="fa fa-times"></i></a>
     </h1>
 
 
@@ -55,7 +55,7 @@
           <tr *ngFor="let tag of reservedTags">
             <td>{{tag.name}}</td>
             <td>
-              <ng-container *ngIf="tag.key === 'created_date' || tag.key === 'created_by' || !isTagsEditable;else inputTemplate">
+              <ng-container *ngIf="tag.key === 'created_date' || tag.key === 'created_by' || !isReservedTagsEditable;else inputTemplate">
                 {{device?.tags[tag.key]}}
               </ng-container>
               <ng-template #inputTemplate>
@@ -67,11 +67,11 @@
           <tr *ngFor="let tag of reservedTagsBasedOnProtocol">
             <td>{{tag.name}}</td>
             <td>
-              <ng-container *ngIf="isTagsEditable">
+              <ng-container *ngIf="isReservedTagsEditable">
                 <input type="text" class="form-control bg-light border-0 small"
                 [(ngModel)]="device?.tags[tag.key]" name="{{tag.name}}">
               </ng-container>
-              <ng-container *ngIf="!isTagsEditable">
+              <ng-container *ngIf="!isReservedTagsEditable">
                 {{device?.tags[tag.key]}}
               </ng-container>
             </td>
@@ -83,7 +83,11 @@
   <div class="col-xl-6 col-lg-5">
     <!-- Page Heading -->
     <div class="row col-12 d-sm-inline-block">
-      <h1 class="h6 mb-3 text-secondary-800">Custom Tags:</h1>
+      <h1 class="h6 mb-3 text-secondary-800">Custom Tags:
+        <!-- <a href="javascript:void(0)" title="Edit Custom Tags" *ngIf="!isCustomTagsEditable" (click)="isCustomTagsEditable = true;"><i class="fa fa-edit"></i></a>
+      <a href="javascript:void(0)" title="Cancel" *ngIf="isCustomTagsEditable" (click)="isCustomTagsEditable = false;"><i class="fa fa-times"></i></a> -->
+      </h1>
+
       <!-- <span class="float-right">
       <i class="fa fa-check mr-2" (click)="updateDeviceTags()"></i>
       <i class="fa fa-times " (click)="resetDeviceTags()"></i>
@@ -95,8 +99,18 @@
         <tbody>
           <tr *ngFor="let tag of deviceCustomTags;">
             <ng-container *ngIf="!tag.editable; else lastRowTemplate">
-            <td >{{tag.name}}</td>
-            <td>{{tag.value}}</td>
+              <ng-container *ngIf="!isCustomTagsEditable">
+                <td >{{tag.name}}</td>
+                <td>{{tag.value}}</td>
+              </ng-container>
+              <ng-container *ngIf="isCustomTagsEditable">
+                <td >
+                  <input type="text" class="form-control bg-light border-0 small mr-3"
+                aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name">
+                </td>
+                <td><input type="text" class="form-control bg-light border-0 small mr-3"
+                  aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.value" name="value"></td>
+              </ng-container>
             </ng-container>
             <ng-template #lastRowTemplate>
               <td>

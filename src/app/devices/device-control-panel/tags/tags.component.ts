@@ -18,7 +18,9 @@ export class TagsComponent implements OnInit {
   deviceCustomTags: any[] = [];
   reservedTags: any[] = [];
   reservedTagsBasedOnProtocol: any[] = [];
-  isTagsEditable = false;
+  isReservedTagsEditable = false;
+  isCustomTagsEditable = false;
+  tagsListToNotDelete = ['created_date', 'created_by', 'device_manager', 'manufacturer', 'serial_number', 'mac_address', 'protocol'];
   userData: any;
   constructor(
     private route: ActivatedRoute,
@@ -76,7 +78,7 @@ export class TagsComponent implements OnInit {
     }
     if (this.device.tags && this.device.tags.protocol) {
       if (this.device.tags.created_date) {
-        this.device.tags.created_date = this.commonService.convertUTCDateToLocal(this.device.tags.created_date);
+        this.device.tags.local_created_date = this.commonService.convertUTCDateToLocal(this.device.tags.created_date);
       }
       this.reservedTagsBasedOnProtocol = CONSTANTS.DEVICE_PROTOCOL_BASED_TAGS_LIST[this.device.tags.protocol]
       ? CONSTANTS.DEVICE_PROTOCOL_BASED_TAGS_LIST[this.device.tags.protocol] : [];
@@ -125,7 +127,7 @@ export class TagsComponent implements OnInit {
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Set Tags');
         this.getDeviceData();
-        this.isTagsEditable = false;
+        this.isReservedTagsEditable = false;
       }, error => this.toasterService.showError(error.message, 'Set Tags')
     );
   }
@@ -137,17 +139,17 @@ export class TagsComponent implements OnInit {
         tagObj[tag.name] = null;
       }
     });
+    (Object.keys(this.device.tags)).forEach(key => {
+      if (this.tagsListToNotDelete.indexOf(key) === -1 && key !== 'custom_tags') {
+        this.device.tags[key] = null;
+      }
+    });
     this.device.tags.custom_tags = tagObj;
-    if (this.device.tags.created_date) {
-      delete this.device.tags.created_date;
-    }
-    if (this.device.tags.created_by) {
-      delete this.device.tags.created_by;
-    }
     const obj = {
       device_id: this.device.device_id,
       tags: this.device.tags
     };
+    console.log(obj);
     this.deviceService.updateDeviceTags(obj, this.userData.app).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Delete Tags');

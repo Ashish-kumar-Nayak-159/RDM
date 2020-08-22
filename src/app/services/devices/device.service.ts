@@ -133,6 +133,16 @@ export class DeviceService {
     return this.http.get(this.url + AppUrls.GET_OTHER_MESSAGE_LIST, { params });
   }
 
+  getDeviceBatteryMessagesList(filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + AppUrls.GET_DEVICE_BATTERY_LIST, { params });
+  }
+
   getDeviceC2DMessages(filterObj) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {

@@ -49,10 +49,12 @@ import { BatteryMessagesComponent } from './device-control-panel/battery-message
     TelemetryComponent,
     CommandsComponent,
     C2dPurgeComponent,
+    FilterComponent,
     MessageModalComponent,
     SettingsComponent,
     LiveDataComponent,
     RDMDeviceControlPanelErrorComponent,
+    TableComponent,
     OthersComponent,
     LogsComponent,
     ComposeC2DMessageComponent,
@@ -72,6 +74,9 @@ import { BatteryMessagesComponent } from './device-control-panel/battery-message
     NgSelectModule,
     ChartsModule,
     Ng2GoogleChartsModule,
+  ],
+  providers: [
+    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}
   ]
 })
 export class DevicesModule { }

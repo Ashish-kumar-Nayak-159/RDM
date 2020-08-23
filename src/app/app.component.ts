@@ -19,16 +19,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
   ngAfterViewInit(): void {
     setTimeout(() => {
-
-    //       $container1Div.removeClass('sb1-notoggle');
-    //       $container1Div.addClass('sb1-toggle');
-    //     } else {
-    //       $containerDiv.removeClass('sb-toggle');
-    //       $containerDiv.addClass('sb-notoggle');
-    //       $container1Div.removeClass('sb1-toggle');
-    //       $container1Div.addClass('sb1-notoggle');
-    //     }
-    //   });
     let node = document.createElement('script');
     node.src = './assets/js/kdm.min.js';
     node.type = 'text/javascript';
@@ -42,6 +32,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
+        console.log(event.url);
         if (event.url.includes('login')) {
           this.isLoginRoute = true;
           if (!this.document.body.classList.contains('bg-gradient-login')) {

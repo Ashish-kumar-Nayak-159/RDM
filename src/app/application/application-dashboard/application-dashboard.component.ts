@@ -6,6 +6,7 @@ import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from './../../app.constants';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -58,6 +59,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
   apiSubscriptions: Subscription[] = []; // to store all the API subscriptions
   userData: any;
   applicationData: {logo: string, icon: string};
+  blobToken = environment.blobKey;
   constructor(
     private applicationService: ApplicationService,
     private router: Router,

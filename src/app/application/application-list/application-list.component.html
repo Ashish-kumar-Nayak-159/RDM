@@ -6,7 +6,7 @@
     <a
 
       class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-4"
-      href="javascript:void(0)"
+      href="javascript:void(0)" (click)="openCreateAppModal()"
       ><i class="fas fa- fa-sm text-white-50"></i> Add App</a
     >
   </div>
@@ -21,9 +21,9 @@
         <div class="form-group form-inline my-1">
 
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="App Name"
-          [(ngModel)]="applicationFilterObj.name" name="name">
+          [(ngModel)]="applicationFilterObj.app" name="app">
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputPassword4" placeholder="App Manager"
-          [(ngModel)]="applicationFilterObj.app_admin" name="device_manager">
+          [(ngModel)]="applicationFilterObj.admin" name="admin">
 
           <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="searchApplications()" ><i class="fas fa-search fa-sm"></i></button>
           <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="clearFilter()"><i class="fas fa-trash  fa-sm"></i></button>
@@ -65,15 +65,15 @@
         <tbody>
           <ng-container *ngIf="applications.length > 0 && !isApplicationListLoading">
             <tr *ngFor="let app of applications">
-              <td>{{app.app_name}}</td>
-              <td>{{app.app_admin}}</td>
+              <td>{{app.app}}</td>
+              <td>{{app.admin}}</td>
               <td>
-                <a href="javascript:void(0)" (click)="redirectToDevices(app)" title="Devices">
+                <a href="javascript:void(0)" (click)="redirectToDevices(app)" title="View Devices">
                 <i class="fas fa-fw fa-eye"></i></a></td>
-              <td><a [routerLink]="[ app.app_name, 'devices']" routerLinkActive="router-link-active" title="Devices">
+              <td><a  title="View Icons">
                 <i class="fas fa-fw fa-eye"></i></a></td>
-              <td><a [routerLink]="[ app.app_name, 'devices']" routerLinkActive="router-link-active" title="Devices">
-                <i class="fas fa-fw fa-eye"></i></a></td>
+              <td><a  title="Edit App">
+                <i class="fas fa-fw fa-edit"></i></a></td>
             </tr>
           </ng-container>
           <ng-container *ngIf="applications.length === 0 && !isApplicationListLoading">
@@ -94,4 +94,51 @@
   </div>
 </div>
 </div>
+
+<div class="modal right fade" id="createAppModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Create New App</h5>
+      <button type="button" class="close"  (click)="onCloseCreateAppModal()" aria-label="Close" [disabled]="isCreateAPILoading">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body" *ngIf="applicationDetail">
+      <form>
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">App name:</label>
+          <input type="text" class="form-control" id="app_name" name='app_name' [(ngModel)]="applicationDetail.app"
+          placeholder="Enter App name">
+        </div>
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">App Admin:</label>
+          <input type="email" class="form-control" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+          id="device_name" name="device_id" [(ngModel)]="applicationDetail.admin"
+          placeholder="Enter App Admin">
+        </div>
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">App Logo:</label>
+          <input type="file"
+          #appLogoFileInput (change)="onLogoFileSelected($event.target.files)"
+           class="form-control" id="app_logo" name="app_logo" >
+        </div>
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">App Icon:</label>
+          <input type="file" #appIconFileInput (change)="onIconFileSelected($event.target.files)"
+           class="form-control" id="app_icon" name="app_icon" >
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary add-row" [disabled]="isCreateAPILoading || isFileUploading" (click)="createApp()">Save</button>
+      <button type="button" class="btn btn-secondary" [disabled]="isCreateAPILoading" (click)="onCloseCreateAppModal()">
+        Cancel
+      </button>
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAPILoading"></i>
+    </div>
+  </div>
+  </div>
+</div>
+
 

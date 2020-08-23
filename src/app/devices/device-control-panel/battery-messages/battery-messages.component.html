@@ -14,7 +14,7 @@
   </div>
   <div class="modal right fade" id="batteryMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
     <div class="modal-dialog" role="document">
-      <app-message-modal *ngIf="modalConfig" [bodyMessage]="selectedBatteryMessage?.message" [headerMessage]="'Other Message'"
+      <app-message-modal *ngIf="modalConfig" [bodyMessage]="selectedBatteryMessage?.message" [headerMessage]="'Battery Message'"
       (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
     </div>
   </div>

@@ -1,5 +1,5 @@
 export class AppUrls {
-  public static GET_APPLICATION_DASHBOARD_SNAPSHOT = 'Device_GetDashboardSnapshot';
+  public static GET_APPLICATION_DASHBOARD_SNAPSHOT = 'dashboard/snapshot/get';
   public static GET_DEVICE_FILTER_LIST = 'DLM_GetDevices';
   public static GET_DEVICE_DATA = 'DLM_GetDeviceTwin';
   public static UPDATE_DEVICE_TAGS = 'DLM_SetDeviceTags';
@@ -24,5 +24,7 @@ export class AppUrls {
   public static CREATE_DEVICE = 'DLM_CreateDevice';
   public static SEND_C2D_MESSAGE = 'C2D_SendMessage';
   public static LOGIN = 'App_Login';
+  public static GET_APPLICATIONS_LIST = 'apps/get';
+  public static CREATE_APP = 'App_CreateApp';
 
 }

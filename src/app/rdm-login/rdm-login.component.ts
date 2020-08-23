@@ -24,9 +24,11 @@ export class RDMLoginComponent implements OnInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.usersList = CONSTANTS.USERS_LIST;
     if (this.userData) {
-
-      console.log('in if');
-      this.router.navigate(['applications', this.userData.app]);
+      if (this.userData.is_super_admin) {
+        this.router.navigate(['applications']);
+      } else {
+        this.router.navigate(['applications', this.userData.app]);
+      }
     }
   }
 
@@ -42,9 +44,9 @@ export class RDMLoginComponent implements OnInit {
     if (this.loginForm.email && this.loginForm.password) {
       this.commonService.loginUser(this.loginForm).subscribe(
         (response: any) => {
-          localStorage.setItem('userData', JSON.stringify(response));
+          this.commonService.setItemInLocalStorage('userData', response);
           if (response.is_super_admin) {
-            this.router.navigate['applications'];
+            this.router.navigate(['applications']);
           } else {
             this.router.navigate(['applications', response.app]);
           }

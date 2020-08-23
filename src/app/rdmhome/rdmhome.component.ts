@@ -10,7 +10,6 @@ import { CommonService } from 'src/app/services/common.service';
 })
 export class RDMHomeComponent implements OnInit {
   userData: any;
-
   constructor(
     private router: Router,
     private commonService: CommonService
@@ -18,8 +17,13 @@ export class RDMHomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    console.log(this.userData);
     if (this.userData) {
-      this.router.navigate(['applications', this.userData.app]);
+      if (this.userData.is_super_admin) {
+        this.router.navigate(['applications']);
+      } else {
+        this.router.navigate(['applications', this.userData.app]);
+      }
     } else {
       this.router.navigate(['login']);
     }

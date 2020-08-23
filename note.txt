@@ -11,3 +11,11 @@ Pending tasks
 - super admin UI
 - Send C2d message
 
+keys -
+
+conn - BlobEndpoint=https://storageaccountkemsy96a3.blob.core.windows.net/;QueueEndpoint=https://storageaccountkemsy96a3.queue.core.windows.net/;FileEndpoint=https://storageaccountkemsy96a3.file.core.windows.net/;TableEndpoint=https://storageaccountkemsy96a3.table.core.windows.net/;SharedAccessSignature=sv=2019-12-12&ss=bfqt&srt=co&sp=rwdlacupx&se=2050-08-24T01:36:54Z&st=2020-08-23T17:36:54Z&spr=https,http&sig=RQIjWkLDMqo6bxn5QtZrBLBQ7qYDn2q2dPZyckV%2FGJc%3D
+SAS token - ?sv=2019-12-12&ss=bfqt&srt=co&sp=rwdlacupx&se=2050-08-24T01:36:54Z&st=2020-08-23T17:36:54Z&spr=https,http&sig=RQIjWkLDMqo6bxn5QtZrBLBQ7qYDn2q2dPZyckV%2FGJc%3D
+blob SAS URL - https://storageaccountkemsy96a3.blob.core.windows.net/?sv=2019-12-12&ss=bfqt&srt=co&sp=rwdlacupx&se=2050-08-24T01:36:54Z&st=2020-08-23T17:36:54Z&spr=https,http&sig=RQIjWkLDMqo6bxn5QtZrBLBQ7qYDn2q2dPZyckV%2FGJc%3D
+File SAS URL = https://storageaccountkemsy96a3.file.core.windows.net/?sv=2019-12-12&ss=bfqt&srt=co&sp=rwdlacupx&se=2050-08-24T01:36:54Z&st=2020-08-23T17:36:54Z&spr=https,http&sig=RQIjWkLDMqo6bxn5QtZrBLBQ7qYDn2q2dPZyckV%2FGJc%3D
+Queuw SAAS URL - https://storageaccountkemsy96a3.queue.core.windows.net/?sv=2019-12-12&ss=bfqt&srt=co&sp=rwdlacupx&se=2050-08-24T01:36:54Z&st=2020-08-23T17:36:54Z&spr=https,http&sig=RQIjWkLDMqo6bxn5QtZrBLBQ7qYDn2q2dPZyckV%2FGJc%3D
+Table SAS URL - https://storageaccountkemsy96a3.table.core.windows.net/?sv=2019-12-12&ss=bfqt&srt=co&sp=rwdlacupx&se=2050-08-24T01:36:54Z&st=2020-08-23T17:36:54Z&spr=https,http&sig=RQIjWkLDMqo6bxn5QtZrBLBQ7qYDn2q2dPZyckV%2FGJc%3D

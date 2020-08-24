@@ -75,7 +75,7 @@
             <div class="card bg-warning text-white shadow" >
               <div class="card-body">
                 <div class="text-center">
-              <img class="img-fluid px-2 mt-3 mb-3 img-szmd"  src="{{applicationData?.metadata.logo.url + blobToken}}" alt="">
+              <img class="img-fluid px-2 mt-3 mb-3 img-szmd"  src="{{applicationData?.metadata?.logo?.url + blobToken}}" alt="">
             </div>
               </div>
             </div>
@@ -84,7 +84,7 @@
             <div class="card border-left-secondary shadow h-100">
               <div class="card-body">
                 <a href="javascript:void(0)" (click)="redirectToDevice()" ><div class="text-center">
-        <img class="img-fluid px-2 mt-2 mb-3 img-szsm" src="{{applicationData?.metadata.icon.url + blobToken}}" alt="">
+        <img class="img-fluid px-2 mt-2 mb-3 img-szsm" src="{{applicationData?.metadata?.icon?.url + blobToken}}" alt="">
       </div>
       <div class="text-center">
         <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>
@@ -98,7 +98,7 @@
             <div class="card border-left-success shadow h-100" >
               <div class="card-body">
                 <a href="javascript:void(0)" (click)="redirectToDevice('connected')"><div class="text-center">
-        <img class="img-fluid px-2 mt-2 mb-3 img-szsm" src="{{applicationData?.metadata.icon.url + blobToken}}" alt="">
+        <img class="img-fluid px-2 mt-2 mb-3 img-szsm" src="{{applicationData?.metadata?.icon?.url + blobToken}}" alt="">
       </div>
       <div class="text-center">
         <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>
@@ -113,7 +113,7 @@
             <div class="card border-left-danger shadow h-100" >
     <div class="card-body">
       <a href="javascript:void(0)" (click)="redirectToDevice('disconnected')"><div class="text-center">
-        <img class="img-fluid px-2 mt-2 mb-3 img-szsm" src="{{applicationData?.metadata.icon.url + blobToken}}" alt="">
+        <img class="img-fluid px-2 mt-2 mb-3 img-szsm" src="{{applicationData?.metadata?.icon?.url + blobToken}}" alt="">
       </div>
       <div class="text-center">
         <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>

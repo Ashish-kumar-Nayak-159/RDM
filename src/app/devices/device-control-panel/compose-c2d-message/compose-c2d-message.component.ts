@@ -7,6 +7,7 @@ import { CommonService } from './../../../services/common.service';
 import { CONSTANTS } from './../../../app.constants';
 import { Observable } from 'rxjs/internal/Observable';
 import { Subscription, interval } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -30,23 +31,29 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
   remainingTime: any;
   apiSubscription: Subscription[] = [];
   timerInterval: any;
+  appName: any;
   constructor(
     private toasterService: ToasterService,
     private deviceService: DeviceService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.displayType = 'compose';
-    this.c2dMessageData = {
-      device_id: this.device.device_id,
-      app: this.userData.app,
-      message_id: this.device.device_id + '_' + moment().unix(),
-      message: null,
-      acknowledge: 'Full',
-      expire_in_min: 1
-    };
+    this.route.paramMap.subscribe(params => {
+      this.appName = params.get('applicationId');
+      this.c2dMessageData = {
+        device_id: this.device.device_id,
+        app: this.appName,
+        message_id: this.device.device_id + '_' + moment().unix(),
+        message: null,
+        acknowledge: 'Full',
+        expire_in_min: 1
+      };
+    });
+
     // this.messageIdInterval = setInterval(() => {
     //   this.c2dMessageData.message_id = this.device.device_id + '_' + moment().unix();
     // }, 1000);
@@ -82,7 +89,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
     this.sentMessageData = JSON.parse(JSON.stringify(this.c2dMessageData));
     this.sentMessageData.message = JSON.parse(this.sentMessageData.message);
     this.isSendC2DMessageAPILoading = true;
-    this.deviceService.sendC2DMessage(this.sentMessageData, this.userData.app).subscribe(
+    this.deviceService.sendC2DMessage(this.sentMessageData, this.appName).subscribe(
       (response: any) => {
         this.sendMessageResponse = 'Successfully  sent.';
         this.sendMessageStatus = 'success';
@@ -104,7 +111,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
 
   verifyQueueMessages() {
     this.noOfMessageInQueue = null;
-    this.deviceService.getQueueMessagesCount(this.device.device_id, this.userData.app).subscribe(
+    this.deviceService.getQueueMessagesCount(this.device.device_id, this.appName).subscribe(
       (response: any) => {
         this.noOfMessageInQueue = response.count;
       }
@@ -112,7 +119,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
   }
 
   purgeQueueMessages() {
-    this.deviceService.purgeQueueMessages(this.device.device_id, this.userData.app).subscribe(
+    this.deviceService.purgeQueueMessages(this.device.device_id, this.appName).subscribe(
       response => {
         this.toasterService.showSuccess('Messages purged successfully', 'Purge Messages');
         this.verifyQueueMessages();

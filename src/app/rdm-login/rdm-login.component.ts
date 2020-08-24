@@ -27,7 +27,7 @@ export class RDMLoginComponent implements OnInit {
       if (this.userData.is_super_admin) {
         this.router.navigate(['applications']);
       } else {
-        this.router.navigate(['applications', this.userData.app]);
+        this.router.navigate(['applications', this.userData.apps[0].app]);
       }
     }
   }
@@ -48,7 +48,7 @@ export class RDMLoginComponent implements OnInit {
           if (response.is_super_admin) {
             this.router.navigate(['applications']);
           } else {
-            this.router.navigate(['applications', response.app]);
+            this.router.navigate(['applications', response.apps[0].app]);
           }
         }, error => this.toasterService.showError(error.message, 'Login')
       );

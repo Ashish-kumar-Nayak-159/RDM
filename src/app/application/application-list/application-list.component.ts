@@ -6,6 +6,7 @@ import { ApplicationService } from './../../services/application/application.ser
 import { environment } from 'src/environments/environment';
 import {BlobServiceClient,AnonymousCredential,newPipeline } from '@azure/storage-blob';
 import { ToasterService } from './../../services/toaster.service';
+import { UserService } from './../../services/user.service';
 declare var $: any;
 @Component({
   selector: 'app-application-list',
@@ -21,11 +22,12 @@ export class ApplicationListComponent implements OnInit {
   applicationDetail: any;
   isCreateAPILoading = false;
   isFileUploading = false;
-
+  blobSASToken = environment.blobKey;
   constructor(
     private applicationService: ApplicationService,
     private commonService: CommonService,
     private toasterService: ToasterService,
+    private userService: UserService,
     private router: Router
   ) { }
 
@@ -73,7 +75,6 @@ export class ApplicationListComponent implements OnInit {
   }
 
   redirectToDevices(app) {
-    this.userData.app = app.app;
     this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
     console.log(this.userData);
     this.router.navigate(['applications', app.app, 'devices']);
@@ -84,6 +85,13 @@ export class ApplicationListComponent implements OnInit {
       metadata: {}
     };
     $('#createAppModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  openViewIconModal(app) {
+    console.log(app);
+    this.applicationDetail = app;
+    $('#viewAppIconModal').modal({ backdrop: 'static', keyboard: false, show: true });
+
   }
 
   async onLogoFileSelected(files: FileList): Promise<void> {
@@ -100,8 +108,8 @@ export class ApplicationListComponent implements OnInit {
     // this.blobState.uploadItems(files);
   }
 
-  onCloseCreateAppModal() {
-    $('#createAppModal').modal('hide');
+  onCloseCreateAppModal(modalId) {
+    $('#' + modalId).modal('hide');
     this.applicationDetail = undefined;
   }
 
@@ -144,7 +152,7 @@ export class ApplicationListComponent implements OnInit {
   }
 
 
-  createApp() {
+  async createApp() {
     console.log(this.applicationDetail);
     if (!this.applicationDetail.app || !this.applicationDetail.admin || !this.applicationDetail.metadata.logo || !this.applicationDetail.metadata.icon) {
       this.toasterService.showError('Please fill all details', 'Create App');
@@ -162,6 +170,14 @@ export class ApplicationListComponent implements OnInit {
         }
       );
     }
+  }
+
+  createUser(app) {
+    const obj = {
+      email: app.admin,
+      password: 'kemSys@123'
+    }
+    this.userService.createUser(obj).toPromise();
   }
 
 }

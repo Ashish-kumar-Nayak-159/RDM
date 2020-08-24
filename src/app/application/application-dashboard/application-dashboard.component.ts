@@ -3,7 +3,7 @@ import { ApplicationService } from './../../services/application/application.ser
 import { ApplicationDashboardSnapshot, Alert, Event, Notification } from 'src/app/models/applicationDashboard.model';
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from './../../app.constants';
 import { environment } from 'src/environments/environment';
@@ -58,29 +58,34 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
   isLastNotificationDataLoading = false; // flag to identify last {noOfRecordsToDisplay} notifications API call is completed or not
   apiSubscriptions: Subscription[] = []; // to store all the API subscriptions
   userData: any;
-  applicationData: {logo: string, icon: string};
+  applicationData: any;
   blobToken = environment.blobKey;
+  appName: string;
   constructor(
     private applicationService: ApplicationService,
     private router: Router,
     private commonService: CommonService,
-
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.applicationData = CONSTANTS.APP_DATA[this.userData.app];
-    this.getDashboardSnapshot();
-    this.getLastNotificationData();
-    this.getLastAlertData();
-    this.getLastEventData();
-    this.commonService.breadcrumbEvent.emit({
-      data: [
-        {
-          title: this.userData.app,
-          url: 'applications/' + this.userData.app
-        }
-      ]
+    this.route.paramMap.subscribe(params => {
+      this.appName = params.get('applicationId');
+      this.getApplicationData();
+      this.getDashboardSnapshot();
+      this.getLastNotificationData();
+      this.getLastAlertData();
+      this.getLastEventData();
+      this.commonService.breadcrumbEvent.emit({
+        data: [
+          {
+            title: this.appName,
+            url: 'applications/' + this.appName
+          }
+        ]
+      });
+
     });
 
   }
@@ -96,12 +101,26 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
       }, 500);
   }
 
+  getApplicationData() {
+    this.applicationService.getApplications({}).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          response.data.forEach(item => {
+            if (item.app === this.appName) {
+              this.applicationData = item;
+            }
+          });
+        }
+      }
+    );
+  }
+
   /**
    * It will call the application dashboard snapshot API
    */
   getDashboardSnapshot() {
     this.isDashboardSnapshotLoading = true;
-    this.apiSubscriptions.push(this.applicationService.getApplicationDashboardSnapshot(this.userData.app)
+    this.apiSubscriptions.push(this.applicationService.getApplicationDashboardSnapshot(this.appName)
     .subscribe(
       (response: ApplicationDashboardSnapshot) => {
         this.dashboardSnapshot = response;
@@ -117,7 +136,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
    */
   getLastAlertData() {
     this.isLastAlertDataLoading = true;
-    this.apiSubscriptions.push(this.applicationService.getLastAlerts(this.noOfRecordsToDisplay, this.userData.app)
+    this.apiSubscriptions.push(this.applicationService.getLastAlerts(this.noOfRecordsToDisplay, this.appName)
     .subscribe(
       (response: any) => {
         if (response.data) {
@@ -136,7 +155,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
    */
   getLastNotificationData() {
     this.isLastNotificationDataLoading = true;
-    this.apiSubscriptions.push(this.applicationService.getLastNotifications(this.noOfRecordsToDisplay, this.userData.app)
+    this.apiSubscriptions.push(this.applicationService.getLastNotifications(this.noOfRecordsToDisplay, this.appName)
     .subscribe(
       (response: any) => {
         if (response.data) {
@@ -157,7 +176,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
    */
   getLastEventData() {
     this.isLastEventDataLoading = true;
-    this.apiSubscriptions.push(this.applicationService.getLastEvents(this.noOfRecordsToDisplay, this.userData.app)
+    this.apiSubscriptions.push(this.applicationService.getLastEvents(this.noOfRecordsToDisplay, this.appName)
     .subscribe(
       (response: any) => {
         if (response.data) {
@@ -204,7 +223,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
       };
     }
     console.log(obj);
-    this.router.navigate(['applications', this.userData.app, 'devices'], {queryParams: obj});
+    this.router.navigate(['applications', this.appName, 'devices'], {queryParams: obj});
   }
 
   /**

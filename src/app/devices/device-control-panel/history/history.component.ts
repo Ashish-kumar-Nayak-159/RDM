@@ -9,6 +9,7 @@ import { Label, Color } from 'ng2-charts';
 import { GoogleChartInterface } from 'ng2-google-charts';
 import * as moment from 'moment';
 import { ToasterService } from './../../../services/toaster.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-history',
@@ -56,18 +57,24 @@ export class HistoryComponent implements OnInit {
         maxZoomIn: 10.0}
     }
 };
+  appName: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.propertyList = CONSTANTS.APP_PROP_LIST[this.userData.app];
+
+    this.route.paramMap.subscribe(params => {
+      this.appName = params.get('applicationId');
+      this.propertyList = CONSTANTS.APP_PROP_LIST[this.appName];
+      this.historyFilter.app = this.appName;
+    });
     this.historyFilter.epoch = true;
     this.historyFilter.device_id = this.device.device_id;
-    this.historyFilter.app = this.userData.app;
     // this.historyFilter.y1AxisProperty = undefined;
     // this.historyFilter.y2AxisProperty = undefined;
     // const today = new Date();

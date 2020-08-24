@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/app.constants';
+import { ActivatedRoute } from '@angular/router';
 declare var $: any;
 @Component({
   selector: 'app-c2d-message',
@@ -26,22 +27,29 @@ export class C2dMessageComponent implements OnInit {
   c2dResponseDetail: any[];
   modalConfig: any;
   userData: any;
+  appName: string;
   constructor(
     private deviceService: DeviceService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.c2dMsgFilter.device_id = this.device.device_id;
     this.c2dMsgFilter.epoch = true;
-    if (this.type === 'feedback') {
-      this.loadMessageDetail(this.message, false);
-      this.isFilterSelected = true;
-    } else if (this.type === 'response') {
-      this.loadResponseDetail(this.message, false);
-      this.isFilterSelected = true;
-    }
+    this.route.paramMap.subscribe(params => {
+      this.appName = params.get('applicationId');
+      if (this.type === 'feedback') {
+        this.loadMessageDetail(this.message, false);
+        this.isFilterSelected = true;
+      } else if (this.type === 'response') {
+        this.loadResponseDetail(this.message, false);
+        this.isFilterSelected = true;
+      }
+    });
+
+
   }
 
   searchC2DMessages(filterObj) {
@@ -90,7 +98,7 @@ export class C2dMessageComponent implements OnInit {
       this.isC2dMsgsLoading = true;
     }
     this.c2dMessageDetail = undefined;
-    this.deviceService.getC2dMessageJSON(message.message_id, this.userData.app).subscribe(
+    this.deviceService.getC2dMessageJSON(message.message_id, this.appName).subscribe(
       (response: any) => {
         if (openModalFlag) {
         this.c2dMessageDetail = response;
@@ -111,7 +119,7 @@ export class C2dMessageComponent implements OnInit {
       this.isC2dMsgsLoading = true;
     }
     this.c2dResponseDetail = undefined;
-    this.deviceService.getC2dResponseJSON(message.message_id, this.userData.app).subscribe(
+    this.deviceService.getC2dResponseJSON(message.message_id, this.appName).subscribe(
       (response: any) => {
         if (response.data) {
           if (openModalFlag) {

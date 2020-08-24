@@ -3,7 +3,7 @@ import { Device } from 'src/app/models/device.model';
 import { DeviceService } from './../../../services/devices/device.service';
 import { ToasterService } from './../../../services/toaster.service';
 import { Subscription } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 declare var $: any;
@@ -21,20 +21,25 @@ export class SettingsComponent implements OnInit {
   modalConfig: any;
   btnClickType: string;
   confirmModalMessage: string;
+  appName: any;
   constructor(
     private deviceService: DeviceService,
     private toasterService: ToasterService,
     private router: Router,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.route.paramMap.subscribe(params => {
+      this.appName = params.get('applicationId');
+    });
   }
 
   enableDevice() {
     this.isAPILoading = true;
-    this.deviceService.enableDevice(this.device.device_id, this.userData.app).subscribe(
+    this.deviceService.enableDevice(this.device.device_id, this.appName).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Enable Device');
         this.isAPILoading = false;
@@ -75,7 +80,7 @@ export class SettingsComponent implements OnInit {
 
   disableDevice() {
     this.isAPILoading = true;
-    this.deviceService.disableDevice(this.device.device_id, this.userData.app).subscribe(
+    this.deviceService.disableDevice(this.device.device_id, this.appName).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Disable Device');
         this.isAPILoading = false;
@@ -89,11 +94,11 @@ export class SettingsComponent implements OnInit {
 
   deleteDevice() {
     this.isAPILoading = true;
-    this.deviceService.deleteDevice(this.device.device_id, this.userData.app).subscribe(
+    this.deviceService.deleteDevice(this.device.device_id, this.appName).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Delete Device');
         this.isAPILoading = false;
-        this.router.navigate(['applications', this.userData.app, 'devices']);
+        this.router.navigate(['applications', this.appName, 'devices']);
       }, error => {
         this.toasterService.showError(error.message, 'Delete Device');
         this.isAPILoading = false;

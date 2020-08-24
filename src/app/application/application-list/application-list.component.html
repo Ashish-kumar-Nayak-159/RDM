@@ -70,7 +70,7 @@
               <td>
                 <a href="javascript:void(0)" (click)="redirectToDevices(app)" title="View Devices">
                 <i class="fas fa-fw fa-eye"></i></a></td>
-              <td><a  title="View Icons">
+              <td><a  href="javascript:void(0)" (click)="openViewIconModal(app)" title="View Icons" >
                 <i class="fas fa-fw fa-eye"></i></a></td>
               <td><a  title="Edit App">
                 <i class="fas fa-fw fa-edit"></i></a></td>
@@ -99,8 +99,8 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
     <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">Create New App</h5>
-      <button type="button" class="close"  (click)="onCloseCreateAppModal()" aria-label="Close" [disabled]="isCreateAPILoading">
+      <h5 class="modal-title" >Create New App</h5>
+      <button type="button" class="close"  (click)="onCloseCreateAppModal('createAppModal')" aria-label="Close" [disabled]="isCreateAPILoading">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
@@ -132,10 +132,39 @@
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-primary add-row" [disabled]="isCreateAPILoading || isFileUploading" (click)="createApp()">Save</button>
-      <button type="button" class="btn btn-secondary" [disabled]="isCreateAPILoading" (click)="onCloseCreateAppModal()">
+      <button type="button" class="btn btn-secondary" [disabled]="isCreateAPILoading" (click)="onCloseCreateAppModal('createAppModal')">
         Cancel
       </button>
       <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAPILoading"></i>
+    </div>
+  </div>
+  </div>
+</div>
+
+
+<div class="modal right fade" id="viewAppIconModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
+  <div class="modal-dialog" role="document" *ngIf="applicationDetail">
+    <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">View App Icons: {{applicationDetail.app}}</h5>
+      <button type="button" class="close"  (click)="onCloseCreateAppModal('viewAppIconModal')" aria-label="Close" data-dismiss="modal">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="col-12">
+        <h6>{{applicationDetail.app}} Logo</h6>
+        <img src="{{applicationDetail.metadata.logo.url + blobSASToken}}"/>
+      </div>
+      <div class="col-12">
+        <h6>{{applicationDetail.app}} Icon</h6>
+        <img src="{{applicationDetail.metadata.icon.url + blobSASToken}}"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary"  (click)="onCloseCreateAppModal('viewAppIconModal')" data-dismiss="modal">
+        Close
+      </button>
     </div>
   </div>
   </div>

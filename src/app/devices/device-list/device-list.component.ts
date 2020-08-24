@@ -25,6 +25,7 @@ export class DeviceListComponent implements OnInit {
   isCreateDeviceAPILoading = false;
   protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
   connectivityList: any[] = [];
+  appName: string;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -35,19 +36,23 @@ export class DeviceListComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.commonService.breadcrumbEvent.emit({
-      data: [
-          {
-            title: this.userData.app,
-            url: 'applications/' + this.userData.app
-          },
-          {
-            title: 'devices',
-            url: 'applications/' + this.userData.app + '/devices'
-          }
-      ]
+    this.route.paramMap.subscribe(params => {
+      this.appName = params.get('applicationId');
+      this.commonService.breadcrumbEvent.emit({
+        data: [
+            {
+              title: this.appName,
+              url: 'applications/' + this.appName
+            },
+            {
+              title: 'devices',
+              url: 'applications/' + this.appName + '/devices'
+            }
+        ]
+      });
+      this.deviceFilterObj.app = this.appName;
     });
-    this.deviceFilterObj.app = this.userData.app;
+
     this.route.queryParamMap.subscribe(
       params => {
         if (params.get('state')) {
@@ -90,7 +95,7 @@ export class DeviceListComponent implements OnInit {
     this.deviceDetail = new Device();
     this.deviceDetail.tags = {
     };
-    this.deviceDetail.tags.app = this.userData.app;
+    this.deviceDetail.tags.app = this.appName;
     $('#createDeviceModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -99,7 +104,7 @@ export class DeviceListComponent implements OnInit {
     console.log(this.deviceDetail);
     this.deviceDetail.tags.created_by = this.userData.email;
     this.deviceDetail.tags.created_date = moment().utc().format('M/DD/YYYY h:mm:ss A');
-    this.deviceService.createDevice(this.deviceDetail, this.userData.app).subscribe(
+    this.deviceService.createDevice(this.deviceDetail, this.appName).subscribe(
       (response: any) => {
         this.isCreateDeviceAPILoading = false;
         this.toasterService.showSuccess(response.message, 'Create Device');

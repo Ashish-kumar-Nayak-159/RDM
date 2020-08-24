@@ -4,6 +4,8 @@ import { Device } from 'src/app/models/device.model';
 import { ActivatedRoute } from '@angular/router';
 import { CONSTANTS } from './../../../app.constants';
 import { CommonService } from 'src/app/services/common.service';
+import { ApplicationService } from './../../../services/application/application.service';
+import { environment } from './../../../../environments/environment';
 
 @Component({
   selector: 'app-overview',
@@ -18,22 +20,44 @@ export class OverviewComponent implements OnInit {
   userData: any;
   isCopyClicked = false;
   isViewClicked = false;
-  applicationData: {logo: string, icon: string};
+  applicationData: any;
+  appName: any;
+  blobSASToken = environment.blobKey;
   constructor(
     private devieService: DeviceService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private route: ActivatedRoute,
+    private applicationService: ApplicationService
   ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.applicationData = CONSTANTS.APP_DATA[this.userData.app];
-    this.getDeviceCredentials();
-    this.getDeviceConnectionStatus();
+    this.route.paramMap.subscribe(params => {
+      this.appName = params.get('applicationId');
+      this.getApplicationData();
+      this.getDeviceCredentials();
+      this.getDeviceConnectionStatus();
+    });
+
+  }
+
+  getApplicationData() {
+    this.applicationService.getApplications({}).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          response.data.forEach(item => {
+            if (item.app === this.appName) {
+              this.applicationData = item;
+            }
+          });
+        }
+      }
+    );
   }
 
   getDeviceCredentials() {
     this.deviceCredentials = undefined;
-    this.devieService.getDeviceCredentials(this.device.device_id, this.userData.app).subscribe(
+    this.devieService.getDeviceCredentials(this.device.device_id, this.appName).subscribe(
       response => {
         this.deviceCredentials = response;
       }
@@ -42,7 +66,7 @@ export class OverviewComponent implements OnInit {
 
   getDeviceConnectionStatus() {
     this.deviceConnectionStatus = undefined;
-    this.devieService.getDeviceConnectionStatus(this.device.device_id, this.userData.app).subscribe(
+    this.devieService.getDeviceConnectionStatus(this.device.device_id, this.appName).subscribe(
       response => {
         this.deviceConnectionStatus = response;
         this.deviceConnectionStatus.local_updated_date =

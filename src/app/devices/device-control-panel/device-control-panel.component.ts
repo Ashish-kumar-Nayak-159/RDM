@@ -17,6 +17,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
   device: Device = new Device();
   isDeviceDataLoading = false;
   userData: any;
+  appName: string;
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private deviceService: DeviceService,
@@ -29,21 +30,22 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.route.paramMap.subscribe(
       params => {
+        this.appName = params.get('applicationId');
         if (params.get('deviceId')) {
           this.device.device_id = params.get('deviceId');
           this.commonService.breadcrumbEvent.emit({
             data: [
                 {
-                  title: this.userData.app,
-                  url: 'applications/' + this.userData.app
+                  title: this.appName,
+                  url: 'applications/' + this.appName
                 },
                 {
                   title: 'devices',
-                  url: 'applications/' + this.userData.app + '/devices'
+                  url: 'applications/' + this.appName + '/devices'
                 },
                 {
                   title: this.device.device_id + ' / Control Panel',
-                  url: 'applications/' + this.userData.app + '/ devices/' + this.device.device_id + '/control-panel'
+                  url: 'applications/' + this.appName + '/ devices/' + this.device.device_id + '/control-panel'
                 }
             ]
           });
@@ -149,7 +151,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
     if (!callFromMenu) {
       this.isDeviceDataLoading = true;
     }
-    this.deviceService.getDeviceData(this.device.device_id, this.userData.app).subscribe(
+    this.deviceService.getDeviceData(this.device.device_id, this.appName).subscribe(
       (response: any) => {
         this.device = response;
         this.isDeviceDataLoading = false;

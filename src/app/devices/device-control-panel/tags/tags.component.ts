@@ -22,6 +22,7 @@ export class TagsComponent implements OnInit {
   isCustomTagsEditable = false;
   tagsListToNotDelete = ['created_date', 'created_by', 'device_manager', 'manufacturer', 'serial_number', 'mac_address', 'protocol'];
   userData: any;
+  appName: string;
   constructor(
     private route: ActivatedRoute,
     private deviceService: DeviceService,
@@ -31,12 +32,16 @@ export class TagsComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.route.paramMap.subscribe(params => {
+      this.appName = params.get('applicationId');
+      this.getDeviceDetail();
+    });
     this.reservedTags = CONSTANTS.DEVICE_RESERVED_TAGS_LIST;
-    this.getDeviceDetail();
+
   }
 
   getDeviceData() {
-    this.deviceService.getDeviceData(this.device.device_id, this.userData.app).subscribe(
+    this.deviceService.getDeviceData(this.device.device_id, this.appName).subscribe(
       (response: any) => {
         this.device = response;
         this.getDeviceDetail();
@@ -123,7 +128,7 @@ export class TagsComponent implements OnInit {
       device_id: this.device.device_id,
       tags: this.device.tags
     };
-    this.deviceService.updateDeviceTags(obj, this.userData.app).subscribe(
+    this.deviceService.updateDeviceTags(obj, this.appName).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Set Tags');
         this.getDeviceData();
@@ -150,7 +155,7 @@ export class TagsComponent implements OnInit {
       tags: this.device.tags
     };
     console.log(obj);
-    this.deviceService.updateDeviceTags(obj, this.userData.app).subscribe(
+    this.deviceService.updateDeviceTags(obj, this.appName).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Delete Tags');
         this.getDeviceData();

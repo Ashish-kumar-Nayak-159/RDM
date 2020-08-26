@@ -117,19 +117,13 @@
       <!-- Divider -->
       <hr class="sidebar1-divider">
       <!-- Nav Item - Charts -->
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'commands'}">
-        <a class="nav-link" href="#device_commands" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('commands')">
+      <li class="nav-item" [ngClass]="{'active': activeTab === 'control_widgets'}">
+        <a class="nav-link" href="#device_control_widgets" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('control_widgets')">
 
           <i class="fas fa-fw fa-angle-right" title="General Commands"></i>
-          <span>General Commands</span></a>
+          <span>Control Widgets</span></a>
       </li>
 
-      <!-- Nav Item - Tables -->
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'purge'}">
-        <a class="nav-link" href="#device_purge" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('purge')">
-          <i class="fas fa-fw fa-trash" title="Purge"></i>
-          <span>Purge</span></a>
-      </li>
 
 
       <!-- Divider -->
@@ -195,11 +189,8 @@
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'trendAnalysis'}" role="tabpanel" id="device_trend_analysis">
         <app-trend-analysis *ngIf="activeTab === 'trendAnalysis'" [device]="device"></app-trend-analysis>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'commands'}" role="tabpanel" id="device_commands">
-        <app-commands *ngIf="activeTab === 'commands'" [device]="device"></app-commands>
-      </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'purge'}" role="tabpanel" id="device_purge">
-        <app-c2d-purge *ngIf="activeTab === 'purge'" [device]="device"></app-c2d-purge>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel" id="device_control_widgets">
+        <app-commands *ngIf="activeTab === 'control_widgets'" [device]="device"></app-commands>
       </div>
       <!-- /.container1-fluid -->
 

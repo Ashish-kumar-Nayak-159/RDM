@@ -41,7 +41,7 @@ export class ApplicationVisualizationComponent implements OnInit {
       vAxes: {
           // Adds titles to each axis.
         },
-      height: 300,
+      height: 280,
       curveType: 'function',
       explorer: {
         actions: ['dragToZoom', 'rightClickToReset'],
@@ -56,7 +56,6 @@ export class ApplicationVisualizationComponent implements OnInit {
       ['Label', 'Value']
     ],
     options: {
-      width: 400, height: 300,
       redFrom: 90, redTo: 100,
       yellowFrom:75, yellowTo: 90,
       minorTicks: 5
@@ -122,16 +121,18 @@ export class ApplicationVisualizationComponent implements OnInit {
       device_id: alert.device_id,
       message_props: '',
       from_date: ((moment.utc(alert.created_date, "M/DD/YYYY h:mm:ss A")).subtract(30, 'minute')).unix(),
-      to_date: now.unix()
+      to_date: ((moment.utc(alert.created_date, "M/DD/YYYY h:mm:ss A")).add(30, 'minute')).unix()
     };
     this.propertyList.forEach((prop, index) => filterObj.message_props += prop + (index !== (this.propertyList.length -1) ? ',' : ''));
     console.log(filterObj);
     this.deviceService.getDeviceTelemetry(filterObj).subscribe(
       (response: any) => {
+        console.log(response);
         if (response && response.data) {
           let telemetryData = response.data;
           this.loadGaugeChart(telemetryData[0]);
           telemetryData.reverse();
+          console.log('load line chart');
           this.loadLineChart(telemetryData);
         }
       }
@@ -147,7 +148,7 @@ export class ApplicationVisualizationComponent implements OnInit {
           let telemetryData = response.data;
           this.loadGaugeChart(telemetryData[0]);
           telemetryData.reverse();
-          this.updateLineChart(telemetryData);
+          // this.updateLineChart(telemetryData);
         }
       });
 
@@ -155,6 +156,7 @@ export class ApplicationVisualizationComponent implements OnInit {
   }
 
   loadLineChart(telemetryData) {
+    console.log(telemetryData);
     const dataList = [];
     dataList.push('DateTime');
     let title = '';
@@ -200,7 +202,9 @@ export class ApplicationVisualizationComponent implements OnInit {
     // let ccWrapper = ccComponent.wrapper;
 
     //force a redraw
-    ccComponent.draw();
+    if (ccComponent) {
+      ccComponent.draw();
+    }
     }
   }
 

@@ -198,8 +198,6 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     const date = moment().utc().format('M/DD/YYYY h:mm:ss A');
     const today = moment(this.commonService.convertUTCDateToLocal(date));
     const startime = moment(this.commonService.convertUTCDateToLocal(startDate));
-    console.log(today);
-    console.log(startime);
     let timeString = '';
     let diff = today.diff(startime, 'minute');
     timeString = diff + ' minutes ago';
@@ -211,7 +209,6 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
         timeString = diff + ' days ago';
       }
     }
-    console.log(timeString);
     return timeString;
   }
 

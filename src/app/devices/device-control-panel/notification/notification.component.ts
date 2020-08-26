@@ -31,7 +31,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
     this.notificationFilter.epoch = true;
     this.notificationTableConfig = {
       type: 'notification',
-      headers: ['Timestamp', 'Message ID', 'Notification Message'],
+      headers: ['Timestamp', 'Message ID', 'Message'],
       data: [
         {
           name: 'Timestamp',
@@ -42,7 +42,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
           key: 'message_id',
         },
         {
-          name: 'Notification Message',
+          name: 'Message',
           key: undefined,
         }
       ]

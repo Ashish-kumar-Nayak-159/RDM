@@ -1,7 +1,8 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, Input } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from '../app.constants';
+import { ActivatedRoute } from '@angular/router';
 declare var $: any;
 @Component({
   selector: 'app-rdm-side-menu',
@@ -11,14 +12,15 @@ declare var $: any;
 export class RDMSideMenuComponent implements OnInit {
 
   userData: any;
+  @Input() appName: string = '';
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-
   }
 
   onSidebarToggle() {

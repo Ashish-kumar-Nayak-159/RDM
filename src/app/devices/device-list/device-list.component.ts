@@ -21,7 +21,7 @@ export class DeviceListComponent implements OnInit {
   isDeviceListLoading = false;
   userData: any;
   isFilterSelected = false;
-  deviceDetail: Device;
+  deviceDetail: any;
   isCreateDeviceAPILoading = false;
   protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
   connectivityList: any[] = [];
@@ -100,6 +100,12 @@ export class DeviceListComponent implements OnInit {
   }
 
   onCreateDevice() {
+    console.log(this.deviceDetail);
+    if (!this.deviceDetail.device_id || !this.deviceDetail.tags.device_manager || !this.deviceDetail.tags.protocol
+      || !this.deviceDetail.tags.cloud_connectivity  || !this.deviceDetail.tags.manufacturer ) {
+        this.toasterService.showError('Please fill all the details', 'Create Device');
+        return;
+    }
     this.isCreateDeviceAPILoading = true;
     console.log(this.deviceDetail);
     this.deviceDetail.tags.created_by = this.userData.email;
@@ -112,7 +118,7 @@ export class DeviceListComponent implements OnInit {
       }, error => {
         this.isCreateDeviceAPILoading = false;
         this.toasterService.showError(error.message, 'Create Device');
-        this.onCloseCreateDeviceModal();
+        // this.onCloseCreateDeviceModal();
       }
     )
   }

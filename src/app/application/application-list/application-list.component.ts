@@ -75,8 +75,11 @@ export class ApplicationListComponent implements OnInit {
   }
 
   redirectToDevices(app) {
-    this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
-    console.log(this.userData);
+    // const index = this.userData.apps.findIndex(item => item.app === app.app);
+    // this.userData.apps.splice(index, 1);
+    // this.userData.apps.splice(0, 0, app);
+    // this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
+    // console.log(this.userData);
     this.router.navigate(['applications', app.app, 'devices']);
   }
 
@@ -161,7 +164,7 @@ export class ApplicationListComponent implements OnInit {
       this.applicationService.createApp(this.applicationDetail).subscribe(
         (response: any) => {
           this.toasterService.showSuccess(response.message, 'Create App');
-          this.onCloseCreateAppModal();
+          this.onCloseCreateAppModal('createAppModal');
           this.searchApplications();
           this.isCreateAPILoading = false;
         }, error => {

@@ -32,7 +32,7 @@ export class RDMDeviceControlPanelErrorComponent implements OnInit {
     this.errorFilter.epoch = true;
     this.errorTableConfig = {
       type: 'error',
-      headers: ['Timestamp', 'Message ID','Error Code', 'Error Message'],
+      headers: ['Timestamp', 'Message ID','Error Code', 'Message'],
       data: [
         {
           name: 'Timestamp',
@@ -47,7 +47,7 @@ export class RDMDeviceControlPanelErrorComponent implements OnInit {
           key: 'error_code',
         },
         {
-          name: 'Error Message',
+          name: 'Message',
           key: undefined,
         }
       ]

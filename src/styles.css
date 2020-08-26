@@ -16,6 +16,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
   cursor: pointer;
 }
 
+select.form-control {
+  width: 9rem!important;
+}
+
 .li.nav-item.active {
   text-decoration: underline;
   color: blue;
@@ -31,6 +35,8 @@ a.disabled {
   cursor: default;
   opacity: .65;
 }
+
+
 table {
   width: 100%;
 }
@@ -68,3 +74,14 @@ table {
 input:invalid {
   border: 1px solid red;
 }
+
+.ng-select .ng-select-container {
+  color: #333;
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  min-height: 30px;
+  align-items: center;
+  height: 30px;
+}
+

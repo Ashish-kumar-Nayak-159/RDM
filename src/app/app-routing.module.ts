@@ -6,10 +6,7 @@ import { RDMHomeComponent } from './rdmhome/rdmhome.component';
 const routes: Routes = [
   {
     path: 'applications',
-    loadChildren: () => import('./application/application.module').then(module => {
-      console.log('abcd');
-      return module.ApplicationModule;
-    })
+    loadChildren: () => import('./application/application.module').then(module => module.ApplicationModule)
   },
   {
     path: 'applications/:applicationId/devices',

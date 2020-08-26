@@ -55,7 +55,7 @@
           <tr *ngFor="let tag of reservedTags">
             <td>{{tag.name}}</td>
             <td>
-              <ng-container *ngIf="tag.key === 'created_date' || tag.key === 'created_by' || !isReservedTagsEditable;else inputTemplate">
+              <ng-container *ngIf="tag.key === 'local_created_date' || (tagsListToNotDelete.indexOf(tag.key) !== -1 && originalDevice?.tags[tag.key] ) || !isReservedTagsEditable;else inputTemplate">
                 {{device?.tags[tag.key]}}
               </ng-container>
               <ng-template #inputTemplate>

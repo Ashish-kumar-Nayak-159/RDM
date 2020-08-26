@@ -7,7 +7,7 @@
       <thead>
         <tr class="bg-secondary text-white">
           <th>Time Stamp</th>
-          <th class="border-left">Message ID</th>
+          <!-- <th class="border-left">Message ID</th> -->
           <th class="border-left">TTL</th>
           <th class="border-left">ACK</th>
           <th class="border-left">Feedback</th>
@@ -22,7 +22,7 @@
         <ng-container *ngIf="c2dMsgs.length > 0 && !isC2dMsgsLoading">
         <tr *ngFor="let msg of c2dMsgs">
           <td>{{msg.local_created_date}}</td>
-          <td>{{msg.message_id}}</td>
+          <!-- <td>{{msg.message_id}}</td> -->
           <td>{{msg?.application_properties?.expire_in_min}}</td>
           <td>{{msg?.application_properties?.acknowledge}}</td>
           <td>{{msg?.feedback}}</td>
@@ -59,9 +59,9 @@
 
 <div class="modal right fade" id="c2dmessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
-    <app-message-modal *ngIf="c2dMessageDetail" [bodyMessage]="c2dMessageDetail.message" [headerMessage]="'C2D Message'"
+    <app-message-modal *ngIf="c2dMessageDetail" [bodyMessage]="c2dMessageDetail.message" [headerMessage]="'C2D Message: ' + selectedMessage?.message_id"
     (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
-    <app-message-modal *ngIf="c2dResponseDetail" [bodyMessage]="c2dResponseDetail" [headerMessage]="'C2D Response'"
+    <app-message-modal *ngIf="c2dResponseDetail" [bodyMessage]="c2dResponseDetail" [headerMessage]="'C2D Response: ' + selectedMessage?.message_id"
     (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
   </div>
 </div>

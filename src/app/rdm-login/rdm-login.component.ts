@@ -14,6 +14,7 @@ export class RDMLoginComponent implements OnInit {
   loginForm: any = {};
   usersList: any[] = [];
   userData: any;
+  isLoginAPILoading = false;
   constructor(
     private router: Router,
     private toasterService: ToasterService,
@@ -25,32 +26,57 @@ export class RDMLoginComponent implements OnInit {
     this.usersList = CONSTANTS.USERS_LIST;
     if (this.userData) {
       if (this.userData.is_super_admin) {
+
         this.router.navigate(['applications']);
       } else {
-        this.router.navigate(['applications', this.userData.apps[0].app]);
+        if (this.userData.apps && this.userData.apps.length > 0) {
+          this.router.navigate(['applications', this.userData.apps[0].app]);
+        }
       }
     }
+
   }
 
   ngAfterViewInit(): void {
     //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
     //Add 'implements AfterViewInit' to the class.
-    if ($('.container').hasClass('sb-notoggle')) {
-      $('.container').removeClass('sb-notoggle');
+    if ($('body').hasClass('sb-notoggle')) {
+      $('body').removeClass('sb-notoggle');
+    }
+    if ($('body').hasClass('sb-toggle')) {
+      $('body').removeClass('sb-toggle');
+    }
+    if ($('.container-fluid').hasClass('sb-notoggle')) {
+      console.log('in sb-notoggle');
+      $('.container-fluid').removeClass('sb-notoggle');
     }
   }
 
   onLogin() {
     if (this.loginForm.email && this.loginForm.password) {
+      this.isLoginAPILoading = true;
       this.commonService.loginUser(this.loginForm).subscribe(
         (response: any) => {
-          this.commonService.setItemInLocalStorage('userData', response);
+
           if (response.is_super_admin) {
+            console.log('in login 28');
             this.router.navigate(['applications']);
+            this.commonService.setItemInLocalStorage('userData', response);
           } else {
-            this.router.navigate(['applications', response.apps[0].app]);
+            if (response.apps && response.apps.length > 0) {
+              this.router.navigate(['applications', response.apps[0].app]);
+              this.commonService.setItemInLocalStorage('userData', response);
+            } else {
+              this.toasterService.showError('No apps are assigned to this user', 'Contact Administrator');
+              return;
+            }
+
           }
-        }, error => this.toasterService.showError(error.message, 'Login')
+          this.isLoginAPILoading = false;
+        }, error => {
+          this.isLoginAPILoading = false;
+          this.toasterService.showError(error.message, 'Login');
+        }
       );
     } else {
       this.toasterService.showError('Please enter username and password', 'Login');

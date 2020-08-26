@@ -9,6 +9,7 @@ export class DeviceListFilter {
 
 export class Device {
   device_id: string;
+  device_manager: string;
   status: string;
   connection_state: string;
   tags: any;

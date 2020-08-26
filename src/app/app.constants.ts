@@ -136,12 +136,23 @@ export class CONSTANTS {
     'R_Bus_Voltage',
     'Y_Bus_Voltage',
     'B_Bus_Voltage'
+    ],
+    Kirloskar: [
+      'SpindleTemp_0_path1_Top_Center_OP40',
+      'PulseCoderTemp_2_path1_Top_Center_OP40',
+      'ServoTemp_1_path1_Top_Center_OP40',
+      'ServoTemp_2_path1_Top_Center_OP40',
+      'PulseCoderTemp_0_path1_Top_Center_OP40',
+      'PulseCoderTemp_1_path1_Top_Center_OP40',
+      'ServoTemp_0_path1_Top_Center_OP40',
+      'PulseCoderTemp_3_path1_Top_Center_OP40',
+      'ServoTemp_3_path1_Top_Center_OP40'
     ]
   };
 
   public static PROTOCOL_CONNECTIVITY_LIST = [
     {
-      name: 'IP Device (Wifi)',
+      name: 'IP Device (WiFi)',
       connectivity: ['IP Device -> Azure IOT Hub SDK -> WiFi -> Cloud', 'IP Device -> MQTT Client -> WiFi -> Cloud'],
       display: true
     },

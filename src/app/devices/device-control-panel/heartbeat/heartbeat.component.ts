@@ -31,7 +31,7 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
     this.heartBeatFilter.epoch = true;
     this.heartbeatTableConfig = {
       type: 'heartbeat',
-      headers: ['Timestamp', 'Message ID', 'Heartbeat Message'],
+      headers: ['Timestamp', 'Message ID', 'Message'],
       data: [
         {
           name: 'Timestamp',
@@ -42,7 +42,7 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
           key: 'message_id',
         },
         {
-          name: 'Heartbeat Message',
+          name: 'Message',
           key: undefined,
         }
       ]

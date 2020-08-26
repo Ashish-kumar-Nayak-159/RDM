@@ -27,6 +27,7 @@ export class C2dMessageComponent implements OnInit {
   c2dResponseDetail: any[];
   modalConfig: any;
   userData: any;
+  selectedMessage: any;
   appName: string;
   constructor(
     private deviceService: DeviceService,
@@ -97,6 +98,7 @@ export class C2dMessageComponent implements OnInit {
     if (!openModalFlag) {
       this.isC2dMsgsLoading = true;
     }
+    this.selectedMessage = message;
     this.c2dMessageDetail = undefined;
     this.deviceService.getC2dMessageJSON(message.message_id, this.appName).subscribe(
       (response: any) => {
@@ -118,6 +120,7 @@ export class C2dMessageComponent implements OnInit {
     if (!openModalFlag) {
       this.isC2dMsgsLoading = true;
     }
+    this.selectedMessage = message;
     this.c2dResponseDetail = undefined;
     this.deviceService.getC2dResponseJSON(message.message_id, this.appName).subscribe(
       (response: any) => {
@@ -149,6 +152,7 @@ export class C2dMessageComponent implements OnInit {
       $('#c2dmessageModal').modal('hide');
       this.c2dMessageDetail = undefined;
       this.c2dResponseDetail = undefined;
+      this.selectedMessage = undefined;
     }
   }
 

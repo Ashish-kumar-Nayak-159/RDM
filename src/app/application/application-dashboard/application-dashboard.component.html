@@ -204,12 +204,15 @@
       <div class="card-body1">
         <div class="notifications">
           <i *ngIf="isLastNotificationDataLoading" class="fa fa-spinner fa-spin fa-2x fa-fw"></i>
-          <ul class="timeline" *ngIf="!isLastNotificationDataLoading">
+          <ul class="timeline" *ngIf="!isLastNotificationDataLoading && lastGeneratedNotifications.length > 0">
             <li *ngFor="let notification of lastGeneratedNotifications">
                 <div class="device-name-text">{{notification.device_id}} | {{notification.time_diff}}</div>
                 <p>{{notification.message?.message}}</p>
             </li>
           </ul>
+          <div *ngIf="!isLastNotificationDataLoading && lastGeneratedNotifications.length === 0">
+            No Notifications found.
+          </div>
         </div>
       </div>
     </div>
@@ -230,7 +233,7 @@
       <div class="card-body1">
         <div class="notifications">
           <i *ngIf="isLastAlertDataLoading" class="fa fa-spinner fa-spin fa-2x fa-fw"></i>
-          <ul class="timeline" *ngIf="!isLastAlertDataLoading">
+          <ul class="timeline" *ngIf="!isLastAlertDataLoading && lastGeneratedAlerts.length > 0">
 
             <li  *ngFor="let alert of lastGeneratedAlerts">
 
@@ -241,6 +244,9 @@
 
 
           </ul>
+          <div *ngIf="!isLastNotificationDataLoading && lastGeneratedAlerts.length === 0">
+            No alerts found.
+          </div>
         </div>
       </div>
     </div>
@@ -261,7 +267,7 @@
       <div class="card-body1">
         <div class="notifications">
           <i *ngIf="isLastEventDataLoading" class="fa fa-spinner fa-spin fa-2x fa-fw"></i>
-          <ul class="timeline" *ngIf="!isLastEventDataLoading">
+          <ul class="timeline" *ngIf="!isLastEventDataLoading  && lastGeneratedEvents.length > 0">
 
             <li *ngFor="let event of lastGeneratedEvents">
 
@@ -271,6 +277,9 @@
             </li>
 
           </ul>
+          <div *ngIf="!isLastNotificationDataLoading && lastGeneratedEvents.length === 0">
+            No Device Lifecycle events found.
+          </div>
         </div>
       </div>
     </div>

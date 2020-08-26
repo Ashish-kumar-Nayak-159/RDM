@@ -20,7 +20,8 @@ export class TagsComponent implements OnInit {
   reservedTagsBasedOnProtocol: any[] = [];
   isReservedTagsEditable = false;
   isCustomTagsEditable = false;
-  tagsListToNotDelete = ['created_date', 'created_by', 'device_manager', 'manufacturer', 'serial_number', 'mac_address', 'protocol'];
+  tagsListToNotDelete = ['app', 'created_date', 'created_by', 'device_manager', 'manufacturer',
+  'serial_number', 'mac_address', 'protocol', 'cloud_connectivity'];
   userData: any;
   appName: string;
   constructor(

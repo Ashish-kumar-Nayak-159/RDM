@@ -14,7 +14,7 @@
 
   <!-- Nav Item - Dashboard -->
   <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-    <a class="nav-link collapsed" [routerLink]="['applications', userData?.app]" *ngIf="!userData?.is_super_admin" >
+    <a class="nav-link collapsed" [routerLink]="['applications', appName]" *ngIf="!userData?.is_super_admin" >
       <i class="fas fa-fw fa-home" title="Home"></i>
       <span>Home</span></a>
       <a class="nav-link collapsed" [routerLink]="['applications']" *ngIf="userData?.is_super_admin" >
@@ -24,7 +24,7 @@
 
   <!-- Nav Item - Charts -->
   <li class="nav-item" routerLinkActive="active"  *ngIf="!userData?.is_super_admin">
-    <a class="nav-link" [routerLink]="['/applications', userData?.app, 'devices']">
+    <a class="nav-link" [routerLink]="['/applications', appName, 'devices']">
 
       <i class="fas fa-fw fa-desktop" title="Devices"></i>
       <span>Devices</span></a>
@@ -38,7 +38,7 @@
   </li>
 
   <li class="nav-item" routerLinkActive="active" *ngIf="!userData?.is_super_admin">
-    <a class="nav-link" href="javascript:void(0)" [routerLink]="['/applications', userData?.app, 'visualization']">
+    <a class="nav-link" href="javascript:void(0)" [routerLink]="['/applications', appName, 'visualization']">
 
       <i class="fas fa-fw fa-chart-bar" title="Data Visualization"></i>
       <span>Data Visualization</span></a>

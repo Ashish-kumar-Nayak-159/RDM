@@ -22,7 +22,11 @@ export class RDMHomeComponent implements OnInit {
       if (this.userData.is_super_admin) {
         this.router.navigate(['applications']);
       } else {
-        this.router.navigate(['applications', this.userData.apps[0].app]);
+        if (this.userData.apps && this.userData.apps.length > 0) {
+          this.router.navigate(['applications', this.userData.apps[0].app]);
+        } else {
+          this.router.navigate(['login']);
+        }
       }
     } else {
       this.router.navigate(['login']);

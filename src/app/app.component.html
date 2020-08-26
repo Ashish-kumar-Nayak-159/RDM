@@ -1,24 +1,16 @@
-<div id="{{isLoginRoute ? '' : 'wrapper'}}" >
-  <app-rdm-side-menu *ngIf="!isLoginRoute"></app-rdm-side-menu>
+<div id="{{isLoginRoute || isHomeRoute  ? '' : 'wrapper'}}" >
+  <app-rdm-side-menu *ngIf="!isLoginRoute && !isHomeRoute" [appName]="appName"></app-rdm-side-menu>
   <!-- Content Wrapper -->
-  <div id="{{isLoginRoute ? '' : 'content-wrapper'}}" [ngClass]="isLoginRoute ? '' : 'd-flex flex-column'">
+  <div id="{{isHomeRoute ? '' : 'content-wrapper'}}" [ngClass]="{'d-flex flex-column': !isHomeRoute}">
 
     <!-- Main Content -->
-    <div id="{{isLoginRoute ? '' : 'content'}}">
-      <app-header *ngIf="!isLoginRoute"></app-header>
+    <div id="{{isHomeRoute ? '' : 'content'}}">
+      <app-header *ngIf="!isHomeRoute" [isLoginRoute]="isLoginRoute"  [appName]="appName"></app-header>
       <!-- Begin Page Content -->
-      <div [ngClass]="isLoginRoute ? 'container' : 'container-fluid'">
-
+      <div [ngClass]="{'container-fluid': !isHomeRoute}">
         <router-outlet></router-outlet>
       </div>
-    </div>
-    <app-footer  *ngIf="!isLoginRoute"></app-footer>
   </div>
+    <app-footer *ngIf="!isHomeRoute" [isLoginRoute]="isLoginRoute"></app-footer>
 </div>
-<a class="scroll-to-top rounded" href="#page-top">
-  <i class="fas fa-angle-up"></i>
-</a>
-<!--
-<div class="container" *ngIf="isLoginRoute">
-  <router-outlet></router-outlet>
-</div> -->
+</div>

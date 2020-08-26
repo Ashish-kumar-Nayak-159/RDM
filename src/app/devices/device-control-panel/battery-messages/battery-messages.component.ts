@@ -31,7 +31,7 @@ export class BatteryMessagesComponent implements OnInit {
     this.batteryMessageFilter.device_id = this.device.device_id;
     this.batteryMessageTableConfig = {
       type: 'battery',
-      headers: ['Timestamp', 'Message ID', 'Battery Message'],
+      headers: ['Timestamp', 'Message ID', 'Message'],
       data: [
         {
           name: 'Timestamp',
@@ -42,7 +42,7 @@ export class BatteryMessagesComponent implements OnInit {
           key: 'message_id',
         },
         {
-          name: 'Battery Message',
+          name: 'Message',
           key: undefined,
         }
       ]

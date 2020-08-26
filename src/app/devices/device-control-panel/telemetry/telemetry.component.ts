@@ -31,7 +31,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
     this.telemetryFilter.epoch = true;
     this.telemetryTableConfig = {
       type: 'telemetry',
-      headers: ['Timestamp', 'Message ID', 'Telemetry Message'],
+      headers: ['Timestamp', 'Message ID', 'Message'],
       data: [
         {
           name: 'Timestamp',
@@ -42,7 +42,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
           key: 'message_id',
         },
         {
-          name: 'Telemetry Message',
+          name: 'Message',
           key: undefined,
         }
       ]

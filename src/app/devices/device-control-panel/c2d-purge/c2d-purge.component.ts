@@ -42,9 +42,10 @@ export class C2dPurgeComponent implements OnInit {
 
   purgeQueueMessages() {
     this.deviceService.purgeQueueMessages(this.device.device_id, this.appName).subscribe(
-      response => {
-        this.toasterServie.showSuccess('Messages purged successfully', 'Purge Messages');
-      }, error => this.toasterServie.showError('Error in purging messages', 'Purge messages')
+      (response: any) => {
+        this.toasterServie.showSuccess(response.message, 'Purge Messages');
+        this.verifyQueueMessages();
+      }, error => this.toasterServie.showError(error.message, 'Purge messages')
     );
   }
 

@@ -21,7 +21,7 @@
       </ng-container>
     <ng-container *ngIf="tableData.length === 0 && !isTableDataLoading && isTableFilterSelected">
       <tr>
-        <td colspan="6">No Heartbeat data found.</td>
+        <td colspan="6">No {{tableConfig.type}} data found.</td>
       </tr>
     </ng-container>
     <ng-container *ngIf="tableData.length === 0 && !isTableDataLoading && !isTableFilterSelected">

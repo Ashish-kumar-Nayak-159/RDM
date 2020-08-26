@@ -31,7 +31,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
     this.alertFilter.epoch = true;
     this.alertTableConfig = {
       type: 'alert',
-      headers: ['Timestamp', 'Message ID', 'Alert Message'],
+      headers: ['Timestamp', 'Message ID', 'Message'],
       data: [
         {
           name: 'Timestamp',
@@ -42,7 +42,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
           key: 'message_id',
         },
         {
-          name: 'Alert Message',
+          name: 'Message',
           key: undefined,
         }
       ]

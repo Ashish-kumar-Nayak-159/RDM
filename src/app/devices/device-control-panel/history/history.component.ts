@@ -197,6 +197,9 @@ export class HistoryComponent implements OnInit {
 
   clear() {
     this.historyFilter = {};
+    this.historyFilter.epoch = true;
+    this.historyFilter.device_id = this.device.device_id;
+    this.historyFilter.app = this.appName;
   }
 
 }

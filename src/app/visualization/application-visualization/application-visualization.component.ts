@@ -25,6 +25,7 @@ export class ApplicationVisualizationComponent implements OnInit {
     chartType: 'LineChart',
     dataTable: [],
     options: {
+      interpolateNulls: true,
       hAxis: {
         viewWindowMode: 'pretty',
         slantedText: true,

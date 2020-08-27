@@ -31,6 +31,7 @@ export class HistoryComponent implements OnInit {
     chartType: 'LineChart',
     dataTable: [],
     options: {
+      interpolateNulls: true,
       hAxis: {
         viewWindowMode: 'pretty',
         slantedText: true,
@@ -163,22 +164,25 @@ export class HistoryComponent implements OnInit {
           }
           this.lineGoogleChartData.dataTable.push(dataList);
           this.historyData.forEach(history =>  {
-            history.local_created_date = this.commonService.convertUTCDateToLocal(history.created_date);
-            // this.lineChartLabels.push(history.local_created_date);
-            // this.propertyList.forEach(propObj => {
-            //   this.lineChartData.forEach(item => {
-            //     if (propObj.name === item.label) {
-            //       item.data.push(history[propObj.key]);
-            //     }
-            //   });
-            // });
+            history.local_created_date = this.commonService.convertUTCDateToLocal(history.message_date);
 
-            // google chart
             const list = [];
             list.splice(0, 0, new Date(history.local_created_date));
-            this.historyFilter.y1AxisProperty.forEach(prop => list.splice(list.length, 0, parseFloat(history[prop])));
+            this.historyFilter.y1AxisProperty.forEach(prop => {
+              if (!isNaN(parseFloat(history[prop]))) {
+                list.splice(list.length, 0, parseFloat(history[prop]));
+              } else {
+                list.splice(list.length, 0, null);
+              }
+            });
             if (this.historyFilter.y2AxisProperty) {
-              this.historyFilter.y2AxisProperty.forEach(prop => list.splice(list.length, 0, parseFloat(history[prop])));
+              this.historyFilter.y2AxisProperty.forEach(prop => {
+                if (!isNaN(parseFloat(history[prop]))) {
+                  list.splice(list.length, 0, parseFloat(history[prop]));
+                } else {
+                  list.splice(list.length, 0, null);
+                }
+              });
             }
             this.lineGoogleChartData.dataTable.splice(this.lineGoogleChartData.dataTable.length, 0, list);
           });

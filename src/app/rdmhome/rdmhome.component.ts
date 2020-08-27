@@ -38,7 +38,7 @@ export class RDMHomeComponent implements OnInit {
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
-    $('body').css({});
+    $('body').css({'overflow-y': ''});
   }
 
 }

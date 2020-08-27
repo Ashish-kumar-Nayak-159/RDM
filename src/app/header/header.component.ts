@@ -54,7 +54,7 @@ export class HeaderComponent implements OnInit {
   onLogout() {
     localStorage.removeItem('userData');
     $('#logoutModal').modal('hide');
-    this.router.navigate(['login']);
+    this.router.navigate(['']);
 
   }
 

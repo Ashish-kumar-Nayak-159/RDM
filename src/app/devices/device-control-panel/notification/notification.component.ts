@@ -80,7 +80,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response && response.data) {
           this.notifications = response.data
-          this.notifications.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date))
+          this.notifications.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date))
         }
         this.isNotificationLoading = false
       }, error => this.isNotificationLoading = false

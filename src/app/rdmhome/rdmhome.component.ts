@@ -33,6 +33,16 @@ export class RDMHomeComponent implements OnInit {
     //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
     //Add 'implements AfterViewInit' to the class.
     $('body').css({'overflow-y': 'auto'});
+    if ($('body').hasClass('sb-notoggle')) {
+      $('body').removeClass('sb-notoggle');
+    }
+    if ($('body').hasClass('sb-toggle')) {
+      $('body').removeClass('sb-toggle');
+    }
+    if ($('#container-fluid-div').hasClass('sb-notoggle')) {
+      console.log('in sb-notoggle');
+      $('#container-fluid-div').removeClass('sb-notoggle');
+    }
   }
 
   ngOnDestroy(): void {

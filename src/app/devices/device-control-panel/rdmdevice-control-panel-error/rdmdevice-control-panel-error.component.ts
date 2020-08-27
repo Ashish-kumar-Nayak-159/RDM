@@ -85,7 +85,7 @@ export class RDMDeviceControlPanelErrorComponent implements OnInit {
       (response: any) => {
         if (response && response.data) {
           this.errors = response.data;
-          this.errors.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date));
+          this.errors.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
 
         }
         this.isErrorLoading = false;

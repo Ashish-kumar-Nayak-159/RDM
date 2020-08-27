@@ -13,6 +13,7 @@ export class Alert {
   created_date: string;
   device_id: string;
   message: any;
+  message_date: string;
   message_id: string;
   system_properties: any;
   time_diff: string;
@@ -27,6 +28,7 @@ export class Notification {
   device_id: string;
   message: any;
   message_id: string;
+  message_date: string;
   system_properties: any;
   time_diff: string;
   type: string;
@@ -37,4 +39,5 @@ export class Event {
   device_id: string;
   event_type: string;
   time_diff: string;
+  message_date: string;
 }

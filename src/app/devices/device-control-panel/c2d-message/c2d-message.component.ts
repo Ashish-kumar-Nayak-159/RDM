@@ -130,7 +130,7 @@ export class C2dMessageComponent implements OnInit {
           this.openC2DMessageModal();
           } else {
             this.c2dMsgs = response.data;
-            this.c2dMsgs.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date));
+            this.c2dMsgs.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
             this.isC2dMsgsLoading = false;
           }
         }

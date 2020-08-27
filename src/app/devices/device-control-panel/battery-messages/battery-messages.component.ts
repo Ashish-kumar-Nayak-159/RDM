@@ -81,7 +81,7 @@ export class BatteryMessagesComponent implements OnInit {
       (response: any) => {
         if (response && response.data) {
           this.batteryMessageList = response.data;
-          this.batteryMessageList.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date));
+          this.batteryMessageList.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
         }
         this.isBatteryMessageLoading = false;
       }, error => this.isBatteryMessageLoading = false

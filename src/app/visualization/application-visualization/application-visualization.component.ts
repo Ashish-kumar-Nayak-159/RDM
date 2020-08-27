@@ -169,7 +169,7 @@ export class ApplicationVisualizationComponent implements OnInit {
       }
     });
     this.lineGoogleChartConfig.options.vAxes = {
-      0: {title:  title}
+      1: {title:  title}
     }
     title = '';
     this.propertyList.forEach((prop, index) => {
@@ -179,10 +179,10 @@ export class ApplicationVisualizationComponent implements OnInit {
         this.lineGoogleChartConfig.options.series[(Object.keys(this.lineGoogleChartConfig.options.series).length)] =  {targetAxisIndex:1};
       }
     });
-    this.lineGoogleChartConfig.options.vAxes['1'] ={title: title};
+    this.lineGoogleChartConfig.options.vAxes['0'] ={title: title};
     this.lineGoogleChartConfig.dataTable.push(dataList);
     telemetryData.forEach(obj => {
-      obj.local_created_date = this.commonService.convertUTCDateToLocal(obj.created_date);
+      obj.local_created_date = this.commonService.convertUTCDateToLocal(obj.message_date);
       const list = [];
       list.splice(0, 0, new Date(obj.local_created_date));
       this.propertyList.forEach((prop, index) => {
@@ -211,7 +211,7 @@ export class ApplicationVisualizationComponent implements OnInit {
 
   updateLineChart(telemetryData) {
     telemetryData.forEach(obj => {
-      obj.local_created_date = this.commonService.convertUTCDateToLocal(obj.created_date);
+      obj.local_created_date = this.commonService.convertUTCDateToLocal(obj.message_date);
       const list = [];
       list.splice(0, 0, new Date(obj.local_created_date));
       this.propertyList.forEach((prop, index) => {

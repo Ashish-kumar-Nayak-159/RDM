@@ -29,6 +29,6 @@
   <div class="con-pad">
         <app-history *ngIf="viewType === 'history'" [device]="device"></app-history>
 
-        <app-live-data *ngIf="viewType === 'live'"></app-live-data>
+        <app-live-data *ngIf="viewType === 'live'" [device]="device"></app-live-data>
 
   </div>

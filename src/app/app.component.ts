@@ -26,7 +26,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
     setTimeout(() => {
-      if (!this.isLoginRoute) {
+      if (!this.isLoginRoute && !this.isHomeRoute) {
         let node = document.createElement('script');
         node.src = './assets/js/kdm.min.js';
         node.type = 'text/javascript';

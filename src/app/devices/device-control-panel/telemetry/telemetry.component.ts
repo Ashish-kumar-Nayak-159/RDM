@@ -80,7 +80,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response && response.data) {
           this.telemetry = response.data;
-          this.telemetry.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date));
+          this.telemetry.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
 
         }
         this.isTelemetryLoading = false;

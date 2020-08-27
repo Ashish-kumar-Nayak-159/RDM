@@ -14,7 +14,7 @@ export class AuthGuardService {
   ) {}
   canActivate(): boolean {
     if (!this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS)) {
-      this.router.navigate(['login']);
+      this.router.navigate(['']);
       return false;
     }
     return true;

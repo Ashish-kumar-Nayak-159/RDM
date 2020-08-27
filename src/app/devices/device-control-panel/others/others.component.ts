@@ -85,7 +85,7 @@ export class OthersComponent implements OnInit {
       (response: any) => {
         if (response && response.data) {
           this.othersList = response.data;
-          this.othersList.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date));
+          this.othersList.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
         }
         this.isOthersLoading = false;
       }, error => this.isOthersLoading = false

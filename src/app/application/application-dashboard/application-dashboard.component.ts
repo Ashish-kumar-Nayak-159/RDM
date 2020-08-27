@@ -141,7 +141,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response.data) {
           this.lastGeneratedAlerts = response.data;
-          this.lastGeneratedAlerts.forEach(alert => alert.time_diff = this.calculateTimeDifference(alert.created_date));
+          this.lastGeneratedAlerts.forEach(alert => alert.time_diff = this.calculateTimeDifference(alert.message_date));
         }
         this.isLastAlertDataLoading = false;
       }, error => {
@@ -161,7 +161,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
         if (response.data) {
           this.lastGeneratedNotifications = response.data;
           this.lastGeneratedNotifications.forEach(
-            notification => notification.time_diff = this.calculateTimeDifference(notification.created_date)
+            notification => notification.time_diff = this.calculateTimeDifference(notification.message_date)
           );
         }
         this.isLastNotificationDataLoading = false;

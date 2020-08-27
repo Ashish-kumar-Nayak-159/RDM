@@ -1,72 +1,5 @@
 <div class="container-pad">
 <div class="row">
-  <!-- <div class="col-xl-4 col-lg-5">
-    <div class="row">
-      <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4">
-        <div class="card bg-warning text-white shadow">
-          <div class="card-body">
-            <div class="text-center">
-              <img class="img-fluid px-2 mt-3 mb-3 img-szsm"  src="{{applicationData.logo}}"
-                alt="">
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4">
-        <div class="card border-left-secondary shadow h-100">
-          <div class="card-body">
-            <a href="javascript:void(0)" (click)="redirectToDevice()" >
-              <div class="text-center">
-                <img class="img-fluid px-2 mt-2 mb-3 img-szsm"
-                  src="{{applicationData.icon}}" alt="">
-              </div>
-              <div class="text-center">
-                <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>
-                <span *ngIf="!isDashboardSnapshotLoading">{{dashboardSnapshot?.device_count}}</span> </div>
-              <div class="text-black-50 text-center small">Devices</div>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4">
-        <div class="card border-left-success shadow h-100">
-          <div class="card-body">
-            <a href="javascript:void(0)" (click)="redirectToDevice('connected')">
-              <div class="text-center">
-                <img class="img-fluid px-2 mt-2 mb-3 img-szsm"
-                  src="{{applicationData.icon}}" alt="">
-              </div>
-              <div class="text-center">
-                <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>
-                <span *ngIf="!isDashboardSnapshotLoading">{{dashboardSnapshot?.connected_device_count}}</span> </div>
-              <div class="text-black-50 text-center small">Connected</div>
-            </a>
-
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4">
-        <div class="card border-left-danger shadow h-100">
-          <div class="card-body">
-            <a href="javascript:void(0)" (click)="redirectToDevice('disconnected')">
-              <div class="text-center">
-                <img class="img-fluid px-2 mt-2 mb-3 img-szsm"
-                  src="{{applicationData.icon}}" alt="">
-              </div>
-              <div class="text-center">
-                <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>
-                <span *ngIf="!isDashboardSnapshotLoading">{{dashboardSnapshot?.disconnected_device_count}}</span> </div>
-              <div class="text-black-50 text-center small">Disconnected</div>
-            </a>
-
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div> -->
 
   <div class="col-xl-4 col-lg-5">
     <div class="row">
@@ -75,7 +8,8 @@
             <div class="card bg-warning text-white shadow" >
               <div class="card-body">
                 <div class="text-center">
-              <img class="img-fluid px-2 mt-3 mb-3 img-szmd"  src="{{applicationData?.metadata?.logo?.url + blobToken}}" alt="">
+              <img class="img-fluid px-2 mt-3 mb-3 img-szmd"
+              src="{{(applicationData?.metadata?.logo?.url) ? (applicationData?.metadata?.logo?.url + blobToken) : ''}}" alt="">
             </div>
               </div>
             </div>
@@ -84,7 +18,8 @@
             <div class="card border-left-secondary shadow h-100">
               <div class="card-body">
                 <a href="javascript:void(0)" (click)="redirectToDevice()" ><div class="text-center">
-        <img class="img-fluid px-2 mt-2 mb-3 img-szsm" src="{{applicationData?.metadata?.icon?.url + blobToken}}" alt="">
+        <img class="img-fluid px-2 mt-2 mb-3 img-szsm"
+        src="{{(applicationData?.metadata?.icon?.url) ? (applicationData?.metadata?.icon?.url + blobToken) : ''}}" alt="">
       </div>
       <div class="text-center">
         <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>
@@ -98,7 +33,8 @@
             <div class="card border-left-success shadow h-100" >
               <div class="card-body">
                 <a href="javascript:void(0)" (click)="redirectToDevice('connected')"><div class="text-center">
-        <img class="img-fluid px-2 mt-2 mb-3 img-szsm" src="{{applicationData?.metadata?.icon?.url + blobToken}}" alt="">
+        <img class="img-fluid px-2 mt-2 mb-3 img-szsm"
+        src="{{(applicationData?.metadata?.icon?.url) ? (applicationData?.metadata?.icon?.url + blobToken) : ''}}" alt="">
       </div>
       <div class="text-center">
         <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>
@@ -113,7 +49,8 @@
             <div class="card border-left-danger shadow h-100" >
     <div class="card-body">
       <a href="javascript:void(0)" (click)="redirectToDevice('disconnected')"><div class="text-center">
-        <img class="img-fluid px-2 mt-2 mb-3 img-szsm" src="{{applicationData?.metadata?.icon?.url + blobToken}}" alt="">
+        <img class="img-fluid px-2 mt-2 mb-3 img-szsm"
+        src="{{(applicationData?.metadata?.icon?.url) ? (applicationData?.metadata?.icon?.url + blobToken) : ''}}" alt="">
       </div>
       <div class="text-center">
         <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>

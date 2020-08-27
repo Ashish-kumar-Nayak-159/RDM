@@ -81,7 +81,7 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response && response.data) {
           this.heartbeats = response.data;
-          this.heartbeats.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date));
+          this.heartbeats.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
         }
         this.isHeartbeatLoading = false;
       }, error => this.isHeartbeatLoading = false

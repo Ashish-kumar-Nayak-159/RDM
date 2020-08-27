@@ -3,3 +3,9 @@
   overflow-y: auto;
 }
 
+
+#bar-chart text {
+  fill: yellow!important;
+  font-size: 10px!important;
+  font-family: 'Comfortaa';
+}

@@ -151,7 +151,7 @@ export class HistoryComponent implements OnInit {
             this.lineGoogleChartData.options.series[index.toString()] = {targetAxisIndex: 0};
           });
           this.lineGoogleChartData.options.vAxes = {
-            0: {title:  title}
+            1: {title:  title}
           }
           if (this.historyFilter.y2AxisProperty) {
             title = '';
@@ -160,7 +160,7 @@ export class HistoryComponent implements OnInit {
               title += prop + (index !== this.historyFilter.y2AxisProperty.length - 1 ? ' & ' : '');
               this.lineGoogleChartData.options.series[(this.historyFilter.y1AxisProperty.length - 1) + index] =  {targetAxisIndex:1};
             });
-            this.lineGoogleChartData.options.vAxes['1'] ={title: title};
+            this.lineGoogleChartData.options.vAxes['0'] ={title: title};
           }
           this.lineGoogleChartData.dataTable.push(dataList);
           this.historyData.forEach(history =>  {

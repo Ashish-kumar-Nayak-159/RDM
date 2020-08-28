@@ -5,7 +5,7 @@ import { DeviceListComponent } from './device-list/device-list.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule} from '@angular/material-moment-adapter';
-
+import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import {MatTableModule} from '@angular/material/table';
 
 import { DeviceControlPanelComponent } from './device-control-panel/device-control-panel.component';
@@ -71,9 +71,10 @@ import { BatteryMessagesComponent } from './device-control-panel/battery-message
     MatDatepickerModule,
     MatMomentDateModule,
     MatTableModule,
-    NgSelectModule,
+    // NgSelectModule,
     ChartsModule,
     Ng2GoogleChartsModule,
+    AngularMultiSelectModule
   ],
   providers: [
     {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}

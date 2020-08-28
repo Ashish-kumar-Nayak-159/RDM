@@ -58,6 +58,9 @@ export class LiveDataComponent implements OnInit {
 };
   appName: any;
   refreshInterval: any;
+  dropdownPropList = [];
+  y1AxisProps = [];
+  y2AxisProp = [];
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -78,11 +81,23 @@ export class LiveDataComponent implements OnInit {
     const now = moment().utc();
     this.historyFilter.to_date = now.unix();
     this.historyFilter.from_date = (now.subtract(1, 'minute')).unix();
-
+    this.propertyList.forEach(item => {
+      this.dropdownPropList.push({
+        id: item
+      });
+    });
     console.log(this.historyFilter);
   }
 
   searchData() {
+    this.historyFilter.y1AxisProperty = [];
+    this.historyFilter.y2AxisProperty = [];
+    this.y1AxisProps.forEach(item => {
+      this.historyFilter.y1AxisProperty.push(item.id);
+    });
+    this.y2AxisProp.forEach(item => {
+      this.historyFilter.y2AxisProperty.push(item.id);
+    });
     if (!this.historyFilter.y1AxisProperty || (this.historyFilter.y1AxisProperty && this.historyFilter.y1AxisProperty.length === 0)) {
       this.toasterService.showError('Y1 Axis Property is required', 'Load Chart');
       return;

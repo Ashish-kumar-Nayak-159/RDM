@@ -121,21 +121,28 @@ export class C2dMessageComponent implements OnInit {
       this.isC2dMsgsLoading = true;
     }
     this.selectedMessage = message;
-    this.c2dResponseDetail = undefined;
-    this.deviceService.getC2dResponseJSON(message.message_id, this.appName).subscribe(
-      (response: any) => {
-        if (response.data) {
-          if (openModalFlag) {
-          this.c2dResponseDetail = response.data;
-          this.openC2DMessageModal();
-          } else {
-            this.c2dMsgs = response.data;
-            this.c2dMsgs.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
-            this.isC2dMsgsLoading = false;
+    this.c2dResponseDetail = [];
+    if (this.type !== 'response' || !openModalFlag) {
+      this.deviceService.getC2dResponseJSON(message.message_id, this.appName).subscribe(
+        (response: any) => {
+          if (response.data) {
+            if (openModalFlag) {
+              response.data.forEach(item => {
+                this.c2dResponseDetail.push(item.message);
+              });
+              this.openC2DMessageModal();
+            } else {
+              this.c2dMsgs = response.data;
+              this.c2dMsgs.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
+              this.isC2dMsgsLoading = false;
+            }
           }
-        }
-      }, error => this.isC2dMsgsLoading = false
-    );
+        }, error => this.isC2dMsgsLoading = false
+      );
+    } else if (this.type === 'response' && openModalFlag){
+      this.c2dResponseDetail = message.message;
+      this.openC2DMessageModal();
+    }
   }
 
   openC2DMessageModal() {

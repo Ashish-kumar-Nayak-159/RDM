@@ -75,13 +75,49 @@ input:invalid {
   border: 1px solid red;
 }
 
-.ng-select .ng-select-container {
-  color: #333;
-  background-color: #fff;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  min-height: 30px;
-  align-items: center;
-  height: 30px;
+.compose-c2d-button-line {
+  max-width: 3%;
+  flex: 0 0 8.33333%;
 }
+
+ /* multi select css */
+
+.c-btn {
+  display: inline-block;
+  border-width: 1px;
+  line-height: 1.25;
+  border-radius: 3px;
+  font-size: .85rem;
+  padding: 5px 10px;
+  cursor: pointer;
+  align-items: center;
+  height: calc(1.5em + .5rem + 2px)!important;
+  min-height: calc(1.5em + .5rem + 2px)!important;
+  padding: 14px !important;
+  }
+
+  .c-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 10px;
+    width: 5.5rem;
+    color: #858796!important;
+  }
+
+  .selected-list .c-angle-down, .selected-list .c-angle-up {
+    top: 42%!important;
+  }
+  .selected-list .c-list .c-token {
+    background: transparent;
+    padding: 0!important;
+  }
+
+  .cuppa-dropdown {
+    width: 10rem!important;
+  }
+
+  .dropdown-list{
+    width: auto!important;
+  }
 

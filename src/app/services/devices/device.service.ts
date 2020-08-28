@@ -10,6 +10,7 @@ export class DeviceService {
 
   url = environment.appServerURL;
   reloadDeviceInControlPanelEmitter: EventEmitter<any> = new EventEmitter<any>();
+  composeC2DMessageStartEmitter: EventEmitter<any> = new EventEmitter<any>();
   constructor(
     private http: HttpClient
   ) { }

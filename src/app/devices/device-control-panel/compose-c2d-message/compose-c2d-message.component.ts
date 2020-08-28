@@ -86,11 +86,18 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Please type JSON in given box', "Validate Message Detail");
       return;
     }
-    this.sentMessageData = JSON.parse(JSON.stringify(this.c2dMessageData));
-    this.sentMessageData.message = JSON.parse(this.sentMessageData.message);
+    try {
+      this.sentMessageData = JSON.parse(JSON.stringify(this.c2dMessageData));
+      this.sentMessageData.message = JSON.parse(this.sentMessageData.message);
+    } catch (e) {
+      this.isMessageValidated = 'invalid';
+      this.sentMessageData = undefined;
+      return;
+    }
     this.isSendC2DMessageAPILoading = true;
     this.deviceService.sendC2DMessage(this.sentMessageData, this.appName).subscribe(
       (response: any) => {
+        this.isMessageValidated = undefined;
         this.sendMessageResponse = 'Successfully  sent.';
         this.sendMessageStatus = 'success';
         this.toasterService.showSuccess('C2D message sent successfully', 'Send C2D Message');
@@ -98,7 +105,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
         const expiryDate = moment().add(this.sentMessageData.expire_in_min, 'minutes').toDate();
         this.timerInterval = setInterval(() => {
           const time = Math.floor((expiryDate.getTime() - new Date().getTime()) / 1000);
-          this.remainingTime = this.dhms(time);
+          this.dhms(time);
         }, 1000);
       }, error => {
         this.sendMessageResponse = error.message && error.message.includes('Queue') ? 'Device Queue size exceeded.': 'Not Successful';
@@ -160,17 +167,17 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
     if (hours === 0 && minutes === 0 && seconds === 0) {
       clearInterval(this.timerInterval);
       this.onClickOfFeedback();
-      return [
-      hours + 'h',
-        minutes + 'm',
-        seconds + 's'
-    ].join(' ');
+      this.deviceService.composeC2DMessageStartEmitter.emit({
+        hours,
+        minutes,
+        seconds
+      });
     }
-    return [
-        hours + 'h',
-        minutes + 'm',
-        seconds + 's'
-    ].join(' ');
+    this.deviceService.composeC2DMessageStartEmitter.emit({
+      hours,
+      minutes,
+      seconds
+    });
 }
 
   ngOnDestroy() {

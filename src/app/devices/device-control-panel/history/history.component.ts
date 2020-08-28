@@ -26,6 +26,10 @@ export class HistoryComponent implements OnInit {
   userData: any;
   isFilterSelected = false;
   propertyList: any[] = [];
+  dropdownPropList = [];
+  y1AxisProps = [];
+  y2AxisProp = [];
+
   //google chart
   public lineGoogleChartData: GoogleChartInterface = {  // use :any or :GoogleChartInterface
     chartType: 'LineChart',
@@ -58,6 +62,7 @@ export class HistoryComponent implements OnInit {
         maxZoomIn: 10.0}
     }
 };
+//
   appName: any;
   constructor(
     private deviceService: DeviceService,
@@ -76,16 +81,14 @@ export class HistoryComponent implements OnInit {
     });
     this.historyFilter.epoch = true;
     this.historyFilter.device_id = this.device.device_id;
-    // this.historyFilter.y1AxisProperty = undefined;
-    // this.historyFilter.y2AxisProperty = undefined;
-    // const today = new Date();
-    // this.historyFilter.to_date = today;
-    // const yesterday = new Date(today);
-    // yesterday.setDate(today.getDate() - 1);
-    // this.historyFilter.from_date = yesterday;
     this.historyFilter.dateOption = '5 mins';
-
+    this.propertyList.forEach(item => {
+      this.dropdownPropList.push({
+        id: item
+      });
+    });
     console.log(this.historyFilter);
+
   }
 
   onDateOptionChange() {
@@ -94,6 +97,14 @@ export class HistoryComponent implements OnInit {
   }
 
   searchHistory() {
+    this.historyFilter.y1AxisProperty = [];
+    this.historyFilter.y2AxisProperty = [];
+    this.y1AxisProps.forEach(item => {
+      this.historyFilter.y1AxisProperty.push(item.id);
+    });
+    this.y2AxisProp.forEach(item => {
+      this.historyFilter.y2AxisProperty.push(item.id);
+    });
     if (!this.historyFilter.y1AxisProperty || (this.historyFilter.y1AxisProperty && this.historyFilter.y1AxisProperty.length === 0)) {
       this.toasterService.showError('Y1 Axis Property is required', 'Load Chart');
       return;

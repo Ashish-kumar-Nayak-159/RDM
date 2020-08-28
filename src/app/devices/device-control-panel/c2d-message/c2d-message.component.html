@@ -7,14 +7,14 @@
       <thead>
         <tr class="bg-secondary text-white">
           <th>Time Stamp</th>
+          <th class="border-left" *ngIf="type === 'response'">Message Id</th>
           <!-- <th class="border-left">Message ID</th> -->
-          <th class="border-left">TTL</th>
-          <th class="border-left">ACK</th>
-          <th class="border-left">Feedback</th>
+          <th class="border-left" *ngIf="type !== 'response'">TTL</th>
+          <th class="border-left" *ngIf="type !== 'response'">ACK</th>
+          <th class="border-left" *ngIf="type !== 'response'">Feedback</th>
           <!-- <th class="border-left">F Time Stamp</th> -->
-          <th class="border-left" style="width:7%">Message</th>
+          <th class="border-left" style="width:7%" *ngIf="type !== 'response'">Message</th>
           <th class="border-left" style="width:7%">Response</th>
-
         </tr>
       </thead>
 
@@ -22,12 +22,13 @@
         <ng-container *ngIf="c2dMsgs.length > 0 && !isC2dMsgsLoading">
         <tr *ngFor="let msg of c2dMsgs">
           <td>{{msg.local_created_date}}</td>
+          <td *ngIf="type === 'response'">{{msg.message_id}}</td>
           <!-- <td>{{msg.message_id}}</td> -->
-          <td>{{msg?.application_properties?.expire_in_min}}</td>
-          <td>{{msg?.application_properties?.acknowledge}}</td>
-          <td>{{msg?.feedback}}</td>
+          <td *ngIf="type !== 'response'">{{msg?.application_properties?.expire_in_min}}</td>
+          <td *ngIf="type !== 'response'">{{msg?.application_properties?.acknowledge}}</td>
+          <td *ngIf="type !== 'response'">{{msg?.feedback}}</td>
           <!-- <td></td> -->
-          <td>
+          <td *ngIf="type !== 'response'">
             <a (click)="loadMessageDetail(msg, true)" href="javascript:void(0)">
               <i class="fas fa-fw fa-eye"></i></a></td>
           <td>

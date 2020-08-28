@@ -8,7 +8,7 @@
   <ul class="nav">
       <!-- Nav Item - Tables -->
       <li class="nav-item">
-        <a class="nav-link"  href="javascript:void(0)" (click)="displayMode = 'view'">
+        <a class="nav-link"  href="javascript:void(0)" (click)="displayMode = 'view'; timerObj = undefined;">
           <i class="fas fa-fw fa-eye"></i>
           <span>View</span></a>
       </li>
@@ -19,18 +19,34 @@
         <span>Send Specific Command</span></a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="javascript:void(0)" (click)="displayMode = 'general_commands'">
+      <a class="nav-link" href="javascript:void(0)" (click)="displayMode = 'general_commands'; timerObj = undefined;">
         <i class="fas fa-fw fa-edit"></i>
         <span>Send General Command</span></a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="javascript:void(0)" (click)="displayMode = 'purge'">
+      <a class="nav-link" href="javascript:void(0)" (click)="displayMode = 'purge'; timerObj = undefined;">
         <i class="fas fa-fw fa-trash"></i>
         <span>Purge</span></a>
     </li>
 
 
+
   </ul>
+  <div class="timer" *ngIf="timerObj">
+    <div>
+       <span class="hours" id="hour">{{timerObj?.hours}}</span>
+       <div class="smalltext">Hours</div>
+    </div>
+    <div>
+       <span class="minutes" id="minute">{{timerObj?.minutes}}</span>
+       <div class="smalltext">Minutes</div>
+    </div>
+    <div>
+       <span class="seconds" id="second">{{timerObj?.seconds}}</span>
+       <div class="smalltext">Seconds</div>
+    </div>
+    <p id="time-up"></p>
+ </div>
 
 </div>
 <div class="row">

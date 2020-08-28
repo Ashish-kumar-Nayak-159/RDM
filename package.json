@@ -25,6 +25,7 @@
     "@azure/storage-blob": "^12.2.0-preview.1",
     "@ng-select/ng-select": "^5.0.1",
     "angular-datatables": "^9.0.2",
+    "angular2-multiselect-dropdown": "^4.6.3",
     "bootstrap": "^4.5.0",
     "chart.js": "^2.9.3",
     "datatables.net": "^1.10.21",

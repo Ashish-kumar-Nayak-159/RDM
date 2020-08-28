@@ -5,7 +5,7 @@
           <form>
             <div class="form-group form-inline my-1">
 
-              <ng-select class="custom w-16 mx-1 my-1"  id="y1AxisProperty"
+              <!-- <ng-select class="custom w-16 mx-1 my-1"  id="y1AxisProperty"
               [(ngModel)]="historyFilter.y1AxisProperty" name="y1AxisProperty" [items]="propertyList"
               [multiple]="true" placeholder="Y1 Axis Property" [searchable]="true">
               <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
@@ -30,7 +30,36 @@
                   <span class="ng-value-label">+ {{items.length - 1}}</span>
                 </div>
               </ng-template>
-              </ng-select>
+              </ng-select> -->
+
+              <angular2-multiselect [data]="dropdownPropList"
+              id="y1AxisProperty"
+              [(ngModel)]="y1AxisProps" name="y1AxisProperty"
+              [settings]="{
+                text: 'Select Property',
+                selectAllText: 'Select All',
+                unSelectAllText: 'UnSelect All',
+                classes: 'custom-class',
+                enableSearchFilter: true,
+                badgeShowLimit: 1,
+                maxHeight: 200,
+                labelKey: 'id'
+              }">
+            </angular2-multiselect>
+            <angular2-multiselect [data]="dropdownPropList"
+              id="y2AxisProp"
+              [(ngModel)]="y2AxisProp" name="y2AxisProp"
+              [settings]="{
+                text: 'Select Property',
+                selectAllText: 'Select All',
+                unSelectAllText: 'UnSelect All',
+                classes: 'custom-class ml-1',
+                enableSearchFilter: true,
+                badgeShowLimit: 1,
+                maxHeight: 200,
+                labelKey: 'id'
+              }">
+            </angular2-multiselect>
 
               <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="searchData()" ><i class="fas fa-search fa-sm"></i></button>
               <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fas fa-trash  fa-sm"></i></button>

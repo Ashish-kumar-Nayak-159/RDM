@@ -6,7 +6,7 @@
       </button></a
     >
   </div>
-  <div class="col-sm-1 px-0"><hr /></div>
+  <div class="compose-c2d-button-line px-0"><hr /></div>
 
   <div>
     <a href="javascript:void(0)" [class.disabled]="sentMessageData" (click)="sentC2DMessage()"
@@ -15,21 +15,39 @@
       </button></a
     >
   </div>
-  <div class="col-sm-1 px-0"><hr /></div>
+  <div class="compose-c2d-button-line px-0"><hr /></div>
 
   <div>
-    <a href="javascript:void(0)" (click)="onClickOfFeedback()"
+    <a href="javascript:void(0)" [class.disabled]="!sentMessageData" (click)="onClickOfFeedback()"
       ><button type="button" class="btn btn-warning" >3. Feedback</button></a
     >
   </div>
-  <div class="col-sm-1 px-0"><hr /></div>
+  <div class="compose-c2d-button-line px-0"><hr /></div>
   <div>
-    <a href="javascript:void(0)" (click)="onClickOfResponse()"
+    <a href="javascript:void(0)"  [class.disabled]="!sentMessageData" (click)="onClickOfResponse()"
       ><button type="submit" class="btn btn-warning" >4. Response</button></a
     >
   </div>
-  <div class="col-sm-3" *ngIf="sentMessageData">
-    Timer: {{remainingTime}}
+  <div class="col-sm-6" >
+    <p *ngIf="isMessageValidated === 'invalid'" class="red-font">
+      <i class="fa fa-times" ></i>
+      Please verify JSON.
+    </p>
+    <p *ngIf="isMessageValidated === 'valid'" class="green-font">
+      <i class="fa fa-check" ></i>
+      Successfully Validated.
+    </p>
+    <p *ngIf="sendMessageStatus && sendMessageResponse" [ngClass]="{'green-font': sendMessageStatus === 'success', 'red-font': sendMessageStatus === 'error'}">
+      <i class="fa" [ngClass]="{'fa-check': sendMessageStatus === 'success', 'fa-times': sendMessageStatus === 'error'}" ></i>
+      {{sendMessageResponse}}
+    </p>
+    <p *ngIf="sendMessageResponse?.includes('Queue')">You can verify queue messages
+      <a class="blue-font" href="javascript:void(0)" (click)="verifyQueueMessages()">here</a>
+    </p>
+    <p *ngIf="sendMessageResponse?.includes('Queue') && noOfMessageInQueue >= 0"> Total Queue Message: {{noOfMessageInQueue}}</p>
+    <p *ngIf="sendMessageResponse?.includes('Queue')">You can purge queue messages
+      <a class="blue-font" href="javascript:void(0)" (click)="purgeQueueMessages()">here</a>
+    </p>
   </div>
 </div>
 <div class="row">
@@ -87,27 +105,6 @@
           </tr>
         </tbody>
       </table>
-    </div>
-    <div class="">
-      <p *ngIf="isMessageValidated === 'invalid'" class="red-font">
-        <i class="fa fa-times" ></i>
-        Please verify JSON.
-      </p>
-      <p *ngIf="isMessageValidated === 'valid'" class="green-font">
-        <i class="fa fa-check" ></i>
-        Successfully Validated.
-      </p>
-      <p [ngClass]="{'green-font': sendMessageStatus === 'success', 'red-font': sendMessageStatus === 'error'}">
-        <i class="fa" [ngClass]="{'fa-check': sendMessageStatus === 'success', 'fa-times': sendMessageStatus === 'error'}" ></i>
-        {{sendMessageResponse}}
-      </p>
-      <p *ngIf="sendMessageResponse?.includes('Queue')">You can verify queue messages
-        <a class="blue-font" href="javascript:void(0)" (click)="verifyQueueMessages()">here</a>
-      </p>
-      <p *ngIf="sendMessageResponse?.includes('Queue') && noOfMessageInQueue >= 0"> Total Queue Message: {{noOfMessageInQueue}}</p>
-      <p *ngIf="sendMessageResponse?.includes('Queue')">You can purge queue messages
-        <a class="blue-font" href="javascript:void(0)" (click)="purgeQueueMessages()">here</a>
-      </p>
     </div>
   </div>
 

@@ -1,19 +1,4 @@
 export class CONSTANTS {
-  // application logo and icon detail
-  public static APP_DATA = {
-    IDEX: {
-      logo: './assets/img/idex_logo.svg', // logo image for application dashboard and control panel
-      icon: './assets/img/idex_icon.svg' // icon for application dashboard device icon
-    },
-    ccd: {
-      logo: './assets/img/ccd_logo.png',
-      icon: './assets/img/ccd_icon.svg'
-    },
-    Adani: {
-      logo: './assets/img/adani_logo.png',
-      icon: './assets/img/adani_icon.png'
-    }
-  };
   // user list for login check
   public static USERS_LIST = [
     {
@@ -124,10 +109,26 @@ export class CONSTANTS {
   };
 
   public static APP_PROP_LIST = {
+    ccd: [
+      'temperature',
+      'flow',
+      'pressure',
+      'R_Bus_Temperature',
+      'Y_Bus_Temperature',
+      'B_Bus_Temperature',
+      'R_Bus_Voltage',
+      'Y_Bus_Voltage',
+      'B_Bus_Voltage',
+      'voltage',
+      'phase_current',
+      'neutral_current',
+      'frequency',
+      'cumulative_energy_kWh'
+    ],
     IDEX: [
       'temperature',
       'flow',
-      'pressure'
+      'pressure',
     ],
     Adani: [
     'R_Bus_Temperature',
@@ -147,6 +148,13 @@ export class CONSTANTS {
       'ServoTemp_0_path1_Top_Center_OP40',
       'PulseCoderTemp_3_path1_Top_Center_OP40',
       'ServoTemp_3_path1_Top_Center_OP40'
+    ],
+    NTT: [
+      'voltage',
+      'phase_current',
+      'neutral_current',
+      'frequency',
+      'cumulative_energy_kWh'
     ]
   };
 

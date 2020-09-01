@@ -13,6 +13,7 @@ export class RDMSideMenuComponent implements OnInit {
 
   userData: any;
   @Input() appName: string = '';
+  predictiveDemoUrl = 'https://app.powerbi.com/view?r=eyJrIjoiMzUyOWE3MmUtZWJhYi00NzA5LWI1YjktMTMwZDg1NjJiNmY2IiwidCI6IjA4YjdjZmViLTg5N2UtNDY5Yi05NDM2LTk3NGU2OTRhOGRmMiJ9&pageName=ReportSection';
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private commonService: CommonService,

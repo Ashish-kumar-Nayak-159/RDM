@@ -3,6 +3,7 @@ import * as moment from 'moment';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { AppUrls } from '../app-url.constants';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,8 @@ export class CommonService {
   url = environment.appServerURL;
   breadcrumbEvent: EventEmitter<any> = new EventEmitter<any>();
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private router: Router
   ) { }
 
   convertUTCDateToLocal(utcDate) {
@@ -32,5 +34,10 @@ export class CommonService {
 
   setItemInLocalStorage(key, value) {
     return localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  onLogOut() {
+    localStorage.removeItem('userData');
+    this.router.navigate(['']);
   }
 }

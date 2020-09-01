@@ -138,7 +138,7 @@ export class LiveDataComponent implements OnInit {
                   this.updateChart(telemetryData);
                 }
               });
-          }, 15000);
+          }, 5000);
           this.loadChart();
         }
       }, error => this.isHistoryAPILoading = false
@@ -150,21 +150,21 @@ export class LiveDataComponent implements OnInit {
     dataList.push('DateTime');
     let title = '';
     this.historyFilter.y1AxisProperty.forEach((prop, index) => {
-      dataList.splice(dataList.length, 0, prop);
+       dataList.splice(dataList.length, 0,  {label: prop, type: 'number'});
       title += prop + (index !== this.historyFilter.y1AxisProperty.length - 1 ? ' & ' : '');
       this.lineGoogleChartData.options.series[index.toString()] = {targetAxisIndex: 0};
     });
     this.lineGoogleChartData.options.vAxes = {
-      1: {title:  title}
+      0: {title:  title}
     }
     if (this.historyFilter.y2AxisProperty) {
       title = '';
       this.historyFilter.y2AxisProperty.forEach((prop, index) => {
-        dataList.splice(dataList.length, 0, prop);
+         dataList.splice(dataList.length, 0,  {label: prop, type: 'number'});
         title += prop + (index !== this.historyFilter.y2AxisProperty.length - 1 ? ' & ' : '');
-        this.lineGoogleChartData.options.series[(this.historyFilter.y1AxisProperty.length - 1) + index] =  {targetAxisIndex:1};
+        this.lineGoogleChartData.options.series[(this.historyFilter.y1AxisProperty.length) + index] =  {targetAxisIndex:1};
       });
-      this.lineGoogleChartData.options.vAxes['0'] ={title: title};
+      this.lineGoogleChartData.options.vAxes['1'] ={title: title};
     }
     this.lineGoogleChartData.dataTable.push(dataList);
     this.historyData.forEach(history =>  {

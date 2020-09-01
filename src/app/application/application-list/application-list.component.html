@@ -142,27 +142,27 @@
 </div>
 
 
-<div class="modal right fade" id="viewAppIconModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
+<div class="modal right fade" id="viewAppIconModal" role="dialog" aria-labelledby="ModalLabel1" >
   <div class="modal-dialog" role="document" *ngIf="applicationDetail">
     <div class="modal-content">
     <div class="modal-header">
       <h5 class="modal-title">View App Icons: {{applicationDetail.app}}</h5>
-      <button type="button" class="close"  (click)="onCloseCreateAppModal('viewAppIconModal')" aria-label="Close" data-dismiss="modal">
+      <button type="button" class="close"  (click)="onCloseCreateAppModal('viewAppIconModal')">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
     <div class="modal-body">
       <div class="col-12">
         <h6>{{applicationDetail.app}} Logo</h6>
-        <img src="{{applicationDetail.metadata.logo.url + blobSASToken}}"/>
+        <img class="icon-display" src="{{applicationDetail?.metadata?.logo?.url + blobSASToken}}"/>
       </div>
       <div class="col-12">
         <h6>{{applicationDetail.app}} Icon</h6>
-        <img src="{{applicationDetail.metadata.icon.url + blobSASToken}}"/>
+        <img class="icon-display" src="{{applicationDetail?.metadata?.icon?.url + blobSASToken}}"/>
       </div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary"  (click)="onCloseCreateAppModal('viewAppIconModal')" data-dismiss="modal">
+      <button type="button" class="btn btn-secondary"  (click)="onCloseCreateAppModal('viewAppIconModal')">
         Close
       </button>
     </div>

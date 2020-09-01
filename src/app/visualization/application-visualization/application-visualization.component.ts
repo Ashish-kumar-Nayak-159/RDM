@@ -163,23 +163,32 @@ export class ApplicationVisualizationComponent implements OnInit {
     let title = '';
     this.propertyList.forEach((prop, index) => {
       if (index % 2 !== 0) {
-        dataList.splice(dataList.length, 0, prop);
+         dataList.splice(dataList.length, 0,  {label: prop, type: 'number'});
         title += prop + (prop[index + 2] ? ' & ' : '');
-        this.lineGoogleChartConfig.options.series[index.toString()] = {targetAxisIndex: 0};
+        console.log()
+        this.lineGoogleChartConfig.options.series[Object.keys(this.lineGoogleChartConfig.options.series).length] = {targetAxisIndex: 0};
       }
     });
+    if (title.charAt(title.length - 2) === '&') {
+      title = title.substring(0, title.length - 2);
+    }
     this.lineGoogleChartConfig.options.vAxes = {
-      1: {title:  title}
+      0: {title:  title}
     }
     title = '';
     this.propertyList.forEach((prop, index) => {
+      console.log('index   ', index);
       if (index % 2 === 0) {
-        dataList.splice(dataList.length, 0, prop);
+        console.log('inn iff');
+         dataList.splice(dataList.length, 0,  {label: prop, type: 'number'});
         title += prop + (prop[index + 2] ? ' & ' : '');
         this.lineGoogleChartConfig.options.series[(Object.keys(this.lineGoogleChartConfig.options.series).length)] =  {targetAxisIndex:1};
       }
     });
-    this.lineGoogleChartConfig.options.vAxes['0'] ={title: title};
+    if (title.charAt(title.length - 2) === '&') {
+      title = title.substring(0, title.length - 2);
+    }
+    this.lineGoogleChartConfig.options.vAxes['1'] ={title: title};
     this.lineGoogleChartConfig.dataTable.push(dataList);
     telemetryData.forEach(obj => {
       obj.local_created_date = this.commonService.convertUTCDateToLocal(obj.message_date);

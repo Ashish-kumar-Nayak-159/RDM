@@ -52,10 +52,8 @@ export class HeaderComponent implements OnInit {
   }
 
   onLogout() {
-    localStorage.removeItem('userData');
     $('#logoutModal').modal('hide');
-    this.router.navigate(['']);
-
+    this.commonService.onLogOut();
   }
 
 }

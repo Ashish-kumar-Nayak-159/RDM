@@ -27,11 +27,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     setTimeout(() => {
       if (!this.isLoginRoute && !this.isHomeRoute) {
-        let node = document.createElement('script');
+        const node = document.createElement('script');
         node.src = './assets/js/kdm.min.js';
         node.type = 'text/javascript';
         node.async = false;
-        node.charset = 'utf-8';
         document.getElementsByTagName('head')[0].appendChild(node);
       }
     }, 500);

@@ -62,7 +62,7 @@ export class CONSTANTS {
       name: 'Protocol',
       key: 'protocol'
     }
-  ]
+  ];
   // device tags list based on device protocol
   public static DEVICE_PROTOCOL_BASED_TAGS_LIST = {
     'IP Device (SIM)': [
@@ -192,7 +192,7 @@ export class CONSTANTS {
       connectivity: ['LwM2M Node -> LwM2M Server -> Azure Integration -> Cloud'],
       display: false
     }
-  ]
+  ];
 
   public static USER_DETAILS = 'userData';
 

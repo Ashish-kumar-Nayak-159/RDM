@@ -12,7 +12,7 @@ declare var $: any;
 export class RDMSideMenuComponent implements OnInit {
 
   userData: any;
-  @Input() appName: string = '';
+  @Input() appName = '';
   predictiveDemoUrl = 'https://app.powerbi.com/view?r=eyJrIjoiMzUyOWE3MmUtZWJhYi00NzA5LWI1YjktMTMwZDg1NjJiNmY2IiwidCI6IjA4YjdjZmViLTg5N2UtNDY5Yi05NDM2LTk3NGU2OTRhOGRmMiJ9&pageName=ReportSection';
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -25,17 +25,17 @@ export class RDMSideMenuComponent implements OnInit {
   }
 
   onSidebarToggle() {
-    $("body").toggleClass("sidebar-toggled");
-    $(".sidebar").toggleClass("toggled");
-    if ($(".sidebar").hasClass("toggled")) {
+    $('body').toggleClass('sidebar-toggled');
+    $('.sidebar').toggleClass('toggled');
+    if ($('.sidebar').hasClass('toggled')) {
       // $(".sidebar .collapse").collapse("hide");
-      $(".container-fluid").removeClass("sb-notoggle");
-      $(".container-fluid").addClass("sb-toggle");
+      $('.container-fluid').removeClass('sb-notoggle');
+      $('.container-fluid').addClass('sb-toggle');
     }
-    if (!$(".sidebar").hasClass("toggled")) {
+    if (!$('.sidebar').hasClass('toggled')) {
       // $(".sidebar .collapse").collapse("show");
-      $(".container-fluid").addClass("sb-notoggle");
-      $(".container-fluid").removeClass("sb-toggle");
+      $('.container-fluid').addClass('sb-notoggle');
+      $('.container-fluid').removeClass('sb-toggle');
     }
   }
 

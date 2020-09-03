@@ -19,7 +19,7 @@ export class CommonService {
 
   convertUTCDateToLocal(utcDate) {
     if (utcDate) {
-      return (moment.utc(utcDate, "M/DD/YYYY h:mm:ss A")).local().format('DD-MMM-YYYY hh:mm:ss A');
+      return (moment.utc(utcDate, 'M/DD/YYYY h:mm:ss A')).local().format('DD-MMM-YYYY hh:mm:ss A');
     }
     return null;
   }

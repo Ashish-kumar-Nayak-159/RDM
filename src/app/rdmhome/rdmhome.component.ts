@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CONSTANTS } from '../app.constants';
 import { CommonService } from 'src/app/services/common.service';
@@ -8,7 +8,7 @@ declare var $: any;
   templateUrl: './rdmhome.component.html',
   styleUrls: ['./rdmhome.component.css']
 })
-export class RDMHomeComponent implements OnInit {
+export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
   userData: any;
   constructor(
     private router: Router,
@@ -30,8 +30,6 @@ export class RDMHomeComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
-    //Add 'implements AfterViewInit' to the class.
     $('body').css({'overflow-y': 'auto'});
     if ($('body').hasClass('sb-notoggle')) {
       $('body').removeClass('sb-notoggle');
@@ -46,8 +44,6 @@ export class RDMHomeComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
     $('body').css({'overflow-y': ''});
   }
 

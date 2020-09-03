@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Device } from 'src/app/models/device.model';
 import { GoogleChartInterface } from 'ng2-google-charts';
@@ -14,7 +14,7 @@ import * as moment from 'moment';
   templateUrl: './live-data.component.html',
   styleUrls: ['./live-data.component.css']
 })
-export class LiveDataComponent implements OnInit {
+export class LiveDataComponent implements OnInit, OnDestroy {
 
   historyFilter: any = {};
   apiSubscriptions: Subscription[] = [];
@@ -24,7 +24,7 @@ export class LiveDataComponent implements OnInit {
   userData: any;
   isFilterSelected = false;
   propertyList: any[] = [];
-  //google chart
+  // google chart
   public lineGoogleChartData: GoogleChartInterface = {  // use :any or :GoogleChartInterface
     chartType: 'LineChart',
     dataTable: [],
@@ -36,12 +36,12 @@ export class LiveDataComponent implements OnInit {
         textStyle: {
           fontSize: 10
         },
-        slantedTextAngle:60
+        slantedTextAngle: 60
       },
       legend: {
         position: 'top'
       },
-      series:{
+      series: {
       },
       vAxes: {
           // Adds titles to each axis.
@@ -55,7 +55,7 @@ export class LiveDataComponent implements OnInit {
         keepInBounds: true,
         maxZoomIn: 10.0}
     }
-};
+  };
   appName: any;
   refreshInterval: any;
   dropdownPropList = [];
@@ -139,9 +139,9 @@ export class LiveDataComponent implements OnInit {
             obj.from_date = obj.to_date;
             obj.to_date = (moment().utc()).unix();
             this.deviceService.getDeviceTelemetry(obj).subscribe(
-              (response: any) => {
+              (response1: any) => {
                 if (response && response.data) {
-                  let telemetryData = response.data;
+                  const telemetryData = response1.data;
                   telemetryData.reverse();
                   this.updateChart(telemetryData);
                 }
@@ -158,21 +158,21 @@ export class LiveDataComponent implements OnInit {
     dataList.push('DateTime');
     let title = '';
     this.historyFilter.y1AxisProperty.forEach((prop, index) => {
-       dataList.splice(dataList.length, 0,  {label: prop, type: 'number'});
+      dataList.splice(dataList.length, 0,  {label: prop, type: 'number'});
       title += prop + (index !== this.historyFilter.y1AxisProperty.length - 1 ? ' & ' : '');
       this.lineGoogleChartData.options.series[index.toString()] = {targetAxisIndex: 0};
     });
     this.lineGoogleChartData.options.vAxes = {
-      0: {title:  title}
-    }
+      0: {title}
+    };
     if (this.historyFilter.y2AxisProperty) {
       title = '';
       this.historyFilter.y2AxisProperty.forEach((prop, index) => {
-         dataList.splice(dataList.length, 0,  {label: prop, type: 'number'});
+        dataList.splice(dataList.length, 0,  {label: prop, type: 'number'});
         title += prop + (index !== this.historyFilter.y2AxisProperty.length - 1 ? ' & ' : '');
-        this.lineGoogleChartData.options.series[(this.historyFilter.y1AxisProperty.length) + index] =  {targetAxisIndex:1};
+        this.lineGoogleChartData.options.series[(this.historyFilter.y1AxisProperty.length) + index] =  {targetAxisIndex: 1};
       });
-      this.lineGoogleChartData.options.vAxes['1'] ={title: title};
+      this.lineGoogleChartData.options.vAxes['1'] = {title};
     }
     this.lineGoogleChartData.dataTable.push(dataList);
     this.historyData.forEach(history =>  {
@@ -200,10 +200,8 @@ export class LiveDataComponent implements OnInit {
     });
     console.log(this.lineGoogleChartData);
     if (this.lineGoogleChartData.dataTable.length > 1) {
-    let ccComponent = this.lineGoogleChartData.component;
-    let ccWrapper = ccComponent.wrapper;
-
-    //force a redraw
+    const ccComponent = this.lineGoogleChartData.component;
+    // force a redraw
     ccComponent.draw();
     }
   }
@@ -233,10 +231,8 @@ export class LiveDataComponent implements OnInit {
     });
     console.log(this.lineGoogleChartData);
     if (this.lineGoogleChartData.dataTable.length > 1) {
-      let ccComponent = this.lineGoogleChartData.component;
-      let ccWrapper = ccComponent.wrapper;
-
-      //force a redraw
+      const ccComponent = this.lineGoogleChartData.component;
+      // force a redraw
       ccComponent.draw();
       }
   }
@@ -252,8 +248,6 @@ export class LiveDataComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
     clearInterval(this.refreshInterval);
   }
 

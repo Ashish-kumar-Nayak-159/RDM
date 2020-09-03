@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToasterService } from '../services/toaster.service';
 import { CONSTANTS } from './../app.constants';
@@ -9,7 +9,7 @@ declare var $: any;
   templateUrl: './rdm-login.component.html',
   styleUrls: ['./rdm-login.component.css']
 })
-export class RDMLoginComponent implements OnInit {
+export class RDMLoginComponent implements OnInit, AfterViewInit {
 
   loginForm: any = {};
   usersList: any[] = [];
@@ -38,8 +38,6 @@ export class RDMLoginComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
-    //Add 'implements AfterViewInit' to the class.
     if ($('body').hasClass('sb-notoggle')) {
       $('body').removeClass('sb-notoggle');
     }

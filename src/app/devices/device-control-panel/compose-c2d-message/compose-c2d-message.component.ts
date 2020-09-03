@@ -55,11 +55,6 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
         expire_in_min: 1
       };
     });
-
-		  setTimeout(() => {
-			this.count++;
-		  }, 1000);
-
     // this.messageIdInterval = setInterval(() => {
     //   this.c2dMessageData.message_id = this.device.device_id + '_' + moment().unix();
     // }, 1000);
@@ -71,7 +66,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
     this.sentMessageData = undefined;
     this.isMessageValidated = undefined;
     if (!this.c2dMessageData.message) {
-      this.toasterService.showError('Please type JSON in given box', "Validate Message Detail");
+      this.toasterService.showError('Please type JSON in given box', 'Validate Message Detail');
       return;
     }
     try {
@@ -79,7 +74,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
       JSON.parse(this.c2dMessageData.message);
     } catch (e) {
       console.log('in catch');
-        this.isMessageValidated = 'invalid';
+      this.isMessageValidated = 'invalid';
     }
   }
 
@@ -89,7 +84,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
     this.remainingTime = null;
     this.sentMessageData = undefined;
     if (!this.c2dMessageData.message) {
-      this.toasterService.showError('Please type JSON in given box', "Validate Message Detail");
+      this.toasterService.showError('Please type JSON in given box', 'Validate Message Detail');
       return;
     }
     try {
@@ -114,7 +109,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
           this.timerObj = this.dhms(time);
         }, 1000);
       }, error => {
-        this.sendMessageResponse = error.message && error.message.includes('Queue') ? 'Device Queue size exceeded.': 'Not Successful';
+        this.sendMessageResponse = error.message && error.message.includes('Queue') ? 'Device Queue size exceeded.' : 'Not Successful';
         this.sendMessageStatus = 'error';
         this.toasterService.showError(error.message, 'Send C2D Message');
         this.isSendC2DMessageAPILoading = false;
@@ -161,7 +156,6 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
   }
 
   dhms(t) {
-    let days;
     let hours;
     let minutes;
     let seconds;

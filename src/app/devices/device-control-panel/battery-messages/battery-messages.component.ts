@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
@@ -11,7 +11,7 @@ declare var $: any;
   templateUrl: './battery-messages.component.html',
   styleUrls: ['./battery-messages.component.css']
 })
-export class BatteryMessagesComponent implements OnInit {
+export class BatteryMessagesComponent implements OnInit, OnDestroy {
 
   batteryMessageFilter: any = {};
   batteryMessageList: any[] = [];

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from './../../services/common.service';
 import { DeviceService } from './../../services/devices/device.service';
@@ -12,7 +12,7 @@ import * as moment from 'moment';
   templateUrl: './application-visualization.component.html',
   styleUrls: ['./application-visualization.component.css']
 })
-export class ApplicationVisualizationComponent implements OnInit {
+export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   userData: any;
   appData: any = {};
@@ -32,12 +32,12 @@ export class ApplicationVisualizationComponent implements OnInit {
         textStyle: {
           fontSize: 10
         },
-        slantedTextAngle:60
+        slantedTextAngle: 60
       },
       legend: {
         position: 'top'
       },
-      series:{
+      series: {
       },
       vAxes: {
           // Adds titles to each axis.
@@ -58,10 +58,10 @@ export class ApplicationVisualizationComponent implements OnInit {
     ],
     options: {
       redFrom: 90, redTo: 100,
-      yellowFrom:75, yellowTo: 90,
+      yellowFrom: 75, yellowTo: 90,
       minorTicks: 5
     }
-  }
+  };
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -121,16 +121,16 @@ export class ApplicationVisualizationComponent implements OnInit {
       app: this.appData.app,
       device_id: alert.device_id,
       message_props: '',
-      from_date: ((moment.utc(alert.created_date, "M/DD/YYYY h:mm:ss A")).subtract(30, 'minute')).unix(),
-      to_date: ((moment.utc(alert.created_date, "M/DD/YYYY h:mm:ss A")).add(30, 'minute')).unix()
+      from_date: ((moment.utc(alert.created_date, 'M/DD/YYYY h:mm:ss A')).subtract(30, 'minute')).unix(),
+      to_date: ((moment.utc(alert.created_date, 'M/DD/YYYY h:mm:ss A')).add(30, 'minute')).unix()
     };
-    this.propertyList.forEach((prop, index) => filterObj.message_props += prop + (index !== (this.propertyList.length -1) ? ',' : ''));
+    this.propertyList.forEach((prop, index) => filterObj.message_props += prop + (index !== (this.propertyList.length - 1) ? ',' : ''));
     console.log(filterObj);
     this.deviceService.getDeviceTelemetry(filterObj).subscribe(
       (response: any) => {
         console.log(response);
         if (response && response.data) {
-          let telemetryData = response.data;
+          const telemetryData = response.data;
           this.loadGaugeChart(telemetryData[0]);
           telemetryData.reverse();
           console.log('load line chart');
@@ -140,18 +140,17 @@ export class ApplicationVisualizationComponent implements OnInit {
     );
     clearInterval(this.refreshInterval);
     this.refreshInterval = setInterval(() => {
-
       filterObj.from_date = filterObj.to_date;
       filterObj.to_date = (moment().utc()).unix();
-    this.deviceService.getDeviceTelemetry(filterObj).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          let telemetryData = response.data;
-          this.loadGaugeChart(telemetryData[0]);
-          telemetryData.reverse();
-          // this.updateLineChart(telemetryData);
-        }
-      });
+      this.deviceService.getDeviceTelemetry(filterObj).subscribe(
+        (response: any) => {
+          if (response && response.data) {
+            const telemetryData = response.data;
+            this.loadGaugeChart(telemetryData[0]);
+            telemetryData.reverse();
+            // this.updateLineChart(telemetryData);
+          }
+        });
 
     }, 20000);
   }
@@ -163,9 +162,8 @@ export class ApplicationVisualizationComponent implements OnInit {
     let title = '';
     this.propertyList.forEach((prop, index) => {
       if (index % 2 !== 0) {
-         dataList.splice(dataList.length, 0,  {label: prop, type: 'number'});
+        dataList.splice(dataList.length, 0,  {label: prop, type: 'number'});
         title += prop + (prop[index + 2] ? ' & ' : '');
-        console.log()
         this.lineGoogleChartConfig.options.series[Object.keys(this.lineGoogleChartConfig.options.series).length] = {targetAxisIndex: 0};
       }
     });
@@ -173,22 +171,22 @@ export class ApplicationVisualizationComponent implements OnInit {
       title = title.substring(0, title.length - 2);
     }
     this.lineGoogleChartConfig.options.vAxes = {
-      0: {title:  title}
-    }
+      0: {title}
+    };
     title = '';
     this.propertyList.forEach((prop, index) => {
       console.log('index   ', index);
       if (index % 2 === 0) {
         console.log('inn iff');
-         dataList.splice(dataList.length, 0,  {label: prop, type: 'number'});
+        dataList.splice(dataList.length, 0,  {label: prop, type: 'number'});
         title += prop + (prop[index + 2] ? ' & ' : '');
-        this.lineGoogleChartConfig.options.series[(Object.keys(this.lineGoogleChartConfig.options.series).length)] =  {targetAxisIndex:1};
+        this.lineGoogleChartConfig.options.series[(Object.keys(this.lineGoogleChartConfig.options.series).length)] =  {targetAxisIndex: 1};
       }
     });
     if (title.charAt(title.length - 2) === '&') {
       title = title.substring(0, title.length - 2);
     }
-    this.lineGoogleChartConfig.options.vAxes['1'] ={title: title};
+    this.lineGoogleChartConfig.options.vAxes['1'] = {title};
     this.lineGoogleChartConfig.dataTable.push(dataList);
     telemetryData.forEach(obj => {
       obj.local_created_date = this.commonService.convertUTCDateToLocal(obj.message_date);
@@ -208,10 +206,8 @@ export class ApplicationVisualizationComponent implements OnInit {
     });
     console.log(this.lineGoogleChartConfig);
     if (this.lineGoogleChartConfig.dataTable.length > 1) {
-    let ccComponent = this.lineGoogleChartConfig.component;
-    // let ccWrapper = ccComponent.wrapper;
-
-    //force a redraw
+    const ccComponent = this.lineGoogleChartConfig.component;
+    // force a redraw
     if (ccComponent) {
       ccComponent.draw();
     }
@@ -236,7 +232,7 @@ export class ApplicationVisualizationComponent implements OnInit {
       this.lineGoogleChartConfig.dataTable.splice(this.lineGoogleChartConfig.dataTable.length, 0, list);
     });
     console.log(this.lineGoogleChartConfig);
-    let ccComponent = this.lineGoogleChartConfig.component;
+    const ccComponent = this.lineGoogleChartConfig.component;
     ccComponent.draw();
   }
 
@@ -263,8 +259,6 @@ export class ApplicationVisualizationComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
     clearInterval(this.refreshInterval);
   }
 

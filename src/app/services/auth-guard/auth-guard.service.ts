@@ -14,7 +14,7 @@ export class AuthGuardService {
   ) {}
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const app = route.paramMap.get('applicationId');
-    const userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS)
+    const userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     if (!userData) {
       this.commonService.onLogOut();
       return false;

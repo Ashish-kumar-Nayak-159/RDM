@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonService } from './../../services/common.service';
 import { CONSTANTS } from './../../app.constants';
 import { Router } from '@angular/router';
 import { ApplicationService } from './../../services/application/application.service';
 import { environment } from 'src/environments/environment';
-import {BlobServiceClient,AnonymousCredential,newPipeline } from '@azure/storage-blob';
+import { BlobServiceClient, AnonymousCredential, newPipeline } from '@azure/storage-blob';
 import { ToasterService } from './../../services/toaster.service';
 import { UserService } from './../../services/user.service';
 declare var $: any;
@@ -13,7 +13,7 @@ declare var $: any;
   templateUrl: './application-list.component.html',
   styleUrls: ['./application-list.component.css']
 })
-export class ApplicationListComponent implements OnInit {
+export class ApplicationListComponent implements OnInit, AfterViewInit {
 
   userData: any;
   applicationFilterObj: any = {};
@@ -48,11 +48,10 @@ export class ApplicationListComponent implements OnInit {
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      let node = document.createElement('script');
+      const node = document.createElement('script');
       node.src = './assets/js/kdm.min.js';
       node.type = 'text/javascript';
       node.async = false;
-      node.charset = 'utf-8';
       document.getElementsByTagName('head')[0].appendChild(node);
       }, 500);
   }
@@ -117,33 +116,29 @@ export class ApplicationListComponent implements OnInit {
   }
 
   async upload(file) {
-    const containerName=environment.blobContainerName;
-
-    const pipeline = newPipeline (new AnonymousCredential(),{
+    const containerName = environment.blobContainerName;
+    const pipeline = newPipeline(new AnonymousCredential(), {
     retryOptions: { maxTries: 2 }, // Retry options
     keepAliveOptions: {
         // Keep alive is enabled by default, disable keep alive by setting false
         enable: false
     }
     });
-
-    const blobServiceClient =new BlobServiceClient(environment.blobURL +  environment.blobKey,
-                                                      pipeline  )
-    const containerClient =blobServiceClient.getContainerClient(containerName)
-    if(!containerClient.exists()){
-    console.log("the container does not exit")
-    await containerClient.create()
-
+    const blobServiceClient = new BlobServiceClient(environment.blobURL +  environment.blobKey, pipeline);
+    const containerClient = blobServiceClient.getContainerClient(containerName);
+    if (!containerClient.exists()){
+    console.log('the container does not exit');
+    await containerClient.create();
     }
-    console.log(file.name)
+    console.log(file.name);
     const client = containerClient.getBlockBlobClient(file.name);
-    const response = await client.uploadBrowserData(file,{
+    const response = await client.uploadBrowserData(file, {
           blockSize: 4 * 1024 * 1024, // 4MB block size
           concurrency: 20, // 20 concurrency
           onProgress: (ev) => console.log(ev),
-          blobHTTPHeaders :{ blobContentType:file.type }
+          blobHTTPHeaders : { blobContentType: file.type }
           });
-    console.log(response._response)
+    console.log(response._response);
     if (response._response.status === 201) {
       return {
         url: environment.blobURL + '/' + containerName + '/' + file.name,
@@ -157,7 +152,8 @@ export class ApplicationListComponent implements OnInit {
 
   async createApp() {
     console.log(this.applicationDetail);
-    if (!this.applicationDetail.app || !this.applicationDetail.admin || !this.applicationDetail.metadata.logo || !this.applicationDetail.metadata.icon) {
+    if (!this.applicationDetail.app || !this.applicationDetail.admin || !this.applicationDetail.metadata.logo
+      || !this.applicationDetail.metadata.icon) {
       this.toasterService.showError('Please fill all details', 'Create App');
     } else {
       this.isCreateAPILoading = true;
@@ -179,7 +175,7 @@ export class ApplicationListComponent implements OnInit {
     const obj = {
       email: app.admin,
       password: 'kemSys@123'
-    }
+    };
     this.userService.createUser(obj).toPromise();
   }
 

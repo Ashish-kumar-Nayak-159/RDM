@@ -80,7 +80,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response && response.data) {
           this.alerts = response.data;
-          this.alerts.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date))
+          this.alerts.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
         }
         this.isAlertLoading = false;
       }, error => this.isAlertLoading = false
@@ -92,7 +92,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
       jsonDisplay: true,
       isDisplaySave: false,
       isDisplayCancel: true
-    }
+    };
     this.selectedAlert = alert;
     $('#alertMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }

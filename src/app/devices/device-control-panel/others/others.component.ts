@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
@@ -11,7 +11,7 @@ declare var $: any;
   templateUrl: './others.component.html',
   styleUrls: ['./others.component.css']
 })
-export class OthersComponent implements OnInit {
+export class OthersComponent implements OnInit, OnDestroy {
 
   otherFilter: any = {};
   othersList: any[] = [];
@@ -110,10 +110,7 @@ export class OthersComponent implements OnInit {
     }
   }
 
-
-
   ngOnDestroy() {
     this.apiSubscriptions.forEach(subscribe => subscribe.unsubscribe());
   }
-
 }

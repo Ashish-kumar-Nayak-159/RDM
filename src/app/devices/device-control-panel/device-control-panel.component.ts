@@ -70,47 +70,47 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    //this.setToggleClassForMenu();
+    // this.setToggleClassForMenu();
   }
 
   setToggleClassForMenu() {
-    if ($(window).width() > 768 && $(".sidebar").hasClass("toggled")) {
-      $(".container-fluid").removeClass("sb-collapse");
-      $(".container-fluid").removeClass("sb-notoggle");
-      $(".container-fluid").addClass("sb-toggle");
+    if ($(window).width() > 768 && $('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').removeClass('sb-collapse');
+      $('.container-fluid').removeClass('sb-notoggle');
+      $('.container-fluid').addClass('sb-toggle');
     }
-    if ($(window).width() > 768 && !$(".sidebar").hasClass("toggled")) {
+    if ($(window).width() > 768 && !$('.sidebar').hasClass('toggled')) {
       console.log('min js 16');
-      $(".container-fluid").removeClass("sb-collapse");
-      $(".container-fluid").removeClass("sb-toggle");
-      $(".container-fluid").addClass("sb-notoggle");
+      $('.container-fluid').removeClass('sb-collapse');
+      $('.container-fluid').removeClass('sb-toggle');
+      $('.container-fluid').addClass('sb-notoggle');
     }
-    if ($(window).width() < 768 && $(".sidebar").hasClass("toggled")) {
-      $(".container-fluid").removeClass("sb-collapse");
-      $(".container-fluid").removeClass("sb-notoggle");
-      $(".container-fluid").removeClass("sb-toggle");
+    if ($(window).width() < 768 && $('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').removeClass('sb-collapse');
+      $('.container-fluid').removeClass('sb-notoggle');
+      $('.container-fluid').removeClass('sb-toggle');
     }
-    if ($(window).width() < 768 && !$(".sidebar").hasClass("toggled")) {
-      $(".container-fluid").removeClass("sb-collapse");
-      $(".container-fluid").addClass("sb-toggle");
-      $(".container-fluid").removeClass("sb-notoggle");
+    if ($(window).width() < 768 && !$('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').removeClass('sb-collapse');
+      $('.container-fluid').addClass('sb-toggle');
+      $('.container-fluid').removeClass('sb-notoggle');
     }
 
-    if ($(window).width() > 768 && $(".sidebar1").hasClass("toggled")) {
-      $(".container1-fluid").removeClass("sb1-notoggle");
-      $(".container1-fluid").addClass("sb1-toggle");
+    if ($(window).width() > 768 && $('.sidebar1').hasClass('toggled')) {
+      $('.container1-fluid').removeClass('sb1-notoggle');
+      $('.container1-fluid').addClass('sb1-toggle');
     }
-    if ($(window).width() > 768 && !$(".sidebar1").hasClass("toggled")) {
-      $(".container1-fluid").addClass("sb1-notoggle");
-      $(".container1-fluid").removeClass("sb1-toggle");
+    if ($(window).width() > 768 && !$('.sidebar1').hasClass('toggled')) {
+      $('.container1-fluid').addClass('sb1-notoggle');
+      $('.container1-fluid').removeClass('sb1-toggle');
     }
-    if ($(window).width() < 768 && $(".sidebar1").hasClass("toggled")) {
-      $(".container1-fluid").removeClass("sb1-notoggle");
-      $(".container1-fluid").removeClass("sb1-toggle");
+    if ($(window).width() < 768 && $('.sidebar1').hasClass('toggled')) {
+      $('.container1-fluid').removeClass('sb1-notoggle');
+      $('.container1-fluid').removeClass('sb1-toggle');
     }
-    if ($(window).width() < 768 && !$(".sidebar1").hasClass("toggled")) {
-      $(".container1-fluid").addClass("sb1-toggle");
-      $(".container1-fluid").removeClass("sb1-notoggle");
+    if ($(window).width() < 768 && !$('.sidebar1').hasClass('toggled')) {
+      $('.container1-fluid').addClass('sb1-toggle');
+      $('.container1-fluid').removeClass('sb1-notoggle');
     }
   }
 
@@ -120,30 +120,30 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
   }
 
   onSidebarToggle() {
-    $(".sidebar1").toggleClass("toggled");
-    if ($(".sidebar1").hasClass("toggled")) {
-      // $(".sidebar1 .collapse").collapse("hide");
-      $(".container1-fluid").removeClass("sb1-notoggle");
-      $(".container1-fluid").addClass("sb1-toggle");
+    $('.sidebar1').toggleClass('toggled');
+    if ($('.sidebar1').hasClass('toggled')) {
+      // $('.sidebar1 .collapse').collapse('hide');
+      $('.container1-fluid').removeClass('sb1-notoggle');
+      $('.container1-fluid').addClass('sb1-toggle');
     }
-    if (!$(".sidebar1").hasClass("toggled")) {
-      // $(".sidebar1 .collapse").collapse("show");
-      $(".container1-fluid").addClass("sb1-notoggle");
-      $(".container1-fluid").removeClass("sb1-toggle");
+    if (!$('.sidebar1').hasClass('toggled')) {
+      // $('.sidebar1 .collapse').collapse('show');
+      $('.container1-fluid').addClass('sb1-notoggle');
+      $('.container1-fluid').removeClass('sb1-toggle');
     }
   }
 
   onSideBarToggleTopClick() {
-    $(".sidebar1").toggleClass("toggled");
-    if ($(".sidebar1").hasClass("toggled")) {
-      // $(".sidebar1 .collapse").collapse("hide");
-      $(".container1-fluid").addClass("sb1-collapse");
-      $(".container1-fluid").removeClass("sb1-toggle");
+    $('.sidebar1').toggleClass('toggled');
+    if ($('.sidebar1').hasClass('toggled')) {
+      // $('.sidebar1 .collapse').collapse('hide');
+      $('.container1-fluid').addClass('sb1-collapse');
+      $('.container1-fluid').removeClass('sb1-toggle');
     }
-    if (!$(".sidebar1").hasClass("toggled")) {
-      // $(".sidebar1 .collapse").collapse("show");
-      $(".container1-fluid").removeClass("sb1-collapse");
-      $(".container1-fluid").addClass("sb1-toggle");
+    if (!$('.sidebar1').hasClass('toggled')) {
+      // $('.sidebar1 .collapse').collapse('show');
+      $('.container1-fluid').removeClass('sb1-collapse');
+      $('.container1-fluid').addClass('sb1-toggle');
     }
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
@@ -11,7 +11,7 @@ declare var $: any;
   templateUrl: './rdmdevice-control-panel-error.component.html',
   styleUrls: ['./rdmdevice-control-panel-error.component.css']
 })
-export class RDMDeviceControlPanelErrorComponent implements OnInit {
+export class RDMDeviceControlPanelErrorComponent implements OnInit, OnDestroy {
 
   errorFilter: any = {};
   errors: any[] = [];
@@ -32,7 +32,7 @@ export class RDMDeviceControlPanelErrorComponent implements OnInit {
     this.errorFilter.epoch = true;
     this.errorTableConfig = {
       type: 'error',
-      headers: ['Timestamp', 'Message ID','Error Code', 'Message'],
+      headers: ['Timestamp', 'Message ID', 'Error Code', 'Message'],
       data: [
         {
           name: 'Timestamp',

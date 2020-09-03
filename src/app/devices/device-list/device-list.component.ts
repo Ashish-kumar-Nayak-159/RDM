@@ -120,7 +120,7 @@ export class DeviceListComponent implements OnInit {
         this.toasterService.showError(error.message, 'Create Device');
         // this.onCloseCreateDeviceModal();
       }
-    )
+    );
   }
 
   onCloseCreateDeviceModal() {

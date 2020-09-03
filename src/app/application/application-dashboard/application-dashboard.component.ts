@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChildren, OnDestroy } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChildren, OnDestroy, AfterViewInit } from '@angular/core';
 import { ApplicationService } from './../../services/application/application.service';
 import { ApplicationDashboardSnapshot, Alert, Event, Notification } from 'src/app/models/applicationDashboard.model';
 import { Subscription } from 'rxjs';
@@ -14,7 +14,7 @@ import { environment } from 'src/environments/environment';
   templateUrl: './application-dashboard.component.html',
   styleUrls: ['./application-dashboard.component.css']
 })
-export class ApplicationDashboardComponent implements OnInit, OnDestroy {
+export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChildren('c2dChart') c2dChart: ElementRef;
   @ViewChildren('d2cChart') d2cChart: ElementRef;
@@ -92,11 +92,10 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      let node = document.createElement('script');
+      const node = document.createElement('script');
       node.src = './assets/js/kdm.min.js';
       node.type = 'text/javascript';
       node.async = false;
-      node.charset = 'utf-8';
       document.getElementsByTagName('head')[0].appendChild(node);
       }, 500);
   }

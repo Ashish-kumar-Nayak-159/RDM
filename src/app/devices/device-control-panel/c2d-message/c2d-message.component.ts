@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
@@ -12,13 +12,13 @@ declare var $: any;
   templateUrl: './c2d-message.component.html',
   styleUrls: ['./c2d-message.component.css']
 })
-export class C2dMessageComponent implements OnInit {
+export class C2dMessageComponent implements OnInit, OnDestroy {
 
   c2dMsgFilter: any = {};
   c2dMsgs: any[] = [];
   isC2dMsgsLoading = false;
   @Input() device: Device = new Device();
-  @Input() type: string = 'all';
+  @Input() type = 'all';
   @Input() message: any;
   apiSubscriptions: Subscription[] = [];
   displayMode: string;
@@ -151,7 +151,7 @@ export class C2dMessageComponent implements OnInit {
       jsonDisplay: true,
       isDisplaySave: false,
       isDisplayCancel: true
-    }
+    };
   }
 
   onModalEvents(eventType) {

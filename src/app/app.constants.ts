@@ -122,7 +122,7 @@ export class CONSTANTS {
       'voltage',
       'phase_current',
       'neutral_current',
-      'frequency',
+      'frequency_Hz',
       'cumulative_energy_kWh'
     ],
     IDEX: [
@@ -153,7 +153,7 @@ export class CONSTANTS {
       'voltage',
       'phase_current',
       'neutral_current',
-      'frequency',
+      'frequency_Hz',
       'cumulative_energy_kWh'
     ]
   };

@@ -89,6 +89,14 @@ export class LiveDataComponent implements OnInit {
     console.log(this.historyFilter);
   }
 
+  onDeSelectAll(type) {
+    if (type === 'y1') {
+      this.y1AxisProps = [];
+    } else if (type === 'y2') {
+      this.y2AxisProp = [];
+    }
+  }
+
   searchData() {
     this.historyFilter.y1AxisProperty = [];
     this.historyFilter.y2AxisProperty = [];

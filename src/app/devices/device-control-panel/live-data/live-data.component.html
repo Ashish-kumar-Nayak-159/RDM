@@ -44,7 +44,8 @@
                 badgeShowLimit: 1,
                 maxHeight: 200,
                 labelKey: 'id'
-              }">
+              }"
+              (onDeSelectAll)="onDeSelectAll('y1')">
             </angular2-multiselect>
             <angular2-multiselect [data]="dropdownPropList"
               id="y2AxisProp"
@@ -58,7 +59,7 @@
                 badgeShowLimit: 1,
                 maxHeight: 200,
                 labelKey: 'id'
-              }">
+              }"  (onDeSelectAll)="onDeSelectAll('y2')">
             </angular2-multiselect>
 
               <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="searchData()" ><i class="fas fa-search fa-sm"></i></button>

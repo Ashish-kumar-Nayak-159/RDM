@@ -32,6 +32,8 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
   apiSubscription: Subscription[] = [];
   timerInterval: any;
   appName: any;
+  count = 1234;
+  timerObj: any;
   constructor(
     private toasterService: ToasterService,
     private deviceService: DeviceService,
@@ -53,6 +55,10 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
         expire_in_min: 1
       };
     });
+
+		  setTimeout(() => {
+			this.count++;
+		  }, 1000);
 
     // this.messageIdInterval = setInterval(() => {
     //   this.c2dMessageData.message_id = this.device.device_id + '_' + moment().unix();
@@ -105,7 +111,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
         const expiryDate = moment().add(this.sentMessageData.expire_in_min, 'minutes').toDate();
         this.timerInterval = setInterval(() => {
           const time = Math.floor((expiryDate.getTime() - new Date().getTime()) / 1000);
-          this.dhms(time);
+          this.timerObj = this.dhms(time);
         }, 1000);
       }, error => {
         this.sendMessageResponse = error.message && error.message.includes('Queue') ? 'Device Queue size exceeded.': 'Not Successful';
@@ -167,17 +173,17 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
     if (hours === 0 && minutes === 0 && seconds === 0) {
       clearInterval(this.timerInterval);
       this.onClickOfFeedback();
-      this.deviceService.composeC2DMessageStartEmitter.emit({
+      return {
         hours,
         minutes,
         seconds
-      });
+      };
     }
-    this.deviceService.composeC2DMessageStartEmitter.emit({
+    return {
       hours,
       minutes,
       seconds
-    });
+    };
 }
 
   ngOnDestroy() {

@@ -1,226 +1,347 @@
 <div class="container-pad">
-<div class="row">
-
-  <div class="col-xl-4 col-lg-5">
-    <div class="row">
-
-          <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4" >
-            <div class="card bg-warning text-white shadow" >
-              <div class="card-body">
+  <div class="row">
+    <div class="col-xl-4 col-lg-5">
+      <div class="row">
+        <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4">
+          <div class="card bg-warning text-white shadow">
+            <div class="card-body">
+              <div class="text-center">
+                <img
+                  class="img-fluid px-2 mt-3 mb-3 img-szmd"
+                  src="{{
+                    applicationData?.metadata?.logo?.url
+                      ? applicationData?.metadata?.logo?.url + blobToken
+                      : ''
+                  }}"
+                  alt=""
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4">
+          <div class="card border-left-secondary shadow h-100">
+            <div class="card-body">
+              <a href="javascript:void(0)" (click)="redirectToDevice()"
+                ><div class="text-center">
+                  <img
+                    class="img-fluid px-2 mt-2 mb-3 img-szsm"
+                    src="{{
+                      applicationData?.metadata?.icon?.url
+                        ? applicationData?.metadata?.icon?.url + blobToken
+                        : ''
+                    }}"
+                    alt=""
+                  />
+                </div>
                 <div class="text-center">
-              <img class="img-fluid px-2 mt-3 mb-3 img-szmd"
-              src="{{(applicationData?.metadata?.logo?.url) ? (applicationData?.metadata?.logo?.url + blobToken) : ''}}" alt="">
-            </div>
-              </div>
-            </div>
-          </div>
-  <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4" >
-            <div class="card border-left-secondary shadow h-100">
-              <div class="card-body">
-                <a href="javascript:void(0)" (click)="redirectToDevice()" ><div class="text-center">
-        <img class="img-fluid px-2 mt-2 mb-3 img-szsm"
-        src="{{(applicationData?.metadata?.icon?.url) ? (applicationData?.metadata?.icon?.url + blobToken) : ''}}" alt="">
-      </div>
-      <div class="text-center">
-        <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>
-        <span *ngIf="!isDashboardSnapshotLoading">{{dashboardSnapshot?.device_count}}</span> </div>
-      <div class="text-black-50 text-center small">Devices </div></a>
-              </div>
+                  <i
+                    *ngIf="isDashboardSnapshotLoading"
+                    class="fa fa-spinner fa-spin fa-fw"
+                  ></i>
+                  <span *ngIf="!isDashboardSnapshotLoading">{{
+                    dashboardSnapshot?.device_count
+                  }}</span>
+                </div>
+                <div class="text-black-50 text-center small">{{
+                  (contextApp?.metadata?.contain_devices && contextApp?.metadata?.contain_gateways ? 'IP Devices & Gateways' :
+                  (contextApp?.metadata?.contain_devices && !contextApp?.metadata?.contain_gateways ? 'IP Devices' :
+                  (!contextApp?.metadata?.contain_devices && contextApp?.metadata?.contain_gateways ? 'IP Gateways' : '')))
+                }}</div
+              ></a>
             </div>
           </div>
-
-  <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4" >
-            <div class="card border-left-success shadow h-100" >
-              <div class="card-body">
-                <a href="javascript:void(0)" (click)="redirectToDevice('connected')"><div class="text-center">
-        <img class="img-fluid px-2 mt-2 mb-3 img-szsm"
-        src="{{(applicationData?.metadata?.icon?.url) ? (applicationData?.metadata?.icon?.url + blobToken) : ''}}" alt="">
-      </div>
-      <div class="text-center">
-        <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>
-        <span *ngIf="!isDashboardSnapshotLoading">{{dashboardSnapshot?.connected_device_count}}</span> </div>
-      <div class="text-black-50 text-center small">Connected</div></a>
-
-              </div>
-            </div>
-          </div>
-
-  <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4" >
-            <div class="card border-left-danger shadow h-100" >
-    <div class="card-body">
-      <a href="javascript:void(0)" (click)="redirectToDevice('disconnected')"><div class="text-center">
-        <img class="img-fluid px-2 mt-2 mb-3 img-szsm"
-        src="{{(applicationData?.metadata?.icon?.url) ? (applicationData?.metadata?.icon?.url + blobToken) : ''}}" alt="">
-      </div>
-      <div class="text-center">
-        <i *ngIf="isDashboardSnapshotLoading" class="fa fa-spinner fa-spin fa-fw"></i>
-        <span *ngIf="!isDashboardSnapshotLoading">{{dashboardSnapshot?.disconnected_device_count}}</span> </div>
-      <div class="text-black-50 text-center small">Disconnected</div></a>
-
-              </div>
-            </div>
-          </div>
-    </div>
-
-      </div>
-  <!-- Area Chart -->
-  <div class="col-xl-8 col-lg-7">
-
-    <!-- Bar Chart -->
-    <div class="card shadow mb-4">
-      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
-      style="max-height:5rem;">
-        <h6 class="m-0 font-weight-bold text-primary">IoT Hub Overall Statistics</h6>
-        <ul class="nav">
-          <li class="nav-item active">
-            <a class="nav-link small font-weight-normal" data-toggle="tab" aria-expanded="false" href="#D2C">D2C
-              Messages</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link small font-weight-normal" data-toggle="tab" aria-expanded="false" href="#C2D">C2D
-              Messages</a>
-          </li>
-        </ul>
-        <div id="reportrange"
-          style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; font-size:.75rem;">
-          <i class="fa fa-calendar"></i>&nbsp;
-          <span></span> <i class="fa fa-caret-down"></i>
         </div>
 
+        <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4">
+          <div class="card border-left-success shadow h-100">
+            <div class="card-body">
+              <a
+                href="javascript:void(0)"
+                (click)="redirectToDevice('connected')"
+                ><div class="text-center">
+                  <img
+                    class="img-fluid px-2 mt-2 mb-3 img-szsm"
+                    src="{{
+                      applicationData?.metadata?.icon?.url
+                        ? applicationData?.metadata?.icon?.url + blobToken
+                        : ''
+                    }}"
+                    alt=""
+                  />
+                </div>
+                <div class="text-center">
+                  <i
+                    *ngIf="isDashboardSnapshotLoading"
+                    class="fa fa-spinner fa-spin fa-fw"
+                  ></i>
+                  <span *ngIf="!isDashboardSnapshotLoading">{{
+                    dashboardSnapshot?.connected_device_count
+                  }}</span>
+                </div>
+                <div class="text-black-50 text-center small">Connected</div></a
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4">
+          <div class="card border-left-danger shadow h-100">
+            <div class="card-body">
+              <a
+                href="javascript:void(0)"
+                (click)="redirectToDevice('disconnected')"
+                ><div class="text-center">
+                  <img
+                    class="img-fluid px-2 mt-2 mb-3 img-szsm"
+                    src="{{
+                      applicationData?.metadata?.icon?.url
+                        ? applicationData?.metadata?.icon?.url + blobToken
+                        : ''
+                    }}"
+                    alt=""
+                  />
+                </div>
+                <div class="text-center">
+                  <i
+                    *ngIf="isDashboardSnapshotLoading"
+                    class="fa fa-spinner fa-spin fa-fw"
+                  ></i>
+                  <span *ngIf="!isDashboardSnapshotLoading">{{
+                    dashboardSnapshot?.disconnected_device_count
+                  }}</span>
+                </div>
+                <div class="text-black-50 text-center small">
+                  Disconnected
+                </div></a
+              >
+            </div>
+          </div>
+        </div>
       </div>
+    </div>
+    <!-- Area Chart -->
+    <div class="col-xl-8 col-lg-7">
+      <!-- Bar Chart -->
+      <div class="card shadow mb-4">
+        <div
+          class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+          style="max-height: 5rem"
+        >
+          <h6 class="m-0 font-weight-bold text-primary">
+            IoT Hub Overall Statistics
+          </h6>
+          <ul class="nav">
+            <li class="nav-item active">
+              <a
+                class="nav-link small font-weight-normal"
+                data-toggle="tab"
+                aria-expanded="false"
+                href="#D2C"
+                >D2C Messages</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link small font-weight-normal"
+                data-toggle="tab"
+                aria-expanded="false"
+                href="#C2D"
+                >C2D Messages</a
+              >
+            </li>
+          </ul>
+          <div
+            id="reportrange"
+            style="
+              background: #fff;
+              cursor: pointer;
+              padding: 5px 10px;
+              border: 1px solid #ccc;
+              font-size: 0.75rem;
+            "
+          >
+            <i class="fa fa-calendar"></i>&nbsp; <span></span>
+            <i class="fa fa-caret-down"></i>
+          </div>
+        </div>
 
-      <div class="card-body" style="max-height:22rem;">
-
-        <div class="tab-content">
-          <div class="tab-pane active" id="D2C">
-            <div role="tabpanel" class="tab-pane active no-padding" id="home">
+        <div class="card-body" style="max-height: 22rem">
+          <div class="tab-content">
+            <div class="tab-pane active" id="D2C">
+              <div role="tabpanel" class="tab-pane active no-padding" id="home">
+                <div>
+                  <canvas
+                    style="height: 20rem"
+                    baseChart
+                    #d2cChart
+                    [datasets]="barChartData"
+                    [labels]="barChartLabels"
+                    [options]="barChartOptions"
+                    [legend]="barChartLegend"
+                    [chartType]="barChartType"
+                  >
+                  </canvas>
+                </div>
+              </div>
+            </div>
+            <!-- /.tab-pane -->
+            <div class="tab-pane" id="C2D">
               <div>
-                <canvas  style="height: 20rem;" baseChart  #d2cChart [datasets]="barChartData" [labels]="barChartLabels"
-                  [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType">
+                <canvas
+                  baseChart
+                  #c2dChart
+                  [datasets]="barChartData1"
+                  [labels]="barChartLabels"
+                  [options]="barChartOptions"
+                  [legend]="barChartLegend"
+                  [chartType]="barChartType"
+                >
                 </canvas>
               </div>
+            </div>
+            <!-- /.tab-pane -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- Content Row -->
+  <div class="row">
+    <!-- Content Column -->
+    <div class="col-lg-4 mb-4">
+      <!-- Project Card Example -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">
+            Recent Notifications
+            <span class="float-right">
+              <a
+                class="watch-eye"
+                [routerLink]="['notifications']"
+                routerLinkActive="router-link-active"
+                ><i class="fa fa-eye" aria-hidden="true"></i
+              ></a>
+            </span>
+          </h6>
+        </div>
+
+        <div class="card-body1">
+          <div class="notifications">
+            <i
+              *ngIf="isLastNotificationDataLoading"
+              class="fa fa-spinner fa-spin fa-2x fa-fw"
+            ></i>
+            <ul
+              class="timeline"
+              *ngIf="
+                !isLastNotificationDataLoading &&
+                lastGeneratedNotifications.length > 0
+              "
+            >
+              <li *ngFor="let notification of lastGeneratedNotifications">
+                <div class="device-name-text">
+                  {{ notification.device_id }} | {{ notification.time_diff }}
+                </div>
+                <p>{{ notification.message?.message }}</p>
+              </li>
+            </ul>
+            <div
+              *ngIf="
+                !isLastNotificationDataLoading &&
+                lastGeneratedNotifications.length === 0
+              "
+            >
+              No Notifications found.
             </div>
           </div>
-          <!-- /.tab-pane -->
-          <div class="tab-pane" id="C2D">
-            <div>
-              <canvas baseChart #c2dChart [datasets]="barChartData1" [labels]="barChartLabels"
-                [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType">
-              </canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 mb-4">
+      <!-- Illustrations -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">
+            Recent Alerts
+            <span class="float-right">
+              <a class="watch-eye"
+                ><i class="fa fa-eye" aria-hidden="true"></i
+              ></a>
+            </span>
+          </h6>
+        </div>
+        <div class="card-body1">
+          <div class="notifications">
+            <i
+              *ngIf="isLastAlertDataLoading"
+              class="fa fa-spinner fa-spin fa-2x fa-fw"
+            ></i>
+            <ul
+              class="timeline"
+              *ngIf="!isLastAlertDataLoading && lastGeneratedAlerts.length > 0"
+            >
+              <li *ngFor="let alert of lastGeneratedAlerts">
+                <div class="device-name-text">
+                  {{ alert.device_id }} | {{ alert.time_diff }}
+                </div>
+                <p>{{ alert.message?.message }}</p>
+              </li>
+            </ul>
+            <div
+              *ngIf="
+                !isLastAlertDataLoading && lastGeneratedAlerts.length === 0
+              "
+            >
+              No alerts found.
             </div>
           </div>
-          <!-- /.tab-pane -->
         </div>
-
-
       </div>
     </div>
-  </div>
 
-
-</div>
-
-<!-- Content Row -->
-<div class="row">
-
-  <!-- Content Column -->
-  <div class="col-lg-4 mb-4">
-
-    <!-- Project Card Example -->
-    <div class="card shadow mb-4">
-      <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Recent Notifications
-          <span class="float-right">
-            <a class="watch-eye" [routerLink]="['notifications']" routerLinkActive="router-link-active" ><i class="fa fa-eye" aria-hidden="true"></i></a>
-          </span>
-        </h6>
-
-      </div>
-
-      <div class="card-body1">
-        <div class="notifications">
-          <i *ngIf="isLastNotificationDataLoading" class="fa fa-spinner fa-spin fa-2x fa-fw"></i>
-          <ul class="timeline" *ngIf="!isLastNotificationDataLoading && lastGeneratedNotifications.length > 0">
-            <li *ngFor="let notification of lastGeneratedNotifications">
-                <div class="device-name-text">{{notification.device_id}} | {{notification.time_diff}}</div>
-                <p>{{notification.message?.message}}</p>
-            </li>
-          </ul>
-          <div *ngIf="!isLastNotificationDataLoading && lastGeneratedNotifications.length === 0">
-            No Notifications found.
+    <div class="col-lg-4 mb-4">
+      <!-- Approach -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">
+            Device Life Cycle Events
+            <span class="float-right">
+              <a class="watch-eye"
+                ><i class="fa fa-eye" aria-hidden="true"></i
+              ></a>
+            </span>
+          </h6>
+        </div>
+        <div class="card-body1">
+          <div class="notifications">
+            <i
+              *ngIf="isLastEventDataLoading"
+              class="fa fa-spinner fa-spin fa-2x fa-fw"
+            ></i>
+            <ul
+              class="timeline"
+              *ngIf="!isLastEventDataLoading && lastGeneratedEvents.length > 0"
+            >
+              <li *ngFor="let event of lastGeneratedEvents">
+                <div class="device-name-text">
+                  {{ event.device_id }} | {{ event.time_diff }}
+                </div>
+                <p>{{ event.event_type }}</p>
+              </li>
+            </ul>
+            <div
+              *ngIf="
+                !isLastEventDataLoading && lastGeneratedEvents.length === 0
+              "
+            >
+              No Device Lifecycle events found.
+            </div>
           </div>
         </div>
       </div>
     </div>
-
   </div>
-
-  <div class="col-lg-4 mb-4">
-
-    <!-- Illustrations -->
-    <div class="card shadow mb-4">
-      <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Recent Alerts
-          <span class="float-right">
-            <a class="watch-eye"><i class="fa fa-eye" aria-hidden="true"></i></a>
-          </span>
-        </h6>
-      </div>
-      <div class="card-body1">
-        <div class="notifications">
-          <i *ngIf="isLastAlertDataLoading" class="fa fa-spinner fa-spin fa-2x fa-fw"></i>
-          <ul class="timeline" *ngIf="!isLastAlertDataLoading && lastGeneratedAlerts.length > 0">
-
-            <li  *ngFor="let alert of lastGeneratedAlerts">
-
-                <div class="device-name-text">{{alert.device_id}} | {{alert.time_diff}}</div>
-                <p>{{alert.message?.message}}</p>
-
-            </li>
-
-
-          </ul>
-          <div *ngIf="!isLastAlertDataLoading && lastGeneratedAlerts.length === 0">
-            No alerts found.
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="col-lg-4 mb-4">
-
-    <!-- Approach -->
-    <div class="card shadow mb-4">
-      <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Device Life Cycle Events
-          <span class="float-right">
-            <a class="watch-eye"><i class="fa fa-eye" aria-hidden="true"></i></a>
-          </span>
-        </h6>
-      </div>
-      <div class="card-body1">
-        <div class="notifications">
-          <i *ngIf="isLastEventDataLoading" class="fa fa-spinner fa-spin fa-2x fa-fw"></i>
-          <ul class="timeline" *ngIf="!isLastEventDataLoading  && lastGeneratedEvents.length > 0">
-
-            <li *ngFor="let event of lastGeneratedEvents">
-
-                <div class="device-name-text">{{event.device_id}} | {{event.time_diff}} </div>
-                <p>{{event.event_type}}</p>
-
-            </li>
-
-          </ul>
-          <div *ngIf="!isLastEventDataLoading && lastGeneratedEvents.length === 0">
-            No Device Lifecycle events found.
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
 </div>

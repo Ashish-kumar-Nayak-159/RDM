@@ -34,15 +34,8 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
         if (params.get('deviceId')) {
           this.device.device_id = params.get('deviceId');
           this.commonService.breadcrumbEvent.emit({
+            type: 'append',
             data: [
-                {
-                  title: this.appName,
-                  url: 'applications/' + this.appName
-                },
-                {
-                  title: 'devices',
-                  url: 'applications/' + this.appName + '/devices'
-                },
                 {
                   title: this.device.device_id + ' / Control Panel',
                   url: 'applications/' + this.appName + '/ devices/' + this.device.device_id + '/control-panel'

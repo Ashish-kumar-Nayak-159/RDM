@@ -23,11 +23,39 @@
   </li>
 
   <!-- Nav Item - Charts -->
-  <li class="nav-item" routerLinkActive="active"  *ngIf="!userData?.is_super_admin">
-    <a class="nav-link" [routerLink]="['/applications', appName, 'devices']">
+  <li class="nav-item" routerLinkActive="active"  *ngIf="!userData?.is_super_admin" [routerLinkActiveOptions]="{exact: false}">
+    <a class="nav-link" [routerLink]="['/applications', appName, 'devices']" [queryParams]="{state: constantsData.IP_DEVICES}">
 
-      <i class="fas fa-fw fa-desktop" title="Devices"></i>
-      <span>Devices</span></a>
+      <i class="fas fa-fw fa-desktop" title="IP Devices"></i>
+      <span>IP Devices</span></a>
+  </li>
+
+  <li class="nav-item" routerLinkActive="active"  *ngIf="!userData?.is_super_admin" [routerLinkActiveOptions]="{exact: false}">
+    <a class="nav-link" [routerLink]="['/applications', appName, 'gateways']" [queryParams]="{state: constantsData.IP_GATEWAYS}">
+
+      <i class="fas fa-fw fa-desktop" title="IP Gateways"></i>
+      <span>IP Gateways</span></a>
+  </li>
+  <li class="nav-item"  *ngIf="!userData?.is_super_admin">
+    <a class="nav-link collapsed" href="#non-ip-devices" data-toggle="collapse"
+    aria-expanded="true">
+      <i class="fas fa-fw fa-folder" title="Non IP Devices"></i>
+      <span>Non IP Devices</span>
+    </a>
+    <div id="non-ip-devices" class="collapse" aria-labelledby="headingPages" >
+      <div class="bg-white py-2 collapse-inner rounded">
+        <!--<h6 class="collapse-header">Login Screens:</h6>
+        <a class="collapse-item" href="login.html">Login</a>
+        <a class="collapse-item" href="register.html">Register</a>
+        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+        <div class="collapse-divider"></div>
+        <h6 class="collapse-header">Other Pages:</h6>-->
+        <a class="collapse-item" href="#">BLE Mesh Devices</a>
+        <a class="collapse-item" href="#">BLE Beacon Devices</a>
+        <a class="collapse-item" href="#">LoRa Devices</a>
+        <a class="collapse-item" href="#">ModBus Devices</a>
+      </div>
+    </div>
   </li>
 
   <li class="nav-item"  *ngIf="!userData?.is_super_admin">
@@ -54,12 +82,12 @@
 
   <!-- Nav Item - Pages Collapse Menu -->
   <li class="nav-item"  *ngIf="!userData?.is_super_admin">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-    aria-expanded="true" aria-controls="collapsePages">
+    <a class="nav-link collapsed" href="#device-groups" data-toggle="collapse"
+    aria-expanded="true">
       <i class="fas fa-fw fa-folder" title="Device Groups"></i>
       <span>Device Groups</span>
     </a>
-    <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+    <div id="device-groups" class="collapse" aria-labelledby="headingPages">
       <div class="bg-white py-2 collapse-inner rounded">
         <!--<h6 class="collapse-header">Login Screens:</h6>
         <a class="collapse-item" href="login.html">Login</a>

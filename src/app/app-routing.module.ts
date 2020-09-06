@@ -13,6 +13,10 @@ const routes: Routes = [
     loadChildren: () => import('./devices/devices.module').then(module => module.DevicesModule),
   },
   {
+    path: 'applications/:applicationId/gateways',
+    loadChildren: () => import('./devices/devices.module').then(module => module.DevicesModule),
+  },
+  {
     path: 'applications/:applicationId/visualization',
     loadChildren: () => import('./visualization/visualization.module').then(module => module.VisualizationModule)
   },

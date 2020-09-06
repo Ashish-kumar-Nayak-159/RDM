@@ -5,6 +5,7 @@ export class DeviceListFilter {
   connection_state: string;
   location: string;
   status: string;
+  category: string;
 }
 
 export class Device {

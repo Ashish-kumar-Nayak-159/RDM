@@ -61,6 +61,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
   applicationData: any;
   blobToken = environment.blobKey;
   appName: string;
+  contextApp: any;
   constructor(
     private applicationService: ApplicationService,
     private router: Router,
@@ -78,6 +79,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
       this.getLastAlertData();
       this.getLastEventData();
       this.commonService.breadcrumbEvent.emit({
+        type: 'replace',
         data: [
           {
             title: this.appName,
@@ -85,7 +87,10 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
           }
         ]
       });
-
+      this.contextApp = this.userData.apps.filter(
+        app => app.app === params.get('applicationId')
+      )[0];
+      console.log(this.contextApp);
     });
 
   }
@@ -212,13 +217,17 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
   }
 
   redirectToDevice(type?: string) {
+    const fromValue = (this.contextApp?.metadata?.contain_devices && this.contextApp?.metadata?.contain_gateways
+      ? CONSTANTS.IP_DEVICES_GATEWAYS :
+    (this.contextApp?.metadata?.contain_devices && !this.contextApp?.metadata?.contain_gateways ? CONSTANTS.IP_DEVICES :
+    (!this.contextApp?.metadata?.contain_devices && this.contextApp?.metadata?.contain_gateways ? CONSTANTS.IP_GATEWAYS : '')));
     let obj;
-    if (type) {
+    if (type || fromValue) {
       obj = {
-        state: type
+        connection_state: type,
+        state: fromValue
       };
     }
-    console.log(obj);
     this.router.navigate(['applications', this.appName, 'devices'], {queryParams: obj});
   }
 

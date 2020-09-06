@@ -117,6 +117,16 @@
           id="device_name" name="device_id" [(ngModel)]="applicationDetail.admin"
           placeholder="Enter App Admin">
         </div>
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="contains-gateway"
+          name="contains-gateway" [(ngModel)]="applicationDetail.metadata.contain_gateways">
+          <label class="form-check-label" for="contains-gateway">Contains Gateways</label>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="contains-devices"
+          name="contains-device" [(ngModel)]="applicationDetail.metadata.contain_devices">
+          <label class="form-check-label" for="contains-devices">Contains Devices</label>
+        </div>
         <div class="form-group">
           <label for="message-text" class="col-form-label">App Logo:</label>
           <input type="file"

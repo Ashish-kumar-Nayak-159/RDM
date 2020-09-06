@@ -76,11 +76,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.appData.app = params.get('applicationId');
       }
       this.commonService.breadcrumbEvent.emit({
+        type: 'replace',
         data: [
-            {
-              title: this.appData.app,
-              url: 'applications/' + this.appData.app
-            },
+          {
+            title: this.appData.app,
+            url: 'applications/' + this.appData.app
+          },
             {
               title: 'Visualization',
               url: 'applications/' + this.appData.app + '/visualization'

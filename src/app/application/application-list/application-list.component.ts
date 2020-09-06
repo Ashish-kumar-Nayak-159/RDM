@@ -35,6 +35,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
     console.log('in app component');
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.commonService.breadcrumbEvent.emit({
+      type: 'replace',
       data: [
         {
           title: 'Applications',
@@ -84,7 +85,10 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
 
   openCreateAppModal() {
     this.applicationDetail = {
-      metadata: {}
+      metadata: {
+        contain_gateways: false,
+        contain_devices: false
+      }
     };
     $('#createAppModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }

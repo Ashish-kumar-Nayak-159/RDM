@@ -195,5 +195,14 @@ export class CONSTANTS {
   ];
 
   public static USER_DETAILS = 'userData';
+  public static CURRENT_BREADCRUMB_STATE = 'breadcrumbState';
+  public static IP_DEVICES_GATEWAYS = 'IP Devices & Gateways';
+  public static IP_DEVICES = 'IP Devices';
+  public static IP_GATEWAYS = 'IP Gateways';
+  public static NON_IP_DEVICES = 'Non IP Devices';
+  public static IP_DEVICE_GATEWAY = 'IP Device & Gateway';
+  public static IP_DEVICE = 'IP Device';
+  public static IP_GATEWAY = 'IP Gateway';
+  public static NON_IP_DEVICE = 'Non IP Device';
 
 }

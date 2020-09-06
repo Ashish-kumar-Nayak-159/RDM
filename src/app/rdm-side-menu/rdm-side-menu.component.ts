@@ -1,8 +1,8 @@
 import { Component, OnInit, Inject, Input } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { CommonService } from 'src/app/services/common.service';
-import { CONSTANTS } from '../app.constants';
 import { ActivatedRoute } from '@angular/router';
+import { CONSTANTS } from 'src/app/app.constants';
 declare var $: any;
 @Component({
   selector: 'app-rdm-side-menu',
@@ -13,6 +13,7 @@ export class RDMSideMenuComponent implements OnInit {
 
   userData: any;
   @Input() appName = '';
+  constantsData = CONSTANTS;
   predictiveDemoUrl = 'https://app.powerbi.com/view?r=eyJrIjoiMzUyOWE3MmUtZWJhYi00NzA5LWI1YjktMTMwZDg1NjJiNmY2IiwidCI6IjA4YjdjZmViLTg5N2UtNDY5Yi05NDM2LTk3NGU2OTRhOGRmMiJ9&pageName=ReportSection';
   constructor(
     @Inject(DOCUMENT) private document: Document,

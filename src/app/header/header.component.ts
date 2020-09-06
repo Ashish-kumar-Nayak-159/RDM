@@ -1,8 +1,10 @@
 import { Component, OnInit, Inject, Input, SimpleChanges, OnChanges } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { CommonService } from '../services/common.service';
 import { DOCUMENT } from '@angular/common';
 import { CONSTANTS } from '../app.constants';
+import { filter } from 'rxjs/operators';
+import { data } from 'jquery';
 declare var $: any;
 
 @Component({
@@ -11,7 +13,7 @@ declare var $: any;
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit, OnChanges {
-  breadcrumbData: any;
+  breadcrumbData: any[] = [];
   userData: any;
   @Input() appName = '';
   @Input() isLoginRoute = false;
@@ -22,16 +24,62 @@ export class HeaderComponent implements OnInit, OnChanges {
     private route: ActivatedRoute,
     @Inject(DOCUMENT) private document: Document
   ) {
-    this.commonService.breadcrumbEvent.subscribe(data => this.breadcrumbData = data);
+    this.commonService.breadcrumbEvent.subscribe(data => {
+      console.log(data);
+      this.commonService.setItemInLocalStorage(CONSTANTS.CURRENT_BREADCRUMB_STATE, this.breadcrumbData);
+      console.log('breadcrumb data', this.breadcrumbData);
+      if (data.type === 'replace') {
+        this.breadcrumbData = data.data;
+      } else if (data.type === 'append') {
+        if (this.breadcrumbData && this.breadcrumbData.length > 0 ) {
+          console.log('in else if if');
+          data.data.forEach(item => {
+            this.breadcrumbData.splice(this.breadcrumbData.length, 0, item);
+          });
+          console.log(this.breadcrumbData);
+        } else {
+          console.log('in else if else');
+          this.breadcrumbData = data.data;
+        }
+      }
+    });
    }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.router.events
+    .pipe(filter((rs): rs is NavigationEnd => rs instanceof NavigationEnd))
+    .subscribe(event => {
+      if (
+        event.id === 1 &&
+        event.url === event.urlAfterRedirects
+      ) {
+        console.log('page refreshed');
+        this.breadcrumbData = this.commonService.getItemFromLocalStorage(CONSTANTS.CURRENT_BREADCRUMB_STATE);
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log(changes);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+  }
+
+  onClickOfBreadcrumbItem(obj, index) {
+    console.log(obj);
+    console.log(index);
+    console.log(JSON.stringify(this.breadcrumbData));
+    const arr = JSON.parse(JSON.stringify(this.breadcrumbData));
+    console.log(this.breadcrumbData.length);
+    for (let i = this.breadcrumbData.length - 1; i >= index; i--) {
+      console.log(i);
+      console.log(JSON.stringify(arr));
+      arr.splice(i, 1);
+    }
+
+    this.breadcrumbData = JSON.parse(JSON.stringify(arr));
+    console.log(JSON.stringify(this.breadcrumbData));
+    this.router.navigate([obj.url], {queryParams: (obj.queryParams ? obj.queryParams : undefined)});
   }
 
   onSideBarToggleTopClick() {

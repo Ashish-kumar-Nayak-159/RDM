@@ -7,7 +7,7 @@
 
       class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-4"
       href="javascript:void(0)" (click)="openCreateDeviceModal()"
-      ><i class="fas fa- fa-sm text-white-50"></i> Add {{originalSingularComponentState}}</a
+      ><i class="fas fa- fa-sm text-white-50"></i> Add {{singularComponentState}}</a
     >
     <a *ngIf="originalSingularComponentState === constantData.IP_DEVICE_GATEWAY"
 
@@ -29,10 +29,10 @@
         <div class="form-group form-inline my-1">
 
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4"
-          placeholder="{{originalSingularComponentState !== constantData.IP_DEVICE_GATEWAY ? originalSingularComponentState : 'IP Device or Gateway'}} Name"
+          placeholder="{{singularComponentState}} Name"
           [(ngModel)]="deviceFilterObj.name" name="name">
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputPassword4"
-          placeholder="{{originalSingularComponentState !== constantData.IP_DEVICE_GATEWAY ? originalSingularComponentState : 'IP Device or Gateway'}} Manager"
+          placeholder="{{singularComponentState}} Manager"
           [(ngModel)]="deviceFilterObj.device_manager" name="device_manager">
 
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="Location"
@@ -41,7 +41,7 @@
           [(ngModel)]="deviceFilterObj.status" name="status"> -->
           <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
           [(ngModel)]="deviceFilterObj.status" name="status">
-          <option [ngValue]="undefined">{{originalSingularComponentState !== constantData.IP_DEVICE_GATEWAY ? originalSingularComponentState : 'IP Device or Gateway'}} Status</option>
+          <option [ngValue]="undefined">{{singularComponentState}} Status</option>
           <option [ngValue]="'enabled'">Enabled</option>
           <option [ngValue]="'disabled'">Disabled</option>
           </select>
@@ -77,9 +77,9 @@
       <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
         <thead>
           <tr  class="bg-secondary text-white">
-            <th></th>
-            <th>{{originalSingularComponentState !== constantData.IP_DEVICE_GATEWAY ? originalSingularComponentState : 'IP Device or Gateway'}} Name</th>
-            <th>{{originalSingularComponentState !== constantData.IP_DEVICE_GATEWAY ? originalSingularComponentState : 'IP Device or Gateway'}} Manager</th>
+            <!-- <th></th> -->
+            <th>{{singularComponentState}} Name</th>
+            <th>{{singularComponentState}} Manager</th>
             <th>Connectivity</th>
 
             <th>Location</th>
@@ -99,12 +99,12 @@
         <tbody>
           <ng-container *ngIf="devicesList.length > 0 && !isDeviceListLoading">
             <tr *ngFor="let device of devicesList">
-              <td>
+              <!-- <td>
                 <img [src]="device.tags?.category === constantData.IP_DEVICE ? '../../../assets/img/device.svg' :
                  (device.tags?.category === constantData.IP_GATEWAY ? '../../../assets/img/gateway.svg' : '')"
                  width="18px" title="{{device.tags?.category}}"/>
 
-              </td>
+              </td> -->
               <td>{{device.device_id}}</td>
               <td>{{device.tags?.device_manager}}</td>
               <td>{{device.tags?.cloud_connectivity}}</td>
@@ -120,17 +120,17 @@
           </ng-container>
           <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading && isFilterSelected">
             <tr>
-              <td colspan="7">No {{componentState}} found.</td>
+              <td colspan="6">No {{componentState}} found.</td>
             </tr>
           </ng-container>
           <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading && !isFilterSelected">
             <tr>
-              <td colspan="7">Select filter and press search button to load the {{originalSingularComponentState}} data.</td>
+              <td colspan="6">Select filter and press search button to load the {{singularComponentState}} data.</td>
             </tr>
           </ng-container>
           <ng-container *ngIf="isDeviceListLoading">
             <tr>
-              <td colspan="7">
+              <td colspan="6">
                 <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
               </td>
             </tr>

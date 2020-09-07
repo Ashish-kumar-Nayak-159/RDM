@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, Input } from '@angular/core';
+import { Component, OnInit, Inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { CommonService } from 'src/app/services/common.service';
 import { ActivatedRoute } from '@angular/router';
@@ -9,11 +9,12 @@ declare var $: any;
   templateUrl: './rdm-side-menu.component.html',
   styleUrls: ['./rdm-side-menu.component.css']
 })
-export class RDMSideMenuComponent implements OnInit {
+export class RDMSideMenuComponent implements OnInit, OnChanges {
 
   userData: any;
   @Input() appName = '';
   constantsData = CONSTANTS;
+  appData: any;
   predictiveDemoUrl = 'https://app.powerbi.com/view?r=eyJrIjoiMzUyOWE3MmUtZWJhYi00NzA5LWI1YjktMTMwZDg1NjJiNmY2IiwidCI6IjA4YjdjZmViLTg5N2UtNDY5Yi05NDM2LTk3NGU2OTRhOGRmMiJ9&pageName=ReportSection';
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -23,6 +24,14 @@ export class RDMSideMenuComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.appData = this.userData.apps.filter(app => app.app === this.appName)[0];
+    console.log(this.appData);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.userData) {
+      this.appData = this.userData.apps.filter(app => app.app === this.appName)[0];
+    }
   }
 
   onSidebarToggle() {

@@ -14,9 +14,6 @@
     <div class="col-xl-12 col-md-12 mb-12 my-1">
 <!-- Page Heading -->
 
-
-
-
       <form>
         <div class="form-group form-inline my-1">
 
@@ -119,12 +116,14 @@
         </div>
         <div class="form-check">
           <input type="checkbox" class="form-check-input" id="contains-gateway"
-          name="contains-gateway" [(ngModel)]="applicationDetail.metadata.contain_gateways">
+          name="contains-gateway" [(ngModel)]="applicationDetail.metadata.contain_gateways"
+          (ngModelChange)="applicationDetail.metadata.contain_devices = false;">
           <label class="form-check-label" for="contains-gateway">Contains Gateways</label>
         </div>
         <div class="form-check">
           <input type="checkbox" class="form-check-input" id="contains-devices"
-          name="contains-device" [(ngModel)]="applicationDetail.metadata.contain_devices">
+          name="contains-device" [(ngModel)]="applicationDetail.metadata.contain_devices"
+          (ngModelChange)="applicationDetail.metadata.contain_gateways = false;">
           <label class="form-check-label" for="contains-devices">Contains Devices</label>
         </div>
         <div class="form-group">

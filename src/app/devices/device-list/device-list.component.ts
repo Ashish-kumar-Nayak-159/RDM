@@ -80,14 +80,10 @@ export class DeviceListComponent implements OnInit {
         } else if (this.componentState === CONSTANTS.IP_GATEWAYS) {
           this.singularComponentState = CONSTANTS.IP_GATEWAY;
           this.deviceFilterObj.category = CONSTANTS.IP_GATEWAY;
-        } else if (this.componentState === CONSTANTS.IP_DEVICES_GATEWAYS){
-          this.singularComponentState = CONSTANTS.IP_DEVICE_GATEWAY;
-          this.deviceFilterObj.category = undefined;
         } else if (this.componentState === CONSTANTS.NON_IP_DEVICES) {
           this.singularComponentState = CONSTANTS.NON_IP_DEVICE;
           this.deviceFilterObj.category = undefined;
         }
-        this.originalSingularComponentState = this.singularComponentState;
       }
     );
     console.log(this.deviceFilterObj);
@@ -119,10 +115,7 @@ export class DeviceListComponent implements OnInit {
     }
   }
 
-  openCreateDeviceModal(type = undefined) {
-    if (this.originalSingularComponentState === CONSTANTS.IP_DEVICE_GATEWAY) {
-      this.singularComponentState = type;
-    }
+  openCreateDeviceModal() {
     this.deviceDetail = new Device();
     this.deviceDetail.tags = {
     };
@@ -158,6 +151,5 @@ export class DeviceListComponent implements OnInit {
   onCloseCreateDeviceModal() {
     $('#createDeviceModal').modal('hide');
     this.deviceDetail = undefined;
-    this.singularComponentState = this.originalSingularComponentState;
   }
 }

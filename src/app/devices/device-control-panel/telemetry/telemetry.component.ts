@@ -88,14 +88,16 @@ export class TelemetryComponent implements OnInit, OnDestroy {
     ));
   }
 
-  openTelemetryMessageModal(telemetry) {
-    this.modalConfig = {
-      jsonDisplay: true,
-      isDisplaySave: false,
-      isDisplayCancel: true
-    };
-    this.selectedTelemetry = telemetry;
+  openTelemetryMessageModal(obj) {
+    if (obj.type === this.telemetryTableConfig.type) {
+      this.modalConfig = {
+        jsonDisplay: true,
+        isDisplaySave: false,
+        isDisplayCancel: true
+      };
+      this.selectedTelemetry = obj.data;
     $('#telemetryMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    }
   }
 
 

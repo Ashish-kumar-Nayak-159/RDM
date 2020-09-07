@@ -93,14 +93,16 @@ export class RDMDeviceControlPanelErrorComponent implements OnInit, OnDestroy {
     ));
   }
 
-  openErrorMessageModal(error) {
+  openErrorMessageModal(obj) {
+    if (obj.type === this.errorTableConfig.type) {
     this.modalConfig = {
       jsonDisplay: true,
       isDisplaySave: false,
       isDisplayCancel: true
     };
-    this.selectedError = error;
+    this.selectedError = obj.data;
     $('#errorMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    }
   }
 
 

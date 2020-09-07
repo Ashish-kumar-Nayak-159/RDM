@@ -18,6 +18,12 @@ export class TableComponent implements OnInit {
   ngOnInit(): void {
   }
 
-
+  onClickOfButton(data, value) {
+    this.viewMessageEvent.emit({
+      data,
+      for: value,
+      type: this.tableConfig.type
+    });
+  }
 
 }

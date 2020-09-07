@@ -88,15 +88,16 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
     ));
   }
 
-  openHeratbeatMessageModal(heartbeat) {
-    this.selectedHeartbeat = heartbeat;
-    this.modalConfig = {
-      jsonDisplay: true,
-      isDisplaySave: false,
-      isDisplayCancel: true
-    };
-    $('#heartbeatMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
-
+  openHeratbeatMessageModal(obj) {
+    if (obj.type === this.heartbeatTableConfig.type) {
+      this.selectedHeartbeat = obj.data;
+      this.modalConfig = {
+        jsonDisplay: true,
+        isDisplaySave: false,
+        isDisplayCancel: true
+      };
+      $('#heartbeatMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    }
   }
 
 

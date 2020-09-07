@@ -92,14 +92,16 @@ export class OthersComponent implements OnInit, OnDestroy {
     ));
   }
 
-  openOtherMessageModal(otherMessage) {
-    this.selectedOther = otherMessage;
-    this.modalConfig = {
-      jsonDisplay: true,
-      isDisplaySave: false,
-      isDisplayCancel: true
-    };
-    $('#otherMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  openOtherMessageModal(obj) {
+    if (obj.type === this.otherTableConfig.type) {
+      this.selectedOther = obj.data;
+      this.modalConfig = {
+        jsonDisplay: true,
+        isDisplaySave: false,
+        isDisplayCancel: true
+      };
+      $('#otherMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    }
   }
 
 

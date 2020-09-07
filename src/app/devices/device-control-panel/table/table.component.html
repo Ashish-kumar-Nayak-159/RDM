@@ -12,11 +12,10 @@
         <tr *ngFor="let data of tableData">
           <td *ngFor="let header of tableConfig?.data">
             <span *ngIf="header.key">{{data[header.key]}} </span>
-            <a href="javascript:void(0)" *ngIf="!header.key" (click)="viewMessageEvent.emit(data)">
+            <a href="javascript:void(0)" *ngIf="!header.key" (click)="onClickOfButton(data, header.name)">
               <i class="fas fa-fw fa-eye" title="View {{tableConfig?.type}} message"></i>
             </a>
           </td>
-
         </tr>
       </ng-container>
     <ng-container *ngIf="tableData.length === 0 && !isTableDataLoading && isTableFilterSelected">

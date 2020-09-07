@@ -87,14 +87,16 @@ export class NotificationComponent implements OnInit, OnDestroy {
     ));
   }
 
-  openNotificationMessageModal(notification) {
+  openNotificationMessageModal(obj) {
+    if (obj.type === this.notificationTableConfig.type) {
     this.modalConfig = {
       jsonDisplay: true,
       isDisplaySave: false,
       isDisplayCancel: true
     };
-    this.selectedNotification = notification;
+    this.selectedNotification = obj.data;
     $('#notificationMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    }
 
   }
 

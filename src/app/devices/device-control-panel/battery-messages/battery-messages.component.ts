@@ -88,14 +88,16 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
     ));
   }
 
-  openBatteryMessageModal(otherMessage) {
-    this.selectedBatteryMessage = otherMessage;
-    this.modalConfig = {
-      jsonDisplay: true,
-      isDisplaySave: false,
-      isDisplayCancel: true
-    };
-    $('#batteryMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  openBatteryMessageModal(obj) {
+    if (obj.type === this.batteryMessageTableConfig.type) {
+      this.selectedBatteryMessage = obj.data;
+      this.modalConfig = {
+        jsonDisplay: true,
+        isDisplaySave: false,
+        isDisplayCancel: true
+      };
+      $('#batteryMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    }
   }
 
 

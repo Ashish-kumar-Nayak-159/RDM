@@ -87,14 +87,16 @@ export class AlertsComponent implements OnInit, OnDestroy {
     ));
   }
 
-  openAlertMessageModal(alert) {
+  openAlertMessageModal(obj) {
+    if (obj.type === this.alertTableConfig.type) {
     this.modalConfig = {
       jsonDisplay: true,
       isDisplaySave: false,
       isDisplayCancel: true
     };
-    this.selectedAlert = alert;
+    this.selectedAlert = obj.data;
     $('#alertMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    }
   }
 
   onModalEvents(eventType) {

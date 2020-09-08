@@ -23,6 +23,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
   isCreateAPILoading = false;
   isFileUploading = false;
   blobSASToken = environment.blobKey;
+  appModalType: string;
   constructor(
     private applicationService: ApplicationService,
     private commonService: CommonService,
@@ -75,21 +76,30 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
   }
 
   redirectToDevices(app) {
-    // const index = this.userData.apps.findIndex(item => item.app === app.app);
-    // this.userData.apps.splice(index, 1);
-    // this.userData.apps.splice(0, 0, app);
-    // this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
-    // console.log(this.userData);
-    this.router.navigate(['applications', app.app, 'devices']);
+
+    this.router.navigate(['applications', app.app, 'devices'], {
+      queryParams: { state: app.metadata.contain_gateways ? CONSTANTS.IP_GATEWAYS : (
+        app.metadata.contain_devices ? CONSTANTS.IP_DEVICES : undefined
+      )}
+    });
   }
 
   openCreateAppModal() {
+    this.appModalType = 'Create';
     this.applicationDetail = {
       metadata: {
         contain_gateways: false,
         contain_devices: false
       }
     };
+    $('#createAppModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  openEditAppModal(app) {
+    this.appModalType = 'Edit';
+    console.log(app);
+    app.id = app.app;
+    this.applicationDetail = JSON.parse(JSON.stringify(app));
     $('#createAppModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -117,6 +127,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
   onCloseCreateAppModal(modalId) {
     $('#' + modalId).modal('hide');
     this.applicationDetail = undefined;
+    this.appModalType = undefined;
   }
 
   async upload(file) {
@@ -161,17 +172,23 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
       this.toasterService.showError('Please fill all details', 'Create App');
     } else {
       this.isCreateAPILoading = true;
-      this.applicationService.createApp(this.applicationDetail).subscribe(
-        (response: any) => {
-          this.toasterService.showSuccess(response.message, 'Create App');
-          this.onCloseCreateAppModal('createAppModal');
-          this.searchApplications();
-          this.isCreateAPILoading = false;
-        }, error => {
-          this.toasterService.showError(error.message, 'Create App');
-          this.isCreateAPILoading = false;
-        }
-      );
+
+      const methodToCall = this.appModalType === 'Create' ? this.applicationService.createApp(this.applicationDetail) :
+      (this.appModalType === 'Edit' ? this.applicationService.updateApp(this.applicationDetail) : null);
+      if (methodToCall) {
+        methodToCall.subscribe(
+          (response: any) => {
+            this.toasterService.showSuccess(response.message, this.appModalType + ' App');
+            this.onCloseCreateAppModal('createAppModal');
+            this.searchApplications();
+            this.isCreateAPILoading = false;
+          }, error => {
+            this.toasterService.showError(error.message, this.appModalType + ' App');
+            this.isCreateAPILoading = false;
+          }
+        );
+      }
+
     }
   }
 

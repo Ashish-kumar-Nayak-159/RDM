@@ -40,7 +40,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    if (this.userData) {
+    if (this.userData && !this.userData.is_super_admin) {
       this.appName = this.userData.apps[0].app;
     }
     this.router.events.subscribe(event => {

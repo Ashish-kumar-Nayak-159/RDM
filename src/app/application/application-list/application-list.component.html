@@ -69,7 +69,7 @@
                 <i class="fas fa-fw fa-eye"></i></a></td>
               <td><a  href="javascript:void(0)" (click)="openViewIconModal(app)" title="View Icons" >
                 <i class="fas fa-fw fa-eye"></i></a></td>
-              <td><a  title="Edit App">
+              <td><a href="javascript:void(0)" (click)="openEditAppModal(app)" title="Edit App" >
                 <i class="fas fa-fw fa-edit"></i></a></td>
             </tr>
           </ng-container>
@@ -96,7 +96,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
     <div class="modal-header">
-      <h5 class="modal-title" >Create New App</h5>
+      <h5 class="modal-title" >{{appModalType}} {{appModalType === 'Create' ? 'New' : ''}} App {{appModalType === 'Edit' ? ('- ' + applicationDetail?.app) : ''}}</h5>
       <button type="button" class="close"  (click)="onCloseCreateAppModal('createAppModal')" aria-label="Close" [disabled]="isCreateAPILoading">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -127,15 +127,16 @@
           <label class="form-check-label" for="contains-devices">Contains Devices</label>
         </div>
         <div class="form-group">
-          <label for="message-text" class="col-form-label">App Logo:</label>
+          <label for="message-text" class="col-form-label">App Logo: {{appModalType === 'Edit' ? applicationDetail?.metadata?.logo?.name : ''}}</label>
           <input type="file"
           #appLogoFileInput (change)="onLogoFileSelected($event.target.files)"
            class="form-control" id="app_logo" name="app_logo" >
         </div>
         <div class="form-group">
-          <label for="message-text" class="col-form-label">App Icon:</label>
+          <label for="message-text" class="col-form-label">App Icon: {{appModalType === 'Edit' ? applicationDetail?.metadata?.icon?.name : ''}}</label>
           <input type="file" #appIconFileInput (change)="onIconFileSelected($event.target.files)"
            class="form-control" id="app_icon" name="app_icon" >
+
         </div>
       </form>
     </div>
@@ -152,8 +153,8 @@
 
 
 <div class="modal right fade" id="viewAppIconModal" role="dialog" aria-labelledby="ModalLabel1" >
-  <div class="modal-dialog" role="document" *ngIf="applicationDetail">
-    <div class="modal-content">
+  <div class="modal-dialog" role="document" >
+    <div class="modal-content" *ngIf="applicationDetail">
     <div class="modal-header">
       <h5 class="modal-title">View App Icons: {{applicationDetail.app}}</h5>
       <button type="button" class="close"  (click)="onCloseCreateAppModal('viewAppIconModal')">

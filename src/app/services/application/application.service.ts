@@ -33,6 +33,10 @@ export class ApplicationService {
     return this.http.post(this.url + AppUrls.CREATE_APP, appObj);
   }
 
+  updateApp(appObj) {
+    return this.http.patch(this.url + AppUrls.UPDATE_APP, appObj);
+  }
+
   getLastAlerts(limit: number, app) {
     let params = new HttpParams().set('count', limit.toString());
     params = params.set('app', app);

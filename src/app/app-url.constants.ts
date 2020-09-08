@@ -26,6 +26,7 @@ export class AppUrls {
   public static LOGIN = 'App_Login';
   public static GET_APPLICATIONS_LIST = 'apps/get';
   public static CREATE_APP = 'App_CreateApp';
+  public static UPDATE_APP = 'App_EditApp';
   public static CREATE_USER = 'App_CreateUser';
 
 }

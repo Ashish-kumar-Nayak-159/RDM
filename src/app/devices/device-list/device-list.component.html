@@ -1,13 +1,13 @@
 
 <div class="topnavbar" >
   <div class="d-sm-flex align-items-center justify-content-start mb-4">
-    <h1 class="h3 mb-0 text-gray-800">{{componentState}} Management</h1>
+    <h1 class="h3 mb-0 text-gray-800">{{nonIPDeviceCategory ? nonIPDeviceCategory.name : componentState}} Management</h1>
 
     <a
 
       class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-4"
       href="javascript:void(0)" (click)="openCreateDeviceModal()"
-      ><i class="fas fa- fa-sm text-white-50"></i> Add {{singularComponentState}}</a
+      ><i class="fas fa- fa-sm text-white-50"></i> Add {{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}}</a
     >
 
   </div>
@@ -18,10 +18,10 @@
         <div class="form-group form-inline my-1">
 
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4"
-          placeholder="{{singularComponentState}} Name"
+          placeholder="{{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} Name"
           [(ngModel)]="deviceFilterObj.name" name="name">
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputPassword4"
-          placeholder="{{singularComponentState}} Manager"
+          placeholder="{{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} Manager"
           [(ngModel)]="deviceFilterObj.device_manager" name="device_manager">
 
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="Location"
@@ -30,7 +30,7 @@
           [(ngModel)]="deviceFilterObj.status" name="status"> -->
           <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
           [(ngModel)]="deviceFilterObj.status" name="status">
-          <option [ngValue]="undefined">{{singularComponentState}} Status</option>
+          <option [ngValue]="undefined">{{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} Status</option>
           <option [ngValue]="'enabled'">Enabled</option>
           <option [ngValue]="'disabled'">Disabled</option>
           </select>
@@ -67,8 +67,8 @@
         <thead>
           <tr  class="bg-secondary text-white">
             <!-- <th></th> -->
-            <th>{{singularComponentState}} Name</th>
-            <th>{{singularComponentState}} Manager</th>
+            <th>{{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} Name</th>
+            <th>{{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} Manager</th>
             <th>Connectivity</th>
 
             <th>Location</th>
@@ -99,12 +99,12 @@
           </ng-container>
           <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading && isFilterSelected">
             <tr>
-              <td colspan="6">No {{componentState}} found.</td>
+              <td colspan="6">No {{nonIPDeviceCategory ? nonIPDeviceCategory.name : componentState}} found.</td>
             </tr>
           </ng-container>
           <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading && !isFilterSelected">
             <tr>
-              <td colspan="6">Select filter and press search button to load the {{singularComponentState}} data.</td>
+              <td colspan="6">Select filter and press search button to load the {{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} data.</td>
             </tr>
           </ng-container>
           <ng-container *ngIf="isDeviceListLoading">
@@ -125,7 +125,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
     <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">Create New {{singularComponentState}}</h5>
+      <h5 class="modal-title" id="exampleModalLabel">Create New {{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}}</h5>
       <button type="button" class="close"  (click)="onCloseCreateDeviceModal()" aria-label="Close" [disabled]="isCreateDeviceAPILoading">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -137,27 +137,28 @@
           <input type="text" class="form-control" id="app_name" [defaultValue]="appName" disabled>
         </div>
         <div class="form-group">
-          <label for="message-text" class="col-form-label">{{singularComponentState}} name:</label>
+          <label for="message-text" class="col-form-label">{{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} name:</label>
           <input type="text" class="form-control" id="device_name" name="device_id" [(ngModel)]="deviceDetail.device_id"
-          placeholder="Enter {{singularComponentState}} name">
+          placeholder="Enter {{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} name">
         </div>
         <div class="form-group">
-          <label for="message-text" class="col-form-label">{{singularComponentState}} Manager:</label>
+          <label for="message-text" class="col-form-label">{{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} Manager:</label>
           <input type="email" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
-          placeholder="Enter {{singularComponentState}} Manager"
+          placeholder="Enter {{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} Manager"
            class="form-control" id="device_manager" name="device_manager" [(ngModel)]="deviceDetail.tags.device_manager">
         </div>
         <div class="form-group">
-          <label for="recipient-name" class="col-form-label">{{singularComponentState}} Type:</label>
+          <label for="recipient-name" class="col-form-label">{{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} Type:</label>
           <select class="custom-select" id="device_type" name="device_type" [(ngModel)]="deviceDetail.tags.device_type"
           >
-            <option [ngValue]="undefined"> Select {{singularComponentState}} Type</option>
+            <option [ngValue]="undefined"> Select {{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} Type</option>
 
         </select>
         </div>
         <div class="form-group">
           <label for="recipient-name" class="col-form-label">Protocol:</label>
-          <select class="custom-select" id="protocol" name="protocol" (change)="getConnectivityData()" [(ngModel)]="deviceDetail.tags.protocol">
+          <select class="custom-select" id="protocol" name="protocol" [disabled]="nonIPDeviceCategory"
+          (change)="getConnectivityData()" [(ngModel)]="deviceDetail.tags.protocol">
             <option [ngValue]="undefined"> Select Protocol</option>
             <ng-container *ngFor="let protocol of protocolList">
               <option [ngValue]="protocol.name" *ngIf="protocol.display">{{protocol.name}}</option>
@@ -165,7 +166,7 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="recipient-name" class="col-form-label">Cloud Connectivity followed by the {{singularComponentState}}:</label>
+          <label for="recipient-name" class="col-form-label">Cloud Connectivity followed by the {{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}}:</label>
           <select class="custom-select" id="template" name="connectivity" [(ngModel)]="deviceDetail.tags.cloud_connectivity">
             <option [ngValue]="undefined"> Select Connectivity</option>
           <option *ngFor="let item of connectivityList" [ngValue]="item">
@@ -181,6 +182,14 @@
           <label for="message-text" class="col-form-label">Location:</label>
           <input type="text" class="form-control" id="location" name="location"
           placeholder="Enter Location" [(ngModel)]="deviceDetail.tags.location">
+        </div>
+        <div class="form-group" *ngIf="nonIPDeviceCategory">
+          <label for="message-text" class="col-form-label">Gateway:</label>
+          <select class="custom-select" id="template" name="gateway_id" [(ngModel)]="deviceDetail.gateway_id">
+            <option [ngValue]="undefined"> Select Gateway</option>
+          <option *ngFor="let item of gateways" [ngValue]="item.device_id">
+            {{item.device_id}}</option>
+          </select>
         </div>
       </form>
     </div>

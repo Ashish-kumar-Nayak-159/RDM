@@ -36,7 +36,7 @@
       <i class="fas fa-fw fa-desktop" title="IP Gateways"></i>
       <span>IP Gateways</span></a>
   </li>
-  <li class="nav-item"  *ngIf="!userData?.is_super_admin  && appData?.metadata?.contain_gateways">
+  <li class="nav-item" routerLinkActive="active" *ngIf="!userData?.is_super_admin  && appData?.metadata?.contain_gateways">
     <a class="nav-link collapsed" href="#non-ip-devices" data-toggle="collapse"
     aria-expanded="true">
       <i class="fas fa-fw fa-folder" title="Non IP Devices"></i>
@@ -50,10 +50,10 @@
         <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
         <div class="collapse-divider"></div>
         <h6 class="collapse-header">Other Pages:</h6>-->
-        <a class="collapse-item" href="#">BLE Mesh Devices</a>
-        <a class="collapse-item" href="#">BLE Beacon Devices</a>
-        <a class="collapse-item" href="#">LoRa Devices</a>
-        <a class="collapse-item" href="#">ModBus Devices</a>
+        <a class="collapse-item" *ngFor="let item of constantsData.NON_IP_DEVICE_OPTIONS"
+        [routerLink]="['/applications', appName, 'devices']" [queryParams]="{state: constantsData.NON_IP_DEVICES, category: item.name}">
+          {{item.name}}
+        </a>
       </div>
     </div>
   </li>

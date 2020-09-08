@@ -144,6 +144,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
     if (!callFromMenu) {
       this.isDeviceDataLoading = true;
     }
+    const methodToCall
     this.deviceService.getDeviceData(this.device.device_id, this.appName).subscribe(
       (response: any) => {
         this.device = response;

@@ -173,14 +173,19 @@ export class CONSTANTS {
       name: 'BLE',
       connectivity: ['BLE Device -> Mobile App -> Azure IOT Hub SDK -> Cloud', 'BLE Device -> Mobile App -> MQTT Client -> Cloud',
     'BLE Device -> Gateway -> Azure IOT Hub SDK -> Cloud', 'BLE Device -> Gateway -> MQTT Client -> Cloud'],
-      display: false
+      display: true
     },
     {
       name: 'LoRa',
       connectivity: ['LoRa Node -> LoRa Public Gateway -> Azure Integration -> Cloud',
       'LoRa Node -> LoRa Private Gateway -> Azure IOT Hub SDK -> Cloud',
       'LoRa Node -> LoRa Private Gateway -> MQTT Client -> Cloud'],
-      display: false
+      display: true
+    },
+    {
+      name: 'ModBus',
+      connectivity: [],
+      display: true
     },
     {
       name: 'NB-IoT',
@@ -191,6 +196,25 @@ export class CONSTANTS {
       name: 'LwM2M',
       connectivity: ['LwM2M Node -> LwM2M Server -> Azure Integration -> Cloud'],
       display: false
+    }
+  ];
+
+  public static NON_IP_DEVICE_OPTIONS = [
+    {
+      name: 'BLE Mesh Devices',
+      protocol: 'BLE'
+    },
+    {
+      name: 'BLE Beacon Devices',
+      protocol: 'BLE'
+    },
+    {
+      name: 'LoRa Devices',
+      protocol: 'LoRa'
+    },
+    {
+      name: 'ModBus Devices',
+      protocol: 'ModBus'
     }
   ];
 

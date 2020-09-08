@@ -26,9 +26,11 @@ export class DeviceListComponent implements OnInit {
   connectivityList: any[] = [];
   appName: string;
   componentState: string; // value must be IP Devices & Gateways or IP Device or IP Gateway or Non IP Devices
+  nonIPDeviceCategory: any;
   singularComponentState: string; // value must be IP Device & Gateway or IP Device or IP Gateway or Non IP Device
   constantData = CONSTANTS;
   originalSingularComponentState: string;
+  gateways: any[];
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -54,8 +56,15 @@ export class DeviceListComponent implements OnInit {
         }
         if (params.get('state')) {
           this.componentState = params.get('state');
+          if (this.componentState === CONSTANTS.NON_IP_DEVICES) {
+            this.nonIPDeviceCategory = CONSTANTS.NON_IP_DEVICE_OPTIONS.filter(item => item.name === params.get('category'))[0];
+            this.getGatewayList();
+          } else {
+            this.nonIPDeviceCategory = undefined;
+          }
         } else {
           this.componentState = CONSTANTS.IP_DEVICES;
+          this.nonIPDeviceCategory = undefined;
         }
         this.commonService.breadcrumbEvent.emit({
           type: 'replace',
@@ -65,10 +74,14 @@ export class DeviceListComponent implements OnInit {
               url: 'applications/' + this.appName
             },
               {
-                title: this.componentState,
+                title:
+                  (this.componentState === CONSTANTS.IP_GATEWAYS ? 'gateways' :
+                  (this.componentState === CONSTANTS.IP_DEVICES ? 'devices' :
+                  (this.componentState === CONSTANTS.NON_IP_DEVICES ?  this.nonIPDeviceCategory.name : ''))),
                 url: 'applications/' + this.appName + '/' + (this.componentState === CONSTANTS.IP_GATEWAYS ? 'gateways' : 'devices'),
                 queryParams: {
                     state: this.componentState,
+                    category: this.nonIPDeviceCategory?.name,
                     connection_state: this.deviceFilterObj.connection_state ? this.deviceFilterObj.connection_state : undefined
                 }
               }
@@ -89,10 +102,32 @@ export class DeviceListComponent implements OnInit {
     console.log(this.deviceFilterObj);
   }
 
+  getGatewayList() {
+    this.gateways = [];
+    const obj = {
+      app: this.appName,
+      category: CONSTANTS.IP_GATEWAY
+    };
+    this.deviceService.getDeviceList(obj).subscribe(
+      (response: any) => {
+        if (response.data) {
+          this.gateways = response.data;
+        }
+      }
+    )
+  }
+
+
   searchDevices() {
     this.isDeviceListLoading = true;
     this.isFilterSelected = true;
-    this.deviceService.getDeviceList(this.deviceFilterObj).subscribe(
+    if (this.nonIPDeviceCategory) {
+      this.deviceFilterObj.category = this.nonIPDeviceCategory.name;
+    }
+    const methodToCall = this.nonIPDeviceCategory
+    ? this.deviceService.getNonIPDeviceList(this.deviceFilterObj)
+    : this.deviceService.getDeviceList(this.deviceFilterObj);
+    methodToCall.subscribe(
       (response: any) => {
         if (response.data) {
           this.devicesList = response.data;
@@ -118,7 +153,11 @@ export class DeviceListComponent implements OnInit {
   openCreateDeviceModal() {
     this.deviceDetail = new Device();
     this.deviceDetail.tags = {
+      protocol: (this.nonIPDeviceCategory ? this.nonIPDeviceCategory.protocol : null)
     };
+    if (this.nonIPDeviceCategory) {
+      this.getConnectivityData();
+    }
     this.deviceDetail.tags.app = this.appName;
     $('#createDeviceModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
@@ -127,22 +166,29 @@ export class DeviceListComponent implements OnInit {
     console.log(this.deviceDetail);
     if (!this.deviceDetail.device_id || !this.deviceDetail.tags.device_manager || !this.deviceDetail.tags.protocol
       || !this.deviceDetail.tags.cloud_connectivity  || !this.deviceDetail.tags.manufacturer ) {
-        this.toasterService.showError('Please fill all the details', 'Create ' + this.singularComponentState);
+        this.toasterService.showError('Please fill all the details',
+        'Create ' + (this.nonIPDeviceCategory ? this.nonIPDeviceCategory.name : this.singularComponentState));
         return;
     }
     this.isCreateDeviceAPILoading = true;
     console.log(this.deviceDetail);
     this.deviceDetail.tags.created_by = this.userData.email;
-    this.deviceDetail.tags.category = this.singularComponentState;
+    this.deviceDetail.app = this.nonIPDeviceCategory ? this.appName : undefined;
+    this.deviceDetail.tags.category = this.nonIPDeviceCategory ? this.nonIPDeviceCategory.name : this.singularComponentState;
     this.deviceDetail.tags.created_date = moment().utc().format('M/DD/YYYY h:mm:ss A');
-    this.deviceService.createDevice(this.deviceDetail, this.appName).subscribe(
+    const methodToCall = this.nonIPDeviceCategory
+    ? this.deviceService.createNonIPDevice(this.deviceDetail, this.appName)
+    : this.deviceService.createDevice(this.deviceDetail, this.appName);
+    methodToCall.subscribe(
       (response: any) => {
         this.isCreateDeviceAPILoading = false;
-        this.toasterService.showSuccess(response.message, 'Create ' + this.singularComponentState);
+        this.toasterService.showSuccess(response.message,
+          'Create ' + (this.nonIPDeviceCategory ? this.nonIPDeviceCategory.name : this.singularComponentState));
         this.onCloseCreateDeviceModal();
       }, error => {
         this.isCreateDeviceAPILoading = false;
-        this.toasterService.showError(error.message, 'Create ' + this.singularComponentState);
+        this.toasterService.showError(error.message,
+          'Create ' + (this.nonIPDeviceCategory ? this.nonIPDeviceCategory.name : this.singularComponentState));
         // this.onCloseCreateDeviceModal();
       }
     );

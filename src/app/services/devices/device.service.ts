@@ -26,6 +26,17 @@ export class DeviceService {
     return this.http.get(this.url + AppUrls.GET_DEVICE_FILTER_LIST, { params });
   }
 
+  getNonIPDeviceList(filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    console.log(params);
+    return this.http.get(this.url + AppUrls.GET_NON_IP_DEVICE, { params });
+  }
+
   getDeviceData(deviceId, app) {
     let params = new HttpParams().set('device_id', deviceId);
     params = params.set('app', app);
@@ -36,6 +47,12 @@ export class DeviceService {
     let params = new HttpParams();
     params = params.set('app', app);
     return this.http.post(this.url + AppUrls.CREATE_DEVICE, deviceObj, {params});
+  }
+
+  createNonIPDevice(deviceObj, app) {
+    let params = new HttpParams();
+    params = params.set('app', app);
+    return this.http.post(this.url + AppUrls.CREATE_NON_IP_DEVICE, deviceObj, {params});
   }
 
   enableDevice(deviceId, appId) {
@@ -54,6 +71,12 @@ export class DeviceService {
     let params = new HttpParams().set('device_id', deviceId);
     params = params.set('app', appId);
     return this.http.delete(this.url + AppUrls.DELETE_DEVICE, { params });
+  }
+
+  deleteNonIPDevice(deviceId, appId) {
+    let params = new HttpParams().set('device_id', deviceId);
+    params = params.set('app', appId);
+    return this.http.delete(this.url + AppUrls.DELETE_NON_IP_DEVICE, { params });
   }
 
   getDeviceCredentials(deviceId, appId) {

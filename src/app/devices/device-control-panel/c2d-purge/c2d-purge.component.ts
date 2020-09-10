@@ -5,6 +5,7 @@ import { ToasterService } from './../../../services/toaster.service';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from './../../../services/common.service';
 import { ActivatedRoute } from '@angular/router';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-c2d-purge',
@@ -33,7 +34,10 @@ export class C2dPurgeComponent implements OnInit {
 
   verifyQueueMessages() {
     this.messageCount = null;
-    this.deviceService.getQueueMessagesCount(this.device.device_id, this.appName).subscribe(
+    let params = new HttpParams();
+    params = params.set(this.device.tags.category === CONSTANTS.IP_GATEWAY ? 'gateway_id' : 'device_id', this.device.device_id);
+    params = params.set('app', this.appName);
+    this.deviceService.getQueueMessagesCount(params).subscribe(
       (response: any) => {
         this.messageCount = response.count;
       }
@@ -41,7 +45,10 @@ export class C2dPurgeComponent implements OnInit {
   }
 
   purgeQueueMessages() {
-    this.deviceService.purgeQueueMessages(this.device.device_id, this.appName).subscribe(
+    let params = new HttpParams();
+    params = params.set(this.device.tags.category === CONSTANTS.IP_GATEWAY ? 'gateway_id' : 'device_id', this.device.device_id);
+    params = params.set('app', this.appName);
+    this.deviceService.purgeQueueMessages(params).subscribe(
       (response: any) => {
         this.toasterServie.showSuccess(response.message, 'Purge Messages');
         this.verifyQueueMessages();

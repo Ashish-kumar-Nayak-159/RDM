@@ -4,6 +4,7 @@ import { Device } from 'src/app/models/device.model';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
+import { CONSTANTS } from 'src/app/app.constants';
 declare var $: any;
 @Component({
   selector: 'app-heartbeat',
@@ -27,7 +28,11 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.heartBeatFilter.device_id = this.device.device_id;
+    if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
+      this.heartBeatFilter.gateway_id = this.device.device_id;
+    } else {
+      this.heartBeatFilter.device_id = this.device.device_id;
+    }
     this.heartBeatFilter.epoch = true;
     this.heartbeatTableConfig = {
       type: 'heartbeat',

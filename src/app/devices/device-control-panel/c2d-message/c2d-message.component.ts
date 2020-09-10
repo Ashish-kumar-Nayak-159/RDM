@@ -37,7 +37,11 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.c2dMsgFilter.device_id = this.device.device_id;
+    if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
+      this.c2dMsgFilter.gateway_id = this.device.device_id;
+    } else {
+      this.c2dMsgFilter.device_id = this.device.device_id;
+    }
     this.c2dMsgFilter.epoch = true;
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');

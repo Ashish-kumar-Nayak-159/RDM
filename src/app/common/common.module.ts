@@ -5,13 +5,15 @@ import { TableComponent } from '../devices/device-control-panel/table/table.comp
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTableModule } from '@angular/material/table';
+import { CommonTableComponent } from './common-table/common-table.component';
 
 
 
 @NgModule({
   declarations: [
-    FilterComponent,
-    TableComponent
+    // FilterComponent,
+    // TableComponent,
+    CommonTableComponent
   ],
   imports: [
     CommonModule,
@@ -20,8 +22,9 @@ import { MatTableModule } from '@angular/material/table';
     MatTableModule,
   ],
   exports: [
-    FilterComponent,
-    TableComponent
+    // FilterComponent,
+    // TableComponent,
+    CommonTableComponent
   ],
   providers: [
     {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}

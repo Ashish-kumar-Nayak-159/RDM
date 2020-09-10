@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { CommonService } from 'src/app/services/common.service';
 import * as moment from 'moment';
+import { CONSTANTS } from 'src/app/app.constants';
 declare var $: any;
 
 @Component({
@@ -28,7 +29,11 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.batteryMessageFilter.device_id = this.device.device_id;
+    if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
+      this.batteryMessageFilter.gateway_id = this.device.device_id;
+    } else {
+      this.batteryMessageFilter.device_id = this.device.device_id;
+    }
     this.batteryMessageTableConfig = {
       type: 'battery',
       headers: ['Timestamp', 'Message ID', 'Message'],

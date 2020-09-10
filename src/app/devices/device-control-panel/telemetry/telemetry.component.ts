@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import * as moment from 'moment';
 import { CommonService } from 'src/app/services/common.service';
+import { CONSTANTS } from 'src/app/app.constants';
 declare var $: any;
 @Component({
   selector: 'app-telemetry',
@@ -27,7 +28,11 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.telemetryFilter.device_id = this.device.device_id;
+    if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
+      this.telemetryFilter.gateway_id = this.device.device_id;
+    } else {
+      this.telemetryFilter.device_id = this.device.device_id;
+    }
     this.telemetryFilter.epoch = true;
     this.telemetryTableConfig = {
       type: 'telemetry',

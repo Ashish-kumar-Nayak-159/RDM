@@ -31,7 +31,15 @@ export class HeaderComponent implements OnInit, OnChanges {
       } else if (data.type === 'append') {
         if (this.breadcrumbData && this.breadcrumbData.length > 0 ) {
           data.data.forEach(item => {
-            this.breadcrumbData.splice(this.breadcrumbData.length, 0, item);
+            let isFound = false;
+            this.breadcrumbData.forEach(obj => {
+              if (obj.url === item.url) {
+                isFound = true;
+              }
+            });
+            if (!isFound) {
+              this.breadcrumbData.splice(this.breadcrumbData.length, 0, item);
+            }
           });
         } else {
           this.breadcrumbData = data.data;

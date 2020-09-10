@@ -34,6 +34,7 @@ import { ChartsModule } from 'ng2-charts';
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { BatteryMessagesComponent } from './device-control-panel/battery-messages/battery-messages.component';
+import { CommonCustomModule } from './../common/common.module';
 
 
 @NgModule({
@@ -74,7 +75,8 @@ import { BatteryMessagesComponent } from './device-control-panel/battery-message
     // NgSelectModule,
     ChartsModule,
     Ng2GoogleChartsModule,
-    AngularMultiSelectModule
+    AngularMultiSelectModule,
+    CommonCustomModule
   ],
   providers: [
     {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}

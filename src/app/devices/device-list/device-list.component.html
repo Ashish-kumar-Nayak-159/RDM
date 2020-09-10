@@ -62,61 +62,8 @@
 <div class="mb-4 ">
 
   <div class="">
-    <div class="table-responsive">
-      <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
-        <thead>
-          <tr  class="bg-secondary text-white">
-            <!-- <th></th> -->
-            <th>{{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} Name</th>
-            <th>{{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} Manager</th>
-            <th>Connectivity</th>
-
-            <th>Location</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <ng-container *ngIf="devicesList.length > 0 && !isDeviceListLoading">
-            <tr *ngFor="let device of devicesList">
-              <!-- <td>
-                <img [src]="device.tags?.category === constantData.IP_DEVICE ? '../../../assets/img/device.svg' :
-                 (device.tags?.category === constantData.IP_GATEWAY ? '../../../assets/img/gateway.svg' : '')"
-                 width="18px" title="{{device.tags?.category}}"/>
-
-              </td> -->
-              <td>{{device.device_id}}</td>
-              <td>{{device.tags?.device_manager}}</td>
-              <td>{{device.tags?.cloud_connectivity}}</td>
-              <td>{{device.tags?.location}}</td>
-              <td>
-                <a *ngIf="device.tags?.category === constantData.IP_GATEWAY" class="mr-2" title="View Devices" href="javascript:void(0)">
-                  <i class="fas fa-fw fa-eye"></i></a>
-                <a [routerLink]="[device.device_id, 'control-panel']" routerLinkActive="router-link-active" title="Control panel">
-                <i class="fas fa-fw fa-table"></i></a>
-
-              </td>
-            </tr>
-          </ng-container>
-          <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading && isFilterSelected">
-            <tr>
-              <td colspan="6">No {{nonIPDeviceCategory ? nonIPDeviceCategory.name : componentState}} found.</td>
-            </tr>
-          </ng-container>
-          <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading && !isFilterSelected">
-            <tr>
-              <td colspan="6">Select filter and press search button to load the {{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} data.</td>
-            </tr>
-          </ng-container>
-          <ng-container *ngIf="isDeviceListLoading">
-            <tr>
-              <td colspan="6">
-                <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-              </td>
-            </tr>
-          </ng-container>
-        </tbody>
-      </table>
-    </div>
+   <app-common-table [tableData]="devicesList" [tableConfig]="tableConfig" [isTableFilterSelected]="isFilterSelected"
+   [isTableDataLoading]="isDeviceListLoading" (viewMessageEvent)="onTableFunctionCall($event)"></app-common-table>
   </div>
 </div>
 </div>

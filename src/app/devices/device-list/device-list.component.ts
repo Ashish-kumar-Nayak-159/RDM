@@ -31,6 +31,7 @@ export class DeviceListComponent implements OnInit {
   constantData = CONSTANTS;
   originalSingularComponentState: string;
   gateways: any[];
+  tableConfig: any;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -46,6 +47,7 @@ export class DeviceListComponent implements OnInit {
 
       this.deviceFilterObj.app = this.appName;
     });
+
 
     this.route.queryParamMap.subscribe(
       params => {
@@ -97,6 +99,64 @@ export class DeviceListComponent implements OnInit {
           this.singularComponentState = CONSTANTS.NON_IP_DEVICE;
           this.deviceFilterObj.category = undefined;
         }
+        this.tableConfig = {
+          type: 'device',
+          data: [
+            {
+              name: this.nonIPDeviceCategory ? this.nonIPDeviceCategory.name : this.singularComponentState + ' Name',
+              key: 'device_id',
+              type: 'text',
+              headerClass: '',
+              valueclass: ''
+            },
+            {
+              name: this.nonIPDeviceCategory ? this.nonIPDeviceCategory.name : this.singularComponentState + ' Manager',
+              key: 'tags.device_manager',
+              type: 'text',
+              headerClass: '',
+              valueclass: ''
+            },
+            {
+              name: 'Connectivity',
+              key: 'tags.cloud_connectivity',
+              type: 'text',
+              headerClass: '',
+              valueclass: ''
+            },
+            {
+              name: 'Connectivity',
+              key: 'tags.location',
+              type: 'text',
+              headerClass: '',
+              valueclass: ''
+            },
+            {
+              name: 'Actions',
+              key: undefined,
+              type: 'button',
+              headerClass: '',
+              btnData: [
+                {
+                  icon: 'fas fa-fw fa-eye',
+                  text: '',
+                  id: 'View Devices',
+                  valueclass: 'mr-2',
+                  tooltip: 'View Devices',
+                },
+                {
+                  icon: 'fas fa-fw fa-table',
+                  text: '',
+                  id: 'View Control Panel',
+                  valueclass: '',
+                  tooltip: 'View Control panel'
+                }
+              ]
+            }
+          ]
+        };
+        if (this.singularComponentState !== this.constantData.IP_GATEWAY) {
+          this.tableConfig.data[4].btnData.splice(0, 1);
+        }
       }
     );
     console.log(this.deviceFilterObj);
@@ -114,7 +174,7 @@ export class DeviceListComponent implements OnInit {
           this.gateways = response.data;
         }
       }
-    )
+    );
   }
 
 
@@ -192,6 +252,17 @@ export class DeviceListComponent implements OnInit {
         // this.onCloseCreateDeviceModal();
       }
     );
+  }
+
+  onTableFunctionCall(obj) {
+    if (obj.type === 'device') {
+      if (obj.for === 'View Devices') {
+      } else if (obj.for === 'View Control Panel') {
+        this.router.navigate(['applications', this.appName,
+        this.singularComponentState === CONSTANTS.IP_GATEWAY ? 'gateways' : 'devices' ,
+        obj.data.device_id, 'control-panel']);
+      }
+    }
   }
 
   onCloseCreateDeviceModal() {

@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import * as moment from 'moment';
 import { CommonService } from 'src/app/services/common.service';
+import { CONSTANTS } from 'src/app/app.constants';
 declare var $: any;
 @Component({
   selector: 'app-notification',
@@ -27,7 +28,11 @@ export class NotificationComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.notificationFilter.device_id = this.device.device_id;
+    if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
+      this.notificationFilter.gateway_id = this.device.device_id;
+    } else {
+      this.notificationFilter.device_id = this.device.device_id;
+    }
     this.notificationFilter.epoch = true;
     this.notificationTableConfig = {
       type: 'notification',

@@ -79,7 +79,11 @@ export class HistoryComponent implements OnInit {
       this.historyFilter.app = this.appName;
     });
     this.historyFilter.epoch = true;
-    this.historyFilter.device_id = this.device.device_id;
+    if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
+      this.historyFilter.gateway_id = this.device.device_id;
+    } else {
+      this.historyFilter.device_id = this.device.device_id;
+    }
     this.historyFilter.dateOption = '5 mins';
     this.propertyList.forEach(item => {
       this.dropdownPropList.push({

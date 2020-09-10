@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { CommonService } from 'src/app/services/common.service';
 import * as moment from 'moment';
+import { CONSTANTS } from 'src/app/app.constants';
 
 declare var $: any;
 @Component({
@@ -28,7 +29,11 @@ export class OthersComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.otherFilter.device_id = this.device.device_id;
+    if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
+      this.otherFilter.gateway_id = this.device.device_id;
+    } else {
+      this.otherFilter.device_id = this.device.device_id;
+    }
     this.otherTableConfig = {
       type: 'other',
       headers: ['Timestamp', 'Message ID', 'Message Type', 'Other Message'],

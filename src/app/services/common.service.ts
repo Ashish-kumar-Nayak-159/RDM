@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { AppUrls } from '../app-url.constants';
 import { Router } from '@angular/router';
+import { CONSTANTS } from 'src/app/app.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +38,8 @@ export class CommonService {
   }
 
   onLogOut() {
-    localStorage.removeItem('userData');
+    localStorage.removeItem(CONSTANTS.USER_DETAILS);
+    localStorage.removeItem('breadcrumbState');
     this.router.navigate(['']);
   }
 }

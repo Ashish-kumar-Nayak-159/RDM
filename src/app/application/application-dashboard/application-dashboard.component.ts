@@ -217,10 +217,9 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
   }
 
   redirectToDevice(type?: string) {
-    const fromValue = (this.contextApp?.metadata?.contain_devices && this.contextApp?.metadata?.contain_gateways
-      ? CONSTANTS.IP_DEVICES_GATEWAYS :
-    (this.contextApp?.metadata?.contain_devices && !this.contextApp?.metadata?.contain_gateways ? CONSTANTS.IP_DEVICES :
-    (!this.contextApp?.metadata?.contain_devices && this.contextApp?.metadata?.contain_gateways ? CONSTANTS.IP_GATEWAYS : '')));
+    const fromValue = (
+    (this.contextApp?.metadata?.contain_devices ? CONSTANTS.IP_DEVICES :
+    (this.contextApp?.metadata?.contain_gateways ? CONSTANTS.IP_GATEWAYS : null)));
     let obj;
     if (type || fromValue) {
       obj = {
@@ -228,7 +227,9 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
         state: fromValue
       };
     }
-    this.router.navigate(['applications', this.appName, 'devices'], {queryParams: obj});
+    this.router.navigate(['applications', this.appName,
+    (this.contextApp?.metadata?.contain_devices ? 'devices' :
+      (this.contextApp?.metadata?.contain_gateways ? 'gateways' : ''))], {queryParams: obj});
   }
 
   /**

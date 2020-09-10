@@ -8,6 +8,7 @@ import { CONSTANTS } from './../../../app.constants';
 import { Observable } from 'rxjs/internal/Observable';
 import { Subscription, interval } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { HttpParams } from '@angular/common/http';
 
 
 @Component({
@@ -119,7 +120,10 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
 
   verifyQueueMessages() {
     this.noOfMessageInQueue = null;
-    this.deviceService.getQueueMessagesCount(this.device.device_id, this.appName).subscribe(
+    let params = new HttpParams();
+    params = params.set(this.device.tags.category === CONSTANTS.IP_GATEWAY ? 'gateway_id' : 'device_id', this.device.device_id);
+    params = params.set('app', this.appName);
+    this.deviceService.getQueueMessagesCount(params).subscribe(
       (response: any) => {
         this.noOfMessageInQueue = response.count;
       }
@@ -127,7 +131,10 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
   }
 
   purgeQueueMessages() {
-    this.deviceService.purgeQueueMessages(this.device.device_id, this.appName).subscribe(
+    let params = new HttpParams();
+    params = params.set(this.device.tags.category === CONSTANTS.IP_GATEWAY ? 'gateway_id' : 'device_id', this.device.device_id);
+    params = params.set('app', this.appName);
+    this.deviceService.purgeQueueMessages(params).subscribe(
       response => {
         this.toasterService.showSuccess('Messages purged successfully', 'Purge Messages');
         this.verifyQueueMessages();

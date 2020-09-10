@@ -177,17 +177,11 @@ export class DeviceService {
     return this.http.get(this.url + AppUrls.GET_C2D_MESSAGE_LIST, { params });
   }
 
-  getQueueMessagesCount(deviceId, app) {
-    let params = new HttpParams();
-    params = params.set('device_id', deviceId);
-    params = params.set('app', app);
+  getQueueMessagesCount(params) {
     return this.http.get(this.url + AppUrls.GET_QUEUE_MESSAGE_COUNT, { params });
   }
 
-  purgeQueueMessages(deviceId, app) {
-    let params = new HttpParams();
-    params = params.set('device_id', deviceId);
-    params = params.set('app', app);
+  purgeQueueMessages(params) {
     return this.http.get(this.url + AppUrls.PURGE_QUEUE_MESSAGE, { params });
   }
 

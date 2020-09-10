@@ -77,7 +77,11 @@ export class LiveDataComponent implements OnInit, OnDestroy {
       this.historyFilter.app = this.appName;
     });
     this.historyFilter.epoch = true;
-    this.historyFilter.device_id = this.device.device_id;
+    if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
+      this.historyFilter.gateway_id = this.device.device_id;
+    } else {
+      this.historyFilter.device_id = this.device.device_id;
+    }
     const now = moment().utc();
     this.historyFilter.to_date = now.unix();
     this.historyFilter.from_date = (now.subtract(1, 'minute')).unix();

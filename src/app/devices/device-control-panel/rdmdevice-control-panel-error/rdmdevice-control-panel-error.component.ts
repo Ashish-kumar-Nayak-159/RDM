@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { CommonService } from 'src/app/services/common.service';
 import * as moment from 'moment';
+import { CONSTANTS } from 'src/app/app.constants';
 
 declare var $: any;
 @Component({
@@ -28,7 +29,11 @@ export class RDMDeviceControlPanelErrorComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.errorFilter.device_id = this.device.device_id;
+    if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
+      this.errorFilter.gateway_id = this.device.device_id;
+    } else {
+      this.errorFilter.device_id = this.device.device_id;
+    }
     this.errorFilter.epoch = true;
     this.errorTableConfig = {
       type: 'error',

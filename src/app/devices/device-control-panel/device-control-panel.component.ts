@@ -18,6 +18,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
   isDeviceDataLoading = false;
   userData: any;
   appName: string;
+  nonIPDeviceCategory: any;
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private deviceService: DeviceService,
@@ -28,6 +29,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+
     this.route.paramMap.subscribe(
       params => {
         this.appName = params.get('applicationId');
@@ -41,6 +43,13 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
                   url: 'applications/' + this.appName + '/ devices/' + this.device.device_id + '/control-panel'
                 }
             ]
+          });
+          const breadcrumbdata = this.commonService.getItemFromLocalStorage(CONSTANTS.CURRENT_BREADCRUMB_STATE);
+          this.nonIPDeviceCategory = undefined;
+          breadcrumbdata.forEach(data => {
+            if (data.queryParams && data.queryParams.state === CONSTANTS.NON_IP_DEVICES) {
+              this.nonIPDeviceCategory = CONSTANTS.NON_IP_DEVICE_OPTIONS.filter(category => category.name === data.queryParams.category)[0];
+            }
           });
           this.getDeviceDetail();
         }
@@ -144,9 +153,27 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
     if (!callFromMenu) {
       this.isDeviceDataLoading = true;
     }
-    this.deviceService.getDeviceData(this.device.device_id, this.appName).subscribe(
+    let methodToCall;
+    if (this.nonIPDeviceCategory) {
+      const obj = {
+        category: this.nonIPDeviceCategory.name,
+        app: this.appName,
+        device_id: this.device.device_id,
+        gateway_id: this.device.gateway_id
+      };
+      methodToCall = this.deviceService.getNonIPDeviceList(obj);
+    } else {
+      methodToCall = this.deviceService.getDeviceData(this.device.device_id, this.appName);
+    }
+    methodToCall.subscribe(
       (response: any) => {
-        this.device = response;
+        if (this.nonIPDeviceCategory) {
+          if (response && response.data) {
+            this.device = response.data[0];
+          }
+        } else {
+          this.device = response;
+        }
         this.isDeviceDataLoading = false;
         if (!callFromMenu) {
           setTimeout(

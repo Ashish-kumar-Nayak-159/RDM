@@ -65,12 +65,7 @@
       <span>Device Type</span></a>
   </li>
 
-  <li class="nav-item" routerLinkActive="active" *ngIf="!userData?.is_super_admin">
-    <a class="nav-link" href="javascript:void(0)" [routerLink]="['/applications', appName, 'visualization']">
 
-      <i class="fas fa-fw fa-chart-bar" title="Data Visualization"></i>
-      <span>Data Visualization</span></a>
-  </li>
 
 
   <!-- Nav Item - Tables -->
@@ -99,6 +94,17 @@
         <a class="collapse-item" href="#">Group Type</a>
       </div>
     </div>
+  </li>
+
+   <!-- Divider -->
+   <hr class="sidebar-divider d-none d-md-block">
+
+
+  <li class="nav-item" routerLinkActive="active" *ngIf="!userData?.is_super_admin">
+    <a class="nav-link" href="javascript:void(0)" [routerLink]="['/applications', appName, 'visualization']">
+
+      <i class="fas fa-fw fa-chart-bar" title="Data Visualization"></i>
+      <span>Data Visualization</span></a>
   </li>
 
   <li class="nav-item"  *ngIf="!userData?.is_super_admin">

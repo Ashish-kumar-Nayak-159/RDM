@@ -57,7 +57,8 @@ export class OverviewComponent implements OnInit {
 
   getDeviceCredentials() {
     this.deviceCredentials = undefined;
-    this.devieService.getDeviceCredentials(this.device.device_id, this.appName).subscribe(
+    const id = (this.device.tags.category && this.device.gateway_id) ? this.device.gateway_id : this.device.device_id;
+    this.devieService.getDeviceCredentials(id, this.appName).subscribe(
       response => {
         this.deviceCredentials = response;
       }
@@ -66,7 +67,8 @@ export class OverviewComponent implements OnInit {
 
   getDeviceConnectionStatus() {
     this.deviceConnectionStatus = undefined;
-    this.devieService.getDeviceConnectionStatus(this.device.device_id, this.appName).subscribe(
+    const id = (this.device.tags.category && this.device.gateway_id) ? this.device.gateway_id : this.device.device_id;
+    this.devieService.getDeviceConnectionStatus(id, this.appName).subscribe(
       response => {
         this.deviceConnectionStatus = response;
         this.deviceConnectionStatus.local_updated_date =

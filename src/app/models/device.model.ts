@@ -5,6 +5,7 @@ export class DeviceListFilter {
   connection_state: string;
   location: string;
   status: string;
+
   category: string;
 }
 
@@ -13,5 +14,7 @@ export class Device {
   device_manager: string;
   status: string;
   connection_state: string;
+  gateway_id?: string;
+  category?: string;
   tags: any;
 }

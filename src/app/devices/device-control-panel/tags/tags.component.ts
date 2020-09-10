@@ -42,9 +42,27 @@ export class TagsComponent implements OnInit {
   }
 
   getDeviceData() {
-    this.deviceService.getDeviceData(this.device.device_id, this.appName).subscribe(
+    let methodToCall;
+    if (this.device.tags.category && this.device.gateway_id) {
+      const obj = {
+        category: this.device.tags.category,
+        app: this.appName,
+        device_id: this.device.device_id,
+        gateway_id: this.device.gateway_id
+      };
+      methodToCall = this.deviceService.getNonIPDeviceList(obj);
+    } else {
+      methodToCall = this.deviceService.getDeviceData(this.device.device_id, this.appName);
+    }
+    methodToCall.subscribe(
       (response: any) => {
-        this.device = response;
+        if (this.device.tags.category && this.device.gateway_id) {
+          if (response && response.data) {
+            this.device = response.data[0];
+          }
+        } else {
+          this.device = response;
+        }
         this.getDeviceDetail();
       }
     );
@@ -129,7 +147,13 @@ export class TagsComponent implements OnInit {
       device_id: this.device.device_id,
       tags: this.device.tags
     };
-    this.deviceService.updateDeviceTags(obj, this.appName).subscribe(
+    let methodToCall;
+    if (this.device.tags.category && this.device.gateway_id) {
+      methodToCall = this.deviceService.updateNonIPDeviceTags(obj, this.appName);
+    } else {
+      methodToCall = this.deviceService.updateDeviceTags(obj, this.appName);
+    }
+    methodToCall.subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Set Tags');
         this.getDeviceData();
@@ -156,7 +180,13 @@ export class TagsComponent implements OnInit {
       tags: this.device.tags
     };
     console.log(obj);
-    this.deviceService.updateDeviceTags(obj, this.appName).subscribe(
+    let methodToCall;
+    if (this.device.tags.category && this.device.gateway_id) {
+      methodToCall = this.deviceService.updateNonIPDeviceTags(obj, this.appName);
+    } else {
+      methodToCall = this.deviceService.updateDeviceTags(obj, this.appName);
+    }
+    methodToCall.subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Delete Tags');
         this.getDeviceData();

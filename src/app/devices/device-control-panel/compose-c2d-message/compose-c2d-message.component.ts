@@ -49,6 +49,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
       this.appName = params.get('applicationId');
       this.c2dMessageData = {
         device_id: this.device.device_id,
+        gateway_id: this.device.gateway_id,
         app: this.appName,
         message_id: this.device.device_id + '_' + moment().unix(),
         message: null,

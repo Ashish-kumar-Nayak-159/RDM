@@ -17,7 +17,10 @@
 
 </div>
 <div class="con-pad ">
-  <div class="row col-12">
+  <div class="row col-12" *ngIf="device.tags.category && device.gateway_id">
+    <h6>This device is managed by an IP Gateway {{device.gateway_id}}</h6>
+  </div>
+  <div class="row col-12 mt-1">
     <a class="btn-sm shadow-sm white-font"
     [ngClass]="{'btn-success': deviceConnectionStatus?.connection_state === 'Connected',
                 'btn-danger': deviceConnectionStatus?.connection_state === 'Disconnected'}">

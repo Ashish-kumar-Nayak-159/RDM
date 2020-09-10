@@ -97,6 +97,12 @@ export class DeviceService {
     return this.http.post(this.url + AppUrls.UPDATE_DEVICE_TAGS, deviceObj, {params});
   }
 
+  updateNonIPDeviceTags(deviceObj, app) {
+    let params = new HttpParams();
+    params = params.set('app', app);
+    return this.http.post(this.url + AppUrls.UPDATE_NON_IP_DEVICE_TAGS, deviceObj, {params});
+  }
+
   getDeviceHeartBeats(filterObj) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {

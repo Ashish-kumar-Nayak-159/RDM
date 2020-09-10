@@ -94,11 +94,31 @@ export class SettingsComponent implements OnInit {
 
   deleteDevice() {
     this.isAPILoading = true;
-    this.deviceService.deleteDevice(this.device.device_id, this.appName).subscribe(
+    let methodToCall;
+    if (this.device.tags.category && this.device.gateway_id) {
+      methodToCall = this.deviceService.deleteNonIPDevice(this.device.device_id, this.appName);
+    } else {
+      methodToCall = this.deviceService.deleteDevice(this.device.device_id, this.appName);
+    }
+
+    methodToCall.subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Delete Device');
         this.isAPILoading = false;
-        this.router.navigate(['applications', this.appName, 'devices']);
+        if (this.device.tags.category && this.device.gateway_id) {
+          this.router.navigate(['applications', this.appName, 'devices'], { queryParams: {
+            state: CONSTANTS.NON_IP_DEVICES,
+            category: this.device.tags.category
+          }});
+        } else if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
+          this.router.navigate(['applications', this.appName, 'gateways'], { queryParams: {
+            state: CONSTANTS.IP_GATEWAYS
+          }});
+        }  else {
+          this.router.navigate(['applications', this.appName, 'devices'], { queryParams: {
+            state: CONSTANTS.IP_DEVICES
+          }});
+        }
       }, error => {
         this.toasterService.showError(error.message, 'Delete Device');
         this.isAPILoading = false;

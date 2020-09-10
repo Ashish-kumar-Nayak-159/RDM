@@ -7,12 +7,12 @@
         <i class="fas fa-fw fa-eye"></i>
         <span class="text-secondary">View</span></a>
     </li> -->
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="!(this.device.tags.category && this.device.gateway_id)">
       <a class="nav-link" href="javascript:void(0)" (click)="enableDevice()"  [class.disabled]="isAPILoading || device?.status?.toLowerCase() === 'enabled'">
         <i class="fas fa-fw fa-toggle-on"></i>
         <span class="text-secondary"> Enable</span></a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="!(this.device.tags.category && this.device.gateway_id)">
       <a class="nav-link" href="javascript:void(0)" (click)="openConfirmDialog('Disable')"  [class.disabled]="isAPILoading || device?.status?.toLowerCase() === 'disabled'">
         <i class="fas fa-fw fa-toggle-off"></i>
         <span class="text-secondary"> Disable</span></a>

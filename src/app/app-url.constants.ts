@@ -31,5 +31,5 @@ export class AppUrls {
   public static CREATE_NON_IP_DEVICE = 'DDM_CreateNonIPDevice';
   public static GET_NON_IP_DEVICE = 'DDM_GetNonIPDevices';
   public static DELETE_NON_IP_DEVICE = 'DDM_DeleteNonIPDevice';
-
+  public static UPDATE_NON_IP_DEVICE_TAGS = 'DDM_SetNonIPDeviceTags';
 }

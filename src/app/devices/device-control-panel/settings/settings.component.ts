@@ -107,16 +107,16 @@ export class SettingsComponent implements OnInit {
         this.isAPILoading = false;
         if (this.device.tags.category && this.device.gateway_id) {
           this.router.navigate(['applications', this.appName, 'devices'], { queryParams: {
-            state: CONSTANTS.NON_IP_DEVICES,
+            state: CONSTANTS.NON_IP_DEVICE,
             category: this.device.tags.category
           }});
         } else if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
           this.router.navigate(['applications', this.appName, 'gateways'], { queryParams: {
-            state: CONSTANTS.IP_GATEWAYS
+            state: CONSTANTS.IP_GATEWAY
           }});
         }  else {
           this.router.navigate(['applications', this.appName, 'devices'], { queryParams: {
-            state: CONSTANTS.IP_DEVICES
+            state: CONSTANTS.IP_DEVICE
           }});
         }
       }, error => {

@@ -19,6 +19,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
   userData: any;
   appName: string;
   nonIPDeviceCategory: any;
+  pageType: any;
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private deviceService: DeviceService,
@@ -34,20 +35,14 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
       params => {
         this.appName = params.get('applicationId');
         if (params.get('deviceId')) {
+          this.pageType = params.get('listName');
+          this.pageType = this.pageType.slice(0, -1);
+          console.log(this.pageType);
           this.device.device_id = params.get('deviceId');
-          this.commonService.breadcrumbEvent.emit({
-            type: 'append',
-            data: [
-                {
-                  title: this.device.device_id + ' / Control Panel',
-                  url: 'applications/' + this.appName + '/ devices/' + this.device.device_id + '/control-panel'
-                }
-            ]
-          });
           const breadcrumbdata = this.commonService.getItemFromLocalStorage(CONSTANTS.CURRENT_BREADCRUMB_STATE);
           this.nonIPDeviceCategory = undefined;
           breadcrumbdata.forEach(data => {
-            if (data.queryParams && data.queryParams.state === CONSTANTS.NON_IP_DEVICES) {
+            if (data.queryParams && data.queryParams.state === CONSTANTS.NON_IP_DEVICE) {
               this.nonIPDeviceCategory = CONSTANTS.NON_IP_DEVICE_OPTIONS.filter(category => category.name === data.queryParams.category)[0];
             }
           });
@@ -174,6 +169,15 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
         } else {
           this.device = response;
         }
+        this.commonService.breadcrumbEvent.emit({
+          type: 'append',
+          data: [
+              {
+                title: (this.device.tags.display_name ? this.device.tags.display_name : this.device.device_id) + ' / Control Panel',
+                url: 'applications/' + this.appName + '/ /' + this.device.device_id + '/control-panel'
+              }
+          ]
+        });
         this.isDeviceDataLoading = false;
         if (!callFromMenu) {
           setTimeout(

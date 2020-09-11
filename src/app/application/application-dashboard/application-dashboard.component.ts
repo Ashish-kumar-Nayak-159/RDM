@@ -218,8 +218,8 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
 
   redirectToDevice(type?: string) {
     const fromValue = (
-    (this.contextApp?.metadata?.contain_devices ? CONSTANTS.IP_DEVICES :
-    (this.contextApp?.metadata?.contain_gateways ? CONSTANTS.IP_GATEWAYS : null)));
+    (this.contextApp?.metadata?.contain_devices ? CONSTANTS.IP_DEVICE :
+    (this.contextApp?.metadata?.contain_gateways ? CONSTANTS.IP_GATEWAY : null)));
     let obj;
     if (type || fromValue) {
       obj = {

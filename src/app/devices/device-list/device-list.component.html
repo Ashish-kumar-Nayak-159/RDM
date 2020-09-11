@@ -1,13 +1,13 @@
 
 <div class="topnavbar" >
   <div class="d-sm-flex align-items-center justify-content-start mb-4">
-    <h1 class="h3 mb-0 text-gray-800">{{nonIPDeviceCategory ? nonIPDeviceCategory.name : componentState}} Management</h1>
+    <h1 class="h3 mb-0 text-gray-800">{{nonIPDeviceCategory ? nonIPDeviceCategory.name : (componentState + 's')}} Management</h1>
 
     <a
 
       class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-4"
       href="javascript:void(0)" (click)="openCreateDeviceModal()"
-      ><i class="fas fa- fa-sm text-white-50"></i> Add {{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}}</a
+      ><i class="fas fa- fa-sm text-white-50"></i> Add {{nonIPDeviceCategory ? nonIPDeviceCategory.name : componentState}}</a
     >
 
   </div>
@@ -18,10 +18,10 @@
         <div class="form-group form-inline my-1">
 
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4"
-          placeholder="{{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} Name"
+          placeholder="Name"
           [(ngModel)]="deviceFilterObj.name" name="name">
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputPassword4"
-          placeholder="{{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} Manager"
+          placeholder="Manager"
           [(ngModel)]="deviceFilterObj.device_manager" name="device_manager">
 
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="Location"
@@ -30,7 +30,7 @@
           [(ngModel)]="deviceFilterObj.status" name="status"> -->
           <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
           [(ngModel)]="deviceFilterObj.status" name="status">
-          <option [ngValue]="undefined">{{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} Status</option>
+          <option [ngValue]="undefined">Status</option>
           <option [ngValue]="'enabled'">Enabled</option>
           <option [ngValue]="'disabled'">Disabled</option>
           </select>
@@ -72,7 +72,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
     <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">Create New {{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}}</h5>
+      <h5 class="modal-title" id="exampleModalLabel">Create New {{nonIPDeviceCategory ? nonIPDeviceCategory.name : componentState}}</h5>
       <button type="button" class="close"  (click)="onCloseCreateDeviceModal()" aria-label="Close" [disabled]="isCreateDeviceAPILoading">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -84,21 +84,26 @@
           <input type="text" class="form-control" id="app_name" [defaultValue]="appName" disabled>
         </div>
         <div class="form-group">
-          <label for="message-text" class="col-form-label">{{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} name:</label>
+          <label for="message-text" class="col-form-label">{{nonIPDeviceCategory ? nonIPDeviceCategory.name : pageType}} Name:</label>
           <input type="text" class="form-control" id="device_name" name="device_id" [(ngModel)]="deviceDetail.device_id"
-          placeholder="Enter {{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} name">
+          placeholder="Enter {{nonIPDeviceCategory ? nonIPDeviceCategory.name : pageType}} Name">
         </div>
         <div class="form-group">
-          <label for="message-text" class="col-form-label">{{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} Manager:</label>
+          <label for="message-text" class="col-form-label">{{nonIPDeviceCategory ? nonIPDeviceCategory.name : pageType}} Display Name:</label>
+          <input type="text" class="form-control" id="device_name" name="device_id" [(ngModel)]="deviceDetail.tags.display_name"
+          placeholder="Enter {{nonIPDeviceCategory ? nonIPDeviceCategory.name : pageType}} Display Name">
+        </div>
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">{{nonIPDeviceCategory ? nonIPDeviceCategory.name : pageType}} Manager:</label>
           <input type="email" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
-          placeholder="Enter {{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} Manager"
+          placeholder="Enter {{nonIPDeviceCategory ? nonIPDeviceCategory.name : pageType}} Manager"
            class="form-control" id="device_manager" name="device_manager" [(ngModel)]="deviceDetail.tags.device_manager">
         </div>
         <div class="form-group">
-          <label for="recipient-name" class="col-form-label">{{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} Type:</label>
+          <label for="recipient-name" class="col-form-label">{{nonIPDeviceCategory ? nonIPDeviceCategory.name : pageType}} Type:</label>
           <select class="custom-select" id="device_type" name="device_type" [(ngModel)]="deviceDetail.tags.device_type"
           >
-            <option [ngValue]="undefined"> Select {{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}} Type</option>
+            <option [ngValue]="undefined"> Select {{nonIPDeviceCategory ? nonIPDeviceCategory.name : pageType}} Type</option>
 
         </select>
         </div>
@@ -113,7 +118,7 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="recipient-name" class="col-form-label">Cloud Connectivity followed by the {{nonIPDeviceCategory ? nonIPDeviceCategory.name : singularComponentState}}:</label>
+          <label for="recipient-name" class="col-form-label">Cloud Connectivity followed by the {{nonIPDeviceCategory ? nonIPDeviceCategory.name : pageType}}:</label>
           <select class="custom-select" id="template" name="connectivity" [(ngModel)]="deviceDetail.tags.cloud_connectivity">
             <option [ngValue]="undefined"> Select Connectivity</option>
           <option *ngFor="let item of connectivityList" [ngValue]="item">

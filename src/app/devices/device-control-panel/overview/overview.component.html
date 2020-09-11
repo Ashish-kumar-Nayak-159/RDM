@@ -3,7 +3,7 @@
 <!-- Page Heading -->
 <div class="topnavbar bg-white py-2" >
 <div class="d-sm-flex align-items-center justify-content-between">
-  <h1 class="h3 mb-0 text-gray-800 row col-12">Welcome to {{device?.device_id}}</h1><br/>
+  <h1 class="h3 mb-0 text-gray-800 row col-12">Welcome to {{device?.tags?.display_name ? device?.tags?.display_name : device?.device_id}}</h1><br/>
 
 </div>
 

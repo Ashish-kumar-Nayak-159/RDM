@@ -78,8 +78,8 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
   redirectToDevices(app) {
 
     this.router.navigate(['applications', app.app, 'devices'], {
-      queryParams: { state: app.metadata.contain_gateways ? CONSTANTS.IP_GATEWAYS : (
-        app.metadata.contain_devices ? CONSTANTS.IP_DEVICES : undefined
+      queryParams: { state: app.metadata.contain_gateways ? CONSTANTS.IP_GATEWAY : (
+        app.metadata.contain_devices ? CONSTANTS.IP_DEVICE : undefined
       )}
     });
   }

@@ -62,7 +62,7 @@ import { CommonCustomModule } from './../common/common.module';
     TrendAnalysisComponent,
     HistoryComponent,
     C2dMessageComponent,
-    BatteryMessagesComponent
+    BatteryMessagesComponent,
   ],
   imports: [
     CommonModule,

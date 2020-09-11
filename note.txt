@@ -19,3 +19,11 @@ blob SAS URL - https://storageaccountkemsy96a3.blob.core.windows.net/?sv=2019-12
 File SAS URL = https://storageaccountkemsy96a3.file.core.windows.net/?sv=2019-12-12&ss=bfqt&srt=co&sp=rwdlacupx&se=2050-08-24T01:36:54Z&st=2020-08-23T17:36:54Z&spr=https,http&sig=RQIjWkLDMqo6bxn5QtZrBLBQ7qYDn2q2dPZyckV%2FGJc%3D
 Queuw SAAS URL - https://storageaccountkemsy96a3.queue.core.windows.net/?sv=2019-12-12&ss=bfqt&srt=co&sp=rwdlacupx&se=2050-08-24T01:36:54Z&st=2020-08-23T17:36:54Z&spr=https,http&sig=RQIjWkLDMqo6bxn5QtZrBLBQ7qYDn2q2dPZyckV%2FGJc%3D
 Table SAS URL - https://storageaccountkemsy96a3.table.core.windows.net/?sv=2019-12-12&ss=bfqt&srt=co&sp=rwdlacupx&se=2050-08-24T01:36:54Z&st=2020-08-23T17:36:54Z&spr=https,http&sig=RQIjWkLDMqo6bxn5QtZrBLBQ7qYDn2q2dPZyckV%2FGJc%3D
+
+
+- Gateqya created text in device life cycle events
+-
+
+Control panel gateway 
+overview - This is the gateway of type (Symatic IOT 2040) managing 10 devices.
+tags - gateway manager gateway type , protocol - IP gateway

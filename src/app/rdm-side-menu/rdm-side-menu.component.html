@@ -24,14 +24,14 @@
 
   <!-- Nav Item - Charts -->
   <li class="nav-item" routerLinkActive="active"  *ngIf="!userData?.is_super_admin && appData?.metadata?.contain_devices" [routerLinkActiveOptions]="{exact: false}">
-    <a class="nav-link" [routerLink]="['/applications', appName, 'devices']" [queryParams]="{state: constantsData.IP_DEVICES}">
+    <a class="nav-link" [routerLink]="['/applications', appName, 'devices']" [queryParams]="{state: constantsData.IP_DEVICE}">
 
       <i class="fas fa-fw fa-desktop" title="IP Devices"></i>
       <span>IP Devices</span></a>
   </li>
 
   <li class="nav-item" routerLinkActive="active"  *ngIf="!userData?.is_super_admin && appData?.metadata?.contain_gateways" [routerLinkActiveOptions]="{exact: false}">
-    <a class="nav-link" [routerLink]="['/applications', appName, 'gateways']" [queryParams]="{state: constantsData.IP_GATEWAYS}">
+    <a class="nav-link" [routerLink]="['/applications', appName, 'gateways']" [queryParams]="{state: constantsData.IP_GATEWAY}">
 
       <i class="fas fa-fw fa-desktop" title="IP Gateways"></i>
       <span>IP Gateways</span></a>
@@ -51,7 +51,7 @@
         <div class="collapse-divider"></div>
         <h6 class="collapse-header">Other Pages:</h6>-->
         <a class="collapse-item" *ngFor="let item of constantsData.NON_IP_DEVICE_OPTIONS"
-        [routerLink]="['/applications', appName, 'devices']" [queryParams]="{state: constantsData.NON_IP_DEVICES, category: item.name}">
+        [routerLink]="['/applications', appName, 'devices']" [queryParams]="{state: constantsData.NON_IP_DEVICE, category: item.name}">
           {{item.name}}
         </a>
       </div>

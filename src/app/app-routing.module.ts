@@ -9,11 +9,7 @@ const routes: Routes = [
     loadChildren: () => import('./application/application.module').then(module => module.ApplicationModule)
   },
   {
-    path: 'applications/:applicationId/devices',
-    loadChildren: () => import('./devices/devices.module').then(module => module.DevicesModule),
-  },
-  {
-    path: 'applications/:applicationId/gateways',
+    path: 'applications/:applicationId/:listName',
     loadChildren: () => import('./devices/devices.module').then(module => module.DevicesModule),
   },
   {

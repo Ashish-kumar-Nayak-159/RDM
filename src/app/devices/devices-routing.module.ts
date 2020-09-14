@@ -11,6 +11,11 @@ const routes: Routes = [
     canActivate: [AuthGuardService]
   },
   {
+    path: 'deviceType/:deviceType/:deviceId/control-panel',
+    component: DeviceControlPanelComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
     path: ':deviceId/control-panel',
     component: DeviceControlPanelComponent,
     canActivate: [AuthGuardService]

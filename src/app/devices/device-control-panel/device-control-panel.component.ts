@@ -39,13 +39,10 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
           this.pageType = this.pageType.slice(0, -1);
           console.log(this.pageType);
           this.device.device_id = params.get('deviceId');
-          const breadcrumbdata = this.commonService.getItemFromLocalStorage(CONSTANTS.CURRENT_BREADCRUMB_STATE);
           this.nonIPDeviceCategory = undefined;
-          breadcrumbdata.forEach(data => {
-            if (data.queryParams && data.queryParams.state === CONSTANTS.NON_IP_DEVICE) {
-              this.nonIPDeviceCategory = CONSTANTS.NON_IP_DEVICE_OPTIONS.filter(category => category.name === data.queryParams.category)[0];
-            }
-          });
+          if (params.get('deviceType')) {
+            this.nonIPDeviceCategory = CONSTANTS.NON_IP_DEVICE_OPTIONS.filter(category => category.name === params.get('deviceType'))[0];
+          }
           this.getDeviceDetail();
         }
       }
@@ -151,7 +148,6 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
     let methodToCall;
     if (this.nonIPDeviceCategory) {
       const obj = {
-        category: this.nonIPDeviceCategory.name,
         app: this.appName,
         device_id: this.device.device_id,
         gateway_id: this.device.gateway_id
@@ -169,6 +165,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
         } else {
           this.device = response;
         }
+        console.log(this.device);
         this.commonService.breadcrumbEvent.emit({
           type: 'append',
           data: [

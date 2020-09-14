@@ -29,6 +29,7 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
   userData: any;
   selectedMessage: any;
   appName: string;
+  pageType: string;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -45,6 +46,8 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
     this.c2dMsgFilter.epoch = true;
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
+      this.pageType = params.get('listName');
+      this.pageType = this.pageType.slice(0, -1);
       if (this.type === 'feedback') {
         this.loadMessageDetail(this.message, false);
         this.isFilterSelected = true;

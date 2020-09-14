@@ -1,3 +1,4 @@
+
 Application URL -  https://kemsys-azure-rdm.azurewebsites.net
 Valid users for login -
 1. sombabu@kemsys.com - admin - Adani
@@ -24,6 +25,6 @@ Table SAS URL - https://storageaccountkemsy96a3.table.core.windows.net/?sv=2019-
 - Gateqya created text in device life cycle events
 -
 
-Control panel gateway 
+Control panel gateway
 overview - This is the gateway of type (Symatic IOT 2040) managing 10 devices.
 tags - gateway manager gateway type , protocol - IP gateway

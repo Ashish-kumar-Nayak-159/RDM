@@ -23,6 +23,8 @@ export class OverviewComponent implements OnInit {
   applicationData: any;
   appName: any;
   blobSASToken = environment.blobKey;
+  pageType: string;
+  deviceCount = null;
   constructor(
     private devieService: DeviceService,
     private commonService: CommonService,
@@ -34,9 +36,14 @@ export class OverviewComponent implements OnInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
+      this.pageType = params.get('listName');
+      this.pageType = this.pageType.slice(0, -1);
       this.getApplicationData();
       this.getDeviceCredentials();
       this.getDeviceConnectionStatus();
+      if (this.pageType === 'gateway') {
+        this.getDeviceCount();
+      }
     });
 
   }
@@ -63,6 +70,19 @@ export class OverviewComponent implements OnInit {
         this.deviceCredentials = response;
       }
     );
+  }
+
+  getDeviceCount() {
+    this.deviceCount = null;
+    const obj = {
+      app: this.appName,
+      gateway_id: this.device.device_id
+    }
+    this.devieService.getNonIPDeviceCount(obj).subscribe(
+      (response: any) => {
+        this.deviceCount = response.count;
+      }
+    )
   }
 
   getDeviceConnectionStatus() {

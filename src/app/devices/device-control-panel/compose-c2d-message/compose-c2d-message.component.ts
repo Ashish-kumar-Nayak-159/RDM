@@ -33,8 +33,9 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
   apiSubscription: Subscription[] = [];
   timerInterval: any;
   appName: any;
-  count = 1234;
   timerObj: any;
+  pageType: string;
+  devices: any[] = []
   constructor(
     private toasterService: ToasterService,
     private deviceService: DeviceService,
@@ -47,19 +48,40 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
     this.displayType = 'compose';
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
+      this.pageType = params.get('listName');
+      this.pageType = this.pageType.slice(0, -1);
       this.c2dMessageData = {
         device_id: this.device.device_id,
         gateway_id: this.device.gateway_id,
         app: this.appName,
-        message_id: this.device.device_id + '_' + moment().unix(),
+        timestamp:  moment().unix(),
         message: null,
         acknowledge: 'Full',
         expire_in_min: 1
       };
+      if (this.pageType === 'gateway') {
+        this.getDevicesListByGateway();
+      }
     });
     // this.messageIdInterval = setInterval(() => {
     //   this.c2dMessageData.message_id = this.device.device_id + '_' + moment().unix();
     // }, 1000);
+  }
+
+  getDevicesListByGateway() {
+    this.devices = [];
+    const obj = {
+      gateway_id: this.device.device_id,
+      app: this.appName
+    };
+    this.deviceService.getNonIPDeviceList(obj).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.devices = response.data;
+          this.c2dMessageData.device_id = this.devices.length > 0 ? this.devices[0].device_id : undefined;
+        }
+      }, errror => {}
+    );
   }
 
   validateMessage() {
@@ -84,6 +106,10 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
     this.displayType = 'compose';
     this.isMessageValidated = undefined;
     this.remainingTime = null;
+    this.c2dMessageData.message_id = this.c2dMessageData.device_id + '_' + this.c2dMessageData.timestamp;
+    if (this.pageType === 'gateway') {
+      this.c2dMessageData.gateway_id = this.device.device_id;
+    }
     this.sentMessageData = undefined;
     if (!this.c2dMessageData.message) {
       this.toasterService.showError('Please type JSON in given box', 'Validate Message Detail');
@@ -115,6 +141,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
         this.sendMessageStatus = 'error';
         this.toasterService.showError(error.message, 'Send C2D Message');
         this.isSendC2DMessageAPILoading = false;
+        this.sentMessageData = undefined;
       }
     );
   }

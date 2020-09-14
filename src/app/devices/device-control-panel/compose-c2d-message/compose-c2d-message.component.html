@@ -102,11 +102,18 @@
         <tbody>
           <tr>
             <td>Device ID</td>
-            <td>{{c2dMessageData.device_id}}</td>
+            <td *ngIf="pageType === 'device'">{{c2dMessageData.device_id}}</td>
+            <td *ngIf="pageType === 'gateway'">
+              <select class="custom-select" id="device_id" name="device_id" [(ngModel)]="c2dMessageData.device_id">
+                <option *ngFor="let device of devices" [ngValue]="device.device_id">
+                  {{device?.tags.display_name ? device?.tags.display_name : device.device_id}}
+                </option>
+              </select>
+            </td>
           </tr>
           <tr>
             <td>Message ID</td>
-            <td>{{c2dMessageData.message_id}}</td>
+            <td>{{c2dMessageData.device_id}}_{{c2dMessageData.timestamp}}</td>
           </tr>
           <tr>
             <td>TTL (In minutes)</td>

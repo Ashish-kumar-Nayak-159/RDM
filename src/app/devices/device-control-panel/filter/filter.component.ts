@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from './../../../app.constants';
 import { ActivatedRoute } from '@angular/router';
+import { DeviceService } from 'src/app/services/devices/device.service';
 
 @Component({
   selector: 'app-filter',
@@ -15,9 +16,13 @@ export class FilterComponent implements OnInit {
   userData: any;
   @Output() filterSearch: EventEmitter<any> = new EventEmitter<any>();
   appName: any;
+  pageType: string;
+  constantData: CONSTANTS;
+  devices: any[] = [];
   constructor(
     private commonService: CommonService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private deviceService: DeviceService
   ) { }
 
   ngOnInit(): void {
@@ -25,11 +30,31 @@ export class FilterComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
       this.filterObj.app = this.appName;
+      this.pageType = params.get('listName');
+      this.pageType = this.pageType.slice(0, -1);
     });
 
+    if (this.filterObj.gateway_id) {
+      this.getDevicesListByGateway();
+    }
     this.filterObj.count = 10;
     this.originalFilterObj = {};
     this.originalFilterObj = {...this.filterObj};
+  }
+
+  getDevicesListByGateway() {
+    this.devices = [];
+    const obj = {
+      gateway_id: this.filterObj.gateway_id,
+      app: this.appName
+    };
+    this.deviceService.getNonIPDeviceList(obj).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.devices = response.data;
+        }
+      }, errror => {}
+    );
   }
 
   onDateOptionChange() {

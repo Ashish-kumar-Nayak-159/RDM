@@ -99,13 +99,32 @@
           placeholder="Enter {{nonIPDeviceCategory ? nonIPDeviceCategory.name : pageType}} Manager"
            class="form-control" id="device_manager" name="device_manager" [(ngModel)]="deviceDetail.tags.device_manager">
         </div>
+        <div class="form-group" *ngIf="nonIPDeviceCategory">
+          <label for="message-text" class="col-form-label">Gateway:</label>
+          <select class="custom-select" id="template" name="gateway_id" [(ngModel)]="deviceDetail.gateway_id">
+            <option [ngValue]="undefined"> Select Gateway</option>
+          <option *ngFor="let item of gateways" [ngValue]="item.device_id">
+            {{item.device_id}}</option>
+          </select>
+        </div>
+        <div class="form-group" *ngIf="pageType === 'Gateway'">
+          <label for="message-text" class="col-form-label">Device Category supported by Gateway:</label>
+          <select class="custom-select" id="template" name="gateway_id" [(ngModel)]="deviceDetail.tags.device_category">
+            <option [ngValue]="undefined"> Select device category</option>
+          <option *ngFor="let item of deviceCategory" [ngValue]="item.name">
+            {{item.name}}</option>
+          </select>
+        </div>
         <div class="form-group">
           <label for="recipient-name" class="col-form-label">{{nonIPDeviceCategory ? nonIPDeviceCategory.name : pageType}} Type:</label>
-          <select class="custom-select" id="device_type" name="device_type" [(ngModel)]="deviceDetail.tags.device_type"
+          <select class="custom-select" id="device_type" name="device_type" [(ngModel)]="deviceDetail.tags.device_type" *ngIf="pageType === 'Device'"
           >
             <option [ngValue]="undefined"> Select {{nonIPDeviceCategory ? nonIPDeviceCategory.name : pageType}} Type</option>
-
         </select>
+        {{pageType}}
+        <input type="text"  *ngIf="pageType === 'Gateway'"
+          placeholder="Enter {{nonIPDeviceCategory ? nonIPDeviceCategory.name : pageType}} Type"
+           class="form-control" id="device_type" name="device_type" [(ngModel)]="deviceDetail.tags.device_type">
         </div>
         <div class="form-group">
           <label for="recipient-name" class="col-form-label">Protocol:</label>
@@ -135,14 +154,7 @@
           <input type="text" class="form-control" id="location" name="location"
           placeholder="Enter Location" [(ngModel)]="deviceDetail.tags.location">
         </div>
-        <div class="form-group" *ngIf="nonIPDeviceCategory">
-          <label for="message-text" class="col-form-label">Gateway:</label>
-          <select class="custom-select" id="template" name="gateway_id" [(ngModel)]="deviceDetail.gateway_id">
-            <option [ngValue]="undefined"> Select Gateway</option>
-          <option *ngFor="let item of gateways" [ngValue]="item.device_id">
-            {{item.device_id}}</option>
-          </select>
-        </div>
+
       </form>
     </div>
     <div class="modal-footer">

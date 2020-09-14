@@ -32,7 +32,6 @@ import { HistoryComponent } from './device-control-panel/history/history.compone
 import { C2dMessageComponent } from './device-control-panel/c2d-message/c2d-message.component';
 import { ChartsModule } from 'ng2-charts';
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
-import { NgSelectModule } from '@ng-select/ng-select';
 import { BatteryMessagesComponent } from './device-control-panel/battery-messages/battery-messages.component';
 import { CommonCustomModule } from './../common/common.module';
 

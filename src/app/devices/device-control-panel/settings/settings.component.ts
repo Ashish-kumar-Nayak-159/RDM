@@ -22,6 +22,7 @@ export class SettingsComponent implements OnInit {
   btnClickType: string;
   confirmModalMessage: string;
   appName: any;
+  pageType: string;
   constructor(
     private deviceService: DeviceService,
     private toasterService: ToasterService,
@@ -34,6 +35,8 @@ export class SettingsComponent implements OnInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
+      this.pageType = params.get('listName');
+      this.pageType = this.pageType.slice(0, -1);
     });
   }
 

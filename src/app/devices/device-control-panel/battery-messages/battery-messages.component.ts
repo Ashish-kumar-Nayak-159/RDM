@@ -5,6 +5,7 @@ import { DeviceService } from 'src/app/services/devices/device.service';
 import { CommonService } from 'src/app/services/common.service';
 import * as moment from 'moment';
 import { CONSTANTS } from 'src/app/app.constants';
+import { ActivatedRoute } from '@angular/router';
 declare var $: any;
 
 @Component({
@@ -23,9 +24,11 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
   isFilterSelected = false;
   modalConfig: any;
   batteryMessageTableConfig: any = {};
+  pageType: any;
   constructor(
     private deviceService: DeviceService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -34,24 +37,36 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
     } else {
       this.batteryMessageFilter.device_id = this.device.device_id;
     }
-    this.batteryMessageTableConfig = {
-      type: 'battery',
-      headers: ['Timestamp', 'Message ID', 'Message'],
-      data: [
-        {
-          name: 'Timestamp',
-          key: 'local_created_date',
-        },
-        {
-          name: 'Message ID',
-          key: 'message_id',
-        },
-        {
-          name: 'Message',
-          key: undefined,
-        }
-      ]
-    };
+    this.route.paramMap.subscribe(params => {
+      this.pageType = params.get('listName');
+      this.pageType = this.pageType.slice(0, -1);
+      this.batteryMessageTableConfig = {
+        type: 'battery',
+        headers: ['Timestamp', 'Message ID', 'Message'],
+        data: [
+          {
+            name: 'Timestamp',
+            key: 'local_created_date',
+          },
+          {
+            name: 'Message ID',
+            key: 'message_id',
+          },
+          {
+            name: 'Message',
+            key: undefined,
+          }
+        ]
+      };
+      if (this.pageType === 'gateway') {
+        this.batteryMessageTableConfig.data.splice(1, 1);
+        this.batteryMessageTableConfig.data.splice(1, 0, {
+          name: 'Asset Name',
+          key: 'device_id'
+        });
+      }
+    });
+
   }
 
   searchBatteryMessage(filterObj) {

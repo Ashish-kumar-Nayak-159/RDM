@@ -5,6 +5,7 @@ import { DeviceService } from 'src/app/services/devices/device.service';
 import { CommonService } from 'src/app/services/common.service';
 import * as moment from 'moment';
 import { CONSTANTS } from 'src/app/app.constants';
+import { ActivatedRoute } from '@angular/router';
 
 declare var $: any;
 @Component({
@@ -23,9 +24,11 @@ export class OthersComponent implements OnInit, OnDestroy {
   isFilterSelected = false;
   modalConfig: any;
   otherTableConfig: any = {};
+  pageType: any;
   constructor(
     private deviceService: DeviceService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -34,28 +37,40 @@ export class OthersComponent implements OnInit, OnDestroy {
     } else {
       this.otherFilter.device_id = this.device.device_id;
     }
-    this.otherTableConfig = {
-      type: 'other',
-      headers: ['Timestamp', 'Message ID', 'Message Type', 'Other Message'],
-      data: [
-        {
-          name: 'Timestamp',
-          key: 'local_created_date',
-        },
-        {
-          name: 'Message Type',
-          key: 'type',
-        },
-        {
-          name: 'Message ID',
-          key: 'message_id',
-        },
-        {
-          name: 'Other Message',
-          key: undefined,
-        }
-      ]
-    };
+    this.route.paramMap.subscribe(params => {
+      this.pageType = params.get('listName');
+      this.pageType = this.pageType.slice(0, -1);
+      this.otherTableConfig = {
+        type: 'other',
+        headers: ['Timestamp', 'Message ID', 'Message Type', 'Other Message'],
+        data: [
+          {
+            name: 'Timestamp',
+            key: 'local_created_date',
+          },
+          {
+            name: 'Message Type',
+            key: 'type',
+          },
+          {
+            name: 'Message ID',
+            key: 'message_id',
+          },
+          {
+            name: 'Other Message',
+            key: undefined,
+          }
+        ]
+      };
+      if (this.pageType === 'gateway') {
+        this.otherTableConfig.data.splice(1, 1);
+        this.otherTableConfig.data.splice(1, 0, {
+          name: 'Asset Name',
+          key: 'device_id'
+        });
+      }
+    });
+
   }
 
   searchOther(filterObj) {

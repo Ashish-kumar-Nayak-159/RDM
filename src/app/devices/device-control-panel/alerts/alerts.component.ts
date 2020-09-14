@@ -1,3 +1,4 @@
+import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
@@ -22,9 +23,11 @@ export class AlertsComponent implements OnInit, OnDestroy {
   isFilterSelected = false;
   modalConfig: any;
   alertTableConfig: any = {};
+  pageType: string;
   constructor(
     private deviceService: DeviceService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -33,25 +36,37 @@ export class AlertsComponent implements OnInit, OnDestroy {
     } else {
       this.alertFilter.device_id = this.device.device_id;
     }
+    this.route.paramMap.subscribe(params => {
+      this.pageType = params.get('listName');
+      this.pageType = this.pageType.slice(0, -1);
+      this.alertTableConfig = {
+        type: 'alert',
+        headers: ['Timestamp', 'Message ID', 'Message'],
+        data: [
+          {
+            name: 'Timestamp',
+            key: 'local_created_date',
+          },
+          {
+            name: 'Message ID',
+            key: 'message_id',
+          },
+          {
+            name: 'Message',
+            key: undefined,
+          }
+        ]
+      };
+      if (this.pageType === 'gateway') {
+        this.alertTableConfig.data.splice(1, 1);
+        this.alertTableConfig.data.splice(1, 0, {
+          name: 'Asset Name',
+          key: 'device_id'
+        });
+      }
+    });
     this.alertFilter.epoch = true;
-    this.alertTableConfig = {
-      type: 'alert',
-      headers: ['Timestamp', 'Message ID', 'Message'],
-      data: [
-        {
-          name: 'Timestamp',
-          key: 'local_created_date',
-        },
-        {
-          name: 'Message ID',
-          key: 'message_id',
-        },
-        {
-          name: 'Message',
-          key: undefined,
-        }
-      ]
-    };
+
   }
 
   searchAlerts(filterObj) {

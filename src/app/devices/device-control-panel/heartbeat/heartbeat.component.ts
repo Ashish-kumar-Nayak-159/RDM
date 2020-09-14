@@ -1,3 +1,4 @@
+import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { Device } from 'src/app/models/device.model';
@@ -21,37 +22,51 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
   selectedHeartbeat: any;
   isFilterSelected = false;
   modalConfig: any;
+  pageType: string;
   heartbeatTableConfig: any = {};
   constructor(
     private deviceService: DeviceService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
+    if (this.device.tags.category === CONSTANTS.IP_GATEWAY ) {
       this.heartBeatFilter.gateway_id = this.device.device_id;
     } else {
       this.heartBeatFilter.device_id = this.device.device_id;
     }
+    this.route.paramMap.subscribe(params => {
+      this.pageType = params.get('listName');
+      this.pageType = this.pageType.slice(0, -1);
+      this.heartbeatTableConfig = {
+        type: 'heartbeat',
+        headers: ['Timestamp', 'Message ID', 'Message'],
+        data: [
+          {
+            name: 'Timestamp',
+            key: 'local_created_date',
+          },
+          {
+            name: 'Message ID',
+            key: 'message_id',
+          },
+          {
+            name: 'Message',
+            key: undefined,
+          }
+        ]
+      };
+      if (this.pageType === 'gateway') {
+        this.heartbeatTableConfig.data.splice(1, 1);
+        this.heartbeatTableConfig.data.splice(1, 0, {
+          name: 'Asset Name',
+          key: 'device_id'
+        });
+      }
+    });
     this.heartBeatFilter.epoch = true;
-    this.heartbeatTableConfig = {
-      type: 'heartbeat',
-      headers: ['Timestamp', 'Message ID', 'Message'],
-      data: [
-        {
-          name: 'Timestamp',
-          key: 'local_created_date',
-        },
-        {
-          name: 'Message ID',
-          key: 'message_id',
-        },
-        {
-          name: 'Message',
-          key: undefined,
-        }
-      ]
-    };
+
   }
 
   searchHeartBeat(filterObj) {

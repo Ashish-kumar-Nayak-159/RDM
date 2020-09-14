@@ -4,10 +4,17 @@
       <div class="form-group form-inline my-1">
         <input type="number" min="1" class="form-control form-control-sm mx-1 my-1 record-input" id="inputEmail4" placeholder="No of Records"
         [(ngModel)]="filterObj.count" name="count">
-        <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="MessageId"
+        <input *ngIf="pageType === 'device'" type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="MessageId"
         [(ngModel)]="filterObj.message_id" name="message_id">
+        <select *ngIf="pageType === 'gateway'" class="form-control form-control-sm mx-1 my-1" id="deviceCategory"
+         [(ngModel)]="filterObj.device_id" name="deviceCategory">
+          <option [ngValue]="undefined">Select Device</option>
+          <option [ngValue]="device.device_id" *ngFor="let device of devices">
+            {{device?.tags.dislay_name ? device.tags.display_name: device.device_id}}
+          </option>
+        </select>
         <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
-        placeholder="Date Options" [(ngModel)]="filterObj.dateOption" name="dateOptions" (change)="onDateOptionChange()">
+        [(ngModel)]="filterObj.dateOption" name="dateOptions" (change)="onDateOptionChange()">
           <option [ngValue]="undefined">Date Options</option>
           <option [ngValue]="'5 mins'">Last 5 minutes</option>
           <option [ngValue]="'30 mins'">Last 30 minutes</option>

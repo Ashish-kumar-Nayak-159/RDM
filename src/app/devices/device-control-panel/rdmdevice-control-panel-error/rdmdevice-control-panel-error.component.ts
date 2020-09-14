@@ -1,3 +1,4 @@
+import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
@@ -23,9 +24,11 @@ export class RDMDeviceControlPanelErrorComponent implements OnInit, OnDestroy {
   isFilterSelected = false;
   modalConfig: any;
   errorTableConfig: any = {};
+  pageType: string;
   constructor(
     private deviceService: DeviceService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -34,29 +37,41 @@ export class RDMDeviceControlPanelErrorComponent implements OnInit, OnDestroy {
     } else {
       this.errorFilter.device_id = this.device.device_id;
     }
+    this.route.paramMap.subscribe(params => {
+      this.pageType = params.get('listName');
+      this.pageType = this.pageType.slice(0, -1);
+      this.errorTableConfig = {
+        type: 'error',
+        headers: ['Timestamp', 'Message ID', 'Error Code', 'Message'],
+        data: [
+          {
+            name: 'Timestamp',
+            key: 'local_created_date',
+          },
+          {
+            name: 'Message ID',
+            key: 'message_id',
+          },
+          {
+            name: 'Error Code',
+            key: 'error_code',
+          },
+          {
+            name: 'Message',
+            key: undefined,
+          }
+        ]
+      };
+      if (this.pageType === 'gateway') {
+        this.errorTableConfig.data.splice(1, 1);
+        this.errorTableConfig.data.splice(1, 0, {
+          name: 'Asset Name',
+          key: 'device_id'
+        });
+      }
+    });
     this.errorFilter.epoch = true;
-    this.errorTableConfig = {
-      type: 'error',
-      headers: ['Timestamp', 'Message ID', 'Error Code', 'Message'],
-      data: [
-        {
-          name: 'Timestamp',
-          key: 'local_created_date',
-        },
-        {
-          name: 'Message ID',
-          key: 'message_id',
-        },
-        {
-          name: 'Error Code',
-          key: 'error_code',
-        },
-        {
-          name: 'Message',
-          key: undefined,
-        }
-      ]
-    };
+
   }
 
   searchError(filterObj) {

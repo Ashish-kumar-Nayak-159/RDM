@@ -32,6 +32,7 @@ export class DeviceListComponent implements OnInit {
   gateways: any[];
   tableConfig: any;
   pageType: string;
+  deviceCategory = CONSTANTS.NON_IP_DEVICE_OPTIONS;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -187,7 +188,8 @@ export class DeviceListComponent implements OnInit {
     this.gateways = [];
     const obj = {
       app: this.appName,
-      category: CONSTANTS.IP_GATEWAY
+      category: CONSTANTS.IP_GATEWAY,
+      device_category: this.nonIPDeviceCategory.name
     };
     this.deviceService.getDeviceList(obj).subscribe(
       (response: any) => {
@@ -286,12 +288,15 @@ export class DeviceListComponent implements OnInit {
     if (obj.type === this.pageType.toLowerCase()) {
       if (obj.for === 'View Devices') {
       } else if (obj.for === 'View Control Panel') {
-        console.log('ghereee', ['applications', this.appName,
-        (this.pageType.toLowerCase() + 's') ,
+        if (this.nonIPDeviceCategory) {
+          this.router.navigate(['applications', this.appName,
+        'devices', 'deviceType', this.nonIPDeviceCategory.name ,
         obj.data.device_id, 'control-panel']);
+        } else {
         this.router.navigate(['applications', this.appName,
         (this.pageType.toLowerCase() + 's') ,
         obj.data.device_id, 'control-panel']);
+        }
       }
     }
   }

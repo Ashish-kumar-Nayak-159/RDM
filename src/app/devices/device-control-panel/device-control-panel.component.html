@@ -9,7 +9,11 @@
 		</div>
     <ul class="navbar-nav bg-white" id="controlPanelSidebar">
 
-
+      <div class="sidebar1-heading ">
+        Manage
+      </div>
+      <!-- Divider -->
+      <hr class="sidebar1-divider">
       <!-- Nav Item - Dashboard -->
       <li class="nav-item" [ngClass]="{'active': activeTab === 'overview'}">
         <a class="nav-link collapsed" href="#device_overview" data-toggle="tab" aria-expanded="false"
@@ -33,18 +37,11 @@
           <span>Tags</span></a>
       </li>
 
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'manage'}">
-        <a class="nav-link" href="#device_setting" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('manage')">
-          <i class="fas fa-fw fa-cog" title="Manage Device"></i>
-          <span>Manage</span></a>
-      </li>
-
-
 
 
       <!-- Heading -->
       <div class="sidebar1-heading ">
-        D2C
+        D2C (Monitor)
       </div>
       <!-- Divider -->
       <hr class="sidebar1-divider">
@@ -103,16 +100,12 @@
           <span>Other</span></a>
       </li>
 
-      <li class="nav-item"  [ngClass]="{'active': activeTab === 'trendAnalysis'}">
-        <a class="nav-link" href="#device_trend_analysis"  data-toggle="tab" aria-expanded="false" (click)="setActiveTab('trendAnalysis')">
-          <i class="fas fa-fw fa-stream" title="Live Data"></i>
-          <span>Trend Analysis</span></a>
-      </li>
+
 
 
       <!-- Heading -->
       <div class="sidebar1-heading">
-        C2D
+        C2D (Control)
       </div>
       <!-- Divider -->
       <hr class="sidebar1-divider">
@@ -124,7 +117,17 @@
           <span>Control Widgets</span></a>
       </li>
 
-
+      <div class="sidebar1-heading">
+        Visualize
+      </div>
+       <!-- Divider -->
+       <hr class="sidebar1-divider">
+       <!-- Nav Item - Charts -->
+       <li class="nav-item"  [ngClass]="{'active': activeTab === 'trendAnalysis'}">
+        <a class="nav-link" href="#device_trend_analysis"  data-toggle="tab" aria-expanded="false" (click)="setActiveTab('trendAnalysis')">
+          <i class="fas fa-fw fa-stream" title="Live Data"></i>
+          <span>Trend Analysis</span></a>
+      </li>
 
       <!-- Divider -->
       <hr class="sidebar1-divider d-none d-md-block">
@@ -149,7 +152,6 @@
       <i class="fa fa-bars"></i>
     </button> -->
     <div class="">
-
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'overview'}" id="device_overview" role="tabpanel">
         <app-overview *ngIf="activeTab === 'overview'" [device]="device"></app-overview>
       </div>
@@ -158,9 +160,6 @@
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="device_device_tags">
         <app-tags *ngIf="activeTab === 'tags'" [device]="device"></app-tags>
-      </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'manage'}" role="tabpanel" id="device_setting">
-        <app-settings *ngIf="activeTab === 'manage'" [device]="device"></app-settings>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'heartbeat'}" role="tabpanel" id="device_heartbeat">
         <app-heartbeat *ngIf="activeTab === 'heartbeat'" [device]="device"></app-heartbeat>

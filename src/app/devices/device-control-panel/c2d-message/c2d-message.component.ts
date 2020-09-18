@@ -78,7 +78,7 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
     } else if (filterObj.dateOption === '24 hour') {
       obj.to_date = now.unix();
       obj.from_date = (now.subtract(24, 'hour')).unix();
-    } else if (filterObj.dateOption === 'custom') {
+    }else {
       if (filterObj.from_date) {
         obj.from_date = (filterObj.from_date.unix());
       }

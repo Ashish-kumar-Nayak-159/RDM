@@ -155,6 +155,11 @@ export class CONSTANTS {
       'neutral_current',
       'frequency_Hz',
       'cumulative_energy_kWh'
+    ],
+    IIoT_App: [
+      'temperature',
+      'flow',
+      'pressure',
     ]
   };
 
@@ -221,8 +226,8 @@ export class CONSTANTS {
   public static USER_DETAILS = 'userData';
   public static CURRENT_BREADCRUMB_STATE = 'breadcrumbState';
   public static NON_IP_DEVICES = 'Non IP Devices';
-  public static IP_DEVICE = 'IP Device';
-  public static IP_GATEWAY = 'IP Gateway';
+  public static IP_DEVICE = 'IoT Device';
+  public static IP_GATEWAY = 'IoT Gateway';
   public static NON_IP_DEVICE = 'Non IP Device';
 
 }

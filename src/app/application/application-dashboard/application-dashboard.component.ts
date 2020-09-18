@@ -223,8 +223,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
     let obj;
     if (type || fromValue) {
       obj = {
-        connection_state: type,
-        state: fromValue
+        connection_state: type
       };
     }
     this.router.navigate(['applications', this.appName,

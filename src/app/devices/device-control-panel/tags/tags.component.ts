@@ -23,6 +23,7 @@ export class TagsComponent implements OnInit {
   tagsListToNotDelete = ['app', 'created_date', 'created_by', 'device_manager', 'manufacturer',
   'serial_number', 'mac_address', 'protocol', 'cloud_connectivity'];
   userData: any;
+  pageType: string;
   appName: string;
   constructor(
     private route: ActivatedRoute,
@@ -35,9 +36,17 @@ export class TagsComponent implements OnInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
+      this.pageType = params.get('listName');
       this.getDeviceDetail();
     });
     this.reservedTags = CONSTANTS.DEVICE_RESERVED_TAGS_LIST;
+    if (this.pageType === 'gateways') {
+      this.reservedTags.forEach(item => {
+        if (item.name.includes('Device')) {
+          item.name = item.name.replace('Device', 'Gateway');
+        }
+      });
+    }
 
   }
 

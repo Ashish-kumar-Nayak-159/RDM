@@ -52,6 +52,7 @@ export class FilterComponent implements OnInit {
       (response: any) => {
         if (response && response.data) {
           this.devices = response.data;
+          this.devices.splice(0, 0, { device_id: this.filterObj.gateway_id});
         }
       }, errror => {}
     );

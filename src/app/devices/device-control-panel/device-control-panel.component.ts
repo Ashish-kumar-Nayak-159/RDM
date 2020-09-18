@@ -18,7 +18,8 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
   isDeviceDataLoading = false;
   userData: any;
   appName: string;
-  nonIPDeviceCategory: any;
+  componentState: any;
+  gatewayId: string;
   pageType: any;
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -35,14 +36,26 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
       params => {
         this.appName = params.get('applicationId');
         if (params.get('deviceId')) {
-          this.pageType = params.get('listName');
-          this.pageType = this.pageType.slice(0, -1);
-          console.log(this.pageType);
-          this.device.device_id = params.get('deviceId');
-          this.nonIPDeviceCategory = undefined;
-          if (params.get('deviceType')) {
-            this.nonIPDeviceCategory = CONSTANTS.NON_IP_DEVICE_OPTIONS.filter(category => category.name === params.get('deviceType'))[0];
+          if (params.get('listName')) {
+            const listName = params.get('listName');
+            if (listName.toLowerCase() === 'nonipdevices') {
+              this.componentState = CONSTANTS.NON_IP_DEVICE;
+              this.pageType = 'Device';
+            } else if (listName.toLowerCase() === 'gateways') {
+              this.componentState = CONSTANTS.IP_GATEWAY;
+              this.pageType = 'Gateway';
+            } else if (listName.toLowerCase() === 'devices') {
+              this.componentState = CONSTANTS.IP_DEVICE;
+              this.pageType = 'Device';
+            }
           }
+          if (params.get('gatewayId')) {
+            this.gatewayId = params.get('gatewayId');
+            this.componentState = CONSTANTS.NON_IP_DEVICE;
+            this.pageType = 'Device';
+          }
+          this.pageType = this.pageType.slice(0, -1);
+          this.device.device_id = params.get('deviceId');
           this.getDeviceDetail();
         }
       }
@@ -146,7 +159,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
       this.isDeviceDataLoading = true;
     }
     let methodToCall;
-    if (this.nonIPDeviceCategory) {
+    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
       const obj = {
         app: this.appName,
         device_id: this.device.device_id,
@@ -158,7 +171,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
     }
     methodToCall.subscribe(
       (response: any) => {
-        if (this.nonIPDeviceCategory) {
+        if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
           if (response && response.data) {
             this.device = response.data[0];
           }
@@ -171,7 +184,9 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
           data: [
               {
                 title: (this.device.tags.display_name ? this.device.tags.display_name : this.device.device_id) + ' / Control Panel',
-                url: 'applications/' + this.appName + '/ /' + this.device.device_id + '/control-panel'
+                url:
+                'applications/' + this.appName + '/' + (this.componentState === CONSTANTS.NON_IP_DEVICE ? 'nonIPDevices':
+                (this.pageType.toLowerCase() + 's')) + '/' + this.device.device_id + '/control-panel'
               }
           ]
         });

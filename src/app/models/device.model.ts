@@ -5,7 +5,7 @@ export class DeviceListFilter {
   connection_state: string;
   location: string;
   status: string;
-
+  gateway_id?: string;
   category: string;
 }
 

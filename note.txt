@@ -28,3 +28,16 @@ Table SAS URL - https://storageaccountkemsy96a3.table.core.windows.net/?sv=2019-
 Control panel gateway
 overview - This is the gateway of type (Symatic IOT 2040) managing 10 devices.
 tags - gateway manager gateway type , protocol - IP gateway
+
+
+-- 16-09-2020 ---
+- need to add 'device' or 'gateway' field name - Done
+- gateway devices view - No need to add as per 17-9 document
+- remove category of non ip devices - Done
+- Overview - This device is managed by an IP Gateway (gateway name) - Done
+- timer CSS - Pending
+- control widget -- non ip devices- add gateway id - Done
+- need to check for purge option in non ip devices - Done
+-- gateway keyword in gateways for  IP gateways control pane; - Done
+
+

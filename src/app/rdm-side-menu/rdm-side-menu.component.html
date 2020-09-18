@@ -24,38 +24,29 @@
 
   <!-- Nav Item - Charts -->
   <li class="nav-item" routerLinkActive="active"  *ngIf="!userData?.is_super_admin && appData?.metadata?.contain_devices" [routerLinkActiveOptions]="{exact: false}">
-    <a class="nav-link" [routerLink]="['/applications', appName, 'devices']" [queryParams]="{state: constantsData.IP_DEVICE}">
+    <a class="nav-link" [routerLink]="['/applications', appName, 'devices']">
 
       <i class="fas fa-fw fa-desktop" title="IP Devices"></i>
-      <span>IP Devices</span></a>
+      <span>IoT Devices</span></a>
   </li>
 
   <li class="nav-item" routerLinkActive="active"  *ngIf="!userData?.is_super_admin && appData?.metadata?.contain_gateways" [routerLinkActiveOptions]="{exact: false}">
-    <a class="nav-link" [routerLink]="['/applications', appName, 'gateways']" [queryParams]="{state: constantsData.IP_GATEWAY}">
+    <a class="nav-link" [routerLink]="['/applications', appName, 'gateways']" >
 
       <i class="fas fa-fw fa-desktop" title="IP Gateways"></i>
-      <span>IP Gateways</span></a>
+      <span>IoT Gateways</span></a>
   </li>
   <li class="nav-item" routerLinkActive="active" *ngIf="!userData?.is_super_admin  && appData?.metadata?.contain_gateways">
-    <a class="nav-link collapsed" href="#non-ip-devices" data-toggle="collapse"
-    aria-expanded="true">
+    <a class="nav-link"
+    [routerLink]="['/applications', appName, 'nonIPDevices']">
       <i class="fas fa-fw fa-folder" title="Non IP Devices"></i>
-      <span>Non IP Devices</span>
+      <span>Non IP Devices
+        <i class="fa fa-info-circle" title="It may be BLE Mesh device /
+BLE Beacon device / LoRa device /
+ModBus device or any other,
+who can not connect over internet"></i></span>
     </a>
-    <div id="non-ip-devices" class="collapse" aria-labelledby="headingPages" >
-      <div class="bg-white py-2 collapse-inner rounded">
-        <!--<h6 class="collapse-header">Login Screens:</h6>
-        <a class="collapse-item" href="login.html">Login</a>
-        <a class="collapse-item" href="register.html">Register</a>
-        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-        <div class="collapse-divider"></div>
-        <h6 class="collapse-header">Other Pages:</h6>-->
-        <a class="collapse-item" *ngFor="let item of constantsData.NON_IP_DEVICE_OPTIONS"
-        [routerLink]="['/applications', appName, 'devices']" [queryParams]="{state: constantsData.NON_IP_DEVICE, category: item.name}">
-          {{item.name}}
-        </a>
-      </div>
-    </div>
+
   </li>
 
   <li class="nav-item"  *ngIf="!userData?.is_super_admin">

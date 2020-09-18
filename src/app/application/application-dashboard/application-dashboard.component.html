@@ -44,9 +44,8 @@
                   }}</span>
                 </div>
                 <div class="text-black-50 text-center small">{{
-                  (contextApp?.metadata?.contain_devices && contextApp?.metadata?.contain_gateways ? 'IP Devices & Gateways' :
-                  (contextApp?.metadata?.contain_devices && !contextApp?.metadata?.contain_gateways ? 'IP Devices' :
-                  (!contextApp?.metadata?.contain_devices && contextApp?.metadata?.contain_gateways ? 'IP Gateways' : '')))
+                  (contextApp?.metadata?.contain_devices && !contextApp?.metadata?.contain_gateways ? 'IoT Devices' :
+                  (!contextApp?.metadata?.contain_devices && contextApp?.metadata?.contain_gateways ? 'IoT Gateways' : ''))
                 }}</div
               ></a>
             </div>

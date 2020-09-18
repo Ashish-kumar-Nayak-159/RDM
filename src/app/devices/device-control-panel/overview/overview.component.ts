@@ -1,11 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DeviceService } from './../../../services/devices/device.service';
 import { Device } from 'src/app/models/device.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CONSTANTS } from './../../../app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { ApplicationService } from './../../../services/application/application.service';
 import { environment } from './../../../../environments/environment';
+import { ToasterService } from 'src/app/services/toaster.service';
+declare var $: any;
 
 @Component({
   selector: 'app-overview',
@@ -25,11 +27,17 @@ export class OverviewComponent implements OnInit {
   blobSASToken = environment.blobKey;
   pageType: string;
   deviceCount = null;
+  isAPILoading = false;
+  modalConfig: any;
+  btnClickType: string;
+  confirmModalMessage: string;
   constructor(
-    private devieService: DeviceService,
     private commonService: CommonService,
     private route: ActivatedRoute,
-    private applicationService: ApplicationService
+    private router: Router,
+    private applicationService: ApplicationService,
+    private deviceService: DeviceService,
+    private toasterService: ToasterService,
   ) { }
 
   ngOnInit(): void {
@@ -37,11 +45,10 @@ export class OverviewComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
       this.pageType = params.get('listName');
-      this.pageType = this.pageType.slice(0, -1);
       this.getApplicationData();
       this.getDeviceCredentials();
       this.getDeviceConnectionStatus();
-      if (this.pageType === 'gateway') {
+      if (this.pageType === 'gateways') {
         this.getDeviceCount();
       }
     });
@@ -65,7 +72,7 @@ export class OverviewComponent implements OnInit {
   getDeviceCredentials() {
     this.deviceCredentials = undefined;
     const id = (this.device.tags.category && this.device.gateway_id) ? this.device.gateway_id : this.device.device_id;
-    this.devieService.getDeviceCredentials(id, this.appName).subscribe(
+    this.deviceService.getDeviceCredentials(id, this.appName).subscribe(
       response => {
         this.deviceCredentials = response;
       }
@@ -78,7 +85,7 @@ export class OverviewComponent implements OnInit {
       app: this.appName,
       gateway_id: this.device.device_id
     }
-    this.devieService.getNonIPDeviceCount(obj).subscribe(
+    this.deviceService.getNonIPDeviceCount(obj).subscribe(
       (response: any) => {
         this.deviceCount = response.count;
       }
@@ -88,7 +95,7 @@ export class OverviewComponent implements OnInit {
   getDeviceConnectionStatus() {
     this.deviceConnectionStatus = undefined;
     const id = (this.device.tags.category && this.device.gateway_id) ? this.device.gateway_id : this.device.device_id;
-    this.devieService.getDeviceConnectionStatus(id, this.appName).subscribe(
+    this.deviceService.getDeviceConnectionStatus(id, this.appName).subscribe(
       response => {
         this.deviceConnectionStatus = response;
         this.deviceConnectionStatus.local_updated_date =
@@ -106,6 +113,95 @@ export class OverviewComponent implements OnInit {
   viewonnectionString() {
     this.isViewClicked = true;
     setTimeout(() => this.isViewClicked = false, 3000);
+  }
+
+  enableDevice() {
+    this.isAPILoading = true;
+    this.deviceService.enableDevice(this.device.device_id, this.appName).subscribe(
+      (response: any) => {
+        this.toasterService.showSuccess(response.message, 'Enable Device');
+        this.isAPILoading = false;
+        this.deviceService.reloadDeviceInControlPanelEmitter.emit();
+      }, error => {
+        this.toasterService.showError(error.message, 'Enable Device');
+        this.isAPILoading = false;
+      }
+    );
+  }
+
+  openConfirmDialog(type) {
+    this.btnClickType = type;
+    this.modalConfig = {
+      isDisplaySave: true,
+      isDisplayCancel: true,
+      saveBtnText: 'Yes',
+      cancelBtnText: 'No',
+      stringDisplay: true
+    };
+    $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onModalEvents(eventType) {
+    console.log(eventType);
+    if (eventType === 'save'){
+      console.log(this.btnClickType);
+      if (this.btnClickType === 'Disable') {
+        this.disableDevice();
+        this.btnClickType = undefined;
+      } else if (this.btnClickType === 'Delete') {
+        this.deleteDevice();
+        this.btnClickType = undefined;
+      }
+    }
+    $('#confirmMessageModal').modal('hide');
+  }
+
+  disableDevice() {
+    this.isAPILoading = true;
+    this.deviceService.disableDevice(this.device.device_id, this.appName).subscribe(
+      (response: any) => {
+        this.toasterService.showSuccess(response.message, 'Disable Device');
+        this.isAPILoading = false;
+        this.deviceService.reloadDeviceInControlPanelEmitter.emit();
+      }, error => {
+        this.toasterService.showError(error.message, 'Disable Device');
+        this.isAPILoading = false;
+      }
+    );
+  }
+
+  deleteDevice() {
+    this.isAPILoading = true;
+    let methodToCall;
+    if (this.device.tags.category && this.device.gateway_id) {
+      methodToCall = this.deviceService.deleteNonIPDevice(this.device.device_id, this.appName);
+    } else {
+      methodToCall = this.deviceService.deleteDevice(this.device.device_id, this.appName);
+    }
+
+    methodToCall.subscribe(
+      (response: any) => {
+        this.toasterService.showSuccess(response.message, 'Delete Device');
+        this.isAPILoading = false;
+        if (this.device.tags.category && this.device.gateway_id) {
+          this.router.navigate(['applications', this.appName, 'devices'], { queryParams: {
+            state: CONSTANTS.NON_IP_DEVICE,
+            category: this.device.tags.category
+          }});
+        } else if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
+          this.router.navigate(['applications', this.appName, 'gateways'], { queryParams: {
+            state: CONSTANTS.IP_GATEWAY
+          }});
+        }  else {
+          this.router.navigate(['applications', this.appName, 'devices'], { queryParams: {
+            state: CONSTANTS.IP_DEVICE
+          }});
+        }
+      }, error => {
+        this.toasterService.showError(error.message, 'Delete Device');
+        this.isAPILoading = false;
+      }
+    );
   }
 
 

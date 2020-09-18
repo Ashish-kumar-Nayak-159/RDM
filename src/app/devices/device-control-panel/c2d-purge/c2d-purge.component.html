@@ -20,7 +20,7 @@
             class="nav-link delete-table"
             [class.disabled]="!messageCount|| messageCount === 0"
             href="javascript:void(0)"
-            (click)="purgeQueueMessages()"
+            (click)="openConfirmDialog()"
           >
             <i class="fas fa-fw fa-trash"></i>
             <span>Purge Queue Messages</span></a
@@ -39,7 +39,20 @@
   <div class="row mx-auto" *ngIf="messageCount?.toString().length > 0">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-2 pt-3">
-      <h6 class="h6 mb-0">Total Messages: {{ messageCount }}</h6>
+      <h6 class="h6 mb-0">Total Messages {{pageType !== 'devices' ?
+        ('in Gateway (' + (device.gateway_id ? device.gateway_id : device.device_id) + ') queue is ') : 'in device (' + device.device_id + ') queue is '}}:
+        {{ messageCount }}</h6>
     </div>
+  </div>
+</div>
+
+<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <app-message-modal
+    [bodyMessage]="'This will purge all the messages from ' +
+    (pageType !== 'devices' ? ('gateway (' + (device.gateway_id ? device.gateway_id : device.device_id)) :'device (' + device.device_id ) + ') queue.' +
+    ' Are you sure you want to continue?'"
+     [headerMessage]="'Purge Queue Messages'"
+      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
   </div>
 </div>

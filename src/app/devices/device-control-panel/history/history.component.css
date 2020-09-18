@@ -14,5 +14,27 @@
   width: 11.5%!important;
 }
 
+.chartTypeDropdown{
+  border: 1px solid #d1d3e2;
+  border-radius: 5px;
+  height: 32px;
+}
 
+#dropdownMenu2{
+  padding-top : 2px;
+}
 
+#chartTitle{
+  height: 32px;
+  margin-left: 5px;
+  width: 125px;
+}
+
+.multi-select{
+  margin:0rem !important;
+}
+
+#widgetContainer{
+  height: 500px;
+  overflow: scroll;
+}

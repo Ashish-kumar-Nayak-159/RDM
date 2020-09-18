@@ -1,15 +1,15 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ComponentFactoryResolver, ApplicationRef, Injector, EmbeddedViewRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DeviceService } from './../../../services/devices/device.service';
 import { CommonService } from 'src/app/services/common.service';
 import { Device } from 'src/app/models/device.model';
 import { CONSTANTS } from './../../../app.constants';
-import { ChartDataSets, ChartOptions } from 'chart.js';
-import { Label, Color } from 'ng2-charts';
 import { GoogleChartInterface } from 'ng2-google-charts';
 import * as moment from 'moment';
 import { ToasterService } from './../../../services/toaster.service';
 import { ActivatedRoute } from '@angular/router';
+import { ChartWidgetComponent } from '../chart-widget/chart-widget.component';
+import { MapWidgetComponent } from '../map-widget/map-widget.component';
 
 @Component({
   selector: 'app-history',
@@ -23,12 +23,26 @@ export class HistoryComponent implements OnInit {
   historyData: any[] = [];
   isHistoryAPILoading = false;
   @Input() device = new Device();
+  @Input() isLayout;
   userData: any;
   isFilterSelected = false;
   propertyList: any[] = [];
   dropdownPropList = [];
-  y1AxisProps = [];
-  y2AxisProp = [];
+  // y1AxisProps = [];
+  // y2AxisProp = [];
+  y1AxisProps = "";
+  y2AxisProp = "";
+
+  //chart selection 
+  chartCount = 0
+  chartTypes = ["Bar Chart", "Column Chart", "Line Chart", "Area Chart", "Pie Chart", "Data Table", "Map"]
+  chartTypeValues = ["BarChart", "ColumnChart", "LineChart", "AreaChart", "PieChart", "Table", "Map"]
+  chartIcons = ["fa-bar-chart fa-rotate-90", "fa-bar-chart", "fa-line-chart", "fa-area-chart", "fa-pie-chart", "fa-table", "fa-map"]
+  public selectedChartType = "Chart Type"
+  columnNames = []
+  layoutJson = []
+  chartTitle = ""
+  showDataTable: boolean = false
 
   // google chart
   public lineGoogleChartData: GoogleChartInterface = {  // use :any or :GoogleChartInterface
@@ -50,16 +64,17 @@ export class HistoryComponent implements OnInit {
       series: {
       },
       vAxes: {
-          // Adds titles to each axis.
-        },
+        // Adds titles to each axis.
+      },
       height: 300,
-      width: 900,
+      width: 600,
       curveType: 'function',
       explorer: {
         actions: ['dragToZoom', 'rightClickToReset'],
         axis: 'horizontal',
         keepInBounds: true,
-        maxZoomIn: 10.0}
+        maxZoomIn: 10.0
+      }
     }
   };
   appName: any;
@@ -68,10 +83,17 @@ export class HistoryComponent implements OnInit {
     private deviceService: DeviceService,
     private commonService: CommonService,
     private toasterService: ToasterService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private factoryResolver: ComponentFactoryResolver,
+    private appRef: ApplicationRef,
+    private injector: Injector
   ) { }
 
+
+
   ngOnInit(): void {
+    
+
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
 
     this.route.paramMap.subscribe(params => {
@@ -99,120 +121,135 @@ export class HistoryComponent implements OnInit {
   }
 
   onDateOptionChange() {
-      this.historyFilter.from_date = undefined;
-      this.historyFilter.to_date = undefined;
+    this.historyFilter.from_date = undefined;
+    this.historyFilter.to_date = undefined;
   }
 
-  searchHistory() {
-    this.historyFilter.y1AxisProperty = [];
-    this.historyFilter.y2AxisProperty = [];
-    this.y1AxisProps.forEach(item => {
-      this.historyFilter.y1AxisProperty.push(item.id);
-    });
-    this.y2AxisProp.forEach(item => {
-      this.historyFilter.y2AxisProperty.push(item.id);
-    });
-    if (!this.historyFilter.y1AxisProperty || (this.historyFilter.y1AxisProperty && this.historyFilter.y1AxisProperty.length === 0)) {
-      this.toasterService.showError('Y1 Axis Property is required', 'Load Chart');
-      return;
-    }
-    this.isHistoryAPILoading = true;
-    this.lineGoogleChartData.dataTable = [];
-    const obj = {...this.historyFilter};
-    const now = moment().utc();
-    if (this.historyFilter.dateOption === '5 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(5, 'minute')).unix();
-    } else if (this.historyFilter.dateOption === '30 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(30, 'minute')).unix();
-    } else if (this.historyFilter.dateOption === '1 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(1, 'hour')).unix();
-    } else if (this.historyFilter.dateOption === '24 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(24, 'hour')).unix();
-    } else {
-      if (this.historyFilter.from_date) {
-        obj.from_date = (this.historyFilter.from_date.unix());
-      }
-      if (this.historyFilter.to_date) {
-        obj.to_date = this.historyFilter.to_date.unix();
-      }
-    }
-    obj.message_props = '';
-    obj.y1AxisProperty.forEach(prop => obj.message_props += prop + ',');
-    if (obj.y2AxisProperty) {
-      obj.y2AxisProperty.forEach(prop => obj.message_props += prop + ',');
-    }
-    if (obj.message_props.charAt(obj.message_props.length - 1) === ',') {
-      obj.message_props = obj.message_props.substring(0, obj.message_props.length - 1);
-    }
-    console.log(this.historyFilter);
-    delete obj.dateOption;
-    delete obj.y1AxisProperty;
-    delete obj.y2AxisProperty;
-    this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
-      (response: any) => {
-        this.isFilterSelected = true;
-        if (response && response.data) {
-          this.historyData = response.data;
-          this.isHistoryAPILoading = false;
-          this.historyData.reverse();
+  searchHistory(layoutJson) {
+    
+    return new Promise((resolve, reject) => {
 
-          const dataList = [];
-          dataList.push('DateTime');
-          let title = '';
-          this.historyFilter.y1AxisProperty.forEach((prop, index) => {
-            dataList.splice(dataList.length, 0,  {label: prop, type: 'number'});
-            title += prop + (index !== this.historyFilter.y1AxisProperty.length - 1 ? ' & ' : '');
-            this.lineGoogleChartData.options.series[index.toString()] = {targetAxisIndex: 0};
-          });
-          this.lineGoogleChartData.options.vAxes = {
-            0: {title}
-          };
-          if (this.historyFilter.y2AxisProperty) {
-            title = '';
-            this.historyFilter.y2AxisProperty.forEach((prop, index) => {
-              dataList.splice(dataList.length, 0,  {label: prop, type: 'number'});
-              title += prop + (index !== this.historyFilter.y2AxisProperty.length - 1 ? ' & ' : '');
-              this.lineGoogleChartData.options.series[(this.historyFilter.y1AxisProperty.length) + index] =  {targetAxisIndex: 1};
-            });
-            this.lineGoogleChartData.options.vAxes['1'] = {title};
-          }
-          this.lineGoogleChartData.dataTable.push(dataList);
-          this.historyData.forEach(history =>  {
-            history.local_created_date = this.commonService.convertUTCDateToLocal(history.message_date);
+      this.historyFilter.y1AxisProperty = [];
+      this.historyFilter.y2AxisProperty = [];
+      if (layoutJson == null) {
+        // this.y1AxisProps.forEach(item => {
+        //   this.historyFilter.y1AxisProperty.push(item.id);
+        // });
+        // this.y2AxisProp.forEach(item => {
+        //   this.historyFilter.y2AxisProperty.push(item.id);
+        // });
+        this.historyFilter.y1AxisProperty = this.y1AxisProps.split(',')
+        this.historyFilter.y2AxisProperty = this.y2AxisProp.split(',')
+      }
+      else {
+        this.historyFilter.y1AxisProperty = layoutJson.y1axis
+        this.historyFilter.y2AxisProperty = layoutJson.y2axis
+      }
+      if (!this.historyFilter.y1AxisProperty || (this.historyFilter.y1AxisProperty && this.historyFilter.y1AxisProperty.length === 0)) {
+        this.toasterService.showError('Y1 Axis Property is required', 'Load Chart');
+        return;
+      }
+      this.isHistoryAPILoading = true;
+      this.lineGoogleChartData.dataTable = [];
+      const obj = { ...this.historyFilter };
+      const now = moment().utc();
+      obj.to_date = now.unix();
+      if (this.historyFilter.dateOption === '5 mins') {
+        obj.from_date = (now.subtract(5, 'minute')).unix();
+      } else if (this.historyFilter.dateOption === '30 mins') {
+        obj.from_date = (now.subtract(30, 'minute')).unix();
+      } else if (this.historyFilter.dateOption === '1 hour') {
+        obj.from_date = (now.subtract(1, 'hour')).unix();
+      } else if (this.historyFilter.dateOption === '24 hour') {
+        obj.from_date = (now.subtract(24, 'hour')).unix();
+      } else {
+        if (this.historyFilter.from_date) {
+          obj.from_date = (this.historyFilter.from_date.unix());
+        }
+        if (this.historyFilter.to_date) {
+          obj.to_date = this.historyFilter.to_date.unix();
+        }
+      }
+      obj.message_props = '';
+      obj.y1AxisProperty.forEach(prop => obj.message_props += prop + ',');
+      if (obj.y2AxisProperty) {
+        obj.y2AxisProperty.forEach(prop => obj.message_props += prop + ',');
+      }
+      if (obj.message_props.charAt(obj.message_props.length - 1) === ',') {
+        obj.message_props = obj.message_props.substring(0, obj.message_props.length - 1);
+      }
+      console.log(this.historyFilter);
+      delete obj.dateOption;
+      delete obj.y1AxisProperty;
+      delete obj.y2AxisProperty;
+      this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
+        (response: any) => {
+          this.isFilterSelected = true;
+          if (response && response.data) {
+            this.lineGoogleChartData.dataTable = [];
+            this.historyData = []
+            this.historyData = response.data;
+            this.isHistoryAPILoading = false;
+            this.historyData.reverse();
 
-            const list = [];
-            list.splice(0, 0, new Date(history.local_created_date));
-            this.historyFilter.y1AxisProperty.forEach(prop => {
-              if (!isNaN(parseFloat(history[prop]))) {
-                list.splice(list.length, 0, parseFloat(history[prop]));
-              } else {
-                list.splice(list.length, 0, null);
-              }
+            const dataList = [];
+            dataList.push('DateTime');
+            let title = '';
+
+            this.historyFilter.y1AxisProperty.forEach((prop, index) => {
+              dataList.splice(dataList.length, 0, { label: prop, type: 'number' });
+              title += prop + (index !== this.historyFilter.y1AxisProperty.length - 1 ? ' & ' : '');
+              this.lineGoogleChartData.options.series[index.toString()] = { targetAxisIndex: 0 };
             });
+            this.lineGoogleChartData.options.vAxes = {
+              0: { title }
+            };
             if (this.historyFilter.y2AxisProperty) {
-              this.historyFilter.y2AxisProperty.forEach(prop => {
+              title = '';
+              this.historyFilter.y2AxisProperty.forEach((prop, index) => {
+                dataList.splice(dataList.length, 0, { label: prop, type: 'number' });
+                title += prop + (index !== this.historyFilter.y2AxisProperty.length - 1 ? ' & ' : '');
+                this.lineGoogleChartData.options.series[(this.historyFilter.y1AxisProperty.length) + index] = { targetAxisIndex: 1 };
+              });
+              this.lineGoogleChartData.options.vAxes['1'] = { title };
+            }
+            console.log('this.lineGoogleChartData.dataTable ',this.lineGoogleChartData.dataTable)
+            this.lineGoogleChartData.dataTable.push(dataList);
+
+            this.historyData.forEach(history => {
+              history.local_created_date = this.commonService.convertUTCDateToLocal(history.message_date);
+              const list = [];
+              list.splice(0, 0, new Date(history.local_created_date).toString());
+              this.historyFilter.y1AxisProperty.forEach(prop => {
                 if (!isNaN(parseFloat(history[prop]))) {
                   list.splice(list.length, 0, parseFloat(history[prop]));
                 } else {
                   list.splice(list.length, 0, null);
                 }
               });
-            }
-            this.lineGoogleChartData.dataTable.splice(this.lineGoogleChartData.dataTable.length, 0, list);
-          });
-          console.log(this.lineGoogleChartData);
-          if (this.lineGoogleChartData.dataTable.length > 1) {
-          const ccComponent = this.lineGoogleChartData.component;
-          // force a redraw
-          ccComponent.draw();
+              if (this.historyFilter.y2AxisProperty) {
+                this.historyFilter.y2AxisProperty.forEach(prop => {
+                  if (!isNaN(parseFloat(history[prop]))) {
+                    list.splice(list.length, 0, parseFloat(history[prop]));
+                  } else {
+                    list.splice(list.length, 0, null);
+                  }
+                });
+              }
+              this.lineGoogleChartData.dataTable.splice(this.lineGoogleChartData.dataTable.length, 0, list);
+            });
+            console.log(this.lineGoogleChartData);
+            resolve(this.lineGoogleChartData)
+            // if (this.lineGoogleChartData.dataTable.length > 1) {
+            //   const ccComponent = this.lineGoogleChartData.component;
+            //   // force a redraw
+            //   ccComponent.draw();
+            // }
+
           }
-        }
-      }, error => this.isHistoryAPILoading = false
-    ));
+        }, error => this.isHistoryAPILoading = false
+      ));
+    })
   }
 
   clear() {
@@ -227,5 +264,135 @@ export class HistoryComponent implements OnInit {
     this.historyFilter.from_date = moment(event.value[0]).utc();
     this.historyFilter.to_date = moment(event.value[1]).utc();
   }
+
+  setChartType(chartTypeIndex) {
+    this.selectedChartType = this.chartTypeValues[chartTypeIndex]
+  }
+
+  addChart() {
+    this.chartCount++
+    var componentRef;
+    if (this.selectedChartType != "Map") {
+      this.searchHistory(null).then(() => {
+        var componentRef = this.factoryResolver.resolveComponentFactory(ChartWidgetComponent).create(this.injector);
+        if (this.selectedChartType == "PieChart") {
+          delete this.lineGoogleChartData.options.explorer
+        }
+        componentRef.instance.showDataTable = this.showDataTable
+        componentRef.instance.chartData = this.lineGoogleChartData
+        componentRef.instance.chartData.chartType = this.selectedChartType
+        componentRef.instance.widgetTitle = componentRef.instance.title = (this.chartTitle).toLocaleUpperCase()
+        // componentRef.instance.busesOnDuty = this.lineGoogleChartData.dataTable
+        this.appRef.attachView(componentRef.hostView);
+        const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
+          .rootNodes[0] as HTMLElement;
+        var newNode = document.createElement('div');
+        componentRef.instance.chartId = "chart_" + this.chartCount
+        if(this.showDataTable){
+          componentRef.instance.chartData.options.width = 500
+        }
+        else{
+          componentRef.instance.chartData.options.width = 1000
+        }
+        newNode.className = 'col-xl-10 col-lg-10 col-sm-10 col-md-10 col-xs-12';
+        // if(this.showDataTable){
+        //   newNode.className = 'col-xl-12 col-lg-12 col-sm-12 col-md-12 col-xs-12';
+        // }
+        // if($("#widgetContainer").children().length==0){
+        //   newNode.className = 'col-lg-12';
+        // }
+        // else if($("#widgetContainer").children().length==1){
+        //   $($("#widgetContainer").children()[0]).addClass('col-lg-6').removeClass('col-lg-12')
+        // }
+        newNode.appendChild(domElem)
+        if (this.selectedChartType == "Map" || componentRef.instance.chartData.dataTable.length > 0) {
+          document.getElementById("widgetContainer").appendChild(newNode)
+        }
+        let chart = {
+          "type": componentRef.instance.chartData.chartType,
+          "title": componentRef.instance.widgetTitle,
+          "y1axis": this.historyFilter.y1AxisProperty,
+          "y2axis": this.historyFilter.y2AxisProperty,
+          "showDataTable": this.showDataTable
+        }
+        this.layoutJson.push(chart)
+      });
+    }
+    else{
+      componentRef = this.factoryResolver.resolveComponentFactory(MapWidgetComponent).create(this.injector);
+      this.appRef.attachView(componentRef.hostView);
+        const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
+          .rootNodes[0] as HTMLElement;
+        var newNode = document.createElement('div');
+        componentRef.instance.chartId = "chart_" + this.chartCount
+        newNode.appendChild(domElem)
+        document.getElementById("widgetContainer").appendChild(newNode)
+        let chart = {
+          "type": this.selectedChartType,
+          "title": this.chartTitle,
+          // "y1axis": this.historyFilter.y1AxisProperty,
+          // "y2axis": this.historyFilter.y2AxisProperty,
+          // "showDataTable": this.showDataTable
+        }
+        this.layoutJson.push(chart)
+    }
+  }
+
+  renderLayout() {
+    var componentRef;
+    this.layoutJson.map((currentChart, i) => {
+      this.searchHistory(currentChart).then((chartData) => {
+        console.log('promise resolved ', currentChart,chartData)
+        componentRef = this.factoryResolver.resolveComponentFactory(ChartWidgetComponent).create(this.injector);
+        if (this.selectedChartType == "PieChart") {
+          delete chartData['options'].explorer
+        }
+        componentRef.instance.showDataTable = this.showDataTable
+        componentRef.instance.chartData = chartData
+        componentRef.instance.chartData.chartType = currentChart.type
+        componentRef.instance.y1axis = currentChart.y1axis
+        componentRef.instance.y2axis = currentChart.y2axis
+        componentRef.instance.widgetTitle = currentChart.title
+        componentRef.instance.showDataTable = currentChart.showDataTable
+        componentRef.instance.chartId = "render_chart_" + (i + 1)
+        if(this.showDataTable){
+          componentRef.instance.chartData.options.width = 500
+        }
+        else{
+          componentRef.instance.chartData.options.width = 1000
+        }
+        this.appRef.attachView(componentRef.hostView);
+        const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
+          .rootNodes[0] as HTMLElement;
+        var newNode = document.createElement('div');
+        newNode.className = 'col-xl-10 col-lg-10 col-sm-10 col-md-10 col-xs-12';
+        newNode.appendChild(domElem)
+        document.getElementById("widgetContainer").appendChild(newNode)
+      });
+    })
+    // for (var i = 0; i < this.layoutJson.length; i++) {
+    // console.log('this.layoutJson[i] ',this.layoutJson[i])
+    // if (this.layoutJson[i].type != "Map") {
+
+    // }
+    // else {
+    //   componentRef = this.factoryResolver
+    //   .resolveComponentFactory(MapWidgetComponent).create(this.injector);
+    // }
+
+    // this.appRef.attachView(componentRef.hostView);
+    // const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
+    //   .rootNodes[0] as HTMLElement;
+    // var newNode = document.createElement('div');
+    // newNode.className = 'col-lg-6';
+    // newNode.appendChild(domElem)
+    // document.getElementById("widgetContainer").appendChild(newNode)
+    // }
+  }
+
+  saveLayout() {
+    console.log('layout json ', this.layoutJson)
+  }
+
 
 }

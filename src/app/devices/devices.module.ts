@@ -8,6 +8,7 @@ import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule} from '@angular/mat
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import {MatTableModule} from '@angular/material/table';
 import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
+import { GoogleMapsModule } from '@angular/google-maps';
 
 import { DeviceControlPanelComponent } from './device-control-panel/device-control-panel.component';
 import { OverviewComponent } from './device-control-panel/overview/overview.component';
@@ -35,7 +36,8 @@ import { ChartsModule } from 'ng2-charts';
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 import { BatteryMessagesComponent } from './device-control-panel/battery-messages/battery-messages.component';
 import { CommonCustomModule } from './../common/common.module';
-
+import { ChartWidgetComponent } from './device-control-panel/chart-widget/chart-widget.component';
+import { MapWidgetComponent } from './device-control-panel/map-widget/map-widget.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +65,8 @@ import { CommonCustomModule } from './../common/common.module';
     HistoryComponent,
     C2dMessageComponent,
     BatteryMessagesComponent,
+    ChartWidgetComponent,
+    MapWidgetComponent
   ],
   imports: [
     CommonModule,
@@ -78,7 +82,8 @@ import { CommonCustomModule } from './../common/common.module';
     AngularMultiSelectModule,
     CommonCustomModule,
     OwlDateTimeModule,
-    OwlNativeDateTimeModule
+    OwlNativeDateTimeModule,
+    GoogleMapsModule
   ],
   providers: [
     {provide: OWL_DATE_TIME_LOCALE, useValue: {useUtc: true}}

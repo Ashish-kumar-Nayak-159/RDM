@@ -183,12 +183,9 @@ export class HistoryComponent implements OnInit {
           obj.to_date = this.historyFilter.to_date.unix();
         }
       }
-      if(layoutJson==null){
-        obj.from_date = (now.subtract(30, 'minute')).unix();
-      }
       obj.message_props = '';
       obj.y1AxisProperty.forEach(prop => obj.message_props += prop + ',');
-      if (obj.y2AxisProperty.length>0) {
+      if (obj.y2AxisProperty) {
         obj.y2AxisProperty.forEach(prop => obj.message_props += prop + ',');
       }
       if (obj.message_props.charAt(obj.message_props.length - 1) === ',') {

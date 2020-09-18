@@ -1,0 +1,61 @@
+<div class="container-tab-pad " >
+
+
+  <div class="row pb-4 pl-5">
+
+      <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-start ">
+    <h1 class="h3 mb-0">App settings</h1>
+    </div>
+      </div>
+<div id="tabs" class="bg-white">
+  <nav>
+            <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+              <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'meta-data'}"
+              href="#app-meta-data" role="tab" aria-controls="nav-home" aria-selected="true" (click)="setActiveTab('meta-data')">
+              Meta Data</a>
+              <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'device-hierarchy'}"
+              href="#app-device-hierarchy" role="tab" aria-controls="nav-profile" aria-selected="false" (click)="setActiveTab('device-hierarchy')">
+              Device Hierarchy</a>
+              <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'roles'}"
+              href="#app-roles" role="tab" aria-controls="nav-contact" aria-selected="false" (click)="setActiveTab('roles')">
+              Roles</a>
+              <a class="nav-item nav-link" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'users'}"
+              href="#app-users" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('users')">
+              Users</a>
+              <a class="nav-item nav-link" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'menu-settings'}"
+              href="#app-menu-settings" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('menu-settings')">
+              Menu Settings</a>
+            </div>
+  </nav>
+   </div>
+
+  <div class="row pt-3 pl-5">
+        <div id="tabs">
+
+          <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+          <div class="tab-pane" id="app-meta-data" role="tabpanel" aria-labelledby="nav-home-tab"
+            [ngClass]="{'active': activeTab === 'meta-data'}">
+              <app-application-metadata *ngIf="activeTab === 'meta-data' && applicationData" [applicationData]="applicationData"></app-application-metadata>
+            </div>
+            <div class="tab-pane" id="app-device-hierarchy" role="tabpanel" aria-labelledby="nav-profile-tab"
+            [ngClass]="{'active': activeTab === 'device-hierarchy'}">
+              <app-application-device-hierarchy *ngIf="activeTab === 'device-hierarchy' && applicationData" [applicationData]="applicationData"></app-application-device-hierarchy>
+            </div>
+            <div class="tab-pane" id="app-roles" role="tabpanel" aria-labelledby="nav-contact-tab"
+            [ngClass]="{'active': activeTab === 'roles'}">
+              <app-application-roles *ngIf="activeTab === 'roles'"></app-application-roles>
+            </div>
+            <div class="tab-pane" id="app-users" role="tabpanel" aria-labelledby="nav-about-tab"
+            [ngClass]="{'active': activeTab === 'users'}">
+               <app-application-users *ngIf="activeTab === 'users'"></app-application-users>
+            </div>
+            <div class="tab-pane" id="app-menu-settings" role="tabpanel" aria-labelledby="nav-about-tab"
+            [ngClass]="{'active': activeTab === 'menu-settings'}">
+              <app-application-menu-settings *ngIf="activeTab === 'menu-settings'"></app-application-menu-settings>
+            </div>
+          </div>
+        </div>
+</div>
+
+</div>

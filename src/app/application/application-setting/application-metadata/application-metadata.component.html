@@ -1,0 +1,31 @@
+<table class="table table-bordered table-striped" cellspacing="0">
+  <!--<thead>
+    <tr>
+      <th>Project Name</th>
+      <th>Employer</th>
+      <th>Awards</th>
+    </tr>
+  </thead>-->
+  <tbody>
+      <tr>
+      <td>App Name</td>
+      <td>{{applicationData?.app}}</td>
+    </tr>
+    <tr class="bg-white">
+      <td>App Admin</td>
+      <td>{{applicationData?.admin}}</td>
+    </tr>
+    <tr>
+
+      <td>App Logo</td>
+      <td>{{applicationData?.metadata?.logo ? applicationData?.metadata?.logo.name : 'Not yet uploaded. Please upload'}}
+      </td>
+    </tr>
+    <tr class="bg-white">
+      <!--<td><a href="#">Work 3</a></td>-->
+      <td>App Icon</td>
+      <td>{{applicationData?.metadata?.icon ? applicationData?.metadata?.icon.name : 'Not yet uploaded. Please upload'}}
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -19,6 +19,28 @@ export class FilterComponent implements OnInit {
   pageType: string;
   constantData: CONSTANTS;
   devices: any[] = [];
+  selectedDate: {
+    daily: {
+        startDate: "2018-10-13",
+        endDate: "2018-10-19",
+      },
+    weekly: {
+        startDate: "2018-10-13",
+        endDate: "2018-10-19",
+    },
+    monthly: {
+        startDate: "2018-10-13",
+        endDate: "2018-10-19",
+    },
+    quarterly: {
+        startDate: "2018-10-13",
+        endDate: "2018-10-19",
+    },
+    yearly: {
+        startDate: "2018-10-13",
+        endDate: "2018-10-19",
+    }
+};
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -57,6 +79,7 @@ export class FilterComponent implements OnInit {
       }, errror => {}
     );
   }
+
 
   onDateOptionChange() {
     if (this.filterObj.dateOption !== 'custom') {

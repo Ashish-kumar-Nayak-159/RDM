@@ -1,3 +1,4 @@
+import { ApplicationSettingComponent } from './application-setting/application-setting.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
@@ -15,6 +16,11 @@ const routes: Routes = [
   {
     path: ':applicationId',
     component: ApplicationDashboardComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: ':applicationId/settings',
+    component: ApplicationSettingComponent,
     canActivate: [AuthGuardService]
   },
   {

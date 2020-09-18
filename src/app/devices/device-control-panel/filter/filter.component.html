@@ -13,7 +13,7 @@
         </select>
         <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
         [(ngModel)]="filterObj.dateOption" name="dateOptions" (change)="onDateOptionChange()">
-          <option [ngValue]="undefined">Date Options</option>
+          <option [ngValue]="undefined">Quick Options</option>
           <option [ngValue]="'5 mins'">Last 5 minutes</option>
           <option [ngValue]="'30 mins'">Last 30 minutes</option>
           <option [ngValue]="'1 hour'">Last 1 hour</option>
@@ -21,8 +21,10 @@
         </select>
         <ng-container>
           <mat-date-range-picker #picker></mat-date-range-picker>
-          <mat-date-range-input [rangePicker]="picker" class="form-control form-control-sm mx-1 my-1 col-md-2">
-            <input matStartDate [(ngModel)]="filterObj.from_date" name="from_date">
+
+          <mat-date-range-input [rangePicker]="picker" class="form-control form-control-sm mx-1 my-1 col-md-2"
+          >
+            <input matStartDate [(ngModel)]="filterObj.from_date" name="from_date" placeholder="Date Range">
             <input matEndDate [(ngModel)]="filterObj.to_date" name="to_date">
           </mat-date-range-input>
 

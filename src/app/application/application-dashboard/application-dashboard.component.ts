@@ -106,14 +106,12 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
   }
 
   getApplicationData() {
-    this.applicationService.getApplications({}).subscribe(
+    this.applicationService.getApplications({
+      app: this.appName
+    }).subscribe(
       (response: any) => {
         if (response && response.data) {
-          response.data.forEach(item => {
-            if (item.app === this.appName) {
-              this.applicationData = item;
-            }
-          });
+          this.applicationData = response.data[0];
         }
       }
     );

@@ -172,7 +172,6 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
       this.toasterService.showError('Please fill all details', 'Create App');
     } else {
       this.isCreateAPILoading = true;
-      await this.createUser(this.applicationDetail);
       const methodToCall = this.appModalType === 'Create' ? this.applicationService.createApp(this.applicationDetail) :
       (this.appModalType === 'Edit' ? this.applicationService.updateApp(this.applicationDetail) : null);
       if (methodToCall) {
@@ -191,13 +190,4 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
 
     }
   }
-
-  createUser(app) {
-    const obj = {
-      email: app.admin,
-      password: 'kemSys@123'
-    };
-    this.userService.createUser(obj).toPromise();
-  }
-
 }

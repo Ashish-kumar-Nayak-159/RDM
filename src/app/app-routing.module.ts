@@ -9,13 +9,14 @@ const routes: Routes = [
     loadChildren: () => import('./application/application.module').then(module => module.ApplicationModule)
   },
   {
+    path: 'applications/:applicationId/data/visualization',
+    loadChildren: () => import('./visualization/visualization.module').then(module => module.VisualizationModule)
+  },
+  {
     path: 'applications/:applicationId/:listName',
     loadChildren: () => import('./devices/devices.module').then(module => module.DevicesModule),
   },
-  {
-    path: 'applications/:applicationId/visualization',
-    loadChildren: () => import('./visualization/visualization.module').then(module => module.VisualizationModule)
-  },
+
   {
     path: 'login',
     component: RDMLoginComponent

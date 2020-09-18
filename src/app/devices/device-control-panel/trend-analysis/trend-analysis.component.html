@@ -8,14 +8,19 @@
           <span class="text-secondary">View</span></a>
       </li> -->
       <li class="nav-item" [ngClass]="{'active': viewType === 'history'}">
-        <a class="nav-link" href="javascript:void(0)" (click)="viewType = 'history'">
+        <a class="nav-link" href="javascript:void(0)" (click)="setViewType('history')">
           <i class="fas fa-fw fa-history"></i>
           <span class="text-secondary">History</span></a>
       </li>
       <li class="nav-item" [ngClass]="{'active': viewType === 'live'}">
-        <a class="nav-link" href="javascript:void(0)" (click)="viewType = 'live'">
+        <a class="nav-link" href="javascript:void(0)" (click)="setViewType('live')">
           <i class="fas fa-fw fa-stream"></i>
           <span class="text-secondary">Live</span></a>
+      </li>
+      <li class="nav-item" [ngClass]="{'active': viewType === 'history'}">
+        <a class="nav-link" href="javascript:void(0)" (click)="setViewType('layout')">
+          <i class="fas fa-fw fa-th-large"></i>
+          <span class="text-secondary">Layout</span></a>
       </li>
     </ul>
   </div>
@@ -27,8 +32,6 @@
 
   </div>
   <div class="con-pad">
-        <app-history *ngIf="viewType === 'history'" [device]="device"></app-history>
-
+        <app-history *ngIf="viewType === 'history'" [device]="device" [isLayout]="isLayout"></app-history>
         <app-live-data *ngIf="viewType === 'live'" [device]="device"></app-live-data>
-
   </div>

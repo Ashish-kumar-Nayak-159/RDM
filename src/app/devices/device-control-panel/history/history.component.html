@@ -1,7 +1,7 @@
 <div class="row mx-auto">
-<div class="topnavbar bg-white py-2" style="margin-top: 3.1rem;">
-  <div class="row">
-    <div class="col-xl-12 col-md-12 mb-12" >
+  <div class="topnavbar bg-white py-2" style="margin-top: 3.1rem;">
+    <div class="row">
+      <div class="col-xl-8 col-lg-8 col-md-8 mb-12">
         <form>
           <div class="form-group form-inline my-1">
             <!-- <select  class="form-control form-control-sm mx-1 my-1" id="y1AxisProperty"
@@ -48,11 +48,9 @@
               </div>
             </ng-template>
             </ng-select> -->
-
-            <angular2-multiselect [data]="dropdownPropList"
-              id="y1AxisProperty"
-              [(ngModel)]="y1AxisProps" name="y1AxisProperty"
-              [settings]="{
+            
+            <!-- <angular2-multiselect *ngIf="isLayout" [data]="dropdownPropList" id="y1AxisProperty" [(ngModel)]="y1AxisProps"
+              name="y1AxisProperty" [settings]="{
                 text: 'Select Y1 Axis',
                 selectAllText: 'Select All',
                 unSelectAllText: 'UnSelect All',
@@ -62,10 +60,9 @@
                 maxHeight: 200,
                 labelKey: 'id'
               }">
-            </angular2-multiselect>
-            <angular2-multiselect [data]="dropdownPropList"
-              id="y2AxisProp"
-              [(ngModel)]="y2AxisProp" name="y2AxisProp"
+            </angular2-multiselect> -->
+            <input type="text" *ngIf="isLayout" placeholder="Comma separated list of parameters"  id="y1AxisProperty" [(ngModel)]="y1AxisProps" name="y1AxisProperty">
+            <!-- <angular2-multiselect *ngIf="isLayout" [data]="dropdownPropList" id="y2AxisProp" [(ngModel)]="y2AxisProp" name="y2AxisProp"
               [settings]="{
                 text: 'Select Y2 Axis',
                 selectAllText: 'Select All',
@@ -87,7 +84,20 @@
                 <option [ngValue]="'custom'">Custom</option>
               </select>
               <ng-container *ngIf="historyFilter?.dateOption === 'custom'">
-              <!-- <mat-date-range-picker   #picker></mat-date-range-picker>
+               <mat-date-range-picker   #picker></mat-date-range-picker>
+            </angular2-multiselect> -->
+            <input type="text" *ngIf="isLayout" placeholder="Comma separated list of parameters"  id="y2AxisProperty" [(ngModel)]="y2AxisProp" name="y2AxisProperty">
+            <select  class="form-control form-control-sm mx-1 my-1" id="dateoptions"
+              [(ngModel)]="historyFilter.dateOption" name="dateOptions" (change)="onDateOptionChange()" *ngIf="!isLayout">
+              <option [ngValue]="undefined">Date Options</option>
+              <option [ngValue]="'5 mins'">Last 5 minutes</option>
+              <option [ngValue]="'30 mins'">Last 30 minutes</option>
+              <option [ngValue]="'1 hour'">Last 1 hour</option>
+              <option [ngValue]="'24 hour'">Last 24 hours</option>
+              <option [ngValue]="'custom'">>Custom</option>
+            </select>
+            <ng-container *ngIf="historyFilter?.dateOption === 'custom' && !isLayout">
+              <mat-date-range-picker #picker></mat-date-range-picker>
               <mat-date-range-input [rangePicker]="picker" class="form-control form-control-sm mx-1 my-1 w-11">
                 <input matStartDate [(ngModel)]="historyFilter.from_date" name="from_date">
                 <input matEndDate [(ngModel)]="historyFilter.to_date" name="to_date">
@@ -100,37 +110,71 @@
           </ng-container>
             <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="searchHistory()" ><i class="fas fa-search fa-sm"></i></button>
             <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fas fa-trash  fa-sm"></i></button>
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            </ng-container>
+            <div class="dropdown chartTypeDropdown" *ngIf="isLayout">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="true">
+                {{selectedChartType}}
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenu2"
+                id="dropdownMenu2List">
+                <li class="dropdown-item" *ngFor="let item of chartTypes;let i=index" (click)="setChartType(i)">
+                  <i class="fa {{chartIcons[i]}} chartTypeIcon"></i>
+                  {{item}}
+                </li>
+              </ul>
+            </div>
+            <input type="checkbox" name="showDataTable" id="chkShowDataTable" class="ml-2 mr-1" [(ngModel)]="showDataTable" *ngIf="isLayout">
+              
+            <span *ngIf="isLayout">Show Data Table</span>
+            <input type="text" id="chartTitle" class="form-control" name="chartTitle" placeholder="Display Name"
+              [(ngModel)]="chartTitle" *ngIf="isLayout">
+            
+            <button *ngIf="isLayout" type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="addChart()"><i
+                class="fas fa-plus fa-sm"></i> Add Chart</button>
+            <button *ngIf="isLayout" type="button" class="btn btn-success btn-sm mx-1 my-1" title="Search" (click)="saveLayout()"><i
+              class="fa fa-th-large fa-sm"></i> Save Layout</button>
+            <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()" ><i
+                class="fas fa-trash  fa-sm"></i></button>
+                <button *ngIf="!isLayout" type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="renderLayout()"><i
+                  class="fas fa-search fa-sm"></i></button>
           </div>
-         </form>
-    </div>
+        </form>
+      </div>
     </div>
     <div class="row">
-      <div class="col-lg-12">
-        <hr class="solid">
+      <div class="col-xl-10 col-lg-10 col-md-8 mb-12">
+        <div >
+          <!-- <canvas baseChart
+            [datasets]="lineChartData"
+            [labels]="lineChartLabels"
+            [options]="lineChartOptions"
+            [colors]="lineChartColors"
+            [legend]="lineChartLegend"
+            [chartType]="lineChartType"
+            [plugins]="lineChartPlugins">
+          </canvas>-->
+          <!-- <google-chart *ngIf="lineGoogleChartData.dataTable.length > 1 && !isHistoryAPILoading" [data]="lineGoogleChartData">
+          </google-chart> -->
+          <h6 *ngIf="historyData.length === 0 && isFilterSelected && !isHistoryAPILoading">No data found.</h6>
+          <h6 *ngIf="historyData.length === 0 && !isFilterSelected && !isHistoryAPILoading">
+            <!-- Select filter and press search button to load the chart. -->
+            Create layout and press search button to load the charts
+          </h6>
+          <hr class="solid mb-4">
+          <i *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+          <div id="widgetContainer" class="row">
+        
+          </div>
+        </div>
+        
       </div>
     </div>
 
-</div>
-
-    <div style="margin-top: 3.5rem;">
-      <!-- <canvas baseChart
-      [datasets]="lineChartData"
-      [labels]="lineChartLabels"
-      [options]="lineChartOptions"
-      [colors]="lineChartColors"
-      [legend]="lineChartLegend"
-      [chartType]="lineChartType"
-      [plugins]="lineChartPlugins">
-    </canvas>-->
-    <google-chart  *ngIf="lineGoogleChartData.dataTable.length > 1 && !isHistoryAPILoading" [data]="lineGoogleChartData"></google-chart>
-    <h6 *ngIf="historyData.length === 0 && isFilterSelected && !isHistoryAPILoading" >No data found.</h6>
-    <h6 *ngIf="historyData.length === 0 && !isFilterSelected && !isHistoryAPILoading" >
-      Select filter and press search button to load the chart.
-    </h6>
-    <i *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
   </div>
 
+  
+
 </div>
-
-
-

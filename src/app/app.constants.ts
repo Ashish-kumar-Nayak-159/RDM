@@ -223,6 +223,71 @@ export class CONSTANTS {
     }
   ];
 
+  public static SIDE_MENU_LIST = [
+    {
+      page: 'Home',
+      system_name: 'Home',
+      url: 'applications/:appName',
+      display_name: 'Home'
+    },
+    {
+      page: 'Devices',
+      system_name: 'IoT Devices',
+      url: 'applications/:appName/devices',
+      display_name: 'IoT Devices'
+    },
+    {
+      page: 'Gateways',
+      system_name: 'IoT Gateways',
+      url: 'applications/:appName/gateways',
+      display_name: 'IoT Gateways'
+    },
+    {
+      page: 'Non IP Devices',
+      system_name: 'Non IP Devices',
+      url: 'applications/:appName/nonIPDevices',
+      display_name: 'Non IP Devices'
+    },
+    {
+      page: 'Device Type',
+      system_name: 'Device Type',
+      url: null,
+      display_name: 'Device Type'
+    },
+    {
+      page: 'Device Groups',
+      system_name: 'Device Groups',
+      url: null,
+      display_name: 'Device Groups',
+      children: [
+        {
+          page: 'Group Jobs',
+          system_name: 'Group Jobs',
+          url: null,
+          display_name: 'Group Jobs'
+        },
+        {
+          page: 'Group Type',
+          system_name: 'Group Type',
+          url: null,
+          display_name: 'Group Type'
+        }
+      ]
+    },
+    {
+      page: 'Data Visualization',
+      system_name: 'Data Visualization',
+      url: 'applications/:appName/data/visualization',
+      display_name: 'Data Visualization'
+    },
+    {
+      page: 'App Settings',
+      system_name: 'App Settings',
+      url: 'applications/:appName/settings',
+      display_name: 'App Settings'
+    }
+  ];
+
   public static USER_DETAILS = 'userData';
   public static CURRENT_BREADCRUMB_STATE = 'breadcrumbState';
   public static NON_IP_DEVICES = 'Non IP Devices';

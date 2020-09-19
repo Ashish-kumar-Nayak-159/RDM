@@ -1,44 +1,129 @@
-<div class="pb-3">
-  <a href="#" data-toggle="modal" data-target="#roleassigmenModal">
-  <i class="fas fa-fw fa-plus"></i>
-  <span class="text-secondary">Add New Users</span></a>
- </div>
-<table class="table table-bordered table-striped" cellspacing="0">
-  <thead>
-    <tr class="bg-secondary text-white">
-      <th>Email</th>
-      <th>Full Name</th>
-      <th>Role</th>
-      <th>Access Level</th>
-    </tr>
-  </thead>
+<div class="col-lg-12 col-xl-12">
+  <a
+    class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-4 float-right"
+    href="javascript:void(0)"
+    (click)="openCreateUserModal()"
+    ><i class="fas fa- fa-sm text-white-50"></i> Add User</a
+  >
+  <table class="table table-bordered table-striped mt-1" cellspacing="0">
+    <thead>
+      <tr class="bg-secondary text-white">
+        <th>Email</th>
+        <th>Full Name</th>
+        <th>Role</th>
+        <th>Access Level</th>
+      </tr>
+    </thead>
 
-  <tbody>
-      <tr>
-      <td>Somababu@kemsys.com</td>
-      <td>Sombabu Gunithi</td>
-      <td>App Admin</td>
-      <td>/ NTT</td>
-    </tr>
-    <tr class="bg-white">
-      <td>Urvisha@kemsys.com</td>
-      <td>Urvisha Seladiya</td>
-      <td>Manager</td>
-      <td>/ NTT / Mumbai</td>
-    </tr>
-    <tr>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{ user.user_email }}</td>
+        <td>{{ user.user_name }}</td>
+        <td>{{ user.role }}</td>
+        <td>{{ getUserHierarchy(user) }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-      <td>yash@kemsys.com</td>
-      <td>Yash Mochi</td>
-      <td>Supervisor</td>
-      <td>/ NTT / Mumbai / Plant-1</td>
-    </tr>
-    <tr class="bg-white">
-      <!--<td><a href="#">Work 3</a></td>-->
-      <td>Somababu@gmail.com</td>
-      <td>Sombabu Gunithi</td>
-      <td>Operator</td>
-      <td>/ NTT / Mumbai / Plant-1 / Machine Shop</td>
-    </tr>
-  </tbody>
-</table>
+<div
+  class="modal right fade"
+  id="createUserModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="ModalLabel2"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" *ngIf="addUserObj">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Create New User</h5>
+        <button
+          type="button"
+          class="close"
+          [disabled]="isCreateUserAPILoading"
+          (click)="onCloseCreateUserModal()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">App Name:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="app"
+              [defaultValue]="applicationData.app"
+              disabled
+            />
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label"
+              >User Full Name:</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              name="user_name"
+              id="user_name"
+              placeholder="Enter User name"
+              [(ngModel)]="addUserObj.name"
+            />
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">User Email:</label>
+            <input
+              type="email"
+              pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+              class="form-control"
+              id="user_email"
+              name="user_email"
+              placeholder="Enter User Email"
+              [(ngModel)]="addUserObj.email"
+            />
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Role:</label>
+            <select class="custom-select" id="role" (change)="onUserRoleChange()" name="role" [(ngModel)]="addUserObj.role">
+              <option [ngValue]="role.name" *ngFor="let role of applicationData.roles">{{role.name}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label"
+              >Access Level:</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="user_email"
+              [defaultValue]="getAccessLevelHierarchy()"
+              disabled
+            />
+          </div>
+          <div class="form-group" *ngFor="let hierarchyItem of hierarchyList; let hIndex = index">
+            <label for="message-text" class="col-form-label">{{hierarchyItem.name}}:</label>
+            <select class="custom-select" id="hierarchy{{hIndex}}"  name="hierarchy{{hIndex}}" [(ngModel)]="addUserObj.hierarchy[hierarchyItem.name]">
+              <option [ngValue]="tag" *ngFor="let tag of hierarchyItem.tags">{{tag}}</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+
+        <button
+          type="button"
+          class="btn btn-primary add-row"
+          (click)="onCreateUser()"
+          [disabled]="isCreateUserAPILoading"
+        >
+          Save
+          <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateUserAPILoading"></i>
+        </button>
+        <button type="button" class="btn btn-secondary" [disabled]="isCreateUserAPILoading" (click)="onCloseCreateUserModal()">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -30,8 +30,8 @@
   </nav>
    </div>
 
-  <div class="row pt-3 pl-5">
-        <div id="tabs">
+  <div  id="tabs">
+        <div  class="row pt-3 pl-5">
 
           <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
           <div class="tab-pane" id="app-meta-data" role="tabpanel" aria-labelledby="nav-home-tab"
@@ -44,15 +44,15 @@
             </div>
             <div class="tab-pane" id="app-roles" role="tabpanel" aria-labelledby="nav-contact-tab"
             [ngClass]="{'active': activeTab === 'roles'}">
-              <app-application-roles *ngIf="activeTab === 'roles'"></app-application-roles>
+              <app-application-roles *ngIf="activeTab === 'roles' && applicationData" [applicationData]="applicationData"></app-application-roles>
             </div>
             <div class="tab-pane" id="app-users" role="tabpanel" aria-labelledby="nav-about-tab"
             [ngClass]="{'active': activeTab === 'users'}">
-               <app-application-users *ngIf="activeTab === 'users'"></app-application-users>
+               <app-application-users *ngIf="activeTab === 'users' && applicationData" [applicationData]="applicationData"></app-application-users>
             </div>
             <div class="tab-pane" id="app-menu-settings" role="tabpanel" aria-labelledby="nav-about-tab"
             [ngClass]="{'active': activeTab === 'menu-settings'}">
-              <app-application-menu-settings *ngIf="activeTab === 'menu-settings'"></app-application-menu-settings>
+              <app-application-menu-settings *ngIf="activeTab === 'menu-settings' && applicationData" [applicationData]="applicationData"></app-application-menu-settings>
             </div>
           </div>
         </div>

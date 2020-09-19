@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppUrls } from '../../app-url.constants';
@@ -9,6 +9,7 @@ import { AppUrls } from '../../app-url.constants';
 export class ApplicationService {
 
   url = environment.appServerURL;
+  refreshAppData: EventEmitter<any> = new EventEmitter<any>();
   constructor(
     private http: HttpClient
   ) { }
@@ -53,5 +54,11 @@ export class ApplicationService {
     let params = new HttpParams().set('count', limit.toString());
     params = params.set('app', app);
     return this.http.get(this.url + AppUrls.GET_DEVICE_LIFECYCLE_EVENTS, { params });
+  }
+
+  getApplicationUsers(app) {
+    let params = new HttpParams();
+    params = params.set('app', app);
+    return this.http.get(this.url + AppUrls.GET_APP_USERS, { params });
   }
 }

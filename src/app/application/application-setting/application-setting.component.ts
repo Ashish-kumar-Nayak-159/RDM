@@ -31,9 +31,14 @@ export class ApplicationSettingComponent implements OnInit {
         }
       }
     );
+
+    this.applicationService.refreshAppData.subscribe(() => {
+      this.getApplicationData();
+    })
   }
 
   getApplicationData() {
+    this.applicationData = undefined;
     this.applicationService.getApplications({
       app: this.appName
     }).subscribe(

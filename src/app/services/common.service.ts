@@ -13,6 +13,7 @@ export class CommonService {
 
   url = environment.appServerURL;
   breadcrumbEvent: EventEmitter<any> = new EventEmitter<any>();
+  refreshSideMenuData: EventEmitter<any> = new EventEmitter<any>();
   constructor(
     private http: HttpClient,
     private router: Router

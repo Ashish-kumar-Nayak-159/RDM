@@ -14,17 +14,21 @@ export class AuthGuardService {
   ) {}
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const app = route.paramMap.get('applicationId');
+    console.log(app);
+    const appname = decodeURIComponent(app);
+    console.log(appname);
     const userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     if (!userData) {
       this.commonService.onLogOut();
       return false;
-    } else if (userData && !userData.is_super_admin && route.paramMap.get('applicationId')) {
+    } else if (userData && !userData.is_super_admin && appname) {
       let appFound = false;
       userData.apps.forEach(appObj => {
-        if (appObj.app === app) {
+        if (appObj.app === appname) {
           appFound = true;
         }
       });
+      console.log(appFound);
       if (!appFound) {
         this.commonService.onLogOut();
         return false;

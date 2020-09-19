@@ -13,18 +13,14 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
   selectedHierarchyItem: any;
   addedTagItem: string;
   saveHierarchyAPILoading = false;
+  originalApplicationData: any;
   constructor(
     private toasterService: ToasterService,
     private applicationService: ApplicationService
   ) { }
 
   ngOnInit(): void {
-    this.applicationData.hierarchy = [];
-    this.applicationData.hierarchy.push({
-      name: 'App',
-      level: 0,
-      tags: [this.applicationData.app]
-    });
+    this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
   }
 
   onAddNewHierarchyObj() {
@@ -64,11 +60,16 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
         this.selectedHierarchyItem = undefined;
         this.addedTagItem = undefined;
         this.saveHierarchyAPILoading = false;
+        this.applicationService.refreshAppData.emit();
       }, (error) => {
         this.toasterService.showError(error.message, 'Save Device Hierarchy');
         this.saveHierarchyAPILoading = false;
       }
     );
+  }
+
+  onCancelClick() {
+    this.applicationData = JSON.parse(JSON.stringify(this.originalApplicationData));
   }
 
 }

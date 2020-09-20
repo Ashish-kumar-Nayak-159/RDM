@@ -272,6 +272,7 @@ export class DeviceListComponent implements OnInit {
     this.isCreateDeviceAPILoading = true;
     console.log(this.deviceDetail);
     this.deviceDetail.tags.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
+    this.deviceDetail.tags.hierarchy_json = this.contextApp.user.hierarchy;
     this.deviceDetail.tags.created_by = this.userData.email;
     this.deviceDetail.app = this.appName;
     this.deviceDetail.tags.category = this.componentState === CONSTANTS.NON_IP_DEVICE ?

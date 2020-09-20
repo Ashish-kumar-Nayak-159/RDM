@@ -125,7 +125,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
     this.isDashboardSnapshotLoading = true;
     const obj = {
       app: this.appName,
-      hierarchy: JSON.stringify(this.contextApp.user.hierarchyString)
+      hierarchy: JSON.stringify(this.contextApp.user.hierarchy)
     };
     this.apiSubscriptions.push(this.applicationService.getApplicationDashboardSnapshot(obj)
     .subscribe(
@@ -145,7 +145,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
     this.isLastAlertDataLoading = true;
     const obj = {
       app: this.appName,
-      hierarchy: JSON.stringify(this.contextApp.user.hierarchyString),
+      hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
       count: this.noOfRecordsToDisplay
     };
     this.apiSubscriptions.push(this.applicationService.getLastAlerts(obj)
@@ -169,7 +169,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
     this.isLastNotificationDataLoading = true;
     const obj = {
       app: this.appName,
-      hierarchy: JSON.stringify(this.contextApp.user.hierarchyString),
+      hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
       count: this.noOfRecordsToDisplay
     };
     this.apiSubscriptions.push(this.applicationService.getLastNotifications(obj)
@@ -195,7 +195,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
     this.isLastEventDataLoading = true;
     const obj = {
       app: this.appName,
-      hierarchy: JSON.stringify(this.contextApp.user.hierarchyString),
+      hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
       count: this.noOfRecordsToDisplay
     };
     this.apiSubscriptions.push(this.applicationService.getLastEvents(obj)

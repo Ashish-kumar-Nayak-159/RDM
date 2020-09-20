@@ -153,43 +153,43 @@
     </button> -->
     <div class="">
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'overview'}" id="device_overview" role="tabpanel">
-        <app-overview *ngIf="activeTab === 'overview'" [device]="device"></app-overview>
+        <app-overview *ngIf="activeTab === 'overview' && device" [device]="device"></app-overview>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'access_control'}" role="tabpanel" id="device_access_control">
-        <app-access-control *ngIf="activeTab === 'access_control'"></app-access-control>
+        <app-access-control *ngIf="activeTab === 'access_control'  && device"></app-access-control>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="device_device_tags">
-        <app-tags *ngIf="activeTab === 'tags'" [device]="device"></app-tags>
+        <app-tags *ngIf="activeTab === 'tags'  && device" [device]="device"></app-tags>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'heartbeat'}" role="tabpanel" id="device_heartbeat">
-        <app-heartbeat *ngIf="activeTab === 'heartbeat'" [device]="device"></app-heartbeat>
+        <app-heartbeat *ngIf="activeTab === 'heartbeat' && device" [device]="device"></app-heartbeat>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel" id="device_notifications">
-        <app-notification *ngIf="activeTab === 'notifications'" [device]="device"></app-notification>
+        <app-notification *ngIf="activeTab === 'notifications' && device" [device]="device"></app-notification>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'telemetry'}" role="tabpanel" id="device_telemetry">
-        <app-telemetry *ngIf="activeTab === 'telemetry'" [device]="device"></app-telemetry>
+        <app-telemetry *ngIf="activeTab === 'telemetry' && device" [device]="device"></app-telemetry>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'alerts'}" role="tabpanel" id="device_alerts">
-        <app-alerts *ngIf="activeTab === 'alerts'" [device]="device"></app-alerts>
+        <app-alerts *ngIf="activeTab === 'alerts' && device" [device]="device"></app-alerts>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'error'}" role="tabpanel" id="device_error">
-        <app-rdmdevice-control-panel-error *ngIf="activeTab === 'error'" [device]="device"></app-rdmdevice-control-panel-error>
+        <app-rdmdevice-control-panel-error *ngIf="activeTab === 'error' && device" [device]="device"></app-rdmdevice-control-panel-error>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'other'}" role="tabpanel" id="device_other">
-        <app-others *ngIf="activeTab === 'other'" [device]="device"></app-others>
+        <app-others *ngIf="activeTab === 'other' && device" [device]="device"></app-others>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'battery_message'}" role="tabpanel" id="device_battery_message">
-        <app-battery-messages *ngIf="activeTab === 'battery_message'" [device]="device"></app-battery-messages>
+        <app-battery-messages *ngIf="activeTab === 'battery_message' && device" [device]="device"></app-battery-messages>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'logs'}" role="tabpanel" id="device_logs">
-        <app-logs *ngIf="activeTab === 'logs'" [device]="device"></app-logs>
+        <app-logs *ngIf="activeTab === 'logs' && device" [device]="device"></app-logs>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'trendAnalysis'}" role="tabpanel" id="device_trend_analysis">
-        <app-trend-analysis *ngIf="activeTab === 'trendAnalysis'" [device]="device"></app-trend-analysis>
+        <app-trend-analysis *ngIf="activeTab === 'trendAnalysis' && device" [device]="device"></app-trend-analysis>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel" id="device_control_widgets">
-        <app-commands *ngIf="activeTab === 'control_widgets'" [device]="device"></app-commands>
+        <app-commands *ngIf="activeTab === 'control_widgets' && device" [device]="device"></app-commands>
       </div>
       <!-- /.container1-fluid -->
 

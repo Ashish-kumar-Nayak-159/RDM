@@ -7,6 +7,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule} from '@angular/material-moment-adapter';
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import {MatTableModule} from '@angular/material/table';
+import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 
 import { DeviceControlPanelComponent } from './device-control-panel/device-control-panel.component';
 import { OverviewComponent } from './device-control-panel/overview/overview.component';
@@ -75,10 +76,12 @@ import { CommonCustomModule } from './../common/common.module';
     ChartsModule,
     Ng2GoogleChartsModule,
     AngularMultiSelectModule,
-    CommonCustomModule
+    CommonCustomModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule
   ],
   providers: [
-    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}
+    {provide: OWL_DATE_TIME_LOCALE, useValue: {useUtc: true}}
   ]
 })
 export class DevicesModule { }

@@ -31,6 +31,7 @@
     "datatables.net-dt": "^1.10.21",
     "jquery": "^3.5.1",
     "moment": "^2.27.0",
+    "ng-pick-datetime": "^7.0.0",
     "ng2-charts": "^2.3.2",
     "ng2-google-charts": "^6.1.0",
     "ngx-toastr": "^13.0.0",

@@ -3,6 +3,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from './../../../app.constants';
 import { ActivatedRoute } from '@angular/router';
 import { DeviceService } from 'src/app/services/devices/device.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-filter',
@@ -19,28 +20,6 @@ export class FilterComponent implements OnInit {
   pageType: string;
   constantData: CONSTANTS;
   devices: any[] = [];
-  selectedDate: {
-    daily: {
-        startDate: "2018-10-13",
-        endDate: "2018-10-19",
-      },
-    weekly: {
-        startDate: "2018-10-13",
-        endDate: "2018-10-19",
-    },
-    monthly: {
-        startDate: "2018-10-13",
-        endDate: "2018-10-19",
-    },
-    quarterly: {
-        startDate: "2018-10-13",
-        endDate: "2018-10-19",
-    },
-    yearly: {
-        startDate: "2018-10-13",
-        endDate: "2018-10-19",
-    }
-};
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -86,6 +65,12 @@ export class FilterComponent implements OnInit {
       this.filterObj.from_date = undefined;
       this.filterObj.to_date = undefined;
     }
+  }
+
+  onDateChange(event) {
+    console.log(event);
+    this.filterObj.from_date = moment(event.value[0]).utc();
+    this.filterObj.to_date = moment(event.value[1]).utc();
   }
 
   search() {

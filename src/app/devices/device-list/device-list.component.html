@@ -18,8 +18,8 @@
         <div class="form-group form-inline my-1">
 
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="hierarchy"
-          placeholder="Hierarchy"
-             name="hierarchy">
+          placeholder="Hierarchy" disabled [(ngModel)]="deviceFilterObj.hierarchyString"
+             name="hierarchy" title="{{deviceFilterObj.hierarchyString}}">
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4"
           placeholder="{{pageType}} Name"
           [(ngModel)]="deviceFilterObj.name" name="name">

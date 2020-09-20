@@ -22,7 +22,7 @@ export class DeviceListComponent implements OnInit {
   isFilterSelected = false;
   deviceDetail: any;
   isCreateDeviceAPILoading = false;
-  protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
+  protocolList: any[] = [];
   connectivityList: any[] = [];
   appName: string;
   componentState: string; // value must be IP Devices & Gateways or IP Device or IP Gateway or Non IP Devices
@@ -33,6 +33,7 @@ export class DeviceListComponent implements OnInit {
   pageType: string;
   deviceCategory = CONSTANTS.NON_IP_DEVICE_OPTIONS;
   gatewayId: string;
+  contextApp: any;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -43,9 +44,13 @@ export class DeviceListComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
     this.route.paramMap.subscribe(params => {
       this.devicesList = [];
       this.appName = params.get('applicationId');
+      this.contextApp = this.userData.apps.filter(
+        app => app.app === params.get('applicationId')
+      )[0];
       if (params.get('listName')) {
         const listName = params.get('listName');
         if (listName.toLowerCase() === 'nonipdevices') {
@@ -61,11 +66,13 @@ export class DeviceListComponent implements OnInit {
         }
       }
       this.deviceFilterObj.app = this.appName;
+      this.deviceFilterObj.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
+      this.deviceFilterObj.hierarchyString =  this.contextApp.user.hierarchyString;
       const obj = {
         type: 'replace',
         data: [
           {
-            title: this.appName,
+            title: this.contextApp.user.hierarchyString,
             url: 'applications/' + this.appName
           },
             {
@@ -163,8 +170,9 @@ export class DeviceListComponent implements OnInit {
           }
         }
       });
+      console.log(JSON.stringify(data));
       this.protocolList = JSON.parse(JSON.stringify(data));
-      console.log(JSON.stringify(this.protocolList));
+
     });
     this.route.queryParamMap.subscribe(
 
@@ -173,8 +181,8 @@ export class DeviceListComponent implements OnInit {
         if (params.get('connection_state')) {
           this.deviceFilterObj.status = params.get('connection_state');
           this.originalDeviceFilterObj = JSON.parse(JSON.stringify(this.deviceFilterObj));
-          this.searchDevices();
         }
+        this.searchDevices();
       }
     );
     console.log(this.deviceFilterObj);
@@ -199,6 +207,7 @@ export class DeviceListComponent implements OnInit {
     this.isDeviceListLoading = true;
     this.isFilterSelected = true;
     const obj = JSON.parse(JSON.stringify(this.deviceFilterObj));
+    delete obj.hierarchyString;
     if (obj.status && obj.status.includes('connected')) {
       obj.connection_state = obj.status;
       delete obj.status;
@@ -262,9 +271,11 @@ export class DeviceListComponent implements OnInit {
     }
     this.isCreateDeviceAPILoading = true;
     console.log(this.deviceDetail);
+    this.deviceDetail.tags.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
     this.deviceDetail.tags.created_by = this.userData.email;
     this.deviceDetail.app = this.appName;
-    this.deviceDetail.tags.category = this.componentState === CONSTANTS.NON_IP_DEVICE ? this.deviceDetail.tags.category : this.componentState;
+    this.deviceDetail.tags.category = this.componentState === CONSTANTS.NON_IP_DEVICE ?
+    this.deviceDetail.tags.category : this.componentState;
     this.deviceDetail.tags.created_date = moment().utc().format('M/DD/YYYY h:mm:ss A');
     const methodToCall = this.componentState === CONSTANTS.NON_IP_DEVICE
     ? this.deviceService.createNonIPDevice(this.deviceDetail, this.appName)
@@ -274,6 +285,7 @@ export class DeviceListComponent implements OnInit {
         this.isCreateDeviceAPILoading = false;
         this.toasterService.showSuccess(response.message,
           'Create ' + this.pageType);
+        this.searchDevices();
         this.onCloseCreateDeviceModal();
       }, error => {
         this.isCreateDeviceAPILoading = false;

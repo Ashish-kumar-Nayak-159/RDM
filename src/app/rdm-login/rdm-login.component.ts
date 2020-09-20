@@ -63,8 +63,17 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
           } else {
             if (response.apps && response.apps.length > 0) {
               this.router.navigate(['applications', response.apps[0].app]);
+              response.apps.forEach(element => {
+                let hierarchy = '';
+                const keys = Object.keys(element.user.hierarchy);
+                keys.forEach((key, index) => {
+                  hierarchy = hierarchy + element.user.hierarchy[key] + (keys[index + 1] ? ' / ' : '');
+                });
+                element.user.hierarchyString = hierarchy;
+              });
               this.commonService.setItemInLocalStorage('userData', response);
             } else {
+              this.isLoginAPILoading = false;
               this.toasterService.showError('No apps are assigned to this user', 'Contact Administrator');
               return;
             }
@@ -77,6 +86,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
         }
       );
     } else {
+      this.isLoginAPILoading = false;
       this.toasterService.showError('Please enter username and password', 'Login');
     }
   }

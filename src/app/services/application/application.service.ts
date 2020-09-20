@@ -14,9 +14,13 @@ export class ApplicationService {
     private http: HttpClient
   ) { }
 
-  getApplicationDashboardSnapshot(app) {
+  getApplicationDashboardSnapshot(filterObj) {
     let params = new HttpParams();
-    params = params.set('app', app);
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
     return this.http.get(this.url + AppUrls.GET_APPLICATION_DASHBOARD_SNAPSHOT, {params});
   }
 
@@ -38,21 +42,33 @@ export class ApplicationService {
     return this.http.patch(this.url + AppUrls.UPDATE_APP, appObj);
   }
 
-  getLastAlerts(limit: number, app) {
-    let params = new HttpParams().set('count', limit.toString());
-    params = params.set('app', app);
+  getLastAlerts(filterObj: any) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
     return this.http.get(this.url + AppUrls.GET_ALERTS_LIST, { params });
   }
 
-  getLastNotifications(limit: number, app) {
-    let params = new HttpParams().set('count', limit.toString());
-    params = params.set('app', app);
+  getLastNotifications(filterObj: any) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
     return this.http.get(this.url + AppUrls.GET_NOTIFICAION_LIST, { params });
   }
 
-  getLastEvents(limit: number, app) {
-    let params = new HttpParams().set('count', limit.toString());
-    params = params.set('app', app);
+  getLastEvents(filterObj: any) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
     return this.http.get(this.url + AppUrls.GET_DEVICE_LIFECYCLE_EVENTS, { params });
   }
 

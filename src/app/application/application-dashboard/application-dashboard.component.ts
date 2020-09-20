@@ -73,24 +73,24 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
+      this.contextApp = this.userData.apps.filter(
+        app => app.app === params.get('applicationId')
+      )[0];
+      this.commonService.breadcrumbEvent.emit({
+        type: 'replace',
+        data: [
+          {
+            title: this.contextApp.user.hierarchyString,
+            url: 'applications/' + this.appName
+          }
+        ]
+      });
+      console.log(this.contextApp);
       this.getApplicationData();
       this.getDashboardSnapshot();
       this.getLastNotificationData();
       this.getLastAlertData();
       this.getLastEventData();
-      this.commonService.breadcrumbEvent.emit({
-        type: 'replace',
-        data: [
-          {
-            title: this.appName,
-            url: 'applications/' + this.appName
-          }
-        ]
-      });
-      this.contextApp = this.userData.apps.filter(
-        app => app.app === params.get('applicationId')
-      )[0];
-      console.log(this.contextApp);
     });
 
   }
@@ -121,8 +121,13 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
    * It will call the application dashboard snapshot API
    */
   getDashboardSnapshot() {
+    console.log(this.contextApp);
     this.isDashboardSnapshotLoading = true;
-    this.apiSubscriptions.push(this.applicationService.getApplicationDashboardSnapshot(this.appName)
+    const obj = {
+      app: this.appName,
+      hierarchy: JSON.stringify(this.contextApp.user.hierarchyString)
+    };
+    this.apiSubscriptions.push(this.applicationService.getApplicationDashboardSnapshot(obj)
     .subscribe(
       (response: ApplicationDashboardSnapshot) => {
         this.dashboardSnapshot = response;
@@ -138,7 +143,12 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
    */
   getLastAlertData() {
     this.isLastAlertDataLoading = true;
-    this.apiSubscriptions.push(this.applicationService.getLastAlerts(this.noOfRecordsToDisplay, this.appName)
+    const obj = {
+      app: this.appName,
+      hierarchy: JSON.stringify(this.contextApp.user.hierarchyString),
+      count: this.noOfRecordsToDisplay
+    };
+    this.apiSubscriptions.push(this.applicationService.getLastAlerts(obj)
     .subscribe(
       (response: any) => {
         if (response.data) {
@@ -157,7 +167,12 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
    */
   getLastNotificationData() {
     this.isLastNotificationDataLoading = true;
-    this.apiSubscriptions.push(this.applicationService.getLastNotifications(this.noOfRecordsToDisplay, this.appName)
+    const obj = {
+      app: this.appName,
+      hierarchy: JSON.stringify(this.contextApp.user.hierarchyString),
+      count: this.noOfRecordsToDisplay
+    };
+    this.apiSubscriptions.push(this.applicationService.getLastNotifications(obj)
     .subscribe(
       (response: any) => {
         if (response.data) {
@@ -178,7 +193,12 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
    */
   getLastEventData() {
     this.isLastEventDataLoading = true;
-    this.apiSubscriptions.push(this.applicationService.getLastEvents(this.noOfRecordsToDisplay, this.appName)
+    const obj = {
+      app: this.appName,
+      hierarchy: JSON.stringify(this.contextApp.user.hierarchyString),
+      count: this.noOfRecordsToDisplay
+    };
+    this.apiSubscriptions.push(this.applicationService.getLastEvents(obj)
     .subscribe(
       (response: any) => {
         if (response.data) {

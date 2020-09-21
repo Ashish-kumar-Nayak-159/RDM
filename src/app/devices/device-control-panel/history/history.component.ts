@@ -35,9 +35,9 @@ export class HistoryComponent implements OnInit {
 
   //chart selection 
   chartCount = 0
-  chartTypes = ["Bar Chart", "Column Chart", "Line Chart", "Area Chart", "Pie Chart", "Data Table", "Map"]
-  chartTypeValues = ["BarChart", "ColumnChart", "LineChart", "AreaChart", "PieChart", "Table", "Map"]
-  chartIcons = ["fa-bar-chart fa-rotate-90", "fa-bar-chart", "fa-line-chart", "fa-area-chart", "fa-pie-chart", "fa-table", "fa-map"]
+  chartTypes = ["Bar Chart", "Column Chart", "Line Chart", "Area Chart", "Pie Chart", "Data Table", "Map","Pie Chart + Data Table"]
+  chartTypeValues = ["BarChart", "ColumnChart", "LineChart", "AreaChart", "PieChart", "Table", "Map","Pie Chart with table"]
+  chartIcons = ["fa-bar-chart fa-rotate-90", "fa-bar-chart", "fa-line-chart", "fa-area-chart", "fa-pie-chart", "fa-table", "fa-map","fa-pie-chart fa-table"]
   public selectedChartType = "Chart Type"
   columnNames = []
   layoutJson = []
@@ -125,10 +125,8 @@ export class HistoryComponent implements OnInit {
     this.historyFilter.to_date = undefined;
   }
 
-  searchHistory(layoutJson) {
-    
+  searchHistory(layoutJson) {    
     return new Promise((resolve, reject) => {
-
       this.historyFilter.y1AxisProperty = [];
       this.historyFilter.y2AxisProperty = [];
       if (layoutJson == null) {
@@ -219,7 +217,7 @@ export class HistoryComponent implements OnInit {
             this.historyData.forEach(history => {
               history.local_created_date = this.commonService.convertUTCDateToLocal(history.message_date);
               const list = [];
-              list.splice(0, 0, new Date(history.local_created_date).toString());
+              list.splice(0, 0, history.local_created_date);
               this.historyFilter.y1AxisProperty.forEach(prop => {
                 if (!isNaN(parseFloat(history[prop]))) {
                   list.splice(list.length, 0, parseFloat(history[prop]));
@@ -270,13 +268,18 @@ export class HistoryComponent implements OnInit {
   }
 
   addChart() {
+    $(".overlay").show()
     this.chartCount++
     var componentRef;
     if (this.selectedChartType != "Map") {
       this.searchHistory(null).then(() => {
         var componentRef = this.factoryResolver.resolveComponentFactory(ChartWidgetComponent).create(this.injector);
-        if (this.selectedChartType == "PieChart") {
+        if (this.selectedChartType == "PieChart" || this.selectedChartType=="Pie Chart with table") {
           delete this.lineGoogleChartData.options.explorer
+          if(this.selectedChartType=="Pie Chart with table"){
+            this.showDataTable = true
+            this.selectedChartType = "PieChart"
+          }
         }
         componentRef.instance.showDataTable = this.showDataTable
         componentRef.instance.chartData = this.lineGoogleChartData
@@ -339,15 +342,19 @@ export class HistoryComponent implements OnInit {
   }
 
   renderLayout() {
+    
     var componentRef;
     this.layoutJson.map((currentChart, i) => {
       this.searchHistory(currentChart).then((chartData) => {
-        console.log('promise resolved ', currentChart,chartData)
         componentRef = this.factoryResolver.resolveComponentFactory(ChartWidgetComponent).create(this.injector);
-        if (this.selectedChartType == "PieChart") {
+        if (currentChart.type == "PieChart" || currentChart.type=="Pie Chart with table") {
           delete chartData['options'].explorer
+          if(currentChart.type=="Pie Chart with table"){
+            currentChart.showDataTable = true
+            currentChart.type = "PieChart"
+          }
         }
-        componentRef.instance.showDataTable = this.showDataTable
+        componentRef.instance.showDataTable = currentChart.showDataTable
         componentRef.instance.chartData = chartData
         componentRef.instance.chartData.chartType = currentChart.type
         componentRef.instance.y1axis = currentChart.y1axis
@@ -355,7 +362,7 @@ export class HistoryComponent implements OnInit {
         componentRef.instance.widgetTitle = currentChart.title
         componentRef.instance.showDataTable = currentChart.showDataTable
         componentRef.instance.chartId = "render_chart_" + (i + 1)
-        if(this.showDataTable){
+        if(currentChart.showDataTable){
           componentRef.instance.chartData.options.width = 500
         }
         else{
@@ -368,6 +375,7 @@ export class HistoryComponent implements OnInit {
         newNode.className = 'col-xl-10 col-lg-10 col-sm-10 col-md-10 col-xs-12';
         newNode.appendChild(domElem)
         document.getElementById("widgetContainer").appendChild(newNode)
+        $(".overlay").hide()
       });
     })
     // for (var i = 0; i < this.layoutJson.length; i++) {

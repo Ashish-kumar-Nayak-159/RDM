@@ -1,14 +1,14 @@
-<div class="row" id="{{chartId}}" class="chartWidget" >
+<div class="row" id="{{chartId}}" class="chartWidget">
     <div class="col-lg-12">
-        <div class="card shadow mb-4 border-top-widget" id="card_{{chartId}}" >
-            <a href="#collapse_{{chartId}}" class="d-block card-header py-3" data-toggle="collapse" role="button" >
+        <div class="card shadow mb-4 border-top-widget" id="card_{{chartId}}">
+            <a href="#collapse_{{chartId}}" class="d-block card-header py-3" data-toggle="collapse" role="button">
                 <h6 class="m-0 font-weight-bold text-primary">{{widgetTitle}}
                     <span class="btn btn-card-tool close-icon" data-widget="remove" id="remove_{{chartId}}">
                         <i class="fa fa-times"></i>
                     </span>
                 </h6>
-                
-              </a>
+
+            </a>
             <!-- <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">{{widgetTitle}}</h6>
                 <div class="card-tools pull-right">
@@ -25,12 +25,15 @@
                     <div class="chart-area chart">
                         <div class="row">
                             <div class="col" [ngClass]="{'col-lg-6':showDataTable,'col-lg-12':!showDataTable}">
-                                <google-chart   [data]="chartData">
+                                <google-chart [data]="chartData">
                                 </google-chart>
                             </div>
                             <div class="col col-lg-6" *ngIf="showDataTable">
-                                <google-chart   [data]="chartDataTable" >
+                                <google-chart [data]="chartDataTable">
                                 </google-chart>
+                            </div>
+                            <div class="overlay">
+                                <div style="font-family:'Arial Black'; font-size: 40px;">Sample Chart</div>
                             </div>
                         </div>
                     </div>

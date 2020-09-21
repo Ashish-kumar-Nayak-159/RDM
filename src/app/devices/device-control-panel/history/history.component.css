@@ -17,7 +17,7 @@
 .chartTypeDropdown{
   border: 1px solid #d1d3e2;
   border-radius: 5px;
-  height: 32px;
+  /* height: 32px; */
 }
 
 #dropdownMenu2{
@@ -25,7 +25,7 @@
 }
 
 #chartTitle{
-  height: 32px;
+  /* height: 32px; */
   margin-left: 5px;
   width: 125px;
 }
@@ -36,5 +36,9 @@
 
 #widgetContainer{
   height: 500px;
-  overflow: scroll;
+  overflow-y: scroll;
+}
+
+.lbl{
+  justify-content: normal;
 }

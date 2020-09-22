@@ -32,12 +32,13 @@ export class HistoryComponent implements OnInit {
   // y2AxisProp = [];
   y1AxisProps = "";
   y2AxisProp = "";
+  xAxisProps = "";
 
   //chart selection 
   chartCount = 0
-  chartTypes = ["Bar Chart", "Column Chart", "Line Chart", "Area Chart", "Pie Chart", "Data Table", "Map","Pie Chart + Data Table"]
-  chartTypeValues = ["BarChart", "ColumnChart", "LineChart", "AreaChart", "PieChart", "Table", "Map","Pie Chart with table"]
-  chartIcons = ["fa-bar-chart fa-rotate-90", "fa-bar-chart", "fa-line-chart", "fa-area-chart", "fa-pie-chart", "fa-table", "fa-map","fa-pie-chart fa-table"]
+  chartTypes = ["Bar Chart", "Column Chart", "Line Chart", "Area Chart", "Pie Chart", "Data Table", "Map", "Pie Chart + Data Table", "Timeline"]
+  chartTypeValues = ["BarChart", "ColumnChart", "LineChart", "AreaChart", "PieChart", "Table", "Map", "Pie Chart with table", "Timeline"]
+  chartIcons = ["fa-bar-chart fa-rotate-90", "fa-bar-chart", "fa-line-chart", "fa-area-chart", "fa-pie-chart", "fa-table", "fa-map", "fa-pie-chart fa-table"]
   public selectedChartType = "Chart Type"
   columnNames = []
   layoutJson = []
@@ -92,10 +93,7 @@ export class HistoryComponent implements OnInit {
 
 
   ngOnInit(): void {
-    
-
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
       this.appData = this.userData.apps.filter(
@@ -124,7 +122,7 @@ export class HistoryComponent implements OnInit {
     this.historyFilter.to_date = undefined;
   }
 
-  searchHistory(layoutJson) {    
+  searchHistory(layoutJson) {
     return new Promise((resolve, reject) => {
       this.historyFilter.y1AxisProperty = [];
       this.historyFilter.y2AxisProperty = [];
@@ -179,8 +177,8 @@ export class HistoryComponent implements OnInit {
       delete obj.dateOption;
       delete obj.y1AxisProperty;
       delete obj.y2AxisProperty;
-      if(layoutJson!=null){
-        
+      if (layoutJson != null) {
+
       }
       this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
         (response: any) => {
@@ -272,12 +270,12 @@ export class HistoryComponent implements OnInit {
     $(".overlay").show()
     this.chartCount++
     var componentRef;
-    if (this.selectedChartType != "Map") {
+    if (this.selectedChartType != "Map" && this.selectedChartType != "Timeline") {
       this.searchHistory(null).then(() => {
         var componentRef = this.factoryResolver.resolveComponentFactory(ChartWidgetComponent).create(this.injector);
-        if (this.selectedChartType == "PieChart" || this.selectedChartType=="Pie Chart with table") {
+        if (this.selectedChartType == "PieChart" || this.selectedChartType == "Pie Chart with table") {
           delete this.lineGoogleChartData.options.explorer
-          if(this.selectedChartType=="Pie Chart with table"){
+          if (this.selectedChartType == "Pie Chart with table") {
             this.showDataTable = true
             this.selectedChartType = "PieChart"
           }
@@ -292,10 +290,10 @@ export class HistoryComponent implements OnInit {
           .rootNodes[0] as HTMLElement;
         var newNode = document.createElement('div');
         componentRef.instance.chartId = "chart_" + this.chartCount
-        if(this.showDataTable){
+        if (this.showDataTable) {
           componentRef.instance.chartData.options.width = 500
         }
-        else{
+        else {
           componentRef.instance.chartData.options.width = 1000
         }
         newNode.className = 'col-xl-10 col-lg-10 col-sm-10 col-md-10 col-xs-12';
@@ -322,35 +320,74 @@ export class HistoryComponent implements OnInit {
         this.layoutJson.push(chart)
       });
     }
-    else{
+    else if (this.selectedChartType == "Map") {
       componentRef = this.factoryResolver.resolveComponentFactory(MapWidgetComponent).create(this.injector);
       this.appRef.attachView(componentRef.hostView);
-        const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
-          .rootNodes[0] as HTMLElement;
-        var newNode = document.createElement('div');
-        componentRef.instance.chartId = "chart_" + this.chartCount
-        newNode.appendChild(domElem)
-        document.getElementById("widgetContainer").appendChild(newNode)
-        let chart = {
-          "type": this.selectedChartType,
-          "title": this.chartTitle,
-          // "y1axis": this.historyFilter.y1AxisProperty,
-          // "y2axis": this.historyFilter.y2AxisProperty,
-          // "showDataTable": this.showDataTable
-        }
-        this.layoutJson.push(chart)
+
+      const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
+        .rootNodes[0] as HTMLElement;
+      var newNode = document.createElement('div');
+      componentRef.instance.chartId = "chart_" + this.chartCount
+      newNode.appendChild(domElem)
+      document.getElementById("widgetContainer").appendChild(newNode)
+      let chart = {
+        "type": this.selectedChartType,
+        "title": this.chartTitle,
+        // "y1axis": this.historyFilter.y1AxisProperty,
+        // "y2axis": this.historyFilter.y2AxisProperty,
+        // "showDataTable": this.showDataTable
+      }
+      this.layoutJson.push(chart)
+    }
+    else {
+      componentRef = this.factoryResolver.resolveComponentFactory(ChartWidgetComponent).create(this.injector);
+      this.appRef.attachView(componentRef.hostView);
+      // this.lineGoogleChartData.dataTable =new google.visualization.DataTable();
+      // this.lineGoogleChartData.dataTable.addColumn('string', 'Team');
+      // this.lineGoogleChartData.dataTable.addColumn('date', 'Season Start Date');
+      // this.lineGoogleChartData.dataTable.addColumn('date', 'Season End Date');
+
+      this.lineGoogleChartData.dataTable.splice(this.lineGoogleChartData.dataTable.length,0,
+        ['Adams1', new Date("2020-09-22T11:07:39.412Z"),new Date("2020-09-22T11:07:44.406Z")]
+      )
+      this.lineGoogleChartData.dataTable.splice(this.lineGoogleChartData.dataTable.length,0,['Adams1', new Date("2020-09-22T11:07:44.406Z"),new Date("2020-09-22T11:07:59.406Z")])
+
+      console.log('this.lineGoogleChartData.dataTable ',this.lineGoogleChartData.dataTable)
+      // this.lineGoogleChartData.dataTable.push(['Adams2', new Date("2020-09-21 9:30:00"),new Date("2020-09-21 9:35:00")])
+      componentRef.instance.chartData = this.lineGoogleChartData
+      componentRef.instance.chartData.options.width = 1000
+      componentRef.instance.chartData.options.timeline= {
+        groupByRowLabel: true
+      }
+      componentRef.instance.chartData.chartType = this.selectedChartType
+      componentRef.instance.widgetTitle = componentRef.instance.title = (this.chartTitle).toLocaleUpperCase()
+      const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
+        .rootNodes[0] as HTMLElement;
+      var newNode = document.createElement('div');
+      componentRef.instance.chartId = "chart_" + this.chartCount
+      newNode.className = 'col-xl-10 col-lg-10 col-sm-10 col-md-10 col-xs-12';
+      newNode.appendChild(domElem)
+      document.getElementById("widgetContainer").appendChild(newNode)
+      let chart = {
+        "type": this.selectedChartType,
+        "title": this.chartTitle,
+        // "y1axis": this.historyFilter.y1AxisProperty,
+        // "y2axis": this.historyFilter.y2AxisProperty,
+        // "showDataTable": this.showDataTable
+      }
+      this.layoutJson.push(chart)
     }
   }
 
   renderLayout() {
-    
+
     var componentRef;
     this.layoutJson.map((currentChart, i) => {
       this.searchHistory(currentChart).then((chartData) => {
         componentRef = this.factoryResolver.resolveComponentFactory(ChartWidgetComponent).create(this.injector);
-        if (currentChart.type == "PieChart" || currentChart.type=="Pie Chart with table") {
+        if (currentChart.type == "PieChart" || currentChart.type == "Pie Chart with table") {
           delete chartData['options'].explorer
-          if(currentChart.type=="Pie Chart with table"){
+          if (currentChart.type == "Pie Chart with table") {
             currentChart.showDataTable = true
             currentChart.type = "PieChart"
           }
@@ -363,10 +400,10 @@ export class HistoryComponent implements OnInit {
         componentRef.instance.widgetTitle = currentChart.title
         componentRef.instance.showDataTable = currentChart.showDataTable
         componentRef.instance.chartId = "render_chart_" + (i + 1)
-        if(currentChart.showDataTable){
+        if (currentChart.showDataTable) {
           componentRef.instance.chartData.options.width = 500
         }
-        else{
+        else {
           componentRef.instance.chartData.options.width = 1000
         }
         this.appRef.attachView(componentRef.hostView);

@@ -67,6 +67,7 @@
                 labelKey: 'id'
               }">
             </angular2-multiselect> -->
+            
             <input type="text" id="chartTitle" class="form-control col-xl-3 col-lg-3 mr-2" name="chartTitle"
               placeholder="Display Name" [(ngModel)]="chartTitle" *ngIf="isLayout">
             <div class="dropdown chartTypeDropdown col-xl-3 col-lg-3 mr-2" *ngIf="isLayout">
@@ -151,10 +152,11 @@
               (click)="addChart()"><i class="fas fa-plus fa-sm"></i></button>
             <button *ngIf="isLayout" type="button" class="btn btn-success btn-sm mx-1 my-1" title="Search"
               (click)="saveLayout()"><i class="fa fa-save fa-sm"></i></button>
-            <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i
-                class="fas fa-trash  fa-sm"></i></button>
-            <button *ngIf="!isLayout" type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search"
+              <button *ngIf="!isLayout" type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search"
               (click)="renderLayout()"><i class="fas fa-search fa-sm"></i></button>
+              <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i
+                class="fas fa-trash  fa-sm"></i></button>
+            
           </div>
         </form>
       </div>

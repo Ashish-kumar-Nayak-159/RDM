@@ -110,12 +110,11 @@ export class HistoryComponent implements OnInit {
     } else {
       this.historyFilter.device_id = this.device.device_id;
     }
-    this.historyFilter.dateOption = '5 mins';
-    this.propertyList.forEach(item => {
-      this.dropdownPropList.push({
-        id: item
-      });
-    });
+    // this.propertyList.forEach(item => {
+    //   this.dropdownPropList.push({
+    //     id: item
+    //   });
+    // });
     console.log(this.historyFilter);
 
   }
@@ -180,6 +179,9 @@ export class HistoryComponent implements OnInit {
       delete obj.dateOption;
       delete obj.y1AxisProperty;
       delete obj.y2AxisProperty;
+      if(layoutJson!=null){
+        
+      }
       this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
         (response: any) => {
           this.isFilterSelected = true;
@@ -211,13 +213,12 @@ export class HistoryComponent implements OnInit {
               });
               this.lineGoogleChartData.options.vAxes['1'] = { title };
             }
-            console.log('this.lineGoogleChartData.dataTable ',this.lineGoogleChartData.dataTable)
             this.lineGoogleChartData.dataTable.push(dataList);
 
             this.historyData.forEach(history => {
               history.local_created_date = this.commonService.convertUTCDateToLocal(history.message_date);
               const list = [];
-              list.splice(0, 0, history.local_created_date);
+              list.splice(0, 0, new Date(history.local_created_date));
               this.historyFilter.y1AxisProperty.forEach(prop => {
                 if (!isNaN(parseFloat(history[prop]))) {
                   list.splice(list.length, 0, parseFloat(history[prop]));

@@ -1,3 +1,5 @@
+import { CONSTANTS } from './../../app.constants';
+import { CommonService } from './../../services/common.service';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ApplicationService } from 'src/app/services/application/application.service';
@@ -12,12 +14,15 @@ export class ApplicationSettingComponent implements OnInit {
   appName: string;
   applicationData: any;
   activeTab: string;
+  userData: any;
   constructor(
     private route: ActivatedRoute,
-    private applicationService: ApplicationService
+    private applicationService: ApplicationService,
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
+    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
       this.getApplicationData();
@@ -34,7 +39,7 @@ export class ApplicationSettingComponent implements OnInit {
 
     this.applicationService.refreshAppData.subscribe(() => {
       this.getApplicationData();
-    })
+    });
   }
 
   getApplicationData() {
@@ -45,6 +50,12 @@ export class ApplicationSettingComponent implements OnInit {
       (response: any) => {
         if (response && response.data) {
           this.applicationData = response.data[0];
+          const index = this.userData.apps.findIndex(app => app.app === this.applicationData.app);
+          const obj = JSON.parse(JSON.stringify(this.applicationData));
+          obj.user = this.userData.apps[index].user;
+          this.userData.apps.splice(index, 1);
+          this.userData.apps.splice(index, 0, obj);
+          this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
         }
       }
     );

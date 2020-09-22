@@ -14,3 +14,10 @@
 select.form-control {
   width: 10rem!important;
 }
+
+.w-30 {
+  width: 30%;
+}
+.w-10 {
+  width: 10%;
+}

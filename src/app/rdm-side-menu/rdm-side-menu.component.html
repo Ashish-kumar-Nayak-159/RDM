@@ -26,14 +26,14 @@
       [routerLinkActiveOptions]="{exact: true}"
       >
         <a class="nav-link" [routerLink]="getURL(item.url)">
-          <i class="fas fa-fw fa-desktop" title="{{item.display_name ? item.display_name : item.system_name}}"></i>
+          <i class="{{item.icon}}" title="{{item.display_name ? item.display_name : item.system_name}}"></i>
           <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
 
       </li>
       <li class="nav-item" *ngIf="!userData?.is_super_admin && !item.url"
       >
       <a class="nav-link" >
-        <i class="fas fa-fw fa-desktop" title="{{item.display_name ? item.display_name : item.system_name}}"></i>
+        <i class="{{item.icon}}" title="{{item.display_name ? item.display_name : item.system_name}}"></i>
         <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
         </li>
     </ng-container>
@@ -41,7 +41,7 @@
       <li class="nav-item" >
         <a class="nav-link collapsed" href="#device-groups" data-toggle="collapse"
         aria-expanded="true">
-          <i class="fas fa-fw fa-folder" title="{{item.display_name ? item.display_name : item.system_name}}"></i>
+          <i class="{{item.icon}}" title="{{item.display_name ? item.display_name : item.system_name}}"></i>
           <span>{{item.display_name ? item.display_name : item.system_name}}</span>
         </a>
         <div id="device-groups" class="collapse" aria-labelledby="headingPages">

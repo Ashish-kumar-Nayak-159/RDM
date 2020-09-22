@@ -55,13 +55,27 @@
           <tr *ngFor="let tag of reservedTags">
             <td>{{tag.name}}</td>
             <td>
-              <ng-container *ngIf="tag.key === 'local_created_date' || (tagsListToNotDelete.indexOf(tag.key) !== -1 && originalDevice?.tags[tag.key] ) || !isReservedTagsEditable;else inputTemplate">
+              <ng-container *ngIf="tag.key === 'local_created_date' || (tagsListToNotEdit.indexOf(tag.key) !== -1 && originalDevice?.tags[tag.key] ) || !isReservedTagsEditable;else inputTemplate">
                 {{device?.tags[tag.key]}}
               </ng-container>
               <ng-template #inputTemplate>
                 <input type="text" class="form-control bg-light border-0 small"
                 [(ngModel)]="device?.tags[tag.key]" name="{{tag.name}}">
               </ng-template>
+            </td>
+          </tr>
+          <tr *ngFor="let tag of contextApp.hierarchy; let tIndex = index;">
+            <td>{{tag.name}}</td>
+            <td>
+              <ng-container *ngIf="isReservedTagsEditable && !contextApp.user.hierarchy[tag.name]">
+                <select class="custom-select" id="hierarchy{{tIndex}}"  name="hierarchy{{tIndex}}"
+                [(ngModel)]="device.tags.hierarchy_json[tag.name]" (change)="onChangeOfHierarchyTags()">
+                  <option [ngValue]="tag" *ngFor="let tag of tag.tags">{{tag}}</option>
+                </select>
+              </ng-container>
+              <ng-container *ngIf="contextApp.user.hierarchy[tag.name] || !isReservedTagsEditable">
+                {{device?.tags.hierarchy_json[tag.name]}}
+              </ng-container>
             </td>
           </tr>
           <tr *ngFor="let tag of reservedTagsBasedOnProtocol">

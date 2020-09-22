@@ -2,7 +2,7 @@ import { filter } from 'rxjs/operators';
 import { Component, OnInit, Inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { CommonService } from 'src/app/services/common.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CONSTANTS } from 'src/app/app.constants';
 declare var $: any;
 @Component({
@@ -21,29 +21,66 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private commonService: CommonService,
-    private route: ActivatedRoute,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.appData = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
-    console.log(this.appData);
-    if (!this.userData?.is_super_admin) {
-    let data = [];
-    if (this.appData.configuration && this.appData.configuration.length > 0) {
-      data = this.appData.configuration;
-    } else {
-      data =  this.constantsData.SIDE_MENU_LIST;
+    if (this.userData && !this.userData.is_super_admin) {
+      this.appName = this.userData.apps[0].app;
     }
-    this.processSideMenuData(data);
+    if (this.appName) {
+      this.appData = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
+      console.log(this.appData);
+      if (!this.userData?.is_super_admin) {
+      let data = [];
+      if (this.appData.configuration && this.appData.configuration.length > 0) {
+        data = this.appData.configuration;
+      } else {
+        data =  this.constantsData.SIDE_MENU_LIST;
+      }
+      this.processSideMenuData(data, this.appData);
+      }
+    }
+    let i = 0;
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd && i === 0) {
+        i++;
+        const list = event.url.split('/');
+        if (list[1] === 'applications' && list[2]) {
+          this.appName = list[2];
+        } else {
+          if (this.userData && !this.userData.is_super_admin) {
+            this.appName = this.userData.apps[0].app;
+          }
+        }
+        if (this.appName) {
+        this.appData = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
+        console.log(this.appData);
+        if (!this.userData?.is_super_admin) {
+        let data = [];
+        if (this.appData.configuration && this.appData.configuration.length > 0) {
+          data = this.appData.configuration;
+        } else {
+          data =  this.constantsData.SIDE_MENU_LIST;
+        }
+        this.processSideMenuData(data, this.appData);
+        }
+        }
+      }
+    });
+
     this.commonService.refreshSideMenuData.subscribe(list => {
-      this.processSideMenuData(list.configuration);
+      const config = list.configuration && list.configuration.length > 0 ? list.configuration : CONSTANTS.SIDE_MENU_LIST;
+      this.processSideMenuData(config, list);
       const index = this.userData.apps.findIndex(app => app.app === list.app);
+      const obj = this.userData.apps[index];
       this.userData.apps.splice(index, 1);
-      this.userData.apps.splice(index, 0, list);
+      this.userData.apps.splice(index, 0, obj);
       this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
     });
-    }
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -52,21 +89,25 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
     }
   }
 
-  processSideMenuData(data) {
+  processSideMenuData(data, list) {
     const arr = [];
+    console.log(list);
     data.forEach(item => {
-      if (this.appData.metadata.contain_gateways) {
+      if (list.metadata.contain_gateways) {
+        console.log('in gateway');
         if (item.page !== 'Devices') {
           arr.push(item);
         }
       }
-      if (this.appData.metadata.contain_devices) {
-        if (item.page !== 'Gateways') {
+      if (list.metadata.contain_devices) {
+        console.log('in device');
+        if (item.page !== 'Gateways' && item.page !== 'Non IP Devices') {
           arr.push(item);
         }
       }
     });
     this.displayMenuList = arr;
+    console.log(this.displayMenuList);
   }
 
   onSidebarToggle() {

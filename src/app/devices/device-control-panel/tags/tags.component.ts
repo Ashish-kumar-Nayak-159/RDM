@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { Component, OnInit, Input } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { ActivatedRoute } from '@angular/router';
@@ -22,9 +23,13 @@ export class TagsComponent implements OnInit {
   isCustomTagsEditable = false;
   tagsListToNotDelete = ['app', 'created_date', 'created_by', 'device_manager', 'manufacturer',
   'serial_number', 'mac_address', 'protocol', 'cloud_connectivity'];
+  tagsListToNotEdit = ['app', 'created_date', 'created_by', 'manufacturer',
+  'serial_number', 'mac_address', 'protocol', 'cloud_connectivity']
   userData: any;
   pageType: string;
   appName: string;
+  hierarchyTags: any[] = [];
+  contextApp: any;
   constructor(
     private route: ActivatedRoute,
     private deviceService: DeviceService,
@@ -36,6 +41,7 @@ export class TagsComponent implements OnInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
+      this.contextApp = this.userData.apps.filter(app => app.app === this.appName)[0];
       this.pageType = params.get('listName');
       this.getDeviceDetail();
     });
@@ -142,6 +148,10 @@ export class TagsComponent implements OnInit {
     this.device = null;
     this.device = JSON.parse(JSON.stringify(this.originalDevice));
     this.getDeviceDetail();
+  }
+
+  onChangeOfHierarchyTags() {
+    this.device.tags.hierarchy = JSON.stringify(this.device.tags.hierarchy_json);
   }
 
   updateDeviceTags() {

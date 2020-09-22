@@ -1,6 +1,7 @@
 
 
 <!-- Page Heading -->
+
 <div class="topnavbar bg-white py-2" >
   <div class="row">
 
@@ -45,19 +46,36 @@
     <h4 class="mb-0 text-gray-800 row col-12">Welcome to {{device?.tags?.display_name ? device?.tags?.display_name : device?.device_id}}</h4><br/>
 
   </div>
-  <div class="row col-12 mt-1" *ngIf="pageType.toLowerCase() === 'nonipdevices'">
+  <div class="row col-12 mt-1" *ngIf="pageType.toLowerCase() === 'nonipdevice'">
     <h6>This device is managed by an IP Gateway ({{device.gateway_id}})</h6>
   </div>
-  <div class="row col-12 mt-1" *ngIf="pageType === 'gateways'">
+  <div class="row col-12 mt-1" *ngIf="pageType === 'gateway'">
     <h6>This is the gateway of type ({{device.tags.device_type}}) managing {{deviceCount}} devices.</h6>
   </div>
   <div class="row col-12 mt-1">
-    <a class="btn-sm shadow-sm white-font"
+    <!-- <a class="btn-sm shadow-sm white-font"
     [ngClass]="{'btn-success': deviceConnectionStatus?.connection_state === 'Connected',
                 'btn-danger': deviceConnectionStatus?.connection_state === 'Disconnected'}">
       {{deviceConnectionStatus?.status.charAt(0).toUpperCase() + deviceConnectionStatus?.status.slice(1)
         + ', ' + deviceConnectionStatus?.connection_state + ' @ ' + deviceConnectionStatus?.local_updated_date}}
-    </a>
+    </a> -->
+    <p *ngIf="device?.status?.toLowerCase() === 'enabled' && device?.connection_state?.toLowerCase() === 'connected'">
+      Currently, {{pageType}} is
+      <span class="enabled-font">
+        {{device?.status}} & {{device?.connection_state}}.</span>
+    </p>
+    <p *ngIf="device?.status?.toLowerCase() === 'enabled' && device?.connection_state?.toLowerCase() === 'disconnected'">
+      Currently, {{pageType}} is
+      <span class="enabled-font">
+        {{device?.status}}</span>, but it is
+        <span class="disabled-font">
+          {{device?.connection_state}}</span>
+    </p>
+    <p *ngIf="device?.status?.toLowerCase() === 'disabled' && device?.connection_state?.toLowerCase() === 'disconnected'">
+      Currently, {{pageType}} is
+      <span class="disabled-font">
+        {{device?.status}} & {{device?.connection_state}}.</span>
+    </p>
   </div>
   <div *ngIf="deviceCredentials" class="mt-1">
     <h6>Connection String:

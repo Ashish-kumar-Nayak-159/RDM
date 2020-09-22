@@ -39,10 +39,6 @@ export class CONSTANTS {
       key: 'device_type'
     },
     {
-      name: 'Location',
-      key: 'location'
-    },
-    {
       name: 'Location Coordinates',
       key: 'location_coordinates'
     },
@@ -228,37 +224,43 @@ export class CONSTANTS {
       page: 'Home',
       system_name: 'Home',
       url: 'applications/:appName',
-      display_name: 'Home'
+      display_name: 'Home',
+      icon: 'fas fa-fw fa-home'
     },
     {
       page: 'Devices',
       system_name: 'IoT Devices',
       url: 'applications/:appName/devices',
-      display_name: 'IoT Devices'
+      display_name: 'IoT Devices',
+      icon: 'fas fa-fw fa-desktop'
     },
     {
       page: 'Gateways',
       system_name: 'IoT Gateways',
       url: 'applications/:appName/gateways',
-      display_name: 'IoT Gateways'
+      display_name: 'IoT Gateways',
+      icon: 'fas fa-fw fa-desktop'
     },
     {
       page: 'Non IP Devices',
       system_name: 'Non IP Devices',
       url: 'applications/:appName/nonIPDevices',
-      display_name: 'Non IP Devices'
+      display_name: 'Non IP Devices',
+      icon: 'fas fa-fw fa-folder'
     },
     {
-      page: 'Device Type',
-      system_name: 'Device Type',
+      page: 'Things Modelling',
+      system_name: 'Things Modelling',
       url: null,
-      display_name: 'Device Type'
+      display_name: 'Things Modelling',
+      icon: 'fas fa-fw fa-list'
     },
     {
       page: 'Device Groups',
       system_name: 'Device Groups',
       url: null,
       display_name: 'Device Groups',
+      icon: 'fas fa-fw fa-table',
       children: [
         {
           page: 'Group Jobs',
@@ -278,13 +280,15 @@ export class CONSTANTS {
       page: 'Data Visualization',
       system_name: 'Data Visualization',
       url: 'applications/:appName/data/visualization',
-      display_name: 'Data Visualization'
+      display_name: 'Data Visualization',
+      icon: 'fas fa-fw fa-chart-bar'
     },
     {
       page: 'App Settings',
       system_name: 'App Settings',
       url: 'applications/:appName/settings',
-      display_name: 'App Settings'
+      display_name: 'App Settings',
+      icon: 'fas fa-fw fa-cog'
     }
   ];
 
@@ -294,5 +298,6 @@ export class CONSTANTS {
   public static IP_DEVICE = 'IoT Device';
   public static IP_GATEWAY = 'IoT Gateway';
   public static NON_IP_DEVICE = 'Non IP Device';
+  public static NOT_ALLOWED_SPECIAL_CHARS_NAME = [' ', '.', '$', '#'];
 
 }

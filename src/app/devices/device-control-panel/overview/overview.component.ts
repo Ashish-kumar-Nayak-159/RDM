@@ -45,10 +45,11 @@ export class OverviewComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
       this.pageType = params.get('listName');
+      this.pageType = this.pageType.slice(0, -1);
       this.getApplicationData();
       this.getDeviceCredentials();
       this.getDeviceConnectionStatus();
-      if (this.pageType === 'gateways') {
+      if (this.pageType === 'gateway') {
         this.getDeviceCount();
       }
     });
@@ -184,18 +185,11 @@ export class OverviewComponent implements OnInit {
         this.toasterService.showSuccess(response.message, 'Delete Device');
         this.isAPILoading = false;
         if (this.device.tags.category && this.device.gateway_id) {
-          this.router.navigate(['applications', this.appName, 'devices'], { queryParams: {
-            state: CONSTANTS.NON_IP_DEVICE,
-            category: this.device.tags.category
-          }});
+          this.router.navigate(['applications', this.appName, 'devices']);
         } else if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
-          this.router.navigate(['applications', this.appName, 'gateways'], { queryParams: {
-            state: CONSTANTS.IP_GATEWAY
-          }});
+          this.router.navigate(['applications', this.appName, 'gateways']);
         }  else {
-          this.router.navigate(['applications', this.appName, 'devices'], { queryParams: {
-            state: CONSTANTS.IP_DEVICE
-          }});
+          this.router.navigate(['applications', this.appName, 'nonIPDevices']);
         }
       }, error => {
         this.toasterService.showError(error.message, 'Delete Device');

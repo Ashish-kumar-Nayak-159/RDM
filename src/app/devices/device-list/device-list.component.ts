@@ -34,6 +34,7 @@ export class DeviceListComponent implements OnInit {
   deviceCategory = CONSTANTS.NON_IP_DEVICE_OPTIONS;
   gatewayId: string;
   contextApp: any;
+  hierarchyDropdown: any[] = [];
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -44,13 +45,14 @@ export class DeviceListComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
     this.route.paramMap.subscribe(params => {
+      this.protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
       this.devicesList = [];
       this.appName = params.get('applicationId');
       this.contextApp = this.userData.apps.filter(
         app => app.app === params.get('applicationId')
       )[0];
+      console.log(this.contextApp);
       if (params.get('listName')) {
         const listName = params.get('listName');
         if (listName.toLowerCase() === 'nonipdevices') {
@@ -68,6 +70,13 @@ export class DeviceListComponent implements OnInit {
       this.deviceFilterObj.app = this.appName;
       this.deviceFilterObj.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
       this.deviceFilterObj.hierarchyString =  this.contextApp.user.hierarchyString;
+      const keys = Object.keys(this.contextApp.user.hierarchy);
+      this.hierarchyDropdown = [];
+      this.contextApp.hierarchy.forEach(item => {
+        if (item.level >= keys.length - 1 && item.name !== 'App') {
+          this.hierarchyDropdown.push(item);
+        }
+      });
       const obj = {
         type: 'replace',
         data: [
@@ -107,21 +116,21 @@ export class DeviceListComponent implements OnInit {
             name: this.pageType + ' Manager',
             key: 'tags.device_manager',
             type: 'text',
-            headerClass: '',
+            headerClass: 'w-10',
             valueclass: ''
           },
           {
             name: 'Connectivity',
             key: 'tags.cloud_connectivity',
             type: 'text',
-            headerClass: '',
+            headerClass: 'w-30',
             valueclass: ''
           },
           {
             name: 'Location',
-            key: 'tags.location',
+            key: 'tags.hierarchyString',
             type: 'text',
-            headerClass: '',
+            headerClass: 'w-30',
             valueclass: ''
           },
           {
@@ -173,6 +182,7 @@ export class DeviceListComponent implements OnInit {
       console.log(JSON.stringify(data));
       this.protocolList = JSON.parse(JSON.stringify(data));
 
+
     });
     this.route.queryParamMap.subscribe(
 
@@ -223,6 +233,13 @@ export class DeviceListComponent implements OnInit {
             if (!item.tags.display_name) {
               item.tags.display_name = item.device_id;
             }
+            if (item.tags.hierarchy_json) {
+              item.tags.hierarchyString = '';
+              const keys = Object.keys(item.tags.hierarchy_json);
+              keys.forEach((key, index) => {
+                item.tags.hierarchyString += item.tags.hierarchy_json[key] + ( keys[index + 1] ? ' / ' : '');
+              });
+            }
           });
         }
         this.isDeviceListLoading = false;
@@ -247,7 +264,7 @@ export class DeviceListComponent implements OnInit {
     this.deviceDetail = new Device();
     this.deviceDetail.tags = {};
     this.deviceDetail.tags.app = this.appName;
-    console.log(this.deviceDetail);
+    this.deviceDetail.tags.hierarchy_json = JSON.parse(JSON.stringify(this.contextApp.user.hierarchy));
     $('#createDeviceModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -271,8 +288,7 @@ export class DeviceListComponent implements OnInit {
     }
     this.isCreateDeviceAPILoading = true;
     console.log(this.deviceDetail);
-    this.deviceDetail.tags.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
-    this.deviceDetail.tags.hierarchy_json = this.contextApp.user.hierarchy;
+    this.deviceDetail.tags.hierarchy = JSON.stringify(this.deviceDetail.tags.hierarchy_json );
     this.deviceDetail.tags.created_by = this.userData.email;
     this.deviceDetail.app = this.appName;
     this.deviceDetail.tags.category = this.componentState === CONSTANTS.NON_IP_DEVICE ?

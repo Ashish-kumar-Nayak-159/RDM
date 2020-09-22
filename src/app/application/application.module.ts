@@ -13,6 +13,7 @@ import { ApplicationDeviceHierarchyComponent } from './application-setting/appli
 import { ApplicationRolesComponent } from './application-setting/application-roles/application-roles.component';
 import { ApplicationUsersComponent } from './application-setting/application-users/application-users.component';
 import { ApplicationMenuSettingsComponent } from './application-setting/application-menu-settings/application-menu-settings.component';
+import { ApplicationPropertiesComponent } from './application-setting/application-properties/application-properties.component';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { ApplicationMenuSettingsComponent } from './application-setting/applicat
     ApplicationDeviceHierarchyComponent,
     ApplicationRolesComponent,
     ApplicationUsersComponent,
-    ApplicationMenuSettingsComponent
+    ApplicationMenuSettingsComponent,
+    ApplicationPropertiesComponent
   ],
   imports: [
   CommonModule,

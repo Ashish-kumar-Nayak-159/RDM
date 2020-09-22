@@ -1,3 +1,4 @@
+import { CONSTANTS } from 'src/app/app.constants';
 import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application/application.service';
@@ -21,13 +22,17 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
 
   ngOnInit(): void {
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
+    this.applicationData.hierarchy.forEach(element => {
+      element.isEditable = false;
+    });
   }
 
   onAddNewHierarchyObj() {
     this.applicationData.hierarchy.splice(this.applicationData.hierarchy.length, 0, {
       name: null,
       level: this.applicationData.hierarchy.length,
-      tags: []
+      tags: [],
+      isEditable: true
     });
     this.selectedHierarchyItem = undefined;
     this.addedTagItem = undefined;
@@ -52,6 +57,24 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
   }
 
   onSaveHierarchyTags() {
+    let flag;
+    this.applicationData.hierarchy.forEach(item => {
+      CONSTANTS.NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach(char => {
+        if (item.name.includes(char)) {
+          flag = `Hierarchy name will not allow ' ', '.', '#' and '$'`;
+        }
+      });
+      if (!item.name || (item.name.trim()).length === 0) {
+        flag = 'Blank Name is not allowed.';
+      }
+    });
+    if (flag) {
+      this.toasterService.showError(flag, 'Save Device Hierarchy');
+      return;
+    }
+    this.applicationData.hierarchy.forEach(item => {
+      delete item.isEditable;
+    });
     this.saveHierarchyAPILoading = true;
     this.applicationData.id = this.applicationData.app;
     this.applicationService.updateApp(this.applicationData).subscribe(
@@ -67,6 +90,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
       }
     );
   }
+
 
   onCancelClick() {
     this.applicationData = JSON.parse(JSON.stringify(this.originalApplicationData));

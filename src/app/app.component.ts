@@ -40,14 +40,16 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    if (this.userData && !this.userData.is_super_admin) {
-      this.appName = this.userData.apps[0].app;
-    }
+
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         const list = event.url.split('/');
         if (list[1] === 'applications' && list[2]) {
           this.appName = list[2];
+        } else {
+          if (this.userData && !this.userData.is_super_admin) {
+            this.appName = this.userData.apps[0].app;
+          }
         }
         if (event.url.includes('login')) {
           this.isLoginRoute = true;

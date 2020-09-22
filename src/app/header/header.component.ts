@@ -76,6 +76,11 @@ export class HeaderComponent implements OnInit, OnChanges {
     this.router.navigate([obj.url], {queryParams: (obj.queryParams ? obj.queryParams : undefined)});
   }
 
+  onClickOfAppChange(app) {
+    this.commonService.refreshSideMenuData.emit(app);
+    this.router.navigate(['applications', app.app]);
+  }
+
   onSideBarToggleTopClick() {
     $('body').toggleClass('sidebar-toggled');
     $('.sidebar').toggleClass('toggled');

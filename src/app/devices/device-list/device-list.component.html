@@ -84,8 +84,15 @@
     <div class="modal-body" *ngIf="deviceDetail">
       <form>
         <div class="form-group">
-          <label for="message-text" class="col-form-label">App name:</label>
+          <label for="message-text" class="col-form-label">App:</label>
           <input type="text" class="form-control" id="app_name" [defaultValue]="appName" disabled>
+        </div>
+        <div class="form-group" *ngFor="let hierarchyItem of hierarchyDropdown; let hIndex = index">
+          <label for="message-text" class="col-form-label">{{hierarchyItem.name}}:</label>
+          <select class="custom-select" id="hierarchy{{hIndex}}"  name="hierarchy{{hIndex}}"
+          [(ngModel)]="deviceDetail.tags.hierarchy_json[hierarchyItem.name]" [disabled]="contextApp.user.hierarchy[hierarchyItem.name]">
+            <option [ngValue]="tag" *ngFor="let tag of hierarchyItem.tags">{{tag}}</option>
+          </select>
         </div>
         <div class="form-group">
           <label for="message-text" class="col-form-label">{{pageType}} Name:</label>
@@ -153,11 +160,6 @@
           <label for="message-text" class="col-form-label">Manufactured By:</label>
           <input type="text" class="form-control" id="manufactured_by" name="manufacturer"
           placeholder="Enter Manufacturer" [(ngModel)]="deviceDetail.tags.manufacturer">
-        </div>
-        <div class="form-group">
-          <label for="message-text" class="col-form-label">Location:</label>
-          <input type="text" class="form-control" id="location" name="location"
-          placeholder="Enter Location" [(ngModel)]="deviceDetail.tags.location">
         </div>
 
       </form>

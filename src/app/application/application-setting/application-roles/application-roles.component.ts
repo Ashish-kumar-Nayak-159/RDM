@@ -20,18 +20,37 @@ export class ApplicationRolesComponent implements OnInit {
 
   ngOnInit(): void {
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
+    this.applicationData.roles.forEach(element => {
+      element.isEditable = false;
+    });
   }
 
   onAddNewRoleObj() {
     this.applicationData.roles.splice(this.applicationData.roles.length, 0, {
       name: null,
-      level: 0
+      level: 0,
+      isEditable: true
     });
   }
 
   onSaveRoles() {
-    this.saveRoleAPILoading = true;
+
     this.applicationData.id = this.applicationData.app;
+    let flag = '';
+    this.applicationData.roles.forEach(element => {
+      if (!element.name || (element.name.trim()).length === 0) {
+        flag = 'Blank Name is not allowed.';
+      }
+      delete element.isEditable;
+    });
+    if (flag) {
+      this.toasterService.showError(flag, 'Save Device Hierarchy');
+      return;
+    }
+    this.saveRoleAPILoading = true;
+    this.applicationData.roles.forEach(item => {
+      delete item.isEditable;
+    });
     this.applicationService.updateApp(this.applicationData).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Save Device Hierarchy');

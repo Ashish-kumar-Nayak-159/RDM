@@ -73,13 +73,15 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.route.paramMap.subscribe(params => {
       if (params.get('applicationId')) {
-        this.appData.app = params.get('applicationId');
+        this.appData = this.userData.apps.filter(
+          app => app.app === params.get('applicationId')
+        )[0];
       }
       this.commonService.breadcrumbEvent.emit({
         type: 'replace',
         data: [
           {
-            title: this.appData.app,
+            title: this.appData.user.hierarchyString,
             url: 'applications/' + this.appData.app
           },
             {
@@ -89,7 +91,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         ]
       });
       this.getLatestAlerts();
-      this.propertyList = CONSTANTS.APP_PROP_LIST[this.appData.app];
+      this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
     });
 
   }

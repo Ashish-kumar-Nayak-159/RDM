@@ -32,6 +32,7 @@ export class HistoryComponent implements OnInit {
   // y2AxisProp = [];
   y1AxisProps = "";
   y2AxisProp = "";
+  xAxisProps = "";
 
   //chart selection 
   chartCount = 0

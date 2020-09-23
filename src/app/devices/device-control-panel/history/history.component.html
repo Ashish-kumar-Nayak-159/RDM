@@ -87,12 +87,16 @@
                 <option [ngValue]="'custom'">Custom</option>
               </select>
               <ng-container *ngIf="historyFilter?.dateOption === 'custom'">
-              <mat-date-range-picker   #picker></mat-date-range-picker>
+              <!-- <mat-date-range-picker   #picker></mat-date-range-picker>
               <mat-date-range-input [rangePicker]="picker" class="form-control form-control-sm mx-1 my-1 w-11">
                 <input matStartDate [(ngModel)]="historyFilter.from_date" name="from_date">
                 <input matEndDate [(ngModel)]="historyFilter.to_date" name="to_date">
               </mat-date-range-input>
-            <mat-datepicker-toggle  matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker-toggle  matSuffix [for]="picker"></mat-datepicker-toggle> -->
+            <input [owlDateTime]="dt1" [selectMode]="'range'"
+            (dateTimeChange)="onDateChange($event)" class="form-control form-control-sm mx-1 my-1 col-md-2" [owlDateTimeTrigger]="dt1" placeholder="Select Date Time">
+            <span [owlDateTimeTrigger]="dt1"><i class="fa fa-calendar"></i></span>
+            <owl-date-time #dt1></owl-date-time>
           </ng-container>
             <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="searchHistory()" ><i class="fas fa-search fa-sm"></i></button>
             <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fas fa-trash  fa-sm"></i></button>

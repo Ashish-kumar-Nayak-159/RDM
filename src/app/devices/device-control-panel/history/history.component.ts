@@ -63,6 +63,7 @@ export class HistoryComponent implements OnInit {
     }
   };
   appName: any;
+  appData: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -75,7 +76,10 @@ export class HistoryComponent implements OnInit {
 
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
-      this.propertyList = CONSTANTS.APP_PROP_LIST[this.appName];
+      this.appData = this.userData.apps.filter(
+        app => app.app === params.get('applicationId')
+      )[0];
+      this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
       this.historyFilter.app = this.appName;
     });
     this.historyFilter.epoch = true;
@@ -216,6 +220,12 @@ export class HistoryComponent implements OnInit {
     this.historyFilter.epoch = true;
     this.historyFilter.device_id = this.device.device_id;
     this.historyFilter.app = this.appName;
+  }
+
+  onDateChange(event) {
+    console.log(event);
+    this.historyFilter.from_date = moment(event.value[0]).utc();
+    this.historyFilter.to_date = moment(event.value[1]).utc();
   }
 
 }

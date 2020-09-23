@@ -24,6 +24,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
   userData: any;
   isFilterSelected = false;
   propertyList: any[] = [];
+  appData: any;
   // google chart
   public lineGoogleChartData: GoogleChartInterface = {  // use :any or :GoogleChartInterface
     chartType: 'LineChart',
@@ -73,7 +74,10 @@ export class LiveDataComponent implements OnInit, OnDestroy {
 
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
-      this.propertyList = CONSTANTS.APP_PROP_LIST[this.appName];
+      this.appData = this.userData.apps.filter(
+        app => app.app === params.get('applicationId')
+      )[0];
+      this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
       this.historyFilter.app = this.appName;
     });
     this.historyFilter.epoch = true;

@@ -113,6 +113,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   onClickOfViewGraph(alert) {
+    if (this.propertyList.length > 0) {
     this.selectedAlert = alert;
     console.log(alert);
     this.lineGoogleChartConfig.dataTable = [];
@@ -156,6 +157,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         });
 
     }, 20000);
+  }
   }
 
   loadLineChart(telemetryData) {

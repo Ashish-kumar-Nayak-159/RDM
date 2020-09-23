@@ -29,7 +29,9 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
 
         this.router.navigate(['applications']);
       } else {
-        if (this.userData.apps && this.userData.apps.length > 0) {
+        if (this.userData.apps && this.userData.apps.length > 1) {
+          this.router.navigate(['applications', 'selection']);
+        } else if (this.userData.apps && this.userData.apps.length === 1) {
           this.router.navigate(['applications', this.userData.apps[0].app]);
         }
       }
@@ -55,14 +57,13 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
       this.isLoginAPILoading = true;
       this.commonService.loginUser(this.loginForm).subscribe(
         (response: any) => {
-
+          this.userData = response;
           if (response.is_super_admin) {
             console.log('in login 28');
             this.router.navigate(['applications']);
             this.commonService.setItemInLocalStorage('userData', response);
           } else {
             if (response.apps && response.apps.length > 0) {
-              this.router.navigate(['applications', response.apps[0].app]);
               response.apps.forEach(element => {
                 let hierarchy = '';
                 const keys = Object.keys(element.user.hierarchy);
@@ -72,6 +73,11 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
                 element.user.hierarchyString = hierarchy;
               });
               this.commonService.setItemInLocalStorage('userData', response);
+              if (this.userData.apps && this.userData.apps.length > 1) {
+                this.router.navigate(['applications', 'selection']);
+              } else if (this.userData.apps && this.userData.apps.length === 1) {
+                this.router.navigate(['applications', this.userData.apps[0].app]);
+              }
             } else {
               this.isLoginAPILoading = false;
               this.toasterService.showError('No apps are assigned to this user', 'Contact Administrator');

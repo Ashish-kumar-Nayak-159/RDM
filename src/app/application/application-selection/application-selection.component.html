@@ -1,0 +1,29 @@
+<div class="container-pad">
+  <div class="col-12">
+    <h3>Welcome {{userData.name}}</h3>
+    <p>Please select which app you want to login...</p>
+  </div>
+  <div class="row">
+    <div class="col-lg-2 col-md-2 col-sm-2 col-2 mb-4" *ngFor="let app of userData.apps">
+      <div class="card shadow h-100">
+        <div class="card-body">
+          <a href="javascript:void(0)" (click)="redirectToApp(app)"
+            ><div class="text-center">
+              <img
+                class="img-fluid px-2 mt-2 mb-3 img-szsm"
+                src="{{
+                  app?.metadata?.icon?.url
+                    ? app?.metadata?.icon?.url + blobToken
+                    : constantData.DEFAULT_APP_ICON  + blobToken
+                }}"
+                alt=""
+              />
+            </div>
+            <div class="text-black-50 text-center small">
+              <h6>{{app.app}}</h6></div
+          ></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

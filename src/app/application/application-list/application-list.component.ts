@@ -168,8 +168,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
   async createApp() {
     console.log(this.applicationDetail);
     if (!this.applicationDetail.app || !this.applicationDetail.admin_email || !this.applicationDetail.admin_name
-      || !this.applicationDetail.metadata.logo
-      || !this.applicationDetail.metadata.icon || !(this.applicationDetail.metadata.contain_devices
+      || !(this.applicationDetail.metadata.contain_devices
         || this.applicationDetail.metadata.contain_gateways)) {
       this.toasterService.showError('Please fill all details', 'Create App');
     } else {

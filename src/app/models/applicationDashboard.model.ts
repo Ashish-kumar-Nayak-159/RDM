@@ -39,5 +39,6 @@ export class Event {
   device_id: string;
   event_type: string;
   time_diff: string;
+  category: string;
   message_date: string;
 }

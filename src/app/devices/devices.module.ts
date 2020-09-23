@@ -80,6 +80,10 @@ import { CommonCustomModule } from './../common/common.module';
     OwlDateTimeModule,
     OwlNativeDateTimeModule
   ],
+  exports: [
+    FilterComponent,
+    TableComponent
+  ],
   providers: [
     {provide: OWL_DATE_TIME_LOCALE, useValue: {useUtc: true}}
   ]

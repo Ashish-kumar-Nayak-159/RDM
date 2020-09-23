@@ -12,7 +12,7 @@ declare var $: any;
 })
 export class AppComponent implements OnInit, AfterViewInit {
   title = 'RDM';
-  isLoginRoute = false;
+  isLoginRoute = true;
   isHomeRoute = false;
   appName: string;
   userData: any;
@@ -60,6 +60,9 @@ export class AppComponent implements OnInit, AfterViewInit {
         } else if (event.url === '/') {
           this.isHomeRoute = true;
           this.isLoginRoute = false;
+        } else if (event.url.includes('applications/selection')) {
+          this.isHomeRoute = false;
+          this.isLoginRoute = true;
         } else {
           this.isLoginRoute = false;
           this.isHomeRoute = false;

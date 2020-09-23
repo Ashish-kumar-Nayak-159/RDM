@@ -62,6 +62,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
   blobToken = environment.blobKey;
   appName: string;
   contextApp: any;
+  constantData = CONSTANTS;
   constructor(
     private applicationService: ApplicationService,
     private router: Router,
@@ -76,6 +77,17 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
       this.contextApp = this.userData.apps.filter(
         app => app.app === params.get('applicationId')
       )[0];
+      console.log(this.contextApp);
+      if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.logo) {
+        this.contextApp.metadata.logo = {
+          url : CONSTANTS.DEFAULT_APP_LOGO
+        };
+      }
+      if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.icon) {
+        this.contextApp.metadata.icon = {
+          url : CONSTANTS.DEFAULT_APP_ICON
+        };
+      }
       this.commonService.breadcrumbEvent.emit({
         type: 'replace',
         data: [
@@ -86,7 +98,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
         ]
       });
       console.log(this.contextApp);
-      this.getApplicationData();
+      // this.getApplicationData();
       this.getDashboardSnapshot();
       this.getLastNotificationData();
       this.getLastAlertData();
@@ -105,17 +117,17 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
       }, 500);
   }
 
-  getApplicationData() {
-    this.applicationService.getApplications({
-      app: this.appName
-    }).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.applicationData = response.data[0];
-        }
-      }
-    );
-  }
+  // getApplicationData() {
+  //   this.applicationService.getApplications({
+  //     app: this.appName
+  //   }).subscribe(
+  //     (response: any) => {
+  //       if (response && response.data) {
+  //         this.applicationData = response.data[0];
+  //       }
+  //     }
+  //   );
+  // }
 
   /**
    * It will call the application dashboard snapshot API
@@ -206,6 +218,9 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
           this.lastGeneratedEvents.forEach(event => {
             event.time_diff = this.calculateTimeDifference(event.created_date);
             const eventMsg = event.event_type.split('.');
+            eventMsg[eventMsg.length - 1] = eventMsg[eventMsg.length - 1].replace('Device', '');
+            eventMsg[eventMsg.length - 1] = (event.category === CONSTANTS.IP_GATEWAY ? 'Gateway ' : 'Device ' ) +
+            eventMsg[eventMsg.length - 1];
             event.event_type = eventMsg[eventMsg.length - 1];
           });
         }

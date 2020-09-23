@@ -31,6 +31,7 @@ export class OverviewComponent implements OnInit {
   modalConfig: any;
   btnClickType: string;
   confirmModalMessage: string;
+  constantData = CONSTANTS;
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -63,6 +64,11 @@ export class OverviewComponent implements OnInit {
           response.data.forEach(item => {
             if (item.app === this.appName) {
               this.applicationData = item;
+              if (this.applicationData && this.applicationData.metadata && !this.applicationData.metadata.logo) {
+                this.applicationData.metadata.logo = {
+                  url : CONSTANTS.DEFAULT_APP_LOGO
+                };
+              }
             }
           });
         }

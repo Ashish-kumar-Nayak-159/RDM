@@ -8,10 +8,7 @@
               <div class="text-center">
                 <img
                   class="img-fluid px-2 mt-3 mb-3 img-szmd"
-                  src="{{
-                    applicationData?.metadata?.logo?.url
-                      ? applicationData?.metadata?.logo?.url + blobToken
-                      : ''
+                  src="{{contextApp?.metadata?.logo?.url + blobToken
                   }}"
                   alt=""
                 />
@@ -26,10 +23,7 @@
                 ><div class="text-center">
                   <img
                     class="img-fluid px-2 mt-2 mb-3 img-szsm"
-                    src="{{
-                      applicationData?.metadata?.icon?.url
-                        ? applicationData?.metadata?.icon?.url + blobToken
-                        : ''
+                    src="{{contextApp?.metadata?.icon?.url + blobToken
                     }}"
                     alt=""
                   />
@@ -61,10 +55,7 @@
                 ><div class="text-center">
                   <img
                     class="img-fluid px-2 mt-2 mb-3 img-szsm"
-                    src="{{
-                      applicationData?.metadata?.icon?.url
-                        ? applicationData?.metadata?.icon?.url + blobToken
-                        : ''
+                    src="{{contextApp?.metadata?.icon?.url + blobToken
                     }}"
                     alt=""
                   />
@@ -93,10 +84,7 @@
                 ><div class="text-center">
                   <img
                     class="img-fluid px-2 mt-2 mb-3 img-szsm"
-                    src="{{
-                      applicationData?.metadata?.icon?.url
-                        ? applicationData?.metadata?.icon?.url + blobToken
-                        : ''
+                    src="{{contextApp?.metadata?.icon?.url + blobToken
                     }}"
                     alt=""
                   />
@@ -241,7 +229,8 @@
             >
               <li *ngFor="let notification of lastGeneratedNotifications">
                 <div class="device-name-text">
-                  {{ notification.device_id }} | {{ notification.time_diff }}
+                  {{ notification.application_properties.display_name ?  notification.application_properties.display_name : notification.device_id  }}
+                  | {{ notification.time_diff }}
                 </div>
                 <p>{{ notification.message?.message }}</p>
               </li>
@@ -284,7 +273,8 @@
             >
               <li *ngFor="let alert of lastGeneratedAlerts">
                 <div class="device-name-text">
-                  {{ alert.device_id }} | {{ alert.time_diff }}
+                  {{ alert.application_properties.display_name ?  alert.application_properties.display_name : alert.device_id  }}
+                   | {{ alert.time_diff }}
                 </div>
                 <p>{{ alert.message?.message }}</p>
               </li>

@@ -6,12 +6,13 @@ import { ApplicationDashboardComponent } from './application-dashboard/applicati
 import { AuthGuardService } from './../services/auth-guard/auth-guard.service';
 import { ApplicationListComponent } from './application-list/application-list.component';
 import { ApplicationNotificationComponent } from './application-notification/application-notification.component';
+import { ApplicationSelectionComponent } from './application-selection/application-selection.component';
 
 const routes: Routes = [
+
   {
-    path: '',
-    component: ApplicationListComponent,
-    canActivate: [AuthGuardService]
+    path: 'selection',
+    component: ApplicationSelectionComponent
   },
   {
     path: ':applicationId',
@@ -26,6 +27,11 @@ const routes: Routes = [
   {
     path: ':applicationId/notifications',
     component: ApplicationNotificationComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: '',
+    component: ApplicationListComponent,
     canActivate: [AuthGuardService]
   }
 ];

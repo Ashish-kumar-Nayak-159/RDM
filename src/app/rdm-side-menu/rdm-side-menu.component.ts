@@ -27,9 +27,9 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    if (this.userData && !this.userData.is_super_admin) {
-      this.appName = this.userData.apps[0].app;
-    }
+    // if (this.userData && !this.userData.is_super_admin) {
+    //   this.appName = this.userData.apps[0].app;
+    // }
     if (this.appName) {
       this.appData = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
       console.log(this.appData);
@@ -74,11 +74,11 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
     this.commonService.refreshSideMenuData.subscribe(list => {
       const config = list.configuration && list.configuration.length > 0 ? list.configuration : CONSTANTS.SIDE_MENU_LIST;
       this.processSideMenuData(config, list);
-      const index = this.userData.apps.findIndex(app => app.app === list.app);
-      const obj = this.userData.apps[index];
-      this.userData.apps.splice(index, 1);
-      this.userData.apps.splice(index, 0, obj);
-      this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
+      // const index = this.userData.apps.findIndex(app => app.app === list.app);
+      // const obj = this.userData.apps[index];
+      // this.userData.apps.splice(index, 1);
+      // this.userData.apps.splice(index, 0, obj);
+      // this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
     });
 
   }

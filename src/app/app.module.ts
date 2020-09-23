@@ -23,7 +23,6 @@ import { RDMHomeComponent } from './rdmhome/rdmhome.component';
     RDMSideMenuComponent,
     RDMLoginComponent,
     RDMHomeComponent,
-
   ],
   imports: [
     BrowserModule,

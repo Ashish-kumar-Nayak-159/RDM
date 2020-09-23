@@ -152,10 +152,10 @@
 
         <ng-container  *ngIf="userData.apps.length > 1">
           <div class="dropdown-divider"></div>
-        <a class="dropdown-item" *ngFor="let app of userData.apps"
-        (click)="onClickOfAppChange(app)" routerLinkActive="active" >
+        <a class="dropdown-item"
+        [routerLink]="['applications', 'selection']" routerLinkActive="active" >
           <i class="fas fa-th-large fa-sm fa-fw mr-2 text-gray-400"></i>
-          {{app.app}}
+          Change Application
         </a>
         </ng-container>
         <div class="dropdown-divider"></div>

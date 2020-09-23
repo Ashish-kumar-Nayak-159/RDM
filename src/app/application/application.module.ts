@@ -1,3 +1,4 @@
+import { CommonCustomModule } from './../common/common.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChartsModule } from 'ng2-charts';
@@ -14,6 +15,8 @@ import { ApplicationRolesComponent } from './application-setting/application-rol
 import { ApplicationUsersComponent } from './application-setting/application-users/application-users.component';
 import { ApplicationMenuSettingsComponent } from './application-setting/application-menu-settings/application-menu-settings.component';
 import { ApplicationPropertiesComponent } from './application-setting/application-properties/application-properties.component';
+import { ApplicationSelectionComponent } from './application-selection/application-selection.component';
+import { DevicesModule } from '../devices/devices.module';
 
 
 @NgModule({
@@ -27,14 +30,16 @@ import { ApplicationPropertiesComponent } from './application-setting/applicatio
     ApplicationRolesComponent,
     ApplicationUsersComponent,
     ApplicationMenuSettingsComponent,
-    ApplicationPropertiesComponent
+    ApplicationPropertiesComponent,
+    ApplicationSelectionComponent
   ],
   imports: [
   CommonModule,
     ApplicationRoutingModule,
     ChartsModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    DevicesModule
   ]
 })
 export class ApplicationModule { }

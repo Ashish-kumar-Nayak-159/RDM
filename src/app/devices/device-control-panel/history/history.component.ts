@@ -32,13 +32,12 @@ export class HistoryComponent implements OnInit {
   // y2AxisProp = [];
   y1AxisProps = "";
   y2AxisProp = "";
-  xAxisProps = "";
 
   //chart selection 
   chartCount = 0
-  chartTypes = ["Bar Chart", "Column Chart", "Line Chart", "Area Chart", "Pie Chart", "Data Table", "Map", "Pie Chart + Data Table", "Timeline"]
-  chartTypeValues = ["BarChart", "ColumnChart", "LineChart", "AreaChart", "PieChart", "Table", "Map", "Pie Chart with table", "Timeline"]
-  chartIcons = ["fa-bar-chart fa-rotate-90", "fa-bar-chart", "fa-line-chart", "fa-area-chart", "fa-pie-chart", "fa-table", "fa-map", "fa-pie-chart fa-table"]
+  chartTypes = ["Bar Chart", "Column Chart", "Line Chart", "Area Chart", "Pie Chart", "Data Table", "Map","Pie Chart + Data Table"]
+  chartTypeValues = ["BarChart", "ColumnChart", "LineChart", "AreaChart", "PieChart", "Table", "Map","Pie Chart with table"]
+  chartIcons = ["fa-bar-chart fa-rotate-90", "fa-bar-chart", "fa-line-chart", "fa-area-chart", "fa-pie-chart", "fa-table", "fa-map","fa-pie-chart fa-table"]
   public selectedChartType = "Chart Type"
   columnNames = []
   layoutJson = []
@@ -92,7 +91,10 @@ export class HistoryComponent implements OnInit {
 
 
   ngOnInit(): void {
+    
+
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
       this.appData = this.userData.apps.filter(
@@ -121,7 +123,7 @@ export class HistoryComponent implements OnInit {
     this.historyFilter.to_date = undefined;
   }
 
-  searchHistory(layoutJson) {
+  searchHistory(layoutJson) {    
     return new Promise((resolve, reject) => {
       this.historyFilter.y1AxisProperty = [];
       this.historyFilter.y2AxisProperty = [];
@@ -285,12 +287,12 @@ export class HistoryComponent implements OnInit {
     $(".overlay").show()
     this.chartCount++
     var componentRef;
-    if (this.selectedChartType != "Map" && this.selectedChartType != "Timeline") {
+    if (this.selectedChartType != "Map") {
       this.searchHistory(null).then(() => {
         var componentRef = this.factoryResolver.resolveComponentFactory(ChartWidgetComponent).create(this.injector);
-        if (this.selectedChartType == "PieChart" || this.selectedChartType == "Pie Chart with table") {
+        if (this.selectedChartType == "PieChart" || this.selectedChartType=="Pie Chart with table") {
           delete this.lineGoogleChartData.options.explorer
-          if (this.selectedChartType == "Pie Chart with table") {
+          if(this.selectedChartType=="Pie Chart with table"){
             this.showDataTable = true
             this.selectedChartType = "PieChart"
           }
@@ -305,10 +307,10 @@ export class HistoryComponent implements OnInit {
           .rootNodes[0] as HTMLElement;
         var newNode = document.createElement('div');
         componentRef.instance.chartId = "chart_" + this.chartCount
-        if (this.showDataTable) {
+        if(this.showDataTable){
           componentRef.instance.chartData.options.width = 500
         }
-        else {
+        else{
           componentRef.instance.chartData.options.width = 1000
         }
         newNode.className = 'col-xl-10 col-lg-10 col-sm-10 col-md-10 col-xs-12';
@@ -326,7 +328,7 @@ export class HistoryComponent implements OnInit {
         this.layoutJson.push(chart)
       });
     }
-    else if (this.selectedChartType == "Map") {
+    else if(this.selectedChartType == "Map"){
       componentRef = this.factoryResolver.resolveComponentFactory(MapWidgetComponent).create(this.injector);
       this.appRef.attachView(componentRef.hostView);
 
@@ -388,9 +390,9 @@ export class HistoryComponent implements OnInit {
     this.layoutJson.map((currentChart, i) => {
       this.searchHistory(currentChart).then((chartData) => {
         componentRef = this.factoryResolver.resolveComponentFactory(ChartWidgetComponent).create(this.injector);
-        if (currentChart.type == "PieChart" || currentChart.type == "Pie Chart with table") {
+        if (currentChart.type == "PieChart" || currentChart.type=="Pie Chart with table") {
           delete chartData['options'].explorer
-          if (currentChart.type == "Pie Chart with table") {
+          if(currentChart.type=="Pie Chart with table"){
             currentChart.showDataTable = true
             currentChart.type = "PieChart"
           }
@@ -403,10 +405,10 @@ export class HistoryComponent implements OnInit {
         componentRef.instance.widgetTitle = currentChart.title
         componentRef.instance.showDataTable = currentChart.showDataTable
         componentRef.instance.chartId = "render_chart_" + (i + 1)
-        if (currentChart.showDataTable) {
+        if(currentChart.showDataTable){
           componentRef.instance.chartData.options.width = 500
         }
-        else {
+        else{
           componentRef.instance.chartData.options.width = 1000
         }
         this.appRef.attachView(componentRef.hostView);

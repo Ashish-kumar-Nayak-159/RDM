@@ -61,7 +61,28 @@
                 labelKey: 'id'
               }">
             </angular2-multiselect> -->
-            <input type="text" *ngIf="isLayout" placeholder="Comma separated list of parameters"  id="y1AxisProperty" [(ngModel)]="y1AxisProps" name="y1AxisProperty">
+            
+            <input type="text" id="chartTitle" class="form-control col-xl-3 col-lg-3 mr-2" name="chartTitle"
+              placeholder="Display Name" [(ngModel)]="chartTitle" *ngIf="isLayout">
+            <div class="dropdown chartTypeDropdown col-xl-3 col-lg-3 mr-2" *ngIf="isLayout">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="true" style="width:100%">
+                {{selectedChartType}}
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenu2"
+                id="dropdownMenu2List">
+                <li class="dropdown-item" *ngFor="let item of chartTypes;let i=index" (click)="setChartType(i)">
+                  <i class="fa {{chartIcons[i]}} chartTypeIcon"></i>
+                  {{item}}
+                </li>
+              </ul>
+            </div>
+            <input class="form-control col-xl-3 col-lg-3 mr-2"  type="text" *ngIf="isLayout" placeholder="Comma separated list of Y1 parameters"
+              id="y1AxisProperty" [(ngModel)]="y1AxisProps" name="y1AxisProperty">
+          </div>
+          <div class="form-group form-inline my-1">
+            
             <!-- <angular2-multiselect *ngIf="isLayout" [data]="dropdownPropList" id="y2AxisProp" [(ngModel)]="y2AxisProp" name="y2AxisProp"
               [settings]="{
                 text: 'Select Y2 Axis',
@@ -74,9 +95,12 @@
                 labelKey: 'id'
               }">
             </angular2-multiselect> -->
-            <input type="text" *ngIf="isLayout" placeholder="Comma separated list of parameters"  id="y2AxisProperty" [(ngModel)]="y2AxisProp" name="y2AxisProperty">
-            <select  class="form-control form-control-sm mx-1 my-1" id="dateoptions"
-              [(ngModel)]="historyFilter.dateOption" name="dateOptions" (change)="onDateOptionChange()" *ngIf="!isLayout">
+            <input class="form-control col-xl-3 col-lg-3 mr-2 ml-1"  type="text" *ngIf="isLayout" placeholder="Comma separated list of Y2 parameters"
+              id="y2AxisProperty" [(ngModel)]="y2AxisProp" name="y2AxisProperty">
+
+            <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
+              [(ngModel)]="historyFilter.dateOption" name="dateOptions" (change)="onDateOptionChange()"
+              *ngIf="!isLayout">
               <option [ngValue]="undefined">Date Options</option>
               <option [ngValue]="'5 mins'">Last 5 minutes</option>
               <option [ngValue]="'30 mins'">Last 30 minutes</option>

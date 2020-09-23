@@ -197,6 +197,12 @@ export class HistoryComponent implements OnInit {
       delete obj.dateOption;
       delete obj.y1AxisProperty;
       delete obj.y2AxisProperty;
+<<<<<<< HEAD
+=======
+      if(layoutJson!=null){
+        
+      }
+>>>>>>> parent of 7aeb213... WIP - Timeline chart
       this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
         (response: any) => {
           this.isFilterSelected = true;

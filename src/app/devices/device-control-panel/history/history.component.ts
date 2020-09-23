@@ -44,7 +44,7 @@ export class HistoryComponent implements OnInit {
   layoutJson = []
   chartTitle = ""
   showDataTable: boolean = false
-
+  appData: any = {};
   // google chart
   public lineGoogleChartData: GoogleChartInterface = {  // use :any or :GoogleChartInterface
     chartType: 'LineChart',
@@ -79,7 +79,6 @@ export class HistoryComponent implements OnInit {
     }
   };
   appName: any;
-  appData: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -133,12 +132,28 @@ export class HistoryComponent implements OnInit {
         // this.y2AxisProp.forEach(item => {
         //   this.historyFilter.y2AxisProperty.push(item.id);
         // });
-        this.historyFilter.y1AxisProperty = this.y1AxisProps.split(',')
-        this.historyFilter.y2AxisProperty = this.y2AxisProp.split(',')
+        
+        
+        if(this.y1AxisProps.indexOf(",")>=0){
+          this.historyFilter.y1AxisProperty = this.y1AxisProps.split(',')
+        }
+        else if(this.y1AxisProps!="" || this.y1AxisProps.length>0){
+          this.historyFilter.y1AxisProperty = [this.y1AxisProps]
+        }
+        if(this.y2AxisProp.indexOf(",")>=0){
+          this.historyFilter.y2AxisProperty = this.y2AxisProp.split(',')
+        }
+        else if(this.y2AxisProp!="" || this.y2AxisProp.length>0){
+          this.historyFilter.y2AxisProperty = [this.y2AxisProp]
+        }
       }
       else {
         this.historyFilter.y1AxisProperty = layoutJson.y1axis
         this.historyFilter.y2AxisProperty = layoutJson.y2axis
+      }
+      if(this.historyFilter.y1AxisProperty.length===0){
+        this.toasterService.showError('Y1 Axis Property is required', 'Load Chart');
+        return;
       }
       if (!this.historyFilter.y1AxisProperty || (this.historyFilter.y1AxisProperty && this.historyFilter.y1AxisProperty.length === 0)) {
         this.toasterService.showError('Y1 Axis Property is required', 'Load Chart');
@@ -165,9 +180,12 @@ export class HistoryComponent implements OnInit {
           obj.to_date = this.historyFilter.to_date.unix();
         }
       }
+      if(layoutJson==null){
+        obj.from_date = (now.subtract(30, 'minute')).unix();
+      }
       obj.message_props = '';
       obj.y1AxisProperty.forEach(prop => obj.message_props += prop + ',');
-      if (obj.y2AxisProperty) {
+      if (obj.y2AxisProperty.length>0) {
         obj.y2AxisProperty.forEach(prop => obj.message_props += prop + ',');
       }
       if (obj.message_props.charAt(obj.message_props.length - 1) === ',') {
@@ -177,9 +195,6 @@ export class HistoryComponent implements OnInit {
       delete obj.dateOption;
       delete obj.y1AxisProperty;
       delete obj.y2AxisProperty;
-      if (layoutJson != null) {
-
-      }
       this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
         (response: any) => {
           this.isFilterSelected = true;
@@ -297,15 +312,6 @@ export class HistoryComponent implements OnInit {
           componentRef.instance.chartData.options.width = 1000
         }
         newNode.className = 'col-xl-10 col-lg-10 col-sm-10 col-md-10 col-xs-12';
-        // if(this.showDataTable){
-        //   newNode.className = 'col-xl-12 col-lg-12 col-sm-12 col-md-12 col-xs-12';
-        // }
-        // if($("#widgetContainer").children().length==0){
-        //   newNode.className = 'col-lg-12';
-        // }
-        // else if($("#widgetContainer").children().length==1){
-        //   $($("#widgetContainer").children()[0]).addClass('col-lg-6').removeClass('col-lg-12')
-        // }
         newNode.appendChild(domElem)
         if (this.selectedChartType == "Map" || componentRef.instance.chartData.dataTable.length > 0) {
           document.getElementById("widgetContainer").appendChild(newNode)
@@ -347,12 +353,10 @@ export class HistoryComponent implements OnInit {
       // this.lineGoogleChartData.dataTable.addColumn('date', 'Season Start Date');
       // this.lineGoogleChartData.dataTable.addColumn('date', 'Season End Date');
 
-      this.lineGoogleChartData.dataTable.splice(this.lineGoogleChartData.dataTable.length,0,
+      this.lineGoogleChartData.dataTable.push(
         ['Adams1', new Date("2020-09-22T11:07:39.412Z"),new Date("2020-09-22T11:07:44.406Z")]
       )
-      this.lineGoogleChartData.dataTable.splice(this.lineGoogleChartData.dataTable.length,0,['Adams1', new Date("2020-09-22T11:07:44.406Z"),new Date("2020-09-22T11:07:59.406Z")])
-
-      console.log('this.lineGoogleChartData.dataTable ',this.lineGoogleChartData.dataTable)
+      this.lineGoogleChartData.dataTable.push(['Adams1', new Date("2020-09-22T11:07:44.406Z"),new Date("2020-09-22T11:07:59.406Z")])
       // this.lineGoogleChartData.dataTable.push(['Adams2', new Date("2020-09-21 9:30:00"),new Date("2020-09-21 9:35:00")])
       componentRef.instance.chartData = this.lineGoogleChartData
       componentRef.instance.chartData.options.width = 1000
@@ -380,7 +384,6 @@ export class HistoryComponent implements OnInit {
   }
 
   renderLayout() {
-
     var componentRef;
     this.layoutJson.map((currentChart, i) => {
       this.searchHistory(currentChart).then((chartData) => {
@@ -439,6 +442,5 @@ export class HistoryComponent implements OnInit {
   saveLayout() {
     console.log('layout json ', this.layoutJson)
   }
-
 
 }

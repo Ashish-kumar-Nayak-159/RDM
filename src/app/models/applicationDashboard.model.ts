@@ -41,4 +41,5 @@ export class Event {
   time_diff: string;
   category: string;
   message_date: string;
+  display_name: string;
 }

@@ -1,6 +1,6 @@
 
 <div class="topnavbar" >
-  <div class="d-sm-flex align-items-center justify-content-start mb-4">
+  <div class="d-sm-flex align-items-center justify-content-start mb-4 pl-1">
     <h1 class="h3 mb-0 text-gray-800">{{(componentState + 's')}} Management</h1>
 
     <a
@@ -11,12 +11,11 @@
     >
 
   </div>
-  <div class="card row shadow bg-light" style="margin-left:0rem">
-    <div class="col-xl-12 col-md-12 mb-12 my-1">
+  <div class="row bg-white" style="margin-left:-1.5rem">
+    <div class="col-xl-12 col-md-12 mb-12 my-1 px-4">
 <!-- Page Heading -->
       <form>
         <div class="form-group form-inline my-1">
-
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="hierarchy"
           placeholder="Hierarchy" disabled [(ngModel)]="deviceFilterObj.hierarchyString"
              name="hierarchy" title="{{deviceFilterObj.hierarchyString}}">

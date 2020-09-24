@@ -316,7 +316,7 @@
             >
               <li *ngFor="let event of lastGeneratedEvents">
                 <div class="device-name-text">
-                  {{ event.device_id }} | {{ event.time_diff }}
+                  {{ event.device_id ? event.device_id : event.display_name }} | {{ event.time_diff }}
                 </div>
                 <p>{{ event.event_type }}</p>
               </li>

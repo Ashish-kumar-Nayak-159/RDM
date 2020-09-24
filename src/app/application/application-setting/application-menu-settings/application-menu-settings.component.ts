@@ -31,6 +31,14 @@ export class ApplicationMenuSettingsComponent implements OnInit {
   onSaveMenuSettings() {
     this.saveMenuSettingAPILoading = true;
     this.applicationData.id = this.applicationData.app;
+    CONSTANTS.SIDE_MENU_LIST.forEach(item => {
+      this.applicationData.configuration.forEach(config => {
+        if (item.system_name === config.system_name) {
+          item.display_name = config.display_name;
+        }
+      });
+    });
+    this.applicationData.configuration = CONSTANTS.SIDE_MENU_LIST;
     this.applicationService.updateApp(this.applicationData).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Save Menu Settings');

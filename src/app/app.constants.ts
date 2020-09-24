@@ -251,7 +251,7 @@ export class CONSTANTS {
     {
       page: 'Things Modelling',
       system_name: 'Things Modelling',
-      url: null,
+      url: 'applications/:appName/things/model',
       display_name: 'Things Modelling',
       icon: 'fas fa-fw fa-list'
     },

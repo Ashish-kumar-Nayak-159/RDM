@@ -41,4 +41,8 @@ tags - gateway manager gateway type , protocol - IP gateway
 -- gateway keyword in gateways for  IP gateways control pane; - Done
 
 
-
+------- Device Type=----
+- Device type/ gateway type/ non IP device type ??
+- default tags list for device type
+- need to display protocol based tags or not in reserved tags.
+- do we need to manage properties at device level or it is common for all devices of same device type.

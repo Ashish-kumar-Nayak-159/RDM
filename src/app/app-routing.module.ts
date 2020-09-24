@@ -13,10 +13,13 @@ const routes: Routes = [
     loadChildren: () => import('./visualization/visualization.module').then(module => module.VisualizationModule)
   },
   {
+    path: 'applications/:applicationId/things/model',
+    loadChildren: () => import('./device-type/device-type.module').then(module => module.DeviceTypeModule)
+  },
+  {
     path: 'applications/:applicationId/:listName',
     loadChildren: () => import('./devices/devices.module').then(module => module.DevicesModule),
   },
-
   {
     path: 'login',
     component: RDMLoginComponent

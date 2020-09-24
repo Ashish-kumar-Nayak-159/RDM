@@ -12,7 +12,7 @@ declare var $: any;
 })
 export class AppComponent implements OnInit, AfterViewInit {
   title = 'RDM';
-  isLoginRoute = true;
+  isLoginRoute = false;
   isHomeRoute = false;
   appName: string;
   userData: any;

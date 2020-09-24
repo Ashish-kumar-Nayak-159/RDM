@@ -11678,8 +11678,8 @@ padding-bottom: 1.5rem;
 }
 
 .contain-pad  {
-  margin-top: 12.5rem;
-max-height: calc(100vh - 14rem);
+  margin-top: 13.5rem;
+max-height: calc(100vh - 15rem);
 padding-right: 1rem;
   overflow-y: auto;
   overflow-x: hidden;
@@ -11720,7 +11720,7 @@ padding-bottom: 1.5rem;
 
 /* Tabs*/
 #tabs{
-
+  width: 100%;
 }
 #tabs .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
     color: #000;

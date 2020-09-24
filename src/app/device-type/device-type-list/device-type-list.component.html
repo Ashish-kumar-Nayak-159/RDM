@@ -1,0 +1,114 @@
+
+<div class="topnavbar" >
+  <div class="d-sm-flex align-items-center justify-content-start mb-4 pl-1">
+    <h1 class="h3 mb-0 text-gray-800">Things Model Management</h1>
+
+    <a
+
+      class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-4"
+      href="javascript:void(0)"  (click)="openCreateDeviceTypeModal()"
+      ><i class="fas fa- fa-sm text-white-50"></i>Add Things Model</a>
+
+  </div>
+  <div class="row bg-white" style="margin-left:-1.5rem">
+    <div class="col-xl-12 col-md-12 mb-12 my-1 px-4">
+      <form>
+        <div class="form-group form-inline my-1">
+
+          <input type="text" class="form-control form-control-sm mx-1 my-1" id="hierarchy"
+          placeholder="Hierarchy" disabled [(ngModel)]="deviceTypeFilterObj.hierarchyString"
+          name="hierarchy" title="{{deviceTypeFilterObj.hierarchyString}}">
+          <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4"
+          [(ngModel)]="deviceTypeFilterObj.name" name="name">
+          <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputPassword4"
+          [(ngModel)]="deviceTypeFilterObj.device_manager" name="device_manager">
+
+          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" ><i class="fas fa-search fa-sm"></i></button>
+          <button type="button" class="btn btn-white btn-sm mx-1 my-1" ><i class="fas fa-trash  fa-sm"></i></button>
+
+        </div>
+       </form>
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-12">
+    <hr class="solid">
+  </div>
+</div>
+</div>
+<!-- Content Row -->
+
+<!-- DataTales Example -->
+<div class="contain-pad">
+<div class="mb-4 ">
+
+  <div class="">
+   <app-common-table [tableData]="deviceTypes" [tableConfig]="tableConfig" [isTableFilterSelected]="isFilterSelected"
+   [isTableDataLoading]="isDeviceTypeListLoading" (viewMessageEvent)="onTableFunctionCall($event)"></app-common-table>
+  </div>
+</div>
+</div>
+
+<!-- <div class="modal right fade" id="createDeviceTypeModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Create Device Type</h5>
+      <button type="button" class="close"  (click)="onCloseCreateDeviceModal()" aria-label="Close" [disabled]="isCreateDeviceTypeAPILoading">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body" *ngIf="deviceType">
+      <form>
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">App:</label>
+          <input type="text" class="form-control" id="app_name" [defaultValue]="contextApp.app" disabled>
+        </div>
+        <div class="form-group" *ngFor="let hierarchyItem of hierarchyDropdown; let hIndex = index">
+          <label for="message-text" class="col-form-label">{{hierarchyItem.name}}:</label>
+          <select class="custom-select" id="hierarchy{{hIndex}}"  name="hierarchy{{hIndex}}"
+          [(ngModel)]="deviceType.tags.hierarchy_json[hierarchyItem.name]" [disabled]="contextApp.user.hierarchy[hierarchyItem.name]">
+            <option [ngValue]="tag" *ngFor="let tag of hierarchyItem.tags">{{tag}}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message-text" class="col- form-label">Device Type Name:</label>
+          <input type="text" class="form-control" id="device_name" name="device_id" [(ngModel)]="deviceType.name"
+          placeholder="Enter Device Type Name">
+        </div>
+        <div class="form-group">
+          <label for="recipient-name" class="col-form-label">Protocol:</label>
+          <select class="custom-select" id="protocol" name="protocol"
+          (change)="getConnectivityData()" [(ngModel)]="deviceDetail.tags.protocol">
+            <option [ngValue]="undefined"> Select Protocol</option>
+            <ng-container *ngFor="let protocol of protocolList">
+              <option [ngValue]="protocol.name" *ngIf="protocol.display">{{protocol.name}}</option>
+            </ng-container>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="recipient-name" class="col-form-label">Cloud Connectivity followed by the {{pageType}}:</label>
+          <select class="custom-select" id="template" name="connectivity" [(ngModel)]="deviceDetail.tags.cloud_connectivity">
+            <option [ngValue]="undefined"> Select Connectivity</option>
+          <option *ngFor="let item of connectivityList" [ngValue]="item">
+            {{item}}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">Manufactured By:</label>
+          <input type="text" class="form-control" id="manufactured_by" name="manufacturer"
+          placeholder="Enter Manufacturer" [(ngModel)]="deviceDetail.tags.manufacturer">
+        </div>
+
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary add-row" [disabled]="isCreateDeviceAPILoading" (click)="onCreateDevice()">Save</button>
+      <button type="button" class="btn btn-secondary" [disabled]="isCreateDeviceAPILoading" (click)="onCloseCreateDeviceModal()">
+        Cancel
+      </button>
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateDeviceAPILoading"></i>
+    </div>
+  </div>
+  </div>
+</div> -->

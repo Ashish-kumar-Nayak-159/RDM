@@ -22,6 +22,8 @@ export class TrendAnalysisComponent implements OnInit {
     if(type=='layout'){
       this.viewType = 'history'
       this.isLayout = true
+      //remove all the children of widgetContainer
+      
     }
     let children = $("#widgetContainer").children()
     for(let i = 0;i<children.length;i++){

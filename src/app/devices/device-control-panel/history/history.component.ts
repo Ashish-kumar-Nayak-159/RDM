@@ -92,8 +92,6 @@ export class HistoryComponent implements OnInit {
 
 
   ngOnInit(): void {
-    
-
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
 
     this.route.paramMap.subscribe(params => {
@@ -110,11 +108,14 @@ export class HistoryComponent implements OnInit {
     } else {
       this.historyFilter.device_id = this.device.device_id;
     }
-    // this.propertyList.forEach(item => {
-    //   this.dropdownPropList.push({
-    //     id: item
-    //   });
-    // });
+    console.log('propertyList ',this.propertyList)
+    if(this.propertyList){
+      this.propertyList.forEach(item => {
+        this.dropdownPropList.push({
+          id: item
+        });
+      });
+    }
     console.log(this.historyFilter);
 
   }
@@ -154,13 +155,15 @@ export class HistoryComponent implements OnInit {
         this.historyFilter.y1AxisProperty = layoutJson.y1axis
         this.historyFilter.y2AxisProperty = layoutJson.y2axis
       }
-      if(this.historyFilter.y1AxisProperty.length===0){
-        this.toasterService.showError('Y1 Axis Property is required', 'Load Chart');
+      if(this.historyFilter.y1AxisProperty.length===0 && this.xAxisProps.length==0){
+        this.toasterService.showError('Y1 or X Axis Property is required', 'Load Chart');
         return;
       }
       if (!this.historyFilter.y1AxisProperty || (this.historyFilter.y1AxisProperty && this.historyFilter.y1AxisProperty.length === 0)) {
-        this.toasterService.showError('Y1 Axis Property is required', 'Load Chart');
-        return;
+        if(this.xAxisProps.length==0 ){
+          this.toasterService.showError('Y1 or X Axis Property is required', 'Load Chart');
+          return;
+        }
       }
       this.isHistoryAPILoading = true;
       this.lineGoogleChartData.dataTable = [];
@@ -187,9 +190,14 @@ export class HistoryComponent implements OnInit {
         obj.from_date = (now.subtract(30, 'minute')).unix();
       }
       obj.message_props = '';
-      obj.y1AxisProperty.forEach(prop => obj.message_props += prop + ',');
-      if (obj.y2AxisProperty.length>0) {
-        obj.y2AxisProperty.forEach(prop => obj.message_props += prop + ',');
+      if(this.selectedChartType.indexOf("Pie")>=0){
+        obj.message_props += this.xAxisProps + ','
+      }
+      else{
+        obj.y1AxisProperty.forEach(prop => obj.message_props += prop + ',');
+        if (obj.y2AxisProperty.length>0) {
+          obj.y2AxisProperty.forEach(prop => obj.message_props += prop + ',');
+        }
       }
       if (obj.message_props.charAt(obj.message_props.length - 1) === ',') {
         obj.message_props = obj.message_props.substring(0, obj.message_props.length - 1);
@@ -209,9 +217,15 @@ export class HistoryComponent implements OnInit {
             this.historyData.reverse();
 
             const dataList = [];
-            dataList.push('DateTime');
+            // if(this.selectedChartType.indexOf("Pie")>=0){
+            //   dataList.push(this.historyFilter.y1AxisProperty[0]);
+            // }
+            // else{
+            //   dataList.push('DateTime');
+            // }
+            dataList.push(this.xAxisProps);
             let title = '';
-
+            
             this.historyFilter.y1AxisProperty.forEach((prop, index) => {
               dataList.splice(dataList.length, 0, { label: prop, type: 'number' });
               title += prop + (index !== this.historyFilter.y1AxisProperty.length - 1 ? ' & ' : '');
@@ -230,11 +244,27 @@ export class HistoryComponent implements OnInit {
               this.lineGoogleChartData.options.vAxes['1'] = { title };
             }
             this.lineGoogleChartData.dataTable.push(dataList);
-
+            let tempData = {}
+            let prop = this.xAxisProps
+            this.historyData.forEach(history => {
+              if(tempData[history[prop]]){
+                tempData[history[prop]]++
+              }
+              else{
+                tempData[history[prop]] = 1
+              }
+            })
             this.historyData.forEach(history => {
               history.local_created_date = this.commonService.convertUTCDateToLocal(history.message_date);
               const list = [];
-              list.splice(0, 0, new Date(history.local_created_date));
+              if(this.selectedChartType.indexOf("Pie")>=0){
+                let prop = this.xAxisProps
+                if(list.indexOf([history[prop],null])<=-1)
+                  list.splice(0, 0, history[prop]);
+              }
+              else{
+                list.splice(0, 0, new Date(history.local_created_date));
+              }
               this.historyFilter.y1AxisProperty.forEach(prop => {
                 if (!isNaN(parseFloat(history[prop]))) {
                   list.splice(list.length, 0, parseFloat(history[prop]));
@@ -253,6 +283,14 @@ export class HistoryComponent implements OnInit {
               }
               this.lineGoogleChartData.dataTable.splice(this.lineGoogleChartData.dataTable.length, 0, list);
             });
+            if(this.selectedChartType.indexOf("Pie")>=0){
+              this.lineGoogleChartData.dataTable = []
+              this.lineGoogleChartData.dataTable.push([this.xAxisProps,{label: "Count", type: "number"}]);
+              let keys = Object.keys(tempData)
+              keys.forEach((key)=>{
+                this.lineGoogleChartData.dataTable.push([key,tempData[key]])
+              })
+            }
             console.log(this.lineGoogleChartData);
             resolve(this.lineGoogleChartData)
             // if (this.lineGoogleChartData.dataTable.length > 1) {
@@ -282,25 +320,35 @@ export class HistoryComponent implements OnInit {
 
   setChartType(chartTypeIndex) {
     this.selectedChartType = this.chartTypeValues[chartTypeIndex]
+    if(this.selectedChartType.indexOf('Pie')>=0){
+      document.getElementById("y1AxisProperty")['disabled']=true
+      document.getElementById("y2AxisProperty")['disabled']=true
+      document.getElementById("y1AxisProperty")['value']=""
+      document.getElementById("y2AxisProperty")['value']=""
+    }else{
+      document.getElementById("y1AxisProperty")['disabled']=false
+      document.getElementById("y2AxisProperty")['disabled']=false
+    }
   }
 
   addChart() {
     $(".overlay").show()
     this.chartCount++
     var componentRef;
+    this.showDataTable = false
     if (this.selectedChartType != "Map") {
       this.searchHistory(null).then(() => {
         var componentRef = this.factoryResolver.resolveComponentFactory(ChartWidgetComponent).create(this.injector);
+        componentRef.instance.chartData = this.lineGoogleChartData
+        componentRef.instance.chartData.chartType = this.selectedChartType
         if (this.selectedChartType == "PieChart" || this.selectedChartType=="Pie Chart with table") {
           delete this.lineGoogleChartData.options.explorer
           if(this.selectedChartType=="Pie Chart with table"){
             this.showDataTable = true
-            this.selectedChartType = "PieChart"
+            componentRef.instance.chartData.chartType = "PieChart"
           }
         }
         componentRef.instance.showDataTable = this.showDataTable
-        componentRef.instance.chartData = this.lineGoogleChartData
-        componentRef.instance.chartData.chartType = this.selectedChartType
         componentRef.instance.widgetTitle = componentRef.instance.title = (this.chartTitle).toLocaleUpperCase()
         // componentRef.instance.busesOnDuty = this.lineGoogleChartData.dataTable
         this.appRef.attachView(componentRef.hostView);
@@ -320,11 +368,12 @@ export class HistoryComponent implements OnInit {
           document.getElementById("widgetContainer").appendChild(newNode)
         }
         let chart = {
-          "type": componentRef.instance.chartData.chartType,
+          "chartType": componentRef.instance.chartData.chartType,
           "title": componentRef.instance.widgetTitle,
           "y1axis": this.historyFilter.y1AxisProperty,
           "y2axis": this.historyFilter.y2AxisProperty,
-          "showDataTable": this.showDataTable
+          "showDataTable": this.showDataTable,
+          "chart_Id":componentRef.instance.chartId
         }
         this.layoutJson.push(chart)
       });
@@ -340,8 +389,9 @@ export class HistoryComponent implements OnInit {
       newNode.appendChild(domElem)
       document.getElementById("widgetContainer").appendChild(newNode)
       let chart = {
-        "type": this.selectedChartType,
+        "chartType": this.selectedChartType,
         "title": this.chartTitle,
+        "chart_Id":componentRef.instance.chartId
         // "y1axis": this.historyFilter.y1AxisProperty,
         // "y2axis": this.historyFilter.y2AxisProperty,
         // "showDataTable": this.showDataTable
@@ -376,8 +426,9 @@ export class HistoryComponent implements OnInit {
       newNode.appendChild(domElem)
       document.getElementById("widgetContainer").appendChild(newNode)
       let chart = {
-        "type": this.selectedChartType,
+        "chartType": this.selectedChartType,
         "title": this.chartTitle,
+        "chart_Id":componentRef.instance.chartId
         // "y1axis": this.historyFilter.y1AxisProperty,
         // "y2axis": this.historyFilter.y2AxisProperty,
         // "showDataTable": this.showDataTable
@@ -395,12 +446,13 @@ export class HistoryComponent implements OnInit {
           delete chartData['options'].explorer
           if(currentChart.type=="Pie Chart with table"){
             currentChart.showDataTable = true
-            currentChart.type = "PieChart"
+            currentChart.chartType = "PieChart"
           }
         }
+        console.log('current chart ',currentChart)
         componentRef.instance.showDataTable = currentChart.showDataTable
         componentRef.instance.chartData = chartData
-        componentRef.instance.chartData.chartType = currentChart.type
+        componentRef.instance.chartData.chartType = currentChart.chartType
         componentRef.instance.y1axis = currentChart.y1axis
         componentRef.instance.y2axis = currentChart.y2axis
         componentRef.instance.widgetTitle = currentChart.title
@@ -444,6 +496,17 @@ export class HistoryComponent implements OnInit {
 
   saveLayout() {
     console.log('layout json ', this.layoutJson)
+    for(let i=0;i<this.layoutJson.length;i++){
+      if(document.getElementById(this.layoutJson[i].chart_Id)==null){
+        this.layoutJson.splice(i,1)
+      }
+    }
+    console.log('AFTER  - layout json ', this.layoutJson)
+    let heirarchy= 'Device'
+    this.deviceService.createLayout(this.layoutJson,heirarchy)
+    // this.apiSubscriptions.push(.subscribe(
+
+    // ))
   }
 
 }

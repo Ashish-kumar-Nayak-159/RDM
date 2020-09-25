@@ -485,6 +485,7 @@ export class HistoryComponent implements OnInit {
       resolve(chart)
     })
   }
+  
 
   renderLayout() {
     this.renderCount++;

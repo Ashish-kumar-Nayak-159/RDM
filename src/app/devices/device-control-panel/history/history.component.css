@@ -34,7 +34,7 @@
   margin:0rem !important;
 }
 
-#widgetContainer{
+.chartsContainer{
   height: 500px;
   overflow-y: scroll;
 }
@@ -56,4 +56,10 @@
 }
 #dropdownMenuButton{
   text-align: left;
+}
+.show{
+  display: block;
+}
+.hide{
+  display: none;
 }

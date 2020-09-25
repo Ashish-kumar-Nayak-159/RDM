@@ -70,6 +70,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   }
 
   searchTelemetry(filterObj) {
+    console.log('filterObj ',filterObj)
     this.isFilterSelected = true;
     this.isTelemetryLoading = true;
     const obj = {...filterObj};

@@ -34,5 +34,6 @@ export class AppUrls {
   public static UPDATE_NON_IP_DEVICE_TAGS = 'DDM_SetNonIPDeviceTags';
   public static GE_NON_IP_DEVICES_COUNT = 'DDM_GetNonIPDevicesCount';
   public static GET_APP_USERS = 'App_GetAppUsers';
-  public static CREATE_LAYOUT = 'layout'
+  public static CREATE_LAYOUT = 'layout';
+  public static GET_LAYOUT = 'layouts';
 }

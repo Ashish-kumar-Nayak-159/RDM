@@ -117,10 +117,10 @@
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             </ng-container>
 
-            <button *ngIf="isLayout" type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search"
+            <button *ngIf="isLayout" type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Add Chart"
               (click)="addChart()"><i class="fas fa-plus fa-sm"></i></button>
-            <button *ngIf="isLayout" type="button" class="btn btn-success btn-sm mx-1 my-1" title="Search"
-              (click)="saveLayout()"><i class="fa fa-save fa-sm"></i></button>
+            <button *ngIf="isLayout" type="button" class="btn btn-success btn-sm mx-1 my-1" title="Save"
+              (click)="openSaveLayoutModal()"><i class="fa fa-save fa-sm"></i></button>
             <button *ngIf="!isLayout" type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search"
               (click)="renderLayout()"><i class="fas fa-search fa-sm"></i></button>
             <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i
@@ -148,18 +148,53 @@
             <!-- Select filter and press search button to load the chart. -->
             <!-- Create layout and press search button to load the charts -->
           </h6>
+          <h6 *ngIf="layoutJson.length==0">
+            No Layout found
+          </h6>
           <hr class="solid mb-4">
           <i *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-          <div id="widgetContainer" class="row">
+          <div id="widgetContainer" class="row chartsContainer" [ngClass]="{'show':!isLayout,'hide':isLayout}">
+
+          </div>
+          <div id="layoutWidgetContainer" class="row chartsContainer" [ngClass]="{'show':isLayout,'hide':!isLayout}">
 
           </div>
         </div>
-
       </div>
     </div>
-
   </div>
+</div>
 
-
-
+<div class="modal right fade" id="saveLayoutModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Create New Layout</h5>
+        <button type="button" class="close" (click)="onCloseCreateDeviceModal()" aria-label="Close"
+          >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group" >
+            <label for="message-text" class="col-form-label">Select Hierarchy:</label>
+            <select class="custom-select" id="hierarchy" name="hierarchy" [(ngModel)]="selectedHierarchy">
+              <!-- <option [ngValue]="tag" *ngFor="let tag of hierarchyItem.tags">{{tag}}</option> -->
+              <option [ngValue]="hierarchyItem.name" *ngFor="let hierarchyItem of appData.hierarchy; let hIndex = index">{{hierarchyItem.name}}</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary add-row" 
+          (click)="saveLayout()">Save</button>
+        <button type="button" class="btn btn-secondary" 
+          (click)="closeSaveLayoutModal()">
+          Cancel
+        </button>
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateDeviceAPILoading"></i>
+      </div>
+    </div>
+  </div>
 </div>

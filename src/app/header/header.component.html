@@ -8,16 +8,16 @@
   </button>
 
   <!-- Sidebar - Brand -->
-  <a class="d-flex align-items-center justify-content-center mx-3" *ngIf="!userData?.is_super_admin"
+  <a class="d-flex align-items-center justify-content-center" *ngIf="!userData?.is_super_admin"
   [routerLink]="['applications', appName]">
-    <img src="../../assets/img/logo.png" class="d-block img-fluid">
+    <img src="../../assets/img/logo.png" class="d-block img-fluid img-logo">
   </a>
-  <a class="d-flex align-items-center justify-content-center mx-3" *ngIf="userData?.is_super_admin"
+  <a class="d-flex align-items-center justify-content-center" *ngIf="userData?.is_super_admin"
   [routerLink]="['applications']">
-    <img src="../../assets/img/logo.png" class="d-block img-fluid">
+    <img src="../../assets/img/logo.png" class="d-block img-fluid img-logo">
   </a>
 
-  <div class="topbar-divider ml-2 mr-4 mt-n2 d-none d-xl-block"></div>
+  <div class="topbar-divider ml-3 mr-4 mt-n2 d-none d-xl-block"></div>
 
   <nav aria-label="breadcrumb" class="d-none d-xl-block">
     <ol class="breadcrumb py-2 mb-1">

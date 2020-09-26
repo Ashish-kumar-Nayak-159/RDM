@@ -1,7 +1,9 @@
+import { ToasterService } from './../../services/toaster.service';
+import { CONSTANTS } from './../../app.constants';
+import { DeviceTypeService } from './../../services/device-type/device-type.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
-import { CONSTANTS } from 'src/app/app.constants';
 
 declare var $: any;
 @Component({
@@ -11,58 +13,32 @@ declare var $: any;
 })
 export class DeviceTypeListComponent implements OnInit {
 
-  deviceTypes: any[] = [];
-  deviceType: any;
+  thingsModels: any[] = [];
+  thingsModel: any;
   tableConfig: any;
   isFilterSelected = true;
-  isDeviceTypeListLoading = false;
+  isthingsModelsListLoading = false;
   userData: any;
   contextApp: any;
-  deviceTypeFilterObj: any = {};
-  isCreateDeviceTypeAPILoading = false;
-  hierarchyDropdown: any[] = [];
+  thingsModelFilterObj: any = {};
+  isCreateThingsModelAPILoading = false;
+  constantData = CONSTANTS;
+  protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
+  connectivityList: string[] = [];
   constructor(
+    private deviceTypeService: DeviceTypeService,
     private commonService: CommonService,
+    private toasterService: ToasterService,
     private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    this.deviceTypes = [
-      {
-        id: '1',
-        name: 'Things Model 1',
-        protocol: 'IP Device(SIM)',
-        cloud_connectivity: 'IP Device -> Azure IOT Hub SDK -> SIM -> Cloud',
-        manufacturer: 'Test',
-        image: {
-          url: '',
-          name: ''
-        },
-        tags: {
-          hierarchy: '',
-          hierarchy_json: {},
-          location_coordinates: '',
-          device_manager: '',
-          custom_tags: {}
-        },
-        properties: [
-          {}
-        ],
-        created_by: 'Urvisha'
-      }
-    ];
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.route.paramMap.subscribe(params => {
       this.contextApp = this.userData.apps.filter(
         app => app.app === params.get('applicationId')
       )[0];
-      this.hierarchyDropdown = [];
-      const keys = Object.keys(this.contextApp.user.hierarchy);
-      this.contextApp.hierarchy.forEach(item => {
-        if (item.level >= keys.length - 1 && item.name !== 'App') {
-          this.hierarchyDropdown.push(item);
-        }
-      });
+      this.thingsModelFilterObj.app = this.contextApp.app;
       const obj = {
         type: 'replace',
         data: [
@@ -90,7 +66,7 @@ export class DeviceTypeListComponent implements OnInit {
         },
         {
           name: 'Template',
-          key: 'cloud_connectivity',
+          key: 'tags.cloud_connectivity',
           type: 'text',
           headerClass: 'w-10',
           valueclass: ''
@@ -104,7 +80,7 @@ export class DeviceTypeListComponent implements OnInit {
         },
         {
           name: 'No of Devices inherited',
-          key: 'name',
+          key: 'inherited_device_count',
           type: 'text',
           headerClass: 'w-30',
           valueclass: ''
@@ -126,21 +102,96 @@ export class DeviceTypeListComponent implements OnInit {
         }
       ]
     };
+    this.searchThingsModels();
+  }
+
+  searchThingsModels() {
+    this.isthingsModelsListLoading = true;
+    this.isFilterSelected = true;
+    this.thingsModels = [];
+    const obj = JSON.parse(JSON.stringify(this.thingsModelFilterObj));
+    this.deviceTypeService.getThingsModelsList(obj).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.thingsModels = response.data;
+        }
+        this.isthingsModelsListLoading = false;
+      }, error => this.isthingsModelsListLoading = false
+    );
   }
 
   onTableFunctionCall(event) {}
 
   openCreateDeviceTypeModal() {
-    this.deviceType = {};
-    this.deviceType.tags = {};
-    this.deviceType.tags.app = this.contextApp.app;
-    this.deviceType.tags.hierarchy_json = JSON.parse(JSON.stringify(this.contextApp.user.hierarchy));
+    this.thingsModel = {};
+    this.thingsModel.app = this.contextApp.app;
+    this.thingsModel.created_by = this.userData.name;
+    this.thingsModel.metadata = {};
+    this.thingsModel.metadata.model_type = CONSTANTS.IP_DEVICE;
+    this.thingsModel.tags = {};
+    this.getProtocolList();
+
+   // this.thingsModel.tags.app = this.contextApp.app;
     $('#createDeviceTypeModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
-  onCloseCreateDeviceModal() {
+  getProtocolList() {
+    const data = JSON.parse(JSON.stringify(CONSTANTS.PROTOCOL_CONNECTIVITY_LIST));
+    data.forEach(protocol => {
+      if (this.thingsModel.metadata.model_type === CONSTANTS.IP_DEVICE || this.thingsModel.metadata.model_type === CONSTANTS.IP_GATEWAY) {
+        if (!protocol.name.includes('IP')) {
+          protocol.display = false;
+        }
+        if (this.thingsModel.metadata.model_type === CONSTANTS.IP_GATEWAY && protocol.name.includes('IP')) {
+          protocol.name = protocol.name.replace('Device', 'Gateway');
+          const list = [];
+          protocol.connectivity.forEach(item => {
+            list.push(item.replace('Device', 'Gateway'));
+          });
+          protocol.connectivity = JSON.parse(JSON.stringify(list));
+        }
+      } else {
+        if (protocol.name.includes('IP')) {
+          protocol.display = false;
+        }
+      }
+    });
+    console.log(JSON.stringify(data));
+    this.protocolList = JSON.parse(JSON.stringify(data));
+  }
+
+  getConnectivityData() {
+    this.thingsModel.tags.cloud_connectivity = undefined;
+    if (this.thingsModel && this.thingsModel.tags && this.thingsModel.tags.protocol) {
+      this.connectivityList = (this.protocolList.filter(protocol => protocol.name === this.thingsModel.tags.protocol)[0]).connectivity;
+    }
+  }
+
+  createThingsModel() {
+    if (!this.thingsModel.name || !this.thingsModel.tags.protocol || !this.thingsModel.tags.cloud_connectivity
+    || !this.thingsModel.metadata.model_type) {
+      this.toasterService.showError('Please fill all the fieds', 'Create Things Model');
+      return;
+    }
+    console.log(this.thingsModel);
+    this.isCreateThingsModelAPILoading = true;
+    this.deviceTypeService.createThingsModel(this.thingsModel, this.contextApp.app).subscribe(
+      (response: any) => {
+        this.isCreateThingsModelAPILoading = false;
+        this.onCloseThingsModelModal();
+        this.toasterService.showSuccess(response.message, 'Create Things Model');
+        this.searchThingsModels();
+      }, error => {
+        this.isCreateThingsModelAPILoading = false;
+        this.toasterService.showError(error.message, 'Create Things Model');
+      }
+    );
+  }
+
+
+  onCloseThingsModelModal() {
     $('#createDeviceTypeModal').modal('hide');
-    this.deviceType = undefined;
+    this.thingsModel = undefined;
   }
 
 }

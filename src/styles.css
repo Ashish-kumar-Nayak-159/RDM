@@ -9,6 +9,11 @@ thead {
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
 
 
+.required:after {
+  content:" *";
+  color: red;
+}
+
 .watch-eye i {
   color: #999;
   font-size: 18px;
@@ -120,4 +125,5 @@ input:invalid {
   .dropdown-list{
     width: auto!important;
   }
+
 

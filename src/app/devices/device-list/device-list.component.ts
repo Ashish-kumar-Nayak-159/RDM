@@ -1,3 +1,4 @@
+import { DeviceTypeService } from './../../services/device-type/device-type.service';
 import { Component, OnInit } from '@angular/core';
 import { DeviceListFilter, Device } from 'src/app/models/device.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -35,10 +36,12 @@ export class DeviceListComponent implements OnInit {
   gatewayId: string;
   contextApp: any;
   hierarchyDropdown: any[] = [];
+  deviceTypes: any[] = [];
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private deviceService: DeviceService,
+    private deviceTypeService: DeviceTypeService,
     private commonService: CommonService,
     private toasterService: ToasterService
   ) { }
@@ -59,6 +62,7 @@ export class DeviceListComponent implements OnInit {
           this.componentState = CONSTANTS.NON_IP_DEVICE;
           this.pageType = 'Device';
           this.getGatewayList();
+          this.getThingsModels(this)
         } else if (listName.toLowerCase() === 'gateways') {
           this.componentState = CONSTANTS.IP_GATEWAY;
           this.pageType = 'Gateway';
@@ -67,6 +71,7 @@ export class DeviceListComponent implements OnInit {
           this.pageType = 'Device';
         }
       }
+      this.getThingsModels(this.componentState);
       this.deviceFilterObj.app = this.appName;
       this.deviceFilterObj.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
       this.deviceFilterObj.hierarchyString =  this.contextApp.user.hierarchyString;
@@ -198,6 +203,22 @@ export class DeviceListComponent implements OnInit {
     console.log(this.deviceFilterObj);
   }
 
+  getThingsModels(type) {
+    this.deviceTypes = [];
+    const obj = {
+      app: this.contextApp.app,
+      model_type: type
+    };
+    this.deviceTypeService.getThingsModelsList(obj).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.deviceTypes = response.data;
+        }
+      }
+    );
+  }
+
+
   getGatewayList() {
     this.gateways = [];
     const obj = {
@@ -266,6 +287,14 @@ export class DeviceListComponent implements OnInit {
     this.deviceDetail.tags.app = this.appName;
     this.deviceDetail.tags.hierarchy_json = JSON.parse(JSON.stringify(this.contextApp.user.hierarchy));
     $('#createDeviceModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onChangeThingsModel() {
+    if (this.deviceDetail.tags.device_type) {
+      const modelObj = this.deviceTypes.filter(type => type.name === this.deviceDetail.tags.device_type)[0];
+      const obj = {...this.deviceDetail.tags, ...modelObj.tags};
+      this.deviceDetail.tags = obj;
+    }
   }
 
   onCreateDevice() {

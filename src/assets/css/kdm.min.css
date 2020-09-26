@@ -1825,7 +1825,7 @@ pre code {
 }
 
 .form-control:disabled, .form-control[readonly] {
-  background-color: #eaecf4;
+  background-color: #f8f9fc;
   opacity: 1
 }
 
@@ -4483,7 +4483,7 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
   padding: .75rem 1rem;
   margin-bottom: 1rem;
   list-style: none;
-  background-color: #eaecf4;
+  background-color: #f8f9fc;
   border-radius: .35rem
 }
 
@@ -11653,6 +11653,35 @@ ul.timeline > li:before {
     margin-bottom: 0rem;
 }
 
+.con-pad-c2d  {
+  margin-top: 8.5rem;
+max-height: calc(100vh - 10rem);
+padding-right: 1rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+padding-top: 0.5rem;
+padding-bottom: 1.5rem;
+}
+
+
+.topnavbar-c2d  {
+	position: fixed;
+	z-index: 1;
+    top: 6rem;
+	width:100%;
+	margin-left: -1.5rem;
+    padding-left: 1.5rem;
+	height: 3rem;
+	/*min-width:  calc(100vw - 33rem);
+    */
+}
+
+.topnavbar-c2d hr {
+	margin-top: 0rem;
+    margin-bottom: 0rem;
+}
+
+
 .container-pad {
     margin-top: 4.5rem;
     padding-top: 1.5rem;
@@ -11687,10 +11716,15 @@ padding-top: 0.5rem;
 padding-bottom: 1.5rem;
 }
 .img-szmd {
-	width:7.5rem; height:7.5rem;
+  width:7.5rem;
+  height:7.5rem;
+  object-fit: contain;
+	mix-blend-mode: multiply;
 }
 .img-szsm {
-	width:5rem; height:5rem;
+  width:5rem;
+  height:5rem;
+  object-fit: contain;
 }
 
 @media (max-width:575.98px) {
@@ -11759,3 +11793,11 @@ padding-bottom: 1.5rem;
 .tagsinput div input::-moz-placeholder{color:#ccc;opacity:1}
 .tagsinput div input:-ms-input-placeholder{color:#ccc;opacity:1}
 
+
+
+.img-logo {
+	width: 10rem;
+    height: 3rem;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+}

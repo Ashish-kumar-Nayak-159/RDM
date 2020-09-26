@@ -36,4 +36,7 @@ export class AppUrls {
   public static GET_APP_USERS = 'App_GetAppUsers';
   public static CREATE_LAYOUT = 'layout';
   public static GET_LAYOUT = 'layouts';
+  public static GET_THINGS_MODELS = 'device_types';
+  public static CREATE_THINGS_MODEL = 'device_type';
+  public static UPDATE_THINGS_MODEL = 'device_type';
 }

@@ -169,7 +169,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Create New Layout</h5>
-        <button type="button" class="close" (click)="onCloseCreateDeviceModal()" aria-label="Close"
+        <button type="button" class="close" (click)="closeSaveLayoutModal()" aria-label="Close"
           >
           <span aria-hidden="true">&times;</span>
         </button>
@@ -192,7 +192,6 @@
           (click)="closeSaveLayoutModal()">
           Cancel
         </button>
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateDeviceAPILoading"></i>
       </div>
     </div>
   </div>

@@ -11,6 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ChartWidgetComponent } from '../chart-widget/chart-widget.component';
 import { MapWidgetComponent } from '../map-widget/map-widget.component';
 
+declare var $: any;
 @Component({
   selector: 'app-history',
   templateUrl: './history.component.html',
@@ -488,6 +489,10 @@ export class HistoryComponent implements OnInit {
   
 
   renderLayout() {
+    let children = $("#widgetContainer").children()
+    for(let i = 0;i<children.length;i++){
+      $(children[i]).remove()
+    }
     this.renderCount++;
     var componentRef;
     if (this.layoutJson) {
@@ -546,7 +551,7 @@ export class HistoryComponent implements OnInit {
       body['id'] = this.storedLayout['id']
       this.apiSubscriptions.push(this.deviceService.editLayout(body).subscribe(
         (response: any) => {
-          console.log('update response ', response)
+          // console.log('update response ', response)
           this.closeSaveLayoutModal()
           this.toasterService.showSuccess(response.message, 'Save Layout')
         },
@@ -558,7 +563,7 @@ export class HistoryComponent implements OnInit {
     else {
       this.apiSubscriptions.push(this.deviceService.createLayout(body).subscribe(
         (response: any) => {
-          console.log('create response ', response)
+          // console.log('create response ', response)
           this.closeSaveLayoutModal()
           this.toasterService.showSuccess(response.message, 'Save Layout')
         },
@@ -570,27 +575,24 @@ export class HistoryComponent implements OnInit {
   }
 
   async getLayout() {
-    console.log('this.appData ', this.appData)
     let params = {
       app: this.appName
     }
     this.apiSubscriptions.push(this.deviceService.getLayout(params).subscribe(
       (response: any) => {
-        console.log('get response ', response)
         if (response.data.length > 0) {
           this.layoutJson = response.data[0].layout;
           this.storedLayout = response.data[0]
           if(this.isLayout){
              for(let index = 0; index<this.layoutJson.length;index++){
               const element = this.layoutJson[index]
-              console.log('ele ',element)
               this.selectedChartType = element.chartType
               this.chartTitle = element.title
               this.y1AxisProps = element.y1axis
               this.y2AxisProp = element.y2axis
               this.xAxisProps = element.xAxis
               this.plotChart().then(()=>{
-                console.log('plotted')
+                // console.log('plotted')
               })
             }
             

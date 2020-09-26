@@ -19,13 +19,16 @@ export class TrendAnalysisComponent implements OnInit {
   setViewType(type){
     this.isLayout = false
     this.viewType = type
+    $(".overlay").hide()
     if(type=='layout'){
+      $(".overlay").show()
       this.viewType = 'history'
       this.isLayout = true
     }
-    let children = $("#widgetContainer").children()
-    for(let i = 0;i<children.length;i++){
-      $(children[i]).remove()
-    }
+    //remove all the children of widgetContainer
+    // let children = $("#widgetContainer").children()
+    // for(let i = 0;i<children.length;i++){
+    //   $(children[i]).remove()
+    // }
   }
 }

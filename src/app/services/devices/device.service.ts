@@ -220,4 +220,22 @@ export class DeviceService {
     });
     return this.http.get(this.url + AppUrls.GE_NON_IP_DEVICES_COUNT, { params });
   }
+
+  createLayout(layoutObj) {
+    return this.http.post(this.url + AppUrls.CREATE_LAYOUT, layoutObj);
+  }
+
+  getLayout(filterObj){
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + AppUrls.GET_LAYOUT, { params });
+  }
+
+  editLayout(layoutObj){
+    return this.http.post(this.url + AppUrls.CREATE_LAYOUT, layoutObj);
+  }
 }

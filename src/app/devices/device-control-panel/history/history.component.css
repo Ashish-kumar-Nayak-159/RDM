@@ -34,11 +34,32 @@
   margin:0rem !important;
 }
 
-#widgetContainer{
+.chartsContainer{
   height: 500px;
   overflow-y: scroll;
 }
 
 .lbl{
   justify-content: normal;
+}
+.dropdown-toggle::after {
+  display: inline-block;
+  margin-left: .255em;
+  vertical-align: .255em;
+  content: "";
+  border-top: .3em solid;
+  border-right: .3em solid transparent;
+  border-bottom: 0;
+  border-left: .3em solid transparent;
+  float: right;
+  margin-top: 10px;
+}
+#dropdownMenuButton{
+  text-align: left;
+}
+.show{
+  display: block;
+}
+.hide{
+  display: none;
 }

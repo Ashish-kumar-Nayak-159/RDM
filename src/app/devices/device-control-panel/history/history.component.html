@@ -48,7 +48,10 @@
               </div>
             </ng-template>
             </ng-select> -->
+<<<<<<< HEAD
+=======
 
+>>>>>>> b2eb217b2d704b837a235a7903e295680a7d8f8d
             <!-- <angular2-multiselect *ngIf="isLayout" [data]="dropdownPropList" id="y1AxisProperty" [(ngModel)]="y1AxisProps"
               name="y1AxisProperty" [settings]="{
                 text: 'Select Y1 Axis',
@@ -64,20 +67,6 @@
 
             <input type="text" id="chartTitle" class="form-control col-xl-3 col-lg-3 mr-2" name="chartTitle"
               placeholder="Display Name" [(ngModel)]="chartTitle" *ngIf="isLayout">
-            <!-- <div class="dropdown chartTypeDropdown col-xl-3 col-lg-3 mr-2" *ngIf="isLayout">
-              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="true" style="width:100%">
-                {{selectedChartType}}
-                <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenu2"
-                id="dropdownMenu2List">
-                <li class="dropdown-item" *ngFor="let item of chartTypes;let i=index" (click)="setChartType(i)">
-                  <i class="fa {{chartIcons[i]}} chartTypeIcon"></i>
-                  {{item}}
-                </li>
-              </ul>
-            </div> -->
             <div class=" dropdown chartTypeDropdown col-xl-3 col-lg-3 mr-2 p-0" *ngIf="isLayout">
               <button class="btn btn-default dropdown-toggle col-xl-12 col-lg-12 col-md-12" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{selectedChartType}}
@@ -93,7 +82,7 @@
               placeholder="X-Axis parameter" id="xAxisProperty" [(ngModel)]="xAxisProps" name="xAxisProperty">
           </div>
           <div class="form-group form-inline my-1">
-            <input class="form-control col-xl-3 col-lg-3 mr-2 ml-1" type="text" *ngIf="isLayout"
+            <input class="form-control col-xl-3 col-lg-3 mr-2 ml-1"  type="text" *ngIf="isLayout"
               placeholder="Comma separated list of Y1 parameters" id="y1AxisProperty" [(ngModel)]="y1AxisProps"
               name="y1AxisProperty">
             <!-- <angular2-multiselect *ngIf="isLayout" [data]="dropdownPropList" id="y2AxisProp" [(ngModel)]="y2AxisProp" name="y2AxisProp"
@@ -131,10 +120,10 @@
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             </ng-container>
 
-            <button *ngIf="isLayout" type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search"
+            <button *ngIf="isLayout" type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Add Chart"
               (click)="addChart()"><i class="fas fa-plus fa-sm"></i></button>
-            <button *ngIf="isLayout" type="button" class="btn btn-success btn-sm mx-1 my-1" title="Search"
-              (click)="saveLayout()"><i class="fa fa-save fa-sm"></i></button>
+            <button *ngIf="isLayout" type="button" class="btn btn-success btn-sm mx-1 my-1" title="Save"
+              (click)="openSaveLayoutModal()"><i class="fa fa-save fa-sm"></i></button>
             <button *ngIf="!isLayout" type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search"
               (click)="renderLayout()"><i class="fas fa-search fa-sm"></i></button>
             <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i
@@ -162,18 +151,52 @@
             <!-- Select filter and press search button to load the chart. -->
             <!-- Create layout and press search button to load the charts -->
           </h6>
+          <h6 *ngIf="layoutJson.length==0">
+            No Layout found
+          </h6>
           <hr class="solid mb-4">
           <i *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-          <div id="widgetContainer" class="row">
+          <div id="widgetContainer" class="row chartsContainer" [ngClass]="{'show':!isLayout,'hide':isLayout}">
+
+          </div>
+          <div id="layoutWidgetContainer" class="row chartsContainer" [ngClass]="{'show':isLayout,'hide':!isLayout}">
 
           </div>
         </div>
-
       </div>
     </div>
-
   </div>
+</div>
 
-
-
+<div class="modal right fade" id="saveLayoutModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Create New Layout</h5>
+        <button type="button" class="close" (click)="closeSaveLayoutModal()" aria-label="Close"
+          >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group" >
+            <label for="message-text" class="col-form-label">Select Hierarchy:</label>
+            <select class="custom-select" id="hierarchy" name="hierarchy" [(ngModel)]="selectedHierarchy">
+              <!-- <option [ngValue]="tag" *ngFor="let tag of hierarchyItem.tags">{{tag}}</option> -->
+              <option [ngValue]="hierarchyItem.name" *ngFor="let hierarchyItem of appData.hierarchy; let hIndex = index">{{hierarchyItem.name}}</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary add-row" 
+          (click)="saveLayout()">Save</button>
+        <button type="button" class="btn btn-secondary" 
+          (click)="closeSaveLayoutModal()">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

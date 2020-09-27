@@ -62,7 +62,6 @@ export class DeviceListComponent implements OnInit {
           this.componentState = CONSTANTS.NON_IP_DEVICE;
           this.pageType = 'Device';
           this.getGatewayList();
-          this.getThingsModels(this)
         } else if (listName.toLowerCase() === 'gateways') {
           this.componentState = CONSTANTS.IP_GATEWAY;
           this.pageType = 'Gateway';
@@ -204,11 +203,13 @@ export class DeviceListComponent implements OnInit {
   }
 
   getThingsModels(type) {
+    console.log('207      ', type);
     this.deviceTypes = [];
     const obj = {
       app: this.contextApp.app,
       model_type: type
     };
+    console.log(obj);
     this.deviceTypeService.getThingsModelsList(obj).subscribe(
       (response: any) => {
         if (response && response.data) {

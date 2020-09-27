@@ -110,16 +110,38 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
 
   }
 
+  async onHeaderLogoFileSelected(files: FileList): Promise<void> {
+    this.isFileUploading = true;
+    const data = await this.commonService.uploadImageToBlob(files.item(0), 'app-images');
+    if (data) {
+      this.applicationDetail.metadata.header_logo = data;
+    } else {
+      this.toasterService.showError('Error in uploading file', 'Upload file');
+    }
+    this.isFileUploading = false;
+    // this.blobState.uploadItems(files);
+  }
+
   async onLogoFileSelected(files: FileList): Promise<void> {
     this.isFileUploading = true;
-    this.applicationDetail.metadata.logo = await this.upload(files.item(0));
+    const data = await this.commonService.uploadImageToBlob(files.item(0), 'app-images');
+    if (data) {
+      this.applicationDetail.metadata.logo = data;
+    } else {
+      this.toasterService.showError('Error in uploading file', 'Upload file');
+    }
     this.isFileUploading = false;
     // this.blobState.uploadItems(files);
   }
 
   async onIconFileSelected(files: FileList): Promise<void> {
     this.isFileUploading = true;
-    this.applicationDetail.metadata.icon = await this.upload(files.item(0));
+    const data = await this.commonService.uploadImageToBlob(files.item(0), 'app-images');
+    if (data) {
+      this.applicationDetail.metadata.icon = data;
+    } else {
+      this.toasterService.showError('Error in uploading file', 'Upload file');
+    }
     this.isFileUploading = false;
     // this.blobState.uploadItems(files);
   }
@@ -130,39 +152,39 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
     this.appModalType = undefined;
   }
 
-  async upload(file) {
-    const containerName = environment.blobContainerName;
-    const pipeline = newPipeline(new AnonymousCredential(), {
-    retryOptions: { maxTries: 2 }, // Retry options
-    keepAliveOptions: {
-        // Keep alive is enabled by default, disable keep alive by setting false
-        enable: false
-    }
-    });
-    const blobServiceClient = new BlobServiceClient(environment.blobURL +  environment.blobKey, pipeline);
-    const containerClient = blobServiceClient.getContainerClient(containerName);
-    if (!containerClient.exists()){
-    console.log('the container does not exit');
-    await containerClient.create();
-    }
-    console.log(file.name);
-    const client = containerClient.getBlockBlobClient(file.name);
-    const response = await client.uploadBrowserData(file, {
-          blockSize: 4 * 1024 * 1024, // 4MB block size
-          concurrency: 20, // 20 concurrency
-          onProgress: (ev) => console.log(ev),
-          blobHTTPHeaders : { blobContentType: file.type }
-          });
-    console.log(response._response);
-    if (response._response.status === 201) {
-      return {
-        url: environment.blobURL + '/' + containerName + '/' + file.name,
-        name: file.name
-      };
-    }
-    this.toasterService.showError('Error in uploading file', 'Upload file');
-    return null;
-  }
+  // async upload(file, folderName) {
+  //   const containerName = environment.blobContainerName;
+  //   const pipeline = newPipeline(new AnonymousCredential(), {
+  //   retryOptions: { maxTries: 2 }, // Retry options
+  //   keepAliveOptions: {
+  //       // Keep alive is enabled by default, disable keep alive by setting false
+  //       enable: false
+  //   }
+  //   });
+  //   const blobServiceClient = new BlobServiceClient(environment.blobURL +  environment.blobKey, pipeline);
+  //   const containerClient = blobServiceClient.getContainerClient(containerName);
+  //   if (!containerClient.exists()){
+  //   console.log('the container does not exit');
+  //   await containerClient.create();
+  //   }
+  //   console.log(folderName + '/' + file.name);
+  //   const client = containerClient.getBlockBlobClient(file.name);
+  //   const response = await client.uploadBrowserData(file, {
+  //         blockSize: 4 * 1024 * 1024, // 4MB block size
+  //         concurrency: 20, // 20 concurrency
+  //         onProgress: (ev) => console.log(ev),
+  //         blobHTTPHeaders : { blobContentType: file.type }
+  //         });
+  //   console.log(response._response);
+  //   if (response._response.status === 201) {
+  //     return {
+  //       url: environment.blobURL + '/' + containerName + '/' + folderName + '/' + file.name,
+  //       name: file.name
+  //     };
+  //   }
+  //   this.toasterService.showError('Error in uploading file', 'Upload file');
+  //   return null;
+  // }
 
 
   async createApp() {

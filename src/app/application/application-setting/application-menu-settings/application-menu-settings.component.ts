@@ -27,6 +27,10 @@ export class ApplicationMenuSettingsComponent implements OnInit {
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
 
   }
+  // onChangeOfVisibilityCheckbox(index) {
+  //   alert('here');
+  //   this.applicationData.configuration[index].visible = !this.applicationData.configuration[index].visible;
+  // }
 
   onSaveMenuSettings() {
     this.saveMenuSettingAPILoading = true;
@@ -35,6 +39,7 @@ export class ApplicationMenuSettingsComponent implements OnInit {
       this.applicationData.configuration.forEach(config => {
         if (item.system_name === config.system_name) {
           item.display_name = config.display_name;
+          item.visible = config.visible;
         }
       });
     });

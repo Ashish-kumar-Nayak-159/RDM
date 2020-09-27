@@ -225,35 +225,40 @@ export class CONSTANTS {
       system_name: 'Home',
       url: 'applications/:appName',
       display_name: 'Home',
-      icon: 'fas fa-fw fa-home'
+      icon: 'fas fa-fw fa-home',
+      visible: true
     },
     {
       page: 'Devices',
       system_name: 'IoT Devices',
       url: 'applications/:appName/devices',
       display_name: 'IoT Devices',
-      icon: 'fas fa-fw fa-desktop'
+      icon: 'fas fa-fw fa-desktop',
+      visible: true
     },
     {
       page: 'Gateways',
       system_name: 'IoT Gateways',
       url: 'applications/:appName/gateways',
       display_name: 'IoT Gateways',
-      icon: 'fas fa-fw fa-desktop'
+      icon: 'fas fa-fw fa-desktop',
+      visible: true
     },
     {
       page: 'Non IP Devices',
       system_name: 'Non IP Devices',
       url: 'applications/:appName/nonIPDevices',
       display_name: 'Non IP Devices',
-      icon: 'fas fa-fw fa-folder'
+      icon: 'fas fa-fw fa-folder',
+      visible: true
     },
     {
       page: 'Things Modelling',
       system_name: 'Things Modelling',
       url: 'applications/:appName/things/model',
       display_name: 'Things Modelling',
-      icon: 'fas fa-fw fa-list'
+      icon: 'fas fa-fw fa-list',
+      visible: true
     },
     {
       page: 'Device Groups',
@@ -261,34 +266,39 @@ export class CONSTANTS {
       url: null,
       display_name: 'Device Groups',
       icon: 'fas fa-fw fa-table',
+      visible: true,
       children: [
         {
           page: 'Group Jobs',
           system_name: 'Group Jobs',
           url: null,
-          display_name: 'Group Jobs'
+          display_name: 'Group Jobs',
+          visible: true
         },
         {
           page: 'Group Type',
           system_name: 'Group Type',
           url: null,
-          display_name: 'Group Type'
+          display_name: 'Group Type',
+          visible: true
         }
       ]
     },
     {
-      page: 'Data Visualization',
-      system_name: 'Data Visualization',
+      page: 'Alert Visualization',
+      system_name: 'Alert Visualization',
       url: 'applications/:appName/data/visualization',
-      display_name: 'Data Visualization',
-      icon: 'fas fa-fw fa-chart-bar'
+      display_name: 'Alert Visualization',
+      icon: 'fas fa-fw fa-chart-bar',
+      visible: true
     },
     {
       page: 'App Settings',
       system_name: 'App Settings',
       url: 'applications/:appName/settings',
       display_name: 'App Settings',
-      icon: 'fas fa-fw fa-cog'
+      icon: 'fas fa-fw fa-cog',
+      visible: true
     }
   ];
 
@@ -299,7 +309,8 @@ export class CONSTANTS {
   public static IP_GATEWAY = 'IoT Gateway';
   public static NON_IP_DEVICE = 'Non IP Device';
   public static NOT_ALLOWED_SPECIAL_CHARS_NAME = [' ', '.', '$', '#'];
+  public static APP_ADMIN_ROLE = 'App Admin';
   public static DEFAULT_APP_ICON = 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/default_app_icon.png';
   public static DEFAULT_APP_LOGO = 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/default_app_logo.jpg';
-
+  public static DEFAULT_HEADER_LOGO = 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/app-images/header-logo/logo.png';
 }

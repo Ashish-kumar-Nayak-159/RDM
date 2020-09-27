@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { CONSTANTS } from './../../app.constants';
 import { CommonService } from './../../services/common.service';
 import { Component, OnInit } from '@angular/core';
@@ -14,6 +15,7 @@ export class ApplicationSettingComponent implements OnInit {
   appName: string;
   applicationData: any;
   activeTab: string;
+  contextApp: any;
   userData: any;
   constructor(
     private route: ActivatedRoute,
@@ -25,7 +27,17 @@ export class ApplicationSettingComponent implements OnInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
+      this.contextApp = this.userData.apps.filter(app => app.app === this.appName)[0];
       this.getApplicationData();
+      this.commonService.breadcrumbEvent.emit({
+        type: 'replace',
+        data: [
+          {
+            title: this.contextApp.user.hierarchyString,
+            url: 'applications/' + this.appName
+          }
+        ]
+      });
     });
     this.route.fragment.subscribe(
       fragment => {

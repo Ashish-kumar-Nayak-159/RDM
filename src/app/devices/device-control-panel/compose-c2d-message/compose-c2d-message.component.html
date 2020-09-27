@@ -16,7 +16,7 @@
     </div>
   </div>
 
-  <div class="col-lg-5 col-xl-5 border" *ngIf="isMessageValidated || sendMessageStatus || timerObj" style="margin-left: -3rem;">
+  <div class="col-lg-5 col-xl-5 border" style="margin-left: -3rem;">
     <div class="row" >
     <div class="bg-light px-1 py-1" style="writing-mode: tb-rl; transform: rotate(-180deg); font-size:0.75rem; color:black;">STATUS</div>
     <div class="justify-content-center align-self-center px-1 red-font" *ngIf="isMessageValidated === 'invalid'">
@@ -79,7 +79,7 @@
 </div>
 
 <div class="row" *ngIf="displayType === 'compose'">
-  <div class="col-lg-6 col-xl-6">
+  <div class="col-lg-5 col-xl-5">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-2 pt-3">
       <h6 class="h6 mb-0 text-gray-800">Meta Data:</h6>
@@ -89,7 +89,6 @@
       <table
         class="table table-striped table-bordered"
         id="dataTable"
-        width="100%"
         cellspacing="0"
       >
         <thead>
@@ -141,7 +140,7 @@
     </div>
   </div>
 
-  <div class="col-lg-6 col-xl-6">
+  <div class="col-lg-7 col-xl-7">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-2 pt-3">
       <h6 class="h6 mb-0 text-gray-800">Message Body / Message JSON:</h6>

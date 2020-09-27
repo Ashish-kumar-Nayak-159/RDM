@@ -62,19 +62,19 @@
     <p *ngIf="device?.status?.toLowerCase() === 'enabled' && device?.connection_state?.toLowerCase() === 'connected'">
       Currently, {{pageType}} is
       <span class="enabled-font">
-        {{device?.status}} & {{device?.connection_state}}.</span>
+        {{device?.status}} & Online.</span>
     </p>
     <p *ngIf="device?.status?.toLowerCase() === 'enabled' && device?.connection_state?.toLowerCase() === 'disconnected'">
       Currently, {{pageType}} is
       <span class="enabled-font">
         {{device?.status}}</span>, but it is
         <span class="disabled-font">
-          {{device?.connection_state}}</span>
+          Offline.</span>
     </p>
     <p *ngIf="device?.status?.toLowerCase() === 'disabled' && device?.connection_state?.toLowerCase() === 'disconnected'">
       Currently, {{pageType}} is
       <span class="disabled-font">
-        {{device?.status}} & {{device?.connection_state}}.</span>
+        {{device?.status}} & Offline.</span>
     </p>
   </div>
   <div *ngIf="deviceCredentials" class="mt-1">

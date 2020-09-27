@@ -106,6 +106,15 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
         }
       }
     });
+    console.log(this.appData.user.role, '===', CONSTANTS.APP_ADMIN_ROLE);
+    if (this.appData.user.role !== CONSTANTS.APP_ADMIN_ROLE) {
+      arr.forEach(element => {
+        if (element.page === 'App Settings' || element.page === 'Things Modelling') {
+          element.visible = false;
+        }
+      });
+      console.log('in if', arr);
+    }
     this.displayMenuList = arr;
     console.log(this.displayMenuList);
   }

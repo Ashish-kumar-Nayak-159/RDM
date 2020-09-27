@@ -177,7 +177,9 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Please send the message first', 'C2D Feedback');
       return;
     }
-    this.displayType = 'feedback';
+    setTimeout(() => {
+      this.displayType = 'feedback';
+    }, 500);
   }
 
   onClickOfResponse() {
@@ -187,7 +189,9 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Please send the message first', 'C2D Response');
       return;
     }
+    setTimeout(() => {
     this.displayType = 'response';
+    }, 500);
   }
 
   dhms(t) {

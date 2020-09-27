@@ -10,7 +10,7 @@
   <!-- Sidebar - Brand -->
   <a class="d-flex align-items-center justify-content-center" *ngIf="!userData?.is_super_admin"
   [routerLink]="['applications', appName]">
-    <img src="../../assets/img/logo.png" class="d-block img-fluid img-logo">
+    <img src="{{contextApp?.metadata?.header_logo.url + blobToken}}" class="d-block img-fluid img-logo">
   </a>
   <a class="d-flex align-items-center justify-content-center" *ngIf="userData?.is_super_admin"
   [routerLink]="['applications']">
@@ -132,7 +132,14 @@
     <li class="nav-item dropdown no-arrow">
       <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
-        <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{userData?.name}}</span>
+        <!-- <span>{{contextApp?.user.role}}</span>
+        <br/>
+        <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{userData?.name}}</span> -->
+        <span class="mr-2 d-none d-lg-block">
+          <span class="text-gray-600">{{userData?.name}}</span>
+          <small class="text-muted-dark d-block ">{{contextApp?.user.role}}</small>
+        </span>
+
         <img class="img-profile rounded-circle" src="../../assets/img/user.jpg">
       </a>
       <!-- Dropdown - User Information -->

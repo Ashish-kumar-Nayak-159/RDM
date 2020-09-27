@@ -46,3 +46,38 @@ tags - gateway manager gateway type , protocol - IP gateway
 - default tags list for device type
 - need to display protocol based tags or not in reserved tags.
 - do we need to manage properties at device level or it is common for all devices of same device type.
+
+-------------25-09-2020 feedback---------------
+1. Select Date & Time - calendar icon - inside the text box - Done
+2. Non-IP Devices will be part of main menu always (but its visibility will be controlled through app menu settings).
+In that case, no need to capture gateways / devices as part of app (Urvisha & Yash to confirm). Once this is done,
+we will test IDEX app (Customer want to connect individual pumps through sim card & 3 pumps at a time through wifi)
+
+As part of above, we need to upload following icons / logos  using app settings
+
+App Logo
+IoT Device Icon (for ex: coffee machine, pump etc...)(of course default one will be there always, please check the attachment),
+same for connected / disconnected widgets
+IoT gateway icon (for ex: industrial gateway photos)(of course default one will be there always, please check the attachment),
+same for connected / disconnected widgets
+Non-IP Deices Icon (for ex: compressor etc...)(of course default one will be there always, please check the attachment)
+Blank widget
+
+3. App menu settings - should control visibility of every element - Done
+4. Display role below the login name - Done
+5. Search button should become (JSON SQL query box)(sombabu to give design) - Pending
+6. In control panel menu, add two more menu itms (Preventive Maintenance / Predictive Maintenance) - done
+7. What should be the size of company logo? - No need of any restrictions - Done
+8. Allow only PNG images for dashboard tiles - No need to put restrictions
+9. Dash board tiles are reserved for following:
+10. Use online / offline words instead of connected / disconnected - Done
+11. Data Visualization name change to alert visualization - Done
+12. Let us make C2D CSS proper & also work flow proper (we dont have refresh for feedback / response),
+ we don't have button for sending one more command. ACK please make it radio buttons, so that we can save some space for JSON - Done
+13. breadcrumb color - Done
+14. selected app color - Done
+
+Dashboard Widget ideas:
+1. Predictive  Maintenance / Preventive Mainteance alerts
+2. Widget specific to business use case (for ex: CCD - Beverages sold)
+

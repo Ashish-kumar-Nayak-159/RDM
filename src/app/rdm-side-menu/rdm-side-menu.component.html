@@ -21,7 +21,7 @@
 
   <!-- Nav Item - Charts -->
   <ng-container *ngFor="let item of displayMenuList">
-    <ng-container *ngIf="!item.children">
+    <ng-container *ngIf="!item.children && item.visible">
       <li class="nav-item" routerLinkActive="active"  *ngIf="!userData?.is_super_admin && item.url"
       [routerLinkActiveOptions]="{exact: true}"
       >
@@ -37,7 +37,7 @@
         <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
         </li>
     </ng-container>
-    <ng-container *ngIf="item.children && item.children.length > 0">
+    <ng-container *ngIf="item.children && item.children.length > 0  && item.visible">
       <li class="nav-item" >
         <a class="nav-link collapsed" href="#device-groups" data-toggle="collapse"
         aria-expanded="true">
@@ -46,9 +46,11 @@
         </a>
         <div id="device-groups" class="collapse" aria-labelledby="headingPages">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="javascript:void(0)" *ngFor="let child of item.children">
+            <ng-container  *ngFor="let child of item.children">
+            <a class="collapse-item" href="javascript:void(0)" *ngIf="child.visible">
               {{child.display_name ? child.display_name : child.system_name}}
             </a>
+          </ng-container>
           </div>
         </div>
       </li>

@@ -31,7 +31,14 @@ export class CommandsComponent implements OnInit {
         seconds: data.seconds
       };
     });
+  }
 
+  onClickOfGeneralCommands() {
+    this.displayMode = '';
+    setTimeout(() => {
+      this.displayMode = 'general_commands';
+    }, 500);
+    this.timerObj = undefined;
   }
 
 

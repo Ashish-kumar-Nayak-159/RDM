@@ -49,6 +49,10 @@ table {
 .table-device {
   max-height: 60vh;
 }
+.datepicker-calendar {
+  margin-left: -1.3rem;
+  z-index: 999;
+}
 
 
 .scroll-container {

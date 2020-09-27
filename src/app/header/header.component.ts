@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { Component, OnInit, Inject, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { CommonService } from '../services/common.service';
@@ -17,6 +18,8 @@ export class HeaderComponent implements OnInit, OnChanges {
   userData: any;
   @Input() appName = '';
   @Input() isLoginRoute = false;
+  contextApp: any;
+  blobToken = environment.blobKey;
 
   constructor(
     private router: Router,
@@ -50,6 +53,14 @@ export class HeaderComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    if (this.appName && this.userData) {
+      this.contextApp = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
+      if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.header_logo) {
+        this.contextApp.metadata.header_logo = {
+          url : CONSTANTS.DEFAULT_HEADER_LOGO
+        };
+      }
+    }
     this.router.events
     .pipe(filter((rs): rs is NavigationEnd => rs instanceof NavigationEnd))
     .subscribe(event => {
@@ -63,7 +74,17 @@ export class HeaderComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    if (changes.appName && this.userData) {
+      this.appName = changes.appName.currentValue;
+      this.contextApp = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
+      if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.header_logo) {
+        this.contextApp.metadata.header_logo = {
+          url : CONSTANTS.DEFAULT_HEADER_LOGO
+        };
+      }
+    }
   }
 
   onClickOfBreadcrumbItem(obj, index) {
@@ -77,6 +98,13 @@ export class HeaderComponent implements OnInit, OnChanges {
   }
 
   onClickOfAppChange(app) {
+    this.contextApp = app;
+    if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.header_logo) {
+      this.contextApp.metadata.header_logo = {
+        url : CONSTANTS.DEFAULT_HEADER_LOGO
+      };
+    }
+    this.appName = app.app;
     this.commonService.refreshSideMenuData.emit(app);
     this.router.navigate(['applications', app.app]);
   }
@@ -94,6 +122,10 @@ export class HeaderComponent implements OnInit, OnChanges {
       $('.container-fluid').removeClass('sb-collapse');
       $('.container-fluid').addClass('sb-toggle');
     }
+  }
+
+  decode(item) {
+    return decodeURIComponent(item);
   }
 
   onLogout() {

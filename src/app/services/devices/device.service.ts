@@ -236,6 +236,6 @@ export class DeviceService {
   }
 
   editLayout(layoutObj){
-    return this.http.post(this.url + AppUrls.CREATE_LAYOUT, layoutObj);
+    return this.http.patch(this.url + AppUrls.CREATE_LAYOUT, layoutObj);
   }
 }

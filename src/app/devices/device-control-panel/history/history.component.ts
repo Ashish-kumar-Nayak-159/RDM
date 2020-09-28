@@ -160,7 +160,7 @@ export class HistoryComponent implements OnInit {
         this.historyFilter.y1AxisProperty = layoutJson.y1axis
         this.historyFilter.y2AxisProperty = layoutJson.y2axis
         this.xAxisProps = layoutJson.xAxis
-        this.selectedChartType = layoutJson.chartType
+        // this.selectedChartType = layoutJson.chartType
       }
 
 
@@ -186,7 +186,8 @@ export class HistoryComponent implements OnInit {
         }
       }
       obj.message_props = '';
-      if (this.selectedChartType.indexOf("Pie") >= 0) {
+      let type = layoutJson.chartType ? layoutJson.chartType : this.selectedChartType;
+      if (type.indexOf("Pie") >= 0) {
         obj.message_props += this.xAxisProps + ','
       }
       else {
@@ -198,7 +199,7 @@ export class HistoryComponent implements OnInit {
       if (obj.message_props.charAt(obj.message_props.length - 1) === ',') {
         obj.message_props = obj.message_props.substring(0, obj.message_props.length - 1);
       }
-      if (layoutJson == null) {
+      if (layoutJson == null || this.isLayout) {
         obj['count'] = 10
         delete obj.message_props
         delete obj.to_date
@@ -248,38 +249,40 @@ export class HistoryComponent implements OnInit {
             this.lineGoogleChartData.dataTable.push(dataList);
             let tempData = {}
             let prop = this.xAxisProps
-            this.historyData.forEach(history => {
-              if(history[prop]){
-                if (tempData[history[prop]]) {
-                  tempData[history[prop]]++
+            if(type.indexOf('Pie')>=0){
+              this.historyData.forEach(history => {
+                if (history[prop]) {
+                  if (tempData[history[prop]]) {
+                    tempData[history[prop]]++
+                  }
+                  else {
+                    tempData[history[prop]] = 1
+                  }
                 }
                 else {
-                  tempData[history[prop]] = 1
+                  if (tempData[history.message[prop]]) {
+                    tempData[history.message[prop]]++
+                  }
+                  else {
+                    tempData[history.message[prop]] = 1
+                  }
                 }
-              }
-              else{
-                if (tempData[history.message[prop]]) {
-                  tempData[history.message[prop]]++
-                }
-                else {
-                  tempData[history.message[prop]] = 1
-                }
-              }
-              
-            })
+  
+              })
+            }
             this.historyData.forEach(history => {
               history.local_created_date = this.commonService.convertUTCDateToLocal(history.message_date);
               const list = [];
-              if (this.selectedChartType.indexOf("Pie") >= 0) {
+              if (type.indexOf("Pie") >= 0) {
                 let prop = this.xAxisProps
-                if (list.indexOf([history[prop], null]) <= -1){
+                if (list.indexOf([history[prop], null]) <= -1) {
                   list.splice(0, 0, history[prop]);
                 }
-                else if (list.indexOf([history.message[prop], null]) <= -1){
+                else if (list.indexOf([history.message[prop], null]) <= -1) {
                   list.splice(0, 0, history.message[prop]);
                 }
 
-                
+
               }
               else {
                 list.splice(0, 0, new Date(history.local_created_date));
@@ -311,7 +314,7 @@ export class HistoryComponent implements OnInit {
               }
               this.lineGoogleChartData.dataTable.splice(this.lineGoogleChartData.dataTable.length, 0, list);
             });
-            if (this.selectedChartType.indexOf("Pie") >= 0) {
+            if (type.indexOf("Pie") >= 0) {
               this.lineGoogleChartData.dataTable = []
               this.lineGoogleChartData.dataTable.push([this.xAxisProps, { label: "Count", type: "number" }]);
               let keys = Object.keys(tempData)
@@ -319,6 +322,7 @@ export class HistoryComponent implements OnInit {
                 this.lineGoogleChartData.dataTable.push([key, tempData[key]])
               })
             }
+            this.lineGoogleChartData.chartType = type
             console.log(this.lineGoogleChartData);
             resolve(this.lineGoogleChartData)
             // if (this.lineGoogleChartData.dataTable.length > 1) {
@@ -335,9 +339,18 @@ export class HistoryComponent implements OnInit {
 
   clear() {
     this.historyFilter = {};
+    this.historyFilter.from_date = undefined;
+    this.historyFilter.to_date = undefined;
     this.historyFilter.epoch = true;
     this.historyFilter.device_id = this.device.device_id;
     this.historyFilter.app = this.appName;
+    this.selectedChartType = "Chart Type"
+    this.chartTitle = ""
+    this.xAxisProps = ""
+    this.y1AxisProps = ""
+    this.y2AxisProp = ""
+    document.getElementById("y1AxisProperty")['disabled'] = false
+    document.getElementById("y2AxisProperty")['disabled'] = false
   }
 
   onDateChange(event) {
@@ -360,51 +373,72 @@ export class HistoryComponent implements OnInit {
   }
 
   addChart() {
-    this.plotChart().then((chart)=>{
+    this.plotChart(null).then((chart) => {
+      console.log('add chart ', chart, this.layoutJson)
       this.layoutJson.push(chart)
     })
   }
 
-  plotChart(){
-    return new Promise((resolve,reject)=>{
+  plotChart(layoutJson) {
+    return new Promise((resolve, reject) => {
       $(".overlay").show()
       this.chartCount++
       var componentRef;
       this.showDataTable = false
       let chart = {}
-      // if (document.getElementById("y1AxisProperty")['disabled'] == false) {
-      if (this.selectedChartType.indexOf('Pie')<=-1) {
-        if (!this.y1AxisProps || (this.y1AxisProps && this.y1AxisProps.length === 0)) {
-          this.toasterService.showError('Y1 Axis Property is required', 'Load Chart');
-          return;
+      if(layoutJson == null){
+        if (this.selectedChartType.indexOf('Pie') <= -1) {
+          if (!this.y1AxisProps || (this.y1AxisProps && this.y1AxisProps.length === 0)) {
+            this.toasterService.showError('Y1 Axis Property is required', 'Load Chart');
+            return;
+          }
+        }
+        else {
+          if (this.xAxisProps.length == 0) {
+            this.toasterService.showError('X Axis Property is required', 'Load Chart');
+            return;
+          }
         }
       }
-      else {
-        if (this.xAxisProps.length == 0) {
-          this.toasterService.showError('X Axis Property is required', 'Load Chart');
-          return;
+      else{
+        if (layoutJson.chartType.indexOf('Pie') <= -1) {
+          if (!layoutJson.y1axis || (layoutJson.y1axis && layoutJson.y1axis.length === 0)) {
+            this.toasterService.showError('Y1 Axis Property is required', 'Load Chart');
+            return;
+          }
+        }
+        else {
+          if (layoutJson.xAxis.length == 0) {
+            this.toasterService.showError('X Axis Property is required', 'Load Chart');
+            return;
+          }
         }
       }
       if (this.selectedChartType != "Map") {
-        this.searchHistory(null).then(() => {
+        this.searchHistory(layoutJson).then(() => {
           var componentRef = this.factoryResolver.resolveComponentFactory(ChartWidgetComponent).create(this.injector);
           componentRef.instance.chartData = this.lineGoogleChartData
-          componentRef.instance.chartData.chartType = this.selectedChartType
-          if (this.selectedChartType == "PieChart" || this.selectedChartType == "Pie Chart with table") {
+          componentRef.instance.chartData.chartType = layoutJson.chartType ? layoutJson.chartType : this.selectedChartType
+          console.log('layoutJson.chartType ',componentRef.instance.chartData.chartType)
+          document.getElementById("y1AxisProperty")['disabled'] = false
+          document.getElementById("y2AxisProperty")['disabled'] = false
+          if (componentRef.instance.chartData.chartType == "PieChart" || componentRef.instance.chartData.chartType == "Pie Chart with table") {
             delete this.lineGoogleChartData.options.explorer
-            if (this.selectedChartType == "Pie Chart with table") {
+            if (componentRef.instance.chartData.chartType == "Pie Chart with table") {
               this.showDataTable = true
               componentRef.instance.chartData.chartType = "PieChart"
             }
+            document.getElementById("y1AxisProperty")['disabled'] = true
+            document.getElementById("y2AxisProperty")['disabled'] = true
           }
-          componentRef.instance.showDataTable = this.showDataTable
-          componentRef.instance.widgetTitle = componentRef.instance.title = (this.chartTitle).toLocaleUpperCase()
+          componentRef.instance.showDataTable = layoutJson ? layoutJson.showDataTable : this.showDataTable
+          componentRef.instance.widgetTitle = componentRef.instance.title = (layoutJson ? layoutJson.title : this.chartTitle).toLocaleUpperCase()
           // componentRef.instance.busesOnDuty = this.lineGoogleChartData.dataTable
           this.appRef.attachView(componentRef.hostView);
           const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
             .rootNodes[0] as HTMLElement;
           var newNode = document.createElement('div');
-          componentRef.instance.chartId = "chart_" + this.chartCount
+          componentRef.instance.chartId = "chart_" + (layoutJson ? layoutJson.chartCount : this.chartCount)
           if (this.showDataTable) {
             componentRef.instance.chartData.options.width = 500
           }
@@ -414,6 +448,7 @@ export class HistoryComponent implements OnInit {
           newNode.className = 'col-xl-10 col-lg-10 col-sm-10 col-md-10 col-xs-12';
           newNode.appendChild(domElem)
           if (this.selectedChartType == "Map" || componentRef.instance.chartData.dataTable.length > 0) {
+            console.log('in layoutWidgetContainer')
             document.getElementById("layoutWidgetContainer").appendChild(newNode)
           }
           chart = {
@@ -425,12 +460,13 @@ export class HistoryComponent implements OnInit {
             "showDataTable": this.showDataTable,
             "chart_Id": componentRef.instance.chartId
           }
+          resolve(chart)
         });
       }
       else if (this.selectedChartType == "Map") {
         componentRef = this.factoryResolver.resolveComponentFactory(MapWidgetComponent).create(this.injector);
         this.appRef.attachView(componentRef.hostView);
-  
+
         const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
           .rootNodes[0] as HTMLElement;
         var newNode = document.createElement('div');
@@ -445,6 +481,7 @@ export class HistoryComponent implements OnInit {
           // "y2axis": this.historyFilter.y2AxisProperty,
           // "showDataTable": this.showDataTable
         }
+        resolve(chart)
       }
       else {
         componentRef = this.factoryResolver.resolveComponentFactory(ChartWidgetComponent).create(this.injector);
@@ -453,7 +490,7 @@ export class HistoryComponent implements OnInit {
         // this.lineGoogleChartData.dataTable.addColumn('string', 'Team');
         // this.lineGoogleChartData.dataTable.addColumn('date', 'Season Start Date');
         // this.lineGoogleChartData.dataTable.addColumn('date', 'Season End Date');
-  
+
         this.lineGoogleChartData.dataTable.push(
           ['Adams1', new Date("2020-09-22T11:07:39.412Z"), new Date("2020-09-22T11:07:44.406Z")]
         )
@@ -469,7 +506,7 @@ export class HistoryComponent implements OnInit {
         const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
           .rootNodes[0] as HTMLElement;
         var newNode = document.createElement('div');
-        componentRef.instance.chartId = "chart_" + this.chartCount
+        componentRef.instance.chartId = "chart_" + (layoutJson ? layoutJson.chartCount : this.chartCount)
         newNode.className = 'col-xl-10 col-lg-10 col-sm-10 col-md-10 col-xs-12';
         newNode.appendChild(domElem)
         document.getElementById("layoutWidgetContainer").appendChild(newNode)
@@ -482,16 +519,21 @@ export class HistoryComponent implements OnInit {
           // "y2axis": this.historyFilter.y2AxisProperty,
           // "showDataTable": this.showDataTable
         }
+        resolve(chart)
       }
-      resolve(chart)
+
     })
   }
-  
+
 
   renderLayout() {
     let children = $("#widgetContainer").children()
-    for(let i = 0;i<children.length;i++){
+    for (let i = 0; i < children.length; i++) {
       $(children[i]).remove()
+    }
+    let layoutChildren = $("#layoutWidgetContainer").children()
+    for (let i = 0; i < layoutChildren.length; i++) {
+      $(layoutChildren[i]).remove()
     }
     this.renderCount++;
     var componentRef;
@@ -526,8 +568,15 @@ export class HistoryComponent implements OnInit {
           var newNode = document.createElement('div');
           newNode.className = 'col-xl-10 col-lg-10 col-sm-10 col-md-10 col-xs-12';
           newNode.appendChild(domElem)
-          document.getElementById("widgetContainer").appendChild(newNode)
-          $(".overlay").hide()
+          console.log('componentRef.instance.chartData ',componentRef.instance.chartData)
+          if(this.isLayout){
+            document.getElementById("layoutWidgetContainer").appendChild(newNode)
+            $(".overlay").show()
+          }
+          else{
+            document.getElementById("widgetContainer").appendChild(newNode)
+            $(".overlay").hide()
+          }
         });
       })
     }
@@ -547,11 +596,12 @@ export class HistoryComponent implements OnInit {
       hierarchy_level: this.selectedHierarchy,
       layout: this.layoutJson
     }
+    console.log('this.storedLayout ', this.storedLayout)
     if (this.storedLayout['id']) {
       body['id'] = this.storedLayout['id']
       this.apiSubscriptions.push(this.deviceService.editLayout(body).subscribe(
         (response: any) => {
-          // console.log('update response ', response)
+          console.log('update response ', response)
           this.closeSaveLayoutModal()
           this.toasterService.showSuccess(response.message, 'Save Layout')
         },
@@ -563,7 +613,7 @@ export class HistoryComponent implements OnInit {
     else {
       this.apiSubscriptions.push(this.deviceService.createLayout(body).subscribe(
         (response: any) => {
-          // console.log('create response ', response)
+          console.log('create response ', response)
           this.closeSaveLayoutModal()
           this.toasterService.showSuccess(response.message, 'Save Layout')
         },
@@ -574,29 +624,36 @@ export class HistoryComponent implements OnInit {
     }
   }
 
-  async getLayout() {
+  getLayout() {
+    console.log('in getlayout')
     let params = {
       app: this.appName
     }
     this.apiSubscriptions.push(this.deviceService.getLayout(params).subscribe(
-      (response: any) => {
+      async (response: any) => {
         if (response.data.length > 0) {
           this.layoutJson = response.data[0].layout;
+          console.log('stored layout ',response.data)
           this.storedLayout = response.data[0]
-          if(this.isLayout){
-             for(let index = 0; index<this.layoutJson.length;index++){
-              const element = this.layoutJson[index]
-              this.selectedChartType = element.chartType
-              this.chartTitle = element.title
-              this.y1AxisProps = element.y1axis
-              this.y2AxisProp = element.y2axis
-              this.xAxisProps = element.xAxis
-              this.plotChart().then(()=>{
-                // console.log('plotted')
-              })
-            }
-            
-          }
+          // if (this.isLayout) {
+          //   //  for(let index = 0; index<this.layoutJson.length;index++){
+          //   await this.layoutJson.map((element,index) => {
+          //     // const element = this.layoutJson[index]
+          //     // this.selectedChartType = element.chartType
+          //     // this.chartTitle = ""
+          //     // this.chartTitle = element.title
+          //     // this.y1AxisProps = element.y1axis
+          //     // this.y2AxisProp = element.y2axis
+          //     // this.xAxisProps = element.xAxis
+          //     // this.showDataTable = element.showDataTable
+          //     element['chartCount'] = index
+          //     this.plotChart(element).then(()=>{
+          //       console.log('plotted')
+          //     })
+          //   });
+
+          //   // }
+          // }
         }
       }
     ))

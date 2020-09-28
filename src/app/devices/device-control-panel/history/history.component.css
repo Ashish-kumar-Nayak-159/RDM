@@ -16,7 +16,7 @@
 
 .chartTypeDropdown{
   border: 1px solid #d1d3e2;
-  border-radius: 10px;
+  /* border-radius: 10px; */
   /* height: 32px; */
 }
 
@@ -52,14 +52,18 @@
   border-bottom: 0;
   border-left: .3em solid transparent;
   float: right;
-  margin-top: 10px;
+  margin-top: 7px;
 }
 #dropdownMenuButton{
   text-align: left;
+  font-size: .875rem;
 }
 .show{
   display: block;
 }
 .hide{
   display: none;
+}
+.dropdown-menu{
+  top: 30px !important;
 }

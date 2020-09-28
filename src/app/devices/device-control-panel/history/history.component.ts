@@ -404,7 +404,7 @@ export class HistoryComponent implements OnInit {
         }
       }
       if (type != "Map") {
-        this.searchHistory(layoutJson).then((plottedChart) => {
+        this.searchHistory(layoutJson).then((plottedChart : GoogleChartInterface) => {
           let componentRef = this.factoryResolver.resolveComponentFactory(ChartWidgetComponent).create(this.injector);
           componentRef.instance.chartData = plottedChart
           componentRef.instance.chartData.chartType = plottedChart['chartType']

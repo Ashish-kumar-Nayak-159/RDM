@@ -15,7 +15,7 @@
         <form>
           <div class="form-group form-inline my-1">
 
-            <button *ngIf="isLayout" class="btn btn-warning btn-sm mx-1 my-1 col-xl-3 col-lg-3 mr-2 ">Add New Widget</button>
+            <span *ngIf="isLayout" class="badge badge-warning mx-1 my-1 col-xl-3 col-lg-3 mr-2 " style="line-height:24px; font-size: 14px;">Add New Widget</span>
             <input type="text" id="chartTitle" class="form-control form-control-sm col-xl-3 col-lg-3 mr-2"
               name="chartTitle" placeholder="Display Name" [(ngModel)]="chartTitle" *ngIf="isLayout">
             <div class=" dropdown chartTypeDropdown col-xl-3 col-lg-3 mr-2 p-0 form-control form-control-sm"
@@ -34,14 +34,14 @@
             </div>
           </div>
           <div class="form-group form-inline my-1">
-            <input class="form-control form-control-sm col-xl-3 col-lg-3 ml-1" type="text" *ngIf="isLayout"
+            <input class="form-control form-control-sm col-xl-3 col-lg-3 ml-2 mr-2" type="text" *ngIf="isLayout"
               placeholder="X-Axis parameter" id="xAxisProperty" [(ngModel)]="xAxisProps" name="xAxisProperty">
-            <angular2-multiselect *ngIf="isLayout" class="col-xl-3 col-lg-3 mr-2" [data]="dropdownPropList" id="y1AxisProperty"
+            <angular2-multiselect *ngIf="isLayout" class="col-lg-3" [data]="dropdownPropList" id="y1AxisProperty"
               [(ngModel)]="y1AxisProps" name="y1AxisProperty" [settings]="{
                 text: 'Select Y1 Axis',
                 selectAllText: 'Select All',
                 unSelectAllText: 'UnSelect All',
-                classes: 'custom-class col-xl-3 col-lg-3 mr-2',
+                classes: 'custom-class mr-2 col-lg-3',
                 enableSearchFilter: true,
                 badgeShowLimit: 1,
                 maxHeight: 200,
@@ -85,7 +85,7 @@
               </mat-date-range-input>
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle> -->
               <input [owlDateTime]="dt1" [selectMode]="'range'" (dateTimeChange)="onDateChange($event)"
-                class="form-control form-control-sm mx-1 my-1 col-md-3" [owlDateTimeTrigger]="dt1"
+                class="form-control form-control-sm mx-1 my-1 col-md-3 mr-1" [owlDateTimeTrigger]="dt1"
                 placeholder="Select Date Time">
               <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
               <owl-date-time #dt1></owl-date-time>

@@ -186,7 +186,7 @@ export class HistoryComponent implements OnInit {
         }
       }
       obj.message_props = '';
-      let type = layoutJson.chartType ? layoutJson.chartType : this.selectedChartType;
+      let type = layoutJson ? layoutJson.chartType : this.selectedChartType;
       if (type.indexOf("Pie") >= 0) {
         obj.message_props += this.xAxisProps + ','
       }

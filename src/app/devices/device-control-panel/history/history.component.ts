@@ -186,7 +186,7 @@ export class HistoryComponent implements OnInit {
         }
       }
       obj.message_props = '';
-      let type = layoutJson.chartType ? layoutJson.chartType : this.selectedChartType;
+      let type = layoutJson ? layoutJson.chartType : this.selectedChartType;
       if (type.indexOf("Pie") >= 0) {
         obj.message_props += this.xAxisProps + ','
       }
@@ -418,7 +418,7 @@ export class HistoryComponent implements OnInit {
         this.searchHistory(layoutJson).then(() => {
           var componentRef = this.factoryResolver.resolveComponentFactory(ChartWidgetComponent).create(this.injector);
           componentRef.instance.chartData = this.lineGoogleChartData
-          componentRef.instance.chartData.chartType = layoutJson.chartType ? layoutJson.chartType : this.selectedChartType
+          componentRef.instance.chartData.chartType = layoutJson ? layoutJson.chartType : this.selectedChartType
           console.log('layoutJson.chartType ',componentRef.instance.chartData.chartType)
           document.getElementById("y1AxisProperty")['disabled'] = false
           document.getElementById("y2AxisProperty")['disabled'] = false

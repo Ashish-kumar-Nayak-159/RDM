@@ -9,6 +9,7 @@ import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import {MatTableModule} from '@angular/material/table';
 import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 import { DeviceControlPanelComponent } from './device-control-panel/device-control-panel.component';
 import { OverviewComponent } from './device-control-panel/overview/overview.component';
@@ -83,7 +84,8 @@ import { MapWidgetComponent } from './device-control-panel/map-widget/map-widget
     CommonCustomModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
-    GoogleMapsModule
+    GoogleMapsModule,
+    NgMultiSelectDropDownModule.forRoot()
   ],
   exports: [
     FilterComponent,

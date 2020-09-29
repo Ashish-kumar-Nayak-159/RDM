@@ -110,7 +110,7 @@ input:invalid {
     overflow: hidden;
     text-overflow: ellipsis;
     min-width: 10px;
-    width: 5.5rem;
+    width: 20rem;
     color: #858796!important;
   }
 
@@ -123,11 +123,11 @@ input:invalid {
   }
 
   .cuppa-dropdown {
-    width: 10rem!important;
+    width: 20.5rem!important;
+    font: 400 13.3333px Arial;
   }
 
   .dropdown-list{
-    width: auto!important;
+    width: 100% !important;
   }
-
 

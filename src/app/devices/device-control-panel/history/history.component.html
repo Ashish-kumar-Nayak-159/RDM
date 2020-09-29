@@ -1,6 +1,6 @@
 <div class="row mx-auto">
   <div class="topnavbar bg-white py-2" style="margin-top: 3.1rem;">
-    <div class="row" *ngIf="isLayout">
+    <!-- <div class="row" *ngIf="isLayout">
       <div class="col-xl-10 col-lg-10 col-md-10 mb-12">
         <strong class="ml-1">Default Layout</strong>
         <button  type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Render"
@@ -8,14 +8,14 @@
         <button  type="button" class="btn btn-success btn-sm mx-1 my-1" title="Save"
           (click)="openSaveLayoutModal()"><i class="fa fa-save fa-sm"></i></button>
       </div>
-    </div>
-    <hr class="solid mb-1" *ngIf="isLayout">
+    </div> -->
+    <!-- <hr class="solid mb-1" *ngIf="isLayout"> -->
     <div class="row">
       <div class="col-xl-10 col-lg-10 col-md-10 mb-12">
         <form>
           <div class="form-group form-inline my-1">
-
-            <span *ngIf="isLayout" class="badge badge-warning mx-1 my-1 col-xl-3 col-lg-3 mr-2 " style="line-height:24px; font-size: 14px;">Add New Widget</span>
+            <span *ngIf="isLayout" class="badge badge-warning col-xl-3 col-lg-3 mr-1 "
+              style="line-height:24px; font-size: 14px;">Add New Widget</span>
             <input type="text" id="chartTitle" class="form-control form-control-sm col-xl-3 col-lg-3 mr-2"
               name="chartTitle" placeholder="Display Name" [(ngModel)]="chartTitle" *ngIf="isLayout">
             <div class=" dropdown chartTypeDropdown col-xl-3 col-lg-3 mr-2 p-0 form-control form-control-sm"
@@ -34,14 +34,14 @@
             </div>
           </div>
           <div class="form-group form-inline my-1">
-            <input class="form-control form-control-sm col-xl-3 col-lg-3 ml-2 mr-2" type="text" *ngIf="isLayout"
+            <input class="form-control form-control-sm col-xl-3 col-lg-3 mr-2" type="text" *ngIf="isLayout"
               placeholder="X-Axis parameter" id="xAxisProperty" [(ngModel)]="xAxisProps" name="xAxisProperty">
-            <angular2-multiselect *ngIf="isLayout" class="col-lg-3" [data]="dropdownPropList" id="y1AxisProperty"
+            <angular2-multiselect *ngIf="isLayout" [data]="dropdownPropList" id="y1AxisProperty"
               [(ngModel)]="y1AxisProps" name="y1AxisProperty" [settings]="{
                 text: 'Select Y1 Axis',
                 selectAllText: 'Select All',
                 unSelectAllText: 'UnSelect All',
-                classes: 'custom-class mr-2 col-lg-3',
+                classes: 'custom-class mr-2 col-lg-3 pl-0',
                 enableSearchFilter: true,
                 badgeShowLimit: 1,
                 maxHeight: 200,
@@ -56,7 +56,7 @@
                 text: 'Select Y2 Axis',
                 selectAllText: 'Select All',
                 unSelectAllText: 'UnSelect All',
-                classes: 'custom-class ml-1',
+                classes: 'custom-class col-lg-3 pl-0',
                 enableSearchFilter: true,
                 badgeShowLimit: 1,
                 maxHeight: 200,
@@ -67,6 +67,18 @@
               placeholder="Comma separated list of Y2 parameters" id="y2AxisProperty" [(ngModel)]="y2AxisProp"
               name="y2AxisProperty"> -->
 
+            <angular2-multiselect *ngIf="!isLayout" [data]="dropdownWidgetList" id="widgets" [(ngModel)]="selectedWidgets"
+              name="widgets" [settings]="{
+                text: 'Select Widgets',
+                selectAllText: 'Select All',
+                unSelectAllText: 'UnSelect All',
+                classes: 'custom-class p-0 mr-2 col-lg-3',
+                enableSearchFilter: true,
+                badgeShowLimit: 1,
+                maxHeight: 200,
+                labelKey: 'id'
+              }">
+            </angular2-multiselect>
             <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
               [(ngModel)]="historyFilter.dateOption" name="dateOptions" (change)="onDateOptionChange()"
               *ngIf="!isLayout">
@@ -93,8 +105,9 @@
 
             <button *ngIf="isLayout" type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Add Chart"
               (click)="addChart()"><i class="fas fa-plus fa-sm"></i></button>
-
-            <button *ngIf="!isLayout" type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search"
+            <button *ngIf="isLayout" type="button" class="btn btn-success btn-sm mx-1 my-1" title="Save"
+              (click)="openSaveLayoutModal()"><i class="fa fa-save fa-sm"></i></button>
+            <button *ngIf="!isLayout" type="button" class="btn btn-warning btn-sm mx-1 my-1 ml-2" title="Search"
               (click)="renderLayout()"><i class="fas fa-search fa-sm"></i></button>
 
             <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i
@@ -103,27 +116,28 @@
         </form>
       </div>
     </div>
-    <div class="row">
-      <div class="col-xl-10 col-lg-10 col-md-8 mb-12">
-        <div>
-          <hr class="solid mb-4">
-          <h6 *ngIf="historyData.length === 0 && isFilterSelected && !isHistoryAPILoading">No data found.</h6>
-          <!-- <h6 *ngIf="historyData.length === 0 && !isFilterSelected && !isHistoryAPILoading">
+    <hr class="solid mb-4">
+    <h6 *ngIf="historyData.length === 0 && isFilterSelected && !isHistoryAPILoading">No data found.</h6>
+    <!-- <h6 *ngIf="historyData.length === 0 && !isFilterSelected && !isHistoryAPILoading">
             Select filter and press search button to load the chart.
             Create layout and press search button to load the charts
           </h6> -->
-          <h6 *ngIf="layoutJson.length==0">
-            No Layout found
-          </h6>
-          <i *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-          <div id="widgetContainer" class="row chartsContainer" [ngClass]="{'show':!isLayout,'hide':isLayout}">
+    <h6 *ngIf="layoutJson.length==0">
+      No Layout found
+    </h6>
+    <i *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+    <div class="row">
+      <!-- <div class="col-xl-10 col-lg-10 col-md-8 mb-12"> -->
+      <div>
 
-          </div>
-          <div id="layoutWidgetContainer" class="row chartsContainer" [ngClass]="{'show':isLayout,'hide':!isLayout}">
+        <div id="widgetContainer" class="row chartsContainer" [ngClass]="{'showLayout':!isLayout,'hideLayout':isLayout}">
 
-          </div>
+        </div>
+        <div id="layoutWidgetContainer" class="row chartsContainer" [ngClass]="{'showLayout':isLayout,'hideLayout':!isLayout}">
+
         </div>
       </div>
+      <!-- </div> -->
     </div>
   </div>
 </div>

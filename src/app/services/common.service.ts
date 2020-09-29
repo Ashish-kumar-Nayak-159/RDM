@@ -55,7 +55,7 @@ export class CommonService {
     await containerClient.create();
     }
     console.log(folderName + '/' + file.name);
-    const client = containerClient.getBlockBlobClient(file.name);
+    const client = containerClient.getBlockBlobClient(folderName + '/' + file.name);
     const response = await client.uploadBrowserData(file, {
           blockSize: 4 * 1024 * 1024, // 4MB block size
           concurrency: 20, // 20 concurrency

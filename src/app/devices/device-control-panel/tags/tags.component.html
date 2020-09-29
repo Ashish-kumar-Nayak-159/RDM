@@ -59,7 +59,7 @@
                 {{device?.tags[tag.key]}}
               </ng-container>
               <ng-template #inputTemplate>
-                <input type="text" class="form-control bg-light border-0 small"
+                <input type="text" class="form-control form-control-sm bg-light border-0 small"
                 [(ngModel)]="device?.tags[tag.key]" name="{{tag.name}}">
               </ng-template>
             </td>
@@ -82,7 +82,7 @@
             <td>{{tag.name}}</td>
             <td>
               <ng-container *ngIf="isReservedTagsEditable">
-                <input type="text" class="form-control bg-light border-0 small"
+                <input type="text" class="form-control form-control-sm bg-light border-0 small"
                 [(ngModel)]="device?.tags[tag.key]" name="{{tag.name}}">
               </ng-container>
               <ng-container *ngIf="!isReservedTagsEditable">

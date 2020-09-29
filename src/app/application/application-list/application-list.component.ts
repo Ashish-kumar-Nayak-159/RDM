@@ -112,7 +112,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
 
   async onHeaderLogoFileSelected(files: FileList): Promise<void> {
     this.isFileUploading = true;
-    const data = await this.commonService.uploadImageToBlob(files.item(0), 'app-images');
+    const data = await this.commonService.uploadImageToBlob(files.item(0), 'app-images/header-logo');
     if (data) {
       this.applicationDetail.metadata.header_logo = data;
     } else {

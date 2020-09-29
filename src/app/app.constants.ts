@@ -197,6 +197,11 @@ export class CONSTANTS {
       name: 'LwM2M',
       connectivity: ['LwM2M Node -> LwM2M Server -> Azure Integration -> Cloud'],
       display: true
+    },
+    {
+      name: 'Other',
+      connectivity: ['Custom Protocol -> IoT Gateway -> Azure IoT Hub SDK -> Azure Cloud', 'Custom Protocol -> IoT Gateway -> MQTT Client -> Azure Cloud'],
+      display: true
     }
   ];
 
@@ -301,6 +306,25 @@ export class CONSTANTS {
       visible: true
     }
   ];
+
+  public static PROPERTY_DATA_TYPE_LIST = [
+    {
+      name: 'Number',
+      validations: ['minValue', 'maxValue', 'precision', 'units']
+    },
+    {
+      name: 'Boolean',
+      validations: []
+    },
+    {
+      name: 'String',
+      validations: []
+    },
+    {
+      name: 'Enum',
+      validations: ['enum']
+    }
+  ]
 
   public static USER_DETAILS = 'userData';
   public static CURRENT_BREADCRUMB_STATE = 'breadcrumbState';

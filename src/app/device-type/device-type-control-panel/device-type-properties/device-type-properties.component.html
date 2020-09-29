@@ -1,0 +1,114 @@
+<!-- Page Heading -->
+<!-- <div class="d-sm-flex align-items-center justify-content-between mb-4 pt-3">
+  <h1 class="h3 mb-0 text-gray-800">Access Control</h1>
+</div> -->
+<div class="topnavbar bg-white py-2" >
+  <div class="row">
+
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)"  (click)="openAddPropertiesModal()">
+          <i class="fas fa-fw fa-plus"></i>
+          <span class="text-secondary">Add {{(type.includes('measured') ? 'Measured ' : (
+            type.includes('writable') ? 'Writable ' : (
+              type.includes('readable') ? 'Readable ' : ''
+            )
+          ))}}
+          Property</span></a>
+      </li>
+    </ul>
+    <!-- Divider
+      <hr class="sidebar-divider d-none d-md-block mt-n1">-->
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <hr class="solid">
+    </div>
+  </div>
+  </div>
+
+  <div class="con-pad">
+  <div class="table-responsive">
+    <app-common-table [tableData]="properties[type]" [tableConfig]="propertyTableConfig" [isTableFilterSelected]="true"
+    [isTableDataLoading]="isPropertiesLoading" (viewMessageEvent)="onTableFunctionCall($event)"></app-common-table>
+  </div>
+  </div>
+
+  <div class="modal right fade" id="addPropertiesModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" *ngIf="propertyObj">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add New
+          {{(type.includes('measured') ? 'Measured ' : (
+            type.includes('writable') ? 'Writable ' : (
+              type.includes('readable') ? 'Readable ' : ''
+            )
+          ))}}
+          Property</h5>
+        <button type="button" class="close" [disabled]="isCreatePropertyLoading" (click)="onCloseThingsPropertyModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label required">Display Name:</label>
+            <input type="text" class="form-control" id="name" name="name" [(ngModel)]="propertyObj.name"
+          placeholder="Enter Property Name">
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label required">JSON Key:</label>
+            <input type="text" class="form-control" id="name" name="name" [(ngModel)]="propertyObj.json_key"
+            placeholder="Enter Key Name" (change)="onJSONKeyChange()">
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label required">Data Type:</label>
+            <select class="custom-select" id="template" name="model_type" [(ngModel)]="propertyObj.data_type"
+            (change)="onDataTypeChange()">
+              <option [ngValue]="dataType.name" *ngFor="let dataType of dataTypeList">{{dataType.name}}</option>
+
+            </select>
+          </div>
+          <div class="form-group mr-3">
+            <textarea
+              class="form-control"
+              id="message"
+              rows="10"
+              placeholder="Please type your JSON here.."
+              name="message"
+              [defaultValue]="propertyObj.json_model | json"
+              disabled
+            ></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary add-row" [disabled]="isCreatePropertyLoading" (click)="onSavePropertyObj()">Save</button>
+        <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading" (click)="onCloseThingsPropertyModal()">Cancel</button>
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreatePropertyLoading"></i>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div class="modal right fade" id="PropJSONModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" *ngIf="selectedProperty">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">View JSON Model</h5>
+          <button type="button" class="close"  aria-label="Close" (click)="onCloseModal()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <pre  [innerHTML]="selectedProperty.json_model | json"></pre>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="onCloseModal()">
+            Cancel
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>

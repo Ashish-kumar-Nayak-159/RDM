@@ -1,0 +1,48 @@
+URL: https://kemsysrdmfuntionapp.azurewebsites.net/api/device_types/properties?app=Test App 1&id=1
+Method: GET
+For getting properties of specific device type
+Request params:
+     app - required
+     id - optional
+     name - optional
+     id or name is required.
+
+URL: https://kemsysrdmfuntionapp.azurewebsites.net/api/device_types/layouts?app=Test App 1&id=1
+Method: GET
+For getting layout of specific device type
+Request params:
+     app - required
+     id - optional
+     name - optional
+     id or name is required.
+1.Create Control Widgets:
+    API: /device_type/control_widget
+    Method: POST
+    Body:
+        app: required
+        name: required
+        device_type: required
+        properties: json: required
+        json: json: required
+        metadata: json: optional
+
+2. Update Control Widgets:
+    API: device_type/control_widget
+    Method: PATCH
+    Body:
+        id: required
+        app: optional
+        name: optional
+        device_type: optional
+        properties: optional
+        json: optional
+        metadata: optional
+
+3. Get Control Widgets:
+    API: device_type/control_widgets
+    Method: GET
+    Request params:
+        app: required
+        device_type: required
+        id: optional
+        count: optional

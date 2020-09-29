@@ -33,6 +33,40 @@ export class DeviceTypeService {
   updateThingsModel(modelObj, app) {
     let params = new HttpParams();
     params = params.set('app', app);
-    return this.http.post(this.url + AppUrls.UPDATE_THINGS_MODEL, modelObj, {params});
+    return this.http.patch(this.url + AppUrls.UPDATE_THINGS_MODEL, modelObj, {params});
+  }
+
+  getThingsModelProperties(filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    console.log(params);
+    return this.http.get(this.url + AppUrls.GET_THINGS_MODEL_PROPERTIES, { params });
+  }
+
+  getThingsModelControlWidgets(filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    console.log(params);
+    return this.http.get(this.url + AppUrls.GET_THINGS_MODEL_CONTROL_WIDGETS, { params });
+  }
+
+  createThingsModelControlWidget(modelObj, app) {
+    let params = new HttpParams();
+    params = params.set('app', app);
+    return this.http.post(this.url + AppUrls.CREATE_THINGS_MODEL_CONTROL_WIDGETS, modelObj, {params});
+  }
+
+  updateThingsModelControlWidget(modelObj, app) {
+    let params = new HttpParams();
+    params = params.set('app', app);
+    return this.http.patch(this.url + AppUrls.UPDATE_THINGS_MODEL_CONTROL_WIDGETS, modelObj, {params});
   }
 }

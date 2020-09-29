@@ -1,7 +1,7 @@
 import { ToasterService } from './../../services/toaster.service';
 import { CONSTANTS } from './../../app.constants';
 import { DeviceTypeService } from './../../services/device-type/device-type.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 
@@ -25,11 +25,14 @@ export class DeviceTypeListComponent implements OnInit {
   constantData = CONSTANTS;
   protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
   connectivityList: string[] = [];
+  isFileUploading = false;
+  originalThingsModelFilterObj: any;
   constructor(
     private deviceTypeService: DeviceTypeService,
     private commonService: CommonService,
     private toasterService: ToasterService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -103,6 +106,7 @@ export class DeviceTypeListComponent implements OnInit {
       ]
     };
     this.searchThingsModels();
+    this.originalThingsModelFilterObj = JSON.parse(JSON.stringify(this.thingsModelFilterObj));
   }
 
   searchThingsModels() {
@@ -120,7 +124,14 @@ export class DeviceTypeListComponent implements OnInit {
     );
   }
 
-  onTableFunctionCall(event) {}
+  clearFilter() {
+    this.thingsModelFilterObj = undefined;
+    this.thingsModelFilterObj = JSON.parse(JSON.stringify(this.originalThingsModelFilterObj));
+  }
+
+  onTableFunctionCall(obj) {
+    this.router.navigate(['applications', this.contextApp.app, 'things', 'model', obj.data.name, 'control-panel']);
+  }
 
   openCreateDeviceTypeModal() {
     this.thingsModel = {};
@@ -133,6 +144,18 @@ export class DeviceTypeListComponent implements OnInit {
 
    // this.thingsModel.tags.app = this.contextApp.app;
     $('#createDeviceTypeModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  async onLogoFileSelected(files: FileList): Promise<void> {
+    this.isFileUploading = true;
+    const data = await this.commonService.uploadImageToBlob(files.item(0), 'device-type-images');
+    if (data) {
+      this.thingsModel.metadata.image = data;
+    } else {
+      this.toasterService.showError('Error in uploading file', 'Upload file');
+    }
+    this.isFileUploading = false;
+    // this.blobState.uploadItems(files);
   }
 
   getProtocolList() {

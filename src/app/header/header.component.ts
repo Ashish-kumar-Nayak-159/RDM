@@ -71,6 +71,18 @@ export class HeaderComponent implements OnInit, OnChanges {
         this.breadcrumbData = this.commonService.getItemFromLocalStorage(CONSTANTS.CURRENT_BREADCRUMB_STATE);
       }
     });
+
+    this.commonService.refreshSideMenuData.subscribe(list => {
+      this.appName = list.app;
+      this.contextApp = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
+      if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.header_logo) {
+        this.contextApp.metadata.header_logo = {
+          url : CONSTANTS.DEFAULT_HEADER_LOGO
+        };
+      } else if (this.contextApp  && this.contextApp.metadata) {
+        this.contextApp.metadata.header_logo = list.metadata.header_logo;
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {

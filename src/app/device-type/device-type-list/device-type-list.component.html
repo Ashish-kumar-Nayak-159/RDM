@@ -10,10 +10,10 @@
       ><i class="fas fa- fa-sm text-white-50"></i>Add Things Model</a>
 
   </div>
-  <div class="row bg-white" style="margin-left:-1.5rem">
-    <div class="col-xl-12 col-md-12 mb-12 my-1 px-4">
+  <div class="card row bg-white" style="margin-left:-1.5rem">
+    <div class="col-xl-12 col-md-12 mb-12">
       <form>
-        <div class="form-group form-inline my-1">
+        <div class="form-group form-inline  my-2 mx-3">
 
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="app"
           placeholder="App" disabled [(ngModel)]="thingsModelFilterObj.app"
@@ -23,18 +23,20 @@
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputPassword4"
           [(ngModel)]="thingsModelFilterObj.created_by" name="created_by" placeholder="Created By">
 
-          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" ><i class="fas fa-search fa-sm"></i></button>
-          <button type="button" class="btn btn-white btn-sm mx-1 my-1" ><i class="fas fa-trash  fa-sm"></i></button>
+          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="searchThingsModels()">
+            <i class="fas fa-search fa-sm"></i></button>
+          <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="clearFilter()">
+            <i class="fas fa-trash  fa-sm"></i></button>
 
         </div>
        </form>
   </div>
 </div>
-<div class="row">
+<!-- <div class="row">
   <div class="col-lg-12">
     <hr class="solid">
   </div>
-</div>
+</div> -->
 </div>
 <!-- Content Row -->
 
@@ -96,12 +98,18 @@
             {{item}}</option>
           </select>
         </div>
-
         <div class="form-group">
+          <label for="message-text" class="col-form-label">Upload Image: </label>
+          <input type="file"
+          #typeLogoFileInput (change)="onLogoFileSelected($event.target.files)"
+           class="form-control" id="app_logo" name="app_logo" >
+        </div>
+
+        <!-- <div class="form-group">
           <label for="message-text" class="col-form-label">Manufactured By:</label>
           <input type="text" class="form-control" id="manufactured_by" name="manufacturer"
           placeholder="Enter Manufacturer" [(ngModel)]="thingsModel.tags.manufacturer">
-        </div>
+        </div> -->
 
       </form>
     </div>

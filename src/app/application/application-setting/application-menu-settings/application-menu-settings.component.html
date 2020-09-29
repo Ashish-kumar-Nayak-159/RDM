@@ -29,7 +29,7 @@
         id="display_name{{configIndex}}"
         [(ngModel)]="item.display_name"
       /></td>
-      <td><input
+      <td><input *ngIf="item.system_name !== 'App Settings'"
         type="checkbox"
         name="visible{{configIndex}}"
         id="visible{{configIndex}}"

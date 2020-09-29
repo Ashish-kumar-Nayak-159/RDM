@@ -26,7 +26,7 @@ export class ApplicationMetadataComponent implements OnInit {
 
   async onHeaderLogoFileSelected(files: FileList): Promise<void> {
     this.isFileUploading = true;
-    const data = await this.commonService.uploadImageToBlob(files.item(0), 'app-images');
+    const data = await this.commonService.uploadImageToBlob(files.item(0), 'app-images/header-logo');
     if (data) {
       this.applicationData.metadata.header_logo = data;
     } else {

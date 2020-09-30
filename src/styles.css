@@ -103,6 +103,7 @@ input:invalid {
   height: calc(1.5em + .5rem + 2px)!important;
   min-height: calc(1.5em + .5rem + 2px)!important;
   padding: 14px !important;
+  color : #858796
   }
 
   .c-label {
@@ -111,7 +112,7 @@ input:invalid {
     text-overflow: ellipsis;
     min-width: 10px;
     width: 20rem;
-    color: #858796!important;
+    color: #333 !important;
   }
 
   .selected-list .c-angle-down, .selected-list .c-angle-up {

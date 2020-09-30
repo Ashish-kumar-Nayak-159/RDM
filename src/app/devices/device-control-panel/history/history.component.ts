@@ -183,7 +183,7 @@ export class HistoryComponent implements OnInit, OnChanges {
       let currentHistoryFilter = { ...this.historyFilter }
       currentHistoryFilter.y1AxisProperty = []
       currentHistoryFilter.y2AxisProperty = []
-      currentHistoryFilter.xAxisProps  = this.xAxisProps
+      currentHistoryFilter.xAxisProps = this.xAxisProps
       if (layoutJson == null) {
         this.y1AxisProps.forEach(item => {
           currentHistoryFilter.y1AxisProperty.push(item.id);

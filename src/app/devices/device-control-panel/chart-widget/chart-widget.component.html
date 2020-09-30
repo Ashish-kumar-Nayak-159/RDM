@@ -24,12 +24,14 @@
                 <div class="card-body">
                     <div class="chart-area chart">
                         <div class="row">
-                            <div class="col" [ngClass]="{'col-lg-6':showDataTable,'col-lg-12':!showDataTable}">
-                                <google-chart [data]="chartData">
+                            <i *ngIf="isLoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+                            <span *ngIf="showError" class="badge badge-danger">{{errorMsg}}</span>
+                            <div id="chartParent" class="col" [ngClass]="{'col-lg-6':showDataTable,'col-lg-12':!showDataTable}">
+                                <google-chart  [data]="chartData" *ngIf="chartData.dataTable.length>0">
                                 </google-chart>
                             </div>
                             <div class="col col-lg-6" *ngIf="showDataTable">
-                                <google-chart [data]="chartDataTable">
+                                <google-chart [data]="chartDataTable" *ngIf="chartDataTable && chartDataTable.dataTable.length>0">
                                 </google-chart>
                             </div>
                             <div class="overlay">

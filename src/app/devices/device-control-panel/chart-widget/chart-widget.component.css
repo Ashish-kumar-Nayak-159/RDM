@@ -41,3 +41,7 @@
     left: 180px;
     opacity: 0.7;
 }
+
+.collapse.show {
+    visibility: visible;
+  }

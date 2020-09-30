@@ -63,7 +63,7 @@
   display: block;
   padding-bottom: 45px;
   overflow-y: scroll;
-  width: 71rem
+  /* width: 60rem */
 }
 .hideLayout{
   display: none;

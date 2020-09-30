@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ComponentFactoryResolver, ApplicationRef, Injector, EmbeddedViewRef, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, ComponentFactoryResolver, ApplicationRef, Injector, EmbeddedViewRef, SimpleChanges, OnChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DeviceService } from './../../../services/devices/device.service';
 import { CommonService } from 'src/app/services/common.service';

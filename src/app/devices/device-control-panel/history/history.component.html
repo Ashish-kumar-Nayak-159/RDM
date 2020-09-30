@@ -128,17 +128,12 @@
     </h6>
     <i *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
     <div class="row">
-      <!-- <div class="col-xl-10 col-lg-10 col-md-8 mb-12"> -->
-      <div>
-
-        <div id="widgetContainer" class="row chartsContainer" [ngClass]="{'showLayout':!isLayout,'hideLayout':isLayout}">
-
+      <div class="col-xl-8 col-lg-8 col-md-8 mb-12">
+        <div id="widgetContainer" class=" chartsContainer" [ngClass]="{'showLayout':!isLayout,'hideLayout':isLayout}">
         </div>
-        <div id="layoutWidgetContainer" class="row chartsContainer" [ngClass]="{'showLayout':isLayout,'hideLayout':!isLayout}">
-
+        <div id="layoutWidgetContainer" class=" chartsContainer" [ngClass]="{'showLayout':isLayout,'hideLayout':!isLayout}">
         </div>
       </div>
-      <!-- </div> -->
     </div>
   </div>
 </div>

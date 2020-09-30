@@ -141,7 +141,7 @@ export class ChartWidgetComponent implements OnInit {
         this.chartData.options.width = 500
       }
       else {
-        this.chartData.options.width = 1000
+        this.chartData.options.width = 'inherit'
       }
       if (this.showDataTable) {
         this.chartDataTable = { ...this.chartData }

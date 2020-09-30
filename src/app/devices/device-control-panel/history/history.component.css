@@ -36,7 +36,6 @@
 
 .chartsContainer{
   height: 500px;
-  overflow-y: scroll;
 }
 
 .lbl{
@@ -58,16 +57,16 @@
   text-align: left;
   font-size: .875rem;
 }
-.show{
+.showLayout{
   display: block;
+  padding-bottom: 45px;
+  overflow-y: scroll;
+  width: 71rem
 }
-.hide{
+.hideLayout{
   display: none;
 }
 .dropdown-menu{
   top: 30px !important;
   transform: translate3d(0px, -2px, 0px) !important;
-}
-#y1AxisProperty .cuppa-dropdown{
-  width : 20.5rem !important;
 }

@@ -108,6 +108,7 @@ input:invalid {
   min-height: calc(1.5em + .5rem + 2px)!important;
   color: #858796!important;
   padding: 14px !important;
+  color : #858796
   }
 
   .c-label {

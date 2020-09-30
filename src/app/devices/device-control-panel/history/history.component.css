@@ -10,6 +10,9 @@
   white-space: nowrap; */
 }
 
+.pure-checkbox input[type="checkbox"] + label .c-btn{
+  color: #6e707e!important;
+}
 .w-11 {
   width: 11.5%!important;
 }
@@ -24,11 +27,10 @@
   padding-top : 2px;
 }
 
-#chartTitle{
-  /* height: 32px; */
-  margin-left: 5px;
+/* #chartTitle{
+
   width: 125px;
-}
+} */
 
 .multi-select{
   margin:0rem !important;

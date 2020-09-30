@@ -91,6 +91,10 @@ input:invalid {
 
  /* multi select css */
 
+ .custom-class-example {
+  width: 11%!important;
+}
+
 .c-btn {
   display: inline-block;
   border-width: 1px;
@@ -102,6 +106,7 @@ input:invalid {
   align-items: center;
   height: calc(1.5em + .5rem + 2px)!important;
   min-height: calc(1.5em + .5rem + 2px)!important;
+  color: #858796!important;
   padding: 14px !important;
   }
 
@@ -110,7 +115,7 @@ input:invalid {
     overflow: hidden;
     text-overflow: ellipsis;
     min-width: 10px;
-    width: 20rem;
+    width: 9rem;
     color: #858796!important;
   }
 
@@ -123,8 +128,9 @@ input:invalid {
   }
 
   .cuppa-dropdown {
-    width: 20.5rem!important;
+    /* width: 20.5rem!important; */
     font: 400 13.3333px Arial;
+    color: #6e707e;
   }
 
   .dropdown-list{

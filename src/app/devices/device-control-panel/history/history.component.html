@@ -14,11 +14,11 @@
       <div class="col-xl-10 col-lg-10 col-md-10 mb-12">
         <form>
           <div class="form-group form-inline my-1">
-            <span *ngIf="isLayout" class="badge badge-warning col-xl-3 col-lg-3 mr-1 "
+            <span *ngIf="isLayout" class="badge badge-warning col-xl-2 col-lg-2"
               style="line-height:24px; font-size: 14px;">Add New Widget</span>
-            <input type="text" id="chartTitle" class="form-control form-control-sm col-xl-3 col-lg-3 mr-2"
+            <input type="text" id="chartTitle" class="form-control form-control-sm col-xl-2 col-lg-2 ml-2"
               name="chartTitle" placeholder="Display Name" [(ngModel)]="chartTitle" *ngIf="isLayout">
-            <div class=" dropdown chartTypeDropdown col-xl-3 col-lg-3 mr-2 p-0 form-control form-control-sm"
+            <div class=" dropdown chartTypeDropdown col-xl-2 col-lg-2 ml-2 p-0 form-control form-control-sm"
               *ngIf="isLayout">
               <button class="btn btn-default dropdown-toggle col-xl-12 col-lg-12 col-md-12 pb-0 pt-1" type="button"
                 id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -32,16 +32,17 @@
                 </a>
               </div>
             </div>
+
           </div>
           <div class="form-group form-inline my-1">
-            <input class="form-control form-control-sm col-xl-3 col-lg-3 mr-2" type="text" *ngIf="isLayout"
+            <input class="form-control form-control-sm col-xl-2 col-lg-2" type="text" *ngIf="isLayout"
               placeholder="X-Axis parameter" id="xAxisProperty" [(ngModel)]="xAxisProps" name="xAxisProperty">
             <angular2-multiselect *ngIf="isLayout" [data]="dropdownPropList" id="y1AxisProperty"
               [(ngModel)]="y1AxisProps" name="y1AxisProperty" [settings]="{
                 text: 'Select Y1 Axis',
                 selectAllText: 'Select All',
                 unSelectAllText: 'UnSelect All',
-                classes: 'custom-class mr-2 col-lg-3 pl-0',
+                classes: 'col-lg-2 col-xl-2 p-0 ml-2',
                 enableSearchFilter: true,
                 badgeShowLimit: 1,
                 maxHeight: 200,
@@ -56,7 +57,7 @@
                 text: 'Select Y2 Axis',
                 selectAllText: 'Select All',
                 unSelectAllText: 'UnSelect All',
-                classes: 'custom-class col-lg-3 pl-0',
+                classes: 'col-lg-2 col-xl-2 p-0 ml-2',
                 enableSearchFilter: true,
                 badgeShowLimit: 1,
                 maxHeight: 200,
@@ -72,7 +73,7 @@
                 text: 'Select Widgets',
                 selectAllText: 'Select All',
                 unSelectAllText: 'UnSelect All',
-                classes: 'custom-class p-0 mr-2 col-lg-3',
+                classes: 'col-lg-2 col-xl-2 p-0',
                 enableSearchFilter: true,
                 badgeShowLimit: 1,
                 maxHeight: 200,
@@ -104,14 +105,14 @@
             </ng-container>
 
             <button *ngIf="isLayout" type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Add Chart"
-              (click)="addChart()"><i class="fas fa-plus fa-sm"></i></button>
-            <button *ngIf="isLayout" type="button" class="btn btn-success btn-sm mx-1 my-1" title="Save"
-              (click)="openSaveLayoutModal()"><i class="fa fa-save fa-sm"></i></button>
-            <button *ngIf="!isLayout" type="button" class="btn btn-warning btn-sm mx-1 my-1 ml-2" title="Search"
-              (click)="renderLayout()"><i class="fas fa-search fa-sm"></i></button>
+            (click)="addChart()"><i class="fas fa-plus fa-sm"></i></button>
+          <button *ngIf="isLayout" type="button" class="btn btn-success btn-sm mx-1 my-1" title="Save"
+            (click)="openSaveLayoutModal()"><i class="fa fa-save fa-sm"></i></button>
+          <button *ngIf="!isLayout" type="button" class="btn btn-warning btn-sm mx-1 my-1 ml-2" title="Search"
+            (click)="renderLayout()"><i class="fas fa-search fa-sm"></i></button>
 
-            <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i
-                class="fas fa-trash  fa-sm"></i></button>
+          <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i
+              class="fas fa-trash  fa-sm"></i></button>
           </div>
         </form>
       </div>
@@ -122,7 +123,7 @@
             Select filter and press search button to load the chart.
             Create layout and press search button to load the charts
           </h6> -->
-    <h6 *ngIf="layoutJson.length==0">
+    <h6 *ngIf="layoutJson.length==0  && !isHistoryAPILoading">
       No Layout found
     </h6>
     <i *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>

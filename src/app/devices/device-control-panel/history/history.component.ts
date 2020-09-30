@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ComponentFactoryResolver, ApplicationRef, Injector, EmbeddedViewRef } from '@angular/core';
+import { Component, OnInit, Input, ComponentFactoryResolver, ApplicationRef, Injector, EmbeddedViewRef, SimpleChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DeviceService } from './../../../services/devices/device.service';
 import { CommonService } from 'src/app/services/common.service';
@@ -17,7 +17,7 @@ declare var $: any;
   templateUrl: './history.component.html',
   styleUrls: ['./history.component.css']
 })
-export class HistoryComponent implements OnInit {
+export class HistoryComponent implements OnInit, OnChanges {
 
   historyFilter: any = {};
   apiSubscriptions: Subscription[] = [];
@@ -35,7 +35,7 @@ export class HistoryComponent implements OnInit {
   // y2AxisProp = "";
   xAxisProps = "";
 
-  //chart selection 
+  //chart selection
   chartCount = 0
   chartTypes = ["Bar Chart", "Column Chart", "Line Chart", "Area Chart", "Pie Chart", "Data Table", "Map", "Pie Chart + Data Table"]
   chartTypeValues = ["BarChart", "ColumnChart", "LineChart", "AreaChart", "PieChart", "Table", "Map", "Pie Chart with table"]
@@ -43,7 +43,7 @@ export class HistoryComponent implements OnInit {
   public selectedChartType = "Chart Type"
   columnNames = []
   layoutJson = []
-  storedLayout = {}
+  storedLayout = {};
   chartTitle = ""
   showDataTable: boolean = false
   appData: any = {};
@@ -60,8 +60,8 @@ export class HistoryComponent implements OnInit {
     private factoryResolver: ComponentFactoryResolver,
     private appRef: ApplicationRef,
     private injector: Injector
-  ) { 
-    
+  ) {
+
   }
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -92,6 +92,13 @@ export class HistoryComponent implements OnInit {
       console.log('layout clicked')
       this.renderLayout()
     })
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.isLayout && !changes.isLayout.currentValue && this.appName) {
+      console.log('aaaa', changes);
+      this.getLayout();
+    }
   }
 
   onDateOptionChange() {
@@ -145,7 +152,7 @@ export class HistoryComponent implements OnInit {
       let currentHistoryFilter = {...this.historyFilter}
       currentHistoryFilter.y1AxisProperty = []
       currentHistoryFilter.y2AxisProperty = []
-      currentHistoryFilter.xAxisProps  = this.xAxisProps 
+      currentHistoryFilter.xAxisProps  = this.xAxisProps
       if (layoutJson == null) {
         this.y1AxisProps.forEach(item => {
           currentHistoryFilter.y1AxisProperty.push(item.id);
@@ -219,6 +226,7 @@ export class HistoryComponent implements OnInit {
             const dataList = [];
             dataList.push(currentHistoryFilter.xAxisProps);
             let title = '';
+            console.log(currentHistoryFilter.y1AxisProperty);
 
             currentHistoryFilter.y1AxisProperty.forEach((prop, index) => {
               dataList.splice(dataList.length, 0, { label: prop, type: 'number' });
@@ -292,7 +300,7 @@ export class HistoryComponent implements OnInit {
             }
             lineGoogleChartData.chartType = type
             console.log(lineGoogleChartData);
-           
+
             resolve(lineGoogleChartData)
 
           }
@@ -336,7 +344,13 @@ export class HistoryComponent implements OnInit {
   }
 
   addChart() {
-    this.plotChart(null).then((chart) => {
+    this.plotChart(null).then((chart: any) => {
+      if (!chart.y1axis) {
+        chart.y1axis = [];
+      }
+      if (!chart.y2axis) {
+        chart.y2axis = [];
+      }
       console.log('add chart ', chart, this.layoutJson)
       this.layoutJson.push(chart)
     })
@@ -382,7 +396,7 @@ export class HistoryComponent implements OnInit {
           let componentRef = this.factoryResolver.resolveComponentFactory(ChartWidgetComponent).create(this.injector);
           componentRef.instance.chartData = plottedChart
           componentRef.instance.chartData.chartType = plottedChart['chartType']
-          
+
           if (componentRef.instance.chartData.chartType == "PieChart" || componentRef.instance.chartData.chartType == "Pie Chart with table") {
             delete componentRef.instance.chartData.options.explorer
             delete componentRef.instance.chartData.options.legend
@@ -552,7 +566,8 @@ export class HistoryComponent implements OnInit {
         (response: any) => {
           // console.log('update response ', response)
           this.closeSaveLayoutModal()
-          this.toasterService.showSuccess(response.message, 'Save Layout')
+          this.toasterService.showSuccess(response.message, 'Save Layout');
+          this.getLayout();
         },
         (err) => {
           this.toasterService.showError(err.message, 'Save Layout')
@@ -577,6 +592,7 @@ export class HistoryComponent implements OnInit {
     let params = {
       app: this.appName
     }
+    this.dropdownWidgetList = [];
     this.apiSubscriptions.push(this.deviceService.getLayout(params).subscribe(
       async (response: any) => {
         if (response.data.length > 0) {

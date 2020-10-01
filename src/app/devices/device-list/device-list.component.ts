@@ -301,12 +301,12 @@ export class DeviceListComponent implements OnInit {
   onCreateDevice() {
     console.log(this.deviceDetail);
     if (!this.deviceDetail.device_id || !this.deviceDetail.tags.device_manager || !this.deviceDetail.tags.protocol
-      || !this.deviceDetail.tags.cloud_connectivity  || !this.deviceDetail.tags.manufacturer ) {
+      || !this.deviceDetail.tags.cloud_connectivity  ) {
         this.toasterService.showError('Please fill all the details',
         'Create ' + this.pageType);
         return;
     }
-    if (this.componentState === CONSTANTS.NON_IP_DEVICE && (!this.deviceDetail.gateway_id || !this.deviceDetail.tags.category)) {
+    if (this.componentState === CONSTANTS.NON_IP_DEVICE && (!this.deviceDetail.gateway_id)) {
       this.toasterService.showError('Please fill all the details',
       'Create ' + this.pageType);
       return;
@@ -322,7 +322,7 @@ export class DeviceListComponent implements OnInit {
     this.deviceDetail.tags.created_by = this.userData.email;
     this.deviceDetail.app = this.appName;
     this.deviceDetail.tags.category = this.componentState === CONSTANTS.NON_IP_DEVICE ?
-    this.deviceDetail.tags.category : this.componentState;
+    null : this.componentState;
     this.deviceDetail.tags.created_date = moment().utc().format('M/DD/YYYY h:mm:ss A');
     const methodToCall = this.componentState === CONSTANTS.NON_IP_DEVICE
     ? this.deviceService.createNonIPDevice(this.deviceDetail, this.appName)

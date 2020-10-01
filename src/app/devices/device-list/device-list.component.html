@@ -118,7 +118,7 @@
             {{item.tags.display_name ? item.tags.display_name : item.device_id}}</option>
           </select>
         </div>
-        <div class="form-group" *ngIf="componentState === constantData.NON_IP_DEVICE">
+        <!-- <div class="form-group" *ngIf="componentState === constantData.NON_IP_DEVICE">
           <label for="message-text" class="col-form-label required">Device Category:</label>
           <select class="custom-select" id="template" name="gateway_id"
           [(ngModel)]="deviceDetail.tags.category">
@@ -126,7 +126,7 @@
           <option *ngFor="let item of deviceCategory" [ngValue]="item.name">
             {{item.name}}</option>
           </select>
-        </div>
+        </div> -->
         <div class="form-group">
           <label for="recipient-name" class="col-form-label required">{{pageType}} Type:</label>
           <select class="custom-select" id="device_type" name="device_type" [(ngModel)]="deviceDetail.tags.device_type"

@@ -62,7 +62,7 @@
 .showLayout{
   display: block;
   padding-bottom: 45px;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
   /* width: 60rem */
 }
 .hideLayout{

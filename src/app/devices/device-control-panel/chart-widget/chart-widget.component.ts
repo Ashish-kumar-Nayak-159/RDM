@@ -114,7 +114,6 @@ export class ChartWidgetComponent implements OnInit {
       }
     }
     else {
-      console.log('this.currentLayout ',this.currentLayout)
       if (this.currentLayout.chartType.indexOf('Pie') <= -1) {
         if (!this.currentLayout.y1axis || (this.currentLayout.y1axis && this.currentLayout.y1axis.length === 0)) {
           this.showError = true
@@ -151,6 +150,7 @@ export class ChartWidgetComponent implements OnInit {
       if (this.chartData.chartType == "PieChart" || this.chartData.chartType == "Pie Chart with table") {
         delete this.chartData.options.explorer
         delete this.chartData.options.legend
+        this.chartData.options.pieSliceText = 'percentage'
         if (this.chartData.chartType == "Pie Chart with table") {
           this.showDataTable = true
           this.chartData.chartType = "PieChart"
@@ -169,6 +169,7 @@ export class ChartWidgetComponent implements OnInit {
         .resizable();
     }
     $("#" + this.chartId).on('resize', (event) => {
+      console.log('Resize ',event)
       if (parseInt(event.target.style.width.split('px')[0]) > 700) {
         $("#" + this.chartId).parent().parent().addClass('col-lg-12').removeClass('col-lg-6')
       }
@@ -291,7 +292,6 @@ export class ChartWidgetComponent implements OnInit {
             const dataList = [];
             dataList.push(currentHistoryFilter.xAxisProps);
             let title = '';
-            console.log('currentHistoryFilter.y1AxisProperty ',currentHistoryFilter.y1AxisProperty)
             currentHistoryFilter.y1AxisProperty.forEach((prop, index) => {
               dataList.splice(dataList.length, 0, { label: prop, type: 'number' });
               title += prop + (index !== currentHistoryFilter.y1AxisProperty.length - 1 ? ' & ' : '');
@@ -363,11 +363,21 @@ export class ChartWidgetComponent implements OnInit {
               })
             }
             lineGoogleChartData.chartType = type
-            console.log('chart ',lineGoogleChartData)
             resolve(lineGoogleChartData)
           }
         }, error => this.isLoading = false
       ));
     })
+  }
+
+  changeSliceText(e){
+    console.log('e ',e)
+    if(e=='val'){
+      this.chartData.options.pieSliceText='value'
+    }
+    else{
+      this.chartData.options.pieSliceText='percentage'
+    }
+    this.chartData.component.draw()
   }
 }

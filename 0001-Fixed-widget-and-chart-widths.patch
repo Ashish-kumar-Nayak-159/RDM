@@ -1,0 +1,76 @@
+From 7646dca7aeac50c7d9eb390d5a9a97d0e5ec0310 Mon Sep 17 00:00:00 2001
+From: bhakti-kemsys <bhaktigandhi@kemsys.com>
+Date: Wed, 30 Sep 2020 23:33:53 +0530
+Subject: [PATCH 1/2] Fixed widget and chart widths
+
+---
+ .../chart-widget/chart-widget.component.ts            |  2 +-
+ .../history/history.component.css                     |  2 +-
+ .../history/history.component.html                    | 11 +++--------
+ .../device-control-panel/history/history.component.ts |  2 +-
+ 4 files changed, 6 insertions(+), 11 deletions(-)
+
+diff --git a/src/app/devices/device-control-panel/chart-widget/chart-widget.component.ts b/src/app/devices/device-control-panel/chart-widget/chart-widget.component.ts
+index ebd0083..bdfc88b 100644
+--- a/src/app/devices/device-control-panel/chart-widget/chart-widget.component.ts
++++ b/src/app/devices/device-control-panel/chart-widget/chart-widget.component.ts
+@@ -141,7 +141,7 @@ export class ChartWidgetComponent implements OnInit {
+         this.chartData.options.width = 500
+       }
+       else {
+-        this.chartData.options.width = 1000
++        this.chartData.options.width = 'inherit'
+       }
+       if (this.showDataTable) {
+         this.chartDataTable = { ...this.chartData }
+diff --git a/src/app/devices/device-control-panel/history/history.component.css b/src/app/devices/device-control-panel/history/history.component.css
+index c1ace79..cd6e968 100644
+--- a/src/app/devices/device-control-panel/history/history.component.css
++++ b/src/app/devices/device-control-panel/history/history.component.css
+@@ -63,7 +63,7 @@
+   display: block;
+   padding-bottom: 45px;
+   overflow-y: scroll;
+-  width: 71rem
++  /* width: 60rem */
+ }
+ .hideLayout{
+   display: none;
+diff --git a/src/app/devices/device-control-panel/history/history.component.html b/src/app/devices/device-control-panel/history/history.component.html
+index c262a90..78634b5 100644
+--- a/src/app/devices/device-control-panel/history/history.component.html
++++ b/src/app/devices/device-control-panel/history/history.component.html
+@@ -128,17 +128,12 @@
+     </h6>
+     <i *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+     <div class="row">
+-      <!-- <div class="col-xl-10 col-lg-10 col-md-8 mb-12"> -->
+-      <div>
+-
+-        <div id="widgetContainer" class="row chartsContainer" [ngClass]="{'showLayout':!isLayout,'hideLayout':isLayout}">
+-
++      <div class="col-xl-8 col-lg-8 col-md-8 mb-12">
++        <div id="widgetContainer" class=" chartsContainer" [ngClass]="{'showLayout':!isLayout,'hideLayout':isLayout}">
+         </div>
+-        <div id="layoutWidgetContainer" class="row chartsContainer" [ngClass]="{'showLayout':isLayout,'hideLayout':!isLayout}">
+-
++        <div id="layoutWidgetContainer" class=" chartsContainer" [ngClass]="{'showLayout':isLayout,'hideLayout':!isLayout}">
+         </div>
+       </div>
+-      <!-- </div> -->
+     </div>
+   </div>
+ </div>
+diff --git a/src/app/devices/device-control-panel/history/history.component.ts b/src/app/devices/device-control-panel/history/history.component.ts
+index a11193e..60641f9 100644
+--- a/src/app/devices/device-control-panel/history/history.component.ts
++++ b/src/app/devices/device-control-panel/history/history.component.ts
+@@ -1,4 +1,4 @@
+-import { Component, OnInit, Input, ComponentFactoryResolver, ApplicationRef, Injector, EmbeddedViewRef, SimpleChanges } from '@angular/core';
++import { Component, OnInit, Input, ComponentFactoryResolver, ApplicationRef, Injector, EmbeddedViewRef, SimpleChanges, OnChanges } from '@angular/core';
+ import { Subscription } from 'rxjs';
+ import { DeviceService } from './../../../services/devices/device.service';
+ import { CommonService } from 'src/app/services/common.service';
+-- 
+2.28.0.windows.1
+

@@ -31,7 +31,7 @@
     </div>
 
   </div>
-  <div class="con-pad">
+  <div class="con-pad" [ngClass]="{'con-pad-extra-margin':viewType=='history' || viewType=='live'}">
         <app-history *ngIf="viewType === 'history'" [device]="device" [isLayout]="isLayout"></app-history>
         <app-live-data *ngIf="viewType === 'live'" [device]="device"></app-live-data>
   </div>

@@ -136,6 +136,7 @@ export class HistoryComponent implements OnInit, OnChanges {
   onDateOptionChange() {
     this.historyFilter.from_date = undefined;
     this.historyFilter.to_date = undefined;
+    $("#txtDt1").val("")
   }
 
   searchHistory(layoutJson) {
@@ -425,7 +426,7 @@ export class HistoryComponent implements OnInit, OnChanges {
           .rootNodes[0] as HTMLElement;
         let newNode = document.createElement('div');
         // newNode.className = 'col-xl-10 col-lg-10 col-sm-10 col-md-10 col-xs-12';
-        newNode.className = 'm-4';
+        // newNode.className = 'm-4';
         newNode.appendChild(domElem)
         if (this.isLayout) {
           document.getElementById("layoutWidgetContainer").prepend(newNode)

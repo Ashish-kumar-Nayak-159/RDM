@@ -23,6 +23,15 @@
             <div class="collapse show" id="collapse_{{chartId}}">
                 <div class="card-body">
                     <div class="chart-area chart">
+                        <span *ngIf="type.indexOf('Pie')>=0" >Labels on Pie Slice  </span>
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons" *ngIf="type.indexOf('Pie')>=0">
+                            <label class="btn btn-secondary active" (click)="changeSliceText('perc')">
+                              <input type="radio" name="options" id="option1" autocomplete="off" checked > Percentage
+                            </label>
+                            <label class="btn btn-secondary" (click)="changeSliceText('val')">
+                              <input type="radio" name="options" id="option2" autocomplete="off" > Values
+                            </label>
+                          </div>
                         <div class="row">
                             <i *ngIf="isLoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
                             <span *ngIf="showError" class="badge badge-danger">{{errorMsg}}</span>

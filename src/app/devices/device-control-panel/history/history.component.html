@@ -101,7 +101,7 @@
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle> -->
               <input [owlDateTime]="dt1" [selectMode]="'range'" (dateTimeChange)="onDateChange($event)"
                 class="form-control form-control-sm mx-1 my-1 col-md-3 mr-1" [owlDateTimeTrigger]="dt1"
-                placeholder="Select Date Time">
+                placeholder="Select Date Time" id="txtDt1">
               <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
               <owl-date-time #dt1></owl-date-time>
             </ng-container>

@@ -130,6 +130,7 @@ export class HistoryComponent implements OnInit, OnChanges {
       console.log('aaaa', changes);
       this.getLayout();
     }
+    this.clear()
   }
 
   onDateOptionChange() {
@@ -390,13 +391,16 @@ export class HistoryComponent implements OnInit, OnChanges {
     return new Promise((resolve, reject) => {
       $(".overlay").show()
       this.chartCount++
-      this.showDataTable = false
       let chart = {}
       let type = layoutJson ? layoutJson.chartType : this.selectedChartType
       let xAxis = layoutJson ? layoutJson.xAxis : this.xAxisProps
       let y1Axis = layoutJson ? layoutJson.y1axis : this.y1AxisProps
       let y2Axis = layoutJson ? layoutJson.y2axis : this.y2AxisProp
       if (type != "Map") {
+        if (type == "Pie Chart with table") {
+          this.showDataTable = true
+          type = "PieChart"
+        }
         let componentRef = this.factoryResolver.resolveComponentFactory(ChartWidgetComponent).create(this.injector);
         componentRef.instance.isLoading = true
         componentRef.instance.showDataTable = layoutJson ? layoutJson.showDataTable : this.showDataTable
@@ -659,5 +663,19 @@ export class HistoryComponent implements OnInit, OnChanges {
 
   closeSaveLayoutModal() {
     $('#saveLayoutModal').modal('hide');
+  }
+
+  y1Deselect(e){
+    if(e==[] || e.length==0)
+    {
+      this.y1AxisProps = []
+    }
+  }
+  y2Deselect(e){
+    console.log('e ',e)
+    if(e==[] || e.length==0)
+    {
+      this.y2AxisProp = []
+    }
   }
 }

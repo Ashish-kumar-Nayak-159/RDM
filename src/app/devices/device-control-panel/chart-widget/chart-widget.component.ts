@@ -114,7 +114,6 @@ export class ChartWidgetComponent implements OnInit {
       }
     }
     else {
-      console.log('this.currentLayout ',this.currentLayout)
       if (this.currentLayout.chartType.indexOf('Pie') <= -1) {
         if (!this.currentLayout.y1axis || (this.currentLayout.y1axis && this.currentLayout.y1axis.length === 0)) {
           this.showError = true

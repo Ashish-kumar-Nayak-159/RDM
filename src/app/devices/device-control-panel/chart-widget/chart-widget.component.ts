@@ -169,6 +169,7 @@ export class ChartWidgetComponent implements OnInit {
         .resizable();
     }
     $("#" + this.chartId).on('resize', (event) => {
+      console.log('Resize ',event)
       if (parseInt(event.target.style.width.split('px')[0]) > 700) {
         $("#" + this.chartId).parent().parent().addClass('col-lg-12').removeClass('col-lg-6')
       }

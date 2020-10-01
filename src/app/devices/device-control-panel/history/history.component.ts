@@ -396,7 +396,6 @@ export class HistoryComponent implements OnInit, OnChanges {
       let xAxis = layoutJson ? layoutJson.xAxis : this.xAxisProps
       let y1Axis = layoutJson ? layoutJson.y1axis : this.y1AxisProps
       let y2Axis = layoutJson ? layoutJson.y2axis : this.y2AxisProp
-     
       if (type != "Map") {
         let componentRef = this.factoryResolver.resolveComponentFactory(ChartWidgetComponent).create(this.injector);
         componentRef.instance.isLoading = true

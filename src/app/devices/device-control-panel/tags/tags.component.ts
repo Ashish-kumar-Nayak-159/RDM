@@ -42,7 +42,7 @@ export class TagsComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
       this.contextApp = this.userData.apps.filter(app => app.app === this.appName)[0];
-      this.pageType = params.get('listName');
+      this.pageType = params.get('listName').toLowerCase();
       this.getDeviceDetail();
     });
     this.reservedTags = CONSTANTS.DEVICE_RESERVED_TAGS_LIST;
@@ -58,9 +58,8 @@ export class TagsComponent implements OnInit {
 
   getDeviceData() {
     let methodToCall;
-    if (this.device.tags.category && this.device.gateway_id) {
+    if (this.pageType === 'nonipdevices') {
       const obj = {
-        category: this.device.tags.category,
         app: this.appName,
         device_id: this.device.device_id,
         gateway_id: this.device.gateway_id
@@ -71,7 +70,7 @@ export class TagsComponent implements OnInit {
     }
     methodToCall.subscribe(
       (response: any) => {
-        if (this.device.tags.category && this.device.gateway_id) {
+        if (this.pageType === 'nonipdevices') {
           if (response && response.data) {
             this.device = response.data[0];
           }
@@ -167,7 +166,7 @@ export class TagsComponent implements OnInit {
       tags: this.device.tags
     };
     let methodToCall;
-    if (this.device.tags.category && this.device.gateway_id) {
+    if (this.pageType === 'nonipdevices') {
       methodToCall = this.deviceService.updateNonIPDeviceTags(obj, this.appName);
     } else {
       methodToCall = this.deviceService.updateDeviceTags(obj, this.appName);
@@ -200,7 +199,7 @@ export class TagsComponent implements OnInit {
     };
     console.log(obj);
     let methodToCall;
-    if (this.device.tags.category && this.device.gateway_id) {
+    if (this.pageType === 'nonipdevices') {
       methodToCall = this.deviceService.updateNonIPDeviceTags(obj, this.appName);
     } else {
       methodToCall = this.deviceService.updateDeviceTags(obj, this.appName);

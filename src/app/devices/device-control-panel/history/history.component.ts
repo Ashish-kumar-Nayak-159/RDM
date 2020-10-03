@@ -119,7 +119,7 @@ export class HistoryComponent implements OnInit, OnChanges {
       });
     }
     this.isHistoryAPILoading = true
-    this.getLayout()
+    this.getLayout();
     $("#layoutNav").on('click', () => {
       this.renderLayout()
     })
@@ -634,16 +634,14 @@ export class HistoryComponent implements OnInit, OnChanges {
     let params = {
       app: this.appName
     }
-    this.dropdownWidgetList = [];
+    this.dropdownWidgetList = []
+    this.selectedWidgets = []
+    this.layoutJson = []
     this.apiSubscriptions.push(this.deviceService.getLayout(params).subscribe(
       async (response: any) => {
         if (response.data.length > 0) {
-          this.dropdownWidgetList = []
-          this.selectedWidgets = []
-          this.layoutJson = []
           this.layoutJson = response.data[0].layout;
           this.storedLayout = response.data[0]
-          this.isHistoryAPILoading = false
           this.layoutJson.forEach((item) => {
             this.dropdownWidgetList.push({
               id: item.title,
@@ -654,6 +652,7 @@ export class HistoryComponent implements OnInit, OnChanges {
             this.renderLayout()
           }
         }
+        this.isHistoryAPILoading = false
       }
     ))
   }

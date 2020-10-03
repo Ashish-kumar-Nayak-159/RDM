@@ -74,7 +74,7 @@ export class HeaderComponent implements OnInit, OnChanges {
 
     this.commonService.refreshSideMenuData.subscribe(list => {
       this.appName = list.app;
-      this.contextApp = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
+      this.contextApp = this.userData?.apps.filter(app => app.app === this.decode(this.appName))[0];
       if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.header_logo) {
         this.contextApp.metadata.header_logo = {
           url : CONSTANTS.DEFAULT_HEADER_LOGO

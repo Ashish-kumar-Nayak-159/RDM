@@ -46,7 +46,7 @@ export class OverviewComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
       this.pageType = params.get('listName');
-      this.pageType = this.pageType.slice(0, -1);
+      this.pageType = this.pageType.slice(0, -1).toLowerCase();
       this.getApplicationData();
       this.getDeviceCredentials();
       this.getDeviceConnectionStatus();
@@ -78,7 +78,7 @@ export class OverviewComponent implements OnInit {
 
   getDeviceCredentials() {
     this.deviceCredentials = undefined;
-    const id = (this.device.tags.category && this.device.gateway_id) ? this.device.gateway_id : this.device.device_id;
+    const id = (this.pageType === 'nonipdevice') ? this.device.gateway_id : this.device.device_id;
     this.deviceService.getDeviceCredentials(id, this.appName).subscribe(
       response => {
         this.deviceCredentials = response;
@@ -101,7 +101,7 @@ export class OverviewComponent implements OnInit {
 
   getDeviceConnectionStatus() {
     this.deviceConnectionStatus = undefined;
-    const id = (this.device.tags.category && this.device.gateway_id) ? this.device.gateway_id : this.device.device_id;
+    const id = (this.pageType === 'nonipdevice') ? this.device.gateway_id : this.device.device_id;
     this.deviceService.getDeviceConnectionStatus(id, this.appName).subscribe(
       response => {
         this.deviceConnectionStatus = response;
@@ -180,7 +180,7 @@ export class OverviewComponent implements OnInit {
   deleteDevice() {
     this.isAPILoading = true;
     let methodToCall;
-    if (this.device.tags.category && this.device.gateway_id) {
+    if (this.pageType === 'nonipdevice') {
       methodToCall = this.deviceService.deleteNonIPDevice(this.device.device_id, this.appName);
     } else {
       methodToCall = this.deviceService.deleteDevice(this.device.device_id, this.appName);
@@ -190,7 +190,7 @@ export class OverviewComponent implements OnInit {
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Delete Device');
         this.isAPILoading = false;
-        if (this.device.tags.category && this.device.gateway_id) {
+        if (this.pageType === 'nonipdevice') {
           this.router.navigate(['applications', this.appName, 'devices']);
         } else if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
           this.router.navigate(['applications', this.appName, 'gateways']);

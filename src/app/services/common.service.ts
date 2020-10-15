@@ -15,10 +15,13 @@ export class CommonService {
   url = environment.appServerURL;
   breadcrumbEvent: EventEmitter<any> = new EventEmitter<any>();
   refreshSideMenuData: EventEmitter<any> = new EventEmitter<any>();
+  flag = false;
   constructor(
     private http: HttpClient,
     private router: Router
-  ) { }
+  ) {
+    console.log('hereeee');
+  }
 
   convertUTCDateToLocal(utcDate) {
     if (utcDate) {
@@ -33,6 +36,15 @@ export class CommonService {
 
   getItemFromLocalStorage(key) {
     return JSON.parse(localStorage.getItem(key));
+  }
+
+  setFlag(val) {
+    this.setFlag = val;
+    console.log('service    ', this.setFlag);
+  }
+
+  getFlag() {
+    return this.setFlag;
   }
 
   setItemInLocalStorage(key, value) {

@@ -1,5 +1,8 @@
+import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AccordionModule } from 'ngx-bootstrap/accordion';
+
 import { DeviceTypeListComponent } from './device-type-list/device-type-list.component';
 import { CommonCustomModule } from '../common/common.module';
 import { DeviceTypeRoutingModule } from './device-type-routing.module';
@@ -10,17 +13,32 @@ import { DeviceTypeTagsComponent } from './device-type-control-panel/device-type
 import { DeviceTypePropertiesComponent } from './device-type-control-panel/device-type-properties/device-type-properties.component';
 import { DeviceTypeJsonPacketFormatComponent } from './device-type-control-panel/device-type-json-packet-format/device-type-json-packet-format.component';
 import { DeviceTypeControlWidgetsComponent } from './device-type-control-panel/device-type-control-widgets/device-type-control-widgets.component';
+import { DeviceTypeDeviceMethodsComponent } from './device-type-control-panel/device-type-device-methods/device-type-device-methods.component';
+import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 
 
 
 @NgModule({
-  declarations: [DeviceTypeListComponent, DeviceTypeControlPanelComponent, DeviceTypeOverviewComponent, DeviceTypeTagsComponent, DeviceTypePropertiesComponent, DeviceTypeJsonPacketFormatComponent, DeviceTypeControlWidgetsComponent],
+  declarations: [
+    DeviceTypeListComponent,
+    DeviceTypeControlPanelComponent,
+    DeviceTypeOverviewComponent,
+    DeviceTypeTagsComponent,
+    DeviceTypePropertiesComponent,
+    DeviceTypeJsonPacketFormatComponent,
+    DeviceTypeControlWidgetsComponent,
+    DeviceTypeDeviceMethodsComponent
+  ],
   imports: [
     CommonModule,
     DeviceTypeRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    CommonCustomModule
+    CommonCustomModule,
+    AccordionModule.forRoot(),
+    NgJsonEditorModule,
+    AngularMultiSelectModule
+
   ]
 })
 export class DeviceTypeModule { }

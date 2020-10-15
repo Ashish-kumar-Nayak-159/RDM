@@ -39,6 +39,7 @@ import { BatteryMessagesComponent } from './device-control-panel/battery-message
 import { CommonCustomModule } from './../common/common.module';
 import { ChartWidgetComponent } from './device-control-panel/chart-widget/chart-widget.component';
 import { MapWidgetComponent } from './device-control-panel/map-widget/map-widget.component';
+import { SpecificC2dMessageComponent } from './device-control-panel/specific-c2d-message/specific-c2d-message.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { MapWidgetComponent } from './device-control-panel/map-widget/map-widget
     C2dMessageComponent,
     BatteryMessagesComponent,
     ChartWidgetComponent,
-    MapWidgetComponent
+    MapWidgetComponent,
+    SpecificC2dMessageComponent
   ],
   imports: [
     CommonModule,

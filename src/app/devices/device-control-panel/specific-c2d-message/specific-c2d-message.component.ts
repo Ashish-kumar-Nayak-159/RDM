@@ -1,22 +1,21 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { Device } from 'src/app/models/device.model';
-import * as moment from 'moment';
-import { ToasterService } from './../../../services/toaster.service';
-import { DeviceService } from 'src/app/services/devices/device.service';
-import { CommonService } from './../../../services/common.service';
-import { CONSTANTS } from './../../../app.constants';
-import { Observable } from 'rxjs/internal/Observable';
-import { Subscription, interval } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
 import { HttpParams } from '@angular/common/http';
-
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import * as moment from 'moment';
+import { Subscription } from 'rxjs';
+import { CONSTANTS } from 'src/app/app.constants';
+import { Device } from 'src/app/models/device.model';
+import { CommonService } from 'src/app/services/common.service';
+import { DeviceService } from 'src/app/services/devices/device.service';
+import { ToasterService } from 'src/app/services/toaster.service';
 
 @Component({
-  selector: 'app-compose-c2d-message',
-  templateUrl: './compose-c2d-message.component.html',
-  styleUrls: ['./compose-c2d-message.component.css']
+  selector: 'app-specific-c2d-message',
+  templateUrl: './specific-c2d-message.component.html',
+  styleUrls: ['./specific-c2d-message.component.css']
 })
-export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
+export class SpecificC2dMessageComponent implements OnInit {
 
   @Input() device: Device = new Device();
   c2dMessageData: any = {};
@@ -36,11 +35,16 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
   timerObj: any;
   pageType: string;
   devices: any[] = [];
+  controlWidgets: any[] = [];
+  deviceMethods: any[] = [];
+  selectedWidget: any;
+
   constructor(
     private toasterService: ToasterService,
     private deviceService: DeviceService,
     private commonService: CommonService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private deviceTypeService: DeviceTypeService
   ) { }
 
   ngOnInit(): void {
@@ -62,10 +66,46 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
       if (this.pageType === 'gateway') {
         this.getDevicesListByGateway();
       }
+      this.getControlWidgets();
     });
+
     // this.messageIdInterval = setInterval(() => {
     //   this.c2dMessageData.message_id = this.device.device_id + '_' + moment().unix();
     // }, 1000);
+  }
+
+  getControlWidgets() {
+    const obj = {
+      app: this.appName,
+      device_type: this.device.tags?.device_type
+    };
+    this.deviceTypeService.getThingsModelControlWidgets(obj).subscribe(
+      (response: any) => {
+        if (response?.data) {
+          response.data.forEach(item => item.type = 'control_widget');
+          this.controlWidgets = response.data;
+          this.getThingsModelDeviceMethod();
+        }
+      }
+    );
+  }
+
+  getThingsModelDeviceMethod() {
+    // this.deviceMethods = {};
+    const obj = {
+      app: this.appName,
+      name: this.device.tags?.device_type
+    };
+    this.deviceTypeService.getThingsModelDeviceMethods(obj).subscribe(
+      (response: any) => {
+        response.device_methods.forEach(item => item.type = 'device_method');
+        this.controlWidgets = [...response.device_methods, ...this.controlWidgets];
+      }
+    );
+  }
+
+  onChangeOfDropdownData() {
+
   }
 
   getDevicesListByGateway() {
@@ -89,7 +129,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
     this.remainingTime = null;
     this.sentMessageData = undefined;
     this.isMessageValidated = undefined;
-    if (!this.c2dMessageData.message) {
+    if (!this.selectedWidget.json_model) {
       this.toasterService.showError('Please type JSON in given box', 'Validate Message Detail');
       return;
     }
@@ -111,13 +151,15 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
       this.c2dMessageData.gateway_id = this.device.device_id;
     }
     this.sentMessageData = undefined;
+    this.c2dMessageData.message = this.selectedWidget.json_model;
     if (!this.c2dMessageData.message) {
       this.toasterService.showError('Please type JSON in given box', 'Validate Message Detail');
       return;
     }
     try {
       this.sentMessageData = JSON.parse(JSON.stringify(this.c2dMessageData));
-      this.sentMessageData.message = JSON.parse(this.sentMessageData.message);
+      console.log(this.sentMessageData);
+     // this.sentMessageData.message = JSON.parse(this.sentMessageData.message);
     } catch (e) {
       this.isMessageValidated = 'invalid';
       this.sentMessageData = undefined;
@@ -223,5 +265,6 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
     clearInterval(this.messageIdInterval);
     clearInterval(this.timerInterval);
   }
+
 
 }

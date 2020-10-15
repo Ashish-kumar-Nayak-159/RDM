@@ -2,17 +2,19 @@
 
   <div class="col-lg-7 col-xl-7 align-self-center">
     <div class="row">
-    <div><a href="javascript:void(0)" [class.disabled]="sentMessageData" (click)="validateMessage()" ><button type="button" class="btn btn-warning contact-form" > 1. Validate</button></a></div>
-    <div class='px-1'><hr></div>
-    <div><a  href="javascript:void(0)" [class.disabled]="sentMessageData" (click)="sentC2DMessage()" >
-      <button type="button" class="btn btn-warning" > 2. Send
+    <!-- <div><a href="javascript:void(0)" [class.disabled]="sentMessageData || !selectedWidget" (click)="validateMessage()" ><button type="button" class="btn btn-warning contact-form" > 1. Validate</button></a></div>
+    <div class='px-1'><hr></div> -->
+    <div><a  href="javascript:void(0)" [class.disabled]="sentMessageData || !selectedWidget" (click)="sentC2DMessage()" >
+      <button type="button" class="btn btn-warning" > 1. Send
         <i class="fa fa-spinner fa-spin fa-fw " *ngIf="isSendC2DMessageAPILoading"></i>
       </button>
     </a></div>
     <div class='px-1'><hr></div>
-    <div><a href="javascript:void(0)" [class.disabled]="!sentMessageData" (click)="onClickOfFeedback()"><button type="button" class="btn btn-warning"> 3. Feedback</button></a></div>
+    <div><a href="javascript:void(0)" [class.disabled]="!sentMessageData  || !selectedWidget" (click)="onClickOfFeedback()">
+      <button type="button" class="btn btn-warning"> 2. Feedback</button></a></div>
     <div class='px-1'><hr></div>
-    <div><a  href="javascript:void(0)"  [class.disabled]="!sentMessageData" (click)="onClickOfResponse()" ><button type="submit" class="btn btn-warning" > 4. Response</button></a></div>
+    <div><a  href="javascript:void(0)"  [class.disabled]="!sentMessageData  || !selectedWidget" (click)="onClickOfResponse()" >
+      <button type="submit" class="btn btn-warning" > 3. Response</button></a></div>
     </div>
   </div>
 
@@ -52,6 +54,28 @@
 
 </div>
 <div class="row mt-n3">
+  <div class="col-lg-12">
+    <hr class="solid" />
+  </div>
+</div>
+<div class="row ml-1" *ngIf="!sentMessageData">
+
+  <div class="col-lg-12 col-xl-12 align-self-center">
+
+    <div class="form-group row">
+      <label for="inputPassword" class="col-4 col-form-label">Select Control Widget / Device Methods:</label>
+      <div class="">
+        <select class="form-control form-control-sm" id="widget" name="acknowledge" [(ngModel)]="selectedWidget"
+        (change)="onChangeOfDropdownData()" style="width: 15rem!important;">
+          <option [ngValue]="widget" *ngFor="let widget of controlWidgets">{{widget.name}}</option>
+        </select>
+      </div>
+  </div>
+  </div>
+
+
+</div>
+<div class="row mt-n3" *ngIf="!sentMessageData">
   <div class="col-lg-12">
     <hr class="solid" />
   </div>
@@ -127,7 +151,7 @@
       <h6 class="h6 mb-0 text-gray-800">Message Body / Message JSON:</h6>
     </div>
 
-    <form id="contact-form">
+    <form id="contact-form" *ngIf="selectedWidget?.type === 'device_method'">
       <div class="form-group mr-3">
         <textarea
           class="form-control"
@@ -135,7 +159,8 @@
           rows="13"
           placeholder="Please type your JSON here.."
           name="message"
-          [(ngModel)]="c2dMessageData.message"
+          disabled
+          [defaultValue]="selectedWidget.json_model | json"
         ></textarea>
       </div>
     </form>

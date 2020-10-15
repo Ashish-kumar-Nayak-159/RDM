@@ -47,6 +47,18 @@ export class DeviceTypeService {
     return this.http.get(this.url + AppUrls.GET_THINGS_MODEL_PROPERTIES, { params });
   }
 
+
+  getThingsModelDeviceMethods(filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    console.log(params);
+    return this.http.get(this.url + AppUrls.GET_THINGS_MODEL_DEVICE_METHODS, { params });
+  }
+
   getThingsModelControlWidgets(filterObj) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
@@ -58,10 +70,8 @@ export class DeviceTypeService {
     return this.http.get(this.url + AppUrls.GET_THINGS_MODEL_CONTROL_WIDGETS, { params });
   }
 
-  createThingsModelControlWidget(modelObj, app) {
-    let params = new HttpParams();
-    params = params.set('app', app);
-    return this.http.post(this.url + AppUrls.CREATE_THINGS_MODEL_CONTROL_WIDGETS, modelObj, {params});
+  createThingsModelControlWidget(modelObj) {
+    return this.http.post(this.url + AppUrls.CREATE_THINGS_MODEL_CONTROL_WIDGETS, modelObj);
   }
 
   updateThingsModelControlWidget(modelObj, app) {

@@ -41,6 +41,13 @@ export class CommandsComponent implements OnInit {
     this.timerObj = undefined;
   }
 
+  onClickOfSpecificCommands() {
+    this.displayMode = '';
+    setTimeout(() => {
+      this.displayMode = 'specific_commands';
+    }, 500);
+    this.timerObj = undefined;
+  }
 
 
 }

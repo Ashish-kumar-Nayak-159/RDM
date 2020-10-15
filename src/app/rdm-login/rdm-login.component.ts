@@ -23,7 +23,6 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.usersList = CONSTANTS.USERS_LIST;
     if (this.userData) {
       if (this.userData.is_super_admin) {
 

@@ -1,8 +1,9 @@
 import { ToasterService } from './../../../services/toaster.service';
 import { CONSTANTS } from 'src/app/app.constants';
 import { DeviceTypeService } from './../../../services/device-type/device-type.service';
-import { Component, Input, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, ViewChild } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
+import { JsonEditorOptions, JsonEditorComponent } from 'ang-jsoneditor';
 
 declare var $: any;
 @Component({
@@ -25,13 +26,17 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
   dataTypeList = CONSTANTS.PROPERTY_DATA_TYPE_LIST;
   isCreatePropertyLoading = false;
   selectedProperty: any;
+  editorOptions: JsonEditorOptions;
+  @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   constructor(
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService,
   ) { }
 
   ngOnInit(): void {
-    this.setUpPropertyData();
+    this.editorOptions = new JsonEditorOptions();
+    this.editorOptions.mode = 'code';
+    this.editorOptions.statusBar = false;
   }
 
   ngOnChanges(changes): void {
@@ -129,6 +134,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
     } else {
       this.propertyObj.json_model = {};
     }
+    this.editor.set(this.propertyObj.json_model);
   }
 
   onDataTypeChange() {
@@ -143,11 +149,20 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
     } else {
       this.propertyObj.json_model = {};
     }
+    this.editor.set(this.propertyObj.json_model);
   }
+
+
 
   onSavePropertyObj() {
     if (!this.propertyObj.name || !this.propertyObj.json_key || !this.propertyObj.data_type ) {
       this.toasterService.showError('Please fill the form correctly', 'Add Property');
+      return;
+    }
+    try {
+      this.propertyObj.json_model = this.editor.get();
+    } catch (e) {
+      this.toasterService.showError('Invalid JSON data', 'Add Property');
       return;
     }
     this.isCreatePropertyLoading = true;

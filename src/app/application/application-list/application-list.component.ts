@@ -88,8 +88,6 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
     this.appModalType = 'Create';
     this.applicationDetail = {
       metadata: {
-        contain_gateways: true,
-        contain_devices: false
       }
     };
     $('#createAppModal').modal({ backdrop: 'static', keyboard: false, show: true });

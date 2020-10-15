@@ -1,0 +1,120 @@
+.w-16 {
+  width: 13%!important;
+  /* height: 20px; */
+}
+
+.select-item {
+  /* width: 10%!important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; */
+}
+
+.pure-checkbox input[type="checkbox"] + label .c-btn{
+  color: #6e707e!important;
+}
+.w-11 {
+  width: 11.5%!important;
+}
+
+.chartTypeDropdown{
+  border: 1px solid #d1d3e2;
+  /* border-radius: 10px; */
+  /* height: 32px; */
+}
+
+#dropdownMenu2{
+  padding-top : 2px;
+}
+
+/* #chartTitle{
+
+  width: 125px;
+} */
+
+.multi-select{
+  margin:0rem !important;
+}
+
+.chartsContainer{
+  height: 500px;
+}
+
+.lbl{
+  justify-content: normal;
+}
+.dropdown-toggle::after {
+  display: inline-block;
+  margin-left: .255em;
+  vertical-align: .255em;
+  content: "";
+  border-top: .3em solid;
+  border-right: .3em solid transparent;
+  border-bottom: 0;
+  border-left: .3em solid transparent;
+  float: right;
+  margin-top: 7px;
+}
+#dropdownMenuButton{
+  text-align: left;
+  font-size: .875rem;
+}
+.showLayout{
+  display: block;
+  padding-bottom: 45px;
+  /* overflow-y: scroll; */
+  /* width: 60rem */
+}
+.hideLayout{
+  display: none;
+}
+.dropdown-menu{
+  top: 30px !important;
+  transform: translate3d(0px, -2px, 0px) !important;
+}
+.custom-class-example {
+  width: 11%!important;
+}
+
+.c-btn {
+  display: inline-block;
+  border-width: 1px;
+  line-height: 1.25;
+  border-radius: 3px;
+  font-size: .85rem;
+  padding: 5px 10px;
+  cursor: pointer;
+  align-items: center;
+  height: calc(1.5em + .5rem + 2px)!important;
+  min-height: calc(1.5em + .5rem + 2px)!important;
+  color: #858796!important;
+  padding: 14px !important;
+  color : #858796
+  }
+
+  .c-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 10px;
+    width: 7rem;
+    color: #858796!important;
+  }
+
+  .selected-list .c-angle-down, .selected-list .c-angle-up {
+    top: 42%!important;
+  }
+  .selected-list .c-list .c-token {
+    /* background: transparent; */
+    padding: 0!important;
+  }
+
+  .cuppa-dropdown {
+    /* width: 20.5rem!important; */
+    font: 400 13.3333px Arial;
+    color: #6e707e;
+  }
+
+  .dropdown-list{
+    width: 100% !important;
+  }

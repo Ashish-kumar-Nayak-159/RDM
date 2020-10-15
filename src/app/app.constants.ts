@@ -1,25 +1,4 @@
 export class CONSTANTS {
-  // user list for login check
-  public static USERS_LIST = [
-    {
-      email: 'sombabu@kemsys.com',
-      username: 'Sombabu Gunithi',
-      password: 'admin',
-      app: 'Adani'
-    },
-    {
-      email: 'yash@kemsys.com',
-      username: 'Yash Mochi',
-      password: 'admin',
-      app: 'IDEX'
-    },
-    {
-      email: 'urvisha@kemsys.com',
-      username: 'Urvisha Seladiya',
-      password: 'admin',
-      app: 'ccd'
-    }
-  ];
 
   public static DEVICE_RESERVED_TAGS_LIST = [
     {
@@ -104,60 +83,7 @@ export class CONSTANTS {
     ]
   };
 
-  public static APP_PROP_LIST = {
-    ccd: [
-      'temperature',
-      'flow',
-      'pressure',
-      'R_Bus_Temperature',
-      'Y_Bus_Temperature',
-      'B_Bus_Temperature',
-      'R_Bus_Voltage',
-      'Y_Bus_Voltage',
-      'B_Bus_Voltage',
-      'voltage',
-      'phase_current',
-      'neutral_current',
-      'frequency_Hz',
-      'cumulative_energy_kWh'
-    ],
-    IDEX: [
-      'temperature',
-      'flow',
-      'pressure',
-    ],
-    Adani: [
-    'R_Bus_Temperature',
-    'Y_Bus_Temperature',
-    'B_Bus_Temperature',
-    'R_Bus_Voltage',
-    'Y_Bus_Voltage',
-    'B_Bus_Voltage'
-    ],
-    Kirloskar: [
-      'SpindleTemp_0_path1_Top_Center_OP40',
-      'PulseCoderTemp_2_path1_Top_Center_OP40',
-      'ServoTemp_1_path1_Top_Center_OP40',
-      'ServoTemp_2_path1_Top_Center_OP40',
-      'PulseCoderTemp_0_path1_Top_Center_OP40',
-      'PulseCoderTemp_1_path1_Top_Center_OP40',
-      'ServoTemp_0_path1_Top_Center_OP40',
-      'PulseCoderTemp_3_path1_Top_Center_OP40',
-      'ServoTemp_3_path1_Top_Center_OP40'
-    ],
-    NTT: [
-      'voltage',
-      'phase_current',
-      'neutral_current',
-      'frequency_Hz',
-      'cumulative_energy_kWh'
-    ],
-    IIoT_App: [
-      'temperature',
-      'flow',
-      'pressure',
-    ]
-  };
+
 
   public static PROTOCOL_CONNECTIVITY_LIST = [
     {
@@ -318,13 +244,19 @@ export class CONSTANTS {
     },
     {
       name: 'String',
-      validations: []
+      validations: ['units']
     },
     {
       name: 'Enum',
       validations: ['enum']
     }
-  ]
+  ];
+
+  public static DEVICE_METHODS = [
+    'REBOOT',
+    'FOTA',
+    'TELEMETRY_INTERVAL_CHANGE'
+  ];
 
   public static USER_DETAILS = 'userData';
   public static CURRENT_BREADCRUMB_STATE = 'breadcrumbState';

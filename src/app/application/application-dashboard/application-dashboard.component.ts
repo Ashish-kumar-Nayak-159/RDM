@@ -63,8 +63,10 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
   appName: string;
   contextApp: any;
   constantData = CONSTANTS;
+  tileName: string;
   constructor(
     private applicationService: ApplicationService,
+
     private router: Router,
     private commonService: CommonService,
     private route: ActivatedRoute
@@ -72,12 +74,16 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    console.log('22222    ', this.commonService.getFlag());
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
       this.contextApp = this.userData.apps.filter(
         app => app.app === params.get('applicationId')
       )[0];
       console.log(this.contextApp);
+      this.tileName = this.getTileName(
+        (this.contextApp?.metadata?.contain_devices && !this.contextApp?.metadata?.contain_gateways ? 'IoT Devices' :
+        (!this.contextApp?.metadata?.contain_devices && this.contextApp?.metadata?.contain_gateways ? 'IoT Gateways' : '')));
       if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.logo) {
         this.contextApp.metadata.logo = {
           url : CONSTANTS.DEFAULT_APP_LOGO
@@ -128,6 +134,18 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
   //     }
   //   );
   // }
+
+  getTileName(type) {
+    let name;
+    this.contextApp.configuration.forEach(item => {
+      console.log((item.system_name === type));
+      if (item.system_name === type) {
+        name = item.display_name;
+      }
+    });
+    console.log(name);
+    return name;
+  }
 
   /**
    * It will call the application dashboard snapshot API

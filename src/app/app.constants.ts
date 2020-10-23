@@ -160,6 +160,14 @@ export class CONSTANTS {
       visible: true
     },
     {
+      page: 'Dashboard',
+      system_name: 'Dashboard',
+      url: 'applications/:appName/dashboard',
+      display_name: 'Dashboard',
+      icon: 'fas fa-fw fa-bar-chart',
+      visible: true
+    },
+    {
       page: 'Devices',
       system_name: 'IoT Devices',
       url: 'applications/:appName/devices',
@@ -187,7 +195,7 @@ export class CONSTANTS {
       page: 'Things Modelling',
       system_name: 'Things Modelling',
       url: 'applications/:appName/things/model',
-      display_name: 'Things Modelling',
+      display_name: 'Asset Modelling',
       icon: 'fas fa-fw fa-list',
       visible: true
     },
@@ -236,19 +244,19 @@ export class CONSTANTS {
   public static PROPERTY_DATA_TYPE_LIST = [
     {
       name: 'Number',
-      validations: ['minValue', 'maxValue', 'precision', 'units']
+      validations: ['minValue', 'maxValue', 'precision', 'units', 'defaultValue']
     },
     {
       name: 'Boolean',
-      validations: []
+      validations: ['defaultValue']
     },
     {
       name: 'String',
-      validations: ['units']
+      validations: ['units', 'defaultValue']
     },
     {
       name: 'Enum',
-      validations: ['enum']
+      validations: ['enum', 'defaultValue']
     }
   ];
 

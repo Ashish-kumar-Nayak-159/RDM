@@ -50,7 +50,7 @@ export class DeviceTypeListComponent implements OnInit {
             url: 'applications/' + this.contextApp.app
           },
             {
-              title: 'Things Modelling',
+              title: 'Asset Models',
               url: 'applications/' + this.contextApp.app + '/' + 'things/model'
             }
         ]

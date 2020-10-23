@@ -23,6 +23,26 @@ export class ApplicationMenuSettingsComponent implements OnInit {
   ngOnInit(): void {
     if (this.applicationData.configuration && this.applicationData.configuration.length === 0) {
       this.applicationData.configuration = CONSTANTS.SIDE_MENU_LIST;
+    } else {
+      console.log(this.applicationData.configuration);
+      const arr = [];
+      CONSTANTS.SIDE_MENU_LIST.forEach(item => {
+        let flag = false;
+        this.applicationData.configuration.forEach(menu => {
+          if (menu.page === item.page) {
+            flag = true;
+            console.log(menu);
+            menu.display_name = item.display_name;
+            menu.visible = item.visible;
+            arr.push(menu);
+          }
+        });
+        if (!flag) {
+          arr.push(item);
+        }
+      });
+      console.log(arr);
+      this.applicationData.configuration = arr;
     }
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
 

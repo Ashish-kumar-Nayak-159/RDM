@@ -48,7 +48,7 @@ export class DeviceListComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.commonService.setFlag(true);
+  //  this.commonService.setFlag(true);
     this.route.paramMap.subscribe(params => {
       this.protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
       this.devicesList = [];

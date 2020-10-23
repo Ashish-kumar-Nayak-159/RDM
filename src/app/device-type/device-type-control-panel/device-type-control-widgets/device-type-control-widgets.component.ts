@@ -1,6 +1,7 @@
 import { ToasterService } from './../../../services/toaster.service';
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { JsonEditorOptions, JsonEditorComponent } from 'ang-jsoneditor';
 
 declare var $: any;
 @Component({
@@ -17,6 +18,9 @@ export class DeviceTypeControlWidgetsComponent implements OnInit {
   properties: any;
   isCreateWidgetAPILoading = false;
   deviceMethods: any[] = [];
+  editorOptions: JsonEditorOptions;
+  @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
+  isGetControlWidgetAPILoading = false;
   constructor(
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService
@@ -24,6 +28,9 @@ export class DeviceTypeControlWidgetsComponent implements OnInit {
 
   ngOnInit(): void {
     console.log(this.deviceType);
+    this.editorOptions = new JsonEditorOptions();
+    this.editorOptions.mode = 'code';
+    this.editorOptions.statusBar = false;
     this.getThingsModelProperties();
     this.getControlWidgets();
   }
@@ -57,16 +64,18 @@ export class DeviceTypeControlWidgetsComponent implements OnInit {
 
 
   getControlWidgets() {
+    this.isGetControlWidgetAPILoading = true;
     const obj = {
       app: this.deviceType.app,
-      device_type: this.deviceType.id
+      device_type: this.deviceType.name
     };
     this.deviceTypeService.getThingsModelControlWidgets(obj).subscribe(
       (response: any) => {
         if (response?.data) {
           this.controlWidgets = response.data;
         }
-      }
+        this.isGetControlWidgetAPILoading = false;
+      }, error => this.isGetControlWidgetAPILoading = false
     );
   }
 
@@ -96,7 +105,7 @@ export class DeviceTypeControlWidgetsComponent implements OnInit {
       propObj.json_model[propObj.json_key];
       // this.controlWidget.properties.push(propObj);
     }
-    // this.editor.set(this.controlWidget.json);
+    this.editor.set(this.controlWidget.json);
     console.log(this.controlWidget);
   }
 
@@ -110,6 +119,7 @@ export class DeviceTypeControlWidgetsComponent implements OnInit {
       this.controlWidget.json[propObj.json_key] =
       propObj.json_model[propObj.json_key];
     });
+    this.editor.set(this.controlWidget.json);
   }
 
   deselectAllProps(event) {
@@ -118,6 +128,7 @@ export class DeviceTypeControlWidgetsComponent implements OnInit {
         type: 'string'
       }
     };
+    this.editor.set(this.controlWidget.json);
   }
 
   createControlWidget() {
@@ -127,6 +138,12 @@ export class DeviceTypeControlWidgetsComponent implements OnInit {
     }
     if (this.controlWidget.properties.length === 0) {
       this.toasterService.showError('Please select at least one property', 'Create Control Widget');
+      return;
+    }
+    try {
+      this.controlWidget.json_model = this.editor.get();
+    } catch (e) {
+      this.toasterService.showError('Invalid JSON data', 'Create Control Widget');
       return;
     }
     this.isCreateWidgetAPILoading = true;

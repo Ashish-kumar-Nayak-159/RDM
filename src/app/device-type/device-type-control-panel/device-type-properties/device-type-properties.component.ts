@@ -146,6 +146,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
       });
       this.propertyObj.json_model = {};
       this.propertyObj.json_model[this.propertyObj.json_key] =  obj;
+      this.propertyObj.json_model[this.propertyObj.json_key].type = this.propertyObj.data_type.toLowerCase();
     } else {
       this.propertyObj.json_model = {};
     }

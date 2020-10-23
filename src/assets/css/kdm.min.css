@@ -11801,3 +11801,182 @@ padding-bottom: 1.5rem;
     object-fit: contain;
     mix-blend-mode: multiply;
 }
+.tank {
+	width: 30%;
+	text-align:center;
+}
+.tk {
+	/*position: relative;*/
+	position: absolute;
+	width: 250px;
+	height: 300px;
+	padding-top: 0px;
+	margin: 0 auto;
+	margin-left: 2px;
+	margin-top: 6px;
+	background: rgba(229, 235, 236, 0.8);
+	border-radius: 100%/70px;
+	border-bottom: 3px solid #000;
+	/*border-top: 0px solid #000;
+	border-left: 0px solid #000;
+	border-right: 0px solid #000;*/
+	text-align: center;
+	z-index: 1;
+	overflow: hidden;
+}
+.lq {
+   position: absolute;
+   background:#00acff; /*rgba(116, 198, 217, 0.99)*/;
+   width: 100%;
+   height:0;
+   bottom: 0;
+   border-radius:100%/40px;
+   border-bottom:1px solid #000;
+}
+.ring1 {
+  position: absolute;
+  border-radius:100%;
+  top: 0;
+  width: 100%;
+  height:0.05%;
+  content: '';
+  border: 1px solid #58c8fe;
+
+}
+.text-tank {
+  display: block;
+  position:absolute;
+  top: 45%;
+  left: 37%;
+  z-index: 1;
+  color: #000;
+}
+.card-img-top1 {
+	width: 270px;
+	height: 326px;
+	flex-shrink: 0;
+}
+.circle {
+  width: 100px;
+  height: 100px;
+  line-height: 20px;
+  padding-top:35px;
+  border-radius: 50%;
+  font-size: 25px;
+  color: #fff;
+  text-align: center;
+  background: #4e73df;
+}
+.circle1 {
+  width: 100px;
+  height: 100px;
+  line-height: 20px;
+  padding-top:35px;
+  border-radius: 50%;
+  font-size: 25px;
+  color: #000;
+  text-align: center;
+  background: orange;
+}
+.circle2 {
+  width: 6rem;
+  height: 6rem;
+  line-height: 20px;
+  padding-top:35px;
+  border-radius: 50%;
+  font-size: 25px;
+  color: #000;
+  text-align: center;
+  background: #f0f0f0;
+}
+
+
+.button {
+  border: none;
+  color: black;
+  padding: 0px 10px;
+  text-align: center;
+  font-size: 12px;
+  color: #fff;
+  text-decoration: none;
+  display: inline-block;
+  margin: 4px 2px;
+  border-radius: 16px;
+}
+.barcontainer {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  min-height: 3vw;
+  max-height: 50vw;
+  min-width: 30%;
+  max-width: 100%;
+  z-index: 1;
+}
+
+.bar {
+  position: absolute;
+  display: inline-block;
+  bottom: 0;
+  background: #64a5e2;
+  width: 30%;
+  text-align: center;
+  color: #000;
+  font-size:9px;
+  /*box-shadow: 4px 0 8px #888;*/
+}
+
+.barlabel {
+  position: absolute;
+  bottom: -15px;
+  width: 100%;
+  color: #000;
+  font-size:9px;
+}
+
+.bar:nth-child(2) {
+  left: 50%;
+}
+
+.barcontainer1 {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  min-height: 2vw;
+  max-height: 5vw;
+  min-width: 5vh;
+  max-width: 20vh;
+  z-index: 1;
+}
+
+.bar1 {
+  position: absolute;
+  display: inline-block;
+  top: -30%;
+  bottom: 0;
+  background: #64a5e2;
+  height: 50%;
+  text-align: center;
+  color: #fff;
+  font-size:10px;
+  /*box-shadow: 4px 0 8px #888;*/
+}
+
+.barlabel1 {
+  position: absolute;
+  bottom: 15px;
+  width: 100%;
+  color: #000;
+  font-size:12px;
+}
+
+.bar1:nth-child(2) {
+  top: 130%;
+  left: 0%;
+}
+.chart {
+  width: 80px;
+  height: 30px;
+}
+

@@ -5,7 +5,7 @@
 
     <!-- Main Content -->
     <div id="{{isHomeRoute ? '' : 'content'}}">
-      <app-header *ngIf="!isHomeRoute" [isLoginRoute]="isLoginRoute"  [appName]="appName"></app-header>
+      <app-header *ngIf="!isHomeRoute" [isLoginRoute]="isLoginRoute" [url]="url" [appName]="appName"></app-header>
       <!-- Begin Page Content -->
       <div id="container-fluid-div" [ngClass]="{'container-fluid': !isHomeRoute}">
         <router-outlet></router-outlet>

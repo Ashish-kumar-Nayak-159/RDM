@@ -16,6 +16,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   isHomeRoute = false;
   appName: string;
   userData: any;
+  url: any;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -40,9 +41,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-
+    this.url = this.router.url;
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
+        this.url = event.url;
         const list = event.url.split('/');
         if (list[1] === 'applications' && list[2]) {
           this.appName = list[2];

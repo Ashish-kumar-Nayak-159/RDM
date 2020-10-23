@@ -16,6 +16,7 @@ declare var $: any;
 export class HeaderComponent implements OnInit, OnChanges {
   breadcrumbData: any[] = [];
   userData: any;
+  @Input() url: string;
   @Input() appName = '';
   @Input() isLoginRoute = false;
   contextApp: any;

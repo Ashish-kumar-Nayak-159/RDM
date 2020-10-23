@@ -30,13 +30,24 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
     // if (this.userData && !this.userData.is_super_admin) {
     //   this.appName = this.userData.apps[0].app;
     // }
+
     if (this.appName) {
       this.appData = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
-      console.log(this.appData);
       if (!this.userData?.is_super_admin) {
       let data = [];
       if (this.appData.configuration && this.appData.configuration.length > 0) {
-        data = this.appData.configuration;
+        this.constantsData.SIDE_MENU_LIST.forEach(config => {
+          let found = false;
+          this.appData.configuration.forEach(item => {
+            if (config.page === item.page) {
+              found = true;
+              data.push(item);
+            }
+          });
+          if (!found) {
+            data.push(config);
+          }
+        });
       } else {
         data =  this.constantsData.SIDE_MENU_LIST;
       }
@@ -57,11 +68,21 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
         }
         if (this.appName) {
         this.appData = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
-        console.log(this.appData);
         if (!this.userData?.is_super_admin) {
         let data = [];
         if (this.appData.configuration && this.appData.configuration.length > 0) {
-          data = this.appData.configuration;
+          this.constantsData.SIDE_MENU_LIST.forEach(config => {
+            let found = false;
+            this.appData.configuration.forEach(item => {
+              if (config.page === item.page) {
+                found = true;
+                data.push(item);
+              }
+            });
+            if (!found) {
+              data.push(config);
+            }
+          });
         } else {
           data =  this.constantsData.SIDE_MENU_LIST;
         }
@@ -90,6 +111,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
   }
 
   processSideMenuData(data, list) {
+    console.log('data    ', data);
     const arr = [];
     console.log(list);
     data.forEach(item => {

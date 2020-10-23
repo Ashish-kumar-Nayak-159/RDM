@@ -3,7 +3,7 @@
   <div class="sidebar1 sidebar-light mb-3 ">
 
     <div class="sidebar1-heading bg-warning text-white py-2">
-      <span style="font-size:0.9rem; margin-right:2rem;">Control Panel </span>
+      <span style="font-size:0.8rem; margin-right:1.5rem;">Model Definition </span>
       <button class="d-none d-md-inline rounded-circle border-0 mb-0" id="sidebar1Toggle" title="Minimize" (click)="onSidebarToggle()"></button>
       <i class="fas fa-fw fa" style="font-size:1rem; margin-top:0.5rem;margin-left:0.3rem">CP</i>
 		</div>
@@ -81,6 +81,20 @@
           <span>Control Widgets</span></a>
       </li>
 
+      <!-- Heading -->
+      <div class="sidebar1-heading">
+        Visualization
+      </div>
+      <!-- Divider -->
+      <hr class="sidebar1-divider">
+      <!-- Nav Item - Charts -->
+      <li class="nav-item" [ngClass]="{'active': activeTab === 'layout'}">
+        <a class="nav-link" href="#device_type_layout" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('layout')">
+
+          <i class="fas fa-fw fa-bar-chart" title="Layout"></i>
+          <span>Layout</span></a>
+      </li>
+
       <!-- Divider -->
       <hr class="sidebar1-divider d-none d-md-block">
 
@@ -121,6 +135,9 @@
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel" id="device_type_control_widgets">
         <app-device-type-control-widgets *ngIf="activeTab === 'control_widgets' && deviceType" [deviceType]="deviceType"></app-device-type-control-widgets>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'layout'}" role="tabpanel" id="device_type_layout">
+        <app-device-type-layout *ngIf="activeTab === 'layout' && deviceType" [deviceType]="deviceType"></app-device-type-layout>
       </div>
       <!-- /.container1-fluid -->
 

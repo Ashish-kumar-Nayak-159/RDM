@@ -15,6 +15,9 @@ import { DeviceTypeJsonPacketFormatComponent } from './device-type-control-panel
 import { DeviceTypeControlWidgetsComponent } from './device-type-control-panel/device-type-control-widgets/device-type-control-widgets.component';
 import { DeviceTypeDeviceMethodsComponent } from './device-type-control-panel/device-type-device-methods/device-type-device-methods.component';
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
+import { DeviceTypeLayoutComponent } from './device-type-control-panel/device-type-layout/device-type-layout.component';
+import { DeviceTypeHistoryLayoutComponent } from './device-type-control-panel/device-type-layout/device-type-history-layout/device-type-history-layout.component';
+import { DeviceTypeLiveLayoutComponent } from './device-type-control-panel/device-type-layout/device-type-live-layout/device-type-live-layout.component';
 
 
 
@@ -27,7 +30,10 @@ import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
     DeviceTypePropertiesComponent,
     DeviceTypeJsonPacketFormatComponent,
     DeviceTypeControlWidgetsComponent,
-    DeviceTypeDeviceMethodsComponent
+    DeviceTypeDeviceMethodsComponent,
+    DeviceTypeLayoutComponent,
+    DeviceTypeHistoryLayoutComponent,
+    DeviceTypeLiveLayoutComponent
   ],
   imports: [
     CommonModule,
@@ -38,7 +44,6 @@ import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
     AccordionModule.forRoot(),
     NgJsonEditorModule,
     AngularMultiSelectModule
-
   ]
 })
 export class DeviceTypeModule { }

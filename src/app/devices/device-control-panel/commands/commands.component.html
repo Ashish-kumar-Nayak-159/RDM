@@ -7,23 +7,23 @@
 
   <ul class="nav">
       <!-- Nav Item - Tables -->
-      <li class="nav-item">
+      <li class="nav-item" [ngClass]="{'active': displayMode === 'view'}">
         <a class="nav-link"  href="javascript:void(0)" (click)="displayMode = 'view'; timerObj = undefined;">
           <i class="fas fa-fw fa-eye"></i>
           <span>View</span></a>
       </li>
     <!-- Nav Item - Charts -->
-    <li class="nav-item">
+    <li class="nav-item"  [ngClass]="{'active': displayMode === 'specific_commands'}">
       <a class="nav-link"  href="javascript:void(0)" (click)="onClickOfSpecificCommands()">
         <i class="fas fa-fw fa-edit"></i>
         <span>Send Specific Command</span></a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" [ngClass]="{'active': displayMode === 'general_commands'}">
       <a class="nav-link" href="javascript:void(0)" (click)="onClickOfGeneralCommands()">
         <i class="fas fa-fw fa-edit"></i>
         <span>Send General Command</span></a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" [ngClass]="{'active': displayMode === 'purge'}">
       <a class="nav-link" href="javascript:void(0)" (click)="displayMode = 'purge'; timerObj = undefined;">
         <i class="fas fa-fw fa-trash"></i>
         <span>Purge</span></a>

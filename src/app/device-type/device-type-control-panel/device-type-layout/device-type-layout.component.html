@@ -1,0 +1,33 @@
+<div class="topnavbar bg-white py-2" >
+  <div class="row">
+
+    <ul class="nav">
+      <!-- <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)">
+          <i class="fas fa-fw fa-eye"></i>
+          <span class="text-secondary">View</span></a>
+      </li> -->
+      <li class="nav-item" [ngClass]="{'active': viewType === 'history'}">
+        <a class="nav-link" href="javascript:void(0)" (click)="setViewType('history')">
+          <i class="fas fa-fw fa-history"></i>
+          <span class="text-secondary">History</span></a>
+      </li>
+      <li class="nav-item" [ngClass]="{'active': viewType === 'live'}">
+        <a class="nav-link" href="javascript:void(0)" (click)="setViewType('live')">
+          <i class="fas fa-fw fa-stream"></i>
+          <span class="text-secondary">Live</span></a>
+      </li>
+
+    </ul>
+  </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <hr class="solid">
+      </div>
+    </div>
+
+  </div>
+  <div class="con-pad" [ngClass]="{'con-pad-extra-margin':viewType=='history' || viewType=='live'}">
+        <app-device-type-history-layout *ngIf="viewType === 'history'" [deviceType]="deviceType"></app-device-type-history-layout>
+        <app-device-type-live-layout *ngIf="viewType === 'live'" [deviceType]="deviceType"></app-device-type-live-layout>
+  </div>

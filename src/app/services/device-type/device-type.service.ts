@@ -47,6 +47,17 @@ export class DeviceTypeService {
     return this.http.get(this.url + AppUrls.GET_THINGS_MODEL_PROPERTIES, { params });
   }
 
+  getThingsModelLayout(filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    console.log(params);
+    return this.http.get(this.url + AppUrls.GET_THINGS_MODEL_LAYOUT, { params });
+  }
+
 
   getThingsModelDeviceMethods(filterObj) {
     let params = new HttpParams();

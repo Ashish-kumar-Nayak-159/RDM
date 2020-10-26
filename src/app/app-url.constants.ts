@@ -44,4 +44,5 @@ export class AppUrls {
   public static CREATE_THINGS_MODEL_CONTROL_WIDGETS = 'device_type/control_widget';
   public static UPDATE_THINGS_MODEL_CONTROL_WIDGETS = 'device_type/control_widget';
   public static GET_THINGS_MODEL_DEVICE_METHODS = 'device_types/device_methods';
+  public static GET_THINGS_MODEL_LAYOUT = 'device_types/layouts';
 }

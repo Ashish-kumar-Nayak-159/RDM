@@ -374,6 +374,7 @@ export class HistoryComponent implements OnInit, OnChanges {
   }
 
   addChart() {
+    console.log(this.y1AxisProps, '====', this.y2AxisProp);
     this.plotChart(null).then((chart: any) => {
       if (!chart.y1axis) {
         chart.y1axis = [];

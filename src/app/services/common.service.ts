@@ -84,6 +84,10 @@ export class CommonService {
     return null;
   }
 
+  randomIntFromInterval(min, max): number {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
   onLogOut() {
     localStorage.removeItem(CONSTANTS.USER_DETAILS);
     localStorage.removeItem('breadcrumbState');

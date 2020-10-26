@@ -19,6 +19,7 @@ export class ChartWidgetComponent implements OnInit, AfterViewInit {
   public y1axis = [];
   public y2axis = [];
   dates = [];
+  layoutData: any[] = [];
   months = [
     'Jan',
     'Feb',
@@ -76,7 +77,7 @@ export class ChartWidgetComponent implements OnInit, AfterViewInit {
 
   historyFilter: any = {};
   apiSubscriptions: Subscription[] = [];
-  historyData: any[] = [];
+  layoutData: any[] = [];
   device = new Device();
   isLayout = false;
   y1AxisProps = [];
@@ -129,6 +130,7 @@ export class ChartWidgetComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
+    console.log(this.currentLayout);
     if (Object.keys(this.currentLayout).length === 0) {
       this.currentLayout = null;
       if (this.type.indexOf('Pie') <= -1) {
@@ -350,125 +352,97 @@ export class ChartWidgetComponent implements OnInit, AfterViewInit {
       delete obj.y1AxisProperty;
       delete obj.y2AxisProperty;
       delete obj.xAxisProps;
-      this.apiSubscriptions.push(
-        this.deviceService.getDeviceTelemetry(obj).subscribe(
-          (response: any) => {
-            this.isFilterSelected = true;
-            if (response && response.data) {
-              lineGoogleChartData.dataTable = [];
-              let historyData = [];
-              historyData = response.data;
-              this.historyData = historyData;
-              this.isLoading = false;
-              historyData.reverse();
+      if (this.layoutData) {
+        lineGoogleChartData.dataTable = [];
+        this.isLoading = false;
+        this.layoutData.reverse();
 
-              const dataList = [];
-              dataList.push(currentHistoryFilter.xAxisProps);
-              let title = '';
-              currentHistoryFilter.y1AxisProperty.forEach((prop, index) => {
-                dataList.splice(dataList.length, 0, {
-                  label: prop,
-                  type: 'number',
-                });
-                title +=
-                  prop +
-                  (index !== currentHistoryFilter.y1AxisProperty.length - 1
-                    ? ' & '
-                    : '');
-                lineGoogleChartData.options.series[index.toString()] = {
-                  targetAxisIndex: 0,
-                };
-              });
-              lineGoogleChartData.options.vAxes = {
-                0: { title },
-              };
-              if (currentHistoryFilter.y2AxisProperty) {
-                title = '';
-                currentHistoryFilter.y2AxisProperty.forEach((prop, index) => {
-                  dataList.splice(dataList.length, 0, {
-                    label: prop,
-                    type: 'number',
-                  });
-                  title +=
-                    prop +
-                    (index !== currentHistoryFilter.y2AxisProperty.length - 1
-                      ? ' & '
-                      : '');
-                  lineGoogleChartData.options.series[
-                    currentHistoryFilter.y1AxisProperty.length + index
-                  ] = { targetAxisIndex: 1 };
-                });
-                lineGoogleChartData.options.vAxes['1'] = { title };
+        const dataList = [];
+        dataList.push(currentHistoryFilter.xAxisProps);
+        let title = '';
+        currentHistoryFilter.y1AxisProperty.forEach((prop, index) => {
+          dataList.splice(dataList.length, 0, {
+            label: prop,
+            type: 'number',
+          });
+          title +=
+            prop +
+            (index !== currentHistoryFilter.y1AxisProperty.length - 1
+              ? ' & '
+              : '');
+          lineGoogleChartData.options.series[index.toString()] = {
+            targetAxisIndex: 0,
+          };
+        });
+        lineGoogleChartData.options.vAxes = {
+          0: { title },
+        };
+        if (currentHistoryFilter.y2AxisProperty) {
+          title = '';
+          currentHistoryFilter.y2AxisProperty.forEach((prop, index) => {
+            dataList.splice(dataList.length, 0, {
+              label: prop,
+              type: 'number',
+            });
+            title +=
+              prop +
+              (index !== currentHistoryFilter.y2AxisProperty.length - 1
+                ? ' & '
+                : '');
+            lineGoogleChartData.options.series[
+              currentHistoryFilter.y1AxisProperty.length + index
+            ] = { targetAxisIndex: 1 };
+          });
+          lineGoogleChartData.options.vAxes['1'] = { title };
+        }
+        lineGoogleChartData.dataTable.push(dataList);
+        const tempData = {};
+        if (type.indexOf('Pie') >= 0) {
+          this.layoutData.forEach((history) => {
+            if (history[currentHistoryFilter.xAxisProps]) {
+              if (tempData[history[currentHistoryFilter.xAxisProps]]) {
+                tempData[history[currentHistoryFilter.xAxisProps]]++;
+              } else {
+                tempData[history[currentHistoryFilter.xAxisProps]] = 1;
               }
-              lineGoogleChartData.dataTable.push(dataList);
-              const tempData = {};
-              if (type.indexOf('Pie') >= 0) {
-                historyData.forEach((history) => {
-                  if (history[currentHistoryFilter.xAxisProps]) {
-                    if (tempData[history[currentHistoryFilter.xAxisProps]]) {
-                      tempData[history[currentHistoryFilter.xAxisProps]]++;
-                    } else {
-                      tempData[history[currentHistoryFilter.xAxisProps]] = 1;
-                    }
-                  }
-                });
-              }
-              historyData.forEach((history) => {
-                history.local_created_date = this.commonService.convertUTCDateToLocal(
-                  history.message_date
-                );
-                const list = [];
-                if (type.indexOf('Pie') >= 0) {
-                  if (
-                    list.indexOf([
-                      history[currentHistoryFilter.xAxisProps],
-                      null,
-                    ]) <= -1
-                  ) {
-                    list.splice(0, 0, history[currentHistoryFilter.xAxisProps]);
-                  }
-                } else {
-                  list.splice(0, 0, new Date(history.local_created_date));
-                  currentHistoryFilter.y1AxisProperty.forEach((prop) => {
-                    if (!isNaN(parseFloat(history[prop]))) {
-                      list.splice(list.length, 0, parseFloat(history[prop]));
-                    } else {
-                      list.splice(list.length, 0, null);
-                    }
-                  });
-                  if (currentHistoryFilter.y2AxisProperty) {
-                    currentHistoryFilter.y2AxisProperty.forEach((prop) => {
-                      if (!isNaN(parseFloat(history[prop]))) {
-                        list.splice(list.length, 0, parseFloat(history[prop]));
-                      } else {
-                        list.splice(list.length, 0, null);
-                      }
-                    });
-                  }
-                }
-                lineGoogleChartData.dataTable.splice(
-                  lineGoogleChartData.dataTable.length,
-                  0,
-                  list
-                );
-              });
-              if (type.indexOf('Pie') >= 0) {
-                lineGoogleChartData.dataTable = [];
-                lineGoogleChartData.dataTable.push([
-                  currentHistoryFilter.xAxisProps,
-                  { label: 'Count', type: 'number' },
-                ]);
-                Object.keys(tempData).forEach((key) => {
-                  lineGoogleChartData.dataTable.push([key, tempData[key]]);
-                });
-              }
-              lineGoogleChartData.chartType = type;
-              resolve(lineGoogleChartData);
             }
-          },
-          (error) => (this.isLoading = false)
-        )
-      );
+          });
+        }
+        this.layoutData.forEach(history => {
+          const list = [];
+          if (type.indexOf('Pie') >= 0) {
+            if (
+              list.indexOf([
+                history[currentHistoryFilter.xAxisProps],
+                null,
+              ]) <= -1
+            ) {
+              list.splice(0, 0, history[currentHistoryFilter.xAxisProps]);
+            }
+          } else {
+            const keys = Object.keys(history);
+            keys.reverse();
+            keys.forEach(key => {
+              list.splice(0, 0, history[key]);
+            });
+          }
+
+          lineGoogleChartData.dataTable.splice(lineGoogleChartData.dataTable.length, 0, list);
+          console.log(lineGoogleChartData);
+        });
+        if (type.indexOf('Pie') >= 0) {
+          lineGoogleChartData.dataTable = [];
+          lineGoogleChartData.dataTable.push([
+            currentHistoryFilter.xAxisProps,
+            { label: 'Count', type: 'number' },
+          ]);
+          Object.keys(tempData).forEach((key) => {
+            lineGoogleChartData.dataTable.push([key, tempData[key]]);
+          });
+        }
+        lineGoogleChartData.chartType = type;
+        resolve(lineGoogleChartData);
+      }
     });
   }
 

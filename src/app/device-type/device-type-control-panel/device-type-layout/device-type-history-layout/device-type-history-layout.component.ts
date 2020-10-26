@@ -351,12 +351,6 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
   }
 
   clear() {
-    this.historyFilter = {};
-    this.historyFilter.from_date = undefined;
-    this.historyFilter.to_date = undefined;
-    this.historyFilter.epoch = true;
-    this.historyFilter.device_id = this.device.device_id;
-    this.historyFilter.app = this.appName;
     this.selectedChartType = 'Chart Type';
     this.chartTitle = '';
     this.xAxisProps = '';
@@ -384,16 +378,30 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
   }
 
   addChart() {
+    console.log(this.y1AxisProps, '====', this.y2AxisProp);
+    const obj = {
+      title: this.chartTitle,
+      chartType: this.selectedChartType,
+      chartCount: this.chartCount,
+      chart_Id: 'chart_' + this.chartCount,
+      showDataTable: this.showDataTable,
+      y1Axis: this.y1AxisProps,
+      y2Axis: this.y2AxisProp,
+      xAxis: this.xAxisProps
+    };
     this.plotChart(null).then((chart: any) => {
+      console.log(chart);
       if (!chart.y1axis) {
         chart.y1axis = [];
       }
       if (!chart.y2axis) {
         chart.y2axis = [];
       }
+      this.clear();
       console.log('add chart ', chart, this.layoutJson);
-      this.layoutJson.push(chart);
+      this.layoutJson.splice(0, 0, chart);
     }, (err) => {
+      console.log(err);
       this.toasterService.showError(err, 'Load Chart');
     });
   }
@@ -412,6 +420,53 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
           this.showDataTable = true;
           type = 'PieChart';
         }
+        const data = [];
+        const currentDate = moment();
+        for (let i = 0; i < 10; i++) {
+          const obj = {
+            date: currentDate.subtract(i, 'minute').format('DD-MMM-YYYY hh:mm:ss A')
+          };
+          y1Axis.forEach(element => {
+            this.propertyList.forEach(prop => {
+              if (!element.id && element === prop.json_key) {
+                if (prop.data_type === 'Number') {
+                  obj[prop.json_key] = this.commonService.randomIntFromInterval(
+                    prop.json_model[prop.json_key].minValue ? prop.json_model[prop.json_key].minValue : 0,
+                    prop.json_model[prop.json_key].maxValue ? prop.json_model[prop.json_key].maxValue : 100
+                  );
+                }
+              } else if (element.id && element.id === prop.json_key) {
+                if (prop.data_type === 'Number') {
+                  obj[prop.json_key] = this.commonService.randomIntFromInterval(
+                    prop.json_model[prop.json_key].minValue ? prop.json_model[prop.json_key].minValue : 0,
+                    prop.json_model[prop.json_key].maxValue ? prop.json_model[prop.json_key].maxValue : 100
+                  );
+                }
+              }
+            });
+          });
+          y2Axis.forEach(element => {
+            this.propertyList.forEach(prop => {
+              if (!element.id && element === prop.json_key) {
+                if (prop.data_type === 'Number') {
+                  obj[prop.json_key] = this.commonService.randomIntFromInterval(
+                    prop.json_model[prop.json_key].minValue ? prop.json_model[prop.json_key].minValue : 0,
+                    prop.json_model[prop.json_key].maxValue ? prop.json_model[prop.json_key].maxValue : 100
+                  );
+                }
+              } else if (element.id && element.id === prop.json_key) {
+                if (prop.data_type === 'Number') {
+                  obj[prop.json_key] = this.commonService.randomIntFromInterval(
+                    prop.json_model[prop.json_key].minValue ? prop.json_model[prop.json_key].minValue : 0,
+                    prop.json_model[prop.json_key].maxValue ? prop.json_model[prop.json_key].maxValue : 100
+                  );
+                }
+              }
+            });
+          });
+          data.splice(i, 0, obj);
+        }
+        console.log(data);
         const componentRef = this.factoryResolver.resolveComponentFactory(ChartWidgetComponent).create(this.injector);
         componentRef.instance.isLoading = true;
         componentRef.instance.showDataTable = layoutJson ? layoutJson.showDataTable : this.showDataTable;
@@ -422,6 +477,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
         componentRef.instance.historyFilter = { ...this.historyFilter };
         componentRef.instance.isFilterSelected = this.isFilterSelected;
         componentRef.instance.xAxisProps = xAxis;
+        componentRef.instance.layoutData = data;
         componentRef.instance.type = type;
         y1Axis.forEach(item => {
           componentRef.instance.y1AxisProps.push(item.id);
@@ -458,15 +514,15 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
           }
         }
         else {
-          if (layoutJson.chartType.indexOf('Pie') <= -1) {
-            if (!layoutJson.y1axis || (layoutJson.y1axis && layoutJson.y1axis.length === 0)) {
+          if (layoutJson?.chartType.indexOf('Pie') <= -1) {
+            if (!layoutJson.y1axis || (layoutJson?.y1axis && layoutJson?.y1axis?.length === 0)) {
               // this.toasterService.showError('Y1 Axis Property is required', 'Load Chart');
               reject('Y1 Axis Property is required');
               return;
             }
           }
           else {
-            if (layoutJson.xAxis.length === 0) {
+            if (layoutJson?.xAxis.length === 0) {
               // this.toasterService.showError('X Axis Property is required', 'Load Chart');
               reject('X Axis Property is required');
               return;
@@ -482,6 +538,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
           showDataTable: componentRef.instance.showDataTable,
           chart_Id: componentRef.instance.chartId
         };
+        console.log(chart);
         resolve(chart);
       }
       else if (type === 'Map') {
@@ -504,6 +561,8 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
       }
     });
   }
+
+
 
 
   renderLayout() {
@@ -537,52 +596,33 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
         this.layoutJson.splice(i, 1);
       }
     }
-    const body = {
-      app: this.appName,
-      hierarchy_level: this.selectedHierarchy,
-      layout: this.layoutJson
-    };
-    if (this.storedLayout['id']) {
-      body['id'] = this.storedLayout['id'];
-      this.apiSubscriptions.push(this.deviceService.editLayout(body).subscribe(
-        (response: any) => {
-          // console.log('update response ', response)
-          this.closeSaveLayoutModal();
-          this.toasterService.showSuccess(response.message, 'Save Layout');
-          this.getLayout();
-        },
-        (err) => {
-          this.toasterService.showError(err.message, 'Save Layout');
-        }
-      ));
-    }
-    else {
-      this.apiSubscriptions.push(this.deviceService.createLayout(body).subscribe(
-        (response: any) => {
-          // console.log('create response ', response)
-          this.closeSaveLayoutModal();
-          this.toasterService.showSuccess(response.message, 'Save Layout');
-          this.getLayout();
-        },
-        (err) => {
-          this.toasterService.showError(err.message, 'Save Layout');
-        }
-      ));
-    }
+    this.deviceType.layout = this.layoutJson;
+    this.apiSubscriptions.push(this.deviceTypeService.updateThingsModel(this.deviceType, this.appName).subscribe(
+      (response: any) => {
+        // console.log('update response ', response)
+        this.toasterService.showSuccess(response.message, 'Save Layout');
+        this.getLayout();
+      },
+      (err) => {
+        this.toasterService.showError(err.message, 'Save Layout');
+      }
+    ));
+
   }
 
   getLayout() {
     const params = {
-      app: this.appName
+      app: this.appName,
+      id: this.deviceType.id
     };
     this.dropdownWidgetList = [];
     this.selectedWidgets = [];
     this.layoutJson = [];
-    this.apiSubscriptions.push(this.deviceService.getLayout(params).subscribe(
+    this.apiSubscriptions.push(this.deviceTypeService.getThingsModelLayout(params).subscribe(
       async (response: any) => {
-        if (response.data.length > 0) {
-          this.layoutJson = response.data[0].layout;
-          this.storedLayout = response.data[0];
+        if (response?.layout?.length > 0) {
+          this.layoutJson = response.layout;
+          this.storedLayout = response.layout[0];
           this.layoutJson.forEach((item) => {
             this.dropdownWidgetList.push({
               id: item.title,
@@ -592,16 +632,8 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
           this.renderLayout();
         }
         this.isHistoryAPILoading = false;
-      }
+      }, err => this.isHistoryAPILoading = false
     ));
-  }
-
-  openSaveLayoutModal() {
-    $('#saveLayoutModal').modal({ backdrop: 'static', keyboard: false, show: true });
-  }
-
-  closeSaveLayoutModal() {
-    $('#saveLayoutModal').modal('hide');
   }
 
   y1Deselect(e){

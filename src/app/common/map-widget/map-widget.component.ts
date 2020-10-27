@@ -1,21 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { MapInfoWindow, MapMarker, GoogleMap } from '@angular/google-maps'
+import { MapInfoWindow, MapMarker, GoogleMap } from '@angular/google-maps';
 
-declare var $: any
+declare var $: any;
 
 @Component({
   selector: 'app-map-widget',
   templateUrl: './map-widget.component.html',
   styleUrls: ['./map-widget.component.css']
 })
-export class MapWidgetComponent implements OnInit {
-  isCollapsed:boolean = false
-  widgetTitle
-  chartId
-  zoom = 20
-  center: google.maps.LatLngLiteral
-  type="Map"
+export class MapWidgetComponent implements OnInit, AfterViewInit {
+  isCollapsed = false;
+  widgetTitle;
+  chartId;
+  zoom = 20;
+  center: google.maps.LatLngLiteral;
+  type = 'Map';
   // options: google.maps.MapOptions = {
   //   zoomControl: false,
   //   scrollwheel: false,
@@ -25,9 +25,9 @@ export class MapWidgetComponent implements OnInit {
   //   minZoom: 8,
   // }
 
-  coordinates = []
+  coordinates = [];
 
-  markers = []
+  markers = [];
   constructor() {
     this.markers.push({
       position: {
@@ -39,11 +39,10 @@ export class MapWidgetComponent implements OnInit {
         text: 'Car1',
       },
       title: 'Car 1',
-      
       options: { animation: google.maps.Animation.BOUNCE,
         // icon:'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
        },
-    })
+    });
     this.markers.push({
       position: {
         lat: 23.03842,
@@ -55,7 +54,7 @@ export class MapWidgetComponent implements OnInit {
       },
       title: 'Marker title ' + (1),
       // options: { animation: google.maps.Animation.BOUNCE },
-    })
+    });
     this.markers.push({
       position: {
         lat: 23.04141,
@@ -67,7 +66,7 @@ export class MapWidgetComponent implements OnInit {
       },
       title: 'Marker title ' + (2),
       // options: { animation: google.maps.Animation.BOUNCE },
-    })
+    });
    }
 
   ngOnInit(): void {
@@ -75,75 +74,73 @@ export class MapWidgetComponent implements OnInit {
       this.center = {
         lat: 23.03842,
         lng: 72.56235,
+      };
+    });
+    setInterval(() => {
+      if (this.coordinates.length > 0){
+        const currentCoord = this.coordinates.pop();
+        const lat = parseFloat(currentCoord.split(',')[1]);
+        const lng = parseFloat(currentCoord.split(',')[0]);
+        this.markers[0].position = {
+          lat,
+          lng
+        };
       }
-    })
-    var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
-    setInterval(()=>{
-      
-      if(this.coordinates.length>0){
-        let currentCoord = this.coordinates.pop()
-        let lat = parseFloat(currentCoord.split(",")[1])
-        let lng = parseFloat(currentCoord.split(",")[0])
-        this.markers[0].position={
-          lat : lat,
-          lng: lng  
-        }
-      }
-    },100)
+    }, 100);
 
   }
 
   ngAfterViewInit(){
-    $("#"+this.chartId).draggable()
+    $('#' + this.chartId).draggable()
     .resizable();
-    $("#collapse_" + this.chartId).on("click", () => {
-      if ($("#box_"+this.chartId).hasClass('collapsed-box')) { 
-        $("#box_"+this.chartId).removeClass('collapsed-box') 
-        this.isCollapsed = false
+    $('#collapse_' + this.chartId).on('click', () => {
+      if ($('#box_' + this.chartId).hasClass('collapsed-box')) {
+        $('#box_' + this.chartId).removeClass('collapsed-box');
+        this.isCollapsed = false;
       } else {
-         $("#box_"+this.chartId).addClass('collapsed-box') 
-         this.isCollapsed = true
-        } 
-    })
-    $("#remove_" + this.chartId).on("click", () => {
-      //immediate parent is the component tag and it's parent is the col div
-      $("#"+this.chartId).parent().parent().remove()
-    })
+         $('#box_' + this.chartId).addClass('collapsed-box');
+         this.isCollapsed = true;
+        }
+    });
+    $('#remove_' + this.chartId).on('click', () => {
+      // immediate parent is the component tag and it's parent is the col div
+      $('#' + this.chartId).parent().parent().remove();
+    });
   }
 
   fileChanged(e) {
-    let file = e.target.files[0]
-    this.parseDocument(file)
+    const file = e.target.files[0];
+    this.parseDocument(file);
   }
   parseDocument(file) {
-    let fileReader = new FileReader()
+    const fileReader = new FileReader();
     fileReader.onload = async (e: any) => {
-      let result = await this.extractGoogleCoords(e.target.result)
+      const result = await this.extractGoogleCoords(e.target.result);
 
-      //Do something with result object here
-      console.log(result)
+      // Do something with result object here
+      console.log(result);
 
-    }
-    fileReader.readAsText(file)
+    };
+    fileReader.readAsText(file);
   }
 
   async extractGoogleCoords(plainText) {
-    let parser = new DOMParser()
-    let xmlDoc = parser.parseFromString(plainText, "text/xml")
-    let googlePolygons = []
-    let googleMarkers = []
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(plainText, 'text/xml');
+    const googlePolygons = [];
+    const googleMarkers = [];
 
-    if (xmlDoc.documentElement.nodeName == "kml") {
+    if (xmlDoc.documentElement.nodeName === 'kml') {
 
       for (const item of xmlDoc.getElementsByTagName('Placemark') as any) {
-        if(item.getElementsByTagName('LineString')[0]){
-          this.coordinates = item.getElementsByTagName('LineString')[0].getElementsByTagName("coordinates")[0].textContent.trim().split("\n")
-          this.coordinates = this.coordinates.reverse()
+        if (item.getElementsByTagName('LineString')[0]){
+          this.coordinates = item.getElementsByTagName('LineString')[0].getElementsByTagName('coordinates')[0]
+          .textContent.trim().split('\n');
+          this.coordinates = this.coordinates.reverse();
         }
         // let polygons = item.getElementsByTagName('Polygon')
         // let markers = item.getElementsByTagName('Point')
-        
-        // /** POLYGONS PARSE **/        
+        // /** POLYGONS PARSE **/
         // for (const polygon of polygons) {
         //   let coords = polygon.getElementsByTagName('coordinates')[0].childNodes[0].nodeValue.trim()
         //   let points = coords.split(" ")
@@ -156,7 +153,7 @@ export class MapWidgetComponent implements OnInit {
         //   googlePolygons.push(googlePolygonsPaths)
         // }
 
-        // /** MARKER PARSE **/    
+        // /** MARKER PARSE **/
         // for (const marker of markers) {
         //   var coords = marker.getElementsByTagName('coordinates')[0].childNodes[0].nodeValue.trim()
         //   let coord = coords.split(",")
@@ -164,15 +161,15 @@ export class MapWidgetComponent implements OnInit {
         // }
       }
     } else {
-      throw "error while parsing"
+      throw new Error('error while parsing');
     }
 
-    return { markers: googleMarkers, polygons: googlePolygons }
+    return { markers: googleMarkers, polygons: googlePolygons };
 
   }
 
   click(event: google.maps.MouseEvent) {
-    console.log(event)
+    console.log(event);
   }
 
 }

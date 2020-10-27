@@ -1,6 +1,6 @@
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
 import { HttpParams } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -15,7 +15,7 @@ import { ToasterService } from 'src/app/services/toaster.service';
   templateUrl: './specific-c2d-message.component.html',
   styleUrls: ['./specific-c2d-message.component.css']
 })
-export class SpecificC2dMessageComponent implements OnInit {
+export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
 
   @Input() device: Device = new Device();
   c2dMessageData: any = {};

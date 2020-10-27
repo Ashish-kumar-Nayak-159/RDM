@@ -17,7 +17,7 @@ import { constants } from 'http2';
   templateUrl: './e-scooter-tracker-dashboard.component.html',
   styleUrls: ['./e-scooter-tracker-dashboard.component.css']
 })
-export class EScooterTrackerDashboardComponent implements OnInit {
+export class EScooterTrackerDashboardComponent implements OnInit, OnDestroy {
 
   devices: any[] = [];
   appName: string;
@@ -123,10 +123,6 @@ export class EScooterTrackerDashboardComponent implements OnInit {
       // options: { animation: google.maps.Animation.BOUNCE },
     });
 
-  }
-
-  ngAfterViewInit() {
-  // this.plotMapChart().then(res => console.log(res));
   }
 
   click(event: google.maps.MouseEvent) {

@@ -24,7 +24,7 @@ export class TagsComponent implements OnInit {
   tagsListToNotDelete = ['app', 'created_date', 'created_by', 'device_manager', 'manufacturer',
   'serial_number', 'mac_address', 'protocol', 'cloud_connectivity'];
   tagsListToNotEdit = ['app', 'created_date', 'created_by', 'manufacturer',
-  'serial_number', 'mac_address', 'protocol', 'cloud_connectivity']
+  'serial_number', 'mac_address', 'protocol', 'cloud_connectivity'];
   userData: any;
   pageType: string;
   appName: string;

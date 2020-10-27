@@ -70,7 +70,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   }
 
   searchTelemetry(filterObj) {
-    console.log('filterObj ',filterObj)
+    console.log('filterObj ', filterObj);
     this.isFilterSelected = true;
     this.isTelemetryLoading = true;
     const obj = {...filterObj};
@@ -117,7 +117,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
         isDisplayCancel: true
       };
       this.selectedTelemetry = obj.data;
-    $('#telemetryMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      $('#telemetryMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }
 

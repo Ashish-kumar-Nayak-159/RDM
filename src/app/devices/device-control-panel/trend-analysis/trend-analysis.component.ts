@@ -10,20 +10,20 @@ export class TrendAnalysisComponent implements OnInit {
 
   viewType: string;
   @Input() device = new Device();
-  isLayout : boolean = false
+  isLayout = false;
   constructor() { }
 
   ngOnInit(): void {
   }
 
   setViewType(type){
-    this.isLayout = false
-    this.viewType = type
-    $(".overlay").hide()
-    if(type=='layout'){
-      $(".overlay").show()
-      this.viewType = 'history'
-      this.isLayout = true
+    this.isLayout = false;
+    this.viewType = type;
+    $('.overlay').hide();
+    if (type === 'layout'){
+      $('.overlay').show();
+      this.viewType = 'history';
+      this.isLayout = true;
     }
   }
 }

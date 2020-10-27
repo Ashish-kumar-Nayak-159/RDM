@@ -91,12 +91,12 @@ export class OverviewComponent implements OnInit {
     const obj = {
       app: this.appName,
       gateway_id: this.device.device_id
-    }
+    };
     this.deviceService.getNonIPDeviceCount(obj).subscribe(
       (response: any) => {
         this.deviceCount = response.count;
       }
-    )
+    );
   }
 
   getDeviceConnectionStatus() {

@@ -28,13 +28,13 @@ export class HeaderComponent implements OnInit, OnChanges {
     private route: ActivatedRoute,
     @Inject(DOCUMENT) private document: Document
   ) {
-    this.commonService.breadcrumbEvent.subscribe(data => {
+    this.commonService.breadcrumbEvent.subscribe((breadcrumbs: any) => {
       this.commonService.setItemInLocalStorage(CONSTANTS.CURRENT_BREADCRUMB_STATE, this.breadcrumbData);
-      if (data.type === 'replace') {
-        this.breadcrumbData = data.data;
-      } else if (data.type === 'append') {
+      if (breadcrumbs.type === 'replace') {
+        this.breadcrumbData = breadcrumbs.data;
+      } else if (breadcrumbs.type === 'append') {
         if (this.breadcrumbData && this.breadcrumbData.length > 0 ) {
-          data.data.forEach(item => {
+          breadcrumbs.data.forEach(item => {
             let isFound = false;
             this.breadcrumbData.forEach(obj => {
               if (obj.url === item.url) {
@@ -46,7 +46,7 @@ export class HeaderComponent implements OnInit, OnChanges {
             }
           });
         } else {
-          this.breadcrumbData = data.data;
+          this.breadcrumbData = breadcrumbs.data;
         }
       }
     });

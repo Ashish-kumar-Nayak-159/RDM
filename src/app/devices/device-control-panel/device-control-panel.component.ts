@@ -185,7 +185,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
               {
                 title: (this.device.tags.display_name ? this.device.tags.display_name : this.device.device_id) + ' / Control Panel',
                 url:
-                'applications/' + this.appName + '/' + (this.componentState === CONSTANTS.NON_IP_DEVICE ? 'nonIPDevices':
+                'applications/' + this.appName + '/' + (this.componentState === CONSTANTS.NON_IP_DEVICE ? 'nonIPDevices' :
                 (this.pageType.toLowerCase() + 's')) + '/' + this.device.device_id + '/control-panel'
               }
           ]

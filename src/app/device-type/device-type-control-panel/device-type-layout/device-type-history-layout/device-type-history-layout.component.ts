@@ -123,9 +123,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
     }
     this.isHistoryAPILoading = true;
     this.getLayout();
-    $('#layoutNav').on('click', () => {
-      this.renderLayout();
-    });
+
   }
 
   getThingsModelProperties() {

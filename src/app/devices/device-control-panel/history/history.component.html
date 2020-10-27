@@ -1,77 +1,15 @@
 <div class="mx-auto">
-  <div class="topnavbar bg-white py-2" style="margin-top: 3.1rem;height:6rem">
-    <!-- <div class="row" *ngIf="isLayout">
-      <div class="col-xl-10 col-lg-10 col-md-10 mb-12">
-        <strong class="ml-1">Default Layout</strong>
-        <button  type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Render"
-          (click)="renderLayout()"><i class="fas fa-eye fa-sm"></i></button>
-        <button  type="button" class="btn btn-success btn-sm mx-1 my-1" title="Save"
-          (click)="openSaveLayoutModal()"><i class="fa fa-save fa-sm"></i></button>
-      </div>
-    </div> -->
-    <!-- <hr class="solid mb-1" *ngIf="isLayout"> -->
+  <div class="topnavbar bg-white py-2" style="margin-top: 3.1rem; height: 6rem">
     <div class="row">
       <div class="col-xl-10 col-lg-10 col-md-10 mb-12">
         <form>
           <div class="form-group form-inline my-1">
-            <span *ngIf="isLayout" class="badge badge-warning col-xl-2 col-lg-2"
-              style="line-height:24px; font-size: 14px;">Add New Widget</span>
-            <input type="text" id="chartTitle" class="form-control form-control-sm col-xl-2 col-lg-2 ml-2"
-              name="chartTitle" placeholder="Display Name" [(ngModel)]="chartTitle" *ngIf="isLayout">
-            <div class=" dropdown chartTypeDropdown col-xl-2 col-lg-2 ml-2 p-0 form-control form-control-sm"
-              *ngIf="isLayout">
-              <button class="btn btn-default dropdown-toggle col-xl-12 col-lg-12 col-md-12 pb-0 pt-1" type="button"
-                id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{selectedChartType}}
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="javascript:void(0)" *ngFor="let item of chartTypes;let i=index"
-                  (click)="setChartType(i)">
-                  <i class="fa {{chartIcons[i]}} chartTypeIcon"></i>
-                  {{item}}
-                </a>
-              </div>
-            </div>
-
-          </div>
-          <div class="form-group form-inline my-1">
-            <input class="form-control form-control-sm col-xl-2 col-lg-2" type="text" *ngIf="isLayout"
-              placeholder="X-Axis parameter" id="xAxisProperty" [(ngModel)]="xAxisProps" name="xAxisProperty">
-            <angular2-multiselect *ngIf="isLayout" [data]="dropdownPropList" id="y1AxisProperty"
-              [(ngModel)]="y1AxisProps" name="y1AxisProperty" [settings]="{
-                text: 'Select Y1 Axis',
-                selectAllText: 'Select All',
-                unSelectAllText: 'UnSelect All',
-                classes: 'col-lg-2 col-xl-2 p-0 ml-2',
-                enableSearchFilter: true,
-                badgeShowLimit: 1,
-                maxHeight: 200,
-                labelKey: 'id'
-              }"
-              (onDeSelectAll)="y1Deselect($event)">
-            </angular2-multiselect>
-            <!-- <input class="form-control form-control-sm col-xl-3 col-lg-3 mr-2 ml-1"  type="text" *ngIf="isLayout"
-              placeholder="Comma separated list of Y1 parameters" id="y1AxisProperty" [(ngModel)]="y1AxisProps"
-              name="y1AxisProperty"> -->
-            <angular2-multiselect *ngIf="isLayout" [data]="dropdownPropList" id="y2AxisProp" [(ngModel)]="y2AxisProp"
-              name="y2AxisProp" [settings]="{
-                text: 'Select Y2 Axis',
-                selectAllText: 'Select All',
-                unSelectAllText: 'UnSelect All',
-                classes: 'col-lg-2 col-xl-2 p-0 ml-2',
-                enableSearchFilter: true,
-                badgeShowLimit: 1,
-                maxHeight: 200,
-                labelKey: 'id'
-              }"
-              (onDeSelectAll)="y2Deselect($event)" >
-            </angular2-multiselect>
-            <!-- <input class="form-control form-control-sm col-xl-3 col-lg-3 mr-2" type="text" *ngIf="isLayout"
-              placeholder="Comma separated list of Y2 parameters" id="y2AxisProperty" [(ngModel)]="y2AxisProp"
-              name="y2AxisProperty"> -->
-
-            <angular2-multiselect *ngIf="!isLayout" [data]="dropdownWidgetList" id="widgets"
-              [(ngModel)]="selectedWidgets" name="widgets" [settings]="{
+            <angular2-multiselect
+              [data]="dropdownWidgetList"
+              id="widgets"
+              [(ngModel)]="selectedWidgets"
+              name="widgets"
+              [settings]="{
                 text: 'Select Widgets',
                 selectAllText: 'Select All',
                 unSelectAllText: 'UnSelect All',
@@ -80,11 +18,16 @@
                 badgeShowLimit: 1,
                 maxHeight: 200,
                 labelKey: 'id'
-              }">
+              }"
+            >
             </angular2-multiselect>
-            <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
-              [(ngModel)]="historyFilter.dateOption" name="dateOptions" (change)="onDateOptionChange()"
-              *ngIf="!isLayout">
+            <select
+              class="form-control form-control-sm mx-1 my-1"
+              id="dateoptions"
+              [(ngModel)]="historyFilter.dateOption"
+              name="dateOptions"
+              (change)="onDateOptionChange()"
+            >
               <option [ngValue]="undefined">Date Options</option>
               <option [ngValue]="'5 mins'">Last 5 minutes</option>
               <option [ngValue]="'30 mins'">Last 30 minutes</option>
@@ -92,79 +35,64 @@
               <option [ngValue]="'24 hour'">Last 24 hours</option>
               <!-- <option [ngValue]="'custom'">>Custom</option> -->
             </select>
-            <ng-container *ngIf="!isLayout">
+            <ng-container>
               <!-- <mat-date-range-picker #picker></mat-date-range-picker>
               <mat-date-range-input [rangePicker]="picker" class="form-control form-control-sm mx-1 my-1 w-11">
                 <input matStartDate [(ngModel)]="historyFilter.from_date" name="from_date">
                 <input matEndDate [(ngModel)]="historyFilter.to_date" name="to_date">
               </mat-date-range-input>
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle> -->
-              <input [owlDateTime]="dt1" [selectMode]="'range'" (dateTimeChange)="onDateChange($event)"
-                class="form-control form-control-sm mx-1 my-1 col-md-3 mr-1" [owlDateTimeTrigger]="dt1"
-                placeholder="Select Date Time" id="txtDt1">
-              <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
+              <input
+                [owlDateTime]="dt1"
+                [selectMode]="'range'"
+                (dateTimeChange)="onDateChange($event)"
+                class="form-control form-control-sm mx-1 my-1 col-md-3 mr-1"
+                [owlDateTimeTrigger]="dt1"
+                placeholder="Select Date Time"
+                id="txtDt1"
+              />
+              <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"
+                ><i class="fa fa-calendar"></i
+              ></span>
               <owl-date-time #dt1></owl-date-time>
             </ng-container>
+            <button
+              type="button"
+              class="btn btn-warning btn-sm mx-1 my-1 ml-2"
+              title="Search"
+              (click)="renderLayout()"
+            >
+              <i class="fas fa-search fa-sm"></i>
+            </button>
 
-            <button *ngIf="isLayout" type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Add Chart"
-              (click)="addChart()"><i class="fas fa-plus fa-sm"></i></button>
-            <button *ngIf="isLayout" type="button" class="btn btn-success btn-sm mx-1 my-1" title="Save"
-              (click)="openSaveLayoutModal()"><i class="fa fa-save fa-sm"></i></button>
-            <button *ngIf="!isLayout" type="button" class="btn btn-warning btn-sm mx-1 my-1 ml-2" title="Search"
-              (click)="renderLayout()"><i class="fas fa-search fa-sm"></i></button>
-
-            <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i
-                class="fas fa-trash  fa-sm"></i></button>
+            <button
+              type="button"
+              class="btn btn-white btn-sm mx-1 my-1"
+              title="Clear"
+              (click)="clear()"
+            >
+              <i class="fas fa-trash fa-sm"></i>
+            </button>
           </div>
         </form>
       </div>
     </div>
-    <hr class="solid mb-4">
-    <h6 *ngIf="historyData.length === 0 && isFilterSelected && !isHistoryAPILoading">No data found.</h6>
-    <!-- <h6 *ngIf="historyData.length === 0 && !isFilterSelected && !isHistoryAPILoading">
-            Select filter and press search button to load the chart.
-            Create layout and press search button to load the charts
-          </h6> -->
-    <h6 *ngIf="layoutJson.length==0  && !isHistoryAPILoading">
+    <hr class="solid mb-4" />
+    <h6
+      *ngIf="
+        historyData.length === 0 && isFilterSelected && !isHistoryAPILoading
+      "
+    >
+      No data found.
+    </h6>
+    <h6 *ngIf="layoutJson.length == 0 && !isHistoryAPILoading">
       No Layout found
     </h6>
-    <i *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+    <i
+      *ngIf="isHistoryAPILoading"
+      class="fa fa-spinner fa-spin fa-fw fa-2x"
+    ></i>
   </div>
-  <div id="widgetContainer" class=" row" [ngClass]="{'showLayout':!isLayout,'hideLayout':isLayout}">
-  </div>
-  <div>
-    <div id="layoutWidgetContainer" class="row " [ngClass]="{'showLayout':isLayout,'hideLayout':!isLayout}">
-    </div>
-  </div>
-</div>
-
-<div class="modal right fade" id="saveLayoutModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Create New Layout</h5>
-        <button type="button" class="close" (click)="closeSaveLayoutModal()" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="message-text" class="col-form-label">Select Hierarchy:</label>
-            <select class="custom-select" id="hierarchy" name="hierarchy" [(ngModel)]="selectedHierarchy">
-              <!-- <option [ngValue]="tag" *ngFor="let tag of hierarchyItem.tags">{{tag}}</option> -->
-              <option [ngValue]="hierarchyItem.name"
-                *ngFor="let hierarchyItem of appData.hierarchy; let hIndex = index">{{hierarchyItem.name}}</option>
-            </select>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary add-row" (click)="saveLayout()">Save</button>
-        <button type="button" class="btn btn-secondary" (click)="closeSaveLayoutModal()">
-          Cancel
-        </button>
-      </div>
-    </div>
-  </div>
+  <div id="widgetContainer" class="row showLayout"></div>
+  <div></div>
 </div>

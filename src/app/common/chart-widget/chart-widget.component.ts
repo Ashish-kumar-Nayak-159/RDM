@@ -77,7 +77,6 @@ export class ChartWidgetComponent implements OnInit, AfterViewInit {
 
   historyFilter: any = {};
   apiSubscriptions: Subscription[] = [];
-  layoutData: any[] = [];
   device = new Device();
   isLayout = false;
   y1AxisProps = [];
@@ -91,7 +90,7 @@ export class ChartWidgetComponent implements OnInit, AfterViewInit {
   errorMsg = '';
 
   // google chart
-  public chartData: GoogleChartInterface = {
+  chartData: GoogleChartInterface = {
     // use :any or :GoogleChartInterface
     chartType: '',
     dataTable: [],
@@ -428,7 +427,7 @@ export class ChartWidgetComponent implements OnInit, AfterViewInit {
           }
 
           lineGoogleChartData.dataTable.splice(lineGoogleChartData.dataTable.length, 0, list);
-          console.log(lineGoogleChartData);
+
         });
         if (type.indexOf('Pie') >= 0) {
           lineGoogleChartData.dataTable = [];
@@ -441,6 +440,7 @@ export class ChartWidgetComponent implements OnInit, AfterViewInit {
           });
         }
         lineGoogleChartData.chartType = type;
+        console.log(lineGoogleChartData);
         resolve(lineGoogleChartData);
       }
     });

@@ -78,42 +78,11 @@
 
   </div>
   <div class="" style="margin-top: 6rem;">
-    <h6 *ngIf="layoutJson.length==0  && !isHistoryAPILoading">
+    <h6 *ngIf="layoutJson.length === 0  && !isHistoryAPILoading">
       No Layout found
     </h6>
     <i *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
     <div id="layoutWidgetContainer" class="row showLayout">
-    </div>
-  </div>
-</div>
-
-<div class="modal right fade" id="saveLayoutModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Create New Layout</h5>
-        <button type="button" class="close" (click)="closeSaveLayoutModal()" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="message-text" class="col-form-label">Select Hierarchy:</label>
-            <select class="custom-select" id="hierarchy" name="hierarchy" [(ngModel)]="selectedHierarchy">
-              <!-- <option [ngValue]="tag" *ngFor="let tag of hierarchyItem.tags">{{tag}}</option> -->
-              <option [ngValue]="hierarchyItem.name"
-                *ngFor="let hierarchyItem of appData.hierarchy; let hIndex = index">{{hierarchyItem.name}}</option>
-            </select>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary add-row" (click)="saveLayout()">Save</button>
-        <button type="button" class="btn btn-secondary" (click)="closeSaveLayoutModal()">
-          Cancel
-        </button>
-      </div>
     </div>
   </div>
 </div>

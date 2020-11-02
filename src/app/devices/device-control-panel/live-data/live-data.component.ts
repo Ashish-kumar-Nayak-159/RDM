@@ -207,6 +207,9 @@ export class LiveDataComponent implements OnInit, OnDestroy {
       this.lineGoogleChartData.dataTable.splice(this.lineGoogleChartData.dataTable.length, 0, list);
     });
     console.log(this.lineGoogleChartData);
+    if (this.lineGoogleChartData.dataTable.length === 10) {
+      this.lineGoogleChartData.dataTable.splice(1, 1);
+    }
     if (this.lineGoogleChartData.dataTable.length > 1) {
     const ccComponent = this.lineGoogleChartData.component;
     // force a redraw

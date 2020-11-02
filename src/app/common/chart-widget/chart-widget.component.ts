@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Output } from '@angular/core';
 import * as moment from 'moment';
 import { GoogleChartInterface, GoogleChartComponent } from 'ng2-google-charts';
 import { log } from 'console';
@@ -74,7 +74,6 @@ export class ChartWidgetComponent implements OnInit, AfterViewInit {
   public chartDataTable: GoogleChartInterface;
   public showDataTable = false;
   isLoading = false;
-
   historyFilter: any = {};
   apiSubscriptions: Subscription[] = [];
   device = new Device();
@@ -88,7 +87,7 @@ export class ChartWidgetComponent implements OnInit, AfterViewInit {
   currentLayout;
   showError = false;
   errorMsg = '';
-
+  initiatedFrom = 'device'; // possible values are device or device_type
   // google chart
   chartData: GoogleChartInterface = {
     // use :any or :GoogleChartInterface
@@ -123,8 +122,6 @@ export class ChartWidgetComponent implements OnInit, AfterViewInit {
     },
   };
   constructor(
-    private deviceService: DeviceService,
-    private commonService: CommonService,
     private toasterService: ToasterService
   ) {}
 
@@ -444,6 +441,19 @@ export class ChartWidgetComponent implements OnInit, AfterViewInit {
         resolve(lineGoogleChartData);
       }
     });
+  }
+
+  onRemoveChart(event) {
+    // this.onCloseModal();
+    // $('#' + event).remove();
+  }
+
+  openConfirmModal() {
+    $('#' + this.chartId + 'confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onCloseModal() {
+    $('#' + this.chartId + 'confirmMessageModal').modal('hide');
   }
 
   changeSliceText(e) {

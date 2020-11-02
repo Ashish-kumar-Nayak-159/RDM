@@ -1,14 +1,15 @@
 <div class="row" id="{{chartId}}" class="chartWidget">
   <div class="col-lg-12">
       <div class="card shadow mb-4 border-top-widget" id="card_{{chartId}}">
-          <a href="#collapse_{{chartId}}" class="d-block card-header py-3" data-toggle="collapse" role="button" >
+        <div class="card-header">
+          <a href="#collapse_{{chartId}}" class="float-left py-3" data-toggle="collapse" role="button" >
               <h6 class="m-0 font-weight-bold text-primary">{{widgetTitle}}
-                  <span class="btn btn-card-tool close-icon" data-widget="remove" id="remove_{{chartId}}" title="Remove">
-                      <i class="fa fa-times"></i>
-                  </span>
               </h6>
-
           </a>
+          <a *ngIf="initiatedFrom === 'device_type'" href="javascript:void(0)" (click)="openConfirmModal()" class="btn btn-card-tool close-icon" data-widget="remove" id="remove_{{chartId}}" title="Remove">
+            <i class="fa fa-times"></i>
+        </a>
+      </div>
           <!-- <div class="card-header py-3">
               <h6 class="m-0 font-weight-bold text-primary">{{widgetTitle}}</h6>
               <div class="card-tools pull-right">
@@ -57,3 +58,27 @@
 
 <!-- coffee sold counter -->
 <!-- device on/off pie chart % -->
+
+<div class="modal fade" id="{{chartId}}confirmMessageModal" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Remove Widget</h5>
+        <button type="button" class="close"  aria-label="Close" (click)="onCloseModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to remove this widget?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="onRemoveChart(chartId)">
+          Ok</button>
+        <button type="button" class="btn btn-secondary" (click)="onCloseModal()">
+          Cancel
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

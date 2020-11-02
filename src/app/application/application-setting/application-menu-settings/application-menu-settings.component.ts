@@ -14,6 +14,7 @@ export class ApplicationMenuSettingsComponent implements OnInit {
   @Input() applicationData: any;
   saveMenuSettingAPILoading = false;
   originalApplicationData: any;
+  sideMenuList = [...CONSTANTS.SIDE_MENU_LIST];
   constructor(
     private toasterService: ToasterService,
     private applicationService: ApplicationService,
@@ -22,19 +23,19 @@ export class ApplicationMenuSettingsComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.applicationData.configuration && this.applicationData.configuration.length === 0) {
-      this.applicationData.configuration = CONSTANTS.SIDE_MENU_LIST;
+      this.applicationData.configuration = this.sideMenuList;
     } else {
       console.log(this.applicationData.configuration);
       const arr = [];
-      CONSTANTS.SIDE_MENU_LIST.forEach(item => {
+      this.sideMenuList.forEach(item => {
         let flag = false;
         this.applicationData.configuration.forEach(menu => {
           if (menu.page === item.page) {
             flag = true;
             console.log(menu);
-            menu.display_name = item.display_name;
-            menu.visible = item.visible;
-            arr.push(menu);
+            item.display_name = menu.display_name;
+            item.visible = menu.visible;
+            arr.push(item);
           }
         });
         if (!flag) {
@@ -42,7 +43,7 @@ export class ApplicationMenuSettingsComponent implements OnInit {
         }
       });
       console.log(arr);
-      this.applicationData.configuration = arr;
+      this.applicationData.configuration = [...arr];
     }
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
 
@@ -55,7 +56,7 @@ export class ApplicationMenuSettingsComponent implements OnInit {
   onSaveMenuSettings() {
     this.saveMenuSettingAPILoading = true;
     this.applicationData.id = this.applicationData.app;
-    CONSTANTS.SIDE_MENU_LIST.forEach(item => {
+    this.sideMenuList.forEach(item => {
       this.applicationData.configuration.forEach(config => {
         if (item.system_name === config.system_name) {
           item.display_name = config.display_name;
@@ -63,7 +64,7 @@ export class ApplicationMenuSettingsComponent implements OnInit {
         }
       });
     });
-    this.applicationData.configuration = CONSTANTS.SIDE_MENU_LIST;
+    this.applicationData.configuration = [...this.sideMenuList];
     this.applicationService.updateApp(this.applicationData).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Save Menu Settings');

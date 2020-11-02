@@ -2,6 +2,7 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppUrls } from '../../app-url.constants';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -237,5 +238,9 @@ export class DeviceService {
 
   editLayout(layoutObj){
     return this.http.patch(this.url + AppUrls.CREATE_LAYOUT, layoutObj);
+  }
+
+  acknowledgeDeviceAlert(obj): Observable<any> {
+    return this.http.put(this.url + AppUrls.ACKNOWLEGE_DEVICE_ALERT, obj);
   }
 }

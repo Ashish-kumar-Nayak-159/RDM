@@ -11,6 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CONSTANTS } from 'src/app/app.constants';
 import * as moment from 'moment';
 import { ChartWidgetComponent } from 'src/app/common/chart-widget/chart-widget.component';
+import { MapWidgetComponent } from 'src/app/common/map-widget/map-widget.component';
 declare var $: any;
 
 @Component({
@@ -43,7 +44,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
   public selectedChartType = 'Chart Type';
   columnNames = [];
   layoutJson = [];
-  storedLayout = {};
+  storedLayout: any[] = [];
   chartTitle = '';
   showDataTable = false;
   appData: any = {};
@@ -476,7 +477,12 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
         componentRef.instance.isFilterSelected = this.isFilterSelected;
         componentRef.instance.xAxisProps = xAxis;
         componentRef.instance.layoutData = data;
+        componentRef.instance.initiatedFrom = 'device_type';
         componentRef.instance.type = type;
+        componentRef.instance.onRemoveChart = (event) => {
+          $('#' + event + 'confirmMessageModal').modal('hide');
+          this.removeWidget(event);
+        };
         y1Axis.forEach(item => {
           componentRef.instance.y1AxisProps.push(item.id);
         });
@@ -540,7 +546,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
         resolve(chart);
       }
       else if (type === 'Map') {
-        const componentRef = this.factoryResolver.resolveComponentFactory(ChartWidgetComponent).create(this.injector);
+        const componentRef = this.factoryResolver.resolveComponentFactory(MapWidgetComponent).create(this.injector);
         this.appRef.attachView(componentRef.hostView);
 
         const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
@@ -587,13 +593,43 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
     }
   }
 
+  removeWidget(chartId) {
+    // alert('here' + chartId);
+    // const index = this.storedLayout.findIndex(layout => layout.chart_Id === chartId);
+    // if (index === -1) {
+    //   $('#' + chartId).remove();
+    // } else {
+    for (let i = 0; i < this.layoutJson.length; i++) {
+      if (this.layoutJson[i].chart_Id === chartId) {
+        console.log('DOM not found', this.layoutJson[i]);
+        this.layoutJson.splice(i, 1);
+        $('#' + chartId).remove();
+      }
+    }
+    // this.deviceType.layout = this.layoutJson;
+    // this.apiSubscriptions.push(this.deviceTypeService.updateThingsModel(this.deviceType, this.appName).subscribe(
+    //   (response: any) => {
+
+    //     // console.log('update response ', response)
+    //     this.toasterService.showSuccess(response.message, 'Remove Widget');
+    //     this.getLayout();
+    //   },
+    //   (err) => {
+    //     this.toasterService.showError(err.message, 'Remove Widget');
+    //   }
+    // ));
+    // }
+  }
+
   saveLayout() {
     for (let i = 0; i < this.layoutJson.length; i++) {
       if (document.getElementById(this.layoutJson[i].chart_Id) == null) {
         console.log('DOM not found', this.layoutJson[i]);
         this.layoutJson.splice(i, 1);
+
       }
     }
+    this.layoutJson.reverse();
     this.deviceType.layout = this.layoutJson;
     this.apiSubscriptions.push(this.deviceTypeService.updateThingsModel(this.deviceType, this.appName).subscribe(
       (response: any) => {
@@ -620,7 +656,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
       async (response: any) => {
         if (response?.layout?.length > 0) {
           this.layoutJson = response.layout;
-          this.storedLayout = response.layout[0];
+          this.storedLayout = response.layout;
           this.layoutJson.forEach((item) => {
             this.dropdownWidgetList.push({
               id: item.title,

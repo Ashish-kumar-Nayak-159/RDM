@@ -30,6 +30,13 @@ export class CommonService {
     return null;
   }
 
+  convertDateToEpoch(date: string) {
+    if (date) {
+      return (moment.utc(date)).unix();
+    }
+    return 0;
+  }
+
   loginUser(obj) {
     return this.http.post(this.url + AppUrls.LOGIN,  obj);
   }

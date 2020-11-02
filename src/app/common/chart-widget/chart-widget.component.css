@@ -1,6 +1,6 @@
 .chartWidget{
     overflow: hidden;
-    min-width: 200px; 
+    min-width: 200px;
     /* min-height: 200px; */
 }
 
@@ -16,7 +16,6 @@
 
 .close-icon{
     float: right;
-    padding: 0;
 }
 
 .card .card-header[data-toggle=collapse]::after {

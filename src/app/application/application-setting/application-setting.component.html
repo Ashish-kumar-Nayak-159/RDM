@@ -26,9 +26,9 @@
               <a class="nav-item nav-link" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'menu-settings'}"
               href="#app-menu-settings" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('menu-settings')">
               Menu Settings</a>
-              <a class="nav-item nav-link" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'properties'}"
+              <!-- <a class="nav-item nav-link" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'properties'}"
               href="#app-properties" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('properties')">
-              Properties</a>
+              Properties</a> -->
             </div>
   </nav>
    </div>
@@ -57,10 +57,10 @@
             [ngClass]="{'active': activeTab === 'menu-settings'}">
               <app-application-menu-settings *ngIf="activeTab === 'menu-settings' && applicationData" [applicationData]="applicationData"></app-application-menu-settings>
             </div>
-            <div class="tab-pane" id="app-properties" role="tabpanel" aria-labelledby="nav-about-tab"
+            <!-- <div class="tab-pane" id="app-properties" role="tabpanel" aria-labelledby="nav-about-tab"
             [ngClass]="{'active': activeTab === 'properties'}">
               <app-application-properties *ngIf="activeTab === 'properties' && applicationData" [applicationData]="applicationData"></app-application-properties>
-            </div>
+            </div> -->
           </div>
         </div>
 </div>

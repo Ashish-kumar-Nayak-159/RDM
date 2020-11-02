@@ -1,3 +1,4 @@
+import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -11,6 +12,7 @@ import { Ng2GoogleChartsModule } from 'ng2-google-charts';
   imports: [
     CommonModule,
     VisualizationRoutingModule,
+    FormsModule,
     Ng2GoogleChartsModule
   ]
 })

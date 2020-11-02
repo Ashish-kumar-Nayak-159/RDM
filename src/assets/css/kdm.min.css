@@ -6168,7 +6168,7 @@ a.bg-secondary:focus, a.bg-secondary:hover, button.bg-secondary:focus, button.bg
 }
 
 .bg-success {
-  background-color: #1cc88a!important
+  background-color: #22b14c!important /*#1cc88a*/;
 }
 
 a.bg-success:focus, a.bg-success:hover, button.bg-success:focus, button.bg-success:hover {
@@ -11980,3 +11980,13 @@ padding-bottom: 1.5rem;
   height: 30px;
 }
 
+
+
+
+.bg-transparent {
+  background-color: transparent!important;
+}
+
+.nav-item.active {
+    font-weight: 700;
+}

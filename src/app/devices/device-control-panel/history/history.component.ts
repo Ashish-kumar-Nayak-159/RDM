@@ -413,6 +413,7 @@ export class HistoryComponent implements OnInit {
         componentRef.instance.isFilterSelected = this.isFilterSelected;
         componentRef.instance.xAxisProps = xAxis;
         componentRef.instance.type = type;
+        componentRef.instance.initiatedFrom = 'device';
         componentRef.instance.layoutData = data;
         y1Axis.forEach(item => {
           componentRef.instance.y1AxisProps.push(item);

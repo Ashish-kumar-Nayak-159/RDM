@@ -1,37 +1,9 @@
 <div class="row mx-auto">
-  <div class="topnavbar bg-white py-2" style="margin-top: 3.1rem;">
+  <div class="topnavbar bg-white py-2" style="margin-top: 3.1rem;height:6rem;">
     <div class="row">
       <div class="col-xl-12 col-md-12 mb-12" >
           <form>
             <div class="form-group form-inline my-1">
-
-              <!-- <ng-select class="custom w-16 mx-1 my-1"  id="y1AxisProperty"
-              [(ngModel)]="historyFilter.y1AxisProperty" name="y1AxisProperty" [items]="propertyList"
-              [multiple]="true" placeholder="Y1 Axis Property" [searchable]="true">
-              <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
-                <div class="ng-value" *ngFor="let item of items | slice:0:1">
-                  <span class="ng-value-label select-item" title="{{item}}">{{item}}</span>
-
-                </div>
-                <div class="ng-value" *ngIf="items.length > 1">
-                  <span class="ng-value-label">+ {{items.length - 1}}</span>
-                </div>
-              </ng-template>
-              </ng-select>
-              <ng-select class="custom w-16 mx-1 my-1"  id="y2AxisProperty"
-              [(ngModel)]="historyFilter.y2AxisProperty" name="y2AxisProperty" [items]="propertyList"
-              [multiple]="true" placeholder="Y2 Axis Property" [searchable]="true">
-              <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
-                <div class="ng-value" *ngFor="let item of items | slice:0:1">
-                  <span class="ng-value-label">{{item}}</span>
-
-                </div>
-                <div class="ng-value" *ngIf="items.length > 1">
-                  <span class="ng-value-label">+ {{items.length - 1}}</span>
-                </div>
-              </ng-template>
-              </ng-select> -->
-
               <angular2-multiselect [data]="dropdownPropList"
               id="y1AxisProperty"
               [(ngModel)]="y1AxisProps" name="y1AxisProperty"
@@ -76,7 +48,7 @@
 
   </div>
 
-      <div style="margin-top: 3.5rem;">
+      <div>
 
       <google-chart  *ngIf="lineGoogleChartData.dataTable.length > 1 && !isHistoryAPILoading" [data]="lineGoogleChartData"></google-chart>
       <h6 *ngIf="historyData.length === 0 && isFilterSelected && !isHistoryAPILoading" >No data found.</h6>

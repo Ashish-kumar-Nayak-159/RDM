@@ -248,11 +248,11 @@ export class CONSTANTS {
     },
     {
       name: 'Boolean',
-      validations: ['defaultValue']
+      validations: ['trueValue', 'falseValue', 'defaultValue']
     },
     {
       name: 'String',
-      validations: ['units', 'defaultValue']
+      validations: ['minLength', 'maxLength', 'units', 'defaultValue']
     },
     {
       name: 'Enum',

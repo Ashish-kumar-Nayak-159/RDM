@@ -1,0 +1,43 @@
+
+<div class="topnavbar bg-white py-2" >
+  <div class="row">
+
+    <ul class="nav">
+        <!-- Nav Item - Tables -->
+        <li class="nav-item" [ngClass]="{'active': displayMode === 'view'}">
+          <a class="nav-link"  href="javascript:void(0)" (click)="displayMode = 'view'">
+            <i class="fas fa-fw fa-eye"></i>
+            <span>View Recommendations</span></a>
+        </li>
+
+    </ul>
+
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <hr class="solid">
+    </div>
+  </div>
+  </div>
+  <div class="con-pad">
+    <div class="col-6">
+      <ng-container *ngIf="displayMode === 'view'">
+        <div class="card shadow mb-4 border-top-widget" id="card">
+          <div class="card-header">
+            <a href="#collapse" class="float-left py-3" data-toggle="collapse" role="button" >
+                <h6 class="m-0 font-weight-bold text-primary">Useful Life Left
+                </h6>
+            </a>
+        </div>
+        <div class="collapse show" id="collapse">
+          <div class="card-body">
+            <google-chart [data]="chartData" ></google-chart>
+            <label>* Recommended to change the diaphragm by 3rd Nov 2020</label>
+          </div>
+        </div>
+      </div>
+
+      </ng-container>
+    </div>
+  </div>
+

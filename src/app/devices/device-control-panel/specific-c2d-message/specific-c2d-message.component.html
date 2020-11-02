@@ -2,53 +2,63 @@
 
   <div class="col-lg-7 col-xl-7 align-self-center">
     <div class="row">
-    <!-- <div><a href="javascript:void(0)" [class.disabled]="sentMessageData || !selectedWidget" (click)="validateMessage()" ><button type="button" class="btn btn-warning contact-form" > 1. Validate</button></a></div>
+      <!-- <div><a href="javascript:void(0)" [class.disabled]="sentMessageData || !selectedWidget" (click)="validateMessage()" ><button type="button" class="btn btn-warning contact-form" > 1. Validate</button></a></div>
     <div class='px-1'><hr></div> -->
-    <div><a  href="javascript:void(0)" [class.disabled]="sentMessageData || !selectedWidget" (click)="sentC2DMessage()" >
-      <button type="button" class="btn btn-warning" > 1. Send
-        <i class="fa fa-spinner fa-spin fa-fw " *ngIf="isSendC2DMessageAPILoading"></i>
-      </button>
-    </a></div>
-    <div class='px-1'><hr></div>
-    <div><a href="javascript:void(0)" [class.disabled]="!sentMessageData  || !selectedWidget" (click)="onClickOfFeedback()">
-      <button type="button" class="btn btn-warning"> 2. Feedback</button></a></div>
-    <div class='px-1'><hr></div>
-    <div><a  href="javascript:void(0)"  [class.disabled]="!sentMessageData  || !selectedWidget" (click)="onClickOfResponse()" >
-      <button type="submit" class="btn btn-warning" > 3. Response</button></a></div>
+      <div><a href="javascript:void(0)" [class.disabled]="sentMessageData || !selectedWidget"
+          (click)="sentC2DMessage()">
+          <button type="button" class="btn btn-warning"> 1. Send
+            <i class="fa fa-spinner fa-spin fa-fw " *ngIf="isSendC2DMessageAPILoading"></i>
+          </button>
+        </a></div>
+      <div class='px-1'>
+        <hr>
+      </div>
+      <div><a href="javascript:void(0)" [class.disabled]="!sentMessageData  || !selectedWidget"
+          (click)="onClickOfFeedback()">
+          <button type="button" class="btn btn-warning"> 2. Feedback</button></a></div>
+      <div class='px-1'>
+        <hr>
+      </div>
+      <div><a href="javascript:void(0)" [class.disabled]="!sentMessageData  || !selectedWidget"
+          (click)="onClickOfResponse()">
+          <button type="submit" class="btn btn-warning"> 3. Response</button></a></div>
     </div>
   </div>
 
   <div class="col-lg-5 col-xl-5 border" style="margin-left: -3rem;">
-    <div class="row" >
-    <div class="bg-light px-1 py-1" style="writing-mode: tb-rl; transform: rotate(-180deg); font-size:0.75rem; color:black;">STATUS</div>
-    <div class="justify-content-center align-self-center px-1 red-font" *ngIf="isMessageValidated === 'invalid'">
-      <i class="fa fa-times" ></i> Please verify JSON.</div>
+    <div class="row">
+      <div class="bg-light px-1 py-1"
+        style="writing-mode: tb-rl; transform: rotate(-180deg); font-size:0.75rem; color:black;">STATUS</div>
+      <div class="justify-content-center align-self-center px-1 red-font" *ngIf="isMessageValidated === 'invalid'">
+        <i class="fa fa-times"></i> Please verify JSON.</div>
       <div class="justify-content-center align-self-center px-1 green-font" *ngIf="isMessageValidated === 'valid'">
-        <i class="fa fa-check" ></i>  Successfully Validated.</div>
-      <div class="justify-content-center align-self-center px-1"
-      *ngIf="sendMessageStatus && sendMessageResponse" [ngClass]="{'green-font': sendMessageStatus === 'success', 'red-font': sendMessageStatus === 'error'}">
-      <i class="fa" [ngClass]="{'fa-check': sendMessageStatus === 'success', 'fa-times': sendMessageStatus === 'error'}" ></i>
-      {{sendMessageResponse}}</div>
+        <i class="fa fa-check"></i> Successfully Validated.</div>
+      <div class="justify-content-center align-self-center px-1" *ngIf="sendMessageStatus && sendMessageResponse"
+        [ngClass]="{'green-font': sendMessageStatus === 'success', 'red-font': sendMessageStatus === 'error'}">
+        <i class="fa"
+          [ngClass]="{'fa-check': sendMessageStatus === 'success', 'fa-times': sendMessageStatus === 'error'}"></i>
+        {{sendMessageResponse}}</div>
 
-    <div *ngIf="timerObj" class="bg-light px-1 py-1" style="writing-mode: tb-rl; transform: rotate(-180deg); font-size:0.75rem; color:black;">&nbsp;TIMER</div>
-    <div class="justify-content-center align-self-center px-3">
-      <div class="timer" *ngIf="timerObj">
-        <div>
-           <span class="hours" id="hour">{{timerObj?.hours}}</span>
-           <div class="smalltext">Hours</div>
+      <div *ngIf="timerObj" class="bg-light px-1 py-1"
+        style="writing-mode: tb-rl; transform: rotate(-180deg); font-size:0.75rem; color:black;">&nbsp;TIMER</div>
+      <div class="justify-content-center align-self-center px-3">
+        <div class="timer" *ngIf="timerObj">
+          <div>
+            <span class="hours" id="hour">{{timerObj?.hours}}</span>
+            <div class="smalltext">Hours</div>
+          </div>
+          <div>
+            <span class="minutes" id="minute">{{timerObj?.minutes}}</span>
+            <div class="smalltext">Minutes</div>
+          </div>
+          <div>
+            <span class="seconds" id="second">{{timerObj?.seconds}}</span>
+            <div class="smalltext">Seconds</div>
+          </div>
+          <p id="time-up"></p>
         </div>
-        <div>
-           <span class="minutes" id="minute">{{timerObj?.minutes}}</span>
-           <div class="smalltext">Minutes</div>
-        </div>
-        <div>
-           <span class="seconds" id="second">{{timerObj?.seconds}}</span>
-           <div class="smalltext">Seconds</div>
-        </div>
-        <p id="time-up"></p>
-     </div>
+      </div>
     </div>
-     </div>
   </div>
 
 
@@ -66,11 +76,11 @@
       <label for="inputPassword" class="col-4 col-form-label">Select Control Widget / Device Methods:</label>
       <div class="">
         <select class="form-control form-control-sm" id="widget" name="acknowledge" [(ngModel)]="selectedWidget"
-        (change)="onChangeOfDropdownData()" style="width: 15rem!important;">
+          (change)="onChangeOfDropdownData()" style="width: 15rem!important;">
           <option [ngValue]="widget" *ngFor="let widget of controlWidgets">{{widget.name}}</option>
         </select>
       </div>
-  </div>
+    </div>
   </div>
 
 
@@ -89,11 +99,7 @@
     </div>
 
     <div class="table-responsive">
-      <table
-        class="table table-striped table-bordered"
-        id="dataTable"
-        cellspacing="0"
-      >
+      <table class="table table-striped table-bordered" id="dataTable" cellspacing="0">
         <thead>
           <tr class="bg-secondary text-white">
             <th>Key</th>
@@ -104,7 +110,8 @@
         <tbody>
           <tr>
             <td>Device ID</td>
-            <td *ngIf="pageType === 'device' || pageType.toLowerCase() === 'nonipdevice'">{{c2dMessageData.device_id}}</td>
+            <td *ngIf="pageType === 'device' || pageType.toLowerCase() === 'nonipdevice'">{{c2dMessageData.device_id}}
+            </td>
             <td *ngIf="pageType === 'gateway'">
               <select class="custom-select" id="device_id" name="device_id" [(ngModel)]="c2dMessageData.device_id">
 
@@ -126,13 +133,15 @@
           <tr>
             <td>TTL (In minutes)</td>
             <td>
-              <input class="form-control form-control-sm" type="number" min="0" name="expire_in_min" [(ngModel)]="c2dMessageData.expire_in_min">
+              <input class="form-control form-control-sm" type="number" min="0" name="expire_in_min"
+                [(ngModel)]="c2dMessageData.expire_in_min">
             </td>
           </tr>
           <tr>
             <td>ACK</td>
             <td>
-              <select class="custom-select" id="acknowledge" name="acknowledge" [(ngModel)]="c2dMessageData.acknowledge">
+              <select class="custom-select" id="acknowledge" name="acknowledge"
+                [(ngModel)]="c2dMessageData.acknowledge">
                 <option value="Full">Full</option>
                 <option value="Positive">Positive</option>
                 <option value="Negative">Negative</option>
@@ -153,15 +162,60 @@
 
     <form id="contact-form" *ngIf="selectedWidget?.type === 'device_method'">
       <div class="form-group mr-3">
-        <textarea
-          class="form-control"
-          id="message"
-          rows="13"
-          placeholder="Please type your JSON here.."
-          name="message"
-          disabled
-          [defaultValue]="selectedWidget.json_model | json"
-        ></textarea>
+        <textarea class="form-control" id="message" rows="13" placeholder="Please type your JSON here.." name="message"
+          disabled [defaultValue]="selectedWidget.json_model | json"></textarea>
+      </div>
+    </form>
+    <form id="contact-form" class="col-12" *ngIf="selectedWidget?.type === 'control_widget'">
+      <div class="table-responsive">
+        <table class="table table-striped table-bordered" id="dataTable" cellspacing="0">
+          <thead>
+            <tr class="bg-secondary text-white">
+              <th style="width: 60%;">Property</th>
+              <th class="border-left"  style="width: 40%;">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+        <ng-container *ngFor="let item of jsonModelKeys; let i = index;">
+          <tr>
+          <td >
+          <label for="inputPassword" class="col-form-label">{{item.name}}:</label>
+          </td>
+          <td>
+          <div >
+          <ng-container *ngIf="item.json.type === 'string'">
+            <input type="text" class="form-control form-control-sm" name="{{item.name}}"
+            [(ngModel)]="item.value" minlength="{{item.json.minLength ? item.json.minLength : 1}}"
+            maxLength="{{item.json.maxLength ? item.json.maxLength : 50}}">
+          </ng-container>
+          <ng-container *ngIf="item.json.type === 'number'">
+            <input type="number" class="form-control form-control-sm" name="{{item.name}}"
+            [(ngModel)]="item.value" min="{{item.json.minValue ? item.json.minValue : 1}}"
+            max="{{item.json.maxValue ? item.json.maxValue : 1000}}">
+          </ng-container>
+          <ng-container *ngIf="item.json.type === 'boolean'">
+            <div class="btn-group"  name="booleandata">
+
+              <ui-switch labelOn="{{item.json.trueValue}}"
+              labelOff="{{item.json.falseValue}}"
+              [(ngModel)]="item.value" id="{{item.name}}" name="{{item.name}}"
+              uncheckedTextColor="red" defaultBgColor="red" checkedTextColor="white" uncheckedTextColor="white"></ui-switch>
+
+            </div>
+          </ng-container>
+          <ng-container *ngIf="item.json.type === 'enum'">
+            <select class="form-control form-control-sm custom-select" id="widget" name="acknowledge" [(ngModel)]="item.value"
+            >
+            <option [ngValue]="val" *ngFor="let val of item.json.enum">{{val}}</option>
+            </select>
+          </ng-container>
+          </div>
+
+        </td>
+      </tr>
+        </ng-container>
+      </tbody>
+        </table>
       </div>
     </form>
   </div>
@@ -172,4 +226,3 @@
 <div *ngIf="displayType === 'response'">
   <app-c2d-message [device]="device" [type]="displayType" [message]="sentMessageData"></app-c2d-message>
 </div>
-

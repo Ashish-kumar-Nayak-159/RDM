@@ -1,3 +1,6 @@
+import { DeviceTypeService } from './../../services/device-type/device-type.service';
+import { Device } from './../../models/device.model';
+import { ToasterService } from './../../services/toaster.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from './../../services/common.service';
@@ -7,6 +10,7 @@ import { Alert } from 'src/app/models/applicationDashboard.model';
 import { GoogleChartInterface } from 'ng2-google-charts';
 import * as moment from 'moment';
 
+declare var $: any;
 @Component({
   selector: 'app-application-visualization',
   templateUrl: './application-visualization.component.html',
@@ -20,12 +24,16 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   isAlertAPILoading = false;
   propertyList: any[] = [];
   selectedAlert: any;
+  selectedDevice: any;
   refreshInterval: any;
+  beforeInterval = 10;
+  afterInterval = 10;
   lineGoogleChartConfig: GoogleChartInterface = {  // use :any or :GoogleChartInterface
-    chartType: 'LineChart',
+    chartType: 'ComboChart',
     dataTable: [],
     options: {
       interpolateNulls: true,
+      pointSize: 0.5,
       hAxis: {
         viewWindowMode: 'pretty',
         slantedText: true,
@@ -34,6 +42,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         },
         slantedTextAngle: 60
       },
+      seriesType: 'line',
       legend: {
         position: 'top'
       },
@@ -43,6 +52,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           // Adds titles to each axis.
         },
       height: 280,
+      width: 1000,
       curveType: 'function',
       explorer: {
         actions: ['dragToZoom', 'rightClickToReset'],
@@ -51,20 +61,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         maxZoomIn: 10.0}
     }
   };
-  barGoogleChartConfig: GoogleChartInterface = {
-    chartType: 'Gauge',
-    dataTable: [
-      ['Label', 'Value']
-    ],
-    options: {
-      redFrom: 90, redTo: 100,
-      yellowFrom: 75, yellowTo: 90,
-      minorTicks: 5
-    }
-  };
+
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
+    private deviceTypeService: DeviceTypeService,
+    private toasterService: ToasterService,
     private route: ActivatedRoute
 
   ) { }
@@ -91,7 +93,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         ]
       });
       this.getLatestAlerts();
-      this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
+     // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
     });
 
   }
@@ -112,9 +114,41 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     );
   }
 
-  onClickOfViewGraph(alert) {
-    if (this.propertyList.length > 0) {
+  getDeviceData() {
+    return new Promise((resolve, reject) => {
+      const obj = {
+        app: this.appData.app,
+        name: this.selectedAlert.device_id
+      };
+      this.deviceService.getDeviceData(obj.name, obj.app).subscribe(
+        (response: any) => {
+          this.selectedDevice = response;
+          resolve();
+        }
+      );
+    });
+  }
+
+  getThingsModelProperties() {
+    return new Promise((resolve, reject) => {
+      const obj = {
+        app: this.appData.app,
+        name: this.selectedDevice.tags.device_type
+      };
+      this.deviceTypeService.getThingsModelProperties(obj).subscribe(
+        (response: any) => {
+          this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
+          resolve();
+        }
+      );
+    });
+  }
+
+  async onClickOfViewGraph(alert) {
     this.selectedAlert = alert;
+    await this.getDeviceData();
+    await this.getThingsModelProperties();
+    if (this.propertyList.length > 0) {
     console.log(alert);
     this.lineGoogleChartConfig.dataTable = [];
     this.lineGoogleChartConfig.options.series = {};
@@ -125,38 +159,50 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       app: this.appData.app,
       device_id: alert.device_id,
       message_props: '',
-      from_date: ((moment.utc(alert.created_date, 'M/DD/YYYY h:mm:ss A')).subtract(30, 'minute')).unix(),
-      to_date: ((moment.utc(alert.created_date, 'M/DD/YYYY h:mm:ss A')).add(30, 'minute')).unix()
+      from_date: null,
+      to_date: null
     };
-    this.propertyList.forEach((prop, index) => filterObj.message_props += prop + (index !== (this.propertyList.length - 1) ? ',' : ''));
+    if (this.beforeInterval > 0) {
+      filterObj.from_date = ((moment.utc(alert.created_date, 'M/DD/YYYY h:mm:ss A')).subtract(this.beforeInterval, 'minute')).unix();
+    } else {
+      this.toasterService.showError('Minutes Before Alert value must be greater than 0.', 'View Visualization');
+      return;
+    }
+    if (this.afterInterval > 0) {
+      filterObj.to_date = ((moment.utc(alert.created_date, 'M/DD/YYYY h:mm:ss A')).add(this.afterInterval, 'minute')).unix();
+    } else {
+      this.toasterService.showError('Minutes After Alert value must be greater than 0.', 'View Visualization');
+      return;
+    }
+    this.propertyList.forEach((prop, index) => filterObj.message_props += prop.json_key + (index !== (this.propertyList.length - 1) ? ',' : ''));
     console.log(filterObj);
     this.deviceService.getDeviceTelemetry(filterObj).subscribe(
       (response: any) => {
         console.log(response);
         if (response && response.data) {
           const telemetryData = response.data;
-          this.loadGaugeChart(telemetryData[0]);
+          // this.loadGaugeChart(telemetryData[0]);
           telemetryData.reverse();
           console.log('load line chart');
           this.loadLineChart(telemetryData);
         }
       }
     );
-    clearInterval(this.refreshInterval);
-    this.refreshInterval = setInterval(() => {
-      filterObj.from_date = filterObj.to_date;
-      filterObj.to_date = (moment().utc()).unix();
-      this.deviceService.getDeviceTelemetry(filterObj).subscribe(
-        (response: any) => {
-          if (response && response.data) {
-            const telemetryData = response.data;
-            this.loadGaugeChart(telemetryData[0]);
-            telemetryData.reverse();
-            // this.updateLineChart(telemetryData);
-          }
-        });
+    // clearInterval(this.refreshInterval);
+    // this.refreshInterval = setInterval(() => {
+    //   filterObj.from_date = filterObj.to_date;
+    //   filterObj.to_date = (moment().utc()).unix();
+    //   this.deviceService.getDeviceTelemetry(filterObj).subscribe(
+    //     (response: any) => {
+    //       if (response && response.data) {
+    //         const telemetryData = response.data;
+    //         this.loadGaugeChart(telemetryData[0]);
+    //         telemetryData.reverse();
+    //         // this.updateLineChart(telemetryData);
+    //       }
+    //     });
 
-    }, 20000);
+    // }, 20000);
   }
   }
 
@@ -165,13 +211,15 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     const dataList = [];
     dataList.push('DateTime');
     let title = '';
+    const alertEpoch = this.commonService.convertDateToEpoch(this.selectedAlert.local_created_date);
     this.propertyList.forEach((prop, index) => {
       if (index % 2 !== 0) {
-        dataList.splice(dataList.length, 0,  {label: prop, type: 'number'});
-        title += prop + (prop[index + 2] ? ' & ' : '');
+        dataList.splice(dataList.length, 0,  {label: prop.json_key, type: 'number'});
+        title += prop.json_key + (this.propertyList[index + 2] ? ' & ' : '');
         this.lineGoogleChartConfig.options.series[Object.keys(this.lineGoogleChartConfig.options.series).length] = {targetAxisIndex: 0};
       }
     });
+
     if (title.charAt(title.length - 2) === '&') {
       title = title.substring(0, title.length - 2);
     }
@@ -183,84 +231,84 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       console.log('index   ', index);
       if (index % 2 === 0) {
         console.log('inn iff');
-        dataList.splice(dataList.length, 0,  {label: prop, type: 'number'});
-        title += prop + (prop[index + 2] ? ' & ' : '');
+        dataList.splice(dataList.length, 0,  {label: prop.json_key, type: 'number'});
+        title += prop.json_key + (this.propertyList[index + 2] ? ' & ' : '');
         this.lineGoogleChartConfig.options.series[(Object.keys(this.lineGoogleChartConfig.options.series).length)] =  {targetAxisIndex: 1};
       }
     });
+    this.lineGoogleChartConfig.options.series[(Object.keys(this.lineGoogleChartConfig.options.series).length)] = {type: 'Bar'};
     if (title.charAt(title.length - 2) === '&') {
       title = title.substring(0, title.length - 2);
     }
     this.lineGoogleChartConfig.options.vAxes['1'] = {title};
+    dataList.splice(dataList.length, 0,  'Alert Time');
     this.lineGoogleChartConfig.dataTable.push(dataList);
-    telemetryData.forEach(obj => {
+    telemetryData.forEach((obj, i) => {
       obj.local_created_date = this.commonService.convertUTCDateToLocal(obj.message_date);
       const list = [];
       list.splice(0, 0, new Date(obj.local_created_date));
       this.propertyList.forEach((prop, index) => {
         if (index % 2 !== 0) {
-          list.splice(list.length, 0, parseFloat(obj[prop]));
+          list.splice(list.length, 0, parseFloat(obj[prop.json_key]));
         }
       });
       this.propertyList.forEach((prop, index) => {
         if (index % 2 === 0) {
-          list.splice(list.length, 0, parseFloat(obj[prop]));
+          list.splice(list.length, 0, parseFloat(obj[prop.json_key]));
         }
       });
+      const epoch = this.commonService.convertDateToEpoch(obj.local_created_date);
+      if ( epoch > alertEpoch - 10 && epoch <= alertEpoch + 10) {
+        list.splice(list.length, 0, 300);
+      } else {
+        list.splice(list.length, 0, null);
+      }
       this.lineGoogleChartConfig.dataTable.splice(this.lineGoogleChartConfig.dataTable.length, 0, list);
     });
     console.log(this.lineGoogleChartConfig);
+
     if (this.lineGoogleChartConfig.dataTable.length > 1) {
     const ccComponent = this.lineGoogleChartConfig.component;
     // force a redraw
     if (ccComponent) {
       ccComponent.draw();
+      // const chart = ccComponent.wrapper;
+      // chart.setSelection([{row: 10, column: 1}]);
     }
     }
   }
 
-  updateLineChart(telemetryData) {
-    telemetryData.forEach(obj => {
-      obj.local_created_date = this.commonService.convertUTCDateToLocal(obj.message_date);
-      const list = [];
-      list.splice(0, 0, new Date(obj.local_created_date));
-      this.propertyList.forEach((prop, index) => {
-        if (index % 2 !== 0) {
-          list.splice(list.length, 0, parseFloat(obj[prop]));
-        }
-      });
-      this.propertyList.forEach((prop, index) => {
-        if (index % 2 === 0) {
-          list.splice(list.length, 0, parseFloat(obj[prop]));
-        }
-      });
-      this.lineGoogleChartConfig.dataTable.splice(this.lineGoogleChartConfig.dataTable.length, 0, list);
-    });
-    console.log(this.lineGoogleChartConfig);
-    const ccComponent = this.lineGoogleChartConfig.component;
-    ccComponent.draw();
+
+  onClickOfAcknowledgeAlert(alert): void {
+    this.selectedAlert = alert;
+    $('#acknowledgemenConfirmModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
-  loadGaugeChart(telemetryData) {
-    if (telemetryData) {
-    this.barGoogleChartConfig.dataTable = [];
-    this.barGoogleChartConfig.dataTable.push(['Label', 'Value']);
-    this.propertyList.forEach(prop => {
-      const list = [];
-      list.push(prop);
-      list.push(parseFloat(telemetryData[prop]));
-      this.barGoogleChartConfig.dataTable.splice(this.barGoogleChartConfig.dataTable.length, 0, list);
-    });
-    console.log(this.barGoogleChartConfig);
-    const component = this.barGoogleChartConfig.component;
-    component.draw();
-    }
+  acknowledgeAlert(): void {
+    const obj = {
+      app: this.appData.app,
+      device_id: this.selectedAlert.device_id,
+      message_id: this.selectedAlert.message_id,
+      message: this.selectedAlert.message,
+    };
+    obj.message['user_id'] = this.userData.name;
+    obj.message['acknowledged_date'] = (moment.utc(new Date(), 'M/DD/YYYY h:mm:ss A'));
+    this.deviceService.acknowledgeDeviceAlert(obj).subscribe(
+      response => {
+        this.toasterService.showSuccess(response.message, 'Acknowledge Alert');
+        this.closeAcknowledgementModal();
+       // this.getAlarms();
+      }, (error) => {
+        this.toasterService.showError(error.message, 'Acknowledge Alert');
+      }
+    );
   }
 
-  updateGaugeChart(telemetryData) {
-    this.barGoogleChartConfig.dataTable.forEach(data => {
 
-    });
+
+  closeAcknowledgementModal(): void {
+    $('#acknowledgemenConfirmModal').modal('hide');
+    this.selectedAlert = undefined;
   }
 
   ngOnDestroy(): void {

@@ -10,6 +10,7 @@ import {MatTableModule} from '@angular/material/table';
 import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { UiSwitchModule } from 'ngx-toggle-switch';
 
 import { DeviceControlPanelComponent } from './device-control-panel/device-control-panel.component';
 import { OverviewComponent } from './device-control-panel/overview/overview.component';
@@ -40,6 +41,7 @@ import { CommonCustomModule } from './../common/common.module';
 import { SpecificC2dMessageComponent } from './device-control-panel/specific-c2d-message/specific-c2d-message.component';
 import { ChartWidgetComponent } from '../common/chart-widget/chart-widget.component';
 import { MapWidgetComponent } from '../common/map-widget/map-widget.component';
+import { PredictiveMaintenanceComponent } from './device-control-panel/predictive-maintenance/predictive-maintenance.component';
 
 @NgModule({
   declarations: [
@@ -67,8 +69,8 @@ import { MapWidgetComponent } from '../common/map-widget/map-widget.component';
     HistoryComponent,
     C2dMessageComponent,
     BatteryMessagesComponent,
-
-    SpecificC2dMessageComponent
+    SpecificC2dMessageComponent,
+    PredictiveMaintenanceComponent
   ],
   imports: [
     CommonModule,
@@ -86,7 +88,8 @@ import { MapWidgetComponent } from '../common/map-widget/map-widget.component';
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     GoogleMapsModule,
-    NgMultiSelectDropDownModule.forRoot()
+    NgMultiSelectDropDownModule.forRoot(),
+    UiSwitchModule
   ],
   exports: [
     FilterComponent,

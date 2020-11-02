@@ -129,7 +129,7 @@
           <span>Trend Analysis</span></a>
       </li>
       <div class="sidebar1-heading">
-        Maintenance
+        AI / ML Recommendations
       </div>
        <!-- Divider -->
        <hr class="sidebar1-divider">
@@ -139,8 +139,9 @@
           <i class="fas fa-fw fa-stream" title="Preventive Maintenance"></i>
           <span>Preventive Maintenance</span></a>
         </li>
-        <li class="nav-item" >
-          <a class="nav-link" href="javascript:void(0)"  data-toggle="tab" aria-expanded="false">
+        <li class="nav-item"  [ngClass]="{'active': activeTab === 'predictiveMaintenance'}">
+          <a class="nav-link" href="#device_predictive_maintenance"  data-toggle="tab" aria-expanded="false"
+          (click)="setActiveTab('predictiveMaintenance')">
             <i class="fas fa-fw fa-stream" title="Predictive Maintenance"></i>
             <span>Predictive Maintenance</span></a>
         </li>
@@ -206,6 +207,9 @@
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel" id="device_control_widgets">
         <app-commands *ngIf="activeTab === 'control_widgets' && device" [device]="device"></app-commands>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'predictiveMaintenance'}" role="tabpanel" id="device_predictive_mainteance">
+        <app-predictive-maintenance *ngIf="activeTab === 'predictiveMaintenance' && device" [device]="device"></app-predictive-maintenance>
       </div>
       <!-- /.container1-fluid -->
 

@@ -142,7 +142,15 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
     if (this.propertyObj.data_type && this.propertyObj.json_key) {
       const validations = this.dataTypeList.find(type => type.name === this.propertyObj.data_type).validations;
       validations.forEach(item => {
-        obj[item] = null;
+        if (item === 'enum') {
+          obj[item] = [];
+        } else if (item === 'trueValue') {
+          obj[item] = true;
+        } else if (item === 'falseValue') {
+          obj[item] = false;
+        } else {
+          obj[item] = null;
+        }
       });
       this.propertyObj.json_model = {};
       this.propertyObj.json_model[this.propertyObj.json_key] =  obj;

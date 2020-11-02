@@ -38,6 +38,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
   controlWidgets: any[] = [];
   deviceMethods: any[] = [];
   selectedWidget: any;
+  jsonModelKeys: any[] = [];
 
   constructor(
     private toasterService: ToasterService,
@@ -104,8 +105,39 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     );
   }
 
-  onChangeOfDropdownData() {
+  onSwitchValueChange(event, index) {
+    console.log(event);
+    console.log(event.target.value);
+  }
 
+  onChangeOfDropdownData() {
+    this.jsonModelKeys = [];
+    if (this.selectedWidget.type === 'control_widget') {
+      const keys =  Object.keys(this.selectedWidget.json);
+      const index = keys.findIndex(key => key === 'timestamp');
+      keys.splice(index, 1);
+      keys.forEach(key => {
+        const obj = {
+          key,
+          json: {},
+          name: null,
+          value: null
+        };
+        this.selectedWidget.properties.forEach(prop => {
+          if (prop.json_key === key) {
+            obj.name = prop.name;
+            obj.json = this.selectedWidget.json[key];
+            if (obj.json['type'] === 'boolean') {
+              obj.value = obj.json['defaultValue'] === obj.json['trueValue'] ? true : false;
+            } else {
+              obj.value = this.selectedWidget.json[key].defaultValue;
+            }
+          }
+        });
+        this.jsonModelKeys.splice(this.jsonModelKeys.length, 0, obj);
+      });
+      console.log(this.jsonModelKeys);
+    }
   }
 
   getDevicesListByGateway() {
@@ -151,7 +183,21 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
       this.c2dMessageData.gateway_id = this.device.device_id;
     }
     this.sentMessageData = undefined;
-    this.c2dMessageData.message = this.selectedWidget.json_model;
+    if (this.selectedWidget.type === 'device_method') {
+      this.c2dMessageData.message = this.selectedWidget.json_model;
+    } else if (this.selectedWidget.type === 'control_widget') {
+      this.c2dMessageData.message = {};
+      this.jsonModelKeys.forEach(item => {
+        if (item.value !== null || item.value !== undefined) {
+          if (item.json.type === 'boolean') {
+            this.c2dMessageData.message[item.key] = item.value ? item.json.trueValue : item.json.falseValue;
+          } else {
+            this.c2dMessageData.message[item.key] = item.value;
+          }
+        }
+      });
+    }
+    this.c2dMessageData.message['timestamp'] = this.c2dMessageData.timestamp;
     if (!this.c2dMessageData.message) {
       this.toasterService.showError('Please type JSON in given box', 'Validate Message Detail');
       return;
@@ -166,6 +212,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
       return;
     }
     this.isSendC2DMessageAPILoading = true;
+    console.log(this.sentMessageData);
     this.deviceService.sendC2DMessage(this.sentMessageData, this.appName).subscribe(
       (response: any) => {
         this.isMessageValidated = undefined;

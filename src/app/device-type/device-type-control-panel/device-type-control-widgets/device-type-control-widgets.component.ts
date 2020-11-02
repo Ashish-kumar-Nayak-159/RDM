@@ -141,7 +141,7 @@ export class DeviceTypeControlWidgetsComponent implements OnInit {
       return;
     }
     try {
-      this.controlWidget.json_model = this.editor.get();
+      this.controlWidget.json = this.editor.get();
     } catch (e) {
       this.toasterService.showError('Invalid JSON data', 'Create Control Widget');
       return;

@@ -1,65 +1,87 @@
-<div class="container-pad">
-  <div class="row">
-    <div class="col-lg-12 mb-1">
-      <!-- Project Card Example -->
-      <div class="card shadow mb-1">
-        <div class="card-header">
-          <h6 class="m-0 font-weight-bold text-primary">Most Recent Alerts</h6>
+<div class="topnavbar">
+  <div class="d-sm-flex align-items-center justify-content-start mb-4 pl-1">
+    <h1 class="h3 mb-0 text-gray-800">Alerts</h1>
+  </div>
+  <div class="card row bg-white" style="margin-left:-1.5rem">
+    <div class="col-xl-12 col-md-12 mb-12">
+      <form>
+        <div class="form-group form-inline  my-2 mx-3">
+          <input type="number" class="form-control form-control-sm my-1" id="app" style="width: 5%;" name="app"
+            [(ngModel)]="beforeInterval">
+          <!-- <label>mins before alert</label> -->
+          <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins before alert</button>
+          <input type="number" class="form-control form-control-sm my-1" id="inputEmail4" style="width: 5%;" name="name"
+            [(ngModel)]="afterInterval">
+          <!-- <label>mins after alert</label> -->
+          <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins after alert</button>
         </div>
 
-        <div class="card-body1 alert-container p-0">
-          <div class="table-responsive">
-            <table
-              class="table table-bordered table-striped"
-              id="dataTable"
-              width="100%"
-              cellspacing="0"
-            >
-              <ng-container
-                *ngIf="latestAlerts.length > 0 && !isAlertAPILoading"
-              >
-                <tr
-                  *ngFor="let alert of latestAlerts"
-                  [ngClass]="{
-                    'bg-info':
-                      alert.message_id === this.selectedAlert?.message_id
-                  }"
-                >
-                  <td>{{ alert.local_created_date }}</td>
-                  <td>{{ alert.device_id }}</td>
-                  <td>{{ alert.message?.message }}</td>
-                  <td>
-                    <a
-                      href="javascript:void(0)"
-                      (click)="onClickOfViewGraph(alert)"
-                    >
-                      <i class="fa fa-search"></i>
-                    </a>
-                  </td>
-                </tr>
-              </ng-container>
-              <ng-container
-                *ngIf="latestAlerts.length === 0 && !isAlertAPILoading"
-              >
-                <tr>
-                  <td colspan="4">No Alert data available.</td>
-                </tr>
-              </ng-container>
-              <ng-container *ngIf="isAlertAPILoading">
-                <tr>
-                  <td colspan="4">
-                    <i class="fa fa-fw fa-2x fa-spinner"></i>
-                  </td>
-                </tr>
-              </ng-container>
-            </table>
-          </div>
-        </div>
-      </div>
+      </form>
     </div>
-    <ng-container>
+  </div>
+</div>
+
+<div class="contain-pad" >
+  <div class="mb-2">
+    <div class="table-responsive" style="max-height: 30vh;height: 30vh">
+      <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+          <tr class="bg-secondary text-white">
+            <th>Priority</th>
+            <th>Asset Name</th>
+            <th>Description</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Acknowledged By</th>
+            <th></th>
+          </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="latestAlerts.length > 0 && !isAlertAPILoading">
+          <tr *ngFor="let alert of latestAlerts" [ngClass]="{
+                    'bg-warning':
+                      alert.message_id === this.selectedAlert?.message_id
+                  }">
+            <td ><i class="fa fa-bell" [style.color]="
+              (alert.message?.priority === 'critical' ? '#fb5515' :
+              (alert.message?.priority === 'medium' ? '#f6c23e' :
+              (alert.message?.priority === 'low' ? '#229954' : '')
+              )
+              )"></i></td>
+            <td>{{ alert.device_id }}</td>
+            <td>{{ alert.message?.message }}</td>
+            <td>{{ alert.local_created_date }}</td>
+            <td >
+              <ng-container *ngIf="alert.message?.acknowledged_date">Acknowledged</ng-container>
+              <button *ngIf="!alert.message?.acknowledged_date" class="btn btn-sm btn-secondary" (click)="onClickOfAcknowledgeAlert(alert)">Acknowledge</button>
+            </td>
+            <td>{{ alert.message?.user_id }}</td>
+            <td>
+              <a href="javascript:void(0)" (click)="onClickOfViewGraph(alert)">
+                <i class="fa fa-search"></i>
+              </a>
+            </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="latestAlerts.length === 0 && !isAlertAPILoading">
+          <tr>
+            <td colspan="7">No Alert data available.</td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="isAlertAPILoading">
+          <tr>
+            <td colspan="7">
+              <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+      </table>
+    </div>
+  </div>
+  <ng-container>
+    <div class="row">
       <div class="col-lg-12 mb-1">
-        <!-- Project Card Example -->
         <div class="shadow mb-1" [ngClass]="{'card': selectedAlert}">
           <div class="card-header py-3" *ngIf="selectedAlert">
             <h6 class="m-0 font-weight-bold text-primary">Historical data
@@ -73,18 +95,50 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-12 mb-1">
-        <!-- Project Card Example -->
-        <div class="shadow mb-1" [ngClass]="{'card': selectedAlert}">
-          <div class="card-header py-3" *ngIf="selectedAlert">
-            <h6 class="m-0 font-weight-bold text-primary">Latest data
-            </h6>
-          </div>
-          <div class="card-body1" id="bar-chart" style="max-height: 20rem; overflow-y: auto;">
-            <google-chart  [data]="barGoogleChartConfig"></google-chart>
-          </div>
+    </div>
+    <!-- <div class="col-lg-12 mb-1">
+      <div class="shadow mb-1" [ngClass]="{'card': selectedAlert}">
+        <div class="card-header py-3" *ngIf="selectedAlert">
+          <h6 class="m-0 font-weight-bold text-primary">Latest data
+          </h6>
+        </div>
+        <div class="card-body1" id="bar-chart" style="max-height: 20rem; overflow-y: auto;">
+          <google-chart  [data]="barGoogleChartConfig"></google-chart>
         </div>
       </div>
-    </ng-container>
+    </div> -->
+  </ng-container>
+</div>
+
+
+
+<div class="modal right fade" id="acknowledgemenConfirmModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" *ngIf="selectedAlert">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Acknowledge Alert</h5>
+      <button type="button" class="close" (click)="closeAcknowledgementModal()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <h6>Are you sure you want to acknowledge this alert?</h6>
+        <div class="form-group">
+          <label for="recipient-name" class="col-form-label">Select the reason for Alert:</label>
+          <select class="custom-select" id="alertReason" [(ngModel)]="selectedAlert.message.reason" name="alertReason">
+            <option value="undefined">Select Reason</option>
+            <option value="Reason 1">Reason 1</option>
+            <option value="Reason 2">Reason 2</option>
+            <option value="Reason 3">Reason 3</option>
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="acknowledgeAlert()">Acknowledge</button>
+      <button type="button" class="btn btn-secondary add-row" (click)="closeAcknowledgementModal()">Cancel</button>
+    </div>
+  </div>
   </div>
 </div>

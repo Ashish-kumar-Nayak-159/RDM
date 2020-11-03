@@ -90,4 +90,15 @@ export class DeviceTypeService {
     params = params.set('app', app);
     return this.http.patch(this.url + AppUrls.UPDATE_THINGS_MODEL_CONTROL_WIDGETS, modelObj, {params});
   }
+
+  deleteThingsModelControlWidget(filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    console.log(params);
+    return this.http.delete(this.url + AppUrls.DELETE_CONTROL_WIDGET, { params });
+  }
 }

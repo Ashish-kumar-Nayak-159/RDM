@@ -74,7 +74,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
           valueclass: ''
         },
         {
-          name: 'JSON Model',
+          name: 'Actions',
           key: undefined,
           type: 'button',
           headerClass: '',
@@ -85,6 +85,13 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
               id: 'View JSON Model',
               valueclass: '',
               tooltip: 'View JSON Model'
+            },
+            {
+              icon: 'fas fa-fw fa-trash',
+              text: '',
+              id: 'Delete',
+              valueclass: '',
+              tooltip: 'Delete'
             }
           ]
         }
@@ -174,6 +181,12 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
       this.toasterService.showError('Invalid JSON data', 'Add Property');
       return;
     }
+    const index = this.properties[this.type].findIndex(prop => prop.json_key === this.propertyObj.json_key);
+    console.log(index);
+    if (index > -1) {
+      this.toasterService.showError('Property with same name already exist.', 'Add Property');
+      return;
+    }
     this.isCreatePropertyLoading = true;
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
@@ -191,6 +204,24 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
     );
   }
 
+  deleteProperty() {
+    const obj = JSON.parse(JSON.stringify(this.deviceType));
+    obj.properties = JSON.parse(JSON.stringify(this.properties));
+    const index = obj.properties[this.type].findIndex(prop => prop.json_key === this.selectedProperty.json_key);
+    obj.properties[this.type].splice(index, 1);
+    this.deviceTypeService.updateThingsModel(obj, this.deviceType.app).subscribe(
+      (response: any) => {
+        this.isCreatePropertyLoading = false;
+        this.onCloseModal('confirmMessageModal');
+        this.toasterService.showSuccess(response.message, 'Delete Property');
+        this.getThingsModelProperties();
+      }, error => {
+        this.isCreatePropertyLoading = false;
+        this.toasterService.showError(error.message, 'Delete Property');
+      }
+    );
+  }
+
   onCloseThingsPropertyModal() {
     $('#addPropertiesModal').modal('hide');
     this.propertyObj = undefined;
@@ -198,10 +229,15 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
 
   onTableFunctionCall(obj) {
     this.selectedProperty = obj.data;
-    $('#PropJSONModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    if (obj.for === 'View JSON Model') {
+      $('#PropJSONModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    } else if (obj.for === 'Delete') {
+      $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    }
   }
-  onCloseModal() {
-    $('#PropJSONModal').modal('hide');
+
+  onCloseModal(id) {
+    $('#' + id).modal('hide');
     this.selectedProperty = undefined;
   }
 

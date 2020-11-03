@@ -19,6 +19,7 @@ export class DeviceTypeControlWidgetsComponent implements OnInit {
   isCreateWidgetAPILoading = false;
   deviceMethods: any[] = [];
   editorOptions: JsonEditorOptions;
+  selectedWidget: any;
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   isGetControlWidgetAPILoading = false;
   constructor(
@@ -160,6 +161,35 @@ export class DeviceTypeControlWidgetsComponent implements OnInit {
         this.toasterService.showError(error.message, 'Create Control Widget');
       }
     );
+  }
+
+
+  deleteControlWidget() {
+    const obj = {
+      app: this.deviceType.app,
+      id: this.selectedWidget.id
+    };
+    this.deviceTypeService.deleteThingsModelControlWidget(obj).subscribe(
+      (response: any) => {
+        this.isCreateWidgetAPILoading = false;
+        this.toasterService.showSuccess(response.message, 'Delete Control Widget');
+        this.onCloseModal();
+        this.getControlWidgets();
+      }, error => {
+        this.isCreateWidgetAPILoading = false;
+        this.toasterService.showError(error.message, 'Delete Control Widget');
+      }
+    );
+  }
+
+  openConfirmModal(widget) {
+    $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    this.selectedWidget = widget;
+  }
+
+  onCloseModal() {
+    this.selectedWidget = undefined;
+    $('#confirmMessageModal').modal('hide');
   }
 
   closeCreateWidgetModal() {

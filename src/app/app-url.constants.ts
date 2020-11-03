@@ -46,4 +46,5 @@ export class AppUrls {
   public static GET_THINGS_MODEL_DEVICE_METHODS = 'device_types/device_methods';
   public static GET_THINGS_MODEL_LAYOUT = 'device_types/layouts';
   public static ACKNOWLEGE_DEVICE_ALERT = 'D2C_UpdateMessage';
+  public static DELETE_CONTROL_WIDGET = 'device_type/control_widget';
 }

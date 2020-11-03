@@ -53,7 +53,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit {
           valueclass: ''
         },
         {
-          name: 'JSON Model',
+          name: 'Actions',
           key: undefined,
           type: 'button',
           headerClass: '',
@@ -64,6 +64,13 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit {
               id: 'View JSON Model',
               valueclass: '',
               tooltip: 'View JSON Model'
+            },
+            {
+              icon: 'fas fa-fw fa-trash',
+              text: '',
+              id: 'Delete',
+              valueclass: '',
+              tooltip: 'Delete'
             }
           ]
         }
@@ -118,6 +125,12 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit {
       this.toasterService.showError('Invalid JSON data', 'Add Device Method');
       return;
     }
+    const index = this.deviceMethods.findIndex(prop => prop.method_name === this.deviceMethodObj.method_name);
+    console.log(index);
+    if (index > -1) {
+      this.toasterService.showError('Device Method with same method name already exist.', 'Add Device Method');
+      return;
+    }
     this.isCreateDeviceMethodLoading = true;
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.device_methods = JSON.parse(JSON.stringify(this.deviceMethods));
@@ -135,6 +148,24 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit {
     );
   }
 
+  deleteDeviceMethod() {
+    const obj = JSON.parse(JSON.stringify(this.deviceType));
+    obj.device_methods = JSON.parse(JSON.stringify(this.deviceMethods));
+    const index = obj.device_methods.findIndex(prop => prop.json_key === this.selectedDeviceMethod.json_key);
+    obj.device_methods.splice(index, 1);
+    this.deviceTypeService.updateThingsModel(obj, this.deviceType.app).subscribe(
+      (response: any) => {
+        this.isCreateDeviceMethodLoading = false;
+        this.onCloseModal('confirmMessageModal');
+        this.toasterService.showSuccess(response.message, 'Delete Device Method');
+        this.getThingsModelDeviceMethod();
+      }, error => {
+        this.isCreateDeviceMethodLoading = false;
+        this.toasterService.showError(error.message, 'Delete Device Method');
+      }
+    );
+  }
+
   onCloseThingsDeviceMethodModal() {
     $('#addDeviceMethodModal').modal('hide');
     this.deviceMethodObj = undefined;
@@ -142,10 +173,14 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit {
 
   onTableFunctionCall(obj) {
     this.selectedDeviceMethod = obj.data;
-    $('#PropJSONModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    if (obj.for === 'View JSON Model') {
+      $('#PropJSONModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    } else if (obj.for === 'Delete') {
+      $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    }
   }
-  onCloseModal() {
-    $('#PropJSONModal').modal('hide');
+  onCloseModal(id) {
+    $('#' + id).modal('hide');
     this.selectedDeviceMethod = undefined;
   }
 

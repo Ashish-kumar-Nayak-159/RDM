@@ -1,8 +1,8 @@
 <div class="topnavbar">
-  <div class="d-sm-flex align-items-center justify-content-start mb-4 pl-1">
-    <h1 class="h3 mb-0 text-gray-800">Alerts</h1>
+  <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-1">
+    <h5 class="h4 mb-0 text-gray-800">Alerts</h5>
   </div>
-  <div class="card row bg-white" style="margin-left:-1.5rem">
+  <div class="card row bg-white" style="margin-left:-2rem">
     <div class="col-xl-12 col-md-12 mb-12">
       <form>
         <div class="form-group form-inline  my-2 mx-3">
@@ -80,6 +80,45 @@
     </div>
   </div>
   <ng-container>
+    <div class="" *ngIf="selectedAlert">
+      <div class="col-xl-10 col-lg-10 col-md-10">
+        <form>
+          <div class="form-group form-inline my-1">
+            <angular2-multiselect [data]="dropdownPropList" id="y1AxisProperty"
+              [(ngModel)]="y1AxisProps" name="y1AxisProperty" [settings]="{
+                text: 'Select Y1 Axis',
+                selectAllText: 'Select All',
+                unSelectAllText: 'UnSelect All',
+                classes: 'col-lg-2 col-xl-2 p-0 ml-2',
+                enableSearchFilter: true,
+                badgeShowLimit: 1,
+                maxHeight: 200,
+                labelKey: 'id'
+              }"
+              (onDeSelectAll)="y1Deselect($event)">
+            </angular2-multiselect>
+            <angular2-multiselect [data]="dropdownPropList" id="y2AxisProp" [(ngModel)]="y2AxisProps"
+              name="y2AxisProp" [settings]="{
+                text: 'Select Y2 Axis',
+                selectAllText: 'Select All',
+                unSelectAllText: 'UnSelect All',
+                classes: 'col-lg-2 col-xl-2 p-0 ml-2',
+                enableSearchFilter: true,
+                badgeShowLimit: 1,
+                maxHeight: 200,
+                labelKey: 'id'
+              }"
+              (onDeSelectAll)="y2Deselect($event)" >
+            </angular2-multiselect>
+            <button type="button" class="btn btn-success btn-sm mx-1 my-1" title="Search" (click)="getDeviceTelemetryData()"
+            ><i class="fa fa-search fa-sm"></i></button>
+
+            <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" ><i
+              class="fas fa-trash  fa-sm"></i></button>
+          </div>
+        </form>
+      </div>
+    </div>
     <div class="row">
       <div class="col-lg-12 mb-1">
         <div class="shadow mb-1" [ngClass]="{'card': selectedAlert}">
@@ -88,6 +127,8 @@
             </h6>
           </div>
           <div class="card-body1" style="max-height: 20rem; overflow-y: auto;">
+
+            <div *ngIf="isTelemetryDataLoading"><i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i></div>
             <google-chart
               *ngIf="lineGoogleChartConfig.dataTable.length > 1"
               [data]="lineGoogleChartConfig"

@@ -28,6 +28,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   refreshInterval: any;
   beforeInterval = 10;
   telemetryData: any[] = [];
+  filterObj: any = {};
+  devices: any[] = [];
   afterInterval = 10;
   lineGoogleChartConfig: GoogleChartInterface = {  // use :any or :GoogleChartInterface
     chartType: 'ComboChart',
@@ -66,6 +68,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   y1AxisProps: any[] = [];
   dropdownPropList: any[] = [];
   isTelemetryDataLoading = false;
+  isTelemetryFilterSelected = false;
 
   constructor(
     private commonService: CommonService,
@@ -78,11 +81,13 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe(async params => {
       if (params.get('applicationId')) {
         this.appData = this.userData.apps.filter(
           app => app.app === params.get('applicationId')
         )[0];
+        this.filterObj.app = this.appData.app;
+        this.filterObj.count = 10;
       }
       this.commonService.breadcrumbEvent.emit({
         type: 'replace',
@@ -97,20 +102,51 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             }
         ]
       });
-      this.getLatestAlerts();
+     // this.getLatestAlerts();
+      await this.getDevices();
      // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
     });
 
   }
 
+  getDevices() {
+    return new Promise((resolve, reject) => {
+      const obj = {
+        app: this.appData.app,
+        hierarchy: JSON.stringify(this.appData.user.hierarchy),
+      };
+      this.deviceService.getDeviceList(obj).subscribe(
+        (response: any) => {
+          if (response?.data) {
+            this.devices = response.data;
+          }
+          resolve();
+        }
+      );
+    });
+  }
+
+  onDateOptionChange() {
+    if (this.filterObj.dateOption !== 'custom') {
+      this.filterObj.from_date = undefined;
+      this.filterObj.to_date = undefined;
+    }
+  }
+
+  onDateChange(event) {
+    console.log(event);
+    this.filterObj.from_date = moment(event.value[0]).utc();
+    this.filterObj.to_date = moment(event.value[1]).utc();
+  }
+
   getLatestAlerts() {
     this.latestAlerts = [];
     this.isAlertAPILoading = true;
-    const filterObj = {
-      app: this.appData.app,
-      count: 10
-    };
-    this.deviceService.getDeviceAlerts(filterObj).subscribe(
+    // const filterObj = {
+    //   app: this.appData.app,
+    //   count: 10
+    // };
+    this.deviceService.getDeviceAlerts(this.filterObj).subscribe(
       (response: any) => {
         this.latestAlerts = response.data;
         this.latestAlerts.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date));
@@ -158,7 +194,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   async onClickOfViewGraph(alert) {
     this.selectedAlert = alert;
-
+    this.isTelemetryFilterSelected = false;
     await this.getDeviceData();
     await this.getThingsModelProperties();
     if (this.propertyList.length > 0) {
@@ -171,7 +207,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   getDeviceTelemetryData() {
     this.telemetryData = [];
-    this.isTelemetryDataLoading = true;
     this.lineGoogleChartConfig.dataTable = [];
     this.lineGoogleChartConfig.options.series = {};
     this.lineGoogleChartConfig.options.vAxes = {};
@@ -197,8 +232,14 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Minutes After Alert value must be greater than 0.', 'View Visualization');
       return;
     }
+    if (this.y1AxisProps.length === 0) {
+      this.toasterService.showError('Please select Y1 Axis property.', 'View Visualization');
+      return;
+    }
+    this.isTelemetryFilterSelected = true;
+    this.isTelemetryDataLoading = true;
     this.y1AxisProps.forEach((prop, index) =>
-    filterObj.message_props += prop.id + ',');
+    filterObj.message_props += prop.id + (index !== (this.y1AxisProps.length > 0 && this.y1AxisProps.length - 1) ? ',' : ''));
     this.y2AxisProps.forEach((prop, index) =>
     filterObj.message_props += prop.id + (index !== (this.y2AxisProps.length - 1) ? ',' : ''));
     console.log(filterObj);
@@ -295,9 +336,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       device_id: this.selectedAlert.device_id,
       message_id: this.selectedAlert.message_id,
       message: this.selectedAlert.message,
+      metadata: this.selectedAlert.metadata
     };
-    obj.message['user_id'] = this.userData.name;
-    obj.message['acknowledged_date'] = (moment.utc(new Date(), 'M/DD/YYYY h:mm:ss A'));
+    obj.metadata['user_id'] = this.userData.name;
+    obj.metadata['acknowledged_date'] = (moment.utc(new Date(), 'M/DD/YYYY h:mm:ss A'));
     this.deviceService.acknowledgeDeviceAlert(obj).subscribe(
       response => {
         this.toasterService.showSuccess(response.message, 'Acknowledge Alert');

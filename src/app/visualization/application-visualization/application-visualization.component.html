@@ -6,19 +6,60 @@
     <div class="col-xl-12 col-md-12 mb-12">
       <form>
         <div class="form-group form-inline  my-2 mx-3">
+
+          <input type="number" min="1" class="form-control form-control-sm mx-1 my-1 record-input" id="inputEmail4" placeholder="No of Records"
+        [(ngModel)]="filterObj.count" name="count">
+        <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory"
+         [(ngModel)]="filterObj.device_id" name="deviceCategory">
+          <option [ngValue]="undefined">Select Asset</option>
+          <option [ngValue]="device.device_id" *ngFor="let device of devices">
+            {{device?.tags?.dislay_name ? device.tags?.display_name: device.device_id}}
+          </option>
+        </select>
+        <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
+        [(ngModel)]="filterObj.acknowledged" name="dateOptions">
+          <option [ngValue]="undefined">All</option>
+          <option [ngValue]="'true'">Acknowledged</option>
+          <option [ngValue]="'false'">Not Acknowledged</option>
+        </select>
+        <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
+        [(ngModel)]="filterObj.dateOption" name="dateOptions" (change)="onDateOptionChange()">
+          <option [ngValue]="undefined">Quick Options</option>
+          <option [ngValue]="'5 mins'">Last 5 minutes</option>
+          <option [ngValue]="'30 mins'">Last 30 minutes</option>
+          <option [ngValue]="'1 hour'">Last 1 hour</option>
+          <option [ngValue]="'24 hour'">Last 24 hours</option>
+        </select>
+        <ng-container>
+          <input [owlDateTime]="dt1" [selectMode]="'range'"
+          (dateTimeChange)="onDateChange($event)" class="form-control form-control-sm mx-1 my-1 col-md-2" [owlDateTimeTrigger]="dt1" placeholder="Select Date Time">
+          <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
+          <owl-date-time #dt1></owl-date-time>
+        </ng-container>
+
+        <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="getLatestAlerts()" ><i class="fas fa-search fa-sm"></i></button>
+        <!-- <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fas fa-trash  fa-sm"></i></button> -->
+
+        </div>
+       </form>
+  </div>
+</div>
+
+  <!-- <div class="card row bg-white" style="margin-left:-2rem">
+    <div class="col-xl-12 col-md-12 mb-12">
+      <form>
+        <div class="form-group form-inline  my-2 mx-3">
           <input type="number" class="form-control form-control-sm my-1" id="app" style="width: 5%;" name="app"
             [(ngModel)]="beforeInterval">
-          <!-- <label>mins before alert</label> -->
           <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins before alert</button>
           <input type="number" class="form-control form-control-sm my-1" id="inputEmail4" style="width: 5%;" name="name"
             [(ngModel)]="afterInterval">
-          <!-- <label>mins after alert</label> -->
           <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins after alert</button>
         </div>
 
       </form>
     </div>
-  </div>
+  </div> -->
 </div>
 
 <div class="contain-pad" >
@@ -52,10 +93,10 @@
             <td>{{ alert.message?.message }}</td>
             <td>{{ alert.local_created_date }}</td>
             <td >
-              <ng-container *ngIf="alert.message?.acknowledged_date">Acknowledged</ng-container>
-              <button *ngIf="!alert.message?.acknowledged_date" class="btn btn-sm btn-secondary" (click)="onClickOfAcknowledgeAlert(alert)">Acknowledge</button>
+              <ng-container *ngIf="alert.metadata?.acknowledged_date">Acknowledged</ng-container>
+              <button *ngIf="!alert.metadata?.acknowledged_date" class="btn btn-sm btn-secondary" (click)="onClickOfAcknowledgeAlert(alert)">Acknowledge</button>
             </td>
-            <td>{{ alert.message?.user_id }}</td>
+            <td>{{ alert.metadata?.user_id }}</td>
             <td>
               <a href="javascript:void(0)" (click)="onClickOfViewGraph(alert)">
                 <i class="fa fa-search"></i>
@@ -80,10 +121,27 @@
     </div>
   </div>
   <ng-container>
-    <div class="" *ngIf="selectedAlert">
+
+    <div class="card shadow mb-4 border-top-widget" id="card" *ngIf="selectedAlert">
+      <div class="card-header">
+        <a href="#collapse" class="float-left py-3" data-toggle="collapse" role="button">
+          <h6 class="m-0 font-weight-bold text-primary">Filters
+          </h6>
+        </a>
+
+      </div>
+      <div class="collapse show" id="collapse">
+        <div class="card-body">
+          <div class="" >
       <div class="col-xl-10 col-lg-10 col-md-10">
         <form>
           <div class="form-group form-inline my-1">
+            <input type="number" class="form-control form-control-sm my-1" id="app" style="width: 5%;" name="app"
+            [(ngModel)]="beforeInterval">
+          <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins before alert</button>
+          <input type="number" class="form-control form-control-sm my-1" id="inputEmail4" style="width: 5%;" name="name"
+            [(ngModel)]="afterInterval">
+          <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins after alert</button>
             <angular2-multiselect [data]="dropdownPropList" id="y1AxisProperty"
               [(ngModel)]="y1AxisProps" name="y1AxisProperty" [settings]="{
                 text: 'Select Y1 Axis',
@@ -110,7 +168,7 @@
               }"
               (onDeSelectAll)="y2Deselect($event)" >
             </angular2-multiselect>
-            <button type="button" class="btn btn-success btn-sm mx-1 my-1" title="Search" (click)="getDeviceTelemetryData()"
+            <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="getDeviceTelemetryData()"
             ><i class="fa fa-search fa-sm"></i></button>
 
             <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" ><i
@@ -119,7 +177,11 @@
         </form>
       </div>
     </div>
-    <div class="row">
+        </div>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="isTelemetryFilterSelected">
       <div class="col-lg-12 mb-1">
         <div class="shadow mb-1" [ngClass]="{'card': selectedAlert}">
           <div class="card-header py-3" *ngIf="selectedAlert">

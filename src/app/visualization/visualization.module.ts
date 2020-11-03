@@ -6,6 +6,7 @@ import { VisualizationRoutingModule } from './visualization-routing.module';
 import { ApplicationVisualizationComponent } from './application-visualization/application-visualization.component';
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
+import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 
 
 @NgModule({
@@ -15,7 +16,12 @@ import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
     VisualizationRoutingModule,
     FormsModule,
     Ng2GoogleChartsModule,
-    AngularMultiSelectModule
+    AngularMultiSelectModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
+  ],
+  providers: [
+    {provide: OWL_DATE_TIME_LOCALE, useValue: {useUtc: true}}
   ]
 })
 export class VisualizationModule { }

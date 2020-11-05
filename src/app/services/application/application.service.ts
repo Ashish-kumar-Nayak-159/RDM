@@ -42,6 +42,14 @@ export class ApplicationService {
     return this.http.patch(this.url + AppUrls.UPDATE_APP, appObj);
   }
 
+  updateAppHierarchy(appObj) {
+    return this.http.put(this.url + AppUrls.UPDATE_APP_HIERARCHY, appObj);
+  }
+
+  updateAppRoles(appObj) {
+    return this.http.put(this.url + AppUrls.UPDATE_APP_ROLES, appObj);
+  }
+
   getLastAlerts(filterObj: any) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {

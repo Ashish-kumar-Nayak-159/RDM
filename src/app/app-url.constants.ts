@@ -47,4 +47,6 @@ export class AppUrls {
   public static GET_THINGS_MODEL_LAYOUT = 'device_types/layouts';
   public static ACKNOWLEGE_DEVICE_ALERT = 'D2C_UpdateAlertMetadata';
   public static DELETE_CONTROL_WIDGET = 'device_type/control_widget';
+  public static UPDATE_APP_HIERARCHY = 'App_EditAppHierarchy';
+  public static UPDATE_APP_ROLES = 'App_EditAppRoles';
 }

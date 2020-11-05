@@ -2,6 +2,7 @@ import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application/application.service';
 
+declare var $: any;
 @Component({
   selector: 'app-application-roles',
   templateUrl: './application-roles.component.html',
@@ -13,6 +14,7 @@ export class ApplicationRolesComponent implements OnInit {
   addedLevelItem: string;
   saveRoleAPILoading = false;
   originalApplicationData: any;
+  selectedRole: any;
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService
@@ -33,8 +35,7 @@ export class ApplicationRolesComponent implements OnInit {
     });
   }
 
-  onSaveRoles() {
-
+  onSaveRoles(forceUpdate = false) {
     this.applicationData.id = this.applicationData.app;
     let flag = '';
     this.applicationData.roles.forEach(element => {
@@ -51,16 +52,47 @@ export class ApplicationRolesComponent implements OnInit {
     this.applicationData.roles.forEach(item => {
       delete item.isEditable;
     });
-    this.applicationService.updateApp(this.applicationData).subscribe(
+    const obj = {
+      app: this.applicationData.app,
+      roles: this.applicationData.roles,
+      force_update: forceUpdate ? forceUpdate : undefined
+    };
+    if (forceUpdate) {
+      const roles = [];
+      this.applicationData.roles.forEach(role => {
+        if (role.name !== this.selectedRole.name) {
+          roles.push(role);
+        }
+      });
+      obj.roles = roles;
+    }
+    this.applicationService.updateAppRoles(obj).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Save Device Hierarchy');
         this.saveRoleAPILoading = false;
+        if (forceUpdate) {
+          this.onCloseModal();
+        }
         this.applicationService.refreshAppData.emit();
       }, (error) => {
         this.toasterService.showError(error.message, 'Save Device Hierarchy');
         this.saveRoleAPILoading = false;
       }
     );
+  }
+
+  openConfirmRoleDeleteModal(role) {
+    this.selectedRole = role;
+    $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  deleteRole() {
+    this.onSaveRoles(true);
+  }
+
+  onCloseModal() {
+    this.selectedRole = undefined;
+    $('#confirmMessageModal').modal('hide');
   }
 
   onCancelClick() {

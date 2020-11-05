@@ -1,3 +1,23 @@
+For adding/updating hierarchy:
+Start using below API:
+URL: https://kemsysrdmfuntionapp.azurewebsites.net/api/App_EditAppHierarchy
+Method: PATCH
+Body:
+      id or app: string: required
+      hierarchy: list: required
+
+For adding/updating roles:
+Start using below API:
+URL: https://kemsysrdmfuntionapp.azurewebsites.net/api/App_EditAppRoles
+Method: PUT
+Body:
+      id or app: string: required
+      roles: list: required
+
+Jo rule remove karvano try karso to error aavse.
+And jo forcefully karvo hoy to 'force_update': true karine moklvano
+
+
 URL: https://kemsysrdmfuntionapp.azurewebsites.net/api/device_types/properties?app=Test App 1&id=1
 Method: GET
 For getting properties of specific device type

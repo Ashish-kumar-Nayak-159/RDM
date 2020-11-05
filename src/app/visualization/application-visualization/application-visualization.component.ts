@@ -64,11 +64,13 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         maxZoomIn: 10.0}
     }
   };
+  isOpen = true;
   y2AxisProps: any[] = [];
   y1AxisProps: any[] = [];
   dropdownPropList: any[] = [];
   isTelemetryDataLoading = false;
   isTelemetryFilterSelected = false;
+  acknowledgedAlert: any;
 
   constructor(
     private commonService: CommonService,
@@ -155,21 +157,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     );
   }
 
-  getDeviceData() {
-    return new Promise((resolve, reject) => {
-      const obj = {
-        app: this.appData.app,
-        name: this.selectedAlert.device_id
-      };
-      this.deviceService.getDeviceData(obj.name, obj.app).subscribe(
-        (response: any) => {
-          this.selectedDevice = response;
-          resolve();
-        }
-      );
-    });
-  }
-
   getThingsModelProperties() {
     return new Promise((resolve, reject) => {
       const obj = {
@@ -193,9 +180,14 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
 
   async onClickOfViewGraph(alert) {
+    this.isOpen = true;
+    this.beforeInterval = 10;
+    this.afterInterval = 10;
+    this.y1AxisProps = [];
+    this.y2AxisProps = [];
     this.selectedAlert = alert;
     this.isTelemetryFilterSelected = false;
-    await this.getDeviceData();
+    this.selectedDevice = this.devices.find(device => device.device_id === this.selectedAlert.device_id);
     await this.getThingsModelProperties();
     if (this.propertyList.length > 0) {
       console.log(alert);
@@ -206,6 +198,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   getDeviceTelemetryData() {
+    this.isOpen = false;
     this.telemetryData = [];
     this.lineGoogleChartConfig.dataTable = [];
     this.lineGoogleChartConfig.options.series = {};
@@ -239,9 +232,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.isTelemetryFilterSelected = true;
     this.isTelemetryDataLoading = true;
     this.y1AxisProps.forEach((prop, index) =>
-    filterObj.message_props += prop.id + (index !== (this.y1AxisProps.length > 0 && this.y1AxisProps.length - 1) ? ',' : ''));
+    filterObj.message_props += prop.id + ',');
     this.y2AxisProps.forEach((prop, index) =>
     filterObj.message_props += prop.id + (index !== (this.y2AxisProps.length - 1) ? ',' : ''));
+    if (filterObj.message_props.charAt(filterObj.message_props.length - 1) === ',') {
+      filterObj.message_props = filterObj.message_props.substring(0, filterObj.message_props.length - 1);
+    }
     console.log(filterObj);
     this.deviceService.getDeviceTelemetry(filterObj).subscribe(
       (response: any) => {
@@ -285,13 +281,13 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         title += prop.id + (this.y2AxisProps[index + 1] ? ' & ' : '');
         this.lineGoogleChartConfig.options.series[(Object.keys(this.lineGoogleChartConfig.options.series).length)] =  {targetAxisIndex: 1};
     });
-    this.lineGoogleChartConfig.options.series[(Object.keys(this.lineGoogleChartConfig.options.series).length)] =
-    {type: 'Column', targetAxisIndex: 0, visibleInLegend: false};
+    // this.lineGoogleChartConfig.options.series[(Object.keys(this.lineGoogleChartConfig.options.series).length)] =
+    // {type: 'Column', targetAxisIndex: 0, visibleInLegend: false};
     if (title.charAt(title.length - 2) === '&') {
       title = title.substring(0, title.length - 2);
     }
     this.lineGoogleChartConfig.options.vAxes['1'] = {title};
-    dataList.splice(dataList.length, 0,  'Alert Time');
+    //  dataList.splice(dataList.length, 0,  'Alert Time');
     this.lineGoogleChartConfig.dataTable.push(dataList);
     telemetryData.forEach((obj, i) => {
       obj.local_created_date = this.commonService.convertUTCDateToLocal(obj.message_date);
@@ -304,11 +300,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           list.splice(list.length, 0, parseFloat(obj[prop.id]));
       });
       const epoch = this.commonService.convertDateToEpoch(obj.local_created_date);
-      if ( epoch > alertEpoch - 5 && epoch <= alertEpoch + 5) {
-        list.splice(list.length, 0, 500);
-      } else {
-        list.splice(list.length, 0, null);
-      }
+      // if ( epoch > alertEpoch - 5 && epoch <= alertEpoch + 5) {
+      //   list.splice(list.length, 0, 500);
+      // } else {
+      //   list.splice(list.length, 0, null);
+      // }
       this.lineGoogleChartConfig.dataTable.splice(this.lineGoogleChartConfig.dataTable.length, 0, list);
     });
     console.log(this.lineGoogleChartConfig);
@@ -326,17 +322,17 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
 
   onClickOfAcknowledgeAlert(alert): void {
-    this.selectedAlert = alert;
+    this.acknowledgedAlert = alert;
     $('#acknowledgemenConfirmModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
   acknowledgeAlert(): void {
     const obj = {
       app: this.appData.app,
-      device_id: this.selectedAlert.device_id,
-      message_id: this.selectedAlert.message_id,
-      message: this.selectedAlert.message,
-      metadata: this.selectedAlert.metadata
+      device_id: this.acknowledgedAlert.device_id,
+      message_id: this.acknowledgedAlert.message_id,
+      message: this.acknowledgedAlert.message,
+      metadata: this.acknowledgedAlert.metadata
     };
     obj.metadata['user_id'] = this.userData.name;
     obj.metadata['acknowledged_date'] = (moment.utc(new Date(), 'M/DD/YYYY h:mm:ss A'));
@@ -355,7 +351,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   closeAcknowledgementModal(): void {
     $('#acknowledgemenConfirmModal').modal('hide');
-    this.selectedAlert = undefined;
+    this.acknowledgedAlert = undefined;
   }
 
   ngOnDestroy(): void {

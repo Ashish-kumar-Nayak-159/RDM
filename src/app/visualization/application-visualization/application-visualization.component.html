@@ -64,7 +64,8 @@
 
 <div class="contain-pad" >
   <div class="mb-2">
-    <div class="table-responsive" style="max-height: 30vh;height: 30vh">
+    <div class="table-responsive" style="max-height: 27vh;height: 27vh;"
+    >
       <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
         <thead>
           <tr class="bg-secondary text-white">
@@ -80,7 +81,7 @@
       <tbody>
         <ng-container *ngIf="latestAlerts.length > 0 && !isAlertAPILoading">
           <tr *ngFor="let alert of latestAlerts" [ngClass]="{
-                    'bg-warning':
+                    'bg-alert-selection':
                       alert.message_id === this.selectedAlert?.message_id
                   }">
             <td ><i class="fa fa-bell" [style.color]="
@@ -121,65 +122,63 @@
     </div>
   </div>
   <ng-container>
-
-    <div class="card shadow mb-4 border-top-widget" id="card" *ngIf="selectedAlert">
-      <div class="card-header">
-        <a href="#collapse" class="float-left py-3" data-toggle="collapse" role="button">
-          <h6 class="m-0 font-weight-bold text-primary">Filters
-          </h6>
-        </a>
-
-      </div>
-      <div class="collapse show" id="collapse">
-        <div class="card-body">
-          <div class="" >
-      <div class="col-xl-10 col-lg-10 col-md-10">
-        <form>
-          <div class="form-group form-inline my-1">
-            <input type="number" class="form-control form-control-sm my-1" id="app" style="width: 5%;" name="app"
-            [(ngModel)]="beforeInterval">
-          <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins before alert</button>
-          <input type="number" class="form-control form-control-sm my-1" id="inputEmail4" style="width: 5%;" name="name"
-            [(ngModel)]="afterInterval">
-          <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins after alert</button>
-            <angular2-multiselect [data]="dropdownPropList" id="y1AxisProperty"
-              [(ngModel)]="y1AxisProps" name="y1AxisProperty" [settings]="{
-                text: 'Select Y1 Axis',
-                selectAllText: 'Select All',
-                unSelectAllText: 'UnSelect All',
-                classes: 'col-lg-2 col-xl-2 p-0 ml-2',
-                enableSearchFilter: true,
-                badgeShowLimit: 1,
-                maxHeight: 200,
-                labelKey: 'id'
-              }"
-              (onDeSelectAll)="y1Deselect($event)">
-            </angular2-multiselect>
-            <angular2-multiselect [data]="dropdownPropList" id="y2AxisProp" [(ngModel)]="y2AxisProps"
-              name="y2AxisProp" [settings]="{
-                text: 'Select Y2 Axis',
-                selectAllText: 'Select All',
-                unSelectAllText: 'UnSelect All',
-                classes: 'col-lg-2 col-xl-2 p-0 ml-2',
-                enableSearchFilter: true,
-                badgeShowLimit: 1,
-                maxHeight: 200,
-                labelKey: 'id'
-              }"
-              (onDeSelectAll)="y2Deselect($event)" >
-            </angular2-multiselect>
-            <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="getDeviceTelemetryData()"
-            ><i class="fa fa-search fa-sm"></i></button>
-
-            <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" ><i
-              class="fas fa-trash  fa-sm"></i></button>
+    <accordion [closeOthers]="true" *ngIf="selectedAlert" class="mb-2">
+      <accordion-group heading="Filters" [panelClass]="'customClass'" [isOpen]="isOpen">
+        <div class="">
+          <div class="">
+            <div class="" >
+        <div class="col-xl-10 col-lg-10 col-md-10">
+          <form>
+            <div class="form-group form-inline my-1">
+              <label class="mr-2"> Time Range: </label>
+              <input type="number" class="form-control form-control-sm my-1" id="app" style="width: 9%;" name="app"
+              [(ngModel)]="beforeInterval">
+            <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins before alert</button>
+            <input type="number" class="form-control form-control-sm my-1" id="inputEmail4" style="width: 9%;" name="name"
+              [(ngModel)]="afterInterval">
+            <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins after alert</button>
           </div>
-        </form>
-      </div>
-    </div>
+          <div class="form-group form-inline my-1">
+            <label class="mr-2">Properties: </label>
+              <angular2-multiselect [data]="dropdownPropList" id="y1AxisProperty"
+                [(ngModel)]="y1AxisProps" name="y1AxisProperty" [settings]="{
+                  text: 'Select Y1 Axis',
+                  selectAllText: 'Select All',
+                  unSelectAllText: 'UnSelect All',
+                  classes: 'col-lg-2 col-xl-2 p-0 ml-2',
+                  enableSearchFilter: true,
+                  badgeShowLimit: 1,
+                  maxHeight: 200,
+                  labelKey: 'id'
+                }"
+                (onDeSelectAll)="y1Deselect($event)">
+              </angular2-multiselect>
+              <angular2-multiselect [data]="dropdownPropList" id="y2AxisProp" [(ngModel)]="y2AxisProps"
+                name="y2AxisProp" [settings]="{
+                  text: 'Select Y2 Axis',
+                  selectAllText: 'Select All',
+                  unSelectAllText: 'UnSelect All',
+                  classes: 'col-lg-2 col-xl-2 p-0 ml-2',
+                  enableSearchFilter: true,
+                  badgeShowLimit: 1,
+                  maxHeight: 200,
+                  labelKey: 'id'
+                }"
+                (onDeSelectAll)="y2Deselect($event)" >
+              </angular2-multiselect>
+              <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Apply Filter" (click)="getDeviceTelemetryData()"
+              >Apply</button>
+
+              <!-- <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" ><i
+                class="fas fa-trash  fa-sm"></i></button> -->
+            </div>
+          </form>
         </div>
       </div>
-    </div>
+          </div>
+        </div>
+      </accordion-group>
+      </accordion>
 
     <div class="row" *ngIf="isTelemetryFilterSelected">
       <div class="col-lg-12 mb-1">
@@ -199,25 +198,13 @@
         </div>
       </div>
     </div>
-    <!-- <div class="col-lg-12 mb-1">
-      <div class="shadow mb-1" [ngClass]="{'card': selectedAlert}">
-        <div class="card-header py-3" *ngIf="selectedAlert">
-          <h6 class="m-0 font-weight-bold text-primary">Latest data
-          </h6>
-        </div>
-        <div class="card-body1" id="bar-chart" style="max-height: 20rem; overflow-y: auto;">
-          <google-chart  [data]="barGoogleChartConfig"></google-chart>
-        </div>
-      </div>
-    </div> -->
+
   </ng-container>
 </div>
 
-
-
 <div class="modal right fade" id="acknowledgemenConfirmModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
   <div class="modal-dialog" role="document">
-    <div class="modal-content" *ngIf="selectedAlert">
+    <div class="modal-content" *ngIf="acknowledgedAlert">
     <div class="modal-header">
       <h5 class="modal-title" id="exampleModalLabel">Acknowledge Alert</h5>
       <button type="button" class="close" (click)="closeAcknowledgementModal()" aria-label="Close">
@@ -229,7 +216,7 @@
         <h6>Are you sure you want to acknowledge this alert?</h6>
         <div class="form-group">
           <label for="recipient-name" class="col-form-label">Select the reason for Alert:</label>
-          <select class="custom-select" id="alertReason" [(ngModel)]="selectedAlert.message.reason" name="alertReason">
+          <select class="custom-select" id="alertReason" [(ngModel)]="acknowledgedAlert.message.reason" name="alertReason">
             <option value="undefined">Select Reason</option>
             <option value="Reason 1">Reason 1</option>
             <option value="Reason 2">Reason 2</option>

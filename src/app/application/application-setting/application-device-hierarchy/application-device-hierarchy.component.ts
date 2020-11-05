@@ -3,6 +3,7 @@ import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application/application.service';
 
+declare var $: any;
 @Component({
   selector: 'app-application-device-hierarchy',
   templateUrl: './application-device-hierarchy.component.html',
@@ -15,6 +16,8 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
   addedTagItem: string;
   saveHierarchyAPILoading = false;
   originalApplicationData: any;
+  selectedHierarchy: any;
+  forceUpdate = false;
   constructor(
     private toasterService: ToasterService,
     private applicationService: ApplicationService
@@ -54,6 +57,10 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
 
   onRemoveTag(index) {
     this.selectedHierarchyItem.tags.splice(index, 1);
+    const i = this.applicationData.hierarchy.findIndex(item => item.name === this.selectedHierarchyItem.name);
+    this.applicationData.hierarchy.splice(i, 1);
+    this.applicationData.hierarchy.splice(i, 0, this.selectedHierarchyItem);
+    this.forceUpdate = true;
   }
 
   onSaveHierarchyTags() {
@@ -75,13 +82,29 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
     this.applicationData.hierarchy.forEach(item => {
       delete item.isEditable;
     });
+    const obj = {
+      app: this.applicationData.app,
+      hierarchy: this.applicationData.hierarchy,
+      force_update: this.forceUpdate ? this.forceUpdate : undefined
+    };
+    if (this.forceUpdate && this.selectedHierarchy) {
+      const hierarchy = [];
+      this.applicationData.hierarchy.forEach(item => {
+        if (item.name !== this.selectedHierarchy.name) {
+          hierarchy.push(item);
+        }
+      });
+      obj.hierarchy = hierarchy;
+    }
     this.saveHierarchyAPILoading = true;
-    this.applicationData.id = this.applicationData.app;
-    this.applicationService.updateApp(this.applicationData).subscribe(
+    this.applicationService.updateAppHierarchy(obj).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Save Device Hierarchy');
         this.selectedHierarchyItem = undefined;
         this.addedTagItem = undefined;
+        if (this.forceUpdate) {
+          this.onCloseModal();
+        }
         this.saveHierarchyAPILoading = false;
         this.applicationService.refreshAppData.emit();
       }, (error) => {
@@ -89,6 +112,22 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
         this.saveHierarchyAPILoading = false;
       }
     );
+  }
+
+  openConfirmHierarchyDeleteModal(hierarchy) {
+    this.selectedHierarchy = hierarchy;
+    $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  deleteRole() {
+    // this.onSaveRoles(true);
+    this.forceUpdate = true;
+    this.onSaveHierarchyTags();
+  }
+
+  onCloseModal() {
+    this.selectedHierarchy = undefined;
+    $('#confirmMessageModal').modal('hide');
   }
 
 

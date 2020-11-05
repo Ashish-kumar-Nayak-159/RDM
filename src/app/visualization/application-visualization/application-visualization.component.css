@@ -31,3 +31,9 @@ th[scope=row] {
   padding-left: 5rem;
   width: 9rem;
 }
+
+.bg-alert-selection {
+  background-color: #f7ce64!important;
+}
+
+

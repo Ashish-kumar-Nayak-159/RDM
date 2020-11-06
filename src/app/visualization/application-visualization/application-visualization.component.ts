@@ -30,6 +30,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   telemetryData: any[] = [];
   filterObj: any = {};
   devices: any[] = [];
+  nonIPDevices: any[] = [];
   afterInterval = 10;
   lineGoogleChartConfig: GoogleChartInterface = {  // use :any or :GoogleChartInterface
     chartType: 'ComboChart',
@@ -148,6 +149,16 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     //   app: this.appData.app,
     //   count: 10
     // };
+    const obj = {...this.filterObj};
+    if (obj.non_ip_device) {
+      obj.gateway_id = obj.device.device_id;
+      obj.device_id = obj.non_ip_device.device_id;
+      delete obj.device;
+      delete obj.non_ip_device;
+    } else if (obj.device) {
+      obj.device_id = obj.device.device_id;
+      delete obj.device;
+    }
     this.deviceService.getDeviceAlerts(this.filterObj).subscribe(
       (response: any) => {
         this.latestAlerts = response.data;
@@ -157,11 +168,50 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     );
   }
 
+  onAssetSelection() {
+    this.nonIPDevices = [];
+    if (this.filterObj.category === 'IoT Gateway') {
+      const obj = {
+        app: this.appData.app,
+        hierarchy: JSON.stringify(this.appData.user.hierarchy),
+      };
+      this.deviceService.getNonIPDeviceList(obj).subscribe(
+        (response: any) => {
+          if (response?.data) {
+            this.nonIPDevices = response.data;
+          }
+        }
+      );
+    }
+  }
+
+  getDeviceData() {
+    return new Promise((resolve, reject) => {
+      const obj = {
+        app: this.appData.app,
+        device_id: this.selectedAlert.device_id
+      };
+      const methodToCall = this.selectedAlert.gateway_id === this.selectedAlert.device_id || !this.selectedAlert.gateway_id ?
+        this.deviceService.getDeviceData(obj.device_id, obj.app) :
+        this.deviceService.getNonIPDeviceList(obj);
+      methodToCall.subscribe(
+        (response: any) => {
+          if (response?.data?.length > 0) {
+            this.selectedDevice = response.data[0];
+          } else {
+            this.selectedDevice = response;
+          }
+          resolve();
+        }
+      );
+    });
+  }
+
   getThingsModelProperties() {
     return new Promise((resolve, reject) => {
       const obj = {
         app: this.appData.app,
-        name: this.selectedDevice.tags.device_type
+        name: this.selectedDevice?.tags?.device_type
       };
       this.deviceTypeService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
@@ -177,8 +227,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     });
   }
 
-
-
   async onClickOfViewGraph(alert) {
     this.isOpen = true;
     this.beforeInterval = 10;
@@ -187,7 +235,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.y2AxisProps = [];
     this.selectedAlert = alert;
     this.isTelemetryFilterSelected = false;
-    this.selectedDevice = this.devices.find(device => device.device_id === this.selectedAlert.device_id);
+    // this.selectedDevice = this.devices.find(device => device.device_id === this.selectedAlert.device_id);
+    await this.getDeviceData();
     await this.getThingsModelProperties();
     if (this.propertyList.length > 0) {
       console.log(alert);

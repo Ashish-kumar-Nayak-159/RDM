@@ -112,7 +112,7 @@ input:invalid {
   overflow: hidden;
   text-overflow: ellipsis;
   min-width: 10px;
-  width: 9rem;
+  width: 7rem;
   color: #858796 !important;
 }
 
@@ -132,22 +132,22 @@ input:invalid {
 }
 
 .dropdown-list {
-  width: 100% !important;
+  min-width: 100% !important;
+  width: 150% !important;
 }
 
 .accordion-toggle[aria-expanded="true"]:before {
-  content: "\f107";
+  content: "\f13a";
   font: normal normal bold 14px/1 FontAwesome;
 }
 
 .accordion-toggle[aria-expanded="false"]:before {
-  content: "\f106";
+  content: "\f139";
   font: normal normal bold 14px/1 FontAwesome;
 }
 
-
 .card.customClass .card-header {
-  padding: 0.5rem 0.25rem;
+  padding: 0.25rem 1rem 0.25rem;
   font-size: 1rem;
   font-weight: 700;
 }

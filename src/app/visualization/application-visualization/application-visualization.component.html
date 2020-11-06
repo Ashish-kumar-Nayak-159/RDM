@@ -7,43 +7,52 @@
       <form>
         <div class="form-group form-inline  my-2 mx-3">
 
-          <input type="number" min="1" class="form-control form-control-sm mx-1 my-1 record-input" id="inputEmail4" placeholder="No of Records"
-        [(ngModel)]="filterObj.count" name="count">
-        <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory"
-         [(ngModel)]="filterObj.device_id" name="deviceCategory">
-          <option [ngValue]="undefined">Select Asset</option>
-          <option [ngValue]="device.device_id" *ngFor="let device of devices">
-            {{device?.tags?.dislay_name ? device.tags?.display_name: device.device_id}}
-          </option>
-        </select>
-        <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
-        [(ngModel)]="filterObj.acknowledged" name="dateOptions">
-          <option [ngValue]="undefined">All</option>
-          <option [ngValue]="'true'">Acknowledged</option>
-          <option [ngValue]="'false'">Not Acknowledged</option>
-        </select>
-        <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
-        [(ngModel)]="filterObj.dateOption" name="dateOptions" (change)="onDateOptionChange()">
-          <option [ngValue]="undefined">Quick Options</option>
-          <option [ngValue]="'5 mins'">Last 5 minutes</option>
-          <option [ngValue]="'30 mins'">Last 30 minutes</option>
-          <option [ngValue]="'1 hour'">Last 1 hour</option>
-          <option [ngValue]="'24 hour'">Last 24 hours</option>
-        </select>
-        <ng-container>
-          <input [owlDateTime]="dt1" [selectMode]="'range'"
-          (dateTimeChange)="onDateChange($event)" class="form-control form-control-sm mx-1 my-1 col-md-2" [owlDateTimeTrigger]="dt1" placeholder="Select Date Time">
-          <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
-          <owl-date-time #dt1></owl-date-time>
-        </ng-container>
+          <input type="number" min="1" class="form-control form-control-sm mx-1 my-1 record-input" id="inputEmail4"
+            placeholder="No of Records" [(ngModel)]="filterObj.count" name="count">
+          <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory" [(ngModel)]="filterObj.device"
+            name="deviceCategory" (change)="onAssetSelection()">
+            <option [ngValue]="undefined">Select Asset</option>
+            <option [ngValue]="device" *ngFor="let device of devices">
+              {{device?.tags?.dislay_name ? device.tags?.display_name: device.device_id}}
+            </option>
+          </select>
+          <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory1" [(ngModel)]="filterObj.non_ip_device"
+            name="deviceCategory1" *ngIf="filterObj.device?.tags?.category === 'IoT Gateway'">
+            <option [ngValue]="undefined">Select Asset</option>
+            <option [ngValue]="device" *ngFor="let device of nonIPDevices">
+              {{device?.tags?.dislay_name ? device.tags?.display_name: device.device_id}}
+            </option>
+          </select>
+          <select class="form-control form-control-sm mx-1 my-1" id="dateoptions" [(ngModel)]="filterObj.acknowledged"
+            name="dateOptions">
+            <option [ngValue]="undefined">Status</option>
+            <option [ngValue]="'true'">Acknowledged</option>
+            <option [ngValue]="'false'">Not Acknowledged</option>
+          </select>
+          <select class="form-control form-control-sm mx-1 my-1" id="dateoptions" [(ngModel)]="filterObj.dateOption"
+            name="dateOptions" (change)="onDateOptionChange()">
+            <option [ngValue]="undefined">Quick Options</option>
+            <option [ngValue]="'5 mins'">Last 5 minutes</option>
+            <option [ngValue]="'30 mins'">Last 30 minutes</option>
+            <option [ngValue]="'1 hour'">Last 1 hour</option>
+            <option [ngValue]="'24 hour'">Last 24 hours</option>
+          </select>
+          <ng-container>
+            <input [owlDateTime]="dt1" [selectMode]="'range'" (dateTimeChange)="onDateChange($event)"
+              class="form-control form-control-sm mx-1 my-1 col-md-2" [owlDateTimeTrigger]="dt1"
+              placeholder="Select Date Time">
+            <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
+            <owl-date-time #dt1></owl-date-time>
+          </ng-container>
 
-        <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="getLatestAlerts()" ><i class="fas fa-search fa-sm"></i></button>
-        <!-- <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fas fa-trash  fa-sm"></i></button> -->
+          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="getLatestAlerts()"><i
+              class="fas fa-search fa-sm"></i></button>
+          <!-- <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fas fa-trash  fa-sm"></i></button> -->
 
         </div>
-       </form>
+      </form>
+    </div>
   </div>
-</div>
 
   <!-- <div class="card row bg-white" style="margin-left:-2rem">
     <div class="col-xl-12 col-md-12 mb-12">
@@ -62,10 +71,9 @@
   </div> -->
 </div>
 
-<div class="contain-pad" >
+<div class="contain-pad">
   <div class="mb-2">
-    <div class="table-responsive" style="max-height: 27vh;height: 27vh;"
-    >
+    <div class="table-responsive" style="max-height: 27vh;height: 27vh;">
       <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
         <thead>
           <tr class="bg-secondary text-white">
@@ -77,47 +85,48 @@
             <th>Acknowledged By</th>
             <th></th>
           </tr>
-      </thead>
-      <tbody>
-        <ng-container *ngIf="latestAlerts.length > 0 && !isAlertAPILoading">
-          <tr *ngFor="let alert of latestAlerts" [ngClass]="{
+        </thead>
+        <tbody>
+          <ng-container *ngIf="latestAlerts.length > 0 && !isAlertAPILoading">
+            <tr *ngFor="let alert of latestAlerts" [ngClass]="{
                     'bg-alert-selection':
                       alert.message_id === this.selectedAlert?.message_id
                   }">
-            <td ><i class="fa fa-bell" [style.color]="
+              <td><i class="fa fa-bell" [style.color]="
               (alert.message?.priority === 'critical' ? '#fb5515' :
               (alert.message?.priority === 'medium' ? '#f6c23e' :
               (alert.message?.priority === 'low' ? '#229954' : '')
               )
               )"></i></td>
-            <td>{{ alert.device_id }}</td>
-            <td>{{ alert.message?.message }}</td>
-            <td>{{ alert.local_created_date }}</td>
-            <td >
-              <ng-container *ngIf="alert.metadata?.acknowledged_date">Acknowledged</ng-container>
-              <button *ngIf="!alert.metadata?.acknowledged_date" class="btn btn-sm btn-secondary" (click)="onClickOfAcknowledgeAlert(alert)">Acknowledge</button>
-            </td>
-            <td>{{ alert.metadata?.user_id }}</td>
-            <td>
-              <a href="javascript:void(0)" (click)="onClickOfViewGraph(alert)">
-                <i class="fa fa-search"></i>
-              </a>
-            </td>
-          </tr>
-        </ng-container>
-        <ng-container *ngIf="latestAlerts.length === 0 && !isAlertAPILoading">
-          <tr>
-            <td colspan="7">No Alert data available.</td>
-          </tr>
-        </ng-container>
-        <ng-container *ngIf="isAlertAPILoading">
-          <tr>
-            <td colspan="7">
-              <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
-            </td>
-          </tr>
-        </ng-container>
-      </tbody>
+              <td>{{ alert.device_id }}</td>
+              <td>{{ alert.message?.message }}</td>
+              <td>{{ alert.local_created_date }}</td>
+              <td>
+                <ng-container *ngIf="alert.metadata?.acknowledged_date">Acknowledged</ng-container>
+                <button *ngIf="!alert.metadata?.acknowledged_date" class="btn btn-sm btn-secondary"
+                  (click)="onClickOfAcknowledgeAlert(alert)">Acknowledge</button>
+              </td>
+              <td>{{ alert.metadata?.user_id }}</td>
+              <td>
+                <a href="javascript:void(0)" (click)="onClickOfViewGraph(alert)">
+                  <i class="fa fa-search"></i>
+                </a>
+              </td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="latestAlerts.length === 0 && !isAlertAPILoading">
+            <tr>
+              <td colspan="7">No Alert data available.</td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="isAlertAPILoading">
+            <tr>
+              <td colspan="7">
+                <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
       </table>
     </div>
   </div>
@@ -126,22 +135,22 @@
       <accordion-group heading="Filters" [panelClass]="'customClass'" [isOpen]="isOpen">
         <div class="">
           <div class="">
-            <div class="" >
-        <div class="col-xl-10 col-lg-10 col-md-10">
-          <form>
-            <div class="form-group form-inline my-1">
-              <label class="mr-2"> Time Range: </label>
-              <input type="number" class="form-control form-control-sm my-1" id="app" style="width: 9%;" name="app"
-              [(ngModel)]="beforeInterval">
-            <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins before alert</button>
-            <input type="number" class="form-control form-control-sm my-1" id="inputEmail4" style="width: 9%;" name="name"
-              [(ngModel)]="afterInterval">
-            <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins after alert</button>
-          </div>
-          <div class="form-group form-inline my-1">
-            <label class="mr-2">Properties: </label>
-              <angular2-multiselect [data]="dropdownPropList" id="y1AxisProperty"
-                [(ngModel)]="y1AxisProps" name="y1AxisProperty" [settings]="{
+            <div class="">
+              <div class="col-xl-10 col-lg-10 col-md-10">
+                <form>
+                  <div class="form-group form-inline my-1">
+                    <label class="mr-2"> Time Range: </label>
+                    <input type="number" class="form-control form-control-sm my-1" id="app" style="width: 9%;"
+                      name="app" [(ngModel)]="beforeInterval">
+                    <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins before alert</button>
+                    <input type="number" class="form-control form-control-sm my-1" id="inputEmail4" style="width: 9%;"
+                      name="name" [(ngModel)]="afterInterval">
+                    <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins after alert</button>
+                  </div>
+                  <div class="form-group form-inline my-1">
+                    <label class="mr-2">Properties: </label>
+                    <angular2-multiselect [data]="dropdownPropList" id="y1AxisProperty" [(ngModel)]="y1AxisProps"
+                      name="y1AxisProperty" [settings]="{
                   text: 'Select Y1 Axis',
                   selectAllText: 'Select All',
                   unSelectAllText: 'UnSelect All',
@@ -150,11 +159,10 @@
                   badgeShowLimit: 1,
                   maxHeight: 200,
                   labelKey: 'id'
-                }"
-                (onDeSelectAll)="y1Deselect($event)">
-              </angular2-multiselect>
-              <angular2-multiselect [data]="dropdownPropList" id="y2AxisProp" [(ngModel)]="y2AxisProps"
-                name="y2AxisProp" [settings]="{
+                }" (onDeSelectAll)="y1Deselect($event)">
+                    </angular2-multiselect>
+                    <angular2-multiselect [data]="dropdownPropList" id="y2AxisProp" [(ngModel)]="y2AxisProps"
+                      name="y2AxisProp" [settings]="{
                   text: 'Select Y2 Axis',
                   selectAllText: 'Select All',
                   unSelectAllText: 'UnSelect All',
@@ -163,22 +171,21 @@
                   badgeShowLimit: 1,
                   maxHeight: 200,
                   labelKey: 'id'
-                }"
-                (onDeSelectAll)="y2Deselect($event)" >
-              </angular2-multiselect>
-              <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Apply Filter" (click)="getDeviceTelemetryData()"
-              >Apply</button>
+                }" (onDeSelectAll)="y2Deselect($event)">
+                    </angular2-multiselect>
+                    <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Apply Filter"
+                      (click)="getDeviceTelemetryData()">Apply</button>
 
-              <!-- <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" ><i
+                    <!-- <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" ><i
                 class="fas fa-trash  fa-sm"></i></button> -->
+                  </div>
+                </form>
+              </div>
             </div>
-          </form>
-        </div>
-      </div>
           </div>
         </div>
       </accordion-group>
-      </accordion>
+    </accordion>
 
     <div class="row" *ngIf="isTelemetryFilterSelected">
       <div class="col-lg-12 mb-1">
@@ -190,10 +197,22 @@
           <div class="card-body1" style="max-height: 20rem; overflow-y: auto;">
 
             <div *ngIf="isTelemetryDataLoading"><i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i></div>
-            <google-chart
-              *ngIf="lineGoogleChartConfig.dataTable.length > 1"
-              [data]="lineGoogleChartConfig"
-            ></google-chart>
+            <div class="col-12"  *ngIf="lineGoogleChartConfig.dataTable.length > 1">
+              <div class="form-check col-2" *ngFor="let prop of y1AxisProps;let i = index;">
+                <input class="form-check-input" type="checkbox" value="{{i}}" id="prop{{i}}"  checked>
+                <label class="form-check-label" for="prop{{i}}">
+                  {{prop.id}}
+                </label>
+              </div>
+              <div class="form-check col-2" *ngFor="let prop of y2AxisProps;let i = index;">
+                <input class="form-check-input" type="checkbox" value="{{i}}" id="prop{{i}}"  checked>
+                <label class="form-check-label" for="prop{{i}}">
+                  {{prop.id}}
+                </label>
+              </div>
+            </div>
+            <google-chart *ngIf="lineGoogleChartConfig.dataTable.length > 1" [data]="lineGoogleChartConfig">
+            </google-chart>
           </div>
         </div>
       </div>
@@ -202,33 +221,34 @@
   </ng-container>
 </div>
 
-<div class="modal right fade" id="acknowledgemenConfirmModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
+<div class="modal right fade" id="acknowledgemenConfirmModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <div class="modal-content" *ngIf="acknowledgedAlert">
-    <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">Acknowledge Alert</h5>
-      <button type="button" class="close" (click)="closeAcknowledgementModal()" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Acknowledge Alert</h5>
+        <button type="button" class="close" (click)="closeAcknowledgementModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <h6>Are you sure you want to acknowledge this alert?</h6>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Select the reason for Alert:</label>
+            <select class="custom-select" id="alertReason" [(ngModel)]="acknowledgedAlert.message.reason"
+              name="alertReason">
+              <option value="undefined">Select Reason</option>
+              <option value="Reason 1">Reason 1</option>
+              <option value="Reason 2">Reason 2</option>
+              <option value="Reason 3">Reason 3</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="acknowledgeAlert()">Acknowledge</button>
+        <button type="button" class="btn btn-secondary add-row" (click)="closeAcknowledgementModal()">Cancel</button>
+      </div>
     </div>
-    <div class="modal-body">
-      <form>
-        <h6>Are you sure you want to acknowledge this alert?</h6>
-        <div class="form-group">
-          <label for="recipient-name" class="col-form-label">Select the reason for Alert:</label>
-          <select class="custom-select" id="alertReason" [(ngModel)]="acknowledgedAlert.message.reason" name="alertReason">
-            <option value="undefined">Select Reason</option>
-            <option value="Reason 1">Reason 1</option>
-            <option value="Reason 2">Reason 2</option>
-            <option value="Reason 3">Reason 3</option>
-          </select>
-        </div>
-      </form>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-primary" (click)="acknowledgeAlert()">Acknowledge</button>
-      <button type="button" class="btn btn-secondary add-row" (click)="closeAcknowledgementModal()">Cancel</button>
-    </div>
-  </div>
   </div>
 </div>

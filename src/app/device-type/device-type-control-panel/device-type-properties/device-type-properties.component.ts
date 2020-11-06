@@ -118,7 +118,8 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
 
   openAddPropertiesModal() {
     this.propertyObj = {
-      json_model : {}
+      json_model : {},
+      threshold: {}
     };
    // this.thingsModel.tags.app = this.contextApp.app;
     $('#addPropertiesModal').modal({ backdrop: 'static', keyboard: false, show: true });
@@ -186,6 +187,36 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
     if (index > -1) {
       this.toasterService.showError('Property with same name already exist.', 'Add Property');
       return;
+    }
+    if (this.propertyObj.threshold) {
+      if (this.propertyObj.threshold.l1 && this.propertyObj.threshold.h1 && this.propertyObj.threshold.h1 < this.propertyObj.threshold.l1) {
+        this.toasterService.showError('H1 must be greater than L1', 'Add Property');
+        return;
+      }
+      if (this.propertyObj.threshold.l2 && this.propertyObj.threshold.h2 && this.propertyObj.threshold.h2 < this.propertyObj.threshold.l2) {
+        this.toasterService.showError('H2 must be greater than L2', 'Add Property');
+        return;
+      }
+      if (this.propertyObj.threshold.l3 && this.propertyObj.threshold.h3 && this.propertyObj.threshold.h3 < this.propertyObj.threshold.l3) {
+        this.toasterService.showError('H3 must be greater than L3', 'Add Property');
+        return;
+      }
+      if (this.propertyObj.threshold.l1 && this.propertyObj.threshold.l2 && this.propertyObj.threshold.l1 < this.propertyObj.threshold.l2) {
+        this.toasterService.showError('L1 must be greater than L2', 'Add Property');
+        return;
+      }
+      if (this.propertyObj.threshold.l2 && this.propertyObj.threshold.l3 && this.propertyObj.threshold.l2 < this.propertyObj.threshold.l3) {
+        this.toasterService.showError('L2 must be greater than L3', 'Add Property');
+        return;
+      }
+      if (this.propertyObj.threshold.h1 && this.propertyObj.threshold.h2 && this.propertyObj.threshold.h1 > this.propertyObj.threshold.h2) {
+        this.toasterService.showError('H2 must be greater than H1', 'Add Property');
+        return;
+      }
+      if (this.propertyObj.threshold.h2 && this.propertyObj.threshold.h3 && this.propertyObj.threshold.h3 < this.propertyObj.threshold.h2) {
+        this.toasterService.showError('H3 must be greater than H2', 'Add Property');
+        return;
+      }
     }
     this.isCreatePropertyLoading = true;
     const obj = JSON.parse(JSON.stringify(this.deviceType));

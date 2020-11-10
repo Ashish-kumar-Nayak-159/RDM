@@ -131,10 +131,15 @@ input:invalid {
   color: #6e707e;
 }
 
-.dropdown-list {
+/* .dropdown-list {
   min-width: 100% !important;
   width: 150% !important;
 }
+
+.modal-select.cuppa-dropdown.dropdown-list {
+  min-width: 100% !important;
+  width: 100% !important;
+} */
 
 .accordion-toggle[aria-expanded="true"]:before {
   content: "\f13a";

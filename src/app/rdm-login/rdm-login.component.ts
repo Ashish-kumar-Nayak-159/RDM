@@ -14,6 +14,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
   loginForm: any = {};
   usersList: any[] = [];
   userData: any;
+  isResetPassword = false;
   isLoginAPILoading = false;
   constructor(
     private router: Router,
@@ -22,10 +23,16 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
+
+    this.commonService.resetPassword.subscribe((resetPassword: boolean) => {
+      if (!resetPassword) {
+        $('#changePasswordModal').modal('hide');
+        this.loginForm.reset();
+      }
+    });
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     if (this.userData) {
       if (this.userData.is_super_admin) {
-
         this.router.navigate(['applications']);
       } else {
         if (this.userData.apps && this.userData.apps.length > 1) {
@@ -62,6 +69,14 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
             this.router.navigate(['applications']);
             this.commonService.setItemInLocalStorage('userData', response);
           } else {
+            if (response.password_created_date === '') {
+              this.isResetPassword = true;
+              $('#changePasswordModal').modal({
+                backdrop: 'static',
+                keyboard: false
+              });
+              return;
+            }
             if (response.apps && response.apps.length > 0) {
               response.apps.forEach(element => {
                 let hierarchy = '';

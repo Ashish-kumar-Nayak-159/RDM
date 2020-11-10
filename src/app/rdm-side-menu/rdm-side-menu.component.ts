@@ -35,7 +35,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
       this.appData = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
       if (!this.userData?.is_super_admin) {
       let data = [];
-      if (this.appData.configuration && this.appData.configuration.length > 0) {
+      if (this.appData?.configuration?.length > 0) {
         this.constantsData.SIDE_MENU_LIST.forEach(config => {
           let found = false;
           this.appData.configuration.forEach(item => {

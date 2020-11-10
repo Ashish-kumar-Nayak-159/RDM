@@ -197,6 +197,14 @@ export class HistoryComponent implements OnInit {
       //   currentHistoryFilter.y2AxisProperty = layoutJson.y2axis;
       //   currentHistoryFilter.xAxisProps = layoutJson.xAxis;
       // }
+      if (currentHistoryFilter.aggregation_format && !currentHistoryFilter.aggregation_minutes) {
+        this.toasterService.showError('If Aggregation Format is set, Aggregation Time is required.', 'View Visualization');
+        return;
+      }
+      if (currentHistoryFilter.aggregation_minutes && !currentHistoryFilter.aggregation_format) {
+        this.toasterService.showError('If Aggregation Time is set, Aggregation Format is required.', 'View Visualization');
+        return;
+      }
       currentHistoryFilter.to_date = this.historyFilter.to_date;
       currentHistoryFilter.from_date = this.historyFilter.from_date;
       this.isHistoryAPILoading = true;
@@ -387,6 +395,10 @@ export class HistoryComponent implements OnInit {
         if (type === 'Pie Chart with table') {
           this.showDataTable = true;
           type = 'PieChart';
+        }
+        if (type === 'Table') {
+          this.showDataTable = true;
+          type = 'Table';
         }
         this.historyData.forEach(item => {
           const obj = {

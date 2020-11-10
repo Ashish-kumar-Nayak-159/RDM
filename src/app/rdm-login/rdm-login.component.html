@@ -146,3 +146,7 @@
     <i class="fas fa fa-clone text-warning"></i> <span>10</span> Apps
   </div>
 </div>
+
+<div id="changePasswordModal" class="modal fade">
+  <app-reset-password [isFirstTimeLogin]="true" *ngIf="isResetPassword"></app-reset-password>
+</div>

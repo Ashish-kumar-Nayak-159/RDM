@@ -273,6 +273,7 @@ export class CONSTANTS {
   public static IP_GATEWAY = 'IoT Gateway';
   public static NON_IP_DEVICE = 'Non IP Device';
   public static NOT_ALLOWED_SPECIAL_CHARS_NAME = [' ', '.', '$', '#'];
+  public static PASSWORD_REGEX = '^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,20}$';
   public static APP_ADMIN_ROLE = 'App Admin';
   public static DEFAULT_APP_ICON = 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/default_app_icon.png';
   public static DEFAULT_APP_LOGO = 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/default_app_logo.jpg';

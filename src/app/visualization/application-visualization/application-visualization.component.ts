@@ -1,7 +1,8 @@
+import { filter } from 'rxjs/operators';
 import { DeviceTypeService } from './../../services/device-type/device-type.service';
 import { Device } from './../../models/device.model';
 import { ToasterService } from './../../services/toaster.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, NgZone } from '@angular/core';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from './../../services/common.service';
 import { DeviceService } from './../../services/devices/device.service';
@@ -9,7 +10,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Alert } from 'src/app/models/applicationDashboard.model';
 import { GoogleChartInterface } from 'ng2-google-charts';
 import * as moment from 'moment';
-
+import * as am4core from '@amcharts/amcharts4/core';
+import * as am4charts from '@amcharts/amcharts4/charts';
+import am4themes_animated from '@amcharts/amcharts4/themes/animated';
+import { isPlatformBrowser } from '@angular/common';
 declare var $: any;
 @Component({
   selector: 'app-application-visualization',
@@ -18,6 +22,7 @@ declare var $: any;
 })
 export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
+  private chart: am4charts.XYChart;
   userData: any;
   appData: any = {};
   latestAlerts: any[] = [];
@@ -32,39 +37,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   devices: any[] = [];
   nonIPDevices: any[] = [];
   afterInterval = 10;
-  lineGoogleChartConfig: GoogleChartInterface = {  // use :any or :GoogleChartInterface
-    chartType: 'ComboChart',
-    dataTable: [],
-    options: {
-      interpolateNulls: true,
-      pointSize: 0.5,
-      hAxis: {
-        viewWindowMode: 'pretty',
-        slantedText: true,
-        textStyle: {
-          fontSize: 10
-        },
-        slantedTextAngle: 60
-      },
-      seriesType: 'line',
-      legend: {
-        position: 'top'
-      },
-      series: {
-      },
-      vAxes: {
-          // Adds titles to each axis.
-        },
-      height: 280,
-      width: 1000,
-      curveType: 'function',
-      explorer: {
-        actions: ['dragToZoom', 'rightClickToReset'],
-        axis: 'horizontal',
-        keepInBounds: true,
-        maxZoomIn: 10.0}
-    }
-  };
+  seriesArr: any[] = [];
   isOpen = true;
   y2AxisProps: any[] = [];
   y1AxisProps: any[] = [];
@@ -78,7 +51,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     private deviceService: DeviceService,
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    @Inject(PLATFORM_ID) private platformId, private zone: NgZone
 
   ) { }
 
@@ -111,6 +85,20 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     });
 
   }
+
+  browserOnly(f: () => void) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.zone.runOutsideAngular(() => {
+        f();
+      });
+    }
+  }
+
+  ngAfterViewInit() {
+    // Chart code goes in here
+
+  }
+
 
   getDevices() {
     return new Promise((resolve, reject) => {
@@ -159,7 +147,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       obj.device_id = obj.device.device_id;
       delete obj.device;
     }
-    this.deviceService.getDeviceAlerts(this.filterObj).subscribe(
+    this.deviceService.getDeviceAlerts(obj).subscribe(
       (response: any) => {
         this.latestAlerts = response.data;
         this.latestAlerts.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date));
@@ -238,20 +226,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     // this.selectedDevice = this.devices.find(device => device.device_id === this.selectedAlert.device_id);
     await this.getDeviceData();
     await this.getThingsModelProperties();
-    if (this.propertyList.length > 0) {
-      console.log(alert);
-      this.lineGoogleChartConfig.dataTable = [];
-      this.lineGoogleChartConfig.options.series = {};
-      this.lineGoogleChartConfig.options.vAxes = {};
-    }
+
   }
 
   getDeviceTelemetryData() {
-    this.isOpen = false;
+    
     this.telemetryData = [];
-    this.lineGoogleChartConfig.dataTable = [];
-    this.lineGoogleChartConfig.options.series = {};
-    this.lineGoogleChartConfig.options.vAxes = {};
     const now = moment().utc();
     const filterObj = {
       epoch: true,
@@ -259,8 +239,18 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       device_id: this.selectedAlert.device_id,
       message_props: '',
       from_date: null,
-      to_date: null
+      to_date: null,
+      aggregation_format: this.filterObj.aggregation_format,
+      aggregation_minutes: this.filterObj.aggregation_minutes
     };
+    if (filterObj.aggregation_format && !filterObj.aggregation_minutes) {
+      this.toasterService.showError('If Aggregation Format is set, Aggregation Time is required.', 'View Visualization');
+      return;
+    }
+    if (filterObj.aggregation_minutes && !filterObj.aggregation_format) {
+      this.toasterService.showError('If Aggregation Time is set, Aggregation Format is required.', 'View Visualization');
+      return;
+    }
     if (this.beforeInterval > 0) {
       filterObj.from_date = ((moment.utc(this.selectedAlert.created_date, 'M/DD/YYYY h:mm:ss A'))
       .subtract(this.beforeInterval, 'minute')).unix();
@@ -278,6 +268,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Please select Y1 Axis property.', 'View Visualization');
       return;
     }
+    this.isOpen = false;
     this.isTelemetryFilterSelected = true;
     this.isTelemetryDataLoading = true;
     this.y1AxisProps.forEach((prop, index) =>
@@ -306,66 +297,160 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   loadLineChart(telemetryData) {
     console.log(telemetryData);
-    const dataList = [];
-    dataList.push('DateTime');
-    let title = '';
-    const alertEpoch = this.commonService.convertDateToEpoch(this.selectedAlert.local_created_date);
-    this.y1AxisProps.forEach((prop, index) => {
-        dataList.splice(dataList.length, 0,  {label: prop.id, type: 'number'});
-        title += prop.id + (this.y1AxisProps[index + 1] ? ' & ' : '');
-        this.lineGoogleChartConfig.options.series[Object.keys(this.lineGoogleChartConfig.options.series).length] = {targetAxisIndex: 0};
-    });
+    this.browserOnly(() => {
+      // alert('here');
+      am4core.useTheme(am4themes_animated);
 
-    if (title.charAt(title.length - 2) === '&') {
-      title = title.substring(0, title.length - 2);
-    }
-    this.lineGoogleChartConfig.options.vAxes = {
-      0: {title}
-    };
-    title = '';
-    this.y2AxisProps.forEach((prop, index) => {
-        console.log('index   ', index);
-        console.log('inn iff');
-        dataList.splice(dataList.length, 0,  {label: prop.id, type: 'number'});
-        title += prop.id + (this.y2AxisProps[index + 1] ? ' & ' : '');
-        this.lineGoogleChartConfig.options.series[(Object.keys(this.lineGoogleChartConfig.options.series).length)] =  {targetAxisIndex: 1};
-    });
-    // this.lineGoogleChartConfig.options.series[(Object.keys(this.lineGoogleChartConfig.options.series).length)] =
-    // {type: 'Column', targetAxisIndex: 0, visibleInLegend: false};
-    if (title.charAt(title.length - 2) === '&') {
-      title = title.substring(0, title.length - 2);
-    }
-    this.lineGoogleChartConfig.options.vAxes['1'] = {title};
-    //  dataList.splice(dataList.length, 0,  'Alert Time');
-    this.lineGoogleChartConfig.dataTable.push(dataList);
-    telemetryData.forEach((obj, i) => {
-      obj.local_created_date = this.commonService.convertUTCDateToLocal(obj.message_date);
-      const list = [];
-      list.splice(0, 0, new Date(obj.local_created_date));
-      this.y1AxisProps.forEach((prop, index) => {
-          list.splice(list.length, 0, parseFloat(obj[prop.id]));
-      });
-      this.y2AxisProps.forEach((prop, index) => {
-          list.splice(list.length, 0, parseFloat(obj[prop.id]));
-      });
-      const epoch = this.commonService.convertDateToEpoch(obj.local_created_date);
-      // if ( epoch > alertEpoch - 5 && epoch <= alertEpoch + 5) {
-      //   list.splice(list.length, 0, 500);
-      // } else {
-      //   list.splice(list.length, 0, null);
-      // }
-      this.lineGoogleChartConfig.dataTable.splice(this.lineGoogleChartConfig.dataTable.length, 0, list);
-    });
-    console.log(this.lineGoogleChartConfig);
+      const chart = am4core.create('chartdiv', am4charts.XYChart);
 
-    if (this.lineGoogleChartConfig.dataTable.length > 1) {
-    const ccComponent = this.lineGoogleChartConfig.component;
-    // force a redraw
-    if (ccComponent) {
-      ccComponent.draw();
-      // const chart = ccComponent.wrapper;
-      // chart.setSelection([{row: 10, column: 1}]);
+      chart.paddingRight = 20;
+
+      const data = [];
+      telemetryData.forEach((obj, i) => {
+        console.log(this.commonService.convertUTCDateToLocal(obj.message_date));
+        obj.message_date = new Date(this.commonService.convertUTCDateToLocal(obj.message_date));
+        delete obj.aggregation_end_time;
+        delete obj.aggregation_start_time;
+        data.splice(data.length, 0, obj);
+      });
+      console.log(data);
+
+      chart.data = data;
+
+      const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+      dateAxis.renderer.minGridDistance = 50;
+      // const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+      // valueAxis.tooltip.disabled = true;
+      // valueAxis.renderer.minWidth = 35;
+      this.createValueAxis(chart, 0);
+      this.createValueAxis(chart, 1);
+
+
+      chart.legend = new am4charts.Legend();
+
+      chart.cursor = new am4charts.XYCursor();
+
+      // const scrollbarX = new am4charts.XYChartScrollbar();
+      // scrollbarX.series.push(series);
+      // chart.scrollbarX = scrollbarX;
+
+      const range = dateAxis.axisRanges.create();
+      range.date = new Date(this.selectedAlert.local_created_date);
+      range.grid.stroke = am4core.color('red');
+      range.grid.strokeWidth = 2;
+      range.grid.strokeOpacity = 1;
+      range.axisFill.tooltip = new am4core.Tooltip();
+      range.axisFill.tooltipText = 'Alert Time';
+      range.axisFill.interactionsEnabled = true;
+      range.axisFill.isMeasured = true;
+      chart.legend.itemContainers.template.events.on('hit', (ev) => {
+        let shownItem;
+        let propObj;
+        console.log(ev.target.dataItem.dataContext);
+        let count = 0;
+        this.seriesArr.forEach((item, index) => {
+          console.log(item.isActive);
+          console.log(chart.series);
+          const seriesColumn = chart.series.getIndex(index);
+          if (ev.target.dataItem.dataContext['name'] === item.name) {
+            item.compareText = !item.compareText;
+            seriesColumn.isActive = !seriesColumn.isActive;
+          }
+          if (item.compareText) {
+            count += 1;
+            shownItem = seriesColumn;
+            this.propertyList.forEach(prop => {
+              if (prop.json_key === item.name) {
+                propObj = prop;
+              }
+            });
+          }
+        });
+        if (count === 1) {
+          this.createThresholdSeries(shownItem.yAxis, propObj);
+        } else {
+          this.seriesArr.forEach(series => series.yAxis.axisRanges.clear());
+        }
+        console.log(this.seriesArr);
+      });
+
+      chart.exporting.menu = new am4core.ExportMenu();
+      chart.exporting.filePrefix = this.selectedAlert.device_id + '_Alert_' + this.selectedAlert.local_created_date;
+      this.chart = chart;
+    });
+  }
+
+  createThresholdSeries(valueAxis, propObj) {
+    propObj.threshold = propObj.threshold ? propObj.threshold : {};
+
+    if (propObj.threshold.l1 && propObj.threshold.h1) {
+    const rangeL1H1 = valueAxis.axisRanges.create();
+    rangeL1H1.value = propObj.threshold.l1;
+    rangeL1H1.endValue = propObj.threshold.h1;
+    rangeL1H1.axisFill.fill = am4core.color('#229954');
+    rangeL1H1.axisFill.fillOpacity = 0.2;
+    rangeL1H1.grid.strokeOpacity = 0;
     }
+    if (propObj.threshold.l1 && propObj.threshold.l2) {
+    const rangeL1L2 = valueAxis.axisRanges.create();
+    rangeL1L2.value = propObj.threshold.l2;
+    rangeL1L2.endValue = propObj.threshold.l1;
+    rangeL1L2.axisFill.fill = am4core.color('#f6c23e');
+    rangeL1L2.axisFill.fillOpacity = 0.2;
+    rangeL1L2.grid.strokeOpacity = 0;
+    }
+    if (propObj.threshold.h1 && propObj.threshold.h2) {
+    const rangeH1H2 = valueAxis.axisRanges.create();
+    rangeH1H2.value = propObj.threshold.h1;
+    rangeH1H2.endValue = propObj.threshold.h2;
+    rangeH1H2.axisFill.fill = am4core.color('#f6c23e');
+    rangeH1H2.axisFill.fillOpacity = 0.2;
+    rangeH1H2.grid.strokeOpacity = 0;
+    }
+    if (propObj.threshold.l2 && propObj.threshold.l3) {
+    const rangeL2L3 = valueAxis.axisRanges.create();
+    rangeL2L3.value = propObj.threshold.l3;
+    rangeL2L3.endValue = propObj.threshold.l2;
+    rangeL2L3.axisFill.fill = am4core.color('#fb5515');
+    rangeL2L3.axisFill.fillOpacity = 0.2;
+    rangeL2L3.grid.strokeOpacity = 0;
+    }
+    if (propObj.threshold.h2 && propObj.threshold.h3) {
+    const rangeH2H3 = valueAxis.axisRanges.create();
+    rangeH2H3.value = propObj.threshold.h2;
+    rangeH2H3.endValue = propObj.threshold.h3;
+    rangeH2H3.axisFill.fill = am4core.color('#fb5515');
+    rangeH2H3.axisFill.fillOpacity = 0.2;
+    rangeH2H3.grid.strokeOpacity = 0;
+    }
+  }
+
+  createValueAxis(chart, axis) {
+
+    const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    if (chart.yAxes.indexOf(valueYAxis) !== 0){
+      valueYAxis.syncWithAxis = chart.yAxes.getIndex(0);
+    }
+    const arr = axis === 0 ? this.y1AxisProps : this.y2AxisProps;
+    arr.forEach((prop, index) => {
+      const series = chart.series.push(new am4charts.LineSeries());
+      series.dataFields.dateX = 'message_date';
+      series.name =  prop.id;
+      // series.stroke = this.commonService.getRandomColor();
+      series.yAxis = valueYAxis;
+      series.dataFields.valueY =  prop.id;
+      series.compareText = true;
+      series.strokeWidth = 1;
+      series.strokeOpacity = 1;
+      series.tooltipText = '{name}: [bold]{valueY}[/]';
+      this.seriesArr.push(series);
+    });
+    valueYAxis.tooltip.disabled = true;
+    valueYAxis.renderer.opposite = (axis === 1);
+    valueYAxis.renderer.minWidth = 35;
+    if (this.y1AxisProps.length === 1 && this.y2AxisProps.length === 0) {
+      const propObj = this.propertyList.filter(prop => prop.json_key === this.y1AxisProps[0].id)[0];
+      this.createThresholdSeries(valueYAxis, propObj);
     }
   }
 
@@ -405,6 +490,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     clearInterval(this.refreshInterval);
+    this.browserOnly(() => {
+      if (this.chart) {
+        this.chart.dispose();
+      }
+    });
   }
 
   y1Deselect(e){

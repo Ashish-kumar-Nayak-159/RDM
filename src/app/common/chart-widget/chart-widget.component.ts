@@ -192,8 +192,14 @@ export class ChartWidgetComponent implements OnInit, AfterViewInit {
         } else {
           this.chartData.options.width = 'inherit';
         }
-        if (this.showDataTable) {
+        if (showTable) {
           this.chartDataTable = { ...this.chartData };
+          this.chartDataTable.dataTable[0].forEach(item => {
+            if (item?.type === 'number') {
+              item.type = 'string';
+            }
+          });
+          console.log(this.chartDataTable);
           this.chartDataTable.chartType = 'Table';
         }
         // console.log('this.chartData ',this.chartData)

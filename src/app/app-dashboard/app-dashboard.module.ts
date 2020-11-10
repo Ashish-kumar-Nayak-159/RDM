@@ -11,10 +11,11 @@ import { EScooterTrackerDashboardComponent } from './app-dashboard/e-scooter-tra
 import { WaterTankMonitorComponent } from './app-dashboard/water-tank-monitor/water-tank-monitor.component';
 import { FormsModule } from '@angular/forms';
 import { PumpDashboardComponent } from './app-dashboard/pump-dashboard/pump-dashboard.component';
+import { CompressorDashboardComponent } from './app-dashboard/compressor-dashboard/compressor-dashboard.component';
 
 
 @NgModule({
-  declarations: [AppDashboardComponent, EScooterTrackerDashboardComponent, WaterTankMonitorComponent, PumpDashboardComponent],
+  declarations: [AppDashboardComponent, EScooterTrackerDashboardComponent, WaterTankMonitorComponent, PumpDashboardComponent, CompressorDashboardComponent],
   imports: [
     CommonModule,
     AppDashboardRoutingModule,

@@ -419,6 +419,10 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
           this.showDataTable = true;
           type = 'PieChart';
         }
+        if (type === 'Table') {
+          this.showDataTable = true;
+          type = 'Table';
+        }
         const data = [];
         const currentDate = moment();
         for (let i = 0; i < 10; i++) {
@@ -433,6 +437,11 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
                     prop.json_model[prop.json_key].minValue ? prop.json_model[prop.json_key].minValue : 0,
                     prop.json_model[prop.json_key].maxValue ? prop.json_model[prop.json_key].maxValue : 100
                   );
+                } else if (prop.data_type === 'Enum') {
+                  obj[prop.json_key] = prop.json_model[prop.json_key].enum[this.commonService.randomIntFromInterval(
+                    0,
+                    prop.json_model[prop.json_key].enum ? prop.json_model[prop.json_key].enum.length : 0
+                  )];
                 }
               } else if (element.id && element.id === prop.json_key) {
                 if (prop.data_type === 'Number') {
@@ -440,6 +449,11 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
                     prop.json_model[prop.json_key].minValue ? prop.json_model[prop.json_key].minValue : 0,
                     prop.json_model[prop.json_key].maxValue ? prop.json_model[prop.json_key].maxValue : 100
                   );
+                } else if (prop.data_type === 'Enum') {
+                  obj[prop.json_key] = prop.json_model[prop.json_key].enum[this.commonService.randomIntFromInterval(
+                    0,
+                    prop.json_model[prop.json_key].enum ? prop.json_model[prop.json_key].enum.length : 0
+                  )];
                 }
               }
             });

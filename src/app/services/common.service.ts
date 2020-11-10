@@ -15,6 +15,7 @@ export class CommonService {
   url = environment.appServerURL;
   breadcrumbEvent: EventEmitter<any> = new EventEmitter<any>();
   refreshSideMenuData: EventEmitter<any> = new EventEmitter<any>();
+  resetPassword: EventEmitter<any> = new EventEmitter<any>();
   flag = false;
   constructor(
     private http: HttpClient,
@@ -25,7 +26,8 @@ export class CommonService {
 
   convertUTCDateToLocal(utcDate) {
     if (utcDate) {
-      return (moment.utc(utcDate, 'M/DD/YYYY h:mm:ss A')).local().format('DD-MMM-YYYY hh:mm:ss A');
+      // return (moment.utc(utcDate, 'M/DD/YYYY h:mm:ss A')).local().format('DD-MMM-YYYY hh:mm:ss A');
+      return moment(new Date(utcDate + ' UTC').toString()).format('DD-MMM-YYYY hh:mm:ss A');
     }
     return null;
   }
@@ -37,8 +39,21 @@ export class CommonService {
     return 0;
   }
 
+  getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
   loginUser(obj) {
     return this.http.post(this.url + AppUrls.LOGIN,  obj);
+  }
+
+  resetUserPassword(obj) {
+    return this.http.post(this.url + AppUrls.RESET_PASSWORD,  obj);
   }
 
   getItemFromLocalStorage(key) {

@@ -1,0 +1,59 @@
+
+
+<accordion class="mb-2" id="{{chartId}}_{{chartId}}">
+  <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="true">
+    <ng-container accordion-heading>
+      <button class="btn" type="button">
+        {{chartTitle}}
+      </button>
+      <a *ngIf="isOverlayVisible" (click)="openConfirmRemoveWidgetModal()" class="float-right pull-right mt-1" href="javascript:void(0)"><i class="fa fa-close"></i></a>
+    </ng-container>
+    <div class="row">
+      <div class="col-12">
+        <div class="card shadow h-100">
+          <div class="card-body1" style="max-height: 25rem; overflow-y: auto;">
+            <div class="table-responsive"
+              [ngStyle]="{'width': chartWidth, 'height': chartHeight, 'max-height': chartHeight}">
+              <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                  <tr class="bg-secondary text-white">
+                    <th>Date</th>
+                    <th *ngFor="let item of y1AxisProps">{{item}}</th>
+                    <th *ngFor="let item of y2AxisProps">{{item}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container>
+                    <tr *ngFor="let alert of telemetryData">
+
+                      <td>{{ alert.message_date }}</td>
+                      <td *ngFor="let item of y1AxisProps">{{ alert[item] }}</td>
+                      <td *ngFor="let item of y2AxisProps">{{ alert[item] }}</td>
+                    </tr>
+                  </ng-container>
+                  <ng-container *ngIf="telemetryData.length === 0">
+                    <tr>
+                      <td colspan="2">No data available.</td>
+                    </tr>
+                  </ng-container>
+
+                </tbody>
+              </table>
+              <div class="overlay" *ngIf="isOverlayVisible">
+                <div style="font-family:'Arial Black'; font-size: 40px;">Sample Chart</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </accordion-group>
+</accordion>
+
+<div class="modal fade" id="confirmRemoveWidgetModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <app-confirm-modal *ngIf="modalConfig" [bodyMessage]="bodyMessage"
+    [headerMessage]="headerMessage"
+    (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-confirm-modal>
+  </div>
+</div>

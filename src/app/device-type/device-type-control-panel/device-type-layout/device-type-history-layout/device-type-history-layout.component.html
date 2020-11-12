@@ -5,7 +5,7 @@
         <form>
           <div class="form-group form-inline my-1">
             <span class="badge badge-warning col-xl-2 col-lg-2"
-              style="line-height:24px; font-size: 14px;">Add New Widget</span>
+              style="line-height:24px; font-size: 14px;">Add Historical Widget</span>
             <input type="text" id="chartTitle" class="form-control form-control-sm col-xl-2 col-lg-2 ml-2"
               name="chartTitle" placeholder="Display Name" [(ngModel)]="chartTitle" >
             <div class=" dropdown chartTypeDropdown col-xl-2 col-lg-2 ml-2 p-0 form-control form-control-sm"
@@ -22,7 +22,6 @@
                 </a>
               </div>
             </div>
-
           </div>
           <div class="form-group form-inline my-1">
             <input class="form-control form-control-sm col-xl-2 col-lg-2" type="text"
@@ -43,8 +42,8 @@
             <!-- <input class="form-control form-control-sm col-xl-3 col-lg-3 mr-2 ml-1"  type="text" *ngIf="isLayout"
               placeholder="Comma separated list of Y1 parameters" id="y1AxisProperty" [(ngModel)]="y1AxisProps"
               name="y1AxisProperty"> -->
-            <angular2-multiselect [data]="dropdownPropList" id="y2AxisProp" [(ngModel)]="y2AxisProp"
-              name="y2AxisProp" [settings]="{
+            <angular2-multiselect [data]="dropdownPropList" id="y2AxisProps" [(ngModel)]="y2AxisProps"
+              name="y2AxisProps" [settings]="{
                 text: 'Select Y2 Axis',
                 selectAllText: 'Select All',
                 unSelectAllText: 'UnSelect All',
@@ -56,14 +55,8 @@
               }"
               (onDeSelectAll)="y2Deselect($event)" >
             </angular2-multiselect>
-            <!-- <input class="form-control form-control-sm col-xl-3 col-lg-3 mr-2" type="text" *ngIf="isLayout"
-              placeholder="Comma separated list of Y2 parameters" id="y2AxisProperty" [(ngModel)]="y2AxisProp"
-              name="y2AxisProperty"> -->
 
-
-
-
-            <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Add Chart"
+            <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Add Widget"
               (click)="addChart()"><i class="fas fa-plus fa-sm"></i></button>
             <button type="button" class="btn btn-success btn-sm mx-1 my-1" title="Save"
               (click)="saveLayout()"><i class="fa fa-save fa-sm"></i></button>
@@ -82,7 +75,7 @@
       No Layout found
     </h6>
     <i *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-    <div id="layoutWidgetContainer" class="row showLayout">
+    <div id="layoutWidgetContainer" class="showLayout">
     </div>
   </div>
 </div>

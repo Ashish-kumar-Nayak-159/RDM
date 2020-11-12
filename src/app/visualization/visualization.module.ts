@@ -8,6 +8,7 @@ import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
+import { CommonCustomModule } from '../common/common.module';
 
 
 @NgModule({
@@ -16,11 +17,11 @@ import { AccordionModule } from 'ngx-bootstrap/accordion';
     CommonModule,
     VisualizationRoutingModule,
     FormsModule,
-    Ng2GoogleChartsModule,
     AngularMultiSelectModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     AccordionModule.forRoot(),
+    CommonCustomModule
   ],
   providers: [
     {provide: OWL_DATE_TIME_LOCALE, useValue: {useUtc: true}}

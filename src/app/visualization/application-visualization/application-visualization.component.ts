@@ -1,19 +1,22 @@
-import { filter } from 'rxjs/operators';
+import { ColumnChartComponent } from './../../common/charts/column-chart/column-chart.component';
+import { DataTableComponent } from './../../common/charts/data-table/data-table.component';
+import { PieChartComponent } from './../../common/charts/pie-chart/pie-chart.component';
 import { DeviceTypeService } from './../../services/device-type/device-type.service';
-import { Device } from './../../models/device.model';
 import { ToasterService } from './../../services/toaster.service';
-import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, NgZone, EmbeddedViewRef,
+  ApplicationRef, ComponentFactoryResolver, Injector } from '@angular/core';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from './../../services/common.service';
 import { DeviceService } from './../../services/devices/device.service';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Alert } from 'src/app/models/applicationDashboard.model';
-import { GoogleChartInterface } from 'ng2-google-charts';
+import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 import { isPlatformBrowser } from '@angular/common';
+import { LiveChartComponent } from 'src/app/common/charts/live-data/live-data.component';
+import { BarChartComponent } from 'src/app/common/charts/bar-chart/bar-chart.component';
+import { ChartService } from 'src/app/chart/chart.service';
 declare var $: any;
 @Component({
   selector: 'app-application-visualization',
@@ -45,13 +48,21 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   isTelemetryDataLoading = false;
   isTelemetryFilterSelected = false;
   acknowledgedAlert: any;
-
+  dropdownWidgetList: any[];
+  selectedWidgets: any[];
+  propList: any[];
+  showThreshold = false;
+  selectedPropertyForChart: any[] = [];
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService,
     private route: ActivatedRoute,
+    private chartService: ChartService,
+    private factoryResolver: ComponentFactoryResolver,
+    private appRef: ApplicationRef,
+    private injector: Injector,
     @Inject(PLATFORM_ID) private platformId, private zone: NgZone
 
   ) { }
@@ -101,7 +112,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
 
   getDevices() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const obj = {
         app: this.appData.app,
         hierarchy: JSON.stringify(this.appData.user.hierarchy),
@@ -152,7 +163,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.latestAlerts = response.data;
         this.latestAlerts.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date));
         this.isAlertAPILoading = false;
-      }, error => this.isAlertAPILoading = false
+      }, () => this.isAlertAPILoading = false
     );
   }
 
@@ -174,7 +185,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   getDeviceData() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const obj = {
         app: this.appData.app,
         device_id: this.selectedAlert.device_id
@@ -196,7 +207,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   getThingsModelProperties() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const obj = {
         app: this.appData.app,
         name: this.selectedDevice?.tags?.device_type
@@ -215,6 +226,29 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     });
   }
 
+  getLayout() {
+    return new Promise((resolve) => {
+    const params = {
+      app: this.appData.app,
+      name: this.selectedDevice?.tags?.device_type
+    };
+    this.dropdownWidgetList = [];
+    this.selectedWidgets = [];
+    this.deviceTypeService.getThingsModelLayout(params).subscribe(
+      async (response: any) => {
+        if (response?.layout?.length > 0) {
+          response.layout.forEach((item) => {
+            this.dropdownWidgetList.push({
+              id: item.title,
+              value: item
+            });
+          });
+        }
+        resolve();
+      });
+    });
+  }
+
   async onClickOfViewGraph(alert) {
     this.isOpen = true;
     this.beforeInterval = 10;
@@ -226,13 +260,31 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     // this.selectedDevice = this.devices.find(device => device.device_id === this.selectedAlert.device_id);
     await this.getDeviceData();
     await this.getThingsModelProperties();
+    await this.getLayout();
 
   }
 
   getDeviceTelemetryData() {
-    
+    this.propList = [];
+    this.selectedWidgets.forEach(widget => {
+      widget.value.y1axis.forEach(prop => {
+        if (this.propList.indexOf(prop) === -1) {
+          this.propList.push(prop);
+        }
+      });
+      widget.value.y2axis.forEach(prop => {
+        if (this.propList.indexOf(prop) === -1) {
+          this.propList.push(prop);
+        }
+      });
+    });
+    this.selectedPropertyForChart = [];
+    this.selectedPropertyForChart = [...this.propList];
+    const children = $('#charts').children();
+    for (const child of children) {
+      $(child).remove();
+    }
     this.telemetryData = [];
-    const now = moment().utc();
     const filterObj = {
       epoch: true,
       app: this.appData.app,
@@ -264,36 +316,83 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Minutes After Alert value must be greater than 0.', 'View Visualization');
       return;
     }
-    if (this.y1AxisProps.length === 0) {
-      this.toasterService.showError('Please select Y1 Axis property.', 'View Visualization');
+    if (this.selectedWidgets.length === 0) {
+      this.toasterService.showError('Please select at least one widget.', 'View Visualization');
       return;
     }
     this.isOpen = false;
     this.isTelemetryFilterSelected = true;
     this.isTelemetryDataLoading = true;
-    this.y1AxisProps.forEach((prop, index) =>
-    filterObj.message_props += prop.id + ',');
-    this.y2AxisProps.forEach((prop, index) =>
-    filterObj.message_props += prop.id + (index !== (this.y2AxisProps.length - 1) ? ',' : ''));
-    if (filterObj.message_props.charAt(filterObj.message_props.length - 1) === ',') {
-      filterObj.message_props = filterObj.message_props.substring(0, filterObj.message_props.length - 1);
-    }
-    console.log(filterObj);
+    this.propList.forEach((prop, index) =>
+    filterObj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
+    // this.y2AxisProps.forEach((prop, index) =>
+    // filterObj.message_props += prop.id + (index !== (this.y2AxisProps.length - 1) ? ',' : ''));
+    // if (filterObj.message_props.charAt(filterObj.message_props.length - 1) === ',') {
+    //   filterObj.message_props = filterObj.message_props.substring(0, filterObj.message_props.length - 1);
+    // }
     this.deviceService.getDeviceTelemetry(filterObj).subscribe(
       (response: any) => {
         console.log(response);
         if (response && response.data) {
           this.telemetryData = response.data;
           const telemetryData = response.data;
+          telemetryData.forEach(item => {
+            item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
+          });
           // this.loadGaugeChart(telemetryData[0]);
           telemetryData.reverse();
-          console.log('load line chart');
-          this.loadLineChart(telemetryData);
+          // this.loadLineChart(telemetryData);
+          this.isTelemetryDataLoading = false;
+          this.selectedWidgets.forEach(widget => {
+            let componentRef;
+            if (widget.value.chartType === 'LineChart' || widget.value.chartType === 'AreaChart') {
+              componentRef = this.factoryResolver.resolveComponentFactory(LiveChartComponent).create(this.injector);
+            } else if (widget.value.chartType === 'ColumnChart') {
+              componentRef = this.factoryResolver.resolveComponentFactory(ColumnChartComponent).create(this.injector);
+            } else if (widget.value.chartType === 'BarChart') {
+              componentRef = this.factoryResolver.resolveComponentFactory(BarChartComponent).create(this.injector);
+            } else if (widget.value.chartType === 'PieChart') {
+              componentRef = this.factoryResolver.resolveComponentFactory(PieChartComponent).create(this.injector);
+            } else if (widget.value.chartType === 'Table') {
+              componentRef = this.factoryResolver.resolveComponentFactory(DataTableComponent).create(this.injector);
+            }
+            componentRef.instance.telemetryData = JSON.parse(JSON.stringify(telemetryData));
+            componentRef.instance.selectedAlert = JSON.parse(JSON.stringify(this.selectedAlert));
+            componentRef.instance.propertyList = this.propertyList;
+            componentRef.instance.y1AxisProps = widget.value.y1axis;
+            componentRef.instance.y2AxisProps = widget.value.y2axis;
+            componentRef.instance.xAxisProps = widget.value.xAxis;
+            componentRef.instance.chartType = widget.value.chartType;
+            componentRef.instance.chartHeight = '23rem';
+            componentRef.instance.chartWidth = '100%';
+            componentRef.instance.chartTitle = widget.value.title;
+            componentRef.instance.chartId = widget.value.chart_Id;
+            this.appRef.attachView(componentRef.hostView);
+            const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
+            .rootNodes[0] as HTMLElement;
+            document.getElementById('charts').prepend(domElem);
+          });
         }
-        this.isTelemetryDataLoading = false;
       }
     );
   }
+
+  toggleProperty(prop) {
+    const index = this.selectedPropertyForChart.indexOf(prop);
+    if (index === -1) {
+      this.selectedPropertyForChart.push(prop);
+    } else {
+      this.selectedPropertyForChart.splice(index, 1);
+    }
+    this.chartService.togglePropertyEvent.emit(prop);
+  }
+
+  toggleThreshold() {
+    console.log(this.showThreshold);
+    // this.showThreshold = !this.showThreshold;
+    this.chartService.toggleThresholdEvent.emit(this.showThreshold);
+  }
+
 
   loadLineChart(telemetryData) {
     console.log(telemetryData);
@@ -306,7 +405,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       chart.paddingRight = 20;
 
       const data = [];
-      telemetryData.forEach((obj, i) => {
+      telemetryData.forEach((obj) => {
         console.log(this.commonService.convertUTCDateToLocal(obj.message_date));
         obj.message_date = new Date(this.commonService.convertUTCDateToLocal(obj.message_date));
         delete obj.aggregation_end_time;
@@ -432,7 +531,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       valueYAxis.syncWithAxis = chart.yAxes.getIndex(0);
     }
     const arr = axis === 0 ? this.y1AxisProps : this.y2AxisProps;
-    arr.forEach((prop, index) => {
+    arr.forEach((prop) => {
       const series = chart.series.push(new am4charts.LineSeries());
       series.dataFields.dateX = 'message_date';
       series.name =  prop.id;

@@ -49,4 +49,5 @@ export class AppUrls {
   public static DELETE_CONTROL_WIDGET = 'device_type/control_widget';
   public static UPDATE_APP_HIERARCHY = 'App_EditAppHierarchy';
   public static UPDATE_APP_ROLES = 'App_EditAppRoles';
+  public static RESET_PASSWORD = 'App_ResetUserPassword';
 }

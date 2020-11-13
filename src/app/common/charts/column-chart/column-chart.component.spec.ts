@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MapWidgetComponent } from './map-widget.component';
+import { ColumnChartComponent } from './column-chart.component';
 
-describe('MapWidgetComponent', () => {
-  let component: MapWidgetComponent;
-  let fixture: ComponentFixture<MapWidgetComponent>;
+describe('ColumnChartComponent', () => {
+  let component: ColumnChartComponent;
+  let fixture: ComponentFixture<ColumnChartComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MapWidgetComponent ]
+      declarations: [ ColumnChartComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MapWidgetComponent);
+    fixture = TestBed.createComponent(ColumnChartComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

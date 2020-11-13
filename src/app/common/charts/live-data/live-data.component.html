@@ -1,0 +1,29 @@
+<accordion class="mb-2" id="{{chartId}}_{{chartId}}">
+  <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="true">
+    <ng-container accordion-heading>
+      <button class="btn" type="button">
+        {{chartTitle}}
+      </button>
+      <a *ngIf="isOverlayVisible" class="float-right pull-right mt-1" href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()"><i class="fa fa-close"></i></a>
+    </ng-container>
+    <div class="row">
+      <div class="col-12">
+        <div class="card shadow h-100">
+          <div class="card-body1" style="max-height: 25rem; overflow-y: auto;">
+            <div id="{{ chartId }}" [ngStyle]="{'width': chartWidth, 'height': chartHeight}"></div>
+            <div class="overlay" *ngIf="isOverlayVisible">
+              <div style="font-family:'Arial Black'; font-size: 40px;">Sample Chart</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </accordion-group>
+</accordion>
+<div class="modal fade" id="confirmRemoveWidgetModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <app-confirm-modal *ngIf="modalConfig" [bodyMessage]="bodyMessage"
+    [headerMessage]="headerMessage"
+    (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-confirm-modal>
+  </div>
+</div>

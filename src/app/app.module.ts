@@ -13,6 +13,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { MatNativeDateModule } from '@angular/material/core';
 import { RDMLoginComponent } from './rdm-login/rdm-login.component';
 import { RDMHomeComponent } from './rdmhome/rdmhome.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { RDMHomeComponent } from './rdmhome/rdmhome.component';
     RDMSideMenuComponent,
     RDMLoginComponent,
     RDMHomeComponent,
+    ResetPasswordComponent,
   ],
   imports: [
     BrowserModule,

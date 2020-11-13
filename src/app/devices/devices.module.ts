@@ -39,8 +39,6 @@ import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 import { BatteryMessagesComponent } from './device-control-panel/battery-messages/battery-messages.component';
 import { CommonCustomModule } from './../common/common.module';
 import { SpecificC2dMessageComponent } from './device-control-panel/specific-c2d-message/specific-c2d-message.component';
-import { ChartWidgetComponent } from '../common/chart-widget/chart-widget.component';
-import { MapWidgetComponent } from '../common/map-widget/map-widget.component';
 import { PredictiveMaintenanceComponent } from './device-control-panel/predictive-maintenance/predictive-maintenance.component';
 
 @NgModule({

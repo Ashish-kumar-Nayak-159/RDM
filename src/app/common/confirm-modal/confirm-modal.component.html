@@ -1,0 +1,19 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">{{headerMessage}}</h5>
+    <button type="button" class="close"  aria-label="Close" (click)="onCloseModal('close')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <pre *ngIf="modalConfig?.jsonDisplay" [innerHTML]="bodyMessage | json"></pre>
+    <div *ngIf="modalConfig?.stringDisplay">{{bodyMessage}}</div>
+  </div>
+  <div class="modal-footer">
+    <button *ngIf="modalConfig?.isDisplaySave" type="button" class="btn btn-primary" (click)="onCloseModal('save')">
+      {{modalConfig?.saveBtnText ? modalConfig?.saveBtnText : 'Save'}}</button>
+    <button *ngIf="modalConfig?.isDisplayCancel" type="button" class="btn btn-secondary" (click)="onCloseModal('close')">
+      {{modalConfig?.cancelBtnText ? modalConfig?.cancelBtnText : 'Cancel'}}
+    </button>
+  </div>
+</div>

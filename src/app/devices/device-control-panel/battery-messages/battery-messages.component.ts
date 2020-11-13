@@ -108,9 +108,26 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
     ));
   }
 
+  getMessageData(dataobj) {
+    return new Promise((resolve) => {
+      const obj = {
+        app: dataobj.app,
+        id: dataobj.id
+      };
+      this.deviceService.getDeviceMessageById(obj, 'battery').subscribe(
+        (response: any) => {
+          resolve(response.message);
+        }
+      );
+    });
+  }
+
   openBatteryMessageModal(obj) {
     if (obj.type === this.batteryMessageTableConfig.type) {
       this.selectedBatteryMessage = obj.data;
+      this.getMessageData(obj.data).then(message => {
+        this.selectedBatteryMessage.message = message;
+      });
       this.modalConfig = {
         jsonDisplay: true,
         isDisplaySave: false,

@@ -2,6 +2,7 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppUrls } from '../../app-url.constants';
+import { String } from 'typescript-string-operations';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,10 @@ export class ApplicationService {
       }
     });
     return this.http.get(this.url + AppUrls.GET_APPLICATIONS_LIST, {params});
+  }
+
+  getApplicationDetail(app) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_APP_DETAILS, app));
   }
 
   createApp(appObj) {

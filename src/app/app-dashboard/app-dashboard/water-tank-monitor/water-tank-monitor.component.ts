@@ -39,6 +39,7 @@ export class WaterTankMonitorComponent implements OnInit, AfterViewInit, OnDestr
     });
   }
 
+
   ngAfterViewInit() {
     $('.tk').each(function(){
     const amount: any = $('.lq').attr('data-amount');

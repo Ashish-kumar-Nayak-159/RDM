@@ -112,6 +112,20 @@ export class OthersComponent implements OnInit, OnDestroy {
     ));
   }
 
+  getMessageData(dataobj) {
+    return new Promise((resolve) => {
+      const obj = {
+        app: dataobj.app,
+        id: dataobj.id
+      };
+      this.deviceService.getDeviceMessageById(obj, 'other').subscribe(
+        (response: any) => {
+          resolve(response.message);
+        }
+      );
+    });
+  }
+
   openOtherMessageModal(obj) {
     if (obj.type === this.otherTableConfig.type) {
       this.selectedOther = obj.data;
@@ -120,6 +134,9 @@ export class OthersComponent implements OnInit, OnDestroy {
         isDisplaySave: false,
         isDisplayCancel: true
       };
+      this.getMessageData(obj.data).then(message => {
+        this.selectedOther.message = message;
+      });
       $('#otherMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }

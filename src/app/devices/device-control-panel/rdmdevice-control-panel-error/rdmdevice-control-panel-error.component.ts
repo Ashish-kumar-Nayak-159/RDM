@@ -113,6 +113,20 @@ export class RDMDeviceControlPanelErrorComponent implements OnInit, OnDestroy {
     ));
   }
 
+  getMessageData(dataobj) {
+    return new Promise((resolve) => {
+      const obj = {
+        app: dataobj.app,
+        id: dataobj.id
+      };
+      this.deviceService.getDeviceMessageById(obj, 'error').subscribe(
+        (response: any) => {
+          resolve(response.message);
+        }
+      );
+    });
+  }
+
   openErrorMessageModal(obj) {
     if (obj.type === this.errorTableConfig.type) {
     this.modalConfig = {
@@ -121,6 +135,9 @@ export class RDMDeviceControlPanelErrorComponent implements OnInit, OnDestroy {
       isDisplayCancel: true
     };
     this.selectedError = obj.data;
+    this.getMessageData(obj.data).then(message => {
+      this.selectedError.message = message;
+    });
     $('#errorMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }

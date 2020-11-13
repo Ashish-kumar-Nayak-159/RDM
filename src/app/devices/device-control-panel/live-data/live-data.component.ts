@@ -1,3 +1,4 @@
+import { DeviceTypeService } from './../../../services/device-type/device-type.service';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Device } from 'src/app/models/device.model';
@@ -66,10 +67,11 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     private deviceService: DeviceService,
     private commonService: CommonService,
     private toasterService: ToasterService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private deviceTypeService: DeviceTypeService
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
 
     this.route.paramMap.subscribe(params => {
@@ -89,12 +91,29 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     const now = moment().utc();
     this.historyFilter.to_date = now.unix();
     this.historyFilter.from_date = (now.subtract(1, 'minute')).unix();
+    await this.getThingsModelProperties();
     this.propertyList.forEach(item => {
       this.dropdownPropList.push({
-        id: item
+        id: item.json_key
       });
     });
     console.log(this.historyFilter);
+  }
+
+  getThingsModelProperties() {
+    // this.properties = {};
+    return new Promise((resolve) => {
+      const obj = {
+        app: this.appName,
+        name: this.device.tags.device_type
+      };
+      this.deviceTypeService.getThingsModelProperties(obj).subscribe(
+        (response: any) => {
+          this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
+          resolve();
+        }
+      );
+    });
   }
 
   onDeSelectAll(type) {

@@ -27,6 +27,7 @@ export class ApplicationUsersComponent implements OnInit {
 
   getApplicationUsers() {
     this.users = [];
+    console.log(this.applicationData);
     this.applicationService.getApplicationUsers(this.applicationData.app).subscribe(
       (response: any) => {
         if (response && response.data) {

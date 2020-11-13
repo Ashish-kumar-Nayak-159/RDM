@@ -108,6 +108,20 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
     ));
   }
 
+  getMessageData(dataobj) {
+    return new Promise((resolve) => {
+      const obj = {
+        app: dataobj.app,
+        id: dataobj.id
+      };
+      this.deviceService.getDeviceMessageById(obj, 'heartbeat').subscribe(
+        (response: any) => {
+          resolve(response.message);
+        }
+      );
+    });
+  }
+
   openHeratbeatMessageModal(obj) {
     if (obj.type === this.heartbeatTableConfig.type) {
       this.selectedHeartbeat = obj.data;
@@ -116,6 +130,9 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
         isDisplaySave: false,
         isDisplayCancel: true
       };
+      this.getMessageData(obj.data).then(message => {
+        this.selectedHeartbeat.message = message;
+      });
       $('#heartbeatMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }

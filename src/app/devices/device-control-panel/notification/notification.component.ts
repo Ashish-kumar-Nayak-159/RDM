@@ -107,6 +107,20 @@ export class NotificationComponent implements OnInit, OnDestroy {
     ));
   }
 
+  getMessageData(dataobj) {
+    return new Promise((resolve) => {
+      const obj = {
+        app: dataobj.app,
+        id: dataobj.id
+      };
+      this.deviceService.getDeviceMessageById(obj, 'notification').subscribe(
+        (response: any) => {
+          resolve(response.message);
+        }
+      );
+    });
+  }
+
   openNotificationMessageModal(obj) {
     if (obj.type === this.notificationTableConfig.type) {
     this.modalConfig = {
@@ -115,6 +129,9 @@ export class NotificationComponent implements OnInit, OnDestroy {
       isDisplayCancel: true
     };
     this.selectedNotification = obj.data;
+    this.getMessageData(obj.data).then(message => {
+      this.selectedNotification.message = message;
+    });
     $('#notificationMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
 

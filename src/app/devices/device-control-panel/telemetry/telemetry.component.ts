@@ -109,6 +109,20 @@ export class TelemetryComponent implements OnInit, OnDestroy {
     ));
   }
 
+  getMessageData(dataobj) {
+    return new Promise((resolve) => {
+      const obj = {
+        app: dataobj.app,
+        id: dataobj.id
+      };
+      this.deviceService.getDeviceMessageById(obj, 'telemetry').subscribe(
+        (response: any) => {
+          resolve(response.message);
+        }
+      );
+    });
+  }
+
   openTelemetryMessageModal(obj) {
     if (obj.type === this.telemetryTableConfig.type) {
       this.modalConfig = {
@@ -117,6 +131,9 @@ export class TelemetryComponent implements OnInit, OnDestroy {
         isDisplayCancel: true
       };
       this.selectedTelemetry = obj.data;
+      this.getMessageData(obj.data).then(message => {
+        this.selectedTelemetry.message = message;
+      });
       $('#telemetryMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }

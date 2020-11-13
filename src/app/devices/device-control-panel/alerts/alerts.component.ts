@@ -107,6 +107,20 @@ export class AlertsComponent implements OnInit, OnDestroy {
     ));
   }
 
+  getAlertMessageData(alert) {
+    return new Promise((resolve) => {
+      const obj = {
+        app: alert.app,
+        id: alert.id
+      };
+      this.deviceService.getDeviceMessageById(obj, 'alert').subscribe(
+        (response: any) => {
+          resolve(response.message);
+        }
+      );
+    });
+  }
+
   openAlertMessageModal(obj) {
     if (obj.type === this.alertTableConfig.type) {
     this.modalConfig = {
@@ -114,6 +128,10 @@ export class AlertsComponent implements OnInit, OnDestroy {
       isDisplaySave: false,
       isDisplayCancel: true
     };
+    this.selectedAlert = obj.data;
+    this.getAlertMessageData(obj.data).then(message => {
+      this.selectedAlert.message = message;
+    });
     this.selectedAlert = obj.data;
     $('#alertMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }

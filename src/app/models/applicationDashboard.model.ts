@@ -13,6 +13,7 @@ export class Alert {
   created_date: string;
   device_id: string;
   message: any;
+  display_name?: string;
   message_date: string;
   message_id: string;
   system_properties: any;
@@ -26,6 +27,7 @@ export class Notification {
   correlation_id: string;
   created_date: string;
   device_id: string;
+  display_name?: string;
   message: any;
   message_id: string;
   message_date: string;

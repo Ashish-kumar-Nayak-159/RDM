@@ -243,4 +243,43 @@ export class DeviceService {
   acknowledgeDeviceAlert(obj): Observable<any> {
     return this.http.put(this.url + AppUrls.ACKNOWLEGE_DEVICE_ALERT, obj);
   }
+
+  getNonIPDeviceTags(filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + AppUrls.GET_NON_IP_DEVICE_TAGS, { params });
+  }
+
+  getDeviceMessageById(filterObj, type) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    let url;
+    if (type === 'alert') {
+      url = AppUrls.GET_ALERT_MESSAGE_BY_ID;
+    } else if (type === 'telemetry') {
+      url = AppUrls.GET_TELEMETRY_MESSAGE_BY_ID;
+    } else if (type === 'battery') {
+      url = AppUrls.GET_BATTERY_MESSAGE_BY_ID;
+    } else if (type === 'heartbeat') {
+      url = AppUrls.GET_HEARTBEAT_MESSAGE_BY_ID;
+    } else if (type === 'log') {
+      url = AppUrls.GET_LOG_MESSAGE_BY_ID;
+    } else if (type === 'notification') {
+      url = AppUrls.GET_NOTIFICATION_MESSAGE_BY_ID;
+    } else if (type === 'other') {
+      url = AppUrls.GET_OTHER_MESSAGE_BY_ID;
+    } else if (type === 'error') {
+      url = AppUrls.GET_ERROR_MESSAGE_BY_ID;
+    }
+    return this.http.get(this.url + url, { params });
+  }
+
 }

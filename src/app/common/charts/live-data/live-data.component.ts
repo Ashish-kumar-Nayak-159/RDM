@@ -8,7 +8,7 @@ import * as moment from 'moment';
 declare var $: any;
 
 @Component({
-  selector: 'app-live-data',
+  selector: 'app-live-chart-data',
   templateUrl: './live-data.component.html',
   styleUrls: ['./live-data.component.css']
 })

@@ -33,6 +33,7 @@ export class AppUrls {
   public static DELETE_NON_IP_DEVICE = 'DDM_DeleteNonIPDevice';
   public static UPDATE_NON_IP_DEVICE_TAGS = 'DDM_SetNonIPDeviceTags';
   public static GE_NON_IP_DEVICES_COUNT = 'DDM_GetNonIPDevicesCount';
+  public static GET_APP_DETAILS = 'apps/{0}/get';
   public static GET_APP_USERS = 'App_GetAppUsers';
   public static CREATE_LAYOUT = 'layout';
   public static GET_LAYOUT = 'layouts';
@@ -50,4 +51,13 @@ export class AppUrls {
   public static UPDATE_APP_HIERARCHY = 'App_EditAppHierarchy';
   public static UPDATE_APP_ROLES = 'App_EditAppRoles';
   public static RESET_PASSWORD = 'App_ResetUserPassword';
+  public static GET_ALERT_MESSAGE_BY_ID = 'D2C_GetDeviceAlertMessage';
+  public static GET_TELEMETRY_MESSAGE_BY_ID = 'D2C_GetDeviceTelemetryMessage';
+  public static GET_BATTERY_MESSAGE_BY_ID = 'D2C_GetDeviceBatteryMessage';
+  public static GET_HEARTBEAT_MESSAGE_BY_ID = 'D2C_GetDeviceHeartbeat';
+  public static GET_LOG_MESSAGE_BY_ID = 'D2C_GetDeviceLog';
+  public static GET_NOTIFICATION_MESSAGE_BY_ID = 'D2C_GetDeviceNotification';
+  public static GET_OTHER_MESSAGE_BY_ID = 'D2C_GetDeviceOtherMessage';
+  public static GET_ERROR_MESSAGE_BY_ID = 'D2C_GetDeviceError';
+  public static GET_NON_IP_DEVICE_TAGS = 'DDM_GetNonIPDeviceTags';
 }

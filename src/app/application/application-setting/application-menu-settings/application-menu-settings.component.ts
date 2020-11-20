@@ -15,6 +15,7 @@ export class ApplicationMenuSettingsComponent implements OnInit {
   saveMenuSettingAPILoading = false;
   originalApplicationData: any;
   sideMenuList = [...CONSTANTS.SIDE_MENU_LIST];
+  activeTab = 'main-menu';
   constructor(
     private toasterService: ToasterService,
     private applicationService: ApplicationService,
@@ -52,6 +53,10 @@ export class ApplicationMenuSettingsComponent implements OnInit {
   //   alert('here');
   //   this.applicationData.configuration[index].visible = !this.applicationData.configuration[index].visible;
   // }
+
+  setActiveTab(type) {
+    this.activeTab = type;
+  }
 
   onSaveMenuSettings() {
     this.saveMenuSettingAPILoading = true;

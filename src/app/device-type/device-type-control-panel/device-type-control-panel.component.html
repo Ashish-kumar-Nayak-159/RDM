@@ -69,6 +69,20 @@
 
       <!-- Heading -->
       <div class="sidebar1-heading">
+        D2C (Monitor)
+      </div>
+      <!-- Divider -->
+      <hr class="sidebar1-divider">
+      <!-- Nav Item - Charts -->
+      <li class="nav-item" [ngClass]="{'active': activeTab === 'alert_conditioning'}">
+        <a class="nav-link" href="#device_type_alert_conditioning" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('alert_conditioning')">
+
+          <i class="fas fa-fw fa-exclamation-triangle" title="Control Widgets"></i>
+          <span>Alert Conditioning</span></a>
+      </li>
+
+      <!-- Heading -->
+      <div class="sidebar1-heading">
         C2D (Control)
       </div>
       <!-- Divider -->
@@ -93,6 +107,19 @@
 
           <i class="fas fa-fw fa-bar-chart" title="Layout"></i>
           <span>Widgets</span></a>
+      </li>
+
+      <div class="sidebar1-heading">
+        Reference Material
+      </div>
+      <!-- Divider -->
+      <hr class="sidebar1-divider">
+      <!-- Nav Item - Charts -->
+      <li class="nav-item" [ngClass]="{'active': activeTab === 'reference_material'}">
+        <a class="nav-link" href="#device_type_reference_material" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('reference_material')">
+
+          <i class="fas fa-fw fa-file-alt" title="Documents"></i>
+          <span>Documents</span></a>
       </li>
 
       <!-- Divider -->
@@ -133,11 +160,17 @@
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'jsonpacket'}" role="tabpanel" id="device_type_jsonpacket">
         <app-device-type-json-packet-format *ngIf="activeTab === 'jsonpacket' && deviceType" [deviceType]="deviceType"></app-device-type-json-packet-format>
       </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'alert_conditioning'}" role="tabpanel" id="device_type_alert_conditioning">
+        <app-device-type-alert-conditions *ngIf="activeTab === 'alert_conditioning' && deviceType" [deviceType]="deviceType"></app-device-type-alert-conditions>
+      </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel" id="device_type_control_widgets">
         <app-device-type-control-widgets *ngIf="activeTab === 'control_widgets' && deviceType" [deviceType]="deviceType"></app-device-type-control-widgets>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'layout'}" role="tabpanel" id="device_type_layout">
         <app-device-type-layout *ngIf="activeTab === 'layout' && deviceType" [deviceType]="deviceType"></app-device-type-layout>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'reference_material'}" role="tabpanel" id="device_type_reference_material">
+        <app-device-type-reference-documents *ngIf="activeTab === 'reference_material' && deviceType" [deviceType]="deviceType"></app-device-type-reference-documents>
       </div>
       <!-- /.container1-fluid -->
 

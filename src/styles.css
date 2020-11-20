@@ -131,6 +131,9 @@ input:invalid {
   color: #6e707e;
 }
 
+.lazyContainer {
+  max-height: 100px;
+}
 /* .dropdown-list {
   min-width: 100% !important;
   width: 150% !important;
@@ -164,4 +167,8 @@ input:invalid {
   top: 100px;
   left: 180px;
   opacity: 0.7;
+}
+
+.form-control {
+  line-height: 1.2;
 }

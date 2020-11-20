@@ -35,7 +35,7 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    setTimeout(() => this.plotChart(), 1000);
+    setTimeout(() => this.plotChart(), 200);
     this.chartService.toggleThresholdEvent.subscribe((ev) => {
       this.showThreshold = ev;
       this.toggleThreshold(ev);
@@ -215,15 +215,15 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
     };
     this.bodyMessage = 'Are you sure you want to remove this ' + this.chartTitle + ' widget?';
     this.headerMessage = 'Remove Widget';
-    $('#confirmRemoveWidgetModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    $('#confirmRemoveWidgetModal' + this.chartId).modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
   onModalEvents(eventType) {
     if (eventType === 'close') {
-      $('#confirmRemoveWidgetModal').modal('hide');
+      $('#confirmRemoveWidgetModal' + this.chartId).modal('hide');
     } else if (eventType === 'save') {
       this.removeWidget(this.chartId);
-      $('#confirmRemoveWidgetModal').modal('hide');
+      $('#confirmRemoveWidgetModal' + this.chartId).modal('hide');
     }
   }
 

@@ -8,144 +8,25 @@
       <i class="fas fa-fw fa" style="font-size:1rem; margin-top:0.5rem;margin-left:0.3rem">CP</i>
 		</div>
     <ul class="navbar-nav bg-white" id="controlPanelSidebar">
-
-      <div class="sidebar1-heading ">
-        Manage
-      </div>
-      <!-- Divider -->
-      <hr class="sidebar1-divider">
-      <!-- Nav Item - Dashboard -->
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'overview'}">
-        <a class="nav-link collapsed" href="#device_overview" data-toggle="tab" aria-expanded="false"
-          (click)="setActiveTab('overview')">
-          <i class="fas fa-fw fa-life-ring" title="Overview"></i>
-          <span>Overview</span></a>
-      </li>
-
-      <!-- Nav Item - Dashboard -->
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'access_control'}">
-        <a class="nav-link collapsed" href="#device_access_control" data-toggle="tab" aria-expanded="false"
-          (click)="setActiveTab('access_control')">
-          <i class="fas fa-fw fa-users" title="Access Control (IAM)"></i>
-          <span>Access Control (IAM)</span></a>
-      </li>
-
-      <!-- Nav Item - Dashboard -->
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'tags'}">
-        <a class="nav-link collapsed" href="#device_tags" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('tags')">
-          <i class="fas fa-fw fa-tags" title="Tags"></i>
-          <span>Tags</span></a>
-      </li>
-
-
-
-      <!-- Heading -->
-      <div class="sidebar1-heading ">
-        D2C (Monitor)
-      </div>
-      <!-- Divider -->
-      <hr class="sidebar1-divider">
-      <!-- Nav Item - Charts -->
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'heartbeat'}">
-        <a class="nav-link" href="#device_heartbeat" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('heartbeat')">
-
-          <i class="fas fa-fw fa-heartbeat" title="Heartbeat"></i>
-          <span>Heartbeat</span></a>
-      </li>
-
-      <!-- Nav Item - Tables -->
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'notifications'}">
-        <a class="nav-link" href="#device_notifications" data-toggle="tab" aria-expanded="false"
-          (click)="setActiveTab('notifications')">
-          <i class="fas fa-fw fa-bell" title="Notifications"></i>
-          <span>Notifications</span></a>
-      </li>
-
-      <!-- Nav Item - Charts -->
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'alerts'}">
-        <a class="nav-link" href="#device_alerts" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('alerts')">
-
-          <i class="fas fa-fw fa-bolt" title="Alerts"></i>
-          <span>Alerts</span></a>
-      </li>
-
-      <!-- Nav Item - Tables -->
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'telemetry'}">
-        <a class="nav-link" href="#device_telemetry" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('telemetry')">
-          <i class="fas fa-fw fa-history" title="Telemetry"></i>
-          <span>Telemetry</span></a>
-      </li>
-
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'error'}">
-        <a class="nav-link" href="#device_error" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('error')">
-          <i class="fas fa-fw fa-exclamation-triangle" title="Error"></i>
-          <span>Error</span></a>
-      </li>
-
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'battery_message'}">
-        <a class="nav-link" href="#device_battery_message" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('battery_message')">
-          <i class="fas fa-fw fa-battery-full" title="Battery Message"></i>
-          <span>Battery</span></a>
-      </li>
-
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'logs'}">
-        <a class="nav-link" href="#device_logs" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('logs')">
-          <i class="fas fa-fw fa-file" title="Logs"></i>
-          <span>Logs</span></a>
-      </li>
-
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'other'}">
-        <a class="nav-link" href="#device_other" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('other')">
-          <i class="fas fa-fw fa-poll-h" title="Other"></i>
-          <span>Other</span></a>
-      </li>
-
-
-
-
-      <!-- Heading -->
-      <div class="sidebar1-heading">
-        C2D (Control)
-      </div>
-      <!-- Divider -->
-      <hr class="sidebar1-divider">
-      <!-- Nav Item - Charts -->
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'control_widgets'}">
-        <a class="nav-link" href="#device_control_widgets" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('control_widgets')">
-
-          <i class="fas fa-fw fa-angle-right" title="Control Widgets"></i>
-          <span>Control Widgets</span></a>
-      </li>
-
-      <div class="sidebar1-heading">
-        Visualize
-      </div>
-       <!-- Divider -->
-       <hr class="sidebar1-divider">
-       <!-- Nav Item - Charts -->
-       <li class="nav-item"  [ngClass]="{'active': activeTab === 'trendAnalysis'}">
-        <a class="nav-link" href="#device_trend_analysis"  data-toggle="tab" aria-expanded="false" (click)="setActiveTab('trendAnalysis')">
-          <i class="fas fa-fw fa-stream" title="Live Data"></i>
-          <span>Trend Analysis</span></a>
-      </li>
-      <div class="sidebar1-heading">
-        AI / ML Recommendations
-      </div>
-       <!-- Divider -->
-       <hr class="sidebar1-divider">
-       <!-- Nav Item - Charts -->
-       <li class="nav-item" >
-        <a class="nav-link" href="javascript:void(0)"  data-toggle="tab" aria-expanded="false">
-          <i class="fas fa-fw fa-stream" title="Preventive Maintenance"></i>
-          <span>Preventive Maintenance</span></a>
+      <ng-container *ngFor="let menu of menuItems">
+        <ng-container *ngIf="menu.isTitle">
+        <div class="sidebar1-heading ">
+          {{menu.display_name}}
+        </div>
+        <!-- Divider -->
+        <hr class="sidebar1-divider">
+        </ng-container>
+        <ng-container *ngIf="!menu.isTitle">
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item" [ngClass]="{'active': activeTab === menu.page}">
+          <a class="nav-link collapsed" href="{{menu.url}}" data-toggle="tab" aria-expanded="false"
+            (click)="setActiveTab(menu.page)">
+            <i class="{{menu.icon}}" title="{{menu.display_name}}"></i>
+            <span>{{menu.display_name}}</span></a>
         </li>
-        <li class="nav-item"  [ngClass]="{'active': activeTab === 'predictiveMaintenance'}">
-          <a class="nav-link" href="#device_predictive_maintenance"  data-toggle="tab" aria-expanded="false"
-          (click)="setActiveTab('predictiveMaintenance')">
-            <i class="fas fa-fw fa-stream" title="Predictive Maintenance"></i>
-            <span>Predictive Maintenance</span></a>
-        </li>
+        </ng-container>
 
+      </ng-container>
       <!-- Divider -->
       <hr class="sidebar1-divider d-none d-md-block">
 
@@ -202,8 +83,8 @@
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'logs'}" role="tabpanel" id="device_logs">
         <app-logs *ngIf="activeTab === 'logs' && device" [device]="device"></app-logs>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'trendAnalysis'}" role="tabpanel" id="device_trend_analysis">
-        <app-trend-analysis *ngIf="activeTab === 'trendAnalysis' && device" [device]="device"></app-trend-analysis>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'trend-analysis'}" role="tabpanel" id="device_trend_analysis">
+        <app-trend-analysis *ngIf="activeTab === 'trend-analysis' && device" [device]="device"></app-trend-analysis>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel" id="device_control_widgets">
         <app-commands *ngIf="activeTab === 'control_widgets' && device" [device]="device"></app-commands>

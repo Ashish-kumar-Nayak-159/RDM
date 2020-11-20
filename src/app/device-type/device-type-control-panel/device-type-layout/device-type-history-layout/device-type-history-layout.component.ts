@@ -142,9 +142,14 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
       y2axis: this.y2AxisProps,
       xAxis: this.xAxisProps
     };
-    await this.plotChart(obj);
-    this.clear();
-    this.layoutJson.splice(0, 0, obj);
+    const index = this.layoutJson.findIndex(widget => widget.title.toLowerCase() === obj.title.toLowerCase());
+    if (index === -1) {
+      await this.plotChart(obj);
+      this.clear();
+      this.layoutJson.splice(0, 0, obj);
+    } else {
+      this.toasterService.showError('Widget with same title is already exist.', 'Add Widget');
+    }
   }
 
   plotChart(layoutJson) {
@@ -243,7 +248,6 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
   }
 
   removeWidget(chartId) {
-    alert(chartId);
     for (let i = 0; i < this.layoutJson.length; i++) {
       if (this.layoutJson[i].chart_Id === chartId) {
         console.log('DOM not found', this.layoutJson[i]);

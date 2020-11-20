@@ -60,4 +60,8 @@ export class AppUrls {
   public static GET_OTHER_MESSAGE_BY_ID = 'D2C_GetDeviceOtherMessage';
   public static GET_ERROR_MESSAGE_BY_ID = 'D2C_GetDeviceError';
   public static GET_NON_IP_DEVICE_TAGS = 'DDM_GetNonIPDeviceTags';
+  public static GET_MODEL_REFERENCE_DOCUMENTS = 'apps/{0}/device_types/{1}/reference_documents';
+  public static CREATE_MODEL_REFERENCE_DOCUMENTS = 'apps/{0}/device_types/{1}/reference_documents';
+  public static DELETE_MODEL_REFERENCE_DOCUMENTS = 'apps/{0}/device_types/{1}/reference_documents/{2}';
+
 }

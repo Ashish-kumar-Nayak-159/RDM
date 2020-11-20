@@ -22,12 +22,12 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
   gatewayId: string;
   pageType: any;
   tagsObj: any;
+  menuItems: any[] = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private deviceService: DeviceService,
     private route: ActivatedRoute,
     private commonService: CommonService
-
   ) { }
 
   ngOnInit(): void {

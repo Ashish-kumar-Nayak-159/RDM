@@ -34,7 +34,7 @@ export class PieChartComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    setTimeout(() => this.plotChart(), 1000);
+    setTimeout(() => this.plotChart(), 200);
   }
 
   plotChart() {

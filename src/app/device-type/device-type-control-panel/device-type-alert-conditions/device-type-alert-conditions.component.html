@@ -1,0 +1,193 @@
+<div class="topnavbar bg-white py-2">
+  <div class="row">
+
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)" (click)="openAddAlertConditionModal()">
+          <i class="fas fa-fw fa-plus"></i>
+          <span class="text-secondary">Add Alert Condition
+            Property</span></a>
+      </li>
+    </ul>
+    <!-- Divider
+      <hr class="sidebar-divider d-none d-md-block mt-n1">-->
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <hr class="solid">
+    </div>
+  </div>
+</div>
+
+<div class="con-pad">
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr class="bg-secondary text-white">
+          <th>Alert Code</th>
+          <th>Alert Message</th>
+          <th>Actions</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let alert of alertConditions; let i = index">
+        <tr >
+          <td><i  [style.color]="
+            (alert.severity === 'critical' ? '#fb5515' :
+            (alert.severity === 'error' ? '#f6c23e' :
+            (alert.severity === 'warning' ? '#229954' : '')
+            )
+            )" class="fa fa-exclamation-triangle"></i> {{alert.code}}</td>
+          <td>{{alert.message}}</td>
+          <td>
+            <a href="javascript:void(0)" class="circle mr-2" title="Visualization" (click)="onClickOfViewActionIcon('Visualization', i)">
+              V
+            </a>
+            <a href="javascript:void(0)" class="circle" title="Recommendations" (click)="onClickOfViewActionIcon('Recommendations', i)">
+              R
+            </a>
+          </td>
+          <td>
+            <a href="javascript:void(0)" class="mr-1">
+              <i class="fas fa-fw fa-eye"></i>
+            </a>
+            <a href="javascript:void(0)">
+              <i class="fas fa-fw fa-trash"></i>
+            </a>
+          </td>
+        </tr>
+        <tr *ngIf="toggleRows[i]">
+          <td colspan="4" *ngIf="viewType === 'Visualization'">
+            <div class="row col-12">
+              <h6 *ngIf="alertObj?.visualizations?.length === 0"> No Visualization widgets defined yet.</h6>
+              <h6 *ngIf="alertObj?.visualizations?.length > 0"> Following widgets have been defined so far. You can define more</h6>
+              <div >
+                <button type="button" class="btn btn-warning btn-sm mx-1 mt-n2" 
+                title="Add" (click)="addVisualizationWidget()" [disabled]="!editVisualizationWidget"><i class="fas fa-plus fa-sm"></i></button>
+                <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2" (click)="editVisualizationWidget = true;"
+                title="Edit" ><i class="fas fa-pencil-square-o fa-sm"></i></button>
+                <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" 
+                title="Save" (click)="onSaveVisualizationWidget()" [disabled]="!editVisualizationWidget"><i class="fas fa-save fa-sm"></i></button>
+              </div>
+            </div>
+            <div class="col-12 mt-2" *ngIf="editVisualizationWidget">
+              <div class="form-group row"  *ngFor="let item of alertObj.visualizations; let i = index">
+                <label for="inputPassword" class="col-3 col-form-label">Visualization Widget</label>
+                <div class="col-3">
+                  <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="alertObj.visualizations[i]">
+                    <option [ngValue]="undefined">Select Widgets</option>
+                    <option [ngValue]="widget.title" *ngFor="let widget of widgets">{{widget.title}}</option>
+                  </select>
+                </div>
+                <div class="col-1">
+                  <button type="button" class="btn btn-white btn-sm mx-1" 
+                title="Remove" (click)="removeVisualizationWidget()" ><i class="fas fa-close fa-sm"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 mt-2" *ngIf="!editVisualizationWidget">
+              <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
+                <ng-container *ngFor="let item of alertObj.visualizations; let index = index">
+                  <span class="tag" *ngIf="item">
+                    <span class="tag-text">{{item}}</span>
+                  </span>
+                </ng-container>
+              </div>
+            </div>
+          </td>
+          <td colspan="4" *ngIf="viewType === 'Recommendations'">
+            <div class="row col-12">
+              <h6 *ngIf="alertObj?.recommendations?.length === 0"> No recommendations configured yet.</h6>
+              <h6 *ngIf="alertObj?.recommendations?.length > 0"> Following recommendations have been pre-configured. You can configure more.</h6>
+              <div >
+                <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" 
+                title="Save" (click)="onSaveRecommendations()" ><i class="fas fa-save fa-sm"></i></button>
+                
+              </div>
+            </div>
+            <div class="row col-12">
+              <h6 >Debugging Steps</h6>
+              <div>
+                <button type="button" class="btn btn-warning btn-sm mx-1 mt-n2" 
+                title="Add" (click)="addRecommendationStep()" ><i class="fas fa-plus fa-sm"></i></button>
+              </div>
+            </div>
+            <div class="col-12 mt-2">
+              <div class="form-group row"  *ngFor="let item of alertObj.recommendations; let i = index">
+                <label for="inputPassword" class="col-1 col-form-label">Step - {{i + 1}}</label>
+                <div class="col-3">
+                  <input type="text" class="form-control form-control-sm" id="description" name="description" [(ngModel)]="alertObj.recommendations[i].description"
+                  placeholder="Enter Description">
+                </div>
+                <div class="col-3">
+                  <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="alertObj.recommendations[i].activity">
+                    <option [ngValue]="undefined">Select Activity</option>
+                    <option [ngValue]="'auto'">Auto Activity</option>
+                    <option [ngValue]="'manual'">Manual Activity</option>
+                  </select>
+                </div>
+                <div class="col-3" *ngIf="alertObj.recommendations[i].activity === 'auto'">
+                  <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="alertObj.recommendations[i].command">
+                    <option [ngValue]="undefined">Select Command</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row col-12">
+              <h6 >Email/Message Attachments</h6>
+              <div>
+                <button type="button" class="btn btn-warning btn-sm mx-1 mt-n2" 
+                title="Add" ><i class="fas fa-plus fa-sm"></i></button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal right fade" id="addAlertConditionModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" *ngIf="alertObj">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Add Alert Condition
+        Property</h5>
+      <button type="button" class="close" [disabled]="isCreateAlertConditionLoading" (click)="onCloseAlertConditionModal()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="form-group">
+          <label for="message-text" class="col-form-label required">Alert Message:</label>
+          <input type="text" class="form-control" id="message" name="message" [(ngModel)]="alertObj.message"
+        placeholder="Enter Alert Message">
+        </div>
+        <div class="form-group">
+          <label for="message-text" class="col-form-label required">Alert Code:</label>
+          <input type="text" class="form-control" id="code" name="code" [(ngModel)]="alertObj.code"
+        placeholder="Enter Alert Code">
+        </div>
+        <div class="form-group">
+          <label for="recipient-name" class="col-form-label required">Severity:</label>
+          <select class="custom-select" id="template" name="model_type" [(ngModel)]="alertObj.severity">
+            <option [ngValue]="undefined" >Select Severity</option>
+            <option [ngValue]="'critical'" >Critical</option>
+            <option [ngValue]="'error'" >Error</option>
+            <option [ngValue]="'warning'" >Warning</option>
+
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary add-row" [disabled]="isCreateAlertConditionLoading" (click)="onCreateAlertCondition()">Save</button>
+      <button type="button" class="btn btn-secondary" [disabled]="isCreateAlertConditionLoading" (click)="onCloseAlertConditionModal()">Cancel</button>
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></i>
+    </div>
+  </div>
+  </div>
+</div>

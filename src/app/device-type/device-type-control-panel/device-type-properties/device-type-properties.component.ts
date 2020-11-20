@@ -188,7 +188,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
       this.toasterService.showError('Property with same name already exist.', 'Add Property');
       return;
     }
-    if (this.propertyObj.threshold) {
+    if (this.propertyObj.threshold && this.type === 'measured_properties') {
       if (this.propertyObj.threshold.l1 && this.propertyObj.threshold.h1 && this.propertyObj.threshold.h1 < this.propertyObj.threshold.l1) {
         this.toasterService.showError('H1 must be greater than L1', 'Add Property');
         return;

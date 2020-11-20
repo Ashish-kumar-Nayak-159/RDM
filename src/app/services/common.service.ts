@@ -39,6 +39,12 @@ export class CommonService {
     return 0;
   }
 
+  getFileData(url) {
+    return this.http.get(url, {
+      responseType: 'blob'
+    });
+  }
+
   getRandomColor() {
     const letters = '0123456789ABCDEF';
     let color = '#';

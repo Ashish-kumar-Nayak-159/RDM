@@ -92,7 +92,7 @@
                     'bg-alert-selection':
                       alert.message_id === this.selectedAlert?.message_id
                   }">
-              <td><i class="fa fa-bell" [style.color]="
+              <td><i class="fa fa-exclamation-triangle" [style.color]="
               (alert.message?.priority === 'critical' ? '#fb5515' :
               (alert.message?.priority === 'medium' ? '#f6c23e' :
               (alert.message?.priority === 'low' ? '#229954' : '')

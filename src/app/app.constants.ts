@@ -192,7 +192,7 @@ export class CONSTANTS {
       visible: true
     },
     {
-      page: 'Things Modelling',
+      page: 'alerts',
       system_name: 'Things Modelling',
       url: 'applications/:appName/things/model',
       display_name: 'Asset Modelling',
@@ -238,6 +238,180 @@ export class CONSTANTS {
       display_name: 'App Settings',
       icon: 'fas fa-fw fa-cog',
       visible: true
+    }
+  ];
+
+  public static DEVICE_CONTROL_PANEL_SIDE_MENU_LIST = [
+    {
+      page: 'manage',
+      system_name: 'Manage',
+      url: null,
+      display_name: 'Manage',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'overview',
+      system_name: 'Overview',
+      url: '#device_overview',
+      display_name: 'Overview',
+      icon: 'fas fa-fw fa-life-ring',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'access_control',
+      system_name: 'Access Control',
+      url: '#device_access_control',
+      display_name: 'Access Control (IAM)',
+      icon: 'fas fa-fw fa-users',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'tags',
+      system_name: 'Tags',
+      url: '#device_tags',
+      display_name: 'Tags',
+      icon: 'fas fa-fw fa-tags',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'd2c',
+      system_name: 'D2C (Monitor)',
+      url: null,
+      display_name: 'D2C (Monitor)',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'heartbeat',
+      system_name: 'Heartbeat',
+      url: '#device_heartbeat',
+      display_name: 'Heartbeat',
+      icon: 'fas fa-fw fa-heartbeat',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'notiications',
+      system_name: 'Notifications',
+      url: '#device_notifications',
+      display_name: 'Notifications',
+      icon: 'fas fa-fw fa-bell',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'alerts',
+      system_name: 'Alerts',
+      url: '#device_alerts',
+      display_name: 'Alerts',
+      icon: 'fas fa-fw fa-bolt',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'telemetry',
+      system_name: 'Telemetry',
+      url: '#device_telemetry',
+      display_name: 'Telemetry',
+      icon: 'fas fa-fw fa-history',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'error',
+      system_name: 'Error',
+      url: '#device_error',
+      display_name: 'Error',
+      icon: 'fas fa-fw fa-exclamation-triangle',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'battery_message',
+      system_name: 'Batery',
+      url: '#device_battery_message',
+      display_name: 'Batery',
+      icon: 'fas fa-fw fa-battery-full',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'logs',
+      system_name: 'Logs',
+      url: '#device_logs',
+      display_name: 'Logs',
+      icon: 'fas fa-fw fa-file',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'other',
+      system_name: 'Other',
+      url: '#device_other',
+      display_name: 'Other',
+      icon: 'fas fa-fw fa-poll-h',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'c2d',
+      system_name: 'C2D (Control)',
+      url: null,
+      display_name: 'C2D (Control)',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'control_widgets',
+      system_name: 'Control Widgets',
+      url: '#device_control_widgets',
+      display_name: 'Control Widgets',
+      icon: 'fas fa-fw fa-angle-right',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'trend-analysis',
+      system_name: 'Trend Analysis',
+      url: '#device_trend_analysis',
+      display_name: 'Trend Analysis',
+      icon: 'fas fa-fw fa-stream',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'recommendations',
+      system_name: 'AI / ML Recommendations',
+      url: null,
+      display_name: 'AI / ML Recommendations',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'preventiveMaintenance',
+      system_name: 'Preventive Maintenance',
+      url: '#device_preventive_maintenance',
+      display_name: 'Preventive Maintenance',
+      icon: 'fas fa-fw fa-stream',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'predictiveMaintenance',
+      system_name: 'Predictive Maintenance',
+      url: '#device_predictive_maintenance',
+      display_name: 'Predictive Maintenance',
+      icon: 'fas fa-fw fa-stream',
+      visible: true,
+      isTitle: false
     }
   ];
 

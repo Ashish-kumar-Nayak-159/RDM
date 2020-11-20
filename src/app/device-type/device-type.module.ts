@@ -2,6 +2,7 @@ import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
+import { FileSaverModule } from 'ngx-filesaver';
 
 import { DeviceTypeListComponent } from './device-type-list/device-type-list.component';
 import { CommonCustomModule } from '../common/common.module';
@@ -18,6 +19,8 @@ import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import { DeviceTypeLayoutComponent } from './device-type-control-panel/device-type-layout/device-type-layout.component';
 import { DeviceTypeHistoryLayoutComponent } from './device-type-control-panel/device-type-layout/device-type-history-layout/device-type-history-layout.component';
 import { DeviceTypeLiveLayoutComponent } from './device-type-control-panel/device-type-layout/device-type-live-layout/device-type-live-layout.component';
+import { DeviceTypeAlertConditionsComponent } from './device-type-control-panel/device-type-alert-conditions/device-type-alert-conditions.component';
+import { DeviceTypeReferenceDocumentsComponent } from './device-type-control-panel/device-type-reference-documents/device-type-reference-documents.component';
 
 
 
@@ -33,7 +36,9 @@ import { DeviceTypeLiveLayoutComponent } from './device-type-control-panel/devic
     DeviceTypeDeviceMethodsComponent,
     DeviceTypeLayoutComponent,
     DeviceTypeHistoryLayoutComponent,
-    DeviceTypeLiveLayoutComponent
+    DeviceTypeLiveLayoutComponent,
+    DeviceTypeAlertConditionsComponent,
+    DeviceTypeReferenceDocumentsComponent
   ],
   imports: [
     CommonModule,
@@ -43,7 +48,8 @@ import { DeviceTypeLiveLayoutComponent } from './device-type-control-panel/devic
     CommonCustomModule,
     AccordionModule.forRoot(),
     NgJsonEditorModule,
-    AngularMultiSelectModule
+    AngularMultiSelectModule,
+    FileSaverModule
   ]
 })
 export class DeviceTypeModule { }

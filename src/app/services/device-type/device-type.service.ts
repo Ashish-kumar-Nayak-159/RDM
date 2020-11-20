@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AppUrls } from 'src/app/app-url.constants';
 import { environment } from 'src/environments/environment';
+import { String } from 'typescript-string-operations';
 
 @Injectable({
   providedIn: 'root'
@@ -100,5 +101,19 @@ export class DeviceTypeService {
     });
     console.log(params);
     return this.http.delete(this.url + AppUrls.DELETE_CONTROL_WIDGET, { params });
+  }
+
+  getThingsModelDocuments(filterObj) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_MODEL_REFERENCE_DOCUMENTS, filterObj.app, filterObj.device_type));
+  }
+
+  createThingsModelDocument(modelObj, app, deviceType) {
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_MODEL_REFERENCE_DOCUMENTS, app, deviceType), modelObj);
+  }
+
+  deleteThingsModelDocument(id, app, deviceType) {
+    const params = new HttpParams().set('id', id);
+    console.log(params);
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_MODEL_REFERENCE_DOCUMENTS, app, deviceType, id), {});
   }
 }

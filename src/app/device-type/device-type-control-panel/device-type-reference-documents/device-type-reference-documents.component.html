@@ -1,0 +1,121 @@
+<div class="topnavbar bg-white py-2" >
+  <div class="row">
+
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)"  (click)="openAddDocumentModal()">
+          <i class="fas fa-fw fa-plus"></i>
+          <span class="text-secondary">Add</span></a>
+      </li>
+    </ul>
+    <!-- Divider
+      <hr class="sidebar-divider d-none d-md-block mt-n1">-->
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <hr class="solid">
+    </div>
+  </div>
+  </div>
+
+  <div class="con-pad">
+  <div class="table-responsive">
+    <app-common-table [tableData]="documents" [tableConfig]="docTableConfig" [isTableFilterSelected]="true"
+    [isTableDataLoading]="isDocumentsLoading" (viewMessageEvent)="onTableFunctionCall($event)"></app-common-table>
+  </div>
+  </div>
+
+  <div class="modal right fade" id="addDocumentModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" *ngIf="documentObj">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Document</h5>
+        <button type="button" class="close" [disabled]="isCreateDocumentLoading" (click)="onCloseAddDocModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label required">Display Name:</label>
+            <input type="text" class="form-control" id="name" name="name" [(ngModel)]="documentObj.name"
+          placeholder="Enter Document Name">
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label required">Type:</label>
+            <select class="custom-select" id="template" name="model_type" [(ngModel)]="documentObj.type"
+            >
+              <option [ngValue]="undefined" >Select Document Type</option>
+              <option [ngValue]="'PDF'" >PDF</option>
+              <option [ngValue]="'Image'" >Image</option>
+              <option [ngValue]="'Video'" >Video</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label required">File:</label>
+            {{documentObj?.metadata ? documentObj?.metadata?.name : 'Not yet uploaded'}}
+            <input type="file"  (change)="onDocumentFileSelected($event.target.files)"
+            class="form-control" id="app_logo" name="app_logo">
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary add-row" [disabled]="isCreateDocumentLoading  || isFileUploading" (click)="onSaveDocumentObj()">Save</button>
+        <button type="button" class="btn btn-secondary" [disabled]="isCreateDocumentLoading || isFileUploading" (click)="onCloseAddDocModal()">Cancel</button>
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateDocumentLoading || isFileUploading"></i>
+      </div>
+    </div>
+    </div>
+  </div>
+
+
+  <div class="modal right fade" id="viewDocModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" *ngIf="selectedDocument">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">View Document</h5>
+          <button type="button" class="close"  aria-label="Close" (click)="closeModal('viewDocModal')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <img *ngIf="selectedDocument.type === 'Image'" width="420" height="350" [src]="selectedDocument.metadata.url + sasToken"/>
+          <video *ngIf="selectedDocument.type === 'Video'" width="420" height="350" controls>
+            <source [src]="selectedDocument.metadata.url + sasToken" type="video/mp4">
+          </video>
+          <iframe *ngIf="selectedDocument.type === 'PDF'"  [src]="sanitizeURL()" style="width: 100%;height: 80vh"></iframe>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal('viewDocModal')">
+            Cancel
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="modal fade" id="confirmMessageModal" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Remove Document</h5>
+          <button type="button" class="close"  aria-label="Close" (click)="closeModal('confirmMessageModal')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to remove this document?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" (click)="deleteDocument()">
+            Ok</button>
+          <button type="button" class="btn btn-secondary" (click)="closeModal('confirmMessageModal')">
+            Cancel
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>

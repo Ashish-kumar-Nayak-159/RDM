@@ -66,14 +66,13 @@
             <select class="custom-select" id="template" name="model_type" [(ngModel)]="propertyObj.data_type"
             (change)="onDataTypeChange()">
               <option [ngValue]="dataType.name" *ngFor="let dataType of dataTypeList">{{dataType.name}}</option>
-
             </select>
           </div>
-          <div class="row col-12">
+          <div class="row col-12" *ngIf="type === 'measured_properties'">
             <label for="recipient-name" class="col-form-label">Thresholds:</label>
           </div>
-          <div class="row">
-            
+          <div class="row" *ngIf="type === 'measured_properties'">
+
             <div class="form-group col-6">
               <!-- <label for="recipient-name" class="col-form-label required">L1:</label> -->
               <input type="number" class="form-control" id="l1" name="l1" [(ngModel)]="propertyObj.threshold.l1"
@@ -85,7 +84,7 @@
               placeholder="Enter H1 Value" >
             </div>
           </div>
-          <div class="row">
+          <div class="row" *ngIf="type === 'measured_properties'">
             <div class="form-group col-6">
               <!-- <label for="recipient-name" class="col-form-label required">L2:</label> -->
               <input type="number" class="form-control" id="l2" name="l2" [(ngModel)]="propertyObj.threshold.l2"
@@ -97,7 +96,7 @@
               placeholder="Enter H2 Value" >
             </div>
           </div>
-          <div class="row">
+          <div class="row" *ngIf="type === 'measured_properties'">
             <div class="form-group col-6">
               <!-- <label for="recipient-name" class="col-form-label required">L3:</label> -->
               <input type="number" class="form-control" id="l3" name="l3" [(ngModel)]="propertyObj.threshold.l3"
@@ -145,8 +144,8 @@
         <div class="modal-body">
           <label>JSON Model: </label>
           <pre  [innerHTML]="selectedProperty.json_model | json"></pre>
-          <label>Thresholds: </label>
-          <pre  [innerHTML]="selectedProperty.threshold ? (selectedProperty.threshold | json) : ({} | json)"></pre>
+          <label *ngIf="type === 'measured_properties'">Thresholds: </label>
+          <pre *ngIf="type === 'measured_properties'" [innerHTML]="selectedProperty.threshold ? (selectedProperty.threshold | json) : ({} | json)"></pre>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="onCloseModal('PropJSONModal')">

@@ -1,9 +1,9 @@
 <accordion class="mb-2" id="{{chartId}}_{{chartId}}">
   <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="true">
     <ng-container accordion-heading>
-      <button class="btn" type="button">
+      <a class="btn" >
         {{chartTitle}}
-      </button>
+      </a>
       <a *ngIf="isOverlayVisible" class="float-right pull-right mt-1" href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()"><i class="fa fa-close"></i></a>
     </ng-container>
     <div class="row">

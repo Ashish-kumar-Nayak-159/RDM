@@ -16,7 +16,7 @@
         <!-- Divider -->
         <hr class="sidebar1-divider">
         </ng-container>
-        <ng-container *ngIf="!menu.isTitle">
+        <ng-container *ngIf="!menu.isTitle && menu.visible">
         <!-- Nav Item - Dashboard -->
         <li class="nav-item" [ngClass]="{'active': activeTab === menu.page}">
           <a class="nav-link collapsed" href="{{menu.url}}" data-toggle="tab" aria-expanded="false"

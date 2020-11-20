@@ -1,3 +1,4 @@
+import { ApplicationService } from 'src/app/services/application/application.service';
 import { filter } from 'rxjs/operators';
 import { Component, OnInit, Inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
@@ -18,27 +19,30 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
   appData: any;
   displayMenuList = [];
   predictiveDemoUrl = 'https://app.powerbi.com/view?r=eyJrIjoiMzUyOWE3MmUtZWJhYi00NzA5LWI1YjktMTMwZDg1NjJiNmY2IiwidCI6IjA4YjdjZmViLTg5N2UtNDY5Yi05NDM2LTk3NGU2OTRhOGRmMiJ9&pageName=ReportSection';
+  applicationData: any;
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private commonService: CommonService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private applicationService: ApplicationService
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     // if (this.userData && !this.userData.is_super_admin) {
     //   this.appName = this.userData.apps[0].app;
     // }
 
     if (this.appName) {
-      this.appData = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
+      this.applicationData = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
+      await this.getApplicationData();
       if (!this.userData?.is_super_admin) {
       let data = [];
-      if (this.appData?.configuration?.length > 0) {
+      if (this.appData?.configuration?.main_menu?.length > 0) {
         this.constantsData.SIDE_MENU_LIST.forEach(config => {
           let found = false;
-          this.appData.configuration.forEach(item => {
+          this.appData.configuration.main_menu.forEach(item => {
             if (config.page === item.page) {
               found = true;
               data.push(item);
@@ -70,10 +74,10 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
         this.appData = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
         if (!this.userData?.is_super_admin) {
         let data = [];
-        if (this.appData.configuration && this.appData.configuration.length > 0) {
+        if (this.appData.configuration?.main_menu?.length > 0) {
           this.constantsData.SIDE_MENU_LIST.forEach(config => {
             let found = false;
-            this.appData.configuration.forEach(item => {
+            this.appData.configuration.main_menu.forEach(item => {
               if (config.page === item.page) {
                 found = true;
                 data.push(item);
@@ -93,7 +97,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
     });
 
     this.commonService.refreshSideMenuData.subscribe(list => {
-      const config = list.configuration && list.configuration.length > 0 ? list.configuration : CONSTANTS.SIDE_MENU_LIST;
+      const config = list.configuration?.main_menu?.length > 0 ? list.configuration.main_menu : CONSTANTS.SIDE_MENU_LIST;
       this.processSideMenuData(config, list);
       // const index = this.userData.apps.findIndex(app => app.app === list.app);
       // const obj = this.userData.apps[index];
@@ -104,10 +108,24 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
 
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (this.userData) {
       this.appData = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
+      await this.getApplicationData();
     }
+  }
+
+  getApplicationData() {
+    return new Promise((resolve) => {
+      this.applicationService.getApplicationDetail(this.appName).subscribe(
+        (response: any) => {
+            this.appData = response;
+            if (this.applicationData?.user) {
+            this.appData.user = this.applicationData.user;
+            }
+            resolve();
+        });
+    });
   }
 
   processSideMenuData(data, list) {

@@ -37,7 +37,9 @@
                     dashboardSnapshot?.device_count
                   }}</span>
                 </div>
-                <div class="text-black-50 text-center small">{{tileName
+                <div class="text-black-50 text-center small">{{tileName ? tileName: (
+                  (contextApp?.metadata?.contain_devices && !contextApp?.metadata?.contain_gateways ? 'IoT Devices' :
+                  (!contextApp?.metadata?.contain_devices && contextApp?.metadata?.contain_gateways ? 'IoT Gateways' : '')))
                 }}</div
               ></a>
             </div>
@@ -227,10 +229,10 @@
             >
               <li *ngFor="let notification of lastGeneratedNotifications">
                 <div class="device-name-text">
-                  {{ notification.display_name ?  notification.display_name : notification.device_id  }}
+                  {{ notification.device_display_name }}
                   | {{ notification.time_diff }}
                 </div>
-                <p>{{ notification.message?.message }}</p>
+                <p>{{ notification.message }}</p>
               </li>
             </ul>
             <div
@@ -271,10 +273,10 @@
             >
               <li *ngFor="let alert of lastGeneratedAlerts">
                 <div class="device-name-text">
-                  {{ alert.display_name ?  alert.display_name : alert.device_id  }}
+                  {{ alert.device_display_name }}
                    | {{ alert.time_diff }}
                 </div>
-                <p>{{ alert.message?.message }}</p>
+                <p>{{ alert.message }}</p>
               </li>
             </ul>
             <div
@@ -314,7 +316,7 @@
             >
               <li *ngFor="let event of lastGeneratedEvents">
                 <div class="device-name-text">
-                  {{ event.device_id ? event.device_id : event.display_name }} | {{ event.time_diff }}
+                  {{ event.display_name }} | {{ event.time_diff }}
                 </div>
                 <p>{{ event.event_type }}</p>
               </li>

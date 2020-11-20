@@ -1,3 +1,5 @@
+import { ApplicationService } from 'src/app/services/application/application.service';
+import { CONSTANTS } from 'src/app/app.constants';
 import { DeviceTypeService } from './../../services/device-type/device-type.service';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -15,15 +17,28 @@ export class DeviceTypeControlPanelComponent implements OnInit {
   isDeviceTypeDataLoading = false;
   appName: string;
   activeTab: string;
+  menuItems: any[] = CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST;
+  contextApp: any;
+  userData: any;
+  applicationData: any;
   constructor(
     private route: ActivatedRoute,
     private deviceTypeService: DeviceTypeService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private applicationService: ApplicationService
   ) { }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
+    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.route.paramMap.subscribe(async params => {
       this.appName = params.get('applicationId');
+      this.applicationData = this.userData.apps.find(app => app.app === this.appName);
+      console.log(this.contextApp);
+      await this.getApplicationData();
+      if (this.contextApp?.configuration?.model_control_panel_menu?.length > 0) {
+        this.menuItems = this.contextApp.configuration.model_control_panel_menu;
+        console.log(this.menuItems);
+      }
       this.getDeviceTypeData(params.get('deviceTypeId'));
     });
 
@@ -36,6 +51,17 @@ export class DeviceTypeControlPanelComponent implements OnInit {
         }
       }
     );
+  }
+
+  getApplicationData() {
+    return new Promise((resolve) => {
+      this.applicationService.getApplicationDetail(this.appName).subscribe(
+        (response: any) => {
+            this.contextApp = response;
+            this.contextApp.user = this.applicationData.user;
+            resolve();
+        });
+    });
   }
 
   setActiveTab(tab) {

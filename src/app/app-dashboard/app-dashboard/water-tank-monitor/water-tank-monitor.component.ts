@@ -1,6 +1,6 @@
 import { DeviceTypeService } from './../../../services/device-type/device-type.service';
 import { DeviceService } from 'src/app/services/devices/device.service';
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from 'src/app/services/common.service';
@@ -14,7 +14,7 @@ export class WaterTankMonitorComponent implements OnInit, AfterViewInit, OnDestr
 
   appName: string;
   userData: any;
-  contextApp: any;
+  @Input() contextApp: any;
   selectedHierarchy: any = {};
   selectedDevice: any;
   properties: any[] = [];
@@ -32,7 +32,6 @@ export class WaterTankMonitorComponent implements OnInit, AfterViewInit, OnDestr
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
-      this.contextApp = this.userData.apps.filter(app => app.app === this.appName)[0];
       this.selectedHierarchy = {
         App: this.appName
       };

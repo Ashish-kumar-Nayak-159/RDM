@@ -1,5 +1,5 @@
 export class AppUrls {
-  public static GET_APPLICATION_DASHBOARD_SNAPSHOT = 'dashboard/snapshot/get';
+  public static GET_APPLICATION_DASHBOARD_SNAPSHOT = 'apps/{0}​​​​​​​/device_statistics';
   public static GET_DEVICE_FILTER_LIST = 'DLM_GetDevices';
   public static GET_DEVICE_DATA = 'DLM_GetDeviceTwin';
   public static UPDATE_DEVICE_TAGS = 'DLM_SetDeviceTags';
@@ -23,18 +23,18 @@ export class AppUrls {
   public static DELETE_DEVICE = 'DLM_DeleteDevice';
   public static CREATE_DEVICE = 'DLM_CreateDevice';
   public static SEND_C2D_MESSAGE = 'C2D_SendMessage';
-  public static LOGIN = 'App_Login';
-  public static GET_APPLICATIONS_LIST = 'apps/get';
-  public static CREATE_APP = 'App_CreateApp';
-  public static UPDATE_APP = 'App_EditApp';
-  public static CREATE_USER = 'App_CreateUser';
+  public static LOGIN = 'login';
+  public static GET_APPLICATIONS_LIST = 'apps';
+  public static CREATE_APP = 'apps';
+  public static UPDATE_APP = 'apps/{0}';
+  public static CREATE_USER = 'apps/{0}​​​​​​​/users';
   public static CREATE_NON_IP_DEVICE = 'DDM_CreateNonIPDevice';
   public static GET_NON_IP_DEVICE = 'DDM_GetNonIPDevices';
   public static DELETE_NON_IP_DEVICE = 'DDM_DeleteNonIPDevice';
   public static UPDATE_NON_IP_DEVICE_TAGS = 'DDM_SetNonIPDeviceTags';
   public static GE_NON_IP_DEVICES_COUNT = 'DDM_GetNonIPDevicesCount';
-  public static GET_APP_DETAILS = 'apps/{0}/get';
-  public static GET_APP_USERS = 'App_GetAppUsers';
+  public static GET_APP_DETAILS = 'apps/{0}';
+  public static GET_APP_USERS = 'apps/{0}​​​​​​​/users';
   public static CREATE_LAYOUT = 'layout';
   public static GET_LAYOUT = 'layouts';
   public static GET_THINGS_MODELS = 'device_types';
@@ -48,9 +48,9 @@ export class AppUrls {
   public static GET_THINGS_MODEL_LAYOUT = 'device_types/layouts';
   public static ACKNOWLEGE_DEVICE_ALERT = 'D2C_UpdateAlertMetadata';
   public static DELETE_CONTROL_WIDGET = 'device_type/control_widget';
-  public static UPDATE_APP_HIERARCHY = 'App_EditAppHierarchy';
-  public static UPDATE_APP_ROLES = 'App_EditAppRoles';
-  public static RESET_PASSWORD = 'App_ResetUserPassword';
+  public static UPDATE_APP_HIERARCHY = 'apps/{0}​​​​​​​/hierarchy';
+  public static UPDATE_APP_ROLES = 'apps/{0}​​​​​​​/roles';
+  public static RESET_PASSWORD = 'users/reset_password';
   public static GET_ALERT_MESSAGE_BY_ID = 'D2C_GetDeviceAlertMessage';
   public static GET_TELEMETRY_MESSAGE_BY_ID = 'D2C_GetDeviceTelemetryMessage';
   public static GET_BATTERY_MESSAGE_BY_ID = 'D2C_GetDeviceBatteryMessage';

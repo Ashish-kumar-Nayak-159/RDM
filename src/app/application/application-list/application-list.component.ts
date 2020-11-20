@@ -202,6 +202,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
         name: 'App Admin',
         level: 0
       }];
+      this.applicationDetail.configuration = {main_menu: [], device_control_panel_menu : [], model_control_panel_menu: []};
       const methodToCall = this.appModalType === 'Create' ? this.applicationService.createApp(this.applicationDetail) :
       (this.appModalType === 'Edit' ? this.applicationService.updateApp(this.applicationDetail) : null);
       if (methodToCall) {

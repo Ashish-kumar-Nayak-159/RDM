@@ -1,6 +1,6 @@
 
 import { DeviceService } from 'src/app/services/devices/device.service';
-import { Component, OnInit, OnDestroy, AfterViewInit, ApplicationRef, ComponentFactoryResolver, EmbeddedViewRef, Injector } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ApplicationRef, ComponentFactoryResolver, EmbeddedViewRef, Injector, Input } from '@angular/core';
 import { GoogleChartInterface } from 'ng2-google-charts';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CONSTANTS } from 'src/app/app.constants';
@@ -73,6 +73,7 @@ export class EScooterTrackerDashboardComponent implements OnInit, OnDestroy {
   center: google.maps.LatLngLiteral;
   markers: any[] = [];
   markerOptions: google.maps.MarkerOptions;
+  @Input() contextApp: any;
   constructor(
     private deviceService: DeviceService,
     private route: ActivatedRoute,

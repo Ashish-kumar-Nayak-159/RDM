@@ -1,5 +1,5 @@
-<app-e-scooter-tracker-dashboard *ngIf="appName === 'eScooterTracker'"></app-e-scooter-tracker-dashboard>
-<app-water-tank-monitor *ngIf="appName === 'WaterTankMonitor'"></app-water-tank-monitor>
-<app-pump-dashboard *ngIf="appName === 'IIoT_Pump'"></app-pump-dashboard>
+<app-e-scooter-tracker-dashboard [contextApp]="contextApp" *ngIf="appName === 'eScooterTracker'"></app-e-scooter-tracker-dashboard>
+<app-water-tank-monitor [contextApp]="contextApp" *ngIf="appName === 'WaterTankMonitor'"></app-water-tank-monitor>
+<app-pump-dashboard [contextApp]="contextApp" *ngIf="appName === 'IIoT_Pump'"></app-pump-dashboard>
 
-<app-compressor-dashboard *ngIf="appName === 'IIoT_Compressor'"></app-compressor-dashboard>
+<app-compressor-dashboard [contextApp]="contextApp" *ngIf="appName === 'IIoT_Compressor'"></app-compressor-dashboard>

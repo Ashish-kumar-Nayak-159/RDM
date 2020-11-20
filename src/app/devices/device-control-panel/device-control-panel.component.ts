@@ -1,3 +1,4 @@
+import { ApplicationService } from 'src/app/services/application/application.service';
 import { Component, OnInit, Inject, AfterViewInit } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { DeviceService } from 'src/app/services/devices/device.service';
@@ -14,7 +15,7 @@ declare var $: any;
 export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
 
   activeTab: string;
-  device: Device = new Device();
+  device: Device;
   isDeviceDataLoading = false;
   userData: any;
   appName: string;
@@ -22,20 +23,31 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
   gatewayId: string;
   pageType: any;
   tagsObj: any;
+  contextApp: any;
   menuItems: any[] = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
+  applicationData: any;
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private deviceService: DeviceService,
     private route: ActivatedRoute,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private applicationService: ApplicationService
   ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-
     this.route.paramMap.subscribe(
-      params => {
+      async params => {
         this.appName = params.get('applicationId');
+        console.log(this.appName);
+        this.applicationData = this.userData.apps.find(app => app.app === this.appName);
+        await this.getApplicationData();
+        console.log(this.contextApp);
+        if (this.contextApp?.configuration?.device_control_panel_menu.length > 0) {
+          this.menuItems = this.contextApp.configuration.device_control_panel_menu;
+          console.log(this.menuItems);
+        }
+        console.log(this.menuItems);
         if (params.get('deviceId')) {
           if (params.get('listName')) {
             const listName = params.get('listName');
@@ -56,6 +68,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
             this.pageType = 'Device';
           }
           this.pageType = this.pageType.slice(0, -1);
+          this.device = new Device();
           this.device.device_id = params.get('deviceId');
           this.getDeviceDetail();
         }
@@ -79,6 +92,17 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     // this.setToggleClassForMenu();
+  }
+
+  getApplicationData() {
+    return new Promise((resolve) => {
+      this.applicationService.getApplicationDetail(this.appName).subscribe(
+        (response: any) => {
+            this.contextApp = response;
+            this.contextApp.user = this.applicationData.user;
+            resolve();
+        });
+    });
   }
 
   setToggleClassForMenu() {

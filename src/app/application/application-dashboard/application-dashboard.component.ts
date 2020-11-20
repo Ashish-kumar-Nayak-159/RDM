@@ -66,7 +66,6 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
   tileName: string;
   constructor(
     private applicationService: ApplicationService,
-
     private router: Router,
     private commonService: CommonService,
     private route: ActivatedRoute
@@ -75,11 +74,12 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     console.log('22222    ', this.commonService.getFlag());
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe(async params => {
       this.appName = params.get('applicationId');
-      this.contextApp = this.userData.apps.filter(
+      this.applicationData = this.userData.apps.filter(
         app => app.app === params.get('applicationId')
       )[0];
+      await this.getApplicationData();
       console.log(this.contextApp);
       this.tileName = this.getTileName(
         (this.contextApp?.metadata?.contain_devices && !this.contextApp?.metadata?.contain_gateways ? 'IoT Devices' :
@@ -123,6 +123,17 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
       }, 500);
   }
 
+  getApplicationData() {
+    return new Promise((resolve) => {
+      this.applicationService.getApplicationDetail(this.appName).subscribe(
+        (response: any) => {
+            this.contextApp = response;
+            this.contextApp.user = this.applicationData.user;
+            resolve();
+        });
+    });
+  }
+
   // getApplicationData() {
   //   this.applicationService.getApplications({
   //     app: this.appName
@@ -137,7 +148,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
 
   getTileName(type) {
     let name;
-    this.contextApp.configuration.forEach(item => {
+    this.contextApp.configuration.main_menu.forEach(item => {
       console.log((item.system_name === type));
       if (item.system_name === type) {
         name = item.display_name;
@@ -157,7 +168,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
       app: this.appName,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy)
     };
-    this.apiSubscriptions.push(this.applicationService.getApplicationDashboardSnapshot(obj)
+    this.apiSubscriptions.push(this.applicationService.getApplicationDashboardSnapshot(obj, obj.app)
     .subscribe(
       (response: ApplicationDashboardSnapshot) => {
         this.dashboardSnapshot = response;

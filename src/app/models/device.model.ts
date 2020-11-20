@@ -18,5 +18,8 @@ export class Device {
   connection_state: string;
   gateway_id?: string;
   category?: string;
+  display_name: string;
+  hierarchy: string;
+  hierarchyString: string;
   tags: any;
 }

@@ -1,3 +1,4 @@
+import { ApplicationService } from 'src/app/services/application/application.service';
 import { filter } from 'rxjs/operators';
 import { Component, OnInit, Input } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
@@ -30,18 +31,21 @@ export class TagsComponent implements OnInit {
   appName: string;
   hierarchyTags: any[] = [];
   contextApp: any;
+  applicationData: any;
   constructor(
     private route: ActivatedRoute,
     private deviceService: DeviceService,
     private toasterService: ToasterService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private applicationService: ApplicationService
   ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe(async params => {
       this.appName = params.get('applicationId');
-      this.contextApp = this.userData.apps.filter(app => app.app === this.appName)[0];
+      this.applicationData = this.userData.apps.filter(app => app.app === this.appName)[0];
+      await this.getApplicationData();
       this.pageType = params.get('listName').toLowerCase();
       this.getDeviceDetail();
     });
@@ -54,6 +58,17 @@ export class TagsComponent implements OnInit {
       });
     }
 
+  }
+
+  getApplicationData() {
+    return new Promise((resolve) => {
+      this.applicationService.getApplicationDetail(this.appName).subscribe(
+        (response: any) => {
+            this.contextApp = response;
+            this.contextApp.user = this.applicationData.user;
+            resolve();
+        });
+    });
   }
 
   getDeviceData() {

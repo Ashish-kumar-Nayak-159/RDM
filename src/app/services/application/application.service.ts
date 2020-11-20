@@ -15,14 +15,15 @@ export class ApplicationService {
     private http: HttpClient
   ) { }
 
-  getApplicationDashboardSnapshot(filterObj) {
+  getApplicationDashboardSnapshot(filterObj, app) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
       if (filterObj[key]) {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + AppUrls.GET_APPLICATION_DASHBOARD_SNAPSHOT, {params});
+    console.log(this.url + String.Format(AppUrls.GET_APPLICATION_DASHBOARD_SNAPSHOT, app));
+    return this.http.get(this.url + String.Format(AppUrls.GET_APPLICATION_DASHBOARD_SNAPSHOT, app), {params});
   }
 
   getApplications(filterObj) {
@@ -44,15 +45,15 @@ export class ApplicationService {
   }
 
   updateApp(appObj) {
-    return this.http.patch(this.url + AppUrls.UPDATE_APP, appObj);
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_APP, appObj.app), appObj);
   }
 
   updateAppHierarchy(appObj) {
-    return this.http.put(this.url + AppUrls.UPDATE_APP_HIERARCHY, appObj);
+    return this.http.put(this.url + String.Format(AppUrls.UPDATE_APP_HIERARCHY, appObj.app), appObj);
   }
 
   updateAppRoles(appObj) {
-    return this.http.put(this.url + AppUrls.UPDATE_APP_ROLES, appObj);
+    return this.http.put(this.url + String.Format(AppUrls.UPDATE_APP_ROLES, appObj.app), appObj);
   }
 
   getLastAlerts(filterObj: any) {
@@ -86,8 +87,8 @@ export class ApplicationService {
   }
 
   getApplicationUsers(app) {
-    let params = new HttpParams();
-    params = params.set('app', app);
-    return this.http.get(this.url + AppUrls.GET_APP_USERS, { params });
+    console.log(app.length);
+    console.log(this.url + String.Format(AppUrls.GET_APP_USERS, app));
+    return this.http.get(this.url + String.Format(AppUrls.GET_APP_USERS, app));
   }
 }

@@ -1,3 +1,4 @@
+import { ApplicationService } from 'src/app/services/application/application.service';
 import { DeviceTypeService } from './../../services/device-type/device-type.service';
 import { Component, OnInit } from '@angular/core';
 import { DeviceListFilter, Device } from 'src/app/models/device.model';
@@ -37,26 +38,23 @@ export class DeviceListComponent implements OnInit {
   contextApp: any;
   hierarchyDropdown: any[] = [];
   deviceTypes: any[] = [];
+  applicationData: any;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private deviceService: DeviceService,
     private deviceTypeService: DeviceTypeService,
     private commonService: CommonService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private applicationService: ApplicationService
   ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
   //  this.commonService.setFlag(true);
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe(async params => {
       this.protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
       this.devicesList = [];
-      this.appName = params.get('applicationId');
-      this.contextApp = this.userData.apps.filter(
-        app => app.app === params.get('applicationId')
-      )[0];
-      console.log(this.contextApp);
       if (params.get('listName')) {
         const listName = params.get('listName');
         if (listName.toLowerCase() === 'nonipdevices') {
@@ -71,13 +69,19 @@ export class DeviceListComponent implements OnInit {
           this.pageType = 'Device';
         }
       }
-      this.getThingsModels(this.componentState);
+      this.appName = params.get('applicationId');
+      this.applicationData = this.userData.apps.filter(
+        app => app.app === params.get('applicationId')
+      )[0];
       this.deviceFilterObj.app = this.appName;
-      this.deviceFilterObj.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
-      this.deviceFilterObj.hierarchyString =  this.contextApp.user.hierarchyString;
-      const keys = Object.keys(this.contextApp.user.hierarchy);
+      this.deviceFilterObj.hierarchy = JSON.stringify(this.applicationData.user.hierarchy);
+      this.deviceFilterObj.hierarchyString =  this.applicationData.user.hierarchyString;
+      await this.getApplicationData();
+      console.log(this.contextApp);
+      this.getThingsModels(this.componentState);
+      const keys = Object.keys(this.applicationData.user.hierarchy);
       this.hierarchyDropdown = [];
-      this.contextApp.hierarchy.forEach(item => {
+      this.applicationData.hierarchy.forEach(item => {
         if (item.level >= keys.length - 1 && item.name !== 'App') {
           this.hierarchyDropdown.push(item);
         }
@@ -112,28 +116,28 @@ export class DeviceListComponent implements OnInit {
         data: [
           {
             name: this.pageType + ' Name',
-            key: 'tags.display_name',
+            key: 'display_name',
             type: 'text',
             headerClass: '',
             valueclass: ''
           },
           {
             name: this.pageType + ' Manager',
-            key: 'tags.device_manager',
+            key: 'device_manager',
             type: 'text',
             headerClass: 'w-10',
             valueclass: ''
           },
           {
             name: 'Connectivity',
-            key: 'tags.cloud_connectivity',
+            key: 'cloud_connectivity',
             type: 'text',
             headerClass: 'w-30',
             valueclass: ''
           },
           {
             name: 'Location',
-            key: 'tags.hierarchyString',
+            key: 'hierarchyString',
             type: 'text',
             headerClass: 'w-30',
             valueclass: ''
@@ -190,7 +194,6 @@ export class DeviceListComponent implements OnInit {
 
     });
     this.route.queryParamMap.subscribe(
-
       params => {
         this.devicesList = [];
         if (params.get('connection_state')) {
@@ -201,6 +204,17 @@ export class DeviceListComponent implements OnInit {
       }
     );
     console.log(this.deviceFilterObj);
+  }
+
+  getApplicationData() {
+    return new Promise((resolve) => {
+      this.applicationService.getApplicationDetail(this.appName).subscribe(
+        (response: any) => {
+            this.contextApp = response;
+            this.contextApp.user = this.applicationData.user;
+            resolve();
+        });
+    });
   }
 
   getThingsModels(type) {
@@ -253,14 +267,14 @@ export class DeviceListComponent implements OnInit {
         if (response.data) {
           this.devicesList = response.data;
           this.devicesList.forEach(item => {
-            if (!item.tags.display_name) {
-              item.tags.display_name = item.device_id;
+            if (!item.display_name) {
+              item.display_name = item.device_id;
             }
-            if (item.tags.hierarchy_json) {
-              item.tags.hierarchyString = '';
-              const keys = Object.keys(item.tags.hierarchy_json);
+            if (item.hierarchy) {
+              item.hierarchyString = '';
+              const keys = Object.keys(item.hierarchy);
               keys.forEach((key, index) => {
-                item.tags.hierarchyString += item.tags.hierarchy_json[key] + ( keys[index + 1] ? ' / ' : '');
+                item.hierarchyString += item.hierarchy[key] + ( keys[index + 1] ? ' / ' : '');
               });
             }
           });

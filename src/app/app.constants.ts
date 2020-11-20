@@ -297,7 +297,7 @@ export class CONSTANTS {
       isTitle: false
     },
     {
-      page: 'notiications',
+      page: 'notifications',
       system_name: 'Notifications',
       url: '#device_notifications',
       display_name: 'Notifications',
@@ -378,6 +378,15 @@ export class CONSTANTS {
       isTitle: false
     },
     {
+      page: 'visualization',
+      system_name: 'Visualizations',
+      url: 'null',
+      display_name: 'Visualization',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
       page: 'trend-analysis',
       system_name: 'Trend Analysis',
       url: '#device_trend_analysis',
@@ -396,7 +405,7 @@ export class CONSTANTS {
       isTitle: true
     },
     {
-      page: 'preventiveMaintenance',
+      page: 'predictiveMaintenance',
       system_name: 'Preventive Maintenance',
       url: '#device_preventive_maintenance',
       display_name: 'Preventive Maintenance',
@@ -410,6 +419,162 @@ export class CONSTANTS {
       url: '#device_predictive_maintenance',
       display_name: 'Predictive Maintenance',
       icon: 'fas fa-fw fa-stream',
+      visible: true,
+      isTitle: false
+    }
+  ];
+
+  public static MODEL_CONTROL_PANEL_SIDE_MENU_LIST = [
+    {
+      page: 'manage',
+      system_name: 'Manage',
+      url: null,
+      display_name: 'Manage',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'overview',
+      system_name: 'Overview',
+      url: '#device_type_overview',
+      display_name: 'Overview',
+      icon: 'fas fa-fw fa-life-ring',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'tags',
+      system_name: 'Tags',
+      url: '#device_type_tags',
+      display_name: 'Tags',
+      icon: 'fas fa-fw fa-tags',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'capabilities',
+      system_name: 'Capabilities',
+      url: null,
+      display_name: 'Capabilities',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'measured_properties',
+      system_name: 'Measured Properties',
+      url: '#device_type_properties',
+      display_name: 'Measured Properties',
+      icon: 'fas fa-fw fa-history',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'readable_properties',
+      system_name: 'Readable Properties',
+      url: '#device_type_properties',
+      display_name: 'Readable Properties',
+      icon: 'fas fa-fw fa-book',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'writable_properties',
+      system_name: 'Writable Properties',
+      url: '#device_type_properties',
+      display_name: 'Writable Properties',
+      icon: 'fas fa-fw fa-pencil-square-o',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'device_methods',
+      system_name: 'Device Methods(commands)',
+      url: '#device_type_methods',
+      display_name: 'Device Methods(commands)',
+      icon: 'fas fa-fw fa-tags',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'd2c',
+      system_name: 'D2C (Monitor)',
+      url: null,
+      display_name: 'D2C (Monitor)',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'jsonpacket',
+      system_name: 'JSON Packet Format',
+      url: '#device_type_jsonpacket',
+      display_name: 'JSON Packet Format',
+      icon: 'fas fa-fw fa-heartbeat',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'alert_conditioning',
+      system_name: 'Alert Conditioning',
+      url: '#device_type_alert_conditioning',
+      display_name: 'Alert Conditioning',
+      icon: 'fas fa-fw fa-exclamation-triangle',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'c2d',
+      system_name: 'C2D (Control)',
+      url: null,
+      display_name: 'C2D (Control)',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'control_widgets',
+      system_name: 'Control Widgets',
+      url: '#device_type_control_widgets',
+      display_name: 'Control Widgets',
+      icon: 'fas fa-fw fa-angle-right',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'visualization',
+      system_name: 'Visualizations',
+      url: 'null',
+      display_name: 'Visualization',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'layout',
+      system_name: 'Widgets',
+      url: '#device_type_layout',
+      display_name: 'Widgets',
+      icon: 'fas fa-fw fa-bar-chart',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'reference_material',
+      system_name: 'Reference Material',
+      url: null,
+      display_name: 'Reference Material',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'reference_material',
+      system_name: 'Documents',
+      url: '#device_type_reference_material',
+      display_name: 'Documents',
+      icon: 'fas fa-fw fa-file-alt',
       visible: true,
       isTitle: false
     }

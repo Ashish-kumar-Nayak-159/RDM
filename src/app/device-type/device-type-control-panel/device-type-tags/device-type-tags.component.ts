@@ -1,3 +1,4 @@
+import { ApplicationService } from 'src/app/services/application/application.service';
 import { ToasterService } from './../../../services/toaster.service';
 import { DeviceTypeService } from './../../../services/device-type/device-type.service';
 import { ActivatedRoute } from '@angular/router';
@@ -25,17 +26,22 @@ export class DeviceTypeTagsComponent implements OnInit {
   isCustomTagsEditable = false;
   userData: any;
   contextApp: any;
+  applicationData: any;
+  appName: any;
   constructor(
     private route: ActivatedRoute,
     private commonService: CommonService,
     private deviceTypeService: DeviceTypeService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private applicationService: ApplicationService
   ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.route.paramMap.subscribe(params => {
-      this.contextApp = this.userData.apps.filter(app => app.app === params.get('applicationId'))[0];
+    this.route.paramMap.subscribe(async params => {
+      this.appName = params.get('applicationId');
+      this.applicationData = this.userData.apps.filter(app => app.app === params.get('applicationId'))[0];
+      await this.getApplicationData();
     });
     this.originalDeviceType = JSON.parse(JSON.stringify(this.deviceType));
     this.reservedTags = CONSTANTS.DEVICE_RESERVED_TAGS_LIST;
@@ -54,6 +60,18 @@ export class DeviceTypeTagsComponent implements OnInit {
     });
     this.processTagsData();
   }
+
+  getApplicationData() {
+    return new Promise((resolve) => {
+      this.applicationService.getApplicationDetail(this.appName).subscribe(
+        (response: any) => {
+            this.contextApp = response;
+            this.contextApp.user = this.applicationData.user;
+            resolve();
+        });
+    });
+  }
+
 
   processTagsData() {
       this.deviceTypeCustomTags = [];

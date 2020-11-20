@@ -1,3 +1,4 @@
+import { ApplicationService } from 'src/app/services/application/application.service';
 import { ChartService } from './../../../chart/chart.service';
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
 import { Component, OnInit, Input, ComponentFactoryResolver, ApplicationRef, Injector, EmbeddedViewRef } from '@angular/core';
@@ -53,6 +54,7 @@ export class HistoryComponent implements OnInit {
   propList: any[];
   selectedPropertyForChart: any[];
   showThreshold = false;
+  applicationData: any;
   constructor(
     private deviceService: DeviceService,
     private deviceTypeService: DeviceTypeService,
@@ -62,7 +64,8 @@ export class HistoryComponent implements OnInit {
     private factoryResolver: ComponentFactoryResolver,
     private appRef: ApplicationRef,
     private injector: Injector,
-    private chartService: ChartService
+    private chartService: ChartService,
+    private applicationService: ApplicationService
   ) {
 
   }
@@ -70,9 +73,10 @@ export class HistoryComponent implements OnInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.route.paramMap.subscribe(async params => {
       this.appName = params.get('applicationId');
-      this.appData = this.userData.apps.filter(
+      this.applicationData = this.userData.apps.filter(
         app => app.app === params.get('applicationId')
       )[0];
+      await this.getApplicationData();
       await this.getThingsModelProperties();
       this.historyFilter.app = this.appName;
     });
@@ -91,6 +95,17 @@ export class HistoryComponent implements OnInit {
     }
     this.isHistoryAPILoading = true;
     this.getLayout();
+  }
+
+  getApplicationData() {
+    return new Promise((resolve) => {
+      this.applicationService.getApplicationDetail(this.appName).subscribe(
+        (response: any) => {
+            this.appData = response;
+            this.appData.user = this.applicationData.user;
+            resolve();
+        });
+    });
   }
 
   getThingsModelProperties() {
@@ -149,6 +164,7 @@ export class HistoryComponent implements OnInit {
       });
       this.selectedPropertyForChart = [];
       this.selectedPropertyForChart = [...this.propList];
+      this.historyFilter.app = this.appName;
       const currentHistoryFilter = { ...this.historyFilter };
 
       if (currentHistoryFilter.aggregation_format && !currentHistoryFilter.aggregation_minutes) {
@@ -188,6 +204,7 @@ export class HistoryComponent implements OnInit {
       // delete obj.y1AxisProperty;
       // delete obj.y2AxisProperty;
       // delete obj.xAxisProps;
+      console.log(obj);
       this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
         (response: any) => {
           this.isFilterSelected = true;

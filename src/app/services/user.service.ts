@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { AppUrls } from '../app-url.constants';
+import { String } from 'typescript-string-operations';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class UserService {
     private http: HttpClient
   ) { }
 
-  createUser(userObj) {
-    return this.http.post(this.url + AppUrls.CREATE_USER, userObj);
+  createUser(userObj, app) {
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_USER, app), userObj);
   }
 }

@@ -58,7 +58,8 @@
               <td>{{tag.name}}</td>
               <td>
                 <ng-container
-                  *ngIf="tag.key === 'local_created_date' || (tagsListToNotEdit.indexOf(tag.key) !== -1 && originalDevice?.tags[tag.key] ) || !isReservedTagsEditable;else inputTemplate">
+                  *ngIf="tag?.key === 'local_created_date' || (tagsListToNotEdit?.indexOf(tag.key) !== -1 && originalDevice?.tags[tag.key] ) 
+                  || !isReservedTagsEditable;else inputTemplate">
                   {{device?.tags[tag.key]}}
                 </ng-container>
                 <ng-template #inputTemplate>
@@ -67,7 +68,7 @@
                 </ng-template>
               </td>
             </tr>
-            <tr *ngFor="let tag of contextApp.hierarchy; let tIndex = index;">
+            <tr *ngFor="let tag of contextApp?.hierarchy; let tIndex = index;">
               <td>{{tag.name}}</td>
               <td>
                 <ng-container *ngIf="isReservedTagsEditable && !contextApp.user.hierarchy[tag.name]">

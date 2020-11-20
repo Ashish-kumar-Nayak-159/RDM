@@ -77,7 +77,7 @@
       <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
         <thead>
           <tr class="bg-secondary text-white">
-            <th>Priority</th>
+            <th></th>
             <th>Asset Name</th>
             <th>Description</th>
             <th>Time</th>
@@ -98,8 +98,8 @@
               (alert.message?.priority === 'low' ? '#229954' : '')
               )
               )"></i></td>
-              <td>{{ alert.device_id }}</td>
-              <td>{{ alert.message?.message }}</td>
+              <td>{{ alert.device_display_name }}</td>
+              <td>{{ alert.message }}</td>
               <td>{{ alert.local_created_date }}</td>
               <td>
                 <ng-container *ngIf="alert.metadata?.acknowledged_date">Acknowledged</ng-container>

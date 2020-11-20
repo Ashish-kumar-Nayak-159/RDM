@@ -59,13 +59,12 @@ export class ApplicationSettingComponent implements OnInit {
     this.applicationService.getApplicationDetail(this.appName).subscribe(
       (response: any) => {
           this.applicationData = response;
-          this.applicationData.app = this.appName;
-          const index = this.userData.apps.findIndex(app => app.app === this.applicationData.app);
-          const obj = JSON.parse(JSON.stringify(this.applicationData));
-          obj.user = this.userData.apps[index].user;
-          this.userData.apps.splice(index, 1);
-          this.userData.apps.splice(index, 0, obj);
-          this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
+          // const index = this.userData.apps.findIndex(app => app.app === this.applicationData.app);
+          // const obj = JSON.parse(JSON.stringify(this.applicationData));
+          // obj.user = this.userData.apps[index].user;
+          // this.userData.apps.splice(index, 1);
+          // this.userData.apps.splice(index, 0, obj);
+          // this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
 
       }
     );

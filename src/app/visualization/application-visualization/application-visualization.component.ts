@@ -1,3 +1,4 @@
+import { ApplicationService } from 'src/app/services/application/application.service';
 import { ColumnChartComponent } from './../../common/charts/column-chart/column-chart.component';
 import { DataTableComponent } from './../../common/charts/data-table/data-table.component';
 import { PieChartComponent } from './../../common/charts/pie-chart/pie-chart.component';
@@ -53,6 +54,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   propList: any[];
   showThreshold = false;
   selectedPropertyForChart: any[] = [];
+  applicationData: any;
+  appName: any;
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -63,6 +66,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     private factoryResolver: ComponentFactoryResolver,
     private appRef: ApplicationRef,
     private injector: Injector,
+    private applicationService: ApplicationService,
     @Inject(PLATFORM_ID) private platformId, private zone: NgZone
 
   ) { }
@@ -71,9 +75,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.route.paramMap.subscribe(async params => {
       if (params.get('applicationId')) {
-        this.appData = this.userData.apps.filter(
+        this.appName = params.get('applicationId');
+        this.applicationData = this.userData.apps.filter(
           app => app.app === params.get('applicationId')
         )[0];
+        await this.getApplicationData();
         this.filterObj.app = this.appData.app;
         this.filterObj.count = 10;
       }
@@ -95,6 +101,17 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
      // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
     });
 
+  }
+
+  getApplicationData() {
+    return new Promise((resolve) => {
+      this.applicationService.getApplicationDetail(this.appName).subscribe(
+        (response: any) => {
+            this.appData = response;
+            this.appData.user = this.applicationData.user;
+            resolve();
+        });
+    });
   }
 
   browserOnly(f: () => void) {
@@ -161,7 +178,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.deviceService.getDeviceAlerts(obj).subscribe(
       (response: any) => {
         this.latestAlerts = response.data;
-        this.latestAlerts.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date));
+        this.latestAlerts.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
         this.isAlertAPILoading = false;
       }, () => this.isAlertAPILoading = false
     );
@@ -304,14 +321,14 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.beforeInterval > 0) {
-      filterObj.from_date = ((moment.utc(this.selectedAlert.created_date, 'M/DD/YYYY h:mm:ss A'))
+      filterObj.from_date = ((moment.utc(this.selectedAlert.message_date, 'M/DD/YYYY h:mm:ss A'))
       .subtract(this.beforeInterval, 'minute')).unix();
     } else {
       this.toasterService.showError('Minutes Before Alert value must be greater than 0.', 'View Visualization');
       return;
     }
     if (this.afterInterval > 0) {
-      filterObj.to_date = ((moment.utc(this.selectedAlert.created_date, 'M/DD/YYYY h:mm:ss A')).add(this.afterInterval, 'minute')).unix();
+      filterObj.to_date = ((moment.utc(this.selectedAlert.message_date, 'M/DD/YYYY h:mm:ss A')).add(this.afterInterval, 'minute')).unix();
     } else {
       this.toasterService.showError('Minutes After Alert value must be greater than 0.', 'View Visualization');
       return;

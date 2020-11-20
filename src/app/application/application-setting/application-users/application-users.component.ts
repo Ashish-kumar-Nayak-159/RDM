@@ -84,7 +84,7 @@ export class ApplicationUsersComponent implements OnInit {
       return;
     }
     this.isCreateUserAPILoading = true;
-    this.userService.createUser(this.addUserObj).subscribe(
+    this.userService.createUser(this.addUserObj, this.applicationData.app).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Create User');
         this.isCreateUserAPILoading = false;

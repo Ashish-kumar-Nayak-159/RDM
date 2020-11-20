@@ -4,6 +4,7 @@ import { DeviceTypeService } from './../../services/device-type/device-type.serv
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
+import { ApplicationService } from 'src/app/services/application/application.service';
 
 declare var $: any;
 @Component({
@@ -27,21 +28,28 @@ export class DeviceTypeListComponent implements OnInit {
   connectivityList: string[] = [];
   isFileUploading = false;
   originalThingsModelFilterObj: any;
+  appName: any;
+  applicationData: any;
   constructor(
     private deviceTypeService: DeviceTypeService,
     private commonService: CommonService,
     private toasterService: ToasterService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private applicationService: ApplicationService
   ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.route.paramMap.subscribe(params => {
-      this.contextApp = this.userData.apps.filter(
+    this.route.paramMap.subscribe(async params => {
+      this.appName = params.get('applicationId');
+      this.applicationData = this.userData.apps.filter(
         app => app.app === params.get('applicationId')
       )[0];
-      this.thingsModelFilterObj.app = this.contextApp.app;
+      await this.getApplicationData();
+      this.thingsModelFilterObj.app = this.applicationData.app;
+      this.originalThingsModelFilterObj = JSON.parse(JSON.stringify(this.thingsModelFilterObj));
+      this.searchThingsModels();
       const obj = {
         type: 'replace',
         data: [
@@ -105,8 +113,19 @@ export class DeviceTypeListComponent implements OnInit {
         }
       ]
     };
-    this.searchThingsModels();
-    this.originalThingsModelFilterObj = JSON.parse(JSON.stringify(this.thingsModelFilterObj));
+    
+    
+  }
+
+  getApplicationData() {
+    return new Promise((resolve) => {
+      this.applicationService.getApplicationDetail(this.appName).subscribe(
+        (response: any) => {
+            this.contextApp = response;
+            this.contextApp.user = this.applicationData.user;
+            resolve();
+        });
+    });
   }
 
   searchThingsModels() {

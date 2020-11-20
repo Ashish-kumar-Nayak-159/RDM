@@ -9,122 +9,28 @@
 		</div>
     <ul class="navbar-nav bg-white" id="controlPanelSidebar">
 
+      <ng-container *ngFor="let menu of menuItems">
+        <ng-container *ngIf="menu.isTitle">
+        <div class="sidebar1-heading ">
+          {{menu.display_name}}
+        </div>
+        <!-- Divider -->
+        <hr class="sidebar1-divider">
+        </ng-container>
+        <ng-container *ngIf="!menu.isTitle && menu.visible">
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item" [ngClass]="{'active': activeTab === menu.page}">
+          <a class="nav-link collapsed" href="{{menu.url}}" data-toggle="tab" aria-expanded="false"
+            (click)="setActiveTab(menu.page)">
+            <i class="{{menu.icon}}" title="{{menu.display_name}}"></i>
+            <span>{{menu.display_name}}</span></a>
+        </li>
+        </ng-container>
 
-      <!-- Nav Item - Dashboard -->
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'overview'}">
-        <a class="nav-link collapsed" href="#device_type_overview" data-toggle="tab" aria-expanded="false"
-          (click)="setActiveTab('overview')">
-          <i class="fas fa-fw fa-life-ring" title="Overview"></i>
-          <span>Overview</span></a>
-      </li>
-
-      <!-- Nav Item - Dashboard -->
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'tags'}">
-        <a class="nav-link collapsed" href="#device_type_tags" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('tags')">
-          <i class="fas fa-fw fa-tags" title="Tags"></i>
-          <span>Tags</span></a>
-      </li>
-
-      <div class="sidebar1-heading ">
-        Capabilities
-      </div>
-      <!-- Divider -->
-      <hr class="sidebar1-divider">
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'measured_properties'}">
-        <a class="nav-link collapsed" href="#device_type_properties" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('measured_properties')">
-          <i class="fas fa-fw fa-history" title="Measured Properties"></i>
-          <span>Measured Properties</span></a>
-      </li>
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'readable_properties'}">
-        <a class="nav-link collapsed" href="#device_type_properties" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('readable_properties')">
-          <i class="fas fa-fw fa-book" title="Readable Properties"></i>
-          <span>Readable Properties</span></a>
-      </li>
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'writable_properties'}">
-        <a class="nav-link collapsed" href="#device_type_properties" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('writable_properties')">
-          <i class="fas fa-fw fa-pencil-square-o" title="Writable Properties"></i>
-          <span>Writable Properties</span></a>
-      </li>
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'device_methods'}">
-        <a class="nav-link collapsed" href="#device_type_methods" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('device_methods')">
-          <i class="fas fa-fw fa-terminal" title="Device Methods(commands)"></i>
-          <span>Device Methods(commands)</span></a>
-      </li>
-
-
-
-      <!-- Heading -->
-      <div class="sidebar1-heading ">
-        D2C (Monitor)
-      </div>
-      <!-- Divider -->
-      <hr class="sidebar1-divider">
-      <!-- Nav Item - Charts -->
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'jsonpacket'}">
-        <a class="nav-link" href="#device_type_jsonpacket" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('jsonpacket')">
-
-          <i class="fas fa-fw fa-heartbeat" title="JSON Packet Format"></i>
-          <span>JSON Packet Format</span></a>
-      </li>
-
-      <!-- Heading -->
-      <div class="sidebar1-heading">
-        D2C (Monitor)
-      </div>
-      <!-- Divider -->
-      <hr class="sidebar1-divider">
-      <!-- Nav Item - Charts -->
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'alert_conditioning'}">
-        <a class="nav-link" href="#device_type_alert_conditioning" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('alert_conditioning')">
-
-          <i class="fas fa-fw fa-exclamation-triangle" title="Control Widgets"></i>
-          <span>Alert Conditioning</span></a>
-      </li>
-
-      <!-- Heading -->
-      <div class="sidebar1-heading">
-        C2D (Control)
-      </div>
-      <!-- Divider -->
-      <hr class="sidebar1-divider">
-      <!-- Nav Item - Charts -->
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'control_widgets'}">
-        <a class="nav-link" href="#device_type_control_widgets" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('control_widgets')">
-
-          <i class="fas fa-fw fa-angle-right" title="Control Widgets"></i>
-          <span>Control Widgets</span></a>
-      </li>
-
-      <!-- Heading -->
-      <div class="sidebar1-heading">
-        Visualization
-      </div>
-      <!-- Divider -->
-      <hr class="sidebar1-divider">
-      <!-- Nav Item - Charts -->
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'layout'}">
-        <a class="nav-link" href="#device_type_layout" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('layout')">
-
-          <i class="fas fa-fw fa-bar-chart" title="Layout"></i>
-          <span>Widgets</span></a>
-      </li>
-
-      <div class="sidebar1-heading">
-        Reference Material
-      </div>
-      <!-- Divider -->
-      <hr class="sidebar1-divider">
-      <!-- Nav Item - Charts -->
-      <li class="nav-item" [ngClass]="{'active': activeTab === 'reference_material'}">
-        <a class="nav-link" href="#device_type_reference_material" data-toggle="tab" aria-expanded="false" (click)="setActiveTab('reference_material')">
-
-          <i class="fas fa-fw fa-file-alt" title="Documents"></i>
-          <span>Documents</span></a>
-      </li>
+      </ng-container>
 
       <!-- Divider -->
       <hr class="sidebar1-divider d-none d-md-block">
-
     </ul>
   </div>
   <!-- End of Sidebar -->

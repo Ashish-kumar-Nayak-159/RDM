@@ -81,3 +81,22 @@ Dashboard Widget ideas:
 1. Predictive  Maintenance / Preventive Mainteance alerts
 2. Widget specific to business use case (for ex: CCD - Beverages sold)
 
+
+
+ ----- To do ------
+1. Remove device and gateway from app creation
+2. Menu Settings accordion for device control panel
+3. Dynamic tiles for dashboard based on user selection
+4. Live Widgets - High Priority - 
+    1.	Single Guage 2.	Multi-Guage (Round, Radial with start / sweep angle, linear, bullet, pie guages) 
+    3.	Number Indicator 4.	Number indicator with trend analysis
+5. In Progress ----ALert conditioning
+6. Done ----- Reference Documents
+7. Alert conditioning integration in Alert Visualization
+8. Export icons on widgets accordion
+9. Modal tags changes, device tags needs to come from model
+10. App hierarchy relation changes
+11. Filter based on app hierarchy in all screens.
+12. Reports - one report with all measured property as columns
+13. In Progress ---- API Optimization changes
+14. Websocket integration for live data

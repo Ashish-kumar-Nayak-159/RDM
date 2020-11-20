@@ -1,3 +1,4 @@
+import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { CommonCustomModule } from './../common/common.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -39,7 +40,8 @@ import { DevicesModule } from '../devices/devices.module';
     ChartsModule,
     FormsModule,
     ReactiveFormsModule,
-    DevicesModule
+    DevicesModule,
+    AccordionModule
   ]
 })
 export class ApplicationModule { }

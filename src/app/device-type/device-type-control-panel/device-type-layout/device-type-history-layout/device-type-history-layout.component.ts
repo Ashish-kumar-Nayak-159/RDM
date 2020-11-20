@@ -1,3 +1,4 @@
+import { ApplicationService } from 'src/app/services/application/application.service';
 import { DeviceTypeService } from './../../../../services/device-type/device-type.service';
 import { Device } from './../../../../models/device.model';
 import { ApplicationRef, Component, ComponentFactoryResolver, EmbeddedViewRef, Injector, OnChanges, OnInit, SimpleChanges } from '@angular/core';
@@ -54,6 +55,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
   renderCount = 0;
   selectedWidgets = [];
   dropdownWidgetList = [];
+  applicationData: any;
 
   constructor(
     private commonService: CommonService,
@@ -62,17 +64,19 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
     private factoryResolver: ComponentFactoryResolver,
     private appRef: ApplicationRef,
     private injector: Injector,
-    private deviceTypeService: DeviceTypeService
+    private deviceTypeService: DeviceTypeService,
+    private applicationService: ApplicationService
   ) {
 
   }
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe(async params => {
       this.appName = params.get('applicationId');
-      this.appData = this.userData.apps.filter(
+      this.applicationData = this.userData.apps.filter(
         app => app.app === params.get('applicationId')
       )[0];
+      await this.getApplicationData();
     });
     await this.getThingsModelProperties();
     if (this.propertyList) {
@@ -86,6 +90,17 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
     this.isHistoryAPILoading = true;
     this.getLayout();
 
+  }
+
+  getApplicationData() {
+    return new Promise((resolve) => {
+      this.applicationService.getApplicationDetail(this.appName).subscribe(
+        (response: any) => {
+            this.appData = response;
+            this.appData.user = this.applicationData.user;
+            resolve();
+        });
+    });
   }
 
   getThingsModelProperties() {

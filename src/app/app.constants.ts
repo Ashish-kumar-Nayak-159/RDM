@@ -83,8 +83,6 @@ export class CONSTANTS {
     ]
   };
 
-
-
   public static PROTOCOL_CONNECTIVITY_LIST = [
     {
       name: 'IP Device (WiFi)',

@@ -25,6 +25,7 @@ export class DeviceTypeService {
     return this.http.get(this.url + AppUrls.GET_THINGS_MODELS, { params });
   }
 
+
   createThingsModel(modelObj, app) {
     let params = new HttpParams();
     params = params.set('app', app);
@@ -115,5 +116,27 @@ export class DeviceTypeService {
     const params = new HttpParams().set('id', id);
     console.log(params);
     return this.http.delete(this.url + String.Format(AppUrls.DELETE_MODEL_REFERENCE_DOCUMENTS, app, deviceType, id), {});
+  }
+
+  getAlertConditions(app, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_ALERT_CONDITIONS, app), { params });
+  }
+
+  createAlertCondition(modelObj, app, deviceType) {
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_ALERT_CONDITION, app, deviceType), modelObj);
+  }
+
+  updateAlertCondition(modelObj, app, deviceType, alertConditionId) {
+    return this.http.post(this.url + String.Format(AppUrls.UPDATE_ALERT_CONDITION, app, deviceType, alertConditionId), modelObj);
+  }
+
+  deleteAlertCondition(app, deviceType, alertConditionId) {
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_ALERT_CONDITION, app, deviceType, alertConditionId), {});
   }
 }

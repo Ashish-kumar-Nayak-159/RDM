@@ -77,7 +77,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
     this.route.paramMap.subscribe(async params => {
       this.appName = params.get('applicationId');
       this.applicationData = this.userData.apps.filter(
-        app => app.app === params.get('applicationId')
+        app => app.app === this.appName
       )[0];
       await this.getApplicationData();
       console.log(this.contextApp);

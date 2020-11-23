@@ -1,3 +1,5 @@
+import { ToasterService } from './../../../services/toaster.service';
+import { filter } from 'rxjs/operators';
 import { DeviceTypeService } from './../../../services/device-type/device-type.service';
 import { Component, Input, OnInit } from '@angular/core';
 
@@ -10,40 +12,23 @@ declare var $: any;
 export class DeviceTypeAlertConditionsComponent implements OnInit {
 
   @Input() deviceType: any;
-  alertConditions: {message?: string, code?: string, severity?: string, recommendations?: any[], visualizations?: any[]}[] = [
-    {
-      message: 'Low Oil Level',
-      severity: 'critical',
-      code: '0X1234',
-      recommendations: [],
-      visualizations: ['TEST WIDGET 1']
-    },
-    {
-      message: 'Phase Fault',
-      severity: 'warning',
-      code: '0X1235',
-      recommendations: [],
-      visualizations: []
-    },
-    {
-      message: 'No Water Flow',
-      severity: 'error',
-      code: '0X1236',
-      recommendations: [],
-      visualizations: []
-    }
-  ];
-  alertObj: {message?: string, code?: string, severity?: string, recommendations?: any[], visualizations?: any[]};
+  alertConditions: {message?: string, code?: string, severity?: string, recommendations?: any[], visualization_widgets?: any[],
+    reference_documents?: any[], actions?: any[]}[] = [];
+  alertObj: {message?: string, code?: string, severity?: string, recommendations?: any[], visualization_widgets?: any[],
+    reference_documents?: any[], actions?: any[]};
+  isAlertConditionsLoading = false;
   isCreateAlertConditionLoading = false;
   widgets: any[] = [];
   toggleRows = {};
   viewType: string;
   editVisualizationWidget = false;
   constructor(
-    private deviceTypeService: DeviceTypeService
+    private deviceTypeService: DeviceTypeService,
+    private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
+    this.getAlertConditions();
   }
 
   getDeviceTypeWidgets() {
@@ -62,12 +47,27 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
     }
   }
 
+  getAlertConditions() {
+    this.isAlertConditionsLoading = true;
+    const filterObj = {
+      device_type: this.deviceType.id
+    };
+    this.deviceTypeService.getAlertConditions(this.deviceType.app, filterObj).subscribe(
+      (response: any) => {
+        if (response?.data) {
+          this.alertConditions = response.data;
+          this.isAlertConditionsLoading = false;
+        }
+      }, error => this.isAlertConditionsLoading = false
+    );
+  }
+
   addVisualizationWidget() {
-    this.alertObj.visualizations.splice(this.alertObj.visualizations.length, 0, undefined);
+    this.alertObj.visualization_widgets.splice(this.alertObj.visualization_widgets.length, 0, undefined);
   }
 
   removeVisualizationWidget(index) {
-    this.alertObj.visualizations.splice(index, 1);
+    this.alertObj.visualization_widgets.splice(index, 1);
   }
 
   addRecommendationStep() {
@@ -107,6 +107,21 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
   }
 
   onCreateAlertCondition() {
+    this.isCreateAlertConditionLoading = true;
+    this.alertObj.visualization_widgets = [];
+    this.alertObj.recommendations = [];
+    this.alertObj.reference_documents = [];
+    this.alertObj.actions = [];
+    this.deviceTypeService.createAlertCondition(this.alertObj, this.deviceType.app, this.deviceType.id).subscribe(
+      (response: any) => {
+        this.isCreateAlertConditionLoading = false;
+        this.onCloseAlertConditionModal();
+        this.toasterService.showSuccess(response.message, 'Create Alert Condition');
+      }, error => {
+        this.isCreateAlertConditionLoading = false;
+        this.toasterService.showSuccess(error.message, 'Create Alert Condition');
+      }
+    )
   }
 
   onCloseAlertConditionModal() {

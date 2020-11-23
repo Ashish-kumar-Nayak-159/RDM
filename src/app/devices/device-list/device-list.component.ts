@@ -81,7 +81,7 @@ export class DeviceListComponent implements OnInit {
       this.getThingsModels(this.componentState);
       const keys = Object.keys(this.applicationData.user.hierarchy);
       this.hierarchyDropdown = [];
-      this.applicationData.hierarchy.forEach(item => {
+      this.contextApp.hierarchy.forEach(item => {
         if (item.level >= keys.length - 1 && item.name !== 'App') {
           this.hierarchyDropdown.push(item);
         }

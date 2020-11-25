@@ -121,9 +121,7 @@ export class DeviceTypeService {
   getAlertConditions(app, filterObj) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
-      if (filterObj[key]) {
-        params = params.set(key, filterObj[key]);
-      }
+      params = params.set(key, filterObj[key]);
     });
     return this.http.get(this.url + String.Format(AppUrls.GET_ALERT_CONDITIONS, app), { params });
   }
@@ -133,7 +131,7 @@ export class DeviceTypeService {
   }
 
   updateAlertCondition(modelObj, app, deviceType, alertConditionId) {
-    return this.http.post(this.url + String.Format(AppUrls.UPDATE_ALERT_CONDITION, app, deviceType, alertConditionId), modelObj);
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_ALERT_CONDITION, app, deviceType, alertConditionId), modelObj);
   }
 
   deleteAlertCondition(app, deviceType, alertConditionId) {

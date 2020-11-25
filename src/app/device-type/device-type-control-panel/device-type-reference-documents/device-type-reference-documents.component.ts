@@ -98,7 +98,7 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit {
     this.isDocumentsLoading = true;
     const obj = {
       app: this.deviceType.app,
-      device_type: this.deviceType.id
+      device_type: this.deviceType.name
     };
     this.deviceTypeService.getThingsModelDocuments(obj).subscribe(
       (response: any) => {
@@ -176,7 +176,7 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit {
   }
 
   deleteDocument() {
-    this.deviceTypeService.deleteThingsModelDocument(this.selectedDocument.id, this.deviceType.app, this.deviceType.id).
+    this.deviceTypeService.deleteThingsModelDocument(this.selectedDocument.id, this.deviceType.app, this.deviceType.name).
       subscribe((response: any) => {
         this.toasterService.showSuccess(response.message, 'Remove Document');
         this.closeModal('confirmMessageModal');
@@ -191,7 +191,7 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit {
     console.log(JSON.stringify(this.documentObj));
     this.isCreateDocumentLoading = true;
     this.deviceTypeService.createThingsModelDocument(this.documentObj,
-      this.deviceType.app, this.deviceType.id).subscribe(
+      this.deviceType.app, this.deviceType.name).subscribe(
         (response: any) => {
           this.toasterService.showSuccess(response.message, 'Add Document');
           this.isCreateDocumentLoading = false;

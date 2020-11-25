@@ -84,7 +84,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit {
     this.isDeviceMethodsLoading = true;
     const obj = {
       app: this.deviceType.app,
-      id: this.deviceType.id
+      name: this.deviceType.name
     };
     this.deviceTypeService.getThingsModelDeviceMethods(obj).subscribe(
       (response: any) => {

@@ -90,7 +90,7 @@
           <ng-container *ngIf="latestAlerts.length > 0 && !isAlertAPILoading">
             <tr *ngFor="let alert of latestAlerts" [ngClass]="{
                     'bg-alert-selection':
-                      alert.message_id === this.selectedAlert?.message_id
+                      alert.id === this.selectedAlert?.id
                   }">
               <td><i class="fa fa-exclamation-triangle" [style.color]="
               (alert.message?.priority === 'critical' ? '#fb5515' :
@@ -132,7 +132,12 @@
   </div>
   <ng-container>
     <accordion *ngIf="selectedAlert" class="mb-2">
-      <accordion-group heading="Filters" [panelClass]="'customClass'" [isOpen]="isOpen">
+      <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="isOpen">
+        <ng-container accordion-heading>
+          <a class="btn" >
+            Filters
+          </a>
+        </ng-container>
         <div class="">
           <div class="">
             <div class="">
@@ -217,7 +222,12 @@
           </div>
         </div>
       </accordion-group>
-      <accordion-group heading="Historical Data" [panelClass]="'customClass'" [isOpen]="true" *ngIf="isTelemetryFilterSelected">
+      <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="true" *ngIf="isTelemetryFilterSelected">
+        <ng-container accordion-heading>
+          <a class="btn" >
+            Alert Visualization
+          </a>
+        </ng-container>
         <div >
           <div class="row col-12 pl-5">
 

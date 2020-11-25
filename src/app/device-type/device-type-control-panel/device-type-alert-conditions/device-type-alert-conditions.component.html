@@ -31,119 +31,210 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngFor="let alert of alertConditions; let i = index">
-        <tr >
-          <td><i  [style.color]="
-            (alert.severity === 'critical' ? '#fb5515' :
-            (alert.severity === 'error' ? '#f6c23e' :
-            (alert.severity === 'warning' ? '#229954' : '')
-            )
-            )" class="fa fa-exclamation-triangle"></i> {{alert.code}}</td>
-          <td>{{alert.message}}</td>
-          <td>
-            <a href="javascript:void(0)" class="circle mr-2" title="Visualization" (click)="onClickOfViewActionIcon('Visualization', i)">
-              V
-            </a>
-            <a href="javascript:void(0)" class="circle" title="Recommendations" (click)="onClickOfViewActionIcon('Recommendations', i)">
-              R
-            </a>
-          </td>
-          <td>
-            <a href="javascript:void(0)" class="mr-1">
-              <i class="fas fa-fw fa-eye"></i>
-            </a>
-            <a href="javascript:void(0)">
-              <i class="fas fa-fw fa-trash"></i>
-            </a>
-          </td>
-        </tr>
-        <tr *ngIf="toggleRows[i]">
-          <td colspan="4" *ngIf="viewType === 'Visualization'">
-            <div class="row col-12">
-              <h6 *ngIf="alertObj?.visualizations?.length === 0"> No Visualization widgets defined yet.</h6>
-              <h6 *ngIf="alertObj?.visualizations?.length > 0"> Following widgets have been defined so far. You can define more</h6>
-              <div >
-                <button type="button" class="btn btn-warning btn-sm mx-1 mt-n2" 
-                title="Add" (click)="addVisualizationWidget()" [disabled]="!editVisualizationWidget"><i class="fas fa-plus fa-sm"></i></button>
-                <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2" (click)="editVisualizationWidget = true;"
-                title="Edit" ><i class="fas fa-pencil-square-o fa-sm"></i></button>
-                <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" 
-                title="Save" (click)="onSaveVisualizationWidget()" [disabled]="!editVisualizationWidget"><i class="fas fa-save fa-sm"></i></button>
-              </div>
-            </div>
-            <div class="col-12 mt-2" *ngIf="editVisualizationWidget">
-              <div class="form-group row"  *ngFor="let item of alertObj.visualizations; let i = index">
-                <label for="inputPassword" class="col-3 col-form-label">Visualization Widget</label>
-                <div class="col-3">
-                  <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="alertObj.visualizations[i]">
-                    <option [ngValue]="undefined">Select Widgets</option>
-                    <option [ngValue]="widget.title" *ngFor="let widget of widgets">{{widget.title}}</option>
-                  </select>
+        <ng-container *ngIf="!isAlertConditionsLoading && alertConditions.length > 0">
+          <ng-container  *ngFor="let alert of alertConditions; let i = index">
+            <tr >
+              <td><i title="{{alert.severity}}"  [style.color]="
+                (alert.severity === 'critical' ? '#cc0000' :
+                (alert.severity === 'error' ? '#fb5515' :
+                (alert.severity === 'warning' ? '#f6c23e' :
+                (alert.severity === 'informational' ? '#229954' : ''))
+                )
+                )" class="fa fa-exclamation-triangle"></i>
+                {{alert.code}}</td>
+              <td>{{alert.message}}</td>
+              <td>
+                <a href="javascript:void(0)" class="mr-2" title="Visualization" (click)="onClickOfViewActionIcon('Visualization', i)">
+                  <img class="img-icon" src="../../../../assets/img/visualization.png">
+                </a>
+                <a href="javascript:void(0)" title="Recommendations" (click)="onClickOfViewActionIcon('Recommendations', i)">
+                  <img class="img-icon" src="../../../../assets/img/recommendation.png">
+                </a>
+              </td>
+              <td>
+                <!-- <a href="javascript:void(0)" class="mr-1">
+                  <i class="fas fa-fw fa-eye"></i>
+                </a> -->
+                <a href="javascript:void(0)" (click)="openConfirmModal('confirmMessageModal', alert)">
+                  <i class="fas fa-fw fa-trash"></i>
+                </a>
+              </td>
+            </tr>
+            <tr *ngIf="toggleRows[i]">
+              <td colspan="4" *ngIf="viewType === 'Visualization'">
+                <div class="row col-12">
+                  <h6 *ngIf="alertObj?.visualization_widgets?.length === 0"> No Visualization widgets defined yet.</h6>
+                  <h6 *ngIf="alertObj?.visualization_widgets?.length > 0"> Following widgets have been defined so far. You can define more.</h6>
+                  <div class="">
+                    <!-- <button type="button" class="btn btn-warning btn-sm mx-1 mt-n2" [disabled]="isCreateAlertConditionLoading"
+                    title="Add" (click)="addVisualizationWidget()" ><i class="fas fa-plus fa-sm"></i></button> -->
+                    <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
+                    [disabled]="alertObj?.visualization_widgets?.length === 0 || isCreateAlertConditionLoading" title="Edit"
+                    (click)="editWidgets()"><i class="fas fa-pencil-square-o fa-sm"></i></button> -->
+                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" [disabled]="alertObj?.visualization_widgets?.length === 0 || isCreateAlertConditionLoading"
+                    title="Save" (click)="onUpdateAlertConditions()" ><i class="fas fa-save fa-sm"></i></button>
+                    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></i>
+                  </div>
                 </div>
-                <div class="col-1">
-                  <button type="button" class="btn btn-white btn-sm mx-1" 
-                title="Remove" ><i class="fas fa-close fa-sm"></i></button>
+                <div class="col-12 mt-2">
+                  <div class="form-group row" >
+                    <ng-container>
+                    <div class="col-3">
+                      <select class="form-control form-control-sm" id="template" name="model_type" 
+                      [(ngModel)]="widgetName"
+                      >
+                        <option [ngValue]="undefined">Select Widgets</option>
+                        <ng-container *ngFor="let widget of widgets">
+                          <option [ngValue]="widget.title">
+                          {{widget.title}}</option>
+                        </ng-container>
+                      </select>
+                      
+                    </div>
+                    <div class="col-1">
+                      <a href="javascript:void(0)" (click)="addVisualizationWidget()">
+                        <i class="fas fa-arrow-down fa-sm"></i> </a>
+                    </div>
+                  </ng-container>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div class="col-12 mt-2" *ngIf="!editVisualizationWidget">
-              <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
-                <ng-container *ngFor="let item of alertObj.visualizations; let index = index">
-                  <span class="tag" *ngIf="item">
-                    <span class="tag-text">{{item}}</span>
-                  </span>
-                </ng-container>
-              </div>
-            </div>
-          </td>
-          <td colspan="4" *ngIf="viewType === 'Recommendations'">
-            <div class="row col-12">
-              <h6 *ngIf="alertObj?.recommendations?.length === 0"> No recommendations configured yet.</h6>
-              <h6 *ngIf="alertObj?.recommendations?.length > 0"> Following recommendations have been pre-configured. You can configure more.</h6>
-              <div >
-                <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" 
-                title="Save" (click)="onSaveRecommendations()" ><i class="fas fa-save fa-sm"></i></button>
+                <div class="col-12 mt-2" *ngIf="alertObj?.visualization_widgets?.length > 0">
+                  <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
+                    <ng-container *ngFor="let item of alertObj.visualization_widgets; let index = index">
+                      <span class="tag" >
+                        <span class="tag-text">{{item}}</span>
+                        <button class="tag-remove" (click)="removeVisualizationWidget(index)"></button>
+                      </span>
+                    </ng-container>
+                  </div>
+                </div>
+
+              </td>
+              <td colspan="4" *ngIf="viewType === 'Recommendations'">
+
+                <div class="row col-12">Following recommendations have been pre-configured. You can configure more.
+
+                  <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                  title="Save" (click)="onUpdateAlertConditions()" ><i class="fas fa-save fa-sm"></i></button></div>
+                <div class="row col-12 text-primary my-2">
+                  <span >Debugging Steps: </span>
+                  <!-- <a  class=" mx-1" href="javascript:void(0)"
+                  title="Add" (click)="addRecommendationStep()" ><i class="fas fa-plus fa-sm"></i></a> -->
+                   <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
+                   title="Edit" (click)="editSteps()"><i class="fas fa-edit fa-sm"></i></button> -->
+                 <div class="row col-12 mt-2">
+                  <table id="mytable" width="100%" class="table-borderless col-12" *ngIf="alertObj.recommendations.length > 0">
+                    <tbody>
+                      <ng-container  >
+                      <tr *ngFor="let step of alertObj.recommendations; let i = index;" class="bg-white">
+                      
+                      <ng-container >
+                        <td style="width: 10%;">Step - {{i + 1}}</td>
+                        <td style="width: 30%;">{{step.description}}</td>
+                        <td style="width: 30%;">{{step.activity}} Activity</td>
+                        <td style="width: 30%;"><ng-container *ngIf="step.activity === 'Auto'">{{step.command}}</ng-container> </td>
+                        <td style="width: 10%;">
+                            <a href="javascript:void(0)" class="ml-2" (click)="removeRecommendationStep(i)" title="Remove">
+                              <i class="fas fa-trash fa-sm"></i> </a>
+                        </td>
+                      </ng-container>
+                      </tr>
+                      <tr *ngIf="recommendationObj" class="bg-white">
+                        <ng-container >
+                          <td style="width: 10%;">
+                            Step - {{alertObj.recommendations.length + 1}}
+                          </td>
+                          <td style="width: 30%;">
+                            <input type="text"  id="description" name="description" size="20" class="mx-1 form-control form-control-sm"
+                            [(ngModel)]="recommendationObj.description">
+                          </td>
+                          <td style="width: 20%;">
+                            <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="recommendationObj.activity">
+                              <option [ngValue]="undefined">Select Activity</option>
+                              <option [ngValue]="'Auto'">Auto Activity</option>
+                              <option [ngValue]="'Manual'">Manual Activity</option>
+                            </select></td>
+                          <td style="width: 30%;" >
+                            <select *ngIf="recommendationObj.activity === 'Auto'" class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="recommendationObj.command">
+                              <option [ngValue]="undefined">Select Command</option>
+                              <ng-container *ngFor="let method of deviceMethods">
+                                <option [ngValue]="method.name">
+                                {{method.name}}</option>
+                              </ng-container>
+                            </select>
+                            </td>
+                            <td>
+                              <a href="javascript:void(0)" (click)="addRecommendationStep()" title="Add">
+                                <i class="fas fa-arrow-down fa-sm"></i> </a>
+                            </td>
+                            
+                          </ng-container>
+                      </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                 
+                  <ng-container *ngIf="alertObj.recommendations.length === 0" >
+                   No Recommendation steps added.
+                  </ng-container>
+                </div>
+                <div class="row col-12">
+                  <div class="col-lg-12">
+                    <hr class="solid">
+                  </div>
+                </div>
+                <div class="row col-12 text-primary">
+                  <span>Email / Whatsapp Attachments:</span>
+                  <!-- <button type="button" class="btn btn-warning btn-sm mx-1 mt-n2"
+                   title="Add" (click)="addReferenceDocument()"><i class="fas fa-plus fa-sm"></i></button>
+                   <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
+                   title="Edit" (click)="editReferenceDocuments()"><i class="fas fa-edit fa-sm"></i></button> -->
+                </div>
                 
-              </div>
-            </div>
-            <div class="row col-12">
-              <h6 >Debugging Steps</h6>
-              <div>
-                <button type="button" class="btn btn-warning btn-sm mx-1 mt-n2" 
-                title="Add" (click)="addRecommendationStep()" ><i class="fas fa-plus fa-sm"></i></button>
-              </div>
-            </div>
-            <div class="col-12 mt-2">
-              <div class="form-group row"  *ngFor="let item of alertObj.recommendations; let i = index">
-                <label for="inputPassword" class="col-1 col-form-label">Step - {{i + 1}}</label>
-                <div class="col-3">
-                  <input type="text" class="form-control form-control-sm" id="description" name="description" [(ngModel)]="alertObj.recommendations[i].description"
-                  placeholder="Enter Description">
+                <div class="col-12 mt-2">
+                  <div class="form-group row" >
+                    <ng-container>
+                    <div class="col-3" >
+                      <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="docName"
+                      >
+                        <option [ngValue]="undefined">Select Document</option>
+                        <ng-container *ngFor="let document of documents">
+                          <option [ngValue]="document.name">
+                          {{document.name}}</option>
+                        </ng-container>
+                      </select>
+                    </div>
+                    <div class="col-1">
+                      <a href="javascript:void(0)" class="ml-1" (click)="addReferenceDocument()">
+                        <i class="fas fa-arrow-down fa-sm"></i> </a>
+                    </div>
+                  </ng-container>
+                  </div>
                 </div>
-                <div class="col-3">
-                  <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="alertObj.recommendations[i].activity">
-                    <option [ngValue]="undefined">Select Activity</option>
-                    <option [ngValue]="'auto'">Auto Activity</option>
-                    <option [ngValue]="'manual'">Manual Activity</option>
-                  </select>
+                <!-- <h6 class="mt-1" *ngIf="alertObj?.reference_documents?.length === 0"> No Attachments added yet.</h6> -->
+                <div class="tagsinput" style="width: auto; height: auto;min-height: auto;" *ngIf="alertObj?.reference_documents?.length > 0">
+                  <ng-container *ngFor="let item of alertObj.reference_documents; let index = index">
+                    <span class="tag" >
+                      <span class="tag-text">{{item}}</span>
+                      <button class="tag-remove" (click)="removeDocument(index)"></button>
+                    </span>
+                  </ng-container>
                 </div>
-                <div class="col-3" *ngIf="alertObj.recommendations[i].activity === 'auto'">
-                  <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="alertObj.recommendations[i].command">
-                    <option [ngValue]="undefined">Select Command</option>
-                  </select>
                 </div>
-              </div>
-            </div>
-            <div class="row col-12">
-              <h6 >Email/Message Attachments</h6>
-              <div>
-                <button type="button" class="btn btn-warning btn-sm mx-1 mt-n2" 
-                title="Add" ><i class="fas fa-plus fa-sm"></i></button>
-              </div>
-            </div>
-          </td>
-        </tr>
-      </ng-container>
+              </td>
+            </tr>
+         </ng-container>
+        </ng-container>
+        <ng-container *ngIf="isAlertConditionsLoading">
+          <tr>
+            <td colspan="4"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="!isAlertConditionsLoading && alertConditions.length === 0">
+          <tr>
+            <td colspan="4"> No Alert Conditions added.</td>
+          </tr>
+        </ng-container>
       </tbody>
     </table>
   </div>
@@ -178,7 +269,7 @@
             <option [ngValue]="'critical'" >Critical</option>
             <option [ngValue]="'error'" >Error</option>
             <option [ngValue]="'warning'" >Warning</option>
-
+            <option [ngValue]="'informational'" >Informational</option>
           </select>
         </div>
       </form>
@@ -189,5 +280,30 @@
       <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></i>
     </div>
   </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="confirmMessageModal" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Remove Alert Condition</h5>
+        <button type="button" class="close"  aria-label="Close" (click)="onCloseModal('confirmMessageModal')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to remove this alert condition?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="onClickOfRemoveCondition()">
+          Ok</button>
+        <button type="button" class="btn btn-secondary" (click)="onCloseModal('confirmMessageModal')">
+          Cancel
+        </button>
+      </div>
+    </div>
+
   </div>
 </div>

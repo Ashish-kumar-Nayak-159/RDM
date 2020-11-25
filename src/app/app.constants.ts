@@ -190,7 +190,7 @@ export class CONSTANTS {
       visible: true
     },
     {
-      page: 'alerts',
+      page: 'Things Modelling',
       system_name: 'Things Modelling',
       url: 'applications/:appName/things/model',
       display_name: 'Asset Modelling',

@@ -39,6 +39,8 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
       await this.getApplicationData();
       if (!this.userData?.is_super_admin) {
       let data = [];
+     // alert('here');
+      console.log(this.appData);
       if (this.appData?.configuration?.main_menu?.length > 0) {
         this.constantsData.SIDE_MENU_LIST.forEach(config => {
           let found = false;
@@ -59,7 +61,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
       }
     }
     let i = 0;
-    this.router.events.subscribe(event => {
+    this.router.events.subscribe(async event => {
       if (event instanceof NavigationEnd && i === 0) {
         i++;
         const list = event.url.split('/');
@@ -71,7 +73,8 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
           }
         }
         if (this.appName) {
-        this.appData = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
+        this.applicationData = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
+        await this.getApplicationData();
         if (!this.userData?.is_super_admin) {
         let data = [];
         if (this.appData.configuration?.main_menu?.length > 0) {
@@ -120,6 +123,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
       this.applicationService.getApplicationDetail(this.appName).subscribe(
         (response: any) => {
             this.appData = response;
+            console.log(response);
             if (this.applicationData?.user) {
             this.appData.user = this.applicationData.user;
             }
@@ -129,6 +133,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
   }
 
   processSideMenuData(data, list) {
+    // alert('here');
     console.log('data    ', data);
     const arr = [];
     console.log(list);

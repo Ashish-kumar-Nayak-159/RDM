@@ -56,6 +56,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   selectedPropertyForChart: any[] = [];
   applicationData: any;
   appName: any;
+  alertCondition: any = {};
+  documents: any[] = [];
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -223,6 +225,54 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     });
   }
 
+  getAlertConditions() {
+    return new Promise((resolve) => {
+      const filterObj = {
+        app: this.appData.app,
+        device_id: this.selectedAlert.device_id,
+        legacy: !(this.selectedAlert.device_id === this.selectedAlert.gateway_id),
+        message: this.selectedAlert.message
+      };
+      this.alertCondition = undefined;
+      this.deviceTypeService.getAlertConditions(this.appData.app, filterObj).subscribe(
+        (response: any) => {
+          if (response?.data) {
+            this.alertCondition = response.data[0];
+            
+            resolve();
+          }
+        }
+      );
+    });
+  }
+
+  getDocuments() {
+    return new Promise((resolve) => {
+      this.documents = [];
+      const obj = {
+        app: this.appData.app,
+        device_type: this.alertCondition.device_type
+      };
+      this.deviceTypeService.getThingsModelDocuments(obj).subscribe(
+        (response: any) => {
+          if (response?.data) {
+            this.documents = response.data;
+            const arr = [];
+            this.alertCondition.reference_documents.forEach(refDoc => {
+              this.documents.forEach(doc => {
+                if (doc.id === refDoc) {
+                  arr.push(doc.name);
+                }
+              });
+            });
+            this.alertCondition.reference_documents = arr;
+            resolve();
+          }
+        }
+      );
+    });
+  }
+
   getThingsModelProperties() {
     return new Promise((resolve) => {
       const obj = {
@@ -247,7 +297,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
     const params = {
       app: this.appData.app,
-      name: this.selectedDevice?.tags?.device_type
+      name: this.alertCondition.device_type
     };
     this.dropdownWidgetList = [];
     this.selectedWidgets = [];
@@ -259,7 +309,18 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
               id: item.title,
               value: item
             });
+            this.alertCondition.visualization_widgets.forEach(widget => {
+              if (widget === item.title) {
+                this.selectedWidgets.push({
+                  id: item.title,
+                  value: item
+                });
+              }
+            });
           });
+          if (this.selectedWidgets.length > 0) {
+            this.getDeviceTelemetryData();
+          }
         }
         resolve();
       });
@@ -275,13 +336,16 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.selectedAlert = alert;
     this.isTelemetryFilterSelected = false;
     // this.selectedDevice = this.devices.find(device => device.device_id === this.selectedAlert.device_id);
-    await this.getDeviceData();
-    await this.getThingsModelProperties();
+    // await this.getDeviceData();
+    // await this.getThingsModelProperties();
+    await this.getAlertConditions();
+    await this.getDocuments();
     await this.getLayout();
 
   }
 
   getDeviceTelemetryData() {
+    console.log(this.selectedWidgets);
     this.propList = [];
     this.selectedWidgets.forEach(widget => {
       widget.value.y1axis.forEach(prop => {

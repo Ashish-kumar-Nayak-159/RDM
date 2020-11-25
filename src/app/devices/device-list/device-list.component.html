@@ -7,7 +7,7 @@
 
   </div> -->
   <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-1">
-    <h5 class="h4 mb-0 text-gray-800">{{(componentState?.includes('Device') ? 'Assets' : 'Gateways')}}</h5>
+    <h5 class="h4 mb-0 text-gray-800" >{{tileName}}</h5>
     <a
     class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-3"
     href="javascript:void(0)" (click)="openCreateDeviceModal()"
@@ -33,7 +33,7 @@
           [(ngModel)]="deviceFilterObj.gateway_id" name="gateway_id">
             <option [ngValue]="undefined">Reporting Via</option>
             <option [ngValue]="gateway.device_id" *ngFor="let gateway of gateways">
-              {{gateway.tags.display_name ? gateway.tags.display_name : gateway.device_id}}
+              {{gateway.display_name ? gateway.display_name : gateway.device_id}}
             </option>
           </select>
           <!-- <input type="email" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="Device Status"
@@ -119,7 +119,7 @@
          >
             <option [ngValue]="undefined"> Select Gateway</option>
           <option *ngFor="let item of gateways" [ngValue]="item.device_id">
-            {{item.tags.display_name ? item.tags.display_name : item.device_id}}</option>
+            {{item.display_name ? item.display_name : item.device_id}}</option>
           </select>
         </div>
         <!-- <div class="form-group" *ngIf="componentState === constantData.NON_IP_DEVICE">

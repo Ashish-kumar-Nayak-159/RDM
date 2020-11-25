@@ -39,6 +39,7 @@ export class DeviceListComponent implements OnInit {
   hierarchyDropdown: any[] = [];
   deviceTypes: any[] = [];
   applicationData: any;
+  tileName: string;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -53,7 +54,13 @@ export class DeviceListComponent implements OnInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
   //  this.commonService.setFlag(true);
     this.route.paramMap.subscribe(async params => {
-      this.protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
+      this.appName = params.get('applicationId');
+      this.applicationData = this.userData.apps.filter(
+        app => app.app === params.get('applicationId')
+      )[0];
+      this.deviceFilterObj.app = this.appName;
+      this.deviceFilterObj.hierarchy = JSON.stringify(this.applicationData.user.hierarchy);
+      this.deviceFilterObj.hierarchyString =  this.applicationData.user.hierarchyString;
       this.devicesList = [];
       if (params.get('listName')) {
         const listName = params.get('listName');
@@ -69,14 +76,19 @@ export class DeviceListComponent implements OnInit {
           this.pageType = 'Device';
         }
       }
-      this.appName = params.get('applicationId');
-      this.applicationData = this.userData.apps.filter(
-        app => app.app === params.get('applicationId')
-      )[0];
-      this.deviceFilterObj.app = this.appName;
-      this.deviceFilterObj.hierarchy = JSON.stringify(this.applicationData.user.hierarchy);
-      this.deviceFilterObj.hierarchyString =  this.applicationData.user.hierarchyString;
+
+      this.route.queryParamMap.subscribe(
+        params1 => {
+          this.devicesList = [];
+          if (params1.get('connection_state')) {
+            this.deviceFilterObj.status = params1.get('connection_state');
+            this.originalDeviceFilterObj = JSON.parse(JSON.stringify(this.deviceFilterObj));
+          }
+          this.searchDevices();
+        }
+      );
       await this.getApplicationData();
+      this.protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
       console.log(this.contextApp);
       this.getThingsModels(this.componentState);
       const keys = Object.keys(this.applicationData.user.hierarchy);
@@ -107,9 +119,10 @@ export class DeviceListComponent implements OnInit {
         ]
       };
       this.commonService.breadcrumbEvent.emit(obj);
-      this.deviceFilterObj.category = this.componentState;
       if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
         this.deviceFilterObj.category = undefined;
+      } else {
+        this.deviceFilterObj.category = this.componentState;
       }
       this.tableConfig = {
         type: this.pageType.toLowerCase(),
@@ -193,17 +206,18 @@ export class DeviceListComponent implements OnInit {
 
 
     });
-    this.route.queryParamMap.subscribe(
-      params => {
-        this.devicesList = [];
-        if (params.get('connection_state')) {
-          this.deviceFilterObj.status = params.get('connection_state');
-          this.originalDeviceFilterObj = JSON.parse(JSON.stringify(this.deviceFilterObj));
-        }
-        this.searchDevices();
-      }
-    );
     console.log(this.deviceFilterObj);
+  }
+
+  getTileName() {
+    let name;
+    this.contextApp.configuration.main_menu.forEach(item => {
+      if (item.system_name === this.componentState + 's') {
+        name = item.display_name;
+      }
+    });
+    console.log(name);
+    this.tileName = name;
   }
 
   getApplicationData() {
@@ -212,6 +226,7 @@ export class DeviceListComponent implements OnInit {
         (response: any) => {
             this.contextApp = response;
             this.contextApp.user = this.applicationData.user;
+            this.getTileName();
             resolve();
         });
     });
@@ -238,7 +253,7 @@ export class DeviceListComponent implements OnInit {
   getGatewayList() {
     this.gateways = [];
     const obj = {
-      app: this.appName,
+      app: this.applicationData.app,
       category: CONSTANTS.IP_GATEWAY
     };
     this.deviceService.getDeviceList(obj).subscribe(
@@ -266,6 +281,7 @@ export class DeviceListComponent implements OnInit {
       (response: any) => {
         if (response.data) {
           this.devicesList = response.data;
+          console.log(this.devicesList);
           this.devicesList.forEach(item => {
             if (!item.display_name) {
               item.display_name = item.device_id;

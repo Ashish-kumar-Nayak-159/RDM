@@ -30,6 +30,7 @@ export class DeviceTypeListComponent implements OnInit {
   originalThingsModelFilterObj: any;
   appName: any;
   applicationData: any;
+  tileName: any;
   constructor(
     private deviceTypeService: DeviceTypeService,
     private commonService: CommonService,
@@ -113,8 +114,17 @@ export class DeviceTypeListComponent implements OnInit {
         }
       ]
     };
-    
-    
+  }
+
+  getTileName() {
+    let name;
+    this.contextApp.configuration.main_menu.forEach(item => {
+      if (item.system_name === 'Things Modelling') {
+        name = item.display_name;
+      }
+    });
+    console.log(name);
+    this.tileName = name;
   }
 
   getApplicationData() {
@@ -123,6 +133,7 @@ export class DeviceTypeListComponent implements OnInit {
         (response: any) => {
             this.contextApp = response;
             this.contextApp.user = this.applicationData.user;
+            this.getTileName();
             resolve();
         });
     });

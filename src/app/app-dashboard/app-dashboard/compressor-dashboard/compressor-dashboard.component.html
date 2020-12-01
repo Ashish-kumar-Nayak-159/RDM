@@ -49,13 +49,14 @@
                     {{device?.display_name ? device?.display_name: device.device_id}}
                   </option>
                 </select>
-                <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="onFilterSelection()" ><i
+                <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="onFilterSelection();isTelemetryDataLoading = false;" ><i
                   class="fas fa-search fa-sm"></i></button>
                 </div>
               </form>
             </div>
 
           </div>
+          <i class="fa fa-spinner fa-spin fa-fw" *ngIf="isTelemetryDataLoading"></i>
           <div class="row" *ngIf="telemetryObj">
               <div class="col-xl-8 col-lg-8">
                 <!-- Content Row -->

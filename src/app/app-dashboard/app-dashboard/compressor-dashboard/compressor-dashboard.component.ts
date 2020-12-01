@@ -24,6 +24,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
   telemetryData: any[] = [];
   refreshInterval: any;
   selectedTab = 'telemetry';
+  isTelemetryDataLoading = false;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -147,12 +148,13 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
         if (response?.data?.length > 0) {
           this.telemetryObj = response.data[0];
           this.telemetryData = response.data;
+          this.isTelemetryDataLoading = false;
           clearInterval(this.refreshInterval);
           this.refreshInterval = setInterval(() => {
             this.onFilterSelection();
           }, 5000);
         }
-    });
+    }, error => this.isTelemetryDataLoading = false);
   }
 
   getThingsModelProperties(deviceType) {

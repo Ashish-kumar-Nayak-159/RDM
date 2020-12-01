@@ -220,8 +220,8 @@ export class ReportsComponent implements OnInit {
 
   onSingleDateChange(event) {
     console.log(event);
-    this.filterObj.from_date = moment(event.value[0]).utc();
-    this.filterObj.to_date = (moment(event.value[0]).add(1, 'days')).utc();
+    this.filterObj.from_date = moment(event.value).utc();
+    this.filterObj.to_date = (moment(event.value).add(1, 'days')).utc();
     console.log(this.filterObj.from_date.unix());
     console.log(this.filterObj.to_date.unix());
   }

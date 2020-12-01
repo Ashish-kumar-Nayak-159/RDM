@@ -38,8 +38,8 @@
         <ng-container>
         <select *ngIf="i !== 0 " class="form-control form-control-sm mx-1 my-1" id="deviceCategory"
          [(ngModel)]="item.level" name="deviceCategory" [disabled]="!item.isEditable">
-          <option [ngValue]="hierarchy.level" *ngFor="let hierarchy of applicationData.hierarchy">
-            {{hierarchy.name}}
+          <option [ngValue]="i" *ngFor="let level of applicationData.hierarchy.levels; let i = index;">
+            {{level}}
           </option>
         </select>
       </ng-container>

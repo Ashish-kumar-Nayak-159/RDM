@@ -1,9 +1,9 @@
 export const environment = {
   production: true,
   // sopan app server
-  // appServerURL: 'https://sopanfunctionapp.azurewebsites.net/api/',
+  appServerURL: 'https://sopanfunctionapp.azurewebsites.net/api/',
   // test RDM app server
-  appServerURL: 'https://kemsysrdmfuntionapp.azurewebsites.net/api/',
+  // appServerURL: 'https://kemsysrdmfuntionapp.azurewebsites.net/api/',
   // dev RDM app server
   // appServerURL: 'https://devkemsysrdmfuntionapp.azurewebsites.net/api/',
   blobAccountName: 'storageaccountkemsy96a3',

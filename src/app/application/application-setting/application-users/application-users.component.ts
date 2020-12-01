@@ -15,6 +15,8 @@ export class ApplicationUsersComponent implements OnInit {
   addUserObj: any;
   hierarchyList: any[] = [];
   isCreateUserAPILoading = false;
+  hierarchyArr = {};
+  configureHierarchy = {};
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
@@ -23,6 +25,11 @@ export class ApplicationUsersComponent implements OnInit {
 
   ngOnInit(): void {
     this.getApplicationUsers();
+
+    this.applicationData.hierarchy.levels.forEach((element, index) => {
+      this.hierarchyArr[index] = [];
+    });
+
   }
 
   getApplicationUsers() {
@@ -50,7 +57,9 @@ export class ApplicationUsersComponent implements OnInit {
     this.addUserObj = {};
     this.addUserObj.app = this.applicationData.app;
     this.addUserObj.role = 'App Admin';
+    this.configureHierarchy = {};
     this.addUserObj.hierarchy = {App: this.applicationData.app};
+    this.addUserObj.hierarchy = {};
     $('#createUserModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -58,18 +67,47 @@ export class ApplicationUsersComponent implements OnInit {
     this.getAccessLevelHierarchy();
   }
 
+  onChangeOfHierarchy(i) {
+    Object.keys(this.configureHierarchy).forEach(key => {
+      console.log(key, i);
+      if (key > i) {
+        delete this.configureHierarchy[key];
+      }
+    });
+    Object.keys(this.hierarchyArr).forEach(key => {
+      if (key > i) {
+        this.hierarchyArr[key] = [];
+      }
+    });
+    let nextHierarchy = this.applicationData.hierarchy.tags;
+    Object.keys(this.configureHierarchy).forEach((key, index) => {
+      console.log(index);
+      console.log(this.configureHierarchy);
+      console.log(this.configureHierarchy[index + 1]);
+      if (this.configureHierarchy[index + 1]) {
+        nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
+        console.log(nextHierarchy);
+      }
+    });
+    if (nextHierarchy) {
+      this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
+    }
+  }
   getAccessLevelHierarchy() {
     this.hierarchyList = [];
     let hierarchy = '';
     const roleObj = this.applicationData.roles.filter(role => role.name === this.addUserObj.role)[0];
-    this.applicationData.hierarchy.forEach(element => {
-      if (element.level <= roleObj.level) {
-        hierarchy = hierarchy + element.name + ' / ';
+    this.applicationData.hierarchy.levels.forEach((element, index) => {
+      if (index <= roleObj.level) {
+        hierarchy = hierarchy + element + ' / ';
         if (element.level !== 0) {
           this.hierarchyList.push(element);
         }
       }
     });
+    if (this.hierarchyList.length > 1) {
+      this.hierarchyArr['1'] = Object.keys(this.applicationData.hierarchy.tags);
+    }
     if (hierarchy.slice(-2) === '/ ') {
       hierarchy = hierarchy.substring(0, hierarchy.length - 2);
     }
@@ -77,13 +115,19 @@ export class ApplicationUsersComponent implements OnInit {
   }
 
   onCreateUser() {
-    console.log(this.addUserObj);
+    this.addUserObj.hierarchy[this.applicationData.hierarchy.levels[0]] = this.applicationData.app;
+    Object.keys(this.configureHierarchy).forEach((key) => {
+      this.addUserObj.hierarchy[this.applicationData.hierarchy.levels[key]] = this.configureHierarchy[key];
+      console.log(this.addUserObj.hierarchy);
+    });
+
     if (!this.addUserObj.name || !this.addUserObj.email || !this.addUserObj.role ||
-      Object.keys(this.addUserObj.hierarchy).length !== this.hierarchyList.length + 1) {
+      Object.keys(this.addUserObj.hierarchy).length !== this.hierarchyList.length) {
       this.toasterService.showError('Please fill all the details', 'Create User');
       return;
     }
     this.isCreateUserAPILoading = true;
+    console.log(this.addUserObj);
     this.userService.createUser(this.addUserObj, this.applicationData.app).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Create User');

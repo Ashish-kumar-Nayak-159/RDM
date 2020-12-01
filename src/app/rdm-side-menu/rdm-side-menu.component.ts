@@ -1,3 +1,4 @@
+import { element } from 'protractor';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { filter } from 'rxjs/operators';
 import { Component, OnInit, Inject, Input, OnChanges, SimpleChanges } from '@angular/core';
@@ -151,14 +152,16 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
         }
       }
   });
-    if (this.appData?.user.role !== CONSTANTS.APP_ADMIN_ROLE) {
-      arr.forEach(element => {
-        if (element.page === 'App Settings' || element.page === 'Things Modelling') {
-          element.visible = false;
+    arr.forEach(element => {
+      if (element.page === 'App Settings' || element.page === 'Things Modelling') {
+        if (this.applicationData?.user.role !== CONSTANTS.APP_ADMIN_ROLE) {
+        element.visible = false;
+        } else {
+          element.visible = true;
         }
-      });
-      console.log('in if', arr);
-    }
+      }
+    });
+    console.log('in if', arr);
     this.displayMenuList = arr;
     console.log(this.displayMenuList);
   }

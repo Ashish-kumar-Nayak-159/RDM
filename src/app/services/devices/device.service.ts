@@ -20,6 +20,7 @@ export class DeviceService {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
       if (filterObj[key]) {
+        console.log(key, '=====', filterObj[key]);
         params = params.set(key, filterObj[key]);
       }
     });

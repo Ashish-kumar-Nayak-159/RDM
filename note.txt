@@ -85,19 +85,19 @@ Dashboard Widget ideas:
 
  ----- To do ------
 1. Remove device and gateway from app creation
-2. Done ---- Menu Settings accordion for device control panel
+2. Done ----- Menu Settings accordion for device control panel
 3. Dynamic tiles for dashboard based on user selection
 4. Live Widgets - High Priority -
     1.	Single Guage 2.	Multi-Guage (Round, Radial with start / sweep angle, linear, bullet, pie guages)
     3.	Number Indicator 4.	Number indicator with trend analysis
-5. Done ----ALert conditioning
+5. Done ----- Alert conditioning
 6. Done ----- Reference Documents
-7. Alert conditioning integration in Alert Visualization ----- 1
+7. Done ----- Alert conditioning integration in Alert Visualization ----- 1
 8. Export icons on widgets accordion
 9. Modal tags changes, device tags needs to come from model
-10. App hierarchy relation changes
-11. Filter based on app hierarchy in all screens. ----- 2
-12. Reports - one report with all measured property as columns ----- 3
+10. App hierarchy relation changes ----- 2
+11. Filter based on app hierarchy in all screens. ----- 3
+12. Reports - one report with all measured properety as columns ----- 4
 13. Done ---- API Optimization changes
 14. Websocket integration for live data
 15. Edit icon for App settings ---- 4

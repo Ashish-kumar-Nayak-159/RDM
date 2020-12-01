@@ -48,6 +48,7 @@ export class AppDashboardComponent implements OnInit {
       this.applicationService.getApplicationDetail(this.appName).subscribe(
         (response: any) => {
             this.contextApp = response;
+            this.contextApp.app = this.appName;
             this.contextApp.user = this.applicationData.user;
             resolve();
         });

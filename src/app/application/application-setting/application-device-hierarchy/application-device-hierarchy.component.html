@@ -15,6 +15,7 @@
                 <i class="fas fa-plus fa-sm"></i></button></th>
             <!--<a href="#" id="insert-more" ><i class="fas fa-fw fa-plus" style="color:red"></i></a>-->
           </tr>
+
         </thead>
         <tfoot>
           <tr>
@@ -27,22 +28,28 @@
           </tr>
         </tfoot>
         <tbody class="bg-white">
-          <tr *ngFor="let item of applicationData.hierarchy; let i = index">
-            <td width="25%"> Level - {{item.level}}:</td>
+          <tr *ngFor="let item of applicationData.hierarchy?.levels; let i = index; trackBy:trackByFn">
+            <td width="25%"> Level - {{i + 1}}:</td>
             <td width="60%">
-              <ng-container *ngIf="!item.isEditable"> {{item.name}}</ng-container>
-              <ng-container *ngIf="item.isEditable">
-                <input type="text" name="hierarchyName{{i}}" [(ngModel)]="item.name"
-                  class="form-control form-control-sm">
+              <ng-container *ngIf="!editableHierarchy[i + 1]"> {{item}}</ng-container>
+              <ng-container *ngIf="editableHierarchy[i + 1]">
+                <input type="text" name="hierarchyName{{i}}" id="hierarchyName{{i}}" [(ngModel)]="applicationData.hierarchy.levels[i]"
+                  class="form-control form-control-sm" placeholder="Enter Level Name">
               </ng-container>
             </td>
-            <td width="15%">
-              <a href="javascript:void(0)" [class.disabled]="item.level === 0" (click)="onArrowClick(item)">
+            <td width="15%" *ngIf="i !== 0">
+              <a href="javascript:void(0)" [class.disabled]="!applicationData.hierarchy.levels[i]" (click)="onArrowClick(i)">
                 <i class="fas fa fa-arrow-circle-right" ></i></a>
-                <a [class.disabled]="item.level === 0" class="ml-2" href="javascript:void(0)" (click)="openConfirmHierarchyDeleteModal(item)">
+                <a [class.disabled]="!applicationData.hierarchy.levels[i]" class="ml-2" href="javascript:void(0)" (click)="openConfirmHierarchyDeleteModal(item)">
                   <i class="fa fa-trash"  title="Delete Hierarchy"></i>
                 </a>
             </td>
+            <td width="15%" *ngIf="i === 0"></td>
+          </tr>
+          <tr>
+            <td>Level - {{applicationData.hierarchy.levels.length + 1}}:</td>
+            <td>Device</td>
+            <td></td>
           </tr>
         </tbody>
       </table>
@@ -52,19 +59,47 @@
   <div class="col-lg-5 col-xl-5" *ngIf="selectedHierarchyItem">
     <div id="showdiv">
 
-      <table id="mytable" width="80%" class="table table-bordered">
+      <table id="mytable" width="80%" class="table table-bordered table-sm">
         <thead>
           <tr>
-            <th style="font-size:1rem;" colspan="2">{{selectedHierarchyItem.name}} </th>
+            <th style="font-size:1rem;" colspan="2">{{applicationData.hierarchy.levels[selectedHierarchyItem]}} </th>
           </tr>
         </thead>
         <tbody class="bg-white">
           <tr>
+            <td colspan="2">
+              <div class="form-group row mb-0">
+                <label for="message-text" class="col-form-label col-3"
+                  >App: </label
+                >
+                <label class="col-form-label col-8">{{applicationData.app}}</label>
+              </div></td>
+          </tr>
+          <ng-container *ngFor="let level of applicationData.hierarchy.levels; let i = index;">
+          <tr *ngIf="i !== 0 && i < selectedHierarchyItem">
+            <td colspan="2">
+              <div class="form-group row  mb-0">
+                <label for="message-text" class="col-form-label col-3"
+                  >{{level}}: </label
+                >
+                <select class=" form-control form-control-sm col-8" id="{{level}}" name="{{level}}" [(ngModel)]="configureHierarchy[i]"
+                  (change)="onHierarchyConfigurationChange(i)">
+                  <option [ngValue]="undefined">Select {{level}}</option>
+                  <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[i]">{{tag}}</option>
+                </select>
+              </div>
+
+
+
+            </td>
+          </tr>
+        </ng-container>
+          <tr *ngIf="hierarchyArr[selectedHierarchyItem].length > 0">
             <td>
               <input id="tag" name="tag" type="text" class="form-control form-control-sm" placeholder="Add Tag"
                 [(ngModel)]="addedTagItem">
               <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
-                <span class="tag" *ngFor="let tag of selectedHierarchyItem.tags; let tagIndex = index">
+                <span class="tag" *ngFor="let tag of hierarchyArr[selectedHierarchyItem]; let tagIndex = index">
                   <span class="tag-text">{{tag}}</span>
                   <button class="tag-remove" (click)="onRemoveTag(tagIndex)"></button>
                 </span>
@@ -75,7 +110,7 @@
                 <i class="fas fa-plus fa-sm"></i></button>
               </td>
 
-           
+
           </tr>
 
         </tbody>
@@ -88,7 +123,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Remove Role</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Remove Hierarchy</h5>
         <button type="button" class="close" aria-label="Close" (click)="onCloseModal()">
           <span aria-hidden="true">&times;</span>
         </button>

@@ -25,6 +25,7 @@ import { CommonCustomModule } from '../common/common.module';
   ],
   providers: [
     {provide: OWL_DATE_TIME_LOCALE, useValue: {useUtc: true}}
-  ]
+  ],
+  exports: [ApplicationVisualizationComponent]
 })
 export class VisualizationModule { }

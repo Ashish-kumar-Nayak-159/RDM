@@ -58,6 +58,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   appName: any;
   alertCondition: any = {};
   documents: any[] = [];
+  configureHierarchy = {};
+  hierarchyArr = {};
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -99,10 +101,38 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         ]
       });
      // this.getLatestAlerts();
-      await this.getDevices();
+      await this.getDevices(this.appData.user.hierarchy);
      // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
     });
 
+  }
+
+  async onChangeOfHierarchy(i) {
+    Object.keys(this.configureHierarchy).forEach(key => {
+      if (key > i) {
+        delete this.configureHierarchy[key];
+      }
+    });
+    Object.keys(this.hierarchyArr).forEach(key => {
+      if (key > i) {
+        this.hierarchyArr[key] = [];
+      }
+    });
+    let nextHierarchy = this.appData.hierarchy.tags;
+    Object.keys(this.configureHierarchy).forEach((key, index) => {
+      if (this.configureHierarchy[index + 1]) {
+        nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
+      }
+    });
+    if (nextHierarchy) {
+      this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
+    }
+    const hierarchyObj: any = { App: this.applicationData.app};
+    Object.keys(this.configureHierarchy).forEach((key) => {
+      hierarchyObj[this.appData.hierarchy.levels[key]] = this.configureHierarchy[key];
+      console.log(hierarchyObj);
+    });
+    await this.getDevices(hierarchyObj);
   }
 
   getApplicationData() {
@@ -111,6 +141,17 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         (response: any) => {
             this.appData = response;
             this.appData.user = this.applicationData.user;
+            if (this.appData.hierarchy.levels.length > 1) {
+              this.hierarchyArr[1] = Object.keys(this.appData.hierarchy.tags);
+            }
+            this.appData.hierarchy.levels.forEach((level, index) => {
+              if (index !== 0) {
+                this.configureHierarchy[index] = this.appData.user.hierarchy[level];
+                if (this.appData.user.hierarchy[level]) {
+                  this.onChangeOfHierarchy(index);
+                }
+              }
+            });
             resolve();
         });
     });
@@ -130,11 +171,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
 
-  getDevices() {
+  getDevices(hierarchy) {
     return new Promise((resolve) => {
       const obj = {
         app: this.appData.app,
-        hierarchy: JSON.stringify(this.appData.user.hierarchy),
+        hierarchy: JSON.stringify(hierarchy),
       };
       this.deviceService.getDeviceList(obj).subscribe(
         (response: any) => {
@@ -168,6 +209,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     //   count: 10
     // };
     const obj = {...this.filterObj};
+    obj.hierarchy = { App: this.applicationData.app};
+    Object.keys(this.configureHierarchy).forEach((key) => {
+      obj.hierarchy[this.appData.hierarchy.levels[key]] = this.configureHierarchy[key];
+      console.log(obj.hierarchy);
+    });
+    obj.hierarchy = JSON.stringify(obj.hierarchy);
     if (obj.non_ip_device) {
       obj.gateway_id = obj.device.device_id;
       obj.device_id = obj.non_ip_device.device_id;
@@ -177,6 +224,28 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       obj.device_id = obj.device.device_id;
       delete obj.device;
     }
+    const now = moment().utc();
+    if (this.filterObj.dateOption === '5 mins') {
+      obj.to_date = now.unix();
+      obj.from_date = (now.subtract(5, 'minute')).unix();
+    } else if (this.filterObj.dateOption === '30 mins') {
+      obj.to_date = now.unix();
+      obj.from_date = (now.subtract(30, 'minute')).unix();
+    } else if (this.filterObj.dateOption === '1 hour') {
+      obj.to_date = now.unix();
+      obj.from_date = (now.subtract(1, 'hour')).unix();
+    } else if (this.filterObj.dateOption === '24 hour') {
+      obj.to_date = now.unix();
+      obj.from_date = (now.subtract(24, 'hour')).unix();
+    } else {
+      if (this.filterObj.from_date) {
+        obj.from_date = (this.filterObj.from_date.unix());
+      }
+      if (this.filterObj.to_date) {
+        obj.to_date = this.filterObj.to_date.unix();
+      }
+    }
+
     this.deviceService.getDeviceAlerts(obj).subscribe(
       (response: any) => {
         this.latestAlerts = response.data;
@@ -188,10 +257,15 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   onAssetSelection() {
     this.nonIPDevices = [];
-    if (this.filterObj.category === 'IoT Gateway') {
+    const hierarchyObj: any = { App: this.applicationData.app};
+    Object.keys(this.configureHierarchy).forEach((key) => {
+      hierarchyObj[this.appData.hierarchy.levels[key]] = this.configureHierarchy[key];
+      console.log(hierarchyObj);
+    });
+    if (this.filterObj.device?.cloud_connectivity.includes('Gateway')) {
       const obj = {
         app: this.appData.app,
-        hierarchy: JSON.stringify(this.appData.user.hierarchy),
+        hierarchy: JSON.stringify(hierarchyObj),
       };
       this.deviceService.getNonIPDeviceList(obj).subscribe(
         (response: any) => {
@@ -226,7 +300,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   getAlertConditions() {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const filterObj = {
         app: this.appData.app,
         device_id: this.selectedAlert.device_id,
@@ -238,10 +312,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         (response: any) => {
           if (response?.data) {
             this.alertCondition = response.data[0];
-            
             resolve();
           }
-        }
+        }, error => reject()
       );
     });
   }
@@ -251,13 +324,14 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.documents = [];
       const obj = {
         app: this.appData.app,
-        device_type: this.alertCondition.device_type
+        device_type: this.alertCondition?.device_type ?  this.alertCondition.device_type : this.selectedDevice.tags.device_type
       };
       this.deviceTypeService.getThingsModelDocuments(obj).subscribe(
         (response: any) => {
           if (response?.data) {
             this.documents = response.data;
             const arr = [];
+            if (this.alertCondition) {
             this.alertCondition.reference_documents.forEach(refDoc => {
               this.documents.forEach(doc => {
                 if (doc.id === refDoc) {
@@ -266,6 +340,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
               });
             });
             this.alertCondition.reference_documents = arr;
+            }
             resolve();
           }
         }
@@ -297,7 +372,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
     const params = {
       app: this.appData.app,
-      name: this.alertCondition.device_type
+      name: this.alertCondition?.device_type ?  this.alertCondition.device_type : this.selectedDevice.tags.device_type
     };
     this.dropdownWidgetList = [];
     this.selectedWidgets = [];
@@ -309,6 +384,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
               id: item.title,
               value: item
             });
+            if (this.alertCondition) {
             this.alertCondition.visualization_widgets.forEach(widget => {
               if (widget === item.title) {
                 this.selectedWidgets.push({
@@ -317,6 +393,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
                 });
               }
             });
+          }
           });
           if (this.selectedWidgets.length > 0) {
             this.getDeviceTelemetryData();
@@ -329,15 +406,15 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   async onClickOfViewGraph(alert) {
     this.isOpen = true;
-    this.beforeInterval = 10;
-    this.afterInterval = 10;
+    this.beforeInterval = 5;
+    this.afterInterval = 5;
     this.y1AxisProps = [];
     this.y2AxisProps = [];
     this.selectedAlert = alert;
     this.isTelemetryFilterSelected = false;
     // this.selectedDevice = this.devices.find(device => device.device_id === this.selectedAlert.device_id);
-    // await this.getDeviceData();
-    // await this.getThingsModelProperties();
+    await this.getDeviceData();
+   // await this.getThingsModelProperties();
     await this.getAlertConditions();
     await this.getDocuments();
     await this.getLayout();

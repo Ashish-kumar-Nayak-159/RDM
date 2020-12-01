@@ -35,10 +35,10 @@
           <ng-container  *ngFor="let alert of alertConditions; let i = index">
             <tr >
               <td><i title="{{alert.severity}}"  [style.color]="
-                (alert.severity === 'critical' ? '#cc0000' :
-                (alert.severity === 'error' ? '#fb5515' :
-                (alert.severity === 'warning' ? '#f6c23e' :
-                (alert.severity === 'informational' ? '#229954' : ''))
+                (alert.severity.toLowerCase() === 'critical' ? '#cc0000' :
+                (alert.severity.toLowerCase() === 'error' ? '#fb5515' :
+                (alert.severity.toLowerCase() === 'warning' ? '#f6c23e' :
+                (alert.severity.toLowerCase() === 'informational' ? '#229954' : ''))
                 )
                 )" class="fa fa-exclamation-triangle"></i>
                 {{alert.code}}</td>
@@ -80,7 +80,7 @@
                   <div class="form-group row" >
                     <ng-container>
                     <div class="col-3">
-                      <select class="form-control form-control-sm" id="template" name="model_type" 
+                      <select class="form-control form-control-sm" id="template" name="model_type"
                       [(ngModel)]="widgetName"
                       >
                         <option [ngValue]="undefined">Select Widgets</option>
@@ -89,7 +89,7 @@
                           {{widget.title}}</option>
                         </ng-container>
                       </select>
-                      
+
                     </div>
                     <div class="col-1">
                       <a href="javascript:void(0)" (click)="addVisualizationWidget()">
@@ -123,11 +123,11 @@
                    <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
                    title="Edit" (click)="editSteps()"><i class="fas fa-edit fa-sm"></i></button> -->
                  <div class="row col-12 mt-2">
-                  <table id="mytable" width="100%" class="table-borderless col-12" *ngIf="alertObj.recommendations.length > 0">
+                  <table id="mytable" width="100%" class="table-borderless col-12">
                     <tbody>
                       <ng-container  >
                       <tr *ngFor="let step of alertObj.recommendations; let i = index;" class="bg-white">
-                      
+
                       <ng-container >
                         <td style="width: 10%;">Step - {{i + 1}}</td>
                         <td style="width: 30%;">{{step.description}}</td>
@@ -167,16 +167,12 @@
                               <a href="javascript:void(0)" (click)="addRecommendationStep()" title="Add">
                                 <i class="fas fa-arrow-down fa-sm"></i> </a>
                             </td>
-                            
+
                           </ng-container>
                       </tr>
                       </ng-container>
                     </tbody>
                   </table>
-                 
-                  <ng-container *ngIf="alertObj.recommendations.length === 0" >
-                   No Recommendation steps added.
-                  </ng-container>
                 </div>
                 <div class="row col-12">
                   <div class="col-lg-12">
@@ -190,7 +186,7 @@
                    <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
                    title="Edit" (click)="editReferenceDocuments()"><i class="fas fa-edit fa-sm"></i></button> -->
                 </div>
-                
+
                 <div class="col-12 mt-2">
                   <div class="form-group row" >
                     <ng-container>
@@ -245,7 +241,7 @@
     <div class="modal-content" *ngIf="alertObj">
     <div class="modal-header">
       <h5 class="modal-title" id="exampleModalLabel">Add Alert Condition
-        Property</h5>
+        </h5>
       <button type="button" class="close" [disabled]="isCreateAlertConditionLoading" (click)="onCloseAlertConditionModal()" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>

@@ -17,6 +17,7 @@ export class ApplicationSettingComponent implements OnInit {
   activeTab: string;
   contextApp: any;
   userData: any;
+  isApplicationDataLoading = false;
   constructor(
     private route: ActivatedRoute,
     private applicationService: ApplicationService,
@@ -55,10 +56,12 @@ export class ApplicationSettingComponent implements OnInit {
   }
 
   getApplicationData() {
+    this.isApplicationDataLoading = true;
     this.applicationData = undefined;
     this.applicationService.getApplicationDetail(this.appName).subscribe(
       (response: any) => {
           this.applicationData = response;
+          this.isApplicationDataLoading = false;
           // const index = this.userData.apps.findIndex(app => app.app === this.applicationData.app);
           // const obj = JSON.parse(JSON.stringify(this.applicationData));
           // obj.user = this.userData.apps[index].user;
@@ -66,7 +69,7 @@ export class ApplicationSettingComponent implements OnInit {
           // this.userData.apps.splice(index, 0, obj);
           // this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
 
-      }
+      }, error => this.isApplicationDataLoading = false
     );
   }
 

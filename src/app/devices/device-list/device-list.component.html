@@ -7,7 +7,7 @@
 
   </div> -->
   <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-1">
-    <h5 class="h4 mb-0 text-gray-800" >{{tileName}}</h5>
+    <h5 class="h4 mb-0 text-gray-800" >{{tileName ? tileName : (componentState + 's')}}</h5>
     <a
     class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-3"
     href="javascript:void(0)" (click)="openCreateDeviceModal()"
@@ -20,9 +20,22 @@
 <!-- Page Heading -->
       <form>
         <div class="form-group form-inline my-2 mx-3">
-          <input type="text" class="form-control form-control-sm mx-1 my-1" id="hierarchy"
+          <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let index = index;">
+          <select *ngIf="index !== 0" class="form-control form-control-sm mx-1 my-1" id="{{level}}"
+          [disabled]="contextApp?.user?.hierarchy[level]"
+          [(ngModel)]="configureHierarchy[index]" name="{{level}}" (change)="onChangeOfHierarchy(index)">
+            <option [ngValue]="undefined">Select {{level}}</option>
+            <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">
+              {{tag}}
+            </option>
+          </select>
+          <input  type="text" *ngIf="index === 0"  defaultValue="{{contextApp.app}}" disabled class="form-control form-control-sm  mx-1 my-1">
+        </ng-container>
+        </div>
+        <div class="form-group form-inline my-2 mx-3">
+          <!-- <input type="text" class="form-control form-control-sm mx-1 my-1" id="hierarchy"
           placeholder="Hierarchy" disabled [(ngModel)]="deviceFilterObj.hierarchyString"
-             name="hierarchy" title="{{deviceFilterObj.hierarchyString}}">
+             name="hierarchy" title="{{deviceFilterObj.hierarchyString}}"> -->
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4"
           placeholder="{{pageType}} Name"
           [(ngModel)]="deviceFilterObj.name" name="name">
@@ -65,7 +78,7 @@
 <!-- Content Row -->
 
 <!-- DataTales Example -->
-<div class="contain-pad">
+<div class="contain-pad" style="margin-top: 14.5rem;">
 <div class="mb-4 ">
 
   <div class="">
@@ -90,13 +103,17 @@
           <label for="message-text" class="col-form-label">App:</label>
           <input type="text" class="form-control" id="app_name" [defaultValue]="appName" disabled>
         </div>
-        <div class="form-group" *ngFor="let hierarchyItem of hierarchyDropdown; let hIndex = index">
-          <label for="message-text" class="col-form-label">{{hierarchyItem.name}}:</label>
+        <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let hIndex = index" >
+        <div class="form-group" *ngIf="hIndex !== 0">
+          <label for="message-text" class="col-form-label">{{level}}:</label>
           <select class="custom-select" id="hierarchy{{hIndex}}"  name="hierarchy{{hIndex}}"
-          [(ngModel)]="deviceDetail.tags.hierarchy_json[hierarchyItem.name]" [disabled]="contextApp.user.hierarchy[hierarchyItem.name]">
-            <option [ngValue]="tag" *ngFor="let tag of hierarchyItem.tags">{{tag}}</option>
+          [(ngModel)]="addDeviceConfigureHierarchy[hIndex]" [disabled]="contextApp.user.hierarchy[level]"
+          (change)="onChangeOfAddDeviceHierarchy(hIndex)">
+            <option [ngValue]="undefined"> Select {{level}}</option>
+            <option [ngValue]="tag" *ngFor="let tag of addDeviceHierarchyArr[hIndex]">{{tag}}</option>
           </select>
         </div>
+      </ng-container>
         <div class="form-group">
           <label for="message-text" class="col-form-label required">{{pageType}} Name:</label>
           <input type="text" class="form-control" id="device_name" name="device_id" [(ngModel)]="deviceDetail.device_id"

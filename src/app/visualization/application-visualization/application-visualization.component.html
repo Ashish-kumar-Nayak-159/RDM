@@ -1,28 +1,56 @@
-<div class="topnavbar">
-  <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-1">
+<div class="topnavbar" style="margin-top: 3rem;">
+  <!-- <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-1">
     <h5 class="h4 mb-0 text-gray-800">Alerts</h5>
-  </div>
+  </div> -->
   <div class="card row bg-white" style="margin-left:-2rem">
     <div class="col-xl-12 col-md-12 mb-12">
       <form>
+        <div class="form-group form-inline my-2 mx-3">
+          <ng-container *ngFor="let level of appData?.hierarchy?.levels; let index = index;">
+          <select *ngIf="index !== 0" class="form-control form-control-sm mx-1 my-1" id="{{level}}"
+          [disabled]="appData?.user?.hierarchy[level]"
+          [(ngModel)]="configureHierarchy[index]" name="{{level}}" (change)="onChangeOfHierarchy(index)">
+            <option [ngValue]="undefined">Select {{level}}</option>
+            <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">
+              {{tag}}
+            </option>
+          </select>
+          <input  type="text" *ngIf="index === 0"  defaultValue="{{appData.app}}" disabled class="form-control form-control-sm mx-1 my-1">
+        </ng-container>
+        <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory" [(ngModel)]="filterObj.device"
+        name="deviceCategory" (change)="onAssetSelection()">
+        <option [ngValue]="undefined">Select Asset</option>
+        <option [ngValue]="device" *ngFor="let device of devices">
+          {{device?.display_name ? device?.display_name: device.device_id}}
+        </option>
+        </select>
+        <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory1" [(ngModel)]="filterObj.non_ip_device"
+          name="deviceCategory1" *ngIf="filterObj.device?.cloud_connectivity.includes('Gateway')"
+          >
+          <option [ngValue]="undefined">Select Asset</option>
+          <option [ngValue]="device" *ngFor="let device of nonIPDevices">
+            {{device?.display_name ? device?.display_name: device.device_id}}
+          </option>
+        </select>
+        </div>
         <div class="form-group form-inline  my-2 mx-3">
 
           <input type="number" min="1" class="form-control form-control-sm mx-1 my-1 record-input" id="inputEmail4"
             placeholder="No of Records" [(ngModel)]="filterObj.count" name="count">
-          <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory" [(ngModel)]="filterObj.device"
+          <!-- <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory" [(ngModel)]="filterObj.device"
             name="deviceCategory" (change)="onAssetSelection()">
             <option [ngValue]="undefined">Select Asset</option>
             <option [ngValue]="device" *ngFor="let device of devices">
-              {{device?.tags?.dislay_name ? device.tags?.display_name: device.device_id}}
+              {{device?.display_name ? device?.display_name: device.device_id}}
             </option>
           </select>
           <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory1" [(ngModel)]="filterObj.non_ip_device"
             name="deviceCategory1" *ngIf="filterObj.device?.tags?.category === 'IoT Gateway'">
             <option [ngValue]="undefined">Select Asset</option>
             <option [ngValue]="device" *ngFor="let device of nonIPDevices">
-              {{device?.tags?.dislay_name ? device.tags?.display_name: device.device_id}}
+              {{device?.display_name ? device?.display_name: device.device_id}}
             </option>
-          </select>
+          </select> -->
           <select class="form-control form-control-sm mx-1 my-1" id="dateoptions" [(ngModel)]="filterObj.acknowledged"
             name="dateOptions">
             <option [ngValue]="undefined">Status</option>
@@ -71,7 +99,7 @@
   </div> -->
 </div>
 
-<div class="contain-pad">
+<div class="contain-pad" style="margin-top: 7.5rem;">
   <div class="mb-2">
     <div class="table-responsive" style="max-height: 27vh;height: 27vh;">
       <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
@@ -98,7 +126,7 @@
               (alert.message?.priority === 'low' ? '#229954' : '')
               )
               )"></i></td>
-              <td>{{ alert.device_display_name }}</td>
+              <td>{{ alert.device_display_name ? alert.device_display_name : alert.device_id }}</td>
               <td>{{ alert.message }}</td>
               <td>{{ alert.local_created_date }}</td>
               <td>
@@ -171,39 +199,12 @@
                       }"
                     >
                     </angular2-multiselect>
-                    <!-- <label class="mr-2">Properties: </label>
-                    <angular2-multiselect [data]="dropdownPropList" id="y1AxisProperty" [(ngModel)]="y1AxisProps"
-                      name="y1AxisProperty" [settings]="{
-                  text: 'Select Y1 Axis',
-                  selectAllText: 'Select All',
-                  unSelectAllText: 'UnSelect All',
-                  classes: 'col-lg-3 col-xl-3 p-0 ml-2',
-                  enableSearchFilter: true,
-                  badgeShowLimit: 1,
-                  maxHeight: 200,
-                  labelKey: 'id'
-                }" (onDeSelectAll)="y1Deselect($event)">
-                    </angular2-multiselect>
-                    <angular2-multiselect [data]="dropdownPropList" id="y2AxisProp" [(ngModel)]="y2AxisProps"
-                      name="y2AxisProp" [settings]="{
-                  text: 'Select Y2 Axis',
-                  selectAllText: 'Select All',
-                  unSelectAllText: 'UnSelect All',
-                  classes: 'col-lg-3 col-xl-3 p-0 ml-2',
-                  enableSearchFilter: true,
-                  badgeShowLimit: 1,
-                  maxHeight: 200,
-                  labelKey: 'id'
-                }" (onDeSelectAll)="y2Deselect($event)">
-                    </angular2-multiselect> -->
 
-                    <!-- <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" ><i
-                class="fas fa-trash  fa-sm"></i></button> -->
                   </div>
                   <div class="form-group form-inline my-1">
                     <label class="mr-2">Aggregation: </label>
-                    <input type="number" class="form-control form-control-sm my-1 col-3" id="minutes" min="1"
-                      name="minutes" [(ngModel)]="filterObj.aggregation_minutes" placeholder="Agreegation Time (mins)">
+                    <input type="number" class="form-control form-control-sm my-1 col-3 minute-input" id="minutes" min="1"
+                      name="minutes" [(ngModel)]="filterObj.aggregation_minutes" placeholder="Agreegation Time">
                     <select class="form-control form-control-sm mx-2 my-1 col-3" id="dateoptions" [(ngModel)]="filterObj.aggregation_format"
                     name="dateOptions" style="width: 15%;">
                     <option [ngValue]="undefined">Aggregartion Format</option>

@@ -230,6 +230,14 @@ export class CONSTANTS {
       visible: true
     },
     {
+      page: 'Reports',
+      system_name: 'Reports',
+      url: 'applications/:appName/reports',
+      display_name: 'Reports',
+      icon: 'fas fa-fw fa-file',
+      visible: true
+    },
+    {
       page: 'App Settings',
       system_name: 'App Settings',
       url: 'applications/:appName/settings',
@@ -504,15 +512,15 @@ export class CONSTANTS {
       visible: true,
       isTitle: true
     },
-    {
-      page: 'jsonpacket',
-      system_name: 'JSON Packet Format',
-      url: '#device_type_jsonpacket',
-      display_name: 'JSON Packet Format',
-      icon: 'fas fa-fw fa-heartbeat',
-      visible: true,
-      isTitle: false
-    },
+    // {
+    //   page: 'jsonpacket',
+    //   system_name: 'JSON Packet Format',
+    //   url: '#device_type_jsonpacket',
+    //   display_name: 'JSON Packet Format',
+    //   icon: 'fas fa-fw fa-heartbeat',
+    //   visible: true,
+    //   isTitle: false
+    // },
     {
       page: 'alert_conditioning',
       system_name: 'Alert Conditioning',

@@ -40,6 +40,10 @@ export class DeviceListComponent implements OnInit {
   deviceTypes: any[] = [];
   applicationData: any;
   tileName: string;
+  hierarchyArr = {};
+  configureHierarchy = {};
+  addDeviceHierarchyArr = {};
+  addDeviceConfigureHierarchy = {};
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -93,11 +97,11 @@ export class DeviceListComponent implements OnInit {
       this.getThingsModels(this.componentState);
       const keys = Object.keys(this.applicationData.user.hierarchy);
       this.hierarchyDropdown = [];
-      this.contextApp.hierarchy.forEach(item => {
-        if (item.level >= keys.length - 1 && item.name !== 'App') {
-          this.hierarchyDropdown.push(item);
-        }
-      });
+      // this.contextApp.hierarchy.forEach(item => {
+      //   if (item.level >= keys.length - 1 && item.name !== 'App') {
+      //     this.hierarchyDropdown.push(item);
+      //   }
+      // });
       const obj = {
         type: 'replace',
         data: [
@@ -209,6 +213,50 @@ export class DeviceListComponent implements OnInit {
     console.log(this.deviceFilterObj);
   }
 
+  onChangeOfHierarchy(i) {
+    Object.keys(this.configureHierarchy).forEach(key => {
+      if (key > i) {
+        delete this.configureHierarchy[key];
+      }
+    });
+    Object.keys(this.hierarchyArr).forEach(key => {
+      if (key > i) {
+        this.hierarchyArr[key] = [];
+      }
+    });
+    let nextHierarchy = this.contextApp.hierarchy.tags;
+    Object.keys(this.configureHierarchy).forEach((key, index) => {
+      if (this.configureHierarchy[index + 1]) {
+        nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
+      }
+    });
+    if (nextHierarchy) {
+      this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
+    }
+  }
+
+  onChangeOfAddDeviceHierarchy(i) {
+    Object.keys(this.addDeviceConfigureHierarchy).forEach(key => {
+      if (key > i) {
+        delete this.addDeviceConfigureHierarchy[key];
+      }
+    });
+    Object.keys(this.addDeviceHierarchyArr).forEach(key => {
+      if (key > i) {
+        this.addDeviceHierarchyArr[key] = [];
+      }
+    });
+    let nextHierarchy = this.contextApp.hierarchy.tags;
+    Object.keys(this.addDeviceConfigureHierarchy).forEach((key, index) => {
+      if (this.addDeviceConfigureHierarchy[index + 1]) {
+        nextHierarchy = nextHierarchy[this.addDeviceConfigureHierarchy[index + 1]];
+      }
+    });
+    if (nextHierarchy) {
+      this.addDeviceHierarchyArr[i + 1] = Object.keys(nextHierarchy);
+    }
+  }
+
   getTileName() {
     let name;
     this.contextApp.configuration.main_menu.forEach(item => {
@@ -226,6 +274,21 @@ export class DeviceListComponent implements OnInit {
         (response: any) => {
             this.contextApp = response;
             this.contextApp.user = this.applicationData.user;
+            if (this.contextApp.hierarchy.levels.length > 1) {
+              this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+              this.addDeviceHierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+            }
+            this.contextApp.hierarchy.levels.forEach((level, index) => {
+              if (index !== 0) {
+              this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+              this.addDeviceConfigureHierarchy[index] = this.contextApp.user.hierarchy[level];
+              if (this.contextApp.user.hierarchy[level]) {
+                this.onChangeOfHierarchy(index);
+                this.onChangeOfAddDeviceHierarchy(index);
+
+              }
+              }
+            });
             this.getTileName();
             resolve();
         });
@@ -269,6 +332,15 @@ export class DeviceListComponent implements OnInit {
     this.isDeviceListLoading = true;
     this.isFilterSelected = true;
     const obj = JSON.parse(JSON.stringify(this.deviceFilterObj));
+    if (this.contextApp) {
+    obj.hierarchy = { App: this.applicationData.app};
+    Object.keys(this.configureHierarchy).forEach((key) => {
+      obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
+      console.log(obj.hierarchy);
+    });
+    obj.hierarchy = JSON.stringify(obj.hierarchy);
+    console.log(obj.hierarchy);
+    }
     delete obj.hierarchyString;
     if (obj.status && obj.status.includes('connected')) {
       obj.connection_state = obj.status;
@@ -349,6 +421,11 @@ export class DeviceListComponent implements OnInit {
     }
     this.isCreateDeviceAPILoading = true;
     console.log(this.deviceDetail);
+    this.deviceDetail.tags.hierarchy_json = { App: this.applicationData.app};
+    Object.keys(this.addDeviceConfigureHierarchy).forEach((key) => {
+      this.deviceDetail.tags.hierarchy_json[this.contextApp.hierarchy.levels[key]] = this.addDeviceConfigureHierarchy[key];
+      console.log(this.deviceDetail.tags.hierarchy_json);
+    });
     this.deviceDetail.tags.hierarchy = JSON.stringify(this.deviceDetail.tags.hierarchy_json );
     this.deviceDetail.tags.created_by = this.userData.email;
     this.deviceDetail.app = this.appName;

@@ -229,7 +229,7 @@
             >
               <li *ngFor="let notification of lastGeneratedNotifications">
                 <div class="device-name-text">
-                  {{ notification.device_display_name }}
+                  {{ notification.device_display_name ? notification.device_display_name : notification.device_id }}
                   | {{ notification.time_diff }}
                 </div>
                 <p>{{ notification.message }}</p>
@@ -273,7 +273,7 @@
             >
               <li *ngFor="let alert of lastGeneratedAlerts">
                 <div class="device-name-text">
-                  {{ alert.device_display_name }}
+                  {{ alert.device_display_name ? alert.device_display_name : alert.device_id }}
                    | {{ alert.time_diff }}
                 </div>
                 <p>{{ alert.message }}</p>

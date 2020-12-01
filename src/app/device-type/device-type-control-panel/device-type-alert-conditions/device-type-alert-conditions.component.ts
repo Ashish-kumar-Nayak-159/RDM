@@ -113,7 +113,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
 
   addVisualizationWidget() {
     // this.editVisuailzationWidget[this.alertObj.visualization_widgets.length] = true;
-    
+
     const index = this.alertObj.visualization_widgets.findIndex(widget => widget === this.widgetName);
     if (index > -1) {
       this.toasterService.showError('Same Widget is already added.', 'Add Widget');
@@ -158,6 +158,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
       this.alertObj.reference_documents.splice(this.alertObj.reference_documents.length, 0, this.docName);
     }
     this.docName = undefined;
+    console.log(this.alertObj.reference_documents);
   }
 
   editSteps() {
@@ -167,12 +168,6 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
     });
   }
 
-  editReferenceDocuments() {
-    this.editDocuments = {};
-    this.alertObj.reference_documents.forEach((doc, index) => {
-      this.editDocuments[index] = true;
-    });
-  }
 
   onSaveRecommendations() {
     console.log(JSON.stringify(this.alertObj));
@@ -247,26 +242,40 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
         this.alertObj.visualization_widgets.splice(index, 1);
       }
     });
+    console.log(JSON.stringify(this.alertObj.reference_documents));
     arr = this.alertObj.reference_documents;
+    this.alertObj.reference_documents = [];
+    this.documents.forEach(doc => {
     arr.forEach((widget, index) => {
-      if (!widget) {
+      console.log(doc.name, '===', widget);
+      if (doc.name === widget) {
+        console.log(this.alertObj.reference_documents.length);
+        console.log(doc.id);
+        this.alertObj.reference_documents.push(doc.id);
+        console.log(JSON.stringify(this.alertObj.reference_documents));
+      }
+    });
+    });
+    arr = this.alertObj.reference_documents;
+    arr.forEach((doc, index) => {
+      if (!doc) {
         this.alertObj.reference_documents.splice(index, 1);
       }
     });
-    let distinctArray = this.alertObj.visualization_widgets.filter((n, i) => this.alertObj.visualization_widgets.indexOf(n) === i);
-    this.alertObj.visualization_widgets = distinctArray;
-    distinctArray = this.alertObj.reference_documents.filter((n, i) => this.alertObj.reference_documents.indexOf(n) === i);
-    this.alertObj.reference_documents = distinctArray;
-    this.alertConditions.forEach(alert => {
-      alert.reference_documents.forEach(refDoc => {
-        this.documents.forEach(doc => {
-          if (doc.name === refDoc) {
-            arr.push(doc.id);
-          }
-        });
-      });
-    });
-    this.alertObj.reference_documents  = arr;
+    // let distinctArray = this.alertObj.visualization_widgets.filter((n, i) => this.alertObj.visualization_widgets.indexOf(n) === i);
+    // this.alertObj.visualization_widgets = distinctArray;
+    // distinctArray = this.alertObj.reference_documents.filter((n, i) => this.alertObj.reference_documents.indexOf(n) === i);
+    // this.alertObj.reference_documents = distinctArray;
+    // this.alertConditions.forEach(alert => {
+    //   alert.reference_documents.forEach(refDoc => {
+    //     this.documents.forEach(doc => {
+    //       if (doc.name === refDoc) {
+    //         arr.push(doc.id);
+    //       }
+    //     });
+    //   });
+    // });
+   // this.alertObj.reference_documents  = arr;
     this.deviceTypeService.updateAlertCondition(this.alertObj, this.deviceType.app, this.deviceType.name, this.alertObj.id)
     .subscribe((response: any) => {
       this.isCreateAlertConditionLoading = false;
@@ -281,7 +290,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
     });
   }
 
-  
+
 
   onCreateAlertCondition() {
     this.isCreateAlertConditionLoading = true;

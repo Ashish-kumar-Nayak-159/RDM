@@ -21,6 +21,10 @@ const routes: Routes = [
     loadChildren: () => import('./app-dashboard/app-dashboard.module').then(module => module.AppDashboardModule)
   },
   {
+    path: 'applications/:applicationId/reports',
+    loadChildren: () => import('./reports/reports.module').then(module => module.ReportsModule)
+  },
+  {
     path: 'applications/:applicationId/:listName',
     loadChildren: () => import('./devices/devices.module').then(module => module.DevicesModule),
   },

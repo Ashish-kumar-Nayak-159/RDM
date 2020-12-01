@@ -12006,3 +12006,13 @@ padding-bottom: 1.5rem;
 .nav-item.active {
     font-weight: 700;
 }
+
+.line-chart {
+  width: 150px;
+  height: 30px;
+  margin-left:-50px;
+}
+
+.canvasjs-chart-credit {
+  display:none;
+}

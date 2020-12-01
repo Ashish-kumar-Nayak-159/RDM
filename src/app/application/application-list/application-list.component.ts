@@ -193,11 +193,10 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
       this.toasterService.showError('Please fill all details', 'Create App');
     } else {
       this.isCreateAPILoading = true;
-      this.applicationDetail.hierarchy = [{
-        name: 'App',
-        level: 0,
-        tags: [this.applicationDetail.app]
-      }];
+      this.applicationDetail.hierarchy = {
+        levels: ["App"],
+        tags: {}
+      };
       this.applicationDetail.roles = [{
         name: 'App Admin',
         level: 0

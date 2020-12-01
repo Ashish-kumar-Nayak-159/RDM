@@ -223,7 +223,7 @@
           </div>
         </div>
       </accordion-group>
-      <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="true" *ngIf="isTelemetryFilterSelected">
+      <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="" *ngIf="isTelemetryFilterSelected">
         <ng-container accordion-heading>
           <a class="btn" >
             Alert Visualization
@@ -246,6 +246,64 @@
           </div>
           <div *ngIf="isTelemetryDataLoading"><i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i></div>
           <div id="charts" classs="w-100 row"></div>
+        </div>
+      </accordion-group>
+      <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="isOpen" *ngIf="alertCondition">
+        <ng-container accordion-heading>
+          <a class="btn" >
+           Recommendations
+          </a>
+        </ng-container>
+        <div class="">
+          <div class="">
+            <div class="">
+              <div class="table-responsive">
+
+                <table id="mytable" width="100%" class="table table-bordered table-striped col-12">
+                  <tbody>
+                    <ng-container *ngFor="let step of alertCondition.recommendations; let i = index;" >
+                    <tr  *ngIf="alertCondition.recommendations.length > 0">
+
+                    <ng-container >
+                      <td style="width: 10%;">Step - {{i + 1}}</td>
+                      <td style="width: 30%;">{{step.description}}</td>
+                      <td style="width: 30%;">{{step.activity}} Activity</td>
+                      <td style="width: 30%;"><ng-container *ngIf="step.activity === 'Auto'">{{step.command}}</ng-container> </td>
+                    </ng-container>
+                    </tr>
+                    <tr *ngIf="alertCondition.recommendations.length === 0">
+                      <td colspan="4"> No Recommedation Steps added.</td>
+                    </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+              <h6>Reference Documents:</h6>
+              <div class="tagsinput" style="width: auto; height: auto;min-height: auto;" *ngIf="alertCondition?.reference_documents?.length > 0">
+                <ng-container *ngFor="let item of alertCondition.reference_documents; let index = index">
+                  <span class="tag" >
+                    <span class="tag-text">{{item}}</span>
+                  </span>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </accordion-group>
+      <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="isOpen" *ngIf="alertCondition">
+        <ng-container accordion-heading>
+          <a class="btn" >
+           Actions
+          </a>
+        </ng-container>
+        <div class="">
+          <div class="">
+            <div class="">
+              <div class="table-responsive">
+                No Actions configured yet.
+              </div>
+            </div>
+          </div>
         </div>
       </accordion-group>
     </accordion>

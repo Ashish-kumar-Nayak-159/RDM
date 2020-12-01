@@ -21,7 +21,9 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
   filterObj: any = {};
   propertyList: any[] = [];
   telemetryObj: any;
+  telemetryData: any[] = [];
   refreshInterval: any;
+  selectedTab = 'telemetry';
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -136,7 +138,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
       await this.getThingsModelProperties(device_type);
     }
     let message_props = '';
-    obj.count = 1;
+    obj.count = 15;
     obj.app = this.contextApp.app;
     this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : ''));
     obj.message_props = message_props;
@@ -144,6 +146,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response?.data?.length > 0) {
           this.telemetryObj = response.data[0];
+          this.telemetryData = response.data;
           clearInterval(this.refreshInterval);
           this.refreshInterval = setInterval(() => {
             this.onFilterSelection();

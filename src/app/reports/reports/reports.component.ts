@@ -222,7 +222,8 @@ export class ReportsComponent implements OnInit {
     console.log(event);
     this.filterObj.from_date = moment(event.value[0]).utc();
     this.filterObj.to_date = (moment(event.value[0]).add(1, 'days')).utc();
-    console.log(this.filterObj);
+    console.log(this.filterObj.from_date.unix());
+    console.log(this.filterObj.to_date.unix());
   }
 
   getThingsModelProperties(deviceType) {
@@ -347,7 +348,8 @@ export class ReportsComponent implements OnInit {
         const now = moment().utc().unix();
         saveAs(
           dataObj,
-          this.filterObj.device.device_id + '_' + this.filterObj.report_type + '_' + now + '.pdf'
+          (this.filterObj.non_ip_device ? this.filterObj.non_ip_device.device_id : this.filterObj.device.device_id)
+           + '_' + this.filterObj.report_type + '_' + now + '.pdf'
         );
     });
     exportPDFFn.catch ( (error) => {
@@ -364,7 +366,8 @@ export class ReportsComponent implements OnInit {
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     const now = moment().utc().unix();
     /* save to file */
-    XLSX.writeFile(wb, this.filterObj.device.device_id + '_' + this.filterObj.report_type + '_' + now + '.xlsx');
+    XLSX.writeFile(wb, (this.filterObj.non_ip_device ? this.filterObj.non_ip_device.device_id : this.filterObj.device.device_id)
+      + '_' + this.filterObj.report_type + '_' + now + '.xlsx');
   }
 
 }

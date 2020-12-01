@@ -8,3 +8,7 @@
 select.form-control {
   width: 11rem !important;
 }
+
+.w-10 {
+  width:  10%!important;
+}

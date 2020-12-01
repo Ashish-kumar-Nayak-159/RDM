@@ -87,19 +87,19 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.filterObj.app = this.appData.app;
         this.filterObj.count = 10;
       }
-      this.commonService.breadcrumbEvent.emit({
-        type: 'replace',
-        data: [
-          {
-            title: this.appData.user.hierarchyString,
-            url: 'applications/' + this.appData.app
-          },
-            {
-              title: 'Visualization',
-              url: 'applications/' + this.appData.app + '/visualization'
-            }
-        ]
-      });
+      // this.commonService.breadcrumbEvent.emit({
+      //   type: 'replace',
+      //   data: [
+      //     {
+      //       title: this.appData.user.hierarchyString,
+      //       url: 'applications/' + this.appData.app
+      //     },
+      //       {
+      //         title: 'Visualization',
+      //         url: 'applications/' + this.appData.app + '/visualization'
+      //       }
+      //   ]
+      // });
      // this.getLatestAlerts();
       await this.getDevices(this.appData.user.hierarchy);
      // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];

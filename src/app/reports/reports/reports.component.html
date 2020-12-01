@@ -65,13 +65,15 @@
             <option [ngValue]="'1 hour'">Last 1 hour</option>
             <option [ngValue]="'24 hour'">Last 24 hours</option>
           </select>
+          <label class="ml-1 mr-1">OR</label>
           <ng-container>
             <input [owlDateTime]="dt2"  (dateTimeChange)="onSingleDateChange($event)"
-              class="form-control form-control-sm mx-1 my-1 col-md-2" [owlDateTimeTrigger]="dt2"
+              class="form-control form-control-sm mx-1 my-1 w-10" [owlDateTimeTrigger]="dt2"
               placeholder="Select Date Time">
             <span [owlDateTimeTrigger]="dt2"  class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
             <owl-date-time #dt2 [pickerType]="'calendar'"></owl-date-time>
           </ng-container>
+          <label class="ml-1 mr-1">OR</label>
           <ng-container>
             <input [owlDateTime]="dt1" [selectMode]="'range'" (dateTimeChange)="onDateChange($event)"
               class="form-control form-control-sm mx-1 my-1 col-md-2" [owlDateTimeTrigger]="dt1"
@@ -80,7 +82,7 @@
             <owl-date-time #dt1></owl-date-time>
           </ng-container>
 
-          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="onFilterSelection()" ><i
+          <button type="button" class="btn btn-warning btn-sm mx-2 my-1" title="Search" (click)="onFilterSelection()" ><i
               class="fas fa-search fa-sm"></i></button>
           <!-- <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fas fa-trash  fa-sm"></i></button> -->
 

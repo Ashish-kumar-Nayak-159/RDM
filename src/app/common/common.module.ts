@@ -16,6 +16,7 @@ import { DataTableComponent } from './charts/data-table/data-table.component';
 import { ColumnChartComponent } from './charts/column-chart/column-chart.component';
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { GaugeChartComponent } from './charts/gauge-chart/gauge-chart.component';
+import { LineChartWithoutAxisComponent } from './charts/line-chart-without-axis/line-chart-without-axis.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { GaugeChartComponent } from './charts/gauge-chart/gauge-chart.component'
     ColumnChartComponent,
     ConfirmModalComponent,
     GaugeChartComponent,
+    LineChartWithoutAxisComponent,
 
   ],
   imports: [
@@ -50,7 +52,8 @@ import { GaugeChartComponent } from './charts/gauge-chart/gauge-chart.component'
     PieChartComponent,
     DataTableComponent,
     ConfirmModalComponent,
-    GaugeChartComponent
+    GaugeChartComponent,
+    LineChartWithoutAxisComponent
   ],
   providers: [
     {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}

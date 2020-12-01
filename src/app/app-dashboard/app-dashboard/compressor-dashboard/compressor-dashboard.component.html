@@ -435,7 +435,7 @@
                   </div>
                 </div>
 
-                <div class="col-lg-5 mb-3">
+                <div class="col-lg-3 mb-3">
 
                   <!-- Illustrations -->
                   <div class="card ">
@@ -443,19 +443,14 @@
                     <h6 class="m-0 font-weight-bold">Gas Leak Parameters</h6>
                   </div>
                   <div class="card-body1">
-                    <div class="row">
-                    <div class="col-6" >
-                       <div class="text-center" >
-                      <img src="../../../../assets/img/meter.png" width="75%">
+                    <div class="row text-center">
+                    <div class="col-12" >
+                       <div class="" >
+                        <app-gauge-chart [id]="'gaugeChart2'" [value]="telemetryObj.Gas_Leakage_Level_1"></app-gauge-chart>
                        </div>
                       <span class="text-xs mx-3">Gas Leak Level-1</span>
                     </div>
-                    <div class="col-6 border-left" >
-                       <div class="text-center" >
-                      <img src="../../../../assets/img/meter.png" width="75%">
-                       </div>
-                       <span class="text-xs mx-3">Gas Leak Level-2</span>
-                    </div>
+
 
                     </div>
                   </div>
@@ -475,16 +470,11 @@
                 <div class="card-body">
                     <div class="row text-center">
                     <div class="" >
-                      <app-gauge-chart></app-gauge-chart>
+                      <app-gauge-chart [id]="'gaugeChart1'" [value]="telemetryObj.Discharge_Gas_Temperature"></app-gauge-chart>
                     </div>
                     <span class="text-xs mx-3">Discharge Gas Temperature</span>
                   </div>
-                    <div class="row text-center">
-                      <div class="pt-3" >
-                        <app-gauge-chart></app-gauge-chart>
-                    </div>
-                    <span class="text-xs mx-3">Discharge Oil Temperature</span>
-                  </div>
+
                 </div>
                 </div>
               </div>
@@ -498,7 +488,7 @@
                 <!-- Card Body -->
                 <div class="card-body text-center">
                   <h4 class="font-weight-bold">ON</h4>
-                  for
+                  for last
                   <h4 class="font-weight-bold mt-3">{{telemetryObj.Running_Hours}}</h4>
                   Hrs
                 </div>

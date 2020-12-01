@@ -311,8 +311,6 @@ export class ReportsComponent implements OnInit {
   }
 
   async getTelemetryData(obj) {
-
-
     delete obj.dateOption;
     let message_props = '';
     this.props.forEach((prop, index) => message_props = message_props + prop.value.json_key + (this.props[index + 1] ? ',' : ''));
@@ -336,21 +334,6 @@ export class ReportsComponent implements OnInit {
   }
 
   savePDF(): void {
-    // const content = this.content.nativeElement;
-    // const doc = new jsPDF('A4');
-    // const elementHandlers =
-    // {
-    //   '#editor': (element, renderer) => {
-    //     return true;
-    //   }
-    // };
-    // doc.fromHTML(content.innerHTML, 15, 15, {
-
-    //   width: 190,
-    //   elementHandlers
-    // });
-
-    // doc.save('test.pdf');
     const drawDOMFn = drawDOM(document.getElementById('dataTable'), this.pdfOptions);
     drawDOMFn.catch( (error) => {
       console.log(error);
@@ -361,9 +344,10 @@ export class ReportsComponent implements OnInit {
     });
     exportPDFFn.then((dataObj) => {
         // Save the PDF file
+        const now = moment().utc().unix();
         saveAs(
           dataObj,
-          'report.pdf'
+          this.filterObj.device.device_id + '_' + this.filterObj.report_type + '_' + now + '.pdf'
         );
     });
     exportPDFFn.catch ( (error) => {
@@ -378,9 +362,9 @@ export class ReportsComponent implements OnInit {
     /* generate workbook and add the worksheet */
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-
+    const now = moment().utc().unix();
     /* save to file */
-    XLSX.writeFile(wb, 'reprot.xlsx');
+    XLSX.writeFile(wb, this.filterObj.device.device_id + '_' + this.filterObj.report_type + '_' + now + '.xlsx');
   }
 
 }

@@ -26,8 +26,6 @@ export class DeviceTypeTagsComponent implements OnInit {
   isCustomTagsEditable = false;
   userData: any;
   contextApp: any;
-  applicationData: any;
-  appName: any;
   constructor(
     private route: ActivatedRoute,
     private commonService: CommonService,
@@ -38,11 +36,7 @@ export class DeviceTypeTagsComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.route.paramMap.subscribe(async params => {
-      this.appName = params.get('applicationId');
-      this.applicationData = this.userData.apps.filter(app => app.app === params.get('applicationId'))[0];
-      await this.getApplicationData();
-    });
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.originalDeviceType = JSON.parse(JSON.stringify(this.deviceType));
     this.reservedTags = CONSTANTS.DEVICE_RESERVED_TAGS_LIST;
     console.log(this.deviceType);
@@ -60,18 +54,6 @@ export class DeviceTypeTagsComponent implements OnInit {
     });
     this.processTagsData();
   }
-
-  getApplicationData() {
-    return new Promise((resolve) => {
-      this.applicationService.getApplicationDetail(this.appName).subscribe(
-        (response: any) => {
-            this.contextApp = response;
-            this.contextApp.user = this.applicationData.user;
-            resolve();
-        });
-    });
-  }
-
 
   processTagsData() {
       this.deviceTypeCustomTags = [];
@@ -116,7 +98,6 @@ export class DeviceTypeTagsComponent implements OnInit {
       this.deviceType.tags.created_by = this.deviceType.created_by;
       this.deviceType.tags.app = this.deviceType.app;
       this.originalDeviceType = null;
-      console.log('aaaaaaaaaaaaaaaaa', this.deviceType);
       this.originalDeviceType = JSON.parse(JSON.stringify(this.deviceType));
   }
 

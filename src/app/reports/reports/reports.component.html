@@ -6,16 +6,16 @@
     <div class="col-xl-12 col-md-12 mb-12">
       <form>
         <div class="form-group form-inline my-2 mx-3">
-          <ng-container *ngFor="let level of appData?.hierarchy?.levels; let index = index;">
+          <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let index = index;">
           <select *ngIf="index !== 0" class="form-control form-control-sm mx-1 my-1" id="{{level}}"
-          [disabled]="appData?.user?.hierarchy[level]"
+          [disabled]="contextApp?.user?.hierarchy[level]"
           [(ngModel)]="configureHierarchy[index]" name="{{level}}" (change)="onChangeOfHierarchy(index)">
             <option [ngValue]="undefined">Select {{level}}</option>
             <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">
               {{tag}}
             </option>
           </select>
-          <input  type="text" *ngIf="index === 0"  defaultValue="{{appData.app}}" disabled class="form-control form-control-sm mx-1 my-1">
+          <input  type="text" *ngIf="index === 0"  defaultValue="{{contextApp.app}}" disabled class="form-control form-control-sm mx-1 my-1">
         </ng-container>
         <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory" [(ngModel)]="filterObj.device"
         name="deviceCategory" (change)="onAssetSelection()">
@@ -100,7 +100,7 @@
       <h5 >{{filterObj.report_type}}
         <a href="javascript:void(0)" (click)="savePDF()" title="Export as PDF"><i class="fa fa-sm fa-file-pdf-o" ></i></a>
         <a href="javascript:void(0)" (click)="saveExcel()" title="Export as Excel" class="ml-1"><i class="fa fa-sm fa-file-excel-o" ></i></a>
-        <i *ngIf="isTelemetryLoading" class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+
       </h5>
       <table class="table table-bordered table-striped"  id="dataTable" width="100%" cellspacing="0"
       *ngIf="isFilterSelected && filterObj.report_type === 'Telemetry Report'">
@@ -108,7 +108,7 @@
           <tr class="bg-secondary text-white">
             <th>Asset Name</th>
             <th>Time</th>
-            <th *ngFor="let property of props"> {{property.id}}</th>
+            <th *ngFor="let property of selectedProps"> {{property.id}}</th>
           </tr>
         </thead>
         <tbody>
@@ -121,14 +121,22 @@
               (filterObj.device.device_display_name ? filterObj.device.device_display_name : filterObj.device.device_id)
               : '' )}}</td>
               <td>{{ telemetryObj.local_created_date }}</td>
-              <td *ngFor="let prop of props"> {{telemetryObj[prop.value.json_key]}}</td>
+              <td *ngFor="let prop of selectedProps"> {{telemetryObj[prop.value.json_key]}}</td>
                           </tr>
           </ng-container>
           <ng-container *ngIf="telemetry.length === 0 && !isTelemetryLoading">
             <tr>
-              <td colspan="5">No telemetry data available.</td>
+              <td [attr.colspan]="2 + selectedProps.length">No telemetry data available.</td>
             </tr>
           </ng-container>
+           <ng-container *ngIf="telemetry.length === 0 && isTelemetryLoading">
+            <tr>
+              <td [attr.colspan]="2 + selectedProps.length">
+                <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+              </td>
+            </tr>
+          </ng-container>
+
         </tbody>
       </table>
       <table class="table table-bordered table-striped"  id="dataTable" width="100%" cellspacing="0"

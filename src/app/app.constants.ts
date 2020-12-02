@@ -612,6 +612,7 @@ export class CONSTANTS {
   ];
 
   public static USER_DETAILS = 'userData';
+  public static SELECTED_APP_DATA = 'selectedAppData';
   public static CURRENT_BREADCRUMB_STATE = 'breadcrumbState';
   public static NON_IP_DEVICES = 'Non IP Devices';
   public static IP_DEVICE = 'IoT Device';

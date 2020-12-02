@@ -119,6 +119,7 @@ export class CommonService {
   onLogOut() {
     localStorage.removeItem(CONSTANTS.USER_DETAILS);
     localStorage.removeItem('breadcrumbState');
+    localStorage.removeItem(CONSTANTS.SELECTED_APP_DATA);
     this.router.navigate(['']);
   }
 }

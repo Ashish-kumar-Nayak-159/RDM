@@ -28,7 +28,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   private chart: am4charts.XYChart;
   userData: any;
-  appData: any = {};
+  contextApp: any = {};
   latestAlerts: any[] = [];
   isAlertAPILoading = false;
   propertyList: any[] = [];
@@ -54,8 +54,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   propList: any[];
   showThreshold = false;
   selectedPropertyForChart: any[] = [];
-  applicationData: any;
-  appName: any;
   alertCondition: any = {};
   documents: any[] = [];
   configureHierarchy = {};
@@ -75,36 +73,23 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.route.paramMap.subscribe(async params => {
-      if (params.get('applicationId')) {
-        this.appName = params.get('applicationId');
-        this.applicationData = this.userData.apps.filter(
-          app => app.app === params.get('applicationId')
-        )[0];
-        await this.getApplicationData();
-        this.filterObj.app = this.appData.app;
-        this.filterObj.count = 10;
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    if (this.contextApp.hierarchy.levels.length > 1) {
+      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+    }
+    this.contextApp.hierarchy.levels.forEach((level, index) => {
+      if (index !== 0) {
+        this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+        if (this.contextApp.user.hierarchy[level]) {
+          this.onChangeOfHierarchy(index);
+        }
       }
-      // this.commonService.breadcrumbEvent.emit({
-      //   type: 'replace',
-      //   data: [
-      //     {
-      //       title: this.appData.user.hierarchyString,
-      //       url: 'applications/' + this.appData.app
-      //     },
-      //       {
-      //         title: 'Visualization',
-      //         url: 'applications/' + this.appData.app + '/visualization'
-      //       }
-      //   ]
-      // });
-     // this.getLatestAlerts();
-      await this.getDevices(this.appData.user.hierarchy);
-     // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
     });
-
+    this.filterObj.app = this.contextApp.app;
+    this.filterObj.count = 10;
+    await this.getDevices(this.contextApp.user.hierarchy);
   }
 
   async onChangeOfHierarchy(i) {
@@ -118,7 +103,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.hierarchyArr[key] = [];
       }
     });
-    let nextHierarchy = this.appData.hierarchy.tags;
+    let nextHierarchy = this.contextApp.hierarchy.tags;
     Object.keys(this.configureHierarchy).forEach((key, index) => {
       if (this.configureHierarchy[index + 1]) {
         nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
@@ -127,34 +112,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     if (nextHierarchy) {
       this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
     }
-    const hierarchyObj: any = { App: this.applicationData.app};
+    const hierarchyObj: any = { App: this.contextApp.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
-      hierarchyObj[this.appData.hierarchy.levels[key]] = this.configureHierarchy[key];
+      hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
       console.log(hierarchyObj);
     });
     await this.getDevices(hierarchyObj);
-  }
-
-  getApplicationData() {
-    return new Promise((resolve) => {
-      this.applicationService.getApplicationDetail(this.appName).subscribe(
-        (response: any) => {
-            this.appData = response;
-            this.appData.user = this.applicationData.user;
-            if (this.appData.hierarchy.levels.length > 1) {
-              this.hierarchyArr[1] = Object.keys(this.appData.hierarchy.tags);
-            }
-            this.appData.hierarchy.levels.forEach((level, index) => {
-              if (index !== 0) {
-                this.configureHierarchy[index] = this.appData.user.hierarchy[level];
-                if (this.appData.user.hierarchy[level]) {
-                  this.onChangeOfHierarchy(index);
-                }
-              }
-            });
-            resolve();
-        });
-    });
   }
 
   browserOnly(f: () => void) {
@@ -174,7 +137,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   getDevices(hierarchy) {
     return new Promise((resolve) => {
       const obj = {
-        app: this.appData.app,
+        app: this.contextApp.app,
         hierarchy: JSON.stringify(hierarchy),
       };
       this.deviceService.getDeviceList(obj).subscribe(
@@ -205,13 +168,13 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.latestAlerts = [];
     this.isAlertAPILoading = true;
     // const filterObj = {
-    //   app: this.appData.app,
+    //   app: this.contextApp.app,
     //   count: 10
     // };
     const obj = {...this.filterObj};
-    obj.hierarchy = { App: this.applicationData.app};
+    obj.hierarchy = { App: this.contextApp.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
-      obj.hierarchy[this.appData.hierarchy.levels[key]] = this.configureHierarchy[key];
+      obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
       console.log(obj.hierarchy);
     });
     obj.hierarchy = JSON.stringify(obj.hierarchy);
@@ -257,14 +220,14 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   onAssetSelection() {
     this.nonIPDevices = [];
-    const hierarchyObj: any = { App: this.applicationData.app};
+    const hierarchyObj: any = { App: this.contextApp.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
-      hierarchyObj[this.appData.hierarchy.levels[key]] = this.configureHierarchy[key];
+      hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
       console.log(hierarchyObj);
     });
     if (this.filterObj.device?.cloud_connectivity.includes('Gateway')) {
       const obj = {
-        app: this.appData.app,
+        app: this.contextApp.app,
         hierarchy: JSON.stringify(hierarchyObj),
       };
       this.deviceService.getNonIPDeviceList(obj).subscribe(
@@ -280,7 +243,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   getDeviceData() {
     return new Promise((resolve) => {
       const obj = {
-        app: this.appData.app,
+        app: this.contextApp.app,
         device_id: this.selectedAlert.device_id
       };
       const methodToCall = this.selectedAlert.gateway_id === this.selectedAlert.device_id || !this.selectedAlert.gateway_id ?
@@ -302,13 +265,13 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   getAlertConditions() {
     return new Promise((resolve, reject) => {
       const filterObj = {
-        app: this.appData.app,
+        app: this.contextApp.app,
         device_id: this.selectedAlert.device_id,
         legacy: !(this.selectedAlert.device_id === this.selectedAlert.gateway_id),
         message: this.selectedAlert.message
       };
       this.alertCondition = undefined;
-      this.deviceTypeService.getAlertConditions(this.appData.app, filterObj).subscribe(
+      this.deviceTypeService.getAlertConditions(this.contextApp.app, filterObj).subscribe(
         (response: any) => {
           if (response?.data) {
             this.alertCondition = response.data[0];
@@ -323,7 +286,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       this.documents = [];
       const obj = {
-        app: this.appData.app,
+        app: this.contextApp.app,
         device_type: this.alertCondition?.device_type ?  this.alertCondition.device_type : this.selectedDevice.tags.device_type
       };
       this.deviceTypeService.getThingsModelDocuments(obj).subscribe(
@@ -351,7 +314,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   getThingsModelProperties() {
     return new Promise((resolve) => {
       const obj = {
-        app: this.appData.app,
+        app: this.contextApp.app,
         name: this.selectedDevice?.tags?.device_type
       };
       this.deviceTypeService.getThingsModelProperties(obj).subscribe(
@@ -371,7 +334,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   getLayout() {
     return new Promise((resolve) => {
     const params = {
-      app: this.appData.app,
+      app: this.contextApp.app,
       name: this.alertCondition?.device_type ?  this.alertCondition.device_type : this.selectedDevice.tags.device_type
     };
     this.dropdownWidgetList = [];
@@ -445,7 +408,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.telemetryData = [];
     const filterObj = {
       epoch: true,
-      app: this.appData.app,
+      app: this.contextApp.app,
       device_id: this.selectedAlert.device_id,
       message_props: '',
       from_date: null,
@@ -719,7 +682,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   acknowledgeAlert(): void {
     const obj = {
-      app: this.appData.app,
+      app: this.contextApp.app,
       device_id: this.acknowledgedAlert.device_id,
       message_id: this.acknowledgedAlert.message_id,
       message: this.acknowledgedAlert.message,

@@ -12,7 +12,6 @@ import { ApplicationService } from 'src/app/services/application/application.ser
 })
 export class ApplicationSettingComponent implements OnInit {
 
-  appName: string;
   applicationData: any;
   activeTab: string;
   contextApp: any;
@@ -26,16 +25,14 @@ export class ApplicationSettingComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.route.paramMap.subscribe(params => {
-      this.appName = params.get('applicationId');
-      this.contextApp = this.userData.apps.filter(app => app.app === this.appName)[0];
-      this.getApplicationData();
       this.commonService.breadcrumbEvent.emit({
         type: 'replace',
         data: [
           {
             title: this.contextApp.user.hierarchyString,
-            url: 'applications/' + this.appName
+            url: 'applications/' + this.contextApp.app
           }
         ]
       });
@@ -58,9 +55,13 @@ export class ApplicationSettingComponent implements OnInit {
   getApplicationData() {
     this.isApplicationDataLoading = true;
     this.applicationData = undefined;
-    this.applicationService.getApplicationDetail(this.appName).subscribe(
+    this.applicationService.getApplicationDetail(this.contextApp.app).subscribe(
       (response: any) => {
           this.applicationData = response;
+          this.applicationData.user = this.contextApp.user;
+          this.applicationData.app = this.contextApp.app;
+          this.contextApp = JSON.parse(JSON.stringify(this.applicationData));
+          this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.contextApp);
           this.isApplicationDataLoading = false;
           // const index = this.userData.apps.findIndex(app => app.app === this.applicationData.app);
           // const obj = JSON.parse(JSON.stringify(this.applicationData));

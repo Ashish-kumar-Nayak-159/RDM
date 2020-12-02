@@ -28,8 +28,6 @@ export class DeviceTypeListComponent implements OnInit {
   connectivityList: string[] = [];
   isFileUploading = false;
   originalThingsModelFilterObj: any;
-  appName: any;
-  applicationData: any;
   tileName: any;
   constructor(
     private deviceTypeService: DeviceTypeService,
@@ -42,13 +40,9 @@ export class DeviceTypeListComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.route.paramMap.subscribe(async params => {
-      this.appName = params.get('applicationId');
-      this.applicationData = this.userData.apps.filter(
-        app => app.app === params.get('applicationId')
-      )[0];
-      await this.getApplicationData();
-      this.thingsModelFilterObj.app = this.applicationData.app;
+      this.thingsModelFilterObj.app = this.contextApp.app;
       this.originalThingsModelFilterObj = JSON.parse(JSON.stringify(this.thingsModelFilterObj));
       this.searchThingsModels();
       const obj = {
@@ -125,18 +119,6 @@ export class DeviceTypeListComponent implements OnInit {
     });
     console.log(name);
     this.tileName = name;
-  }
-
-  getApplicationData() {
-    return new Promise((resolve) => {
-      this.applicationService.getApplicationDetail(this.appName).subscribe(
-        (response: any) => {
-            this.contextApp = response;
-            this.contextApp.user = this.applicationData.user;
-            this.getTileName();
-            resolve();
-        });
-    });
   }
 
   searchThingsModels() {

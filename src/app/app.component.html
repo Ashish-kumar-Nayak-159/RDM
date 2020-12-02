@@ -1,5 +1,5 @@
 <div id="{{isLoginRoute || isHomeRoute  ? '' : 'wrapper'}}" >
-  <app-rdm-side-menu *ngIf="!isLoginRoute && !isHomeRoute" [appName]="appName"></app-rdm-side-menu>
+  <app-rdm-side-menu *ngIf="!isLoginRoute && !isHomeRoute"></app-rdm-side-menu>
   <!-- Content Wrapper -->
   <div id="{{isHomeRoute ? '' : 'content-wrapper'}}" [ngClass]="{'d-flex flex-column': !isHomeRoute}">
 

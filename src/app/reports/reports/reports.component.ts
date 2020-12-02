@@ -20,10 +20,8 @@ import * as XLSX from 'xlsx';
 export class ReportsComponent implements OnInit {
 
   userData: any;
-  appName: string;
-  applicationData: any;
   filterObj: any = {};
-  appData: any;
+  contextApp: any;
   hierarchyArr: any = {};
   configureHierarchy: any = {};
   devices: any[] = [];
@@ -42,6 +40,7 @@ export class ReportsComponent implements OnInit {
   };
   isFilterSelected = false;
   props: any[] = [];
+  selectedProps: any[] = [];
 
   constructor(
     private commonService: CommonService,
@@ -54,62 +53,47 @@ export class ReportsComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.route.paramMap.subscribe(async params => {
       if (params.get('applicationId')) {
-        this.appName = params.get('applicationId');
-        this.applicationData = this.userData.apps.filter(
-          app => app.app === params.get('applicationId')
-        )[0];
-        await this.getApplicationData();
-        this.filterObj.app = this.appData.app;
+        this.filterObj.app = this.contextApp.app;
        // this.filterObj.count = 10;
       }
+      if (this.contextApp.hierarchy.levels.length > 1) {
+        this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+      }
+      this.contextApp.hierarchy.levels.forEach((level, index) => {
+        if (index !== 0) {
+          this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+          if (this.contextApp.user.hierarchy[level]) {
+            this.onChangeOfHierarchy(index);
+          }
+        }
+      });
       this.commonService.breadcrumbEvent.emit({
         type: 'replace',
         data: [
           {
-            title: this.appData.user.hierarchyString,
-            url: 'applications/' + this.appData.app
+            title: this.contextApp.user.hierarchyString,
+            url: 'applications/' + this.contextApp.app
           },
             {
               title: 'Visualization',
-              url: 'applications/' + this.appData.app + '/visualization'
+              url: 'applications/' + this.contextApp.app + '/visualization'
             }
         ]
       });
      // this.getLatestAlerts();
-      await this.getDevices(this.appData.user.hierarchy);
+      await this.getDevices(this.contextApp.user.hierarchy);
      // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
     });
 
   }
 
-  getApplicationData() {
-    return new Promise((resolve) => {
-      this.applicationService.getApplicationDetail(this.appName).subscribe(
-        (response: any) => {
-            this.appData = response;
-            this.appData.user = this.applicationData.user;
-            if (this.appData.hierarchy.levels.length > 1) {
-              this.hierarchyArr[1] = Object.keys(this.appData.hierarchy.tags);
-            }
-            this.appData.hierarchy.levels.forEach((level, index) => {
-              if (index !== 0) {
-                this.configureHierarchy[index] = this.appData.user.hierarchy[level];
-                if (this.appData.user.hierarchy[level]) {
-                  this.onChangeOfHierarchy(index);
-                }
-              }
-            });
-            resolve();
-        });
-    });
-  }
-
   getDevices(hierarchy) {
     return new Promise((resolve) => {
       const obj = {
-        app: this.appData.app,
+        app: this.contextApp.app,
         hierarchy: JSON.stringify(hierarchy),
       };
       this.deviceService.getDeviceList(obj).subscribe(
@@ -135,7 +119,7 @@ export class ReportsComponent implements OnInit {
         this.hierarchyArr[key] = [];
       }
     });
-    let nextHierarchy = this.appData.hierarchy.tags;
+    let nextHierarchy = this.contextApp.hierarchy.tags;
     Object.keys(this.configureHierarchy).forEach((key, index) => {
       if (this.configureHierarchy[index + 1]) {
         nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
@@ -145,9 +129,9 @@ export class ReportsComponent implements OnInit {
       this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
     }
     // let hierarchy = {...this.configureHierarchy};
-    const hierarchyObj: any = { App: this.applicationData.app};
+    const hierarchyObj: any = { App: this.contextApp.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
-      hierarchyObj[this.appData.hierarchy.levels[key]] = this.configureHierarchy[key];
+      hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
       console.log(hierarchyObj);
     });
     await this.getDevices(hierarchyObj);
@@ -156,9 +140,9 @@ export class ReportsComponent implements OnInit {
 
   onAssetSelection() {
     this.nonIPDevices = [];
-    const hierarchyObj: any = { App: this.applicationData.app};
+    const hierarchyObj: any = { App: this.contextApp.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
-      hierarchyObj[this.appData.hierarchy.levels[key]] = this.configureHierarchy[key];
+      hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
       console.log(hierarchyObj);
     });
     // this.filterObj.device_id = this.filterObj.device.device_id;
@@ -168,13 +152,13 @@ export class ReportsComponent implements OnInit {
     }
     if (this.filterObj.device?.cloud_connectivity.includes('Gateway')) {
       const obj: any = {
-        app: this.appData.app,
+        app: this.contextApp.app,
         hierarchy: JSON.stringify(hierarchyObj),
         gateway_id: this.filterObj.device.device_id
       };
-      obj.hierarchy = { App: this.applicationData.app};
+      obj.hierarchy = { App: this.contextApp.app};
       Object.keys(this.configureHierarchy).forEach((key) => {
-        obj.hierarchy[this.appData.hierarchy.levels[key]] = this.configureHierarchy[key];
+        obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
         console.log(obj.hierarchy);
       });
       obj.hierarchy = JSON.stringify(obj.hierarchy);
@@ -229,7 +213,7 @@ export class ReportsComponent implements OnInit {
   getThingsModelProperties(deviceType) {
     return new Promise((resolve) => {
       const obj = {
-        app: this.appData.app,
+        app: this.contextApp.app,
         name: deviceType
       };
       this.deviceTypeService.getThingsModelProperties(obj).subscribe(
@@ -251,6 +235,7 @@ export class ReportsComponent implements OnInit {
   }
 
   onFilterSelection() {
+
     const obj = {...this.filterObj};
     let device_type: any;
     if (obj.non_ip_device) {
@@ -272,6 +257,9 @@ export class ReportsComponent implements OnInit {
       this.toasterService.showError('Device selection is required', 'View Report');
       return;
     }
+    this.isTelemetryLoading = true;
+    this.telemetry = [];
+    this.latestAlerts = [];
     const now = moment().utc();
     if (this.filterObj.dateOption === '5 mins') {
       obj.to_date = now.unix();
@@ -293,6 +281,7 @@ export class ReportsComponent implements OnInit {
         obj.to_date = this.filterObj.to_date.unix();
       }
     }
+    this.selectedProps = JSON.parse(JSON.stringify(this.props));
     this.isFilterSelected = true;
     if (obj.report_type === 'Telemetry Report') {
       this.getTelemetryData(obj);

@@ -26,7 +26,6 @@ export class DeviceListComponent implements OnInit {
   isCreateDeviceAPILoading = false;
   protocolList: any[] = [];
   connectivityList: any[] = [];
-  appName: string;
   componentState: string; // value must be IP Devices & Gateways or IP Device or IP Gateway or Non IP Devices
   constantData = CONSTANTS;
   originalSingularComponentState: string;
@@ -38,7 +37,6 @@ export class DeviceListComponent implements OnInit {
   contextApp: any;
   hierarchyDropdown: any[] = [];
   deviceTypes: any[] = [];
-  applicationData: any;
   tileName: string;
   hierarchyArr = {};
   configureHierarchy = {};
@@ -56,15 +54,14 @@ export class DeviceListComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+
   //  this.commonService.setFlag(true);
     this.route.paramMap.subscribe(async params => {
-      this.appName = params.get('applicationId');
-      this.applicationData = this.userData.apps.filter(
-        app => app.app === params.get('applicationId')
-      )[0];
-      this.deviceFilterObj.app = this.appName;
-      this.deviceFilterObj.hierarchy = JSON.stringify(this.applicationData.user.hierarchy);
-      this.deviceFilterObj.hierarchyString =  this.applicationData.user.hierarchyString;
+
+      this.deviceFilterObj.app = this.contextApp.app;
+      this.deviceFilterObj.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
+      this.deviceFilterObj.hierarchyString =  this.contextApp.user.hierarchyString;
       this.devicesList = [];
       if (params.get('listName')) {
         const listName = params.get('listName');
@@ -80,6 +77,22 @@ export class DeviceListComponent implements OnInit {
           this.pageType = 'Device';
         }
       }
+      if (this.contextApp.hierarchy.levels.length > 1) {
+        this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+        this.addDeviceHierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+      }
+      this.contextApp.hierarchy.levels.forEach((level, index) => {
+        if (index !== 0) {
+        this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+        this.addDeviceConfigureHierarchy[index] = this.contextApp.user.hierarchy[level];
+        if (this.contextApp.user.hierarchy[level]) {
+          this.onChangeOfHierarchy(index);
+          this.onChangeOfAddDeviceHierarchy(index);
+
+        }
+        }
+      });
+      this.getTileName();
 
       this.route.queryParamMap.subscribe(
         params1 => {
@@ -91,11 +104,10 @@ export class DeviceListComponent implements OnInit {
           this.searchDevices();
         }
       );
-      await this.getApplicationData();
       this.protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
       console.log(this.contextApp);
       this.getThingsModels(this.componentState);
-      const keys = Object.keys(this.applicationData.user.hierarchy);
+      const keys = Object.keys(this.contextApp.user.hierarchy);
       this.hierarchyDropdown = [];
       // this.contextApp.hierarchy.forEach(item => {
       //   if (item.level >= keys.length - 1 && item.name !== 'App') {
@@ -107,14 +119,14 @@ export class DeviceListComponent implements OnInit {
         data: [
           {
             title: this.contextApp.user.hierarchyString,
-            url: 'applications/' + this.appName
+            url: 'applications/' + this.contextApp.app
           },
             {
               title:
                 (this.componentState === CONSTANTS.IP_GATEWAY ? 'Gateways' :
                 (this.componentState === CONSTANTS.IP_DEVICE ? 'Devices' :
                 (this.componentState === CONSTANTS.NON_IP_DEVICE ?  'Non IP Devices' : ''))),
-              url: 'applications/' + this.appName + '/' +
+              url: 'applications/' + this.contextApp.app + '/' +
               (this.componentState === CONSTANTS.NON_IP_DEVICE ? 'nonIPDevices' : (this.pageType + 's')),
               queryParams: {
                   connection_state: this.deviceFilterObj.connection_state ? this.deviceFilterObj.connection_state : undefined
@@ -268,33 +280,6 @@ export class DeviceListComponent implements OnInit {
     this.tileName = name;
   }
 
-  getApplicationData() {
-    return new Promise((resolve) => {
-      this.applicationService.getApplicationDetail(this.appName).subscribe(
-        (response: any) => {
-            this.contextApp = response;
-            this.contextApp.user = this.applicationData.user;
-            if (this.contextApp.hierarchy.levels.length > 1) {
-              this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
-              this.addDeviceHierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
-            }
-            this.contextApp.hierarchy.levels.forEach((level, index) => {
-              if (index !== 0) {
-              this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-              this.addDeviceConfigureHierarchy[index] = this.contextApp.user.hierarchy[level];
-              if (this.contextApp.user.hierarchy[level]) {
-                this.onChangeOfHierarchy(index);
-                this.onChangeOfAddDeviceHierarchy(index);
-
-              }
-              }
-            });
-            this.getTileName();
-            resolve();
-        });
-    });
-  }
-
   getThingsModels(type) {
     console.log('207      ', type);
     this.deviceTypes = [];
@@ -316,7 +301,7 @@ export class DeviceListComponent implements OnInit {
   getGatewayList() {
     this.gateways = [];
     const obj = {
-      app: this.applicationData.app,
+      app: this.contextApp.app,
       category: CONSTANTS.IP_GATEWAY
     };
     this.deviceService.getDeviceList(obj).subscribe(
@@ -333,7 +318,7 @@ export class DeviceListComponent implements OnInit {
     this.isFilterSelected = true;
     const obj = JSON.parse(JSON.stringify(this.deviceFilterObj));
     if (this.contextApp) {
-    obj.hierarchy = { App: this.applicationData.app};
+    obj.hierarchy = { App: this.contextApp.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
       obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
       console.log(obj.hierarchy);
@@ -388,7 +373,7 @@ export class DeviceListComponent implements OnInit {
   openCreateDeviceModal() {
     this.deviceDetail = new Device();
     this.deviceDetail.tags = {};
-    this.deviceDetail.tags.app = this.appName;
+    this.deviceDetail.tags.app = this.contextApp.app;
     this.deviceDetail.tags.hierarchy_json = JSON.parse(JSON.stringify(this.contextApp.user.hierarchy));
     $('#createDeviceModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
@@ -421,20 +406,20 @@ export class DeviceListComponent implements OnInit {
     }
     this.isCreateDeviceAPILoading = true;
     console.log(this.deviceDetail);
-    this.deviceDetail.tags.hierarchy_json = { App: this.applicationData.app};
+    this.deviceDetail.tags.hierarchy_json = { App: this.contextApp.app};
     Object.keys(this.addDeviceConfigureHierarchy).forEach((key) => {
       this.deviceDetail.tags.hierarchy_json[this.contextApp.hierarchy.levels[key]] = this.addDeviceConfigureHierarchy[key];
       console.log(this.deviceDetail.tags.hierarchy_json);
     });
     this.deviceDetail.tags.hierarchy = JSON.stringify(this.deviceDetail.tags.hierarchy_json );
     this.deviceDetail.tags.created_by = this.userData.email;
-    this.deviceDetail.app = this.appName;
+    this.deviceDetail.app = this.contextApp.app;
     this.deviceDetail.tags.category = this.componentState === CONSTANTS.NON_IP_DEVICE ?
     null : this.componentState;
     this.deviceDetail.tags.created_date = moment().utc().format('M/DD/YYYY h:mm:ss A');
     const methodToCall = this.componentState === CONSTANTS.NON_IP_DEVICE
-    ? this.deviceService.createNonIPDevice(this.deviceDetail, this.appName)
-    : this.deviceService.createDevice(this.deviceDetail, this.appName);
+    ? this.deviceService.createNonIPDevice(this.deviceDetail, this.contextApp.app)
+    : this.deviceService.createDevice(this.deviceDetail, this.contextApp.app);
     methodToCall.subscribe(
       (response: any) => {
         this.isCreateDeviceAPILoading = false;
@@ -456,16 +441,16 @@ export class DeviceListComponent implements OnInit {
     console.log(this.pageType);
     if (obj.type === this.pageType.toLowerCase()) {
         if (this.gatewayId) {
-          this.router.navigate(['applications', this.appName,
+          this.router.navigate(['applications', this.contextApp.app,
           'nonIPDevices',
           obj.data.device_id, 'control-panel']);
         } else {
           if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
-            this.router.navigate(['applications', this.appName,
+            this.router.navigate(['applications', this.contextApp.app,
           'nonIPDevices',
           obj.data.device_id, 'control-panel']);
           } else {
-          this.router.navigate(['applications', this.appName,
+          this.router.navigate(['applications', this.contextApp.app,
           (this.pageType.toLowerCase() + 's') ,
           obj.data.device_id, 'control-panel']);
           }

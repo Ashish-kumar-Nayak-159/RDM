@@ -18,14 +18,12 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
   device: Device;
   isDeviceDataLoading = false;
   userData: any;
-  appName: string;
   componentState: any;
   gatewayId: string;
   pageType: any;
   tagsObj: any;
   contextApp: any;
   menuItems: any[] = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
-  applicationData: any;
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private deviceService: DeviceService,
@@ -36,13 +34,9 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.route.paramMap.subscribe(
       async params => {
-        this.appName = params.get('applicationId');
-        console.log(this.appName);
-        this.applicationData = this.userData.apps.find(app => app.app === this.appName);
-        await this.getApplicationData();
-        console.log(this.contextApp);
         if (this.contextApp?.configuration?.device_control_panel_menu.length > 0) {
           this.menuItems = this.contextApp.configuration.device_control_panel_menu;
           console.log(this.menuItems);
@@ -94,16 +88,6 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
     // this.setToggleClassForMenu();
   }
 
-  getApplicationData() {
-    return new Promise((resolve) => {
-      this.applicationService.getApplicationDetail(this.appName).subscribe(
-        (response: any) => {
-            this.contextApp = response;
-            this.contextApp.user = this.applicationData.user;
-            resolve();
-        });
-    });
-  }
 
   setToggleClassForMenu() {
     if ($(window).width() > 768 && $('.sidebar').hasClass('toggled')) {
@@ -187,14 +171,14 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
     if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
 
       const obj = {
-        app: this.appName,
+        app: this.contextApp.app,
         device_id: this.device.device_id,
         gateway_id: this.device.gateway_id
       };
       methodToCall = this.deviceService.getNonIPDeviceList(obj);
       await this.getDeviceTags(obj);
     } else {
-      methodToCall = this.deviceService.getDeviceData(this.device.device_id, this.appName);
+      methodToCall = this.deviceService.getDeviceData(this.device.device_id, this.contextApp.app);
     }
     methodToCall.subscribe(
       (response: any) => {
@@ -214,7 +198,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
               {
                 title: (this.device.tags.display_name ? this.device.tags.display_name : this.device.device_id) + ' / Control Panel',
                 url:
-                'applications/' + this.appName + '/' + (this.componentState === CONSTANTS.NON_IP_DEVICE ? 'nonIPDevices' :
+                'applications/' + this.contextApp.app + '/' + (this.componentState === CONSTANTS.NON_IP_DEVICE ? 'nonIPDevices' :
                 (this.pageType.toLowerCase() + 's')) + '/' + this.device.device_id + '/control-panel'
               }
           ]

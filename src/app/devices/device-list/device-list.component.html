@@ -101,7 +101,7 @@
       <form>
         <div class="form-group">
           <label for="message-text" class="col-form-label">App:</label>
-          <input type="text" class="form-control" id="app_name" [defaultValue]="appName" disabled>
+          <input type="text" class="form-control" id="app_name" [defaultValue]="contextApp.app" disabled>
         </div>
         <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let hIndex = index" >
         <div class="form-group" *ngIf="hIndex !== 0">

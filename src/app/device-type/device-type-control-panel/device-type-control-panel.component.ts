@@ -15,12 +15,10 @@ export class DeviceTypeControlPanelComponent implements OnInit {
 
   deviceType: any;
   isDeviceTypeDataLoading = false;
-  appName: string;
   activeTab: string;
   menuItems: any[] = CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST;
   contextApp: any;
   userData: any;
-  applicationData: any;
   constructor(
     private route: ActivatedRoute,
     private deviceTypeService: DeviceTypeService,
@@ -30,14 +28,10 @@ export class DeviceTypeControlPanelComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.route.paramMap.subscribe(async params => {
-      this.appName = params.get('applicationId');
-      this.applicationData = this.userData.apps.find(app => app.app === this.appName);
-      console.log(this.contextApp);
-      await this.getApplicationData();
       if (this.contextApp?.configuration?.model_control_panel_menu?.length > 0) {
         this.menuItems = this.contextApp.configuration.model_control_panel_menu;
-        console.log(this.menuItems);
       }
       this.getDeviceTypeData(params.get('deviceTypeId'));
     });
@@ -51,17 +45,6 @@ export class DeviceTypeControlPanelComponent implements OnInit {
         }
       }
     );
-  }
-
-  getApplicationData() {
-    return new Promise((resolve) => {
-      this.applicationService.getApplicationDetail(this.appName).subscribe(
-        (response: any) => {
-            this.contextApp = response;
-            this.contextApp.user = this.applicationData.user;
-            resolve();
-        });
-    });
   }
 
   setActiveTab(tab) {
@@ -142,7 +125,7 @@ export class DeviceTypeControlPanelComponent implements OnInit {
     this.isDeviceTypeDataLoading = true;
     const obj = {
       name: deviceTypeId,
-      app: this.appName
+      app: this.contextApp.app
     };
     this.deviceTypeService.getThingsModelsList(obj).subscribe(
       (response: any) => {
@@ -154,7 +137,7 @@ export class DeviceTypeControlPanelComponent implements OnInit {
                 {
                   title: (this.deviceType.name) + ' / Control Panel',
                   url:
-                  'applications/' + this.appName + '/things/model/' + this.deviceType.name + '/control-panel'
+                  'applications/' + this.contextApp.app + '/things/model/' + this.deviceType.name + '/control-panel'
                 }
             ]
           });

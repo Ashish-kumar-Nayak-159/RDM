@@ -15,12 +15,9 @@ declare var $: any;
 export class RDMSideMenuComponent implements OnInit, OnChanges {
 
   userData: any;
-  @Input() appName = '';
   constantsData = CONSTANTS;
-  appData: any;
+  contextApp: any;
   displayMenuList = [];
-  predictiveDemoUrl = 'https://app.powerbi.com/view?r=eyJrIjoiMzUyOWE3MmUtZWJhYi00NzA5LWI1YjktMTMwZDg1NjJiNmY2IiwidCI6IjA4YjdjZmViLTg5N2UtNDY5Yi05NDM2LTk3NGU2OTRhOGRmMiJ9&pageName=ReportSection';
-  applicationData: any;
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private commonService: CommonService,
@@ -31,21 +28,20 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     // if (this.userData && !this.userData.is_super_admin) {
     //   this.appName = this.userData.apps[0].app;
     // }
 
-    if (this.appName) {
-      this.applicationData = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
-      await this.getApplicationData();
+    if (this.contextApp.app) {
       if (!this.userData?.is_super_admin) {
       let data = [];
      // alert('here');
-      console.log(this.appData);
-      if (this.appData?.configuration?.main_menu?.length > 0) {
+      console.log(this.contextApp);
+      if (this.contextApp?.configuration?.main_menu?.length > 0) {
         this.constantsData.SIDE_MENU_LIST.forEach(config => {
           let found = false;
-          this.appData.configuration.main_menu.forEach(item => {
+          this.contextApp.configuration.main_menu.forEach(item => {
             if (config.page === item.page) {
               found = true;
               data.push(item);
@@ -58,30 +54,20 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
       } else {
         data =  this.constantsData.SIDE_MENU_LIST;
       }
-      this.processSideMenuData(data, this.appData);
+      this.processSideMenuData(data, this.contextApp);
       }
     }
     let i = 0;
     this.router.events.subscribe(async event => {
       if (event instanceof NavigationEnd && i === 0) {
         i++;
-        const list = event.url.split('/');
-        if (list[1] === 'applications' && list[2]) {
-          this.appName = list[2];
-        } else {
-          if (this.userData && !this.userData.is_super_admin) {
-            this.appName = this.userData.apps[0].app;
-          }
-        }
-        if (this.appName) {
-        this.applicationData = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
-        await this.getApplicationData();
+        if (this.contextApp.app) {
         if (!this.userData?.is_super_admin) {
         let data = [];
-        if (this.appData.configuration?.main_menu?.length > 0) {
+        if (this.contextApp.configuration?.main_menu?.length > 0) {
           this.constantsData.SIDE_MENU_LIST.forEach(config => {
             let found = false;
-            this.appData.configuration.main_menu.forEach(item => {
+            this.contextApp.configuration.main_menu.forEach(item => {
               if (config.page === item.page) {
                 found = true;
                 data.push(item);
@@ -94,14 +80,15 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
         } else {
           data =  this.constantsData.SIDE_MENU_LIST;
         }
-        this.processSideMenuData(data, this.appData);
+        this.processSideMenuData(data, this.contextApp);
         }
         }
       }
     });
 
     this.commonService.refreshSideMenuData.subscribe(list => {
-      const config = list.configuration?.main_menu?.length > 0 ? list.configuration.main_menu : CONSTANTS.SIDE_MENU_LIST;
+      let config = list.configuration?.main_menu?.length > 0 ? list.configuration.main_menu : CONSTANTS.SIDE_MENU_LIST;
+      config = JSON.parse(JSON.stringify(config));
       this.processSideMenuData(config, list);
       // const index = this.userData.apps.findIndex(app => app.app === list.app);
       // const obj = this.userData.apps[index];
@@ -114,23 +101,8 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (this.userData) {
-      this.appData = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
-      await this.getApplicationData();
+      this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     }
-  }
-
-  getApplicationData() {
-    return new Promise((resolve) => {
-      this.applicationService.getApplicationDetail(this.appName).subscribe(
-        (response: any) => {
-            this.appData = response;
-            console.log(response);
-            if (this.applicationData?.user) {
-            this.appData.user = this.applicationData.user;
-            }
-            resolve();
-        });
-    });
   }
 
   processSideMenuData(data, list) {
@@ -154,7 +126,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
   });
     arr.forEach(element => {
       if (element.page === 'App Settings' || element.page === 'Things Modelling') {
-        if (this.applicationData?.user.role !== CONSTANTS.APP_ADMIN_ROLE) {
+        if (this.contextApp?.user.role !== CONSTANTS.APP_ADMIN_ROLE) {
         element.visible = false;
         } else {
           element.visible = true;
@@ -182,7 +154,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
   }
 
   getURL(url) {
-    return url ? url.replace(':appName', this.decode(this.appName)) : url;
+    return url ? url.replace(':appName', this.decode(this.contextApp.app)) : url;
   }
 
   decode(item) {

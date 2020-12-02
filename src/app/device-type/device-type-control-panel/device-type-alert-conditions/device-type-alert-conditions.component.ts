@@ -113,7 +113,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
 
   addVisualizationWidget() {
     // this.editVisuailzationWidget[this.alertObj.visualization_widgets.length] = true;
-
+    
     const index = this.alertObj.visualization_widgets.findIndex(widget => widget === this.widgetName);
     if (index > -1) {
       this.toasterService.showError('Same Widget is already added.', 'Add Widget');
@@ -158,7 +158,6 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
       this.alertObj.reference_documents.splice(this.alertObj.reference_documents.length, 0, this.docName);
     }
     this.docName = undefined;
-    console.log(this.alertObj.reference_documents);
   }
 
   editSteps() {
@@ -242,7 +241,6 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
         this.alertObj.visualization_widgets.splice(index, 1);
       }
     });
-    console.log(JSON.stringify(this.alertObj.reference_documents));
     arr = this.alertObj.reference_documents;
     this.alertObj.reference_documents = [];
     this.documents.forEach(doc => {

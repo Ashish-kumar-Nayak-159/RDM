@@ -1,3 +1,4 @@
+import { ApplicationService } from 'src/app/services/application/application.service';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToasterService } from '../services/toaster.service';
@@ -16,10 +17,12 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
   userData: any;
   isResetPassword = false;
   isLoginAPILoading = false;
+  applicationData: any;
   constructor(
     private router: Router,
     private toasterService: ToasterService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private applicationService: ApplicationService
   ) { }
 
   ngOnInit(): void {
@@ -62,7 +65,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
     if (this.loginForm.email && this.loginForm.password) {
       this.isLoginAPILoading = true;
       this.commonService.loginUser(this.loginForm).subscribe(
-        (response: any) => {
+        async (response: any) => {
           this.userData = response;
           if (response.is_super_admin) {
             console.log('in login 28');
@@ -90,6 +93,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
               if (this.userData.apps && this.userData.apps.length > 1) {
                 this.router.navigate(['applications', 'selection']);
               } else if (this.userData.apps && this.userData.apps.length === 1) {
+                await this.getApplicationData(this.userData.apps[0]);
                 this.router.navigate(['applications', this.userData.apps[0].app]);
               }
             } else {
@@ -109,6 +113,20 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
       this.isLoginAPILoading = false;
       this.toasterService.showError('Please enter username and password', 'Login');
     }
+  }
+
+  getApplicationData(app) {
+    return new Promise((resolve) => {
+    this.applicationData = undefined;
+    this.applicationService.getApplicationDetail(app.app).subscribe(
+      (response: any) => {
+          this.applicationData = response;
+          this.applicationData.app = app.app;
+          this.applicationData.user = app.user;
+          this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
+          resolve();
+      });
+    });
   }
 
 }

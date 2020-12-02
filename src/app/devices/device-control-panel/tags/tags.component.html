@@ -58,7 +58,7 @@
               <td>{{tag.name}}</td>
               <td>
                 <ng-container
-                  *ngIf="tag?.key === 'local_created_date' || (tagsListToNotEdit?.indexOf(tag.key) !== -1 && originalDevice?.tags[tag.key] ) 
+                  *ngIf="tag?.key === 'local_created_date' || (tagsListToNotEdit?.indexOf(tag.key) !== -1 && originalDevice?.tags[tag.key] )
                   || !isReservedTagsEditable;else inputTemplate">
                   {{device?.tags[tag.key]}}
                 </ng-container>

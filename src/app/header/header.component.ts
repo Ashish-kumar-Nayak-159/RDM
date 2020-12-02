@@ -17,9 +17,8 @@ export class HeaderComponent implements OnInit, OnChanges {
   breadcrumbData: any[] = [];
   userData: any;
   @Input() url: string;
-  @Input() appName = '';
   @Input() isLoginRoute = false;
-  contextApp: any;
+  @Input() contextApp: any;
   blobToken = environment.blobKey;
 
   constructor(
@@ -54,9 +53,9 @@ export class HeaderComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    if (this.appName && this.userData) {
-      this.contextApp = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
-      if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.header_logo) {
+    // this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    if (this.contextApp && this.userData) {
+      if (this.contextApp.metadata && !this.contextApp.metadata.header_logo) {
         this.contextApp.metadata.header_logo = {
           url : CONSTANTS.DEFAULT_HEADER_LOGO
         };
@@ -72,11 +71,10 @@ export class HeaderComponent implements OnInit, OnChanges {
         this.breadcrumbData = this.commonService.getItemFromLocalStorage(CONSTANTS.CURRENT_BREADCRUMB_STATE);
       }
     });
-
     this.commonService.refreshSideMenuData.subscribe(list => {
-      this.appName = list.app;
-      this.contextApp = this.userData?.apps.filter(app => app.app === this.decode(this.appName))[0];
-      if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.header_logo) {
+
+      this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+      if (this.contextApp?.metadata && !this.contextApp.metadata.header_logo) {
         this.contextApp.metadata.header_logo = {
           url : CONSTANTS.DEFAULT_HEADER_LOGO
         };
@@ -89,15 +87,31 @@ export class HeaderComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     console.log(changes);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    if (changes.appName && this.userData) {
-      this.appName = changes.appName.currentValue;
-      this.contextApp = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
+    if (changes && this.userData) {
+      // this.appName = changes.appName.currentValue;
+      this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
       if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.header_logo) {
         this.contextApp.metadata.header_logo = {
           url : CONSTANTS.DEFAULT_HEADER_LOGO
         };
       }
     }
+  }
+
+  redirectToFirstMenu() {
+    const menu = this.contextApp.configuration.main_menu.length > 0 ?
+    this.contextApp.configuration.main_menu : CONSTANTS.SIDE_MENU_LIST;
+    let i = 0;
+    menu.forEach(menuObj => {
+      if ( i === 0 && menuObj.visible) {
+        i++;
+        const url = menuObj.url;
+        if (menuObj.url?.includes(':appName')) {
+          menuObj.url = menuObj.url.replace(':appName', this.contextApp.app);
+          this.router.navigateByUrl(menuObj.url);
+        }
+      }
+    });
   }
 
   onClickOfBreadcrumbItem(obj, index) {
@@ -110,17 +124,6 @@ export class HeaderComponent implements OnInit, OnChanges {
     this.router.navigate([obj.url], {queryParams: (obj.queryParams ? obj.queryParams : undefined)});
   }
 
-  onClickOfAppChange(app) {
-    this.contextApp = app;
-    if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.header_logo) {
-      this.contextApp.metadata.header_logo = {
-        url : CONSTANTS.DEFAULT_HEADER_LOGO
-      };
-    }
-    this.appName = app.app;
-    this.commonService.refreshSideMenuData.emit(app);
-    this.router.navigate(['applications', app.app]);
-  }
 
   onSideBarToggleTopClick() {
     $('body').toggleClass('sidebar-toggled');

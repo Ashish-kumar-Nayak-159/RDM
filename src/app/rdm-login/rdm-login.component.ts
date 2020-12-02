@@ -25,7 +25,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
     private applicationService: ApplicationService
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
 
     this.commonService.resetPassword.subscribe((resetPassword: boolean) => {
       if (!resetPassword) {
@@ -41,6 +41,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
         if (this.userData.apps && this.userData.apps.length > 1) {
           this.router.navigate(['applications', 'selection']);
         } else if (this.userData.apps && this.userData.apps.length === 1) {
+          await this.getApplicationData(this.userData.apps[0]);
           this.router.navigate(['applications', this.userData.apps[0].app]);
         }
       }
@@ -94,7 +95,20 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
                 this.router.navigate(['applications', 'selection']);
               } else if (this.userData.apps && this.userData.apps.length === 1) {
                 await this.getApplicationData(this.userData.apps[0]);
-                this.router.navigate(['applications', this.userData.apps[0].app]);
+                const menu = this.applicationData.configuration.main_menu.length > 0 ?
+                this.applicationData.configuration.main_menu : CONSTANTS.SIDE_MENU_LIST;
+                let i = 0;
+                menu.forEach(menuObj => {
+                  if ( i === 0 && menuObj.visible) {
+                    i++;
+                    const url = menuObj.url;
+                    if (menuObj.url?.includes(':appName')) {
+                      menuObj.url = menuObj.url.replace(':appName', this.applicationData.app);
+                      console.log(menuObj.url);
+                      this.router.navigateByUrl(menuObj.url);
+                    }
+                  }
+                });
               }
             } else {
               this.isLoginAPILoading = false;

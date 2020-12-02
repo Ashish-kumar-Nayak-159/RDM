@@ -1,3 +1,4 @@
+import { VisualizationModule } from './../visualization/visualization.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DevicesRoutingModule } from './devices-routing.module';
@@ -87,7 +88,8 @@ import { PredictiveMaintenanceComponent } from './device-control-panel/predictiv
     OwlNativeDateTimeModule,
     GoogleMapsModule,
     NgMultiSelectDropDownModule.forRoot(),
-    UiSwitchModule
+    UiSwitchModule,
+    VisualizationModule
   ],
   exports: [
     FilterComponent,

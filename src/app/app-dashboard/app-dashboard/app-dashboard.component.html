@@ -2,4 +2,4 @@
 <app-water-tank-monitor [contextApp]="contextApp" *ngIf="contextApp.app === 'WaterTankMonitor'"></app-water-tank-monitor>
 <app-pump-dashboard [contextApp]="contextApp" *ngIf="contextApp.app === 'IIoT_Pump'"></app-pump-dashboard>
 
-<app-compressor-dashboard [contextApp]="contextApp" *ngIf="contextApp.app === 'SopanCMS' && contextApp"></app-compressor-dashboard>
+<app-compressor-dashboard [contextApp]="contextApp" *ngIf="contextApp && (contextApp.app === 'SopanCMS' || contextApp.app === 'IIoT_Compressor') "></app-compressor-dashboard>

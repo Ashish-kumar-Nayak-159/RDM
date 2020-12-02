@@ -9,7 +9,7 @@
 
   <!-- Sidebar - Brand -->
   <a class="d-flex align-items-center justify-content-center" *ngIf="!userData?.is_super_admin"
-  [routerLink]="['applications', appName]">
+   href="javascript:void(0)" (click)="redirectToFirstMenu()">
     <img src="{{contextApp?.metadata?.header_logo?.url + blobToken}}" class="d-block img-fluid img-logo">
   </a>
   <a class="d-flex align-items-center justify-content-center" *ngIf="userData?.is_super_admin"
@@ -195,7 +195,7 @@
           Activity Log
         </a>
 
-        <ng-container  *ngIf="userData.apps.length > 1">
+        <ng-container  *ngIf="userData?.apps.length > 1">
           <div class="dropdown-divider"></div>
         <a class="dropdown-item"
         [routerLink]="['applications', 'selection']" routerLinkActive="active" >

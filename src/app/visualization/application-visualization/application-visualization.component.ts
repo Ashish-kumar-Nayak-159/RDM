@@ -5,7 +5,7 @@ import { PieChartComponent } from './../../common/charts/pie-chart/pie-chart.com
 import { DeviceTypeService } from './../../services/device-type/device-type.service';
 import { ToasterService } from './../../services/toaster.service';
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, NgZone, EmbeddedViewRef,
-  ApplicationRef, ComponentFactoryResolver, Injector } from '@angular/core';
+  ApplicationRef, ComponentFactoryResolver, Injector, Input } from '@angular/core';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from './../../services/common.service';
 import { DeviceService } from './../../services/devices/device.service';
@@ -26,6 +26,8 @@ declare var $: any;
 })
 export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
+  @Input() device: any;
+  @Input() pageType: string;
   private chart: am4charts.XYChart;
   userData: any;
   contextApp: any = {};
@@ -87,6 +89,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         }
       }
     });
+    if (this.pageType === 'history') {
+      this.filterObj.device = this.device;
+    }
     this.filterObj.app = this.contextApp.app;
     this.filterObj.count = 10;
     await this.getDevices(this.contextApp.user.hierarchy);
@@ -214,10 +219,29 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.latestAlerts = response.data;
         this.latestAlerts.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
         this.isAlertAPILoading = false;
+        if (this.pageType === 'live') {
+        clearInterval(this.refreshInterval);
+        this.refreshInterval = setInterval(() => {
+          this.getLiveAlerts(obj);
+        }, 5000);
+        }
       }, () => this.isAlertAPILoading = false
     );
   }
 
+  getLiveAlerts(obj) {
+    obj.count = 1;
+    this.deviceService.getDeviceAlerts(obj).subscribe(
+      (response: any) => {
+        if (response?.data?.length > 0) {
+          if (this.latestAlerts.length > 0 && this.latestAlerts[0].message_id !== response.data[0].message_id) {
+            this.latestAlerts.splice(this.latestAlerts.length - 1, 1);
+            response.data[0].local_created_date = this.commonService.convertUTCDateToLocal(response.data[0].message_date);
+            this.latestAlerts.splice(0, 0, response.data[0]);
+          }
+        }
+      });
+  }
   onAssetSelection() {
     this.nonIPDevices = [];
     const hierarchyObj: any = { App: this.contextApp.app};

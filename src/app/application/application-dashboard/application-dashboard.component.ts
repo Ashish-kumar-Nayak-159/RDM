@@ -14,7 +14,7 @@ import { environment } from 'src/environments/environment';
   templateUrl: './application-dashboard.component.html',
   styleUrls: ['./application-dashboard.component.css']
 })
-export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ApplicationDashboardComponent implements OnInit, OnDestroy {
 
   @ViewChildren('c2dChart') c2dChart: ElementRef;
   @ViewChildren('d2cChart') d2cChart: ElementRef;
@@ -105,15 +105,6 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
 
   }
 
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      const node = document.createElement('script');
-      node.src = './assets/js/kdm.min.js';
-      node.type = 'text/javascript';
-      node.async = false;
-      document.getElementsByTagName('head')[0].appendChild(node);
-      }, 500);
-  }
 
   getTileName(type) {
     let name;

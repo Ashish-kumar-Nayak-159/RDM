@@ -73,7 +73,7 @@
             <span [owlDateTimeTrigger]="dt2"  class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
             <owl-date-time #dt2 [pickerType]="'calendar'"></owl-date-time>
           </ng-container>
-          <label class="ml-1 mr-1">OR</label>
+          <label class="ml-2 mr-1">OR</label>
           <ng-container>
             <input [owlDateTime]="dt1" [selectMode]="'range'" (dateTimeChange)="onDateChange($event)"
               class="form-control form-control-sm mx-1 my-1 col-md-2" [owlDateTimeTrigger]="dt1"
@@ -82,7 +82,7 @@
             <owl-date-time #dt1></owl-date-time>
           </ng-container>
 
-          <button type="button" class="btn btn-warning btn-sm mx-2 my-1" title="Search" (click)="onFilterSelection()" ><i
+          <button type="button" class="btn btn-warning btn-sm mx-3 my-1" title="Search" (click)="onFilterSelection()" ><i
               class="fas fa-search fa-sm"></i></button>
           <!-- <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fas fa-trash  fa-sm"></i></button> -->
 
@@ -155,11 +155,12 @@
           <ng-container *ngIf="latestAlerts.length > 0">
             <tr *ngFor="let alert of latestAlerts">
               <td><i class="fa fa-exclamation-triangle" [style.color]="
-              (alert.message?.priority === 'critical' ? '#fb5515' :
-              (alert.message?.priority === 'medium' ? '#f6c23e' :
-              (alert.message?.priority === 'low' ? '#229954' : '')
-              )
-              )"></i></td>
+                (alert.severity.toLowerCase() === 'critical' ? '#cc0000' :
+                (alert.severity.toLowerCase() === 'error' ? '#fb5515' :
+                (alert.severity.toLowerCase() === 'warning' ? '#f6c23e' :
+                (alert.severity.toLowerCase() === 'informational' ? '#229954' : ''))
+                )
+                )"></i></td>
 
               <td>{{ alert.device_display_name ? alert.device_display_name : alert.device_id }}</td>
 

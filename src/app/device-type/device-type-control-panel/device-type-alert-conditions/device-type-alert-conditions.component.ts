@@ -97,13 +97,20 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
           this.alertConditions.forEach(alert => {
             arr = [];
             alert.reference_documents.forEach(refDoc => {
+              console.log('here');
               this.documents.forEach(doc => {
-                if (doc.id === refDoc) {
+                console.log(typeof doc.id, ' ===', typeof refDoc);
+                console.log(doc.id, ' ===', refDoc);
+                console.log(doc.id === refDoc.toString());
+                if (doc.id === refDoc.toString()) {
                   arr.push(doc.name);
+                  console.log(arr);
                 }
               });
             });
+            console.log(alert.message, '====', arr);
             alert.reference_documents = arr;
+
           });
           this.isAlertConditionsLoading = false;
         }
@@ -113,7 +120,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
 
   addVisualizationWidget() {
     // this.editVisuailzationWidget[this.alertObj.visualization_widgets.length] = true;
-    
+
     const index = this.alertObj.visualization_widgets.findIndex(widget => widget === this.widgetName);
     if (index > -1) {
       this.toasterService.showError('Same Widget is already added.', 'Add Widget');
@@ -249,7 +256,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
       if (doc.name === widget) {
         console.log(this.alertObj.reference_documents.length);
         console.log(doc.id);
-        this.alertObj.reference_documents.push(doc.id);
+        this.alertObj.reference_documents.push((doc.id.toString()));
         console.log(JSON.stringify(this.alertObj.reference_documents));
       }
     });

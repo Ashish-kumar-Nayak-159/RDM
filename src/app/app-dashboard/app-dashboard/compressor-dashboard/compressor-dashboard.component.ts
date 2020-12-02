@@ -24,6 +24,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
   telemetryData: any[] = [];
   refreshInterval: any;
   selectedTab = 'telemetry';
+  lastReportedTelemetryValues: any;
   isTelemetryDataLoading = false;
   constructor(
     private deviceService: DeviceService,
@@ -147,6 +148,15 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response?.data?.length > 0) {
           this.telemetryObj = response.data[0];
+          if (!this.lastReportedTelemetryValues) {
+            this.lastReportedTelemetryValues = response.data[0];
+          } else {
+            this.propertyList.forEach(prop => {
+              if (response.data[0][prop.json_key]) {
+                this.lastReportedTelemetryValues[prop.json_key] = response.data[0][prop.json_key];
+              }
+            });
+          }
           this.telemetryData = response.data;
           this.isTelemetryDataLoading = false;
           clearInterval(this.refreshInterval);

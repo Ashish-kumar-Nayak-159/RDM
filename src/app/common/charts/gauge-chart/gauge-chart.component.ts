@@ -22,10 +22,11 @@ export class GaugeChartComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes) {
-    console.log(changes);
     if (this.chart && changes.value) {
+      console.log(this.id, '=======', changes.value.currentValue);
       this.label.text = changes.value.currentValue;
-      this.hand.showValue(Number(changes.value.currentValue), 1000, am4core.ease.cubicOut);
+      this.hand.value = Number(changes.value.currentValue);
+      console.log(this.hand.value);
     }
   }
 
@@ -35,12 +36,12 @@ export class GaugeChartComponent implements OnInit, OnChanges {
     chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
 
     chart.innerRadius = am4core.percent(70);
-
+    chart.logo.disabled = true;
     const axis = chart.xAxes.push(new am4charts.ValueAxis<am4charts.AxisRendererCircular>());
     axis.min = 0;
     axis.max = 100;
-    axis.renderer.radius = am4core.percent(80);
-    axis.strictMinMax = true;
+    axis.renderer.radius = am4core.percent(70);
+    axis.renderer.fontSize = '0.8em';
     axis.renderer.grid.template.stroke = new am4core.InterfaceColorSet().getFor('background');
     axis.renderer.grid.template.strokeOpacity = 0.3;
     axis.renderer.minGridDistance = 2500;
@@ -69,20 +70,20 @@ export class GaugeChartComponent implements OnInit, OnChanges {
 
     const label = chart.radarContainer.createChild(am4core.Label);
     label.isMeasured = false;
-    label.fontSize = '1em';
+    label.fontSize = '0.8em';
     label.x = am4core.percent(50);
     label.horizontalCenter = 'middle';
     label.verticalCenter = 'bottom';
     // label.dataItem = data;
-    label.text = this.value;
+    label.text = this.value ? this.value : '0';
     // label.text = "{score}";
 
     const hand = chart.hands.push(new am4charts.ClockHand());
-    hand.showValue(Number(this.value), 1000, am4core.ease.cubicOut);
+    hand.value = Number(this.value ? this.value : '0');
+    console.log(this.id, '=====', hand.value);
     this.chart = chart;
     this.hand = hand;
     this.label = label;
-    console.log(this.chart);
 
   }
 

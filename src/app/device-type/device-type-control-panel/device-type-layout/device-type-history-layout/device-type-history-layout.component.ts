@@ -12,6 +12,7 @@ import { ColumnChartComponent } from 'src/app/common/charts/column-chart/column-
 import { BarChartComponent } from 'src/app/common/charts/bar-chart/bar-chart.component';
 import { PieChartComponent } from 'src/app/common/charts/pie-chart/pie-chart.component';
 import { DataTableComponent } from 'src/app/common/charts/data-table/data-table.component';
+import { ApplicationService } from 'src/app/services/application/application.service';
 declare var $: any;
 
 @Component({
@@ -58,7 +59,9 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
     private factoryResolver: ComponentFactoryResolver,
     private appRef: ApplicationRef,
     private injector: Injector,
-    private deviceTypeService: DeviceTypeService  ) {
+    private deviceTypeService: DeviceTypeService,
+    private applicationService: ApplicationService
+  ) {
 
   }
   async ngOnInit(): Promise<void> {

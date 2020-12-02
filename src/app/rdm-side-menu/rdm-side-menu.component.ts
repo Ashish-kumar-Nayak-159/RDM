@@ -33,7 +33,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
     //   this.appName = this.userData.apps[0].app;
     // }
 
-    if (this.contextApp.app) {
+    if (this.contextApp?.app) {
       if (!this.userData?.is_super_admin) {
       let data = [];
      // alert('here');
@@ -61,7 +61,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
     this.router.events.subscribe(async event => {
       if (event instanceof NavigationEnd && i === 0) {
         i++;
-        if (this.contextApp.app) {
+        if (this.contextApp?.app) {
         if (!this.userData?.is_super_admin) {
         let data = [];
         if (this.contextApp.configuration?.main_menu?.length > 0) {

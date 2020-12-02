@@ -86,6 +86,9 @@
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'trend-analysis'}" role="tabpanel" id="device_trend_analysis">
         <app-trend-analysis *ngIf="activeTab === 'trend-analysis' && device" [device]="device"></app-trend-analysis>
       </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'alert-visualization'}" role="tabpanel" id="device_trend_analysis">
+        <app-application-visualization [pageType]="'history'" *ngIf="activeTab === 'alert-visualization' && device" [device]="device"></app-application-visualization>
+      </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel" id="device_control_widgets">
         <app-commands *ngIf="activeTab === 'control_widgets' && device" [device]="device"></app-commands>
       </div>

@@ -45,6 +45,7 @@ export class DeviceTypeListComponent implements OnInit {
       this.thingsModelFilterObj.app = this.contextApp.app;
       this.originalThingsModelFilterObj = JSON.parse(JSON.stringify(this.thingsModelFilterObj));
       this.searchThingsModels();
+      this.getTileName();
       const obj = {
         type: 'replace',
         data: [

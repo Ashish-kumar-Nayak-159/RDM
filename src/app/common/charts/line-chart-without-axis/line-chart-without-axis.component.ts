@@ -56,6 +56,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
       console.log(data);
       data.reverse();
       chart.data = data;
+      chart.logo.disabled = true;
       chart.marginLeft = -100;
       chart.dateFormatter.inputDateFormat = 'x';
       const dateAxis = chart.xAxes.push(new am4charts.DateAxis());

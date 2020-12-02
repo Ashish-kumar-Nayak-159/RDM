@@ -221,14 +221,14 @@ export class CONSTANTS {
         }
       ]
     },
-    {
-      page: 'Alert Visualization',
-      system_name: 'Alert Visualization',
-      url: 'applications/:appName/data/visualization',
-      display_name: 'Alert Visualization',
-      icon: 'fas fa-fw fa-chart-bar',
-      visible: true
-    },
+    // {
+    //   page: 'Alert Visualization',
+    //   system_name: 'Alert Visualization',
+    //   url: 'applications/:appName/data/visualization',
+    //   display_name: 'Alert Visualization',
+    //   icon: 'fas fa-fw fa-chart-bar',
+    //   visible: true
+    // },
     {
       page: 'Reports',
       system_name: 'Reports',
@@ -398,6 +398,15 @@ export class CONSTANTS {
       url: '#device_trend_analysis',
       display_name: 'Trend Analysis',
       icon: 'fas fa-fw fa-stream',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'alert-visualization',
+      system_name: 'Alert Visualization',
+      url: '#device_alert_visualization',
+      display_name: 'Alert Visualization',
+      icon: 'fas fa-fw fa-bar-chart',
       visible: true,
       isTitle: false
     },

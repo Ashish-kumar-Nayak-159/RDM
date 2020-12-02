@@ -65,47 +65,42 @@
                   <!-- Content Column -->
                 <div class="col-lg-7  my-3">
 
-                  <!-- Project Card Example -->
                   <div class="card ">
                   <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold">Pressure Parameters (Bar)</h6>
                   </div>
-                  <div class="card-body1">
+                  <div class="card-body1" style="height: 10rem;">
                     <div class="row  text-center">
                     <div class="col-4 text-center" >
                       <span class="text-xs mx-3">Discharge Pressure</span>
                       <div class="pt-3" >
-                      <span class="text-darkblue display-5 font-weight-bold">{{telemetryObj.Discharge_Pressure}}</span> <span class="text-xs">bar</span>
+                      <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Discharge_Pressure}}</span>
                       </div>
-                       <div class="mt-n1">
-                             <app-line-chart-without-axis [chartId]="'lineChart1'" [telemetryData]="telemetryData" [property]="'Discharge_Pressure'"></app-line-chart-without-axis>
+                       <div >
+                             <app-line-chart-without-axis *ngIf="lastReportedTelemetryValues.Discharge_Pressure" [chartId]="'lineChart1'"  [telemetryData]="telemetryData" [property]="'Discharge_Pressure'"></app-line-chart-without-axis>
                         </div>
-
                     </div>
-
-
 
                     <div class="col-4 border-left" >
                       <span class="text-xs mx-3">Suction Pressure</span>
                        <div class="text-center pt-3" >
-                      <span class="text-darkblue display-5 font-weight-bold">{{telemetryObj.suction_pressure}}</span> <span class="text-xs">bar</span>
+                      <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.suction_pressure}}</span>
                     </div>
-                       <div class="mt-n1">
+                       <div >
 
-                            <app-line-chart-without-axis [chartId]="'lineChart2'" [telemetryData]="telemetryData" [property]="'suction_pressure'"></app-line-chart-without-axis>
+                            <app-line-chart-without-axis *ngIf="lastReportedTelemetryValues.suction_pressure" [chartId]="'lineChart2'" [telemetryData]="telemetryData" [property]="'suction_pressure'"></app-line-chart-without-axis>
 
                         </div>
-
                     </div>
 
                     <div class="col-4 border-left" >
                       <span class="text-xs mx-3">High-bank Pressure</span>
                        <div class="text-center pt-3" >
-                      <span class="text-darkblue display-5 font-weight-bold">{{telemetryObj.high_bank_pressure}}</span> <span class="text-xs">bar</span>
+                      <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.high_bank_pressure}}</span>
                     </div>
-                       <div class="mt-n1">
+                       <div >
 
-                            <app-line-chart-without-axis [chartId]="'lineChart3'" [telemetryData]="telemetryData" [property]="'high_bank_pressure'"></app-line-chart-without-axis>
+                            <app-line-chart-without-axis *ngIf="lastReportedTelemetryValues.high_bank_pressure" [chartId]="'lineChart3'" [telemetryData]="telemetryData" [property]="'high_bank_pressure'"></app-line-chart-without-axis>
 
 
                       </div>
@@ -115,6 +110,8 @@
                   </div>
                 </div>
 
+
+
                   <div class="col-lg-5 my-3">
 
                    <!-- Project Card Example -->
@@ -122,16 +119,16 @@
                   <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold">Flow Rate Parameters (kg/hr)</h6>
                   </div>
-                  <div class="card-body1">
+                  <div class="card-body1" style="height: 10rem;">
                     <div class="row">
                     <div class="col-6" >
                       <span class="text-xs mx-3">Flow Rate Suction</span>
                       <div class="text-center pt-3" >
-                      <span class="text-darkblue display-5 font-weight-bold">{{telemetryObj.Flow_rate_Suction}}</span> <span class="text-xs">Kg/hr</span>
+                      <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Flow_rate_Suction}}</span>
                     </div>
-                       <div class="mt-n1">
+                       <div >
 
-                            <app-line-chart-without-axis [chartId]="'lineChart4'" [telemetryData]="telemetryData" [property]="'Flow_rate_Suction'"></app-line-chart-without-axis>
+                            <app-line-chart-without-axis *ngIf="lastReportedTelemetryValues.Flow_rate_Suction" [chartId]="'lineChart4'" [telemetryData]="telemetryData" [property]="'Flow_rate_Suction'"></app-line-chart-without-axis>
 
 
                       </div>
@@ -139,11 +136,11 @@
                     <div class="col-6 border-left" >
                       <span class="text-xs mx-3">Flow Rate Discharge</span>
                        <div class="text-center pt-3" >
-                      <span class="text-darkblue display-5 font-weight-bold">{{telemetryObj.Flow_rate_Discharge}}</span> <span class="text-xs">kg/hr</span>
+                      <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Flow_rate_Discharge}}</span>
                     </div>
-                       <div class="mt-n1">
+                       <div >
 
-                            <app-line-chart-without-axis [chartId]="'lineChart5'" [telemetryData]="telemetryData" [property]="'Flow_rate_Discharge'"></app-line-chart-without-axis>
+                            <app-line-chart-without-axis *ngIf="lastReportedTelemetryValues.Flow_rate_Discharge" [chartId]="'lineChart5'" [telemetryData]="telemetryData" [property]="'Flow_rate_Discharge'"></app-line-chart-without-axis>
 
                        </div>
                     </div>
@@ -167,39 +164,39 @@
                   <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold">Electric Parameters</h6>
                   </div>
-                  <div class="card-body1">
+                  <div class="card-body1" style="height: 10rem;">
                     <div class="row">
                     <div class="col-4" >
-                      <span class="text-xs mx-3">Active Power</span>
+                      <span class="text-xs ml-3">Active Power</span><span class="text-xs">(KW)</span>
                       <div class="text-center pt-3" >
-                      <span class="text-darkblue display-5 font-weight-bold">{{telemetryObj.Active_Power}}</span> <span class="text-xs">KW</span>
+                      <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Active_Power}}</span>
                       </div>
-                       <div class="mt-n1">
+                       <div >
 
-                            <app-line-chart-without-axis [chartId]="'lineChart6'" [telemetryData]="telemetryData" [property]="'Active_Power'"></app-line-chart-without-axis>
+                            <app-line-chart-without-axis *ngIf="lastReportedTelemetryValues.Active_Power" [chartId]="'lineChart6'" [telemetryData]="telemetryData" [property]="'Active_Power'"></app-line-chart-without-axis>
 
 
                       </div>
                     </div>
                     <div class="col-4 border-left" >
-                      <span class="text-xs mx-3">Voltage R-Y</span>
+                      <span class="text-xs ml-3">Voltage R-Y</span> <span class="text-xs">(V)</span>
                        <div class="text-center pt-3" >
-                      <span class="text-darkblue display-5 font-weight-bold">{{telemetryObj.Voltage_R_Y}}</span> <span class="text-xs">V</span>
+                      <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Voltage_R_Y}}</span>
                     </div>
-                       <div class="mt-n1">
+                       <div >
 
-                            <app-line-chart-without-axis [chartId]="'lineChart7'" [telemetryData]="telemetryData" [property]="'Voltage_R_Y'"></app-line-chart-without-axis>
+                            <app-line-chart-without-axis *ngIf="lastReportedTelemetryValues.Voltage_R_Y" [chartId]="'lineChart7'" [telemetryData]="telemetryData" [property]="'Voltage_R_Y'"></app-line-chart-without-axis>
 
                        </div>
                     </div>
 
                     <div class="col-4 border-left" >
-                      <span class="text-xs mx-3">Current R Phase</span>
+                      <span class="text-xs ml-3">Current R Phase</span><span class="text-xs">(A)</span>
                        <div class="text-center pt-3" >
-                      <span class="text-darkblue display-5 font-weight-bold">{{telemetryObj.Current_R_Phase}}</span> <span class="text-xs">A</span> </div>
-                       <div class="mt-n1">
+                      <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Current_R_Phase}}</span>  </div>
+                       <div >
 
-                            <app-line-chart-without-axis [chartId]="'lineChart8'" [telemetryData]="telemetryData" [property]="'Current_R_Phase'"></app-line-chart-without-axis>
+                            <app-line-chart-without-axis *ngIf="lastReportedTelemetryValues.Current_R_Phase" [chartId]="'lineChart8'" [telemetryData]="telemetryData" [property]="'Current_R_Phase'"></app-line-chart-without-axis>
 
                       </div>
                     </div>
@@ -208,24 +205,28 @@
                   </div>
                 </div>
 
-                <div class="col-lg-3 mb-3">
+                <div class="col-lg-5 mb-3">
 
                   <!-- Illustrations -->
                   <div class="card ">
                   <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold">Gas Leak Parameters</h6>
+                    <h6 class="m-0 font-weight-bold">Gas Leak Parameters (%)</h6>
                   </div>
-                  <div class="card-body1"  style="height: 175px;">
+                  <div class="card-body1" style="height: 10rem;">
                     <div class="row text-center">
-                    <div class="col-12" >
+                    <div class="col-6" >
                       <span class="text-xs mx-3">Gas Leak Level-1</span>
                        <div class="mt-n5" >
-                        <app-gauge-chart [id]="'gaugeChart2'" [value]="telemetryObj.Gas_Leakage_Level_1"></app-gauge-chart>
+                        <app-gauge-chart [id]="'gaugeChart1'" *ngIf="lastReportedTelemetryValues.Gas_Leakage_Level_1" [value]="lastReportedTelemetryValues.Gas_Leakage_Level_1"></app-gauge-chart>
                        </div>
 
                     </div>
-
-
+                    <div class="col-6" >
+                      <span class="text-xs mx-3">Gas Leak Level-2</span>
+                       <div class="mt-n5" >
+                        <app-gauge-chart [id]="'gaugeChart2'" *ngIf="lastReportedTelemetryValues.Gas_Leakage_Level_2" [value]="lastReportedTelemetryValues.Gas_Leakage_Level_2"></app-gauge-chart>
+                       </div>
+                    </div>
                     </div>
                   </div>
                   </div>
@@ -241,14 +242,21 @@
                   <h6 class="m-0 font-weight-bold">Temperature (&deg;C)</h6>
                 </div>
                 <!-- Card Body -->
-                <div class="card-body" style="height: 175px;">
+                <div class="card-body" style="height: 24.5rem;">
                     <div class="row text-center">
                       <span class="text-xs mx-3">Discharge Gas Temperature</span>
                     <div class="mt-n5" >
-                      <app-gauge-chart [id]="'gaugeChart1'" [value]="telemetryObj.Discharge_Gas_Temperature"></app-gauge-chart>
+                      <app-gauge-chart [id]="'gaugeChart3'" *ngIf="lastReportedTelemetryValues.Discharge_Gas_Temperature" [value]="lastReportedTelemetryValues.Discharge_Gas_Temperature"></app-gauge-chart>
                     </div>
 
                   </div>
+                  <div class="row text-center" style="margin-top: 2rem;">
+                    <span class="text-xs mx-3">Discharge Oil Temperature</span>
+                  <div class="mt-n5" >
+                    <app-gauge-chart [id]="'gaugeChart4'" *ngIf="lastReportedTelemetryValues.Discharge_Oil_Temperature" [value]="lastReportedTelemetryValues.Discharge_Oil_Temperature"></app-gauge-chart>
+                  </div>
+
+                </div>
 
                 </div>
                 </div>
@@ -261,10 +269,11 @@
                   <h6 class="m-0 font-weight-bold">Running Hours</h6>
                 </div>
                 <!-- Card Body -->
-                <div class="card-body text-center" style="height: 175px;">
-                  <h4 class="font-weight-bold">ON</h4>
+                <div class="card-body text-center" style="height: 10rem;">
+                  <h4 class="font-weight-bold" [ngClass]="{'text-success': lastReportedTelemetryValues.status === 'On',
+                'text-danger': lastReportedTelemetryValues.status === 'Off'}">{{lastReportedTelemetryValues.status}}</h4>
                   for last
-                  <h4 class="font-weight-bold mt-3">{{telemetryObj.Running_Hours}}</h4>
+                  <h4 class="font-weight-bold mt-3">{{lastReportedTelemetryValues.Running_Hours}}</h4>
                   Hrs
                 </div>
                 </div>
@@ -274,7 +283,7 @@
         </div>
         <div class="tab-pane fade" id="Device" role="tabpanel" aria-labelledby="nav-profile-tab" *ngIf="selectedTab === 'alert'">
           <ng-container>
-            <app-application-visualization></app-application-visualization>
+            <app-application-visualization [pageType]="'live'"></app-application-visualization>
           </ng-container>
 
 

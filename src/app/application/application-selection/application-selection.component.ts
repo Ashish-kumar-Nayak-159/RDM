@@ -29,7 +29,19 @@ export class ApplicationSelectionComponent implements OnInit {
   async redirectToApp(app) {
     await this.getApplicationData(app);
     this.commonService.refreshSideMenuData.emit(this.applicationData);
-    this.router.navigate(['applications', app.app]);
+    const menu = this.applicationData.configuration.main_menu.length > 0 ?
+    this.applicationData.configuration.main_menu : CONSTANTS.SIDE_MENU_LIST;
+    let i = 0;
+    menu.forEach(menuObj => {
+      if ( i === 0 && menuObj.visible) {
+        i++;
+        const url = menuObj.url;
+        if (menuObj.url?.includes(':appName')) {
+          menuObj.url = menuObj.url.replace(':appName', this.applicationData.app);
+          this.router.navigateByUrl(menuObj.url);
+        }
+      }
+    });
   }
 
   getApplicationData(app) {

@@ -3,6 +3,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppUrls } from '../../app-url.constants';
 import { Observable } from 'rxjs';
+import { String } from 'typescript-string-operations';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,16 @@ export class DeviceService {
   constructor(
     private http: HttpClient
   ) { }
+
+  getAllDevicesList(filterObj, app) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_DEVICES, app), { params });
+  }
 
   getDeviceList(filterObj) {
     let params = new HttpParams();

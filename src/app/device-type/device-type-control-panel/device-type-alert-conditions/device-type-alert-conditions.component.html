@@ -24,6 +24,7 @@
     <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
       <thead>
         <tr class="bg-secondary text-white">
+          <th></th>
           <th>Alert Code</th>
           <th>Alert Message</th>
           <th>Actions</th>
@@ -34,6 +35,11 @@
         <ng-container *ngIf="!isAlertConditionsLoading && alertConditions.length > 0">
           <ng-container  *ngFor="let alert of alertConditions; let i = index">
             <tr >
+              <td>
+                <a href="javascript:void(0)" (click)="onToggleRows(i)">
+                <i [ngClass]="toggleRows[i] ? 'fas fa-angle-down' : 'fas fa-angle-up'"></i>
+                </a>
+              </td>
               <td><i title="{{alert.severity}}"  [style.color]="
                 (alert.severity.toLowerCase() === 'critical' ? '#cc0000' :
                 (alert.severity.toLowerCase() === 'error' ? '#fb5515' :
@@ -79,7 +85,7 @@
                 <div class="col-12 mt-2">
                   <div class="form-group row" >
                     <ng-container>
-                    <div class="col-3">
+                    <div class="col-md-3">
                       <select class="form-control form-control-sm" id="template" name="model_type"
                       [(ngModel)]="widgetName"
                       >
@@ -91,9 +97,9 @@
                       </select>
 
                     </div>
-                    <div class="col-1">
+                    <div class="col-md-1">
                       <a href="javascript:void(0)" (click)="addVisualizationWidget()">
-                        <i class="fas fa-arrow-down fa-sm"></i> </a>
+                        <i class="fas fa-plus fa-sm"></i> </a>
                     </div>
                   </ng-container>
                   </div>
@@ -117,7 +123,8 @@
                   <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
                   title="Save" (click)="onUpdateAlertConditions()" ><i class="fas fa-save fa-sm"></i></button></div>
                 <div class="row col-12 text-primary my-2">
-                  <span >Debugging Steps: </span>
+                  <span >Debugging Steps: <a href="javascript:void(0)" class="ml-2" (click)="addRecommendationStep()" title="Add">
+                    <i class="fas fa-plus fa-sm"></i> </a></span>
                   <!-- <a  class=" mx-1" href="javascript:void(0)"
                   title="Add" (click)="addRecommendationStep()" ><i class="fas fa-plus fa-sm"></i></a> -->
                    <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
@@ -129,10 +136,10 @@
                       <tr *ngFor="let step of alertObj.recommendations; let i = index;" class="bg-white">
 
                       <ng-container >
-                        <td style="width: 10%;">Step - {{i + 1}}</td>
+                        <td style="width: 15%;">Step - {{i + 1}}</td>
                         <td style="width: 30%;">{{step.description}}</td>
                         <td style="width: 30%;">{{step.activity}} Activity</td>
-                        <td style="width: 30%;"><ng-container *ngIf="step.activity === 'Auto'">{{step.command}}</ng-container> </td>
+
                         <td style="width: 10%;">
                             <a href="javascript:void(0)" class="ml-2" (click)="removeRecommendationStep(i)" title="Remove">
                               <i class="fas fa-trash fa-sm"></i> </a>
@@ -141,20 +148,20 @@
                       </tr>
                       <tr *ngIf="recommendationObj" class="bg-white">
                         <ng-container >
-                          <td style="width: 10%;">
+                          <td style="width: 15%;">
                             Step - {{alertObj.recommendations.length + 1}}
                           </td>
                           <td style="width: 30%;">
                             <input type="text"  id="description" name="description" size="20" class="mx-1 form-control form-control-sm"
                             [(ngModel)]="recommendationObj.description">
                           </td>
-                          <td style="width: 20%;">
+                          <td style="width: 30%;">
                             <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="recommendationObj.activity">
                               <option [ngValue]="undefined">Select Activity</option>
                               <option [ngValue]="'Auto'">Auto Activity</option>
                               <option [ngValue]="'Manual'">Manual Activity</option>
                             </select></td>
-                          <td style="width: 30%;" >
+                          <!-- <td style="width: 30%;" >
                             <select *ngIf="recommendationObj.activity === 'Auto'" class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="recommendationObj.command">
                               <option [ngValue]="undefined">Select Command</option>
                               <ng-container *ngFor="let method of deviceMethods">
@@ -162,10 +169,9 @@
                                 {{method.name}}</option>
                               </ng-container>
                             </select>
-                            </td>
+                            </td> -->
                             <td>
-                              <a href="javascript:void(0)" (click)="addRecommendationStep()" title="Add">
-                                <i class="fas fa-arrow-down fa-sm"></i> </a>
+
                             </td>
 
                           </ng-container>
@@ -180,7 +186,9 @@
                   </div>
                 </div>
                 <div class="row col-12 text-primary">
-                  <span>Email / Whatsapp Attachments:</span>
+                  <span>Email / Whatsapp Attachments:
+                    <a href="javascript:void(0)" class="ml-1" (click)="addReferenceDocument()">
+                    <i class="fas fa-plus fa-sm"></i> </a></span>
                   <!-- <button type="button" class="btn btn-warning btn-sm mx-1 mt-n2"
                    title="Add" (click)="addReferenceDocument()"><i class="fas fa-plus fa-sm"></i></button>
                    <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
@@ -200,10 +208,7 @@
                         </ng-container>
                       </select>
                     </div>
-                    <div class="col-1">
-                      <a href="javascript:void(0)" class="ml-1" (click)="addReferenceDocument()">
-                        <i class="fas fa-arrow-down fa-sm"></i> </a>
-                    </div>
+
                   </ng-container>
                   </div>
                 </div>

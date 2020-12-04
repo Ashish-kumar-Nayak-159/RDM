@@ -12,6 +12,7 @@
           <table class="table table-bordered table-striped" cellspacing="0">
             <thead>
               <tr class="bg-secondary text-white">
+                <th></th>
                 <th>Page</th>
                 <th>System Name</th>
                 <th>Display Name</th>
@@ -30,16 +31,39 @@
               </tr>
             </tfoot>
             <tbody>
-              <tr *ngFor="let item of applicationData?.configuration.main_menu; let configIndex = index">
+              <ng-container *ngFor="let item of applicationData?.configuration.main_menu; let configIndex = index">
+              <tr >
+                <td>
+                  <ng-container *ngIf="item.showAccordion?.length > 0">
+                    <a href="javascript:void(0)" (click)="onToggleRows(configIndex)">
+                      <i [ngClass]="toggleRows[configIndex] ? 'fas fa-angle-down' : 'fas fa-angle-up'"></i>
+                      </a>
+                  </ng-container>
+                </td>
                 <td>{{item.page}}</td>
                 <td>{{item.system_name}}</td>
                 <td><input type="text" class="form-control" name="display_name{{configIndex}}" id="display_name{{configIndex}}"
                     [(ngModel)]="item.display_name" /></td>
-                <td><input *ngIf="item.system_name !== 'App Settings'" type="checkbox" name="visible{{configIndex}}"
+                <td><input type="checkbox" name="visible{{configIndex}}"
                     id="visible{{configIndex}}" [(ngModel)]="item.visible" /></td>
 
               </tr>
-
+              <tr *ngIf="toggleRows[configIndex]">
+                <td colspan="5">
+                  <div class="form-group row mt-1" *ngFor="let control of item.showAccordion;" >
+                    <ng-container >
+                    <div class="col-md-4">
+                      <label for="recipient-name" class="col-form-label">{{control.name}}</label>
+                    </div>
+                    <div class="col-md-5">
+                      <input type="text" class="form-control form-control-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
+                        placeholder="Enter {{control.name}}">
+                    </div>
+                  </ng-container>
+                  </div>
+                </td>
+              </tr>
+              </ng-container>
             </tbody>
           </table>
         </div>

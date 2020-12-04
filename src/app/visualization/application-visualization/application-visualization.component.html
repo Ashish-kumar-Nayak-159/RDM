@@ -1,7 +1,7 @@
-<div class="topnavbar" [style.marginTop]="pageType === 'live' ? '3rem' : ''" >
-  <!-- <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-1" *ngIf="pageType === 'history'">
-    <h5 class="h4 mb-0 text-gray-800">Alerts</h5>
-  </div> -->
+<div class="topnavbar" [style.marginTop]="pageType === 'live' ? '1.5rem' : ''" >
+  <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-1" *ngIf="pageType === 'side_menu'">
+    <h5 class="h4 mb-0 text-gray-800">{{tileData && tileData[0] ? tileData[0]?.value : ''}}</h5>
+  </div>
   <div class="card row bg-white" [style.marginLeft]="pageType === 'live' ? '-2rem' : '-1.5rem'"
   [style.borderRadius]= "pageType === 'live' ? '' : '0'"
   [style.border]= "pageType === 'live' ? '' : 'none'">
@@ -20,20 +20,20 @@
           <input  type="text" *ngIf="index === 0"  defaultValue="{{contextApp.app}}" disabled class="form-control form-control-sm mx-1 my-1">
           </ng-container>
           <select class="form-control form-control-sm mx-2 my-1" id="deviceCategory" [(ngModel)]="filterObj.device"
-          name="deviceCategory" (change)="onAssetSelection()">
+          name="deviceCategory" >
           <option [ngValue]="undefined">Select Asset</option>
           <option [ngValue]="device" *ngFor="let device of devices">
             {{device?.display_name ? device?.display_name: device.device_id}}
           </option>
           </select>
-          <select class="form-control form-control-sm mx-2 my-1" id="deviceCategory1" [(ngModel)]="filterObj.non_ip_device"
+          <!-- <select class="form-control form-control-sm mx-2 my-1" id="deviceCategory1" [(ngModel)]="filterObj.non_ip_device"
             name="deviceCategory1" *ngIf="filterObj.device?.cloud_connectivity.includes('Gateway')"
             >
             <option [ngValue]="undefined">Select Asset</option>
             <option [ngValue]="device" *ngFor="let device of nonIPDevices">
               {{device?.display_name ? device?.display_name: device.device_id}}
             </option>
-          </select>
+          </select> -->
         </div>
         <div class="form-group form-inline  my-2 mx-3">
 
@@ -67,7 +67,7 @@
             <option [ngValue]="'1 hour'">Last 1 hour</option>
             <option [ngValue]="'24 hour'">Last 24 hours</option>
           </select>
-          <ng-container *ngIf="pageType === 'history'">
+          <ng-container *ngIf="pageType === 'history' || pageType === 'side_menu'">
             <input [owlDateTime]="dt1" [selectMode]="'range'" (dateTimeChange)="onDateChange($event)"
               class="form-control form-control-sm mx-2 my-1 col-md-2" [owlDateTimeTrigger]="dt1"
               placeholder="Select Date Time">
@@ -101,7 +101,7 @@
   </div> -->
 </div>
 
-<div class="contain-pad" [style.marginTop]="pageType === 'live' ? '7.5rem' : '10.8rem '">
+<div class="contain-pad" [style.marginTop]="pageType === 'live' ? '6.5rem': (pageType === 'history' ? '9rem': '13.2rem')">
   <div class="mb-2">
     <div class="table-responsive" style="max-height: 27vh;height: 27vh;">
       <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
@@ -120,15 +120,16 @@
           <ng-container *ngIf="latestAlerts.length > 0 && !isAlertAPILoading">
             <tr *ngFor="let alert of latestAlerts" [ngClass]="{
                     'bg-alert-selection':
-                      alert.id === this.selectedAlert?.id
-                  }">
+                      alert.id === this.selectedAlert?.id,
+                      'bg-danger text-white': alert.severity.toLowerCase() === 'critical'
+                  }" >
               <td><i class="fa fa-exclamation-triangle" [style.color]="
                 (alert?.severity?.toLowerCase() === 'critical' ? '#cc0000' :
                 (alert?.severity?.toLowerCase() === 'error' ? '#fb5515' :
                 (alert?.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
                 (alert?.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                 )
-                )"></i></td>
+                )" title="{{alert.severity}}"></i></td>
               <td>{{ alert.device_display_name ? alert.device_display_name : alert.device_id }}</td>
               <td>{{ alert.message }}</td>
               <td>{{ alert.local_created_date }}</td>
@@ -271,7 +272,7 @@
                       <td style="width: 10%;">Step - {{i + 1}}</td>
                       <td style="width: 30%;">{{step.description}}</td>
                       <td style="width: 30%;">{{step.activity}} Activity</td>
-                      <td style="width: 30%;"><ng-container *ngIf="step.activity === 'Auto'">{{step.command}}</ng-container> </td>
+
                     </ng-container>
                     </tr>
                     <tr *ngIf="alertCondition.recommendations.length === 0">

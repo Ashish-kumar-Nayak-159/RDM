@@ -1,5 +1,7 @@
-<app-e-scooter-tracker-dashboard [contextApp]="contextApp" *ngIf="contextApp.app === 'eScooterTracker'"></app-e-scooter-tracker-dashboard>
-<app-water-tank-monitor [contextApp]="contextApp" *ngIf="contextApp.app === 'WaterTankMonitor'"></app-water-tank-monitor>
-<app-pump-dashboard [contextApp]="contextApp" *ngIf="contextApp.app === 'IIoT_Pump'"></app-pump-dashboard>
+<app-e-scooter-tracker-dashboard [contextApp]="contextApp" *ngIf="contextApp.app === 'eScooterTracker'"
+[tileData]="tileData"></app-e-scooter-tracker-dashboard>
+<app-water-tank-monitor [contextApp]="contextApp" *ngIf="contextApp.app === 'WaterTankMonitor'" [tileData]="tileData"></app-water-tank-monitor>
+<app-pump-dashboard [contextApp]="contextApp" *ngIf="contextApp.app === 'IIoT_Pump'" [tileData]="tileData"></app-pump-dashboard>
 
-<app-compressor-dashboard [contextApp]="contextApp" *ngIf="contextApp && (contextApp.app === 'SopanCMS' || contextApp.app === 'IIoT_Compressor') "></app-compressor-dashboard>
+<app-compressor-dashboard [contextApp]="contextApp" *ngIf="contextApp && (contextApp.app === 'SopanCMS' || contextApp.app === 'IIoT_Compressor') "
+[tileData]="tileData"></app-compressor-dashboard>

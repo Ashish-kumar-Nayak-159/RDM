@@ -44,6 +44,10 @@ export class AlertsComponent implements OnInit, OnDestroy {
         headers: ['Timestamp', 'Message ID', 'Message'],
         data: [
           {
+            name: 'Code',
+            key: 'code',
+          },
+          {
             name: 'Timestamp',
             key: 'local_created_date',
           },
@@ -53,6 +57,10 @@ export class AlertsComponent implements OnInit, OnDestroy {
           },
           {
             name: 'Message',
+            key: 'message'
+          },
+          {
+            name: '',
             key: undefined,
           }
         ]
@@ -128,11 +136,11 @@ export class AlertsComponent implements OnInit, OnDestroy {
       isDisplaySave: false,
       isDisplayCancel: true
     };
-    this.selectedAlert = obj.data;
+    this.selectedAlert = JSON.parse(JSON.stringify(obj.data));
     this.getAlertMessageData(obj.data).then(message => {
       this.selectedAlert.message = message;
     });
-    this.selectedAlert = obj.data;
+    // this.selectedAlert = obj.data;
     $('#alertMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }

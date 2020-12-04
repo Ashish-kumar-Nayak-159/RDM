@@ -13,6 +13,7 @@ export class AppDashboardComponent implements OnInit {
 
   userData: any;
   contextApp: any;
+  tileData: any;
   constructor(
     private route: ActivatedRoute,
     private commonService: CommonService  ) {
@@ -21,6 +22,7 @@ export class AppDashboardComponent implements OnInit {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.getTileName();
     this.route.paramMap.subscribe(async () => {
       this.commonService.breadcrumbEvent.emit({
         type: 'replace',
@@ -32,5 +34,16 @@ export class AppDashboardComponent implements OnInit {
         ]
       });
     });
+  }
+
+  getTileName() {
+    let selectedItem;
+    this.contextApp.configuration.main_menu.forEach(item => {
+      if (item.page === 'Dashboard') {
+        selectedItem = item.showAccordion;
+        console.log(selectedItem);
+      }
+    });
+    this.tileData = selectedItem;
   }
 }

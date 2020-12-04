@@ -8,6 +8,7 @@ import { Component, Input, OnInit } from '@angular/core';
 export class PumpDashboardComponent implements OnInit {
 
   @Input() contextApp: any;
+  @Input() tileData: any;
   constructor() { }
 
   ngOnInit(): void {

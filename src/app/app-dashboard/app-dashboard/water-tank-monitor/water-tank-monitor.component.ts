@@ -21,6 +21,7 @@ export class WaterTankMonitorComponent implements OnInit, AfterViewInit, OnDestr
   telemetryData: any;
   telemetryRefreshInterval: NodeJS.Timeout;
   selectedTab = 'county';
+  @Input() tileData: any;
   constructor(
     private route: ActivatedRoute,
     private commonService: CommonService,

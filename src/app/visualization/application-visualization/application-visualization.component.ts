@@ -27,7 +27,7 @@ declare var $: any;
 export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   @Input() device: any;
-  @Input() pageType: string;
+  @Input() pageType = 'side_menu';
   private chart: am4charts.XYChart;
   userData: any;
   contextApp: any = {};
@@ -60,6 +60,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   documents: any[] = [];
   configureHierarchy = {};
   hierarchyArr = {};
+  tileData: any;
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -81,6 +82,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
     }
+    this.getTileName();
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
         this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
@@ -133,6 +135,17 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
   }
 
+  getTileName() {
+    let selectedItem;
+    this.contextApp.configuration.main_menu.forEach(item => {
+      if (item.system_name === 'Alert Visualization') {
+        selectedItem = item.showAccordion;
+        console.log(selectedItem);
+      }
+    });
+    this.tileData = selectedItem;
+  }
+
   ngAfterViewInit() {
     // Chart code goes in here
 
@@ -142,10 +155,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   getDevices(hierarchy) {
     return new Promise((resolve) => {
       const obj = {
-        app: this.contextApp.app,
         hierarchy: JSON.stringify(hierarchy),
       };
-      this.deviceService.getDeviceList(obj).subscribe(
+      this.deviceService.getAllDevicesList(obj, this.contextApp.app).subscribe(
         (response: any) => {
           if (response?.data) {
             this.devices = response.data;
@@ -183,12 +195,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       console.log(obj.hierarchy);
     });
     obj.hierarchy = JSON.stringify(obj.hierarchy);
-    if (obj.non_ip_device) {
-      obj.gateway_id = obj.device.device_id;
-      obj.device_id = obj.non_ip_device.device_id;
-      delete obj.device;
-      delete obj.non_ip_device;
-    } else if (obj.device) {
+    if (obj.device) {
       obj.device_id = obj.device.device_id;
       delete obj.device;
     }
@@ -242,27 +249,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         }
       });
   }
-  onAssetSelection() {
-    this.nonIPDevices = [];
-    const hierarchyObj: any = { App: this.contextApp.app};
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
-      console.log(hierarchyObj);
-    });
-    if (this.filterObj.device?.cloud_connectivity.includes('Gateway')) {
-      const obj = {
-        app: this.contextApp.app,
-        hierarchy: JSON.stringify(hierarchyObj),
-      };
-      this.deviceService.getNonIPDeviceList(obj).subscribe(
-        (response: any) => {
-          if (response?.data) {
-            this.nonIPDevices = response.data;
-          }
-        }
-      );
-    }
-  }
+
 
   getDeviceData() {
     return new Promise((resolve) => {

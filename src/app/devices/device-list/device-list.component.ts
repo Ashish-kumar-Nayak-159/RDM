@@ -37,7 +37,7 @@ export class DeviceListComponent implements OnInit {
   contextApp: any;
   hierarchyDropdown: any[] = [];
   deviceTypes: any[] = [];
-  tileName: string;
+  tileData: any;
   hierarchyArr = {};
   configureHierarchy = {};
   addDeviceHierarchyArr = {};
@@ -77,6 +77,7 @@ export class DeviceListComponent implements OnInit {
           this.pageType = 'Device';
         }
       }
+      await this.getTileName();
       if (this.contextApp.hierarchy.levels.length > 1) {
         this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
         this.addDeviceHierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
@@ -92,7 +93,7 @@ export class DeviceListComponent implements OnInit {
         }
         }
       });
-      this.getTileName();
+
 
       this.route.queryParamMap.subscribe(
         params1 => {
@@ -123,9 +124,7 @@ export class DeviceListComponent implements OnInit {
           },
             {
               title:
-                (this.componentState === CONSTANTS.IP_GATEWAY ? 'Gateways' :
-                (this.componentState === CONSTANTS.IP_DEVICE ? 'Devices' :
-                (this.componentState === CONSTANTS.NON_IP_DEVICE ?  'Non IP Devices' : ''))),
+              this.tileData && this.tileData[0] ? this.tileData[0]?.value : '',
               url: 'applications/' + this.contextApp.app + '/' +
               (this.componentState === CONSTANTS.NON_IP_DEVICE ? 'nonIPDevices' : (this.pageType + 's')),
               queryParams: {
@@ -144,24 +143,17 @@ export class DeviceListComponent implements OnInit {
         type: this.pageType.toLowerCase(),
         data: [
           {
-            name: this.pageType + ' Name',
+            name: (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Name',
             key: 'display_name',
             type: 'text',
             headerClass: '',
             valueclass: ''
           },
           {
-            name: this.pageType + ' Manager',
+            name: (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Manager',
             key: 'device_manager',
             type: 'text',
             headerClass: 'w-10',
-            valueclass: ''
-          },
-          {
-            name: 'Connectivity',
-            key: 'cloud_connectivity',
-            type: 'text',
-            headerClass: 'w-30',
             valueclass: ''
           },
           {
@@ -190,7 +182,7 @@ export class DeviceListComponent implements OnInit {
       };
       if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
         this.tableConfig.data.splice((this.tableConfig.data.length - 2), 0, {
-          name: 'Reporting Via',
+          name: 'Reporting Via GW',
           key: 'gateway_id',
           type: 'text',
           headerClass: '',
@@ -270,14 +262,15 @@ export class DeviceListComponent implements OnInit {
   }
 
   getTileName() {
-    let name;
+    let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {
+      console.log(item.system_name, '------', this.componentState);
       if (item.system_name === this.componentState + 's') {
-        name = item.display_name;
+        selectedItem = item.showAccordion;
+        console.log(selectedItem);
       }
     });
-    console.log(name);
-    this.tileName = name;
+    this.tileData = selectedItem;
   }
 
   getThingsModels(type) {

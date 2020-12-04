@@ -155,7 +155,9 @@ export class CONSTANTS {
       url: 'applications/:appName',
       display_name: 'Home',
       icon: 'fas fa-fw fa-home',
-      visible: true
+      visible: true,
+      showAccordion: [],
+      priority: 1
     },
     {
       page: 'Dashboard',
@@ -163,7 +165,11 @@ export class CONSTANTS {
       url: 'applications/:appName/dashboard',
       display_name: 'Dashboard',
       icon: 'fas fa-fw fa-bar-chart',
-      visible: true
+      visible: true,
+      showAccordion: [
+        { name: 'Title', value: 'Dashboard'},
+      ],
+      priority: 1
     },
     {
       page: 'Devices',
@@ -171,23 +177,25 @@ export class CONSTANTS {
       url: 'applications/:appName/devices',
       display_name: 'IoT Devices',
       icon: 'fas fa-fw fa-desktop',
-      visible: true
-    },
-    {
-      page: 'Gateways',
-      system_name: 'IoT Gateways',
-      url: 'applications/:appName/gateways',
-      display_name: 'IoT Gateways',
-      icon: 'fas fa-fw fa-desktop',
-      visible: true
+      visible: true,
+      showAccordion: [
+        { name: 'Title', value: 'Assets'},
+        { name: 'Table Key Name', value: 'Asset'}
+      ],
+      priority: 1
     },
     {
       page: 'Non IP Devices',
-      system_name: 'Non IP Devices',
+      system_name: 'Legacy Devices',
       url: 'applications/:appName/nonIPDevices',
-      display_name: 'Non IP Devices',
+      display_name: 'Legacy Devices',
       icon: 'fas fa-fw fa-folder',
-      visible: true
+      visible: true,
+      showAccordion: [
+        { name: 'Title', value: 'Assets'},
+        { name: 'Table Key Name', value: 'Asset'}
+      ],
+      priority: 1
     },
     {
       page: 'Things Modelling',
@@ -195,7 +203,12 @@ export class CONSTANTS {
       url: 'applications/:appName/things/model',
       display_name: 'Asset Modelling',
       icon: 'fas fa-fw fa-list',
-      visible: true
+      visible: true,
+      showAccordion: [
+        { name: 'Title', value: 'Models'},
+        { name: 'Table Key Name', value: 'Model'}
+      ],
+      priority: 1
     },
     {
       page: 'Device Groups',
@@ -210,40 +223,66 @@ export class CONSTANTS {
           system_name: 'Group Jobs',
           url: null,
           display_name: 'Group Jobs',
-          visible: true
+          visible: true,
+          showAccordion: []
         },
         {
           page: 'Group Type',
           system_name: 'Group Type',
           url: null,
           display_name: 'Group Type',
-          visible: true
+          visible: true,
+          showAccordion: []
         }
-      ]
+      ],
+      priority: 1
     },
-    // {
-    //   page: 'Alert Visualization',
-    //   system_name: 'Alert Visualization',
-    //   url: 'applications/:appName/data/visualization',
-    //   display_name: 'Alert Visualization',
-    //   icon: 'fas fa-fw fa-chart-bar',
-    //   visible: true
-    // },
+    {
+      page: 'Alert Visualization',
+      system_name: 'Alert Visualization',
+      url: 'applications/:appName/data/visualization',
+      display_name: 'Alert Visualization',
+      icon: 'fas fa-fw fa-chart-bar',
+      visible: true,
+      showAccordion: [
+        { name: 'Title', value: 'Alerts'},
+      ],
+      priority: 1
+    },
     {
       page: 'Reports',
       system_name: 'Reports',
       url: 'applications/:appName/reports',
       display_name: 'Reports',
       icon: 'fas fa-fw fa-file',
-      visible: true
+      visible: true,
+      showAccordion: [
+        { name: 'Title', value: 'Reports'},
+      ],
+      priority: 1
     },
+    // {
+    //   page: 'App Settings',
+    //   system_name: 'App Settings',
+    //   url: 'applications/:appName/settings',
+    //   display_name: 'App Settings',
+    //   icon: 'fas fa-fw fa-cog',
+    //   visible: true,
+    //   showAccordion: [],
+    //   priority: 1
+    // },
     {
-      page: 'App Settings',
-      system_name: 'App Settings',
-      url: 'applications/:appName/settings',
-      display_name: 'App Settings',
-      icon: 'fas fa-fw fa-cog',
-      visible: true
+      page: 'Gateways',
+      system_name: 'IoT Gateways',
+      url: 'applications/:appName/gateways',
+      display_name: 'IoT Gateways',
+      icon: 'fas fa-fw fa-desktop',
+      visible: true,
+      showAccordion: [
+        { name: 'Title', value: 'Gateways'},
+        { name: 'Table Key Name', value: 'Gateway'}
+      ],
+      priority: 2
     }
   ];
 
@@ -396,7 +435,7 @@ export class CONSTANTS {
       page: 'trend-analysis',
       system_name: 'Trend Analysis',
       url: '#device_trend_analysis',
-      display_name: 'Trend Analysis',
+      display_name: 'Telemetry Trend Analysis',
       icon: 'fas fa-fw fa-stream',
       visible: true,
       isTitle: false
@@ -626,7 +665,7 @@ export class CONSTANTS {
   public static NON_IP_DEVICES = 'Non IP Devices';
   public static IP_DEVICE = 'IoT Device';
   public static IP_GATEWAY = 'IoT Gateway';
-  public static NON_IP_DEVICE = 'Non IP Device';
+  public static NON_IP_DEVICE = 'Legacy Device';
   public static NOT_ALLOWED_SPECIAL_CHARS_NAME = [' ', '.', '$', '#'];
   public static PASSWORD_REGEX = '^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,20}$';
   public static APP_ADMIN_ROLE = 'App Admin';

@@ -1,6 +1,6 @@
 <div class="topnavbar">
   <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-1">
-    <h5 class="h4 mb-0 text-gray-800">Reports</h5>
+    <h5 class="h4 mb-0 text-gray-800">{{tileData && tileData[0] ? tileData[0]?.value : ''}}</h5>
   </div>
   <div class="card row bg-white" style="margin-left:-2rem">
     <div class="col-xl-12 col-md-12 mb-12">
@@ -24,14 +24,14 @@
           {{device?.display_name ? device?.display_name: device.device_id}}
         </option>
         </select>
-        <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory1" [(ngModel)]="filterObj.non_ip_device"
+        <!-- <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory1" [(ngModel)]="filterObj.non_ip_device"
           name="deviceCategory1" *ngIf="filterObj.device?.cloud_connectivity.includes('Gateway')"
           (change)="onNonIPDeviceChange()">
           <option [ngValue]="undefined">Select Asset</option>
           <option [ngValue]="device" *ngFor="let device of nonIPDevices">
             {{device?.display_name ? device?.display_name: device.device_id}}
           </option>
-        </select>
+        </select> -->
         </div>
         <div class="form-group form-inline  my-2 mx-3">
 
@@ -143,7 +143,7 @@
       *ngIf="isFilterSelected && filterObj.report_type === 'Alert Report'">
         <thead>
           <tr class="bg-secondary text-white">
-            <th></th>
+            <th>Code</th>
             <th>Asset Name</th>
             <th>Time</th>
             <th>Description</th>
@@ -153,14 +153,14 @@
         </thead>
         <tbody>
           <ng-container *ngIf="latestAlerts.length > 0">
-            <tr *ngFor="let alert of latestAlerts">
+            <tr *ngFor="let alert of latestAlerts" [ngClass]="{'bg-danger text-white': alert.severity.toLowerCase() === 'critical'}">
               <td><i class="fa fa-exclamation-triangle" [style.color]="
                 (alert.severity.toLowerCase() === 'critical' ? '#cc0000' :
                 (alert.severity.toLowerCase() === 'error' ? '#fb5515' :
                 (alert.severity.toLowerCase() === 'warning' ? '#f6c23e' :
                 (alert.severity.toLowerCase() === 'informational' ? '#229954' : ''))
                 )
-                )"></i></td>
+                )" title="{{alert.severity}}"></i>&nbsp;{{alert.code}}</td>
 
               <td>{{ alert.device_display_name ? alert.device_display_name : alert.device_id }}</td>
 

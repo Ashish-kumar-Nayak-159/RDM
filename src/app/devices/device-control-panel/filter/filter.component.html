@@ -2,16 +2,16 @@
 <div class="col-xl-12 col-md-12 mb-12" >
     <form>
       <div class="form-group form-inline my-1">
-        <input type="number" min="1" class="form-control form-control-sm mx-1 my-1 record-input" id="inputEmail4" placeholder="No of Records"
+        <input type="number" min="1" class="form-control form-control-sm mx-2 my-1 record-input" id="inputEmail4" placeholder="No of Records"
         [(ngModel)]="filterObj.count" name="count">
-        <select *ngIf="pageType === 'gateway'" class="form-control form-control-sm mx-1 my-1" id="deviceCategory"
+        <select *ngIf="pageType === 'gateway'" class="form-control form-control-sm mx-2 my-1" id="deviceCategory"
          [(ngModel)]="filterObj.device_id" name="deviceCategory">
           <option [ngValue]="undefined">Select Asset</option>
           <option [ngValue]="device.device_id" *ngFor="let device of devices">
             {{device?.tags?.dislay_name ? device.tags?.display_name: device.device_id}}
           </option>
         </select>
-        <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
+        <select class="form-control form-control-sm mx-2 my-1" id="dateoptions"
         [(ngModel)]="filterObj.dateOption" name="dateOptions" (change)="onDateOptionChange()">
           <option [ngValue]="undefined">Quick Options</option>
           <option [ngValue]="'5 mins'">Last 5 minutes</option>
@@ -30,14 +30,14 @@
 
         <mat-datepicker-toggle  matSuffix [for]="picker"></mat-datepicker-toggle> -->
         <input [owlDateTime]="dt1" [selectMode]="'range'"
-        (dateTimeChange)="onDateChange($event)" class="form-control form-control-sm mx-1 my-1 col-md-2" [owlDateTimeTrigger]="dt1" placeholder="Select Date Time">
+        (dateTimeChange)="onDateChange($event)" class="form-control form-control-sm mx-2 my-1 col-md-2" [owlDateTimeTrigger]="dt1" placeholder="Select Date Time">
         <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
         <owl-date-time #dt1></owl-date-time>
       </ng-container>
 
 
-        <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="search()" ><i class="fas fa-search fa-sm"></i></button>
-        <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fas fa-trash  fa-sm"></i></button>
+        <button type="button" class="btn btn-warning btn-sm mx-3 my-1" title="Search" (click)="search()" ><i class="fas fa-search fa-sm"></i></button>
+        <button type="button" class="btn btn-white btn-sm my-1" title="Clear" (click)="clear()"><i class="fas fa-trash  fa-sm"></i></button>
       </div>
      </form>
 </div>

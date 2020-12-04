@@ -135,7 +135,7 @@ export class DeviceTypeControlPanelComponent implements OnInit {
             type: 'append',
             data: [
                 {
-                  title: (this.deviceType.name) + ' / Control Panel',
+                  title: (this.deviceType.name) + ' / Model Definition',
                   url:
                   'applications/' + this.contextApp.app + '/things/model/' + this.deviceType.name + '/control-panel'
                 }

@@ -7,11 +7,11 @@
 
   </div> -->
   <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-1">
-    <h5 class="h4 mb-0 text-gray-800" >{{tileName ? tileName : (componentState + 's')}}</h5>
+    <h5 class="h4 mb-0 text-gray-800" >{{tileData && tileData[0] ? tileData[0]?.value : ''}}</h5>
     <a
     class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-3"
     href="javascript:void(0)" (click)="openCreateDeviceModal()"
-    title="{{componentState.includes('Device') ? 'Add Asset' : 'Add Gateway'}}"
+    title="{{'Add ' + (tileData && tileData[1] ? tileData[1]?.value: '')}}"
     ><i class="fas fa-plus fa-sm text-white"></i></a
   >
   </div>
@@ -37,14 +37,14 @@
           placeholder="Hierarchy" disabled [(ngModel)]="deviceFilterObj.hierarchyString"
              name="hierarchy" title="{{deviceFilterObj.hierarchyString}}"> -->
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4"
-          placeholder="{{pageType}} Name"
+          placeholder="{{(tileData && tileData[1] ? tileData[1]?.value: '')}} Name"
           [(ngModel)]="deviceFilterObj.name" name="name">
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputPassword4"
-          placeholder="{{pageType}} Manager"
+          placeholder="{{(tileData && tileData[1] ? tileData[1]?.value: '')}} Manager"
           [(ngModel)]="deviceFilterObj.device_manager" name="device_manager">
           <select class="form-control form-control-sm mx-1 my-1" id="gateway_id" *ngIf="componentState === constantData.NON_IP_DEVICE"
           [(ngModel)]="deviceFilterObj.gateway_id" name="gateway_id">
-            <option [ngValue]="undefined">Reporting Via</option>
+            <option [ngValue]="undefined">Reporting Via GW</option>
             <option [ngValue]="gateway.device_id" *ngFor="let gateway of gateways">
               {{gateway.display_name ? gateway.display_name : gateway.device_id}}
             </option>
@@ -82,7 +82,7 @@
 <div class="mb-4 ">
 
   <div class="">
-   <app-common-table [tableData]="devicesList" [tableConfig]="tableConfig" [isTableFilterSelected]="isFilterSelected"
+   <app-common-table *ngIf="tableConfig" [tableData]="devicesList" [tableConfig]="tableConfig" [isTableFilterSelected]="isFilterSelected"
    [isTableDataLoading]="isDeviceListLoading" (viewMessageEvent)="onTableFunctionCall($event)"></app-common-table>
   </div>
 </div>
@@ -92,7 +92,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
     <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">Create New {{componentState}}</h5>
+      <h5 class="modal-title" id="exampleModalLabel">Create New {{(tileData && tileData[1] ? tileData[1]?.value: '')}}</h5>
       <button type="button" class="close"  (click)="onCloseCreateDeviceModal()" aria-label="Close" [disabled]="isCreateDeviceAPILoading">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -115,19 +115,19 @@
         </div>
       </ng-container>
         <div class="form-group">
-          <label for="message-text" class="col-form-label required">{{pageType}} Name:</label>
+          <label for="message-text" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value: '')}} Name:</label>
           <input type="text" class="form-control" id="device_name" name="device_id" [(ngModel)]="deviceDetail.device_id"
-          placeholder="Enter {{pageType}} Name">
+          placeholder="Enter {{(tileData && tileData[1] ? tileData[1]?.value: '')}} Name">
         </div>
         <div class="form-group">
-          <label for="message-text" class="col-form-label required">{{pageType}} Display Name:</label>
+          <label for="message-text" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value: '')}} Display Name:</label>
           <input type="text" class="form-control" id="device_name" name="device_id" [(ngModel)]="deviceDetail.tags.display_name"
-          placeholder="Enter {{pageType}} Display Name">
+          placeholder="Enter {{(tileData && tileData[1] ? tileData[1]?.value: '')}} Display Name">
         </div>
         <div class="form-group">
-          <label for="message-text" class="col-form-label required">{{pageType}} Manager:</label>
+          <label for="message-text" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value: '')}} Manager:</label>
           <input type="email" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
-          placeholder="Enter {{pageType}} Manager"
+          placeholder="Enter {{(tileData && tileData[1] ? tileData[1]?.value: '')}} Manager"
            class="form-control" id="device_manager" name="device_manager" [(ngModel)]="deviceDetail.tags.device_manager">
         </div>
         <div class="form-group" *ngIf="componentState === constantData.NON_IP_DEVICE">
@@ -149,10 +149,10 @@
           </select>
         </div> -->
         <div class="form-group">
-          <label for="recipient-name" class="col-form-label required">{{pageType}} Type:</label>
+          <label for="recipient-name" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value: '')}} Type:</label>
           <select class="custom-select" id="device_type" name="device_type" [(ngModel)]="deviceDetail.tags.device_type"
           (change)="onChangeThingsModel()">
-            <option [ngValue]="undefined"> Select {{pageType}} Type</option>
+            <option [ngValue]="undefined"> Select {{(tileData && tileData[1] ? tileData[1]?.value: '')}} Type</option>
             <option *ngFor="let item of deviceTypes" [ngValue]="item.name">
               {{item.name}}</option>
 
@@ -172,7 +172,7 @@
           placeholder="Protocol" disabled>
         </div>
         <div class="form-group">
-          <label for="recipient-name" class="col-form-label">Cloud Connectivity followed by the {{pageType}}:</label>
+          <label for="recipient-name" class="col-form-label">Cloud Connectivity followed by the {{(tileData && tileData[1] ? tileData[1]?.value: '')}}:</label>
           <!-- <select class="custom-select" id="template" name="connectivity" disabled [(ngModel)]="deviceDetail.tags.cloud_connectivity">
             <option [ngValue]="undefined"> Select Connectivity</option>
           <option *ngFor="let item of connectivityList" [ngValue]="item">

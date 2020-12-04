@@ -23,6 +23,7 @@ export class EScooterTrackerDashboardComponent implements OnInit, OnDestroy {
   appName: string;
   userData: any;
   properties: any[] = [];
+  @Input() tileData: any;
   gaugeGoogleChartConfig: GoogleChartInterface = {
     chartType: 'Gauge',
     dataTable: [

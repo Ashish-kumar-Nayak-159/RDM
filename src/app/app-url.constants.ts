@@ -67,5 +67,6 @@ export class AppUrls {
   public static CREATE_ALERT_CONDITION = 'apps/{0}/device_types/{1}/alert_conditions';
   public static UPDATE_ALERT_CONDITION = 'apps/{0}/device_types/{1}/alert_conditions/{2}';
   public static DELETE_ALERT_CONDITION = 'apps/{0}/device_types/{1}/alert_conditions/{2}';
+  public static GET_IOT_LEGACY_DEVICES = 'apps/{0}/devices';
 
 }

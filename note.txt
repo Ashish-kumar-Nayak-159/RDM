@@ -92,15 +92,18 @@ Dashboard Widget ideas:
     3.	Number Indicator 4.	Number indicator with trend analysis
 5. Done ----- Alert conditioning
 6. Done ----- Reference Documents
-7. Done ----- Alert conditioning integration in Alert Visualization ----- 1
+7. Done ----- Alert conditioning integration in Alert Visualization
 8. Export icons on widgets accordion
 9. Modal tags changes, device tags needs to come from model
-10. App hierarchy relation changes ----- 2
+10. App hierarchy relation changes
 11. Done ----- Filter based on app hierarchy in all screens.
-12. Done ----- Reports - one report with all measured properety as columns + alert report ----- 4
+12. Done ----- Reports - one report with all measured properety as columns + alert report
 13. Done ---- API Optimization changes
 14. Websocket integration for live data
-15. Edit icon for App settings ---- 4
+15. Edit icon for App settings
 16. Add actions in Alert conditions
 17. Reprot PDF - Heading - report type + device name, reprot generated date, report data time range
-18. Done ----- Add alert visualization in device control panel --- Done
+18. Done ----- Add alert visualization in device control panel
+19. Done ----- Need to remove Connectivity in compressors
+20. Done ----- alert screen change, add message, severity,
+    highlighting the alerts (critical to red-background) - reports, alert visualization and alerts

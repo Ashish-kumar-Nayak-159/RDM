@@ -118,6 +118,14 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
     );
   }
 
+  onToggleRows(i) {
+    if (this.toggleRows[i]) {
+      this.toggleRows = {};
+    } else {
+      this.onClickOfViewActionIcon('Visualization', i);
+    }
+  }
+
   addVisualizationWidget() {
     // this.editVisuailzationWidget[this.alertObj.visualization_widgets.length] = true;
 

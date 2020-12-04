@@ -10,7 +10,8 @@ import * as moment from 'moment';
 import { drawDOM, exportPDF } from '@progress/kendo-drawing';
 import { saveAs } from '@progress/kendo-file-saver';
 import * as XLSX from 'xlsx';
-
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-reports',
@@ -41,6 +42,8 @@ export class ReportsComponent implements OnInit {
   isFilterSelected = false;
   props: any[] = [];
   selectedProps: any[] = [];
+  newFilterObj: any;
+  tileData: any;
 
   constructor(
     private commonService: CommonService,
@@ -54,6 +57,7 @@ export class ReportsComponent implements OnInit {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.getTileName();
     this.route.paramMap.subscribe(async params => {
       if (params.get('applicationId')) {
         this.filterObj.app = this.contextApp.app;
@@ -78,7 +82,7 @@ export class ReportsComponent implements OnInit {
             url: 'applications/' + this.contextApp.app
           },
             {
-              title: 'Visualization',
+              title: this.tileData && this.tileData[0] ? this.tileData[0]?.value : '',
               url: 'applications/' + this.contextApp.app + '/visualization'
             }
         ]
@@ -90,17 +94,26 @@ export class ReportsComponent implements OnInit {
 
   }
 
+  getTileName() {
+    let selectedItem;
+    this.contextApp.configuration.main_menu.forEach(item => {
+      if (item.system_name === 'Reports') {
+        selectedItem = item.showAccordion;
+        console.log(selectedItem);
+      }
+    });
+    this.tileData = selectedItem;
+  }
+
   getDevices(hierarchy) {
     return new Promise((resolve) => {
       const obj = {
-        app: this.contextApp.app,
         hierarchy: JSON.stringify(hierarchy),
       };
-      this.deviceService.getDeviceList(obj).subscribe(
+      this.deviceService.getAllDevicesList(obj, this.contextApp.app).subscribe(
         (response: any) => {
           if (response?.data) {
             this.devices = response.data;
-            this.originalDevices = JSON.parse(JSON.stringify(this.devices));
           }
           resolve();
         }
@@ -139,48 +152,18 @@ export class ReportsComponent implements OnInit {
   }
 
   onAssetSelection() {
-    this.nonIPDevices = [];
-    const hierarchyObj: any = { App: this.contextApp.app};
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
-      console.log(hierarchyObj);
-    });
+    // this.nonIPDevices = [];
     // this.filterObj.device_id = this.filterObj.device.device_id;
     const device_type = this.filterObj.device.device_type;
     if (device_type) {
       this.getThingsModelProperties(device_type);
-    }
-    if (this.filterObj.device?.cloud_connectivity.includes('Gateway')) {
-      const obj: any = {
-        app: this.contextApp.app,
-        hierarchy: JSON.stringify(hierarchyObj),
-        gateway_id: this.filterObj.device.device_id
-      };
-      obj.hierarchy = { App: this.contextApp.app};
-      Object.keys(this.configureHierarchy).forEach((key) => {
-        obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
-        console.log(obj.hierarchy);
-      });
-      obj.hierarchy = JSON.stringify(obj.hierarchy);
-      this.deviceService.getNonIPDeviceList(obj).subscribe(
-        (response: any) => {
-          if (response?.data) {
-            this.nonIPDevices = response.data;
-          }
-        }
-      );
     }
   }
 
   onNonIPDeviceChange() {
     // this.filterObj.device_id = this.filterObj.device.device_id;
     if (this.filterObj.report_type === 'Telemetry Report') {
-    if (this.filterObj.non_ip_device) {
-    const device_type = this.filterObj.non_ip_device.device_type;
-    if (device_type) {
-      this.getThingsModelProperties(device_type);
-    }
-    } else if (this.filterObj.device) {
+    if (this.filterObj.device) {
       const device_type = this.filterObj.device.device_type;
       if (device_type) {
         this.getThingsModelProperties(device_type);
@@ -238,13 +221,7 @@ export class ReportsComponent implements OnInit {
 
     const obj = {...this.filterObj};
     let device_type: any;
-    if (obj.non_ip_device) {
-      obj.gateway_id = obj.device.device_id;
-      obj.device_id = obj.non_ip_device.device_id;
-      device_type = obj.non_ip_device.device_type;
-      delete obj.device;
-      delete obj.non_ip_device;
-    } else if (obj.device) {
+    if (obj.device) {
       obj.device_id = obj.device.device_id;
       device_type = obj.device.device_type;
       delete obj.device;
@@ -282,6 +259,7 @@ export class ReportsComponent implements OnInit {
       }
     }
     this.selectedProps = JSON.parse(JSON.stringify(this.props));
+    this.newFilterObj = JSON.parse(JSON.stringify(obj));
     this.isFilterSelected = true;
     if (obj.report_type === 'Telemetry Report') {
       this.getTelemetryData(obj);
@@ -324,38 +302,57 @@ export class ReportsComponent implements OnInit {
   }
 
   savePDF(): void {
-    const drawDOMFn = drawDOM(document.getElementById('dataTable'), this.pdfOptions);
-    drawDOMFn.catch( (error) => {
-      console.log(error);
-    });
-    const exportPDFFn = drawDOMFn.then((group) => {
-        // Render the result as a PDF file
-        return exportPDF(group);
-    });
-    exportPDFFn.then((dataObj) => {
-        // Save the PDF file
-        const now = moment().utc().unix();
-        saveAs(
-          dataObj,
-          (this.filterObj.non_ip_device ? this.filterObj.non_ip_device.device_id : this.filterObj.device.device_id)
-           + '_' + this.filterObj.report_type + '_' + now + '.pdf'
-        );
-    });
-    exportPDFFn.catch ( (error) => {
-      console.log(error);
-    });
+    const pdf = new jsPDF('p', 'pt', 'A3');
+    pdf.text(this.filterObj.report_type + ' for ' +
+    (this.filterObj.device.display_name ? this.filterObj.device.display_name : this.filterObj.device.device_id) +
+    ' for ' + this.commonService.convertEpochToDate(this.newFilterObj.from_date) + ' to ' +
+    this.commonService.convertEpochToDate(this.newFilterObj.to_date), 20, 50);
+    autoTable(pdf, { html: '#dataTable', margin: { top: 70 } });
+    const now = moment().utc().unix();
+    pdf.save((this.filterObj.device.display_name ? this.filterObj.device.display_name : this.filterObj.device.device_id)
+           + '_' + this.filterObj.report_type + '_' + now + '.pdf');
   }
 
   saveExcel() {
     const element = document.getElementById('dataTable');
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+    let colA;
+    if (this.filterObj.report_type === 'Alert Report') {
+      colA = XLSX.utils.decode_col('C'); // timestamp is in first column
+    } else if (this.filterObj.report_type === 'Telemetry Report') {
+      colA = XLSX.utils.decode_col('B'); // timestamp is in first column
+    }
+    const fmt = 'DD-MMM-YYYY hh:mm:ss'; // excel datetime format
+
+    // get worksheet range
+    const range = XLSX.utils.decode_range(ws['!ref']);
+    for (let i = range.s.r + 1; i <= range.e.r; ++i) {
+      /* find the data cell (range.s.r + 1 skips the header row of the worksheet) */
+      const ref = XLSX.utils.encode_cell({ r: i, c: colA });
+      /* if the particular row did not contain data for the column, the cell will not be generated */
+      if (!ws[ref]) {
+        continue;
+      }
+      /* `.t == "n"` for number cells */
+      if (ws[ref].t !== 'n') {
+        continue;
+      }
+      /* assign the `.z` number format */
+      ws[ref].z = fmt;
+    }
+    // width of timestamp col
+    const wscols = [
+      { wch: 20 }
+    ];
+
+    ws['!cols'] = wscols;
 
     /* generate workbook and add the worksheet */
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     const now = moment().utc().unix();
     /* save to file */
-    XLSX.writeFile(wb, (this.filterObj.non_ip_device ? this.filterObj.non_ip_device.device_id : this.filterObj.device.device_id)
+    XLSX.writeFile(wb, (this.filterObj.device.display_name ? this.filterObj.device.display_name : this.filterObj.device.device_id)
       + '_' + this.filterObj.report_type + '_' + now + '.xlsx');
   }
 

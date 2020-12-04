@@ -13,7 +13,7 @@ import { resolve } from 'dns';
 export class CompressorDashboardComponent implements OnInit, OnDestroy {
 
   @Input() contextApp: any;
-
+  @Input() tileData: any;
   hierarchyArr: any = {};
   configureHierarchy: any = {};
   devices: any[] = [];
@@ -82,10 +82,9 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
   getDevices(hierarchy) {
     return new Promise((resolve) => {
       const obj = {
-        app: this.contextApp.app,
         hierarchy: JSON.stringify(hierarchy),
       };
-      this.deviceService.getDeviceList(obj).subscribe(
+      this.deviceService.getAllDevicesList(obj, this.contextApp.app).subscribe(
         (response: any) => {
           if (response?.data) {
             this.devices = response.data;
@@ -96,38 +95,10 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAssetSelection() {
-    this.nonIPDevices = [];
-    const hierarchyObj: any = { App: this.contextApp.app};
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
-      console.log(hierarchyObj);
-    });
-    if (this.filterObj.device?.cloud_connectivity.includes('Gateway')) {
-      const obj = {
-        app: this.contextApp.app,
-        hierarchy: JSON.stringify(hierarchyObj),
-      };
-      this.deviceService.getNonIPDeviceList(obj).subscribe(
-        (response: any) => {
-          if (response?.data) {
-            this.nonIPDevices = response.data;
-          }
-        }
-      );
-    }
-  }
-
   async onFilterSelection() {
     const obj = {...this.filterObj};
     let device_type: any;
-    if (obj.non_ip_device) {
-      obj.gateway_id = obj.device.device_id;
-      obj.device_id = obj.non_ip_device.device_id;
-      device_type = obj.non_ip_device.device_type;
-      delete obj.device;
-      delete obj.non_ip_device;
-    } else if (obj.device) {
+    if (obj.device) {
       obj.device_id = obj.device.device_id;
       device_type = obj.device.device_type;
       delete obj.device;

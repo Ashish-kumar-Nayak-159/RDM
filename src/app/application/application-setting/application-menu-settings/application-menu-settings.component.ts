@@ -16,6 +16,7 @@ export class ApplicationMenuSettingsComponent implements OnInit {
   originalApplicationData: any;
   sideMenuList = CONSTANTS.SIDE_MENU_LIST;
   activeTab = 'main-menu';
+  toggleRows: any = {};
   constructor(
     private toasterService: ToasterService,
     private applicationService: ApplicationService,
@@ -80,6 +81,7 @@ export class ApplicationMenuSettingsComponent implements OnInit {
             console.log(menu);
             item.display_name = menu.display_name;
             item.visible = menu.visible;
+            item.showAccordion = menu.showAccordion;
             arr.push(item);
           }
         });
@@ -97,6 +99,15 @@ export class ApplicationMenuSettingsComponent implements OnInit {
   //   alert('here');
   //   this.applicationData.configuration[index].visible = !this.applicationData.configuration[index].visible;
   // }
+
+  onToggleRows(i) {
+    if (this.toggleRows[i]) {
+      this.toggleRows = {};
+    } else {
+      this.toggleRows = {};
+      this.toggleRows[i] = true;
+    }
+  }
 
   setActiveTab(type) {
     this.activeTab = type;

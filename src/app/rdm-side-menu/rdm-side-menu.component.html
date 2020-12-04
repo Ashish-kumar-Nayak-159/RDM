@@ -21,7 +21,24 @@
 
   <!-- Nav Item - Charts -->
   <ng-container *ngFor="let item of displayMenuList">
-    <ng-container *ngIf="!item.children && item.visible">
+    <ng-container *ngIf="!item.children && item.visible && item?.priority === 1">
+      <li class="nav-item" routerLinkActive="active"  *ngIf="!userData?.is_super_admin && item.url"
+      [routerLinkActiveOptions]="{exact: true}"
+      >
+        <a class="nav-link" [routerLink]="getURL(item.url)">
+          <i class="{{item.icon}}" title="{{item.display_name ? item.display_name : item.system_name}}"></i>
+          <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
+
+      </li>
+      <li class="nav-item" *ngIf="!userData?.is_super_admin && !item.url"
+      >
+      <a class="nav-link" >
+        <i class="{{item.icon}}" title="{{item.display_name ? item.display_name : item.system_name}}"></i>
+        <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
+        </li>
+    </ng-container>
+    <ng-container *ngIf="!item.children && item.visible && item?.priority === 2">
+      <hr class="sidebar-divider d-none d-md-block">
       <li class="nav-item" routerLinkActive="active"  *ngIf="!userData?.is_super_admin && item.url"
       [routerLinkActiveOptions]="{exact: true}"
       >
@@ -56,6 +73,7 @@
       </li>
     </ng-container>
   </ng-container>
+  <hr class="sidebar-divider d-none d-md-block">
 
 
    <!-- Sidebar Toggler (Sidebar) -->

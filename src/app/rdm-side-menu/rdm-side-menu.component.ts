@@ -87,6 +87,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
     });
 
     this.commonService.refreshSideMenuData.subscribe(list => {
+      console.log(list);
       let config = list.configuration?.main_menu?.length > 0 ? list.configuration.main_menu : CONSTANTS.SIDE_MENU_LIST;
       config = JSON.parse(JSON.stringify(config));
       this.processSideMenuData(config, list);
@@ -96,7 +97,6 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
       // this.userData.apps.splice(index, 0, obj);
       // this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
     });
-
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
@@ -125,7 +125,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
       }
   });
     arr.forEach(element => {
-      if (element.page === 'App Settings' || element.page === 'Things Modelling') {
+      if (element.page === 'Things Modelling') {
         if (this.contextApp?.user.role !== CONSTANTS.APP_ADMIN_ROLE) {
         element.visible = false;
         } else {

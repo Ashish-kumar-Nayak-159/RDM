@@ -93,28 +93,6 @@ export class DeviceListComponent implements OnInit {
         }
         }
       });
-
-
-      this.route.queryParamMap.subscribe(
-        params1 => {
-          this.devicesList = [];
-          if (params1.get('connection_state')) {
-            this.deviceFilterObj.status = params1.get('connection_state');
-            this.originalDeviceFilterObj = JSON.parse(JSON.stringify(this.deviceFilterObj));
-          }
-          this.searchDevices();
-        }
-      );
-      this.protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
-      console.log(this.contextApp);
-      this.getThingsModels(this.componentState);
-      const keys = Object.keys(this.contextApp.user.hierarchy);
-      this.hierarchyDropdown = [];
-      // this.contextApp.hierarchy.forEach(item => {
-      //   if (item.level >= keys.length - 1 && item.name !== 'App') {
-      //     this.hierarchyDropdown.push(item);
-      //   }
-      // });
       const obj = {
         type: 'replace',
         data: [
@@ -139,6 +117,28 @@ export class DeviceListComponent implements OnInit {
       } else {
         this.deviceFilterObj.category = this.componentState;
       }
+
+      this.route.queryParamMap.subscribe(
+        params1 => {
+          this.devicesList = [];
+          if (params1.get('connection_state')) {
+            this.deviceFilterObj.status = params1.get('connection_state');
+            this.originalDeviceFilterObj = JSON.parse(JSON.stringify(this.deviceFilterObj));
+          }
+          this.searchDevices();
+        }
+      );
+      this.protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
+      console.log(this.contextApp);
+      this.getThingsModels(this.componentState);
+      const keys = Object.keys(this.contextApp.user.hierarchy);
+      this.hierarchyDropdown = [];
+      // this.contextApp.hierarchy.forEach(item => {
+      //   if (item.level >= keys.length - 1 && item.name !== 'App') {
+      //     this.hierarchyDropdown.push(item);
+      //   }
+      // });
+
       this.tableConfig = {
         type: this.pageType.toLowerCase(),
         data: [
@@ -157,7 +157,7 @@ export class DeviceListComponent implements OnInit {
             valueclass: ''
           },
           {
-            name: 'Location',
+            name: 'Hierarchy',
             key: 'hierarchyString',
             type: 'text',
             headerClass: 'w-30',

@@ -15,6 +15,9 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
   @Input() telemetryData: any[] = [];
   @Input() property: string;
   private chart: am4charts.XYChart;
+  min = 0;
+  max = 100;
+  average: number;
 
 
   constructor(
@@ -46,13 +49,27 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
       console.log(document.getElementById(this.chartId));
       const chart = am4core.create(this.chartId, am4charts.XYChart);
       const data = [];
+      const valueArr = [];
       this.telemetryData.forEach((obj, i) => {
         const newObj = {
           message_date: new Date(obj.message_date)
         };
         newObj[this.property] = obj[this.property];
         data.splice(data.length, 0, newObj);
+        // if (Number(obj[this.property])) {
+        valueArr.push(Number(obj[this.property]));
+        // }
       });
+      if (valueArr.length > 0) {
+      this.max = Math.round(valueArr.reduce((a, b) => Math.max(a, b)));
+      this.min = Math.round(valueArr.reduce((a, b) => Math.min(a, b)));
+      this.average = Math.round((valueArr.reduce((a, b) => a + b))
+        / this.telemetryData.length);
+      }
+      console.log(this.property);
+      console.log('min   ', this.min);
+      console.log('max   ', this.max);
+      console.log('average   ', this.average);
       console.log(data);
       data.reverse();
       chart.data = data;
@@ -84,6 +101,39 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
     if (chart.yAxes.indexOf(valueYAxis) !== 0){
       valueYAxis.syncWithAxis = chart.yAxes.getIndex(0);
     }
+    valueYAxis.renderer.grid.template.disabled = true;
+    valueYAxis.renderer.labels.template.disabled = true;
+    valueYAxis.labelsEnabled = false;
+    // valueYAxis.min = this.min;
+    // valueYAxis.max = this.max;
+
+
+    // chart.events.on('ready', (ev) => {
+    //   valueYAxis.min = valueYAxis.minZoomed;
+    //   valueYAxis.max = valueYAxis.maxZoomed;
+    // });
+    // valueYAxis.events.on('ready', (ev) => {
+    //   ev.target.min = this.min;
+    //   ev.target.max = this.max;
+    // });
+    // valueYAxis.strictMinMax = true;
+
+    const range0 = valueYAxis.axisRanges.create();
+    range0.value = this.min;
+    range0.label.text = this.min;
+
+    const range1 = valueYAxis.axisRanges.create();
+    range1.value = this.max;
+    range1.label.text = this.max;
+    // range1.endValue = this.average;
+
+    const range2 = valueYAxis.axisRanges.create();
+    range2.value = this.average;
+   //  range2.endValue = this.max;
+    range2.label.text = this.average;
+    // range1.axisFill.fill = am4core.color('#229954');
+    // range1.axisFill.fillOpacity = 0.2;
+    // range1.grid.strokeOpacity = 0;
     const series = chart.series.push(new am4charts.LineSeries());
     series.dataFields.dateX = 'message_date';
     series.name =  this.property;
@@ -100,8 +150,8 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
     // valueYAxis.renderer.labels.template.fillOpacity = this.chartType.includes('Area') ? 0.2 : 0;
     valueYAxis.renderer.labels.template.fill = am4core.color('gray');
     // valueYAxis.renderer.opposite = (axis === 1);
-    valueYAxis.renderer.minWidth = 35;
-    valueYAxis.hidden = true;
+    // valueYAxis.renderer.minWidth = 35;
+    // valueYAxis.hidden = true;
     // if (this.y1AxisProps.length === 1 && this.y2AxisProps.length === 0) {
     //   const propObj = this.propertyList.filter(prop => prop.json_key === this.y1AxisProps[0])[0];
     //   this.createThresholdSeries(valueYAxis, propObj);

@@ -14,7 +14,7 @@ export class ApplicationMenuSettingsComponent implements OnInit {
   @Input() applicationData: any;
   saveMenuSettingAPILoading = false;
   originalApplicationData: any;
-  sideMenuList = CONSTANTS.SIDE_MENU_LIST;
+  sideMenuList = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
   activeTab = 'main-menu';
   toggleRows: any = {};
   constructor(

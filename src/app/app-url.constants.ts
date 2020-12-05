@@ -68,5 +68,6 @@ export class AppUrls {
   public static UPDATE_ALERT_CONDITION = 'apps/{0}/device_types/{1}/alert_conditions/{2}';
   public static DELETE_ALERT_CONDITION = 'apps/{0}/device_types/{1}/alert_conditions/{2}';
   public static GET_IOT_LEGACY_DEVICES = 'apps/{0}/devices';
+  public static GET_REPORT_TELEMETRY_DATA = 'apps/{0}/d2c/telemetry_report'
 
 }

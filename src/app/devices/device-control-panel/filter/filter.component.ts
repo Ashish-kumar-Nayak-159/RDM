@@ -69,8 +69,8 @@ export class FilterComponent implements OnInit {
 
   onDateChange(event) {
     console.log(event);
-    this.filterObj.from_date = moment(event.value[0]).utc();
-    this.filterObj.to_date = moment(event.value[1]).utc();
+    this.filterObj.from_date = moment(event.value[0]).second(0).utc();
+    this.filterObj.to_date = moment(event.value[1]).second(0).utc();
   }
 
   search() {

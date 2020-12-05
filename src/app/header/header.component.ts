@@ -69,6 +69,7 @@ export class HeaderComponent implements OnInit, OnChanges {
         event.id === 1 &&
         event.url === event.urlAfterRedirects
       ) {
+        this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
         this.breadcrumbData = this.commonService.getItemFromLocalStorage(CONSTANTS.CURRENT_BREADCRUMB_STATE);
       }
     });
@@ -101,7 +102,7 @@ export class HeaderComponent implements OnInit, OnChanges {
 
   redirectToFirstMenu() {
     const menu = this.contextApp.configuration.main_menu.length > 0 ?
-    this.contextApp.configuration.main_menu : CONSTANTS.SIDE_MENU_LIST;
+    this.contextApp.configuration.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
     let i = 0;
     menu.forEach(menuObj => {
       if ( i === 0 && menuObj.visible) {

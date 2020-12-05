@@ -181,8 +181,10 @@ export class ReportsComponent implements OnInit {
 
   onDateChange(event) {
     console.log(event);
-    this.filterObj.from_date = moment(event.value[0]).utc();
-    this.filterObj.to_date = moment(event.value[1]).utc();
+    this.filterObj.from_date = moment(event.value[0]).second(0).utc();
+    this.filterObj.to_date = moment(event.value[1]).second(0).utc();
+    console.log(this.filterObj.from_date.unix());
+    console.log(this.filterObj.to_date.unix());
   }
 
   onSingleDateChange(event) {
@@ -191,6 +193,8 @@ export class ReportsComponent implements OnInit {
     this.filterObj.to_date = (moment(event.value).add(1, 'days')).utc();
     console.log(this.filterObj.from_date.unix());
     console.log(this.filterObj.to_date.unix());
+    console.log(this.commonService.convertEpochToDate(this.filterObj.from_date.unix()));
+    console.log(this.commonService.convertEpochToDate(this.filterObj.to_date.unix()));
   }
 
   getThingsModelProperties(deviceType) {
@@ -272,6 +276,7 @@ export class ReportsComponent implements OnInit {
     this.deviceService.getDeviceAlerts(obj).subscribe(
       (response: any) => {
         this.latestAlerts = response.data;
+        this.latestAlerts.reverse();
         this.latestAlerts.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false
@@ -283,7 +288,7 @@ export class ReportsComponent implements OnInit {
     let message_props = '';
     this.props.forEach((prop, index) => message_props = message_props + prop.value.json_key + (this.props[index + 1] ? ',' : ''));
     obj['message_props'] = message_props;
-    this.deviceService.getDeviceTelemetry(obj).subscribe(
+    this.deviceService.getDeviceTelemetryForReport(obj, this.contextApp.app).subscribe(
       (response: any) => {
         if (response && response.data) {
           this.telemetry = response.data;
@@ -303,6 +308,7 @@ export class ReportsComponent implements OnInit {
 
   savePDF(): void {
     const pdf = new jsPDF('p', 'pt', 'A3');
+
     pdf.text(this.filterObj.report_type + ' for ' +
     (this.filterObj.device.display_name ? this.filterObj.device.display_name : this.filterObj.device.device_id) +
     ' for ' + this.commonService.convertEpochToDate(this.newFilterObj.from_date) + ' to ' +

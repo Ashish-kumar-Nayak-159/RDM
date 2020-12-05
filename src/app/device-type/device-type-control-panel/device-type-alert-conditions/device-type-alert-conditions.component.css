@@ -9,7 +9,7 @@
 }
 
 select.form-control {
-  width: 15rem!important;
+  width: 14rem!important;
 }
 
 .img-icon {
@@ -44,3 +44,4 @@ select.form-control {
   border: 0;
   border-bottom: 1px solid #ccc;
 }
+

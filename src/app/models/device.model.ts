@@ -17,9 +17,11 @@ export class Device {
   status: string;
   connection_state: string;
   gateway_id?: string;
+  device_type: string;
   category?: string;
   display_name: string;
   hierarchy: string;
   hierarchyString: string;
   tags: any;
+  app: string;
 }

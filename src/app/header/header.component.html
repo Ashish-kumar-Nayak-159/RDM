@@ -113,7 +113,6 @@
         <div class="dropdown-divider"></div>
         </ng-container>
         <ng-container  *ngIf="userData.apps.length > 1">
-          <div class="dropdown-divider"></div>
         <a class="dropdown-item"
         [routerLink]="['applications', 'selection']" routerLinkActive="active" >
           <i class="fas fa-th-large fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -181,7 +180,7 @@
         <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{userData?.name}}</span> -->
         <span class="mr-2 d-none d-lg-block">
           <span class="text-gray-600">{{userData?.name}}</span>
-          <small class="text-muted-dark d-block ">{{contextApp?.user.role}}</small>
+          <!-- <small class="text-muted-dark d-block ">{{contextApp?.user.role}}</small> -->
         </span>
 
         <img class="img-profile rounded-circle" src="../../assets/img/user.jpg">
@@ -192,24 +191,25 @@
           <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
           Profile
         </a>
-        <a class="dropdown-item" href="#">
+        <!-- <a class="dropdown-item" href="#">
           <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
           Settings
         </a>
         <a class="dropdown-item" href="#">
           <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
           Activity Log
-        </a>
+        </a> -->
 
         <ng-container  *ngIf="userData?.apps.length > 1">
-          <div class="dropdown-divider"></div>
+
         <a class="dropdown-item"
         [routerLink]="['applications', 'selection']" routerLinkActive="active" >
           <i class="fas fa-th-large fa-sm fa-fw mr-2 text-gray-400"></i>
           Change Application
         </a>
-        </ng-container>
         <div class="dropdown-divider"></div>
+        </ng-container>
+
         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
           <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
           Logout

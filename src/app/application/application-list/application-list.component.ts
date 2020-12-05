@@ -76,12 +76,6 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
   }
 
   redirectToDevices(app) {
-
-    this.router.navigate(['applications', app.app, 'devices'], {
-      queryParams: { state: app.metadata.contain_gateways ? CONSTANTS.IP_GATEWAY : (
-        app.metadata.contain_devices ? CONSTANTS.IP_DEVICE : undefined
-      )}
-    });
   }
 
   openCreateAppModal() {
@@ -188,8 +182,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
   async createApp() {
     console.log(this.applicationDetail);
     if (!this.applicationDetail.app || !this.applicationDetail.admin_email || !this.applicationDetail.admin_name
-      || !(this.applicationDetail.metadata.contain_devices
-        || this.applicationDetail.metadata.contain_gateways)) {
+      ) {
       this.toasterService.showError('Please fill all details', 'Create App');
     } else {
       this.isCreateAPILoading = true;

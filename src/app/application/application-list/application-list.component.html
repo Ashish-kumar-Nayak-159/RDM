@@ -46,7 +46,7 @@
             <th>Devices</th>
 
             <th>Icons</th>
-            <th>Actions</th>
+            <!-- <th>Actions</th> -->
           </tr>
         </thead>
         <!-- <tfoot>
@@ -69,18 +69,18 @@
                 <i class="fas fa-fw fa-eye"></i></a></td>
               <td><a  href="javascript:void(0)" (click)="openViewIconModal(app)" title="View Icons" >
                 <i class="fas fa-fw fa-eye"></i></a></td>
-              <td><a href="javascript:void(0)" (click)="openEditAppModal(app)" title="Edit App" >
-                <i class="fas fa-fw fa-edit"></i></a></td>
+              <!-- <td><a href="javascript:void(0)" (click)="openEditAppModal(app)" title="Edit App" >
+                <i class="fas fa-fw fa-edit"></i></a></td> -->
             </tr>
           </ng-container>
           <ng-container *ngIf="applications.length === 0 && !isApplicationListLoading">
             <tr>
-              <td colspan="6">No Applications found.</td>
+              <td colspan="4">No Applications found.</td>
             </tr>
           </ng-container>
           <ng-container *ngIf="isApplicationListLoading">
             <tr>
-              <td colspan="6">
+              <td colspan="4">
                 <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
               </td>
             </tr>
@@ -120,7 +120,7 @@
           id="app_admin" name="app_admin" [(ngModel)]="applicationDetail.admin_email"
           placeholder="Enter App Admin Email">
         </div>
-        <div class="form-check">
+        <!-- <div class="form-check">
           <input type="checkbox" class="form-check-input" id="contains-gateway"
           name="contains-gateway" [(ngModel)]="applicationDetail.metadata.contain_gateways"
           (ngModelChange)="applicationDetail.metadata.contain_devices = false;">
@@ -131,7 +131,7 @@
           name="contains-device" [(ngModel)]="applicationDetail.metadata.contain_devices"
           (ngModelChange)="applicationDetail.metadata.contain_gateways = false;">
           <label class="form-check-label" for="contains-devices">Contains Devices</label>
-        </div>
+        </div> -->
         <div class="form-group">
           <label for="message-text" class="col-form-label">Header Logo: {{appModalType === 'Edit' ? applicationDetail?.metadata?.header_logo?.name : ''}}</label>
           <input type="file"

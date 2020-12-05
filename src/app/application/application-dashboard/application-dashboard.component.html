@@ -37,10 +37,7 @@
                     dashboardSnapshot?.device_count
                   }}</span>
                 </div>
-                <div class="text-black-50 text-center small">{{tileName ? tileName: (
-                  (contextApp?.metadata?.contain_devices && !contextApp?.metadata?.contain_gateways ? 'IoT Devices' :
-                  (!contextApp?.metadata?.contain_devices && contextApp?.metadata?.contain_gateways ? 'IoT Gateways' : '')))
-                }}</div
+                <div class="text-black-50 text-center small">{{tileName}}</div
               ></a>
             </div>
           </div>

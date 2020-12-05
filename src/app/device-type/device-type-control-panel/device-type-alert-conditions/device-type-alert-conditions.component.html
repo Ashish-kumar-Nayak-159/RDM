@@ -67,7 +67,7 @@
               </td>
             </tr>
             <tr *ngIf="toggleRows[i]">
-              <td colspan="4" *ngIf="viewType === 'Visualization'">
+              <td colspan="5" *ngIf="viewType === 'Visualization'">
                 <div class="row col-12">
                   <h6 *ngIf="alertObj?.visualization_widgets?.length === 0"> No Visualization widgets defined yet.</h6>
                   <h6 *ngIf="alertObj?.visualization_widgets?.length > 0"> Following widgets have been defined so far. You can define more.</h6>
@@ -85,8 +85,8 @@
                 <div class="col-12 mt-2">
                   <div class="form-group row" >
                     <ng-container>
-                    <div class="col-md-3">
-                      <select class="form-control form-control-sm" id="template" name="model_type"
+                    <div class="row">
+                      <select class="form-control form-control-sm mx-2" id="template" name="model_type"
                       [(ngModel)]="widgetName"
                       >
                         <option [ngValue]="undefined">Select Widgets</option>
@@ -95,12 +95,12 @@
                           {{widget.title}}</option>
                         </ng-container>
                       </select>
+                      <!-- <a href="javascript:void(0)" class="mx-1" (click)="addVisualizationWidget()">
+                        <i class="fas fa-plus fa-sm"></i> </a> -->
+                        <button type="button" class="btn btn-warning btn-sm mx-2" title="Add" (click)="addVisualizationWidget()" >
+                          <i class="fas fa-plus fa-sm"></i></button>
+                    </div>
 
-                    </div>
-                    <div class="col-md-1">
-                      <a href="javascript:void(0)" (click)="addVisualizationWidget()">
-                        <i class="fas fa-plus fa-sm"></i> </a>
-                    </div>
                   </ng-container>
                   </div>
                 </div>
@@ -116,15 +116,14 @@
                 </div>
 
               </td>
-              <td colspan="4" *ngIf="viewType === 'Recommendations'">
+              <td colspan="5" *ngIf="viewType === 'Recommendations'">
 
                 <div class="row col-12">Following recommendations have been pre-configured. You can configure more.
 
                   <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
                   title="Save" (click)="onUpdateAlertConditions()" ><i class="fas fa-save fa-sm"></i></button></div>
                 <div class="row col-12 text-primary my-2">
-                  <span >Debugging Steps: <a href="javascript:void(0)" class="ml-2" (click)="addRecommendationStep()" title="Add">
-                    <i class="fas fa-plus fa-sm"></i> </a></span>
+                  <span >Debugging Steps: </span>
                   <!-- <a  class=" mx-1" href="javascript:void(0)"
                   title="Add" (click)="addRecommendationStep()" ><i class="fas fa-plus fa-sm"></i></a> -->
                    <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
@@ -171,7 +170,10 @@
                             </select>
                             </td> -->
                             <td>
-
+                              <a href="javascript:void(0)" class="ml-2" (click)="addRecommendationStep()" title="Add">
+                                <i class="fas fa-plus fa-sm"></i> </a>
+                              <!-- <button type="button" class="btn btn-warning btn-sm mx-2" title="Add" (click)="addRecommendationStep()" >
+                                <i class="fas fa-plus fa-sm"></i></button> -->
                             </td>
 
                           </ng-container>
@@ -187,8 +189,7 @@
                 </div>
                 <div class="row col-12 text-primary">
                   <span>Email / Whatsapp Attachments:
-                    <a href="javascript:void(0)" class="ml-1" (click)="addReferenceDocument()">
-                    <i class="fas fa-plus fa-sm"></i> </a></span>
+                    </span>
                   <!-- <button type="button" class="btn btn-warning btn-sm mx-1 mt-n2"
                    title="Add" (click)="addReferenceDocument()"><i class="fas fa-plus fa-sm"></i></button>
                    <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
@@ -198,8 +199,8 @@
                 <div class="col-12 mt-2">
                   <div class="form-group row" >
                     <ng-container>
-                    <div class="col-3" >
-                      <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="docName"
+                    <div class="row" >
+                      <select class="form-control form-control-sm mx-2" id="template" name="model_type" [(ngModel)]="docName"
                       >
                         <option [ngValue]="undefined">Select Document</option>
                         <ng-container *ngFor="let document of documents">
@@ -207,6 +208,10 @@
                           {{document.name}}</option>
                         </ng-container>
                       </select>
+                      <!-- <a href="javascript:void(0)" class="mx-1" (click)="addReferenceDocument()">
+                        <i class="fas fa-plus fa-sm"></i> </a> -->
+                        <button type="button" class="btn btn-warning btn-sm mx-1" title="Add" (click)="addReferenceDocument()" >
+                          <i class="fas fa-plus fa-sm"></i></button>
                     </div>
 
                   </ng-container>
@@ -229,12 +234,12 @@
         </ng-container>
         <ng-container *ngIf="isAlertConditionsLoading">
           <tr>
-            <td colspan="4"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></td>
+            <td colspan="5"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></td>
           </tr>
         </ng-container>
         <ng-container *ngIf="!isAlertConditionsLoading && alertConditions.length === 0">
           <tr>
-            <td colspan="4"> No Alert Conditions added.</td>
+            <td colspan="5"> No Alert Conditions added.</td>
           </tr>
         </ng-container>
       </tbody>

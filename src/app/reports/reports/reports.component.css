@@ -10,5 +10,36 @@ select.form-control {
 }
 
 .w-10 {
-  width:  10%!important;
+  width:  10rem!important;
 }
+
+.w-15 {
+  width:  15rem!important;
+}
+
+#dateRow input
+{
+  border: 0;
+  border-bottom: 1px solid #ccc;
+  outline: 0;
+  background-color: transparent;
+}
+#dateRow select {
+  background-color: transparent!important;
+  background: url('../../../assets/img/arrow-down.png') no-repeat right #ddd;
+  background-position: 98%;
+  padding: 2px 20px 2px 8px;
+  padding-right: 20px;
+  background-size: 14px;
+  -webkit-appearance: none;
+  outline: none !important;
+  -webkit-border-radius: 4px;
+  border: 0;
+  border-bottom: 1px solid #ccc;
+}
+
+ .bg-dateRow {
+  background-color: #F8F9Fc;
+}
+
+

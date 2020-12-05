@@ -23,7 +23,7 @@
   <ng-container *ngFor="let item of displayMenuList">
     <ng-container *ngIf="!item.children && item.visible && item?.priority === 1">
       <li class="nav-item" routerLinkActive="active"  *ngIf="!userData?.is_super_admin && item.url"
-      [routerLinkActiveOptions]="{exact: true}"
+
       >
         <a class="nav-link" [routerLink]="getURL(item.url)">
           <i class="{{item.icon}}" title="{{item.display_name ? item.display_name : item.system_name}}"></i>

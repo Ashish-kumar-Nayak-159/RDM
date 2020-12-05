@@ -44,7 +44,10 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
           this.contextApp.configuration.main_menu.forEach(item => {
             if (config.page === item.page) {
               found = true;
-              data.push(item);
+              config.display_name = item.display_name;
+              config.visible = item.visible;
+              config.showAccordion = item.showAccordion;
+              data.push(config);
             }
           });
           if (!found) {
@@ -54,6 +57,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
       } else {
         data =  this.constantsData.SIDE_MENU_LIST;
       }
+      console.log('60   ', data);
       this.processSideMenuData(data, this.contextApp);
       }
     }
@@ -70,7 +74,10 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
             this.contextApp.configuration.main_menu.forEach(item => {
               if (config.page === item.page) {
                 found = true;
-                data.push(item);
+                config.display_name = item.display_name;
+                config.visible = item.visible;
+                config.showAccordion = item.showAccordion;
+                data.push(config);
               }
             });
             if (!found) {
@@ -88,7 +95,8 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
 
     this.commonService.refreshSideMenuData.subscribe(list => {
       console.log(list);
-      let config = list.configuration?.main_menu?.length > 0 ? list.configuration.main_menu : CONSTANTS.SIDE_MENU_LIST;
+      let config = list.configuration?.main_menu?.length > 0 ? list.configuration.main_menu :
+      JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
       config = JSON.parse(JSON.stringify(config));
       this.processSideMenuData(config, list);
       // const index = this.userData.apps.findIndex(app => app.app === list.app);
@@ -107,23 +115,9 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
 
   processSideMenuData(data, list) {
     // alert('here');
-    console.log('data    ', data);
-    const arr = [];
+    console.log('data-117    ', data);
+    const arr = JSON.parse(JSON.stringify(data));
     console.log(list);
-    data.forEach(item => {
-      if (list.metadata.contain_gateways) {
-        console.log('in gateway');
-        if (item.page !== 'Devices') {
-          arr.push(item);
-        }
-      }
-      if (list.metadata.contain_devices) {
-        console.log('in device');
-        if (item.page !== 'Gateways' && item.page !== 'Non IP Devices') {
-          arr.push(item);
-        }
-      }
-  });
     arr.forEach(element => {
       if (element.page === 'Things Modelling') {
         if (this.contextApp?.user.role !== CONSTANTS.APP_ADMIN_ROLE) {
@@ -133,9 +127,9 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
         }
       }
     });
-    console.log('in if', arr);
+    console.log('in if - 129', JSON.stringify(arr));
     this.displayMenuList = arr;
-    console.log(this.displayMenuList);
+    console.log('131   ', this.displayMenuList);
   }
 
   onSidebarToggle() {

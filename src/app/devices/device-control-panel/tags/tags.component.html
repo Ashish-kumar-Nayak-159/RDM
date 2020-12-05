@@ -54,44 +54,52 @@
         <table class="table table-bordered  table-striped text-gray-800" id="dataTable" width="100%" cellspacing="0">
 
           <tbody>
-            <tr *ngFor="let tag of reservedTags">
+            <tr>
+              <td>Asset Display Name</td>
+              <td>
+                <ng-container *ngIf="!isReservedTagsEditable">{{device?.tags?.display_name}}</ng-container>
+                <ng-container *ngIf="isReservedTagsEditable">
+                  <input type="text" class="form-control form-control-sm bg-light border-0 small"
+                    [(ngModel)]="device?.tags.display_name" name="display_name">
+                </ng-container>
+              </td>
+            </tr>
+            <tr >
+              <td>Hierarchy</td>
+              <td>{{device?.hierarchyString}}</td>
+            </tr>
+            <tr>
+              <td>Created By</td>
+              <td>{{device?.tags?.created_by}}</td>
+            </tr>
+            <tr>
+              <td>Created On</td>
+              <td>{{device?.tags?.local_created_date}}</td>
+            </tr>
+
+            <tr>
+              <td>Asset Manager</td>
+              <td>{{device?.tags?.device_manager}}</td>
+            </tr>
+            <tr>
+              <td>Model</td>
+              <td>{{device?.tags?.device_type}}</td>
+            </tr>
+            <tr>
+              <td>Protocol</td>
+              <td>{{device?.tags?.protocol}}</td>
+            </tr>
+            <tr *ngFor="let tag of deviceType?.tags?.reserved_tags">
               <td>{{tag.name}}</td>
               <td>
                 <ng-container
-                  *ngIf="tag?.key === 'local_created_date' || (tagsListToNotEdit?.indexOf(tag.key) !== -1 && originalDevice?.tags[tag.key] )
-                  || !isReservedTagsEditable;else inputTemplate">
+                  *ngIf="!isReservedTagsEditable;else inputTemplate">
                   {{device?.tags[tag.key]}}
                 </ng-container>
                 <ng-template #inputTemplate>
                   <input type="text" class="form-control form-control-sm bg-light border-0 small"
                     [(ngModel)]="device?.tags[tag.key]" name="{{tag.name}}">
                 </ng-template>
-              </td>
-            </tr>
-            <tr *ngFor="let tag of contextApp?.hierarchy; let tIndex = index;">
-              <td>{{tag.name}}</td>
-              <td>
-                <ng-container *ngIf="isReservedTagsEditable && !contextApp.user.hierarchy[tag.name]">
-                  <select class="custom-select" id="hierarchy{{tIndex}}" name="hierarchy{{tIndex}}"
-                    [(ngModel)]="device.tags.hierarchy_json[tag.name]" (change)="onChangeOfHierarchyTags()">
-                    <option [ngValue]="tag" *ngFor="let tag of tag.tags">{{tag}}</option>
-                  </select>
-                </ng-container>
-                <ng-container *ngIf="contextApp.user.hierarchy[tag.name] || !isReservedTagsEditable">
-                  {{device?.tags.hierarchy_json[tag.name]}}
-                </ng-container>
-              </td>
-            </tr>
-            <tr *ngFor="let tag of reservedTagsBasedOnProtocol">
-              <td>{{tag.name}}</td>
-              <td>
-                <ng-container *ngIf="isReservedTagsEditable">
-                  <input type="text" class="form-control form-control-sm bg-light border-0 small"
-                    [(ngModel)]="device?.tags[tag.key]" name="{{tag.name}}">
-                </ng-container>
-                <ng-container *ngIf="!isReservedTagsEditable">
-                  {{device?.tags[tag.key]}}
-                </ng-container>
               </td>
             </tr>
           </tbody>

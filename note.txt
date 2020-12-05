@@ -84,26 +84,42 @@ Dashboard Widget ideas:
 
 
  ----- To do ------
-1. Remove device and gateway from app creation
-2. Done ----- Menu Settings accordion for device control panel
-3. Dynamic tiles for dashboard based on user selection
-4. Live Widgets - High Priority -
+1.  Done ----- Remove device and gateway from app creation
+2.  Done ----- Menu Settings accordion for device control panel
+3.  Dynamic tiles for dashboard based on user selection
+4.  Live Widgets - High Priority -
     1.	Single Guage 2.	Multi-Guage (Round, Radial with start / sweep angle, linear, bullet, pie guages)
     3.	Number Indicator 4.	Number indicator with trend analysis
-5. Done ----- Alert conditioning
-6. Done ----- Reference Documents
-7. Done ----- Alert conditioning integration in Alert Visualization
-8. Export icons on widgets accordion
-9. Modal tags changes, device tags needs to come from model
-10. App hierarchy relation changes
+5.  Done ----- Alert conditioning
+6.  Done ----- Reference Documents
+7.  Done ----- Alert conditioning integration in Alert Visualization
+8.  Export icons on widgets accordion
+9.  Done ----- Modal tags changes, device tags needs to come from model
+10. Done ----- App hierarchy relation changes
 11. Done ----- Filter based on app hierarchy in all screens.
 12. Done ----- Reports - one report with all measured properety as columns + alert report
 13. Done ---- API Optimization changes
 14. Websocket integration for live data
 15. Edit icon for App settings
 16. Add actions in Alert conditions
-17. Reprot PDF - Heading - report type + device name, reprot generated date, report data time range
-18. Done ----- Add alert visualization in device control panel
-19. Done ----- Need to remove Connectivity in compressors
-20. Done ----- alert screen change, add message, severity,
+17. Notification overlay
+18. Done ----- Reprot PDF - Heading - report type + device name, reprot generated date, report data time range
+19. Done ----- Add alert visualization in device control panel
+20. Done ----- Need to remove Connectivity in compressors
+21. Done ----- alert screen change, add message, severity,
     highlighting the alerts (critical to red-background) - reports, alert visualization and alerts
+22. Done ----- Added settings option under user logo
+23. Done ----- Added configuration to add table title and heading in menu setting
+24. Access Control in device control panel
+
+
+1. Asset Logo - Fixed
+2. Total IOT Devices
+2. Online IOT Devices
+2. Offline IOT Devices
+2. Total IOT Gateways
+2. Online IOT Gateways
+2. Offline IOT Gateways
+2. Total Legacy Devices
+2. Online Legacy Devices
+2. Offline Legacy Devices

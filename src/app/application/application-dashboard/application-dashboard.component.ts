@@ -74,9 +74,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.route.paramMap.subscribe(async params => {
       console.log(this.contextApp);
-      this.tileName = this.getTileName(
-        (this.contextApp?.metadata?.contain_devices && !this.contextApp?.metadata?.contain_gateways ? 'IoT Devices' :
-        (!this.contextApp?.metadata?.contain_devices && this.contextApp?.metadata?.contain_gateways ? 'IoT Gateways' : '')));
+      this.tileName = this.getTileName('IoT Gateways');
       if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.logo) {
         this.contextApp.metadata.logo = {
           url : CONSTANTS.DEFAULT_APP_LOGO
@@ -239,18 +237,14 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
   }
 
   redirectToDevice(type?: string) {
-    const fromValue = (
-    (this.contextApp?.metadata?.contain_devices ? CONSTANTS.IP_DEVICE :
-    (this.contextApp?.metadata?.contain_gateways ? CONSTANTS.IP_GATEWAY : null)));
+    const fromValue = CONSTANTS.IP_GATEWAY;
     let obj;
     if (type || fromValue) {
       obj = {
         connection_state: type
       };
     }
-    this.router.navigate(['applications', this.contextApp.app,
-    (this.contextApp?.metadata?.contain_devices ? 'devices' :
-      (this.contextApp?.metadata?.contain_gateways ? 'gateways' : ''))], {queryParams: obj});
+    this.router.navigate(['applications', this.contextApp.app, 'gateways'], {queryParams: obj});
   }
 
   /**

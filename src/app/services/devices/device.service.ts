@@ -156,6 +156,16 @@ export class DeviceService {
     return this.http.get(this.url + AppUrls.GET_TELEMETRY_LIST, { params });
   }
 
+  getDeviceTelemetryForReport(filterObj, app) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_REPORT_TELEMETRY_DATA, app), { params });
+  }
+
   getDeviceError(filterObj) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {

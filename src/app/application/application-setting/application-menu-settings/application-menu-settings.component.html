@@ -42,7 +42,7 @@
                 </td>
                 <td>{{item.page}}</td>
                 <td>{{item.system_name}}</td>
-                <td><input type="text" class="form-control" name="display_name{{configIndex}}" id="display_name{{configIndex}}"
+                <td><input type="text" class="form-control" name="display_name_main_menu{{configIndex}}" id="display_name_main_menu{{configIndex}}"
                     [(ngModel)]="item.display_name" /></td>
                 <td><input type="checkbox" name="visible{{configIndex}}"
                     id="visible{{configIndex}}" [(ngModel)]="item.visible" /></td>
@@ -102,7 +102,7 @@
               <ng-container *ngFor="let item of applicationData?.configuration?.device_control_panel_menu; let configIndex = index">
                 <tr *ngIf="!item.isTitle">
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control" name="display_name{{configIndex}}" id="display_name{{configIndex}}"
+                  <td><input type="text" class="form-control" name="display_name_device{{configIndex}}" id="display_name_device{{configIndex}}"
                       [(ngModel)]="item.display_name" /></td>
                   <td><input type="checkbox" name="visible{{configIndex}}"
                       id="visible{{configIndex}}" [(ngModel)]="item.visible" /></td>
@@ -146,7 +146,7 @@
               <ng-container *ngFor="let item of applicationData?.configuration?.model_control_panel_menu; let configIndex = index">
                 <tr *ngIf="!item.isTitle">
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control" name="display_name{{configIndex}}" id="display_name{{configIndex}}"
+                  <td><input type="text" class="form-control" name="display_name_device_type{{configIndex}}" id="display_name_device_type{{configIndex}}"
                       [(ngModel)]="item.display_name" /></td>
                   <td><input type="checkbox" name="visible{{configIndex}}"
                       id="visible{{configIndex}}" [(ngModel)]="item.visible" /></td>

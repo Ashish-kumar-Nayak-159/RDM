@@ -23,10 +23,8 @@ export class GaugeChartComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes) {
     if (this.chart && changes.value) {
-      console.log(this.id, '=======', changes.value.currentValue);
       this.label.text = changes.value.currentValue;
       this.hand.value = Number(changes.value.currentValue);
-      console.log(this.hand.value);
     }
   }
 

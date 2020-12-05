@@ -33,7 +33,7 @@
           </option>
         </select> -->
         </div>
-        <div class="form-group form-inline  my-2 mx-3">
+        <div class="row form-group form-inline  my-2 mx-3">
 
           <!-- <input type="number" min="1" class="form-control form-control-sm mx-1 my-1 record-input" id="inputEmail4"
             placeholder="No of Records" [(ngModel)]="filterObj.count" name="count"> -->
@@ -57,8 +57,9 @@
               }"
               (onDeSelectAll)="y1Deselect($event)">
             </angular2-multiselect>
+            <div class="bg-dateRow form-group form-inline" id="dateRow" style="width: 42rem;">
           <select class="form-control form-control-sm mx-1 my-1" id="dateoptions" [(ngModel)]="filterObj.dateOption"
-            name="dateOptions" (change)="onDateOptionChange()">
+            name="dateOptions" (change)="onDateOptionChange();dt1Input.value = null;dt2Input.value = null;">
             <option [ngValue]="undefined">Quick Options</option>
             <option [ngValue]="'5 mins'">Last 5 minutes</option>
             <option [ngValue]="'30 mins'">Last 30 minutes</option>
@@ -67,21 +68,21 @@
           </select>
           <label class="ml-1 mr-1">OR</label>
           <ng-container>
-            <input [owlDateTime]="dt2"  (dateTimeChange)="onSingleDateChange($event)"
+            <input #dt2Input [owlDateTime]="dt2"  (dateTimeChange)="onSingleDateChange($event);dt1Input.value = null;filterObj.dateOption = undefined;"
               class="form-control form-control-sm mx-1 my-1 w-10" [owlDateTimeTrigger]="dt2"
-              placeholder="Select Date Time">
+              placeholder="Select Date">
             <span [owlDateTimeTrigger]="dt2"  class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
             <owl-date-time #dt2 [pickerType]="'calendar'"></owl-date-time>
           </ng-container>
-          <label class="ml-2 mr-1">OR</label>
+          <label class="ml-3 mr-1">OR</label>
           <ng-container>
-            <input [owlDateTime]="dt1" [selectMode]="'range'" (dateTimeChange)="onDateChange($event)"
-              class="form-control form-control-sm mx-1 my-1 col-md-2" [owlDateTimeTrigger]="dt1"
+            <input #dt1Input [owlDateTime]="dt1" [selectMode]="'range'" (dateTimeChange)="onDateChange($event);dt2Input.value = null;filterObj.dateOption = undefined;"
+              class="form-control form-control-sm mx-1 my-1 w-15" [owlDateTimeTrigger]="dt1"
               placeholder="Select Date Range">
             <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
             <owl-date-time #dt1></owl-date-time>
           </ng-container>
-
+          </div>
           <button type="button" class="btn btn-warning btn-sm mx-3 my-1" title="Search" (click)="onFilterSelection()" ><i
               class="fas fa-search fa-sm"></i></button>
           <!-- <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fas fa-trash  fa-sm"></i></button> -->

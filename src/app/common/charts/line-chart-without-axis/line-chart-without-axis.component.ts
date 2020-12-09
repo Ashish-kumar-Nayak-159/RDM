@@ -63,13 +63,12 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
       if (valueArr.length > 0) {
       this.max = Math.round(valueArr.reduce((a, b) => Math.max(a, b)));
       this.min = Math.round(valueArr.reduce((a, b) => Math.min(a, b)));
-      this.average = Math.round((valueArr.reduce((a, b) => a + b))
-        / this.telemetryData.length);
+      this.average = Math.round((this.min + this.max) / 2);
       }
       console.log(this.property);
       console.log('min   ', this.min);
       console.log('max   ', this.max);
-      console.log('average   ', this.average);
+      console.log('average', this.average);
       console.log(data);
       data.reverse();
       chart.data = data;
@@ -120,16 +119,22 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
 
     const range0 = valueYAxis.axisRanges.create();
     range0.value = this.min;
+    range0.label.fontSize = '0.6em';
+    range0.label.fontWeight = 'bold';
     range0.label.text = this.min;
 
     const range1 = valueYAxis.axisRanges.create();
     range1.value = this.max;
+    range1.label.fontSize = '0.6em';
+    range1.label.fontWeight = 'bold';
     range1.label.text = this.max;
     // range1.endValue = this.average;
 
     const range2 = valueYAxis.axisRanges.create();
     range2.value = this.average;
    //  range2.endValue = this.max;
+    range2.label.fontSize = '0.6em';
+    range2.label.fontWeight = 'bold';
     range2.label.text = this.average;
     // range1.axisFill.fill = am4core.color('#229954');
     // range1.axisFill.fillOpacity = 0.2;

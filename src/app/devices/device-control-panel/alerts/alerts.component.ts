@@ -52,10 +52,6 @@ export class AlertsComponent implements OnInit, OnDestroy {
             key: 'local_created_date',
           },
           {
-            name: 'Message ID',
-            key: 'message_id',
-          },
-          {
             name: 'Message',
             key: 'message'
           },

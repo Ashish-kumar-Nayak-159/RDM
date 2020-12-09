@@ -107,9 +107,9 @@
       class="fa fa-spinner fa-spin fa-fw fa-2x"
     ></i>
   </div>
-  <div class="row col-12 pl-5 mt-2" *ngIf="historyData.length > 0 && isFilterSelected && !isHistoryAPILoading">
+  <div class="row mt-2 col-12 ml-1" *ngIf="historyData.length > 0 && isFilterSelected && !isHistoryAPILoading">
 
-    <div class="col-2 form-group " *ngFor="let prop of propList">
+    <div class="col-md-3 form-group " *ngFor="let prop of propList">
       <input type="checkbox" class="form-check-input" id="{{prop}}"
       name="{{prop}}" (change)="toggleProperty(prop)" [checked]="selectedPropertyForChart.indexOf(prop) !== -1">
       <label class="form-check-label" for="{{prop}}">{{prop}}</label>

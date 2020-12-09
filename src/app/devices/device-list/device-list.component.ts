@@ -27,7 +27,7 @@ export class DeviceListComponent implements OnInit {
   protocolList: any[] = [];
   connectivityList: any[] = [];
   componentState: string; // value must be IP Devices & Gateways or IP Device or IP Gateway or Non IP Devices
-  constantData = CONSTANTS;
+  constantData =CONSTANTS;
   originalSingularComponentState: string;
   gateways: any[];
   tableConfig: any;
@@ -407,6 +407,7 @@ export class DeviceListComponent implements OnInit {
     this.deviceDetail.tags.hierarchy = JSON.stringify(this.deviceDetail.tags.hierarchy_json );
     this.deviceDetail.tags.created_by = this.userData.email;
     this.deviceDetail.app = this.contextApp.app;
+    delete this.deviceDetail.tags.reserved_tags;
     this.deviceDetail.tags.category = this.componentState === CONSTANTS.NON_IP_DEVICE ?
     null : this.componentState;
     this.deviceDetail.tags.created_date = moment().utc().format('M/DD/YYYY h:mm:ss A');

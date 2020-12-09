@@ -62,7 +62,7 @@
       <table id="mytable" width="80%" class="table table-bordered table-sm">
         <thead>
           <tr>
-            <th style="font-size:1rem;" colspan="2">{{applicationData.hierarchy.levels[selectedHierarchyItem]}} </th>
+            <th  colspan="2">{{applicationData.hierarchy.levels[selectedHierarchyItem]}} </th>
           </tr>
         </thead>
         <tbody class="bg-white">
@@ -94,11 +94,11 @@
             </td>
           </tr>
         </ng-container>
-          <tr *ngIf="hierarchyArr[selectedHierarchyItem].length > 0">
+          <tr >
             <td>
               <input id="tag" name="tag" type="text" class="form-control form-control-sm" placeholder="Add Tag"
                 [(ngModel)]="addedTagItem">
-              <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
+              <div class="tagsinput" style="width: auto; height: auto;min-height: auto;" *ngIf="hierarchyArr[selectedHierarchyItem].length > 0">
                 <span class="tag" *ngFor="let tag of hierarchyArr[selectedHierarchyItem]; let tagIndex = index">
                   <span class="tag-text">{{tag}}</span>
                   <button class="tag-remove" (click)="onRemoveTag(tagIndex)"></button>

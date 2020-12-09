@@ -1,5 +1,5 @@
 <div class="topnavbar">
-    <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-1">
+    <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3">
     <h5 class="h4 mb-0 text-gray-800">{{tileData && tileData[0] ? tileData[0]?.value : ''}}</h5>
   </div>
 <div id="telemetry-tabs" class="d-sm-flex justify-content-end" style="margin-right: 12rem;margin-top: -3.2rem;">
@@ -13,272 +13,292 @@
 </nav>
 </div>
 </div>
-<div class="container-tab-pad" style="margin-top: 6rem">
+<div class="container-tab-pad" style="margin-top: 6.7rem">
 
-        <div class="row px-4">
+    <div class="row px-4">
     <div id="tabs">
       <div class="tab-content px-3 px-sm-0" id="nav-tabContent">
         <div class="tab-pane fade show active" id="Meta-data" role="tabpanel" aria-labelledby="nav-home-tab">
-          <div class="card row bg-white" style="margin-left:-3rem" *ngIf="selectedTab === 'telemetry'">
-            <div class="col-xl-12 col-md-12 mb-12 ml-5">
-              <form>
-                <div class="form-group form-inline my-2 mx-3">
-                  <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let index = index;">
-                  <select *ngIf="index !== 0" class="form-control form-control-sm mx-1 my-1" id="{{level}}"
-                  [disabled]="contextApp?.user?.hierarchy[level]"
-                  [(ngModel)]="configureHierarchy[index]" name="{{level}}" (change)="onChangeOfHierarchy(index)">
-                    <option [ngValue]="undefined">Select {{level}}</option>
-                    <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">
-                      {{tag}}
-                    </option>
-                  </select>
-                  <input  type="text" *ngIf="index === 0"  defaultValue="{{contextApp.app}}" disabled class="form-control form-control-sm mx-1 my-1">
-                </ng-container>
-                <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory" [(ngModel)]="filterObj.device"
-                name="deviceCategory" >
-                <option [ngValue]="undefined">Select Asset</option>
-                <option [ngValue]="device" *ngFor="let device of devices">
-                  {{device?.display_name ? device?.display_name: device.device_id}}
-                </option>
-                </select>
-                <!-- <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory1" [(ngModel)]="filterObj.non_ip_device"
-                  name="deviceCategory1" *ngIf="filterObj.device?.cloud_connectivity.includes('Gateway')"
-                  >
+          <div class="topnavbar" style="margin-top: 1.5rem;">
+            <div class="card row bg-white" *ngIf="selectedTab === 'telemetry'">
+              <div class="col-xl-12 col-md-12 mb-12">
+                <form>
+                  <div class="form-group form-inline my-2 mx-1">
+                    <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let index = index;">
+                    <select *ngIf="index !== 0" class="form-control form-control-sm mx-1 my-1" id="{{level}}"
+                    [disabled]="contextApp?.user?.hierarchy[level]"
+                    [(ngModel)]="configureHierarchy[index]" name="{{level}}" (change)="onChangeOfHierarchy(index)">
+                      <option [ngValue]="undefined">Select {{level}}</option>
+                      <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">
+                        {{tag}}
+                      </option>
+                    </select>
+                    <input  type="text" *ngIf="index === 0"  defaultValue="{{contextApp.app}}" disabled class="form-control form-control-sm mx-1 my-1">
+                  </ng-container>
+                  <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory" [(ngModel)]="filterObj.device"
+                  name="deviceCategory" >
                   <option [ngValue]="undefined">Select Asset</option>
-                  <option [ngValue]="device" *ngFor="let device of nonIPDevices">
+                  <option [ngValue]="device" *ngFor="let device of devices">
                     {{device?.display_name ? device?.display_name: device.device_id}}
                   </option>
-                </select> -->
-                <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="onFilterSelection();isTelemetryDataLoading = false;" ><i
-                  class="fas fa-search fa-sm"></i></button>
-                </div>
-              </form>
+                  </select>
+                  <!-- <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory1" [(ngModel)]="filterObj.non_ip_device"
+                    name="deviceCategory1" *ngIf="filterObj.device?.cloud_connectivity.includes('Gateway')"
+                    >
+                    <option [ngValue]="undefined">Select Asset</option>
+                    <option [ngValue]="device" *ngFor="let device of nonIPDevices">
+                      {{device?.display_name ? device?.display_name: device.device_id}}
+                    </option>
+                  </select> -->
+                  <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="onFilterSelection();isTelemetryDataLoading = false;" ><i
+                    class="fas fa-search fa-sm"></i></button>
+                  </div>
+                </form>
+              </div>
             </div>
-
           </div>
-          <i class="fa fa-spinner fa-spin fa-fw" *ngIf="isTelemetryDataLoading"></i>
-          <div class="row" *ngIf="telemetryObj">
-              <div class="col-xl-8 col-lg-8">
-                <!-- Content Row -->
-                  <div class="row">
 
-                  <!-- Content Column -->
-                <div class="col-lg-7  my-3">
+          <div class="contain-pad" style="margin-top: 2.5rem;">
+            <div class="mb-2">
+              <i class="fa fa-spinner fa-spin fa-fw" *ngIf="isTelemetryDataLoading"></i>
+              <div class="row" *ngIf="telemetryObj">
+                  <div class="col-xl-8 col-lg-8">
+                    <!-- Content Row -->
+                      <div class="row">
 
-                  <div class="card ">
-                  <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold">Pressure Parameters (Bar)</h6>
-                  </div>
-                  <div class="card-body1" style="height: 10rem;">
-                    <div class="row  text-center">
-                    <div class="col-4 text-center" >
-                      <span class="text-xs mx-3">Discharge Pressure</span>
-                      <div class="pt-3" >
-                      <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Discharge_Pressure}}</span>
+                      <!-- Content Column -->
+                    <div class="col-lg-7  my-3">
+
+                      <div class="card ">
+                      <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold">Pressure Parameters (Bar)</h6>
                       </div>
-                       <div class="ml-2">
-                             <app-line-chart-without-axis *ngIf="lastReportedTelemetryValues.Discharge_Pressure" [chartId]="'lineChart1'"  [telemetryData]="telemetryData" [property]="'Discharge_Pressure'"></app-line-chart-without-axis>
+                      <div class="card-body1" style="height: 10rem;">
+                        <div class="row  text-center">
+                        <div class="col-4 text-center" >
+                          <span class="text-xs mx-3">Discharge Pressure</span>
+                          <div class="pt-3" >
+                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Discharge_Pressure}}</span>
+                          </div>
+                           <div class="ml-3">
+                                 <app-line-chart-without-axis [chartId]="'lineChart1'"  [telemetryData]="telemetryData" [property]="'Discharge_Pressure'"></app-line-chart-without-axis>
+                            </div>
                         </div>
+
+                        <div class="col-4  text-center border-left" >
+                          <span class="text-xs mx-3">Suction Pressure</span>
+                           <div class="pt-3" >
+                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.suction_pressure}}</span>
+                        </div>
+                           <div class="ml-2">
+
+                                <app-line-chart-without-axis [chartId]="'lineChart2'" [telemetryData]="telemetryData" [property]="'suction_pressure'"></app-line-chart-without-axis>
+
+                            </div>
+                        </div>
+
+                        <div class="col-4  text-center border-left" >
+                          <span class="text-xs mx-3">High-bank Pressure</span>
+                           <div class="pt-3" >
+                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.high_bank_pressure}}</span>
+                        </div>
+                           <div class="ml-2">
+
+                                <app-line-chart-without-axis [chartId]="'lineChart3'" [telemetryData]="telemetryData" [property]="'high_bank_pressure'"></app-line-chart-without-axis>
+
+
+                          </div>
+                        </div>
+                        </div>
+                      </div>
+                      </div>
                     </div>
 
-                    <div class="col-4  text-center border-left" >
-                      <span class="text-xs mx-3">Suction Pressure</span>
-                       <div class="pt-3" >
-                      <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.suction_pressure}}</span>
-                    </div>
-                       <div class="ml-1">
 
-                            <app-line-chart-without-axis *ngIf="lastReportedTelemetryValues.suction_pressure" [chartId]="'lineChart2'" [telemetryData]="telemetryData" [property]="'suction_pressure'"></app-line-chart-without-axis>
+
+                      <div class="col-lg-5 my-3">
+
+                       <!-- Project Card Example -->
+                      <div class="card ">
+                      <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold">Flow Rate Parameters (kg/hr)</h6>
+                      </div>
+                      <div class="card-body1" style="height: 10rem;">
+                        <div class="row  text-center">
+                        <div class="col-6  text-center" >
+                          <span class="text-xs mx-3">Flow Rate Suction</span>
+                          <div class="pt-3" >
+                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Flow_rate_Suction}}</span>
+                        </div>
+                           <div class="ml-3">
+
+                                <app-line-chart-without-axis [chartId]="'lineChart4'" [telemetryData]="telemetryData" [property]="'Flow_rate_Suction'"></app-line-chart-without-axis>
+
+
+                          </div>
+                        </div>
+                        <div class="col-6  text-center border-left" >
+                          <span class="text-xs mx-3">Flow Rate Discharge</span>
+                           <div class="pt-3" >
+                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Flow_rate_Discharge}}</span>
+                        </div>
+                           <div class="ml-3">
+
+                                <app-line-chart-without-axis [chartId]="'lineChart5'" [telemetryData]="telemetryData" [property]="'Flow_rate_Discharge'"></app-line-chart-without-axis>
+
+                           </div>
+                        </div>
 
                         </div>
+                      </div>
+                      </div>
+
+                      </div>
+
+
+                     </div>
+
+                    <div class="row">
+
+                    <!-- Content Column -->
+                    <div class="col-lg-7 mb-3">
+
+                      <!-- Project Card Example -->
+                      <div class="card ">
+                      <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold">Electric Parameters</h6>
+                      </div>
+                      <div class="card-body1" style="height: 10rem;">
+                        <div class="row  text-center">
+                        <div class="col-4  text-center" >
+                          <span class="text-xs ml-3">Active Power</span><span class="text-xs">(KW)</span>
+                          <div class="pt-3" >
+                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Active_Power}}</span>
+                          </div>
+                           <div class="ml-3">
+                                <app-line-chart-without-axis [chartId]="'lineChart6'" [telemetryData]="telemetryData" [property]="'Active_Power'"></app-line-chart-without-axis>
+                          </div>
+                        </div>
+                        <div class="col-4  text-center border-left" >
+                          <span class="text-xs ml-3">Voltage R-Y</span> <span class="text-xs">(V)</span>
+                           <div class="pt-3" >
+                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Voltage_R_Y}}</span>
+                        </div>
+                           <div class="ml-2">
+
+                                <app-line-chart-without-axis [chartId]="'lineChart7'" [telemetryData]="telemetryData" [property]="'Voltage_R_Y'"></app-line-chart-without-axis>
+
+                           </div>
+                        </div>
+
+                        <div class="col-4 text-center border-left" >
+                          <span class="text-xs ml-3">Current R Phase</span><span class="text-xs">(A)</span>
+                           <div class="pt-3" >
+                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Current_R_Phase}}</span>  </div>
+                           <div class="ml-2">
+
+                                <app-line-chart-without-axis [chartId]="'lineChart8'" [telemetryData]="telemetryData" [property]="'Current_R_Phase'"></app-line-chart-without-axis>
+
+                          </div>
+                        </div>
+                        </div>
+                      </div>
+                      </div>
                     </div>
 
-                    <div class="col-4  text-center border-left" >
-                      <span class="text-xs mx-3">High-bank Pressure</span>
-                       <div class="pt-3" >
-                      <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.high_bank_pressure}}</span>
-                    </div>
-                       <div class="ml-1">
+                    <div class="col-lg-5 mb-3">
 
-                            <app-line-chart-without-axis *ngIf="lastReportedTelemetryValues.high_bank_pressure" [chartId]="'lineChart3'" [telemetryData]="telemetryData" [property]="'high_bank_pressure'"></app-line-chart-without-axis>
+                      <!-- Illustrations -->
+                      <div class="card ">
+                      <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold">Gas Leak Parameters (%)</h6>
+                      </div>
+                      <div class="card-body1" style="height: 10rem;">
+                        <div class="row text-center">
+                        <div class="col-6 text-center" >
+                          <span class="text-xs mx-3">Gas Leak Level-1</span>
+                          <div class="pt-3" >
+                            <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Gas_Leakage_Level_1}}</span>
+                            </div>
+                           <div class="mt-n5" >
+                            <app-gauge-chart [id]="'gaugeChart1'" [value]="lastReportedTelemetryValues.Gas_Leakage_Level_1"></app-gauge-chart>
+                           </div>
 
-
+                        </div>
+                        <div class="col-6 text-center" >
+                          <span class="text-xs mx-3">Gas Leak Level-2</span>
+                          <div class="pt-3" >
+                            <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Gas_Leakage_Level_2}}</span>
+                            </div>
+                           <div class="mt-n5" >
+                            <app-gauge-chart [id]="'gaugeChart2'" [value]="lastReportedTelemetryValues.Gas_Leakage_Level_2"></app-gauge-chart>
+                           </div>
+                        </div>
+                        </div>
+                      </div>
                       </div>
                     </div>
                     </div>
                   </div>
-                  </div>
-                </div>
 
-
-
-                  <div class="col-lg-5 my-3">
-
-                   <!-- Project Card Example -->
-                  <div class="card ">
-                  <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold">Flow Rate Parameters (kg/hr)</h6>
-                  </div>
-                  <div class="card-body1" style="height: 10rem;">
-                    <div class="row  text-center">
-                    <div class="col-6  text-center" >
-                      <span class="text-xs mx-3">Flow Rate Suction</span>
-                      <div class="pt-3" >
-                      <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Flow_rate_Suction}}</span>
+                  <!-- Area Chart -->
+                  <div class="col-xl-2 col-lg-2 my-3">
+                    <div class="card">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3 ">
+                      <h6 class="m-0 font-weight-bold">Temperature (&deg;C)</h6>
                     </div>
-                       <div class="ml-2">
-
-                            <app-line-chart-without-axis *ngIf="lastReportedTelemetryValues.Flow_rate_Suction" [chartId]="'lineChart4'" [telemetryData]="telemetryData" [property]="'Flow_rate_Suction'"></app-line-chart-without-axis>
-
+                    <!-- Card Body -->
+                    <div class="card-body" style="height: 24.5rem;">
+                        <div class="row text-center">
+                          <div class="col-12 ">
+                          <span class="text-xs mx-3">Discharge Gas Temperature</span>
+                          <div class="pt-3" >
+                            <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Discharge_Gas_Temperature}}</span>
+                            </div>
+                            <div class="mt-n5" >
+                              <app-gauge-chart [id]="'gaugeChart3'"  [value]="lastReportedTelemetryValues.Discharge_Gas_Temperature"></app-gauge-chart>
+                            </div>
+                          </div>
 
                       </div>
-                    </div>
-                    <div class="col-6  text-center border-left" >
-                      <span class="text-xs mx-3">Flow Rate Discharge</span>
-                       <div class="pt-3" >
-                      <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Flow_rate_Discharge}}</span>
-                    </div>
-                       <div class="ml-2">
-
-                            <app-line-chart-without-axis *ngIf="lastReportedTelemetryValues.Flow_rate_Discharge" [chartId]="'lineChart5'" [telemetryData]="telemetryData" [property]="'Flow_rate_Discharge'"></app-line-chart-without-axis>
-
-                       </div>
-                    </div>
+                      <div class="row text-center" style="margin-top: 2rem;">
+                        <div class="col-12">
+                        <span class="text-xs mx-3">Discharge Oil Temperature</span>
+                        <div class="pt-3" >
+                          <span class="text-darkblue  display-5 font-weight-bold">{{lastReportedTelemetryValues.Discharge_Oil_Temperature}}</span>
+                          </div>
+                          <div class="mt-n5" >
+                            <app-gauge-chart [id]="'gaugeChart4'"  [value]="lastReportedTelemetryValues.Discharge_Oil_Temperature"></app-gauge-chart>
+                          </div>
+                        </div>
 
                     </div>
-                  </div>
-                  </div>
 
-                  </div>
-
-
-                 </div>
-
-                <div class="row">
-
-                <!-- Content Column -->
-                <div class="col-lg-7 mb-3">
-
-                  <!-- Project Card Example -->
-                  <div class="card ">
-                  <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold">Electric Parameters</h6>
-                  </div>
-                  <div class="card-body1" style="height: 10rem;">
-                    <div class="row  text-center">
-                    <div class="col-4  text-center" >
-                      <span class="text-xs ml-3">Active Power</span><span class="text-xs">(KW)</span>
-                      <div class="pt-3" >
-                      <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Active_Power}}</span>
-                      </div>
-                       <div class="ml-1">
-
-                            <app-line-chart-without-axis *ngIf="lastReportedTelemetryValues.Active_Power" [chartId]="'lineChart6'" [telemetryData]="telemetryData" [property]="'Active_Power'"></app-line-chart-without-axis>
-
-
-                      </div>
-                    </div>
-                    <div class="col-4  text-center border-left" >
-                      <span class="text-xs ml-3">Voltage R-Y</span> <span class="text-xs">(V)</span>
-                       <div class="pt-3" >
-                      <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Voltage_R_Y}}</span>
-                    </div>
-                       <div class="ml-1">
-
-                            <app-line-chart-without-axis *ngIf="lastReportedTelemetryValues.Voltage_R_Y" [chartId]="'lineChart7'" [telemetryData]="telemetryData" [property]="'Voltage_R_Y'"></app-line-chart-without-axis>
-
-                       </div>
-                    </div>
-
-                    <div class="col-4 text-center border-left" >
-                      <span class="text-xs ml-3">Current R Phase</span><span class="text-xs">(A)</span>
-                       <div class="pt-3" >
-                      <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Current_R_Phase}}</span>  </div>
-                       <div class="ml-1">
-
-                            <app-line-chart-without-axis *ngIf="lastReportedTelemetryValues.Current_R_Phase" [chartId]="'lineChart8'" [telemetryData]="telemetryData" [property]="'Current_R_Phase'"></app-line-chart-without-axis>
-
-                      </div>
                     </div>
                     </div>
                   </div>
-                  </div>
-                </div>
-
-                <div class="col-lg-5 mb-3">
-
-                  <!-- Illustrations -->
-                  <div class="card ">
-                  <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold">Gas Leak Parameters (%)</h6>
-                  </div>
-                  <div class="card-body1" style="height: 10rem;">
-                    <div class="row text-center">
-                    <div class="col-6 text-center" >
-                      <span class="text-xs mx-3">Gas Leak Level-1</span>
-                       <div class="mt-n5" >
-                        <app-gauge-chart [id]="'gaugeChart1'" *ngIf="lastReportedTelemetryValues.Gas_Leakage_Level_1" [value]="lastReportedTelemetryValues.Gas_Leakage_Level_1"></app-gauge-chart>
-                       </div>
-
+                  <!-- Area Chart -->
+                  <div class="col-xl-2 col-lg-2 my-3">
+                    <div class="card">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3">
+                      <h6 class="m-0 font-weight-bold">Running Hours</h6>
                     </div>
-                    <div class="col-6 text-center" >
-                      <span class="text-xs mx-3">Gas Leak Level-2</span>
-                       <div class="mt-n5" >
-                        <app-gauge-chart [id]="'gaugeChart2'" *ngIf="lastReportedTelemetryValues.Gas_Leakage_Level_2" [value]="lastReportedTelemetryValues.Gas_Leakage_Level_2"></app-gauge-chart>
-                       </div>
+                    <!-- Card Body -->
+                    <div class="card-body text-center" style="height: 10rem;">
+                      <h4 class="font-weight-bold" [ngClass]="{'text-success': lastReportedTelemetryValues.status === 'On',
+                    'text-danger': lastReportedTelemetryValues.status === 'Off'}">{{lastReportedTelemetryValues.status}}</h4>
+                      for last
+                      <h4 class="font-weight-bold mt-3">{{lastReportedTelemetryValues.Running_Hours}}</h4>
+                      Hrs
                     </div>
                     </div>
-                  </div>
                   </div>
                 </div>
-                </div>
-              </div>
-
-              <!-- Area Chart -->
-              <div class="col-xl-2 col-lg-2 my-3">
-                <div class="card">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 ">
-                  <h6 class="m-0 font-weight-bold">Temperature (&deg;C)</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body" style="height: 24.5rem;">
-                    <div class="row text-center">
-                      <span class="text-xs mx-3">Discharge Gas Temperature</span>
-                    <div class="mt-n5" >
-                      <app-gauge-chart [id]="'gaugeChart3'" *ngIf="lastReportedTelemetryValues.Discharge_Gas_Temperature" [value]="lastReportedTelemetryValues.Discharge_Gas_Temperature"></app-gauge-chart>
-                    </div>
-
-                  </div>
-                  <div class="row text-center" style="margin-top: 2rem;">
-                    <span class="text-xs mx-3">Discharge Oil Temperature</span>
-                  <div class="mt-n5" >
-                    <app-gauge-chart [id]="'gaugeChart4'" *ngIf="lastReportedTelemetryValues.Discharge_Oil_Temperature" [value]="lastReportedTelemetryValues.Discharge_Oil_Temperature"></app-gauge-chart>
-                  </div>
-
-                </div>
-
-                </div>
-                </div>
-              </div>
-              <!-- Area Chart -->
-              <div class="col-xl-2 col-lg-2 my-3">
-                <div class="card">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold">Running Hours</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body text-center" style="height: 10rem;">
-                  <h4 class="font-weight-bold" [ngClass]="{'text-success': lastReportedTelemetryValues.status === 'On',
-                'text-danger': lastReportedTelemetryValues.status === 'Off'}">{{lastReportedTelemetryValues.status}}</h4>
-                  for last
-                  <h4 class="font-weight-bold mt-3">{{lastReportedTelemetryValues.Running_Hours}}</h4>
-                  Hrs
-                </div>
-                </div>
-              </div>
             </div>
+          </div>
+
 
         </div>
         <div class="tab-pane fade" id="Device" role="tabpanel" aria-labelledby="nav-profile-tab" *ngIf="selectedTab === 'alert'">

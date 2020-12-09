@@ -3,7 +3,8 @@
   <table  class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
     <thead>
       <tr class="bg-secondary text-white">
-        <th  *ngFor="let item of tableConfig?.data;let i = index;" [ngClass]="{'w-15': !item.key || ( tableConfig.type === 'alert' && item.name === 'Code' && i === 0), 'w-20': item.name === 'Timestamp'}">
+        <th  *ngFor="let item of tableConfig?.data;let i = index;" [ngClass]="{'w-10': !item.key,
+        'w-15': ( tableConfig.type === 'alert' && item.name === 'Code' && i === 0), 'w-30': item.name === 'Timestamp'}">
           {{item.name}}</th>
       </tr>
     </thead>

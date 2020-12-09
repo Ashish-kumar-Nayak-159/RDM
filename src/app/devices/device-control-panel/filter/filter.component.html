@@ -2,7 +2,7 @@
 <div class="col-xl-12 col-md-12 mb-12" >
     <form>
       <div class="form-group form-inline my-1">
-        <input type="number" min="1" class="form-control form-control-sm mx-2 my-1 record-input" id="inputEmail4" placeholder="No of Records"
+        <input type="number" min="1" class="form-control form-control-sm my-1 record-input" id="inputEmail4" placeholder="No of Records"
         [(ngModel)]="filterObj.count" name="count">
         <select *ngIf="pageType === 'gateway'" class="form-control form-control-sm mx-2 my-1" id="deviceCategory"
          [(ngModel)]="filterObj.device_id" name="deviceCategory">

@@ -1,3 +1,4 @@
+import { ToasterService } from 'src/app/services/toaster.service';
 import { Component, Inject, HostListener, NgZone, OnInit, AfterViewInit } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
@@ -23,7 +24,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private commonService: CommonService,
     @Inject(DOCUMENT) private document: Document,
-    private applicationService: ApplicationService
+    private applicationService: ApplicationService,
+    private toasterService: ToasterService
   ) {
   }
   ngAfterViewInit(): void {
@@ -42,6 +44,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
 
   ngOnInit(): void {
+
+    // setInterval(() => {
+    //   this.toasterService.showCriticalAlert('Critical Alert', 'Pump pressure is high', 'toast-bottom-right', 1000);
+    // }, 10000);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.applicationData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.url = this.router.url;

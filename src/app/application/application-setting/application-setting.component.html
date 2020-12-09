@@ -42,23 +42,23 @@
           <div class="tab-content py-3 px-3 px-sm-0 mr-5" id="nav-tabContent">
           <div class="tab-pane" id="app-meta-data" role="tabpanel" aria-labelledby="nav-home-tab"
             [ngClass]="{'active': activeTab === 'meta-data'}">
-              <app-application-metadata *ngIf="activeTab === 'meta-data' && contextApp" [applicationData]="contextApp"></app-application-metadata>
+              <app-application-metadata *ngIf="activeTab === 'meta-data' && applicationData" [applicationData]="applicationData"></app-application-metadata>
             </div>
             <div class="tab-pane" id="app-device-hierarchy" role="tabpanel" aria-labelledby="nav-profile-tab"
             [ngClass]="{'active': activeTab === 'device-hierarchy'}">
-              <app-application-device-hierarchy *ngIf="activeTab === 'device-hierarchy' && contextApp" [applicationData]="contextApp"></app-application-device-hierarchy>
+              <app-application-device-hierarchy *ngIf="activeTab === 'device-hierarchy' && applicationData" [applicationData]="applicationData"></app-application-device-hierarchy>
             </div>
             <div class="tab-pane" id="app-roles" role="tabpanel" aria-labelledby="nav-contact-tab"
             [ngClass]="{'active': activeTab === 'roles'}">
-              <app-application-roles *ngIf="activeTab === 'roles' && contextApp" [applicationData]="contextApp"></app-application-roles>
+              <app-application-roles *ngIf="activeTab === 'roles' && applicationData" [applicationData]="applicationData"></app-application-roles>
             </div>
             <div class="tab-pane" id="app-users" role="tabpanel" aria-labelledby="nav-about-tab"
             [ngClass]="{'active': activeTab === 'users'}">
-               <app-application-users *ngIf="activeTab === 'users' && contextApp" [applicationData]="contextApp"></app-application-users>
+               <app-application-users *ngIf="activeTab === 'users' && applicationData" [applicationData]="applicationData"></app-application-users>
             </div>
             <div class="tab-pane" id="app-menu-settings" role="tabpanel" aria-labelledby="nav-about-tab"
             [ngClass]="{'active': activeTab === 'menu-settings'}">
-              <app-application-menu-settings *ngIf="activeTab === 'menu-settings' && contextApp" [applicationData]="contextApp"></app-application-menu-settings>
+              <app-application-menu-settings *ngIf="activeTab === 'menu-settings' && applicationData" [applicationData]="applicationData"></app-application-menu-settings>
             </div>
             <!-- <div class="tab-pane" id="app-properties" role="tabpanel" aria-labelledby="nav-about-tab"
             [ngClass]="{'active': activeTab === 'properties'}">

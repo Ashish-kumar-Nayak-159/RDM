@@ -47,6 +47,15 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
     }
+
+    this.contextApp.hierarchy.levels.forEach((level, index) => {
+      if (index !== 0) {
+      this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+      if (this.contextApp.user.hierarchy[level]) {
+        this.onChangeOfHierarchy(index);
+      }
+      }
+    });
   }
 
   async onChangeOfHierarchy(i) {
@@ -123,10 +132,13 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
             this.lastReportedTelemetryValues = response.data[0];
           } else {
             this.propertyList.forEach(prop => {
-              if (response.data[0][prop.json_key]) {
+              if (response.data[0][prop.json_key] !== '') {
                 this.lastReportedTelemetryValues[prop.json_key] = response.data[0][prop.json_key];
+              } else {
+                this.lastReportedTelemetryValues[prop.json_key] = '0';
               }
             });
+
           }
           this.telemetryData = response.data;
           this.isTelemetryDataLoading = false;

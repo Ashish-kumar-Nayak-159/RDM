@@ -23,7 +23,7 @@ export class DeviceTypeListComponent implements OnInit {
   contextApp: any;
   thingsModelFilterObj: any = {};
   isCreateThingsModelAPILoading = false;
-  constantData = CONSTANTS;
+  constantData =CONSTANTS;
   protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
   connectivityList: string[] = [];
   isFileUploading = false;

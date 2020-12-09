@@ -38,8 +38,9 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
       let data = [];
      // alert('here');
       console.log(this.contextApp);
+      const arr = JSON.parse(JSON.stringify(this.constantsData.SIDE_MENU_LIST));
       if (this.contextApp?.configuration?.main_menu?.length > 0) {
-        this.constantsData.SIDE_MENU_LIST.forEach(config => {
+        arr.forEach(config => {
           let found = false;
           this.contextApp.configuration.main_menu.forEach(item => {
             if (config.page === item.page) {
@@ -55,7 +56,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
           }
         });
       } else {
-        data =  this.constantsData.SIDE_MENU_LIST;
+        data =  arr;
       }
       console.log('60   ', data);
       this.processSideMenuData(data, this.contextApp);
@@ -68,8 +69,9 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
         if (this.contextApp?.app) {
         if (!this.userData?.is_super_admin) {
         let data = [];
+        const arr = JSON.parse(JSON.stringify(this.constantsData.SIDE_MENU_LIST));
         if (this.contextApp.configuration?.main_menu?.length > 0) {
-          this.constantsData.SIDE_MENU_LIST.forEach(config => {
+          arr.forEach(config => {
             let found = false;
             this.contextApp.configuration.main_menu.forEach(item => {
               if (config.page === item.page) {
@@ -85,7 +87,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
             }
           });
         } else {
-          data =  this.constantsData.SIDE_MENU_LIST;
+          data =  arr;
         }
         this.processSideMenuData(data, this.contextApp);
         }

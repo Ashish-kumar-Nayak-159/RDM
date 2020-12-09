@@ -41,6 +41,11 @@ export class CONSTANTS {
       display: true
     },
     {
+      name: 'PLC',
+      connectivity: ['PLC Protocol -> IoT Gateway -> Azure IoT Hub SDK -> Azure Cloud'],
+      display: true
+    },
+    {
       name: 'Other',
       connectivity: ['Custom Protocol -> IoT Gateway -> Azure IoT Hub SDK -> Azure Cloud', 'Custom Protocol -> IoT Gateway -> MQTT Client -> Azure Cloud'],
       display: true

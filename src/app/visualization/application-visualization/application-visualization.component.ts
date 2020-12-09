@@ -308,7 +308,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             if (this.alertCondition) {
             this.alertCondition.reference_documents.forEach(refDoc => {
               this.documents.forEach(doc => {
-                if (doc.id === refDoc) {
+                if (doc.id === refDoc.toString()) {
                   arr.push(doc.name);
                 }
               });

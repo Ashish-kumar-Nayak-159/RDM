@@ -23,7 +23,7 @@ export class GaugeChartComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes) {
     if (this.chart && changes.value) {
-      this.label.text = changes.value.currentValue;
+     //  this.label.text = changes.value.currentValue;
       this.hand.value = Number(changes.value.currentValue);
     }
   }
@@ -66,14 +66,15 @@ export class GaugeChartComponent implements OnInit, OnChanges {
     range2.axisFill.fill = colorSet.getIndex(4);
     range2.axisFill.zIndex = -1;
 
-    const label = chart.radarContainer.createChild(am4core.Label);
-    label.isMeasured = false;
-    label.fontSize = '0.8em';
-    label.x = am4core.percent(50);
-    label.horizontalCenter = 'middle';
-    label.verticalCenter = 'bottom';
-    // label.dataItem = data;
-    label.text = this.value ? this.value : '0';
+    // const label = chart.radarContainer.createChild(am4core.Label);
+    // label.isMeasured = false;
+    // label.fontSize = '0.8em';
+    // label.x = am4core.percent(50);
+    // label.horizontalCenter = 'middle';
+    // label.verticalCenter = 'bottom';
+    // // label.dataItem = data;
+    // label.marginTop = 2;
+    // label.text = this.value ? this.value : '0';
     // label.text = "{score}";
 
     const hand = chart.hands.push(new am4charts.ClockHand());
@@ -81,7 +82,7 @@ export class GaugeChartComponent implements OnInit, OnChanges {
     console.log(this.id, '=====', hand.value);
     this.chart = chart;
     this.hand = hand;
-    this.label = label;
+    // this.label = label;
 
   }
 

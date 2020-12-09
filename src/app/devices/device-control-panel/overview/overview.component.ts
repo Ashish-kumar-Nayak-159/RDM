@@ -30,7 +30,7 @@ export class OverviewComponent implements OnInit {
   modalConfig: any;
   btnClickType: string;
   confirmModalMessage: string;
-  constantData = CONSTANTS;
+  constantData =CONSTANTS;
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,

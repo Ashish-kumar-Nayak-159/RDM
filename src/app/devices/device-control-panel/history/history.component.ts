@@ -320,7 +320,14 @@ export class HistoryComponent implements OnInit {
       });
     }
     else {
-      this.toasterService.showError('Layout not defined', 'Layout');
+      if (this.layoutJson.length === 0) {
+        this.toasterService.showError('Layout not defined', 'Historical Widgets');
+        return;
+      }
+      if (this.historyData.length === 0) {
+        this.toasterService.showError('No data available for selected filter.', 'Historical Widgets');
+        return;
+      }
     }
   }
 

@@ -7,7 +7,7 @@
   [style.border]= "pageType === 'live' ? '' : 'none'">
     <div class="col-xl-12 col-md-12 mb-12">
       <form>
-        <div class="form-group form-inline my-2 mx-3" *ngIf="pageType !== 'history'">
+        <div class="form-group form-inline my-2" [ngClass]="pageType !== 'live' ? 'mx-3' : 'mx-4'" *ngIf="pageType !== 'history'">
           <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let index = index;">
           <select *ngIf="index !== 0" class="form-control form-control-sm mx-2 my-1" id="{{level}}"
           [disabled]="contextApp?.user?.hierarchy[level]"
@@ -35,9 +35,9 @@
             </option>
           </select> -->
         </div>
-        <div class="form-group form-inline  my-2 mx-3">
+        <div class="form-group form-inline  my-2 mx-3" [ngClass]="pageType !== 'live' ? 'mx-3' : 'mx-4'">
 
-          <input type="number" min="1" class="form-control form-control-sm mx-2 my-1 record-input" id="inputEmail4"
+          <input type="number" min="1" class="form-control form-control-sm mx-1 my-1 record-input" id="inputEmail4"
             placeholder="No of Records" [(ngModel)]="filterObj.count" name="count">
           <!-- <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory" [(ngModel)]="filterObj.device"
             name="deviceCategory" (change)="onAssetSelection()">
@@ -83,7 +83,11 @@
       </form>
     </div>
   </div>
-
+  <div class="row">
+    <div class="col-lg-12">
+      <hr class="solid">
+    </div>
+  </div>
   <!-- <div class="card row bg-white" style="margin-left:-2rem">
     <div class="col-xl-12 col-md-12 mb-12">
       <form>
@@ -101,9 +105,9 @@
   </div> -->
 </div>
 
-<div class="contain-pad" [style.marginTop]="pageType === 'live' ? '6.5rem': (pageType === 'history' ? '9rem': '13.2rem')">
+<div class="contain-pad" [style.marginTop]="pageType === 'live' ? '6.5rem': (pageType === 'history' ? '9.5rem': '13.5rem')">
   <div class="mb-2">
-    <div class="table-responsive" style="max-height: 27vh;height: 27vh;">
+    <div class="table-responsive mx-2" style="max-height: 27vh;height: 27vh;">
       <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
         <thead>
           <tr class="bg-secondary text-white">
@@ -163,7 +167,7 @@
     </div>
   </div>
   <ng-container>
-    <accordion *ngIf="selectedAlert" class="mb-2">
+    <accordion *ngIf="selectedAlert" class="mb-2 mx-2">
       <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="isOpen">
         <ng-container accordion-heading>
           <a class="btn" >

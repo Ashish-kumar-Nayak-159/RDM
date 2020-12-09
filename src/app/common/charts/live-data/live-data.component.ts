@@ -60,7 +60,6 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         delete newObj.aggregation_start_time;
         data.splice(data.length, 0, newObj);
       });
-
       chart.data = data;
       chart.dateFormatter.inputDateFormat = 'x';
       const dateAxis = chart.xAxes.push(new am4charts.DateAxis());

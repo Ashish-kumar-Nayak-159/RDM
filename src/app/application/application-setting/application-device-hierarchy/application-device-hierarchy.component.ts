@@ -189,17 +189,39 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
   deleteRole() {
     // this.onSaveRoles(true);
     this.forceUpdate = true;
+    console.log(this.selectedHierarchy);
+    const index = this.applicationData.hierarchy.levels.findIndex(level => level === this.selectedHierarchy);
+    const tags = this.removeHierarchyIndexTags(this.applicationData.hierarchy.tags, index);
+    console.log(tags);
+    this.applicationData.hierarchy.tags = JSON.parse(JSON.stringify(tags));
+    this.applicationData.hierarchy.levels.splice(index, 1);
     this.onSaveHierarchyTags();
   }
+
+  removeHierarchyIndexTags(tags, index) {
+    if (index === 1) {
+      return {};
+    }
+    Object.keys(tags).forEach(tag => {
+        tags[tag] = this.removeHierarchyIndexTags(tags[tag], index - 1);
+    });
+    return tags;
+}
 
   onCloseModal() {
     this.selectedHierarchy = undefined;
     $('#confirmMessageModal').modal('hide');
   }
 
-
   onCancelClick() {
     this.applicationData = JSON.parse(JSON.stringify(this.originalApplicationData));
+    this.selectedHierarchyItem = undefined;
+    this.applicationData.hierarchy.levels.forEach((element, index) => {
+      this.hierarchyArr[index] = [];
+    });
+    if (this.applicationData?.hierarchy?.levels.length > 1) {
+      this.hierarchyArr['1'] = Object.keys(this.applicationData.hierarchy.tags);
+    }
   }
 
 }

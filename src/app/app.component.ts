@@ -1,10 +1,12 @@
+import { Subscription } from 'rxjs';
 import { ToasterService } from 'src/app/services/toaster.service';
-import { Component, Inject, HostListener, NgZone, OnInit, AfterViewInit } from '@angular/core';
+import { Component, Inject, HostListener, NgZone, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from './app.constants';
 import { ApplicationService } from './services/application/application.service';
+import { SignalRService } from './services/signalR/signal-r.service';
 declare var $: any;
 
 @Component({
@@ -12,20 +14,22 @@ declare var $: any;
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   title = 'RDM';
   isLoginRoute = false;
   isHomeRoute = false;
   userData: any;
   url: any;
   applicationData: any;
+  signalRAlertSubscription: Subscription;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private commonService: CommonService,
     @Inject(DOCUMENT) private document: Document,
     private applicationService: ApplicationService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private singalRService: SignalRService
   ) {
   }
   ngAfterViewInit(): void {
@@ -50,6 +54,19 @@ export class AppComponent implements OnInit, AfterViewInit {
     // }, 10000);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.applicationData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    if (this.applicationData) {
+      // this.connectToSignalR();
+      // this.signalRAlertSubscription = this.singalRService.signalRAlertData.subscribe(
+      //   msg => {
+      //     this.toasterService.showCriticalAlert(
+      //       msg.message,
+      //       msg.device_display_name ? msg.device_display_name : msg.device_id,
+      //       'toast-bottom-right',
+      //       1000
+      //     );
+      //   }
+      // );
+    }
     this.url = this.router.url;
     this.router.events.subscribe(async event => {
       if (event instanceof NavigationEnd) {
@@ -112,6 +129,15 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   }
 
+  connectToSignalR() {
+    const obj = {
+      levels: this.applicationData.hierarchy.levels,
+      hierarchy: this.applicationData.user.hierarchy,
+      type: 'alert'
+    };
+    this.singalRService.connectToSignalR(obj);
+  }
+
   getApplicationData(app) {
     return new Promise((resolve) => {
     this.applicationData = undefined;
@@ -137,6 +163,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
   }
 
-
+  ngOnDestroy() {
+    this.singalRService.disconnectFromSignalR();
+    this.signalRAlertSubscription.unsubscribe();
+  }
 
 }

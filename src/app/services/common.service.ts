@@ -32,6 +32,14 @@ export class CommonService {
     return null;
   }
 
+  convertSignalRUTCDateToLocal(utcDate) {
+    if (utcDate) {
+      // return (moment.utc(utcDate, 'M/DD/YYYY h:mm:ss A')).local().format('DD-MMM-YYYY hh:mm:ss A');
+      return moment(new Date(utcDate).toString()).format('DD-MMM-YYYY hh:mm:ss A');
+    }
+    return null;
+  }
+
   convertDateToEpoch(date: string) {
     if (date) {
       return (moment.utc(date)).unix();

@@ -18,7 +18,9 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
   min = 0;
   max = 100;
   average: number;
-
+  range0: any;
+  range1: any;
+  range2: any;
 
   constructor(
     private chartService: ChartService,
@@ -30,19 +32,41 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
   }
 
   ngOnChanges(changes) {
+    console.log(changes);
     if (changes.telemetryData && this.chart) {
+
       const data = [];
+      const valueArr = [];
+      const dateArr = [];
       this.telemetryData.forEach((obj, i) => {
         const newObj = {
           message_date: new Date(obj.message_date)
         };
         newObj[this.property] = obj[this.property];
         data.splice(data.length, 0, newObj);
+        valueArr.push(Number(obj[this.property]));
+        dateArr.push(newObj.message_date);
       });
-      data.reverse();
+      console.log(this.property, '====', valueArr);
+      console.log(this.property, '====', dateArr);
+      this.max = Math.round(valueArr.reduce((a, b) => Math.max(a, b)));
+      this.min = Math.round(valueArr.reduce((a, b) => Math.min(a, b)));
+      this.average = Math.round((this.min + this.max) / 2);
+      console.log(this.property, '=====', this.min, '====', this.max, '=====', this.average);
+      this.range0.value = this.min;
+      this.range1.value = this.max;
+      this.range2.value = this.average;
+      this.range0.label.text = this.min.toString();
+      this.range1.label.text = this.max.toString();
+      this.range2.label.text = this.average.toString();
+      // data.reverse();
       this.chart.data = data;
+      this.chart.invalidateData();
+      console.log(data);
     }
   }
+
+
 
   plotChart() {
     this.zone.runOutsideAngular(() => {
@@ -121,13 +145,15 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
     range0.value = this.min;
     range0.label.fontSize = '0.6em';
     range0.label.fontWeight = 'bold';
-    range0.label.text = this.min;
+    range0.label.text = this.min.toString();
+    this.range0 = range0;
 
     const range1 = valueYAxis.axisRanges.create();
     range1.value = this.max;
     range1.label.fontSize = '0.6em';
     range1.label.fontWeight = 'bold';
-    range1.label.text = this.max;
+    range1.label.text = this.max.toString();
+    this.range1 = range1;
     // range1.endValue = this.average;
 
     const range2 = valueYAxis.axisRanges.create();
@@ -135,7 +161,8 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
    //  range2.endValue = this.max;
     range2.label.fontSize = '0.6em';
     range2.label.fontWeight = 'bold';
-    range2.label.text = this.average;
+    range2.label.text = this.average.toString();
+    this.range2 = range2;
     // range1.axisFill.fill = am4core.color('#229954');
     // range1.axisFill.fillOpacity = 0.2;
     // range1.grid.strokeOpacity = 0;

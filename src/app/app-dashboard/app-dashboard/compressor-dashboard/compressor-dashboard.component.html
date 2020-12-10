@@ -50,7 +50,7 @@
                       {{device?.display_name ? device?.display_name: device.device_id}}
                     </option>
                   </select> -->
-                  <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="onFilterSelection();isTelemetryDataLoading = false;" ><i
+                  <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="onFilterSelection();" ><i
                     class="fas fa-search fa-sm"></i></button>
                   </div>
                 </form>
@@ -58,9 +58,11 @@
             </div>
           </div>
 
-          <div class="contain-pad" style="margin-top: 2.5rem;">
+          <div class="contain-pad contain-pad-dashboard">
             <div class="mb-2">
-              <i class="fa fa-spinner fa-spin fa-fw" *ngIf="isTelemetryDataLoading"></i>
+              <div class="row col-12" *ngIf="isTelemetryDataLoading">
+              <i class="fa fa-spinner fa-spin fa-fw fa-2x" ></i>
+              </div>
               <div class="row" *ngIf="telemetryObj">
                   <div class="col-xl-8 col-lg-8">
                     <!-- Content Row -->
@@ -76,35 +78,35 @@
                       <div class="card-body1" style="height: 10rem;">
                         <div class="row  text-center">
                         <div class="col-4 text-center" >
-                          <span class="text-xs mx-3">Discharge Pressure</span>
+                          <span class="text-xs">Discharge Pressure</span>
                           <div class="pt-3" >
-                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Discharge_Pressure}}</span>
+                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['Discharge Pressure']}}</span>
                           </div>
                            <div class="ml-3">
-                                 <app-line-chart-without-axis [chartId]="'lineChart1'"  [telemetryData]="telemetryData" [property]="'Discharge_Pressure'"></app-line-chart-without-axis>
+                                 <app-line-chart-without-axis [chartId]="'lineChart1'"  [telemetryData]="telemetryData" [property]="'Discharge Pressure'"></app-line-chart-without-axis>
                             </div>
                         </div>
 
                         <div class="col-4  text-center border-left" >
-                          <span class="text-xs mx-3">Suction Pressure</span>
+                          <span class="text-xs">Suction Pressure</span>
                            <div class="pt-3" >
-                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.suction_pressure}}</span>
+                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['Suction Pressure']}}</span>
                         </div>
                            <div class="ml-2">
 
-                                <app-line-chart-without-axis [chartId]="'lineChart2'" [telemetryData]="telemetryData" [property]="'suction_pressure'"></app-line-chart-without-axis>
+                                <app-line-chart-without-axis [chartId]="'lineChart2'" [telemetryData]="telemetryData" [property]="'Suction Pressure'"></app-line-chart-without-axis>
 
                             </div>
                         </div>
 
                         <div class="col-4  text-center border-left" >
-                          <span class="text-xs mx-3">High-bank Pressure</span>
+                          <span class="text-xs">High-bank Pressure</span>
                            <div class="pt-3" >
-                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.high_bank_pressure}}</span>
+                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['High Bank Pressure']}}</span>
                         </div>
                            <div class="ml-2">
 
-                                <app-line-chart-without-axis [chartId]="'lineChart3'" [telemetryData]="telemetryData" [property]="'high_bank_pressure'"></app-line-chart-without-axis>
+                                <app-line-chart-without-axis [chartId]="'lineChart3'" [telemetryData]="telemetryData" [property]="'High Bank Pressure'"></app-line-chart-without-axis>
 
 
                           </div>
@@ -126,25 +128,25 @@
                       <div class="card-body1" style="height: 10rem;">
                         <div class="row  text-center">
                         <div class="col-6  text-center" >
-                          <span class="text-xs mx-3">Flow Rate Suction</span>
+                          <span class="text-xs">Flow Rate Suction</span>
                           <div class="pt-3" >
-                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Flow_rate_Suction}}</span>
+                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['Flow rate Suction']}}</span>
                         </div>
                            <div class="ml-3">
 
-                                <app-line-chart-without-axis [chartId]="'lineChart4'" [telemetryData]="telemetryData" [property]="'Flow_rate_Suction'"></app-line-chart-without-axis>
+                                <app-line-chart-without-axis [chartId]="'lineChart4'" [telemetryData]="telemetryData" [property]="'Flow rate Suction'"></app-line-chart-without-axis>
 
 
                           </div>
                         </div>
                         <div class="col-6  text-center border-left" >
-                          <span class="text-xs mx-3">Flow Rate Discharge</span>
+                          <span class="text-xs">Flow Rate Discharge</span>
                            <div class="pt-3" >
-                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Flow_rate_Discharge}}</span>
+                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['Flow rate Discharge']}}</span>
                         </div>
                            <div class="ml-3">
 
-                                <app-line-chart-without-axis [chartId]="'lineChart5'" [telemetryData]="telemetryData" [property]="'Flow_rate_Discharge'"></app-line-chart-without-axis>
+                                <app-line-chart-without-axis [chartId]="'lineChart5'" [telemetryData]="telemetryData" [property]="'Flow rate Discharge'"></app-line-chart-without-axis>
 
                            </div>
                         </div>
@@ -171,33 +173,33 @@
                       <div class="card-body1" style="height: 10rem;">
                         <div class="row  text-center">
                         <div class="col-4  text-center" >
-                          <span class="text-xs ml-3">Active Power</span><span class="text-xs">(KW)</span>
+                          <span class="text-xs ml-3">Active Power</span><span class="text-xs">&nbsp;(KW)</span>
                           <div class="pt-3" >
-                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Active_Power}}</span>
+                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['Active Power']}}</span>
                           </div>
                            <div class="ml-3">
-                                <app-line-chart-without-axis [chartId]="'lineChart6'" [telemetryData]="telemetryData" [property]="'Active_Power'"></app-line-chart-without-axis>
+                                <app-line-chart-without-axis [chartId]="'lineChart6'" [telemetryData]="telemetryData" [property]="'Active Power'"></app-line-chart-without-axis>
                           </div>
                         </div>
                         <div class="col-4  text-center border-left" >
-                          <span class="text-xs ml-3">Voltage R-Y</span> <span class="text-xs">(V)</span>
+                          <span class="text-xs ml-3">Voltage R-Y</span> <span class="text-xs">&nbsp;(V)</span>
                            <div class="pt-3" >
-                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Voltage_R_Y}}</span>
+                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['Voltage R-Y']}}</span>
                         </div>
                            <div class="ml-2">
 
-                                <app-line-chart-without-axis [chartId]="'lineChart7'" [telemetryData]="telemetryData" [property]="'Voltage_R_Y'"></app-line-chart-without-axis>
+                                <app-line-chart-without-axis [chartId]="'lineChart7'" [telemetryData]="telemetryData" [property]="'Voltage R-Y'"></app-line-chart-without-axis>
 
                            </div>
                         </div>
 
                         <div class="col-4 text-center border-left" >
-                          <span class="text-xs ml-3">Current R Phase</span><span class="text-xs">(A)</span>
+                          <span class="text-xs ml-3">Current R Phase</span><span class="text-xs">&nbsp;(A)</span>
                            <div class="pt-3" >
-                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Current_R_Phase}}</span>  </div>
+                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['Current R Phase']}}</span>  </div>
                            <div class="ml-2">
 
-                                <app-line-chart-without-axis [chartId]="'lineChart8'" [telemetryData]="telemetryData" [property]="'Current_R_Phase'"></app-line-chart-without-axis>
+                                <app-line-chart-without-axis [chartId]="'lineChart8'" [telemetryData]="telemetryData" [property]="'Current R Phase'"></app-line-chart-without-axis>
 
                           </div>
                         </div>
@@ -216,17 +218,17 @@
                       <div class="card-body1" style="height: 10rem;">
                         <div class="row text-center">
                         <div class="col-6 text-center" >
-                          <span class="text-xs mx-3">Gas Leak Level-1</span>
+                          <span class="text-xs">Gas Leak Level-1</span>
                           <div class="pt-3" >
-                            <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Gas_Leakage_Level_1}}</span>
+                            <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['Gas Leakage Level-1']}}</span>
                             </div>
                            <div class="mt-n5" >
-                            <app-gauge-chart [id]="'gaugeChart1'" [value]="lastReportedTelemetryValues.Gas_Leakage_Level_1"></app-gauge-chart>
+                            <app-gauge-chart [id]="'gaugeChart1'" [value]="lastReportedTelemetryValues['Gas Leakage Level-1']"></app-gauge-chart>
                            </div>
 
                         </div>
                         <div class="col-6 text-center" >
-                          <span class="text-xs mx-3">Gas Leak Level-2</span>
+                          <span class="text-xs">Gas Leak Level-2</span>
                           <div class="pt-3" >
                             <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Gas_Leakage_Level_2}}</span>
                             </div>
@@ -252,19 +254,19 @@
                     <div class="card-body" style="height: 24.5rem;">
                         <div class="row text-center">
                           <div class="col-12 ">
-                          <span class="text-xs mx-3">Discharge Gas Temperature</span>
+                          <span class="text-xs">Discharge Gas Temperature</span>
                           <div class="pt-3" >
-                            <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Discharge_Gas_Temperature}}</span>
+                            <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['Discharge Gas Temperature']}}</span>
                             </div>
                             <div class="mt-n5" >
-                              <app-gauge-chart [id]="'gaugeChart3'"  [value]="lastReportedTelemetryValues.Discharge_Gas_Temperature"></app-gauge-chart>
+                              <app-gauge-chart [id]="'gaugeChart3'"  [value]="lastReportedTelemetryValues['Discharge Gas Temperature']"></app-gauge-chart>
                             </div>
                           </div>
 
                       </div>
                       <div class="row text-center" style="margin-top: 2rem;">
                         <div class="col-12">
-                        <span class="text-xs mx-3">Discharge Oil Temperature</span>
+                        <span class="text-xs">Discharge Oil Temperature</span>
                         <div class="pt-3" >
                           <span class="text-darkblue  display-5 font-weight-bold">{{lastReportedTelemetryValues.Discharge_Oil_Temperature}}</span>
                           </div>
@@ -290,7 +292,7 @@
                       <h4 class="font-weight-bold" [ngClass]="{'text-success': lastReportedTelemetryValues.status === 'On',
                     'text-danger': lastReportedTelemetryValues.status === 'Off'}">{{lastReportedTelemetryValues.status}}</h4>
                       for last
-                      <h4 class="font-weight-bold mt-3">{{lastReportedTelemetryValues.Running_Hours}}</h4>
+                      <h4 class="font-weight-bold mt-3">{{lastReportedTelemetryValues['Running Hours']}}</h4>
                       Hrs
                     </div>
                     </div>

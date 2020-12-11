@@ -22,7 +22,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
         console.log(error);
         console.log(request);
         if (request.method === 'GET') {
-          this.toasterService.showError(error.message, '');
+          this.toasterService.showError(error?.error?.message || error.message, '');
         }
         if (error.status === 401) {
           // logout code

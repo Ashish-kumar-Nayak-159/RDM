@@ -1,28 +1,29 @@
 <div class="topnavbar">
-    <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3">
+    <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n2">
     <h5 class="h4 mb-0 text-gray-800">{{tileData && tileData[0] ? tileData[0]?.value : ''}}</h5>
   </div>
 <div id="telemetry-tabs" class="d-sm-flex justify-content-end" style="margin-right: 12rem;margin-top: -3.2rem;">
 <nav>
 <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
   <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#Meta-data" role="tab" aria-controls="nav-home" aria-selected="true"
-  (click)="selectedTab = 'telemetry'">Live Telemetry</a>
+  (click)="onTabChange('telemetry')">Live Telemetry</a>
   <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#Device" role="tab" aria-controls="nav-profile" aria-selected="false"
-  (click)="selectedTab = 'alert'">Live Alerts</a>
+  (click)="onTabChange('alert')">Live Alerts</a>
 </div>
 </nav>
 </div>
 </div>
 <div class="container-tab-pad" style="margin-top: 6.7rem">
 
-    <div class="row px-4">
+    <div class="row pl-4 " style="padding-right: 0.8rem;">
     <div id="tabs">
       <div class="tab-content px-3 px-sm-0" id="nav-tabContent">
         <div class="tab-pane fade show active" id="Meta-data" role="tabpanel" aria-labelledby="nav-home-tab">
-          <div class="topnavbar" style="margin-top: 1.5rem;">
-            <div class="card row bg-white" *ngIf="selectedTab === 'telemetry'">
+          <div class="topnavbar" style="margin-top: 1.5rem;"  *ngIf="selectedTab === 'telemetry'">
+            <div class="card row bg-white">
               <div class="col-xl-12 col-md-12 mb-12">
-                <form>
+                <form class="row">
+                  <div class="col-md-8">
                   <div class="form-group form-inline my-2 mx-1">
                     <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let index = index;">
                     <select *ngIf="index !== 0" class="form-control form-control-sm mx-1 my-1" id="{{level}}"
@@ -53,17 +54,22 @@
                   <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="onFilterSelection();" ><i
                     class="fas fa-search fa-sm"></i></button>
                   </div>
+
+
+                  </div>
+                  <label class="col-md-2 mt-3 ml-5" >{{telemetryObj?.message_date}}</label>
                 </form>
               </div>
             </div>
           </div>
 
-          <div class="contain-pad contain-pad-dashboard">
+          <div class="contain-pad contain-pad-dashboard" *ngIf="selectedTab === 'telemetry'">
             <div class="mb-2">
               <div class="row col-12" *ngIf="isTelemetryDataLoading">
               <i class="fa fa-spinner fa-spin fa-fw fa-2x" ></i>
               </div>
               <div class="row" *ngIf="telemetryObj">
+
                   <div class="col-xl-8 col-lg-8">
                     <!-- Content Row -->
                       <div class="row">
@@ -230,10 +236,10 @@
                         <div class="col-6 text-center" >
                           <span class="text-xs">Gas Leak Level-2</span>
                           <div class="pt-3" >
-                            <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues.Gas_Leakage_Level_2}}</span>
+                            <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['Gas Leakage Level-2'] ? lastReportedTelemetryValues['Gas Leakage Level-2'] : 'NA'}}</span>
                             </div>
                            <div class="mt-n5" >
-                            <app-gauge-chart [id]="'gaugeChart2'" [value]="lastReportedTelemetryValues.Gas_Leakage_Level_2"></app-gauge-chart>
+                            <app-gauge-chart [id]="'gaugeChart2'" [value]="lastReportedTelemetryValues['Gas Leakage Level-2']"></app-gauge-chart>
                            </div>
                         </div>
                         </div>
@@ -268,10 +274,10 @@
                         <div class="col-12">
                         <span class="text-xs">Discharge Oil Temperature</span>
                         <div class="pt-3" >
-                          <span class="text-darkblue  display-5 font-weight-bold">{{lastReportedTelemetryValues.Discharge_Oil_Temperature}}</span>
+                          <span class="text-darkblue  display-5 font-weight-bold">{{lastReportedTelemetryValues['Discharge Oil Temperature'] ? lastReportedTelemetryValues['Discharge Oil Temperature'] : 'NA'}}</span>
                           </div>
                           <div class="mt-n5" >
-                            <app-gauge-chart [id]="'gaugeChart4'"  [value]="lastReportedTelemetryValues.Discharge_Oil_Temperature"></app-gauge-chart>
+                            <app-gauge-chart [id]="'gaugeChart4'"  [value]="lastReportedTelemetryValues['Discharge Oil Temperature']"></app-gauge-chart>
                           </div>
                         </div>
 
@@ -289,9 +295,7 @@
                     </div>
                     <!-- Card Body -->
                     <div class="card-body text-center" style="height: 10rem;">
-                      <h4 class="font-weight-bold" [ngClass]="{'text-success': lastReportedTelemetryValues.status === 'On',
-                    'text-danger': lastReportedTelemetryValues.status === 'Off'}">{{lastReportedTelemetryValues.status}}</h4>
-                      for last
+
                       <h4 class="font-weight-bold mt-3">{{lastReportedTelemetryValues['Running Hours']}}</h4>
                       Hrs
                     </div>
@@ -300,8 +304,6 @@
                 </div>
             </div>
           </div>
-
-
         </div>
         <div class="tab-pane fade" id="Device" role="tabpanel" aria-labelledby="nav-profile-tab" *ngIf="selectedTab === 'alert'">
           <ng-container>

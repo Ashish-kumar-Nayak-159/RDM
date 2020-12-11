@@ -55,17 +55,20 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.applicationData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.applicationData) {
-      // this.connectToSignalR();
-      // this.signalRAlertSubscription = this.singalRService.signalRAlertData.subscribe(
-      //   msg => {
-      //     this.toasterService.showCriticalAlert(
-      //       msg.message,
-      //       msg.device_display_name ? msg.device_display_name : msg.device_id,
-      //       'toast-bottom-right',
-      //       1000
-      //     );
-      //   }
-      // );
+      // alert('here');
+      this.connectToSignalR();
+      this.signalRAlertSubscription = this.singalRService.signalROverlayAlertData.subscribe(
+        msg => {
+          if (msg?.severity?.toLowerCase() === 'critical') {
+          this.toasterService.showCriticalAlert(
+            msg.message,
+            msg.device_display_name ? msg.device_display_name : msg.device_id,
+            'toast-bottom-right',
+            60000
+          );
+          }
+        }
+      );
     }
     this.url = this.router.url;
     this.router.events.subscribe(async event => {
@@ -130,12 +133,14 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   connectToSignalR() {
+    this.singalRService.disconnectFromSignalR('overlay');
     const obj = {
       levels: this.applicationData.hierarchy.levels,
       hierarchy: this.applicationData.user.hierarchy,
-      type: 'alert'
+      type: 'alert',
+      app: this.applicationData.app
     };
-    this.singalRService.connectToSignalR(obj);
+    this.singalRService.connectToSignalR(obj, 'overlay');
   }
 
   getApplicationData(app) {
@@ -164,7 +169,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.singalRService.disconnectFromSignalR();
+    this.singalRService.disconnectFromSignalR('overlay');
     this.signalRAlertSubscription.unsubscribe();
   }
 

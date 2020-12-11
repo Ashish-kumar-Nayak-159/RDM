@@ -109,6 +109,7 @@ export class ReportsComponent implements OnInit {
     return new Promise((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
+        type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
       };
       this.deviceService.getAllDevicesList(obj, this.contextApp.app).subscribe(
         (response: any) => {
@@ -238,9 +239,7 @@ export class ReportsComponent implements OnInit {
       this.toasterService.showError('Device selection is required', 'View Report');
       return;
     }
-    this.isTelemetryLoading = true;
-    this.telemetry = [];
-    this.latestAlerts = [];
+
     const now = moment().utc();
     if (this.filterObj.dateOption === '5 mins') {
       obj.to_date = now.unix();
@@ -262,6 +261,13 @@ export class ReportsComponent implements OnInit {
         obj.to_date = this.filterObj.to_date.unix();
       }
     }
+    if (!obj.from_date || !obj.to_date) {
+      this.toasterService.showError('Date selection is required', 'View Report');
+      return;
+    }
+    this.isTelemetryLoading = true;
+    this.telemetry = [];
+    this.latestAlerts = [];
     this.selectedProps = JSON.parse(JSON.stringify(this.props));
     this.newFilterObj = JSON.parse(JSON.stringify(obj));
     this.isFilterSelected = true;

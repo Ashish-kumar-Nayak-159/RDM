@@ -387,11 +387,6 @@ export class DeviceListComponent implements OnInit {
         'Create ' + this.pageType);
         return;
     }
-    if (this.componentState === CONSTANTS.NON_IP_DEVICE && (!this.deviceDetail.gateway_id)) {
-      this.toasterService.showError('Please fill all the details',
-      'Create ' + this.pageType);
-      return;
-    }
     if (this.componentState === CONSTANTS.NON_IP_DEVICE && this.deviceDetail.device_id === this.deviceDetail.gateway_id) {
       this.toasterService.showError('Gateway and Device name can not be the same.',
       'Create ' + this.pageType);

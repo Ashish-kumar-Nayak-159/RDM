@@ -34,7 +34,10 @@
               {{device?.display_name ? device?.display_name: device.device_id}}
             </option>
           </select> -->
+          <button type="button" *ngIf="pageType === 'live'" class="btn btn-warning btn-sm mx-3 my-1" title="Search" (click)="getLatestAlerts()"><i
+            class="fas fa-search fa-sm"></i></button>
         </div>
+        <ng-container *ngIf="pageType === 'history' || pageType === 'side_menu'">
         <div class="form-group form-inline  my-2 mx-3" [ngClass]="pageType !== 'live' ? 'mx-3' : 'mx-4'">
 
           <input type="number" min="1" class="form-control form-control-sm mx-1 my-1 record-input" id="inputEmail4"
@@ -53,6 +56,7 @@
               {{device?.display_name ? device?.display_name: device.device_id}}
             </option>
           </select> -->
+
           <select class="form-control form-control-sm mx-2 my-1" id="dateoptions" [(ngModel)]="filterObj.acknowledged"
             name="dateOptions">
             <option [ngValue]="undefined">Status</option>
@@ -67,19 +71,20 @@
             <option [ngValue]="'1 hour'">Last 1 hour</option>
             <option [ngValue]="'24 hour'">Last 24 hours</option>
           </select>
-          <ng-container *ngIf="pageType === 'history' || pageType === 'side_menu'">
+
             <input [owlDateTime]="dt1" [selectMode]="'range'" (dateTimeChange)="onDateChange($event)"
               class="form-control form-control-sm mx-2 my-1 col-md-2" [owlDateTimeTrigger]="dt1"
               placeholder="Select Date Time">
             <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
             <owl-date-time #dt1></owl-date-time>
-          </ng-container>
+
 
           <button type="button" class="btn btn-warning btn-sm mx-3 my-1" title="Search" (click)="getLatestAlerts()"><i
               class="fas fa-search fa-sm"></i></button>
           <!-- <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fas fa-trash  fa-sm"></i></button> -->
 
         </div>
+      </ng-container>
       </form>
     </div>
   </div>
@@ -105,9 +110,10 @@
   </div> -->
 </div>
 
-<div class="contain-pad" [style.marginTop]="pageType === 'live' ? '6.5rem': (pageType === 'history' ? '9.5rem': '13.5rem')">
+<div class="contain-pad" [style.marginTop]="pageType === 'live' ? '3rem': (pageType === 'history' ? '9.5rem': '13.5rem')">
   <div class="mb-2">
-    <div class="table-responsive mx-2" style="max-height: 27vh;height: 27vh;">
+    <div class="table-responsive mx-2" [style.maxHeight]="selectedAlert ? '27vh': ''"
+    [style.height]="selectedAlert ? '27vh' : ''">
       <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
         <thead>
           <tr class="bg-secondary text-white">
@@ -124,7 +130,7 @@
           <ng-container *ngIf="latestAlerts.length > 0 && !isAlertAPILoading">
             <tr *ngFor="let alert of latestAlerts" [ngClass]="{
                     'bg-alert-selection':
-                      alert.id === this.selectedAlert?.id,
+                      alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id,
                       'bg-danger text-white': alert.severity.toLowerCase() === 'critical'
                   }" >
               <td><i class="fa fa-exclamation-triangle" [style.color]="

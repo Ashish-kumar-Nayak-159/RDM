@@ -23,16 +23,14 @@ export class AppDashboardComponent implements OnInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
-    this.route.paramMap.subscribe(async () => {
-      this.commonService.breadcrumbEvent.emit({
-        type: 'replace',
-        data: [
-          {
-            title: this.contextApp.user.hierarchyString,
-            url: 'applications/' + this.contextApp.app
-          }
-        ]
-      });
+    this.commonService.breadcrumbEvent.emit({
+      type: 'replace',
+      data: [
+        {
+          title: this.contextApp.user.hierarchyString,
+          url: 'applications/' + this.contextApp.app
+        }
+      ]
     });
   }
 

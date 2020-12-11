@@ -49,21 +49,21 @@ export class GaugeChartComponent implements OnInit, OnChanges {
     range0.value = 0;
     range0.endValue = 50;
     range0.axisFill.fillOpacity = 1;
-    range0.axisFill.fill = colorSet.getIndex(0);
+    range0.axisFill.fill = am4core.color('#6dc068');
     range0.axisFill.zIndex = - 1;
 
     const range1 = axis.axisRanges.create();
     range1.value = 50;
     range1.endValue = 80;
     range1.axisFill.fillOpacity = 1;
-    range1.axisFill.fill = colorSet.getIndex(2);
+    range1.axisFill.fill = am4core.color('#fecc4d');
     range1.axisFill.zIndex = -1;
 
     const range2 = axis.axisRanges.create();
     range2.value = 80;
     range2.endValue = 100;
     range2.axisFill.fillOpacity = 1;
-    range2.axisFill.fill = colorSet.getIndex(4);
+    range2.axisFill.fill = am4core.color('#fe5959');
     range2.axisFill.zIndex = -1;
 
     // const label = chart.radarContainer.createChild(am4core.Label);
@@ -78,8 +78,9 @@ export class GaugeChartComponent implements OnInit, OnChanges {
     // label.text = "{score}";
 
     const hand = chart.hands.push(new am4charts.ClockHand());
+    hand.radius = am4core.percent(97);
     hand.value = Number(this.value ? this.value : '0');
-    console.log(this.id, '=====', hand.value);
+    // console.log(this.id, '=====', hand.value);
     this.chart = chart;
     this.hand = hand;
     // this.label = label;

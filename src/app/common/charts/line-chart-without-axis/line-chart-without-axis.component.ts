@@ -32,7 +32,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
   }
 
   ngOnChanges(changes) {
-    console.log(changes);
+    // console.log(changes);
     if (changes.telemetryData && this.chart) {
 
       const data = [];
@@ -47,12 +47,12 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
         valueArr.push(Number(obj[this.property]));
         dateArr.push(newObj.message_date);
       });
-      console.log(this.property, '====', valueArr);
-      console.log(this.property, '====', dateArr);
+      // console.log(this.property, '====', valueArr);
+      // console.log(this.property, '====', dateArr);
       this.max = Math.round(valueArr.reduce((a, b) => Math.max(a, b)));
       this.min = Math.round(valueArr.reduce((a, b) => Math.min(a, b)));
       this.average = Math.round((this.min + this.max) / 2);
-      console.log(this.property, '=====', this.min, '====', this.max, '=====', this.average);
+      // console.log(this.property, '=====', this.min, '====', this.max, '=====', this.average);
       this.range0.value = this.min;
       this.range1.value = this.max;
       this.range2.value = this.average;
@@ -62,7 +62,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
       // data.reverse();
       this.chart.data = data;
       this.chart.invalidateData();
-      console.log(data);
+      // console.log(data);
     }
   }
 
@@ -70,7 +70,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
 
   plotChart() {
     this.zone.runOutsideAngular(() => {
-      console.log(document.getElementById(this.chartId));
+      // console.log(document.getElementById(this.chartId));
       const chart = am4core.create(this.chartId, am4charts.XYChart);
       const data = [];
       const valueArr = [];
@@ -89,11 +89,11 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
       this.min = Math.round(valueArr.reduce((a, b) => Math.min(a, b)));
       this.average = Math.round((this.min + this.max) / 2);
       }
-      console.log(this.property);
-      console.log('min   ', this.min);
-      console.log('max   ', this.max);
-      console.log('average', this.average);
-      console.log(data);
+      // console.log(this.property);
+      // console.log('min   ', this.min);
+      // console.log('max   ', this.max);
+      // console.log('average', this.average);
+      // console.log(data);
       data.reverse();
       chart.data = data;
       chart.logo.disabled = true;
@@ -169,7 +169,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
     const series = chart.series.push(new am4charts.LineSeries());
     series.dataFields.dateX = 'message_date';
     series.name =  this.property;
-    series.stroke = '#8a0909';
+    series.stroke = 'darkgreen';
     series.yAxis = valueYAxis;
     series.dataFields.valueY =  this.property;
     series.compareText = true;

@@ -1,23 +1,20 @@
-import { ApplicationService } from 'src/app/services/application/application.service';
 import { ColumnChartComponent } from './../../common/charts/column-chart/column-chart.component';
 import { DataTableComponent } from './../../common/charts/data-table/data-table.component';
 import { PieChartComponent } from './../../common/charts/pie-chart/pie-chart.component';
 import { DeviceTypeService } from './../../services/device-type/device-type.service';
 import { ToasterService } from './../../services/toaster.service';
-import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, NgZone, EmbeddedViewRef,
+import { Component, OnInit, OnDestroy, EmbeddedViewRef,
   ApplicationRef, ComponentFactoryResolver, Injector, Input } from '@angular/core';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from './../../services/common.service';
 import { DeviceService } from './../../services/devices/device.service';
-import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
-import am4themes_animated from '@amcharts/amcharts4/themes/animated';
-import { isPlatformBrowser } from '@angular/common';
 import { LiveChartComponent } from 'src/app/common/charts/live-data/live-data.component';
 import { BarChartComponent } from 'src/app/common/charts/bar-chart/bar-chart.component';
 import { ChartService } from 'src/app/chart/chart.service';
+import { SignalRService } from 'src/app/services/signalR/signal-r.service';
 declare var $: any;
 @Component({
   selector: 'app-application-visualization',
@@ -28,7 +25,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   @Input() device: any;
   @Input() pageType = 'side_menu';
-  private chart: am4charts.XYChart;
   userData: any;
   contextApp: any = {};
   latestAlerts: any[] = [];
@@ -61,19 +57,17 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   configureHierarchy = {};
   hierarchyArr = {};
   tileData: any;
+  signalRAlertSubscription: any;
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService,
-    private route: ActivatedRoute,
     private chartService: ChartService,
     private factoryResolver: ComponentFactoryResolver,
     private appRef: ApplicationRef,
     private injector: Injector,
-    private applicationService: ApplicationService,
-    @Inject(PLATFORM_ID) private platformId, private zone: NgZone
-
+    private singalRService: SignalRService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -127,14 +121,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     await this.getDevices(hierarchyObj);
   }
 
-  browserOnly(f: () => void) {
-    if (isPlatformBrowser(this.platformId)) {
-      this.zone.runOutsideAngular(() => {
-        f();
-      });
-    }
-  }
-
   getTileName() {
     let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {
@@ -156,6 +142,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
+        type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
       };
       this.deviceService.getAllDevicesList(obj, this.contextApp.app).subscribe(
         (response: any) => {
@@ -191,7 +178,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     const obj = {...this.filterObj};
     obj.hierarchy = { App: this.contextApp.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
-      obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
+      if (this.configureHierarchy[key]) {
+        obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
+      }
       console.log(obj.hierarchy);
     });
     obj.hierarchy = JSON.stringify(obj.hierarchy);
@@ -220,34 +209,59 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         obj.to_date = this.filterObj.to_date.unix();
       }
     }
-
+    delete obj.dateOption;
     this.deviceService.getDeviceAlerts(obj).subscribe(
       (response: any) => {
         this.latestAlerts = response.data;
-        this.latestAlerts.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
+        this.latestAlerts.forEach((item, i) =>  {
+          item.alert_id = 'alert_' +  i;
+          item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
+        });
         this.isAlertAPILoading = false;
+        this.singalRService.disconnectFromSignalR('alert');
         if (this.pageType === 'live') {
-        clearInterval(this.refreshInterval);
-        this.refreshInterval = setInterval(() => {
-          this.getLiveAlerts(obj);
-        }, 5000);
+          const obj1 = {
+            levels: this.contextApp.hierarchy.levels,
+            hierarchy: JSON.parse(obj.hierarchy),
+            type: 'alert',
+            app: this.contextApp.app,
+            device_id: obj.device_id,
+          };
+          this.singalRService.connectToSignalR(obj1);
+          this.signalRAlertSubscription = this.singalRService.signalRAlertData.subscribe(
+            msg => {
+              this.getLiveAlerts(msg);
+          });
+        // clearInterval(this.refreshInterval);
+        // this.refreshInterval = setInterval(() => {
+        //   this.getLiveAlerts(obj);
+        // }, 5000);
         }
       }, () => this.isAlertAPILoading = false
     );
   }
 
   getLiveAlerts(obj) {
-    obj.count = 1;
-    this.deviceService.getDeviceAlerts(obj).subscribe(
-      (response: any) => {
-        if (response?.data?.length > 0) {
-          if (this.latestAlerts.length > 0 && this.latestAlerts[0].message_id !== response.data[0].message_id) {
-            this.latestAlerts.splice(this.latestAlerts.length - 1, 1);
-            response.data[0].local_created_date = this.commonService.convertUTCDateToLocal(response.data[0].message_date);
-            this.latestAlerts.splice(0, 0, response.data[0]);
-          }
-        }
-      });
+    obj.local_created_date = this.commonService.convertSignalRUTCDateToLocal(obj.timestamp);
+    obj.alert_id = 'alert_' + this.latestAlerts.length;
+    this.latestAlerts.splice(0, 0, obj);
+    // obj.count = 1;
+    // if (obj.from_date) {
+    //   obj.from_date = obj.from_date + 5;
+    // }
+    // if (obj.to_date) {
+    //   obj.to_date = obj.to_date + 5;
+    // }
+
+    // this.deviceService.getDeviceAlerts(obj).subscribe(
+    //   (response: any) => {
+    //     if (response?.data?.length > 0) {
+    //       this.latestAlerts = response.data;
+    //       this.latestAlerts.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
+    //     }
+    //   });
+
+
   }
 
 
@@ -257,9 +271,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         app: this.contextApp.app,
         device_id: this.selectedAlert.device_id
       };
-      const methodToCall = this.selectedAlert.gateway_id === this.selectedAlert.device_id || !this.selectedAlert.gateway_id ?
-        this.deviceService.getDeviceData(obj.device_id, obj.app) :
-        this.deviceService.getNonIPDeviceList(obj);
+      const methodToCall =
+        this.deviceService.getAllDevicesList(obj, obj.app)
       methodToCall.subscribe(
         (response: any) => {
           if (response?.data?.length > 0) {
@@ -288,7 +301,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             this.alertCondition = response.data[0];
             resolve();
           }
-        }, error => reject()
+        }, () => reject()
       );
     });
   }
@@ -435,15 +448,15 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.toasterService.showError('If Aggregation Time is set, Aggregation Format is required.', 'View Visualization');
       return;
     }
+    console.log(this.selectedAlert.message_date);
     if (this.beforeInterval > 0) {
-      filterObj.from_date = ((moment.utc(this.selectedAlert.message_date, 'M/DD/YYYY h:mm:ss A'))
-      .subtract(this.beforeInterval, 'minute')).unix();
+      filterObj.from_date = (this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp)) - (this.beforeInterval * 60);
     } else {
       this.toasterService.showError('Minutes Before Alert value must be greater than 0.', 'View Visualization');
       return;
     }
     if (this.afterInterval > 0) {
-      filterObj.to_date = ((moment.utc(this.selectedAlert.message_date, 'M/DD/YYYY h:mm:ss A')).add(this.afterInterval, 'minute')).unix();
+      filterObj.to_date = (this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp)) + (this.beforeInterval * 60);
     } else {
       this.toasterService.showError('Minutes After Alert value must be greater than 0.', 'View Visualization');
       return;
@@ -523,92 +536,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     console.log(this.showThreshold);
     // this.showThreshold = !this.showThreshold;
     this.chartService.toggleThresholdEvent.emit(this.showThreshold);
-  }
-
-
-  loadLineChart(telemetryData) {
-    console.log(telemetryData);
-    this.browserOnly(() => {
-      // alert('here');
-      am4core.useTheme(am4themes_animated);
-
-      const chart = am4core.create('chartdiv', am4charts.XYChart);
-
-      chart.paddingRight = 20;
-
-      const data = [];
-      telemetryData.forEach((obj) => {
-        console.log(this.commonService.convertUTCDateToLocal(obj.message_date));
-        obj.message_date = new Date(this.commonService.convertUTCDateToLocal(obj.message_date));
-        delete obj.aggregation_end_time;
-        delete obj.aggregation_start_time;
-        data.splice(data.length, 0, obj);
-      });
-      console.log(data);
-
-      chart.data = data;
-
-      const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-      dateAxis.renderer.minGridDistance = 50;
-      // const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-      // valueAxis.tooltip.disabled = true;
-      // valueAxis.renderer.minWidth = 35;
-      this.createValueAxis(chart, 0);
-      this.createValueAxis(chart, 1);
-
-
-      chart.legend = new am4charts.Legend();
-
-      chart.cursor = new am4charts.XYCursor();
-
-      // const scrollbarX = new am4charts.XYChartScrollbar();
-      // scrollbarX.series.push(series);
-      // chart.scrollbarX = scrollbarX;
-
-      const range = dateAxis.axisRanges.create();
-      range.date = new Date(this.selectedAlert.local_created_date);
-      range.grid.stroke = am4core.color('red');
-      range.grid.strokeWidth = 2;
-      range.grid.strokeOpacity = 1;
-      range.axisFill.tooltip = new am4core.Tooltip();
-      range.axisFill.tooltipText = 'Alert Time';
-      range.axisFill.interactionsEnabled = true;
-      range.axisFill.isMeasured = true;
-      chart.legend.itemContainers.template.events.on('hit', (ev) => {
-        let shownItem;
-        let propObj;
-        console.log(ev.target.dataItem.dataContext);
-        let count = 0;
-        this.seriesArr.forEach((item, index) => {
-          console.log(item.isActive);
-          console.log(chart.series);
-          const seriesColumn = chart.series.getIndex(index);
-          if (ev.target.dataItem.dataContext['name'] === item.name) {
-            item.compareText = !item.compareText;
-            seriesColumn.isActive = !seriesColumn.isActive;
-          }
-          if (item.compareText) {
-            count += 1;
-            shownItem = seriesColumn;
-            this.propertyList.forEach(prop => {
-              if (prop.json_key === item.name) {
-                propObj = prop;
-              }
-            });
-          }
-        });
-        if (count === 1) {
-          this.createThresholdSeries(shownItem.yAxis, propObj);
-        } else {
-          this.seriesArr.forEach(series => series.yAxis.axisRanges.clear());
-        }
-        console.log(this.seriesArr);
-      });
-
-      chart.exporting.menu = new am4core.ExportMenu();
-      chart.exporting.filePrefix = this.selectedAlert.device_id + '_Alert_' + this.selectedAlert.local_created_date;
-      this.chart = chart;
-    });
   }
 
   createThresholdSeries(valueAxis, propObj) {
@@ -721,11 +648,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     clearInterval(this.refreshInterval);
-    this.browserOnly(() => {
-      if (this.chart) {
-        this.chart.dispose();
-      }
-    });
   }
 
   y1Deselect(e){

@@ -206,7 +206,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
         tags[tag] = this.removeHierarchyIndexTags(tags[tag], index - 1);
     });
     return tags;
-}
+  }
 
   onCloseModal() {
     this.selectedHierarchy = undefined;

@@ -1,3 +1,4 @@
+import { CONSTANTS } from 'src/app/app.constants';
 import { environment } from './../../../../environments/environment';
 import { Component, Input, OnInit } from '@angular/core';
 
@@ -13,6 +14,11 @@ export class DeviceTypeOverviewComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    if (!this.deviceType.metadata?.image) {
+      this.deviceType.metadata.image = {
+        url: CONSTANTS.DEFAULT_MODEL_IMAGE
+      };
+    }
   }
 
 }

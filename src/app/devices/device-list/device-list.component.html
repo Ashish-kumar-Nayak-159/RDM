@@ -131,7 +131,7 @@
            class="form-control" id="device_manager" name="device_manager" [(ngModel)]="deviceDetail.tags.device_manager">
         </div>
         <div class="form-group" *ngIf="componentState === constantData.NON_IP_DEVICE">
-          <label for="message-text" class="col-form-label required">Gateway:</label>
+          <label for="message-text" class="col-form-label">Gateway:</label>
           <select class="custom-select" id="template" name="gateway_id" [(ngModel)]="deviceDetail.gateway_id"
          >
             <option [ngValue]="undefined"> Select Gateway</option>

@@ -1,3 +1,4 @@
+import { CONSTANTS } from './../../../app.constants';
 import { ToasterService } from './../../../services/toaster.service';
 import { DeviceTypeService } from './../../../services/device-type/device-type.service';
 import { DeviceService } from './../../../services/devices/device.service';
@@ -97,6 +98,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
+        type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
       };
       this.deviceService.getAllDevicesList(obj, this.contextApp.app).subscribe(
         (response: any) => {
@@ -109,41 +111,83 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  onTabChange(type) {
+    this.signalRService.disconnectFromSignalR('telemetry');
+    this.signalRService.disconnectFromSignalR('alert');
+    this.telemetryData = [];
+    this.telemetryObj = undefined;
+    this.selectedTab = type;
+    this.filterObj.device = undefined;
+    this.hierarchyArr = [];
+    this.configureHierarchy = {};
+    if (this.contextApp.hierarchy.levels.length > 1) {
+      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+    }
+  }
+
   async onFilterSelection() {
-    this.signalRService.disconnectFromSignalR();
+    this.signalRService.disconnectFromSignalR('telemetry');
     this.isTelemetryDataLoading = true;
-    const obj = {
-      device_id: this.filterObj.device.device_id,
-      type: 'telemetry',
-      hierarchy: {},
-      levels: this.contextApp.hierarchy.levels
-    };
-    obj.hierarchy = { App: this.contextApp.app};
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
-      console.log(obj.hierarchy);
-    });
-    this.signalRService.connectToSignalR(obj);
-    this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(
-      data => {
-        this.processTelemetryData(data);
-        this.isTelemetryDataLoading = false;
-      }
-    );
+    const obj = {...this.filterObj};
+    let device_type: any;
+    if (obj.device) {
+      obj.device_id = obj.device.device_id;
+      device_type = obj.device.device_type;
+      delete obj.device;
+    }
+    if (!obj.device_id) {
+      this.toasterService.showError('Device selection is required', 'View Live Telemetry');
+      return;
+    }
+    if (device_type) {
+      await this.getThingsModelProperties(device_type);
+    }
+    this.telemetryObj = undefined;
+    this.telemetryData = [];
+    let message_props = '';
+    obj.count = 1;
+    obj.app = this.contextApp.app;
+    this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : ''));
+    obj.message_props = message_props;
+    this.deviceService.getDeviceTelemetry(obj).subscribe(
+      (response: any) => {
+        if (response?.data?.length > 0) {
+          response.data[0].message_date = this.commonService.convertUTCDateToLocal(response.data[0].message_date);
+          this.telemetryObj = response.data[0];
+          this.lastReportedTelemetryValues = response.data[0];
+          this.telemetryData = response.data;
+          this.isTelemetryDataLoading = false;
+        }
+        const obj1 = {
+          hierarchy: this.contextApp.user.hierarchy,
+          levels: this.contextApp.hierarchy.levels,
+          device_id: this.filterObj.device.device_id,
+          type: 'telemetry',
+          app: this.contextApp.app
+        };
+        this.signalRService.connectToSignalR(obj1);
+        this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(
+          data => {
+            if (data.type !== 'alert') {
+              this.processTelemetryData(data);
+              this.isTelemetryDataLoading = false;
+            }
+          }
+        );
+    }, error => this.isTelemetryDataLoading = false);
   }
 
   processTelemetryData(telemetryObj) {
-    console.log(moment(new Date(telemetryObj.timestamp).toString()).format('DD-MMM-YYYY hh:mm:ss A'));
     telemetryObj.message_date = this.commonService.convertSignalRUTCDateToLocal(telemetryObj.timestamp);
+    console.log(telemetryObj.message_date)
     this.lastReportedTelemetryValues = telemetryObj;
-    console.log(telemetryObj);
     this.telemetryObj = telemetryObj;
     if (this.telemetryData.length >= 10) {
       this.telemetryData.splice(0, 1);
     }
     this.telemetryData.push(this.lastReportedTelemetryValues);
     this.telemetryData = JSON.parse(JSON.stringify(this.telemetryData));
-    console.log(this.telemetryData);
+    // console.log(this.telemetryData);
     // this.cdr.detectChanges()
   }
 

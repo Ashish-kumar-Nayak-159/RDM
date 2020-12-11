@@ -11777,8 +11777,8 @@ padding-bottom: 1.5rem;
     background-color: transparent;
     border-color: transparent transparent #2e59d9;
     border-bottom: 3px solid #2e59d9 !important;
-    font-size: 20px;
-    font-weight: bold;
+    /* font-size: 20px; */
+    /* font-weight: bold; */
 }
 #tabs .nav-tabs .nav-link {
 	padding: 0.5rem 0;
@@ -11786,7 +11786,12 @@ padding-bottom: 1.5rem;
     border-top-left-radius: .25rem;
     border-top-right-radius: .25rem;
     color: #858796;
-    font-size: 20px;
+    /* font-size: 20px; */
+}
+
+#tabs .nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
+  border: 0px;
+  /* border-color: #eaecf4 #eaecf4 #dddfeb; */
 }
 .hidden {
      display:none;

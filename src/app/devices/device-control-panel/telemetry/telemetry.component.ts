@@ -1,3 +1,4 @@
+import { ToasterService } from './../../../services/toaster.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
@@ -27,7 +28,8 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -95,9 +97,21 @@ export class TelemetryComponent implements OnInit, OnDestroy {
         obj.to_date = filterObj.to_date.unix();
       }
     }
+    if (!obj.from_date || !obj.to_date) {
+      this.toasterService.showError('Date selection is requierd.', 'Get Telemetry Data');
+      this.isTelemetryLoading = false;
+      this.isFilterSelected = false;
+      return;
+    }
+    let method;
+    if (obj.to_date - obj.from_date < 3600) {
+      method = this.deviceService.getDeviceTelemetry(obj);
+    } else {
+      method = this.deviceService.getDeviceSamplingTelemetry(obj, this.device.app);
+    }
     delete obj.dateOption;
     this.telemetryFilter = filterObj;
-    this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
+    this.apiSubscriptions.push(method.subscribe(
       (response: any) => {
         if (response && response.data) {
           this.telemetry = response.data;
@@ -113,8 +127,14 @@ export class TelemetryComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       const obj = {
         app: dataobj.app,
-        id: dataobj.id
+        id: dataobj.id,
+        from_date: null,
+        to_date: null,
+        epoch: true
       };
+      const epoch =  this.commonService.convertDateToEpoch(dataobj.message_date);
+      obj.from_date = epoch ? (epoch - 5) : null
+      obj.to_date = (epoch ? (epoch + 5) : null);
       this.deviceService.getDeviceMessageById(obj, 'telemetry').subscribe(
         (response: any) => {
           resolve(response.message);

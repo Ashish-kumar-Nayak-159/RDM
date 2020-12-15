@@ -268,6 +268,8 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     const now = moment().utc();
     this.historyFilter.to_date = now.unix();
     this.historyFilter.from_date = (now.subtract(1, 'minute')).unix();
+    this.y1AxisProps = [];
+    this.y2AxisProp = [];
   }
 
   ngOnDestroy(): void {

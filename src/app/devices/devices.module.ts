@@ -41,6 +41,7 @@ import { BatteryMessagesComponent } from './device-control-panel/battery-message
 import { CommonCustomModule } from './../common/common.module';
 import { SpecificC2dMessageComponent } from './device-control-panel/specific-c2d-message/specific-c2d-message.component';
 import { PredictiveMaintenanceComponent } from './device-control-panel/predictive-maintenance/predictive-maintenance.component';
+import { AlertEndEventComponent } from './device-control-panel/alert-end-event/alert-end-event.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { PredictiveMaintenanceComponent } from './device-control-panel/predictiv
     C2dMessageComponent,
     BatteryMessagesComponent,
     SpecificC2dMessageComponent,
-    PredictiveMaintenanceComponent
+    PredictiveMaintenanceComponent,
+    AlertEndEventComponent
   ],
   imports: [
     CommonModule,

@@ -170,7 +170,7 @@ export class DeviceListComponent implements OnInit {
             headerClass: '',
             btnData: [
               {
-                icon: 'fas fa-fw fa-table',
+                icon: 'fa fa-fw fa-table',
                 text: '',
                 id: 'View Control Panel',
                 valueclass: '',

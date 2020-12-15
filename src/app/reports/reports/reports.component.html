@@ -38,18 +38,18 @@
           <!-- <input type="number" min="1" class="form-control form-control-sm mx-1 my-1 record-input" id="inputEmail4"
             placeholder="No of Records" [(ngModel)]="filterObj.count" name="count"> -->
 
-          <select class="form-control form-control-sm mx-1 my-1" id="report_type" [(ngModel)]="filterObj.report_type"
+          <select class="form-control form-control-sm mr-2 ml-1 my-1" id="report_type" [(ngModel)]="filterObj.report_type"
           name="report_type" (change)="onNonIPDeviceChange()">
           <option [ngValue]="undefined">Select Report Type</option>
-          <option [ngValue]="'Telemetry Report'">Telemetry Report</option>
+          <option [ngValue]="'Process Parameter Report'">Process Parameter Report</option>
           <option [ngValue]="'Alert Report'">Alert Report</option>
           </select>
-          <angular2-multiselect [data]="dropdownPropList" id="y1AxisProperty" *ngIf=" filterObj.report_type === 'Telemetry Report'"
+          <angular2-multiselect [data]="dropdownPropList" id="y1AxisProperty" *ngIf=" filterObj.report_type === 'Process Parameter Report'"
               [(ngModel)]="props" name="props" [settings]="{
                 text: 'Select Property',
                 selectAllText: 'Select All',
                 unSelectAllText: 'UnSelect All',
-                classes: 'col-lg-2 col-xl-2 p-0 ml-2',
+                classes: 'col-lg-2 col-xl-2 p-0 ml-2 mx-2',
                 enableSearchFilter: true,
                 badgeShowLimit: 1,
                 maxHeight: 200,
@@ -57,7 +57,7 @@
               }"
               (onDeSelectAll)="y1Deselect($event)">
             </angular2-multiselect>
-            <div class="bg-dateRow form-group form-inline" id="dateRow" style="width: 42rem;">
+            <div class="bg-dateRow form-group form-inline" id="dateRow" style="width: 47rem;">
           <select class="form-control form-control-sm mx-1 my-1" id="dateoptions" [(ngModel)]="filterObj.dateOption"
             name="dateOptions" (change)="onDateOptionChange();dt1Input.value = null;dt2Input.value = null;">
             <option [ngValue]="undefined">Quick Options</option>
@@ -77,15 +77,15 @@
           <label class="ml-3 mr-1">OR</label>
           <ng-container>
             <input #dt1Input [owlDateTime]="dt1" [selectMode]="'range'" (dateTimeChange)="onDateChange($event);dt2Input.value = null;filterObj.dateOption = undefined;"
-              class="form-control form-control-sm mx-1 my-1 w-15" [owlDateTimeTrigger]="dt1"
+              class="form-control form-control-sm mx-1 my-1 w-20" [owlDateTimeTrigger]="dt1"
               placeholder="Select Date Range">
             <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
             <owl-date-time #dt1></owl-date-time>
           </ng-container>
           </div>
           <button type="button" class="btn btn-warning btn-sm mx-2 my-1" title="Search" (click)="onFilterSelection()" ><i
-              class="fas fa-search fa-sm"></i></button>
-          <!-- <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fas fa-trash  fa-sm"></i></button> -->
+              class="fa fa-search fa-sm"></i></button>
+          <!-- <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fa fa-trash  fa-sm"></i></button> -->
 
         </div>
       </form>
@@ -104,7 +104,7 @@
 
       </h5>
       <table class="table table-bordered table-striped"  id="dataTable" width="100%" cellspacing="0"
-      *ngIf="isFilterSelected && filterObj.report_type === 'Telemetry Report'">
+      *ngIf="isFilterSelected && filterObj.report_type === 'Process Parameter Report'">
         <thead>
           <tr class="bg-secondary text-white">
             <th>Asset Name</th>
@@ -144,7 +144,7 @@
       *ngIf="isFilterSelected && filterObj.report_type === 'Alert Report'">
         <thead>
           <tr class="bg-secondary text-white">
-            <th>Code</th>
+            <th></th>
             <th>Asset Name</th>
             <th>Time</th>
             <th>Description</th>
@@ -161,7 +161,7 @@
                 (alert.severity.toLowerCase() === 'warning' ? '#f6c23e' :
                 (alert.severity.toLowerCase() === 'informational' ? '#229954' : ''))
                 )
-                )" title="{{alert.severity}}"></i>&nbsp;{{alert.code}}</td>
+                )" title="{{alert.severity}}"></i></td>
 
               <td>{{ alert.device_display_name ? alert.device_display_name : alert.device_id }}</td>
 

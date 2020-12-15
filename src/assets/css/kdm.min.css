@@ -9786,7 +9786,7 @@ font-size:0.8rem;
 .sidebar #sidebarToggle::after {
   font-weight: 900;
   content: '\f100';
-  font-family: 'Font Awesome 5 Free';
+  font-family: FontAwesome;
   margin-right: .1rem
 }
 
@@ -9805,7 +9805,7 @@ font-size:0.8rem;
 
 .sidebar.toggled #sidebarToggle::after {
   content: '\f101';
-  font-family: 'Font Awesome 5 Free';
+  font-family: FontAwesome;
   margin-left: .25rem
 }
 
@@ -10768,8 +10768,8 @@ body.sidebar-toggled footer.sticky-footer {
 
 .container-fluid .sidebar1 #sidebar1Toggle::after {
   font-weight: 900;
-  content: '\f104';
-  font-family: 'Font Awesome 5 Free';
+  content: '\f100';
+  font-family: FontAwesome;
   margin-right: 0.1rem;
 }
 
@@ -10788,7 +10788,7 @@ body.sidebar-toggled footer.sticky-footer {
 
 .container-fluid .sidebar1.toggled #sidebar1Toggle::after {
   content: '\f101';
-  font-family: 'Font Awesome 5 Free';
+  font-family: FontAwesome;
   margin-left: 0.1rem;
 }
 

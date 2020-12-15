@@ -17,6 +17,9 @@ select.form-control {
   width:  15rem!important;
 }
 
+.w-20 {
+  width: 20rem!important;
+}
 #dateRow input
 {
   border: 0;

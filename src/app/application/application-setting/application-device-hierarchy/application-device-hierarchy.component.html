@@ -12,8 +12,8 @@
               <i class="fa fa-info-circle" title="Hierarchy name will not allow ' ', '.', '#' and '$'"></i> </th>
             <th style="padding:0.2rem 0.5rem;"><button type="button" id="insert-more"
                 class="btn btn-red btn-sm mx-1 my-1" style="float:right" (click)="onAddNewHierarchyObj()">
-                <i class="fas fa-plus fa-sm"></i></button></th>
-            <!--<a href="#" id="insert-more" ><i class="fas fa-fw fa-plus" style="color:red"></i></a>-->
+                <i class="fa fa-plus fa-sm"></i></button></th>
+            <!--<a href="#" id="insert-more" ><i class="fa fa-fw fa-plus" style="color:red"></i></a>-->
           </tr>
 
         </thead>
@@ -39,7 +39,7 @@
             </td>
             <td width="15%" *ngIf="i !== 0">
               <a href="javascript:void(0)" [class.disabled]="!applicationData.hierarchy.levels[i]" (click)="onArrowClick(i)">
-                <i class="fas fa fa-arrow-circle-right" ></i></a>
+                <i class="fa fa fa-arrow-circle-right" ></i></a>
                 <a [class.disabled]="!applicationData.hierarchy.levels[i]" class="ml-2" href="javascript:void(0)" (click)="openConfirmHierarchyDeleteModal(item)">
                   <i class="fa fa-trash"  title="Delete Hierarchy"></i>
                 </a>
@@ -107,7 +107,7 @@
             </td>
             <td width="10%"><button type="button" id="insert-more" class="btn btn-red btn-sm mx-1 my-1"
                 (click)="onAddNewTag()" [disabled]="!addedTagItem">
-                <i class="fas fa-plus fa-sm"></i></button>
+                <i class="fa fa-plus fa-sm"></i></button>
               </td>
 
 

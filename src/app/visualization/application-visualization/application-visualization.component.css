@@ -3,13 +3,17 @@
   overflow-y: auto;
 }
 
+input:invalid {
+  border: 1px solid #d1d3e2;
+}
+
 
 #bar-chart text {
   fill: yellow!important;
   font-size: 10px!important;
   font-family: 'Comfortaa';
 }
-
+/*
 th {
   position: -webkit-sticky;
   position: sticky;
@@ -23,7 +27,10 @@ th[scope=row] {
   position: sticky;
   left: 0;
   z-index: 1;
-}
+} */
+
+
+
 
 .record-input {
   background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="90" height="30"><text x="5" y="19" style="font-size: .875rem; font-family: Roboto, Helvetica Neue, sans-serif;" fill="%23858796">N Records:</text></svg>') no-repeat;

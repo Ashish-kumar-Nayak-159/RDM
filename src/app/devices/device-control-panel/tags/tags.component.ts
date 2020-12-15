@@ -30,6 +30,7 @@ export class TagsComponent implements OnInit {
   hierarchyTags: any[] = [];
   contextApp: any;
   deviceType: any;
+  constantData = CONSTANTS;
   constructor(
     private route: ActivatedRoute,
     private deviceService: DeviceService,

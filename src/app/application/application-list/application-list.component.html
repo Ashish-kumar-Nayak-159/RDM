@@ -7,7 +7,7 @@
 
       class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-4"
       href="javascript:void(0)" (click)="openCreateAppModal()"
-      ><i class="fas fa- fa-sm text-white-50"></i> Add App</a
+      ><i class="fa fa- fa-sm text-white-50"></i> Add App</a
     >
   </div>
   <div class="card row shadow bg-light" style="margin-left:0rem">
@@ -22,8 +22,8 @@
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputPassword4" placeholder="App Manager"
           [(ngModel)]="applicationFilterObj.admin_email" name="admin">
 
-          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="searchApplications()" ><i class="fas fa-search fa-sm"></i></button>
-          <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="clearFilter()"><i class="fas fa-trash  fa-sm"></i></button>
+          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="searchApplications()" ><i class="fa fa-search fa-sm"></i></button>
+          <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="clearFilter()"><i class="fa fa-trash  fa-sm"></i></button>
 
         </div>
        </form>
@@ -66,11 +66,11 @@
               <td>{{app.admin_email}} ({{app.admin_name}})</td>
               <td>
                 <a href="javascript:void(0)" (click)="redirectToDevices(app)" title="View Devices">
-                <i class="fas fa-fw fa-eye"></i></a></td>
+                <i class="fa fa-fw fa-eye"></i></a></td>
               <td><a  href="javascript:void(0)" (click)="openViewIconModal(app)" title="View Icons" >
-                <i class="fas fa-fw fa-eye"></i></a></td>
+                <i class="fa fa-fw fa-eye"></i></a></td>
               <!-- <td><a href="javascript:void(0)" (click)="openEditAppModal(app)" title="Edit App" >
-                <i class="fas fa-fw fa-edit"></i></a></td> -->
+                <i class="fa fa-fw fa-edit"></i></a></td> -->
             </tr>
           </ng-container>
           <ng-container *ngIf="applications.length === 0 && !isApplicationListLoading">

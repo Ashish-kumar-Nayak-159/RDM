@@ -1,49 +1,115 @@
 <div class="topnavbar">
-    <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n2">
-    <h5 class="h4 mb-0 text-gray-800">{{tileData && tileData[0] ? tileData[0]?.value : ''}}</h5>
+  <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n2">
+    <h5 class="h4 mb-0 text-gray-800">
+      {{ tileData && tileData[0] ? tileData[0]?.value : "" }}
+    </h5>
   </div>
-<div id="telemetry-tabs" class="d-sm-flex justify-content-end" style="margin-right: 12rem;margin-top: -3.2rem;">
-<nav>
-<div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-  <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#Meta-data" role="tab" aria-controls="nav-home" aria-selected="true"
-  (click)="onTabChange('telemetry')">Live Telemetry</a>
-  <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#Device" role="tab" aria-controls="nav-profile" aria-selected="false"
-  (click)="onTabChange('alert')">Live Alerts</a>
-</div>
-</nav>
-</div>
+  <div
+    id="telemetry-tabs"
+    class="d-sm-flex justify-content-end"
+    style="margin-right: 12rem; margin-top: -3.2rem"
+  >
+    <nav>
+      <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+        <a
+          class="nav-item nav-link active"
+          id="nav-home-tab"
+          data-toggle="tab"
+          href="#Meta-data"
+          role="tab"
+          aria-controls="nav-home"
+          aria-selected="true"
+          (click)="onTabChange('telemetry')"
+          >Live Telemetry</a
+        >
+        <a
+          class="nav-item nav-link"
+          id="nav-profile-tab"
+          data-toggle="tab"
+          href="#Device"
+          role="tab"
+          aria-controls="nav-profile"
+          aria-selected="false"
+          (click)="onTabChange('alert')"
+          >Live Alerts</a
+        >
+      </div>
+    </nav>
+  </div>
 </div>
 <div class="container-tab-pad" style="margin-top: 6.7rem">
-
-    <div class="row pl-4 " style="padding-right: 0.8rem;">
+  <div class="row pl-4" style="padding-right: 0.8rem">
     <div id="tabs">
       <div class="tab-content px-3 px-sm-0" id="nav-tabContent">
-        <div class="tab-pane fade show active" id="Meta-data" role="tabpanel" aria-labelledby="nav-home-tab">
-          <div class="topnavbar" style="margin-top: 1.5rem;"  *ngIf="selectedTab === 'telemetry'">
+        <div
+          class="tab-pane fade show active"
+          id="Meta-data"
+          role="tabpanel"
+          aria-labelledby="nav-home-tab"
+        >
+          <div
+            class="topnavbar"
+            style="margin-top: 1.5rem"
+            *ngIf="selectedTab === 'telemetry'"
+          >
             <div class="card row bg-white">
               <div class="col-xl-12 col-md-12 mb-12">
                 <form class="row">
                   <div class="col-md-8">
-                  <div class="form-group form-inline my-2 mx-1">
-                    <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let index = index;">
-                    <select *ngIf="index !== 0" class="form-control form-control-sm mx-1 my-1" id="{{level}}"
-                    [disabled]="contextApp?.user?.hierarchy[level]"
-                    [(ngModel)]="configureHierarchy[index]" name="{{level}}" (change)="onChangeOfHierarchy(index)">
-                      <option [ngValue]="undefined">Select {{level}}</option>
-                      <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">
-                        {{tag}}
-                      </option>
-                    </select>
-                    <input  type="text" *ngIf="index === 0"  defaultValue="{{contextApp.app}}" disabled class="form-control form-control-sm mx-1 my-1">
-                  </ng-container>
-                  <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory" [(ngModel)]="filterObj.device"
-                  name="deviceCategory" >
-                  <option [ngValue]="undefined">Select Asset</option>
-                  <option [ngValue]="device" *ngFor="let device of devices">
-                    {{device?.display_name ? device?.display_name: device.device_id}}
-                  </option>
-                  </select>
-                  <!-- <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory1" [(ngModel)]="filterObj.non_ip_device"
+                    <div class="form-group form-inline my-2 mx-1">
+                      <ng-container
+                        *ngFor="
+                          let level of contextApp?.hierarchy?.levels;
+                          let index = index
+                        "
+                      >
+                        <select
+                          *ngIf="index !== 0"
+                          class="form-control form-control-sm mx-1 my-1"
+                          id="{{ level }}"
+                          [disabled]="contextApp?.user?.hierarchy[level]"
+                          [(ngModel)]="configureHierarchy[index]"
+                          name="{{ level }}"
+                          (change)="onChangeOfHierarchy(index)"
+                        >
+                          <option [ngValue]="undefined">
+                            Select {{ level }}
+                          </option>
+                          <option
+                            [ngValue]="tag"
+                            *ngFor="let tag of hierarchyArr[index]"
+                          >
+                            {{ tag }}
+                          </option>
+                        </select>
+                        <input
+                          type="text"
+                          *ngIf="index === 0"
+                          defaultValue="{{ contextApp.app }}"
+                          disabled
+                          class="form-control form-control-sm mx-1 my-1"
+                        />
+                      </ng-container>
+                      <select
+                        class="form-control form-control-sm mx-1 my-1"
+                        id="deviceCategory"
+                        [(ngModel)]="filterObj.device"
+                        name="deviceCategory"
+                        [compareWith]="compareFn"
+                      >
+                        <option [ngValue]="undefined">Select Asset</option>
+                        <option
+                          [ngValue]="device"
+                          *ngFor="let device of devices"
+                        >
+                          {{
+                            device?.display_name
+                              ? device?.display_name
+                              : device.device_id
+                          }}
+                        </option>
+                      </select>
+                      <!-- <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory1" [(ngModel)]="filterObj.non_ip_device"
                     name="deviceCategory1" *ngIf="filterObj.device?.cloud_connectivity.includes('Gateway')"
                     >
                     <option [ngValue]="undefined">Select Asset</option>
@@ -51,266 +117,419 @@
                       {{device?.display_name ? device?.display_name: device.device_id}}
                     </option>
                   </select> -->
-                  <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="onFilterSelection();" ><i
-                    class="fas fa-search fa-sm"></i></button>
+                      <button
+                        type="button"
+                        class="btn btn-warning btn-sm mx-1 my-1"
+                        title="Search"
+                        (click)="onFilterSelection(this.filterObj)"
+                      >
+                        <i class="fa fa-search fa-sm"></i>
+                      </button>
+                    </div>
                   </div>
-
-
-                  </div>
-                  <label class="col-md-2 mt-3 ml-5" >{{telemetryObj?.message_date}}</label>
+                  <label class="col-md-2 mt-3 ml-5">{{
+                    telemetryObj?.message_date
+                  }}</label>
                 </form>
               </div>
             </div>
           </div>
-
-          <div class="contain-pad contain-pad-dashboard" *ngIf="selectedTab === 'telemetry'">
+          <div
+            class="contain-pad contain-pad-dashboard"
+            *ngIf="selectedTab === 'telemetry'"
+          >
             <div class="mb-2">
               <div class="row col-12" *ngIf="isTelemetryDataLoading">
-              <i class="fa fa-spinner fa-spin fa-fw fa-2x" ></i>
+                <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+              </div>
+              <div
+                class="row col-12 mx-1"
+                *ngIf="
+                  !isTelemetryDataLoading && !telemetryObj && isFilterSelected
+                "
+              >
+                No data available since last 1 minute.
               </div>
               <div class="row" *ngIf="telemetryObj">
-
-                  <div class="col-xl-8 col-lg-8">
-                    <!-- Content Row -->
-                      <div class="row">
-
-                      <!-- Content Column -->
-                    <div class="col-lg-7  my-3">
-
-                      <div class="card ">
-                      <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold">Pressure Parameters (Bar)</h6>
-                      </div>
-                      <div class="card-body1" style="height: 10rem;">
-                        <div class="row  text-center">
-                        <div class="col-4 text-center" >
-                          <span class="text-xs">Discharge Pressure</span>
-                          <div class="pt-3" >
-                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['Discharge Pressure']}}</span>
-                          </div>
-                           <div class="ml-3">
-                                 <app-line-chart-without-axis [chartId]="'lineChart1'"  [telemetryData]="telemetryData" [property]="'Discharge Pressure'"></app-line-chart-without-axis>
+                <div class="col-xl-8 col-lg-8">
+                  <!-- Content Row -->
+                  <div class="row">
+                    <!-- Content Column -->
+                    <div class="col-lg-7 my-3">
+                      <div class="card">
+                        <div class="card-header py-3">
+                          <h6 class="m-0 font-weight-bold">
+                            Pressure Parameters (Bar)
+                          </h6>
+                        </div>
+                        <div class="card-body1" style="height: 10rem">
+                          <div class="row text-center">
+                            <div class="col-4 text-center">
+                              <span class="text-xs">Discharge Pressure == {{ telemetryObj["Discharge Pressure"]}}</span>
+                              <div class="pt-3">
+                                <span
+                                  class="text-darkblue display-5 font-weight-bold"
+                                  >{{
+                                    telemetryObj["Discharge Pressure"] ? telemetryObj["Discharge Pressure"].toFixed(
+                                      2
+                                    ) : ''
+                                  }}</span
+                                >
+                              </div>
+                              <div class="ml-3">
+                                <app-line-chart-without-axis
+                                  [chartId]="'lineChart1'"
+                                  [telemetryData]="telemetryData"
+                                  [property]="'Discharge Pressure'"
+                                ></app-line-chart-without-axis>
+                              </div>
                             </div>
-                        </div>
-
-                        <div class="col-4  text-center border-left" >
-                          <span class="text-xs">Suction Pressure</span>
-                           <div class="pt-3" >
-                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['Suction Pressure']}}</span>
-                        </div>
-                           <div class="ml-2">
-
-                                <app-line-chart-without-axis [chartId]="'lineChart2'" [telemetryData]="telemetryData" [property]="'Suction Pressure'"></app-line-chart-without-axis>
-
+                            <div class="col-4 text-center border-left">
+                              <span class="text-xs">Suction Pressure</span>
+                              <div class="pt-3">
+                                <span
+                                  class="text-darkblue display-5 font-weight-bold"
+                                  >{{
+                                    telemetryObj["Suction Pressure"] ? telemetryObj["Suction Pressure"].toFixed(2) : ''
+                                  }}</span
+                                >
+                              </div>
+                              <div class="ml-2">
+                                <app-line-chart-without-axis
+                                  [chartId]="'lineChart2'"
+                                  [telemetryData]="telemetryData"
+                                  [property]="'Suction Pressure'"
+                                ></app-line-chart-without-axis>
+                              </div>
                             </div>
-                        </div>
-
-                        <div class="col-4  text-center border-left" >
-                          <span class="text-xs">High-bank Pressure</span>
-                           <div class="pt-3" >
-                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['High Bank Pressure']}}</span>
-                        </div>
-                           <div class="ml-2">
-
-                                <app-line-chart-without-axis [chartId]="'lineChart3'" [telemetryData]="telemetryData" [property]="'High Bank Pressure'"></app-line-chart-without-axis>
-
-
+                            <div class="col-4 text-center border-left">
+                              <span class="text-xs">High-bank Pressure</span>
+                              <div class="pt-3">
+                                <span
+                                  class="text-darkblue display-5 font-weight-bold"
+                                  >{{
+                                    telemetryObj["High Bank Pressure"] ? telemetryObj["High Bank Pressure"].toFixed(
+                                      2
+                                    ) : ''
+                                  }}</span
+                                >
+                              </div>
+                              <div class="ml-2">
+                                <app-line-chart-without-axis
+                                  [chartId]="'lineChart3'"
+                                  [telemetryData]="telemetryData"
+                                  [property]="'High Bank Pressure'"
+                                ></app-line-chart-without-axis>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                        </div>
-                      </div>
                       </div>
                     </div>
-
-
-
-                      <div class="col-lg-5 my-3">
-
-                       <!-- Project Card Example -->
-                      <div class="card ">
-                      <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold">Flow Rate Parameters (kg/hr)</h6>
-                      </div>
-                      <div class="card-body1" style="height: 10rem;">
-                        <div class="row  text-center">
-                        <div class="col-6  text-center" >
-                          <span class="text-xs">Flow Rate Suction</span>
-                          <div class="pt-3" >
-                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['Flow rate Suction']}}</span>
+                    <div class="col-lg-5 my-3">
+                      <!-- Project Card Example -->
+                      <div class="card">
+                        <div class="card-header py-3">
+                          <h6 class="m-0 font-weight-bold">
+                            Flow Rate Parameters (kg/hr)
+                          </h6>
                         </div>
-                           <div class="ml-3">
-
-                                <app-line-chart-without-axis [chartId]="'lineChart4'" [telemetryData]="telemetryData" [property]="'Flow rate Suction'"></app-line-chart-without-axis>
-
-
+                        <div class="card-body1" style="height: 10rem">
+                          <div class="row text-center">
+                            <div class="col-6 text-center">
+                              <span class="text-xs">Flow Rate Suction</span>
+                              <div class="pt-3">
+                                <span
+                                  class="text-darkblue display-5 font-weight-bold"
+                                  >{{
+                                    telemetryObj["Flow rate Suction"] ? telemetryObj["Flow rate Suction"].toFixed(
+                                      2
+                                    ) : ''
+                                  }}</span
+                                >
+                              </div>
+                              <div class="ml-3">
+                                <app-line-chart-without-axis
+                                  [chartId]="'lineChart4'"
+                                  [telemetryData]="telemetryData"
+                                  [property]="'Flow rate Suction'"
+                                ></app-line-chart-without-axis>
+                              </div>
+                            </div>
+                            <div class="col-6 text-center border-left">
+                              <span class="text-xs">Flow Rate Discharge</span>
+                              <div class="pt-3">
+                                <span
+                                  class="text-darkblue display-5 font-weight-bold"
+                                  >{{
+                                    telemetryObj[
+                                      "Flow rate Discharge"
+                                    ] ? telemetryObj[
+                                    "Flow rate Discharge"
+                                  ].toFixed(2) : ''
+                                  }}</span
+                                >
+                              </div>
+                              <div class="ml-3">
+                                <app-line-chart-without-axis
+                                  [chartId]="'lineChart5'"
+                                  [telemetryData]="telemetryData"
+                                  [property]="'Flow rate Discharge'"
+                                ></app-line-chart-without-axis>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                        <div class="col-6  text-center border-left" >
-                          <span class="text-xs">Flow Rate Discharge</span>
-                           <div class="pt-3" >
-                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['Flow rate Discharge']}}</span>
-                        </div>
-                           <div class="ml-3">
-
-                                <app-line-chart-without-axis [chartId]="'lineChart5'" [telemetryData]="telemetryData" [property]="'Flow rate Discharge'"></app-line-chart-without-axis>
-
-                           </div>
-                        </div>
-
-                        </div>
                       </div>
-                      </div>
+                    </div>
+                  </div>
 
-                      </div>
-
-
-                     </div>
-
-                    <div class="row">
-
+                  <div class="row">
                     <!-- Content Column -->
                     <div class="col-lg-7 mb-3">
-
                       <!-- Project Card Example -->
-                      <div class="card ">
-                      <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold">Electric Parameters</h6>
-                      </div>
-                      <div class="card-body1" style="height: 10rem;">
-                        <div class="row  text-center">
-                        <div class="col-4  text-center" >
-                          <span class="text-xs ml-3">Active Power</span><span class="text-xs">&nbsp;(KW)</span>
-                          <div class="pt-3" >
-                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['Active Power']}}</span>
+                      <div class="card">
+                        <div class="card-header py-3">
+                          <h6 class="m-0 font-weight-bold">
+                            Electric Parameters
+                          </h6>
+                        </div>
+                        <div class="card-body1" style="height: 10rem">
+                          <div class="row text-center">
+                            <div class="col-4 text-center">
+                              <span class="text-xs ml-3">Active Power</span
+                              ><span class="text-xs">&nbsp;(KW)</span>
+                              <div class="pt-3">
+                                <span
+                                  class="text-darkblue display-5 font-weight-bold"
+                                  >{{
+                                    telemetryObj["Active Power"] ? telemetryObj["Active Power"].toFixed(2) : ''
+                                  }}</span
+                                >
+                              </div>
+                              <div class="ml-3">
+                                <app-line-chart-without-axis
+                                  [chartId]="'lineChart6'"
+                                  [telemetryData]="telemetryData"
+                                  [property]="'Active Power'"
+                                ></app-line-chart-without-axis>
+                              </div>
+                            </div>
+                            <div class="col-4 text-center border-left">
+                              <span class="text-xs ml-3">Voltage R-Y</span>
+                              <span class="text-xs">&nbsp;(V)</span>
+                              <div class="pt-3">
+                                <span
+                                  class="text-darkblue display-5 font-weight-bold"
+                                  >{{
+                                    telemetryObj["Voltage R-Y"] ? telemetryObj["Voltage R-Y"].toFixed(2) : ''
+                                  }}</span
+                                >
+                              </div>
+                              <div class="ml-2">
+                                <app-line-chart-without-axis
+                                  [chartId]="'lineChart7'"
+                                  [telemetryData]="telemetryData"
+                                  [property]="'Voltage R-Y'"
+                                ></app-line-chart-without-axis>
+                              </div>
+                            </div>
+
+                            <div class="col-4 text-center border-left">
+                              <span class="text-xs ml-3">Current R Phase</span
+                              ><span class="text-xs">&nbsp;(A)</span>
+                              <div class="pt-3">
+                                <span
+                                  class="text-darkblue display-5 font-weight-bold"
+                                  >{{
+                                    telemetryObj["Current R Phase"] ? telemetryObj["Current R Phase"].toFixed(2) : ''
+                                  }}</span
+                                >
+                              </div>
+                              <div class="ml-2">
+                                <app-line-chart-without-axis
+                                  [chartId]="'lineChart8'"
+                                  [telemetryData]="telemetryData"
+                                  [property]="'Current R Phase'"
+                                ></app-line-chart-without-axis>
+                              </div>
+                            </div>
                           </div>
-                           <div class="ml-3">
-                                <app-line-chart-without-axis [chartId]="'lineChart6'" [telemetryData]="telemetryData" [property]="'Active Power'"></app-line-chart-without-axis>
-                          </div>
                         </div>
-                        <div class="col-4  text-center border-left" >
-                          <span class="text-xs ml-3">Voltage R-Y</span> <span class="text-xs">&nbsp;(V)</span>
-                           <div class="pt-3" >
-                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['Voltage R-Y']}}</span>
-                        </div>
-                           <div class="ml-2">
-
-                                <app-line-chart-without-axis [chartId]="'lineChart7'" [telemetryData]="telemetryData" [property]="'Voltage R-Y'"></app-line-chart-without-axis>
-
-                           </div>
-                        </div>
-
-                        <div class="col-4 text-center border-left" >
-                          <span class="text-xs ml-3">Current R Phase</span><span class="text-xs">&nbsp;(A)</span>
-                           <div class="pt-3" >
-                          <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['Current R Phase']}}</span>  </div>
-                           <div class="ml-2">
-
-                                <app-line-chart-without-axis [chartId]="'lineChart8'" [telemetryData]="telemetryData" [property]="'Current R Phase'"></app-line-chart-without-axis>
-
-                          </div>
-                        </div>
-                        </div>
-                      </div>
                       </div>
                     </div>
 
                     <div class="col-lg-5 mb-3">
-
                       <!-- Illustrations -->
-                      <div class="card ">
-                      <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold">Gas Leak Parameters (%)</h6>
-                      </div>
-                      <div class="card-body1" style="height: 10rem;">
-                        <div class="row text-center">
-                        <div class="col-6 text-center" >
-                          <span class="text-xs">Gas Leak Level-1</span>
-                          <div class="pt-3" >
-                            <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['Gas Leakage Level-1']}}</span>
+                      <div class="card">
+                        <div class="card-header py-3">
+                          <h6 class="m-0 font-weight-bold">
+                            Gas Leak Parameters (%)
+                          </h6>
+                        </div>
+                        <div class="card-body1" style="height: 10rem">
+                          <div class="row text-center">
+                            <div class="col-6 text-center">
+                              <span class="text-xs">Gas Leak Level-1</span>
+                              <div class="pt-3">
+                                <span
+                                  class="text-darkblue display-5 font-weight-bold"
+                                  >{{
+                                    telemetryObj[
+                                      "Gas Leakage Level-1"
+                                    ] ? telemetryObj[
+                                    "Gas Leakage Level-1"
+                                  ].toFixed(2) : ''
+                                  }}</span
+                                >
+                              </div>
+                              <div class="mt-n5">
+                                <app-gauge-chart
+                                  [id]="'gaugeChart1'"
+                                  [value]="telemetryObj['Gas Leakage Level-1']"
+                                ></app-gauge-chart>
+                              </div>
                             </div>
-                           <div class="mt-n5" >
-                            <app-gauge-chart [id]="'gaugeChart1'" [value]="lastReportedTelemetryValues['Gas Leakage Level-1']"></app-gauge-chart>
-                           </div>
-
-                        </div>
-                        <div class="col-6 text-center" >
-                          <span class="text-xs">Gas Leak Level-2</span>
-                          <div class="pt-3" >
-                            <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['Gas Leakage Level-2'] ? lastReportedTelemetryValues['Gas Leakage Level-2'] : 'NA'}}</span>
+                            <div class="col-6 text-center">
+                              <span class="text-xs">Gas Leak Level-2</span>
+                              <div class="pt-3">
+                                <span
+                                  class="text-darkblue display-5 font-weight-bold"
+                                  >{{
+                                    telemetryObj["Gas Leakage Level-2"]
+                                      ? telemetryObj[
+                                          "Gas Leakage Level-2"
+                                        ]?.toFixed(2)
+                                      : "NA"
+                                  }}</span
+                                >
+                              </div>
+                              <div class="mt-n5">
+                                <app-gauge-chart
+                                  [id]="'gaugeChart2'"
+                                  [value]="telemetryObj['Gas Leakage Level-2']"
+                                ></app-gauge-chart>
+                              </div>
                             </div>
-                           <div class="mt-n5" >
-                            <app-gauge-chart [id]="'gaugeChart2'" [value]="lastReportedTelemetryValues['Gas Leakage Level-2']"></app-gauge-chart>
-                           </div>
-                        </div>
+                          </div>
                         </div>
                       </div>
-                      </div>
-                    </div>
                     </div>
                   </div>
+                </div>
 
-                  <!-- Area Chart -->
-                  <div class="col-xl-2 col-lg-2 my-3">
-                    <div class="card">
+                <!-- Area Chart -->
+                <div class="col-xl-2 col-lg-2 my-3">
+                  <div class="card">
                     <!-- Card Header - Dropdown -->
-                    <div class="card-header py-3 ">
+                    <div class="card-header py-3">
                       <h6 class="m-0 font-weight-bold">Temperature (&deg;C)</h6>
                     </div>
                     <!-- Card Body -->
-                    <div class="card-body" style="height: 24.5rem;">
-                        <div class="row text-center">
-                          <div class="col-12 ">
-                          <span class="text-xs">Discharge Gas Temperature</span>
-                          <div class="pt-3" >
-                            <span class="text-darkblue display-5 font-weight-bold">{{lastReportedTelemetryValues['Discharge Gas Temperature']}}</span>
-                            </div>
-                            <div class="mt-n5" >
-                              <app-gauge-chart [id]="'gaugeChart3'"  [value]="lastReportedTelemetryValues['Discharge Gas Temperature']"></app-gauge-chart>
-                            </div>
-                          </div>
-
-                      </div>
-                      <div class="row text-center" style="margin-top: 2rem;">
+                    <div class="card-body" style="height: 24.5rem">
+                      <div class="row text-center">
                         <div class="col-12">
-                        <span class="text-xs">Discharge Oil Temperature</span>
-                        <div class="pt-3" >
-                          <span class="text-darkblue  display-5 font-weight-bold">{{lastReportedTelemetryValues['Discharge Oil Temperature'] ? lastReportedTelemetryValues['Discharge Oil Temperature'] : 'NA'}}</span>
+                          <span class="text-xs">Discharge Gas Temperature</span>
+                          <div class="pt-3">
+                            <span
+                              class="text-darkblue display-5 font-weight-bold"
+                              >{{
+                                telemetryObj[
+                                  "Discharge Gas Temperature"
+                                ]? telemetryObj[
+                                "Discharge Gas Temperature"
+                              ].toFixed(2) : ''
+                              }}</span
+                            >
                           </div>
-                          <div class="mt-n5" >
-                            <app-gauge-chart [id]="'gaugeChart4'"  [value]="lastReportedTelemetryValues['Discharge Oil Temperature']"></app-gauge-chart>
+                          <div class="mt-n5">
+                            <app-gauge-chart
+                              [id]="'gaugeChart3'"
+                              [value]="
+                                telemetryObj['Discharge Gas Temperature']
+                              "
+                            ></app-gauge-chart>
                           </div>
                         </div>
-
-                    </div>
-
-                    </div>
+                      </div>
+                      <div class="row text-center" style="margin-top: 4rem">
+                        <div class="col-12">
+                          <span class="text-xs">Discharge Oil Temperature</span>
+                          <div class="pt-3">
+                            <span
+                              class="text-darkblue display-5 font-weight-bold"
+                              >{{
+                                telemetryObj["Discharge Oil Temperature"]
+                                  ? telemetryObj[
+                                      "Discharge Oil Temperature"
+                                    ]?.toFixed(2)
+                                  : "NA"
+                              }}</span
+                            >
+                          </div>
+                          <div class="mt-n5">
+                            <app-gauge-chart
+                              [id]="'gaugeChart4'"
+                              [value]="
+                                telemetryObj['Discharge Oil Temperature']
+                              "
+                            ></app-gauge-chart>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <!-- Area Chart -->
-                  <div class="col-xl-2 col-lg-2 my-3">
-                    <div class="card">
+                </div>
+                <!-- Area Chart -->
+                <div class="col-xl-2 col-lg-2 my-3">
+                  <div class="card">
                     <!-- Card Header - Dropdown -->
                     <div class="card-header py-3">
                       <h6 class="m-0 font-weight-bold">Running Hours</h6>
                     </div>
                     <!-- Card Body -->
-                    <div class="card-body text-center" style="height: 10rem;">
-
-                      <h4 class="font-weight-bold mt-3">{{lastReportedTelemetryValues['Running Hours']}}</h4>
-                      Hrs
-                    </div>
+                    <div class="card-body text-center" style="height: 24.5rem">
+                      <div class="row text-center">
+                        <div class="col-12">
+                          <span class="text-xs">Since Beginning</span>
+                          <div class="pt-2">
+                            <h4 class="font-weight-bold mt-3">
+                              {{ telemetryObj["Running Hours"] }}
+                            </h4>
+                            Hrs
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row text-center" style="margin-top: 6rem">
+                        <div class="col-12">
+                          <span class="text-xs">Since Mid-Night</span>
+                          <div class="pt-2">
+                            <h4 class="font-weight-bold mt-3">
+                              {{ telemetryObj["Running Hours"] - midNightHour }}
+                            </h4>
+                            Hrs
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="tab-pane fade" id="Device" role="tabpanel" aria-labelledby="nav-profile-tab" *ngIf="selectedTab === 'alert'">
-          <ng-container>
-            <app-application-visualization [pageType]="'live'"></app-application-visualization>
-          </ng-container>
-
-
+          <div
+            class="tab-pane fade"
+            id="Device"
+            role="tabpanel"
+            aria-labelledby="nav-profile-tab"
+            *ngIf="selectedTab === 'alert'"
+          >
+            <ng-container>
+              <app-application-visualization
+                [pageType]="'live'"
+              ></app-application-visualization>
+            </ng-container>
+          </div>
         </div>
       </div>
     </div>

@@ -28,6 +28,8 @@ export class ApplicationSelectionComponent implements OnInit {
   }
 
   async redirectToApp(app) {
+    localStorage.removeItem(CONSTANTS.DASHBOARD_ALERT_SELECTION);
+    localStorage.removeItem(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION);
     await this.getApplicationData(app);
     this.commonService.refreshSideMenuData.emit(this.applicationData);
     const menu = this.applicationData.configuration.main_menu.length > 0 ?

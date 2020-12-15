@@ -30,7 +30,7 @@ export class OverviewComponent implements OnInit {
   modalConfig: any;
   btnClickType: string;
   confirmModalMessage: string;
-  constantData =CONSTANTS;
+  constantData = CONSTANTS;
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -103,7 +103,7 @@ export class OverviewComponent implements OnInit {
 
   viewonnectionString() {
     this.isViewClicked = true;
-    setTimeout(() => this.isViewClicked = false, 3000);
+    setTimeout(() => this.isViewClicked = false, 10000);
   }
 
   enableDevice() {

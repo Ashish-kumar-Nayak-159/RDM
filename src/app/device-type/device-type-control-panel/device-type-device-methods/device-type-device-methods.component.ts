@@ -59,14 +59,14 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit {
           headerClass: '',
           btnData: [
             {
-              icon: 'fas fa-fw fa-eye',
+              icon: 'fa fa-fw fa-eye',
               text: '',
               id: 'View JSON Model',
               valueclass: '',
               tooltip: 'View JSON Model'
             },
             {
-              icon: 'fas fa-fw fa-trash',
+              icon: 'fa fa-fw fa-trash',
               text: '',
               id: 'Delete',
               valueclass: '',

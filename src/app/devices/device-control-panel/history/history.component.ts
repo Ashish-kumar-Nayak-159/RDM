@@ -126,6 +126,10 @@ export class HistoryComponent implements OnInit {
   searchHistory() {
     return new Promise((resolve) => {
       this.propList = [];
+      if (this.selectedWidgets.length === 0) {
+        this.toasterService.showError('Please select widgets first.', 'View Widget');
+        return;
+      }
       this.selectedWidgets.forEach(widget => {
         widget.value.y1axis.forEach(prop => {
           if (this.propList.indexOf(prop) === -1) {
@@ -181,7 +185,13 @@ export class HistoryComponent implements OnInit {
       // delete obj.y2AxisProperty;
       // delete obj.xAxisProps;
       console.log(obj);
-      this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
+      let method;
+      if (obj.to_date - obj.from_date < 3600) {
+        method = this.deviceService.getDeviceTelemetry(obj);
+      } else {
+        method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
+      }
+      this.apiSubscriptions.push(method.subscribe(
         (response: any) => {
           this.isFilterSelected = true;
           if (response && response.data) {

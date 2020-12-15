@@ -67,21 +67,21 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit {
           headerClass: '',
           btnData: [
             {
-              icon: 'fas fa-fw fa-download',
+              icon: 'fa fa-fw fa-download',
               text: '',
               id: 'Download',
               valueclass: '',
               tooltip: 'Download'
             },
             {
-              icon: 'fas fa-fw fa-eye',
+              icon: 'fa fa-fw fa-eye',
               text: '',
               id: 'View Document',
               valueclass: '',
               tooltip: 'View Document'
             },
             {
-              icon: 'fas fa-fw fa-trash',
+              icon: 'fa fa-fw fa-trash',
               text: '',
               id: 'Delete',
               valueclass: '',

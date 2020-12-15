@@ -5,7 +5,7 @@
     <div class="sidebar1-heading bg-warning text-white py-2">
       <span style="font-size:0.9rem; margin-right:2rem;">Control Panel </span>
       <button class="d-none d-md-inline rounded-circle border-0 mb-0" id="sidebar1Toggle" title="Minimize" (click)="onSidebarToggle()"></button>
-      <i class="fas fa-fw fa" style="font-size:1rem; margin-top:0.5rem;margin-left:0.3rem">CP</i>
+      <i class="fa fa-fw fa" style="font-size:1rem; margin-top:0.5rem;margin-left:0.3rem">CP</i>
 		</div>
     <ul class="navbar-nav bg-white" id="controlPanelSidebar">
       <ng-container *ngFor="let menu of menuItems">
@@ -70,6 +70,9 @@
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'alerts'}" role="tabpanel" id="device_alerts">
         <app-alerts *ngIf="activeTab === 'alerts' && device" [device]="device"></app-alerts>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'alertendevents'}" role="tabpanel" id="device_alert_end_events">
+        <app-alert-end-event *ngIf="activeTab === 'alertendevents' && device" [device]="device"></app-alert-end-event>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'error'}" role="tabpanel" id="device_error">
         <app-rdmdevice-control-panel-error *ngIf="activeTab === 'error' && device" [device]="device"></app-rdmdevice-control-panel-error>

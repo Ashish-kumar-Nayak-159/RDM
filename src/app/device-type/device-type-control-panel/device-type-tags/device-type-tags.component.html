@@ -8,22 +8,22 @@
     <ul class="nav">
       <!-- <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)">
-          <i class="fas fa-fw fa-eye"></i>
+          <i class="fa fa-fw fa-eye"></i>
           <span class="text-secondary">View</span></a>
       </li> -->
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="updateDeviceTypeTags()">
-          <i class="fas fa-fw fa-save"></i>
+          <i class="fa fa-fw fa-save"></i>
           <span class="text-secondary">Save</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="deleteAllDeviceTypeTags()">
-          <i class="fas fa-fw fa-trash"></i>
+          <i class="fa fa-fw fa-trash"></i>
           <span class="text-secondary">Delete all</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="resetDeviceTypeTags()">
-          <i class="fas fa-fw fa-undo"></i>
+          <i class="fa fa-fw fa-undo"></i>
           <span class="text-secondary delete-row">Revert Changes</span></a>
       </li>
     </ul>
@@ -45,7 +45,7 @@
       <h1 class="h6 mb-3 text-secondary-400">
         Following tags will be added when asset is instantiated with this model.
         <button type="button" class="btn btn-warning btn-sm mx-2 my-1" title="Search" (click)="addTagObject()" >
-          <i class="fas fa-plus fa-sm"></i></button>
+          <i class="fa fa-plus fa-sm"></i></button>
       </h1>
 
       <div class="table-responsive">
@@ -65,7 +65,7 @@
               <td>{{tag.key}}</td>
               <td>{{tag.defaultValue}}</td>
               <td><a href="javascript:void(0)" class="mx-1" (click)="removeTag(i)">
-                <i class="fas fa-trash fa-sm"></i> </a></td>
+                <i class="fa fa-trash fa-sm"></i> </a></td>
             </tr>
           </ng-container>
             <tr *ngIf="tagObj">

@@ -9,7 +9,7 @@
       <form>
         <div class="form-group form-inline my-2" [ngClass]="pageType !== 'live' ? 'mx-3' : 'mx-4'" *ngIf="pageType !== 'history'">
           <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let index = index;">
-          <select *ngIf="index !== 0" class="form-control form-control-sm mx-2 my-1" id="{{level}}"
+          <select *ngIf="index !== 0" class="form-control form-control-sm ml-2 mr-1 my-1" id="{{level}}"
           [disabled]="contextApp?.user?.hierarchy[level]"
           [(ngModel)]="configureHierarchy[index]" name="{{level}}" (change)="onChangeOfHierarchy(index)">
             <option [ngValue]="undefined">Select {{level}}</option>
@@ -34,11 +34,11 @@
               {{device?.display_name ? device?.display_name: device.device_id}}
             </option>
           </select> -->
-          <button type="button" *ngIf="pageType === 'live'" class="btn btn-warning btn-sm mx-3 my-1" title="Search" (click)="getLatestAlerts()"><i
-            class="fas fa-search fa-sm"></i></button>
+          <button type="button" *ngIf="pageType === 'live'" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="getLatestAlerts()"><i
+            class="fa fa-search fa-sm"></i></button>
         </div>
         <ng-container *ngIf="pageType === 'history' || pageType === 'side_menu'">
-        <div class="form-group form-inline  my-2 mx-3" [ngClass]="pageType !== 'live' ? 'mx-3' : 'mx-4'">
+        <div class="form-group form-inline  my-2 mx-3">
 
           <input type="number" min="1" class="form-control form-control-sm mx-1 my-1 record-input" id="inputEmail4"
             placeholder="No of Records" [(ngModel)]="filterObj.count" name="count">
@@ -80,8 +80,8 @@
 
 
           <button type="button" class="btn btn-warning btn-sm mx-3 my-1" title="Search" (click)="getLatestAlerts()"><i
-              class="fas fa-search fa-sm"></i></button>
-          <!-- <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fas fa-trash  fa-sm"></i></button> -->
+              class="fa fa-search fa-sm"></i></button>
+          <!-- <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fa fa-trash  fa-sm"></i></button> -->
 
         </div>
       </ng-container>
@@ -187,11 +187,11 @@
                 <form>
                   <div class="form-group form-inline my-1">
                     <label class="mr-2"> Time Range: </label>
-                    <input type="number" class="form-control form-control-sm my-1" id="app" style="width: 9%;"
-                      name="app" [(ngModel)]="beforeInterval">
+                    <input type="number" class="form-control form-control-sm my-1" step="1" min="0" id="beforeInterval" style="width: 9%;"
+                      name="beforeInterval" [(ngModel)]="beforeInterval">
                     <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins before alert</button>
-                    <input type="number" class="form-control form-control-sm my-1" id="inputEmail4" style="width: 9%;"
-                      name="name" [(ngModel)]="afterInterval">
+                    <input type="number" class="form-control form-control-sm my-1" step="1" min="0" id="afterInterval" style="width: 9%;"
+                      name="afterInterval" [(ngModel)]="afterInterval">
                     <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins after alert</button>
                   </div>
                   <div class="form-group form-inline my-1">

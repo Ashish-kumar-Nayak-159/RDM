@@ -4,7 +4,7 @@
     <ul class="nav">
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="openAddAlertConditionModal()">
-          <i class="fas fa-fw fa-plus"></i>
+          <i class="fa fa-fw fa-plus"></i>
           <span class="text-secondary">Add Alert Condition
           </span></a>
       </li>
@@ -37,7 +37,7 @@
             <tr >
               <td>
                 <a href="javascript:void(0)" (click)="onToggleRows(i)">
-                <i [ngClass]="toggleRows[i] ? 'fas fa-angle-down' : 'fas fa-angle-up'"></i>
+                <i [ngClass]="toggleRows[i] ? 'fa fa-angle-down' : 'fa fa-angle-up'"></i>
                 </a>
               </td>
               <td><i title="{{alert.severity}}"  [style.color]="
@@ -59,10 +59,10 @@
               </td>
               <td>
                 <!-- <a href="javascript:void(0)" class="mr-1">
-                  <i class="fas fa-fw fa-eye"></i>
+                  <i class="fa fa-fw fa-eye"></i>
                 </a> -->
                 <a href="javascript:void(0)" (click)="openConfirmModal('confirmMessageModal', alert)">
-                  <i class="fas fa-fw fa-trash"></i>
+                  <i class="fa fa-fw fa-trash"></i>
                 </a>
               </td>
             </tr>
@@ -73,12 +73,12 @@
                   <h6 *ngIf="alertObj?.visualization_widgets?.length > 0"> Following widgets have been defined so far. You can define more.</h6>
                   <div class="">
                     <!-- <button type="button" class="btn btn-warning btn-sm mx-1 mt-n2" [disabled]="isCreateAlertConditionLoading"
-                    title="Add" (click)="addVisualizationWidget()" ><i class="fas fa-plus fa-sm"></i></button> -->
+                    title="Add" (click)="addVisualizationWidget()" ><i class="fa fa-plus fa-sm"></i></button> -->
                     <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
                     [disabled]="alertObj?.visualization_widgets?.length === 0 || isCreateAlertConditionLoading" title="Edit"
-                    (click)="editWidgets()"><i class="fas fa-pencil-square-o fa-sm"></i></button> -->
+                    (click)="editWidgets()"><i class="fa fa-pencil-square-o fa-sm"></i></button> -->
                     <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" [disabled]="alertObj?.visualization_widgets?.length === 0 || isCreateAlertConditionLoading"
-                    title="Save" (click)="onUpdateAlertConditions()" ><i class="fas fa-save fa-sm"></i></button>
+                    title="Save" (click)="onUpdateAlertConditions()" ><i class="fa fa-save fa-sm"></i></button>
                     <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></i>
                   </div>
                 </div>
@@ -96,9 +96,9 @@
                         </ng-container>
                       </select>
                       <!-- <a href="javascript:void(0)" class="mx-1" (click)="addVisualizationWidget()">
-                        <i class="fas fa-plus fa-sm"></i> </a> -->
+                        <i class="fa fa-plus fa-sm"></i> </a> -->
                         <button type="button" class="btn btn-warning btn-sm mx-2" title="Add" (click)="addVisualizationWidget()" >
-                          <i class="fas fa-plus fa-sm"></i></button>
+                          <i class="fa fa-plus fa-sm"></i></button>
                     </div>
 
                   </ng-container>
@@ -121,13 +121,13 @@
                 <div class="row col-12">Following recommendations have been pre-configured. You can configure more.
 
                   <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
-                  title="Save" (click)="onUpdateAlertConditions()" ><i class="fas fa-save fa-sm"></i></button></div>
+                  title="Save" (click)="onUpdateAlertConditions()" ><i class="fa fa-save fa-sm"></i></button></div>
                 <div class="row col-12 text-primary my-2">
                   <span >Debugging Steps: </span>
                   <!-- <a  class=" mx-1" href="javascript:void(0)"
-                  title="Add" (click)="addRecommendationStep()" ><i class="fas fa-plus fa-sm"></i></a> -->
+                  title="Add" (click)="addRecommendationStep()" ><i class="fa fa-plus fa-sm"></i></a> -->
                    <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
-                   title="Edit" (click)="editSteps()"><i class="fas fa-edit fa-sm"></i></button> -->
+                   title="Edit" (click)="editSteps()"><i class="fa fa-edit fa-sm"></i></button> -->
                  <div class="row col-12 mt-2">
                   <table id="mytable" width="100%" class="table-borderless col-12">
                     <tbody>
@@ -141,7 +141,7 @@
 
                         <td style="width: 10%;">
                             <a href="javascript:void(0)" class="ml-2" (click)="removeRecommendationStep(i)" title="Remove">
-                              <i class="fas fa-trash fa-sm"></i> </a>
+                              <i class="fa fa-trash fa-sm"></i> </a>
                         </td>
                       </ng-container>
                       </tr>
@@ -171,9 +171,9 @@
                             </td> -->
                             <td>
                               <a href="javascript:void(0)" class="ml-2" (click)="addRecommendationStep()" title="Add">
-                                <i class="fas fa-plus fa-sm"></i> </a>
+                                <i class="fa fa-plus fa-sm"></i> </a>
                               <!-- <button type="button" class="btn btn-warning btn-sm mx-2" title="Add" (click)="addRecommendationStep()" >
-                                <i class="fas fa-plus fa-sm"></i></button> -->
+                                <i class="fa fa-plus fa-sm"></i></button> -->
                             </td>
 
                           </ng-container>
@@ -191,9 +191,9 @@
                   <span>Email / Whatsapp Attachments:
                     </span>
                   <!-- <button type="button" class="btn btn-warning btn-sm mx-1 mt-n2"
-                   title="Add" (click)="addReferenceDocument()"><i class="fas fa-plus fa-sm"></i></button>
+                   title="Add" (click)="addReferenceDocument()"><i class="fa fa-plus fa-sm"></i></button>
                    <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
-                   title="Edit" (click)="editReferenceDocuments()"><i class="fas fa-edit fa-sm"></i></button> -->
+                   title="Edit" (click)="editReferenceDocuments()"><i class="fa fa-edit fa-sm"></i></button> -->
                 </div>
 
                 <div class="col-12 mt-2">
@@ -209,9 +209,9 @@
                         </ng-container>
                       </select>
                       <!-- <a href="javascript:void(0)" class="mx-1" (click)="addReferenceDocument()">
-                        <i class="fas fa-plus fa-sm"></i> </a> -->
+                        <i class="fa fa-plus fa-sm"></i> </a> -->
                         <button type="button" class="btn btn-warning btn-sm mx-1" title="Add" (click)="addReferenceDocument()" >
-                          <i class="fas fa-plus fa-sm"></i></button>
+                          <i class="fa fa-plus fa-sm"></i></button>
                     </div>
 
                   </ng-container>

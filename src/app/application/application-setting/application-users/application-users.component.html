@@ -3,7 +3,7 @@
     class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm mb-1 float-right"
     href="javascript:void(0)"
     (click)="openCreateUserModal()"
-    ><i class="fas fa- fa-sm text-white-50"></i> Add User</a
+    ><i class="fa fa- fa-sm text-white-50"></i> Add User</a
   >
   <table class="table table-bordered table-striped" cellspacing="0">
     <thead>
@@ -101,7 +101,7 @@
               disabled
             />
           </div>
-          
+
           <div class="form-group" *ngFor="let hierarchyItem of hierarchyList; let hIndex = index">
             <label for="message-text" class="col-form-label">{{hierarchyItem}}:</label>
             <select class="custom-select" id="hierarchy{{hIndex}}"  name="hierarchy{{hIndex}}" [(ngModel)]="configureHierarchy[hIndex]"

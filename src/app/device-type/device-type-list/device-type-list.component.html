@@ -8,7 +8,7 @@
     <a
     class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-4"
     href="javascript:void(0)"  (click)="openCreateDeviceTypeModal()" title="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"
-    ><i class="fas fa- fa-sm fa-plus text-white"></i></a>
+    ><i class="fa fa- fa-sm fa-plus text-white"></i></a>
   </div>
   <div class="card row bg-white" style="margin-left:-1.5rem">
     <div class="col-xl-12 col-md-12 mb-12">
@@ -24,9 +24,9 @@
           [(ngModel)]="thingsModelFilterObj.created_by" name="created_by" placeholder="Created By">
 
           <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="searchThingsModels()">
-            <i class="fas fa-search fa-sm"></i></button>
+            <i class="fa fa-search fa-sm"></i></button>
           <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="clearFilter()">
-            <i class="fas fa-trash  fa-sm"></i></button>
+            <i class="fa fa-trash  fa-sm"></i></button>
 
         </div>
        </form>

@@ -58,6 +58,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   hierarchyArr = {};
   tileData: any;
   signalRAlertSubscription: any;
+  originalDevices: any[] = [];
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -90,7 +91,24 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
     this.filterObj.app = this.contextApp.app;
     this.filterObj.count = 10;
+
     await this.getDevices(this.contextApp.user.hierarchy);
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.DASHBOARD_ALERT_SELECTION);
+    if (item) {
+
+      this.filterObj = item;
+      this.contextApp.hierarchy.levels.forEach((level, index) => {
+        if (index !== 0) {
+        // console.log( this.filterObj.hierarchy);
+        // console.log( this.filterObj.hierarchy[level]);
+        this.configureHierarchy[index] = this.filterObj.device.hierarchy[level];
+        if (this.filterObj.device.hierarchy[level]) {
+          this.onChangeOfHierarchy(index);
+        }
+        }
+      });
+      this.getLatestAlerts();
+    }
   }
 
   async onChangeOfHierarchy(i) {
@@ -115,10 +133,33 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
     const hierarchyObj: any = { App: this.contextApp.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
-      hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
-      console.log(hierarchyObj);
+      if (this.configureHierarchy[key]) {
+        hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
+      }
     });
-    await this.getDevices(hierarchyObj);
+    if (Object.keys(hierarchyObj).length === 1) {
+      this.devices = JSON.parse(JSON.stringify(this.originalDevices));
+    } else {
+    const arr = [];
+    this.devices = [];
+    this.originalDevices.forEach(device => {
+      let flag = false;
+      Object.keys(hierarchyObj).forEach(hierarchyKey => {
+        if (device.hierarchy[hierarchyKey] && device.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+          flag = true;
+        } else {
+          flag = false;
+        }
+      });
+      if (flag) {
+        arr.push(device);
+      }
+    });
+    this.devices = JSON.parse(JSON.stringify(arr));
+    }
+    if (this.devices?.length === 1) {
+      this.filterObj.device = this.devices[0];
+    }
   }
 
   getTileName() {
@@ -148,6 +189,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         (response: any) => {
           if (response?.data) {
             this.devices = response.data;
+            this.originalDevices = JSON.parse(JSON.stringify(this.devices));
+            if (this.devices?.length === 1) {
+              this.filterObj.device = this.devices[0];
+            }
           }
           resolve();
         }
@@ -175,6 +220,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     //   app: this.contextApp.app,
     //   count: 10
     // };
+    this.commonService.setItemInLocalStorage(CONSTANTS.DASHBOARD_ALERT_SELECTION, this.filterObj);
     const obj = {...this.filterObj};
     obj.hierarchy = { App: this.contextApp.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
@@ -219,6 +265,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         });
         this.isAlertAPILoading = false;
         this.singalRService.disconnectFromSignalR('alert');
+        this.signalRAlertSubscription?.unsubscribe();
         if (this.pageType === 'live') {
           const obj1 = {
             levels: this.contextApp.hierarchy.levels,
@@ -393,8 +440,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   async onClickOfViewGraph(alert) {
     this.isOpen = true;
-    this.beforeInterval = 5;
-    this.afterInterval = 5;
+    this.beforeInterval = 1.5;
+    this.afterInterval = 0.5;
     this.y1AxisProps = [];
     this.y2AxisProps = [];
     this.selectedAlert = alert;
@@ -449,16 +496,16 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       return;
     }
     console.log(this.selectedAlert.message_date);
-    if (this.beforeInterval > 0) {
+    if (this.beforeInterval > 0 && this.beforeInterval <= 30) {
       filterObj.from_date = (this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp)) - (this.beforeInterval * 60);
     } else {
-      this.toasterService.showError('Minutes Before Alert value must be greater than 0.', 'View Visualization');
+      this.toasterService.showError('Minutes Before Alert value must be greater than 0 and less than 30.', 'View Visualization');
       return;
     }
-    if (this.afterInterval > 0) {
-      filterObj.to_date = (this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp)) + (this.beforeInterval * 60);
+    if (this.afterInterval > 0 && this.afterInterval <= 30) {
+      filterObj.to_date = (this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp)) + (this.afterInterval * 60);
     } else {
-      this.toasterService.showError('Minutes After Alert value must be greater than 0.', 'View Visualization');
+      this.toasterService.showError('Minutes After Alert value must be greater than 0 and less than 30.', 'View Visualization');
       return;
     }
     if (this.selectedWidgets.length === 0) {
@@ -648,6 +695,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     clearInterval(this.refreshInterval);
+    this.signalRAlertSubscription?.unsubscribe();
+    this.singalRService.disconnectFromSignalR('alert');
   }
 
   y1Deselect(e){

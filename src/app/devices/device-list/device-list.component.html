@@ -12,7 +12,7 @@
     class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-3"
     href="javascript:void(0)" (click)="openCreateDeviceModal()"
     title="{{'Add ' + (tileData && tileData[1] ? tileData[1]?.value: '')}}"
-    ><i class="fas fa-plus fa-sm text-white"></i></a
+    ><i class="fa fa-plus fa-sm text-white"></i></a
   >
   </div>
   <div class="card row bg-white" style="margin-left:-2rem">
@@ -62,8 +62,8 @@
           <!-- <input type="email" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="Connection State"
           [(ngModel)]="deviceFilterObj.connection_state" name="connection_state"> -->
 
-          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="searchDevices()" ><i class="fas fa-search fa-sm"></i></button>
-          <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="clearFilter()"><i class="fas fa-trash  fa-sm"></i></button>
+          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="searchDevices()" ><i class="fa fa-search fa-sm"></i></button>
+          <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="clearFilter()"><i class="fa fa-trash  fa-sm"></i></button>
 
         </div>
        </form>

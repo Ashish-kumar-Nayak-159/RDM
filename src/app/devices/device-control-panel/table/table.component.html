@@ -22,7 +22,7 @@
                 )
                 )" title="{{data.severity}}"></i>&nbsp;{{data[header.key]}} </span>
             <a href="javascript:void(0)" *ngIf="!header.key" (click)="onClickOfButton(data, header.name)">
-              <i class="fas fa-fw fa-eye" title="View {{tableConfig?.type}} message"></i>
+              <i class="fa fa-fw fa-eye" title="View {{tableConfig?.type}} message"></i>
             </a>
           </td>
         </tr>
@@ -52,7 +52,7 @@
       <mat-cell *matCellDef="let element">
         <span *ngIf="item.key">{{element[item.key]}} </span>
         <a *ngIf="!item.key" (click)="viewMessageEvent.emit(element)">
-          <i class="fas fa-fw fa-eye" title="View {{tableConfig?.type}} message"></i>
+          <i class="fa fa-fw fa-eye" title="View {{tableConfig?.type}} message"></i>
         </a>
       </mat-cell>
     </ng-container>

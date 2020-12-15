@@ -115,6 +115,10 @@ export class ReportsComponent implements OnInit {
         (response: any) => {
           if (response?.data) {
             this.devices = response.data;
+            this.originalDevices = JSON.parse(JSON.stringify(this.devices));
+            if (this.devices?.length === 1) {
+              this.filterObj.device = this.devices[0];
+            }
           }
           resolve();
         }
@@ -145,10 +149,33 @@ export class ReportsComponent implements OnInit {
     // let hierarchy = {...this.configureHierarchy};
     const hierarchyObj: any = { App: this.contextApp.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
-      hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
-      console.log(hierarchyObj);
+      if (this.configureHierarchy[key]) {
+        hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
+      }
     });
-    await this.getDevices(hierarchyObj);
+    if (Object.keys(hierarchyObj).length === 1) {
+      this.devices = JSON.parse(JSON.stringify(this.originalDevices));
+    } else {
+    const arr = [];
+    this.devices = [];
+    this.originalDevices.forEach(device => {
+      let flag = false;
+      Object.keys(hierarchyObj).forEach(hierarchyKey => {
+        if (device.hierarchy[hierarchyKey] && device.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+          flag = true;
+        } else {
+          flag = false;
+        }
+      });
+      if (flag) {
+        arr.push(device);
+      }
+    });
+    this.devices = JSON.parse(JSON.stringify(arr));
+    }
+    if (this.devices?.length === 1) {
+      this.filterObj.device = this.devices[0];
+    }
 
   }
 
@@ -163,7 +190,7 @@ export class ReportsComponent implements OnInit {
 
   onNonIPDeviceChange() {
     // this.filterObj.device_id = this.filterObj.device.device_id;
-    if (this.filterObj.report_type === 'Telemetry Report') {
+    if (this.filterObj.report_type === 'Process Parameter Report') {
     if (this.filterObj.device) {
       const device_type = this.filterObj.device.device_type;
       if (device_type) {
@@ -271,7 +298,7 @@ export class ReportsComponent implements OnInit {
     this.selectedProps = JSON.parse(JSON.stringify(this.props));
     this.newFilterObj = JSON.parse(JSON.stringify(obj));
     this.isFilterSelected = true;
-    if (obj.report_type === 'Telemetry Report') {
+    if (obj.report_type === 'Process Parameter Report') {
       this.getTelemetryData(obj);
     } else if (obj.report_type === 'Alert Report') {
       this.getAlertData(obj);
@@ -294,12 +321,18 @@ export class ReportsComponent implements OnInit {
     let message_props = '';
     this.props.forEach((prop, index) => message_props = message_props + prop.value.json_key + (this.props[index + 1] ? ',' : ''));
     obj['message_props'] = message_props;
-    this.deviceService.getDeviceTelemetryForReport(obj, this.contextApp.app).subscribe(
+    let method;
+    if (obj.to_date - obj.from_date < 3600) {
+      method = this.deviceService.getDeviceTelemetry(obj);
+    } else {
+      method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
+    }
+    method.subscribe(
       (response: any) => {
         if (response && response.data) {
           this.telemetry = response.data;
           this.telemetry.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
-
+          this.telemetry.reverse();
         }
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false
@@ -331,7 +364,7 @@ export class ReportsComponent implements OnInit {
     let colA;
     if (this.filterObj.report_type === 'Alert Report') {
       colA = XLSX.utils.decode_col('C'); // timestamp is in first column
-    } else if (this.filterObj.report_type === 'Telemetry Report') {
+    } else if (this.filterObj.report_type === 'Process Parameter Report') {
       colA = XLSX.utils.decode_col('B'); // timestamp is in first column
     }
     const fmt = 'DD-MMM-YYYY hh:mm:ss'; // excel datetime format

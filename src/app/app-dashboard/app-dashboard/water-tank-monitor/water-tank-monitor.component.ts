@@ -4,6 +4,7 @@ import { Component, OnInit, AfterViewInit, OnDestroy, Input } from '@angular/cor
 import { ActivatedRoute } from '@angular/router';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from 'src/app/services/common.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-water-tank-monitor',
@@ -133,8 +134,13 @@ export class WaterTankMonitorComponent implements OnInit, AfterViewInit, OnDestr
       app: this.appName,
       device_id: this.selectedDevice.device_id,
       count: 1,
+      from_date: null,
+      to_date: null,
       message_props: '',
     };
+    const now =  moment().utc();
+    filterObj.from_date = (now.subtract(5, 'seconds')).unix();
+    filterObj.to_date = now.unix();
     this.telemetryData = undefined;
     this.properties.forEach((prop, i) => filterObj.message_props += prop.json_key + (this.properties[i + 1] ? ',' : ''));
     this.deviceService.getDeviceTelemetry(filterObj).subscribe((response: any) => {

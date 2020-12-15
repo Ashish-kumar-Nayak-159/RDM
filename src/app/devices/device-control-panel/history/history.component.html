@@ -28,7 +28,7 @@
               name="dateOptions"
               (change)="onDateOptionChange()"
             >
-              <option [ngValue]="undefined">Date Options</option>
+              <option [ngValue]="undefined">Quick Options</option>
               <option [ngValue]="'5 mins'">Last 5 minutes</option>
               <option [ngValue]="'30 mins'">Last 30 minutes</option>
               <option [ngValue]="'1 hour'">Last 1 hour</option>
@@ -76,7 +76,7 @@
               title="Search"
               (click)="renderLayout()"
             >
-              <i class="fas fa-search fa-sm"></i>
+              <i class="fa fa-search fa-sm"></i>
             </button>
 
             <button
@@ -85,7 +85,7 @@
               title="Clear"
               (click)="clear()"
             >
-              <i class="fas fa-trash fa-sm"></i>
+              <i class="fa fa-trash fa-sm"></i>
             </button>
           </div>
         </form>

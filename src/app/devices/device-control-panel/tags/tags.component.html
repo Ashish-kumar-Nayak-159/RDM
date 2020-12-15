@@ -8,22 +8,22 @@
     <ul class="nav">
       <!-- <li class="nav-item">
       <a class="nav-link" href="javascript:void(0)">
-        <i class="fas fa-fw fa-eye"></i>
+        <i class="fa fa-fw fa-eye"></i>
         <span class="text-secondary">View</span></a>
     </li> -->
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="updateDeviceTags()">
-          <i class="fas fa-fw fa-save"></i>
+          <i class="fa fa-fw fa-save"></i>
           <span class="text-secondary">Save</span></a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="contextApp?.user?.role === constantData.APP_ADMIN_ROLE">
         <a class="nav-link" href="javascript:void(0)" (click)="deleteAllDeviceTags()">
-          <i class="fas fa-fw fa-trash"></i>
+          <i class="fa fa-fw fa-trash"></i>
           <span class="text-secondary">Delete all</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="resetDeviceTags()">
-          <i class="fas fa-fw fa-undo"></i>
+          <i class="fa fa-fw fa-undo"></i>
           <span class="text-secondary delete-row">Revert Changes</span></a>
       </li>
     </ul>

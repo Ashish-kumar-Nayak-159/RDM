@@ -7,6 +7,7 @@ export class AppUrls {
   public static GET_HEARTBEAT_LIST = 'D2C_GetDeviceHeartbeats';
   public static GET_NOTIFICAION_LIST = 'D2C_GetDeviceNotifications';
   public static GET_ALERTS_LIST = 'D2C_GetDeviceAlerts';
+  public static GET_ALERT_END_EVENT_LIST = 'D2C_GetDeviceAlertEndEvents';
   public static GET_TELEMETRY_LIST = 'D2C_GetDeviceTelemetry';
   public static GET_ERROR_LIST = 'D2C_GetDeviceErrors';
   public static GET_OTHER_MESSAGE_LIST = 'D2C_GetDeviceOtherMessages';
@@ -52,6 +53,7 @@ export class AppUrls {
   public static UPDATE_APP_ROLES = 'apps/{0}/roles';
   public static RESET_PASSWORD = 'users/reset_password';
   public static GET_ALERT_MESSAGE_BY_ID = 'D2C_GetDeviceAlertMessage';
+  public static GET_ALERT_END_EVENT_MESSAGE_BY_ID = 'D2C_GetDeviceAlertEndEventMessage';
   public static GET_TELEMETRY_MESSAGE_BY_ID = 'D2C_GetDeviceTelemetryMessage';
   public static GET_BATTERY_MESSAGE_BY_ID = 'D2C_GetDeviceBatteryMessage';
   public static GET_HEARTBEAT_MESSAGE_BY_ID = 'D2C_GetDeviceHeartbeat';
@@ -70,5 +72,5 @@ export class AppUrls {
   public static GET_IOT_LEGACY_DEVICES = 'apps/{0}/devices';
   public static GET_REPORT_TELEMETRY_DATA = 'apps/{0}/d2c/telemetry_report';
   public static SIGNALR_NEGOTIATE = 'signalr/negotiate';
-
+  public static GET_SAMPLING_DEVICE_TELEMETRY = 'apps/{0}/d2c/telemetry_messages_with_sampling';
 }

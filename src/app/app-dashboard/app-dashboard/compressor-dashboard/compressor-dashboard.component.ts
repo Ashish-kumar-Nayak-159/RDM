@@ -20,7 +20,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
   hierarchyArr: any = {};
   configureHierarchy: any = {};
   devices: any[] = [];
-  nonIPDevices: any[] = [];
+  originalDevices: any[] = [];
   filterObj: any = {};
   propertyList: any[] = [];
   telemetryObj: any;
@@ -30,6 +30,8 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
   lastReportedTelemetryValues: any;
   isTelemetryDataLoading = false;
   signalRTelemetrySubscription: any;
+  isFilterSelected = false;
+  midNightHour = 1033;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -49,6 +51,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
         }
       ]
     });
+
     await this.getDevices(this.contextApp.user.hierarchy);
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
@@ -58,13 +61,37 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
       if (index !== 0) {
       this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
       if (this.contextApp.user.hierarchy[level]) {
-        this.onChangeOfHierarchy(index);
+        this.onChangeOfHierarchy(index, false);
       }
       }
     });
+    this.loadFromCache();
   }
 
-  async onChangeOfHierarchy(i) {
+  loadFromCache() {
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION);
+    if (item) {
+      console.log(item);
+      this.filterObj = item;
+      this.contextApp.hierarchy.levels.forEach((level, index) => {
+        if (index !== 0) {
+        // console.log( this.filterObj.hierarchy);
+        // console.log( this.filterObj.hierarchy[level]);
+        this.configureHierarchy[index] = this.filterObj.device.hierarchy[level];
+        if (this.filterObj.device.hierarchy[level]) {
+          this.onChangeOfHierarchy(index, false);
+        }
+        }
+      });
+      this.onFilterSelection(this.filterObj);
+    }
+  }
+
+  compareFn(c1, c2): boolean {
+    return c1 && c2 ? c1.device_id === c2.device_id : c1 === c2;
+}
+
+  async onChangeOfHierarchy(i, flag = true) {
     Object.keys(this.configureHierarchy).forEach(key => {
       if (key > i) {
         delete this.configureHierarchy[key];
@@ -85,12 +112,40 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
       this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
     }
     // let hierarchy = {...this.configureHierarchy};
-    const hierarchyObj: any = { App: this.contextApp.app};
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
-      console.log(hierarchyObj);
-    });
-    await this.getDevices(hierarchyObj);
+
+    if (flag) {
+      const hierarchyObj: any = { App: this.contextApp.app};
+      Object.keys(this.configureHierarchy).forEach((key) => {
+        if (this.configureHierarchy[key]) {
+          hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
+        }
+        console.log(hierarchyObj);
+      });
+      if (Object.keys(hierarchyObj).length === 1) {
+        this.devices = JSON.parse(JSON.stringify(this.originalDevices));
+      } else {
+      const arr = [];
+      this.devices = [];
+      this.originalDevices.forEach(device => {
+        let flag = false;
+        Object.keys(hierarchyObj).forEach(hierarchyKey => {
+          if (device.hierarchy[hierarchyKey] && device.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+            flag = true;
+          } else {
+            flag = false;
+          }
+        });
+        if (flag) {
+          arr.push(device);
+        }
+      });
+      this.devices = JSON.parse(JSON.stringify(arr));
+      }
+      if (this.devices?.length === 1) {
+        this.filterObj.device = this.devices[0];
+      }
+      // await this.getDevices(hierarchyObj);
+    }
 
   }
 
@@ -104,6 +159,10 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
         (response: any) => {
           if (response?.data) {
             this.devices = response.data;
+            this.originalDevices = JSON.parse(JSON.stringify(this.devices));
+            if (this.devices?.length === 1) {
+              this.filterObj.device = this.devices[0];
+            }
           }
           resolve();
         }
@@ -123,39 +182,57 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
     }
+    if (type === 'telemetry') {
+      this.loadFromCache();
+    }
   }
 
-  async onFilterSelection() {
+  async onFilterSelection(filterObj) {
     this.signalRService.disconnectFromSignalR('telemetry');
-    this.isTelemetryDataLoading = true;
-    const obj = {...this.filterObj};
+    this.signalRTelemetrySubscription?.unsubscribe();
+
+    this.commonService.setItemInLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION, filterObj);
+    const obj = {...filterObj};
     let device_type: any;
     if (obj.device) {
       obj.device_id = obj.device.device_id;
       device_type = obj.device.device_type;
       delete obj.device;
-    }
-    if (!obj.device_id) {
+    } else {
       this.toasterService.showError('Device selection is required', 'View Live Telemetry');
       return;
     }
+    this.isTelemetryDataLoading = true;
     if (device_type) {
       await this.getThingsModelProperties(device_type);
     }
     this.telemetryObj = undefined;
+    this.lastReportedTelemetryValues = undefined;
     this.telemetryData = [];
     let message_props = '';
     obj.count = 1;
+    const midnight =  ((((moment().hour(0)).minute(0)).second(0)).utc()).unix();
+    const now = (moment().utc()).unix();
+    obj.from_date = midnight;
+    obj.to_date = now;
     obj.app = this.contextApp.app;
     this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : ''));
     obj.message_props = message_props;
+    this.isFilterSelected = true;
     this.deviceService.getDeviceTelemetry(obj).subscribe(
       (response: any) => {
         if (response?.data?.length > 0) {
           response.data[0].message_date = this.commonService.convertUTCDateToLocal(response.data[0].message_date);
           this.telemetryObj = response.data[0];
-          this.lastReportedTelemetryValues = response.data[0];
+          Object.keys(this.telemetryObj).forEach(key => {
+            if (key !== 'message_date') {
+              this.telemetryObj[key] = Number(this.telemetryObj[key]);
+            }
+          });
+          this.lastReportedTelemetryValues = JSON.parse(JSON.stringify(this.telemetryObj));
           this.telemetryData = response.data;
+          this.isTelemetryDataLoading = false;
+        } else {
           this.isTelemetryDataLoading = false;
         }
         const obj1 = {
@@ -182,7 +259,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
     console.log(telemetryObj.message_date)
     this.lastReportedTelemetryValues = telemetryObj;
     this.telemetryObj = telemetryObj;
-    if (this.telemetryData.length >= 10) {
+    if (this.telemetryData.length >= 15) {
       this.telemetryData.splice(0, 1);
     }
     this.telemetryData.push(this.lastReportedTelemetryValues);
@@ -213,6 +290,8 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     clearInterval(this.refreshInterval);
+    this.signalRTelemetrySubscription?.unsubscribe();
+    this.signalRService.disconnectFromSignalR('telemetry');
   }
 
 }

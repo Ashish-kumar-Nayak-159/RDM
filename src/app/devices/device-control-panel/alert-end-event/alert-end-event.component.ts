@@ -7,12 +7,13 @@ import * as moment from 'moment';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/app.constants';
 declare var $: any;
+
 @Component({
-  selector: 'app-alerts',
-  templateUrl: './alerts.component.html',
-  styleUrls: ['./alerts.component.css']
+  selector: 'app-alert-end-event',
+  templateUrl: './alert-end-event.component.html',
+  styleUrls: ['./alert-end-event.component.css']
 })
-export class AlertsComponent implements OnInit, OnDestroy {
+export class AlertEndEventComponent implements OnInit {
 
   alertFilter: any = {};
   alerts: any[] = [];
@@ -100,7 +101,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
     }
     delete obj.dateOption;
     this.alertFilter = filterObj;
-    this.apiSubscriptions.push(this.deviceService.getDeviceAlerts(obj).subscribe(
+    this.apiSubscriptions.push(this.deviceService.getDeviceAlertEndEvents(obj).subscribe(
       (response: any) => {
         if (response && response.data) {
           this.alerts = response.data;
@@ -117,7 +118,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
         app: alert.app,
         id: alert.id
       };
-      this.deviceService.getDeviceMessageById(obj, 'alert').subscribe(
+      this.deviceService.getDeviceMessageById(obj, 'alertendevent').subscribe(
         (response: any) => {
           resolve(response.message);
         }
@@ -137,13 +138,13 @@ export class AlertsComponent implements OnInit, OnDestroy {
       this.selectedAlert.message = message;
     });
     // this.selectedAlert = obj.data;
-    $('#alertMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    $('#alertEndEventMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }
 
   onModalEvents(eventType) {
     if (eventType === 'close') {
-      $('#alertMessageModal').modal('hide');
+      $('#alertEndEventMessageModal').modal('hide');
       this.selectedAlert = undefined;
     }
   }

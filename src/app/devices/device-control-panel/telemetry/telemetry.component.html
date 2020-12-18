@@ -1,7 +1,99 @@
-<div class="topnavbar bg-white py-2" >
-<app-filter [filterObj]="telemetryFilter" (filterSearch)="searchTelemetry($event)"></app-filter>
+<div class="topnavbar bg-white py-2" style="height: 6rem;">
+  <div class="row">
+    <div class="col-xl-12 col-md-12 mb-12" >
+        <form>
+          <div class="form-group form-inline my-1">
+            <input type="number" min="1" class="form-control form-control-sm mr-1 my-1 record-input" id="inputEmail4" placeholder="No of Records"
+            [(ngModel)]="telemetryFilter.count" name="count">
+            <select *ngIf="pageType === 'gateway'" class="form-control form-control-sm mx-1 my-1" id="deviceCategory"
+             [(ngModel)]="telemetryFilter.device_id" name="deviceCategory">
+              <option [ngValue]="undefined">Select Asset</option>
+              <option [ngValue]="device.device_id" *ngFor="let device of devices">
+                {{device?.tags?.dislay_name ? device.tags?.display_name: device.device_id}}
+              </option>
+            </select>
+            <div class="bg-dateRow form-group form-inline" id="dateRow" style="width: 35rem;">
+            <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
+            [(ngModel)]="telemetryFilter.dateOption" name="dateOptions" (change)="onDateOptionChange();dt1Input.value = null;">
+              <option [ngValue]="undefined">Quick Options</option>
+              <option [ngValue]="'5 mins'">Last 5 minutes</option>
+              <option [ngValue]="'30 mins'">Last 30 minutes</option>
+              <option [ngValue]="'1 hour'">Last 1 hour</option>
+              <option [ngValue]="'24 hour'">Last 24 hours</option>
+            </select>
+            <label class="ml-1 mr-1">OR</label>
+            <ng-container>
+              <!-- <mat-date-range-picker #picker></mat-date-range-picker>
+
+              <mat-date-range-input [rangePicker]="picker" class="form-control form-control-sm mx-1 my-1 col-md-2"
+              >
+                <input matStartDate [(ngModel)]="filterObj.from_date" name="from_date" placeholder="Date Range">
+                <input matEndDate [(ngModel)]="filterObj.to_date" name="to_date">
+              </mat-date-range-input>
+
+            <mat-datepicker-toggle  matSuffix [for]="picker"></mat-datepicker-toggle> -->
+            <input [owlDateTime]="dt1" [selectMode]="'range'" #dt1Input
+            (dateTimeChange)="onDateChange($event);telemetryFilter.dateOption = undefined;" class="form-control form-control-sm mx-1 my-1 date-range-picket-width" [owlDateTimeTrigger]="dt1" placeholder="Select Date Time">
+            <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
+            <owl-date-time #dt1></owl-date-time>
+          </ng-container>
+          </div>
+          <!-- <button type="button" class="btn btn-warning btn-sm ml-3 mr-1 my-1" title="Search" (click)="searchTelemetry(this.telemetryFilter)" ><i class="fa fa-search fa-sm"></i></button>
+          <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear();dt1Input.value = null;"><i class="fa fa-trash  fa-sm"></i></button> -->
+
+          </div>
+          <div class="form-group form-inline my-1">
+            <input type="checkbox" class="mr-1 my-1" id="checkbox" min="1"
+            name="checkbox" [(ngModel)]="telemetryFilter.isTypeEditable" (change)="telemetryFilter.aggregation_format = undefined; telemetryFilter.aggregation_minutes = undefined;
+            telemetryFilter.sampling_format = undefined; telemetryFilter.sampling_time = undefined;">
+
+            <fieldset [disabled]="!telemetryFilter.isTypeEditable" class="form-group form-inline my-1">
+            <!-- <ui-switch size="small"  class="mr-1" [disabled]="!telemetryFilter.isTypeEditable"
+            defaultBgColor="red" checkedTextColor="white" uncheckedTextColor="white"
+            checkedLabel="Sampling" (valueChange)="telemetryFilter.aggregation_format = undefined; telemetryFilter.aggregation_minutes = undefined;
+            telemetryFilter.sampling_format = undefined; telemetryFilter.sampling_time = undefined;"
+            uncheckedLabel="Aggregation" [(ngModel)]="telemetryFilter.type" name="tpye"></ui-switch> -->
+            <label class="mx-1 my-1">Sampling: </label>
+            <ng-container *ngIf="!telemetryFilter.type">
+            <input type="number" class="form-control form-control-sm my-1 w-7" id="minutes" min="1"
+              name="minutes" [(ngModel)]="telemetryFilter.aggregation_minutes" placeholder="Agreegation Time">
+            <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
+            <select class="form-control form-control-sm mx-2 my-1" id="dateoptions" [(ngModel)]="telemetryFilter.aggregation_format"
+            name="dateOptions" style="width: 11rem!important;">
+            <option [ngValue]="undefined">Aggregartion Format</option>
+            <option [ngValue]="'AVG'">Average</option>
+            <option [ngValue]="'SUM'">Sum</option>
+            <option [ngValue]="'MIN'">Min</option>
+            <option [ngValue]="'MAX'">Max</option>
+            <option [ngValue]="'COUNT'">Count</option>
+            </select>
+            </ng-container>
+            <ng-container *ngIf="telemetryFilter.type">
+            <input type="number" class="form-control form-control-sm ml-1 my-1 w-7" id="minutes" min="1"
+              name="minutes" [(ngModel)]="telemetryFilter.sampling_time" placeholder="Sampling">
+            <select class="form-control form-control-sm mx-2 my-1" id="dateoptions" [(ngModel)]="telemetryFilter.sampling_format"
+            name="dateOptions" style="width: 11rem!important;">
+            <option [ngValue]="undefined">Sampling Format</option>
+            <option [ngValue]="'second'">Second</option>
+            <option [ngValue]="'minute'">Minute</option>
+            <option [ngValue]="'hour'">Hour</option>
+            </select>
+            </ng-container>
+            </fieldset>
+            <button type="button" class="btn btn-warning btn-sm mr-1 my-1" title="Search" (click)="searchTelemetry(this.telemetryFilter)" ><i class="fa fa-search fa-sm"></i></button>
+            <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear();dt1Input.value = null;"><i class="fa fa-trash  fa-sm"></i></button>
+          </div>
+         </form>
+    </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <hr class="solid">
+      </div>
+    </div>
+
 </div>
-<div class="con-pad">
+<div class="con-pad" style="margin-top: 12rem;">
 <div class="row mx-auto">
 
   <div class="table-responsive">

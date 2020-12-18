@@ -311,9 +311,9 @@ export class CONSTANTS {
     },
     {
       page: 'battery_message',
-      system_name: 'Batery',
+      system_name: 'Battery',
       url: '#device_battery_message',
-      display_name: 'Batery',
+      display_name: 'Battery',
       icon: 'fa fa-fw fa-battery-full',
       visible: true,
       isTitle: false

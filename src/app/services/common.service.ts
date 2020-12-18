@@ -1,3 +1,4 @@
+import { SignalRService } from './signalR/signal-r.service';
 import { Injectable, EventEmitter } from '@angular/core';
 import * as moment from 'moment';
 import { environment } from 'src/environments/environment';
@@ -19,7 +20,8 @@ export class CommonService {
   flag = false;
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private signalRService: SignalRService
   ) {
     console.log('hereeee');
   }
@@ -133,6 +135,7 @@ export class CommonService {
 
   onLogOut() {
     localStorage.clear();
+    this.signalRService.disconnectFromSignalR('all');
     this.router.navigate(['']);
   }
 }

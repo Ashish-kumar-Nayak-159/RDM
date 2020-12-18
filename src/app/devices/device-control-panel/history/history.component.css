@@ -3,6 +3,13 @@
   /* height: 20px; */
 }
 
+.w-22 {
+  width: 22rem!important;
+}
+
+.w-7 {
+  width: 7rem!important;
+}
 .select-item {
   /* width: 10%!important;
   overflow: hidden;

@@ -1,3 +1,4 @@
+import { UiSwitchModule } from 'ngx-ui-switch';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -16,7 +17,8 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from
     FormsModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
-    AngularMultiSelectModule
+    AngularMultiSelectModule,
+    UiSwitchModule
   ],
   providers: [
     {provide: OWL_DATE_TIME_LOCALE, useValue: {useUtc: true}}

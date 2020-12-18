@@ -86,6 +86,9 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
           message_date: new Date(obj.message_date)
         };
         newObj[this.property] = obj[this.property];
+        // if (newObj['Total Mass Discharge'] === 0 || newObj['Total Mass Discharge'] === '0') {
+        //   newObj['Total Mass Discharge'] = undefined;
+        // }
         data.splice(data.length, 0, newObj);
         // if (Number(obj[this.property])) {
         valueArr.push(Number(obj[this.property]));
@@ -169,7 +172,13 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
     series.compareText = true;
     series.strokeWidth = 1.5;
     series.strokeOpacity = 1;
+    series.connect = true;
     series.fillOpacity = 0;
+
+    var bullet = series.bullets.push(new am4charts.CircleBullet());
+    bullet.stroke = 'darkgreen';
+    bullet.strokeWidth = 2;
+    bullet.circle.radius = 1;
 
     valueYAxis.renderer.labels.template.fill = am4core.color('gray');
     this.valueAxis = valueYAxis;

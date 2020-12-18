@@ -24,6 +24,7 @@ export class ApplicationSelectionComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    console.log(this.userData.apps);
     localStorage.removeItem(CONSTANTS.SELECTED_APP_DATA);
   }
 

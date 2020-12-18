@@ -72,5 +72,6 @@ export class AppUrls {
   public static GET_IOT_LEGACY_DEVICES = 'apps/{0}/devices';
   public static GET_REPORT_TELEMETRY_DATA = 'apps/{0}/d2c/telemetry_report';
   public static SIGNALR_NEGOTIATE = 'signalr/negotiate';
+  public static GET_MODEL_ALERT_REASONS = 'apps/{0}/device_types/{1}/alert_acknowledge_reasons';
   public static GET_SAMPLING_DEVICE_TELEMETRY = 'apps/{0}/d2c/telemetry_messages_with_sampling';
 }

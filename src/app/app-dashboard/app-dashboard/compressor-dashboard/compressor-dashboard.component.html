@@ -148,7 +148,7 @@
                   !isTelemetryDataLoading && !telemetryObj && isFilterSelected
                 "
               >
-                No data available since last 1 minute.
+                No data available since mid night.
               </div>
               <div class="row" *ngIf="telemetryObj">
                 <div class="col-xl-8 col-lg-8">
@@ -162,17 +162,17 @@
                             Pressure Parameters (Bar)
                           </h6>
                         </div>
-                        <div class="card-body1" style="height: 10rem">
+                        <div class="card-body1" style="height: 10rem;padding: 0rem">
                           <div class="row text-center">
                             <div class="col-4 text-center">
-                              <span class="text-xs">Discharge Pressure == {{ telemetryObj["Discharge Pressure"]}}</span>
+                              <span class="text-xs">Discharge Pressure</span>
                               <div class="pt-3">
                                 <span
                                   class="text-darkblue display-5 font-weight-bold"
                                   >{{
-                                    telemetryObj["Discharge Pressure"] ? telemetryObj["Discharge Pressure"].toFixed(
+                                    telemetryObj["Discharge Pressure"]?.toFixed(
                                       2
-                                    ) : ''
+                                    )
                                   }}</span
                                 >
                               </div>
@@ -189,8 +189,7 @@
                               <div class="pt-3">
                                 <span
                                   class="text-darkblue display-5 font-weight-bold"
-                                  >{{
-                                    telemetryObj["Suction Pressure"] ? telemetryObj["Suction Pressure"].toFixed(2) : ''
+                                  >{{telemetryObj["Suction Pressure"]?.toFixed(2)
                                   }}</span
                                 >
                               </div>
@@ -208,9 +207,9 @@
                                 <span
                                   class="text-darkblue display-5 font-weight-bold"
                                   >{{
-                                    telemetryObj["High Bank Pressure"] ? telemetryObj["High Bank Pressure"].toFixed(
+                                     telemetryObj["High Bank Pressure"]?.toFixed(
                                       2
-                                    ) : ''
+                                    )
                                   }}</span
                                 >
                               </div>
@@ -234,7 +233,7 @@
                             Flow Rate Parameters (kg/hr)
                           </h6>
                         </div>
-                        <div class="card-body1" style="height: 10rem">
+                        <div class="card-body1" style="height: 10rem;padding: 0rem">
                           <div class="row text-center">
                             <div class="col-6 text-center">
                               <span class="text-xs">Flow Rate Suction</span>
@@ -242,9 +241,9 @@
                                 <span
                                   class="text-darkblue display-5 font-weight-bold"
                                   >{{
-                                    telemetryObj["Flow rate Suction"] ? telemetryObj["Flow rate Suction"].toFixed(
+                                     telemetryObj["Flow rate Suction"]?.toFixed(
                                       2
-                                    ) : ''
+                                    )
                                   }}</span
                                 >
                               </div>
@@ -264,9 +263,7 @@
                                   >{{
                                     telemetryObj[
                                       "Flow rate Discharge"
-                                    ] ? telemetryObj[
-                                    "Flow rate Discharge"
-                                  ].toFixed(2) : ''
+                                    ]?.toFixed(2)
                                   }}</span
                                 >
                               </div>
@@ -294,7 +291,7 @@
                             Electric Parameters
                           </h6>
                         </div>
-                        <div class="card-body1" style="height: 10rem">
+                        <div class="card-body1" style="height: 10rem;padding: 0rem">
                           <div class="row text-center">
                             <div class="col-4 text-center">
                               <span class="text-xs ml-3">Active Power</span
@@ -303,7 +300,7 @@
                                 <span
                                   class="text-darkblue display-5 font-weight-bold"
                                   >{{
-                                    telemetryObj["Active Power"] ? telemetryObj["Active Power"].toFixed(2) : ''
+                                    telemetryObj["Active Power"]?.toFixed(2)
                                   }}</span
                                 >
                               </div>
@@ -322,7 +319,7 @@
                                 <span
                                   class="text-darkblue display-5 font-weight-bold"
                                   >{{
-                                    telemetryObj["Voltage R-Y"] ? telemetryObj["Voltage R-Y"].toFixed(2) : ''
+                                    telemetryObj["Voltage R-Y"]?.toFixed(2)
                                   }}</span
                                 >
                               </div>
@@ -342,7 +339,7 @@
                                 <span
                                   class="text-darkblue display-5 font-weight-bold"
                                   >{{
-                                    telemetryObj["Current R Phase"] ? telemetryObj["Current R Phase"].toFixed(2) : ''
+                                    telemetryObj["Current R Phase"]?.toFixed(2)
                                   }}</span
                                 >
                               </div>
@@ -367,7 +364,7 @@
                             Gas Leak Parameters (%)
                           </h6>
                         </div>
-                        <div class="card-body1" style="height: 10rem">
+                        <div class="card-body1" style="height: 10rem;padding: 0rem">
                           <div class="row text-center">
                             <div class="col-6 text-center">
                               <span class="text-xs">Gas Leak Level-1</span>
@@ -375,11 +372,9 @@
                                 <span
                                   class="text-darkblue display-5 font-weight-bold"
                                   >{{
-                                    telemetryObj[
-                                      "Gas Leakage Level-1"
-                                    ] ? telemetryObj[
+                                   telemetryObj[
                                     "Gas Leakage Level-1"
-                                  ].toFixed(2) : ''
+                                  ]?.toFixed(2)
                                   }}</span
                                 >
                               </div>
@@ -416,6 +411,11 @@
                       </div>
                     </div>
                   </div>
+                  <div class="row">
+                    <div class="col-lg-12 mb-3">
+                      *{{telemetryData.length}} samples with {{telemetryInterval ? telemetryInterval : '(?)'}} second refresh rate
+                    </div>
+                  </div>
                 </div>
 
                 <!-- Area Chart -->
@@ -427,7 +427,7 @@
                     </div>
                     <!-- Card Body -->
                     <div class="card-body" style="height: 24.5rem">
-                      <div class="row text-center">
+                      <div class="row text-center mt-n4">
                         <div class="col-12">
                           <span class="text-xs">Discharge Gas Temperature</span>
                           <div class="pt-3">
@@ -435,10 +435,8 @@
                               class="text-darkblue display-5 font-weight-bold"
                               >{{
                                 telemetryObj[
-                                  "Discharge Gas Temperature"
-                                ]? telemetryObj[
                                 "Discharge Gas Temperature"
-                              ].toFixed(2) : ''
+                              ]?.toFixed(2)
                               }}</span
                             >
                           </div>
@@ -452,7 +450,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="row text-center" style="margin-top: 4rem">
+                      <div class="row text-center" style="margin-top: 5rem">
                         <div class="col-12">
                           <span class="text-xs">Discharge Oil Temperature</span>
                           <div class="pt-3">
@@ -489,23 +487,34 @@
                     </div>
                     <!-- Card Body -->
                     <div class="card-body text-center" style="height: 24.5rem">
-                      <div class="row text-center">
+                      <div class="row text-center mt-n4">
+                        <div class="col-12">
+                          <span class="text-xs">Motor Status</span>
+                          <div class="pt-2">
+                          <h4 class="font-weight-bold mt-3"
+                          [ngClass]="{'text-success' : telemetryObj['Motor'] === 1, 'text-danger': telemetryObj['Motor'] === 0}">
+                            {{ telemetryObj.hasOwnProperty('Motor') ? (telemetryObj["Motor"] === 0 ? 'OFF' : 'ON') : 'NA' }}
+                          </h4>
+                        </div>
+                        </div>
+                      </div>
+                      <div class="row text-center"  style="margin-top: 0.5rem">
                         <div class="col-12">
                           <span class="text-xs">Since Beginning</span>
                           <div class="pt-2">
                             <h4 class="font-weight-bold mt-3">
-                              {{ telemetryObj["Running Hours"] }}
+                              {{ telemetryObj["Running Hours"] + ':' + (telemetryObj['Running Minutes'] || 0)}}
                             </h4>
                             Hrs
                           </div>
                         </div>
                       </div>
-                      <div class="row text-center" style="margin-top: 6rem">
+                      <div class="row text-center" style="margin-top: 1.5rem">
                         <div class="col-12">
                           <span class="text-xs">Since Mid-Night</span>
                           <div class="pt-2">
                             <h4 class="font-weight-bold mt-3">
-                              {{ telemetryObj["Running Hours"] - midNightHour }}
+                              {{telemetryObj["Running Hours"] !== undefined && midNightHour !== undefined ? (telemetryObj["Running Hours"] - midNightHour) : 0}}:{{telemetryObj["Running Minutes"] !== undefined && midNightMinute !== undefined ? (telemetryObj["Running Minutes"] - midNightMinute) : 0}}
                             </h4>
                             Hrs
                           </div>

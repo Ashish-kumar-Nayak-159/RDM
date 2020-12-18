@@ -89,6 +89,10 @@
               <td>Protocol</td>
               <td>{{device?.tags?.protocol}}</td>
             </tr>
+            <tr>
+              <td>Cloud Connectivity</td>
+              <td>{{device?.tags?.cloud_connectivity}}</td>
+            </tr>
             <tr *ngFor="let tag of deviceType?.tags?.reserved_tags">
               <td>{{tag.name}}</td>
               <td>

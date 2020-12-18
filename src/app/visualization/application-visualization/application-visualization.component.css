@@ -13,7 +13,7 @@ input:invalid {
   font-size: 10px!important;
   font-family: 'Comfortaa';
 }
-/*
+
 th {
   position: -webkit-sticky;
   position: sticky;
@@ -27,9 +27,15 @@ th[scope=row] {
   position: sticky;
   left: 0;
   z-index: 1;
-} */
+}
 
+.w-22 {
+  width: 22rem!important;
+}
 
+.w-7 {
+  width: 7rem!important;
+}
 
 
 .record-input {

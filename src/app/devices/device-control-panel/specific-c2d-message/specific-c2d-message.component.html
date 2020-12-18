@@ -196,8 +196,8 @@
           <ng-container *ngIf="item.json.type === 'boolean'">
             <div class="btn-group"  name="booleandata">
 
-              <ui-switch labelOn="{{item.json.trueValue}}"
-              labelOff="{{item.json.falseValue}}"
+              <ui-switch checkedLabel="{{item.json.trueValue}}"
+              uncheckedLabel="{{item.json.falseValue}}" size="small"
               [(ngModel)]="item.value" id="{{item.name}}" name="{{item.name}}"
               uncheckedTextColor="red" defaultBgColor="red" checkedTextColor="white" uncheckedTextColor="white"></ui-switch>
 

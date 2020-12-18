@@ -31,7 +31,9 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
   isTelemetryDataLoading = false;
   signalRTelemetrySubscription: any;
   isFilterSelected = false;
-  midNightHour = 1033;
+  midNightHour: number;
+  midNightMinute: number;
+  telemetryInterval;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -57,6 +59,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
     }
 
+
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
       this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
@@ -79,7 +82,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
         // console.log( this.filterObj.hierarchy[level]);
         this.configureHierarchy[index] = this.filterObj.device.hierarchy[level];
         if (this.filterObj.device.hierarchy[level]) {
-          this.onChangeOfHierarchy(index, false);
+          this.onChangeOfHierarchy(index, true);
         }
         }
       });
@@ -139,6 +142,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
           arr.push(device);
         }
       });
+      console.log('devicessss  ', arr);
       this.devices = JSON.parse(JSON.stringify(arr));
       }
       if (this.devices?.length === 1) {
@@ -219,11 +223,16 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
     this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : ''));
     obj.message_props = message_props;
     this.isFilterSelected = true;
+    await this.getMidNightHours(obj);
+
     this.deviceService.getDeviceTelemetry(obj).subscribe(
       (response: any) => {
         if (response?.data?.length > 0) {
           response.data[0].message_date = this.commonService.convertUTCDateToLocal(response.data[0].message_date);
           this.telemetryObj = response.data[0];
+          const hours = this.telemetryObj['Running Hours'].split(':');
+          this.telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
+          this.telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
           Object.keys(this.telemetryObj).forEach(key => {
             if (key !== 'message_date') {
               this.telemetryObj[key] = Number(this.telemetryObj[key]);
@@ -255,9 +264,21 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
   }
 
   processTelemetryData(telemetryObj) {
+
     telemetryObj.message_date = this.commonService.convertSignalRUTCDateToLocal(telemetryObj.timestamp);
-    console.log(telemetryObj.message_date)
+
+    if (!this.midNightHour) {
+      this.midNightHour = telemetryObj['Running Hours'] ? Math.floor(Number(telemetryObj['Running Hours'])) : 0;
+      this.midNightMinute = telemetryObj['Running Minutes'] ? Math.floor(Number(telemetryObj['Running Minutes'])) : 0;
+    }
+    // const hours = telemetryObj['Running Hours'].toString().split(':');
+    // telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
+    // telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
+    // console.log(telemetryObj);
     this.lastReportedTelemetryValues = telemetryObj;
+    if (this.telemetryObj) {
+      this.telemetryInterval = moment(telemetryObj.message_date).diff(moment(this.telemetryObj.message_date), 'second');
+    }
     this.telemetryObj = telemetryObj;
     if (this.telemetryData.length >= 15) {
       this.telemetryData.splice(0, 1);
@@ -266,6 +287,21 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
     this.telemetryData = JSON.parse(JSON.stringify(this.telemetryData));
     // console.log(this.telemetryData);
     // this.cdr.detectChanges()
+  }
+
+  getMidNightHours(filterObj) {
+    return new Promise((resolve) => {
+      const obj = {...filterObj};
+      obj.order_dir = 'ASC';
+      this.deviceService.getDeviceTelemetry(obj).subscribe(
+        (response: any) => {
+          if (response?.data?.length > 0) {
+            this.midNightHour = response.data[0]['Running Hours'] ? Math.floor(Number(response.data[0]['Running Hours'])) : 0;
+            this.midNightMinute = response.data[0]['Running Minutes'] ? Math.floor(Number(response.data[0]['Running Minutes'])) : 0;
+          }
+          resolve();
+        });
+    });
   }
 
   getThingsModelProperties(deviceType) {

@@ -73,6 +73,7 @@ export class HistoryComponent implements OnInit {
     } else {
       this.historyFilter.device_id = this.device.device_id;
     }
+    this.historyFilter.type = true;
     if (this.propertyList) {
       this.propertyList.forEach(item => {
         this.dropdownPropList.push({
@@ -157,7 +158,7 @@ export class HistoryComponent implements OnInit {
       }
       currentHistoryFilter.to_date = this.historyFilter.to_date;
       currentHistoryFilter.from_date = this.historyFilter.from_date;
-      this.isHistoryAPILoading = true;
+
       const obj = { ...currentHistoryFilter };
       const now = moment().utc();
       obj.to_date = now.unix();
@@ -186,11 +187,30 @@ export class HistoryComponent implements OnInit {
       // delete obj.xAxisProps;
       console.log(obj);
       let method;
-      if (obj.to_date - obj.from_date < 3600) {
-        method = this.deviceService.getDeviceTelemetry(obj);
+    if (obj.to_date - obj.from_date > 3600 && !this.historyFilter.isTypeEditable) {
+        this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
+        return;
+    }
+    if (this.historyFilter.isTypeEditable) {
+    if (this.historyFilter.type) {
+      if (!this.historyFilter.sampling_time || !this.historyFilter.sampling_format ) {
+        this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
+        return;
       } else {
         method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
       }
+    } else {
+      if (!this.historyFilter.aggregation_minutes || !this.historyFilter.aggregation_format ) {
+        this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
+        return;
+      } else {
+        method = this.deviceService.getDeviceTelemetry(obj);
+      }
+    }
+    } else {
+      method = this.deviceService.getDeviceTelemetry(obj);
+    }
+    this.isHistoryAPILoading = true;
       this.apiSubscriptions.push(method.subscribe(
         (response: any) => {
           this.isFilterSelected = true;
@@ -295,6 +315,7 @@ export class HistoryComponent implements OnInit {
       componentRef.instance.xAxisProps = layoutJson.xAxis;
       componentRef.instance.chartType = layoutJson.chartType;
       componentRef.instance.chartHeight = '23rem';
+      componentRef.instance.device = this.device;
       componentRef.instance.chartWidth = '100%';
       componentRef.instance.chartTitle = layoutJson.title;
       componentRef.instance.chartId = layoutJson.chart_Id;

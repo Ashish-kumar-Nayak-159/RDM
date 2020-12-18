@@ -129,7 +129,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
       title: this.chartTitle,
       chartType: this.selectedChartType,
       chartCount: this.chartCount,
-      chart_Id: 'chart_' + this.chartCount,
+      chart_Id: 'chart_' + moment().utc().unix(),
       showDataTable: this.showDataTable,
       y1axis: this.y1AxisProps,
       y2axis: this.y2AxisProps,
@@ -210,6 +210,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
       componentRef.instance.chartType = layoutJson.chartType;
       componentRef.instance.chartHeight = '23rem';
       componentRef.instance.chartWidth = '100%';
+      componentRef.instance.device = this.device;
       componentRef.instance.chartTitle = layoutJson.title;
       componentRef.instance.chartId = layoutJson.chart_Id;
       componentRef.instance.isOverlayVisible = true;

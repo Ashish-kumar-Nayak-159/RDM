@@ -2,7 +2,7 @@
 
 <!-- Page Heading -->
 
-<div class="topnavbar bg-white py-2"  *ngIf="contextApp?.user?.role === constantData.APP_ADMIN_ROLE">
+<div class="topnavbar bg-white py-2" *ngIf="pageType !== 'nonipdevice'">
   <div class="row">
 
     <ul class="nav" *ngIf="pageType !== 'nonipdevice'">
@@ -21,30 +21,16 @@
           <i class="fa fa-fw fa-toggle-off"></i>
           <span class="text-secondary"> Disable</span></a>
       </li>
-      <li class="nav-item" >
+      <!-- <li class="nav-item" >
         <a class="nav-link" href="javascript:void(0)" (click)="openConfirmDialog('Delete')" [class.disabled]="isAPILoading">
           <i class="fa fa-fw fa-trash"></i>
           <span class="text-secondary delete-row">Delete</span></a>
-      </li>
-      <li *ngIf="isAPILoading">
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-      </li>
-    </ul>
-    <ul class="nav" *ngIf="pageType === 'nonipdevice'">
-      <!-- <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)">
-          <i class="fa fa-fw fa-eye"></i>
-          <span class="text-secondary">View</span></a>
       </li> -->
-      <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="openConfirmDialog('Delete')" [class.disabled]="isAPILoading">
-          <i class="fa fa-fw fa-trash"></i>
-          <span class="text-secondary delete-row">Delete</span></a>
-      </li>
       <li *ngIf="isAPILoading">
         <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
       </li>
     </ul>
+
 
 
   </div>
@@ -56,13 +42,17 @@
 </div>
 
 </div>
-<div class="con-pad " [style.marginTop]="contextApp?.user?.role !== constantData.APP_ADMIN_ROLE ? '6rem' : ''">
+<div class="con-pad " [style.marginTop]="pageType === 'nonipdevice' ? '6rem' : ''">
   <div class="d-sm-flex align-items-center justify-content-between mt-1">
     <h4 class="mb-0 text-gray-800 row col-12">Welcome to {{device?.tags?.display_name ? device?.tags?.display_name : device?.device_id}}</h4><br/>
 
   </div>
   <div class="row col-12 mt-1" *ngIf="pageType.toLowerCase() === 'nonipdevice'">
     <h6>This device is managed by an IP Gateway ({{device.gateway_id}})</h6>
+
+  </div>
+  <div class="row col-12">
+    <h6>Device Id is {{device?.device_id}}</h6>
   </div>
   <div class="row col-12 mt-1" *ngIf="pageType === 'gateway'">
     <h6>This is the gateway of type ({{device.tags.device_type}}) managing {{deviceCount}} devices.</h6>

@@ -87,6 +87,7 @@ export class ReportsComponent implements OnInit {
             }
         ]
       });
+      this.filterObj.type = true;
      // this.getLatestAlerts();
       await this.getDevices(this.contextApp.user.hierarchy);
      // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
@@ -316,17 +317,48 @@ export class ReportsComponent implements OnInit {
     );
   }
 
-  async getTelemetryData(obj) {
-    delete obj.dateOption;
+  async getTelemetryData(filterObj) {
+    const obj = JSON.parse(JSON.stringify(filterObj));
     let message_props = '';
     this.props.forEach((prop, index) => message_props = message_props + prop.value.json_key + (this.props[index + 1] ? ',' : ''));
     obj['message_props'] = message_props;
+
+    // if (obj.to_date - obj.from_date <= 3600) {
+    //   method = this.deviceService.getDeviceTelemetry(obj);
+    // } else {
+    //   method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
+    // }
+    delete obj.dateOption;
+    delete obj.isTypeEditable;
+    delete obj.type;
+    this.isTelemetryLoading = false;
+    this.isFilterSelected = false;
     let method;
-    if (obj.to_date - obj.from_date < 3600) {
-      method = this.deviceService.getDeviceTelemetry(obj);
-    } else {
-      method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
+    if (obj.to_date - obj.from_date > 3600 && !filterObj.isTypeEditable) {
+        this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
+        return;
     }
+    if (filterObj.isTypeEditable) {
+    if (filterObj.type) {
+      if (!filterObj.sampling_time || !filterObj.sampling_format ) {
+        this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
+        return;
+      } else {
+        method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
+      }
+    } else {
+      if (!filterObj.aggregation_minutes || !filterObj.aggregation_format ) {
+        this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
+        return;
+      } else {
+        method = this.deviceService.getDeviceTelemetry(obj);
+      }
+    }
+    } else {
+      method = this.deviceService.getDeviceTelemetry(obj);
+    }
+    this.isTelemetryLoading = true;
+    this.isFilterSelected = true;
     method.subscribe(
       (response: any) => {
         if (response && response.data) {

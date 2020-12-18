@@ -295,7 +295,8 @@ export class DeviceListComponent implements OnInit {
     this.gateways = [];
     const obj = {
       app: this.contextApp.app,
-      category: CONSTANTS.IP_GATEWAY
+      category: CONSTANTS.IP_GATEWAY,
+      hierarchy: JSON.stringify(this.contextApp.user.hierarchy)
     };
     this.deviceService.getDeviceList(obj).subscribe(
       (response: any) => {

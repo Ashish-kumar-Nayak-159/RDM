@@ -137,4 +137,8 @@ export class DeviceTypeService {
   deleteAlertCondition(app, deviceType, alertConditionId) {
     return this.http.delete(this.url + String.Format(AppUrls.DELETE_ALERT_CONDITION, app, deviceType, alertConditionId), {});
   }
+
+  getModelReasons(app, deviceType) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_MODEL_ALERT_REASONS, app, deviceType));
+  }
 }

@@ -1,7 +1,9 @@
+import { ToasterService } from './../services/toaster.service';
+import { SignalRService } from './../services/signalR/signal-r.service';
 import { element } from 'protractor';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { filter } from 'rxjs/operators';
-import { Component, OnInit, Inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Inject, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { CommonService } from 'src/app/services/common.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -12,18 +14,19 @@ declare var $: any;
   templateUrl: './rdm-side-menu.component.html',
   styleUrls: ['./rdm-side-menu.component.css']
 })
-export class RDMSideMenuComponent implements OnInit, OnChanges {
+export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
 
   userData: any;
   constantsData = CONSTANTS;
   contextApp: any;
   displayMenuList = [];
+  signalRAlertSubscription: any;
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private commonService: CommonService,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private applicationService: ApplicationService
+    private toasterService: ToasterService,
+    private signalRService: SignalRService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -32,7 +35,23 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
     // if (this.userData && !this.userData.is_super_admin) {
     //   this.appName = this.userData.apps[0].app;
     // }
+    if (this.contextApp) {
+      // alert('here');
+      this.connectToSignalR();
 
+      this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe(
+        msg => {
+          if (msg?.severity?.toLowerCase() === 'critical') {
+          this.toasterService.showCriticalAlert(
+            msg.message,
+            msg.device_display_name ? msg.device_display_name : msg.device_id,
+            'toast-bottom-right',
+            60000
+          );
+          }
+        }
+      );
+    }
     if (this.contextApp?.app) {
       if (!this.userData?.is_super_admin) {
       let data = [];
@@ -112,7 +131,37 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (this.userData) {
       this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+      if (this.contextApp) {
+        // alert('here');
+        this.connectToSignalR();
+
+        this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe(
+          msg => {
+            if (msg?.severity?.toLowerCase() === 'critical') {
+            this.toasterService.showCriticalAlert(
+              msg.message,
+              msg.device_display_name ? msg.device_display_name : msg.device_id,
+              'toast-bottom-right',
+              60000
+            );
+            }
+          }
+        );
+      }
     }
+  }
+
+  connectToSignalR() {
+    this.signalRAlertSubscription?.unsubscribe();
+    this.signalRService.disconnectFromSignalR('overlay');
+    const obj = {
+      levels: this.contextApp.hierarchy.levels,
+      hierarchy: this.contextApp.user.hierarchy,
+      type: 'alert',
+      app: this.contextApp.app
+    };
+    console.log('overlay connection');
+    this.signalRService.connectToSignalR(obj, 'overlay');
   }
 
   processSideMenuData(data, list) {
@@ -155,6 +204,11 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
 
   decode(item) {
     return decodeURIComponent(item);
+  }
+
+  ngOnDestroy() {
+    this.signalRService.disconnectFromSignalR('overlay');
+    this.signalRAlertSubscription?.unsubscribe();
   }
 
 }

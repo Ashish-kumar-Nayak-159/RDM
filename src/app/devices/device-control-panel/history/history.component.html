@@ -13,7 +13,7 @@
                 text: 'Select Widgets',
                 selectAllText: 'Select All',
                 unSelectAllText: 'UnSelect All',
-                classes: 'col-lg-2 col-xl-2 p-0',
+                classes: 'col-lg-2 col-xl-2 mr-1 p-0',
                 enableSearchFilter: true,
                 badgeShowLimit: 1,
                 maxHeight: 200,
@@ -21,6 +21,7 @@
               }"
             >
             </angular2-multiselect>
+            <div class="bg-dateRow form-group form-inline" id="dateRow" style="width: 35rem;">
             <select
               class="form-control form-control-sm mx-1 my-1"
               id="dateoptions"
@@ -35,6 +36,7 @@
               <option [ngValue]="'24 hour'">Last 24 hours</option>
               <!-- <option [ngValue]="'custom'">>Custom</option> -->
             </select>
+            <label class="ml-1 mr-1">OR</label>
             <ng-container>
               <!-- <mat-date-range-picker #picker></mat-date-range-picker>
               <mat-date-range-input [rangePicker]="picker" class="form-control form-control-sm mx-1 my-1 w-11">
@@ -46,7 +48,7 @@
                 [owlDateTime]="dt1"
                 [selectMode]="'range'"
                 (dateTimeChange)="onDateChange($event)"
-                class="form-control form-control-sm mx-1 my-1 col-md-3 mr-1"
+                class="form-control form-control-sm mx-1 my-1 date-range-picket-width mr-1"
                 [owlDateTimeTrigger]="dt1"
                 placeholder="Select Date Time"
                 id="txtDt1"
@@ -56,13 +58,27 @@
               ></span>
               <owl-date-time #dt1></owl-date-time>
             </ng-container>
-
           </div>
+          </div>
+
           <div class="form-group form-inline my-1">
-            <input type="number" class="form-control form-control-sm my-1 col-2" id="minutes" min="1"
-              name="minutes" [(ngModel)]="historyFilter.aggregation_minutes" placeholder="Agreegation Time (mins)">
-            <select class="form-control form-control-sm mx-1 my-1 col-2" id="dateoptions" [(ngModel)]="historyFilter.aggregation_format"
-            name="dateOptions" style="width: 15%;">
+            <input type="checkbox" class="mx-1 my-1" id="checkbox" min="1"
+            name="checkbox" [(ngModel)]="historyFilter.isTypeEditable" (change)="historyFilter.aggregation_format = undefined; historyFilter.aggregation_minutes = undefined;
+            historyFilter.sampling_format = undefined; historyFilter.sampling_time = undefined;">
+
+            <fieldset [disabled]="!historyFilter.isTypeEditable" class="form-group form-inline my-1">
+            <ui-switch size="small"  class="mr-1" [disabled]="!historyFilter.isTypeEditable"
+            defaultBgColor="red" checkedTextColor="white" uncheckedTextColor="white"
+            checkedLabel="Sampling" (valueChange)="historyFilter.aggregation_format = undefined; historyFilter.aggregation_minutes = undefined;
+            historyFilter.sampling_format = undefined; historyFilter.sampling_time = undefined;"
+            uncheckedLabel="Aggregation" [(ngModel)]="historyFilter.type" name="tpye"></ui-switch>
+
+            <ng-container *ngIf="!historyFilter.type">
+            <input type="number" class="form-control form-control-sm my-1 w-7" id="minutes" min="1"
+              name="minutes" [(ngModel)]="historyFilter.aggregation_minutes" placeholder="Agreegation Time">
+            <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
+            <select class="form-control form-control-sm mx-1 my-1" id="dateoptions" [(ngModel)]="historyFilter.aggregation_format"
+            name="dateOptions" style="width: 11rem!important;">
             <option [ngValue]="undefined">Aggregartion Format</option>
             <option [ngValue]="'AVG'">Average</option>
             <option [ngValue]="'SUM'">Sum</option>
@@ -70,23 +86,36 @@
             <option [ngValue]="'MAX'">Max</option>
             <option [ngValue]="'COUNT'">Count</option>
             </select>
+            </ng-container>
+            <ng-container *ngIf="historyFilter.type">
+            <input type="number" class="form-control form-control-sm ml-1 my-1 w-7" id="minutes" min="1"
+              name="minutes" [(ngModel)]="historyFilter.sampling_time" placeholder="Sampling">
+            <select class="form-control form-control-sm mx-1 my-1" id="dateoptions" [(ngModel)]="historyFilter.sampling_format"
+            name="dateOptions" style="width: 11rem!important;">
+            <option [ngValue]="undefined">Sampling Format</option>
+            <option [ngValue]="'second'">Second</option>
+            <option [ngValue]="'minute'">Minute</option>
+            <option [ngValue]="'hour'">Hour</option>
+            </select>
+            </ng-container>
+            </fieldset>
             <button
-              type="button"
-              class="btn btn-warning btn-sm mx-1 my-1 ml-2"
-              title="Search"
-              (click)="renderLayout()"
-            >
-              <i class="fa fa-search fa-sm"></i>
-            </button>
+            type="button"
+            class="btn btn-warning btn-sm mx-1 my-1 ml-2"
+            title="Search"
+            (click)="renderLayout()"
+          >
+            <i class="fa fa-search fa-sm"></i>
+          </button>
 
-            <button
-              type="button"
-              class="btn btn-white btn-sm mx-1 my-1"
-              title="Clear"
-              (click)="clear()"
-            >
-              <i class="fa fa-trash fa-sm"></i>
-            </button>
+          <button
+            type="button"
+            class="btn btn-white btn-sm mx-1 my-1"
+            title="Clear"
+            (click)="clear()"
+          >
+            <i class="fa fa-trash fa-sm"></i>
+          </button>
           </div>
         </form>
       </div>

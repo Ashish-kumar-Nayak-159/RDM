@@ -59,6 +59,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   tileData: any;
   signalRAlertSubscription: any;
   originalDevices: any[] = [];
+  reasons: any[] = [];
+  isAlertModalDataLoading = false;
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -91,8 +93,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
     this.filterObj.app = this.contextApp.app;
     this.filterObj.count = 10;
-
+    this.filterObj.type = true;
     await this.getDevices(this.contextApp.user.hierarchy);
+
+    if (this.pageType === 'live') {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.DASHBOARD_ALERT_SELECTION);
     if (item) {
 
@@ -108,6 +112,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         }
       });
       this.getLatestAlerts();
+    }
     }
   }
 
@@ -220,7 +225,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     //   app: this.contextApp.app,
     //   count: 10
     // };
+    if (this.pageType === 'live') {
     this.commonService.setItemInLocalStorage(CONSTANTS.DASHBOARD_ALERT_SELECTION, this.filterObj);
+    }
     const obj = {...this.filterObj};
     obj.hierarchy = { App: this.contextApp.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
@@ -312,11 +319,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
 
-  getDeviceData() {
+  getDeviceData(deviceId) {
     return new Promise((resolve) => {
       const obj = {
         app: this.contextApp.app,
-        device_id: this.selectedAlert.device_id
+        device_id: deviceId
       };
       const methodToCall =
         this.deviceService.getAllDevicesList(obj, obj.app)
@@ -358,7 +365,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.documents = [];
       const obj = {
         app: this.contextApp.app,
-        device_type: this.alertCondition?.device_type ?  this.alertCondition.device_type : this.selectedDevice.tags.device_type
+        device_type: this.alertCondition?.device_type ?  this.alertCondition.device_type : this.selectedDevice.device_type
       };
       this.deviceTypeService.getThingsModelDocuments(obj).subscribe(
         (response: any) => {
@@ -386,7 +393,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       const obj = {
         app: this.contextApp.app,
-        name: this.selectedDevice?.tags?.device_type
+        name: this.alertCondition?.device_type ?  this.alertCondition.device_type : this.selectedDevice.device_type
       };
       this.deviceTypeService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
@@ -438,21 +445,47 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     });
   }
 
+  closeModal(id) {
+    $('#' + id).modal('hide');
+    this.selectedAlert = undefined;
+  }
+
   async onClickOfViewGraph(alert) {
     this.isOpen = true;
     this.beforeInterval = 1.5;
     this.afterInterval = 0.5;
+    $('#alertVisualizationModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    this.isAlertModalDataLoading = true;
     this.y1AxisProps = [];
     this.y2AxisProps = [];
     this.selectedAlert = alert;
+    this.filterObj.type = true;
+    if (this.selectedAlert?.metadata?.acknowledged_date) {
+      this.selectedAlert.metadata.acknowledged_date = this.commonService.convertSignalRUTCDateToLocal(this.selectedAlert.metadata.acknowledged_date);
+    }
     this.isTelemetryFilterSelected = false;
     // this.selectedDevice = this.devices.find(device => device.device_id === this.selectedAlert.device_id);
-    await this.getDeviceData();
-   // await this.getThingsModelProperties();
+    await this.getDeviceData(this.selectedAlert.device_id);
+    await this.getThingsModelProperties();
     await this.getAlertConditions();
     await this.getDocuments();
     await this.getLayout();
+    this.isAlertModalDataLoading = false;
+  }
 
+  getModelReasons() {
+    return new Promise((resolve) => {
+      const obj = {
+        app: this.contextApp.app,
+        name: this.alertCondition?.device_type ?  this.alertCondition.device_type : this.selectedDevice.device_type
+      };
+      this.deviceTypeService.getModelReasons(obj.app, obj.name).subscribe(
+        (response: any) => {
+          this.reasons = response.alert_acknowledge_reasons;
+          resolve();
+        }
+      );
+    });
   }
 
   getDeviceTelemetryData() {
@@ -477,37 +510,57 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       $(child).remove();
     }
     this.telemetryData = [];
-    const filterObj = {
-      epoch: true,
-      app: this.contextApp.app,
-      device_id: this.selectedAlert.device_id,
-      message_props: '',
-      from_date: null,
-      to_date: null,
-      aggregation_format: this.filterObj.aggregation_format,
-      aggregation_minutes: this.filterObj.aggregation_minutes
-    };
-    if (filterObj.aggregation_format && !filterObj.aggregation_minutes) {
-      this.toasterService.showError('If Aggregation Format is set, Aggregation Time is required.', 'View Visualization');
-      return;
-    }
-    if (filterObj.aggregation_minutes && !filterObj.aggregation_format) {
-      this.toasterService.showError('If Aggregation Time is set, Aggregation Format is required.', 'View Visualization');
-      return;
-    }
-    console.log(this.selectedAlert.message_date);
-    if (this.beforeInterval > 0 && this.beforeInterval <= 30) {
+    this.filterObj.epoch = true;
+    this.filterObj.app = this.contextApp.app;
+    this.filterObj.device_id = this.selectedAlert.device_id;
+    this.filterObj.message_props = '';
+    this.filterObj.from_date = null;
+    this.filterObj.to_date = null;
+    console.log(this.filterObj);
+    const filterObj = JSON.parse(JSON.stringify(this.filterObj));
+    this.propList.forEach((prop, index) =>
+    filterObj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
+    if (this.beforeInterval > 0) {
       filterObj.from_date = (this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp)) - (this.beforeInterval * 60);
     } else {
       this.toasterService.showError('Minutes Before Alert value must be greater than 0 and less than 30.', 'View Visualization');
       return;
     }
-    if (this.afterInterval > 0 && this.afterInterval <= 30) {
+    if (this.afterInterval > 0) {
       filterObj.to_date = (this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp)) + (this.afterInterval * 60);
     } else {
       this.toasterService.showError('Minutes After Alert value must be greater than 0 and less than 30.', 'View Visualization');
       return;
     }
+    let method;
+    if (filterObj.to_date - filterObj.from_date > 3600 && !this.filterObj.isTypeEditable) {
+        this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
+        return;
+    }
+    console.log(this.filterObj.isTypeEditable);
+    if (this.filterObj.isTypeEditable) {
+      console.log(this.filterObj.type);
+      console.log(this.filterObj);
+    if (this.filterObj.type) {
+      if (!this.filterObj.sampling_time || !this.filterObj.sampling_format ) {
+        this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
+        return;
+      } else {
+        method = this.deviceService.getDeviceSamplingTelemetry(filterObj, this.contextApp.app);
+      }
+    } else {
+      if (!this.filterObj.aggregation_minutes || !this.filterObj.aggregation_format ) {
+        this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
+        return;
+      } else {
+        method = this.deviceService.getDeviceTelemetry(filterObj);
+      }
+    }
+    } else {
+      method = this.deviceService.getDeviceTelemetry(filterObj);
+    }
+    console.log(this.selectedAlert.message_date);
+
     if (this.selectedWidgets.length === 0) {
       this.toasterService.showError('Please select at least one widget.', 'View Visualization');
       return;
@@ -515,14 +568,13 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.isOpen = false;
     this.isTelemetryFilterSelected = true;
     this.isTelemetryDataLoading = true;
-    this.propList.forEach((prop, index) =>
-    filterObj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
+
     // this.y2AxisProps.forEach((prop, index) =>
     // filterObj.message_props += prop.id + (index !== (this.y2AxisProps.length - 1) ? ',' : ''));
     // if (filterObj.message_props.charAt(filterObj.message_props.length - 1) === ',') {
     //   filterObj.message_props = filterObj.message_props.substring(0, filterObj.message_props.length - 1);
     // }
-    this.deviceService.getDeviceTelemetry(filterObj).subscribe(
+    method.subscribe(
       (response: any) => {
         console.log(response);
         if (response && response.data) {
@@ -660,8 +712,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
 
-  onClickOfAcknowledgeAlert(alert): void {
+  async onClickOfAcknowledgeAlert(alert): Promise<void> {
     this.acknowledgedAlert = alert;
+    await this.getDeviceData(this.acknowledgedAlert.device_id);
+    await this.getModelReasons();
     $('#acknowledgemenConfirmModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 

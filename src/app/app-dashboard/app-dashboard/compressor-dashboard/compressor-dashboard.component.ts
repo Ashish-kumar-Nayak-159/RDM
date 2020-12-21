@@ -230,9 +230,9 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy {
         if (response?.data?.length > 0) {
           response.data[0].message_date = this.commonService.convertUTCDateToLocal(response.data[0].message_date);
           this.telemetryObj = response.data[0];
-          const hours = this.telemetryObj['Running Hours'].split(':');
-          this.telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
-          this.telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
+          // const hours = this.telemetryObj['Running Hours'].split(':');
+          // this.telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
+          // this.telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
           Object.keys(this.telemetryObj).forEach(key => {
             if (key !== 'message_date') {
               this.telemetryObj[key] = Number(this.telemetryObj[key]);

@@ -74,6 +74,8 @@ export class HistoryComponent implements OnInit {
       this.historyFilter.device_id = this.device.device_id;
     }
     this.historyFilter.type = true;
+    this.historyFilter.sampling_format = 'minute';
+    this.historyFilter.sampling_time = 1;
     if (this.propertyList) {
       this.propertyList.forEach(item => {
         this.dropdownPropList.push({
@@ -148,14 +150,14 @@ export class HistoryComponent implements OnInit {
       this.historyFilter.app = this.contextApp.app;
       const currentHistoryFilter = { ...this.historyFilter };
 
-      if (currentHistoryFilter.aggregation_format && !currentHistoryFilter.aggregation_minutes) {
-        this.toasterService.showError('If Aggregation Format is set, Aggregation Time is required.', 'View Visualization');
-        return;
-      }
-      if (currentHistoryFilter.aggregation_minutes && !currentHistoryFilter.aggregation_format) {
-        this.toasterService.showError('If Aggregation Time is set, Aggregation Format is required.', 'View Visualization');
-        return;
-      }
+      // if (currentHistoryFilter.aggregation_format && !currentHistoryFilter.aggregation_minutes) {
+      //   this.toasterService.showError('If Aggregation Format is set, Aggregation Time is required.', 'View Visualization');
+      //   return;
+      // }
+      // if (currentHistoryFilter.aggregation_minutes && !currentHistoryFilter.aggregation_format) {
+      //   this.toasterService.showError('If Aggregation Time is set, Aggregation Format is required.', 'View Visualization');
+      //   return;
+      // }
       currentHistoryFilter.to_date = this.historyFilter.to_date;
       currentHistoryFilter.from_date = this.historyFilter.from_date;
 
@@ -188,6 +190,7 @@ export class HistoryComponent implements OnInit {
       console.log(obj);
       let method;
     if (obj.to_date - obj.from_date > 3600 && !this.historyFilter.isTypeEditable) {
+        this.historyFilter.isTypeEditable = true;
         this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
         return;
     }

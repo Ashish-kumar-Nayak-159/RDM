@@ -74,6 +74,9 @@ export class TelemetryComponent implements OnInit, OnDestroy {
       this.getDevicesListByGateway();
     }
     this.telemetryFilter.type = true;
+    this.telemetryFilter.sampling_format = 'minute';
+    this.telemetryFilter.sampling_time = 1;
+
     this.telemetryFilter.count = 10;
     this.telemetryFilter.app = this.device.app;
     this.telemetryFilter.epoch = true;
@@ -152,6 +155,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
     delete obj.isTypeEditable;
     let method;
     if (obj.to_date - obj.from_date > 3600 && !this.telemetryFilter.isTypeEditable) {
+      this.telemetryFilter.isTypeEditable = true;
         this.toasterService.showError('Please select sampling filters.', 'View Telemetry');
         return;
     }

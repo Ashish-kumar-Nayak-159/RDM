@@ -94,6 +94,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.filterObj.app = this.contextApp.app;
     this.filterObj.count = 10;
     this.filterObj.type = true;
+    this.filterObj.sampling_format = 'minute';
+    this.filterObj.sampling_time = 1;
     await this.getDevices(this.contextApp.user.hierarchy);
 
     if (this.pageType === 'live') {
@@ -460,6 +462,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.y2AxisProps = [];
     this.selectedAlert = alert;
     this.filterObj.type = true;
+    this.filterObj.sampling_format = 'minute';
+    this.filterObj.sampling_time = 1;
     if (this.selectedAlert?.metadata?.acknowledged_date) {
       this.selectedAlert.metadata.acknowledged_date = this.commonService.convertSignalRUTCDateToLocal(this.selectedAlert.metadata.acknowledged_date);
     }
@@ -534,6 +538,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
     let method;
     if (filterObj.to_date - filterObj.from_date > 3600 && !this.filterObj.isTypeEditable) {
+        this.filterObj.isTypeEditable = true;
         this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
         return;
     }

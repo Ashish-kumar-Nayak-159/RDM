@@ -211,3 +211,5 @@ input:invalid {
 .owl-dt-calendar {
   height: 19.25rem!important;
 }
+
+.big-checkbox {width: 23px; height: 25px;}

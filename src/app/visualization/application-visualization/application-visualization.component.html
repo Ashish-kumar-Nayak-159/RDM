@@ -231,23 +231,23 @@
                         </div>
 
                         <div class="form-group form-inline my-1">
-                          <input type="checkbox" class="mr-1 my-1" id="checkbox" min="1"
+                          <input type="checkbox" class="mx-1 my-1 big-checkbox" id="checkbox" min="1"
                           name="checkbox" [(ngModel)]="filterObj.isTypeEditable" (change)="filterObj.aggregation_format = undefined; filterObj.aggregation_minutes = undefined;
-                          filterObj.sampling_format = undefined; filterObj.sampling_time = undefined;">
+                          ">
 
                           <fieldset [disabled]="!filterObj.isTypeEditable" class="form-group form-inline my-1">
-                          <ui-switch size="small"  class="mr-1" [disabled]="!filterObj.isTypeEditable"
-                          defaultBgColor="red" checkedTextColor="white" uncheckedTextColor="white"
-                          checkedLabel="Sampling" (valueChange)="filterObj.aggregation_format = undefined; filterObj.aggregation_minutes = undefined;
-                          filterObj.sampling_format = undefined; filterObj.sampling_time = undefined;"
+                          <ui-switch   class="mr-1" [disabled]="!filterObj.isTypeEditable"
+                          defaultBgColor="#f6c23e" checkedTextColor="white" uncheckedTextColor="white"
+                          checkedLabel="Sampling Frequency" (valueChange)="filterObj.aggregation_format = undefined; filterObj.aggregation_minutes = undefined;
+                          "
                           uncheckedLabel="Aggregation" [(ngModel)]="filterObj.type" name="tpye"></ui-switch>
 
                           <ng-container *ngIf="!filterObj.type">
                           <input type="number" class="form-control form-control-sm my-1 w-7" id="minutes" min="1"
                             name="minutes" [(ngModel)]="filterObj.aggregation_minutes" placeholder="Agreegation Time">
                           <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
-                          <select class="form-control form-control-sm mx-1 my-1" id="dateoptions" [(ngModel)]="filterObj.aggregation_format"
-                          name="dateOptions" style="width: 11rem!important;">
+                          <select class="form-control form-control-sm mx-1 my-1" id="aggregationFormat" [(ngModel)]="filterObj.aggregation_format"
+                          name="aggregationFormat" style="width: 11rem!important;">
                           <option [ngValue]="undefined">Aggregartion Format</option>
                           <option [ngValue]="'AVG'">Average</option>
                           <option [ngValue]="'SUM'">Sum</option>
@@ -258,10 +258,10 @@
                           </ng-container>
                           <ng-container *ngIf="filterObj.type">
                           <input type="number" class="form-control form-control-sm ml-1 my-1 w-7" id="minutes" min="1"
-                            name="minutes" [(ngModel)]="filterObj.sampling_time" placeholder="Sampling">
-                          <select class="form-control form-control-sm mx-1 my-1" id="dateoptions" [(ngModel)]="filterObj.sampling_format"
-                          name="dateOptions" style="width: 11rem!important;">
-                          <option [ngValue]="undefined">Sampling Format</option>
+                            name="minutes" [(ngModel)]="filterObj.sampling_time" placeholder="Sampling" disabled>
+                          <select class="form-control form-control-sm mx-1 my-1" id="samplingFrequency" [(ngModel)]="filterObj.sampling_format"
+                          name="samplingFrequency" style="width: 11rem!important;" disabled>
+                          <option [ngValue]="undefined">Frequency</option>
                           <option [ngValue]="'second'">Second</option>
                           <option [ngValue]="'minute'">Minute</option>
                           <option [ngValue]="'hour'">Hour</option>

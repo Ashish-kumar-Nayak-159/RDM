@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { DeviceTypeService } from './../../services/device-type/device-type.service';
 import { ToasterService } from './../../services/toaster.service';
 import { DeviceService } from './../../services/devices/device.service';
@@ -88,6 +89,8 @@ export class ReportsComponent implements OnInit {
         ]
       });
       this.filterObj.type = true;
+      this.filterObj.sampling_format = 'minute';
+      this.filterObj.sampling_time = 1;
      // this.getLatestAlerts();
       await this.getDevices(this.contextApp.user.hierarchy);
      // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
@@ -335,6 +338,7 @@ export class ReportsComponent implements OnInit {
     this.isFilterSelected = false;
     let method;
     if (obj.to_date - obj.from_date > 3600 && !filterObj.isTypeEditable) {
+        this.filterObj.isTypeEditable = true;
         this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
         return;
     }

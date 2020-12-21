@@ -43,7 +43,7 @@
 
           </div>
           <div class="form-group form-inline my-1">
-            <input type="checkbox" class="mr-1 my-1" id="checkbox" min="1"
+            <input type="checkbox" class="mr-1 my-1 big-checkbox" id="checkbox" min="1"
             name="checkbox" [(ngModel)]="telemetryFilter.isTypeEditable" (change)="telemetryFilter.aggregation_format = undefined; telemetryFilter.aggregation_minutes = undefined;
             telemetryFilter.sampling_format = undefined; telemetryFilter.sampling_time = undefined;">
 
@@ -55,11 +55,11 @@
             uncheckedLabel="Aggregation" [(ngModel)]="telemetryFilter.type" name="tpye"></ui-switch> -->
             <label class="mx-1 my-1">Sampling: </label>
             <ng-container *ngIf="!telemetryFilter.type">
-            <input type="number" class="form-control form-control-sm my-1 w-7" id="minutes" min="1"
+            <input type="number" class="form-control form-control-sm my-1 w-7" id="minutes" min="1" disabled
               name="minutes" [(ngModel)]="telemetryFilter.aggregation_minutes" placeholder="Agreegation Time">
             <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
-            <select class="form-control form-control-sm mx-2 my-1" id="dateoptions" [(ngModel)]="telemetryFilter.aggregation_format"
-            name="dateOptions" style="width: 11rem!important;">
+            <select class="form-control form-control-sm mx-2 my-1" id="aggregationFormat" [(ngModel)]="telemetryFilter.aggregation_format"
+            name="aggregationFormat" style="width: 11rem!important;" disabled>
             <option [ngValue]="undefined">Aggregartion Format</option>
             <option [ngValue]="'AVG'">Average</option>
             <option [ngValue]="'SUM'">Sum</option>
@@ -70,9 +70,9 @@
             </ng-container>
             <ng-container *ngIf="telemetryFilter.type">
             <input type="number" class="form-control form-control-sm ml-1 my-1 w-7" id="minutes" min="1"
-              name="minutes" [(ngModel)]="telemetryFilter.sampling_time" placeholder="Sampling">
-            <select class="form-control form-control-sm mx-2 my-1" id="dateoptions" [(ngModel)]="telemetryFilter.sampling_format"
-            name="dateOptions" style="width: 11rem!important;">
+              name="minutes" [(ngModel)]="telemetryFilter.sampling_time" placeholder="Sampling" disabled>
+            <select class="form-control form-control-sm mx-2 my-1" id="samplingFrequency" [(ngModel)]="telemetryFilter.sampling_format"
+            name="samplingFrequency" style="width: 11rem!important;" disabled>
             <option [ngValue]="undefined">Sampling Format</option>
             <option [ngValue]="'second'">Second</option>
             <option [ngValue]="'minute'">Minute</option>

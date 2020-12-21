@@ -47,7 +47,7 @@ export class DeviceService {
       }
     });
     console.log(params);
-    return this.http.get(this.url + AppUrls.GET_NON_IP_DEVICE, { params });
+    return this.http.get(this.url + String.Format(AppUrls.GET_NON_IP_DEVICE, filterObj.app), { params });
   }
 
   getDeviceData(deviceId, app) {
@@ -63,9 +63,7 @@ export class DeviceService {
   }
 
   createNonIPDevice(deviceObj, app) {
-    let params = new HttpParams();
-    params = params.set('app', app);
-    return this.http.post(this.url + AppUrls.CREATE_NON_IP_DEVICE, deviceObj, {params});
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_NON_IP_DEVICE, app), deviceObj);
   }
 
   enableDevice(deviceId, appId) {
@@ -87,9 +85,9 @@ export class DeviceService {
   }
 
   deleteNonIPDevice(deviceId, appId) {
-    let params = new HttpParams().set('device_id', deviceId);
-    params = params.set('app', appId);
-    return this.http.delete(this.url + AppUrls.DELETE_NON_IP_DEVICE, { params });
+    // let params = new HttpParams().set('device_id', deviceId);
+    // params = params.set('app', appId);
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_NON_IP_DEVICE, appId, deviceId));
   }
 
   getDeviceCredentials(deviceId, appId) {
@@ -113,7 +111,7 @@ export class DeviceService {
   updateNonIPDeviceTags(deviceObj, app) {
     let params = new HttpParams();
     params = params.set('app', app);
-    return this.http.post(this.url + AppUrls.UPDATE_NON_IP_DEVICE_TAGS, deviceObj, {params});
+    return this.http.post(this.url + String.Format(AppUrls.UPDATE_NON_IP_DEVICE_TAGS, app, deviceObj.device_id), deviceObj, {params});
   }
 
   getDeviceHeartBeats(filterObj) {
@@ -223,22 +221,19 @@ export class DeviceService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + AppUrls.GET_C2D_MESSAGE_LIST, { params });
+    return this.http.get(this.url + String.Format(AppUrls.GET_C2D_MESSAGE_LIST, filterObj.app), { params });
   }
 
-  getQueueMessagesCount(params) {
-    return this.http.get(this.url + AppUrls.GET_QUEUE_MESSAGE_COUNT, { params });
+  getQueueMessagesCount(params, app) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_QUEUE_MESSAGE_COUNT, app), { params });
   }
 
-  purgeQueueMessages(params) {
-    return this.http.get(this.url + AppUrls.PURGE_QUEUE_MESSAGE, { params });
+  purgeQueueMessages(params, app) {
+    return this.http.get(this.url + String.Format(AppUrls.PURGE_QUEUE_MESSAGE, app), { params });
   }
 
   getC2dMessageJSON(messageId, app) {
-    let params = new HttpParams();
-    params = params.set('message_id', messageId);
-    params = params.set('app', app);
-    return this.http.get(this.url + AppUrls.GET_C2D_MESSAGE_JSON, { params });
+    return this.http.get(this.url + String.Format(AppUrls.GET_C2D_MESSAGE_JSON, app, messageId));
   }
 
   getC2dResponseJSON(messageId, app) {
@@ -249,9 +244,7 @@ export class DeviceService {
   }
 
   sendC2DMessage(message, app) {
-    let params = new HttpParams();
-    params = params.set('app', app);
-    return this.http.post(this.url + AppUrls.SEND_C2D_MESSAGE, message, {params});
+    return this.http.post(this.url + String.Format(AppUrls.SEND_C2D_MESSAGE,app), message);
   }
 
   getNonIPDeviceCount(filterObj) {
@@ -261,7 +254,7 @@ export class DeviceService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + AppUrls.GE_NON_IP_DEVICES_COUNT, { params });
+    return this.http.get(this.url + String.Format(AppUrls.GE_NON_IP_DEVICES_COUNT, filterObj.app), { params });
   }
 
   createLayout(layoutObj) {
@@ -293,7 +286,7 @@ export class DeviceService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + AppUrls.GET_NON_IP_DEVICE_TAGS, { params });
+    return this.http.get(this.url + String.Format(AppUrls.GET_NON_IP_DEVICE_TAGS, filterObj.app, filterObj.device_id), { params });
   }
 
   getDeviceMessageById(filterObj, type) {

@@ -43,8 +43,8 @@ export class C2dPurgeComponent implements OnInit {
       deviceId = this.device.gateway_id;
     }
     params = params.set('device_id', deviceId);
-    params = params.set('app', this.appName);
-    this.deviceService.getQueueMessagesCount(params).subscribe(
+
+    this.deviceService.getQueueMessagesCount(params, this.appName).subscribe(
       (response: any) => {
         this.messageCount = response.count;
       }
@@ -77,8 +77,8 @@ export class C2dPurgeComponent implements OnInit {
       deviceId = this.device.gateway_id;
     }
     params = params.set('device_id', deviceId);
-    params = params.set('app', this.appName);
-    this.deviceService.purgeQueueMessages(params).subscribe(
+    // params = params.set('app', this.appName);
+    this.deviceService.purgeQueueMessages(params, this.appName).subscribe(
       (response: any) => {
         this.toasterServie.showSuccess(response.message, 'Purge Messages');
         this.verifyQueueMessages();

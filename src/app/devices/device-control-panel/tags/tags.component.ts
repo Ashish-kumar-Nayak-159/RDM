@@ -58,11 +58,9 @@ export class TagsComponent implements OnInit {
     let methodToCall;
     if (this.pageType === 'nonipdevices') {
       const obj = {
-        app: this.contextApp.app,
-        device_id: this.device.device_id,
         gateway_id: this.device.gateway_id
       };
-      methodToCall = this.deviceService.getNonIPDeviceTags(obj);
+      methodToCall = this.deviceService.getNonIPDeviceTags(obj, obj.app, obj.device_id);
     } else {
       methodToCall = this.deviceService.getDeviceData(this.device.device_id, this.contextApp.app);
     }

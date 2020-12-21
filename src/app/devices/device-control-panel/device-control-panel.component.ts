@@ -217,7 +217,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
 
   getDeviceTags(obj) {
     return new Promise((resolve) => {
-      this.deviceService.getNonIPDeviceTags(obj).subscribe(
+      this.deviceService.getNonIPDeviceTags(obj, obj.app, obj.device_id).subscribe(
         (response: any) => {
           this.tagsObj = response.tags;
           resolve();

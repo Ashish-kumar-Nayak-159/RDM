@@ -11,16 +11,16 @@
     <tbody>
       <ng-container *ngIf="tableData.length > 0 && !isTableDataLoading && isTableFilterSelected">
         <tr *ngFor="let data of tableData" [ngClass]="{'bg-danger text-white': tableConfig.type === 'alert'
-        && data.severity.toLowerCase() === 'critical'}">
+        && data?.severity?.toLowerCase() === 'critical'}">
           <td *ngFor="let header of tableConfig?.data" >
             <span *ngIf="header.key">
               <i class="fa fa-exclamation-triangle" *ngIf="tableConfig.type === 'alert' && header.key === 'code'" [style.color]="
-                (data.severity.toLowerCase() === 'critical' ? '#cc0000' :
-                (data.severity.toLowerCase() === 'error' ? '#fb5515' :
-                (data.severity.toLowerCase() === 'warning' ? '#f6c23e' :
-                (data.severity.toLowerCase() === 'informational' ? '#229954' : ''))
+                (data?.severity?.toLowerCase() === 'critical' ? '#cc0000' :
+                (data?.severity?.toLowerCase() === 'error' ? '#fb5515' :
+                (data?.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
+                (data?.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                 )
-                )" title="{{data.severity}}"></i>&nbsp;{{data[header.key]}} </span>
+                )" title="{{data?.severity}}"></i>&nbsp;{{data[header.key]}} </span>
             <a href="javascript:void(0)" *ngIf="!header.key" (click)="onClickOfButton(data, header.name)">
               <i class="fa fa-fw fa-eye" title="View {{tableConfig?.type}} message"></i>
             </a>

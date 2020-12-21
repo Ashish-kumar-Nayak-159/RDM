@@ -130,7 +130,7 @@
             <tr *ngFor="let alert of latestAlerts" [ngClass]="{
                     'bg-alert-selection':
                       alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id,
-                      'bg-danger text-white': alert.severity.toLowerCase() === 'critical'
+                      'bg-danger text-white': alert?.severity?.toLowerCase() === 'critical'
                   }" >
               <td><i class="fa fa-exclamation-triangle" [style.color]="
                 (alert?.severity?.toLowerCase() === 'critical' ? '#cc0000' :

@@ -150,8 +150,8 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
     this.noOfMessageInQueue = null;
     let params = new HttpParams();
     params = params.set(this.device.tags.category === CONSTANTS.IP_GATEWAY ? 'gateway_id' : 'device_id', this.device.device_id);
-    params = params.set('app', this.appName);
-    this.deviceService.getQueueMessagesCount(params).subscribe(
+    // params = params.set('app', this.appName);
+    this.deviceService.getQueueMessagesCount(params, this.appName).subscribe(
       (response: any) => {
         this.noOfMessageInQueue = response.count;
       }
@@ -161,8 +161,8 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
   purgeQueueMessages() {
     let params = new HttpParams();
     params = params.set(this.device.tags.category === CONSTANTS.IP_GATEWAY ? 'gateway_id' : 'device_id', this.device.device_id);
-    params = params.set('app', this.appName);
-    this.deviceService.purgeQueueMessages(params).subscribe(
+    // params = params.set('app', this.appName);
+    this.deviceService.purgeQueueMessages(params, this.appName).subscribe(
       response => {
         this.toasterService.showSuccess('Messages purged successfully', 'Purge Messages');
         this.verifyQueueMessages();

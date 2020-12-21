@@ -3,9 +3,9 @@
     <h5 class="h4 mb-0 text-gray-800">{{tileData && tileData[0] ? tileData[0]?.value : ''}}</h5>
   </div>
   <div class="card row bg-white" style="margin-left:-2rem">
-    <div class="col-xl-12 col-md-12 mb-12">
+    <div class="col-xl-12 mb-12">
       <form>
-        <div class="form-group form-inline my-2 mx-3">
+        <div class="d-flex form-group form-inline my-2 mx-3">
           <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let index = index;">
           <select *ngIf="index !== 0" class="form-control form-control-sm mx-1 my-1" id="{{level}}"
           [disabled]="contextApp?.user?.hierarchy[level]"
@@ -33,7 +33,7 @@
           </option>
         </select> -->
         </div>
-        <div class="row form-group form-inline  my-2 mx-3">
+        <div class="d-flex row form-group form-inline  my-2 mx-3">
 
           <!-- <input type="number" min="1" class="form-control form-control-sm mx-1 my-1 record-input" id="inputEmail4"
             placeholder="No of Records" [(ngModel)]="filterObj.count" name="count"> -->
@@ -57,7 +57,8 @@
               }"
               (onDeSelectAll)="y1Deselect($event)">
             </angular2-multiselect>
-            <div class="bg-dateRow form-group form-inline" id="dateRow" style="width: 50rem;">
+            <div class="bg-dateRow form-group form-inline" id="dateRow"
+            [style.width]="(filterObj.dateOption === 'date' ? '25rem' : (filterObj.dateOption === 'date range' ? '35rem' : ''))">
           <select class="form-control form-control-sm mx-1 my-1" id="dateoptions" [(ngModel)]="filterObj.dateOption"
             name="dateOptions" (change)="onDateOptionChange();dt1Input.value = null;dt2Input.value = null;">
             <option [ngValue]="undefined">Quick Options</option>
@@ -65,19 +66,21 @@
             <option [ngValue]="'30 mins'">Last 30 minutes</option>
             <option [ngValue]="'1 hour'">Last 1 hour</option>
             <option [ngValue]="'24 hour'">Last 24 hours</option>
+            <option [ngValue]="'date'">Select Date</option>
+            <option [ngValue]="'date range'">Select Date Range</option>
           </select>
-          <label class="ml-1 mr-1">OR</label>
-          <ng-container>
+          <!-- <label class="ml-1 mr-1">OR</label> -->
+          <ng-container *ngIf="filterObj.dateOption === 'date'">
             <input #dt2Input [owlDateTime]="dt2"  (dateTimeChange)="onSingleDateChange($event);dt1Input.value = null;filterObj.dateOption = undefined;"
-              class="form-control form-control-sm mx-1 my-1 w-10" [owlDateTimeTrigger]="dt2"
+              class="form-control form-control-sm mx-2 my-1 w-10" [owlDateTimeTrigger]="dt2"
               placeholder="Select Date">
             <span [owlDateTimeTrigger]="dt2"  class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
             <owl-date-time #dt2 [pickerType]="'calendar'"></owl-date-time>
           </ng-container>
-          <label class="ml-3 mr-1">OR</label>
-          <ng-container>
+          <!-- <label class="ml-3 mr-1">OR</label> -->
+          <ng-container *ngIf="filterObj.dateOption === 'date range'">
             <input #dt1Input [owlDateTime]="dt1" [selectMode]="'range'" (dateTimeChange)="onDateChange($event);dt2Input.value = null;filterObj.dateOption = undefined;"
-              class="form-control form-control-sm mx-1 my-1 date-range-picket-width" [owlDateTimeTrigger]="dt1"
+              class="form-control form-control-sm mx-2 my-1 date-range-picket-width" [owlDateTimeTrigger]="dt1"
               placeholder="Select Date Range">
             <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
             <owl-date-time #dt1></owl-date-time>
@@ -88,7 +91,7 @@
           <!-- <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fa fa-trash  fa-sm"></i></button> -->
 
         </div>
-        <div class="form-group form-inline my-2 mx-3">
+        <div class="d-flex form-group form-inline my-2 mx-3">
           <input type="checkbox" class="mx-1 my-1" id="checkbox" min="1"
           name="checkbox" [(ngModel)]="filterObj.isTypeEditable" (change)="filterObj.aggregation_format = undefined; filterObj.aggregation_minutes = undefined;
           filterObj.sampling_format = undefined; filterObj.sampling_time = undefined;">
@@ -129,9 +132,13 @@
           <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="onFilterSelection()" ><i
             class="fa fa-search fa-sm"></i></button>
         </div>
+
+
       </form>
     </div>
   </div>
+
+
 
 
 </div>
@@ -195,12 +202,12 @@
         </thead>
         <tbody>
           <ng-container *ngIf="latestAlerts.length > 0">
-            <tr *ngFor="let alert of latestAlerts" [ngClass]="{'bg-danger text-white': alert.severity.toLowerCase() === 'critical'}">
+            <tr *ngFor="let alert of latestAlerts" [ngClass]="{'bg-danger text-white': alert.severity?.toLowerCase() === 'critical'}">
               <td><i class="fa fa-exclamation-triangle" [style.color]="
-                (alert.severity.toLowerCase() === 'critical' ? '#cc0000' :
-                (alert.severity.toLowerCase() === 'error' ? '#fb5515' :
-                (alert.severity.toLowerCase() === 'warning' ? '#f6c23e' :
-                (alert.severity.toLowerCase() === 'informational' ? '#229954' : ''))
+                (alert.severity?.toLowerCase() === 'critical' ? '#cc0000' :
+                (alert.severity?.toLowerCase() === 'error' ? '#fb5515' :
+                (alert.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
+                (alert.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                 )
                 )" title="{{alert.severity}}"></i></td>
 

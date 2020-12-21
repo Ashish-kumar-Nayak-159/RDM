@@ -1,3 +1,4 @@
+import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { UiSwitchModule } from 'ngx-ui-switch';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
@@ -18,7 +19,8 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     AngularMultiSelectModule,
-    UiSwitchModule
+    UiSwitchModule,
+    AccordionModule
   ],
   providers: [
     {provide: OWL_DATE_TIME_LOCALE, useValue: {useUtc: true}}

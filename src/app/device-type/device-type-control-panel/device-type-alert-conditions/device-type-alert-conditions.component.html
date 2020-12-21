@@ -41,10 +41,10 @@
                 </a>
               </td>
               <td><i title="{{alert.severity}}"  [style.color]="
-                (alert.severity.toLowerCase() === 'critical' ? '#cc0000' :
-                (alert.severity.toLowerCase() === 'error' ? '#fb5515' :
-                (alert.severity.toLowerCase() === 'warning' ? '#f6c23e' :
-                (alert.severity.toLowerCase() === 'informational' ? '#229954' : ''))
+                (alert?.severity?.toLowerCase() === 'critical' ? '#cc0000' :
+                (alert?.severity?.toLowerCase() === 'error' ? '#fb5515' :
+                (alert?.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
+                (alert?.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                 )
                 )" class="fa fa-exclamation-triangle"></i>
                 {{alert.code}}</td>

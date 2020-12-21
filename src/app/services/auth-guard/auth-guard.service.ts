@@ -18,6 +18,7 @@ export class AuthGuardService {
     const appData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     console.log('user    ', userData);
     console.log('apppp   ', appData);
+    console.log(route);
     if (!userData && !appData) {
       this.commonService.onLogOut();
       return false;

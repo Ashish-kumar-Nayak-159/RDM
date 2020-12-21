@@ -1,3 +1,4 @@
+import { VisualizationModule } from './../visualization/visualization.module';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { DevicesModule } from './../devices/devices.module';
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
@@ -15,7 +16,8 @@ import { CompressorDashboardComponent } from './app-dashboard/compressor-dashboa
 
 
 @NgModule({
-  declarations: [AppDashboardComponent, EScooterTrackerDashboardComponent, WaterTankMonitorComponent, PumpDashboardComponent, CompressorDashboardComponent],
+  declarations: [AppDashboardComponent, EScooterTrackerDashboardComponent, WaterTankMonitorComponent,
+    PumpDashboardComponent, CompressorDashboardComponent],
   imports: [
     CommonModule,
     AppDashboardRoutingModule,
@@ -23,7 +25,8 @@ import { CompressorDashboardComponent } from './app-dashboard/compressor-dashboa
     Ng2GoogleChartsModule,
     GoogleMapsModule,
     DevicesModule,
-    FormsModule
+    FormsModule,
+    VisualizationModule,
   ]
 })
 export class AppDashboardModule { }

@@ -8,22 +8,22 @@
   <ul class="nav">
     <li class="nav-item">
       <a class="nav-link" href="#" data-toggle="modal" data-target="#roleassigmenModal">
-        <i class="fas fa-fw fa-plus"></i>
+        <i class="fa fa-fw fa-plus"></i>
         <span class="text-secondary">Add</span></a>
     </li>
     <!-- <li class="nav-item">
       <a class="nav-link" href="#">
-        <i class="fas fa-fw fa-list"></i>
+        <i class="fa fa-fw fa-list"></i>
         <span class="text-secondary">Role Assignments</span></a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="#">
-        <i class="fas fa-fw fa">&#xf021;</i>
+        <i class="fa fa-fw fa">&#xf021;</i>
         <span class="text-secondary">Refresh</span></a>
     </li> -->
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="contextApp?.user?.role === constantData.APP_ADMIN_ROLE">
       <a class="nav-link" href="#">
-        <i class="fas fa-fw fa-times"></i>
+        <i class="fa fa-fw fa-times"></i>
         <span class="text-secondary delete-row">Remove</span></a>
     </li>
   </ul>

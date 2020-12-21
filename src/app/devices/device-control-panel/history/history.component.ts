@@ -1,4 +1,3 @@
-import { ApplicationService } from 'src/app/services/application/application.service';
 import { ChartService } from './../../../chart/chart.service';
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
 import { Component, OnInit, Input, ComponentFactoryResolver, ApplicationRef, Injector, EmbeddedViewRef } from '@angular/core';
@@ -9,7 +8,6 @@ import { Device } from 'src/app/models/device.model';
 import { CONSTANTS } from './../../../app.constants';
 import * as moment from 'moment';
 import { ToasterService } from './../../../services/toaster.service';
-import { ActivatedRoute } from '@angular/router';
 import { LiveChartComponent } from 'src/app/common/charts/live-data/live-data.component';
 import { BarChartComponent } from 'src/app/common/charts/bar-chart/bar-chart.component';
 import { PieChartComponent } from 'src/app/common/charts/pie-chart/pie-chart.component';
@@ -45,8 +43,6 @@ export class HistoryComponent implements OnInit {
   storedLayout = {};
   chartTitle = '';
   showDataTable = false;
-  appData: any = {};
-  appName: any;
   selectedHierarchy = '';
   renderCount = 0;
   selectedWidgets = [];
@@ -54,38 +50,30 @@ export class HistoryComponent implements OnInit {
   propList: any[];
   selectedPropertyForChart: any[];
   showThreshold = false;
-  applicationData: any;
+  contextApp: any;
   constructor(
     private deviceService: DeviceService,
     private deviceTypeService: DeviceTypeService,
     private commonService: CommonService,
     private toasterService: ToasterService,
-    private route: ActivatedRoute,
     private factoryResolver: ComponentFactoryResolver,
     private appRef: ApplicationRef,
     private injector: Injector,
-    private chartService: ChartService,
-    private applicationService: ApplicationService
-  ) {
+    private chartService: ChartService  ) {
 
   }
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.route.paramMap.subscribe(async params => {
-      this.appName = params.get('applicationId');
-      this.applicationData = this.userData.apps.filter(
-        app => app.app === params.get('applicationId')
-      )[0];
-      await this.getApplicationData();
-      await this.getThingsModelProperties();
-      this.historyFilter.app = this.appName;
-    });
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    await this.getThingsModelProperties();
+    this.historyFilter.app = this.contextApp.app;
     this.historyFilter.epoch = true;
     if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
       this.historyFilter.gateway_id = this.device.device_id;
     } else {
       this.historyFilter.device_id = this.device.device_id;
     }
+    this.historyFilter.type = true;
     if (this.propertyList) {
       this.propertyList.forEach(item => {
         this.dropdownPropList.push({
@@ -97,22 +85,11 @@ export class HistoryComponent implements OnInit {
     this.getLayout();
   }
 
-  getApplicationData() {
-    return new Promise((resolve) => {
-      this.applicationService.getApplicationDetail(this.appName).subscribe(
-        (response: any) => {
-            this.appData = response;
-            this.appData.user = this.applicationData.user;
-            resolve();
-        });
-    });
-  }
-
   getThingsModelProperties() {
     // this.properties = {};
     return new Promise((resolve) => {
       const obj = {
-        app: this.appName,
+        app: this.contextApp.app,
         name: this.device.tags.device_type
       };
       this.deviceTypeService.getThingsModelProperties(obj).subscribe(
@@ -150,6 +127,10 @@ export class HistoryComponent implements OnInit {
   searchHistory() {
     return new Promise((resolve) => {
       this.propList = [];
+      if (this.selectedWidgets.length === 0) {
+        this.toasterService.showError('Please select widgets first.', 'View Widget');
+        return;
+      }
       this.selectedWidgets.forEach(widget => {
         widget.value.y1axis.forEach(prop => {
           if (this.propList.indexOf(prop) === -1) {
@@ -164,7 +145,7 @@ export class HistoryComponent implements OnInit {
       });
       this.selectedPropertyForChart = [];
       this.selectedPropertyForChart = [...this.propList];
-      this.historyFilter.app = this.appName;
+      this.historyFilter.app = this.contextApp.app;
       const currentHistoryFilter = { ...this.historyFilter };
 
       if (currentHistoryFilter.aggregation_format && !currentHistoryFilter.aggregation_minutes) {
@@ -177,7 +158,7 @@ export class HistoryComponent implements OnInit {
       }
       currentHistoryFilter.to_date = this.historyFilter.to_date;
       currentHistoryFilter.from_date = this.historyFilter.from_date;
-      this.isHistoryAPILoading = true;
+
       const obj = { ...currentHistoryFilter };
       const now = moment().utc();
       obj.to_date = now.unix();
@@ -205,7 +186,32 @@ export class HistoryComponent implements OnInit {
       // delete obj.y2AxisProperty;
       // delete obj.xAxisProps;
       console.log(obj);
-      this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
+      let method;
+    if (obj.to_date - obj.from_date > 3600 && !this.historyFilter.isTypeEditable) {
+        this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
+        return;
+    }
+    if (this.historyFilter.isTypeEditable) {
+    if (this.historyFilter.type) {
+      if (!this.historyFilter.sampling_time || !this.historyFilter.sampling_format ) {
+        this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
+        return;
+      } else {
+        method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
+      }
+    } else {
+      if (!this.historyFilter.aggregation_minutes || !this.historyFilter.aggregation_format ) {
+        this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
+        return;
+      } else {
+        method = this.deviceService.getDeviceTelemetry(obj);
+      }
+    }
+    } else {
+      method = this.deviceService.getDeviceTelemetry(obj);
+    }
+    this.isHistoryAPILoading = true;
+      this.apiSubscriptions.push(method.subscribe(
         (response: any) => {
           this.isFilterSelected = true;
           if (response && response.data) {
@@ -227,7 +233,7 @@ export class HistoryComponent implements OnInit {
     this.historyFilter.to_date = undefined;
     this.historyFilter.epoch = true;
     this.historyFilter.device_id = this.device.device_id;
-    this.historyFilter.app = this.appName;
+    this.historyFilter.app = this.contextApp.app;
     this.chartTitle = '';
     this.xAxisProps = '';
     this.y1AxisProps = [];
@@ -309,6 +315,7 @@ export class HistoryComponent implements OnInit {
       componentRef.instance.xAxisProps = layoutJson.xAxis;
       componentRef.instance.chartType = layoutJson.chartType;
       componentRef.instance.chartHeight = '23rem';
+      componentRef.instance.device = this.device;
       componentRef.instance.chartWidth = '100%';
       componentRef.instance.chartTitle = layoutJson.title;
       componentRef.instance.chartId = layoutJson.chart_Id;
@@ -344,13 +351,20 @@ export class HistoryComponent implements OnInit {
       });
     }
     else {
-      this.toasterService.showError('Layout not defined', 'Layout');
+      if (this.layoutJson.length === 0) {
+        this.toasterService.showError('Layout not defined', 'Historical Widgets');
+        return;
+      }
+      if (this.historyData.length === 0) {
+        this.toasterService.showError('No data available for selected filter.', 'Historical Widgets');
+        return;
+      }
     }
   }
 
   getLayout() {
     const params = {
-      app: this.appName,
+      app: this.contextApp.app,
       name: this.device?.tags?.device_type
     };
     this.dropdownWidgetList = [];

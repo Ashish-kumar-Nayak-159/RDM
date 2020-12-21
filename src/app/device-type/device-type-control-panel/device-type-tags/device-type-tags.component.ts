@@ -26,8 +26,8 @@ export class DeviceTypeTagsComponent implements OnInit {
   isCustomTagsEditable = false;
   userData: any;
   contextApp: any;
-  applicationData: any;
-  appName: any;
+  tagObj: any;
+  firstTagAdded = false;
   constructor(
     private route: ActivatedRoute,
     private commonService: CommonService,
@@ -38,14 +38,12 @@ export class DeviceTypeTagsComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.route.paramMap.subscribe(async params => {
-      this.appName = params.get('applicationId');
-      this.applicationData = this.userData.apps.filter(app => app.app === params.get('applicationId'))[0];
-      await this.getApplicationData();
-    });
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.originalDeviceType = JSON.parse(JSON.stringify(this.deviceType));
-    this.reservedTags = CONSTANTS.DEVICE_RESERVED_TAGS_LIST;
     console.log(this.deviceType);
+    if (!this.deviceType.tags.reserved_tags) {
+    this.deviceType.tags.reserved_tags = [];
+    }
     if (this.deviceType.metadata.model_type.includes('Gateway')) {
       this.reservedTags.forEach(item => {
         if (item.name.includes('Device')) {
@@ -58,115 +56,59 @@ export class DeviceTypeTagsComponent implements OnInit {
       console.log(['Device Type', 'Serial No', 'MAC ID'].indexOf(tag.name) === -1);
       return ['Device Type', 'Serial No', 'MAC ID'].indexOf(tag.name) === -1;
     });
-    this.processTagsData();
+    // this.processTagsData();
   }
 
-  getApplicationData() {
-    return new Promise((resolve) => {
-      this.applicationService.getApplicationDetail(this.appName).subscribe(
-        (response: any) => {
-            this.contextApp = response;
-            this.contextApp.user = this.applicationData.user;
-            resolve();
-        });
-    });
-  }
-
-
-  processTagsData() {
-      this.deviceTypeCustomTags = [];
-      if (!this.deviceType.tags) {
-        this.deviceType.tags = {};
-        this.deviceTypeCustomTags = [
-          {
-            name: null,
-            value: null,
-            editable: true
-          }
-        ];
-      } else if (!this.deviceType.tags.custom_tags) {
-        this.deviceTypeCustomTags = [
-          {
-            name: null,
-            value: null,
-            editable: true
-          }
-        ];
-      } else {
-        Object.keys(this.deviceType.tags.custom_tags).forEach(key => {
-          this.deviceTypeCustomTags.push({
-            name: key,
-            value: this.deviceType.tags.custom_tags[key]
-          });
-        });
-        this.deviceTypeCustomTags.push({
-          name: null,
-          value: null,
-          editable: true
-        });
+  addTagObject() {
+    console.log(this.tagObj);
+    if (this.tagObj) {
+      if (!this.tagObj.name || !this.tagObj.key) {
+        this.toasterService.showError('Please add tag name and key', 'Add Tag');
+        return;
       }
-      if (this.deviceType.tags && this.deviceType.tags.protocol) {
-        if (this.deviceType.created_date) {
-          this.deviceType.tags.local_created_date = this.commonService.convertUTCDateToLocal(this.deviceType.created_date);
+      let flag = false;
+      CONSTANTS.NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach(char => {
+        if (this.tagObj.key.includes(char)) {
+          flag = true;
         }
-        this.reservedTagsBasedOnProtocol = CONSTANTS.DEVICE_PROTOCOL_BASED_TAGS_LIST[this.deviceType.tags.protocol]
-        ? CONSTANTS.DEVICE_PROTOCOL_BASED_TAGS_LIST[this.deviceType.tags.protocol] : [];
+      });
+      if (flag) {
+        this.toasterService.showError(`Tag key will not allow ' ', '.', '#' and '$'`, 'Add Tag');
+        return;
       }
-      console.log(this.reservedTagsBasedOnProtocol);
-      this.deviceType.tags.created_by = this.deviceType.created_by;
-      this.deviceType.tags.app = this.deviceType.app;
-      this.originalDeviceType = null;
-      console.log('aaaaaaaaaaaaaaaaa', this.deviceType);
-      this.originalDeviceType = JSON.parse(JSON.stringify(this.deviceType));
+      this.deviceType.tags.reserved_tags.push(this.tagObj);
+      console.log(this.deviceType.tags.reserved_tags);
+    }
+    this.firstTagAdded = true;
+    this.tagObj = {};
+
   }
 
-  onCustomTagInputChange() {
-    let count = 0;
-    console.log(this.deviceType.tags.custom_tags);
-    this.deviceTypeCustomTags.forEach((tag, index) => {
-      if (tag.name && tag.value && !this.deviceTypeCustomTags[index + 1]) {
-        count += 1;
-      }
-    });
-    if (count > 0) {
-      this.deviceTypeCustomTags.push({
-        name: null,
-        value: null,
-        editable: true
-      });
-    }
+  removeTag(index) {
+    this.deviceType.tags.reserved_tags.splice(index, 1);
   }
 
   updateDeviceTypeTags() {
     const tagObj = {};
-    this.deviceTypeCustomTags.forEach(tag => {
-      if (tag.name && tag.value) {
-        tagObj[tag.name] = tag.value;
-      }
-    });
-    this.deviceType.tags.custom_tags = tagObj;
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.tags = this.deviceType.tags;
     obj.app = this.contextApp.app;
     console.log(obj);
     this.deviceTypeService.updateThingsModel(obj, this.contextApp.app).subscribe(
       (response: any) => {
+        this.tagObj = undefined;
         this.toasterService.showSuccess(response.message, 'Set Tags');
         this.getDeviceTypeDetail();
-        this.isReservedTagsEditable = false;
       }, error => this.toasterService.showError(error.message, 'Set Tags')
     );
   }
 
   deleteAllDeviceTypeTags() {
-    (Object.keys(this.deviceType.tags)).forEach(key => {
-      if (this.tagsListToNotDelete.indexOf(key) === -1 && key !== 'custom_tags') {
-        this.deviceType.tags[key] = null;
-      }
-    });
-    this.deviceType.tags.custom_tags = {};
+
+    this.tagObj = undefined;
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.tags = this.deviceType.tags;
+    obj.tags.reserved_tags = [];
     obj.app = this.contextApp.app;
     console.log(obj);
     this.deviceTypeService.updateThingsModel(obj, this.contextApp.app).subscribe(
@@ -192,7 +134,6 @@ export class DeviceTypeTagsComponent implements OnInit {
       (response: any) => {
         if (response && response.data && response.data.length > 0) {
           this.deviceType = response.data[0];
-          this.processTagsData();
         }
       }
     );

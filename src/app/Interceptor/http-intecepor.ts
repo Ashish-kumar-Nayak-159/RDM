@@ -1,3 +1,4 @@
+import { ToasterService } from './../services/toaster.service';
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpResponse } from '@angular/common/http';
 
@@ -7,6 +8,10 @@ import { catchError, map } from 'rxjs/operators';
 @Injectable()
 export class CustomHttpInterceptor implements HttpInterceptor {
 
+  constructor(
+    private toasterService: ToasterService
+  ) {}
+
   intercept(
     request: HttpRequest<any>,
     next: HttpHandler
@@ -15,6 +20,10 @@ export class CustomHttpInterceptor implements HttpInterceptor {
       // tslint:disable-next-line:no-shadowed-variable
       catchError((error: any) => {
         console.log(error);
+        console.log(request);
+        if (request.method === 'GET') {
+          this.toasterService.showError(error?.error?.message || error.message, '');
+        }
         if (error.status === 401) {
           // logout code
         }

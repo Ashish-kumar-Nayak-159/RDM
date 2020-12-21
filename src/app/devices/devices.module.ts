@@ -1,3 +1,4 @@
+import { VisualizationModule } from './../visualization/visualization.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DevicesRoutingModule } from './devices-routing.module';
@@ -10,7 +11,7 @@ import {MatTableModule} from '@angular/material/table';
 import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-import { UiSwitchModule } from 'ngx-toggle-switch';
+import { UiSwitchModule } from 'ngx-ui-switch';
 
 import { DeviceControlPanelComponent } from './device-control-panel/device-control-panel.component';
 import { OverviewComponent } from './device-control-panel/overview/overview.component';
@@ -40,6 +41,7 @@ import { BatteryMessagesComponent } from './device-control-panel/battery-message
 import { CommonCustomModule } from './../common/common.module';
 import { SpecificC2dMessageComponent } from './device-control-panel/specific-c2d-message/specific-c2d-message.component';
 import { PredictiveMaintenanceComponent } from './device-control-panel/predictive-maintenance/predictive-maintenance.component';
+import { AlertEndEventComponent } from './device-control-panel/alert-end-event/alert-end-event.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +70,8 @@ import { PredictiveMaintenanceComponent } from './device-control-panel/predictiv
     C2dMessageComponent,
     BatteryMessagesComponent,
     SpecificC2dMessageComponent,
-    PredictiveMaintenanceComponent
+    PredictiveMaintenanceComponent,
+    AlertEndEventComponent
   ],
   imports: [
     CommonModule,
@@ -87,7 +90,8 @@ import { PredictiveMaintenanceComponent } from './device-control-panel/predictiv
     OwlNativeDateTimeModule,
     GoogleMapsModule,
     NgMultiSelectDropDownModule.forRoot(),
-    UiSwitchModule
+    UiSwitchModule,
+    VisualizationModule
   ],
   exports: [
     FilterComponent,

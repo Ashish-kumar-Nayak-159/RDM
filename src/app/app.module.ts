@@ -8,12 +8,13 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { RDMSideMenuComponent } from './rdm-side-menu/rdm-side-menu.component';
 import { HttpInterceptorProviders } from './Interceptor';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule, BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { MatNativeDateModule } from '@angular/material/core';
 import { RDMLoginComponent } from './rdm-login/rdm-login.component';
 import { RDMHomeComponent } from './rdmhome/rdmhome.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     ToastrModule.forRoot(),
     NoopAnimationsModule,
     MatNativeDateModule,
+    BrowserAnimationsModule,
   ],
   providers: [
     HttpInterceptorProviders

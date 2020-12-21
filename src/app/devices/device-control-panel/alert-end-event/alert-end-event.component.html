@@ -1,0 +1,18 @@
+<div class="topnavbar bg-white py-2" >
+  <app-filter [filterObj]="alertFilter" (filterSearch)="searchAlerts($event)"></app-filter>
+  </div>
+  <div class="con-pad">
+  <div class="row mx-auto">
+
+    <div class="table-responsive">
+      <app-table [tableData]="alerts" [tableConfig]="alertTableConfig" [isTableFilterSelected]="isFilterSelected"
+      [isTableDataLoading]="isAlertLoading" (viewMessageEvent)="openAlertMessageModal($event)"></app-table>
+    </div>
+  </div>
+  </div>
+  <div class="modal right fade" id="alertEndEventMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+    <div class="modal-dialog" role="document">
+      <app-message-modal [bodyMessage]="selectedAlert?.message" [headerMessage]="'Alert Message'"
+      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
+    </div>
+  </div>

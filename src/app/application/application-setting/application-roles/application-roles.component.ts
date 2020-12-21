@@ -25,6 +25,7 @@ export class ApplicationRolesComponent implements OnInit {
     this.applicationData.roles.forEach(element => {
       element.isEditable = false;
     });
+
   }
 
   onAddNewRoleObj() {

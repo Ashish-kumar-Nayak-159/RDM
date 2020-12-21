@@ -9768,17 +9768,25 @@ a:focus {
 }
 
 .sidebar #sidebarToggle {
-  width: 2rem;
-  height: 2rem;
-  text-align: center;
-  margin-bottom: 1rem;
-  cursor: pointer
+  width: 1.5rem;
+height: 1.25rem;
+text-align: center;
+margin-bottom: 0rem;
+margin-left: -0.5rem;
+cursor: pointer;
+background-color: Transparent;
+background-repeat:no-repeat;
+border: none;
+overflow: hidden;
+outline:none;
+float:left;
+font-size:0.8rem;
 }
 
 .sidebar #sidebarToggle::after {
   font-weight: 900;
-  content: '\f104';
-  font-family: 'Font Awesome 5 Free';
+  content: '\f100';
+  font-family: FontAwesome;
   margin-right: .1rem
 }
 
@@ -9796,8 +9804,8 @@ a:focus {
 }
 
 .sidebar.toggled #sidebarToggle::after {
-  content: '\f105';
-  font-family: 'Font Awesome 5 Free';
+  content: '\f101';
+  font-family: FontAwesome;
   margin-left: .25rem
 }
 
@@ -10042,7 +10050,7 @@ a:focus {
 }
 
 .sidebar-dark #sidebarToggle {
-  background-color: rgba(255, 255, 255, .2)
+  /* background-color: rgba(255, 255, 255, .2) */
 }
 
 .sidebar-dark #sidebarToggle::after {
@@ -10050,7 +10058,7 @@ a:focus {
 }
 
 .sidebar-dark #sidebarToggle:hover {
-  background-color: rgba(255, 255, 255, .25)
+  /* background-color: rgba(255, 255, 255, .25) */
 }
 
 .sidebar-dark.toggled #sidebarToggle::after {
@@ -10744,16 +10752,24 @@ body.sidebar-toggled footer.sticky-footer {
 
 .container-fluid .sidebar1 #sidebar1Toggle {
   width: 1.5rem;
-  height: 1.5rem;
+  height: 1rem;
   text-align: center;
   margin-bottom: 1rem;
   cursor: pointer;
+  background-color: Transparent;
+  background-repeat:no-repeat;
+  border: none;
+  overflow: hidden;
+  outline:none;
+  float:right;
+  color:#fff;
 }
+
 
 .container-fluid .sidebar1 #sidebar1Toggle::after {
   font-weight: 900;
-  content: '\f104';
-  font-family: 'Font Awesome 5 Free';
+  content: '\f100';
+  font-family: FontAwesome;
   margin-right: 0.1rem;
 }
 
@@ -10771,8 +10787,8 @@ body.sidebar-toggled footer.sticky-footer {
 }
 
 .container-fluid .sidebar1.toggled #sidebar1Toggle::after {
-  content: '\f105';
-  font-family: 'Font Awesome 5 Free';
+  content: '\f101';
+  font-family: FontAwesome;
   margin-left: 0.1rem;
 }
 
@@ -10802,7 +10818,7 @@ body.sidebar-toggled footer.sticky-footer {
 
 .container-fluid .sidebar1 .sidebar1-heading {
   text-align: center;
-  padding: 1.25rem 1rem 0.25rem;
+  padding: 1.25rem 0rem 0.25rem 1rem;
   font-weight: 800;
   font-size: 0.75rem;
 }
@@ -11761,8 +11777,8 @@ padding-bottom: 1.5rem;
     background-color: transparent;
     border-color: transparent transparent #2e59d9;
     border-bottom: 3px solid #2e59d9 !important;
-    font-size: 20px;
-    font-weight: bold;
+    /* font-size: 20px; */
+    /* font-weight: bold; */
 }
 #tabs .nav-tabs .nav-link {
 	padding: 0.5rem 0;
@@ -11770,7 +11786,12 @@ padding-bottom: 1.5rem;
     border-top-left-radius: .25rem;
     border-top-right-radius: .25rem;
     color: #858796;
-    font-size: 20px;
+    /* font-size: 20px; */
+}
+
+#tabs .nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
+  border: 0px;
+  /* border-color: #eaecf4 #eaecf4 #dddfeb; */
 }
 .hidden {
      display:none;
@@ -11989,4 +12010,14 @@ padding-bottom: 1.5rem;
 
 .nav-item.active {
     font-weight: 700;
+}
+
+.line-chart {
+  width: 150px;
+  height: 30px;
+  margin-left:-50px;
+}
+
+.canvasjs-chart-credit {
+  display:none;
 }

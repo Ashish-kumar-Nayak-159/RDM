@@ -44,22 +44,26 @@ export class AlertsComponent implements OnInit, OnDestroy {
         headers: ['Timestamp', 'Message ID', 'Message'],
         data: [
           {
+            name: 'Code',
+            key: 'code',
+          },
+          {
             name: 'Timestamp',
             key: 'local_created_date',
           },
           {
-            name: 'Message ID',
-            key: 'message_id',
+            name: 'Message',
+            key: 'message'
           },
           {
-            name: 'Message',
+            name: '',
             key: undefined,
           }
         ]
       };
       if (this.pageType === 'gateway') {
-        this.alertTableConfig.data.splice(1, 1);
-        this.alertTableConfig.data.splice(1, 0, {
+        // this.alertTableConfig.data.splice(1, 1);
+        this.alertTableConfig.data.splice(2, 0, {
           name: 'Asset Name',
           key: 'device_id'
         });
@@ -128,11 +132,11 @@ export class AlertsComponent implements OnInit, OnDestroy {
       isDisplaySave: false,
       isDisplayCancel: true
     };
-    this.selectedAlert = obj.data;
+    this.selectedAlert = JSON.parse(JSON.stringify(obj.data));
     this.getAlertMessageData(obj.data).then(message => {
       this.selectedAlert.message = message;
     });
-    this.selectedAlert = obj.data;
+    // this.selectedAlert = obj.data;
     $('#alertMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }

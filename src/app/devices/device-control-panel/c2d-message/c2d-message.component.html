@@ -32,10 +32,10 @@
           <!-- <td></td> -->
           <td *ngIf="type !== 'response'">
             <a (click)="loadMessageDetail(msg, true)" href="javascript:void(0)">
-              <i class="fas fa-fw fa-eye"></i></a></td>
+              <i class="fa fa-fw fa-eye"></i></a></td>
           <td>
             <a (click)="loadResponseDetail(msg, true)" href="javascript:void(0)">
-              <i class="fas fa-fw fa-eye"></i></a></td>
+              <i class="fa fa-fw fa-eye"></i></a></td>
         </tr>
       </ng-container>
         <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading && isFilterSelected">

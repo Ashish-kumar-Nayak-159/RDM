@@ -4,8 +4,16 @@
 
 <div class="topnavbar bg-white" >
   <div class="d-sm-flex align-items-center justify-content-between mt-3">
-    <h4 class="mb-0 text-gray-800 row col-12">Welcome to
-      {{deviceType.name}}</h4><br/>
+    <div class="row col-md-12">
+      <h4 class="mb-0 text-gray-800 row col-md-7 pull-left">Welcome to
+        {{deviceType.name}}
+      </h4>
+      <a
+        class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm pull-right"
+        href="javascript:void(0)"
+        title="Sync with cache"
+        >Sync with cache <i class="fa fa-refresh fa-sm text-white"></i></a>
+    </div>
   </div>
 </div>
 <div class="con-pad ">

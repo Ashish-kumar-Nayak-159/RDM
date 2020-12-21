@@ -14,7 +14,7 @@ import { environment } from 'src/environments/environment';
   templateUrl: './application-dashboard.component.html',
   styleUrls: ['./application-dashboard.component.css']
 })
-export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ApplicationDashboardComponent implements OnInit, OnDestroy {
 
   @ViewChildren('c2dChart') c2dChart: ElementRef;
   @ViewChildren('d2cChart') d2cChart: ElementRef;
@@ -58,9 +58,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
   isLastNotificationDataLoading = false; // flag to identify last {noOfRecordsToDisplay} notifications API call is completed or not
   apiSubscriptions: Subscription[] = []; // to store all the API subscriptions
   userData: any;
-  applicationData: any;
   blobToken = environment.blobKey;
-  appName: string;
   contextApp: any;
   constantData = CONSTANTS;
   tileName: string;
@@ -73,17 +71,10 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    console.log('22222    ', this.commonService.getFlag());
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.route.paramMap.subscribe(async params => {
-      this.appName = params.get('applicationId');
-      this.applicationData = this.userData.apps.filter(
-        app => app.app === params.get('applicationId')
-      )[0];
-      await this.getApplicationData();
       console.log(this.contextApp);
-      this.tileName = this.getTileName(
-        (this.contextApp?.metadata?.contain_devices && !this.contextApp?.metadata?.contain_gateways ? 'IoT Devices' :
-        (!this.contextApp?.metadata?.contain_devices && this.contextApp?.metadata?.contain_gateways ? 'IoT Gateways' : '')));
+      this.tileName = this.getTileName('IoT Gateways');
       if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.logo) {
         this.contextApp.metadata.logo = {
           url : CONSTANTS.DEFAULT_APP_LOGO
@@ -99,12 +90,11 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
         data: [
           {
             title: this.contextApp.user.hierarchyString,
-            url: 'applications/' + this.appName
+            url: 'applications/' + this.contextApp.app
           }
         ]
       });
       console.log(this.contextApp);
-      // this.getApplicationData();
       this.getDashboardSnapshot();
       this.getLastNotificationData();
       this.getLastAlertData();
@@ -113,38 +103,6 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
 
   }
 
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      const node = document.createElement('script');
-      node.src = './assets/js/kdm.min.js';
-      node.type = 'text/javascript';
-      node.async = false;
-      document.getElementsByTagName('head')[0].appendChild(node);
-      }, 500);
-  }
-
-  getApplicationData() {
-    return new Promise((resolve) => {
-      this.applicationService.getApplicationDetail(this.appName).subscribe(
-        (response: any) => {
-            this.contextApp = response;
-            this.contextApp.user = this.applicationData.user;
-            resolve();
-        });
-    });
-  }
-
-  // getApplicationData() {
-  //   this.applicationService.getApplications({
-  //     app: this.appName
-  //   }).subscribe(
-  //     (response: any) => {
-  //       if (response && response.data) {
-  //         this.applicationData = response.data[0];
-  //       }
-  //     }
-  //   );
-  // }
 
   getTileName(type) {
     let name;
@@ -165,7 +123,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
     console.log(this.contextApp);
     this.isDashboardSnapshotLoading = true;
     const obj = {
-      app: this.appName,
+      app: this.contextApp.app,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy)
     };
     this.apiSubscriptions.push(this.applicationService.getApplicationDashboardSnapshot(obj, obj.app)
@@ -185,7 +143,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
   getLastAlertData() {
     this.isLastAlertDataLoading = true;
     const obj = {
-      app: this.appName,
+      app: this.contextApp.app,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
       count: this.noOfRecordsToDisplay
     };
@@ -209,7 +167,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
   getLastNotificationData() {
     this.isLastNotificationDataLoading = true;
     const obj = {
-      app: this.appName,
+      app: this.contextApp.app,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
       count: this.noOfRecordsToDisplay
     };
@@ -235,7 +193,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
   getLastEventData() {
     this.isLastEventDataLoading = true;
     const obj = {
-      app: this.appName,
+      app: this.contextApp.app,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
       count: this.noOfRecordsToDisplay
     };
@@ -279,18 +237,14 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy, AfterVi
   }
 
   redirectToDevice(type?: string) {
-    const fromValue = (
-    (this.contextApp?.metadata?.contain_devices ? CONSTANTS.IP_DEVICE :
-    (this.contextApp?.metadata?.contain_gateways ? CONSTANTS.IP_GATEWAY : null)));
+    const fromValue = CONSTANTS.IP_GATEWAY;
     let obj;
     if (type || fromValue) {
       obj = {
         connection_state: type
       };
     }
-    this.router.navigate(['applications', this.appName,
-    (this.contextApp?.metadata?.contain_devices ? 'devices' :
-      (this.contextApp?.metadata?.contain_gateways ? 'gateways' : ''))], {queryParams: obj});
+    this.router.navigate(['applications', this.contextApp.app, 'gateways'], {queryParams: obj});
   }
 
   /**

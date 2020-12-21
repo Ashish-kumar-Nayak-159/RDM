@@ -1,90 +1,6 @@
 export class CONSTANTS {
 
-  public static DEVICE_RESERVED_TAGS_LIST = [
-    {
-      name: 'Created By',
-      key: 'created_by'
-    },
-    {
-      name: 'Created On',
-      key: 'local_created_date'
-    },
-    {
-      name: 'Device Manager',
-      key: 'device_manager'
-    },
-    {
-      name: 'Device Type',
-      key: 'device_type'
-    },
-    {
-      name: 'Location Coordinates',
-      key: 'location_coordinates'
-    },
-    {
-      name: 'Manufacturer',
-      key: 'manufacturer'
-    },
-    {
-      name: 'Serial No',
-      key: 'serial_number'
-    },
-    {
-      name: 'MAC ID',
-      key: 'mac_address'
-    },
-    {
-      name: 'Protocol',
-      key: 'protocol'
-    }
-  ];
   // device tags list based on device protocol
-  public static DEVICE_PROTOCOL_BASED_TAGS_LIST = {
-    'IP Device (SIM)': [
-      {
-        name: 'SIM No',
-        key: 'sim_no'
-      },
-      {
-        name: 'SIM Service Provider',
-        key: 'sim_service_provider'
-      },
-      {
-        name: 'SIM IMEI No',
-        key: 'sim_imei'
-      },
-      {
-        name: '2G/3G/4G',
-        key: 'network_option'
-      }
-      ],
-    LoRa: [
-      {
-        name: 'LoRa Class Type'
-      },
-      {
-        name: 'LoRa Service Provider'
-      },
-      {
-        name: 'Activation Type'
-      },
-      {
-        name: 'DevEUI'
-      },
-      {
-        name: 'DevAddr'
-      },
-      {
-        name: 'AppEUI'
-      },
-      {
-        name: 'GatewayEUI'
-      }
-    ]
-  };
-
-
-
   public static PROTOCOL_CONNECTIVITY_LIST = [
     {
       name: 'IP Device (WiFi)',
@@ -125,6 +41,11 @@ export class CONSTANTS {
       display: true
     },
     {
+      name: 'PLC',
+      connectivity: ['PLC Protocol -> IoT Gateway -> Azure IoT Hub SDK -> Azure Cloud'],
+      display: true
+    },
+    {
       name: 'Other',
       connectivity: ['Custom Protocol -> IoT Gateway -> Azure IoT Hub SDK -> Azure Cloud', 'Custom Protocol -> IoT Gateway -> MQTT Client -> Azure Cloud'],
       display: true
@@ -156,55 +77,68 @@ export class CONSTANTS {
       system_name: 'Home',
       url: 'applications/:appName',
       display_name: 'Home',
-      icon: 'fas fa-fw fa-home',
-      visible: true
+      icon: 'fa fa-fw fa-home',
+      visible: true,
+      showAccordion: [],
+      priority: 1
     },
     {
       page: 'Dashboard',
       system_name: 'Dashboard',
       url: 'applications/:appName/dashboard',
       display_name: 'Dashboard',
-      icon: 'fas fa-fw fa-bar-chart',
-      visible: true
+      icon: 'fa fa-fw fa-bar-chart',
+      visible: true,
+      showAccordion: [
+        { name: 'Title', value: 'Dashboard'},
+      ],
+      priority: 1
     },
     {
       page: 'Devices',
       system_name: 'IoT Devices',
       url: 'applications/:appName/devices',
       display_name: 'IoT Devices',
-      icon: 'fas fa-fw fa-desktop',
-      visible: true
-    },
-    {
-      page: 'Gateways',
-      system_name: 'IoT Gateways',
-      url: 'applications/:appName/gateways',
-      display_name: 'IoT Gateways',
-      icon: 'fas fa-fw fa-desktop',
-      visible: true
+      icon: 'fa fa-fw fa-desktop',
+      visible: true,
+      showAccordion: [
+        { name: 'Title', value: 'Assets'},
+        { name: 'Table Key Name', value: 'Asset'}
+      ],
+      priority: 1
     },
     {
       page: 'Non IP Devices',
-      system_name: 'Non IP Devices',
+      system_name: 'Legacy Devices',
       url: 'applications/:appName/nonIPDevices',
-      display_name: 'Non IP Devices',
-      icon: 'fas fa-fw fa-folder',
-      visible: true
+      display_name: 'Legacy Devices',
+      icon: 'fa fa-fw fa-folder',
+      visible: true,
+      showAccordion: [
+        { name: 'Title', value: 'Assets'},
+        { name: 'Table Key Name', value: 'Asset'}
+      ],
+      priority: 1
     },
     {
-      page: 'alerts',
+      page: 'Things Modelling',
       system_name: 'Things Modelling',
       url: 'applications/:appName/things/model',
       display_name: 'Asset Modelling',
-      icon: 'fas fa-fw fa-list',
-      visible: true
+      icon: 'fa fa-fw fa-list',
+      visible: true,
+      showAccordion: [
+        { name: 'Title', value: 'Models'},
+        { name: 'Table Key Name', value: 'Model'}
+      ],
+      priority: 1
     },
     {
       page: 'Device Groups',
       system_name: 'Device Groups',
       url: null,
       display_name: 'Device Groups',
-      icon: 'fas fa-fw fa-table',
+      icon: 'fa fa-fw fa-table',
       visible: true,
       children: [
         {
@@ -212,32 +146,66 @@ export class CONSTANTS {
           system_name: 'Group Jobs',
           url: null,
           display_name: 'Group Jobs',
-          visible: true
+          visible: true,
+          showAccordion: []
         },
         {
           page: 'Group Type',
           system_name: 'Group Type',
           url: null,
           display_name: 'Group Type',
-          visible: true
+          visible: true,
+          showAccordion: []
         }
-      ]
+      ],
+      priority: 1
     },
     {
       page: 'Alert Visualization',
       system_name: 'Alert Visualization',
       url: 'applications/:appName/data/visualization',
       display_name: 'Alert Visualization',
-      icon: 'fas fa-fw fa-chart-bar',
-      visible: true
+      icon: 'fa fa-fw fa-bar-chart',
+      visible: true,
+      showAccordion: [
+        { name: 'Title', value: 'Alerts'},
+      ],
+      priority: 1
     },
     {
-      page: 'App Settings',
-      system_name: 'App Settings',
-      url: 'applications/:appName/settings',
-      display_name: 'App Settings',
-      icon: 'fas fa-fw fa-cog',
-      visible: true
+      page: 'Reports',
+      system_name: 'Reports',
+      url: 'applications/:appName/reports',
+      display_name: 'Reports',
+      icon: 'fa fa-fw fa-file',
+      visible: true,
+      showAccordion: [
+        { name: 'Title', value: 'Reports'},
+      ],
+      priority: 1
+    },
+    // {
+    //   page: 'App Settings',
+    //   system_name: 'App Settings',
+    //   url: 'applications/:appName/settings',
+    //   display_name: 'App Settings',
+    //   icon: 'fa fa-fw fa-cog',
+    //   visible: true,
+    //   showAccordion: [],
+    //   priority: 1
+    // },
+    {
+      page: 'Gateways',
+      system_name: 'IoT Gateways',
+      url: 'applications/:appName/gateways',
+      display_name: 'IoT Gateways',
+      icon: 'fa fa-fw fa-desktop',
+      visible: true,
+      showAccordion: [
+        { name: 'Title', value: 'Gateways'},
+        { name: 'Table Key Name', value: 'Gateway'}
+      ],
+      priority: 2
     }
   ];
 
@@ -256,7 +224,7 @@ export class CONSTANTS {
       system_name: 'Overview',
       url: '#device_overview',
       display_name: 'Overview',
-      icon: 'fas fa-fw fa-life-ring',
+      icon: 'fa fa-fw fa-life-ring',
       visible: true,
       isTitle: false
     },
@@ -265,7 +233,7 @@ export class CONSTANTS {
       system_name: 'Access Control',
       url: '#device_access_control',
       display_name: 'Access Control (IAM)',
-      icon: 'fas fa-fw fa-users',
+      icon: 'fa fa-fw fa-users',
       visible: true,
       isTitle: false
     },
@@ -274,7 +242,7 @@ export class CONSTANTS {
       system_name: 'Tags',
       url: '#device_tags',
       display_name: 'Tags',
-      icon: 'fas fa-fw fa-tags',
+      icon: 'fa fa-fw fa-tags',
       visible: true,
       isTitle: false
     },
@@ -292,7 +260,7 @@ export class CONSTANTS {
       system_name: 'Heartbeat',
       url: '#device_heartbeat',
       display_name: 'Heartbeat',
-      icon: 'fas fa-fw fa-heartbeat',
+      icon: 'fa fa-fw fa-heartbeat',
       visible: true,
       isTitle: false
     },
@@ -301,7 +269,7 @@ export class CONSTANTS {
       system_name: 'Notifications',
       url: '#device_notifications',
       display_name: 'Notifications',
-      icon: 'fas fa-fw fa-bell',
+      icon: 'fa fa-fw fa-bell',
       visible: true,
       isTitle: false
     },
@@ -310,7 +278,16 @@ export class CONSTANTS {
       system_name: 'Alerts',
       url: '#device_alerts',
       display_name: 'Alerts',
-      icon: 'fas fa-fw fa-bolt',
+      icon: 'fa fa-fw fa-bolt',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'alertendevents',
+      system_name: 'Alert End Events',
+      url: '#device_alert_end_events',
+      display_name: 'Alert End Events',
+      icon: 'fa fa-fw fa-hourglass-end',
       visible: true,
       isTitle: false
     },
@@ -319,7 +296,7 @@ export class CONSTANTS {
       system_name: 'Telemetry',
       url: '#device_telemetry',
       display_name: 'Telemetry',
-      icon: 'fas fa-fw fa-history',
+      icon: 'fa fa-fw fa-history',
       visible: true,
       isTitle: false
     },
@@ -328,16 +305,16 @@ export class CONSTANTS {
       system_name: 'Error',
       url: '#device_error',
       display_name: 'Error',
-      icon: 'fas fa-fw fa-exclamation-triangle',
+      icon: 'fa fa-fw fa-exclamation-triangle',
       visible: true,
       isTitle: false
     },
     {
       page: 'battery_message',
-      system_name: 'Batery',
+      system_name: 'Battery',
       url: '#device_battery_message',
-      display_name: 'Batery',
-      icon: 'fas fa-fw fa-battery-full',
+      display_name: 'Battery',
+      icon: 'fa fa-fw fa-battery-full',
       visible: true,
       isTitle: false
     },
@@ -346,7 +323,7 @@ export class CONSTANTS {
       system_name: 'Logs',
       url: '#device_logs',
       display_name: 'Logs',
-      icon: 'fas fa-fw fa-file',
+      icon: 'fa fa-fw fa-file',
       visible: true,
       isTitle: false
     },
@@ -355,7 +332,7 @@ export class CONSTANTS {
       system_name: 'Other',
       url: '#device_other',
       display_name: 'Other',
-      icon: 'fas fa-fw fa-poll-h',
+      icon: 'fa fa-fw fa-stack-exchange',
       visible: true,
       isTitle: false
     },
@@ -373,7 +350,7 @@ export class CONSTANTS {
       system_name: 'Control Widgets',
       url: '#device_control_widgets',
       display_name: 'Control Widgets',
-      icon: 'fas fa-fw fa-angle-right',
+      icon: 'fa fa-fw fa-angle-right',
       visible: true,
       isTitle: false
     },
@@ -390,8 +367,17 @@ export class CONSTANTS {
       page: 'trend-analysis',
       system_name: 'Trend Analysis',
       url: '#device_trend_analysis',
-      display_name: 'Trend Analysis',
-      icon: 'fas fa-fw fa-stream',
+      display_name: 'Telemetry Trend Analysis',
+      icon: 'fa fa-fw fa-area-chart',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'alert-visualization',
+      system_name: 'Alert Visualization',
+      url: '#device_alert_visualization',
+      display_name: 'Alert Visualization',
+      icon: 'fa fa-fw fa-bar-chart',
       visible: true,
       isTitle: false
     },
@@ -409,7 +395,7 @@ export class CONSTANTS {
       system_name: 'Preventive Maintenance',
       url: '#device_preventive_maintenance',
       display_name: 'Preventive Maintenance',
-      icon: 'fas fa-fw fa-stream',
+      icon: 'fa fa-fw fa-stream',
       visible: true,
       isTitle: false
     },
@@ -418,7 +404,7 @@ export class CONSTANTS {
       system_name: 'Predictive Maintenance',
       url: '#device_predictive_maintenance',
       display_name: 'Predictive Maintenance',
-      icon: 'fas fa-fw fa-stream',
+      icon: 'fa fa-fw fa-stream',
       visible: true,
       isTitle: false
     }
@@ -439,7 +425,7 @@ export class CONSTANTS {
       system_name: 'Overview',
       url: '#device_type_overview',
       display_name: 'Overview',
-      icon: 'fas fa-fw fa-life-ring',
+      icon: 'fa fa-fw fa-life-ring',
       visible: true,
       isTitle: false
     },
@@ -448,7 +434,7 @@ export class CONSTANTS {
       system_name: 'Tags',
       url: '#device_type_tags',
       display_name: 'Tags',
-      icon: 'fas fa-fw fa-tags',
+      icon: 'fa fa-fw fa-tags',
       visible: true,
       isTitle: false
     },
@@ -466,7 +452,7 @@ export class CONSTANTS {
       system_name: 'Measured Properties',
       url: '#device_type_properties',
       display_name: 'Measured Properties',
-      icon: 'fas fa-fw fa-history',
+      icon: 'fa fa-fw fa-history',
       visible: true,
       isTitle: false
     },
@@ -475,7 +461,7 @@ export class CONSTANTS {
       system_name: 'Readable Properties',
       url: '#device_type_properties',
       display_name: 'Readable Properties',
-      icon: 'fas fa-fw fa-book',
+      icon: 'fa fa-fw fa-book',
       visible: true,
       isTitle: false
     },
@@ -484,7 +470,7 @@ export class CONSTANTS {
       system_name: 'Writable Properties',
       url: '#device_type_properties',
       display_name: 'Writable Properties',
-      icon: 'fas fa-fw fa-pencil-square-o',
+      icon: 'fa fa-fw fa-pencil-square-o',
       visible: true,
       isTitle: false
     },
@@ -493,7 +479,7 @@ export class CONSTANTS {
       system_name: 'Device Methods(commands)',
       url: '#device_type_methods',
       display_name: 'Device Methods(commands)',
-      icon: 'fas fa-fw fa-tags',
+      icon: 'fa fa-fw fa-tags',
       visible: true,
       isTitle: false
     },
@@ -506,21 +492,21 @@ export class CONSTANTS {
       visible: true,
       isTitle: true
     },
-    {
-      page: 'jsonpacket',
-      system_name: 'JSON Packet Format',
-      url: '#device_type_jsonpacket',
-      display_name: 'JSON Packet Format',
-      icon: 'fas fa-fw fa-heartbeat',
-      visible: true,
-      isTitle: false
-    },
+    // {
+    //   page: 'jsonpacket',
+    //   system_name: 'JSON Packet Format',
+    //   url: '#device_type_jsonpacket',
+    //   display_name: 'JSON Packet Format',
+    //   icon: 'fa fa-fw fa-heartbeat',
+    //   visible: true,
+    //   isTitle: false
+    // },
     {
       page: 'alert_conditioning',
       system_name: 'Alert Conditioning',
       url: '#device_type_alert_conditioning',
       display_name: 'Alert Conditioning',
-      icon: 'fas fa-fw fa-exclamation-triangle',
+      icon: 'fa fa-fw fa-exclamation-triangle',
       visible: true,
       isTitle: false
     },
@@ -538,7 +524,7 @@ export class CONSTANTS {
       system_name: 'Control Widgets',
       url: '#device_type_control_widgets',
       display_name: 'Control Widgets',
-      icon: 'fas fa-fw fa-angle-right',
+      icon: 'fa fa-fw fa-angle-right',
       visible: true,
       isTitle: false
     },
@@ -556,7 +542,7 @@ export class CONSTANTS {
       system_name: 'Widgets',
       url: '#device_type_layout',
       display_name: 'Widgets',
-      icon: 'fas fa-fw fa-bar-chart',
+      icon: 'fa fa-fw fa-bar-chart',
       visible: true,
       isTitle: false
     },
@@ -574,7 +560,7 @@ export class CONSTANTS {
       system_name: 'Documents',
       url: '#device_type_reference_material',
       display_name: 'Documents',
-      icon: 'fas fa-fw fa-file-alt',
+      icon: 'fa fa-fw fa-file',
       visible: true,
       isTitle: false
     }
@@ -606,15 +592,19 @@ export class CONSTANTS {
   ];
 
   public static USER_DETAILS = 'userData';
+  public static SELECTED_APP_DATA = 'selectedAppData';
+  public static DASHBOARD_TELEMETRY_SELECTION = 'dashboardTelemetryFilterObj';
+  public static DASHBOARD_ALERT_SELECTION = 'dashboardAlertFilterObj';
   public static CURRENT_BREADCRUMB_STATE = 'breadcrumbState';
   public static NON_IP_DEVICES = 'Non IP Devices';
   public static IP_DEVICE = 'IoT Device';
   public static IP_GATEWAY = 'IoT Gateway';
-  public static NON_IP_DEVICE = 'Non IP Device';
+  public static NON_IP_DEVICE = 'Legacy Device';
   public static NOT_ALLOWED_SPECIAL_CHARS_NAME = [' ', '.', '$', '#'];
   public static PASSWORD_REGEX = '^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,20}$';
   public static APP_ADMIN_ROLE = 'App Admin';
   public static DEFAULT_APP_ICON = 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/default_app_icon.png';
   public static DEFAULT_APP_LOGO = 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/default_app_logo.jpg';
   public static DEFAULT_HEADER_LOGO = 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/app-images/header-logo/logo.png';
+  public static DEFAULT_MODEL_IMAGE = 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/device-type-images/device.svg';
 }

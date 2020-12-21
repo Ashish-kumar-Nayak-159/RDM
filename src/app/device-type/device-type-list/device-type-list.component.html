@@ -4,29 +4,29 @@
     <h1 class="h3 mb-0 text-gray-800">Asset Model</h1>
   </div> -->
   <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-1">
-    <h5 class="h4 mb-0 text-gray-800">Asset Model</h5>
+    <h5 class="h4 mb-0 text-gray-800">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}</h5>
     <a
     class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-4"
-    href="javascript:void(0)"  (click)="openCreateDeviceTypeModal()" title="Add Asset Model"
-    ><i class="fas fa- fa-sm fa-plus text-white"></i></a>
+    href="javascript:void(0)"  (click)="openCreateDeviceTypeModal()" title="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"
+    ><i class="fa fa- fa-sm fa-plus text-white"></i></a>
   </div>
   <div class="card row bg-white" style="margin-left:-1.5rem">
     <div class="col-xl-12 col-md-12 mb-12">
       <form>
-        <div class="form-group form-inline  my-2 mx-3">
+        <div class="form-group form-inline  my-2 mx-2">
 
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="app"
           placeholder="App" disabled [(ngModel)]="thingsModelFilterObj.app"
           name="app">
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4"
-          [(ngModel)]="thingsModelFilterObj.name" name="name" placeholder="Model Name">
+          [(ngModel)]="thingsModelFilterObj.name" name="name" placeholder="{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name">
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputPassword4"
           [(ngModel)]="thingsModelFilterObj.created_by" name="created_by" placeholder="Created By">
 
           <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="searchThingsModels()">
-            <i class="fas fa-search fa-sm"></i></button>
+            <i class="fa fa-search fa-sm"></i></button>
           <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="clearFilter()">
-            <i class="fas fa-trash  fa-sm"></i></button>
+            <i class="fa fa-trash  fa-sm"></i></button>
 
         </div>
        </form>
@@ -55,7 +55,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
     <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">Create Things Model</h5>
+      <h5 class="modal-title" id="exampleModalLabel">Create {{(tileData && tileData[1] ? tileData[1]?.value : '')}}</h5>
       <button type="button" class="close"  (click)="onCloseThingsModelModal()" aria-label="Close" [disabled]="isCreateThingsModelAPILoading">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -67,12 +67,12 @@
           <input type="text" class="form-control" id="app_name" [defaultValue]="contextApp.app" disabled>
         </div>
         <div class="form-group">
-          <label for="message-text" class="col-form-label required">Model Name:</label>
+          <label for="message-text" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name:</label>
           <input type="text" class="form-control" id="name" name="name" [(ngModel)]="thingsModel.name"
-          placeholder="Enter Model Name">
+          placeholder="Enter {{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name">
         </div>
         <div class="form-group">
-          <label for="recipient-name" class="col-form-label required">Model Type:</label>
+          <label for="recipient-name" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Type:</label>
           <select class="custom-select" id="template" name="model_type" [(ngModel)]="thingsModel.metadata.model_type"
           (change)="getProtocolList()">
             <option [ngValue]="constantData.IP_DEVICE">{{constantData.IP_DEVICE}}</option>
@@ -91,7 +91,7 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="recipient-name" class="col-form-label required">Cloud Connectivity followed by the Model:</label>
+          <label for="recipient-name" class="col-form-label required">Cloud Connectivity followed by the {{(tileData && tileData[1] ? tileData[1]?.value : '')}}:</label>
           <select class="custom-select" id="template" name="connectivity" [(ngModel)]="thingsModel.tags.cloud_connectivity">
             <option [ngValue]="undefined"> Select Connectivity</option>
           <option *ngFor="let item of connectivityList" [ngValue]="item">

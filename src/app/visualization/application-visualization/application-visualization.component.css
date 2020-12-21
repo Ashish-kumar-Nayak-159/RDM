@@ -3,6 +3,10 @@
   overflow-y: auto;
 }
 
+input:invalid {
+  border: 1px solid #d1d3e2;
+}
+
 
 #bar-chart text {
   fill: yellow!important;
@@ -25,6 +29,15 @@ th[scope=row] {
   z-index: 1;
 }
 
+.w-22 {
+  width: 22rem!important;
+}
+
+.w-7 {
+  width: 7rem!important;
+}
+
+
 .record-input {
   background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="90" height="30"><text x="5" y="19" style="font-size: .875rem; font-family: Roboto, Helvetica Neue, sans-serif;" fill="%23858796">N Records:</text></svg>') no-repeat;
   box-sizing: border-box;
@@ -35,5 +48,13 @@ th[scope=row] {
 .bg-alert-selection {
   background-color: #f7ce64!important;
 }
+
+.minute-input {
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="90" height="30"><text x="5" y="19" style="font-size: .875rem; font-family: Roboto, Helvetica Neue, sans-serif;" fill="%23858796">N Minutes:</text></svg>') no-repeat;
+  box-sizing: border-box;
+  padding-left: 5rem;
+  width: 9rem;
+}
+
 
 

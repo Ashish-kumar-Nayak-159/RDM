@@ -1,3 +1,4 @@
+import { UiSwitchModule } from 'ngx-ui-switch';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -21,10 +22,12 @@ import { CommonCustomModule } from '../common/common.module';
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     AccordionModule.forRoot(),
-    CommonCustomModule
+    CommonCustomModule,
+    UiSwitchModule
   ],
   providers: [
     {provide: OWL_DATE_TIME_LOCALE, useValue: {useUtc: true}}
-  ]
+  ],
+  exports: [ApplicationVisualizationComponent]
 })
 export class VisualizationModule { }

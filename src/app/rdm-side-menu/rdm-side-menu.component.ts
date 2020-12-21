@@ -1,6 +1,9 @@
+import { ToasterService } from './../services/toaster.service';
+import { SignalRService } from './../services/signalR/signal-r.service';
+import { element } from 'protractor';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { filter } from 'rxjs/operators';
-import { Component, OnInit, Inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Inject, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { CommonService } from 'src/app/services/common.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -11,41 +14,60 @@ declare var $: any;
   templateUrl: './rdm-side-menu.component.html',
   styleUrls: ['./rdm-side-menu.component.css']
 })
-export class RDMSideMenuComponent implements OnInit, OnChanges {
+export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
 
   userData: any;
-  @Input() appName = '';
   constantsData = CONSTANTS;
-  appData: any;
+  contextApp: any;
   displayMenuList = [];
-  predictiveDemoUrl = 'https://app.powerbi.com/view?r=eyJrIjoiMzUyOWE3MmUtZWJhYi00NzA5LWI1YjktMTMwZDg1NjJiNmY2IiwidCI6IjA4YjdjZmViLTg5N2UtNDY5Yi05NDM2LTk3NGU2OTRhOGRmMiJ9&pageName=ReportSection';
-  applicationData: any;
+  signalRAlertSubscription: any;
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private commonService: CommonService,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private applicationService: ApplicationService
+    private toasterService: ToasterService,
+    private signalRService: SignalRService
   ) { }
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     // if (this.userData && !this.userData.is_super_admin) {
     //   this.appName = this.userData.apps[0].app;
     // }
+    if (this.contextApp) {
+      // alert('here');
+      this.connectToSignalR();
 
-    if (this.appName) {
-      this.applicationData = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
-      await this.getApplicationData();
+      this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe(
+        msg => {
+          if (msg?.severity?.toLowerCase() === 'critical') {
+          this.toasterService.showCriticalAlert(
+            msg.message,
+            msg.device_display_name ? msg.device_display_name : msg.device_id,
+            'toast-bottom-right',
+            60000
+          );
+          }
+        }
+      );
+    }
+    if (this.contextApp?.app) {
       if (!this.userData?.is_super_admin) {
       let data = [];
-      if (this.appData?.configuration?.main_menu?.length > 0) {
-        this.constantsData.SIDE_MENU_LIST.forEach(config => {
+     // alert('here');
+      console.log(this.contextApp);
+      const arr = JSON.parse(JSON.stringify(this.constantsData.SIDE_MENU_LIST));
+      if (this.contextApp?.configuration?.main_menu?.length > 0) {
+        arr.forEach(config => {
           let found = false;
-          this.appData.configuration.main_menu.forEach(item => {
+          this.contextApp.configuration.main_menu.forEach(item => {
             if (config.page === item.page) {
               found = true;
-              data.push(item);
+              config.display_name = item.display_name;
+              config.visible = item.visible;
+              config.showAccordion = item.showAccordion;
+              data.push(config);
             }
           });
           if (!found) {
@@ -53,34 +75,30 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
           }
         });
       } else {
-        data =  this.constantsData.SIDE_MENU_LIST;
+        data =  arr;
       }
-      this.processSideMenuData(data, this.appData);
+      console.log('60   ', data);
+      this.processSideMenuData(data, this.contextApp);
       }
     }
     let i = 0;
-    this.router.events.subscribe(event => {
+    this.router.events.subscribe(async event => {
       if (event instanceof NavigationEnd && i === 0) {
         i++;
-        const list = event.url.split('/');
-        if (list[1] === 'applications' && list[2]) {
-          this.appName = list[2];
-        } else {
-          if (this.userData && !this.userData.is_super_admin) {
-            this.appName = this.userData.apps[0].app;
-          }
-        }
-        if (this.appName) {
-        this.appData = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
+        if (this.contextApp?.app) {
         if (!this.userData?.is_super_admin) {
         let data = [];
-        if (this.appData.configuration?.main_menu?.length > 0) {
-          this.constantsData.SIDE_MENU_LIST.forEach(config => {
+        const arr = JSON.parse(JSON.stringify(this.constantsData.SIDE_MENU_LIST));
+        if (this.contextApp.configuration?.main_menu?.length > 0) {
+          arr.forEach(config => {
             let found = false;
-            this.appData.configuration.main_menu.forEach(item => {
+            this.contextApp.configuration.main_menu.forEach(item => {
               if (config.page === item.page) {
                 found = true;
-                data.push(item);
+                config.display_name = item.display_name;
+                config.visible = item.visible;
+                config.showAccordion = item.showAccordion;
+                data.push(config);
               }
             });
             if (!found) {
@@ -88,16 +106,19 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
             }
           });
         } else {
-          data =  this.constantsData.SIDE_MENU_LIST;
+          data =  arr;
         }
-        this.processSideMenuData(data, this.appData);
+        this.processSideMenuData(data, this.contextApp);
         }
         }
       }
     });
 
     this.commonService.refreshSideMenuData.subscribe(list => {
-      const config = list.configuration?.main_menu?.length > 0 ? list.configuration.main_menu : CONSTANTS.SIDE_MENU_LIST;
+      console.log(list);
+      let config = list.configuration?.main_menu?.length > 0 ? list.configuration.main_menu :
+      JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+      config = JSON.parse(JSON.stringify(config));
       this.processSideMenuData(config, list);
       // const index = this.userData.apps.findIndex(app => app.app === list.app);
       // const obj = this.userData.apps[index];
@@ -105,57 +126,61 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
       // this.userData.apps.splice(index, 0, obj);
       // this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
     });
-
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (this.userData) {
-      this.appData = this.userData.apps.filter(app => app.app === this.decode(this.appName))[0];
-      await this.getApplicationData();
+      this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+      if (this.contextApp) {
+        // alert('here');
+        this.connectToSignalR();
+
+        this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe(
+          msg => {
+            if (msg?.severity?.toLowerCase() === 'critical') {
+            this.toasterService.showCriticalAlert(
+              msg.message,
+              msg.device_display_name ? msg.device_display_name : msg.device_id,
+              'toast-bottom-right',
+              60000
+            );
+            }
+          }
+        );
+      }
     }
   }
 
-  getApplicationData() {
-    return new Promise((resolve) => {
-      this.applicationService.getApplicationDetail(this.appName).subscribe(
-        (response: any) => {
-            this.appData = response;
-            if (this.applicationData?.user) {
-            this.appData.user = this.applicationData.user;
-            }
-            resolve();
-        });
-    });
+  connectToSignalR() {
+    this.signalRAlertSubscription?.unsubscribe();
+    this.signalRService.disconnectFromSignalR('overlay');
+    const obj = {
+      levels: this.contextApp.hierarchy.levels,
+      hierarchy: this.contextApp.user.hierarchy,
+      type: 'alert',
+      app: this.contextApp.app
+    };
+    console.log('overlay connection');
+    this.signalRService.connectToSignalR(obj, 'overlay');
   }
 
   processSideMenuData(data, list) {
-    console.log('data    ', data);
-    const arr = [];
+    // alert('here');
+    console.log('data-117    ', data);
+    const arr = JSON.parse(JSON.stringify(data));
     console.log(list);
-    data.forEach(item => {
-      if (list.metadata.contain_gateways) {
-        console.log('in gateway');
-        if (item.page !== 'Devices') {
-          arr.push(item);
+    arr.forEach(element => {
+      if (element.page === 'Things Modelling') {
+        if (this.contextApp?.user.role !== CONSTANTS.APP_ADMIN_ROLE) {
+        element.visible = false;
+        } else {
+          element.visible = true;
         }
       }
-      if (list.metadata.contain_devices) {
-        console.log('in device');
-        if (item.page !== 'Gateways' && item.page !== 'Non IP Devices') {
-          arr.push(item);
-        }
-      }
-  });
-    if (this.appData?.user.role !== CONSTANTS.APP_ADMIN_ROLE) {
-      arr.forEach(element => {
-        if (element.page === 'App Settings' || element.page === 'Things Modelling') {
-          element.visible = false;
-        }
-      });
-      console.log('in if', arr);
-    }
+    });
+    console.log('in if - 129', JSON.stringify(arr));
     this.displayMenuList = arr;
-    console.log(this.displayMenuList);
+    console.log('131   ', this.displayMenuList);
   }
 
   onSidebarToggle() {
@@ -174,11 +199,16 @@ export class RDMSideMenuComponent implements OnInit, OnChanges {
   }
 
   getURL(url) {
-    return url ? url.replace(':appName', this.decode(this.appName)) : url;
+    return url ? url.replace(':appName', this.decode(this.contextApp.app)) : url;
   }
 
   decode(item) {
     return decodeURIComponent(item);
+  }
+
+  ngOnDestroy() {
+    this.signalRService.disconnectFromSignalR('overlay');
+    this.signalRAlertSubscription?.unsubscribe();
   }
 
 }

@@ -19,6 +19,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   selectedAlert: any;
   seriesArr: any[] = [];
   propertyList: any[] = [];
+  device: any;
   xAxisProps: any;
   y1AxisProps: any[] = [];
   y2AxisProps: any[] = [];
@@ -58,9 +59,17 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         newObj.message_date = new Date(obj.message_date);
         delete newObj.aggregation_end_time;
         delete newObj.aggregation_start_time;
+        newObj['Total Mass Discharge'] = Number(newObj['Total Mass Discharge']);
+        newObj['Total Mass Suction'] = Number(newObj['Total Mass Suction']);
+        if (newObj['Total Mass Discharge'] < 1) {
+          newObj['Total Mass Discharge'] = undefined;
+        }
+        if (newObj['Total Mass Suction'] < 1) {
+          newObj['Total Mass Suction'] = undefined;
+        }
         data.splice(data.length, 0, newObj);
       });
-
+      console.log(data);
       chart.data = data;
       chart.dateFormatter.inputDateFormat = 'x';
       const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
@@ -90,8 +99,40 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       chart.legend.itemContainers.template.togglable = false;
       // chart.dateFormatter.dateFormat = 'DD-MMM-YYYY hh:mm:ss A';
       chart.exporting.menu = new am4core.ExportMenu();
+      chart.exporting.getFormatOptions("xlsx").useLocale = false;
+      chart.exporting.getFormatOptions("pdf").pageOrientation = 'landscape';
+      chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date.toString() + ' to ' + chart.data[chart.data.length - 1].message_date.toString();
+      const obj = {
+        "message_date": "Timestamp"
+      }
+      this.y1AxisProps.forEach(prop => {
+        this.propertyList.forEach(propObj => {
+          if (prop === propObj.json_key) {
+            const units = propObj.json_model[propObj.json_key].units;
+            obj[prop] = propObj.name + (units ? (' (' + units + ')') : '');
+          }
+        });
+      });
+      this.y2AxisProps.forEach(prop => {
+        this.propertyList.forEach(propObj => {
+          if (prop === propObj.json_key) {
+            const units = propObj.json_model[propObj.json_key].units;
+            obj[prop] = propObj.name + (units ? (' (' + units + ')') : '');
+          }
+        });
+      });
+      chart.exporting.dataFields = obj;
+      const list = new am4core.List<string>();
+      list.insertIndex(0, 'message_date');
+      console.log(list);
+      chart.exporting.dateFields = list;
+      chart.exporting.getFormatOptions("pdf").addURL = false;
+      chart.exporting.dateFormat = 'dd-MM-yyyy hh:mm:ss A a';
+      console.log(this.selectedAlert);
       if (this.selectedAlert) {
         chart.exporting.filePrefix = this.selectedAlert.device_id + '_Alert_' + this.selectedAlert.local_created_date;
+      } else {
+        chart.exporting.filePrefix = this.device.device_id + '_' + chart.data[0].message_date.toString() + '_' + chart.data[chart.data.length - 1].message_date.toString();
       }
       this.chart = chart;
     });
@@ -153,16 +194,24 @@ export class LiveChartComponent implements OnInit, OnDestroy {
     arr.forEach((prop, index) => {
       const series = chart.series.push(new am4charts.LineSeries());
       series.dataFields.dateX = 'message_date';
+      this.propertyList.forEach(propObj => {
+        if (propObj.json_key === prop) {
+          series.units = propObj.json_model[propObj.json_key].units;
+        }
+        console.log('unitssss    ', series.units);
+      });
       series.name =  prop;
       // series.stroke = this.commonService.getRandomColor();
       series.yAxis = valueYAxis;
       series.dataFields.valueY =  prop;
       series.compareText = true;
-      series.strokeWidth = 1;
+      series.strokeWidth = 2;
+   //   series.connect = (prop === 'Total Mass Discharge' ? true : false);
      // series.tensionX = 0.77;
       series.strokeOpacity = 1;
+      series.legendSettings.labelText = '{name} ({units})';
       series.fillOpacity = this.chartType.includes('Area') ? 0.3 : 0;
-      series.tooltipText = '{name}: [bold]{valueY}[/]';
+      series.tooltipText = '{name} ({units}): [bold]{valueY}[/]';
 
       // // Make bullets grow on hover
       // const bullet = series.bullets.push(new am4charts.CircleBullet());

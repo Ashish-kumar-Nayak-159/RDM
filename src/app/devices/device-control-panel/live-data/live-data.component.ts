@@ -1,4 +1,3 @@
-import { ApplicationService } from 'src/app/services/application/application.service';
 import { DeviceTypeService } from './../../../services/device-type/device-type.service';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
@@ -7,7 +6,6 @@ import { GoogleChartInterface } from 'ng2-google-charts';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from 'src/app/services/toaster.service';
-import { ActivatedRoute } from '@angular/router';
 import { CONSTANTS } from 'src/app/app.constants';
 import * as moment from 'moment';
 
@@ -26,7 +24,6 @@ export class LiveDataComponent implements OnInit, OnDestroy {
   userData: any;
   isFilterSelected = false;
   propertyList: any[] = [];
-  appData: any;
   // google chart
   public lineGoogleChartData: GoogleChartInterface = {  // use :any or :GoogleChartInterface
     chartType: 'LineChart',
@@ -59,33 +56,22 @@ export class LiveDataComponent implements OnInit, OnDestroy {
         maxZoomIn: 10.0}
     }
   };
-  appName: any;
   refreshInterval: any;
   dropdownPropList = [];
   y1AxisProps = [];
   y2AxisProp = [];
-  applicationData: any;
+  contextApp: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
     private toasterService: ToasterService,
-    private route: ActivatedRoute,
-    private deviceTypeService: DeviceTypeService,
-    private applicationService: ApplicationService
-  ) { }
+    private deviceTypeService: DeviceTypeService  ) { }
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-
-    this.route.paramMap.subscribe(async params => {
-      this.appName = params.get('applicationId');
-      this.applicationData = this.userData.apps.filter(
-        app => app.app === params.get('applicationId')
-      )[0];
-      await this.getApplicationData();
-      this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
-      this.historyFilter.app = this.appName;
-    });
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.propertyList = [];
+    this.historyFilter.app = this.contextApp.app;
     this.historyFilter.epoch = true;
     if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
       this.historyFilter.gateway_id = this.device.device_id;
@@ -104,22 +90,11 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     console.log(this.historyFilter);
   }
 
-  getApplicationData() {
-    return new Promise((resolve) => {
-      this.applicationService.getApplicationDetail(this.appName).subscribe(
-        (response: any) => {
-            this.appData = response;
-            this.appData.user = this.applicationData.user;
-            resolve();
-        });
-    });
-  }
-
   getThingsModelProperties() {
     // this.properties = {};
     return new Promise((resolve) => {
       const obj = {
-        app: this.appName,
+        app: this.contextApp.app,
         name: this.device.tags.device_type
       };
       this.deviceTypeService.getThingsModelProperties(obj).subscribe(
@@ -191,7 +166,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
           }, 5000);
           this.loadChart();
         }
-      }, error => this.isHistoryAPILoading = false
+      }, () => this.isHistoryAPILoading = false
     ));
   }
 
@@ -289,10 +264,12 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     this.historyFilter = {};
     this.historyFilter.epoch = true;
     this.historyFilter.device_id = this.device.device_id;
-    this.historyFilter.app = this.appName;
+    this.historyFilter.app = this.contextApp.app;
     const now = moment().utc();
     this.historyFilter.to_date = now.unix();
     this.historyFilter.from_date = (now.subtract(1, 'minute')).unix();
+    this.y1AxisProps = [];
+    this.y2AxisProp = [];
   }
 
   ngOnDestroy(): void {

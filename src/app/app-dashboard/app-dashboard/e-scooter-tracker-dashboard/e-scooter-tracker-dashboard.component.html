@@ -51,7 +51,7 @@
                   <div class="card-body p-3">
                       <a href="javascript:void(0)" title={{device.device_id}}
                       ><div class="text-center" *ngIf="chartData && chartData[device.device_id] && chartData[device.device_id][0]">
-                        <i class="fa-fw fas" [ngClass]="{
+                        <i class="fa-fw fa" [ngClass]="{
                           'fa-battery-quarter': chartData[device.device_id][0]?.battery_level > 0 && chartData[device.device_id][0]?.battery_level <= 25,
                           'fa-battery-half': chartData[device.device_id][0]?.battery_level > 25 && chartData[device.device_id][0]?.battery_level <= 50,
                           'fa-battery-three-quarters': chartData[device.device_id][0]?.battery_level > 50 && chartData[device.device_id][0]?.battery_level <= 75,

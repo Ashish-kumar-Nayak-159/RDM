@@ -1,5 +1,5 @@
 export class AppUrls {
-  public static GET_APPLICATION_DASHBOARD_SNAPSHOT = 'apps/{0}​​​​​​​/device_statistics';
+  public static GET_APPLICATION_DASHBOARD_SNAPSHOT = 'apps/{0}/device_statistics';
   public static GET_DEVICE_FILTER_LIST = 'DLM_GetDevices';
   public static GET_DEVICE_DATA = 'DLM_GetDeviceTwin';
   public static UPDATE_DEVICE_TAGS = 'DLM_SetDeviceTags';
@@ -7,6 +7,7 @@ export class AppUrls {
   public static GET_HEARTBEAT_LIST = 'D2C_GetDeviceHeartbeats';
   public static GET_NOTIFICAION_LIST = 'D2C_GetDeviceNotifications';
   public static GET_ALERTS_LIST = 'D2C_GetDeviceAlerts';
+  public static GET_ALERT_END_EVENT_LIST = 'D2C_GetDeviceAlertEndEvents';
   public static GET_TELEMETRY_LIST = 'D2C_GetDeviceTelemetry';
   public static GET_ERROR_LIST = 'D2C_GetDeviceErrors';
   public static GET_OTHER_MESSAGE_LIST = 'D2C_GetDeviceOtherMessages';
@@ -27,14 +28,14 @@ export class AppUrls {
   public static GET_APPLICATIONS_LIST = 'apps';
   public static CREATE_APP = 'apps';
   public static UPDATE_APP = 'apps/{0}';
-  public static CREATE_USER = 'apps/{0}​​​​​​​/users';
+  public static CREATE_USER = 'apps/{0}/users';
   public static CREATE_NON_IP_DEVICE = 'DDM_CreateNonIPDevice';
   public static GET_NON_IP_DEVICE = 'DDM_GetNonIPDevices';
   public static DELETE_NON_IP_DEVICE = 'DDM_DeleteNonIPDevice';
   public static UPDATE_NON_IP_DEVICE_TAGS = 'DDM_SetNonIPDeviceTags';
   public static GE_NON_IP_DEVICES_COUNT = 'DDM_GetNonIPDevicesCount';
   public static GET_APP_DETAILS = 'apps/{0}';
-  public static GET_APP_USERS = 'apps/{0}​​​​​​​/users';
+  public static GET_APP_USERS = 'apps/{0}/users';
   public static CREATE_LAYOUT = 'layout';
   public static GET_LAYOUT = 'layouts';
   public static GET_THINGS_MODELS = 'device_types';
@@ -48,10 +49,11 @@ export class AppUrls {
   public static GET_THINGS_MODEL_LAYOUT = 'device_types/layouts';
   public static ACKNOWLEGE_DEVICE_ALERT = 'D2C_UpdateAlertMetadata';
   public static DELETE_CONTROL_WIDGET = 'device_type/control_widget';
-  public static UPDATE_APP_HIERARCHY = 'apps/{0}​​​​​​​/hierarchy';
-  public static UPDATE_APP_ROLES = 'apps/{0}​​​​​​​/roles';
+  public static UPDATE_APP_HIERARCHY = 'apps/{0}/hierarchy';
+  public static UPDATE_APP_ROLES = 'apps/{0}/roles';
   public static RESET_PASSWORD = 'users/reset_password';
   public static GET_ALERT_MESSAGE_BY_ID = 'D2C_GetDeviceAlertMessage';
+  public static GET_ALERT_END_EVENT_MESSAGE_BY_ID = 'D2C_GetDeviceAlertEndEventMessage';
   public static GET_TELEMETRY_MESSAGE_BY_ID = 'D2C_GetDeviceTelemetryMessage';
   public static GET_BATTERY_MESSAGE_BY_ID = 'D2C_GetDeviceBatteryMessage';
   public static GET_HEARTBEAT_MESSAGE_BY_ID = 'D2C_GetDeviceHeartbeat';
@@ -63,5 +65,13 @@ export class AppUrls {
   public static GET_MODEL_REFERENCE_DOCUMENTS = 'apps/{0}/device_types/{1}/reference_documents';
   public static CREATE_MODEL_REFERENCE_DOCUMENTS = 'apps/{0}/device_types/{1}/reference_documents';
   public static DELETE_MODEL_REFERENCE_DOCUMENTS = 'apps/{0}/device_types/{1}/reference_documents/{2}';
-
+  public static GET_ALERT_CONDITIONS = 'apps/{0}/alert_conditions';
+  public static CREATE_ALERT_CONDITION = 'apps/{0}/device_types/{1}/alert_conditions';
+  public static UPDATE_ALERT_CONDITION = 'apps/{0}/device_types/{1}/alert_conditions/{2}';
+  public static DELETE_ALERT_CONDITION = 'apps/{0}/device_types/{1}/alert_conditions/{2}';
+  public static GET_IOT_LEGACY_DEVICES = 'apps/{0}/devices';
+  public static GET_REPORT_TELEMETRY_DATA = 'apps/{0}/d2c/telemetry_report';
+  public static SIGNALR_NEGOTIATE = 'signalr/negotiate';
+  public static GET_MODEL_ALERT_REASONS = 'apps/{0}/device_types/{1}/alert_acknowledge_reasons';
+  public static GET_SAMPLING_DEVICE_TELEMETRY = 'apps/{0}/d2c/telemetry_messages_with_sampling';
 }

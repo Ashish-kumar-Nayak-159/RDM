@@ -23,6 +23,7 @@ export class EScooterTrackerDashboardComponent implements OnInit, OnDestroy {
   appName: string;
   userData: any;
   properties: any[] = [];
+  @Input() tileData: any;
   gaugeGoogleChartConfig: GoogleChartInterface = {
     chartType: 'Gauge',
     dataTable: [
@@ -148,8 +149,13 @@ export class EScooterTrackerDashboardComponent implements OnInit, OnDestroy {
               app: this.appName,
               device_id: device.device_id,
               count: 1,
+              from_date: null,
+              to_date: null,
               message_props: 'speed,battery_level,gps_coordinates,direction',
             };
+            const now =  moment().utc();
+            filterObj.from_date = (now.subtract(5, 'seconds')).unix();
+            filterObj.to_date = now.unix();
             this.chartData[device.device_id] = null;
             // this.properties.forEach((prop, index) => filterObj.message_props += prop.json_key +
             //   (index !== (this.properties.length - 1) ? ',' : ''));

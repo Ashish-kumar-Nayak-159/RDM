@@ -1,3 +1,4 @@
+import { element } from 'protractor';
 import { CONSTANTS } from 'src/app/app.constants';
 import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnInit } from '@angular/core';
@@ -18,6 +19,9 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
   originalApplicationData: any;
   selectedHierarchy: any;
   forceUpdate = false;
+  editableHierarchy = {};
+  hierarchyArr = {};
+  configureHierarchy = {};
   constructor(
     private toasterService: ToasterService,
     private applicationService: ApplicationService
@@ -25,18 +29,24 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
 
   ngOnInit(): void {
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
-    this.applicationData.hierarchy.forEach(element => {
-      element.isEditable = false;
+
+    this.applicationData.hierarchy.levels.forEach((element, index) => {
+      this.hierarchyArr[index] = [];
     });
   }
 
   onAddNewHierarchyObj() {
-    this.applicationData.hierarchy.splice(this.applicationData.hierarchy.length, 0, {
-      name: null,
-      level: this.applicationData.hierarchy.length,
-      tags: [],
-      isEditable: true
-    });
+    // this.applicationData.hierarchy.splice(this.applicationData.hierarchy.length, 0, {
+    //   name: null,
+    //   level: this.applicationData.hierarchy.length,
+    //   tags: [],
+    //   isEditable: true
+    // });
+    if (this.applicationData.hierarchy.levels[this.applicationData.hierarchy.levels.length - 1]) {
+      this.applicationData.hierarchy.levels.splice(this.applicationData.hierarchy.levels.length, 0, undefined);
+    }
+    this.editableHierarchy[this.applicationData.hierarchy.levels.length] = true;
+    console.log(this.editableHierarchy);
     this.selectedHierarchyItem = undefined;
     this.addedTagItem = undefined;
   }
@@ -44,34 +54,93 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
   onArrowClick(item) {
     this.selectedHierarchyItem = item;
     this.addedTagItem = undefined;
+    this.configureHierarchy = {};
+    this.applicationData.hierarchy.levels.forEach((element, index) => {
+      this.hierarchyArr[index] = [];
+    });
+    if (this.applicationData?.hierarchy?.levels.length > 1) {
+      this.hierarchyArr['1'] = Object.keys(this.applicationData.hierarchy.tags);
+    }
+  }
+
+
+
+  onHierarchyConfigurationChange(i) {
+    Object.keys(this.configureHierarchy).forEach(key => {
+      console.log(key, i);
+      if (key > i) {
+        delete this.configureHierarchy[key];
+      }
+    });
+    Object.keys(this.hierarchyArr).forEach(key => {
+      if (key > i) {
+        this.hierarchyArr[key] = [];
+      }
+    });
+    let nextHierarchy = this.applicationData.hierarchy.tags;
+    Object.keys(this.configureHierarchy).forEach((_, index) => {
+      console.log(this.configureHierarchy[index + 1]);
+      nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
+      console.log(nextHierarchy);
+    });
+    if (nextHierarchy) {
+      this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
+    }
   }
 
   onAddNewTag() {
-    if (this.selectedHierarchyItem.tags.indexOf(this.addedTagItem) !== -1) {
+    if (this.hierarchyArr[this.selectedHierarchyItem].indexOf(this.addedTagItem) !== -1) {
       this.toasterService.showError('Tag already exists', 'Add Tag');
       return;
     }
-    this.selectedHierarchyItem.tags.splice(this.selectedHierarchyItem.tags.length, 0, this.addedTagItem);
+
+    if (Object.keys(this.configureHierarchy).length !== this.selectedHierarchyItem - 1) {
+      this.toasterService.showError('Please select dropdown data first', 'Add Tag');
+      return;
+    }
+    this.hierarchyArr[this.selectedHierarchyItem].splice(
+      this.hierarchyArr[this.selectedHierarchyItem].length, 0, this.addedTagItem);
+    let obj = this.applicationData.hierarchy.tags;
+    Object.keys(this.configureHierarchy).forEach((_, index) => {
+      console.log(this.configureHierarchy[index + 1]);
+      obj = obj[this.configureHierarchy[index + 1]];
+      console.log(obj);
+    });
+    obj[this.addedTagItem] = {};
+    console.log(JSON.stringify(this.applicationData.hierarchy.tags));
     this.addedTagItem = undefined;
   }
 
   onRemoveTag(index) {
-    this.selectedHierarchyItem.tags.splice(index, 1);
-    const i = this.applicationData.hierarchy.findIndex(item => item.name === this.selectedHierarchyItem.name);
-    this.applicationData.hierarchy.splice(i, 1);
-    this.applicationData.hierarchy.splice(i, 0, this.selectedHierarchyItem);
-    this.forceUpdate = true;
+    this.hierarchyArr[this.selectedHierarchyItem].splice(index, 1);
+    let obj = this.applicationData.hierarchy.tags;
+    Object.keys(this.configureHierarchy).forEach((_, i) => {
+      console.log(this.configureHierarchy[i + 1]);
+      obj = obj[this.configureHierarchy[i + 1]];
+      console.log(obj);
+    });
+    const keys = Object.keys(obj);
+    delete obj[keys[index]];
+    console.log(JSON.stringify(this.applicationData.hierarchy.tags));
+    // const i = this.applicationData.hierarchy.findIndex(item => item.name === this.selectedHierarchyItem.name);
+    // this.applicationData.hierarchy.splice(i, 1);
+    // this.applicationData.hierarchy.splice(i, 0, this.selectedHierarchyItem);
+    // this.forceUpdate = true;
   }
+
+  trackByFn(index: any, item: any) {
+    return index;
+ }
 
   onSaveHierarchyTags() {
     let flag;
-    this.applicationData.hierarchy.forEach(item => {
+    this.applicationData.hierarchy.levels.forEach(item => {
       CONSTANTS.NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach(char => {
-        if (item.name.includes(char)) {
+        if (item.includes(char)) {
           flag = `Hierarchy name will not allow ' ', '.', '#' and '$'`;
         }
       });
-      if (!item.name || (item.name.trim()).length === 0) {
+      if (!item || (item.trim()).length === 0) {
         flag = 'Blank Name is not allowed.';
       }
     });
@@ -79,23 +148,21 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
       this.toasterService.showError(flag, 'Save Device Hierarchy');
       return;
     }
-    this.applicationData.hierarchy.forEach(item => {
-      delete item.isEditable;
-    });
+
     const obj = {
       app: this.applicationData.app,
       hierarchy: this.applicationData.hierarchy,
       force_update: this.forceUpdate ? this.forceUpdate : undefined
     };
-    if (this.forceUpdate && this.selectedHierarchy) {
-      const hierarchy = [];
-      this.applicationData.hierarchy.forEach(item => {
-        if (item.name !== this.selectedHierarchy.name) {
-          hierarchy.push(item);
-        }
-      });
-      obj.hierarchy = hierarchy;
-    }
+    // if (this.forceUpdate && this.selectedHierarchy) {
+    //   const hierarchy = [];
+    //   this.applicationData.hierarchy.forEach(item => {
+    //     if (item.name !== this.selectedHierarchy.name) {
+    //       hierarchy.push(item);
+    //     }
+    //   });
+    //   obj.hierarchy = hierarchy;
+    // }
     this.saveHierarchyAPILoading = true;
     this.applicationService.updateAppHierarchy(obj).subscribe(
       (response: any) => {
@@ -122,7 +189,23 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
   deleteRole() {
     // this.onSaveRoles(true);
     this.forceUpdate = true;
+    console.log(this.selectedHierarchy);
+    const index = this.applicationData.hierarchy.levels.findIndex(level => level === this.selectedHierarchy);
+    const tags = this.removeHierarchyIndexTags(this.applicationData.hierarchy.tags, index);
+    console.log(tags);
+    this.applicationData.hierarchy.tags = JSON.parse(JSON.stringify(tags));
+    this.applicationData.hierarchy.levels.splice(index, 1);
     this.onSaveHierarchyTags();
+  }
+
+  removeHierarchyIndexTags(tags, index) {
+    if (index === 1) {
+      return {};
+    }
+    Object.keys(tags).forEach(tag => {
+        tags[tag] = this.removeHierarchyIndexTags(tags[tag], index - 1);
+    });
+    return tags;
   }
 
   onCloseModal() {
@@ -130,9 +213,15 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
     $('#confirmMessageModal').modal('hide');
   }
 
-
   onCancelClick() {
     this.applicationData = JSON.parse(JSON.stringify(this.originalApplicationData));
+    this.selectedHierarchyItem = undefined;
+    this.applicationData.hierarchy.levels.forEach((element, index) => {
+      this.hierarchyArr[index] = [];
+    });
+    if (this.applicationData?.hierarchy?.levels.length > 1) {
+      this.hierarchyArr['1'] = Object.keys(this.applicationData.hierarchy.tags);
+    }
   }
 
 }

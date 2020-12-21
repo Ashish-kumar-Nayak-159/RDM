@@ -1,3 +1,4 @@
+import { SignalRService } from './signalR/signal-r.service';
 import { Injectable, EventEmitter } from '@angular/core';
 import * as moment from 'moment';
 import { environment } from 'src/environments/environment';
@@ -19,7 +20,8 @@ export class CommonService {
   flag = false;
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private signalRService: SignalRService
   ) {
     console.log('hereeee');
   }
@@ -32,11 +34,26 @@ export class CommonService {
     return null;
   }
 
+  convertSignalRUTCDateToLocal(utcDate) {
+    if (utcDate) {
+      // return (moment.utc(utcDate, 'M/DD/YYYY h:mm:ss A')).local().format('DD-MMM-YYYY hh:mm:ss A');
+      return moment(new Date(utcDate).toString()).format('DD-MMM-YYYY hh:mm:ss A');
+    }
+    return null;
+  }
+
   convertDateToEpoch(date: string) {
     if (date) {
       return (moment.utc(date)).unix();
     }
     return 0;
+  }
+
+  convertEpochToDate(epoch) {
+    if (epoch) {
+      return moment.unix(epoch).format('DD-MMM-YYYY hh:mm:ss A');
+    }
+    return null;
   }
 
   getFileData(url) {
@@ -117,8 +134,8 @@ export class CommonService {
   }
 
   onLogOut() {
-    localStorage.removeItem(CONSTANTS.USER_DETAILS);
-    localStorage.removeItem('breadcrumbState');
+    localStorage.clear();
+    this.signalRService.disconnectFromSignalR('all');
     this.router.navigate(['']);
   }
 }

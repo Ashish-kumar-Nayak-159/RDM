@@ -8,22 +8,22 @@
     <ul class="nav">
       <!-- <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)">
-          <i class="fas fa-fw fa-eye"></i>
+          <i class="fa fa-fw fa-eye"></i>
           <span class="text-secondary">View</span></a>
       </li> -->
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="updateDeviceTypeTags()">
-          <i class="fas fa-fw fa-save"></i>
+          <i class="fa fa-fw fa-save"></i>
           <span class="text-secondary">Save</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="deleteAllDeviceTypeTags()">
-          <i class="fas fa-fw fa-trash"></i>
+          <i class="fa fa-fw fa-trash"></i>
           <span class="text-secondary">Delete all</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="resetDeviceTypeTags()">
-          <i class="fas fa-fw fa-undo"></i>
+          <i class="fa fa-fw fa-undo"></i>
           <span class="text-secondary delete-row">Revert Changes</span></a>
       </li>
     </ul>
@@ -40,35 +40,47 @@
 
   <div class="row mt-1 mx-auto">
 
-    <div class="col-xl-6 col-lg-7">
+    <div class="col-xl-12 col-lg-12">
       <!-- Page Heading -->
-      <h1 class="h6 mb-3 text-secondary-400">Reserved Tags:
-        <a href="javascript:void(0)" title="Edit Tags" *ngIf="!isReservedTagsEditable" (click)="isReservedTagsEditable = true;"><i class="fa fa-edit"></i></a>
-        <a href="javascript:void(0)" title="Cancel" *ngIf="isReservedTagsEditable" (click)="isReservedTagsEditable = false;"><i class="fa fa-times"></i></a>
+      <h1 class="h6 mb-3 text-secondary-400">
+        Following tags will be added when asset is instantiated with this model.
+        <button type="button" class="btn btn-warning btn-sm mx-2 my-1" title="Search" (click)="addTagObject()" >
+          <i class="fa fa-plus fa-sm"></i></button>
       </h1>
 
-
       <div class="table-responsive">
-        <table class="table table-bordered  table-striped text-gray-800" id="dataTable" width="100%" cellspacing="0">
-
+        <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+            <tr class="bg-secondary text-white">
+              <th>Name</th>
+              <th>Key</th>
+              <th>Default Value</th>
+              <th></th>
+            </tr>
+          </thead>
           <tbody>
-            <tr>
-              <td >App</td>
-                  <td>{{contextApp.app}}</td>
+            <ng-container *ngIf="deviceType?.tags?.reserved_tags?.length > 0">
+            <tr *ngFor="let tag of deviceType?.tags?.reserved_tags; let i = index;">
+              <td >{{tag.name}}</td>
+              <td>{{tag.key}}</td>
+              <td>{{tag.defaultValue}}</td>
+              <td><a href="javascript:void(0)" class="mx-1" (click)="removeTag(i)">
+                <i class="fa fa-trash fa-sm"></i> </a></td>
             </tr>
-            <tr *ngFor="let tag of reservedTags">
-              <td>{{tag.name}}</td>
-              <td>
-                <ng-container *ngIf="tag.key === 'local_created_date' || (tagsListToNotEdit.indexOf(tag.key) !== -1 && originalDeviceType?.tags[tag.key] ) || !isReservedTagsEditable;else inputTemplate">
-                  {{deviceType?.tags[tag.key]}}
-                </ng-container>
-                <ng-template #inputTemplate>
-                  <input type="text" class="form-control form-control-sm bg-light border-0 small"
-                  [(ngModel)]="deviceType?.tags[tag.key]" name="{{tag.name}}">
-                </ng-template>
-              </td>
+          </ng-container>
+            <tr *ngIf="tagObj">
+              <td><input type="text" min="1" class="form-control form-control-sm mx-2 my-1" id="name" placeholder="Tag Name"
+                [(ngModel)]="tagObj.name" name="name"></td>
+              <td><input type="text" min="1" class="form-control form-control-sm mx-2 my-1" id="key" placeholder="Tag Key"
+                [(ngModel)]="tagObj.key" name="key"></td>
+              <td><input type="text" min="1" class="form-control form-control-sm mx-2 my-1" id="defaultValue" placeholder="Default Value"
+                [(ngModel)]="tagObj.defaultValue" name="defaultValue"></td>
+              <td></td>
             </tr>
-            <tr *ngFor="let tag of reservedTagsBasedOnProtocol">
+            <tr *ngIf="deviceType?.tags?.reserved_tags?.length === 0 && !firstTagAdded">
+              <td colspan="4">No Tags added.</td>
+            </tr>
+            <!-- <tr *ngFor="let tag of reservedTagsBasedOnProtocol">
               <td>{{tag.name}}</td>
               <td>
                 <ng-container *ngIf="isReservedTagsEditable">
@@ -79,57 +91,12 @@
                   {{deviceType?.tags[tag.key]}}
                 </ng-container>
               </td>
-            </tr>
+            </tr> -->
           </tbody>
         </table>
       </div>
     </div>
-    <div class="col-xl-6 col-lg-5">
-      <!-- Page Heading -->
-      <div class="row col-12 d-sm-inline-block">
-        <h1 class="h6 mb-3 text-secondary-800">Custom Tags:
-          <!-- <a href="javascript:void(0)" title="Edit Custom Tags" *ngIf="!isCustomTagsEditable" (click)="isCustomTagsEditable = true;"><i class="fa fa-edit"></i></a>
-        <a href="javascript:void(0)" title="Cancel" *ngIf="isCustomTagsEditable" (click)="isCustomTagsEditable = false;"><i class="fa fa-times"></i></a> -->
-        </h1>
 
-        <!-- <span class="float-right">
-        <i class="fa fa-check mr-2" (click)="updateDeviceTags()"></i>
-        <i class="fa fa-times " (click)="resetDeviceTags()"></i>
-        </span> -->
-      </div>
-      <div class="table-responsive">
-        <table class="table table-bordered table-striped text-black-800 table-striped" id="dataTable" width="100%" cellspacing="0">
-
-          <tbody>
-
-            <tr *ngFor="let tag of deviceTypeCustomTags;">
-              <ng-container *ngIf="!tag.editable; else lastRowTemplate">
-                <ng-container *ngIf="!isCustomTagsEditable">
-                  <td >{{tag.name}}</td>
-                  <td>{{tag.value}}</td>
-                </ng-container>
-                <ng-container *ngIf="isCustomTagsEditable">
-                  <td >
-                    <input type="text" class="form-control bg-light border-0 small mr-3"
-                  aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name">
-                  </td>
-                  <td><input type="text" class="form-control bg-light border-0 small mr-3"
-                    aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.value" name="value"></td>
-                </ng-container>
-              </ng-container>
-              <ng-template #lastRowTemplate>
-                <td>
-                  <input type="text" class="form-control bg-light border-0 small mr-3" placeholder="Name"
-                  aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name" (input)="onCustomTagInputChange()">
-                </td>
-                <td><input type="text" class="form-control bg-light border-0 small mr-3" placeholder="Value"
-                  aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.value" name="value"  (input)="onCustomTagInputChange()"></td>
-              </ng-template>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
 
   </div>
   </div>

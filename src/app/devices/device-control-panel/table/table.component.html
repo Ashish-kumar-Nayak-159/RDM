@@ -3,17 +3,26 @@
   <table  class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
     <thead>
       <tr class="bg-secondary text-white">
-        <th  *ngFor="let item of tableConfig?.data;let i = index;" [ngClass]="{'w-20': !item.key, 'w-30': i === 0}">
+        <th  *ngFor="let item of tableConfig?.data;let i = index;" [ngClass]="{'w-10': !item.key,
+        'w-15': ( tableConfig.type === 'alert' && item.name === 'Code' && i === 0), 'w-30': item.name === 'Timestamp'}">
           {{item.name}}</th>
       </tr>
     </thead>
     <tbody>
       <ng-container *ngIf="tableData.length > 0 && !isTableDataLoading && isTableFilterSelected">
-        <tr *ngFor="let data of tableData">
-          <td *ngFor="let header of tableConfig?.data">
-            <span *ngIf="header.key">{{data[header.key]}} </span>
+        <tr *ngFor="let data of tableData" [ngClass]="{'bg-danger text-white': tableConfig.type === 'alert'
+        && data.severity.toLowerCase() === 'critical'}">
+          <td *ngFor="let header of tableConfig?.data" >
+            <span *ngIf="header.key">
+              <i class="fa fa-exclamation-triangle" *ngIf="tableConfig.type === 'alert' && header.key === 'code'" [style.color]="
+                (data.severity.toLowerCase() === 'critical' ? '#cc0000' :
+                (data.severity.toLowerCase() === 'error' ? '#fb5515' :
+                (data.severity.toLowerCase() === 'warning' ? '#f6c23e' :
+                (data.severity.toLowerCase() === 'informational' ? '#229954' : ''))
+                )
+                )" title="{{data.severity}}"></i>&nbsp;{{data[header.key]}} </span>
             <a href="javascript:void(0)" *ngIf="!header.key" (click)="onClickOfButton(data, header.name)">
-              <i class="fas fa-fw fa-eye" title="View {{tableConfig?.type}} message"></i>
+              <i class="fa fa-fw fa-eye" title="View {{tableConfig?.type}} message"></i>
             </a>
           </td>
         </tr>
@@ -43,7 +52,7 @@
       <mat-cell *matCellDef="let element">
         <span *ngIf="item.key">{{element[item.key]}} </span>
         <a *ngIf="!item.key" (click)="viewMessageEvent.emit(element)">
-          <i class="fas fa-fw fa-eye" title="View {{tableConfig?.type}} message"></i>
+          <i class="fa fa-fw fa-eye" title="View {{tableConfig?.type}} message"></i>
         </a>
       </mat-cell>
     </ng-container>

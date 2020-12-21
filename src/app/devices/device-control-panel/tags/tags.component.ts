@@ -1,5 +1,4 @@
-import { ApplicationService } from 'src/app/services/application/application.service';
-import { filter } from 'rxjs/operators';
+import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { ActivatedRoute } from '@angular/router';
@@ -28,73 +27,89 @@ export class TagsComponent implements OnInit {
   'serial_number', 'mac_address', 'protocol', 'cloud_connectivity'];
   userData: any;
   pageType: string;
-  appName: string;
   hierarchyTags: any[] = [];
   contextApp: any;
-  applicationData: any;
+  deviceType: any;
+  constantData = CONSTANTS;
   constructor(
     private route: ActivatedRoute,
     private deviceService: DeviceService,
     private toasterService: ToasterService,
     private commonService: CommonService,
-    private applicationService: ApplicationService
-  ) { }
+    private deviceTypeService: DeviceTypeService  ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.route.paramMap.subscribe(async params => {
-      this.appName = params.get('applicationId');
-      this.applicationData = this.userData.apps.filter(app => app.app === this.appName)[0];
-      await this.getApplicationData();
       this.pageType = params.get('listName').toLowerCase();
+      console.log(this.device);
       this.getDeviceDetail();
     });
-    this.reservedTags = CONSTANTS.DEVICE_RESERVED_TAGS_LIST;
-    if (this.pageType === 'gateways') {
-      this.reservedTags.forEach(item => {
-        if (item.name.includes('Device')) {
-          item.name = item.name.replace('Device', 'Gateway');
-        }
-      });
-    }
-
-  }
-
-  getApplicationData() {
-    return new Promise((resolve) => {
-      this.applicationService.getApplicationDetail(this.appName).subscribe(
-        (response: any) => {
-            this.contextApp = response;
-            this.contextApp.user = this.applicationData.user;
-            resolve();
-        });
+    this.device.hierarchyString = '';
+    const keys = Object.keys(this.device.hierarchy);
+    keys.forEach((key, index) => {
+      this.device.hierarchyString += this.device.hierarchy[key] + ( keys[index + 1] ? ' / ' : '');
     });
+    await this.getDeviceTypeDetail();
   }
 
   getDeviceData() {
     let methodToCall;
     if (this.pageType === 'nonipdevices') {
       const obj = {
-        app: this.appName,
+        app: this.contextApp.app,
         device_id: this.device.device_id,
         gateway_id: this.device.gateway_id
       };
-      methodToCall = this.deviceService.getNonIPDeviceList(obj);
+      methodToCall = this.deviceService.getNonIPDeviceTags(obj);
     } else {
-      methodToCall = this.deviceService.getDeviceData(this.device.device_id, this.appName);
+      methodToCall = this.deviceService.getDeviceData(this.device.device_id, this.contextApp.app);
     }
     methodToCall.subscribe(
-      (response: any) => {
+      async (response: any) => {
         if (this.pageType === 'nonipdevices') {
           if (response && response.data) {
-            this.device = response.data[0];
+            this.device.tags = response.tags;
           }
         } else {
           this.device = response;
         }
+        this.device.hierarchyString = '';
+        const keys = Object.keys(this.device.hierarchy);
+        keys.forEach((key, index) => {
+          this.device.hierarchyString += this.device.hierarchy[key] + ( keys[index + 1] ? ' / ' : '');
+        });
+        console.log(this.device);
+        await this.getDeviceTypeDetail();
         this.getDeviceDetail();
       }
     );
+  }
+
+  getDeviceTypeDetail() {
+    return new Promise((resolve) => {
+      const obj = {
+        hierarchy: JSON.stringify(this.device.hierarchy),
+        name: this.device.device_type,
+        app: this.device.app
+      };
+      this.deviceTypeService.getThingsModelsList(obj).subscribe(
+        (response: any) => {
+          if (response?.data?.length > 0) {
+            this.deviceType = response.data[0];
+            console.log(this.deviceType);
+            this.deviceType.tags.reserved_tags.forEach(tag => {
+              if (tag.defaultValue && !this.device.tags[tag.key] ) {
+                this.device.tags[tag.key] = tag.defaultValue;
+              }
+            });
+            console.log(this.device.tags);
+          }
+          resolve();
+        }
+      );
+    });
   }
 
   getDeviceDetail() {
@@ -129,14 +144,11 @@ export class TagsComponent implements OnInit {
         editable: true
       });
     }
-    if (this.device.tags && this.device.tags.protocol) {
+    if (this.device.tags) {
       if (this.device.tags.created_date) {
         this.device.tags.local_created_date = this.commonService.convertUTCDateToLocal(this.device.tags.created_date);
       }
-      this.reservedTagsBasedOnProtocol = CONSTANTS.DEVICE_PROTOCOL_BASED_TAGS_LIST[this.device.tags.protocol]
-      ? CONSTANTS.DEVICE_PROTOCOL_BASED_TAGS_LIST[this.device.tags.protocol] : [];
     }
-    console.log(this.reservedTagsBasedOnProtocol);
     this.originalDevice = null;
     this.originalDevice = JSON.parse(JSON.stringify(this.device));
   }
@@ -178,13 +190,14 @@ export class TagsComponent implements OnInit {
     this.device.tags.custom_tags = tagObj;
     const obj = {
       device_id: this.device.device_id,
+      display_name: this.device.display_name,
       tags: this.device.tags
     };
     let methodToCall;
     if (this.pageType === 'nonipdevices') {
-      methodToCall = this.deviceService.updateNonIPDeviceTags(obj, this.appName);
+      methodToCall = this.deviceService.updateNonIPDeviceTags(obj, this.contextApp.app);
     } else {
-      methodToCall = this.deviceService.updateDeviceTags(obj, this.appName);
+      methodToCall = this.deviceService.updateDeviceTags(obj, this.contextApp.app);
     }
     methodToCall.subscribe(
       (response: any) => {
@@ -215,9 +228,9 @@ export class TagsComponent implements OnInit {
     console.log(obj);
     let methodToCall;
     if (this.pageType === 'nonipdevices') {
-      methodToCall = this.deviceService.updateNonIPDeviceTags(obj, this.appName);
+      methodToCall = this.deviceService.updateNonIPDeviceTags(obj, this.contextApp.app);
     } else {
-      methodToCall = this.deviceService.updateDeviceTags(obj, this.appName);
+      methodToCall = this.deviceService.updateDeviceTags(obj, this.contextApp.app);
     }
     methodToCall.subscribe(
       (response: any) => {

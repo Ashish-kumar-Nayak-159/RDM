@@ -3,6 +3,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppUrls } from '../../app-url.constants';
 import { Observable } from 'rxjs';
+import { String } from 'typescript-string-operations';
 
 @Injectable({
   providedIn: 'root'
@@ -16,10 +17,21 @@ export class DeviceService {
     private http: HttpClient
   ) { }
 
+  getAllDevicesList(filterObj, app) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_DEVICES, app), { params });
+  }
+
   getDeviceList(filterObj) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
       if (filterObj[key]) {
+        console.log(key, '=====', filterObj[key]);
         params = params.set(key, filterObj[key]);
       }
     });
@@ -134,6 +146,16 @@ export class DeviceService {
     return this.http.get(this.url + AppUrls.GET_ALERTS_LIST, { params });
   }
 
+  getDeviceAlertEndEvents(filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + AppUrls.GET_ALERT_END_EVENT_LIST, { params });
+  }
+
   getDeviceTelemetry(filterObj) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
@@ -142,6 +164,26 @@ export class DeviceService {
       }
     });
     return this.http.get(this.url + AppUrls.GET_TELEMETRY_LIST, { params });
+  }
+
+  getDeviceSamplingTelemetry(filterObj, app) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_SAMPLING_DEVICE_TELEMETRY, app), { params });
+  }
+
+  getDeviceTelemetryForReport(filterObj, app) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_REPORT_TELEMETRY_DATA, app), { params });
   }
 
   getDeviceError(filterObj) {
@@ -264,6 +306,8 @@ export class DeviceService {
     let url;
     if (type === 'alert') {
       url = AppUrls.GET_ALERT_MESSAGE_BY_ID;
+    } else if (type === 'alertendevent') {
+      url = AppUrls.GET_ALERT_END_EVENT_MESSAGE_BY_ID;
     } else if (type === 'telemetry') {
       url = AppUrls.GET_TELEMETRY_MESSAGE_BY_ID;
     } else if (type === 'battery') {

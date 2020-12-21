@@ -15,6 +15,8 @@ import { PieChartComponent } from './charts/pie-chart/pie-chart.component';
 import { DataTableComponent } from './charts/data-table/data-table.component';
 import { ColumnChartComponent } from './charts/column-chart/column-chart.component';
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
+import { GaugeChartComponent } from './charts/gauge-chart/gauge-chart.component';
+import { LineChartWithoutAxisComponent } from './charts/line-chart-without-axis/line-chart-without-axis.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +29,8 @@ import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
     DataTableComponent,
     ColumnChartComponent,
     ConfirmModalComponent,
+    GaugeChartComponent,
+    LineChartWithoutAxisComponent,
 
   ],
   imports: [
@@ -47,7 +51,9 @@ import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
     BarChartComponent,
     PieChartComponent,
     DataTableComponent,
-    ConfirmModalComponent
+    ConfirmModalComponent,
+    GaugeChartComponent,
+    LineChartWithoutAxisComponent
   ],
   providers: [
     {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}

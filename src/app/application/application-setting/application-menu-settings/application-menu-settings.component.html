@@ -12,6 +12,7 @@
           <table class="table table-bordered table-striped" cellspacing="0">
             <thead>
               <tr class="bg-secondary text-white">
+                <th></th>
                 <th>Page</th>
                 <th>System Name</th>
                 <th>Display Name</th>
@@ -20,7 +21,7 @@
             </thead>
             <tfoot>
               <tr>
-                <th colspan="4`">
+                <th colspan="5">
                   <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
                     [disabled]="saveMenuSettingAPILoading">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x"
                       *ngIf="saveMenuSettingAPILoading"></i></button>
@@ -30,16 +31,39 @@
               </tr>
             </tfoot>
             <tbody>
-              <tr *ngFor="let item of applicationData?.configuration.main_menu; let configIndex = index">
+              <ng-container *ngFor="let item of applicationData?.configuration.main_menu; let configIndex = index">
+              <tr >
+                <td>
+                  <ng-container *ngIf="item.showAccordion?.length > 0">
+                    <a href="javascript:void(0)" (click)="onToggleRows(configIndex)">
+                      <i [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-down' : 'fa fa-angle-up'"></i>
+                      </a>
+                  </ng-container>
+                </td>
                 <td>{{item.page}}</td>
                 <td>{{item.system_name}}</td>
-                <td><input type="text" class="form-control" name="display_name{{configIndex}}" id="display_name{{configIndex}}"
+                <td><input type="text" class="form-control" name="display_name_main_menu{{configIndex}}" id="display_name_main_menu{{configIndex}}"
                     [(ngModel)]="item.display_name" /></td>
-                <td><input *ngIf="item.system_name !== 'App Settings'" type="checkbox" name="visible{{configIndex}}"
+                <td><input type="checkbox" name="visible{{configIndex}}"
                     id="visible{{configIndex}}" [(ngModel)]="item.visible" /></td>
 
               </tr>
-
+              <tr *ngIf="toggleRows[configIndex]">
+                <td colspan="5">
+                  <div class="form-group row mt-1" *ngFor="let control of item.showAccordion;" >
+                    <ng-container >
+                    <div class="col-md-4">
+                      <label for="recipient-name" class="col-form-label">{{control.name}}</label>
+                    </div>
+                    <div class="col-md-5">
+                      <input type="text" class="form-control form-control-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
+                        placeholder="Enter {{control.name}}">
+                    </div>
+                  </ng-container>
+                  </div>
+                </td>
+              </tr>
+              </ng-container>
             </tbody>
           </table>
         </div>
@@ -65,7 +89,7 @@
             </thead>
             <tfoot>
               <tr>
-                <th colspan="4`">
+                <th colspan="5">
                   <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
                     [disabled]="saveMenuSettingAPILoading">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x"
                       *ngIf="saveMenuSettingAPILoading"></i></button>
@@ -78,7 +102,7 @@
               <ng-container *ngFor="let item of applicationData?.configuration?.device_control_panel_menu; let configIndex = index">
                 <tr *ngIf="!item.isTitle">
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control" name="display_name{{configIndex}}" id="display_name{{configIndex}}"
+                  <td><input type="text" class="form-control" name="display_name_device{{configIndex}}" id="display_name_device{{configIndex}}"
                       [(ngModel)]="item.display_name" /></td>
                   <td><input type="checkbox" name="visible{{configIndex}}"
                       id="visible{{configIndex}}" [(ngModel)]="item.visible" /></td>
@@ -109,7 +133,7 @@
             </thead>
             <tfoot>
               <tr>
-                <th colspan="4`">
+                <th colspan="5">
                   <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
                     [disabled]="saveMenuSettingAPILoading">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x"
                       *ngIf="saveMenuSettingAPILoading"></i></button>
@@ -122,7 +146,7 @@
               <ng-container *ngFor="let item of applicationData?.configuration?.model_control_panel_menu; let configIndex = index">
                 <tr *ngIf="!item.isTitle">
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control" name="display_name{{configIndex}}" id="display_name{{configIndex}}"
+                  <td><input type="text" class="form-control" name="display_name_device_type{{configIndex}}" id="display_name_device_type{{configIndex}}"
                       [(ngModel)]="item.display_name" /></td>
                   <td><input type="checkbox" name="visible{{configIndex}}"
                       id="visible{{configIndex}}" [(ngModel)]="item.visible" /></td>

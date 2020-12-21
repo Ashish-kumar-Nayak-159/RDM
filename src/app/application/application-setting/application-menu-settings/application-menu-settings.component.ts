@@ -14,8 +14,9 @@ export class ApplicationMenuSettingsComponent implements OnInit {
   @Input() applicationData: any;
   saveMenuSettingAPILoading = false;
   originalApplicationData: any;
-  sideMenuList = CONSTANTS.SIDE_MENU_LIST;
+  sideMenuList = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
   activeTab = 'main-menu';
+  toggleRows: any = {};
   constructor(
     private toasterService: ToasterService,
     private applicationService: ApplicationService,
@@ -26,14 +27,51 @@ export class ApplicationMenuSettingsComponent implements OnInit {
     // this.applicationData.configuration = {};
     if (this.applicationData?.configuration?.device_control_panel_menu?.length === 0) {
       this.applicationData.configuration.device_control_panel_menu = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
+    } else {
+      const arr = [];
+      CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST.forEach(item => {
+        let flag = false;
+        this.applicationData.configuration.device_control_panel_menu.forEach(menu => {
+          if (menu.system_name === item.system_name) {
+            flag = true;
+            console.log(menu);
+            item.display_name = menu.display_name;
+            item.visible = menu.visible;
+            arr.push(item);
+          }
+        });
+        if (!flag) {
+          arr.push(item);
+        }
+      });
+      console.log(arr);
+      this.applicationData.configuration.device_control_panel_menu = [...arr];
     }
     if (this.applicationData?.configuration?.model_control_panel_menu?.length === 0) {
       this.applicationData.configuration.model_control_panel_menu = CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST;
+    } else {
+      const arr = [];
+      CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST.forEach(item => {
+        let flag = false;
+        this.applicationData.configuration.model_control_panel_menu.forEach(menu => {
+          if (menu.system_name === item.system_name) {
+            flag = true;
+            console.log(menu);
+            item.display_name = menu.display_name;
+            item.visible = menu.visible;
+            arr.push(item);
+          }
+        });
+        if (!flag) {
+          arr.push(item);
+        }
+      });
+      console.log(arr);
+      this.applicationData.configuration.model_control_panel_menu = [...arr];
     }
     if (this.applicationData.configuration?.main_menu?.length === 0) {
       this.applicationData.configuration.main_menu = this.sideMenuList;
     } else {
-      console.log(this.applicationData.configuration);
       const arr = [];
       this.sideMenuList.forEach(item => {
         let flag = false;
@@ -43,6 +81,7 @@ export class ApplicationMenuSettingsComponent implements OnInit {
             console.log(menu);
             item.display_name = menu.display_name;
             item.visible = menu.visible;
+            item.showAccordion = menu.showAccordion;
             arr.push(item);
           }
         });
@@ -60,6 +99,15 @@ export class ApplicationMenuSettingsComponent implements OnInit {
   //   alert('here');
   //   this.applicationData.configuration[index].visible = !this.applicationData.configuration[index].visible;
   // }
+
+  onToggleRows(i) {
+    if (this.toggleRows[i]) {
+      this.toggleRows = {};
+    } else {
+      this.toggleRows = {};
+      this.toggleRows[i] = true;
+    }
+  }
 
   setActiveTab(type) {
     this.activeTab = type;

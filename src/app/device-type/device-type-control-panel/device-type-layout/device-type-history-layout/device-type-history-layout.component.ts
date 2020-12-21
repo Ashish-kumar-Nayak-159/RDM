@@ -1,13 +1,10 @@
-import { ApplicationService } from 'src/app/services/application/application.service';
 import { DeviceTypeService } from './../../../../services/device-type/device-type.service';
 import { Device } from './../../../../models/device.model';
 import { ApplicationRef, Component, ComponentFactoryResolver, EmbeddedViewRef, Injector, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Input } from '@angular/core';
-import { DeviceService } from 'src/app/services/devices/device.service';
 import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from 'src/app/services/toaster.service';
-import { ActivatedRoute } from '@angular/router';
 import { CONSTANTS } from 'src/app/app.constants';
 import * as moment from 'moment';
 import { LiveChartComponent } from 'src/app/common/charts/live-data/live-data.component';
@@ -15,6 +12,7 @@ import { ColumnChartComponent } from 'src/app/common/charts/column-chart/column-
 import { BarChartComponent } from 'src/app/common/charts/bar-chart/bar-chart.component';
 import { PieChartComponent } from 'src/app/common/charts/pie-chart/pie-chart.component';
 import { DataTableComponent } from 'src/app/common/charts/data-table/data-table.component';
+import { ApplicationService } from 'src/app/services/application/application.service';
 declare var $: any;
 
 @Component({
@@ -49,18 +47,15 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
   storedLayout: any[] = [];
   chartTitle = '';
   showDataTable = false;
-  appData: any = {};
-  appName: any;
   selectedHierarchy = '';
   renderCount = 0;
   selectedWidgets = [];
   dropdownWidgetList = [];
-  applicationData: any;
+  contextApp: any;
 
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
-    private route: ActivatedRoute,
     private factoryResolver: ComponentFactoryResolver,
     private appRef: ApplicationRef,
     private injector: Injector,
@@ -71,13 +66,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
   }
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.route.paramMap.subscribe(async params => {
-      this.appName = params.get('applicationId');
-      this.applicationData = this.userData.apps.filter(
-        app => app.app === params.get('applicationId')
-      )[0];
-      await this.getApplicationData();
-    });
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     await this.getThingsModelProperties();
     if (this.propertyList) {
       this.propertyList.forEach(item => {
@@ -92,22 +81,11 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
 
   }
 
-  getApplicationData() {
-    return new Promise((resolve) => {
-      this.applicationService.getApplicationDetail(this.appName).subscribe(
-        (response: any) => {
-            this.appData = response;
-            this.appData.user = this.applicationData.user;
-            resolve();
-        });
-    });
-  }
-
   getThingsModelProperties() {
     // this.properties = {};
     return new Promise((resolve) => {
       const obj = {
-        app: this.appName,
+        app: this.contextApp.app,
         name: this.deviceType.name
       };
       this.deviceTypeService.getThingsModelProperties(obj).subscribe(
@@ -120,7 +98,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.isLayout && !changes.isLayout.currentValue && this.appName) {
+    if (changes.isLayout && !changes.isLayout.currentValue && this.contextApp.app) {
       console.log('aaaa', changes);
       this.getLayout();
     }
@@ -151,7 +129,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
       title: this.chartTitle,
       chartType: this.selectedChartType,
       chartCount: this.chartCount,
-      chart_Id: 'chart_' + this.chartCount,
+      chart_Id: 'chart_' + moment().utc().unix(),
       showDataTable: this.showDataTable,
       y1axis: this.y1AxisProps,
       y2axis: this.y2AxisProps,
@@ -232,6 +210,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
       componentRef.instance.chartType = layoutJson.chartType;
       componentRef.instance.chartHeight = '23rem';
       componentRef.instance.chartWidth = '100%';
+      componentRef.instance.device = this.device;
       componentRef.instance.chartTitle = layoutJson.title;
       componentRef.instance.chartId = layoutJson.chart_Id;
       componentRef.instance.isOverlayVisible = true;
@@ -281,7 +260,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
     }
     // this.layoutJson.reverse();
     this.deviceType.layout = this.layoutJson;
-    this.apiSubscriptions.push(this.deviceTypeService.updateThingsModel(this.deviceType, this.appName).subscribe(
+    this.apiSubscriptions.push(this.deviceTypeService.updateThingsModel(this.deviceType, this.contextApp.app).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Save Layout');
         this.getLayout();
@@ -295,7 +274,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
 
   getLayout() {
     const params = {
-      app: this.appName,
+      app: this.contextApp.app,
       id: this.deviceType.id
     };
     this.dropdownWidgetList = [];

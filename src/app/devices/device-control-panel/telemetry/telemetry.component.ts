@@ -1,3 +1,4 @@
+import { ToasterService } from './../../../services/toaster.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
@@ -24,10 +25,13 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   modalConfig: any;
   telemetryTableConfig: any = {};
   pageType: string;
+  devices: any[] = [];
+  originalTelemetryFilter: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -65,14 +69,56 @@ export class TelemetryComponent implements OnInit, OnDestroy {
         });
       }
     });
-    this.telemetryFilter.epoch = true;
 
+    if (this.telemetryFilter.gateway_id) {
+      this.getDevicesListByGateway();
+    }
+    this.telemetryFilter.type = true;
+    this.telemetryFilter.count = 10;
+    this.telemetryFilter.app = this.device.app;
+    this.telemetryFilter.epoch = true;
+    this.originalTelemetryFilter = {...this.telemetryFilter};
+
+  }
+
+  getDevicesListByGateway() {
+    this.devices = [];
+    const obj = {
+      gateway_id: this.telemetryFilter.gateway_id,
+      app: this.device.app
+    };
+    this.deviceService.getNonIPDeviceList(obj).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.devices = response.data;
+          this.devices.splice(0, 0, { device_id: this.telemetryFilter.gateway_id});
+        }
+      }, errror => {}
+    );
+  }
+
+  onDateOptionChange() {
+    if (this.telemetryFilter.dateOption !== 'custom') {
+      this.telemetryFilter.from_date = undefined;
+      this.telemetryFilter.to_date = undefined;
+    }
+  }
+
+  onDateChange(event) {
+    console.log(event);
+    this.telemetryFilter.from_date = moment(event.value[0]).second(0).utc();
+    this.telemetryFilter.to_date = moment(event.value[1]).second(0).utc();
+  }
+
+  clear() {
+    // this.filterSearch.emit(this.originalFilterObj);
+    this.telemetryFilter = {};
+    this.telemetryFilter = {...this.originalTelemetryFilter};
   }
 
   searchTelemetry(filterObj) {
     console.log('filterObj ', filterObj);
-    this.isFilterSelected = true;
-    this.isTelemetryLoading = true;
+
     const obj = {...filterObj};
     const now = moment().utc();
     if (filterObj.dateOption === '5 mins') {
@@ -95,9 +141,37 @@ export class TelemetryComponent implements OnInit, OnDestroy {
         obj.to_date = filterObj.to_date.unix();
       }
     }
+
+    if (!obj.from_date || !obj.to_date) {
+      this.toasterService.showError('Date selection is requierd.', 'Get Telemetry Data');
+      this.isTelemetryLoading = false;
+      this.isFilterSelected = false;
+      return;
+    }
     delete obj.dateOption;
+    delete obj.isTypeEditable;
+    let method;
+    if (obj.to_date - obj.from_date > 3600 && !this.telemetryFilter.isTypeEditable) {
+        this.toasterService.showError('Please select sampling filters.', 'View Telemetry');
+        return;
+    }
+    if (this.telemetryFilter.isTypeEditable) {
+
+      if (!this.telemetryFilter.sampling_time || !this.telemetryFilter.sampling_format ) {
+        this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
+        return;
+      } else {
+        method = this.deviceService.getDeviceSamplingTelemetry(obj, this.device.app);
+      }
+
+    } else {
+      method = this.deviceService.getDeviceTelemetry(obj);
+    }
+    this.isFilterSelected = true;
+    this.isTelemetryLoading = true;
+
     this.telemetryFilter = filterObj;
-    this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
+    this.apiSubscriptions.push(method.subscribe(
       (response: any) => {
         if (response && response.data) {
           this.telemetry = response.data;
@@ -113,8 +187,14 @@ export class TelemetryComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       const obj = {
         app: dataobj.app,
-        id: dataobj.id
+        id: dataobj.id,
+        from_date: null,
+        to_date: null,
+        epoch: true
       };
+      const epoch =  this.commonService.convertDateToEpoch(dataobj.message_date);
+      obj.from_date = epoch ? (epoch - 5) : null
+      obj.to_date = (epoch ? (epoch + 5) : null);
       this.deviceService.getDeviceMessageById(obj, 'telemetry').subscribe(
         (response: any) => {
           resolve(response.message);

@@ -22,8 +22,7 @@ export class OverviewComponent implements OnInit {
   userData: any;
   isCopyClicked = false;
   isViewClicked = false;
-  applicationData: any;
-  appName: any;
+  contextApp: any;
   blobSASToken = environment.blobKey;
   pageType: string;
   deviceCount = null;
@@ -43,11 +42,15 @@ export class OverviewComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.logo) {
+      this.contextApp.metadata.logo = {
+        url : CONSTANTS.DEFAULT_APP_LOGO
+      };
+    }
     this.route.paramMap.subscribe(params => {
-      this.appName = params.get('applicationId');
       this.pageType = params.get('listName');
       this.pageType = this.pageType.slice(0, -1).toLowerCase();
-      this.getApplicationData();
       this.getDeviceCredentials();
       this.getDeviceConnectionStatus();
       if (this.pageType === 'gateway') {
@@ -57,29 +60,10 @@ export class OverviewComponent implements OnInit {
 
   }
 
-  getApplicationData() {
-    this.applicationService.getApplications({}).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          response.data.forEach(item => {
-            if (item.app === this.appName) {
-              this.applicationData = item;
-              if (this.applicationData && this.applicationData.metadata && !this.applicationData.metadata.logo) {
-                this.applicationData.metadata.logo = {
-                  url : CONSTANTS.DEFAULT_APP_LOGO
-                };
-              }
-            }
-          });
-        }
-      }
-    );
-  }
-
   getDeviceCredentials() {
     this.deviceCredentials = undefined;
     const id = (this.pageType === 'nonipdevice') ? this.device.gateway_id : this.device.device_id;
-    this.deviceService.getDeviceCredentials(id, this.appName).subscribe(
+    this.deviceService.getDeviceCredentials(id, this.contextApp.app).subscribe(
       response => {
         this.deviceCredentials = response;
       }
@@ -89,7 +73,7 @@ export class OverviewComponent implements OnInit {
   getDeviceCount() {
     this.deviceCount = null;
     const obj = {
-      app: this.appName,
+      app: this.contextApp.app,
       gateway_id: this.device.device_id
     };
     this.deviceService.getNonIPDeviceCount(obj).subscribe(
@@ -102,7 +86,7 @@ export class OverviewComponent implements OnInit {
   getDeviceConnectionStatus() {
     this.deviceConnectionStatus = undefined;
     const id = (this.pageType === 'nonipdevice') ? this.device.gateway_id : this.device.device_id;
-    this.deviceService.getDeviceConnectionStatus(id, this.appName).subscribe(
+    this.deviceService.getDeviceConnectionStatus(id, this.contextApp.app).subscribe(
       response => {
         this.deviceConnectionStatus = response;
         this.deviceConnectionStatus.local_updated_date =
@@ -119,12 +103,12 @@ export class OverviewComponent implements OnInit {
 
   viewonnectionString() {
     this.isViewClicked = true;
-    setTimeout(() => this.isViewClicked = false, 3000);
+    setTimeout(() => this.isViewClicked = false, 10000);
   }
 
   enableDevice() {
     this.isAPILoading = true;
-    this.deviceService.enableDevice(this.device.device_id, this.appName).subscribe(
+    this.deviceService.enableDevice(this.device.device_id, this.contextApp.app).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Enable Device');
         this.isAPILoading = false;
@@ -165,7 +149,7 @@ export class OverviewComponent implements OnInit {
 
   disableDevice() {
     this.isAPILoading = true;
-    this.deviceService.disableDevice(this.device.device_id, this.appName).subscribe(
+    this.deviceService.disableDevice(this.device.device_id, this.contextApp.app).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Disable Device');
         this.isAPILoading = false;
@@ -181,9 +165,9 @@ export class OverviewComponent implements OnInit {
     this.isAPILoading = true;
     let methodToCall;
     if (this.pageType === 'nonipdevice') {
-      methodToCall = this.deviceService.deleteNonIPDevice(this.device.device_id, this.appName);
+      methodToCall = this.deviceService.deleteNonIPDevice(this.device.device_id, this.contextApp.app);
     } else {
-      methodToCall = this.deviceService.deleteDevice(this.device.device_id, this.appName);
+      methodToCall = this.deviceService.deleteDevice(this.device.device_id, this.contextApp.app);
     }
 
     methodToCall.subscribe(
@@ -191,11 +175,11 @@ export class OverviewComponent implements OnInit {
         this.toasterService.showSuccess(response.message, 'Delete Device');
         this.isAPILoading = false;
         if (this.pageType === 'nonipdevice') {
-          this.router.navigate(['applications', this.appName, 'devices']);
+          this.router.navigate(['applications', this.contextApp.app, 'devices']);
         } else if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
-          this.router.navigate(['applications', this.appName, 'gateways']);
+          this.router.navigate(['applications', this.contextApp.app, 'gateways']);
         }  else {
-          this.router.navigate(['applications', this.appName, 'nonIPDevices']);
+          this.router.navigate(['applications', this.contextApp.app, 'nonIPDevices']);
         }
       }, error => {
         this.toasterService.showError(error.message, 'Delete Device');

@@ -23,13 +23,12 @@ export class DeviceTypeListComponent implements OnInit {
   contextApp: any;
   thingsModelFilterObj: any = {};
   isCreateThingsModelAPILoading = false;
-  constantData = CONSTANTS;
+  constantData =CONSTANTS;
   protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
   connectivityList: string[] = [];
   isFileUploading = false;
   originalThingsModelFilterObj: any;
-  appName: any;
-  applicationData: any;
+  tileData: any;
   constructor(
     private deviceTypeService: DeviceTypeService,
     private commonService: CommonService,
@@ -41,15 +40,12 @@ export class DeviceTypeListComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.route.paramMap.subscribe(async params => {
-      this.appName = params.get('applicationId');
-      this.applicationData = this.userData.apps.filter(
-        app => app.app === params.get('applicationId')
-      )[0];
-      await this.getApplicationData();
-      this.thingsModelFilterObj.app = this.applicationData.app;
+      this.thingsModelFilterObj.app = this.contextApp.app;
       this.originalThingsModelFilterObj = JSON.parse(JSON.stringify(this.thingsModelFilterObj));
       this.searchThingsModels();
+      this.getTileName();
       const obj = {
         type: 'replace',
         data: [
@@ -58,7 +54,7 @@ export class DeviceTypeListComponent implements OnInit {
             url: 'applications/' + this.contextApp.app
           },
             {
-              title: 'Asset Models',
+              title: (this.tileData && this.tileData[0] ? this.tileData[0]?.value : ''),
               url: 'applications/' + this.contextApp.app + '/' + 'things/model'
             }
         ]
@@ -69,14 +65,14 @@ export class DeviceTypeListComponent implements OnInit {
       type: 'Things Model',
       data: [
         {
-          name: 'Model Name',
+          name: (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Name',
           key: 'name',
           type: 'text',
           headerClass: '',
           valueclass: ''
         },
         {
-          name: 'Template',
+          name: (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Template',
           key: 'tags.cloud_connectivity',
           type: 'text',
           headerClass: 'w-10',
@@ -103,7 +99,7 @@ export class DeviceTypeListComponent implements OnInit {
           headerClass: '',
           btnData: [
             {
-              icon: 'fas fa-fw fa-table',
+              icon: 'fa fa-fw fa-table',
               text: '',
               id: 'View Control Panel',
               valueclass: '',
@@ -113,19 +109,17 @@ export class DeviceTypeListComponent implements OnInit {
         }
       ]
     };
-    
-    
   }
 
-  getApplicationData() {
-    return new Promise((resolve) => {
-      this.applicationService.getApplicationDetail(this.appName).subscribe(
-        (response: any) => {
-            this.contextApp = response;
-            this.contextApp.user = this.applicationData.user;
-            resolve();
-        });
+  getTileName() {
+    let name;
+    this.contextApp.configuration.main_menu.forEach(item => {
+      if (item.system_name === 'Things Modelling') {
+        name = item.showAccordion;
+      }
     });
+    console.log(name);
+    this.tileData = name;
   }
 
   searchThingsModels() {

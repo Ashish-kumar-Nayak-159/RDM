@@ -59,7 +59,7 @@ export class TagsComponent implements OnInit {
     if (this.pageType === 'nonipdevices') {
       const obj = {
         gateway_id: this.device.gateway_id,
-        app: this.device.app,
+        app: this.device?.tags?.app,
         device_id: this.device.device_id
       };
       methodToCall = this.deviceService.getNonIPDeviceTags(obj);
@@ -92,7 +92,7 @@ export class TagsComponent implements OnInit {
       const obj = {
         hierarchy: JSON.stringify(this.device.hierarchy),
         name: this.device.device_type,
-        app: this.device.app
+        app: this.device?.tags?.app
       };
       this.deviceTypeService.getThingsModelsList(obj).subscribe(
         (response: any) => {

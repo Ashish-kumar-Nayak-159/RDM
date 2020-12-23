@@ -116,7 +116,7 @@
               <select class="custom-select" id="device_id" name="device_id" [(ngModel)]="c2dMessageData.device_id">
 
                 <option *ngFor="let device of devices" [ngValue]="device.device_id">
-                  {{device?.tags.display_name ? device?.tags.display_name : device.device_id}}
+                  {{device?.display_name ? device?.display_name : device.device_id}}
                 </option>
                 <option [ngValue]="device.device_id"> {{device.device_id}}</option>
               </select>

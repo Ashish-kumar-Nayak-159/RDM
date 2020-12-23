@@ -78,7 +78,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
     this.telemetryFilter.sampling_time = 1;
 
     this.telemetryFilter.count = 10;
-    this.telemetryFilter.app = this.device.app;
+    this.telemetryFilter.app = this.device?.tags?.app;
     this.telemetryFilter.epoch = true;
     this.originalTelemetryFilter = {...this.telemetryFilter};
 
@@ -86,9 +86,10 @@ export class TelemetryComponent implements OnInit, OnDestroy {
 
   getDevicesListByGateway() {
     this.devices = [];
+    console.log(this.device);
     const obj = {
       gateway_id: this.telemetryFilter.gateway_id,
-      app: this.device.app
+      app: this.device?.tags?.app
     };
     this.deviceService.getNonIPDeviceList(obj).subscribe(
       (response: any) => {
@@ -176,7 +177,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
         this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
         return;
       } else {
-        method = this.deviceService.getDeviceSamplingTelemetry(obj, this.device.app);
+        method = this.deviceService.getDeviceSamplingTelemetry(obj, this.device?.tags?.app);
       }
 
     } else {

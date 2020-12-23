@@ -310,7 +310,8 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
           // const hours = this.telemetryObj['Running Hours'].split(':');
           // this.telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
           // this.telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
-          this.getTimeDifference(this.telemetryObj['Running Hours'], this.telemetryObj['Running Minutes']);
+          this.getTimeDifference( Math.floor(Number(this.telemetryObj['Running Hours'])),  Math.floor(Number(this.telemetryObj['Running Minutes'])));
+      //    this.getTimeDifference(this.telemetryObj['Running Hours'], this.telemetryObj['Running Minutes']);
           Object.keys(this.telemetryObj).forEach(key => {
             if (key !== 'message_date') {
               this.telemetryObj[key] = Number(this.telemetryObj[key]);
@@ -353,10 +354,11 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
     // telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
     // telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
     // console.log(telemetryObj);
-    this.getTimeDifference(telemetryObj['Running Hours'], telemetryObj['Running Minutes']);
+    this.getTimeDifference( Math.floor(Number(telemetryObj['Running Hours'])),  Math.floor(Number(telemetryObj['Running Minutes'])));
     this.lastReportedTelemetryValues = telemetryObj;
     if (this.telemetryObj) {
       const interval = moment(telemetryObj.message_date).diff(moment(this.telemetryObj.message_date), 'second');
+
       // if ((this.telemetryInterval - 5) <= interval && (this.telemetryInterval+ 5) > interval) {
       //   this.getDeviceSignalRMode(this.filterObj.device.device_id);
       // }
@@ -382,6 +384,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
           message_props = message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : '')
         }
       });
+
       obj.message_props = message_props;
       this.deviceService.getDeviceTelemetry(obj).subscribe(
         (response: any) => {
@@ -432,7 +435,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
     this.deviceService.getDeviceSignalRMode(this.contextApp.app, deviceId).subscribe(
       (response: any) => {
         this.signalRModeValue = response?.mode?.toLowerCase() === 'normal' ? true :
-        (response?.mode?.toLowerCase() === 'turbo' ? false : undefined);
+        (response?.mode?.toLowerCase() === 'turbo' ? false : true);
       }
     )
   }

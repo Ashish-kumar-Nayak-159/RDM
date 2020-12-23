@@ -112,11 +112,11 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
     this.c2dLoadingMessage = 'Sending C2D Command';
     clearInterval(this.c2dResponseInterval);
     const obj = {
-      device_id: this.filterObj.device.device_id,
-      gateway_id: this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : this.filterObj.device.device_id,
+      device_id: this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : this.filterObj.device.device_id,
+      gateway_id: this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : undefined,
       message: {
         mode: this.signalRModeValue ? 'normal' : 'turbo',
-        frequency_in_sec: this.signalRModeValue ? 15 : 1,
+        frequency_in_sec: this.signalRModeValue ? 60 : 1,
         device_id: this.filterObj.device.device_id
       },
       app: this.contextApp.app,
@@ -283,7 +283,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
       return;
     }
     this.isTelemetryDataLoading = true;
-    await this.getDeviceSignalRMode(this.filterObj.device.device_id);
+    await this.getDeviceSignalRMode(this.filterObj.device.gateway_id);
     if (device_type) {
       await this.getThingsModelProperties(device_type);
     }
@@ -358,10 +358,12 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
     this.lastReportedTelemetryValues = telemetryObj;
     if (this.telemetryObj) {
       const interval = moment(telemetryObj.message_date).diff(moment(this.telemetryObj.message_date), 'second');
-
-      // if ((this.telemetryInterval - 5) <= interval && (this.telemetryInterval+ 5) > interval) {
-      //   this.getDeviceSignalRMode(this.filterObj.device.device_id);
-      // }
+      // alert((this.telemetryInterval - 5) + ' aaaaa ' + interval + ' bbbbb ' + (this.telemetryInterval+ 5));
+      if (this.telemetryInterval && interval && Math.abs(this.telemetryInterval - interval) > 5) {
+        setTimeout(() => {
+        this.getDeviceSignalRMode(this.filterObj.device.gateway_id);
+      }, 2000);
+      }
       this.telemetryInterval = interval;
     }
     this.telemetryObj = telemetryObj;

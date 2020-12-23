@@ -187,7 +187,7 @@
       <div class="modal-body">
         <ng-container *ngIf="isAlertModalDataLoading"> <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i></ng-container>
         <ng-container *ngIf="!isAlertModalDataLoading">
-          <accordion *ngIf="selectedAlert" class="mb-2 mx-2" [closeOthers]="'true'">
+          <accordion *ngIf="selectedAlert" class="mb-2 mx-2">
             <accordion-group heading=""  [panelClass]="'customClass'" [isOpen]="isOpen">
               <ng-container accordion-heading>
                 <a class="btn" >
@@ -202,10 +202,10 @@
                         <div class="form-group form-inline my-1">
                           <label class="mr-2"> Time Range: </label>
                           <input type="number" class="form-control form-control-sm my-1" step="1" min="0" id="beforeInterval" style="width: 9%;"
-                            name="beforeInterval" [(ngModel)]="beforeInterval">
+                            name="beforeInterval" [(ngModel)]="beforeInterval" (change)="onChangeTimeValue()">
                           <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins before alert</button>
                           <input type="number" class="form-control form-control-sm my-1" step="1" min="0" id="afterInterval" style="width: 9%;"
-                            name="afterInterval" [(ngModel)]="afterInterval">
+                            name="afterInterval" [(ngModel)]="afterInterval" (change)="onChangeTimeValue()">
                           <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins after alert</button>
                         </div>
                         <div class="form-group form-inline my-1">
@@ -232,13 +232,15 @@
 
                         <div class="form-group form-inline my-1">
                           <input type="checkbox" class="mx-1 my-1 big-checkbox" id="checkbox" min="1"
-                          name="checkbox" [(ngModel)]="filterObj.isTypeEditable" (change)="filterObj.aggregation_format = undefined; filterObj.aggregation_minutes = undefined;
+                          name="checkbox" [(ngModel)]="filterObj.isTypeEditable" (change)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
+                          filterObj.sampling_format = 'minute'; filterObj.sampling_time = 1;
                           ">
 
                           <fieldset [disabled]="!filterObj.isTypeEditable" class="form-group form-inline my-1">
                           <ui-switch   class="mr-1" [disabled]="!filterObj.isTypeEditable"
                           defaultBgColor="#f6c23e" checkedTextColor="white" uncheckedTextColor="white"
-                          checkedLabel="Sampling Frequency" (valueChange)="filterObj.aggregation_format = undefined; filterObj.aggregation_minutes = undefined;
+                          checkedLabel="Sampling Frequency" (valueChange)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
+                          filterObj.sampling_format = 'minute'; filterObj.sampling_time = 1;
                           "
                           uncheckedLabel="Aggregation" [(ngModel)]="filterObj.type" name="tpye"></ui-switch>
 
@@ -259,17 +261,19 @@
                           <ng-container *ngIf="filterObj.type">
                           <input type="number" class="form-control form-control-sm ml-1 my-1 w-7" id="minutes" min="1"
                             name="minutes" [(ngModel)]="filterObj.sampling_time" placeholder="Sampling" disabled>
-                          <select class="form-control form-control-sm mx-1 my-1" id="samplingFrequency" [(ngModel)]="filterObj.sampling_format"
+                          <!-- <select class="form-control form-control-sm mx-1 my-1" id="samplingFrequency" [(ngModel)]="filterObj.sampling_format"
                           name="samplingFrequency" style="width: 11rem!important;" disabled>
                           <option [ngValue]="undefined">Frequency</option>
                           <option [ngValue]="'second'">Second</option>
                           <option [ngValue]="'minute'">Minute</option>
                           <option [ngValue]="'hour'">Hour</option>
-                          </select>
+                          </select> -->
+                          <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
                           </ng-container>
                           </fieldset>
                           <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Apply Filter"
                           (click)="getDeviceTelemetryData()">Apply</button>
+                          <i  *ngIf="isTelemetryDataLoading" class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
                         </div>
                       </form>
                     </div>
@@ -277,7 +281,7 @@
                 </div>
               </div>
             </accordion-group>
-            <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="true" *ngIf="isTelemetryFilterSelected">
+            <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="isChartViewOpen" *ngIf="isTelemetryFilterSelected">
               <ng-container accordion-heading>
                 <a class="btn" >
                   Alert Visualization

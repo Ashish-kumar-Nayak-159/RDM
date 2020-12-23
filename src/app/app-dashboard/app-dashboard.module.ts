@@ -13,6 +13,7 @@ import { WaterTankMonitorComponent } from './app-dashboard/water-tank-monitor/wa
 import { FormsModule } from '@angular/forms';
 import { PumpDashboardComponent } from './app-dashboard/pump-dashboard/pump-dashboard.component';
 import { CompressorDashboardComponent } from './app-dashboard/compressor-dashboard/compressor-dashboard.component';
+import { UiSwitchModule } from 'ngx-ui-switch';
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import { CompressorDashboardComponent } from './app-dashboard/compressor-dashboa
     DevicesModule,
     FormsModule,
     VisualizationModule,
+    UiSwitchModule
   ]
 })
 export class AppDashboardModule { }

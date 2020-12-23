@@ -61,6 +61,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   originalDevices: any[] = [];
   reasons: any[] = [];
   isAlertModalDataLoading = false;
+  isChartViewOpen = true;
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -96,6 +97,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.filterObj.type = true;
     this.filterObj.sampling_format = 'minute';
     this.filterObj.sampling_time = 1;
+    this.filterObj.aggregation_minutes = 1;
+    this.filterObj.aggregation_format = 'AVG';
     await this.getDevices(this.contextApp.user.hierarchy);
 
     if (this.pageType === 'live') {
@@ -391,6 +394,19 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     });
   }
 
+  onChangeTimeValue() {
+    console.log(this.beforeInterval, '=====', this.afterInterval);
+    if (this.beforeInterval && this.afterInterval) {
+      console.log(this.beforeInterval + this.afterInterval);
+      if (this.beforeInterval + this.afterInterval > 60) {
+
+        this.filterObj.isTypeEditable = true;
+      } else {
+        this.filterObj.isTypeEditable = false;
+      }
+    }
+  }
+
   getThingsModelProperties() {
     return new Promise((resolve) => {
       const obj = {
@@ -464,6 +480,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.filterObj.type = true;
     this.filterObj.sampling_format = 'minute';
     this.filterObj.sampling_time = 1;
+    this.filterObj.aggregation_minutes = 1;
+    this.filterObj.aggregation_format = 'AVG';
     if (this.selectedAlert?.metadata?.acknowledged_date) {
       this.selectedAlert.metadata.acknowledged_date = this.commonService.convertSignalRUTCDateToLocal(this.selectedAlert.metadata.acknowledged_date);
     }
@@ -493,6 +511,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   getDeviceTelemetryData() {
+    this.isChartViewOpen = false;
     console.log(this.selectedWidgets);
     this.propList = [];
     this.selectedWidgets.forEach(widget => {
@@ -551,6 +570,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
         return;
       } else {
+        delete filterObj.aggregation_minutes;
+        delete filterObj.aggregation_format;
         method = this.deviceService.getDeviceSamplingTelemetry(filterObj, this.contextApp.app);
       }
     } else {
@@ -558,10 +579,16 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
         return;
       } else {
+        delete filterObj.sampling_time;
+        delete filterObj.sampling_format;
         method = this.deviceService.getDeviceTelemetry(filterObj);
       }
     }
     } else {
+      delete filterObj.aggregation_minutes;
+      delete filterObj.aggregation_format;
+      delete filterObj.sampling_time;
+      delete filterObj.sampling_format;
       method = this.deviceService.getDeviceTelemetry(filterObj);
     }
     console.log(this.selectedAlert.message_date);
@@ -585,6 +612,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         if (response && response.data) {
           this.telemetryData = response.data;
           const telemetryData = response.data;
+
+          this.isChartViewOpen = true;
           telemetryData.forEach(item => {
             item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
           });
@@ -621,6 +650,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             .rootNodes[0] as HTMLElement;
             document.getElementById('charts').prepend(domElem);
           });
+
         }
       }
     );

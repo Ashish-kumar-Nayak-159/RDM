@@ -105,12 +105,24 @@ export class TelemetryComponent implements OnInit, OnDestroy {
       this.telemetryFilter.from_date = undefined;
       this.telemetryFilter.to_date = undefined;
     }
+    if (this.telemetryFilter.dateOption === '24 hour') {
+      this.telemetryFilter.isTypeEditable = true;
+    } else {
+      this.telemetryFilter.isTypeEditable = false;
+    }
   }
 
   onDateChange(event) {
     console.log(event);
     this.telemetryFilter.from_date = moment(event.value[0]).second(0).utc();
     this.telemetryFilter.to_date = moment(event.value[1]).second(0).utc();
+    const from = this.telemetryFilter.from_date.unix();
+    const to = this.telemetryFilter.to_date.unix();
+    if (to - from > 3600) {
+      this.telemetryFilter.isTypeEditable = true;
+    } else {
+      this.telemetryFilter.isTypeEditable = false;
+    }
   }
 
   clear() {
@@ -155,7 +167,6 @@ export class TelemetryComponent implements OnInit, OnDestroy {
     delete obj.isTypeEditable;
     let method;
     if (obj.to_date - obj.from_date > 3600 && !this.telemetryFilter.isTypeEditable) {
-      this.telemetryFilter.isTypeEditable = true;
         this.toasterService.showError('Please select sampling filters.', 'View Telemetry');
         return;
     }

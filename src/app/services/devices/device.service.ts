@@ -319,4 +319,12 @@ export class DeviceService {
     return this.http.get(this.url + url, { params });
   }
 
+  getDeviceSignalRMode(app, deviceId) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_SIGNALR_MODE, app, deviceId));
+  }
+
+  changeTelemetryMode(msgObj, app) {
+    return this.http.post(this.url + String.Format(AppUrls.CHANGE_TELEMETRY_MODE, app), msgObj);
+  }
+
 }

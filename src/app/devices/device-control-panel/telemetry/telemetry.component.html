@@ -45,7 +45,7 @@
           <div class="form-group form-inline my-1">
             <input type="checkbox" class="mr-1 my-1 big-checkbox" id="checkbox" min="1"
             name="checkbox" [(ngModel)]="telemetryFilter.isTypeEditable" (change)="telemetryFilter.aggregation_format = undefined; telemetryFilter.aggregation_minutes = undefined;
-            telemetryFilter.sampling_format = undefined; telemetryFilter.sampling_time = undefined;">
+            ">
 
             <fieldset [disabled]="!telemetryFilter.isTypeEditable" class="form-group form-inline my-1">
             <!-- <ui-switch size="small"  class="mr-1" [disabled]="!telemetryFilter.isTypeEditable"
@@ -71,16 +71,17 @@
             <ng-container *ngIf="telemetryFilter.type">
             <input type="number" class="form-control form-control-sm ml-1 my-1 w-7" id="minutes" min="1"
               name="minutes" [(ngModel)]="telemetryFilter.sampling_time" placeholder="Sampling" disabled>
-            <select class="form-control form-control-sm mx-2 my-1" id="samplingFrequency" [(ngModel)]="telemetryFilter.sampling_format"
+              <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
+            <!-- <select class="form-control form-control-sm mx-2 my-1" id="samplingFrequency" [(ngModel)]="telemetryFilter.sampling_format"
             name="samplingFrequency" style="width: 11rem!important;" disabled>
             <option [ngValue]="undefined">Sampling Format</option>
             <option [ngValue]="'second'">Second</option>
             <option [ngValue]="'minute'">Minute</option>
             <option [ngValue]="'hour'">Hour</option>
-            </select>
+            </select> -->
             </ng-container>
             </fieldset>
-            <button type="button" class="btn btn-warning btn-sm mr-1 my-1" title="Search" (click)="searchTelemetry(this.telemetryFilter)" ><i class="fa fa-search fa-sm"></i></button>
+            <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="searchTelemetry(this.telemetryFilter)" ><i class="fa fa-search fa-sm"></i></button>
             <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear();dt1Input.value = null;"><i class="fa fa-trash  fa-sm"></i></button>
           </div>
          </form>

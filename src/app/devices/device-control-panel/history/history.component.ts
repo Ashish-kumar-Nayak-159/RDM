@@ -76,6 +76,8 @@ export class HistoryComponent implements OnInit {
     this.historyFilter.type = true;
     this.historyFilter.sampling_format = 'minute';
     this.historyFilter.sampling_time = 1;
+    this.historyFilter.aggregation_minutes = 1;
+    this.historyFilter.aggregation_format = 'AVG';
     if (this.propertyList) {
       this.propertyList.forEach(item => {
         this.dropdownPropList.push({
@@ -123,6 +125,11 @@ export class HistoryComponent implements OnInit {
     this.historyFilter.from_date = undefined;
     this.historyFilter.to_date = undefined;
     $('#txtDt1').val('');
+    if (this.historyFilter.dateOption === '24 hour') {
+      this.historyFilter.isTypeEditable = true;
+    } else {
+      this.historyFilter.isTypeEditable = false;
+    }
   }
 
 
@@ -200,6 +207,8 @@ export class HistoryComponent implements OnInit {
         this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
         return;
       } else {
+        delete obj.aggregation_minutes;
+        delete obj.aggregation_format;
         method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
       }
     } else {
@@ -207,10 +216,14 @@ export class HistoryComponent implements OnInit {
         this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
         return;
       } else {
+        delete obj.sampling_time;
+        delete obj.sampling_format;
         method = this.deviceService.getDeviceTelemetry(obj);
       }
     }
     } else {
+      delete obj.sampling_time;
+      delete obj.sampling_format;
       method = this.deviceService.getDeviceTelemetry(obj);
     }
     this.isHistoryAPILoading = true;
@@ -247,6 +260,13 @@ export class HistoryComponent implements OnInit {
     this.historyFilter.from_date = moment(event.value[0]).utc();
     this.historyFilter.to_date = moment(event.value[1]).utc();
     this.historyFilter.dateOption = undefined;
+    const from = this.historyFilter.from_date.unix();
+    const to = this.historyFilter.to_date.unix();
+    if (to - from > 3600) {
+      this.historyFilter.isTypeEditable = true;
+    } else {
+      this.historyFilter.isTypeEditable = false;
+    }
   }
 
   setChartType() {

@@ -1,5 +1,5 @@
 <div class="mx-auto">
-  <div class="topnavbar bg-white py-2" style="margin-top: 3.1rem; height: 6rem">
+  <div class="topnavbar bg-white py-2" style="margin-top: 3.1rem; height: 7rem">
     <div class="row">
       <div class="col-xl-10 col-lg-10 col-md-10 mb-12">
         <form>
@@ -63,13 +63,15 @@
 
           <div class="form-group form-inline my-1">
             <input type="checkbox" class="mx-1 my-1 big-checkbox" id="checkbox" min="1"
-            name="checkbox" [(ngModel)]="historyFilter.isTypeEditable" (change)="historyFilter.aggregation_format = undefined; historyFilter.aggregation_minutes = undefined;
+            name="checkbox" [(ngModel)]="historyFilter.isTypeEditable" (change)="historyFilter.aggregation_format = 'AVG'; historyFilter.aggregation_minutes = 1;
+            historyFilter.sampling_format = 'minute'; historyFilter.sampling_time = 1;
             ">
 
             <fieldset [disabled]="!historyFilter.isTypeEditable" class="form-group form-inline my-1">
             <ui-switch   class="mr-1" [disabled]="!historyFilter.isTypeEditable"
             defaultBgColor="#f6c23e" checkedTextColor="white" uncheckedTextColor="white"
-            checkedLabel="Sampling Frequency" (valueChange)="historyFilter.aggregation_format = undefined; historyFilter.aggregation_minutes = undefined;
+            checkedLabel="Sampling Frequency" (valueChange)="historyFilter.aggregation_format = 'AVG'; historyFilter.aggregation_minutes = 1;
+            historyFilter.sampling_format = 'minute'; historyFilter.sampling_time = 1;
             "
             uncheckedLabel="Aggregation" [(ngModel)]="historyFilter.type" name="tpye"></ui-switch>
 
@@ -90,13 +92,14 @@
             <ng-container *ngIf="historyFilter.type">
             <input type="number" class="form-control form-control-sm ml-1 my-1 w-7" id="minutes" min="1"
               name="minutes" [(ngModel)]="historyFilter.sampling_time" placeholder="Sampling" disabled>
-            <select class="form-control form-control-sm mx-1 my-1" id="samplingFrequency" [(ngModel)]="historyFilter.sampling_format"
+            <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
+            <!-- <select class="form-control form-control-sm mx-1 my-1" id="samplingFrequency" [(ngModel)]="historyFilter.sampling_format"
             name="samplingFrequency" style="width: 11rem!important;" disabled>
             <option [ngValue]="undefined">Frequency</option>
             <option [ngValue]="'second'">Second</option>
             <option [ngValue]="'minute'">Minute</option>
             <option [ngValue]="'hour'">Hour</option>
-            </select>
+            </select> -->
             </ng-container>
             </fieldset>
             <button

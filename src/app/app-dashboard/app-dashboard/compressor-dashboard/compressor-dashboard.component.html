@@ -1,7 +1,12 @@
 <div class="topnavbar">
-  <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n2">
+  <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3">
     <h5 class="h4 mb-0 text-gray-800">
       {{ tileData && tileData[0] ? tileData[0]?.value : "" }}
+      <!-- <ui-switch   class="mr-1" *ngIf="signalRModeValue !== undefined"
+      defaultBgColor="#f6c23e" checkedTextColor="white" uncheckedTextColor="white"
+      checkedLabel="@ 15 sec refresh frequency"
+      uncheckedLabel="@ 1 sec refresh frequency" name="tpye" [(ngModel)]="signalRModeValue"
+      (valueChange)="onSwitchValueChange($event)"></ui-switch> -->
     </h5>
   </div>
   <div
@@ -150,6 +155,7 @@
               >
                 No data available since mid night.
               </div>
+
               <div class="row" *ngIf="telemetryObj">
                 <div class="col-xl-8 col-lg-8">
                   <!-- Content Row -->
@@ -313,7 +319,7 @@
                               </div>
                             </div>
                             <div class="col-4 text-center border-left">
-                              <span class="text-xs ml-3">Voltage R-Y</span>
+                              <span class="text-xs ml-1">Voltage R-Y</span>
                               <span class="text-xs">&nbsp;(V)</span>
                               <div class="pt-3">
                                 <span
@@ -333,7 +339,7 @@
                             </div>
 
                             <div class="col-4 text-center border-left">
-                              <span class="text-xs ml-3">Current R Phase</span
+                              <span class="text-xs ml-n2">Current R Phase</span
                               ><span class="text-xs">&nbsp;(A)</span>
                               <div class="pt-3">
                                 <span
@@ -514,7 +520,7 @@
                           <span class="text-xs">Since Mid-Night</span>
                           <div class="pt-2">
                             <h4 class="font-weight-bold mt-3">
-                              {{telemetryObj["Running Hours"] !== undefined && midNightHour !== undefined ? (telemetryObj["Running Hours"] - midNightHour) : 0}}:{{telemetryObj["Running Minutes"] !== undefined && midNightMinute !== undefined ? (telemetryObj["Running Minutes"] - midNightMinute) : 0}}
+                              {{currentHour}}:{{currentMinute}}
                             </h4>
                             Hrs
                           </div>
@@ -541,6 +547,21 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay">
+  <div style="font-family:'Arial Black'; font-size: 15px;">
+    <ng-container *ngIf="c2dResponseMessage.length > 0">
+      <div
+        class="row col-12 mx-1 my-2" *ngFor="let message of c2dResponseMessage"
+        >
+        {{message.timestamp}}: {{message.message}}
+      </div>
+    </ng-container>
+    <div class="row col-12" *ngIf="isC2dAPILoading">
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x"> </i>{{c2dLoadingMessage}}
     </div>
   </div>
 </div>

@@ -45,6 +45,8 @@ export class ReportsComponent implements OnInit {
   selectedProps: any[] = [];
   newFilterObj: any;
   tileData: any;
+  @ViewChild('dtInput1', {static: false}) dtInput1: any;
+  @ViewChild('dtInput2', {static: false}) dtInput2: any;
 
   constructor(
     private commonService: CommonService,
@@ -91,6 +93,8 @@ export class ReportsComponent implements OnInit {
       this.filterObj.type = true;
       this.filterObj.sampling_format = 'minute';
       this.filterObj.sampling_time = 1;
+      this.filterObj.aggregation_minutes = 1;
+      this.filterObj.aggregation_format = 'AVG';
      // this.getLatestAlerts();
       await this.getDevices(this.contextApp.user.hierarchy);
      // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
@@ -209,6 +213,17 @@ export class ReportsComponent implements OnInit {
       this.filterObj.from_date = undefined;
       this.filterObj.to_date = undefined;
     }
+    if (this.dtInput1) {
+      this.dtInput1.value = null;
+    }
+    if (this.dtInput2) {
+      this.dtInput2.value = null;
+    }
+    if (this.filterObj.dateOption === '24 hour') {
+      this.filterObj.isTypeEditable = true;
+    } else {
+      this.filterObj.isTypeEditable = false;
+    }
   }
 
   onDateChange(event) {
@@ -217,16 +232,38 @@ export class ReportsComponent implements OnInit {
     this.filterObj.to_date = moment(event.value[1]).second(0).utc();
     console.log(this.filterObj.from_date.unix());
     console.log(this.filterObj.to_date.unix());
+    if (this.dtInput2) {
+      this.dtInput2.value = null;
+    }
+    if (this.filterObj.dateOption !== 'date range') {
+      this.filterObj.dateOption = undefined;
+    }
+    const from = this.filterObj.from_date.unix();
+    const to = this.filterObj.to_date.unix();
+    if (to - from > 3600) {
+      this.filterObj.isTypeEditable = true;
+    } else {
+      this.filterObj.isTypeEditable = false;
+    }
   }
 
   onSingleDateChange(event) {
     console.log(event);
     this.filterObj.from_date = moment(event.value).utc();
     this.filterObj.to_date = (moment(event.value).add(1, 'days')).utc();
-    console.log(this.filterObj.from_date.unix());
-    console.log(this.filterObj.to_date.unix());
-    console.log(this.commonService.convertEpochToDate(this.filterObj.from_date.unix()));
-    console.log(this.commonService.convertEpochToDate(this.filterObj.to_date.unix()));
+    if (this.dtInput1) {
+      this.dtInput1.value = null;
+    }
+    if (this.filterObj.dateOption !== 'date') {
+      this.filterObj.dateOption = undefined;
+    }
+    const from = this.filterObj.from_date.unix();
+    const to = this.filterObj.to_date.unix();
+    if (to - from > 3600) {
+      this.filterObj.isTypeEditable = true;
+    } else {
+      this.filterObj.isTypeEditable = false;
+    }
   }
 
   getThingsModelProperties(deviceType) {
@@ -338,7 +375,6 @@ export class ReportsComponent implements OnInit {
     this.isFilterSelected = false;
     let method;
     if (obj.to_date - obj.from_date > 3600 && !filterObj.isTypeEditable) {
-        this.filterObj.isTypeEditable = true;
         this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
         return;
     }
@@ -348,6 +384,8 @@ export class ReportsComponent implements OnInit {
         this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
         return;
       } else {
+        delete obj.aggregation_minutes;
+        delete obj.aggregation_format;
         method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
       }
     } else {
@@ -355,10 +393,16 @@ export class ReportsComponent implements OnInit {
         this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
         return;
       } else {
+        delete obj.sampling_time;
+        delete obj.sampling_format;
         method = this.deviceService.getDeviceTelemetry(obj);
       }
     }
     } else {
+      delete obj.aggregation_minutes;
+      delete obj.aggregation_format;
+      delete obj.sampling_time;
+      delete obj.sampling_format;
       method = this.deviceService.getDeviceTelemetry(obj);
     }
     this.isTelemetryLoading = true;

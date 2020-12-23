@@ -1,3 +1,4 @@
+import { ColumnChartComponent } from 'src/app/common/charts/column-chart/column-chart.component';
 import { ChartService } from './../../../chart/chart.service';
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
 import { Component, OnInit, Input, ComponentFactoryResolver, ApplicationRef, Injector, EmbeddedViewRef } from '@angular/core';
@@ -243,6 +244,10 @@ export class HistoryComponent implements OnInit {
     });
   }
 
+  getPropertyName(key) {
+    return this.propertyList.filter(prop => prop.json_key === key)[0].name;
+  }
+
   clear() {
     this.historyFilter = {};
     this.historyFilter.from_date = undefined;
@@ -323,7 +328,7 @@ export class HistoryComponent implements OnInit {
       if (layoutJson.chartType === 'LineChart' || layoutJson.chartType === 'AreaChart') {
         componentRef = this.factoryResolver.resolveComponentFactory(LiveChartComponent).create(this.injector);
       } else if (layoutJson.chartType === 'ColumnChart') {
-        componentRef = this.factoryResolver.resolveComponentFactory(LiveChartComponent).create(this.injector);
+        componentRef = this.factoryResolver.resolveComponentFactory(ColumnChartComponent).create(this.injector);
       } else if (layoutJson.chartType === 'BarChart') {
         componentRef = this.factoryResolver.resolveComponentFactory(BarChartComponent).create(this.injector);
       } else if (layoutJson.chartType === 'PieChart') {

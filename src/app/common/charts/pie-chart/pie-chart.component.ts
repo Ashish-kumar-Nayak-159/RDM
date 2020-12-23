@@ -29,6 +29,7 @@ export class PieChartComponent implements OnInit {
   modalConfig: any;
   bodyMessage: string;
   headerMessage: string;
+  device: any;
   constructor(
     private commonService: CommonService
   ) { }
@@ -73,9 +74,45 @@ export class PieChartComponent implements OnInit {
     pieSeries.hiddenState.properties.endAngle = -90;
     pieSeries.hiddenState.properties.startAngle = -90;
     chart.hiddenState.properties.radius = am4core.percent(0);
-    chart.exporting.menu = new am4core.ExportMenu();
+    // chart.exporting.menu = new am4core.ExportMenu();
     chart.legend = new am4charts.Legend();
     chart.legend.itemContainers.template.togglable = false;
+    chart.exporting.menu = new am4core.ExportMenu();
+      chart.exporting.getFormatOptions("xlsx").useLocale = false;
+      chart.exporting.getFormatOptions("pdf").pageOrientation = 'landscape';
+      chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date.toString() + ' to ' + chart.data[chart.data.length - 1].message_date.toString();
+      const obj = {
+        "message_date": "Timestamp"
+      }
+      this.y1AxisProps.forEach(prop => {
+        this.propertyList.forEach(propObj => {
+          if (prop === propObj.json_key) {
+            const units = propObj.json_model[propObj.json_key].units;
+            obj[prop] = propObj.name + (units ? (' (' + units + ')') : '');
+          }
+        });
+      });
+      this.y2AxisProps.forEach(prop => {
+        this.propertyList.forEach(propObj => {
+          if (prop === propObj.json_key) {
+            const units = propObj.json_model[propObj.json_key].units;
+            obj[prop] = propObj.name + (units ? (' (' + units + ')') : '');
+          }
+        });
+      });
+      chart.exporting.dataFields = obj;
+      const list = new am4core.List<string>();
+      list.insertIndex(0, 'message_date');
+      console.log(list);
+      chart.exporting.dateFields = list;
+      chart.exporting.getFormatOptions("pdf").addURL = false;
+      chart.exporting.dateFormat = 'dd-MM-yyyy hh:mm:ss A a';
+      console.log(this.selectedAlert);
+      if (this.selectedAlert) {
+        chart.exporting.filePrefix = this.selectedAlert.device_id + '_Alert_' + this.selectedAlert.local_created_date;
+      } else {
+        chart.exporting.filePrefix = this.device.device_id + '_' + chart.data[0].message_date.toString() + '_' + chart.data[chart.data.length - 1].message_date.toString();
+      }
     this.chart = chart;
   }
 

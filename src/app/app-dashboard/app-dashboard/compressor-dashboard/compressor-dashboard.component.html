@@ -176,7 +176,7 @@
                                 <span
                                   class="text-darkblue display-5 font-weight-bold"
                                   >{{
-                                    telemetryObj["Discharge Pressure"]?.toFixed(
+                                    telemetryObj[getPropertyKey("Discharge Pressure")]?.toFixed(
                                       2
                                     )
                                   }}</span
@@ -186,7 +186,7 @@
                                 <app-line-chart-without-axis
                                   [chartId]="'lineChart1'"
                                   [telemetryData]="telemetryData"
-                                  [property]="'Discharge Pressure'"
+                                  [property]="getPropertyKey('Discharge Pressure')"
                                 ></app-line-chart-without-axis>
                               </div>
                             </div>
@@ -195,7 +195,7 @@
                               <div class="pt-3">
                                 <span
                                   class="text-darkblue display-5 font-weight-bold"
-                                  >{{telemetryObj["Suction Pressure"]?.toFixed(2)
+                                  >{{telemetryObj[getPropertyKey("Suction Pressure")]?.toFixed(2)
                                   }}</span
                                 >
                               </div>
@@ -203,7 +203,7 @@
                                 <app-line-chart-without-axis
                                   [chartId]="'lineChart2'"
                                   [telemetryData]="telemetryData"
-                                  [property]="'Suction Pressure'"
+                                  [property]="getPropertyKey('Suction Pressure')"
                                 ></app-line-chart-without-axis>
                               </div>
                             </div>
@@ -213,7 +213,7 @@
                                 <span
                                   class="text-darkblue display-5 font-weight-bold"
                                   >{{
-                                     telemetryObj["High Bank Pressure"]?.toFixed(
+                                     telemetryObj[getPropertyKey("High Bank Pressure")]?.toFixed(
                                       2
                                     )
                                   }}</span
@@ -223,7 +223,7 @@
                                 <app-line-chart-without-axis
                                   [chartId]="'lineChart3'"
                                   [telemetryData]="telemetryData"
-                                  [property]="'High Bank Pressure'"
+                                  [property]="getPropertyKey('High Bank Pressure')"
                                 ></app-line-chart-without-axis>
                               </div>
                             </div>
@@ -247,7 +247,7 @@
                                 <span
                                   class="text-darkblue display-5 font-weight-bold"
                                   >{{
-                                     telemetryObj["Flow rate Suction"]?.toFixed(
+                                     telemetryObj[getPropertyKey("Flow rate Suction")]?.toFixed(
                                       2
                                     )
                                   }}</span
@@ -257,7 +257,7 @@
                                 <app-line-chart-without-axis
                                   [chartId]="'lineChart4'"
                                   [telemetryData]="telemetryData"
-                                  [property]="'Flow rate Suction'"
+                                  [property]="getPropertyKey('Flow rate Suction')"
                                 ></app-line-chart-without-axis>
                               </div>
                             </div>
@@ -268,7 +268,7 @@
                                   class="text-darkblue display-5 font-weight-bold"
                                   >{{
                                     telemetryObj[
-                                      "Flow rate Discharge"
+                                    getPropertyKey("Flow rate Discharge")
                                     ]?.toFixed(2)
                                   }}</span
                                 >
@@ -277,7 +277,7 @@
                                 <app-line-chart-without-axis
                                   [chartId]="'lineChart5'"
                                   [telemetryData]="telemetryData"
-                                  [property]="'Flow rate Discharge'"
+                                  [property]="getPropertyKey('Flow rate Discharge')"
                                 ></app-line-chart-without-axis>
                               </div>
                             </div>
@@ -306,7 +306,7 @@
                                 <span
                                   class="text-darkblue display-5 font-weight-bold"
                                   >{{
-                                    telemetryObj["Active Power"]?.toFixed(2)
+                                    telemetryObj[getPropertyKey("Active Power")]?.toFixed(2)
                                   }}</span
                                 >
                               </div>
@@ -314,7 +314,7 @@
                                 <app-line-chart-without-axis
                                   [chartId]="'lineChart6'"
                                   [telemetryData]="telemetryData"
-                                  [property]="'Active Power'"
+                                  [property]="getPropertyKey('Active Power')"
                                 ></app-line-chart-without-axis>
                               </div>
                             </div>
@@ -325,7 +325,7 @@
                                 <span
                                   class="text-darkblue display-5 font-weight-bold"
                                   >{{
-                                    telemetryObj["Voltage R-Y"]?.toFixed(2)
+                                    telemetryObj[getPropertyKey("Voltage R-Y")]?.toFixed(2)
                                   }}</span
                                 >
                               </div>
@@ -333,7 +333,7 @@
                                 <app-line-chart-without-axis
                                   [chartId]="'lineChart7'"
                                   [telemetryData]="telemetryData"
-                                  [property]="'Voltage R-Y'"
+                                  [property]="getPropertyKey('Voltage R-Y')"
                                 ></app-line-chart-without-axis>
                               </div>
                             </div>
@@ -345,7 +345,7 @@
                                 <span
                                   class="text-darkblue display-5 font-weight-bold"
                                   >{{
-                                    telemetryObj["Current R Phase"]?.toFixed(2)
+                                    telemetryObj[getPropertyKey("Current R Phase")]?.toFixed(2)
                                   }}</span
                                 >
                               </div>
@@ -353,7 +353,7 @@
                                 <app-line-chart-without-axis
                                   [chartId]="'lineChart8'"
                                   [telemetryData]="telemetryData"
-                                  [property]="'Current R Phase'"
+                                  [property]="getPropertyKey('Current R Phase')"
                                 ></app-line-chart-without-axis>
                               </div>
                             </div>
@@ -379,7 +379,7 @@
                                   class="text-darkblue display-5 font-weight-bold"
                                   >{{
                                    telemetryObj[
-                                    "Gas Leakage Level-1"
+                                   getPropertyKey("Gas Leakage Level-1")
                                   ]?.toFixed(2)
                                   }}</span
                                 >
@@ -387,7 +387,7 @@
                               <div class="mt-n5">
                                 <app-gauge-chart
                                   [id]="'gaugeChart1'"
-                                  [value]="telemetryObj['Gas Leakage Level-1']"
+                                  [value]="telemetryObj[getPropertyKey('Gas Leakage Level-1')]"
                                 ></app-gauge-chart>
                               </div>
                             </div>
@@ -397,9 +397,9 @@
                                 <span
                                   class="text-darkblue display-5 font-weight-bold"
                                   >{{
-                                    telemetryObj["Gas Leakage Level-2"]
+                                    telemetryObj[getPropertyKey("Gas Leakage Level-2")]
                                       ? telemetryObj[
-                                          "Gas Leakage Level-2"
+                                      getPropertyKey("Gas Leakage Level-2")
                                         ]?.toFixed(2)
                                       : "NA"
                                   }}</span
@@ -408,7 +408,7 @@
                               <div class="mt-n5">
                                 <app-gauge-chart
                                   [id]="'gaugeChart2'"
-                                  [value]="telemetryObj['Gas Leakage Level-2']"
+                                  [value]="telemetryObj[getPropertyKey('Gas Leakage Level-2')]"
                                 ></app-gauge-chart>
                               </div>
                             </div>
@@ -441,7 +441,7 @@
                               class="text-darkblue display-5 font-weight-bold"
                               >{{
                                 telemetryObj[
-                                "Discharge Gas Temperature"
+                                getPropertyKey("Discharge Gas Temperature")
                               ]?.toFixed(2)
                               }}</span
                             >
@@ -450,7 +450,7 @@
                             <app-gauge-chart
                               [id]="'gaugeChart3'"
                               [value]="
-                                telemetryObj['Discharge Gas Temperature']
+                                telemetryObj[getPropertyKey('Discharge Gas Temperature')]
                               "
                             ></app-gauge-chart>
                           </div>
@@ -463,9 +463,9 @@
                             <span
                               class="text-darkblue display-5 font-weight-bold"
                               >{{
-                                telemetryObj["Discharge Oil Temperature"]
+                                telemetryObj[getPropertyKey("Discharge Oil Temperature")]
                                   ? telemetryObj[
-                                      "Discharge Oil Temperature"
+                                  getPropertyKey("Discharge Oil Temperature")
                                     ]?.toFixed(2)
                                   : "NA"
                               }}</span
@@ -475,7 +475,7 @@
                             <app-gauge-chart
                               [id]="'gaugeChart4'"
                               [value]="
-                                telemetryObj['Discharge Oil Temperature']
+                                telemetryObj[getPropertyKey('Discharge Oil Temperature')]
                               "
                             ></app-gauge-chart>
                           </div>
@@ -498,8 +498,8 @@
                           <span class="text-xs">Motor Status</span>
                           <div class="pt-2">
                           <h4 class="font-weight-bold mt-3"
-                          [ngClass]="{'text-success' : telemetryObj['Motor'] === 1, 'text-danger': telemetryObj['Motor'] === 0}">
-                            {{ telemetryObj.hasOwnProperty('Motor') ? (telemetryObj["Motor"] === 0 ? 'OFF' : 'ON') : 'NA' }}
+                          [ngClass]="{'text-success' : telemetryObj[getPropertyKey('Motor')] === 1, 'text-danger': telemetryObj[getPropertyKey('Motor')] === 0}">
+                            {{ telemetryObj.hasOwnProperty(getPropertyKey('Motor')) ? (telemetryObj[getPropertyKey("Motor")] === 0 ? 'OFF' : 'ON') : 'NA' }}
                           </h4>
                         </div>
                         </div>
@@ -509,7 +509,7 @@
                           <span class="text-xs">Since Beginning</span>
                           <div class="pt-2">
                             <h4 class="font-weight-bold mt-3">
-                              {{ telemetryObj["Running Hours"] + ':' + (telemetryObj['Running Minutes'] || 0)}}
+                              {{ telemetryObj[getPropertyKey("Running Hours")] + ':' + (telemetryObj[getPropertyKey('Running Minutes')] || 0)}}
                             </h4>
                             Hrs
                           </div>

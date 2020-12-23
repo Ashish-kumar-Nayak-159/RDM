@@ -200,7 +200,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         }
         console.log('unitssss    ', series.units);
       });
-      series.name =  prop;
+      series.name =  this.getPropertyName(prop);
       // series.stroke = this.commonService.getRandomColor();
       series.yAxis = valueYAxis;
       series.dataFields.valueY =  prop;
@@ -232,6 +232,10 @@ export class LiveChartComponent implements OnInit, OnDestroy {
     //   const propObj = this.propertyList.filter(prop => prop.json_key === this.y1AxisProps[0])[0];
     //   this.createThresholdSeries(valueYAxis, propObj);
     // }
+  }
+
+  getPropertyName(key) {
+    return this.propertyList.filter(prop => prop.json_key === key)[0].name;
   }
 
   toggleProperty(prop) {

@@ -150,16 +150,19 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
 
           setTimeout(() => {
             $('.overlay').hide();
-          }, 5000);
+          }, 10000);
           this.c2dResponseMessage.push({
             timestamp: this.commonService.convertEpochToDate((moment().utc()).unix()),
           message: (this.filterObj.device.gateway_id ? 'IoT Gateway' : 'Device') + ' is successfully configured with '
-          + obj.message.frequency_in_sec + ' second telemetry frequency'
+          + obj.message.frequency_in_sec + ' second telemetry frequency.' + (obj.message.mode === 'turbo' ?
+          'After 10 minutes normal mode will be set automatically.' : '')
           });
           clearInterval(this.c2dResponseInterval);
         }
       });
   }
+
+
 
   compareFn(c1, c2): boolean {
     return c1 && c2 ? c1.device_id === c2.device_id : c1 === c2;
@@ -310,7 +313,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
           // const hours = this.telemetryObj['Running Hours'].split(':');
           // this.telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
           // this.telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
-          this.getTimeDifference( Math.floor(Number(this.telemetryObj['Running Hours'])),  Math.floor(Number(this.telemetryObj['Running Minutes'])));
+          this.getTimeDifference( Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Hours')])),  Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Minutes')])));
       //    this.getTimeDifference(this.telemetryObj['Running Hours'], this.telemetryObj['Running Minutes']);
           Object.keys(this.telemetryObj).forEach(key => {
             if (key !== 'message_date') {
@@ -344,17 +347,17 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
 
   processTelemetryData(telemetryObj) {
 
-    telemetryObj.message_date = this.commonService.convertSignalRUTCDateToLocal(telemetryObj.timestamp);
+    telemetryObj.message_date = this.commonService.convertSignalRUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
 
     if (!this.midNightHour) {
-      this.midNightHour = telemetryObj['Running Hours'] ? Math.floor(Number(telemetryObj['Running Hours'])) : 0;
-      this.midNightMinute = telemetryObj['Running Minutes'] ? Math.floor(Number(telemetryObj['Running Minutes'])) : 0;
+      this.midNightHour = telemetryObj[this.getPropertyKey('Running Hours')] ? Math.floor(Number(telemetryObj[this.getPropertyKey('Running Hours')])) : 0;
+      this.midNightMinute = telemetryObj[this.getPropertyKey('Running Minutes')] ? Math.floor(Number(telemetryObj[this.getPropertyKey('Running Minutes')])) : 0;
     }
-    // const hours = telemetryObj['Running Hours'].toString().split(':');
+    // const hours = telemetryObj[this.getPropertyKey('Running Hours')].toString().split(':');
     // telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
     // telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
     // console.log(telemetryObj);
-    this.getTimeDifference( Math.floor(Number(telemetryObj['Running Hours'])),  Math.floor(Number(telemetryObj['Running Minutes'])));
+    this.getTimeDifference( Math.floor(Number(telemetryObj[this.getPropertyKey('Running Hours')])),  Math.floor(Number(telemetryObj[this.getPropertyKey('Running Minutes')])));
     this.lastReportedTelemetryValues = telemetryObj;
     if (this.telemetryObj) {
       const interval = moment(telemetryObj.message_date).diff(moment(this.telemetryObj.message_date), 'second');
@@ -376,13 +379,18 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
     // this.cdr.detectChanges()
   }
 
+
+  getPropertyKey(name) {
+    return this.propertyList.filter(prop => prop.name === name)[0].json_key;
+  }
+
   getMidNightHours(filterObj) {
     return new Promise((resolve) => {
       const obj = {...filterObj};
       obj.order_dir = 'ASC';
       let message_props = '';
       this.propertyList.forEach((prop, index) => {
-        if (prop.json_key === 'Running Hours' || prop.json_key === 'Running Minutes') {
+        if (prop.json_key === this.getPropertyKey('Running Hours') || prop.json_key === this.getPropertyKey('Running Minutes')) {
           message_props = message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : '')
         }
       });
@@ -391,8 +399,8 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
       this.deviceService.getDeviceTelemetry(obj).subscribe(
         (response: any) => {
           if (response?.data?.length > 0) {
-            this.midNightHour = response.data[0]['Running Hours'] ? Math.floor(Number(response.data[0]['Running Hours'])) : 0;
-            this.midNightMinute = response.data[0]['Running Minutes'] ? Math.floor(Number(response.data[0]['Running Minutes'])) : 0;
+            this.midNightHour = response.data[0][this.getPropertyKey('Running Hours')] ? Math.floor(Number(response.data[0][this.getPropertyKey('Running Hours')])) : 0;
+            this.midNightMinute = response.data[0][this.getPropertyKey('Running Minutes')] ? Math.floor(Number(response.data[0][this.getPropertyKey('Running Minutes')])) : 0;
           }
           resolve();
         });

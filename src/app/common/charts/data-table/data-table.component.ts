@@ -57,6 +57,11 @@ export class DataTableComponent implements OnInit {
     }
   }
 
+  getPropertyName(key) {
+    return this.propertyList.filter(prop => prop.json_key === key)[0].name;
+  }
+
+
   removeWidget(chartId) {
 
   }

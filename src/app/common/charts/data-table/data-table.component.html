@@ -18,8 +18,8 @@
                 <thead>
                   <tr class="bg-secondary text-white">
                     <th>Date</th>
-                    <th *ngFor="let item of y1AxisProps">{{item}}</th>
-                    <th *ngFor="let item of y2AxisProps">{{item}}</th>
+                    <th *ngFor="let item of y1AxisProps">{{getPropertyName(item)}}</th>
+                    <th *ngFor="let item of y2AxisProps">{{getPropertyName(item)}}</th>
                   </tr>
                 </thead>
                 <tbody>

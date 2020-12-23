@@ -486,14 +486,19 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.selectedAlert.metadata.acknowledged_date = this.commonService.convertSignalRUTCDateToLocal(this.selectedAlert.metadata.acknowledged_date);
     }
     this.isTelemetryFilterSelected = false;
-    // this.selectedDevice = this.devices.find(device => device.device_id === this.selectedAlert.device_id);
+    this.selectedDevice = this.originalDevices.find(device => device.device_id === this.selectedAlert.device_id);
+    console.log('selected device   ', this.selectedDevice);
     await this.getDeviceData(this.selectedAlert.device_id);
-    await this.getThingsModelProperties();
     await this.getAlertConditions();
+    await this.getThingsModelProperties();
     await this.getDocuments();
     await this.getLayout();
     this.isAlertModalDataLoading = false;
   }
+
+  compareFn(c1, c2): boolean {
+    return c1 && c2 ? c1.device_id === c2.device_id : c1 === c2;
+}
 
   getModelReasons() {
     return new Promise((resolve) => {
@@ -508,6 +513,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         }
       );
     });
+  }
+
+  getPropertyName(key) {
+    return this.propertyList.filter(prop => prop.json_key === key)[0].name;
   }
 
   getDeviceTelemetryData() {

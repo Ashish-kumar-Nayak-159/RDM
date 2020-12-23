@@ -71,7 +71,8 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
     if (this.propertyList) {
       this.propertyList.forEach(item => {
         this.dropdownPropList.push({
-          id: item.json_key
+          id: item.name,
+          value: item
         });
       });
       console.log(this.dropdownPropList);
@@ -119,10 +120,10 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
 
   async addChart() {
     let arr = [];
-    this.y1AxisProps.forEach(prop => arr.push(prop.id));
+    this.y1AxisProps.forEach(prop => arr.push(prop.value.json_key));
     this.y1AxisProps = [...arr];
     arr = [];
-    this.y2AxisProps.forEach(prop => arr.push(prop.id));
+    this.y2AxisProps.forEach(prop => arr.push(prop.value.json_key));
     this.y2AxisProps = [...arr];
     console.log(this.y1AxisProps, '====', this.y2AxisProps);
     const obj = {

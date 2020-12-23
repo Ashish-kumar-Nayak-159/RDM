@@ -20,7 +20,7 @@
           <input  type="text" *ngIf="index === 0"  defaultValue="{{contextApp.app}}" disabled class="form-control form-control-sm mx-1 my-1">
           </ng-container>
           <select class="form-control form-control-sm mx-2 my-1" id="deviceCategory" [(ngModel)]="filterObj.device"
-          name="deviceCategory" >
+          name="deviceCategory" [compareWith]="compareFn">
           <option [ngValue]="undefined">Select Asset</option>
           <option [ngValue]="device" *ngFor="let device of devices">
             {{device?.display_name ? device?.display_name: device.device_id}}
@@ -293,7 +293,7 @@
                   <div class="col-2 form-group " *ngFor="let prop of propList">
                     <input type="checkbox" class="form-check-input" id="{{prop}}"
                     name="{{prop}}" (change)="toggleProperty(prop)" [checked]="selectedPropertyForChart.indexOf(prop) !== -1">
-                    <label class="form-check-label" for="{{prop}}">{{prop}}</label>
+                    <label class="form-check-label" for="{{prop}}">{{getPropertyName(prop)}}</label>
                   </div>
 
                   <div class="col-2 pull-right">

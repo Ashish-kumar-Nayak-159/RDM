@@ -51,13 +51,13 @@
     </button> -->
     <div class="">
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'overview'}" id="device_overview" role="tabpanel">
-        <app-overview *ngIf="activeTab === 'overview' && device" [device]="device"></app-overview>
+        <app-overview *ngIf="activeTab === 'overview' && device" [tileData]="tileData" [device]="device"></app-overview>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'access_control'}" role="tabpanel" id="device_access_control">
         <app-access-control *ngIf="activeTab === 'access_control'  && device"></app-access-control>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="device_device_tags">
-        <app-tags *ngIf="activeTab === 'tags'  && device" [device]="device"></app-tags>
+        <app-tags *ngIf="activeTab === 'tags'  && device" [tileData]="tileData" [device]="device"></app-tags>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'heartbeat'}" role="tabpanel" id="device_heartbeat">
         <app-heartbeat *ngIf="activeTab === 'heartbeat' && device" [device]="device"></app-heartbeat>

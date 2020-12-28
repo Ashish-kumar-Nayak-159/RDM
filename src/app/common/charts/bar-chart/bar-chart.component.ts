@@ -117,6 +117,9 @@ export class BarChartComponent implements OnInit, OnDestroy {
         chart.exporting.filePrefix = this.device.device_id + '_' + chart.data[0].message_date.toString() + '_' + chart.data[chart.data.length - 1].message_date.toString();
       }
     chart.cursor = new am4charts.XYCursor();
+    chart.scrollbarX = new am4core.Scrollbar();
+      chart.scrollbarX.parent = chart.bottomAxesContainer;
+      chart.zoomOutButton.disabled = true;
     this.chart = chart;
     // // Create series
     this.createValueAxis(chart, 0);

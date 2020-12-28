@@ -129,6 +129,7 @@ export class HistoryComponent implements OnInit {
     if (this.historyFilter.dateOption === '24 hour') {
       this.historyFilter.isTypeEditable = true;
     } else {
+      this.historyFilter.type = true;
       this.historyFilter.isTypeEditable = false;
     }
   }
@@ -197,6 +198,10 @@ export class HistoryComponent implements OnInit {
       // delete obj.xAxisProps;
       console.log(obj);
       let method;
+    if (!obj.to_date || !obj.from_date) {
+      this.toasterService.showError('Date Selection is required', 'View Trend Analysis');
+      return;
+    }
     if (obj.to_date - obj.from_date > 3600 && !this.historyFilter.isTypeEditable) {
         this.historyFilter.isTypeEditable = true;
         this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
@@ -223,6 +228,8 @@ export class HistoryComponent implements OnInit {
       }
     }
     } else {
+      delete obj.aggregation_minutes;
+      delete obj.aggregation_format;
       delete obj.sampling_time;
       delete obj.sampling_format;
       method = this.deviceService.getDeviceTelemetry(obj);
@@ -270,6 +277,7 @@ export class HistoryComponent implements OnInit {
     if (to - from > 3600) {
       this.historyFilter.isTypeEditable = true;
     } else {
+      this.historyFilter.type = true;
       this.historyFilter.isTypeEditable = false;
     }
   }

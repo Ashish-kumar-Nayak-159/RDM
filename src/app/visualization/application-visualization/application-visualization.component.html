@@ -150,7 +150,7 @@
               <td>{{ alert.metadata?.user_id }}</td>
               <td>
                 <a href="javascript:void(0)" (click)="onClickOfViewGraph(alert)">
-                  <i class="fa fa-search"></i>
+                  <i class="fa fa-search" [style.color]="alert?.severity?.toLowerCase() === 'critical' ? 'white' : ''"></i>
                 </a>
               </td>
             </tr>
@@ -369,8 +369,8 @@
                     <ng-template #actionTakenTemplate>
                       <div class="table-responsive">
                         <p> Alert acknowledged by {{selectedAlert?.metadata?.user_id}} at {{selectedAlert?.metadata?.acknowledged_date}}.</p>
-                        <p>Reason: {{selectedAlert?.metadata?.reason?.reason}}</p>
-                        <p>Notes: {{selectedAlert?.metadata?.note}}</p>
+                        <p>Reason: {{selectedAlert?.metadata?.reason?.reason ? selectedAlert?.metadata?.reason?.reason: 'NA'}}</p>
+                        <p>Notes: {{selectedAlert?.metadata?.note ? selectedAlert?.metadata?.note : 'NA'}}</p>
                       </div>
                     </ng-template>
                     <h6 class="font-weight-bold"><u>By RDM:</u></h6>
@@ -405,7 +405,7 @@
         <form>
           <h6>Are you sure you want to acknowledge this alert?</h6>
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Select the reason for Alert:</label>
+            <label for="recipient-name" class="col-form-label">Reason:</label>
             <select class="custom-select" id="alertReason" [(ngModel)]="acknowledgedAlert.metadata.reason"
               name="alertReason">
               <option [ngValue]="undefined">Select Reason</option>

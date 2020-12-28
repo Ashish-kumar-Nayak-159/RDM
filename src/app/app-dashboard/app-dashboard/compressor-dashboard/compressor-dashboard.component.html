@@ -2,7 +2,7 @@
   <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3">
     <h5 class="h4 mb-0 text-gray-800">
       {{ tileData && tileData[0] ? tileData[0]?.value : "" }}
-      <ui-switch   class="mr-1" *ngIf="signalRModeValue !== undefined"
+      <ui-switch  class="mr-1" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry'"
       defaultBgColor="#f6c23e" checkedTextColor="white" uncheckedTextColor="white"
       checkedLabel="@ 60 sec refresh frequency"
       uncheckedLabel="@ 1 sec refresh frequency" name="tpye" [(ngModel)]="signalRModeValue"
@@ -422,6 +422,18 @@
                       *{{telemetryData.length}} samples with {{telemetryInterval ? telemetryInterval : '(?)'}} second refresh rate
                     </div>
                   </div>
+                  <div class="row" id="overlay">
+                    <ng-container *ngIf="c2dResponseMessage.length > 0">
+                      <div
+                        class="row col-12 mx-1 my-2" *ngFor="let message of c2dResponseMessage"
+                        >
+                        {{message.timestamp}}: {{message.message}}
+                      </div>
+                    </ng-container>
+                    <div class="row col-12" *ngIf="isC2dAPILoading">
+                      <i class="fa fa-spinner fa-spin fa-fw fa-2x"> </i>{{c2dLoadingMessage}}
+                    </div>
+                  </div>
                 </div>
 
                 <!-- Area Chart -->
@@ -551,17 +563,3 @@
   </div>
 </div>
 
-<div class="overlay">
-  <div style="font-family:'Arial Black'; font-size: 15px;">
-    <ng-container *ngIf="c2dResponseMessage.length > 0">
-      <div
-        class="row col-12 mx-1 my-2" *ngFor="let message of c2dResponseMessage"
-        >
-        {{message.timestamp}}: {{message.message}}
-      </div>
-    </ng-container>
-    <div class="row col-12" *ngIf="isC2dAPILoading">
-      <i class="fa fa-spinner fa-spin fa-fw fa-2x"> </i>{{c2dLoadingMessage}}
-    </div>
-  </div>
-</div>

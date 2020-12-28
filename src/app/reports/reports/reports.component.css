@@ -48,8 +48,18 @@ select.form-control {
   width: 7rem!important;
 }
 
- .bg-dateRow {
+.bg-dateRow {
   background-color: #F8F9Fc;
+}
+
+.contain-pad-report {
+  margin-top: 11.5rem;
+  max-height: calc(100vh - 20rem);
+  padding-right: 1rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: 0.5rem;
+  padding-bottom: 1.5rem;
 }
 
 

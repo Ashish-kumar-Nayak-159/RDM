@@ -41,6 +41,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
   c2dResponseInterval: any;
   isC2dAPILoading = false;
   c2dLoadingMessage: string;
+  isTelemetryModeAPICalled = false;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -79,10 +80,11 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
   }
 
   ngAfterViewInit() {
-    if ($('.overlay')) {
-      $('.overlay').hide();
+    if ($('#overlay')) {
+      $('#overlay').hide();
     }
   }
+
   loadFromCache() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION);
     if (item) {
@@ -104,7 +106,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
 
   onSwitchValueChange(event) {
     console.log(event)
-    $('.overlay').show();
+    $('#overlay').show();
     // alert(this.signalRModeValue);
     this.c2dResponseMessage = [];
     this.signalRModeValue = event;
@@ -127,35 +129,47 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
     };
     console.log(obj);
     this.deviceService.changeTelemetryMode(obj, this.contextApp.app).subscribe(
-      response => {
+      (response: any) => {
+        if (response.message_id) {
         this.c2dResponseMessage.push({
           timestamp: this.commonService.convertEpochToDate(obj.timestamp),
           message: 'Sent ' + (this.signalRModeValue ? 'Normal' : 'Turbo')  + ' mode command with '
           + obj.message.frequency_in_sec + ' second telemetry frequency to ' + (this.filterObj.device.gateway_id ? 'IoT Gateway' : 'Device')
         });
-        this.c2dLoadingMessage = 'Waiting for resoponse from device';
+        this.c2dLoadingMessage = 'Waiting for acknowledgement';
         this.c2dResponseInterval = setInterval(() => {
           this.checkForC2dResponse(obj);
         }, 5000);
+        const arr = [];
+        this.telemetryData = [];
+        this.telemetryData = JSON.parse(JSON.stringify(arr));
+        // this.telemetryData.push(this.telemetryObj);
+      }
       }
     );
   }
 
   checkForC2dResponse(obj) {
-    this.deviceService.getC2dResponseJSON(obj.message_id, this.contextApp.app).subscribe(
+    this.deviceService.getC2dMessageJSON(obj.message_id, this.contextApp.app).subscribe(
       (response: any) => {
-        if (response.data?.length > 0) {
+        if (response?.feedback_code) {
           this.isC2dAPILoading = false;
           this.c2dLoadingMessage = undefined;
 
           setTimeout(() => {
-            $('.overlay').hide();
+            $('#overlay').hide();
           }, 10000);
           this.c2dResponseMessage.push({
             timestamp: this.commonService.convertEpochToDate((moment().utc()).unix()),
-          message: (this.filterObj.device.gateway_id ? 'IoT Gateway' : 'Device') + ' is successfully configured with '
-          + obj.message.frequency_in_sec + ' second telemetry frequency.' + (obj.message.mode === 'turbo' ?
-          'After 10 minutes normal mode will be set automatically.' : '')
+            message: (response?.feedback_code?.toLowerCase() === 'success' ? (this.filterObj.device.gateway_id ? 'IoT Gateway' : 'Device') + ' has received the command successfully' : (
+            response?.feedback_code?.toLowerCase() === 'expired' ? 'Command has been expired' : (
+            response?.feedback_code?.toLowerCase() === 'rejected' ? 'Command has been rejected by ' + (this.filterObj.device.gateway_id ? 'IoT Gateway' : 'Device') : (
+            response?.feedback_code?.toLowerCase() === 'purged' ? 'Command has been purged' : (
+            response?.feedback_code?.toLowerCase() === 'deliverycountexceeded' ? 'Delivery count exceeded for command' : ''
+            )
+            )
+            )
+          ))
           });
           clearInterval(this.c2dResponseInterval);
         }
@@ -265,11 +279,12 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
     if (type === 'telemetry') {
       this.loadFromCache();
     }
+    $('#overlay').hide();
   }
 
   async onFilterSelection(filterObj) {
     this.c2dResponseMessage = [];
-    $('.overlay').hide();
+    $('#overlay').hide();
     clearInterval(this.c2dResponseInterval);
     this.signalRService.disconnectFromSignalR('telemetry');
     this.signalRTelemetrySubscription?.unsubscribe();
@@ -362,7 +377,8 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
     if (this.telemetryObj) {
       const interval = moment(telemetryObj.message_date).diff(moment(this.telemetryObj.message_date), 'second');
       // alert((this.telemetryInterval - 5) + ' aaaaa ' + interval + ' bbbbb ' + (this.telemetryInterval+ 5));
-      if (this.telemetryInterval && interval && Math.abs(this.telemetryInterval - interval) > 5) {
+      if (this.telemetryInterval && interval && Math.abs(this.telemetryInterval - interval) > 5 && !this.isTelemetryModeAPICalled) {
+        this.isTelemetryModeAPICalled = true;
         setTimeout(() => {
         this.getDeviceSignalRMode(this.filterObj.device.gateway_id);
       }, 2000);
@@ -441,11 +457,12 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
   }
 
   getDeviceSignalRMode(deviceId) {
-    this.signalRModeValue = true;
+    // this.signalRModeValue = true;
     this.deviceService.getDeviceSignalRMode(this.contextApp.app, deviceId).subscribe(
       (response: any) => {
         this.signalRModeValue = response?.mode?.toLowerCase() === 'normal' ? true :
         (response?.mode?.toLowerCase() === 'turbo' ? false : true);
+        this.isTelemetryModeAPICalled = false;
       }
     )
   }

@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { ColumnChartComponent } from './../../common/charts/column-chart/column-chart.component';
 import { DataTableComponent } from './../../common/charts/data-table/data-table.component';
 import { PieChartComponent } from './../../common/charts/pie-chart/pie-chart.component';
@@ -302,6 +303,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   getLiveAlerts(obj) {
     obj.local_created_date = this.commonService.convertSignalRUTCDateToLocal(obj.timestamp);
+    obj.message_date = obj.timestamp;
     obj.alert_id = 'alert_' + this.latestAlerts.length;
     this.latestAlerts.splice(0, 0, obj);
     // obj.count = 1;
@@ -431,7 +433,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
     const params = {
       app: this.contextApp.app,
-      name: this.alertCondition?.device_type ?  this.alertCondition.device_type : this.selectedDevice.tags.device_type
+      name: this.alertCondition?.device_type ?  this.alertCondition.device_type : this.selectedDevice.device_type
     };
     this.dropdownWidgetList = [];
     this.selectedWidgets = [];
@@ -570,6 +572,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
         return;
     }
+    delete filterObj.count;
+    delete filterObj.device;
     console.log(this.filterObj.isTypeEditable);
     if (this.filterObj.isTypeEditable) {
       console.log(this.filterObj.type);
@@ -758,6 +762,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   async onClickOfAcknowledgeAlert(alert): Promise<void> {
     this.acknowledgedAlert = alert;
+    if (!this.acknowledgedAlert.metadata) {
+      this.acknowledgedAlert.metadata = {};
+    }
     await this.getDeviceData(this.acknowledgedAlert.device_id);
     await this.getModelReasons();
     $('#acknowledgemenConfirmModal').modal({ backdrop: 'static', keyboard: false, show: true });
@@ -768,6 +775,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       app: this.contextApp.app,
       device_id: this.acknowledgedAlert.device_id,
       message_id: this.acknowledgedAlert.message_id,
+      message_date: this.acknowledgedAlert.message_date,
+      code: this.acknowledgedAlert.code,
       message: this.acknowledgedAlert.message,
       metadata: this.acknowledgedAlert.metadata
     };

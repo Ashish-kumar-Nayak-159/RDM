@@ -31,6 +31,8 @@ export class OverviewComponent implements OnInit {
   btnClickType: string;
   confirmModalMessage: string;
   constantData = CONSTANTS;
+  @Input() tileData: any;
+  componentState: any;
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -51,6 +53,13 @@ export class OverviewComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.pageType = params.get('listName');
       this.pageType = this.pageType.slice(0, -1).toLowerCase();
+      if (this.pageType === 'device') {
+        this.componentState = CONSTANTS.IP_DEVICE;
+      } else if (this.pageType === 'gateway') {
+        this.componentState = CONSTANTS.IP_GATEWAY;
+      } else if (this.pageType === 'nonipdevice') {
+        this.componentState = CONSTANTS.NON_IP_DEVICE;
+      }
       this.getDeviceCredentials();
       this.getDeviceConnectionStatus();
       if (this.pageType === 'gateway') {
@@ -59,6 +68,9 @@ export class OverviewComponent implements OnInit {
     });
 
   }
+
+
+
 
   getDeviceCredentials() {
     this.deviceCredentials = undefined;

@@ -24,6 +24,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
   tagsObj: any;
   contextApp: any;
   menuItems: any[] = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
+  tileData: any;
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private deviceService: DeviceService,
@@ -61,6 +62,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
             this.componentState = CONSTANTS.NON_IP_DEVICE;
             this.pageType = 'Device';
           }
+          this.getTileName();
           this.pageType = this.pageType.slice(0, -1);
           this.device = new Device();
           this.device.device_id = params.get('deviceId');
@@ -82,6 +84,19 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
         this.getDeviceDetail(true);
       }
     );
+  }
+
+  getTileName() {
+    let selectedItem;
+    this.contextApp.configuration.main_menu.forEach(item => {
+      // console.log(item.system_name, '------', this.componentState);
+      // console.log(this.pageType);
+      if (item.system_name === this.componentState + 's') {
+        selectedItem = item.showAccordion;
+        console.log(selectedItem);
+      }
+    });
+    this.tileData = selectedItem[1];
   }
 
   ngAfterViewInit(): void {

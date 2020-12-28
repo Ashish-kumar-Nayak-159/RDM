@@ -129,12 +129,13 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   clear() {
     // this.filterSearch.emit(this.originalFilterObj);
     this.telemetryFilter = {};
+    // this.isFilterSelected = false;
     this.telemetryFilter = {...this.originalTelemetryFilter};
   }
 
   searchTelemetry(filterObj) {
     console.log('filterObj ', filterObj);
-
+    this.telemetry = [];
     const obj = {...filterObj};
     const now = moment().utc();
     if (filterObj.dateOption === '5 mins') {

@@ -48,11 +48,11 @@
 
   </div>
   <div class="row col-12 mt-1" *ngIf="pageType.toLowerCase() === 'nonipdevice'">
-    <h6>This device is managed by an IP Gateway ({{device.gateway_id}})</h6>
+    <h6>This {{tileData.value}} is managed by an IP Gateway ({{device.gateway_id}})</h6>
 
   </div>
   <div class="row col-12">
-    <h6>Device Id is {{device?.device_id}}</h6>
+    <h6>{{tileData.value}} Id is {{device?.device_id}}</h6>
   </div>
   <div class="row col-12 mt-1" *ngIf="pageType === 'gateway'">
     <h6>This is the gateway of type ({{device.tags.device_type}}) managing {{deviceCount}} devices.</h6>

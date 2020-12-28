@@ -213,3 +213,7 @@ input:invalid {
 }
 
 .big-checkbox {width: 23px; height: 25px;}
+
+.switch.switch-medium {
+  outline:  none;
+}

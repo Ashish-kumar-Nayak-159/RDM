@@ -6,25 +6,26 @@
   <div class="row">
 
     <ul class="nav">
-      <!-- <li class="nav-item">
-      <a class="nav-link" href="javascript:void(0)">
-        <i class="fa fa-fw fa-eye"></i>
-        <span class="text-secondary">View</span></a>
-    </li> -->
+
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="updateDeviceTags()">
+        <a class="nav-link" href="javascript:void(0)" (click)="updateDeviceTags()" [class.disabled]="isUpdateAPILoading">
           <i class="fa fa-fw fa-save"></i>
           <span class="text-secondary">Save</span></a>
       </li>
       <li class="nav-item" *ngIf="contextApp?.user?.role === constantData.APP_ADMIN_ROLE">
-        <a class="nav-link" href="javascript:void(0)" (click)="deleteAllDeviceTags()">
+        <a class="nav-link" href="javascript:void(0)" (click)="openModal('confirmdeleteTagsModal')" [class.disabled]="isUpdateAPILoading">
           <i class="fa fa-fw fa-trash"></i>
           <span class="text-secondary">Delete all</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="resetDeviceTags()">
+        <a class="nav-link" href="javascript:void(0)" (click)="openModal('confirmResetTagsModal')" [class.disabled]="isUpdateAPILoading">
           <i class="fa fa-fw fa-undo"></i>
           <span class="text-secondary delete-row">Revert Changes</span></a>
+      </li>
+      <li class="nav-item" *ngIf="isUpdateAPILoading">
+      <a class="nav-link" href="javascript:void(0)">
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+        </a>
       </li>
     </ul>
   </div>
@@ -55,7 +56,7 @@
 
           <tbody>
             <tr>
-              <td>Asset Display Name</td>
+              <td>{{tileData.value}} Display Name</td>
               <td>
                 <ng-container *ngIf="!isReservedTagsEditable">{{device?.tags?.display_name}}</ng-container>
                 <ng-container *ngIf="isReservedTagsEditable">
@@ -78,7 +79,7 @@
             </tr>
 
             <tr>
-              <td>Asset Manager</td>
+              <td>{{tileData.value}} Manager</td>
               <td>{{device?.tags?.device_manager}}</td>
             </tr>
             <tr>
@@ -159,5 +160,25 @@
       </div>
     </div>
 
+  </div>
+</div>
+
+
+<div class="modal fade" id="confirmResetTagsModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <app-message-modal
+    [bodyMessage]="'All the unsaved tags will get deleted. Are you sure you want to reset the tags?'"
+     [headerMessage]="'Reset ' + this.tileData.value + ' Tags'"
+      (modalEvents)="resetDeviceTags($event)" [modalConfig]="modalConfig"></app-message-modal>
+  </div>
+</div>
+
+
+<div class="modal fade" id="confirmdeleteTagsModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <app-message-modal
+    [bodyMessage]="'All the custom tags will get deleted. Are you sure you want to delete the tags?'"
+     [headerMessage]="'Delete ' + this.tileData.value + ' Tags'"
+      (modalEvents)="deleteAllDeviceTags($event)" [modalConfig]="modalConfig"></app-message-modal>
   </div>
 </div>

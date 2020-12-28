@@ -82,9 +82,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       chart.legend = new am4charts.Legend();
 
       chart.cursor = new am4charts.XYCursor();
-      // const scrollbarX = new am4charts.XYChartScrollbar();
-      // scrollbarX.series.push(series);
-      // chart.scrollbarX = scrollbarX;
+
       if (this.selectedAlert) {
         const range = dateAxis.axisRanges.create();
         range.date = new Date(this.selectedAlert.local_created_date);
@@ -122,6 +120,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         });
       });
       chart.exporting.dataFields = obj;
+      chart.zoomOutButton.disabled = true;
       const list = new am4core.List<string>();
       list.insertIndex(0, 'message_date');
       console.log(list);
@@ -134,6 +133,8 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       } else {
         chart.exporting.filePrefix = this.device.device_id + '_' + chart.data[0].message_date.toString() + '_' + chart.data[chart.data.length - 1].message_date.toString();
       }
+      chart.scrollbarX = new am4core.Scrollbar();
+      chart.scrollbarX.parent = chart.bottomAxesContainer;
       this.chart = chart;
     });
   }
@@ -213,6 +214,14 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       series.fillOpacity = this.chartType.includes('Area') ? 0.3 : 0;
       series.tooltipText = '{name} ({units}): [bold]{valueY}[/]';
 
+      var bullet = series.bullets.push(new am4charts.CircleBullet());
+      // bullet.stroke = 'darkgreen';
+      bullet.strokeWidth = 2;
+      bullet.circle.radius = 1.5;
+
+      // // const scrollbarX = new am4charts.XYChartScrollbar();
+      // // scrollbarX.series.push(series);
+      // chart.scrollbarX = scrollbarX;
       // // Make bullets grow on hover
       // const bullet = series.bullets.push(new am4charts.CircleBullet());
       // bullet.circle.strokeWidth = 2;

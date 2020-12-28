@@ -58,10 +58,11 @@ export class DeviceListComponent implements OnInit {
 
   //  this.commonService.setFlag(true);
     this.route.paramMap.subscribe(async params => {
-
+      this.deviceFilterObj = new DeviceListFilter();
       this.deviceFilterObj.app = this.contextApp.app;
       this.deviceFilterObj.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
       this.deviceFilterObj.hierarchyString =  this.contextApp.user.hierarchyString;
+      this.originalDeviceFilterObj = JSON.parse(JSON.stringify(this.deviceFilterObj));
       this.devicesList = [];
       if (params.get('listName')) {
         const listName = params.get('listName');
@@ -123,7 +124,7 @@ export class DeviceListComponent implements OnInit {
           this.devicesList = [];
           if (params1.get('connection_state')) {
             this.deviceFilterObj.status = params1.get('connection_state');
-            this.originalDeviceFilterObj = JSON.parse(JSON.stringify(this.deviceFilterObj));
+
           }
           this.searchDevices();
         }
@@ -355,6 +356,22 @@ export class DeviceListComponent implements OnInit {
   clearFilter() {
     this.deviceFilterObj = undefined;
     this.deviceFilterObj = JSON.parse(JSON.stringify(this.originalDeviceFilterObj));
+    console.log(this.deviceFilterObj);
+    if (this.contextApp.hierarchy.levels.length > 1) {
+      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+      this.addDeviceHierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+    }
+    this.contextApp.hierarchy.levels.forEach((level, index) => {
+      if (index !== 0) {
+      this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+      this.addDeviceConfigureHierarchy[index] = this.contextApp.user.hierarchy[level];
+      if (this.contextApp.user.hierarchy[level]) {
+        this.onChangeOfHierarchy(index);
+        this.onChangeOfAddDeviceHierarchy(index);
+
+      }
+      }
+    });
   }
 
   getConnectivityData() {

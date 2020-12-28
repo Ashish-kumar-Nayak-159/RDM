@@ -6,7 +6,7 @@ import { DeviceService } from 'src/app/services/devices/device.service';
 import { ToasterService } from './../../../services/toaster.service';
 import { CONSTANTS } from './../../../app.constants';
 import { CommonService } from 'src/app/services/common.service';
-
+declare var $: any;
 @Component({
   selector: 'app-tags',
   templateUrl: './tags.component.html',
@@ -15,6 +15,7 @@ import { CommonService } from 'src/app/services/common.service';
 export class TagsComponent implements OnInit {
 
   @Input() device: Device = new Device();
+  @Input() tileData: any;
   originalDevice: Device = new Device();
   deviceCustomTags: any[] = [];
   reservedTags: any[] = [];
@@ -31,6 +32,14 @@ export class TagsComponent implements OnInit {
   contextApp: any;
   deviceType: any;
   constantData = CONSTANTS;
+  isUpdateAPILoading = false;
+  modalConfig = {
+    isDisplaySave: true,
+    isDisplayCancel: true,
+    saveBtnText: 'Yes',
+    cancelBtnText: 'No',
+    stringDisplay: true
+  };
   constructor(
     private route: ActivatedRoute,
     private deviceService: DeviceService,
@@ -113,6 +122,7 @@ export class TagsComponent implements OnInit {
   }
 
   getDeviceDetail() {
+    console.log('12444444  ', this.device.tags);
     this.deviceCustomTags = [];
     if (!this.device.tags) {
       this.device.tags = {};
@@ -170,10 +180,26 @@ export class TagsComponent implements OnInit {
     }
   }
 
-  resetDeviceTags() {
-    this.device = null;
-    this.device = JSON.parse(JSON.stringify(this.originalDevice));
-    this.getDeviceDetail();
+  openModal(id) {
+    $('#' + id).modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  resetDeviceTags(event) {
+    if (event === 'save') {
+      this.isUpdateAPILoading = true;
+      this.device = null;
+      this.device = JSON.parse(JSON.stringify(this.originalDevice));
+      this.device.hierarchyString = '';
+      const keys = Object.keys(this.device.hierarchy);
+      keys.forEach((key, index) => {
+        this.device.hierarchyString += this.device.hierarchy[key] + ( keys[index + 1] ? ' / ' : '');
+      });
+      $('#confirmResetTagsModal').modal('hide');
+      this.getDeviceDetail();
+      this.isUpdateAPILoading = false;
+    } else {
+      $('#confirmResetTagsModal').modal('hide');
+    }
   }
 
   onChangeOfHierarchyTags() {
@@ -181,6 +207,7 @@ export class TagsComponent implements OnInit {
   }
 
   updateDeviceTags() {
+    this.isUpdateAPILoading = true;
     const tagObj = {};
     this.deviceCustomTags.forEach(tag => {
       if (tag.name && tag.value) {
@@ -204,22 +231,28 @@ export class TagsComponent implements OnInit {
         this.toasterService.showSuccess(response.message, 'Set Tags');
         this.getDeviceData();
         this.isReservedTagsEditable = false;
-      }, error => this.toasterService.showError(error.message, 'Set Tags')
+        this.isUpdateAPILoading = false;
+      }, error => {
+        this.toasterService.showError(error.message, 'Set Tags');
+        this.isUpdateAPILoading = false;
+      }
     );
   }
 
-  deleteAllDeviceTags() {
+  deleteAllDeviceTags(event) {
+    if (event === 'save') {
+    this.isUpdateAPILoading = true;
     const tagObj = {};
     this.deviceCustomTags.forEach(tag => {
       if (tag.name && tag.value) {
         tagObj[tag.name] = null;
       }
     });
-    (Object.keys(this.device.tags)).forEach(key => {
-      if (this.tagsListToNotDelete.indexOf(key) === -1 && key !== 'custom_tags') {
-        this.device.tags[key] = null;
-      }
-    });
+    // (Object.keys(this.device.tags)).forEach(key => {
+    //   if (this.tagsListToNotDelete.indexOf(key) === -1 && key !== 'custom_tags') {
+    //     this.device.tags[key] = null;
+    //   }
+    // });
     this.device.tags.custom_tags = tagObj;
     const obj = {
       device_id: this.device.device_id,
@@ -235,10 +268,18 @@ export class TagsComponent implements OnInit {
     methodToCall.subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Delete Tags');
+        $('#confirmdeleteTagsModal').modal('hide');
+        this.device.tags.custom_tags = {};
         this.getDeviceData();
-
-      }, error => this.toasterService.showError(error.message, 'Delete Tags')
+        this.isUpdateAPILoading = false;
+      }, error => {
+        this.toasterService.showError(error.message, 'Delete Tags');
+        this.isUpdateAPILoading = false;
+      }
     );
+    } else {
+      $('#confirmdeleteTagsModal').modal('hide');
+    }
   }
 
 }

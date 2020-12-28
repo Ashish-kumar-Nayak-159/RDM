@@ -48,24 +48,25 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
         valueArr.push(Number(obj[this.property]));
         dateArr.push(newObj.message_date);
       });
-
-      this.max = Math.ceil(valueArr.reduce((a, b) => Math.max(a, b)));
-      this.min = Math.floor(valueArr.reduce((a, b) => Math.min(a, b)));
-      if (this.min === this.max) {
-        this.min = this.min - 5;
-        this.max = this.max + 5;
+      if (valueArr.length > 0) {
+        this.max = Math.ceil(valueArr.reduce((a, b) => Math.max(a, b)));
+        this.min = Math.floor(valueArr.reduce((a, b) => Math.min(a, b)));
+        if (this.min === this.max) {
+          this.min = this.min - 5;
+          this.max = this.max + 5;
+        }
+        this.average = Number(((this.min + this.max) / 2).toFixed(1));
+        this.valueAxis.min = this.min;
+        this.valueAxis.max = this.max;
+        this.range0.value = this.min;
+        this.range1.value = this.max;
+        this.range2.value = this.average;
+        this.range0.label.text = this.min.toString();
+        this.range1.label.text = this.max.toString();
+        this.range2.label.text = this.average.toString();
+        this.range1.grid.disabled = (this.min === this.max);
+        this.range2.grid.disabled = ((this.min + this.max) === (this.average * 2));
       }
-      this.average = Number(((this.min + this.max) / 2).toFixed(1));
-      this.valueAxis.min = this.min;
-      this.valueAxis.max = this.max;
-      this.range0.value = this.min;
-      this.range1.value = this.max;
-      this.range2.value = this.average;
-      this.range0.label.text = this.min.toString();
-      this.range1.label.text = this.max.toString();
-      this.range2.label.text = this.average.toString();
-      this.range1.grid.disabled = (this.min === this.max);
-      this.range2.grid.disabled = ((this.min + this.max) === (this.average * 2));
       // data.reverse();
       this.chart.data = data;
       this.chart.validateData();

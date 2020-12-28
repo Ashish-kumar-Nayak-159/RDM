@@ -443,6 +443,7 @@ export class ReportsComponent implements OnInit {
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
     let colA;
     if (this.filterObj.report_type === 'Alert Report') {
+      // ws['!cols'][0] = { hidden: true };
       colA = XLSX.utils.decode_col('C'); // timestamp is in first column
     } else if (this.filterObj.report_type === 'Process Parameter Report') {
       colA = XLSX.utils.decode_col('B'); // timestamp is in first column
@@ -451,6 +452,8 @@ export class ReportsComponent implements OnInit {
 
     // get worksheet range
     const range = XLSX.utils.decode_range(ws['!ref']);
+    console.log(range.s.r);
+    console.log(range.e.r);
     for (let i = range.s.r + 1; i <= range.e.r; ++i) {
       /* find the data cell (range.s.r + 1 skips the header row of the worksheet) */
       const ref = XLSX.utils.encode_cell({ r: i, c: colA });
@@ -467,7 +470,7 @@ export class ReportsComponent implements OnInit {
     }
     // width of timestamp col
     const wscols = [
-      { wch: 20 }
+      { wch: 80 }
     ];
 
     ws['!cols'] = wscols;

@@ -21,7 +21,8 @@
               }"
             >
             </angular2-multiselect>
-            <div class="bg-dateRow form-group form-inline" id="dateRow" style="width: 35rem;">
+            <div class="bg-dateRow form-group form-inline" id="dateRow"
+            [style.width]="(historyFilter.dateOption === 'date' ? '25rem' : (historyFilter.dateOption === 'date range' ? '35rem' : ''))">
             <select
               class="form-control form-control-sm mx-1 my-1"
               id="dateoptions"
@@ -34,10 +35,20 @@
               <option [ngValue]="'30 mins'">Last 30 minutes</option>
               <option [ngValue]="'1 hour'">Last 1 hour</option>
               <option [ngValue]="'24 hour'">Last 24 hours</option>
+              <option [ngValue]="'date'">Select Date</option>
+              <option [ngValue]="'date range'">Select Date Range</option>
               <!-- <option [ngValue]="'custom'">>Custom</option> -->
             </select>
-            <label class="ml-1 mr-1">OR</label>
-            <ng-container>
+            <!-- <label class="ml-1 mr-1">OR</label> -->
+            <ng-container *ngIf="historyFilter.dateOption === 'date'">
+              <input #dt2Input [owlDateTime]="dt2"  (dateTimeChange)="onSingleDateChange($event);"
+                class="form-control form-control-sm mx-2 my-1 w-10" [owlDateTimeTrigger]="dt2"
+                placeholder="Select Date">
+              <span [owlDateTimeTrigger]="dt2"  class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
+              <owl-date-time #dt2 [pickerType]="'calendar'"></owl-date-time>
+            </ng-container>
+            <!-- <label class="ml-3 mr-1">OR</label> -->
+            <ng-container *ngIf="historyFilter.dateOption === 'date range'">
               <!-- <mat-date-range-picker #picker></mat-date-range-picker>
               <mat-date-range-input [rangePicker]="picker" class="form-control form-control-sm mx-1 my-1 w-11">
                 <input matStartDate [(ngModel)]="historyFilter.from_date" name="from_date">
@@ -45,7 +56,7 @@
               </mat-date-range-input>
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle> -->
               <input
-                [owlDateTime]="dt1"
+                [owlDateTime]="dt1" #dt1Input
                 [selectMode]="'range'"
                 (dateTimeChange)="onDateChange($event)"
                 class="form-control form-control-sm mx-1 my-1 date-range-picket-width mr-1"

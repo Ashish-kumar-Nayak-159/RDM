@@ -5,7 +5,7 @@ import { PieChartComponent } from './../../common/charts/pie-chart/pie-chart.com
 import { DeviceTypeService } from './../../services/device-type/device-type.service';
 import { ToasterService } from './../../services/toaster.service';
 import { Component, OnInit, OnDestroy, EmbeddedViewRef,
-  ApplicationRef, ComponentFactoryResolver, Injector, Input } from '@angular/core';
+  ApplicationRef, ComponentFactoryResolver, Injector, Input, ViewChild } from '@angular/core';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from './../../services/common.service';
 import { DeviceService } from './../../services/devices/device.service';
@@ -63,6 +63,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   reasons: any[] = [];
   isAlertModalDataLoading = false;
   isChartViewOpen = true;
+  @ViewChild('dtInput1', {static: false}) dtInput1: any;
+  @ViewChild('dtInput2', {static: false}) dtInput2: any;
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -216,12 +218,57 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.filterObj.from_date = undefined;
       this.filterObj.to_date = undefined;
     }
+    if (this.dtInput1) {
+      this.dtInput1.value = null;
+    }
+    if (this.dtInput2) {
+      this.dtInput2.value = null;
+    }
+    if (this.filterObj.dateOption === '24 hour') {
+      this.filterObj.isTypeEditable = true;
+    } else {
+      this.filterObj.isTypeEditable = false;
+    }
+  }
+
+  onSingleDateChange(event) {
+    console.log(event);
+    this.filterObj.from_date = moment(event.value).utc();
+    this.filterObj.to_date = (moment(event.value).add(1, 'days')).utc();
+    if (this.dtInput1) {
+      this.dtInput1.value = null;
+    }
+    if (this.filterObj.dateOption !== 'date') {
+      this.filterObj.dateOption = undefined;
+    }
+    const from = this.filterObj.from_date.unix();
+    const to = this.filterObj.to_date.unix();
+    if (to - from > 3600) {
+      this.filterObj.isTypeEditable = true;
+    } else {
+      this.filterObj.isTypeEditable = false;
+    }
   }
 
   onDateChange(event) {
     console.log(event);
     this.filterObj.from_date = moment(event.value[0]).second(0).utc();
     this.filterObj.to_date = moment(event.value[1]).second(0).utc();
+    console.log(this.filterObj.from_date.unix());
+    console.log(this.filterObj.to_date.unix());
+    if (this.dtInput2) {
+      this.dtInput2.value = null;
+    }
+    if (this.filterObj.dateOption !== 'date range') {
+      this.filterObj.dateOption = undefined;
+    }
+    const from = this.filterObj.from_date.unix();
+    const to = this.filterObj.to_date.unix();
+    if (to - from > 3600) {
+      this.filterObj.isTypeEditable = true;
+    } else {
+      this.filterObj.isTypeEditable = false;
+    }
   }
 
   getLatestAlerts() {

@@ -91,7 +91,7 @@
                 <div class="text-center">
                   <h1 class="h4 text-white mb-4">Welcome !!</h1>
                 </div>
-                <form class="user">
+                <form class="user" (submit)="onLogin()">
                   <div class="form-group">
                     <input type="email" class="form-control form-control-user" id="exampleInputEmail"
                       aria-describedby="emailHelp" placeholder="Enter Email Address" [(ngModel)]="loginForm.email" name="email">
@@ -114,14 +114,13 @@
                       >
                     </div>
                   </div>
-                  <a
-                  (click)="onLogin()" href="javascript:void(0)"
+                  <button type="submit"
                     class="btn btn-secondary btn-user btn-block"
                     [class.disabled]="isLoginAPILoading"
                   >
                     Login
                     <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></i>
-                  </a>
+                  </button>
                 </form>
                 <hr />
                 <div class="text-center">

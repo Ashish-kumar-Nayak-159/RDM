@@ -1,6 +1,6 @@
 import { ToasterService } from './../../../services/toaster.service';
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ViewChild } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
@@ -27,6 +27,8 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   pageType: string;
   devices: any[] = [];
   originalTelemetryFilter: any;
+  @ViewChild('dtInput1', {static: false}) dtInput1: any;
+  @ViewChild('dtInput2', {static: false}) dtInput2: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -106,7 +108,32 @@ export class TelemetryComponent implements OnInit, OnDestroy {
       this.telemetryFilter.from_date = undefined;
       this.telemetryFilter.to_date = undefined;
     }
+    if (this.dtInput1) {
+      this.dtInput1.value = null;
+    }
+    if (this.dtInput2) {
+      this.dtInput2.value = null;
+    }
     if (this.telemetryFilter.dateOption === '24 hour') {
+      this.telemetryFilter.isTypeEditable = true;
+    } else {
+      this.telemetryFilter.isTypeEditable = false;
+    }
+  }
+
+  onSingleDateChange(event) {
+    console.log(event);
+    this.telemetryFilter.from_date = moment(event.value).utc();
+    this.telemetryFilter.to_date = (moment(event.value).add(1, 'days')).utc();
+    if (this.dtInput1) {
+      this.dtInput1.value = null;
+    }
+    if (this.telemetryFilter.dateOption !== 'date') {
+      this.telemetryFilter.dateOption = undefined;
+    }
+    const from = this.telemetryFilter.from_date.unix();
+    const to = this.telemetryFilter.to_date.unix();
+    if (to - from > 3600) {
       this.telemetryFilter.isTypeEditable = true;
     } else {
       this.telemetryFilter.isTypeEditable = false;
@@ -117,6 +144,13 @@ export class TelemetryComponent implements OnInit, OnDestroy {
     console.log(event);
     this.telemetryFilter.from_date = moment(event.value[0]).second(0).utc();
     this.telemetryFilter.to_date = moment(event.value[1]).second(0).utc();
+    if (this.dtInput2) {
+      this.dtInput2.value = null;
+    }
+    console.log(this.telemetryFilter.dateOption);
+    if (this.telemetryFilter.dateOption !== 'date range') {
+      this.telemetryFilter.dateOption = undefined;
+    }
     const from = this.telemetryFilter.from_date.unix();
     const to = this.telemetryFilter.to_date.unix();
     if (to - from > 3600) {
@@ -131,6 +165,12 @@ export class TelemetryComponent implements OnInit, OnDestroy {
     this.telemetryFilter = {};
     // this.isFilterSelected = false;
     this.telemetryFilter = {...this.originalTelemetryFilter};
+    if (this.dtInput1) {
+      this.dtInput1.value = null;
+    }
+    if (this.dtInput2) {
+      this.dtInput2.value = null;
+    }
   }
 
   searchTelemetry(filterObj) {

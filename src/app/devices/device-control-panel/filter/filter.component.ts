@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from './../../../app.constants';
 import { ActivatedRoute } from '@angular/router';
@@ -20,6 +20,8 @@ export class FilterComponent implements OnInit {
   pageType: string;
   constantData: CONSTANTS;
   devices: any[] = [];
+  @ViewChild('dtInput1', {static: false}) dtInput1: any;
+  @ViewChild('dtInput2', {static: false}) dtInput2: any;
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -65,12 +67,36 @@ export class FilterComponent implements OnInit {
       this.filterObj.from_date = undefined;
       this.filterObj.to_date = undefined;
     }
+    if (this.dtInput1) {
+      this.dtInput1.value = null;
+    }
+    if (this.dtInput2) {
+      this.dtInput2.value = null;
+    }
   }
 
   onDateChange(event) {
     console.log(event);
     this.filterObj.from_date = moment(event.value[0]).second(0).utc();
     this.filterObj.to_date = moment(event.value[1]).second(0).utc();
+    if (this.dtInput2) {
+      this.dtInput2.value = null;
+    }
+    if (this.filterObj.dateOption !== 'date range') {
+      this.filterObj.dateOption = undefined;
+    }
+  }
+
+  onSingleDateChange(event) {
+    console.log(event);
+    this.filterObj.from_date = moment(event.value).utc();
+    this.filterObj.to_date = (moment(event.value).add(1, 'days')).utc();
+    if (this.dtInput1) {
+      this.dtInput1.value = null;
+    }
+    if (this.filterObj.dateOption !== 'date') {
+      this.filterObj.dateOption = undefined;
+    }
   }
 
   search() {
@@ -81,5 +107,11 @@ export class FilterComponent implements OnInit {
     // this.filterSearch.emit(this.originalFilterObj);
     this.filterObj = {};
     this.filterObj = {...this.originalFilterObj};
+    if (this.dtInput1) {
+      this.dtInput1.value = null;
+    }
+    if (this.dtInput2) {
+      this.dtInput2.value = null;
+    }
   }
 }

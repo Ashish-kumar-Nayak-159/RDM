@@ -1,7 +1,7 @@
 import { ColumnChartComponent } from 'src/app/common/charts/column-chart/column-chart.component';
 import { ChartService } from './../../../chart/chart.service';
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
-import { Component, OnInit, Input, ComponentFactoryResolver, ApplicationRef, Injector, EmbeddedViewRef } from '@angular/core';
+import { Component, OnInit, Input, ComponentFactoryResolver, ApplicationRef, Injector, EmbeddedViewRef, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DeviceService } from './../../../services/devices/device.service';
 import { CommonService } from 'src/app/services/common.service';
@@ -36,6 +36,8 @@ export class HistoryComponent implements OnInit {
   // y1AxisProps = "";
   // y2AxisProp = "";
   xAxisProps = '';
+  @ViewChild('dtInput1', {static: false}) dtInput1: any;
+  @ViewChild('dtInput2', {static: false}) dtInput2: any;
 
   // chart selection
   chartCount = 0;
@@ -130,6 +132,31 @@ export class HistoryComponent implements OnInit {
       this.historyFilter.isTypeEditable = true;
     } else {
       this.historyFilter.type = true;
+      this.historyFilter.isTypeEditable = false;
+    }
+    if (this.dtInput1) {
+      this.dtInput1.value = null;
+    }
+    if (this.dtInput2) {
+      this.dtInput2.value = null;
+    }
+  }
+
+  onSingleDateChange(event) {
+    console.log(event);
+    this.historyFilter.from_date = moment(event.value).utc();
+    this.historyFilter.to_date = (moment(event.value).add(1, 'days')).utc();
+    if (this.dtInput1) {
+      this.dtInput1.value = null;
+    }
+    if (this.historyFilter.dateOption !== 'date') {
+      this.historyFilter.dateOption = undefined;
+    }
+    const from = this.historyFilter.from_date.unix();
+    const to = this.historyFilter.to_date.unix();
+    if (to - from > 3600) {
+      this.historyFilter.isTypeEditable = true;
+    } else {
       this.historyFilter.isTypeEditable = false;
     }
   }
@@ -271,7 +298,12 @@ export class HistoryComponent implements OnInit {
   onDateChange(event) {
     this.historyFilter.from_date = moment(event.value[0]).utc();
     this.historyFilter.to_date = moment(event.value[1]).utc();
-    this.historyFilter.dateOption = undefined;
+    if (this.dtInput2) {
+      this.dtInput2.value = null;
+    }
+    if (this.historyFilter.dateOption !== 'date range') {
+      this.historyFilter.dateOption = undefined;
+    }
     const from = this.historyFilter.from_date.unix();
     const to = this.historyFilter.to_date.unix();
     if (to - from > 3600) {

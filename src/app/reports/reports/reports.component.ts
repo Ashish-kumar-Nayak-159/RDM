@@ -439,15 +439,23 @@ export class ReportsComponent implements OnInit {
   }
 
   saveExcel() {
-    const element = document.getElementById('dataTable');
-    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
-    let colA;
-    if (this.filterObj.report_type === 'Alert Report') {
-      // ws['!cols'][0] = { hidden: true };
-      colA = XLSX.utils.decode_col('C'); // timestamp is in first column
-    } else if (this.filterObj.report_type === 'Process Parameter Report') {
-      colA = XLSX.utils.decode_col('B'); // timestamp is in first column
-    }
+    const data = [];
+    this.latestAlerts.forEach(alert => {
+      data.push({
+        'Asset Name': alert.device_display_name ? alert.device_display_name : alert.device_id,
+        'Time': alert.local_created_date,
+        'Description': alert.message,
+        'Status': alert.metadata?.acknowledged_date ? 'Acknowledged' : 'Not Acknowledged',
+        'Acknowledged By': alert.metadata?.user_id
+      });
+    })
+    // const element = document.getElementById('dataTable');
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    console.log(ws);
+
+
+    let colA = XLSX.utils.decode_col('B'); // timestamp is in first column
+
     const fmt = 'DD-MMM-YYYY hh:mm:ss'; // excel datetime format
 
     // get worksheet range
@@ -468,9 +476,10 @@ export class ReportsComponent implements OnInit {
       /* assign the `.z` number format */
       ws[ref].z = fmt;
     }
+    console.log(ws);
     // width of timestamp col
     const wscols = [
-      { wch: 80 }
+      { wch: 10 }
     ];
 
     ws['!cols'] = wscols;

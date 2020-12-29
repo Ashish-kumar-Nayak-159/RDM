@@ -167,7 +167,7 @@
 <div class="modal fade" id="confirmResetTagsModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <app-message-modal
-    [bodyMessage]="'All the unsaved tags will get deleted. Are you sure you want to reset the tags?'"
+    [bodyMessage]="'All the unsaved tags will get reverted. Are you sure you want to reset the tags?'"
      [headerMessage]="'Reset ' + this.tileData.value + ' Tags'"
       (modalEvents)="resetDeviceTags($event)" [modalConfig]="modalConfig"></app-message-modal>
   </div>

@@ -140,9 +140,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
         this.c2dResponseInterval = setInterval(() => {
           this.checkForC2dResponse(obj);
         }, 5000);
-        const arr = [];
-        this.telemetryData = [];
-        this.telemetryData = JSON.parse(JSON.stringify(arr));
+
         // this.telemetryData.push(this.telemetryObj);
       }
       }
@@ -159,6 +157,11 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
           setTimeout(() => {
             $('#overlay').hide();
           }, 10000);
+          if (response?.feedback_code?.toLowerCase() === 'success') {
+            const arr = [];
+            this.telemetryData = [];
+            this.telemetryData = JSON.parse(JSON.stringify(arr));
+          }
           this.c2dResponseMessage.push({
             timestamp: this.commonService.convertEpochToDate((moment().utc()).unix()),
             message: (response?.feedback_code?.toLowerCase() === 'success' ? (this.filterObj.device.gateway_id ? 'IoT Gateway' : 'Device') + ' has received the command successfully' : (
@@ -272,6 +275,8 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
     this.hierarchyArr = [];
     this.configureHierarchy = {};
     this.c2dResponseMessage = [];
+    this.isC2dAPILoading = false;
+    this.c2dLoadingMessage = undefined;
     clearInterval(this.c2dResponseInterval);
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
@@ -460,8 +465,14 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
     // this.signalRModeValue = true;
     this.deviceService.getDeviceSignalRMode(this.contextApp.app, deviceId).subscribe(
       (response: any) => {
-        this.signalRModeValue = response?.mode?.toLowerCase() === 'normal' ? true :
+        const newMode = response?.mode?.toLowerCase() === 'normal' ? true :
         (response?.mode?.toLowerCase() === 'turbo' ? false : true);
+        if (this.signalRModeValue !== newMode) {
+          const arr = [];
+          this.telemetryData = [];
+          this.telemetryData = JSON.parse(JSON.stringify(arr));
+        }
+        this.signalRModeValue = newMode;
         this.isTelemetryModeAPICalled = false;
       }
     )

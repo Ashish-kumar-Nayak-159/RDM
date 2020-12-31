@@ -257,7 +257,8 @@
 
                           <ng-container *ngIf="!filterObj.type">
                           <input type="number" class="form-control form-control-sm my-1 w-7" id="minutes" min="1"
-                            name="minutes" [(ngModel)]="filterObj.aggregation_minutes" placeholder="Agreegation Time">
+                            name="minutes" [(ngModel)]="filterObj.aggregation_minutes" placeholder="Agreegation Time"
+                            (change)="onNumberChange($event, 'aggregation')">
                           <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
                           <select class="form-control form-control-sm mx-1 my-1" id="aggregationFormat" [(ngModel)]="filterObj.aggregation_format"
                           name="aggregationFormat" style="width: 11rem!important;">
@@ -271,7 +272,8 @@
                           </ng-container>
                           <ng-container *ngIf="filterObj.type">
                           <input type="number" class="form-control form-control-sm ml-1 my-1 w-7" id="minutes" min="1"
-                            name="minutes" [(ngModel)]="filterObj.sampling_time" placeholder="Sampling" disabled>
+                            name="minutes" [(ngModel)]="filterObj.sampling_time" placeholder="Sampling" disabled
+                            (change)="onNumberChange($event, 'sampling')">
                           <!-- <select class="form-control form-control-sm mx-1 my-1" id="samplingFrequency" [(ngModel)]="filterObj.sampling_format"
                           name="samplingFrequency" style="width: 11rem!important;" disabled>
                           <option [ngValue]="undefined">Frequency</option>
@@ -408,7 +410,7 @@
     <div class="modal-content" *ngIf="acknowledgedAlert">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Acknowledge Alert</h5>
-        <button type="button" class="close" (click)="closeAcknowledgementModal()" aria-label="Close">
+        <button type="button" class="close" (click)="closeAcknowledgementModal(true)" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -433,7 +435,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="acknowledgeAlert()">Acknowledge</button>
-        <button type="button" class="btn btn-secondary add-row" (click)="closeAcknowledgementModal()">Cancel</button>
+        <button type="button" class="btn btn-secondary add-row" (click)="closeAcknowledgementModal(true)">Cancel</button>
       </div>
     </div>
   </div>

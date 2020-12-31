@@ -75,7 +75,8 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
       range.axisFill.interactionsEnabled = true;
       range.axisFill.isMeasured = true;
     }
-
+    chart.dateFormatter.inputDateFormat = 'x';
+    chart.dateFormatter.dateFormat = "dd-MMM-yyyy HH:mm:ss";
     chart.legend = new am4charts.Legend();
     chart.exporting.menu = new am4core.ExportMenu();
     chart.exporting.getFormatOptions("xlsx").useLocale = false;
@@ -129,7 +130,7 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
     this.seriesArr.forEach((item, index) => {
       console.log(item.isActive);
       const seriesColumn = this.chart.series.getIndex(index);
-      if (prop === item.name) {
+      if (prop === item.propKey) {
         item.compareText = !item.compareText;
         // seriesColumn.isActive = !seriesColumn.isActive;
         if (item.isHiding || item.isHidden) {
@@ -156,7 +157,7 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
           count += 1;
           shownItem = seriesColumn;
           this.propertyList.forEach(prop => {
-            if (prop.json_key === item.name) {
+            if (prop.json_key === item.propKey) {
               propObj = prop;
             }
           });
@@ -192,7 +193,8 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
         console.log('unitssss    ', series.units);
       });
       series.name = this.getPropertyName(prop);
-      series.columns.template.tooltipText = '{name}: [bold]{valueY}[/]';
+      series.propKey = prop;
+      series.columns.template.tooltipText = 'Date: {dateX} \n {name}: [bold]{valueY}[/]';
       series.columns.template.fillOpacity = .8;
       series.compareText = true;
       series.legendSettings.labelText = '{name} ({units})';

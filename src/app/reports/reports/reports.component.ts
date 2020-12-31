@@ -8,8 +8,6 @@ import { CommonService } from './../../services/common.service';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CONSTANTS } from 'src/app/app.constants';
 import * as moment from 'moment';
-import { drawDOM, exportPDF } from '@progress/kendo-drawing';
-import { saveAs } from '@progress/kendo-file-saver';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -190,9 +188,28 @@ export class ReportsComponent implements OnInit {
   onAssetSelection() {
     // this.nonIPDevices = [];
     // this.filterObj.device_id = this.filterObj.device.device_id;
-    const device_type = this.filterObj.device.device_type;
+    if (this.filterObj.device) {
+    const device_type = this.filterObj?.device?.device_type;
+
     if (device_type) {
       this.getThingsModelProperties(device_type);
+    }
+    } else {
+      this.dropdownPropList = [];
+      this.propertyList = [];
+      this.props = [];
+    }
+  }
+
+  onNumberChange(event, type) {
+    console.log(event);
+    if (Number(event.target.value) % 1 !== 0) {
+      this.toasterService.showError('Decimal values are not allowed.', 'View Report');
+      if (type === 'aggregation') {
+        this.filterObj.aggregation_minutes = Math.floor(Number(event.target.value));
+      } else {
+        this.filterObj.sampling_time = Math.floor(Number(event.target.value));
+      }
     }
   }
 
@@ -439,18 +456,25 @@ export class ReportsComponent implements OnInit {
   }
 
   saveExcel() {
-    const data = [];
-    this.latestAlerts.forEach(alert => {
-      data.push({
-        'Asset Name': alert.device_display_name ? alert.device_display_name : alert.device_id,
-        'Time': alert.local_created_date,
-        'Description': alert.message,
-        'Status': alert.metadata?.acknowledged_date ? 'Acknowledged' : 'Not Acknowledged',
-        'Acknowledged By': alert.metadata?.user_id
-      });
-    })
-    // const element = document.getElementById('dataTable');
-    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    let ws: XLSX.WorkSheet;
+    if (this.filterObj.report_type !== 'Process Parameter Report') {
+      const data = [];
+      this.latestAlerts.forEach(alert => {
+        data.push({
+          'Asset Name': alert.device_display_name ? alert.device_display_name : alert.device_id,
+          'Time': alert.local_created_date,
+          'Description': alert.message,
+          'Status': alert.metadata?.acknowledged_date ? 'Acknowledged' : 'Not Acknowledged',
+          'Acknowledged By': alert.metadata?.user_id
+        });
+      })
+      // const element = document.getElementById('dataTable');
+      ws = XLSX.utils.json_to_sheet(data);
+    } else {
+      const element = document.getElementById('dataTable');
+      ws = XLSX.utils.table_to_sheet(element);
+    }
+
     console.log(ws);
 
 

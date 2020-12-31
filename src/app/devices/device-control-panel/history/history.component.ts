@@ -92,6 +92,18 @@ export class HistoryComponent implements OnInit {
     this.getLayout();
   }
 
+  onNumberChange(event, type) {
+    console.log(event);
+    if (Number(event.target.value) % 1 !== 0) {
+      this.toasterService.showError('Decimal values are not allowed.', 'View Report');
+      if (type === 'aggregation') {
+        this.historyFilter.aggregation_minutes = Math.floor(Number(event.target.value));
+      } else {
+        this.historyFilter.sampling_time = Math.floor(Number(event.target.value));
+      }
+    }
+  }
+
   getThingsModelProperties() {
     // this.properties = {};
     return new Promise((resolve) => {
@@ -164,11 +176,16 @@ export class HistoryComponent implements OnInit {
 
   searchHistory() {
     return new Promise((resolve) => {
+      const children = $('#widgetContainer').children();
+    for (const child of children) {
+      $(child).remove();
+    }
       this.propList = [];
       if (this.selectedWidgets.length === 0) {
         this.toasterService.showError('Please select widgets first.', 'View Widget');
         return;
       }
+
       this.selectedWidgets.forEach(widget => {
         widget.value.y1axis.forEach(prop => {
           if (this.propList.indexOf(prop) === -1) {
@@ -282,6 +299,10 @@ export class HistoryComponent implements OnInit {
     return this.propertyList.filter(prop => prop.json_key === key)[0].name;
   }
 
+  onDeSelectAll(event) {
+    this.selectedWidgets = [];
+  }
+
   clear() {
     this.historyFilter = {};
     this.historyFilter.from_date = undefined;
@@ -289,10 +310,13 @@ export class HistoryComponent implements OnInit {
     this.historyFilter.epoch = true;
     this.historyFilter.device_id = this.device.device_id;
     this.historyFilter.app = this.contextApp.app;
+    this.historyFilter.type = true;
     this.chartTitle = '';
     this.xAxisProps = '';
     this.y1AxisProps = [];
     this.y2AxisProp = [];
+
+    this.selectedWidgets = [];
   }
 
   onDateChange(event) {

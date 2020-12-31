@@ -72,8 +72,11 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       console.log(data);
       chart.data = data;
       chart.dateFormatter.inputDateFormat = 'x';
+      chart.dateFormatter.dateFormat = "dd-MMM-yyyy HH:mm:ss";
+     // chart.durationFormatter.durationFormat = "hh:ii:ss";
       const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
       dateAxis.renderer.minGridDistance = 70;
+
       // const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
       // valueAxis.tooltip.disabled = true;
       // valueAxis.renderer.minWidth = 35;
@@ -95,7 +98,8 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         range.axisFill.isMeasured = true;
       }
       chart.legend.itemContainers.template.togglable = false;
-      // chart.dateFormatter.dateFormat = 'DD-MMM-YYYY hh:mm:ss A';
+      dateAxis.dateFormatter = new am4core.DateFormatter();
+      dateAxis.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss';
       chart.exporting.menu = new am4core.ExportMenu();
       chart.exporting.getFormatOptions("xlsx").useLocale = false;
       chart.exporting.getFormatOptions("pdf").pageOrientation = 'landscape';
@@ -194,7 +198,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
     const arr = axis === 0 ? this.y1AxisProps : this.y2AxisProps;
     arr.forEach((prop, index) => {
       const series = chart.series.push(new am4charts.LineSeries());
-      series.dataFields.dateX = 'message_date';
+      // series.dataFields.dateX = 'message_date';
       this.propertyList.forEach(propObj => {
         if (propObj.json_key === prop) {
           series.units = propObj.json_model[propObj.json_key].units;
@@ -202,8 +206,10 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         console.log('unitssss    ', series.units);
       });
       series.name =  this.getPropertyName(prop);
+      series.propKey = prop;
       // series.stroke = this.commonService.getRandomColor();
       series.yAxis = valueYAxis;
+      series.dataFields.dateX = 'message_date';
       series.dataFields.valueY =  prop;
       series.compareText = true;
       series.strokeWidth = 2;
@@ -212,7 +218,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       series.strokeOpacity = 1;
       series.legendSettings.labelText = '{name} ({units})';
       series.fillOpacity = this.chartType.includes('Area') ? 0.3 : 0;
-      series.tooltipText = '{name} ({units}): [bold]{valueY}[/]';
+      series.tooltipText = 'Date: {dateX} \n {name} ({units}): [bold]{valueY}[/]';
 
       var bullet = series.bullets.push(new am4charts.CircleBullet());
       // bullet.stroke = 'darkgreen';
@@ -248,10 +254,13 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   }
 
   toggleProperty(prop) {
+    // alert('here  ' + prop);
     this.seriesArr.forEach((item, index) => {
       console.log(item.isActive);
       const seriesColumn = this.chart.series.getIndex(index);
-      if (prop === item.name) {
+      console.log(prop, '===' ,item)
+      if (prop === item.propKey) {
+
         item.compareText = !item.compareText;
         // seriesColumn.isActive = !seriesColumn.isActive;
         if (item.isHiding || item.isHidden) {
@@ -278,7 +287,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
           count += 1;
           shownItem = seriesColumn;
           this.propertyList.forEach(prop => {
-            if (prop.json_key === item.name) {
+            if (prop.json_key === item.propKey) {
               propObj = prop;
             }
           });

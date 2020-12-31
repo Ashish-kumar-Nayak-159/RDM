@@ -142,7 +142,13 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
         }, 5000);
 
         // this.telemetryData.push(this.telemetryObj);
+      } else {
+        this.isC2dAPILoading = false;
+        this.c2dLoadingMessage = undefined;
       }
+      }, error => {
+        this.isC2dAPILoading = false;
+        this.c2dLoadingMessage = undefined;
       }
     );
   }
@@ -153,10 +159,6 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
         if (response?.feedback_code) {
           this.isC2dAPILoading = false;
           this.c2dLoadingMessage = undefined;
-
-          setTimeout(() => {
-            $('#overlay').hide();
-          }, 10000);
           if (response?.feedback_code?.toLowerCase() === 'success') {
             const arr = [];
             this.telemetryData = [];
@@ -382,7 +384,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
     if (this.telemetryObj) {
       const interval = moment(telemetryObj.message_date).diff(moment(this.telemetryObj.message_date), 'second');
       // alert((this.telemetryInterval - 5) + ' aaaaa ' + interval + ' bbbbb ' + (this.telemetryInterval+ 5));
-      if (this.telemetryInterval && interval && Math.abs(this.telemetryInterval - interval) > 5 && !this.isTelemetryModeAPICalled) {
+      if (this.telemetryInterval && interval && Math.abs(this.telemetryInterval - interval) > 10 && !this.isTelemetryModeAPICalled) {
         this.isTelemetryModeAPICalled = true;
         setTimeout(() => {
         this.getDeviceSignalRMode(this.filterObj.device.gateway_id);
@@ -467,11 +469,20 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
       (response: any) => {
         const newMode = response?.mode?.toLowerCase() === 'normal' ? true :
         (response?.mode?.toLowerCase() === 'turbo' ? false : true);
-        if (this.signalRModeValue !== newMode) {
+        if (this.isC2dAPILoading) {
           const arr = [];
           this.telemetryData = [];
           this.telemetryData = JSON.parse(JSON.stringify(arr));
         }
+        if (this.signalRModeValue === newMode) {
+          $('#overlay').hide();
+          this.isC2dAPILoading = false;
+          this.c2dResponseMessage = [];
+          this.c2dLoadingMessage = undefined;
+          clearInterval(this.c2dResponseInterval);
+        }
+
+
         this.signalRModeValue = newMode;
         this.isTelemetryModeAPICalled = false;
       }

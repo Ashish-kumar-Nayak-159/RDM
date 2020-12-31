@@ -66,7 +66,8 @@
             <label class="mx-1 my-1">Sampling: </label>
             <ng-container *ngIf="!telemetryFilter.type">
             <input type="number" class="form-control form-control-sm my-1 w-7" id="minutes" min="1" disabled
-              name="minutes" [(ngModel)]="telemetryFilter.aggregation_minutes" placeholder="Agreegation Time">
+              name="minutes" [(ngModel)]="telemetryFilter.aggregation_minutes" placeholder="Agreegation Time"
+              (change)="onNumberChange($event, 'aggregation')">
             <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
             <select class="form-control form-control-sm mx-2 my-1" id="aggregationFormat" [(ngModel)]="telemetryFilter.aggregation_format"
             name="aggregationFormat" style="width: 11rem!important;" disabled>
@@ -80,7 +81,8 @@
             </ng-container>
             <ng-container *ngIf="telemetryFilter.type">
             <input type="number" class="form-control form-control-sm ml-1 my-1 w-7" id="minutes" min="1"
-              name="minutes" [(ngModel)]="telemetryFilter.sampling_time" placeholder="Sampling" disabled>
+              name="minutes" [(ngModel)]="telemetryFilter.sampling_time" placeholder="Sampling" disabled
+              (change)="onNumberChange($event, 'sampling')">
               <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
             <!-- <select class="form-control form-control-sm mx-2 my-1" id="samplingFrequency" [(ngModel)]="telemetryFilter.sampling_format"
             name="samplingFrequency" style="width: 11rem!important;" disabled>

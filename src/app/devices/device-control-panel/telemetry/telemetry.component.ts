@@ -46,7 +46,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
       this.pageType = params.get('listName');
       this.pageType = this.pageType.slice(0, -1);
       this.telemetryTableConfig = {
-        type: 'telemetry',
+        type: 'process parameter',
         headers: ['Timestamp', 'Message ID', 'Message'],
         data: [
           {
@@ -258,6 +258,18 @@ export class TelemetryComponent implements OnInit, OnDestroy {
         }
       );
     });
+  }
+
+  onNumberChange(event, type) {
+    console.log(event);
+    if (Number(event.target.value) % 1 !== 0) {
+      this.toasterService.showError('Decimal values are not allowed.', 'View Report');
+      if (type === 'aggregation') {
+        this.telemetryFilter.aggregation_minutes = Math.floor(Number(event.target.value));
+      } else {
+        this.telemetryFilter.sampling_time = Math.floor(Number(event.target.value));
+      }
+    }
   }
 
   openTelemetryMessageModal(obj) {

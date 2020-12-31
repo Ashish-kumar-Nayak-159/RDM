@@ -25,6 +25,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     RDMLoginComponent,
     RDMHomeComponent,
     ResetPasswordComponent,
+
   ],
   imports: [
     BrowserModule,

@@ -3,6 +3,7 @@
     <h5 class="h4 mb-0 text-gray-800">
       {{ tileData && tileData[0] ? tileData[0]?.value : "" }}
       <ui-switch  class="mr-1" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry'"
+      [disabled]="isC2dAPILoading"
       defaultBgColor="#f6c23e" checkedTextColor="white" uncheckedTextColor="white"
       checkedLabel="@ 60 sec refresh frequency"
       uncheckedLabel="@ 1 sec refresh frequency" name="tpye" [(ngModel)]="signalRModeValue"
@@ -422,20 +423,7 @@
                       *{{telemetryData.length}} samples with {{telemetryInterval ? telemetryInterval : '(?)'}} second refresh rate
                     </div>
                   </div>
-                  <div class="row" id="overlay">
-                    <div class="col-lg-12 mb-3">
-                    <ng-container *ngIf="c2dResponseMessage.length > 0">
-                      <div
-                        class="row col-12 mx-1 my-2" *ngFor="let message of c2dResponseMessage"
-                        >
-                        {{message.timestamp}}: {{message.message}}
-                      </div>
-                    </ng-container>
-                    <div class="row col-12" *ngIf="isC2dAPILoading">
-                      <i class="fa fa-spinner fa-spin fa-fw fa-2x"> </i>{{c2dLoadingMessage}}
-                    </div>
-                    </div>
-                  </div>
+
                 </div>
 
                 <!-- Area Chart -->
@@ -542,6 +530,20 @@
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div class="row" id="overlay">
+                <div class="col-lg-12 mb-3">
+                <ng-container *ngIf="c2dResponseMessage.length > 0">
+                  <div
+                    class="row col-12 mx-1 my-2" *ngFor="let message of c2dResponseMessage"
+                    >
+                    {{message.timestamp}}: {{message.message}}
+                  </div>
+                </ng-container>
+                <div class="row col-md-12" *ngIf="isC2dAPILoading">
+                  <i class="fa fa-spinner fa-spin fa-fw fa-2x"> </i>{{c2dLoadingMessage}}
+                </div>
                 </div>
               </div>
             </div>

@@ -109,7 +109,8 @@
 
             <ng-container *ngIf="!filterObj.type">
             <input type="number" class="form-control form-control-sm my-1 w-7" id="minutes" min="1"
-              name="minutes" [(ngModel)]="filterObj.aggregation_minutes" placeholder="Agreegation Time">
+              name="minutes" [(ngModel)]="filterObj.aggregation_minutes" placeholder="Agreegation Time"
+              (change)="onNumberChange($event, 'aggregation')">
             <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
             <select class="form-control form-control-sm mx-1 my-1" id="aggregationFormat" [(ngModel)]="filterObj.aggregation_format"
             name="aggregationFormat" style="width: 11rem!important;">
@@ -123,7 +124,8 @@
             </ng-container>
             <ng-container *ngIf="filterObj.type">
             <input type="number" class="form-control form-control-sm ml-1 my-1 w-7" id="minutes" min="1"
-              name="minutes" [(ngModel)]="filterObj.sampling_time" placeholder="Sampling" disabled>
+              name="minutes" [(ngModel)]="filterObj.sampling_time" placeholder="Sampling" disabled
+              (change)="onNumberChange($event, 'sampling')">
             <!-- <select class="form-control form-control-sm mx-1 my-1" id="samplingFrequency" [(ngModel)]="filterObj.sampling_format"
             name="samplingFrequency" style="width: 11rem!important;" disabled>
             <option [ngValue]="undefined">Frequency</option>

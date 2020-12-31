@@ -124,6 +124,18 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
   }
 
+  onNumberChange(event, type) {
+    console.log(event);
+    if (Number(event.target.value) % 1 !== 0) {
+      this.toasterService.showError('Decimal values are not allowed.', 'View Report');
+      if (type === 'aggregation') {
+        this.filterObj.aggregation_minutes = Math.floor(Number(event.target.value));
+      } else {
+        this.filterObj.sampling_time = Math.floor(Number(event.target.value));
+      }
+    }
+  }
+
   async onChangeOfHierarchy(i) {
     Object.keys(this.configureHierarchy).forEach(key => {
       if (key > i) {
@@ -831,7 +843,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     obj.metadata['acknowledged_date'] = (moment.utc(new Date(), 'M/DD/YYYY h:mm:ss A'));
     this.deviceService.acknowledgeDeviceAlert(obj).subscribe(
       response => {
-        this.toasterService.showSuccess(response.message, 'Acknowledge Alert');
+        this.toasterService.showSuccess('Alert acknowledged successfully', 'Acknowledge Alert');
         this.closeAcknowledgementModal();
        // this.getAlarms();
       }, (error) => {
@@ -842,9 +854,17 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
 
 
-  closeAcknowledgementModal(): void {
+  closeAcknowledgementModal(flag = false): void {
     $('#acknowledgemenConfirmModal').modal('hide');
+    if (flag) {
+    this.latestAlerts.forEach(alert => {
+      if ((alert?.id === this.acknowledgedAlert?.id) || alert?.alert_id === this.acknowledgedAlert?.alert_id) {
+        alert.metadata = {};
+      }
+    });
+    }
     this.acknowledgedAlert = undefined;
+
   }
 
   ngOnDestroy(): void {

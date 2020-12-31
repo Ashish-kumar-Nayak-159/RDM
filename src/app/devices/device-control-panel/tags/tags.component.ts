@@ -1,5 +1,5 @@
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { ActivatedRoute } from '@angular/router';
 import { DeviceService } from 'src/app/services/devices/device.service';
@@ -12,7 +12,7 @@ declare var $: any;
   templateUrl: './tags.component.html',
   styleUrls: ['./tags.component.css']
 })
-export class TagsComponent implements OnInit {
+export class TagsComponent implements OnInit, OnDestroy {
 
   @Input() device: Device = new Device();
   @Input() tileData: any;
@@ -48,11 +48,16 @@ export class TagsComponent implements OnInit {
     private deviceTypeService: DeviceTypeService  ) { }
 
   async ngOnInit(): Promise<void> {
+    console.log(JSON.stringify(this.device));
+    const device = JSON.parse(JSON.stringify(this.device));
+    this.device = undefined;
+    this.device = JSON.parse(JSON.stringify(device));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.route.paramMap.subscribe(async params => {
       this.pageType = params.get('listName').toLowerCase();
       console.log(this.device);
+      // this.device.tags = {};
       this.getDeviceDetail();
     });
     this.device.hierarchyString = '';
@@ -84,6 +89,7 @@ export class TagsComponent implements OnInit {
         } else {
           this.device = response;
         }
+        console.log('111111', JSON.stringify(this.device));
         this.device.hierarchyString = '';
         const keys = Object.keys(this.device.hierarchy);
         keys.forEach((key, index) => {
@@ -280,6 +286,11 @@ export class TagsComponent implements OnInit {
     } else {
       $('#confirmdeleteTagsModal').modal('hide');
     }
+  }
+
+  ngOnDestroy() {
+    this.device = JSON.parse(JSON.stringify(this.originalDevice));
+    console.log('on destroy', this.device);
   }
 
 }

@@ -145,12 +145,12 @@ input:invalid {
 } */
 
 .accordion-toggle[aria-expanded="true"]:before {
-  content: "\f13a";
+  content: "\f139";
   font: normal normal bold 14px/1 FontAwesome;
 }
 
 .accordion-toggle[aria-expanded="false"]:before {
-  content: "\f139";
+  content: "\f13a";
   font: normal normal bold 14px/1 FontAwesome;
 }
 

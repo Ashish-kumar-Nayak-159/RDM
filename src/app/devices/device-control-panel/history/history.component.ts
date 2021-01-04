@@ -159,7 +159,7 @@ export class HistoryComponent implements OnInit {
   onSingleDateChange(event) {
     console.log(event);
     this.historyFilter.from_date = moment(event.value).utc();
-    this.historyFilter.to_date = (moment(event.value).add(1, 'days')).utc();
+    this.historyFilter.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
     if (this.dtInput1) {
       this.dtInput1.value = null;
     }
@@ -314,6 +314,10 @@ export class HistoryComponent implements OnInit {
     this.historyFilter.epoch = true;
     this.historyFilter.device_id = this.device.device_id;
     this.historyFilter.app = this.contextApp.app;
+    this.historyFilter.sampling_format = 'minute';
+    this.historyFilter.sampling_time = 1;
+    this.historyFilter.aggregation_minutes = 1;
+    this.historyFilter.aggregation_format = 'AVG';
     this.historyFilter.type = true;
     this.chartTitle = '';
     this.xAxisProps = '';

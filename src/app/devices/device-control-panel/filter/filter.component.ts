@@ -90,7 +90,7 @@ export class FilterComponent implements OnInit {
   onSingleDateChange(event) {
     console.log(event);
     this.filterObj.from_date = moment(event.value).utc();
-    this.filterObj.to_date = (moment(event.value).add(1, 'days')).utc();
+    this.filterObj.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
     if (this.dtInput1) {
       this.dtInput1.value = null;
     }

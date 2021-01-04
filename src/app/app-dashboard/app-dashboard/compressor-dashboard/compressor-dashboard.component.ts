@@ -87,7 +87,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
 
   loadFromCache() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION);
-    if (item) {
+    if (item && this.filterObj.device) {
       console.log(item);
       this.filterObj = item;
       this.contextApp.hierarchy.levels.forEach((level, index) => {
@@ -242,8 +242,23 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
       }
       if (this.devices?.length === 1) {
         this.filterObj.device = this.devices[0];
+      } else {
+        this.filterObj.device = undefined;
       }
       // await this.getDevices(hierarchyObj);
+    }
+    this.signalRModeValue = undefined;
+    let count = 0;
+    Object.keys(this.configureHierarchy).forEach(key => {
+      if(this.configureHierarchy[key]) {
+        count ++;
+      }
+    });
+    if (count === 0) {
+      this.hierarchyArr = [];
+      if (this.contextApp.hierarchy.levels.length > 1) {
+        this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+      }
     }
 
   }
@@ -306,7 +321,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
       device_type = obj.device.device_type;
       delete obj.device;
     } else {
-      this.toasterService.showError('Device selection is required', 'View Live Telemetry');
+      this.toasterService.showError('Asset selection is required', 'View Live Telemetry');
       return;
     }
     this.isTelemetryDataLoading = true;

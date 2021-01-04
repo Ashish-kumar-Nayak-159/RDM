@@ -34,6 +34,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   bodyMessage: string;
   headerMessage: string;
   chartStartdate: any;
+  chartDataFields: any = {};
   chartEnddate: any;
   constructor(
     private commonService: CommonService,
@@ -119,14 +120,14 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       chart.exporting.getFormatOptions("xlsx").useLocale = false;
       chart.exporting.getFormatOptions("pdf").pageOrientation = 'landscape';
       chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date.toString() + ' to ' + chart.data[chart.data.length - 1].message_date.toString();
-      const obj = {
+      this.chartDataFields = {
         "message_date": "Timestamp"
       }
       this.y1AxisProps.forEach(prop => {
         this.propertyList.forEach(propObj => {
           if (prop === propObj.json_key) {
             const units = propObj.json_model[propObj.json_key].units;
-            obj[prop] = propObj.name + (units ? (' (' + units + ')') : '');
+            this.chartDataFields[prop] = propObj.name + (units ? (' (' + units + ')') : '');
           }
         });
       });
@@ -134,16 +135,16 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         this.propertyList.forEach(propObj => {
           if (prop === propObj.json_key) {
             const units = propObj.json_model[propObj.json_key].units;
-            obj[prop] = propObj.name + (units ? (' (' + units + ')') : '');
+            this.chartDataFields[prop] = propObj.name + (units ? (' (' + units + ')') : '');
           }
         });
       });
-      chart.exporting.dataFields = obj;
+      chart.exporting.dataFields = this.chartDataFields;
       chart.zoomOutButton.disabled = true;
-      const list = new am4core.List<string>();
-      list.insertIndex(0, 'message_date');
-      console.log(list);
-      chart.exporting.dateFields = list;
+      // const list = new am4core.List<string>();
+      // list.insertIndex(0, 'message_date');
+      // console.log(obj);// console.log(obj);
+      // chart.exporting.dateFields = list;
       chart.exporting.getFormatOptions("pdf").addURL = false;
       chart.exporting.dateFormat = 'dd-MM-yyyy hh:mm:ss A a';
       console.log(this.selectedAlert);
@@ -156,6 +157,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       chart.scrollbarX.parent = chart.bottomAxesContainer;
       chart.preloader.disabled = false;
       this.chart = chart;
+      console.log('cartrttt', this.chart);
     });
   }
 
@@ -281,12 +283,25 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         // seriesColumn.isActive = !seriesColumn.isActive;
         if (item.isHiding || item.isHidden) {
           item.show();
+          this.propertyList.forEach(propObj => {
+            if (prop === propObj.json_key) {
+              const units = propObj.json_model[propObj.json_key].units;
+              this.chartDataFields[prop] = propObj.name + (units ? (' (' + units + ')') : '');
+            }
+          });
         }
         else {
           item.hide();
+          delete this.chartDataFields[prop];
+
         }
       }
     });
+    // if (Object.keys(this.chartDataFields).length > 1) {
+    //   this.chart.exportable = true;
+    // } else {
+    //   this.chart.exportable = false;
+    // }
     this.toggleThreshold(this.showThreshold);
 
   }

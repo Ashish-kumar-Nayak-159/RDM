@@ -108,11 +108,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
     if (this.pageType === 'live') {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.DASHBOARD_ALERT_SELECTION);
-    if (item && item.device) {
+    if (item && item.device ) {
 
       this.filterObj = item;
       this.contextApp.hierarchy.levels.forEach((level, index) => {
-        if (index !== 0) {
+        if (index !== 0 && this.filterObj.device) {
         // console.log( this.filterObj.hierarchy);
         // console.log( this.filterObj.hierarchy[level]);
         this.configureHierarchy[index] = this.filterObj.device.hierarchy[level];
@@ -186,6 +186,21 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
     if (this.devices?.length === 1) {
       this.filterObj.device = this.devices[0];
+    } else {
+      this.filterObj.device = undefined;
+    }
+
+    let count = 0;
+    Object.keys(this.configureHierarchy).forEach(key => {
+      if(this.configureHierarchy[key]) {
+        count ++;
+      }
+    });
+    if (count === 0) {
+      this.hierarchyArr = [];
+      if (this.contextApp.hierarchy.levels.length > 1) {
+        this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+      }
     }
   }
 
@@ -248,7 +263,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   onSingleDateChange(event) {
     console.log(event);
     this.filterObj.from_date = moment(event.value).utc();
-    this.filterObj.to_date = (moment(event.value).add(1, 'days')).utc();
+    this.filterObj.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
     if (this.dtInput1) {
       this.dtInput1.value = null;
     }
@@ -687,15 +702,15 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         if (response && response.data) {
           this.telemetryData = response.data;
           const telemetryData = response.data;
-
           this.isChartViewOpen = true;
           telemetryData.forEach(item => {
             item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
           });
           // this.loadGaugeChart(telemetryData[0]);
           telemetryData.reverse();
-          // this.loadLineChart(telemetryData);
           this.isTelemetryDataLoading = false;
+          // this.loadLineChart(telemetryData);
+          if (telemetryData.length > 0) {
           this.selectedWidgets.forEach(widget => {
             let componentRef;
             if (widget.value.chartType === 'LineChart' || widget.value.chartType === 'AreaChart') {
@@ -727,7 +742,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             .rootNodes[0] as HTMLElement;
             document.getElementById('charts').prepend(domElem);
           });
-
+          }
         }
       }
     );

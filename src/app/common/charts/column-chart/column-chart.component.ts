@@ -32,6 +32,7 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
   chartStartdate: any;
   chartEnddate: any;
   device: any;
+  chartDataFields: any;
   constructor(
     private commonService: CommonService,
     private chartService: ChartService
@@ -95,14 +96,14 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
     chart.exporting.getFormatOptions("xlsx").useLocale = false;
     chart.exporting.getFormatOptions("pdf").pageOrientation = 'landscape';
     chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date.toString() + ' to ' + chart.data[chart.data.length - 1].message_date.toString();
-    const obj = {
+    this.chartDataFields = {
       "message_date": "Timestamp"
     }
     this.y1AxisProps.forEach(prop => {
       this.propertyList.forEach(propObj => {
         if (prop === propObj.json_key) {
           const units = propObj.json_model[propObj.json_key].units;
-          obj[prop] = propObj.name + (units ? (' (' + units + ')') : '');
+          this.chartDataFields[prop] = propObj.name + (units ? (' (' + units + ')') : '');
         }
       });
     });
@@ -110,15 +111,15 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
       this.propertyList.forEach(propObj => {
         if (prop === propObj.json_key) {
           const units = propObj.json_model[propObj.json_key].units;
-          obj[prop] = propObj.name + (units ? (' (' + units + ')') : '');
+          this.chartDataFields[prop] = propObj.name + (units ? (' (' + units + ')') : '');
         }
       });
     });
-    chart.exporting.dataFields = obj;
-    const list = new am4core.List<string>();
-    list.insertIndex(0, 'message_date');
-    console.log(list);
-    chart.exporting.dateFields = list;
+    chart.exporting.dataFields = this.chartDataFields;
+    // const list = new am4core.List<string>();
+    // list.insertIndex(0, 'message_date');
+    // console.log(list);
+    // chart.exporting.dateFields = list;
     chart.exporting.getFormatOptions("pdf").addURL = false;
     chart.exporting.dateFormat = 'dd-MM-yyyy hh:mm:ss A a';
     console.log(this.selectedAlert);
@@ -144,13 +145,22 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
       console.log(item.isActive);
       const seriesColumn = this.chart.series.getIndex(index);
       if (prop === item.propKey) {
+
         item.compareText = !item.compareText;
         // seriesColumn.isActive = !seriesColumn.isActive;
         if (item.isHiding || item.isHidden) {
           item.show();
+          this.propertyList.forEach(propObj => {
+            if (prop === propObj.json_key) {
+              const units = propObj.json_model[propObj.json_key].units;
+              this.chartDataFields[prop] = propObj.name + (units ? (' (' + units + ')') : '');
+            }
+          });
         }
         else {
           item.hide();
+          delete this.chartDataFields[prop];
+
         }
       }
     });

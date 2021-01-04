@@ -58,40 +58,45 @@ export class TagsComponent implements OnInit, OnDestroy {
       this.pageType = params.get('listName').toLowerCase();
       console.log(this.device);
       // this.device.tags = {};
-      this.getDeviceDetail();
+      this.getDeviceData();
     });
-    this.device.hierarchyString = '';
-    console.log(this.device);
-    let keys = [];
-    if (this.device.hierarchy) {
-      keys = Object.keys(this.device.hierarchy);
-      keys.forEach((key, index) => {
-        this.device.hierarchyString += this.device.hierarchy[key] + ( keys[index + 1] ? ' / ' : '');
-      });
-    }
-    await this.getDeviceTypeDetail();
+    // this.device.hierarchyString = '';
+    // console.log(this.device);
+    // let keys = [];
+    // if (this.device.hierarchy) {
+    //   keys = Object.keys(this.device.hierarchy);
+    //   keys.forEach((key, index) => {
+    //     this.device.hierarchyString += this.device.hierarchy[key] + ( keys[index + 1] ? ' / ' : '');
+    //   });
+    // }
+    // await this.getDeviceTypeDetail();
   }
 
   getDeviceData() {
+    this.device.tags = undefined;
     let methodToCall;
     if (this.pageType === 'nonipdevices') {
       const obj = {
         gateway_id: this.device.gateway_id,
-        app: this.device?.tags?.app,
+        app: this.contextApp.app,
         device_id: this.device.device_id
       };
       methodToCall = this.deviceService.getNonIPDeviceTags(obj);
     } else {
       methodToCall = this.deviceService.getDeviceData(this.device.device_id, this.contextApp.app);
     }
+
     methodToCall.subscribe(
       async (response: any) => {
-        if (this.pageType === 'nonipdevices') {
-          if (response && response.data) {
-            this.device.tags = response.tags;
-          }
+        if (this.pageType === 'nonipdevices' && response && response.tags) {
+            this.device.tags = JSON.parse(JSON.stringify(response.tags));
         } else {
-          this.device = response;
+          this.device = JSON.parse(JSON.stringify(response));
+        }
+
+        if (this.device.tags?.hierarchy_json) {
+          this.device.hierarchy = this.device.tags.hierarchy_json;
+          this.device.tags.hierarchy = this.device.tags.hierarchy_json;
         }
         console.log('111111', JSON.stringify(this.device));
         this.device.hierarchyString = '';
@@ -111,7 +116,7 @@ export class TagsComponent implements OnInit, OnDestroy {
       const obj = {
         hierarchy: JSON.stringify(this.device.hierarchy),
         name: this.device.device_type,
-        app: this.device?.tags?.app
+        app: this.contextApp.app
       };
       this.deviceTypeService.getThingsModelsList(obj).subscribe(
         (response: any) => {

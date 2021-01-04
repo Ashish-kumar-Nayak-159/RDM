@@ -203,8 +203,27 @@ input:invalid {
   border-bottom: 1px solid #ccc;
 }
 
+
+.owl-dt-timer-box {
+  flex-direction: row;
+}
+
+.owl-dt-timer-box:nth-of-type(2) {
+  flex-direction: row;
+  padding-left: 1.7rem;
+}
+
+.owl-dt-timer-divider {
+  margin-left: 2.25rem;
+}
+
+.owl-dt-control-button-content {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
  .owl-dt-timer {
-  height: 6rem!important;
+  height: 3rem!important;
   padding: 0!important;
 }
 

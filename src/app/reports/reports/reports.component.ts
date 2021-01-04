@@ -182,6 +182,21 @@ export class ReportsComponent implements OnInit {
     if (this.devices?.length === 1) {
       this.filterObj.device = this.devices[0];
     }
+    this.filterObj.device = undefined;
+    this.props = [];
+    this.dropdownPropList = [];
+    let count = 0;
+    Object.keys(this.configureHierarchy).forEach(key => {
+      if(this.configureHierarchy[key]) {
+        count ++;
+      }
+    });
+    if (count === 0) {
+      this.hierarchyArr = [];
+      if (this.contextApp.hierarchy.levels.length > 1) {
+        this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+      }
+    }
 
   }
 
@@ -267,7 +282,7 @@ export class ReportsComponent implements OnInit {
   onSingleDateChange(event) {
     console.log(event);
     this.filterObj.from_date = moment(event.value).utc();
-    this.filterObj.to_date = (moment(event.value).add(1, 'days')).utc();
+    this.filterObj.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
     if (this.dtInput1) {
       this.dtInput1.value = null;
     }
@@ -317,11 +332,11 @@ export class ReportsComponent implements OnInit {
       delete obj.device;
     }
     if (!obj.report_type) {
-      this.toasterService.showError('Report selection is required', 'View Report');
+      this.toasterService.showError('Report Type selection is required', 'View Report');
       return;
     }
     if (!obj.device_id) {
-      this.toasterService.showError('Device selection is required', 'View Report');
+      this.toasterService.showError('Asset selection is required', 'View Report');
       return;
     }
 

@@ -16,7 +16,7 @@
             [style.width]="(telemetryFilter.dateOption === 'date' ? '22rem' : (telemetryFilter.dateOption === 'date range' ? '32rem' : ''))">
             <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
             [(ngModel)]="telemetryFilter.dateOption" name="dateOptions" (change)="onDateOptionChange()">
-              <option [ngValue]="undefined">Quick Options</option>
+              <option [ngValue]="undefined">Quick Date Options</option>
               <option [ngValue]="'5 mins'">Last 5 minutes</option>
               <option [ngValue]="'30 mins'">Last 30 minutes</option>
               <option [ngValue]="'1 hour'">Last 1 hour</option>

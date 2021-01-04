@@ -124,7 +124,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   onSingleDateChange(event) {
     console.log(event);
     this.telemetryFilter.from_date = moment(event.value).utc();
-    this.telemetryFilter.to_date = (moment(event.value).add(1, 'days')).utc();
+    this.telemetryFilter.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
     if (this.dtInput1) {
       this.dtInput1.value = null;
     }

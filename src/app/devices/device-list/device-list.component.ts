@@ -30,6 +30,7 @@ export class DeviceListComponent implements OnInit {
   constantData =CONSTANTS;
   originalSingularComponentState: string;
   gateways: any[];
+  originalGateways: any[] = [];
   tableConfig: any;
   pageType: string;
   deviceCategory = CONSTANTS.NON_IP_DEVICE_OPTIONS;
@@ -238,6 +239,47 @@ export class DeviceListComponent implements OnInit {
     if (nextHierarchy) {
       this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
     }
+    const hierarchyObj: any = { App: this.contextApp.app};
+    Object.keys(this.configureHierarchy).forEach((key) => {
+      if (this.configureHierarchy[key]) {
+        hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
+      }
+    });
+    if (Object.keys(hierarchyObj).length === 1) {
+      this.gateways = JSON.parse(JSON.stringify(this.originalGateways));
+    } else {
+    const arr = [];
+    this.gateways = [];
+    this.originalGateways.forEach(device => {
+      let flag = false;
+      Object.keys(hierarchyObj).forEach(hierarchyKey => {
+        console.log(device.hierarchy[hierarchyKey] ,'&&', device.hierarchy[hierarchyKey], '===', hierarchyObj[hierarchyKey])
+        if (device.hierarchy[hierarchyKey] && device.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+          flag = true;
+        } else {
+          flag = false;
+        }
+      });
+      console.log(flag);
+      if (flag) {
+        arr.push(device);
+      }
+    });
+    this.gateways = JSON.parse(JSON.stringify(arr));
+    }
+    let count = 0;
+    Object.keys(this.configureHierarchy).forEach(key => {
+      if(this.configureHierarchy[key]) {
+        count ++;
+      }
+    });
+    if (count === 0) {
+      this.hierarchyArr = [];
+      if (this.contextApp.hierarchy.levels.length > 1) {
+        this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+        this.addDeviceHierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+      }
+    }
   }
 
   onChangeOfAddDeviceHierarchy(i) {
@@ -294,6 +336,7 @@ export class DeviceListComponent implements OnInit {
 
   getGatewayList() {
     this.gateways = [];
+    this.originalGateways = [];
     const obj = {
       app: this.contextApp.app,
       category: CONSTANTS.IP_GATEWAY,
@@ -303,6 +346,7 @@ export class DeviceListComponent implements OnInit {
       (response: any) => {
         if (response.data) {
           this.gateways = response.data;
+          this.originalGateways = JSON.parse(JSON.stringify(this.gateways));
         }
       }
     );
@@ -357,10 +401,12 @@ export class DeviceListComponent implements OnInit {
     this.deviceFilterObj = undefined;
     this.deviceFilterObj = JSON.parse(JSON.stringify(this.originalDeviceFilterObj));
     console.log(this.deviceFilterObj);
+    this.hierarchyArr = [];
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
       this.addDeviceHierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
     }
+    this.gateways = JSON.parse(JSON.stringify(this.originalGateways));
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
       this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];

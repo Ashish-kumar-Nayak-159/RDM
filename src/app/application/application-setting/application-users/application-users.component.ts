@@ -92,6 +92,19 @@ export class ApplicationUsersComponent implements OnInit {
     if (nextHierarchy) {
       this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
     }
+
+    let count = 0;
+    Object.keys(this.configureHierarchy).forEach(key => {
+      if(this.configureHierarchy[key]) {
+        count ++;
+      }
+    });
+    if (count === 0) {
+      this.hierarchyArr = [];
+      if (this.applicationData.hierarchy.levels.length > 1) {
+        this.hierarchyArr[1] = Object.keys(this.applicationData.hierarchy.tags);
+      }
+    }
   }
   getAccessLevelHierarchy() {
     this.hierarchyList = [];

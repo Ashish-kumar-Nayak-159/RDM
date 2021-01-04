@@ -65,6 +65,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   isChartViewOpen = true;
   @ViewChild('dtInput1', {static: false}) dtInput1: any;
   @ViewChild('dtInput2', {static: false}) dtInput2: any;
+  toDate: any;
+  fromDate: any;
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -106,7 +108,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
     if (this.pageType === 'live') {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.DASHBOARD_ALERT_SELECTION);
-    if (item) {
+    if (item && item.device) {
 
       this.filterObj = item;
       this.contextApp.hierarchy.levels.forEach((level, index) => {
@@ -664,7 +666,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       method = this.deviceService.getDeviceTelemetry(filterObj);
     }
     console.log(this.selectedAlert.message_date);
-
+    this.fromDate = filterObj.from_date;
+    this.toDate = filterObj.to_date;
     if (this.selectedWidgets.length === 0) {
       this.toasterService.showError('Please select at least one widget.', 'View Visualization');
       return;
@@ -713,6 +716,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             componentRef.instance.y2AxisProps = widget.value.y2axis;
             componentRef.instance.xAxisProps = widget.value.xAxis;
             componentRef.instance.chartType = widget.value.chartType;
+            componentRef.instance.chartStartdate = this.fromDate;
+            componentRef.instance.chartEnddate = this.toDate;
             componentRef.instance.chartHeight = '23rem';
             componentRef.instance.chartWidth = '100%';
             componentRef.instance.chartTitle = widget.value.title;

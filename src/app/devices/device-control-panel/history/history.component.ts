@@ -54,6 +54,8 @@ export class HistoryComponent implements OnInit {
   selectedPropertyForChart: any[];
   showThreshold = false;
   contextApp: any;
+  fromDate: any;
+  toDate: any;
   constructor(
     private deviceService: DeviceService,
     private deviceTypeService: DeviceTypeService,
@@ -278,6 +280,8 @@ export class HistoryComponent implements OnInit {
       delete obj.sampling_format;
       method = this.deviceService.getDeviceTelemetry(obj);
     }
+    this.fromDate = obj.from_date;
+    this.toDate = obj.to_date;
     this.isHistoryAPILoading = true;
       this.apiSubscriptions.push(method.subscribe(
         (response: any) => {
@@ -408,6 +412,8 @@ export class HistoryComponent implements OnInit {
       componentRef.instance.chartType = layoutJson.chartType;
       componentRef.instance.chartHeight = '23rem';
       componentRef.instance.device = this.device;
+      componentRef.instance.chartStartdate = this.fromDate;
+      componentRef.instance.chartEnddate = this.toDate;
       componentRef.instance.chartWidth = '100%';
       componentRef.instance.chartTitle = layoutJson.title;
       componentRef.instance.chartId = layoutJson.chart_Id;

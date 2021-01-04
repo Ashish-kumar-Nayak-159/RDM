@@ -61,10 +61,14 @@ export class TagsComponent implements OnInit, OnDestroy {
       this.getDeviceDetail();
     });
     this.device.hierarchyString = '';
-    const keys = Object.keys(this.device.hierarchy);
-    keys.forEach((key, index) => {
-      this.device.hierarchyString += this.device.hierarchy[key] + ( keys[index + 1] ? ' / ' : '');
-    });
+    console.log(this.device);
+    let keys = [];
+    if (this.device.hierarchy) {
+      keys = Object.keys(this.device.hierarchy);
+      keys.forEach((key, index) => {
+        this.device.hierarchyString += this.device.hierarchy[key] + ( keys[index + 1] ? ' / ' : '');
+      });
+    }
     await this.getDeviceTypeDetail();
   }
 
@@ -128,12 +132,12 @@ export class TagsComponent implements OnInit, OnDestroy {
   }
 
   getDeviceDetail() {
-    console.log('12444444  ', this.device.tags);
     this.deviceCustomTags = [];
     if (!this.device.tags) {
       this.device.tags = {};
       this.deviceCustomTags = [
         {
+          id: 1,
           name: null,
           value: null,
           editable: true
@@ -142,19 +146,22 @@ export class TagsComponent implements OnInit, OnDestroy {
     } else if (!this.device.tags.custom_tags) {
       this.deviceCustomTags = [
         {
+          id: 1,
           name: null,
           value: null,
           editable: true
         }
       ];
     } else {
-      Object.keys(this.device.tags.custom_tags).forEach(key => {
+      Object.keys(this.device.tags.custom_tags).forEach((key, index) => {
         this.deviceCustomTags.push({
+          id: index,
           name: key,
           value: this.device.tags.custom_tags[key]
         });
       });
       this.deviceCustomTags.push({
+        id: Object.keys(this.device.tags.custom_tags).length,
         name: null,
         value: null,
         editable: true
@@ -196,14 +203,18 @@ export class TagsComponent implements OnInit, OnDestroy {
       this.device = null;
       this.device = JSON.parse(JSON.stringify(this.originalDevice));
       this.device.hierarchyString = '';
-      const keys = Object.keys(this.device.hierarchy);
-      keys.forEach((key, index) => {
-        this.device.hierarchyString += this.device.hierarchy[key] + ( keys[index + 1] ? ' / ' : '');
-      });
+      let keys = [];
+      if (this.device.hierarchy) {
+        keys = Object.keys(this.device.hierarchy);
+        keys.forEach((key, index) => {
+          this.device.hierarchyString += this.device.hierarchy[key] + ( keys[index + 1] ? ' / ' : '');
+        });
+      }
       $('#confirmResetTagsModal').modal('hide');
       this.getDeviceDetail();
       this.isUpdateAPILoading = false;
     } else {
+      this.isUpdateAPILoading = false;
       $('#confirmResetTagsModal').modal('hide');
     }
   }
@@ -238,6 +249,7 @@ export class TagsComponent implements OnInit, OnDestroy {
         this.getDeviceData();
         this.isReservedTagsEditable = false;
         this.isUpdateAPILoading = false;
+        this.isCustomTagsEditable = false;
       }, error => {
         this.toasterService.showError(error.message, 'Set Tags');
         this.isUpdateAPILoading = false;

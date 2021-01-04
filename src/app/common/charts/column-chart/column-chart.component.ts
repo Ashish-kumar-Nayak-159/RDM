@@ -29,6 +29,8 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
   modalConfig: any;
   bodyMessage: string;
   headerMessage: string;
+  chartStartdate: any;
+  chartEnddate: any;
   device: any;
   constructor(
     private commonService: CommonService,
@@ -60,6 +62,17 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
     // Create axes
 
     const categoryAxis = chart.xAxes.push(new am4charts.DateAxis());
+    if (this.chartStartdate) {
+      const date = new Date(0);
+      date.setUTCSeconds(this.chartStartdate);
+      categoryAxis.min = date.getTime();
+    }
+
+    if (this.chartEnddate) {
+      const date = new Date(0);
+      date.setUTCSeconds(this.chartEnddate);
+      categoryAxis.max = date.getTime();
+    }
     // categoryAxis.dataFields.category = 'message_date';
     categoryAxis.renderer.grid.template.location = 0;
     categoryAxis.renderer.minGridDistance = 70;

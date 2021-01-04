@@ -163,6 +163,8 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
             const arr = [];
             this.telemetryData = [];
             this.telemetryData = JSON.parse(JSON.stringify(arr));
+          } else {
+            this.getDeviceSignalRMode(this.filterObj.device.gateway_id);
           }
           this.c2dResponseMessage.push({
             timestamp: this.commonService.convertEpochToDate((moment().utc()).unix()),

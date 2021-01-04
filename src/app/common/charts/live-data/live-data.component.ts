@@ -33,6 +33,8 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   modalConfig: any;
   bodyMessage: string;
   headerMessage: string;
+  chartStartdate: any;
+  chartEnddate: any;
   constructor(
     private commonService: CommonService,
     private chartService: ChartService,
@@ -59,13 +61,13 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         newObj.message_date = new Date(obj.message_date);
         delete newObj.aggregation_end_time;
         delete newObj.aggregation_start_time;
-        newObj['Total Mass Discharge'] = Number(newObj['Total Mass Discharge']);
-        newObj['Total Mass Suction'] = Number(newObj['Total Mass Suction']);
-        if (newObj['Total Mass Discharge'] < 1) {
-          newObj['Total Mass Discharge'] = undefined;
+        newObj['TMD'] = Number(newObj['TMD']);
+        newObj['TMS'] = Number(newObj['TMS']);
+        if (newObj['TMD'] < 1) {
+          newObj['TMD'] = undefined;
         }
-        if (newObj['Total Mass Suction'] < 1) {
-          newObj['Total Mass Suction'] = undefined;
+        if (newObj['TMS'] < 1) {
+          newObj['TMS'] = undefined;
         }
         data.splice(data.length, 0, newObj);
       });
@@ -75,7 +77,20 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       chart.dateFormatter.dateFormat = "dd-MMM-yyyy HH:mm:ss";
      // chart.durationFormatter.durationFormat = "hh:ii:ss";
       const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-      dateAxis.renderer.minGridDistance = 70;
+      if (this.chartStartdate) {
+        const date = new Date(0);
+        date.setUTCSeconds(this.chartStartdate);
+        dateAxis.min = date.getTime();
+      }
+
+      if (this.chartEnddate) {
+        const date = new Date(0);
+        date.setUTCSeconds(this.chartEnddate);
+        dateAxis.max = date.getTime();
+      }
+      // dateAxis.renderer.minGridDistance = 70;
+      dateAxis.renderer.grid.template.location = 0.5;
+      dateAxis.renderer.labels.template.location = 0.5;
 
       // const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
       // valueAxis.tooltip.disabled = true;
@@ -139,6 +154,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       }
       chart.scrollbarX = new am4core.Scrollbar();
       chart.scrollbarX.parent = chart.bottomAxesContainer;
+      chart.preloader.disabled = false;
       this.chart = chart;
     });
   }
@@ -213,7 +229,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       series.dataFields.valueY =  prop;
       series.compareText = true;
       series.strokeWidth = 2;
-   //   series.connect = (prop === 'Total Mass Discharge' ? true : false);
+      // series.connect = (this.getPropertyName(prop) === 'Total Mass Discharge' || this.getPropertyName(prop) === 'Total Mass Suction' ? true : false);
      // series.tensionX = 0.77;
       series.strokeOpacity = 1;
       series.legendSettings.labelText = '{name} ({units})';

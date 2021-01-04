@@ -31,6 +31,8 @@ export class BarChartComponent implements OnInit, OnDestroy {
   bodyMessage: string;
   headerMessage: string;
   device: any;
+  chartStartdate: any;
+  chartEnddate: any;
 
   constructor(
     private commonService: CommonService,
@@ -62,6 +64,17 @@ export class BarChartComponent implements OnInit, OnDestroy {
     // Create axes
 
     const categoryAxis = chart.yAxes.push(new am4charts.DateAxis());
+    if (this.chartStartdate) {
+      const date = new Date(0);
+      date.setUTCSeconds(this.chartStartdate);
+      categoryAxis.min = date.getTime();
+    }
+
+    if (this.chartEnddate) {
+      const date = new Date(0);
+      date.setUTCSeconds(this.chartEnddate);
+      categoryAxis.max = date.getTime();
+    }
     // categoryAxis.dataFields.category = 'message_date';
     categoryAxis.renderer.grid.template.location = 0;
     categoryAxis.renderer.minGridDistance = 70;

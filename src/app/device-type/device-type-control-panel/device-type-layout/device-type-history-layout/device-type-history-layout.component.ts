@@ -52,6 +52,8 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
   selectedWidgets = [];
   dropdownWidgetList = [];
   contextApp: any;
+  fromDate: any;
+  toDate: any;
 
   constructor(
     private commonService: CommonService,
@@ -212,6 +214,8 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
       componentRef.instance.chartHeight = '23rem';
       componentRef.instance.chartWidth = '100%';
       componentRef.instance.device = this.device;
+      // componentRef.instance.chartStartdate = this.fromDate;
+      // componentRef.instance.chartEnddate = this.toDate;
       componentRef.instance.chartTitle = layoutJson.title;
       componentRef.instance.chartId = layoutJson.chart_Id;
       componentRef.instance.isOverlayVisible = true;

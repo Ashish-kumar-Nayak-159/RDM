@@ -1,18 +1,19 @@
-import { ApplicationService } from 'src/app/services/application/application.service';
-import { Component, OnInit, Inject, AfterViewInit } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { DeviceService } from 'src/app/services/devices/device.service';
-import { Device } from 'src/app/models/device.model';
+import { Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CommonService } from 'src/app/services/common.service';
+import { constants } from 'fs';
 import { CONSTANTS } from 'src/app/app.constants';
-declare var $: any;
+import { Device } from 'src/app/models/device.model';
+import { ApplicationService } from 'src/app/services/application/application.service';
+import { CommonService } from 'src/app/services/common.service';
+import { DeviceService } from 'src/app/services/devices/device.service';
+
 @Component({
-  selector: 'app-device-control-panel',
-  templateUrl: './device-control-panel.component.html',
-  styleUrls: ['./device-control-panel.component.css']
+  selector: 'app-gateway-control-panel',
+  templateUrl: './gateway-control-panel.component.html',
+  styleUrls: ['./gateway-control-panel.component.css']
 })
-export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
+export class GatewayControlPanelComponent implements OnInit {
 
   activeTab: string;
   device: Device;
@@ -38,33 +39,31 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.route.paramMap.subscribe(
       async params => {
-        if (this.contextApp?.configuration?.device_control_panel_menu.length > 0) {
-          this.menuItems = this.contextApp.configuration.device_control_panel_menu;
+        if (this.contextApp?.configuration?.gateway_control_panel_menu.length > 0) {
+          this.menuItems = this.contextApp.configuration.gateway_control_panel_menu;
           console.log(this.menuItems);
         }
         console.log(this.menuItems);
         if (params.get('deviceId')) {
           if (params.get('listName')) {
             const listName = params.get('listName');
-            if (listName.toLowerCase() === 'nonipdevices') {
-              this.componentState = CONSTANTS.NON_IP_DEVICE;
-              this.pageType = 'Device';
-            } else if (listName.toLowerCase() === 'devices') {
-              this.componentState = CONSTANTS.IP_DEVICE;
-              this.pageType = 'Device';
+            if (listName.toLowerCase() === 'gateways') {
+              this.componentState = CONSTANTS.IP_GATEWAY;
+              this.pageType = 'Gateway';
             }
           }
-            // if (params.get('gatewayId')) {
-            //   this.gatewayId = params.get('gatewayId');
-            //   this.componentState = CONSTANTS.NON_IP_DEVICE;
-            //   this.pageType = 'Device';
-            // }
+            if (params.get('gatewayId')) {
+              this.gatewayId = params.get('gatewayId');
+              this.componentState = CONSTANTS.NON_IP_DEVICE;
+              this.pageType = 'Device';
+            }
             this.getTileName();
             this.pageType = this.pageType.slice(0, -1);
             this.device = new Device();
             this.device.device_id = params.get('deviceId');
             this.getDeviceDetail();
-          }
+
+        }
       }
     );
     this.route.fragment.subscribe(
@@ -179,36 +178,16 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
     if (!callFromMenu) {
       this.isDeviceDataLoading = true;
     }
-    let methodToCall;
-    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
-
-      const obj = {
-        app: this.contextApp.app,
-        device_id: this.device.device_id,
-        gateway_id: this.device.gateway_id
-      };
-      methodToCall = this.deviceService.getNonIPDeviceList(obj);
-      await this.getDeviceTags(obj);
-    } else {
-      methodToCall = this.deviceService.getDeviceData(this.device.device_id, this.contextApp.app);
-    }
+    const methodToCall = this.deviceService.getDeviceData(this.device.device_id, this.contextApp.app);
     methodToCall.subscribe(
       (response: any) => {
-        if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
-          if (response && response.data) {
-            const obj = {...response.data[0]};
-            obj.tags = this.tagsObj;
-            this.device = obj;
-          }
-        } else {
-          this.device = response;
-        }
+        this.device = response;
         console.log(this.device);
         this.commonService.breadcrumbEvent.emit({
           type: 'append',
           data: [
               {
-                title: (this.device.tags.display_name ? this.device.tags.display_name : this.device.device_id) + ' / Control Panel',
+                title: (this.device.tags.display_name ? this.device.tags.display_name : this.device.device_id) + ' / Diagnosis Panel',
                 url:
                 'applications/' + this.contextApp.app + '/' + (this.componentState === CONSTANTS.NON_IP_DEVICE ? 'nonIPDevices' :
                 (this.pageType.toLowerCase() + 's')) + '/' + this.device.device_id + '/control-panel'
@@ -225,16 +204,5 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
         }
       }, () => this.isDeviceDataLoading = false
     );
-  }
-
-  getDeviceTags(obj) {
-    return new Promise((resolve) => {
-      this.deviceService.getNonIPDeviceTags(obj).subscribe(
-        (response: any) => {
-          this.tagsObj = response.tags;
-          resolve();
-        }
-      );
-    });
   }
 }

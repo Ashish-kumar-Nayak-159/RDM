@@ -1,7 +1,7 @@
+import { ControlPanelComponent } from './control-panel/control-panel.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { DeviceListComponent } from './device-list/device-list.component';
-import { DeviceControlPanelComponent } from './device-control-panel/device-control-panel.component';
 import { AuthGuardService } from '../services/auth-guard/auth-guard.service';
 
 const routes: Routes = [
@@ -12,12 +12,12 @@ const routes: Routes = [
   },
   {
     path: ':deviceId/control-panel',
-    component: DeviceControlPanelComponent,
+    component: ControlPanelComponent,
     canActivate: [AuthGuardService]
   }
 ];
 
-@NgModule({
+ @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })

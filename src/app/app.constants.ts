@@ -410,6 +410,90 @@ export class CONSTANTS {
     }
   ];
 
+  public static GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST = [
+    {
+      page: 'manage',
+      system_name: 'Manage',
+      url: null,
+      display_name: 'Manage',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'overview',
+      system_name: 'Overview',
+      url: '#device_overview',
+      display_name: 'Overview',
+      icon: 'fa fa-fw fa-life-ring',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'tags',
+      system_name: 'Tags',
+      url: '#device_tags',
+      display_name: 'Tags',
+      icon: 'fa fa-fw fa-tags',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'd2c',
+      system_name: 'D2C (Monitor)',
+      url: null,
+      display_name: 'D2C (Monitor)',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'notifications',
+      system_name: 'Notifications',
+      url: '#device_notifications',
+      display_name: 'Notifications',
+      icon: 'fa fa-fw fa-bell',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'device_life_cycle',
+      system_name: 'Gateway Life Cycle Events',
+      url: '#device_life_cycle_events',
+      display_name: 'Gateway Life Cycle Events',
+      icon: 'fa fa-fw fa-heartbeat',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'cached_alerts',
+      system_name: 'Cached Alerts',
+      url: '#device_cached_alerts',
+      display_name: 'Cached Alerts',
+      icon: 'fa fa-fw fa-bolt',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'cached_telemetry',
+      system_name: 'Cached Telemetry',
+      url: '#device_cached_telemetry',
+      display_name: 'Cached Telemetry',
+      icon: 'fa fa-fw fa-stack-exchange',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'config_history',
+      system_name: 'Configuration History',
+      url: '#device_config_history',
+      display_name: 'Configuration History',
+      icon: 'fa fa-fw fa-history',
+      visible: true,
+      isTitle: false
+    }
+  ];
+
   public static MODEL_CONTROL_PANEL_SIDE_MENU_LIST = [
     {
       page: 'manage',

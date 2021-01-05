@@ -29,6 +29,7 @@ export class CommonService {
   convertUTCDateToLocal(utcDate) {
     if (utcDate) {
       // return (moment.utc(utcDate, 'M/DD/YYYY h:mm:ss A')).local().format('DD-MMM-YYYY hh:mm:ss A');
+      console.log(moment(new Date(utcDate + ' UTC').toString()).format('DD-MMM-YYYY hh:mm:ss A'));
       return moment(new Date(utcDate + ' UTC').toString()).format('DD-MMM-YYYY hh:mm:ss A');
     }
     return null;
@@ -60,6 +61,10 @@ export class CommonService {
     return this.http.get(url, {
       responseType: 'blob'
     });
+  }
+
+  getFileOriginalData(url) {
+    return this.http.get(url);
   }
 
   getRandomColor() {

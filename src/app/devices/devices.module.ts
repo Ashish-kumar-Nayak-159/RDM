@@ -42,6 +42,11 @@ import { CommonCustomModule } from './../common/common.module';
 import { SpecificC2dMessageComponent } from './device-control-panel/specific-c2d-message/specific-c2d-message.component';
 import { PredictiveMaintenanceComponent } from './device-control-panel/predictive-maintenance/predictive-maintenance.component';
 import { AlertEndEventComponent } from './device-control-panel/alert-end-event/alert-end-event.component';
+import { GatewayControlPanelComponent } from './gateway-control-panel/gateway-control-panel.component';
+import { ControlPanelComponent } from './control-panel/control-panel.component';
+import { GatewayCachedTelemetryComponent } from './gateway-control-panel/gateway-cached-telemetry/gateway-cached-telemetry.component';
+import { GatewayCachedAlertsComponent } from './gateway-control-panel/gateway-cached-alerts/gateway-cached-alerts.component';
+import { DeviceLifeCycleEventsComponent } from './gateway-control-panel/device-life-cycle-events/device-life-cycle-events.component';
 
 @NgModule({
   declarations: [
@@ -71,7 +76,12 @@ import { AlertEndEventComponent } from './device-control-panel/alert-end-event/a
     BatteryMessagesComponent,
     SpecificC2dMessageComponent,
     PredictiveMaintenanceComponent,
-    AlertEndEventComponent
+    AlertEndEventComponent,
+    GatewayControlPanelComponent,
+    ControlPanelComponent,
+    GatewayCachedTelemetryComponent,
+    GatewayCachedAlertsComponent,
+    DeviceLifeCycleEventsComponent
   ],
   imports: [
     CommonModule,

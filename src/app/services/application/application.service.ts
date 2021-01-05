@@ -77,7 +77,7 @@ export class ApplicationService {
     return this.http.get(this.url + AppUrls.GET_NOTIFICAION_LIST, { params });
   }
 
-  getLastEvents(filterObj: any) {
+  getDeviceLifeCycleEvents(filterObj: any) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
       if (filterObj[key]) {

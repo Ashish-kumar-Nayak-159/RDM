@@ -155,7 +155,7 @@ export class DeviceListComponent implements OnInit {
             name: (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Manager',
             key: 'device_manager',
             type: 'text',
-            headerClass: 'w-10',
+            headerClass: 'w-30',
             valueclass: ''
           },
           {
@@ -503,9 +503,9 @@ export class DeviceListComponent implements OnInit {
           'nonIPDevices',
           obj.data.device_id, 'control-panel']);
           } else {
-          this.router.navigate(['applications', this.contextApp.app,
-          (this.pageType.toLowerCase() + 's') ,
-          obj.data.device_id, 'control-panel']);
+            this.router.navigate(['applications', this.contextApp.app,
+            (this.pageType.toLowerCase() + 's') ,
+            obj.data.device_id, 'control-panel']);
           }
         }
     }

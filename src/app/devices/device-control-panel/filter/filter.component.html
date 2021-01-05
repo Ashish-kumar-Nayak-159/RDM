@@ -4,15 +4,15 @@
       <div class="form-group form-inline my-1">
         <input type="number" min="1" class="form-control form-control-sm mr-1 my-1 record-input" id="inputEmail4" placeholder="No of Records"
         [(ngModel)]="filterObj.count" name="count">
-        <select *ngIf="pageType === 'gateway'" class="form-control form-control-sm mx-1 my-1" id="deviceCategory"
+        <!-- <select *ngIf="pageType === 'gateway' && filterObj.gateway_id" class="form-control form-control-sm mx-1 my-1" id="deviceCategory"
          [(ngModel)]="filterObj.device_id" name="deviceCategory">
           <option [ngValue]="undefined">Select Asset</option>
           <option [ngValue]="device.device_id" *ngFor="let device of devices">
             {{device?.tags?.dislay_name ? device.tags?.display_name: device.device_id}}
           </option>
-        </select>
+        </select> -->
         <div class="bg-dateRow form-group form-inline" id="dateRow"
-        [style.width]="(filterObj.dateOption === 'date' ? '22rem' : (filterObj.dateOption === 'date range' ? '32rem' : ''))">
+        [style.width]="(filterObj.dateOption === 'date' ? '23rem' : (filterObj.dateOption === 'date range' ? '33rem' : ''))">
         <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
         [(ngModel)]="filterObj.dateOption" name="dateOptions" (change)="onDateOptionChange()">
           <option [ngValue]="undefined">Quick Date Options</option>

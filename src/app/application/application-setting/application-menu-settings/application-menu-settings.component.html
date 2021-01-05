@@ -117,6 +117,49 @@
   <accordion-group heading="" [panelClass]="'customClass'">
     <ng-container accordion-heading>
       <a class="btn" >
+        Gateway Diagnosis Panel Menu
+      </a>
+    </ng-container>
+    <div class="row">
+      <div class="col-12">
+        <div class="col-8">
+          <table class="table table-bordered table-striped" cellspacing="0">
+            <thead>
+              <tr class="bg-secondary text-white">
+                <th>System Name</th>
+                <th>Display Name</th>
+                <th>Visibility</th>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <th colspan="5">
+                  <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
+                    [disabled]="saveMenuSettingAPILoading">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x"
+                      *ngIf="saveMenuSettingAPILoading"></i></button>
+                  <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()">CANCEL</button>
+                </th>
+              </tr>
+            </tfoot>
+            <tbody>
+              <ng-container *ngFor="let item of applicationData?.configuration?.gateway_control_panel_menu; let configIndex = index">
+                <tr *ngIf="!item.isTitle">
+                  <td>{{item.system_name}}</td>
+                  <td><input type="text" class="form-control" name="display_name_device{{configIndex}}" id="display_name_device{{configIndex}}"
+                      [(ngModel)]="item.display_name" /></td>
+                  <td><input type="checkbox" name="visible{{configIndex}}"
+                      id="visible{{configIndex}}" [(ngModel)]="item.visible" /></td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </accordion-group>
+  <accordion-group heading="" [panelClass]="'customClass'">
+    <ng-container accordion-heading>
+      <a class="btn" >
         Model Definition Menu
       </a>
     </ng-container>

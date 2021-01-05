@@ -16,11 +16,7 @@ declare var $: any;
 export class DeviceTypeReferenceDocumentsComponent implements OnInit {
 
   @Input() deviceType: any;
-  documents: any[] = [
-    {metadata: {url: 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/models/23_Residential 2000 Liters/reference-material/Company Leave policy 2020.pdf', name: 'Company Leave policy 2020.pdf'}, name: 'PDF Doc 1', type: 'PDF'},
-    {metadata: {url: 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/models/23_Residential 2000 Liters/reference-material/chrome_awXj87XP7N.png', name: 'chrome_awXj87XP7N.png'}, name: 'Image Doc 1', type: 'Image'},
-    {metadata: {url: 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/models/23_Residential 2000 Liters/reference-material/8aPu277x69.mp4', name: '8aPu277x69.mp4'}, name: 'Video Doc 1', type: 'Video'}
-  ];
+  documents: any[] = [];
   docTableConfig: any;
   isDocumentsLoading = false;
   documentObj: any;

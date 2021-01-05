@@ -48,8 +48,8 @@ export class NotificationComponent implements OnInit, OnDestroy {
             key: 'local_created_date',
           },
           {
-            name: 'Message ID',
-            key: 'message_id',
+            name: 'Message',
+            key: 'message_text',
           },
           {
             name: 'Message',
@@ -57,13 +57,13 @@ export class NotificationComponent implements OnInit, OnDestroy {
           }
         ]
       };
-      if (this.pageType === 'gateway') {
-        this.notificationTableConfig.data.splice(1, 1);
-        this.notificationTableConfig.data.splice(1, 0, {
-          name: 'Asset Name',
-          key: 'device_id'
-        });
-      }
+      // if (this.pageType === 'gateway') {
+      //   this.notificationTableConfig.data.splice(1, 1);
+      //   this.notificationTableConfig.data.splice(1, 0, {
+      //     name: 'Asset Name',
+      //     key: 'device_id'
+      //   });
+      // }
     });
     this.notificationFilter.epoch = true;
 
@@ -100,7 +100,10 @@ export class NotificationComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response && response.data) {
           this.notifications = response.data;
-          this.notifications.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
+          this.notifications.forEach(item => {
+            item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
+            item.message_text = item.message;
+          });
         }
         this.isNotificationLoading = false;
       }, error => this.isNotificationLoading = false

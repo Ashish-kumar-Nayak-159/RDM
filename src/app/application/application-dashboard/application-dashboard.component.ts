@@ -197,7 +197,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
       count: this.noOfRecordsToDisplay
     };
-    this.apiSubscriptions.push(this.applicationService.getLastEvents(obj)
+    this.apiSubscriptions.push(this.applicationService.getDeviceLifeCycleEvents(obj)
     .subscribe(
       (response: any) => {
         if (response.data) {

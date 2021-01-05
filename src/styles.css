@@ -203,6 +203,10 @@ input:invalid {
   border-bottom: 1px solid #ccc;
 }
 
+select#dateoptions {
+  width: 10rem!important;
+}
+
 
 .owl-dt-timer-box {
   flex-direction: row;

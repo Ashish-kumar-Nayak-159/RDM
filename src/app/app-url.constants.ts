@@ -76,4 +76,6 @@ export class AppUrls {
   public static GET_SAMPLING_DEVICE_TELEMETRY = 'apps/{0}/d2c/telemetry_messages_with_sampling';
   public static GET_DEVICE_SIGNALR_MODE = 'apps/{0}/devices/{1}/get_telemetry_mode';
   public static CHANGE_TELEMETRY_MODE = 'apps/{0}/c2d/change_telemetry_mode';
+  public static GET_CACHED_TELEMETRY = 'cached_telemetry_analysis';
+  public static GET_CACHED_ALERTS = 'cached_alert_analysis';
 }

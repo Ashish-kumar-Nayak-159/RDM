@@ -66,10 +66,7 @@ export class OverviewComponent implements OnInit {
         this.getDeviceCount();
       }
     });
-
   }
-
-
 
 
   getDeviceCredentials() {

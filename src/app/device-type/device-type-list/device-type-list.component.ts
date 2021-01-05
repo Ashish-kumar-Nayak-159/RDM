@@ -68,14 +68,14 @@ export class DeviceTypeListComponent implements OnInit {
           name: (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Name',
           key: 'name',
           type: 'text',
-          headerClass: '',
+          headerClass: 'w-30',
           valueclass: ''
         },
         {
           name: (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Template',
           key: 'tags.cloud_connectivity',
           type: 'text',
-          headerClass: 'w-10',
+          headerClass: 'w-30',
           valueclass: ''
         },
         {

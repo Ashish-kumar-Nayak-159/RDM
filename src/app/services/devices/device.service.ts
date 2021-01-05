@@ -327,4 +327,34 @@ export class DeviceService {
     return this.http.post(this.url + String.Format(AppUrls.CHANGE_TELEMETRY_MODE, app), msgObj);
   }
 
+  getGatewayCachedTelemetry(filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + AppUrls.GET_CACHED_TELEMETRY, { params });
+  }
+
+  getGatewayCachedAlerts(filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + AppUrls.GET_CACHED_ALERTS, { params });
+  }
+
+  getDeviceLifeCycleEvents(filterObj: any) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + AppUrls.GET_DEVICE_LIFECYCLE_EVENTS, { params });
+  }
+
 }

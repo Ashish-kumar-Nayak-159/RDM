@@ -33,6 +33,7 @@ export class TagsComponent implements OnInit, OnDestroy {
   deviceType: any;
   constantData = CONSTANTS;
   isUpdateAPILoading = false;
+  originalDeviceData: any;
   modalConfig = {
     isDisplaySave: true,
     isDisplayCancel: true,
@@ -231,6 +232,17 @@ export class TagsComponent implements OnInit, OnDestroy {
   updateDeviceTags() {
     this.isUpdateAPILoading = true;
     const tagObj = {};
+    Object.keys(this.device.tags.custom_tags).forEach(customTag => {
+      let flag = false;
+      this.deviceCustomTags.forEach(tag => {
+      if (tag.name === customTag) {
+        flag = true;
+      }
+      });
+      if (!flag) {
+        tagObj[customTag] = null;
+      }
+    });
     this.deviceCustomTags.forEach(tag => {
       if (tag.name && tag.value) {
         tagObj[tag.name] = tag.value;

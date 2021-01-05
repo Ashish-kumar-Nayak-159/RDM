@@ -156,8 +156,13 @@
               >
                 No data available since mid night.
               </div>
+              <div class="row col-12 mx-1 mt-1" *ngIf="
+              !isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.device
+            ">
+            <h5>Welcome to {{originalFilter.device?.display_name ? originalFilter.device?.display_name : originalFilter.device?.device_id}}</h5>
+              </div>
 
-              <div class="row" *ngIf="telemetryObj">
+              <div class="row mt-n2" *ngIf="telemetryObj">
                 <div class="col-xl-8 col-lg-8">
                   <!-- Content Row -->
                   <div class="row">

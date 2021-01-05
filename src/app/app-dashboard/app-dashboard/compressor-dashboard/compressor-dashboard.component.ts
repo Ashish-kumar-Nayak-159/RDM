@@ -42,6 +42,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
   isC2dAPILoading = false;
   c2dLoadingMessage: string;
   isTelemetryModeAPICalled = false;
+  originalFilter: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -87,15 +88,16 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
 
   loadFromCache() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION);
-    if (item && this.filterObj.device) {
+    if (item && item.device) {
       console.log(item);
+      this.originalFilter = JSON.parse(JSON.stringify(item));
       this.filterObj = item;
       this.contextApp.hierarchy.levels.forEach((level, index) => {
         if (index !== 0) {
         // console.log( this.filterObj.hierarchy);
         // console.log( this.filterObj.hierarchy[level]);
-        this.configureHierarchy[index] = this.filterObj.device.hierarchy[level];
-        if (this.filterObj.device.hierarchy[level]) {
+        this.configureHierarchy[index] = this.originalFilter.device.hierarchy[level];
+        if (this.originalFilter.device.hierarchy[level]) {
           this.onChangeOfHierarchy(index, true);
         }
         }
@@ -247,7 +249,6 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
       }
       // await this.getDevices(hierarchyObj);
     }
-    this.signalRModeValue = undefined;
     let count = 0;
     Object.keys(this.configureHierarchy).forEach(key => {
       if(this.configureHierarchy[key]) {
@@ -315,6 +316,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
 
     this.commonService.setItemInLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION, filterObj);
     const obj = {...filterObj};
+    this.originalFilter = JSON.parse(JSON.stringify(filterObj));
     let device_type: any;
     if (obj.device) {
       obj.device_id = obj.device.device_id;

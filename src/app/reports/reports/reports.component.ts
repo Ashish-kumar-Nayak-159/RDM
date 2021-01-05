@@ -464,7 +464,7 @@ export class ReportsComponent implements OnInit {
     (this.filterObj.device.display_name ? this.filterObj.device.display_name : this.filterObj.device.device_id) +
     ' for ' + this.commonService.convertEpochToDate(this.newFilterObj.from_date) + ' to ' +
     this.commonService.convertEpochToDate(this.newFilterObj.to_date), 20, 50);
-    autoTable(pdf, { html: '#dataTable', margin: { top: 70 } });
+    autoTable(pdf, { html: '#dataTable1', margin: { top: 70 } });
     const now = moment().utc().unix();
     pdf.save((this.filterObj.device.display_name ? this.filterObj.device.display_name : this.filterObj.device.device_id)
            + '_' + this.filterObj.report_type + '_' + now + '.pdf');
@@ -472,23 +472,40 @@ export class ReportsComponent implements OnInit {
 
   saveExcel() {
     let ws: XLSX.WorkSheet;
+    let data = [];
     if (this.filterObj.report_type !== 'Process Parameter Report') {
-      const data = [];
+
       this.latestAlerts.forEach(alert => {
         data.push({
           'Asset Name': alert.device_display_name ? alert.device_display_name : alert.device_id,
           'Time': alert.local_created_date,
+          'Severity': alert.severity,
           'Description': alert.message,
           'Status': alert.metadata?.acknowledged_date ? 'Acknowledged' : 'Not Acknowledged',
           'Acknowledged By': alert.metadata?.user_id
         });
-      })
+      });
       // const element = document.getElementById('dataTable');
       ws = XLSX.utils.json_to_sheet(data);
     } else {
-      const element = document.getElementById('dataTable');
-      ws = XLSX.utils.table_to_sheet(element);
+      data = [];
+      this.telemetry.forEach(telemetryObj => {
+        const obj = {
+          'Asset Name': this.filterObj.non_ip_device ?
+            (this.filterObj.non_ip_device.device_display_name ? this.filterObj.non_ip_device?.device_display_name : this.filterObj.non_ip_device?.device_id)
+            : (this.filterObj.device ?
+            (this.filterObj.device.device_display_name ? this.filterObj.device.device_display_name : this.filterObj.device.device_id)
+            : '' ),
+          'Time': telemetryObj.local_created_date
+        }
+        this.selectedProps.forEach(prop => {
+          obj[prop.id] = telemetryObj[prop.value.json_key]
+        });
+        data.push(obj);
+      });
+
     }
+    ws = XLSX.utils.json_to_sheet(data);
 
     console.log(ws);
 

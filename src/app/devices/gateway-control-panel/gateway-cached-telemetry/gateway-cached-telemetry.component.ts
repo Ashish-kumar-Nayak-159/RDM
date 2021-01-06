@@ -9,6 +9,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { environment } from 'src/environments/environment';
 import { FileSaverService } from 'ngx-filesaver';
+import { JsonEditorOptions } from 'ang-jsoneditor';
 
 declare var $: any;
 @Component({
@@ -31,6 +32,7 @@ export class GatewayCachedTelemetryComponent implements OnInit {
   sasToken = environment.blobKey;
   fileData: any;
   isFileDataLoading: boolean;
+  editorOptions: JsonEditorOptions;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -40,7 +42,9 @@ export class GatewayCachedTelemetryComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
+    this.editorOptions = new JsonEditorOptions();
+    this.editorOptions.mode = 'view';
+    this.editorOptions.statusBar = false;
     this.filterObj.gateway_id = this.device.device_id;
 
     this.route.paramMap.subscribe(params => {
@@ -193,8 +197,9 @@ export class GatewayCachedTelemetryComponent implements OnInit {
         isDisplaySave: false,
         isDisplayCancel: true
       };
-      await this.downloadFile(obj.data, 'view');
       $('#telemetryMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      await this.downloadFile(obj.data, 'view');
+
     }
   }
 

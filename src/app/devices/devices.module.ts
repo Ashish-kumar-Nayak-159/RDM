@@ -47,6 +47,7 @@ import { ControlPanelComponent } from './control-panel/control-panel.component';
 import { GatewayCachedTelemetryComponent } from './gateway-control-panel/gateway-cached-telemetry/gateway-cached-telemetry.component';
 import { GatewayCachedAlertsComponent } from './gateway-control-panel/gateway-cached-alerts/gateway-cached-alerts.component';
 import { DeviceLifeCycleEventsComponent } from './gateway-control-panel/device-life-cycle-events/device-life-cycle-events.component';
+import { NgJsonEditorModule } from 'ang-jsoneditor';
 
 @NgModule({
   declarations: [
@@ -101,7 +102,8 @@ import { DeviceLifeCycleEventsComponent } from './gateway-control-panel/device-l
     GoogleMapsModule,
     NgMultiSelectDropDownModule.forRoot(),
     UiSwitchModule,
-    VisualizationModule
+    VisualizationModule,
+    NgJsonEditorModule
   ],
   exports: [
     FilterComponent,

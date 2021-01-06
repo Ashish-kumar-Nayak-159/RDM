@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { Device } from 'src/app/models/device.model';
 import { CommonService } from 'src/app/services/common.service';
 import { DeviceService } from 'src/app/services/devices/device.service';
-
+declare var $: any;
 @Component({
   selector: 'app-gateway-cached-alerts',
   templateUrl: './gateway-cached-alerts.component.html',

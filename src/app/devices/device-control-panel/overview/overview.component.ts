@@ -1,3 +1,4 @@
+import { DeviceTypeService } from './../../../services/device-type/device-type.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { DeviceService } from './../../../services/devices/device.service';
 import { Device } from 'src/app/models/device.model';
@@ -33,11 +34,12 @@ export class OverviewComponent implements OnInit {
   constantData = CONSTANTS;
   @Input() tileData: any;
   componentState: any;
+  deviceType: any;
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
     private router: Router,
-    private applicationService: ApplicationService,
+    private deviceTypeService: DeviceTypeService,
     private deviceService: DeviceService,
     private toasterService: ToasterService,
   ) { }
@@ -45,11 +47,7 @@ export class OverviewComponent implements OnInit {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.logo) {
-      this.contextApp.metadata.logo = {
-        url : CONSTANTS.DEFAULT_APP_LOGO
-      };
-    }
+
     this.route.paramMap.subscribe(params => {
       this.pageType = params.get('listName');
       this.pageType = this.pageType.slice(0, -1).toLowerCase();
@@ -62,6 +60,7 @@ export class OverviewComponent implements OnInit {
       }
       this.getDeviceCredentials();
       this.getDeviceConnectionStatus();
+      this.getDeviceTypeDetail();
       if (this.pageType === 'gateway') {
         this.getDeviceCount();
       }
@@ -77,6 +76,29 @@ export class OverviewComponent implements OnInit {
         this.deviceCredentials = response;
       }
     );
+  }
+
+  getDeviceTypeDetail() {
+    return new Promise((resolve) => {
+      const obj = {
+        hierarchy: JSON.stringify(this.device.tags.hierarchy_json),
+        name: this.device.tags.device_type,
+        app: this.contextApp.app
+      };
+      this.deviceTypeService.getThingsModelsList(obj).subscribe(
+        (response: any) => {
+          if (response?.data?.length > 0) {
+            this.deviceType = response.data[0];
+            if (!this.deviceType.metadata?.image) {
+              this.deviceType.metadata.image = {
+                url: CONSTANTS.DEFAULT_MODEL_IMAGE
+              };
+            }
+          }
+          resolve();
+        }
+      );
+    });
   }
 
   getDeviceCount() {

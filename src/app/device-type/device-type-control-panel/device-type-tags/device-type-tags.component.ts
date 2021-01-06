@@ -41,6 +41,7 @@ export class DeviceTypeTagsComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.originalDeviceType = JSON.parse(JSON.stringify(this.deviceType));
     console.log(this.deviceType);
+    this.getDeviceTypeDetail();
     if (!this.deviceType.tags.reserved_tags) {
     this.deviceType.tags.reserved_tags = [];
     }
@@ -99,6 +100,7 @@ export class DeviceTypeTagsComponent implements OnInit {
         this.tagObj = undefined;
         this.toasterService.showSuccess(response.message, 'Set Tags');
         this.getDeviceTypeDetail();
+        this.firstTagAdded = false;
       }, error => this.toasterService.showError(error.message, 'Set Tags')
     );
   }
@@ -115,6 +117,7 @@ export class DeviceTypeTagsComponent implements OnInit {
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Delete Tags');
         this.getDeviceTypeDetail();
+        this.firstTagAdded = false;
       }, error => this.toasterService.showError(error.message, 'Delete Tags')
     );
   }
@@ -123,6 +126,7 @@ export class DeviceTypeTagsComponent implements OnInit {
     this.deviceType = null;
     this.deviceType = JSON.parse(JSON.stringify(this.originalDeviceType));
     this.getDeviceTypeDetail();
+    this.firstTagAdded = false;
   }
 
   getDeviceTypeDetail() {

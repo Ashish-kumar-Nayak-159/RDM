@@ -156,4 +156,8 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
 }

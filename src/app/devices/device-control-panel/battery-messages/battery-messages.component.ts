@@ -114,11 +114,11 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
         app: dataobj.app,
         id: dataobj.id
       };
-      this.deviceService.getDeviceMessageById(obj, 'battery').subscribe(
+      this.apiSubscriptions.push(this.deviceService.getDeviceMessageById(obj, 'battery').subscribe(
         (response: any) => {
           resolve(response.message);
         }
-      );
+      ));
     });
   }
 

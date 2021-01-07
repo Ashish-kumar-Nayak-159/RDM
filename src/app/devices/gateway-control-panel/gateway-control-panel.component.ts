@@ -1,5 +1,6 @@
+import { Subscription } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { constants } from 'fs';
 import { CONSTANTS } from 'src/app/app.constants';
@@ -13,7 +14,7 @@ import { DeviceService } from 'src/app/services/devices/device.service';
   templateUrl: './gateway-control-panel.component.html',
   styleUrls: ['./gateway-control-panel.component.css']
 })
-export class GatewayControlPanelComponent implements OnInit {
+export class GatewayControlPanelComponent implements OnInit, OnDestroy {
 
   activeTab: string;
   device: Device;
@@ -26,6 +27,7 @@ export class GatewayControlPanelComponent implements OnInit {
   contextApp: any;
   menuItems: any[] = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
   tileData: any;
+  subscriptions: Subscription[] = [];
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private deviceService: DeviceService,
@@ -75,11 +77,11 @@ export class GatewayControlPanelComponent implements OnInit {
         }
       }
     );
-    this.deviceService.reloadDeviceInControlPanelEmitter.subscribe(
+    this.subscriptions.push(this.deviceService.reloadDeviceInControlPanelEmitter.subscribe(
       () => {
         this.getDeviceDetail(true);
       }
-    );
+    ));
   }
 
   getTileName() {
@@ -179,7 +181,7 @@ export class GatewayControlPanelComponent implements OnInit {
       this.isDeviceDataLoading = true;
     }
     const methodToCall = this.deviceService.getDeviceData(this.device.device_id, this.contextApp.app);
-    methodToCall.subscribe(
+    this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         this.device = response;
         console.log(this.device);
@@ -203,6 +205,10 @@ export class GatewayControlPanelComponent implements OnInit {
           );
         }
       }, () => this.isDeviceDataLoading = false
-    );
+    ));
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

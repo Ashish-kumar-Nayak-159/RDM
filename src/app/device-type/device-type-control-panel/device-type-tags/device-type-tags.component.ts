@@ -1,9 +1,10 @@
+import { Subscription } from 'rxjs';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { ToasterService } from './../../../services/toaster.service';
 import { DeviceTypeService } from './../../../services/device-type/device-type.service';
 import { ActivatedRoute } from '@angular/router';
 import { CONSTANTS } from 'src/app/app.constants';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 
 @Component({
@@ -11,7 +12,7 @@ import { CommonService } from 'src/app/services/common.service';
   templateUrl: './device-type-tags.component.html',
   styleUrls: ['./device-type-tags.component.css']
 })
-export class DeviceTypeTagsComponent implements OnInit {
+export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
 
   @Input() deviceType: any;
   isReservedTagsEditable = false;
@@ -28,6 +29,7 @@ export class DeviceTypeTagsComponent implements OnInit {
   contextApp: any;
   tagObj: any;
   firstTagAdded = false;
+  subscriptions: Subscription[] = [];
   constructor(
     private route: ActivatedRoute,
     private commonService: CommonService,
@@ -95,14 +97,14 @@ export class DeviceTypeTagsComponent implements OnInit {
     obj.tags = this.deviceType.tags;
     obj.app = this.contextApp.app;
     console.log(obj);
-    this.deviceTypeService.updateThingsModel(obj, this.contextApp.app).subscribe(
+    this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.contextApp.app).subscribe(
       (response: any) => {
         this.tagObj = undefined;
         this.toasterService.showSuccess(response.message, 'Set Tags');
         this.getDeviceTypeDetail();
         this.firstTagAdded = false;
       }, error => this.toasterService.showError(error.message, 'Set Tags')
-    );
+    ));
   }
 
   deleteAllDeviceTypeTags() {
@@ -113,13 +115,13 @@ export class DeviceTypeTagsComponent implements OnInit {
     obj.tags.reserved_tags = [];
     obj.app = this.contextApp.app;
     console.log(obj);
-    this.deviceTypeService.updateThingsModel(obj, this.contextApp.app).subscribe(
+    this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.contextApp.app).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Delete Tags');
         this.getDeviceTypeDetail();
         this.firstTagAdded = false;
       }, error => this.toasterService.showError(error.message, 'Delete Tags')
-    );
+    ));
   }
 
   resetDeviceTypeTags() {
@@ -134,13 +136,17 @@ export class DeviceTypeTagsComponent implements OnInit {
       name: this.deviceType.name,
       app: this.contextApp.app
     };
-    this.deviceTypeService.getThingsModelsList(obj).subscribe(
+    this.subscriptions.push(this.deviceTypeService.getThingsModelsList(obj).subscribe(
       (response: any) => {
         if (response && response.data && response.data.length > 0) {
           this.deviceType = response.data[0];
         }
       }
-    );
+    ));
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

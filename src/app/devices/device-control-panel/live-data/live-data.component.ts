@@ -97,12 +97,12 @@ export class LiveDataComponent implements OnInit, OnDestroy {
         app: this.contextApp.app,
         name: this.device.tags.device_type
       };
-      this.deviceTypeService.getThingsModelProperties(obj).subscribe(
+      this.apiSubscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           resolve();
         }
-      );
+      ));
     });
   }
 
@@ -155,14 +155,14 @@ export class LiveDataComponent implements OnInit, OnDestroy {
             console.log('in interval');
             obj.from_date = obj.to_date;
             obj.to_date = (moment().utc()).unix();
-            this.deviceService.getDeviceTelemetry(obj).subscribe(
+            this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
               (response1: any) => {
                 if (response && response.data) {
                   const telemetryData = response1.data;
                   telemetryData.reverse();
                   this.updateChart(telemetryData);
                 }
-              });
+              }));
           }, 5000);
           this.loadChart();
         }
@@ -274,6 +274,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     clearInterval(this.refreshInterval);
+    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

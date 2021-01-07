@@ -1,5 +1,6 @@
+import { Subscription } from 'rxjs';
 import { MatNativeDateModule } from '@angular/material/core';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { CONSTANTS } from 'src/app/app.constants';
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
 import { ToasterService } from 'src/app/services/toaster.service';
@@ -11,7 +12,7 @@ declare var $: any;
   templateUrl: './device-type-device-methods.component.html',
   styleUrls: ['./device-type-device-methods.component.css']
 })
-export class DeviceTypeDeviceMethodsComponent implements OnInit {
+export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
 
   @Input() deviceType: any;
   deviceMethods: any = {};
@@ -28,6 +29,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit {
   deviceMethodsList = CONSTANTS.DEVICE_METHODS;
   editorOptions: JsonEditorOptions;
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
+  subscriptions: Subscription[] = [];
   constructor(
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService,
@@ -86,12 +88,12 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit {
       app: this.deviceType.app,
       name: this.deviceType.name
     };
-    this.deviceTypeService.getThingsModelDeviceMethods(obj).subscribe(
+    this.subscriptions.push(this.deviceTypeService.getThingsModelDeviceMethods(obj).subscribe(
       (response: any) => {
         this.deviceMethods = response.device_methods;
         this.isDeviceMethodsLoading = false;
       }
-    );
+    ));
   }
 
   openaddDeviceMethodModal() {
@@ -135,7 +137,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit {
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.device_methods = JSON.parse(JSON.stringify(this.deviceMethods));
     obj.device_methods.push(this.deviceMethodObj);
-    this.deviceTypeService.updateThingsModel(obj, this.deviceType.app).subscribe(
+    this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.deviceType.app).subscribe(
       (response: any) => {
         this.isCreateDeviceMethodLoading = false;
         this.onCloseThingsDeviceMethodModal();
@@ -145,7 +147,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit {
         this.isCreateDeviceMethodLoading = false;
         this.toasterService.showError(error.message, 'Add Device Method');
       }
-    );
+    ));
   }
 
   deleteDeviceMethod() {
@@ -153,7 +155,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit {
     obj.device_methods = JSON.parse(JSON.stringify(this.deviceMethods));
     const index = obj.device_methods.findIndex(prop => prop.json_key === this.selectedDeviceMethod.json_key);
     obj.device_methods.splice(index, 1);
-    this.deviceTypeService.updateThingsModel(obj, this.deviceType.app).subscribe(
+    this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.deviceType.app).subscribe(
       (response: any) => {
         this.isCreateDeviceMethodLoading = false;
         this.onCloseModal('confirmMessageModal');
@@ -163,7 +165,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit {
         this.isCreateDeviceMethodLoading = false;
         this.toasterService.showError(error.message, 'Delete Device Method');
       }
-    );
+    ));
   }
 
   onCloseThingsDeviceMethodModal() {
@@ -182,6 +184,10 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit {
   onCloseModal(id) {
     $('#' + id).modal('hide');
     this.selectedDeviceMethod = undefined;
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
 

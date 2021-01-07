@@ -1,3 +1,4 @@
+import { Subscription } from 'rxjs';
 import { DeviceTypeService } from './../../../services/device-type/device-type.service';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { Component, OnInit, AfterViewInit, OnDestroy, Input } from '@angular/core';
@@ -23,6 +24,7 @@ export class WaterTankMonitorComponent implements OnInit, AfterViewInit, OnDestr
   telemetryRefreshInterval: NodeJS.Timeout;
   selectedTab = 'county';
   @Input() tileData: any;
+  apiSubscriptions: Subscription[] = [];
   constructor(
     private route: ActivatedRoute,
     private commonService: CommonService,
@@ -96,7 +98,7 @@ export class WaterTankMonitorComponent implements OnInit, AfterViewInit, OnDestr
       hierarchy: JSON.stringify(this.selectedHierarchy)
     };
     this.selectedDevice = undefined;
-    this.deviceService.getDeviceList(obj).subscribe(
+    this.apiSubscriptions.push(this.deviceService.getDeviceList(obj).subscribe(
       async (response: any) => {
         if (response?.data?.length > 0) {
           this.selectedDevice = response.data[0];
@@ -107,7 +109,7 @@ export class WaterTankMonitorComponent implements OnInit, AfterViewInit, OnDestr
           }, 5500);
         }
       }
-    );
+    ));
   }
 
   getThingsModelProperties() {
@@ -118,12 +120,12 @@ export class WaterTankMonitorComponent implements OnInit, AfterViewInit, OnDestr
         name: this.selectedDevice.tags.device_type
       };
       this.properties = [];
-      this.deviceTypeService.getThingsModelProperties(obj).subscribe(
+      this.apiSubscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
           this.properties = response.properties.measured_properties ? response.properties.measured_properties : [];
           resolve();
         }
-      );
+      ));
     });
   }
 
@@ -143,16 +145,17 @@ export class WaterTankMonitorComponent implements OnInit, AfterViewInit, OnDestr
     filterObj.to_date = now.unix();
     this.telemetryData = undefined;
     this.properties.forEach((prop, i) => filterObj.message_props += prop.json_key + (this.properties[i + 1] ? ',' : ''));
-    this.deviceService.getDeviceTelemetry(filterObj).subscribe((response: any) => {
+    this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(filterObj).subscribe((response: any) => {
       if (response?.data?.length > 0) {
         this.telemetryData = response.data[0];
         this.onOptionChange(this.telemetryData['level']);
       }
-    });
+    }));
   }
 
   ngOnDestroy() {
     clearInterval(this.telemetryRefreshInterval);
+    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

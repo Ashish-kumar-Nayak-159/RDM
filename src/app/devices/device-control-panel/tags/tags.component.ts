@@ -1,3 +1,4 @@
+import { Subscription } from 'rxjs';
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
@@ -34,6 +35,7 @@ export class TagsComponent implements OnInit, OnDestroy {
   constantData = CONSTANTS;
   isUpdateAPILoading = false;
   originalDeviceData: any;
+  subscriptions: Subscription[] = [];
   modalConfig = {
     isDisplaySave: true,
     isDisplayCancel: true,
@@ -87,7 +89,7 @@ export class TagsComponent implements OnInit, OnDestroy {
       methodToCall = this.deviceService.getDeviceData(this.device.device_id, this.contextApp.app);
     }
 
-    methodToCall.subscribe(
+    this.subscriptions.push(methodToCall.subscribe(
       async (response: any) => {
         if (this.pageType === 'nonipdevices' && response && response.tags) {
             this.device.tags = JSON.parse(JSON.stringify(response.tags));
@@ -109,7 +111,7 @@ export class TagsComponent implements OnInit, OnDestroy {
         await this.getDeviceTypeDetail();
         this.getDeviceDetail();
       }
-    );
+    ));
   }
 
   getDeviceTypeDetail() {
@@ -119,7 +121,7 @@ export class TagsComponent implements OnInit, OnDestroy {
         name: this.device.device_type,
         app: this.contextApp.app
       };
-      this.deviceTypeService.getThingsModelsList(obj).subscribe(
+      this.subscriptions.push(this.deviceTypeService.getThingsModelsList(obj).subscribe(
         (response: any) => {
           if (response?.data?.length > 0) {
             this.deviceType = response.data[0];
@@ -133,7 +135,7 @@ export class TagsComponent implements OnInit, OnDestroy {
           }
           resolve();
         }
-      );
+      ));
     });
   }
 
@@ -260,7 +262,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     } else {
       methodToCall = this.deviceService.updateDeviceTags(obj, this.contextApp.app);
     }
-    methodToCall.subscribe(
+    this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Set Tags');
         this.getDeviceData();
@@ -271,7 +273,7 @@ export class TagsComponent implements OnInit, OnDestroy {
         this.toasterService.showError(error.message, 'Set Tags');
         this.isUpdateAPILoading = false;
       }
-    );
+    ));
   }
 
   deleteAllDeviceTags(event) {
@@ -300,7 +302,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     } else {
       methodToCall = this.deviceService.updateDeviceTags(obj, this.contextApp.app);
     }
-    methodToCall.subscribe(
+    this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Delete Tags');
         $('#confirmdeleteTagsModal').modal('hide');
@@ -311,7 +313,7 @@ export class TagsComponent implements OnInit, OnDestroy {
         this.toasterService.showError(error.message, 'Delete Tags');
         this.isUpdateAPILoading = false;
       }
-    );
+    ));
     } else {
       $('#confirmdeleteTagsModal').modal('hide');
     }
@@ -320,6 +322,7 @@ export class TagsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.device = JSON.parse(JSON.stringify(this.originalDevice));
     console.log('on destroy', this.device);
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

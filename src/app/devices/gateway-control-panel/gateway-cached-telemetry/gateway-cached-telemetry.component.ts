@@ -172,7 +172,7 @@ export class GatewayCachedTelemetryComponent implements OnInit {
     } else  {
       method = this.commonService.getFileOriginalData(url);
     }
-    method.subscribe(
+    this.apiSubscriptions.push(method.subscribe(
       response => {
         this.fileData = response;
         console.log(this.fileData);
@@ -182,7 +182,7 @@ export class GatewayCachedTelemetryComponent implements OnInit {
         this.isFileDataLoading = false;
         resolve();
       }, error => this.isFileDataLoading = false
-    );
+    ));
     });
   }
 

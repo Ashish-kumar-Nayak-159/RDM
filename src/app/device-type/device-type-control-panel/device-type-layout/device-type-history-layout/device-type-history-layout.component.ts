@@ -1,6 +1,6 @@
 import { DeviceTypeService } from './../../../../services/device-type/device-type.service';
 import { Device } from './../../../../models/device.model';
-import { ApplicationRef, Component, ComponentFactoryResolver, EmbeddedViewRef, Injector, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { ApplicationRef, Component, ComponentFactoryResolver, EmbeddedViewRef, Injector, OnChanges, OnInit, SimpleChanges, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Input } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
@@ -20,7 +20,7 @@ declare var $: any;
   templateUrl: './device-type-history-layout.component.html',
   styleUrls: ['./device-type-history-layout.component.css']
 })
-export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
+export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() deviceType: any;
   apiSubscriptions: Subscription[] = [];
@@ -54,6 +54,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
   contextApp: any;
   fromDate: any;
   toDate: any;
+  subscriptions: Subscription[] = [];
 
   constructor(
     private commonService: CommonService,
@@ -91,12 +92,12 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
         app: this.contextApp.app,
         name: this.deviceType.name
       };
-      this.deviceTypeService.getThingsModelProperties(obj).subscribe(
+      this.subscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           resolve();
         }
-      );
+      ));
     });
   }
 
@@ -265,7 +266,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
     }
     // this.layoutJson.reverse();
     this.deviceType.layout = this.layoutJson;
-    this.apiSubscriptions.push(this.deviceTypeService.updateThingsModel(this.deviceType, this.contextApp.app).subscribe(
+    this.subscriptions.push(this.deviceTypeService.updateThingsModel(this.deviceType, this.contextApp.app).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Save Layout');
         this.getLayout();
@@ -285,7 +286,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
     this.dropdownWidgetList = [];
     this.selectedWidgets = [];
     this.layoutJson = [];
-    this.apiSubscriptions.push(this.deviceTypeService.getThingsModelLayout(params).subscribe(
+    this.subscriptions.push(this.deviceTypeService.getThingsModelLayout(params).subscribe(
       async (response: any) => {
         if (response?.layout?.length > 0) {
           this.layoutJson = response.layout;
@@ -312,6 +313,10 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges {
     if (e === [] || e.length === 0) {
       this.y2AxisProps = [];
     }
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
 

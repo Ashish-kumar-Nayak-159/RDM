@@ -1,7 +1,8 @@
+import { Subscription } from 'rxjs';
 import { element } from 'protractor';
 import { CONSTANTS } from 'src/app/app.constants';
 import { ToasterService } from './../../../services/toaster.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application/application.service';
 
 declare var $: any;
@@ -10,7 +11,7 @@ declare var $: any;
   templateUrl: './application-device-hierarchy.component.html',
   styleUrls: ['./application-device-hierarchy.component.css']
 })
-export class ApplicationDeviceHierarchyComponent implements OnInit {
+export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
 
   @Input() applicationData: any;
   selectedHierarchyItem: any;
@@ -22,6 +23,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
   editableHierarchy = {};
   hierarchyArr = {};
   configureHierarchy = {};
+  apiSubscriptions: Subscription[] = [];
   constructor(
     private toasterService: ToasterService,
     private applicationService: ApplicationService
@@ -164,7 +166,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
     //   obj.hierarchy = hierarchy;
     // }
     this.saveHierarchyAPILoading = true;
-    this.applicationService.updateAppHierarchy(obj).subscribe(
+    this.apiSubscriptions.push(this.applicationService.updateAppHierarchy(obj).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Save Device Hierarchy');
         this.selectedHierarchyItem = undefined;
@@ -178,7 +180,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
         this.toasterService.showError(error.message, 'Save Device Hierarchy');
         this.saveHierarchyAPILoading = false;
       }
-    );
+    ));
   }
 
   openConfirmHierarchyDeleteModal(hierarchy) {
@@ -222,6 +224,10 @@ export class ApplicationDeviceHierarchyComponent implements OnInit {
     if (this.applicationData?.hierarchy?.levels.length > 1) {
       this.hierarchyArr['1'] = Object.keys(this.applicationData.hierarchy.tags);
     }
+  }
+
+  ngOnDestroy() {
+    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

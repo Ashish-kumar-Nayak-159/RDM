@@ -1,6 +1,7 @@
+import { Subscription } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/app.constants';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { ApplicationService } from 'src/app/services/application/application.service';
 
@@ -9,7 +10,7 @@ import { ApplicationService } from 'src/app/services/application/application.ser
   templateUrl: './application-menu-settings.component.html',
   styleUrls: ['./application-menu-settings.component.css']
 })
-export class ApplicationMenuSettingsComponent implements OnInit {
+export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
 
   @Input() applicationData: any;
   saveMenuSettingAPILoading = false;
@@ -17,6 +18,7 @@ export class ApplicationMenuSettingsComponent implements OnInit {
   sideMenuList = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
   activeTab = 'main-menu';
   toggleRows: any = {};
+  apiSubscriptions: Subscription[] = [];
   constructor(
     private toasterService: ToasterService,
     private applicationService: ApplicationService,
@@ -148,7 +150,7 @@ export class ApplicationMenuSettingsComponent implements OnInit {
     });
     this.applicationData.configuration.main_menu = [...this.sideMenuList];
     console.log(JSON.stringify(this.applicationData.configuration));
-    this.applicationService.updateApp(this.applicationData).subscribe(
+    this.apiSubscriptions.push(this.applicationService.updateApp(this.applicationData).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Save Menu Settings');
         this.saveMenuSettingAPILoading = false;
@@ -158,11 +160,15 @@ export class ApplicationMenuSettingsComponent implements OnInit {
         this.toasterService.showError(error.message, 'Save Menu Settings');
         this.saveMenuSettingAPILoading = false;
       }
-    );
+    ));
   }
 
   onCancelClick() {
     this.applicationData = JSON.parse(JSON.stringify(this.originalApplicationData));
+  }
+
+  ngOnDestroy() {
+    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
 

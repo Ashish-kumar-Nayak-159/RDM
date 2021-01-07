@@ -1,6 +1,7 @@
+import { Subscription } from 'rxjs';
 import { ToasterService } from './../../../services/toaster.service';
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { JsonEditorOptions, JsonEditorComponent } from 'ang-jsoneditor';
 
 declare var $: any;
@@ -9,7 +10,7 @@ declare var $: any;
   templateUrl: './device-type-control-widgets.component.html',
   styleUrls: ['./device-type-control-widgets.component.css']
 })
-export class DeviceTypeControlWidgetsComponent implements OnInit {
+export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
 
   @Input() deviceType: any;
   viewType: string;
@@ -22,6 +23,7 @@ export class DeviceTypeControlWidgetsComponent implements OnInit {
   selectedWidget: any;
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   isGetControlWidgetAPILoading = false;
+  subscriptions: Subscription[] = [];
   constructor(
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService
@@ -43,11 +45,11 @@ export class DeviceTypeControlWidgetsComponent implements OnInit {
       app: this.deviceType.app,
       id: this.deviceType.id
     };
-    this.deviceTypeService.getThingsModelProperties(obj).subscribe(
+    this.subscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
       (response: any) => {
         this.properties = response.properties;
       }
-    );
+    ));
   }
 
   getThingsModelDeviceMethod() {
@@ -56,11 +58,11 @@ export class DeviceTypeControlWidgetsComponent implements OnInit {
       app: this.deviceType.app,
       id: this.deviceType.id
     };
-    this.deviceTypeService.getThingsModelDeviceMethods(obj).subscribe(
+    this.subscriptions.push(this.deviceTypeService.getThingsModelDeviceMethods(obj).subscribe(
       (response: any) => {
         this.deviceMethods = response.device_methods;
       }
-    );
+    ));
   }
 
 
@@ -70,14 +72,14 @@ export class DeviceTypeControlWidgetsComponent implements OnInit {
       app: this.deviceType.app,
       device_type: this.deviceType.name
     };
-    this.deviceTypeService.getThingsModelControlWidgets(obj).subscribe(
+    this.subscriptions.push(this.deviceTypeService.getThingsModelControlWidgets(obj).subscribe(
       (response: any) => {
         if (response?.data) {
           this.controlWidgets = response.data;
         }
         this.isGetControlWidgetAPILoading = false;
       }, error => this.isGetControlWidgetAPILoading = false
-    );
+    ));
   }
 
   openAddWidgetModal() {
@@ -150,7 +152,7 @@ export class DeviceTypeControlWidgetsComponent implements OnInit {
     this.isCreateWidgetAPILoading = true;
     this.controlWidget.app = this.deviceType.app;
     this.controlWidget.device_type = this.deviceType.name;
-    this.deviceTypeService.createThingsModelControlWidget(this.controlWidget).subscribe(
+    this.subscriptions.push(this.deviceTypeService.createThingsModelControlWidget(this.controlWidget).subscribe(
       (response: any) => {
         this.isCreateWidgetAPILoading = false;
         this.toasterService.showSuccess(response.message, 'Create Control Widget');
@@ -160,7 +162,7 @@ export class DeviceTypeControlWidgetsComponent implements OnInit {
         this.isCreateWidgetAPILoading = false;
         this.toasterService.showError(error.message, 'Create Control Widget');
       }
-    );
+    ));
   }
 
 
@@ -169,7 +171,7 @@ export class DeviceTypeControlWidgetsComponent implements OnInit {
       app: this.deviceType.app,
       id: this.selectedWidget.id
     };
-    this.deviceTypeService.deleteThingsModelControlWidget(obj).subscribe(
+    this.subscriptions.push(this.deviceTypeService.deleteThingsModelControlWidget(obj).subscribe(
       (response: any) => {
         this.isCreateWidgetAPILoading = false;
         this.toasterService.showSuccess(response.message, 'Delete Control Widget');
@@ -179,7 +181,7 @@ export class DeviceTypeControlWidgetsComponent implements OnInit {
         this.isCreateWidgetAPILoading = false;
         this.toasterService.showError(error.message, 'Delete Control Widget');
       }
-    );
+    ));
   }
 
   openConfirmModal(widget) {
@@ -196,6 +198,10 @@ export class DeviceTypeControlWidgetsComponent implements OnInit {
     this.controlWidget = {};
     $('#createWidgetModal').modal('hide');
     this.viewType = undefined;
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

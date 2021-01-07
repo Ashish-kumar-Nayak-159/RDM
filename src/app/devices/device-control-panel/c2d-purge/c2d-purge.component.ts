@@ -1,4 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { Device } from 'src/app/models/device.model';
 import { ToasterService } from './../../../services/toaster.service';
@@ -12,7 +13,7 @@ declare var $: any;
   templateUrl: './c2d-purge.component.html',
   styleUrls: ['./c2d-purge.component.css']
 })
-export class C2dPurgeComponent implements OnInit {
+export class C2dPurgeComponent implements OnInit, OnDestroy {
 
   messageCount: number;
   @Input() device: Device = new Device();
@@ -20,6 +21,7 @@ export class C2dPurgeComponent implements OnInit {
   appName: string;
   pageType: string;
   modalConfig: { isDisplaySave: boolean; isDisplayCancel: boolean; saveBtnText: string; cancelBtnText: string; stringDisplay: boolean; };
+  subscriptions: Subscription[] = [];
   constructor(
     private deviceService: DeviceService,
     private toasterServie: ToasterService,
@@ -44,11 +46,11 @@ export class C2dPurgeComponent implements OnInit {
     }
     params = params.set('device_id', deviceId);
 
-    this.deviceService.getQueueMessagesCount(params, this.appName).subscribe(
+    this.subscriptions.push(this.deviceService.getQueueMessagesCount(params, this.appName).subscribe(
       (response: any) => {
         this.messageCount = response.count;
       }
-    );
+    ));
   }
 
   openConfirmDialog() {
@@ -78,12 +80,16 @@ export class C2dPurgeComponent implements OnInit {
     }
     params = params.set('device_id', deviceId);
     // params = params.set('app', this.appName);
-    this.deviceService.purgeQueueMessages(params, this.appName).subscribe(
+    this.subscriptions.push(this.deviceService.purgeQueueMessages(params, this.appName).subscribe(
       (response: any) => {
         this.toasterServie.showSuccess(response.message, 'Purge Messages');
         this.verifyQueueMessages();
       }, error => this.toasterServie.showError(error.message, 'Purge messages')
-    );
+    ));
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

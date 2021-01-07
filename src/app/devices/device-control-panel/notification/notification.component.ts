@@ -116,11 +116,11 @@ export class NotificationComponent implements OnInit, OnDestroy {
         app: dataobj.app,
         id: dataobj.id
       };
-      this.deviceService.getDeviceMessageById(obj, 'notification').subscribe(
+      this.apiSubscriptions.push(this.deviceService.getDeviceMessageById(obj, 'notification').subscribe(
         (response: any) => {
           resolve(response.message);
         }
-      );
+      ));
     });
   }
 

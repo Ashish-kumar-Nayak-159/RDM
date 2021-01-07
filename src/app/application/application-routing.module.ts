@@ -12,7 +12,8 @@ const routes: Routes = [
 
   {
     path: 'selection',
-    component: ApplicationSelectionComponent
+    component: ApplicationSelectionComponent,
+    canActivate: [AuthGuardService]
   },
   {
     path: ':applicationId',

@@ -1,37 +1,48 @@
+import { Subscription } from 'rxjs';
+import { DeviceTypeService } from './../../services/device-type/device-type.service';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from './../../services/common.service';
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
+import { DeviceService } from 'src/app/services/devices/device.service';
 
 @Component({
   selector: 'app-application-selection',
   templateUrl: './application-selection.component.html',
   styleUrls: ['./application-selection.component.css']
 })
-export class ApplicationSelectionComponent implements OnInit {
+export class ApplicationSelectionComponent implements OnInit, OnDestroy {
 
   userData: any;
   constantData = CONSTANTS;
   blobToken = environment.blobKey;
   applicationData: any;
+  apiSubscriptions: Subscription[] = [];
   constructor(
     private commonService: CommonService,
     private router: Router,
-    private applicationService: ApplicationService
+    private applicationService: ApplicationService,
+    private deviceService: DeviceService,
+    private deviceTypeService: DeviceTypeService
   ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     console.log(this.userData.apps);
+    localStorage.removeItem(CONSTANTS.DASHBOARD_ALERT_SELECTION);
+    localStorage.removeItem(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION);
     localStorage.removeItem(CONSTANTS.SELECTED_APP_DATA);
+    localStorage.removeItem(CONSTANTS.DEVICES_LIST);
+    localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
   }
 
   async redirectToApp(app) {
-    localStorage.removeItem(CONSTANTS.DASHBOARD_ALERT_SELECTION);
-    localStorage.removeItem(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION);
+
     await this.getApplicationData(app);
+    await this.getDevices(this.applicationData.user.hierarchy);
+    await this.getDeviceModels(this.applicationData.user.hierarchy);
     this.commonService.refreshSideMenuData.emit(this.applicationData);
     const menu = this.applicationData.configuration.main_menu.length > 0 ?
     this.applicationData.configuration.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
@@ -43,16 +54,51 @@ export class ApplicationSelectionComponent implements OnInit {
         console.log(url);
         if (menuObj.url?.includes(':appName')) {
           url = menuObj.url.replace(':appName', this.applicationData.app);
+          console.log(url);
           this.router.navigateByUrl(url);
         }
       }
     });
   }
 
+  getDevices(hierarchy) {
+    return new Promise((resolve) => {
+      const obj = {
+        hierarchy: JSON.stringify(hierarchy),
+        type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
+      };
+      this.apiSubscriptions.push(this.deviceService.getAllDevicesList(obj, this.applicationData.app).subscribe(
+        (response: any) => {
+          if (response?.data) {
+            this.commonService.setItemInLocalStorage(CONSTANTS.DEVICES_LIST, response.data);
+          }
+          resolve();
+        }
+      ));
+    });
+  }
+
+  getDeviceModels(hierarchy) {
+    return new Promise((resolve) => {
+      const obj = {
+        hierarchy: JSON.stringify(hierarchy),
+        app: this.applicationData.app
+      };
+      this.apiSubscriptions.push(this.deviceTypeService.getThingsModelsList(obj).subscribe(
+        (response: any) => {
+          if (response?.data) {
+            this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_MODELS_LIST, response.data);
+          }
+          resolve();
+        }
+      ));
+    });
+  }
+
   getApplicationData(app) {
     return new Promise((resolve) => {
     this.applicationData = undefined;
-    this.applicationService.getApplicationDetail(app.app).subscribe(
+    this.apiSubscriptions.push(this.applicationService.getApplicationDetail(app.app).subscribe(
       (response: any) => {
           this.applicationData = response;
           this.applicationData.app = app.app;
@@ -72,7 +118,11 @@ export class ApplicationSelectionComponent implements OnInit {
           console.log(JSON.stringify(this.applicationData));
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
           resolve();
-      });
+      }));
     });
+  }
+
+  ngOnDestroy() {
+    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
   }
 }

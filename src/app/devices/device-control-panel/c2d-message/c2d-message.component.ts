@@ -107,7 +107,7 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
     }
     this.selectedMessage = message;
     this.c2dMessageDetail = undefined;
-    this.deviceService.getC2dMessageJSON(message.message_id, this.appName).subscribe(
+    this.apiSubscriptions.push(this.deviceService.getC2dMessageJSON(message.message_id, this.appName).subscribe(
       (response: any) => {
         if (openModalFlag) {
         this.c2dMessageDetail = response;
@@ -120,7 +120,7 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
           this.isC2dMsgsLoading = false;
         }
       }, error => this.isC2dMsgsLoading = false
-    );
+    ));
   }
 
   loadResponseDetail(message, openModalFlag) {
@@ -130,7 +130,7 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
     this.selectedMessage = message;
     this.c2dResponseDetail = [];
     if (this.type !== 'response' || !openModalFlag) {
-      this.deviceService.getC2dResponseJSON(message.message_id, this.appName).subscribe(
+      this.apiSubscriptions.push(this.deviceService.getC2dResponseJSON(message.message_id, this.appName).subscribe(
         (response: any) => {
           if (response.data) {
             if (openModalFlag) {
@@ -145,7 +145,7 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
             }
           }
         }, error => this.isC2dMsgsLoading = false
-      );
+      ));
     } else if (this.type === 'response' && openModalFlag){
       this.c2dResponseDetail = message.message;
       this.openC2DMessageModal();

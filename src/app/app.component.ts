@@ -14,7 +14,7 @@ declare var $: any;
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   title = 'RDM';
   isLoginRoute = false;
   isHomeRoute = false;
@@ -22,6 +22,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   url: any;
   applicationData: any;
   signalRAlertSubscription: Subscription;
+  apiSubscriptions: Subscription[] = [];
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -120,7 +121,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   getApplicationData(app) {
     return new Promise((resolve) => {
     this.applicationData = undefined;
-    this.applicationService.getApplicationDetail(app.app).subscribe(
+    this.apiSubscriptions.push(this.applicationService.getApplicationDetail(app.app).subscribe(
       (response: any) => {
           this.applicationData = response;
           this.applicationData.app = app.app;
@@ -138,8 +139,12 @@ export class AppComponent implements OnInit, AfterViewInit {
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
           resolve();
-      });
+      }));
     });
+  }
+
+  ngOnDestroy() {
+    this.apiSubscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
 

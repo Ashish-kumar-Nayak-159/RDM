@@ -119,11 +119,11 @@ export class RDMDeviceControlPanelErrorComponent implements OnInit, OnDestroy {
         app: dataobj.app,
         id: dataobj.id
       };
-      this.deviceService.getDeviceMessageById(obj, 'error').subscribe(
+      this.apiSubscriptions.push(this.deviceService.getDeviceMessageById(obj, 'error').subscribe(
         (response: any) => {
           resolve(response.message);
         }
-      );
+      ));
     });
   }
 

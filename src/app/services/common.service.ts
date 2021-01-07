@@ -141,6 +141,9 @@ export class CommonService {
   onLogOut() {
     localStorage.clear();
     this.signalRService.disconnectFromSignalR('all');
-    this.router.navigate(['']);
+    this.router.navigate(['']).then(() => {
+      location.reload();
+    });
+
   }
 }

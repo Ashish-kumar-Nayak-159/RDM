@@ -108,11 +108,11 @@ export class GatewayCachedAlertsComponent implements OnInit {
         app: dataobj.app,
         id: dataobj.id
       };
-      this.deviceService.getDeviceMessageById(obj, 'heartbeat').subscribe(
+      this.apiSubscriptions.push(this.deviceService.getDeviceMessageById(obj, 'heartbeat').subscribe(
         (response: any) => {
           resolve(response.message);
         }
-      );
+      ));
     });
   }
 

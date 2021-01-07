@@ -1,6 +1,7 @@
+import { Subscription } from 'rxjs';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { DeviceTypeService } from './../../services/device-type/device-type.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DeviceListFilter, Device } from 'src/app/models/device.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DeviceService } from './../../services/devices/device.service';
@@ -14,7 +15,7 @@ declare var $: any;
   templateUrl: './device-list.component.html',
   styleUrls: ['./device-list.component.css']
 })
-export class DeviceListComponent implements OnInit {
+export class DeviceListComponent implements OnInit, OnDestroy {
 
   deviceFilterObj: DeviceListFilter = new DeviceListFilter();
   originalDeviceFilterObj: DeviceListFilter = new DeviceListFilter();
@@ -43,6 +44,7 @@ export class DeviceListComponent implements OnInit {
   configureHierarchy = {};
   addDeviceHierarchyArr = {};
   addDeviceConfigureHierarchy = {};
+  subscriptions: Subscription[] = [];
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -324,13 +326,13 @@ export class DeviceListComponent implements OnInit {
       model_type: type
     };
     console.log(obj);
-    this.deviceTypeService.getThingsModelsList(obj).subscribe(
+    this.subscriptions.push(this.deviceTypeService.getThingsModelsList(obj).subscribe(
       (response: any) => {
         if (response && response.data) {
           this.deviceTypes = response.data;
         }
       }
-    );
+    ));
   }
 
 
@@ -342,14 +344,14 @@ export class DeviceListComponent implements OnInit {
       category: CONSTANTS.IP_GATEWAY,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy)
     };
-    this.deviceService.getDeviceList(obj).subscribe(
+    this.subscriptions.push(this.deviceService.getDeviceList(obj).subscribe(
       (response: any) => {
         if (response.data) {
           this.gateways = response.data;
           this.originalGateways = JSON.parse(JSON.stringify(this.gateways));
         }
       }
-    );
+    ));
   }
 
   searchDevices() {
@@ -373,7 +375,7 @@ export class DeviceListComponent implements OnInit {
     const methodToCall = this.componentState === CONSTANTS.NON_IP_DEVICE
     ? this.deviceService.getNonIPDeviceList(obj)
     : this.deviceService.getDeviceList(obj);
-    methodToCall.subscribe(
+    this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         if (response.data) {
           this.devicesList = response.data;
@@ -394,7 +396,7 @@ export class DeviceListComponent implements OnInit {
         this.isDeviceListLoading = false;
       }, error => {
         this.isDeviceListLoading = false;
-    });
+    }));
   }
 
   clearFilter() {
@@ -473,7 +475,7 @@ export class DeviceListComponent implements OnInit {
     const methodToCall = this.componentState === CONSTANTS.NON_IP_DEVICE
     ? this.deviceService.createNonIPDevice(this.deviceDetail, this.contextApp.app)
     : this.deviceService.createDevice(this.deviceDetail, this.contextApp.app);
-    methodToCall.subscribe(
+    this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         this.isCreateDeviceAPILoading = false;
         this.toasterService.showSuccess(response.message,
@@ -486,7 +488,7 @@ export class DeviceListComponent implements OnInit {
           'Create ' + this.pageType);
         // this.onCloseCreateDeviceModal();
       }
-    );
+    ));
   }
 
   onTableFunctionCall(obj) {
@@ -514,5 +516,9 @@ export class DeviceListComponent implements OnInit {
   onCloseCreateDeviceModal() {
     $('#createDeviceModal').modal('hide');
     this.deviceDetail = undefined;
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

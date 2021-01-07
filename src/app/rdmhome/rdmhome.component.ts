@@ -1,3 +1,4 @@
+import { Subscription } from 'rxjs';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
@@ -12,6 +13,7 @@ declare var $: any;
 export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
   userData: any;
   applicationData: any;
+  subscriptions: Subscription[] = [];
   constructor(
     private router: Router,
     private commonService: CommonService,
@@ -64,7 +66,7 @@ export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
   getApplicationData(app) {
     return new Promise((resolve) => {
     this.applicationData = undefined;
-    this.applicationService.getApplicationDetail(app.app).subscribe(
+    this.subscriptions.push(this.applicationService.getApplicationDetail(app.app).subscribe(
       (response: any) => {
           this.applicationData = response;
           this.applicationData.app = app.app;
@@ -82,7 +84,7 @@ export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
           resolve();
-      });
+      }));
     });
   }
 

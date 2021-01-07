@@ -1,7 +1,7 @@
 import { ColumnChartComponent } from 'src/app/common/charts/column-chart/column-chart.component';
 import { ChartService } from './../../../chart/chart.service';
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
-import { Component, OnInit, Input, ComponentFactoryResolver, ApplicationRef, Injector, EmbeddedViewRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ComponentFactoryResolver, ApplicationRef, Injector, EmbeddedViewRef, ViewChild, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DeviceService } from './../../../services/devices/device.service';
 import { CommonService } from 'src/app/services/common.service';
@@ -19,7 +19,7 @@ declare var $: any;
   templateUrl: './history.component.html',
   styleUrls: ['./history.component.css']
 })
-export class HistoryComponent implements OnInit {
+export class HistoryComponent implements OnInit, OnDestroy {
 
   historyFilter: any = {};
   apiSubscriptions: Subscription[] = [];
@@ -113,12 +113,12 @@ export class HistoryComponent implements OnInit {
         app: this.contextApp.app,
         name: this.device.tags.device_type
       };
-      this.deviceTypeService.getThingsModelProperties(obj).subscribe(
+      this.apiSubscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           resolve();
         }
-      );
+      ));
     });
   }
 
@@ -499,5 +499,9 @@ export class HistoryComponent implements OnInit {
     if (e === [] || e.length === 0) {
       this.y2AxisProp = [];
     }
+  }
+
+  ngOnDestroy() {
+    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
   }
 }

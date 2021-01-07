@@ -117,11 +117,11 @@ export class AlertsComponent implements OnInit, OnDestroy {
         app: alert.app,
         id: alert.id
       };
-      this.deviceService.getDeviceMessageById(obj, 'alert').subscribe(
+      this.apiSubscriptions.push(this.deviceService.getDeviceMessageById(obj, 'alert').subscribe(
         (response: any) => {
           resolve(response.message);
         }
-      );
+      ));
     });
   }
 

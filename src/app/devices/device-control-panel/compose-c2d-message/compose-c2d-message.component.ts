@@ -30,7 +30,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
   displayType: string;
   sentMessageData: any;
   remainingTime: any;
-  apiSubscription: Subscription[] = [];
+  subscriptions: Subscription[] = [];
   timerInterval: any;
   appName: any;
   timerObj: any;
@@ -74,14 +74,14 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
       gateway_id: this.device.device_id,
       app: this.appName
     };
-    this.deviceService.getNonIPDeviceList(obj).subscribe(
+    this.subscriptions.push(this.deviceService.getNonIPDeviceList(obj).subscribe(
       (response: any) => {
         if (response && response.data) {
           this.devices = response.data;
           this.c2dMessageData.device_id = this.devices.length > 0 ? this.devices[0].device_id : undefined;
         }
       }, errror => {}
-    );
+    ));
   }
 
   validateMessage() {
@@ -124,7 +124,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
       return;
     }
     this.isSendC2DMessageAPILoading = true;
-    this.deviceService.sendC2DMessage(this.sentMessageData, this.appName).subscribe(
+    this.subscriptions.push(this.deviceService.sendC2DMessage(this.sentMessageData, this.appName).subscribe(
       (response: any) => {
         this.isMessageValidated = undefined;
         this.sendMessageResponse = 'Successfully sent.';
@@ -143,7 +143,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
         this.isSendC2DMessageAPILoading = false;
         this.sentMessageData = undefined;
       }
-    );
+    ));
   }
 
   verifyQueueMessages() {
@@ -151,23 +151,23 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
     let params = new HttpParams();
     params = params.set(this.device.tags.category === CONSTANTS.IP_GATEWAY ? 'gateway_id' : 'device_id', this.device.device_id);
     // params = params.set('app', this.appName);
-    this.deviceService.getQueueMessagesCount(params, this.appName).subscribe(
+    this.subscriptions.push(this.deviceService.getQueueMessagesCount(params, this.appName).subscribe(
       (response: any) => {
         this.noOfMessageInQueue = response.count;
       }
-    );
+    ));
   }
 
   purgeQueueMessages() {
     let params = new HttpParams();
     params = params.set(this.device.tags.category === CONSTANTS.IP_GATEWAY ? 'gateway_id' : 'device_id', this.device.device_id);
     // params = params.set('app', this.appName);
-    this.deviceService.purgeQueueMessages(params, this.appName).subscribe(
+    this.subscriptions.push(this.deviceService.purgeQueueMessages(params, this.appName).subscribe(
       response => {
         this.toasterService.showSuccess('Messages purged successfully', 'Purge Messages');
         this.verifyQueueMessages();
       }, error => this.toasterService.showError('Error in purging messages', 'Purge messages')
-    );
+    ));
   }
 
   onClickOfFeedback() {
@@ -222,6 +222,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     clearInterval(this.messageIdInterval);
     clearInterval(this.timerInterval);
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

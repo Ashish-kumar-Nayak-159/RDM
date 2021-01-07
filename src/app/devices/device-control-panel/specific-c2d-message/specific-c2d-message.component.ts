@@ -29,7 +29,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
   displayType: string;
   sentMessageData: any;
   remainingTime: any;
-  apiSubscription: Subscription[] = [];
+  apiSubscriptions: Subscription[] = [];
   timerInterval: any;
   appName: any;
   timerObj: any;
@@ -80,7 +80,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
       app: this.appName,
       device_type: this.device.tags?.device_type
     };
-    this.deviceTypeService.getThingsModelControlWidgets(obj).subscribe(
+    this.apiSubscriptions.push(this.deviceTypeService.getThingsModelControlWidgets(obj).subscribe(
       (response: any) => {
         if (response?.data) {
           response.data.forEach(item => item.type = 'control_widget');
@@ -88,7 +88,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
           this.getThingsModelDeviceMethod();
         }
       }
-    );
+    ));
   }
 
   getThingsModelDeviceMethod() {
@@ -97,12 +97,12 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
       app: this.appName,
       name: this.device.tags?.device_type
     };
-    this.deviceTypeService.getThingsModelDeviceMethods(obj).subscribe(
+    this.apiSubscriptions.push(this.deviceTypeService.getThingsModelDeviceMethods(obj).subscribe(
       (response: any) => {
         response.device_methods.forEach(item => item.type = 'device_method');
         this.controlWidgets = [...response.device_methods, ...this.controlWidgets];
       }
-    );
+    ));
   }
 
   onSwitchValueChange(event, index) {
@@ -146,14 +146,14 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
       gateway_id: this.device.device_id,
       app: this.appName
     };
-    this.deviceService.getNonIPDeviceList(obj).subscribe(
+    this.apiSubscriptions.push(this.deviceService.getNonIPDeviceList(obj).subscribe(
       (response: any) => {
         if (response && response.data) {
           this.devices = response.data;
           this.c2dMessageData.device_id = this.devices.length > 0 ? this.devices[0].device_id : undefined;
         }
       }, errror => {}
-    );
+    ));
   }
 
   validateMessage() {
@@ -213,7 +213,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     }
     this.isSendC2DMessageAPILoading = true;
     console.log(this.sentMessageData);
-    this.deviceService.sendC2DMessage(this.sentMessageData, this.appName).subscribe(
+    this.apiSubscriptions.push(this.deviceService.sendC2DMessage(this.sentMessageData, this.appName).subscribe(
       (response: any) => {
         this.isMessageValidated = undefined;
         this.sendMessageResponse = 'Successfully sent.';
@@ -232,7 +232,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
         this.isSendC2DMessageAPILoading = false;
         this.sentMessageData = undefined;
       }
-    );
+    ));
   }
 
   verifyQueueMessages() {
@@ -240,23 +240,23 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     let params = new HttpParams();
     params = params.set(this.device.tags.category === CONSTANTS.IP_GATEWAY ? 'gateway_id' : 'device_id', this.device.device_id);
     // params = params.set('app', this.appName);
-    this.deviceService.getQueueMessagesCount(params, this.appName).subscribe(
+    this.apiSubscriptions.push(this.deviceService.getQueueMessagesCount(params, this.appName).subscribe(
       (response: any) => {
         this.noOfMessageInQueue = response.count;
       }
-    );
+    ));
   }
 
   purgeQueueMessages() {
     let params = new HttpParams();
     params = params.set(this.device.tags.category === CONSTANTS.IP_GATEWAY ? 'gateway_id' : 'device_id', this.device.device_id);
     // params = params.set('app', this.appName);
-    this.deviceService.purgeQueueMessages(params, this.appName).subscribe(
+    this.apiSubscriptions.push(this.deviceService.purgeQueueMessages(params, this.appName).subscribe(
       response => {
         this.toasterService.showSuccess('Messages purged successfully', 'Purge Messages');
         this.verifyQueueMessages();
       }, error => this.toasterService.showError('Error in purging messages', 'Purge messages')
-    );
+    ));
   }
 
   onClickOfFeedback() {
@@ -311,6 +311,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     clearInterval(this.messageIdInterval);
     clearInterval(this.timerInterval);
+    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
 

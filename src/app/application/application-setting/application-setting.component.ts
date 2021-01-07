@@ -1,22 +1,24 @@
 import { filter } from 'rxjs/operators';
 import { CONSTANTS } from './../../app.constants';
 import { CommonService } from './../../services/common.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ApplicationService } from 'src/app/services/application/application.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-application-setting',
   templateUrl: './application-setting.component.html',
   styleUrls: ['./application-setting.component.css']
 })
-export class ApplicationSettingComponent implements OnInit {
+export class ApplicationSettingComponent implements OnInit, OnDestroy {
 
   applicationData: any;
   activeTab: string;
   contextApp: any;
   userData: any;
   isApplicationDataLoading = false;
+  apiSubscriptions: Subscription[] = [];
   constructor(
     private route: ActivatedRoute,
     private applicationService: ApplicationService,
@@ -48,15 +50,15 @@ export class ApplicationSettingComponent implements OnInit {
       }
     );
 
-    this.applicationService.refreshAppData.subscribe(() => {
+    this.apiSubscriptions.push(this.applicationService.refreshAppData.subscribe(() => {
       this.getApplicationData();
-    });
+    }));
   }
 
   getApplicationData() {
     this.isApplicationDataLoading = true;
     this.applicationData = undefined;
-    this.applicationService.getApplicationDetail(this.contextApp.app).subscribe(
+    this.apiSubscriptions.push(this.applicationService.getApplicationDetail(this.contextApp.app).subscribe(
       (response: any) => {
           this.applicationData = response;
           this.applicationData.user = this.contextApp.user;
@@ -66,11 +68,15 @@ export class ApplicationSettingComponent implements OnInit {
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.contextApp);
           this.isApplicationDataLoading = false;
       }, error => this.isApplicationDataLoading = false
-    );
+    ));
   }
 
   setActiveTab(tab) {
     this.activeTab = tab;
     window.location.hash = tab;
+  }
+
+  ngOnDestroy() {
+    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
   }
 }

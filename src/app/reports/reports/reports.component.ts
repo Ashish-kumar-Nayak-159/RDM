@@ -5,19 +5,20 @@ import { DeviceService } from './../../services/devices/device.service';
 import { ApplicationService } from './../../services/application/application.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonService } from './../../services/common.service';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { CONSTANTS } from 'src/app/app.constants';
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-reports',
   templateUrl: './reports.component.html',
   styleUrls: ['./reports.component.css']
 })
-export class ReportsComponent implements OnInit {
+export class ReportsComponent implements OnInit, OnDestroy {
 
   userData: any;
   filterObj: any = {};
@@ -43,6 +44,7 @@ export class ReportsComponent implements OnInit {
   selectedProps: any[] = [];
   newFilterObj: any;
   tileData: any;
+  subscriptions: Subscription[] = [];
   @ViewChild('dtInput1', {static: false}) dtInput1: any;
   @ViewChild('dtInput2', {static: false}) dtInput2: any;
 
@@ -117,7 +119,7 @@ export class ReportsComponent implements OnInit {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
       };
-      this.deviceService.getAllDevicesList(obj, this.contextApp.app).subscribe(
+      this.subscriptions.push(this.deviceService.getAllDevicesList(obj, this.contextApp.app).subscribe(
         (response: any) => {
           if (response?.data) {
             this.devices = response.data;
@@ -128,7 +130,7 @@ export class ReportsComponent implements OnInit {
           }
           resolve();
         }
-      );
+      ));
     });
   }
 
@@ -304,7 +306,7 @@ export class ReportsComponent implements OnInit {
         app: this.contextApp.app,
         name: deviceType
       };
-      this.deviceTypeService.getThingsModelProperties(obj).subscribe(
+      this.subscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           this.dropdownPropList = [];
@@ -318,7 +320,7 @@ export class ReportsComponent implements OnInit {
           this.props = [...this.dropdownPropList];
           resolve();
         }
-      );
+      ));
     });
   }
 
@@ -379,14 +381,14 @@ export class ReportsComponent implements OnInit {
   }
 
   getAlertData(obj) {
-    this.deviceService.getDeviceAlerts(obj).subscribe(
+    this.subscriptions.push(this.deviceService.getDeviceAlerts(obj).subscribe(
       (response: any) => {
         this.latestAlerts = response.data;
         this.latestAlerts.reverse();
         this.latestAlerts.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false
-    );
+    ));
   }
 
   async getTelemetryData(filterObj) {
@@ -439,7 +441,7 @@ export class ReportsComponent implements OnInit {
     }
     this.isTelemetryLoading = true;
     this.isFilterSelected = true;
-    method.subscribe(
+    this.subscriptions.push(method.subscribe(
       (response: any) => {
         if (response && response.data) {
           this.telemetry = response.data;
@@ -448,7 +450,7 @@ export class ReportsComponent implements OnInit {
         }
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false
-    );
+    ));
   }
 
   y1Deselect(e){
@@ -547,6 +549,10 @@ export class ReportsComponent implements OnInit {
     /* save to file */
     XLSX.writeFile(wb, (this.filterObj.device.display_name ? this.filterObj.device.display_name : this.filterObj.device.device_id)
       + '_' + this.filterObj.report_type + '_' + now + '.xlsx');
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

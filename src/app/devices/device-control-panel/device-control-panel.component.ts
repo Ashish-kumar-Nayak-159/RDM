@@ -1,5 +1,6 @@
+import { Subscription } from 'rxjs';
 import { ApplicationService } from 'src/app/services/application/application.service';
-import { Component, OnInit, Inject, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Inject, AfterViewInit, OnDestroy } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { Device } from 'src/app/models/device.model';
@@ -12,7 +13,7 @@ declare var $: any;
   templateUrl: './device-control-panel.component.html',
   styleUrls: ['./device-control-panel.component.css']
 })
-export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
+export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDestroy {
 
   activeTab: string;
   device: Device;
@@ -25,6 +26,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
   contextApp: any;
   menuItems: any[] = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
   tileData: any;
+  subscriptions: Subscription[] = [];
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private deviceService: DeviceService,
@@ -76,11 +78,11 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
         }
       }
     );
-    this.deviceService.reloadDeviceInControlPanelEmitter.subscribe(
+    this.subscriptions.push(this.deviceService.reloadDeviceInControlPanelEmitter.subscribe(
       () => {
         this.getDeviceDetail(true);
       }
-    );
+    ));
   }
 
   getTileName() {
@@ -192,7 +194,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
     } else {
       methodToCall = this.deviceService.getDeviceData(this.device.device_id, this.contextApp.app);
     }
-    methodToCall.subscribe(
+    this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
           if (response && response.data) {
@@ -224,17 +226,21 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit {
           );
         }
       }, () => this.isDeviceDataLoading = false
-    );
+    ));
   }
 
   getDeviceTags(obj) {
     return new Promise((resolve) => {
-      this.deviceService.getNonIPDeviceTags(obj).subscribe(
+      this.subscriptions.push(this.deviceService.getNonIPDeviceTags(obj).subscribe(
         (response: any) => {
           this.tagsObj = response.tags;
           resolve();
         }
-      );
+      ));
     });
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

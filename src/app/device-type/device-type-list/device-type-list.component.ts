@@ -1,8 +1,9 @@
+import { Subscription } from 'rxjs';
 import { ToasterService } from './../../services/toaster.service';
 import { CONSTANTS } from './../../app.constants';
 import { DeviceTypeService } from './../../services/device-type/device-type.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { ApplicationService } from 'src/app/services/application/application.service';
 
@@ -12,7 +13,7 @@ declare var $: any;
   templateUrl: './device-type-list.component.html',
   styleUrls: ['./device-type-list.component.css']
 })
-export class DeviceTypeListComponent implements OnInit {
+export class DeviceTypeListComponent implements OnInit, OnDestroy {
 
   thingsModels: any[] = [];
   thingsModel: any;
@@ -29,6 +30,7 @@ export class DeviceTypeListComponent implements OnInit {
   isFileUploading = false;
   originalThingsModelFilterObj: any;
   tileData: any;
+  subscriptions: Subscription[] = [];
   constructor(
     private deviceTypeService: DeviceTypeService,
     private commonService: CommonService,
@@ -127,14 +129,14 @@ export class DeviceTypeListComponent implements OnInit {
     this.isFilterSelected = true;
     this.thingsModels = [];
     const obj = JSON.parse(JSON.stringify(this.thingsModelFilterObj));
-    this.deviceTypeService.getThingsModelsList(obj).subscribe(
+    this.subscriptions.push(this.deviceTypeService.getThingsModelsList(obj).subscribe(
       (response: any) => {
         if (response && response.data) {
           this.thingsModels = response.data;
         }
         this.isthingsModelsListLoading = false;
       }, error => this.isthingsModelsListLoading = false
-    );
+    ));
   }
 
   clearFilter() {
@@ -211,7 +213,7 @@ export class DeviceTypeListComponent implements OnInit {
     }
     console.log(this.thingsModel);
     this.isCreateThingsModelAPILoading = true;
-    this.deviceTypeService.createThingsModel(this.thingsModel, this.contextApp.app).subscribe(
+    this.subscriptions.push(this.deviceTypeService.createThingsModel(this.thingsModel, this.contextApp.app).subscribe(
       (response: any) => {
         this.isCreateThingsModelAPILoading = false;
         this.onCloseThingsModelModal();
@@ -221,13 +223,17 @@ export class DeviceTypeListComponent implements OnInit {
         this.isCreateThingsModelAPILoading = false;
         this.toasterService.showError(error.message, 'Create Things Model');
       }
-    );
+    ));
   }
 
 
   onCloseThingsModelModal() {
     $('#createDeviceTypeModal').modal('hide');
     this.thingsModel = undefined;
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

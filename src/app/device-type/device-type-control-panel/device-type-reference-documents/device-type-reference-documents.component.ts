@@ -1,8 +1,9 @@
+import { Subscription } from 'rxjs';
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
 import { environment } from './../../../../environments/environment.prod';
 import { CONSTANTS } from 'src/app/app.constants';
 import { ToasterService } from './../../../services/toaster.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { FileSaverService } from 'ngx-filesaver';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -13,7 +14,7 @@ declare var $: any;
   templateUrl: './device-type-reference-documents.component.html',
   styleUrls: ['./device-type-reference-documents.component.css']
 })
-export class DeviceTypeReferenceDocumentsComponent implements OnInit {
+export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy {
 
   @Input() deviceType: any;
   documents: any[] = [];
@@ -24,7 +25,7 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit {
   isFileUploading = false;
   sasToken = environment.blobKey;
   selectedDocument: any;
-
+  subscriptions: Subscription[] = [];
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -96,14 +97,14 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit {
       app: this.deviceType.app,
       device_type: this.deviceType.name
     };
-    this.deviceTypeService.getThingsModelDocuments(obj).subscribe(
+    this.subscriptions.push(this.deviceTypeService.getThingsModelDocuments(obj).subscribe(
       (response: any) => {
         if (response?.data) {
           this.documents = response.data;
         }
         this.isDocumentsLoading = false;
       }
-    );
+    ));
   }
 
   openAddDocumentModal() {
@@ -134,11 +135,11 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit {
     // link.click();
     // link.remove();
     const url = fileObj.url + this.sasToken;
-    this.commonService.getFileData(url).subscribe(
+    this.subscriptions.push(this.commonService.getFileData(url).subscribe(
       response => {
         this.fileSaverService.save(response, fileObj.name);
       }
-    );
+    ));
   }
 
   sanitizeURL() {
@@ -172,7 +173,7 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit {
   }
 
   deleteDocument() {
-    this.deviceTypeService.deleteThingsModelDocument(this.selectedDocument.id, this.deviceType.app, this.deviceType.name).
+    this.subscriptions.push(this.deviceTypeService.deleteThingsModelDocument(this.selectedDocument.id, this.deviceType.app, this.deviceType.name).
       subscribe((response: any) => {
         this.toasterService.showSuccess(response.message, 'Remove Document');
         this.closeModal('confirmMessageModal');
@@ -180,13 +181,13 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit {
       }, error => {
         this.toasterService.showSuccess(error.message, 'Remove Document');
         this.closeModal('confirmMessageModal');
-      });
+      }));
   }
 
   onSaveDocumentObj() {
     console.log(JSON.stringify(this.documentObj));
     this.isCreateDocumentLoading = true;
-    this.deviceTypeService.createThingsModelDocument(this.documentObj,
+    this.subscriptions.push(this.deviceTypeService.createThingsModelDocument(this.documentObj,
       this.deviceType.app, this.deviceType.name).subscribe(
         (response: any) => {
           this.toasterService.showSuccess(response.message, 'Add Document');
@@ -197,7 +198,11 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit {
           this.toasterService.showSuccess(error.message, 'Add Document');
           this.isCreateDocumentLoading = false;
         }
-    );
+    ));
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

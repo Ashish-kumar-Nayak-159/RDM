@@ -1,7 +1,8 @@
+import { Subscription } from 'rxjs';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { CONSTANTS } from 'src/app/app.constants';
 import { DeviceTypeService } from './../../services/device-type/device-type.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonService } from 'src/app/services/common.service';
 
@@ -11,7 +12,7 @@ declare var $: any;
   templateUrl: './device-type-control-panel.component.html',
   styleUrls: ['./device-type-control-panel.component.css']
 })
-export class DeviceTypeControlPanelComponent implements OnInit {
+export class DeviceTypeControlPanelComponent implements OnInit, OnDestroy {
 
   deviceType: any;
   isDeviceTypeDataLoading = false;
@@ -19,6 +20,7 @@ export class DeviceTypeControlPanelComponent implements OnInit {
   menuItems: any[] = CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST;
   contextApp: any;
   userData: any;
+  subscriptions: Subscription[] = [];
   constructor(
     private route: ActivatedRoute,
     private deviceTypeService: DeviceTypeService,
@@ -127,7 +129,7 @@ export class DeviceTypeControlPanelComponent implements OnInit {
       name: deviceTypeId,
       app: this.contextApp.app
     };
-    this.deviceTypeService.getThingsModelsList(obj).subscribe(
+    this.subscriptions.push(this.deviceTypeService.getThingsModelsList(obj).subscribe(
       (response: any) => {
         if (response && response.data && response.data.length > 0) {
           this.deviceType = response.data[0];
@@ -151,7 +153,10 @@ export class DeviceTypeControlPanelComponent implements OnInit {
           );
         }
       }
-    );
+    ));
   }
 
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
 }

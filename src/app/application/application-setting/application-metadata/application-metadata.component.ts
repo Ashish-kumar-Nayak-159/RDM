@@ -1,5 +1,6 @@
+import { Subscription } from 'rxjs';
 import { ToasterService } from './../../../services/toaster.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { ApplicationService } from 'src/app/services/application/application.service';
 
@@ -8,12 +9,13 @@ import { ApplicationService } from 'src/app/services/application/application.ser
   templateUrl: './application-metadata.component.html',
   styleUrls: ['./application-metadata.component.css']
 })
-export class ApplicationMetadataComponent implements OnInit {
+export class ApplicationMetadataComponent implements OnInit, OnDestroy {
 
   @Input() applicationData: any;
   isFileUploading = false;
   saveMetadataAPILoading = false;
   originalApplicationData: any;
+  apiSubscriptions: Subscription[] = [];
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -64,7 +66,7 @@ export class ApplicationMetadataComponent implements OnInit {
     this.saveMetadataAPILoading = true;
     this.applicationData.id = this.applicationData.app;
     console.log(this.applicationData);
-    this.applicationService.updateApp(this.applicationData).subscribe(
+    this.apiSubscriptions.push(this.applicationService.updateApp(this.applicationData).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Save Menu Settings');
         this.saveMetadataAPILoading = false;
@@ -74,11 +76,15 @@ export class ApplicationMetadataComponent implements OnInit {
         this.toasterService.showError(error.message, 'Save Menu Settings');
         this.saveMetadataAPILoading = false;
       }
-    );
+    ));
   }
 
   onCancelClick() {
     this.applicationData = JSON.parse(JSON.stringify(this.originalApplicationData));
+  }
+
+  ngOnDestroy() {
+    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

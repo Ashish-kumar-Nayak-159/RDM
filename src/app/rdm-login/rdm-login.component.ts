@@ -1,5 +1,6 @@
+import { Subscription } from 'rxjs';
 import { ApplicationService } from 'src/app/services/application/application.service';
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToasterService } from '../services/toaster.service';
 import { CONSTANTS } from './../app.constants';
@@ -10,7 +11,7 @@ declare var $: any;
   templateUrl: './rdm-login.component.html',
   styleUrls: ['./rdm-login.component.css']
 })
-export class RDMLoginComponent implements OnInit, AfterViewInit {
+export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
 
   loginForm: any = {};
   usersList: any[] = [];
@@ -18,6 +19,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
   isResetPassword = false;
   isLoginAPILoading = false;
   applicationData: any;
+  subscriptions: Subscription[] = [];
   constructor(
     private router: Router,
     private toasterService: ToasterService,
@@ -27,12 +29,12 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
 
   async ngOnInit(): Promise<void> {
 
-    this.commonService.resetPassword.subscribe((resetPassword: boolean) => {
+    this.subscriptions.push(this.commonService.resetPassword.subscribe((resetPassword: boolean) => {
       if (!resetPassword) {
         $('#changePasswordModal').modal('hide');
         this.loginForm.reset();
       }
-    });
+    }));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     if (this.userData) {
       if (this.userData.is_super_admin) {
@@ -65,7 +67,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
   onLogin() {
     if (this.loginForm.email && this.loginForm.password) {
       this.isLoginAPILoading = true;
-      this.commonService.loginUser(this.loginForm).subscribe(
+      this.subscriptions.push(this.commonService.loginUser(this.loginForm).subscribe(
         async (response: any) => {
           this.userData = response;
           if (response.is_super_admin) {
@@ -122,7 +124,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
           this.isLoginAPILoading = false;
           this.toasterService.showError(error.message, 'Login');
         }
-      );
+      ));
     } else {
       this.isLoginAPILoading = false;
       this.toasterService.showError('Please enter username and password', 'Login');
@@ -132,7 +134,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
   getApplicationData(app) {
     return new Promise((resolve) => {
     this.applicationData = undefined;
-    this.applicationService.getApplicationDetail(app.app).subscribe(
+    this.subscriptions.push(this.applicationService.getApplicationDetail(app.app).subscribe(
       (response: any) => {
           this.applicationData = response;
           this.applicationData.app = app.app;
@@ -150,7 +152,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit {
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
           resolve();
-      });
+      }));
     });
   }
 

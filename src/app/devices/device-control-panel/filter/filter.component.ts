@@ -45,22 +45,6 @@ export class FilterComponent implements OnInit {
     this.originalFilterObj = {...this.filterObj};
   }
 
-  getDevicesListByGateway() {
-    this.devices = [];
-    const obj = {
-      gateway_id: this.filterObj.gateway_id,
-      app: this.appName
-    };
-    this.deviceService.getNonIPDeviceList(obj).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.devices = response.data;
-          this.devices.splice(0, 0, { device_id: this.filterObj.gateway_id});
-        }
-      }, errror => {}
-    );
-  }
-
 
   onDateOptionChange() {
     if (this.filterObj.dateOption !== 'custom') {

@@ -16,6 +16,7 @@ import { LiveChartComponent } from 'src/app/common/charts/live-data/live-data.co
 import { BarChartComponent } from 'src/app/common/charts/bar-chart/bar-chart.component';
 import { ChartService } from 'src/app/chart/chart.service';
 import { SignalRService } from 'src/app/services/signalR/signal-r.service';
+import { Subscription } from 'rxjs';
 declare var $: any;
 @Component({
   selector: 'app-application-visualization',
@@ -67,6 +68,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   @ViewChild('dtInput2', {static: false}) dtInput2: any;
   toDate: any;
   fromDate: any;
+  subscriptions: Subscription[] = [];
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -108,9 +110,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
     if (this.pageType === 'live') {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.DASHBOARD_ALERT_SELECTION);
-    if (item && item.device ) {
+    if (item) {
 
-      this.filterObj = item;
+      this.filterObj = JSON.parse(JSON.stringify(item));
       this.contextApp.hierarchy.levels.forEach((level, index) => {
         if (index !== 0 && this.filterObj.device) {
         // console.log( this.filterObj.hierarchy);
@@ -184,12 +186,13 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     });
     this.devices = JSON.parse(JSON.stringify(arr));
     }
+    if (!this.filterObj.device) {
     if (this.devices?.length === 1) {
       this.filterObj.device = this.devices[0];
     } else {
       this.filterObj.device = undefined;
     }
-
+    }
     let count = 0;
     Object.keys(this.configureHierarchy).forEach(key => {
       if(this.configureHierarchy[key]) {
@@ -227,7 +230,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
       };
-      this.deviceService.getAllDevicesList(obj, this.contextApp.app).subscribe(
+      this.subscriptions.push(this.deviceService.getAllDevicesList(obj, this.contextApp.app).subscribe(
         (response: any) => {
           if (response?.data) {
             this.devices = response.data;
@@ -238,7 +241,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           }
           resolve();
         }
-      );
+      ));
     });
   }
 
@@ -345,7 +348,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       }
     }
     delete obj.dateOption;
-    this.deviceService.getDeviceAlerts(obj).subscribe(
+    this.subscriptions.push(this.deviceService.getDeviceAlerts(obj).subscribe(
       (response: any) => {
         this.latestAlerts = response.data;
         this.latestAlerts.forEach((item, i) =>  {
@@ -358,7 +361,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         if (this.pageType === 'live') {
           const obj1 = {
             levels: this.contextApp.hierarchy.levels,
-            hierarchy: JSON.parse(obj.hierarchy),
+            hierarchy: this.filterObj.device ? this.filterObj.device.hierarchy: JSON.parse(obj.hierarchy),
             type: 'alert',
             app: this.contextApp.app,
             device_id: obj.device_id,
@@ -374,7 +377,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         // }, 5000);
         }
       }, () => this.isAlertAPILoading = false
-    );
+    ));
   }
 
   getLiveAlerts(obj) {
@@ -410,7 +413,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       };
       const methodToCall =
         this.deviceService.getAllDevicesList(obj, obj.app)
-      methodToCall.subscribe(
+        this.subscriptions.push(methodToCall.subscribe(
         (response: any) => {
           if (response?.data?.length > 0) {
             this.selectedDevice = response.data[0];
@@ -419,7 +422,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           }
           resolve();
         }
-      );
+      ));
     });
   }
 
@@ -432,14 +435,14 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         message: this.selectedAlert.message
       };
       this.alertCondition = undefined;
-      this.deviceTypeService.getAlertConditions(this.contextApp.app, filterObj).subscribe(
+      this.subscriptions.push(this.deviceTypeService.getAlertConditions(this.contextApp.app, filterObj).subscribe(
         (response: any) => {
           if (response?.data) {
             this.alertCondition = response.data[0];
             resolve();
           }
         }, () => reject()
-      );
+      ));
     });
   }
 
@@ -450,7 +453,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         app: this.contextApp.app,
         device_type: this.alertCondition?.device_type ?  this.alertCondition.device_type : this.selectedDevice.device_type
       };
-      this.deviceTypeService.getThingsModelDocuments(obj).subscribe(
+      this.subscriptions.push(this.deviceTypeService.getThingsModelDocuments(obj).subscribe(
         (response: any) => {
           if (response?.data) {
             this.documents = response.data;
@@ -468,7 +471,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             resolve();
           }
         }
-      );
+      ));
     });
   }
 
@@ -491,8 +494,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         app: this.contextApp.app,
         name: this.alertCondition?.device_type ?  this.alertCondition.device_type : this.selectedDevice.device_type
       };
-      this.deviceTypeService.getThingsModelProperties(obj).subscribe(
+      this.subscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
+          console.log('4966666', response);
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           this.propertyList.forEach(item => {
             this.dropdownPropList.push({
@@ -501,7 +505,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           });
           resolve();
         }
-      );
+      ));
     });
   }
 
@@ -513,7 +517,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     };
     this.dropdownWidgetList = [];
     this.selectedWidgets = [];
-    this.deviceTypeService.getThingsModelLayout(params).subscribe(
+    this.subscriptions.push(this.deviceTypeService.getThingsModelLayout(params).subscribe(
       async (response: any) => {
         if (response?.layout?.length > 0) {
           response.layout.forEach((item) => {
@@ -537,7 +541,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           }
         }
         resolve();
-      });
+      }));
     });
   }
 
@@ -564,6 +568,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.selectedAlert.metadata.acknowledged_date = this.commonService.convertSignalRUTCDateToLocal(this.selectedAlert.metadata.acknowledged_date);
     }
     this.isTelemetryFilterSelected = false;
+    console.log(this.originalDevices);
     this.selectedDevice = this.originalDevices.find(device => device.device_id === this.selectedAlert.device_id);
     console.log('selected device   ', this.selectedDevice);
     await this.getDeviceData(this.selectedAlert.device_id);
@@ -584,12 +589,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         app: this.contextApp.app,
         name: this.alertCondition?.device_type ?  this.alertCondition.device_type : this.selectedDevice.device_type
       };
-      this.deviceTypeService.getModelReasons(obj.app, obj.name).subscribe(
+      this.subscriptions.push(this.deviceTypeService.getModelReasons(obj.app, obj.name).subscribe(
         (response: any) => {
           this.reasons = response.alert_acknowledge_reasons;
           resolve();
         }
-      );
+      ));
     });
   }
 
@@ -696,7 +701,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     // if (filterObj.message_props.charAt(filterObj.message_props.length - 1) === ',') {
     //   filterObj.message_props = filterObj.message_props.substring(0, filterObj.message_props.length - 1);
     // }
-    method.subscribe(
+    this.subscriptions.push(method.subscribe(
       (response: any) => {
         console.log(response);
         if (response && response.data) {
@@ -745,7 +750,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           }
         }
       }
-    );
+    ));
   }
 
   toggleProperty(prop) {
@@ -861,7 +866,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     };
     obj.metadata['user_id'] = this.userData.name;
     obj.metadata['acknowledged_date'] = (moment.utc(new Date(), 'M/DD/YYYY h:mm:ss A'));
-    this.deviceService.acknowledgeDeviceAlert(obj).subscribe(
+    this.subscriptions.push(this.deviceService.acknowledgeDeviceAlert(obj).subscribe(
       response => {
         this.toasterService.showSuccess('Alert acknowledged successfully', 'Acknowledge Alert');
         this.closeAcknowledgementModal();
@@ -869,7 +874,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       }, (error) => {
         this.toasterService.showError(error.message, 'Acknowledge Alert');
       }
-    );
+    ));
   }
 
 
@@ -889,6 +894,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     clearInterval(this.refreshInterval);
+    this.subscriptions.forEach(sub => sub.unsubscribe());
     this.signalRAlertSubscription?.unsubscribe();
     this.singalRService.disconnectFromSignalR('alert');
   }

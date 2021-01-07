@@ -679,6 +679,9 @@ export class CONSTANTS {
   public static SELECTED_APP_DATA = 'selectedAppData';
   public static DASHBOARD_TELEMETRY_SELECTION = 'dashboardTelemetryFilterObj';
   public static DASHBOARD_ALERT_SELECTION = 'dashboardAlertFilterObj';
+  public static DEVICES_LIST = 'devices_list';
+  public static DEVICE_MODELS_LIST = 'device_models_list';
+  public static DEVICE_MODEL_DATA = 'device_model_data';
   public static CURRENT_BREADCRUMB_STATE = 'breadcrumbState';
   public static NON_IP_DEVICES = 'Non IP Devices';
   public static IP_DEVICE = 'IoT Device';

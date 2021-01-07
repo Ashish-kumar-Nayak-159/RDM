@@ -1,5 +1,6 @@
+import { Subscription } from 'rxjs';
 import { DeviceTypeService } from './../../../services/device-type/device-type.service';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { DeviceService } from './../../../services/devices/device.service';
 import { Device } from 'src/app/models/device.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -15,7 +16,7 @@ declare var $: any;
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.css']
 })
-export class OverviewComponent implements OnInit {
+export class OverviewComponent implements OnInit, OnDestroy {
 
   @Input() device: Device = new Device();
   deviceCredentials: any;
@@ -35,6 +36,7 @@ export class OverviewComponent implements OnInit {
   @Input() tileData: any;
   componentState: any;
   deviceType: any;
+  subscriptions: Subscription[] = [];
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -71,11 +73,11 @@ export class OverviewComponent implements OnInit {
   getDeviceCredentials() {
     this.deviceCredentials = undefined;
     const id = (this.pageType === 'nonipdevice') ? this.device.gateway_id : this.device.device_id;
-    this.deviceService.getDeviceCredentials(id, this.contextApp.app).subscribe(
+    this.subscriptions.push(this.deviceService.getDeviceCredentials(id, this.contextApp.app).subscribe(
       response => {
         this.deviceCredentials = response;
       }
-    );
+    ));
   }
 
   getDeviceTypeDetail() {
@@ -85,7 +87,7 @@ export class OverviewComponent implements OnInit {
         name: this.device.tags.device_type,
         app: this.contextApp.app
       };
-      this.deviceTypeService.getThingsModelsList(obj).subscribe(
+      this.subscriptions.push(this.deviceTypeService.getThingsModelsList(obj).subscribe(
         (response: any) => {
           if (response?.data?.length > 0) {
             this.deviceType = response.data[0];
@@ -97,7 +99,7 @@ export class OverviewComponent implements OnInit {
           }
           resolve();
         }
-      );
+      ));
     });
   }
 
@@ -107,23 +109,23 @@ export class OverviewComponent implements OnInit {
       app: this.contextApp.app,
       gateway_id: this.device.device_id
     };
-    this.deviceService.getNonIPDeviceCount(obj).subscribe(
+    this.subscriptions.push(this.deviceService.getNonIPDeviceCount(obj).subscribe(
       (response: any) => {
         this.deviceCount = response.count;
       }
-    );
+    ));
   }
 
   getDeviceConnectionStatus() {
     this.deviceConnectionStatus = undefined;
     const id = (this.pageType === 'nonipdevice') ? this.device.gateway_id : this.device.device_id;
-    this.deviceService.getDeviceConnectionStatus(id, this.contextApp.app).subscribe(
+    this.subscriptions.push(this.deviceService.getDeviceConnectionStatus(id, this.contextApp.app).subscribe(
       response => {
         this.deviceConnectionStatus = response;
         this.deviceConnectionStatus.local_updated_date =
           this.commonService.convertUTCDateToLocal(this.deviceConnectionStatus.updated_date);
       }
-    );
+    ));
   }
 
   copyConnectionString() {
@@ -139,7 +141,7 @@ export class OverviewComponent implements OnInit {
 
   enableDevice() {
     this.isAPILoading = true;
-    this.deviceService.enableDevice(this.device.device_id, this.contextApp.app).subscribe(
+    this.subscriptions.push(this.deviceService.enableDevice(this.device.device_id, this.contextApp.app).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Enable Device');
         this.isAPILoading = false;
@@ -148,7 +150,7 @@ export class OverviewComponent implements OnInit {
         this.toasterService.showError(error.message, 'Enable Device');
         this.isAPILoading = false;
       }
-    );
+    ));
   }
 
   openConfirmDialog(type) {
@@ -180,7 +182,7 @@ export class OverviewComponent implements OnInit {
 
   disableDevice() {
     this.isAPILoading = true;
-    this.deviceService.disableDevice(this.device.device_id, this.contextApp.app).subscribe(
+    this.subscriptions.push(this.deviceService.disableDevice(this.device.device_id, this.contextApp.app).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Disable Device');
         this.isAPILoading = false;
@@ -189,7 +191,7 @@ export class OverviewComponent implements OnInit {
         this.toasterService.showError(error.message, 'Disable Device');
         this.isAPILoading = false;
       }
-    );
+    ));
   }
 
   deleteDevice() {
@@ -201,7 +203,7 @@ export class OverviewComponent implements OnInit {
       methodToCall = this.deviceService.deleteDevice(this.device.device_id, this.contextApp.app);
     }
 
-    methodToCall.subscribe(
+    this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Delete Device');
         this.isAPILoading = false;
@@ -216,8 +218,11 @@ export class OverviewComponent implements OnInit {
         this.toasterService.showError(error.message, 'Delete Device');
         this.isAPILoading = false;
       }
-    );
+    ));
   }
 
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
 
 }

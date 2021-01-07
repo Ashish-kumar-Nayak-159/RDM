@@ -1,3 +1,4 @@
+import { Subscription } from 'rxjs';
 import { CONSTANTS } from './../../../app.constants';
 import { ToasterService } from './../../../services/toaster.service';
 import { DeviceTypeService } from './../../../services/device-type/device-type.service';
@@ -43,6 +44,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
   c2dLoadingMessage: string;
   isTelemetryModeAPICalled = false;
   originalFilter: any;
+  apiSubscriptions: Subscription[] = [];
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -89,15 +91,16 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
   loadFromCache() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION);
     if (item && item.device) {
-      console.log(item);
+      console.log('aaaaaaaaaaaaaaa     ', item.device.hierarchy);
       this.originalFilter = JSON.parse(JSON.stringify(item));
-      this.filterObj = item;
+      this.filterObj = JSON.parse(JSON.stringify(item));
       this.contextApp.hierarchy.levels.forEach((level, index) => {
         if (index !== 0) {
         // console.log( this.filterObj.hierarchy);
         // console.log( this.filterObj.hierarchy[level]);
-        this.configureHierarchy[index] = this.originalFilter.device.hierarchy[level];
-        if (this.originalFilter.device.hierarchy[level]) {
+        console.log(item);
+        this.configureHierarchy[index] = item.device.hierarchy[level];
+        if (item.device.hierarchy[level]) {
           this.onChangeOfHierarchy(index, true);
         }
         }
@@ -130,7 +133,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
       message_id: this.filterObj.device.device_id + '_' + (moment().utc()).unix()
     };
     console.log(obj);
-    this.deviceService.changeTelemetryMode(obj, this.contextApp.app).subscribe(
+    this.apiSubscriptions.push(this.deviceService.changeTelemetryMode(obj, this.contextApp.app).subscribe(
       (response: any) => {
         if (response.message_id) {
         this.c2dResponseMessage.push({
@@ -152,11 +155,11 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
         this.isC2dAPILoading = false;
         this.c2dLoadingMessage = undefined;
       }
-    );
+    ));
   }
 
   checkForC2dResponse(obj) {
-    this.deviceService.getC2dMessageJSON(obj.message_id, this.contextApp.app).subscribe(
+    this.apiSubscriptions.push(this.deviceService.getC2dMessageJSON(obj.message_id, this.contextApp.app).subscribe(
       (response: any) => {
         if (response?.feedback_code) {
           this.isC2dAPILoading = false;
@@ -182,7 +185,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
           });
           clearInterval(this.c2dResponseInterval);
         }
-      });
+      }));
   }
 
 
@@ -226,6 +229,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
       } else {
       const arr = [];
       this.devices = [];
+      console.log(this.originalDevices);
       this.originalDevices.forEach(device => {
         let flag = false;
         Object.keys(hierarchyObj).forEach(hierarchyKey => {
@@ -242,10 +246,12 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
       console.log('devicessss  ', arr);
       this.devices = JSON.parse(JSON.stringify(arr));
       }
+      if (!this.filterObj.device) {
       if (this.devices?.length === 1) {
         this.filterObj.device = this.devices[0];
       } else {
         this.filterObj.device = undefined;
+      }
       }
       // await this.getDevices(hierarchyObj);
     }
@@ -270,7 +276,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
       };
-      this.deviceService.getAllDevicesList(obj, this.contextApp.app).subscribe(
+      this.apiSubscriptions.push(this.deviceService.getAllDevicesList(obj, this.contextApp.app).subscribe(
         (response: any) => {
           if (response?.data) {
             this.devices = response.data;
@@ -281,8 +287,9 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
           }
           resolve();
         }
-      );
+      ));
     });
+
   }
 
   onTabChange(type) {
@@ -346,7 +353,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
     this.isFilterSelected = true;
     await this.getMidNightHours(obj);
 
-    this.deviceService.getDeviceTelemetry(obj).subscribe(
+    this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
       (response: any) => {
         if (response?.data?.length > 0) {
           response.data[0].message_date = this.commonService.convertUTCDateToLocal(response.data[0].message_date);
@@ -383,7 +390,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
             }
           }
         );
-    }, error => this.isTelemetryDataLoading = false);
+    }, error => this.isTelemetryDataLoading = false));
   }
 
   processTelemetryData(telemetryObj) {
@@ -438,14 +445,14 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
       });
 
       obj.message_props = message_props;
-      this.deviceService.getDeviceTelemetry(obj).subscribe(
+      this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
         (response: any) => {
           if (response?.data?.length > 0) {
             this.midNightHour = response.data[0][this.getPropertyKey('Running Hours')] ? Math.floor(Number(response.data[0][this.getPropertyKey('Running Hours')])) : 0;
             this.midNightMinute = response.data[0][this.getPropertyKey('Running Minutes')] ? Math.floor(Number(response.data[0][this.getPropertyKey('Running Minutes')])) : 0;
           }
           resolve();
-        });
+        }));
     });
   }
 
@@ -470,12 +477,12 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
           app: this.contextApp.app,
           name: deviceType
         };
-        this.deviceTypeService.getThingsModelProperties(obj).subscribe(
+        this.apiSubscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
           (response: any) => {
             this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
             resolve();
           }
-        );
+        ));
       } else {
         resolve();
       }
@@ -484,7 +491,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
 
   getDeviceSignalRMode(deviceId) {
     // this.signalRModeValue = true;
-    this.deviceService.getDeviceSignalRMode(this.contextApp.app, deviceId).subscribe(
+    this.apiSubscriptions.push(this.deviceService.getDeviceSignalRMode(this.contextApp.app, deviceId).subscribe(
       (response: any) => {
         const newMode = response?.mode?.toLowerCase() === 'normal' ? true :
         (response?.mode?.toLowerCase() === 'turbo' ? false : true);
@@ -505,7 +512,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
         this.signalRModeValue = newMode;
         this.isTelemetryModeAPICalled = false;
       }
-    )
+    ));
   }
 
   ngOnDestroy() {
@@ -513,6 +520,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
     this.signalRTelemetrySubscription?.unsubscribe();
     this.signalRService.disconnectFromSignalR('telemetry');
     clearInterval(this.c2dResponseInterval);
+    this.apiSubscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
 }

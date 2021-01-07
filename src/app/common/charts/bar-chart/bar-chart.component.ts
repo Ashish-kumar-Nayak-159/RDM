@@ -1,3 +1,4 @@
+import { Subscription } from 'rxjs';
 import { ChartService } from './../../../chart/chart.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
@@ -34,6 +35,7 @@ export class BarChartComponent implements OnInit, OnDestroy {
   chartStartdate: any;
   chartEnddate: any;
   chartDataFields: any;
+  subscriptions: Subscription[] = [];
 
   constructor(
     private commonService: CommonService,
@@ -42,11 +44,12 @@ export class BarChartComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     setTimeout(() => this.plotChart(), 200);
-    this.chartService.toggleThresholdEvent.subscribe((ev) => {
+    this.subscriptions.push(this.chartService.toggleThresholdEvent.subscribe((ev) => {
       this.showThreshold = ev;
       this.toggleThreshold(ev);
-    });
-    this.chartService.togglePropertyEvent.subscribe((property) => this.toggleProperty(property));
+    }));
+    this.subscriptions.push(
+      this.chartService.togglePropertyEvent.subscribe((property) => this.toggleProperty(property)));
   }
 
   plotChart() {
@@ -312,6 +315,7 @@ export class BarChartComponent implements OnInit, OnDestroy {
       if (this.chart) {
         this.chart.dispose();
       }
+      this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
 

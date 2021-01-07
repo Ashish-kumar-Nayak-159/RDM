@@ -1,7 +1,7 @@
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
@@ -12,7 +12,7 @@ declare var $: any;
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.css']
 })
-export class ResetPasswordComponent implements OnInit {
+export class ResetPasswordComponent implements OnInit, OnDestroy  {
 
    /**
    * Flag to confirm if it is first time log in or user manually wants to change password.
@@ -119,6 +119,10 @@ export class ResetPasswordComponent implements OnInit {
   onModalClose() {
     this.resetPasswordForm.reset();
     $('#changePasswordModal').modal('hide');
+  }
+
+  ngOnDestroy() {
+    this.changePasswordSubscription?.unsubscribe();
   }
 
 }

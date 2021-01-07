@@ -1,9 +1,12 @@
+import { CONSTANTS } from 'src/app/app.constants';
+import { CommonService } from 'src/app/services/common.service';
 import { Injectable, EventEmitter } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppUrls } from '../../app-url.constants';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { String } from 'typescript-string-operations';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +17,8 @@ export class DeviceService {
   reloadDeviceInControlPanelEmitter: EventEmitter<any> = new EventEmitter<any>();
   composeC2DMessageStartEmitter: EventEmitter<any> = new EventEmitter<any>();
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private commonService: CommonService
   ) { }
 
   getAllDevicesList(filterObj, app) {
@@ -24,7 +28,23 @@ export class DeviceService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_DEVICES, app), { params });
+    const devices = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICES_LIST);
+    if (devices) {
+      return new Observable((observer) => {
+        observer.next({
+          data: devices
+        });
+      });
+    } else {
+      return this.http.get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_DEVICES, app), { params })
+      .pipe( map((data: any) => {
+        this.commonService.setItemInLocalStorage(CONSTANTS.DEVICES_LIST, data.data);
+        return data;
+      }), catchError( error => {
+        return throwError( error);
+      })
+      );
+    }
   }
 
   getDeviceList(filterObj) {
@@ -59,10 +79,12 @@ export class DeviceService {
   createDevice(deviceObj, app) {
     let params = new HttpParams();
     params = params.set('app', app);
+    localStorage.removeItem(CONSTANTS.DEVICES_LIST);
     return this.http.post(this.url + AppUrls.CREATE_DEVICE, deviceObj, {params});
   }
 
   createNonIPDevice(deviceObj, app) {
+    localStorage.removeItem(CONSTANTS.DEVICES_LIST);
     return this.http.post(this.url + String.Format(AppUrls.CREATE_NON_IP_DEVICE, app), deviceObj);
   }
 
@@ -81,12 +103,14 @@ export class DeviceService {
   deleteDevice(deviceId, appId) {
     let params = new HttpParams().set('device_id', deviceId);
     params = params.set('app', appId);
+    localStorage.removeItem(CONSTANTS.DEVICES_LIST);
     return this.http.delete(this.url + AppUrls.DELETE_DEVICE, { params });
   }
 
   deleteNonIPDevice(deviceId, appId) {
     // let params = new HttpParams().set('device_id', deviceId);
     // params = params.set('app', appId);
+    localStorage.removeItem(CONSTANTS.DEVICES_LIST);
     return this.http.delete(this.url + String.Format(AppUrls.DELETE_NON_IP_DEVICE, appId, deviceId));
   }
 

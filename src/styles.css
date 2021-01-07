@@ -208,7 +208,7 @@ select#dateoptions {
 }
 
 
-.owl-dt-timer-box {
+/* .owl-dt-timer-box {
   flex-direction: row;
 }
 
@@ -225,15 +225,35 @@ select#dateoptions {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
 }
-
+*/
  .owl-dt-timer {
-  height: 3rem!important;
+  height: 5.25rem!important;
   padding: 0!important;
 }
 
-.owl-dt-calendar {
-  height: 19.25rem!important;
+.owl-dt-timer-content .owl-dt-timer-input {
+  font-size: 0.9rem;
 }
+
+.owl-dt-calendar {
+  height: 16rem!important;
+}
+
+.owl-dt-calendar-table .owl-dt-calendar-cell {
+  padding-top: 0!important;
+  padding-bottom: 0!important;
+  height: 32px!important;
+}
+
+.owl-dt-calendar-table .owl-dt-calendar-header .owl-dt-weekdays th {
+  padding-bottom: 0!important;
+}
+
+.owl-dt-timer-box {
+  height: 90%;
+}
+
+
 
 .big-checkbox {width: 23px; height: 25px;}
 

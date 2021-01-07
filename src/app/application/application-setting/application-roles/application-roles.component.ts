@@ -1,5 +1,6 @@
+import { Subscription } from 'rxjs';
 import { ToasterService } from './../../../services/toaster.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application/application.service';
 
 declare var $: any;
@@ -8,13 +9,14 @@ declare var $: any;
   templateUrl: './application-roles.component.html',
   styleUrls: ['./application-roles.component.css']
 })
-export class ApplicationRolesComponent implements OnInit {
+export class ApplicationRolesComponent implements OnInit, OnDestroy {
 
   @Input() applicationData: any;
   addedLevelItem: string;
   saveRoleAPILoading = false;
   originalApplicationData: any;
   selectedRole: any;
+  apiSubscriptions: Subscription[] = [];
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService
@@ -67,7 +69,7 @@ export class ApplicationRolesComponent implements OnInit {
       });
       obj.roles = roles;
     }
-    this.applicationService.updateAppRoles(obj).subscribe(
+    this.apiSubscriptions.push(this.applicationService.updateAppRoles(obj).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Save Device Hierarchy');
         this.saveRoleAPILoading = false;
@@ -79,7 +81,7 @@ export class ApplicationRolesComponent implements OnInit {
         this.toasterService.showError(error.message, 'Save Device Hierarchy');
         this.saveRoleAPILoading = false;
       }
-    );
+    ));
   }
 
   openConfirmRoleDeleteModal(role) {
@@ -98,6 +100,10 @@ export class ApplicationRolesComponent implements OnInit {
 
   onCancelClick() {
     this.applicationData = JSON.parse(JSON.stringify(this.originalApplicationData));
+  }
+
+  ngOnDestroy() {
+    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

@@ -93,14 +93,14 @@ export class TelemetryComponent implements OnInit, OnDestroy {
       gateway_id: this.telemetryFilter.gateway_id,
       app: this.device?.tags?.app
     };
-    this.deviceService.getNonIPDeviceList(obj).subscribe(
+    this.apiSubscriptions.push(this.deviceService.getNonIPDeviceList(obj).subscribe(
       (response: any) => {
         if (response && response.data) {
           this.devices = response.data;
           this.devices.splice(0, 0, { device_id: this.telemetryFilter.gateway_id});
         }
       }, errror => {}
-    );
+    ));
   }
 
   onDateOptionChange() {
@@ -252,11 +252,11 @@ export class TelemetryComponent implements OnInit, OnDestroy {
       const epoch =  this.commonService.convertDateToEpoch(dataobj.message_date);
       obj.from_date = epoch ? (epoch - 5) : null
       obj.to_date = (epoch ? (epoch + 5) : null);
-      this.deviceService.getDeviceMessageById(obj, 'telemetry').subscribe(
+      this.apiSubscriptions.push(this.deviceService.getDeviceMessageById(obj, 'telemetry').subscribe(
         (response: any) => {
           resolve(response.message);
         }
-      );
+      ));
     });
   }
 

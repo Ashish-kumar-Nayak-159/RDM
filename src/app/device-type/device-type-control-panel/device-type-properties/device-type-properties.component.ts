@@ -1,7 +1,8 @@
+import { Subscription } from 'rxjs';
 import { ToasterService } from './../../../services/toaster.service';
 import { CONSTANTS } from 'src/app/app.constants';
 import { DeviceTypeService } from './../../../services/device-type/device-type.service';
-import { Component, Input, OnInit, OnChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, ViewChild, OnDestroy } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { JsonEditorOptions, JsonEditorComponent } from 'ang-jsoneditor';
 
@@ -11,7 +12,7 @@ declare var $: any;
   templateUrl: './device-type-properties.component.html',
   styleUrls: ['./device-type-properties.component.css']
 })
-export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
+export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() deviceType: any;
   @Input() type: any;
@@ -28,6 +29,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
   selectedProperty: any;
   editorOptions: JsonEditorOptions;
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
+  subscriptions: Subscription[] = [];
   constructor(
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService,
@@ -107,13 +109,13 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
       app: this.deviceType.app,
       id: this.deviceType.id
     };
-    this.deviceTypeService.getThingsModelProperties(obj).subscribe(
+    this.subscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
       (response: any) => {
         this.properties = response.properties;
         this.properties[this.type] = this.properties[this.type] ? this.properties[this.type] : [];
         this.isPropertiesLoading = false;
       }
-    );
+    ));
   }
 
   openAddPropertiesModal() {
@@ -222,7 +224,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
     obj.properties[this.type].push(this.propertyObj);
-    this.deviceTypeService.updateThingsModel(obj, this.deviceType.app).subscribe(
+    this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.deviceType.app).subscribe(
       (response: any) => {
         this.isCreatePropertyLoading = false;
         this.onCloseThingsPropertyModal();
@@ -232,7 +234,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
         this.isCreatePropertyLoading = false;
         this.toasterService.showError(error.message, 'Add Property');
       }
-    );
+    ));
   }
 
   deleteProperty() {
@@ -240,7 +242,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
     obj.properties = JSON.parse(JSON.stringify(this.properties));
     const index = obj.properties[this.type].findIndex(prop => prop.json_key === this.selectedProperty.json_key);
     obj.properties[this.type].splice(index, 1);
-    this.deviceTypeService.updateThingsModel(obj, this.deviceType.app).subscribe(
+    this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.deviceType.app).subscribe(
       (response: any) => {
         this.isCreatePropertyLoading = false;
         this.onCloseModal('confirmMessageModal');
@@ -250,7 +252,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
         this.isCreatePropertyLoading = false;
         this.toasterService.showError(error.message, 'Delete Property');
       }
-    );
+    ));
   }
 
   onCloseThingsPropertyModal() {
@@ -270,6 +272,10 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges {
   onCloseModal(id) {
     $('#' + id).modal('hide');
     this.selectedProperty = undefined;
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

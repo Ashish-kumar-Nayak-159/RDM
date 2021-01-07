@@ -1,5 +1,6 @@
+import { Subscription } from 'rxjs';
 import { ToasterService } from './../../../services/toaster.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application/application.service';
 
 @Component({
@@ -7,11 +8,12 @@ import { ApplicationService } from 'src/app/services/application/application.ser
   templateUrl: './application-properties.component.html',
   styleUrls: ['./application-properties.component.css']
 })
-export class ApplicationPropertiesComponent implements OnInit {
+export class ApplicationPropertiesComponent implements OnInit, OnDestroy {
 
   @Input() applicationData: any;
   originalApplicationData: any;
   savePropertiesAPILoading = false;
+  apiSubscriptions: Subscription[] = [];
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService
@@ -47,7 +49,7 @@ export class ApplicationPropertiesComponent implements OnInit {
     });
     const obj = JSON.parse(JSON.stringify(this.applicationData));
     obj.metadata.properties = props;
-    this.applicationService.updateApp(obj).subscribe(
+    this.apiSubscriptions.push(this.applicationService.updateApp(obj).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Save Properties');
         this.savePropertiesAPILoading = false;
@@ -56,11 +58,15 @@ export class ApplicationPropertiesComponent implements OnInit {
         this.toasterService.showError(error.message, 'Save Properties');
         this.savePropertiesAPILoading = false;
       }
-    );
+    ));
   }
 
   onCancelClick() {
     this.applicationData = JSON.parse(JSON.stringify(this.originalApplicationData));
+  }
+
+  ngOnDestroy() {
+    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

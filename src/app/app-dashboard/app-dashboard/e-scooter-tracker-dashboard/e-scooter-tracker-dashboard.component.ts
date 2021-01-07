@@ -6,7 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { CONSTANTS } from 'src/app/app.constants';
 import * as moment from 'moment';
 import { HttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { CommonService } from 'src/app/services/common.service';
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
@@ -75,6 +75,7 @@ export class EScooterTrackerDashboardComponent implements OnInit, OnDestroy {
   markers: any[] = [];
   markerOptions: google.maps.MarkerOptions;
   @Input() contextApp: any;
+  apiSubscriptions: Subscription[] = [];
   constructor(
     private deviceService: DeviceService,
     private route: ActivatedRoute,
@@ -136,7 +137,7 @@ export class EScooterTrackerDashboardComponent implements OnInit, OnDestroy {
     const obj = {
       app: this.appName
     };
-    this.deviceService.getDeviceList(obj).subscribe(
+    this.apiSubscriptions.push(this.deviceService.getDeviceList(obj).subscribe(
       async (response: any) => {
         if (response && response.data) {
           this.devices = response.data;
@@ -186,7 +187,7 @@ export class EScooterTrackerDashboardComponent implements OnInit, OnDestroy {
           }, 4500);
         }
       }, errror => {}
-    );
+    ));
   }
 
   getThingsModelProperties() {
@@ -196,23 +197,24 @@ export class EScooterTrackerDashboardComponent implements OnInit, OnDestroy {
         app: this.appName,
         name: this.devices[0].tags.device_type
       };
-      this.deviceTypeService.getThingsModelProperties(obj).subscribe(
+      this.apiSubscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
           this.properties = response.properties.measured_properties ? response.properties.measured_properties : [];
           resolve();
         }
-      );
+      ));
     });
   }
 
   getLastTelemetry(obj) {
-    return new Promise((resolve, reject) => this.deviceService.getDeviceTelemetry
+    return new Promise((resolve, reject) =>
+    this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry
     (obj).subscribe((response: any) => {
       if (response?.data) {
         this.chartData[obj.device_id] = response.data;
       }
       resolve();
-    }));
+    })));
   }
 
   setMarkers(telemetryData, type) {
@@ -331,6 +333,7 @@ export class EScooterTrackerDashboardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     clearInterval(this.chartDataRefreshInterval);
+    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
 

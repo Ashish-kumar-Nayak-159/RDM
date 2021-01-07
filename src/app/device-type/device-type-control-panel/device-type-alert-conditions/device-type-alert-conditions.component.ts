@@ -1,7 +1,8 @@
 import { ToasterService } from './../../../services/toaster.service';
 import { filter } from 'rxjs/operators';
 import { DeviceTypeService } from './../../../services/device-type/device-type.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 declare var $: any;
 @Component({
@@ -9,7 +10,7 @@ declare var $: any;
   templateUrl: './device-type-alert-conditions.component.html',
   styleUrls: ['./device-type-alert-conditions.component.css']
 })
-export class DeviceTypeAlertConditionsComponent implements OnInit {
+export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
 
   @Input() deviceType: any;
   alertConditions: {id?: string, message?: string, code?: string, severity?: string, recommendations?: any[], visualization_widgets?: any[],
@@ -28,6 +29,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
   widgetName: string;
   recommendationObj: any;
   docName: any;
+  subscriptions: Subscription[] = [];
   constructor(
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService
@@ -44,13 +46,13 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
         app: this.deviceType.app,
         id: this.deviceType.id
       };
-      this.deviceTypeService.getThingsModelLayout(obj).subscribe(
+      this.subscriptions.push(this.deviceTypeService.getThingsModelLayout(obj).subscribe(
         (response: any) => {
           if (response?.layout?.length > 0) {
             this.widgets = response.layout;
           }
          }
-      );
+      ));
     }
   }
 
@@ -61,11 +63,11 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
       app: this.deviceType.app,
       device_type: this.deviceType.name
     };
-    this.deviceTypeService.getThingsModelControlWidgets(obj).subscribe(
+    this.subscriptions.push(this.deviceTypeService.getThingsModelControlWidgets(obj).subscribe(
       (response: any) => {
         this.deviceMethods = response.device_methods;
       }
-    );
+    ));
   }
 
   getDocuments() {
@@ -74,14 +76,14 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
       app: this.deviceType.app,
       device_type: this.deviceType.name
     };
-    this.deviceTypeService.getThingsModelDocuments(obj).subscribe(
+    this.subscriptions.push(this.deviceTypeService.getThingsModelDocuments(obj).subscribe(
       (response: any) => {
         if (response?.data) {
           this.documents = response.data;
           this.getAlertConditions();
         }
       }
-    );
+    ));
   }
 
   getAlertConditions() {
@@ -89,7 +91,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
     const filterObj = {
       device_type: this.deviceType.name
     };
-    this.deviceTypeService.getAlertConditions(this.deviceType.app, filterObj).subscribe(
+    this.subscriptions.push(this.deviceTypeService.getAlertConditions(this.deviceType.app, filterObj).subscribe(
       (response: any) => {
         if (response?.data) {
           this.alertConditions = response.data;
@@ -115,7 +117,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
           this.isAlertConditionsLoading = false;
         }
       }, error => this.isAlertConditionsLoading = false
-    );
+    ));
   }
 
   onToggleRows(i) {
@@ -221,7 +223,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
   }
 
   onClickOfRemoveCondition() {
-    this.deviceTypeService.deleteAlertCondition(this.deviceType.app, this.deviceType.name, this.alertObj.id)
+    this.subscriptions.push(this.deviceTypeService.deleteAlertCondition(this.deviceType.app, this.deviceType.name, this.alertObj.id)
     .subscribe((response: any) => {
       this.onCloseModal('confirmMessageModal');
       this.getAlertConditions();
@@ -229,7 +231,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
     }, error => {
       this.onCloseModal('confirmMessageModal');
       this.toasterService.showSuccess(error.message, 'Remove Alert Condition');
-    });
+    }));
   }
 
   onCloseModal(id) {
@@ -289,7 +291,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
     //   });
     // });
    // this.alertObj.reference_documents  = arr;
-    this.deviceTypeService.updateAlertCondition(this.alertObj, this.deviceType.app, this.deviceType.name, this.alertObj.id)
+   this.subscriptions.push(this.deviceTypeService.updateAlertCondition(this.alertObj, this.deviceType.app, this.deviceType.name, this.alertObj.id)
     .subscribe((response: any) => {
       this.isCreateAlertConditionLoading = false;
       this.getAlertConditions();
@@ -300,7 +302,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
     }, error => {
       this.isCreateAlertConditionLoading = false;
       this.toasterService.showSuccess(error.message, 'Update Alert Condition');
-    });
+    }));
   }
 
 
@@ -311,7 +313,8 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
     this.alertObj.recommendations = [];
     this.alertObj.reference_documents = [];
     this.alertObj.actions = {};
-    this.deviceTypeService.createAlertCondition(this.alertObj, this.deviceType.app, this.deviceType.name).subscribe(
+    this.subscriptions.push(
+      this.deviceTypeService.createAlertCondition(this.alertObj, this.deviceType.app, this.deviceType.name).subscribe(
       (response: any) => {
         this.isCreateAlertConditionLoading = false;
         this.onCloseAlertConditionModal();
@@ -321,7 +324,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
         this.isCreateAlertConditionLoading = false;
         this.toasterService.showSuccess(error.message, 'Create Alert Condition');
       }
-    );
+    ));
   }
 
   onCloseAlertConditionModal() {
@@ -330,6 +333,10 @@ export class DeviceTypeAlertConditionsComponent implements OnInit {
     this.toggleRows = {};
     this.editRecommendationStep = {};
     this.editDocuments = {};
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

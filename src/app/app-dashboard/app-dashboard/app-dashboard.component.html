@@ -3,5 +3,5 @@
 <app-water-tank-monitor [contextApp]="contextApp" *ngIf="contextApp.app === 'WaterTankMonitor'" [tileData]="tileData"></app-water-tank-monitor>
 <app-pump-dashboard [contextApp]="contextApp" *ngIf="contextApp.app === 'IIoT_Pump'" [tileData]="tileData"></app-pump-dashboard>
 
-<app-compressor-dashboard [contextApp]="contextApp" *ngIf="contextApp && (contextApp.app === 'SopanCMS' || contextApp.app === 'IIoT_Compressor'  || contextApp.app === 'CMS') "
+<app-compressor-dashboard [contextApp]="contextApp" *ngIf="contextApp && (contextApp.app?.toLowerCase().includes('cms') || contextApp.app?.toLowerCase().includes('compressor')) "
 [tileData]="tileData"></app-compressor-dashboard>

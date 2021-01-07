@@ -13,7 +13,7 @@ declare var $: any;
   templateUrl: './alert-end-event.component.html',
   styleUrls: ['./alert-end-event.component.css']
 })
-export class AlertEndEventComponent implements OnInit {
+export class AlertEndEventComponent implements OnInit, OnDestroy {
 
   alertFilter: any = {};
   alerts: any[] = [];
@@ -118,11 +118,11 @@ export class AlertEndEventComponent implements OnInit {
         app: alert.app,
         id: alert.id
       };
-      this.deviceService.getDeviceMessageById(obj, 'alertendevent').subscribe(
+      this.apiSubscriptions.push(this.deviceService.getDeviceMessageById(obj, 'alertendevent').subscribe(
         (response: any) => {
           resolve(response.message);
         }
-      );
+      ));
     });
   }
 

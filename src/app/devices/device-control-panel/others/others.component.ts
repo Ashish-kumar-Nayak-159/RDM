@@ -118,11 +118,11 @@ export class OthersComponent implements OnInit, OnDestroy {
         app: dataobj.app,
         id: dataobj.id
       };
-      this.deviceService.getDeviceMessageById(obj, 'other').subscribe(
+      this.apiSubscriptions.push(this.deviceService.getDeviceMessageById(obj, 'other').subscribe(
         (response: any) => {
           resolve(response.message);
         }
-      );
+      ));
     });
   }
 

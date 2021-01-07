@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonService } from './../../services/common.service';
 import { CONSTANTS } from './../../app.constants';
 import { Router } from '@angular/router';
@@ -13,7 +14,7 @@ declare var $: any;
   templateUrl: './application-list.component.html',
   styleUrls: ['./application-list.component.css']
 })
-export class ApplicationListComponent implements OnInit, AfterViewInit {
+export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   userData: any;
   applicationFilterObj: any = {};
@@ -24,6 +25,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
   isFileUploading = false;
   blobSASToken = environment.blobKey;
   appModalType: string;
+  apiSubscriptions: Subscription[] = [];
   constructor(
     private applicationService: ApplicationService,
     private commonService: CommonService,
@@ -61,14 +63,14 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
   searchApplications() {
     this.isApplicationListLoading = true;
     this.applications = [];
-    this.applicationService.getApplications(this.applicationFilterObj).subscribe(
+    this.apiSubscriptions.push(this.applicationService.getApplications(this.applicationFilterObj).subscribe(
       (response: any) => {
         if (response && response.data) {
           this.applications = response.data;
         }
         this.isApplicationListLoading = false;
       }, error => this.isApplicationListLoading = false
-    );
+    ));
   }
 
   clearFilter() {
@@ -198,7 +200,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
       const methodToCall = this.appModalType === 'Create' ? this.applicationService.createApp(this.applicationDetail) :
       (this.appModalType === 'Edit' ? this.applicationService.updateApp(this.applicationDetail) : null);
       if (methodToCall) {
-        methodToCall.subscribe(
+        this.apiSubscriptions.push(methodToCall.subscribe(
           (response: any) => {
             this.toasterService.showSuccess(response.message, this.appModalType + ' App');
             this.onCloseCreateAppModal('createAppModal');
@@ -208,9 +210,13 @@ export class ApplicationListComponent implements OnInit, AfterViewInit {
             this.toasterService.showError(error.message, this.appModalType + ' App');
             this.isCreateAPILoading = false;
           }
-        );
+        ));
       }
 
     }
+  }
+
+  ngOnDestroy() {
+    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
   }
 }

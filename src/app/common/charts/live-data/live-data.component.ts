@@ -1,3 +1,4 @@
+import { Subscription } from 'rxjs';
 import { CommonService } from './../../../services/common.service';
 import { isPlatformBrowser } from '@angular/common';
 import { Component, Inject, NgZone, OnInit, PLATFORM_ID, OnDestroy } from '@angular/core';
@@ -36,6 +37,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   chartStartdate: any;
   chartDataFields: any = {};
   chartEnddate: any;
+  subscriptions: Subscription[] = [];
   constructor(
     private commonService: CommonService,
     private chartService: ChartService,
@@ -44,11 +46,12 @@ export class LiveChartComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     setTimeout(() => this.plotChart(), 200);
-    this.chartService.toggleThresholdEvent.subscribe((ev) => {
+    this.subscriptions.push(this.chartService.toggleThresholdEvent.subscribe((ev) => {
       this.showThreshold = ev;
       this.toggleThreshold(ev);
-    });
-    this.chartService.togglePropertyEvent.subscribe((property) => this.toggleProperty(property));
+    }));
+    this.subscriptions.push(
+      this.chartService.togglePropertyEvent.subscribe((property) => this.toggleProperty(property)));
   }
 
   plotChart() {
@@ -366,6 +369,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       if (this.chart) {
         this.chart.dispose();
       }
+      this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

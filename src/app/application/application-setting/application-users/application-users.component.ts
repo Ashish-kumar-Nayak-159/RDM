@@ -1,6 +1,7 @@
+import { Subscription } from 'rxjs';
 import { UserService } from './../../../services/user.service';
 import { ToasterService } from './../../../services/toaster.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application/application.service';
 declare var $: any;
 @Component({
@@ -8,7 +9,7 @@ declare var $: any;
   templateUrl: './application-users.component.html',
   styleUrls: ['./application-users.component.css']
 })
-export class ApplicationUsersComponent implements OnInit {
+export class ApplicationUsersComponent implements OnInit, OnDestroy {
 
   @Input() applicationData: any;
   users: any[] = [];
@@ -17,6 +18,7 @@ export class ApplicationUsersComponent implements OnInit {
   isCreateUserAPILoading = false;
   hierarchyArr = {};
   configureHierarchy = {};
+  apiSubscriptions: Subscription[] = [];
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
@@ -35,13 +37,13 @@ export class ApplicationUsersComponent implements OnInit {
   getApplicationUsers() {
     this.users = [];
     console.log(this.applicationData);
-    this.applicationService.getApplicationUsers(this.applicationData.app).subscribe(
+    this.apiSubscriptions.push(this.applicationService.getApplicationUsers(this.applicationData.app).subscribe(
       (response: any) => {
         if (response && response.data) {
           this.users = response.data;
         }
       }
-    );
+    ));
   }
 
   getUserHierarchy(userObj) {
@@ -141,7 +143,7 @@ export class ApplicationUsersComponent implements OnInit {
     }
     this.isCreateUserAPILoading = true;
     console.log(this.addUserObj);
-    this.userService.createUser(this.addUserObj, this.applicationData.app).subscribe(
+    this.apiSubscriptions.push(this.userService.createUser(this.addUserObj, this.applicationData.app).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Create User');
         this.isCreateUserAPILoading = false;
@@ -151,13 +153,17 @@ export class ApplicationUsersComponent implements OnInit {
         this.toasterService.showError(error.message, 'Create User');
         this.isCreateUserAPILoading = false;
       }
-    );
+    ));
   }
 
   onCloseCreateUserModal() {
     $('#createUserModal').modal('hide');
     this.addUserObj = undefined;
     this.hierarchyList = [];
+  }
+
+  ngOnDestroy() {
+    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

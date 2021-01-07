@@ -78,4 +78,7 @@ export class AppUrls {
   public static CHANGE_TELEMETRY_MODE = 'apps/{0}/c2d/change_telemetry_mode';
   public static GET_CACHED_TELEMETRY = 'cached_telemetry_analysis';
   public static GET_CACHED_ALERTS = 'cached_alert_analysis';
+  public static GET_CACHED_ALERT_BY_ID = 'cached_alert_analysis/{0}';
+  public static GET_ASSET_CONFIGURATION_HISTORY = 'apps/{0}/d2c/configuration_history';
+  public static GET_DEVICE_DETAIL = 'apps/{0}/devices/{1}';
 }

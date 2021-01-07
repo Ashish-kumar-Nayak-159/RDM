@@ -24,4 +24,5 @@ export class Device {
   hierarchyString: string;
   tags: any;
   app: string;
+  metadata: any;
 }

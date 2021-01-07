@@ -5,24 +5,25 @@ import { Subscription } from 'rxjs';
 import { Device } from 'src/app/models/device.model';
 import { CommonService } from 'src/app/services/common.service';
 import { DeviceService } from 'src/app/services/devices/device.service';
+
 declare var $: any;
 @Component({
-  selector: 'app-gateway-cached-alerts',
-  templateUrl: './gateway-cached-alerts.component.html',
-  styleUrls: ['./gateway-cached-alerts.component.css']
+  selector: 'app-gateway-configuration-history',
+  templateUrl: './gateway-configuration-history.component.html',
+  styleUrls: ['./gateway-configuration-history.component.css']
 })
-export class GatewayCachedAlertsComponent implements OnInit {
+export class GatewayConfigurationHistoryComponent implements OnInit {
 
   filterObj: any = {};
-  alertsList: any[] = [];
+  confighistory: any[] = [];
   @Input() device: Device = new Device();
-  isAlertLoading = false;
+  isConfigHistoryLoading = false;
   apiSubscriptions: Subscription[] = [];
-  selectedAlert: any;
+  selectedConfigHistory: any;
   isFilterSelected = false;
   modalConfig: any;
   pageType: string;
-  alertTableConfig: any = {};
+  configHistoryTableConfig: any = {};
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -36,24 +37,21 @@ export class GatewayCachedAlertsComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.pageType = params.get('listName');
       this.pageType = this.pageType.slice(0, -1);
-      this.alertTableConfig = {
-        type: 'cached alerts',
+      this.configHistoryTableConfig = {
+        type: 'configuration history',
         headers: ['Timestamp', 'Asset Name', 'File Name', 'Process Status', 'View'],
         data: [
+
           {
-            name: 'Uploaded At',
-            key: 'local_upload_date',
-          },
-          {
-            name: 'Processed At',
+            name: 'Timestamp',
             key: 'local_created_date',
           },
+          // {
+          //   name: 'Asset Name',
+          //   key: 'device_id',
+          // },
           {
-            name: 'Asset Name',
-            key: 'device_id',
-          },
-          {
-            name: '',
+            name: 'Configuration',
             key: undefined,
           }
         ]
@@ -64,10 +62,10 @@ export class GatewayCachedAlertsComponent implements OnInit {
 
   }
 
-  searchAlerts(filterObj) {
+  searchConfigHistory(filterObj) {
     console.log(filterObj);
     this.isFilterSelected = true;
-    this.isAlertLoading = true;
+    this.isConfigHistoryLoading = true;
     const obj = {...filterObj};
     const now = moment().utc();
     if (filterObj.dateOption === '5 mins') {
@@ -92,54 +90,45 @@ export class GatewayCachedAlertsComponent implements OnInit {
     }
     delete obj.dateOption;
     this.filterObj = filterObj;
-    this.apiSubscriptions.push(this.deviceService.getGatewayCachedAlerts(obj).subscribe(
+    this.apiSubscriptions.push(this.deviceService.getAssetConfigurationHistory(obj).subscribe(
       (response: any) => {
         if (response && response.data) {
-          this.alertsList = response.data;
-          this.alertsList.forEach(item => {
-            item.local_created_date = this.commonService.convertSignalRUTCDateToLocal(item.created_date);
-            item.local_upload_date = this.commonService.convertSignalRUTCDateToLocal(item.iothub_date);
+          this.confighistory = response.data;
+          this.confighistory.forEach(item => {
+            item.local_created_date = this.commonService.convertSignalRUTCDateToLocal(item.message_date);
           });
         }
-        this.isAlertLoading = false;
-      }, error => this.isAlertLoading = false
+        this.isConfigHistoryLoading = false;
+      }, error => this.isConfigHistoryLoading = false
     ));
   }
 
   getMessageData(dataobj) {
     return new Promise((resolve) => {
-      const obj = {
-        app: dataobj.app,
-        id: dataobj.id
-      };
-      this.apiSubscriptions.push(this.deviceService.getDeviceMessageById(obj, 'cached_alert').subscribe(
-        (response: any) => {
-          resolve(response.raw_data);
-        }
-      ));
+      resolve(dataobj.configuration);
     });
   }
 
-  openAlertMessageModal(obj) {
-    if (obj.type === this.alertTableConfig.type) {
-      this.selectedAlert = obj.data;
+  openConfigHistoryMessageModal(obj) {
+    if (obj.type === this.configHistoryTableConfig.type) {
+      this.selectedConfigHistory = obj.data;
       this.modalConfig = {
         jsonDisplay: true,
         isDisplaySave: false,
         isDisplayCancel: true
       };
       this.getMessageData(obj.data).then(message => {
-        this.selectedAlert.message = message;
+        this.selectedConfigHistory.configuration = message;
       });
-      $('#alertMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      $('#configHistoryMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }
 
 
   onModalEvents(eventType) {
     if (eventType === 'close') {
-      $('#alertMessageModal').modal('hide');
-      this.selectedAlert = undefined;
+      $('#configHistoryMessageModal').modal('hide');
+      this.selectedConfigHistory = undefined;
     }
   }
 
@@ -148,6 +137,7 @@ export class GatewayCachedAlertsComponent implements OnInit {
   ngOnDestroy() {
     this.apiSubscriptions.forEach(subscribe => subscribe.unsubscribe());
   }
+
 
 
 }

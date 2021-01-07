@@ -484,6 +484,15 @@ export class CONSTANTS {
       isTitle: false
     },
     {
+      page: 'current_config',
+      system_name: 'Current Configuration',
+      url: '#device_current_config',
+      display_name: 'Current Configuration',
+      icon: 'fa fa-fw fa-cog',
+      visible: true,
+      isTitle: false
+    },
+    {
       page: 'config_history',
       system_name: 'Configuration History',
       url: '#device_config_history',
@@ -576,15 +585,6 @@ export class CONSTANTS {
       visible: true,
       isTitle: true
     },
-    // {
-    //   page: 'jsonpacket',
-    //   system_name: 'JSON Packet Format',
-    //   url: '#device_type_jsonpacket',
-    //   display_name: 'JSON Packet Format',
-    //   icon: 'fa fa-fw fa-heartbeat',
-    //   visible: true,
-    //   isTitle: false
-    // },
     {
       page: 'alert_conditioning',
       system_name: 'Alert Conditioning',

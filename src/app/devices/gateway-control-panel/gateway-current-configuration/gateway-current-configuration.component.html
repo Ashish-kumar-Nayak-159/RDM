@@ -1,0 +1,36 @@
+<div class="topnavbar bg-white py-2">
+  <div class="row">
+    <div class="col-xl-12 col-md-12 mb-12" >
+      <h5>Gateway Configuration</h5>
+      </div>
+      </div>
+</div>
+
+<div class="con-pad">
+  <div class="row mx-auto">
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+          <tr class="bg-secondary text-white">
+            <th>Key</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="deviceMetadataKeys.length > 0">
+            <tr *ngFor="let key of deviceMetadataKeys">
+              <td>{{key}}</td>
+              <td>{{device.metadata[key]}}</td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="deviceMetadataKeys.length === 0">
+            <tr>
+              <td colspan="2">No configuration data available.</td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

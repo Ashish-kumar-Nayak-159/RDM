@@ -1,0 +1,18 @@
+<div class="topnavbar bg-white py-2" >
+  <app-filter [filterObj]="filterObj" (filterSearch)="searchConfigHistory($event)"></app-filter>
+  </div>
+  <div class="con-pad">
+  <div class="row mx-auto">
+
+    <div class="table-responsive" >
+      <app-table [tableData]="confighistory" [tableConfig]="configHistoryTableConfig" [isTableFilterSelected]="isFilterSelected"
+      [isTableDataLoading]="isConfigHistoryLoading" (viewMessageEvent)="openConfigHistoryMessageModal($event)"></app-table>
+    </div>
+  </div>
+  </div>
+  <div class="modal right fade" id="configHistoryMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+    <div class="modal-dialog" role="document">
+      <app-message-modal *ngIf="modalConfig" [bodyMessage]="selectedConfigHistory?.configuration" [headerMessage]="'Configuration Message'"
+      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
+    </div>
+  </div>

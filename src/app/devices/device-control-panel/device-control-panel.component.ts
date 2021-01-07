@@ -182,29 +182,11 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
       this.isDeviceDataLoading = true;
     }
     let methodToCall;
-    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
-
-      const obj = {
-        app: this.contextApp.app,
-        device_id: this.device.device_id,
-        gateway_id: this.device.gateway_id
-      };
-      methodToCall = this.deviceService.getNonIPDeviceList(obj);
-      await this.getDeviceTags(obj);
-    } else {
-      methodToCall = this.deviceService.getDeviceData(this.device.device_id, this.contextApp.app);
-    }
+    methodToCall = this.deviceService.getDeviceDetailById(this.contextApp.app, this.device.device_id);
     this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
-        if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
-          if (response && response.data) {
-            const obj = {...response.data[0]};
-            obj.tags = this.tagsObj;
-            this.device = obj;
-          }
-        } else {
-          this.device = response;
-        }
+        this.device = response;
+        this.device.gateway_id = this.device.metadata?.gateway_id;
         console.log(this.device);
         this.commonService.breadcrumbEvent.emit({
           type: 'append',

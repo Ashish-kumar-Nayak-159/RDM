@@ -55,6 +55,9 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
       const arr = [];
       CONSTANTS.GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST.forEach(item => {
         let flag = false;
+        if (!this.applicationData.configuration.gateway_control_panel_menu) {
+          this.applicationData.configuration.gateway_control_panel_menu = [];
+        }
         this.applicationData.configuration.gateway_control_panel_menu.forEach(menu => {
           if (menu.system_name === item.system_name) {
             flag = true;

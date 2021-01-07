@@ -68,6 +68,12 @@
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'device_life_cycle'}" role="tabpanel" id="device_life_cycle_events">
         <app-device-life-cycle-events *ngIf="activeTab === 'device_life_cycle' && device" [device]="device"></app-device-life-cycle-events>
       </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'config_history'}" role="tabpanel" id="device_config_history">
+        <app-gateway-configuration-history *ngIf="activeTab === 'config_history' && device" [device]="device"></app-gateway-configuration-history>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'current_config'}" role="tabpanel" id="device_current_config">
+        <app-gateway-current-configuration *ngIf="activeTab === 'current_config' && device" [device]="device"></app-gateway-current-configuration>
+      </div>
       <!-- /.container1-fluid -->
 
     </div>

@@ -6,7 +6,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppUrls } from '../../app-url.constants';
 import { Observable, throwError } from 'rxjs';
 import { String } from 'typescript-string-operations';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, filter } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -68,6 +68,10 @@ export class DeviceService {
     });
     console.log(params);
     return this.http.get(this.url + String.Format(AppUrls.GET_NON_IP_DEVICE, filterObj.app), { params });
+  }
+
+  getDeviceDetailById(app, deviceId) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_DETAIL, app, deviceId));
   }
 
   getDeviceData(deviceId, app) {
@@ -339,6 +343,8 @@ export class DeviceService {
       url = AppUrls.GET_OTHER_MESSAGE_BY_ID;
     } else if (type === 'error') {
       url = AppUrls.GET_ERROR_MESSAGE_BY_ID;
+    } else if (type === 'cached_alert') {
+      url = String.Format(AppUrls.GET_CACHED_ALERT_BY_ID, filterObj.id);
     }
     return this.http.get(this.url + url, { params });
   }
@@ -379,6 +385,16 @@ export class DeviceService {
       }
     });
     return this.http.get(this.url + AppUrls.GET_DEVICE_LIFECYCLE_EVENTS, { params });
+  }
+
+  getAssetConfigurationHistory(filterObj: any) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_CONFIGURATION_HISTORY, filterObj.app), { params });
   }
 
 }

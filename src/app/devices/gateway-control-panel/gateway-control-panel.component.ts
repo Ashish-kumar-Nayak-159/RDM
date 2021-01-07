@@ -180,11 +180,12 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
     if (!callFromMenu) {
       this.isDeviceDataLoading = true;
     }
-    const methodToCall = this.deviceService.getDeviceData(this.device.device_id, this.contextApp.app);
+    let methodToCall;
+    methodToCall = this.deviceService.getDeviceDetailById(this.contextApp.app, this.device.device_id);
     this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         this.device = response;
-        console.log(this.device);
+        // this.device.gateway_id = this.device.metadata?.gateway_id;
         this.commonService.breadcrumbEvent.emit({
           type: 'append',
           data: [

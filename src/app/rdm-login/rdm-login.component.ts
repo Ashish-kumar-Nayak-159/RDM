@@ -1,9 +1,9 @@
+import { CONSTANTS } from 'src/app/app.constants';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToasterService } from '../services/toaster.service';
-import { CONSTANTS } from './../app.constants';
 import { CommonService } from 'src/app/services/common.service';
 declare var $: any;
 @Component({
@@ -70,10 +70,14 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
       this.subscriptions.push(this.commonService.loginUser(this.loginForm).subscribe(
         async (response: any) => {
           this.userData = response;
+          // const expiryObj = this.commonService.getItemFromLocalStorage(CONSTANTS.EXPIRY_TIME);
+          // if (!expiryObj || expiryObj.email !== this.userData.email || new Date().getTime() > expiryObj.expired_at) {
+          //   localStorage.clear();
+          // }
           if (response.is_super_admin) {
             console.log('in login 28');
             this.router.navigate(['applications']);
-            this.commonService.setItemInLocalStorage('userData', response);
+            this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, response);
           } else {
             if (response.password_created_date === '') {
               this.isResetPassword = true;
@@ -92,7 +96,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
                 });
                 element.user.hierarchyString = hierarchy;
               });
-              this.commonService.setItemInLocalStorage('userData', response);
+              this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, response);
               if (this.userData.apps && this.userData.apps.length > 1) {
                 this.router.navigate(['applications', 'selection']);
               } else if (this.userData.apps && this.userData.apps.length === 1) {

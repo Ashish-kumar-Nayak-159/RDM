@@ -1,0 +1,42 @@
+
+<div class="col-md-{{chartConfig?.properties?.length * 3}} my-3">
+<div class="card" id="{{chartConfig.chartId}}">
+  <div class="card-header py-3">
+    <h6 class="col-md-9 m-0 font-weight-bold">
+      {{chartConfig.widgetTitle}}
+    </h6>
+    <a class="float-right pull-right col-md-1 mt-n4" href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()"><i class="fa fa-close"></i></a>
+  </div>
+  <div class="card-body1" >
+    <div class="row text-center " *ngIf="telemetryObj">
+      <div class="col-md-{{12 / chartConfig?.properties?.length}} text-center" *ngFor="let prop of chartConfig.properties; let i = index"
+      [ngClass]="{'border-left': i > 0}">
+        <span class="text-xs ">{{prop.title}}</span>
+        <div class="text-center" *ngIf="chartConfig.widgetType === 'NumberWithImage'">
+          <img
+            class="img-fluid px-2 img-szmd"
+            src="{{prop?.image?.url + blobToken
+            }}"
+            alt=""
+          />
+        </div>
+        <div [ngClass]="{'pt-3': chartConfig.widgetType === 'OnlyNumber'}">
+          <span class="text-darkblue display-5 font-weight-bold text-lg" >
+            {{ telemetryObj[prop.property.json_key]?.toFixed(prop.digitsAfterDecimals)}} {{prop.unit}}
+          </span>
+        </div>
+
+
+
+        <div style="margin-left: 2.5rem;" *ngIf="chartConfig.widgetType === 'NumberWithTrend'">
+          <app-line-chart-without-axis
+          [chartId]="chartConfig.chartId + '_' + prop + '_' + i"
+            [telemetryData]="telemetryData"
+            [property]="prop.property.json_key"
+          ></app-line-chart-without-axis>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

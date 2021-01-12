@@ -1,3 +1,4 @@
+import { FormsModule } from '@angular/forms';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 import { NgModule } from '@angular/core';
@@ -7,6 +8,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTableModule } from '@angular/material/table';
 import { CommonTableComponent } from './common-table/common-table.component';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 import { ChartsModule } from 'ng2-charts';
 import { LiveChartComponent } from './charts/live-data/live-data.component';
@@ -17,6 +19,12 @@ import { ColumnChartComponent } from './charts/column-chart/column-chart.compone
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { GaugeChartComponent } from './charts/gauge-chart/gauge-chart.component';
 import { LineChartWithoutAxisComponent } from './charts/line-chart-without-axis/line-chart-without-axis.component';
+import { OnlyNumberWidgetComponent } from './live-widgets/only-number-widget/only-number-widget.component';
+import { AddOnlyNumberWidgetComponent } from './live-widgets/only-number-widget/add-only-number-widget/add-only-number-widget.component';
+import { LiveLineChartComponent } from './charts/live-widgets/live-line-chart/live-line-chart.component';
+import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
+import { LiveBarChartComponent } from './charts/live-widgets/live-bar-chart/live-bar-chart.component';
+import { LiveColumnChartComponent } from './charts/live-widgets/live-column-chart/live-column-chart.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +39,11 @@ import { LineChartWithoutAxisComponent } from './charts/line-chart-without-axis/
     ConfirmModalComponent,
     GaugeChartComponent,
     LineChartWithoutAxisComponent,
+    OnlyNumberWidgetComponent,
+    AddOnlyNumberWidgetComponent,
+    LiveLineChartComponent,
+    LiveBarChartComponent,
+    LiveColumnChartComponent,
 
   ],
   imports: [
@@ -41,7 +54,10 @@ import { LineChartWithoutAxisComponent } from './charts/line-chart-without-axis/
     ChartsModule,
     Ng2GoogleChartsModule,
     GoogleMapsModule,
-    AccordionModule.forRoot()
+    AccordionModule.forRoot(),
+    FormsModule,
+    ColorPickerModule,
+    AngularMultiSelectModule
   ],
   exports: [
     // FilterComponent,
@@ -53,7 +69,12 @@ import { LineChartWithoutAxisComponent } from './charts/line-chart-without-axis/
     DataTableComponent,
     ConfirmModalComponent,
     GaugeChartComponent,
-    LineChartWithoutAxisComponent
+    LineChartWithoutAxisComponent,
+    OnlyNumberWidgetComponent,
+    AddOnlyNumberWidgetComponent,
+    LiveLineChartComponent,
+    LiveBarChartComponent,
+    LiveColumnChartComponent,
   ],
   providers: [
     {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}

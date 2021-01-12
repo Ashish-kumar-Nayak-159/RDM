@@ -1,27 +1,26 @@
 import { Subscription } from 'rxjs';
-import { CommonService } from './../../../services/common.service';
-import { isPlatformBrowser } from '@angular/common';
-import { Component, Inject, NgZone, OnInit, PLATFORM_ID, OnDestroy, Input } from '@angular/core';
+import { Component, Input, NgZone, OnChanges, OnInit } from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import { ChartService } from 'src/app/chart/chart.service';
-import * as moment from 'moment';
 declare var $: any;
 
+
 @Component({
-  selector: 'app-live-chart-data',
-  templateUrl: './live-data.component.html',
-  styleUrls: ['./live-data.component.css']
+  selector: 'app-live-line-chart',
+  templateUrl: './live-line-chart.component.html',
+  styleUrls: ['./live-line-chart.component.css']
 })
-export class LiveChartComponent implements OnInit, OnDestroy {
+export class LiveLineChartComponent implements OnInit, OnChanges {
 
   private chart: am4charts.XYChart;
+  @Input() chartConfig: any;
+  @Input() telemetryObj: any;
   telemetryData: any[] = [];
   selectedAlert: any;
   seriesArr: any[] = [];
   propertyList: any[] = [];
   device: any;
-  xAxisProps: any;
   y1AxisProps: any[] = [];
   y2AxisProps: any[] = [];
   chartHeight: any;
@@ -39,45 +38,68 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   chartEnddate: any;
   subscriptions: Subscription[] = [];
   constructor(
-    private commonService: CommonService,
     private chartService: ChartService,
     private zone: NgZone
   ) { }
 
   ngOnInit(): void {
+    if (!this.chartConfig.y1AxisProps) {
+      this.chartConfig.y1AxisProps = [];
+    }
+    if (!this.chartConfig.y2AxisProps) {
+      this.chartConfig.y2AxisProps = [];
+    }
     setTimeout(() => this.plotChart(), 200);
-    this.subscriptions.push(this.chartService.toggleThresholdEvent.subscribe((ev) => {
-      this.showThreshold = ev;
-      this.toggleThreshold(ev);
-    }));
-    this.subscriptions.push(
-      this.chartService.togglePropertyEvent.subscribe((property) => this.toggleProperty(property)));
+  }
+
+  ngOnChanges(changes) {
+    // const arr = JSON.parse(JSON.stringify(this.telemetryData));
+    if (changes.telemetryObj && this.chart) {
+      if (this.chartConfig.noOfDataPointsForTrend > 0) {
+        if (changes.telemetryObj) {
+          this.telemetryObj['message_date'] = new Date(this.telemetryObj['message_date']);
+          this.telemetryObj['TMD'] = Number(this.telemetryObj['TMD']);
+          this.telemetryObj['TMS'] = Number(this.telemetryObj['TMS']);
+          if (this.telemetryObj['TMD'] < 1) {
+            this.telemetryObj['TMD'] = undefined;
+          }
+          if (this.telemetryObj['TMS'] < 1) {
+            this.telemetryObj['TMS'] = undefined;
+          }
+          this.telemetryData.push(this.telemetryObj);
+        }
+        if (this.telemetryData.length > this.chartConfig.noOfDataPointsForTrend) {
+          this.telemetryData.splice(0, 1);
+        }
+      }
+      console.log(this.telemetryData);
+      // this.telemetryData.reverse();
+      this.chart.data = this.telemetryData;
+      // this.chart.validateData();
+    }
+    // this.telemetryData = JSON.parse(JSON.stringify([]));
+    // this.telemetryData = JSON.parse(JSON.stringify(arr));
+
   }
 
   plotChart() {
     this.zone.runOutsideAngular(() => {
-      console.log(document.getElementById(this.chartId));
-      const chart = am4core.create(this.chartId, am4charts.XYChart);
+      console.log(document.getElementById(this.chartConfig.chartId));
+      const chart = am4core.create(this.chartConfig.chartId, am4charts.XYChart);
       chart.paddingRight = 20;
-      const data = [];
-      console.log(this.telemetryData);
-      this.telemetryData.forEach((obj, i) => {
-        const newObj = {...obj};
-        newObj.message_date = new Date(obj.message_date);
-        delete newObj.aggregation_end_time;
-        delete newObj.aggregation_start_time;
-        newObj['TMD'] = Number(newObj['TMD']);
-        newObj['TMS'] = Number(newObj['TMS']);
-        if (newObj['TMD'] < 1) {
-          newObj['TMD'] = undefined;
-        }
-        if (newObj['TMS'] < 1) {
-          newObj['TMS'] = undefined;
-        }
-        data.splice(data.length, 0, newObj);
-      });
-      console.log(data);
-      chart.data = data;
+      // const data = [];
+      this.telemetryObj['TMD'] = Number(this.telemetryObj['TMD']);
+      this.telemetryObj['TMS'] = Number(this.telemetryObj['TMS']);
+      if (this.telemetryObj['TMD'] < 1) {
+        this.telemetryObj['TMD'] = undefined;
+      }
+      if (this.telemetryObj['TMS'] < 1) {
+        this.telemetryObj['TMS'] = undefined;
+      }
+      this.telemetryObj.message_date = new Date(this.telemetryObj.message_date);
+      this.telemetryData.push(this.telemetryObj);
+      // console.log(this.telemetryData);
+      chart.data = this.telemetryData;
       chart.dateFormatter.inputDateFormat = 'x';
       chart.dateFormatter.dateFormat = "dd-MMM-yyyy HH:mm:ss.nnn";
      // chart.durationFormatter.durationFormat = "hh:ii:ss";
@@ -87,43 +109,25 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         date.setUTCSeconds(this.chartStartdate);
         dateAxis.min = date.getTime();
       }
-      // dateAxis.baseInterval = {
-      //   count: 10,
-      //   timeUnit: "minute"
-      // }
-
       if (this.chartEnddate) {
         const date = new Date(0);
         date.setUTCSeconds(this.chartEnddate);
         dateAxis.max = date.getTime();
       }
-      // dateAxis.renderer.minGridDistance = 70;
       dateAxis.renderer.grid.template.location = 0.5;
       dateAxis.renderer.labels.template.location = 0.5;
-
       // const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
       // valueAxis.tooltip.disabled = true;
       // valueAxis.renderer.minWidth = 35;
       this.createValueAxis(chart, 0);
       this.createValueAxis(chart, 1);
-      chart.legend = new am4charts.Legend();
       chart.logo.disabled = true;
+      chart.legend = new am4charts.Legend();
       chart.cursor = new am4charts.XYCursor();
-
-      if (this.selectedAlert) {
-        const range = dateAxis.axisRanges.create();
-        range.date = new Date(this.selectedAlert.local_created_date);
-        range.grid.stroke = am4core.color('red');
-        range.grid.strokeWidth = 2;
-        range.grid.strokeOpacity = 1;
-        range.axisFill.tooltip = new am4core.Tooltip();
-        range.axisFill.tooltipText = 'Alert Time';
-        range.axisFill.interactionsEnabled = true;
-        range.axisFill.isMeasured = true;
-      }
       chart.legend.itemContainers.template.togglable = false;
       dateAxis.dateFormatter = new am4core.DateFormatter();
       dateAxis.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
+      if (this.device) {
       chart.exporting.menu = new am4core.ExportMenu();
       chart.exporting.getFormatOptions("xlsx").useLocale = false;
       chart.exporting.getFormatOptions("pdf").pageOrientation = 'landscape';
@@ -131,21 +135,13 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       this.chartDataFields = {
         "message_date": "Timestamp"
       }
-      this.y1AxisProps.forEach(prop => {
-        this.propertyList.forEach(propObj => {
-          if (prop === propObj.json_key) {
-            const units = propObj.json_model[propObj.json_key].units;
-            this.chartDataFields[prop] = propObj.name + (units ? (' (' + units + ')') : '');
-          }
-        });
+      this.chartConfig.y1AxisProps.forEach(prop => {
+        const units = prop.value.json_model[prop.id].units;
+        this.chartDataFields[prop.id] = prop.name + (units ? (' (' + units + ')') : '');
       });
-      this.y2AxisProps.forEach(prop => {
-        this.propertyList.forEach(propObj => {
-          if (prop === propObj.json_key) {
-            const units = propObj.json_model[propObj.json_key].units;
-            this.chartDataFields[prop] = propObj.name + (units ? (' (' + units + ')') : '');
-          }
-        });
+      this.chartConfig.y2AxisProps.forEach(prop => {
+        const units = prop.value.json_model[prop.id].units;
+        this.chartDataFields[prop.id] = prop.name + (units ? (' (' + units + ')') : '');
       });
       chart.exporting.dataFields = this.chartDataFields;
       chart.zoomOutButton.disabled = true;
@@ -161,11 +157,12 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       } else {
         chart.exporting.filePrefix = this.device.device_id + '_' + chart.data[0].message_date.toString() + '_' + chart.data[chart.data.length - 1].message_date.toString();
       }
-      chart.scrollbarX = new am4core.Scrollbar();
-      chart.scrollbarX.parent = chart.bottomAxesContainer;
+      }
+      // chart.scrollbarX = new am4core.Scrollbar();
+      // chart.scrollbarX.parent = chart.bottomAxesContainer;
       chart.preloader.disabled = false;
       this.chart = chart;
-      console.log('cartrttt', this.chart);
+      console.log('chartrttt', this.chart);
     });
   }
 
@@ -221,30 +218,34 @@ export class LiveChartComponent implements OnInit, OnDestroy {
     if (chart.yAxes.indexOf(valueYAxis) !== 0){
       valueYAxis.syncWithAxis = chart.yAxes.getIndex(0);
     }
-    const arr = axis === 0 ? this.y1AxisProps : this.y2AxisProps;
-    arr.forEach((prop, index) => {
+    const arr = axis === 0 ? this.chartConfig.y1AxisProps : this.chartConfig.y2AxisProps;
+    arr.forEach((prop) => {
+      console.log('aaaaaaa   ', prop.id);
       const series = chart.series.push(new am4charts.LineSeries());
       // series.dataFields.dateX = 'message_date';
-      this.propertyList.forEach(propObj => {
-        if (propObj.json_key === prop) {
-          series.units = propObj.json_model[propObj.json_key].units;
-        }
-        console.log('unitssss    ', series.units);
-      });
-      series.name =  this.getPropertyName(prop);
-      series.propKey = prop;
+      // this.propertyList.forEach(propObj => {
+      //   if (propObj.json_key === prop.id) {
+      //     series.units = propObj.json_model[propObj.json_key].units;
+      //   }
+      //   console.log('unitssss    ', series.units);
+      // });
+      series.units = prop.value.json_model[prop.id].units;
+      series.name =  prop.name;
+      series.propKey = prop.id;
       // series.stroke = this.commonService.getRandomColor();
       series.yAxis = valueYAxis;
       series.dataFields.dateX = 'message_date';
-      series.dataFields.valueY =  prop;
+      series.dataFields.valueY =  prop.id;
       series.compareText = true;
+      if (prop.color) {
+        series.stroke = am4core.color(prop.color);
+      }
       series.strokeWidth = 2;
       // series.connect = false;
-      // series.connect = (this.getPropertyName(prop) === 'Total Mass Discharge' || this.getPropertyName(prop) === 'Total Mass Suction' ? true : false);
      // series.tensionX = 0.77;
       series.strokeOpacity = 1;
       series.legendSettings.labelText = '{name} ({units})';
-      series.fillOpacity = this.chartType.includes('Area') ? 0.3 : 0;
+      series.fillOpacity = this.chartConfig.widgetType.includes('Area') ? 0.3 : 0;
       series.tooltipText = 'Date: {dateX} \n {name} ({units}): [bold]{valueY}[/]';
 
       var bullet = series.bullets.push(new am4charts.CircleBullet());
@@ -280,71 +281,6 @@ export class LiveChartComponent implements OnInit, OnDestroy {
     return this.propertyList.filter(prop => prop.json_key === key)[0].name;
   }
 
-  toggleProperty(prop) {
-    // alert('here  ' + prop);
-    this.seriesArr.forEach((item, index) => {
-      console.log(item.isActive);
-      const seriesColumn = this.chart.series.getIndex(index);
-      console.log(prop, '===' ,item)
-      if (prop === item.propKey) {
-
-        item.compareText = !item.compareText;
-        // seriesColumn.isActive = !seriesColumn.isActive;
-        if (item.isHiding || item.isHidden) {
-          item.show();
-          this.propertyList.forEach(propObj => {
-            if (prop === propObj.json_key) {
-              const units = propObj.json_model[propObj.json_key].units;
-              this.chartDataFields[prop] = propObj.name + (units ? (' (' + units + ')') : '');
-            }
-          });
-        }
-        else {
-          item.hide();
-          delete this.chartDataFields[prop];
-
-        }
-      }
-    });
-    // if (Object.keys(this.chartDataFields).length > 1) {
-    //   this.chart.exportable = true;
-    // } else {
-    //   this.chart.exportable = false;
-    // }
-    this.toggleThreshold(this.showThreshold);
-
-  }
-
-  toggleThreshold(show) {
-    if (show) {
-      let shownItem;
-      let propObj;
-      // console.log(ev.target.dataItem.dataContext);
-      let count = 0;
-      this.seriesArr.forEach((item, index) => {
-        const seriesColumn = this.chart.series.getIndex(index);
-        if (item.compareText) {
-          count += 1;
-          shownItem = seriesColumn;
-          this.propertyList.forEach(prop => {
-            if (prop.json_key === item.propKey) {
-              propObj = prop;
-            }
-          });
-        }
-      });
-      if (count === 1 && this.showThreshold) {
-        this.seriesArr.forEach(series => series.yAxis.axisRanges.clear());
-        this.createThresholdSeries(shownItem.yAxis, propObj);
-      } else {
-        this.seriesArr.forEach(series => series.yAxis.axisRanges.clear());
-      }
-    } else {
-      this.seriesArr.forEach(series => series.yAxis.axisRanges.clear());
-    }
-    console.log(this.seriesArr);
-  }
-
   openConfirmRemoveWidgetModal() {
     this.modalConfig = {
       stringDisplay: true,
@@ -360,22 +296,20 @@ export class LiveChartComponent implements OnInit, OnDestroy {
     if (eventType === 'close') {
       $('#confirmRemoveWidgetModal' + this.chartId).modal('hide');
     } else if (eventType === 'save') {
-      this.removeWidget(this.chartId);
+      this.removeWidget();
       $('#confirmRemoveWidgetModal' + this.chartId).modal('hide');
     }
   }
 
-  removeWidget(chartId) {
-
+  removeWidget() {
   }
-
-
 
   ngOnDestroy(): void {
-      if (this.chart) {
-        this.chart.dispose();
-      }
-      this.subscriptions.forEach(sub => sub.unsubscribe());
+    if (this.chart) {
+      this.chart.dispose();
+    }
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
+
 
 }

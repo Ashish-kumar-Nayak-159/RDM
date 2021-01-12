@@ -1,0 +1,166 @@
+<ng-container *ngIf="widgetObj.widgetType !== 'LineChart' && widgetObj.widgetType !== 'BarChart'
+&& widgetObj.widgetType !== 'AreaChart' && widgetObj.widgetType !== 'ColumnChart'; else singleChartTemplate">
+<ng-container *ngFor="let prop of widgetObj.properties; let i = index;" >
+<div class="form-group">
+  <label for="message-text" class="col-form-label ">Property <a *ngIf="i === 0"
+    class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2"
+    href="javascript:void(0)" (click)="addProperty()"
+    title="Add Property"
+    ><i class="fa fa-plus fa-sm text-white"></i></a
+  ></label>
+  <select class="custom-select" id="template" name="model_type" [(ngModel)]="prop.property"
+  >
+  <option [ngValue]="undefined" >Select Property</option>
+    <option [ngValue]="prop" *ngFor="let prop of propertyList">{{prop.name}}</option>
+  </select>
+</div>
+<div class="form-group" >
+  <label for="message-text" class="col-form-label ">Property Title:</label>
+  <input type="text"  class="form-control" id="title" name="title"
+  [(ngModel)]="prop.title"
+    placeholder="Property Title">
+</div>
+<div class="form-group" *ngIf="prop?.property?.data_type === 'Number'">
+  <label for="message-text" class="col-form-label ">Digits after Decimal:</label>
+  <input type="number" min="0" class="form-control" id="digitsAfterDecimals" name="digitsAfterDecimals" [(ngModel)]="prop.digitsAfterDecimals"
+    placeholder="Digits after Decimal">
+</div>
+<div class="form-group" *ngIf="widgetObj.widgetType === 'NumberWithImage'">
+  <label for="message-text" class="col-form-label ">Image
+    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isFileUploading"></i>:</label>
+  <input type="file" [disabled]="isFileUploading"
+          #typeLogoFileInput (change)="onLogoFileSelected($event.target.files, i)"
+           class="form-control" id="app_logo" name="app_logo" >
+</div>
+<ng-container *ngIf="widgetObj.widgetType === 'GaugeChart'">
+  <div class="row col-12" >
+    <label for="recipient-name" class="col-form-label">Low Threshold Range:</label>
+  </div>
+  <div class="row">
+    <div class="form-group col-5">
+      <!-- <label for="recipient-name" class="col-form-label required">L1:</label> -->
+      <input type="number" class="form-control" id="l1" name="l1" [(ngModel)]="prop.low_min"
+      placeholder="Low Threshold min Value" >
+    </div>
+    <div class="form-group col-5">
+      <!-- <label for="recipient-name" class="col-form-label required">H1:</label> -->
+      <input type="number" class="form-control" id="h1" name="h1" [(ngModel)]="prop.low_max"
+      placeholder="Low Threshold max Value" >
+    </div>
+    <div class="form-group col-1">
+      <span [(colorPicker)]="prop.low_color"
+       >
+       <i class="fa fa-paint-brush"></i>
+    </span>
+    </div>
+    <div class="form-group col-1">
+      <input [style.background]="prop.low_color" style="width: 1rem;"/>
+    </div>
+  </div>
+  <div class="row col-12" >
+    <label for="recipient-name" class="col-form-label">Normal Range:</label>
+  </div>
+  <div class="row">
+    <div class="form-group col-5">
+      <!-- <label for="recipient-name" class="col-form-label required">L1:</label> -->
+      <input type="number" class="form-control" id="l1" name="l1" [(ngModel)]="prop.normal_min"
+      placeholder="Normal min Value" >
+    </div>
+    <div class="form-group col-5">
+      <!-- <label for="recipient-name" class="col-form-label required">H1:</label> -->
+      <input type="number" class="form-control" id="h1" name="h1" [(ngModel)]="prop.normal_max"
+      placeholder="Normal max Value" >
+    </div>
+    <div class="form-group col-1">
+      <span [(colorPicker)]="prop.normal_color"
+       >
+       <i class="fa fa-paint-brush"></i>
+    </span>
+    </div>
+    <div class="form-group col-1">
+      <input [style.background]="prop.normal_color" style="width: 1rem;"/>
+    </div>
+  </div>
+  <div class="row col-12" >
+    <label for="recipient-name" class="col-form-label">High Threshold Range:</label>
+  </div>
+  <div class="row">
+    <div class="form-group col-5">
+      <!-- <label for="recipient-name" class="col-form-label required">L1:</label> -->
+      <input type="number" class="form-control" id="l1" name="l1" [(ngModel)]="prop.high_min"
+      placeholder="High Threshold min Value" >
+    </div>
+    <div class="form-group col-5">
+      <!-- <label for="recipient-name" class="col-form-label required">H1:</label> -->
+      <input type="number" class="form-control" id="h1" name="h1" [(ngModel)]="prop.high_max"
+      placeholder="High Threshold max Value" >
+    </div>
+    <div class="form-group col-1">
+      <span [(colorPicker)]="prop.high_color"
+       >
+       <i class="fa fa-paint-brush"></i>
+    </span>
+    </div>
+    <div class="form-group col-1">
+      <input [style.background]="prop.high_color" style="width: 1rem;"/>
+    </div>
+  </div>
+</ng-container>
+<div class="row" >
+  <div class="col-lg-12">
+    <hr class="solid">
+  </div>
+</div>
+</ng-container>
+</ng-container>
+<ng-template #singleChartTemplate>
+  <div class="form-group" >
+    <label for="message-text" class="col-form-label ">Y1 Axis Property:</label>
+    <angular2-multiselect [data]="dropdownProperties" id="y1AxisProperty"
+              [(ngModel)]="widgetObj.y1AxisProps" name="y1AxisProperty" [settings]="{
+                text: 'Select Y1 Axis',
+                selectAllText: 'Select All',
+                unSelectAllText: 'UnSelect All',
+                classes: 'col-lg-2 col-xl-2 p-0 ml-2',
+                enableSearchFilter: true,
+                badgeShowLimit: 1,
+                maxHeight: 200,
+                labelKey: 'name'
+              }"
+              (onDeSelectAll)="y1Deselect($event)">
+            </angular2-multiselect>
+  </div>
+  <div class="form-group" >
+    <label for="message-text" class="col-form-label ">Y2 Axis Property:</label>
+    <angular2-multiselect [data]="dropdownProperties" id="y2AxisProperty"
+              [(ngModel)]="widgetObj.y2AxisProps" name="y2AxisProperty" [settings]="{
+                text: 'Select Y2 Axis',
+                selectAllText: 'Select All',
+                unSelectAllText: 'UnSelect All',
+                classes: 'col-lg-2 col-xl-2 p-0 ml-2',
+                enableSearchFilter: true,
+                badgeShowLimit: 1,
+                maxHeight: 200,
+                labelKey: 'name'
+              }"
+              (onDeSelectAll)="y2Deselect($event)">
+            </angular2-multiselect>
+  </div>
+  <div class="row col-12" >
+    <label for="recipient-name" class="col-form-label">Color:</label>
+  </div>
+  <div class="row" *ngFor="let prop of widgetObj.y1AxisProps">
+    <div class="form-group col-5">
+      <label for="recipient-name" class="col-form-label required">{{prop.name}}:</label>
+    </div>
+    <div class="form-group col-1">
+      <span [(colorPicker)]="prop.color"
+       >
+       <i class="fa fa-paint-brush"></i>
+    </span>
+    </div>
+    <div class="form-group col-3">
+      <input [style.background]="prop.color" style="width: 3rem;"/>
+    </div>
+    </div>
+</ng-template>

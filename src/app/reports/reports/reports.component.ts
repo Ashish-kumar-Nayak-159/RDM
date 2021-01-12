@@ -514,7 +514,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
     let colA = XLSX.utils.decode_col('B'); // timestamp is in first column
 
-    const fmt = 'DD-MMM-YYYY hh:mm:ss'; // excel datetime format
+    const fmt = 'DD-MMM-YYYY hh:mm:ss.SSS'; // excel datetime format
 
     // get worksheet range
     const range = XLSX.utils.decode_range(ws['!ref']);

@@ -48,6 +48,8 @@
     "ng2-charts": "^2.3.2",
     "ng2-google-charts": "^6.1.0",
     "ngx-bootstrap": "^6.1.0",
+    "ngx-color": "^5.1.4",
+    "ngx-color-picker": "^11.0.0",
     "ngx-filesaver": "^11.0.0",
     "ngx-toastr": "^13.0.0",
     "ngx-ui-switch": "^10.0.2",

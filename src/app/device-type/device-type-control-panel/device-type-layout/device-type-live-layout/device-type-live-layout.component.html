@@ -1,1 +1,99 @@
-<h5>Work in Progress</h5>
+<div class="mx-auto">
+  <div class="topnavbar bg-white py-2" style="margin-top: 3.1rem;height:3rem">
+    <div class="row">
+      <div class="col-xl-10 col-lg-10 col-md-10 mb-12">
+          <div class="form-group form-inline my-1">
+            <button class="btn btn-sm btn-warning" (click)="onOpenAddWidgetModal()"
+              >Add Live Widget</button>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="con-pad" style="margin-top: 12rem;max-height: calc(100vh - 13rem);">
+    <i *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+    <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length > 0">
+    <ng-container *ngFor="let widget of liveWidgets">
+      <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
+      || widget?.widgetType === 'NumberWithImage'" [chartConfig]="widget"
+      [telemetryObj]="telemetryObj">
+      </app-only-number-widget>
+      <app-gauge-chart [chartConfig]="widget" *ngIf="widget.widgetType === 'GaugeChart'" [telemetryObj]="telemetryObj"></app-gauge-chart>
+      <app-live-line-chart [chartConfig]="widget" [telemetryObj]="telemetryObj" 
+      *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
+      </app-live-line-chart>
+      <app-live-bar-chart [chartConfig]="widget" [telemetryObj]="telemetryObj" 
+      *ngIf="widget.widgetType === 'BarChart'">
+      </app-live-bar-chart>
+      <app-live-column-chart [chartConfig]="widget" [telemetryObj]="telemetryObj" 
+      *ngIf="widget.widgetType === 'ColumnChart'">
+      </app-live-column-chart>
+    </ng-container>
+    </ng-container>
+    <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length === 0">
+      No Live Widgets added.
+    </ng-container>
+
+  </div>
+</div>
+
+
+<div class="modal right fade" id="addWidgetsModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" *ngIf="widgetObj">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Add Widget</h5>
+      <button type="button" class="close" [disabled]="isCreateWidgetAPILoading" (click)="onCloseAddWidgetModal()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">Widget Title:</label>
+          <input type="text" class="form-control" id="name" name="name" [(ngModel)]="widgetObj.widgetTitle"
+          placeholder="Enter Widget Name">
+        </div>
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">Widget Type:</label>
+          <select class="custom-select" id="template" name="model_type" [(ngModel)]="widgetObj.widgetType"
+          (change)="onWidgetTypeChange()">
+          <option [ngValue]="undefined" >Select Widget</option>
+            <option [ngValue]="'OnlyNumber'" >Only Number Widget</option>
+            <option [ngValue]="'NumberWithTrend'" >Number with Trend Widget</option>
+            <option [ngValue]="'NumberWithImage'" >Number with Image Widget</option>
+            <option [ngValue]="'GaugeChart'" >Gauge Chart</option>
+            <option [ngValue]="'LineChart'" >Line Chart</option>
+            <option [ngValue]="'AreaChart'" >Area Chart</option>
+            <option [ngValue]="'ColumnChart'" >Column Chart</option>
+            <option [ngValue]="'BarChart'" >Bar Chart</option>
+          </select>
+        </div>
+        <div class="form-group" *ngIf="widgetObj.widgetType === 'NumberWithTrend' || widgetObj.widgetType === 'LineChart' || widgetObj.widgetType === 'AreaChart'
+        || widgetObj.widgetType === 'BarChart' || widgetObj.widgetType === 'ColumnChart'">
+          <label for="message-text" class="col-form-label">Data points in Chart:</label>
+          <input type="number" class="form-control" id="data_points" name="data_points" [(ngModel)]="widgetObj.noOfDataPointsForTrend"
+          placeholder="Enter No of data points">
+        </div>
+        <div class="form-group" *ngIf="widgetObj.widgetType === 'GaugeChart'">
+          <label for="message-text" class="col-form-label">Gauge Start Angle:</label>
+          <input type="number" class="form-control" id="start_angle" name="start_angle" [(ngModel)]="widgetObj.startAngle"
+          placeholder="Gauge Start Angle">
+        </div>
+        <div class="form-group" *ngIf="widgetObj.widgetType === 'GaugeChart'">
+          <label for="message-text" class="col-form-label">Gauge End Angle:</label>
+          <input type="number" class="form-control" id="end_angle" name="end_angle" [(ngModel)]="widgetObj.endAngle"
+          placeholder="Gauge End Angle">
+        </div>
+        <app-add-only-number-widget [widgetObj]="widgetObj" [propertyList]="propertyList"></app-add-only-number-widget>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary add-row" [disabled]="isCreateWidgetAPILoading" (click)="onSaveWidgetObj()">Save</button>
+      <button type="button" class="btn btn-secondary" [disabled]="isCreateWidgetAPILoading" (click)="onCloseAddWidgetModal()">Cancel</button>
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateWidgetAPILoading"></i>
+    </div>
+  </div>
+  </div>
+</div>
+
+

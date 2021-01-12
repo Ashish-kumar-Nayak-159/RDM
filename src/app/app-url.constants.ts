@@ -14,7 +14,7 @@ export class AppUrls {
   public static GET_DEVICE_BATTERY_LIST = 'D2C_GetDeviceBatteryMessages';
   public static GET_C2D_MESSAGE_LIST = 'apps/{0}/c2d/messages';
   public static GET_QUEUE_MESSAGE_COUNT = 'apps/{0}/c2d/queue_message_count';
-  public static PURGE_QUEUE_MESSAGE = 'apps/{0}/c2d/messages/purge';
+  public static PURGE_QUEUE_MESSAGE = 'apps/{0}/c2d/purge_messages';
   public static GET_C2D_MESSAGE_JSON = 'apps/{0}/c2d/messages/{1}';
   public static GET_C2D_RESPONSE_JSON = 'D2C_GetDeviceResponses';
   public static GET_DEVICE_CREDENTIALS = 'DLM_GetDeviceCredentials';
@@ -81,4 +81,5 @@ export class AppUrls {
   public static GET_CACHED_ALERT_BY_ID = 'cached_alert_analysis/{0}';
   public static GET_ASSET_CONFIGURATION_HISTORY = 'apps/{0}/d2c/configuration_history';
   public static GET_DEVICE_DETAIL = 'apps/{0}/devices/{1}';
+  public static GET_LIVE_WIDGETS_FOR_MODEL = 'device_types/live_widgets';
 }

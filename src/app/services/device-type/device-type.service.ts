@@ -27,7 +27,7 @@ export class DeviceTypeService {
       }
     });
     const deviceModels = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_MODELS_LIST);
-    if (deviceModels && (filterObj['id'] || filterObj['name'])) {
+    if (deviceModels) {
       if (filterObj['id']) {
         const model = deviceModels.filter(modelObj => modelObj.id === filterObj['id']);
         return new Observable((observer) => {
@@ -177,6 +177,17 @@ export class DeviceTypeService {
       })
       );
     }
+  }
+
+  getThingsModelLiveWidgets(filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    console.log(params);
+    return this.http.get(this.url + AppUrls.GET_LIVE_WIDGETS_FOR_MODEL, { params });
   }
 
 

@@ -1,8 +1,12 @@
+import { CommonService } from 'src/app/services/common.service';
 import { Injectable, EventEmitter } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppUrls } from '../../app-url.constants';
 import { String } from 'typescript-string-operations';
+import { CONSTANTS } from 'src/app/app.constants';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +16,8 @@ export class ApplicationService {
   url = environment.appServerURL;
   refreshAppData: EventEmitter<any> = new EventEmitter<any>();
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private commonService: CommonService
   ) { }
 
   getApplicationDashboardSnapshot(filterObj, app) {
@@ -39,6 +44,23 @@ export class ApplicationService {
 
   getApplicationDetail(app) {
     return this.http.get(this.url + String.Format(AppUrls.GET_APP_DETAILS, app));
+    // const appData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    // if (appData) {
+    //   return new Observable((observer) => {
+    //     observer.next({
+    //       data: appData
+    //     });
+    //   });
+    // } else {
+      
+    //   .pipe( map((data: any) => {
+    //     this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, data);
+    //     return data;
+    //   }), catchError( error => {
+    //     return throwError( error);
+    //   })
+    //   );
+    // }
   }
 
   createApp(appObj) {

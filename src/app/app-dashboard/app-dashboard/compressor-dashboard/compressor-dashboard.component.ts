@@ -495,11 +495,9 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
       (response: any) => {
         const newMode = response?.mode?.toLowerCase() === 'normal' ? true :
         (response?.mode?.toLowerCase() === 'turbo' ? false : true);
-        if (this.isC2dAPILoading) {
-          const arr = [];
-          this.telemetryData = [];
-          this.telemetryData = JSON.parse(JSON.stringify(arr));
-        }
+        const arr = [];
+        this.telemetryData = [];
+        this.telemetryData = JSON.parse(JSON.stringify(arr));
         if (this.signalRModeValue === newMode) {
           $('#overlay').hide();
           this.isC2dAPILoading = false;
@@ -507,8 +505,6 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
           this.c2dLoadingMessage = undefined;
           clearInterval(this.c2dResponseInterval);
         }
-
-
         this.signalRModeValue = newMode;
         this.isTelemetryModeAPICalled = false;
       }

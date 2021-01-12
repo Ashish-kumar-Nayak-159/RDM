@@ -31,15 +31,17 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     console.log(this.userData.apps);
-    localStorage.removeItem(CONSTANTS.DASHBOARD_ALERT_SELECTION);
-    localStorage.removeItem(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION);
-    localStorage.removeItem(CONSTANTS.SELECTED_APP_DATA);
-    localStorage.removeItem(CONSTANTS.DEVICES_LIST);
-    localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
   }
 
   async redirectToApp(app) {
-
+    const localStorageAppData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    if (localStorageAppData && localStorageAppData.app !== app.app)  {
+      localStorage.removeItem(CONSTANTS.DASHBOARD_ALERT_SELECTION);
+      localStorage.removeItem(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION);
+      localStorage.removeItem(CONSTANTS.SELECTED_APP_DATA);
+      localStorage.removeItem(CONSTANTS.DEVICES_LIST);
+      localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
+    }
     await this.getApplicationData(app);
     await this.getDevices(this.applicationData.user.hierarchy);
     await this.getDeviceModels(this.applicationData.user.hierarchy);

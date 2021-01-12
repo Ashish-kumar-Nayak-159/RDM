@@ -448,6 +448,24 @@ export class CONSTANTS {
       isTitle: true
     },
     {
+      page: 'current_config',
+      system_name: 'Current Configuration',
+      url: '#device_current_config',
+      display_name: 'Current Configuration',
+      icon: 'fa fa-fw fa-cog',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'config_history',
+      system_name: 'Configuration History',
+      url: '#device_config_history',
+      display_name: 'Configuration History',
+      icon: 'fa fa-fw fa-history',
+      visible: true,
+      isTitle: false
+    },
+    {
       page: 'notifications',
       system_name: 'Notifications',
       url: '#device_notifications',
@@ -480,24 +498,6 @@ export class CONSTANTS {
       url: '#device_cached_telemetry',
       display_name: 'Cached Telemetry',
       icon: 'fa fa-fw fa-stack-exchange',
-      visible: true,
-      isTitle: false
-    },
-    {
-      page: 'current_config',
-      system_name: 'Current Configuration',
-      url: '#device_current_config',
-      display_name: 'Current Configuration',
-      icon: 'fa fa-fw fa-cog',
-      visible: true,
-      isTitle: false
-    },
-    {
-      page: 'config_history',
-      system_name: 'Configuration History',
-      url: '#device_config_history',
-      display_name: 'Configuration History',
-      icon: 'fa fa-fw fa-history',
       visible: true,
       isTitle: false
     }
@@ -682,6 +682,7 @@ export class CONSTANTS {
   public static DEVICES_LIST = 'devices_list';
   public static DEVICE_MODELS_LIST = 'device_models_list';
   public static DEVICE_MODEL_DATA = 'device_model_data';
+  public static EXPIRY_TIME = 'expiry_time';
   public static CURRENT_BREADCRUMB_STATE = 'breadcrumbState';
   public static NON_IP_DEVICES = 'Non IP Devices';
   public static IP_DEVICE = 'IoT Device';
@@ -690,6 +691,7 @@ export class CONSTANTS {
   public static NOT_ALLOWED_SPECIAL_CHARS_NAME = [' ', '.', '$', '#'];
   public static PASSWORD_REGEX = '^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,20}$';
   public static APP_ADMIN_ROLE = 'App Admin';
+  public static LOCAL_STORAGE_EXPIRY_INTERVAL = 86400000;
   public static DEFAULT_APP_ICON = 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/default_app_icon.png';
   public static DEFAULT_APP_LOGO = 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/default_app_logo.jpg';
   public static DEFAULT_HEADER_LOGO = 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/app-images/header-logo/logo.png';

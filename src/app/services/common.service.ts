@@ -30,7 +30,7 @@ export class CommonService {
     if (utcDate) {
       // return (moment.utc(utcDate, 'M/DD/YYYY h:mm:ss A')).local().format('DD-MMM-YYYY hh:mm:ss A');
       // console.log(moment(new Date(utcDate + ' UTC').toString()).format('DD-MMM-YYYY hh:mm:ss A'));
-      return moment(new Date(utcDate + ' UTC').toString()).format('DD-MMM-YYYY hh:mm:ss A');
+      return moment(new Date(utcDate).toISOString()).format('DD-MMM-YYYY hh:mm:ss.SSS A');
     }
     return null;
   }
@@ -38,7 +38,7 @@ export class CommonService {
   convertSignalRUTCDateToLocal(utcDate) {
     if (utcDate) {
       // return (moment.utc(utcDate, 'M/DD/YYYY h:mm:ss A')).local().format('DD-MMM-YYYY hh:mm:ss A');
-      return moment(new Date(utcDate).toString()).format('DD-MMM-YYYY hh:mm:ss A');
+      return moment(new Date(utcDate).toString()).format('DD-MMM-YYYY hh:mm:ss.SSS A');
     }
     return null;
   }
@@ -88,17 +88,16 @@ export class CommonService {
     return JSON.parse(localStorage.getItem(key));
   }
 
-  setFlag(val) {
-    this.setFlag = val;
-    console.log('service    ', this.setFlag);
-  }
-
-  getFlag() {
-    return this.setFlag;
-  }
-
   setItemInLocalStorage(key, value) {
-    return localStorage.setItem(key, JSON.stringify(value));
+    localStorage.setItem(key, JSON.stringify(value));
+    // let expiryObj: any = localStorage.getItem(CONSTANTS.EXPIRY_TIME);
+    // const userData: any = JSON.parse(localStorage.getItem(CONSTANTS.USER_DETAILS));
+    // if (!expiryObj && userData) {
+    //   expiryObj = {};
+    //   expiryObj.expired_at = (new Date().getTime()) + CONSTANTS.LOCAL_STORAGE_EXPIRY_INTERVAL;
+    //   expiryObj.user = userData.email;
+    //   localStorage.setItem(CONSTANTS.EXPIRY_TIME, JSON.stringify(expiryObj));
+    // }
   }
 
   async uploadImageToBlob(file, folderName) {
@@ -139,6 +138,14 @@ export class CommonService {
   }
 
   onLogOut() {
+    // const now = new Date();
+    // // compare the expiry time of the item with the current time
+    // const expiryObj: any = localStorage.getItem(CONSTANTS.EXPIRY_TIME);
+    // if (!expiryObj || now.getTime() > expiryObj.expired_at) {
+    //   localStorage.clear();
+    // } else {
+    //   localStorage.removeItem(CONSTANTS.USER_DETAILS);
+    // }
     localStorage.clear();
     this.signalRService.disconnectFromSignalR('all');
     this.router.navigate(['']).then(() => {

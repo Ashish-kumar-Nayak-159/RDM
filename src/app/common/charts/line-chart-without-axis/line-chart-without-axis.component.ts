@@ -70,7 +70,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
       // data.reverse();
       this.chart.data = data;
       this.chart.validateData();
-      // console.log(data);
+      console.log(data);
     }
   }
 

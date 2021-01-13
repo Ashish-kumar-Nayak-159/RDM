@@ -169,12 +169,12 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
     console.log('data-117    ', data);
     const arr = JSON.parse(JSON.stringify(data));
     console.log(list);
-    arr.forEach(element => {
-      if (element.page === 'Things Modelling') {
+    arr.forEach(element1 => {
+      if (element1.page === 'Things Modelling') {
         if (this.contextApp?.user.role !== CONSTANTS.APP_ADMIN_ROLE) {
-        element.visible = false;
+        element1.visible = false;
         } else {
-          element.visible = true;
+          element1.visible = true;
         }
       }
     });

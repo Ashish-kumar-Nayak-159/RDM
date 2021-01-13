@@ -189,14 +189,15 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
     } else {
       this.isCreateAPILoading = true;
       this.applicationDetail.hierarchy = {
-        levels: ["App"],
+        levels: ['App'],
         tags: {}
       };
       this.applicationDetail.roles = [{
         name: 'App Admin',
         level: 0
       }];
-      this.applicationDetail.configuration = {main_menu: [], device_control_panel_menu : [], model_control_panel_menu: [],gateway_control_panel_menu: []};
+      this.applicationDetail.configuration = {main_menu: [], device_control_panel_menu : [],
+        model_control_panel_menu: [], gateway_control_panel_menu: []};
       const methodToCall = this.appModalType === 'Create' ? this.applicationService.createApp(this.applicationDetail) :
       (this.appModalType === 'Edit' ? this.applicationService.updateApp(this.applicationDetail) : null);
       if (methodToCall) {

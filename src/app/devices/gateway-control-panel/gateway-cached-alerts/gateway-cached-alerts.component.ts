@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -11,7 +11,7 @@ declare var $: any;
   templateUrl: './gateway-cached-alerts.component.html',
   styleUrls: ['./gateway-cached-alerts.component.css']
 })
-export class GatewayCachedAlertsComponent implements OnInit {
+export class GatewayCachedAlertsComponent implements OnInit, OnDestroy {
 
   filterObj: any = {};
   alertsList: any[] = [];

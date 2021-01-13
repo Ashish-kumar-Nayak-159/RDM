@@ -11,7 +11,7 @@ declare var $: any;
   templateUrl: './live-bar-chart.component.html',
   styleUrls: ['./live-bar-chart.component.css']
 })
-export class LiveBarChartComponent implements OnInit, OnChanges {
+export class LiveBarChartComponent implements OnInit, OnChanges, OnDestroy {
 
   private chart: am4charts.XYChart;
   @Input() chartConfig: any;
@@ -126,17 +126,18 @@ export class LiveBarChartComponent implements OnInit, OnChanges {
       range.axisFill.isMeasured = true;
     }
     chart.dateFormatter.inputDateFormat = 'x';
-    chart.dateFormatter.dateFormat = "dd-MMM-yyyy HH:mm:ss.nnn";
+    chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
     chart.legend = new am4charts.Legend();
     chart.legend.itemContainers.template.togglable = false;
     if (this.device) {
-    chart.exporting.menu = new am4core.ExportMenu();
-      chart.exporting.getFormatOptions("xlsx").useLocale = false;
-      chart.exporting.getFormatOptions("pdf").pageOrientation = 'landscape';
-      chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date.toString() + ' to ' + chart.data[chart.data.length - 1].message_date.toString();
+      chart.exporting.menu = new am4core.ExportMenu();
+      chart.exporting.getFormatOptions('xlsx').useLocale = false;
+      chart.exporting.getFormatOptions('pdf').pageOrientation = 'landscape';
+      chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date.toString() +
+      ' to ' + chart.data[chart.data.length - 1].message_date.toString();
       this.chartDataFields = {
-        "message_date": "Timestamp"
-      }
+        message_date: 'Timestamp'
+      };
       this.chartConfig.y1AxisProps.forEach(prop => {
         const units = prop.value.json_model[prop.id].units;
         this.chartDataFields[prop.id] = prop.name + (units ? (' (' + units + ')') : '');
@@ -146,20 +147,21 @@ export class LiveBarChartComponent implements OnInit, OnChanges {
         this.chartDataFields[prop.id] = prop.name + (units ? (' (' + units + ')') : '');
       });
       chart.exporting.dataFields = this.chartDataFields;
-      chart.exporting.getFormatOptions("pdf").addURL = false;
+      chart.exporting.getFormatOptions('pdf').addURL = false;
       chart.exporting.dateFormat = 'dd-MM-yyyy hh:mm:ss A a';
       console.log(this.selectedAlert);
       if (this.selectedAlert) {
         chart.exporting.filePrefix = this.selectedAlert.device_id + '_Alert_' + this.selectedAlert.local_created_date;
       } else {
-        chart.exporting.filePrefix = this.device.device_id + '_' + chart.data[0].message_date.toString() + '_' + chart.data[chart.data.length - 1].message_date.toString();
+        chart.exporting.filePrefix = this.device.device_id + '_' + chart.data[0].message_date.toString()
+        + '_' + chart.data[chart.data.length - 1].message_date.toString();
       }
     }
     chart.cursor = new am4charts.XYCursor();
     // chart.scrollbarX = new am4core.Scrollbar();
     //   chart.scrollbarX.parent = chart.bottomAxesContainer;
-      chart.zoomOutButton.disabled = true;
-      chart.logo.disabled = true;
+    chart.zoomOutButton.disabled = true;
+    chart.logo.disabled = true;
     this.chart = chart;
     // // Create series
     this.createValueAxis(chart, 0);

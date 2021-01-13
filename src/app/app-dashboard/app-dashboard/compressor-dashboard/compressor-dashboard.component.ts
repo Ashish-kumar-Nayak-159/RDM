@@ -110,7 +110,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
   }
 
   onSwitchValueChange(event) {
-    console.log(event)
+    console.log(event);
     $('#overlay').show();
     // alert(this.signalRModeValue);
     this.c2dResponseMessage = [];
@@ -231,15 +231,15 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
       this.devices = [];
       console.log(this.originalDevices);
       this.originalDevices.forEach(device => {
-        let flag = false;
+        let flag1 = false;
         Object.keys(hierarchyObj).forEach(hierarchyKey => {
           if (device.hierarchy[hierarchyKey] && device.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
-            flag = true;
+            flag1 = true;
           } else {
-            flag = false;
+            flag1 = false;
           }
         });
-        if (flag) {
+        if (flag1) {
           arr.push(device);
         }
       });
@@ -257,7 +257,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
     }
     let count = 0;
     Object.keys(this.configureHierarchy).forEach(key => {
-      if(this.configureHierarchy[key]) {
+      if (this.configureHierarchy[key]) {
         count ++;
       }
     });
@@ -271,7 +271,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
   }
 
   getDevices(hierarchy) {
-    return new Promise((resolve) => {
+    return new Promise((resolve1) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
@@ -285,7 +285,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
               this.filterObj.device = this.devices[0];
             }
           }
-          resolve();
+          resolve1();
         }
       ));
     });
@@ -361,7 +361,9 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
           // const hours = this.telemetryObj['Running Hours'].split(':');
           // this.telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
           // this.telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
-          this.getTimeDifference( Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Hours')])),  Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Minutes')])));
+          this.getTimeDifference(
+            Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Hours')])),
+            Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Minutes')])));
       //    this.getTimeDifference(this.telemetryObj['Running Hours'], this.telemetryObj['Running Minutes']);
           Object.keys(this.telemetryObj).forEach(key => {
             if (key !== 'message_date') {
@@ -405,7 +407,9 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
     // telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
     // telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
     // console.log(telemetryObj);
-    this.getTimeDifference( Math.floor(Number(telemetryObj[this.getPropertyKey('Running Hours')])),  Math.floor(Number(telemetryObj[this.getPropertyKey('Running Minutes')])));
+    this.getTimeDifference(
+      Math.floor(Number(telemetryObj[this.getPropertyKey('Running Hours')])),
+      Math.floor(Number(telemetryObj[this.getPropertyKey('Running Minutes')])));
     this.lastReportedTelemetryValues = telemetryObj;
     if (this.telemetryObj) {
       const interval = moment(telemetryObj.message_date).diff(moment(this.telemetryObj.message_date), 'second');
@@ -434,13 +438,13 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
   }
 
   getMidNightHours(filterObj) {
-    return new Promise((resolve) => {
+    return new Promise((resolve1) => {
       const obj = {...filterObj};
       obj.order_dir = 'ASC';
       let message_props = '';
       this.propertyList.forEach((prop, index) => {
         if (prop.json_key === this.getPropertyKey('Running Hours') || prop.json_key === this.getPropertyKey('Running Minutes')) {
-          message_props = message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : '')
+          message_props = message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : '');
         }
       });
 
@@ -448,10 +452,12 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
       this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
         (response: any) => {
           if (response?.data?.length > 0) {
-            this.midNightHour = response.data[0][this.getPropertyKey('Running Hours')] ? Math.floor(Number(response.data[0][this.getPropertyKey('Running Hours')])) : 0;
-            this.midNightMinute = response.data[0][this.getPropertyKey('Running Minutes')] ? Math.floor(Number(response.data[0][this.getPropertyKey('Running Minutes')])) : 0;
+            this.midNightHour = response.data[0][this.getPropertyKey('Running Hours')] ?
+            Math.floor(Number(response.data[0][this.getPropertyKey('Running Hours')])) : 0;
+            this.midNightMinute = response.data[0][this.getPropertyKey('Running Minutes')] ?
+            Math.floor(Number(response.data[0][this.getPropertyKey('Running Minutes')])) : 0;
           }
-          resolve();
+          resolve1();
         }));
     });
   }
@@ -471,7 +477,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
   }
 
   getThingsModelProperties(deviceType) {
-    return new Promise((resolve) => {
+    return new Promise((resolve1) => {
       if (this.propertyList.length === 0) {
         const obj = {
           app: this.contextApp.app,
@@ -480,11 +486,11 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
         this.apiSubscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
           (response: any) => {
             this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-            resolve();
+            resolve1();
           }
         ));
       } else {
-        resolve();
+        resolve1();
       }
     });
   }

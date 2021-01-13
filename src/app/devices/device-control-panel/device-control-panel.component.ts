@@ -61,11 +61,11 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
             //   this.componentState = CONSTANTS.NON_IP_DEVICE;
             //   this.pageType = 'Device';
             // }
-            this.getTileName();
-            this.pageType = this.pageType.slice(0, -1);
-            this.device = new Device();
-            this.device.device_id = params.get('deviceId');
-            this.getDeviceDetail();
+          this.getTileName();
+          this.pageType = this.pageType.slice(0, -1);
+          this.device = new Device();
+          this.device.device_id = params.get('deviceId');
+          this.getDeviceDetail();
           }
       }
     );

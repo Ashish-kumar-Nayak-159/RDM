@@ -272,7 +272,7 @@ export class DeviceService {
   }
 
   sendC2DMessage(message, app) {
-    return this.http.post(this.url + String.Format(AppUrls.SEND_C2D_MESSAGE,app), message);
+    return this.http.post(this.url + String.Format(AppUrls.SEND_C2D_MESSAGE, app), message);
   }
 
   getNonIPDeviceCount(filterObj) {

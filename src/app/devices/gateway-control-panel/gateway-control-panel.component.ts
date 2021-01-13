@@ -54,16 +54,16 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
               this.pageType = 'Gateway';
             }
           }
-            if (params.get('gatewayId')) {
-              this.gatewayId = params.get('gatewayId');
-              this.componentState = CONSTANTS.NON_IP_DEVICE;
-              this.pageType = 'Device';
-            }
-            this.getTileName();
-            this.pageType = this.pageType.slice(0, -1);
-            this.device = new Device();
-            this.device.device_id = params.get('deviceId');
-            this.getDeviceDetail();
+          if (params.get('gatewayId')) {
+            this.gatewayId = params.get('gatewayId');
+            this.componentState = CONSTANTS.NON_IP_DEVICE;
+            this.pageType = 'Device';
+          }
+          this.getTileName();
+          this.pageType = this.pageType.slice(0, -1);
+          this.device = new Device();
+          this.device.device_id = params.get('deviceId');
+          this.getDeviceDetail();
 
         }
       }
@@ -95,10 +95,6 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
       }
     });
     this.tileData = selectedItem[1];
-  }
-
-  ngAfterViewInit(): void {
-    // this.setToggleClassForMenu();
   }
 
 

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -12,7 +12,7 @@ declare var $: any;
   templateUrl: './gateway-configuration-history.component.html',
   styleUrls: ['./gateway-configuration-history.component.css']
 })
-export class GatewayConfigurationHistoryComponent implements OnInit {
+export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
 
   filterObj: any = {};
   confighistory: any[] = [];

@@ -189,7 +189,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.dropdownPropList = [];
     let count = 0;
     Object.keys(this.configureHierarchy).forEach(key => {
-      if(this.configureHierarchy[key]) {
+      if (this.configureHierarchy[key]) {
         count ++;
       }
     });
@@ -480,10 +480,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.latestAlerts.forEach(alert => {
         data.push({
           'Asset Name': alert.device_display_name ? alert.device_display_name : alert.device_id,
-          'Time': alert.local_created_date,
-          'Severity': alert.severity,
-          'Description': alert.message,
-          'Status': alert.metadata?.acknowledged_date ? 'Acknowledged' : 'Not Acknowledged',
+          Time: alert.local_created_date,
+          Severity: alert.severity,
+          Description: alert.message,
+          Status: alert.metadata?.acknowledged_date ? 'Acknowledged' : 'Not Acknowledged',
           'Acknowledged By': alert.metadata?.user_id
         });
       });
@@ -494,14 +494,15 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.telemetry.forEach(telemetryObj => {
         const obj = {
           'Asset Name': this.filterObj.non_ip_device ?
-            (this.filterObj.non_ip_device.device_display_name ? this.filterObj.non_ip_device?.device_display_name : this.filterObj.non_ip_device?.device_id)
+            (this.filterObj.non_ip_device.device_display_name ? this.filterObj.non_ip_device?.device_display_name
+              : this.filterObj.non_ip_device?.device_id)
             : (this.filterObj.device ?
             (this.filterObj.device.device_display_name ? this.filterObj.device.device_display_name : this.filterObj.device.device_id)
             : '' ),
-          'Time': telemetryObj.local_created_date
-        }
+          Time: telemetryObj.local_created_date
+        };
         this.selectedProps.forEach(prop => {
-          obj[prop.id] = telemetryObj[prop.value.json_key]
+          obj[prop.id] = telemetryObj[prop.value.json_key];
         });
         data.push(obj);
       });
@@ -512,7 +513,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     console.log(ws);
 
 
-    let colA = XLSX.utils.decode_col('B'); // timestamp is in first column
+    const colA = XLSX.utils.decode_col('B'); // timestamp is in first column
 
     const fmt = 'DD-MMM-YYYY hh:mm:ss.SSS'; // excel datetime format
 

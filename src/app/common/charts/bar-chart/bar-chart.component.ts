@@ -95,50 +95,52 @@ export class BarChartComponent implements OnInit, OnDestroy {
       range.axisFill.isMeasured = true;
     }
     chart.dateFormatter.inputDateFormat = 'x';
-    chart.dateFormatter.dateFormat = "dd-MMM-yyyy HH:mm:ss.nnn";
+    chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
     chart.legend = new am4charts.Legend();
     chart.legend.itemContainers.template.togglable = false;
     chart.exporting.menu = new am4core.ExportMenu();
-      chart.exporting.getFormatOptions("xlsx").useLocale = false;
-      chart.exporting.getFormatOptions("pdf").pageOrientation = 'landscape';
-      chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date.toString() + ' to ' + chart.data[chart.data.length - 1].message_date.toString();
-      this.chartDataFields = {
-        "message_date": "Timestamp"
-      }
-      this.y1AxisProps.forEach(prop => {
-        this.propertyList.forEach(propObj => {
-          if (prop === propObj.json_key) {
-            const units = propObj.json_model[propObj.json_key].units;
-            this.chartDataFields[prop] = propObj.name + (units ? (' (' + units + ')') : '');
-          }
-        });
+    chart.exporting.getFormatOptions('xlsx').useLocale = false;
+    chart.exporting.getFormatOptions('pdf').pageOrientation = 'landscape';
+    chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date.toString()
+    + ' to ' + chart.data[chart.data.length - 1].message_date.toString();
+    this.chartDataFields = {
+      message_date: 'Timestamp'
+    };
+    this.y1AxisProps.forEach(prop => {
+      this.propertyList.forEach(propObj => {
+        if (prop === propObj.json_key) {
+          const units = propObj.json_model[propObj.json_key].units;
+          this.chartDataFields[prop] = propObj.name + (units ? (' (' + units + ')') : '');
+        }
       });
-      this.y2AxisProps.forEach(prop => {
-        this.propertyList.forEach(propObj => {
-          if (prop === propObj.json_key) {
-            const units = propObj.json_model[propObj.json_key].units;
-            this.chartDataFields[prop] = propObj.name + (units ? (' (' + units + ')') : '');
-          }
-        });
+    });
+    this.y2AxisProps.forEach(prop => {
+      this.propertyList.forEach(propObj => {
+        if (prop === propObj.json_key) {
+          const units = propObj.json_model[propObj.json_key].units;
+          this.chartDataFields[prop] = propObj.name + (units ? (' (' + units + ')') : '');
+        }
       });
-      chart.exporting.dataFields = this.chartDataFields;
-      // const list = new am4core.List<string>();
-      // list.insertIndex(0, 'message_date');
-      // console.log(list);
-      // chart.exporting.dateFields = list;
-      chart.exporting.getFormatOptions("pdf").addURL = false;
-      chart.exporting.dateFormat = 'dd-MM-yyyy hh:mm:ss A a';
-      console.log(this.selectedAlert);
-      if (this.selectedAlert) {
-        chart.exporting.filePrefix = this.selectedAlert.device_id + '_Alert_' + this.selectedAlert.local_created_date;
-      } else {
-        chart.exporting.filePrefix = this.device.device_id + '_' + chart.data[0].message_date.toString() + '_' + chart.data[chart.data.length - 1].message_date.toString();
-      }
+    });
+    chart.exporting.dataFields = this.chartDataFields;
+    // const list = new am4core.List<string>();
+    // list.insertIndex(0, 'message_date');
+    // console.log(list);
+    // chart.exporting.dateFields = list;
+    chart.exporting.getFormatOptions('pdf').addURL = false;
+    chart.exporting.dateFormat = 'dd-MM-yyyy hh:mm:ss A a';
+    console.log(this.selectedAlert);
+    if (this.selectedAlert) {
+      chart.exporting.filePrefix = this.selectedAlert.device_id + '_Alert_' + this.selectedAlert.local_created_date;
+    } else {
+      chart.exporting.filePrefix = this.device.device_id + '_' +
+      chart.data[0].message_date.toString() + '_' + chart.data[chart.data.length - 1].message_date.toString();
+    }
     chart.cursor = new am4charts.XYCursor();
     chart.scrollbarX = new am4core.Scrollbar();
-      chart.scrollbarX.parent = chart.bottomAxesContainer;
-      chart.zoomOutButton.disabled = true;
-      chart.logo.disabled = true;
+    chart.scrollbarX.parent = chart.bottomAxesContainer;
+    chart.zoomOutButton.disabled = true;
+    chart.logo.disabled = true;
     this.chart = chart;
     // // Create series
     this.createValueAxis(chart, 0);

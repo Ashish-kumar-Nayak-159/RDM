@@ -1,6 +1,6 @@
 import { DomSanitizer } from '@angular/platform-browser';
 import { Device } from './../../../models/device.model';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -17,7 +17,7 @@ declare var $: any;
   templateUrl: './gateway-cached-telemetry.component.html',
   styleUrls: ['./gateway-cached-telemetry.component.css']
 })
-export class GatewayCachedTelemetryComponent implements OnInit {
+export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
 
   filterObj: any = {};
   telemetryList: any[] = [];
@@ -164,25 +164,26 @@ export class GatewayCachedTelemetryComponent implements OnInit {
     return new Promise((resolve) => {
       this.isFileDataLoading = true;
     // link.remove();
-    this.fileData = undefined;
-    const url = environment.blobURL + '/' + environment.cachedTelemetryContainer + '/' + fileObj.file_path + '/' + fileObj.file_name + this.sasToken;
-    let method;
-    if (type === 'download') {
-      method = this.commonService.getFileData(url);
-    } else  {
-      method = this.commonService.getFileOriginalData(url);
-    }
-    this.apiSubscriptions.push(method.subscribe(
-      response => {
-        this.fileData = response;
-        console.log(this.fileData);
-        if (type === 'download') {
-        this.fileSaverService.save(response, fileObj.file_name);
-        }
-        this.isFileDataLoading = false;
-        resolve();
-      }, error => this.isFileDataLoading = false
-    ));
+      this.fileData = undefined;
+      const url = environment.blobURL + '/' + environment.cachedTelemetryContainer + '/' +
+      fileObj.file_path + '/' + fileObj.file_name + this.sasToken;
+      let method;
+      if (type === 'download') {
+        method = this.commonService.getFileData(url);
+      } else  {
+        method = this.commonService.getFileOriginalData(url);
+      }
+      this.apiSubscriptions.push(method.subscribe(
+        response => {
+          this.fileData = response;
+          console.log(this.fileData);
+          if (type === 'download') {
+          this.fileSaverService.save(response, fileObj.file_name);
+          }
+          this.isFileDataLoading = false;
+          resolve();
+        }, error => this.isFileDataLoading = false
+      ));
     });
   }
 
@@ -212,7 +213,8 @@ export class GatewayCachedTelemetryComponent implements OnInit {
   }
 
   sanitizeURL() {
-    const url = environment.blobURL + '/' + environment.cachedTelemetryContainer + '/' + this.selectedTelemetry.file_path + '/' + this.selectedTelemetry.file_name + this.sasToken;
+    const url = environment.blobURL + '/' + environment.cachedTelemetryContainer + '/'
+    + this.selectedTelemetry.file_path + '/' + this.selectedTelemetry.file_name + this.sasToken;
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 

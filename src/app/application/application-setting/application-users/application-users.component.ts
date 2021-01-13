@@ -97,7 +97,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
 
     let count = 0;
     Object.keys(this.configureHierarchy).forEach(key => {
-      if(this.configureHierarchy[key]) {
+      if (this.configureHierarchy[key]) {
         count ++;
       }
     });

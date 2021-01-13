@@ -27,8 +27,9 @@ export class GaugeChartComponent implements OnInit, OnChanges {
     if (this.chart && changes.telemetryObj) {
      //  this.label.text = changes.value.currentValue;
       this.chartConfig.properties.forEach((prop, index) => {
-        if (this.hand[index] && this.chart[index])
-        this.hand[index].value = Number(this.telemetryObj[prop.property.json_key] || '0');
+        if (this.hand[index] && this.chart[index]) {
+          this.hand[index].value = Number(this.telemetryObj[prop.property.json_key] || '0');
+        }
       });
     }
   }
@@ -70,7 +71,7 @@ export class GaugeChartComponent implements OnInit, OnChanges {
     range1.axisFill.zIndex = -1;
 
     const range2 = axis.axisRanges.create();
-    range2.value = prop.high_min || prop.normal_max || 50;;
+    range2.value = prop.high_min || prop.normal_max || 50;
     range2.endValue = prop.high_max || 100;
     range2.axisFill.fillOpacity = 1;
     range2.axisFill.fill = am4core.color(prop.high_color || '#fe5959');

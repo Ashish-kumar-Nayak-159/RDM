@@ -28,7 +28,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   protocolList: any[] = [];
   connectivityList: any[] = [];
   componentState: string; // value must be IP Devices & Gateways or IP Device or IP Gateway or Non IP Devices
-  constantData =CONSTANTS;
+  constantData = CONSTANTS;
   originalSingularComponentState: string;
   gateways: any[];
   originalGateways: any[] = [];
@@ -255,7 +255,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.originalGateways.forEach(device => {
       let flag = false;
       Object.keys(hierarchyObj).forEach(hierarchyKey => {
-        console.log(device.hierarchy[hierarchyKey] ,'&&', device.hierarchy[hierarchyKey], '===', hierarchyObj[hierarchyKey])
+        console.log(device.hierarchy[hierarchyKey] , '&&', device.hierarchy[hierarchyKey], '===', hierarchyObj[hierarchyKey])
         if (device.hierarchy[hierarchyKey] && device.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
           flag = true;
         } else {
@@ -271,7 +271,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     }
     let count = 0;
     Object.keys(this.configureHierarchy).forEach(key => {
-      if(this.configureHierarchy[key]) {
+      if (this.configureHierarchy[key]) {
         count ++;
       }
     });

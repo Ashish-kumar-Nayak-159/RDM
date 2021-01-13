@@ -25,7 +25,7 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
         value: prop,
         name: prop.name
       });
-    })
+    });
   }
 
   addProperty() {

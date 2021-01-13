@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import { CommonService } from 'src/app/services/common.service';
@@ -9,7 +9,7 @@ declare var $: any;
   templateUrl: './pie-chart.component.html',
   styleUrls: ['./pie-chart.component.css']
 })
-export class PieChartComponent implements OnInit {
+export class PieChartComponent implements OnInit, OnDestroy {
 
   private chart: am4charts.PieChart;
   telemetryData: any[] = [];
@@ -42,18 +42,18 @@ export class PieChartComponent implements OnInit {
     const chart = am4core.create(this.chartId, am4charts.PieChart);
 
     const data = [];
-    this.telemetryData.forEach((obj, i) => {
+    this.telemetryData.forEach((telemetryObj, i) => {
       const item: any = {};
       let foundIndex = -1;
       data.forEach((dataObj, i2) => {
-        if (dataObj[this.xAxisProps] === obj[this.xAxisProps]) {
+        if (dataObj[this.xAxisProps] === telemetryObj[this.xAxisProps]) {
           foundIndex = i2;
         }
       });
       if (foundIndex !== -1) {
         data[foundIndex].value += 1;
       } else {
-        item[this.xAxisProps] = obj[this.xAxisProps];
+        item[this.xAxisProps] = telemetryObj[this.xAxisProps];
         item['value'] = 1;
         data.push(item);
       }
@@ -78,41 +78,43 @@ export class PieChartComponent implements OnInit {
     chart.legend = new am4charts.Legend();
     chart.legend.itemContainers.template.togglable = false;
     chart.exporting.menu = new am4core.ExportMenu();
-      chart.exporting.getFormatOptions("xlsx").useLocale = false;
-      chart.exporting.getFormatOptions("pdf").pageOrientation = 'landscape';
-      chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date.toString() + ' to ' + chart.data[chart.data.length - 1].message_date.toString();
-      const obj = {
-        "message_date": "Timestamp"
-      }
-      this.y1AxisProps.forEach(prop => {
-        this.propertyList.forEach(propObj => {
-          if (prop === propObj.json_key) {
-            const units = propObj.json_model[propObj.json_key].units;
-            obj[prop] = propObj.name + (units ? (' (' + units + ')') : '');
-          }
-        });
+    chart.exporting.getFormatOptions('xlsx').useLocale = false;
+    chart.exporting.getFormatOptions('pdf').pageOrientation = 'landscape';
+    chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date.toString()
+    + ' to ' + chart.data[chart.data.length - 1].message_date.toString();
+    const obj = {
+      message_date: 'Timestamp'
+    };
+    this.y1AxisProps.forEach(prop => {
+      this.propertyList.forEach(propObj => {
+        if (prop === propObj.json_key) {
+          const units = propObj.json_model[propObj.json_key].units;
+          obj[prop] = propObj.name + (units ? (' (' + units + ')') : '');
+        }
       });
-      this.y2AxisProps.forEach(prop => {
-        this.propertyList.forEach(propObj => {
-          if (prop === propObj.json_key) {
-            const units = propObj.json_model[propObj.json_key].units;
-            obj[prop] = propObj.name + (units ? (' (' + units + ')') : '');
-          }
-        });
+    });
+    this.y2AxisProps.forEach(prop => {
+      this.propertyList.forEach(propObj => {
+        if (prop === propObj.json_key) {
+          const units = propObj.json_model[propObj.json_key].units;
+          obj[prop] = propObj.name + (units ? (' (' + units + ')') : '');
+        }
       });
-      chart.exporting.dataFields = obj;
-      const list = new am4core.List<string>();
-      list.insertIndex(0, 'message_date');
-      console.log(list);
-      chart.exporting.dateFields = list;
-      chart.exporting.getFormatOptions("pdf").addURL = false;
-      chart.exporting.dateFormat = 'dd-MM-yyyy hh:mm:ss A a';
-      console.log(this.selectedAlert);
-      if (this.selectedAlert) {
-        chart.exporting.filePrefix = this.selectedAlert.device_id + '_Alert_' + this.selectedAlert.local_created_date;
-      } else {
-        chart.exporting.filePrefix = this.device.device_id + '_' + chart.data[0].message_date.toString() + '_' + chart.data[chart.data.length - 1].message_date.toString();
-      }
+    });
+    chart.exporting.dataFields = obj;
+    const list = new am4core.List<string>();
+    list.insertIndex(0, 'message_date');
+    console.log(list);
+    chart.exporting.dateFields = list;
+    chart.exporting.getFormatOptions('pdf').addURL = false;
+    chart.exporting.dateFormat = 'dd-MM-yyyy hh:mm:ss A a';
+    console.log(this.selectedAlert);
+    if (this.selectedAlert) {
+      chart.exporting.filePrefix = this.selectedAlert.device_id + '_Alert_' + this.selectedAlert.local_created_date;
+    } else {
+      chart.exporting.filePrefix = this.device.device_id + '_' +
+      chart.data[0].message_date.toString() + '_' + chart.data[chart.data.length - 1].message_date.toString();
+    }
     this.chart = chart;
   }
 

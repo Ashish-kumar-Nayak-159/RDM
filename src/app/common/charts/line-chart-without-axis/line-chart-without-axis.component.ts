@@ -117,8 +117,8 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
       chart.dateFormatter.inputDateFormat = 'x';
       const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
       dateAxis.hidden = true;
-      chart.events.on("beforedatavalidated", function(ev) {
-        chart.data.sort(function(a, b) {
+      chart.events.on('beforedatavalidated', (ev) => {
+        chart.data.sort((a, b) => {
           return ((a.message_date)) - ((b.message_date));
         });
       });
@@ -176,7 +176,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
     series.connect = true;
     series.fillOpacity = 0;
 
-    var bullet = series.bullets.push(new am4charts.CircleBullet());
+    const bullet = series.bullets.push(new am4charts.CircleBullet());
     bullet.stroke = 'darkgreen';
     bullet.strokeWidth = 2;
     bullet.circle.radius = 1;

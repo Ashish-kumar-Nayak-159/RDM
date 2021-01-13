@@ -52,7 +52,6 @@ export class ApplicationService {
     //     });
     //   });
     // } else {
-      
     //   .pipe( map((data: any) => {
     //     this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, data);
     //     return data;

@@ -15,8 +15,8 @@ declare var $: any;
 export class ResetPasswordComponent implements OnInit, OnDestroy  {
 
    /**
-   * Flag to confirm if it is first time log in or user manually wants to change password.
-   */
+    * Flag to confirm if it is first time log in or user manually wants to change password.
+    */
   @Input()
   isFirstTimeLogin: boolean;
   /**

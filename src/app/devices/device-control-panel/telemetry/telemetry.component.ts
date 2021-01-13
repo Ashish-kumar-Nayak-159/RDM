@@ -250,7 +250,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
         epoch: true
       };
       const epoch =  this.commonService.convertDateToEpoch(dataobj.message_date);
-      obj.from_date = epoch ? (epoch - 5) : null
+      obj.from_date = epoch ? (epoch - 5) : null;
       obj.to_date = (epoch ? (epoch + 5) : null);
       this.apiSubscriptions.push(this.deviceService.getDeviceMessageById(obj, 'telemetry').subscribe(
         (response: any) => {

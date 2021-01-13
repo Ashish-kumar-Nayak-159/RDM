@@ -173,7 +173,8 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
   }
 
   deleteDocument() {
-    this.subscriptions.push(this.deviceTypeService.deleteThingsModelDocument(this.selectedDocument.id, this.deviceType.app, this.deviceType.name).
+    this.subscriptions.push(this.deviceTypeService.deleteThingsModelDocument
+      (this.selectedDocument.id, this.deviceType.app, this.deviceType.name).
       subscribe((response: any) => {
         this.toasterService.showSuccess(response.message, 'Remove Document');
         this.closeModal('confirmMessageModal');

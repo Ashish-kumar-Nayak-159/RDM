@@ -291,18 +291,19 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
     //   });
     // });
    // this.alertObj.reference_documents  = arr;
-   this.subscriptions.push(this.deviceTypeService.updateAlertCondition(this.alertObj, this.deviceType.app, this.deviceType.name, this.alertObj.id)
-    .subscribe((response: any) => {
-      this.isCreateAlertConditionLoading = false;
-      this.getAlertConditions();
-      this.toasterService.showSuccess(response.message, 'Update Alert Condition');
-      this.toggleRows = {};
-      this.editRecommendationStep = {};
-      this.editDocuments = {};
-    }, error => {
-      this.isCreateAlertConditionLoading = false;
-      this.toasterService.showSuccess(error.message, 'Update Alert Condition');
-    }));
+    this.subscriptions.push(this.deviceTypeService.updateAlertCondition(
+      this.alertObj, this.deviceType.app, this.deviceType.name, this.alertObj.id)
+      .subscribe((response: any) => {
+        this.isCreateAlertConditionLoading = false;
+        this.getAlertConditions();
+        this.toasterService.showSuccess(response.message, 'Update Alert Condition');
+        this.toggleRows = {};
+        this.editRecommendationStep = {};
+        this.editDocuments = {};
+      }, error => {
+        this.isCreateAlertConditionLoading = false;
+        this.toasterService.showSuccess(error.message, 'Update Alert Condition');
+      }));
   }
 
 

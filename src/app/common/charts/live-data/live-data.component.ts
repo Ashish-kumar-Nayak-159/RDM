@@ -79,7 +79,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       console.log(data);
       chart.data = data;
       chart.dateFormatter.inputDateFormat = 'x';
-      chart.dateFormatter.dateFormat = "dd-MMM-yyyy HH:mm:ss.nnn";
+      chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
      // chart.durationFormatter.durationFormat = "hh:ii:ss";
       const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
       if (this.chartStartdate) {
@@ -125,12 +125,13 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       dateAxis.dateFormatter = new am4core.DateFormatter();
       dateAxis.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
       chart.exporting.menu = new am4core.ExportMenu();
-      chart.exporting.getFormatOptions("xlsx").useLocale = false;
-      chart.exporting.getFormatOptions("pdf").pageOrientation = 'landscape';
-      chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date.toString() + ' to ' + chart.data[chart.data.length - 1].message_date.toString();
+      chart.exporting.getFormatOptions('xlsx').useLocale = false;
+      chart.exporting.getFormatOptions('pdf').pageOrientation = 'landscape';
+      chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date.toString()
+      + ' to ' + chart.data[chart.data.length - 1].message_date.toString();
       this.chartDataFields = {
-        "message_date": "Timestamp"
-      }
+        message_date: 'Timestamp'
+      };
       this.y1AxisProps.forEach(prop => {
         this.propertyList.forEach(propObj => {
           if (prop === propObj.json_key) {
@@ -153,13 +154,14 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       // list.insertIndex(0, 'message_date');
       // console.log(obj);// console.log(obj);
       // chart.exporting.dateFields = list;
-      chart.exporting.getFormatOptions("pdf").addURL = false;
+      chart.exporting.getFormatOptions('pdf').addURL = false;
       chart.exporting.dateFormat = 'dd-MM-yyyy hh:mm:ss A a';
       console.log(this.selectedAlert);
       if (this.selectedAlert) {
         chart.exporting.filePrefix = this.selectedAlert.device_id + '_Alert_' + this.selectedAlert.local_created_date;
       } else {
-        chart.exporting.filePrefix = this.device.device_id + '_' + chart.data[0].message_date.toString() + '_' + chart.data[chart.data.length - 1].message_date.toString();
+        chart.exporting.filePrefix = this.device.device_id + '_' + chart.data[0].message_date.toString()
+        + '_' + chart.data[chart.data.length - 1].message_date.toString();
       }
       chart.scrollbarX = new am4core.Scrollbar();
       chart.scrollbarX.parent = chart.bottomAxesContainer;
@@ -240,14 +242,15 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       series.compareText = true;
       series.strokeWidth = 2;
       // series.connect = false;
-      // series.connect = (this.getPropertyName(prop) === 'Total Mass Discharge' || this.getPropertyName(prop) === 'Total Mass Suction' ? true : false);
-     // series.tensionX = 0.77;
+      // series.connect = (this.getPropertyName(prop) === 'Total Mass Discharge' ||
+      // this.getPropertyName(prop) === 'Total Mass Suction' ? true : false);
+      // series.tensionX = 0.77;
       series.strokeOpacity = 1;
       series.legendSettings.labelText = '{name} ({units})';
       series.fillOpacity = this.chartType.includes('Area') ? 0.3 : 0;
       series.tooltipText = 'Date: {dateX} \n {name} ({units}): [bold]{valueY}[/]';
 
-      var bullet = series.bullets.push(new am4charts.CircleBullet());
+      const bullet = series.bullets.push(new am4charts.CircleBullet());
       // bullet.stroke = 'darkgreen';
       bullet.strokeWidth = 2;
       bullet.circle.radius = 1.5;
@@ -285,7 +288,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
     this.seriesArr.forEach((item, index) => {
       console.log(item.isActive);
       const seriesColumn = this.chart.series.getIndex(index);
-      console.log(prop, '===' ,item)
+      console.log(prop, '===' , item);
       if (prop === item.propKey) {
 
         item.compareText = !item.compareText;

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -13,7 +13,7 @@ declare var $: any;
   templateUrl: './device-life-cycle-events.component.html',
   styleUrls: ['./device-life-cycle-events.component.css']
 })
-export class DeviceLifeCycleEventsComponent implements OnInit {
+export class DeviceLifeCycleEventsComponent implements OnInit, OnDestroy {
 
   filterObj: any = {};
   lifeCycleEvents: any[] = [];
@@ -96,7 +96,7 @@ export class DeviceLifeCycleEventsComponent implements OnInit {
             eventMsg[eventMsg.length - 1] = (item.category === CONSTANTS.IP_GATEWAY ? 'Gateway ' : 'Device ' ) +
             eventMsg[eventMsg.length - 1];
             item.event_type = eventMsg[eventMsg.length - 1];
-            item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date)
+            item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
           });
         }
         this.isLifeCycleEventsLoading = false;

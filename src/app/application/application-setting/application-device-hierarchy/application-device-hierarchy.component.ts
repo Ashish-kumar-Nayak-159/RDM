@@ -32,7 +32,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
 
-    this.applicationData.hierarchy.levels.forEach((element, index) => {
+    this.applicationData.hierarchy.levels.forEach((_, index) => {
       this.hierarchyArr[index] = [];
     });
   }
@@ -57,7 +57,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
     this.selectedHierarchyItem = item;
     this.addedTagItem = undefined;
     this.configureHierarchy = {};
-    this.applicationData.hierarchy.levels.forEach((element, index) => {
+    this.applicationData.hierarchy.levels.forEach((_, index) => {
       this.hierarchyArr[index] = [];
     });
     if (this.applicationData?.hierarchy?.levels.length > 1) {
@@ -218,7 +218,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
   onCancelClick() {
     this.applicationData = JSON.parse(JSON.stringify(this.originalApplicationData));
     this.selectedHierarchyItem = undefined;
-    this.applicationData.hierarchy.levels.forEach((element, index) => {
+    this.applicationData.hierarchy.levels.forEach((_, index) => {
       this.hierarchyArr[index] = [];
     });
     if (this.applicationData?.hierarchy?.levels.length > 1) {

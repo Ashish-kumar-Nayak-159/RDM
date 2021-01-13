@@ -179,9 +179,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
   searchHistory() {
     return new Promise((resolve) => {
       const children = $('#widgetContainer').children();
-    for (const child of children) {
-      $(child).remove();
-    }
+      for (const child of children) {
+        $(child).remove();
+      }
       this.propList = [];
       if (this.selectedWidgets.length === 0) {
         this.toasterService.showError('Please select widgets first.', 'View Widget');
@@ -244,45 +244,45 @@ export class HistoryComponent implements OnInit, OnDestroy {
       // delete obj.xAxisProps;
       console.log(obj);
       let method;
-    if (!obj.to_date || !obj.from_date) {
-      this.toasterService.showError('Date Selection is required', 'View Trend Analysis');
-      return;
-    }
-    if (obj.to_date - obj.from_date > 3600 && !this.historyFilter.isTypeEditable) {
-        this.historyFilter.isTypeEditable = true;
-        this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
+      if (!obj.to_date || !obj.from_date) {
+        this.toasterService.showError('Date Selection is required', 'View Trend Analysis');
         return;
-    }
-    if (this.historyFilter.isTypeEditable) {
-    if (this.historyFilter.type) {
-      if (!this.historyFilter.sampling_time || !this.historyFilter.sampling_format ) {
-        this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
-        return;
+      }
+      if (obj.to_date - obj.from_date > 3600 && !this.historyFilter.isTypeEditable) {
+          this.historyFilter.isTypeEditable = true;
+          this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
+          return;
+      }
+      if (this.historyFilter.isTypeEditable) {
+      if (this.historyFilter.type) {
+        if (!this.historyFilter.sampling_time || !this.historyFilter.sampling_format ) {
+          this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
+          return;
+        } else {
+          delete obj.aggregation_minutes;
+          delete obj.aggregation_format;
+          method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
+        }
+      } else {
+        if (!this.historyFilter.aggregation_minutes || !this.historyFilter.aggregation_format ) {
+          this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
+          return;
+        } else {
+          delete obj.sampling_time;
+          delete obj.sampling_format;
+          method = this.deviceService.getDeviceTelemetry(obj);
+        }
+      }
       } else {
         delete obj.aggregation_minutes;
         delete obj.aggregation_format;
-        method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
-      }
-    } else {
-      if (!this.historyFilter.aggregation_minutes || !this.historyFilter.aggregation_format ) {
-        this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
-        return;
-      } else {
         delete obj.sampling_time;
         delete obj.sampling_format;
         method = this.deviceService.getDeviceTelemetry(obj);
       }
-    }
-    } else {
-      delete obj.aggregation_minutes;
-      delete obj.aggregation_format;
-      delete obj.sampling_time;
-      delete obj.sampling_format;
-      method = this.deviceService.getDeviceTelemetry(obj);
-    }
-    this.fromDate = obj.from_date;
-    this.toDate = obj.to_date;
-    this.isHistoryAPILoading = true;
+      this.fromDate = obj.from_date;
+      this.toDate = obj.to_date;
+      this.isHistoryAPILoading = true;
       this.apiSubscriptions.push(method.subscribe(
         (response: any) => {
           this.isFilterSelected = true;

@@ -38,11 +38,6 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
   ) { }
 
   async ngOnInit(): Promise<void> {
-    var str = '2021-01-08T04:46:03.8880000Z';
-    console.log(this.commonService.convertUTCDateToLocal(str));
-    var date = moment(str);
-    var dateComponent = date.format('YYYY-MM-DD HH:mm:ss SSS A');
-    console.log(dateComponent);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     await this.getThingsModelProperties();
@@ -116,7 +111,8 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
     // const now = (moment().utc()).unix();
     // obj['from_date'] = midnight;
     // obj['to_date'] = now;
-    // this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : ''));
+    // this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key
+    // + (this.propertyList[index + 1] ? ',' : ''));
     // obj['message_props'] = message_props;
 
     // this.subscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(

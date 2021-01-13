@@ -195,7 +195,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
     let count = 0;
     Object.keys(this.configureHierarchy).forEach(key => {
-      if(this.configureHierarchy[key]) {
+      if (this.configureHierarchy[key]) {
         count ++;
       }
     });
@@ -217,12 +217,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     });
     this.tileData = selectedItem;
   }
-
-  ngAfterViewInit() {
-    // Chart code goes in here
-
-  }
-
 
   getDevices(hierarchy) {
     return new Promise((resolve) => {
@@ -361,7 +355,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         if (this.pageType === 'live') {
           const obj1 = {
             levels: this.contextApp.hierarchy.levels,
-            hierarchy: this.filterObj.device ? this.filterObj.device.hierarchy: JSON.parse(obj.hierarchy),
+            hierarchy: this.filterObj.device ? this.filterObj.device.hierarchy : JSON.parse(obj.hierarchy),
             type: 'alert',
             app: this.contextApp.app,
             device_id: obj.device_id,
@@ -412,16 +406,16 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         device_id: deviceId
       };
       const methodToCall =
-        this.deviceService.getAllDevicesList(obj, obj.app)
-        this.subscriptions.push(methodToCall.subscribe(
-        (response: any) => {
-          if (response?.data?.length > 0) {
-            this.selectedDevice = response.data[0];
-          } else {
-            this.selectedDevice = response;
-          }
-          resolve();
+        this.deviceService.getAllDevicesList(obj, obj.app);
+      this.subscriptions.push(methodToCall.subscribe(
+      (response: any) => {
+        if (response?.data?.length > 0) {
+          this.selectedDevice = response.data[0];
+        } else {
+          this.selectedDevice = response;
         }
+        resolve();
+      }
       ));
     });
   }
@@ -565,7 +559,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.filterObj.aggregation_minutes = 1;
     this.filterObj.aggregation_format = 'AVG';
     if (this.selectedAlert?.metadata?.acknowledged_date) {
-      this.selectedAlert.metadata.acknowledged_date = this.commonService.convertSignalRUTCDateToLocal(this.selectedAlert.metadata.acknowledged_date);
+      this.selectedAlert.metadata.acknowledged_date = this.commonService.convertSignalRUTCDateToLocal(
+        this.selectedAlert.metadata.acknowledged_date);
     }
     this.isTelemetryFilterSelected = false;
     console.log(this.originalDevices);
@@ -636,13 +631,15 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.propList.forEach((prop, index) =>
     filterObj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
     if (this.beforeInterval > 0) {
-      filterObj.from_date = (this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp)) - (this.beforeInterval * 60);
+      filterObj.from_date = (this.commonService.convertDateToEpoch(
+        this.selectedAlert?.message_date || this.selectedAlert.timestamp)) - (this.beforeInterval * 60);
     } else {
       this.toasterService.showError('Minutes Before Alert value must be greater than 0 and less than 30.', 'View Visualization');
       return;
     }
     if (this.afterInterval > 0) {
-      filterObj.to_date = (this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp)) + (this.afterInterval * 60);
+      filterObj.to_date = (this.commonService.convertDateToEpoch(
+        this.selectedAlert?.message_date || this.selectedAlert.timestamp)) + (this.afterInterval * 60);
     } else {
       this.toasterService.showError('Minutes After Alert value must be greater than 0 and less than 30.', 'View Visualization');
       return;
@@ -659,25 +656,25 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     if (this.filterObj.isTypeEditable) {
       console.log(this.filterObj.type);
       console.log(this.filterObj);
-    if (this.filterObj.type) {
-      if (!this.filterObj.sampling_time || !this.filterObj.sampling_format ) {
-        this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
-        return;
+      if (this.filterObj.type) {
+        if (!this.filterObj.sampling_time || !this.filterObj.sampling_format ) {
+          this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
+          return;
+        } else {
+          delete filterObj.aggregation_minutes;
+          delete filterObj.aggregation_format;
+          method = this.deviceService.getDeviceSamplingTelemetry(filterObj, this.contextApp.app);
+        }
       } else {
-        delete filterObj.aggregation_minutes;
-        delete filterObj.aggregation_format;
-        method = this.deviceService.getDeviceSamplingTelemetry(filterObj, this.contextApp.app);
+        if (!this.filterObj.aggregation_minutes || !this.filterObj.aggregation_format ) {
+          this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
+          return;
+        } else {
+          delete filterObj.sampling_time;
+          delete filterObj.sampling_format;
+          method = this.deviceService.getDeviceTelemetry(filterObj);
+        }
       }
-    } else {
-      if (!this.filterObj.aggregation_minutes || !this.filterObj.aggregation_format ) {
-        this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
-        return;
-      } else {
-        delete filterObj.sampling_time;
-        delete filterObj.sampling_format;
-        method = this.deviceService.getDeviceTelemetry(filterObj);
-      }
-    }
     } else {
       delete filterObj.aggregation_minutes;
       delete filterObj.aggregation_format;

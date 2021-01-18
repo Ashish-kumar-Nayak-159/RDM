@@ -1,8 +1,7 @@
-import { Component, Input, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, EventEmitter, Output } from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
-import { constants } from 'fs';
-
+declare var $: any;
 @Component({
   selector: 'app-gauge-chart',
   templateUrl: './gauge-chart.component.html',
@@ -14,9 +13,14 @@ export class GaugeChartComponent implements OnInit, OnChanges {
   @Input() value: string;
   @Input() chartConfig: any;
   @Input() telemetryObj: any;
+  @Output() removeWidget: EventEmitter<string> = new EventEmitter<string>();
   hand: any[] = [];
   chart: any[] = [];
   label: am4core.Label[] = [];
+  @Input() device: any;
+  modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean; };
+  bodyMessage: string;
+  headerMessage: string;
   constructor() { }
 
   ngOnInit(): void {
@@ -100,6 +104,26 @@ export class GaugeChartComponent implements OnInit, OnChanges {
   }
 
   openConfirmRemoveWidgetModal() {
+    this.modalConfig = {
+      stringDisplay: true,
+      isDisplaySave: true,
+      isDisplayCancel: true
+    };
+    this.bodyMessage = 'Are you sure you want to remove this ' + this.chartConfig.widgetTitle + ' widget?';
+    this.headerMessage = 'Remove Widget';
+    $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal({ backdrop: 'static', keyboard: false, show: true });
+  }
 
+  onModalEvents(eventType) {
+    if (eventType === 'close') {
+      $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal('hide');
+    } else if (eventType === 'save') {
+      this.removeChart(this.chartConfig.chartId);
+      $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal('hide');
+    }
+  }
+
+  removeChart(chartId) {
+    this.removeWidget.emit(chartId);
   }
 }

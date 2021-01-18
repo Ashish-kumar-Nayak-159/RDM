@@ -28,6 +28,7 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
   signalRTelemetrySubscription: Subscription;
   telemetryObj: any;
   isTelemetryDataLoading: boolean;
+  configureDashboardWidgets: any[] = [];
 
   constructor(
     private commonService: CommonService,
@@ -85,6 +86,8 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
     this.widgetObj.properties = [{}];
   }
 
+
+
   getTelemetryData() {
     this.telemetryObj = {};
     this.telemetryObj.message_date = moment().subtract(10, 'second').format('DD-MMM-YYYY hh:mm:ss A').toString();
@@ -94,63 +97,21 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
         prop.json_model[prop.json_key].maxValue ? prop.json_model[prop.json_key].maxValue : 100
       );
     });
+  }
 
-    // this.signalRService.disconnectFromSignalR('telemetry');
-    // this.signalRTelemetrySubscription?.unsubscribe();
-
-    // this.commonService.setItemInLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION, filterObj);
-    // const obj = {};
-    // this.isTelemetryDataLoading = true;
-    // this.telemetryObj = undefined;
-    // obj['app'] = this.contextApp.app;
-    // obj['device_type'] = this.deviceType.name;
-
-    // let message_props = '';
-    // obj['count'] = 1;
-    // const midnight =  ((((moment().hour(0)).minute(0)).second(0)).utc()).unix();
-    // const now = (moment().utc()).unix();
-    // obj['from_date'] = midnight;
-    // obj['to_date'] = now;
-    // this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key
-    // + (this.propertyList[index + 1] ? ',' : ''));
-    // obj['message_props'] = message_props;
-
-    // this.subscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
-    //   (response: any) => {
-    //     if (response?.data?.length > 0) {
-    //       response.data[0].message_date = this.commonService.convertUTCDateToLocal(response.data[0].message_date);
-    //       this.telemetryObj = response.data[0];
-    //       Object.keys(this.telemetryObj).forEach(key => {
-    //         if (key !== 'message_date') {
-    //           this.telemetryObj[key] = Number(this.telemetryObj[key]);
-    //         }
-    //       });
-    //       this.isTelemetryDataLoading = false;
-    //     } else {
-    //       this.isTelemetryDataLoading = false;
-    //     }
-    //     const obj1 = {
-    //       hierarchy: this.contextApp.user.hierarchy,
-    //       levels: this.contextApp.hierarchy.levels,
-    //       device_id: this.filterObj.device.device_id,
-    //       type: 'telemetry',
-    //       app: this.contextApp.app
-    //     };
-    //     this.signalRService.connectToSignalR(obj1);
-    //     this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(
-    //       data => {
-    //         if (data.type !== 'alert') {
-    //           this.processTelemetryData(data);
-    //           this.isTelemetryDataLoading = false;
-    //         }
-    //       }
-    //     );
-    // }, error => this.isTelemetryDataLoading = false));
+  onSaveConfigureDashboardWidgets() {
+    this.isCreateWidgetAPILoading = true;
+    this.updateDeviceType(this.configureDashboardWidgets, 'Dashboard configured successfully');
   }
 
   onCloseAddWidgetModal() {
     $('#addWidgetsModal').modal('hide');
     this.widgetObj = undefined;
+  }
+
+  onCloseConfigureDashboardModal() {
+    $('#configureDashboardWidgetsModal').modal('hide');
+    this.configureDashboardWidgets = [];
   }
 
   onOpenAddWidgetModal() {
@@ -160,18 +121,31 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
     $('#addWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
-  onSaveWidgetObj() {
-    this.isCreateWidgetAPILoading = true;
-    console.log(JSON.stringify(this.widgetObj));
-    this.widgetObj.chartId = 'chart_' + moment().utc().unix();
-    const arr = this.liveWidgets;
-    arr.push(this.widgetObj);
+  onOpenConfigureDashboardModal() {
+    this.configureDashboardWidgets = JSON.parse(JSON.stringify(this.liveWidgets));
+    $('#configureDashboardWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  removeWidget(chartId) {
+    const arr = JSON.parse(JSON.stringify(this.liveWidgets));
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i].chartId === chartId) {
+        console.log('DOM not found', arr[i]);
+        arr.splice(i, 1);
+      }
+    }
+    this.liveWidgets = JSON.parse(JSON.stringify(arr));
+    this.updateDeviceType(this.liveWidgets, 'Widget removed successfully.');
+  }
+
+  updateDeviceType(arr, message) {
     this.deviceType.live_widgets = arr;
     this.subscriptions.push(this.deviceTypeService.updateThingsModel(this.deviceType, this.contextApp.app).subscribe(
       (response: any) => {
-        this.toasterService.showSuccess(response.message, 'Add Live Widgets');
+        this.toasterService.showSuccess(message, 'Live Widgets');
         this.getLiveWidgets();
         this.onCloseAddWidgetModal();
+        this.onCloseConfigureDashboardModal();
         this.isCreateWidgetAPILoading = false;
       },
       (err) => {
@@ -179,6 +153,15 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
         this.toasterService.showError(err.message, 'Add Live Widgets');
       }
     ));
+  }
+
+  onSaveWidgetObj() {
+    this.isCreateWidgetAPILoading = true;
+    console.log(JSON.stringify(this.widgetObj));
+    this.widgetObj.chartId = 'chart_' + moment().utc().unix();
+    const arr = this.liveWidgets;
+    arr.push(this.widgetObj);
+    this.updateDeviceType(arr, 'Widget added successfully.');
   }
 
 }

@@ -2,35 +2,48 @@
   <div class="topnavbar bg-white py-2" style="margin-top: 3.1rem;height:3rem">
     <div class="row">
       <div class="col-xl-10 col-lg-10 col-md-10 mb-12">
-          <div class="form-group form-inline my-1">
-            <button class="btn btn-sm btn-warning" (click)="onOpenAddWidgetModal()"
-              >Add Live Widget</button>
+          <div class="form-group form-inline my-1" *ngIf="liveWidgets.length > 0">
+            Following Live widgets are already added.&nbsp;
+            <button class="btn btn-sm btn-warning" (click)="onOpenAddWidgetModal()" title="Add Live Widget"
+              ><i class="fa fa-plus fa-sm text-white"></i></button>&nbsp;
+            <button class="btn btn-sm btn-success" (click)="onOpenConfigureDashboardModal()" title="Configure Dashboard Widgets"
+            ><i class="fa fa-cog fa-sm text-white"></i></button>
           </div>
       </div>
     </div>
   </div>
-  <div class="con-pad" style="margin-top: 12rem;max-height: calc(100vh - 13rem);">
+  <div class="con-pad" style="margin-top: 12rem;max-height: calc(100vh - 14rem);">
     <i *ngIf="isGetWidgetsAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
     <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length > 0">
-    <ng-container *ngFor="let widget of liveWidgets">
+    <div class="row col-md-12">
+    <ng-container *ngFor="let widget of liveWidgets; let i = index;">
+      <div [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
+      || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'GaugeChart' ? (23 * widget.properties.length + '%') : '48%',
+      'margin-left':'2%', 'margin-top': '2%'}">
       <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
-      || widget?.widgetType === 'NumberWithImage'" [chartConfig]="widget"
+      || widget?.widgetType === 'NumberWithImage'" [chartConfig]="widget"  (removeWidget)="removeWidget($event)"
       [telemetryObj]="telemetryObj">
       </app-only-number-widget>
-      <app-gauge-chart [chartConfig]="widget" *ngIf="widget.widgetType === 'GaugeChart'" [telemetryObj]="telemetryObj"></app-gauge-chart>
-      <app-live-line-chart [chartConfig]="widget" [telemetryObj]="telemetryObj" 
+      <app-gauge-chart [chartConfig]="widget" *ngIf="widget.widgetType === 'GaugeChart'"
+      (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj"></app-gauge-chart>
+
+
+      <app-live-line-chart [chartConfig]="widget" [telemetryObj]="telemetryObj"  (removeWidget)="removeWidget($event)"
       *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
       </app-live-line-chart>
-      <app-live-bar-chart [chartConfig]="widget" [telemetryObj]="telemetryObj" 
+      <app-live-bar-chart [chartConfig]="widget" [telemetryObj]="telemetryObj" (removeWidget)="removeWidget($event)"
       *ngIf="widget.widgetType === 'BarChart'">
       </app-live-bar-chart>
-      <app-live-column-chart [chartConfig]="widget" [telemetryObj]="telemetryObj" 
+      <app-live-column-chart [chartConfig]="widget" [telemetryObj]="telemetryObj" (removeWidget)="removeWidget($event)"
       *ngIf="widget.widgetType === 'ColumnChart'">
       </app-live-column-chart>
+    </div>
     </ng-container>
+    </div>
     </ng-container>
     <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length === 0">
-      No Live Widgets added.
+      No Live Widgets added. <button class="btn btn-sm btn-warning" (click)="onOpenAddWidgetModal()"
+      ><i class="fa fa-plus fa-sm text-white"></i></button>
     </ng-container>
 
   </div>
@@ -90,6 +103,48 @@
     <div class="modal-footer">
       <button type="button" class="btn btn-primary add-row" [disabled]="isCreateWidgetAPILoading" (click)="onSaveWidgetObj()">Save</button>
       <button type="button" class="btn btn-secondary" [disabled]="isCreateWidgetAPILoading" (click)="onCloseAddWidgetModal()">Cancel</button>
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateWidgetAPILoading"></i>
+    </div>
+  </div>
+  </div>
+</div>
+
+
+<div class="modal right fade" id="configureDashboardWidgetsModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" >
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Configure Dashboard Widget</h5>
+      <button type="button" class="close" [disabled]="isCreateWidgetAPILoading" (click)="onCloseConfigureDashboardModal()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="col-12">
+
+          <table class="table table-bordered table-striped" cellspacing="0">
+            <thead>
+              <tr class="bg-secondary text-white">
+                <th>Widget Name</th>
+                <th>Visibility</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let item of configureDashboardWidgets; let index = index">
+                <tr >
+                  <td>{{item.widgetTitle}}</td>
+                  <td><input type="checkbox" name="visible{{index}}"
+                      id="visible{{index}}" [(ngModel)]="item.dashboardVisibility" /></td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary add-row" [disabled]="isCreateWidgetAPILoading" (click)="onSaveConfigureDashboardWidgets()">Save</button>
+      <button type="button" class="btn btn-secondary" [disabled]="isCreateWidgetAPILoading" (click)="onCloseConfigureDashboardModal()">Cancel</button>
       <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateWidgetAPILoading"></i>
     </div>
   </div>

@@ -31,8 +31,7 @@
     </div>
 
   </div>
-  <div class="con-pad" [ngClass]="{'con-pad-extra-margin':viewType=='history' || viewType=='live'}"
-  style="max-height: calc(100vh - 16rem)">
+  <div class="con-pad" style="max-height: calc(100vh)">
         <app-history *ngIf="viewType === 'history'" [device]="device"></app-history>
         <app-live-data *ngIf="viewType === 'live'" [device]="device"></app-live-data>
   </div>

@@ -1,3 +1,4 @@
+import { SignalRService } from 'src/app/services/signalR/signal-r.service';
 import { DeviceTypeService } from './../../../services/device-type/device-type.service';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
@@ -16,78 +17,31 @@ import * as moment from 'moment';
 })
 export class LiveDataComponent implements OnInit, OnDestroy {
 
-  historyFilter: any = {};
-  apiSubscriptions: Subscription[] = [];
-  historyData: any[] = [];
-  isHistoryAPILoading = false;
+
   @Input() device = new Device();
   userData: any;
-  isFilterSelected = false;
-  propertyList: any[] = [];
-  // google chart
-  public lineGoogleChartData: GoogleChartInterface = {  // use :any or :GoogleChartInterface
-    chartType: 'LineChart',
-    dataTable: [],
-    options: {
-      interpolateNulls: true,
-      hAxis: {
-        viewWindowMode: 'pretty',
-        slantedText: true,
-        textStyle: {
-          fontSize: 10
-        },
-        slantedTextAngle: 60
-      },
-      legend: {
-        position: 'top'
-      },
-      series: {
-      },
-      vAxes: {
-          // Adds titles to each axis.
-        },
-      height: 300,
-      width: 900,
-      curveType: 'function',
-      explorer: {
-        actions: ['dragToZoom', 'rightClickToReset'],
-        axis: 'horizontal',
-        keepInBounds: true,
-        maxZoomIn: 10.0}
-    }
-  };
-  refreshInterval: any;
-  dropdownPropList = [];
-  y1AxisProps = [];
-  y2AxisProp = [];
   contextApp: any;
+  apiSubscriptions: Subscription[] = [];
+  propertyList: any[] = [];
+  liveWidgets: any[] = [];
+  isGetLiveWidgetsAPILoading = false;
+  selectedWidgets: any[] = [];
+  signalRTelemetrySubscription: any;
+  isTelemetryDataLoading = false;
+  telemetryObj: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
-    private toasterService: ToasterService,
-    private deviceTypeService: DeviceTypeService  ) { }
+    private deviceTypeService: DeviceTypeService,
+    private signalRService: SignalRService
+    ) { }
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.propertyList = [];
-    this.historyFilter.app = this.contextApp.app;
-    this.historyFilter.epoch = true;
-    if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
-      this.historyFilter.gateway_id = this.device.device_id;
-    } else {
-      this.historyFilter.device_id = this.device.device_id;
-    }
-    const now = moment().utc();
-    this.historyFilter.to_date = now.unix();
-    this.historyFilter.from_date = (now.subtract(1, 'minute')).unix();
     await this.getThingsModelProperties();
-    this.propertyList.forEach(item => {
-      this.dropdownPropList.push({
-        id: item.json_key
-      });
-    });
-    console.log(this.historyFilter);
+    this.getLiveWidgets();
+
   }
 
   getThingsModelProperties() {
@@ -106,174 +60,84 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDeSelectAll(type) {
-    if (type === 'y1') {
-      this.y1AxisProps = [];
-    } else if (type === 'y2') {
-      this.y2AxisProp = [];
-    }
+  getLiveWidgets() {
+    this.liveWidgets = [];
+    const params = {
+      app: this.contextApp.app,
+      name: this.device.tags.device_type
+    };
+    this.deviceTypeService.getThingsModelLiveWidgets(params).subscribe(
+      (response: any) => {
+        if (response?.live_widgets?.length > 0) {
+          response.live_widgets.forEach(widget => {
+            this.liveWidgets.push({
+              id: widget.widgetTitle,
+              value: widget
+            });
+          });
+        }
+      }
+    );
   }
 
-  searchData() {
-    this.historyFilter.y1AxisProperty = [];
-    this.historyFilter.y2AxisProperty = [];
-    this.y1AxisProps.forEach(item => {
-      this.historyFilter.y1AxisProperty.push(item.id);
-    });
-    this.y2AxisProp.forEach(item => {
-      this.historyFilter.y2AxisProperty.push(item.id);
-    });
-    if (!this.historyFilter.y1AxisProperty || (this.historyFilter.y1AxisProperty && this.historyFilter.y1AxisProperty.length === 0)) {
-      this.toasterService.showError('Y1 Axis Property is required', 'Load Chart');
-      return;
-    }
-    this.isHistoryAPILoading = true;
-    this.lineGoogleChartData.dataTable = [];
-    const obj = {...this.historyFilter};
-    obj.message_props = '';
-    obj.y1AxisProperty.forEach(prop => obj.message_props += prop + ',');
-    if (obj.y2AxisProperty) {
-      obj.y2AxisProperty.forEach(prop => obj.message_props += prop + ',');
-    }
-    if (obj.message_props.charAt(obj.message_props.length - 1) === ',') {
-      obj.message_props = obj.message_props.substring(0, obj.message_props.length - 1);
-    }
-    console.log(this.historyFilter);
-    delete obj.y1AxisProperty;
-    delete obj.y2AxisProperty;
+  getTelemetryData() {
+    this.signalRService.disconnectFromSignalR('telemetry');
+    this.signalRTelemetrySubscription?.unsubscribe();
+    const obj = {};
+    this.isTelemetryDataLoading = true;
+    this.telemetryObj = undefined;
+    obj['app'] = this.contextApp.app;
+    obj['device_type'] = this.device.tags.device_type;
+    let message_props = '';
+    obj['count'] = 1;
+    const midnight =  ((((moment().hour(0)).minute(0)).second(0)).utc()).unix();
+    const now = (moment().utc()).unix();
+    obj['from_date'] = midnight;
+    obj['to_date'] = now;
+    this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key
+    + (this.propertyList[index + 1] ? ',' : ''));
+    obj['message_props'] = message_props;
+
     this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
       (response: any) => {
-        this.isFilterSelected = true;
-        if (response && response.data) {
-          console.log(response);
-          this.historyData = response.data;
-          this.isHistoryAPILoading = false;
-          this.historyData.reverse();
-
-          console.log('before interval');
-          this.refreshInterval = setInterval(() => {
-            console.log('in interval');
-            obj.from_date = obj.to_date;
-            obj.to_date = (moment().utc()).unix();
-            this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
-              (response1: any) => {
-                if (response && response.data) {
-                  const telemetryData = response1.data;
-                  telemetryData.reverse();
-                  this.updateChart(telemetryData);
-                }
-              }));
-          }, 5000);
-          this.loadChart();
-        }
-      }, () => this.isHistoryAPILoading = false
-    ));
-  }
-
-  loadChart() {
-    const dataList = [];
-    dataList.push('DateTime');
-    let title = '';
-    this.historyFilter.y1AxisProperty.forEach((prop, index) => {
-      dataList.splice(dataList.length, 0,  {label: prop, type: 'number'});
-      title += prop + (index !== this.historyFilter.y1AxisProperty.length - 1 ? ' & ' : '');
-      this.lineGoogleChartData.options.series[index.toString()] = {targetAxisIndex: 0};
-    });
-    this.lineGoogleChartData.options.vAxes = {
-      0: {title}
-    };
-    if (this.historyFilter.y2AxisProperty) {
-      title = '';
-      this.historyFilter.y2AxisProperty.forEach((prop, index) => {
-        dataList.splice(dataList.length, 0,  {label: prop, type: 'number'});
-        title += prop + (index !== this.historyFilter.y2AxisProperty.length - 1 ? ' & ' : '');
-        this.lineGoogleChartData.options.series[(this.historyFilter.y1AxisProperty.length) + index] =  {targetAxisIndex: 1};
-      });
-      this.lineGoogleChartData.options.vAxes['1'] = {title};
-    }
-    this.lineGoogleChartData.dataTable.push(dataList);
-    this.historyData.forEach(history =>  {
-      history.local_created_date = this.commonService.convertUTCDateToLocal(history.message_date);
-
-      const list = [];
-      list.splice(0, 0, new Date(history.local_created_date));
-      this.historyFilter.y1AxisProperty.forEach(prop => {
-        if (!isNaN(parseFloat(history[prop]))) {
-          list.splice(list.length, 0, parseFloat(history[prop]));
+        if (response?.data?.length > 0) {
+          response.data[0].message_date = this.commonService.convertUTCDateToLocal(response.data[0].message_date);
+          this.telemetryObj = response.data[0];
+          Object.keys(this.telemetryObj).forEach(key => {
+            if (key !== 'message_date') {
+              this.telemetryObj[key] = Number(this.telemetryObj[key]);
+            }
+          });
+          this.isTelemetryDataLoading = false;
         } else {
-          list.splice(list.length, 0, null);
+          this.isTelemetryDataLoading = false;
         }
-      });
-      if (this.historyFilter.y2AxisProperty) {
-        this.historyFilter.y2AxisProperty.forEach(prop => {
-          if (!isNaN(parseFloat(history[prop]))) {
-            list.splice(list.length, 0, parseFloat(history[prop]));
-          } else {
-            list.splice(list.length, 0, null);
+        const obj1 = {
+          hierarchy: this.contextApp.user.hierarchy,
+          levels: this.contextApp.hierarchy.levels,
+          device_id: this.device.device_id,
+          type: 'telemetry',
+          app: this.contextApp.app
+        };
+        this.signalRService.connectToSignalR(obj1);
+        this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(
+          data => {
+            if (data.type !== 'alert') {
+              this.telemetryObj = undefined;
+              data.message_date = this.commonService.convertSignalRUTCDateToLocal(data.ts);
+              this.telemetryObj = JSON.parse(JSON.stringify(data));
+              this.isTelemetryDataLoading = false;
+            }
           }
-        });
-      }
-      this.lineGoogleChartData.dataTable.splice(this.lineGoogleChartData.dataTable.length, 0, list);
-    });
-    console.log(this.lineGoogleChartData);
-    if (this.lineGoogleChartData.dataTable.length === 10) {
-      this.lineGoogleChartData.dataTable.splice(1, 1);
-    }
-    if (this.lineGoogleChartData.dataTable.length > 1) {
-    const ccComponent = this.lineGoogleChartData.component;
-    // force a redraw
-    ccComponent.draw();
-    }
+        );
+    }, error => this.isTelemetryDataLoading = false));
   }
 
-  updateChart(telemetryData) {
-    telemetryData.forEach(obj => {
-      obj.local_created_date = this.commonService.convertUTCDateToLocal(obj.message_date);
-      const list = [];
-      list.splice(0, 0, new Date(obj.local_created_date));
-      this.historyFilter.y1AxisProperty.forEach(prop => {
-        if (!isNaN(parseFloat(obj[prop]))) {
-          list.splice(list.length, 0, parseFloat(obj[prop]));
-        } else {
-          list.splice(list.length, 0, null);
-        }
-      });
-      if (this.historyFilter.y2AxisProperty) {
-        this.historyFilter.y2AxisProperty.forEach(prop => {
-          if (!isNaN(parseFloat(obj[prop]))) {
-            list.splice(list.length, 0, parseFloat(obj[prop]));
-          } else {
-            list.splice(list.length, 0, null);
-          }
-        });
-      }
-      this.lineGoogleChartData.dataTable.splice(this.lineGoogleChartData.dataTable.length, 0, list);
-    });
-    if (this.lineGoogleChartData.dataTable.length === 10) {
-      this.lineGoogleChartData.dataTable.splice(1, 1);
-    }
-    console.log(this.lineGoogleChartData);
-    if (this.lineGoogleChartData.dataTable.length > 1) {
-      const ccComponent = this.lineGoogleChartData.component;
-      // force a redraw
-      ccComponent.draw();
-      }
-  }
-
-  clear() {
-    this.historyFilter = {};
-    this.historyFilter.epoch = true;
-    this.historyFilter.device_id = this.device.device_id;
-    this.historyFilter.app = this.contextApp.app;
-    const now = moment().utc();
-    this.historyFilter.to_date = now.unix();
-    this.historyFilter.from_date = (now.subtract(1, 'minute')).unix();
-    this.y1AxisProps = [];
-    this.y2AxisProp = [];
+  onDeSelectAll() {
+    this.selectedWidgets = [];
   }
 
   ngOnDestroy(): void {
-    clearInterval(this.refreshInterval);
     this.apiSubscriptions.forEach(sub => sub.unsubscribe());
   }
 

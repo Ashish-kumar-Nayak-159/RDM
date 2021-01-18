@@ -1,7 +1,234 @@
-<app-e-scooter-tracker-dashboard [contextApp]="contextApp" *ngIf="contextApp.app === 'eScooterTracker'"
-[tileData]="tileData"></app-e-scooter-tracker-dashboard>
-<app-water-tank-monitor [contextApp]="contextApp" *ngIf="contextApp.app === 'WaterTankMonitor'" [tileData]="tileData"></app-water-tank-monitor>
-<app-pump-dashboard [contextApp]="contextApp" *ngIf="contextApp.app === 'IIoT_Pump'" [tileData]="tileData"></app-pump-dashboard>
+<div class="topnavbar">
+  <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3">
+    <h5 class="h4 mb-0 text-gray-800">
+      {{ tileData && tileData[0] ? tileData[0]?.value : "" }}
+      <ui-switch  class="mr-1" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry'"
+      [disabled]="isC2dAPILoading"
+      defaultBgColor="#f6c23e" checkedTextColor="white" uncheckedTextColor="white"
+      checkedLabel="@ 60 sec refresh frequency"
+      uncheckedLabel="@ 1 sec refresh frequency" name="tpye" [(ngModel)]="signalRModeValue"
+      (valueChange)="onSwitchValueChange($event)"></ui-switch>
+    </h5>
+  </div>
+  <div
+    id="telemetry-tabs"
+    class="d-sm-flex justify-content-end"
+    style="margin-right: 12rem; margin-top: -3.2rem"
+  >
+    <nav>
+      <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+        <a
+          class="nav-item nav-link active"
+          id="nav-home-tab"
+          data-toggle="tab"
+          href="#Meta-data"
+          role="tab"
+          aria-controls="nav-home"
+          aria-selected="true"
+          (click)="onTabChange('telemetry')"
+          >Live Telemetry</a
+        >
+        <a
+          class="nav-item nav-link"
+          id="nav-profile-tab"
+          data-toggle="tab"
+          href="#Device"
+          role="tab"
+          aria-controls="nav-profile"
+          aria-selected="false"
+          (click)="onTabChange('alert')"
+          >Live Alerts</a
+        >
+      </div>
+    </nav>
+  </div>
+</div>
+<div class="container-tab-pad" style="margin-top: 6.7rem">
+  <div class="row pl-4" style="padding-right: 0.8rem">
+    <div id="tabs">
+      <div class="tab-content px-3 px-sm-0" id="nav-tabContent">
+        <div
+          class="tab-pane fade show active"
+          id="Meta-data"
+          role="tabpanel"
+          aria-labelledby="nav-home-tab"
+        >
+          <div
+            class="topnavbar"
+            style="margin-top: 1.5rem"
+            *ngIf="selectedTab === 'telemetry'"
+          >
+            <div class="card row bg-white">
+              <div class="col-xl-12 col-md-12 mb-12">
+                <form class="row">
+                  <div class="col-md-8">
+                    <div class="form-group form-inline my-2 mx-1">
+                      <ng-container
+                        *ngFor="
+                          let level of contextApp?.hierarchy?.levels;
+                          let index = index
+                        "
+                      >
+                        <select
+                          *ngIf="index !== 0"
+                          class="form-control form-control-sm mx-1 my-1"
+                          id="{{ level }}"
+                          [disabled]="contextApp?.user?.hierarchy[level]"
+                          [(ngModel)]="configureHierarchy[index]"
+                          name="{{ level }}"
+                          (change)="onChangeOfHierarchy(index)"
+                        >
+                          <option [ngValue]="undefined">
+                            Select {{ level }}
+                          </option>
+                          <option
+                            [ngValue]="tag"
+                            *ngFor="let tag of hierarchyArr[index]"
+                          >
+                            {{ tag }}
+                          </option>
+                        </select>
+                        <input
+                          type="text"
+                          *ngIf="index === 0"
+                          defaultValue="{{ contextApp.app }}"
+                          disabled
+                          class="form-control form-control-sm mx-1 my-1"
+                        />
+                      </ng-container>
+                      <select
+                        class="form-control form-control-sm mx-1 my-1"
+                        id="deviceCategory"
+                        [(ngModel)]="filterObj.device"
+                        name="deviceCategory"
+                        [compareWith]="compareFn"
+                      >
+                        <option [ngValue]="undefined">Select Asset</option>
+                        <option
+                          [ngValue]="device"
+                          *ngFor="let device of devices"
+                        >
+                          {{
+                            device?.display_name
+                              ? device?.display_name
+                              : device.device_id
+                          }}
+                        </option>
+                      </select>
+                      <!-- <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory1" [(ngModel)]="filterObj.non_ip_device"
+                    name="deviceCategory1" *ngIf="filterObj.device?.cloud_connectivity.includes('Gateway')"
+                    >
+                    <option [ngValue]="undefined">Select Asset</option>
+                    <option [ngValue]="device" *ngFor="let device of nonIPDevices">
+                      {{device?.display_name ? device?.display_name: device.device_id}}
+                    </option>
+                  </select> -->
+                      <button
+                        type="button"
+                        class="btn btn-warning btn-sm mx-1 my-1"
+                        title="Search"
+                        (click)="onFilterSelection(this.filterObj)"
+                      >
+                        <i class="fa fa-search fa-sm"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <label class="col-md-3 mt-3 ml-3">{{
+                    telemetryObj?.date
+                  }}</label>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div
+            class="contain-pad contain-pad-dashboard"
+            *ngIf="selectedTab === 'telemetry'"
+          >
+            <div class="mb-2">
+              <div class="row col-12" *ngIf="isTelemetryDataLoading">
+                <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+              </div>
+              <div
+                class="row col-12 mx-1"
+                *ngIf="
+                  !isTelemetryDataLoading && !telemetryObj && isFilterSelected
+                "
+              >
+                No data available since mid night.
+              </div>
+              <div
+                class="row col-12 mx-1"
+                *ngIf="liveWidgets.length === 0 && isFilterSelected
+                "
+              >
+                No widgets configured for this device. Please contact administrator.
+              </div>
+              <div class="row col-12 mx-1 mt-1" *ngIf="
+              !isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.device && liveWidgets.length > 0
+            ">
+            <h5>Welcome to {{originalFilter.device?.display_name ? originalFilter.device?.display_name : originalFilter.device?.device_id}}</h5>
+              </div>
 
-<app-compressor-dashboard [contextApp]="contextApp" *ngIf="contextApp && (contextApp.app?.toLowerCase().includes('cms') || contextApp.app?.toLowerCase().includes('compressor')) "
-[tileData]="tileData"></app-compressor-dashboard>
+              <div class="mt-n2" *ngIf="telemetryObj && liveWidgets.length > 0">
+                <!-- code goes here -->
+                <div class="row col-md-12">
+                  <ng-container *ngFor="let widget of liveWidgets; let i = index;">
+                    <div [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
+                    || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'GaugeChart' ? (23 * widget.properties.length + '%') : '48%',
+                    'margin-left':'2%', 'margin-top': '2%'}">
+                    <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
+                    || widget?.widgetType === 'NumberWithImage'" [chartConfig]="widget" [device]="filterObj?.device" 
+                    [telemetryObj]="telemetryObj">
+                    </app-only-number-widget>
+                    <app-gauge-chart [chartConfig]="widget" [device]="filterObj?.device" *ngIf="widget.widgetType === 'GaugeChart'"
+                    [telemetryObj]="telemetryObj"></app-gauge-chart>
+              
+              
+                    <app-live-line-chart [chartConfig]="widget" [device]="filterObj?.device" [telemetryObj]="telemetryObj" 
+                    *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
+                    </app-live-line-chart>
+                    <app-live-bar-chart [chartConfig]="widget" [device]="filterObj?.device" [telemetryObj]="telemetryObj"
+                    *ngIf="widget.widgetType === 'BarChart'">
+                    </app-live-bar-chart>
+                    <app-live-column-chart [chartConfig]="widget" [device]="filterObj?.device" [telemetryObj]="telemetryObj"
+                    *ngIf="widget.widgetType === 'ColumnChart'">
+                    </app-live-column-chart>
+                  </div>
+                  </ng-container>
+                  </div>
+              </div>
+              <div class="row" id="overlay">
+                <div class="col-lg-12 mb-3">
+                <ng-container *ngIf="c2dResponseMessage.length > 0">
+                  <div
+                    class="row col-12 mx-1 my-2" *ngFor="let message of c2dResponseMessage"
+                    >
+                    {{message.timestamp}}: {{message.message}}
+                  </div>
+                </ng-container>
+                <div class="row col-md-12" *ngIf="isC2dAPILoading">
+                  <i class="fa fa-spinner fa-spin fa-fw fa-2x"> </i>{{c2dLoadingMessage}}
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="tab-pane fade"
+            id="Device"
+            role="tabpanel"
+            aria-labelledby="nav-profile-tab"
+            *ngIf="selectedTab === 'alert'"
+          >
+            <ng-container>
+              <app-application-visualization
+                [pageType]="'live'"
+              ></app-application-visualization>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

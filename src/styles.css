@@ -267,3 +267,9 @@ select#dateoptions {
 .selected-list .c-btn {
   outline: none!important;
 }
+
+.live-widget-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

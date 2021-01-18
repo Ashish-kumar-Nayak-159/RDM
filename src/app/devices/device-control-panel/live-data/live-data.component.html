@@ -1,41 +1,30 @@
-<div class="row mx-auto">
-  <div class="topnavbar bg-white py-2" style="margin-top: 3.1rem;height:6rem;">
+<div class="mx-auto">
+  <div class="topnavbar bg-white py-2" style="margin-top: 3.1rem;height:3.5rem;">
     <div class="row">
       <div class="col-xl-12 col-md-12 mb-12" >
           <form>
             <div class="form-group form-inline my-1">
-              <angular2-multiselect [data]="dropdownPropList"
-              id="y1AxisProperty"
-              [(ngModel)]="y1AxisProps" name="y1AxisProperty"
+              <angular2-multiselect
+              [data]="liveWidgets"
+              id="widgets"
+              [(ngModel)]="selectedWidgets"
+              (onDeSelectAll)="onDeSelectAll()"
+              name="widgets"
               [settings]="{
-                text: 'Select Y1 Axis',
+                text: 'Select Widgets',
                 selectAllText: 'Select All',
                 unSelectAllText: 'UnSelect All',
-                classes: 'custom-class col-lg-3 p-0',
+                classes: 'col-lg-2 col-xl-2 mr-1 p-0',
                 enableSearchFilter: true,
                 badgeShowLimit: 1,
                 maxHeight: 200,
                 labelKey: 'id'
               }"
-              (onDeSelectAll)="onDeSelectAll('y1')">
-            </angular2-multiselect>
-            <angular2-multiselect [data]="dropdownPropList"
-              id="y2AxisProp"
-              [(ngModel)]="y2AxisProp" name="y2AxisProp"
-              [settings]="{
-                text: 'Select Y2 Axis',
-                selectAllText: 'Select All',
-                unSelectAllText: 'UnSelect All',
-                classes: 'custom-class col-lg-3',
-                enableSearchFilter: true,
-                badgeShowLimit: 1,
-                maxHeight: 200,
-                labelKey: 'id'
-              }"  (onDeSelectAll)="onDeSelectAll('y2')">
+            >
             </angular2-multiselect>
 
-              <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="searchData()" ><i class="fa fa-search fa-sm"></i></button>
-              <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fa fa-trash  fa-sm"></i></button>
+              <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="getTelemetryData()" ><i class="fa fa-search fa-sm"></i></button>
+              <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="onDeSelectAll()"><i class="fa fa-trash  fa-sm"></i></button>
             </div>
            </form>
       </div>
@@ -47,17 +36,41 @@
       </div>
 
   </div>
-
-      <div>
-
-      <google-chart  *ngIf="lineGoogleChartData.dataTable.length > 1 && !isHistoryAPILoading" [data]="lineGoogleChartData"></google-chart>
-      <h6 *ngIf="historyData.length === 0 && isFilterSelected && !isHistoryAPILoading" >No data found.</h6>
-      <h6 *ngIf="historyData.length === 0 && !isFilterSelected && !isHistoryAPILoading" >
-        Select filter and press search button to load the chart.
-      </h6>
-      <i *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+  <div class="con-pad" style="max-height: calc(100vh - 15rem);margin-top: 3rem;">
+    <i *ngIf="isTelemetryDataLoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+    <ng-container *ngIf="!isTelemetryDataLoading && selectedWidgets.length > 0 && telemetryObj">
+    <div class="row col-md-12">
+    <ng-container *ngFor="let widget of selectedWidgets">
+      <div [style]="{ 'width': widget?.value.widgetType === 'OnlyNumber' || widget?.value.widgetType === 'NumberWithTrend'
+      || widget?.value.widgetType === 'NumberWithImage' || widget?.value.widgetType === 'GaugeChart' ? (23 * widget.value.properties.length + '%') : '48%',
+      'margin-left':'2%', 'margin-top': '2%'}">
+      <app-only-number-widget *ngIf="widget?.value.widgetType === 'OnlyNumber' || widget?.value.widgetType === 'NumberWithTrend'
+      || widget?.value.widgetType === 'NumberWithImage'" [chartConfig]="widget.value"
+      [telemetryObj]="telemetryObj" [device]="device">
+      </app-only-number-widget>
+      <app-gauge-chart [chartConfig]="widget.value" *ngIf="widget.value.widgetType === 'GaugeChart'"
+      [telemetryObj]="telemetryObj" [device]="device">
+      </app-gauge-chart>
+      <app-live-line-chart [chartConfig]="widget.value" [telemetryObj]="telemetryObj" [device]="device"
+      *ngIf="widget.value.widgetType === 'LineChart' || widget.value.widgetType === 'AreaChart'">
+      </app-live-line-chart>
+      <app-live-bar-chart [chartConfig]="widget.value" [telemetryObj]="telemetryObj"
+      *ngIf="widget.value.widgetType === 'BarChart'" [device]="device">
+      </app-live-bar-chart>
+      <app-live-column-chart [chartConfig]="widget.value" [telemetryObj]="telemetryObj"
+      *ngIf="widget.value.widgetType === 'ColumnChart'" [device]="device">
+      </app-live-column-chart>
     </div>
-
+    </ng-container>
+    </div>
+    </ng-container>
+    <ng-container *ngIf="!isTelemetryDataLoading && selectedWidgets.length === 0 && !telemetryObj ">
+      Please select widgets first.
+    </ng-container>
+    <ng-container *ngIf="!isTelemetryDataLoading && selectedWidgets.length > 0 && !telemetryObj">
+      Please search to view the data.
+    </ng-container>
+  </div>
   </div>
 
 

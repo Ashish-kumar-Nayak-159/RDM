@@ -1,5 +1,5 @@
 import { Subscription } from 'rxjs';
-import { Component, OnInit, OnDestroy, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, OnChanges, EventEmitter, Output } from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import { CommonService } from 'src/app/services/common.service';
@@ -16,6 +16,8 @@ export class LiveColumnChartComponent implements OnInit, OnChanges, OnDestroy {
   private chart: am4charts.XYChart;
   @Input() chartConfig: any;
   @Input() telemetryObj: any;
+  @Output() removeWidget: EventEmitter<string> = new EventEmitter<string>();
+  @Input() device: any;
   telemetryData: any[] = [];
   selectedAlert: any;
   seriesArr: any[] = [];
@@ -26,7 +28,6 @@ export class LiveColumnChartComponent implements OnInit, OnChanges, OnDestroy {
   headerMessage: string;
   chartStartdate: any;
   chartEnddate: any;
-  device: any;
   chartDataFields: any;
   subscriptions: Subscription[] = [];
   constructor(
@@ -104,7 +105,8 @@ export class LiveColumnChartComponent implements OnInit, OnChanges, OnDestroy {
     // const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
     chart.dateFormatter.inputDateFormat = 'x';
     chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
-    chart.legend = new am4charts.Legend();
+    // chart.legend = new am4charts.Legend();
+    chart.zoomOutButton.disabled = true;
     if (this.device) {
       chart.zoomOutButton.disabled = true;
       chart.exporting.menu = new am4core.ExportMenu();
@@ -243,13 +245,13 @@ export class LiveColumnChartComponent implements OnInit, OnChanges, OnDestroy {
     if (eventType === 'close') {
       $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal('hide');
     } else if (eventType === 'save') {
-      this.removeWidget(this.chartConfig.chartId);
+      this.removeChart(this.chartConfig.chartId);
       $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal('hide');
     }
   }
 
-
-  removeWidget(chartId) {
+  removeChart(chartId) {
+    this.removeWidget.emit(chartId);
   }
 
   ngOnDestroy(): void {

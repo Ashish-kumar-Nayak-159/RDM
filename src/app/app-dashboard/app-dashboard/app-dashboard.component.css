@@ -1,0 +1,4 @@
+.contain-pad-dashboard {
+  margin-top: 2.5rem;
+  max-height: calc(100vh - 12rem)!important;
+}

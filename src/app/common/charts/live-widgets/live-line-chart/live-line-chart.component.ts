@@ -1,5 +1,5 @@
 import { Subscription } from 'rxjs';
-import { Component, Input, NgZone, OnChanges, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, NgZone, OnChanges, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import { ChartService } from 'src/app/chart/chart.service';
@@ -15,12 +15,13 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
 
   private chart: am4charts.XYChart;
   @Input() chartConfig: any;
+  @Input() device: any;
   @Input() telemetryObj: any;
+  @Output() removeWidget: EventEmitter<string> = new EventEmitter<string>();
   telemetryData: any[] = [];
   selectedAlert: any;
   seriesArr: any[] = [];
   propertyList: any[] = [];
-  device: any;
   y1AxisProps: any[] = [];
   y2AxisProps: any[] = [];
   chartHeight: any;
@@ -122,11 +123,12 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
       this.createValueAxis(chart, 0);
       this.createValueAxis(chart, 1);
       chart.logo.disabled = true;
-      chart.legend = new am4charts.Legend();
+      // chart.legend = new am4charts.Legend();
       chart.cursor = new am4charts.XYCursor();
-      chart.legend.itemContainers.template.togglable = false;
+      // chart.legend.itemContainers.template.togglable = false;
       dateAxis.dateFormatter = new am4core.DateFormatter();
       dateAxis.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
+      chart.zoomOutButton.disabled = true;
       if (this.device) {
       chart.exporting.menu = new am4core.ExportMenu();
       chart.exporting.getFormatOptions('xlsx').useLocale = false;
@@ -289,21 +291,22 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
       isDisplaySave: true,
       isDisplayCancel: true
     };
-    this.bodyMessage = 'Are you sure you want to remove this ' + this.chartTitle + ' widget?';
+    this.bodyMessage = 'Are you sure you want to remove this ' + this.chartConfig.widgetTitle + ' widget?';
     this.headerMessage = 'Remove Widget';
-    $('#confirmRemoveWidgetModal' + this.chartId).modal({ backdrop: 'static', keyboard: false, show: true });
+    $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
   onModalEvents(eventType) {
     if (eventType === 'close') {
-      $('#confirmRemoveWidgetModal' + this.chartId).modal('hide');
+      $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal('hide');
     } else if (eventType === 'save') {
-      this.removeWidget();
-      $('#confirmRemoveWidgetModal' + this.chartId).modal('hide');
+      this.removeChart(this.chartConfig.chartId);
+      $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal('hide');
     }
   }
 
-  removeWidget() {
+  removeChart(chartId) {
+    this.removeWidget.emit(chartId);
   }
 
   ngOnDestroy(): void {

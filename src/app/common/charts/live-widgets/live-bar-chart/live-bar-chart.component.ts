@@ -1,5 +1,5 @@
 import { Subscription } from 'rxjs';
-import { Component, OnInit, OnDestroy, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, OnChanges, EventEmitter, Output } from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import { CommonService } from 'src/app/services/common.service';
@@ -16,6 +16,8 @@ export class LiveBarChartComponent implements OnInit, OnChanges, OnDestroy {
   private chart: am4charts.XYChart;
   @Input() chartConfig: any;
   @Input() telemetryObj: any;
+  @Input() device: any;
+  @Output() removeWidget: EventEmitter<string> = new EventEmitter<string>();
   telemetryData: any[] = [];
   selectedAlert: any;
   seriesArr: any[] = [];
@@ -33,7 +35,6 @@ export class LiveBarChartComponent implements OnInit, OnChanges, OnDestroy {
   modalConfig: any;
   bodyMessage: string;
   headerMessage: string;
-  device: any;
   chartStartdate: any;
   chartEnddate: any;
   chartDataFields: any;
@@ -111,8 +112,8 @@ export class LiveBarChartComponent implements OnInit, OnChanges, OnDestroy {
       categoryAxis.max = date.getTime();
     }
     // categoryAxis.dataFields.category = 'message_date';
-    categoryAxis.renderer.grid.template.location = 0;
-    categoryAxis.renderer.minGridDistance = 70;
+    // categoryAxis.renderer.grid.template.location = 0;
+    // categoryAxis.renderer.minGridDistance = 70;
   //  const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
     if (this.selectedAlert) {
       const range = categoryAxis.axisRanges.create();
@@ -127,8 +128,8 @@ export class LiveBarChartComponent implements OnInit, OnChanges, OnDestroy {
     }
     chart.dateFormatter.inputDateFormat = 'x';
     chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
-    chart.legend = new am4charts.Legend();
-    chart.legend.itemContainers.template.togglable = false;
+    //chart.legend = new am4charts.Legend();
+    // chart.legend.itemContainers.template.togglable = false;
     if (this.device) {
       chart.exporting.menu = new am4core.ExportMenu();
       chart.exporting.getFormatOptions('xlsx').useLocale = false;
@@ -252,25 +253,23 @@ export class LiveBarChartComponent implements OnInit, OnChanges, OnDestroy {
       isDisplaySave: true,
       isDisplayCancel: true
     };
-    this.bodyMessage = 'Are you sure you want to remove this ' + this.chartTitle + ' widget?';
+    this.bodyMessage = 'Are you sure you want to remove this ' + this.chartConfig.widgetTitle + ' widget?';
     this.headerMessage = 'Remove Widget';
-    $('#confirmRemoveWidgetModal_' + this.chartId).modal({ backdrop: 'static', keyboard: false, show: true });
+    $('#confirmRemoveWidgetModal_' + this.chartConfig.chartId).modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
   onModalEvents(eventType) {
     if (eventType === 'close') {
-      $('#confirmRemoveWidgetModal_' + this.chartId).modal('hide');
+      $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal('hide');
     } else if (eventType === 'save') {
-      this.removeWidget(this.chartId);
-      $('#confirmRemoveWidgetModal_' + this.chartId).modal('hide');
+      this.removeChart(this.chartConfig.chartId);
+      $('#confirmRemoveWidgetModal' + this.chartConfig.chartId).modal('hide');
     }
   }
 
-  removeWidget(chartId) {
-
+  removeChart(chartId) {
+    this.removeWidget.emit(chartId);
   }
-
-
 
   ngOnDestroy(): void {
       if (this.chart) {

@@ -153,6 +153,7 @@
       class="fa fa-spinner fa-spin fa-fw fa-2x"
     ></i>
   </div>
+  <div class="con-pad" style="max-height: calc(100vh - 15rem);margin-top: 8rem;">
   <div class="row mt-2 col-12 ml-1" *ngIf="historyData.length > 0 && isFilterSelected && !isHistoryAPILoading">
 
     <div class="col-md-3 form-group " *ngFor="let prop of propList">
@@ -168,5 +169,5 @@
     </div>
   </div>
   <div id="widgetContainer" class="showLayout"></div>
-  <div></div>
+</div>
 </div>

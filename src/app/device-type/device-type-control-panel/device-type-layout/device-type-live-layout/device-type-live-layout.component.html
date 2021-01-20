@@ -18,10 +18,10 @@
     <div class="row col-md-12">
     <ng-container *ngFor="let widget of liveWidgets; let i = index;">
       <div [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
-      || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'GaugeChart' ? (23 * widget.properties.length + '%') : '48%',
+      || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget' ? (23 * widget.properties.length + '%') : '48%',
       'margin-left':'2%', 'margin-top': '2%'}">
       <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
-      || widget?.widgetType === 'NumberWithImage'" [chartConfig]="widget"  (removeWidget)="removeWidget($event)"
+      || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'StringWidget'" [chartConfig]="widget"  (removeWidget)="removeWidget($event)"
       [telemetryObj]="telemetryObj">
       </app-only-number-widget>
       <app-gauge-chart [chartConfig]="widget" *ngIf="widget.widgetType === 'GaugeChart'"
@@ -31,12 +31,12 @@
       <app-live-line-chart [chartConfig]="widget" [telemetryObj]="telemetryObj"  (removeWidget)="removeWidget($event)"
       *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
       </app-live-line-chart>
-      <app-live-bar-chart [chartConfig]="widget" [telemetryObj]="telemetryObj" (removeWidget)="removeWidget($event)"
+      <!-- <app-live-bar-chart [chartConfig]="widget" [telemetryObj]="telemetryObj" (removeWidget)="removeWidget($event)"
       *ngIf="widget.widgetType === 'BarChart'">
       </app-live-bar-chart>
       <app-live-column-chart [chartConfig]="widget" [telemetryObj]="telemetryObj" (removeWidget)="removeWidget($event)"
       *ngIf="widget.widgetType === 'ColumnChart'">
-      </app-live-column-chart>
+      </app-live-column-chart> -->
     </div>
     </ng-container>
     </div>
@@ -74,18 +74,19 @@
             <option [ngValue]="'OnlyNumber'" >Only Number Widget</option>
             <option [ngValue]="'NumberWithTrend'" >Number with Trend Widget</option>
             <option [ngValue]="'NumberWithImage'" >Number with Image Widget</option>
+            <option [ngValue]="'StringWidget'" >String Widget</option>
             <option [ngValue]="'GaugeChart'" >Gauge Chart</option>
             <option [ngValue]="'LineChart'" >Line Chart</option>
             <option [ngValue]="'AreaChart'" >Area Chart</option>
-            <option [ngValue]="'ColumnChart'" >Column Chart</option>
-            <option [ngValue]="'BarChart'" >Bar Chart</option>
+            <!-- <option [ngValue]="'ColumnChart'" >Column Chart</option>
+            <option [ngValue]="'BarChart'" >Bar Chart</option> -->
           </select>
         </div>
         <div class="form-group" *ngIf="widgetObj.widgetType === 'NumberWithTrend' || widgetObj.widgetType === 'LineChart' || widgetObj.widgetType === 'AreaChart'
-        || widgetObj.widgetType === 'BarChart' || widgetObj.widgetType === 'ColumnChart'">
+        ">
           <label for="message-text" class="col-form-label">Data points in Chart:</label>
           <input type="number" class="form-control" id="data_points" name="data_points" [(ngModel)]="widgetObj.noOfDataPointsForTrend"
-          placeholder="Enter No of data points">
+          placeholder="Enter No of data points" disabled>
         </div>
         <div class="form-group" *ngIf="widgetObj.widgetType === 'GaugeChart'">
           <label for="message-text" class="col-form-label">Gauge Start Angle:</label>

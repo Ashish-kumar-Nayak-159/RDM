@@ -43,7 +43,7 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
     // this.properties = {};
     const obj = {
       app: this.deviceType.app,
-      id: this.deviceType.id
+      name: this.deviceType.name
     };
     this.subscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
       (response: any) => {
@@ -56,7 +56,7 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
     // this.deviceMethods = {};
     const obj = {
       app: this.deviceType.app,
-      id: this.deviceType.id
+      name: this.deviceType.name
     };
     this.subscriptions.push(this.deviceTypeService.getThingsModelDeviceMethods(obj).subscribe(
       (response: any) => {
@@ -169,7 +169,8 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
   deleteControlWidget() {
     const obj = {
       app: this.deviceType.app,
-      id: this.selectedWidget.id
+      id: this.selectedWidget.id,
+      device_type: this.deviceType.id
     };
     this.subscriptions.push(this.deviceTypeService.deleteThingsModelControlWidget(obj).subscribe(
       (response: any) => {

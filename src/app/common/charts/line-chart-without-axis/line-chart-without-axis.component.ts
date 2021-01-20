@@ -30,6 +30,13 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
 
   ngOnInit(): void {
     setTimeout(() => this.plotChart(), 200);
+    this.chartService.clearDashboardTelemetryList.subscribe(arr => {
+      this.telemetryData = [];
+      if (this.chart) {
+        this.chart.data = [];
+        this.chart.validateData();
+      }
+    });
   }
 
   ngOnChanges(changes) {
@@ -70,7 +77,6 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
       // data.reverse();
       this.chart.data = data;
       this.chart.validateData();
-      console.log(data);
     }
   }
 

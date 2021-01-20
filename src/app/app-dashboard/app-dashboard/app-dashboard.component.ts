@@ -1,3 +1,4 @@
+import { ChartService } from 'src/app/chart/chart.service';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -48,12 +49,14 @@ export class AppDashboardComponent implements OnInit {
   apiSubscriptions: Subscription[] = [];
   liveWidgets: any[] = [];
   isGetWidgetsAPILoading = false;
+  deviceDetailData: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService,
     private signalRService: SignalRService,
+    private chartService: ChartService,
     private cdr: ChangeDetectorRef  ) {
   }
 
@@ -135,21 +138,27 @@ export class AppDashboardComponent implements OnInit {
     }
   }
 
-  onSwitchValueChange(event) {
+  async onSwitchValueChange(event) {
     console.log(event);
     $('#overlay').show();
     // alert(this.signalRModeValue);
     this.c2dResponseMessage = [];
     this.signalRModeValue = event;
     this.isC2dAPILoading = true;
-    this.c2dLoadingMessage = 'Sending C2D Command';
+    await this.getDeviceData();
+    // this.c2dLoadingMessage = 'Sending C2D Command';
     clearInterval(this.c2dResponseInterval);
     const obj = {
+      method: 'setTelemetryMode',
       device_id: this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : this.filterObj.device.device_id,
       gateway_id: this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : undefined,
       message: {
         mode: this.signalRModeValue ? 'normal' : 'turbo',
-        frequency_in_sec: this.signalRModeValue ? 60 : 1,
+        frequency_in_sec: this.signalRModeValue ? 
+        (this.deviceDetailData?.tags?.settings?.normal_mode?.frequency ? this.deviceDetailData?.tags?.settings?.normal_mode?.frequency : 60) : 
+        (this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency ? this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency : 60),
+        turbo_mode_timeout : !this.signalRModeValue ?
+        (this.deviceDetailData?.tags?.settings?.turbo_mode?.timeout ? this.deviceDetailData?.tags?.settings?.turbo_mode?.timeout : 120) : undefined,
         device_id: this.filterObj.device.device_id
       },
       app: this.contextApp.app,
@@ -159,59 +168,45 @@ export class AppDashboardComponent implements OnInit {
       message_id: this.filterObj.device.device_id + '_' + (moment().utc()).unix()
     };
     console.log(obj);
-    this.apiSubscriptions.push(this.deviceService.changeTelemetryMode(obj, this.contextApp.app).subscribe(
+    this.apiSubscriptions.push(this.deviceService.callDeviceMethod(obj, this.contextApp.app).subscribe(
       (response: any) => {
-        if (response.message_id) {
-        this.c2dResponseMessage.push({
-          timestamp: this.commonService.convertEpochToDate(obj.timestamp),
-          message: 'Sent ' + (this.signalRModeValue ? 'Normal' : 'Turbo')  + ' mode command with '
-          + obj.message.frequency_in_sec + ' second telemetry frequency to ' + (this.filterObj.device.gateway_id ? 'IoT Gateway' : 'Device')
-        });
-        this.c2dLoadingMessage = 'Waiting for acknowledgement';
-        this.c2dResponseInterval = setInterval(() => {
-          this.checkForC2dResponse(obj);
-        }, 5000);
-
-        // this.telemetryData.push(this.telemetryObj);
-      } else {
-        this.isC2dAPILoading = false;
-        this.c2dLoadingMessage = undefined;
+        if (response?.device_response?.configuration) {
+        // this.c2dResponseMessage.push({
+        //   timestamp: this.commonService.convertEpochToDate(obj.timestamp),
+        //   message: 'Sent ' + (this.signalRModeValue ? 'Normal' : 'Turbo')  + ' mode command with '
+        //   + obj.message.frequency_in_sec + ' second telemetry frequency to ' + (this.filterObj.device.gateway_id ? 'IoT Gateway' : 'Device')
+        // });
+        this.chartService.clearDashboardTelemetryList.emit([]);
+        this.telemetryData = [];
+        this.toasterService.showSuccess(response.device_response.message, 'Change Telemetry Mode');
       }
+      this.isC2dAPILoading = false;
+      this.c2dLoadingMessage = undefined;
+      this.telemetryInterval = undefined;
       }, error => {
+        // this.c2dResponseMessage.push({
+        //   timestamp: this.commonService.convertEpochToDate(obj.timestamp),
+        //   message: error.message});
+        this.toasterService.showError(error.message, 'Change Telemetry Mode');
+        this.signalRModeValue = !this.signalRModeValue;
         this.isC2dAPILoading = false;
         this.c2dLoadingMessage = undefined;
       }
     ));
   }
 
-  checkForC2dResponse(obj) {
-    this.apiSubscriptions.push(this.deviceService.getC2dMessageJSON(obj.message_id, this.contextApp.app).subscribe(
-      (response: any) => {
-        if (response?.feedback_code) {
-          this.isC2dAPILoading = false;
-          this.c2dLoadingMessage = undefined;
-          if (response?.feedback_code?.toLowerCase() === 'success') {
-            const arr = [];
-            this.telemetryData = [];
-            this.telemetryData = JSON.parse(JSON.stringify(arr));
-          } else {
-            this.getDeviceSignalRMode(this.filterObj.device.gateway_id);
-          }
-          this.c2dResponseMessage.push({
-            timestamp: this.commonService.convertEpochToDate((moment().utc()).unix()),
-            message: (response?.feedback_code?.toLowerCase() === 'success' ? (this.filterObj.device.gateway_id ? 'IoT Gateway' : 'Device') + ' has received the command successfully' : (
-            response?.feedback_code?.toLowerCase() === 'expired' ? 'Command has been expired' : (
-            response?.feedback_code?.toLowerCase() === 'rejected' ? 'Command has been rejected by ' + (this.filterObj.device.gateway_id ? 'IoT Gateway' : 'Device') : (
-            response?.feedback_code?.toLowerCase() === 'purged' ? 'Command has been purged' : (
-            response?.feedback_code?.toLowerCase() === 'deliverycountexceeded' ? 'Delivery count exceeded for command' : ''
-            )
-            )
-            )
-          ))
-          });
-          clearInterval(this.c2dResponseInterval);
-        }
+  getDeviceData() {
+    return new Promise((resolve1) => {
+    this.deviceDetailData = undefined;
+
+    this.apiSubscriptions.push(
+      this.deviceService.getDeviceData
+      (this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : this.filterObj.device.device_id, this.contextApp.app).subscribe(
+      async (response: any) => {
+        this.deviceDetailData = JSON.parse(JSON.stringify(response));
+        resolve1();
       }));
+    });
   }
 
 
@@ -295,6 +290,9 @@ export class AppDashboardComponent implements OnInit {
     }
 
   }
+
+  
+
 
   getDevices(hierarchy) {
     return new Promise((resolve1) => {
@@ -402,7 +400,7 @@ export class AppDashboardComponent implements OnInit {
     this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : ''));
     obj.message_props = message_props;
     this.isFilterSelected = true;
-    await this.getMidNightHours(obj);
+    // await this.getMidNightHours(obj);
 
     this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
       (response: any) => {
@@ -413,15 +411,18 @@ export class AppDashboardComponent implements OnInit {
           // const hours = this.telemetryObj['Running Hours'].split(':');
           // this.telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
           // this.telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
-          this.getTimeDifference(
-            Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Hours')])),
-            Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Minutes')])));
+          // this.getTimeDifference(
+          //   Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Hours')])),
+          //   Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Minutes')])));
       //    this.getTimeDifference(this.telemetryObj['Running Hours'], this.telemetryObj['Running Minutes']);
-          Object.keys(this.telemetryObj).forEach(key => {
-            if (  key !== 'date' && key !== 'message_date') {
-              this.telemetryObj[key] = Number(this.telemetryObj[key]);
-            }
-          });
+         
+            
+          // this.propertyList.forEach(prop => {
+          //   if (prop.data_type === 'Number') {
+          //     this.telemetryObj[prop.json_key] = Number(this.telemetryObj[prop.json_key]);
+          //   }
+          // });
+          console.log(JSON.stringify(this.telemetryObj));
           this.lastReportedTelemetryValues = JSON.parse(JSON.stringify(this.telemetryObj));
           this.telemetryData = response.data;
           this.isTelemetryDataLoading = false;
@@ -451,17 +452,17 @@ export class AppDashboardComponent implements OnInit {
 
     telemetryObj.date = this.commonService.convertSignalRUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
     telemetryObj.message_date = this.commonService.convertSignalRUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
-    if (!this.midNightHour) {
-      this.midNightHour = telemetryObj[this.getPropertyKey('Running Hours')] ? Math.floor(Number(telemetryObj[this.getPropertyKey('Running Hours')])) : 0;
-      this.midNightMinute = telemetryObj[this.getPropertyKey('Running Minutes')] ? Math.floor(Number(telemetryObj[this.getPropertyKey('Running Minutes')])) : 0;
-    }
+    // if (!this.midNightHour) {
+    //   this.midNightHour = telemetryObj[this.getPropertyKey('Running Hours')] ? Math.floor(Number(telemetryObj[this.getPropertyKey('Running Hours')])) : 0;
+    //   this.midNightMinute = telemetryObj[this.getPropertyKey('Running Minutes')] ? Math.floor(Number(telemetryObj[this.getPropertyKey('Running Minutes')])) : 0;
+    // }
     // const hours = telemetryObj[this    .getPropertyKey('Running Hours')].toString().split(':');
     // telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
     // telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
     // console.log(telemetryObj);
-    this.getTimeDifference(
-      Math.floor(Number(telemetryObj[this.getPropertyKey('Running Hours')])),
-      Math.floor(Number(telemetryObj[this.getPropertyKey('Running Minutes')])));
+    // this.getTimeDifference(
+    //   Math.floor(Number(telemetryObj[this.getPropertyKey('Running Hours')])),
+    //   Math.floor(Number(telemetryObj[this.getPropertyKey('Running Minutes')])));
     this.lastReportedTelemetryValues = telemetryObj;
     if (this.telemetryObj) {
       const interval = moment(telemetryObj.message_date).diff(moment(this.telemetryObj.message_date), 'second');
@@ -474,6 +475,7 @@ export class AppDashboardComponent implements OnInit {
       }
       this.telemetryInterval = interval;
     }
+    
     this.telemetryObj = telemetryObj;
     if (this.telemetryData.length >= 15) {
       this.telemetryData.splice(0, 1);
@@ -555,6 +557,7 @@ export class AppDashboardComponent implements OnInit {
         (response?.mode?.toLowerCase() === 'turbo' ? false : true);
         const arr = [];
         this.telemetryData = [];
+        this.chartService.clearDashboardTelemetryList.emit([]);
         this.telemetryData = JSON.parse(JSON.stringify(arr));
         if (this.signalRModeValue === newMode) {
           $('#overlay').hide();

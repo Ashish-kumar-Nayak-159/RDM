@@ -1,0 +1,81 @@
+<div class="topnavbar bg-white py-2">
+  <div class="row">
+
+    <ul class="nav">
+
+      <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)" (click)="saveGatewaySettings()" [class.disabled]="isSaveSettingAPILoading">
+          <i class="fa fa-fw fa-save"></i>
+          <span class="text-secondary">Save</span></a>
+      </li>
+      <li class="nav-item" *ngIf="isSaveSettingAPILoading">
+      <a class="nav-link" href="javascript:void(0)">
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <hr class="solid">
+    </div>
+  </div>
+
+</div>
+
+
+<div class="con-pad" *ngIf="device?.tags?.settings">
+
+  <div class="row mt-1 mx-auto">
+
+    <div class="col-xl-6 col-lg-6">
+      <!-- Page Heading -->
+      <h1 class="h6 mb-3 text-secondary-400">Normal Telemetry Mode Settings:</h1>
+      <div class="table-responsive">
+        <table class="table table-bordered  table-striped text-gray-800" id="dataTable" width="100%" cellspacing="0">
+
+          <tbody>
+            <tr>
+              <td style="width: 50%;">Frequency (In Sec): </td>
+              <td>
+                  <input type="number" class="form-control form-control-sm bg-light border-0 small"
+                    [(ngModel)]="device.tags.settings.normal_mode.frequency" name="frequency_in_normal"
+                    placeholder="Frequency">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-1 mx-auto">
+
+    <div class="col-xl-6 col-lg-6">
+      <!-- Page Heading -->
+      <h1 class="h6 mb-3 text-secondary-400">Turbo Telemetry Mode Settings:</h1>
+      <div class="table-responsive">
+        <table class="table table-bordered  table-striped text-gray-800" id="dataTable" width="100%" cellspacing="0">
+
+          <tbody>
+            <tr>
+              <td style="width: 50%;">Frequency (In Sec): </td>
+              <td>
+                  <input type="number" class="form-control form-control-sm bg-light border-0 small"
+                    [(ngModel)]="device.tags.settings.turbo_mode.frequency" name="frequency_in_turbo"
+                    placeholder="Frequency">
+              </td>
+            </tr>
+            <tr>
+              <td >Turbo mode Timeout (In Sec): </td>
+              <td>
+                  <input type="number" class="form-control form-control-sm bg-light border-0 small"
+                    [(ngModel)]="device.tags.settings.turbo_mode.timeout_time" name="timeout_in_turbo"
+                    placeholder="Timeout">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

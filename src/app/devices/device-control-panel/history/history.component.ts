@@ -474,9 +474,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.layoutJson = [];
     this.apiSubscriptions.push(this.deviceTypeService.getThingsModelLayout(params).subscribe(
       async (response: any) => {
-        if (response?.layout?.length > 0) {
-          this.layoutJson = response.layout;
-          this.storedLayout = response.layout[0];
+        if (response?.historical_widgets?.length > 0) {
+          this.layoutJson = response.historical_widgets;
+          this.storedLayout = response.historical_widgets[0];
           this.layoutJson.forEach((item) => {
             this.dropdownWidgetList.push({
               id: item.title,

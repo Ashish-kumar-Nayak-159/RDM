@@ -397,4 +397,20 @@ export class DeviceService {
     return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_CONFIGURATION_HISTORY, filterObj.app), { params });
   }
 
+  callDeviceMethod(obj, app) {
+    console.log(app);
+    console.log(obj);
+    return this.http.post(this.url + String.Format(AppUrls.CALL_DEVICE_METHOD, app), obj);
+  }
+
+  syncDeviceCache(app, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.SYNC_DEVICE_CACHE, app), { params });
+  }
+
 }

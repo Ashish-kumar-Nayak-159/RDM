@@ -513,8 +513,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.selectedWidgets = [];
     this.subscriptions.push(this.deviceTypeService.getThingsModelLayout(params).subscribe(
       async (response: any) => {
-        if (response?.layout?.length > 0) {
-          response.layout.forEach((item) => {
+        if (response?.historical_widgets?.length > 0) {
+          response.historical_widgets.forEach((item) => {
             this.dropdownWidgetList.push({
               id: item.title,
               value: item

@@ -103,11 +103,16 @@ export class LiveDataComponent implements OnInit, OnDestroy {
         if (response?.data?.length > 0) {
           response.data[0].message_date = this.commonService.convertUTCDateToLocal(response.data[0].message_date);
           this.telemetryObj = response.data[0];
-          Object.keys(this.telemetryObj).forEach(key => {
-            if (key !== 'message_date') {
-              this.telemetryObj[key] = Number(this.telemetryObj[key]);
-            }
-          });
+          // Object.keys(this.telemetryObj).forEach(key => {
+          //   if (key !== 'message_date') {
+          //     this.telemetryObj[key] = Number(this.telemetryObj[key]);
+          //   }
+          // });
+          // this.propertyList.forEach(prop => {
+          //   if (prop.data_type === 'Number') {
+          //     this.telemetryObj[prop.json_key] = Number(this.telemetryObj[prop.json_key]);
+          //   }
+          // });
           this.isTelemetryDataLoading = false;
         } else {
           this.isTelemetryDataLoading = false;

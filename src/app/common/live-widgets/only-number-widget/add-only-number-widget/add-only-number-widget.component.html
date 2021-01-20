@@ -1,5 +1,5 @@
-<ng-container *ngIf="widgetObj.widgetType !== 'LineChart' && widgetObj.widgetType !== 'BarChart'
-&& widgetObj.widgetType !== 'AreaChart' && widgetObj.widgetType !== 'ColumnChart'; else singleChartTemplate">
+<ng-container *ngIf="widgetObj.widgetType !== 'LineChart' 
+&& widgetObj.widgetType !== 'AreaChart'; else singleChartTemplate">
 <ng-container *ngFor="let prop of widgetObj.properties; let i = index;" >
 <div class="form-group">
   <label for="message-text" class="col-form-label ">Property <a *ngIf="i === 0"

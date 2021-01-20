@@ -265,7 +265,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       }
     }
     // this.layoutJson.reverse();
-    this.deviceType.layout = this.layoutJson;
+    this.deviceType.historical_widgets = this.layoutJson;
     this.subscriptions.push(this.deviceTypeService.updateThingsModel(this.deviceType, this.contextApp.app).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Save Layout');
@@ -281,16 +281,16 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
   getLayout() {
     const params = {
       app: this.contextApp.app,
-      id: this.deviceType.id
+      name: this.deviceType.name
     };
     this.dropdownWidgetList = [];
     this.selectedWidgets = [];
     this.layoutJson = [];
     this.subscriptions.push(this.deviceTypeService.getThingsModelLayout(params).subscribe(
       async (response: any) => {
-        if (response?.layout?.length > 0) {
-          this.layoutJson = response.layout;
-          this.storedLayout = response.layout;
+        if (response?.historical_widgets?.length > 0) {
+          this.layoutJson = response.historical_widgets;
+          this.storedLayout = response.historical_widgets;
           this.layoutJson.forEach((item) => {
             this.dropdownWidgetList.push({
               id: item.title,

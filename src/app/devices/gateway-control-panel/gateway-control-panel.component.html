@@ -56,6 +56,9 @@
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="device_device_tags">
         <app-tags *ngIf="activeTab === 'tags'  && device" [tileData]="tileData" [device]="device"></app-tags>
       </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'settings'}" role="tabpanel" id="device_settings">
+        <app-gateway-settings *ngIf="activeTab === 'settings'  && device" [tileData]="tileData" [device]="device"></app-gateway-settings>
+      </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel" id="device_notifications">
         <app-notification *ngIf="activeTab === 'notifications' && device" [device]="device"></app-notification>
       </div>

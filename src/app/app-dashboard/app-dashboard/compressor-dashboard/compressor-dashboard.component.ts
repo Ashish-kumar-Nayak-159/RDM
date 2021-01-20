@@ -91,7 +91,6 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
   loadFromCache() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION);
     if (item && item.device) {
-      console.log('aaaaaaaaaaaaaaa     ', item.device.hierarchy);
       this.originalFilter = JSON.parse(JSON.stringify(item));
       this.filterObj = JSON.parse(JSON.stringify(item));
       this.contextApp.hierarchy.levels.forEach((level, index) => {
@@ -110,7 +109,6 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
   }
 
   onSwitchValueChange(event) {
-    console.log(event);
     $('#overlay').show();
     // alert(this.signalRModeValue);
     this.c2dResponseMessage = [];
@@ -229,7 +227,6 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
       } else {
       const arr = [];
       this.devices = [];
-      console.log(this.originalDevices);
       this.originalDevices.forEach(device => {
         let flag1 = false;
         Object.keys(hierarchyObj).forEach(hierarchyKey => {

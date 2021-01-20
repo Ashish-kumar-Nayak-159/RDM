@@ -1,6 +1,8 @@
+import { ToasterService } from './../../../services/toaster.service';
 import { CONSTANTS } from 'src/app/app.constants';
 import { environment } from './../../../../environments/environment';
 import { Component, Input, OnInit } from '@angular/core';
+import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
 
 @Component({
   selector: 'app-device-type-overview',
@@ -11,7 +13,10 @@ export class DeviceTypeOverviewComponent implements OnInit {
 
   @Input() deviceType: any;
   blobSASToken = environment.blobKey;
-  constructor() { }
+  constructor(
+    private toasterService: ToasterService,
+    private deviceTypeService: DeviceTypeService
+  ) { }
 
   ngOnInit(): void {
     if (!this.deviceType.metadata?.image) {
@@ -19,6 +24,15 @@ export class DeviceTypeOverviewComponent implements OnInit {
         url: CONSTANTS.DEFAULT_MODEL_IMAGE
       };
     }
+  }
+
+  syncWithCache() {
+    this.deviceTypeService.syncModelCache(this.deviceType.app, this.deviceType.id)
+    .subscribe((response: any) => {
+      this.toasterService.showSuccess(response.message, 'Sync Model Data');
+    }, error => {
+      this.toasterService.showError(error.message, 'Sync Model Data');
+    });
   }
 
 }

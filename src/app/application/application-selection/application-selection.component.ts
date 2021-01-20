@@ -56,7 +56,6 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
         console.log(url);
         if (menuObj.url?.includes(':appName')) {
           url = menuObj.url.replace(':appName', this.applicationData.app);
-          console.log(url);
           this.router.navigateByUrl(url);
         }
       }

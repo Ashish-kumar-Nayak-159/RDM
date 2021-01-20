@@ -44,12 +44,12 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
     if (this.widgets.length === 0) {
       const obj = {
         app: this.deviceType.app,
-        id: this.deviceType.id
+        name: this.deviceType.name
       };
       this.subscriptions.push(this.deviceTypeService.getThingsModelLayout(obj).subscribe(
         (response: any) => {
-          if (response?.layout?.length > 0) {
-            this.widgets = response.layout;
+          if (response?.historical_widgets?.length > 0) {
+            this.widgets = response.historical_widgets;
           }
          }
       ));

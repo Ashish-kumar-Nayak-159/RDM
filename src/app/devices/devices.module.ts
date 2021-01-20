@@ -50,6 +50,7 @@ import { DeviceLifeCycleEventsComponent } from './gateway-control-panel/device-l
 import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { GatewayConfigurationHistoryComponent } from './gateway-control-panel/gateway-configuration-history/gateway-configuration-history.component';
 import { GatewayCurrentConfigurationComponent } from './gateway-control-panel/gateway-current-configuration/gateway-current-configuration.component';
+import { GatewaySettingsComponent } from './gateway-control-panel/gateway-settings/gateway-settings.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +87,8 @@ import { GatewayCurrentConfigurationComponent } from './gateway-control-panel/ga
     GatewayCachedAlertsComponent,
     DeviceLifeCycleEventsComponent,
     GatewayConfigurationHistoryComponent,
-    GatewayCurrentConfigurationComponent
+    GatewayCurrentConfigurationComponent,
+    GatewaySettingsComponent
   ],
   imports: [
     CommonModule,

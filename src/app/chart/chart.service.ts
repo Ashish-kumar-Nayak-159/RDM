@@ -7,5 +7,6 @@ export class ChartService {
 
   toggleThresholdEvent: EventEmitter<any> = new EventEmitter<any>();
   togglePropertyEvent: EventEmitter<any> = new EventEmitter<any>();
+  clearDashboardTelemetryList: EventEmitter<any> = new EventEmitter<any>();
   constructor() { }
 }

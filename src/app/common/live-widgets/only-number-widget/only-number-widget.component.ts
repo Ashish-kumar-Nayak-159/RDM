@@ -21,6 +21,7 @@ export class OnlyNumberWidgetComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     if (this.telemetryObj) {
+      
       this.telemetryData.push(this.telemetryObj);
     }
   }

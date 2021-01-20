@@ -60,7 +60,6 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       const chart = am4core.create(this.chartId, am4charts.XYChart);
       chart.paddingRight = 20;
       const data = [];
-      console.log(this.telemetryData);
       this.telemetryData.forEach((obj, i) => {
         const newObj = {...obj};
         newObj.message_date = new Date(obj.message_date);
@@ -87,10 +86,6 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         date.setUTCSeconds(this.chartStartdate);
         dateAxis.min = date.getTime();
       }
-      // dateAxis.baseInterval = {
-      //   count: 10,
-      //   timeUnit: "minute"
-      // }
 
       if (this.chartEnddate) {
         const date = new Date(0);
@@ -288,7 +283,6 @@ export class LiveChartComponent implements OnInit, OnDestroy {
     this.seriesArr.forEach((item, index) => {
       console.log(item.isActive);
       const seriesColumn = this.chart.series.getIndex(index);
-      console.log(prop, '===' , item);
       if (prop === item.propKey) {
 
         item.compareText = !item.compareText;

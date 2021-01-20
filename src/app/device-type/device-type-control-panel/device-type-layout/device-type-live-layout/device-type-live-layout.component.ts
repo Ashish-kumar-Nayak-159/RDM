@@ -64,7 +64,7 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
   getLiveWidgets() {
     const params = {
       app: this.contextApp.app,
-      id: this.deviceType.id
+      name: this.deviceType.name
     };
     this.liveWidgets = [];
     this.isGetWidgetsAPILoading = true;
@@ -84,6 +84,10 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
 
   onWidgetTypeChange() {
     this.widgetObj.properties = [{}];
+    if (this.widgetObj.widgetType === 'NumberWithTrend' ||
+    this.widgetObj.widgetType === 'LineChart' || this.widgetObj.widgetType === 'AreaChart') {
+      this.widgetObj.noOfDataPointsForTrend = 15;
+    }
   }
 
 

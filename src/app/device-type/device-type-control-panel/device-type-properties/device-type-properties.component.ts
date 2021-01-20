@@ -107,7 +107,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
     this.isPropertiesLoading = true;
     const obj = {
       app: this.deviceType.app,
-      id: this.deviceType.id
+      name: this.deviceType.name
     };
     this.subscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
       (response: any) => {

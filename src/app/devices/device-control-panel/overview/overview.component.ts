@@ -116,6 +116,18 @@ export class OverviewComponent implements OnInit, OnDestroy {
     ));
   }
 
+  syncWithCache() {
+    const obj = {
+      device_id: this.device.device_id
+    };
+    this.deviceService.syncDeviceCache(this.deviceType.app, obj)
+    .subscribe((response: any) => {
+      this.toasterService.showSuccess(response.message, 'Sync Device Data');
+    }, error => {
+      this.toasterService.showError(error.message, 'Sync Device Data');
+    });
+  }
+
   getDeviceConnectionStatus() {
     this.deviceConnectionStatus = undefined;
     const id = (this.pageType === 'nonipdevice') ? this.device.gateway_id : this.device.device_id;

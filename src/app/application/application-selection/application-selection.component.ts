@@ -1,3 +1,4 @@
+import { ToasterService } from './../../services/toaster.service';
 import { Subscription } from 'rxjs';
 import { DeviceTypeService } from './../../services/device-type/device-type.service';
 import { ApplicationService } from 'src/app/services/application/application.service';
@@ -25,7 +26,8 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     private router: Router,
     private applicationService: ApplicationService,
     private deviceService: DeviceService,
-    private deviceTypeService: DeviceTypeService
+    private deviceTypeService: DeviceTypeService,
+    private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -50,16 +52,23 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     this.applicationData.configuration.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
     let i = 0;
     menu.forEach(menuObj => {
+      if (menuObj.page === 'Things Modelling' && this.applicationData.user.role === CONSTANTS.APP_ADMIN_ROLE) {
+        menuObj.visible = true;
+      }
       if ( i === 0 && menuObj.visible) {
         i++;
         let url = menuObj.url;
         console.log(url);
         if (menuObj.url?.includes(':appName')) {
           url = menuObj.url.replace(':appName', this.applicationData.app);
+          console.log('after url   ', url);
           this.router.navigateByUrl(url);
         }
       }
     });
+    if (i === 0) {
+      this.toasterService.showError('All the menu items visibility are off. Please contact administrator', 'App Selection');
+    }
   }
 
   getDevices(hierarchy) {

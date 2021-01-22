@@ -52,13 +52,36 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
         }
       );
     }
+    this.processAppMenuData();
+    let i = 0;
+    this.router.events.subscribe(async event => {
+      if (event instanceof NavigationEnd && i === 0) {
+        i++;
+        this.processAppMenuData();
+      }
+    });
+
+    this.commonService.refreshSideMenuData.subscribe(list => {
+      console.log(list);
+      let config = list.configuration?.main_menu?.length > 0 ? list.configuration.main_menu :
+      JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+      config = JSON.parse(JSON.stringify(config));
+      this.processSideMenuData(config, list);
+      // const index = this.userData.apps.findIndex(app => app.app === list.app);
+      // const obj = this.userData.apps[index];
+      // this.userData.apps.splice(index, 1);
+      // this.userData.apps.splice(index, 0, obj);
+      // this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
+    });
+  }
+
+
+  processAppMenuData() {
     if (this.contextApp?.app) {
       if (!this.userData?.is_super_admin) {
       let data = [];
-     // alert('here');
-      console.log(this.contextApp);
       const arr = JSON.parse(JSON.stringify(this.constantsData.SIDE_MENU_LIST));
-      if (this.contextApp?.configuration?.main_menu?.length > 0) {
+      if (this.contextApp.configuration?.main_menu?.length > 0) {
         arr.forEach(config => {
           let found = false;
           this.contextApp.configuration.main_menu.forEach(item => {
@@ -77,55 +100,9 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
       } else {
         data =  arr;
       }
-      console.log('60   ', data);
       this.processSideMenuData(data, this.contextApp);
       }
-    }
-    let i = 0;
-    this.router.events.subscribe(async event => {
-      if (event instanceof NavigationEnd && i === 0) {
-        i++;
-        if (this.contextApp?.app) {
-        if (!this.userData?.is_super_admin) {
-        let data = [];
-        const arr = JSON.parse(JSON.stringify(this.constantsData.SIDE_MENU_LIST));
-        if (this.contextApp.configuration?.main_menu?.length > 0) {
-          arr.forEach(config => {
-            let found = false;
-            this.contextApp.configuration.main_menu.forEach(item => {
-              if (config.page === item.page) {
-                found = true;
-                config.display_name = item.display_name;
-                config.visible = item.visible;
-                config.showAccordion = item.showAccordion;
-                data.push(config);
-              }
-            });
-            if (!found) {
-              data.push(config);
-            }
-          });
-        } else {
-          data =  arr;
-        }
-        this.processSideMenuData(data, this.contextApp);
-        }
-        }
       }
-    });
-
-    this.commonService.refreshSideMenuData.subscribe(list => {
-      console.log(list);
-      let config = list.configuration?.main_menu?.length > 0 ? list.configuration.main_menu :
-      JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
-      config = JSON.parse(JSON.stringify(config));
-      this.processSideMenuData(config, list);
-      // const index = this.userData.apps.findIndex(app => app.app === list.app);
-      // const obj = this.userData.apps[index];
-      // this.userData.apps.splice(index, 1);
-      // this.userData.apps.splice(index, 0, obj);
-      // this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
-    });
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
@@ -167,6 +144,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   processSideMenuData(data, list) {
     // alert('here');
     console.log('data-117    ', data);
+    console.log(this.contextApp);
     const arr = JSON.parse(JSON.stringify(data));
     console.log(list);
     arr.forEach(element1 => {
@@ -175,11 +153,12 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
         element1.visible = false;
         } else {
           element1.visible = true;
+          console.log('17999999999999');
         }
       }
     });
     console.log('in if - 129', JSON.stringify(arr));
-    this.displayMenuList = arr;
+    this.displayMenuList = JSON.parse(JSON.stringify(arr));
     console.log('131   ', this.displayMenuList);
   }
 

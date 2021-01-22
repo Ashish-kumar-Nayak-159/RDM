@@ -56,11 +56,11 @@
     <h6>This {{tileData.value}} is managed by an IP Gateway ({{device.gateway_id}})</h6>
 
   </div>
-  <div class="row col-12">
+  <div class="row col-12 mt-1">
     <h6>{{tileData.value}} Id is {{device?.device_id}}</h6>
   </div>
   <div class="row col-12 mt-1" *ngIf="pageType === 'gateway'">
-    <h6>This is the gateway of type ({{device.tags.device_type}}) managing {{deviceCount}} assets.</h6>
+    <h6>This is the gateway of type ({{device.tags.device_type}}) managing {{deviceCount}} {{deviceCount === 1 ? 'asset' : 'assets'}}.</h6>
   </div>
   <div class="row col-12 mt-1">
     <!-- <a class="btn-sm shadow-sm white-font"
@@ -69,22 +69,22 @@
       {{deviceConnectionStatus?.status.charAt(0).toUpperCase() + deviceConnectionStatus?.status.slice(1)
         + ', ' + deviceConnectionStatus?.connection_state + ' @ ' + deviceConnectionStatus?.local_updated_date}}
     </a> -->
-    <p *ngIf="device?.status?.toLowerCase() === 'enabled' && device?.connection_state?.toLowerCase() === 'connected'">
+    <p *ngIf="device?.metadata?.status?.toLowerCase() === 'enabled' && device?.metadata?.connection_state?.toLowerCase() === 'connected'">
       Currently, {{pageType}} is
       <span class="enabled-font">
-        {{device?.status}} & Online.</span>
+        {{device?.metadata.status}} & Online.</span>
     </p>
-    <p *ngIf="device?.status?.toLowerCase() === 'enabled' && device?.connection_state?.toLowerCase() === 'disconnected'">
+    <p *ngIf="device?.metadata?.status?.toLowerCase() === 'enabled' && device?.metadata?.connection_state?.toLowerCase() === 'disconnected'">
       Currently, {{pageType}} is
       <span class="enabled-font">
-        {{device?.status}}</span>, but it is
+        {{device?.metadata.status}}</span>, but it is
         <span class="disabled-font">
           Offline.</span>
     </p>
-    <p *ngIf="device?.status?.toLowerCase() === 'disabled' && device?.connection_state?.toLowerCase() === 'disconnected'">
+    <p *ngIf="device?.metadata?.status?.toLowerCase() === 'disabled' && device?.metadata?.connection_state?.toLowerCase() === 'disconnected'">
       Currently, {{pageType}} is
       <span class="disabled-font">
-        {{device?.status}} & Offline.</span>
+        {{device?.metadata.status}} & Offline.</span>
     </p>
   </div>
   <div *ngIf="deviceCredentials" class="mt-1">

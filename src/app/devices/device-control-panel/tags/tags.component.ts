@@ -99,7 +99,7 @@ export class TagsComponent implements OnInit, OnDestroy {
 
         if (this.device.tags?.hierarchy_json) {
           this.device.hierarchy = this.device.tags.hierarchy_json;
-          this.device.tags.hierarchy = this.device.tags.hierarchy_json;
+          // this.device.tags.hierarchy = this.device.tags.hierarchy_json;
         }
         console.log('111111', JSON.stringify(this.device));
         this.device.hierarchyString = '';
@@ -231,9 +231,19 @@ export class TagsComponent implements OnInit, OnDestroy {
     this.device.tags.hierarchy = JSON.stringify(this.device.tags.hierarchy_json);
   }
 
+  checkKeyDuplicacy(tagObj, tagIndex) {
+    const index = this.deviceCustomTags.findIndex(tag => tag.name === tagObj.name);
+    console.log(index);
+    if (index !== -1 && index !== tagIndex) {
+      this.toasterService.showError('Tag with same name is already exists. Please use different name', 'Set Tags');
+      tagObj.name = undefined;
+    }
+  }
+
   updateDeviceTags() {
     this.isUpdateAPILoading = true;
     const tagObj = {};
+    if (this.device.tags?.custom_tags) {
     Object.keys(this.device.tags.custom_tags).forEach(customTag => {
       let flag = false;
       this.deviceCustomTags.forEach(tag => {
@@ -245,6 +255,7 @@ export class TagsComponent implements OnInit, OnDestroy {
         tagObj[customTag] = null;
       }
     });
+    }
     this.deviceCustomTags.forEach(tag => {
       if (tag.name && tag.value) {
         tagObj[tag.name] = tag.value;
@@ -264,7 +275,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     }
     this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
-        this.toasterService.showSuccess(response.message, 'Set Tags');
+        this.toasterService.showSuccess(this.tileData.value + ' tags updated successfully.', 'Set Tags');
         this.getDeviceData();
         this.isReservedTagsEditable = false;
         this.isUpdateAPILoading = false;

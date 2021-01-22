@@ -394,7 +394,7 @@ export class CompressorDashboardComponent implements OnInit, OnDestroy, AfterVie
 
   processTelemetryData(telemetryObj) {
 
-    telemetryObj.message_date = this.commonService.convertSignalRUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
+    telemetryObj.message_date = this.commonService.convertUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
 
     if (!this.midNightHour) {
       this.midNightHour = telemetryObj[this.getPropertyKey('Running Hours')] ? Math.floor(Number(telemetryObj[this.getPropertyKey('Running Hours')])) : 0;

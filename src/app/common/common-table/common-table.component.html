@@ -9,7 +9,8 @@
   </thead>
     <tbody>
       <ng-container *ngIf="tableData.length > 0 && !isTableDataLoading && isTableFilterSelected">
-        <tr *ngFor="let data of tableData">
+        <tr *ngFor="let data of tableData"
+        [ngClass]="{ 'bg-danger text-white': tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value}">
 
           <td *ngFor="let header of tableConfig?.data" class="{{header.valueClass}}">
             <ng-container *ngIf="header.type === 'text'">{{resolve(data, header.key)}} </ng-container>

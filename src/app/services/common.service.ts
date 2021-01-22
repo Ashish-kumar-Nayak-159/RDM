@@ -28,17 +28,21 @@ export class CommonService {
 
   convertUTCDateToLocal(utcDate) {
     if (utcDate) {
+      const options = { year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit',
+      minute: '2-digit', second: '2-digit', fractionalSecondDigits: 3, hour12: true  };
+      if (utcDate.includes('T') && utcDate.includes('Z')) {
+        // 2011-06-29T16:52:48.000Z
+        return new Date(utcDate).toLocaleString('en-GB', options);
+      } else if (utcDate.includes('T') && !utcDate.includes('Z')) {
+        // 2011-06-29T16:52:48.000
+        return new Date(utcDate + 'Z').toLocaleString('en-GB', options);
+      } else {
+        // 1/20/2021 10:47:59 AM
+        return new Date(utcDate + ' UTC').toLocaleString('en-GB', options);
+      }
       // return (moment.utc(utcDate, 'M/DD/YYYY h:mm:ss A')).local().format('DD-MMM-YYYY hh:mm:ss A');
       // console.log(moment(new Date(utcDate + ' UTC').toString()).format('DD-MMM-YYYY hh:mm:ss A'));
-      return moment(new Date(utcDate).toISOString()).format('DD-MMM-YYYY hh:mm:ss.SSS A');
-    }
-    return null;
-  }
-
-  convertSignalRUTCDateToLocal(utcDate) {
-    if (utcDate) {
-      // return (moment.utc(utcDate, 'M/DD/YYYY h:mm:ss A')).local().format('DD-MMM-YYYY hh:mm:ss A');
-      return moment(new Date(utcDate).toString()).format('DD-MMM-YYYY hh:mm:ss.SSS A');
+     // return moment(new Date(utcDate).toISOString()).format('DD-MMM-YYYY hh:mm:ss.SSS A');
     }
     return null;
   }

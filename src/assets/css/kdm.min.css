@@ -2513,8 +2513,8 @@ a.btn.disabled, fieldset:disabled a.btn {
 
 .btn-white:hover {
   color: #3a3b45;
-  background-color: #fff;
-  border-color: #fff
+  background-color: #bfc3cf;
+  border-color: #a5a9b6
 }
 
 .btn-red {

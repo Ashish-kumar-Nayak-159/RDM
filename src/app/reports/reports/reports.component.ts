@@ -385,7 +385,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
       (response: any) => {
         this.latestAlerts = response.data;
         this.latestAlerts.reverse();
-        this.latestAlerts.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
+        this.latestAlerts.forEach(item => {
+          item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
+          item.device_display_name = this.devices.filter(device => device.device_id === item.device_id)[0]?.display_name;
+        });
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false
     ));

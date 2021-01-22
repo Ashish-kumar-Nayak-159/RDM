@@ -11,7 +11,8 @@
             <th style="font-size:1rem; border-right-color:#f8f9fc;" colspan="2">Hierarchy
               <i class="fa fa-info-circle" title="Hierarchy name will not allow ' ', '.', '#' and '$'"></i> </th>
             <th style="padding:0.2rem 0.5rem;"><button type="button" id="insert-more"
-                class="btn btn-red btn-sm mx-1 my-1" style="float:right" (click)="onAddNewHierarchyObj()">
+                class="btn btn-red btn-sm mx-1 my-1" style="float:right" (click)="onAddNewHierarchyObj()"
+                title="Add Hierarchy">
                 <i class="fa fa-plus fa-sm"></i></button></th>
             <!--<a href="#" id="insert-more" ><i class="fa fa-fw fa-plus" style="color:red"></i></a>-->
           </tr>
@@ -106,7 +107,7 @@
               </div>
             </td>
             <td width="10%"><button type="button" id="insert-more" class="btn btn-red btn-sm mx-1 my-1"
-                (click)="onAddNewTag()" [disabled]="!addedTagItem">
+                (click)="onAddNewTag()" [disabled]="!addedTagItem" title="Add Tag">
                 <i class="fa fa-plus fa-sm"></i></button>
               </td>
 

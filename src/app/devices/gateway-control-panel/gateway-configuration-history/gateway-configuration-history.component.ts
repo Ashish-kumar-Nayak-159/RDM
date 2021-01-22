@@ -95,7 +95,7 @@ export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
         if (response && response.data) {
           this.confighistory = response.data;
           this.confighistory.forEach(item => {
-            item.local_created_date = this.commonService.convertSignalRUTCDateToLocal(item.message_date);
+            item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
           });
         }
         this.isConfigHistoryLoading = false;

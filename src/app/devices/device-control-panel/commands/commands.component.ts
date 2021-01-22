@@ -16,6 +16,7 @@ export class CommandsComponent implements OnInit {
 
 
   @Input() device: Device = new Device();
+  @Input() callingPage = 'Device';
   displayMode: string;
   timerObj: any;
   constructor(
@@ -31,6 +32,10 @@ export class CommandsComponent implements OnInit {
         seconds: data.seconds
       };
     });
+    if (this.callingPage === 'gateway') {
+      this.displayMode = 'view';
+      this.timerObj = undefined
+    }
   }
 
   onClickOfGeneralCommands() {

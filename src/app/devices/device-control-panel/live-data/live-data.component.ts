@@ -129,7 +129,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
           data => {
             if (data.type !== 'alert') {
               this.telemetryObj = undefined;
-              data.message_date = this.commonService.convertSignalRUTCDateToLocal(data.ts);
+              data.message_date = this.commonService.convertUTCDateToLocal(data.ts);
               this.telemetryObj = JSON.parse(JSON.stringify(data));
               this.isTelemetryDataLoading = false;
             }

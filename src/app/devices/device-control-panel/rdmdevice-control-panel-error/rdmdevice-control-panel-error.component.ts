@@ -62,13 +62,6 @@ export class RDMDeviceControlPanelErrorComponent implements OnInit, OnDestroy {
           }
         ]
       };
-      if (this.pageType === 'gateway') {
-        this.errorTableConfig.data.splice(1, 1);
-        this.errorTableConfig.data.splice(1, 0, {
-          name: 'Asset Name',
-          key: 'device_id'
-        });
-      }
     });
     this.errorFilter.epoch = true;
 

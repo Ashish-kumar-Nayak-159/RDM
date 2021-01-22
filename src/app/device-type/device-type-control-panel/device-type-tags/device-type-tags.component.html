@@ -44,7 +44,7 @@
       <!-- Page Heading -->
       <h1 class="h6 mb-3 text-secondary-400">
         Following tags will be added when asset is instantiated with this model.
-        <button type="button" class="btn btn-warning btn-sm mx-2 my-1" title="Search" (click)="addTagObject()" >
+        <button type="button" class="btn btn-warning btn-sm mx-2 my-1" title="Add Tag" (click)="addTagObject()" >
           <i class="fa fa-plus fa-sm"></i></button>
       </h1>
 
@@ -64,7 +64,7 @@
               <td >{{tag.name}}</td>
               <td>{{tag.key}}</td>
               <td>{{tag.defaultValue}}</td>
-              <td><a href="javascript:void(0)" class="mx-1" (click)="removeTag(i)">
+              <td><a href="javascript:void(0)" class="mx-1" title="Delete" (click)="removeTag(i)">
                 <i class="fa fa-trash fa-sm"></i> </a></td>
             </tr>
           </ng-container>

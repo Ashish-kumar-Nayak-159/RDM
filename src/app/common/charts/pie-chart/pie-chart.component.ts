@@ -107,7 +107,7 @@ export class PieChartComponent implements OnInit, OnDestroy {
     console.log(list);
     chart.exporting.dateFields = list;
     chart.exporting.getFormatOptions('pdf').addURL = false;
-    chart.exporting.dateFormat = 'dd-MM-yyyy hh:mm:ss A a';
+    chart.exporting.dateFormat = 'dd-MM-yyyy HH:mm:ss.nnn';
     console.log(this.selectedAlert);
     if (this.selectedAlert) {
       chart.exporting.filePrefix = this.selectedAlert.device_id + '_Alert_' + this.selectedAlert.local_created_date;

@@ -56,7 +56,11 @@ export class GatewayCachedAlertsComponent implements OnInit, OnDestroy {
             name: '',
             key: undefined,
           }
-        ]
+        ],
+        rowHighlight: {
+          param: 'process_status',
+          value: 'Success'
+        }
       };
 
     });
@@ -97,8 +101,8 @@ export class GatewayCachedAlertsComponent implements OnInit, OnDestroy {
         if (response && response.data) {
           this.alertsList = response.data;
           this.alertsList.forEach(item => {
-            item.local_created_date = this.commonService.convertSignalRUTCDateToLocal(item.created_date);
-            item.local_upload_date = this.commonService.convertSignalRUTCDateToLocal(item.iothub_date);
+            item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
+            item.local_upload_date = this.commonService.convertUTCDateToLocal(item.iothub_date);
           });
         }
         this.isAlertLoading = false;

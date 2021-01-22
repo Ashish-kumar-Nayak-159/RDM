@@ -31,10 +31,10 @@
           <td *ngIf="type !== 'response'">{{msg?.feedback}}</td>
           <!-- <td></td> -->
           <td *ngIf="type !== 'response'">
-            <a (click)="loadMessageDetail(msg, true)" href="javascript:void(0)">
+            <a (click)="loadMessageDetail(msg, true)" href="javascript:void(0)" title="View Message">
               <i class="fa fa-fw fa-eye"></i></a></td>
           <td>
-            <a (click)="loadResponseDetail(msg, true)" href="javascript:void(0)">
+            <a (click)="loadResponseDetail(msg, true)" href="javascript:void(0)" title="View Response">
               <i class="fa fa-fw fa-eye"></i></a></td>
         </tr>
       </ng-container>

@@ -1,3 +1,5 @@
+import { environment } from 'src/environments/environment';
+
 export class CONSTANTS {
 
   // device tags list based on device protocol
@@ -509,6 +511,33 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-stack-exchange',
       visible: true,
       isTitle: false
+    },
+    {
+      page: 'error',
+      system_name: 'Error',
+      url: '#device_error',
+      display_name: 'Error',
+      icon: 'fa fa-fw fa-exclamation-triangle',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'c2d',
+      system_name: 'C2D (Control)',
+      url: null,
+      display_name: 'C2D (Control)',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'control_widgets',
+      system_name: 'Control Widgets',
+      url: '#device_control_widgets',
+      display_name: 'Control Widgets',
+      icon: 'fa fa-fw fa-angle-right',
+      visible: true,
+      isTitle: false
     }
   ];
 
@@ -701,8 +730,8 @@ export class CONSTANTS {
   public static PASSWORD_REGEX = '^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,20}$';
   public static APP_ADMIN_ROLE = 'App Admin';
   public static LOCAL_STORAGE_EXPIRY_INTERVAL = 86400000;
-  public static DEFAULT_APP_ICON = 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/default_app_icon.png';
-  public static DEFAULT_APP_LOGO = 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/default_app_logo.jpg';
-  public static DEFAULT_HEADER_LOGO = 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/app-images/header-logo/logo.png';
-  public static DEFAULT_MODEL_IMAGE = 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/device-type-images/device.svg';
+  public static DEFAULT_APP_ICON = environment.blobURL + '/' + environment.blobContainerName + '/default_app_icon.png';
+  public static DEFAULT_APP_LOGO = environment.blobURL + '/' + environment.blobContainerName + '/default_app_logo.jpg';
+  public static DEFAULT_HEADER_LOGO = environment.blobURL + '/' + environment.blobContainerName + '/app-media/logo.png';
+  public static DEFAULT_MODEL_IMAGE = environment.blobURL + '/' + environment.blobContainerName + '/device-type-media/device.svg';
 }

@@ -348,6 +348,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.latestAlerts.forEach((item, i) =>  {
           item.alert_id = 'alert_' +  i;
           item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
+          item.device_display_name = this.devices.filter(device => device.device_id === item.device_id)[0]?.display_name;
         });
         this.isAlertAPILoading = false;
         this.singalRService.disconnectFromSignalR('alert');
@@ -375,7 +376,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   getLiveAlerts(obj) {
-    obj.local_created_date = this.commonService.convertSignalRUTCDateToLocal(obj.timestamp);
+    obj.local_created_date = this.commonService.convertUTCDateToLocal(obj.timestamp);
     obj.message_date = obj.timestamp;
     obj.alert_id = 'alert_' + this.latestAlerts.length;
     this.latestAlerts.splice(0, 0, obj);
@@ -559,7 +560,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.filterObj.aggregation_minutes = 1;
     this.filterObj.aggregation_format = 'AVG';
     if (this.selectedAlert?.metadata?.acknowledged_date) {
-      this.selectedAlert.metadata.acknowledged_date = this.commonService.convertSignalRUTCDateToLocal(
+      this.selectedAlert.metadata.acknowledged_date = this.commonService.convertUTCDateToLocal(
         this.selectedAlert.metadata.acknowledged_date);
     }
     this.isTelemetryFilterSelected = false;
@@ -866,6 +867,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.deviceService.acknowledgeDeviceAlert(obj).subscribe(
       response => {
         this.toasterService.showSuccess('Alert acknowledged successfully', 'Acknowledge Alert');
+        this.getLatestAlerts();
         this.closeAcknowledgementModal();
        // this.getAlarms();
       }, (error) => {

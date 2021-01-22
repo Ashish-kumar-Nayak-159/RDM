@@ -19,7 +19,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
 
   deviceFilterObj: DeviceListFilter = new DeviceListFilter();
   originalDeviceFilterObj: DeviceListFilter = new DeviceListFilter();
-  devicesList: Device[] = [];
+  devicesList: any[] = [];
   isDeviceListLoading = false;
   userData: any;
   isFilterSelected = false;
@@ -187,7 +187,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
         this.tableConfig.data.splice((this.tableConfig.data.length - 2), 0, {
           name: 'Reporting Via GW',
-          key: 'gateway_id',
+          key: 'gateway_display_name',
           type: 'text',
           headerClass: '',
           valueclass: ''
@@ -383,6 +383,9 @@ export class DeviceListComponent implements OnInit, OnDestroy {
           this.devicesList.forEach(item => {
             if (!item.display_name) {
               item.display_name = item.device_id;
+            }
+            if (this.gateways?.length > 0) {
+              item.gateway_display_name = this.gateways.filter(gateway => gateway.device_id === item.gateway_id)[0]?.display_name;
             }
             if (item.hierarchy) {
               item.hierarchyString = '';

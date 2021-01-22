@@ -154,11 +154,14 @@ export class AppDashboardComponent implements OnInit {
       gateway_id: this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : undefined,
       message: {
         mode: this.signalRModeValue ? 'normal' : 'turbo',
-        frequency_in_sec: this.signalRModeValue ? 
-        (this.deviceDetailData?.tags?.settings?.normal_mode?.frequency ? this.deviceDetailData?.tags?.settings?.normal_mode?.frequency : 60) : 
-        (this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency ? this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency : 60),
-        turbo_mode_timeout : !this.signalRModeValue ?
-        (this.deviceDetailData?.tags?.settings?.turbo_mode?.timeout ? this.deviceDetailData?.tags?.settings?.turbo_mode?.timeout : 120) : undefined,
+        frequency_in_sec: this.signalRModeValue ?
+        (this.deviceDetailData?.tags?.settings?.normal_mode?.frequency ?
+          this.deviceDetailData?.tags?.settings?.normal_mode?.frequency : 60) :
+        (this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency ?
+          this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency : 60),
+        turbo_mode_timeout_in_sec : !this.signalRModeValue ?
+        (this.deviceDetailData?.tags?.settings?.turbo_mode?.timeout ?
+          this.deviceDetailData?.tags?.settings?.turbo_mode?.timeout : 120) : undefined,
         device_id: this.filterObj.device.device_id
       },
       app: this.contextApp.app,
@@ -174,15 +177,18 @@ export class AppDashboardComponent implements OnInit {
         // this.c2dResponseMessage.push({
         //   timestamp: this.commonService.convertEpochToDate(obj.timestamp),
         //   message: 'Sent ' + (this.signalRModeValue ? 'Normal' : 'Turbo')  + ' mode command with '
-        //   + obj.message.frequency_in_sec + ' second telemetry frequency to ' + (this.filterObj.device.gateway_id ? 'IoT Gateway' : 'Device')
+        //   + obj.message.frequency_in_sec + ' second telemetry frequency to ' +
+        // (this.filterObj.device.gateway_id ? 'IoT Gateway' : 'Device')
         // });
         this.chartService.clearDashboardTelemetryList.emit([]);
+        const arr = [];
         this.telemetryData = [];
+        this.telemetryData = JSON.parse(JSON.stringify(arr));
         this.toasterService.showSuccess(response.device_response.message, 'Change Telemetry Mode');
       }
-      this.isC2dAPILoading = false;
-      this.c2dLoadingMessage = undefined;
-      this.telemetryInterval = undefined;
+        this.isC2dAPILoading = false;
+        this.c2dLoadingMessage = undefined;
+        this.telemetryInterval = undefined;
       }, error => {
         // this.c2dResponseMessage.push({
         //   timestamp: this.commonService.convertEpochToDate(obj.timestamp),
@@ -201,7 +207,8 @@ export class AppDashboardComponent implements OnInit {
 
     this.apiSubscriptions.push(
       this.deviceService.getDeviceData
-      (this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : this.filterObj.device.device_id, this.contextApp.app).subscribe(
+      (this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id :
+        this.filterObj.device.device_id, this.contextApp.app).subscribe(
       async (response: any) => {
         this.deviceDetailData = JSON.parse(JSON.stringify(response));
         resolve1();
@@ -267,12 +274,10 @@ export class AppDashboardComponent implements OnInit {
       console.log('devicessss  ', arr);
       this.devices = JSON.parse(JSON.stringify(arr));
       }
-      if (!this.filterObj.device) {
       if (this.devices?.length === 1) {
         this.filterObj.device = this.devices[0];
       } else {
         this.filterObj.device = undefined;
-      }
       }
       // await this.getDevices(hierarchyObj);
     }
@@ -290,9 +295,6 @@ export class AppDashboardComponent implements OnInit {
     }
 
   }
-
-  
-
 
   getDevices(hierarchy) {
     return new Promise((resolve1) => {
@@ -321,6 +323,7 @@ export class AppDashboardComponent implements OnInit {
     this.signalRService.disconnectFromSignalR('alert');
     this.telemetryData = [];
     this.telemetryObj = undefined;
+    this.telemetryInterval = undefined;
     this.selectedTab = type;
     this.filterObj.device = undefined;
     this.hierarchyArr = [];
@@ -370,8 +373,8 @@ export class AppDashboardComponent implements OnInit {
     this.signalRTelemetrySubscription?.unsubscribe();
 
     this.commonService.setItemInLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION, filterObj);
-    const obj = {...filterObj};
-    this.originalFilter = JSON.parse(JSON.stringify(filterObj));
+    const obj = JSON.parse(JSON.stringify(filterObj));
+
     let device_type: any;
     if (obj.device) {
       obj.device_id = obj.device.device_id;
@@ -381,6 +384,7 @@ export class AppDashboardComponent implements OnInit {
       this.toasterService.showError('Asset selection is required', 'View Live Telemetry');
       return;
     }
+    this.originalFilter = JSON.parse(JSON.stringify(filterObj));
     this.isTelemetryDataLoading = true;
     await this.getDeviceSignalRMode(this.filterObj.device.gateway_id);
     if (device_type) {
@@ -388,6 +392,7 @@ export class AppDashboardComponent implements OnInit {
       await this.getLiveWidgets(device_type);
     }
     this.telemetryObj = undefined;
+    this.telemetryInterval = undefined;
     this.lastReportedTelemetryValues = undefined;
     this.telemetryData = [];
     let message_props = '';
@@ -415,8 +420,8 @@ export class AppDashboardComponent implements OnInit {
           //   Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Hours')])),
           //   Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Minutes')])));
       //    this.getTimeDifference(this.telemetryObj['Running Hours'], this.telemetryObj['Running Minutes']);
-         
-            
+
+
           // this.propertyList.forEach(prop => {
           //   if (prop.data_type === 'Number') {
           //     this.telemetryObj[prop.json_key] = Number(this.telemetryObj[prop.json_key]);
@@ -432,7 +437,7 @@ export class AppDashboardComponent implements OnInit {
         const obj1 = {
           hierarchy: this.contextApp.user.hierarchy,
           levels: this.contextApp.hierarchy.levels,
-          device_id: this.filterObj.device.device_id,
+          device_id: this.filterObj?.device?.device_id,
           type: 'telemetry',
           app: this.contextApp.app
         };
@@ -450,11 +455,13 @@ export class AppDashboardComponent implements OnInit {
 
   processTelemetryData(telemetryObj) {
 
-    telemetryObj.date = this.commonService.convertSignalRUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
-    telemetryObj.message_date = this.commonService.convertSignalRUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
+    telemetryObj.date = this.commonService.convertUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
+    telemetryObj.message_date = this.commonService.convertUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
     // if (!this.midNightHour) {
-    //   this.midNightHour = telemetryObj[this.getPropertyKey('Running Hours')] ? Math.floor(Number(telemetryObj[this.getPropertyKey('Running Hours')])) : 0;
-    //   this.midNightMinute = telemetryObj[this.getPropertyKey('Running Minutes')] ? Math.floor(Number(telemetryObj[this.getPropertyKey('Running Minutes')])) : 0;
+    //   this.midNightHour = telemetryObj[this.getPropertyKey('Running Hours')] ?
+    // Math.floor(Number(telemetryObj[this.getPropertyKey('Running Hours')])) : 0;
+    //   this.midNightMinute = telemetryObj[this.getPropertyKey('Running Minutes')]
+    // ? Math.floor(Number(telemetryObj[this.getPropertyKey('Running Minutes')])) : 0;
     // }
     // const hours = telemetryObj[this    .getPropertyKey('Running Hours')].toString().split(':');
     // telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
@@ -465,9 +472,10 @@ export class AppDashboardComponent implements OnInit {
     //   Math.floor(Number(telemetryObj[this.getPropertyKey('Running Minutes')])));
     this.lastReportedTelemetryValues = telemetryObj;
     if (this.telemetryObj) {
-      const interval = moment(telemetryObj.message_date).diff(moment(this.telemetryObj.message_date), 'second');
+      const interval = Math.round((moment(telemetryObj.message_date).diff(moment(this.telemetryObj.message_date), 'milliseconds')) / 1000);
       // alert((this.telemetryInterval - 5) + ' aaaaa ' + interval + ' bbbbb ' + (this.telemetryInterval+ 5));
-      if (this.telemetryInterval && interval && Math.abs(this.telemetryInterval - interval) > 10 && !this.isTelemetryModeAPICalled) {
+      if (this.telemetryInterval !== undefined && interval !== undefined &&
+        Math.abs(this.telemetryInterval - interval) > 10 && !this.isTelemetryModeAPICalled) {
         this.isTelemetryModeAPICalled = true;
         setTimeout(() => {
         this.getDeviceSignalRMode(this.filterObj.device.gateway_id);
@@ -475,7 +483,7 @@ export class AppDashboardComponent implements OnInit {
       }
       this.telemetryInterval = interval;
     }
-    
+
     this.telemetryObj = telemetryObj;
     if (this.telemetryData.length >= 15) {
       this.telemetryData.splice(0, 1);
@@ -555,16 +563,17 @@ export class AppDashboardComponent implements OnInit {
       (response: any) => {
         const newMode = response?.mode?.toLowerCase() === 'normal' ? true :
         (response?.mode?.toLowerCase() === 'turbo' ? false : true);
-        const arr = [];
-        this.telemetryData = [];
-        this.chartService.clearDashboardTelemetryList.emit([]);
-        this.telemetryData = JSON.parse(JSON.stringify(arr));
         if (this.signalRModeValue === newMode) {
           $('#overlay').hide();
           this.isC2dAPILoading = false;
           this.c2dResponseMessage = [];
           this.c2dLoadingMessage = undefined;
           clearInterval(this.c2dResponseInterval);
+        } else {
+          const arr = [];
+          this.telemetryData = [];
+          this.chartService.clearDashboardTelemetryList.emit([]);
+          this.telemetryData = JSON.parse(JSON.stringify(arr));
         }
         this.signalRModeValue = newMode;
         this.isTelemetryModeAPICalled = false;

@@ -44,9 +44,9 @@
     <div class="col-xl-6 col-lg-7">
       <!-- Page Heading -->
       <h1 class="h6 mb-3 text-secondary-400">Reserved Tags:
-        <a href="javascript:void(0)" title="Edit Tags" *ngIf="!isReservedTagsEditable"
+        <a href="javascript:void(0)" title="Edit Tags" *ngIf="!isReservedTagsEditable" title="Edit"
           (click)="isReservedTagsEditable = true;"><i class="fa fa-edit"></i></a>
-        <a href="javascript:void(0)" title="Cancel" *ngIf="isReservedTagsEditable"
+        <a href="javascript:void(0)" title="Cancel" *ngIf="isReservedTagsEditable" title="Cancel"
           (click)="isReservedTagsEditable = false;"><i class="fa fa-times"></i></a>
       </h1>
 
@@ -129,7 +129,7 @@
           cellspacing="0">
 
           <tbody>
-            <tr *ngFor="let tag of deviceCustomTags;">
+            <tr *ngFor="let tag of deviceCustomTags;let i = index">
               <ng-container *ngIf="!tag.editable; else lastRowTemplate">
                 <ng-container *ngIf="!isCustomTagsEditable">
                   <td>{{tag.name}}</td>
@@ -138,17 +138,17 @@
                 <ng-container *ngIf="isCustomTagsEditable">
                   <td>
                     <input type="text" class="form-control bg-light border-0 small mr-3" aria-label="Search"
-                      aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name">
+                      aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name" (focusout)="checkKeyDuplicacy(tag, i)">
                   </td>
-                  <td><input type="text" class="form-control bg-light border-0 small mr-3" aria-label="Search"
-                      aria-describedby="basic-addon2" [(ngModel)]="tag.value" name="value"></td>
+                  <td><input type="text" class="form-control bg-light border-0 small mr-3" aria-label="Value"
+                      aria-describedby="basic-addon3" [(ngModel)]="tag.value" name="value"></td>
                 </ng-container>
               </ng-container>
               <ng-template #lastRowTemplate>
                 <td>
                   <input type="text" class="form-control bg-light border-0 small mr-3" placeholder="Name"
                     aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name"
-                    (input)="onCustomTagInputChange()">
+                    (input)="onCustomTagInputChange()" (focusout)="checkKeyDuplicacy(tag, i)">
                 </td>
                 <td><input type="text" class="form-control bg-light border-0 small mr-3" placeholder="Value"
                     aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.value" name="value"

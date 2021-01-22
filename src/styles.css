@@ -207,6 +207,10 @@ select#dateoptions {
   width: 10rem!important;
 }
 
+.filter-clear-icon {
+  width: 1rem;
+}
+
 
 /* .owl-dt-timer-box {
   flex-direction: row;

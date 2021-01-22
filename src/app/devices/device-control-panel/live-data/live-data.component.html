@@ -23,8 +23,10 @@
             >
             </angular2-multiselect>
 
-              <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="getTelemetryData()" ><i class="fa fa-search fa-sm"></i></button>
-              <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="onDeSelectAll()"><i class="fa fa-trash  fa-sm"></i></button>
+              <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="getTelemetryData()" title="Search"><i class="fa fa-search fa-sm"></i></button>
+              <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="onDeSelectAll()" title="Clear Filters">
+                <img class="filter-clear-icon" src="./assets/img/filter.svg">
+              </button>
             </div>
            </form>
       </div>

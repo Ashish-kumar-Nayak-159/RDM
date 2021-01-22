@@ -103,7 +103,11 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
               }
             ]
           }
-        ]
+        ],
+        rowHighlight: {
+          param: 'process_status',
+          value: 'Success'
+        }
       };
 
     });
@@ -144,8 +148,8 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
         if (response && response.data) {
           this.telemetryList = response.data;
           this.telemetryList.forEach(item => {
-            item.local_created_date = this.commonService.convertSignalRUTCDateToLocal(item.created_date);
-            item.local_upload_date = this.commonService.convertSignalRUTCDateToLocal(item.upload_date);
+            item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
+            item.local_upload_date = this.commonService.convertUTCDateToLocal(item.upload_date);
             console.log(item);
           });
         }

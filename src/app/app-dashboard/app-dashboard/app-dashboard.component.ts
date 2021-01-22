@@ -406,7 +406,22 @@ export class AppDashboardComponent implements OnInit {
     obj.message_props = message_props;
     this.isFilterSelected = true;
     // await this.getMidNightHours(obj);
-
+    const obj1 = {
+      hierarchy: this.contextApp.user.hierarchy,
+      levels: this.contextApp.hierarchy.levels,
+      device_id: this.filterObj?.device?.device_id,
+      type: 'telemetry',
+      app: this.contextApp.app
+    };
+    this.signalRService.connectToSignalR(obj1);
+    this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(
+      data => {
+        if (data.type !== 'alert') {
+          this.processTelemetryData(data);
+          this.isTelemetryDataLoading = false;
+        }
+      }
+    );
     this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
       (response: any) => {
         if (response?.data?.length > 0) {
@@ -434,22 +449,6 @@ export class AppDashboardComponent implements OnInit {
         } else {
           this.isTelemetryDataLoading = false;
         }
-        const obj1 = {
-          hierarchy: this.contextApp.user.hierarchy,
-          levels: this.contextApp.hierarchy.levels,
-          device_id: this.filterObj?.device?.device_id,
-          type: 'telemetry',
-          app: this.contextApp.app
-        };
-        this.signalRService.connectToSignalR(obj1);
-        this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(
-          data => {
-            if (data.type !== 'alert') {
-              this.processTelemetryData(data);
-              this.isTelemetryDataLoading = false;
-            }
-          }
-        );
     }, error => this.isTelemetryDataLoading = false));
   }
 

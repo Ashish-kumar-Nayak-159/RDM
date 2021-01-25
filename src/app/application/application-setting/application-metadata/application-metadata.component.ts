@@ -1,6 +1,6 @@
 import { Subscription } from 'rxjs';
 import { ToasterService } from './../../../services/toaster.service';
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { ApplicationService } from 'src/app/services/application/application.service';
 
@@ -16,6 +16,9 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   saveMetadataAPILoading = false;
   originalApplicationData: any;
   apiSubscriptions: Subscription[] = [];
+  @ViewChild('headerFileInput') headerFileInput: ElementRef;
+  @ViewChild('logoFileInput') logoFileInput: ElementRef;
+  @ViewChild('iconFileInput') iconFileInput: ElementRef;
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -81,6 +84,15 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
 
   onCancelClick() {
     this.applicationData = JSON.parse(JSON.stringify(this.originalApplicationData));
+    if (this.headerFileInput) {
+      this.headerFileInput.nativeElement.value = '';
+    }
+    if (this.logoFileInput) {
+      this.logoFileInput.nativeElement.value = '';
+    }
+    if (this.iconFileInput) {
+      this.logoFileInput.nativeElement.value = '';
+    }
   }
 
   ngOnDestroy() {

@@ -8,6 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class FooterComponent implements OnInit {
 
   @Input() isLoginRoute = false;
+  currentYear = new Date().getFullYear();
   constructor() { }
 
   ngOnInit(): void {

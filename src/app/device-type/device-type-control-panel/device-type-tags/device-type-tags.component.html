@@ -12,20 +12,25 @@
           <span class="text-secondary">View</span></a>
       </li> -->
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="updateDeviceTypeTags()">
+        <a class="nav-link" href="javascript:void(0)" (click)="updateDeviceTypeTags()" [class.disabled]="isUpdateTagsAPILoading">
           <i class="fa fa-fw fa-save"></i>
           <span class="text-secondary">Save</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="deleteAllDeviceTypeTags()">
+        <a class="nav-link" href="javascript:void(0)" (click)="openModal('confirmMessageModal', 'all', undefined)" [class.disabled]="isUpdateTagsAPILoading">
           <i class="fa fa-fw fa-trash"></i>
           <span class="text-secondary">Delete all</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="resetDeviceTypeTags()">
+        <a class="nav-link" href="javascript:void(0)" (click)="openModal('confirmMessageModal', 'reset', undefined)" [class.disabled]="isUpdateTagsAPILoading">
           <i class="fa fa-fw fa-undo"></i>
           <span class="text-secondary delete-row">Revert Changes</span></a>
       </li>
+      <li class="nav-item" *ngIf="isUpdateTagsAPILoading">
+        <a class="nav-link" href="javascript:void(0)">
+          <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+          </a>
+        </li>
     </ul>
   </div>
     <div class="row">
@@ -64,7 +69,7 @@
               <td >{{tag.name}}</td>
               <td>{{tag.key}}</td>
               <td>{{tag.defaultValue}}</td>
-              <td><a href="javascript:void(0)" class="mx-1" title="Delete" (click)="removeTag(i)">
+              <td><a href="javascript:void(0)" class="mx-1" title="Delete" (click)="openModal('confirmMessageModal', 'single', i)">
                 <i class="fa fa-trash fa-sm"></i> </a></td>
             </tr>
           </ng-container>
@@ -99,4 +104,28 @@
 
 
   </div>
+  </div>
+
+  <div class="modal fade" id="confirmMessageModal" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Remove Tags</h5>
+          <button type="button" class="close"  aria-label="Close" (click)="closeModal('confirmMessageModal')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          {{message}}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" (click)="message.includes('reset') ? resetDeviceTypeTags() : ( deleteTagIndex !== undefined ? removeTag() : deleteAllDeviceTypeTags())">
+            Ok</button>
+          <button type="button" class="btn btn-secondary" (click)="closeModal('confirmMessageModal')">
+            Cancel
+          </button>
+        </div>
+      </div>
+
+    </div>
   </div>

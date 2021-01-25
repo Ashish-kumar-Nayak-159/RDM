@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CONSTANTS } from 'src/app/app.constants';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
-
+declare var $: any;
 @Component({
   selector: 'app-device-type-tags',
   templateUrl: './device-type-tags.component.html',
@@ -30,6 +30,9 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
   tagObj: any;
   firstTagAdded = false;
   subscriptions: Subscription[] = [];
+  isUpdateTagsAPILoading = false;
+  message: string;
+  deleteTagIndex: any;
   constructor(
     private route: ActivatedRoute,
     private commonService: CommonService,
@@ -76,7 +79,17 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
         }
       });
       if (flag) {
-        this.toasterService.showError(`Tag key will not allow ' ', '.', '#' and '$'`, 'Add Tag');
+        this.toasterService.showError(`Tag key should not contain space, dot, '#' and '$'`, 'Add Tag');
+        return;
+      }
+      flag = false;
+      this.deviceType.tags.reserved_tags.forEach(tag => {
+        if (tag.key === this.tagObj.key) {
+          flag = true;
+        }
+      });
+      if (flag) {
+        this.toasterService.showError('Tag with same key is already exists.', 'Add Tag');
         return;
       }
       this.deviceType.tags.reserved_tags.push(this.tagObj);
@@ -87,11 +100,13 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
 
   }
 
-  removeTag(index) {
-    this.deviceType.tags.reserved_tags.splice(index, 1);
+  removeTag() {
+    this.deviceType.tags.reserved_tags.splice(this.deleteTagIndex, 1);
+    this.closeModal('confirmMessageModal');
   }
 
   updateDeviceTypeTags() {
+    this.isUpdateTagsAPILoading = true;
     const tagObj = {};
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.tags = this.deviceType.tags;
@@ -103,7 +118,11 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
         this.toasterService.showSuccess(response.message, 'Set Tags');
         this.getDeviceTypeDetail();
         this.firstTagAdded = false;
-      }, error => this.toasterService.showError(error.message, 'Set Tags')
+        this.isUpdateTagsAPILoading = false;
+      }, error => {
+        this.toasterService.showError(error.message, 'Set Tags');
+        this.isUpdateTagsAPILoading = false;
+      }
     ));
   }
 
@@ -115,20 +134,40 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
     obj.tags.reserved_tags = [];
     obj.app = this.contextApp.app;
     console.log(obj);
-    this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.contextApp.app).subscribe(
-      (response: any) => {
-        this.toasterService.showSuccess(response.message, 'Delete Tags');
-        this.getDeviceTypeDetail();
-        this.firstTagAdded = false;
-      }, error => this.toasterService.showError(error.message, 'Delete Tags')
-    ));
+    this.closeModal('confirmMessageModal');
+    // this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.contextApp.app).subscribe(
+    //   (response: any) => {
+    //     this.toasterService.showSuccess(response.message, 'Delete Tags');
+    //     this.getDeviceTypeDetail();
+    //     this.firstTagAdded = false;
+    //   }, error => this.toasterService.showError(error.message, 'Delete Tags')
+    // ));
   }
+
+  openModal(id, type, index) {
+    if (type === 'reset') {
+      this.message = 'All the unsaved changes will removed. Are you sure you want to reset the tags?';
+    } else {
+      this.message = 'All the devices with this model will get affected. Are you sure you want to remove ' + (type === 'all' ? 'all tags?' : 'this tag?');
+    }
+    this.deleteTagIndex =  index;
+    $('#' + id).modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  closeModal(id) {
+    this.message = undefined;
+    this.deleteTagIndex = undefined;
+    $('#' + id).modal('hide');
+  }
+
 
   resetDeviceTypeTags() {
     this.deviceType = null;
     this.deviceType = JSON.parse(JSON.stringify(this.originalDeviceType));
     this.getDeviceTypeDetail();
+    this.tagObj = undefined;
     this.firstTagAdded = false;
+    this.closeModal('confirmMessageModal');
   }
 
   getDeviceTypeDetail() {

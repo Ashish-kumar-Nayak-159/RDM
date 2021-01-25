@@ -99,7 +99,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
     let flag;
     CONSTANTS.NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach(char => {
       if (this.addedTagItem.includes(char)) {
-        flag = `Hierarchy name will not allow ' ', '.', '#' and '$'`;
+        flag = `Hierarchy name should not contain space, dot, '#' and '$'`;
         return;
       }
     });
@@ -160,7 +160,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
       }
       CONSTANTS.NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach(char => {
         if (item.includes(char)) {
-          flag = `Hierarchy name will not allow ' ', '.', '#' and '$'`;
+          flag = `Hierarchy name should not contain space, dot '#' and '$'`;
           return;
         }
       });

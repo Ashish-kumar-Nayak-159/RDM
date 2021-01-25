@@ -17,6 +17,7 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
   originalApplicationData: any;
   selectedRole: any;
   apiSubscriptions: Subscription[] = [];
+  forceUpdate = false;
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService
@@ -46,7 +47,6 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
       if (!element.name || (element.name.trim()).length === 0) {
         flag = 'Blank Name is not allowed.';
       }
-      delete element.isEditable;
     });
     if (flag) {
       this.toasterService.showError(flag, 'Save Device Hierarchy');
@@ -54,29 +54,19 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
     }
     this.saveRoleAPILoading = true;
     this.applicationData.roles.forEach(item => {
+      console.log('here');
       delete item.isEditable;
     });
     const obj = {
       app: this.applicationData.app,
       roles: this.applicationData.roles,
-      force_update: forceUpdate ? forceUpdate : undefined
+      force_update: this.forceUpdate ? this.forceUpdate : undefined
     };
-    if (forceUpdate) {
-      const roles = [];
-      this.applicationData.roles.forEach(role => {
-        if (role.name !== this.selectedRole.name) {
-          roles.push(role);
-        }
-      });
-      obj.roles = roles;
-    }
     this.apiSubscriptions.push(this.applicationService.updateAppRoles(obj).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Save Device Hierarchy');
         this.saveRoleAPILoading = false;
-        if (forceUpdate) {
-          this.onCloseModal();
-        }
+        this.forceUpdate = false;
         this.applicationService.refreshAppData.emit();
       }, (error) => {
         this.toasterService.showError(error.message, 'Save Device Hierarchy');
@@ -91,7 +81,15 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
   }
 
   deleteRole() {
-    this.onSaveRoles(true);
+    const roles = [];
+    this.applicationData.roles.forEach(role => {
+      if (role.name !== this.selectedRole.name) {
+        roles.push(role);
+      }
+    });
+    this.applicationData.roles = roles;
+    this.forceUpdate = true;
+    this.onCloseModal();
   }
 
   onCloseModal() {

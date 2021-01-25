@@ -70,28 +70,35 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
           name: (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Name',
           key: 'name',
           type: 'text',
-          headerClass: 'w-30',
+          headerClass: 'w-20',
           valueclass: ''
         },
         {
           name: (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Template',
           key: 'tags.cloud_connectivity',
           type: 'text',
-          headerClass: 'w-30',
+          headerClass: 'w-20',
+          valueclass: ''
+        },
+        {
+          name: 'Type',
+          key: 'metadata.model_type',
+          type: 'text',
+          headerClass: 'w-10',
           valueclass: ''
         },
         {
           name: 'Created By',
           key: 'created_by',
           type: 'text',
-          headerClass: 'w-30',
+          headerClass: 'w-10',
           valueclass: ''
         },
         {
           name: 'No of Devices inherited',
           key: 'inherited_device_count',
           type: 'text',
-          headerClass: 'w-30',
+          headerClass: 'w-5',
           valueclass: ''
         },
         {

@@ -123,6 +123,7 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
     } else if (obj.for === 'View Document') {
       this.openModal('viewDocModal');
       this.selectedDocument = obj.data;
+      this.selectedDocument.sanitizedURL = this.sanitizeURL();
     }
   }
 

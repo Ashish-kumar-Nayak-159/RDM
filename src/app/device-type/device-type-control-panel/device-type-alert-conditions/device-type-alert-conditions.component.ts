@@ -230,7 +230,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
       this.toasterService.showSuccess(response.message, 'Remove Alert Condition');
     }, error => {
       this.onCloseModal('confirmMessageModal');
-      this.toasterService.showSuccess(error.message, 'Remove Alert Condition');
+      this.toasterService.showError(error.message, 'Remove Alert Condition');
     }));
   }
 
@@ -302,13 +302,18 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
         this.editDocuments = {};
       }, error => {
         this.isCreateAlertConditionLoading = false;
-        this.toasterService.showSuccess(error.message, 'Update Alert Condition');
+        this.toasterService.showError(error.message, 'Update Alert Condition');
       }));
   }
 
 
 
   onCreateAlertCondition() {
+    if (!this.alertObj.message || (this.alertObj.message.trim()).length === 0 ||  !this.alertObj.code
+     || (this.alertObj.code.trim()).length === 0 || !this.alertObj.severity) {
+      this.toasterService.showError('Please add all the data', 'Add Alert Condition');
+      return;
+    }
     this.isCreateAlertConditionLoading = true;
     this.alertObj.visualization_widgets = [];
     this.alertObj.recommendations = [];
@@ -320,10 +325,10 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
         this.isCreateAlertConditionLoading = false;
         this.onCloseAlertConditionModal();
         this.getAlertConditions();
-        this.toasterService.showSuccess(response.message, 'Create Alert Condition');
+        this.toasterService.showSuccess(response.message, 'Add Alert Condition');
       }, error => {
         this.isCreateAlertConditionLoading = false;
-        this.toasterService.showSuccess(error.message, 'Create Alert Condition');
+        this.toasterService.showError(error.message, 'Add Alert Condition');
       }
     ));
   }

@@ -48,8 +48,15 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
       type: 'Device Methods',
       data: [
         {
-          name: 'Method Name',
+          name: 'Name',
           key: 'name',
+          type: 'text',
+          headerClass: '',
+          valueclass: ''
+        },
+        {
+          name: 'Method Name',
+          key: 'method_name',
           type: 'text',
           headerClass: '',
           valueclass: ''

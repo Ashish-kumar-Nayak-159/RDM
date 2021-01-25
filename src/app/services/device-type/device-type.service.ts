@@ -60,7 +60,9 @@ export class DeviceTypeService {
       });
       return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODELS, filterObj.app), { params })
       .pipe( map((data: any) => {
-        this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_MODELS_LIST, data.data);
+        if (!filterObj['id'] && !filterObj['name'] && !filterObj['model_type'] && !filterObj['created_by']) {
+          this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_MODELS_LIST, data.data);
+        }
         return data;
       }), catchError( error => {
         return throwError( error);

@@ -91,6 +91,10 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
   }
 
   onAddNewTag() {
+    if (!this.addedTagItem || (this.addedTagItem.trim()).length === 0) {
+      this.toasterService.showError('Blank values are not allowed', 'Add Tag');
+      return;
+    }
     if (this.hierarchyArr[this.selectedHierarchyItem].indexOf(this.addedTagItem) !== -1) {
       this.toasterService.showError('Tag already exists', 'Add Tag');
       return;
@@ -136,15 +140,18 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
 
   onSaveHierarchyTags() {
     let flag;
+
     this.applicationData.hierarchy.levels.forEach(item => {
+      if (!item || (item.trim()).length === 0) {
+        flag = 'Blank Name is not allowed.';
+        return;
+      }
       CONSTANTS.NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach(char => {
         if (item.includes(char)) {
           flag = `Hierarchy name will not allow ' ', '.', '#' and '$'`;
+          return;
         }
       });
-      if (!item || (item.trim()).length === 0) {
-        flag = 'Blank Name is not allowed.';
-      }
     });
     if (flag) {
       this.toasterService.showError(flag, 'Save Device Hierarchy');
@@ -188,7 +195,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
     $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
-  deleteRole() {
+  deleteHierarchy() {
     // this.onSaveRoles(true);
     this.forceUpdate = true;
     console.log(this.selectedHierarchy);
@@ -197,7 +204,8 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
     console.log(tags);
     this.applicationData.hierarchy.tags = JSON.parse(JSON.stringify(tags));
     this.applicationData.hierarchy.levels.splice(index, 1);
-    this.onSaveHierarchyTags();
+    this.onCloseModal();
+    // this.onSaveHierarchyTags();
   }
 
   removeHierarchyIndexTags(tags, index) {

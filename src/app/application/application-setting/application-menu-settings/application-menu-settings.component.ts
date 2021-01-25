@@ -26,6 +26,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
     // this.applicationData.configuration = {};
     if (this.applicationData?.configuration?.device_control_panel_menu?.length === 0) {
       this.applicationData.configuration.device_control_panel_menu = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;

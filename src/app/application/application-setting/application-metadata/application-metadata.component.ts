@@ -26,6 +26,7 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
   }
 

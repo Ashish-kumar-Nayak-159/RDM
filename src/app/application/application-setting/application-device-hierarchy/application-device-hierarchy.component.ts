@@ -30,6 +30,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
 
     this.applicationData.hierarchy.levels.forEach((_, index) => {
@@ -93,6 +94,17 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
   onAddNewTag() {
     if (!this.addedTagItem || (this.addedTagItem.trim()).length === 0) {
       this.toasterService.showError('Blank values are not allowed', 'Add Tag');
+      return;
+    }
+    let flag;
+    CONSTANTS.NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach(char => {
+      if (this.addedTagItem.includes(char)) {
+        flag = `Hierarchy name will not allow ' ', '.', '#' and '$'`;
+        return;
+      }
+    });
+    if (flag) {
+      this.toasterService.showError(flag, 'Add Tag');
       return;
     }
     if (this.hierarchyArr[this.selectedHierarchyItem].indexOf(this.addedTagItem) !== -1) {
@@ -192,6 +204,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
 
   openConfirmHierarchyDeleteModal(hierarchy) {
     this.selectedHierarchy = hierarchy;
+    this.selectedHierarchyItem = undefined;
     $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -237,5 +250,4 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.apiSubscriptions.forEach(sub => sub.unsubscribe());
   }
-
 }

@@ -1,3 +1,4 @@
+
 import { Subscription } from 'rxjs';
 import { UserService } from './../../../services/user.service';
 import { ToasterService } from './../../../services/toaster.service';
@@ -26,6 +27,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
     this.getApplicationUsers();
 
     this.applicationData.hierarchy.levels.forEach((element, index) => {

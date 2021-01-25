@@ -23,6 +23,7 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
     this.applicationData.roles.forEach(element => {
       element.isEditable = false;

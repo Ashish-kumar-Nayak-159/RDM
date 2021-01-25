@@ -22,7 +22,13 @@
           [(ngModel)]="thingsModelFilterObj.name" name="name" placeholder="{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name">
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputPassword4"
           [(ngModel)]="thingsModelFilterObj.created_by" name="created_by" placeholder="Created By">
-
+          <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
+          [(ngModel)]="thingsModelFilterObj.model_type" name="status">
+          <option [ngValue]="undefined">Model Type</option>
+          <option [ngValue]="constantData.IP_DEVICE">{{constantData.IP_DEVICE}}</option>
+          <option [ngValue]="constantData.IP_GATEWAY">{{constantData.IP_GATEWAY}}</option>
+          <option [ngValue]="constantData.NON_IP_DEVICE">{{constantData.NON_IP_DEVICE}}</option>
+          </select>
           <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="searchThingsModels()" title="Search">
             <i class="fa fa-search fa-sm"></i></button>
           <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="clearFilter()" title="Clear Filters">

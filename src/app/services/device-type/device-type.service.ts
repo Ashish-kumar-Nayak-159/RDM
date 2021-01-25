@@ -20,30 +20,31 @@ export class DeviceTypeService {
   ) { }
 
   getThingsModelsList(filterObj) {
-    let params = new HttpParams();
-    (Object.keys(filterObj)).forEach(key => {
-      if (filterObj[key]) {
-        params = params.set(key, filterObj[key]);
-      }
-    });
+    console.log(filterObj);
     const deviceModels = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_MODELS_LIST);
     if (deviceModels) {
+      if (filterObj['id'] || filterObj['name'] || filterObj['model_type'] || filterObj['created_by']) {
+      let models = deviceModels;
       if (filterObj['id']) {
-        const model = deviceModels.filter(modelObj => modelObj.id === filterObj['id']);
-        return new Observable((observer) => {
-          observer.next({
-            data: model
-          });
+        models = models.filter(modelObj => modelObj.id === filterObj['id']);
+      }
+      if (filterObj['name']) {
+        models = models.filter(modelObj => modelObj.name === filterObj['name']);
+      }
+      if (filterObj['model_type']) {
+        models = models.filter(modelObj => modelObj.metadata.model_type === filterObj['model_type']);
+      }
+      console.log(models);
+      if (filterObj['created_by']) {
+        models = models.filter(modelObj => modelObj.created_by === filterObj['created_by']);
+      }
+      console.log(models);
+      return new Observable((observer) => {
+        observer.next({
+          data: models
         });
-      } else if (filterObj['name']) {
-        const model = deviceModels.filter(modelObj => modelObj.name === filterObj['name']);
-        console.log(model);
-        return new Observable((observer) => {
-          observer.next({
-            data: model
-          });
-        });
-      } else {
+      });
+    } else {
         return new Observable((observer) => {
           observer.next({
             data: deviceModels
@@ -51,6 +52,12 @@ export class DeviceTypeService {
         });
       }
     } else {
+      let params = new HttpParams();
+      (Object.keys(filterObj)).forEach(key => {
+        if (filterObj[key]) {
+          params = params.set(key, filterObj[key]);
+        }
+      });
       return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODELS, filterObj.app), { params })
       .pipe( map((data: any) => {
         this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_MODELS_LIST, data.data);
@@ -61,7 +68,6 @@ export class DeviceTypeService {
       );
     }
   }
-
 
   createThingsModel(modelObj, app) {
     localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);

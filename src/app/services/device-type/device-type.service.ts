@@ -71,7 +71,6 @@ export class DeviceTypeService {
   updateThingsModel(modelObj, app) {
     localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
     localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
-    alert('after');
     console.log(localStorage.getItem(CONSTANTS.DEVICE_MODEL_DATA));
     return this.http.patch(this.url + String.Format(AppUrls.UPDATE_THINGS_MODEL, app, modelObj.name), modelObj);
   }

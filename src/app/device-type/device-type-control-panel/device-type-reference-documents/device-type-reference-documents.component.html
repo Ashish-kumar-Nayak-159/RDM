@@ -54,7 +54,11 @@
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Document:</label>
             {{documentObj?.metadata ? documentObj?.metadata?.name : 'Not yet uploaded'}}
-            <input type="file"  (change)="onDocumentFileSelected($event.target.files)"
+            <input type="file" accept="{{(documentObj.type === 'PDF' ? '.pdf' : (
+              documentObj.type === 'Image' ? '.jpeg,.png,.svg' : (
+                documentObj.type === 'Video' ? '.mp4,' : '*'
+              )
+            ))}}" (change)="onDocumentFileSelected($event.target.files)" [disabled]="documentObj.type === undefined"
             class="form-control" id="app_logo" name="app_logo">
           </div>
 

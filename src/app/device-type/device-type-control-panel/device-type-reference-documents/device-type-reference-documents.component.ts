@@ -162,8 +162,15 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
   }
 
   async onDocumentFileSelected(files: FileList): Promise<void> {
+    console.log(files);
+    const arr = files?.item(0)?.name?.split('.') || [];
+    if (!files?.item(0).type.includes(this.documentObj.type?.toLowerCase())) {
+      this.toasterService.showError('This file is not valid for selected document type', 'Select File');
+      return;
+    }
     this.isFileUploading = true;
-    const data = await this.commonService.uploadImageToBlob(files.item(0), 'models/' + this.deviceType.id + '_' + this.deviceType.name + '/reference-material');
+    const data = await this.commonService.uploadImageToBlob(files.item(0),
+    'models/' + this.deviceType.id + '_' + this.deviceType.name + '/reference-material');
     if (data) {
       this.documentObj.metadata = data;
     } else {
@@ -181,13 +188,27 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
         this.closeModal('confirmMessageModal');
         this.getDocuments();
       }, error => {
-        this.toasterService.showSuccess(error.message, 'Remove Document');
+        this.toasterService.showError(error.message, 'Remove Document');
         this.closeModal('confirmMessageModal');
       }));
   }
 
   onSaveDocumentObj() {
     console.log(JSON.stringify(this.documentObj));
+    if (!this.documentObj.name || (this.documentObj.name.trim()).length === 0 || !this.documentObj.type || !this.documentObj.metadata) {
+      this.toasterService.showError('Please select all the data', 'Add Document');
+      return;
+    }
+    let flag = false;
+    this.documents.forEach(doc => {
+      if (this.documentObj.name === doc.name) {
+        flag = true;
+      }
+    });
+    if (flag) {
+      this.toasterService.showError('Document with same name is already exists', 'Add Document');
+      return;
+    }
     this.isCreateDocumentLoading = true;
     this.subscriptions.push(this.deviceTypeService.createThingsModelDocument(this.documentObj,
       this.deviceType.app, this.deviceType.name).subscribe(
@@ -197,7 +218,7 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
           this.onCloseAddDocModal();
           this.getDocuments();
         }, error => {
-          this.toasterService.showSuccess(error.message, 'Add Document');
+          this.toasterService.showError(error.message, 'Add Document');
           this.isCreateDocumentLoading = false;
         }
     ));

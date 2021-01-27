@@ -122,6 +122,10 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
   }
 
   async addChart() {
+    if (!this.chartTitle || !this.selectedChartType || this.y1AxisProps.length === 0) {
+      this.toasterService.showError('Please select all the data to add widget', 'Add Widget');
+      return;
+    }
     let arr = [];
     this.y1AxisProps.forEach(prop => arr.push(prop.value.json_key));
     this.y1AxisProps = [...arr];

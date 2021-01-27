@@ -426,6 +426,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       const filterObj = {
         app: this.contextApp.app,
         device_id: this.selectedAlert.device_id,
+        device_type: this.selectedDevice.device_type,
         legacy: !(this.selectedAlert.device_id === this.selectedAlert.gateway_id),
         message: this.selectedAlert.message
       };

@@ -386,7 +386,7 @@ export class AppDashboardComponent implements OnInit {
     }
     this.originalFilter = JSON.parse(JSON.stringify(filterObj));
     this.isTelemetryDataLoading = true;
-    await this.getDeviceSignalRMode(this.filterObj.device.gateway_id);
+    await this.getDeviceSignalRMode(this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : this.filterObj.device.device_id);
     if (device_type) {
       await this.getThingsModelProperties(device_type);
       await this.getLiveWidgets(device_type);
@@ -477,7 +477,7 @@ export class AppDashboardComponent implements OnInit {
         Math.abs(this.telemetryInterval - interval) > 10 && !this.isTelemetryModeAPICalled) {
         this.isTelemetryModeAPICalled = true;
         setTimeout(() => {
-        this.getDeviceSignalRMode(this.filterObj.device.gateway_id);
+        this.getDeviceSignalRMode(this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : this.filterObj.device.device_id);
       }, 2000);
       }
       this.telemetryInterval = interval;

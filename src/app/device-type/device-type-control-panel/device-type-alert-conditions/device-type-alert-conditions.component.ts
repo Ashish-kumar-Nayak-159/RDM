@@ -314,6 +314,16 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Please add all the data', 'Add Alert Condition');
       return;
     }
+    let flag = false;
+    this.alertConditions.forEach(alert => {
+      if (this.alertObj.message === alert.message) {
+        flag = true;
+      }
+    });
+    if (flag) {
+      this.toasterService.showError('Alert Condition with same name is already exists', 'Add Alert Condition');
+      return;
+    }
     this.isCreateAlertConditionLoading = true;
     this.alertObj.visualization_widgets = [];
     this.alertObj.recommendations = [];

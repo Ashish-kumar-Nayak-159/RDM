@@ -1,3 +1,4 @@
+import { ToasterService } from './../../services/toaster.service';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { Component, OnInit, Inject, AfterViewInit, OnDestroy } from '@angular/core';
@@ -32,18 +33,18 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
     private deviceService: DeviceService,
     private route: ActivatedRoute,
     private commonService: CommonService,
-    private applicationService: ApplicationService
+    private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    if (this.contextApp?.configuration?.device_control_panel_menu.length > 0) {
+      this.menuItems = this.contextApp.configuration.device_control_panel_menu;
+      console.log(this.menuItems);
+    }
     this.route.paramMap.subscribe(
       async params => {
-        if (this.contextApp?.configuration?.device_control_panel_menu.length > 0) {
-          this.menuItems = this.contextApp.configuration.device_control_panel_menu;
-          console.log(this.menuItems);
-        }
         console.log(this.menuItems);
         if (params.get('deviceId')) {
           if (params.get('listName')) {
@@ -74,7 +75,19 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
         if (fragment) {
           this.activeTab = fragment;
         } else {
-          this.activeTab = 'overview';
+          const menu = this.contextApp.configuration.device_control_panel_menu.length > 0 ?
+          this.contextApp.configuration.device_control_panel_menu : 
+          JSON.parse(JSON.stringify(CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST));
+          menu.forEach(menuObj => {
+            if ( !this.activeTab && menuObj.visible && !menuObj.isTitle) {
+              this.activeTab = menuObj.page;
+              return;
+            }
+          });
+          if (!this.activeTab) {
+            this.toasterService.showError('All the menu items visibility are off. Please contact administrator', 'App Selection');
+            return;
+          }
         }
       }
     );

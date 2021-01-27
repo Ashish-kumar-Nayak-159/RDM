@@ -1,3 +1,4 @@
+import { ToasterService } from './../../services/toaster.service';
 import { Subscription } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
@@ -33,7 +34,7 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
     private deviceService: DeviceService,
     private route: ActivatedRoute,
     private commonService: CommonService,
-    private applicationService: ApplicationService
+    private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -73,7 +74,19 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
         if (fragment) {
           this.activeTab = fragment;
         } else {
-          this.activeTab = 'overview';
+          const menu = this.contextApp.configuration.gateway_control_panel_menu.length > 0 ?
+          this.contextApp.configuration.gateway_control_panel_menu :
+          JSON.parse(JSON.stringify(CONSTANTS.GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST));
+          menu.forEach(menuObj => {
+            if ( !this.activeTab && menuObj.visible && !menuObj.isTitle) {
+              this.activeTab = menuObj.page;
+              return;
+            }
+          });
+          if (!this.activeTab) {
+            this.toasterService.showError('All the menu items visibility are off. Please contact administrator', 'App Selection');
+            return;
+          }
         }
       }
     );

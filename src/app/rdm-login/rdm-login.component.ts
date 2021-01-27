@@ -20,6 +20,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   isLoginAPILoading = false;
   applicationData: any;
   subscriptions: Subscription[] = [];
+  isPasswordVisible = false;
   constructor(
     private router: Router,
     private toasterService: ToasterService,
@@ -62,6 +63,10 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log('in sb-notoggle');
       $('.container-fluid').removeClass('sb-notoggle');
     }
+  }
+
+  togglePasswordVisibility() {
+    this.isPasswordVisible = !this.isPasswordVisible;
   }
 
   onLogin() {

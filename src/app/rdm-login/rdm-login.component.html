@@ -96,9 +96,14 @@
                     <input type="email" class="form-control form-control-user" id="exampleInputEmail"
                       aria-describedby="emailHelp" placeholder="Enter Email Address" [(ngModel)]="loginForm.email" name="email">
                   </div>
-                  <div class="form-group">
-                    <input type="password" class="form-control form-control-user" id="exampleInputPassword"
-                      placeholder="Password" [(ngModel)]="loginForm.password" name="password">
+                  <div class="row form-group">
+                    <div class="col-md-12">
+                      <input id="exampleInputPassword" type="{{this.isPasswordVisible ? 'text' : 'password'}}" class="form-control form-control-user" name="exampleInputPassword" placeholder="Password" [(ngModel)]="loginForm.password">
+                      <i class="fa fa-fw  field-icon toggle-password" (click)="togglePasswordVisibility()"
+                      [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}" ></i>
+                    </div>
+                    <!-- <p class="wrapper"><input type="password" class="form-control form-control-user" id="exampleInputPassword"
+                      placeholder="Password" [(ngModel)]="loginForm.password" name="password"></p> -->
                   </div>
                   <div class="form-group">
                     <div class="custom-control custom-checkbox small">
@@ -147,5 +152,5 @@
 </div>
 
 <div id="changePasswordModal" class="modal fade">
-  <app-reset-password [isFirstTimeLogin]="true" *ngIf="isResetPassword"></app-reset-password>
+  <app-reset-password [isFirstTimeLogin]="true" [loginData]="loginForm" *ngIf="isResetPassword"></app-reset-password>
 </div>

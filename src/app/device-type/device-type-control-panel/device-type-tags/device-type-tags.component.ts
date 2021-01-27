@@ -41,7 +41,7 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
     private applicationService: ApplicationService
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.originalDeviceType = JSON.parse(JSON.stringify(this.deviceType));
@@ -57,11 +57,7 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
         }
       });
     }
-    this.reservedTags = this.reservedTags.filter(tag => {
-      console.log(tag.name);
-      console.log(['Device Type', 'Serial No', 'MAC ID'].indexOf(tag.name) === -1);
-      return ['Device Type', 'Serial No', 'MAC ID'].indexOf(tag.name) === -1;
-    });
+
     // this.processTagsData();
   }
 
@@ -105,8 +101,9 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
     this.closeModal('confirmMessageModal');
   }
 
-  updateDeviceTypeTags() {
+  async updateDeviceTypeTags() {
     this.isUpdateTagsAPILoading = true;
+    await this.addTagObject();
     const tagObj = {};
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.tags = this.deviceType.tags;
@@ -160,7 +157,6 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
     $('#' + id).modal('hide');
   }
 
-
   resetDeviceTypeTags() {
     this.deviceType = null;
     this.deviceType = JSON.parse(JSON.stringify(this.originalDeviceType));
@@ -171,6 +167,7 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
   }
 
   getDeviceTypeDetail() {
+    return new Promise((resolve) => {
     const obj = {
       name: this.deviceType.name,
       app: this.contextApp.app
@@ -179,9 +176,14 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response && response.data && response.data.length > 0) {
           this.deviceType = response.data[0];
+          if (!this.deviceType.tags.reserved_tags) {
+            this.deviceType.tags.reserved_tags = [];
+          }
         }
+        resolve();
       }
     ));
+  });
   }
 
   ngOnDestroy() {

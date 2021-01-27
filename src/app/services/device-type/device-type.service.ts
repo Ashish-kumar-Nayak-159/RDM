@@ -261,7 +261,13 @@ export class DeviceTypeService {
   }
 
   getAlertConditions(app, filterObj) {
-    return this.http.get(this.url + String.Format(AppUrls.GET_ALERT_CONDITIONS, app, filterObj.device_type));
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_ALERT_CONDITIONS, app, filterObj.device_type), {params});
   }
 
   createAlertCondition(modelObj, app, deviceType) {

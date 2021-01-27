@@ -412,6 +412,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response?.data?.length > 0) {
           this.selectedDevice = response.data[0];
+          console.log('41555555   ',this.selectedDevice);
         } else {
           this.selectedDevice = response;
         }
@@ -430,6 +431,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         legacy: !(this.selectedAlert.device_id === this.selectedAlert.gateway_id),
         message: this.selectedAlert.message
       };
+      console.log(filterObj)
       this.alertCondition = undefined;
       this.subscriptions.push(this.deviceTypeService.getAlertConditions(this.contextApp.app, filterObj).subscribe(
         (response: any) => {
@@ -568,7 +570,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     console.log(this.originalDevices);
     this.selectedDevice = this.originalDevices.find(device => device.device_id === this.selectedAlert.device_id);
     console.log('selected device   ', this.selectedDevice);
-    await this.getDeviceData(this.selectedAlert.device_id);
+    // await this.getDeviceData(this.selectedAlert.device_id);
     await this.getAlertConditions();
     await this.getThingsModelProperties();
     await this.getDocuments();

@@ -19,6 +19,9 @@ export class ResetPasswordComponent implements OnInit, OnDestroy  {
     */
   @Input()
   isFirstTimeLogin: boolean;
+
+  @Input()
+  loginData: any;
   /**
    * Reset/change password formgroup.
    */
@@ -51,11 +54,11 @@ export class ResetPasswordComponent implements OnInit, OnDestroy  {
     this.loggedInUser = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.resetPasswordForm = new FormGroup(
       {
-        email: new FormControl(null, [
+        email: new FormControl(this.loginData?.email || null, [
           Validators.required,
           this.noWhitespaceValidator
         ]),
-        old_password: new FormControl(null, [
+        old_password: new FormControl(this.loginData?.password || null, [
           Validators.required,
           this.noWhitespaceValidator
         ]),

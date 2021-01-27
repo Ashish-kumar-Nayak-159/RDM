@@ -456,6 +456,11 @@ export class DeviceListComponent implements OnInit, OnDestroy {
         'Create ' + this.pageType);
         return;
     }
+    if (!CONSTANTS.EMAIL_REGEX.test(this.deviceDetail.tags.device_manager)) {
+      this.toasterService.showError('Email address is not valid',
+        'Create ' + this.pageType);
+      return;
+    }
     if (this.componentState === CONSTANTS.NON_IP_DEVICE && this.deviceDetail.device_id === this.deviceDetail.gateway_id) {
       this.toasterService.showError('Gateway and Device name can not be the same.',
       'Create ' + this.pageType);

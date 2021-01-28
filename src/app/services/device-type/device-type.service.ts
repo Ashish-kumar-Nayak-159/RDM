@@ -181,19 +181,41 @@ export class DeviceTypeService {
   }
 
   getThingsModelControlWidgets(filterObj) {
-    return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_CONTROL_WIDGETS, filterObj.app, filterObj.device_type));
+    return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_CONTROL_WIDGETS,
+      filterObj.app, filterObj.device_type));
   }
 
   createThingsModelControlWidget(modelObj) {
-    return this.http.post(this.url + String.Format(AppUrls.CREATE_THINGS_MODEL_CONTROL_WIDGETS, modelObj.app, modelObj.device_type), modelObj);
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_THINGS_MODEL_CONTROL_WIDGETS,
+      modelObj.app, modelObj.device_type), modelObj);
   }
 
   updateThingsModelControlWidget(modelObj, app) {
-    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_THINGS_MODEL_CONTROL_WIDGETS, app, modelObj.deviceType, modelObj.id), modelObj);
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_THINGS_MODEL_CONTROL_WIDGETS,
+      app, modelObj.deviceType, modelObj.id), modelObj);
   }
 
   deleteThingsModelControlWidget(filterObj) {
     return this.http.delete(this.url + String.Format(AppUrls.DELETE_CONTROL_WIDGET, filterObj.app, filterObj.device_type, filterObj.id));
+  }
+
+  getThingsModelConfigurationWidgets(filterObj) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_CONFIGURATION_WIDGETS, filterObj.app, filterObj.device_type));
+  }
+
+  createThingsModelConfigurationWidget(modelObj) {
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_THINGS_MODEL_CONFIGURATION_WIDGETS,
+      modelObj.app, modelObj.device_type), modelObj);
+  }
+
+  updateThingsModelConfigurationWidget(modelObj, app) {
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_THINGS_MODEL_CONFIGURATION_WIDGETS,
+      app, modelObj.deviceType, modelObj.id), modelObj);
+  }
+
+  deleteThingsModelConfigurationWidget(filterObj) {
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_CONFIGURATION_WIDGET,
+      filterObj.app, filterObj.device_type, filterObj.id));
   }
 
   getThingsModelDocuments(filterObj) {

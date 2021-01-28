@@ -72,6 +72,9 @@
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel" id="device_type_control_widgets">
         <app-device-type-control-widgets *ngIf="activeTab === 'control_widgets' && deviceType" [deviceType]="deviceType"></app-device-type-control-widgets>
       </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'configuration_widgets'}" role="tabpanel" id="device_type_configuration_widgets">
+        <app-device-type-configuration-widgets *ngIf="activeTab === 'configuration_widgets' && deviceType" [deviceType]="deviceType"></app-device-type-configuration-widgets>
+      </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'layout'}" role="tabpanel" id="device_type_layout">
         <app-device-type-layout *ngIf="activeTab === 'layout' && deviceType" [deviceType]="deviceType"></app-device-type-layout>
       </div>

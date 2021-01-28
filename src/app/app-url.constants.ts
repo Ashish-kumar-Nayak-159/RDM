@@ -45,10 +45,14 @@ export class AppUrls {
   public static GET_THINGS_MODEL_CONTROL_WIDGETS = 'apps/{0}/device_types/{1}/control_widgets';
   public static CREATE_THINGS_MODEL_CONTROL_WIDGETS = 'apps/{0}/device_types/{1}/control_widget';
   public static UPDATE_THINGS_MODEL_CONTROL_WIDGETS = 'apps/{0}/device_types/{1}/control_widget/{2}';
+  public static GET_THINGS_MODEL_CONFIGURATION_WIDGETS = 'apps/{0}/device_types/{1}/configuration_widgets';
+  public static CREATE_THINGS_MODEL_CONFIGURATION_WIDGETS = 'apps/{0}/device_types/{1}/configuration_widget';
+  public static UPDATE_THINGS_MODEL_CONFIGURATION_WIDGETS = 'apps/{0}/device_types/{1}/configuration_widget/{2}';
   public static GET_THINGS_MODEL_DEVICE_METHODS = 'apps/{0}/device_types/{1}/device_methods';
   public static GET_THINGS_MODEL_LAYOUT = 'apps/{0}/device_types/{1}/historical_widgets';
   public static ACKNOWLEGE_DEVICE_ALERT = 'D2C_UpdateAlertMetadata';
   public static DELETE_CONTROL_WIDGET = 'apps/{0}/device_types/{1}/control_widget/{2}';
+  public static DELETE_CONFIGURATION_WIDGET = 'apps/{0}/device_types/{1}/configuration_widget/{2}';
   public static UPDATE_APP_HIERARCHY = 'apps/{0}/hierarchy';
   public static UPDATE_APP_ROLES = 'apps/{0}/roles';
   public static RESET_PASSWORD = 'users/reset_password';

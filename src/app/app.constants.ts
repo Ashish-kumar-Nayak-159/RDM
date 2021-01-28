@@ -349,9 +349,9 @@ export class CONSTANTS {
     },
     {
       page: 'control_widgets',
-      system_name: 'Control Widgets',
+      system_name: 'Control / Configure',
       url: '#device_control_widgets',
-      display_name: 'Control Widgets',
+      display_name: 'Control / Configure',
       icon: 'fa fa-fw fa-angle-right',
       visible: true,
       isTitle: false
@@ -640,6 +640,15 @@ export class CONSTANTS {
       icon: null,
       visible: true,
       isTitle: true
+    },
+    {
+      page: 'configuration_widgets',
+      system_name: 'Configuration Widgets',
+      url: '#device_type_configuration_widgets',
+      display_name: 'Configuration Widgets',
+      icon: 'fa fa-fw fa-cog',
+      visible: true,
+      isTitle: false
     },
     {
       page: 'control_widgets',

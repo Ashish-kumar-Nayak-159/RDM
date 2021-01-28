@@ -21,6 +21,7 @@ import { DeviceTypeHistoryLayoutComponent } from './device-type-control-panel/de
 import { DeviceTypeLiveLayoutComponent } from './device-type-control-panel/device-type-layout/device-type-live-layout/device-type-live-layout.component';
 import { DeviceTypeAlertConditionsComponent } from './device-type-control-panel/device-type-alert-conditions/device-type-alert-conditions.component';
 import { DeviceTypeReferenceDocumentsComponent } from './device-type-control-panel/device-type-reference-documents/device-type-reference-documents.component';
+import { DeviceTypeConfigurationWidgetsComponent } from './device-type-control-panel/device-type-configuration-widgets/device-type-configuration-widgets.component';
 
 
 
@@ -38,7 +39,8 @@ import { DeviceTypeReferenceDocumentsComponent } from './device-type-control-pan
     DeviceTypeHistoryLayoutComponent,
     DeviceTypeLiveLayoutComponent,
     DeviceTypeAlertConditionsComponent,
-    DeviceTypeReferenceDocumentsComponent
+    DeviceTypeReferenceDocumentsComponent,
+    DeviceTypeConfigurationWidgetsComponent
   ],
   imports: [
     CommonModule,

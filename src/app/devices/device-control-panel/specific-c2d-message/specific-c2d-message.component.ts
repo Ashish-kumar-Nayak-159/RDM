@@ -17,6 +17,7 @@ import { ToasterService } from 'src/app/services/toaster.service';
 })
 export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
 
+  @Input() pageType: any;
   @Input() device: Device = new Device();
   c2dMessageData: any = {};
   userData: any;
@@ -33,7 +34,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
   timerInterval: any;
   appName: any;
   timerObj: any;
-  pageType: string;
+  listName: string;
   devices: any[] = [];
   controlWidgets: any[] = [];
   deviceMethods: any[] = [];
@@ -53,21 +54,28 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     this.displayType = 'compose';
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
-      this.pageType = params.get('listName');
-      this.pageType = this.pageType.slice(0, -1);
+      this.listName = params.get('listName');
+      this.listName = this.listName.slice(0, -1);
       this.c2dMessageData = {
         device_id: this.device.device_id,
         gateway_id: this.device.gateway_id,
         app: this.appName,
         timestamp:  moment().unix(),
         message: null,
+        metadata: {
         acknowledge: 'Full',
-        expire_in_min: 1
+        expire_in_min: 1,
+        type: this.pageType.includes('configure') ? 'configuration_widget' : 'control_widget'
+        }
       };
-      if (this.pageType === 'gateway') {
+      if (this.listName === 'gateway') {
         this.getDevicesListByGateway();
       }
-      this.getControlWidgets();
+      if (this.pageType.includes('control')) {
+        this.getControlWidgets();
+      } else {
+        this.getConfigureWidgets();
+      }
     });
 
     // this.messageIdInterval = setInterval(() => {
@@ -83,9 +91,21 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     this.apiSubscriptions.push(this.deviceTypeService.getThingsModelControlWidgets(obj).subscribe(
       (response: any) => {
         if (response?.data) {
-          response.data.forEach(item => item.type = 'control_widget');
           this.controlWidgets = response.data;
-          this.getThingsModelDeviceMethod();
+        }
+      }
+    ));
+  }
+
+  getConfigureWidgets() {
+    const obj = {
+      app: this.appName,
+      device_type: this.device.tags?.device_type
+    };
+    this.apiSubscriptions.push(this.deviceTypeService.getThingsModelConfigurationWidgets(obj).subscribe(
+      (response: any) => {
+        if (response?.data) {
+          this.controlWidgets = response.data;
         }
       }
     ));
@@ -112,32 +132,30 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
 
   onChangeOfDropdownData() {
     this.jsonModelKeys = [];
-    if (this.selectedWidget.type === 'control_widget') {
-      const keys =  Object.keys(this.selectedWidget.json);
-      const index = keys.findIndex(key => key === 'timestamp');
-      keys.splice(index, 1);
-      keys.forEach(key => {
-        const obj = {
-          key,
-          json: {},
-          name: null,
-          value: null
-        };
-        this.selectedWidget.properties.forEach(prop => {
-          if (prop.json_key === key) {
-            obj.name = prop.name;
-            obj.json = this.selectedWidget.json[key];
-            if (obj.json['type'] === 'boolean') {
-              obj.value = obj.json['defaultValue'] === obj.json['trueValue'] ? true : false;
-            } else {
-              obj.value = this.selectedWidget.json[key].defaultValue;
-            }
+    const keys =  Object.keys(this.selectedWidget.json);
+    const index = keys.findIndex(key => key === 'timestamp');
+    keys.splice(index, 1);
+    keys.forEach(key => {
+      const obj = {
+        key,
+        json: {},
+        name: null,
+        value: null
+      };
+      this.selectedWidget.properties.forEach(prop => {
+        if (prop.json_key === key) {
+          obj.name = prop.name;
+          obj.json = this.selectedWidget.json[key];
+          if (obj.json['type'] === 'boolean') {
+            obj.value = obj.json['defaultValue'] === obj.json['trueValue'] ? true : false;
+          } else {
+            obj.value = this.selectedWidget.json[key].defaultValue;
           }
-        });
-        this.jsonModelKeys.splice(this.jsonModelKeys.length, 0, obj);
+        }
       });
-      console.log(this.jsonModelKeys);
-    }
+      this.jsonModelKeys.splice(this.jsonModelKeys.length, 0, obj);
+    });
+    console.log(this.jsonModelKeys);
   }
 
   getDevicesListByGateway() {
@@ -179,24 +197,20 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     this.isMessageValidated = undefined;
     this.remainingTime = null;
     this.c2dMessageData.message_id = this.c2dMessageData.device_id + '_' + this.c2dMessageData.timestamp;
-    if (this.pageType === 'gateway') {
+    if (this.listName === 'gateway') {
       this.c2dMessageData.gateway_id = this.device.device_id;
     }
     this.sentMessageData = undefined;
-    if (this.selectedWidget.type === 'device_method') {
-      this.c2dMessageData.message = this.selectedWidget.json_model;
-    } else if (this.selectedWidget.type === 'control_widget') {
-      this.c2dMessageData.message = {};
-      this.jsonModelKeys.forEach(item => {
-        if (item.value !== null || item.value !== undefined) {
-          if (item.json.type === 'boolean') {
-            this.c2dMessageData.message[item.key] = item.value ? item.json.trueValue : item.json.falseValue;
-          } else {
-            this.c2dMessageData.message[item.key] = item.value;
-          }
+    this.c2dMessageData.message = {};
+    this.jsonModelKeys.forEach(item => {
+      if (item.value !== null || item.value !== undefined) {
+        if (item.json.type === 'boolean') {
+          this.c2dMessageData.message[item.key] = item.value ? item.json.trueValue : item.json.falseValue;
+        } else {
+          this.c2dMessageData.message[item.key] = item.value;
         }
-      });
-    }
+      }
+    });
     this.c2dMessageData.message['timestamp'] = this.c2dMessageData.timestamp;
     if (!this.c2dMessageData.message) {
       this.toasterService.showError('Please type JSON in given box', 'Validate Message Detail');
@@ -220,7 +234,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
         this.sendMessageStatus = 'success';
         this.toasterService.showSuccess('C2D message sent successfully', 'Send C2D Message');
         this.isSendC2DMessageAPILoading = false;
-        const expiryDate = moment().add(this.sentMessageData.expire_in_min, 'minutes').toDate();
+        const expiryDate = moment().add(this.sentMessageData.metadata.expire_in_min, 'minutes').toDate();
         this.timerInterval = setInterval(() => {
           const time = Math.floor((expiryDate.getTime() - new Date().getTime()) / 1000);
           this.timerObj = this.dhms(time);

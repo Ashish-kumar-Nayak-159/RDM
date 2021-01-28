@@ -158,6 +158,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
   }
 
   setActiveTab(tab) {
+    this.activeTab = undefined;
     this.activeTab = tab;
     window.location.hash = tab;
   }

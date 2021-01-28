@@ -34,7 +34,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
   timerInterval: any;
   appName: any;
   timerObj: any;
-  pageType: string;
+  listName: string;
   devices: any[] = [];
   constructor(
     private toasterService: ToasterService,
@@ -48,8 +48,8 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
     this.displayType = 'compose';
     this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
-      this.pageType = params.get('listName');
-      this.pageType = this.pageType.slice(0, -1);
+      this.listName = params.get('listName');
+      this.listName = this.listName.slice(0, -1);
       this.c2dMessageData = {
         device_id: this.device.device_id,
         gateway_id: this.device.gateway_id,
@@ -59,7 +59,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
         acknowledge: 'Full',
         expire_in_min: 1
       };
-      if (this.pageType === 'gateway') {
+      if (this.listName === 'gateway') {
         this.getDevicesListByGateway();
       }
     });
@@ -107,7 +107,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
     this.isMessageValidated = undefined;
     this.remainingTime = null;
     this.c2dMessageData.message_id = this.c2dMessageData.device_id + '_' + this.c2dMessageData.timestamp;
-    if (this.pageType === 'gateway') {
+    if (this.listName === 'gateway') {
       this.c2dMessageData.gateway_id = this.device.device_id;
     }
     this.sentMessageData = undefined;

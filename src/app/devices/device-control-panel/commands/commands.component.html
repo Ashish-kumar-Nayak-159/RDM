@@ -4,7 +4,6 @@
 </div> -->
 <div class="topnavbar-c2d bg-white py-2" >
 <div class="row">
-
   <ul class="nav">
       <!-- Nav Item - Tables -->
       <li class="nav-item" [ngClass]="{'active': displayMode === 'view'}">
@@ -12,11 +11,16 @@
           <i class="fa fa-fw fa-eye"></i>
           <span>View</span></a>
       </li>
+      <li class="nav-item" *ngIf="callingPage !== 'gateway'" [ngClass]="{'active': displayMode === 'configure_specific_commands'}">
+        <a class="nav-link"  href="javascript:void(0)" (click)="onClickOfSpecificCommands('configure')">
+          <i class="fa fa-fw fa-cog"></i>
+          <span>Configuration</span></a>
+      </li>
     <!-- Nav Item - Charts -->
-    <li class="nav-item" *ngIf="callingPage !== 'gateway'" [ngClass]="{'active': displayMode === 'specific_commands'}">
-      <a class="nav-link"  href="javascript:void(0)" (click)="onClickOfSpecificCommands()">
-        <i class="fa fa-fw fa-edit"></i>
-        <span>Send Specific Command</span></a>
+    <li class="nav-item" *ngIf="callingPage !== 'gateway'" [ngClass]="{'active': displayMode === 'control_specific_commands'}">
+      <a class="nav-link"  href="javascript:void(0)" (click)="onClickOfSpecificCommands('control')">
+        <i class="fa fa-fw fa-angle-right"></i>
+        <span>Control</span></a>
     </li>
     <!-- <li class="nav-item" *ngIf="callingPage !== 'gateway'" [ngClass]="{'active': displayMode === 'general_commands'}">
       <a class="nav-link" href="javascript:void(0)" (click)="onClickOfGeneralCommands()">
@@ -60,8 +64,8 @@
 
 <app-c2d-message [device]="device"></app-c2d-message>
 </ng-container>
-<ng-container *ngIf="displayMode === 'specific_commands'">
-  <app-specific-c2d-message [device]="device"></app-specific-c2d-message>
+<ng-container *ngIf="displayMode === 'configure_specific_commands' || displayMode === 'control_specific_commands'">
+  <app-specific-c2d-message [device]="device" [pageType]="displayMode"></app-specific-c2d-message>
 </ng-container>
 <ng-container *ngIf="displayMode === 'general_commands'">
 <app-compose-c2d-message [device]="device"></app-compose-c2d-message>

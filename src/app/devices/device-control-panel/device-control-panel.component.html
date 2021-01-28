@@ -92,8 +92,8 @@
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'alert-visualization'}" role="tabpanel" id="device_trend_analysis">
         <app-application-visualization [pageType]="'history'" *ngIf="activeTab === 'alert-visualization' && device" [device]="device"></app-application-visualization>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel" id="device_control_widgets">
-        <app-commands *ngIf="activeTab === 'control_widgets' && device" [device]="device"></app-commands>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'  || activeTab === 'configure_widgets'}" role="tabpanel" id="device_control_widgets">
+        <app-commands *ngIf="activeTab === 'control_widgets' || activeTab === 'configure_widgets' && device" [device]="device" [pageType]="activeTab"></app-commands>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'predictiveMaintenance'}" role="tabpanel" id="device_predictive_mainteance">
         <app-predictive-maintenance *ngIf="activeTab === 'predictiveMaintenance' && device" [device]="device"></app-predictive-maintenance>

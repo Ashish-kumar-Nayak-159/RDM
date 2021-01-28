@@ -80,8 +80,8 @@
         <tbody>
           <tr>
             <td>Device ID</td>
-            <td *ngIf="pageType === 'device' || pageType.toLowerCase() === 'nonipdevice'">{{c2dMessageData.device_id}}</td>
-            <td *ngIf="pageType === 'gateway'">
+            <td *ngIf="listName === 'device' || listName.toLowerCase() === 'nonipdevice'">{{c2dMessageData.device_id}}</td>
+            <td *ngIf="listName === 'gateway'">
               <select class="custom-select" id="device_id" name="device_id" [(ngModel)]="c2dMessageData.device_id">
 
                 <option *ngFor="let device of devices" [ngValue]="device.device_id">
@@ -91,7 +91,7 @@
               </select>
             </td>
           </tr>
-          <tr *ngIf="pageType.toLowerCase() === 'nonipdevice'">
+          <tr *ngIf="listName.toLowerCase() === 'nonipdevice'">
             <td>Gateway ID</td>
             <td>{{c2dMessageData.gateway_id}}</td>
           </tr>

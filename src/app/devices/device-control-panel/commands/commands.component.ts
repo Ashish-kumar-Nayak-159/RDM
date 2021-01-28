@@ -14,7 +14,7 @@ declare var $: any;
 })
 export class CommandsComponent implements OnInit {
 
-
+  @Input() pageType;
   @Input() device: Device = new Device();
   @Input() callingPage = 'Device';
   displayMode: string;
@@ -34,7 +34,7 @@ export class CommandsComponent implements OnInit {
     });
     if (this.callingPage === 'gateway') {
       this.displayMode = 'view';
-      this.timerObj = undefined
+      this.timerObj = undefined;
     }
   }
 
@@ -46,10 +46,11 @@ export class CommandsComponent implements OnInit {
     this.timerObj = undefined;
   }
 
-  onClickOfSpecificCommands() {
+  onClickOfSpecificCommands(type) {
     this.displayMode = '';
     setTimeout(() => {
-      this.displayMode = 'specific_commands';
+
+      this.displayMode = type + '_specific_commands';
     }, 500);
     this.timerObj = undefined;
   }

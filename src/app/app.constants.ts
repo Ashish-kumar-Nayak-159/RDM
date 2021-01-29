@@ -588,6 +588,15 @@ export class CONSTANTS {
       isTitle: false
     },
     {
+      page: 'derived_properties',
+      system_name: 'Derived Properties',
+      url: '#device_type_properties',
+      display_name: 'Derived Properties',
+      icon: 'fa fa-fw fa-retweet',
+      visible: true,
+      isTitle: false
+    },
+    {
       page: 'readable_properties',
       system_name: 'Readable Properties',
       url: '#device_type_properties',

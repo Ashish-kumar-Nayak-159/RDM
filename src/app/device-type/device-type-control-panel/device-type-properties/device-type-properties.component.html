@@ -11,7 +11,9 @@
           <i class="fa fa-fw fa-plus"></i>
           <span class="text-secondary">Add {{(type.includes('measured') ? 'Measured ' : (
             type.includes('writable') ? 'Writable ' : (
-              type.includes('readable') ? 'Readable ' : ''
+              type.includes('readable') ? 'Readable ' : (
+                type.includes('derived') ? 'Derived ' : ''
+              )
             )
           ))}}
           Property</span></a>
@@ -41,7 +43,9 @@
         <h5 class="modal-title" id="exampleModalLabel">Add New
           {{(type.includes('measured') ? 'Measured ' : (
             type.includes('writable') ? 'Writable ' : (
-              type.includes('readable') ? 'Readable ' : ''
+              type.includes('readable') ? 'Readable ' : (
+                type.includes('derived') ? 'Derived ' : ''
+              )
             )
           ))}}
           Property</h5>
@@ -67,6 +71,11 @@
             (change)="onDataTypeChange()">
               <option [ngValue]="dataType.name" *ngFor="let dataType of dataTypeList">{{dataType.name}}</option>
             </select>
+          </div>
+          <div class="form-group" *ngIf="type.includes('read') || type.includes('writ')">
+            <input type="checkbox" class="mx-1 my-1" id="checkbox" min="1"
+            name="checkbox" [(ngModel)]="propertyObj.isAdd" >
+            <label for="read_prop" class="col-form-label">Add as {{(type.includes('read') ? 'Writeable' : (type.includes('writ') ? 'Readable' : ''))}} Properties</label>
           </div>
           <div class="row col-12" *ngIf="type === 'measured_properties'">
             <label for="recipient-name" class="col-form-label">Thresholds:</label>
@@ -181,3 +190,46 @@
     </div>
   </div>
 
+
+  <div class="modal right fade" id="configureDerivedPropModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" *ngIf="selectedProperty">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Configure Property</h5>
+          <button type="button" class="close"  aria-label="Close" (click)="onCloseModal('configureDerivedPropModal')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          
+          <form>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label required">Dependent Properties:</label>
+            <angular2-multiselect [data]="dependentProperty" id="y1AxisProperty"
+            [(ngModel)]="selectedProperty.dependent_properties" (onDeSelect)="onPropertyChecked($event)"
+            (onSelectAll)="selectAllProps()" (onDeSelectAll)="deselectAllProps()"
+            (onSelect)="onPropertyChecked($event)" name="property" [settings]="{
+                text: 'Select Property',
+                classes: 'col-lg-2 col-xl-2 p-0 ml-2 w-100 modal-select',
+                enableSearchFilter: true,
+                badgeShowLimit: 2,
+                maxHeight: 200,
+                labelKey: 'name',
+                primaryKey: 'name'
+              }">
+            </angular2-multiselect>
+          </div>
+          </form>
+        
+        
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary">
+            Ok</button>
+          <button type="button" class="btn btn-secondary" (click)="onCloseModal('configureDerivedPropModal')">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>

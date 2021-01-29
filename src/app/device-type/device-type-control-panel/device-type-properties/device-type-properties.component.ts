@@ -27,6 +27,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
   dataTypeList = CONSTANTS.PROPERTY_DATA_TYPE_LIST;
   isCreatePropertyLoading = false;
   selectedProperty: any;
+  dependentProperty: any[] = [];
   editorOptions: JsonEditorOptions;
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   subscriptions: Subscription[] = [];
@@ -99,11 +100,21 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
         }
       ]
     };
+    if (this.type.includes('derived')) {
+      this.propertyTableConfig.data[3].btnData.splice(1, 0, {
+        icon: 'fa fa-fw fa-cog',
+        text: '',
+        id: 'Configure Property',
+        valueclass: '',
+        tooltip: 'Configure Property'
+      });
+    }
     this.getThingsModelProperties();
   }
 
   getThingsModelProperties() {
     // this.properties = {};
+    this.dependentProperty = [];
     this.isPropertiesLoading = true;
     const obj = {
       app: this.deviceType.app,
@@ -113,11 +124,33 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       (response: any) => {
         this.properties = response.properties;
         this.properties[this.type] = this.properties[this.type] ? this.properties[this.type] : [];
+        if (this.type === 'derived_properties') {
+          this.dependentProperty = this.properties['measured_properties'];
+          this.properties[this.type].forEach(prop => this.dependentProperty.push(prop));
+        }
         this.isPropertiesLoading = false;
       }
     ));
   }
 
+
+  onPropertyChecked(event) {
+    console.log(event);
+    const propObj = event;
+    const index = this.selectedProperty.dependent_properties.findIndex(prop => prop.json_key === propObj.json_key);
+    if (index > -1) {
+      this.selectedProperty.dependent_properties.splice(index, 1);
+    }
+  }
+
+  selectAllProps() {
+    this.selectedProperty.dependent_properties = JSON.parse(JSON.stringify(this.dependentProperty));
+  }
+
+  deselectAllProps() {
+    this.selectedProperty.dependent_properties = [];
+  }
+  
   openAddPropertiesModal() {
     this.propertyObj = {
       json_model : {},
@@ -220,6 +253,28 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
         return;
       }
     }
+    if (this.propertyObj.isAdd) {
+      if (this.type.includes('read')) {
+        this.properties.writable_properties = this.properties.writable_properties ? this.properties.writable_properties : [];
+        const windex = this.properties.writable_properties.findIndex(prop => prop.json_key === this.propertyObj.json_key);
+        console.log(windex);
+        delete this.propertyObj.isAdd;
+        if (windex === -1) {
+          console.log('before' , this.properties.writable_properties.length);
+          this.properties.writable_properties.push(this.propertyObj);
+          console.log('after' , this.properties.writable_properties.length);
+        }
+      }
+      if (this.type.includes('writ')) {
+        this.properties.readable_properties = this.properties.readable_properties ? this.properties.readable_properties : [];
+        const windex = this.properties.readable_properties.findIndex(prop => prop.json_key === this.propertyObj.json_key);
+        delete this.propertyObj.isAdd;
+        console.log(windex);
+        if (windex === -1) {
+          this.properties.readable_properties.push(this.propertyObj);
+        }
+      }
+    }
     this.isCreatePropertyLoading = true;
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
@@ -266,6 +321,8 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       $('#PropJSONModal').modal({ backdrop: 'static', keyboard: false, show: true });
     } else if (obj.for === 'Delete') {
       $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    } else if (obj.for === 'Configure Property') {
+      $('#configureDerivedPropModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }
 

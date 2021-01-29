@@ -7,7 +7,7 @@
       defaultBgColor="#f6c23e" checkedTextColor="white" uncheckedTextColor="white"
       checkedLabel="@ {{
         (this.deviceDetailData?.tags?.settings?.normal_mode?.frequency ? this.deviceDetailData?.tags?.settings?.normal_mode?.frequency : 60)}} sec refresh frequency"
-      uncheckedLabel="@ {{(this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency ? this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency : 60)}} sec refresh frequency" name="tpye" [(ngModel)]="signalRModeValue"
+      uncheckedLabel="@ {{(this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency ? this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency : 1)}} sec refresh frequency" name="tpye" [(ngModel)]="signalRModeValue"
       (valueChange)="onSwitchValueChange($event)"></ui-switch>
         <i class="fa fa-spinner fa-spin fa-fw"  *ngIf="isC2dAPILoading"> </i>
     </h5>
@@ -192,6 +192,11 @@
 
                   </div>
                   </ng-container>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <hr class="solid">
+                    </div>
                   </div>
                   <div class="row col-lg-12">
                     <div class="col-lg-12 mb-3">

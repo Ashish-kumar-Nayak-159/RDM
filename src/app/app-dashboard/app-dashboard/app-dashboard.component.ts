@@ -158,7 +158,7 @@ export class AppDashboardComponent implements OnInit {
         (this.deviceDetailData?.tags?.settings?.normal_mode?.frequency ?
           this.deviceDetailData?.tags?.settings?.normal_mode?.frequency : 60) :
         (this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency ?
-          this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency : 60),
+          this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency : 1),
         turbo_mode_timeout_in_sec : !this.signalRModeValue ?
         (this.deviceDetailData?.tags?.settings?.turbo_mode?.timeout ?
           this.deviceDetailData?.tags?.settings?.turbo_mode?.timeout : 120) : undefined,

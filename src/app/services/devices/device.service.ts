@@ -243,13 +243,15 @@ export class DeviceService {
   }
 
   getDeviceC2DMessages(filterObj) {
+    const app = filterObj.app;
+    delete filterObj.app;
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
       if (filterObj[key]) {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_C2D_MESSAGE_LIST, filterObj.app), { params });
+    return this.http.get(this.url + String.Format(AppUrls.GET_C2D_MESSAGE_LIST, app), { params });
   }
 
   getQueueMessagesCount(params, app) {

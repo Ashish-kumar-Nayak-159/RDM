@@ -115,9 +115,10 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
   onJSONKeyChange() {
     console.log(this.deviceMethodObj);
     if (this.deviceMethodObj.method_name) {
-      this.deviceMethodObj.json_model.command = this.deviceMethodObj.method_name;
+      this.deviceMethodObj.json_model.method = this.deviceMethodObj.method_name;
+      this.deviceMethodObj.json_model.message = {};
     } else {
-      delete this.deviceMethodObj.json_model.command;
+      delete this.deviceMethodObj.json_model.method;
     }
     this.editor.set(this.deviceMethodObj.json_model);
   }
@@ -134,7 +135,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Invalid JSON data', 'Add Device Method');
       return;
     }
-    const index = this.deviceMethods.findIndex(prop => prop.method_name === this.deviceMethodObj.method_name);
+    const index = this.deviceMethods.findIndex(prop => prop.name === this.deviceMethodObj.name);
     console.log(index);
     if (index > -1) {
       this.toasterService.showError('Device Method with same method name already exist.', 'Add Device Method');

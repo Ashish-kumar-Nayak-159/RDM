@@ -35,6 +35,7 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
     this.editorOptions.mode = 'code';
     this.editorOptions.statusBar = false;
     this.getThingsModelProperties();
+    this.getThingsModelDeviceMethod();
     this.getControlWidgets();
   }
 
@@ -98,6 +99,17 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
 
   onPropertyChecked(event) {
     console.log(event);
+    if (this.controlWidget?.metadata?.communication_technique === 'Direct Method') {
+      const propObj = event;
+      if (this.controlWidget.json[propObj.method_name]) {
+        delete this.controlWidget.json[propObj.method_name];
+        const index =  this.controlWidget.properties.findIndex(prop => prop.name === propObj.name);
+        // this.controlWidget.properties.splice(index, 1);
+      } else {
+        this.controlWidget.json[propObj.method_name] = propObj.json_model;
+        // this.controlWidget.properties.push(propObj);
+      }
+    } else {
     const propObj = event;
     if (this.controlWidget.json[propObj.json_key]) {
       delete this.controlWidget.json[propObj.json_key];
@@ -107,6 +119,7 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
       this.controlWidget.json[propObj.json_key] =
       propObj.json_model[propObj.json_key];
       // this.controlWidget.properties.push(propObj);
+    }
     }
     this.editor.set(this.controlWidget.json);
     console.log(this.controlWidget);
@@ -118,10 +131,16 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
         type: 'string'
       }
     };
+    if (this.controlWidget?.metadata?.communication_technique === 'Direct Method') {
+      this.controlWidget.properties.forEach(propObj => {
+        this.controlWidget.json[propObj.method_name] = propObj.json_model;
+      });
+    } else {
     this.controlWidget.properties.forEach(propObj => {
       this.controlWidget.json[propObj.json_key] =
       propObj.json_model[propObj.json_key];
     });
+    }
     this.editor.set(this.controlWidget.json);
   }
 
@@ -135,8 +154,8 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
   }
 
   createControlWidget() {
-    if (!this.controlWidget.name) {
-      this.toasterService.showError('Please add widget name', 'Create Control Widget');
+    if (!this.controlWidget.name || !this.controlWidget.metadata || !this.controlWidget.metadata?.communication_technique) {
+      this.toasterService.showError('Please fil the form properly', 'Create Control Widget');
       return;
     }
     if (this.controlWidget.properties.length === 0) {

@@ -1,0 +1,18 @@
+<div class="row ml-1" >
+
+  <div class="col-lg-12 col-xl-12 align-self-center">
+
+    <div class="form-group row">
+      <label for="inputPassword" class="col-4 col-form-label">Select {{pageType.includes('configure') ? 'Configuration ' : 'Control '}} Widget:</label>
+      <div class="">
+        <select class="form-control form-control-sm" id="widget" name="acknowledge" [(ngModel)]="selectedWidget"
+           style="width: 15rem!important;">
+          <option [ngValue]="undefined"> Select {{pageType.includes('configure') ? 'Configuration ' : 'Control '}} Widget</option>
+          <option [ngValue]="widget" *ngFor="let widget of controlWidgets">{{widget.name}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+
+</div>

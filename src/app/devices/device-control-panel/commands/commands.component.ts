@@ -19,6 +19,7 @@ export class CommandsComponent implements OnInit {
   @Input() callingPage = 'Device';
   displayMode: string;
   timerObj: any;
+  selectedCommunicationTechnique: string;
   constructor(
     private deviceService: DeviceService
   ) { }

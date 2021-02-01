@@ -91,7 +91,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     this.apiSubscriptions.push(this.deviceTypeService.getThingsModelControlWidgets(obj).subscribe(
       (response: any) => {
         if (response?.data) {
-          this.controlWidgets = response.data;
+          this.controlWidgets = response.data.filter(widget => widget.metadata.communication_technique === 'C2D Message');
         }
       }
     ));
@@ -105,7 +105,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     this.apiSubscriptions.push(this.deviceTypeService.getThingsModelConfigurationWidgets(obj).subscribe(
       (response: any) => {
         if (response?.data) {
-          this.controlWidgets = response.data;
+          this.controlWidgets = response.data.filter(widget => widget.metadata.communication_technique === 'C2D Message');
         }
       }
     ));

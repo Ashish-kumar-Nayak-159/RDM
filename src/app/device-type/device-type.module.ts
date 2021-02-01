@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { FileSaverModule } from 'ngx-filesaver';
+import { MonacoEditorModule } from 'ngx-monaco-editor';
 
 import { DeviceTypeListComponent } from './device-type-list/device-type-list.component';
 import { CommonCustomModule } from '../common/common.module';
@@ -51,7 +52,8 @@ import { DeviceTypeConfigurationWidgetsComponent } from './device-type-control-p
     AccordionModule.forRoot(),
     NgJsonEditorModule,
     AngularMultiSelectModule,
-    FileSaverModule
+    FileSaverModule,
+    MonacoEditorModule // use forRoot() in main app 
   ]
 })
 export class DeviceTypeModule { }

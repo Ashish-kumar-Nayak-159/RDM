@@ -100,6 +100,17 @@ export class DeviceTypeConfigurationWidgetsComponent implements OnInit {
 
   onPropertyChecked(event) {
     console.log(event);
+    if (this.controlWidget?.metadata?.communication_technique === 'Direct Method') {
+      const propObj = event;
+      if (this.controlWidget.json[propObj.method_name]) {
+        delete this.controlWidget.json[propObj.method_name];
+        const index =  this.controlWidget.properties.findIndex(prop => prop.name === propObj.name);
+        // this.controlWidget.properties.splice(index, 1);
+      } else {
+        this.controlWidget.json[propObj.method_name] = propObj.json_model;
+        // this.controlWidget.properties.push(propObj);
+      }
+    } else {
     const propObj = event;
     if (this.controlWidget.json[propObj.json_key]) {
       delete this.controlWidget.json[propObj.json_key];
@@ -109,6 +120,7 @@ export class DeviceTypeConfigurationWidgetsComponent implements OnInit {
       this.controlWidget.json[propObj.json_key] =
       propObj.json_model[propObj.json_key];
       // this.controlWidget.properties.push(propObj);
+    }
     }
     this.editor.set(this.controlWidget.json);
     console.log(this.controlWidget);
@@ -120,10 +132,16 @@ export class DeviceTypeConfigurationWidgetsComponent implements OnInit {
         type: 'string'
       }
     };
+    if (this.controlWidget?.metadata?.communication_technique === 'Direct Method') {
+      this.controlWidget.properties.forEach(propObj => {
+        this.controlWidget.json[propObj.method_name] = propObj.json_model;
+      });
+    } else {
     this.controlWidget.properties.forEach(propObj => {
       this.controlWidget.json[propObj.json_key] =
       propObj.json_model[propObj.json_key];
     });
+    }
     this.editor.set(this.controlWidget.json);
   }
 

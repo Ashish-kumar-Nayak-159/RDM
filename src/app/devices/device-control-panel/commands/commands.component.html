@@ -65,7 +65,27 @@
 <app-c2d-message [device]="device"></app-c2d-message>
 </ng-container>
 <ng-container *ngIf="displayMode === 'configure_specific_commands' || displayMode === 'control_specific_commands'">
-  <app-specific-c2d-message [device]="device" [pageType]="displayMode"></app-specific-c2d-message>
+  <form>
+    <div class="mt-2 row">
+      <div class="form-group col-md-3">
+        <input type="radio" class="mx-1 my-1" value="C2D Message"
+            name="communicationTechnique" [(ngModel)]="selectedCommunicationTechnique" >
+        <label class="col-form-label"> C2D Message</label>
+      </div>
+      <div class="form-group col-md-3">
+        <input type="radio" class="mx-1 my-1" value="Direct Method"
+            name="communicationTechnique" [(ngModel)]="selectedCommunicationTechnique" >
+        <label class="col-form-label"> Direct Method</label>
+      </div>
+      <div class="form-group col-md-3">
+        <input type="radio" class="mx-1 my-1" value="Twin Change"
+            name="communicationTechnique" [(ngModel)]="selectedCommunicationTechnique" >
+        <label class="col-form-label"> Twin Change</label>
+      </div>
+    </div>
+  </form>
+  <app-specific-c2d-message [device]="device" [pageType]="displayMode" *ngIf="selectedCommunicationTechnique === 'C2D Message'"></app-specific-c2d-message>
+  <app-specific-direct-method [device]="device" [pageType]="displayMode" *ngIf="selectedCommunicationTechnique === 'Direct Method'"></app-specific-direct-method>
 </ng-container>
 <ng-container *ngIf="displayMode === 'general_commands'">
 <app-compose-c2d-message [device]="device"></app-compose-c2d-message>

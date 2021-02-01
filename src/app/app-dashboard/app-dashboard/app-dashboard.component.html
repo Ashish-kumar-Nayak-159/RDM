@@ -176,7 +176,7 @@
                 <div class="row col-md-12">
                   <ng-container *ngFor="let widget of liveWidgets; let i = index;">
                     <div [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
-                    || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + '%') : '48%',
+                    || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
                     'margin-left':'2%', 'margin-top': '2%'}">
                     <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
                     || widget?.widgetType === 'NumberWithImage' || widget?.widgetType === 'StringWidget'" [chartConfig]="widget" [device]="filterObj?.device"

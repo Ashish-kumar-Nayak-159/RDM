@@ -44,7 +44,7 @@
     <div class="row col-md-12">
     <ng-container *ngFor="let widget of selectedWidgets">
       <div [style]="{ 'width': widget?.value.widgetType === 'OnlyNumber' || widget?.value.widgetType === 'NumberWithTrend'
-      || widget?.value.widgetType === 'NumberWithImage' || widget?.value.widgetType === 'GaugeChart' || widget?.value.widgetType === 'StringWidget' ? (23 * widget.value.properties.length + '%') : '48%',
+      || widget?.value.widgetType === 'NumberWithImage' || widget?.value.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
       'margin-left':'2%', 'margin-top': '2%'}">
       <app-only-number-widget *ngIf="widget?.value.widgetType === 'OnlyNumber' || widget?.value.widgetType === 'NumberWithTrend'
       || widget?.value.widgetType === 'NumberWithImage' || widget.value.widgetType === 'StringWidget'" [chartConfig]="widget.value"

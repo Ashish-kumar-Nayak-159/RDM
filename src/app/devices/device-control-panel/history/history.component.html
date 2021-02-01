@@ -104,7 +104,7 @@
             </ng-container>
             <ng-container *ngIf="historyFilter.type">
             <input type="number" class="form-control form-control-sm ml-1 my-1 w-7" id="minutes" min="1"
-              name="minutes" [(ngModel)]="historyFilter.sampling_time"
+              name="minutes" [(ngModel)]="historyFilter.sampling_time" title="This field is disabled. This feature is under development."
               placeholder="Sampling" disabled (change)="onNumberChange($event, 'sampling')">
             <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
             <!-- <select class="form-control form-control-sm mx-1 my-1" id="samplingFrequency" [(ngModel)]="historyFilter.sampling_format"

@@ -82,7 +82,7 @@
             <ng-container *ngIf="telemetryFilter.type">
             <input type="number" class="form-control form-control-sm ml-1 my-1 w-7" id="minutes" min="1"
               name="minutes" [(ngModel)]="telemetryFilter.sampling_time" placeholder="Sampling" disabled
-              (change)="onNumberChange($event, 'sampling')">
+              (change)="onNumberChange($event, 'sampling')" title="This field is disabled. This feature is under development.">
               <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
             <!-- <select class="form-control form-control-sm mx-2 my-1" id="samplingFrequency" [(ngModel)]="telemetryFilter.sampling_format"
             name="samplingFrequency" style="width: 11rem!important;" disabled>

@@ -200,6 +200,8 @@ export class EScooterTrackerDashboardComponent implements OnInit, OnDestroy {
       this.apiSubscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
           this.properties = response.properties.measured_properties ? response.properties.measured_properties : [];
+          response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
+          response.properties.derived_properties.forEach(prop => this.properties.push(prop));
           resolve();
         }
       ));

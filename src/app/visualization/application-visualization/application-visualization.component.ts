@@ -111,8 +111,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     if (this.pageType === 'live') {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.DASHBOARD_ALERT_SELECTION);
     if (item) {
-
       this.filterObj = JSON.parse(JSON.stringify(item));
+      if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
       this.contextApp.hierarchy.levels.forEach((level, index) => {
         if (index !== 0 && this.filterObj.device) {
         // console.log( this.filterObj.hierarchy);
@@ -123,6 +123,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         }
         }
       });
+      }
       this.getLatestAlerts();
     }
     }
@@ -496,6 +497,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         (response: any) => {
           console.log('4966666', response);
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
+          response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
+          response.properties.derived_properties.forEach(prop => this.propertyList.push(prop));
           this.propertyList.forEach(item => {
             this.dropdownPropList.push({
               id: item.json_key

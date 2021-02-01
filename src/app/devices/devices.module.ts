@@ -51,6 +51,7 @@ import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { GatewayConfigurationHistoryComponent } from './gateway-control-panel/gateway-configuration-history/gateway-configuration-history.component';
 import { GatewayCurrentConfigurationComponent } from './gateway-control-panel/gateway-current-configuration/gateway-current-configuration.component';
 import { GatewaySettingsComponent } from './gateway-control-panel/gateway-settings/gateway-settings.component';
+import { SpecificDirectMethodComponent } from './device-control-panel/specific-direct-method/specific-direct-method.component';
 
 @NgModule({
   declarations: [
@@ -88,7 +89,8 @@ import { GatewaySettingsComponent } from './gateway-control-panel/gateway-settin
     DeviceLifeCycleEventsComponent,
     GatewayConfigurationHistoryComponent,
     GatewayCurrentConfigurationComponent,
-    GatewaySettingsComponent
+    GatewaySettingsComponent,
+    SpecificDirectMethodComponent
   ],
   imports: [
     CommonModule,

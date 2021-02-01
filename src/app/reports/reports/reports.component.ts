@@ -309,6 +309,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.subscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
+          response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
+          response.properties.derived_properties.forEach(prop => this.propertyList.push(prop));
           this.dropdownPropList = [];
           this.props = [];
           this.propertyList.forEach(prop => {

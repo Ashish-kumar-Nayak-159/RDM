@@ -116,6 +116,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.apiSubscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
+          response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
+          response.properties.derived_properties.forEach(prop => this.propertyList.push(prop));
           resolve();
         }
       ));

@@ -14,8 +14,15 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { RDMLoginComponent } from './rdm-login/rdm-login.component';
 import { RDMHomeComponent } from './rdmhome/rdmhome.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor';
 
 
+const monacoConfig: NgxMonacoEditorConfig = {
+  baseUrl: 'https://unpkg.com/monaco-editor@0.19.3/min/vs', // configure base path for monaco editor
+  defaultOptions: { scrollBeyondLastLine: false }, // pass default options to be used
+  onMonacoLoad: () => { console.log((window as any).monaco); }
+  // here monaco object will be available as window.monaco use this function to extend monaco editor functionality.
+};
 @NgModule({
   declarations: [
     AppComponent,
@@ -24,8 +31,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     RDMSideMenuComponent,
     RDMLoginComponent,
     RDMHomeComponent,
-    ResetPasswordComponent,
-
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,
@@ -37,6 +43,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     NoopAnimationsModule,
     MatNativeDateModule,
     BrowserAnimationsModule,
+    MonacoEditorModule.forRoot(monacoConfig)
   ],
   providers: [
     HttpInterceptorProviders

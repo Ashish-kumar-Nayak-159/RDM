@@ -49,7 +49,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   ngOnInit(): void {
-
     // setInterval(() => {
     //   this.toasterService.showCriticalAlert('Critical Alert', 'Pump pressure is high', 'toast-bottom-right', 1000);
     // }, 10000);

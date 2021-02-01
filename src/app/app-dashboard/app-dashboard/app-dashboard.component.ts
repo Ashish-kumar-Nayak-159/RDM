@@ -123,6 +123,7 @@ export class AppDashboardComponent implements OnInit {
       console.log('aaaaaaaaaaaaaaa     ', item.device.hierarchy);
       this.originalFilter = JSON.parse(JSON.stringify(item));
       this.filterObj = JSON.parse(JSON.stringify(item));
+      if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
       this.contextApp.hierarchy.levels.forEach((level, index) => {
         if (index !== 0) {
         // console.log( this.filterObj.hierarchy);
@@ -134,6 +135,7 @@ export class AppDashboardComponent implements OnInit {
         }
         }
       });
+      }
       this.onFilterSelection(this.filterObj);
     }
   }
@@ -547,6 +549,8 @@ export class AppDashboardComponent implements OnInit {
         this.apiSubscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
           (response: any) => {
             this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
+            response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
+            response.properties.derived_properties.forEach(prop => this.propertyList.push(prop));
             resolve1();
           }
         ));

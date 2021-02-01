@@ -390,7 +390,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
             if (item.hierarchy) {
               item.hierarchyString = '';
               const keys = Object.keys(item.hierarchy);
-              keys.forEach((key, index) => {
+              this.contextApp.hierarchy.levels.forEach((key, index) => {
                 item.hierarchyString += item.hierarchy[key] + ( keys[index + 1] ? ' / ' : '');
               });
             }

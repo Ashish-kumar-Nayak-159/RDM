@@ -1,0 +1,4 @@
+.editor-container {
+  height: calc(100% - 60px);
+  margin: 15px;
+}

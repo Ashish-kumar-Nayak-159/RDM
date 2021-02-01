@@ -123,6 +123,8 @@ export class WaterTankMonitorComponent implements OnInit, AfterViewInit, OnDestr
       this.apiSubscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
           this.properties = response.properties.measured_properties ? response.properties.measured_properties : [];
+          response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
+          response.properties.derived_properties.forEach(prop => this.properties.push(prop));
           resolve();
         }
       ));

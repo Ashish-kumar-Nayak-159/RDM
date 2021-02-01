@@ -104,7 +104,7 @@ export class TagsComponent implements OnInit, OnDestroy {
         console.log('111111', JSON.stringify(this.device));
         this.device.hierarchyString = '';
         const keys = Object.keys(this.device.hierarchy);
-        keys.forEach((key, index) => {
+        this.contextApp.hierarchy.levels.forEach((key, index) => {
           this.device.hierarchyString += this.device.hierarchy[key] + ( keys[index + 1] ? ' / ' : '');
         });
         console.log(this.device);

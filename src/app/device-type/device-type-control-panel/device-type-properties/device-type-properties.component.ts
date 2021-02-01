@@ -31,6 +31,13 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
   editorOptions: JsonEditorOptions;
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   subscriptions: Subscription[] = [];
+  jsEditorOptions = { theme: 'vs-dark', language: 'javascript' };
+  code = `function calculate ()
+    {
+    }`;
+  options = {
+    theme: 'vs-dark'
+  };
   constructor(
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService,
@@ -125,7 +132,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
         this.properties = response.properties;
         this.properties[this.type] = this.properties[this.type] ? this.properties[this.type] : [];
         if (this.type === 'derived_properties') {
-          this.dependentProperty = this.properties['measured_properties'];
+          this.dependentProperty = JSON.parse(JSON.stringify(this.properties['measured_properties']));
           this.properties[this.type].forEach(prop => this.dependentProperty.push(prop));
         }
         this.isPropertiesLoading = false;
@@ -313,6 +320,26 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
   onCloseThingsPropertyModal() {
     $('#addPropertiesModal').modal('hide');
     this.propertyObj = undefined;
+  }
+
+  updatePropertyData() {
+    const index = this.properties[this.type].findIndex(prop => prop.json_key === this.selectedProperty.json_key);
+    this.properties[this.type].splice(index, 1);
+    this.properties[this.type].push(this.selectedProperty);
+    this.isCreatePropertyLoading = true;
+    const obj = JSON.parse(JSON.stringify(this.deviceType));
+    obj.properties = JSON.parse(JSON.stringify(this.properties));
+    this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.deviceType.app).subscribe(
+      (response: any) => {
+        this.isCreatePropertyLoading = false;
+        this.onCloseModal('configureDerivedPropModal');
+        this.toasterService.showSuccess(response.message, 'Configure Property');
+        this.getThingsModelProperties();
+      }, error => {
+        this.isCreatePropertyLoading = false;
+        this.toasterService.showError(error.message, 'Configure Property');
+      }
+    ));
   }
 
   onTableFunctionCall(obj) {

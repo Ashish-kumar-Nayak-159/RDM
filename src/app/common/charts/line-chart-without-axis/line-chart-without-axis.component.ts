@@ -86,6 +86,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
     this.zone.runOutsideAngular(() => {
       // console.log(document.getElementById(this.chartId));
       const chart = am4core.create(this.chartId, am4charts.XYChart);
+      chart.align = 'center';
       const data = [];
       const valueArr = [];
       this.telemetryData.forEach((obj, i) => {

@@ -7,6 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CONSTANTS } from 'src/app/app.constants';
 import * as moment from 'moment';
 import { DeviceService } from 'src/app/services/devices/device.service';
+import tableDragger from 'table-dragger';
 
 declare var $: any;
 @Component({
@@ -63,6 +64,26 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
     });
   }
 
+  getTableSortable() {
+    setTimeout(() => {
+    const el = document.getElementById('dashboardWidgetTable');
+    const dragger = tableDragger(el, {
+      mode: 'row',
+      dragHandler: '.handle',
+      onlyBody: true,
+      animation: 300
+    });
+    const that = this;
+    dragger.on('drop', function(from, to){
+      console.log(from);
+      console.log(to);
+      console.log(that.configureDashboardWidgets);
+      that.configureDashboardWidgets[to - 1].index = from;
+      that.configureDashboardWidgets[from - 1].index = to;
+    });
+    }, 2000);
+  }
+
   getLiveWidgets() {
     const params = {
       app: this.contextApp.app,
@@ -74,6 +95,10 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
       async (response: any) => {
         if (response?.live_widgets?.length > 0) {
           this.liveWidgets = response.live_widgets;
+          // let count = 1;
+          this.liveWidgets.forEach(widget => {
+            widget.freeze = this.deviceType.freeze;
+          });
           this.getTelemetryData();
           setInterval(() =>
           this.getTelemetryData(), 10000
@@ -129,7 +154,9 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
 
   onOpenConfigureDashboardModal() {
     this.configureDashboardWidgets = JSON.parse(JSON.stringify(this.liveWidgets));
+    this.configureDashboardWidgets.forEach((widget, index) => widget.index = index + 1);
     $('#configureDashboardWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
+   // this.getTableSortable();
   }
 
   removeWidget(chartId) {

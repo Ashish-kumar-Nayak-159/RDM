@@ -3,7 +3,7 @@
 
     <ul class="nav">
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)"  (click)="openAddDocumentModal()">
+        <a class="nav-link" href="javascript:void(0)"  (click)="openAddDocumentModal()" [class.disabled]="deviceType.freeze">
           <i class="fa fa-fw fa-plus"></i>
           <span class="text-secondary">Add</span></a>
       </li>

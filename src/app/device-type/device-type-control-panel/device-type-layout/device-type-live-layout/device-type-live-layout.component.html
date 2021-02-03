@@ -4,9 +4,9 @@
       <div class="col-xl-10 col-lg-10 col-md-10 mb-12">
           <div class="form-group form-inline my-1" *ngIf="liveWidgets.length > 0">
             Following Live widgets are already added.&nbsp;
-            <button class="btn btn-sm btn-warning" (click)="onOpenAddWidgetModal()" title="Add Live Widget"
+            <button class="btn btn-sm btn-warning" [disabled]="deviceType.freeze" (click)="onOpenAddWidgetModal()" title="Add Live Widget"
               ><i class="fa fa-plus fa-sm text-white"></i></button>&nbsp;
-            <button class="btn btn-sm btn-success" (click)="onOpenConfigureDashboardModal()" title="Configure Dashboard Widgets"
+            <button class="btn btn-sm btn-success" [disabled]="deviceType.freeze" (click)="onOpenConfigureDashboardModal()" title="Configure Dashboard Widgets"
             ><i class="fa fa-cog fa-sm text-white"></i></button>
           </div>
       </div>
@@ -126,15 +126,16 @@
           <table class="table table-bordered table-striped" cellspacing="0" id="dashboardWidgetTable">
             <thead>
               <tr class="bg-secondary text-white">
-                <th>Index</th>
-                <th>Widget Name</th>
+                <!-- <th>Index</th> -->
+                <th >Widget Name</th>
                 <th>Visibility</th>
               </tr>
             </thead>
             <tbody>
               <ng-container *ngFor="let item of configureDashboardWidgets; let index = index">
-                <tr >
-                  <td class="favoriteOrderId">{{item.userFavoriteId}}</td>
+                <!-- <tr [ngClass]="{'handle': item.dashboardVisibility}"> -->
+                  <tr>
+                  <!-- <td class="favoriteOrderId">{{item.index}}</td> -->
                   <td>{{item.widgetTitle}}</td>
                   <td><input type="checkbox" name="visible{{index}}"
                       id="visible{{index}}" [(ngModel)]="item.dashboardVisibility" /></td>

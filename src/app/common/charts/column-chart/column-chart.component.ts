@@ -35,6 +35,7 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
   device: any;
   chartDataFields: any;
   subscriptions: Subscription[] = [];
+  hideCancelButton = false;
   constructor(
     private commonService: CommonService,
     private chartService: ChartService

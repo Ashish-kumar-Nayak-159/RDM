@@ -42,6 +42,7 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
   setUpDocumentData() {
     this.docTableConfig = {
       type: 'Documents',
+      freeze: this.deviceType.freeze,
       data: [
         {
           name: 'Display Name',
@@ -82,7 +83,11 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
               text: '',
               id: 'Delete',
               valueclass: '',
-              tooltip: 'Delete'
+              tooltip: 'Delete',
+              disableConditions: {
+                key: 'freeze',
+                value: true
+              }
             }
           ]
         }

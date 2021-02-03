@@ -26,6 +26,7 @@ export class DataTableComponent implements OnInit {
   modalConfig: any;
   bodyMessage: string;
   headerMessage: string;
+  hideCancelButton = false;
   constructor(
     private commonService: CommonService
   ) { }

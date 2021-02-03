@@ -45,6 +45,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
   setUpDeviceMethodsData() {
     this.deviceMethods = [];
     this.deviceMethodTableConfig = {
+      freeze: this.deviceType.freeze,
       type: 'Device Methods',
       data: [
         {
@@ -79,7 +80,11 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
               text: '',
               id: 'Delete',
               valueclass: '',
-              tooltip: 'Delete'
+              tooltip: 'Delete',
+              disableConditions: {
+                key: 'freeze',
+                value: true
+              }
             }
           ]
         }

@@ -52,6 +52,7 @@ import { GatewayConfigurationHistoryComponent } from './gateway-control-panel/ga
 import { GatewayCurrentConfigurationComponent } from './gateway-control-panel/gateway-current-configuration/gateway-current-configuration.component';
 import { GatewaySettingsComponent } from './gateway-control-panel/gateway-settings/gateway-settings.component';
 import { SpecificDirectMethodComponent } from './device-control-panel/specific-direct-method/specific-direct-method.component';
+import { SpecificTwinChangeComponent } from './device-control-panel/specific-twin-change/specific-twin-change.component';
 
 @NgModule({
   declarations: [
@@ -90,7 +91,8 @@ import { SpecificDirectMethodComponent } from './device-control-panel/specific-d
     GatewayConfigurationHistoryComponent,
     GatewayCurrentConfigurationComponent,
     GatewaySettingsComponent,
-    SpecificDirectMethodComponent
+    SpecificDirectMethodComponent,
+    SpecificTwinChangeComponent
   ],
   imports: [
     CommonModule,

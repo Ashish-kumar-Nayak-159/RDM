@@ -54,6 +54,7 @@ export class CommandsComponent implements OnInit {
       this.displayMode = type + '_specific_commands';
     }, 500);
     this.timerObj = undefined;
+    this.selectedCommunicationTechnique = undefined;
   }
 
 

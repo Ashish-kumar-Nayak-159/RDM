@@ -8,12 +8,22 @@
       <h4 class="mb-0 text-gray-800 row col-md-6 pull-left">Welcome to
         {{deviceType.name}}
       </h4>
-      <a
+      <!-- <a
         class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm pull-right"
         href="javascript:void(0)"
         title="Sync with cache"
         (click)="syncWithCache()"
-        >Sync with cache <i class="fa fa-refresh fa-sm text-white"></i></a>
+        >Sync with cache <i class="fa fa-refresh fa-sm text-white"></i></a> -->
+      <div class="row col-md-12 mt-3">
+        <h6 *ngIf="deviceType.freeze"> This model is freezed.
+          <a href="javascript:void(0)" (click)="freezeUnfreezeModel('unfreeze')"
+          class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2">Unfreeze <i class="fa fa-unlock"></i></a>
+           </h6>
+        <h6 *ngIf="!deviceType.freeze"> This model is unfreezed.
+          <a href="javascript:void(0)" (click)="freezeUnfreezeModel('freeze')"
+          class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2">Freeze <i class="fa fa-lock"></i></a>
+          </h6>
+      </div>
     </div>
   </div>
 </div>

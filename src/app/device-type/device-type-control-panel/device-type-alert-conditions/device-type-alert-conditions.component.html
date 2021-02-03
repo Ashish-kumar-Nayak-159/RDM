@@ -3,7 +3,8 @@
 
     <ul class="nav">
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="openAddAlertConditionModal()">
+        <a class="nav-link" href="javascript:void(0)" (click)="openAddAlertConditionModal()"
+        [class.disabled]="deviceType.freeze">
           <i class="fa fa-fw fa-plus"></i>
           <span class="text-secondary">Add Alert Condition
           </span></a>
@@ -53,7 +54,8 @@
                 <a href="javascript:void(0)" class="mr-2" title="Visualization" (click)="onClickOfViewActionIcon('Visualization', i)">
                   <img class="img-icon" src="../../../../assets/img/visualization.png">
                 </a>
-                <a href="javascript:void(0)" title="Recommendations" (click)="onClickOfViewActionIcon('Recommendations', i)">
+                <a href="javascript:void(0)" title="Recommendations" (click)="onClickOfViewActionIcon('Recommendations', i)"
+                >
                   <img class="img-icon" src="../../../../assets/img/recommendation.png">
                 </a>
               </td>
@@ -62,7 +64,7 @@
                   <i class="fa fa-fw fa-eye"></i>
                 </a> -->
                 <a href="javascript:void(0)" (click)="openConfirmModal('confirmMessageModal', alert)"
-                title="Delete Alert Condition">
+                title="Delete Alert Condition" [class.disabled]="deviceType.freeze">
                   <i class="fa fa-fw fa-trash"></i>
                 </a>
               </td>
@@ -78,7 +80,7 @@
                     <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
                     [disabled]="alertObj?.visualization_widgets?.length === 0 || isCreateAlertConditionLoading" title="Edit"
                     (click)="editWidgets()"><i class="fa fa-pencil-square-o fa-sm"></i></button> -->
-                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" [disabled]="alertObj?.visualization_widgets?.length === 0 || isCreateAlertConditionLoading"
+                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" [disabled]="alertObj?.visualization_widgets?.length === 0 || isCreateAlertConditionLoading || deviceType.freeze"
                     title="Save" (click)="onUpdateAlertConditions()" ><i class="fa fa-save fa-sm"></i></button>
                     <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></i>
                   </div>
@@ -98,10 +100,9 @@
                       </select>
                       <!-- <a href="javascript:void(0)" class="mx-1" (click)="addVisualizationWidget()">
                         <i class="fa fa-plus fa-sm"></i> </a> -->
-                        <button type="button" class="btn btn-warning btn-sm mx-2" title="Add" (click)="addVisualizationWidget()" >
+                        <button type="button" class="btn btn-warning btn-sm mx-2" title="Add" (click)="addVisualizationWidget()" [disabled]="deviceType.freeze">
                           <i class="fa fa-plus fa-sm"></i></button>
-                    </div>
-
+                      </div>
                   </ng-container>
                   </div>
                 </div>
@@ -110,7 +111,7 @@
                     <ng-container *ngFor="let item of alertObj.visualization_widgets; let index = index">
                       <span class="tag" >
                         <span class="tag-text">{{item}}</span>
-                        <button class="tag-remove" (click)="removeVisualizationWidget(index)"></button>
+                        <button class="tag-remove" (click)="removeVisualizationWidget(index)" [disabled]="deviceType.freeze"></button>
                       </span>
                     </ng-container>
                   </div>
@@ -122,7 +123,7 @@
                 <div class="row col-12">Following recommendations have been pre-configured. You can configure more.
 
                   <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
-                  title="Save" (click)="onUpdateAlertConditions()" ><i class="fa fa-save fa-sm"></i></button></div>
+                  title="Save" (click)="onUpdateAlertConditions()" [disabled]="deviceType.freeze"><i class="fa fa-save fa-sm"></i></button></div>
                 <div class="row col-12 text-primary my-2">
                   <span >Debugging Steps: </span>
                   <!-- <a  class=" mx-1" href="javascript:void(0)"
@@ -141,7 +142,8 @@
                         <td style="width: 30%;">{{step.activity}} Activity</td>
 
                         <td style="width: 10%;">
-                            <a href="javascript:void(0)" class="ml-2" (click)="removeRecommendationStep(i)" title="Remove">
+                            <a href="javascript:void(0)" class="ml-2" (click)="removeRecommendationStep(i)" title="Remove"
+                            [class.disabled]="deviceType.freeze">
                               <i class="fa fa-trash fa-sm"></i> </a>
                         </td>
                       </ng-container>
@@ -171,7 +173,7 @@
                             </select>
                             </td> -->
                             <td>
-                              <a href="javascript:void(0)" class="ml-2" (click)="addRecommendationStep()" title="Add">
+                              <a href="javascript:void(0)" class="ml-2" [class.disabled]="deviceType.freeze" (click)="addRecommendationStep()" title="Add">
                                 <i class="fa fa-plus fa-sm"></i> </a>
                               <!-- <button type="button" class="btn btn-warning btn-sm mx-2" title="Add" (click)="addRecommendationStep()" >
                                 <i class="fa fa-plus fa-sm"></i></button> -->
@@ -211,7 +213,7 @@
                       </select>
                       <!-- <a href="javascript:void(0)" class="mx-1" (click)="addReferenceDocument()">
                         <i class="fa fa-plus fa-sm"></i> </a> -->
-                        <button type="button" class="btn btn-warning btn-sm mx-1" title="Add" (click)="addReferenceDocument()" >
+                        <button type="button" class="btn btn-warning btn-sm mx-1" title="Add" [disabled]="deviceType.freeze" (click)="addReferenceDocument()" >
                           <i class="fa fa-plus fa-sm"></i></button>
                     </div>
 
@@ -224,7 +226,7 @@
                   <ng-container *ngFor="let item of alertObj.reference_documents; let index = index">
                     <span class="tag" >
                       <span class="tag-text">{{item}}</span>
-                      <button class="tag-remove" (click)="removeDocument(index)"></button>
+                      <button class="tag-remove" [disabled]="deviceType.freeze" (click)="removeDocument(index)"></button>
                     </span>
                   </ng-container>
                 </div>

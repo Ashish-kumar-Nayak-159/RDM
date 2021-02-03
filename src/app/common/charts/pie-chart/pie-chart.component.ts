@@ -29,6 +29,7 @@ export class PieChartComponent implements OnInit, OnDestroy {
   modalConfig: any;
   bodyMessage: string;
   headerMessage: string;
+  hideCancelButton = false;
   device: any;
   constructor(
     private commonService: CommonService

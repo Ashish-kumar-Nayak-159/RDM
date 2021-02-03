@@ -16,7 +16,8 @@
             <ng-container *ngIf="header.type === 'text'">{{resolve(data, header.key)}} </ng-container>
             <ng-container *ngIf="header.type === 'button'">
               <ng-container *ngFor="let btnData of header.btnData">
-                <a href="javascript:void(0)" class="{{btnData.valueclass}}" (click)="onClickOfButton(data, btnData.id)">
+                <a href="javascript:void(0)" class="{{btnData.valueclass}}" (click)="onClickOfButton(data, btnData.id)"
+                [class.disabled]="tableConfig[btnData.disableConditions?.key] === btnData.disableConditions?.value">
                   <i class="{{btnData.icon}}" title="{{btnData.tooltip}}"></i>
                   {{btnData.text}}
                 </a>

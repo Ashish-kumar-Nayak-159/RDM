@@ -36,7 +36,7 @@ export class BarChartComponent implements OnInit, OnDestroy {
   chartEnddate: any;
   chartDataFields: any;
   subscriptions: Subscription[] = [];
-
+  hideCancelButton = false;
   constructor(
     private commonService: CommonService,
     private chartService: ChartService

@@ -7,7 +7,8 @@
 
     <ul class="nav">
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)"  (click)="openAddPropertiesModal()">
+        <a class="nav-link" href="javascript:void(0)"  (click)="openAddPropertiesModal()"
+        [class.disabled]="deviceType.freeze">
           <i class="fa fa-fw fa-plus"></i>
           <span class="text-secondary">Add {{(type.includes('measured') ? 'Measured ' : (
             type.includes('writable') ? 'Writable ' : (
@@ -225,8 +226,8 @@
             </div>
           </div>
           </form>
-        
-        
+
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" [disabled]="isCreatePropertyLoading" (click)="updatePropertyData()">

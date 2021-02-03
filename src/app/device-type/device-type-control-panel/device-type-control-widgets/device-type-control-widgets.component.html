@@ -7,7 +7,7 @@
 
     <ul class="nav">
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="openAddWidgetModal()">
+        <a class="nav-link" href="javascript:void(0)" (click)="openAddWidgetModal()" [class.disabled]="deviceType.freeze">
           <i class="fa fa-fw fa-plus"></i>
           <span class="text-secondary">Add</span></a>
       </li>
@@ -32,7 +32,8 @@
         <button class="btn" type="button">
           {{widget.name}}
         </button>
-        <a class="float-right pull-right mt-1" href="javascript:void(0)" (click)="openConfirmModal(widget)"><i class="fa fa-close"></i></a>
+        <a class="float-right pull-right mt-1" href="javascript:void(0)" [class.disabled]="deviceType.freeze"
+        (click)="openConfirmModal(widget)"><i class="fa fa-close"></i></a>
       </ng-container>
       <h6 *ngIf="widget?.metadata?.communication_technique">This configuration widget will process through {{widget?.metadata?.communication_technique}}.</h6>
       <div class="row">

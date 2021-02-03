@@ -38,6 +38,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   chartDataFields: any = {};
   chartEnddate: any;
   subscriptions: Subscription[] = [];
+  hideCancelButton = false;
   constructor(
     private commonService: CommonService,
     private chartService: ChartService,

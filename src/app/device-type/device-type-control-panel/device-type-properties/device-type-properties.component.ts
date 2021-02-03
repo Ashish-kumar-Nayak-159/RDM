@@ -61,6 +61,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
     this.properties[this.type] = [];
     this.propertyTableConfig = {
       type: 'Properties',
+      freeze: this.deviceType.freeze,
       data: [
         {
           name: 'Display Name',
@@ -101,7 +102,11 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
               text: '',
               id: 'Delete',
               valueclass: '',
-              tooltip: 'Delete'
+              tooltip: 'Delete',
+              disableConditions: {
+                key: 'freeze',
+                value: true
+              }
             }
           ]
         }
@@ -157,7 +162,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
   deselectAllProps() {
     this.selectedProperty.dependent_properties = [];
   }
-  
+
   openAddPropertiesModal() {
     this.propertyObj = {
       json_model : {},

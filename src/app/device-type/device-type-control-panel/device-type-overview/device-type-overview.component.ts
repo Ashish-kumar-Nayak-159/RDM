@@ -1,3 +1,4 @@
+import { CONSTANTS } from './../../../app.constants';
 import { ToasterService } from './../../../services/toaster.service';
 import { CONSTANTS } from 'src/app/app.constants';
 import { environment } from './../../../../environments/environment';
@@ -13,6 +14,7 @@ export class DeviceTypeOverviewComponent implements OnInit {
 
   @Input() deviceType: any;
   blobSASToken = environment.blobKey;
+  appAdminRole = CONSTANTS.APP_ADMIN_ROLE;
   constructor(
     private toasterService: ToasterService,
     private deviceTypeService: DeviceTypeService
@@ -24,6 +26,10 @@ export class DeviceTypeOverviewComponent implements OnInit {
         url: CONSTANTS.DEFAULT_MODEL_IMAGE
       };
     }
+  }
+
+  freezeUnfreezeModel(type) {
+    this.deviceType.freeze = (type === 'freeze' ? true : false);
   }
 
   syncWithCache() {

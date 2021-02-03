@@ -26,7 +26,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
   dataTypeList = CONSTANTS.PROPERTY_DATA_TYPE_LIST;
   isCreateDeviceMethodLoading = false;
   selectedDeviceMethod: any;
-  deviceMethodsList = CONSTANTS.DEVICE_METHODS;
+  deviceMethodsList: any = [];
   editorOptions: JsonEditorOptions;
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   subscriptions: Subscription[] = [];
@@ -103,20 +103,86 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
     ));
   }
 
+  addParameter() {
+    this.deviceMethodObj.json_model.params.push({
+      key: null,
+      data_type: null,
+      json: null
+    });
+  }
+
   openaddDeviceMethodModal() {
     this.deviceMethodObj = {
       json_model : {
-      }
+        params: [
+          {
+            key: null,
+            data_type: null,
+            json: null
+          }
+        ]
+      },
     };
    // this.thingsModel.tags.app = this.contextApp.app;
     $('#addDeviceMethodModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
-  onJSONKeyChange() {
+  onDataTypeChange(index) {
+    const obj = {};
+    const param = this.deviceMethodObj.json_model.params[index];
+    if (param.data_type && param.json) {
+      const validations = this.dataTypeList.find(type => type.name === param.data_type).validations;
+      validations.forEach(item => {
+        if (item === 'enum') {
+          obj[item] = [];
+        } else if (item === 'trueValue') {
+          obj[item] = true;
+        } else if (item === 'falseValue') {
+          obj[item] = false;
+        } else {
+          obj[item] = null;
+        }
+      });
+      param.json = {};
+      param.json =  obj;
+      param.json.type = param.data_type.toLowerCase();
+    } else {
+      param.json = {};
+    }
+    this.editor.set(this.deviceMethodObj.json_model);
+  }
+
+  onParamKeyChange(index) {
     console.log(this.deviceMethodObj);
+    console.log(index);
+    const param = this.deviceMethodObj.json_model.params[index];
+    console.log(param.json);
+    if (param.json) {
+      const keys = Object.keys(param.json);
+      let obj: any = {};
+      if (keys && keys.length > 0) {
+        obj.key = param.json[keys[0]];
+      } else {
+        param.json = {};
+        obj = {};
+      }
+      if (param.data_type) {
+        this.onDataTypeChange(index);
+      }
+      param.json = obj;
+    } else {
+      param.json = {};
+    }
+    console.log(this.deviceMethodObj.json_model);
+    this.editor.set(this.deviceMethodObj.json_model);
+  }
+
+
+
+  onJSONKeyChange() {
     if (this.deviceMethodObj.method_name) {
       this.deviceMethodObj.json_model.method = this.deviceMethodObj.method_name;
-      this.deviceMethodObj.json_model.message = {};
+      // this.deviceMethodObj.json_model.message = {};
     } else {
       delete this.deviceMethodObj.json_model.method;
     }

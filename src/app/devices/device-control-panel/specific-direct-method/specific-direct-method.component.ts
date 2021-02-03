@@ -27,6 +27,7 @@ export class SpecificDirectMethodComponent implements OnInit {
   selectedWidget: any;
   jsonModelKeys = [];
   isInvokeDirectMethod: boolean;
+  responseMessage: any;
   constructor(
 
     private commonService: CommonService,
@@ -67,6 +68,8 @@ export class SpecificDirectMethodComponent implements OnInit {
 
   onWidgetSelection() {
     if (this.selectedWidget) {
+      this.selectedWidget.response_timeout_in_sec = 20;
+      this.selectedWidget.connection_timeout_in_sec = 20;
       const keys = Object.keys(this.selectedWidget.json);
       const index = keys.findIndex(key => key.toLowerCase() === 'timestamp');
       if (index > -1) {
@@ -96,6 +99,7 @@ export class SpecificDirectMethodComponent implements OnInit {
   }
 
   invokeDirectMethod() {
+    this.responseMessage = undefined;
     const timestamp = moment().unix();
     const obj: any = {};
     obj.method = this.selectedWidget.method_name;
@@ -107,6 +111,8 @@ export class SpecificDirectMethodComponent implements OnInit {
       obj.device_id = this.device.device_id;
       obj.gateway_id = this.device.gateway_id;
     }
+    obj.response_timeout_in_sec = this.selectedWidget.response_timeout_in_sec;
+    obj.connection_timeout_in_sec = this.selectedWidget.connection_timeout_in_sec;
     obj.message = {};
     this.jsonModelKeys.forEach(item => {
       if (item.value !== null || item.value !== undefined) {
@@ -123,11 +129,11 @@ export class SpecificDirectMethodComponent implements OnInit {
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Invoke Direct Method');
         this.isInvokeDirectMethod = false;
-        this.selectedWidget = undefined;
-        this.jsonModelKeys = [];
+        this.responseMessage = response;
       }, error => {
         this.toasterService.showError(error.message, 'Invoke Direct Method');
         this.isInvokeDirectMethod = false;
+        this.responseMessage = error;
       }
     ));
   }

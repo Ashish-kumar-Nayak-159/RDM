@@ -55,6 +55,26 @@
               <option [ngValue]="item" *ngFor="let item of deviceMethodsList">{{item}}</option>
           </datalist>
           </div>
+          <ng-container *ngFor="let param of deviceMethodObj.json_model.params; let i = index;" >
+          <div class="form-group">
+            <label for="message-text" class="col-form-label ">Parameter <a *ngIf="i === 0"
+              class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2"
+              href="javascript:void(0)" (click)="addParameter()"
+              title="Add Property"
+              ><i class="fa fa-plus fa-sm text-white"></i></a
+            ></label>
+            <input type="text"  class="form-control" id="title{{i}}" name="title{{i}}"
+              [(ngModel)]="param.key" (change)="onParamKeyChange(i)"
+                placeholder="Parameter Key">
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label required">Data Type:</label>
+            <select class="custom-select" id="template{{i}}" name="model_type{{i}}" [(ngModel)]="param.data_type"
+            (change)="onDataTypeChange(i)">
+              <option [ngValue]="dataType.name" *ngFor="let dataType of dataTypeList">{{dataType.name}}</option>
+            </select>
+          </div>
+          </ng-container>
           <div class="form-group mr-3">
             <label for="message-text" class="col-form-label">JSON Model:</label>
             <!-- <textarea
@@ -66,7 +86,7 @@
               [defaultValue]="deviceMethodObj.json_model | json"
               disbaled
             ></textarea> -->
-            <json-editor [options]="editorOptions" name="json"  [data]="deviceMethodObj.json">
+            <json-editor [options]="editorOptions" name="json"  [data]="deviceMethodObj.json_model">
             </json-editor>
           </div>
         </form>

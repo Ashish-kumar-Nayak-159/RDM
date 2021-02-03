@@ -84,9 +84,14 @@
       </div>
     </div>
   </form>
-  
+  <div class="row mt-n4">
+    <div class="col-lg-12">
+      <hr class="solid">
+    </div>
+  </div>
   <app-specific-c2d-message [device]="device" [pageType]="displayMode" *ngIf="selectedCommunicationTechnique === 'C2D Message'"></app-specific-c2d-message>
   <app-specific-direct-method [device]="device" [pageType]="displayMode" *ngIf="selectedCommunicationTechnique === 'Direct Method'"></app-specific-direct-method>
+  <app-specific-twin-change [device]="device" [pageType]="displayMode" *ngIf="selectedCommunicationTechnique === 'Twin Change'"></app-specific-twin-change>
 </ng-container>
 
 <ng-container *ngIf="displayMode === 'general_commands'">

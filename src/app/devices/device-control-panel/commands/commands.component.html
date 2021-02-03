@@ -84,9 +84,11 @@
       </div>
     </div>
   </form>
+  
   <app-specific-c2d-message [device]="device" [pageType]="displayMode" *ngIf="selectedCommunicationTechnique === 'C2D Message'"></app-specific-c2d-message>
   <app-specific-direct-method [device]="device" [pageType]="displayMode" *ngIf="selectedCommunicationTechnique === 'Direct Method'"></app-specific-direct-method>
 </ng-container>
+
 <ng-container *ngIf="displayMode === 'general_commands'">
 <app-compose-c2d-message [device]="device"></app-compose-c2d-message>
 </ng-container>

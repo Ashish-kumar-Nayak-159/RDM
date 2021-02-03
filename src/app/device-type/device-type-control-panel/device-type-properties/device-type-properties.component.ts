@@ -98,6 +98,17 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
               tooltip: 'View JSON Model'
             },
             {
+              icon: 'fa fa-fw fa-pencil',
+              text: '',
+              id: 'Edit',
+              valueclass: '',
+              tooltip: 'Edit',
+              disableConditions: {
+                key: 'freeze',
+                value: true
+              }
+            },
+            {
               icon: 'fa fa-fw fa-trash',
               text: '',
               id: 'Delete',
@@ -325,12 +336,17 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
   onCloseThingsPropertyModal() {
     $('#addPropertiesModal').modal('hide');
     this.propertyObj = undefined;
+    this.selectedProperty = undefined;
   }
 
   updatePropertyData() {
     const index = this.properties[this.type].findIndex(prop => prop.json_key === this.selectedProperty.json_key);
     this.properties[this.type].splice(index, 1);
-    this.properties[this.type].push(this.selectedProperty);
+    if (this.propertyObj?.edit) {
+      this.properties[this.type].splice(index, 0, this.propertyObj);
+    } else {
+      this.properties[this.type].splice(index, 0, this.selectedProperty);
+    }
     this.isCreatePropertyLoading = true;
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
@@ -338,6 +354,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       (response: any) => {
         this.isCreatePropertyLoading = false;
         this.onCloseModal('configureDerivedPropModal');
+        this.onCloseThingsPropertyModal();
         this.toasterService.showSuccess(response.message, 'Configure Property');
         this.getThingsModelProperties();
       }, error => {
@@ -355,6 +372,14 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     } else if (obj.for === 'Configure Property') {
       $('#configureDerivedPropModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    } else if (obj.for === 'Edit') {
+      $('#addPropertiesModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      this.propertyObj = JSON.parse(JSON.stringify(obj.data));
+      this.propertyObj.edit = true;
+      console.log(this.propertyObj);
+      setTimeout(() => {
+      this.editor.set(this.propertyObj.json_model);
+      }, 1000);
     }
   }
 

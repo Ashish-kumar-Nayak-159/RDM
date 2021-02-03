@@ -76,6 +76,17 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
               tooltip: 'View JSON Model'
             },
             {
+              icon: 'fa fa-fw fa-pencil',
+              text: '',
+              id: 'Edit',
+              valueclass: '',
+              tooltip: 'Edit',
+              disableConditions: {
+                key: 'freeze',
+                value: true
+              }
+            },
+            {
               icon: 'fa fa-fw fa-trash',
               text: '',
               id: 'Delete',
@@ -182,8 +193,6 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
     this.editor.set(this.deviceMethodObj.json_model);
   }
 
-
-
   onJSONKeyChange() {
     if (this.deviceMethodObj.method_name) {
       this.deviceMethodObj.json_model.method = this.deviceMethodObj.method_name;
@@ -206,12 +215,21 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Invalid JSON data', 'Add Device Method');
       return;
     }
-    const index = this.deviceMethods.findIndex(prop => prop.name === this.deviceMethodObj.name);
+    if (this.deviceMethodObj.edit) {
+      const index1 = this.deviceMethods.findIndex(prop => prop.method_name === this.deviceMethodObj.method_name);
+      if (index1 > -1) {
+        this.deviceMethods.splice(index1, 1);
+      }
+    }
+    const index = this.deviceMethods.findIndex(prop => prop.method_name === this.deviceMethodObj.method_name);
     console.log(index);
     if (index > -1) {
       this.toasterService.showError('Device Method with same method name already exist.', 'Add Device Method');
       return;
     }
+    // if (this.deviceMethodObj.edit) {
+    //   this.deviceMethods.push(this.deviceMethodObj);
+    // }
     this.isCreateDeviceMethodLoading = true;
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.device_methods = JSON.parse(JSON.stringify(this.deviceMethods));
@@ -258,6 +276,10 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
       $('#PropJSONModal').modal({ backdrop: 'static', keyboard: false, show: true });
     } else if (obj.for === 'Delete') {
       $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    } else if (obj.for === 'Edit') {
+      this.deviceMethodObj = JSON.parse(JSON.stringify(obj.data));
+      this.deviceMethodObj.edit = true;
+      $('#addDeviceMethodModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }
   onCloseModal(id) {

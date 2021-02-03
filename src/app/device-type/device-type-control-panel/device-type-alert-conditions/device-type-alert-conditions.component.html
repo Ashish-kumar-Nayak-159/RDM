@@ -60,9 +60,9 @@
                 </a>
               </td>
               <td>
-                <!-- <a href="javascript:void(0)" class="mr-1">
-                  <i class="fa fa-fw fa-eye"></i>
-                </a> -->
+                <a href="javascript:void(0)" (click)="openAddAlertConditionModal(alert)" class="mr-1">
+                  <i class="fa fa-fw fa-pencil" [class.disabled]="deviceType.freeze"></i>
+                </a>
                 <a href="javascript:void(0)" (click)="openConfirmModal('confirmMessageModal', alert)"
                 title="Delete Alert Condition" [class.disabled]="deviceType.freeze">
                   <i class="fa fa-fw fa-trash"></i>
@@ -135,7 +135,6 @@
                     <tbody>
                       <ng-container  >
                       <tr *ngFor="let step of alertObj.recommendations; let i = index;" class="bg-white">
-
                       <ng-container >
                         <td style="width: 15%;">Step - {{i + 1}}</td>
                         <td style="width: 30%;">{{step.description}}</td>
@@ -276,16 +275,16 @@
           <label for="recipient-name" class="col-form-label required">Severity:</label>
           <select class="custom-select" id="template" name="model_type" [(ngModel)]="alertObj.severity">
             <option [ngValue]="undefined" >Select Severity</option>
-            <option [ngValue]="'critical'" >Critical</option>
-            <option [ngValue]="'error'" >Error</option>
-            <option [ngValue]="'warning'" >Warning</option>
-            <option [ngValue]="'informational'" >Informational</option>
+            <option [ngValue]="'Critical'" >Critical</option>
+            <option [ngValue]="'Error'" >Error</option>
+            <option [ngValue]="'Warning'" >Warning</option>
+            <option [ngValue]="'Informational'" >Informational</option>
           </select>
         </div>
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-primary add-row" [disabled]="isCreateAlertConditionLoading" (click)="onCreateAlertCondition()">Save</button>
+      <button type="button" class="btn btn-primary add-row" [disabled]="isCreateAlertConditionLoading" (click)="!alertObj.id ? onCreateAlertCondition() : onUpdateAlertConditions()">Save</button>
       <button type="button" class="btn btn-secondary" [disabled]="isCreateAlertConditionLoading" (click)="onCloseAlertConditionModal()">Cancel</button>
       <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></i>
     </div>

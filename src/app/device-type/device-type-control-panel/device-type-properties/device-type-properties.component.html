@@ -58,13 +58,13 @@
         <form>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Display Name:</label>
-            <input type="text" class="form-control" id="name" name="name" [(ngModel)]="propertyObj.name"
+            <input type="text" class="form-control" id="display_name" name="display_name" [(ngModel)]="propertyObj.name"
           placeholder="Enter Property Name">
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">JSON Key:</label>
             <input type="text" class="form-control" id="name" name="name" [(ngModel)]="propertyObj.json_key"
-            placeholder="Enter Key Name" (change)="onJSONKeyChange()">
+            placeholder="Enter Key Name" (change)="onJSONKeyChange()" [disabled]="propertyObj.edit">
           </div>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Data Type:</label>
@@ -134,7 +134,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary add-row" [disabled]="isCreatePropertyLoading" (click)="onSavePropertyObj()">Save</button>
+        <button type="button" class="btn btn-primary add-row" [disabled]="isCreatePropertyLoading" (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading" (click)="onCloseThingsPropertyModal()">Cancel</button>
         <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreatePropertyLoading"></i>
       </div>

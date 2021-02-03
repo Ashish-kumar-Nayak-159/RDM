@@ -209,8 +209,12 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
     console.log(this.alertObj);
   }
 
-  openAddAlertConditionModal() {
-    this.alertObj = {};
+  openAddAlertConditionModal(alertObj) {
+    if (alertObj) {
+      this.alertObj = alertObj;
+    } else {
+      this.alertObj = {};
+    }
     this.toggleRows = {};
     this.editRecommendationStep = {};
     this.editDocuments = {};
@@ -296,6 +300,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
       .subscribe((response: any) => {
         this.isCreateAlertConditionLoading = false;
         this.getAlertConditions();
+        this.onCloseAlertConditionModal();
         this.toasterService.showSuccess(response.message, 'Update Alert Condition');
         this.toggleRows = {};
         this.editRecommendationStep = {};

@@ -42,16 +42,16 @@
       <div class="modal-body">
         <form>
           <div class="form-group">
-            <label for="message-text" class="col-form-label required">Name:</label>
-            <input type="text" class="form-control" id="name" name="name" [(ngModel)]="deviceMethodObj.name"
-              placeholder="Enter Name">
+            <label for="message-text" class="col-form-label required">Display Name:</label>
+            <input type="text" class="form-control" id="display_name" name="display_name" [(ngModel)]="deviceMethodObj.name"
+              placeholder="Enter Display Name">
 
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Method Name:</label>
 
           <input list="encodings" class="form-control form-control-sm" name="name" [(ngModel)]="deviceMethodObj.method_name"
-           (change)="onJSONKeyChange()">
+           (change)="onJSONKeyChange()" placeholder="Enter Method Name" [disabled]="deviceMethodObj.edit">
           <datalist id="encodings">
               <option [ngValue]="item" *ngFor="let item of deviceMethodsList">{{item}}</option>
           </datalist>

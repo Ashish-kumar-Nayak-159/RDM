@@ -97,7 +97,7 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
           this.liveWidgets = response.live_widgets;
           // let count = 1;
           this.liveWidgets.forEach(widget => {
-            widget.freeze = this.deviceType.freeze;
+            widget.freezed = this.deviceType.freezed;
           });
           this.getTelemetryData();
           setInterval(() =>

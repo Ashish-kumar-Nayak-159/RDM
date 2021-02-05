@@ -87,10 +87,12 @@ export class OverviewComponent implements OnInit, OnDestroy {
         name: this.device.tags.device_type,
         app: this.contextApp.app
       };
-      this.subscriptions.push(this.deviceTypeService.getThingsModelsList(obj).subscribe(
+      this.subscriptions.push(this.deviceTypeService.getThingsModelDetails(obj.app, obj.name).subscribe(
         (response: any) => {
-          if (response?.data?.length > 0) {
-            this.deviceType = response.data[0];
+          if (response) {
+            this.deviceType = response;
+            this.deviceType.name = obj.name;
+            this.deviceType.app = obj.app;
             if (!this.deviceType.metadata?.image) {
               this.deviceType.metadata.image = {
                 url: CONSTANTS.DEFAULT_MODEL_IMAGE

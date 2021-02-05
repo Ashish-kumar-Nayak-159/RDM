@@ -39,8 +39,11 @@ export class AppUrls {
   public static CREATE_LAYOUT = 'layout';
   public static GET_LAYOUT = 'layouts';
   public static GET_THINGS_MODELS = 'apps/{0}/device_types';
+  public static GET_THINGS_MODEL_DETAILS = 'apps/{0}/device_types/{1}';
   public static CREATE_THINGS_MODEL = 'apps/{0}/device_types';
   public static UPDATE_THINGS_MODEL = 'apps/{0}/device_types/{1}';
+  public static FREEZE_THINGS_MODEL = 'apps/{0}/device_types/{1}/freeze';
+  public static UNFREEZE_THINGS_MODEL = 'apps/{0}/device_types/{1}/unfreeze';
   public static GET_THINGS_MODEL_PROPERTIES = 'apps/{0}/device_types/{1}/properties';
   public static GET_THINGS_MODEL_CONTROL_WIDGETS = 'apps/{0}/device_types/{1}/control_widgets';
   public static CREATE_THINGS_MODEL_CONTROL_WIDGETS = 'apps/{0}/device_types/{1}/control_widget';

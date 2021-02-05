@@ -277,3 +277,11 @@ select#dateoptions {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.field-icon {
+  float: right;
+  margin-top: -2.1rem;
+  position: relative;
+  z-index: 2;
+  margin-right: 0.7rem;
+}

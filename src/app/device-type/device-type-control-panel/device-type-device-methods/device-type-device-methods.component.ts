@@ -1,3 +1,4 @@
+import { CommonService } from 'src/app/services/common.service';
 import { Subscription } from 'rxjs';
 import { MatNativeDateModule } from '@angular/material/core';
 import { Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
@@ -30,12 +31,15 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
   editorOptions: JsonEditorOptions;
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   subscriptions: Subscription[] = [];
+  contextApp: any;
   constructor(
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService,
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.setUpDeviceMethodsData();
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.mode = 'code';
@@ -45,7 +49,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
   setUpDeviceMethodsData() {
     this.deviceMethods = [];
     this.deviceMethodTableConfig = {
-      freeze: this.deviceType.freeze,
+      freezed: this.deviceType.freezed,
       type: 'Device Methods',
       data: [
         {
@@ -82,7 +86,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
               valueclass: '',
               tooltip: 'Edit',
               disableConditions: {
-                key: 'freeze',
+                key: 'freezed',
                 value: true
               }
             },
@@ -93,7 +97,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
               valueclass: '',
               tooltip: 'Delete',
               disableConditions: {
-                key: 'freeze',
+                key: 'freezed',
                 value: true
               }
             }
@@ -108,7 +112,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
     // this.deviceMethods = {};
     this.isDeviceMethodsLoading = true;
     const obj = {
-      app: this.deviceType.app,
+      app: this.contextApp.app,
       name: this.deviceType.name
     };
     this.subscriptions.push(this.deviceTypeService.getThingsModelDeviceMethods(obj).subscribe(

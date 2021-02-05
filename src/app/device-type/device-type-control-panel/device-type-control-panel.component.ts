@@ -38,6 +38,11 @@ export class DeviceTypeControlPanelComponent implements OnInit, OnDestroy {
       }
       this.getDeviceTypeData(params.get('deviceTypeId'));
     });
+    this.subscriptions.push(this.deviceTypeService.deviceModelRefreshData.subscribe(
+      name => {
+        this.getDeviceTypeData(name);
+      }
+    ))
 
     this.route.fragment.subscribe(
       fragment => {
@@ -137,15 +142,18 @@ export class DeviceTypeControlPanelComponent implements OnInit, OnDestroy {
   }
 
   getDeviceTypeData(deviceTypeId, callFromMenu = false) {
+    this.deviceType = undefined;
     this.isDeviceTypeDataLoading = true;
     const obj = {
       name: deviceTypeId,
       app: this.contextApp.app
     };
-    this.subscriptions.push(this.deviceTypeService.getThingsModelsList(obj).subscribe(
+    this.subscriptions.push(this.deviceTypeService.getThingsModelDetails(obj.app, obj.name).subscribe(
       (response: any) => {
-        if (response && response.data && response.data.length > 0) {
-          this.deviceType = response.data[0];
+        if (response) {
+          this.deviceType = response;
+          this.deviceType.name = obj.name;
+          this.deviceType.app = obj.app;
           this.commonService.breadcrumbEvent.emit({
             type: 'append',
             data: [

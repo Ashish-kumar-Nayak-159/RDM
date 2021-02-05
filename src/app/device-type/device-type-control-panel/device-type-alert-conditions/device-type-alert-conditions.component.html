@@ -4,13 +4,13 @@
     <ul class="nav pull-left col-md-6">
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="openAddAlertConditionModal()"
-        [class.disabled]="deviceType.freeze">
+        [class.disabled]="deviceType.freezed">
           <i class="fa fa-fw fa-plus"></i>
           <span class="text-secondary">Add Alert Condition
           </span></a>
       </li>
     </ul>
-    <div class="pull-right mt-2"  *ngIf="deviceType.freeze">
+    <div class="pull-right mt-2"  *ngIf="deviceType.freezed">
       <h6>This model is freezed.</h6>
     </div>
     <!-- Divider
@@ -63,11 +63,12 @@
                 </a>
               </td>
               <td>
-                <a href="javascript:void(0)" (click)="openAddAlertConditionModal(alert)" class="mr-1">
-                  <i class="fa fa-fw fa-pencil" [class.disabled]="deviceType.freeze"></i>
+                <a href="javascript:void(0)" (click)="openAddAlertConditionModal(alert)" class="mr-1"
+                [class.disabled]="deviceType.freezed" title="Edit">
+                  <i class="fa fa-fw fa-pencil" ></i>
                 </a>
                 <a href="javascript:void(0)" (click)="openConfirmModal('confirmMessageModal', alert)"
-                title="Delete Alert Condition" [class.disabled]="deviceType.freeze">
+                title="Delete Alert Condition" [class.disabled]="deviceType.freezed">
                   <i class="fa fa-fw fa-trash"></i>
                 </a>
               </td>
@@ -83,7 +84,7 @@
                     <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
                     [disabled]="alertObj?.visualization_widgets?.length === 0 || isCreateAlertConditionLoading" title="Edit"
                     (click)="editWidgets()"><i class="fa fa-pencil-square-o fa-sm"></i></button> -->
-                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" [disabled]="alertObj?.visualization_widgets?.length === 0 || isCreateAlertConditionLoading || deviceType.freeze"
+                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" [disabled]="alertObj?.visualization_widgets?.length === 0 || isCreateAlertConditionLoading || deviceType.freezed"
                     title="Save" (click)="onUpdateAlertConditions()" ><i class="fa fa-save fa-sm"></i></button>
                     <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></i>
                   </div>
@@ -103,7 +104,7 @@
                       </select>
                       <!-- <a href="javascript:void(0)" class="mx-1" (click)="addVisualizationWidget()">
                         <i class="fa fa-plus fa-sm"></i> </a> -->
-                        <button type="button" class="btn btn-warning btn-sm mx-2" title="Add" (click)="addVisualizationWidget()" [disabled]="deviceType.freeze">
+                        <button type="button" class="btn btn-warning btn-sm mx-2" title="Add" (click)="addVisualizationWidget()" [disabled]="deviceType.freezed">
                           <i class="fa fa-plus fa-sm"></i></button>
                       </div>
                   </ng-container>
@@ -114,7 +115,7 @@
                     <ng-container *ngFor="let item of alertObj.visualization_widgets; let index = index">
                       <span class="tag" >
                         <span class="tag-text">{{item}}</span>
-                        <button class="tag-remove" (click)="removeVisualizationWidget(index)" [disabled]="deviceType.freeze"></button>
+                        <button class="tag-remove" (click)="removeVisualizationWidget(index)" [disabled]="deviceType.freezed"></button>
                       </span>
                     </ng-container>
                   </div>
@@ -126,7 +127,7 @@
                 <div class="row col-12">Following recommendations have been pre-configured. You can configure more.
 
                   <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
-                  title="Save" (click)="onUpdateAlertConditions()" [disabled]="deviceType.freeze"><i class="fa fa-save fa-sm"></i></button></div>
+                  title="Save" (click)="onUpdateAlertConditions()" [disabled]="deviceType.freezed"><i class="fa fa-save fa-sm"></i></button></div>
                 <div class="row col-12 text-primary my-2">
                   <span >Debugging Steps: </span>
                   <!-- <a  class=" mx-1" href="javascript:void(0)"
@@ -145,7 +146,7 @@
 
                         <td style="width: 10%;">
                             <a href="javascript:void(0)" class="ml-2" (click)="removeRecommendationStep(i)" title="Remove"
-                            [class.disabled]="deviceType.freeze">
+                            [class.disabled]="deviceType.freezed">
                               <i class="fa fa-trash fa-sm"></i> </a>
                         </td>
                       </ng-container>
@@ -175,7 +176,7 @@
                             </select>
                             </td> -->
                             <td>
-                              <a href="javascript:void(0)" class="ml-2" [class.disabled]="deviceType.freeze" (click)="addRecommendationStep()" title="Add">
+                              <a href="javascript:void(0)" class="ml-2" [class.disabled]="deviceType.freezed" (click)="addRecommendationStep()" title="Add">
                                 <i class="fa fa-plus fa-sm"></i> </a>
                               <!-- <button type="button" class="btn btn-warning btn-sm mx-2" title="Add" (click)="addRecommendationStep()" >
                                 <i class="fa fa-plus fa-sm"></i></button> -->
@@ -215,7 +216,7 @@
                       </select>
                       <!-- <a href="javascript:void(0)" class="mx-1" (click)="addReferenceDocument()">
                         <i class="fa fa-plus fa-sm"></i> </a> -->
-                        <button type="button" class="btn btn-warning btn-sm mx-1" title="Add" [disabled]="deviceType.freeze" (click)="addReferenceDocument()" >
+                        <button type="button" class="btn btn-warning btn-sm mx-1" title="Add" [disabled]="deviceType.freezed" (click)="addReferenceDocument()" >
                           <i class="fa fa-plus fa-sm"></i></button>
                     </div>
 
@@ -228,7 +229,7 @@
                   <ng-container *ngFor="let item of alertObj.reference_documents; let index = index">
                     <span class="tag" >
                       <span class="tag-text">{{item}}</span>
-                      <button class="tag-remove" [disabled]="deviceType.freeze" (click)="removeDocument(index)"></button>
+                      <button class="tag-remove" [disabled]="deviceType.freezed" (click)="removeDocument(index)"></button>
                     </span>
                   </ng-container>
                 </div>
@@ -256,7 +257,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content" *ngIf="alertObj">
     <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">Add Alert Condition
+      <h5 class="modal-title" id="exampleModalLabel">{{ !alertObj.id ? 'Add' : 'Edit'}} Alert Condition
         </h5>
       <button type="button" class="close" [disabled]="isCreateAlertConditionLoading" (click)="onCloseAlertConditionModal()" aria-label="Close">
         <span aria-hidden="true">&times;</span>

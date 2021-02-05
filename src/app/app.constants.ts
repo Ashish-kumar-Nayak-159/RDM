@@ -749,10 +749,9 @@ export class CONSTANTS {
   public static EMAIL_REGEX = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
   public static APP_ADMIN_ROLE = 'App Admin';
   public static LOCAL_STORAGE_EXPIRY_INTERVAL = 86400000;
+
   public static DEFAULT_APP_ICON = environment.blobURL + '/' + environment.blobContainerName + '/default_app_icon.png';
   public static DEFAULT_APP_LOGO = environment.blobURL + '/' + environment.blobContainerName + '/default_app_logo.jpg';
   public static DEFAULT_HEADER_LOGO = environment.blobURL + '/' + environment.blobContainerName + '/app-media/logo.png';
   public static DEFAULT_MODEL_IMAGE = environment.blobURL + '/' + environment.blobContainerName + '/device-type-media/device.svg';
-
-
 }

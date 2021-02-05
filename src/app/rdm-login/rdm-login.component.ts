@@ -1,3 +1,4 @@
+import { environment } from 'src/environments/environment';
 import { CONSTANTS } from 'src/app/app.constants';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from 'src/app/services/application/application.service';
@@ -72,6 +73,10 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   onLogin() {
     if (this.loginForm.email && this.loginForm.password) {
       this.isLoginAPILoading = true;
+      const app = environment.app;
+      if (app) {
+        this.loginForm.app = app;
+      }
       this.subscriptions.push(this.commonService.loginUser(this.loginForm).subscribe(
         async (response: any) => {
           this.userData = response;

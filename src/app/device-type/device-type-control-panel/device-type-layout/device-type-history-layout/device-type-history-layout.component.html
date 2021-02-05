@@ -57,11 +57,11 @@
             </angular2-multiselect>
 
             <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Add Widget"
-              (click)="addChart()" [disabled]="deviceType.freeze"><i class="fa fa-plus fa-sm"></i></button>
+              (click)="addChart()" [disabled]="deviceType.freezed"><i class="fa fa-plus fa-sm"></i></button>
             <button type="button" class="btn btn-success btn-sm mx-1 my-1" title="Save"
-              (click)="saveLayout()" [disabled]="deviceType.freeze"><i class="fa fa-save fa-sm"></i></button>
+              (click)="saveLayout()" [disabled]="deviceType.freezed"><i class="fa fa-save fa-sm"></i></button>
 
-            <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()" [disabled]="deviceType.freeze">
+            <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()" [disabled]="deviceType.freezed">
               <img class="filter-clear-icon" src="./assets/img/filter.svg">
             </button>
           </div>

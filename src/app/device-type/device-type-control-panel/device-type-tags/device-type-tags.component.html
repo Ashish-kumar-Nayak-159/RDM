@@ -12,17 +12,17 @@
           <span class="text-secondary">View</span></a>
       </li> -->
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="updateDeviceTypeTags()" [class.disabled]="isUpdateTagsAPILoading || deviceType.freeze">
+        <a class="nav-link" href="javascript:void(0)" (click)="updateDeviceTypeTags()" [class.disabled]="isUpdateTagsAPILoading || deviceType.freezed">
           <i class="fa fa-fw fa-save"></i>
           <span class="text-secondary">Save</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="openModal('confirmMessageModal', 'all', undefined)" [class.disabled]="isUpdateTagsAPILoading || deviceType.freeze">
+        <a class="nav-link" href="javascript:void(0)" (click)="openModal('confirmMessageModal', 'all', undefined)" [class.disabled]="isUpdateTagsAPILoading || deviceType.freezed">
           <i class="fa fa-fw fa-trash"></i>
           <span class="text-secondary">Delete all</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="openModal('confirmMessageModal', 'reset', undefined)" [class.disabled]="isUpdateTagsAPILoading || deviceType.freeze">
+        <a class="nav-link" href="javascript:void(0)" (click)="openModal('confirmMessageModal', 'reset', undefined)" [class.disabled]="isUpdateTagsAPILoading || deviceType.freezed">
           <i class="fa fa-fw fa-undo"></i>
           <span class="text-secondary delete-row">Revert Changes</span></a>
       </li>
@@ -32,7 +32,7 @@
           </a>
         </li>
     </ul>
-    <div class="pull-right mt-2"  *ngIf="deviceType.freeze">
+    <div class="pull-right mt-2"  *ngIf="deviceType.freezed">
       <h6>This model is freezed.</h6>
     </div>
   </div>
@@ -52,7 +52,7 @@
       <!-- Page Heading -->
       <h1 class="h6 mb-3 text-secondary-400">
         Following tags will be added when asset is instantiated with this model.
-        <button type="button" class="btn btn-warning btn-sm mx-2 my-1"  [disabled]="deviceType.freeze"
+        <button type="button" class="btn btn-warning btn-sm mx-2 my-1"  [disabled]="deviceType.freezed"
         title="Add Tag" (click)="addTagObject()" >
           <i class="fa fa-plus fa-sm"></i></button>
       </h1>
@@ -74,7 +74,7 @@
               <td>{{tag.key}}</td>
               <td>{{tag.defaultValue}}</td>
               <td ><a href="javascript:void(0)" class="mx-1" title="Delete" (click)="openModal('confirmMessageModal', 'single', i)"
-                [class.disabled]="deviceType.freeze">
+                [class.disabled]="deviceType.freezed">
                 <i class="fa fa-trash fa-sm"></i> </a></td>
             </tr>
           </ng-container>

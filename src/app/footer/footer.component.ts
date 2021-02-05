@@ -1,3 +1,4 @@
+import { environment } from 'src/environments/environment';
 import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
@@ -9,6 +10,7 @@ export class FooterComponent implements OnInit {
 
   @Input() isLoginRoute = false;
   currentYear = new Date().getFullYear();
+  version = environment.version;
   constructor() { }
 
   ngOnInit(): void {

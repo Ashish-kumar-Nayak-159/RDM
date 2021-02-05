@@ -1,6 +1,6 @@
 import { CommonService } from 'src/app/services/common.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { AppUrls } from 'src/app/app-url.constants';
 import { CONSTANTS } from 'src/app/app.constants';
 import { environment } from 'src/environments/environment';
@@ -14,6 +14,7 @@ import { catchError, map } from 'rxjs/operators';
 export class DeviceTypeService {
 
   url = environment.appServerURL;
+  deviceModelRefreshData: EventEmitter<any> = new EventEmitter<any>();
   constructor(
     private http: HttpClient,
     private commonService: CommonService
@@ -69,6 +70,10 @@ export class DeviceTypeService {
       })
       );
     }
+  }
+
+  getThingsModelDetails(app, name) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_DETAILS, app, name));
   }
 
   createThingsModel(modelObj, app) {
@@ -220,7 +225,18 @@ export class DeviceTypeService {
       })
       );
     }
+  }
 
+  freezeDeviceModel(app, deviceType) {
+    localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
+    localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
+    return this.http.get(this.url + String.Format(AppUrls.FREEZE_THINGS_MODEL, app, deviceType));
+  }
+
+  unfreezeDeviceModel(app, deviceType, obj) {
+    localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
+    localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
+    return this.http.post(this.url + String.Format(AppUrls.UNFREEZE_THINGS_MODEL, app, deviceType), obj);
   }
 
 

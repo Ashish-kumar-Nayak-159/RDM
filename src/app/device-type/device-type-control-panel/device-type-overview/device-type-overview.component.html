@@ -15,18 +15,20 @@
         (click)="syncWithCache()"
         >Sync with cache <i class="fa fa-refresh fa-sm text-white"></i></a> -->
       <div class="row col-md-12 mt-3">
-        <h6 *ngIf="deviceType.freeze">
+          <h6 *ngIf="deviceType.freezed && contextApp.user.role === appAdminRole">
           This model is freezed. <br/>
           You can't add, modify, delete any attribute of this model.<br/>
           Please Unfreeze, if you want to add, modify, delete any.
-          <a href="javascript:void(0)" (click)="freezeUnfreezeModel('unfreeze')"
+          <a href="javascript:void(0)" (click)="openUnfreezeModal()" [class.disabled]="isModelFreezeUnfreezeAPILoading"
           class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2">Unfreeze It <i class="fa fa-unlock"></i></a>
-           </h6>
-        <h6 *ngIf="!deviceType.freeze">
+          <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></i>
+          </h6>
+          <h6 *ngIf="!deviceType.freezed && contextApp.user.role === appAdminRole">
           This model is not freezed.<br/>
           Once you complete modifications(add, edit, delete), Please freeze it for better performance.
-          <a href="javascript:void(0)" (click)="freezeUnfreezeModel('freeze')"
+          <a href="javascript:void(0)" (click)="freezeModel()" [class.disabled]="isModelFreezeUnfreezeAPILoading"
           class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2">Freeze It <i class="fa fa-lock"></i></a>
+          <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></i>
           </h6>
       </div>
     </div>
@@ -39,4 +41,44 @@
   <img class="img-fluid px-3 px-sm-2 mb-4"
   src="{{(deviceType?.metadata?.image?.url + blobSASToken)}}" alt="" style="width:15rem;">
 </div>
+</div>
+
+
+<div class="modal fade" id="passwordCheckModal" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Unfreeze Model</h5>
+        <button type="button" class="close"  aria-label="Close" (click)="onCloseModal('passwordCheckModal')" [disabled]="isModelFreezeUnfreezeAPILoading">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h6>Please Enter your password to unfreeze the modal.</h6>
+        <form>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label required">Email:</label>
+            <input type="text" class="form-control form-control" id="email" name="email" [(ngModel)]="userData.email"
+              placeholder="Enter Email" disabled>
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label required">Password:</label>
+            <input  type="{{this.isPasswordVisible ? 'text' : 'password'}}" class="form-control" id="display_name" name="display_name" [(ngModel)]="password"
+              placeholder="Enter Your Password">
+              <i class="fa fa-fw  field-icon toggle-password" (click)="togglePasswordVisibility()"
+                      [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}" ></i>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="unfreezeModel()" [disabled]="isModelFreezeUnfreezeAPILoading">
+          Unfreeze</button>
+        <button type="button" class="btn btn-secondary" (click)="onCloseModal('passwordCheckModal')" [disabled]="isModelFreezeUnfreezeAPILoading">
+          Cancel
+        </button>
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></i>
+      </div>
+    </div>
+
+  </div>
 </div>

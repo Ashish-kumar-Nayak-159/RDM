@@ -7,7 +7,7 @@
     <ul class="nav pull-left col-md-6">
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)"  (click)="openAddPropertiesModal()"
-        [class.disabled]="deviceType.freeze">
+        [class.disabled]="deviceType.freezed">
           <i class="fa fa-fw fa-plus"></i>
           <span class="text-secondary">Add {{(type.includes('measured') ? 'Measured ' : (
             type.includes('writable') ? 'Writable ' : (
@@ -19,7 +19,7 @@
           Property</span></a>
       </li>
     </ul>
-    <div class="pull-right mt-2"  *ngIf="deviceType.freeze">
+    <div class="pull-right mt-2"  *ngIf="deviceType.freezed">
       <h6>This model is freezed.</h6>
     </div>
     <!-- Divider
@@ -43,7 +43,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content" *ngIf="propertyObj">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add New
+        <h5 class="modal-title" id="exampleModalLabel">{{propertyObj.edit ? 'Edit' : 'Add'}}
           {{(type.includes('measured') ? 'Measured ' : (
             type.includes('writable') ? 'Writable ' : (
               type.includes('readable') ? 'Readable ' : (

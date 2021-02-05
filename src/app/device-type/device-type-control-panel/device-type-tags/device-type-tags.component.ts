@@ -172,10 +172,12 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
       name: this.deviceType.name,
       app: this.contextApp.app
     };
-    this.subscriptions.push(this.deviceTypeService.getThingsModelsList(obj).subscribe(
+    this.subscriptions.push(this.deviceTypeService.getThingsModelDetails(obj.app, obj.name).subscribe(
       (response: any) => {
-        if (response && response.data && response.data.length > 0) {
-          this.deviceType = response.data[0];
+        if (response) {
+          this.deviceType = response;
+          this.deviceType.name = obj.name;
+          this.deviceType.app = obj.app;
           if (!this.deviceType.tags.reserved_tags) {
             this.deviceType.tags.reserved_tags = [];
           }

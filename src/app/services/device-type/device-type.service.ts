@@ -111,7 +111,6 @@ export class DeviceTypeService {
         }
         if (Object.keys(obj).length === 0) {
           obj = {
-            id: data.id,
             name: data.name,
             properties: data.properties
           };
@@ -128,10 +127,13 @@ export class DeviceTypeService {
   }
 
   getThingsModelLayout(filterObj) {
+    console.log('in funnnnnnn');
     let deviceModel = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_MODEL_DATA);
+    console.log(deviceModel);
     if (deviceModel?.id !== filterObj.id || deviceModel?.name !== filterObj.name) {
       deviceModel = undefined;
     }
+    console.log(deviceModel);
     if (deviceModel && deviceModel.historical_widgets && (filterObj['id'] || filterObj['name'])) {
       let flag = false;
       if (filterObj['id']) {
@@ -155,7 +157,6 @@ export class DeviceTypeService {
         }
         if (Object.keys(obj).length === 0) {
           obj = {
-            id: data.id,
             name: data.name,
             historical_widgets: data.historical_widgets
           };
@@ -172,7 +173,54 @@ export class DeviceTypeService {
   }
 
   getThingsModelLiveWidgets(filterObj) {
-    return this.http.get(this.url + String.Format(AppUrls.GET_LIVE_WIDGETS_FOR_MODEL, filterObj.app, filterObj.name));
+    console.log('in fun');
+    let deviceModel = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_MODEL_DATA);
+    console.log(deviceModel);
+    if (deviceModel?.id !== filterObj.id || deviceModel?.name !== filterObj.name) {
+      deviceModel = undefined;
+    }
+    console.log(deviceModel);
+    if (deviceModel && deviceModel.live_widgets && (filterObj['id'] || filterObj['name'])) {
+      console.log('in if');
+      let flag = false;
+      if (filterObj['id']) {
+        flag = deviceModel.id === filterObj.id;
+      } else if (filterObj['name']) {
+        flag = deviceModel.name === filterObj.name;
+      }
+      if (flag) {
+        return new Observable((observer) => {
+          observer.next(
+            deviceModel
+          );
+        });
+      }
+    } else {
+      return this.http.get(this.url + String.Format(AppUrls.GET_LIVE_WIDGETS_FOR_MODEL, filterObj.app, filterObj.name))
+      .pipe( map((data: any) => {
+        let obj = {};
+        if (deviceModel) {
+          obj = {...deviceModel};
+        }
+        if (Object.keys(obj).length === 0) {
+          console.log('keys === 0');
+          obj = {
+            name: data.name,
+            live_widgets: data.live_widgets
+          };
+        } else {
+          console.log('keys > 0');
+          obj['live_widgets'] = data.live_widgets;
+        }
+        console.log(obj);
+        this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_MODEL_DATA, obj);
+        return data;
+      }), catchError( error => {
+        return throwError( error);
+      })
+      );
+    }
+
   }
 
 

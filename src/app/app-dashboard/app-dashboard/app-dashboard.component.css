@@ -2,3 +2,18 @@
   margin-top: 2.5rem;
   max-height: calc(100vh - 12rem)!important;
 }
+
+.red-box {
+  width: 3rem;
+  height: 1rem;
+  padding: 0.5rem;
+  background-color: red;
+}
+
+
+.green-box {
+  width: 3rem;
+  height: 1rem;
+  padding: 0.5rem;
+  background-color: green;
+}

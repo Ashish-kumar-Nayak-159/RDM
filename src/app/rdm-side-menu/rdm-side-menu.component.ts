@@ -144,7 +144,6 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   processSideMenuData(data, list) {
     // alert('here');
     console.log('data-117    ', data);
-    console.log(this.contextApp);
     const arr = JSON.parse(JSON.stringify(data));
     console.log(list);
     arr.forEach(element1 => {
@@ -153,7 +152,6 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
         element1.visible = false;
         } else {
           element1.visible = true;
-          console.log('17999999999999');
         }
       }
     });

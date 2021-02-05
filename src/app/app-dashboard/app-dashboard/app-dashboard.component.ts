@@ -147,7 +147,7 @@ export class AppDashboardComponent implements OnInit {
     this.c2dResponseMessage = [];
     this.signalRModeValue = event;
     this.isC2dAPILoading = true;
-    await this.getDeviceData();
+
     // this.c2dLoadingMessage = 'Sending C2D Command';
     clearInterval(this.c2dResponseInterval);
     const obj = {
@@ -184,7 +184,7 @@ export class AppDashboardComponent implements OnInit {
         // });
         this.chartService.clearDashboardTelemetryList.emit([]);
         const arr = [];
-        this.telemetryData = [];
+        this.telemetryData = JSON.parse(JSON.stringify([]));
         this.telemetryData = JSON.parse(JSON.stringify(arr));
         this.toasterService.showSuccess(response.device_response.message, 'Change Telemetry Mode');
       }
@@ -323,7 +323,7 @@ export class AppDashboardComponent implements OnInit {
   onTabChange(type) {
     this.signalRService.disconnectFromSignalR('telemetry');
     this.signalRService.disconnectFromSignalR('alert');
-    this.telemetryData = [];
+    this.telemetryData = JSON.parse(JSON.stringify([]));
     this.telemetryObj = undefined;
     this.telemetryInterval = undefined;
     this.selectedTab = type;
@@ -389,6 +389,7 @@ export class AppDashboardComponent implements OnInit {
     this.originalFilter = JSON.parse(JSON.stringify(filterObj));
     this.isTelemetryDataLoading = true;
     await this.getDeviceSignalRMode(this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : this.filterObj.device.device_id);
+    await this.getDeviceData();
     if (device_type) {
       await this.getThingsModelProperties(device_type);
       await this.getLiveWidgets(device_type);
@@ -396,7 +397,7 @@ export class AppDashboardComponent implements OnInit {
     this.telemetryObj = undefined;
     this.telemetryInterval = undefined;
     this.lastReportedTelemetryValues = undefined;
-    this.telemetryData = [];
+    this.telemetryData = JSON.parse(JSON.stringify([]));
     let message_props = '';
     obj.count = 1;
     const midnight =  ((((moment().hour(0)).minute(0)).second(0)).utc()).unix();
@@ -574,7 +575,7 @@ export class AppDashboardComponent implements OnInit {
           clearInterval(this.c2dResponseInterval);
         } else {
           const arr = [];
-          this.telemetryData = [];
+          this.telemetryData = JSON.parse(JSON.stringify([]));
           this.chartService.clearDashboardTelemetryList.emit([]);
           this.telemetryData = JSON.parse(JSON.stringify(arr));
         }

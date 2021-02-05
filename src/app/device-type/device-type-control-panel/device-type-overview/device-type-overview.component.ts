@@ -1,4 +1,3 @@
-import { CONSTANTS } from './../../../app.constants';
 import { ToasterService } from './../../../services/toaster.service';
 import { CONSTANTS } from 'src/app/app.constants';
 import { environment } from './../../../../environments/environment';

@@ -1,13 +1,16 @@
 <div class="topnavbar bg-white py-2" >
   <div class="row">
 
-    <ul class="nav">
+    <ul class="nav pull-left col-md-6">
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)"  (click)="openAddDocumentModal()" [class.disabled]="deviceType.freeze">
           <i class="fa fa-fw fa-plus"></i>
           <span class="text-secondary">Add</span></a>
       </li>
     </ul>
+    <div class="pull-right mt-2"  *ngIf="deviceType.freeze">
+      <h6>This model is freezed.</h6>
+    </div>
     <!-- Divider
       <hr class="sidebar-divider d-none d-md-block mt-n1">-->
   </div>

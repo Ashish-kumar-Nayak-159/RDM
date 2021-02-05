@@ -31,10 +31,10 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
   ngOnInit(): void {
     setTimeout(() => this.plotChart(), 200);
     this.chartService.clearDashboardTelemetryList.subscribe(arr => {
-      this.telemetryData = [];
+      this.telemetryData = JSON.parse(JSON.stringify([]));
       if (this.chart) {
-        this.chart.data = [];
-        this.chart.validateData();
+        this.chart.data = JSON.parse(JSON.stringify([]));
+        this.chart.invalidateData();
       }
     });
   }
@@ -86,7 +86,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
     this.zone.runOutsideAngular(() => {
       // console.log(document.getElementById(this.chartId));
       const chart = am4core.create(this.chartId, am4charts.XYChart);
-      chart.align = 'center';
+      // chart.align = 'center';
       const data = [];
       const valueArr = [];
       this.telemetryData.forEach((obj, i) => {

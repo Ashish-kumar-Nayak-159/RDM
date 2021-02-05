@@ -1,3 +1,4 @@
+import { ChartService } from 'src/app/chart/chart.service';
 import { Component, Input, OnChanges, OnInit, EventEmitter, Output } from '@angular/core';
 import { environment } from 'src/environments/environment';
 declare var $: any;
@@ -17,13 +18,19 @@ export class OnlyNumberWidgetComponent implements OnInit, OnChanges {
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean; };
   bodyMessage: string;
   headerMessage: string;
-     constructor() { }
+     constructor(
+       private chartService: ChartService
+     ) { }
 
   ngOnInit(): void {
     if (this.telemetryObj) {
-      
       this.telemetryData.push(this.telemetryObj);
     }
+    this.chartService.clearDashboardTelemetryList.subscribe(arr => {
+      this.telemetryData = JSON.parse(JSON.stringify([]));
+    });
+
+
   }
 
   ngOnChanges(changes) {

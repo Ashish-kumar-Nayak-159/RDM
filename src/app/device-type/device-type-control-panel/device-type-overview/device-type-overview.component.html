@@ -15,13 +15,18 @@
         (click)="syncWithCache()"
         >Sync with cache <i class="fa fa-refresh fa-sm text-white"></i></a> -->
       <div class="row col-md-12 mt-3">
-        <h6 *ngIf="deviceType.freeze"> This model is freezed.
+        <h6 *ngIf="deviceType.freeze">
+          This model is freezed. <br/>
+          You can't add, modify, delete any attribute of this model.<br/>
+          Please Unfreeze, if you want to add, modify, delete any.
           <a href="javascript:void(0)" (click)="freezeUnfreezeModel('unfreeze')"
-          class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2">Unfreeze <i class="fa fa-unlock"></i></a>
+          class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2">Unfreeze It <i class="fa fa-unlock"></i></a>
            </h6>
-        <h6 *ngIf="!deviceType.freeze"> This model is unfreezed.
+        <h6 *ngIf="!deviceType.freeze">
+          This model is not freezed.<br/>
+          Once you complete modifications(add, edit, delete), Please freeze it for better performance.
           <a href="javascript:void(0)" (click)="freezeUnfreezeModel('freeze')"
-          class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2">Freeze <i class="fa fa-lock"></i></a>
+          class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2">Freeze It <i class="fa fa-lock"></i></a>
           </h6>
       </div>
     </div>
@@ -30,7 +35,7 @@
 <div class="con-pad ">
 
 
-<div class="text-center mt-5">
+<div class="text-center" style="margin-top: 5.5rem;">
   <img class="img-fluid px-3 px-sm-2 mb-4"
   src="{{(deviceType?.metadata?.image?.url + blobSASToken)}}" alt="" style="width:15rem;">
 </div>

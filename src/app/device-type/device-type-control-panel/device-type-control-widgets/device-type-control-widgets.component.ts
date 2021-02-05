@@ -155,7 +155,7 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
 
   createControlWidget() {
     if (!this.controlWidget.name || !this.controlWidget.metadata || !this.controlWidget.metadata?.communication_technique) {
-      this.toasterService.showError('Please fil the form properly', 'Create Control Widget');
+      this.toasterService.showError('Please fill the form properly', 'Create Control Widget');
       return;
     }
     if (this.controlWidget.properties.length === 0) {

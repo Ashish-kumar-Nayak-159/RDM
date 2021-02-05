@@ -4,6 +4,7 @@ import { DeviceTypeService } from './../../../services/device-type/device-type.s
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
+
 declare var $: any;
 @Component({
   selector: 'app-device-type-alert-conditions',
@@ -209,7 +210,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
     console.log(this.alertObj);
   }
 
-  openAddAlertConditionModal(alertObj) {
+  openAddAlertConditionModal(alertObj = undefined) {
     if (alertObj) {
       this.alertObj = alertObj;
     } else {

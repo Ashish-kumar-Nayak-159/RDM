@@ -103,6 +103,8 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       this.createValueAxis(chart, 0);
       this.createValueAxis(chart, 1);
       chart.legend = new am4charts.Legend();
+      chart.legend.maxHeight = 100;
+      chart.legend.scrollable = true;
       chart.logo.disabled = true;
       chart.cursor = new am4charts.XYCursor();
 

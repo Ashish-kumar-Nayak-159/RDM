@@ -103,9 +103,11 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       this.createValueAxis(chart, 0);
       this.createValueAxis(chart, 1);
       chart.legend = new am4charts.Legend();
-      chart.legend.maxHeight = 100;
-      chart.legend.scrollable = true;
       chart.logo.disabled = true;
+      chart.legend.maxHeight = 80;
+      chart.legend.scrollable = true;
+      chart.legend.labels.template.maxWidth = 30;
+      chart.legend.labels.template.truncate = true;
       chart.cursor = new am4charts.XYCursor();
 
       if (this.selectedAlert) {
@@ -244,9 +246,18 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       // this.getPropertyName(prop) === 'Total Mass Suction' ? true : false);
       // series.tensionX = 0.77;
       series.strokeOpacity = 1;
+      if (series.units) {
       series.legendSettings.labelText = '{name} ({units})';
+      } else {
+        series.legendSettings.labelText = '{name}';
+      }
+
       series.fillOpacity = this.chartType.includes('Area') ? 0.3 : 0;
+      if (series.units) {
       series.tooltipText = 'Date: {dateX} \n {name} ({units}): [bold]{valueY}[/]';
+      } else {
+        series.tooltipText = 'Date: {dateX} \n {name}: [bold]{valueY}[/]';
+      }
 
       const bullet = series.bullets.push(new am4charts.CircleBullet());
       // bullet.stroke = 'darkgreen';

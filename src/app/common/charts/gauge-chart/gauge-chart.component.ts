@@ -51,8 +51,9 @@ export class GaugeChartComponent implements OnInit, OnChanges {
     chart.innerRadius = am4core.percent(70);
     chart.logo.disabled = true;
     const axis = chart.xAxes.push(new am4charts.ValueAxis<am4charts.AxisRendererCircular>());
-    axis.min = 0;
-    axis.max = 100;
+    axis.min = prop?.minRangeValue || 0;
+    axis.max = prop?.maxRangeValue || 100;
+    axis.strictMinMax = true;
     axis.renderer.radius = am4core.percent(70);
     axis.renderer.fontSize = '0.6em';
     axis.renderer.grid.template.stroke = new am4core.InterfaceColorSet().getFor('background');
@@ -61,22 +62,22 @@ export class GaugeChartComponent implements OnInit, OnChanges {
     const colorSet = new am4core.ColorSet();
 
     const range0 = axis.axisRanges.create();
-    range0.value = prop.low_min || 0;
-    range0.endValue = prop.low_max || prop.normal_min || 50;
+    range0.value = prop.low_min || prop?.minRangeValue || 0;
+    range0.endValue = prop.low_max || prop.normal_min || prop?.maxRangeValue || 50;
     range0.axisFill.fillOpacity = 1;
     range0.axisFill.fill = am4core.color(prop.low_color || '#6dc068');
     range0.axisFill.zIndex = - 1;
 
     const range1 = axis.axisRanges.create();
-    range1.value = prop.normal_min || prop.low_max || 50;
-    range1.endValue = prop.normal_max || prop.high_min || 80;
+    range1.value = prop.normal_min || prop.low_max ||  prop?.minRangeValue ||  50;
+    range1.endValue = prop.normal_max || prop.high_min || prop?.maxRangeValue || 80;
     range1.axisFill.fillOpacity = 1;
     range1.axisFill.fill = am4core.color(prop.normal_color || '#fecc4d');
     range1.axisFill.zIndex = -1;
 
     const range2 = axis.axisRanges.create();
-    range2.value = prop.high_min || prop.normal_max || 50;
-    range2.endValue = prop.high_max || 100;
+    range2.value = prop.high_min || prop.normal_max || prop?.minRangeValue ||  50;
+    range2.endValue = prop.high_max || prop?.maxRangeValue || 100;
     range2.axisFill.fillOpacity = 1;
     range2.axisFill.fill = am4core.color(prop.high_color || '#fe5959');
     range2.axisFill.zIndex = -1;

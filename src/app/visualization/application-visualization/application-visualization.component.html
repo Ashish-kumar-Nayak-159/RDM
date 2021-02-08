@@ -226,6 +226,7 @@
                             id="widgets"
                             [(ngModel)]="selectedWidgets"
                             name="widgets"
+                            (onDeSelectAll)="onDeSelectAll($event)"
                             [settings]="{
                               text: 'Select Widgets',
                               selectAllText: 'Select All',
@@ -355,7 +356,19 @@
                     <div class="table-responsive" *ngIf="alertCondition?.recommendations?.length === 0">
                       No Recommendations added yet.
                     </div>
-                    <h6>Reference Documents:</h6>
+                    </div>
+                </div>
+              </div>
+            </accordion-group>
+            <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="isOpen" *ngIf="alertCondition">
+              <ng-container accordion-heading>
+                <a class="btn" >
+                  Reference Documents
+                </a>
+              </ng-container>
+              <div class="">
+                <div class="">
+                  <div class="">
                     <div class="tagsinput" style="width: auto; height: auto;min-height: auto;" *ngIf="alertCondition?.reference_documents?.length > 0">
                       <ng-container *ngFor="let item of alertCondition.reference_documents; let index = index">
                         <span class="tag" >
@@ -363,7 +376,7 @@
                         </span>
                       </ng-container>
                     </div>
-                    <div class="tagsinput" style="width: auto; height: auto;min-height: auto;" *ngIf="alertCondition?.reference_documents?.length === 0">
+                    <div  class="table-responsive"  *ngIf="alertCondition?.reference_documents?.length === 0">
                     No Reference documents added yet.</div>
                   </div>
                 </div>

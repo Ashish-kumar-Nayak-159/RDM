@@ -438,11 +438,18 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         (response: any) => {
           if (response?.data) {
             this.alertCondition = response.data[0];
+            if (!this.alertCondition.visualization_widgets) {
+              this.alertCondition.visualization_widgets = [];
+            }
             resolve();
           }
         }, () => reject()
       ));
     });
+  }
+
+  onDeSelectAll(event) {
+    this.selectedWidgets = [];
   }
 
   getDocuments() {
@@ -460,7 +467,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             if (this.alertCondition) {
             this.alertCondition.reference_documents.forEach(refDoc => {
               this.documents.forEach(doc => {
-                if (doc.id === refDoc.toString()) {
+                if (doc.id.toString() === refDoc.toString()) {
                   arr.push(doc.name);
                 }
               });

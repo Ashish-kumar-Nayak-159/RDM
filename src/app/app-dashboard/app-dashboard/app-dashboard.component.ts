@@ -404,9 +404,9 @@ export class AppDashboardComponent implements OnInit {
     const now = (moment().utc()).unix();
     obj.from_date = midnight;
     obj.to_date = now;
-    obj.app = this.contextApp.app;
-    this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : ''));
-    obj.message_props = message_props;
+    // obj.app = this.contextApp.app;
+    // this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : ''));
+    // obj.message_props = message_props;
     this.isFilterSelected = true;
     // await this.getMidNightHours(obj);
     const obj1 = {
@@ -425,12 +425,12 @@ export class AppDashboardComponent implements OnInit {
         }
       }
     );
-    this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
+    this.apiSubscriptions.push(this.deviceService.getLastTelmetry(this.contextApp.app, obj).subscribe(
       (response: any) => {
-        if (response?.data?.length > 0) {
-          response.data[0].date = this.commonService.convertUTCDateToLocal(response.data[0].message_date);
-          response.data[0].message_date = this.commonService.convertUTCDateToLocal(response.data[0].message_date);
-          this.telemetryObj = response.data[0];
+        if (response?.message) {
+          response.message.date = this.commonService.convertUTCDateToLocal(response.message_date);
+          response.message.message_date = this.commonService.convertUTCDateToLocal(response.message_date);
+          this.telemetryObj = response.message;
           // const hours = this.telemetryObj['Running Hours'].split(':');
           // this.telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
           // this.telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
@@ -447,7 +447,8 @@ export class AppDashboardComponent implements OnInit {
           // });
           console.log(JSON.stringify(this.telemetryObj));
           this.lastReportedTelemetryValues = JSON.parse(JSON.stringify(this.telemetryObj));
-          this.telemetryData = response.data;
+          this.telemetryData = [];
+          this.telemetryData.push(response.message);
           this.isTelemetryDataLoading = false;
         } else {
           this.isTelemetryDataLoading = false;

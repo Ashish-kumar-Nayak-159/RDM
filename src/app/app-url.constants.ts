@@ -93,4 +93,6 @@ export class AppUrls {
   public static SYNC_MODEL_CACHE = 'apps/{0}/cache/sync_device_type';
   public static SYNC_DEVICE_CACHE = 'apps/{0}/cache/sync_devices';
   public static CALL_DEVICE_METHOD = 'apps/{0}/c2d/call_direct_method';
+  public static GET_DEVICE_FIRST_TELEMETRY = 'apps/{0}/d2c/first_telemetry';
+  public static GET_DEVICE_LAST_TELEMETRY = 'apps/{0}/d2c/last_telemetry';
 }

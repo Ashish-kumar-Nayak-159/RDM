@@ -415,4 +415,24 @@ export class DeviceService {
     return this.http.get(this.url + String.Format(AppUrls.SYNC_DEVICE_CACHE, app), { params });
   }
 
+  getLastTelmetry(app, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_LAST_TELEMETRY, app), { params });
+  }
+
+  getFirstTelmetry(app, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_FIRST_TELEMETRY, app), { params });
+  }
+
 }

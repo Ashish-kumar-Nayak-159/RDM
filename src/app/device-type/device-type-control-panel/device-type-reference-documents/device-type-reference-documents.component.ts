@@ -1,12 +1,12 @@
 import { Subscription } from 'rxjs';
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
-import { environment } from './../../../../environments/environment.prod';
 import { CONSTANTS } from 'src/app/app.constants';
 import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { FileSaverService } from 'ngx-filesaver';
 import { DomSanitizer } from '@angular/platform-browser';
+import { environment } from 'src/environments/environment';
 
 declare var $: any;
 @Component({

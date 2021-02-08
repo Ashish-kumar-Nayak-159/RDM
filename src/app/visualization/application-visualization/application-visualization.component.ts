@@ -432,7 +432,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         legacy: !(this.selectedAlert.device_id === this.selectedAlert.gateway_id),
         message: this.selectedAlert.message
       };
-      console.log(filterObj)
+      console.log(filterObj);
       this.alertCondition = undefined;
       this.subscriptions.push(this.deviceTypeService.getAlertConditions(this.contextApp.app, filterObj).subscribe(
         (response: any) => {

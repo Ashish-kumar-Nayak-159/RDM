@@ -58,7 +58,7 @@ export class GaugeChartComponent implements OnInit, OnChanges {
     axis.renderer.fontSize = '0.6em';
     axis.renderer.grid.template.stroke = new am4core.InterfaceColorSet().getFor('background');
     axis.renderer.grid.template.strokeOpacity = 0.3;
-    axis.renderer.minGridDistance = 2500;
+    axis.renderer.minGridDistance = 500;
     const colorSet = new am4core.ColorSet();
 
     const range0 = axis.axisRanges.create();

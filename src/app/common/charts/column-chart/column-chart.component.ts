@@ -224,10 +224,18 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
       });
       series.name = this.getPropertyName(prop);
       series.propKey = prop;
-      series.columns.template.tooltipText = 'Date: {dateX} \n {name}: [bold]{valueY}[/]';
       series.columns.template.fillOpacity = .8;
       series.compareText = true;
-      series.legendSettings.labelText = '{name} ({units})';
+      if (series.units) {
+        series.legendSettings.labelText = '{name} ({units})';
+        } else {
+          series.legendSettings.labelText = '{name}';
+        }
+      if (series.units) {
+        series.columns.template.tooltipText = 'Date: {dateX} \n {name} ({units}): [bold]{valueY}[/]';
+      } else {
+        series.columns.template.tooltipText = 'Date: {dateX} \n {name}: [bold]{valueY}[/]';
+      }
       const columnTemplate = series.columns.template;
       columnTemplate.strokeWidth = 2;
       columnTemplate.strokeOpacity = 1;

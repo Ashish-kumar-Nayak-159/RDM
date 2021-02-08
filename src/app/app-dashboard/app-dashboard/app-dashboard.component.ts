@@ -124,6 +124,7 @@ export class AppDashboardComponent implements OnInit {
       this.originalFilter = JSON.parse(JSON.stringify(item));
       this.filterObj = JSON.parse(JSON.stringify(item));
       if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
+      console.log('hereeeeeee');
       this.contextApp.hierarchy.levels.forEach((level, index) => {
         if (index !== 0) {
         // console.log( this.filterObj.hierarchy);
@@ -136,6 +137,8 @@ export class AppDashboardComponent implements OnInit {
         }
       });
       }
+
+      console.log(this.filterObj);
       this.onFilterSelection(this.filterObj);
     }
   }
@@ -278,8 +281,6 @@ export class AppDashboardComponent implements OnInit {
       }
       if (this.devices?.length === 1) {
         this.filterObj.device = this.devices[0];
-      } else {
-        this.filterObj.device = undefined;
       }
       // await this.getDevices(hierarchyObj);
     }
@@ -368,6 +369,7 @@ export class AppDashboardComponent implements OnInit {
   }
 
   async onFilterSelection(filterObj) {
+    console.log('3722222222');
     this.c2dResponseMessage = [];
     $('#overlay').hide();
     clearInterval(this.c2dResponseInterval);
@@ -376,7 +378,7 @@ export class AppDashboardComponent implements OnInit {
 
     this.commonService.setItemInLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION, filterObj);
     const obj = JSON.parse(JSON.stringify(filterObj));
-
+    console.log(obj);
     let device_type: any;
     if (obj.device) {
       obj.device_id = obj.device.device_id;
@@ -404,9 +406,9 @@ export class AppDashboardComponent implements OnInit {
     const now = (moment().utc()).unix();
     obj.from_date = midnight;
     obj.to_date = now;
-    obj.app = this.contextApp.app;
-    this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : ''));
-    obj.message_props = message_props;
+    // obj.app = this.contextApp.app;
+    // this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : ''));
+    // obj.message_props = message_props;
     this.isFilterSelected = true;
     // await this.getMidNightHours(obj);
     const obj1 = {
@@ -425,12 +427,12 @@ export class AppDashboardComponent implements OnInit {
         }
       }
     );
-    this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
+    this.apiSubscriptions.push(this.deviceService.getLastTelmetry(this.contextApp.app, obj).subscribe(
       (response: any) => {
-        if (response?.data?.length > 0) {
-          response.data[0].date = this.commonService.convertUTCDateToLocal(response.data[0].message_date);
-          response.data[0].message_date = this.commonService.convertUTCDateToLocal(response.data[0].message_date);
-          this.telemetryObj = response.data[0];
+        if (response?.message) {
+          response.message.date = this.commonService.convertUTCDateToLocal(response.message_date);
+          response.message.message_date = this.commonService.convertUTCDateToLocal(response.message_date);
+          this.telemetryObj = response.message;
           // const hours = this.telemetryObj['Running Hours'].split(':');
           // this.telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
           // this.telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
@@ -447,7 +449,8 @@ export class AppDashboardComponent implements OnInit {
           // });
           console.log(JSON.stringify(this.telemetryObj));
           this.lastReportedTelemetryValues = JSON.parse(JSON.stringify(this.telemetryObj));
-          this.telemetryData = response.data;
+          this.telemetryData = [];
+          this.telemetryData.push(response.message);
           this.isTelemetryDataLoading = false;
         } else {
           this.isTelemetryDataLoading = false;

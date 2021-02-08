@@ -74,21 +74,21 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
           name: 'JSON Key',
           key: 'json_key',
           type: 'text',
-          headerClass: '',
+          headerClass: 'w-15',
           valueclass: ''
         },
         {
           name: 'Data Type',
           key: 'data_type',
           type: 'text',
-          headerClass: '',
+          headerClass: 'w-15',
           valueclass: ''
         },
         {
           name: 'Actions',
           key: undefined,
           type: 'button',
-          headerClass: '',
+          headerClass: 'w-10',
           btnData: [
             {
               icon: 'fa fa-fw fa-eye',

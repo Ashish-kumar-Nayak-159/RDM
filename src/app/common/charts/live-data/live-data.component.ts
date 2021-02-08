@@ -104,6 +104,10 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       this.createValueAxis(chart, 1);
       chart.legend = new am4charts.Legend();
       chart.logo.disabled = true;
+      chart.legend.maxHeight = 80;
+      chart.legend.scrollable = true;
+      chart.legend.labels.template.maxWidth = 30;
+      chart.legend.labels.template.truncate = true;
       chart.cursor = new am4charts.XYCursor();
 
       if (this.selectedAlert) {
@@ -117,6 +121,8 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         range.axisFill.interactionsEnabled = true;
         range.axisFill.isMeasured = true;
       }
+      // chart.legend.labels.template.maxWidth = 120;
+      // chart.legend.labels.template.truncate = true;
       chart.legend.itemContainers.template.togglable = false;
       dateAxis.dateFormatter = new am4core.DateFormatter();
       dateAxis.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
@@ -216,6 +222,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   createValueAxis(chart, axis) {
 
     const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
+
     if (chart.yAxes.indexOf(valueYAxis) !== 0){
       valueYAxis.syncWithAxis = chart.yAxes.getIndex(0);
     }
@@ -242,9 +249,18 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       // this.getPropertyName(prop) === 'Total Mass Suction' ? true : false);
       // series.tensionX = 0.77;
       series.strokeOpacity = 1;
+      if (series.units) {
       series.legendSettings.labelText = '{name} ({units})';
+      } else {
+        series.legendSettings.labelText = '{name}';
+      }
+
       series.fillOpacity = this.chartType.includes('Area') ? 0.3 : 0;
+      if (series.units) {
       series.tooltipText = 'Date: {dateX} \n {name} ({units}): [bold]{valueY}[/]';
+      } else {
+        series.tooltipText = 'Date: {dateX} \n {name}: [bold]{valueY}[/]';
+      }
 
       const bullet = series.bullets.push(new am4charts.CircleBullet());
       // bullet.stroke = 'darkgreen';

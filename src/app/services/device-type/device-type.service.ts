@@ -33,7 +33,7 @@ export class DeviceTypeService {
         models = models.filter(modelObj => modelObj.name === filterObj['name']);
       }
       if (filterObj['model_type']) {
-        models = models.filter(modelObj => modelObj.metadata.model_type === filterObj['model_type']);
+        models = models.filter(modelObj => modelObj.model_type === filterObj['model_type']);
       }
       console.log(models);
       if (filterObj['created_by']) {

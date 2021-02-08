@@ -99,12 +99,29 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key
     + (this.propertyList[index + 1] ? ',' : ''));
     obj['message_props'] = message_props;
-
-    this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
+    const obj1 = {
+      hierarchy: this.contextApp.user.hierarchy,
+      levels: this.contextApp.hierarchy.levels,
+      device_id: this.device.device_id,
+      type: 'telemetry',
+      app: this.contextApp.app
+    };
+    this.signalRService.connectToSignalR(obj1);
+    this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(
+      data => {
+        if (data.type !== 'alert') {
+          this.telemetryObj = undefined;
+          data.message_date = this.commonService.convertUTCDateToLocal(data.ts);
+          this.telemetryObj = JSON.parse(JSON.stringify(data));
+          this.isTelemetryDataLoading = false;
+        }
+      }
+    );
+    this.apiSubscriptions.push(this.deviceService.getLastTelmetry(this.contextApp.app, obj).subscribe(
       (response: any) => {
-        if (response?.data?.length > 0) {
-          response.data[0].message_date = this.commonService.convertUTCDateToLocal(response.data[0].message_date);
-          this.telemetryObj = response.data[0];
+        if (response.message) {
+          response.message_date = this.commonService.convertUTCDateToLocal(response.message_date);
+          this.telemetryObj = response.message;
           // Object.keys(this.telemetryObj).forEach(key => {
           //   if (key !== 'message_date') {
           //     this.telemetryObj[key] = Number(this.telemetryObj[key]);
@@ -119,24 +136,6 @@ export class LiveDataComponent implements OnInit, OnDestroy {
         } else {
           this.isTelemetryDataLoading = false;
         }
-        const obj1 = {
-          hierarchy: this.contextApp.user.hierarchy,
-          levels: this.contextApp.hierarchy.levels,
-          device_id: this.device.device_id,
-          type: 'telemetry',
-          app: this.contextApp.app
-        };
-        this.signalRService.connectToSignalR(obj1);
-        this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(
-          data => {
-            if (data.type !== 'alert') {
-              this.telemetryObj = undefined;
-              data.message_date = this.commonService.convertUTCDateToLocal(data.ts);
-              this.telemetryObj = JSON.parse(JSON.stringify(data));
-              this.isTelemetryDataLoading = false;
-            }
-          }
-        );
     }, error => this.isTelemetryDataLoading = false));
   }
 

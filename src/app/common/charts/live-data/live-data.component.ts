@@ -121,8 +121,6 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         range.axisFill.interactionsEnabled = true;
         range.axisFill.isMeasured = true;
       }
-      // chart.legend.labels.template.maxWidth = 120;
-      // chart.legend.labels.template.truncate = true;
       chart.legend.itemContainers.template.togglable = false;
       dateAxis.dateFormatter = new am4core.DateFormatter();
       dateAxis.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';

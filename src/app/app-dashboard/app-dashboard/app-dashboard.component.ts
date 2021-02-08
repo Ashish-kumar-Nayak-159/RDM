@@ -124,7 +124,6 @@ export class AppDashboardComponent implements OnInit {
       this.originalFilter = JSON.parse(JSON.stringify(item));
       this.filterObj = JSON.parse(JSON.stringify(item));
       if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
-      console.log('hereeeeeee');
       this.contextApp.hierarchy.levels.forEach((level, index) => {
         if (index !== 0) {
         // console.log( this.filterObj.hierarchy);

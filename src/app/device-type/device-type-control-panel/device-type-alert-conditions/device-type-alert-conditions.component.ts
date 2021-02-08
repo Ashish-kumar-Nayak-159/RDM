@@ -99,13 +99,16 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
           let arr = [];
           this.alertConditions.forEach(alert => {
             arr = [];
+            if (!alert.visualization_widgets) {
+              alert.visualization_widgets = [];
+            }
             alert.reference_documents.forEach(refDoc => {
               console.log('here');
               this.documents.forEach(doc => {
                 console.log(typeof doc.id, ' ===', typeof refDoc);
                 console.log(doc.id, ' ===', refDoc);
                 console.log(doc.id === refDoc.toString());
-                if (doc.id === refDoc.toString()) {
+                if (doc.id.toString() === refDoc.toString()) {
                   arr.push(doc.name);
                   console.log(arr);
                 }

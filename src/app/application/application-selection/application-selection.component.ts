@@ -1,4 +1,3 @@
-import { CONSTANTS } from './../../../../.history/src/app/app.constants_20210205141721';
 import { ToasterService } from './../../services/toaster.service';
 import { Subscription } from 'rxjs';
 import { DeviceTypeService } from './../../services/device-type/device-type.service';

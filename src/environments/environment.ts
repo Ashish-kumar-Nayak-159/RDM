@@ -4,8 +4,6 @@
 
 export const environment = {
   production: false,
-  // sopan app server
-  // appServerURL: 'https://sopanfunctionapp.azurewebsites.net/api/',
   // test RDM app server
   // appServerURL: 'https://kemsysrdmfuntionapp.azurewebsites.net/api/',
   // dev RDM app server

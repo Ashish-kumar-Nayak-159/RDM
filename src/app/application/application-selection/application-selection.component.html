@@ -5,10 +5,10 @@
     <p>Please select which app you want to login...</p>
   </div>
   <div class="row">
-    <div class="col-lg-2 col-md-2 col-sm-2 col-2 mb-4" *ngFor="let app of userData?.apps">
+    <div class="col-lg-2 col-md-2 col-sm-2 col-2 mb-4" *ngFor="let app of userData?.apps; let index = index">
       <div class="card shadow h-100">
         <div class="card-body">
-          <a href="javascript:void(0)" (click)="redirectToApp(app)"
+          <a href="javascript:void(0)" [class.disabled]="isAppDataLoading" (click)="redirectToApp(app, index)"
             ><div class="text-center">
               <img
                 class="img-fluid px-2 mt-2 mb-3 img-szsm"
@@ -17,11 +17,12 @@
                     ? app?.metadata?.icon?.url + blobToken
                     : constantData.DEFAULT_APP_ICON  + blobToken
                 }}"
+
                 alt=""
               />
             </div>
             <div class="text-black-50 text-center small">
-              <h6>{{app.app}}</h6></div
+              <h6>{{app.app}} <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAppDataLoading && isAppDataLoading[index]"></i></h6></div
           ></a>
         </div>
       </div>

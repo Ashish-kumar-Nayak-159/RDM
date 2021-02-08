@@ -1,4 +1,4 @@
-<ng-container *ngIf="widgetObj.widgetType !== 'LineChart' 
+<ng-container *ngIf="widgetObj.widgetType !== 'LineChart'
 && widgetObj.widgetType !== 'AreaChart'; else singleChartTemplate">
 <ng-container *ngFor="let prop of widgetObj.properties; let i = index;" >
 <div class="form-group">

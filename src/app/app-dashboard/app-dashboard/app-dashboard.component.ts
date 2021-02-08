@@ -136,6 +136,8 @@ export class AppDashboardComponent implements OnInit {
         }
       });
       }
+
+      console.log(this.filterObj);
       this.onFilterSelection(this.filterObj);
     }
   }
@@ -278,8 +280,6 @@ export class AppDashboardComponent implements OnInit {
       }
       if (this.devices?.length === 1) {
         this.filterObj.device = this.devices[0];
-      } else {
-        this.filterObj.device = undefined;
       }
       // await this.getDevices(hierarchyObj);
     }
@@ -368,6 +368,7 @@ export class AppDashboardComponent implements OnInit {
   }
 
   async onFilterSelection(filterObj) {
+    console.log('3722222222');
     this.c2dResponseMessage = [];
     $('#overlay').hide();
     clearInterval(this.c2dResponseInterval);
@@ -376,7 +377,7 @@ export class AppDashboardComponent implements OnInit {
 
     this.commonService.setItemInLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION, filterObj);
     const obj = JSON.parse(JSON.stringify(filterObj));
-
+    console.log(obj);
     let device_type: any;
     if (obj.device) {
       obj.device_id = obj.device.device_id;

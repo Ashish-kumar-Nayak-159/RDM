@@ -220,6 +220,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   createValueAxis(chart, axis) {
 
     const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
+
     if (chart.yAxes.indexOf(valueYAxis) !== 0){
       valueYAxis.syncWithAxis = chart.yAxes.getIndex(0);
     }

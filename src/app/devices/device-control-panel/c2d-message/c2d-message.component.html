@@ -8,7 +8,7 @@
         <tr class="bg-secondary text-white">
           <th>Time Stamp</th>
           <th class="border-left" *ngIf="pageType === 'device'">Message Id</th>
-          <th class="border-left" *ngIf="pageType === 'gateway'">Asset Name</th>
+          <!-- <th class="border-left" *ngIf="pageType === 'gateway'">Asset Name</th> -->
           <!-- <th class="border-left">Message ID</th> -->
           <th class="border-left" *ngIf="type !== 'response'">TTL</th>
           <th class="border-left" *ngIf="type !== 'response'">ACK</th>
@@ -24,7 +24,7 @@
         <tr *ngFor="let msg of c2dMsgs">
           <td>{{msg.local_created_date}}</td>
           <td *ngIf="pageType === 'device'">{{msg.message_id}}</td>
-          <td *ngIf="pageType === 'gateway'">{{msg.device_id}}</td>
+          <!-- <td *ngIf="pageType === 'gateway'">{{msg.device_id}}</td> -->
           <!-- <td>{{msg.message_id}}</td> -->
           <td *ngIf="type !== 'response'">{{msg?.application_properties?.expire_in_min || msg?.metadata?.expire_in_min}}</td>
           <td *ngIf="type !== 'response'">{{msg?.application_properties?.acknowledge || msg?.metadata?.acknowledge}}</td>

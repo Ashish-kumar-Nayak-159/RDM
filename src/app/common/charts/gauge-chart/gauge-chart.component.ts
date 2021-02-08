@@ -51,8 +51,8 @@ export class GaugeChartComponent implements OnInit, OnChanges {
     chart.innerRadius = am4core.percent(70);
     chart.logo.disabled = true;
     const axis = chart.xAxes.push(new am4charts.ValueAxis<am4charts.AxisRendererCircular>());
-    axis.min = 0;
-    axis.max = 100;
+    axis.min = prop?.minRangeValue || 0;
+    axis.max = prop?.maxRangeValue || 100;
     axis.renderer.radius = am4core.percent(70);
     axis.renderer.fontSize = '0.6em';
     axis.renderer.grid.template.stroke = new am4core.InterfaceColorSet().getFor('background');

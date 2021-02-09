@@ -7,7 +7,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CONSTANTS } from 'src/app/app.constants';
 import * as moment from 'moment';
 import { DeviceService } from 'src/app/services/devices/device.service';
-import tableDragger from 'table-dragger';
 
 declare var $: any;
 @Component({
@@ -66,23 +65,57 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
   }
 
   getTableSortable() {
-    setTimeout(() => {
-    const el = document.getElementById('dashboardWidgetTable');
-    const dragger = tableDragger(el, {
-      mode: 'row',
-      dragHandler: '.handle',
-      onlyBody: true,
-      animation: 300
-    });
     const that = this;
-    dragger.on('drop', function(from, to){
-      console.log(from);
-      console.log(to);
-      console.log(that.configureDashboardWidgets);
-      that.configureDashboardWidgets[to - 1].index = from;
-      that.configureDashboardWidgets[from - 1].index = to;
-    });
-    }, 2000);
+    setTimeout(() => {
+      const fixHelperModified = (e, tr) =>  {
+        const $originals = tr.children();
+        const $helper = tr.clone();
+        $helper.children().each(function(index) {
+          $(this).width($originals.eq(index).width());
+        });
+        return $helper;
+      };
+      const updateIndex =  (e, ui) => {
+        $('td.index', ui.item.parent()).each(function(i) {
+          $(this).html(i + 1 + '');
+        });
+        // $('input.favoriteOrder', ui.item.parent()).each(function (i) {
+        //   $(this).val(i + 1);
+        // });
+        $('tr.favoriteOrderId', ui.item.parent()).each(function(i) {
+
+        // tslint:disable-next-line: prefer-for-of
+        for (let j = 0; j < that.configureDashboardWidgets.length; j++) {
+          if ($(this).attr('id') === that.configureDashboardWidgets[j].chartId) {
+            // console.log(userprofile.userFavorites[j].userFavoriteId + '===' + (j + 1) + '---' + $(this).val() + '===' + i);
+            that.configureDashboardWidgets[j].index = i + 1;
+            // console.log('for loop-', JSON.stringify(userprofile.userFavorites[j]));
+          }
+        }
+
+          // for (let fav of userprofile.userFavorites) {
+          //   // console.log('fav---', fav);
+          // }
+
+        });
+        //// console.log('userprofilefav-', JSON.stringify(userprofile.userFavorites));
+        //// console.log('this.userprofile=', JSON.stringify(this.userprofile.userFavorites));
+      };
+
+      $('#myFavTable tbody').sortable({
+        helper: fixHelperModified,
+        stop: updateIndex
+      }).disableSelection();
+
+      $('#myFavTable tbody').sortable({
+        distance: 5,
+        delay: 100,
+        opacity: 0.6,
+        cursor: 'move',
+        update:  () => { }
+      });
+
+    }, 1000);
   }
 
   getLiveWidgets() {
@@ -133,7 +166,13 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
 
   onSaveConfigureDashboardWidgets() {
     this.isCreateWidgetAPILoading = true;
+    this.sortListBasedOnIndex();
     this.updateDeviceType(this.configureDashboardWidgets, 'Dashboard configured successfully');
+  }
+
+
+  sortListBasedOnIndex() {
+    this.configureDashboardWidgets.sort((a, b) => a.index - b.index);
   }
 
   onCloseAddWidgetModal() {
@@ -174,7 +213,7 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
     });
     this.checkForAllWidgetVisibility();
     $('#configureDashboardWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
-   // this.getTableSortable();
+    this.getTableSortable();
   }
 
   removeWidget(chartId) {

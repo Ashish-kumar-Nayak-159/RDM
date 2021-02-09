@@ -1,3 +1,4 @@
+import { SignalRService } from './../../services/signalR/signal-r.service';
 import { ToasterService } from './../../services/toaster.service';
 import { Subscription } from 'rxjs';
 import { DeviceTypeService } from './../../services/device-type/device-type.service';
@@ -29,7 +30,8 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     private applicationService: ApplicationService,
     private deviceService: DeviceService,
     private deviceTypeService: DeviceTypeService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private signalRService: SignalRService
   ) { }
 
   ngOnInit(): void {
@@ -39,6 +41,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
 
   async redirectToApp(app, index) {
     this.apiSubscriptions.forEach(sub => sub.unsubscribe());
+    this.signalRService.disconnectFromSignalR('all');
     const localStorageAppData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.isAppDataLoading = {};
     this.isAppDataLoading[index] = true;

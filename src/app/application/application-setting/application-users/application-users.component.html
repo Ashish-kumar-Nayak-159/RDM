@@ -12,6 +12,7 @@
         <th>Full Name</th>
         <th>Role</th>
         <th>Access Level</th>
+        <th>Action</th>
       </tr>
     </thead>
 
@@ -21,6 +22,12 @@
         <td>{{ user.user_name }}</td>
         <td>{{ user.role }}</td>
         <td>{{ getUserHierarchy(user) }}</td>
+        <td>
+          <a href="javascript:void(0)" (click)="openCreateUserModal(user)" class="mr-1"
+            title="Edit User">
+              <i class="fa fa-fw fa-pencil" ></i>
+          </a>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -36,7 +43,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content" *ngIf="addUserObj">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add New User</h5>
+        <h5 class="modal-title" id="exampleModalLabel">{{addUserObj.id ? 'Edit': 'Add'}} New User</h5>
         <button
           type="button"
           class="close"

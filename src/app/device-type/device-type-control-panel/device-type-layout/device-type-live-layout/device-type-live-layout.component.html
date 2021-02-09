@@ -127,8 +127,10 @@
             <thead>
               <tr class="bg-secondary text-white">
                 <!-- <th>Index</th> -->
-                <th >Widget Name</th>
-                <th>Visibility</th>
+                <th style="width: 70%">Widget Name</th>
+                <th>Visibility &nbsp;<input type="checkbox" name="visibleall"
+                  id="visibleall" (change)="onClickOfCheckbox()" [(ngModel)]="isAllWidgestSelectedForDashboard"
+                  title="{{isAllWidgestSelectedForDashboard ? 'Deselect All' : 'Select All'}}"/></th>
               </tr>
             </thead>
             <tbody>
@@ -138,7 +140,7 @@
                   <!-- <td class="favoriteOrderId">{{item.index}}</td> -->
                   <td>{{item.widgetTitle}}</td>
                   <td><input type="checkbox" name="visible{{index}}"
-                      id="visible{{index}}" [(ngModel)]="item.dashboardVisibility" /></td>
+                      id="visible{{index}}" [(ngModel)]="item.dashboardVisibility" (change)="checkForAllWidgetVisibility()" /></td>
                 </tr>
               </ng-container>
             </tbody>

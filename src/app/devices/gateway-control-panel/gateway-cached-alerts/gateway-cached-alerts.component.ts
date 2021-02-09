@@ -1,3 +1,4 @@
+import { CONSTANTS } from './../../../../../.history/src/app/app.constants_20210205141721';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
@@ -23,6 +24,7 @@ export class GatewayCachedAlertsComponent implements OnInit, OnDestroy {
   modalConfig: any;
   pageType: string;
   alertTableConfig: any = {};
+  devices: any[] = [];
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -32,7 +34,7 @@ export class GatewayCachedAlertsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     this.filterObj.gateway_id = this.device.device_id;
-
+    this.devices = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICES_LIST);
     this.route.paramMap.subscribe(params => {
       this.pageType = params.get('listName');
       this.pageType = this.pageType.slice(0, -1);
@@ -50,7 +52,7 @@ export class GatewayCachedAlertsComponent implements OnInit, OnDestroy {
           },
           {
             name: 'Asset Name',
-            key: 'device_id',
+            key: 'display_name',
           },
           {
             name: '',
@@ -103,6 +105,13 @@ export class GatewayCachedAlertsComponent implements OnInit, OnDestroy {
           this.alertsList.forEach(item => {
             item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
             item.local_upload_date = this.commonService.convertUTCDateToLocal(item.iothub_date);
+            if (this.devices.length > 0) {
+                console.log(item.device_id);
+                console.log(this.devices);
+                item.display_name = this.devices.find(device => device.device_id === item.device_id)?.display_name;
+              } else {
+                item.display_name = item.device_id;
+              }
           });
         }
         this.isAlertLoading = false;

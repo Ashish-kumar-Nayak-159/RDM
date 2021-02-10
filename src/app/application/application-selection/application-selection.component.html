@@ -12,10 +12,10 @@
             ><div class="text-center">
               <img
                 class="img-fluid px-2 mt-2 mb-3 img-szsm"
-                src="{{
+                src="{{ blobStorageURL + (
                   app?.metadata?.icon?.url
                     ? app?.metadata?.icon?.url + blobToken
-                    : constantData.DEFAULT_APP_ICON  + blobToken
+                    : constantData.DEFAULT_APP_ICON  + blobToken)
                 }}"
 
                 alt=""

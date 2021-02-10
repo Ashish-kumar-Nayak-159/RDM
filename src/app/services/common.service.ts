@@ -130,7 +130,7 @@ export class CommonService {
     console.log(response._response);
     if (response._response.status === 201) {
       return {
-        url: environment.blobURL + '/' + containerName + '/' + folderName + '/' + file.name,
+        url:  containerName + '/' + folderName + '/' + file.name,
         name: file.name
       };
     }

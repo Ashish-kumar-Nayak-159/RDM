@@ -20,6 +20,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
   userData: any;
   constantData = CONSTANTS;
   blobToken = environment.blobKey;
+  blobStorageURL = environment.blobURL;
   applicationData: any;
   apiSubscriptions: Subscription[] = [];
   isAppDataLoading;

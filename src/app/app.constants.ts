@@ -755,9 +755,9 @@ export class CONSTANTS {
   // public static DEFAULT_HEADER_LOGO = environment.blobURL + '/' + environment.blobContainerName + '/app-media/logo.png';
   // public static DEFAULT_MODEL_IMAGE = environment.blobURL + '/' + environment.blobContainerName + '/device-type-media/device.svg';
 
-  public static DEFAULT_APP_ICON = 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/default_app_icon.png';
-  public static DEFAULT_APP_LOGO = 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/default_app_logo.jpg';
-  public static DEFAULT_HEADER_LOGO = 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/app-images/header-logo/logo.png';
-  public static DEFAULT_MODEL_IMAGE = 'https://storageaccountkemsy96a3.blob.core.windows.net/rdm-images/device-type-images/device.svg';
+  public static DEFAULT_APP_ICON = 'rdm-images/default_app_icon.png';
+  public static DEFAULT_APP_LOGO = 'rdm-images/default_app_logo.jpg';
+  public static DEFAULT_HEADER_LOGO = 'rdm-images/app-images/header-logo/logo.png';
+  public static DEFAULT_MODEL_IMAGE = 'rdm-images/device-type-images/device.svg';
 
 }

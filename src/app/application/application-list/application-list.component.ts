@@ -24,6 +24,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
   isCreateAPILoading = false;
   isFileUploading = false;
   blobSASToken = environment.blobKey;
+  blobStorageURL = environment.blobURL;
   appModalType: string;
   apiSubscriptions: Subscription[] = [];
   constructor(

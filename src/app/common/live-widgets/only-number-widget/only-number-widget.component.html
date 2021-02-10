@@ -27,7 +27,7 @@
         <div class="text-center" *ngIf="chartConfig.widgetType === 'NumberWithImage'">
           <img
             class="img-fluid px-2 img-szmd"
-            src="{{prop?.image?.url + blobToken
+            src="{{blobStorageURL + prop?.image?.url + blobToken
             }}"
             alt=""
           />

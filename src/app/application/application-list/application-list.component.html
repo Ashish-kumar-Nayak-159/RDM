@@ -179,11 +179,11 @@
     <div class="modal-body">
       <div class="col-12">
         <h6>{{applicationDetail.app}} Logo</h6>
-        <img class="icon-display" src="{{applicationDetail?.metadata?.logo?.url + blobSASToken}}"/>
+        <img class="icon-display" src="{{blobStorageURL + applicationDetail?.metadata?.logo?.url + blobSASToken}}"/>
       </div>
       <div class="col-12">
         <h6>{{applicationDetail.app}} Icon</h6>
-        <img class="icon-display" src="{{applicationDetail?.metadata?.icon?.url + blobSASToken}}"/>
+        <img class="icon-display" src="{{blobStorageURL + applicationDetail?.metadata?.icon?.url + blobSASToken}}"/>
       </div>
     </div>
     <div class="modal-footer">

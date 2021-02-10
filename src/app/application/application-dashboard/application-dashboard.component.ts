@@ -59,6 +59,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
   apiSubscriptions: Subscription[] = []; // to store all the API subscriptions
   userData: any;
   blobToken = environment.blobKey;
+  blobStorageURL = environment.blobURL;
   contextApp: any;
   constantData = CONSTANTS;
   tileName: string;

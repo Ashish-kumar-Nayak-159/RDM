@@ -16,6 +16,7 @@ export class DeviceTypeOverviewComponent implements OnInit {
   contextApp: any;
   userData: any;
   blobSASToken = environment.blobKey;
+  blobStorageURL = environment.blobURL;
   isModelFreezeUnfreezeAPILoading = false;
   appAdminRole = CONSTANTS.APP_ADMIN_ROLE;
   password: any;

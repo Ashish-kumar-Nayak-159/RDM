@@ -20,6 +20,7 @@ export class HeaderComponent implements OnInit, OnChanges {
   @Input() isLoginRoute = false;
   @Input() contextApp: any;
   blobToken = environment.blobKey;
+  blobStorageURL = environment.blobURL;
   constantData = CONSTANTS;
 
   constructor(

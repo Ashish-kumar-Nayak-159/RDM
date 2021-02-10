@@ -24,6 +24,7 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
   isCreateDocumentLoading = false;
   isFileUploading = false;
   sasToken = environment.blobKey;
+  blobStorageURL = environment.blobURL;
   selectedDocument: any;
   subscriptions: Subscription[] = [];
   constructor(
@@ -140,7 +141,7 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
     // document.body.appendChild(link);
     // link.click();
     // link.remove();
-    const url = fileObj.url + this.sasToken;
+    const url = this.blobStorageURL + fileObj.url + this.sasToken;
     this.subscriptions.push(this.commonService.getFileData(url).subscribe(
       response => {
         this.fileSaverService.save(response, fileObj.name);
@@ -149,7 +150,7 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
   }
 
   sanitizeURL() {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(this.selectedDocument.metadata.url + this.sasToken);
+    return this.sanitizer.bypassSecurityTrustResourceUrl(this.blobStorageURL + this.selectedDocument.metadata.url + this.sasToken);
   }
 
   openModal(id) {

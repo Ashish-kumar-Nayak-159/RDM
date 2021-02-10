@@ -26,6 +26,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   isViewClicked = false;
   contextApp: any;
   blobSASToken = environment.blobKey;
+  blobStorageURL = environment.blobURL;
   pageType: string;
   deviceCount = null;
   isAPILoading = false;

@@ -156,9 +156,9 @@
     <div class="table-responsive" *ngIf="isFilterSelected || isTelemetryLoading"
     >
       <h5 >{{filterObj.report_type}}
-        <a href="javascript:void(0)" (click)="savePDF()" title="Export as PDF"><i class="fa fa-sm fa-file-pdf-o" ></i></a>
-        <a href="javascript:void(0)" (click)="saveExcel()" title="Export as Excel" class="ml-1"><i class="fa fa-sm fa-file-excel-o" ></i></a>
-
+        <a href="javascript:void(0)" [class.disabled]="isFileDownloading" (click)="savePDF()" title="Export as PDF"><i class="fa fa-sm fa-file-pdf-o" ></i></a>
+        <a href="javascript:void(0)" [class.disabled]="isFileDownloading" (click)="saveExcel()" title="Export as Excel" class="ml-1"><i class="fa fa-sm fa-file-excel-o" ></i></a>
+        <i  class="fa fa-fw fa-2x  fa-spin fa-spinner" *ngIf="isFileDownloading"></i>
       </h5>
       <table class="table table-bordered table-striped"  id="dataTable1" width="100%" cellspacing="0"
       *ngIf="isFilterSelected && filterObj.report_type === 'Process Parameter Report'">
@@ -173,10 +173,8 @@
           <ng-container *ngIf="telemetry.length > 0 && !isTelemetryLoading">
             <tr *ngFor="let telemetryObj of telemetry">
 
-              <td>{{ filterObj.non_ip_device ?
-                (filterObj.non_ip_device.device_display_name ? filterObj.non_ip_device?.device_display_name : filterObj.non_ip_device?.device_id)
-              : (filterObj.device ?
-              (filterObj.device.device_display_name ? filterObj.device.device_display_name : filterObj.device.device_id)
+              <td>{{ (filterObj.device ?
+              (filterObj.device.display_name ? filterObj.device.display_name : filterObj.device.device_id)
               : '' )}}</td>
               <td>{{ telemetryObj.local_created_date }}</td>
               <td *ngFor="let prop of selectedProps"> {{telemetryObj[prop.value.json_key]}}</td>

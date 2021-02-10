@@ -70,7 +70,7 @@ export class DeviceTypeOverviewComponent implements OnInit {
     const obj = {
       email: this.userData.email,
       password: this.password
-    }
+    };
     this.deviceTypeService.unfreezeDeviceModel(this.contextApp.app, this.deviceType.name, obj).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Unfreeze Model');

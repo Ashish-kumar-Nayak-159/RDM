@@ -57,6 +57,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     return hierarchy;
   }
 
+  // tslint:disable-next-line: no-unnecessary-initializer
   openCreateUserModal(userObj = undefined) {
     console.log(userObj);
     this.addUserObj = {};

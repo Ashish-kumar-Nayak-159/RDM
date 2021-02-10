@@ -255,7 +255,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.originalGateways.forEach(device => {
       let flag = false;
       Object.keys(hierarchyObj).forEach(hierarchyKey => {
-        console.log(device.hierarchy[hierarchyKey] , '&&', device.hierarchy[hierarchyKey], '===', hierarchyObj[hierarchyKey])
+        console.log(device.hierarchy[hierarchyKey] , '&&', device.hierarchy[hierarchyKey], '===', hierarchyObj[hierarchyKey]);
         if (device.hierarchy[hierarchyKey] && device.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
           flag = true;
         } else {

@@ -76,7 +76,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
           this.activeTab = fragment;
         } else {
           const menu = this.contextApp.configuration.device_control_panel_menu.length > 0 ?
-          this.contextApp.configuration.device_control_panel_menu : 
+          this.contextApp.configuration.device_control_panel_menu :
           JSON.parse(JSON.stringify(CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST));
           menu.forEach(menuObj => {
             if ( !this.activeTab && menuObj.visible && !menuObj.isTitle) {

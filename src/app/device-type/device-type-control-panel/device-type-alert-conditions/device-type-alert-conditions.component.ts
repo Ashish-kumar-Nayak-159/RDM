@@ -213,6 +213,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
     console.log(this.alertObj);
   }
 
+  // tslint:disable-next-line: no-unnecessary-initializer
   openAddAlertConditionModal(alertObj = undefined) {
     if (alertObj) {
       this.alertObj = alertObj;

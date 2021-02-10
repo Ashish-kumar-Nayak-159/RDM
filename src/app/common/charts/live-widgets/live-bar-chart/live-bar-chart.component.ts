@@ -128,7 +128,7 @@ export class LiveBarChartComponent implements OnInit, OnChanges, OnDestroy {
     }
     chart.dateFormatter.inputDateFormat = 'x';
     chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
-    //chart.legend = new am4charts.Legend();
+    // chart.legend = new am4charts.Legend();
     // chart.legend.itemContainers.template.togglable = false;
     // if (this.device) {
     //   chart.exporting.menu = new am4core.ExportMenu();

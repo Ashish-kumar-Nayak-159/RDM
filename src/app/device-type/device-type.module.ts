@@ -53,7 +53,7 @@ import { DeviceTypeConfigurationWidgetsComponent } from './device-type-control-p
     NgJsonEditorModule,
     AngularMultiSelectModule,
     FileSaverModule,
-    MonacoEditorModule // use forRoot() in main app 
+    MonacoEditorModule // use forRoot() in main app
   ]
 })
 export class DeviceTypeModule { }

@@ -42,7 +42,7 @@ export class DeviceTypeControlPanelComponent implements OnInit, OnDestroy {
       name => {
         this.getDeviceTypeData(name);
       }
-    ))
+    ));
 
     this.route.fragment.subscribe(
       fragment => {

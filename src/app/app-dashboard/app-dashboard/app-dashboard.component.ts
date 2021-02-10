@@ -1,5 +1,5 @@
 import { ChartService } from 'src/app/chart/chart.service';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/app.constants';
@@ -15,7 +15,7 @@ import { ToasterService } from 'src/app/services/toaster.service';
   templateUrl: './app-dashboard.component.html',
   styleUrls: ['./app-dashboard.component.css']
 })
-export class AppDashboardComponent implements OnInit {
+export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   userData: any;
   contextApp: any;
@@ -358,7 +358,7 @@ export class AppDashboardComponent implements OnInit {
             if (widget.dashboardVisibility) {
               this.liveWidgets.push(widget);
             }
-          })
+          });
         }
         this.isGetWidgetsAPILoading = false;
         resolve1();
@@ -399,14 +399,14 @@ export class AppDashboardComponent implements OnInit {
     this.telemetryInterval = undefined;
     this.lastReportedTelemetryValues = undefined;
     this.telemetryData = JSON.parse(JSON.stringify([]));
-    let message_props = '';
     obj.count = 1;
     const midnight =  ((((moment().hour(0)).minute(0)).second(0)).utc()).unix();
     const now = (moment().utc()).unix();
     obj.from_date = midnight;
     obj.to_date = now;
     // obj.app = this.contextApp.app;
-    // this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : ''));
+    // this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key +
+    // (this.propertyList[index + 1] ? ',' : ''));
     // obj.message_props = message_props;
     this.isFilterSelected = true;
     // await this.getMidNightHours(obj);

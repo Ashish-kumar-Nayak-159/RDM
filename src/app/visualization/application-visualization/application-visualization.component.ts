@@ -413,7 +413,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response?.data?.length > 0) {
           this.selectedDevice = response.data[0];
-          console.log('41555555   ',this.selectedDevice);
+          console.log('41555555   ', this.selectedDevice);
         } else {
           this.selectedDevice = response;
         }

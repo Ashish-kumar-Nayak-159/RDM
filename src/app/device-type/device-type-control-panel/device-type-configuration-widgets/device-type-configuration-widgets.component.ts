@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { JsonEditorOptions, JsonEditorComponent } from 'ang-jsoneditor';
 import { Subscription } from 'rxjs';
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
@@ -10,7 +10,7 @@ declare var $: any;
   templateUrl: './device-type-configuration-widgets.component.html',
   styleUrls: ['./device-type-configuration-widgets.component.css']
 })
-export class DeviceTypeConfigurationWidgetsComponent implements OnInit {
+export class DeviceTypeConfigurationWidgetsComponent implements OnInit, OnDestroy {
 
   @Input() deviceType: any;
   viewType: string;

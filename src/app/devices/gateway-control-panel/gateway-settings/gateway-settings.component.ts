@@ -17,7 +17,7 @@ export class GatewaySettingsComponent implements OnInit {
   subscriptions: Subscription[] = [];
   contextApp: any;
   userData: any;
-  isSaveSettingAPILoading = false
+  isSaveSettingAPILoading = false;
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,

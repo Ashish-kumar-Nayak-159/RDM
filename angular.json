@@ -73,6 +73,10 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment-sopan.ts"
+                },
+                {
+                  "replace": "src/index.html",
+                  "with": "src/index-sopan.html"
                 }
               ],
               "optimization": true,
@@ -101,6 +105,10 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment-kirloskar.ts"
+                },
+                {
+                  "replace": "src/index.html",
+                  "with": "src/index-kirloskar.html"
                 }
               ],
               "optimization": true,

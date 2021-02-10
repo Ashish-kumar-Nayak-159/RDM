@@ -64,23 +64,7 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
   }
 
   getTableSortable() {
-    setTimeout(() => {
-    const el = document.getElementById('dashboardWidgetTable');
-    const dragger = tableDragger(el, {
-      mode: 'row',
-      dragHandler: '.handle',
-      onlyBody: true,
-      animation: 300
-    });
-    const that = this;
-    dragger.on('drop', function(from, to){
-      console.log(from);
-      console.log(to);
-      console.log(that.configureDashboardWidgets);
-      that.configureDashboardWidgets[to - 1].index = from;
-      that.configureDashboardWidgets[from - 1].index = to;
-    });
-    }, 2000);
+
   }
 
   getLiveWidgets() {

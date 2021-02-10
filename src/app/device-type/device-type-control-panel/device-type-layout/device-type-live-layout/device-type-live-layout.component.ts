@@ -7,7 +7,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CONSTANTS } from 'src/app/app.constants';
 import * as moment from 'moment';
 import { DeviceService } from 'src/app/services/devices/device.service';
-import tableDragger from 'table-dragger';
 
 declare var $: any;
 @Component({

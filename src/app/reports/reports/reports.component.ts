@@ -33,6 +33,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   propertyList: any[] = [];
   dropdownPropList: any[] = [];
   latestAlerts: any[] = [];
+  isFileDownloading = false;
   pdfOptions = {
     paperSize: 'A4',
     margin: { left: '0.75cm', top: '0.60cm', right: '0.75cm', bottom: '0.60cm' },
@@ -465,6 +466,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   savePDF(): void {
+    this.isFileDownloading = true;
     const pdf = new jsPDF('p', 'pt', 'A3');
 
     pdf.text(this.filterObj.report_type + ' for ' +
@@ -475,16 +477,18 @@ export class ReportsComponent implements OnInit, OnDestroy {
     const now = moment().utc().unix();
     pdf.save((this.filterObj.device.display_name ? this.filterObj.device.display_name : this.filterObj.device.device_id)
            + '_' + this.filterObj.report_type + '_' + now + '.pdf');
+    this.isFileDownloading = false;
   }
 
   saveExcel() {
+    this.isFileDownloading = true;
     let ws: XLSX.WorkSheet;
     let data = [];
     if (this.filterObj.report_type !== 'Process Parameter Report') {
 
       this.latestAlerts.forEach(alert => {
         data.push({
-          'Asset Name': alert.device_display_name ? alert.device_display_name : alert.device_id,
+          'Asset Name': (this.filterObj.device.display_name ? this.filterObj.device.display_name : this.filterObj.device.device_id),
           Time: alert.local_created_date,
           Severity: alert.severity,
           Description: alert.message,
@@ -555,6 +559,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     /* save to file */
     XLSX.writeFile(wb, (this.filterObj.device.display_name ? this.filterObj.device.display_name : this.filterObj.device.device_id)
       + '_' + this.filterObj.report_type + '_' + now + '.xlsx');
+    this.isFileDownloading = false;
   }
 
   ngOnDestroy() {

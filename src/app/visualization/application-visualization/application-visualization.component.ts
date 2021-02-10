@@ -429,16 +429,20 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         app: this.contextApp.app,
         device_id: this.selectedAlert.device_id,
         device_type: this.selectedDevice.device_type,
-        legacy: !(this.selectedAlert.device_id === this.selectedAlert.gateway_id),
-        message: this.selectedAlert.message
+        legacy: !(this.selectedAlert.device_id === this.selectedAlert.gateway_id)
       };
+      if (this.selectedAlert.code) {
+        filterObj['code'] = this.selectedAlert.code;
+      } else if (this.selectedAlert.message) {
+        filterObj['message'] = this.selectedAlert.message;
+      }
       console.log(filterObj);
       this.alertCondition = undefined;
       this.subscriptions.push(this.deviceTypeService.getAlertConditions(this.contextApp.app, filterObj).subscribe(
         (response: any) => {
           if (response?.data) {
             this.alertCondition = response.data[0];
-            if (!this.alertCondition.visualization_widgets) {
+            if (!this.alertCondition?.visualization_widgets) {
               this.alertCondition.visualization_widgets = [];
             }
             resolve();

@@ -67,9 +67,10 @@ export class SpecificDirectMethodComponent implements OnInit {
   }
 
   onWidgetSelection() {
+    this.jsonModelKeys = [];
     if (this.selectedWidget) {
-      this.selectedWidget.response_timeout_in_sec = 20;
-      this.selectedWidget.connection_timeout_in_sec = 20;
+      this.selectedWidget.response_timeout_in_sec = 30;
+      this.selectedWidget.connection_timeout_in_sec = 30;
       const keys = Object.keys(this.selectedWidget.json);
       const index = keys.findIndex(key => key.toLowerCase() === 'timestamp');
       if (index > -1) {
@@ -99,6 +100,14 @@ export class SpecificDirectMethodComponent implements OnInit {
   }
 
   invokeDirectMethod() {
+    if (this.selectedWidget.response_timeout_in_sec < 5 || this.selectedWidget.response_timeout_in_sec > 300) {
+      this.toasterService.showError('Response timeout must be between 5 to 300', 'Invoke Method');
+      return;
+    }
+    if (this.selectedWidget.connection_timeout_in_sec < 5 || this.selectedWidget.connection_timeout_in_sec > 300) {
+      this.toasterService.showError('Connection timeout must be between 5 to 300', 'Invoke Method');
+      return;
+    }
     this.responseMessage = undefined;
     const timestamp = moment().unix();
     const obj: any = {};

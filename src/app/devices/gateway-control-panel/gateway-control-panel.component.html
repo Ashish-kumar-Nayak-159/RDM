@@ -81,7 +81,7 @@
         <app-rdmdevice-control-panel-error *ngIf="activeTab === 'error' && device" [device]="device"></app-rdmdevice-control-panel-error>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel" id="device_control_widgets">
-        <app-commands *ngIf="activeTab === 'control_widgets' && device" [device]="device" [callingPage]="'gateway'"></app-commands>
+        <app-commands *ngIf="activeTab === 'control_widgets' && device" [device]="device" ></app-commands>
       </div>
       <!-- /.container1-fluid -->
 

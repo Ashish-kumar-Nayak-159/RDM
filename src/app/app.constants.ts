@@ -616,9 +616,9 @@ export class CONSTANTS {
     },
     {
       page: 'device_methods',
-      system_name: 'Device Methods(commands)',
+      system_name: 'Device Methods',
       url: '#device_type_methods',
-      display_name: 'Device Methods(commands)',
+      display_name: 'Device Methods',
       icon: 'fa fa-fw fa-tags',
       visible: true,
       isTitle: false

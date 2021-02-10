@@ -31,7 +31,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
+    if (this.device?.tags?.category === CONSTANTS.IP_GATEWAY) {
       this.notificationFilter.gateway_id = this.device.device_id;
     } else {
       this.notificationFilter.device_id = this.device.device_id;

@@ -118,7 +118,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(this.device.hierarchy),
-        name: this.device.device_type,
+        name: this.device?.device_type || this.device?.tags?.device_type,
         app: this.contextApp.app
       };
       this.subscriptions.push(this.deviceTypeService.getThingsModelDetails(obj.app, obj.name).subscribe(
@@ -128,11 +128,13 @@ export class TagsComponent implements OnInit, OnDestroy {
             this.deviceType.name = obj.name;
             this.deviceType.app = obj.app;
             console.log(this.deviceType);
-            this.deviceType.tags.reserved_tags.forEach(tag => {
+            if (this.deviceType?.tags?.reserved_tags) {
+            this.deviceType?.tags?.reserved_tags.forEach(tag => {
               if (tag.defaultValue && !this.device.tags[tag.key] ) {
                 this.device.tags[tag.key] = tag.defaultValue;
               }
             });
+            }
             console.log(this.device.tags);
           }
           resolve();

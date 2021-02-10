@@ -452,6 +452,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     });
   }
 
+  onDeSelectAll(event) {
+    this.selectedWidgets = [];
+  }
+
   getDocuments() {
     return new Promise((resolve) => {
       this.documents = [];

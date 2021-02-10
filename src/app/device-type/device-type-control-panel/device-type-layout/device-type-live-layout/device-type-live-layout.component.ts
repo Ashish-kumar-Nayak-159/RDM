@@ -29,6 +29,7 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
   telemetryObj: any;
   isTelemetryDataLoading: boolean;
   configureDashboardWidgets: any[] = [];
+  isAllWidgestSelectedForDashboard = false;
 
   constructor(
     private commonService: CommonService,
@@ -115,7 +116,13 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
 
   onSaveConfigureDashboardWidgets() {
     this.isCreateWidgetAPILoading = true;
+    this.sortListBasedOnIndex();
     this.updateDeviceType(this.configureDashboardWidgets, 'Dashboard configured successfully');
+  }
+
+
+  sortListBasedOnIndex() {
+    this.configureDashboardWidgets.sort((a, b) => a.index - b.index);
   }
 
   onCloseAddWidgetModal() {
@@ -135,11 +142,28 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
     $('#addWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
+  checkForAllWidgetVisibility() {
+    let count = 0;
+    this.configureDashboardWidgets.forEach((widget, index) => {
+      if (widget.dashboardVisibility) {
+        count++;
+      }
+    });
+    if (count === this.configureDashboardWidgets.length) {
+      this.isAllWidgestSelectedForDashboard = true;
+    } else {
+      this.isAllWidgestSelectedForDashboard = false;
+    }
+  }
+
   onOpenConfigureDashboardModal() {
     this.configureDashboardWidgets = JSON.parse(JSON.stringify(this.liveWidgets));
-    this.configureDashboardWidgets.forEach((widget, index) => widget.index = index + 1);
+    this.configureDashboardWidgets.forEach((widget, index) => {
+      widget.index = index + 1;
+    });
+    this.checkForAllWidgetVisibility();
     $('#configureDashboardWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
-   // this.getTableSortable();
+    this.getTableSortable();
   }
 
   removeWidget(chartId) {
@@ -178,6 +202,14 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
     const arr = this.liveWidgets;
     arr.push(this.widgetObj);
     this.updateDeviceType(arr, 'Widget added successfully.');
+  }
+
+  onClickOfCheckbox() {
+    if (this.isAllWidgestSelectedForDashboard) {
+      this.configureDashboardWidgets.forEach((widget) => widget.dashboardVisibility = true);
+    } else {
+      this.configureDashboardWidgets.forEach((widget) => widget.dashboardVisibility = false);
+    }
   }
 
 }

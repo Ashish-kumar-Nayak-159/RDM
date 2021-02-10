@@ -33,6 +33,7 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
   fileData: any;
   isFileDataLoading: boolean;
   editorOptions: JsonEditorOptions;
+  devices: any[] = [];
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -46,7 +47,7 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
     this.editorOptions.mode = 'view';
     this.editorOptions.statusBar = false;
     this.filterObj.gateway_id = this.device.device_id;
-
+    this.devices = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICES_LIST);
     this.route.paramMap.subscribe(params => {
       this.pageType = params.get('listName');
       this.pageType = this.pageType.slice(0, -1);
@@ -69,7 +70,7 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
           },
           {
             name: 'Asset',
-            key: 'device_id',
+            key: 'display_name',
             type: 'text',
             headerClass: '',
             valueclass: ''
@@ -151,6 +152,11 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
             item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
             item.local_upload_date = this.commonService.convertUTCDateToLocal(item.upload_date);
             console.log(item);
+            if (this.devices.length > 0) {
+            item.display_name = this.devices.find(device => device.device_id === item.device_id).display_name;
+            } else {
+              item.display_name = item.device_id;
+            }
           });
         }
         this.isTelemetryLoading = false;

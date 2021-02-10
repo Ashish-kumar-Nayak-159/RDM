@@ -123,22 +123,27 @@
     <div class="modal-body">
       <div class="col-12">
 
-          <table class="table table-bordered table-striped" cellspacing="0" id="dashboardWidgetTable">
+          <table class="table table-bordered table-striped" cellspacing="0" id="myFavTable">
             <thead>
               <tr class="bg-secondary text-white">
-                <!-- <th>Index</th> -->
-                <th >Widget Name</th>
-                <th>Visibility</th>
+                <th>Index</th>
+                <th style="width: 70%">Widget Name</th>
+                <th>Visibility &nbsp;<input type="checkbox" name="visibleall"
+                  id="visibleall" (change)="onClickOfCheckbox()" [(ngModel)]="isAllWidgestSelectedForDashboard"
+                  title="{{isAllWidgestSelectedForDashboard ? 'Deselect All' : 'Select All'}}"/></th>
               </tr>
             </thead>
             <tbody>
               <ng-container *ngFor="let item of configureDashboardWidgets; let index = index">
                 <!-- <tr [ngClass]="{'handle': item.dashboardVisibility}"> -->
-                  <tr>
-                  <!-- <td class="favoriteOrderId">{{item.index}}</td> -->
+                  <tr id="{{item.dashboardVisibility ? item.chartId : ''}}" [ngClass]="{'favoriteOrderId': item.dashboardVisibility}">
+                  <td class="index">{{item.index}}
+                    <!-- <input type="hidden" class="favoriteOrderId" value="{{item.chartId}}" *ngIf="item.dashboardVisibility"
+                            #favOrder="ngModel" name="{{item.chartId}}" [(ngModel)]="item.chartId"> -->
+                  </td>
                   <td>{{item.widgetTitle}}</td>
                   <td><input type="checkbox" name="visible{{index}}"
-                      id="visible{{index}}" [(ngModel)]="item.dashboardVisibility" /></td>
+                      id="visible{{index}}" [(ngModel)]="item.dashboardVisibility" (change)="checkForAllWidgetVisibility()" /></td>
                 </tr>
               </ng-container>
             </tbody>

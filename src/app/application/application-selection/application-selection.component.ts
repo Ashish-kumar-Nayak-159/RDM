@@ -21,6 +21,8 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
   blobToken = environment.blobKey;
   applicationData: any;
   apiSubscriptions: Subscription[] = [];
+  isAppDataLoading;
+
   constructor(
     private commonService: CommonService,
     private router: Router,
@@ -35,14 +37,18 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     console.log(this.userData.apps);
   }
 
-  async redirectToApp(app) {
+  async redirectToApp(app, index) {
+    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
     const localStorageAppData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.isAppDataLoading = {};
+    this.isAppDataLoading[index] = true;
     if (localStorageAppData && localStorageAppData.app !== app.app)  {
       localStorage.removeItem(CONSTANTS.DASHBOARD_ALERT_SELECTION);
       localStorage.removeItem(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION);
       localStorage.removeItem(CONSTANTS.SELECTED_APP_DATA);
       localStorage.removeItem(CONSTANTS.DEVICES_LIST);
       localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
+      localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
     }
     await this.getApplicationData(app);
     await this.getDevices(this.applicationData.user.hierarchy);
@@ -69,6 +75,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     if (i === 0) {
       this.toasterService.showError('All the menu items visibility are off. Please contact administrator', 'App Selection');
     }
+    this.isAppDataLoading = undefined;
   }
 
   getDevices(hierarchy) {

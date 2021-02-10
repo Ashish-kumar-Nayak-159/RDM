@@ -226,6 +226,7 @@
                             id="widgets"
                             [(ngModel)]="selectedWidgets"
                             name="widgets"
+                            (onDeSelectAll)="onDeSelectAll($event)"
                             [settings]="{
                               text: 'Select Widgets',
                               selectAllText: 'Select All',

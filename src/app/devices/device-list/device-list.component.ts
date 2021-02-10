@@ -319,7 +319,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   }
 
   getThingsModels(type) {
-    console.log('207      ', type);
     this.deviceTypes = [];
     const obj = {
       app: this.contextApp.app,
@@ -443,6 +442,10 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   onChangeThingsModel() {
     if (this.deviceDetail.tags.device_type) {
       const modelObj = this.deviceTypes.filter(type => type.name === this.deviceDetail.tags.device_type)[0];
+      modelObj.tags = {
+        cloud_connectivity: modelObj.cloud_connectivity,
+        protocol: modelObj.protocol
+      };
       const obj = {...this.deviceDetail.tags, ...modelObj.tags};
       this.deviceDetail.tags = obj;
     }

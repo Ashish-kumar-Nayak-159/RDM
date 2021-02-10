@@ -32,7 +32,7 @@ export class RDMDeviceControlPanelErrorComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
+    if (this.device?.tags?.category === CONSTANTS.IP_GATEWAY) {
       this.errorFilter.gateway_id = this.device.device_id;
     } else {
       this.errorFilter.device_id = this.device.device_id;

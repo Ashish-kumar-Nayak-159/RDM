@@ -67,6 +67,7 @@ export class SpecificDirectMethodComponent implements OnInit {
   }
 
   onWidgetSelection() {
+    this.jsonModelKeys = [];
     if (this.selectedWidget) {
       this.selectedWidget.response_timeout_in_sec = 20;
       this.selectedWidget.connection_timeout_in_sec = 20;

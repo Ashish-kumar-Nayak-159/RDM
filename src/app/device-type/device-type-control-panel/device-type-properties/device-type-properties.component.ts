@@ -147,7 +147,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       (response: any) => {
         this.properties = response.properties;
         this.properties[this.type] = this.properties[this.type] ? this.properties[this.type] : [];
-        if (this.type === 'derived_properties') {
+        if (this.type === 'derived_properties' && this.properties['measured_properties']) {
           this.dependentProperty = JSON.parse(JSON.stringify(this.properties['measured_properties']));
           this.properties[this.type].forEach(prop => this.dependentProperty.push(prop));
         }

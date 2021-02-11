@@ -29,6 +29,7 @@ export class AppUrls {
   public static CREATE_APP = 'apps';
   public static UPDATE_APP = 'apps/{0}';
   public static CREATE_USER = 'apps/{0}/users';
+  public static UPDATE_USER = 'apps/{0}/users/{1}';
   public static CREATE_NON_IP_DEVICE = 'apps/{0}/legacy_devices';
   public static GET_NON_IP_DEVICE = 'apps/{0}/legacy_devices';
   public static DELETE_NON_IP_DEVICE = 'apps/{0}/legacy_devices/{1}';

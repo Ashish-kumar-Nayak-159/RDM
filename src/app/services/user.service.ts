@@ -17,4 +17,8 @@ export class UserService {
   createUser(userObj, app) {
     return this.http.post(this.url + String.Format(AppUrls.CREATE_USER, app), userObj);
   }
+
+  updateUser(userObj, app) {
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_USER, app, userObj.id), userObj);
+  }
 }

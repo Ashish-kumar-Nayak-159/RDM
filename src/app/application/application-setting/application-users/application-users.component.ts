@@ -66,7 +66,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     this.addUserObj.role = 'App Admin';
     this.configureHierarchy = {};
     this.addUserObj.hierarchy = {App: this.applicationData.app};
-    this.addUserObj.hierarchy = {};
+    // this.addUserObj.hierarchy = {};
     } else {
       this.addUserObj = JSON.parse(JSON.stringify(userObj));
       this.addUserObj.name = userObj.user_name;
@@ -77,6 +77,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
 
   onUserRoleChange() {
     this.getAccessLevelHierarchy();
+    this.configureHierarchy = JSON.parse(JSON.stringify({}));
   }
 
   onChangeOfHierarchy(i) {
@@ -141,11 +142,14 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
 
   onCreateUser() {
     this.addUserObj.hierarchy[this.applicationData.hierarchy.levels[0]] = this.applicationData.app;
+    console.log(this.configureHierarchy);
+    this.addUserObj.hierarchy = {App: this.applicationData.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
       this.addUserObj.hierarchy[this.applicationData.hierarchy.levels[key]] = this.configureHierarchy[key];
       console.log(this.addUserObj.hierarchy);
     });
-
+    console.log(this.hierarchyList);
+    console.log(this.addUserObj.hierarchy);
     if (!this.addUserObj.name || !this.addUserObj.email || !this.addUserObj.role ||
       Object.keys(this.addUserObj.hierarchy).length !== this.hierarchyList.length) {
       this.toasterService.showError('Please fill all the details', 'Create User');
@@ -153,14 +157,16 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     }
     this.isCreateUserAPILoading = true;
     console.log(this.addUserObj);
-    this.apiSubscriptions.push(this.userService.createUser(this.addUserObj, this.applicationData.app).subscribe(
+    const method = this.addUserObj.id ? this.userService.updateUser(this.addUserObj, this.applicationData.app) :
+    this.userService.createUser(this.addUserObj, this.applicationData.app);
+    this.apiSubscriptions.push(method.subscribe(
       (response: any) => {
-        this.toasterService.showSuccess(response.message, 'Create User');
+        this.toasterService.showSuccess(response.message, 'App User');
         this.isCreateUserAPILoading = false;
         this.onCloseCreateUserModal();
         this.getApplicationUsers();
       }, error => {
-        this.toasterService.showError(error.message, 'Create User');
+        this.toasterService.showError(error.message, 'App User');
         this.isCreateUserAPILoading = false;
       }
     ));

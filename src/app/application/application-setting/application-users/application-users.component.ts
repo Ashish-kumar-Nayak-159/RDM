@@ -66,11 +66,19 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     this.addUserObj.role = 'App Admin';
     this.configureHierarchy = {};
     this.addUserObj.hierarchy = {App: this.applicationData.app};
-    // this.addUserObj.hierarchy = {};
+    this.addUserObj.hierarchy = {};
     } else {
       this.addUserObj = JSON.parse(JSON.stringify(userObj));
       this.addUserObj.name = userObj.user_name;
       this.addUserObj.email = userObj.user_email;
+
+      this.applicationData.hierarchy.levels.forEach((level, index) => {
+        if (level !== 'App') {
+          this.configureHierarchy[index] = userObj.hierarchy[level];
+          this.onChangeOfHierarchy(index);
+        }
+      });
+      console.log(this.configureHierarchy);
     }
     $('#createUserModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }

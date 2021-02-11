@@ -35,8 +35,6 @@ import { ComposeC2DMessageComponent } from './device-control-panel/compose-c2d-m
 import { TrendAnalysisComponent } from './device-control-panel/trend-analysis/trend-analysis.component';
 import { HistoryComponent } from './device-control-panel/history/history.component';
 import { C2dMessageComponent } from './device-control-panel/c2d-message/c2d-message.component';
-import { ChartsModule } from 'ng2-charts';
-import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 import { BatteryMessagesComponent } from './device-control-panel/battery-messages/battery-messages.component';
 import { CommonCustomModule } from './../common/common.module';
 import { SpecificC2dMessageComponent } from './device-control-panel/specific-c2d-message/specific-c2d-message.component';
@@ -102,9 +100,6 @@ import { SpecificTwinChangeComponent } from './device-control-panel/specific-twi
     MatDatepickerModule,
     MatMomentDateModule,
     MatTableModule,
-    // NgSelectModule,
-    ChartsModule,
-    Ng2GoogleChartsModule,
     AngularMultiSelectModule,
     CommonCustomModule,
     OwlDateTimeModule,

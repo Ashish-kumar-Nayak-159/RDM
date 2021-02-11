@@ -1,6 +1,5 @@
 import { FormsModule } from '@angular/forms';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
-import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule } from '@angular/material-moment-adapter';
@@ -10,7 +9,6 @@ import { CommonTableComponent } from './common-table/common-table.component';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { ColorPickerModule } from 'ngx-color-picker';
 
-import { ChartsModule } from 'ng2-charts';
 import { LiveChartComponent } from './charts/live-data/live-data.component';
 import { BarChartComponent } from './charts/bar-chart/bar-chart.component';
 import { PieChartComponent } from './charts/pie-chart/pie-chart.component';
@@ -23,8 +21,6 @@ import { OnlyNumberWidgetComponent } from './live-widgets/only-number-widget/onl
 import { AddOnlyNumberWidgetComponent } from './live-widgets/only-number-widget/add-only-number-widget/add-only-number-widget.component';
 import { LiveLineChartComponent } from './charts/live-widgets/live-line-chart/live-line-chart.component';
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
-import { LiveBarChartComponent } from './charts/live-widgets/live-bar-chart/live-bar-chart.component';
-import { LiveColumnChartComponent } from './charts/live-widgets/live-column-chart/live-column-chart.component';
 
 @NgModule({
   declarations: [
@@ -42,17 +38,12 @@ import { LiveColumnChartComponent } from './charts/live-widgets/live-column-char
     OnlyNumberWidgetComponent,
     AddOnlyNumberWidgetComponent,
     LiveLineChartComponent,
-    LiveBarChartComponent,
-    LiveColumnChartComponent,
-
   ],
   imports: [
     CommonModule,
     MatDatepickerModule,
     MatMomentDateModule,
     MatTableModule,
-    ChartsModule,
-    Ng2GoogleChartsModule,
     GoogleMapsModule,
     AccordionModule.forRoot(),
     FormsModule,
@@ -72,9 +63,7 @@ import { LiveColumnChartComponent } from './charts/live-widgets/live-column-char
     LineChartWithoutAxisComponent,
     OnlyNumberWidgetComponent,
     AddOnlyNumberWidgetComponent,
-    LiveLineChartComponent,
-    LiveBarChartComponent,
-    LiveColumnChartComponent,
+    LiveLineChartComponent
   ],
   providers: [
     {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}

@@ -3,7 +3,6 @@ import { DeviceTypeService } from './../../../services/device-type/device-type.s
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Device } from 'src/app/models/device.model';
-import { GoogleChartInterface } from 'ng2-google-charts';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from 'src/app/services/toaster.service';

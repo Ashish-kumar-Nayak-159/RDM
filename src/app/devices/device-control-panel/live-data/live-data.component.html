@@ -56,12 +56,6 @@
       <app-live-line-chart [chartConfig]="widget.value" [telemetryObj]="telemetryObj" [device]="device"
       *ngIf="widget.value.widgetType === 'LineChart' || widget.value.widgetType === 'AreaChart'">
       </app-live-line-chart>
-      <app-live-bar-chart [chartConfig]="widget.value" [telemetryObj]="telemetryObj"
-      *ngIf="widget.value.widgetType === 'BarChart'" [device]="device">
-      </app-live-bar-chart>
-      <app-live-column-chart [chartConfig]="widget.value" [telemetryObj]="telemetryObj"
-      *ngIf="widget.value.widgetType === 'ColumnChart'" [device]="device">
-      </app-live-column-chart>
     </div>
     </ng-container>
     </div>

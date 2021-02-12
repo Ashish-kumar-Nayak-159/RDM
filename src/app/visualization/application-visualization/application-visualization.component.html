@@ -401,6 +401,18 @@
                         <p> Alert acknowledged by {{selectedAlert?.metadata?.user_id}} at {{selectedAlert?.metadata?.acknowledged_date}}.</p>
                         <p>Reason: {{selectedAlert?.metadata?.reason?.reason ? selectedAlert?.metadata?.reason?.reason: 'NA'}}</p>
                         <p>Notes: {{selectedAlert?.metadata?.note ? selectedAlert?.metadata?.note : 'NA'}}</p>
+                        <p *ngIf="!selectedAlert?.metadata?.files || selectedAlert?.metadata?.files.length === 0">
+                          Documents: NA</p>
+                        <div *ngIf="selectedAlert?.metadata?.files && selectedAlert?.metadata?.files.length > 0">
+                          <ng-container *ngFor="let file of selectedAlert?.metadata?.files; let i  = index;">
+                            <p><b>{{file.data.name}}</b></p>
+                            <img *ngIf="file.type === 'Image'" width="420" height="350" [src]="blobStorageURL + file.data.url + sasToken"/>
+                            <video *ngIf="file.type === 'Video'" width="420" height="350" controls>
+                              <source [src]="blobStorageURL + file.data.url + sasToken" type="video/mp4">
+                            </video>
+                            <iframe *ngIf="file.type === 'PDF'"  [src]="file.data.sanitizedURL" style="width: 100%;height: 80vh"></iframe>
+                          </ng-container>
+                        </div>
                       </div>
                     </ng-template>
                     <h6 class="font-weight-bold"><u>By RDM:</u></h6>
@@ -448,6 +460,34 @@
             <textarea type="text" rows="3" class="form-control" id="note" name="note" [(ngModel)]="acknowledgedAlert.metadata.note"
           placeholder="Enter Notes"></textarea>
           </div>
+          <ng-container *ngFor="let file of acknowledgedAlert.metadata.files; let i = index;">
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Type:
+              <a *ngIf="i === 0"
+              class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2"
+              href="javascript:void(0)" (click)="addDocument()"
+              title="Add Document"
+              ><i class="fa fa-plus fa-sm text-white"></i></a>
+            </label>
+            <select class="custom-select" id="template_{{i}}" name="model_type_{{i}}" [(ngModel)]="file.type"
+            >
+              <option [ngValue]="undefined" >Select Document Type</option>
+              <option [ngValue]="'PDF'" >PDF</option>
+              <option [ngValue]="'Image'" >Image</option>
+              <option [ngValue]="'Video'" >Video</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Document:</label>
+            {{file ? file?.name : 'Not yet uploaded'}}
+            <input type="file" accept="{{(file.type === 'PDF' ? '.pdf' : (
+              file.type === 'Image' ? '.jpeg,.png,.svg' : (
+                file.type === 'Video' ? '.mp4,' : '*'
+              )
+            ))}}" (change)="onDocumentFileSelected($event.target.files, i)" [disabled]="file.type === undefined"
+            class="form-control" id="app_logo_{{i}}" name="app_logo_{{i}}">
+          </div>
+          </ng-container>
         </form>
       </div>
       <div class="modal-footer">

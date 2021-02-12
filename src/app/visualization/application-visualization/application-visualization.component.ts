@@ -17,6 +17,8 @@ import { BarChartComponent } from 'src/app/common/charts/bar-chart/bar-chart.com
 import { ChartService } from 'src/app/chart/chart.service';
 import { SignalRService } from 'src/app/services/signalR/signal-r.service';
 import { Subscription } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { DomSanitizer } from '@angular/platform-browser';
 declare var $: any;
 @Component({
   selector: 'app-application-visualization',
@@ -64,11 +66,14 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   reasons: any[] = [];
   isAlertModalDataLoading = false;
   isChartViewOpen = true;
+  sasToken = environment.blobKey;
+  blobStorageURL = environment.blobURL;
   @ViewChild('dtInput1', {static: false}) dtInput1: any;
   @ViewChild('dtInput2', {static: false}) dtInput2: any;
   toDate: any;
   fromDate: any;
   subscriptions: Subscription[] = [];
+  isFileUploading = false;
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -78,6 +83,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     private factoryResolver: ComponentFactoryResolver,
     private appRef: ApplicationRef,
     private injector: Injector,
+    private sanitizer: DomSanitizer,
     private singalRService: SignalRService
   ) { }
 
@@ -580,6 +586,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.selectedAlert.metadata.acknowledged_date = this.commonService.convertUTCDateToLocal(
         this.selectedAlert.metadata.acknowledged_date);
     }
+    this.selectedAlert?.metadata?.files?.forEach(file => {
+      file.data.sanitizedURL = this.sanitizeURL(file.data.url);
+    });
     this.isTelemetryFilterSelected = false;
     console.log(this.originalDevices);
     this.selectedDevice = this.originalDevices.find(device => device.device_id === this.selectedAlert.device_id);
@@ -862,14 +871,73 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   async onClickOfAcknowledgeAlert(alert): Promise<void> {
     this.acknowledgedAlert = alert;
     if (!this.acknowledgedAlert.metadata) {
-      this.acknowledgedAlert.metadata = {};
+      this.acknowledgedAlert.metadata = {
+        files: [{
+          type: undefined,
+          data : {}
+        }]
+      };
+    } else if (!this.acknowledgedAlert.metadata.files || this.acknowledgedAlert.metadata.files.length === 0) {
+      this.acknowledgedAlert.metadata.files =  [{
+        type: undefined,
+        data : {}
+      }];
     }
     await this.getDeviceData(this.acknowledgedAlert.device_id);
     await this.getModelReasons();
     $('#acknowledgemenConfirmModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
+  sanitizeURL(url) {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(this.blobStorageURL + url + this.sasToken);
+  }
+
+  addDocument() {
+    let msg = '';
+    this.acknowledgedAlert.metadata.files.forEach(file => {
+      if (!file.type || !file.data.url || !file.data.name) {
+        msg = 'Please select file.';
+      }
+    });
+    if (msg) {
+      this.toasterService.showError(msg, 'Acknowledge Alert');
+      return;
+    }
+    this.acknowledgedAlert.metadata.files.push({
+      type: undefined,
+      data : {}
+    });
+   }
+
+  async onDocumentFileSelected(files: FileList, index): Promise<void> {
+    console.log(files);
+    const arr = files?.item(0)?.name?.split('.') || [];
+    if (!files?.item(0).type.includes(this.acknowledgedAlert.metadata.files[index].type?.toLowerCase())) {
+      this.toasterService.showError('This file is not valid for selected document type', 'Select File');
+      return;
+    }
+
+    this.isFileUploading = true;
+    const data = await this.commonService.uploadImageToBlob(files.item(0),
+    'devices/' + this.acknowledgedAlert.device_id + '/alerts/' + this.acknowledgedAlert.code);
+    if (data) {
+      this.acknowledgedAlert.metadata.files[index].data = data;
+    } else {
+      this.toasterService.showError('Error in uploading file', 'Upload file');
+    }
+    this.isFileUploading = false;
+    // this.blobState.uploadItems(files);
+  }
+
+
   acknowledgeAlert(): void {
+    const files = [];
+    this.acknowledgedAlert.metadata.files.forEach(file => {
+      if (file.type && file.data.url && file.data.name) {
+        files.push(file);
+      }
+    });
+    this.acknowledgedAlert.metadata.files = files;
     const obj = {
       app: this.contextApp.app,
       device_id: this.acknowledgedAlert.device_id,

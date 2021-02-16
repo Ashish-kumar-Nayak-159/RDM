@@ -252,10 +252,16 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
     });
     const recordObj = this.maintenanceData.find(record => record.id === this.selectedMaintenanceData.id);
     if (notes.length > 0) {
-    recordObj.notes = [...recordObj.notes, ...notes];
+      recordObj.notes.forEach(note => {
+        notes.splice(notes.length, 0, note);
+      });
+      recordObj.notes = notes;
     }
     if (docs.length > 0) {
-    recordObj.documents = [recordObj.documents, ...docs];
+      recordObj.documents.forEach(doc => {
+        docs.splice(0, 0, doc);
+      });
+      recordObj.documents = docs;
     }
     recordObj.title = this.selectedMaintenanceData.title;
     recordObj.end_date = this.selectedMaintenanceData.end_date;

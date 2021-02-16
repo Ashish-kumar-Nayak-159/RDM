@@ -96,4 +96,8 @@ export class AppUrls {
   public static CALL_DEVICE_METHOD = 'apps/{0}/c2d/call_direct_method';
   public static GET_DEVICE_FIRST_TELEMETRY = 'apps/{0}/d2c/first_telemetry';
   public static GET_DEVICE_LAST_TELEMETRY = 'apps/{0}/d2c/last_telemetry';
+  public static GET_DEVICE_MAINTENANCE_DATA = 'apps/{0}/devices/{1}/maintenance_history';
+  public static CREATE_DEVICE_MAINTENANCE_DATA = 'apps/{0}/devices/{1}/maintenance_history';
+  public static DELETE_DEVICE_MAINTENANCE_DATA = 'apps/{0}/devices/{1}/maintenance_history/{2}';
+  public static UPDATE_DEVICE_MAINTENANCE_DATA = 'apps/{0}/devices/{1}/maintenance_history/{2}';
 }

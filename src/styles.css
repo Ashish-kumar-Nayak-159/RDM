@@ -285,3 +285,33 @@ select#dateoptions {
   z-index: 2;
   margin-right: 0.7rem;
 }
+
+
+.datepicker-calendar-modal {
+  float: right;
+  margin-top: -2.1rem;
+  position: relative;
+  z-index: 2;
+  margin-right: 0.7rem;
+}
+.cdk-overlay-container {
+  position: fixed;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  position: absolute;
+  z-index: 9999999 !important;
+}
+.cdk-global-overlay-wrapper, .cdk-overlay-container {
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  position: absolute;
+  z-index: 9999999 !important;
+}

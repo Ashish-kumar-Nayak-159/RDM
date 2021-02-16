@@ -51,6 +51,8 @@ import { GatewayCurrentConfigurationComponent } from './gateway-control-panel/ga
 import { GatewaySettingsComponent } from './gateway-control-panel/gateway-settings/gateway-settings.component';
 import { SpecificDirectMethodComponent } from './device-control-panel/specific-direct-method/specific-direct-method.component';
 import { SpecificTwinChangeComponent } from './device-control-panel/specific-twin-change/specific-twin-change.component';
+import { DeviceMaintenanceComponent } from './device-control-panel/device-maintenance/device-maintenance.component';
+import { AccordionModule } from 'ngx-bootstrap/accordion';
 
 @NgModule({
   declarations: [
@@ -90,7 +92,8 @@ import { SpecificTwinChangeComponent } from './device-control-panel/specific-twi
     GatewayCurrentConfigurationComponent,
     GatewaySettingsComponent,
     SpecificDirectMethodComponent,
-    SpecificTwinChangeComponent
+    SpecificTwinChangeComponent,
+    DeviceMaintenanceComponent
   ],
   imports: [
     CommonModule,
@@ -108,7 +111,9 @@ import { SpecificTwinChangeComponent } from './device-control-panel/specific-twi
     NgMultiSelectDropDownModule.forRoot(),
     UiSwitchModule,
     VisualizationModule,
-    NgJsonEditorModule
+    NgJsonEditorModule,
+    AccordionModule.forRoot(),
+
   ],
   exports: [
     FilterComponent,

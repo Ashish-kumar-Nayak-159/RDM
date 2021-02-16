@@ -895,7 +895,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   addDocument() {
     let msg = '';
     this.acknowledgedAlert.metadata.files.forEach(file => {
-      if (!file.type || !file.data.url || !file.data.name) {
+      if (!file.type || !file?.data?.url || !file?.data?.name) {
         msg = 'Please select file.';
       }
     });
@@ -933,7 +933,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   acknowledgeAlert(): void {
     const files = [];
     this.acknowledgedAlert.metadata.files.forEach(file => {
-      if (file.type && file.data.url && file.data.name) {
+      if (file.type && file?.data?.url && file?.data?.name) {
         files.push(file);
       }
     });

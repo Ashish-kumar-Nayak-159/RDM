@@ -435,4 +435,28 @@ export class DeviceService {
     return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_FIRST_TELEMETRY, app), { params });
   }
 
+  getDeviceMaintenanceActivityData(app, deviceId, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        console.log(filterObj[key]);
+        params = params.set(key, filterObj[key]);
+      }
+    });
+
+    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_MAINTENANCE_DATA, app, deviceId), {params});
+  }
+
+  createDeviceMaintenanceActivityData(app, deviceId, obj) {
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_DEVICE_MAINTENANCE_DATA, app, deviceId), obj);
+  }
+
+  deleteDeviceMaintenanceActivityData(app, deviceId, maintenanceId) {
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_DEVICE_MAINTENANCE_DATA, app, deviceId, maintenanceId));
+  }
+
+  updateDeviceMaintenanceActivityData(app, deviceId, maintenanceId, obj) {
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_DEVICE_MAINTENANCE_DATA, app, deviceId, maintenanceId), obj);
+  }
+
 }

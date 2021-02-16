@@ -493,6 +493,8 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="acknowledgeAlert()">Acknowledge</button>
         <button type="button" class="btn btn-secondary add-row" (click)="closeAcknowledgementModal(true)">Cancel</button>
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isFileUploading"></i>
+
       </div>
     </div>
   </div>

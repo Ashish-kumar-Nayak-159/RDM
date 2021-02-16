@@ -68,7 +68,7 @@
                     </option>
                   </select> -->
                       <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search"
-                        (click)="onFilterSelection(this.filterObj)">
+                        (click)="onFilterSelection(this.filterObj)" [disabled]="isTelemetryDataLoading">
                         <i class="fa fa-search fa-sm"></i>
                       </button>
                     </div>

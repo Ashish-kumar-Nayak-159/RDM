@@ -91,7 +91,8 @@
             <owl-date-time #dt1></owl-date-time>
           </ng-container>
           </div>
-          <button type="button" class="btn btn-warning btn-sm mx-3 my-1" title="Search" (click)="getLatestAlerts()"><i
+          <button type="button" class="btn btn-warning btn-sm mx-3 my-1" title="Search" (click)="getLatestAlerts()"
+          [disabled]="isAlertAPILoading"><i
               class="fa fa-search fa-sm"></i></button>
           <!-- <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fa fa-trash  fa-sm"></i></button> -->
         </div>
@@ -286,7 +287,7 @@
                           </ng-container>
                           </fieldset>
                           <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Apply Filter"
-                          (click)="getDeviceTelemetryData()">Apply</button>
+                          (click)="getDeviceTelemetryData()" [disabled]="isTelemetryDataLoading">Apply</button>
                           <i  *ngIf="isTelemetryDataLoading" class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
                         </div>
                       </form>
@@ -439,7 +440,7 @@
     <div class="modal-content" *ngIf="acknowledgedAlert">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Acknowledge Alert</h5>
-        <button type="button" class="close" (click)="closeAcknowledgementModal(true)" aria-label="Close">
+        <button type="button" class="close" (click)="closeAcknowledgementModal(true)" [disabled]="isFileUploading" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -491,8 +492,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="acknowledgeAlert()">Acknowledge</button>
-        <button type="button" class="btn btn-secondary add-row" (click)="closeAcknowledgementModal(true)">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="acknowledgeAlert()" [disabled]="isFileUploading">Acknowledge</button>
+        <button type="button" class="btn btn-secondary add-row" (click)="closeAcknowledgementModal(true)" [disabled]="isFileUploading">Cancel</button>
         <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isFileUploading"></i>
 
       </div>

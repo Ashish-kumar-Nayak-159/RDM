@@ -136,7 +136,7 @@
             <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
             </ng-container>
             </fieldset>
-          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="onFilterSelection()" ><i
+          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="onFilterSelection()" [disabled]="isTelemetryLoading" ><i
             class="fa fa-search fa-sm"></i></button>
         </div>
 

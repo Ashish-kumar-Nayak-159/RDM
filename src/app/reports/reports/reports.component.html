@@ -173,8 +173,8 @@
           <ng-container *ngIf="telemetry.length > 0 && !isTelemetryLoading">
             <tr *ngFor="let telemetryObj of telemetry">
 
-              <td>{{ (filterObj.device ?
-              (filterObj.device.display_name ? filterObj.device.display_name : filterObj.device.device_id)
+              <td>{{ (deviceFilterObj ?
+              (deviceFilterObj.display_name ? deviceFilterObj.display_name : deviceFilterObj.device_id)
               : '' )}}</td>
               <td>{{ telemetryObj.local_created_date }}</td>
               <td *ngFor="let prop of selectedProps"> {{telemetryObj[prop.value.json_key]}}</td>

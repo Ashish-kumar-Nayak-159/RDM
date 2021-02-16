@@ -45,6 +45,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   selectedProps: any[] = [];
   newFilterObj: any;
   tileData: any;
+  deviceFilterObj: any;
   subscriptions: Subscription[] = [];
   @ViewChild('dtInput1', {static: false}) dtInput1: any;
   @ViewChild('dtInput2', {static: false}) dtInput2: any;
@@ -328,7 +329,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   onFilterSelection() {
-
+    this.deviceFilterObj = undefined;
     const obj = {...this.filterObj};
     let device_type: any;
     if (obj.device) {
@@ -344,7 +345,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Asset selection is required', 'View Report');
       return;
     }
-
+    this.deviceFilterObj = this.filterObj.device;
     const now = moment().utc();
     if (this.filterObj.dateOption === '5 mins') {
       obj.to_date = now.unix();
@@ -470,12 +471,12 @@ export class ReportsComponent implements OnInit, OnDestroy {
     const pdf = new jsPDF('p', 'pt', 'A3');
 
     pdf.text(this.filterObj.report_type + ' for ' +
-    (this.filterObj.device.display_name ? this.filterObj.device.display_name : this.filterObj.device.device_id) +
+    (this.deviceFilterObj.display_name ? this.deviceFilterObj.display_name : this.deviceFilterObj.device_id) +
     ' for ' + this.commonService.convertEpochToDate(this.newFilterObj.from_date) + ' to ' +
     this.commonService.convertEpochToDate(this.newFilterObj.to_date), 20, 50);
     autoTable(pdf, { html: '#dataTable1', margin: { top: 70 } });
     const now = moment().utc().unix();
-    pdf.save((this.filterObj.device.display_name ? this.filterObj.device.display_name : this.filterObj.device.device_id)
+    pdf.save((this.deviceFilterObj.display_name ? this.deviceFilterObj.display_name : this.deviceFilterObj.device_id)
            + '_' + this.filterObj.report_type + '_' + now + '.pdf');
     this.isFileDownloading = false;
   }
@@ -488,7 +489,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
       this.latestAlerts.forEach(alert => {
         data.push({
-          'Asset Name': (this.filterObj.device.display_name ? this.filterObj.device.display_name : this.filterObj.device.device_id),
+          'Asset Name': (this.deviceFilterObj.display_name ? this.deviceFilterObj.display_name : this.deviceFilterObj.device_id),
           Time: alert.local_created_date,
           Severity: alert.severity,
           Description: alert.message,
@@ -505,8 +506,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
           'Asset Name': this.filterObj.non_ip_device ?
             (this.filterObj.non_ip_device.device_display_name ? this.filterObj.non_ip_device?.device_display_name
               : this.filterObj.non_ip_device?.device_id)
-            : (this.filterObj.device ?
-            (this.filterObj.device.device_display_name ? this.filterObj.device.device_display_name : this.filterObj.device.device_id)
+            : (this.deviceFilterObj ?
+            (this.deviceFilterObj.device_display_name ? this.deviceFilterObj.device_display_name : this.deviceFilterObj.device_id)
             : '' ),
           Time: telemetryObj.local_created_date
         };

@@ -116,6 +116,18 @@ input:invalid {
   color: #858796 !important;
 }
 
+.c-remove svg {
+  fill: #858796 !important;
+}
+
+.c-remove {
+  right: auto !important;
+}
+
+.clear-all {
+  right: 1.9rem !important;
+}
+
 .selected-list .c-angle-down,
 .selected-list .c-angle-up {
   top: 42% !important;

@@ -249,6 +249,15 @@ export class CONSTANTS {
       isTitle: false
     },
     {
+      page: 'settings',
+      system_name: 'Settings',
+      url: '#device_settings',
+      display_name: 'Settings',
+      icon: 'fa fa-fw fa-cog',
+      visible: true,
+      isTitle: false
+    },
+    {
       page: 'd2c',
       system_name: 'D2C (Monitor)',
       url: null,

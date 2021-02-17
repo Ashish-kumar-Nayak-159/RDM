@@ -83,6 +83,9 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
               this.activeTab = menuObj.page;
               return;
             }
+            if (this.componentState === CONSTANTS.NON_IP_DEVICE && menuObj.page === 'settings') {
+              menuObj.visible = false;
+            }
           });
           if (!this.activeTab) {
             this.toasterService.showError('All the menu items visibility are off. Please contact administrator', 'App Selection');

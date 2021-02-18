@@ -107,6 +107,8 @@ input:invalid {
   color: #858796;
 }
 
+
+
 .c-label {
   white-space: nowrap;
   overflow: hidden;
@@ -135,6 +137,7 @@ input:invalid {
 .selected-list .c-list .c-token {
   background: transparent;
   padding: 0 !important;
+  margin-right: 20px!important;
 }
 
 .cuppa-dropdown {

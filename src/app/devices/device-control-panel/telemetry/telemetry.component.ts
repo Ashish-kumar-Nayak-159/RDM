@@ -51,12 +51,20 @@ export class TelemetryComponent implements OnInit, OnDestroy {
         data: [
           {
             name: 'Timestamp',
-            key: 'local_created_date',
+            key: 'local_message_date',
           },
           {
             name: 'Message ID',
             key: 'message_id',
           },
+          // {
+          //   name: 'IOT Hub Date',
+          //   key: 'local_iothub_date',
+          // },
+          // {
+          //   name: 'Database Record Date',
+          //   key: 'local_created_date',
+          // },
           {
             name: 'Message',
             key: undefined,
@@ -232,7 +240,11 @@ export class TelemetryComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response && response.data) {
           this.telemetry = response.data;
-          this.telemetry.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
+          this.telemetry.forEach(item => {
+            item.local_message_date = this.commonService.convertUTCDateToLocal(item.message_date);
+            // item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
+            // item.local_iothub_date = this.commonService.convertUTCDateToLocal(item.iothub_date);
+          });
 
         }
         this.isTelemetryLoading = false;

@@ -198,7 +198,7 @@
 
 <div class="modal right fade" id="configureDerivedPropModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
     <div class="modal-dialog" role="document">
-      <div class="modal-content" *ngIf="selectedProperty">
+      <div class="modal-content" *ngIf="selectedProperty && code">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Configure Property</h5>
           <button type="button" class="close"  aria-label="Close" [disabled]="isCreatePropertyLoading" (click)="onCloseModal('configureDerivedPropModal')">
@@ -210,7 +210,7 @@
           <div class="form-group">
             <label for="message-text" class="col-form-label">Dependent Properties:</label>
             <angular2-multiselect [data]="dependentProperty" id="y1AxisProperty"
-            [(ngModel)]="selectedProperty.dependent_properties" (onDeSelect)="onPropertyChecked($event)"
+            [(ngModel)]="selectedProperty.dependent_properties" (onSelect)="onPropParamAddedForFun()" (onDeSelect)="onPropertyChecked($event)"
             (onSelectAll)="selectAllProps()" (onDeSelectAll)="deselectAllProps()"
             name="property" [settings]="{
                 text: 'Select Property',
@@ -224,9 +224,9 @@
             </angular2-multiselect>
           </div>
           <div class="form-group">
-            <label for="javascript" class="col-form-label">Derived Function</label>
-            <div class="editor-container">
-              <ngx-monaco-diff-editor [options]="options" ></ngx-monaco-diff-editor>
+            <label for="javascript" class="col-form-label">Derived Function: </label>
+            <div class="editor-container" *ngIf="code">
+              <ngx-monaco-editor #jsEditor [options]="options" [(ngModel)]="code" name="code"></ngx-monaco-editor>
             </div>
           </div>
           </form>

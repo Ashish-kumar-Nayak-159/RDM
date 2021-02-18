@@ -31,13 +31,11 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
   editorOptions: JsonEditorOptions;
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   subscriptions: Subscription[] = [];
-  jsEditorOptions = { theme: 'vs-dark', language: 'javascript' };
-  code = `function calculate ()
-    {
-    }`;
-  options = {
-    theme: 'vs-dark'
-  };
+  @ViewChild('jsEditor', {static: false}) jsEditor: any;
+  code = `function calculate () {
+  return null;
+}`;
+  options: any;
   constructor(
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService,
@@ -47,6 +45,13 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.mode = 'code';
     this.editorOptions.statusBar = false;
+  }
+
+  onMonacoInit(editorInstance) {
+    setTimeout(() => {
+      console.log(editorInstance);
+      editorInstance.layout();
+    }, 50);
   }
 
   ngOnChanges(changes): void {
@@ -164,14 +169,17 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
     if (index > -1) {
       this.selectedProperty.dependent_properties.splice(index, 1);
     }
+    this.onPropParamAddedForFun();
   }
 
   selectAllProps() {
     this.selectedProperty.dependent_properties = JSON.parse(JSON.stringify(this.dependentProperty));
+    this.onPropParamAddedForFun();
   }
 
   deselectAllProps() {
     this.selectedProperty.dependent_properties = [];
+    this.onPropParamAddedForFun();
   }
 
   openAddPropertiesModal() {
@@ -339,12 +347,24 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
     this.selectedProperty = undefined;
   }
 
+  onPropParamAddedForFun() {
+    let propKeys = '';
+    this.selectedProperty.dependent_properties.forEach((prop, index) =>
+      propKeys += (prop.json_key + (this.selectedProperty.dependent_properties[index + 1] ? ',' : '')));
+    this.code =   `function calculate (` + propKeys + `) {
+  return null;
+}`;
+  }
+
   updatePropertyData() {
+    console.log(this.code);
     const index = this.properties[this.type].findIndex(prop => prop.json_key === this.selectedProperty.json_key);
     this.properties[this.type].splice(index, 1);
     if (this.propertyObj?.edit) {
+      this.propertyObj.derived_function = this.code;
       this.properties[this.type].splice(index, 0, this.propertyObj);
     } else {
+      this.selectedProperty.derived_function = this.code;
       this.properties[this.type].splice(index, 0, this.selectedProperty);
     }
     this.isCreatePropertyLoading = true;
@@ -372,6 +392,20 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     } else if (obj.for === 'Configure Property') {
       $('#configureDerivedPropModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      this.options = {
+        theme: 'vs-dark',
+        language: 'javascript'
+      };
+      if (!this.selectedProperty.derived_function) {
+        this.onPropParamAddedForFun();
+      } else {
+        this.code = this.selectedProperty.derived_function;
+      }
+      // setTimeout(() => {
+      //   if (this.jsEditor) {
+      //     this.jsEditor.editor?.layout();
+      //   }
+      // }, 50);
     } else if (obj.for === 'Edit') {
       $('#addPropertiesModal').modal({ backdrop: 'static', keyboard: false, show: true });
       this.propertyObj = JSON.parse(JSON.stringify(obj.data));
@@ -386,6 +420,8 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
   onCloseModal(id) {
     $('#' + id).modal('hide');
     this.selectedProperty = undefined;
+    this.options = undefined;
+    this.code = undefined;
   }
 
   ngOnDestroy() {

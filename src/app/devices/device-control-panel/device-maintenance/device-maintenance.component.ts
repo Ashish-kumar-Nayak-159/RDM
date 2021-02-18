@@ -149,7 +149,7 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
   openMaintenanceMessageModal(obj) {
       this.viewMaintenanceDataObj = obj;
       this.viewMaintenanceDataObj.notes.forEach(note => note.local_time = this.commonService.convertUTCDateToLocal(note.time));
-      this.viewMaintenanceDataObj.notes.reverse();
+      // this.viewMaintenanceDataObj.notes.reverse();
       this.viewMaintenanceDataObj.documents.forEach(doc => doc.data.sanitizedURL = this.sanitizeURL(doc.data.url));
       $('#maintenanceMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
@@ -163,13 +163,13 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
   openAddMaintenanceRecordModal(data = undefined) {
     if (data) {
       this.selectedMaintenanceData = JSON.parse(JSON.stringify(data));
-      this.selectedMaintenanceData.notes = [{}];
+      this.selectedMaintenanceData.notes = [{text: undefined}];
       this.selectedMaintenanceData.documents = [{}];
     } else {
-    this.selectedMaintenanceData = {
-      notes: [{}],
-      documents: [{}]
-    };
+      this.selectedMaintenanceData = {
+        notes: [{text: undefined}],
+        documents: [{}]
+      };
     }
     $('#addMaintenanceRecordModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
@@ -239,24 +239,23 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
   updateMaintenanceRecord() {
     const docs = [];
     this.selectedMaintenanceData.documents.forEach(doc => {
-      if (doc.type && doc?.data.url && doc?.data.name) {
+      if (doc.type && doc?.data?.url && doc?.data?.name) {
         docs.push(doc);
       }
     });
     const notes = [];
+    const recordObj = this.maintenanceData.find(record => record.id === this.selectedMaintenanceData.id);
+    recordObj.notes.reverse();
+    recordObj.notes.forEach(note => {
+      notes.splice(0, 0, note);
+    });
+    recordObj.notes = notes;
     this.selectedMaintenanceData.notes.forEach(note => {
       if (note.text) {
         note.time = moment().utc().toISOString();
-        notes.push(note);
+        notes.splice(0, 0, note);
       }
     });
-    const recordObj = this.maintenanceData.find(record => record.id === this.selectedMaintenanceData.id);
-    if (notes.length > 0) {
-      recordObj.notes.forEach(note => {
-        notes.splice(notes.length, 0, note);
-      });
-      recordObj.notes = notes;
-    }
     if (docs.length > 0) {
       recordObj.documents.forEach(doc => {
         docs.splice(0, 0, doc);
@@ -280,7 +279,7 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
     if (!this.selectedMaintenanceData.id) {
     const arr = [];
     this.selectedMaintenanceData.documents.forEach(doc => {
-      if (doc.type && doc?.data.url && doc?.data.name) {
+      if (doc.type && doc?.data?.url && doc?.data?.name) {
         arr.push(doc);
       }
     });
@@ -291,6 +290,8 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
         notes.push(note);
       }
     });
+    this.selectedMaintenanceData.documents = arr;
+    this.selectedMaintenanceData.notes = notes;
     this.isCreateRecordAPILoading = true;
     this.selectedMaintenanceData.gateway_id = this.device.gateway_id;
     this.selectedMaintenanceData.created_by = this.loggedInUser.email;

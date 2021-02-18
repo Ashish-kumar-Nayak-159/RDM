@@ -73,7 +73,8 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
       this.addUserObj.email = userObj.user_email;
 
       this.applicationData.hierarchy.levels.forEach((level, index) => {
-        if (level !== 'App') {
+        if (level !== 'App' && userObj.hierarchy[level]) {
+
           this.configureHierarchy[index] = userObj.hierarchy[level];
           this.onChangeOfHierarchy(index);
         }
@@ -102,9 +103,6 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     });
     let nextHierarchy = this.applicationData.hierarchy.tags;
     Object.keys(this.configureHierarchy).forEach((key, index) => {
-      console.log(index);
-      console.log(this.configureHierarchy);
-      console.log(this.configureHierarchy[index + 1]);
       if (this.configureHierarchy[index + 1]) {
         nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
         console.log(nextHierarchy);

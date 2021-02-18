@@ -39,6 +39,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getThingsModelDeviceMethod();
     this.getDocuments();
+    this.getDeviceTypeWidgets();
   }
 
   getDeviceTypeWidgets() {
@@ -198,7 +199,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
   }
 
   onClickOfViewActionIcon(type, index) {
-    this.getDeviceTypeWidgets();
+    // this.getDeviceTypeWidgets();
     this.toggleRows = {};
     this.editRecommendationStep = {};
     this.editDocuments = {};
@@ -209,6 +210,25 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
     //   this.alertObj.visualization_widgets.splice(this.alertObj.visualization_widgets.length, 0, null);
     if (type === 'Recommendations') {
       this.recommendationObj = {};
+    }
+    if (type === 'Actions') {
+      if (!this.alertObj.actions) {
+        this.alertObj.actions = {
+          email: {enabled: false},
+          whatsapp: {enabled: false},
+          sms: {enabled: false}
+        };
+      } else {
+        if (!this.alertObj.actions.email) {
+          this.alertObj.actions.email = {enabled: false};
+        }
+        if (!this.alertObj.actions.whatsapp) {
+          this.alertObj.actions.whatsapp = {enabled: false};
+        }
+        if (!this.alertObj.actions.sms) {
+          this.alertObj.actions.sms = {enabled: false};
+        }
+      }
     }
     console.log(this.alertObj);
   }
@@ -338,7 +358,11 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
     this.alertObj.visualization_widgets = [];
     this.alertObj.recommendations = [];
     this.alertObj.reference_documents = [];
-    this.alertObj.actions = {};
+    this.alertObj.actions = {
+      email: {enabled: false},
+      whatsapp: {enabled: false},
+      sms: {enabled: false}
+    };
     this.subscriptions.push(
       this.deviceTypeService.createAlertCondition(this.alertObj, this.deviceType.app, this.deviceType.name).subscribe(
       (response: any) => {

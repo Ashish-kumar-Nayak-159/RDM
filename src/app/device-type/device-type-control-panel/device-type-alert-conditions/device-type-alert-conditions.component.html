@@ -41,7 +41,7 @@
             <tr >
               <td>
                 <a href="javascript:void(0)" (click)="onToggleRows(i)">
-                <i [ngClass]="toggleRows[i] ? 'fa fa-angle-down' : 'fa fa-angle-up'"></i>
+                <i [ngClass]="toggleRows[i] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
                 </a>
               </td>
               <td><i title="{{alert.severity}}"  [style.color]="
@@ -57,9 +57,13 @@
                 <a href="javascript:void(0)" class="mr-2" title="Visualization" (click)="onClickOfViewActionIcon('Visualization', i)">
                   <img class="img-icon" src="../../../../assets/img/visualization.png">
                 </a>
-                <a href="javascript:void(0)" title="Recommendations" (click)="onClickOfViewActionIcon('Recommendations', i)"
+                <a href="javascript:void(0)" class="mr-2" title="Recommendations" (click)="onClickOfViewActionIcon('Recommendations', i)"
                 >
                   <img class="img-icon" src="../../../../assets/img/recommendation.png">
+                </a>
+                <a href="javascript:void(0)" title="Actions" (click)="onClickOfViewActionIcon('Actions', i)"
+                >
+                  <i class="fa fa-tasks"></i>
                 </a>
               </td>
               <td>
@@ -233,6 +237,34 @@
                     </span>
                   </ng-container>
                 </div>
+                </div>
+              </td>
+              <td colspan="5" *ngIf="viewType === 'Actions'">
+                <div class="row col-md-12">
+                  <h6>Actions:  <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                    title="Save" (click)="onUpdateAlertConditions()" [disabled]="deviceType.freezed"><i class="fa fa-save fa-sm"></i></button></h6>
+                </div>
+                <div class="row col-md-12">
+                  <div class="col-md-3 form-group ">
+                    <!-- <label class="form-check-label"  for="email">Email</label> -->
+                    <input type="checkbox" class="form-check-input" id="email"
+                    name="email" [(ngModel)]="alertObj.actions.email.enabled">
+                    <label class="form-check-label" for="email">Email</label>
+                  </div>
+                  <div class="col-md-3 form-group ">
+                    <!-- <label class="form-check-label"  for="email">Email</label> -->
+                    <input type="checkbox" class="form-check-input" id="whatsapp"
+                    name="whatsapp" [(ngModel)]="alertObj.actions.whatsapp.enabled">
+                    <label class="form-check-label" for="whatsapp">Whatsapp</label>
+                  </div>
+                  <div class="col-md-3 form-group "> 
+                    <!-- <label class="form-check-label"  for="email">Email</label> -->
+                    <input type="checkbox" class="form-check-input" id="sms"
+                    name="sms" [(ngModel)]="alertObj.actions.sms.enabled">
+                    <label class="form-check-label" for="sns">SMS</label>
+                  </div>
+
+
                 </div>
               </td>
             </tr>

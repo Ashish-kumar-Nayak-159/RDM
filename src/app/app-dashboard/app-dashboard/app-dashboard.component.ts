@@ -1,3 +1,4 @@
+import { environment } from './../../../environments/environment';
 import { ChartService } from 'src/app/chart/chart.service';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
 import * as moment from 'moment';
@@ -404,12 +405,14 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     const now = (moment().utc()).unix();
     obj.from_date = midnight;
     obj.to_date = now;
-    // obj.app = this.contextApp.app;
+    obj.app = this.contextApp.app;
     // this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key +
     // (this.propertyList[index + 1] ? ',' : ''));
     // obj.message_props = message_props;
     this.isFilterSelected = true;
-    // await this.getMidNightHours(obj);
+    if (environment.app === 'SopanCMS') {
+      await this.getMidNightHours(obj);
+    }
     const obj1 = {
       hierarchy: this.contextApp.user.hierarchy,
       levels: this.contextApp.hierarchy.levels,
@@ -435,9 +438,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           // const hours = this.telemetryObj['Running Hours'].split(':');
           // this.telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
           // this.telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
-          // this.getTimeDifference(
-          //   Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Hours')])),
-          //   Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Minutes')])));
+          if (environment.app === 'SopanCMS') {
+            this.getTimeDifference(
+              Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Hours')])),
+              Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Minutes')])));
+          }
       //    this.getTimeDifference(this.telemetryObj['Running Hours'], this.telemetryObj['Running Minutes']);
 
 
@@ -471,9 +476,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     // telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
     // telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
     // console.log(telemetryObj);
-    // this.getTimeDifference(
-    //   Math.floor(Number(telemetryObj[this.getPropertyKey('Running Hours')])),
-    //   Math.floor(Number(telemetryObj[this.getPropertyKey('Running Minutes')])));
+    if (environment.app === 'SopanCMS') {
+      this.getTimeDifference(
+        Math.floor(Number(telemetryObj[this.getPropertyKey('Running Hours')])),
+        Math.floor(Number(telemetryObj[this.getPropertyKey('Running Minutes')])));
+    }
     this.lastReportedTelemetryValues = telemetryObj;
     if (this.telemetryObj) {
       const interval = Math.round((moment(telemetryObj.message_date).diff(moment(this.telemetryObj.message_date), 'milliseconds')) / 1000);

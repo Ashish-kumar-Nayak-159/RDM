@@ -579,13 +579,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.selectedAlert = alert;
     this.filterObj.type = true;
     this.filterObj.sampling_format = 'minute';
-<<<<<<< HEAD
-    this.filterObj.sampling_frequency_in_mins = 5;
-    this.filterObj.aggregation_minutes = 5;
-=======
     this.filterObj.sampling_time = 1;
     this.filterObj.aggregation_minutes = 1;
->>>>>>> parent of fece7b2... sampling time key changes and made it dynamic
     this.filterObj.aggregation_format = 'AVG';
     if (this.selectedAlert?.metadata?.acknowledged_date) {
       this.selectedAlert.metadata.acknowledged_date = this.commonService.convertUTCDateToLocal(

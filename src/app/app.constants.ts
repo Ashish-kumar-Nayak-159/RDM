@@ -765,6 +765,7 @@ export class CONSTANTS {
   public static DEVICES_LIST = 'devices_list';
   public static DEVICE_MODELS_LIST = 'device_models_list';
   public static DEVICE_MODEL_DATA = 'device_model_data';
+  public static APP_USERS = 'application_users';
   public static EXPIRY_TIME = 'expiry_time';
   public static CURRENT_BREADCRUMB_STATE = 'breadcrumbState';
   public static NON_IP_DEVICES = 'Non IP Devices';

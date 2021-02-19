@@ -107,6 +107,7 @@ export class TagsComponent implements OnInit, OnDestroy {
         this.contextApp.hierarchy.levels.forEach((key, index) => {
           this.device.hierarchyString += this.device.hierarchy[key] + ( keys[index + 1] ? ' / ' : '');
         });
+        this.device.tags.device_users_arr = this.device.tags.device_manager.split(',');
         console.log(this.device);
         await this.getDeviceTypeDetail();
         this.getDeviceDetail();

@@ -54,7 +54,7 @@
         <app-overview *ngIf="activeTab === 'overview' && device" [tileData]="tileData" [device]="device"></app-overview>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'access_control'}" role="tabpanel" id="device_access_control">
-        <app-access-control *ngIf="activeTab === 'access_control'  && device"></app-access-control>
+        <app-access-control *ngIf="activeTab === 'access_control'  && device"  [device]="device"></app-access-control>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="device_device_tags">
         <app-tags *ngIf="activeTab === 'tags'  && device" [tileData]="tileData" [device]="device"></app-tags>

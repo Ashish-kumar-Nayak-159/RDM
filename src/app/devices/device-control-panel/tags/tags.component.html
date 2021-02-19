@@ -80,7 +80,7 @@
 
             <tr>
               <td>{{tileData.value}} Manager</td>
-              <td>{{device?.tags?.device_manager}}</td>
+              <td><ul><li *ngFor="let user of device?.tags?.device_users_arr">{{user}}</li></ul></td>
             </tr>
             <tr>
               <td>Model</td>

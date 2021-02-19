@@ -4,6 +4,7 @@ import { UserService } from './../../../services/user.service';
 import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application/application.service';
+import { CONSTANTS } from 'src/app/app.constants';
 declare var $: any;
 @Component({
   selector: 'app-application-users',
@@ -155,6 +156,11 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     if (!this.addUserObj.name || !this.addUserObj.email || !this.addUserObj.role ||
       Object.keys(this.addUserObj.hierarchy).length !== this.hierarchyList.length) {
       this.toasterService.showError('Please fill all the details', 'Create User');
+      return;
+    }
+    if (!CONSTANTS.EMAIL_REGEX.test(this.addUserObj.email)) {
+      this.toasterService.showError('Email address is not valid',
+        'Create User');
       return;
     }
     this.isCreateUserAPILoading = true;

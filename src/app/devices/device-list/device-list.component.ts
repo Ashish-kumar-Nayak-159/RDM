@@ -45,6 +45,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   addDeviceHierarchyArr = {};
   addDeviceConfigureHierarchy = {};
   subscriptions: Subscription[] = [];
+  appUsers: any[] = [];
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -58,6 +59,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.appUsers = this.commonService.getItemFromLocalStorage(CONSTANTS.APP_USERS);
 
   //  this.commonService.setFlag(true);
     this.route.paramMap.subscribe(async params => {
@@ -459,7 +461,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
         'Create ' + this.pageType);
         return;
     }
-    if (!CONSTANTS.EMAIL_REGEX.test(this.deviceDetail.tags.device_manager)) {
+    if (!CONSTANTS.EMAIL_REGEX.test(this.deviceDetail.tags.device_manager.user_email)) {
       this.toasterService.showError('Email address is not valid',
         'Create ' + this.pageType);
       return;
@@ -483,6 +485,12 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.deviceDetail.tags.category = this.componentState === CONSTANTS.NON_IP_DEVICE ?
     null : this.componentState;
     this.deviceDetail.tags.created_date = moment().utc().format('M/DD/YYYY h:mm:ss A');
+    this.deviceDetail.tags.device_users = {};
+    this.deviceDetail.tags.device_users[btoa(this.deviceDetail.tags.device_manager.user_email)] = {
+      user_email: this.deviceDetail.tags.device_manager.user_email,
+      user_name: this.deviceDetail.tags.device_manager.user_name
+    };
+    this.deviceDetail.tags.device_manager = this.deviceDetail.tags.device_manager.user_email;
     const methodToCall = this.componentState === CONSTANTS.NON_IP_DEVICE
     ? this.deviceService.createNonIPDevice(this.deviceDetail, this.contextApp.app)
     : this.deviceService.createDevice(this.deviceDetail, this.contextApp.app);

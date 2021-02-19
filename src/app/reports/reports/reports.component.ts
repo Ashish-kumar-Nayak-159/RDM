@@ -412,6 +412,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     delete obj.dateOption;
     delete obj.isTypeEditable;
     delete obj.type;
+    obj.order_dir = 'ASC';
     this.isTelemetryLoading = false;
     this.isFilterSelected = false;
     let method;
@@ -453,7 +454,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         if (response && response.data) {
           this.telemetry = response.data;
           this.telemetry.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
-          this.telemetry.reverse();
+          // this.telemetry.reverse();
         }
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false

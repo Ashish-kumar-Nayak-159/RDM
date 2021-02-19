@@ -80,7 +80,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     this.historyFilter.type = true;
     this.historyFilter.sampling_format = 'minute';
-    this.historyFilter.sampling_time = 1;
+    this.historyFilter.sampling_frequency_in_mins = 1;
     this.historyFilter.aggregation_minutes = 1;
     this.historyFilter.aggregation_format = 'AVG';
     if (this.propertyList) {
@@ -101,7 +101,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (type === 'aggregation') {
         this.historyFilter.aggregation_minutes = Math.floor(Number(event.target.value));
       } else {
-        this.historyFilter.sampling_time = Math.floor(Number(event.target.value));
+        this.historyFilter.sampling_frequency_in_mins = Math.floor(Number(event.target.value));
       }
     }
   }
@@ -257,7 +257,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       if (this.historyFilter.isTypeEditable) {
       if (this.historyFilter.type) {
-        if (!this.historyFilter.sampling_time || !this.historyFilter.sampling_format ) {
+        if (!this.historyFilter.sampling_frequency_in_mins || !this.historyFilter.sampling_format ) {
           this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
           return;
         } else {
@@ -270,7 +270,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
           return;
         } else {
-          delete obj.sampling_time;
+          delete obj.sampling_frequency_in_mins;
           delete obj.sampling_format;
           method = this.deviceService.getDeviceTelemetry(obj);
         }
@@ -278,7 +278,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       } else {
         delete obj.aggregation_minutes;
         delete obj.aggregation_format;
-        delete obj.sampling_time;
+        delete obj.sampling_frequency_in_mins;
         delete obj.sampling_format;
         method = this.deviceService.getDeviceTelemetry(obj);
       }
@@ -317,7 +317,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.historyFilter.device_id = this.device.device_id;
     this.historyFilter.app = this.contextApp.app;
     this.historyFilter.sampling_format = 'minute';
-    this.historyFilter.sampling_time = 1;
+    this.historyFilter.sampling_frequency_in_mins = 1;
     this.historyFilter.aggregation_minutes = 1;
     this.historyFilter.aggregation_format = 'AVG';
     this.historyFilter.type = true;

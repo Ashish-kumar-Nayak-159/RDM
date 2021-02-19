@@ -61,7 +61,7 @@
             <!-- <ui-switch size="small"  class="mr-1" [disabled]="!telemetryFilter.isTypeEditable"
             defaultBgColor="red" checkedTextColor="white" uncheckedTextColor="white"
             checkedLabel="Sampling" (valueChange)="telemetryFilter.aggregation_format = undefined; telemetryFilter.aggregation_minutes = undefined;
-            telemetryFilter.sampling_format = undefined; telemetryFilter.sampling_time = undefined;"
+            telemetryFilter.sampling_format = undefined; telemetryFilter.sampling_frequency_in_mins = undefined;"
             uncheckedLabel="Aggregation" [(ngModel)]="telemetryFilter.type" name="tpye"></ui-switch> -->
             <label class="mx-1 my-1">Sampling: </label>
             <ng-container *ngIf="!telemetryFilter.type">
@@ -81,8 +81,8 @@
             </ng-container>
             <ng-container *ngIf="telemetryFilter.type">
             <input type="number" class="form-control form-control-sm ml-1 my-1 w-7" id="minutes" min="1"
-              name="minutes" [(ngModel)]="telemetryFilter.sampling_time" placeholder="Sampling" disabled
-              (change)="onNumberChange($event, 'sampling')" title="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development.">
+              name="minutes" [(ngModel)]="telemetryFilter.sampling_frequency_in_mins" placeholder="Sampling Time in mins"
+              (change)="onNumberChange($event, 'sampling')">
               <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
             <!-- <select class="form-control form-control-sm mx-2 my-1" id="samplingFrequency" [(ngModel)]="telemetryFilter.sampling_format"
             name="samplingFrequency" style="width: 11rem!important;" disabled>

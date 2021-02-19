@@ -109,8 +109,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.filterObj.count = 10;
     this.filterObj.type = true;
     this.filterObj.sampling_format = 'minute';
-    this.filterObj.sampling_frequency_in_mins = 5;
-    this.filterObj.aggregation_minutes = 5;
+    this.filterObj.sampling_time = 1;
+    this.filterObj.aggregation_minutes = 1;
     this.filterObj.aggregation_format = 'AVG';
     await this.getDevices(this.contextApp.user.hierarchy);
 
@@ -142,7 +142,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       if (type === 'aggregation') {
         this.filterObj.aggregation_minutes = Math.floor(Number(event.target.value));
       } else {
-        this.filterObj.sampling_frequency_in_mins = Math.floor(Number(event.target.value));
+        this.filterObj.sampling_time = Math.floor(Number(event.target.value));
       }
     }
   }
@@ -579,8 +579,13 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.selectedAlert = alert;
     this.filterObj.type = true;
     this.filterObj.sampling_format = 'minute';
+<<<<<<< HEAD
     this.filterObj.sampling_frequency_in_mins = 5;
     this.filterObj.aggregation_minutes = 5;
+=======
+    this.filterObj.sampling_time = 1;
+    this.filterObj.aggregation_minutes = 1;
+>>>>>>> parent of fece7b2... sampling time key changes and made it dynamic
     this.filterObj.aggregation_format = 'AVG';
     if (this.selectedAlert?.metadata?.acknowledged_date) {
       this.selectedAlert.metadata.acknowledged_date = this.commonService.convertUTCDateToLocal(
@@ -684,7 +689,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       console.log(this.filterObj.type);
       console.log(this.filterObj);
       if (this.filterObj.type) {
-        if (!this.filterObj.sampling_frequency_in_mins || !this.filterObj.sampling_format ) {
+        if (!this.filterObj.sampling_time || !this.filterObj.sampling_format ) {
           this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
           return;
         } else {
@@ -697,7 +702,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
           return;
         } else {
-          delete filterObj.sampling_frequency_in_mins;
+          delete filterObj.sampling_time;
           delete filterObj.sampling_format;
           method = this.deviceService.getDeviceTelemetry(filterObj);
         }
@@ -705,7 +710,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     } else {
       delete filterObj.aggregation_minutes;
       delete filterObj.aggregation_format;
-      delete filterObj.sampling_frequency_in_mins;
+      delete filterObj.sampling_time;
       delete filterObj.sampling_format;
       method = this.deviceService.getDeviceTelemetry(filterObj);
     }

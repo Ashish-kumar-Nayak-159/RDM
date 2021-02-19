@@ -94,8 +94,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
       });
       this.filterObj.type = true;
       this.filterObj.sampling_format = 'minute';
-      this.filterObj.sampling_frequency_in_mins = 5;
-      this.filterObj.aggregation_minutes = 5;
+      this.filterObj.sampling_time = 1;
+      this.filterObj.aggregation_minutes = 1;
       this.filterObj.aggregation_format = 'AVG';
      // this.getLatestAlerts();
       await this.getDevices(this.contextApp.user.hierarchy);
@@ -227,7 +227,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       if (type === 'aggregation') {
         this.filterObj.aggregation_minutes = Math.floor(Number(event.target.value));
       } else {
-        this.filterObj.sampling_frequency_in_mins = Math.floor(Number(event.target.value));
+        this.filterObj.sampling_time = Math.floor(Number(event.target.value));
       }
     }
   }
@@ -422,7 +422,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }
     if (filterObj.isTypeEditable) {
     if (filterObj.type) {
-      if (!filterObj.sampling_frequency_in_mins || !filterObj.sampling_format ) {
+      if (!filterObj.sampling_time || !filterObj.sampling_format ) {
         this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
         return;
       } else {
@@ -435,7 +435,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
         return;
       } else {
-        delete obj.sampling_frequency_in_mins;
+        delete obj.sampling_time;
         delete obj.sampling_format;
         method = this.deviceService.getDeviceTelemetry(obj);
       }
@@ -443,7 +443,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     } else {
       delete obj.aggregation_minutes;
       delete obj.aggregation_format;
-      delete obj.sampling_frequency_in_mins;
+      delete obj.sampling_time;
       delete obj.sampling_format;
       method = this.deviceService.getDeviceTelemetry(obj);
     }

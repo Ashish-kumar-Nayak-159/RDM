@@ -85,7 +85,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
     }
     this.telemetryFilter.type = true;
     this.telemetryFilter.sampling_format = 'minute';
-    this.telemetryFilter.sampling_frequency_in_mins = 5;
+    this.telemetryFilter.sampling_time = 1;
 
     this.telemetryFilter.count = 10;
     this.telemetryFilter.app = this.device?.tags?.app;
@@ -222,7 +222,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
     }
     if (this.telemetryFilter.isTypeEditable) {
 
-      if (!this.telemetryFilter.sampling_frequency_in_mins || !this.telemetryFilter.sampling_format ) {
+      if (!this.telemetryFilter.sampling_time || !this.telemetryFilter.sampling_format ) {
         this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
         return;
       } else {
@@ -279,7 +279,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
       if (type === 'aggregation') {
         this.telemetryFilter.aggregation_minutes = Math.floor(Number(event.target.value));
       } else {
-        this.telemetryFilter.sampling_frequency_in_mins = Math.floor(Number(event.target.value));
+        this.telemetryFilter.sampling_time = Math.floor(Number(event.target.value));
       }
     }
   }

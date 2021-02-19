@@ -75,15 +75,15 @@
 
           <div class="form-group form-inline my-1">
             <input type="checkbox" class="mx-1 my-1 big-checkbox" id="checkbox" min="1"
-            name="checkbox" [(ngModel)]="historyFilter.isTypeEditable" (change)="historyFilter.aggregation_format = 'AVG'; historyFilter.aggregation_minutes = 5;
-            historyFilter.sampling_format = 'minute'; historyFilter.sampling_frequency_in_mins = 5;
+            name="checkbox" [(ngModel)]="historyFilter.isTypeEditable" (change)="historyFilter.aggregation_format = 'AVG'; historyFilter.aggregation_minutes = 1;
+            historyFilter.sampling_format = 'minute'; historyFilter.sampling_time = 1;
             ">
 
             <fieldset [disabled]="!historyFilter.isTypeEditable" class="form-group form-inline my-1">
             <ui-switch   class="mr-1" [disabled]="!historyFilter.isTypeEditable"
             defaultBgColor="#f6c23e" checkedTextColor="white" uncheckedTextColor="white"
-            checkedLabel="Sampling Frequency" (valueChange)="historyFilter.aggregation_format = 'AVG'; historyFilter.aggregation_minutes = 5;
-            historyFilter.sampling_format = 'minute'; historyFilter.sampling_frequency_in_mins = 5;
+            checkedLabel="Sampling Frequency" (valueChange)="historyFilter.aggregation_format = 'AVG'; historyFilter.aggregation_minutes = 1;
+            historyFilter.sampling_format = 'minute'; historyFilter.sampling_time = 1;
             "
             uncheckedLabel="Aggregation" [(ngModel)]="historyFilter.type" name="tpye"></ui-switch>
 
@@ -104,8 +104,8 @@
             </ng-container>
             <ng-container *ngIf="historyFilter.type">
             <input type="number" class="form-control form-control-sm ml-1 my-1 w-7" id="minutes" min="1"
-              name="minutes" [(ngModel)]="historyFilter.sampling_frequency_in_mins"
-              placeholder="Sampling Time in mins" (change)="onNumberChange($event, 'sampling')">
+              name="minutes" [(ngModel)]="historyFilter.sampling_time" title="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development."
+              placeholder="Sampling" disabled (change)="onNumberChange($event, 'sampling')">
             <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
             <!-- <select class="form-control form-control-sm mx-1 my-1" id="samplingFrequency" [(ngModel)]="historyFilter.sampling_format"
             name="samplingFrequency" style="width: 11rem!important;" disabled>

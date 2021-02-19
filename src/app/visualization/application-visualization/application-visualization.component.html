@@ -245,15 +245,15 @@
 
                         <div class="form-group form-inline my-1">
                           <input type="checkbox" class="mx-1 my-1 big-checkbox" id="checkbox" min="1"
-                          name="checkbox" [(ngModel)]="filterObj.isTypeEditable" (change)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 5;
-                          filterObj.sampling_format = 'minute'; filterObj.sampling_frequency_in_mins = 5;
+                          name="checkbox" [(ngModel)]="filterObj.isTypeEditable" (change)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
+                          filterObj.sampling_format = 'minute'; filterObj.sampling_time = 1;
                           ">
 
                           <fieldset [disabled]="!filterObj.isTypeEditable" class="form-group form-inline my-1">
                           <ui-switch   class="mr-1" [disabled]="!filterObj.isTypeEditable"
                           defaultBgColor="#f6c23e" checkedTextColor="white" uncheckedTextColor="white"
-                          checkedLabel="Sampling Frequency" (valueChange)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 5;
-                          filterObj.sampling_format = 'minute'; filterObj.sampling_frequency_in_mins = 5;
+                          checkedLabel="Sampling Frequency" (valueChange)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
+                          filterObj.sampling_format = 'minute'; filterObj.sampling_time = 1;
                           "
                           uncheckedLabel="Aggregation" [(ngModel)]="filterObj.type" name="tpye"></ui-switch>
 
@@ -274,8 +274,8 @@
                           </ng-container>
                           <ng-container *ngIf="filterObj.type">
                           <input type="number" class="form-control form-control-sm ml-1 my-1 w-7" id="minutes" min="1"
-                            name="minutes" [(ngModel)]="filterObj.sampling_frequency_in_mins" placeholder="Sampling Time in mins"
-                            (change)="onNumberChange($event, 'sampling')">
+                            name="minutes" [(ngModel)]="filterObj.sampling_time" placeholder="Sampling" disabled
+                            (change)="onNumberChange($event, 'sampling')" title="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development.">
                           <!-- <select class="form-control form-control-sm mx-1 my-1" id="samplingFrequency" [(ngModel)]="filterObj.sampling_format"
                           name="samplingFrequency" style="width: 11rem!important;" disabled>
                           <option [ngValue]="undefined">Frequency</option>

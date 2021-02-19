@@ -80,8 +80,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     this.historyFilter.type = true;
     this.historyFilter.sampling_format = 'minute';
-    this.historyFilter.sampling_frequency_in_mins = 1;
-    this.historyFilter.aggregation_minutes = 1;
+    this.historyFilter.sampling_frequency_in_mins = 5;
+    this.historyFilter.aggregation_minutes = 5;
     this.historyFilter.aggregation_format = 'AVG';
     if (this.propertyList) {
       this.propertyList.forEach(item => {
@@ -317,8 +317,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.historyFilter.device_id = this.device.device_id;
     this.historyFilter.app = this.contextApp.app;
     this.historyFilter.sampling_format = 'minute';
-    this.historyFilter.sampling_frequency_in_mins = 1;
-    this.historyFilter.aggregation_minutes = 1;
+    this.historyFilter.sampling_frequency_in_mins = 5;
+    this.historyFilter.aggregation_minutes = 5;
     this.historyFilter.aggregation_format = 'AVG';
     this.historyFilter.type = true;
     this.chartTitle = '';

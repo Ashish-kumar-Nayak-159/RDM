@@ -94,8 +94,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
       });
       this.filterObj.type = true;
       this.filterObj.sampling_format = 'minute';
-      this.filterObj.sampling_frequency_in_mins = 1;
-      this.filterObj.aggregation_minutes = 1;
+      this.filterObj.sampling_frequency_in_mins = 5;
+      this.filterObj.aggregation_minutes = 5;
       this.filterObj.aggregation_format = 'AVG';
      // this.getLatestAlerts();
       await this.getDevices(this.contextApp.user.hierarchy);

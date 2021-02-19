@@ -85,7 +85,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
     }
     this.telemetryFilter.type = true;
     this.telemetryFilter.sampling_format = 'minute';
-    this.telemetryFilter.sampling_frequency_in_mins = 1;
+    this.telemetryFilter.sampling_frequency_in_mins = 5;
 
     this.telemetryFilter.count = 10;
     this.telemetryFilter.app = this.device?.tags?.app;

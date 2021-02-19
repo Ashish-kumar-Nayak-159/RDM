@@ -109,8 +109,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.filterObj.count = 10;
     this.filterObj.type = true;
     this.filterObj.sampling_format = 'minute';
-    this.filterObj.sampling_frequency_in_mins = 1;
-    this.filterObj.aggregation_minutes = 1;
+    this.filterObj.sampling_frequency_in_mins = 5;
+    this.filterObj.aggregation_minutes = 5;
     this.filterObj.aggregation_format = 'AVG';
     await this.getDevices(this.contextApp.user.hierarchy);
 
@@ -579,8 +579,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.selectedAlert = alert;
     this.filterObj.type = true;
     this.filterObj.sampling_format = 'minute';
-    this.filterObj.sampling_frequency_in_mins = 1;
-    this.filterObj.aggregation_minutes = 1;
+    this.filterObj.sampling_frequency_in_mins = 5;
+    this.filterObj.aggregation_minutes = 5;
     this.filterObj.aggregation_format = 'AVG';
     if (this.selectedAlert?.metadata?.acknowledged_date) {
       this.selectedAlert.metadata.acknowledged_date = this.commonService.convertUTCDateToLocal(

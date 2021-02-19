@@ -245,15 +245,15 @@
 
                         <div class="form-group form-inline my-1">
                           <input type="checkbox" class="mx-1 my-1 big-checkbox" id="checkbox" min="1"
-                          name="checkbox" [(ngModel)]="filterObj.isTypeEditable" (change)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
-                          filterObj.sampling_format = 'minute'; filterObj.sampling_frequency_in_mins = 1;
+                          name="checkbox" [(ngModel)]="filterObj.isTypeEditable" (change)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 5;
+                          filterObj.sampling_format = 'minute'; filterObj.sampling_frequency_in_mins = 5;
                           ">
 
                           <fieldset [disabled]="!filterObj.isTypeEditable" class="form-group form-inline my-1">
                           <ui-switch   class="mr-1" [disabled]="!filterObj.isTypeEditable"
                           defaultBgColor="#f6c23e" checkedTextColor="white" uncheckedTextColor="white"
-                          checkedLabel="Sampling Frequency" (valueChange)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
-                          filterObj.sampling_format = 'minute'; filterObj.sampling_frequency_in_mins = 1;
+                          checkedLabel="Sampling Frequency" (valueChange)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 5;
+                          filterObj.sampling_format = 'minute'; filterObj.sampling_frequency_in_mins = 5;
                           "
                           uncheckedLabel="Aggregation" [(ngModel)]="filterObj.type" name="tpye"></ui-switch>
 

@@ -22,6 +22,7 @@ export class HeaderComponent implements OnInit, OnChanges {
   blobToken = environment.blobKey;
   blobStorageURL = environment.blobURL;
   constantData = CONSTANTS;
+  isResetPassword = false;
 
   constructor(
     private router: Router,
@@ -100,6 +101,14 @@ export class HeaderComponent implements OnInit, OnChanges {
         };
       }
     }
+  }
+
+  openChangePasswordModal() {
+    this.isResetPassword = true;
+    $('#changePasswordModal').modal({
+      backdrop: 'static',
+      keyboard: false
+    });
   }
 
   redirectToFirstMenu() {

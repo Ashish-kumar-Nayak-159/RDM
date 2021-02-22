@@ -98,12 +98,17 @@
           <i class="fa fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
           Profile
         </a>
+        <a class="dropdown-item" href="javascript:void(0)" (click)="openChangePasswordModal()">
+          <i class="fa fa-key fa-sm fa-fw mr-2 text-gray-400"></i>
+          Change Password
+        </a>
          <a class="dropdown-item" href="javascript:void(0)">
           <i class="fa fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
           Activity Log
         </a>
-        <ng-container *ngIf="contextApp?.user?.role === constantData.APP_ADMIN_ROLE">
         <div class="dropdown-divider"></div>
+        <ng-container *ngIf="contextApp?.user?.role === constantData.APP_ADMIN_ROLE">
+
         <a
         class="dropdown-item" [routerLink]="['applications', this.contextApp?.app, 'settings']" routerLinkActive="active">
           <i class="fa fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -120,7 +125,7 @@
         <div class="dropdown-divider"></div>
         </ng-container>
         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-          <i class="fa fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+          <i class="fa fa-sign-out fa-sm fa-fw mr-2 text-gray-400"></i>
           Logout
         </a>
       </div>
@@ -217,3 +222,6 @@
   </ul>
 
       </nav>
+      <div id="changePasswordModal" class="modal fade">
+        <app-reset-password [isFirstTimeLogin]="false" [loginData]="userData" *ngIf="isResetPassword"></app-reset-password>
+      </div>

@@ -59,7 +59,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.appUsers = this.commonService.getItemFromLocalStorage(CONSTANTS.APP_USERS);
+    this.getApplicationUsers();
 
   //  this.commonService.setFlag(true);
     this.route.paramMap.subscribe(async params => {
@@ -221,6 +221,17 @@ export class DeviceListComponent implements OnInit, OnDestroy {
 
     });
     console.log(this.deviceFilterObj);
+  }
+
+  getApplicationUsers() {
+    this.appUsers = [];
+    this.subscriptions.push(this.applicationService.getApplicationUsers(this.contextApp.app).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.appUsers = response.data;
+        }
+      }
+    ));
   }
 
   onChangeOfHierarchy(i) {

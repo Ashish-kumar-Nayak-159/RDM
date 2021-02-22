@@ -1,8 +1,8 @@
 
 <div class="mt-1">
   <div class="card" id="{{chartConfig.chartId}}">
-    <div class="card-header py-3">
-      <h6 class="col-md-9 m-0 font-weight-bold live-widget-title">
+    <div class="card-header ">
+      <h6 class="m-0 font-weight-bold live-widget-title" [ngClass]="!device ? 'col-md-10' : 'col-md-12'" >
         {{chartConfig.widgetTitle}}
       </h6>
       <a *ngIf="!device" [class.disabled]="chartConfig.freezed" class="float-right pull-right col-md-1 mt-n4" href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()"><i class="fa fa-close"></i></a>

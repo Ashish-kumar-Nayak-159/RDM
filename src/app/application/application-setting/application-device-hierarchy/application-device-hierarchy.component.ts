@@ -24,6 +24,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
   hierarchyArr = {};
   configureHierarchy = {};
   apiSubscriptions: Subscription[] = [];
+  isAppSetingsEditable = false;
   constructor(
     private toasterService: ToasterService,
     private applicationService: ApplicationService
@@ -194,6 +195,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
           this.onCloseModal();
         }
         this.saveHierarchyAPILoading = false;
+        this.isAppSetingsEditable = false;
         this.applicationService.refreshAppData.emit();
       }, (error) => {
         this.toasterService.showError(error.message, 'Save Device Hierarchy');
@@ -234,6 +236,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
   onCloseModal() {
     this.selectedHierarchy = undefined;
     $('#confirmMessageModal').modal('hide');
+    this.isAppSetingsEditable = false;
   }
 
   onCancelClick() {
@@ -245,6 +248,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
     if (this.applicationData?.hierarchy?.levels.length > 1) {
       this.hierarchyArr['1'] = Object.keys(this.applicationData.hierarchy.tags);
     }
+    this.isAppSetingsEditable = false;
   }
 
   ngOnDestroy() {

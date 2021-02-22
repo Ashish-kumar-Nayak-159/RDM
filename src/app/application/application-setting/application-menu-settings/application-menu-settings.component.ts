@@ -19,6 +19,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
   activeTab = 'main-menu';
   toggleRows: any = {};
   apiSubscriptions: Subscription[] = [];
+  isAppSettingsEditable = false;
   constructor(
     private toasterService: ToasterService,
     private applicationService: ApplicationService,
@@ -169,6 +170,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
 
   onCancelClick() {
     this.applicationData = JSON.parse(JSON.stringify(this.originalApplicationData));
+    this.isAppSettingsEditable = false;
   }
 
   ngOnDestroy() {

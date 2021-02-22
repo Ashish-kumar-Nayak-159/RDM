@@ -18,6 +18,7 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
   selectedRole: any;
   apiSubscriptions: Subscription[] = [];
   forceUpdate = false;
+  isAppSetingsEditable = false;
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService
@@ -67,6 +68,7 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
         this.toasterService.showSuccess(response.message, 'Save Device Hierarchy');
         this.saveRoleAPILoading = false;
         this.forceUpdate = false;
+        this.isAppSetingsEditable = false;
         this.applicationService.refreshAppData.emit();
       }, (error) => {
         this.toasterService.showError(error.message, 'Save Device Hierarchy');
@@ -95,10 +97,12 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
   onCloseModal() {
     this.selectedRole = undefined;
     $('#confirmMessageModal').modal('hide');
+    this.isAppSetingsEditable = false;
   }
 
   onCancelClick() {
     this.applicationData = JSON.parse(JSON.stringify(this.originalApplicationData));
+    this.isAppSetingsEditable = false;
   }
 
   ngOnDestroy() {

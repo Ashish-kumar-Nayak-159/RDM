@@ -1,4 +1,11 @@
-
+<div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-3">
+  <h5 class="mb-0 text-gray-800">Application Menu Settings
+    <a href="javascript:void(0)" title="Edit Tags" *ngIf="!isAppSettingsEditable" title="Edit"
+      (click)="isAppSettingsEditable = true;"><i class="fa fa-edit"></i></a>
+    <a href="javascript:void(0)" title="Cancel" *ngIf="isAppSettingsEditable" title="Cancel"
+      (click)="onCancelClick();"><i class="fa fa-times"></i></a>
+  </h5>
+</div>
 <accordion class="mb-2"  [closeOthers]="'true'">
   <accordion-group heading="" [panelClass]="'customClass'">
     <ng-container accordion-heading>
@@ -23,9 +30,9 @@
               <tr>
                 <th colspan="5">
                   <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                    [disabled]="saveMenuSettingAPILoading">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x"
+                    [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x"
                       *ngIf="saveMenuSettingAPILoading"></i></button>
-                  <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()">CANCEL</button>
+                  <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()" [disabled]="!isAppSettingsEditable">CANCEL</button>
                 </th>
 
               </tr>
@@ -43,8 +50,10 @@
                 <td>{{item.page}}</td>
                 <td>{{item.system_name}}</td>
                 <td><input type="text" class="form-control" name="display_name_main_menu{{configIndex}}" id="display_name_main_menu{{configIndex}}"
-                    [(ngModel)]="item.display_name" /></td>
-                <td><input type="checkbox" name="visible{{configIndex}}"
+                    [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/>
+
+                  </td>
+                <td><input type="checkbox" name="visible{{configIndex}}" [disabled]="!isAppSettingsEditable"
                     id="visible{{configIndex}}" [(ngModel)]="item.visible" /></td>
 
               </tr>
@@ -57,7 +66,7 @@
                     </div>
                     <div class="col-md-5">
                       <input type="text" class="form-control form-control-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
-                        placeholder="Enter {{control.name}}">
+                        placeholder="Enter {{control.name}}" [disabled]="!isAppSettingsEditable">
                     </div>
                   </ng-container>
                   </div>
@@ -91,9 +100,9 @@
               <tr>
                 <th colspan="5">
                   <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                    [disabled]="saveMenuSettingAPILoading">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x"
+                    [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x"
                       *ngIf="saveMenuSettingAPILoading"></i></button>
-                  <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()">CANCEL</button>
+                  <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()" [disabled]="!isAppSettingsEditable">CANCEL</button>
                 </th>
 
               </tr>
@@ -103,8 +112,8 @@
                 <tr *ngIf="!item.isTitle">
                   <td>{{item.system_name}}</td>
                   <td><input type="text" class="form-control" name="display_name_device{{configIndex}}" id="display_name_device{{configIndex}}"
-                      [(ngModel)]="item.display_name" /></td>
-                  <td><input type="checkbox" name="visible{{configIndex}}"
+                      [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/></td>
+                  <td><input type="checkbox" name="visible{{configIndex}}" [disabled]="!isAppSettingsEditable"
                       id="visible{{configIndex}}" [(ngModel)]="item.visible" /></td>
                 </tr>
               </ng-container>
@@ -135,9 +144,9 @@
               <tr>
                 <th colspan="5">
                   <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                    [disabled]="saveMenuSettingAPILoading">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x"
+                    [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x"
                       *ngIf="saveMenuSettingAPILoading"></i></button>
-                  <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()">CANCEL</button>
+                  <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()" [disabled]="!isAppSettingsEditable">CANCEL</button>
                 </th>
               </tr>
             </tfoot>
@@ -146,8 +155,8 @@
                 <tr *ngIf="!item.isTitle">
                   <td>{{item.system_name}}</td>
                   <td><input type="text" class="form-control" name="display_name_device{{configIndex}}" id="display_name_device{{configIndex}}"
-                      [(ngModel)]="item.display_name" /></td>
-                  <td><input type="checkbox" name="visible{{configIndex}}"
+                      [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" /></td>
+                  <td><input type="checkbox" name="visible{{configIndex}}" [disabled]="!isAppSettingsEditable"
                       id="visible{{configIndex}}" [(ngModel)]="item.visible" /></td>
                 </tr>
               </ng-container>
@@ -178,9 +187,9 @@
               <tr>
                 <th colspan="5">
                   <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
-                    [disabled]="saveMenuSettingAPILoading">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x"
+                    [disabled]="saveMenuSettingAPILoading || !isAppSettingsEditable">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x"
                       *ngIf="saveMenuSettingAPILoading"></i></button>
-                  <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()">CANCEL</button>
+                  <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()" [disabled]="!isAppSettingsEditable">CANCEL</button>
                 </th>
 
               </tr>
@@ -190,8 +199,8 @@
                 <tr *ngIf="!item.isTitle">
                   <td>{{item.system_name}}</td>
                   <td><input type="text" class="form-control" name="display_name_device_type{{configIndex}}" id="display_name_device_type{{configIndex}}"
-                      [(ngModel)]="item.display_name" /></td>
-                  <td><input type="checkbox" name="visible{{configIndex}}"
+                      [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/></td>
+                  <td><input type="checkbox" name="visible{{configIndex}}" [disabled]="!isAppSettingsEditable"
                       id="visible{{configIndex}}" [(ngModel)]="item.visible" /></td>
                 </tr>
               </ng-container>

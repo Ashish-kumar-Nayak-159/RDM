@@ -1,3 +1,11 @@
+<div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-3">
+  <h5 class="mb-0 text-gray-800">Application Metadata
+    <a href="javascript:void(0)" title="Edit Tags" *ngIf="!isMetadataEditable" title="Edit"
+      (click)="isMetadataEditable = true;"><i class="fa fa-edit"></i></a>
+    <a href="javascript:void(0)" title="Cancel" *ngIf="isMetadataEditable" title="Cancel"
+      (click)="onCancelClick();"><i class="fa fa-times"></i></a>
+  </h5>
+</div>
 <div class="col-6">
 <table class="table table-bordered table-striped" cellspacing="0">
   <!--<thead>
@@ -9,11 +17,11 @@
   </thead>-->
   <tfoot>
     <tr class="bg-transparent text-white">
-      <th colspan="3">
+      <th colspan="3" >
         <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="onSaveMetadata()"
-        [disabled]="saveMetadataAPILoading || isFileUploading">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMetadataAPILoading || isFileUploading"></i></button>
+        [disabled]="saveMetadataAPILoading || isFileUploading || !isMetadataEditable">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMetadataAPILoading || isFileUploading"></i></button>
         <button type="button" class="btn btn-white btn-sm mx-1 my-1"
-        (click)="onCancelClick();">
+        (click)="onCancelClick();" [disabled]="!isMetadataEditable">
         CANCEL</button>
       </th>
 
@@ -33,24 +41,24 @@
       <td>Header Logo</td>
       <td>
         {{applicationData?.metadata?.header_logo ? applicationData?.metadata?.header_logo.name : 'Not yet uploaded'}}
-        <input type="file"  (change)="onHeaderLogoFileSelected($event.target.files)" #headerFileInput
-        class="form-control" id="app_logo" name="app_logo">
+        <input *ngIf="isMetadataEditable" type="file"  (change)="onHeaderLogoFileSelected($event.target.files)" #headerFileInput
+        class="form-control" id="app_logo" name="app_logo" accept=".jpeg,.png,.svg">
       </td>
     </tr>
     <tr>
 
       <td>App Logo</td>
       <td>{{applicationData?.metadata?.logo ? applicationData?.metadata?.logo.name : 'Not yet uploaded'}}
-        <input  type="file"  (change)="onLogoFileSelected($event.target.files)" #logoFileInput
-        class="form-control" id="app_logo" name="app_logo">
+        <input  *ngIf="isMetadataEditable"  type="file"  (change)="onLogoFileSelected($event.target.files)" #logoFileInput
+        class="form-control" id="app_logo" name="app_logo" accept=".jpeg,.png,.svg">
       </td>
     </tr>
     <tr class="bg-white">
       <!--<td><a href="#">Work 3</a></td>-->
       <td>App Icon</td>
       <td>{{applicationData?.metadata?.icon ? applicationData?.metadata?.icon.name : 'Not yet uploaded'}}
-        <input type="file"  (change)="onIconFileSelected($event.target.files)" #iconFileInput
-        class="form-control" id="app_logo" name="app_logo">
+        <input  *ngIf="isMetadataEditable"  type="file"  (change)="onIconFileSelected($event.target.files)" #iconFileInput
+        class="form-control" id="app_logo" name="app_logo" accept=".jpeg,.png,.svg">
       </td>
     </tr>
   </tbody>

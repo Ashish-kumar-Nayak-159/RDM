@@ -19,6 +19,7 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   @ViewChild('headerFileInput') headerFileInput: ElementRef;
   @ViewChild('logoFileInput') logoFileInput: ElementRef;
   @ViewChild('iconFileInput') iconFileInput: ElementRef;
+  isMetadataEditable = false;
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -94,6 +95,7 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
     if (this.iconFileInput) {
       this.logoFileInput.nativeElement.value = '';
     }
+    this.isMetadataEditable = false;
   }
 
   ngOnDestroy() {

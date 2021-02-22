@@ -115,7 +115,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
         'Access Control');
       return;
     }
-    if (this.device.tags.device_users[this.selectedUser.user_email] ) {
+    if (this.device.tags.device_users[btoa(this.selectedUser.user_email)] ) {
       this.toasterService.showError('This user already has access of this device',
         'Access Control');
       return;
@@ -141,8 +141,12 @@ export class AccessControlComponent implements OnInit, OnChanges {
     //     keys.splice(index, 1);
     //   }
     // });
-    this.device.tags.device_users[this.deviceUserForDelete] = null;
     const keys = Object.keys(this.device?.tags?.device_users);
+    if (keys.length === 1) {
+      this.toasterService.showError('At least one user is required', 'Access control');
+      return;
+    }
+    this.device.tags.device_users[this.deviceUserForDelete] = null;
     const index = keys.findIndex(key => key === this.deviceUserForDelete);
     keys.splice(index, 1);
     console.log(this.device.tags.device_users);

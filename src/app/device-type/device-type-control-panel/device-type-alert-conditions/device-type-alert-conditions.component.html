@@ -114,7 +114,7 @@
                   </ng-container>
                   </div>
                 </div>
-                <div class="col-12 mt-2" *ngIf="alertObj?.visualization_widgets?.length > 0">
+                <div class="row col-12 mt-2" *ngIf="alertObj?.visualization_widgets?.length > 0">
                   <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
                     <ng-container *ngFor="let item of alertObj.visualization_widgets; let index = index">
                       <span class="tag" >
@@ -240,11 +240,11 @@
                 </div>
               </td>
               <td colspan="5" *ngIf="viewType === 'Actions'">
-                <div class="row col-md-12">
+                <div class="col-md-12">
                   <h6>Actions:  <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
                     title="Save" (click)="onUpdateAlertConditions()" [disabled]="deviceType.freezed"><i class="fa fa-save fa-sm"></i></button></h6>
                 </div>
-                <div class="row col-md-12">
+                <div class="row col-md-12 mt-2 ml-2">
                   <div class="col-md-3 form-group ">
                     <!-- <label class="form-check-label"  for="email">Email</label> -->
                     <input type="checkbox" class="form-check-input" id="email"

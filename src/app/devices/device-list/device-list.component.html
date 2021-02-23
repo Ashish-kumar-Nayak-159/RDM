@@ -84,8 +84,55 @@
 <div class="mb-4 ">
 
   <div class="">
-   <app-common-table *ngIf="tableConfig" [tableData]="devicesList" [tableConfig]="tableConfig" [isTableFilterSelected]="isFilterSelected"
-   [isTableDataLoading]="isDeviceListLoading" (viewMessageEvent)="onTableFunctionCall($event)"></app-common-table>
+    <div class="table-responsive">
+      <table class="table table-bordered  table-striped" id="dataTable" width="100%" cellspacing="0">
+        <thead  class="bg-secondary text-white">
+          <th>{{(tileData && tileData[1] ? tileData[1]?.value : '') + ' Name' }}</th>
+          <th>{{(tileData && tileData[1] ? tileData[1]?.value : '') + ' Manager' }}</th>
+          <th>Hierarchy</th>
+          <th *ngIf="componentState === constantData.NON_IP_DEVICE">Reporting Via GW</th>
+          <th>Actions</th>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="devicesList.length > 0 && !isDeviceListLoading && isFilterSelected">
+            <tr *ngFor="let device of devicesList">
+              <td>{{device.display_name}}</td>
+              <td>
+                <ul >
+                  <li *ngFor="let user of device.device_manager_users">{{user}}</li>
+                </ul>
+                <!-- <span *ngIf="device.device_manager_users?.length === 1">{{device.device_manager_users[0]}}</span> -->
+              </td>
+              <td>{{device.hierarchyString}}</td>
+              <td *ngIf="componentState === constantData.NON_IP_DEVICE">{{device.gateway_display_name}}</td>
+              <td><a  href="javascript:void(0)" (click)="onTableFunctionCall(device)" title="View Control Panel" >
+                <i class="fa fa-fw fa-table"></i></a></td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading && isFilterSelected">
+            <tr>
+              <td [attr.colspan]="componentState === constantData.NON_IP_DEVICE ? '5' : '4'">
+                No {{pageType.toLowerCase()}} data found.
+              </td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading && !isFilterSelected">
+            <tr>
+              <td [attr.colspan]="componentState === constantData.NON_IP_DEVICE ? '5' : '4'">Select filter and press search button to load the {{tableConfig.type}} data.</td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="isDeviceListLoading">
+            <tr>
+              <td [attr.colspan]="componentState === constantData.NON_IP_DEVICE ? '5' : '4'">
+                <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+   <!-- <app-common-table *ngIf="tableConfig" [tableData]="devicesList" [tableConfig]="tableConfig" [isTableFilterSelected]="isFilterSelected"
+   [isTableDataLoading]="isDeviceListLoading" (viewMessageEvent)="onTableFunctionCall($event)"></app-common-table> -->
   </div>
 </div>
 </div>

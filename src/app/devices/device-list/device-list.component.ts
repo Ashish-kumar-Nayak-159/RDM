@@ -396,6 +396,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
             if (!item.display_name) {
               item.display_name = item.device_id;
             }
+            item.device_manager_users = item.device_manager.split(',');
             if (this.gateways?.length > 0) {
               item.gateway_display_name = this.gateways.filter(gateway => gateway.device_id === item.gateway_id)[0]?.display_name;
             }
@@ -524,22 +525,20 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   onTableFunctionCall(obj) {
     console.log(obj);
     console.log(this.pageType);
-    if (obj.type === this.pageType.toLowerCase()) {
-        if (this.gatewayId) {
-          this.router.navigate(['applications', this.contextApp.app,
-          'nonIPDevices',
-          obj.data.device_id, 'control-panel']);
-        } else {
-          if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
-            this.router.navigate(['applications', this.contextApp.app,
-          'nonIPDevices',
-          obj.data.device_id, 'control-panel']);
-          } else {
-            this.router.navigate(['applications', this.contextApp.app,
-            (this.pageType.toLowerCase() + 's') ,
-            obj.data.device_id, 'control-panel']);
-          }
-        }
+    if (this.gatewayId) {
+      this.router.navigate(['applications', this.contextApp.app,
+      'nonIPDevices',
+      obj.device_id, 'control-panel']);
+    } else {
+      if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+        this.router.navigate(['applications', this.contextApp.app,
+      'nonIPDevices',
+      obj.device_id, 'control-panel']);
+      } else {
+        this.router.navigate(['applications', this.contextApp.app,
+        (this.pageType.toLowerCase() + 's') ,
+        obj.device_id, 'control-panel']);
+      }
     }
   }
 

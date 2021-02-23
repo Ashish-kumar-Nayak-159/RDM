@@ -161,6 +161,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
   updateDeviceData() {
     this.isUpdateAPILoading = true;
     let methodToCall;
+    this.device['sync_with_cache'] = true;
     if (this.pageType === 'nonipdevices') {
       methodToCall = this.deviceService.updateNonIPDeviceTags(this.device, this.contextApp.app);
     } else {

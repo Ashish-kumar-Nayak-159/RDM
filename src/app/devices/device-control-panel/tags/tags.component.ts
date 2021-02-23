@@ -270,7 +270,8 @@ export class TagsComponent implements OnInit, OnDestroy {
     const obj = {
       device_id: this.device.device_id,
       display_name: this.device.display_name,
-      tags: this.device.tags
+      tags: this.device.tags,
+      sync_with_cache: this.device?.tags?.display_name !== this.originalDevice?.tags?.display_name
     };
     let methodToCall;
     if (this.pageType === 'nonipdevices') {

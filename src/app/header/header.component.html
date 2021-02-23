@@ -222,6 +222,5 @@
   </ul>
 
       </nav>
-      <div id="changePasswordModal" class="modal fade">
-        <app-reset-password [isFirstTimeLogin]="false" [loginData]="userData" *ngIf="isResetPassword"></app-reset-password>
-      </div>
+
+<app-reset-password [isFirstTimeLogin]="false" [loginData]="userData" (modalClose)="onModalClose()" *ngIf="isResetPassword"></app-reset-password>

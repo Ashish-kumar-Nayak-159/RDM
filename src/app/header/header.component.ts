@@ -105,10 +105,10 @@ export class HeaderComponent implements OnInit, OnChanges {
 
   openChangePasswordModal() {
     this.isResetPassword = true;
-    $('#changePasswordModal').modal({
-      backdrop: 'static',
-      keyboard: false
-    });
+    // $('#changePasswordModal').modal({
+    //   backdrop: 'static',
+    //   keyboard: false
+    // });
   }
 
   redirectToFirstMenu() {
@@ -155,6 +155,12 @@ export class HeaderComponent implements OnInit, OnChanges {
 
   decode(item) {
     return decodeURIComponent(item);
+  }
+
+  onModalClose() {
+    // alert('here');
+    // $('#changePasswordModal').modal('hide');
+    this.isResetPassword = false;
   }
 
   onLogout() {

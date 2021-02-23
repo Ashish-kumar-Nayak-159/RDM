@@ -31,12 +31,12 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async ngOnInit(): Promise<void> {
 
-    this.subscriptions.push(this.commonService.resetPassword.subscribe((resetPassword: boolean) => {
-      if (!resetPassword) {
-        $('#changePasswordModal').modal('hide');
-        this.loginForm.reset();
-      }
-    }));
+    // this.subscriptions.push(this.commonService.resetPassword.subscribe((resetPassword: boolean) => {
+    //   if (!resetPassword) {
+    //     // $('#changePasswordModal').modal('hide');
+    //     this.loginForm.reset();
+    //   }
+    // }));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     if (this.userData) {
       if (this.userData.is_super_admin) {
@@ -66,6 +66,10 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  onResetModalClose() {
+    this.loginForm.reset();
+  }
+
   togglePasswordVisibility() {
     this.isPasswordVisible = !this.isPasswordVisible;
   }
@@ -91,10 +95,10 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
           } else {
             if (response.password_created_date === '') {
               this.isResetPassword = true;
-              $('#changePasswordModal').modal({
-                backdrop: 'static',
-                keyboard: false
-              });
+              // $('#changePasswordModal').modal({
+              //   backdrop: 'static',
+              //   keyboard: false
+              // });
               return;
             }
             if (response.apps && response.apps.length > 0) {

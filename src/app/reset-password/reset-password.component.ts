@@ -1,7 +1,8 @@
+import { ToasterService } from './../services/toaster.service';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
@@ -22,6 +23,8 @@ export class ResetPasswordComponent implements OnInit, OnDestroy  {
 
   @Input()
   loginData: any;
+  @Output()
+  modalClose: EventEmitter<any> = new EventEmitter<any>();
   /**
    * Reset/change password formgroup.
    */
@@ -44,13 +47,17 @@ export class ResetPasswordComponent implements OnInit, OnDestroy  {
   constructor(
     private userService: UserService,
     private commonService: CommonService,
-    private toasterService: ToastrService
+    private toasterService: ToasterService
   ) {}
   /**
    * on init method
    * A callback method that is invoked immediately after the directive is instantiated.
    */
   ngOnInit() {
+    $('#changePasswordModal').modal({
+      backdrop: 'static',
+      keyboard: false
+    });
     this.loggedInUser = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.resetPasswordForm = new FormGroup(
       {
@@ -74,6 +81,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy  {
       },
       { validators: this.checkPasswords }
     );
+
   }
 
   noWhitespaceValidator(control: FormControl) {
@@ -92,14 +100,18 @@ export class ResetPasswordComponent implements OnInit, OnDestroy  {
       .resetUserPassword(this.resetPasswordForm.value)
       .subscribe(
         (response: any) => {
-          this.commonService.resetPassword.emit(false);
+          // this.commonService.resetPassword.emit(false);
           this.changePasswordAPILoading = false;
-          this.toasterService.success(response.message, 'Change Password');
-          location.reload();
+          this.toasterService.showSuccess(response.message, 'Change Password');
+          this.onModalClose();
+          if (this.isFirstTimeLogin) {
+            location.reload();
+          }
           this.resetPasswordForm.reset();
         },
         (error: HttpErrorResponse) => {
           this.changePasswordAPILoading = false;
+          this.toasterService.showError(error.message, 'Change Password');
         }
       );
   }
@@ -121,6 +133,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy  {
    */
   onModalClose() {
     this.resetPasswordForm.reset();
+    this.modalClose.emit();
     $('#changePasswordModal').modal('hide');
   }
 

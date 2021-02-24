@@ -254,6 +254,18 @@ export class DeviceService {
     return this.http.get(this.url + String.Format(AppUrls.GET_C2D_MESSAGE_LIST, app), { params });
   }
 
+  getDeviceDirectMethods(filterObj) {
+    const app = filterObj.app;
+    delete filterObj.app;
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_METHODS, app), { params });
+  }
+
   getQueueMessagesCount(params, app) {
     return this.http.get(this.url + String.Format(AppUrls.GET_QUEUE_MESSAGE_COUNT, app), { params });
   }
@@ -264,6 +276,10 @@ export class DeviceService {
 
   getC2dMessageJSON(messageId, app) {
     return this.http.get(this.url + String.Format(AppUrls.GET_C2D_MESSAGE_JSON, app, messageId));
+  }
+
+  getDirectMethodJSON(messageId, app) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_METHOD_BY_ID, app, messageId));
   }
 
   getC2dResponseJSON(messageId, app) {

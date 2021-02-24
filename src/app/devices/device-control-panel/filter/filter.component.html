@@ -11,6 +11,12 @@
             {{device?.tags?.dislay_name ? device.tags?.display_name: device.device_id}}
           </option>
         </select> -->
+        <select class="form-control form-control-sm mx-1 my-1" id="tableType" *ngIf="filterObj.displayOptions"
+        [(ngModel)]="filterObj.tableType" name="tableType">
+          <option [ngValue]="'C2D Message'">C2D Message</option>
+          <option [ngValue]="'Direct Method'">Direct Method</option>
+          <option [ngValue]="'Twin Change'">Twin Change</option>
+        </select>
         <div class="bg-dateRow form-group form-inline" id="dateRow"
         [style.width]="(filterObj.dateOption === 'date' ? '23rem' : (filterObj.dateOption === 'date range' ? '33rem' : ''))">
         <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"

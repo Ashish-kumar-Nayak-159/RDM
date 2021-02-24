@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
@@ -15,6 +16,7 @@ declare var $: any;
 export class C2dMessageComponent implements OnInit, OnDestroy {
 
   c2dMsgFilter: any = {};
+  previousMsgFilter: any = {};
   c2dMsgs: any[] = [];
   isC2dMsgsLoading = false;
   @Input() device: Device = new Device();
@@ -37,6 +39,9 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.c2dMsgFilter.displayOptions = true;
+    this.c2dMsgFilter.tableType = 'C2D Message';
+
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
       this.c2dMsgFilter.gateway_id = this.device.device_id;
@@ -57,14 +62,15 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
       }
     });
 
-
+    this.previousMsgFilter = JSON.parse(JSON.stringify(this.c2dMsgFilter));
   }
 
-  searchC2DMessages(filterObj) {
+  searchTableData(filterObj) {
     this.isFilterSelected = true;
     this.isC2dMsgsLoading = true;
     const obj = {...filterObj};
     console.log(filterObj);
+    delete obj.displayOptions;
     const now = moment().utc();
     if (filterObj.dateOption === '5 mins') {
       obj.to_date = now.unix();
@@ -88,12 +94,42 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
     }
     delete obj.dateOption;
     console.log(obj);
+    obj.app = this.device.app;
     this.c2dMsgFilter = filterObj;
-    this.apiSubscriptions.push(this.deviceService.getDeviceC2DMessages(obj).subscribe(
+    this.previousMsgFilter = JSON.parse(JSON.stringify(filterObj));
+    if (obj.tableType === 'C2D Message') {
+      this.searchC2DMessages(obj);
+    } else if (obj.tableType === 'Direct Method') {
+      this.searchDirectMethods(obj);
+    }
+  }
+
+  searchC2DMessages(filterObj) {
+    this.c2dMsgs = [];
+    delete filterObj.tableType;
+    delete filterObj.displayOptions;
+    this.apiSubscriptions.push(this.deviceService.getDeviceC2DMessages(filterObj).subscribe(
       (response: any) => {
         if (response && response.data) {
           this.c2dMsgs = response.data;
           this.c2dMsgs.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date));
+        }
+        this.isC2dMsgsLoading = false;
+      }, error => this.isC2dMsgsLoading = false
+    ));
+  }
+
+  searchDirectMethods(filterObj) {
+    delete filterObj.tableType;
+    delete filterObj.displayOptions;
+    this.apiSubscriptions.push(this.deviceService.getDeviceDirectMethods(filterObj).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.c2dMsgs = response.data;
+          this.c2dMsgs.forEach(item => {
+            item.local_request_date = this.commonService.convertUTCDateToLocal(item.request_date);
+            item.local_response_date = this.commonService.convertUTCDateToLocal(item.response_date);
+          });
         }
         this.isC2dMsgsLoading = false;
       }, error => this.isC2dMsgsLoading = false
@@ -107,7 +143,13 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
     }
     this.selectedMessage = message;
     this.c2dMessageDetail = undefined;
-    this.apiSubscriptions.push(this.deviceService.getC2dMessageJSON(message.message_id, this.appName).subscribe(
+    let method;
+    if (this.previousMsgFilter.tableType === 'C2D Message') {
+      method = this.deviceService.getC2dMessageJSON(message.message_id, this.appName);
+    } else if (this.previousMsgFilter.tableType === 'Direct Method') {
+      method = this.deviceService.getDirectMethodJSON(message.id, this.appName);
+    }
+    this.apiSubscriptions.push(method.subscribe(
       (response: any) => {
         if (openModalFlag) {
         this.c2dMessageDetail = response;

@@ -25,7 +25,7 @@
           </h6>
           <h6 *ngIf="!deviceType.freezed && contextApp.user.role === appAdminRole">
           This model is not freezed.<br/>
-          Once you complete modifications(add, edit, delete), Please freeze it for better performance.
+          Once you complete modifications (add, edit, delete), Please freeze it for better performance.
           <a href="javascript:void(0)" (click)="freezeModel()" [class.disabled]="isModelFreezeUnfreezeAPILoading"
           class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2">Freeze It <i class="fa fa-lock"></i></a>
           <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></i>

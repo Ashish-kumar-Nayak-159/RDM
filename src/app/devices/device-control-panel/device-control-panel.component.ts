@@ -28,17 +28,20 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
   menuItems: any[] = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
   tileData: any;
   subscriptions: Subscription[] = [];
+  appUsers: any[] = [];
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private deviceService: DeviceService,
     private route: ActivatedRoute,
+    private applicationService: ApplicationService,
     private commonService: CommonService,
     private toasterService: ToasterService
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    await this.getApplicationUsers();
     if (this.contextApp?.configuration?.device_control_panel_menu.length > 0) {
       this.menuItems = this.contextApp.configuration.device_control_panel_menu;
       console.log(this.menuItems);
@@ -194,7 +197,22 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
     }
   }
 
+  getApplicationUsers() {
+    return new Promise<void>((resolve) => {
+    this.appUsers = [];
+    this.subscriptions.push(this.applicationService.getApplicationUsers(this.contextApp.app).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.appUsers = response.data;
+        }
+        resolve();
+      }
+    ));
+    });
+  }
+
   async getDeviceDetail(callFromMenu = false) {
+
     if (!callFromMenu) {
       this.isDeviceDataLoading = true;
     }
@@ -204,6 +222,14 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
       (response: any) => {
         this.device = response;
         this.device.gateway_id = this.device.metadata?.gateway_id;
+        if (!this.device.tags.device_users) {
+          const userObj = this.appUsers.find(user => user.user_email === this.device.tags.device_manager);
+          this.device.tags.device_users = {};
+          this.device.tags.device_users[btoa(this.device.tags.device_manager)] = {
+            user_email: this.device.tags.device_manager,
+            user_name: 'NA'
+          };
+        }
         console.log(this.device);
         this.commonService.breadcrumbEvent.emit({
           type: 'append',
@@ -229,7 +255,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
   }
 
   getDeviceTags(obj) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       this.subscriptions.push(this.deviceService.getNonIPDeviceTags(obj).subscribe(
         (response: any) => {
           this.tagsObj = response.tags;

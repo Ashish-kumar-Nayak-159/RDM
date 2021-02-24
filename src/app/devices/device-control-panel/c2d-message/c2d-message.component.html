@@ -111,7 +111,7 @@
       (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
     </ng-container>
     <ng-container *ngIf="previousMsgFilter.tableType === 'Direct Method'">
-      <div class="modal-content">
+      <div class="modal-content" *ngIf="c2dMessageDetail">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">View Direct Method</h5>
           <button type="button" class="close"  aria-label="Close" (click)="onModalEvents('close')">
@@ -120,9 +120,9 @@
         </div>
         <div class="modal-body">
           <h5>Reqeust: </h5>
-          <pre *ngIf="modalConfig?.jsonDisplay" [innerHTML]="c2dMessageDetail.request | json"></pre>
+          <pre *ngIf="modalConfig?.jsonDisplay" [innerHTML]="c2dMessageDetail?.request | json"></pre>
           <h5>Response: </h5>
-          <pre *ngIf="modalConfig?.jsonDisplay" [innerHTML]="c2dMessageDetail.response | json"></pre>
+          <pre *ngIf="modalConfig?.jsonDisplay" [innerHTML]="c2dMessageDetail?.response | json"></pre>
         </div>
         <div class="modal-footer">
           <button  type="button" class="btn btn-secondary" (click)="onModalEvents('close')">

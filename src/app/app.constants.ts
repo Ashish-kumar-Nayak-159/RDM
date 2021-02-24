@@ -29,7 +29,7 @@ export class CONSTANTS {
     },
     {
       name: 'ModBus',
-      connectivity: [],
+      connectivity: ['ModBus Device -> IoT Gateway -> Azure IoT Hub SDK -> Azure Cloud'],
       display: true
     },
     {

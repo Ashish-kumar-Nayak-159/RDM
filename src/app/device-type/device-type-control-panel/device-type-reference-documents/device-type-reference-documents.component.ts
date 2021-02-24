@@ -216,32 +216,38 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
       }));
   }
 
+  onDocumentTypeChange() {
+    this.documentObj.metadata = undefined;
+  }
+
   onSaveDocumentObj() {
     console.log(JSON.stringify(this.documentObj));
     if (!this.documentObj.name || (this.documentObj.name.trim()).length === 0 || !this.documentObj.type || !this.documentObj.metadata) {
-      this.toasterService.showError('Please select all the data', 'Add Document');
+      this.toasterService.showError('Please select all the data', ((this.documentObj.id ? 'Edit' : 'Add') + ' Document'));
       return;
     }
     let flag = false;
     this.documents.forEach(doc => {
-      if (this.documentObj.name === doc.name) {
+      if (this.documentObj.name === doc.name && this.documentObj.id !== undefined &&  this.documentObj.id !== doc.id) {
         flag = true;
       }
     });
     if (flag) {
-      this.toasterService.showError('Document with same name is already exists', 'Add Document');
+      this.toasterService.showError('Document with same name is already exists', ((this.documentObj.id ? 'Edit' : 'Add') + ' Document'));
       return;
     }
     this.isCreateDocumentLoading = true;
-    this.subscriptions.push(this.deviceTypeService.createThingsModelDocument(this.documentObj,
-      this.deviceType.app, this.deviceType.name).subscribe(
+    const method = this.documentObj.id ? this.deviceTypeService.updateThingsModelDocument(this.documentObj, this.deviceType.app,
+      this.deviceType.name, this.documentObj.id) : this.deviceTypeService.createThingsModelDocument(this.documentObj,
+        this.deviceType.app, this.deviceType.name);
+    this.subscriptions.push(method.subscribe(
         (response: any) => {
-          this.toasterService.showSuccess(response.message, 'Add Document');
+          this.toasterService.showSuccess(response.message, ((this.documentObj.id ? 'Edit' : 'Add') + ' Document'));
           this.isCreateDocumentLoading = false;
           this.onCloseAddDocModal();
           this.getDocuments();
         }, error => {
-          this.toasterService.showError(error.message, 'Add Document');
+          this.toasterService.showError(error.message, ((this.documentObj.id ? 'Edit' : 'Add') + ' Document'));
           this.isCreateDocumentLoading = false;
         }
     ));

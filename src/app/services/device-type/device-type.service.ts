@@ -335,6 +335,11 @@ export class DeviceTypeService {
     return this.http.post(this.url + String.Format(AppUrls.CREATE_MODEL_REFERENCE_DOCUMENTS, app, deviceType), modelObj);
   }
 
+  updateThingsModelDocument(modelObj, app, deviceType, documentId) {
+    localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_MODEL_REFERENCE_DOCUMENTS, app, deviceType, documentId), modelObj);
+  }
+
   deleteThingsModelDocument(id, app, deviceType) {
     const params = new HttpParams().set('id', id);
     console.log(params);

@@ -72,6 +72,7 @@ export class AppUrls {
   public static GET_NON_IP_DEVICE_TAGS = 'apps/{0}/legacy_devices/{1}/tags';
   public static GET_MODEL_REFERENCE_DOCUMENTS = 'apps/{0}/device_types/{1}/reference_documents';
   public static CREATE_MODEL_REFERENCE_DOCUMENTS = 'apps/{0}/device_types/{1}/reference_documents';
+  public static UPDATE_MODEL_REFERENCE_DOCUMENTS = 'apps/{0}/device_types/{1}/reference_documents/{2}';
   public static DELETE_MODEL_REFERENCE_DOCUMENTS = 'apps/{0}/device_types/{1}/reference_documents/{2}';
   public static GET_ALERT_CONDITIONS = 'apps/{0}/device_types/{1}/alert_conditions';
   public static CREATE_ALERT_CONDITION = 'apps/{0}/device_types/{1}/alert_conditions';

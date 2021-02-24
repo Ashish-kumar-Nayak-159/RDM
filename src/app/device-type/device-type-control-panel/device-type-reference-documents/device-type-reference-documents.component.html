@@ -32,7 +32,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content" *ngIf="documentObj">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Document</h5>
+        <h5 class="modal-title" id="exampleModalLabel">{{documentObj.id ? 'Edit' : 'Add'}} Document</h5>
         <button type="button" class="close" [disabled]="isCreateDocumentLoading" (click)="onCloseAddDocModal()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -47,7 +47,7 @@
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Type:</label>
             <select class="custom-select" id="template" name="model_type" [(ngModel)]="documentObj.type"
-            >
+             [disabled]="documentObj.id">
               <option [ngValue]="undefined" >Select Document Type</option>
               <option [ngValue]="'PDF'" >PDF</option>
               <option [ngValue]="'Image'" >Image</option>
@@ -61,14 +61,14 @@
               documentObj.type === 'Image' ? '.jpeg,.png,.svg' : (
                 documentObj.type === 'Video' ? '.mp4,' : '*'
               )
-            ))}}" (change)="onDocumentFileSelected($event.target.files)" [disabled]="documentObj.type === undefined"
+            ))}}" (change)="onDocumentFileSelected($event.target.files)" [disabled]="documentObj.type === undefined || documentObj.id"
             class="form-control" id="app_logo" name="app_logo">
           </div>
 
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary add-row" [disabled]="isCreateDocumentLoading  || isFileUploading" (click)="onSaveDocumentObj()">Save</button>
+        <button type="button" class="btn btn-primary add-row" [disabled]="isCreateDocumentLoading  || isFileUploading" (click)="documentObj.id ? '' : onSaveDocumentObj()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreateDocumentLoading || isFileUploading" (click)="onCloseAddDocModal()">Cancel</button>
         <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateDocumentLoading || isFileUploading"></i>
       </div>

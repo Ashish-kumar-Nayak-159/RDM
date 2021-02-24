@@ -80,6 +80,17 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
               tooltip: 'View Document'
             },
             {
+              icon: 'fa fa-fw fa-pencil',
+              text: '',
+              id: 'Edit',
+              valueclass: '',
+              tooltip: 'Edit',
+              disableConditions: {
+                key: 'freezed',
+                value: true
+              }
+            },
+            {
               icon: 'fa fa-fw fa-trash',
               text: '',
               id: 'Delete',
@@ -113,10 +124,14 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
     ));
   }
 
-  openAddDocumentModal() {
+  openAddDocumentModal(obj = undefined) {
+    if (!obj) {
     this.documentObj = {
       metadata: {}
     };
+    } else {
+      this.documentObj = JSON.parse(JSON.stringify(obj));
+    }
     $('#addDocumentModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -130,6 +145,8 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
       this.openModal('viewDocModal');
       this.selectedDocument = obj.data;
       this.selectedDocument.sanitizedURL = this.sanitizeURL();
+    } else if (obj.for === 'Edit') {
+      this.openAddDocumentModal(obj.data);
     }
   }
 

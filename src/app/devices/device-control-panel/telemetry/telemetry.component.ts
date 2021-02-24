@@ -52,22 +52,41 @@ export class TelemetryComponent implements OnInit, OnDestroy {
           {
             name: 'Timestamp',
             key: 'local_message_date',
+            type: 'text',
+            headerClass: 'w-15',
+            valueclass: ''
+          },
+          // {
+          //   name: 'Message ID',
+          //   key: 'message_id',
+          // },
+          {
+            name: 'IOT Hub Date',
+            key: 'local_iothub_date',
+            type: 'text',
+            headerClass: 'w-15',
+            valueclass: ''
           },
           {
-            name: 'Message ID',
-            key: 'message_id',
+            name: 'Database Record Date',
+            key: 'local_created_date',
+            type: 'text',
+            headerClass: 'w-15',
+            valueclass: ''
           },
-          // {
-          //   name: 'IOT Hub Date',
-          //   key: 'local_iothub_date',
-          // },
-          // {
-          //   name: 'Database Record Date',
-          //   key: 'local_created_date',
-          // },
           {
             name: 'Message',
             key: undefined,
+            type: 'button',
+            btnData: [
+              {
+                icon: 'fa fa-fw fa-eye',
+                text: '',
+                id: 'View Process Parameter Message',
+                valueclass: '',
+                tooltip: 'View Process Parameter Message'
+              }
+            ]
           }
         ]
       };
@@ -242,8 +261,8 @@ export class TelemetryComponent implements OnInit, OnDestroy {
           this.telemetry = response.data;
           this.telemetry.forEach(item => {
             item.local_message_date = this.commonService.convertUTCDateToLocal(item.message_date);
-            // item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
-            // item.local_iothub_date = this.commonService.convertUTCDateToLocal(item.iothub_date);
+            item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
+            item.local_iothub_date = this.commonService.convertUTCDateToLocal(item.iothub_date);
           });
 
         }

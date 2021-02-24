@@ -108,6 +108,13 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
           headerClass: '',
           btnData: [
             {
+              icon: 'fa fa-fw fa-pencil',
+              text: '',
+              id: 'Change ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Image',
+              valueclass: '',
+              tooltip: 'Change ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Image'
+            },
+            {
               icon: 'fa fa-fw fa-table',
               text: '',
               id: 'View Control Panel',
@@ -152,20 +159,44 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
   }
 
   onTableFunctionCall(obj) {
-    this.router.navigate(['applications', this.contextApp.app, 'things', 'model', obj.data.name, 'control-panel']);
+    if (obj.for === 'View Control Panel') {
+      this.router.navigate(['applications', this.contextApp.app, 'things', 'model', obj.data.name, 'control-panel']);
+    } else {
+      this.openCreateDeviceTypeModal(obj.data);
+    }
   }
 
-  openCreateDeviceTypeModal() {
+  async openCreateDeviceTypeModal(obj = undefined) {
+    if (!obj) {
     this.thingsModel = {};
     this.thingsModel.app = this.contextApp.app;
     this.thingsModel.created_by = this.userData.name;
     this.thingsModel.metadata = {};
     this.thingsModel.metadata.model_type = CONSTANTS.IP_DEVICE;
     this.thingsModel.tags = {};
-    this.getProtocolList();
-
-   // this.thingsModel.tags.app = this.contextApp.app;
+    } else {
+      this.thingsModel = JSON.parse(JSON.stringify(obj));
+      console.log(obj);
+      this.thingsModel.metadata = {
+        model_type: this.thingsModel.model_type,
+        image: this.thingsModel.model_image
+      };
+      this.thingsModel.tags = {
+        protocol: this.thingsModel.protocol,
+        cloud_connectivity: this.thingsModel.cloud_connectivity
+      };
+    }
+    console.log(this.thingsModel);
+    await this.getProtocolList();
+    if (this.thingsModel.id) {
+      this.getConnectivityData();
+      this.thingsModel.tags = {
+        protocol: this.thingsModel.protocol,
+        cloud_connectivity: this.thingsModel.cloud_connectivity
+      };
+    }
     $('#createDeviceTypeModal').modal({ backdrop: 'static', keyboard: false, show: true });
+   // this.thingsModel.tags.app = this.contextApp.app;
   }
 
   async onLogoFileSelected(files: FileList): Promise<void> {
@@ -203,6 +234,7 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
     });
     console.log(JSON.stringify(data));
     this.protocolList = JSON.parse(JSON.stringify(data));
+    
   }
 
   getConnectivityData() {
@@ -210,6 +242,7 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
     if (this.thingsModel && this.thingsModel.tags && this.thingsModel.tags.protocol) {
       this.connectivityList = (this.protocolList.filter(protocol => protocol.name === this.thingsModel.tags.protocol)[0]).connectivity;
     }
+    console.log(JSON.stringify(this.connectivityList));
   }
 
   createThingsModel() {
@@ -220,7 +253,9 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
     }
     console.log(this.thingsModel);
     this.isCreateThingsModelAPILoading = true;
-    this.subscriptions.push(this.deviceTypeService.createThingsModel(this.thingsModel, this.contextApp.app).subscribe(
+    const method = this.thingsModel.id ? this.deviceTypeService.updateThingsModel(this.thingsModel, this.contextApp.app) :
+    this.deviceTypeService.createThingsModel(this.thingsModel, this.contextApp.app);
+    this.subscriptions.push(method.subscribe(
       (response: any) => {
         this.isCreateThingsModelAPILoading = false;
         this.onCloseThingsModelModal();

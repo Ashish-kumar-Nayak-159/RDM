@@ -61,23 +61,23 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
     <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">Create {{(tileData && tileData[1] ? tileData[1]?.value : '')}}</h5>
+      <h5 class="modal-title" id="exampleModalLabel">{{thingsModel?.id ? 'Change Model Image' : ('Create' + (tileData && tileData[1] ? tileData[1]?.value : ''))}}</h5>
       <button type="button" class="close"  (click)="onCloseThingsModelModal()" aria-label="Close" [disabled]="isCreateThingsModelAPILoading">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
     <div class="modal-body" *ngIf="thingsModel">
       <form name="createThingsModelForm">
-        <div class="form-group">
+        <div class="form-group" *ngIf="!thingsModel.id">
           <label for="message-text" class="col-form-label">App:</label>
           <input type="text" class="form-control" id="app_name" [defaultValue]="contextApp.app" disabled>
         </div>
-        <div class="form-group">
+        <div class="form-group" *ngIf="!thingsModel.id">
           <label for="message-text" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name:</label>
           <input type="text" class="form-control" id="name" name="name" [(ngModel)]="thingsModel.name"
           placeholder="Enter {{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name">
         </div>
-        <div class="form-group">
+        <div class="form-group" *ngIf="!thingsModel.id">
           <label for="recipient-name" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Type:</label>
           <select class="custom-select" id="template" name="model_type" [(ngModel)]="thingsModel.metadata.model_type"
           (change)="getProtocolList()">
@@ -86,7 +86,7 @@
             <option [ngValue]="constantData.NON_IP_DEVICE">{{constantData.NON_IP_DEVICE}}</option>
           </select>
         </div>
-        <div class="form-group">
+        <div class="form-group" *ngIf="!thingsModel.id">
           <label for="recipient-name" class="col-form-label required">Protocol:</label>
           <select class="custom-select" id="protocol" name="protocol"
           (change)="getConnectivityData()" [(ngModel)]="thingsModel.tags.protocol">
@@ -96,9 +96,9 @@
             </ng-container>
           </select>
         </div>
-        <div class="form-group">
+        <div class="form-group" *ngIf="!thingsModel.id">
           <label for="recipient-name" class="col-form-label required">Cloud Connectivity followed by the {{(tileData && tileData[1] ? tileData[1]?.value : '')}}:</label>
-          <select class="custom-select" id="template" name="connectivity" [(ngModel)]="thingsModel.tags.cloud_connectivity">
+          <select class="custom-select" id="template" name="connectivity"  [(ngModel)]="thingsModel.tags.cloud_connectivity">
             <option [ngValue]="undefined"> Select Connectivity</option>
           <option *ngFor="let item of connectivityList" [ngValue]="item">
             {{item}}</option>
@@ -106,6 +106,7 @@
         </div>
         <div class="form-group">
           <label for="message-text" class="col-form-label">Upload Image: </label>
+          {{thingsModel.metadata?.image?.name ? thingsModel.metadata.image.name : 'Not yet uploaded'}}
           <input type="file"
           #typeLogoFileInput (change)="onLogoFileSelected($event.target.files)"
            class="form-control" id="app_logo" name="app_logo" >

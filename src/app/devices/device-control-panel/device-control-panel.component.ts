@@ -42,10 +42,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     await this.getApplicationUsers();
-    if (this.contextApp?.configuration?.device_control_panel_menu.length > 0) {
-      this.menuItems = this.contextApp.configuration.device_control_panel_menu;
-      console.log(this.menuItems);
-    }
+    
     this.route.paramMap.subscribe(
       async params => {
         console.log(this.menuItems);
@@ -58,6 +55,21 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
             } else if (listName.toLowerCase() === 'devices') {
               this.componentState = CONSTANTS.IP_DEVICE;
               this.pageType = 'Device';
+            }
+            if (this.componentState === CONSTANTS.IP_DEVICE) {
+              if (this.contextApp?.configuration?.device_control_panel_menu.length > 0) {
+                this.menuItems = this.contextApp.configuration.device_control_panel_menu;
+                console.log(this.menuItems);
+              } else {
+                this.menuItems = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
+              }
+            } else if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+              if (this.contextApp?.configuration?.legacy_device_control_panel_menu.length > 0) {
+                this.menuItems = this.contextApp.configuration.legacy_device_control_panel_menu;
+                console.log(this.menuItems);
+              } else {
+                this.menuItems = CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
+              }
             }
           }
             // if (params.get('gatewayId')) {
@@ -77,25 +89,18 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
       fragment => {
         if (fragment) {
           this.activeTab = fragment;
-          const menu = this.contextApp.configuration.device_control_panel_menu.length > 0 ?
-          this.contextApp.configuration.device_control_panel_menu :
-          JSON.parse(JSON.stringify(CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST));
-          menu.forEach(menuObj => {
-            if (this.componentState === CONSTANTS.NON_IP_DEVICE && menuObj.page === 'settings') {
-              menuObj.visible = false;
-            }
-          });
+          
         } else {
-          const menu = this.contextApp.configuration.device_control_panel_menu.length > 0 ?
+          const menu = this.componentState !== CONSTANTS.NON_IP_DEVICE ? (this.contextApp.configuration.device_control_panel_menu.length > 0 ?
           this.contextApp.configuration.device_control_panel_menu :
-          JSON.parse(JSON.stringify(CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST));
+          JSON.parse(JSON.stringify(CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST))) :
+          (this.contextApp.configuration.legacy_device_control_panel_menu.length > 0 ?
+            this.contextApp.configuration.legacy_device_control_panel_menu :
+            JSON.parse(JSON.stringify(CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST)))
           menu.forEach(menuObj => {
             if ( !this.activeTab && menuObj.visible && !menuObj.isTitle) {
               this.activeTab = menuObj.page;
               return;
-            }
-            if (this.componentState === CONSTANTS.NON_IP_DEVICE && menuObj.page === 'settings') {
-              menuObj.visible = false;
             }
           });
           if (!this.activeTab) {

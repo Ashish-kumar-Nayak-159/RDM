@@ -51,6 +51,27 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
       console.log(arr);
       this.applicationData.configuration.device_control_panel_menu = [...arr];
     }
+    if (this.applicationData?.configuration?.legacy_device_control_panel_menu?.length === 0) {
+      this.applicationData.configuration.legacy_device_control_panel_menu = CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
+    } else {
+      const arr = [];
+      CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST.forEach(item => {
+        let flag = false;
+        this.applicationData.configuration.legacy_device_control_panel_menu.forEach(menu => {
+          if (menu.system_name === item.system_name) {
+            flag = true;
+            item.display_name = menu.display_name;
+            item.visible = menu.visible;
+            arr.push(item);
+          }
+        });
+        if (!flag) {
+          arr.push(item);
+        }
+      });
+      console.log(arr);
+      this.applicationData.configuration.legacy_device_control_panel_menu = [...arr];
+    }
     if (this.applicationData?.configuration?.gateway_control_panel_menu?.length === 0) {
       this.applicationData.configuration.gateway_control_panel_menu = CONSTANTS.GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST;
     } else {

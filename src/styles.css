@@ -346,7 +346,7 @@ table{
   width: 100%;
 }
 
-th{
+thead th{
     background: #858796;
     color: #fff;
 }

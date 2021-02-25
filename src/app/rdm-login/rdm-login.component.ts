@@ -164,6 +164,10 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
             this.applicationData.configuration.device_control_panel_menu =
             JSON.parse(JSON.stringify(CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST));
           }
+          if (this.applicationData.configuration.legacy_device_control_panel_menu.length === 0) {
+            this.applicationData.configuration.legacy_device_control_panel_menu =
+            JSON.parse(JSON.stringify(CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST));
+          }
           if (this.applicationData.configuration.model_control_panel_menu.length === 0) {
             this.applicationData.configuration.model_control_panel_menu =
             JSON.parse(JSON.stringify(CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST));

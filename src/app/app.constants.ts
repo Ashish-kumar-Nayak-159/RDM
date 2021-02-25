@@ -439,6 +439,225 @@ export class CONSTANTS {
     // }
   ];
 
+  public static LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST = [
+    {
+      page: 'manage',
+      system_name: 'Manage',
+      url: null,
+      display_name: 'Manage',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'overview',
+      system_name: 'Overview',
+      url: '#device_overview',
+      display_name: 'Overview',
+      icon: 'fa fa-fw fa-life-ring',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'access_control',
+      system_name: 'Access Control',
+      url: '#device_access_control',
+      display_name: 'Access Control (IAM)',
+      icon: 'fa fa-fw fa-users',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'tags',
+      system_name: 'Tags',
+      url: '#device_tags',
+      display_name: 'Tags',
+      icon: 'fa fa-fw fa-tags',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'd2c',
+      system_name: 'D2C (Monitor)',
+      url: null,
+      display_name: 'D2C (Monitor)',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'heartbeat',
+      system_name: 'Heartbeat',
+      url: '#device_heartbeat',
+      display_name: 'Heartbeat',
+      icon: 'fa fa-fw fa-heartbeat',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'notifications',
+      system_name: 'Notifications',
+      url: '#device_notifications',
+      display_name: 'Notifications',
+      icon: 'fa fa-fw fa-bell',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'alerts',
+      system_name: 'Alerts',
+      url: '#device_alerts',
+      display_name: 'Alerts',
+      icon: 'fa fa-fw fa-bolt',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'alertendevents',
+      system_name: 'Alert End Events',
+      url: '#device_alert_end_events',
+      display_name: 'Alert End Events',
+      icon: 'fa fa-fw fa-hourglass-end',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'telemetry',
+      system_name: 'Telemetry',
+      url: '#device_telemetry',
+      display_name: 'Telemetry',
+      icon: 'fa fa-fw fa-history',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'error',
+      system_name: 'Error',
+      url: '#device_error',
+      display_name: 'Error',
+      icon: 'fa fa-fw fa-exclamation-triangle',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'battery_message',
+      system_name: 'Battery',
+      url: '#device_battery_message',
+      display_name: 'Battery',
+      icon: 'fa fa-fw fa-battery-full',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'logs',
+      system_name: 'Logs',
+      url: '#device_logs',
+      display_name: 'Logs',
+      icon: 'fa fa-fw fa-file',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'other',
+      system_name: 'Other',
+      url: '#device_other',
+      display_name: 'Other',
+      icon: 'fa fa-fw fa-stack-exchange',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'c2d',
+      system_name: 'C2D (Control)',
+      url: null,
+      display_name: 'C2D (Control)',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'control_widgets',
+      system_name: 'Control / Configure',
+      url: '#device_control_widgets',
+      display_name: 'Control / Configure',
+      icon: 'fa fa-fw fa-angle-right',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'visualization',
+      system_name: 'Visualizations',
+      url: 'null',
+      display_name: 'Visualization',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'trend-analysis',
+      system_name: 'Trend Analysis',
+      url: '#device_trend_analysis',
+      display_name: 'Telemetry Trend Analysis',
+      icon: 'fa fa-fw fa-area-chart',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'alert-visualization',
+      system_name: 'Alert Visualization',
+      url: '#device_alert_visualization',
+      display_name: 'Alert Visualization',
+      icon: 'fa fa-fw fa-bar-chart',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'maintenance',
+      system_name: 'Maintenances',
+      url: null,
+      display_name: 'Maintenances',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'maintenance_data',
+      system_name: 'Maintenance',
+      url: '#device_maintenance',
+      display_name: 'Maintenance',
+      icon: 'fa fa-fw fa-wrench',
+      visible: true,
+      isTitle: false
+    },
+    // {
+    //   page: 'recommendations',
+    //   system_name: 'AI / ML Recommendations',
+    //   url: null,
+    //   display_name: 'AI / ML Recommendations',
+    //   icon: null,
+    //   visible: true,
+    //   isTitle: true
+    // },
+    // {
+    //   page: 'predictiveMaintenance',
+    //   system_name: 'Preventive Maintenance',
+    //   url: '#device_preventive_maintenance',
+    //   display_name: 'Preventive Maintenance',
+    //   icon: 'fa fa-fw fa-stream',
+    //   visible: true,
+    //   isTitle: false
+    // },
+    // {
+    //   page: 'predictiveMaintenance',
+    //   system_name: 'Predictive Maintenance',
+    //   url: '#device_predictive_maintenance',
+    //   display_name: 'Predictive Maintenance',
+    //   icon: 'fa fa-fw fa-stream',
+    //   visible: true,
+    //   isTitle: false
+    // }
+  ];
+
   public static GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST = [
     {
       page: 'manage',

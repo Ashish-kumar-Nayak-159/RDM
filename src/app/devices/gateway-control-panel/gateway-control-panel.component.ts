@@ -26,7 +26,7 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
   pageType: any;
   tagsObj: any;
   contextApp: any;
-  menuItems: any[] = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
+  menuItems: any[] = CONSTANTS.GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST;
   tileData: any;
   subscriptions: Subscription[] = [];
   constructor(

@@ -160,43 +160,46 @@
         <a href="javascript:void(0)" [class.disabled]="isFileDownloading" (click)="saveExcel()" title="Export as Excel" class="ml-1"><i class="fa fa-sm fa-file-excel-o" ></i></a>
         <i  class="fa fa-fw fa-2x  fa-spin fa-spinner" *ngIf="isFileDownloading"></i>
       </h5>
-      <table class="table table-bordered table-striped"  id="dataTable1" width="100%" cellspacing="0"
-      *ngIf="isFilterSelected && filterObj.report_type === 'Process Parameter Report'">
-        <thead>
-          <tr class="bg-secondary text-white">
-            <th>Asset Name</th>
-            <th>Time</th>
-            <th *ngFor="let property of selectedProps"> {{property.id}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <ng-container *ngIf="telemetry.length > 0 && !isTelemetryLoading">
-            <tr *ngFor="let telemetryObj of telemetry">
-
-              <td>{{ (deviceFilterObj ?
-              (deviceFilterObj.display_name ? deviceFilterObj.display_name : deviceFilterObj.device_id)
-              : '' )}}</td>
-              <td>{{ telemetryObj.local_created_date }}</td>
-              <td *ngFor="let prop of selectedProps"> {{telemetryObj[prop.value.json_key]}}</td>
-                          </tr>
-          </ng-container>
-          <ng-container *ngIf="telemetry.length === 0 && !isTelemetryLoading">
+      <div class="table-wrapper" style="max-height: calc(100vh - 24rem);"  *ngIf="isFilterSelected && filterObj.report_type === 'Process Parameter Report'">
+        <table class="table table-bordered table-striped"  id="dataTable1" width="100%" cellspacing="0"
+       >
+          <thead>
             <tr>
-              <td [attr.colspan]="2 + selectedProps.length">No telemetry data available.</td>
+              <th>Asset Name</th>
+              <th>Time</th>
+              <th *ngFor="let property of selectedProps"> {{property.id}}</th>
             </tr>
-          </ng-container>
-           <ng-container *ngIf="telemetry.length === 0 && isTelemetryLoading">
-            <tr>
-              <td [attr.colspan]="2 + selectedProps.length">
-                <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
-              </td>
-            </tr>
-          </ng-container>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="telemetry.length > 0 && !isTelemetryLoading">
+              <tr *ngFor="let telemetryObj of telemetry">
 
-        </tbody>
-      </table>
+                <td>{{ (deviceFilterObj ?
+                (deviceFilterObj.display_name ? deviceFilterObj.display_name : deviceFilterObj.device_id)
+                : '' )}}</td>
+                <td>{{ telemetryObj.local_created_date }}</td>
+                <td *ngFor="let prop of selectedProps"> {{telemetryObj[prop.value.json_key]}}</td>
+                            </tr>
+            </ng-container>
+            <ng-container *ngIf="telemetry.length === 0 && !isTelemetryLoading">
+              <tr>
+                <td [attr.colspan]="2 + selectedProps.length">No telemetry data available.</td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="telemetry.length === 0 && isTelemetryLoading">
+              <tr>
+                <td [attr.colspan]="2 + selectedProps.length">
+                  <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+                </td>
+              </tr>
+            </ng-container>
+
+          </tbody>
+        </table>
+      </div>
+      <div class="table-wrapper" style="max-height: calc(100vh - 20rem);" *ngIf="isFilterSelected && filterObj.report_type === 'Alert Report'">
       <table class="table table-bordered table-striped"  id="dataTable" width="100%" cellspacing="0"
-      *ngIf="isFilterSelected && filterObj.report_type === 'Alert Report'">
+      >
         <thead>
           <tr class="bg-secondary text-white">
             <th></th>
@@ -241,6 +244,8 @@
           </ng-container>
         </tbody>
       </table>
+    </div>
+
       <table class="table table-bordered table-striped"  id="dataTable1" width="100%" cellspacing="0" hidden
       *ngIf="isFilterSelected && filterObj.report_type === 'Alert Report'">
         <thead>
@@ -289,6 +294,7 @@
           </ng-container>
         </tbody>
       </table>
+    
     </div>
   </div>
 </div>

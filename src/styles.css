@@ -330,3 +330,23 @@ select#dateoptions {
   position: absolute;
   z-index: 9999999 !important;
 }
+ /* // table header sticky */
+.table-wrapper{
+  overflow-y: auto;
+  max-height: calc(100vh - 18rem)
+}
+
+.table-wrapper th{
+    position: sticky;
+    top: 0;
+}
+
+table{
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th{
+    background: #858796;
+    color: #fff;
+}

@@ -65,6 +65,7 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
     });
     this.tableConfig = {
       type: 'Things Model',
+      tableHeight: 'calc(100vh - 18rem)',
       data: [
         {
           name: (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Name',
@@ -234,7 +235,7 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
     });
     console.log(JSON.stringify(data));
     this.protocolList = JSON.parse(JSON.stringify(data));
-    
+
   }
 
   getConnectivityData() {

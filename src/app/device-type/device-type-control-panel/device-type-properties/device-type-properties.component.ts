@@ -66,6 +66,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
     this.properties[this.type] = [];
     this.propertyTableConfig = {
       type: 'Properties',
+      tableHeight: 'calc(100vh - 14rem)',
       freezed: this.deviceType.freezed,
       data: [
         {

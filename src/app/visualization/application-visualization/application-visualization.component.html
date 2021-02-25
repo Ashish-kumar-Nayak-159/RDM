@@ -42,27 +42,7 @@
 
           <input type="number" min="1" class="form-control form-control-sm mx-1 my-1 record-input" id="inputEmail4"
             placeholder="No of Records" [(ngModel)]="filterObj.count" name="count">
-          <!-- <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory" [(ngModel)]="filterObj.device"
-            name="deviceCategory" (change)="onAssetSelection()">
-            <option [ngValue]="undefined">Select Asset</option>
-            <option [ngValue]="device" *ngFor="let device of devices">
-              {{device?.display_name ? device?.display_name: device.device_id}}
-            </option>
-          </select>
-          <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory1" [(ngModel)]="filterObj.non_ip_device"
-            name="deviceCategory1" *ngIf="filterObj.device?.tags?.category === 'IoT Gateway'">
-            <option [ngValue]="undefined">Select Asset</option>
-            <option [ngValue]="device" *ngFor="let device of nonIPDevices">
-              {{device?.display_name ? device?.display_name: device.device_id}}
-            </option>
-          </select> -->
 
-          <!-- <select class="form-control form-control-sm mx-2 my-1" id="dateoptions" [(ngModel)]="filterObj.acknowledged"
-            name="dateOptions">
-            <option [ngValue]="undefined">Status</option>
-            <option [ngValue]="'true'">Acknowledged</option>
-            <option [ngValue]="'false'">Not Acknowledged</option>
-          </select> -->
           <div class="bg-dateRow form-group form-inline" id="dateRow"
           [style.width]="(filterObj.dateOption === 'date' ? '23rem' : (filterObj.dateOption === 'date range' ? '33rem' : ''))">
           <select class="form-control form-control-sm mx-2 my-1" id="dateoptions" [(ngModel)]="filterObj.dateOption"
@@ -105,29 +85,19 @@
       <hr class="solid">
     </div>
   </div>
-  <!-- <div class="card row bg-white" style="margin-left:-2rem">
-    <div class="col-xl-12 col-md-12 mb-12">
-      <form>
-        <div class="form-group form-inline  my-2 mx-3">
-          <input type="number" class="form-control form-control-sm my-1" id="app" style="width: 5%;" name="app"
-            [(ngModel)]="beforeInterval">
-          <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins before alert</button>
-          <input type="number" class="form-control form-control-sm my-1" id="inputEmail4" style="width: 5%;" name="name"
-            [(ngModel)]="afterInterval">
-          <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins after alert</button>
-        </div>
 
-      </form>
-    </div>
-  </div> -->
 </div>
 
-<div class="contain-pad" [style.marginTop]="pageType === 'live' ? '3rem': (pageType === 'history' ? '9.5rem': '13.5rem')">
+<div class="contain-pad" [ngStyle]="{marginTop: pageType === 'live' ? '3rem': (pageType === 'history' ? '9.5rem': '13.5rem'),
+maxHeight: 'calc(100vh - 12rem)'}"
+>
   <div class="mb-2">
-    <div class="table-responsive mx-2">
+    <div class="table-responsive mx-2 table-wrapper" [ngStyle]="{maxHeight: pageType === 'history' ? 'calc(100vh - 15rem)' : 'calc(100vh - 15rem)'}">
+
+
       <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
         <thead>
-          <tr class="bg-secondary text-white">
+          <tr >
             <th></th>
             <th>Asset Name</th>
             <th>Description</th>

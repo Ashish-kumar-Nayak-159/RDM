@@ -54,7 +54,7 @@ select.form-control {
 
 .contain-pad-report {
   margin-top: 11.5rem;
-  max-height: calc(100vh - 20rem);
+  max-height: calc(100vh - 15rem);
   padding-right: 1rem;
   overflow-y: auto;
   overflow-x: hidden;

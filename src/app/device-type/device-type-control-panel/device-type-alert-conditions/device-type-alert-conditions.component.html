@@ -24,7 +24,7 @@
 </div>
 
 <div class="con-pad">
-  <div class="table-responsive">
+  <div class="table-responsive table-wrapper" style="max-height:calc(100vh - 14rem);">
     <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
       <thead>
         <tr class="bg-secondary text-white">
@@ -257,7 +257,7 @@
                     name="whatsapp" [(ngModel)]="alertObj.actions.whatsapp.enabled">
                     <label class="form-check-label" for="whatsapp">Whatsapp</label>
                   </div>
-                  <div class="col-md-3 form-group "> 
+                  <div class="col-md-3 form-group ">
                     <!-- <label class="form-check-label"  for="email">Email</label> -->
                     <input type="checkbox" class="form-check-input" id="sms"
                     name="sms" [(ngModel)]="alertObj.actions.sms.enabled">

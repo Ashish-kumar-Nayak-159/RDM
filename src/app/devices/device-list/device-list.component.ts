@@ -401,8 +401,10 @@ export class DeviceListComponent implements OnInit, OnDestroy {
               item.display_name = item.device_id;
             }
             item.device_manager_users = item.device_manager.split(',');
+            if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
             const name = this.gateways.filter(gateway => gateway.device_id === item.gateway_id)[0]?.display_name;
             item.gateway_display_name = name ? name : item.gateway_id;
+            }
             if (item.hierarchy) {
               item.hierarchyString = '';
               const keys = Object.keys(item.hierarchy);

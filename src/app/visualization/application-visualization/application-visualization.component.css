@@ -14,21 +14,6 @@ input:invalid {
   font-family: 'Comfortaa';
 }
 
-th {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  background-color: inherit;
-}
-
-th[scope=row] {
-  position: -webkit-sticky;
-  position: sticky;
-  left: 0;
-  z-index: 1;
-}
-
 .w-22 {
   width: 22rem!important;
 }
@@ -56,5 +41,28 @@ th[scope=row] {
   width: 9rem;
 }
 
+
+
+
+.fixed_header{
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.fixed_header tbody{
+  display:block;
+  width: 100%;
+  overflow: auto;
+  height: calc(100vh - 18rem);
+}
+
+.fixed_header thead tr {
+   /* display: block; */
+}
+
+.fixed_header thead {
+  background: #858796;
+  color:#fff;
+}
 
 

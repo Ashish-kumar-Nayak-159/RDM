@@ -47,6 +47,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
       this.pageType = this.pageType.slice(0, -1);
       this.telemetryTableConfig = {
         type: 'process parameter',
+        tableHeight: 'calc(100vh - 16rem)',
         headers: ['Timestamp', 'Message ID', 'Message'],
         data: [
           {

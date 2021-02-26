@@ -119,9 +119,9 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       };
       this.commonService.breadcrumbEvent.emit(obj);
       if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
-        this.deviceFilterObj.category = undefined;
+        this.deviceFilterObj.type = undefined;
       } else {
-        this.deviceFilterObj.category = this.componentState;
+        this.deviceFilterObj.type = this.componentState;
       }
 
       this.route.queryParamMap.subscribe(
@@ -353,7 +353,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.originalGateways = [];
     const obj = {
       app: this.contextApp.app,
-      category: CONSTANTS.IP_GATEWAY,
+      type: CONSTANTS.IP_GATEWAY,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy)
     };
     this.subscriptions.push(this.deviceService.getDeviceList(obj).subscribe(
@@ -499,7 +499,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.deviceDetail.tags.created_by = this.userData.email;
     this.deviceDetail.app = this.contextApp.app;
     delete this.deviceDetail.tags.reserved_tags;
-    this.deviceDetail.tags.category = this.componentState === CONSTANTS.NON_IP_DEVICE ?
+    this.deviceDetail.tags.type = this.componentState === CONSTANTS.NON_IP_DEVICE ?
     null : this.componentState;
     this.deviceDetail.tags.created_date = moment().utc().format('M/DD/YYYY h:mm:ss A');
     this.deviceDetail.tags.device_users = {};

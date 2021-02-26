@@ -64,7 +64,7 @@
             telemetryFilter.sampling_format = undefined; telemetryFilter.sampling_time = undefined;"
             uncheckedLabel="Aggregation" [(ngModel)]="telemetryFilter.type" name="tpye"></ui-switch> -->
             <label class="mx-1 my-1">Sampling: </label>
-            <ng-container *ngIf="!telemetryFilter.type">
+            <!-- <ng-container *ngIf="!telemetryFilter.type">
             <input type="number" class="form-control form-control-sm my-1 w-7" id="minutes" min="1" disabled
               name="minutes" [(ngModel)]="telemetryFilter.aggregation_minutes" placeholder="Agreegation Time"
               (change)="onNumberChange($event, 'aggregation')">
@@ -78,8 +78,8 @@
             <option [ngValue]="'MAX'">Max</option>
             <option [ngValue]="'COUNT'">Count</option>
             </select>
-            </ng-container>
-            <ng-container *ngIf="telemetryFilter.type">
+            </ng-container> -->
+            <ng-container >
             <input type="number" class="form-control form-control-sm ml-1 my-1 w-7" id="minutes" min="1"
               name="minutes" [(ngModel)]="telemetryFilter.sampling_time" placeholder="Sampling" disabled
               (change)="onNumberChange($event, 'sampling')" title="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development.">

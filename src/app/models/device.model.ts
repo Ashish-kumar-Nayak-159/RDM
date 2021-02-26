@@ -6,7 +6,7 @@ export class DeviceListFilter {
   location: string;
   status: string;
   gateway_id?: string;
-  category: string;
+  type: string;
   hierarchy: any;
   hierarchyString: string;
 }

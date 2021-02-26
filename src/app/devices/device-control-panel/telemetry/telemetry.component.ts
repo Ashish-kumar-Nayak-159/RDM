@@ -103,7 +103,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
     if (this.telemetryFilter.gateway_id) {
       this.getDevicesListByGateway();
     }
-    this.telemetryFilter.type = true;
+    // this.telemetryFilter.type = true;
     this.telemetryFilter.sampling_format = 'minute';
     this.telemetryFilter.sampling_time = 1;
 
@@ -226,7 +226,6 @@ export class TelemetryComponent implements OnInit, OnDestroy {
         obj.to_date = filterObj.to_date.unix();
       }
     }
-
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'Get Telemetry Data');
       this.isTelemetryLoading = false;
@@ -250,6 +249,8 @@ export class TelemetryComponent implements OnInit, OnDestroy {
       }
 
     } else {
+      delete obj.sampling_time;
+      delete obj.sampling_format;
       method = this.deviceService.getDeviceTelemetry(obj);
     }
     this.isFilterSelected = true;
@@ -277,6 +278,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
       const obj = {
         app: dataobj.app,
         id: dataobj.id,
+        device_id: this.device.device_id,
         from_date: null,
         to_date: null,
         epoch: true

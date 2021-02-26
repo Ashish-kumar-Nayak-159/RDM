@@ -25,16 +25,17 @@ export class GatewaySettingsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.device = JSON.parse(JSON.stringify(this.device));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getDeviceData();
   }
 
   getDeviceData() {
-    this.device.tags = undefined;
+    // this.device.tags = undefined;
 
     this.subscriptions.push(
-      this.deviceService.getDeviceData(this.device.device_id, this.contextApp.app).subscribe(
+      this.deviceService.getDeviceDetailById(this.contextApp.app, this.device.device_id).subscribe(
       async (response: any) => {
         this.device = JSON.parse(JSON.stringify(response));
         if (!this.device.tags.settings) {
@@ -51,7 +52,7 @@ export class GatewaySettingsComponent implements OnInit {
         if (!this.device.tags.settings.normal_mode) {
           this.device.tags.settings.normal_mode = {
             frequency: 60
-          };
+        };
         }
         if (!this.device.tags.settings.turbo_mode) {
           this.device.tags.settings.turbo_mode = {
@@ -67,12 +68,13 @@ export class GatewaySettingsComponent implements OnInit {
     const obj = {
       device_id: this.device.device_id,
       display_name: this.device.display_name,
-      tags: this.device.tags
+      tags: this.device.tags,
+      app: this.contextApp.app
     };
     this.subscriptions.push(this.deviceService.updateDeviceTags(obj, this.contextApp.app).subscribe(
       (response: any) => {
         this.toasterService.showSuccess('Gateway Settings updated successfully.', 'Gateway Settings');
-        this.getDeviceData();
+        this.deviceService.reloadDeviceInControlPanelEmitter.emit();
         this.isSaveSettingAPILoading = false;
       }, error => {
         this.toasterService.showError(error.message, 'Gateway Settings');

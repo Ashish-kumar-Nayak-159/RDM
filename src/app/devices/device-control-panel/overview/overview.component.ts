@@ -35,6 +35,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   confirmModalMessage: string;
   constantData = CONSTANTS;
   @Input() tileData: any;
+  @Input() menuDetail: any;
   componentState: any;
   deviceType: any;
   subscriptions: Subscription[] = [];

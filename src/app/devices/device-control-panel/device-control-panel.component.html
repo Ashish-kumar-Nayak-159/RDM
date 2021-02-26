@@ -50,14 +50,14 @@
       <i class="fa fa-bars"></i>
     </button> -->
     <div class="">
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'overview'}" id="device_overview" role="tabpanel">
-        <app-overview *ngIf="activeTab === 'overview' && device" [tileData]="tileData" [device]="device"></app-overview>
+      <div class="tab-pane"  [ngClass]="{'active': activeTab === 'overview'}" id="device_overview" role="tabpanel">
+        <app-overview *ngIf="activeTab === 'overview' && device" [tileData]="tileData" [device]="device" [menuDetail]="getMenuDetail('overview')"></app-overview>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'access_control'}" role="tabpanel" id="device_access_control">
         <app-access-control *ngIf="activeTab === 'access_control'  && device"  [device]="device"></app-access-control>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="device_device_tags">
-        <app-tags *ngIf="activeTab === 'tags'  && device" [tileData]="tileData" [device]="device"></app-tags>
+        <app-tags *ngIf="activeTab === 'tags'  && device" [tileData]="tileData" [device]="device" [menuDetail]="getMenuDetail('tags')"></app-tags>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'heartbeat'}" role="tabpanel" id="device_heartbeat">
         <app-heartbeat *ngIf="activeTab === 'heartbeat' && device" [device]="device"></app-heartbeat>
@@ -93,7 +93,7 @@
         <app-application-visualization [pageType]="'history'" *ngIf="activeTab === 'alert-visualization' && device" [device]="device"></app-application-visualization>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'  || activeTab === 'configure_widgets'}" role="tabpanel" id="device_control_widgets">
-        <app-commands *ngIf="activeTab === 'control_widgets' || activeTab === 'configure_widgets' && device" [device]="device" [pageType]="activeTab"></app-commands>
+        <app-commands *ngIf="activeTab === 'control_widgets' || activeTab === 'configure_widgets' && device" [device]="device" [pageType]="activeTab" [menuDetail]="getMenuDetail('control_widgets')"></app-commands>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'predictiveMaintenance'}" role="tabpanel" id="device_predictive_mainteance">
         <app-predictive-maintenance *ngIf="activeTab === 'predictiveMaintenance' && device" [device]="device"></app-predictive-maintenance>

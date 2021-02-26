@@ -51,10 +51,10 @@
     </button> -->
     <div class="">
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'overview'}" id="device_overview" role="tabpanel">
-        <app-overview *ngIf="activeTab === 'overview' && device" [tileData]="tileData" [device]="device"></app-overview>
+        <app-overview *ngIf="activeTab === 'overview' && device" [tileData]="tileData" [device]="device" [menuDetail]="getMenuDetail('overview')"></app-overview>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="device_device_tags">
-        <app-tags *ngIf="activeTab === 'tags'  && device" [tileData]="tileData" [device]="device"></app-tags>
+        <app-tags *ngIf="activeTab === 'tags'  && device" [tileData]="tileData" [device]="device"  [menuDetail]="getMenuDetail('tags')"></app-tags>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'settings'}" role="tabpanel" id="device_settings">
         <app-gateway-settings *ngIf="activeTab === 'settings'  && device" [tileData]="tileData" [device]="device"></app-gateway-settings>
@@ -81,7 +81,7 @@
         <app-rdmdevice-control-panel-error *ngIf="activeTab === 'error' && device" [device]="device"></app-rdmdevice-control-panel-error>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel" id="device_control_widgets">
-        <app-commands *ngIf="activeTab === 'control_widgets' && device" [device]="device" ></app-commands>
+        <app-commands *ngIf="activeTab === 'control_widgets' && device" [device]="device" [menuDetail]="getMenuDetail('control_widgets')" ></app-commands>
       </div>
       <!-- /.container1-fluid -->
 

@@ -16,6 +16,7 @@ export class CommandsComponent implements OnInit {
 
   @Input() pageType;
   @Input() device: Device = new Device();
+  @Input() menuDetail: any;
   @Input() callingPage = 'Device';
   displayMode: string;
   timerObj: any;

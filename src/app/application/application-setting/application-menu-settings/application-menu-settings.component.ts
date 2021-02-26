@@ -41,6 +41,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
             console.log(menu);
             item.display_name = menu.display_name;
             item.visible = menu.visible;
+            console.log(item);
             arr.push(item);
           }
         });
@@ -48,7 +49,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
           arr.push(item);
         }
       });
-      console.log(arr);
+      console.log('52222222222 ', arr);
       this.applicationData.configuration.device_control_panel_menu = [...arr];
     }
     if (this.applicationData?.configuration?.legacy_device_control_panel_menu?.length === 0) {

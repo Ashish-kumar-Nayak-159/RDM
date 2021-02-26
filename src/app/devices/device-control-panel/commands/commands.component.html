@@ -11,13 +11,13 @@
           <i class="fa fa-fw fa-eye"></i>
           <span>View</span></a>
       </li>
-      <li class="nav-item" *ngIf="callingPage !== 'gateway'" [ngClass]="{'active': displayMode === 'configure_specific_commands'}">
+      <li class="nav-item" *ngIf="menuDetail?.accordion_value?.configuration" [ngClass]="{'active': displayMode === 'configure_specific_commands'}">
         <a class="nav-link"  href="javascript:void(0)" (click)="onClickOfSpecificCommands('configure')">
           <i class="fa fa-fw fa-cog"></i>
           <span>Configuration</span></a>
       </li>
     <!-- Nav Item - Charts -->
-    <li class="nav-item" *ngIf="callingPage !== 'gateway'" [ngClass]="{'active': displayMode === 'control_specific_commands'}">
+    <li class="nav-item" *ngIf="menuDetail?.accordion_value?.control" [ngClass]="{'active': displayMode === 'control_specific_commands'}">
       <a class="nav-link"  href="javascript:void(0)" (click)="onClickOfSpecificCommands('control')">
         <i class="fa fa-fw fa-angle-right"></i>
         <span>Control</span></a>
@@ -27,7 +27,7 @@
         <i class="fa fa-fw fa-edit"></i>
         <span>Send General Command</span></a>
     </li> -->
-    <li class="nav-item" *ngIf="callingPage !== 'gateway'" [ngClass]="{'active': displayMode === 'purge'}">
+    <li class="nav-item" *ngIf="menuDetail?.accordion_value?.purge" [ngClass]="{'active': displayMode === 'purge'}">
       <a class="nav-link" href="javascript:void(0)" (click)="displayMode = 'purge'; timerObj = undefined;">
         <i class="fa fa-fw fa-trash"></i>
         <span>Purge</span></a>

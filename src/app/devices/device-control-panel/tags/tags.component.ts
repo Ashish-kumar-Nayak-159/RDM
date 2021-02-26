@@ -17,6 +17,7 @@ export class TagsComponent implements OnInit, OnDestroy {
 
   @Input() device: Device = new Device();
   @Input() tileData: any;
+  @Input() menuDetail: any;
   originalDevice: Device = new Device();
   deviceCustomTags: any[] = [];
   reservedTags: any[] = [];

@@ -12,7 +12,7 @@
           <i class="fa fa-fw fa-save"></i>
           <span class="text-secondary">Save</span></a>
       </li>
-      <li class="nav-item" *ngIf="contextApp?.user?.role === constantData.APP_ADMIN_ROLE">
+      <li class="nav-item" *ngIf="menuDetail?.accordion_value?.delete">
         <a class="nav-link" href="javascript:void(0)" (click)="openModal('confirmdeleteTagsModal')" [class.disabled]="isUpdateAPILoading">
           <i class="fa fa-fw fa-trash"></i>
           <span class="text-secondary">Delete all</span></a>

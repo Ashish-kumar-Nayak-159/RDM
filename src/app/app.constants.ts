@@ -228,7 +228,12 @@ export class CONSTANTS {
       display_name: 'Overview',
       icon: 'fa fa-fw fa-life-ring',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [
+        { name: 'Enable/Disable' , key: 'enable_disable'},
+        { name: 'Delete', key: 'delete'}
+      ],
+      accordion_value: {}
     },
     {
       page: 'access_control',
@@ -237,7 +242,9 @@ export class CONSTANTS {
       display_name: 'Access Control (IAM)',
       icon: 'fa fa-fw fa-users',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'tags',
@@ -246,7 +253,11 @@ export class CONSTANTS {
       display_name: 'Tags',
       icon: 'fa fa-fw fa-tags',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [
+        { name: 'Delete all', key: 'delete'}
+      ],
+      accordion_value: {}
     },
     {
       page: 'settings',
@@ -255,7 +266,9 @@ export class CONSTANTS {
       display_name: 'Settings',
       icon: 'fa fa-fw fa-cog',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'd2c',
@@ -273,7 +286,9 @@ export class CONSTANTS {
       display_name: 'Heartbeat',
       icon: 'fa fa-fw fa-heartbeat',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'notifications',
@@ -282,7 +297,9 @@ export class CONSTANTS {
       display_name: 'Notifications',
       icon: 'fa fa-fw fa-bell',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'alerts',
@@ -291,7 +308,9 @@ export class CONSTANTS {
       display_name: 'Alerts',
       icon: 'fa fa-fw fa-bolt',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'alertendevents',
@@ -300,7 +319,9 @@ export class CONSTANTS {
       display_name: 'Alert End Events',
       icon: 'fa fa-fw fa-hourglass-end',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'telemetry',
@@ -309,7 +330,9 @@ export class CONSTANTS {
       display_name: 'Telemetry',
       icon: 'fa fa-fw fa-history',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'error',
@@ -318,7 +341,9 @@ export class CONSTANTS {
       display_name: 'Error',
       icon: 'fa fa-fw fa-exclamation-triangle',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'battery_message',
@@ -327,7 +352,9 @@ export class CONSTANTS {
       display_name: 'Battery',
       icon: 'fa fa-fw fa-battery-full',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'logs',
@@ -336,7 +363,9 @@ export class CONSTANTS {
       display_name: 'Logs',
       icon: 'fa fa-fw fa-file',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'other',
@@ -345,7 +374,9 @@ export class CONSTANTS {
       display_name: 'Other',
       icon: 'fa fa-fw fa-stack-exchange',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'c2d',
@@ -363,7 +394,13 @@ export class CONSTANTS {
       display_name: 'Control / Configure',
       icon: 'fa fa-fw fa-angle-right',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [
+        { name: 'Configuration', key: 'configuration'},
+        { name: 'Control', key: 'control'},
+        { name: 'Purge', key: 'purge'}
+      ],
+      accordion_value: {}
     },
     {
       page: 'visualization',
@@ -381,7 +418,9 @@ export class CONSTANTS {
       display_name: 'Telemetry Trend Analysis',
       icon: 'fa fa-fw fa-area-chart',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'alert-visualization',
@@ -390,7 +429,9 @@ export class CONSTANTS {
       display_name: 'Alert Visualization',
       icon: 'fa fa-fw fa-bar-chart',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'maintenance',
@@ -408,7 +449,9 @@ export class CONSTANTS {
       display_name: 'Maintenance',
       icon: 'fa fa-fw fa-wrench',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     // {
     //   page: 'recommendations',
@@ -456,7 +499,9 @@ export class CONSTANTS {
       display_name: 'Overview',
       icon: 'fa fa-fw fa-life-ring',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'access_control',
@@ -465,7 +510,9 @@ export class CONSTANTS {
       display_name: 'Access Control (IAM)',
       icon: 'fa fa-fw fa-users',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'tags',
@@ -474,7 +521,11 @@ export class CONSTANTS {
       display_name: 'Tags',
       icon: 'fa fa-fw fa-tags',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [
+        { name: 'Delete all', key: 'delete'}
+      ],
+      accordion_value: {}
     },
     {
       page: 'd2c',
@@ -492,7 +543,9 @@ export class CONSTANTS {
       display_name: 'Heartbeat',
       icon: 'fa fa-fw fa-heartbeat',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'notifications',
@@ -501,7 +554,9 @@ export class CONSTANTS {
       display_name: 'Notifications',
       icon: 'fa fa-fw fa-bell',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'alerts',
@@ -510,7 +565,9 @@ export class CONSTANTS {
       display_name: 'Alerts',
       icon: 'fa fa-fw fa-bolt',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'alertendevents',
@@ -519,7 +576,9 @@ export class CONSTANTS {
       display_name: 'Alert End Events',
       icon: 'fa fa-fw fa-hourglass-end',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'telemetry',
@@ -528,7 +587,9 @@ export class CONSTANTS {
       display_name: 'Telemetry',
       icon: 'fa fa-fw fa-history',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'error',
@@ -537,7 +598,9 @@ export class CONSTANTS {
       display_name: 'Error',
       icon: 'fa fa-fw fa-exclamation-triangle',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'battery_message',
@@ -546,7 +609,9 @@ export class CONSTANTS {
       display_name: 'Battery',
       icon: 'fa fa-fw fa-battery-full',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'logs',
@@ -555,7 +620,9 @@ export class CONSTANTS {
       display_name: 'Logs',
       icon: 'fa fa-fw fa-file',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'other',
@@ -564,7 +631,9 @@ export class CONSTANTS {
       display_name: 'Other',
       icon: 'fa fa-fw fa-stack-exchange',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'c2d',
@@ -582,7 +651,13 @@ export class CONSTANTS {
       display_name: 'Control / Configure',
       icon: 'fa fa-fw fa-angle-right',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [
+        { name: 'Configuration', key: 'configuration'},
+        { name: 'Control', key: 'control'},
+        { name: 'Purge', key: 'purge'}
+      ],
+      accordion_value: {}
     },
     {
       page: 'visualization',
@@ -600,7 +675,9 @@ export class CONSTANTS {
       display_name: 'Telemetry Trend Analysis',
       icon: 'fa fa-fw fa-area-chart',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'alert-visualization',
@@ -609,7 +686,9 @@ export class CONSTANTS {
       display_name: 'Alert Visualization',
       icon: 'fa fa-fw fa-bar-chart',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'maintenance',
@@ -627,7 +706,9 @@ export class CONSTANTS {
       display_name: 'Maintenance',
       icon: 'fa fa-fw fa-wrench',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     // {
     //   page: 'recommendations',
@@ -675,7 +756,12 @@ export class CONSTANTS {
       display_name: 'Overview',
       icon: 'fa fa-fw fa-life-ring',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [
+        { name: 'Enable/Disable' , key: 'enable_disable'},
+        { name: 'Delete', key: 'delete'}
+      ],
+      accordion_value: {}
     },
     {
       page: 'tags',
@@ -684,7 +770,11 @@ export class CONSTANTS {
       display_name: 'Tags',
       icon: 'fa fa-fw fa-tags',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [
+        { name: 'Delete all', key: 'delete'}
+      ],
+      accordion_value: {}
     },
     {
       page: 'settings',
@@ -693,7 +783,9 @@ export class CONSTANTS {
       display_name: 'Settings',
       icon: 'fa fa-fw fa-cog',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'd2c',
@@ -711,7 +803,9 @@ export class CONSTANTS {
       display_name: 'Current Configuration',
       icon: 'fa fa-fw fa-cog',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'config_history',
@@ -720,7 +814,9 @@ export class CONSTANTS {
       display_name: 'Configuration History',
       icon: 'fa fa-fw fa-history',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'notifications',
@@ -729,7 +825,9 @@ export class CONSTANTS {
       display_name: 'Notifications',
       icon: 'fa fa-fw fa-bell',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'device_life_cycle',
@@ -738,7 +836,9 @@ export class CONSTANTS {
       display_name: 'Gateway Life Cycle Events',
       icon: 'fa fa-fw fa-heartbeat',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'cached_alerts',
@@ -747,7 +847,9 @@ export class CONSTANTS {
       display_name: 'Cached Alerts',
       icon: 'fa fa-fw fa-bolt',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'cached_telemetry',
@@ -756,7 +858,9 @@ export class CONSTANTS {
       display_name: 'Cached Telemetry',
       icon: 'fa fa-fw fa-stack-exchange',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'error',
@@ -765,7 +869,9 @@ export class CONSTANTS {
       display_name: 'Error',
       icon: 'fa fa-fw fa-exclamation-triangle',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'c2d',
@@ -783,7 +889,13 @@ export class CONSTANTS {
       display_name: 'Control Widgets',
       icon: 'fa fa-fw fa-angle-right',
       visible: true,
-      isTitle: false
+      isTitle: false,
+      showAccordion: [
+        { name: 'Configuration', key: 'configuration'},
+        { name: 'Control', key: 'control'},
+        { name: 'Purge', key: 'purge'}
+      ],
+      accordion_value: {}
     }
   ];
 

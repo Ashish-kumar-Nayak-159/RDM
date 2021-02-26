@@ -97,6 +97,10 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
     ));
   }
 
+  getMenuDetail(pageType) {
+    return this.menuItems.find(menu => menu.page === pageType);
+  }
+
   getTileName() {
     let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {

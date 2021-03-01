@@ -401,7 +401,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     console.log(obj.hierarchy);
     }
     delete obj.hierarchyString;
-    if (obj.status && obj.status.includes('connected')) {
+    if (obj.status && obj.status.toLowerCase().includes('connected')) {
       obj.connection_state = obj.status;
       delete obj.status;
     }

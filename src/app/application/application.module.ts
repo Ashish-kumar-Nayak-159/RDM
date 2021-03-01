@@ -15,6 +15,10 @@ import { ApplicationUsersComponent } from './application-setting/application-use
 import { ApplicationMenuSettingsComponent } from './application-setting/application-menu-settings/application-menu-settings.component';
 import { ApplicationSelectionComponent } from './application-selection/application-selection.component';
 import { DevicesModule } from '../devices/devices.module';
+import { ApplicationNotificationsComponent } from './application-notifications/application-notifications.component';
+import { ApplicationAlertsComponent } from './application-alerts/application-alerts.component';
+import { ApplicationEventsComponent } from './application-events/application-events.component';
+import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 
 
 @NgModule({
@@ -27,15 +31,24 @@ import { DevicesModule } from '../devices/devices.module';
     ApplicationRolesComponent,
     ApplicationUsersComponent,
     ApplicationMenuSettingsComponent,
-    ApplicationSelectionComponent
+    ApplicationSelectionComponent,
+    ApplicationNotificationsComponent,
+    ApplicationAlertsComponent,
+    ApplicationEventsComponent
   ],
   imports: [
-  CommonModule,
+    CommonModule,
     ApplicationRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     DevicesModule,
-    AccordionModule
+    AccordionModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
+    CommonCustomModule
+  ],
+  providers: [
+    {provide: OWL_DATE_TIME_LOCALE, useValue: {useUtc: true}}
   ]
 })
 export class ApplicationModule { }

@@ -1094,6 +1094,7 @@ export class CONSTANTS {
   public static DASHBOARD_TELEMETRY_SELECTION = 'dashboardTelemetryFilterObj';
   public static DASHBOARD_ALERT_SELECTION = 'dashboardAlertFilterObj';
   public static DEVICES_LIST = 'devices_list';
+  public static DEVICES_GATEWAYS_LIST = 'devices_gateways_list';
   public static DEVICE_MODELS_LIST = 'device_models_list';
   public static DEVICE_MODEL_DATA = 'device_model_data';
   public static APP_USERS = 'application_users';

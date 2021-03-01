@@ -1,0 +1,110 @@
+<div class="topnavbar" style="height: 4.5rem!important;">
+  <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-1">
+    <h5 class="h4 mb-0 text-gray-800">Notifications</h5>
+  </div>
+  <div class="card row bg-white">
+
+    <form>
+      <div class="form-group form-inline my-1">
+        <div class="row col-xl-12 col-md-12 ml-1">
+          <ng-container 
+          *ngFor="
+              let level of contextApp?.hierarchy?.levels;
+              let index = index
+            ">
+            <select *ngIf="index !== 0" class="form-control form-control-sm mx-1 my-1" id="{{ level }}"
+              [disabled]="contextApp?.user?.hierarchy[level]" [(ngModel)]="configureHierarchy[index]" name="{{ level }}"
+              (change)="onChangeOfHierarchy(index)">
+              <option [ngValue]="undefined">
+                Select {{ level }}
+              </option>
+              <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">
+                {{ tag }}
+              </option>
+            </select>
+            <input type="text" *ngIf="index === 0" defaultValue="{{ contextApp.app }}" disabled
+              class="form-control form-control-sm mr-1 my-1" />
+          </ng-container>
+          <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory" [(ngModel)]="filterObj.device"
+            name="deviceCategory" [compareWith]="compareFn">
+            <option [ngValue]="undefined">Select Asset</option>
+            <option [ngValue]="device" *ngFor="let device of devices">
+              {{
+              device?.display_name
+              ? device?.display_name
+              : device.device_id
+              }}
+            </option>
+          </select>
+        </div>
+        <div class="row col-xl-12 col-md-12 ml-1">
+
+          <input type="number" min="1" class="form-control form-control-sm mr-1 record-input" id="inputEmail4"
+            placeholder="No of Records" [(ngModel)]="filterObj.count" name="count">
+          
+          <div class="bg-dateRow form-group form-inline" id="dateRow"
+            [style.width]="(filterObj.dateOption === 'date' ? '23rem' : (filterObj.dateOption === 'date range' ? '33rem' : ''))">
+            <select class="form-control form-control-sm mx-1 my-1" id="dateoptions" [(ngModel)]="filterObj.dateOption"
+              name="dateOptions" (change)="onDateOptionChange()">
+              <option [ngValue]="undefined">Quick Date Options</option>
+              <option [ngValue]="'5 mins'">Last 5 minutes</option>
+              <option [ngValue]="'30 mins'">Last 30 minutes</option>
+              <option [ngValue]="'1 hour'">Last 1 hour</option>
+              <option [ngValue]="'24 hour'">Last 24 hours</option>
+              <option [ngValue]="'date'">Select Date</option>
+              <option [ngValue]="'date range'">Select Date Range</option>
+            </select>
+            <!-- <label class="ml-1 mr-1">OR</label> -->
+            <ng-container *ngIf="filterObj.dateOption === 'date'">
+              <input #dt2Input [owlDateTime]="dt2" (dateTimeChange)="onSingleDateChange($event);"
+                class="form-control form-control-sm mx-2 my-1 w-10" [owlDateTimeTrigger]="dt2"
+                placeholder="Select Date">
+              <span [owlDateTimeTrigger]="dt2" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
+              <owl-date-time #dt2 [pickerType]="'calendar'"></owl-date-time>
+            </ng-container>
+            <ng-container *ngIf="filterObj.dateOption === 'date range'">
+              <input [owlDateTime]="dt1" [selectMode]="'range'" #dt1Input (dateTimeChange)="onDateChange($event)"
+                class="form-control form-control-sm mx-1 my-1 date-range-picket-width" [owlDateTimeTrigger]="dt1"
+                placeholder="Select Date Time">
+              <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
+              <owl-date-time #dt1></owl-date-time>
+            </ng-container>
+          </div>
+          <button type="button" class="btn btn-warning btn-sm ml-3 mr-1 my-1" title="Search"
+            (click)="searchNotifications()"><i class="fa fa-search fa-sm"></i></button>
+          <!-- <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear Filters" (click)="clear();">
+            <img class="filter-clear-icon" src="./assets/img/filter.svg"></button> -->
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="contain-pad" style="max-height: calc(100vh - 15rem)!important;margin-top: 13rem;">
+  <div class="table-responsive">
+    <app-common-table [tableData]="notifications" [tableConfig]="notificationTableConfig"
+      [isTableFilterSelected]="isFilterSelected" [isTableDataLoading]="isNotificationLoading"
+      (viewMessageEvent)="openNotificationMessageModal($event)"></app-common-table>
+  </div>
+</div>
+
+<div class="modal right fade" id="notificationMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" *ngIf="selectedNotification">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">View Notification Message</h5>
+        <button type="button" class="close" aria-label="Close" (click)="onModalEvents('close')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre [innerHTML]="selectedNotification?.message | json"></pre>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onModalEvents('close')">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

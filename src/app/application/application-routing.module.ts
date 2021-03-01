@@ -1,3 +1,6 @@
+import { ApplicationEventsComponent } from './application-events/application-events.component';
+import { ApplicationAlertsComponent } from './application-alerts/application-alerts.component';
+import { ApplicationNotificationsComponent } from './application-notifications/application-notifications.component';
 import { ApplicationSettingComponent } from './application-setting/application-setting.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -22,6 +25,21 @@ const routes: Routes = [
   {
     path: ':applicationId/settings',
     component: ApplicationSettingComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: ':applicationId/notifications',
+    component: ApplicationNotificationsComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: ':applicationId/alerts',
+    component: ApplicationAlertsComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: ':applicationId/events',
+    component: ApplicationEventsComponent,
     canActivate: [AuthGuardService]
   },
   {

@@ -10,15 +10,30 @@
     <tbody>
       <ng-container *ngIf="tableData.length > 0 && !isTableDataLoading && isTableFilterSelected">
         <tr *ngFor="let data of tableData"
-        [ngClass]="{ 'bg-danger text-white': tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value}">
+        [ngClass]="{ 'bg-danger text-white': (tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value) || 
+        (tableConfig.type === 'alert'
+        && data?.severity?.toLowerCase() === 'critical')}">
 
           <td *ngFor="let header of tableConfig?.data" class="{{header.valueClass}}">
-            <ng-container *ngIf="header.type === 'text'">{{resolve(data, header.key)}} </ng-container>
+            <ng-container *ngIf="header.type === 'text'">
+              
+              <span *ngIf="header.key">
+                <i class="fa fa-exclamation-triangle" *ngIf="tableConfig.type === 'alert' && header.key === 'code'" [style.color]="
+                  (data?.severity?.toLowerCase() === 'critical' ? '#cc0000' :
+                  (data?.severity?.toLowerCase() === 'error' ? '#fb5515' :
+                  (data?.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
+                  (data?.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
+                  )
+                  )" title="{{data?.severity}}"></i>&nbsp;{{resolve(data, header.key)}}  </span>
+            </ng-container>
             <ng-container *ngIf="header.type === 'button'">
               <ng-container *ngFor="let btnData of header.btnData">
                 <a href="javascript:void(0)" class="{{btnData.valueclass}}" (click)="onClickOfButton(data, btnData.id)"
                 [class.disabled]="tableConfig[btnData.disableConditions?.key] === btnData.disableConditions?.value">
-                  <i class="{{btnData.icon}}" title="{{btnData.tooltip}}"></i>
+                  <i class="{{btnData.icon}}" title="{{btnData.tooltip}}" 
+                  [style.color]="(tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value) || 
+                  (tableConfig.type === 'alert'
+                  && data?.severity?.toLowerCase() === 'critical') ? 'white' : ''"></i>
                   {{btnData.text}}
                 </a>
               </ng-container>

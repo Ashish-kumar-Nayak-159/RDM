@@ -47,6 +47,32 @@ export class DeviceService {
     }
   }
 
+  getAllGatewaysAndDevicesList(filterObj, app) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    const devices = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICES_GATEWAYS_LIST);
+    if (devices) {
+      return new Observable((observer) => {
+        observer.next({
+          data: devices
+        });
+      });
+    } else {
+      return this.http.get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_DEVICES, app), { params })
+      .pipe( map((data: any) => {
+        this.commonService.setItemInLocalStorage(CONSTANTS.DEVICES_GATEWAYS_LIST, data.data);
+        return data;
+      }), catchError( error => {
+        return throwError( error);
+      })
+      );
+    }
+  }
+
   getDeviceList(filterObj) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {

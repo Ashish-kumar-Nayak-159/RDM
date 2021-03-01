@@ -1,12 +1,14 @@
 import { AppDashboardComponent } from './app-dashboard/app-dashboard.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AuthGuardService } from '../services/auth-guard/auth-guard.service';
 
 
 const routes: Routes = [
   {
     path: '',
-    component: AppDashboardComponent
+    component: AppDashboardComponent,
+    canActivate: [AuthGuardService]
   }
 ];
 

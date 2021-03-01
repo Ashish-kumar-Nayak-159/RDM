@@ -74,15 +74,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       ]
     });
-    this.commonService.breadcrumbEvent.emit({
-      type: 'replace',
-      data: [
-        {
-          title: this.contextApp.user.hierarchyString,
-          url: 'applications/' + this.contextApp.app
-        }
-      ]
-    });
+    
 
     await this.getDevices(this.contextApp.user.hierarchy);
     if (this.contextApp.hierarchy.levels.length > 1) {

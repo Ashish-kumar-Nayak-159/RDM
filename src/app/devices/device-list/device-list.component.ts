@@ -446,6 +446,8 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   }
 
   clearFilter() {
+    this.currentOffset = 0;
+    this.devicesList = [];
     this.deviceFilterObj = undefined;
     this.deviceFilterObj = JSON.parse(JSON.stringify(this.originalDeviceFilterObj));
     console.log(this.deviceFilterObj);

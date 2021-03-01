@@ -203,7 +203,7 @@
           <h6 class="m-0 font-weight-bold text-primary">
             Recent Notifications
             <span class="float-right">
-              <a
+              <a [routerLink]="['notifications']"
                 class="watch-eye"
                 ><i class="fa fa-eye" aria-hidden="true"></i
               ></a>
@@ -252,7 +252,7 @@
           <h6 class="m-0 font-weight-bold text-primary">
             Recent Alerts
             <span class="float-right">
-              <a class="watch-eye"
+              <a class="watch-eye" [routerLink]="['alerts']"
                 ><i class="fa fa-eye" aria-hidden="true"></i
               ></a>
             </span>
@@ -295,7 +295,7 @@
           <h6 class="m-0 font-weight-bold text-primary">
             Device Life Cycle Events
             <span class="float-right">
-              <a class="watch-eye"
+              <a class="watch-eye" [routerLink]="['events']"
                 ><i class="fa fa-eye" aria-hidden="true"></i
               ></a>
             </span>

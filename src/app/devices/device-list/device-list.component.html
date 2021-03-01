@@ -84,8 +84,8 @@
 <div class="mb-4 ">
 
   <div class="">
-    <div class="table-responsiven table-wrapper" style="max-height: calc(100vh - 19.5rem)">
-      <table class="table table-bordered  table-striped" id="dataTable" width="100%" cellspacing="0">
+    <div class="table-responsiven table-wrapper" id="table-wrapper" style="max-height: calc(100vh - 19.5rem)">
+      <table class="table table-bordered  table-striped" id="deviceTable" width="100%" cellspacing="0">
         <thead >
           <th>{{(tileData && tileData[1] ? tileData[1]?.value : '') + ' Name' }}</th>
           <th>{{(tileData && tileData[1] ? tileData[1]?.value : '') + ' Manager' }}</th>
@@ -94,7 +94,7 @@
           <th>Actions</th>
         </thead>
         <tbody>
-          <ng-container *ngIf="devicesList.length > 0 && !isDeviceListLoading && isFilterSelected">
+          <ng-container *ngIf="devicesList.length > 0 && isFilterSelected">
             <tr *ngFor="let device of devicesList">
               <td>{{device.display_name}}</td>
               <td>

@@ -46,6 +46,9 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   addDeviceConfigureHierarchy = {};
   subscriptions: Subscription[] = [];
   appUsers: any[] = [];
+  currentOffset = 0;
+  currentLimit = 20;
+  insideScrollFunFlag = false;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -221,6 +224,17 @@ export class DeviceListComponent implements OnInit, OnDestroy {
 
     });
     console.log(this.deviceFilterObj);
+    setTimeout(() => {
+    console.log($('#table-wrapper'));
+    $("#table-wrapper").on('scroll', () => {
+      let element = document.getElementById("table-wrapper");
+      if (parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0)) >= parseFloat(element.scrollHeight.toFixed(0)) && !this.insideScrollFunFlag) {
+        this.currentOffset += this.currentLimit;
+        this.searchDevices();
+        this.insideScrollFunFlag = true;
+      }
+    });
+  }, 2000);
   }
 
   getApplicationUsers() {
@@ -374,6 +388,9 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.isDeviceListLoading = true;
     this.isFilterSelected = true;
     const obj = JSON.parse(JSON.stringify(this.deviceFilterObj));
+    obj.offset = this.currentOffset;
+    obj.count = this.currentLimit;
+    console.log('387777777   ', obj);
     if (this.contextApp) {
     obj.hierarchy = { App: this.contextApp.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
@@ -394,9 +411,9 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         if (response.data) {
-          this.devicesList = response.data;
+          
           console.log(this.devicesList);
-          this.devicesList.forEach(item => {
+          response.data.forEach(item => {
             if (!item.display_name) {
               item.display_name = item.device_id;
             }
@@ -413,10 +430,18 @@ export class DeviceListComponent implements OnInit, OnDestroy {
               });
             }
           });
+          this.devicesList = [...this.devicesList, ...response.data];
         }
+        if (response.data.length === this.currentLimit) {
+        this.insideScrollFunFlag = false;
+        } else {
+          this.insideScrollFunFlag = true;
+        }
+
         this.isDeviceListLoading = false;
       }, error => {
         this.isDeviceListLoading = false;
+        this.insideScrollFunFlag = false;
     }));
   }
 

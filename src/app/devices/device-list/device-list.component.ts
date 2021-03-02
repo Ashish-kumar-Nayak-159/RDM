@@ -526,7 +526,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.deviceDetail.tags.created_by = this.userData.email;
     this.deviceDetail.app = this.contextApp.app;
     delete this.deviceDetail.tags.reserved_tags;
-    this.deviceDetail.tags.type = this.componentState === CONSTANTS.NON_IP_DEVICE ?
+    this.deviceDetail.tags.category = this.componentState === CONSTANTS.NON_IP_DEVICE ?
     null : this.componentState;
     this.deviceDetail.tags.created_date = moment().utc().format('M/DD/YYYY h:mm:ss A');
     this.deviceDetail.tags.device_users = {};

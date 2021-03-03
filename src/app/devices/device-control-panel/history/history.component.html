@@ -42,7 +42,7 @@
             </select>
             <!-- <label class="ml-1 mr-1">OR</label> -->
             <ng-container *ngIf="historyFilter.dateOption === 'date'">
-              <input #dt2Input [owlDateTime]="dt2"  (dateTimeChange)="onSingleDateChange($event);"
+              <input [max]="today" #dt2Input [owlDateTime]="dt2"  (dateTimeChange)="onSingleDateChange($event);"
                 class="form-control form-control-sm mx-2 my-1 w-10" [owlDateTimeTrigger]="dt2"
                 placeholder="Select Date">
               <span [owlDateTimeTrigger]="dt2"  class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
@@ -56,7 +56,7 @@
                 <input matEndDate [(ngModel)]="historyFilter.to_date" name="to_date">
               </mat-date-range-input>
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle> -->
-              <input
+              <input [max]="today"
                 [owlDateTime]="dt1" #dt1Input
                 [selectMode]="'range'"
                 (dateTimeChange)="onDateChange($event)"

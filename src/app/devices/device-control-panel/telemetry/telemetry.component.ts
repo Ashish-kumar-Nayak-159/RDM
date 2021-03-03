@@ -29,6 +29,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   originalTelemetryFilter: any;
   @ViewChild('dtInput1', {static: false}) dtInput1: any;
   @ViewChild('dtInput2', {static: false}) dtInput2: any;
+  today = new Date();
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -152,7 +153,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   onSingleDateChange(event) {
     console.log(event);
     this.telemetryFilter.from_date = moment(event.value).utc();
-    this.telemetryFilter.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
+    this.telemetryFilter.to_date = moment().utc();
     if (this.dtInput1) {
       this.dtInput1.value = null;
     }

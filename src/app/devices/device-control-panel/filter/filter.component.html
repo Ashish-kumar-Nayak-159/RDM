@@ -31,7 +31,7 @@
         </select>
         <!-- <label class="ml-1 mr-1">OR</label> -->
         <ng-container *ngIf="filterObj.dateOption === 'date'">
-          <input #dt2Input [owlDateTime]="dt2"  (dateTimeChange)="onSingleDateChange($event);"
+          <input #dt2Input [owlDateTime]="dt2" [max]="today"  (dateTimeChange)="onSingleDateChange($event);"
             class="form-control form-control-sm mx-2 my-1 w-10" [owlDateTimeTrigger]="dt2"
             placeholder="Select Date">
           <span [owlDateTimeTrigger]="dt2"  class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
@@ -41,14 +41,14 @@
         <ng-container *ngIf="filterObj.dateOption === 'date range'">
           <!-- <mat-date-range-picker #picker></mat-date-range-picker>
 
-          <mat-date-range-input [rangePicker]="picker" class="form-control form-control-sm mx-1 my-1 col-md-2"
+          <mat-date-range-input [rangePicker]="picr"ke class="form-control form-control-sm mx-1 my-1 col-md-2"
           >
             <input matStartDate [(ngModel)]="filterObj.from_date" name="from_date" placeholder="Date Range">
             <input matEndDate [(ngModel)]="filterObj.to_date" name="to_date">
           </mat-date-range-input>
 
         <mat-datepicker-toggle  matSuffix [for]="picker"></mat-datepicker-toggle> -->
-        <input [owlDateTime]="dt1" [selectMode]="'range'" #dt1Input
+        <input [owlDateTime]="dt1" [selectMode]="'range'" [max]="today" #dt1Input
         (dateTimeChange)="onDateChange($event)" class="form-control form-control-sm mx-1 my-1 date-range-picket-width" [owlDateTimeTrigger]="dt1" placeholder="Select Date Time">
         <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
         <owl-date-time #dt1></owl-date-time>

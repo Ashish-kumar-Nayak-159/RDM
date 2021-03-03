@@ -74,6 +74,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   fromDate: any;
   subscriptions: Subscription[] = [];
   isFileUploading = false;
+  today = new Date();
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -267,7 +268,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   onSingleDateChange(event) {
     console.log(event);
     this.filterObj.from_date = moment(event.value).utc();
-    this.filterObj.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
+    this.filterObj.to_date = moment().utc();
     if (this.dtInput1) {
       this.dtInput1.value = null;
     }

@@ -29,6 +29,7 @@ export class ApplicationNotificationsComponent implements OnInit, OnDestroy {
   isFilterSelected = false;
   modalConfig: { jsonDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean; };
   selectedNotification: any;
+  today = new Date();
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService
@@ -230,7 +231,7 @@ export class ApplicationNotificationsComponent implements OnInit, OnDestroy {
   onSingleDateChange(event) {
     console.log(event);
     this.filterObj.from_date = moment(event.value).utc();
-    this.filterObj.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
+    this.filterObj.to_date = moment().utc();
     if (this.dtInput1) {
       this.dtInput1.value = null;
     }

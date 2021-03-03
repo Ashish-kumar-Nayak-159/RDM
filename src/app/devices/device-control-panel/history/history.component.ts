@@ -56,6 +56,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   contextApp: any;
   fromDate: any;
   toDate: any;
+  today = new Date();
   constructor(
     private deviceService: DeviceService,
     private deviceTypeService: DeviceTypeService,
@@ -161,7 +162,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   onSingleDateChange(event) {
     console.log(event);
     this.historyFilter.from_date = moment(event.value).utc();
-    this.historyFilter.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
+    this.historyFilter.to_date = moment().utc();
     if (this.dtInput1) {
       this.dtInput1.value = null;
     }

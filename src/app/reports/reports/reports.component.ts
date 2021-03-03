@@ -53,6 +53,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   currentLimit = 100;
   insideScrollFunFlag = false;
   isFilterOpen = true;
+  today = new Date();
 
   constructor(
     private commonService: CommonService,
@@ -292,7 +293,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   onSingleDateChange(event) {
     console.log(event);
     this.filterObj.from_date = moment(event.value).utc();
-    this.filterObj.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
+    this.filterObj.to_date = (moment().utc());
     if (this.dtInput1) {
       this.dtInput1.value = null;
     }

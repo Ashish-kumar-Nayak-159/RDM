@@ -75,7 +75,7 @@
           <!-- <label class="ml-1 mr-1">OR</label> -->
           <ng-container *ngIf="filterObj.dateOption === 'date'">
             <input #dt2Input [owlDateTime]="dt2"  (dateTimeChange)="onSingleDateChange($event);"
-              class="form-control form-control-sm mx-2 my-1 w-10" [owlDateTimeTrigger]="dt2"
+              class="form-control form-control-sm mx-2 my-1 w-10" [max]="today" [owlDateTimeTrigger]="dt2"
               placeholder="Select Date">
             <span [owlDateTimeTrigger]="dt2"  class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
             <owl-date-time #dt2 [pickerType]="'calendar'"></owl-date-time>
@@ -84,9 +84,9 @@
           <ng-container *ngIf="filterObj.dateOption === 'date range'">
             <input #dt1Input [owlDateTime]="dt1" [selectMode]="'range'" (dateTimeChange)="onDateChange($event)"
               class="form-control form-control-sm mx-2 my-1 date-range-picket-width" [owlDateTimeTrigger]="dt1"
-              placeholder="Select Date Range">
+              placeholder="Select Date Range" [max]="today">
             <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
-            <owl-date-time #dt1></owl-date-time>
+            <owl-date-time  #dt1></owl-date-time>
           </ng-container>
           </div>
           <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search"

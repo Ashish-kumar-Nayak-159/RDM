@@ -23,11 +23,12 @@
 </div>
 </div>
 
-<div class="con-pad">
-<div class="table-responsive table-wrapper" style="height: calc(100vh - 13rem)">
+<div class="con-pad" style="max-height:100vh;">
+<div class="table-responsive table-wrapper" style="height: 100vh">
   <table class="table  table-bordered table-striped" id="dataTable"  width="100%" cellspacing="0">
     <thead class="bg-secondary text-white">
       <tr>
+        <th></th>
         <th>Email</th>
         <th>Name</th>
         <th>Role</th>
@@ -35,8 +36,8 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let user of deviceUsers">
-
+      <tr *ngFor="let user of deviceUsers;let i = index">
+        <td>{{i + 1}}</td>
         <td>{{user.user_email}}</td>
         <td>{{user.user_name}}</td>
         <td>{{user?.role || 'NA'}}</td>

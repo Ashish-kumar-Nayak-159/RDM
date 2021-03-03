@@ -166,6 +166,7 @@
        >
           <thead>
             <tr>
+              <th></th>
               <th class="w-10">Asset Name</th>
               <th class="w-17">Time</th>
               <th *ngFor="let property of selectedProps"> {{property.id}}</th>
@@ -173,8 +174,8 @@
           </thead>
           <tbody>
             <ng-container *ngIf="telemetry.length > 0">
-              <tr *ngFor="let telemetryObj of telemetry">
-
+              <tr *ngFor="let telemetryObj of telemetry; let index = index">
+                <td>{{index + 1}}</td>
                 <td >{{ (deviceFilterObj ?
                 (deviceFilterObj.display_name ? deviceFilterObj.display_name : deviceFilterObj.device_id)
                 : '' )}}</td>
@@ -213,6 +214,7 @@
         <thead>
           <tr class="bg-secondary text-white">
             <th></th>
+            <th></th>
             <th class="w-10">Asset Name</th>
             <th class="w-17">Time</th>
             <th>Description</th>
@@ -222,7 +224,8 @@
         </thead>
         <tbody>
           <ng-container *ngIf="latestAlerts.length > 0">
-            <tr *ngFor="let alert of latestAlerts" [ngClass]="{'bg-danger text-white': alert.severity?.toLowerCase() === 'critical'}">
+            <tr *ngFor="let alert of latestAlerts; let i = index;" [ngClass]="{'bg-danger text-white': alert.severity?.toLowerCase() === 'critical'}">
+              <td>{{i + 1}}</td>
               <td><i class="fa fa-exclamation-triangle" [style.color]="
                 (alert.severity?.toLowerCase() === 'critical' ? '#cc0000' :
                 (alert.severity?.toLowerCase() === 'error' ? '#fb5515' :

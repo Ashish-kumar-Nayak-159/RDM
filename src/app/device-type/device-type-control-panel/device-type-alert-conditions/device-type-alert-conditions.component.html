@@ -29,6 +29,7 @@
       <thead>
         <tr class="bg-secondary text-white">
           <th></th>
+          <th></th>
           <th>Alert Code</th>
           <th>Alert Message</th>
           <th>Actions</th>
@@ -44,6 +45,7 @@
                 <i [ngClass]="toggleRows[i] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
                 </a>
               </td>
+              <td>{{i + 1}}</td>
               <td><i title="{{alert.severity}}"  [style.color]="
                 (alert?.severity?.toLowerCase() === 'critical' ? '#cc0000' :
                 (alert?.severity?.toLowerCase() === 'error' ? '#fb5515' :
@@ -78,7 +80,7 @@
               </td>
             </tr>
             <tr *ngIf="toggleRows[i]">
-              <td colspan="5" *ngIf="viewType === 'Visualization'">
+              <td colspan="6" *ngIf="viewType === 'Visualization'">
                 <div class="row col-12">
                   <h6 *ngIf="alertObj?.visualization_widgets?.length === 0"> No Visualization widgets defined yet.</h6>
                   <h6 *ngIf="alertObj?.visualization_widgets?.length > 0"> Following widgets have been defined so far. You can define more.</h6>
@@ -126,7 +128,7 @@
                 </div>
 
               </td>
-              <td colspan="5" *ngIf="viewType === 'Recommendations'">
+              <td colspan="6" *ngIf="viewType === 'Recommendations'">
 
                 <div class="row col-12">Following recommendations have been pre-configured. You can configure more.
 
@@ -239,7 +241,7 @@
                 </div>
                 </div>
               </td>
-              <td colspan="5" *ngIf="viewType === 'Actions'">
+              <td colspan="6" *ngIf="viewType === 'Actions'">
                 <div class="col-md-12">
                   <h6>Actions:  <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
                     title="Save" (click)="onUpdateAlertConditions()" [disabled]="deviceType.freezed"><i class="fa fa-save fa-sm"></i></button></h6>
@@ -272,12 +274,12 @@
         </ng-container>
         <ng-container *ngIf="isAlertConditionsLoading">
           <tr>
-            <td colspan="5"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></td>
+            <td colspan="6"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></td>
           </tr>
         </ng-container>
         <ng-container *ngIf="!isAlertConditionsLoading && alertConditions.length === 0">
           <tr>
-            <td colspan="5"> No Alert Conditions added.</td>
+            <td colspan="6"> No Alert Conditions added.</td>
           </tr>
         </ng-container>
       </tbody>

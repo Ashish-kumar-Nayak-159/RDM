@@ -61,6 +61,7 @@
         <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr class="bg-secondary text-white">
+              <th></th>
               <th>Name</th>
               <th>Key</th>
               <th>Default Value</th>
@@ -70,6 +71,7 @@
           <tbody>
             <ng-container *ngIf="deviceType?.tags?.reserved_tags?.length > 0">
             <tr *ngFor="let tag of deviceType?.tags?.reserved_tags; let i = index;">
+              <td>{{i + 1}}</td>
               <td >{{tag.name}}</td>
               <td>{{tag.key}}</td>
               <td>{{tag.defaultValue}}</td>

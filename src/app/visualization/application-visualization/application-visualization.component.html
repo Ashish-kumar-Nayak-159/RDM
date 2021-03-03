@@ -99,6 +99,7 @@ maxHeight: 'calc(100vh - 12rem)'}"
         <thead>
           <tr >
             <th></th>
+            <th></th>
             <th>Asset Name</th>
             <th>Description</th>
             <th>Time</th>
@@ -109,11 +110,12 @@ maxHeight: 'calc(100vh - 12rem)'}"
         </thead>
         <tbody>
           <ng-container *ngIf="latestAlerts.length > 0 && !isAlertAPILoading">
-            <tr *ngFor="let alert of latestAlerts" [ngClass]="{
+            <tr *ngFor="let alert of latestAlerts;let i = index" [ngClass]="{
                     'bg-alert-selection':
                       alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id,
                       'bg-danger text-white': alert?.severity?.toLowerCase() === 'critical'
                   }" >
+                <td>{{i + 1}}</td>
               <td><i class="fa fa-exclamation-triangle" [style.color]="
                 (alert?.severity?.toLowerCase() === 'critical' ? '#cc0000' :
                 (alert?.severity?.toLowerCase() === 'error' ? '#fb5515' :
@@ -139,12 +141,12 @@ maxHeight: 'calc(100vh - 12rem)'}"
           </ng-container>
           <ng-container *ngIf="latestAlerts.length === 0 && !isAlertAPILoading">
             <tr>
-              <td colspan="7">No Alert data available.</td>
+              <td colspan="8">No Alert data available.</td>
             </tr>
           </ng-container>
           <ng-container *ngIf="isAlertAPILoading">
             <tr>
-              <td colspan="7">
+              <td colspan="8">
                 <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
               </td>
             </tr>

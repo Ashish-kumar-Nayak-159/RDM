@@ -49,6 +49,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   @ViewChild('dtInput1', {static: false}) dtInput1: any;
   @ViewChild('dtInput2', {static: false}) dtInput2: any;
+  currentOffset = 0;
+  currentLimit = 100;
+  insideScrollFunFlag = false;
+  isFilterOpen = true;
 
   constructor(
     private commonService: CommonService,
@@ -113,10 +117,12 @@ export class ReportsComponent implements OnInit, OnDestroy {
       }
     });
     this.tileData = selectedItem;
+    console.log('aaaaaaaaaa', this.tileData);
+    this.currentLimit = this.tileData[1]?.value || 100;
   }
 
   getDevices(hierarchy) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
@@ -303,7 +309,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   getThingsModelProperties(deviceType) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
         name: deviceType
@@ -328,7 +334,22 @@ export class ReportsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onFilterSelection() {
+  onScrollFn() {
+    setTimeout(() => {
+      $('#table-wrapper').on('scroll', () => {
+        const element = document.getElementById('table-wrapper');
+        if (parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0)) >=
+        parseFloat(element.scrollHeight.toFixed(0)) && !this.insideScrollFunFlag) {
+          this.currentOffset += this.currentLimit;
+          this.onFilterSelection();
+        }
+      });
+    }, 1000);
+
+  }
+
+  onFilterSelection(callScrollFnFlag = false) {
+    this.insideScrollFunFlag = true;
     this.deviceFilterObj = undefined;
     const obj = {...this.filterObj};
     let device_type: any;
@@ -345,6 +366,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Asset selection is required', 'View Report');
       return;
     }
+    obj.offset = this.currentOffset;
+    obj.count = this.currentLimit;
     this.deviceFilterObj = this.filterObj.device;
     const now = moment().utc();
     if (this.filterObj.dateOption === '5 mins') {
@@ -372,8 +395,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
       return;
     }
     this.isTelemetryLoading = true;
-    this.telemetry = [];
-    this.latestAlerts = [];
+    // this.telemetry = [];
+    // this.latestAlerts = [];
     this.selectedProps = JSON.parse(JSON.stringify(this.props));
     this.newFilterObj = JSON.parse(JSON.stringify(obj));
     this.isFilterSelected = true;
@@ -382,17 +405,28 @@ export class ReportsComponent implements OnInit, OnDestroy {
     } else if (obj.report_type === 'Alert Report') {
       this.getAlertData(obj);
     }
+    if (callScrollFnFlag) {
+      this.onScrollFn();
+    }
   }
 
   getAlertData(obj) {
+    obj.offset = this.currentOffset;
+    obj.count = this.currentLimit;
     this.subscriptions.push(this.deviceService.getDeviceAlerts(obj).subscribe(
       (response: any) => {
-        this.latestAlerts = response.data;
-        this.latestAlerts.reverse();
-        this.latestAlerts.forEach(item => {
+        response.data.reverse();
+        response.data.forEach(item => {
           item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
           item.device_display_name = this.devices.filter(device => device.device_id === item.device_id)[0]?.display_name;
         });
+        this.latestAlerts = [...this.latestAlerts, ...response.data];
+        this.isFilterOpen = false;
+        if (response.data.length === this.currentLimit) {
+          this.insideScrollFunFlag = false;
+          } else {
+            this.insideScrollFunFlag = true;
+          }
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false
     ));
@@ -452,8 +486,15 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(method.subscribe(
       (response: any) => {
         if (response && response.data) {
-          this.telemetry = response.data;
-          this.telemetry.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
+          // this.telemetry = response.data;
+          response.data.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
+          this.telemetry = [...this.telemetry, ...response.data];
+          this.isFilterOpen = false;
+          if (response.data.length === this.currentLimit) {
+            this.insideScrollFunFlag = false;
+            } else {
+              this.insideScrollFunFlag = true;
+            }
           // this.telemetry.reverse();
         }
         this.isTelemetryLoading = false;

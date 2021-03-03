@@ -132,7 +132,15 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
             console.log(menu);
             item.display_name = menu.display_name;
             item.visible = menu.visible;
-            item.showAccordion = menu.showAccordion;
+            let aFlag = false;
+            item.showAccordion?.forEach(aItem => {
+              menu.showAccordion?.forEach(mItem => {
+                if (aItem.name === mItem.name) {
+                  aFlag = true;
+                  aItem.value = mItem.value;
+                }
+              });
+            });
             arr.push(item);
           }
         });

@@ -1,8 +1,11 @@
-<div class="topnavbar">
+<div class="topnavbar" >
   <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-1">
-    <h5 class="h4 mb-0 text-gray-800">{{tileData && tileData[0] ? tileData[0]?.value : ''}}</h5>
+    <h5 class="h4 mb-0 text-gray-800">{{tileData && tileData[0] ? tileData[0]?.value : ''}} 
+      <a href="javascript:void(0)" (click)="isFilterOpen = !isFilterOpen"
+      title="Filters"><i class="fa fa-sm fa-filter" ></i></a>
+    </h5>
   </div>
-  <div class="card row bg-white" style="margin-left:-2rem">
+  <div class="card row bg-white" style="margin-left:-2rem" *ngIf="isFilterOpen">
     <div class="col-xl-12 mb-12">
       <form>
         <div class="d-flex form-group form-inline my-2 mx-3">
@@ -87,7 +90,7 @@
           </ng-container>
           </div>
           <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search"
-          *ngIf=" filterObj.report_type !== 'Process Parameter Report'" (click)="onFilterSelection()" ><i
+          *ngIf=" filterObj.report_type !== 'Process Parameter Report'" (click)="currentOffset = 0;telemetry = [];latestAlerts = [];onFilterSelection(true)" ><i
             class="fa fa-search fa-sm" ></i></button>
 
           <!-- <bu<button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="onFilterSelection()" ><i
@@ -136,45 +139,43 @@
             <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
             </ng-container>
             </fieldset>
-          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="onFilterSelection()" [disabled]="isTelemetryLoading" ><i
+          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="currentOffset = 0;telemetry = [];latestAlerts = [];onFilterSelection(true)" [disabled]="isTelemetryLoading" ><i
             class="fa fa-search fa-sm"></i></button>
         </div>
-
-
       </form>
     </div>
   </div>
 
-
-
-
 </div>
-<div class="contain-pad-report"
- [style.marginTop]="filterObj.report_type === 'Process Parameter Report' ? '17.5rem' : '14.5rem'">
+<div class="contain-pad-report" [ngStyle]="{maxHeight: !isFilterOpen ? 'calc(100vh - 8rem)' : 'calc(100vh - 15rem)'}"
+ [style.marginTop]="filterObj.report_type === 'Process Parameter Report' ? (!isFilterOpen ? '8rem' : '17.5rem')
+ : (!isFilterOpen ? '7rem' : '14.5rem')">
   <div class="mb-2" >
     <h6 *ngIf="!isFilterSelected"> Please select filters to view the report data.</h6>
     <div class="table-responsive" *ngIf="isFilterSelected || isTelemetryLoading"
+    [ngClass]="{'mt-n2' : filterObj.report_type === 'Process Parameter Report' && !isFilterOpen}"
     >
-      <h5 >{{filterObj.report_type}}
+      <h5  >{{filterObj.report_type}}
         <a href="javascript:void(0)" [class.disabled]="isFileDownloading" (click)="savePDF()" title="Export as PDF"><i class="fa fa-sm fa-file-pdf-o" ></i></a>
         <a href="javascript:void(0)" [class.disabled]="isFileDownloading" (click)="saveExcel()" title="Export as Excel" class="ml-1"><i class="fa fa-sm fa-file-excel-o" ></i></a>
         <i  class="fa fa-fw fa-2x  fa-spin fa-spinner" *ngIf="isFileDownloading"></i>
       </h5>
-      <div class="table-wrapper" style="max-height: calc(100vh - 24rem);"  *ngIf="isFilterSelected && filterObj.report_type === 'Process Parameter Report'">
+      <ng-container *ngIf="isFilterSelected && filterObj.report_type === 'Process Parameter Report'">
+      <div class="table-wrapper" id="table-wrapper" [ngStyle]="{maxHeight: !isFilterOpen ? ' calc(100vh - 14rem)' : 'calc(100vh - 24rem)'}" >
         <table class="table table-bordered table-striped"  id="dataTable1" width="100%" cellspacing="0"
        >
           <thead>
             <tr>
-              <th>Asset Name</th>
-              <th>Time</th>
+              <th class="w-10">Asset Name</th>
+              <th class="w-17">Time</th>
               <th *ngFor="let property of selectedProps"> {{property.id}}</th>
             </tr>
           </thead>
           <tbody>
-            <ng-container *ngIf="telemetry.length > 0 && !isTelemetryLoading">
+            <ng-container *ngIf="telemetry.length > 0">
               <tr *ngFor="let telemetryObj of telemetry">
 
-                <td>{{ (deviceFilterObj ?
+                <td >{{ (deviceFilterObj ?
                 (deviceFilterObj.display_name ? deviceFilterObj.display_name : deviceFilterObj.device_id)
                 : '' )}}</td>
                 <td>{{ telemetryObj.local_created_date }}</td>
@@ -186,7 +187,7 @@
                 <td [attr.colspan]="2 + selectedProps.length">No telemetry data available.</td>
               </tr>
             </ng-container>
-            <ng-container *ngIf="telemetry.length === 0 && isTelemetryLoading">
+            <ng-container *ngIf="isTelemetryLoading">
               <tr>
                 <td [attr.colspan]="2 + selectedProps.length">
                   <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
@@ -196,15 +197,24 @@
 
           </tbody>
         </table>
+        
       </div>
-      <div class="table-wrapper" style="max-height: calc(100vh - 20rem);" *ngIf="isFilterSelected && filterObj.report_type === 'Alert Report'">
+      
+      <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && telemetry.length > 0">
+        <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;onFilterSelection();" 
+        title="Load More Records...">Load More...</a>
+      </span>
+      </ng-container>
+      <ng-container *ngIf="isFilterSelected && filterObj.report_type === 'Alert Report'">
+      <div class="table-wrapper" id="table-wrapper" 
+      [ngStyle]="{maxHeight: !isFilterOpen ? ' calc(100vh - 14.5rem)' : 'calc(100vh - 21.5rem)'}">
       <table class="table table-bordered table-striped"  id="dataTable" width="100%" cellspacing="0"
       >
         <thead>
           <tr class="bg-secondary text-white">
             <th></th>
-            <th>Asset Name</th>
-            <th>Time</th>
+            <th class="w-10">Asset Name</th>
+            <th class="w-17">Time</th>
             <th>Description</th>
             <th>Status</th>
             <th>Acknowledged By</th>
@@ -235,7 +245,7 @@
               <td colspan="6">No Alert data available.</td>
             </tr>
           </ng-container>
-          <ng-container *ngIf="latestAlerts.length === 0 && isTelemetryLoading">
+          <ng-container *ngIf="isTelemetryLoading">
             <tr>
               <td [attr.colspan]="6">
                 <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
@@ -244,7 +254,12 @@
           </ng-container>
         </tbody>
       </table>
-    </div>
+      </div>
+      <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && latestAlerts.length > 0">
+        <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;onFilterSelection();" 
+        title="Load More Records...">Load More...</a>
+      </span>
+      </ng-container>
 
       <table class="table table-bordered table-striped"  id="dataTable1" width="100%" cellspacing="0" hidden
       *ngIf="isFilterSelected && filterObj.report_type === 'Alert Report'">
@@ -294,7 +309,7 @@
           </ng-container>
         </tbody>
       </table>
-    
+
     </div>
   </div>
 </div>

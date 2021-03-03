@@ -10,7 +10,7 @@ select.form-control {
 }
 
 .w-10 {
-  width:  10rem!important;
+  min-width:  10rem!important;
 }
 
 .w-15 {
@@ -22,6 +22,9 @@ select.form-control {
 }
 .w-20 {
   width: 20rem!important;
+}
+.w-17 {
+  min-width: 17rem!important;
 }
 #dateRow input
 {

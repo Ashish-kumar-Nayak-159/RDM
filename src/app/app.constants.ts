@@ -105,7 +105,8 @@ export class CONSTANTS {
       visible: true,
       showAccordion: [
         { name: 'Title', value: 'Assets'},
-        { name: 'Table Key Name', value: 'Asset'}
+        { name: 'Table Key Name', value: 'Asset'},
+        { name: 'Records Limit', value: 20, type: 'number'},
       ],
       priority: 1
     },
@@ -118,7 +119,8 @@ export class CONSTANTS {
       visible: true,
       showAccordion: [
         { name: 'Title', value: 'Assets'},
-        { name: 'Table Key Name', value: 'Asset'}
+        { name: 'Table Key Name', value: 'Asset'},
+        { name: 'Records Limit', value: 20, type: 'number'},
       ],
       priority: 1
     },
@@ -183,6 +185,7 @@ export class CONSTANTS {
       visible: true,
       showAccordion: [
         { name: 'Title', value: 'Reports'},
+        { name: 'Records Limit', value: 100, type: 'number'}
       ],
       priority: 1
     },
@@ -205,7 +208,8 @@ export class CONSTANTS {
       visible: true,
       showAccordion: [
         { name: 'Title', value: 'Gateways'},
-        { name: 'Table Key Name', value: 'Gateway'}
+        { name: 'Table Key Name', value: 'Gateway'},
+        { name: 'Records Limit', value: 20, type: 'number'},
       ],
       priority: 2
     }

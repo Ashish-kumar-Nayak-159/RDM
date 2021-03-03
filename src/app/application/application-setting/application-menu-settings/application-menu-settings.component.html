@@ -49,7 +49,8 @@
                 </td>
                 <td>{{item.page}}</td>
                 <td>{{item.system_name}}</td>
-                <td><input type="text" class="form-control" name="display_name_main_menu{{configIndex}}" id="display_name_main_menu{{configIndex}}"
+                <td>
+                  <input type="text" class="form-control" name="display_name_main_menu{{configIndex}}" id="display_name_main_menu{{configIndex}}"
                     [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/>
 
                   </td>
@@ -65,7 +66,7 @@
                       <label for="recipient-name" class="col-form-label">{{control.name}}</label>
                     </div>
                     <div class="col-md-5">
-                      <input type="text" class="form-control form-control-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
+                      <input type="{{control.type === 'number' ? 'number' : 'text'}}" class="form-control form-control-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
                         placeholder="Enter {{control.name}}" [disabled]="!isAppSettingsEditable">
                     </div>
                   </ng-container>

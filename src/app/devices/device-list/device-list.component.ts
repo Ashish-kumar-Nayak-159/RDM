@@ -226,9 +226,10 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     console.log(this.deviceFilterObj);
     setTimeout(() => {
     console.log($('#table-wrapper'));
-    $("#table-wrapper").on('scroll', () => {
-      let element = document.getElementById("table-wrapper");
-      if (parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0)) >= parseFloat(element.scrollHeight.toFixed(0)) && !this.insideScrollFunFlag) {
+    $('#table-wrapper').on('scroll', () => {
+      const element = document.getElementById('table-wrapper');
+      if (parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0))
+      >= parseFloat(element.scrollHeight.toFixed(0)) && !this.insideScrollFunFlag) {
         this.currentOffset += this.currentLimit;
         this.searchDevices();
         this.insideScrollFunFlag = true;

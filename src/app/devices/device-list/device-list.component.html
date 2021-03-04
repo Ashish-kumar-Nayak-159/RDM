@@ -113,19 +113,19 @@
           </ng-container>
           <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading && isFilterSelected">
             <tr>
-              <td [attr.colspan]="componentState === constantData.NON_IP_DEVICE ? '5' : '4'">
+              <td [attr.colspan]="componentState === constantData.NON_IP_DEVICE ? '6' : '5'">
                 No {{pageType.toLowerCase()}} data found.
               </td>
             </tr>
           </ng-container>
           <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading && !isFilterSelected">
             <tr>
-              <td [attr.colspan]="componentState === constantData.NON_IP_DEVICE ? '5' : '4'">Select filter and press search button to load the {{tableConfig?.type}} data.</td>
+              <td [attr.colspan]="componentState === constantData.NON_IP_DEVICE ? '6' : '5'">Select filter and press search button to load the {{tableConfig?.type}} data.</td>
             </tr>
           </ng-container>
           <ng-container *ngIf="isDeviceListLoading">
             <tr>
-              <td [attr.colspan]="componentState === constantData.NON_IP_DEVICE ? '5' : '4'">
+              <td [attr.colspan]="componentState === constantData.NON_IP_DEVICE ? '6' : '5'">
                 <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
               </td>
             </tr>

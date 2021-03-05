@@ -6,6 +6,7 @@ import { Injectable, EventEmitter } from '@angular/core';
 export class ChartService {
 
   toggleThresholdEvent: EventEmitter<any> = new EventEmitter<any>();
+  disposeChartEvent: EventEmitter<any> = new EventEmitter<any>();
   togglePropertyEvent: EventEmitter<any> = new EventEmitter<any>();
   clearDashboardTelemetryList: EventEmitter<any> = new EventEmitter<any>();
   constructor() { }

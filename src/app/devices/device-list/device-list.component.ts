@@ -344,6 +344,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       }
     });
     this.tileData = selectedItem;
+    this.currentLimit = Number(this.tileData[2]?.value) || 20;
   }
 
   getThingsModels(type) {

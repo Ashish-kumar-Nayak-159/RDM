@@ -53,10 +53,24 @@ export class LiveChartComponent implements OnInit, OnDestroy {
     }));
     this.subscriptions.push(
       this.chartService.togglePropertyEvent.subscribe((property) => this.toggleProperty(property)));
+    this.subscriptions.push(
+      this.chartService.disposeChartEvent.subscribe(() => {
+        if (this.chart) {
+          // alert('5888');
+          this.chart.dispose();
+        }
+        this.subscriptions.forEach(sub => sub.unsubscribe());
+      })
+    );
   }
 
   plotChart() {
+    am4core.options.onlyShowOnViewport = true;
+    am4core.options.viewportTarget = [document.getElementById('mainChartDiv')];
+      // am4core.options.animationsEnabled = false;
+    // am4core.options.queue = true;
     this.zone.runOutsideAngular(() => {
+
       console.log(document.getElementById(this.chartId));
       const chart = am4core.create(this.chartId, am4charts.XYChart);
       chart.paddingRight = 20;
@@ -96,8 +110,9 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       // dateAxis.renderer.minGridDistance = 70;
       dateAxis.renderer.grid.template.location = 0.5;
       dateAxis.renderer.labels.template.location = 0.5;
-
-      // const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+      dateAxis.groupData = true;
+      dateAxis.groupCount = 200;
+      // const valueAxis = chart.yAxes.push(new am4charts.ValueAxisp());
       // valueAxis.tooltip.disabled = true;
       // valueAxis.renderer.minWidth = 35;
       this.createValueAxis(chart, 0);
@@ -240,6 +255,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       series.yAxis = valueYAxis;
       series.dataFields.dateX = 'message_date';
       series.dataFields.valueY =  prop;
+      series.groupFields.valueY = 'value';
       series.compareText = true;
       series.strokeWidth = 2;
       // series.connect = false;
@@ -385,6 +401,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
       if (this.chart) {
+        alert('heree');
         this.chart.dispose();
       }
       this.subscriptions.forEach(sub => sub.unsubscribe());

@@ -1,6 +1,6 @@
 import { Subscription } from 'rxjs';
 import { ChartService } from './../../../chart/chart.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import { CommonService } from 'src/app/services/common.service';
@@ -39,7 +39,8 @@ export class BarChartComponent implements OnInit, OnDestroy {
   hideCancelButton = false;
   constructor(
     private commonService: CommonService,
-    private chartService: ChartService
+    private chartService: ChartService,
+    private zone: NgZone
   ) { }
 
   ngOnInit(): void {
@@ -50,9 +51,21 @@ export class BarChartComponent implements OnInit, OnDestroy {
     }));
     this.subscriptions.push(
       this.chartService.togglePropertyEvent.subscribe((property) => this.toggleProperty(property)));
-  }
+    this.subscriptions.push(
+      this.chartService.disposeChartEvent.subscribe(() => {
+        if (this.chart) {
+          // alert('5888');
+          this.chart.dispose();
+        }
+        this.subscriptions.forEach(sub => sub.unsubscribe());
+      })
+    );
+    }
 
   plotChart() {
+    this.zone.runOutsideAngular(() => {
+    am4core.options.onlyShowOnViewport = true;
+    am4core.options.viewportTarget = [document.getElementById('mainChartDiv')];
     const chart = am4core.create(this.chartId, am4charts.XYChart);
 
     const data = [];
@@ -82,6 +95,8 @@ export class BarChartComponent implements OnInit, OnDestroy {
     // categoryAxis.dataFields.category = 'message_date';
     categoryAxis.renderer.grid.template.location = 0;
     categoryAxis.renderer.minGridDistance = 70;
+    categoryAxis.groupData = true;
+      categoryAxis.groupCount = 200;
   //  const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
     if (this.selectedAlert) {
       const range = categoryAxis.axisRanges.create();
@@ -145,6 +160,7 @@ export class BarChartComponent implements OnInit, OnDestroy {
     // // Create series
     this.createValueAxis(chart, 0);
     this.createValueAxis(chart, 1);
+  });
   }
 
   toggleProperty(prop) {

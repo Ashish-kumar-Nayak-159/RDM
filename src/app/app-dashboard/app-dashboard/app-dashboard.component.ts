@@ -51,6 +51,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   liveWidgets: any[] = [];
   isGetWidgetsAPILoading = false;
   deviceDetailData: any;
+  frequencyDiffInterval: number;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -199,7 +200,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getDeviceData() {
-    return new Promise((resolve1) => {
+    return new Promise<void>((resolve1) => {
     this.deviceDetailData = undefined;
 
     this.apiSubscriptions.push(
@@ -208,6 +209,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.filterObj.device.device_id, this.contextApp.app).subscribe(
       async (response: any) => {
         this.deviceDetailData = JSON.parse(JSON.stringify(response));
+        this.frequencyDiffInterval = Math.abs((this.deviceDetailData?.tags?.settings?.normal_mode?.frequency ?
+          this.deviceDetailData?.tags?.settings?.normal_mode?.frequency : 60) -
+          (this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency ?
+            this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency : 1));
         resolve1();
       }));
     });
@@ -478,7 +483,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       const interval = Math.round((moment(telemetryObj.message_date).diff(moment(this.telemetryObj.message_date), 'milliseconds')) / 1000);
       // alert((this.telemetryInterval - 5) + ' aaaaa ' + interval + ' bbbbb ' + (this.telemetryInterval+ 5));
       if (this.telemetryInterval !== undefined && interval !== undefined &&
-        Math.abs(this.telemetryInterval - interval) > 10 && !this.isTelemetryModeAPICalled) {
+        Math.abs(this.telemetryInterval - interval) >= this.frequencyDiffInterval && !this.isTelemetryModeAPICalled) {
         this.isTelemetryModeAPICalled = true;
         setTimeout(() => {
         this.getDeviceSignalRMode(this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : this.filterObj.device.device_id);

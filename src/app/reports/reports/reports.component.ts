@@ -119,7 +119,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     });
     this.tileData = selectedItem;
     console.log('aaaaaaaaaa', this.tileData);
-    this.currentLimit = this.tileData[1]?.value || 100;
+    this.currentLimit = Number(this.tileData[1]?.value) || 100;
   }
 
   getDevices(hierarchy) {
@@ -339,6 +339,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       $('#table-wrapper').on('scroll', () => {
         const element = document.getElementById('table-wrapper');
+        console.log('11111111');
+        console.log(parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0)) >=
+        parseFloat(element.scrollHeight.toFixed(0)));
+        console.log(!this.insideScrollFunFlag);
         if (parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0)) >=
         parseFloat(element.scrollHeight.toFixed(0)) && !this.insideScrollFunFlag) {
           this.currentOffset += this.currentLimit;
@@ -425,9 +429,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
         this.isFilterOpen = false;
         if (response.data.length === this.currentLimit) {
           this.insideScrollFunFlag = false;
-          } else {
-            this.insideScrollFunFlag = true;
-          }
+        } else {
+          this.insideScrollFunFlag = true;
+        }
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false
     ));
@@ -435,9 +439,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   async getTelemetryData(filterObj) {
     const obj = JSON.parse(JSON.stringify(filterObj));
-    let message_props = '';
-    this.props.forEach((prop, index) => message_props = message_props + prop.value.json_key + (this.props[index + 1] ? ',' : ''));
-    obj['message_props'] = message_props;
 
     // if (obj.to_date - obj.from_date <= 3600) {
     //   method = this.deviceService.getDeviceTelemetry(obj);
@@ -463,6 +464,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
       } else {
         delete obj.aggregation_minutes;
         delete obj.aggregation_format;
+        let message_props = '';
+        this.props.forEach((prop, index) => message_props = message_props + prop.value.json_key + (this.props[index + 1] ? ',' : ''));
+        obj['message_props'] = message_props;
         method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
       }
     } else {
@@ -472,6 +476,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
       } else {
         delete obj.sampling_time;
         delete obj.sampling_format;
+        let message_props = '';
+        this.props.forEach((prop, index) => message_props = message_props + prop.value.json_key + (this.props[index + 1] ? ',' : ''));
+        obj['message_props'] = message_props;
         method = this.deviceService.getDeviceTelemetry(obj);
       }
     }
@@ -480,8 +487,16 @@ export class ReportsComponent implements OnInit, OnDestroy {
       delete obj.aggregation_format;
       delete obj.sampling_time;
       delete obj.sampling_format;
+      if (this.props.length === this.propertyList.length && !obj.sampling_format && !obj.aggregation_format) {
+        obj['all_message_props'] = true;
+      } else {
+        let message_props = '';
+        this.props.forEach((prop, index) => message_props = message_props + prop.value.json_key + (this.props[index + 1] ? ',' : ''));
+        obj['message_props'] = message_props;
+      }
       method = this.deviceService.getDeviceTelemetry(obj);
     }
+
     this.isTelemetryLoading = true;
     this.isFilterSelected = true;
     this.subscriptions.push(method.subscribe(
@@ -491,7 +506,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
           response.data.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
           this.telemetry = [...this.telemetry, ...response.data];
           this.isFilterOpen = false;
+          console.log('49888', response.data.length);
+          console.log('498888', this.currentLimit);
           if (response.data.length === this.currentLimit) {
+            console.log('hereeeeee');
             this.insideScrollFunFlag = false;
             } else {
               this.insideScrollFunFlag = true;

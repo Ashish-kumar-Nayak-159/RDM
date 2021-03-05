@@ -180,7 +180,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
 
   searchHistory() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const children = $('#widgetContainer').children();
       for (const child of children) {
         $(child).remove();
@@ -238,9 +238,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           obj.to_date = this.historyFilter.to_date.unix();
         }
       }
-      obj.message_props = '';
-      this.propList.forEach((prop, index) =>
-      obj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
+
       delete obj.dateOption;
       // delete obj.y1AxisProperty;
       // delete obj.y2AxisProperty;
@@ -264,6 +262,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
         } else {
           delete obj.aggregation_minutes;
           delete obj.aggregation_format;
+          obj.message_props = '';
+          this.propList.forEach((prop, index) =>
+          obj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
           method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
         }
       } else {
@@ -273,6 +274,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
         } else {
           delete obj.sampling_time;
           delete obj.sampling_format;
+          obj.message_props = '';
+          this.propList.forEach((prop, index) =>
+          obj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
           method = this.deviceService.getDeviceTelemetry(obj);
         }
       }
@@ -281,6 +285,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
         delete obj.aggregation_format;
         delete obj.sampling_time;
         delete obj.sampling_format;
+        if (this.propList.length === this.propertyList.length) {
+          obj['all_message_props'] = true;
+        } else {
+          let message_props = '';
+          this.propList.forEach((prop, index) => message_props = message_props + prop.value.json_key +
+          (this.propList[index + 1] ? ',' : ''));
+          obj['message_props'] = message_props;
+        }
         method = this.deviceService.getDeviceTelemetry(obj);
       }
       this.fromDate = obj.from_date;
@@ -434,6 +446,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
 
   async renderLayout() {
+    this.chartService.disposeChartEvent.emit();
     await this.searchHistory();
     const children = $('#widgetContainer').children();
     for (const child of children) {

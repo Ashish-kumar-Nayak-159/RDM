@@ -106,7 +106,9 @@
                 <!-- <span *ngIf="device.device_manager_users?.length === 1">{{device.device_manager_users[0]}}</span> -->
               </td>
               <td>{{device.hierarchyString}}</td>
-              <td *ngIf="componentState === constantData.NON_IP_DEVICE">{{device.gateway_display_name}}</td>
+              <td *ngIf="componentState === constantData.NON_IP_DEVICE">
+                <a  href="javascript:void(0)" (click)="onRedirectToGateway(device)" >
+                  {{device.gateway_display_name}}</a></td>
               <td><a  href="javascript:void(0)" (click)="onTableFunctionCall(device)" title="View Control Panel" >
                 <i class="fa fa-fw fa-table"></i></a></td>
             </tr>
@@ -134,7 +136,7 @@
       </table>
     </div>
     <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && devicesList.length > 0">
-      <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;searchDevices();" 
+      <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;searchDevices();"
       title="Load More Records...">Load More...</a>
     </span>
    <!-- <app-common-table *ngIf="tableConfig" [tableData]="devicesList" [tableConfig]="tableConfig" [isTableFilterSelected]="isFilterSelected"

@@ -55,6 +55,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
       localStorage.removeItem(CONSTANTS.APP_USERS);
       localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
+      localStorage.removeItem(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
     }
     await this.getApplicationData(app);
     await this.getDevices(this.applicationData.user.hierarchy);

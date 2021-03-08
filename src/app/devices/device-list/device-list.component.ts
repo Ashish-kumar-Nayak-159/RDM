@@ -1,3 +1,5 @@
+import { filter } from 'rxjs/operators';
+import { Device } from './../../models/device.model';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { DeviceTypeService } from './../../services/device-type/device-type.service';
@@ -71,6 +73,11 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       this.deviceFilterObj.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
       this.deviceFilterObj.hierarchyString =  this.contextApp.user.hierarchyString;
       this.originalDeviceFilterObj = JSON.parse(JSON.stringify(this.deviceFilterObj));
+      const filterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
+      if (filterObj?.gateway_id) {
+        this.deviceFilterObj.gateway_id = filterObj.gateway_id;
+        localStorage.removeItem(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
+      }
       this.devicesList = [];
       if (params.get('listName')) {
         const listName = params.get('listName');
@@ -347,6 +354,10 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.currentLimit = Number(this.tileData[2]?.value) || 20;
   }
 
+  onRedirectToGateway(device) {
+    this.router.navigate(['applications', this.contextApp.app, 'gateways', device.gateway_id, 'control-panel']);
+  }
+
   getThingsModels(type) {
     this.deviceTypes = [];
     const obj = {
@@ -413,7 +424,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         if (response.data) {
-          
+
           console.log(this.devicesList);
           response.data.forEach(item => {
             if (!item.display_name) {

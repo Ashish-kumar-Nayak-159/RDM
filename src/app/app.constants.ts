@@ -1103,6 +1103,7 @@ export class CONSTANTS {
   public static DEVICES_GATEWAYS_LIST = 'devices_gateways_list';
   public static DEVICE_MODELS_LIST = 'device_models_list';
   public static DEVICE_MODEL_DATA = 'device_model_data';
+  public static DEVICE_LIST_FILTER_FOR_GATEWAY = 'deviceListFilterObj';
   public static APP_USERS = 'application_users';
   public static EXPIRY_TIME = 'expiry_time';
   public static CURRENT_BREADCRUMB_STATE = 'breadcrumbState';

@@ -193,16 +193,21 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
       this.selectedWidgets.forEach(widget => {
         widget.value.y1axis.forEach(prop => {
+          console.log(prop);
           if (this.propList.indexOf(prop) === -1) {
             this.propList.push(prop);
           }
         });
         widget.value.y2axis.forEach(prop => {
+          console.log(prop);
           if (this.propList.indexOf(prop) === -1) {
             this.propList.push(prop);
           }
         });
       });
+      if (this.selectedWidgets.length > 3) {
+        this.toasterService.showWarning('Select 3 widgets for better performance.', 'Historical Visualization');
+      }
       this.selectedPropertyForChart = [];
       this.selectedPropertyForChart = [...this.propList];
       this.historyFilter.app = this.contextApp.app;
@@ -289,7 +294,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
           obj['all_message_props'] = true;
         } else {
           let message_props = '';
-          this.propList.forEach((prop, index) => message_props = message_props + prop.value.json_key +
+          console.log('heree');
+          console.log(this.propList);
+          this.propList.forEach((prop, index) => message_props = message_props + prop +
           (this.propList[index + 1] ? ',' : ''));
           obj['message_props'] = message_props;
         }

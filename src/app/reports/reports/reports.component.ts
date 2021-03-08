@@ -302,7 +302,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }
     const from = this.filterObj.from_date.unix();
     const to = this.filterObj.to_date.unix();
-    
+
     if (to - from > 1800) {
       this.filterObj.isTypeEditable = true;
     } else {
@@ -329,7 +329,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
               value: prop
             });
           });
-          this.props = [...this.dropdownPropList];
+          // this.props = [...this.dropdownPropList];
           resolve();
         }
       ));

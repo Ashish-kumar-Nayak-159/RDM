@@ -504,7 +504,9 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-life-ring',
       visible: true,
       isTitle: false,
-      showAccordion: [],
+      showAccordion: [
+        { name: 'Delete', key: 'delete'}
+      ],
       accordion_value: {}
     },
     {

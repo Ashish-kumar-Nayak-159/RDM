@@ -144,10 +144,10 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
     this.selectedMessage = message;
     this.c2dMessageDetail = undefined;
     let method;
-    if (this.previousMsgFilter.tableType === 'C2D Message') {
-      method = this.deviceService.getC2dMessageJSON(message.message_id, this.appName);
-    } else if (this.previousMsgFilter.tableType === 'Direct Method') {
+    if (this.previousMsgFilter.tableType === 'Direct Method') {
       method = this.deviceService.getDirectMethodJSON(message.id, this.appName);
+    } else {
+      method = this.deviceService.getC2dMessageJSON(message.message_id, this.appName);
     }
     this.apiSubscriptions.push(method.subscribe(
       (response: any) => {

@@ -262,7 +262,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     if (this.dtInput2) {
       this.dtInput2.value = null;
     }
-    if (this.filterObj.dateOption === '24 hour') {
+    if (this.filterObj.dateOption.includes('hour')) {
       this.filterObj.isTypeEditable = true;
     } else {
       this.filterObj.isTypeEditable = false;
@@ -283,7 +283,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }
     const from = this.filterObj.from_date.unix();
     const to = this.filterObj.to_date.unix();
-    if (to - from > 3600) {
+    if (to - from > 1800) {
       this.filterObj.isTypeEditable = true;
     } else {
       this.filterObj.isTypeEditable = false;
@@ -302,7 +302,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }
     const from = this.filterObj.from_date.unix();
     const to = this.filterObj.to_date.unix();
-    if (to - from > 3600) {
+    
+    if (to - from > 1800) {
       this.filterObj.isTypeEditable = true;
     } else {
       this.filterObj.isTypeEditable = false;
@@ -339,10 +340,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       $('#table-wrapper').on('scroll', () => {
         const element = document.getElementById('table-wrapper');
-        console.log('11111111');
-        console.log(parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0)) >=
-        parseFloat(element.scrollHeight.toFixed(0)));
-        console.log(!this.insideScrollFunFlag);
         if (parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0)) >=
         parseFloat(element.scrollHeight.toFixed(0)) && !this.insideScrollFunFlag) {
           this.currentOffset += this.currentLimit;
@@ -440,7 +437,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   async getTelemetryData(filterObj) {
     const obj = JSON.parse(JSON.stringify(filterObj));
 
-    // if (obj.to_date - obj.from_date <= 3600) {
+    // if (obj.to_date - obj.from_date <= 1800) {
     //   method = this.deviceService.getDeviceTelemetry(obj);
     // } else {
     //   method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
@@ -452,7 +449,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.isTelemetryLoading = false;
     this.isFilterSelected = false;
     let method;
-    if (obj.to_date - obj.from_date > 3600 && !filterObj.isTypeEditable) {
+    if (obj.to_date - obj.from_date > 1800 && !filterObj.isTypeEditable) {
         this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
         return;
     }
@@ -528,9 +525,11 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   savePDF(): void {
+    if (this.filterObj.report_type === 'Process Parameter Report' && this.props.length > 8) {
+      this.toasterService.showWarning('For more properties, Excel Reports work better.', 'Export as PDF');
+    }
     this.isFileDownloading = true;
     const pdf = new jsPDF('p', 'pt', 'A3');
-
     pdf.text(this.filterObj.report_type + ' for ' +
     (this.deviceFilterObj.display_name ? this.deviceFilterObj.display_name : this.deviceFilterObj.device_id) +
     ' for ' + this.commonService.convertEpochToDate(this.newFilterObj.from_date) + ' to ' +

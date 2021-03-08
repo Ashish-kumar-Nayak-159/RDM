@@ -153,7 +153,8 @@
   <div class="mb-2" >
     <h6 *ngIf="!isFilterSelected"> Please select filters to view the report data.</h6>
     <div class="table-responsive" *ngIf="isFilterSelected || isTelemetryLoading"
-    [ngClass]="{'mt-n2' : filterObj.report_type === 'Process Parameter Report' && !isFilterOpen}"
+    [ngClass]="{'mt-5' : filterObj.report_type === 'Alert Report' && !isFilterOpen,
+    'mt-1' : filterObj.report_type === 'Process Parameter Report'}"
     >
       <h5  >{{filterObj.report_type}}
         <a href="javascript:void(0)" [class.disabled]="isFileDownloading" (click)="savePDF()" title="Export as PDF"><i class="fa fa-sm fa-file-pdf-o" ></i></a>

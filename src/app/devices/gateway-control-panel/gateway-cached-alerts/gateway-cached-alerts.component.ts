@@ -1,8 +1,8 @@
-import { CONSTANTS } from './../../../../../.history/src/app/app.constants_20210205141721';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
+import { CONSTANTS } from 'src/app/app.constants';
 import { Device } from 'src/app/models/device.model';
 import { CommonService } from 'src/app/services/common.service';
 import { DeviceService } from 'src/app/services/devices/device.service';

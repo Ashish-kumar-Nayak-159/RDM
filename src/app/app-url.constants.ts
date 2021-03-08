@@ -1,5 +1,5 @@
 export class AppUrls {
-  public static GET_APPLICATION_DASHBOARD_SNAPSHOT = 'apps/{0}/asset_statistics';
+  public static GET_APPLICATION_DASHBOARD_SNAPSHOT = 'apps/{0}/device_statistics';
   public static GET_DEVICE_FILTER_LIST = 'DLM_GetDevices';
   public static GET_DEVICE_DATA = 'DLM_GetDeviceTwin';
   public static UPDATE_DEVICE_TAGS = 'DLM_SetDeviceTags';

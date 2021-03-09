@@ -1,4 +1,3 @@
-import { CONSTANTS } from 'src/app/app.constants';
 import { Subscription } from 'rxjs';
 import { DeviceTypeService } from './../../../services/device-type/device-type.service';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
@@ -108,7 +107,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  onRedirectToDevices(gatewayId) {
+  onRedirectToDevices() {
     const obj = {
       gateway_id: this.device.device_id
     };

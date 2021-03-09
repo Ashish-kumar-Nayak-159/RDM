@@ -1,5 +1,4 @@
 import { filter } from 'rxjs/operators';
-import { Device } from './../../models/device.model';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { DeviceTypeService } from './../../services/device-type/device-type.service';

@@ -10,11 +10,13 @@
     <div class="row">
       <div class="col-12">
         <div class="card shadow h-100">
-          <div class="card-body1" style="max-height: 25rem; overflow-y: auto;">
+          <div class="card-body1" style="max-height: 27rem; overflow-y: auto;">
+            <span  *ngIf="loader"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> {{loaderMessage}}</span>
             <div id="{{ chartId }}" [ngStyle]="{'width': chartWidth, 'height': chartHeight}"></div>
             <div class="overlay" *ngIf="isOverlayVisible">
               <div style="font-family:'Arial Black'; font-size: 40px;">Sample Chart</div>
             </div>
+
           </div>
         </div>
       </div>

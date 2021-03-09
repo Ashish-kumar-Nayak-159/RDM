@@ -37,6 +37,8 @@ export class BarChartComponent implements OnInit, OnDestroy {
   chartDataFields: any;
   subscriptions: Subscription[] = [];
   hideCancelButton = false;
+  loader = false;
+  loaderMessage = 'Loading Data. Wait...';
   constructor(
     private commonService: CommonService,
     private chartService: ChartService,
@@ -44,6 +46,7 @@ export class BarChartComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.loader = true;
     setTimeout(() => this.plotChart(), 200);
     this.subscriptions.push(this.chartService.toggleThresholdEvent.subscribe((ev) => {
       this.showThreshold = ev;
@@ -77,7 +80,7 @@ export class BarChartComponent implements OnInit, OnDestroy {
     });
     console.log(data);
     chart.data = data;
-
+    this.loaderMessage = 'Loading Chart. Wait...';
     // Create axes
 
     const categoryAxis = chart.yAxes.push(new am4charts.DateAxis());
@@ -156,6 +159,10 @@ export class BarChartComponent implements OnInit, OnDestroy {
     chart.scrollbarX.parent = chart.bottomAxesContainer;
     chart.zoomOutButton.disabled = true;
     chart.logo.disabled = true;
+    chart.events.on('ready', (ev) => {
+      this.loader = false;
+      this.loaderMessage = 'Loading Data. Wait...';
+    });
     this.chart = chart;
     // // Create series
     this.createValueAxis(chart, 0);

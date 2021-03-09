@@ -206,7 +206,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         });
       });
       if (this.selectedWidgets.length > 3) {
-        this.toasterService.showWarning('Select 3 widgets for better performance.', 'Historical Visualization');
+        this.toasterService.showWarning('Select max 3 widgets for better performance.', 'Historical Visualization');
       }
       this.selectedPropertyForChart = [];
       this.selectedPropertyForChart = [...this.propList];

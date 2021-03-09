@@ -7,7 +7,7 @@ import * as am4charts from '@amcharts/amcharts4/charts';
 import { ChartService } from 'src/app/chart/chart.service';
 import * as moment from 'moment';
 declare var $: any;
-
+import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 @Component({
   selector: 'app-live-chart-data',
   templateUrl: './live-data.component.html',
@@ -39,6 +39,8 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   chartEnddate: any;
   subscriptions: Subscription[] = [];
   hideCancelButton = false;
+  loader = false;
+  loaderMessage = 'Loading Data. Wait...';
   constructor(
     private commonService: CommonService,
     private chartService: ChartService,
@@ -46,6 +48,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.loader = true;
     setTimeout(() => this.plotChart(), 200);
     this.subscriptions.push(this.chartService.toggleThresholdEvent.subscribe((ev) => {
       this.showThreshold = ev;
@@ -92,6 +95,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       });
       console.log(data);
       chart.data = data;
+      this.loaderMessage = 'Loading Chart. Wait...';
       chart.dateFormatter.inputDateFormat = 'x';
       chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
      // chart.durationFormatter.durationFormat = "hh:ii:ss";
@@ -182,55 +186,13 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       chart.scrollbarX.parent = chart.bottomAxesContainer;
       // chart.preloader.disabled = true;
       // chart.preloader.disabled = false;
+
+      chart.events.on('ready', (ev) => {
+        this.loader = false;
+        this.loaderMessage = 'Loading Data. Wait...';
+      });
       this.chart = chart;
       console.log('cartrttt', this.chart);
-      // let indicator;
-      // let indicatorInterval;
-
-      // function showIndicator() {
-      //   let hourglass;
-      //   if (!indicator) {
-      //     indicator = chart.tooltipContainer.createChild(am4core.Container);
-      //     indicator.background.fill = am4core.color('#fff');
-      //     indicator.background.fillOpacity = 0.8;
-      //     indicator.width = am4core.percent(100);
-      //     indicator.height = am4core.percent(100);
-
-      //     const indicatorLabel = indicator.createChild(am4core.Label);
-      //     indicatorLabel.text = 'Loading stuff...';
-      //     indicatorLabel.align = 'center';
-      //     indicatorLabel.valign = 'middle';
-      //     indicatorLabel.fontSize = 20;
-      //     indicatorLabel.dy = 50;
-      //     hourglass = indicator.createChild(am4core.Image);
-      //     hourglass.href = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-160/hourglass.svg';
-      //     hourglass.align = 'center';
-      //     hourglass.valign = 'middle';
-      //     hourglass.horizontalCenter = 'middle';
-      //     hourglass.verticalCenter = 'middle';
-      //     hourglass.scale = 0.7;
-      //   }
-      //   indicator.hide(0);
-      //   indicator.show();
-      //   clearInterval(indicatorInterval);
-      //   indicatorInterval = setInterval(() => {
-      //     hourglass.animate([{
-      //       from: 0,
-      //       to: 360,
-      //       property: 'rotation'
-      //     }], 2000);
-      //   }, 3000);
-      // }
-
-      // function hideIndicator() {
-      //   indicator.hide();
-      //   clearInterval(indicatorInterval);
-      // }
-      // chart.events.on('ready', (ev) => {
-      //   console.log('chart ready');
-      //   hideIndicator();
-      // });
-      // showIndicator();
     });
 
   }

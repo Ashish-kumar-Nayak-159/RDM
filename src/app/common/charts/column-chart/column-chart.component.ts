@@ -36,12 +36,15 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
   chartDataFields: any;
   subscriptions: Subscription[] = [];
   hideCancelButton = false;
+  loader = false;
+  loaderMessage = 'Loading Data. Wait...';
   constructor(
     private zone: NgZone,
     private chartService: ChartService
   ) { }
 
   ngOnInit(): void {
+    this.loader = true;
     setTimeout(() => this.plotChart(), 200);
     this.subscriptions.push(this.chartService.toggleThresholdEvent.subscribe((ev) => {
       this.showThreshold = ev;
@@ -75,7 +78,7 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
     });
     console.log(data);
     chart.data = data;
-
+    this.loaderMessage = 'Loading Chart. Wait...';
     // Create axes
 
     const categoryAxis = chart.xAxes.push(new am4charts.DateAxis());
@@ -153,6 +156,10 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
     chart.scrollbarX.parent = chart.bottomAxesContainer;
     chart.zoomOutButton.disabled = true;
     chart.logo.disabled = true;
+    chart.events.on('ready', (ev) => {
+      this.loader = false;
+      this.loaderMessage = 'Loading Data. Wait...';
+    });
     this.chart = chart;
     // chart.exporting.menu = new am4core.ExportMenu();
     // chart.legend.itemContainers.template.togglable = false;

@@ -107,8 +107,9 @@
               </td>
               <td>{{device.hierarchyString}}</td>
               <td *ngIf="componentState === constantData.NON_IP_DEVICE">
-                <a  href="javascript:void(0)" (click)="onRedirectToGateway(device)" >
-                  {{device.gateway_display_name}}</a></td>
+                <!-- <a  href="javascript:void(0)" (click)="onRedirectToGateway(device)" >
+                  {{device.gateway_display_name}}</a> -->
+                  {{device.gateway_display_name}}</td>
               <td><a  href="javascript:void(0)" (click)="onTableFunctionCall(device)" title="View Control Panel" >
                 <i class="fa fa-fw fa-table"></i></a></td>
             </tr>

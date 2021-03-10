@@ -58,8 +58,8 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       localStorage.removeItem(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
     }
     await this.getApplicationData(app);
-    await this.getDevices(this.applicationData.user.hierarchy);
-    await this.getDeviceModels(this.applicationData.user.hierarchy);
+    // await this.getDevices(this.applicationData.user.hierarchy);
+    // await this.getDeviceModels(this.applicationData.user.hierarchy);
     this.commonService.refreshSideMenuData.emit(this.applicationData);
     const menu = this.applicationData.configuration.main_menu.length > 0 ?
     this.applicationData.configuration.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));

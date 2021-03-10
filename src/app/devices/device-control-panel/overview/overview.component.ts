@@ -63,7 +63,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.componentState = CONSTANTS.NON_IP_DEVICE;
       }
       this.getDeviceCredentials();
-      this.getDeviceConnectionStatus();
       this.getDeviceTypeDetail();
       if (this.pageType === 'gateway') {
         this.getDeviceCount();
@@ -142,18 +141,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
     }, error => {
       this.toasterService.showError(error.message, 'Sync Device Data');
     });
-  }
-
-  getDeviceConnectionStatus() {
-    this.deviceConnectionStatus = undefined;
-    const id = (this.pageType === 'nonipdevice') ? this.device.gateway_id : this.device.device_id;
-    this.subscriptions.push(this.deviceService.getDeviceConnectionStatus(id, this.contextApp.app).subscribe(
-      response => {
-        this.deviceConnectionStatus = response;
-        this.deviceConnectionStatus.local_updated_date =
-          this.commonService.convertUTCDateToLocal(this.deviceConnectionStatus.updated_date);
-      }
-    ));
   }
 
   copyConnectionString() {

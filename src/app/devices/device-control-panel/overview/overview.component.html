@@ -6,13 +6,13 @@
   <div class="row">
 
     <ul class="nav">
-      <li class="nav-item" *ngIf="menuDetail.accordion_value.enable_disable && device?.metadata.status?.toLowerCase() === 'disabled'">
+      <li class="nav-item" *ngIf="menuDetail.accordion_value.enable_disable && device?.configuration.status?.toLowerCase() === 'disabled'">
         <a class="nav-link" href="javascript:void(0)" (click)="enableDevice()"  [class.disabled]="isAPILoading">
           <i class="fa fa-fw fa-toggle-on"></i>
           <span class="text-secondary"> Enable</span></a>
       </li>
-      <li class="nav-item" *ngIf="menuDetail.accordion_value.enable_disable && device?.metadata.status?.toLowerCase() === 'enabled'">
-        <a class="nav-link" href="javascript:void(0)" (click)="openConfirmDialog('Disable')"  [class.disabled]="isAPILoading || device?.metadata.status?.toLowerCase() === 'disabled'">
+      <li class="nav-item" *ngIf="menuDetail.accordion_value.enable_disable && device?.configuration.status?.toLowerCase() === 'enabled'">
+        <a class="nav-link" href="javascript:void(0)" (click)="openConfirmDialog('Disable')"  [class.disabled]="isAPILoading || device?.configuration.status?.toLowerCase() === 'disabled'">
           <i class="fa fa-fw fa-toggle-off"></i>
           <span class="text-secondary"> Disable</span></a>
       </li>
@@ -60,28 +60,23 @@
         {{deviceCount}} {{deviceCount === 1 ? 'asset' : 'assets'}}</a>.</h6>
   </div>
   <div class="row col-12 mt-1">
-    <!-- <a class="btn-sm shadow-sm white-font"
-    [ngClass]="{'btn-success': deviceConnectionStatus?.connection_state === 'Connected',
-                'btn-danger': deviceConnectionStatus?.connection_state === 'Disconnected'}">
-      {{deviceConnectionStatus?.status.charAt(0).toUpperCase() + deviceConnectionStatus?.status.slice(1)
-        + ', ' + deviceConnectionStatus?.connection_state + ' @ ' + deviceConnectionStatus?.local_updated_date}}
-    </a> -->
-    <p *ngIf="device?.metadata?.status?.toLowerCase() === 'enabled' && device?.metadata?.connection_state?.toLowerCase() === 'connected'">
+
+    <p *ngIf="device?.configuration?.status?.toLowerCase() === 'enabled' && device?.configuration?.connection_state?.toLowerCase() === 'connected'">
       Currently, {{pageType}} is
       <span class="enabled-font">
-        {{device?.metadata.status}} & Online.</span>
+        {{device?.configuration.status}} & Online.</span>
     </p>
-    <p *ngIf="device?.metadata?.status?.toLowerCase() === 'enabled' && device?.metadata?.connection_state?.toLowerCase() === 'disconnected'">
+    <p *ngIf="device?.configuration?.status?.toLowerCase() === 'enabled' && device?.configuration?.connection_state?.toLowerCase() === 'disconnected'">
       Currently, {{pageType}} is
       <span class="enabled-font">
-        {{device?.metadata.status}}</span>, but it is
+        {{device?.configuration.status}}</span>, but it is
         <span class="disabled-font">
           Offline.</span>
     </p>
-    <p *ngIf="device?.metadata?.status?.toLowerCase() === 'disabled' && device?.metadata?.connection_state?.toLowerCase() === 'disconnected'">
+    <p *ngIf="device?.configuration?.status?.toLowerCase() === 'disabled' && device?.configuration?.connection_state?.toLowerCase() === 'disconnected'">
       Currently, {{pageType}} is
       <span class="disabled-font">
-        {{device?.metadata.status}} & Offline.</span>
+        {{device?.configuration.status}} & Offline.</span>
     </p>
   </div>
   <div *ngIf="deviceCredentials" class="mt-1">

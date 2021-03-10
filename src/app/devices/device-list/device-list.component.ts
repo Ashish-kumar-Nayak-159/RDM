@@ -353,10 +353,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.currentLimit = Number(this.tileData[2]?.value) || 20;
   }
 
-  onRedirectToGateway(device) {
-    this.router.navigate(['applications', this.contextApp.app, 'gateways', device.gateway_id, 'control-panel']);
-  }
-
   getThingsModels(type) {
     this.deviceTypes = [];
     const obj = {

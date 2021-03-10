@@ -21,7 +21,7 @@
           <ng-container *ngIf="deviceMetadataKeys.length > 0">
             <tr *ngFor="let key of deviceMetadataKeys">
               <td>{{key}}</td>
-              <td>{{device.metadata[key]}}</td>
+              <td>{{device.configuration[key]}}</td>
             </tr>
           </ng-container>
           <ng-container *ngIf="deviceMetadataKeys.length === 0">

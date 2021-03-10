@@ -42,7 +42,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     await this.getApplicationUsers();
-    
+
     this.route.paramMap.subscribe(
       async params => {
         console.log(this.menuItems);
@@ -89,7 +89,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
       fragment => {
         if (fragment) {
           this.activeTab = fragment;
-          
+
         } else {
           const menu = this.componentState !== CONSTANTS.NON_IP_DEVICE ? (this.contextApp.configuration.device_control_panel_menu.length > 0 ?
           this.contextApp.configuration.device_control_panel_menu :
@@ -238,7 +238,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
     this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         this.device = response;
-        this.device.gateway_id = this.device.metadata?.gateway_id;
+        this.device.gateway_id = this.device.configuration?.gateway_id;
         if (!this.device.tags.device_users) {
           const userObj = this.appUsers.find(user => user.user_email === this.device.tags.device_manager);
           this.device.tags.device_users = {};

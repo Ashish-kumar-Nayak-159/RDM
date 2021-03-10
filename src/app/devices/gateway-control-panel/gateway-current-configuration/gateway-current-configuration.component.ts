@@ -13,7 +13,7 @@ export class GatewayCurrentConfigurationComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    this.deviceMetadataKeys = Object.keys(this.device.metadata);
+    this.deviceMetadataKeys = Object.keys(this.device.configuration);
   }
 
 }

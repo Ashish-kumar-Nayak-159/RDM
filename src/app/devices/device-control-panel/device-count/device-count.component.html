@@ -5,6 +5,13 @@
           <div class="form-group form-inline my-1">
             <input type="number" min="1" class="form-control form-control-sm mr-1 my-1 record-input" id="inputEmail4" placeholder="No of Records"
             [(ngModel)]="telemetryFilter.count" name="count">
+            <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory"
+             [(ngModel)]="telemetryFilter.device" name="deviceCategory">
+              <option [ngValue]="undefined">Select Asset</option>
+              <option [ngValue]="device" *ngFor="let device of devices">
+                {{device?.tags?.dislay_name ? device.tags?.display_name: device.device_id}}
+              </option>
+            </select>
             <div class="bg-dateRow form-group form-inline" id="dateRow"
             [style.width]="(telemetryFilter.dateOption === 'date' ? '23rem' : (telemetryFilter.dateOption === 'date range' ? '33rem' : ''))">
             <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
@@ -46,23 +53,19 @@
 
           </div>
           <div class="form-group form-inline my-1">
-            <input type="checkbox" class="mr-1 my-1 big-checkbox" id="checkbox" min="1"
-            name="checkbox" [(ngModel)]="telemetryFilter.isTypeEditable" (change)="telemetryFilter.aggregation_format = undefined; telemetryFilter.aggregation_minutes = undefined;
-            ">
 
-            <fieldset [disabled]="!telemetryFilter.isTypeEditable" class="form-group form-inline my-1">
             <!-- <ui-switch size="small"  class="mr-1" [disabled]="!telemetryFilter.isTypeEditable"
             defaultBgColor="red" checkedTextColor="white" uncheckedTextColor="white"
             checkedLabel="Sampling" (valueChange)="telemetryFilter.aggregation_format = undefined; telemetryFilter.aggregation_minutes = undefined;
             telemetryFilter.sampling_format = undefined; telemetryFilter.sampling_time = undefined;"
             uncheckedLabel="Aggregation" [(ngModel)]="telemetryFilter.type" name="tpye"></ui-switch> -->
-            <label class="mx-1 my-1">Sampling: </label>
-            <!-- <ng-container *ngIf="!telemetryFilter.type">
-            <input type="number" class="form-control form-control-sm my-1 w-7" id="minutes" min="1" disabled
+            <label class="mx-1 my-1">Aggreagtion: </label>
+            <ng-container >
+              <input type="number" class="form-control form-control-sm my-1 w-7" id="minutes" min="1"
               name="minutes" [(ngModel)]="telemetryFilter.aggregation_minutes" placeholder="Agreegation Time"
               (change)="onNumberChange($event, 'aggregation')">
             <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
-            <select class="form-control form-control-sm mx-2 my-1" id="aggregationFormat" [(ngModel)]="telemetryFilter.aggregation_format"
+            <select class="form-control form-control-sm mx-1 my-1" id="aggregationFormat" [(ngModel)]="telemetryFilter.aggregation_format"
             name="aggregationFormat" style="width: 11rem!important;" disabled>
             <option [ngValue]="undefined">Aggregartion Format</option>
             <option [ngValue]="'AVG'">Average</option>
@@ -71,21 +74,8 @@
             <option [ngValue]="'MAX'">Max</option>
             <option [ngValue]="'COUNT'">Count</option>
             </select>
-            </ng-container> -->
-            <ng-container >
-            <input type="number" class="form-control form-control-sm ml-1 my-1 w-7" id="minutes" min="1"
-              name="minutes" [(ngModel)]="telemetryFilter.sampling_time" placeholder="Sampling" disabled
-              (change)="onNumberChange($event, 'sampling')" title="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development.">
-              <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
-            <!-- <select class="form-control form-control-sm mx-2 my-1" id="samplingFrequency" [(ngModel)]="telemetryFilter.sampling_format"
-            name="samplingFrequency" style="width: 11rem!important;" disabled>
-            <option [ngValue]="undefined">Sampling Format</option>
-            <option [ngValue]="'second'">Second</option>
-            <option [ngValue]="'minute'">Minute</option>
-            <option [ngValue]="'hour'">Hour</option>
-            </select> -->
             </ng-container>
-            </fieldset>
+
             <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="searchTelemetry(this.telemetryFilter)"
             [disabled]="isTelemetryLoading"><i class="fa fa-search fa-sm"></i></button>
             <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear Filters" (click)="clear()">
@@ -103,17 +93,11 @@
 
 </div>
 <div class="con-pad" style="margin-top: 12.5rem;max-height: calc(100vh - 13rem);">
-<div class="row mx-auto">
+  <div class="row mx-auto">
 
-  <div class="table-responsive">
-    <app-common-table [tableData]="telemetry" [tableConfig]="telemetryTableConfig" [isTableFilterSelected]="isFilterSelected"
-    [isTableDataLoading]="isTelemetryLoading" (viewMessageEvent)="openTelemetryMessageModal($event)"></app-common-table>
+    <div class="table-responsive">
+      <app-common-table [tableData]="telemetry" [tableConfig]="telemetryTableConfig" [isTableFilterSelected]="isFilterSelected"
+      [isTableDataLoading]="isTelemetryLoading" ></app-common-table>
+    </div>
   </div>
-</div>
-</div>
-<div class="modal right fade" id="telemetryMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
-  <div class="modal-dialog" role="document">
-    <app-message-modal [bodyMessage]="selectedTelemetry?.message" [headerMessage]="'Telemetry Message'"
-      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
   </div>
-</div>

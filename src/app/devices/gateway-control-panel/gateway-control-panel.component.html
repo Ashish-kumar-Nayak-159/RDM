@@ -83,6 +83,9 @@
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel" id="device_control_widgets">
         <app-commands *ngIf="activeTab === 'control_widgets' && device" [device]="device" [menuDetail]="getMenuDetail('control_widgets')" ></app-commands>
       </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'count'}" role="tabpanel" id="device_count">
+        <app-device-count *ngIf="activeTab === 'count' && device" [device]="device"  ></app-device-count>
+      </div>
       <!-- /.container1-fluid -->
 
     </div>

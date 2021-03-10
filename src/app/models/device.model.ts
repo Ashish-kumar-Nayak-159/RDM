@@ -25,4 +25,5 @@ export class Device {
   tags: any;
   app: string;
   metadata: any;
+  configuration: any;
 }

@@ -92,13 +92,6 @@ export class TelemetryComponent implements OnInit, OnDestroy {
           }
         ]
       };
-      if (this.pageType === 'gateway') {
-        this.telemetryTableConfig.data.splice(1, 1);
-        this.telemetryTableConfig.data.splice(1, 0, {
-          name: 'Asset Name',
-          key: 'device_id'
-        });
-      }
     });
 
     if (this.telemetryFilter.gateway_id) {

@@ -869,6 +869,17 @@ export class CONSTANTS {
       accordion_value: {}
     },
     {
+      page: 'count',
+      system_name: 'Count',
+      url: '#device_count',
+      display_name: 'Count',
+      icon: 'fa fa-fw fa-calculator',
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
+    },
+    {
       page: 'error',
       system_name: 'Error',
       url: '#device_error',

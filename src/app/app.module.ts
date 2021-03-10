@@ -15,6 +15,8 @@ import { RDMLoginComponent } from './rdm-login/rdm-login.component';
 import { RDMHomeComponent } from './rdmhome/rdmhome.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
+import { NgCircleProgressModule } from 'ng-circle-progress';
+import { LoaderComponent } from './loader/loader.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,8 @@ import { MonacoEditorModule } from 'ngx-monaco-editor';
     RDMSideMenuComponent,
     RDMLoginComponent,
     RDMHomeComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    LoaderComponent
   ],
   imports: [
     BrowserModule,
@@ -36,7 +39,9 @@ import { MonacoEditorModule } from 'ngx-monaco-editor';
     NoopAnimationsModule,
     MatNativeDateModule,
     BrowserAnimationsModule,
-    MonacoEditorModule.forRoot()
+    MonacoEditorModule.forRoot(),
+
+
   ],
   providers: [
     HttpInterceptorProviders

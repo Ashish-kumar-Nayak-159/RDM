@@ -101,9 +101,9 @@ export class DeviceService {
   }
 
   getDeviceData(deviceId, app) {
-    let params = new HttpParams().set('device_id', deviceId);
-    params = params.set('app', app);
-    return this.http.get(this.url + AppUrls.GET_DEVICE_DATA, { params });
+    // let params = new HttpParams().set('device_id', deviceId);
+    // params = params.set('app', app);
+    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_DATA, app, deviceId));
   }
 
   createDevice(deviceObj, app) {
@@ -157,9 +157,7 @@ export class DeviceService {
   }
 
   updateDeviceTags(deviceObj, app) {
-    let params = new HttpParams();
-    params = params.set('app', app);
-    return this.http.post(this.url + AppUrls.UPDATE_DEVICE_TAGS, deviceObj, {params});
+    return this.http.post(this.url + String.Format(AppUrls.UPDATE_DEVICE_TAGS, app, deviceObj.device_id), deviceObj);
   }
 
   updateNonIPDeviceTags(deviceObj, app) {

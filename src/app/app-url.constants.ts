@@ -1,8 +1,8 @@
 export class AppUrls {
   public static GET_APPLICATION_DASHBOARD_SNAPSHOT = 'apps/{0}/device_statistics';
   public static GET_DEVICE_FILTER_LIST = 'DLM_GetDevices';
-  public static GET_DEVICE_DATA = 'DLM_GetDeviceTwin';
-  public static UPDATE_DEVICE_TAGS = 'DLM_SetDeviceTags';
+  public static GET_DEVICE_DATA = 'apps/{0}/iot_devices/{1}/tags';
+  public static UPDATE_DEVICE_TAGS = 'apps/{0}/iot_devices/{1}/tags';
   public static GET_DEVICE_LIFECYCLE_EVENTS = 'DLM_GetDeviceLifeCycleEvents';
   public static GET_HEARTBEAT_LIST = 'D2C_GetDeviceHeartbeats';
   public static GET_NOTIFICAION_LIST = 'D2C_GetDeviceNotifications';

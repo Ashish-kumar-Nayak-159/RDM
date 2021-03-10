@@ -1,6 +1,6 @@
 <div class="topnavbar" >
   <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-1">
-    <h5 class="h4 mb-0 text-gray-800">{{tileData && tileData[0] ? tileData[0]?.value : ''}} 
+    <h5 class="h4 mb-0 text-gray-800">{{tileData && tileData[0] ? tileData[0]?.value : ''}}
       <a href="javascript:void(0)" (click)="isFilterOpen = !isFilterOpen"
       title="Filters"><i class="fa fa-sm fa-filter" ></i></a>
     </h5>
@@ -192,23 +192,33 @@
             <ng-container *ngIf="isTelemetryLoading">
               <tr>
                 <td [attr.colspan]="3 + selectedProps.length">
-                  <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+                  <!-- <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i> -->
+                  <circle-progress
+                    [percent]="100"
+                    [radius]="100"
+                    [outerStrokeWidth]="16"
+                    [innerStrokeWidth]="8"
+                    [outerStrokeColor]="'#78C000'"
+                    [innerStrokeColor]="'#C7E596'"
+                    [animation]="true"
+                    [animationDuration]="10000"
+></circle-progress>
                 </td>
               </tr>
             </ng-container>
 
           </tbody>
         </table>
-        
+
       </div>
-      
+
       <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && telemetry.length > 0">
-        <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;onFilterSelection();" 
+        <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;onFilterSelection();"
         title="Load More Records...">Load More...</a>
       </span>
       </ng-container>
       <ng-container *ngIf="isFilterSelected && filterObj.report_type === 'Alert Report'">
-      <div class="table-wrapper" id="table-wrapper" 
+      <div class="table-wrapper" id="table-wrapper"
       [ngStyle]="{maxHeight: !isFilterOpen ? ' calc(100vh - 14.5rem)' : 'calc(100vh - 21.5rem)'}">
       <table class="table table-bordered table-striped"  id="dataTable" width="100%" cellspacing="0"
       >
@@ -260,7 +270,7 @@
       </table>
       </div>
       <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && latestAlerts.length > 0">
-        <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;onFilterSelection();" 
+        <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;onFilterSelection();"
         title="Load More Records...">Load More...</a>
       </span>
       </ng-container>

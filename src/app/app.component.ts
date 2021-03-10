@@ -1,7 +1,7 @@
 import { Subscription } from 'rxjs';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { Component, Inject, HostListener, NgZone, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute, RouterEvent, NavigationCancel, NavigationError, NavigationStart } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from './app.constants';
@@ -21,6 +21,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   userData: any;
   url: any;
   applicationData: any;
+  showLoader = true;
   signalRAlertSubscription: Subscription;
   apiSubscriptions: Subscription[] = [];
   constructor(
@@ -56,6 +57,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.applicationData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.url = this.router.url;
     this.router.events.subscribe(async event => {
+      this.navigationInterceptor(event);
       if (event instanceof NavigationEnd) {
         this.url = event.url;
         if (!this.applicationData) {
@@ -118,7 +120,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   getApplicationData(app) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
     this.applicationData = undefined;
     this.apiSubscriptions.push(this.applicationService.getApplicationDetail(app.app).subscribe(
       (response: any) => {
@@ -146,10 +148,17 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  navigationInterceptor(event): void {
+    if (event instanceof NavigationStart) {
+      this.showLoader = true;
+    }
+    if (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) {
+      setTimeout(() => this.showLoader = false, 500);
+    }
+  }
+
   ngOnDestroy() {
     this.apiSubscriptions.forEach(subscription => subscription.unsubscribe());
   }
-
-
 
 }

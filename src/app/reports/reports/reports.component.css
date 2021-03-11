@@ -16,6 +16,9 @@ select.form-control {
 .w-15 {
   width:  15rem!important;
 }
+.w-16 {
+  width: 16rem;
+}
 
 .w-22 {
   width:  22rem!important;

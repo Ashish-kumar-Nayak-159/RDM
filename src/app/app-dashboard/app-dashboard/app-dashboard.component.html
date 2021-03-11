@@ -48,7 +48,7 @@
                         <input type="text" *ngIf="index === 0" defaultValue="{{ contextApp.app }}" disabled
                           class="form-control form-control-sm mx-1 my-1" />
                       </ng-container>
-                      <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory"
+                      <!-- <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory"
                         [(ngModel)]="filterObj.device" name="deviceCategory" [compareWith]="compareFn">
                         <option [ngValue]="undefined">Select Asset</option>
                         <option [ngValue]="device" *ngFor="let device of devices">
@@ -58,7 +58,20 @@
                               : device.device_id
                           }}
                         </option>
-                      </select>
+                      </select> -->
+                      <angular2-multiselect [data]="devices" id="deviceSelect"
+                      [(ngModel)]="filterObj.deviceArr" name="devices" [settings]="{
+                        text: 'Select Device',
+                        classes: 'w-16 p-0 mx-1',
+                        singleSelection: true,
+                        enableSearchFilter: true,
+                        showCheckbox: false,
+                        maxHeight: 400,
+                        primaryKey: 'device_id',
+                        labelKey: 'display_name'
+                      }"
+                      (onSelect)="onAssetSelection()">
+                    </angular2-multiselect>
                       <!-- <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory1" [(ngModel)]="filterObj.non_ip_device"
                     name="deviceCategory1" *ngIf="filterObj.device?.cloud_connectivity.includes('Gateway')"
                     >

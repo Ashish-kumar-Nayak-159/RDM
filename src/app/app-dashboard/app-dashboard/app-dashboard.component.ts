@@ -75,7 +75,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       ]
     });
-    
+
 
     await this.getDevices(this.contextApp.user.hierarchy);
     if (this.contextApp.hierarchy.levels.length > 1) {
@@ -544,6 +544,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log(this.currentHour);
     this.currentMinute = diff - (this.currentHour * 60);
     console.log(this.currentMinute);
+  }
+
+  onAssetSelection() {
+    if (this.filterObj?.deviceArr.length > 0) {
+      this.filterObj.device = this.filterObj.deviceArr[0];
+    }
   }
 
   getThingsModelProperties(deviceType) {

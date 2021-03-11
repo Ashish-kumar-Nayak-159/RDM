@@ -7,6 +7,10 @@ input:invalid {
   border: 1px solid #d1d3e2;
 }
 
+.w-16 {
+  width: 16rem;
+}
+
 
 #bar-chart text {
   fill: yellow!important;

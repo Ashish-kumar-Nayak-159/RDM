@@ -10,6 +10,9 @@
   background-color: red;
 }
 
+.w-16 {
+  width: 16rem;
+}
 
 .green-box {
   width: 3rem;

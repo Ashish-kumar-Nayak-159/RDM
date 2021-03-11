@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { AppDashboardRoutingModule } from './app-dashboard-routing.module';
 import { AppDashboardComponent } from './app-dashboard/app-dashboard.component';
 import { UiSwitchModule } from 'ngx-ui-switch';
+import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { UiSwitchModule } from 'ngx-ui-switch';
     DevicesModule,
     FormsModule,
     VisualizationModule,
-    UiSwitchModule
+    UiSwitchModule,
+    AngularMultiSelectModule
   ]
 })
 export class AppDashboardModule { }

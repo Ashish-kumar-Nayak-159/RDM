@@ -157,7 +157,7 @@ export class DeviceService {
   }
 
   updateDeviceTags(deviceObj, app) {
-    return this.http.post(this.url + String.Format(AppUrls.UPDATE_DEVICE_TAGS, app, deviceObj.device_id), deviceObj);
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_DEVICE_TAGS, app, deviceObj.device_id), deviceObj);
   }
 
   updateNonIPDeviceTags(deviceObj, app) {

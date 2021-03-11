@@ -39,7 +39,6 @@
     "jspdf": "^2.1.1",
     "jspdf-autotable": "^3.5.13",
     "moment": "^2.27.0",
-    "ng-circle-progress": "^1.6.0",
     "ng-multiselect-dropdown": "^0.2.10",
     "ng-pick-datetime": "^7.0.0",
     "ngx-bootstrap": "^6.1.0",

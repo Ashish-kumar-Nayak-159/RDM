@@ -192,17 +192,7 @@
             <ng-container *ngIf="isTelemetryLoading">
               <tr>
                 <td [attr.colspan]="3 + selectedProps.length">
-                  <!-- <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i> -->
-                  <circle-progress
-                    [percent]="100"
-                    [radius]="100"
-                    [outerStrokeWidth]="16"
-                    [innerStrokeWidth]="8"
-                    [outerStrokeColor]="'#78C000'"
-                    [innerStrokeColor]="'#C7E596'"
-                    [animation]="true"
-                    [animationDuration]="10000"
-></circle-progress>
+                  <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
                 </td>
               </tr>
             </ng-container>

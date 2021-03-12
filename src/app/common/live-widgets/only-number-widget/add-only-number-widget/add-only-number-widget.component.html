@@ -8,11 +8,25 @@
     title="Add Property"
     ><i class="fa fa-plus fa-sm text-white"></i></a
   ></label>
-  <select class="custom-select" id="template" name="model_type" [(ngModel)]="prop.property"
+  <!-- <select class="custom-select" id="template" name="model_type" [(ngModel)]="prop.property"
   >
   <option [ngValue]="undefined" >Select Property</option>
     <option [ngValue]="prop" *ngFor="let prop of propertyList">{{prop.name}}</option>
-  </select>
+  </select> -->
+  <angular2-multiselect [data]="propertyList" id="PropertySelect"
+    [(ngModel)]="prop.propertyArr" name="Propertys" [settings]="{
+      text: 'Select Property',
+      classes: 'w-16 p-0',
+      singleSelection: true,
+      enableSearchFilter: true,
+      showCheckbox: false,
+      maxHeight: 400,
+      primaryKey: 'json_key',
+      labelKey: 'name'
+    }"
+    (onSelect)="onPropertySelection(prop)"
+    (onDeSelectAll)="onPropertyDeselect(prop)">
+  </angular2-multiselect>
 </div>
 <div class="form-group" >
   <label for="message-text" class="col-form-label ">Property Title:</label>

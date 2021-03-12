@@ -32,6 +32,23 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
     this.widgetObj.properties.push({});
   }
 
+  onPropertySelection(prop) {
+    if (prop?.propertyArr.length > 0) {
+      prop.property = prop.propertyArr[0];
+      prop.title = prop.property.name;
+    } else {
+      prop.property = undefined;
+      prop.propertyArr = undefined;
+      prop.title = undefined;
+    }
+  }
+
+  onPropertyDeselect(prop) {
+    prop.property = undefined;
+    prop.propertyArr = undefined;
+    prop.title = undefined;
+  }
+
   async onLogoFileSelected(files: FileList, index): Promise<void> {
     this.isFileUploading = true;
     const data = await this.commonService.uploadImageToBlob(files.item(0), 'device-type/live-widget-images' );

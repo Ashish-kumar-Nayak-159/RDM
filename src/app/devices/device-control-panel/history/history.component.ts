@@ -162,7 +162,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   onSingleDateChange(event) {
     console.log(event);
     this.historyFilter.from_date = moment(event.value).utc();
-    this.historyFilter.to_date = moment().utc();
+    this.historyFilter.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
     if (this.dtInput1) {
       this.dtInput1.value = null;
     }
@@ -171,6 +171,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     const from = this.historyFilter.from_date.unix();
     const to = this.historyFilter.to_date.unix();
+    const current = (moment().utc()).unix();
+    if (current < to) {
+      this.historyFilter.to_date = moment().utc();
+    }
     if (to - from > 3600) {
       this.historyFilter.isTypeEditable = true;
     } else {

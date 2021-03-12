@@ -130,7 +130,7 @@ export class DeviceCountComponent implements OnInit {
   onSingleDateChange(event) {
     console.log(event);
     this.telemetryFilter.from_date = moment(event.value).utc();
-    this.telemetryFilter.to_date = moment().utc();
+    this.telemetryFilter.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
     if (this.dtInput1) {
       this.dtInput1.value = null;
     }
@@ -139,6 +139,10 @@ export class DeviceCountComponent implements OnInit {
     }
     const from = this.telemetryFilter.from_date.unix();
     const to = this.telemetryFilter.to_date.unix();
+    const current = (moment().utc()).unix();
+    if (current < to) {
+      this.telemetryFilter.to_date = moment().utc();
+    }
     if (to - from > 3600) {
       this.telemetryFilter.isTypeEditable = true;
     } else {

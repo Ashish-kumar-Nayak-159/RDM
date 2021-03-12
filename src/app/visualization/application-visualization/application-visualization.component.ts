@@ -282,7 +282,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   onSingleDateChange(event) {
     console.log(event);
     this.filterObj.from_date = moment(event.value).utc();
-    this.filterObj.to_date = moment().utc();
+    this.filterObj.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
     if (this.dtInput1) {
       this.dtInput1.value = null;
     }
@@ -291,6 +291,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
     const from = this.filterObj.from_date.unix();
     const to = this.filterObj.to_date.unix();
+    const current = (moment().utc()).unix();
+    if (current < to) {
+      this.filterObj.to_date = moment().utc();
+    }
     if (to - from > 3600) {
       this.filterObj.isTypeEditable = true;
     } else {

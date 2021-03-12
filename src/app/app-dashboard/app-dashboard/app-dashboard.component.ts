@@ -549,7 +549,15 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   onAssetSelection() {
     if (this.filterObj?.deviceArr.length > 0) {
       this.filterObj.device = this.filterObj.deviceArr[0];
+    } else {
+      this.filterObj.device = undefined;
+      this.filterObj.deviceArr = undefined;
     }
+  }
+
+  onAssetDeselect() {
+    this.filterObj.device = undefined;
+    this.filterObj.deviceArr = undefined;
   }
 
   getThingsModelProperties(deviceType) {

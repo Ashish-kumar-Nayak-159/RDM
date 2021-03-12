@@ -211,10 +211,18 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   }
 
+  onAssetDeselect() {
+    this.filterObj.device = undefined;
+    this.filterObj.deviceArr = undefined;
+  }
+
   onAssetSelection() {
     console.log(this.filterObj);
     if (this.filterObj?.deviceArr.length > 0) {
       this.filterObj.device = this.filterObj.deviceArr[0];
+    } else {
+      this.filterObj.device = undefined;
+      this.filterObj.deviceArr = undefined;
     }
     // this.nonIPDevices = [];
     // this.filterObj.device_id = this.filterObj.device.device_id;

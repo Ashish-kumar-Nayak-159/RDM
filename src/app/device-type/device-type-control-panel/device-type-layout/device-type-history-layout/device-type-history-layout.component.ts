@@ -156,7 +156,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
   }
 
   plotChart(layoutJson) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       $('.overlay').show();
       this.chartCount++;
       console.log(layoutJson);

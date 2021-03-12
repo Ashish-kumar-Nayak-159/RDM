@@ -268,7 +268,15 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   onAssetSelection() {
     if (this.filterObj?.deviceArr.length > 0) {
       this.filterObj.device = this.filterObj.deviceArr[0];
+    } else {
+      this.filterObj.device = undefined;
+      this.filterObj.deviceArr = undefined;
     }
+  }
+
+  onAssetDeselect() {
+    this.filterObj.device = undefined;
+    this.filterObj.deviceArr = undefined;
   }
 
   onSingleDateChange(event) {

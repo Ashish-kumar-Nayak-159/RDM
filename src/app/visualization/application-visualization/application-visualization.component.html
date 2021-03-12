@@ -37,7 +37,8 @@
               primaryKey: 'device_id',
               labelKey: 'display_name'
             }"
-            (onSelect)="onAssetSelection()">
+            (onSelect)="onAssetSelection()"
+            (onDeSelectAll)="onAssetDeselect()">
           </angular2-multiselect>
           <!-- <select class="form-control form-control-sm mx-2 my-1" id="deviceCategory1" [(ngModel)]="filterObj.non_ip_device"
             name="deviceCategory1" *ngIf="filterObj.device?.cloud_connectivity.includes('Gateway')"
@@ -287,8 +288,8 @@ maxHeight: 'calc(100vh - 12rem)'}"
                   Alert Visualization
                 </a>
               </ng-container>
-              <div >
-                <div class="row col-12 pl-5" *ngIf="!isTelemetryDataLoading && telemetryData.length > 0">
+              <div  id="mainChartDiv" >
+                <div class="row col-12 pl-5"  *ngIf="!isTelemetryDataLoading && telemetryData.length > 0">
 
                   <div class="col-2 form-group " *ngFor="let prop of propList">
                     <input type="checkbox" class="form-check-input" id="{{prop}}"

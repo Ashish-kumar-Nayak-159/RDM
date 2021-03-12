@@ -38,7 +38,8 @@
           primaryKey: 'device_id',
           labelKey: 'display_name'
         }"
-        (onSelect)="onAssetSelection()">
+        (onSelect)="onAssetSelection()"
+        (onDeSelectAll)="onAssetDeselect()">
       </angular2-multiselect>
         </div>
         <div class="d-flex row form-group form-inline  my-2 mx-3">

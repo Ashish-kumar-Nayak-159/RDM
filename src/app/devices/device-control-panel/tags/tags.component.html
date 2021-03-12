@@ -83,6 +83,10 @@
               <td><ul><li *ngFor="let user of device?.tags?.device_users_arr">{{user}}</li></ul></td>
             </tr>
             <tr>
+              <td>Partition Key</td>
+              <td>{{device?.tags?.partition_key}}</td>
+            </tr>
+            <tr>
               <td>Model</td>
               <td>{{device?.tags?.device_type}}</td>
             </tr>

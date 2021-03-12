@@ -85,6 +85,8 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
     this.appModalType = 'Create';
     this.applicationDetail = {
       metadata: {
+        customer: {},
+        partition: { telemetry: {}}
       }
     };
     $('#createAppModal').modal({ backdrop: 'static', keyboard: false, show: true });
@@ -101,6 +103,12 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
   openViewIconModal(app) {
     console.log(app);
     this.applicationDetail = app;
+    if (!this.applicationDetail.customer) {
+      this.applicationDetail.customer = {};
+    }
+    if (!this.applicationDetail.partition) {
+      this.applicationDetail.partition = { telemetry: {}};
+    }
     $('#viewAppIconModal').modal({ backdrop: 'static', keyboard: false, show: true });
 
   }
@@ -184,10 +192,22 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
 
   async createApp() {
     console.log(this.applicationDetail);
-    if (!this.applicationDetail.app || !this.applicationDetail.admin_email || !this.applicationDetail.admin_name
+    if (!this.applicationDetail.app || !this.applicationDetail.admin_email || !this.applicationDetail.admin_name ||
+      !this.applicationDetail.metadata.partition.telemetry.partition_strategy
+      || !this.applicationDetail.metadata.partition.telemetry.sub_partition_strategy
       ) {
       this.toasterService.showError('Please fill all details', 'Create App');
     } else {
+      if (!CONSTANTS.ONLY_NOS_AND_CHARS.test(this.applicationDetail.app)) {
+        this.toasterService.showError('App name only contains numbers and characters.',
+          'Create App');
+        return;
+      }
+      if (!CONSTANTS.EMAIL_REGEX.test(this.applicationDetail.admin_email)) {
+        this.toasterService.showError('Email address is not valid',
+          'Create App');
+        return;
+      }
       this.isCreateAPILoading = true;
       this.applicationDetail.hierarchy = {
         levels: ['App'],
@@ -198,9 +218,10 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
         level: 0
       }];
       this.applicationDetail.configuration = {main_menu: [], device_control_panel_menu : [],
-        model_control_panel_menu: [], gateway_control_panel_menu: []};
+        model_control_panel_menu: [], gateway_control_panel_menu: [], legacy_device_control_panel_menu: []};
       const methodToCall = this.appModalType === 'Create' ? this.applicationService.createApp(this.applicationDetail) :
       (this.appModalType === 'Edit' ? this.applicationService.updateApp(this.applicationDetail) : null);
+      console.log(this.applicationDetail);
       if (methodToCall) {
         this.apiSubscriptions.push(methodToCall.subscribe(
           (response: any) => {

@@ -78,8 +78,10 @@ export class DeviceListComponent implements OnInit, OnDestroy {
         localStorage.removeItem(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
       }
       this.devicesList = [];
+      console.log('81111111    ', params);
       if (params.get('listName')) {
         const listName = params.get('listName');
+
         if (listName.toLowerCase() === 'nonipdevices') {
           this.componentState = CONSTANTS.NON_IP_DEVICE;
           this.pageType = 'Device';
@@ -88,6 +90,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
           this.componentState = CONSTANTS.IP_GATEWAY;
           this.pageType = 'Gateway';
         } else if (listName.toLowerCase() === 'devices') {
+          console.log('9111111');
           this.componentState = CONSTANTS.IP_DEVICE;
           this.pageType = 'Device';
         }
@@ -350,6 +353,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       }
     });
     this.tileData = selectedItem;
+    console.log(this.tileData);
     this.currentLimit = Number(this.tileData[2]?.value) || 20;
   }
 
@@ -522,6 +526,15 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Gateway and Device name can not be the same.',
       'Create ' + this.pageType);
       return;
+    }
+    if (this.contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Device ID' &&
+    !CONSTANTS.ONLY_NOS_AND_CHARS.test(this.deviceDetail.tags.partition_key)) {
+      this.toasterService.showError('Partition Key only contains numbers and characters.',
+      'Create Device');
+      return;
+    }
+    if (this.contextApp.metadata?.partition?.telemetry?.partition_strategy === 'Device ID') {
+      this.deviceDetail.tags.partition_key = this.deviceDetail.device_id;
     }
     this.isCreateDeviceAPILoading = true;
     console.log(this.deviceDetail);

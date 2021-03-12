@@ -189,16 +189,19 @@ export class CONSTANTS {
       ],
       priority: 1
     },
-    // {
-    //   page: 'App Settings',
-    //   system_name: 'App Settings',
-    //   url: 'applications/:appName/settings',
-    //   display_name: 'App Settings',
-    //   icon: 'fa fa-fw fa-cog',
-    //   visible: true,
-    //   showAccordion: [],
-    //   priority: 1
-    // },
+    {
+      page: 'Device Management',
+      system_name: 'Device Management',
+      url: 'applications/:appName/devices/management',
+      display_name: 'Device Management',
+      icon: 'fa fa-fw fa-cog',
+      visible: true,
+      showAccordion: [
+        { name: 'Title', value: 'Device Management'},
+        { name: 'Records Limit', value: 20, type: 'number'},
+      ],
+      priority: 1
+    },
     {
       page: 'Gateways',
       system_name: 'IoT Gateways',
@@ -1125,6 +1128,7 @@ export class CONSTANTS {
   public static NOT_ALLOWED_SPECIAL_CHARS_NAME = [' ', '.', '$', '#'];
   public static PASSWORD_REGEX = '^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,20}$';
   public static EMAIL_REGEX = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
+  public static ONLY_NOS_AND_CHARS = /^[a-zA-Z0-9]+$/;
   public static APP_ADMIN_ROLE = 'App Admin';
   public static LOCAL_STORAGE_EXPIRY_INTERVAL = 86400000;
 

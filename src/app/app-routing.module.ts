@@ -25,6 +25,10 @@ const routes: Routes = [
     loadChildren: () => import('./reports/reports.module').then(module => module.ReportsModule)
   },
   {
+    path: 'applications/:applicationId/asset',
+    loadChildren: () => import('./devices/devices.module').then(module => module.DevicesModule),
+  },
+  {
     path: 'applications/:applicationId/:listName',
     loadChildren: () => import('./devices/devices.module').then(module => module.DevicesModule),
   },

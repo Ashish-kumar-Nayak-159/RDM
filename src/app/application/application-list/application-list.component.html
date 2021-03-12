@@ -134,6 +134,12 @@
           (ngModelChange)="applicationDetail.metadata.contain_gateways = false;">
           <label class="form-check-label" for="contains-devices">Contains Devices</label>
         </div> -->
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="contains-db"
+          name="contains-db" [(ngModel)]="applicationDetail.metadata.app_specific_db"
+          (ngModelChange)="applicationDetail.metadata.app_specific_db = false;">
+          <label class="form-check-label" for="contains-gateway">Separate Database Required</label>
+        </div>
         <div class="form-group">
           <label for="message-text" class="col-form-label">Header Logo: {{appModalType === 'Edit' ? applicationDetail?.metadata?.header_logo?.name : ''}}</label>
           <input type="file"
@@ -150,7 +156,36 @@
           <label for="message-text" class="col-form-label">App Icon: {{appModalType === 'Edit' ? applicationDetail?.metadata?.icon?.name : ''}}</label>
           <input type="file" #appIconFileInput (change)="onIconFileSelected($event.target.files)"
            class="form-control" id="app_icon" name="app_icon" >
-
+        </div>
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">Customer Name:</label>
+          <input type="text" class="form-control"
+          id="customer_name" name="customer_name" [(ngModel)]="applicationDetail.metadata.customer.name"
+          placeholder="Enter Customer Name">
+        </div>
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">Customer Address:</label>
+          <textarea type="text" rows="3" class="form-control" id="customer_address" name="customer_address" [(ngModel)]="applicationDetail.metadata.customer.address"
+          placeholder="Enter Customer Address"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="recipient-name" class="col-form-label">Partition Technique:</label>
+          <select class="custom-select" id="alertReason" [(ngModel)]="applicationDetail.metadata.partition.telemetry.partition_strategy"
+            name="alertReason">
+            <option [ngValue]="undefined">Select Partition Technique</option>
+            <option [ngValue]="'Device ID'">Device ID</option>
+            <option [ngValue]="'Partition Key'">Partition Key</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="recipient-name" class="col-form-label">Partition Technique:</label>
+          <select class="custom-select" id="alertReason" [(ngModel)]="applicationDetail.metadata.partition.telemetry.sub_partition_strategy"
+            name="alertReason">
+            <option [ngValue]="undefined">Select Sub-Partition Technique</option>
+            <option [ngValue]="'day'">Daily</option>
+            <option [ngValue]="'week'">weekly</option>
+            <option [ngValue]="'month'">Monthly</option>
+          </select>
         </div>
       </form>
     </div>
@@ -178,13 +213,17 @@
     </div>
     <div class="modal-body">
       <div class="col-12">
-        <h6>{{applicationDetail.app}} Logo</h6>
-        <img class="icon-display" src="{{blobStorageURL + applicationDetail?.metadata?.logo?.url + blobSASToken}}"/>
+        <h6><b>{{applicationDetail.app}} Logo</b></h6>
+        <img class="icon-display" *ngIf="applicationDetail?.metadata?.logo?.url; else noFileUploaded" src="{{blobStorageURL + applicationDetail?.metadata?.logo?.url + blobSASToken}}"/>
       </div>
+      <hr/>
       <div class="col-12">
-        <h6>{{applicationDetail.app}} Icon</h6>
-        <img class="icon-display" src="{{blobStorageURL + applicationDetail?.metadata?.icon?.url + blobSASToken}}"/>
+        <h6><b>{{applicationDetail.app}} Icon</b></h6>
+        <img class="icon-display" *ngIf="applicationDetail?.metadata?.icon?.url; else noFileUploaded" src="{{blobStorageURL + applicationDetail?.metadata?.icon?.url + blobSASToken}}"/>
       </div>
+      <ng-template #noFileUploaded>
+        <p>No File uploaded</p>
+      </ng-template>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary"  (click)="onCloseCreateAppModal('viewAppIconModal')">

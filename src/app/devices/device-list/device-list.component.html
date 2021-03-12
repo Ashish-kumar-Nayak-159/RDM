@@ -207,6 +207,11 @@
             {{item.name}}</option>
           </select>
         </div> -->
+        <div class="form-group" *ngIf="contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Device ID'">
+          <label for="recipient-name" class="col-form-label">Partition Key:</label>
+          <input type="text" class="form-control" id="partition_key" name="partition_key" [(ngModel)]="deviceDetail.tags.partition_key"
+          placeholder="Partition Key">
+        </div>
         <div class="form-group">
           <label for="recipient-name" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value: '')}} Type:</label>
           <select class="custom-select" id="device_type" name="device_type" [(ngModel)]="deviceDetail.tags.device_type"
@@ -230,17 +235,12 @@
           <input type="text" class="form-control" id="protocol" name="protocol" [(ngModel)]="deviceDetail.tags.protocol"
           placeholder="Protocol" disabled>
         </div>
+
         <div class="form-group">
           <label for="recipient-name" class="col-form-label">Cloud Connectivity followed by the {{(tileData && tileData[1] ? tileData[1]?.value: '')}}:</label>
-          <!-- <select class="custom-select" id="template" name="connectivity" disabled [(ngModel)]="deviceDetail.tags.cloud_connectivity">
-            <option [ngValue]="undefined"> Select Connectivity</option>
-          <option *ngFor="let item of connectivityList" [ngValue]="item">
-            {{item}}</option>
-          </select> -->
           <input type="text" class="form-control" id="cloud_connectivity" name="cloud_connectivity" [(ngModel)]="deviceDetail.tags.cloud_connectivity"
           placeholder="Cloud Connectivity" disabled>
         </div>
-
       </form>
     </div>
     <div class="modal-footer">

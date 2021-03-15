@@ -38,7 +38,7 @@
         </li>
     </ng-container>
     <ng-container *ngIf="!item.children && item.visible && item?.priority === 2">
-      <hr class="sidebar-divider d-none d-md-block">
+      <hr class="sidebar-divider d-none d-md-block m-0">
       <li class="nav-item" routerLinkActive="active"  *ngIf="!userData?.is_super_admin && item.url"
       >
         <a class="nav-link" [routerLink]="getURL(item.url)">
@@ -72,7 +72,7 @@
       </li>
     </ng-container>
   </ng-container>
-  <hr class="sidebar-divider d-none d-md-block">
+  <hr class="sidebar-divider d-none d-md-block m-0">
 
 
    <!-- Sidebar Toggler (Sidebar) -->

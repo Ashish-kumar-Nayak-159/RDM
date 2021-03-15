@@ -1,3 +1,4 @@
+import { DeviceManagementComponent } from './device-management/device-management.component';
 import { ControlPanelComponent } from './control-panel/control-panel.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -8,6 +9,11 @@ const routes: Routes = [
   {
     path: '',
     component: DeviceListComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'management',
+    component: DeviceManagementComponent,
     canActivate: [AuthGuardService]
   },
   {

@@ -97,7 +97,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   getTileName() {
     let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {
-      if (item.page === 'Dashboard') {
+      if (item.page === 'Device Management') {
         selectedItem = item.showAccordion;
         console.log(selectedItem);
       }

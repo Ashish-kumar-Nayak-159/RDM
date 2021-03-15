@@ -54,6 +54,7 @@ import { SpecificTwinChangeComponent } from './device-control-panel/specific-twi
 import { DeviceMaintenanceComponent } from './device-control-panel/device-maintenance/device-maintenance.component';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { DeviceCountComponent } from './device-control-panel/device-count/device-count.component';
+import { DeviceManagementComponent } from './device-management/device-management.component';
 
 @NgModule({
   declarations: [
@@ -95,7 +96,8 @@ import { DeviceCountComponent } from './device-control-panel/device-count/device
     SpecificDirectMethodComponent,
     SpecificTwinChangeComponent,
     DeviceMaintenanceComponent,
-    DeviceCountComponent
+    DeviceCountComponent,
+    DeviceManagementComponent
   ],
   imports: [
     CommonModule,

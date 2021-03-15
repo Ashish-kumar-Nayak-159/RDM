@@ -192,7 +192,7 @@ export class CONSTANTS {
     {
       page: 'Device Management',
       system_name: 'Device Management',
-      url: 'applications/:appName/devices/management',
+      url: 'applications/:appName/asset/management',
       display_name: 'Device Management',
       icon: 'fa fa-fw fa-cog',
       visible: true,

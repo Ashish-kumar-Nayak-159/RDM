@@ -1,0 +1,116 @@
+<div class="topnavbar" style="margin-top: 1.5rem">
+  <div class="card row bg-white">
+    <div class="col-xl-12 col-md-12 mb-12">
+      <form class="row">
+        <div class="col-md-12">
+          <div class="form-group form-inline my-1 mx-1">
+            Single Operations:
+            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="openDeviceCreateModal()"> Provision</a>
+            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="openConfirmDialog('delete')"> Deprovision</a>
+            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="openConfirmDialog('enable')"> Enable</a>
+            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="openConfirmDialog('disable')"> Disable</a>
+            <a class="ml-3 blue-font" href="javascript:void(0)" > Upgrade</a>
+            <a class="ml-3 blue-font" href="javascript:void(0)"> Regenerate Symmetric Keys</a>
+            <a class="ml-3 blue-font" href="javascript:void(0)"> Revoke Security Certificate</a>
+          </div>
+          <div class="form-group form-inline my-1 mx-1">
+            Bulk Operations:
+            <a class="ml-3 blue-font" href="javascript:void(0)"> Provision</a>
+            <a class="ml-3 blue-font" href="javascript:void(0)"> Deprovision</a>
+            <a class="ml-3 blue-font" href="javascript:void(0)"> Enable</a>
+            <a class="ml-3 blue-font" href="javascript:void(0)"> Disable</a>
+            <a class="ml-3 blue-font" href="javascript:void(0)"> Upgrade</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- DataTales Example -->
+<div class="contain-pad" style="margin-top: 3.5rem;max-height: calc(100vh - 12rem)!important;">
+  <div class="mb-4 ">
+
+    <div class="">
+      <div class="table-responsiven table-wrapper" id="table-wrapper" style="max-height: calc(100vh - 16rem)">
+        <table class="table table-bordered  table-striped" id="deviceTable" width="100%" cellspacing="0">
+          <thead>
+            <th class="text-center"><input type="checkbox" name="visibleall"
+              id="visibleall" (change)="onClickOfDeviceAllCheckbox()" [(ngModel)]="isAllDeviceSelected"
+              title="{{isAllDeviceSelected ? 'Deselect All' : 'Select All'}}"/></th>
+            <th></th>
+            <th>{{(tileData && tileData[1] ? tileData[1]?.value : '') + ' Name' }}</th>
+            <th>{{(tileData && tileData[1] ? tileData[1]?.value : '') + ' ID' }}</th>
+            <th>Hierarchy</th>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="devicesList.length > 0">
+              <tr *ngFor="let device of devicesList; let i = index">
+                <td  class="text-center">
+                  <input type="checkbox" name="visible{{i}}"
+                      id="visible{{i}}" (change)="onDeviceSelection(device)"
+                      [checked]="checkForDeviceVisibility(device)" />
+                </td>
+                <td>{{i + 1}}</td>
+                <td>{{device.display_name}}</td>
+                <td>{{device.device_id}}</td>
+                <td>{{device.hierarchyString}}</td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading">
+              <tr>
+                <td colspan="5">
+                  No {{(tileData && tileData[1] ? tileData[1]?.value : '')}} data found.
+                </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="isDeviceListLoading">
+              <tr>
+                <td colspan="5">
+                  <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+      <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && devicesList.length > 0">
+        <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;getDevices();"
+          title="Load More Records...">Load More...</a>
+      </span>
+      <!-- <app-common-table *ngIf="tableConfig" [tableData]="devicesList" [tableConfig]="tableConfig" [isTableFilterSelected]="isFilterSelected"
+     [isTableDataLoading]="isDeviceListLoading" (viewMessageEvent)="onTableFunctionCall($event)"></app-common-table> -->
+    </div>
+  </div>
+</div>
+
+<app-add-device *ngIf="isOpenDeviceCreateModal"  [gateways]="gateways" (getDeviceEmit)="devicesList = [];getDevices()" [componentState]="componentState" [tileData]="tileData"></app-add-device>
+
+<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <!-- <app-message-modal
+    [bodyMessage]="confirmBodyMessage"
+     [headerMessage]="confirmHeaderMessage"
+      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal> -->
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{confirmHeaderMessage}}</h5>
+        <button type="button" class="close"  aria-label="Close" [disabled]="isAPILoading" (click)="onModalEvents('close')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="modalConfig?.stringDisplay">{{confirmBodyMessage}}</div>
+        <div *ngIf="isAPILoading"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></div>
+      </div>
+      <div class="modal-footer">
+        <button *ngIf="modalConfig?.isDisplaySave" type="button" class="btn btn-primary" [disabled]="isAPILoading" (click)="onModalEvents('save')">
+          {{modalConfig?.saveBtnText ? modalConfig?.saveBtnText : 'Save'}}</button>
+        <button *ngIf="modalConfig?.isDisplayCancel" type="button" class="btn btn-secondary" [disabled]="isAPILoading" (click)="onModalEvents('close')">
+          {{modalConfig?.cancelBtnText ? modalConfig?.cancelBtnText : 'Cancel'}}
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -10,14 +10,36 @@ import { Component, OnInit } from '@angular/core';
 export class DeviceManagementComponent implements OnInit {
   contextApp: any;
   tileData: any;
-
+  selectedTab: any;
   constructor(
     private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    console.log('2000000    ', this.contextApp);
     this.getTileName();
+    this.commonService.breadcrumbEvent.emit({
+      type: 'replace',
+      data: [
+        {
+          title: this.contextApp.user.hierarchyString,
+          url: 'applications/' + this.contextApp.app
+        },
+        {
+          title: this.tileData && this.tileData[0] ? this.tileData[0]?.value : '',
+          url: 'applications/' + this.contextApp.app + '/asset/management'
+        }
+      ]
+    });
+    if (this.contextApp.configuration.main_menu[2].visible) {
+      this.selectedTab = 'iot-devices';
+    } else if (this.contextApp.configuration.main_menu[3].visible) {
+      this.selectedTab = 'legacy-devices';
+    } else if (this.contextApp.configuration.main_menu[9].visible) {
+      this.selectedTab = 'iot-gateways';
+    }
+
   }
 
   getTileName() {
@@ -33,7 +55,7 @@ export class DeviceManagementComponent implements OnInit {
   }
 
   onTabChange(type) {
-
+    this.selectedTab = type;
   }
 
 }

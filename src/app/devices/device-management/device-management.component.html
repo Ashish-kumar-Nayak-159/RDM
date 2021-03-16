@@ -7,17 +7,17 @@
   <div id="telemetry-tabs" class="d-sm-flex justify-content-end" style="margin-right: 12rem; margin-top: -3.2rem">
     <nav>
       <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-        <a class="nav-item nav-link" [ngClass]="{'active' : contextApp.configuration.main_menu[2].visible}" id="nav-iot-device-tab" data-toggle="tab" href="#iot-devices" role="tab"
-          *ngIf="contextApp.configuration.main_menu[2].visible" aria-controls="nav-home" aria-selected="true"
-          (click)="onTabChange('iot-devices')">{{contextApp.configuration.main_menu[2].display_name}}</a>
+        <a class="nav-item nav-link" [ngClass]="{'active' : selectedTab === 'iot-devices'}" id="nav-iot-device-tab" data-toggle="tab" href="#iot-devices" role="tab"
+          *ngIf="contextApp.configuration.main_menu[2]?.visible" aria-controls="nav-home" aria-selected="true"
+          (click)="onTabChange('iot-devices')">{{contextApp.configuration.main_menu[2]?.display_name}}</a>
         <a class="nav-item nav-link" id="nav-legacy-device-tab" data-toggle="tab" href="#legacy-devices" role="tab"
-          [ngClass]="{'active': !contextApp.configuration.main_menu[2].visible && contextApp.configuration.main_menu[3].visible}"
-          *ngIf="contextApp.configuration.main_menu[3].visible" aria-controls="nav-home" aria-selected="true"
-          (click)="onTabChange('legacy-devices')">{{contextApp.configuration.main_menu[3].display_name}}</a>
+          [ngClass]="{'active':  selectedTab === 'legacy-devices'}"
+          *ngIf="contextApp.configuration.main_menu[3]?.visible" aria-controls="nav-home" aria-selected="true"
+          (click)="onTabChange('legacy-devices')">{{contextApp.configuration.main_menu[3]?.display_name}}</a>
         <a class="nav-item nav-link" id="nav-iot-gateway-tab" data-toggle="tab" href="#iot-gateways" role="tab"
-        [ngClass]="{'active': !contextApp.configuration.main_menu[2].visible && !contextApp.configuration.main_menu[3].visible && contextApp.configuration.main_menu[9].visible}"
-          *ngIf="contextApp.configuration.main_menu[9].visible" aria-controls="nav-home" aria-selected="true"
-          (click)="onTabChange('iot-gateways')">{{contextApp.configuration.main_menu[9].display_name}}</a>
+        [ngClass]="{'active': selectedTab === 'iot-gateways'}"
+          *ngIf="contextApp.configuration.main_menu[9]?.visible" aria-controls="nav-home" aria-selected="true"
+          (click)="onTabChange('iot-gateways')">{{contextApp.configuration.main_menu[9]?.display_name}}</a>
       </div>
     </nav>
   </div>
@@ -26,14 +26,14 @@
   <div class="row pl-4" style="padding-right: 0.8rem">
     <div id="tabs">
       <div class="tab-content px-3 px-sm-0" id="nav-tabContent">
-        <div class="tab-pane fade show " [ngClass]="{'active' : contextApp.configuration.main_menu[2].visible}" id="iot-devices" role="tabpanel" aria-labelledby="nav-iot-device-tab">
-          IOT Device
+        <div class="tab-pane fade show " [ngClass]="{'active' : selectedTab === 'iot-devices'}" id="iot-devices" role="tabpanel" aria-labelledby="nav-iot-device-tab">
+          <app-device-management-devices [type]="selectedTab" *ngIf="selectedTab === 'iot-devices'"></app-device-management-devices>
         </div>
-        <div class="tab-pane fade show" [ngClass]="{'active': !contextApp.configuration.main_menu[2].visible && contextApp.configuration.main_menu[3].visible}" id="legacy-devices" role="tabpanel" aria-labelledby="nav-legacy-device-tab">
-          Legacy Devices
+        <div class="tab-pane fade show" [ngClass]="{'active': selectedTab === 'legacy-devices'}" id="legacy-devices" role="tabpanel" aria-labelledby="nav-legacy-device-tab">
+          <app-device-management-devices [type]="selectedTab"  *ngIf="selectedTab === 'legacy-devices'"></app-device-management-devices>
         </div>
-        <div class="tab-pane fade show" [ngClass]="{'active': !contextApp.configuration.main_menu[2].visible && !contextApp.configuration.main_menu[3].visible && contextApp.configuration.main_menu[9].visible}" id="iot-gateways" role="tabpanel" aria-labelledby="nav-iot-gateway-tab">
-          IOT Gateways
+        <div class="tab-pane fade show" [ngClass]="{'active': selectedTab === 'iot-gateways'}" id="iot-gateways" role="tabpanel" aria-labelledby="nav-iot-gateway-tab">
+          <app-device-management-devices [type]="selectedTab"  *ngIf="selectedTab === 'iot-gateways'"></app-device-management-devices>
         </div>
       </div>
     </div>

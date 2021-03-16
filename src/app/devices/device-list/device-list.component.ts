@@ -43,13 +43,12 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   tileData: any;
   hierarchyArr = {};
   configureHierarchy = {};
-  addDeviceHierarchyArr = {};
-  addDeviceConfigureHierarchy = {};
   subscriptions: Subscription[] = [];
   appUsers: any[] = [];
   currentOffset = 0;
   currentLimit = 20;
   insideScrollFunFlag = false;
+  openModal = false;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -63,7 +62,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.getApplicationUsers();
 
   //  this.commonService.setFlag(true);
     this.route.paramMap.subscribe(async params => {
@@ -98,16 +96,12 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       await this.getTileName();
       if (this.contextApp.hierarchy.levels.length > 1) {
         this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
-        this.addDeviceHierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
       }
       this.contextApp.hierarchy.levels.forEach((level, index) => {
         if (index !== 0) {
         this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-        this.addDeviceConfigureHierarchy[index] = this.contextApp.user.hierarchy[level];
         if (this.contextApp.user.hierarchy[level]) {
           this.onChangeOfHierarchy(index);
-          this.onChangeOfAddDeviceHierarchy(index);
-
         }
         }
       });
@@ -148,7 +142,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       );
       this.protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
       console.log(this.contextApp);
-      this.getThingsModels(this.componentState);
       const keys = Object.keys(this.contextApp.user.hierarchy);
       this.hierarchyDropdown = [];
       // this.contextApp.hierarchy.forEach(item => {
@@ -247,16 +240,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   }, 2000);
   }
 
-  getApplicationUsers() {
-    this.appUsers = [];
-    this.subscriptions.push(this.applicationService.getApplicationUsers(this.contextApp.app).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.appUsers = response.data;
-        }
-      }
-    ));
-  }
+
 
   onChangeOfHierarchy(i) {
     Object.keys(this.configureHierarchy).forEach(key => {
@@ -316,32 +300,11 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       this.hierarchyArr = [];
       if (this.contextApp.hierarchy.levels.length > 1) {
         this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
-        this.addDeviceHierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
       }
     }
   }
 
-  onChangeOfAddDeviceHierarchy(i) {
-    Object.keys(this.addDeviceConfigureHierarchy).forEach(key => {
-      if (key > i) {
-        delete this.addDeviceConfigureHierarchy[key];
-      }
-    });
-    Object.keys(this.addDeviceHierarchyArr).forEach(key => {
-      if (key > i) {
-        this.addDeviceHierarchyArr[key] = [];
-      }
-    });
-    let nextHierarchy = this.contextApp.hierarchy.tags;
-    Object.keys(this.addDeviceConfigureHierarchy).forEach((key, index) => {
-      if (this.addDeviceConfigureHierarchy[index + 1]) {
-        nextHierarchy = nextHierarchy[this.addDeviceConfigureHierarchy[index + 1]];
-      }
-    });
-    if (nextHierarchy) {
-      this.addDeviceHierarchyArr[i + 1] = Object.keys(nextHierarchy);
-    }
-  }
+
 
   getTileName() {
     let selectedItem;
@@ -357,21 +320,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.currentLimit = Number(this.tileData[2]?.value) || 20;
   }
 
-  getThingsModels(type) {
-    this.deviceTypes = [];
-    const obj = {
-      app: this.contextApp.app,
-      model_type: type
-    };
-    console.log(obj);
-    this.subscriptions.push(this.deviceTypeService.getThingsModelsList(obj).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.deviceTypes = response.data;
-        }
-      }
-    ));
-  }
+
 
 
   getGatewayList() {
@@ -397,12 +346,12 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   }
 
   searchDevices() {
+    this.openModal = false;
     this.isDeviceListLoading = true;
     this.isFilterSelected = true;
     const obj = JSON.parse(JSON.stringify(this.deviceFilterObj));
     obj.offset = this.currentOffset;
     obj.count = this.currentLimit;
-    console.log('387777777   ', obj);
     if (this.contextApp) {
     obj.hierarchy = { App: this.contextApp.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
@@ -466,17 +415,13 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.hierarchyArr = [];
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
-      this.addDeviceHierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
     }
     this.gateways = JSON.parse(JSON.stringify(this.originalGateways));
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
       this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-      this.addDeviceConfigureHierarchy[index] = this.contextApp.user.hierarchy[level];
       if (this.contextApp.user.hierarchy[level]) {
         this.onChangeOfHierarchy(index);
-        this.onChangeOfAddDeviceHierarchy(index);
-
       }
       }
     });
@@ -490,90 +435,9 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   }
 
   openCreateDeviceModal() {
-    this.deviceDetail = new Device();
-    this.deviceDetail.tags = {};
-    this.deviceDetail.tags.app = this.contextApp.app;
-    this.deviceDetail.tags.hierarchy_json = JSON.parse(JSON.stringify(this.contextApp.user.hierarchy));
-    $('#createDeviceModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    this.openModal = true;
   }
 
-  onChangeThingsModel() {
-    if (this.deviceDetail.tags.device_type) {
-      const modelObj = this.deviceTypes.filter(type => type.name === this.deviceDetail.tags.device_type)[0];
-      modelObj.tags = {
-        cloud_connectivity: modelObj.cloud_connectivity,
-        protocol: modelObj.protocol
-      };
-      const obj = {...this.deviceDetail.tags, ...modelObj.tags};
-      this.deviceDetail.tags = obj;
-    }
-  }
-
-  onCreateDevice() {
-    console.log(this.deviceDetail);
-    if (!this.deviceDetail.device_id || !this.deviceDetail.tags.device_manager || !this.deviceDetail.tags.protocol
-      || !this.deviceDetail.tags.cloud_connectivity  ) {
-        this.toasterService.showError('Please fill all the details',
-        'Create ' + this.pageType);
-        return;
-    }
-    if (!CONSTANTS.EMAIL_REGEX.test(this.deviceDetail.tags.device_manager.user_email)) {
-      this.toasterService.showError('Email address is not valid',
-        'Create ' + this.pageType);
-      return;
-    }
-    if (this.componentState === CONSTANTS.NON_IP_DEVICE && this.deviceDetail.device_id === this.deviceDetail.gateway_id) {
-      this.toasterService.showError('Gateway and Device name can not be the same.',
-      'Create ' + this.pageType);
-      return;
-    }
-    if (this.contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Device ID' &&
-    !CONSTANTS.ONLY_NOS_AND_CHARS.test(this.deviceDetail.tags.partition_key)) {
-      this.toasterService.showError('Partition Key only contains numbers and characters.',
-      'Create Device');
-      return;
-    }
-    if (this.contextApp.metadata?.partition?.telemetry?.partition_strategy === 'Device ID') {
-      this.deviceDetail.tags.partition_key = this.deviceDetail.device_id;
-    }
-    this.isCreateDeviceAPILoading = true;
-    console.log(this.deviceDetail);
-    this.deviceDetail.tags.hierarchy_json = { App: this.contextApp.app};
-    Object.keys(this.addDeviceConfigureHierarchy).forEach((key) => {
-      this.deviceDetail.tags.hierarchy_json[this.contextApp.hierarchy.levels[key]] = this.addDeviceConfigureHierarchy[key];
-      console.log(this.deviceDetail.tags.hierarchy_json);
-    });
-    this.deviceDetail.tags.hierarchy = JSON.stringify(this.deviceDetail.tags.hierarchy_json );
-    this.deviceDetail.tags.created_by = this.userData.email;
-    this.deviceDetail.app = this.contextApp.app;
-    delete this.deviceDetail.tags.reserved_tags;
-    this.deviceDetail.tags.category = this.componentState === CONSTANTS.NON_IP_DEVICE ?
-    null : this.componentState;
-    this.deviceDetail.tags.created_date = moment().utc().format('M/DD/YYYY h:mm:ss A');
-    this.deviceDetail.tags.device_users = {};
-    this.deviceDetail.tags.device_users[btoa(this.deviceDetail.tags.device_manager.user_email)] = {
-      user_email: this.deviceDetail.tags.device_manager.user_email,
-      user_name: this.deviceDetail.tags.device_manager.user_name
-    };
-    this.deviceDetail.tags.device_manager = this.deviceDetail.tags.device_manager.user_email;
-    const methodToCall = this.componentState === CONSTANTS.NON_IP_DEVICE
-    ? this.deviceService.createNonIPDevice(this.deviceDetail, this.contextApp.app)
-    : this.deviceService.createDevice(this.deviceDetail, this.contextApp.app);
-    this.subscriptions.push(methodToCall.subscribe(
-      (response: any) => {
-        this.isCreateDeviceAPILoading = false;
-        this.toasterService.showSuccess(response.message,
-          'Create ' + this.pageType);
-        this.searchDevices();
-        this.onCloseCreateDeviceModal();
-      }, error => {
-        this.isCreateDeviceAPILoading = false;
-        this.toasterService.showError(error.message,
-          'Create ' + this.pageType);
-        // this.onCloseCreateDeviceModal();
-      }
-    ));
-  }
 
   onTableFunctionCall(obj) {
     console.log(obj);
@@ -595,10 +459,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     }
   }
 
-  onCloseCreateDeviceModal() {
-    $('#createDeviceModal').modal('hide');
-    this.deviceDetail = undefined;
-  }
+
 
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());

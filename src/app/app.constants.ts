@@ -197,8 +197,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-cog',
       visible: true,
       showAccordion: [
-        { name: 'Title', value: 'Device Management'},
-        { name: 'Records Limit', value: 20, type: 'number'},
+        { name: 'Title', value: 'Device Management'}
       ],
       priority: 1
     },

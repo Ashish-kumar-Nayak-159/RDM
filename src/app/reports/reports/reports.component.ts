@@ -93,7 +93,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
           },
             {
               title: this.tileData && this.tileData[0] ? this.tileData[0]?.value : '',
-              url: 'applications/' + this.contextApp.app + '/visualization'
+              url: 'applications/' + this.contextApp.app + '/reports'
             }
         ]
       });

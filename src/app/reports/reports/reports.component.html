@@ -37,10 +37,16 @@
           maxHeight: 400,
           primaryKey: 'device_id',
           labelKey: 'display_name'
-        }"
+        }"  #device="ngModel"
         (onSelect)="onAssetSelection()"
         (onDeSelectAll)="onAssetDeselect()">
       </angular2-multiselect>
+      <!-- <div *ngIf="device.invalid && (device.dirty || device.touched)"
+        class="ml-1 alert-danger">
+        <div *ngIf="device.errors.required">
+          Asset Selection is required.
+        </div>
+        </div> -->
         </div>
         <div class="d-flex row form-group form-inline  my-2 mx-3">
 
@@ -48,11 +54,18 @@
             placeholder="No of Records" [(ngModel)]="filterObj.count" name="count"> -->
 
           <select class="form-control form-control-sm mr-2 ml-1 my-1" id="report_type" [(ngModel)]="filterObj.report_type"
-          name="report_type" (change)="onNonIPDeviceChange()">
+          name="report_type" (change)="onNonIPDeviceChange()" #reportType="ngModel">
           <option [ngValue]="undefined">Select Report Type</option>
           <option [ngValue]="'Process Parameter Report'">Process Parameter Report</option>
           <option [ngValue]="'Alert Report'">Alert Report</option>
           </select>
+          {{reportType.invalid}} === {{reportType.dirty}} ==== {{reportType.touched}}
+          <!-- <div *ngIf="reportType.invalid && (reportType.dirty || reportType.touched)"
+          class="alert alert-danger">
+          <div *ngIf="reportType.errors.required">
+            Report Type Selection is required.
+          </div>
+          </div> -->
           <angular2-multiselect [data]="dropdownPropList" id="y1AxisProperty" *ngIf=" filterObj.report_type === 'Process Parameter Report'"
               [(ngModel)]="props" name="props" [settings]="{
                 text: 'Select Property',

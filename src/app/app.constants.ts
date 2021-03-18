@@ -449,6 +449,28 @@ export class CONSTANTS {
       isTitle: true
     },
     {
+      page: 'mttr',
+      system_name: 'MTTR',
+      url: '#device_mttr',
+      display_name: 'MTTR',
+      icon: 'fa fa-fw fa-wrench',
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
+    },
+    {
+      page: 'mtbf',
+      system_name: 'MTBF',
+      url: '#device_mtbf',
+      display_name: 'MTBF',
+      icon: 'fa fa-fw fa-wrench',
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
+    },
+    {
       page: 'maintenance_data',
       system_name: 'Maintenance',
       url: '#device_maintenance',
@@ -706,6 +728,28 @@ export class CONSTANTS {
       icon: null,
       visible: true,
       isTitle: true
+    },
+    {
+      page: 'mttr',
+      system_name: 'MTTR',
+      url: '#device_mttr',
+      display_name: 'MTTR',
+      icon: 'fa fa-fw fa-wrench',
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
+    },
+    {
+      page: 'mtbf',
+      system_name: 'MTBF',
+      url: '#device_mtbf',
+      display_name: 'MTBF',
+      icon: 'fa fa-fw fa-wrench',
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'maintenance_data',

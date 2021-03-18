@@ -98,6 +98,12 @@
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'predictiveMaintenance'}" role="tabpanel" id="device_predictive_mainteance">
         <app-predictive-maintenance *ngIf="activeTab === 'predictiveMaintenance' && device" [device]="device"></app-predictive-maintenance>
       </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'mttr'}" role="tabpanel" id="device_mttr">
+        <app-device-mttr *ngIf="activeTab === 'mttr' && device" [device]="device" [componentState]="componentState"></app-device-mttr>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'mtbf'}" role="tabpanel" id="device_mtbf">
+        <app-device-mtbf *ngIf="activeTab === 'mtbf' && device" [device]="device" [componentState]="componentState"></app-device-mtbf>
+      </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'maintenance_data'}" role="tabpanel" id="device_mainteance">
         <app-device-maintenance *ngIf="activeTab === 'maintenance_data' && device" [device]="device"></app-device-maintenance>
       </div>

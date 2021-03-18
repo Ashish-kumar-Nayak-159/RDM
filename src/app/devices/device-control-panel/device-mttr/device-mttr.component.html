@@ -1,0 +1,58 @@
+<div class="topnavbar bg-white py-2">
+  <app-filter [filterObj]="filterObj" (filterSearch)="searchLifeCycleEvents($event)"></app-filter>
+</div>
+<div class="con-pad">
+  <div class="row mx-auto">
+
+    <div class="table-responsive  table-wrapper" style="max-height: calc(100vh - 13rem)">
+      <!-- <app-table [tableData]="lifeCycleEvents" [tableConfig]="eventTableConfig"
+        [isTableFilterSelected]="isFilterSelected" [isTableDataLoading]="isLifeCycleEventsLoading"></app-table> -->
+        <table class="table table-bordered  table-striped" id="deviceTable" width="100%" cellspacing="0">
+          <thead>
+            <th></th>
+            <th>Connected Event Time</th>
+            <th>Disonnected Event Time</th>
+            <th>MTTR </th>
+            <th>Reason</th>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="lifeCycleEvents.length > 0 && isFilterSelected">
+              <tr *ngFor="let event of lifeCycleEvents; let i = index">
+                <td>{{i + 1}}</td>
+                <td>{{event.local_connected_event_time}}</td>
+                <td>{{event.local_disconnected_event_time}}</td>
+                <td>{{event.mttrString}}</td>
+                <td>
+                  <select class="form-control form-control-sm mx-1 my-1" id="reason"
+                  [(ngModel)]="event.reason" name="reason">
+                    <option [ngValue]="undefined">Select Reason</option>
+                    <option [ngValue]="'Network Failure'" >Network Failure</option>
+                    <option [ngValue]="'Machine Failure'" >Machine Failure</option>
+                  </select>
+                </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected">
+              <tr>
+                <td colspan="5">
+                  No MTTR data found.
+                </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">
+              <tr>
+                <td colspan="5">Select filter and press search button to load the MTTR data.</td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="isLifeCycleEventsLoading">
+              <tr>
+                <td colspan="5">
+                  <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+    </div>
+  </div>
+</div>

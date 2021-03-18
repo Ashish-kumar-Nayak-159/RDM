@@ -57,6 +57,8 @@ import { DeviceCountComponent } from './device-control-panel/device-count/device
 import { DeviceManagementComponent } from './device-management/device-management.component';
 import { DeviceManagementDevicesComponent } from './device-management/device-management-devices/device-management-devices.component';
 import { AddDeviceComponent } from './add-device/add-device.component';
+import { DeviceMttrComponent } from './device-control-panel/device-mttr/device-mttr.component';
+import { DeviceMtbfComponent } from './device-control-panel/device-mtbf/device-mtbf.component';
 
 @NgModule({
   declarations: [
@@ -101,7 +103,9 @@ import { AddDeviceComponent } from './add-device/add-device.component';
     DeviceCountComponent,
     DeviceManagementComponent,
     DeviceManagementDevicesComponent,
-    AddDeviceComponent
+    AddDeviceComponent,
+    DeviceMttrComponent,
+    DeviceMtbfComponent
   ],
   imports: [
     CommonModule,

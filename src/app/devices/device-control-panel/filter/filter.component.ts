@@ -41,7 +41,9 @@ export class FilterComponent implements OnInit {
     if (this.filterObj.gateway_id) {
      // this.getDevicesListByGateway();
     }
-    this.filterObj.count = 10;
+    if (!this.filterObj.count) {
+      this.filterObj.count = 10;
+    }
     this.originalFilterObj = {};
     this.originalFilterObj = {...this.filterObj};
   }

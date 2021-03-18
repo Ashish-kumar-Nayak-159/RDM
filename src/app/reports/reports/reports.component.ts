@@ -114,7 +114,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.contextApp.configuration.main_menu.forEach(item => {
       if (item.system_name === 'Reports') {
         selectedItem = item.showAccordion;
-        console.log(selectedItem);
       }
     });
     this.tileData = selectedItem;

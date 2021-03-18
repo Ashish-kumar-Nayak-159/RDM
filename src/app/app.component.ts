@@ -112,7 +112,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
             document.getElementsByTagName('head')[0].appendChild(node);
             }, 500);
         }
-        console.log(this.isLoginRoute);
       }
     });
 

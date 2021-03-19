@@ -1,3 +1,4 @@
+import { CONSTANTS } from './../../app.constants';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { Injectable, EventEmitter } from '@angular/core';
@@ -110,11 +111,13 @@ export class DeviceService {
     let params = new HttpParams();
     params = params.set('app', app);
     localStorage.removeItem(CONSTANTS.DEVICES_LIST);
+    localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
     return this.http.post(this.url + AppUrls.CREATE_DEVICE, deviceObj, {params});
   }
 
   createNonIPDevice(deviceObj, app) {
     localStorage.removeItem(CONSTANTS.DEVICES_LIST);
+    localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
     return this.http.post(this.url + String.Format(AppUrls.CREATE_NON_IP_DEVICE, app), deviceObj);
   }
 
@@ -134,6 +137,7 @@ export class DeviceService {
     let params = new HttpParams().set('device_id', deviceId);
     params = params.set('app', appId);
     localStorage.removeItem(CONSTANTS.DEVICES_LIST);
+    localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
     return this.http.delete(this.url + AppUrls.DELETE_DEVICE, { params });
   }
 
@@ -141,6 +145,7 @@ export class DeviceService {
     // let params = new HttpParams().set('device_id', deviceId);
     // params = params.set('app', appId);
     localStorage.removeItem(CONSTANTS.DEVICES_LIST);
+    localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
     return this.http.delete(this.url + String.Format(AppUrls.DELETE_NON_IP_DEVICE, appId, deviceId));
   }
 
@@ -157,12 +162,16 @@ export class DeviceService {
   }
 
   updateDeviceTags(deviceObj, app) {
+    localStorage.removeItem(CONSTANTS.DEVICES_LIST);
+    localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
     return this.http.patch(this.url + String.Format(AppUrls.UPDATE_DEVICE_TAGS, app, deviceObj.device_id), deviceObj);
   }
 
   updateNonIPDeviceTags(deviceObj, app) {
     let params = new HttpParams();
     params = params.set('app', app);
+    localStorage.removeItem(CONSTANTS.DEVICES_LIST);
+    localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
     return this.http.post(this.url + String.Format(AppUrls.UPDATE_NON_IP_DEVICE_TAGS, app, deviceObj.device_id), deviceObj, {params});
   }
 

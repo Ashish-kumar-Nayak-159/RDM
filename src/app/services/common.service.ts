@@ -141,6 +141,36 @@ export class CommonService {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
+  averageGeolocation(coords) {
+    if (coords.length === 1) {
+      return coords[0];
+    }
+    let x = 0.0;
+    let y = 0.0;
+    let z = 0.0;
+    let total = 0;
+    for (const coord of coords) {
+      if (coord.latitude && coord.longitude) {
+        total = total + 1;
+        const latitude = coord.latitude * Math.PI / 180;
+        const longitude = coord.longitude * Math.PI / 180;
+        x += Math.cos(latitude) * Math.cos(longitude);
+        y += Math.cos(latitude) * Math.sin(longitude);
+        z += Math.sin(latitude);
+      }
+    }
+    x = x / total;
+    y = y / total;
+    z = z / total;
+    const centralLongitude = Math.atan2(y, x);
+    const centralSquareRoot = Math.sqrt(x * x + y * y);
+    const centralLatitude = Math.atan2(z, centralSquareRoot);
+    return {
+      latitude: centralLatitude * 180 / Math.PI,
+      longitude: centralLongitude * 180 / Math.PI
+    };
+  }
+
   onLogOut() {
     // const now = new Date();
     // // compare the expiry time of the item with the current time

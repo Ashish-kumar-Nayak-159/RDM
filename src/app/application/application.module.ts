@@ -1,3 +1,4 @@
+import { AgmCoreModule } from '@agm/core';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { CommonCustomModule } from './../common/common.module';
 import { NgModule } from '@angular/core';
@@ -19,6 +20,7 @@ import { ApplicationNotificationsComponent } from './application-notifications/a
 import { ApplicationAlertsComponent } from './application-alerts/application-alerts.component';
 import { ApplicationEventsComponent } from './application-events/application-events.component';
 import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
+import { AgmMarkerClustererModule } from '@agm/markerclusterer';
 
 
 @NgModule({
@@ -45,7 +47,9 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from
     AccordionModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
-    CommonCustomModule
+    CommonCustomModule,
+    AgmCoreModule,
+    AgmMarkerClustererModule
   ],
   providers: [
     {provide: OWL_DATE_TIME_LOCALE, useValue: {useUtc: true}}

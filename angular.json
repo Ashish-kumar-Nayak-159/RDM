@@ -22,7 +22,8 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              { "glob": "**/*", "input": "node_modules/ngx-monaco-editor/assets/monaco", "output": "./assets/monaco/" }
+              { "glob": "**/*", "input": "node_modules/ngx-monaco-editor/assets/monaco", "output": "./assets/monaco/" },
+              {"input": "./node_modules/@google/markerclustererplus/images", "glob": "*", "output": "/images"}
             ],
             "styles": [
               "node_modules/@angular/material/prebuilt-themes/indigo-pink.css",

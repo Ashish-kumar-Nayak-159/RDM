@@ -365,3 +365,7 @@ thead th{
     background: #858796;
     color: #fff;
 }
+
+.gm-ui-hover-effect {
+  opacity: 0!important;
+}

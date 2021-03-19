@@ -16,6 +16,7 @@ import { RDMHomeComponent } from './rdmhome/rdmhome.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { LoaderComponent } from './loader/loader.component';
+import { AgmCoreModule } from '@agm/core';
 
 @NgModule({
   declarations: [
@@ -39,8 +40,9 @@ import { LoaderComponent } from './loader/loader.component';
     MatNativeDateModule,
     BrowserAnimationsModule,
     MonacoEditorModule.forRoot(),
-
-
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyBTyla_077ZU07G7ewXyrQ8xOW6nsOq_ps'
+    })
   ],
   providers: [
     HttpInterceptorProviders

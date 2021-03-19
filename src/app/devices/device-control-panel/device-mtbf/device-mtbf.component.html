@@ -13,7 +13,6 @@
             <th>MTTR-1 Time</th>
             <th>MTTR-2 Time</th>
             <th>MTBF</th>
-            <th>Reason</th>
           </thead>
           <tfoot *ngIf="lifeCycleEvents.length > 0 && isFilterSelected">
             <tr>
@@ -28,14 +27,6 @@
                 <td>{{event.local_mttr_1_time}}</td>
                 <td>{{event.local_mttr_2_time}}</td>
                 <td>{{event.mtbfString}}</td>
-                <td>
-                  <select class="form-control form-control-sm mx-1 my-1" id="reason"
-                  [(ngModel)]="event.reason" name="reason">
-                    <option [ngValue]="undefined">Select Reason</option>
-                    <option [ngValue]="'Network Failure'" >Network Failure</option>
-                    <option [ngValue]="'Machine Failure'" >Machine Failure</option>
-                  </select>
-                </td>
               </tr>
             </ng-container>
             <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected">

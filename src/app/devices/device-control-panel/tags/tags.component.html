@@ -87,6 +87,22 @@
               <td>{{device?.tags?.partition_key}}</td>
             </tr>
             <tr>
+              <td>Latitude</td>
+              <td><ng-container *ngIf="!isReservedTagsEditable">{{device?.tags?.latitude}}</ng-container>
+                <ng-container *ngIf="isReservedTagsEditable">
+                  <input type="text" class="form-control form-control-sm bg-light border-0 small"
+                    [(ngModel)]="device?.tags.latitude" name="latitude"  placeholder="Enter Latitude">
+                </ng-container></td>
+            </tr>
+            <tr>
+              <td>Longitude</td>
+              <td><ng-container *ngIf="!isReservedTagsEditable">{{device?.tags?.longitude}}</ng-container>
+                <ng-container *ngIf="isReservedTagsEditable">
+                  <input type="text" class="form-control form-control-sm bg-light border-0 small"
+                    [(ngModel)]="device?.tags.longitude" name="longitude" placeholder="Enter Longitude">
+                </ng-container></td>
+            </tr>
+            <tr>
               <td>Model</td>
               <td>{{device?.tags?.device_type}}</td>
             </tr>

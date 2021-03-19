@@ -2,3 +2,7 @@
   font-size: 14px;
   color: #9a9ca8;
 }
+
+agm-map {
+  height: 21rem;
+}

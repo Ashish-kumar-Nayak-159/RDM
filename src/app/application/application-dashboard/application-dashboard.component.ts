@@ -1,3 +1,4 @@
+import { DeviceService } from './../../services/devices/device.service';
 import { Component, OnInit, ElementRef, ViewChildren, OnDestroy, AfterViewInit } from '@angular/core';
 import { ApplicationService } from './../../services/application/application.service';
 import { ApplicationDashboardSnapshot, Alert, Event, Notification } from 'src/app/models/applicationDashboard.model';
@@ -63,14 +64,19 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
   contextApp: any;
   constantData = CONSTANTS;
   tileName: string;
+  previousInfoWindow: any;
+  centerLatitude: any;
+  centerLongitude: any;
+  devices: any[] = [];
   constructor(
     private applicationService: ApplicationService,
     private router: Router,
     private commonService: CommonService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private deviceService: DeviceService
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.route.paramMap.subscribe(async params => {
@@ -101,7 +107,27 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
       this.getLastAlertData();
       this.getLastEventData();
     });
-
+    await this.getAllDevices();
+    const center = this.commonService.averageGeolocation(this.devices);
+    console.log('centerrr    ', center);
+    this.centerLatitude = center?.latitude;
+    this.centerLongitude = center?.longitude;
+    this.devices.forEach(marker => {
+      const mtbfHours = this.commonService.randomIntFromInterval(0, 7);
+      const mtbfMinutes = this.commonService.randomIntFromInterval(10, 59);
+      if (mtbfHours > 0) {
+        marker.mtbf = mtbfHours + ' Hrs ' + mtbfMinutes + ' Mins';
+      } else {
+        marker.mtbf =  mtbfMinutes + ' Mins';
+      }
+      const mttrHours = this.commonService.randomIntFromInterval(0, 5);
+      const mttrMinutes = this.commonService.randomIntFromInterval(5, 59);
+      if (mttrHours > 0) {
+        marker.mttr = mttrHours + ' Hrs ' + mttrMinutes + ' Mins';
+      } else {
+        marker.mttr =  mttrMinutes + ' Mins';
+      }
+    });
   }
 
 
@@ -115,6 +141,22 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     });
     console.log(name);
     return name;
+  }
+
+  getAllDevices() {
+    return new Promise<void>((resolve) => {
+      const obj = {
+        hierarchy: JSON.stringify(this.contextApp.user.hierarchy)
+      };
+      this.apiSubscriptions.push(this.deviceService.getAllGatewaysAndDevicesList(obj, this.contextApp.app).subscribe(
+        (response: any) => {
+          if (response?.data) {
+            this.devices = response.data;
+          }
+          resolve();
+        }
+      ));
+    });
   }
 
   /**
@@ -248,9 +290,22 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     this.router.navigate(['applications', this.contextApp.app, 'gateways'], {queryParams: obj});
   }
 
+  onMarkerClick(infowindow, gm) {
+    if (gm.lastOpen != null) {
+      gm.lastOpen.close();
+    }
+    gm.lastOpen = infowindow;
+    infowindow.open();
+  }
+
+  onMarkerMouseOut(infowindow, gm) {
+    gm.lastOpen = null;
+    infowindow.close();
+  }
+
   /**
    * It will unsubscribe all the subscription which were created from this component.
-   * It will help preventing memory leak issue.
+   * It will help prevent memory leak issue.
    */
   ngOnDestroy() {
     this.apiSubscriptions.forEach(subscription => subscription.unsubscribe());

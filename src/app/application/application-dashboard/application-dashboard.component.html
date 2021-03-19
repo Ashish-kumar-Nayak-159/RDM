@@ -112,10 +112,11 @@
           class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
           style="max-height: 5rem"
         >
-          <h6 class="m-0 font-weight-bold text-primary">
-            IoT Hub Overall Statistics
+          <h6 class="m-0 px-1 font-weight-bold text-primary">
+            <!-- IoT Hub Overall Statistics -->
+            Map View
           </h6>
-          <ul class="nav">
+          <!-- <ul class="nav">
             <li class="nav-item active">
               <a
                 class="nav-link small font-weight-normal"
@@ -134,8 +135,8 @@
                 >C2D Messages</a
               >
             </li>
-          </ul>
-          <div
+          </ul> -->
+          <!-- <div
             id="reportrange"
             style="
               background: #fff;
@@ -147,14 +148,31 @@
           >
             <i class="fa fa-calendar"></i>&nbsp; <span></span>
             <i class="fa fa-caret-down"></i>
-          </div>
+          </div> -->
         </div>
 
-        <div class="card-body" style="max-height: 22rem">
+        <div class="card-body" style="max-height: 23rem">
           <div class="tab-content">
             <div class="tab-pane active" id="D2C">
               <div role="tabpanel" class="tab-pane active no-padding" id="home">
-                <img class="img-fluid" src="../../../assets/img/chart.png" style="height: 20rem;">
+                <!-- <img class="img-fluid" src="../../../assets/img/chart.png" style="height: 20rem;"> -->
+                <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" >
+                  <agm-marker-cluster imagePath="https://raw.githubusercontent.com/googlemaps/v3-utility-library/master/markerclustererplus/images/m">
+                <ng-container  *ngFor="let device of devices; let i = index; ">
+                  <agm-marker *ngIf="device.latitude && device.longitude"
+                  [latitude]="device.latitude" [longitude]="device.longitude" [label]="'D-' + i"
+                  (mouseOver)="onMarkerClick(infowindow, gm)" (mouseOut)="onMarkerMouseOut(infowindow, gm)" >
+                  <agm-info-window #infowindow [disableAutoPan]="false">
+                    <h6>{{device.display_name ? device.display_name: device.device_id}}</h6>
+                    <hr>
+                    <p><b>MTTR:</b> {{device.mttr}}</p>
+                    <p><b>MTBF:</b> {{device.mtbf}}</p>
+                  </agm-info-window>
+                  </agm-marker>
+                </ng-container>
+                </agm-marker-cluster>
+                </agm-map>
+
                 <!-- <div>
                   <canvas
                     style="height: 20rem"

@@ -1,5 +1,4 @@
 import { CONSTANTS } from './../../app.constants';
-import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { Injectable, EventEmitter } from '@angular/core';
 import { environment } from 'src/environments/environment';

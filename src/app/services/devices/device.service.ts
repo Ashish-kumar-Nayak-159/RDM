@@ -306,18 +306,33 @@ export class DeviceService {
     return this.http.get(this.url + String.Format(AppUrls.PURGE_QUEUE_MESSAGE, app), { params });
   }
 
-  getC2dMessageJSON(messageId, app) {
-    return this.http.get(this.url + String.Format(AppUrls.GET_C2D_MESSAGE_JSON, app, messageId));
-  }
-
-  getDirectMethodJSON(messageId, app) {
-    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_METHOD_BY_ID, app, messageId));
-  }
-
-  getC2dResponseJSON(messageId, app) {
+  getC2dMessageJSON(messageId, app, filterObj) {
     let params = new HttpParams();
-    params = params.set('correlation_id', messageId);
-    params = params.set('app', app);
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_C2D_MESSAGE_JSON, app, messageId), { params });
+  }
+
+  getDirectMethodJSON(messageId, app, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_METHOD_BY_ID, app, messageId), { params });
+  }
+
+  getC2dResponseJSON(filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
     return this.http.get(this.url + AppUrls.GET_C2D_RESPONSE_JSON, { params });
   }
 

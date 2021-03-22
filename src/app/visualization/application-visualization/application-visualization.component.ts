@@ -346,6 +346,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       obj.device_id = obj.device.device_id;
       delete obj.device;
     }
+    if (this.pageType === 'live') {
+      const midnight =  ((((moment().hour(0)).minute(0)).second(0)).utc()).unix();
+      const now = (moment().utc()).unix();
+      obj.from_date = midnight;
+      obj.to_date = now;
+    } else {
     const now = moment().utc();
     if (this.filterObj.dateOption === '5 mins') {
       obj.to_date = now.unix();
@@ -368,6 +374,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       }
     }
     delete obj.dateOption;
+    if (!obj.from_date || !obj.to_date) {
+      this.toasterService.showError('Date selection is requierd.', 'Get Alert Data');
+      this.isAlertAPILoading = false;
+      return;
+    }
+    }
     this.subscriptions.push(this.deviceService.getDeviceAlerts(obj).subscribe(
       (response: any) => {
         this.latestAlerts = response.data;

@@ -1,3 +1,4 @@
+import { ToasterService } from './../../../services/toaster.service';
 import { filter } from 'rxjs/operators';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
@@ -35,7 +36,8 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -92,6 +94,12 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
         obj.to_date = filterObj.to_date.unix();
       }
     }
+    if (!obj.from_date || !obj.to_date) {
+      this.toasterService.showError('Date selection is requierd.', 'View ' + obj.tableType);
+      this.isC2dMsgsLoading = false;
+      this.isFilterSelected = false;
+      return;
+    }
     delete obj.dateOption;
     console.log(obj);
     obj.app = this.device.app;
@@ -143,11 +151,24 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
     }
     this.selectedMessage = message;
     this.c2dMessageDetail = undefined;
+    const obj = {
+      device_id: this.device.device_id,
+      from_date: null,
+      to_date: null,
+      epoch: true
+    };
+
     let method;
     if (this.previousMsgFilter.tableType === 'Direct Method') {
-      method = this.deviceService.getDirectMethodJSON(message.id, this.appName);
+      const epoch =  this.commonService.convertDateToEpoch(message.request_date);
+      obj.from_date = epoch ? (epoch - 5) : null;
+      obj.to_date = (epoch ? (epoch + 5) : null);
+      method = this.deviceService.getDirectMethodJSON(message.id, this.appName, obj);
     } else {
-      method = this.deviceService.getC2dMessageJSON(message.message_id, this.appName);
+      const epoch =  this.commonService.convertDateToEpoch(message.created_date);
+      obj.from_date = epoch ? (epoch - 5) : null;
+      obj.to_date = (epoch ? (epoch + 5) : null);
+      method = this.deviceService.getC2dMessageJSON(message.message_id, this.appName, obj);
     }
     this.apiSubscriptions.push(method.subscribe(
       (response: any) => {
@@ -172,7 +193,18 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
     this.selectedMessage = message;
     this.c2dResponseDetail = [];
     if (this.type !== 'response' || !openModalFlag) {
-      this.apiSubscriptions.push(this.deviceService.getC2dResponseJSON(message.message_id, this.appName).subscribe(
+      const obj = {
+        correlation_id: message.message_id,
+        app: this.appName,
+        device_id: this.device.device_id,
+        from_date: null,
+        to_date: null,
+        epoch: true
+      };
+      const epoch =  this.commonService.convertDateToEpoch(message.created_date);
+      obj.from_date = epoch ? (epoch - 5) : null;
+      obj.to_date = (epoch ? (epoch + 5) : null);
+      this.apiSubscriptions.push(this.deviceService.getC2dResponseJSON(obj).subscribe(
         (response: any) => {
           if (response.data) {
             if (openModalFlag) {

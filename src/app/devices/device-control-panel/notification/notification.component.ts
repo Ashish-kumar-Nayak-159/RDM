@@ -1,3 +1,4 @@
+import { ToasterService } from './../../../services/toaster.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
@@ -27,7 +28,8 @@ export class NotificationComponent implements OnInit, OnDestroy {
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -94,6 +96,12 @@ export class NotificationComponent implements OnInit, OnDestroy {
         obj.to_date = filterObj.to_date.unix();
       }
     }
+    if (!obj.from_date || !obj.to_date) {
+      this.toasterService.showError('Date selection is requierd.', 'View Notifications');
+      this.isNotificationLoading = false;
+      this.isFilterSelected = false;
+      return;
+    }
     delete obj.dateOption;
     this.notificationFilter = filterObj;
     this.apiSubscriptions.push(this.deviceService.getDeviceNotifications(obj).subscribe(
@@ -114,7 +122,11 @@ export class NotificationComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       const obj = {
         app: dataobj.app,
-        id: dataobj.id
+        id: dataobj.id,
+        device_id: this.device.device_id,
+        from_date: null,
+        to_date: null,
+        epoch: true
       };
       this.apiSubscriptions.push(this.deviceService.getDeviceMessageById(obj, 'notification').subscribe(
         (response: any) => {

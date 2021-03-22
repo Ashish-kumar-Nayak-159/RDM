@@ -1,3 +1,4 @@
+import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
@@ -28,7 +29,8 @@ export class DeviceLifeCycleEventsComponent implements OnInit, OnDestroy {
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -83,6 +85,12 @@ export class DeviceLifeCycleEventsComponent implements OnInit, OnDestroy {
       if (filterObj.to_date) {
         obj.to_date = filterObj.to_date.unix();
       }
+    }
+    if (!obj.from_date || !obj.to_date) {
+      this.toasterService.showError('Date selection is requierd.', 'Get Device Life cycle events');
+      this.isLifeCycleEventsLoading = false;
+      this.isFilterSelected = false;
+      return;
     }
     delete obj.dateOption;
     this.filterObj = filterObj;

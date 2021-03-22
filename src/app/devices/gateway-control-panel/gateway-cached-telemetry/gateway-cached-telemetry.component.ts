@@ -1,3 +1,4 @@
+import { ToasterService } from './../../../services/toaster.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Device } from './../../../models/device.model';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
@@ -39,7 +40,8 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private fileSaverService: FileSaverService,
     private route: ActivatedRoute,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -141,6 +143,12 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
       if (filterObj.to_date) {
         obj.to_date = filterObj.to_date.unix();
       }
+    }
+    if (!obj.from_date || !obj.to_date) {
+      this.toasterService.showError('Date selection is requierd.', 'Get Cached Telemetry');
+      this.isTelemetryLoading = false;
+      this.isFilterSelected = false;
+      return;
     }
     delete obj.dateOption;
     this.filterObj = filterObj;

@@ -1,3 +1,4 @@
+import { ToasterService } from './../../services/toaster.service';
 import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { DeviceService } from './../../services/devices/device.service';
@@ -32,7 +33,8 @@ export class ApplicationEventsComponent implements OnInit {
   today = new Date();
   constructor(
     private commonService: CommonService,
-    private deviceService: DeviceService
+    private deviceService: DeviceService,
+    private toasterService: ToasterService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -254,6 +256,12 @@ export class ApplicationEventsComponent implements OnInit {
       if (this.filterObj.to_date) {
         obj.to_date = this.filterObj.to_date.unix();
       }
+    }
+    if (!obj.from_date || !obj.to_date) {
+      this.toasterService.showError('Date selection is requierd.', 'Get Device Life cycle events');
+      this.isEventLoading = false;
+      this.isFilterSelected = false;
+      return;
     }
     obj.hierarchy = { App: this.contextApp.app};
     Object.keys(this.configureHierarchy).forEach((key) => {

@@ -1,3 +1,4 @@
+import { ToasterService } from './../../../services/toaster.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
@@ -28,7 +29,8 @@ export class AlertEndEventComponent implements OnInit, OnDestroy {
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -99,6 +101,12 @@ export class AlertEndEventComponent implements OnInit, OnDestroy {
         obj.to_date = filterObj.to_date.unix();
       }
     }
+    if (!obj.from_date || !obj.to_date) {
+      this.toasterService.showError('Date selection is requierd.', 'Get Alert End Events');
+      this.isAlertLoading = false;
+      this.isFilterSelected = false;
+      return;
+    }
     delete obj.dateOption;
     this.alertFilter = filterObj;
     this.apiSubscriptions.push(this.deviceService.getDeviceAlertEndEvents(obj).subscribe(
@@ -116,8 +124,15 @@ export class AlertEndEventComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       const obj = {
         app: alert.app,
-        id: alert.id
+        id: alert.id,
+        device_id: this.device.device_id,
+        from_date: null,
+        to_date: null,
+        epoch: true
       };
+      const epoch =  this.commonService.convertDateToEpoch(alert.message_date);
+      obj.from_date = epoch ? (epoch - 5) : null;
+      obj.to_date = (epoch ? (epoch + 5) : null);
       this.apiSubscriptions.push(this.deviceService.getDeviceMessageById(obj, 'alertendevent').subscribe(
         (response: any) => {
           resolve(response.message);

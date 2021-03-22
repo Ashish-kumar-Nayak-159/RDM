@@ -188,7 +188,9 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     const obj = {
       app: this.contextApp.app,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
-      count: this.noOfRecordsToDisplay
+      count: this.noOfRecordsToDisplay,
+      from_date: ((((moment().hour(0)).minute(0)).second(0)).utc()).unix(),
+      to_date: (moment().utc()).unix()
     };
     this.apiSubscriptions.push(this.applicationService.getLastAlerts(obj)
     .subscribe(
@@ -212,7 +214,9 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     const obj = {
       app: this.contextApp.app,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
-      count: this.noOfRecordsToDisplay
+      count: this.noOfRecordsToDisplay,
+      from_date: ((((moment().hour(0)).minute(0)).second(0)).utc()).unix(),
+      to_date: (moment().utc()).unix()
     };
     this.apiSubscriptions.push(this.applicationService.getLastNotifications(obj)
     .subscribe(
@@ -238,7 +242,9 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     const obj = {
       app: this.contextApp.app,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
-      count: this.noOfRecordsToDisplay
+      count: this.noOfRecordsToDisplay,
+      from_date: ((((moment().hour(0)).minute(0)).second(0)).utc()).unix(),
+      to_date: (moment().utc()).unix()
     };
     this.apiSubscriptions.push(this.applicationService.getDeviceLifeCycleEvents(obj)
     .subscribe(

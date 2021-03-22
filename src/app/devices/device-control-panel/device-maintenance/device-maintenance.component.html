@@ -1,4 +1,4 @@
-<div class="topnavbar bg-white py-2">
+<div class="topnavbar bg-white py-2" style="height: 6.5rem;">
   <div class="row">
     <ul class="nav">
         <!-- Nav Item - Tables -->
@@ -15,9 +15,9 @@
       <hr class="solid">
     </div>
   </div>
-  <!-- <app-filter [filterObj]="maintenanceFilter" (filterSearch)="searchMaintenance($event)"></app-filter> -->
+  <app-filter [filterObj]="maintenanceFilter" (filterSearch)="searchMaintenance($event)"></app-filter>
   </div>
-  <div class="con-pad">
+  <div class="con-pad" style="margin-top: 12rem;max-height: calc(100vh - 9rem);">
   <div class="row mx-auto">
 
     <div class="table-responsive table-wrapper" style="max-height: calc(100vh - 13rem)" >
@@ -54,7 +54,7 @@
           <tr *ngIf="!isFilterSelected && maintenanceData.length === 0 && !isMaintenanceDataLoading">
             <td colspan="4">Please select filter to view maintenance data.</td>
           </tr>
-          <tr *ngIf="isFilterSelected && maintenanceData.length === 0 && isMaintenanceDataLoading">
+          <tr *ngIf="isMaintenanceDataLoading">
             <td colspan="4"><i class="fa fa-fw fa-2x fa-spin fa-spinner"></i></td>
           </tr>
           </tbody>

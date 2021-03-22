@@ -79,8 +79,8 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
         ]
       };
     });
-    // this.maintenanceFilter.epoch = true;
-    this.searchMaintenance(this.maintenanceFilter);
+    this.maintenanceFilter.epoch = true;
+    // this.searchMaintenance(this.maintenanceFilter);
 
   }
 
@@ -111,6 +111,12 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
         obj.to_date = filterObj.to_date.unix();
       }
     }
+    if (!obj.from_date || !obj.to_date) {
+      this.toasterService.showError('Date selection is requierd.', 'Get Device Maintenance Data');
+      this.isMaintenanceDataLoading = false;
+      this.isFilterSelected = false;
+      return;
+    }
     console.log(filterObj);
     delete obj.dateOption;
     this.maintenanceFilter = filterObj;
@@ -130,21 +136,6 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
       }, error => this.isMaintenanceDataLoading = false
     ));
   }
-
-  getMessageData(dataobj) {
-    return new Promise((resolve) => {
-      const obj = {
-        app: dataobj.app,
-        id: dataobj.id
-      };
-      this.apiSubscriptions.push(this.deviceService.getDeviceMessageById(obj, 'heartbeat').subscribe(
-        (response: any) => {
-          resolve(response.message);
-        }
-      ));
-    });
-  }
-
 
   openMaintenanceMessageModal(obj) {
       this.viewMaintenanceDataObj = obj;

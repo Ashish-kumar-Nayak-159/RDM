@@ -56,7 +56,7 @@ export class DeviceTypeService {
       let params = new HttpParams();
       (Object.keys(filterObj)).forEach(key => {
         if (filterObj[key]) {
-          params = params.set(key, filterObj[key]);
+          params = params.set(key, encodeURI(filterObj[key]));
         }
       });
       return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODELS, filterObj.app), { params })
@@ -73,19 +73,19 @@ export class DeviceTypeService {
   }
 
   getThingsModelDetails(app, name) {
-    return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_DETAILS, app, name));
+    return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_DETAILS, encodeURI(app), encodeURI(name)));
   }
 
   createThingsModel(modelObj, app) {
     localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
-    return this.http.post(this.url + String.Format(AppUrls.CREATE_THINGS_MODEL, app), modelObj);
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_THINGS_MODEL, encodeURI(app)), modelObj);
   }
 
   updateThingsModel(modelObj, app) {
     localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
     localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
     console.log(localStorage.getItem(CONSTANTS.DEVICE_MODEL_DATA));
-    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_THINGS_MODEL, app, modelObj.name), modelObj);
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_THINGS_MODEL, encodeURI(app), encodeURI(modelObj.name)), modelObj);
   }
 
   getThingsModelProperties(filterObj) {
@@ -108,7 +108,8 @@ export class DeviceTypeService {
         });
       }
     } else {
-      return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_PROPERTIES, filterObj.app, filterObj.name))
+      return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_PROPERTIES,
+        encodeURI(filterObj.app), encodeURI(filterObj.name)))
       .pipe( map((data: any) => {
         let obj = {};
         if (deviceModel) {
@@ -154,7 +155,8 @@ export class DeviceTypeService {
         });
       }
     } else {
-      return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_LAYOUT, filterObj.app, filterObj.name))
+      return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_LAYOUT,
+        encodeURI(filterObj.app), encodeURI(filterObj.name)))
       .pipe( map((data: any) => {
         let obj = {};
         if (deviceModel) {
@@ -201,7 +203,8 @@ export class DeviceTypeService {
         });
       }
     } else {
-      return this.http.get(this.url + String.Format(AppUrls.GET_LIVE_WIDGETS_FOR_MODEL, filterObj.app, filterObj.name))
+      return this.http.get(this.url + String.Format(AppUrls.GET_LIVE_WIDGETS_FOR_MODEL,
+        encodeURI(filterObj.app), encodeURI(filterObj.name)))
       .pipe( map((data: any) => {
         let obj = {};
         if (deviceModel) {
@@ -230,56 +233,59 @@ export class DeviceTypeService {
   freezeDeviceModel(app, deviceType) {
     localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
     localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
-    return this.http.get(this.url + String.Format(AppUrls.FREEZE_THINGS_MODEL, app, deviceType));
+    return this.http.get(this.url + String.Format(AppUrls.FREEZE_THINGS_MODEL, encodeURI(app), encodeURI(deviceType)));
   }
 
   unfreezeDeviceModel(app, deviceType, obj) {
     localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
     localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
-    return this.http.post(this.url + String.Format(AppUrls.UNFREEZE_THINGS_MODEL, app, deviceType), obj);
+    return this.http.post(this.url + String.Format(AppUrls.UNFREEZE_THINGS_MODEL, encodeURI(app), encodeURI(deviceType)), obj);
   }
 
 
   getThingsModelDeviceMethods(filterObj) {
-    return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_DEVICE_METHODS, filterObj.app, filterObj.name));
+    return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_DEVICE_METHODS,
+      encodeURI(filterObj.app), encodeURI(filterObj.name)));
   }
 
   getThingsModelControlWidgets(filterObj) {
     return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_CONTROL_WIDGETS,
-      filterObj.app, filterObj.device_type));
+      encodeURI(filterObj.app), encodeURI(filterObj.device_type)));
   }
 
   createThingsModelControlWidget(modelObj) {
     return this.http.post(this.url + String.Format(AppUrls.CREATE_THINGS_MODEL_CONTROL_WIDGETS,
-      modelObj.app, modelObj.device_type), modelObj);
+      encodeURI(modelObj.app), encodeURI(modelObj.device_type)), modelObj);
   }
 
   updateThingsModelControlWidget(modelObj, app) {
     return this.http.patch(this.url + String.Format(AppUrls.UPDATE_THINGS_MODEL_CONTROL_WIDGETS,
-      app, modelObj.deviceType, modelObj.id), modelObj);
+      encodeURI(app), encodeURI(modelObj.deviceType), encodeURI(modelObj.id)), modelObj);
   }
 
   deleteThingsModelControlWidget(filterObj) {
-    return this.http.delete(this.url + String.Format(AppUrls.DELETE_CONTROL_WIDGET, filterObj.app, filterObj.device_type, filterObj.id));
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_CONTROL_WIDGET,
+      encodeURI(filterObj.app), encodeURI(filterObj.device_type), encodeURI(filterObj.id)));
   }
 
   getThingsModelConfigurationWidgets(filterObj) {
-    return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_CONFIGURATION_WIDGETS, filterObj.app, filterObj.device_type));
+    return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_CONFIGURATION_WIDGETS,
+      encodeURI(filterObj.app), encodeURI(filterObj.device_type)));
   }
 
   createThingsModelConfigurationWidget(modelObj) {
     return this.http.post(this.url + String.Format(AppUrls.CREATE_THINGS_MODEL_CONFIGURATION_WIDGETS,
-      modelObj.app, modelObj.device_type), modelObj);
+      encodeURI(modelObj.app), encodeURI(modelObj.device_type)), modelObj);
   }
 
   updateThingsModelConfigurationWidget(modelObj, app) {
     return this.http.patch(this.url + String.Format(AppUrls.UPDATE_THINGS_MODEL_CONFIGURATION_WIDGETS,
-      app, modelObj.deviceType, modelObj.id), modelObj);
+      encodeURI(app), encodeURI(modelObj.deviceType), encodeURI(modelObj.id)), modelObj);
   }
 
   deleteThingsModelConfigurationWidget(filterObj) {
     return this.http.delete(this.url + String.Format(AppUrls.DELETE_CONFIGURATION_WIDGET,
-      filterObj.app, filterObj.device_type, filterObj.id));
+      encodeURI(filterObj.app), encodeURI(filterObj.device_type), encodeURI(filterObj.id)));
   }
 
   getThingsModelDocuments(filterObj) {
@@ -302,7 +308,8 @@ export class DeviceTypeService {
         });
       }
     } else {
-    return this.http.get(this.url + String.Format(AppUrls.GET_MODEL_REFERENCE_DOCUMENTS, filterObj.app, filterObj.device_type))
+    return this.http.get(this.url + String.Format(AppUrls.GET_MODEL_REFERENCE_DOCUMENTS,
+      encodeURI(filterObj.app), encodeURI(filterObj.device_type)))
       .pipe( map((data: any) => {
         let obj = {};
         if (deviceModel) {
@@ -332,54 +339,61 @@ export class DeviceTypeService {
       delete deviceModel.documents;
       this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_MODEL_DATA, deviceModel);
     }
-    return this.http.post(this.url + String.Format(AppUrls.CREATE_MODEL_REFERENCE_DOCUMENTS, app, deviceType), modelObj);
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_MODEL_REFERENCE_DOCUMENTS,
+      encodeURI(app), encodeURI(deviceType)), modelObj);
   }
 
   updateThingsModelDocument(modelObj, app, deviceType, documentId) {
     localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
-    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_MODEL_REFERENCE_DOCUMENTS, app, deviceType, documentId), modelObj);
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_MODEL_REFERENCE_DOCUMENTS,
+      encodeURI(app), encodeURI(deviceType), encodeURI(documentId)), modelObj);
   }
 
   deleteThingsModelDocument(id, app, deviceType) {
-    const params = new HttpParams().set('id', id);
+    const params = new HttpParams().set('id', encodeURI(id));
     console.log(params);
     const deviceModel = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_MODEL_DATA);
     if (deviceModel && deviceModel.documents && deviceModel.name === deviceType) {
       delete deviceModel.documents;
       this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_MODEL_DATA, deviceModel);
     }
-    return this.http.delete(this.url + String.Format(AppUrls.DELETE_MODEL_REFERENCE_DOCUMENTS, app, deviceType, id), {});
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_MODEL_REFERENCE_DOCUMENTS,
+      encodeURI(app), encodeURI(deviceType), encodeURI(id)), {});
   }
 
   getAlertConditions(app, filterObj) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
       if (filterObj[key]) {
-        params = params.set(key, filterObj[key]);
+        params = params.set(key, encodeURI(filterObj[key]));
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_ALERT_CONDITIONS, app, filterObj.device_type), {params});
+    return this.http.get(this.url + String.Format(AppUrls.GET_ALERT_CONDITIONS, encodeURI(app), filterObj.device_type), {params});
   }
 
   createAlertCondition(modelObj, app, deviceType) {
-    return this.http.post(this.url + String.Format(AppUrls.CREATE_ALERT_CONDITION, app, deviceType), modelObj);
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_ALERT_CONDITION,
+      encodeURI(app), encodeURI(deviceType)), modelObj);
   }
 
   updateAlertCondition(modelObj, app, deviceType, alertConditionId) {
-    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_ALERT_CONDITION, app, deviceType, alertConditionId), modelObj);
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_ALERT_CONDITION,
+      encodeURI(app), encodeURI(deviceType), encodeURI(alertConditionId)), modelObj);
   }
 
   deleteAlertCondition(app, deviceType, alertConditionId) {
-    return this.http.delete(this.url + String.Format(AppUrls.DELETE_ALERT_CONDITION, app, deviceType, alertConditionId), {});
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_ALERT_CONDITION,
+      encodeURI(app), encodeURI(deviceType), encodeURI(alertConditionId)), {});
   }
 
   getModelReasons(app, deviceType) {
-    return this.http.get(this.url + String.Format(AppUrls.GET_MODEL_ALERT_REASONS, app, deviceType));
+    return this.http.get(this.url + String.Format(AppUrls.GET_MODEL_ALERT_REASONS,
+      encodeURI(app), encodeURI(deviceType)));
   }
 
   syncModelCache(app, deviceType) {
     let params = new HttpParams();
-    params = params.set('device_type', deviceType);
-    return this.http.get(this.url + String.Format(AppUrls.SYNC_MODEL_CACHE, app), { params });
+    params = params.set('device_type', encodeURI(deviceType));
+    return this.http.get(this.url + String.Format(AppUrls.SYNC_MODEL_CACHE, encodeURI(app)), { params });
   }
 }

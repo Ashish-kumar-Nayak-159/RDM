@@ -24,42 +24,24 @@ export class ApplicationService {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
       if (filterObj[key]) {
-        params = params.set(key, filterObj[key]);
+        params = params.set(key, encodeURI(filterObj[key]));
       }
     });
-    console.log(this.url + String.Format(AppUrls.GET_APPLICATION_DASHBOARD_SNAPSHOT, app));
-    // return this.http.get(`${this.url}${AppUrls.GET_APPLICATION_DASHBOARD_SNAPSHOT}/${app}/device_statistics`, {params});
-    return this.http.get(this.url + String.Format(AppUrls.GET_APPLICATION_DASHBOARD_SNAPSHOT, app), {params});
+    return this.http.get(this.url + String.Format(AppUrls.GET_APPLICATION_DASHBOARD_SNAPSHOT, encodeURI(app)), {params});
   }
 
   getApplications(filterObj) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
       if (filterObj[key]) {
-        params = params.set(key, filterObj[key]);
+        params = params.set(key, encodeURI(filterObj[key]));
       }
     });
     return this.http.get(this.url + AppUrls.GET_APPLICATIONS_LIST, {params});
   }
 
   getApplicationDetail(app) {
-    return this.http.get(this.url + String.Format(AppUrls.GET_APP_DETAILS, app));
-    // const appData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    // if (appData) {
-    //   return new Observable((observer) => {
-    //     observer.next({
-    //       data: appData
-    //     });
-    //   });
-    // } else {
-    //   .pipe( map((data: any) => {
-    //     this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, data);
-    //     return data;
-    //   }), catchError( error => {
-    //     return throwError( error);
-    //   })
-    //   );
-    // }
+    return this.http.get(this.url + String.Format(AppUrls.GET_APP_DETAILS, encodeURI(app)));
   }
 
   createApp(appObj) {
@@ -67,22 +49,22 @@ export class ApplicationService {
   }
 
   updateApp(appObj) {
-    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_APP, appObj.app), appObj);
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_APP, encodeURI(appObj.app)), appObj);
   }
 
   updateAppHierarchy(appObj) {
-    return this.http.put(this.url + String.Format(AppUrls.UPDATE_APP_HIERARCHY, appObj.app), appObj);
+    return this.http.put(this.url + String.Format(AppUrls.UPDATE_APP_HIERARCHY, encodeURI(appObj.app)), appObj);
   }
 
   updateAppRoles(appObj) {
-    return this.http.put(this.url + String.Format(AppUrls.UPDATE_APP_ROLES, appObj.app), appObj);
+    return this.http.put(this.url + String.Format(AppUrls.UPDATE_APP_ROLES, encodeURI(appObj.app)), appObj);
   }
 
   getLastAlerts(filterObj: any) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
       if (filterObj[key]) {
-        params = params.set(key, filterObj[key]);
+        params = params.set(key, encodeURI(filterObj[key]));
       }
     });
     return this.http.get(this.url + AppUrls.GET_ALERTS_LIST, { params });
@@ -92,7 +74,7 @@ export class ApplicationService {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
       if (filterObj[key]) {
-        params = params.set(key, filterObj[key]);
+        params = params.set(key, encodeURI(filterObj[key]));
       }
     });
     return this.http.get(this.url + AppUrls.GET_NOTIFICAION_LIST, { params });
@@ -102,7 +84,7 @@ export class ApplicationService {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
       if (filterObj[key]) {
-        params = params.set(key, filterObj[key]);
+        params = params.set(key, encodeURI(filterObj[key]));
       }
     });
     return this.http.get(this.url + AppUrls.GET_DEVICE_LIFECYCLE_EVENTS, { params });
@@ -117,7 +99,7 @@ export class ApplicationService {
         });
       });
     } else {
-      return this.http.get(this.url + String.Format(AppUrls.GET_APP_USERS, app)).pipe( map((data: any) => {
+      return this.http.get(this.url + String.Format(AppUrls.GET_APP_USERS, encodeURI(app))).pipe( map((data: any) => {
         this.commonService.setItemInLocalStorage(CONSTANTS.APP_USERS, data.data);
         return data;
       }), catchError( error => {

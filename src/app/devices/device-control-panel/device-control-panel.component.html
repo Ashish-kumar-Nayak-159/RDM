@@ -108,7 +108,7 @@
         <app-device-maintenance *ngIf="activeTab === 'maintenance_data' && device" [device]="device"></app-device-maintenance>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'settings'}" role="tabpanel" id="device_settings">
-        <app-settings *ngIf="activeTab === 'settings'  && device" [tileData]="tileData" [device]="device"></app-settings>
+        <app-settings *ngIf="activeTab === 'settings'  && device" [device]="device"></app-settings>
       </div>
       <!-- /.container1-fluid -->
 

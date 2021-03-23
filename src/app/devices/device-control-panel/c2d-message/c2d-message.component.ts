@@ -161,13 +161,15 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
     let method;
     if (this.previousMsgFilter.tableType === 'Direct Method') {
       const epoch =  this.commonService.convertDateToEpoch(message.request_date);
-      obj.from_date = epoch ? (epoch - 5) : null;
-      obj.to_date = (epoch ? (epoch + 5) : null);
+      obj.from_date = epoch ? (epoch - 300) : null;
+      obj.to_date = (epoch ? (epoch + 300) : null);
       method = this.deviceService.getDirectMethodJSON(message.id, this.appName, obj);
     } else {
       const epoch =  this.commonService.convertDateToEpoch(message.created_date);
-      obj.from_date = epoch ? (epoch - 5) : null;
-      obj.to_date = (epoch ? (epoch + 5) : null);
+      console.log(epoch);
+      console.log(epoch + 300);
+      obj.from_date = epoch ? (epoch) : null;
+      obj.to_date = (epoch ? (epoch + (message?.metadata?.expire_in_min ? message.metadata.expire_in_min * 60 : 300)) : null);
       method = this.deviceService.getC2dMessageJSON(message.message_id, this.appName, obj);
     }
     this.apiSubscriptions.push(method.subscribe(
@@ -202,8 +204,8 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
         epoch: true
       };
       const epoch =  this.commonService.convertDateToEpoch(message.created_date);
-      obj.from_date = epoch ? (epoch - 5) : null;
-      obj.to_date = (epoch ? (epoch + 5) : null);
+      obj.from_date = epoch ? (epoch) : null;
+      obj.to_date = (moment().utc()).unix();
       this.apiSubscriptions.push(this.deviceService.getC2dResponseJSON(obj).subscribe(
         (response: any) => {
           if (response.data) {

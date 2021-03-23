@@ -982,8 +982,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       epoch: true
     };
     const epoch =  this.commonService.convertDateToEpoch(this.acknowledgedAlert.message_date);
-    obj.from_date = epoch ? (epoch - 5) : null;
-    obj.to_date = (epoch ? (epoch + 5) : null);
+    obj.from_date = epoch ? (epoch - 300) : null;
+    obj.to_date = (epoch ? (epoch + 300) : null);
     obj.metadata['user_id'] = this.userData.name;
     obj.metadata['acknowledged_date'] = (moment.utc(new Date(), 'M/DD/YYYY h:mm:ss A'));
     this.subscriptions.push(this.deviceService.acknowledgeDeviceAlert(obj).subscribe(

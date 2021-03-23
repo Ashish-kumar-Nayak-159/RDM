@@ -130,8 +130,8 @@ export class AlertsComponent implements OnInit, OnDestroy {
         epoch: true
       };
       const epoch =  this.commonService.convertDateToEpoch(alert.message_date);
-      obj.from_date = epoch ? (epoch - 5) : null;
-      obj.to_date = (epoch ? (epoch + 5) : null);
+      obj.from_date = epoch ? (epoch - 300) : null;
+      obj.to_date = (epoch ? (epoch + 300) : null);
       this.apiSubscriptions.push(this.deviceService.getDeviceMessageById(obj, 'alert').subscribe(
         (response: any) => {
           resolve(response.message);

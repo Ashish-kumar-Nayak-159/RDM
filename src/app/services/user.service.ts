@@ -17,11 +17,11 @@ export class UserService {
 
   createUser(userObj, app) {
     localStorage.removeItem(CONSTANTS.APP_USERS);
-    return this.http.post(this.url + String.Format(AppUrls.CREATE_USER, encodeURI(app)), userObj);
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_USER, encodeURIComponent(app)), userObj);
   }
 
   updateUser(userObj, app) {
     localStorage.removeItem(CONSTANTS.APP_USERS);
-    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_USER, encodeURI(app), encodeURI(userObj.id)), userObj);
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_USER, encodeURIComponent(app), encodeURIComponent(userObj.id)), userObj);
   }
 }

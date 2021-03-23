@@ -532,4 +532,9 @@ export class DeviceService {
       encodeURIComponent(app), encodeURIComponent(deviceId), encodeURIComponent(maintenanceId)), obj);
   }
 
+  updateDeviceMetadata(obj, app, deviceId) {
+    return this.http.put(this.url + String.Format(AppUrls.UPDATE_DEVICE_METADATA,
+      encodeURIComponent(app), encodeURIComponent(deviceId)), obj);
+  }
+
 }

@@ -252,6 +252,16 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Please fill all the fieds', 'Create Things Model');
       return;
     }
+    this.thingsModel.metadata.measurement_frequency = {
+      min: 1,
+      max: 10,
+      average: 5
+    };
+    this.thingsModel.metadata.telemetry_frequency = {
+      min: 1,
+      max: 60,
+      average: 30
+    };
     console.log(this.thingsModel);
     this.isCreateThingsModelAPILoading = true;
     const method = this.thingsModel.id ? this.deviceTypeService.updateThingsModel(this.thingsModel, this.contextApp.app) :

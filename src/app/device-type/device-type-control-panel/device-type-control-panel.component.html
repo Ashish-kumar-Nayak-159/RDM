@@ -57,6 +57,9 @@
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="device_type_tags">
         <app-device-type-tags *ngIf="activeTab === 'tags'  && deviceType" [deviceType]="deviceType"></app-device-type-tags>
       </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'settings'}" role="tabpanel" id="device_type_settings">
+        <app-device-type-settings *ngIf="activeTab === 'settings'  && deviceType" [deviceType]="deviceType"></app-device-type-settings>
+      </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab.includes('properties')}" role="tabpanel" id="device_type_properties">
         <app-device-type-properties *ngIf="activeTab.includes('properties') && deviceType" [type]="activeTab" [deviceType]="deviceType"></app-device-type-properties>
       </div>

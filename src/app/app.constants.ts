@@ -558,6 +558,17 @@ export class CONSTANTS {
       accordion_value: {}
     },
     {
+      page: 'settings',
+      system_name: 'Settings',
+      url: '#device_settings',
+      display_name: 'Settings',
+      icon: 'fa fa-fw fa-cog',
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
+    },
+    {
       page: 'd2c',
       system_name: 'D2C (Monitor)',
       url: null,
@@ -987,6 +998,15 @@ export class CONSTANTS {
       url: '#device_type_tags',
       display_name: 'Tags',
       icon: 'fa fa-fw fa-tags',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'settings',
+      system_name: 'Settings',
+      url: '#device_type_settings',
+      display_name: 'Settings',
+      icon: 'fa fa-fw fa-cog',
       visible: true,
       isTitle: false
     },

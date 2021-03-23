@@ -103,4 +103,5 @@ export class AppUrls {
   public static CREATE_DEVICE_MAINTENANCE_DATA = 'apps/{0}/devices/{1}/maintenance_history';
   public static DELETE_DEVICE_MAINTENANCE_DATA = 'apps/{0}/devices/{1}/maintenance_history/{2}';
   public static UPDATE_DEVICE_MAINTENANCE_DATA = 'apps/{0}/devices/{1}/maintenance_history/{2}';
+  public static UPDATE_DEVICE_METADATA = 'apps/{0}/devices/{1}/metadata';
 }

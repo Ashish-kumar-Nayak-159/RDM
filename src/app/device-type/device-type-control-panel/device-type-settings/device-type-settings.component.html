@@ -47,26 +47,26 @@
               <td style="width: 50%;">Min: </td>
               <td>
                   <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                    [(ngModel)]="device?.metadata.telemetry_frequency.min" name="min_frequency"
+                    [(ngModel)]="deviceType?.metadata.telemetry_frequency.min" name="min_frequency"
                     placeholder="Minimum Frequency" *ngIf="isSettingsEditable">
-                  <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata.telemetry_frequency.min}}</ng-container>
+                  <ng-container *ngIf="!isSettingsEditable"> {{deviceType?.metadata.telemetry_frequency.min}}</ng-container>
               </td>
             </tr>
             <tr>
               <td style="width: 50%;">Max: </td>
               <td>
-                <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata.telemetry_frequency.max}}</ng-container>
+                <ng-container *ngIf="!isSettingsEditable"> {{deviceType?.metadata.telemetry_frequency.max}}</ng-container>
                   <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                    [(ngModel)]="device?.metadata.telemetry_frequency.max" name="max_frequency"
+                    [(ngModel)]="deviceType?.metadata.telemetry_frequency.max" name="max_frequency"
                     placeholder="Maximum Frequency" *ngIf="isSettingsEditable">
               </td>
             </tr>
             <tr>
               <td style="width: 50%;">Average: </td>
               <td>
-                <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata.telemetry_frequency.average}}</ng-container>
+                <ng-container *ngIf="!isSettingsEditable"> {{deviceType?.metadata.telemetry_frequency.average}}</ng-container>
                   <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                    [(ngModel)]="device?.metadata.telemetry_frequency.average" name="avrg_frequency"
+                    [(ngModel)]="deviceType?.metadata.telemetry_frequency.average" name="avrg_frequency"
                     placeholder="Average Frequency" *ngIf="isSettingsEditable">
               </td>
             </tr>
@@ -84,27 +84,27 @@
             <tr>
               <td style="width: 50%;">Min: </td>
               <td>
-                <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata.measurement_frequency.min}}</ng-container>
+                <ng-container *ngIf="!isSettingsEditable"> {{deviceType?.metadata.measurement_frequency.min}}</ng-container>
                   <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                    [(ngModel)]="device?.metadata.measurement_frequency.min" name="min_frequency"
+                    [(ngModel)]="deviceType?.metadata.measurement_frequency.min" name="min_frequency"
                     placeholder="Minimum Frequency" *ngIf="isSettingsEditable">
               </td>
             </tr>
             <tr>
               <td style="width: 50%;">Max: </td>
               <td>
-                <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata.measurement_frequency.max}}</ng-container>
+                <ng-container *ngIf="!isSettingsEditable"> {{deviceType?.metadata.measurement_frequency.max}}</ng-container>
                   <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                    [(ngModel)]="device?.metadata.measurement_frequency.max" name="max_frequency"
+                    [(ngModel)]="deviceType?.metadata.measurement_frequency.max" name="max_frequency"
                     placeholder="Maximum Frequency" *ngIf="isSettingsEditable">
               </td>
             </tr>
             <tr>
               <td style="width: 50%;">Average: </td>
               <td>
-                <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata.measurement_frequency.average}}</ng-container>
+                <ng-container *ngIf="!isSettingsEditable"> {{deviceType?.metadata.measurement_frequency.average}}</ng-container>
                   <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                    [(ngModel)]="device?.metadata.measurement_frequency.average" name="avrg_frequency"
+                    [(ngModel)]="deviceType?.metadata.measurement_frequency.average" name="avrg_frequency"
                     placeholder="Average Frequency" *ngIf="isSettingsEditable">
               </td>
             </tr>

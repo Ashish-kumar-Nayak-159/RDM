@@ -81,6 +81,14 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
   redirectToDevices(app) {
   }
 
+  onCheckboxValueChange() {
+    if (!this.applicationDetail.metadata.app_specific_schema && !this.applicationDetail.metadata.app_specific_db &&
+      !this.applicationDetail.metadata.app_telemetry_specific_schema) {
+      this.applicationDetail.metadata.partition.telemetry.partition_strategy = undefined;
+      this.applicationDetail.metadata.partition.telemetry.sub_partition_strategy = undefined;
+    }
+  }
+
   openCreateAppModal() {
     this.appModalType = 'Create';
     this.applicationDetail = {

@@ -86,6 +86,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
     this.applicationDetail = {
       metadata: {
         customer: {},
+        app_specific_schema: true,
         partition: { telemetry: {}}
       }
     };

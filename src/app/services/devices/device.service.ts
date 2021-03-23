@@ -93,7 +93,7 @@ export class DeviceService {
       }
     });
     console.log(params);
-    return this.http.get(this.url + String.Format(AppUrls.GET_NON_IP_DEVICE, filterObj.app), { params });
+    return this.http.get(this.url + String.Format(AppUrls.GET_NON_IP_DEVICE, encodeURIComponent(filterObj.app)), { params });
   }
 
   getDeviceDetailById(app, deviceId) {
@@ -145,7 +145,8 @@ export class DeviceService {
     // params = params.set('app', appId);
     localStorage.removeItem(CONSTANTS.DEVICES_LIST);
     localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
-    return this.http.delete(this.url + String.Format(AppUrls.DELETE_NON_IP_DEVICE, encodeURIComponent(appId), encodeURIComponent(deviceId)));
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_NON_IP_DEVICE,
+      encodeURIComponent(appId), encodeURIComponent(deviceId)));
   }
 
   getDeviceCredentials(deviceId, appId) {
@@ -163,7 +164,8 @@ export class DeviceService {
   updateDeviceTags(deviceObj, app) {
     localStorage.removeItem(CONSTANTS.DEVICES_LIST);
     localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
-    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_DEVICE_TAGS, encodeURIComponent(app), encodeURIComponent(deviceObj.device_id)), deviceObj);
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_DEVICE_TAGS,
+      encodeURIComponent(app), encodeURIComponent(deviceObj.device_id)), deviceObj);
   }
 
   updateNonIPDeviceTags(deviceObj, app) {
@@ -314,7 +316,8 @@ export class DeviceService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_C2D_MESSAGE_JSON, encodeURIComponent(app), encodeURIComponent(messageId)), { params });
+    return this.http.get(this.url + String.Format(AppUrls.GET_C2D_MESSAGE_JSON,
+      encodeURIComponent(app), encodeURIComponent(messageId)), { params });
   }
 
   getDirectMethodJSON(messageId, app, filterObj) {
@@ -324,7 +327,8 @@ export class DeviceService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_METHOD_BY_ID, encodeURIComponent(app), encodeURIComponent(messageId)), { params });
+    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_METHOD_BY_ID,
+      encodeURIComponent(app), encodeURIComponent(messageId)), { params });
   }
 
   getC2dResponseJSON(filterObj) {
@@ -348,7 +352,7 @@ export class DeviceService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GE_NON_IP_DEVICES_COUNT, filterObj.app), { params });
+    return this.http.get(this.url + String.Format(AppUrls.GE_NON_IP_DEVICES_COUNT, encodeURIComponent(filterObj.app)), { params });
   }
 
   createLayout(layoutObj) {
@@ -380,7 +384,8 @@ export class DeviceService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_NON_IP_DEVICE_TAGS, filterObj.app, filterObj.device_id), { params });
+    return this.http.get(this.url + String.Format(AppUrls.GET_NON_IP_DEVICE_TAGS,
+      encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.device_id)), { params });
   }
 
   getDeviceMessageById(filterObj, type) {
@@ -460,7 +465,7 @@ export class DeviceService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_CONFIGURATION_HISTORY, filterObj.app), { params });
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_CONFIGURATION_HISTORY, encodeURIComponent(filterObj.app)), { params });
   }
 
   callDeviceMethod(obj, app) {
@@ -508,11 +513,13 @@ export class DeviceService {
       }
     });
 
-    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_MAINTENANCE_DATA, encodeURIComponent(app), encodeURIComponent(deviceId)), {params});
+    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_MAINTENANCE_DATA,
+      encodeURIComponent(app), encodeURIComponent(deviceId)), {params});
   }
 
   createDeviceMaintenanceActivityData(app, deviceId, obj) {
-    return this.http.post(this.url + String.Format(AppUrls.CREATE_DEVICE_MAINTENANCE_DATA, encodeURIComponent(app), encodeURIComponent(deviceId)), obj);
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_DEVICE_MAINTENANCE_DATA,
+      encodeURIComponent(app), encodeURIComponent(deviceId)), obj);
   }
 
   deleteDeviceMaintenanceActivityData(app, deviceId, maintenanceId) {

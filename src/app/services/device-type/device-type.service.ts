@@ -61,7 +61,7 @@ export class DeviceTypeService {
         }
       });
 
-      return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODELS, filterObj.app), { params })
+      return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODELS, encodeURIComponent(filterObj.app)), { params })
       .pipe( map((data: any) => {
         if (!filterObj['id'] && !filterObj['name'] && !filterObj['model_type'] && !filterObj['created_by']) {
           this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_MODELS_LIST, data.data);
@@ -241,7 +241,8 @@ export class DeviceTypeService {
   unfreezeDeviceModel(app, deviceType, obj) {
     localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
     localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
-    return this.http.post(this.url + String.Format(AppUrls.UNFREEZE_THINGS_MODEL, encodeURIComponent(app), encodeURIComponent(deviceType)), obj);
+    return this.http.post(this.url + String.Format(AppUrls.UNFREEZE_THINGS_MODEL,
+      encodeURIComponent(app), encodeURIComponent(deviceType)), obj);
   }
 
 

@@ -75,6 +75,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   isFileUploading = false;
   today = new Date();
+  loadingMessage: string;
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -710,6 +711,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
     delete filterObj.count;
     delete filterObj.device;
+    this.isChartViewOpen = true;
+    filterObj.order_dir = 'ASC';
     console.log(this.filterObj.isTypeEditable);
     if (this.filterObj.isTypeEditable) {
       console.log(this.filterObj.type);
@@ -721,6 +724,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         } else {
           delete filterObj.aggregation_minutes;
           delete filterObj.aggregation_format;
+          const records = this.commonService.calculateEstimatedRecords(this.filterObj.sampling_time * 60,
+            filterObj.from_date, filterObj.to_date);
+          this.loadingMessage = 'Loading ' + records + ' data points.' + (records > 100 ? 'It may take some time.' : '') + 'Please wait...';
           method = this.deviceService.getDeviceSamplingTelemetry(filterObj, this.contextApp.app);
         }
       } else {
@@ -730,6 +736,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         } else {
           delete filterObj.sampling_time;
           delete filterObj.sampling_format;
+          const records = this.commonService.calculateEstimatedRecords
+          (this.filterObj.aggregation_minutes * 60, filterObj.from_date, filterObj.to_date);
+          this.loadingMessage = 'Loading ' + records + ' data points.' + (records > 100 ? 'It may take some time.' : '') + 'Please wait...';
           method = this.deviceService.getDeviceTelemetry(filterObj);
         }
       }
@@ -738,6 +747,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       delete filterObj.aggregation_format;
       delete filterObj.sampling_time;
       delete filterObj.sampling_format;
+      const device = this.devices.find(obj => obj.device_id ===  this.selectedAlert.device_id);
+      const records = this.commonService.calculateEstimatedRecords
+          ((device?.measurement_frequency?.average ? device.measurement_frequency.average : 5),
+          filterObj.from_date, filterObj.to_date);
+      this.loadingMessage = 'Loading ' + records + ' data points.' + (records > 100 ? 'It may take some time.' : '') + 'Please wait...';
       method = this.deviceService.getDeviceTelemetry(filterObj);
     }
     console.log(this.selectedAlert.message_date);
@@ -767,7 +781,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
           });
           // this.loadGaugeChart(telemetryData[0]);
-          telemetryData.reverse();
+          // telemetryData.reverse();
           this.isTelemetryDataLoading = false;
           // this.loadLineChart(telemetryData);
           if (telemetryData.length > 0) {
@@ -823,81 +837,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     // this.showThreshold = !this.showThreshold;
     this.chartService.toggleThresholdEvent.emit(this.showThreshold);
   }
-
-  createThresholdSeries(valueAxis, propObj) {
-    propObj.threshold = propObj.threshold ? propObj.threshold : {};
-
-    if (propObj.threshold.l1 && propObj.threshold.h1) {
-    const rangeL1H1 = valueAxis.axisRanges.create();
-    rangeL1H1.value = propObj.threshold.l1;
-    rangeL1H1.endValue = propObj.threshold.h1;
-    rangeL1H1.axisFill.fill = am4core.color('#229954');
-    rangeL1H1.axisFill.fillOpacity = 0.2;
-    rangeL1H1.grid.strokeOpacity = 0;
-    }
-    if (propObj.threshold.l1 && propObj.threshold.l2) {
-    const rangeL1L2 = valueAxis.axisRanges.create();
-    rangeL1L2.value = propObj.threshold.l2;
-    rangeL1L2.endValue = propObj.threshold.l1;
-    rangeL1L2.axisFill.fill = am4core.color('#f6c23e');
-    rangeL1L2.axisFill.fillOpacity = 0.2;
-    rangeL1L2.grid.strokeOpacity = 0;
-    }
-    if (propObj.threshold.h1 && propObj.threshold.h2) {
-    const rangeH1H2 = valueAxis.axisRanges.create();
-    rangeH1H2.value = propObj.threshold.h1;
-    rangeH1H2.endValue = propObj.threshold.h2;
-    rangeH1H2.axisFill.fill = am4core.color('#f6c23e');
-    rangeH1H2.axisFill.fillOpacity = 0.2;
-    rangeH1H2.grid.strokeOpacity = 0;
-    }
-    if (propObj.threshold.l2 && propObj.threshold.l3) {
-    const rangeL2L3 = valueAxis.axisRanges.create();
-    rangeL2L3.value = propObj.threshold.l3;
-    rangeL2L3.endValue = propObj.threshold.l2;
-    rangeL2L3.axisFill.fill = am4core.color('#fb5515');
-    rangeL2L3.axisFill.fillOpacity = 0.2;
-    rangeL2L3.grid.strokeOpacity = 0;
-    }
-    if (propObj.threshold.h2 && propObj.threshold.h3) {
-    const rangeH2H3 = valueAxis.axisRanges.create();
-    rangeH2H3.value = propObj.threshold.h2;
-    rangeH2H3.endValue = propObj.threshold.h3;
-    rangeH2H3.axisFill.fill = am4core.color('#fb5515');
-    rangeH2H3.axisFill.fillOpacity = 0.2;
-    rangeH2H3.grid.strokeOpacity = 0;
-    }
-  }
-
-  createValueAxis(chart, axis) {
-
-    const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
-    if (chart.yAxes.indexOf(valueYAxis) !== 0){
-      valueYAxis.syncWithAxis = chart.yAxes.getIndex(0);
-    }
-    const arr = axis === 0 ? this.y1AxisProps : this.y2AxisProps;
-    arr.forEach((prop) => {
-      const series = chart.series.push(new am4charts.LineSeries());
-      series.dataFields.dateX = 'message_date';
-      series.name =  prop.id;
-      // series.stroke = this.commonService.getRandomColor();
-      series.yAxis = valueYAxis;
-      series.dataFields.valueY =  prop.id;
-      series.compareText = true;
-      series.strokeWidth = 1;
-      series.strokeOpacity = 1;
-      series.tooltipText = '{name}: [bold]{valueY}[/]';
-      this.seriesArr.push(series);
-    });
-    valueYAxis.tooltip.disabled = true;
-    valueYAxis.renderer.opposite = (axis === 1);
-    valueYAxis.renderer.minWidth = 35;
-    if (this.y1AxisProps.length === 1 && this.y2AxisProps.length === 0) {
-      const propObj = this.propertyList.filter(prop => prop.json_key === this.y1AxisProps[0].id)[0];
-      this.createThresholdSeries(valueYAxis, propObj);
-    }
-  }
-
 
   async onClickOfAcknowledgeAlert(alert): Promise<void> {
     this.acknowledgedAlert = alert;

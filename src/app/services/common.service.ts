@@ -171,6 +171,11 @@ export class CommonService {
     };
   }
 
+  calculateEstimatedRecords(frequency, startTime, endTime) {
+    const time = endTime - startTime;
+    return Math.round(time / frequency);
+  }
+
   onLogOut() {
     // const now = new Date();
     // // compare the expiry time of the item with the current time

@@ -12,7 +12,7 @@ import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Subscription } from 'rxjs';
-
+declare var $: any;
 @Component({
   selector: 'app-reports',
   templateUrl: './reports.component.html',
@@ -54,6 +54,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   insideScrollFunFlag = false;
   isFilterOpen = true;
   today = new Date();
+  loadingMessage: any;
 
   constructor(
     private commonService: CommonService,
@@ -413,6 +414,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.isTelemetryLoading = true;
     // this.telemetry = [];
     // this.latestAlerts = [];
+
     this.selectedProps = JSON.parse(JSON.stringify(this.props));
     this.newFilterObj = JSON.parse(JSON.stringify(obj));
     this.isFilterSelected = true;
@@ -426,9 +428,16 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getAlertData(obj) {
+  getAlertData(obj, type = undefined) {
+    return new Promise<void>((resolve) => {
     obj.offset = this.currentOffset;
     obj.count = this.currentLimit;
+    this.loadingMessage = 'Loading data. Please wait...';
+    if (type === 'all') {
+      delete obj.count;
+    }
+    delete obj.report_type;
+    delete obj.deviceArr;
     this.subscriptions.push(this.deviceService.getDeviceAlerts(obj).subscribe(
       (response: any) => {
         response.data.reverse();
@@ -443,23 +452,25 @@ export class ReportsComponent implements OnInit, OnDestroy {
         } else {
           this.insideScrollFunFlag = true;
         }
+        resolve();
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false
     ));
+    });
   }
 
-  async getTelemetryData(filterObj) {
+  async getTelemetryData(filterObj, type = undefined) {
+    return new Promise<void>((resolve) => {
     const obj = JSON.parse(JSON.stringify(filterObj));
-
-    // if (obj.to_date - obj.from_date <= 1800) {
-    //   method = this.deviceService.getDeviceTelemetry(obj);
-    // } else {
-    //   method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
-    // }
     delete obj.dateOption;
     delete obj.isTypeEditable;
     delete obj.type;
     obj.order_dir = 'ASC';
+    if (type === 'all') {
+      delete obj.count;
+    }
+    delete obj.report_type;
+    delete obj.deviceArr;
     this.isTelemetryLoading = false;
     this.isFilterSelected = false;
     let method;
@@ -478,6 +489,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
         let message_props = '';
         this.props.forEach((prop, index) => message_props = message_props + prop.value.json_key + (this.props[index + 1] ? ',' : ''));
         obj['message_props'] = message_props;
+        const records = this.commonService.calculateEstimatedRecords(filterObj.sampling_time * 60, obj.from_date, obj.to_date);
+        this.loadingMessage = 'Loading ' + records + ' data points.' + (records > 100 ? ' It may take some time.' : '') + ' Please wait...';
         method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
       }
     } else {
@@ -490,6 +503,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
         let message_props = '';
         this.props.forEach((prop, index) => message_props = message_props + prop.value.json_key + (this.props[index + 1] ? ',' : ''));
         obj['message_props'] = message_props;
+        const records = this.commonService.calculateEstimatedRecords
+          (filterObj.aggregation_minutes * 60, obj.from_date, obj.to_date);
+        this.loadingMessage = 'Loading ' + records + ' data points.' + (records > 100 ? ' It may take some time.' : '') + ' Please wait...';
         method = this.deviceService.getDeviceTelemetry(obj);
       }
     }
@@ -502,9 +518,15 @@ export class ReportsComponent implements OnInit, OnDestroy {
         obj['all_message_props'] = true;
       } else {
         let message_props = '';
-        this.props.forEach((prop, index) => message_props = message_props + prop.value.json_key + (this.props[index + 1] ? ',' : ''));
+        this.props.forEach((prop, index) => message_props = message_props + prop.value.json_key +
+        (this.props[index + 1] ? ',' : ''));
         obj['message_props'] = message_props;
       }
+      const device = this.devices.find(deviceObj => deviceObj.device_id ===  obj.device_id);
+      const records = this.commonService.calculateEstimatedRecords
+          ((device?.measurement_frequency?.average ? device.measurement_frequency.average : 5),
+          filterObj.from_date, filterObj.to_date);
+      this.loadingMessage = 'Loading ' + records + ' data points.' + (records > 100 ? ' It may take some time.' : '') + ' Please wait...';
       method = this.deviceService.getDeviceTelemetry(obj);
     }
 
@@ -517,19 +539,20 @@ export class ReportsComponent implements OnInit, OnDestroy {
           response.data.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
           this.telemetry = [...this.telemetry, ...response.data];
           this.isFilterOpen = false;
-          console.log('49888', response.data.length);
-          console.log('498888', this.currentLimit);
           if (response.data.length === this.currentLimit) {
             console.log('hereeeeee');
             this.insideScrollFunFlag = false;
-            } else {
+          } else {
               this.insideScrollFunFlag = true;
-            }
+          }
+          this.loadingMessage = undefined;
           // this.telemetry.reverse();
         }
         this.isTelemetryLoading = false;
+        resolve();
       }, error => this.isTelemetryLoading = false
     ));
+    });
   }
 
   y1Deselect(e){
@@ -538,103 +561,133 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }
   }
 
-  savePDF(): void {
+  async savePDF(): Promise<void> {
     if (this.filterObj.report_type === 'Process Parameter Report' && this.props.length > 8) {
       this.toasterService.showWarning('For more properties, Excel Reports work better.', 'Export as PDF');
     }
+    $('#downloadReportModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    if (this.filterObj.report_type === 'Process Parameter Report' && !this.insideScrollFunFlag) {
+      this.currentOffset += this.currentLimit;
+      await this.getTelemetryData(this.newFilterObj, 'all');
+      this.insideScrollFunFlag = true;
+    } else if (this.filterObj.report_type === 'Alert Report' && !this.insideScrollFunFlag) {
+      this.currentOffset += this.currentLimit;
+      await this.getAlertData(this.newFilterObj, 'all');
+      this.insideScrollFunFlag = true;
+    }
+    this.loadingMessage = 'Preparing Report.';
     this.isFileDownloading = true;
-    const pdf = new jsPDF('p', 'pt', 'A3');
-    pdf.text(this.filterObj.report_type + ' for ' +
-    (this.deviceFilterObj.display_name ? this.deviceFilterObj.display_name : this.deviceFilterObj.device_id) +
-    ' for ' + this.commonService.convertEpochToDate(this.newFilterObj.from_date) + ' to ' +
-    this.commonService.convertEpochToDate(this.newFilterObj.to_date), 20, 50);
-    autoTable(pdf, { html: '#dataTable1', margin: { top: 70 } });
-    const now = moment().utc().unix();
-    pdf.save((this.deviceFilterObj.display_name ? this.deviceFilterObj.display_name : this.deviceFilterObj.device_id)
-           + '_' + this.filterObj.report_type + '_' + now + '.pdf');
-    this.isFileDownloading = false;
+    setTimeout(() => {
+      const pdf = new jsPDF('p', 'pt', 'A3');
+      pdf.text(this.filterObj.report_type + ' for ' +
+      (this.deviceFilterObj.display_name ? this.deviceFilterObj.display_name : this.deviceFilterObj.device_id) +
+      ' for ' + this.commonService.convertEpochToDate(this.newFilterObj.from_date) + ' to ' +
+      this.commonService.convertEpochToDate(this.newFilterObj.to_date), 20, 50);
+      autoTable(pdf, { html: '#dataTable1', margin: { top: 70 } });
+      const now = moment().utc().unix();
+      pdf.save((this.deviceFilterObj.display_name ? this.deviceFilterObj.display_name : this.deviceFilterObj.device_id)
+             + '_' + this.filterObj.report_type + '_' + now + '.pdf');
+      this.isFileDownloading = false;
+      this.loadingMessage = undefined;
+      $('#downloadReportModal').modal('hide');
+    }, 1000);
+
   }
 
-  saveExcel() {
+  async saveExcel() {
     this.isFileDownloading = true;
     let ws: XLSX.WorkSheet;
     let data = [];
-    if (this.filterObj.report_type !== 'Process Parameter Report') {
-
-      this.latestAlerts.forEach(alert => {
-        data.push({
-          'Asset Name': (this.deviceFilterObj.display_name ? this.deviceFilterObj.display_name : this.deviceFilterObj.device_id),
-          Time: alert.local_created_date,
-          Severity: alert.severity,
-          Description: alert.message,
-          Status: alert.metadata?.acknowledged_date ? 'Acknowledged' : 'Not Acknowledged',
-          'Acknowledged By': alert.metadata?.user_id
+    $('#downloadReportModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    if (this.filterObj.report_type === 'Process Parameter Report' && !this.insideScrollFunFlag) {
+      this.currentOffset += this.currentLimit;
+      await this.getTelemetryData(this.newFilterObj, 'all');
+      this.insideScrollFunFlag = true;
+    } else if (this.filterObj.report_type === 'Alert Report' && !this.insideScrollFunFlag) {
+      this.currentOffset += this.currentLimit;
+      await this.getAlertData(this.newFilterObj, 'all');
+      this.insideScrollFunFlag = true;
+    }
+    this.loadingMessage = 'Preparing Report.';
+    setTimeout(() => {
+      if (this.filterObj.report_type === 'Alert Report') {
+        this.latestAlerts.forEach(alert => {
+          data.push({
+            'Asset Name': (this.deviceFilterObj.display_name ? this.deviceFilterObj.display_name : this.deviceFilterObj.device_id),
+            Time: alert.local_created_date,
+            Severity: alert.severity,
+            Description: alert.message,
+            Status: alert.metadata?.acknowledged_date ? 'Acknowledged' : 'Not Acknowledged',
+            'Acknowledged By': alert.metadata?.user_id
+          });
         });
-      });
-      // const element = document.getElementById('dataTable');
+        // const element = document.getElementById('dataTable');
+        ws = XLSX.utils.json_to_sheet(data);
+      } else {
+        data = [];
+        this.telemetry.forEach(telemetryObj => {
+          const obj = {
+            'Asset Name': this.filterObj.non_ip_device ?
+              (this.filterObj.non_ip_device.device_display_name ? this.filterObj.non_ip_device?.device_display_name
+                : this.filterObj.non_ip_device?.device_id)
+              : (this.deviceFilterObj ?
+              (this.deviceFilterObj.device_display_name ? this.deviceFilterObj.device_display_name : this.deviceFilterObj.device_id)
+              : '' ),
+            Time: telemetryObj.local_created_date
+          };
+          this.selectedProps.forEach(prop => {
+            obj[prop.id] = telemetryObj[prop.value.json_key];
+          });
+          data.push(obj);
+        });
+
+      }
       ws = XLSX.utils.json_to_sheet(data);
-    } else {
-      data = [];
-      this.telemetry.forEach(telemetryObj => {
-        const obj = {
-          'Asset Name': this.filterObj.non_ip_device ?
-            (this.filterObj.non_ip_device.device_display_name ? this.filterObj.non_ip_device?.device_display_name
-              : this.filterObj.non_ip_device?.device_id)
-            : (this.deviceFilterObj ?
-            (this.deviceFilterObj.device_display_name ? this.deviceFilterObj.device_display_name : this.deviceFilterObj.device_id)
-            : '' ),
-          Time: telemetryObj.local_created_date
-        };
-        this.selectedProps.forEach(prop => {
-          obj[prop.id] = telemetryObj[prop.value.json_key];
-        });
-        data.push(obj);
-      });
 
-    }
-    ws = XLSX.utils.json_to_sheet(data);
-
-    console.log(ws);
+      console.log(ws);
 
 
-    const colA = XLSX.utils.decode_col('B'); // timestamp is in first column
+      const colA = XLSX.utils.decode_col('B'); // timestamp is in first column
 
-    const fmt = 'DD-MMM-YYYY hh:mm:ss.SSS'; // excel datetime format
+      const fmt = 'DD-MMM-YYYY hh:mm:ss.SSS'; // excel datetime format
 
-    // get worksheet range
-    const range = XLSX.utils.decode_range(ws['!ref']);
-    console.log(range.s.r);
-    console.log(range.e.r);
-    for (let i = range.s.r + 1; i <= range.e.r; ++i) {
-      /* find the data cell (range.s.r + 1 skips the header row of the worksheet) */
-      const ref = XLSX.utils.encode_cell({ r: i, c: colA });
-      /* if the particular row did not contain data for the column, the cell will not be generated */
-      if (!ws[ref]) {
-        continue;
+      // get worksheet range
+      const range = XLSX.utils.decode_range(ws['!ref']);
+      console.log(range.s.r);
+      console.log(range.e.r);
+      for (let i = range.s.r + 1; i <= range.e.r; ++i) {
+        /* find the data cell (range.s.r + 1 skips the header row of the worksheet) */
+        const ref = XLSX.utils.encode_cell({ r: i, c: colA });
+        /* if the particular row did not contain data for the column, the cell will not be generated */
+        if (!ws[ref]) {
+          continue;
+        }
+        /* `.t == "n"` for number cells */
+        if (ws[ref].t !== 'n') {
+          continue;
+        }
+        /* assign the `.z` number format */
+        ws[ref].z = fmt;
       }
-      /* `.t == "n"` for number cells */
-      if (ws[ref].t !== 'n') {
-        continue;
-      }
-      /* assign the `.z` number format */
-      ws[ref].z = fmt;
-    }
-    console.log(ws);
-    // width of timestamp col
-    const wscols = [
-      { wch: 10 }
-    ];
+      console.log(ws);
+      // width of timestamp col
+      const wscols = [
+        { wch: 10 }
+      ];
 
-    ws['!cols'] = wscols;
+      ws['!cols'] = wscols;
 
-    /* generate workbook and add the worksheet */
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    const now = moment().utc().unix();
-    /* save to file */
-    XLSX.writeFile(wb, (this.filterObj.device.display_name ? this.filterObj.device.display_name : this.filterObj.device.device_id)
-      + '_' + this.filterObj.report_type + '_' + now + '.xlsx');
-    this.isFileDownloading = false;
+      /* generate workbook and add the worksheet */
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+      const now = moment().utc().unix();
+      /* save to file */
+      XLSX.writeFile(wb, (this.filterObj.device.display_name ? this.filterObj.device.display_name : this.filterObj.device.device_id)
+        + '_' + this.filterObj.report_type + '_' + now + '.xlsx');
+      this.loadingMessage = undefined;
+      $('#downloadReportModal').modal('hide');
+    }, 1000);
+
   }
 
   ngOnDestroy() {

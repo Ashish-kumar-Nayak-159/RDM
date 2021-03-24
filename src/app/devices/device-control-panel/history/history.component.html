@@ -14,10 +14,10 @@
                 text: 'Select Widgets',
                 selectAllText: 'Select All',
                 unSelectAllText: 'UnSelect All',
-                classes: 'col-lg-2 col-xl-2 mr-1 p-0',
+                classes: 'col-lg-3 col-xl-3 mr-1 p-0',
                 enableSearchFilter: true,
                 badgeShowLimit: 1,
-                maxHeight: 200,
+                maxHeight: 1000,
                 labelKey: 'id'
               }"
             >
@@ -145,10 +145,13 @@
     <h6 *ngIf="layoutJson.length == 0 && !isHistoryAPILoading">
       No Layout found
     </h6>
-    <i
-      *ngIf="isHistoryAPILoading"
+    <ng-container *ngIf="isHistoryAPILoading">
+      {{loadingMessage}}
+      <i
       class="fa fa-spinner fa-spin fa-fw fa-2x"
     ></i>
+    </ng-container>
+
   </div>
   <div class="con-pad" id="mainChartDiv" style="max-height: calc(100vh - 20rem);margin-top: 8rem;">
   <div class="row mt-2 col-12 ml-1" *ngIf="historyData.length > 0 && isFilterSelected && !isHistoryAPILoading">

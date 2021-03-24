@@ -274,7 +274,10 @@ maxHeight: 'calc(100vh - 12rem)'}"
                           </fieldset>
                           <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Apply Filter"
                           (click)="getDeviceTelemetryData()" [disabled]="isTelemetryDataLoading">Apply</button>
-                          <i  *ngIf="isTelemetryDataLoading" class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+                          <ng-container  *ngIf="isTelemetryDataLoading">
+                            {{loadingMessage}}
+                            <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+                          </ng-container>
                         </div>
                       </form>
                     </div>
@@ -306,7 +309,10 @@ maxHeight: 'calc(100vh - 12rem)'}"
                 <div class="row col-12 pl-5" *ngIf="!isTelemetryDataLoading && telemetryData.length === 0">
                   No data found.
                 </div>
-                <div *ngIf="isTelemetryDataLoading"><i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i></div>
+                <ng-container  *ngIf="isTelemetryDataLoading">
+                  {{loadingMessage}}
+                  <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+                </ng-container>
                 <div id="charts" classs="w-100 row"></div>
               </div>
             </accordion-group>

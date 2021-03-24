@@ -175,12 +175,12 @@
     'mt-1' : filterObj.report_type === 'Process Parameter Report'}"
     >
       <h5  >{{filterObj.report_type}}
-        <a href="javascript:void(0)" [class.disabled]="isFileDownloading" (click)="savePDF()" title="Export as PDF"><i class="fa fa-sm fa-file-pdf-o" ></i></a>
-        <a href="javascript:void(0)" [class.disabled]="isFileDownloading" (click)="saveExcel()" title="Export as Excel" class="ml-1"><i class="fa fa-sm fa-file-excel-o" ></i></a>
-        <i  class="fa fa-fw fa-2x  fa-spin fa-spinner" *ngIf="isFileDownloading"></i>
+        <a href="javascript:void(0)"  (click)="savePDF()" title="Export as PDF"><i class="fa fa-sm fa-file-pdf-o" ></i></a>
+        <a href="javascript:void(0)"  (click)="saveExcel()" title="Export as Excel" class="ml-1"><i class="fa fa-sm fa-file-excel-o" ></i></a>
+        <!-- <i  class="fa fa-fw fa-2x  fa-spin fa-spinner" *ngIf="isFileDownloading"></i> -->
       </h5>
       <ng-container *ngIf="isFilterSelected && filterObj.report_type === 'Process Parameter Report'">
-      <div class="table-wrapper" id="table-wrapper" [ngStyle]="{maxHeight: !isFilterOpen ? ' calc(100vh - 14rem)' : 'calc(100vh - 24rem)'}" >
+      <div class="table-wrapper" id="table-wrapper" [ngStyle]="{maxHeight: !isFilterOpen ? ' calc(100vh - 15rem)' : 'calc(100vh - 24rem)'}" >
         <table class="table table-bordered table-striped"  id="dataTable1" width="100%" cellspacing="0"
        >
           <thead>
@@ -210,6 +210,7 @@
             <ng-container *ngIf="isTelemetryLoading">
               <tr>
                 <td [attr.colspan]="3 + selectedProps.length">
+                  {{loadingMessage}}
                   <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
                 </td>
               </tr>
@@ -227,7 +228,7 @@
       </ng-container>
       <ng-container *ngIf="isFilterSelected && filterObj.report_type === 'Alert Report'">
       <div class="table-wrapper" id="table-wrapper"
-      [ngStyle]="{maxHeight: !isFilterOpen ? ' calc(100vh - 14.5rem)' : 'calc(100vh - 21.5rem)'}">
+      [ngStyle]="{maxHeight: !isFilterOpen ? ' calc(100vh - 17.5rem)' : 'calc(100vh - 21.5rem)'}">
       <table class="table table-bordered table-striped"  id="dataTable" width="100%" cellspacing="0"
       >
         <thead>
@@ -288,6 +289,7 @@
         <thead>
           <tr class="bg-secondary text-white">
             <th></th>
+            <th></th>
             <th>Asset Name</th>
             <th>Time</th>
             <th>Severity</th>
@@ -298,7 +300,8 @@
         </thead>
         <tbody>
           <ng-container *ngIf="latestAlerts.length > 0">
-            <tr *ngFor="let alert of latestAlerts" [ngClass]="{'bg-danger text-white': alert.severity?.toLowerCase() === 'critical'}">
+            <tr *ngFor="let alert of latestAlerts; let i = index" [ngClass]="{'bg-danger text-white': alert.severity?.toLowerCase() === 'critical'}">
+              <td>{{i + 1}}</td>
               <td><i class="fa fa-exclamation-triangle" [style.color]="
                 (alert.severity?.toLowerCase() === 'critical' ? '#cc0000' :
                 (alert.severity?.toLowerCase() === 'error' ? '#fb5515' :
@@ -333,5 +336,25 @@
       </table>
 
     </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="downloadReportModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="exampleModalLabel">Download Report</h6>
+      </div>
+      <div class="modal-body">
+        <ng-container >
+          {{loadingMessage}}
+          <i
+          class="fa fa-spinner fa-spin fa-fw fa-2x"
+        ></i>
+        </ng-container>
+      </div>
+    </div>
+
   </div>
 </div>

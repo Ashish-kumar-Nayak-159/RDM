@@ -228,6 +228,7 @@ export class DeviceCountComponent implements OnInit {
     this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key +
     (this.propertyList[index + 1] ? ',' : ''));
     obj['message_props'] = message_props;
+    obj.partition_key = this.device?.tags?.partition_key;
     method = this.deviceService.getDeviceTelemetry(obj);
     this.isFilterSelected = true;
     this.isTelemetryLoading = true;

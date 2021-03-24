@@ -103,7 +103,8 @@ export class LiveDataComponent implements OnInit, OnDestroy {
       levels: this.contextApp.hierarchy.levels,
       device_id: this.device.device_id,
       type: 'telemetry',
-      app: this.contextApp.app
+      app: this.contextApp.app,
+      partition_key: this.device?.tags?.partition_key
     };
     this.signalRService.connectToSignalR(obj1);
     this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(

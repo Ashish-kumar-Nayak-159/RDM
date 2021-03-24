@@ -709,6 +709,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
         return;
     }
+    const device = this.devices.find(deviceObj => deviceObj.device_id ===  filterObj.device_id);
+    filterObj.partition_key = device.partition_key;
     delete filterObj.count;
     delete filterObj.device;
     this.isChartViewOpen = true;
@@ -747,7 +749,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       delete filterObj.aggregation_format;
       delete filterObj.sampling_time;
       delete filterObj.sampling_format;
-      const device = this.devices.find(obj => obj.device_id ===  this.selectedAlert.device_id);
       const records = this.commonService.calculateEstimatedRecords
           ((device?.measurement_frequency?.average ? device.measurement_frequency.average : 5),
           filterObj.from_date, filterObj.to_date);

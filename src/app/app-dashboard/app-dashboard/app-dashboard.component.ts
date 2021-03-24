@@ -415,7 +415,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       levels: this.contextApp.hierarchy.levels,
       device_id: this.filterObj?.device?.device_id,
       type: 'telemetry',
-      app: this.contextApp.app
+      app: this.contextApp.app,
+      partition_key: this.filterObj?.device?.partition_key
     };
     this.signalRService.connectToSignalR(obj1);
     this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(
@@ -519,6 +520,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       });
 
       obj.message_props = message_props;
+      obj.partition_key = this.filterObj?.device?.partition_key;
       this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
         (response: any) => {
           if (response?.data?.length > 0) {

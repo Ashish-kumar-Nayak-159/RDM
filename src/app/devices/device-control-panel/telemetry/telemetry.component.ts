@@ -224,6 +224,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
         obj.to_date = filterObj.to_date.unix();
       }
     }
+    obj.partition_key = this.device?.tags?.partition_key;
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'Get Telemetry Data');
       this.isTelemetryLoading = false;
@@ -279,7 +280,8 @@ export class TelemetryComponent implements OnInit, OnDestroy {
         device_id: this.device.device_id,
         from_date: null,
         to_date: null,
-        epoch: true
+        epoch: true,
+        partition_key: this.device?.tags?.partition_key
       };
       const epoch =  this.commonService.convertDateToEpoch(dataobj.message_date);
       obj.from_date = epoch ? (epoch - 300) : null;

@@ -248,6 +248,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           obj.to_date = this.historyFilter.to_date.unix();
         }
       }
+      obj.partition_key = this.device?.tags?.partition_key;
 
       delete obj.dateOption;
       obj.order_dir = 'ASC';

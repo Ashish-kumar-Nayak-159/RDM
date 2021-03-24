@@ -473,6 +473,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
     delete obj.deviceArr;
     this.isTelemetryLoading = false;
     this.isFilterSelected = false;
+    const device = this.devices.find(deviceObj => deviceObj.device_id ===  obj.device_id);
+    obj.partition_key = device.partition_key;
     let method;
     if (obj.to_date - obj.from_date > 3600 && !filterObj.isTypeEditable) {
         this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
@@ -522,7 +524,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
         (this.props[index + 1] ? ',' : ''));
         obj['message_props'] = message_props;
       }
-      const device = this.devices.find(deviceObj => deviceObj.device_id ===  obj.device_id);
       const records = this.commonService.calculateEstimatedRecords
           ((device?.measurement_frequency?.average ? device.measurement_frequency.average : 5),
           filterObj.from_date, filterObj.to_date);

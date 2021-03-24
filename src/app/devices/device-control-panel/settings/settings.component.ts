@@ -106,17 +106,19 @@ export class SettingsComponent implements OnInit {
   saveSettings() {
     this.isSaveSettingAPILoading = true;
     const tagObj = {};
-    const obj = JSON.parse(JSON.stringify(this.deviceType));
-    obj.app = this.contextApp.app;
+    const obj = {
+      app : this.contextApp.app,
+      metadata: this.device.metadata
+    };
     console.log(obj);
-    this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.contextApp.app).subscribe(
+    this.subscriptions.push(this.deviceService.updateDeviceMetadata(obj, this.contextApp.app, this.device.device_id).subscribe(
       (response: any) => {
-        this.toasterService.showSuccess(response.message, 'Update Model Settings');
-        this.getDeviceTypeDetail();
+        this.toasterService.showSuccess(response.message, 'Update Device Settings');
+        this.getDeviceData();
         this.isSettingsEditable = false;
         this.isSaveSettingAPILoading = false;
       }, error => {
-        this.toasterService.showError(error.message, 'Update Model Settings');
+        this.toasterService.showError(error.message, 'Update Device Settings');
         this.isSaveSettingAPILoading = false;
       }
     ));

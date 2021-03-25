@@ -160,7 +160,7 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
             item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
             item.local_upload_date = this.commonService.convertUTCDateToLocal(item.upload_date);
             console.log(item);
-            if (this.devices.length > 0) {
+            if (this.devices?.length > 0) {
             item.display_name = this.devices.find(device => device.device_id === item.device_id).display_name;
             } else {
               item.display_name = item.device_id;
@@ -183,7 +183,7 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
       this.isFileDataLoading = true;
     // link.remove();
       this.fileData = undefined;
-      const url = environment.blobURL + '/' + environment.cachedTelemetryContainer + '/' +
+      const url = environment.blobURL + environment.cachedTelemetryContainer + '/' +
       fileObj.file_path + '/' + fileObj.file_name + this.sasToken;
       let method;
       if (type === 'download') {

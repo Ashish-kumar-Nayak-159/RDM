@@ -113,7 +113,7 @@ export class GatewayCachedAlertsComponent implements OnInit, OnDestroy {
           this.alertsList.forEach(item => {
             item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
             item.local_upload_date = this.commonService.convertUTCDateToLocal(item.iothub_date);
-            if (this.devices.length > 0) {
+            if (this.devices?.length > 0) {
                 console.log(item.device_id);
                 console.log(this.devices);
                 item.display_name = this.devices.find(device => device.device_id === item.device_id)?.display_name;

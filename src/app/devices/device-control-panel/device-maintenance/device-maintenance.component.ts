@@ -299,6 +299,9 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
           this.isCreateRecordAPILoading = false;
           this.toasterService.showSuccess(response.message, ((this.selectedMaintenanceData.id ? 'Edit' : 'Add') + ' Maintenance Record'));
           this.onCloseModal();
+          if (!this.maintenanceFilter.from_date || !this.maintenanceFilter.to_date) {
+            this.maintenanceFilter.dateOption = '5 mins';
+          }
           this.searchMaintenance(this.maintenanceFilter);
         }, error => {
           this.isCreateRecordAPILoading = false;

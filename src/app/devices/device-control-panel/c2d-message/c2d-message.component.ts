@@ -55,6 +55,7 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
       this.appName = params.get('applicationId');
       this.pageType = params.get('listName');
       this.pageType = this.pageType.slice(0, -1);
+      console.log(this.message);
       if (this.type === 'feedback') {
         this.loadMessageDetail(this.message, false);
         this.isFilterSelected = true;
@@ -165,10 +166,8 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
       obj.to_date = (epoch ? (epoch + 300) : null);
       method = this.deviceService.getDirectMethodJSON(message.id, this.appName, obj);
     } else {
-      const epoch =  this.commonService.convertDateToEpoch(message.created_date);
-      console.log(epoch);
-      console.log(epoch + 300);
-      obj.from_date = epoch ? (epoch) : null;
+      const epoch =  message.created_date ? this.commonService.convertDateToEpoch(message.created_date) : message.timestamp;;
+      obj.from_date = epoch ? (epoch - 5) : null;
       obj.to_date = (epoch ? (epoch + (message?.metadata?.expire_in_min ? message.metadata.expire_in_min * 60 : 300)) : null);
       method = this.deviceService.getC2dMessageJSON(message.message_id, this.appName, obj);
     }
@@ -203,8 +202,8 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
         to_date: null,
         epoch: true
       };
-      const epoch =  this.commonService.convertDateToEpoch(message.created_date);
-      obj.from_date = epoch ? (epoch) : null;
+      const epoch =  message.created_date ? this.commonService.convertDateToEpoch(message.created_date) : message.timestamp;
+      obj.from_date = epoch ? (epoch - 5) : null;
       obj.to_date = (moment().utc()).unix();
       this.apiSubscriptions.push(this.deviceService.getC2dResponseJSON(obj).subscribe(
         (response: any) => {

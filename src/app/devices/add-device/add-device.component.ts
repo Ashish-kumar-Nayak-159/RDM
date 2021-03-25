@@ -124,8 +124,8 @@ export class AddDeviceComponent implements OnInit {
 
   onCreateDevice() {
     console.log(this.deviceDetail);
-    if (!this.deviceDetail.device_id || !this.deviceDetail.tags.device_manager || !this.deviceDetail.tags.protocol
-      || !this.deviceDetail.tags.cloud_connectivity  ) {
+    if (!this.deviceDetail.device_id || !this.deviceDetail.gateway_id || !this.deviceDetail.tags.device_manager ||
+      !this.deviceDetail.tags.protocol || !this.deviceDetail.tags.cloud_connectivity  ) {
         this.toasterService.showError('Please fill all the details',
         'Create ' + this.componentState);
         return;
@@ -173,6 +173,35 @@ export class AddDeviceComponent implements OnInit {
     ? this.deviceService.createNonIPDevice(this.deviceDetail, this.contextApp.app)
     : this.deviceService.createDevice(this.deviceDetail, this.contextApp.app);
     this.subscriptions.push(methodToCall.subscribe(
+      (response: any) => {
+        if ( this.componentState === CONSTANTS.NON_IP_DEVICE) {
+          this.updateGatewayTags(this.deviceDetail);
+        } else {
+        this.isCreateDeviceAPILoading = false;
+        this.toasterService.showSuccess(response.message,
+          'Create ' + this.componentState);
+        this.getDeviceEmit.emit();
+        this.onCloseCreateDeviceModal();
+      }
+      }, error => {
+        this.isCreateDeviceAPILoading = false;
+        this.toasterService.showError(error.message,
+          'Create ' + this.componentState);
+        // this.onCloseCreateDeviceModal();
+      }
+    ));
+  }
+
+  updateGatewayTags(deviceObj) {
+    const obj = {
+      device_id: deviceObj.gateway_id,
+      tags: {
+        partition_keys: {
+        }
+      }
+    };
+    obj.tags.partition_keys[deviceObj.device_id] = deviceObj.tags.partition_key;
+    this.subscriptions.push(this.deviceService.updateDeviceTags(obj, this.contextApp.app).subscribe(
       (response: any) => {
         this.isCreateDeviceAPILoading = false;
         this.toasterService.showSuccess(response.message,

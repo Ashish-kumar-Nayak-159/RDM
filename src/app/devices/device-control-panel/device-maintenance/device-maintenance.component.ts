@@ -53,7 +53,7 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
     } else {
       this.maintenanceFilter.device_id = this.device.device_id;
     }
-    this.route.paramMap.subscribe(params => {
+    this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
       this.pageType = params.get('listName');
       this.pageType = this.pageType.slice(0, -1);
       this.maintenanceTableConfig = {
@@ -78,7 +78,7 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
           }
         ]
       };
-    });
+    }));
     this.maintenanceFilter.epoch = true;
     // this.searchMaintenance(this.maintenanceFilter);
 
@@ -294,7 +294,7 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
       this.selectedMaintenanceData) :
     this.deviceService.updateDeviceMaintenanceActivityData(this.contextApp.app, this.device.device_id,
       this.selectedMaintenanceData.id, this.selectedMaintenanceData);
-    method.subscribe(
+    this.apiSubscriptions.push(method.subscribe(
         (response: any) => {
           this.isCreateRecordAPILoading = false;
           this.toasterService.showSuccess(response.message, ((this.selectedMaintenanceData.id ? 'Edit' : 'Add') + ' Maintenance Record'));
@@ -307,11 +307,12 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
           this.isCreateRecordAPILoading = false;
           this.toasterService.showError(error.message, ((this.selectedMaintenanceData.id ? 'Edit' : 'Add') + ' Maintenance Record'));
         }
-      );
+      ));
   }
 
   onRemoveRecord() {
-    this.deviceService.deleteDeviceMaintenanceActivityData(this.contextApp.app, this.device.device_id, this.deleteMaintenanceDataObj.id)
+    this.apiSubscriptions.push(this.deviceService.deleteDeviceMaintenanceActivityData
+      (this.contextApp.app, this.device.device_id, this.deleteMaintenanceDataObj.id)
     .subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Remove Maintenance Record');
@@ -320,7 +321,7 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
       }, error => {
         this.toasterService.showError(error.message, 'Remove Maintenance Record');
       }
-    );
+    ));
   }
 
 

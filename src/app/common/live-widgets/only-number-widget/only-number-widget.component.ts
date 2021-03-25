@@ -1,5 +1,6 @@
+import { Subscription } from 'rxjs';
 import { ChartService } from 'src/app/chart/chart.service';
-import { Component, Input, OnChanges, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, EventEmitter, Output, OnDestroy } from '@angular/core';
 import { environment } from 'src/environments/environment';
 declare var $: any;
 @Component({
@@ -7,7 +8,7 @@ declare var $: any;
   templateUrl: './only-number-widget.component.html',
   styleUrls: ['./only-number-widget.component.css']
 })
-export class OnlyNumberWidgetComponent implements OnInit, OnChanges {
+export class OnlyNumberWidgetComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() chartConfig: any;
   @Input() telemetryObj: any;
@@ -19,6 +20,7 @@ export class OnlyNumberWidgetComponent implements OnInit, OnChanges {
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean; };
   bodyMessage: string;
   headerMessage: string;
+  subscriptions: Subscription[] = [];
      constructor(
        private chartService: ChartService
      ) { }
@@ -27,9 +29,9 @@ export class OnlyNumberWidgetComponent implements OnInit, OnChanges {
     if (this.telemetryObj) {
       this.telemetryData.push(this.telemetryObj);
     }
-    this.chartService.clearDashboardTelemetryList.subscribe(arr => {
+    this.subscriptions.push(this.chartService.clearDashboardTelemetryList.subscribe(arr => {
       this.telemetryData = JSON.parse(JSON.stringify([]));
-    });
+    }));
 
 
   }
@@ -74,6 +76,10 @@ export class OnlyNumberWidgetComponent implements OnInit, OnChanges {
 
   removeChart(chartId) {
     this.removeWidget.emit(chartId);
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

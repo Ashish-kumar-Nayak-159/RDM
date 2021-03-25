@@ -31,10 +31,10 @@ export class C2dPurgeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.route.paramMap.subscribe(params => {
+    this.subscriptions.push(this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
       this.pageType = params.get('listName');
-    });
+    }));
   }
 
   verifyQueueMessages() {

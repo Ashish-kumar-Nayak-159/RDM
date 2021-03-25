@@ -37,7 +37,7 @@ export class OthersComponent implements OnInit, OnDestroy {
     } else {
       this.otherFilter.device_id = this.device.device_id;
     }
-    this.route.paramMap.subscribe(params => {
+    this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
       this.pageType = params.get('listName');
       this.pageType = this.pageType.slice(0, -1);
       this.otherTableConfig = {
@@ -69,7 +69,7 @@ export class OthersComponent implements OnInit, OnDestroy {
           key: 'device_id'
         });
       }
-    });
+    }));
 
   }
 

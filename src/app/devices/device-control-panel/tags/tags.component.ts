@@ -58,12 +58,12 @@ export class TagsComponent implements OnInit, OnDestroy {
     this.device = JSON.parse(JSON.stringify(device));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.route.paramMap.subscribe(async params => {
+    this.subscriptions.push(this.route.paramMap.subscribe(async params => {
       this.pageType = params.get('listName').toLowerCase();
       console.log(this.device);
       // this.device.tags = {};
       this.getDeviceData();
-    });
+    }));
     // this.device.hierarchyString = '';
     // console.log(this.device);
     // let keys = [];

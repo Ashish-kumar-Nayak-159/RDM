@@ -52,7 +52,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
 
-    this.route.paramMap.subscribe(params => {
+    this.subscriptions.push(this.route.paramMap.subscribe(params => {
       this.pageType = params.get('listName');
       this.pageType = this.pageType.slice(0, -1).toLowerCase();
       if (this.pageType === 'device') {
@@ -67,7 +67,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       if (this.pageType === 'gateway') {
         this.getDeviceCount();
       }
-    });
+    }));
   }
 
 
@@ -135,12 +135,12 @@ export class OverviewComponent implements OnInit, OnDestroy {
     const obj = {
       device_id: this.device.device_id
     };
-    this.deviceService.syncDeviceCache(this.deviceType.app, obj)
+    this.subscriptions.push(this.deviceService.syncDeviceCache(this.deviceType.app, obj)
     .subscribe((response: any) => {
       this.toasterService.showSuccess(response.message, 'Sync Device Data');
     }, error => {
       this.toasterService.showError(error.message, 'Sync Device Data');
-    });
+    }));
   }
 
   copyConnectionString() {

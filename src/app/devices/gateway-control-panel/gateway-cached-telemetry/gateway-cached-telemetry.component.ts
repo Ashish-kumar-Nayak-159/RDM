@@ -50,7 +50,7 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
     this.editorOptions.statusBar = false;
     this.filterObj.gateway_id = this.device.device_id;
     this.devices = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICES_LIST);
-    this.route.paramMap.subscribe(params => {
+    this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
       this.pageType = params.get('listName');
       this.pageType = this.pageType.slice(0, -1);
       this.telemetryTableConfig = {
@@ -113,7 +113,7 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
         }
       };
 
-    });
+    }));
     this.filterObj.epoch = true;
 
   }

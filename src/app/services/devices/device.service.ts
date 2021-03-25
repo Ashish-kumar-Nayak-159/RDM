@@ -73,6 +73,16 @@ export class DeviceService {
     }
   }
 
+  getAllDevices(filterObj, app) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_DEVICES, encodeURIComponent(app)), { params });
+  }
+
   getDeviceList(filterObj) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {

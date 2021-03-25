@@ -56,7 +56,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.applicationData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.url = this.router.url;
-    this.router.events.subscribe(async event => {
+    this.apiSubscriptions.push(this.router.events.subscribe(async event => {
       this.navigationInterceptor(event);
       if (event instanceof NavigationEnd) {
         this.url = event.url;
@@ -113,7 +113,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
             }, 500);
         }
       }
-    });
+    }));
 
   }
 

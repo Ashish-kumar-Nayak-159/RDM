@@ -1,3 +1,4 @@
+import { Subscription } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CONSTANTS } from 'src/app/app.constants';
@@ -10,12 +11,13 @@ import { CONSTANTS } from 'src/app/app.constants';
 export class ControlPanelComponent implements OnInit {
   componentState: string;
   constantData = CONSTANTS;
+  subscriptions: Subscription[] = [];
   constructor(
     private route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
+    this.subscriptions.push(this.route.paramMap.subscribe(params => {
       if (params.get('listName')) {
         const listName = params.get('listName');
         if (listName.toLowerCase() === 'nonipdevices') {
@@ -26,7 +28,7 @@ export class ControlPanelComponent implements OnInit {
           this.componentState = CONSTANTS.IP_DEVICE;
         }
       }
-    });
+    }));
   }
 
 }

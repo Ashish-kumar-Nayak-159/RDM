@@ -33,9 +33,9 @@ export class AccessControlComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.route.paramMap.subscribe(async params => {
+    this.apiSubscriptions.push(this.route.paramMap.subscribe(async params => {
       this.pageType = params.get('listName').toLowerCase();
-    });
+    }));
     // if (this.device?.tags?.device_users) {
     // Object.keys(this.device?.tags?.device_users).forEach(user => {
     //   const appUser = this.appUsers.find(userObj => userObj.user_email === user);

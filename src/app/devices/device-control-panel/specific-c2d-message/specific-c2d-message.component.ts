@@ -52,7 +52,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.displayType = 'compose';
-    this.route.paramMap.subscribe(params => {
+    this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
       this.listName = params.get('listName');
       this.listName = this.listName.slice(0, -1);
@@ -76,7 +76,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
       } else {
         this.getConfigureWidgets();
       }
-    });
+    }));
 
     // this.messageIdInterval = setInterval(() => {
     //   this.c2dMessageData.message_id = this.device.device_id + '_' + moment().unix();

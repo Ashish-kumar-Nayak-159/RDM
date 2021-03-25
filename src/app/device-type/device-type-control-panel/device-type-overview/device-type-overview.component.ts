@@ -1,8 +1,9 @@
+import { Subscription } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from './../../../services/toaster.service';
 import { CONSTANTS } from 'src/app/app.constants';
 import { environment } from './../../../../environments/environment';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
 declare var $: any;
 @Component({
@@ -10,7 +11,7 @@ declare var $: any;
   templateUrl: './device-type-overview.component.html',
   styleUrls: ['./device-type-overview.component.css']
 })
-export class DeviceTypeOverviewComponent implements OnInit {
+export class DeviceTypeOverviewComponent implements OnInit, OnDestroy {
 
   @Input() deviceType: any;
   contextApp: any;
@@ -21,6 +22,7 @@ export class DeviceTypeOverviewComponent implements OnInit {
   appAdminRole = CONSTANTS.APP_ADMIN_ROLE;
   password: any;
   isPasswordVisible = false;
+  subscriptions: Subscription[] = [];
   constructor(
     private toasterService: ToasterService,
     private deviceTypeService: DeviceTypeService,
@@ -53,7 +55,7 @@ export class DeviceTypeOverviewComponent implements OnInit {
 
   freezeModel() {
     this.isModelFreezeUnfreezeAPILoading = true;
-    this.deviceTypeService.freezeDeviceModel(this.contextApp.app, this.deviceType.name).subscribe(
+    this.subscriptions.push(this.deviceTypeService.freezeDeviceModel(this.contextApp.app, this.deviceType.name).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Freeze Model');
         this.isModelFreezeUnfreezeAPILoading = false;
@@ -62,7 +64,7 @@ export class DeviceTypeOverviewComponent implements OnInit {
         this.toasterService.showError(error.message, 'Freeze Model');
         this.isModelFreezeUnfreezeAPILoading = false;
       }
-    );
+    ));
   }
 
 
@@ -72,7 +74,7 @@ export class DeviceTypeOverviewComponent implements OnInit {
       email: this.userData.email,
       password: this.password
     };
-    this.deviceTypeService.unfreezeDeviceModel(this.contextApp.app, this.deviceType.name, obj).subscribe(
+    this.subscriptions.push(this.deviceTypeService.unfreezeDeviceModel(this.contextApp.app, this.deviceType.name, obj).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Unfreeze Model');
         this.isModelFreezeUnfreezeAPILoading = false;
@@ -82,6 +84,10 @@ export class DeviceTypeOverviewComponent implements OnInit {
         this.toasterService.showError(error.message, 'Unfreeze Model');
         this.isModelFreezeUnfreezeAPILoading = false;
       }
-    );
+    ));
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

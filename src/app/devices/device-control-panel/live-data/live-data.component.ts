@@ -67,7 +67,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
       app: this.contextApp.app,
       name: this.device.tags.device_type
     };
-    this.deviceTypeService.getThingsModelLiveWidgets(params).subscribe(
+    this.apiSubscriptions.push(this.deviceTypeService.getThingsModelLiveWidgets(params).subscribe(
       (response: any) => {
         if (response?.live_widgets?.length > 0) {
           response.live_widgets.forEach(widget => {
@@ -78,7 +78,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
           });
         }
       }
-    );
+    ));
   }
 
   getTelemetryData() {

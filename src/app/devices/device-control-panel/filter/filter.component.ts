@@ -1,4 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from './../../../app.constants';
 import { ActivatedRoute } from '@angular/router';
@@ -10,7 +11,7 @@ import * as moment from 'moment';
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.css']
 })
-export class FilterComponent implements OnInit {
+export class FilterComponent implements OnInit, OnDestroy {
 
   @Input() filterObj: any;
   originalFilterObj: any = {};
@@ -23,6 +24,7 @@ export class FilterComponent implements OnInit {
   @ViewChild('dtInput1', {static: false}) dtInput1: any;
   @ViewChild('dtInput2', {static: false}) dtInput2: any;
   today = new Date();
+  subscriptions: Subscription[] = [];
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -31,12 +33,12 @@ export class FilterComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.route.paramMap.subscribe(params => {
+    this.subscriptions.push(this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
       this.filterObj.app = this.appName;
       this.pageType = params.get('listName');
       this.pageType = this.pageType.slice(0, -1);
-    });
+    }));
 
     if (this.filterObj.gateway_id) {
      // this.getDevicesListByGateway();
@@ -105,5 +107,9 @@ export class FilterComponent implements OnInit {
     if (this.dtInput2) {
       this.dtInput2.value = null;
     }
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

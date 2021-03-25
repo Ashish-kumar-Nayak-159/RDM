@@ -29,7 +29,7 @@ export class ApplicationSettingComponent implements OnInit, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getApplicationData();
-    this.route.paramMap.subscribe(params => {
+    this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
       this.commonService.breadcrumbEvent.emit({
         type: 'replace',
         data: [
@@ -39,8 +39,8 @@ export class ApplicationSettingComponent implements OnInit, OnDestroy {
           }
         ]
       });
-    });
-    this.route.fragment.subscribe(
+    }));
+    this.apiSubscriptions.push(this.route.fragment.subscribe(
       fragment => {
         if (fragment) {
           this.activeTab = fragment;
@@ -48,7 +48,7 @@ export class ApplicationSettingComponent implements OnInit, OnDestroy {
           this.activeTab = 'meta-data';
         }
       }
-    );
+    ));
 
     this.apiSubscriptions.push(this.applicationService.refreshAppData.subscribe(() => {
       this.getApplicationData();

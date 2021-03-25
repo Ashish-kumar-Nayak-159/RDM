@@ -37,7 +37,7 @@ export class DeviceLifeCycleEventsComponent implements OnInit, OnDestroy {
 
     this.filterObj.device_id = this.device.device_id;
 
-    this.route.paramMap.subscribe(params => {
+    this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
       this.pageType = params.get('listName');
       this.pageType = this.pageType.slice(0, -1);
       this.eventTableConfig = {
@@ -55,9 +55,8 @@ export class DeviceLifeCycleEventsComponent implements OnInit, OnDestroy {
         ]
       };
 
-    });
+    }));
     this.filterObj.epoch = true;
-
   }
 
   searchLifeCycleEvents(filterObj) {

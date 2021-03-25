@@ -76,9 +76,9 @@ export class DeviceCountComponent implements OnInit {
     console.log(this.device);
     const obj = {
       gateway_id: this.telemetryFilter.gateway_id,
-      app: this.device?.tags?.app
+      type: 'Legacy Device'
     };
-    this.apiSubscriptions.push(this.deviceService.getNonIPDeviceList(obj).subscribe(
+    this.apiSubscriptions.push(this.deviceService.getAllDevices(obj, this.contextApp.app).subscribe(
       (response: any) => {
         if (response && response.data) {
           this.devices = response.data;
@@ -229,6 +229,9 @@ export class DeviceCountComponent implements OnInit {
     (this.propertyList[index + 1] ? ',' : ''));
     obj['message_props'] = message_props;
     obj.partition_key = this.device?.tags?.partition_key;
+    if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
+      obj.partition_key = filterObj.device.partition_key;
+    }
     method = this.deviceService.getDeviceTelemetry(obj);
     this.isFilterSelected = true;
     this.isTelemetryLoading = true;

@@ -36,7 +36,7 @@ export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
 
     this.filterObj.gateway_id = this.device.device_id;
 
-    this.route.paramMap.subscribe(params => {
+    this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
       this.pageType = params.get('listName');
       this.pageType = this.pageType.slice(0, -1);
       this.configHistoryTableConfig = {
@@ -59,7 +59,7 @@ export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
         ]
       };
 
-    });
+    }));
     this.filterObj.epoch = true;
 
   }

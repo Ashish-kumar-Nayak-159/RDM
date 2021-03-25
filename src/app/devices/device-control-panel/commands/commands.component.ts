@@ -12,7 +12,7 @@ declare var $: any;
   templateUrl: './commands.component.html',
   styleUrls: ['./commands.component.css']
 })
-export class CommandsComponent implements OnInit {
+export class CommandsComponent implements OnInit, OnDestroy {
 
   @Input() pageType;
   @Input() device: Device = new Device();
@@ -21,19 +21,20 @@ export class CommandsComponent implements OnInit {
   displayMode: string;
   timerObj: any;
   selectedCommunicationTechnique: string;
+  subscriptions: Subscription[] = [];
   constructor(
     private deviceService: DeviceService
   ) { }
 
   ngOnInit(): void {
 
-    this.deviceService.composeC2DMessageStartEmitter.subscribe(data => {
+    this.subscriptions.push(this.deviceService.composeC2DMessageStartEmitter.subscribe(data => {
       this.timerObj = {
         hours: data.hours,
         minutes: data.minutes,
         seconds: data.seconds
       };
-    });
+    }));
     if (this.callingPage === 'gateway') {
       this.displayMode = 'view';
       this.timerObj = undefined;
@@ -58,5 +59,8 @@ export class CommandsComponent implements OnInit {
     this.selectedCommunicationTechnique = undefined;
   }
 
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
 
 }

@@ -64,7 +64,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
 
   //  this.commonService.setFlag(true);
-    this.route.paramMap.subscribe(async params => {
+    this.subscriptions.push(this.route.paramMap.subscribe(async params => {
       this.deviceFilterObj = new DeviceListFilter();
       this.deviceFilterObj.app = this.contextApp.app;
       this.deviceFilterObj.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
@@ -130,7 +130,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
         this.deviceFilterObj.type = this.componentState;
       }
 
-      this.route.queryParamMap.subscribe(
+      this.subscriptions.push(this.route.queryParamMap.subscribe(
         params1 => {
           this.devicesList = [];
           if (params1.get('connection_state')) {
@@ -139,7 +139,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
           }
           this.searchDevices();
         }
-      );
+      ));
       this.protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
       console.log(this.contextApp);
       const keys = Object.keys(this.contextApp.user.hierarchy);
@@ -224,7 +224,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       this.protocolList = JSON.parse(JSON.stringify(data));
 
 
-    });
+    }));
     console.log(this.deviceFilterObj);
     setTimeout(() => {
     console.log($('#table-wrapper'));

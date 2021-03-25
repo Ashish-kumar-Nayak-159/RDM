@@ -51,7 +51,7 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
       this.c2dMsgFilter.device_id = this.device.device_id;
     }
     this.c2dMsgFilter.epoch = true;
-    this.route.paramMap.subscribe(params => {
+    this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
       this.pageType = params.get('listName');
       this.pageType = this.pageType.slice(0, -1);
@@ -63,7 +63,7 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
         this.loadResponseDetail(this.message, false);
         this.isFilterSelected = true;
       }
-    });
+    }));
 
     this.previousMsgFilter = JSON.parse(JSON.stringify(this.c2dMsgFilter));
   }

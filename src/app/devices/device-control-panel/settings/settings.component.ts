@@ -1,5 +1,5 @@
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { DeviceService } from './../../../services/devices/device.service';
 import { ToasterService } from './../../../services/toaster.service';
@@ -13,7 +13,7 @@ declare var $: any;
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit, OnDestroy {
 
   @Input() device = new Device();
   originalDevice = new Device();
@@ -122,6 +122,10 @@ export class SettingsComponent implements OnInit {
         this.isSaveSettingAPILoading = false;
       }
     ));
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

@@ -46,7 +46,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.displayType = 'compose';
-    this.route.paramMap.subscribe(params => {
+    this.subscriptions.push(this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');
       this.listName = params.get('listName');
       this.listName = this.listName.slice(0, -1);
@@ -62,7 +62,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
       if (this.listName === 'gateway') {
         this.getDevicesListByGateway();
       }
-    });
+    }));
     // this.messageIdInterval = setInterval(() => {
     //   this.c2dMessageData.message_id = this.device.device_id + '_' + moment().unix();
     // }, 1000);

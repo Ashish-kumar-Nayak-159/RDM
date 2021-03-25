@@ -79,7 +79,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.route.paramMap.subscribe(async params => {
+    this.apiSubscriptions.push(this.route.paramMap.subscribe(async params => {
       console.log(this.contextApp);
       this.tileName = this.getTileName('IoT Gateways');
       if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.logo) {
@@ -106,7 +106,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
       this.getLastNotificationData();
       this.getLastAlertData();
       this.getLastEventData();
-    });
+    }));
     await this.getAllDevices();
     const center = this.commonService.averageGeolocation(this.devices);
     console.log('centerrr    ', center);

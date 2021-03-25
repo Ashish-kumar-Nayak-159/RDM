@@ -43,7 +43,7 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.route.paramMap.subscribe(async params => {
+    this.subscriptions.push(this.route.paramMap.subscribe(async params => {
       this.thingsModelFilterObj.app = this.contextApp.app;
       this.originalThingsModelFilterObj = JSON.parse(JSON.stringify(this.thingsModelFilterObj));
       this.searchThingsModels();
@@ -62,7 +62,7 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
         ]
       };
       this.commonService.breadcrumbEvent.emit(obj);
-    });
+    }));
     this.tableConfig = {
       type: 'Things Model',
       tableHeight: 'calc(100vh - 18rem)',

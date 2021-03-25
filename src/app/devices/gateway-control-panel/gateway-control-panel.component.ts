@@ -40,7 +40,7 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.route.paramMap.subscribe(
+    this.subscriptions.push(this.route.paramMap.subscribe(
       async params => {
         if (this.contextApp?.configuration?.gateway_control_panel_menu.length > 0) {
           this.menuItems = this.contextApp.configuration.gateway_control_panel_menu;
@@ -68,8 +68,8 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
 
         }
       }
-    );
-    this.route.fragment.subscribe(
+    ));
+    this.subscriptions.push(this.route.fragment.subscribe(
       fragment => {
         if (fragment) {
           this.activeTab = fragment;
@@ -89,7 +89,7 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
           }
         }
       }
-    );
+    ));
     this.subscriptions.push(this.deviceService.reloadDeviceInControlPanelEmitter.subscribe(
       () => {
         this.getDeviceDetail(true);

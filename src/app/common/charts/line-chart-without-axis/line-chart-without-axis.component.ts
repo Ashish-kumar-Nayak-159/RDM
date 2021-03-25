@@ -1,3 +1,4 @@
+import { Subscription } from 'rxjs';
 import { Component, Input, NgZone, OnInit, OnDestroy, OnChanges } from '@angular/core';
 import { ChartService } from 'src/app/chart/chart.service';
 import * as am4core from '@amcharts/amcharts4/core';
@@ -22,6 +23,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
   range1: any;
   range2: any;
   valueAxis: any;
+  subscriptions: Subscription[] = [];
 
   constructor(
     private chartService: ChartService,
@@ -30,13 +32,13 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
 
   ngOnInit(): void {
     setTimeout(() => this.plotChart(), 200);
-    this.chartService.clearDashboardTelemetryList.subscribe(arr => {
+    this.subscriptions.push(this.chartService.clearDashboardTelemetryList.subscribe(arr => {
       this.telemetryData = JSON.parse(JSON.stringify([]));
       if (this.chart) {
         this.chart.data = JSON.parse(JSON.stringify([]));
         this.chart.invalidateData();
       }
-    });
+    }));
   }
 
   ngOnChanges(changes) {
@@ -198,6 +200,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
       if (this.chart) {
         this.chart.dispose();
       }
+      this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

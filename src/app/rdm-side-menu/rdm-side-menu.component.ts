@@ -8,6 +8,7 @@ import { DOCUMENT } from '@angular/common';
 import { CommonService } from 'src/app/services/common.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CONSTANTS } from 'src/app/app.constants';
+import { Subscription } from 'rxjs';
 declare var $: any;
 @Component({
   selector: 'app-rdm-side-menu',
@@ -21,6 +22,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   contextApp: any;
   displayMenuList = [];
   signalRAlertSubscription: any;
+  apiSubscriptions: Subscription[] = [];
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private commonService: CommonService,
@@ -54,14 +56,14 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
     }
     this.processAppMenuData();
     let i = 0;
-    this.router.events.subscribe(async event => {
+    this.apiSubscriptions.push(this.router.events.subscribe(async event => {
       if (event instanceof NavigationEnd && i === 0) {
         i++;
         this.processAppMenuData();
       }
-    });
+    }));
 
-    this.commonService.refreshSideMenuData.subscribe(list => {
+    this.apiSubscriptions.push(this.commonService.refreshSideMenuData.subscribe(list => {
       console.log(list);
       let config = list.configuration?.main_menu?.length > 0 ? list.configuration.main_menu :
       JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
@@ -72,7 +74,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
       // this.userData.apps.splice(index, 1);
       // this.userData.apps.splice(index, 0, obj);
       // this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
-    });
+    }));
   }
 
 
@@ -184,6 +186,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
     this.signalRService.disconnectFromSignalR('overlay');
     this.signalRAlertSubscription?.unsubscribe();
   }

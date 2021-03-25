@@ -1,11 +1,12 @@
 import { environment } from './../../environments/environment';
-import { Component, OnInit, Inject, Input, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, OnInit, Inject, Input, SimpleChanges, OnChanges, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { CommonService } from '../services/common.service';
 import { DOCUMENT } from '@angular/common';
 import { CONSTANTS } from '../app.constants';
 import { filter } from 'rxjs/operators';
 import { data } from 'jquery';
+import { Subscription } from 'rxjs';
 declare var $: any;
 
 @Component({
@@ -13,7 +14,7 @@ declare var $: any;
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit, OnChanges {
+export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
   breadcrumbData: any[] = [];
   userData: any;
   @Input() url: string;
@@ -23,6 +24,7 @@ export class HeaderComponent implements OnInit, OnChanges {
   blobStorageURL = environment.blobURL;
   constantData = CONSTANTS;
   isResetPassword = false;
+  apiSubscriptions: Subscription[] = [];
 
   constructor(
     private router: Router,
@@ -43,7 +45,7 @@ export class HeaderComponent implements OnInit, OnChanges {
         };
       }
     }
-    this.router.events
+    this.apiSubscriptions.push(this.router.events
     .pipe(filter((rs): rs is NavigationEnd => rs instanceof NavigationEnd))
     .subscribe(event => {
       if (
@@ -53,8 +55,8 @@ export class HeaderComponent implements OnInit, OnChanges {
         this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
         this.breadcrumbData = this.commonService.getItemFromLocalStorage(CONSTANTS.CURRENT_BREADCRUMB_STATE);
       }
-    });
-    this.commonService.refreshSideMenuData.subscribe(list => {
+    }));
+    this.apiSubscriptions.push(this.commonService.refreshSideMenuData.subscribe(list => {
 
       this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
       if (this.contextApp?.metadata && !this.contextApp.metadata.header_logo) {
@@ -64,8 +66,8 @@ export class HeaderComponent implements OnInit, OnChanges {
       } else if (this.contextApp  && this.contextApp.metadata) {
         this.contextApp.metadata.header_logo = list.metadata.header_logo;
       }
-    });
-    this.commonService.breadcrumbEvent.subscribe((breadcrumbs: any) => {
+    }));
+    this.apiSubscriptions.push(this.commonService.breadcrumbEvent.subscribe((breadcrumbs: any) => {
       this.commonService.setItemInLocalStorage(CONSTANTS.CURRENT_BREADCRUMB_STATE, this.breadcrumbData);
       if (breadcrumbs.type === 'replace') {
         this.breadcrumbData = breadcrumbs.data;
@@ -86,7 +88,7 @@ export class HeaderComponent implements OnInit, OnChanges {
           this.breadcrumbData = breadcrumbs.data;
         }
       }
-    });
+    }));
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -166,6 +168,10 @@ export class HeaderComponent implements OnInit, OnChanges {
   onLogout() {
     $('#logoutModal').modal('hide');
     this.commonService.onLogOut();
+  }
+
+  ngOnDestroy() {
+    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

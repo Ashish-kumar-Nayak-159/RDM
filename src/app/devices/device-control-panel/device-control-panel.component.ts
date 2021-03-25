@@ -43,7 +43,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     await this.getApplicationUsers();
 
-    this.route.paramMap.subscribe(
+    this.subscriptions.push(this.route.paramMap.subscribe(
       async params => {
         console.log(this.menuItems);
         if (params.get('deviceId')) {
@@ -84,14 +84,15 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
           this.getDeviceDetail();
           }
       }
-    );
-    this.route.fragment.subscribe(
+    ));
+    this.subscriptions.push(this.route.fragment.subscribe(
       fragment => {
         if (fragment) {
           this.activeTab = fragment;
 
         } else {
-          const menu = this.componentState !== CONSTANTS.NON_IP_DEVICE ? (this.contextApp.configuration.device_control_panel_menu.length > 0 ?
+          const menu = this.componentState !== CONSTANTS.NON_IP_DEVICE ?
+          (this.contextApp.configuration.device_control_panel_menu.length > 0 ?
           this.contextApp.configuration.device_control_panel_menu :
           JSON.parse(JSON.stringify(CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST))) :
           (this.contextApp.configuration.legacy_device_control_panel_menu.length > 0 ?
@@ -109,7 +110,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
           }
         }
       }
-    );
+    ));
     this.subscriptions.push(this.deviceService.reloadDeviceInControlPanelEmitter.subscribe(
       () => {
         this.getDeviceDetail(true);

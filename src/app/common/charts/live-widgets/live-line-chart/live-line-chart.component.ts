@@ -51,13 +51,13 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
       this.chartConfig.y2AxisProps = [];
     }
     setTimeout(() => this.plotChart(), 200);
-    this.chartService.clearDashboardTelemetryList.subscribe(arr => {
+    this.subscriptions.push(this.chartService.clearDashboardTelemetryList.subscribe(arr => {
       this.telemetryData = [];
       if (this.chart) {
         this.chart.data = [];
         this.chart.validateData();
       }
-    });
+    }));
   }
 
   ngOnChanges(changes) {

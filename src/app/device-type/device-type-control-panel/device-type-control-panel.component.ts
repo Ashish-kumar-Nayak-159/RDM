@@ -32,19 +32,19 @@ export class DeviceTypeControlPanelComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.route.paramMap.subscribe(async params => {
+    this.subscriptions.push(this.route.paramMap.subscribe(async params => {
       if (this.contextApp?.configuration?.model_control_panel_menu?.length > 0) {
         this.menuItems = this.contextApp.configuration.model_control_panel_menu;
       }
       this.getDeviceTypeData(params.get('deviceTypeId'));
-    });
+    }));
     this.subscriptions.push(this.deviceTypeService.deviceModelRefreshData.subscribe(
       name => {
         this.getDeviceTypeData(name);
       }
     ));
 
-    this.route.fragment.subscribe(
+    this.subscriptions.push(this.route.fragment.subscribe(
       fragment => {
         if (fragment) {
           this.activeTab = fragment;
@@ -64,7 +64,7 @@ export class DeviceTypeControlPanelComponent implements OnInit, OnDestroy {
           }
         }
       }
-    );
+    ));
   }
 
   setActiveTab(tab) {

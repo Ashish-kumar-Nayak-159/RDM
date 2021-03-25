@@ -69,7 +69,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
-    this.route.paramMap.subscribe(async params => {
+    this.subscriptions.push(this.route.paramMap.subscribe(async params => {
       if (params.get('applicationId')) {
         this.filterObj.app = this.contextApp.app;
        // this.filterObj.count = 10;
@@ -106,7 +106,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
      // this.getLatestAlerts();
       await this.getDevices(this.contextApp.user.hierarchy);
      // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
-    });
+    }));
 
   }
 

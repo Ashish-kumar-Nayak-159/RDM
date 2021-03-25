@@ -94,6 +94,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
     this.applicationDetail = {
       metadata: {
         customer: {},
+        database_settings: {},
         app_specific_schema: true,
         partition: { telemetry: {}}
       }
@@ -201,6 +202,13 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
 
   async createApp() {
     console.log(this.applicationDetail);
+    console.log(!this.applicationDetail.metadata.app_specific_schema && !this.applicationDetail.metadata.app_specific_db &&
+      !this.applicationDetail.metadata.app_telemetry_specific_schema);
+    if (!this.applicationDetail.metadata.app_specific_schema && !this.applicationDetail.metadata.app_specific_db &&
+      !this.applicationDetail.metadata.app_telemetry_specific_schema) {
+      this.applicationDetail.metadata.partition.telemetry.partition_strategy = 'Device ID';
+      this.applicationDetail.metadata.partition.telemetry.sub_partition_strategy = 'week';
+    }
     if (!this.applicationDetail.app || !this.applicationDetail.admin_email || !this.applicationDetail.admin_name ||
       !this.applicationDetail.metadata.partition.telemetry.partition_strategy
       || !this.applicationDetail.metadata.partition.telemetry.sub_partition_strategy

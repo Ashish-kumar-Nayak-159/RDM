@@ -16,6 +16,9 @@
               <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'meta-data'}"
               href="#app-meta-data" role="tab" aria-controls="nav-home" aria-selected="true" (click)="setActiveTab('meta-data')">
               Meta Data</a>
+              <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'database-configuration'}"
+              href="#app-database-configuration" role="tab" aria-controls="nav-home" aria-selected="true" (click)="setActiveTab('database-configuration')">
+              Database Configuration</a>
               <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'device-hierarchy'}"
               href="#app-device-hierarchy" role="tab" aria-controls="nav-profile" aria-selected="false" (click)="setActiveTab('device-hierarchy')">
               Device Hierarchy</a>
@@ -43,6 +46,10 @@
           <div class="tab-pane" id="app-meta-data" role="tabpanel" aria-labelledby="nav-home-tab"
             [ngClass]="{'active': activeTab === 'meta-data'}">
               <app-application-metadata *ngIf="activeTab === 'meta-data' && applicationData" [applicationData]="applicationData"></app-application-metadata>
+            </div>
+            <div class="tab-pane" id="app-database-configuration" role="tabpanel" aria-labelledby="nav-home-tab"
+            [ngClass]="{'active': activeTab === 'database-configuration'}">
+              <app-application-database-configuration *ngIf="activeTab === 'database-configuration' && applicationData" [applicationData]="applicationData"></app-application-database-configuration>
             </div>
             <div class="tab-pane" id="app-device-hierarchy" role="tabpanel" aria-labelledby="nav-profile-tab"
             [ngClass]="{'active': activeTab === 'device-hierarchy'}">

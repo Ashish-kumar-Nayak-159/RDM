@@ -1,0 +1,38 @@
+
+<div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-3">
+  <h5 class="mb-0 text-gray-800">Database Configuration
+  </h5>
+</div>
+<div class="col-6">
+<table class="table table-bordered table-striped" cellspacing="0">
+  <!--<thead>
+    <tr>
+      <th>Project Name</th>
+      <th>Employer</th>
+      <th>Awards</th>
+    </tr>
+  </thead>-->
+  <tbody>
+    <tr>
+      <td>Separate Database Required?</td>
+      <td>{{applicationData?.metadata?.app_specific_db ? 'Yes' : 'No'}}</td>
+    </tr>
+    <tr>
+      <td>Separate App specific schema required?</td>
+      <td>{{applicationData?.metadata?.app_specific_schema ? 'Yes' : 'No'}}</td>
+    </tr>
+    <tr>
+      <td>Separate App specific schema required?</td>
+      <td>{{applicationData?.metadata?.app_telemetry_specific_schema ? 'Yes' : 'No'}}</td>
+    </tr>
+    <tr>
+      <td>Telemetry Partition Technique</td>
+      <td>{{applicationData?.metadata?.partition?.telemetry?.partition_strategy}}</td>
+    </tr>
+    <tr>
+      <td>Telemetry Sub-Partition Technique</td>
+      <td>{{applicationData?.metadata?.partition?.telemetry?.sub_partition_strategy}}</td>
+    </tr>
+  </tbody>
+</table>
+</div>

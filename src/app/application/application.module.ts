@@ -21,6 +21,7 @@ import { ApplicationAlertsComponent } from './application-alerts/application-ale
 import { ApplicationEventsComponent } from './application-events/application-events.component';
 import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 import { AgmMarkerClustererModule } from '@agm/markerclusterer';
+import { ApplicationDatabaseConfigurationComponent } from './application-setting/application-database-configuration/application-database-configuration.component';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { AgmMarkerClustererModule } from '@agm/markerclusterer';
     ApplicationSelectionComponent,
     ApplicationNotificationsComponent,
     ApplicationAlertsComponent,
-    ApplicationEventsComponent
+    ApplicationEventsComponent,
+    ApplicationDatabaseConfigurationComponent
   ],
   imports: [
     CommonModule,

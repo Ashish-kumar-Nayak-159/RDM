@@ -157,7 +157,7 @@ export class AddDeviceComponent implements OnInit {
       console.log(this.deviceDetail.tags.hierarchy_json);
     });
     this.deviceDetail.tags.hierarchy = JSON.stringify(this.deviceDetail.tags.hierarchy_json );
-    this.deviceDetail.tags.created_by = this.userData.email;
+    this.deviceDetail.tags.created_by = this.userData.email + '(' + this.userData.name + ')';
     this.deviceDetail.app = this.contextApp.app;
     delete this.deviceDetail.tags.reserved_tags;
     this.deviceDetail.tags.category = this.componentState === CONSTANTS.NON_IP_DEVICE ?

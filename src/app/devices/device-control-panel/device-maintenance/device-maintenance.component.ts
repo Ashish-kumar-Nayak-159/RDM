@@ -285,9 +285,9 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
     this.selectedMaintenanceData.notes = notes;
     this.isCreateRecordAPILoading = true;
     this.selectedMaintenanceData.gateway_id = this.device.gateway_id;
-    this.selectedMaintenanceData.created_by = this.loggedInUser.email;
+    this.selectedMaintenanceData.created_by = this.loggedInUser.email + '(' + this.loggedInUser.name + ')';
     } else {
-      this.selectedMaintenanceData.updated_by = this.loggedInUser.email;
+      this.selectedMaintenanceData.updated_by = this.loggedInUser.email + '(' + this.loggedInUser.name + ')';
     }
     const method = !this.selectedMaintenanceData.id ?
     this.deviceService.createDeviceMaintenanceActivityData(this.contextApp.app, this.device.device_id,

@@ -171,7 +171,7 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
     if (!obj) {
     this.thingsModel = {};
     this.thingsModel.app = this.contextApp.app;
-    this.thingsModel.created_by = this.userData.name;
+    this.thingsModel.created_by = this.userData.email + '(' + this.userData.name + ')';
     this.thingsModel.metadata = {};
     this.thingsModel.metadata.model_type = CONSTANTS.IP_DEVICE;
     this.thingsModel.tags = {};

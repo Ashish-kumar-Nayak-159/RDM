@@ -83,7 +83,8 @@
   </div>
 </div>
 
-<app-add-device *ngIf="isOpenDeviceCreateModal"  [gateways]="gateways" (getDeviceEmit)="devicesList = [];getDevices()" [componentState]="componentState" [tileData]="tileData"></app-add-device>
+<app-add-device *ngIf="isOpenDeviceCreateModal"  [gateways]="gateways" (getDeviceEmit)="devicesList = [];getDevices()"
+[componentState]="componentState" [tileData]="tileData" (cancelModal)="onCreateDeviceCancelModal()"></app-add-device>
 
 <div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">

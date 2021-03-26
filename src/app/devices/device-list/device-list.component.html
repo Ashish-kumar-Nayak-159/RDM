@@ -146,4 +146,5 @@
 </div>
 </div>
 
-<app-add-device *ngIf="openModal" [gateways]="gateways" (getDeviceEmit)="devicesList = [];searchDevices()" [componentState]="componentState" [tileData]="tileData"></app-add-device>
+<app-add-device *ngIf="openModal" [gateways]="gateways" (getDeviceEmit)="devicesList = [];searchDevices()"
+[componentState]="componentState" [tileData]="tileData" (cancelModal)="onCreateDeviceCancel()"></app-add-device>

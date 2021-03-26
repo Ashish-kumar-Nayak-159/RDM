@@ -459,6 +459,10 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     }
   }
 
+  onCreateDeviceCancel() {
+    this.openModal = false;
+  }
+
 
 
   ngOnDestroy() {

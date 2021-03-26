@@ -18,6 +18,7 @@ export class AddDeviceComponent implements OnInit {
   @Input() tileData: any;
   @Input() componentState: any;
   @Output() getDeviceEmit: EventEmitter<any> = new EventEmitter<any>();
+  @Output() cancelModal: EventEmitter<any> = new EventEmitter<any>();
   deviceDetail: any;
   isCreateDeviceAPILoading = false;
   contextApp: any;
@@ -124,11 +125,16 @@ export class AddDeviceComponent implements OnInit {
 
   onCreateDevice() {
     console.log(this.deviceDetail);
-    if (!this.deviceDetail.device_id || !this.deviceDetail.gateway_id || !this.deviceDetail.tags.device_manager ||
+    if (!this.deviceDetail.device_id || !this.deviceDetail.tags.device_manager ||
       !this.deviceDetail.tags.protocol || !this.deviceDetail.tags.cloud_connectivity  ) {
         this.toasterService.showError('Please fill all the details',
         'Create ' + this.componentState);
         return;
+    }
+    if (this.componentState === CONSTANTS.NON_IP_DEVICE && !this.deviceDetail.gateway_id) {
+      this.toasterService.showError('Gateway Selection is compulsory.',
+        'Create ' + this.componentState);
+      return;
     }
     if (!CONSTANTS.EMAIL_REGEX.test(this.deviceDetail.tags.device_manager.user_email)) {
       this.toasterService.showError('Email address is not valid',
@@ -219,6 +225,7 @@ export class AddDeviceComponent implements OnInit {
 
   onCloseCreateDeviceModal() {
     $('#createDeviceModal').modal('hide');
+    this.cancelModal.emit();
     this.deviceDetail = undefined;
   }
 

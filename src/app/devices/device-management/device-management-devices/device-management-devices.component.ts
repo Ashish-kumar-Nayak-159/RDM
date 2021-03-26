@@ -173,6 +173,10 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
     }
   }
 
+  onCreateDeviceCancelModal() {
+    this.isOpenDeviceCreateModal = false;
+  }
+
   onDeviceSelection(device) {
     if (this.selectedDevices.length > 0) {
       this.selectedDevices.push(device);

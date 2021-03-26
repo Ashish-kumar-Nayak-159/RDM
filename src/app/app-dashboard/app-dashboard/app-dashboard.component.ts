@@ -403,6 +403,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     obj.from_date = midnight;
     obj.to_date = now;
     obj.app = this.contextApp.app;
+    obj.partition_key = this.filterObj.device.partition_key;
+    delete obj.deviceArr;
+
     // this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key +
     // (this.propertyList[index + 1] ? ',' : ''));
     // obj.message_props = message_props;
@@ -410,13 +413,14 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     if (environment.app === 'SopanCMS') {
       await this.getMidNightHours(obj);
     }
+    console.log(this.filterObj.device.partition_key);
     const obj1 = {
       hierarchy: this.contextApp.user.hierarchy,
       levels: this.contextApp.hierarchy.levels,
       device_id: this.filterObj?.device?.device_id,
       type: 'telemetry',
       app: this.contextApp.app,
-      partition_key: this.filterObj?.device?.partition_key
+
     };
     this.signalRService.connectToSignalR(obj1);
     this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(

@@ -9,6 +9,7 @@ export class DeviceListFilter {
   type: string;
   hierarchy: any;
   hierarchyString: string;
+  gatewayArr: any[];
 }
 
 export class Device {

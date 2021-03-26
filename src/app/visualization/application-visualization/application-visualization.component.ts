@@ -347,6 +347,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       obj.device_id = obj.device.device_id;
       delete obj.device;
     }
+    delete obj.deviceArr;
     if (this.pageType === 'live') {
       const midnight =  ((((moment().hour(0)).minute(0)).second(0)).utc()).unix();
       const now = (moment().utc()).unix();

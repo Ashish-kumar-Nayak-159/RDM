@@ -263,41 +263,43 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
 
   createMaintenanceRecord() {
     console.log(this.selectedMaintenanceData);
-    if (!this.selectedMaintenanceData.start_date) {
+    const obj = JSON.parse(JSON.stringify(this.selectedMaintenanceData));
+    if (!obj.start_date) {
       this.toasterService.showError('Start Date is compulsory', 'Add Maintenance Record');
       return;
     }
-    if (!this.selectedMaintenanceData.id) {
+    if (!obj.id) {
     const arr = [];
-    this.selectedMaintenanceData.documents.forEach(doc => {
+    obj.documents.forEach(doc => {
       if (doc.type && doc?.data?.url && doc?.data?.name) {
         arr.push(doc);
       }
     });
     const notes = [];
-    this.selectedMaintenanceData.notes.forEach(note => {
+    obj.notes.forEach(note => {
       if (note.text) {
         note.time = moment().utc().toISOString();
         notes.push(note);
       }
     });
-    this.selectedMaintenanceData.documents = arr;
-    this.selectedMaintenanceData.notes = notes;
+    obj.documents = arr;
+    obj.notes = notes;
     this.isCreateRecordAPILoading = true;
-    this.selectedMaintenanceData.gateway_id = this.device.gateway_id;
-    this.selectedMaintenanceData.created_by = this.loggedInUser.email + '(' + this.loggedInUser.name + ')';
+    obj.gateway_id = this.device.gateway_id;
+    console.log(this.loggedInUser.email + '(' + this.loggedInUser.name + ')');
+    obj.created_by = this.loggedInUser.email + '(' + this.loggedInUser.name + ')';
     } else {
-      this.selectedMaintenanceData.updated_by = this.loggedInUser.email + '(' + this.loggedInUser.name + ')';
+      obj.updated_by = this.loggedInUser.email + '(' + this.loggedInUser.name + ')';
     }
-    const method = !this.selectedMaintenanceData.id ?
+    const method = !obj.id ?
     this.deviceService.createDeviceMaintenanceActivityData(this.contextApp.app, this.device.device_id,
-      this.selectedMaintenanceData) :
+      obj) :
     this.deviceService.updateDeviceMaintenanceActivityData(this.contextApp.app, this.device.device_id,
-      this.selectedMaintenanceData.id, this.selectedMaintenanceData);
+      obj.id, obj);
     this.apiSubscriptions.push(method.subscribe(
         (response: any) => {
           this.isCreateRecordAPILoading = false;
-          this.toasterService.showSuccess(response.message, ((this.selectedMaintenanceData.id ? 'Edit' : 'Add') + ' Maintenance Record'));
+          this.toasterService.showSuccess(response.message, ((obj.id ? 'Edit' : 'Add') + ' Maintenance Record'));
           this.onCloseModal();
           if (!this.maintenanceFilter.from_date || !this.maintenanceFilter.to_date) {
             this.maintenanceFilter.dateOption = '5 mins';
@@ -305,7 +307,7 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
           this.searchMaintenance(this.maintenanceFilter);
         }, error => {
           this.isCreateRecordAPILoading = false;
-          this.toasterService.showError(error.message, ((this.selectedMaintenanceData.id ? 'Edit' : 'Add') + ' Maintenance Record'));
+          this.toasterService.showError(error.message, ((obj.id ? 'Edit' : 'Add') + ' Maintenance Record'));
         }
       ));
   }

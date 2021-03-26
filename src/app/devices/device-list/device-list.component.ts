@@ -361,6 +361,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     obj.hierarchy = JSON.stringify(obj.hierarchy);
     console.log(obj.hierarchy);
     }
+    delete obj.gatewayArr;
     delete obj.hierarchyString;
     if (obj.status && obj.status.toLowerCase().includes('connected')) {
       obj.connection_state = obj.status;
@@ -457,6 +458,20 @@ export class DeviceListComponent implements OnInit, OnDestroy {
         obj.device_id, 'control-panel']);
       }
     }
+  }
+
+  onAssetSelection() {
+    if (this.deviceFilterObj?.gatewayArr.length > 0) {
+      this.deviceFilterObj.gateway_id = this.deviceFilterObj.gatewayArr[0].device_id;
+    } else {
+      this.deviceFilterObj.gateway_id = undefined;
+      this.deviceFilterObj.gatewayArr = undefined;
+    }
+  }
+
+  onAssetDeselect() {
+    this.deviceFilterObj.gateway_id = undefined;
+    this.deviceFilterObj.gatewayArr = undefined;
   }
 
   onCreateDeviceCancel() {

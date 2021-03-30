@@ -105,4 +105,8 @@ export class AppUrls {
   public static UPDATE_DEVICE_MAINTENANCE_DATA = 'apps/{0}/devices/{1}/maintenance_history/{2}';
   public static UPDATE_DEVICE_METADATA = 'apps/{0}/devices/{1}/metadata';
   public static GET_PRE_GENERATED_REPORTS = 'apps/{0}/report_registry';
+  public static GET_PACKAGES = 'apps/{0}/device_types/{1}/packages';
+  public static CREATE_PACKAGE = 'apps/{0}/device_types/{1}/packages';
+  public static UPDATE_PACKAGE = 'apps/{0}/device_types/{1}/packages/{2}';
+  public static DELETE_PACKAGE = 'apps/{0}/device_types/{1}/packages/{2}';
 }

@@ -104,8 +104,10 @@ export class CommonService {
     // }
   }
 
-  async uploadImageToBlob(file, folderName) {
-    const containerName = environment.blobContainerName;
+  async uploadImageToBlob(file, folderName, containerName = undefined) {
+    if (!containerName) {
+      containerName = environment.blobContainerName;
+    }
     const pipeline = newPipeline(new AnonymousCredential(), {
     retryOptions: { maxTries: 2 }, // Retry options
     keepAliveOptions: {

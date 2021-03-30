@@ -399,4 +399,28 @@ export class DeviceTypeService {
     params = params.set('device_type', deviceType);
     return this.http.get(this.url + String.Format(AppUrls.SYNC_MODEL_CACHE, encodeURIComponent(app)), { params });
   }
+
+  getPackages(app, deviceType, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_PACKAGES, encodeURIComponent(app), encodeURIComponent(deviceType)), {params});
+  }
+
+  createPackage(app, deviceType, obj) {
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_PACKAGE, encodeURIComponent(app), encodeURIComponent(deviceType)), obj);
+  }
+
+  updatePackage(app, deviceType, packageId, obj) {
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_PACKAGE, encodeURIComponent(app), encodeURIComponent(deviceType),
+    encodeURIComponent(packageId)), obj);
+  }
+
+  deletePackage(app, deviceType, packageId) {
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_PACKAGE, encodeURIComponent(app),
+    encodeURIComponent(deviceType), encodeURIComponent(packageId)), {});
+  }
 }

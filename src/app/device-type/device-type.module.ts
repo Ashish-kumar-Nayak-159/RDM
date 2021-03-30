@@ -24,6 +24,7 @@ import { DeviceTypeAlertConditionsComponent } from './device-type-control-panel/
 import { DeviceTypeReferenceDocumentsComponent } from './device-type-control-panel/device-type-reference-documents/device-type-reference-documents.component';
 import { DeviceTypeConfigurationWidgetsComponent } from './device-type-control-panel/device-type-configuration-widgets/device-type-configuration-widgets.component';
 import { DeviceTypeSettingsComponent } from './device-type-control-panel/device-type-settings/device-type-settings.component';
+import { DeviceTypePackageManagementComponent } from './device-type-control-panel/device-type-package-management/device-type-package-management.component';
 
 
 
@@ -43,7 +44,8 @@ import { DeviceTypeSettingsComponent } from './device-type-control-panel/device-
     DeviceTypeAlertConditionsComponent,
     DeviceTypeReferenceDocumentsComponent,
     DeviceTypeConfigurationWidgetsComponent,
-    DeviceTypeSettingsComponent
+    DeviceTypeSettingsComponent,
+    DeviceTypePackageManagementComponent
   ],
   imports: [
     CommonModule,

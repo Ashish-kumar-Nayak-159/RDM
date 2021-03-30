@@ -1060,6 +1060,15 @@ export class CONSTANTS {
       system_name: 'Device Methods',
       url: '#device_type_methods',
       display_name: 'Device Methods',
+      icon: 'fa fa-fw fa-archive',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'package_management',
+      system_name: 'Package Management',
+      url: '#device_type_package_management',
+      display_name: 'Package Management',
       icon: 'fa fa-fw fa-tags',
       visible: true,
       isTitle: false

@@ -1,0 +1,7 @@
+.w-16 {
+  width: 16rem;
+}
+
+select.form-control {
+  width: 11rem !important;
+}

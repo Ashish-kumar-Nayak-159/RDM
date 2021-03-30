@@ -547,4 +547,16 @@ export class DeviceService {
       encodeURIComponent(app), encodeURIComponent(deviceId)), obj);
   }
 
+  getPregeneratedReports(filterObj, app) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        console.log(filterObj[key]);
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_PRE_GENERATED_REPORTS,
+      encodeURIComponent(app)), {params});
+  }
+
 }

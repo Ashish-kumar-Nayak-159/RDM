@@ -22,6 +22,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   userData: any;
   filterObj: any = {};
+  originalFilterObj: any = {};
   contextApp: any;
   hierarchyArr: any = {};
   configureHierarchy: any = {};
@@ -54,6 +55,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   insideScrollFunFlag = false;
   isFilterOpen = true;
   today = new Date();
+  activeTab = 'pre_generated_reports';
   loadingMessage: any;
 
   constructor(
@@ -103,6 +105,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.filterObj.sampling_time = 1;
       this.filterObj.aggregation_minutes = 1;
       this.filterObj.aggregation_format = 'AVG';
+      this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
      // this.getLatestAlerts();
       await this.getDevices(this.contextApp.user.hierarchy);
      // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
@@ -457,6 +460,17 @@ export class ReportsComponent implements OnInit, OnDestroy {
       }, error => this.isTelemetryLoading = false
     ));
     });
+  }
+
+  onTabSelect(type) {
+    if (type === 'custom') {
+      this.filterObj = JSON.parse(JSON.stringify(this.originalFilterObj));
+      this.telemetry = [];
+      this.latestAlerts = [];
+      this.isFilterOpen = true;
+      this.isFilterSelected = false;
+    }
+
   }
 
   async getTelemetryData(filterObj, type = undefined) {

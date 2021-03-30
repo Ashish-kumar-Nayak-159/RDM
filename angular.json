@@ -22,20 +22,10 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              {
-                "glob": "**/*",
-                "input": "node_modules/ngx-monaco-editor/assets/monaco",
-                "output": "./assets/monaco/"
-              },
-              {
-                "input": "./node_modules/@google/markerclustererplus/images",
-                "glob": "*",
-                "output": "/images"
-              }
+              { "glob": "**/*", "input": "node_modules/ngx-monaco-editor/assets/monaco", "output": "./assets/monaco/" },
+              {"input": "./node_modules/@google/markerclustererplus/images", "glob": "*", "output": "/images"}
             ],
             "styles": [
-              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "./node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
               "node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "node_modules/angular2-multiselect-dropdown/themes/default.theme.css",
               "node_modules/ng-pick-datetime/assets/style/picker.min.css",
@@ -175,8 +165,6 @@
               "src/assets"
             ],
             "styles": [
-              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "./node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
               {
                 "input": "node_modules/@progress/kendo-theme-default/dist/all.css"
               },

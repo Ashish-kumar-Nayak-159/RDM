@@ -57,7 +57,8 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private toasterService: ToasterService,
     private applicationService: ApplicationService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -65,6 +66,11 @@ export class DeviceListComponent implements OnInit, OnDestroy {
 
   //  this.commonService.setFlag(true);
     this.subscriptions.push(this.route.paramMap.subscribe(async params => {
+      console.log('paramsssssssss', params);
+      this.currentOffset = 0;
+      this.currentLimit = 20;
+      this.insideScrollFunFlag = false;
+      this.isFilterSelected = false;
       this.deviceFilterObj = new DeviceListFilter();
       this.deviceFilterObj.app = this.contextApp.app;
       this.deviceFilterObj.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
@@ -132,16 +138,21 @@ export class DeviceListComponent implements OnInit, OnDestroy {
 
       this.subscriptions.push(this.route.queryParamMap.subscribe(
         params1 => {
+          console.log('parmas111111111111', params1);
           this.devicesList = [];
           if (params1.get('connection_state')) {
             this.deviceFilterObj.status = params1.get('connection_state');
-
           }
-          this.searchDevices();
+          if (params1.keys.length > 0) {
+            this.searchDevices();
+          }
         }
       ));
+      if (!this.isFilterSelected) {
+        this.searchDevices();
+      }
       this.protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
-      console.log(this.contextApp);
+
       const keys = Object.keys(this.contextApp.user.hierarchy);
       this.hierarchyDropdown = [];
       // this.contextApp.hierarchy.forEach(item => {

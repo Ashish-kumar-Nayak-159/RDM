@@ -98,13 +98,13 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key
     + (this.propertyList[index + 1] ? ',' : ''));
     obj['message_props'] = message_props;
+    obj['partition_key'] = this.device?.tags?.partition_key;
     const obj1 = {
       hierarchy: this.contextApp.user.hierarchy,
       levels: this.contextApp.hierarchy.levels,
       device_id: this.device.device_id,
       type: 'telemetry',
       app: this.contextApp.app,
-      partition_key: this.device?.tags?.partition_key
     };
     this.signalRService.connectToSignalR(obj1);
     this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(

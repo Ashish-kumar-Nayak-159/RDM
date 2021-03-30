@@ -247,8 +247,17 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
   }
 
   onSaveWidgetObj() {
+    let found = true;
+    this.widgetObj.properties.forEach(prop => {
+      if (Object.keys(prop).length === 0) {
+        found = false;
+      }
+    });
+    if (!found) {
+      this.toasterService.showError('Please select all properties.', 'Add Widget');
+      return;
+    }
     this.isCreateWidgetAPILoading = true;
-    console.log(JSON.stringify(this.widgetObj));
     this.widgetObj.chartId = 'chart_' + moment().utc().unix();
     const arr = this.liveWidgets;
     arr.push(this.widgetObj);

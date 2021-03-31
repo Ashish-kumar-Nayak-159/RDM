@@ -7,5 +7,6 @@ export const environment = {
   blobURL: 'https://cmsblobstorageaccount.blob.core.windows.net/',
   cachedTelemetryContainer: 'telemetry',
   app: 'SopanCMS',
-  version: '3.1.1'
+  version: '3.1.1',
+  packageManagementContainer: 'packages'
 };

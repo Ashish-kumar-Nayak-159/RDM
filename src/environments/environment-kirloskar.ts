@@ -7,5 +7,6 @@ export const environment = {
   blobURL: 'https://cmsblobstorageaccount.blob.core.windows.net/',
   cachedTelemetryContainer: 'telemetry',
   app: 'KCMS',
-  version: '1.0'
+  version: '1.0',
+  packageManagementContainer: 'packages'
 };

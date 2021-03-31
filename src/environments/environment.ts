@@ -15,7 +15,8 @@ export const environment = {
   cachedTelemetryContainer: 'telemetry',
   app: undefined,
   version: '3.0',
-  packageManagementContainer: 'packages'
+  packageManagementContainer: 'packages',
+  storgageSecretKey: 'kEm$Y$*RdM'
 
   // appServerURL: 'https://kirloskarfunctionapp.azurewebsites.net/api/',
   // blobAccountName: 'sopancmsblobstorage',

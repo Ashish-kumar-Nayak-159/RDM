@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { AppUrls } from '../app-url.constants';
 import { Router } from '@angular/router';
+import * as CryptoJS from 'crypto-js';
 import { CONSTANTS } from 'src/app/app.constants';
 import { AnonymousCredential, BlobServiceClient, newPipeline } from '@azure/storage-blob';
 
@@ -18,12 +19,12 @@ export class CommonService {
   refreshSideMenuData: EventEmitter<any> = new EventEmitter<any>();
   resetPassword: EventEmitter<any> = new EventEmitter<any>();
   flag = false;
+  privateEncryptionString = environment.storgageSecretKey;
   constructor(
     private http: HttpClient,
     private router: Router,
     private signalRService: SignalRService
   ) {
-    console.log('hereeee');
   }
 
   convertUTCDateToLocal(utcDate) {
@@ -88,12 +89,37 @@ export class CommonService {
     return this.http.post(this.url + AppUrls.RESET_PASSWORD,  obj);
   }
 
+  encryptJSON(data) {
+    if (data) {
+      return CryptoJS.AES.encrypt(JSON.stringify(data), this.privateEncryptionString).toString();
+    }
+  }
+
+  decryptString(key) {
+    if (key) {
+      try {
+        const bytes = CryptoJS.AES.decrypt(key, this.privateEncryptionString);
+        if (bytes.toString()) {
+          return bytes.toString(CryptoJS.enc.Utf8);
+        }
+        return key;
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    return undefined;
+  }
+
   getItemFromLocalStorage(key) {
-    return JSON.parse(localStorage.getItem(key));
+    const data = this.decryptString(localStorage.getItem(key));
+    if (data) {
+      return JSON.parse(data);
+    }
+    return data;
   }
 
   setItemInLocalStorage(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
+    localStorage.setItem(key, this.encryptJSON(value));
     // let expiryObj: any = localStorage.getItem(CONSTANTS.EXPIRY_TIME);
     // const userData: any = JSON.parse(localStorage.getItem(CONSTANTS.USER_DETAILS));
     // if (!expiryObj && userData) {

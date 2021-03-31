@@ -8,5 +8,6 @@ export const environment = {
   cachedTelemetryContainer: 'telemetry',
   app: 'KCMS',
   version: '1.0',
-  packageManagementContainer: 'packages'
+  packageManagementContainer: 'packages',
+  storgageSecretKey: 'kIrL0$k@Rcm$'
 };

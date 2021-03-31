@@ -48,7 +48,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   currentOffset = 0;
   currentLimit = 20;
   insideScrollFunFlag = false;
-  openModal = false;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -251,8 +250,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   }, 2000);
   }
 
-
-
   onChangeOfHierarchy(i) {
     Object.keys(this.configureHierarchy).forEach(key => {
       if (key > i) {
@@ -357,7 +354,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   }
 
   searchDevices() {
-    this.openModal = false;
     this.isDeviceListLoading = true;
     this.isFilterSelected = true;
     const obj = JSON.parse(JSON.stringify(this.deviceFilterObj));
@@ -446,11 +442,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     }
   }
 
-  openCreateDeviceModal() {
-    this.openModal = true;
-  }
-
-
   onTableFunctionCall(obj) {
     console.log(obj);
     console.log(this.pageType);
@@ -484,12 +475,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.deviceFilterObj.gateway_id = undefined;
     this.deviceFilterObj.gatewayArr = undefined;
   }
-
-  onCreateDeviceCancel() {
-    this.openModal = false;
-  }
-
-
 
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());

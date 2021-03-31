@@ -236,8 +236,6 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [
-        { name: 'Enable/Disable' , key: 'enable_disable'},
-        { name: 'Delete', key: 'delete'}
       ],
       accordion_value: {}
     },
@@ -529,7 +527,6 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [
-        { name: 'Delete', key: 'delete'}
       ],
       accordion_value: {}
     },
@@ -821,8 +818,6 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [
-        { name: 'Enable/Disable' , key: 'enable_disable'},
-        { name: 'Delete', key: 'delete'}
       ],
       accordion_value: {}
     },

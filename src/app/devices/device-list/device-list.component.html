@@ -8,12 +8,6 @@
   </div> -->
   <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-1">
     <h5 class="h4 mb-0 text-gray-800" >{{tileData && tileData[0] ? tileData[0]?.value : ''}}</h5>
-    <a
-    class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-3"
-    href="javascript:void(0)" (click)="openCreateDeviceModal()"
-    title="{{'Add ' + (tileData && tileData[1] ? tileData[1]?.value: '')}}"
-    ><i class="fa fa-plus fa-sm text-white"></i></a
-  >
   </div>
   <div class="card row bg-white" style="margin-left:-2rem">
     <div class="col-xl-12 col-md-12 mb-12">
@@ -161,5 +155,5 @@
 </div>
 </div>
 
-<app-add-device *ngIf="openModal" [gateways]="gateways" (getDeviceEmit)="devicesList = [];searchDevices()"
-[componentState]="componentState" [tileData]="tileData" (cancelModal)="onCreateDeviceCancel()"></app-add-device>
+<!-- <app-add-device *ngIf="openModal" [gateways]="gateways" (getDeviceEmit)="devicesList = [];searchDevices()"
+[componentState]="componentState" [tileData]="tileData" (cancelModal)="onCreateDeviceCancel()"></app-add-device> -->

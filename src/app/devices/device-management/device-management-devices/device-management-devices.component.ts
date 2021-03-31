@@ -34,6 +34,8 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
   btnClickType: any;
   isAPILoading = false;
   isAllDeviceSelected = false;
+  constantData = CONSTANTS;
+  deviceTwin: any;
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -199,6 +201,10 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
   }
 
   openConfirmDialog(type) {
+    if (this.selectedDevices?.length === 0) {
+      this.toasterService.showError('To perform any operations, please select at least one device', 'Device Management');
+      return;
+    }
     this.btnClickType = type;
     this.modalConfig = {
       isDisplaySave: true,
@@ -318,6 +324,32 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
         this.isAPILoading = false;
       }
     ));
+  }
+
+  async openPackageManagementModal() {
+    if (this.selectedDevices?.length === 0) {
+      this.toasterService.showError('To perform any operations, please select at least one device', 'Package Management');
+      return;
+    }
+    if (this.selectedDevices.length > 1) {
+      this.toasterService.showError('To perform single operations, please select only one device', 'Package Management');
+      return;
+    }
+    await this.getDeviceTwinData();
+    $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  getDeviceTwinData() {
+    return new Promise<void>((resolve) => {
+      const device = this.selectedDevices[0];
+      this.subscriptions.push(
+        this.deviceService.getDeviceTwin(this.contextApp.app, device.device_id).subscribe(
+          (response) => {
+            this.deviceTwin = response;
+            resolve();
+          }
+        ));
+    });
   }
 
   ngOnDestroy() {

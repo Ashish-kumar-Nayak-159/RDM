@@ -559,4 +559,14 @@ export class DeviceService {
       encodeURIComponent(app)), {params});
   }
 
+  getDeviceTwin(app, deviceId) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_TWIN,
+      encodeURIComponent(app), encodeURIComponent(deviceId)));
+  }
+
+  updateDeviceTwin(app, deviceId, obj) {
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_DEVICE_TWIN,
+      encodeURIComponent(app), encodeURIComponent(deviceId)), obj);
+  }
+
 }

@@ -241,7 +241,7 @@ export class PreGeneratedReportsComponent implements OnInit {
   onSingleDateChange(event) {
     console.log(event);
     this.filterObj.from_date = moment(event.value).utc();
-    this.filterObj.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
+    this.filterObj.to_date = (((moment(event.value).add(23, 'hours')).add(59, 'minute')).add(59, 'second')).utc();
     if (this.dtInput1) {
       this.dtInput1.value = null;
     }
@@ -267,6 +267,15 @@ export class PreGeneratedReportsComponent implements OnInit {
     }
     if (this.filterObj.to_date) {
       obj.to_date = this.filterObj.to_date.unix();
+    }
+    if (!obj.from_date || !obj.to_date) {
+      this.toasterService.showError('Date selection is requierd.', 'View Report');
+      return;
+    }
+    if (obj.report_type.toLowerCase().includes('daily')) {
+      obj.frequency = 'daily';
+    } else {
+      obj.frequency = 'weekly';
     }
     if (!obj.hierarchy) {
       obj.hierarchy =  { App: this.contextApp.app};

@@ -29,6 +29,7 @@ export class DeviceTypePackageManagementComponent implements OnInit {
   subscriptions: Subscription[] = [];
   contextApp: any;
   modalType: string;
+  appPackages: any[] = [];
   constructor(
     private commonService: CommonService,
     private deviceTypeService: DeviceTypeService,
@@ -142,6 +143,14 @@ export class DeviceTypePackageManagementComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustResourceUrl(this.blobStorageURL + this.selectedPackage.url + this.sasToken);
   }
 
+  onAppChange() {
+    // if (this.packageObj.name) {
+    //   this.appPackages = this.packages.filter(obj => obj.name === this.packageObj.name);
+    // } else {
+    //   this.appPackages = [];
+    // }
+  }
+
   onTableFunctionCall(obj) {
     if (obj.for === 'Download') {
       this.downloadFile(obj.data);
@@ -189,10 +198,13 @@ export class DeviceTypePackageManagementComponent implements OnInit {
 
   onSavePackageObj() {
     if (!this.packageObj.name || (this.packageObj.name.trim()).length === 0 || !this.packageObj.display_name ||
-    (this.packageObj.display_name.trim()).length === 0  || !this.packageObj.version || !this.packageObj.url) {
+    (this.packageObj.display_name.trim()).length === 0  || !this.packageObj.metadata.major || this.packageObj.metadata.major === 0
+    || !this.packageObj.url) {
       this.toasterService.showError('Please select all the data', ((this.packageObj.id ? 'Edit' : 'Add') + ' Package'));
       return;
     }
+    this.packageObj.version = this.packageObj.metadata.major + (this.packageObj.metadata.minor ? (
+      '.' + this.packageObj.metadata.minor + (this.packageObj.metadata.patch ? ('.' + this.packageObj.metadata.patch) : '')) : '');
     this.isCreatePackageAPILoading = true;
     const method = this.packageObj.id ? this.deviceTypeService.updatePackage(this.deviceType.app,
       this.deviceType.name, this.packageObj.id, this.packageObj) : this.deviceTypeService.createPackage(

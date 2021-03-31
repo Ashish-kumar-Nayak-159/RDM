@@ -40,20 +40,48 @@
       <div class="modal-body">
         <form>
           <div class="form-group">
-            <label for="message-text" class="col-form-label required">Name:</label>
+            <label for="message-text" class="col-form-label required">App Name:</label>
             <input type="text" class="form-control" id="name" name="name" [(ngModel)]="packageObj.name"
-            placeholder="Enter Package Name">
+            placeholder="Enter Package Name" (change)="onAppChange()">
           </div>
           <div class="form-group">
-            <label for="message-text" class="col-form-label required">Display Name:</label>
+            <label for="message-text" class="col-form-label required">Package Name:</label>
             <input type="text" class="form-control" id="display_name" name="display_name" [(ngModel)]="packageObj.display_name"
             placeholder="Enter Display Name">
           </div>
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label required">Version:</label>
-            <input type="text" class="form-control" id="version" name="version" [(ngModel)]="packageObj.version"
-            placeholder="Enter Package Version">
+          <label for="message-text" class="col-form-label required">Version:</label>
+          <div class="form-row">
+
+            <div class="form-group col-md-4">
+              <input type="number" class="form-control" id="major" name="major" [(ngModel)]="packageObj.metadata.major"
+            placeholder="Major">
+            </div>
+            <div class="form-group col-md-4">
+              <input type="number" class="form-control" id="minor" name="minor" [(ngModel)]="packageObj.metadata.minor"
+            placeholder="Minor">
+            </div>
+            <div class="form-group col-md-4">
+              <input type="number" class="form-control" id="patch" name="patch" [(ngModel)]="packageObj.metadata.patch"
+            placeholder="Patch">
+            </div>
           </div>
+          <!-- <div class="form-group">
+            <label for="recipient-name" class="col-form-label required">Upgradable From:</label>
+            <angular2-multiselect [data]="appPackages" id="y1AxisProperty"
+              [(ngModel)]="packageObj.metadata.upgradable_from" name="y1AxisProperty" [settings]="{
+                text: 'Select Package',
+                selectAllText: 'Select All',
+                unSelectAllText: 'UnSelect All',
+                classes: 'col-lg-2 col-xl-2 p-0 ml-2',
+                enableSearchFilter: true,
+                badgeShowLimit: 1,
+                maxHeight: 200,
+                primaryKey: 'id',
+                labelKey: 'display_name'
+              }"
+              (onDeSelectAll)="y1Deselect($event)">
+            </angular2-multiselect>
+          </div> -->
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Document:</label>
             {{packageObj?.metadata ? packageObj?.metadata?.file_name : 'Not yet uploaded'}}

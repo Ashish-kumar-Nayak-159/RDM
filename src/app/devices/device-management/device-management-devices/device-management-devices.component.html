@@ -7,19 +7,23 @@
             Single Operations:
             <a class="ml-3 blue-font" href="javascript:void(0)" (click)="openDeviceCreateModal()"> Provision</a>
             <a class="ml-3 blue-font" href="javascript:void(0)" (click)="openConfirmDialog('delete')"> Deprovision</a>
-            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="openConfirmDialog('enable')"> Enable</a>
+            <ng-container *ngIf="componentState !== constantData.NON_IP_DEVICE">
+            <a class="ml-3 blue-font" href="javascript:void(0)"  (click)="openConfirmDialog('enable')"> Enable</a>
             <a class="ml-3 blue-font" href="javascript:void(0)" (click)="openConfirmDialog('disable')"> Disable</a>
-            <a class="ml-3 blue-font" href="javascript:void(0)" > Upgrade</a>
+            <a class="ml-3 blue-font" href="javascript:void(0)" > Package Management</a>
             <a class="ml-3 blue-font" href="javascript:void(0)"> Regenerate Symmetric Keys</a>
             <a class="ml-3 blue-font" href="javascript:void(0)"> Revoke Security Certificate</a>
+            </ng-container>
           </div>
           <div class="form-group form-inline my-1 mx-1">
             Bulk Operations:
             <a class="ml-3 blue-font" href="javascript:void(0)"> Provision</a>
             <a class="ml-3 blue-font" href="javascript:void(0)"> Deprovision</a>
+            <ng-container *ngIf="componentState !== constantData.NON_IP_DEVICE">
             <a class="ml-3 blue-font" href="javascript:void(0)"> Enable</a>
             <a class="ml-3 blue-font" href="javascript:void(0)"> Disable</a>
-            <a class="ml-3 blue-font" href="javascript:void(0)"> Upgrade</a>
+            <a class="ml-3 blue-font" href="javascript:void(0)"> Package Management</a>
+            </ng-container>
           </div>
         </div>
       </form>

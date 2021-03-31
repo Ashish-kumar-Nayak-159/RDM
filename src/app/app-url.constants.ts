@@ -109,4 +109,6 @@ export class AppUrls {
   public static CREATE_PACKAGE = 'apps/{0}/device_types/{1}/packages';
   public static UPDATE_PACKAGE = 'apps/{0}/device_types/{1}/packages/{2}';
   public static DELETE_PACKAGE = 'apps/{0}/device_types/{1}/packages/{2}';
+  public static GET_DEVICE_TWIN = 'apps/{0}/iot_devices/{1}/twin_properties';
+  public static UPDATE_DEVICE_TWIN = 'apps/{0}/iot_devices/{1}/twin_desired_properties';
 }

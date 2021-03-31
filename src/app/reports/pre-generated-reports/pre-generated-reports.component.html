@@ -47,24 +47,28 @@
           <!-- <input type="number" min="1" class="form-control form-control-sm mx-1 my-1 record-input" id="inputEmail4"
             placeholder="No of Records" [(ngModel)]="filterObj.count" name="count"> -->
 
-          <select class="form-control form-control-sm mr-2 ml-1 my-1" id="type" [(ngModel)]="filterObj.type"
+          <!-- <select class="form-control form-control-sm mr-2 ml-1 my-1" id="type" [(ngModel)]="filterObj.type"
           name="type" #type="ngModel">
           <option [ngValue]="undefined">Select Type</option>
           <option [ngValue]="'raw'">Raw Data</option>
           <option [ngValue]="'sampling'">Sampled Data</option>
           <option [ngValue]="'affreagtion'">Aggregated Data</option>
-          </select>
-          <select class="form-control form-control-sm mr-2 ml-1 my-1" id="frequency" [(ngModel)]="filterObj.frequency"
+          </select> -->
+          <!-- <select class="form-control form-control-sm mr-2 ml-1 my-1" id="frequency" [(ngModel)]="filterObj.frequency"
           name="frequency" #frequency="ngModel">
           <option [ngValue]="undefined">Select Frequency</option>
           <option [ngValue]="'daily'">Daily</option>
           <option [ngValue]="'weekly'">Weekly</option>
-          </select>
+          </select> -->
           <select class="form-control form-control-sm mr-2 ml-1 my-1" id="report_type" [(ngModel)]="filterObj.report_type"
           name="report_type" #reportType="ngModel">
           <option [ngValue]="undefined">Select Report Type</option>
-          <option [ngValue]="'Process Parameter Report'">Process Parameter Report</option>
-          <option [ngValue]="'Alert Report'">Alert Report</option>
+          <option [ngValue]="'Daily Single Device Telemetry Report'">Daily Single Device Telemetry Report</option>
+          <option [ngValue]="'Weekly Single Device Telemetry Report'">Weekly Single Device Telemetry Report</option>
+          <option [ngValue]="'Daily Multiple Device Telemetry Report'">Daily Multiple Device Telemetry Report</option>
+          <!-- <option [ngValue]="'Daily Single Device Alert Report'">Daily Single Device Alert Report</option>
+          <option [ngValue]="'Weekly Single Device Alert Report'">Weekly Single Device Alert Report</option>
+          <option [ngValue]="'Daily Multiple Device Alert Report'">Daily Multiple Device Alert Report</option> -->
           </select>
           <!-- <div *ngIf="reportType.invalid && (reportType.dirty || reportType.touched)"
           class="alert alert-danger">
@@ -110,17 +114,17 @@
   </div>
 
 </div>
-<div class="contain-pad-report mx-2" [ngStyle]="{}"
-style="margin-top: 7.5rem;max-height: calc(100vh - 19rem)">
+<div class="contain-pad-report mx-2"
+style="margin-top: 7.5rem;max-height: calc(100vh - 15rem)">
   <div class="mb-2" >
     <h6 *ngIf="!isFilterSelected"> Please select filters to view the pre-generated reports.</h6>
     <div class="table-responsive" *ngIf="isFilterSelected || isReportDataLoading"
     class="mt-1"
     >
 
-      <ng-container *ngIf="isFilterSelected && filterObj.report_type === 'Process Parameter Report'">
+      <ng-container *ngIf="isFilterSelected && filterObj.report_type.toLowerCase().includes('telemetry report')">
         <h5  >{{filterObj.report_type}}s</h5>
-      <div class="table-wrapper" id="table-wrapper" style="max-height: calc(100vh - 32rem)'}" >
+      <div class="table-wrapper" id="table-wrapper" style="max-height: calc(100vh - 20rem)" >
         <table class="table table-bordered table-striped"  id="dataTable1" width="100%" cellspacing="0"
        >
           <thead>
@@ -129,8 +133,8 @@ style="margin-top: 7.5rem;max-height: calc(100vh - 19rem)">
               <th class="w-10">Asset Name</th>
               <th class="w-17">Start Date</th>
               <th class="w-17">Last Date</th>
-              <th>Type</th>
-              <th>Frequency</th>
+              <!-- <th>Type</th>
+              <th>Frequency</th> -->
               <th>Action</th>
             </tr>
           </thead>
@@ -145,8 +149,8 @@ style="margin-top: 7.5rem;max-height: calc(100vh - 19rem)">
                 </td>
                 <td>{{ reportObj.local_start_date }}</td>
                 <td>{{ reportObj.local_end_date }}</td>
-                <td>{{reportObj.report_type.method | titlecase}}</td>
-                <td>{{reportObj.report_frequency | titlecase}}</td>
+                <!-- <td>{{reportObj.report_type.method | titlecase}}</td>
+                <td>{{reportObj.report_frequency | titlecase}}</td> -->
                 <td>
                   <a href="javascript:void(0)"  (click)="downloadFile(reportObj)" title="Download Excel"><i class="fa fa-sm fa-download" ></i></a>
                 </td>
@@ -154,12 +158,12 @@ style="margin-top: 7.5rem;max-height: calc(100vh - 19rem)">
             </ng-container>
             <ng-container *ngIf="reports.length === 0 && !isReportDataLoading">
               <tr>
-                <td colspan="7">No reports available.</td>
+                <td colspan="5">No reports available.</td>
               </tr>
             </ng-container>
             <ng-container *ngIf="isReportDataLoading">
               <tr>
-                <td colspan="7">
+                <td colspan="5">
                   <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
                 </td>
               </tr>

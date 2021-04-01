@@ -22,6 +22,11 @@
           <i class="fa fa-fw fa-undo"></i>
           <span class="text-secondary delete-row">Revert Changes</span></a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)" (click)="openModal('changeLocationModal')" [class.disabled]="isUpdateAPILoading">
+          <i class="fa fa-fw fa-map-marker"></i>
+          <span class="text-secondary delete-row">Change Device Location</span></a>
+      </li>
       <li class="nav-item" *ngIf="isUpdateAPILoading">
       <a class="nav-link" href="javascript:void(0)">
         <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
@@ -39,9 +44,9 @@
 
 <div class="con-pad">
 
-  <div class="row mt-1 mx-auto">
+  <div class="row mt-1">
 
-    <div class="col-xl-6 col-lg-7">
+    <div class="col-xl-6 col-lg-6">
       <!-- Page Heading -->
       <h1 class="h6 mb-3 text-secondary-400">Reserved Tags:
         <a href="javascript:void(0)" title="Edit Tags" *ngIf="!isReservedTagsEditable" title="Edit"
@@ -88,19 +93,21 @@
             </tr>
             <tr>
               <td>Latitude</td>
-              <td><ng-container *ngIf="!isReservedTagsEditable">{{device?.tags?.latitude}}</ng-container>
-                <ng-container *ngIf="isReservedTagsEditable">
+              <td>{{device?.tags?.latitude}}
+                <!-- <ng-container *ngIf="isReservedTagsEditable">
                   <input type="text" class="form-control form-control-sm bg-light border-0 small"
                     [(ngModel)]="device?.tags.latitude" name="latitude"  placeholder="Enter Latitude">
-                </ng-container></td>
+                </ng-container> -->
+              </td>
             </tr>
             <tr>
               <td>Longitude</td>
-              <td><ng-container *ngIf="!isReservedTagsEditable">{{device?.tags?.longitude}}</ng-container>
-                <ng-container *ngIf="isReservedTagsEditable">
+              <td>{{device?.tags?.longitude}}
+                <!-- <ng-container *ngIf="isReservedTagsEditable">
                   <input type="text" class="form-control form-control-sm bg-light border-0 small"
                     [(ngModel)]="device?.tags.longitude" name="longitude" placeholder="Enter Longitude">
-                </ng-container></td>
+                </ng-container> -->
+              </td>
             </tr>
             <tr>
               <td>Model</td>
@@ -131,7 +138,7 @@
         </table>
       </div>
     </div>
-    <div class="col-xl-6 col-lg-5">
+    <div class="col-xl-6 col-lg-6">
       <!-- Page Heading -->
       <div class="row col-12 d-sm-inline-block">
         <h1 class="h6 mb-3 text-secondary-800">Custom Tags:
@@ -200,5 +207,78 @@
     [bodyMessage]="'All the custom tags will get deleted. Are you sure you want to delete the tags?'"
      [headerMessage]="'Delete ' + this.tileData.value + ' Tags'"
       (modalEvents)="deleteAllDeviceTags($event)" [modalConfig]="modalConfig"></app-message-modal>
+  </div>
+</div>
+
+
+<div class="modal fade" id="changeLocationModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Change Device Location</h5>
+        <button type="button" class="close"  aria-label="Close" (click)="onModalClose('changeLocationModal')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="latitude_longitude"
+          [(ngModel)]="changeLocationOption">
+          <label class="form-check-label ml-2" for="exampleRadios1">
+            Enter Latitude Longitude
+          </label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="address" [(ngModel)]="changeLocationOption"
+          (change)="onRadioChange()" class="pac-container">
+          <label class="form-check-label ml-4" for="exampleRadios2">
+            Enter Address
+          </label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="pick_from_map" [(ngModel)]="changeLocationOption">
+          <label class="form-check-label ml-2" for="exampleRadios3">
+            Pick Location From Map
+          </label>
+        </div>
+        <ng-container *ngIf="changeLocationOption === 'address'">
+          <div class="form-group mt-2">
+            <label for="inputEmail4">Address:</label>
+            <input placeholder="Search Address" autocorrect="off" autocapitalize="off" spellcheck="off"
+            type="text" class="form-control form-control-sm" #search>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="changeLocationOption === 'pick_from_map' || changeLocationOption === 'address'">
+          <div class="mt-2">
+          <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude"
+           (mapReady)="mapReadyHandler($event)">
+            <agm-marker [latitude]="device?.tags.latitude" [longitude]="device?.tags.longitude" ></agm-marker>
+          </agm-map>
+        </div>
+        </ng-container>
+        <ng-container *ngIf="changeLocationOption">
+          <div class="form-row mt-2">
+            <div class="form-group col-md-4 col-sm-6">
+              <label for="inputEmail4">Latitude:</label>
+              <input type="text" class="form-control form-control-sm" [disabled]="changeLocationOption !== 'latitude_longitude'"
+              [(ngModel)]="device?.tags.latitude" name="latitude"  placeholder="Enter Latitude">
+            </div>
+            <div class="form-group col-md-4 col-sm-6">
+              <label for="inputPassword4">Longitude:</label>
+              <input type="text" class="form-control form-control-sm" [disabled]="changeLocationOption !== 'latitude_longitude'"
+                    [(ngModel)]="device?.tags.longitude" name="longitude" placeholder="Enter Longitude">
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="modal-footer">
+        <button  type="button" class="btn btn-primary" [disabled]="isUpdateAPILoading" (click)="updateDeviceTags()">
+          Save</button>
+        <button  type="button" class="btn btn-secondary" [disabled]="isUpdateAPILoading" (click)="onModalClose('changeLocationModal')">
+          Cancel
+        </button>
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUpdateAPILoading"></i>
+      </div>
+    </div>
   </div>
 </div>

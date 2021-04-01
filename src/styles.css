@@ -8,6 +8,9 @@ thead {
 /* html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
 
+.accordion-toggle .btn:focus {
+  box-shadow: none!important;
+}
 .required:after {
   content: " *";
   color: red;

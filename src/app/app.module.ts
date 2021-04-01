@@ -41,7 +41,8 @@ import { AgmCoreModule } from '@agm/core';
     BrowserAnimationsModule,
     MonacoEditorModule.forRoot(),
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyBTyla_077ZU07G7ewXyrQ8xOW6nsOq_ps'
+      apiKey: 'AIzaSyCGnaF9LBIEhAgc5wwktQtWOBu9pnNNfK0',
+      libraries: ['places']
     })
   ],
   providers: [

@@ -59,6 +59,7 @@ import { DeviceManagementDevicesComponent } from './device-management/device-man
 import { AddDeviceComponent } from './add-device/add-device.component';
 import { DeviceMttrComponent } from './device-control-panel/device-mttr/device-mttr.component';
 import { DeviceMtbfComponent } from './device-control-panel/device-mtbf/device-mtbf.component';
+import { AgmCoreModule } from '@agm/core';
 
 @NgModule({
   declarations: [
@@ -125,7 +126,9 @@ import { DeviceMtbfComponent } from './device-control-panel/device-mtbf/device-m
     VisualizationModule,
     NgJsonEditorModule,
     AccordionModule.forRoot(),
-
+    AgmCoreModule.forRoot({
+      libraries: ['places']
+    })
   ],
   exports: [
     FilterComponent,

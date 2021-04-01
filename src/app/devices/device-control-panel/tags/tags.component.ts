@@ -1,12 +1,13 @@
 import { Subscription } from 'rxjs';
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ViewChild, ElementRef, NgZone } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { ActivatedRoute } from '@angular/router';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { ToasterService } from './../../../services/toaster.service';
 import { CONSTANTS } from './../../../app.constants';
 import { CommonService } from 'src/app/services/common.service';
+import { MapsAPILoader } from '@agm/core';
 declare var $: any;
 @Component({
   selector: 'app-tags',
@@ -44,12 +45,18 @@ export class TagsComponent implements OnInit, OnDestroy {
     cancelBtnText: 'No',
     stringDisplay: true
   };
+  changeLocationOption: any;
+  centerLatitude = 23.0225;
+  centerLongitude = 72.5714;
+  @ViewChild('search') searchElementRef: ElementRef;
   constructor(
     private route: ActivatedRoute,
     private deviceService: DeviceService,
     private toasterService: ToasterService,
     private commonService: CommonService,
-    private deviceTypeService: DeviceTypeService  ) { }
+    private deviceTypeService: DeviceTypeService,
+    private mapsAPILoader: MapsAPILoader,
+    private ngZone: NgZone ) { }
 
   async ngOnInit(): Promise<void> {
     console.log(JSON.stringify(this.device));
@@ -74,6 +81,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     //   });
     // }
     // await this.getDeviceTypeDetail();
+
   }
 
   getDeviceData() {
@@ -117,7 +125,7 @@ export class TagsComponent implements OnInit, OnDestroy {
   }
 
   getDeviceTypeDetail() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(this.device.hierarchy),
         name: this.device?.device_type || this.device?.tags?.device_type,
@@ -208,8 +216,11 @@ export class TagsComponent implements OnInit, OnDestroy {
   }
 
   openModal(id) {
+    console.log(this.device.tags);
     $('#' + id).modal({ backdrop: 'static', keyboard: false, show: true });
   }
+
+
 
   resetDeviceTags(event) {
     if (event === 'save') {
@@ -283,6 +294,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         this.toasterService.showSuccess(this.tileData.value + ' tags updated successfully.', 'Set Tags');
+        this.onModalClose('changeLocationModal');
         this.getDeviceData();
         this.isReservedTagsEditable = false;
         this.isUpdateAPILoading = false;
@@ -335,6 +347,45 @@ export class TagsComponent implements OnInit, OnDestroy {
     } else {
       $('#confirmdeleteTagsModal').modal('hide');
     }
+  }
+
+  public mapReadyHandler(map: google.maps.Map): void {
+    map.addListener('click', (e: google.maps.MouseEvent) => {
+      console.log(e.latLng.lat(), e.latLng.lng());
+      this.centerLatitude = e.latLng.lat();
+      this.centerLongitude = e.latLng.lng();
+      this.device.tags.latitude = e.latLng.lat();
+      this.device.tags.longitude = e.latLng.lng();
+    });
+  }
+
+  onRadioChange() {
+  setTimeout(() => {
+  this.mapsAPILoader.load().then(() => {
+    const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, {
+      types: ['address']
+    });
+    autocomplete.addListener('place_changed', () => {
+      this.ngZone.run(() => {
+        const place: google.maps.places.PlaceResult = autocomplete.getPlace();
+        if (place.geometry === undefined || place.geometry === null) {
+          return;
+        }
+        this.centerLatitude = place.geometry.location.lat();
+        this.centerLongitude = place.geometry.location.lng();
+        this.device.tags.latitude = place.geometry.location.lat();
+        this.device.tags.longitude = place.geometry.location.lng();
+      });
+    });
+  });
+  }, 500);
+  }
+
+  onModalClose(id) {
+    this.device = JSON.parse(JSON.stringify(this.originalDevice));
+    console.log(this.device);
+    this.changeLocationOption = undefined;
+    $('#' + id).modal('hide');
   }
 
   ngOnDestroy() {

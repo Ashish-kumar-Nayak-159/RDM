@@ -6,24 +6,20 @@
           <div class="form-group form-inline my-1 mx-1">
             Single Operations:
             <a class="ml-3 blue-font" href="javascript:void(0)" (click)="openDeviceCreateModal()"> Provision</a>
-            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="openConfirmDialog('delete')"> Deprovision</a>
-            <ng-container *ngIf="componentState !== constantData.NON_IP_DEVICE">
-            <a class="ml-3 blue-font" href="javascript:void(0)"  (click)="openConfirmDialog('enable')"> Enable</a>
-            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="openConfirmDialog('disable')"> Disable</a>
-            <a class="ml-3 blue-font" href="javascript:void(0)" > Package Management</a>
-            <a class="ml-3 blue-font" href="javascript:void(0)"> Regenerate Symmetric Keys</a>
-            <a class="ml-3 blue-font" href="javascript:void(0)"> Revoke Security Certificate</a>
-            </ng-container>
+            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="onSingleOperationClick('Deprovision')"> Deprovision</a>
+            <a class="ml-3 blue-font" href="javascript:void(0)"  (click)="onSingleOperationClick('Enable')"> Enable</a>
+            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="onSingleOperationClick('Disable')"> Disable</a>
+            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="onSingleOperationClick('Package Management')"> Package Management</a>
+            <!-- <a class="ml-3 blue-font" href="javascript:void(0)"> Regenerate Symmetric Keys</a>
+            <a class="ml-3 blue-font" href="javascript:void(0)"> Revoke Security Certificate</a> -->
           </div>
           <div class="form-group form-inline my-1 mx-1">
             Bulk Operations:
-            <a class="ml-3 blue-font" href="javascript:void(0)"> Provision</a>
-            <a class="ml-3 blue-font" href="javascript:void(0)"> Deprovision</a>
-            <ng-container *ngIf="componentState !== constantData.NON_IP_DEVICE">
-            <a class="ml-3 blue-font" href="javascript:void(0)"> Enable</a>
-            <a class="ml-3 blue-font" href="javascript:void(0)"> Disable</a>
-            <a class="ml-3 blue-font" href="javascript:void(0)"> Package Management</a>
-            </ng-container>
+            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="onBulkOperationClick('Provision')"> Provision</a>
+            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="onBulkOperationClick('Deprovision')"> Deprovision</a>
+            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="onBulkOperationClick('Enable')"> Enable</a>
+            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="onBulkOperationClick('Disable')"> Disable</a>
+            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="onBulkOperationClick('Package Management')"> Package Management</a>
           </div>
         </div>
       </form>
@@ -90,7 +86,7 @@
 <app-add-device *ngIf="isOpenDeviceCreateModal"  [gateways]="gateways" (getDeviceEmit)="devicesList = [];getDevices()"
 [componentState]="componentState" [tileData]="tileData" (cancelModal)="onCreateDeviceCancelModal()"></app-add-device>
 
-<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" style="z-index: 1400;">
   <div class="modal-dialog" role="document">
     <!-- <app-message-modal
     [bodyMessage]="confirmBodyMessage"
@@ -100,19 +96,209 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">{{confirmHeaderMessage}}</h5>
+        <button type="button" class="close"  aria-label="Close"  (click)="onModalEvents('close')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+        <ng-container *ngIf="modalConfig?.stringDisplay && displyaMsgArr.length === 0">{{confirmBodyMessage}}<i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAPILoading"></i></ng-container>
+        <ng-container *ngIf="displyaMsgArr.length > 0">
+          <ul>
+            <li *ngFor="let msg of displyaMsgArr; let last = last;">
+              {{msg.message}} <i class="fa fa-check" style="color: green;" *ngIf="!msg.error"></i> <i class="fa fa-cancel" style="color: red;" *ngIf="msg.error"></i>
+              <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAPILoading && last"></i></li>
+          </ul>
+        </ng-container>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button *ngIf="modalConfig?.isDisplaySave" type="button" class="btn btn-primary" (click)="onModalEvents('save')">
+          {{modalConfig?.saveBtnText ? modalConfig?.saveBtnText : 'Save'}}</button>
+        <button *ngIf="modalConfig?.isDisplayCancel" type="button" class="btn btn-secondary" (click)="onModalEvents('close')">
+          {{modalConfig?.cancelBtnText ? modalConfig?.cancelBtnText : 'Cancel'}}
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal fade" id="packageManagementModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2"
+style="z-index: 1200;">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Package Management</h5>
         <button type="button" class="close"  aria-label="Close" [disabled]="isAPILoading" (click)="onModalEvents('close')">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <div *ngIf="modalConfig?.stringDisplay">{{confirmBodyMessage}}</div>
-        <div *ngIf="isAPILoading"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></div>
+        <div *ngIf="!deviceTwin; else packageTemplate"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></div>
+        <ng-template #packageTemplate>
+          <ng-container *ngIf="devicePackages.length === 0"> No Packages are added for this device. Please add it first.</ng-container>
+          <ng-container *ngIf="currentDeviceApps.length > 0">
+            <h6> Currently, this device is having below packages installed.</h6>
+            <ul>
+              <li  *ngFor="let app of currentDeviceApps"> {{app}} - {{deviceTwin.twin_properties.reported.installed_packages[app]}}</li>
+            </ul>
+          </ng-container>
+          <ng-container *ngIf="currentDeviceApps.length === 0">
+              <h6>No packages are installed in this device.</h6>
+          </ng-container>
+          <hr/>
+          <ng-container *ngIf="devicePackages.length > 0">
+          <accordion [closeOthers]="'true'" class="mb-2">
+            <accordion-group heading="" [panelClass]="'customClass'">
+              <ng-container  accordion-heading>
+                <button class="btn" type="button" (click)="selectedDevicePackage = undefined">
+                  Install Package
+                </button>
+              </ng-container>
+              <p class="mt-n3">
+              <a
+                  class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm mb-1 float-right"
+                  href="javascript:void(0)"
+                  (click)="openConfirmDialog('Install')"
+                  [class.disabled]="!selectedDevicePackage"
+                  ><i class="fa fa- fa-sm text-white-50"></i> Install</a
+                >
+              </p>
+              <div class="table-responsive table-wrapper" id="table-wrapper" style="max-height: 20rem;">
+                <table class="table table-bordered table-striped" id="deviceTable" width="100%" cellspacing="0">
+                  <thead>
+                    <th></th>
+                    <th>App</th>
+                    <th>Package</th>
+                    <th>Version</th>
+                  </thead>
+                  <tbody >
+                    <ng-container *ngIf="installPackages.length > 0">
+                    <tr *ngFor="let package of installPackages; let i = index">
+                    <td><input type="checkbox" name="install" [checked]="selectedDevicePackage?.id === package.id"
+                      id="install{{i}}" (change)="onCheckboxChange($event, package)"
+                     /></td>
+                    <td>{{package.name}}</td>
+                    <td>{{package.display_name}}</td>
+                    <td>{{package.version}}</td>
+                    </tr>
+                  </ng-container>
+                  <ng-container *ngIf="installPackages.length === 0">
+                    <tr>
+                      <td colspan="4">No packages are available to install.</td>
+                    </tr>
+                  </ng-container>
+                  </tbody>
+
+                </table>
+              </div>
+            </accordion-group>
+            <accordion-group heading="" [panelClass]="'customClass'">
+              <ng-container  accordion-heading>
+                <button class="btn" type="button" (click)="selectedDevicePackage = undefined">
+                  Upgrade/Downgrade Package
+                </button>
+              </ng-container>
+              <p class="mt-n3 float-right">
+                <a
+                  class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm mr-2"
+                  href="javascript:void(0)"
+                  (click)="openConfirmDialog('Upgrade')"
+                  [class.disabled]="!selectedDevicePackage"
+                  ><i class="fa fa- fa-sm text-white-50"></i> Upgrade</a
+                >
+                <a
+                  class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm"
+                  href="javascript:void(0)"
+                  (click)="openConfirmDialog('Downgrade')"
+                  [class.disabled]="!selectedDevicePackage"
+                  ><i class="fa fa- fa-sm text-white-50"></i> Downgrade</a
+                >
+              </p>
+              <div class="table-responsive table-wrapper" id="table-wrapper" style="max-height: 20rem;">
+
+                <table class="table table-bordered  table-striped" id="deviceTable" width="100%" cellspacing="0">
+                  <thead>
+                    <th></th>
+                    <th>App</th>
+                    <th>Package</th>
+                    <th>Version</th>
+                  </thead>
+
+                  <tbody >
+                    <ng-container *ngIf="updatePackages.length > 0">
+                    <tr *ngFor="let package of updatePackages; let i = index;">
+                    <td><input type="checkbox" name="visible{{i}}" (change)="onCheckboxChange($event, package)"
+                      id="visible{{i}}" [checked]="selectedDevicePackage?.id === package.id"
+                     /></td>
+                    <td>{{package.name}}</td>
+                    <td>{{package.display_name}}</td>
+                    <td>{{package.version}}</td>
+                  </tr>
+                  </ng-container>
+                  <ng-container *ngIf="updatePackages.length === 0">
+                    <tr>
+                      <td colspan="4">No packages are available to upgrade/downgrade.</td>
+                    </tr>
+                  </ng-container>
+                  </tbody>
+
+                </table>
+              </div>
+            </accordion-group>
+            <accordion-group heading="" [panelClass]="'customClass'">
+              <ng-container  accordion-heading>
+                <button class="btn" type="button" (click)="selectedDevicePackage = undefined">
+                  Uninstall Package
+                </button>
+              </ng-container>
+              <p class="mt-n3">
+                <a
+                class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm mb-1 float-right"
+                href="javascript:void(0)"
+                (click)="openConfirmDialog('Uninstall')"
+                [class.disabled]="!selectedDevicePackage"
+                ><i class="fa fa- fa-sm text-white-50"></i> Uninstall</a
+              >
+              </p>
+              <div class="table-responsive table-wrapper" id="table-wrapper" style="max-height: 20rem;">
+                <table class="table table-bordered  table-striped" id="deviceTable" width="100%" cellspacing="0">
+                  <thead>
+                    <th></th>
+                    <th>App</th>
+                    <th>Package</th>
+                    <th>Version</th>
+                  </thead>
+                  <tbody >
+                    <ng-container *ngIf="uninstallPackages.length > 0">
+                    <tr *ngFor="let package of uninstallPackages;let i = index;">
+                    <td><input type="checkbox" name="visible{{i}}" (change)="onCheckboxChange($event, package)"
+                      id="visible{{i}}" [checked]="selectedDevicePackage?.id === package.id"
+                     /></td>
+                    <td>{{package.name}}</td>
+                    <td>{{package.display_name}}</td>
+                    <td>{{package.version}}</td>
+                  </tr>
+                </ng-container>
+                  <ng-container *ngIf="uninstallPackages.length === 0">
+                    <tr>
+                      <td colspan="4">No packages are available to uninstall.</td>
+                    </tr>
+                  </ng-container>
+                  </tbody>
+
+                </table>
+              </div>
+            </accordion-group>
+          </accordion>
+          </ng-container>
+        </ng-template>
       </div>
       <div class="modal-footer">
-        <button *ngIf="modalConfig?.isDisplaySave" type="button" class="btn btn-primary" [disabled]="isAPILoading" (click)="onModalEvents('save')">
-          {{modalConfig?.saveBtnText ? modalConfig?.saveBtnText : 'Save'}}</button>
-        <button *ngIf="modalConfig?.isDisplayCancel" type="button" class="btn btn-secondary" [disabled]="isAPILoading" (click)="onModalEvents('close')">
-          {{modalConfig?.cancelBtnText ? modalConfig?.cancelBtnText : 'Cancel'}}
+        <button  type="button" class="btn btn-secondary"  (click)="onModalEvents('close')">
+          Cancel
         </button>
       </div>
     </div>

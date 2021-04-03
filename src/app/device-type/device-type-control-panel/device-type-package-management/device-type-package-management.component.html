@@ -1,39 +1,47 @@
-<div class="topnavbar bg-white py-2" >
-  <div class="row">
+<div class="topnavbar bg-white py-2">
+  <ng-container *ngIf="deviceType.metadata.model_type !== constantData.NON_IP_DEVICE">
+    <div class="row">
 
-    <ul class="nav pull-left col-md-6">
-      <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)"  (click)="openAddPackageModal()" [class.disabled]="deviceType.freezed">
-          <i class="fa fa-fw fa-plus"></i>
-          <span class="text-secondary">Add Package</span></a>
-      </li>
-    </ul>
-    <div class="pull-right mt-2"  *ngIf="deviceType.freezed">
-      <h6>This model is freezed.</h6>
-    </div>
-    <!-- Divider
+      <ul class="nav pull-left col-md-6">
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="openAddPackageModal()"
+            [class.disabled]="deviceType.freezed">
+            <i class="fa fa-fw fa-plus"></i>
+            <span class="text-secondary">Add Package</span></a>
+        </li>
+      </ul>
+      <div class="pull-right mt-2" *ngIf="deviceType.freezed">
+        <h6>This model is freezed.</h6>
+      </div>
+      <!-- Divider
       <hr class="sidebar-divider d-none d-md-block mt-n1">-->
-  </div>
+    </div>
+
+  </ng-container>
+  <h5 *ngIf="deviceType.metadata.model_type === constantData.NON_IP_DEVICE"> Package Management</h5>
   <div class="row">
     <div class="col-lg-12">
       <hr class="solid">
     </div>
   </div>
-  </div>
+</div>
 
-  <div class="con-pad">
-  <div class="table-responsive">
+<div class="con-pad">
+  <div class="table-responsive" *ngIf="deviceType.metadata.model_type !== constantData.NON_IP_DEVICE">
     <app-common-table [tableData]="packages" [tableConfig]="packageTableConfig" [isTableFilterSelected]="true"
-    [isTableDataLoading]="isPackagesAPILoading" (viewMessageEvent)="onTableFunctionCall($event)"></app-common-table>
+      [isTableDataLoading]="isPackagesAPILoading" (viewMessageEvent)="onTableFunctionCall($event)"></app-common-table>
   </div>
-  </div>
+  <h6 *ngIf="deviceType.metadata.model_type === constantData.NON_IP_DEVICE">Package Management is not avilable for
+    Legacy devices. </h6>
+</div>
 
-  <div class="modal right fade" id="addPackageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
-    <div class="modal-dialog" role="document">
-      <div class="modal-content" *ngIf="packageObj">
+<div class="modal right fade" id="addPackageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" *ngIf="packageObj">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">{{packageObj.id ? 'Edit' : 'Add'}} Package</h5>
-        <button type="button" class="close" [disabled]="isCreatePackageAPILoading" (click)="onCloseAddPackageModal()" aria-label="Close">
+        <button type="button" class="close" [disabled]="isCreatePackageAPILoading" (click)="onCloseAddPackageModal()"
+          aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -42,27 +50,27 @@
           <div class="form-group">
             <label for="message-text" class="col-form-label required">App Name:</label>
             <input type="text" class="form-control" id="name" name="name" [(ngModel)]="packageObj.name"
-            placeholder="Enter Package Name" (change)="onAppChange()">
+              placeholder="Enter Package Name" (change)="onAppChange()">
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Package Name:</label>
-            <input type="text" class="form-control" id="display_name" name="display_name" [(ngModel)]="packageObj.display_name"
-            placeholder="Enter Display Name">
+            <input type="text" class="form-control" id="display_name" name="display_name"
+              [(ngModel)]="packageObj.display_name" placeholder="Enter Display Name">
           </div>
           <label for="message-text" class="col-form-label required">Version:</label>
           <div class="form-row">
 
             <div class="form-group col-md-4">
               <input type="number" class="form-control" id="major" name="major" [(ngModel)]="packageObj.metadata.major"
-            placeholder="Major">
+                placeholder="Major">
             </div>
             <div class="form-group col-md-4">
               <input type="number" class="form-control" id="minor" name="minor" [(ngModel)]="packageObj.metadata.minor"
-            placeholder="Minor">
+                placeholder="Minor">
             </div>
             <div class="form-group col-md-4">
               <input type="number" class="form-control" id="patch" name="patch" [(ngModel)]="packageObj.metadata.patch"
-            placeholder="Patch">
+                placeholder="Patch">
             </div>
           </div>
           <!-- <div class="form-group">
@@ -86,49 +94,52 @@
             <label for="recipient-name" class="col-form-label required">Document:</label>
             {{packageObj?.metadata ? packageObj?.metadata?.file_name : 'Not yet uploaded'}}
             <input type="file" accept=".zip,.rar,.7zip" (change)="onDocumentFileSelected($event.target.files)"
-            class="form-control" id="app_logo" name="app_logo">
+              class="form-control" id="app_logo" name="app_logo">
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary add-row" [disabled]="isCreatePackageAPILoading  || isFileUploading" (click)="onSavePackageObj()">Save</button>
-        <button type="button" class="btn btn-secondary" [disabled]="isCreatePackageAPILoading || isFileUploading" (click)="onCloseAddPackageModal()">Cancel</button>
+        <button type="button" class="btn btn-primary add-row" [disabled]="isCreatePackageAPILoading  || isFileUploading"
+          (click)="onSavePackageObj()">Save</button>
+        <button type="button" class="btn btn-secondary" [disabled]="isCreatePackageAPILoading || isFileUploading"
+          (click)="onCloseAddPackageModal()">Cancel</button>
         <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreatePackageAPILoading || isFileUploading"></i>
       </div>
     </div>
-    </div>
   </div>
+</div>
 
 
-  <div class="modal fade" id="confirmMessageModal" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">{{modalType === 'delete' ? 'Remove ' : 'Download ' }} Package</h5>
-          <button type="button" class="close"  aria-label="Close" (click)="closeConfirmModal()" *ngIf="modalType === 'delete'">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <ng-container *ngIf="modalType === 'delete'; else downloadFileTemplate">
+<div class="modal fade" id="confirmMessageModal" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{modalType === 'delete' ? 'Remove ' : 'Download ' }} Package
+        </h5>
+        <button type="button" class="close" aria-label="Close" (click)="closeConfirmModal()"
+          *ngIf="modalType === 'delete'">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <ng-container *ngIf="modalType === 'delete'; else downloadFileTemplate">
           Are you sure you want to remove this package?
         </ng-container>
         <ng-template #downloadFileTemplate>
           Downloading Package. Please wait...
-          <i
-          class="fa fa-spinner fa-spin fa-fw fa-2x"
-        ></i>
+          <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
         </ng-template>
-        </div>
-        <div class="modal-footer" *ngIf="modalType === 'delete'">
-          <button type="button" class="btn btn-primary" (click)="deletePackage()" [disabled]="isCreatePackageAPILoading">
-            Ok</button>
-          <button type="button" class="btn btn-secondary" (click)="closeConfirmModal()" [disabled]="isCreatePackageAPILoading">
-            Cancel
-          </button>
-          <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreatePackageAPILoading"></i>
-        </div>
       </div>
-
+      <div class="modal-footer" *ngIf="modalType === 'delete'">
+        <button type="button" class="btn btn-primary" (click)="deletePackage()" [disabled]="isCreatePackageAPILoading">
+          Ok</button>
+        <button type="button" class="btn btn-secondary" (click)="closeConfirmModal()"
+          [disabled]="isCreatePackageAPILoading">
+          Cancel
+        </button>
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreatePackageAPILoading"></i>
+      </div>
     </div>
+
   </div>
+</div>

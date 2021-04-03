@@ -1,9 +1,12 @@
+import { DeviceTypeService } from './../../../services/device-type/device-type.service';
 import { ToasterService } from './../../../services/toaster.service';
 import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from './../../../services/common.service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { environment } from 'src/environments/environment';
+import * as moment from 'moment';
 declare var $: any;
 @Component({
   selector: 'app-device-management-devices',
@@ -36,9 +39,20 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
   isAllDeviceSelected = false;
   constantData = CONSTANTS;
   deviceTwin: any;
+  devicePackages: any[] = [];
+  currentDeviceApps: any[] = [];
+  deviceApps: any[] = [];
+  selectedDeviceApp: any;
+  selectedDevicePackage: any;
+  twinResponseInterval: any;
+  installPackages: any[] = [];
+  updatePackages: any[] = [];
+  uninstallPackages: any[] = [];
+  displyaMsgArr = [];
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
+    private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService
   ) { }
 
@@ -200,11 +214,31 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  openConfirmDialog(type) {
-    if (this.selectedDevices?.length === 0) {
-      this.toasterService.showError('To perform any operations, please select at least one device', 'Device Management');
+  onSingleOperationClick(type) {
+    if (!type.toLowerCase().includes('provision') && this.componentState === CONSTANTS.NON_IP_DEVICE) {
+      this.toasterService.showError(`You can't perform this operation on legacy device.`, 'Device Management');
       return;
     }
+    if (this.selectedDevices?.length !== 1) {
+      this.toasterService.showError('To perform single operations, please select only one device', 'Device Management');
+      return;
+    }
+    if (type === 'Deprovision' || type === 'Enable' || type === 'Disable') {
+      this.openConfirmDialog(type);
+    } else if (type === 'Package Management') {
+      this.openPackageManagementModal();
+    }
+  }
+
+  onBulkOperationClick(type) {
+    // if (!type.toLowerCase().includes('provision') && this.componentState === CONSTANTS.NON_IP_DEVICE) {
+    //   this.toasterService.showError(`You can't perform this operation on legacy device.`, 'Device Management');
+    //   return;
+    // }
+    this.toasterService.showError('Currently Bulk Operations are not available for use. Work in Progress.', 'Device Management');
+  }
+
+  openConfirmDialog(type) {
     this.btnClickType = type;
     this.modalConfig = {
       isDisplaySave: true,
@@ -213,40 +247,20 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
       cancelBtnText: 'No',
       stringDisplay: true
     };
-    if (type === 'enable') {
-      if (this.selectedDevices.length > 1) {
-        this.toasterService.showError('To perform single operations, please select only one device', 'Enable Device');
-        return;
-      }
-      if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
-        this.confirmBodyMessage = `You won't be able to enable legacy device. Please try to enable relevant gateway.`;
-        this.modalConfig.isDisplaySave = false;
-        this.modalConfig.cancelBtnText = 'Ok';
-      } else {
-        this.confirmBodyMessage = 'Are you sure you want to enable this device?';
-      }
+    if (type === 'Enable') {
+      this.confirmBodyMessage = 'Are you sure you want to enable this device?';
       this.confirmHeaderMessage = 'Enable ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '');
-    } else if (type === 'disable') {
-      if (this.selectedDevices.length > 1) {
-        this.toasterService.showError('To perform single operations, please select only one device', 'Disable Device');
-        return;
-      }
-      if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
-        this.confirmBodyMessage = `You won't be able to disable legacy device. Please try to disable relevant gateway.`;
-        this.modalConfig.isDisplaySave = false;
-        this.modalConfig.cancelBtnText = 'Ok';
-      } else {
-        this.confirmBodyMessage = 'This ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' will be temporarily disabled. Are you sure you want to continue?';
-      }
+    } else if (type === 'Disable') {
+      this.confirmBodyMessage = 'This ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' will be temporarily disabled. Are you sure you want to continue?';
       this.confirmHeaderMessage = 'Disable ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '');
-    } else if (type === 'delete') {
-      if (this.selectedDevices.length > 1) {
-        this.toasterService.showError('To perform single operations, please select only one device', 'Delete Device');
-        return;
-      }
+    } else if (type === 'Deprovision') {
       this.confirmHeaderMessage = 'Deprovision ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '');
       this.confirmBodyMessage = 'This ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' will be permanently deleted. Instead, you can temporarily disable the ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + '.' +
       ' Are you sure you want to continue?';
+    } else if (type === 'Install' || type === 'Uninstall' ||
+    type === 'Upgrade' || type === 'Downgrade') {
+      this.confirmHeaderMessage = type + ' Package';
+      this.confirmBodyMessage = 'Are you sure you want to ' + type.toLowerCase() + ' this package?';
     }
     $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
@@ -260,8 +274,23 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
         this.disableDevice();
       } else if (this.btnClickType === 'delete') {
         this.deleteDevice();
+      } else if (this.btnClickType === 'Install' || this.btnClickType === 'Uninstall' ||
+      this.btnClickType === 'Upgrade' || this.btnClickType === 'Downgrade') {
+        this.updateDeviceTwin(this.btnClickType);
       }
       this.btnClickType = undefined;
+    } else {
+      $('#confirmMessageModal').modal('hide');
+      $('#packageManagementModal').modal('hide');
+      clearInterval(this.twinResponseInterval);
+      this.installPackages = [];
+      this.updatePackages = [];
+      this.uninstallPackages = [];
+      this.selectedDevices = [];
+      this.devicePackages = [];
+      this.currentDeviceApps = [];
+      this.deviceTwin = undefined;
+      this.selectedDevicePackage = undefined;
     }
   }
 
@@ -310,7 +339,6 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
     } else {
       methodToCall = this.deviceService.deleteDevice(device.device_id, this.contextApp.app);
     }
-
     this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Delete Device');
@@ -335,8 +363,29 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
       this.toasterService.showError('To perform single operations, please select only one device', 'Package Management');
       return;
     }
+    $('#packageManagementModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    await this.getDeviceTypeData();
     await this.getDeviceTwinData();
-    $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  getDeviceTypeData() {
+    return new Promise<void>((resolve) => {
+      this.subscriptions.push(
+        this.deviceTypeService.getPackages(this.contextApp.app, this.selectedDevices[0].device_type, {}).subscribe(
+          (response: any) => {
+            if (response.data?.length > 0) {
+              this.devicePackages = response.data;
+              this.devicePackages.forEach(packageObj => {
+                if (this.deviceApps.indexOf(packageObj.name) === -1) {
+                  this.deviceApps.push(packageObj.name);
+                }
+              });
+            }
+            resolve();
+          }
+        )
+      );
+    });
   }
 
   getDeviceTwinData() {
@@ -346,10 +395,145 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
         this.deviceService.getDeviceTwin(this.contextApp.app, device.device_id).subscribe(
           (response) => {
             this.deviceTwin = response;
+            if (!this.deviceTwin.twin_properties) {
+              this.deviceTwin.twin_properties = {};
+            }
+            if (!this.deviceTwin.twin_properties.reported) {
+              this.deviceTwin.twin_properties.reported = {};
+            }
+            if (!this.deviceTwin.twin_properties.reported.installed_packages) {
+              this.deviceTwin.twin_properties.reported.installed_packages = {};
+            }
+            if (this.deviceTwin.twin_properties?.reported?.installed_packages) {
+              this.currentDeviceApps = Object.keys(this.deviceTwin.twin_properties.reported.installed_packages);
+            }
+            if (this.currentDeviceApps.length > 0) {
+            this.devicePackages.forEach(devicePackage => {
+              this.currentDeviceApps.forEach(currentPackage => {
+                if (devicePackage.name !== currentPackage) {
+                    this.installPackages.push(devicePackage);
+                }
+                if (devicePackage.name === currentPackage &&
+                  this.deviceTwin.twin_properties.reported.installed_packages[currentPackage] === devicePackage.version) {
+                    this.uninstallPackages.push(devicePackage);
+                }
+                if (devicePackage.name === currentPackage &&
+                  this.deviceTwin.twin_properties.reported.installed_packages[currentPackage] !== devicePackage.version) {
+                    this.updatePackages.push(devicePackage);
+                }
+              });
+            });
+            } else {
+              this.installPackages = JSON.parse(JSON.stringify(this.devicePackages));
+            }
             resolve();
           }
         ));
     });
+  }
+
+  updateDeviceTwin(type) {
+    console.log(this.selectedDevicePackage);
+    this.isAPILoading = true;
+    this.displyaMsgArr = [];
+    const obj = {
+      desired_properties: {
+        package_management: {
+          job_id: 'job_' + this.commonService.generateUUID(),
+          command: null,
+          package_details: {
+            name: this.selectedDevicePackage.name,
+            version: this.selectedDevicePackage.version,
+            url: environment.blobURL + this.selectedDevicePackage.url,
+            token: environment.blobKey
+          }
+        }
+      },
+      job_id: null,
+      timestamp: moment().utc().unix()
+    };
+    obj.job_id = obj.desired_properties.package_management.job_id;
+    if (type === 'Install') {
+      obj.desired_properties.package_management.command = 'INSTALL_PACKAGE';
+    } else if (type === 'Upgrade' || type === 'Downgrade') {
+      obj.desired_properties.package_management.command = 'UPDATE_PACKAGE';
+    } else if (type === 'Uninstall') {
+      obj.desired_properties.package_management.command = 'DELETE_PACKAGE';
+    }
+    this.subscriptions.push(
+      this.deviceService.updateDeviceTwin(this.contextApp.app, this.selectedDevices[0].device_id, obj).subscribe(
+        (response: any) => {
+          // this.confirmBodyMessage = response.message;
+          this.displyaMsgArr.push({
+            message: 'Firmware update request sent to Device.',
+            error: false
+          });
+          this.modalConfig.isDisplaySave = false;
+          clearInterval(this.twinResponseInterval);
+          this.loadDeviceTwinChangeResponse(obj);
+        }, error => {
+          this.confirmBodyMessage = error.message;
+          this.modalConfig.isDisplaySave = false;
+          this.isAPILoading = false;
+        }
+      )
+    );
+  }
+
+  onCheckboxChange(event, packageObj) {
+    if (event.target.checked) {
+      this.selectedDevicePackage = packageObj;
+    } else {
+      this.selectedDevicePackage = undefined;
+    }
+  }
+
+  loadDeviceTwinChangeResponse(requestObj) {
+    const obj = {
+      job_id: requestObj.job_id,
+      twin_event: 'Reported',
+      from_date: requestObj.timestamp - 5,
+      to_date: moment().utc().unix()
+    };
+    this.subscriptions.push(
+      this.deviceService.getDeviceTwinHistory(this.contextApp.app, obj).subscribe(
+        (response: any) => {
+          console.log(response);
+          // this.payload.reverse();
+          // for (let i = 0; i <= this.count; i++) {
+          //   response.data[i] = this.payload[i];
+          // }
+          // console.log(response.data);
+          // this.count++;
+          if (response.data?.length > 0 && response.data[response.data.length - 1]?.twin?.reported[this.selectedDevicePackage.name]) {
+            this.displyaMsgArr.push({
+              message: response.data[response.data.length - 1].twin.reported[this.selectedDevicePackage.name].fw_update_sub_status,
+              error: false
+            });
+            this.modalConfig.isDisplaySave = false;
+            clearInterval(this.twinResponseInterval);
+            if (response.data[response.data.length - 1].twin.reported[this.selectedDevicePackage.name].fw_pending_version) {
+            this.twinResponseInterval = setInterval(
+              () => {
+                this.loadDeviceTwinChangeResponse(requestObj);
+              }, 5000);
+            } else {
+              setTimeout(() => {
+                this.onModalEvents('close');
+                this.isAPILoading = false;
+              }, 1000);
+            }
+         }
+        }, error => {
+          this.displyaMsgArr.push({
+            message: error.message,
+            error: true
+          });
+          this.isAPILoading = false;
+          this.modalConfig.isDisplaySave = false;
+          clearInterval(this.twinResponseInterval);
+        }
+      ));
   }
 
   ngOnDestroy() {

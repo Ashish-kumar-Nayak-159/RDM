@@ -569,4 +569,16 @@ export class DeviceService {
       encodeURIComponent(app), encodeURIComponent(deviceId)), obj);
   }
 
+  getDeviceTwinHistory(app, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        console.log(filterObj[key]);
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_TWIN_HISTORY,
+      encodeURIComponent(app)), {params});
+  }
+
 }

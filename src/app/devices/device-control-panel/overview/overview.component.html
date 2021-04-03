@@ -80,14 +80,3 @@
 
 </div> -->
 
-
-<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
-  <div class="modal-dialog" role="document">
-    <app-message-modal
-    [bodyMessage]="btnClickType === 'Disable' ? 'This ' + pageType + ' will be temporarily disabled. Are you sure you want to continue?' :
-    'This ' + pageType + ' will be permanently deleted. Instead, you can temporarily disable the ' + pageType +'.' +
-    ' Are you sure you want to continue?'"
-     [headerMessage]="btnClickType + ' Device'"
-      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
-  </div>
-</div>

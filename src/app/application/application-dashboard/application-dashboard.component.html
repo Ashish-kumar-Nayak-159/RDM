@@ -160,7 +160,7 @@
                   <agm-marker-cluster imagePath="https://raw.githubusercontent.com/googlemaps/v3-utility-library/master/markerclustererplus/images/m">
                 <ng-container  *ngFor="let device of devices; let i = index; ">
                   <agm-marker *ngIf="device.latitude && device.longitude"
-                  [latitude]="device.latitude" [longitude]="device.longitude" [label]="'D-' + i"
+                  [latitude]="device.latitude" [longitude]="device.longitude"
                   (mouseOver)="onMarkerClick(infowindow, gm)" (mouseOut)="onMarkerMouseOut(infowindow, gm)" >
                   <agm-info-window #infowindow [disableAutoPan]="false">
                     <h6>{{device.display_name ? device.display_name: device.device_id}}</h6>

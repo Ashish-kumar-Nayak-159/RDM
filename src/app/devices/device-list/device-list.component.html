@@ -93,7 +93,7 @@
 <div class="mb-4 ">
 
   <div class="">
-    <div class="table-responsiven table-wrapper" id="table-wrapper" style="max-height: calc(100vh - 20rem)">
+    <div class="table-wrapper" id="table-wrapper" style="max-height: calc(100vh - 20rem)">
       <table class="table table-bordered  table-striped" id="deviceTable" width="100%" cellspacing="0">
         <thead >
           <th></th>
@@ -109,9 +109,11 @@
               <td>{{i + 1}}</td>
               <td>{{device.display_name}}</td>
               <td>
-                <ul >
+                <ng-container *ngFor="let user of device.device_manager_users; let last = last">{{user}}
+                <ng-container *ngIf="!last"><br/></ng-container></ng-container>
+                <!-- <ul >
                   <li *ngFor="let user of device.device_manager_users">{{user}}</li>
-                </ul>
+                </ul> -->
                 <!-- <span *ngIf="device.device_manager_users?.length === 1">{{device.device_manager_users[0]}}</span> -->
               </td>
               <td>{{device.hierarchyString}}</td>

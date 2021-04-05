@@ -230,11 +230,17 @@
         </div>
         <div class="form-check form-check-inline">
           <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="address" [(ngModel)]="changeLocationOption"
-          (change)="onRadioChange()" class="pac-container">
-          <label class="form-check-label ml-4" for="exampleRadios2">
+          (change)="onRadioChange()">
+          <label class="form-check-label ml-2" for="exampleRadios2">
             Enter Address
           </label>
         </div>
+        <!-- <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="address" [(ngModel)]="changeLocationOption">
+          <label class="form-check-label ml-2" for="exampleRadios2">
+            Enter Address
+          </label>
+        </div> -->
         <div class="form-check form-check-inline">
           <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="pick_from_map" [(ngModel)]="changeLocationOption">
           <label class="form-check-label ml-2" for="exampleRadios3">
@@ -242,7 +248,7 @@
           </label>
         </div>
         <ng-container *ngIf="changeLocationOption === 'address'">
-          <div class="form-group mt-2">
+          <div class="form-group mt-2 ">
             <label for="inputEmail4">Address:</label>
             <input placeholder="Search Address" autocorrect="off" autocapitalize="off" spellcheck="off"
             type="text" class="form-control form-control-sm" #search>
@@ -251,7 +257,7 @@
         <ng-container *ngIf="changeLocationOption === 'pick_from_map' || changeLocationOption === 'address'">
           <div class="mt-2">
           <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude"
-           (mapReady)="mapReadyHandler($event)">
+           (mapReady)="mapReadyHandler($event)" [zoom]="zoom">
             <agm-marker [latitude]="device?.tags.latitude" [longitude]="device?.tags.longitude" ></agm-marker>
           </agm-map>
         </div>

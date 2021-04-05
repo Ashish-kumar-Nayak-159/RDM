@@ -1482,12 +1482,17 @@ pre code {
     color: #858796;
 }
 
-.table td, .table th {
-    padding: .75rem;
+.table th {
+    padding: .6rem;
     vertical-align: top;
     border-top: 1px solid #e3e6f0;
 }
 
+.table td {
+  padding: .6rem;
+  vertical-align: top;
+  border-top: 1px solid #e3e6f0;
+}
 .table thead th {
     vertical-align: bottom;
     border-bottom: 2px solid #e3e6f0;
@@ -2248,6 +2253,7 @@ textarea.form-control {
 }
 
 .btn.disabled, .btn:disabled {
+  cursor: not-allowed;
   opacity: .65
 }
 

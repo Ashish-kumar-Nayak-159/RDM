@@ -35,6 +35,9 @@ export class PreGeneratedReportsComponent implements OnInit {
   @ViewChild('dtInput2', {static: false}) dtInput2: any;
   blobStorageURL = environment.blobURL;
   sasToken = environment.blobKey;
+  insideScrollFunFlag = false;
+  currentOffset = 0;
+  currentLimit = 20;
 
   constructor(
     private commonService: CommonService,
@@ -80,6 +83,18 @@ export class PreGeneratedReportsComponent implements OnInit {
 
      // this.getLatestAlerts();
       await this.getDevices(this.contextApp.user.hierarchy);
+      setTimeout(() => {
+        console.log($('#table-wrapper'));
+        $('#table-wrapper').on('scroll', () => {
+          const element = document.getElementById('table-wrapper');
+          if (parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0))
+          >= parseFloat(element.scrollHeight.toFixed(0)) && !this.insideScrollFunFlag) {
+            this.currentOffset += this.currentLimit;
+            this.getReportsData();
+            this.insideScrollFunFlag = true;
+          }
+        });
+      }, 2000);
      // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
     }));
   }
@@ -93,6 +108,7 @@ export class PreGeneratedReportsComponent implements OnInit {
     });
     this.tileData = selectedItem;
     console.log('aaaaaaaaaa', this.tileData);
+    this.currentLimit = Number(this.tileData[1]?.value) || 100;
   }
 
   getDevices(hierarchy) {
@@ -257,11 +273,24 @@ export class PreGeneratedReportsComponent implements OnInit {
   }
 
   getReportsData() {
+    this.insideScrollFunFlag = true;
     const obj = {...this.filterObj};
     if (!obj.report_type) {
       this.toasterService.showError('Report Type selection is required', 'View Report');
       return;
     }
+    setTimeout(() => {
+      console.log($('#table-wrapper'));
+      $('#table-wrapper').on('scroll', () => {
+        const element = document.getElementById('table-wrapper');
+        if (parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0))
+        >= parseFloat(element.scrollHeight.toFixed(0)) && !this.insideScrollFunFlag) {
+          this.currentOffset += this.currentLimit;
+          this.getReportsData();
+          this.insideScrollFunFlag = true;
+        }
+      });
+    }, 2000);
     if (this.filterObj.from_date) {
       obj.from_date = (this.filterObj.from_date.unix());
     }
@@ -284,16 +313,25 @@ export class PreGeneratedReportsComponent implements OnInit {
     this.isFilterSelected = true;
     delete obj.deviceArr;
     delete obj.dateOption;
+    delete obj.report_type;
+    obj.offset = this.currentOffset;
+    obj.count = this.currentLimit;
     this.isReportDataLoading = true;
-    this.reports = [];
+    // this.reports = [];
     this.subscriptions.push(this.deviceService.getPregeneratedReports(obj, this.contextApp.app).subscribe(
       (response: any) => {
         if (response.data?.length > 0) {
-          this.reports = response.data;
-          this.reports.forEach(report => {
+          // this.reports = response.data;
+          response.data.forEach(report => {
             report.local_start_date = this.commonService.convertUTCDateToLocal(report.report_start_date);
             report.local_end_date = this.commonService.convertUTCDateToLocal(report.report_end_date);
           });
+          this.reports = [...this.reports, ...response.data];
+          if (response.data.length === this.currentLimit) {
+            this.insideScrollFunFlag = false;
+          } else {
+            this.insideScrollFunFlag = true;
+          }
         }
         this.isReportDataLoading = false;
       }

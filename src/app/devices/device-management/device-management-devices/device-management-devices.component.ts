@@ -194,15 +194,25 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
   }
 
   onDeviceSelection(device) {
-    if (this.selectedDevices.length > 0) {
+    console.log('before', this.selectedDevices.length);
+    console.log(this.selectedDevices);
+    if (this.selectedDevices.length === 0) {
       this.selectedDevices.push(device);
     } else {
       const index = this.selectedDevices.findIndex(deviceObj => deviceObj.device_id === device.device_id);
+      console.log(index);
       if (index > -1) {
         this.selectedDevices.splice(index, 1);
       } else {
         this.selectedDevices.push(device);
       }
+    }
+    console.log('after', this.selectedDevices.length);
+    console.log(this.selectedDevices);
+    if (this.selectedDevices.length === this.devicesList.length) {
+      this.isAllDeviceSelected = true;
+    } else {
+      this.isAllDeviceSelected = false;
     }
   }
 
@@ -268,11 +278,11 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
   onModalEvents(eventType) {
     if (eventType === 'save'){
       console.log(this.btnClickType);
-      if (this.btnClickType === 'enable') {
+      if (this.btnClickType === 'Enable') {
         this.enableDevice();
-      } else if (this.btnClickType === 'disable') {
+      } else if (this.btnClickType === 'Disable') {
         this.disableDevice();
-      } else if (this.btnClickType === 'delete') {
+      } else if (this.btnClickType === 'Deprovision') {
         this.deleteDevice();
       } else if (this.btnClickType === 'Install' || this.btnClickType === 'Uninstall' ||
       this.btnClickType === 'Upgrade' || this.btnClickType === 'Downgrade') {
@@ -289,7 +299,10 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
       this.selectedDevices = [];
       this.devicePackages = [];
       this.currentDeviceApps = [];
+      this.displyaMsgArr = [];
       this.deviceTwin = undefined;
+      this.isAPILoading = false;
+      this.isAllDeviceSelected = false;
       this.selectedDevicePackage = undefined;
     }
   }
@@ -511,19 +524,26 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
               error: false
             });
             this.modalConfig.isDisplaySave = false;
-            clearInterval(this.twinResponseInterval);
             if (response.data[response.data.length - 1].twin.reported[this.selectedDevicePackage.name].fw_pending_version) {
-            this.twinResponseInterval = setInterval(
+              clearInterval(this.twinResponseInterval);
+              this.twinResponseInterval = setInterval(
               () => {
                 this.loadDeviceTwinChangeResponse(requestObj);
               }, 5000);
             } else {
+              clearInterval(this.twinResponseInterval);
               setTimeout(() => {
                 this.onModalEvents('close');
                 this.isAPILoading = false;
               }, 1000);
             }
-         }
+          } else {
+          clearInterval(this.twinResponseInterval);
+          this.twinResponseInterval = setInterval(
+          () => {
+            this.loadDeviceTwinChangeResponse(requestObj);
+          }, 5000);
+          }
         }, error => {
           this.displyaMsgArr.push({
             message: error.message,

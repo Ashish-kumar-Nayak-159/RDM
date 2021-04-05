@@ -48,6 +48,7 @@ export class TagsComponent implements OnInit, OnDestroy {
   changeLocationOption: any;
   centerLatitude = 23.0225;
   centerLongitude = 72.5714;
+  zoom = 8;
   @ViewChild('search') searchElementRef: ElementRef;
   constructor(
     private route: ActivatedRoute,
@@ -117,6 +118,8 @@ export class TagsComponent implements OnInit, OnDestroy {
           this.device.hierarchyString += this.device.hierarchy[key] + ( keys[index + 1] ? ' / ' : '');
         });
         this.device.tags.device_users_arr = this.device.tags.device_manager.split(',');
+        this.centerLatitude = this.device.tags.latitude || 23.0225;
+        this.centerLongitude = this.device.tags.longitude || 72.5714;
         console.log(this.device);
         await this.getDeviceTypeDetail();
         this.getDeviceDetail();
@@ -356,6 +359,7 @@ export class TagsComponent implements OnInit, OnDestroy {
       this.centerLongitude = e.latLng.lng();
       this.device.tags.latitude = e.latLng.lat();
       this.device.tags.longitude = e.latLng.lng();
+      this.zoom = 12;
     });
   }
 
@@ -363,7 +367,7 @@ export class TagsComponent implements OnInit, OnDestroy {
   setTimeout(() => {
   this.mapsAPILoader.load().then(() => {
     const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, {
-      types: ['address']
+      types: ['geocode']
     });
     autocomplete.addListener('place_changed', () => {
       this.ngZone.run(() => {
@@ -371,6 +375,7 @@ export class TagsComponent implements OnInit, OnDestroy {
         if (place.geometry === undefined || place.geometry === null) {
           return;
         }
+        this.zoom = 12;
         this.centerLatitude = place.geometry.location.lat();
         this.centerLongitude = place.geometry.location.lng();
         this.device.tags.latitude = place.geometry.location.lat();

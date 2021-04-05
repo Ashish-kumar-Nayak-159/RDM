@@ -110,8 +110,8 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     await this.getAllDevices();
     const center = this.commonService.averageGeolocation(this.devices);
     console.log('centerrr    ', center);
-    this.centerLatitude = center?.latitude;
-    this.centerLongitude = center?.longitude;
+    this.centerLatitude = center?.latitude || 23.0225;
+    this.centerLongitude = center?.longitude || 72.5714;
     this.devices.forEach(marker => {
       const mtbfHours = this.commonService.randomIntFromInterval(0, 7);
       const mtbfMinutes = this.commonService.randomIntFromInterval(10, 59);

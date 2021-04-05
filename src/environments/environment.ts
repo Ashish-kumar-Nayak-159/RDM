@@ -14,7 +14,7 @@ export const environment = {
   blobURL: 'https://storageaccountkemsy96a3.blob.core.windows.net/',
   cachedTelemetryContainer: 'telemetry',
   app: undefined,
-  version: '3.0',
+  version: '5.0',
   packageManagementContainer: 'packages',
   storgageSecretKey: 'kEm$Y$*RdM'
 

@@ -4,8 +4,8 @@
     <thead>
       <tr class="bg-secondary text-white">
         <th></th>
-        <th  *ngFor="let item of tableConfig?.data;let i = index;" [ngClass]="{'w-10': !item.key,
-        'w-15': ( tableConfig.type === 'alert' && item.name === 'Code' && i === 0), 'w-35': item.name === 'Timestamp'}">
+        <th  *ngFor="let item of tableConfig?.data;let i = index;" [ngClass]="{'w-2': i === 0 && !item.key,
+        'w-15': ( tableConfig.type === 'alert' && item.name === 'Code' && i === 1), 'w-35': item.name === 'Timestamp'}">
           {{item.name}}</th>
       </tr>
     </thead>

@@ -164,9 +164,9 @@
                   (mouseOver)="onMarkerClick(infowindow, gm)" (mouseOut)="onMarkerMouseOut(infowindow, gm)" >
                   <agm-info-window #infowindow [disableAutoPan]="false">
                     <h6>{{device.display_name ? device.display_name: device.device_id}}</h6>
-                    <hr>
+                    <!-- <hr>
                     <p><b>MTTR:</b> {{device.mttr}}</p>
-                    <p><b>MTBF:</b> {{device.mtbf}}</p>
+                    <p><b>MTBF:</b> {{device.mtbf}}</p> -->
                   </agm-info-window>
                   </agm-marker>
                 </ng-container>

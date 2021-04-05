@@ -102,7 +102,7 @@
           </ng-container>
           </div>
           <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search"
-           (click)="getReportsData()" ><i
+           (click)="reports = [];currentOffset = 0;getReportsData()" ><i
             class="fa fa-search fa-sm" ></i></button>
 
           <!-- <bu<button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="onFilterSelection()" ><i
@@ -124,7 +124,7 @@ style="margin-top: 7.5rem;max-height: calc(100vh - 15rem)">
 
       <ng-container *ngIf="isFilterSelected && filterObj.report_type.toLowerCase().includes('telemetry report')">
         <h5  >{{filterObj.report_type}}s</h5>
-      <div class="table-wrapper" id="table-wrapper" style="max-height: calc(100vh - 20rem)" >
+      <div class="table-wrapper" id="table-wrapper" style="max-height: calc(100vh - 21.5rem)" >
         <table class="table table-bordered table-striped"  id="dataTable1" width="100%" cellspacing="0"
        >
           <thead>
@@ -173,6 +173,10 @@ style="margin-top: 7.5rem;max-height: calc(100vh - 15rem)">
         </table>
 
       </div>
+      <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && reports.length > 0">
+        <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;getReportsData();"
+          title="Load More Records...">Load More...</a>
+      </span>
       </ng-container>
 
 

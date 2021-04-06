@@ -125,11 +125,17 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
   }
 
   addParameter() {
+    const data = this.editor.get() as any;
+    const list = data?.params || [];
+    list.forEach((item, i) => {
+      this.deviceMethodObj.json_model.params[i] = item;
+    });
     this.deviceMethodObj.json_model.params.push({
       key: null,
       data_type: null,
       json: null
     });
+    this.editor.set(this.deviceMethodObj.json_model);
   }
 
   openaddDeviceMethodModal() {
@@ -150,6 +156,13 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
 
   onDataTypeChange(index) {
     const obj = {};
+    const data = this.editor.get() as any;
+    const list = data?.params || [];
+    list.forEach((item, i) => {
+      if (i !== index) {
+        this.deviceMethodObj.json_model.params[i] = item;
+      }
+    });
     const param = this.deviceMethodObj.json_model.params[index];
     if (param.data_type && param.json) {
       const validations = this.dataTypeList.find(type => type.name === param.data_type).validations;
@@ -174,10 +187,16 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
   }
 
   onParamKeyChange(index) {
-    console.log(this.deviceMethodObj);
-    console.log(index);
+    // console.log(this.deviceMethodObj);
+    const data = this.editor.get() as any;
+    const list = data?.params || [];
+    list.forEach((item, i) => {
+      if (i !== index) {
+        this.deviceMethodObj.json_model.params[i] = item;
+      }
+    });
+    // this.deviceMethodObj.json_model = this.editor.get();
     const param = this.deviceMethodObj.json_model.params[index];
-    console.log(param.json);
     if (param.json) {
       const keys = Object.keys(param.json);
       let obj: any = {};
@@ -194,7 +213,6 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
     } else {
       param.json = {};
     }
-    console.log(this.deviceMethodObj.json_model);
     this.editor.set(this.deviceMethodObj.json_model);
   }
 

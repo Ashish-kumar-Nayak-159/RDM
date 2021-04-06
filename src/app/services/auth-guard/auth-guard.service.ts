@@ -1,3 +1,5 @@
+import { environment } from 'src/environments/environment';
+import { CONSTANTS } from 'src/app/app.constants';
 import { Injectable } from '@angular/core';
 import { Router, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 import { CommonService } from 'src/app/services/common.service';
@@ -19,6 +21,12 @@ export class AuthGuardService {
     console.log('user    ', userData);
     console.log('apppp   ', appData);
     console.log('routeeeeeee    ', this.getResolvedUrl(route));
+    const version = localStorage.getItem(CONSTANTS.APP_VERSION);
+    if (version !== environment.version) {
+      this.commonService.onLogOut();
+      console.log('return false');
+      return false;
+    }
     if (this.getResolvedUrl(route)?.includes('selection')) {
       if (!userData) {
         this.commonService.onLogOut();

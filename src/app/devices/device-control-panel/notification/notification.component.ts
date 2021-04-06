@@ -128,6 +128,9 @@ export class NotificationComponent implements OnInit, OnDestroy {
         to_date: null,
         epoch: true
       };
+      const epoch =  this.commonService.convertDateToEpoch(dataobj.message_date);
+      obj.from_date = epoch ? (epoch - 300) : null;
+      obj.to_date = (epoch ? (epoch + 300) : null);
       this.apiSubscriptions.push(this.deviceService.getDeviceMessageById(obj, 'notification').subscribe(
         (response: any) => {
           resolve(response.message);

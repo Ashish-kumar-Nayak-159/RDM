@@ -1197,7 +1197,8 @@ export class CONSTANTS {
   public static EMAIL_REGEX = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
   public static ONLY_NOS_AND_CHARS = /^[a-zA-Z0-9]+$/;
   public static APP_ADMIN_ROLE = 'App Admin';
-  public static LOCAL_STORAGE_EXPIRY_INTERVAL = 86400000;
+  public static APP_VERSION = 'version';
+
 
   // public static DEFAULT_APP_ICON = environment.blobURL + '/' + environment.blobContainerName + '/default_app_icon.png';
   // public static DEFAULT_APP_LOGO = environment.blobURL + '/' + environment.blobContainerName + '/default_app_logo.jpg';

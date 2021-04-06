@@ -324,8 +324,14 @@ export class ApplicationNotificationsComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       const obj = {
         app: dataobj.app,
-        id: dataobj.id
+        id: dataobj.id,
+        from_date: null,
+        to_date: null,
+        epoch: true
       };
+      const epoch =  this.commonService.convertDateToEpoch(dataobj.message_date);
+      obj.from_date = epoch ? (epoch - 300) : null;
+      obj.to_date = (epoch ? (epoch + 300) : null);
       this.apiSubscriptions.push(this.deviceService.getDeviceMessageById(obj, 'notification').subscribe(
         (response: any) => {
           resolve(response.message);

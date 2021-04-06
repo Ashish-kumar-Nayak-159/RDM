@@ -7,7 +7,7 @@
     <form>
       <div class="form-group form-inline my-1">
         <div class="row col-xl-12 col-md-12 ml-1">
-          <ng-container 
+          <ng-container
           *ngFor="
               let level of contextApp?.hierarchy?.levels;
               let index = index
@@ -41,7 +41,7 @@
 
           <input type="number" min="1" class="form-control form-control-sm mr-1 record-input" id="inputEmail4"
             placeholder="No of Records" [(ngModel)]="filterObj.count" name="count">
-          
+
           <div class="bg-dateRow form-group form-inline" id="dateRow"
             [style.width]="(filterObj.dateOption === 'date' ? '23rem' : (filterObj.dateOption === 'date range' ? '33rem' : ''))">
             <select class="form-control form-control-sm mx-1 my-1" id="dateoptions" [(ngModel)]="filterObj.dateOption"
@@ -97,7 +97,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <pre [innerHTML]="selectedAlert?.message | json"></pre>
+        <pre [innerHTML]="selectedAlert?.messageObj | json"></pre>
 
       </div>
       <div class="modal-footer">

@@ -41,6 +41,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     scale: 0.42,
     landscape: true
   };
+  tabType = 'pre-generated';
   isFilterSelected = false;
   props: any[] = [];
   selectedProps: any[] = [];
@@ -131,7 +132,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
       };
-      this.subscriptions.push(this.deviceService.getAllDevicesList(obj, this.contextApp.app).subscribe(
+      this.subscriptions.push(this.deviceService.getIPAndLegacyDevices(obj, this.contextApp.app).subscribe(
         (response: any) => {
           if (response?.data) {
             this.devices = response.data;
@@ -356,6 +357,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   onScrollFn() {
     setTimeout(() => {
+      console.log($('#table-wrapper'));
       $('#table-wrapper').on('scroll', () => {
         const element = document.getElementById('table-wrapper');
         if (parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0)) >=
@@ -422,16 +424,14 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.newFilterObj = JSON.parse(JSON.stringify(obj));
     this.isFilterSelected = true;
     if (obj.report_type === 'Process Parameter Report') {
-      this.getTelemetryData(obj);
+      this.getTelemetryData(obj, undefined, callScrollFnFlag);
     } else if (obj.report_type === 'Alert Report') {
-      this.getAlertData(obj);
+      this.getAlertData(obj, undefined, callScrollFnFlag);
     }
-    if (callScrollFnFlag) {
-      this.onScrollFn();
-    }
+
   }
 
-  getAlertData(obj, type = undefined) {
+  getAlertData(obj, type = undefined, callScrollFnFlag = false) {
     return new Promise<void>((resolve) => {
     obj.offset = this.currentOffset;
     obj.count = this.currentLimit;
@@ -455,6 +455,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
         } else {
           this.insideScrollFunFlag = true;
         }
+        if (callScrollFnFlag) {
+          this.onScrollFn();
+        }
         resolve();
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false
@@ -463,17 +466,20 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   onTabSelect(type) {
+    this.tabType = type;
     if (type === 'custom') {
       this.filterObj = JSON.parse(JSON.stringify(this.originalFilterObj));
       this.telemetry = [];
       this.latestAlerts = [];
       this.isFilterOpen = true;
       this.isFilterSelected = false;
+    } else {
+      this.isFilterSelected = false;
     }
 
   }
 
-  async getTelemetryData(filterObj, type = undefined) {
+  async getTelemetryData(filterObj, type = undefined, callScrollFnFlag = false) {
     return new Promise<void>((resolve) => {
     const obj = JSON.parse(JSON.stringify(filterObj));
     delete obj.dateOption;
@@ -562,6 +568,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
           }
           this.loadingMessage = undefined;
           // this.telemetry.reverse();
+        }
+        if (callScrollFnFlag) {
+          this.onScrollFn();
         }
         this.isTelemetryLoading = false;
         resolve();

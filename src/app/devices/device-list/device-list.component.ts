@@ -395,7 +395,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
               item.hierarchyString = '';
               const keys = Object.keys(item.hierarchy);
               this.contextApp.hierarchy.levels.forEach((key, index) => {
-                item.hierarchyString += item.hierarchy[key] + ( keys[index + 1] ? ' / ' : '');
+                item.hierarchyString += item.hierarchy[key] ? (item.hierarchy[key] + ( keys[index + 1] ? ' / ' : '')) : '';
               });
             }
           });
@@ -416,7 +416,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
 
   clearFilter() {
     this.currentOffset = 0;
-    this.devicesList = [];
+    // this.devicesList = [];
     this.deviceFilterObj = undefined;
     this.deviceFilterObj = JSON.parse(JSON.stringify(this.originalDeviceFilterObj));
     console.log(this.deviceFilterObj);

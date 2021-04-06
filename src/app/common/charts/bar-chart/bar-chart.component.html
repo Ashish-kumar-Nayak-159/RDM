@@ -4,7 +4,7 @@
       <a class="btn" >
         {{chartTitle}}
       </a>
-      <a [class.disabled]="hideCancelButton" class="float-right pull-right mt-1" href="javascript:void(0)"
+      <a *ngIf="hideCancelButton" class="float-right pull-right mt-1" href="javascript:void(0)"
       (click)="openConfirmRemoveWidgetModal()" title="Remove Widget">
         <i class="fa fa-close"></i></a>
     </ng-container>

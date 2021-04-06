@@ -32,6 +32,7 @@ export class DeviceManagementComponent implements OnInit {
         }
       ]
     });
+    console.log(this.contextApp);
     if (this.contextApp.configuration.main_menu[2].visible) {
       this.selectedTab = 'iot-devices';
     } else if (this.contextApp.configuration.main_menu[3].visible) {

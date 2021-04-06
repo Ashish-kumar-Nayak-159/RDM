@@ -17,7 +17,7 @@
                 classes: 'col-lg-3 col-xl-3 mr-1 p-0',
                 enableSearchFilter: true,
                 badgeShowLimit: 1,
-                maxHeight: 1000,
+                maxHeight: 400,
                 labelKey: 'id'
               }"
             >
@@ -143,7 +143,7 @@
       No data found.
     </h6>
     <h6 *ngIf="layoutJson.length == 0 && !isHistoryAPILoading">
-      No Layout found
+      No Historical Widgets found
     </h6>
     <ng-container *ngIf="isHistoryAPILoading">
       {{loadingMessage}}

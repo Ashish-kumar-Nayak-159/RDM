@@ -24,11 +24,12 @@
         <angular2-multiselect [data]="devices" id="deviceSelect"
         [(ngModel)]="filterObj.deviceArr" name="devices" [settings]="{
           text: 'Select Device',
-          classes: 'w-16 p-0',
+          classes: 'w-16 mr-1 p-0',
           enableSearchFilter: true,
           showCheckbox: false,
           maxHeight: 400,
           primaryKey: 'device_id',
+          badgeShowLimit: 1,
           labelKey: 'display_name'
         }"  #device="ngModel"
         (onSelect)="onAssetSelection()"
@@ -63,9 +64,9 @@
           <select class="form-control form-control-sm mr-2 ml-1 my-1" id="report_type" [(ngModel)]="filterObj.report_type"
           name="report_type" #reportType="ngModel">
           <option [ngValue]="undefined">Select Report Type</option>
-          <option [ngValue]="'Daily Single Device Telemetry Report'">Daily Single Device Telemetry Report</option>
-          <option [ngValue]="'Weekly Single Device Telemetry Report'">Weekly Single Device Telemetry Report</option>
-          <option [ngValue]="'Daily Multiple Device Telemetry Report'">Daily Multiple Device Telemetry Report</option>
+          <option [ngValue]="'Daily Single Asset Telemetry Report'">Daily Single Asset Telemetry Report</option>
+          <option [ngValue]="'Weekly Single Asset Telemetry Report'">Weekly Single Asset Telemetry Report</option>
+          <option [ngValue]="'Daily Multiple Asset Telemetry Report'">Daily Multiple Asset Telemetry Report</option>
           <!-- <option [ngValue]="'Daily Single Device Alert Report'">Daily Single Device Alert Report</option>
           <option [ngValue]="'Weekly Single Device Alert Report'">Weekly Single Device Alert Report</option>
           <option [ngValue]="'Daily Multiple Device Alert Report'">Daily Multiple Device Alert Report</option> -->
@@ -122,8 +123,8 @@ style="margin-top: 7.5rem;max-height: calc(100vh - 15rem)">
     class="mt-1"
     >
 
-      <ng-container *ngIf="isFilterSelected && filterObj.report_type.toLowerCase().includes('telemetry report')">
-        <h5  >{{filterObj.report_type}}s</h5>
+      <ng-container *ngIf="isFilterSelected && previousFilterObj.report_type.toLowerCase().includes('telemetry report')">
+        <h5  >{{previousFilterObj.report_type}}s</h5>
       <div class="table-wrapper" id="table-wrapper" style="max-height: calc(100vh - 21.5rem)" >
         <table class="table table-bordered table-striped"  id="dataTable1" width="100%" cellspacing="0"
        >
@@ -147,12 +148,13 @@ style="margin-top: 7.5rem;max-height: calc(100vh - 15rem)">
                     <p>{{ getDeviceNameById(deviceId)}}</p>
                   </ng-container>
                 </td>
-                <td>{{ reportObj.local_start_date }}</td>
+              <td>{{ reportObj.local_start_date }}</td>
                 <td>{{ reportObj.local_end_date }}</td>
                 <!-- <td>{{reportObj.report_type.method | titlecase}}</td>
                 <td>{{reportObj.report_frequency | titlecase}}</td> -->
                 <td>
-                  <a href="javascript:void(0)"  (click)="downloadFile(reportObj)" title="Download Excel"><i class="fa fa-sm fa-download" ></i></a>
+                  <a *ngIf="reportObj.process_status.toLowerCase() === 'success'" href="javascript:void(0)"  (click)="downloadFile(reportObj)" title="Download Excel"><i class="fa fa-sm fa-download" ></i></a>
+                  <ng-container *ngIf="reportObj.process_status.toLowerCase() !== 'success'">{{reportObj.process_status}}</ng-container>
                 </td>
                 </tr>
             </ng-container>

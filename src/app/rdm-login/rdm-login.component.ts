@@ -88,6 +88,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
           // if (!expiryObj || expiryObj.email !== this.userData.email || new Date().getTime() > expiryObj.expired_at) {
           //   localStorage.clear();
           // }
+          localStorage.setItem(CONSTANTS.APP_VERSION, environment.version);
           if (response.is_super_admin) {
             console.log('in login 28');
             this.router.navigate(['applications']);

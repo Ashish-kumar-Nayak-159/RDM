@@ -321,7 +321,7 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
       };
       this.selectedAlert = JSON.parse(JSON.stringify(obj.data));
       this.getMessageData(obj.data).then(message => {
-        this.selectedAlert.message = message;
+        this.selectedAlert.messageObj = message;
       });
       $('#alertMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
       }
@@ -331,8 +331,14 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       const obj = {
         app: alert.app,
-        id: alert.id
+        id: alert.id,
+        from_date: null,
+        to_date: null,
+        epoch: true
       };
+      const epoch =  this.commonService.convertDateToEpoch(alert.message_date);
+      obj.from_date = epoch ? (epoch - 300) : null;
+      obj.to_date = (epoch ? (epoch + 300) : null);
       this.apiSubscriptions.push(this.deviceService.getDeviceMessageById(obj, 'alert').subscribe(
         (response: any) => {
           resolve(response.message);

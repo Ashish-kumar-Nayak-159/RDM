@@ -162,6 +162,20 @@ export class AddDeviceComponent implements OnInit {
       this.deviceDetail.tags.hierarchy_json[this.contextApp.hierarchy.levels[key]] = this.addDeviceConfigureHierarchy[key];
       console.log(this.deviceDetail.tags.hierarchy_json);
     });
+    const modelObj = this.deviceTypes.filter(type => type.name === this.deviceDetail.tags.device_type)[0];
+    if (!this.deviceDetail.metadata) {
+      this.deviceDetail.metadata = {};
+    }
+    this.deviceDetail.metadata.measurement_frequency = {
+      min: modelObj?.measurement_frequency.min || 1,
+      max: modelObj?.measurement_frequency.max || 10,
+      average: modelObj?.measurement_frequency.average || 5
+    };
+    this.deviceDetail.metadata.telemetry_frequency = {
+      min: modelObj?.telemetry_frequency.min || 1,
+      max: modelObj?.telemetry_frequency.max || 60,
+      average: modelObj?.telemetry_frequency.average || 30
+    };
     this.deviceDetail.tags.hierarchy = JSON.stringify(this.deviceDetail.tags.hierarchy_json );
     this.deviceDetail.tags.created_by = this.userData.email + '(' + this.userData.name + ')';
     this.deviceDetail.app = this.contextApp.app;
@@ -174,10 +188,11 @@ export class AddDeviceComponent implements OnInit {
       user_email: this.deviceDetail.tags.device_manager.user_email,
       user_name: this.deviceDetail.tags.device_manager.user_name
     };
-    this.deviceDetail.tags.device_manager = this.deviceDetail.tags.device_manager.user_email;
+    const obj = JSON.parse(JSON.stringify(this.deviceDetail));
+    obj.tags.device_manager = this.deviceDetail.tags.device_manager.user_email;
     const methodToCall = this.componentState === CONSTANTS.NON_IP_DEVICE
-    ? this.deviceService.createNonIPDevice(this.deviceDetail, this.contextApp.app)
-    : this.deviceService.createDevice(this.deviceDetail, this.contextApp.app);
+    ? this.deviceService.createNonIPDevice(obj, this.contextApp.app)
+    : this.deviceService.createDevice(obj, this.contextApp.app);
     this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         if ( this.componentState === CONSTANTS.NON_IP_DEVICE) {

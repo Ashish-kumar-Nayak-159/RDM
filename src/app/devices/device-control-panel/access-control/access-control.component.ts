@@ -23,6 +23,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
   deviceUserForDelete: any;
   pageType: string;
   isUpdateAPILoading: boolean;
+  isAddUserModalOpen = false;
   constructor(
     private commonService: CommonService,
     private applicationService: ApplicationService,
@@ -86,6 +87,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
 
   openAddUserModal() {
     this.selectedUser = {};
+    this.isAddUserModalOpen = true;
     $('#userAccessAddModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -96,6 +98,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
 
   onModalClose() {
     $('#userAccessAddModal').modal('hide');
+    this.isAddUserModalOpen = false;
     this.selectedUser = undefined;
   }
 

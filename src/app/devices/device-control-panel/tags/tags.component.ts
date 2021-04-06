@@ -115,7 +115,7 @@ export class TagsComponent implements OnInit, OnDestroy {
         this.device.hierarchyString = '';
         const keys = Object.keys(this.device.hierarchy);
         this.contextApp.hierarchy.levels.forEach((key, index) => {
-          this.device.hierarchyString += this.device.hierarchy[key] + ( keys[index + 1] ? ' / ' : '');
+          this.device.hierarchyString += this.device.hierarchy[key] ? (this.device.hierarchy[key] + ( keys[index + 1] ? ' / ' : '')): '';
         });
         this.device.tags.device_users_arr = this.device.tags.device_manager.split(',');
         this.centerLatitude = this.device.tags.latitude || 23.0225;
@@ -235,7 +235,7 @@ export class TagsComponent implements OnInit, OnDestroy {
       if (this.device.hierarchy) {
         keys = Object.keys(this.device.hierarchy);
         keys.forEach((key, index) => {
-          this.device.hierarchyString += this.device.hierarchy[key] + ( keys[index + 1] ? ' / ' : '');
+          this.device.hierarchyString += this.device.hierarchy[key] ? (this.device.hierarchy[key] + ( keys[index + 1] ? ' / ' : '')) : '';
         });
       }
       $('#confirmResetTagsModal').modal('hide');

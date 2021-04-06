@@ -226,7 +226,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       componentRef.instance.chartTitle = layoutJson.title;
       componentRef.instance.chartId = layoutJson.chart_Id;
       componentRef.instance.isOverlayVisible = true;
-      componentRef.instance.hideCancelButton = this.deviceType.freezed;
+      componentRef.instance.hideCancelButton = !this.deviceType.freezed;
       componentRef.instance.removeWidget = id => this.removeWidget(id);
       this.appRef.attachView(componentRef.hostView);
       const domElem = (componentRef.hostView as EmbeddedViewRef<any>)

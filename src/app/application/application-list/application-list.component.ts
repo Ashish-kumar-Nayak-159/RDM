@@ -207,7 +207,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
     if (!this.applicationDetail.metadata.app_specific_schema && !this.applicationDetail.metadata.app_specific_db &&
       !this.applicationDetail.metadata.app_telemetry_specific_schema) {
       this.applicationDetail.metadata.partition.telemetry.partition_strategy = 'Device ID';
-      this.applicationDetail.metadata.partition.telemetry.sub_partition_strategy = 'week';
+      this.applicationDetail.metadata.partition.telemetry.sub_partition_strategy = 'Weekly';
     }
     if (!this.applicationDetail.app || !this.applicationDetail.admin_email || !this.applicationDetail.admin_name ||
       !this.applicationDetail.metadata.partition.telemetry.partition_strategy

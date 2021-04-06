@@ -80,6 +80,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
       this.deviceService.getDeviceDetailById(this.contextApp.app, this.device.device_id).subscribe(
       async (response: any) => {
         this.device = JSON.parse(JSON.stringify(response));
+        if (!this.device.metadata) {
+          this.device.metadata = {};
+        }
         if (!this.device.metadata.measurement_frequency) {
           this.device.metadata.measurement_frequency = {
             min: this.deviceType.metadata.measurement_frequency.min,

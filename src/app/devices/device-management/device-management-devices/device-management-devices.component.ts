@@ -309,6 +309,10 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
 
   enableDevice() {
     const device = this.selectedDevices[0];
+    if (device.status.toLowerCase() === 'enabled') {
+      this.toasterService.showError('Device is already enabled.', 'Enable Device');
+      return;
+    }
     this.isAPILoading = true;
     this.subscriptions.push(this.deviceService.enableDevice(device.device_id, this.contextApp.app).subscribe(
       (response: any) => {
@@ -327,6 +331,10 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
 
   disableDevice() {
     const device = this.selectedDevices[0];
+    if (device.status.toLowerCase() === 'disabled') {
+      this.toasterService.showError('Device is already disabled.', 'Disable Device');
+      return;
+    }
     this.isAPILoading = true;
     this.subscriptions.push(this.deviceService.disableDevice(device.device_id, this.contextApp.app).subscribe(
       (response: any) => {

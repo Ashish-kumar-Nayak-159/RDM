@@ -78,7 +78,7 @@ export class DeviceCountComponent implements OnInit {
       gateway_id: this.telemetryFilter.gateway_id,
       type: 'Legacy Device'
     };
-    this.apiSubscriptions.push(this.deviceService.getAllDevices(obj, this.contextApp.app).subscribe(
+    this.apiSubscriptions.push(this.deviceService.getLegacyDevices(obj, this.contextApp.app).subscribe(
       (response: any) => {
         if (response && response.data) {
           this.devices = response.data;

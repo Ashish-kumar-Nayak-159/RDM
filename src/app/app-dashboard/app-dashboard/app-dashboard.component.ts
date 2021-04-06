@@ -302,7 +302,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
       };
-      this.apiSubscriptions.push(this.deviceService.getAllDevicesList(obj, this.contextApp.app).subscribe(
+      this.apiSubscriptions.push(this.deviceService.getIPAndLegacyDevices(obj, this.contextApp.app).subscribe(
         (response: any) => {
           if (response?.data) {
             this.devices = response.data;
@@ -486,9 +486,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.lastReportedTelemetryValues = telemetryObj;
     if (this.telemetryObj) {
       const interval = Math.round((moment(telemetryObj.message_date).diff(moment(this.telemetryObj.message_date), 'milliseconds')) / 1000);
-      // alert((this.telemetryInterval - 5) + ' aaaaa ' + interval + ' bbbbb ' + (this.telemetryInterval+ 5));
       if (this.telemetryInterval !== undefined && interval !== undefined &&
-        Math.abs(this.telemetryInterval - interval) >= this.frequencyDiffInterval && !this.isTelemetryModeAPICalled) {
+        Math.abs(interval) >= this.frequencyDiffInterval && !this.isTelemetryModeAPICalled) {
         this.isTelemetryModeAPICalled = true;
         setTimeout(() => {
         this.getDeviceSignalRMode(this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : this.filterObj.device.device_id);

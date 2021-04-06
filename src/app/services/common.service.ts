@@ -210,7 +210,9 @@ export class CommonService {
   }
 
   calculateEstimatedRecords(frequency, startTime, endTime) {
+    console.log(frequency);
     const time = endTime - startTime;
+    console.log(time);
     return Math.round(time / frequency);
   }
 

@@ -76,6 +76,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
         this.range1.grid.disabled = (this.min === this.max);
         this.range2.grid.disabled = ((this.min + this.max) === (this.average * 2));
       }
+      console.log(data);
       // data.reverse();
       this.chart.data = data;
       this.chart.validateData();

@@ -55,7 +55,7 @@
 
 <div class="modal right fade" id="userAccessAddModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
   <div class="modal-dialog" role="document">
-    <div class="modal-content" *ngIf="selectedUser">
+    <div class="modal-content" *ngIf="isAddUserModalOpen">
     <div class="modal-header">
       <h5 class="modal-title" id="exampleModalLabel">Add Role Assignment</h5>
       <button type="button" class="close" (click)="onModalClose()" aria-label="Close" [disabled]="isUpdateAPILoading">
@@ -67,7 +67,7 @@
         <div class="form-group">
           <label for="recipient-name" class="col-form-label">User:</label>
           <select class="custom-select" id="user" name="user" [(ngModel)]="selectedUser">
-            <option [ngValue]="undefined">Select User</option>
+            <option [ngValue]="{}">Select User</option>
             <option *ngFor="let user of appUsers" [ngValue]="user">{{user.user_name}} ({{user.user_email}})</option>
           </select>
         </div>

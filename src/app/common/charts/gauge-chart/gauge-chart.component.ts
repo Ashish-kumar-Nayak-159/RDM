@@ -42,11 +42,13 @@ export class GaugeChartComponent implements OnInit, OnChanges {
     this.chartConfig.properties.forEach((prop, index) => {
     const chart = am4core.create(this.chartConfig.chartId + '_chart_' + index, am4charts.GaugeChart);
     chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
-    if (this.chartConfig.startAngle !== undefined || this.chartConfig.startAngle !== null ) {
-      chart.startAngle = this.chartConfig.startAngle;
+    if (this.chartConfig.startAngle !== undefined && this.chartConfig.startAngle !== null ) {
+      chart.startAngle = -(this.chartConfig.startAngle + 180) % 360;
+      console.log(chart.startAngle);
     }
-    if (this.chartConfig.endAngle !== undefined || this.chartConfig.endAngle !== null) {
-      chart.endAngle = this.chartConfig.endAngle;
+    if (this.chartConfig.endAngle !== undefined && this.chartConfig.endAngle !== null) {
+      chart.endAngle = -(this.chartConfig.endAngle + 180) % 360;
+      console.log(chart.endAngle);
     }
     chart.innerRadius = am4core.percent(70);
     chart.logo.disabled = true;

@@ -176,9 +176,10 @@ export class ApplicationEventsComponent implements OnInit {
   getAllDevices() {
     return new Promise<void>((resolve) => {
       const obj = {
-        hierarchy: JSON.stringify(this.contextApp.user.hierarchy)
+        hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
+        type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.IP_GATEWAY
       };
-      this.apiSubscriptions.push(this.deviceService.getAllGatewaysAndDevicesList(obj, this.contextApp.app).subscribe(
+      this.apiSubscriptions.push(this.deviceService.getIPDevicesAndGateways(obj, this.contextApp.app).subscribe(
         (response: any) => {
           if (response?.data) {
             this.devices = response.data;

@@ -1,9 +1,10 @@
 <div class="container-tab-pad" style="margin-top: 3rem!important;overflow-y: hidden;">
 <tabset>
   <tab heading="Pre-Generated {{tileData && tileData[0] ? tileData[0]?.value : ''}}" id="tab1" (selectTab)="onTabSelect('pre-generated')">
-    <app-pre-generated-reports></app-pre-generated-reports>
+    <app-pre-generated-reports *ngIf="tabType === 'pre-generated'"></app-pre-generated-reports>
   </tab>
   <tab heading="Custom {{tileData && tileData[0] ? tileData[0]?.value : ''}}" (selectTab)="onTabSelect('custom')">
+    <ng-container *ngIf="tabType === 'custom'">
     <div class="topnavbar" style="top:8rem;" *ngIf="isFilterOpen">
       <div class="card row bg-white"  >
         <div class="col-xl-12 mb-12">
@@ -340,6 +341,7 @@
         </div>
       </div>
     </div>
+  </ng-container>
   </tab>
 </tabset>
 

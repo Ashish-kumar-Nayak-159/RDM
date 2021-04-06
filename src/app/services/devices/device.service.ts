@@ -1,4 +1,4 @@
-import { CONSTANTS } from './../../app.constants';
+import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { Injectable, EventEmitter } from '@angular/core';
 import { environment } from 'src/environments/environment';
@@ -21,7 +21,8 @@ export class DeviceService {
     private commonService: CommonService
   ) { }
 
-  getAllDevicesList(filterObj, app) {
+
+  getIPAndLegacyDevices(filterObj, app) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
       if (filterObj[key]) {
@@ -73,7 +74,17 @@ export class DeviceService {
     }
   }
 
-  getAllDevices(filterObj, app) {
+  getIPDevicesAndGateways(filterObj, app) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_DEVICES, encodeURIComponent(app)), { params });
+  }
+
+  getLegacyDevices(filterObj, app) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
       if (filterObj[key]) {
@@ -121,12 +132,16 @@ export class DeviceService {
     params = params.set('app', app);
     localStorage.removeItem(CONSTANTS.DEVICES_LIST);
     localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
+    localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
+    localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
     return this.http.post(this.url + AppUrls.CREATE_DEVICE, deviceObj, {params});
   }
 
   createNonIPDevice(deviceObj, app) {
     localStorage.removeItem(CONSTANTS.DEVICES_LIST);
     localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
+    localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
+    localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
     return this.http.post(this.url + String.Format(AppUrls.CREATE_NON_IP_DEVICE, encodeURIComponent(app)), deviceObj);
   }
 
@@ -147,6 +162,8 @@ export class DeviceService {
     params = params.set('app', appId);
     localStorage.removeItem(CONSTANTS.DEVICES_LIST);
     localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
+    localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
+    localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
     return this.http.delete(this.url + AppUrls.DELETE_DEVICE, { params });
   }
 
@@ -155,6 +172,8 @@ export class DeviceService {
     // params = params.set('app', appId);
     localStorage.removeItem(CONSTANTS.DEVICES_LIST);
     localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
+    localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
+    localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
     return this.http.delete(this.url + String.Format(AppUrls.DELETE_NON_IP_DEVICE,
       encodeURIComponent(appId), encodeURIComponent(deviceId)));
   }
@@ -316,7 +335,7 @@ export class DeviceService {
   }
 
   purgeQueueMessages(params, app) {
-    return this.http.get(this.url + String.Format(AppUrls.PURGE_QUEUE_MESSAGE, encodeURIComponent(app)), { params });
+    return this.http.delete(this.url + String.Format(AppUrls.PURGE_QUEUE_MESSAGE, encodeURIComponent(app)), { params });
   }
 
   getC2dMessageJSON(messageId, app, filterObj) {
@@ -543,6 +562,8 @@ export class DeviceService {
   }
 
   updateDeviceMetadata(obj, app, deviceId) {
+    localStorage.removeItem(CONSTANTS.DEVICES_LIST);
+    localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
     return this.http.put(this.url + String.Format(AppUrls.UPDATE_DEVICE_METADATA,
       encodeURIComponent(app), encodeURIComponent(deviceId)), obj);
   }

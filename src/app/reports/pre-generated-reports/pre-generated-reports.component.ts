@@ -19,6 +19,7 @@ export class PreGeneratedReportsComponent implements OnInit {
 
   userData: any;
   filterObj: any = {};
+  previousFilterObj: any = {};
   contextApp: any;
   hierarchyArr: any = {};
   configureHierarchy: any = {};
@@ -117,7 +118,7 @@ export class PreGeneratedReportsComponent implements OnInit {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
       };
-      this.subscriptions.push(this.deviceService.getAllDevicesList(obj, this.contextApp.app).subscribe(
+      this.subscriptions.push(this.deviceService.getIPAndLegacyDevices(obj, this.contextApp.app).subscribe(
         (response: any) => {
           if (response?.data) {
             this.devices = response.data;
@@ -317,6 +318,7 @@ export class PreGeneratedReportsComponent implements OnInit {
     obj.offset = this.currentOffset;
     obj.count = this.currentLimit;
     this.isReportDataLoading = true;
+    this.previousFilterObj = JSON.parse(JSON.stringify(this.filterObj));
     // this.reports = [];
     this.subscriptions.push(this.deviceService.getPregeneratedReports(obj, this.contextApp.app).subscribe(
       (response: any) => {
@@ -334,7 +336,7 @@ export class PreGeneratedReportsComponent implements OnInit {
           }
         }
         this.isReportDataLoading = false;
-      }
+      }, error => this.isReportDataLoading = false
     )
     );
   }

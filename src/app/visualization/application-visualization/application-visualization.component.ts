@@ -233,7 +233,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
       };
-      this.subscriptions.push(this.deviceService.getAllDevicesList(obj, this.contextApp.app).subscribe(
+      this.subscriptions.push(this.deviceService.getIPAndLegacyDevices(obj, this.contextApp.app).subscribe(
         (response: any) => {
           if (response?.data) {
             this.devices = response.data;
@@ -447,7 +447,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         device_id: deviceId
       };
       const methodToCall =
-        this.deviceService.getAllDevicesList(obj, obj.app);
+        this.deviceService.getIPAndLegacyDevices(obj, obj.app);
       this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         if (response?.data?.length > 0) {

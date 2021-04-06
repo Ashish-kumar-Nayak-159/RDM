@@ -91,7 +91,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
       };
-      this.apiSubscriptions.push(this.deviceService.getAllDevicesList(obj, this.applicationData.app).subscribe(
+      this.apiSubscriptions.push(this.deviceService.getIPAndLegacyDevices(obj, this.applicationData.app).subscribe(
         (response: any) => {
           if (response?.data) {
             this.commonService.setItemInLocalStorage(CONSTANTS.DEVICES_LIST, response.data);

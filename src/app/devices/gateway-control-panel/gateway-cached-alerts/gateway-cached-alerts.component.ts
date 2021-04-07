@@ -112,13 +112,12 @@ export class GatewayCachedAlertsComponent implements OnInit, OnDestroy {
           this.alertsList.forEach(item => {
             item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
             item.local_upload_date = this.commonService.convertUTCDateToLocal(item.iothub_date);
-            if (this.devices?.length > 0) {
-                console.log(item.device_id);
-                console.log(this.devices);
-                item.display_name = this.devices.find(device => device.device_id === item.device_id)?.display_name;
-              } else {
-                item.display_name = item.device_id;
-              }
+            if (this.devices?.length > 0 && item.device) {
+              const deviceObj = this.devices.find(device => device.device_id === item.device_id)
+              item.display_name = deviceObj?.display_name || item.device_id;
+            } else {
+              item.display_name = item.device_id;
+            }
           });
         }
         this.isAlertLoading = false;
@@ -130,8 +129,14 @@ export class GatewayCachedAlertsComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       const obj = {
         app: dataobj.app,
-        id: dataobj.id
+        id: dataobj.id,
+        from_date: null,
+        to_date: null,
+        epoch: true
       };
+      const epoch =  this.commonService.convertDateToEpoch(dataobj.created_date);
+      obj.from_date = epoch ? (epoch - 300) : null;
+      obj.to_date = (epoch ? (epoch + 300) : null);
       this.apiSubscriptions.push(this.deviceService.getDeviceMessageById(obj, 'cached_alert').subscribe(
         (response: any) => {
           resolve(response.raw_data);

@@ -1,5 +1,4 @@
 import { environment } from 'src/environments/environment';
-import { CONSTANTS } from 'src/app/app.constants';
 import { Injectable } from '@angular/core';
 import { Router, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 import { CommonService } from 'src/app/services/common.service';

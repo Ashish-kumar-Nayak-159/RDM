@@ -178,6 +178,7 @@ export class PreGeneratedReportsComponent implements OnInit {
     });
     this.devices = JSON.parse(JSON.stringify(arr));
     }
+    this.filterObj.deviceArr = undefined;
     this.filterObj.devices = undefined;
     let count = 0;
     Object.keys(this.configureHierarchy).forEach(key => {

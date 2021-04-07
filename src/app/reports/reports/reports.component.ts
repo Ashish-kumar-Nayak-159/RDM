@@ -197,6 +197,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     if (this.devices?.length === 1) {
       this.filterObj.device = this.devices[0];
     }
+    this.filterObj.deviceArr = undefined;
     this.filterObj.device = undefined;
     this.props = [];
     this.dropdownPropList = [];
@@ -512,7 +513,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
         this.props.forEach((prop, index) => message_props = message_props + prop.value.json_key + (this.props[index + 1] ? ',' : ''));
         obj['message_props'] = message_props;
         const records = this.commonService.calculateEstimatedRecords(filterObj.sampling_time * 60, obj.from_date, obj.to_date);
-        this.loadingMessage = 'Loading ' + records + ' data points.' + (records > 100 ? ' It may take some time.' : '') + ' Please wait...';
+        if (records > 500 ) {
+          this.loadingMessage = 'Loading approximate' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+        }
         method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
       }
     } else {
@@ -527,7 +530,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
         obj['message_props'] = message_props;
         const records = this.commonService.calculateEstimatedRecords
           (filterObj.aggregation_minutes * 60, obj.from_date, obj.to_date);
-        this.loadingMessage = 'Loading ' + records + ' data points.' + (records > 100 ? ' It may take some time.' : '') + ' Please wait...';
+        if (records > 500 ) {
+          this.loadingMessage = 'Loading approximate' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+        }
         method = this.deviceService.getDeviceTelemetry(obj);
       }
     }
@@ -547,7 +552,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
       const records = this.commonService.calculateEstimatedRecords
           ((device?.measurement_frequency?.average ? device.measurement_frequency.average : 5),
           filterObj.from_date, filterObj.to_date);
-      this.loadingMessage = 'Loading ' + records + ' data points.' + (records > 100 ? ' It may take some time.' : '') + ' Please wait...';
+      if (records > 500 ) {
+        this.loadingMessage = 'Loading approximate' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+      }
       method = this.deviceService.getDeviceTelemetry(obj);
     }
 

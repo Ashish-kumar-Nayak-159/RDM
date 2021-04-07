@@ -204,7 +204,7 @@ export class DeviceTypePackageManagementComponent implements OnInit {
     (this.packageObj.display_name.trim()).length === 0  || this.packageObj.metadata.major === undefined
     || this.packageObj.metadata.major === 0
     || !this.packageObj.url || this.packageObj.metadata.minor  === undefined || this.packageObj.metadata.patch  === undefined) {
-      this.toasterService.showError('Please select all the data', ((this.packageObj.id ? 'Edit' : 'Add') + ' Package'));
+      this.toasterService.showError('Please enter all required fields', ((this.packageObj.id ? 'Edit' : 'Add') + ' Package'));
       return;
     }
     this.packageObj.version = this.packageObj.metadata.major + '.' + this.packageObj.metadata.minor

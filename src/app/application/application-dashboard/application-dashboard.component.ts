@@ -273,13 +273,13 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     const startime = moment(this.commonService.convertUTCDateToLocal(startDate));
     let timeString = '';
     let diff = today.diff(startime, 'minute');
-    timeString = diff + ' minutes ago';
+    timeString = diff + ' ' + (diff === 1 ? 'minute' : 'minutes') + ' ago';
     if (diff > 60) {
       diff = today.diff(startime, 'hours');
-      timeString = diff + ' hours ago';
+      timeString = diff + ' ' + (diff === 1 ? 'hour' : 'hours') + ' ago';
       if (diff > 24) {
         diff = today.diff(startime, 'days');
-        timeString = diff + ' days ago';
+        timeString = diff + ' ' + (diff === 1 ? 'day' : 'days') + ' ago';
       }
     }
     return timeString;

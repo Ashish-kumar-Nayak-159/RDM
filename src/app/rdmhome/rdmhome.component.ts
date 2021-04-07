@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
@@ -14,6 +15,7 @@ export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
   userData: any;
   applicationData: any;
   subscriptions: Subscription[] = [];
+  defaultAppName = environment.app;
   constructor(
     private router: Router,
     private commonService: CommonService,

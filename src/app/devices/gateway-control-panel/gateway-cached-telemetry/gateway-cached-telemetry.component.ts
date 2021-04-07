@@ -160,8 +160,9 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
             item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
             item.local_upload_date = this.commonService.convertUTCDateToLocal(item.upload_date);
             console.log(item);
-            if (this.devices?.length > 0) {
-            item.display_name = this.devices.find(device => device.device_id === item.device_id).display_name;
+            if (this.devices?.length > 0 && item.device) {
+              const deviceObj = this.devices.find(device => device.device_id === item.device_id)
+              item.display_name = deviceObj?.display_name || item.device_id;
             } else {
               item.display_name = item.device_id;
             }

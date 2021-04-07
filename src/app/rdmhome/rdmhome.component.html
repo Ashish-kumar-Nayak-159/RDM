@@ -9,10 +9,12 @@
       </div> -->
 
     <nav class="navbar topbar static-top">
+      <ng-container *ngIf="defaultAppName !== 'SopanCMS'">
       <a class="d-flex justify-content-start" style="margin-left: 8rem;"><img
           src="../../assets/img/logo.png" class="d-block img-fluid"></a><a
         class="d-flex justify-content-end" style="margin-right: 7rem;"><img
           src="../../assets/img/kaynes-logo.png" class="d-none d-md-block img-fluid"></a>
+        </ng-container>
         </nav>
     <nav class="main-nav float-right d-none d-lg-block">
       <ul>

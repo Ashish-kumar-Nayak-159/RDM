@@ -729,7 +729,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           delete filterObj.aggregation_format;
           const records = this.commonService.calculateEstimatedRecords(this.filterObj.sampling_time * 60,
             filterObj.from_date, filterObj.to_date);
-          this.loadingMessage = 'Loading ' + records + ' data points.' + (records > 100 ? 'It may take some time.' : '') + 'Please wait...';
+            if (records > 500 ) {
+              this.loadingMessage = 'Loading approximate' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+            }
           method = this.deviceService.getDeviceSamplingTelemetry(filterObj, this.contextApp.app);
         }
       } else {
@@ -753,7 +755,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       const records = this.commonService.calculateEstimatedRecords
           ((device?.measurement_frequency?.average ? device.measurement_frequency.average : 5),
           filterObj.from_date, filterObj.to_date);
-      this.loadingMessage = 'Loading ' + records + ' data points.' + (records > 100 ? 'It may take some time.' : '') + 'Please wait...';
+      if (records > 500 ) {
+        this.loadingMessage = 'Loading approximate' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+      }
       method = this.deviceService.getDeviceTelemetry(filterObj);
     }
     console.log(this.selectedAlert.message_date);

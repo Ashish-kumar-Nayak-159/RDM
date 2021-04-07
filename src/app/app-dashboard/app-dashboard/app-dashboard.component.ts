@@ -18,6 +18,7 @@ import { ToasterService } from 'src/app/services/toaster.service';
 })
 export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
+  defaultAppName = environment.app;
   userData: any;
   contextApp: any;
   tileData: any;
@@ -52,6 +53,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   isGetWidgetsAPILoading = false;
   deviceDetailData: any;
   frequencyDiffInterval: number;
+  normalModelInterval: number;
+  turboModeInterval: number;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -97,7 +100,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   getTileName() {
     let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {
-      if (item.page === 'Device Management') {
+      if (item.page === 'Dashboard') {
         selectedItem = item.showAccordion;
         console.log(selectedItem);
       }
@@ -209,6 +212,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.filterObj.device.device_id, this.contextApp.app).subscribe(
       async (response: any) => {
         this.deviceDetailData = JSON.parse(JSON.stringify(response));
+        this.normalModelInterval = (this.deviceDetailData?.tags?.settings?.normal_mode?.frequency ?
+          this.deviceDetailData?.tags?.settings?.normal_mode?.frequency : 60);
+        this.turboModeInterval = (this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency ?
+          this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency : 1);
         this.frequencyDiffInterval = Math.abs((this.deviceDetailData?.tags?.settings?.normal_mode?.frequency ?
           this.deviceDetailData?.tags?.settings?.normal_mode?.frequency : 60) -
           (this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency ?
@@ -413,7 +420,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     if (environment.app === 'SopanCMS') {
       await this.getMidNightHours(obj);
     }
-    console.log(this.filterObj.device.partition_key);
     const obj1 = {
       hierarchy: this.contextApp.user.hierarchy,
       levels: this.contextApp.hierarchy.levels,
@@ -486,8 +492,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.lastReportedTelemetryValues = telemetryObj;
     if (this.telemetryObj) {
       const interval = Math.round((moment(telemetryObj.message_date).diff(moment(this.telemetryObj.message_date), 'milliseconds')) / 1000);
-      if (this.telemetryInterval !== undefined && interval !== undefined &&
-        Math.abs(interval) >= this.frequencyDiffInterval && !this.isTelemetryModeAPICalled) {
+      // this.telemetryInterval !== undefined && interval !== undefined &&
+        // Math.abs(this.telemetryInterval - interval) >= this.frequencyDiffInterval && !this.isTelemetryModeAPICalled
+      const diff1 = Math.abs(interval - this.normalModelInterval);
+      const diff2 = Math.abs(interval - this.turboModeInterval);
+      if (interval !== undefined && !this.isTelemetryModeAPICalled &&
+        ((diff1 < diff2 && !this.signalRModeValue) || (diff1 > diff2 && this.signalRModeValue))) {
         this.isTelemetryModeAPICalled = true;
         setTimeout(() => {
         this.getDeviceSignalRMode(this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : this.filterObj.device.device_id);
@@ -508,7 +518,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   getPropertyKey(name) {
-    return this.propertyList.filter(prop => prop.name === name)[0].json_key;
+    return this.propertyList.filter(prop => prop.name === name)[0]?.json_key || name;
   }
 
   getMidNightHours(filterObj) {
@@ -524,15 +534,13 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
       obj.message_props = message_props;
       obj.partition_key = this.filterObj?.device?.partition_key;
-      this.apiSubscriptions.push(this.deviceService.getDeviceTelemetry(obj).subscribe(
+      this.apiSubscriptions.push(this.deviceService.getFirstTelmetry(this.contextApp.app, obj).subscribe(
         (response: any) => {
-          if (response?.data?.length > 0) {
-            this.midNightHour = response.data[0][this.getPropertyKey('Running Hours')] ?
-            Math.floor(Number(response.data[0][this.getPropertyKey('Running Hours')])) : 0;
-            this.midNightMinute = response.data[0][this.getPropertyKey('Running Minutes')] ?
-            Math.floor(Number(response.data[0][this.getPropertyKey('Running Minutes')])) : 0;
-          }
-          resolve1();
+            this.midNightHour = response.message[this.getPropertyKey('Running Hours')] ?
+            Math.floor(Number(response.message[this.getPropertyKey('Running Hours')])) : 0;
+            this.midNightMinute = response.message[this.getPropertyKey('Running Minutes')] ?
+            Math.floor(Number(response.message[this.getPropertyKey('Running Minutes')])) : 0;
+            resolve1();
         }));
     });
   }

@@ -11,6 +11,7 @@ export class FooterComponent implements OnInit {
   @Input() isLoginRoute = false;
   currentYear = new Date().getFullYear();
   version = environment.version;
+  defaultAppName = environment.app;
   constructor() { }
 
   ngOnInit(): void {

@@ -278,7 +278,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
           this.propList.forEach((prop, index) =>
           obj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
           const records = this.commonService.calculateEstimatedRecords(this.historyFilter.sampling_time * 60, obj.from_date, obj.to_date);
-          this.loadingMessage = 'Loading ' + records + ' data points.' + (records > 100 ? 'It may take some time.' : '') + 'Please wait...';
+          if (records > 500 ) {
+            this.loadingMessage = 'Loading approximate' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+          }
           method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
         }
       } else {
@@ -293,7 +295,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
           obj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
           const records = this.commonService.calculateEstimatedRecords
           (this.historyFilter.aggregation_minutes * 60, obj.from_date, obj.to_date);
-          this.loadingMessage = 'Loading ' + records + ' data points.' + (records > 100 ? 'It may take some time.' : '') + 'Please wait...';
+          if (records > 500 ) {
+            this.loadingMessage = 'Loading approximate' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+          }
           method = this.deviceService.getDeviceTelemetry(obj);
         }
       }
@@ -315,7 +319,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
         const records = this.commonService.calculateEstimatedRecords
           ((this.device.metadata?.measurement_frequency?.average ? this.device.metadata.measurement_frequency.average : 5),
           obj.from_date, obj.to_date);
-        this.loadingMessage = 'Loading ' + records + ' data points.' + (records > 100 ? 'It may take some time.' : '') + 'Please wait...';
+        if (records > 500 ) {
+          this.loadingMessage = 'Loading approximate' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+        }
         method = this.deviceService.getDeviceTelemetry(obj);
       }
       this.fromDate = obj.from_date;

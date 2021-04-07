@@ -1,19 +1,19 @@
 <div class="topnavbar bg-white py-2">
   <div class="row">
 
-    <ul class="nav">
+    <ul class="nav pull-left col-md-6">
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="isSettingsEditable = true;" *ngIf="!isSettingsEditable" [class.disabled]="isSaveSettingAPILoading">
+        <a class="nav-link" href="javascript:void(0)" (click)="isSettingsEditable = true;" *ngIf="!isSettingsEditable" [class.disabled]="isSaveSettingAPILoading  || deviceType.freezed">
           <i class="fa fa-fw fa-pencil"></i>
           <span class="text-secondary">Edit</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="onCancelClick()" *ngIf="isSettingsEditable" [class.disabled]="isSaveSettingAPILoading">
+        <a class="nav-link" href="javascript:void(0)" (click)="onCancelClick()" *ngIf="isSettingsEditable" [class.disabled]="isSaveSettingAPILoading || deviceType.freezed">
           <i class="fa fa-fw fa-close"></i>
           <span class="text-secondary">Cancel</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="saveSettings()" *ngIf="isSettingsEditable" [class.disabled]="isSaveSettingAPILoading">
+        <a class="nav-link" href="javascript:void(0)" (click)="saveSettings()" *ngIf="isSettingsEditable" [class.disabled]="isSaveSettingAPILoading || deviceType.freezed">
           <i class="fa fa-fw fa-save"></i>
           <span class="text-secondary">Save</span></a>
       </li>
@@ -23,6 +23,9 @@
         </a>
       </li>
     </ul>
+    <div class="pull-right mt-2"  *ngIf="deviceType.freezed">
+      <h6>This model is freezed.</h6>
+    </div>
   </div>
   <div class="row">
     <div class="col-lg-12">
@@ -62,7 +65,7 @@
               </td>
             </tr>
             <tr>
-              <td style="width: 50%;">General Value: </td>
+              <td style="width: 50%;">Default Value: </td>
               <td>
                 <ng-container *ngIf="!isSettingsEditable"> {{deviceType?.metadata?.telemetry_frequency?.average}}</ng-container>
                   <input type="number" class="form-control form-control-sm bg-light border-0 small"
@@ -100,7 +103,7 @@
               </td>
             </tr>
             <tr>
-              <td style="width: 50%;">General Value: </td>
+              <td style="width: 50%;">Default Value: </td>
               <td>
                 <ng-container *ngIf="!isSettingsEditable"> {{deviceType?.metadata?.measurement_frequency?.average}}</ng-container>
                   <input type="number" class="form-control form-control-sm bg-light border-0 small"

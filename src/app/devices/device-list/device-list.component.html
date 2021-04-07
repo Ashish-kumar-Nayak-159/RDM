@@ -36,9 +36,9 @@
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputPassword4"
           placeholder="{{(tileData && tileData[1] ? tileData[1]?.value: '')}} Manager"
           [(ngModel)]="deviceFilterObj.device_manager" name="device_manager">
-          <angular2-multiselect [data]="gateways" id="deviceSelect"
+          <angular2-multiselect [data]="gateways" id="deviceSelect" *ngIf="componentState === constantData.NON_IP_DEVICE"
             [(ngModel)]="deviceFilterObj.gatewayArr" name="devices" [settings]="{
-              text: 'Select Asset',
+              text: 'Select Gateway',
               classes: 'w-16 p-0 mx-1',
               singleSelection: true,
               enableSearchFilter: true,

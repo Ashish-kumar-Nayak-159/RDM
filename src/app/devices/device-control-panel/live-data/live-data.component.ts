@@ -99,6 +99,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     + (this.propertyList[index + 1] ? ',' : ''));
     obj['message_props'] = message_props;
     obj['partition_key'] = this.device?.tags?.partition_key;
+    obj['device_id'] = this.device.device_id;
     const obj1 = {
       hierarchy: this.contextApp.user.hierarchy,
       levels: this.contextApp.hierarchy.levels,

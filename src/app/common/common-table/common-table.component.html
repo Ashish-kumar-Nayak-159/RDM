@@ -11,13 +11,13 @@
     <tbody>
       <ng-container *ngIf="tableData.length > 0 && !isTableDataLoading && isTableFilterSelected">
         <tr *ngFor="let data of tableData; let i = index;"
-        [ngClass]="{ 'bg-danger text-white': (tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value) || 
+        [ngClass]="{ 'bg-danger text-white': (tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value) ||
         (tableConfig.type === 'alert'
         && data?.severity?.toLowerCase() === 'critical')}">
           <td>{{i + 1}}</td>
           <td *ngFor="let header of tableConfig?.data" class="{{header.valueClass}}">
             <ng-container *ngIf="header.type === 'text'">
-              
+
               <span *ngIf="header.key">
                 <i class="fa fa-exclamation-triangle" *ngIf="tableConfig.type === 'alert' && header.key === 'code'" [style.color]="
                   (data?.severity?.toLowerCase() === 'critical' ? '#cc0000' :
@@ -29,10 +29,10 @@
             </ng-container>
             <ng-container *ngIf="header.type === 'button'">
               <ng-container *ngFor="let btnData of header.btnData">
-                <a href="javascript:void(0)" class="{{btnData.valueclass}}" (click)="onClickOfButton(data, btnData.id)"
+                <a href="javascript:void(0)" style="z-index: 1" class="{{btnData.valueclass}}" (click)="onClickOfButton(data, btnData.id)"
                 [class.disabled]="tableConfig[btnData.disableConditions?.key] === btnData.disableConditions?.value">
-                  <i class="{{btnData.icon}}" title="{{btnData.tooltip}}" 
-                  [style.color]="(tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value) || 
+                  <i class="{{btnData.icon}}" title="{{btnData.tooltip}}"
+                  [style.color]="(tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value) ||
                   (tableConfig.type === 'alert'
                   && data?.severity?.toLowerCase() === 'critical') ? 'white' : ''"></i>
                   {{btnData.text}}
@@ -45,17 +45,17 @@
       </ng-container>
     <ng-container *ngIf="tableData.length === 0 && !isTableDataLoading && isTableFilterSelected">
       <tr>
-        <td colspan="7">No {{tableConfig.type}} data found.</td>
+        <td [attr.colspan]="tableConfig.data.length + 1">No {{tableConfig.type}} data found.</td>
       </tr>
     </ng-container>
     <ng-container *ngIf="tableData.length === 0 && !isTableDataLoading && !isTableFilterSelected">
       <tr>
-        <td colspan="7">Select filter and press search button to load the {{tableConfig.type}} data.</td>
+        <td [attr.colspan]="tableConfig.data.length + 1">Select filter and press search button to load the {{tableConfig.type}} data.</td>
       </tr>
     </ng-container>
     <ng-container *ngIf="isTableDataLoading">
       <tr>
-        <td colspan="7">
+        <td [attr.colspan]="tableConfig.data.length + 1">
           <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
         </td>
       </tr>

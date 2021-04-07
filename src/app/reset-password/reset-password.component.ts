@@ -94,6 +94,11 @@ export class ResetPasswordComponent implements OnInit, OnDestroy  {
    * Emitting the event back to login/header component to confirm that operation completed successfully.
    */
   onChangePassword() {
+    const obj = JSON.parse(JSON.stringify(this.resetPasswordForm.value));
+    if (!obj.old_password || !obj.email || !obj.new_password || !obj.confirmNewPassword) {
+      this.toasterService.showError('Please enter all required fields', 'Change Password');
+      return;
+    }
     this.changePasswordAPILoading = true;
     delete this.resetPasswordForm.value.confirmNewPassword;
     this.changePasswordSubscription = this.commonService

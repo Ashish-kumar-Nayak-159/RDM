@@ -25,6 +25,7 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
   constantData = CONSTANTS;
   isResetPassword = false;
   apiSubscriptions: Subscription[] = [];
+  defaultAppName = environment.app;
 
   constructor(
     private router: Router,

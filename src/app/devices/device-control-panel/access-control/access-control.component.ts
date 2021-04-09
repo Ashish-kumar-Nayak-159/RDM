@@ -37,18 +37,6 @@ export class AccessControlComponent implements OnInit, OnChanges {
     this.apiSubscriptions.push(this.route.paramMap.subscribe(async params => {
       this.pageType = params.get('listName').toLowerCase();
     }));
-    // if (this.device?.tags?.device_users) {
-    // Object.keys(this.device?.tags?.device_users).forEach(user => {
-    //   const appUser = this.appUsers.find(userObj => userObj.user_email === user);
-    //   if (appUser) {
-    //     this.deviceUsers.push(appUser);
-    //   } else {
-    //     this.deviceUsers.push(this.device.tags.device_users[user]);
-    //   }
-    // });
-    // } else {
-    //   this.device.tags.device_users = {};
-    // }
   }
 
   async ngOnChanges(changes) {
@@ -119,7 +107,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
       return;
     }
     if (this.device.tags.device_users[btoa(this.selectedUser.user_email)] ) {
-      this.toasterService.showError('This user already has access of this device',
+      this.toasterService.showError('This user already has access of this asset',
         'Access Control');
       return;
     }
@@ -136,14 +124,6 @@ export class AccessControlComponent implements OnInit, OnChanges {
   }
 
   removeUserAccess() {
-    // const originalKeys = Object.keys(this.device?.tags?.device_users);
-    // const keys = Object.keys(this.device?.tags?.device_users);
-    // originalKeys.forEach((user, index) => {
-    //   if (this.device.tags.device_users[user].user_email === this.deviceUserForDelete) {
-    //     this.device.tags.device_users[user] = null;
-    //     keys.splice(index, 1);
-    //   }
-    // });
     const keys = Object.keys(this.device?.tags?.device_users);
     if (keys.length === 1) {
       this.toasterService.showError('At least one user is required', 'Access control');
@@ -152,7 +132,6 @@ export class AccessControlComponent implements OnInit, OnChanges {
     this.device.tags.device_users[this.deviceUserForDelete] = null;
     const index = keys.findIndex(key => key === this.deviceUserForDelete);
     keys.splice(index, 1);
-    console.log(this.device.tags.device_users);
     this.device.tags.device_manager = '';
     keys.forEach((key, i) => {
       this.device.tags.device_manager += this.device.tags.device_users[key].user_email + (keys[i + 1] ? ',' : '');
@@ -172,7 +151,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
     }
     this.apiSubscriptions.push(methodToCall.subscribe(
       (response: any) => {
-        this.toasterService.showSuccess('Device Access updated successfully', 'Access Control');
+        this.toasterService.showSuccess('Asset Access updated successfully', 'Access Control');
         this.deviceService.reloadDeviceInControlPanelEmitter.emit();
         this.isUpdateAPILoading = false;
         this.onModalClose();

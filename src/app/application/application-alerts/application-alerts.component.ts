@@ -148,14 +148,12 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
         if (this.configureHierarchy[key]) {
           hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
         }
-        console.log(hierarchyObj);
       });
       if (Object.keys(hierarchyObj).length === 1) {
         this.devices = JSON.parse(JSON.stringify(this.originalDevices));
       } else {
       const arr = [];
       this.devices = [];
-      console.log(this.originalDevices);
       this.originalDevices.forEach(device => {
         let flag1 = false;
         Object.keys(hierarchyObj).forEach(hierarchyKey => {
@@ -169,7 +167,6 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
           arr.push(device);
         }
       });
-      console.log('devicessss  ', arr);
       this.devices = JSON.parse(JSON.stringify(arr));
       }
       if (this.devices?.length === 1) {
@@ -227,7 +224,6 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
   }
 
   onDateChange(event) {
-    console.log(event);
     this.filterObj.from_date = moment(event.value[0]).second(0).utc();
     this.filterObj.to_date = moment(event.value[1]).second(0).utc();
     if (this.dtInput2) {
@@ -239,7 +235,6 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
   }
 
   onSingleDateChange(event) {
-    console.log(event);
     this.filterObj.from_date = moment(event.value).utc();
     this.filterObj.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
     const to = this.filterObj.to_date.unix();
@@ -291,7 +286,6 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
       if (this.configureHierarchy[key]) {
         obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
       }
-      console.log(obj.hierarchy);
     });
     obj.hierarchy = JSON.stringify(obj.hierarchy);
     obj.device_id = obj.device?.device_id;

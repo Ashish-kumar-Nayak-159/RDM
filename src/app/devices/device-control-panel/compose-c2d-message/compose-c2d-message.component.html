@@ -79,7 +79,7 @@
 
         <tbody>
           <tr>
-            <td>Device ID</td>
+            <td>Asset ID</td>
             <td *ngIf="listName === 'device' || listName.toLowerCase() === 'nonipdevice'">{{c2dMessageData.device_id}}</td>
             <td *ngIf="listName === 'gateway'">
               <select class="custom-select" id="device_id" name="device_id" [(ngModel)]="c2dMessageData.device_id">

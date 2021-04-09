@@ -126,8 +126,6 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
   }
 
   onSwitchValueChange(event, index) {
-    console.log(event);
-    console.log(event.target.value);
   }
 
   onChangeOfDropdownData() {
@@ -155,7 +153,6 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
       });
       this.jsonModelKeys.splice(this.jsonModelKeys.length, 0, obj);
     });
-    console.log(this.jsonModelKeys);
   }
 
   getDevicesListByGateway() {
@@ -187,7 +184,6 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
       this.isMessageValidated = 'valid';
       JSON.parse(this.c2dMessageData.message);
     } catch (e) {
-      console.log('in catch');
       this.isMessageValidated = 'invalid';
     }
   }
@@ -218,7 +214,6 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     }
     try {
       this.sentMessageData = JSON.parse(JSON.stringify(this.c2dMessageData));
-      console.log(this.sentMessageData);
      // this.sentMessageData.message = JSON.parse(this.sentMessageData.message);
     } catch (e) {
       this.isMessageValidated = 'invalid';
@@ -226,7 +221,6 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
       return;
     }
     this.isSendC2DMessageAPILoading = true;
-    console.log(this.sentMessageData);
     this.apiSubscriptions.push(this.deviceService.sendC2DMessage(this.sentMessageData, this.appName).subscribe(
       (response: any) => {
         this.isMessageValidated = undefined;
@@ -240,7 +234,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
           this.timerObj = this.dhms(time);
         }, 1000);
       }, error => {
-        this.sendMessageResponse = error.message && error.message.includes('Queue') ? 'Device Queue size exceeded.' : 'Not Successful';
+        this.sendMessageResponse = error.message && error.message.includes('Queue') ? 'Asset Queue size exceeded.' : 'Not Successful';
         this.sendMessageStatus = 'error';
         this.toasterService.showError(error.message, 'Send C2D Message');
         this.isSendC2DMessageAPILoading = false;

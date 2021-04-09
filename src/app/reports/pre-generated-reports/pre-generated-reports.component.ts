@@ -85,7 +85,6 @@ export class PreGeneratedReportsComponent implements OnInit {
      // this.getLatestAlerts();
       await this.getDevices(this.contextApp.user.hierarchy);
       setTimeout(() => {
-        console.log($('#table-wrapper'));
         $('#table-wrapper').on('scroll', () => {
           const element = document.getElementById('table-wrapper');
           if (parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0))
@@ -108,7 +107,6 @@ export class PreGeneratedReportsComponent implements OnInit {
       }
     });
     this.tileData = selectedItem;
-    console.log('aaaaaaaaaa', this.tileData);
     this.currentLimit = Number(this.tileData[1]?.value) || 100;
   }
 
@@ -200,7 +198,6 @@ export class PreGeneratedReportsComponent implements OnInit {
   }
 
   onAssetSelection() {
-    console.log(this.filterObj);
     if (this.filterObj?.deviceArr.length > 0) {
       this.filterObj.devices = '';
       this.filterObj.deviceArr.forEach(device => {
@@ -237,11 +234,8 @@ export class PreGeneratedReportsComponent implements OnInit {
   }
 
   onDateChange(event) {
-    console.log(event);
     this.filterObj.from_date = moment(event.value[0]).utc();
     this.filterObj.to_date = ((((moment(event.value[1])).add(23, 'hours')).add(59, 'minute')).add(59, 'second')).utc();
-    console.log(this.filterObj.from_date.unix());
-    console.log(this.filterObj.to_date.unix());
     const from = this.filterObj.from_date.unix();
     const to = this.filterObj.to_date.unix();
     const current = (moment().utc()).unix();
@@ -257,7 +251,6 @@ export class PreGeneratedReportsComponent implements OnInit {
   }
 
   onSingleDateChange(event) {
-    console.log(event);
     this.filterObj.from_date = moment(event.value).utc();
     this.filterObj.to_date = (((moment(event.value).add(23, 'hours')).add(59, 'minute')).add(59, 'second')).utc();
     if (this.dtInput1) {
@@ -282,7 +275,6 @@ export class PreGeneratedReportsComponent implements OnInit {
       return;
     }
     setTimeout(() => {
-      console.log($('#table-wrapper'));
       $('#table-wrapper').on('scroll', () => {
         const element = document.getElementById('table-wrapper');
         if (parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0))

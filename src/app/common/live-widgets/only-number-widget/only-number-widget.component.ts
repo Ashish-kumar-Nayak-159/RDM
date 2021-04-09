@@ -43,9 +43,7 @@ export class OnlyNumberWidgetComponent implements OnInit, OnChanges, OnDestroy {
           this.telemetryData.push(this.telemetryObj);
         }
         if (this.telemetryData.length > this.chartConfig.noOfDataPointsForTrend) {
-          console.log('beforeee   ', this.telemetryData[0].message_date);
           this.telemetryData.splice(0, 1);
-          console.log('after   ', this.telemetryData[0].message_date);
         }
       }
     }

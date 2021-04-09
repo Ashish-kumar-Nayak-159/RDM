@@ -68,7 +68,6 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
       this.componentState = CONSTANTS.IP_GATEWAY;
     }
     setTimeout(() => {
-      console.log($('#table-wrapper'));
       $('#table-wrapper').on('scroll', () => {
         const element = document.getElementById('table-wrapper');
         if (parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0))
@@ -108,11 +107,9 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
         (item.page === this.legacyDevicesPage && this.type === 'legacy-devices') ||
         (item.page === this.iotGatewaysPage && this.type === 'iot-gateways')) {
         selectedItem = item.showAccordion;
-        console.log(selectedItem);
       }
     });
     this.tileData = selectedItem;
-    console.log('1111111   ', this.tileData);
     this.currentLimit = Number(this.tileData[2]?.value) || 20;
   }
 
@@ -122,10 +119,8 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
     obj.app = this.contextApp.app;
     obj.offset = this.currentOffset;
     obj.count = this.currentLimit;
-    console.log('387777777   ', obj);
     if (this.contextApp) {
       obj.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
-      console.log(obj.hierarchy);
     }
     let methodToCall;
     if (this.type === 'legacy-devices') {
@@ -141,8 +136,6 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
     this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         if (response.data) {
-
-          console.log(this.devicesList);
           response.data.forEach(item => {
             if (!item.display_name) {
               item.display_name = item.device_id;
@@ -194,21 +187,16 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
   }
 
   onDeviceSelection(device) {
-    console.log('before', this.selectedDevices.length);
-    console.log(this.selectedDevices);
     if (this.selectedDevices.length === 0) {
       this.selectedDevices.push(device);
     } else {
       const index = this.selectedDevices.findIndex(deviceObj => deviceObj.device_id === device.device_id);
-      console.log(index);
       if (index > -1) {
         this.selectedDevices.splice(index, 1);
       } else {
         this.selectedDevices.push(device);
       }
     }
-    console.log('after', this.selectedDevices.length);
-    console.log(this.selectedDevices);
     if (this.selectedDevices.length === this.devicesList.length) {
       this.isAllDeviceSelected = true;
     } else {
@@ -226,11 +214,11 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
 
   onSingleOperationClick(type) {
     if (!type.toLowerCase().includes('provision') && this.componentState === CONSTANTS.NON_IP_DEVICE) {
-      this.toasterService.showError(`You can't perform this operation on legacy device.`, 'Device Management');
+      this.toasterService.showError(`You can't perform this operation on legacy asset.`, 'Asset Management');
       return;
     }
     if (this.selectedDevices?.length !== 1) {
-      this.toasterService.showError('To perform single operations, please select only one device', 'Device Management');
+      this.toasterService.showError('To perform single operations, please select only one asset', 'Asset Management');
       return;
     }
     if (type === 'Deprovision' || type === 'Enable' || type === 'Disable') {
@@ -245,7 +233,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
     //   this.toasterService.showError(`You can't perform this operation on legacy device.`, 'Device Management');
     //   return;
     // }
-    this.toasterService.showError('Currently Bulk Operations are not available for use. Work in Progress.', 'Device Management');
+    this.toasterService.showError('Currently Bulk Operations are not available for use. Work in Progress.', 'Asset Management');
   }
 
   openConfirmDialog(type) {
@@ -258,7 +246,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
       stringDisplay: true
     };
     if (type === 'Enable') {
-      this.confirmBodyMessage = 'Are you sure you want to enable this device?';
+      this.confirmBodyMessage = 'Are you sure you want to enable this asset?';
       this.confirmHeaderMessage = 'Enable ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '');
     } else if (type === 'Disable') {
       this.confirmBodyMessage = 'This ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' will be temporarily disabled. Are you sure you want to continue?';
@@ -277,7 +265,6 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
 
   onModalEvents(eventType) {
     if (eventType === 'save'){
-      console.log(this.btnClickType);
       if (this.btnClickType === 'Enable') {
         this.enableDevice();
       } else if (this.btnClickType === 'Disable') {
@@ -310,20 +297,20 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
   enableDevice() {
     const device = this.selectedDevices[0];
     if (device.status.toLowerCase() === 'enabled') {
-      this.toasterService.showError('Device is already enabled.', 'Enable Device');
+      this.toasterService.showError('Asset is already enabled.', 'Enable Asset');
       return;
     }
     this.isAPILoading = true;
     this.subscriptions.push(this.deviceService.enableDevice(device.device_id, this.contextApp.app).subscribe(
       (response: any) => {
-        this.toasterService.showSuccess(response.message, 'Enable Device');
+        this.toasterService.showSuccess(response.message, 'Enable Asset');
         this.isAPILoading = false;
         this.devicesList = [];
         this.selectedDevices = [];
         this.getDevices();
         $('#confirmMessageModal').modal('hide');
       }, error => {
-        this.toasterService.showError(error.message, 'Enable Device');
+        this.toasterService.showError(error.message, 'Enable Asset');
         this.isAPILoading = false;
       }
     ));
@@ -332,20 +319,20 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
   disableDevice() {
     const device = this.selectedDevices[0];
     if (device.status.toLowerCase() === 'disabled') {
-      this.toasterService.showError('Device is already disabled.', 'Disable Device');
+      this.toasterService.showError('Asset is already disabled.', 'Disable Asset');
       return;
     }
     this.isAPILoading = true;
     this.subscriptions.push(this.deviceService.disableDevice(device.device_id, this.contextApp.app).subscribe(
       (response: any) => {
-        this.toasterService.showSuccess(response.message, 'Disable Device');
+        this.toasterService.showSuccess(response.message, 'Disable Asset');
         this.isAPILoading = false;
         this.devicesList = [];
         this.selectedDevices = [];
         this.getDevices();
         $('#confirmMessageModal').modal('hide');
       }, error => {
-        this.toasterService.showError(error.message, 'Disable Device');
+        this.toasterService.showError(error.message, 'Disable Asset');
         this.isAPILoading = false;
       }
     ));
@@ -362,14 +349,14 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
     }
     this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
-        this.toasterService.showSuccess(response.message, 'Delete Device');
+        this.toasterService.showSuccess(response.message, 'Delete Asset');
         this.isAPILoading = false;
         this.devicesList = [];
         this.selectedDevices = [];
         this.getDevices();
         $('#confirmMessageModal').modal('hide');
       }, error => {
-        this.toasterService.showError(error.message, 'Delete Device');
+        this.toasterService.showError(error.message, 'Delete Asset');
         this.isAPILoading = false;
       }
     ));
@@ -377,11 +364,11 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
 
   async openPackageManagementModal() {
     if (this.selectedDevices?.length === 0) {
-      this.toasterService.showError('To perform any operations, please select at least one device', 'Package Management');
+      this.toasterService.showError('To perform any operations, please select at least one asset', 'Package Management');
       return;
     }
     if (this.selectedDevices.length > 1) {
-      this.toasterService.showError('To perform single operations, please select only one device', 'Package Management');
+      this.toasterService.showError('To perform single operations, please select only one asset', 'Package Management');
       return;
     }
     $('#packageManagementModal').modal({ backdrop: 'static', keyboard: false, show: true });
@@ -454,7 +441,6 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
   }
 
   updateDeviceTwin(type) {
-    console.log(this.selectedDevicePackage);
     this.isAPILoading = true;
     this.displyaMsgArr = [];
     const obj = {
@@ -486,7 +472,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
         (response: any) => {
           // this.confirmBodyMessage = response.message;
           this.displyaMsgArr.push({
-            message: 'Firmware update request sent to Device.',
+            message: 'Firmware update request sent to Asset.',
             error: false
           });
           this.modalConfig.isDisplaySave = false;
@@ -519,13 +505,6 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.deviceService.getDeviceTwinHistory(this.contextApp.app, obj).subscribe(
         (response: any) => {
-          console.log(response);
-          // this.payload.reverse();
-          // for (let i = 0; i <= this.count; i++) {
-          //   response.data[i] = this.payload[i];
-          // }
-          // console.log(response.data);
-          // this.count++;
           if (response.data?.length > 0 && response.data[response.data.length - 1]?.twin?.reported[this.selectedDevicePackage.name]) {
             this.displyaMsgArr.push({
               message: response.data[response.data.length - 1].twin.reported[this.selectedDevicePackage.name].fw_update_sub_status,

@@ -63,8 +63,8 @@
       <div class="tab-pane" [ngClass]="{'active': activeTab.includes('properties')}" role="tabpanel" id="device_type_properties">
         <app-device-type-properties *ngIf="activeTab.includes('properties') && deviceType" [type]="activeTab" [deviceType]="deviceType"></app-device-type-properties>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab.includes('device_methods')}" role="tabpanel" id="device_type_methods">
-        <app-device-type-device-methods *ngIf="activeTab.includes('device_methods') && deviceType" [deviceType]="deviceType"></app-device-type-device-methods>
+      <div class="tab-pane" [ngClass]="{'active': activeTab.includes('direct_methods')}" role="tabpanel" id="device_type_methods">
+        <app-device-type-device-methods *ngIf="activeTab.includes('direct_methods') && deviceType" [deviceType]="deviceType"></app-device-type-device-methods>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab.includes('package_management')}" role="tabpanel" id="device_type_package_management">
         <app-device-type-package-management *ngIf="activeTab.includes('package_management') && deviceType" [deviceType]="deviceType"></app-device-type-package-management>

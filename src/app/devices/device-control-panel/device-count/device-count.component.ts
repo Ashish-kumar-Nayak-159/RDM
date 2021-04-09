@@ -73,7 +73,6 @@ export class DeviceCountComponent implements OnInit {
 
   getDevicesListByGateway() {
     this.devices = [];
-    console.log(this.device);
     const obj = {
       gateway_id: this.telemetryFilter.gateway_id,
       type: 'Legacy Device'
@@ -128,7 +127,6 @@ export class DeviceCountComponent implements OnInit {
   }
 
   onSingleDateChange(event) {
-    console.log(event);
     this.telemetryFilter.from_date = moment(event.value).utc();
     this.telemetryFilter.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
     if (this.dtInput1) {
@@ -151,13 +149,11 @@ export class DeviceCountComponent implements OnInit {
   }
 
   onDateChange(event) {
-    console.log(event);
     this.telemetryFilter.from_date = moment(event.value[0]).second(0).utc();
     this.telemetryFilter.to_date = moment(event.value[1]).second(0).utc();
     if (this.dtInput2) {
       this.dtInput2.value = null;
     }
-    console.log(this.telemetryFilter.dateOption);
     if (this.telemetryFilter.dateOption !== 'date range') {
       this.telemetryFilter.dateOption = undefined;
     }
@@ -171,13 +167,12 @@ export class DeviceCountComponent implements OnInit {
   }
 
   async searchTelemetry(filterObj) {
-    console.log('filterObj ', filterObj);
     this.telemetry = [];
     const obj = {...filterObj};
     delete obj.device;
     obj.device_id = filterObj.device.device_id;
     if (!obj.device_id) {
-      this.toasterService.showError('Device selection is required.', 'View Count Data');
+      this.toasterService.showError('Asset selection is required.', 'View Count Data');
     }
     await this.getThingsModelProperties(filterObj.device);
     this.propertyList.forEach(prop => {
@@ -252,7 +247,6 @@ export class DeviceCountComponent implements OnInit {
   }
 
   onNumberChange(event, type) {
-    console.log(event);
     if (Number(event.target.value) % 1 !== 0) {
       this.toasterService.showError('Decimal values are not allowed.', 'View Report');
       if (type === 'aggregation') {

@@ -41,9 +41,6 @@ export class CommonService {
         // 1/20/2021 10:47:59 AM
         return new Date(utcDate + ' UTC').toLocaleString('en-GB', options);
       }
-      // return (moment.utc(utcDate, 'M/DD/YYYY h:mm:ss A')).local().format('DD-MMM-YYYY hh:mm:ss A');
-      // console.log(moment(new Date(utcDate + ' UTC').toString()).format('DD-MMM-YYYY hh:mm:ss A'));
-     // return moment(new Date(utcDate).toISOString()).format('DD-MMM-YYYY hh:mm:ss.SSS A');
     }
     return null;
   }
@@ -154,18 +151,14 @@ export class CommonService {
     const blobServiceClient = new BlobServiceClient(environment.blobURL +  environment.blobKey, pipeline);
     const containerClient = blobServiceClient.getContainerClient(containerName);
     if (!containerClient.exists()){
-    console.log('the container does not exit');
     await containerClient.create();
     }
-    console.log(folderName + '/' + file.name);
     const client = containerClient.getBlockBlobClient(folderName + '/' + file.name);
     const response = await client.uploadBrowserData(file, {
           blockSize: 4 * 1024 * 1024, // 4MB block size
           concurrency: 20, // 20 concurrency
-          onProgress: (ev) => console.log(ev),
           blobHTTPHeaders : { blobContentType: file.type }
           });
-    console.log(response._response);
     if (response._response.status === 201) {
       return {
         url:  containerName + '/' + folderName + '/' + file.name,
@@ -210,9 +203,7 @@ export class CommonService {
   }
 
   calculateEstimatedRecords(frequency, startTime, endTime) {
-    console.log(frequency);
     const time = endTime - startTime;
-    console.log(time);
     return Math.round(time / frequency);
   }
 

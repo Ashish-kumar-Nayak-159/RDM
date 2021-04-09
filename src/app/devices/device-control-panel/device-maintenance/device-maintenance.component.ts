@@ -85,7 +85,6 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
   }
 
   searchMaintenance(filterObj) {
-    console.log(filterObj);
     this.maintenanceFilter = JSON.parse(JSON.stringify(filterObj));
     this.isFilterSelected = true;
     this.isMaintenanceDataLoading = true;
@@ -112,12 +111,11 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
       }
     }
     if (!obj.from_date || !obj.to_date) {
-      this.toasterService.showError('Date selection is requierd.', 'Get Device Maintenance Data');
+      this.toasterService.showError('Date selection is requierd.', 'Get Asset Maintenance Data');
       this.isMaintenanceDataLoading = false;
       this.isFilterSelected = false;
       return;
     }
-    console.log(filterObj);
     delete obj.dateOption;
     this.maintenanceFilter = filterObj;
     this.apiSubscriptions.push(this.deviceService.getDeviceMaintenanceActivityData
@@ -198,7 +196,6 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
    }
 
   async onDocumentFileSelected(files: FileList, index): Promise<void> {
-    console.log(files);
     const arr = files?.item(0)?.name?.split('.') || [];
     if (!files?.item(0).type.includes(this.selectedMaintenanceData.documents[index].type?.toLowerCase())) {
       this.toasterService.showError('This file is not valid for selected document type', 'Select File');
@@ -219,7 +216,6 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
 
 
   onRecordDateChange(event, type) {
-    console.log(event);
     if (type === 'start') {
       this.selectedMaintenanceData.start_date = moment(event.value).utc().toISOString();
     } else {
@@ -262,7 +258,6 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
   }
 
   createMaintenanceRecord() {
-    console.log(this.selectedMaintenanceData);
     const obj = JSON.parse(JSON.stringify(this.selectedMaintenanceData));
     if (!obj.start_date) {
       this.toasterService.showError('Start Date is compulsory', 'Add Maintenance Record');
@@ -286,7 +281,6 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
     obj.notes = notes;
     this.isCreateRecordAPILoading = true;
     obj.gateway_id = this.device.gateway_id;
-    console.log(this.loggedInUser.email + '(' + this.loggedInUser.name + ')');
     obj.created_by = this.loggedInUser.email + '(' + this.loggedInUser.name + ')';
     } else {
       obj.updated_by = this.loggedInUser.email + '(' + this.loggedInUser.name + ')';

@@ -65,7 +65,6 @@ export class C2dPurgeComponent implements OnInit, OnDestroy {
   }
 
   onModalEvents(eventType) {
-    console.log(eventType);
     if (eventType === 'save'){
       this.purgeQueueMessages();
     }

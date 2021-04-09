@@ -60,7 +60,6 @@ export class DeviceLifeCycleEventsComponent implements OnInit, OnDestroy {
   }
 
   searchLifeCycleEvents(filterObj) {
-    console.log(filterObj);
     this.isFilterSelected = true;
     this.isLifeCycleEventsLoading = true;
     const obj = {...filterObj};
@@ -86,7 +85,7 @@ export class DeviceLifeCycleEventsComponent implements OnInit, OnDestroy {
       }
     }
     if (!obj.from_date || !obj.to_date) {
-      this.toasterService.showError('Date selection is requierd.', 'Get Device Life cycle events');
+      this.toasterService.showError('Date selection is requierd.', 'Get Asset Life cycle events');
       this.isLifeCycleEventsLoading = false;
       this.isFilterSelected = false;
       return;
@@ -99,8 +98,8 @@ export class DeviceLifeCycleEventsComponent implements OnInit, OnDestroy {
           this.lifeCycleEvents = response.data;
           this.lifeCycleEvents.forEach(item => {
             const eventMsg = item.event_type.split('.');
-            eventMsg[eventMsg.length - 1] = eventMsg[eventMsg.length - 1].replace('Device', '');
-            eventMsg[eventMsg.length - 1] = (item.category === CONSTANTS.IP_GATEWAY ? 'Gateway ' : 'Device ' ) +
+            eventMsg[eventMsg.length - 1] = eventMsg[eventMsg.length - 1].replace('Asset', '');
+            eventMsg[eventMsg.length - 1] = (item.category === CONSTANTS.IP_GATEWAY ? 'Gateway ' : 'Asset ' ) +
             eventMsg[eventMsg.length - 1];
             item.event_type = eventMsg[eventMsg.length - 1];
             item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);

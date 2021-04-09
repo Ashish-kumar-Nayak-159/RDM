@@ -73,6 +73,5 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
   }
 
   onColorChangeComplete(event) {
-    console.log(event);
   }
 }

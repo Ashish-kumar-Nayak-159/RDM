@@ -70,7 +70,6 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   onSaveMetadata() {
     this.saveMetadataAPILoading = true;
     this.applicationData.id = this.applicationData.app;
-    console.log(this.applicationData);
     this.apiSubscriptions.push(this.applicationService.updateApp(this.applicationData).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Save Menu Settings');

@@ -32,7 +32,6 @@ export class DeviceTypeOverviewComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    console.log(this.deviceType);
     if (!this.deviceType.metadata?.image) {
       this.deviceType.metadata.image = {
         url: CONSTANTS.DEFAULT_MODEL_IMAGE

@@ -14,16 +14,9 @@
           </select>
           <input  type="text" *ngIf="index === 0"  defaultValue="{{contextApp.app}}" disabled class="form-control form-control-sm mx-1 my-1">
         </ng-container>
-        <!-- <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory" [(ngModel)]="filterObj.device"
-        name="deviceCategory" (change)="onAssetSelection()">
-        <option [ngValue]="undefined">Select Asset</option>
-        <option [ngValue]="device" *ngFor="let device of devices">
-          {{device?.display_name ? device?.display_name: device.device_id}}
-        </option>
-        </select> -->
         <angular2-multiselect [data]="devices" id="deviceSelect"
         [(ngModel)]="filterObj.deviceArr" name="devices" [settings]="{
-          text: 'Select Device',
+          text: 'Select Asset',
           classes: 'w-16 mr-1 p-0',
           enableSearchFilter: true,
           showCheckbox: false,
@@ -67,16 +60,8 @@
           <option [ngValue]="'Daily Single Asset Telemetry Report'">Daily Single Asset Telemetry Report</option>
           <option [ngValue]="'Weekly Single Asset Telemetry Report'">Weekly Single Asset Telemetry Report</option>
           <option [ngValue]="'Daily Multiple Asset Telemetry Report'">Daily Multiple Asset Telemetry Report</option>
-          <!-- <option [ngValue]="'Daily Single Device Alert Report'">Daily Single Device Alert Report</option>
-          <option [ngValue]="'Weekly Single Device Alert Report'">Weekly Single Device Alert Report</option>
-          <option [ngValue]="'Daily Multiple Device Alert Report'">Daily Multiple Device Alert Report</option> -->
+
           </select>
-          <!-- <div *ngIf="reportType.invalid && (reportType.dirty || reportType.touched)"
-          class="alert alert-danger">
-          <div *ngIf="reportType.errors.required">
-            Report Type Selection is required.
-          </div>
-          </div> -->
           <div class="bg-dateRow form-group form-inline" id="dateRow"
             [style.width]="(filterObj.dateOption === 'date' ? '23rem' : (filterObj.dateOption === 'date range' ? '34rem' : ''))">
           <select class="form-control form-control-sm mx-1 my-1" id="dateoptions" [(ngModel)]="filterObj.dateOption"

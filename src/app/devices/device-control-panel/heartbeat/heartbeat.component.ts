@@ -70,7 +70,6 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
   }
 
   searchHeartBeat(filterObj) {
-    console.log(filterObj);
     this.isFilterSelected = true;
     this.isHeartbeatLoading = true;
     const obj = {...filterObj};

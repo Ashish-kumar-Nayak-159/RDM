@@ -66,7 +66,7 @@ export class ApplicationEventsComponent implements OnInit {
           valueclass: ''
         },
         {
-          name: 'Device',
+          name: 'Asset',
           key: 'display_name',
           type: 'text',
           headerClass: '',
@@ -125,14 +125,12 @@ export class ApplicationEventsComponent implements OnInit {
         if (this.configureHierarchy[key]) {
           hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
         }
-        console.log(hierarchyObj);
       });
       if (Object.keys(hierarchyObj).length === 1) {
         this.devices = JSON.parse(JSON.stringify(this.originalDevices));
       } else {
       const arr = [];
       this.devices = [];
-      console.log(this.originalDevices);
       this.originalDevices.forEach(device => {
         let flag1 = false;
         Object.keys(hierarchyObj).forEach(hierarchyKey => {
@@ -146,7 +144,6 @@ export class ApplicationEventsComponent implements OnInit {
           arr.push(device);
         }
       });
-      console.log('devicessss  ', arr);
       this.devices = JSON.parse(JSON.stringify(arr));
       }
       if (this.devices?.length === 1) {
@@ -205,7 +202,6 @@ export class ApplicationEventsComponent implements OnInit {
   }
 
   onDateChange(event) {
-    console.log(event);
     this.filterObj.from_date = moment(event.value[0]).second(0).utc();
     this.filterObj.to_date = moment(event.value[1]).second(0).utc();
     if (this.dtInput2) {
@@ -217,7 +213,6 @@ export class ApplicationEventsComponent implements OnInit {
   }
 
   onSingleDateChange(event) {
-    console.log(event);
     this.filterObj.from_date = moment(event.value).utc();
     this.filterObj.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
     const to = this.filterObj.to_date.unix();
@@ -259,7 +254,7 @@ export class ApplicationEventsComponent implements OnInit {
       }
     }
     if (!obj.from_date || !obj.to_date) {
-      this.toasterService.showError('Date selection is requierd.', 'Get Device Life cycle events');
+      this.toasterService.showError('Date selection is requierd.', 'Get Asset Life cycle events');
       this.isEventLoading = false;
       this.isFilterSelected = false;
       return;
@@ -269,7 +264,6 @@ export class ApplicationEventsComponent implements OnInit {
       if (this.configureHierarchy[key]) {
         obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
       }
-      console.log(obj.hierarchy);
     });
     obj.hierarchy = JSON.stringify(obj.hierarchy);
     obj.device_id = obj.device?.device_id;
@@ -281,8 +275,8 @@ export class ApplicationEventsComponent implements OnInit {
           this.events = response.data;
           this.events.forEach(item => {
             const eventMsg = item.event_type.split('.');
-            eventMsg[eventMsg.length - 1] = eventMsg[eventMsg.length - 1].replace('Device', '');
-            eventMsg[eventMsg.length - 1] = (item.category === CONSTANTS.IP_GATEWAY ? 'Gateway ' : 'Device ' ) +
+            eventMsg[eventMsg.length - 1] = eventMsg[eventMsg.length - 1].replace('Asset', '');
+            eventMsg[eventMsg.length - 1] = (item.category === CONSTANTS.IP_GATEWAY ? 'Gateway ' : 'Asset ' ) +
             eventMsg[eventMsg.length - 1];
             item.event_type = eventMsg[eventMsg.length - 1];
             item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);

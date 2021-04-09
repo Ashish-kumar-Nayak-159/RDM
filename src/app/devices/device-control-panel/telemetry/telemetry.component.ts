@@ -110,7 +110,6 @@ export class TelemetryComponent implements OnInit, OnDestroy {
 
   getDevicesListByGateway() {
     this.devices = [];
-    console.log(this.device);
     const obj = {
       gateway_id: this.telemetryFilter.gateway_id,
       app: this.device?.tags?.app
@@ -144,7 +143,6 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   }
 
   onSingleDateChange(event) {
-    console.log(event);
     this.telemetryFilter.from_date = moment(event.value).utc();
     this.telemetryFilter.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
     if (this.dtInput1) {
@@ -167,13 +165,11 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   }
 
   onDateChange(event) {
-    console.log(event);
     this.telemetryFilter.from_date = moment(event.value[0]).second(0).utc();
     this.telemetryFilter.to_date = moment(event.value[1]).second(0).utc();
     if (this.dtInput2) {
       this.dtInput2.value = null;
     }
-    console.log(this.telemetryFilter.dateOption);
     if (this.telemetryFilter.dateOption !== 'date range') {
       this.telemetryFilter.dateOption = undefined;
     }
@@ -200,7 +196,6 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   }
 
   searchTelemetry(filterObj) {
-    console.log('filterObj ', filterObj);
     this.telemetry = [];
     const obj = {...filterObj};
     const now = moment().utc();
@@ -295,7 +290,6 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   }
 
   onNumberChange(event, type) {
-    console.log(event);
     if (Number(event.target.value) % 1 !== 0) {
       this.toasterService.showError('Decimal values are not allowed.', 'View Report');
       if (type === 'aggregation') {

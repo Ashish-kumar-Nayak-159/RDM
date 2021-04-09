@@ -21,7 +21,6 @@ export class DeviceTypeService {
   ) { }
 
   getThingsModelsList(filterObj) {
-    console.log(filterObj);
     const deviceModels = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_MODELS_LIST);
     if (deviceModels) {
       if (filterObj['id'] || filterObj['name'] || filterObj['model_type'] || filterObj['created_by']) {
@@ -35,11 +34,9 @@ export class DeviceTypeService {
       if (filterObj['model_type']) {
         models = models.filter(modelObj => modelObj.model_type === filterObj['model_type']);
       }
-      console.log(models);
       if (filterObj['created_by']) {
         models = models.filter(modelObj => modelObj.created_by === filterObj['created_by']);
       }
-      console.log(models);
       return new Observable((observer) => {
         observer.next({
           data: models
@@ -56,7 +53,6 @@ export class DeviceTypeService {
       let params = new HttpParams();
       (Object.keys(filterObj)).forEach(key => {
         if (filterObj[key]) {
-          // console.log(filterObj[key], '===== ', filterObj[key]);
           params = params.set(key, filterObj[key]);
         }
       });
@@ -86,8 +82,8 @@ export class DeviceTypeService {
   updateThingsModel(modelObj, app) {
     localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
     localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
-    console.log(localStorage.getItem(CONSTANTS.DEVICE_MODEL_DATA));
-    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_THINGS_MODEL, encodeURIComponent(app), encodeURIComponent(modelObj.name)), modelObj);
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_THINGS_MODEL, encodeURIComponent(app),
+    encodeURIComponent(modelObj.name)), modelObj);
   }
 
   getThingsModelProperties(filterObj) {
@@ -135,13 +131,10 @@ export class DeviceTypeService {
   }
 
   getThingsModelLayout(filterObj) {
-    console.log('in funnnnnnn');
     let deviceModel = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_MODEL_DATA);
-    console.log(deviceModel);
     if (deviceModel?.id !== filterObj.id || deviceModel?.name !== filterObj.name) {
       deviceModel = undefined;
     }
-    console.log(deviceModel);
     if (deviceModel && deviceModel.historical_widgets && (filterObj['id'] || filterObj['name'])) {
       let flag = false;
       if (filterObj['id']) {
@@ -182,15 +175,11 @@ export class DeviceTypeService {
   }
 
   getThingsModelLiveWidgets(filterObj) {
-    console.log('in fun');
     let deviceModel = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_MODEL_DATA);
-    console.log(deviceModel);
     if (deviceModel?.id !== filterObj.id || deviceModel?.name !== filterObj.name) {
       deviceModel = undefined;
     }
-    console.log(deviceModel);
     if (deviceModel && deviceModel.live_widgets && (filterObj['id'] || filterObj['name'])) {
-      console.log('in if');
       let flag = false;
       if (filterObj['id']) {
         flag = deviceModel.id === filterObj.id;
@@ -213,16 +202,13 @@ export class DeviceTypeService {
           obj = {...deviceModel};
         }
         if (Object.keys(obj).length === 0) {
-          console.log('keys === 0');
           obj = {
             name: data.name,
             live_widgets: data.live_widgets
           };
         } else {
-          console.log('keys > 0');
           obj['live_widgets'] = data.live_widgets;
         }
-        console.log(obj);
         this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_MODEL_DATA, obj);
         return data;
       }), catchError( error => {
@@ -354,7 +340,6 @@ export class DeviceTypeService {
 
   deleteThingsModelDocument(id, app, deviceType) {
     const params = new HttpParams().set('id', id);
-    console.log(params);
     const deviceModel = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_MODEL_DATA);
     if (deviceModel && deviceModel.documents && deviceModel.name === deviceType) {
       delete deviceModel.documents;

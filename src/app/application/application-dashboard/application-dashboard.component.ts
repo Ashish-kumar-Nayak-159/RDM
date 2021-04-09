@@ -80,7 +80,6 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.apiSubscriptions.push(this.route.paramMap.subscribe(async params => {
-      console.log(this.contextApp);
       this.tileName = this.getTileName('IoT Gateways');
       if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.logo) {
         this.contextApp.metadata.logo = {
@@ -101,7 +100,6 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
           }
         ]
       });
-      console.log(this.contextApp);
       this.getDashboardSnapshot();
       this.getLastNotificationData();
       this.getLastAlertData();
@@ -109,7 +107,6 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     }));
     await this.getAllDevices();
     const center = this.commonService.averageGeolocation(this.devices);
-    console.log('centerrr    ', center);
     this.centerLatitude = center?.latitude || 23.0225;
     this.centerLongitude = center?.longitude || 72.5714;
     this.devices.forEach(marker => {
@@ -134,12 +131,10 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
   getTileName(type) {
     let name;
     this.contextApp.configuration.main_menu.forEach(item => {
-      console.log((item.system_name === type));
       if (item.system_name === type) {
         name = item.display_name;
       }
     });
-    console.log(name);
     return name;
   }
 
@@ -163,7 +158,6 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
    * It will call the application dashboard snapshot API
    */
   getDashboardSnapshot() {
-    console.log(this.contextApp);
     this.isDashboardSnapshotLoading = true;
     const obj = {
       app: this.contextApp.app,

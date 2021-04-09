@@ -40,7 +40,7 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-2 pt-3">
       <h6 class="h6 mb-0">Total Messages {{pageType !== 'devices' ?
-        ('in Gateway (' + (device.gateway_id ? device.gateway_id : device.device_id) + ') queue is ') : 'in device (' + device.device_id + ') queue is '}}:
+        ('in Gateway (' + (device.gateway_id ? device.gateway_id : device.device_id) + ') queue is ') : 'in asset (' + device.device_id + ') queue is '}}:
         {{ messageCount }}</h6>
     </div>
   </div>
@@ -50,7 +50,7 @@
   <div class="modal-dialog" role="document">
     <app-message-modal
     [bodyMessage]="'This will purge all the messages from ' +
-    (pageType !== 'devices' ? ('gateway (' + (device.gateway_id ? device.gateway_id : device.device_id)) :'device (' + device.device_id ) + ') queue.' +
+    (pageType !== 'devices' ? ('gateway (' + (device.gateway_id ? device.gateway_id : device.device_id)) :'asset (' + device.device_id ) + ') queue.' +
     ' Are you sure you want to continue?'"
      [headerMessage]="'Purge Queue Messages'"
       (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>

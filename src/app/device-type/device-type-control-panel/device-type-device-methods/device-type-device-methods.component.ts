@@ -51,7 +51,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
     this.deviceMethodTableConfig = {
       freezed: this.deviceType.freezed,
       tableHeight: 'calc(100vh - 14rem)',
-      type: 'Device Methods',
+      type: 'Direct Methods',
       data: [
         {
           name: 'Name',
@@ -187,7 +187,6 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
   }
 
   onParamKeyChange(index) {
-    // console.log(this.deviceMethodObj);
     const data = this.editor.get() as any;
     const list = data?.params || [];
     list.forEach((item, i) => {
@@ -229,13 +228,13 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
 
   onSavedeviceMethodObj() {
     if (!this.deviceMethodObj.name || !this.deviceMethodObj.method_name) {
-      this.toasterService.showError('Please fill the form correctly', 'Add Device Method');
+      this.toasterService.showError('Please fill the form correctly', 'Add Direct Method');
       return;
     }
     try {
       this.deviceMethodObj.json_model = this.editor.get();
     } catch (e) {
-      this.toasterService.showError('Invalid JSON data', 'Add Device Method');
+      this.toasterService.showError('Invalid JSON data', 'Add Direct Method');
       return;
     }
     if (this.deviceMethodObj.edit) {
@@ -245,14 +244,10 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
       }
     }
     const index = this.deviceMethods.findIndex(prop => prop.method_name === this.deviceMethodObj.method_name);
-    console.log(index);
     if (index > -1) {
-      this.toasterService.showError('Device Method with same method name already exist.', 'Add Device Method');
+      this.toasterService.showError('Direct Method with same method name already exist.', 'Add Direct Method');
       return;
     }
-    // if (this.deviceMethodObj.edit) {
-    //   this.deviceMethods.push(this.deviceMethodObj);
-    // }
     this.isCreateDeviceMethodLoading = true;
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.device_methods = JSON.parse(JSON.stringify(this.deviceMethods));
@@ -261,11 +256,11 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
       (response: any) => {
         this.isCreateDeviceMethodLoading = false;
         this.onCloseThingsDeviceMethodModal();
-        this.toasterService.showSuccess(response.message, 'Add Device Method');
+        this.toasterService.showSuccess(response.message, 'Add Direct Method');
         this.getThingsModelDeviceMethod();
       }, error => {
         this.isCreateDeviceMethodLoading = false;
-        this.toasterService.showError(error.message, 'Add Device Method');
+        this.toasterService.showError(error.message, 'Add Direct Method');
       }
     ));
   }
@@ -279,11 +274,11 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
       (response: any) => {
         this.isCreateDeviceMethodLoading = false;
         this.onCloseModal('confirmMessageModal');
-        this.toasterService.showSuccess(response.message, 'Delete Device Method');
+        this.toasterService.showSuccess(response.message, 'Delete Direct Method');
         this.getThingsModelDeviceMethod();
       }, error => {
         this.isCreateDeviceMethodLoading = false;
-        this.toasterService.showError(error.message, 'Delete Device Method');
+        this.toasterService.showError(error.message, 'Delete Direct Method');
       }
     ));
   }

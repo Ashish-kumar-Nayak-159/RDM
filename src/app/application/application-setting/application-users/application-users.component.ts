@@ -39,7 +39,6 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
 
   getApplicationUsers() {
     this.users = [];
-    console.log(this.applicationData);
     this.apiSubscriptions.push(this.applicationService.getApplicationUsers(this.applicationData.app).subscribe(
       (response: any) => {
         if (response && response.data) {
@@ -60,7 +59,6 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
 
   // tslint:disable-next-line: no-unnecessary-initializer
   openCreateUserModal(userObj = undefined) {
-    console.log(userObj);
     this.addUserObj = {};
     if (!userObj) {
     this.addUserObj.app = this.applicationData.app;
@@ -80,7 +78,6 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
           this.onChangeOfHierarchy(index);
         }
       });
-      console.log(this.configureHierarchy);
     }
     $('#createUserModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
@@ -92,7 +89,6 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
 
   onChangeOfHierarchy(i) {
     Object.keys(this.configureHierarchy).forEach(key => {
-      console.log(key, i);
       if (key > i) {
         delete this.configureHierarchy[key];
       }
@@ -106,7 +102,6 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     Object.keys(this.configureHierarchy).forEach((key, index) => {
       if (this.configureHierarchy[index + 1]) {
         nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
-        console.log(nextHierarchy);
       }
     });
     if (nextHierarchy) {
@@ -164,7 +159,6 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
       return;
     }
     this.isCreateUserAPILoading = true;
-    console.log(this.addUserObj);
     const method = this.addUserObj.id ? this.userService.updateUser(this.addUserObj, this.applicationData.app) :
     this.userService.createUser(this.addUserObj, this.applicationData.app);
     this.apiSubscriptions.push(method.subscribe(

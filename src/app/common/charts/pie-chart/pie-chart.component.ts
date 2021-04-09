@@ -59,7 +59,6 @@ export class PieChartComponent implements OnInit, OnDestroy {
         data.push(item);
       }
     });
-    console.log(data);
     chart.data = data;
 
 
@@ -105,11 +104,9 @@ export class PieChartComponent implements OnInit, OnDestroy {
     chart.exporting.dataFields = obj;
     const list = new am4core.List<string>();
     list.insertIndex(0, 'message_date');
-    console.log(list);
     chart.exporting.dateFields = list;
     chart.exporting.getFormatOptions('pdf').addURL = false;
     chart.exporting.dateFormat = 'dd-MM-yyyy HH:mm:ss.nnn';
-    console.log(this.selectedAlert);
     if (this.selectedAlert) {
       chart.exporting.filePrefix = this.selectedAlert.device_id + '_Alert_' + this.selectedAlert.local_created_date;
     } else {

@@ -119,7 +119,6 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
   }
 
   searchTelemetry(filterObj) {
-    console.log(filterObj);
     this.isFilterSelected = true;
     this.isTelemetryLoading = true;
     const obj = {...filterObj};
@@ -159,7 +158,6 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
           this.telemetryList.forEach(item => {
             item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
             item.local_upload_date = this.commonService.convertUTCDateToLocal(item.upload_date);
-            console.log(item);
             if (this.devices?.length > 0 && item.device) {
               const deviceObj = this.devices.find(device => device.device_id === item.device_id)
               item.display_name = deviceObj?.display_name || item.device_id;
@@ -180,7 +178,7 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
     // link.setAttribute('download', fileObj.name);
     // document.body.appendChild(link);
     // link.click();
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       this.isFileDataLoading = true;
     // link.remove();
       this.fileData = undefined;
@@ -195,7 +193,6 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
       this.apiSubscriptions.push(method.subscribe(
         response => {
           this.fileData = response;
-          console.log(this.fileData);
           if (type === 'download') {
           this.fileSaverService.save(response, fileObj.file_name);
           }

@@ -83,7 +83,7 @@
   <accordion-group heading="" [panelClass]="'customClass'">
     <ng-container accordion-heading>
       <a class="btn" >
-        IOT Device Control Panel Menu
+        IOT Asset Control Panel Menu
       </a>
     </ng-container>
     <div class="row">
@@ -110,31 +110,31 @@
               </tr>
             </tfoot>
             <tbody>
-              <ng-container *ngFor="let item of applicationData?.configuration?.device_control_panel_menu; let configIndex = index">
+              <ng-container *ngFor="let item of applicationData?.configuration?.asset_control_panel_menu; let configIndex = index">
                 <tr *ngIf="!item.isTitle">
                   <td>
                     <ng-container *ngIf="item.showAccordion?.length > 0">
-                      <a href="javascript:void(0)" (click)="onToggleRows('device_' + configIndex)">
+                      <a href="javascript:void(0)" (click)="onToggleRows('asset_' + configIndex)">
                         <i [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
                         </a>
                     </ng-container>
                   </td>
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control" name="display_name_device{{configIndex}}" id="display_name_device{{configIndex}}"
+                  <td><input type="text" class="form-control" name="display_name_asset{{configIndex}}" id="display_name_asset{{configIndex}}"
                       [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/></td>
-                  <td><input type="checkbox" name="visible_device_{{configIndex}}" [disabled]="!isAppSettingsEditable"
-                      id="visible_device_{{configIndex}}" [(ngModel)]="item.visible" /></td>
+                  <td><input type="checkbox" name="visible_asset_{{configIndex}}" [disabled]="!isAppSettingsEditable"
+                      id="visible_asset_{{configIndex}}" [(ngModel)]="item.visible" /></td>
                 </tr>
-                <tr *ngIf="toggleRows['device_' + configIndex]">
+                <tr *ngIf="toggleRows['asset_' + configIndex]">
                   <td colspan="5">
                     <div class="row col-md-12">
-                    
+
                       <div class="col-md-6 form-group mt-1" *ngFor="let control of item.showAccordion;let accordionIndex = index;">
-                        <input type="checkbox" name="visible_device_{{control.name}}_{{accordionIndex}}" [disabled]="!isAppSettingsEditable"
-                          id="visible_device_{{control.name}}_{{accordionIndex}}" [(ngModel)]="item.accordion_value[control.key]" />
+                        <input type="checkbox" name="visible_asset_{{control.name}}_{{accordionIndex}}" [disabled]="!isAppSettingsEditable"
+                          id="visible_asset_{{control.name}}_{{accordionIndex}}" [(ngModel)]="item.accordion_value[control.key]" />
                         <label for="recipient-name" class="col-form-label">&nbsp;{{control.name}}</label>
                       </div>
-                    
+
                       <!-- <div class="col-md-5">
                         <input type="text" class="form-control form-control-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
                           placeholder="Enter {{control.name}}" [disabled]="!isAppSettingsEditable">
@@ -152,12 +152,12 @@
   <accordion-group heading="" [panelClass]="'customClass'">
     <ng-container accordion-heading>
       <a class="btn" >
-        Legacy Device Control Panel Menu
+        Legacy Asset Control Panel Menu
       </a>
     </ng-container>
     <div class="row">
       <div class="col-12">
-        
+
         <div class="col-8">
           <table class="table table-bordered table-striped" cellspacing="0">
             <thead>
@@ -180,31 +180,31 @@
               </tr>
             </tfoot>
             <tbody>
-              <ng-container *ngFor="let item of applicationData?.configuration?.legacy_device_control_panel_menu; let configIndex = index">
+              <ng-container *ngFor="let item of applicationData?.configuration?.legacy_asset_control_panel_menu; let configIndex = index">
                 <tr *ngIf="!item.isTitle">
                   <td>
                     <ng-container *ngIf="item.showAccordion?.length > 0">
-                      <a href="javascript:void(0)" (click)="onToggleRows('legacy_device_' + configIndex)">
+                      <a href="javascript:void(0)" (click)="onToggleRows('legacy_asset_' + configIndex)">
                         <i [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
                         </a>
                     </ng-container>
                   </td>
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control" name="display_name_legacy_device{{configIndex}}" id="display_name_device{{configIndex}}"
+                  <td><input type="text" class="form-control" name="display_name_legacy_asset{{configIndex}}" id="display_name_asset{{configIndex}}"
                       [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/></td>
                   <td><input type="checkbox" name="visible_legacy_{{configIndex}}" [disabled]="!isAppSettingsEditable"
                       id="visible_legacy_{{configIndex}}" [(ngModel)]="item.visible" /></td>
                 </tr>
-                <tr *ngIf="toggleRows['legacy_device_' + configIndex]">
+                <tr *ngIf="toggleRows['legacy_asset_' + configIndex]">
                   <td colspan="5">
                     <div class="row col-md-12">
-                    
+
                       <div class="col-md-6 form-group mt-1" *ngFor="let control of item.showAccordion;let accordionIndex = index;">
-                        <input type="checkbox" name="visible_legacy_device_{{control.name}}_{{accordionIndex}}" [disabled]="!isAppSettingsEditable"
-                          id="visible_legacy_device_{{control.name}}_{{accordionIndex}}" [(ngModel)]="item.accordion_value[control.key]" />
+                        <input type="checkbox" name="visible_legacy_asset_{{control.name}}_{{accordionIndex}}" [disabled]="!isAppSettingsEditable"
+                          id="visible_legacy_asset_{{control.name}}_{{accordionIndex}}" [(ngModel)]="item.accordion_value[control.key]" />
                         <label for="recipient-name" class="col-form-label">&nbsp;{{control.name}}</label>
                       </div>
-                    
+
                       <!-- <div class="col-md-5">
                         <input type="text" class="form-control form-control-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
                           placeholder="Enter {{control.name}}" [disabled]="!isAppSettingsEditable">
@@ -258,7 +258,7 @@
                     </ng-container>
                   </td>
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control" name="display_name_gateway{{configIndex}}" id="display_name_device{{configIndex}}"
+                  <td><input type="text" class="form-control" name="display_name_gateway{{configIndex}}" id="display_name_asset{{configIndex}}"
                       [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" /></td>
                   <td><input type="checkbox" name="visible_gateway{{configIndex}}" [disabled]="!isAppSettingsEditable"
                       id="visible_gateway{{configIndex}}" [(ngModel)]="item.visible" /></td>
@@ -266,13 +266,13 @@
                 <tr *ngIf="toggleRows['gateway_' + configIndex]">
                   <td colspan="5">
                     <div class="row col-md-12">
-                    
+
                       <div class="col-md-6 form-group mt-1" *ngFor="let control of item.showAccordion;let accordionIndex = index;">
                         <input type="checkbox" name="visible_gateway_{{control.name}}_{{accordionIndex}}" [disabled]="!isAppSettingsEditable"
                           id="visible_gateway_{{control.name}}_{{accordionIndex}}" [(ngModel)]="item.accordion_value[control.key]" />
                         <label for="recipient-name" class="col-form-label">&nbsp;{{control.name}}</label>
                       </div>
-                    
+
                       <!-- <div class="col-md-5">
                         <input type="text" class="form-control form-control-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
                           placeholder="Enter {{control.name}}" [disabled]="!isAppSettingsEditable">
@@ -319,7 +319,7 @@
               <ng-container *ngFor="let item of applicationData?.configuration?.model_control_panel_menu; let configIndex = index">
                 <tr *ngIf="!item.isTitle">
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control" name="display_name_device_type{{configIndex}}" id="display_name_device_type{{configIndex}}"
+                  <td><input type="text" class="form-control" name="display_name_asset_type{{configIndex}}" id="display_name_asset_type{{configIndex}}"
                       [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/></td>
                   <td><input type="checkbox" name="visible{{configIndex}}" [disabled]="!isAppSettingsEditable"
                       id="visible{{configIndex}}" [(ngModel)]="item.visible" /></td>

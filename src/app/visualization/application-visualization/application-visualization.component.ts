@@ -123,8 +123,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
       this.contextApp.hierarchy.levels.forEach((level, index) => {
         if (index !== 0 && this.filterObj.device) {
-        // console.log( this.filterObj.hierarchy);
-        // console.log( this.filterObj.hierarchy[level]);
         this.configureHierarchy[index] = this.filterObj.device.hierarchy[level];
         if (this.filterObj.device.hierarchy[level]) {
           this.onChangeOfHierarchy(index);
@@ -138,7 +136,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   onNumberChange(event, type) {
-    console.log(event);
     if (Number(event.target.value) % 1 !== 0) {
       this.toasterService.showError('Decimal values are not allowed.', 'View Report');
       if (type === 'aggregation') {
@@ -221,7 +218,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.contextApp.configuration.main_menu.forEach(item => {
       if (item.system_name === 'Alert Visualization') {
         selectedItem = item.showAccordion;
-        console.log(selectedItem);
       }
     });
     this.tileData = selectedItem;
@@ -281,7 +277,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   onSingleDateChange(event) {
-    console.log(event);
     this.filterObj.from_date = moment(event.value).utc();
     this.filterObj.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
     if (this.dtInput1) {
@@ -304,11 +299,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   onDateChange(event) {
-    console.log(event);
     this.filterObj.from_date = moment(event.value[0]).second(0).utc();
     this.filterObj.to_date = moment(event.value[1]).second(0).utc();
-    console.log(this.filterObj.from_date.unix());
-    console.log(this.filterObj.to_date.unix());
     if (this.dtInput2) {
       this.dtInput2.value = null;
     }
@@ -340,7 +332,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       if (this.configureHierarchy[key]) {
         obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
       }
-      console.log(obj.hierarchy);
     });
     obj.hierarchy = JSON.stringify(obj.hierarchy);
     if (obj.device) {
@@ -452,7 +443,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response?.data?.length > 0) {
           this.selectedDevice = response.data[0];
-          console.log('41555555   ', this.selectedDevice);
         } else {
           this.selectedDevice = response;
         }
@@ -475,7 +465,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       } else if (this.selectedAlert.message) {
         filterObj['message'] = this.selectedAlert.message;
       }
-      console.log(filterObj);
       this.alertCondition = undefined;
       this.subscriptions.push(this.deviceTypeService.getAlertConditions(this.contextApp.app, filterObj).subscribe(
         (response: any) => {
@@ -525,9 +514,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   onChangeTimeValue() {
-    console.log(this.beforeInterval, '=====', this.afterInterval);
     if (this.beforeInterval && this.afterInterval) {
-      console.log(this.beforeInterval + this.afterInterval);
       if (this.beforeInterval + this.afterInterval > 60) {
 
         this.filterObj.isTypeEditable = true;
@@ -545,7 +532,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       };
       this.subscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
-          console.log('4966666', response);
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
           response.properties.derived_properties.forEach(prop => this.propertyList.push(prop));
@@ -623,9 +609,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       file.data.sanitizedURL = this.sanitizeURL(file.data.url);
     });
     this.isTelemetryFilterSelected = false;
-    console.log(this.originalDevices);
     this.selectedDevice = this.originalDevices.find(device => device.device_id === this.selectedAlert.device_id);
-    console.log('selected device   ', this.selectedDevice);
     // await this.getDeviceData(this.selectedAlert.device_id);
     await this.getAlertConditions();
     await this.getThingsModelProperties();
@@ -659,7 +643,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   getDeviceTelemetryData() {
     this.isChartViewOpen = false;
-    console.log(this.selectedWidgets);
     this.propList = [];
     this.selectedWidgets.forEach(widget => {
       widget.value.y1axis.forEach(prop => {
@@ -686,7 +669,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.filterObj.message_props = '';
     this.filterObj.from_date = null;
     this.filterObj.to_date = null;
-    console.log(this.filterObj);
     const filterObj = JSON.parse(JSON.stringify(this.filterObj));
     this.propList.forEach((prop, index) =>
     filterObj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
@@ -716,10 +698,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     delete filterObj.device;
     this.isChartViewOpen = true;
     filterObj.order_dir = 'ASC';
-    console.log(this.filterObj.isTypeEditable);
     if (this.filterObj.isTypeEditable) {
-      console.log(this.filterObj.type);
-      console.log(this.filterObj);
       if (this.filterObj.type) {
         if (!this.filterObj.sampling_time || !this.filterObj.sampling_format ) {
           this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
@@ -730,7 +709,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           const records = this.commonService.calculateEstimatedRecords(this.filterObj.sampling_time * 60,
             filterObj.from_date, filterObj.to_date);
             if (records > 500 ) {
-              this.loadingMessage = 'Loading approximate' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+              this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
             }
           method = this.deviceService.getDeviceSamplingTelemetry(filterObj, this.contextApp.app);
         }
@@ -756,11 +735,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           ((device?.measurement_frequency?.average ? device.measurement_frequency.average : 5),
           filterObj.from_date, filterObj.to_date);
       if (records > 500 ) {
-        this.loadingMessage = 'Loading approximate' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+        this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
       }
       method = this.deviceService.getDeviceTelemetry(filterObj);
     }
-    console.log(this.selectedAlert.message_date);
     this.fromDate = filterObj.from_date;
     this.toDate = filterObj.to_date;
     if (this.selectedWidgets.length === 0) {
@@ -778,7 +756,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     // }
     this.subscriptions.push(method.subscribe(
       (response: any) => {
-        console.log(response);
         if (response && response.data) {
           this.telemetryData = response.data;
           const telemetryData = response.data;
@@ -839,8 +816,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   toggleThreshold() {
-    console.log(this.showThreshold);
-    // this.showThreshold = !this.showThreshold;
     this.chartService.toggleThresholdEvent.emit(this.showThreshold);
   }
 
@@ -886,7 +861,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
    }
 
   async onDocumentFileSelected(files: FileList, index): Promise<void> {
-    console.log(files);
     const arr = files?.item(0)?.name?.split('.') || [];
     if (!files?.item(0).type.includes(this.acknowledgedAlert.metadata.files[index].type?.toLowerCase())) {
       this.toasterService.showError('This file is not valid for selected document type', 'Select File');

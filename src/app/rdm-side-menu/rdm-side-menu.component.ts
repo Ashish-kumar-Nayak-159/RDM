@@ -64,16 +64,10 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
     }));
 
     this.apiSubscriptions.push(this.commonService.refreshSideMenuData.subscribe(list => {
-      console.log(list);
       let config = list.configuration?.main_menu?.length > 0 ? list.configuration.main_menu :
       JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
       config = JSON.parse(JSON.stringify(config));
       this.processSideMenuData(config, list);
-      // const index = this.userData.apps.findIndex(app => app.app === list.app);
-      // const obj = this.userData.apps[index];
-      // this.userData.apps.splice(index, 1);
-      // this.userData.apps.splice(index, 0, obj);
-      // this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
     }));
   }
 
@@ -139,15 +133,12 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
       type: 'alert',
       app: this.contextApp.app
     };
-    console.log('overlay connection');
     this.signalRService.connectToSignalR(obj, 'overlay');
   }
 
   processSideMenuData(data, list) {
     // alert('here');
-    console.log('data-117    ', data);
     const arr = JSON.parse(JSON.stringify(data));
-    console.log(list);
     arr.forEach(element1 => {
       if (element1.page === 'Things Modelling') {
         if (this.contextApp?.user.role !== CONSTANTS.APP_ADMIN_ROLE) {
@@ -157,9 +148,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     });
-    console.log('in if - 129', JSON.stringify(arr));
     this.displayMenuList = JSON.parse(JSON.stringify(arr));
-    console.log('131   ', this.displayMenuList);
   }
 
   onSidebarToggle() {

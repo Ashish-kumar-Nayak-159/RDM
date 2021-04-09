@@ -50,12 +50,11 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
       }
     });
     if (flag) {
-      this.toasterService.showError(flag, 'Save Device Hierarchy');
+      this.toasterService.showError(flag, 'Save Role');
       return;
     }
     this.saveRoleAPILoading = true;
     this.applicationData.roles.forEach(item => {
-      console.log('here');
       delete item.isEditable;
     });
     const obj = {
@@ -65,13 +64,13 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
     };
     this.apiSubscriptions.push(this.applicationService.updateAppRoles(obj).subscribe(
       (response: any) => {
-        this.toasterService.showSuccess(response.message, 'Save Device Hierarchy');
+        this.toasterService.showSuccess(response.message, 'Save Role');
         this.saveRoleAPILoading = false;
         this.forceUpdate = false;
         this.isAppSetingsEditable = false;
         this.applicationService.refreshAppData.emit();
       }, (error) => {
-        this.toasterService.showError(error.message, 'Save Device Hierarchy');
+        this.toasterService.showError(error.message, 'Save Role');
         this.saveRoleAPILoading = false;
       }
     ));

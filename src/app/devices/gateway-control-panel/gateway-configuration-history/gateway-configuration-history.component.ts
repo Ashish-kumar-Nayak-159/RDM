@@ -65,7 +65,6 @@ export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
   }
 
   searchConfigHistory(filterObj) {
-    console.log(filterObj);
     this.isFilterSelected = true;
     this.isConfigHistoryLoading = true;
     const obj = {...filterObj};

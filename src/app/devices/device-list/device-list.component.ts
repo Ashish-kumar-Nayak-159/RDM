@@ -65,7 +65,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
 
   //  this.commonService.setFlag(true);
     this.subscriptions.push(this.route.paramMap.subscribe(async params => {
-      console.log('paramsssssssss', params);
       this.currentOffset = 0;
       this.currentLimit = 20;
       this.insideScrollFunFlag = false;
@@ -81,7 +80,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
         localStorage.removeItem(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
       }
       this.devicesList = [];
-      console.log('81111111    ', params);
       if (params.get('listName')) {
         const listName = params.get('listName');
 
@@ -93,7 +91,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
           this.componentState = CONSTANTS.IP_GATEWAY;
           this.pageType = 'Gateway';
         } else if (listName.toLowerCase() === 'devices') {
-          console.log('9111111');
           this.componentState = CONSTANTS.IP_DEVICE;
           this.pageType = 'Device';
         }
@@ -137,7 +134,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
 
       this.subscriptions.push(this.route.queryParamMap.subscribe(
         params1 => {
-          console.log('parmas111111111111', params1);
           this.devicesList = [];
           if (params1.get('connection_state')) {
             this.deviceFilterObj.status = params1.get('connection_state');
@@ -217,10 +213,10 @@ export class DeviceListComponent implements OnInit, OnDestroy {
             protocol.display = false;
           }
           if (this.componentState === CONSTANTS.IP_GATEWAY && protocol.name.includes('IP')) {
-            protocol.name = protocol.name.replace('Device', 'Gateway');
+            protocol.name = protocol.name.replace('Asset', 'Gateway');
             const list = [];
             protocol.connectivity.forEach(item => {
-              list.push(item.replace('Device', 'Gateway'));
+              list.push(item.replace('Asset', 'Gateway'));
             });
             protocol.connectivity = JSON.parse(JSON.stringify(list));
           }
@@ -230,14 +226,11 @@ export class DeviceListComponent implements OnInit, OnDestroy {
           }
         }
       });
-      console.log(JSON.stringify(data));
       this.protocolList = JSON.parse(JSON.stringify(data));
 
 
     }));
-    console.log(this.deviceFilterObj);
     setTimeout(() => {
-    console.log($('#table-wrapper'));
     $('#table-wrapper').on('scroll', () => {
       const element = document.getElementById('table-wrapper');
       if (parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0))
@@ -284,14 +277,12 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.originalGateways.forEach(device => {
       let flag = false;
       Object.keys(hierarchyObj).forEach(hierarchyKey => {
-        console.log(device.hierarchy[hierarchyKey] , '&&', device.hierarchy[hierarchyKey], '===', hierarchyObj[hierarchyKey]);
         if (device.hierarchy[hierarchyKey] && device.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
           flag = true;
         } else {
           flag = false;
         }
       });
-      console.log(flag);
       if (flag) {
         arr.push(device);
       }
@@ -317,14 +308,11 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   getTileName() {
     let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {
-      console.log(item.system_name, '------', this.componentState);
       if (item.system_name === this.componentState + 's') {
         selectedItem = item.showAccordion;
-        console.log(selectedItem);
       }
     });
     this.tileData = selectedItem;
-    console.log(this.tileData);
     this.currentLimit = Number(this.tileData[2]?.value) || 20;
   }
 
@@ -363,10 +351,8 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     obj.hierarchy = { App: this.contextApp.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
       obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
-      console.log(obj.hierarchy);
     });
     obj.hierarchy = JSON.stringify(obj.hierarchy);
-    console.log(obj.hierarchy);
     }
     delete obj.gatewayArr;
     delete obj.hierarchyString;
@@ -380,8 +366,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         if (response.data) {
-
-          console.log(this.devicesList);
           response.data.forEach(item => {
             if (!item.display_name) {
               item.display_name = item.device_id;
@@ -419,7 +403,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     // this.devicesList = [];
     this.deviceFilterObj = undefined;
     this.deviceFilterObj = JSON.parse(JSON.stringify(this.originalDeviceFilterObj));
-    console.log(this.deviceFilterObj);
     this.hierarchyArr = [];
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
@@ -443,8 +426,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   }
 
   onTableFunctionCall(obj) {
-    console.log(obj);
-    console.log(this.pageType);
     if (this.gatewayId) {
       this.router.navigate(['applications', this.contextApp.app,
       'nonIPDevices',

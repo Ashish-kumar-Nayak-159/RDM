@@ -61,7 +61,6 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes) {
-    // const arr = JSON.parse(JSON.stringify(this.telemetryData));
     if (changes.telemetryObj && this.chart) {
       if (this.chartConfig.noOfDataPointsForTrend > 0) {
         if (changes.telemetryObj) {
@@ -80,22 +79,15 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
           this.telemetryData.splice(0, 1);
         }
       }
-      console.log(this.telemetryData);
-      // this.telemetryData.reverse();
       this.chart.data = this.telemetryData;
-      // this.chart.validateData();
     }
-    // this.telemetryData = JSON.parse(JSON.stringify([]));
-    // this.telemetryData = JSON.parse(JSON.stringify(arr));
 
   }
 
   plotChart() {
     this.zone.runOutsideAngular(() => {
-      console.log(document.getElementById(this.chartConfig.chartId));
       const chart = am4core.create(this.chartConfig.chartId, am4charts.XYChart);
       chart.paddingRight = 20;
-      // const data = [];
       this.telemetryObj['TMD'] = Number(this.telemetryObj['TMD']);
       this.telemetryObj['TMS'] = Number(this.telemetryObj['TMS']);
       if (this.telemetryObj['TMD'] < 1) {
@@ -106,11 +98,9 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
       }
       this.telemetryObj.message_date = new Date(this.telemetryObj.message_date);
       this.telemetryData.push(this.telemetryObj);
-      // console.log(this.telemetryData);
       chart.data = this.telemetryData;
       chart.dateFormatter.inputDateFormat = 'x';
       chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
-     // chart.durationFormatter.durationFormat = "hh:ii:ss";
       const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
       if (this.chartStartdate) {
         const date = new Date(0);
@@ -124,56 +114,15 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
       }
       dateAxis.renderer.grid.template.location = 0.5;
       dateAxis.renderer.labels.template.location = 0.5;
-      // const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-      // valueAxis.tooltip.disabled = true;
-      // valueAxis.renderer.minWidth = 35;
       this.createValueAxis(chart, 0);
       this.createValueAxis(chart, 1);
       chart.logo.disabled = true;
-      // chart.legend = new am4charts.Legend();
       chart.cursor = new am4charts.XYCursor();
-      // chart.legend.itemContainers.template.togglable = false;
       dateAxis.dateFormatter = new am4core.DateFormatter();
       dateAxis.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
       chart.zoomOutButton.disabled = true;
-      // if (this.device) {
-      // chart.exporting.menu = new am4core.ExportMenu();
-      // chart.exporting.getFormatOptions('xlsx').useLocale = false;
-      // chart.exporting.getFormatOptions('pdf').pageOrientation = 'landscape';
-      // chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date.toString() +
-      // ' to ' + chart.data[chart.data.length - 1].message_date.toString();
-      // this.chartDataFields = {
-      //   message_date: 'Timestamp'
-      // };
-      // this.chartConfig.y1AxisProps.forEach(prop => {
-      //   const units = prop.value.json_model[prop.id].units;
-      //   this.chartDataFields[prop.id] = prop.name + (units ? (' (' + units + ')') : '');
-      // });
-      // this.chartConfig.y2AxisProps.forEach(prop => {
-      //   const units = prop.value.json_model[prop.id].units;
-      //   this.chartDataFields[prop.id] = prop.name + (units ? (' (' + units + ')') : '');
-      // });
-      // chart.exporting.dataFields = this.chartDataFields;
-      // chart.zoomOutButton.disabled = true;
-      // // const list = new am4core.List<string>();
-      // // list.insertIndex(0, 'message_date');
-      // // console.log(obj);// console.log(obj);
-      // // chart.exporting.dateFields = list;
-      // chart.exporting.getFormatOptions('pdf').addURL = false;
-      // chart.exporting.dateFormat = 'dd-MM-yyyy hh:mm:ss A a';
-      // console.log(this.selectedAlert);
-      // if (this.selectedAlert) {
-      //   chart.exporting.filePrefix = this.selectedAlert.device_id + '_Alert_' + this.selectedAlert.local_created_date;
-      // } else {
-      //   chart.exporting.filePrefix = this.device.device_id + '_' + chart.data[0].message_date.toString()
-      //   + '_' + chart.data[chart.data.length - 1].message_date.toString();
-      // }
-      // }
-      // chart.scrollbarX = new am4core.Scrollbar();
-      // chart.scrollbarX.parent = chart.bottomAxesContainer;
       chart.preloader.disabled = false;
       this.chart = chart;
-      console.log('chartrttt', this.chart);
     });
   }
 
@@ -231,19 +180,10 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
     }
     const arr = axis === 0 ? this.chartConfig.y1AxisProps : this.chartConfig.y2AxisProps;
     arr.forEach((prop) => {
-      console.log('aaaaaaa   ', prop.id);
       const series = chart.series.push(new am4charts.LineSeries());
-      // series.dataFields.dateX = 'message_date';
-      // this.propertyList.forEach(propObj => {
-      //   if (propObj.json_key === prop.id) {
-      //     series.units = propObj.json_model[propObj.json_key].units;
-      //   }
-      //   console.log('unitssss    ', series.units);
-      // });
       series.units = prop.value.json_model[prop.id].units;
       series.name =  prop.name;
       series.propKey = prop.id;
-      // series.stroke = this.commonService.getRandomColor();
       series.yAxis = valueYAxis;
       series.dataFields.dateX = 'message_date';
       series.dataFields.valueY =  prop.id;
@@ -252,40 +192,20 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
         series.stroke = am4core.color(prop.color);
       }
       series.strokeWidth = 2;
-      // series.connect = false;
-     // series.tensionX = 0.77;
       series.strokeOpacity = 1;
       series.legendSettings.labelText = '{name} ({units})';
       series.fillOpacity = this.chartConfig.widgetType.includes('Area') ? 0.3 : 0;
       series.tooltipText = 'Date: {dateX} \n {name} ({units}): [bold]{valueY}[/]';
 
       const bullet = series.bullets.push(new am4charts.CircleBullet());
-      // bullet.stroke = 'darkgreen';
       bullet.strokeWidth = 2;
       bullet.circle.radius = 1.5;
-
-      // // const scrollbarX = new am4charts.XYChartScrollbar();
-      // // scrollbarX.series.push(series);
-      // chart.scrollbarX = scrollbarX;
-      // // Make bullets grow on hover
-      // const bullet = series.bullets.push(new am4charts.CircleBullet());
-      // bullet.circle.strokeWidth = 2;
-      // bullet.circle.radius = 4;
-      // bullet.circle.fill = am4core.color('#fff');
-
-      // const bullethover = bullet.states.create('hover');
-      // bullethover.properties.scale = 1.3;
       this.seriesArr.push(series);
     });
     valueYAxis.tooltip.disabled = true;
-    // valueYAxis.renderer.labels.template.fillOpacity = this.chartType.includes('Area') ? 0.2 : 0;
     valueYAxis.renderer.labels.template.fill = am4core.color('gray');
     valueYAxis.renderer.opposite = (axis === 1);
     valueYAxis.renderer.minWidth = 35;
-    // if (this.y1AxisProps.length === 1 && this.y2AxisProps.length === 0) {
-    //   const propObj = this.propertyList.filter(prop => prop.json_key === this.y1AxisProps[0])[0];
-    //   this.createThresholdSeries(valueYAxis, propObj);
-    // }
   }
 
   getPropertyName(key) {

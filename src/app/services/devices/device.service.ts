@@ -98,11 +98,9 @@ export class DeviceService {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
       if (filterObj[key]) {
-        console.log(key, '=====', filterObj[key]);
         params = params.set(key, filterObj[key]);
       }
     });
-    console.log(params);
     return this.http.get(this.url + AppUrls.GET_DEVICE_FILTER_LIST, { params });
   }
 
@@ -113,7 +111,6 @@ export class DeviceService {
         params = params.set(key, filterObj[key]);
       }
     });
-    console.log(params);
     return this.http.get(this.url + String.Format(AppUrls.GET_NON_IP_DEVICE, encodeURIComponent(filterObj.app)), { params });
   }
 
@@ -498,8 +495,6 @@ export class DeviceService {
   }
 
   callDeviceMethod(obj, app) {
-    console.log(app);
-    console.log(obj);
     return this.http.post(this.url + String.Format(AppUrls.CALL_DEVICE_METHOD, encodeURIComponent(app)), obj);
   }
 
@@ -537,7 +532,6 @@ export class DeviceService {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
       if (filterObj[key]) {
-        console.log(filterObj[key]);
         params = params.set(key, filterObj[key]);
       }
     });
@@ -572,7 +566,6 @@ export class DeviceService {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
       if (filterObj[key]) {
-        console.log(filterObj[key]);
         params = params.set(key, filterObj[key]);
       }
     });
@@ -594,7 +587,6 @@ export class DeviceService {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
       if (filterObj[key]) {
-        console.log(filterObj[key]);
         params = params.set(key, filterObj[key]);
       }
     });

@@ -19,13 +19,7 @@
           </select>
           <input  type="text" *ngIf="index === 0"  defaultValue="{{contextApp.app}}" disabled class="form-control form-control-sm mx-1 my-1">
           </ng-container>
-          <!-- <select class="form-control form-control-sm mx-2 my-1" id="deviceCategory" [(ngModel)]="filterObj.device"
-          name="deviceCategory" [compareWith]="compareFn">
-          <option [ngValue]="undefined">Select Asset</option>
-          <option [ngValue]="device" *ngFor="let device of devices">
-            {{device?.display_name ? device?.display_name: device.device_id}}
-          </option>
-          </select> -->
+
           <angular2-multiselect [data]="devices" id="deviceSelect"
             [(ngModel)]="filterObj.deviceArr" name="devices" [settings]="{
               text: 'Select Asset',
@@ -40,14 +34,7 @@
             (onSelect)="onAssetSelection()"
             (onDeSelectAll)="onAssetDeselect()">
           </angular2-multiselect>
-          <!-- <select class="form-control form-control-sm mx-2 my-1" id="deviceCategory1" [(ngModel)]="filterObj.non_ip_device"
-            name="deviceCategory1" *ngIf="filterObj.device?.cloud_connectivity.includes('Gateway')"
-            >
-            <option [ngValue]="undefined">Select Asset</option>
-            <option [ngValue]="device" *ngFor="let device of nonIPDevices">
-              {{device?.display_name ? device?.display_name: device.device_id}}
-            </option>
-          </select> -->
+
           <button type="button" *ngIf="pageType === 'live'" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="getLatestAlerts()"><i
             class="fa fa-search fa-sm"></i></button>
         </div>

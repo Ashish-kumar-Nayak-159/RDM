@@ -97,9 +97,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   onNumberChange(event, type) {
-    console.log(event);
     if (Number(event.target.value) % 1 !== 0) {
-      this.toasterService.showError('Decimal values are not allowed.', 'View Report');
+      this.toasterService.showError('Decimal values are not allowed.', 'View History');
       if (type === 'aggregation') {
         this.historyFilter.aggregation_minutes = Math.floor(Number(event.target.value));
       } else {
@@ -110,7 +109,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   getThingsModelProperties() {
     // this.properties = {};
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
         name: this.device.tags.device_type
@@ -137,8 +136,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   toggleThreshold() {
-    console.log(this.showThreshold);
-    // this.showThreshold = !this.showThreshold;
     this.chartService.toggleThresholdEvent.emit(this.showThreshold);
   }
 
@@ -161,7 +158,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   onSingleDateChange(event) {
-    console.log(event);
     this.historyFilter.from_date = moment(event.value).utc();
     this.historyFilter.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
     if (this.dtInput1) {
@@ -198,13 +194,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
       this.selectedWidgets.forEach(widget => {
         widget.value.y1axis.forEach(prop => {
-          console.log(prop);
           if (this.propList.indexOf(prop) === -1) {
             this.propList.push(prop);
           }
         });
         widget.value.y2axis.forEach(prop => {
-          console.log(prop);
           if (this.propList.indexOf(prop) === -1) {
             this.propList.push(prop);
           }
@@ -252,10 +246,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
       delete obj.dateOption;
       obj.order_dir = 'ASC';
-      // delete obj.y1AxisProperty;
-      // delete obj.y2AxisProperty;
-      // delete obj.xAxisProps;
-      console.log(obj);
       let method;
       if (!obj.to_date || !obj.from_date) {
         this.toasterService.showError('Date Selection is required', 'View Trend Analysis');
@@ -279,7 +269,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           obj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
           const records = this.commonService.calculateEstimatedRecords(this.historyFilter.sampling_time * 60, obj.from_date, obj.to_date);
           if (records > 500 ) {
-            this.loadingMessage = 'Loading approximate' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+            this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
           }
           method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
         }
@@ -296,7 +286,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           const records = this.commonService.calculateEstimatedRecords
           (this.historyFilter.aggregation_minutes * 60, obj.from_date, obj.to_date);
           if (records > 500 ) {
-            this.loadingMessage = 'Loading approximate' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+            this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
           }
           method = this.deviceService.getDeviceTelemetry(obj);
         }
@@ -310,8 +300,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
           obj['all_message_props'] = true;
         } else {
           let message_props = '';
-          console.log('heree');
-          console.log(this.propList);
           this.propList.forEach((prop, index) => message_props = message_props + prop +
           (this.propList[index + 1] ? ',' : ''));
           obj['message_props'] = message_props;
@@ -320,7 +308,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           ((this.device.metadata?.measurement_frequency?.average ? this.device.metadata.measurement_frequency.average : 5),
           obj.from_date, obj.to_date);
         if (records > 500 ) {
-          this.loadingMessage = 'Loading approximate' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+          this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
         }
         method = this.deviceService.getDeviceTelemetry(obj);
       }
@@ -404,7 +392,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   addChart() {
-    console.log(this.y1AxisProps, '====', this.y2AxisProp);
     this.plotChart(null).then((chart: any) => {
       if (!chart.y1axis) {
         chart.y1axis = [];
@@ -412,7 +399,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (!chart.y2axis) {
         chart.y2axis = [];
       }
-      console.log('add chart ', chart, this.layoutJson);
       this.layoutJson.push(chart);
     }, (err) => {
       this.toasterService.showError(err, 'Load Chart');
@@ -423,7 +409,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       $('.overlay').show();
       this.chartCount++;
-      console.log(layoutJson);
       const y1Axis = layoutJson.y1axis;
       const y2Axis = layoutJson.y2axis;
       const data = [];
@@ -439,7 +424,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
         );
         data.splice(data.length, 0, obj);
       });
-      console.log(data);
       let componentRef;
       if (layoutJson.chartType === 'LineChart' || layoutJson.chartType === 'AreaChart') {
         componentRef = this.factoryResolver.resolveComponentFactory(LiveChartComponent).create(this.injector);
@@ -540,7 +524,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
   y2Deselect(e){
-    console.log('e ', e);
     if (e === [] || e.length === 0) {
       this.y2AxisProp = [];
     }

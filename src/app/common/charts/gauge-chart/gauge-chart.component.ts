@@ -44,11 +44,9 @@ export class GaugeChartComponent implements OnInit, OnChanges {
     chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
     if (this.chartConfig.startAngle !== undefined && this.chartConfig.startAngle !== null ) {
       chart.startAngle = -(this.chartConfig.startAngle + 180) % 360;
-      console.log(chart.startAngle);
     }
     if (this.chartConfig.endAngle !== undefined && this.chartConfig.endAngle !== null) {
       chart.endAngle = -(this.chartConfig.endAngle + 180) % 360;
-      console.log(chart.endAngle);
     }
     chart.innerRadius = am4core.percent(70);
     chart.logo.disabled = true;
@@ -83,26 +81,11 @@ export class GaugeChartComponent implements OnInit, OnChanges {
     range2.axisFill.fillOpacity = 1;
     range2.axisFill.fill = am4core.color(prop.high_color || '#fe5959');
     range2.axisFill.zIndex = -1;
-
-    // const label = chart.radarContainer.createChild(am4core.Label);
-    // label.isMeasured = false;
-    // label.fontSize = '0.8em';
-    // label.x = am4core.percent(50);
-    // label.horizontalCenter = 'middle';
-    // label.verticalCenter = 'bottom';
-    // // label.dataItem = data;
-    // label.marginTop = 2;
-    // label.text = this.value ? this.value : '0';
-    // label.text = "{score}";
-
     const hand = chart.hands.push(new am4charts.ClockHand());
     hand.radius = am4core.percent(97);
     hand.value = Number(this.telemetryObj[prop.property.json_key] || '0');
-    // console.log(this.id, '=====', hand.value);
     this.chart.splice(index, 0, chart);
     this.hand.splice(index, 0, hand);
-    // this.label = label;
-
     });
   }
 

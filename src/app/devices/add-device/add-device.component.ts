@@ -68,7 +68,6 @@ export class AddDeviceComponent implements OnInit {
       app: this.contextApp.app,
       model_type: type
     };
-    console.log(obj);
     this.subscriptions.push(this.deviceTypeService.getThingsModelsList(obj).subscribe(
       (response: any) => {
         if (response && response.data) {
@@ -124,7 +123,6 @@ export class AddDeviceComponent implements OnInit {
   }
 
   onCreateDevice() {
-    console.log(this.deviceDetail);
     if (!this.deviceDetail.device_id || !this.deviceDetail.tags.device_manager ||
       !this.deviceDetail.tags.protocol || !this.deviceDetail.tags.cloud_connectivity  ) {
         this.toasterService.showError('Please fill all the details',
@@ -142,25 +140,23 @@ export class AddDeviceComponent implements OnInit {
       return;
     }
     if (this.componentState === CONSTANTS.NON_IP_DEVICE && this.deviceDetail.device_id === this.deviceDetail.gateway_id) {
-      this.toasterService.showError('Gateway and Device name can not be the same.',
+      this.toasterService.showError('Gateway and Asset name can not be the same.',
       'Create ' + this.componentState);
       return;
     }
     if (this.contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Device ID' &&
     !CONSTANTS.ONLY_NOS_AND_CHARS.test(this.deviceDetail.tags.partition_key)) {
       this.toasterService.showError('Partition Key only contains numbers and characters.',
-      'Create Device');
+      'Create ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : ''));
       return;
     }
     if (this.contextApp.metadata?.partition?.telemetry?.partition_strategy === 'Device ID') {
       this.deviceDetail.tags.partition_key = this.deviceDetail.device_id;
     }
     this.isCreateDeviceAPILoading = true;
-    console.log(this.deviceDetail);
     this.deviceDetail.tags.hierarchy_json = { App: this.contextApp.app};
     Object.keys(this.addDeviceConfigureHierarchy).forEach((key) => {
       this.deviceDetail.tags.hierarchy_json[this.contextApp.hierarchy.levels[key]] = this.addDeviceConfigureHierarchy[key];
-      console.log(this.deviceDetail.tags.hierarchy_json);
     });
     const modelObj = this.deviceTypes.filter(type => type.name === this.deviceDetail.tags.device_type)[0];
     if (!this.deviceDetail.metadata) {
@@ -200,14 +196,14 @@ export class AddDeviceComponent implements OnInit {
         } else {
         this.isCreateDeviceAPILoading = false;
         this.toasterService.showSuccess(response.message,
-          'Create ' + this.componentState);
+          'Create ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : ''));
         this.getDeviceEmit.emit();
         this.onCloseCreateDeviceModal();
       }
       }, error => {
         this.isCreateDeviceAPILoading = false;
         this.toasterService.showError(error.message,
-          'Create ' + this.componentState);
+          'Create ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : ''));
         // this.onCloseCreateDeviceModal();
       }
     ));

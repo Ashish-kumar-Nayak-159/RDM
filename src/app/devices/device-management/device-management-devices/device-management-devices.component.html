@@ -138,15 +138,15 @@ style="z-index: 1200;">
       <div class="modal-body">
         <div *ngIf="!deviceTwin; else packageTemplate"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></div>
         <ng-template #packageTemplate>
-          <ng-container *ngIf="devicePackages.length === 0"> No Packages are added for this device. Please add it first.</ng-container>
+          <ng-container *ngIf="devicePackages.length === 0"> No Packages are added for this asset. Please add it first.</ng-container>
           <ng-container *ngIf="currentDeviceApps.length > 0">
-            <h6> Currently, this device is having below packages installed.</h6>
+            <h6> Currently, this asset is having below packages installed.</h6>
             <ul>
               <li  *ngFor="let app of currentDeviceApps"> {{app}} - {{deviceTwin.twin_properties.reported.installed_packages[app]}}</li>
             </ul>
           </ng-container>
           <ng-container *ngIf="currentDeviceApps.length === 0">
-              <h6>No packages are installed in this device.</h6>
+              <h6>No packages are installed in this asset.</h6>
           </ng-container>
           <hr/>
           <ng-container *ngIf="devicePackages.length > 0">

@@ -44,9 +44,7 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
       async params => {
         if (this.contextApp?.configuration?.gateway_control_panel_menu.length > 0) {
           this.menuItems = this.contextApp.configuration.gateway_control_panel_menu;
-          console.log(this.menuItems);
         }
-        console.log(this.menuItems);
         if (params.get('deviceId')) {
           if (params.get('listName')) {
             const listName = params.get('listName');
@@ -104,11 +102,8 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
   getTileName() {
     let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {
-      // console.log(item.system_name, '------', this.componentState);
-      // console.log(this.pageType);
       if (item.system_name === this.componentState + 's') {
         selectedItem = item.showAccordion;
-        console.log(selectedItem);
       }
     });
     this.tileData = selectedItem[1];
@@ -122,7 +117,6 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
       $('.container-fluid').addClass('sb-toggle');
     }
     if ($(window).width() > 768 && !$('.sidebar').hasClass('toggled')) {
-      console.log('min js 16');
       $('.container-fluid').removeClass('sb-collapse');
       $('.container-fluid').removeClass('sb-toggle');
       $('.container-fluid').addClass('sb-notoggle');

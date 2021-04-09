@@ -97,7 +97,6 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
       this.isMessageValidated = 'valid';
       JSON.parse(this.c2dMessageData.message);
     } catch (e) {
-      console.log('in catch');
       this.isMessageValidated = 'invalid';
     }
   }
@@ -137,7 +136,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
           this.timerObj = this.dhms(time);
         }, 1000);
       }, error => {
-        this.sendMessageResponse = error.message && error.message.includes('Queue') ? 'Device Queue size exceeded.' : 'Not Successful';
+        this.sendMessageResponse = error.message && error.message.includes('Queue') ? 'Asset Queue size exceeded.' : 'Not Successful';
         this.sendMessageStatus = 'error';
         this.toasterService.showError(error.message, 'Send C2D Message');
         this.isSendC2DMessageAPILoading = false;

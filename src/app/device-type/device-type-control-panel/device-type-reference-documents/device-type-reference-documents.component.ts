@@ -186,7 +186,6 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
   }
 
   async onDocumentFileSelected(files: FileList): Promise<void> {
-    console.log(files);
     const arr = files?.item(0)?.name?.split('.') || [];
     if (!files?.item(0).type.includes(this.documentObj.type?.toLowerCase())) {
       this.toasterService.showError('This file is not valid for selected document type', 'Select File');
@@ -222,7 +221,6 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
   }
 
   onSaveDocumentObj() {
-    console.log(JSON.stringify(this.documentObj));
     if (!this.documentObj.name || (this.documentObj.name.trim()).length === 0 || !this.documentObj.type || !this.documentObj.metadata) {
       this.toasterService.showError('Please select all the data', ((this.documentObj.id ? 'Edit' : 'Add') + ' Document'));
       return;

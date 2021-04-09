@@ -55,7 +55,6 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
       this.appName = params.get('applicationId');
       this.pageType = params.get('listName');
       this.pageType = this.pageType.slice(0, -1);
-      console.log(this.message);
       if (this.type === 'feedback') {
         this.loadMessageDetail(this.message, false);
         this.isFilterSelected = true;
@@ -72,7 +71,6 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
     this.isFilterSelected = true;
     this.isC2dMsgsLoading = true;
     const obj = {...filterObj};
-    console.log(filterObj);
     delete obj.displayOptions;
     const now = moment().utc();
     if (filterObj.dateOption === '5 mins') {
@@ -102,7 +100,6 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
       return;
     }
     delete obj.dateOption;
-    console.log(obj);
     obj.app = this.device.app;
     this.c2dMsgFilter = filterObj;
     this.previousMsgFilter = JSON.parse(JSON.stringify(filterObj));
@@ -146,7 +143,6 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
   }
 
   loadMessageDetail(message, openModalFlag) {
-    console.log(message);
     if (!openModalFlag) {
       this.isC2dMsgsLoading = true;
     }

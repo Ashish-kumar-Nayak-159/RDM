@@ -45,7 +45,6 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
 
     this.subscriptions.push(this.route.paramMap.subscribe(
       async params => {
-        console.log(this.menuItems);
         if (params.get('deviceId')) {
           if (params.get('listName')) {
             const listName = params.get('listName');
@@ -59,14 +58,12 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
             if (this.componentState === CONSTANTS.IP_DEVICE) {
               if (this.contextApp?.configuration?.device_control_panel_menu.length > 0) {
                 this.menuItems = this.contextApp.configuration.device_control_panel_menu;
-                console.log(this.menuItems);
               } else {
                 this.menuItems = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
               }
             } else if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
               if (this.contextApp?.configuration?.legacy_device_control_panel_menu.length > 0) {
                 this.menuItems = this.contextApp.configuration.legacy_device_control_panel_menu;
-                console.log(this.menuItems);
               } else {
                 this.menuItems = CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
               }
@@ -125,11 +122,8 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
   getTileName() {
     let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {
-      // console.log(item.system_name, '------', this.componentState);
-      // console.log(this.pageType);
       if (item.system_name === this.componentState + 's') {
         selectedItem = item.showAccordion;
-        console.log(selectedItem);
       }
     });
     this.tileData = selectedItem[1];
@@ -147,7 +141,6 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
       $('.container-fluid').addClass('sb-toggle');
     }
     if ($(window).width() > 768 && !$('.sidebar').hasClass('toggled')) {
-      console.log('min js 16');
       $('.container-fluid').removeClass('sb-collapse');
       $('.container-fluid').removeClass('sb-toggle');
       $('.container-fluid').addClass('sb-notoggle');
@@ -248,7 +241,6 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
             user_name: 'NA'
           };
         }
-        console.log(this.device);
         this.commonService.breadcrumbEvent.emit({
           type: 'append',
           data: [

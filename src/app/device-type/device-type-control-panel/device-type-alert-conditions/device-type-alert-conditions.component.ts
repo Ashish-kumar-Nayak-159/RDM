@@ -104,18 +104,12 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
               alert.visualization_widgets = [];
             }
             alert.reference_documents.forEach(refDoc => {
-              console.log('here');
               this.documents.forEach(doc => {
-                console.log(typeof doc.id, ' ===', typeof refDoc);
-                console.log(doc.id, ' ===', refDoc);
-                console.log(doc.id === refDoc.toString());
                 if (doc.id.toString() === refDoc.toString()) {
                   arr.push(doc.name);
-                  console.log(arr);
                 }
               });
             });
-            console.log(alert.message, '====', arr);
             alert.reference_documents = arr;
 
           });
@@ -191,7 +185,6 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
 
 
   onSaveRecommendations() {
-    console.log(JSON.stringify(this.alertObj));
   }
 
   removeDocument(index) {
@@ -230,7 +223,6 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
         }
       }
     }
-    console.log(this.alertObj);
   }
 
   // tslint:disable-next-line: no-unnecessary-initializer
@@ -272,7 +264,6 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
   }
 
   onUpdateAlertConditions() {
-    console.log(this.alertObj);
     this.isCreateAlertConditionLoading = true;
     let arr = [];
     arr = this.alertObj.recommendations;
@@ -291,12 +282,8 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
     this.alertObj.reference_documents = [];
     this.documents.forEach(doc => {
     arr.forEach((widget, index) => {
-      console.log(doc.name, '===', widget);
       if (doc.name === widget) {
-        console.log(this.alertObj.reference_documents.length);
-        console.log(doc.id);
         this.alertObj.reference_documents.push((doc.id.toString()));
-        console.log(JSON.stringify(this.alertObj.reference_documents));
       }
     });
     });

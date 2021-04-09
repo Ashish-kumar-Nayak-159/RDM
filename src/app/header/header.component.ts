@@ -93,7 +93,6 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     if (changes && this.userData) {
       // this.appName = changes.appName.currentValue;

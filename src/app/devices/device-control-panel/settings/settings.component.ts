@@ -113,15 +113,14 @@ export class SettingsComponent implements OnInit, OnDestroy {
       app : this.contextApp.app,
       metadata: this.device.metadata
     };
-    console.log(obj);
     this.subscriptions.push(this.deviceService.updateDeviceMetadata(obj, this.contextApp.app, this.device.device_id).subscribe(
       (response: any) => {
-        this.toasterService.showSuccess(response.message, 'Update Device Settings');
+        this.toasterService.showSuccess(response.message, 'Update Asset Settings');
         this.getDeviceData();
         this.isSettingsEditable = false;
         this.isSaveSettingAPILoading = false;
       }, error => {
-        this.toasterService.showError(error.message, 'Update Device Settings');
+        this.toasterService.showError(error.message, 'Update Asset Settings');
         this.isSaveSettingAPILoading = false;
       }
     ));

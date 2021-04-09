@@ -51,7 +51,6 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
 
   searchLifeCycleEvents(filterObj) {
     this.avrgMTBF = undefined;
-    console.log(filterObj);
     this.isFilterSelected = true;
     this.isLifeCycleEventsLoading = true;
     const obj = {...filterObj};
@@ -102,7 +101,6 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
               arr.push(mttrObj);
             }
           });
-          console.log(arr);
           let avrg = 0;
           arr.forEach((item, index) => {
             const nextItem1 = arr[index + 1];

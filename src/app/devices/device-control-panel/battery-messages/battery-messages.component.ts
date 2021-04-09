@@ -70,7 +70,6 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
   }
 
   searchBatteryMessage(filterObj) {
-    console.log(filterObj);
     this.isFilterSelected = true;
     this.isBatteryMessageLoading = true;
     const obj = {...filterObj};

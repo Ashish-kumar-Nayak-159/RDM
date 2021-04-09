@@ -72,7 +72,6 @@ export class GatewayCachedAlertsComponent implements OnInit, OnDestroy {
   }
 
   searchAlerts(filterObj) {
-    console.log(filterObj);
     this.isFilterSelected = true;
     this.isAlertLoading = true;
     const obj = {...filterObj};

@@ -40,17 +40,10 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
   }
 
   onAddNewHierarchyObj() {
-    // this.applicationData.hierarchy.splice(this.applicationData.hierarchy.length, 0, {
-    //   name: null,
-    //   level: this.applicationData.hierarchy.length,
-    //   tags: [],
-    //   isEditable: true
-    // });
     if (this.applicationData.hierarchy.levels[this.applicationData.hierarchy.levels.length - 1]) {
       this.applicationData.hierarchy.levels.splice(this.applicationData.hierarchy.levels.length, 0, undefined);
     }
     this.editableHierarchy[this.applicationData.hierarchy.levels.length] = true;
-    console.log(this.editableHierarchy);
     this.selectedHierarchyItem = undefined;
     this.addedTagItem = undefined;
   }
@@ -67,11 +60,8 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
     }
   }
 
-
-
   onHierarchyConfigurationChange(i) {
     Object.keys(this.configureHierarchy).forEach(key => {
-      console.log(key, i);
       if (key > i) {
         delete this.configureHierarchy[key];
       }
@@ -83,9 +73,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
     });
     let nextHierarchy = this.applicationData.hierarchy.tags;
     Object.keys(this.configureHierarchy).forEach((_, index) => {
-      console.log(this.configureHierarchy[index + 1]);
       nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
-      console.log(nextHierarchy);
     });
     if (nextHierarchy) {
       this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
@@ -121,12 +109,9 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
       this.hierarchyArr[this.selectedHierarchyItem].length, 0, this.addedTagItem);
     let obj = this.applicationData.hierarchy.tags;
     Object.keys(this.configureHierarchy).forEach((_, index) => {
-      console.log(this.configureHierarchy[index + 1]);
       obj = obj[this.configureHierarchy[index + 1]];
-      console.log(obj);
     });
     obj[this.addedTagItem] = {};
-    console.log(JSON.stringify(this.applicationData.hierarchy.tags));
     this.addedTagItem = undefined;
   }
 
@@ -134,17 +119,10 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
     this.hierarchyArr[this.selectedHierarchyItem].splice(index, 1);
     let obj = this.applicationData.hierarchy.tags;
     Object.keys(this.configureHierarchy).forEach((_, i) => {
-      console.log(this.configureHierarchy[i + 1]);
       obj = obj[this.configureHierarchy[i + 1]];
-      console.log(obj);
     });
     const keys = Object.keys(obj);
     delete obj[keys[index]];
-    console.log(JSON.stringify(this.applicationData.hierarchy.tags));
-    // const i = this.applicationData.hierarchy.findIndex(item => item.name === this.selectedHierarchyItem.name);
-    // this.applicationData.hierarchy.splice(i, 1);
-    // this.applicationData.hierarchy.splice(i, 0, this.selectedHierarchyItem);
-    // this.forceUpdate = true;
   }
 
   trackByFn(index: any, item: any) {
@@ -167,7 +145,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
       });
     });
     if (flag) {
-      this.toasterService.showError(flag, 'Save Device Hierarchy');
+      this.toasterService.showError(flag, 'Save Asset Hierarchy');
       return;
     }
 
@@ -188,7 +166,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
     this.saveHierarchyAPILoading = true;
     this.apiSubscriptions.push(this.applicationService.updateAppHierarchy(obj).subscribe(
       (response: any) => {
-        this.toasterService.showSuccess(response.message, 'Save Device Hierarchy');
+        this.toasterService.showSuccess(response.message, 'Save Asset Hierarchy');
         this.selectedHierarchyItem = undefined;
         this.addedTagItem = undefined;
         if (this.forceUpdate) {
@@ -198,7 +176,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
         this.isAppSetingsEditable = false;
         this.applicationService.refreshAppData.emit();
       }, (error) => {
-        this.toasterService.showError(error.message, 'Save Device Hierarchy');
+        this.toasterService.showError(error.message, 'Save Asset Hierarchy');
         this.saveHierarchyAPILoading = false;
       }
     ));
@@ -211,16 +189,12 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
   }
 
   deleteHierarchy() {
-    // this.onSaveRoles(true);
     this.forceUpdate = true;
-    console.log(this.selectedHierarchy);
     const index = this.applicationData.hierarchy.levels.findIndex(level => level === this.selectedHierarchy);
     const tags = this.removeHierarchyIndexTags(this.applicationData.hierarchy.tags, index);
-    console.log(tags);
     this.applicationData.hierarchy.tags = JSON.parse(JSON.stringify(tags));
     this.applicationData.hierarchy.levels.splice(index, 1);
     this.onCloseModal();
-    // this.onSaveHierarchyTags();
   }
 
   removeHierarchyIndexTags(tags, index) {

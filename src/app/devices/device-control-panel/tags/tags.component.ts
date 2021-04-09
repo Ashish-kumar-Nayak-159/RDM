@@ -60,7 +60,6 @@ export class TagsComponent implements OnInit, OnDestroy {
     private ngZone: NgZone ) { }
 
   async ngOnInit(): Promise<void> {
-    console.log(JSON.stringify(this.device));
     const device = JSON.parse(JSON.stringify(this.device));
     this.device = undefined;
     this.device = JSON.parse(JSON.stringify(device));
@@ -68,21 +67,8 @@ export class TagsComponent implements OnInit, OnDestroy {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.subscriptions.push(this.route.paramMap.subscribe(async params => {
       this.pageType = params.get('listName').toLowerCase();
-      console.log(this.device);
-      // this.device.tags = {};
       this.getDeviceData();
     }));
-    // this.device.hierarchyString = '';
-    // console.log(this.device);
-    // let keys = [];
-    // if (this.device.hierarchy) {
-    //   keys = Object.keys(this.device.hierarchy);
-    //   keys.forEach((key, index) => {
-    //     this.device.hierarchyString += this.device.hierarchy[key] + ( keys[index + 1] ? ' / ' : '');
-    //   });
-    // }
-    // await this.getDeviceTypeDetail();
-
   }
 
   getDeviceData() {
@@ -111,7 +97,6 @@ export class TagsComponent implements OnInit, OnDestroy {
           this.device.hierarchy = this.device.tags.hierarchy_json;
           // this.device.tags.hierarchy = this.device.tags.hierarchy_json;
         }
-        console.log('111111', JSON.stringify(this.device));
         this.device.hierarchyString = '';
         const keys = Object.keys(this.device.hierarchy);
         this.contextApp.hierarchy.levels.forEach((key, index) => {
@@ -120,7 +105,6 @@ export class TagsComponent implements OnInit, OnDestroy {
         this.device.tags.device_users_arr = this.device.tags.device_manager.split(',');
         this.centerLatitude = this.device.tags.latitude || 23.0225;
         this.centerLongitude = this.device.tags.longitude || 72.5714;
-        console.log(this.device);
         await this.getDeviceTypeDetail();
         this.getDeviceDetail();
       }
@@ -140,7 +124,6 @@ export class TagsComponent implements OnInit, OnDestroy {
             this.deviceType = response;
             this.deviceType.name = obj.name;
             this.deviceType.app = obj.app;
-            console.log(this.deviceType);
             if (this.deviceType?.tags?.reserved_tags) {
             this.deviceType?.tags?.reserved_tags.forEach(tag => {
               if (tag.defaultValue && !this.device.tags[tag.key] ) {
@@ -148,7 +131,6 @@ export class TagsComponent implements OnInit, OnDestroy {
               }
             });
             }
-            console.log(this.device.tags);
           }
           resolve();
         }
@@ -203,7 +185,6 @@ export class TagsComponent implements OnInit, OnDestroy {
 
   onCustomTagInputChange() {
     let count = 0;
-    console.log(this.device.tags.custom_tags);
     this.deviceCustomTags.forEach((tag, index) => {
       if (tag.name && tag.value && !this.deviceCustomTags[index + 1]) {
         count += 1;
@@ -219,7 +200,6 @@ export class TagsComponent implements OnInit, OnDestroy {
   }
 
   openModal(id) {
-    console.log(this.device.tags);
     $('#' + id).modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -253,7 +233,6 @@ export class TagsComponent implements OnInit, OnDestroy {
 
   checkKeyDuplicacy(tagObj, tagIndex) {
     const index = this.deviceCustomTags.findIndex(tag => tag.name === tagObj.name);
-    console.log(index);
     if (index !== -1 && index !== tagIndex) {
       this.toasterService.showError('Tag with same name is already exists. Please use different name', 'Set Tags');
       tagObj.name = undefined;
@@ -328,7 +307,6 @@ export class TagsComponent implements OnInit, OnDestroy {
       device_id: this.device.device_id,
       tags: this.device.tags
     };
-    console.log(obj);
     let methodToCall;
     if (this.pageType === 'nonipdevices') {
       methodToCall = this.deviceService.updateNonIPDeviceTags(obj, this.contextApp.app);
@@ -354,7 +332,6 @@ export class TagsComponent implements OnInit, OnDestroy {
 
   public mapReadyHandler(map: google.maps.Map): void {
     map.addListener('click', (e: google.maps.MouseEvent) => {
-      console.log(e.latLng.lat(), e.latLng.lng());
       this.centerLatitude = e.latLng.lat();
       this.centerLongitude = e.latLng.lng();
       this.device.tags.latitude = e.latLng.lat();
@@ -388,14 +365,12 @@ export class TagsComponent implements OnInit, OnDestroy {
 
   onModalClose(id) {
     this.device = JSON.parse(JSON.stringify(this.originalDevice));
-    console.log(this.device);
     this.changeLocationOption = undefined;
     $('#' + id).modal('hide');
   }
 
   ngOnDestroy() {
     this.device = JSON.parse(JSON.stringify(this.originalDevice));
-    console.log('on destroy', this.device);
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 

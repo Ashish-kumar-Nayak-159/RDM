@@ -78,7 +78,6 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
           value: item
         });
       });
-      console.log(this.dropdownPropList);
     }
     this.isHistoryAPILoading = true;
     this.getLayout();
@@ -87,7 +86,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
 
   getThingsModelProperties() {
     // this.properties = {};
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
         name: this.deviceType.name
@@ -105,7 +104,6 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.isLayout && !changes.isLayout.currentValue && this.contextApp.app) {
-      console.log('aaaa', changes);
       this.getLayout();
     }
     this.clear();
@@ -134,7 +132,6 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
     arr = [];
     this.y2AxisProps.forEach(prop => arr.push(prop.value.json_key));
     this.y2AxisProps = [...arr];
-    console.log(this.y1AxisProps, '====', this.y2AxisProps);
     const obj = {
       title: this.chartTitle,
       chartType: this.selectedChartType,
@@ -159,7 +156,6 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
     return new Promise<void>((resolve) => {
       $('.overlay').show();
       this.chartCount++;
-      console.log(layoutJson);
       const y1Axis = layoutJson.y1axis;
       const y2Axis = layoutJson.y2axis;
       const data = [];
@@ -199,7 +195,6 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
         });
         data.splice(0, 0, obj);
       }
-      console.log(data);
       let componentRef;
       if (layoutJson.chartType === 'LineChart' || layoutJson.chartType === 'AreaChart') {
         componentRef = this.factoryResolver.resolveComponentFactory(LiveChartComponent).create(this.injector);
@@ -257,7 +252,6 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
   removeWidget(chartId) {
     for (let i = 0; i < this.layoutJson.length; i++) {
       if (this.layoutJson[i].chart_Id === chartId) {
-        console.log('DOM not found', this.layoutJson[i]);
         this.layoutJson.splice(i, 1);
         $('#' + chartId + '_' + chartId).remove();
       }
@@ -267,7 +261,6 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
   saveLayout() {
     for (let i = 0; i < this.layoutJson.length; i++) {
       if (document.getElementById(this.layoutJson[i].chart_Id) == null) {
-        console.log('DOM not found', this.layoutJson[i]);
         this.layoutJson.splice(i, 1);
       }
     }

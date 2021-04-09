@@ -102,7 +102,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.contextApp.configuration.main_menu.forEach(item => {
       if (item.page === 'Dashboard') {
         selectedItem = item.showAccordion;
-        console.log(selectedItem);
       }
     });
     this.tileData = selectedItem;
@@ -117,15 +116,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   loadFromCache() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION);
     if (item && item.device) {
-      console.log('aaaaaaaaaaaaaaa     ', item.device.hierarchy);
       this.originalFilter = JSON.parse(JSON.stringify(item));
       this.filterObj = JSON.parse(JSON.stringify(item));
       if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
       this.contextApp.hierarchy.levels.forEach((level, index) => {
         if (index !== 0) {
-        // console.log( this.filterObj.hierarchy);
-        // console.log( this.filterObj.hierarchy[level]);
-        console.log(item);
         this.configureHierarchy[index] = item.device.hierarchy[level];
         if (item.device.hierarchy[level]) {
           this.onChangeOfHierarchy(index, true);
@@ -133,14 +128,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
       }
-
-      console.log(this.filterObj);
       this.onFilterSelection(this.filterObj);
     }
   }
 
   async onSwitchValueChange(event) {
-    console.log(event);
     $('#overlay').show();
     // alert(this.signalRModeValue);
     this.c2dResponseMessage = [];
@@ -171,16 +163,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       expire_in_min: 1,
       message_id: this.filterObj.device.device_id + '_' + (moment().utc()).unix()
     };
-    console.log(obj);
     this.apiSubscriptions.push(this.deviceService.callDeviceMethod(obj, this.contextApp.app).subscribe(
       (response: any) => {
         if (response?.device_response?.configuration) {
-        // this.c2dResponseMessage.push({
-        //   timestamp: this.commonService.convertEpochToDate(obj.timestamp),
-        //   message: 'Sent ' + (this.signalRModeValue ? 'Normal' : 'Turbo')  + ' mode command with '
-        //   + obj.message.frequency_in_sec + ' second telemetry frequency to ' +
-        // (this.filterObj.device.gateway_id ? 'IoT Gateway' : 'Device')
-        // });
         this.chartService.clearDashboardTelemetryList.emit([]);
         const arr = [];
         this.telemetryData = JSON.parse(JSON.stringify([]));
@@ -191,9 +176,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.c2dLoadingMessage = undefined;
         this.telemetryInterval = undefined;
       }, error => {
-        // this.c2dResponseMessage.push({
-        //   timestamp: this.commonService.convertEpochToDate(obj.timestamp),
-        //   message: error.message});
         this.toasterService.showError(error.message, 'Change Telemetry Mode');
         this.signalRModeValue = !this.signalRModeValue;
         this.isC2dAPILoading = false;
@@ -259,14 +241,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         if (this.configureHierarchy[key]) {
           hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
         }
-        console.log(hierarchyObj);
       });
       if (Object.keys(hierarchyObj).length === 1) {
         this.devices = JSON.parse(JSON.stringify(this.originalDevices));
       } else {
       const arr = [];
       this.devices = [];
-      console.log(this.originalDevices);
       this.originalDevices.forEach(device => {
         let flag1 = false;
         Object.keys(hierarchyObj).forEach(hierarchyKey => {
@@ -280,7 +260,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           arr.push(device);
         }
       });
-      console.log('devicessss  ', arr);
       this.devices = JSON.parse(JSON.stringify(arr));
       }
       if (this.devices?.length === 1) {
@@ -304,7 +283,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getDevices(hierarchy) {
-    return new Promise((resolve1) => {
+    return new Promise<void>((resolve1) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
@@ -349,7 +328,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getLiveWidgets(deviceType) {
-    return new Promise((resolve1) => {
+    return new Promise<void>((resolve1) => {
     const params = {
       app: this.contextApp.app,
       name: deviceType
@@ -373,7 +352,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   async onFilterSelection(filterObj) {
-    console.log('3722222222');
     this.c2dResponseMessage = [];
     $('#overlay').hide();
     clearInterval(this.c2dResponseInterval);
@@ -382,7 +360,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.commonService.setItemInLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION, filterObj);
     const obj = JSON.parse(JSON.stringify(filterObj));
-    console.log(obj);
     let device_type: any;
     if (obj.device) {
       obj.device_id = obj.device.device_id;
@@ -412,10 +389,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     obj.app = this.contextApp.app;
     obj.partition_key = this.filterObj.device.partition_key;
     delete obj.deviceArr;
-
-    // this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key +
-    // (this.propertyList[index + 1] ? ',' : ''));
-    // obj.message_props = message_props;
     this.isFilterSelected = true;
     if (environment.app === 'SopanCMS') {
       await this.getMidNightHours(obj);
@@ -451,15 +424,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
               Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Hours')])),
               Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Minutes')])));
           }
-      //    this.getTimeDifference(this.telemetryObj['Running Hours'], this.telemetryObj['Running Minutes']);
-
-
-          // this.propertyList.forEach(prop => {
-          //   if (prop.data_type === 'Number') {
-          //     this.telemetryObj[prop.json_key] = Number(this.telemetryObj[prop.json_key]);
-          //   }
-          // });
-          console.log(JSON.stringify(this.telemetryObj));
           this.lastReportedTelemetryValues = JSON.parse(JSON.stringify(this.telemetryObj));
           this.telemetryData = [];
           this.telemetryData.push(response.message);
@@ -474,16 +438,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
     telemetryObj.date = this.commonService.convertUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
     telemetryObj.message_date = this.commonService.convertUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
-    // if (!this.midNightHour) {
-    //   this.midNightHour = telemetryObj[this.getPropertyKey('Running Hours')] ?
-    // Math.floor(Number(telemetryObj[this.getPropertyKey('Running Hours')])) : 0;
-    //   this.midNightMinute = telemetryObj[this.getPropertyKey('Running Minutes')]
-    // ? Math.floor(Number(telemetryObj[this.getPropertyKey('Running Minutes')])) : 0;
-    // }
-    // const hours = telemetryObj[this    .getPropertyKey('Running Hours')].toString().split(':');
-    // telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
-    // telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
-    // console.log(telemetryObj);
     if (environment.app === 'SopanCMS') {
       this.getTimeDifference(
         Math.floor(Number(telemetryObj[this.getPropertyKey('Running Hours')])),
@@ -492,8 +446,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.lastReportedTelemetryValues = telemetryObj;
     if (this.telemetryObj) {
       const interval = Math.round((moment(telemetryObj.message_date).diff(moment(this.telemetryObj.message_date), 'milliseconds')) / 1000);
-      // this.telemetryInterval !== undefined && interval !== undefined &&
-        // Math.abs(this.telemetryInterval - interval) >= this.frequencyDiffInterval && !this.isTelemetryModeAPICalled
       const diff1 = Math.abs(interval - this.normalModelInterval);
       const diff2 = Math.abs(interval - this.turboModeInterval);
       if (interval !== undefined && !this.isTelemetryModeAPICalled &&
@@ -512,8 +464,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.telemetryData.push(this.lastReportedTelemetryValues);
     this.telemetryData = JSON.parse(JSON.stringify(this.telemetryData));
-    // console.log(this.telemetryData);
-    // this.cdr.detectChanges()
   }
 
 
@@ -522,7 +472,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getMidNightHours(filterObj) {
-    return new Promise((resolve1) => {
+    return new Promise<void>((resolve1) => {
       const obj = {...filterObj};
       obj.order_dir = 'ASC';
       let message_props = '';
@@ -546,17 +496,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getTimeDifference(hour, minute) {
-    console.log(this.midNightHour, '===', this.midNightMinute);
-    console.log(hour, '===', minute);
     const midNightTime = (this.midNightHour * 60) + this.midNightMinute;
     const currentTime = (Number(hour) * 60) + Number(minute);
-    console.log(midNightTime);
-    console.log(currentTime);
     const diff = currentTime - midNightTime;
     this.currentHour = Math.floor((diff / 60));
-    console.log(this.currentHour);
     this.currentMinute = diff - (this.currentHour * 60);
-    console.log(this.currentMinute);
   }
 
   onAssetSelection() {
@@ -574,7 +518,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getThingsModelProperties(deviceType) {
-    return new Promise((resolve1) => {
+    return new Promise<void>((resolve1) => {
       if (this.propertyList.length === 0) {
         const obj = {
           app: this.contextApp.app,

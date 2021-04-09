@@ -14,7 +14,6 @@ export class ConfirmModalComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log(this.bodyMessage);
   }
 
   onCloseModal(type) {

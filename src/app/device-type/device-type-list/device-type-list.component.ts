@@ -96,7 +96,7 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
           valueclass: ''
         },
         {
-          name: 'No of Devices inherited',
+          name: 'No of Assets inherited',
           key: 'inherited_device_count',
           type: 'text',
           headerClass: 'w-5',
@@ -135,7 +135,6 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
         name = item.showAccordion;
       }
     });
-    console.log(name);
     this.tileData = name;
   }
 
@@ -177,7 +176,6 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
     this.thingsModel.tags = {};
     } else {
       this.thingsModel = JSON.parse(JSON.stringify(obj));
-      console.log(obj);
       this.thingsModel.metadata = {
         model_type: this.thingsModel.model_type,
         image: this.thingsModel.model_image
@@ -187,7 +185,6 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
         cloud_connectivity: this.thingsModel.cloud_connectivity
       };
     }
-    console.log(this.thingsModel);
     await this.getProtocolList();
     if (this.thingsModel.id) {
       this.getConnectivityData();
@@ -220,10 +217,10 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
           protocol.display = false;
         }
         if (this.thingsModel.metadata.model_type === CONSTANTS.IP_GATEWAY && protocol.name.includes('IP')) {
-          protocol.name = protocol.name.replace('Device', 'Gateway');
+          protocol.name = protocol.name.replace('Asset', 'Gateway');
           const list = [];
           protocol.connectivity.forEach(item => {
-            list.push(item.replace('Device', 'Gateway'));
+            list.push(item.replace('Asset', 'Gateway'));
           });
           protocol.connectivity = JSON.parse(JSON.stringify(list));
         }
@@ -233,7 +230,6 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
         }
       }
     });
-    console.log(JSON.stringify(data));
     this.protocolList = JSON.parse(JSON.stringify(data));
 
   }
@@ -243,7 +239,6 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
     if (this.thingsModel && this.thingsModel.tags && this.thingsModel.tags.protocol) {
       this.connectivityList = (this.protocolList.filter(protocol => protocol.name === this.thingsModel.tags.protocol)[0]).connectivity;
     }
-    console.log(JSON.stringify(this.connectivityList));
   }
 
   createThingsModel() {
@@ -262,7 +257,6 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
       max: 60,
       average: 30
     };
-    console.log(this.thingsModel);
     this.isCreateThingsModelAPILoading = true;
     const method = this.thingsModel.id ? this.deviceTypeService.updateThingsModel(this.thingsModel, this.contextApp.app) :
     this.deviceTypeService.createThingsModel(this.thingsModel, this.contextApp.app);

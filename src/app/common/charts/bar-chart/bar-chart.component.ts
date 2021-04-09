@@ -78,7 +78,6 @@ export class BarChartComponent implements OnInit, OnDestroy {
       delete obj.aggregation_start_time;
       data.splice(data.length, 0, obj);
     });
-    console.log(data);
     chart.data = data;
     this.loaderMessage = 'Loading Chart. Wait...';
     // Create axes
@@ -141,13 +140,8 @@ export class BarChartComponent implements OnInit, OnDestroy {
       });
     });
     chart.exporting.dataFields = this.chartDataFields;
-    // const list = new am4core.List<string>();
-    // list.insertIndex(0, 'message_date');
-    // console.log(list);
-    // chart.exporting.dateFields = list;
     chart.exporting.getFormatOptions('pdf').addURL = false;
     chart.exporting.dateFormat = 'dd-MM-yyyy HH:mm:ss.nnn';
-    console.log(this.selectedAlert);
     if (this.selectedAlert) {
       chart.exporting.filePrefix = this.selectedAlert.device_id + '_Alert_' + this.selectedAlert.local_created_date;
     } else {
@@ -172,7 +166,6 @@ export class BarChartComponent implements OnInit, OnDestroy {
 
   toggleProperty(prop) {
     this.seriesArr.forEach((item, index) => {
-      console.log(item.isActive);
       const seriesColumn = this.chart.series.getIndex(index);
       if (prop === item.propKey) {
 
@@ -206,7 +199,6 @@ export class BarChartComponent implements OnInit, OnDestroy {
     if (show) {
       let shownItem;
       let propObj;
-      // console.log(ev.target.dataItem.dataContext);
       let count = 0;
       this.seriesArr.forEach((item, index) => {
         const seriesColumn = this.chart.series.getIndex(index);
@@ -226,7 +218,6 @@ export class BarChartComponent implements OnInit, OnDestroy {
       } else {
         this.seriesArr.forEach(series => series.xAxis.axisRanges.clear());
       }
-      console.log(this.seriesArr);
     } else {
       this.seriesArr.forEach(series => series.xAxis.axisRanges.clear());
     }
@@ -247,7 +238,6 @@ export class BarChartComponent implements OnInit, OnDestroy {
         if (propObj.json_key === prop) {
           series.units = propObj.json_model[propObj.json_key].units;
         }
-        console.log('unitssss    ', series.units);
       });
       series.name = this.getPropertyName(prop);
       series.propKey = prop;

@@ -107,7 +107,6 @@ export class DeviceTypeControlPanelComponent implements OnInit, OnDestroy {
       $('.container-fluid').addClass('sb-toggle');
     }
     if ($(window).width() > 768 && !$('.sidebar').hasClass('toggled')) {
-      console.log('min js 16');
       $('.container-fluid').removeClass('sb-collapse');
       $('.container-fluid').removeClass('sb-toggle');
       $('.container-fluid').addClass('sb-notoggle');

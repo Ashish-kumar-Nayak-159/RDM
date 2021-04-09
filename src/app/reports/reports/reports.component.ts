@@ -122,7 +122,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
       }
     });
     this.tileData = selectedItem;
-    console.log('aaaaaaaaaa', this.tileData);
     this.currentLimit = Number(this.tileData[1]?.value) || 100;
   }
 
@@ -222,7 +221,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   onAssetSelection() {
-    console.log(this.filterObj);
     if (this.filterObj?.deviceArr.length > 0) {
       this.filterObj.device = this.filterObj.deviceArr[0];
     } else {
@@ -245,7 +243,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   onNumberChange(event, type) {
-    console.log(event);
     if (Number(event.target.value) % 1 !== 0) {
       this.toasterService.showError('Decimal values are not allowed.', 'View Report');
       if (type === 'aggregation') {
@@ -287,11 +284,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   onDateChange(event) {
-    console.log(event);
     this.filterObj.from_date = moment(event.value[0]).second(0).utc();
     this.filterObj.to_date = moment(event.value[1]).second(0).utc();
-    console.log(this.filterObj.from_date.unix());
-    console.log(this.filterObj.to_date.unix());
     if (this.dtInput2) {
       this.dtInput2.value = null;
     }
@@ -308,7 +302,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   onSingleDateChange(event) {
-    console.log(event);
     this.filterObj.from_date = moment(event.value).utc();
     this.filterObj.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
     if (this.dtInput1) {
@@ -358,7 +351,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   onScrollFn() {
     setTimeout(() => {
-      console.log($('#table-wrapper'));
       $('#table-wrapper').on('scroll', () => {
         const element = document.getElementById('table-wrapper');
         if (parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0)) >=
@@ -514,7 +506,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         obj['message_props'] = message_props;
         const records = this.commonService.calculateEstimatedRecords(filterObj.sampling_time * 60, obj.from_date, obj.to_date);
         if (records > 500 ) {
-          this.loadingMessage = 'Loading approximate' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+          this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
         }
         method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
       }
@@ -531,7 +523,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         const records = this.commonService.calculateEstimatedRecords
           (filterObj.aggregation_minutes * 60, obj.from_date, obj.to_date);
         if (records > 500 ) {
-          this.loadingMessage = 'Loading approximate' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+          this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
         }
         method = this.deviceService.getDeviceTelemetry(obj);
       }
@@ -553,7 +545,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
           ((device?.measurement_frequency?.average ? device.measurement_frequency.average : 5),
           filterObj.from_date, filterObj.to_date);
       if (records > 500 ) {
-        this.loadingMessage = 'Loading approximate' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+        this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
       }
       method = this.deviceService.getDeviceTelemetry(obj);
     }
@@ -568,7 +560,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
           this.telemetry = [...this.telemetry, ...response.data];
           this.isFilterOpen = false;
           if (response.data.length === this.currentLimit) {
-            console.log('hereeeeee');
             this.insideScrollFunFlag = false;
           } else {
               this.insideScrollFunFlag = true;
@@ -675,7 +666,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
       }
       ws = XLSX.utils.json_to_sheet(data);
 
-      console.log(ws);
 
 
       const colA = XLSX.utils.decode_col('B'); // timestamp is in first column
@@ -684,8 +674,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
       // get worksheet range
       const range = XLSX.utils.decode_range(ws['!ref']);
-      console.log(range.s.r);
-      console.log(range.e.r);
       for (let i = range.s.r + 1; i <= range.e.r; ++i) {
         /* find the data cell (range.s.r + 1 skips the header row of the worksheet) */
         const ref = XLSX.utils.encode_cell({ r: i, c: colA });
@@ -700,7 +688,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
         /* assign the `.z` number format */
         ws[ref].z = fmt;
       }
-      console.log(ws);
       // width of timestamp col
       const wscols = [
         { wch: 10 }

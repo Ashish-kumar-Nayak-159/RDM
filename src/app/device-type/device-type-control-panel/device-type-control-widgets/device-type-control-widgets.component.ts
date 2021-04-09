@@ -30,7 +30,6 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.deviceType);
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.mode = 'code';
     this.editorOptions.statusBar = false;
@@ -98,7 +97,6 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
   }
 
   onPropertyChecked(event) {
-    console.log(event);
     if (this.controlWidget?.metadata?.communication_technique === 'Direct Method') {
       const propObj = event;
       if (this.controlWidget.json[propObj.method_name]) {
@@ -122,7 +120,6 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
     }
     }
     this.editor.set(this.controlWidget.json);
-    console.log(this.controlWidget);
   }
 
   selectAllProps(event) {

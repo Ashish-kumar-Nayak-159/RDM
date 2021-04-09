@@ -25,7 +25,7 @@
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="openModal('changeLocationModal')" [class.disabled]="isUpdateAPILoading">
           <i class="fa fa-fw fa-map-marker"></i>
-          <span class="text-secondary delete-row">Change Device Location</span></a>
+          <span class="text-secondary delete-row">Change {{tileData.value}} Location</span></a>
       </li>
       <li class="nav-item" *ngIf="isUpdateAPILoading">
       <a class="nav-link" href="javascript:void(0)">
@@ -215,7 +215,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Change Device Location</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Change {{tileData.value}} Location</h5>
         <button type="button" class="close"  aria-label="Close" (click)="onModalClose('changeLocationModal')">
           <span aria-hidden="true">&times;</span>
         </button>

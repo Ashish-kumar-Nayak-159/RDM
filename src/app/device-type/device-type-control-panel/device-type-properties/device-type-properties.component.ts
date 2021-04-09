@@ -49,13 +49,11 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
 
   onMonacoInit(editorInstance) {
     setTimeout(() => {
-      console.log(editorInstance);
       editorInstance.layout();
     }, 50);
   }
 
   ngOnChanges(changes): void {
-    console.log(changes);
     if (changes.type) {
       this.type = changes.type.currentValue;
       this.setUpPropertyData();
@@ -164,7 +162,6 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
 
 
   onPropertyChecked(event) {
-    console.log(event);
     const propObj = event;
     const index = this.selectedProperty.dependent_properties.findIndex(prop => prop.json_key === propObj.json_key);
     if (index > -1) {
@@ -250,7 +247,6 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       return;
     }
     const index = this.properties[this.type].findIndex(prop => prop.json_key === this.propertyObj.json_key);
-    console.log(index);
     if (index > -1) {
       this.toasterService.showError('Property with same name already exist.', 'Add Property');
       return;
@@ -289,19 +285,15 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       if (this.type.includes('read')) {
         this.properties.writable_properties = this.properties.writable_properties ? this.properties.writable_properties : [];
         const windex = this.properties.writable_properties.findIndex(prop => prop.json_key === this.propertyObj.json_key);
-        console.log(windex);
         delete this.propertyObj.isAdd;
         if (windex === -1) {
-          console.log('before' , this.properties.writable_properties.length);
           this.properties.writable_properties.push(this.propertyObj);
-          console.log('after' , this.properties.writable_properties.length);
         }
       }
       if (this.type.includes('writ')) {
         this.properties.readable_properties = this.properties.readable_properties ? this.properties.readable_properties : [];
         const windex = this.properties.readable_properties.findIndex(prop => prop.json_key === this.propertyObj.json_key);
         delete this.propertyObj.isAdd;
-        console.log(windex);
         if (windex === -1) {
           this.properties.readable_properties.push(this.propertyObj);
         }
@@ -358,7 +350,6 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
   }
 
   updatePropertyData() {
-    console.log(this.code);
     const index = this.properties[this.type].findIndex(prop => prop.json_key === this.selectedProperty.json_key);
     this.properties[this.type].splice(index, 1);
     if (this.propertyObj?.edit) {
@@ -411,7 +402,6 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       $('#addPropertiesModal').modal({ backdrop: 'static', keyboard: false, show: true });
       this.propertyObj = JSON.parse(JSON.stringify(obj.data));
       this.propertyObj.edit = true;
-      console.log(this.propertyObj);
       setTimeout(() => {
       this.editor.set(this.propertyObj.json_model);
       }, 1000);

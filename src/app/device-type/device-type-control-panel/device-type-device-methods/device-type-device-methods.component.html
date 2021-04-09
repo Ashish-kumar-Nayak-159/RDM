@@ -10,7 +10,7 @@
         <a class="nav-link" href="javascript:void(0)"  (click)="openaddDeviceMethodModal()"
         [class.disabled]="deviceType.freezed">
           <i class="fa fa-fw fa-plus"></i>
-          <span class="text-secondary">Add Device Method</span></a>
+          <span class="text-secondary">Add Direct Method</span></a>
       </li>
     </ul>
     <div class="pull-right mt-2"  *ngIf="deviceType.freezed">
@@ -37,7 +37,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content" *ngIf="deviceMethodObj">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{deviceMethodObj.edit ? 'Edit' : 'Add'}} Device Method</h5>
+        <h5 class="modal-title" id="exampleModalLabel">{{deviceMethodObj.edit ? 'Edit' : 'Add'}} Direct Method</h5>
         <button type="button" class="close" [disabled]="isCreateDeviceMethodLoading" (click)="onCloseThingsDeviceMethodModal()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -136,7 +136,7 @@
           </button>
         </div>
         <div class="modal-body">
-          Are you sure you want to remove this device method?
+          Are you sure you want to remove this direct method?
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" (click)="deleteDeviceMethod()">

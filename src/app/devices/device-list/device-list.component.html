@@ -51,25 +51,6 @@
             (onSelect)="onAssetSelection()"
             (onDeSelectAll)="onAssetDeselect()">
           </angular2-multiselect>
-          <!-- <select class="form-control form-control-sm mx-1 my-1" id="gateway_id" *ngIf="componentState === constantData.NON_IP_DEVICE"
-          [(ngModel)]="deviceFilterObj.gateway_id" name="gateway_id">
-            <option [ngValue]="undefined">Reporting Via GW</option>
-            <option [ngValue]="gateway.device_id" *ngFor="let gateway of gateways">
-              {{gateway.display_name ? gateway.display_name : gateway.device_id}}
-            </option>
-          </select> -->
-          <!-- <input type="email" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="Device Status"
-          [(ngModel)]="deviceFilterObj.status" name="status"> -->
-          <!-- <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
-          [(ngModel)]="deviceFilterObj.status" name="status">
-          <option [ngValue]="undefined">Status</option>
-          <option [ngValue]="'enabled'">Enabled</option>
-          <option [ngValue]="'disabled'">Disabled</option>
-          <option [ngValue]="'connected'">Online</option>
-          <option [ngValue]="'disconnected'">Offline</option>
-          </select> -->
-          <!-- <input type="email" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="Connection State"
-          [(ngModel)]="deviceFilterObj.connection_state" name="connection_state"> -->
 
           <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="currentOffset = 0;devicesList = [];searchDevices()" [disabled]="isDeviceListLoading" title="Search"><i class="fa fa-search fa-sm"></i></button>
           <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="clearFilter()" title="Clear Filters">
@@ -111,10 +92,6 @@
               <td>
                 <ng-container *ngFor="let user of device.device_manager_users; let last = last">{{user}}
                 <ng-container *ngIf="!last"><br/></ng-container></ng-container>
-                <!-- <ul >
-                  <li *ngFor="let user of device.device_manager_users">{{user}}</li>
-                </ul> -->
-                <!-- <span *ngIf="device.device_manager_users?.length === 1">{{device.device_manager_users[0]}}</span> -->
               </td>
               <td>{{device.hierarchyString}}</td>
               <td *ngIf="componentState === constantData.NON_IP_DEVICE">
@@ -151,11 +128,7 @@
       <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;searchDevices();"
       title="Load More Records...">Load More...</a>
     </span>
-   <!-- <app-common-table *ngIf="tableConfig" [tableData]="devicesList" [tableConfig]="tableConfig" [isTableFilterSelected]="isFilterSelected"
-   [isTableDataLoading]="isDeviceListLoading" (viewMessageEvent)="onTableFunctionCall($event)"></app-common-table> -->
+
   </div>
 </div>
 </div>
-
-<!-- <app-add-device *ngIf="openModal" [gateways]="gateways" (getDeviceEmit)="devicesList = [];searchDevices()"
-[componentState]="componentState" [tileData]="tileData" (cancelModal)="onCreateDeviceCancel()"></app-add-device> -->

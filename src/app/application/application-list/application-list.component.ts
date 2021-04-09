@@ -36,7 +36,6 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
   ) { }
 
   ngOnInit(): void {
-    console.log('in app component');
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.commonService.breadcrumbEvent.emit({
       type: 'replace',
@@ -47,7 +46,6 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
         }
       ]
     });
-    console.log(typeof this.userData);
     this.searchApplications();
   }
 
@@ -104,14 +102,12 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
 
   openEditAppModal(app) {
     this.appModalType = 'Edit';
-    console.log(app);
     app.id = app.app;
     this.applicationDetail = JSON.parse(JSON.stringify(app));
     $('#createAppModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
   openViewIconModal(app) {
-    console.log(app);
     this.applicationDetail = app;
     if (!this.applicationDetail.customer) {
       this.applicationDetail.customer = {};
@@ -165,45 +161,9 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
     this.appModalType = undefined;
   }
 
-  // async upload(file, folderName) {
-  //   const containerName = environment.blobContainerName;
-  //   const pipeline = newPipeline(new AnonymousCredential(), {
-  //   retryOptions: { maxTries: 2 }, // Retry options
-  //   keepAliveOptions: {
-  //       // Keep alive is enabled by default, disable keep alive by setting false
-  //       enable: false
-  //   }
-  //   });
-  //   const blobServiceClient = new BlobServiceClient(environment.blobURL +  environment.blobKey, pipeline);
-  //   const containerClient = blobServiceClient.getContainerClient(containerName);
-  //   if (!containerClient.exists()){
-  //   console.log('the container does not exit');
-  //   await containerClient.create();
-  //   }
-  //   console.log(folderName + '/' + file.name);
-  //   const client = containerClient.getBlockBlobClient(file.name);
-  //   const response = await client.uploadBrowserData(file, {
-  //         blockSize: 4 * 1024 * 1024, // 4MB block size
-  //         concurrency: 20, // 20 concurrency
-  //         onProgress: (ev) => console.log(ev),
-  //         blobHTTPHeaders : { blobContentType: file.type }
-  //         });
-  //   console.log(response._response);
-  //   if (response._response.status === 201) {
-  //     return {
-  //       url: environment.blobURL + '/' + containerName + '/' + folderName + '/' + file.name,
-  //       name: file.name
-  //     };
-  //   }
-  //   this.toasterService.showError('Error in uploading file', 'Upload file');
-  //   return null;
-  // }
-
 
   async createApp() {
-    console.log(this.applicationDetail);
-    console.log(!this.applicationDetail.metadata.app_specific_schema && !this.applicationDetail.metadata.app_specific_db &&
-      !this.applicationDetail.metadata.app_telemetry_specific_schema);
+
     if (!this.applicationDetail.metadata.app_specific_schema && !this.applicationDetail.metadata.app_specific_db &&
       !this.applicationDetail.metadata.app_telemetry_specific_schema) {
       this.applicationDetail.metadata.partition.telemetry.partition_strategy = 'Device ID';
@@ -238,7 +198,6 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
         model_control_panel_menu: [], gateway_control_panel_menu: [], legacy_device_control_panel_menu: []};
       const methodToCall = this.appModalType === 'Create' ? this.applicationService.createApp(this.applicationDetail) :
       (this.appModalType === 'Edit' ? this.applicationService.updateApp(this.applicationDetail) : null);
-      console.log(this.applicationDetail);
       if (methodToCall) {
         this.apiSubscriptions.push(methodToCall.subscribe(
           (response: any) => {

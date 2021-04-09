@@ -49,7 +49,6 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
   }
 
   searchLifeCycleEvents(filterObj) {
-    console.log(filterObj);
     this.isFilterSelected = true;
     this.isLifeCycleEventsLoading = true;
     const obj = {...filterObj};

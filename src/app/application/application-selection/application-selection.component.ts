@@ -37,7 +37,6 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    console.log(this.userData.apps);
   }
 
   async redirectToApp(app, index) {
@@ -71,10 +70,8 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       if ( i === 0 && menuObj.visible) {
         i++;
         let url = menuObj.url;
-        console.log(url);
         if (menuObj.url?.includes(':appName')) {
           url = menuObj.url.replace(':appName', this.applicationData.app);
-          console.log('after url   ', url);
           this.router.navigateByUrl(url);
         }
       }
@@ -129,7 +126,6 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
           this.applicationData.user = app.user;
           if (!this.applicationData.configuration.main_menu || this.applicationData.configuration.main_menu.length === 0) {
             this.applicationData.configuration.main_menu = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
-            console.log(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
           }
           if (!this.applicationData.configuration.device_control_panel_menu ||
             this.applicationData.configuration.device_control_panel_menu.length === 0) {
@@ -146,7 +142,6 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
             this.applicationData.configuration.model_control_panel_menu =
             JSON.parse(JSON.stringify(CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST));
           }
-          console.log(JSON.stringify(this.applicationData));
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
           resolve();
       }));

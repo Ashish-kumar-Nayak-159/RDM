@@ -137,9 +137,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
     };
     this.subscriptions.push(this.deviceService.syncDeviceCache(this.deviceType.app, obj)
     .subscribe((response: any) => {
-      this.toasterService.showSuccess(response.message, 'Sync Device Data');
+      this.toasterService.showSuccess(response.message, 'Sync Asset Data');
     }, error => {
-      this.toasterService.showError(error.message, 'Sync Device Data');
+      this.toasterService.showError(error.message, 'Sync Asset Data');
     }));
   }
 

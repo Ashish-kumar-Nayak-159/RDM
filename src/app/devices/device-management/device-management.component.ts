@@ -17,7 +17,6 @@ export class DeviceManagementComponent implements OnInit {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    console.log('2000000    ', this.contextApp);
     this.getTileName();
     this.commonService.breadcrumbEvent.emit({
       type: 'replace',
@@ -32,7 +31,6 @@ export class DeviceManagementComponent implements OnInit {
         }
       ]
     });
-    console.log(this.contextApp);
     if (this.contextApp.configuration.main_menu[2].visible) {
       this.selectedTab = 'iot-devices';
     } else if (this.contextApp.configuration.main_menu[3].visible) {
@@ -46,13 +44,11 @@ export class DeviceManagementComponent implements OnInit {
   getTileName() {
     let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {
-      if (item.page === 'Device Management') {
+      if (item.page === 'Asset Management') {
         selectedItem = item.showAccordion;
-        console.log(selectedItem);
       }
     });
     this.tileData = selectedItem;
-    console.log('1111111   ', this.tileData);
   }
 
   onTabChange(type) {

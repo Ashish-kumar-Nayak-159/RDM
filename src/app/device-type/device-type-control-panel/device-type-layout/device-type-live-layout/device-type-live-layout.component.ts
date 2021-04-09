@@ -48,7 +48,7 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
 
   getThingsModelProperties() {
     // this.properties = {};
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
         name: this.deviceType.name
@@ -79,27 +79,15 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
         $('td.index', ui.item.parent()).each(function(i) {
           $(this).html(i + 1 + '');
         });
-        // $('input.favoriteOrder', ui.item.parent()).each(function (i) {
-        //   $(this).val(i + 1);
-        // });
         $('tr.favoriteOrderId', ui.item.parent()).each(function(i) {
 
         // tslint:disable-next-line: prefer-for-of
         for (let j = 0; j < that.configureDashboardWidgets.length; j++) {
           if ($(this).attr('id') === that.configureDashboardWidgets[j].chartId) {
-            // console.log(userprofile.userFavorites[j].userFavoriteId + '===' + (j + 1) + '---' + $(this).val() + '===' + i);
             that.configureDashboardWidgets[j].index = i + 1;
-            // console.log('for loop-', JSON.stringify(userprofile.userFavorites[j]));
           }
         }
-
-          // for (let fav of userprofile.userFavorites) {
-          //   // console.log('fav---', fav);
-          // }
-
         });
-        //// console.log('userprofilefav-', JSON.stringify(userprofile.userFavorites));
-        //// console.log('this.userprofile=', JSON.stringify(this.userprofile.userFavorites));
       };
 
       $('#myFavTable tbody').sortable({
@@ -221,7 +209,6 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
     const arr = JSON.parse(JSON.stringify(this.liveWidgets));
     for (let i = 0; i < arr.length; i++) {
       if (arr[i].chartId === chartId) {
-        console.log('DOM not found', arr[i]);
         arr.splice(i, 1);
       }
     }

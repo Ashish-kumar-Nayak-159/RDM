@@ -14,7 +14,6 @@ export class MessageModalComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log(this.bodyMessage);
   }
 
   onCloseModal(type) {

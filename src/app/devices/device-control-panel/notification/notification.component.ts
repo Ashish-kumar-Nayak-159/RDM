@@ -59,13 +59,6 @@ export class NotificationComponent implements OnInit, OnDestroy {
           }
         ]
       };
-      // if (this.pageType === 'gateway') {
-      //   this.notificationTableConfig.data.splice(1, 1);
-      //   this.notificationTableConfig.data.splice(1, 0, {
-      //     name: 'Asset Name',
-      //     key: 'device_id'
-      //   });
-      // }
     }));
     this.notificationFilter.epoch = true;
 

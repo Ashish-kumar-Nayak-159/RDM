@@ -14,30 +14,22 @@ export class AuthGuardService {
     private commonService: CommonService
   ) {}
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    console.log(state);
     const userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     const appData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    console.log('user    ', userData);
-    console.log('apppp   ', appData);
-    console.log('routeeeeeee    ', this.getResolvedUrl(route));
     const version = localStorage.getItem(CONSTANTS.APP_VERSION);
     if (version !== environment.version) {
       this.commonService.onLogOut();
-      console.log('return false');
       return false;
     }
     if (this.getResolvedUrl(route)?.includes('selection')) {
       if (!userData) {
         this.commonService.onLogOut();
-        console.log('return false');
         return false;
       }
     } else if (!userData && !appData) {
       this.commonService.onLogOut();
-      console.log('return false');
       return false;
     }
-    console.log('return true');
     return true;
   }
 

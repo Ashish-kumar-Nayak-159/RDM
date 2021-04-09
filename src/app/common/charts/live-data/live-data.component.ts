@@ -73,8 +73,6 @@ export class LiveChartComponent implements OnInit, OnDestroy {
 
     // am4core.options.queue = true;
     this.zone.runOutsideAngular(() => {
-
-      console.log(document.getElementById(this.chartId));
       const chart = am4core.create(this.chartId, am4charts.XYChart);
       chart.paddingRight = 20;
       const data = [];
@@ -93,7 +91,6 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         }
         data.splice(data.length, 0, newObj);
       });
-      console.log(data);
       chart.data = data;
       this.loaderMessage = 'Loading Chart. Wait...';
       chart.dateFormatter.inputDateFormat = 'x';
@@ -169,13 +166,8 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       });
       chart.exporting.dataFields = this.chartDataFields;
       chart.zoomOutButton.disabled = true;
-      // const list = new am4core.List<string>();
-      // list.insertIndex(0, 'message_date');
-      // console.log(obj);// console.log(obj);
-      // chart.exporting.dateFields = list;
       chart.exporting.getFormatOptions('pdf').addURL = false;
       chart.exporting.dateFormat = 'dd-MM-yyyy HH:mm:ss.nnn';
-      console.log(this.selectedAlert);
       if (this.selectedAlert) {
         chart.exporting.filePrefix = this.selectedAlert.device_id + '_Alert_' + this.selectedAlert.local_created_date;
       } else {
@@ -184,15 +176,11 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       }
       chart.scrollbarX = new am4core.Scrollbar();
       chart.scrollbarX.parent = chart.bottomAxesContainer;
-      // chart.preloader.disabled = true;
-      // chart.preloader.disabled = false;
-
       chart.events.on('ready', (ev) => {
         this.loader = false;
         this.loaderMessage = 'Loading Data. Wait...';
       });
       this.chart = chart;
-      console.log('cartrttt', this.chart);
     });
 
   }
@@ -258,7 +246,6 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         if (propObj.json_key === prop) {
           series.units = propObj.json_model[propObj.json_key].units;
         }
-        console.log('unitssss    ', series.units);
       });
       series.name =  this.getPropertyName(prop);
       series.propKey = prop;
@@ -288,21 +275,8 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       }
 
       const bullet = series.bullets.push(new am4charts.CircleBullet());
-      // bullet.stroke = 'darkgreen';
       bullet.strokeWidth = 2;
       bullet.circle.radius = 1.5;
-
-      // // const scrollbarX = new am4charts.XYChartScrollbar();
-      // // scrollbarX.series.push(series);
-      // chart.scrollbarX = scrollbarX;
-      // // Make bullets grow on hover
-      // const bullet = series.bullets.push(new am4charts.CircleBullet());
-      // bullet.circle.strokeWidth = 2;
-      // bullet.circle.radius = 4;
-      // bullet.circle.fill = am4core.color('#fff');
-
-      // const bullethover = bullet.states.create('hover');
-      // bullethover.properties.scale = 1.3;
       this.seriesArr.push(series);
     });
     valueYAxis.tooltip.disabled = true;
@@ -323,7 +297,6 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   toggleProperty(prop) {
     // alert('here  ' + prop);
     this.seriesArr.forEach((item, index) => {
-      console.log(item.isActive);
       const seriesColumn = this.chart.series.getIndex(index);
       if (prop === item.propKey) {
 
@@ -345,11 +318,6 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         }
       }
     });
-    // if (Object.keys(this.chartDataFields).length > 1) {
-    //   this.chart.exportable = true;
-    // } else {
-    //   this.chart.exportable = false;
-    // }
     this.toggleThreshold(this.showThreshold);
 
   }
@@ -358,7 +326,6 @@ export class LiveChartComponent implements OnInit, OnDestroy {
     if (show) {
       let shownItem;
       let propObj;
-      // console.log(ev.target.dataItem.dataContext);
       let count = 0;
       this.seriesArr.forEach((item, index) => {
         const seriesColumn = this.chart.series.getIndex(index);
@@ -381,7 +348,6 @@ export class LiveChartComponent implements OnInit, OnDestroy {
     } else {
       this.seriesArr.forEach(series => series.yAxis.axisRanges.clear());
     }
-    console.log(this.seriesArr);
   }
 
   openConfirmRemoveWidgetModal() {

@@ -42,7 +42,6 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
   }
 
   ngOnChanges(changes) {
-    // console.log(changes);
     if (changes.telemetryData && this.chart) {
 
       const data = [];
@@ -76,8 +75,6 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
         this.range1.grid.disabled = (this.min === this.max);
         this.range2.grid.disabled = ((this.min + this.max) === (this.average * 2));
       }
-      console.log(data);
-      // data.reverse();
       this.chart.data = data;
       this.chart.validateData();
     }
@@ -87,9 +84,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
 
   plotChart() {
     this.zone.runOutsideAngular(() => {
-      // console.log(document.getElementById(this.chartId));
       const chart = am4core.create(this.chartId, am4charts.XYChart);
-      // chart.align = 'center';
       const data = [];
       const valueArr = [];
       this.telemetryData.forEach((obj, i) => {
@@ -97,29 +92,18 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
           message_date: new Date(obj.message_date)
         };
         newObj[this.property] = obj[this.property];
-        // if (newObj['Total Mass Discharge'] === 0 || newObj['Total Mass Discharge'] === '0') {
-        //   newObj['Total Mass Discharge'] = undefined;
-        // }
         data.splice(data.length, 0, newObj);
-        // if (Number(obj[this.property])) {
         valueArr.push(Number(obj[this.property]));
-        // }
       });
       if (valueArr.length > 0) {
-        console.log(this.property);
-
         this.max = Math.ceil(valueArr.reduce((a, b) => Math.max(a, b)));
         this.min = Math.floor(valueArr.reduce((a, b) => Math.min(a, b)));
         if (this.min === this.max) {
           this.min = this.min - 5;
           this.max = this.max + 5;
         }
-
-        console.log(this.min, '=--after--', this.max);
         this.average = Number(((this.min + this.max) / 2).toFixed(1));
-
       }
-
       data.reverse();
       chart.data = data;
       chart.logo.disabled = true;

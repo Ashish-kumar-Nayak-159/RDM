@@ -45,15 +45,14 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.originalDeviceType = JSON.parse(JSON.stringify(this.deviceType));
-    console.log(this.deviceType);
     this.getDeviceTypeDetail();
     if (!this.deviceType.tags.reserved_tags) {
     this.deviceType.tags.reserved_tags = [];
     }
     if (this.deviceType.metadata.model_type.includes('Gateway')) {
       this.reservedTags.forEach(item => {
-        if (item.name.includes('Device')) {
-          item.name = item.name.replace('Device', 'Gateway');
+        if (item.name.includes('Asset')) {
+          item.name = item.name.replace('Asset', 'Gateway');
         }
       });
     }
@@ -62,7 +61,6 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
   }
 
   addTagObject() {
-    console.log(this.tagObj);
     if (this.tagObj) {
       if (!this.tagObj.name || !this.tagObj.key) {
         this.toasterService.showError('Please add tag name and key', 'Add Tag');
@@ -89,7 +87,6 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
         return;
       }
       this.deviceType.tags.reserved_tags.push(this.tagObj);
-      console.log(this.deviceType.tags.reserved_tags);
     }
     this.firstTagAdded = true;
     this.tagObj = {};
@@ -108,7 +105,6 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.tags = this.deviceType.tags;
     obj.app = this.contextApp.app;
-    console.log(obj);
     this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.contextApp.app).subscribe(
       (response: any) => {
         this.tagObj = undefined;
@@ -130,22 +126,14 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
     obj.tags = this.deviceType.tags;
     obj.tags.reserved_tags = [];
     obj.app = this.contextApp.app;
-    console.log(obj);
     this.closeModal('confirmMessageModal');
-    // this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.contextApp.app).subscribe(
-    //   (response: any) => {
-    //     this.toasterService.showSuccess(response.message, 'Delete Tags');
-    //     this.getDeviceTypeDetail();
-    //     this.firstTagAdded = false;
-    //   }, error => this.toasterService.showError(error.message, 'Delete Tags')
-    // ));
   }
 
   openModal(id, type, index) {
     if (type === 'reset') {
       this.message = 'All the unsaved changes will removed. Are you sure you want to reset the tags?';
     } else {
-      this.message = 'All the devices with this model will get affected. Are you sure you want to remove ' + (type === 'all' ? 'all tags?' : 'this tag?');
+      this.message = 'All the assets with this model will get affected. Are you sure you want to remove ' + (type === 'all' ? 'all tags?' : 'this tag?');
     }
     this.deleteTagIndex =  index;
     $('#' + id).modal({ backdrop: 'static', keyboard: false, show: true });

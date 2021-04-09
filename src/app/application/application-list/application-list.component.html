@@ -45,7 +45,7 @@
           <tr  class="bg-secondary text-white">
             <th>App Name</th>
             <th>App Admin</th>
-            <th>Devices</th>
+            <th>Assetss</th>
 
             <th>Icons</th>
             <!-- <th>Actions</th> -->
@@ -67,7 +67,7 @@
               <td>{{app.app}}</td>
               <td>{{app.admin_email}} ({{app.admin_name}})</td>
               <td>
-                <a href="javascript:void(0)" (click)="redirectToDevices(app)" title="View Devices">
+                <a href="javascript:void(0)" (click)="redirectToDevices(app)" title="View Assets">
                 <i class="fa fa-fw fa-eye"></i></a></td>
               <td><a  href="javascript:void(0)" (click)="openViewIconModal(app)" title="View Icons" >
                 <i class="fa fa-fw fa-eye"></i></a></td>
@@ -218,7 +218,7 @@
                   <select class="custom-select" id="alertReason" [(ngModel)]="applicationDetail.metadata.partition.telemetry.partition_strategy"
                     name="alertReason">
                     <option [ngValue]="undefined">Select Partition Technique</option>
-                    <option [ngValue]="'Device ID'">Device ID</option>
+                    <option [ngValue]="'Device ID'">Asset ID</option>
                     <option [ngValue]="'Partition Key'">Partition Key</option>
                   </select>
                 </div>

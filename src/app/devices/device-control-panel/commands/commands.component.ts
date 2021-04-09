@@ -2,8 +2,6 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
-import * as moment from 'moment';
-import { CommonService } from 'src/app/services/common.service';
 declare var $: any;
 
 

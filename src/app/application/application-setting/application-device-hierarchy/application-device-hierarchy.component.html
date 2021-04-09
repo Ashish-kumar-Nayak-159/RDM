@@ -1,5 +1,5 @@
 <div class="pb-4 text-orange">
-  *Note: You can define more device hierarchy levels based on your business needs. (For ex: City, Store, Plant, etc.,)
+  *Note: You can define more asset hierarchy levels based on your business needs. (For ex: City, Store, Plant, etc.,)
   <a href="javascript:void(0)" title="Edit Tags" *ngIf="!isAppSetingsEditable" title="Edit"
       (click)="isAppSetingsEditable = true;"><i class="fa fa-edit"></i></a>
     <a href="javascript:void(0)" title="Cancel" *ngIf="isAppSetingsEditable" title="Cancel"
@@ -52,7 +52,7 @@
           </tr>
           <tr>
             <td>Level - {{applicationData.hierarchy.levels.length + 1}}:</td>
-            <td>Device</td>
+            <td>Asset</td>
             <td></td>
           </tr>
         </tbody>

@@ -5,19 +5,19 @@ export class CONSTANTS {
   // device tags list based on device protocol
   public static PROTOCOL_CONNECTIVITY_LIST = [
     {
-      name: 'IP Device (WiFi)',
-      connectivity: ['IP Device -> Azure IOT Hub SDK -> WiFi -> Cloud', 'IP Device -> MQTT Client -> WiFi -> Cloud'],
+      name: 'IP Asset (WiFi)',
+      connectivity: ['IP Asset -> Azure IOT Hub SDK -> WiFi -> Cloud', 'IP Asset -> MQTT Client -> WiFi -> Cloud'],
       display: true
     },
     {
-      name: 'IP Device (SIM)',
-      connectivity: ['IP Device -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Device -> MQTT Client -> SIM -> Cloud'],
+      name: 'IP Asset (SIM)',
+      connectivity: ['IP Asset -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Asset -> MQTT Client -> SIM -> Cloud'],
       display: true
     },
     {
       name: 'BLE',
-      connectivity: ['BLE Device -> Mobile App -> Azure IOT Hub SDK -> Cloud', 'BLE Device -> Mobile App -> MQTT Client -> Cloud',
-    'BLE Device -> Gateway -> Azure IOT Hub SDK -> Cloud', 'BLE Device -> Gateway -> MQTT Client -> Cloud'],
+      connectivity: ['BLE Asset -> Mobile App -> Azure IOT Hub SDK -> Cloud', 'BLE Asset -> Mobile App -> MQTT Client -> Cloud',
+    'BLE Asset -> Gateway -> Azure IOT Hub SDK -> Cloud', 'BLE Asset -> Gateway -> MQTT Client -> Cloud'],
       display: true
     },
     {
@@ -29,7 +29,7 @@ export class CONSTANTS {
     },
     {
       name: 'ModBus',
-      connectivity: ['ModBus Device -> IoT Gateway -> Azure IoT Hub SDK -> Azure Cloud'],
+      connectivity: ['ModBus Asset -> IoT Gateway -> Azure IoT Hub SDK -> Azure Cloud'],
       display: true
     },
     {
@@ -56,19 +56,19 @@ export class CONSTANTS {
 
   public static NON_IP_DEVICE_OPTIONS = [
     {
-      name: 'BLE Mesh Devices',
+      name: 'BLE Mesh Assets',
       protocol: 'BLE'
     },
     {
-      name: 'BLE Beacon Devices',
+      name: 'BLE Beacon Assets',
       protocol: 'BLE'
     },
     {
-      name: 'LoRa Devices',
+      name: 'LoRa Assets',
       protocol: 'LoRa'
     },
     {
-      name: 'ModBus Devices',
+      name: 'ModBus Assets',
       protocol: 'ModBus'
     }
   ];
@@ -97,10 +97,10 @@ export class CONSTANTS {
       priority: 1
     },
     {
-      page: 'Devices',
-      system_name: 'IoT Devices',
+      page: 'Assets',
+      system_name: 'IoT Assets',
       url: 'applications/:appName/devices',
-      display_name: 'IoT Devices',
+      display_name: 'IoT Assets',
       icon: 'fa fa-fw fa-desktop',
       visible: true,
       showAccordion: [
@@ -111,10 +111,10 @@ export class CONSTANTS {
       priority: 1
     },
     {
-      page: 'Non IP Devices',
-      system_name: 'Legacy Devices',
+      page: 'Non IP Assets',
+      system_name: 'Legacy Assets',
       url: 'applications/:appName/nonIPDevices',
-      display_name: 'Legacy Devices',
+      display_name: 'Legacy Assets',
       icon: 'fa fa-fw fa-folder',
       visible: true,
       showAccordion: [
@@ -138,10 +138,10 @@ export class CONSTANTS {
       priority: 1
     },
     {
-      page: 'Device Groups',
-      system_name: 'Device Groups',
+      page: 'Asset Groups',
+      system_name: 'Asset Groups',
       url: null,
-      display_name: 'Device Groups',
+      display_name: 'Asset Groups',
       icon: 'fa fa-fw fa-table',
       visible: true,
       children: [
@@ -190,14 +190,14 @@ export class CONSTANTS {
       priority: 1
     },
     {
-      page: 'Device Management',
-      system_name: 'Device Management',
+      page: 'Assets Management',
+      system_name: 'Assets Management',
       url: 'applications/:appName/asset/management',
-      display_name: 'Device Management',
+      display_name: 'Assets Management',
       icon: 'fa fa-fw fa-cog',
       visible: true,
       showAccordion: [
-        { name: 'Title', value: 'Device Management'}
+        { name: 'Title', value: 'Assets Management'}
       ],
       priority: 1
     },

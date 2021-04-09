@@ -36,7 +36,7 @@
     </div>
     </ng-container>
     <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length === 0">
-      No Live Widgets added. <button class="btn btn-sm btn-warning" (click)="onOpenAddWidgetModal()"
+      No Live Widgets added. <button class="btn btn-sm btn-warning"  [disabled]="deviceType.freezed" (click)="onOpenAddWidgetModal()"
       ><i class="fa fa-plus fa-sm text-white"></i></button>
     </ng-container>
 

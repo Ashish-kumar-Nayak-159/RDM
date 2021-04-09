@@ -112,4 +112,5 @@ export class AppUrls {
   public static GET_DEVICE_TWIN = 'apps/{0}/iot_devices/{1}/twin_properties';
   public static UPDATE_DEVICE_TWIN = 'apps/{0}/iot_devices/{1}/twin_desired_properties';
   public static GET_DEVICE_TWIN_HISTORY = 'apps/{0}/d2c/twin_updates';
+  public static ATTACH_LEGACY_DEVICE_TO_GATEWAY = 'apps/{0}/iot_devices/{1}/attach_legacy_device';
 }

@@ -594,4 +594,10 @@ export class DeviceService {
       encodeURIComponent(app)), {params});
   }
 
+
+  attachLegacyDeviceToGateway(app, gatewayId, obj) {
+    return this.http.post(this.url + String.Format(AppUrls.ATTACH_LEGACY_DEVICE_TO_GATEWAY,
+      encodeURIComponent(app), encodeURIComponent(gatewayId)), obj);
+  }
+
 }

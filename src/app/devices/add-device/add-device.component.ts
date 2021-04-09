@@ -212,13 +212,10 @@ export class AddDeviceComponent implements OnInit {
   updateGatewayTags(deviceObj) {
     const obj = {
       device_id: deviceObj.gateway_id,
-      tags: {
-        partition_keys: {
-        }
-      }
+      device_partition_key: {}
     };
-    obj.tags.partition_keys[deviceObj.device_id] = deviceObj.tags.partition_key;
-    this.subscriptions.push(this.deviceService.updateDeviceTags(obj, this.contextApp.app).subscribe(
+    obj.device_partition_key[deviceObj.device_id] = deviceObj.tags.partition_key;
+    this.subscriptions.push(this.deviceService.attachLegacyDeviceToGateway(this.contextApp.app, deviceObj.gateway_id, obj).subscribe(
       (response: any) => {
         this.isCreateDeviceAPILoading = false;
         this.toasterService.showSuccess(response.message,

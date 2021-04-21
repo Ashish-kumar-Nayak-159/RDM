@@ -99,7 +99,9 @@
                   {{device.gateway_display_name}}</a> -->
                   {{device.gateway_display_name}}</td>
               <td><a  href="javascript:void(0)" (click)="onTableFunctionCall(device)" title="View Control Panel" >
-                <i class="fa fa-fw fa-table"></i></a></td>
+                <i class="fa fa-fw fa-table"></i></a>
+                <a *ngIf="componentState === constantData.NON_IP_DEVICE" href="javascript:void(0)" (click)="redirectToGatewayPanel(device)" title="View Gateway Diagnosis Panel" >
+                  <i class="fa fa-fw fa-book"></i></a></td>
             </tr>
           </ng-container>
           <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading && isFilterSelected">

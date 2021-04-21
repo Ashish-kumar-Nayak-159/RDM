@@ -346,6 +346,15 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     ));
   }
 
+  redirectToGatewayPanel(device) {
+    if (device.gateway_id) {
+      this.router.navigate(['applications', this.contextApp.app, 'gateways', device.gateway_id, 'control-panel']);
+    } else {
+      this.toasterService.showError('Gateway Id is not available in selected Asset', 'Redirection to Gateway Panel');
+      return;
+    }
+  }
+
   searchDevices() {
     this.isDeviceListLoading = true;
     this.isFilterSelected = true;

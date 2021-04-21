@@ -23,8 +23,8 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
   currentLimit = 20;
   contextApp: any;
   tileData: any;
-  iotDevicesPage = 'Devices';
-  legacyDevicesPage = 'Non IP Devices';
+  iotDevicesPage = 'Assets';
+  legacyDevicesPage = 'Non IP Assets';
   iotGatewaysPage = 'Gateways';
   subscriptions: Subscription[] = [];
   isOpenDeviceCreateModal = false;
@@ -103,6 +103,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
   getTileName() {
     let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {
+      console.log(item.page);
       if ((item.page === this.iotDevicesPage && this.type === 'iot-devices') ||
         (item.page === this.legacyDevicesPage && this.type === 'legacy-devices') ||
         (item.page === this.iotGatewaysPage && this.type === 'iot-gateways')) {
@@ -110,7 +111,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
       }
     });
     this.tileData = selectedItem;
-    this.currentLimit = Number(this.tileData[2]?.value) || 20;
+    this.currentLimit = this.tileData && this.tileData[2] ? Number(this.tileData[2]?.value) : 20;
   }
 
   getDevices() {
@@ -417,10 +418,11 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
             }
             if (this.currentDeviceApps.length > 0) {
             this.devicePackages.forEach(devicePackage => {
+              const index = this.currentDeviceApps.findIndex(packageName => packageName === devicePackage.name);
+              if (index === -1) {
+                  this.installPackages.push(devicePackage);
+              }
               this.currentDeviceApps.forEach(currentPackage => {
-                if (devicePackage.name !== currentPackage) {
-                    this.installPackages.push(devicePackage);
-                }
                 if (devicePackage.name === currentPackage &&
                   this.deviceTwin.twin_properties.reported.installed_packages[currentPackage] === devicePackage.version) {
                     this.uninstallPackages.push(devicePackage);

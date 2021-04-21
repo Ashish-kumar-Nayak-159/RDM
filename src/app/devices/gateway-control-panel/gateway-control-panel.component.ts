@@ -29,6 +29,9 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
   menuItems: any[] = CONSTANTS.GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST;
   tileData: any;
   subscriptions: Subscription[] = [];
+  iotDevicesPage = 'Assets';
+  legacyDevicesPage = 'Non IP Assets';
+  iotGatewaysPage = 'Gateways';
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private deviceService: DeviceService,
@@ -102,7 +105,9 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
   getTileName() {
     let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {
-      if (item.system_name === this.componentState + 's') {
+      if ((item.page === this.iotDevicesPage && this.componentState === CONSTANTS.IP_DEVICE) ||
+      (item.page === this.legacyDevicesPage && this.componentState === CONSTANTS.NON_IP_DEVICE) ||
+      (item.page === this.iotGatewaysPage && this.componentState === CONSTANTS.IP_GATEWAY)) {
         selectedItem = item.showAccordion;
       }
     });

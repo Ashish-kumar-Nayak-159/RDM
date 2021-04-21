@@ -48,6 +48,9 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   currentOffset = 0;
   currentLimit = 20;
   insideScrollFunFlag = false;
+  iotDevicesPage = 'Assets';
+  legacyDevicesPage = 'Non IP Assets';
+  iotGatewaysPage = 'Gateways';
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -308,7 +311,9 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   getTileName() {
     let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {
-      if (item.system_name === this.componentState + 's') {
+      if ((item.page === this.iotDevicesPage && this.componentState === CONSTANTS.IP_DEVICE) ||
+      (item.page === this.legacyDevicesPage && this.componentState === CONSTANTS.NON_IP_DEVICE) ||
+      (item.page === this.iotGatewaysPage && this.componentState === CONSTANTS.IP_GATEWAY)) {
         selectedItem = item.showAccordion;
       }
     });

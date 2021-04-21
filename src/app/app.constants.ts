@@ -5,13 +5,13 @@ export class CONSTANTS {
   // device tags list based on device protocol
   public static PROTOCOL_CONNECTIVITY_LIST = [
     {
-      name: 'IP Asset (WiFi)',
-      connectivity: ['IP Asset -> Azure IOT Hub SDK -> WiFi -> Cloud', 'IP Asset -> MQTT Client -> WiFi -> Cloud'],
+      name: 'IP Device (WiFi)',
+      connectivity: ['IP Device -> Azure IOT Hub SDK -> WiFi -> Cloud', 'IP Device -> MQTT Client -> WiFi -> Cloud'],
       display: true
     },
     {
-      name: 'IP Asset (SIM)',
-      connectivity: ['IP Asset -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Asset -> MQTT Client -> SIM -> Cloud'],
+      name: 'IP Device (SIM)',
+      connectivity: ['IP Device -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Device -> MQTT Client -> SIM -> Cloud'],
       display: true
     },
     {
@@ -21,7 +21,7 @@ export class CONSTANTS {
       display: true
     },
     {
-      name: 'LoRa',
+    name: 'LoRa',
       connectivity: ['LoRa Node -> LoRa Public Gateway -> Azure Integration -> Cloud',
       'LoRa Node -> LoRa Private Gateway -> Azure IOT Hub SDK -> Cloud',
       'LoRa Node -> LoRa Private Gateway -> MQTT Client -> Cloud'],

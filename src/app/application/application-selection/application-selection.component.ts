@@ -72,6 +72,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
         let url = menuObj.url;
         if (menuObj.url?.includes(':appName')) {
           url = menuObj.url.replace(':appName', this.applicationData.app);
+          console.log('after url   ', url);
           this.router.navigateByUrl(url);
         }
       }
@@ -126,6 +127,8 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
           this.applicationData.user = app.user;
           if (!this.applicationData.configuration.main_menu || this.applicationData.configuration.main_menu.length === 0) {
             this.applicationData.configuration.main_menu = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+          } else {
+            this.processAppMenuData();
           }
           if (!this.applicationData.configuration.device_control_panel_menu ||
             this.applicationData.configuration.device_control_panel_menu.length === 0) {
@@ -147,6 +150,35 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       }));
     });
   }
+
+
+  processAppMenuData() {
+    if (this.applicationData?.app) {
+      if (!this.userData?.is_super_admin) {
+      const data = [];
+      const arr = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+      if (this.applicationData.configuration?.main_menu?.length > 0) {
+        arr.forEach(config => {
+          let found = false;
+          this.applicationData.configuration.main_menu.forEach(item => {
+            if (config.page === item.page) {
+              found = true;
+              config.display_name = item.display_name;
+              config.visible = item.visible;
+              config.showAccordion = item.showAccordion;
+              data.push(config);
+            }
+          });
+          if (!found) {
+            data.push(config);
+          }
+        });
+      }
+      this.applicationData.configuration.main_menu = JSON.parse(JSON.stringify(data));
+      }
+      }
+  }
+
 
   ngOnDestroy() {
     this.apiSubscriptions.forEach(sub => sub.unsubscribe());

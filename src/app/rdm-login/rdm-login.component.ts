@@ -160,6 +160,8 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
           this.applicationData.user = app.user;
           if (this.applicationData.configuration.main_menu.length === 0) {
             this.applicationData.configuration.main_menu = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+          } else {
+            this.processAppMenuData();
           }
           if (this.applicationData.configuration.device_control_panel_menu.length === 0) {
             this.applicationData.configuration.device_control_panel_menu =
@@ -177,6 +179,33 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
           resolve();
       }));
     });
+  }
+
+  processAppMenuData() {
+    if (this.applicationData?.app) {
+      if (!this.userData?.is_super_admin) {
+      const data = [];
+      const arr = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+      if (this.applicationData.configuration?.main_menu?.length > 0) {
+        arr.forEach(config => {
+          let found = false;
+          this.applicationData.configuration.main_menu.forEach(item => {
+            if (config.page === item.page) {
+              found = true;
+              config.display_name = item.display_name;
+              config.visible = item.visible;
+              config.showAccordion = item.showAccordion;
+              data.push(config);
+            }
+          });
+          if (!found) {
+            data.push(config);
+          }
+        });
+      }
+      this.applicationData.configuration.main_menu = JSON.parse(JSON.stringify(data));
+      }
+      }
   }
 
   ngOnDestroy() {

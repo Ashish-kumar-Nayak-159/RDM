@@ -237,7 +237,7 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
   getConnectivityData() {
     this.thingsModel.tags.cloud_connectivity = undefined;
     if (this.thingsModel && this.thingsModel.tags && this.thingsModel.tags.protocol) {
-      this.connectivityList = (this.protocolList.filter(protocol => protocol.name === this.thingsModel.tags.protocol)[0]).connectivity;
+      this.connectivityList = this.protocolList.find(protocol => protocol.name === this.thingsModel.tags.protocol)?.connectivity || [];
     }
   }
 
@@ -272,7 +272,6 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
       }
     ));
   }
-
 
   onCloseThingsModelModal() {
     $('#createDeviceTypeModal').modal('hide');

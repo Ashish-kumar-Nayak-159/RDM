@@ -203,7 +203,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           (this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency ?
             this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency : 1));
         resolve1();
-      }));
+      }, error => this.isTelemetryDataLoading = false));
     });
   }
 
@@ -346,7 +346,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         this.isGetWidgetsAPILoading = false;
         resolve1();
-      }, () => this.isGetWidgetsAPILoading = false
+      }, () => {
+        this.isGetWidgetsAPILoading = false;
+        this.isTelemetryDataLoading = false;
+      }
     ));
     });
   }
@@ -491,7 +494,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.midNightMinute = response.message[this.getPropertyKey('Running Minutes')] ?
             Math.floor(Number(response.message[this.getPropertyKey('Running Minutes')])) : 0;
             resolve1();
-        }));
+        }, error => this.isTelemetryDataLoading = false));
     });
   }
 
@@ -530,7 +533,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
             response.properties.derived_properties.forEach(prop => this.propertyList.push(prop));
             resolve1();
-          }
+          }, error => this.isTelemetryDataLoading = false
         ));
       } else {
         resolve1();
@@ -558,7 +561,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         this.signalRModeValue = newMode;
         this.isTelemetryModeAPICalled = false;
-      }
+      }, error => this.isTelemetryDataLoading = false
     ));
   }
 

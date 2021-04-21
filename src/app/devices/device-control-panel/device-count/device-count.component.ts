@@ -175,6 +175,7 @@ export class DeviceCountComponent implements OnInit {
       this.toasterService.showError('Asset selection is required.', 'View Count Data');
     }
     await this.getThingsModelProperties(filterObj.device);
+    if (this.telemetryTableConfig.data.length !== (this.propertyList.length + 1)) {
     this.propertyList.forEach(prop => {
       this.telemetryTableConfig.headers.push(prop.name);
       this.telemetryTableConfig.data.push({
@@ -185,6 +186,7 @@ export class DeviceCountComponent implements OnInit {
         valueclass: ''
       });
     });
+    }
     const now = moment().utc();
     if (filterObj.dateOption === '5 mins') {
       obj.to_date = now.unix();

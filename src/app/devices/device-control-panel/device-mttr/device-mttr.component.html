@@ -10,49 +10,84 @@
         <table class="table table-bordered  table-striped" id="deviceTable" width="100%" cellspacing="0">
           <thead>
             <th></th>
-            <th>Connected Event Time</th>
-            <th>Disonnected Event Time</th>
+            <th>Event Start Time</th>
+            <th>Event End Time</th>
             <th>MTTR </th>
             <th>Reason</th>
+            <th>Action</th>
           </thead>
           <tbody>
             <ng-container *ngIf="lifeCycleEvents.length > 0 && isFilterSelected">
               <tr *ngFor="let event of lifeCycleEvents; let i = index">
                 <td>{{i + 1}}</td>
-                <td>{{event.local_connected_event_time}}</td>
-                <td>{{event.local_disconnected_event_time}}</td>
-                <td>{{event.mttrString}}</td>
+                <td>{{event.local_event_start_time}}</td>
+                <td>{{event.local_event_end_time}}</td>
+                <td>{{event.mttr}}</td>
                 <td>
-                  <select class="form-control form-control-sm mx-1 my-1" id="reason"
-                  [(ngModel)]="event.reason" name="reason">
-                    <option [ngValue]="undefined">Select Reason</option>
-                    <option [ngValue]="'Network Failure'" >Network Failure</option>
-                    <option [ngValue]="'Machine Failure'" >Machine Failure</option>
-                  </select>
+                  {{event.event_reason}}
+                </td>
+                <td>
+                  <a href="javascript:void(0)" (click)="openModal(event)">
+                    <i class="fa fa-edit"></i>
+                  </a>
                 </td>
               </tr>
             </ng-container>
             <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected">
               <tr>
-                <td colspan="5">
+                <td colspan="6">
                   No MTTR data found.
                 </td>
               </tr>
             </ng-container>
             <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">
               <tr>
-                <td colspan="5">Select filter and press search button to load the MTTR data.</td>
+                <td colspan="6">Select filter and press search button to load the MTTR data.</td>
               </tr>
             </ng-container>
             <ng-container *ngIf="isLifeCycleEventsLoading">
               <tr>
-                <td colspan="5">
+                <td colspan="6">
                   <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
                 </td>
               </tr>
             </ng-container>
           </tbody>
         </table>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal right fade" id="eventAcknowledgeModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" *ngIf="selectedEvent">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Acknowledge Event</h5>
+        <button type="button" class="close" (click)="closeModal()"  aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <h6>Are you sure you want to acknowledge this event?</h6>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Reason:</label>
+            <select class="custom-select" id="alertReason" [(ngModel)]="selectedEvent.event_reason"
+              name="alertReason">
+              <option [ngValue]="null">Select Reason</option>
+              <option [ngValue]="'Network Failure'" >Network Failure</option>
+              <option [ngValue]="'Machine Failure'" >Machine Failure</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="acknowledgeEvent()">Acknowledge</button>
+        <button type="button" class="btn btn-secondary add-row" (click)="closeModal()">Cancel</button>
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isEventAcknowledgeAPILoading"></i>
+
+      </div>
     </div>
   </div>
 </div>

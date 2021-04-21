@@ -600,4 +600,20 @@ export class DeviceService {
       encodeURIComponent(app), encodeURIComponent(gatewayId)), obj);
   }
 
+  getDeviceMTTRData(app, deviceId, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_MTTR_DATA,
+      encodeURIComponent(app), encodeURIComponent(deviceId)), {params});
+  }
+
+  updateDeviceMTTRData(app, deviceId, mttrId, obj) {
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_MTTR_RECORD,
+      encodeURIComponent(app), encodeURIComponent(deviceId), encodeURIComponent(mttrId)), obj);
+  }
+
 }

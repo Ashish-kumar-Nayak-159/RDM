@@ -446,28 +446,28 @@ export class CONSTANTS {
       visible: true,
       isTitle: true
     },
-    // {
-    //   page: 'mttr',
-    //   system_name: 'MTTR',
-    //   url: '#device_mttr',
-    //   display_name: 'MTTR',
-    //   icon: 'fa fa-fw fa-wrench',
-    //   visible: true,
-    //   isTitle: false,
-    //   showAccordion: [],
-    //   accordion_value: {}
-    // },
-    // {
-    //   page: 'mtbf',
-    //   system_name: 'MTBF',
-    //   url: '#device_mtbf',
-    //   display_name: 'MTBF',
-    //   icon: 'fa fa-fw fa-wrench',
-    //   visible: true,
-    //   isTitle: false,
-    //   showAccordion: [],
-    //   accordion_value: {}
-    // },
+    {
+      page: 'mttr',
+      system_name: 'MTTR',
+      url: '#device_mttr',
+      display_name: 'MTTR',
+      icon: 'fa fa-fw fa-wrench',
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
+    },
+    {
+      page: 'mtbf',
+      system_name: 'MTBF',
+      url: '#device_mtbf',
+      display_name: 'MTBF',
+      icon: 'fa fa-fw fa-wrench',
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
+    },
     {
       page: 'maintenance_data',
       system_name: 'Maintenance',
@@ -737,28 +737,28 @@ export class CONSTANTS {
       visible: true,
       isTitle: true
     },
-    // {
-    //   page: 'mttr',
-    //   system_name: 'MTTR',
-    //   url: '#device_mttr',
-    //   display_name: 'MTTR',
-    //   icon: 'fa fa-fw fa-wrench',
-    //   visible: true,
-    //   isTitle: false,
-    //   showAccordion: [],
-    //   accordion_value: {}
-    // },
-    // {
-    //   page: 'mtbf',
-    //   system_name: 'MTBF',
-    //   url: '#device_mtbf',
-    //   display_name: 'MTBF',
-    //   icon: 'fa fa-fw fa-wrench',
-    //   visible: true,
-    //   isTitle: false,
-    //   showAccordion: [],
-    //   accordion_value: {}
-    // },
+    {
+      page: 'mttr',
+      system_name: 'MTTR',
+      url: '#device_mttr',
+      display_name: 'MTTR',
+      icon: 'fa fa-fw fa-wrench',
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
+    },
+    {
+      page: 'mtbf',
+      system_name: 'MTBF',
+      url: '#device_mtbf',
+      display_name: 'MTBF',
+      icon: 'fa fa-fw fa-wrench',
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
+    },
     {
       page: 'maintenance_data',
       system_name: 'Maintenance',

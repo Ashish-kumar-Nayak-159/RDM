@@ -110,7 +110,7 @@
               </tr>
             </tfoot>
             <tbody>
-              <ng-container *ngFor="let item of applicationData?.configuration?.asset_control_panel_menu; let configIndex = index">
+              <ng-container *ngFor="let item of applicationData?.configuration?.device_control_panel_menu; let configIndex = index">
                 <tr *ngIf="!item.isTitle">
                   <td>
                     <ng-container *ngIf="item.showAccordion?.length > 0">
@@ -180,7 +180,7 @@
               </tr>
             </tfoot>
             <tbody>
-              <ng-container *ngFor="let item of applicationData?.configuration?.legacy_asset_control_panel_menu; let configIndex = index">
+              <ng-container *ngFor="let item of applicationData?.configuration?.legacy_device_control_panel_menu; let configIndex = index">
                 <tr *ngIf="!item.isTitle">
                   <td>
                     <ng-container *ngIf="item.showAccordion?.length > 0">

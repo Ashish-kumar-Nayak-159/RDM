@@ -67,6 +67,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
           arr.push(item);
         }
       });
+      console.log(arr);
       this.applicationData.configuration.legacy_device_control_panel_menu = [...arr];
     }
     if (this.applicationData?.configuration?.gateway_control_panel_menu?.length === 0) {

@@ -143,7 +143,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     clearInterval(this.c2dResponseInterval);
     const obj = {
       method: 'setTelemetryMode',
-      device_id: this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : this.filterObj.device.device_id,
+      device_id: this.filterObj.device.device_id,
       gateway_id: this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : undefined,
       message: {
         mode: this.signalRModeValue ? 'normal' : 'turbo',

@@ -62,7 +62,7 @@
         <tr class="bg-secondary text-white">
           <th>Request Date</th>
           <th>Response Date</th>
-
+          <th>Method</th>
           <!-- <th class="border-left">F Time Stamp</th> -->
           <th  style="width:7%">Status</th>
           <th style="width:7%">Response</th>
@@ -74,6 +74,7 @@
         <tr *ngFor="let msg of c2dMsgs">
           <td>{{msg.local_request_date}}</td>
           <td>{{msg.local_response_date}}</td>
+          <td>{{msg.method_name}}</td>
           <td>{{msg.status}}</td>
           <td>
             <a (click)="loadMessageDetail(msg, true)" href="javascript:void(0)" title="View Response">

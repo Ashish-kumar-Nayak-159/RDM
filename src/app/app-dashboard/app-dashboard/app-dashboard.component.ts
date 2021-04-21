@@ -142,11 +142,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     // this.c2dLoadingMessage = 'Sending C2D Command';
     clearInterval(this.c2dResponseInterval);
     const obj = {
-      method: 'setTelemetryMode',
+      method: 'change_device_mode',
       device_id: this.filterObj.device.device_id,
       gateway_id: this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : undefined,
       message: {
-        mode: this.signalRModeValue ? 'normal' : 'turbo',
+        telemetry_mode: this.signalRModeValue ? 'normal' : 'turbo',
         frequency_in_sec: this.signalRModeValue ?
         (this.deviceDetailData?.tags?.settings?.normal_mode?.frequency ?
           this.deviceDetailData?.tags?.settings?.normal_mode?.frequency : 60) :

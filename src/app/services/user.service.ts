@@ -24,4 +24,10 @@ export class UserService {
     localStorage.removeItem(CONSTANTS.APP_USERS);
     return this.http.patch(this.url + String.Format(AppUrls.UPDATE_USER, encodeURIComponent(app), encodeURIComponent(userObj.id)), userObj);
   }
+
+  deleteUser(app, userId, obj) {
+    localStorage.removeItem(CONSTANTS.APP_USERS);
+    return this.http.request('delete', this.url + String.Format(AppUrls.DELETE_USER_ACCESS, encodeURIComponent(app),
+    encodeURIComponent(userId)), {body: obj});
+  }
 }

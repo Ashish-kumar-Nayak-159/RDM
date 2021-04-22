@@ -115,4 +115,5 @@ export class AppUrls {
   public static ATTACH_LEGACY_DEVICE_TO_GATEWAY = 'apps/{0}/iot_devices/{1}/attach_legacy_device';
   public static GET_MTTR_DATA = 'apps/{0}/devices/{1}/telemetry_loss_events';
   public static UPDATE_MTTR_RECORD = 'apps/{0}/devices/{1}/telemetry_loss_events/{2}';
+  public static DELETE_USER_ACCESS = 'apps/{0}/users/{1}';
 }

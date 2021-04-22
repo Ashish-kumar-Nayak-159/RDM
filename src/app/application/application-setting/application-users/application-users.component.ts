@@ -1,3 +1,4 @@
+import { CommonService } from './../../../services/common.service';
 
 import { Subscription } from 'rxjs';
 import { UserService } from './../../../services/user.service';
@@ -14,6 +15,7 @@ declare var $: any;
 export class ApplicationUsersComponent implements OnInit, OnDestroy {
 
   @Input() applicationData: any;
+  userData: any;
   users: any[] = [];
   addUserObj: any;
   hierarchyList: any[] = [];
@@ -21,13 +23,19 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   hierarchyArr = {};
   configureHierarchy = {};
   apiSubscriptions: Subscription[] = [];
+  isPasswordVisible = false;
+  isDeleteUserAPILoadig = false;
+  selectedUserForDelete: any;
+  password: any;
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
-    private userService: UserService
+    private userService: UserService,
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
+    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
     this.getApplicationUsers();
 
@@ -178,6 +186,60 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     $('#createUserModal').modal('hide');
     this.addUserObj = undefined;
     this.hierarchyList = [];
+  }
+
+  checkForOneAppAdminUser() {
+    let count = 0;
+    this.users.forEach(user => {
+      if (user.role === CONSTANTS.APP_ADMIN_ROLE) {
+        count++;
+      }
+    });
+    return count;
+  }
+
+  async openDeleteUserModal(user) {
+    const count = await this.checkForOneAppAdminUser();
+    if (count < 2 && user.role === CONSTANTS.APP_ADMIN_ROLE) {
+      this.toasterService.showError('At least one app admin user required.', 'Delete User Access');
+      return;
+    }
+    this.selectedUserForDelete = user;
+    $('#deleteUserModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  togglePasswordVisibility() {
+    this.isPasswordVisible = !this.isPasswordVisible;
+  }
+
+
+  onCloseModal() {
+    $('#deleteUserModal').modal('hide');
+    this.selectedUserForDelete = undefined;
+    this.isDeleteUserAPILoadig = false;
+    this.password = undefined;
+  }
+
+  deleteUser() {
+    if (!this.password || (this.password.trim()).length === 0) {
+      this.toasterService.showError('Please enter password.', 'Delete User Access');
+      return;
+    }
+    this.isDeleteUserAPILoadig = true;
+    const obj = {
+      email: this.userData.email,
+      password: this.password
+    };
+    this.apiSubscriptions.push(this.userService.deleteUser(this.applicationData.app, this.selectedUserForDelete.id, obj).subscribe
+    ((response: any) => {
+      this.toasterService.showSuccess(response.message, 'Delete User Access');
+      this.isDeleteUserAPILoadig = false;
+      this.onCloseModal();
+      this.getApplicationUsers();
+    }, error => {
+      this.toasterService.showError(error.message, 'Delete User Access');
+      this.isDeleteUserAPILoadig = false;
+    }));
   }
 
   ngOnDestroy() {

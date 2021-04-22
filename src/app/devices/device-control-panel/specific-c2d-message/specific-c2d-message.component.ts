@@ -213,6 +213,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
       return;
     }
     try {
+      this.c2dMessageData.timestamp = moment().unix();
       this.sentMessageData = JSON.parse(JSON.stringify(this.c2dMessageData));
      // this.sentMessageData.message = JSON.parse(this.sentMessageData.message);
     } catch (e) {
@@ -220,6 +221,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
       this.sentMessageData = undefined;
       return;
     }
+
     this.isSendC2DMessageAPILoading = true;
     this.apiSubscriptions.push(this.deviceService.sendC2DMessage(this.sentMessageData, this.appName).subscribe(
       (response: any) => {

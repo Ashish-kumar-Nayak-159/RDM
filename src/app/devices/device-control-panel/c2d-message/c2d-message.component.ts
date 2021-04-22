@@ -162,9 +162,9 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
       obj.to_date = (epoch ? (epoch + 300) : null);
       method = this.deviceService.getDirectMethodJSON(message.id, this.appName, obj);
     } else {
-      const epoch =  message.created_date ? this.commonService.convertDateToEpoch(message.created_date) : message.timestamp;;
+      const epoch =  message.created_date ? this.commonService.convertDateToEpoch(message.created_date) : message.timestamp;
       obj.from_date = epoch ? (epoch - 5) : null;
-      obj.to_date = (epoch ? (epoch + (message?.metadata?.expire_in_min ? message.metadata.expire_in_min * 60 : 300)) : null);
+      obj.to_date = (epoch ? (epoch + (message?.metadata?.expire_in_min ? message.metadata.expire_in_min * 60 : 300)) : null) + 5;
       method = this.deviceService.getC2dMessageJSON(message.message_id, this.appName, obj);
     }
     this.apiSubscriptions.push(method.subscribe(

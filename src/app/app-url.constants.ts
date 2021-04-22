@@ -113,7 +113,8 @@ export class AppUrls {
   public static UPDATE_DEVICE_TWIN = 'apps/{0}/iot_devices/{1}/twin_desired_properties';
   public static GET_DEVICE_TWIN_HISTORY = 'apps/{0}/d2c/twin_updates';
   public static ATTACH_LEGACY_DEVICE_TO_GATEWAY = 'apps/{0}/iot_devices/{1}/attach_legacy_device';
-  public static GET_MTTR_DATA = 'apps/{0}/devices/{1}/telemetry_loss_events';
+  public static GET_NETWORK_FAILURE_EVENT = 'apps/{0}/devices/{1}/telemetry_loss_events';
+  public static GET_MACHINE_FAILURE_EVENT = 'apps/{0}/devices/{1}/machine_failure_events';
   public static UPDATE_MTTR_RECORD = 'apps/{0}/devices/{1}/telemetry_loss_events/{2}';
   public static DELETE_USER_ACCESS = 'apps/{0}/users/{1}';
 }

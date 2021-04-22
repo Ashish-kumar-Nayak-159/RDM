@@ -1,7 +1,52 @@
-<div class="topnavbar bg-white py-2">
-  <app-filter [filterObj]="filterObj" (filterSearch)="searchLifeCycleEvents($event)"></app-filter>
-</div>
-<div class="con-pad">
+<div class="topnavbar-c2d bg-white py-2" >
+  <div class="row">
+    <ul class="nav">
+        <!-- Nav Item - Tables -->
+        <li class="nav-item" [ngClass]="{'active': displayMode === 'network_failure'}">
+          <a class="nav-link"  href="javascript:void(0)" (click)="onTabChange('network_failure');displayMode = 'network_failure'">
+            <i class="fa fa-fw fa-angle-right"></i>
+            <span>Network Failure Events</span></a>
+        </li>
+        <li class="nav-item"  [ngClass]="{'active': displayMode === 'machine_failure'}">
+          <a class="nav-link"  href="javascript:void(0)" (click)="onTabChange('machine_failure');displayMode = 'machine_failure'">
+            <i class="fa fa-fw fa-cog"></i>
+            <span>Machine Failure Events</span></a>
+        </li>
+      <!-- Nav Item - Charts -->
+      <li class="nav-item" [ngClass]="{'active': displayMode === 'history'}">
+        <a class="nav-link"  href="javascript:void(0)" (click)="onTabChange('history');displayMode = 'history'">
+          <i class="fa fa-fw fa-eye"></i>
+          <span>Historical MTTR</span></a>
+      </li>
+    </ul>
+    <!-- <div class="timer" *ngIf="timerObj">
+      <div>
+         <span class="hours" id="hour">{{timerObj?.hours}}</span>
+         <div class="smalltext">Hours</div>
+      </div>
+      <div>
+         <span class="minutes" id="minute">{{timerObj?.minutes}}</span>
+         <div class="smalltext">Minutes</div>
+      </div>
+      <div>
+         <span class="seconds" id="second">{{timerObj?.seconds}}</span>
+         <div class="smalltext">Seconds</div>
+      </div>
+      <p id="time-up"></p>
+   </div> -->
+
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <hr class="solid">
+    </div>
+  </div>
+  </div>
+
+
+<div class="con-pad-c2d">
+  <ng-container *ngIf="displayMode === 'network_failure' || displayMode === 'machine_failure' ">
+  <app-filter [filterObj]="filterObj" (filterSearch)="searchEvents($event)"></app-filter>
   <div class="row mx-auto">
 
     <div class="table-responsive  table-wrapper" style="max-height: calc(100vh - 13rem)">
@@ -12,20 +57,27 @@
             <th></th>
             <th>Event Start Time</th>
             <th>Event End Time</th>
-            <th>MTTR </th>
+            <th *ngIf="displayMode === 'machine_failure'">MTTR</th>
             <th>Reason</th>
             <th>Action</th>
           </thead>
+          <tfoot *ngIf="averageMTTR && averageMTTR > 0">
+            <tr>
+              <td colspan="3" class="text-right">Average MTTR</td>
+              <td colspan="3"> {{averageMTTRString}}</td>
+            </tr>
+          </tfoot>
           <tbody>
             <ng-container *ngIf="lifeCycleEvents.length > 0 && isFilterSelected">
               <tr *ngFor="let event of lifeCycleEvents; let i = index">
                 <td>{{i + 1}}</td>
                 <td>{{event.local_event_start_time}}</td>
                 <td>{{event.local_event_end_time}}</td>
-                <td>{{event.mttr}}</td>
+                <td *ngIf="displayMode === 'machine_failure'">{{event.mttr}}</td>
                 <td>
                   {{event.event_reason}}
                 </td>
+
                 <td>
                   <a href="javascript:void(0)" (click)="openModal(event)">
                     <i class="fa fa-edit"></i>
@@ -56,6 +108,7 @@
         </table>
     </div>
   </div>
+</ng-container>
 </div>
 
 

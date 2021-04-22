@@ -28,6 +28,9 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
   pageType: string;
   eventTableConfig: any = {};
   isEventAcknowledgeAPILoading = false;
+  averageMTTR: any;
+  displayMode: string;
+  averageMTTRString: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -36,12 +39,6 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
-      this.filterObj.device_id = this.device.gateway_id;
-    } else {
-      this.filterObj.device_id = this.device.device_id;
-    }
-
     this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
       this.pageType = params.get('listName');
       this.pageType = this.pageType.slice(0, -1);
@@ -49,51 +46,77 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     }));
     // this.filterObj.count = 50;
     this.filterObj.epoch = true;
-
   }
 
-  searchLifeCycleEvents(filterObj) {
+  onTabChange(type) {
+    this.filterObj = {};
+    this.averageMTTR = undefined;
+    this.averageMTTRString = undefined;
+    this.filterObj.epoch = true;
+    this.lifeCycleEvents = [];
+    if (type === 'machine_failure') {
+      this.filterObj.countNotShow = true;
+    } else {
+      this.filterObj.count = 10;
+    }
+  }
+
+  searchEvents(filterObj) {
     this.isFilterSelected = true;
     this.isLifeCycleEventsLoading = true;
     const obj = {...filterObj};
     const now = moment().utc();
     if (filterObj.dateOption === '5 mins') {
-      obj.event_end_date = now.unix();
-      obj.event_start_date = (now.subtract(5, 'minute')).unix();
+      obj.to_date = now.unix();
+      obj.from_date = (now.subtract(5, 'minute')).unix();
     } else if (filterObj.dateOption === '30 mins') {
-      obj.event_end_date = now.unix();
-      obj.event_start_date = (now.subtract(30, 'minute')).unix();
+      obj.to_date = now.unix();
+      obj.from_date = (now.subtract(30, 'minute')).unix();
     } else if (filterObj.dateOption === '1 hour') {
-      obj.event_end_date = now.unix();
-      obj.event_start_date = (now.subtract(1, 'hour')).unix();
+      obj.to_date = now.unix();
+      obj.from_date = (now.subtract(1, 'hour')).unix();
     } else if (filterObj.dateOption === '24 hour') {
-      obj.event_end_date = now.unix();
-      obj.event_start_date = (now.subtract(24, 'hour')).unix();
+      obj.to_date = now.unix();
+      obj.from_date = (now.subtract(24, 'hour')).unix();
     } else {
       if (filterObj.from_date) {
-        obj.event_start_date = (filterObj.from_date.unix());
+        obj.from_date = (filterObj.from_date.unix());
       }
       if (filterObj.to_date) {
-        obj.event_end_date = filterObj.to_date.unix();
+        obj.to_date = filterObj.to_date.unix();
       }
     }
-    if (!obj.event_start_date || !obj.event_end_date) {
+    if (!obj.from_date || !obj.to_date) {
       this.isLifeCycleEventsLoading = false;
       this.toasterService.showError('Date Time selection is required', 'View MTTR Data');
       return;
 
     }
     delete obj.dateOption;
+    delete obj.countNotShow;
     this.filterObj = filterObj;
     this.lifeCycleEvents = [];
-    this.apiSubscriptions.push(this.deviceService.getDeviceMTTRData(this.device.app, this.device.device_id, obj).subscribe(
+    let method;
+    if (this.displayMode === 'network_failure') {
+      method = this.deviceService.getDeviceNetworkFailureEvents(this.device.app, this.device.device_id, obj);
+    } else if (this.displayMode === 'machine_failure') {
+      delete obj.count;
+      method = this.deviceService.getDeviceMachineFailureEvents(this.device.app, this.device.device_id, obj);
+    }
+    this.apiSubscriptions.push(method.subscribe(
       (response: any) => {
         if (response?.data) {
           this.lifeCycleEvents = response.data;
+          if (this.displayMode === 'machine_failure') {
+            this.averageMTTR = response.average_mttr;
+            this.averageMTTRString = this.splitTime(response.average_mttr / 60);
+          }
           this.lifeCycleEvents .forEach((item, index) => {
             item.local_event_start_time = this.commonService.convertUTCDateToLocal(item.event_start_time);
             item.local_event_end_time = this.commonService.convertUTCDateToLocal(item.event_end_time);
-            item.mttr = this.splitTime(item.event_timespan_in_sec / 60);
+            if (this.displayMode === 'machine_failure') {
+              item.mttr = this.splitTime(item.event_timespan_in_sec / 60);
+            }
           });
         }
         this.isLifeCycleEventsLoading = false;
@@ -115,7 +138,7 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
   }
 
   openModal(event) {
-    this.selectedEvent = event;
+    this.selectedEvent = JSON.parse(JSON.stringify(event));
     $('#eventAcknowledgeModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -136,7 +159,7 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
       this.toasterService.showSuccess(response.message, 'Acknowledge Event');
       this.isEventAcknowledgeAPILoading = false;
       this.closeModal();
-      this.searchLifeCycleEvents(this.filterObj);
+      this.searchEvents(this.filterObj);
     }, error => {
       this.toasterService.showError(error.message, 'Acknowledge Event');
       this.isEventAcknowledgeAPILoading = false;

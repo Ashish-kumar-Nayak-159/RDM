@@ -52,6 +52,13 @@
     </h6>
     <h6  class="row col-12" *ngIf="isViewClicked">{{deviceCredentials.primary_connection_string}}</h6>
   </div>
+  <div *ngIf="pageType.toLowerCase() !== 'nonipdevice'" class="mt-1">
+    <h6 class="row col-12">
+      Asset Twin:
+      <a class="blue-font ml-2" href="javascript:void(0)" (click)="viewDeviceTwin()"> View</a>
+    </h6>
+    <h6  class="row col-12" *ngIf="isViewClicked">{{deviceCredentials.primary_connection_string}}</h6>
+  </div>
 <div class="text-center mt-5">
   <img class="img-fluid px-3 px-sm-2 mb-4"
   src="{{(blobStorageURL + deviceType?.metadata?.image?.url + blobSASToken)}}" alt="" style="width:15rem;">
@@ -79,4 +86,30 @@
   Reboot Format:<br />
 
 </div> -->
+
+<div class="modal right fade" id="deviceTwinModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">View Asset Twin</h5>
+        <button type="button" class="close"  aria-label="Close" (click)="onModalClose()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- <pre [innerHTML]="fileData | json" ></pre> -->
+        <json-editor *ngIf="!isDeviceTwinLoading" [options]="editorOptions" style="min-height: 40rem;" name="json"  [data]="deviceTwin">
+        </json-editor>
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x"  *ngIf="isDeviceTwinLoading"></i>
+        <!-- <iframe *ngIf="selectedTelemetry.type === 'PDF'"  [src]="sanitizeURL()" style="width: 100%;height: 80vh"></iframe> -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onModalClose()">
+          Cancel
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
 

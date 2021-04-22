@@ -9,6 +9,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { ApplicationService } from './../../../services/application/application.service';
 import { environment } from './../../../../environments/environment';
 import { ToasterService } from 'src/app/services/toaster.service';
+import { JsonEditorOptions } from 'ang-jsoneditor';
 declare var $: any;
 
 @Component({
@@ -39,6 +40,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
   componentState: any;
   deviceType: any;
   subscriptions: Subscription[] = [];
+  isDeviceTwinLoading = false;
+  deviceTwin: any;
+  editorOptions: JsonEditorOptions;
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -49,6 +53,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.editorOptions = new JsonEditorOptions();
+    this.editorOptions.mode = 'view';
+    this.editorOptions.statusBar = false;
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
 
@@ -152,6 +159,23 @@ export class OverviewComponent implements OnInit, OnDestroy {
   viewonnectionString() {
     this.isViewClicked = true;
     setTimeout(() => this.isViewClicked = false, 10000);
+  }
+
+  viewDeviceTwin() {
+    $('#deviceTwinModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    this.isDeviceTwinLoading = true;
+    this.subscriptions.push( this.deviceService.getDeviceTwin(this.contextApp.app, this.device.device_id).subscribe(
+      response => {
+        this.deviceTwin = response;
+        this.isDeviceTwinLoading = false;
+      }, error => this.isDeviceTwinLoading = false
+    ));
+  }
+
+  onModalClose() {
+    $('#deviceTwinModal').modal('hide');
+    this.isDeviceTwinLoading = false;
+    this.deviceTwin = undefined;
   }
 
   ngOnDestroy() {

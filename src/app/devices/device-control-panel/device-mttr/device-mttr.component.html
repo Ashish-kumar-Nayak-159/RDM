@@ -44,12 +44,12 @@
   </div>
 
 
-<div class="con-pad-c2d">
+<div class="con-pad-c2d" style="max-height: calc(100vh - 6rem);">
   <ng-container *ngIf="displayMode === 'network_failure' || displayMode === 'machine_failure' ">
   <app-filter [filterObj]="filterObj" (filterSearch)="searchEvents($event)"></app-filter>
   <div class="row mx-auto">
 
-    <div class="table-responsive  table-wrapper" style="max-height: calc(100vh - 13rem)">
+    <div class="table-responsive  table-wrapper" style="max-height: calc(100vh - 17rem)">
       <!-- <app-table [tableData]="lifeCycleEvents" [tableConfig]="eventTableConfig"
         [isTableFilterSelected]="isFilterSelected" [isTableDataLoading]="isLifeCycleEventsLoading"></app-table> -->
         <table class="table table-bordered  table-striped" id="deviceTable" width="100%" cellspacing="0">
@@ -57,13 +57,12 @@
             <th></th>
             <th>Event Start Time</th>
             <th>Event End Time</th>
-            <th *ngIf="displayMode === 'machine_failure'">MTTR</th>
-            <th>Reason</th>
+            <th *ngIf="displayMode === 'machine_failure'">TTR</th>
             <th>Action</th>
           </thead>
           <tfoot *ngIf="averageMTTR && averageMTTR > 0">
             <tr>
-              <td colspan="3" class="text-right">Average MTTR</td>
+              <td colspan="3" class="text-right">MTTR</td>
               <td colspan="3"> {{averageMTTRString}}</td>
             </tr>
           </tfoot>
@@ -75,10 +74,6 @@
                 <td>{{event.local_event_end_time}}</td>
                 <td *ngIf="displayMode === 'machine_failure'">{{event.mttr}}</td>
                 <td>
-                  {{event.event_reason}}
-                </td>
-
-                <td>
                   <a href="javascript:void(0)" (click)="openModal(event)">
                     <i class="fa fa-edit"></i>
                   </a>
@@ -88,13 +83,13 @@
             <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected">
               <tr>
                 <td colspan="6">
-                  No MTTR data found.
+                  No {{displayMode === 'network_failure' ? 'Network Failure Events' : 'Machine Failure Events'}} data found.
                 </td>
               </tr>
             </ng-container>
             <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">
               <tr>
-                <td colspan="6">Select filter and press search button to load the MTTR data.</td>
+                <td colspan="6">Select filter and press search button to load the TTR data.</td>
               </tr>
             </ng-container>
             <ng-container *ngIf="isLifeCycleEventsLoading">

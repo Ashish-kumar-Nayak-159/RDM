@@ -63,6 +63,8 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
 
   searchEvents(filterObj) {
     this.isFilterSelected = true;
+    this.averageMTTR = undefined;
+    this.averageMTTRString = undefined;
     this.isLifeCycleEventsLoading = true;
     const obj = {...filterObj};
     const now = moment().utc();
@@ -108,8 +110,8 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
         if (response?.data) {
           this.lifeCycleEvents = response.data;
           if (this.displayMode === 'machine_failure') {
-            this.averageMTTR = response.average_mttr;
-            this.averageMTTRString = this.splitTime(response.average_mttr / 60);
+            this.averageMTTR = response.mttr;
+            this.averageMTTRString = this.splitTime(response.mttr / 60);
           }
           this.lifeCycleEvents .forEach((item, index) => {
             item.local_event_start_time = this.commonService.convertUTCDateToLocal(item.event_start_time);

@@ -448,9 +448,9 @@ export class CONSTANTS {
     },
     {
       page: 'mttr',
-      system_name: 'MTTR',
+      system_name: 'TTR',
       url: '#device_mttr',
-      display_name: 'MTTR',
+      display_name: 'TTR',
       icon: 'fa fa-fw fa-wrench',
       visible: true,
       isTitle: false,
@@ -739,9 +739,9 @@ export class CONSTANTS {
     },
     {
       page: 'mttr',
-      system_name: 'MTTR',
+      system_name: 'TTR',
       url: '#device_mttr',
-      display_name: 'MTTR',
+      display_name: 'TTR',
       icon: 'fa fa-fw fa-wrench',
       visible: true,
       isTitle: false,

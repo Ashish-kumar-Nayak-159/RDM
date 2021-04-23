@@ -626,4 +626,15 @@ export class DeviceService {
       encodeURIComponent(app), encodeURIComponent(deviceId), encodeURIComponent(mttrId)), obj);
   }
 
+  getDeviceMTBFEvents(app, deviceId, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_MTBF_EVENTS,
+      encodeURIComponent(app), encodeURIComponent(deviceId)), {params});
+  }
+
 }

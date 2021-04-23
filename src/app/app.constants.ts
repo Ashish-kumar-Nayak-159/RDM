@@ -459,9 +459,9 @@ export class CONSTANTS {
     },
     {
       page: 'mtbf',
-      system_name: 'MTBF',
+      system_name: 'TBF',
       url: '#device_mtbf',
-      display_name: 'MTBF',
+      display_name: 'TBF',
       icon: 'fa fa-fw fa-wrench',
       visible: true,
       isTitle: false,
@@ -750,9 +750,9 @@ export class CONSTANTS {
     },
     {
       page: 'mtbf',
-      system_name: 'MTBF',
+      system_name: 'TBF',
       url: '#device_mtbf',
-      display_name: 'MTBF',
+      display_name: 'TBF',
       icon: 'fa fa-fw fa-wrench',
       visible: true,
       isTitle: false,

@@ -26,6 +26,7 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
   pageType: string;
   eventTableConfig: any = {};
   avrgMTBF: any;
+  avrgMTBFString: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -33,12 +34,8 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
-      this.filterObj.device_id = this.device.gateway_id;
-    } else {
-      this.filterObj.device_id = this.device.device_id;
-    }
-    this.filterObj.count = 50;
+
+    this.filterObj.countNotShow = true;
 
     this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
       this.pageType = params.get('listName');
@@ -49,8 +46,9 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
 
   }
 
-  searchLifeCycleEvents(filterObj) {
+  searchMTBFEvents(filterObj) {
     this.avrgMTBF = undefined;
+    this.avrgMTBFString = undefined;
     this.isFilterSelected = true;
     this.isLifeCycleEventsLoading = true;
     const obj = {...filterObj};
@@ -76,53 +74,21 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
       }
     }
     delete obj.dateOption;
+    delete obj.countNotShow;
     this.filterObj = filterObj;
     this.lifeCycleEvents = [];
-    this.apiSubscriptions.push(this.deviceService.getDeviceLifeCycleEvents(obj).subscribe(
+    this.apiSubscriptions.push(this.deviceService.getDeviceMTBFEvents(this.device.app, this.device.device_id, obj).subscribe(
       (response: any) => {
         if (response && response.data) {
-          const arr = [];
-          response.data.forEach((item, index) => {
-            const nextItem = response.data[index + 1];
-            if (item.event_type.includes('DeviceConnected') && nextItem && nextItem.event_type.includes('DeviceDisconnected')) {
-              const mttrObj = {
-                connected_event_time: item.created_date,
-                local_connected_event_time: this.commonService.convertUTCDateToLocal(item.created_date),
-                disconnected_event_time: nextItem.created_date,
-                local_disconnected_event_time: this.commonService.convertUTCDateToLocal(nextItem.created_date),
-                mttr: (moment(item.created_date).diff(moment(nextItem.created_date), 'minutes')),
-                mttrString: undefined,
-                reason: undefined
-              };
-              mttrObj.mttrString = this.splitTime(mttrObj.mttr);
-              if (mttrObj.mttr < 5) {
-                mttrObj.reason = 'Network Failure';
-              }
-              arr.push(mttrObj);
-            }
-          });
-          let avrg = 0;
-          arr.forEach((item, index) => {
-            const nextItem1 = arr[index + 1];
-            if (index % 2 === 0 && nextItem1) {
-              const mtbfObj = {
-                mttr_1_time: item.connected_time,
-                mttr_2_time: nextItem1.connected_time,
-                local_mttr_1_time: this.commonService.convertUTCDateToLocal(item.connected_event_time),
-                local_mttr_2_time: this.commonService.convertUTCDateToLocal(nextItem1.connected_event_time),
-                mtbf: (moment(item.connected_event_time).diff(moment(nextItem1.connected_event_time), 'minutes')),
-                reason: undefined,
-                mtbfString: undefined
-              };
-              mtbfObj.mtbfString = this.splitTime(mtbfObj.mtbf);
-              this.lifeCycleEvents.push(mtbfObj);
-              avrg = (avrg + mtbfObj.mtbf);
-            }
-          });
-          if (this.lifeCycleEvents.length > 0) {
-            this.avrgMTBF = this.splitTime(Number((avrg / this.lifeCycleEvents.length).toFixed(2)));
-          }
+          this.lifeCycleEvents = response.data;
+          this.avrgMTBF = response.mtbf;
+          this.avrgMTBFString = this.splitTime(response.mtbf / 60);
         }
+        this.lifeCycleEvents .forEach((item, index) => {
+          item.local_event_start_time = this.commonService.convertUTCDateToLocal(item.event_start_time);
+          item.local_event_end_time = this.commonService.convertUTCDateToLocal(item.event_end_time);
+          item.mtbf = this.splitTime(item.event_timespan_in_sec / 60);
+        });
         this.isLifeCycleEventsLoading = false;
       }, error => this.isLifeCycleEventsLoading = false
     ));

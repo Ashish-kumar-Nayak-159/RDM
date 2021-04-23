@@ -1,5 +1,5 @@
 <div class="topnavbar bg-white py-2">
-  <app-filter [filterObj]="filterObj" (filterSearch)="searchLifeCycleEvents($event)"></app-filter>
+  <app-filter [filterObj]="filterObj" (filterSearch)="searchMTBFEvents($event)"></app-filter>
 </div>
 <div class="con-pad">
   <div class="row mx-auto">
@@ -10,35 +10,35 @@
         <table class="table table-bordered  table-striped" id="deviceTable" width="100%" cellspacing="0">
           <thead>
             <th></th>
-            <th>MTTR-1 Time</th>
-            <th>MTTR-2 Time</th>
-            <th>MTBF</th>
+            <th>Event Start Time</th>
+            <th>Event End Time</th>
+            <th>TBF</th>
           </thead>
-          <tfoot *ngIf="lifeCycleEvents.length > 0 && isFilterSelected">
+          <tfoot *ngIf="avrgMTBF && avrgMTBF > 0 && isFilterSelected">
             <tr>
-              <td class="text-right" colspan="3"> Average MTBF</td>
-              <td colspan="2">{{avrgMTBF}}</td>
+              <td class="text-right" colspan="3"> MTBF</td>
+              <td colspan="2">{{avrgMTBFString}}</td>
             </tr>
           </tfoot>
           <tbody>
             <ng-container *ngIf="lifeCycleEvents.length > 0 && isFilterSelected">
               <tr *ngFor="let event of lifeCycleEvents; let i = index">
                 <td>{{i + 1}}</td>
-                <td>{{event.local_mttr_1_time}}</td>
-                <td>{{event.local_mttr_2_time}}</td>
-                <td>{{event.mtbfString}}</td>
+                <td>{{event.local_event_start_time}}</td>
+                <td>{{event.local_event_end_time}}</td>
+                <td>{{event.mtbf}}</td>
               </tr>
             </ng-container>
             <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected">
               <tr>
                 <td colspan="5">
-                  No MTBF data found.
+                  No TBF data found.
                 </td>
               </tr>
             </ng-container>
             <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">
               <tr>
-                <td colspan="5">Select filter and press search button to load the MTTR data.</td>
+                <td colspan="5">Select filter and press search button to load the TBF data.</td>
               </tr>
             </ng-container>
             <ng-container *ngIf="isLifeCycleEventsLoading">

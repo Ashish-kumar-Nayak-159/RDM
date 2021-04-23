@@ -60,10 +60,10 @@
             <th *ngIf="displayMode === 'machine_failure'">TTR</th>
             <th>Action</th>
           </thead>
-          <tfoot *ngIf="averageMTTR && averageMTTR > 0">
+          <tfoot *ngIf="averageMTTR && averageMTTR > 0 && isFilterSelected">
             <tr>
               <td colspan="3" class="text-right">MTTR</td>
-              <td colspan="3"> {{averageMTTRString}}</td>
+              <td colspan="2"> {{averageMTTRString}}</td>
             </tr>
           </tfoot>
           <tbody>
@@ -82,19 +82,19 @@
             </ng-container>
             <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected">
               <tr>
-                <td colspan="6">
+                <td colspan="5">
                   No {{displayMode === 'network_failure' ? 'Network Failure Events' : 'Machine Failure Events'}} data found.
                 </td>
               </tr>
             </ng-container>
             <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">
               <tr>
-                <td colspan="6">Select filter and press search button to load the TTR data.</td>
+                <td colspan="5">Select filter and press search button to load the TTR data.</td>
               </tr>
             </ng-container>
             <ng-container *ngIf="isLifeCycleEventsLoading">
               <tr>
-                <td colspan="6">
+                <td colspan="5">
                   <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
                 </td>
               </tr>

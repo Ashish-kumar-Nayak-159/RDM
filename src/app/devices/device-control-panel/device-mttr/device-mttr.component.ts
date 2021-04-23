@@ -1,5 +1,5 @@
 import { ToasterService } from './../../../services/toaster.service';
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -31,6 +31,9 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
   averageMTTR: any;
   displayMode: string;
   averageMTTRString: any;
+  @ViewChild('dtInput1', {static: false}) dtInput1: any;
+  @ViewChild('dtInput2', {static: false}) dtInput2: any;
+  today = new Date();
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -61,6 +64,63 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     }
   }
 
+  onDateOptionChange() {
+    if (this.filterObj.dateOption !== 'custom') {
+      this.filterObj.from_date = undefined;
+      this.filterObj.to_date = undefined;
+    }
+    if (this.dtInput1) {
+      this.dtInput1.value = null;
+    }
+    if (this.dtInput2) {
+      this.dtInput2.value = null;
+    }
+  }
+
+  onDateChange(event) {
+    this.filterObj.from_date = moment(event.value[0]).second(0).utc();
+    this.filterObj.to_date = moment(event.value[1]).second(0).utc();
+    if (this.dtInput2) {
+      this.dtInput2.value = null;
+    }
+    if (this.filterObj.dateOption !== 'date range') {
+      this.filterObj.dateOption = undefined;
+    }
+  }
+
+  onSingleDateChange(event) {
+    this.filterObj.from_date = moment(event.value).utc();
+    this.filterObj.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
+    const to = this.filterObj.to_date.unix();
+    const current = (moment().utc()).unix();
+    if (current < to) {
+      this.filterObj.to_date = moment().utc();
+    }
+    if (this.dtInput1) {
+      this.dtInput1.value = null;
+    }
+    if (this.filterObj.dateOption !== 'date') {
+      this.filterObj.dateOption = undefined;
+    }
+  }
+
+  clear() {
+    // this.filterSearch.emit(this.originalFilterObj);
+    this.filterObj = {};
+    this.filterObj.epoch = true;
+    if (this.displayMode === 'machine_failure') {
+      this.filterObj.countNotShow = true;
+    } else {
+      this.filterObj.count = 10;
+    }
+    if (this.dtInput1) {
+      this.dtInput1.value = null;
+    }
+    if (this.dtInput2) {
+      this.dtInput2.value = null;
+    }
+  }
+
   searchEvents(filterObj) {
     this.isFilterSelected = true;
     this.averageMTTR = undefined;
@@ -68,18 +128,20 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     this.isLifeCycleEventsLoading = true;
     const obj = {...filterObj};
     const now = moment().utc();
-    if (filterObj.dateOption === '5 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(5, 'minute')).unix();
-    } else if (filterObj.dateOption === '30 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(30, 'minute')).unix();
-    } else if (filterObj.dateOption === '1 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(1, 'hour')).unix();
-    } else if (filterObj.dateOption === '24 hour') {
+    if (filterObj.dateOption === '24 hour') {
       obj.to_date = now.unix();
       obj.from_date = (now.subtract(24, 'hour')).unix();
+    } else if (filterObj.dateOption === 'last 7 days') {
+      obj.to_date = now.unix();
+      obj.from_date = (now.subtract(7, 'days')).unix();
+    } else if (filterObj.dateOption === 'this week') {
+      const today = moment();
+      obj.from_date = today.startOf('isoWeek').unix();
+      obj.to_date = now.unix();
+    }  else if (filterObj.dateOption === 'this month') {
+      const today = moment();
+      obj.from_date = today.startOf('month').unix();
+      obj.to_date = now.unix();
     } else {
       if (filterObj.from_date) {
         obj.from_date = (filterObj.from_date.unix());
@@ -88,6 +150,8 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
         obj.to_date = filterObj.to_date.unix();
       }
     }
+    console.log(obj.from_date);
+    console.log(obj.to_date);
     if (!obj.from_date || !obj.to_date) {
       this.isLifeCycleEventsLoading = false;
       this.toasterService.showError('Date Time selection is required', 'View MTTR Data');
@@ -131,7 +195,7 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     const h = Math.floor((num - (d * 1440)) / 60);
     const m = Math.round(num % 60);
     if (d > 0){
-      return(d + ' D, ' + h + ' Hrs, ' + m + ' Mins');
+      return(d + ' Days, ' + h + ' Hrs, ' + m + ' Mins');
     } else if (h > 0) {
       return(h + ' Hrs, ' + m + ' Mins');
     } else {
@@ -141,6 +205,9 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
 
   openModal(event) {
     this.selectedEvent = JSON.parse(JSON.stringify(event));
+    if (!this.selectedEvent.event_metadata) {
+      this.selectedEvent.event_metadata = {};
+    }
     $('#eventAcknowledgeModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -155,7 +222,6 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
       return;
     }
     this.isEventAcknowledgeAPILoading = true;
-    this.selectedEvent.event_metadata = {};
     this.deviceService.updateDeviceMTTRData(this.device.app, this.device.device_id, this.selectedEvent.id, this.selectedEvent).
     subscribe((response: any) => {
       this.toasterService.showSuccess(response.message, 'Acknowledge Event');

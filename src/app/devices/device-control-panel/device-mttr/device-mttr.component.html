@@ -46,7 +46,54 @@
 
 <div class="con-pad-c2d" style="max-height: calc(100vh - 6rem);">
   <ng-container *ngIf="displayMode === 'network_failure' || displayMode === 'machine_failure' ">
-  <app-filter [filterObj]="filterObj" (filterSearch)="searchEvents($event)"></app-filter>
+
+    <div class="row">
+      <div class="col-xl-12 col-md-12 mb-12" >
+          <form>
+            <div class="form-group form-inline my-1">
+              <input type="number" min="1" class="form-control form-control-sm mr-1 my-1 record-input" id="inputEmail4" placeholder="No of Records"
+              [(ngModel)]="filterObj.count" name="count" *ngIf="!filterObj.countNotShow">
+              <div class="bg-dateRow form-group form-inline" id="dateRow"
+              [style.width]="(filterObj.dateOption === 'date' ? '23rem' : (filterObj.dateOption === 'date range' ? '33rem' : ''))">
+              <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
+              [(ngModel)]="filterObj.dateOption" name="dateOptions" (change)="onDateOptionChange()">
+                <option [ngValue]="undefined"> Quick Date Options </option>
+                <option [ngValue]="'24 hour'">Last 24 hours</option>
+                <option [ngValue]="'last 7 days'">Last 7 Days</option>
+                <option [ngValue]="'this week'">This Week</option>
+                <option [ngValue]="'this month'">This Month</option>
+                <option [ngValue]="'date'">Select Date</option>
+                <option [ngValue]="'date range'">Select Date Range</option>
+              </select>
+              <!-- <lab class="ml-1 mr-1">OR</lab el> -->
+              <ng-container *ngIf="filterObj.dateOption === 'date'">
+                <input #dt2Input [owlDateTime]="dt2" [max]="today"  (dateTimeChange)="onSingleDateChange($event);"
+                  class="form-control form-control-sm mx-2 my-1 w-10" [owlDateTimeTrigger]="dt2"
+                  placeholder="Select Date">
+                <span [owlDateTimeTrigger]="dt2"  class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
+                <owl-date-time #dt2 [pickerType]="'calendar'"></owl-date-time>
+              </ng-container>
+              <ng-container *ngIf="filterObj.dateOption === 'date range'">
+              <input [owlDateTime]="dt1" [selectMode]="'range'" [max]="today" #dt1Input
+              (dateTimeChange)="onDateChange($event)" class="form-control form-control-sm mx-1 my-1 date-range-picket-width" [owlDateTimeTrigger]="dt1" placeholder="Select Date Time">
+              <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
+              <owl-date-time #dt1></owl-date-time>
+              </ng-container>
+            </div>
+              <button type="button" class="btn btn-warning btn-sm ml-3 mr-1 my-1" title="Search" (click)="searchEvents(this.filterObj)" ><i class="fa fa-search fa-sm"></i></button>
+              <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear Filters" (click)="clear();">
+                <img class="filter-clear-icon" src="./assets/img/filter.svg"></button>
+            </div>
+           </form>
+      </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <hr class="solid">
+        </div>
+      </div>
+
+
   <div class="row mx-auto">
 
     <div class="table-responsive  table-wrapper" style="max-height: calc(100vh - 17rem)">
@@ -127,6 +174,11 @@
               <option [ngValue]="'Network Failure'" >Network Failure</option>
               <option [ngValue]="'Machine Failure'" >Machine Failure</option>
             </select>
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Notes:</label>
+            <input type="text"  class="form-control form-control-sm mr-1 my-1" id="inputEmail4" placeholder="Notes"
+              [(ngModel)]="selectedEvent.event_metadata.note" name="count">
           </div>
         </form>
       </div>

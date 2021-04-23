@@ -470,7 +470,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         (response: any) => {
           if (response?.data) {
             this.alertCondition = response.data[0];
-            if (!this.alertCondition?.visualization_widgets) {
+            if (this.alertCondition && !this.alertCondition.visualization_widgets) {
               this.alertCondition.visualization_widgets = [];
             }
             resolve();

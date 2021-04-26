@@ -51,6 +51,9 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   iotDevicesPage = 'Assets';
   legacyDevicesPage = 'Non IP Assets';
   iotGatewaysPage = 'Gateways';
+  currentPageView = 'list';
+  centerLatitude: any;
+  centerLongitude: any;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -72,6 +75,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       this.currentLimit = 20;
       this.insideScrollFunFlag = false;
       this.isFilterSelected = false;
+      this.currentPageView = 'list';
       this.deviceFilterObj = new DeviceListFilter();
       this.deviceFilterObj.app = this.contextApp.app;
       this.deviceFilterObj.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
@@ -306,7 +310,33 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     }
   }
 
+  onMarkerClick(infowindow, gm) {
+    if (gm.lastOpen != null) {
+      gm.lastOpen.close();
+    }
+    gm.lastOpen = infowindow;
+    infowindow.open();
+  }
 
+  onMarkerMouseOut(infowindow, gm) {
+    gm.lastOpen = null;
+    infowindow.close();
+  }
+
+
+  onCurrentPageViewChange(type) {
+    console.log(type);
+    if (type === 'map') {
+      console.log('here');
+      const center = this.commonService.averageGeolocation(this.devicesList);
+      console.log(center);
+      this.centerLatitude = (center?.latitude) || 23.0225;
+      this.centerLongitude = (center?.longitude) || 72.5714;
+      console.log(this.centerLatitude);
+      console.log(this.centerLongitude);
+    }
+    this.currentPageView = type;
+  }
 
   getTileName() {
     let selectedItem;

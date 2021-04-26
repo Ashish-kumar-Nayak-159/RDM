@@ -60,6 +60,7 @@ import { AddDeviceComponent } from './add-device/add-device.component';
 import { DeviceMttrComponent } from './device-control-panel/device-mttr/device-mttr.component';
 import { DeviceMtbfComponent } from './device-control-panel/device-mtbf/device-mtbf.component';
 import { AgmCoreModule } from '@agm/core';
+import { RuleEngineComponent } from './device-control-panel/rule-engine/rule-engine.component';
 
 @NgModule({
   declarations: [
@@ -106,7 +107,8 @@ import { AgmCoreModule } from '@agm/core';
     DeviceManagementDevicesComponent,
     AddDeviceComponent,
     DeviceMttrComponent,
-    DeviceMtbfComponent
+    DeviceMtbfComponent,
+    RuleEngineComponent
   ],
   imports: [
     CommonModule,

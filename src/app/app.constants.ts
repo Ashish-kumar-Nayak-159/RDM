@@ -439,9 +439,9 @@ export class CONSTANTS {
     },
     {
       page: 'maintenance',
-      system_name: 'Maintenances',
+      system_name: 'Maintenance',
       url: null,
-      display_name: 'Maintenances',
+      display_name: 'Maintenance',
       icon: null,
       visible: true,
       isTitle: true
@@ -467,45 +467,7 @@ export class CONSTANTS {
       isTitle: false,
       showAccordion: [],
       accordion_value: {}
-    },
-    {
-      page: 'maintenance_data',
-      system_name: 'Maintenance',
-      url: '#device_maintenance',
-      display_name: 'Maintenance',
-      icon: 'fa fa-fw fa-wrench',
-      visible: true,
-      isTitle: false,
-      showAccordion: [],
-      accordion_value: {}
-    },
-    // {
-    //   page: 'recommendations',
-    //   system_name: 'AI / ML Recommendations',
-    //   url: null,
-    //   display_name: 'AI / ML Recommendations',
-    //   icon: null,
-    //   visible: true,
-    //   isTitle: true
-    // },
-    // {
-    //   page: 'predictiveMaintenance',
-    //   system_name: 'Preventive Maintenance',
-    //   url: '#device_preventive_maintenance',
-    //   display_name: 'Preventive Maintenance',
-    //   icon: 'fa fa-fw fa-stream',
-    //   visible: true,
-    //   isTitle: false
-    // },
-    // {
-    //   page: 'predictiveMaintenance',
-    //   system_name: 'Predictive Maintenance',
-    //   url: '#device_predictive_maintenance',
-    //   display_name: 'Predictive Maintenance',
-    //   icon: 'fa fa-fw fa-stream',
-    //   visible: true,
-    //   isTitle: false
-    // }
+    }
   ];
 
   public static LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST = [
@@ -730,9 +692,9 @@ export class CONSTANTS {
     },
     {
       page: 'maintenance',
-      system_name: 'Maintenances',
+      system_name: 'Maintenance',
       url: null,
-      display_name: 'Maintenances',
+      display_name: 'Maintenance',
       icon: null,
       visible: true,
       isTitle: true
@@ -758,45 +720,7 @@ export class CONSTANTS {
       isTitle: false,
       showAccordion: [],
       accordion_value: {}
-    },
-    {
-      page: 'maintenance_data',
-      system_name: 'Maintenance',
-      url: '#device_maintenance',
-      display_name: 'Maintenance',
-      icon: 'fa fa-fw fa-wrench',
-      visible: true,
-      isTitle: false,
-      showAccordion: [],
-      accordion_value: {}
-    },
-    // {
-    //   page: 'recommendations',
-    //   system_name: 'AI / ML Recommendations',
-    //   url: null,
-    //   display_name: 'AI / ML Recommendations',
-    //   icon: null,
-    //   visible: true,
-    //   isTitle: true
-    // },
-    // {
-    //   page: 'predictiveMaintenance',
-    //   system_name: 'Preventive Maintenance',
-    //   url: '#device_preventive_maintenance',
-    //   display_name: 'Preventive Maintenance',
-    //   icon: 'fa fa-fw fa-stream',
-    //   visible: true,
-    //   isTitle: false
-    // },
-    // {
-    //   page: 'predictiveMaintenance',
-    //   system_name: 'Predictive Maintenance',
-    //   url: '#device_predictive_maintenance',
-    //   display_name: 'Predictive Maintenance',
-    //   icon: 'fa fa-fw fa-stream',
-    //   visible: true,
-    //   isTitle: false
-    // }
+    }
   ];
 
   public static GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST = [

@@ -281,7 +281,9 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     this.lifeCycleEvents.forEach((obj, i) => {
       const newObj = {...obj};
       const date = this.commonService.convertUTCDateToLocal(obj.start_time);
+      const endDate = this.commonService.convertUTCDateToLocal(obj.end_time);
       newObj.date = new Date(date);
+      newObj.endDate = new Date(endDate);
       data.splice(data.length, 0, newObj);
     });
     console.log(data);
@@ -295,23 +297,25 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
 
     // Create axes
     const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
-    const series = chart.series.push(new am4charts.LineSeries());
+    dateAxis.syncWithAxis = valueYAxis;
+    const series = chart.series.push(new am4charts.ColumnSeries());
     series.name =  'MTTR';
     series.yAxis = valueYAxis;
-    series.dataFields.dateX = 'date';
+    series.dataFields.openDateX = 'date';
+    series.dataFields.dateX = 'endDate';
     series.dataFields.valueY =  'mttr';
     series.strokeWidth = 2;
     series.strokeOpacity = 1;
     series.legendSettings.labelText = '{name}';
-    series.fillOpacity = 0;
-    series.tooltipText = 'Date: {dateX} \n {name}: [bold]{valueY}[/]';
+    // series.fillOpacity = 0;
+    series.tooltipText = 'Start Date: {openDateX} \n End Date: {dateX} \n {name}: [bold]{valueY}[/]';
 
-    const bullet = series.bullets.push(new am4charts.CircleBullet());
-    bullet.strokeWidth = 2;
-    bullet.circle.radius = 1.5;
+    // const bullet = series.bullets.push(new am4charts.CircleBullet());
+    // bullet.strokeWidth = 2;
+    // bullet.circle.radius = 1.5;
     valueYAxis.tooltip.disabled = true;
     valueYAxis.renderer.labels.template.fill = am4core.color('gray');
-    valueYAxis.renderer.minWidth = 35;
+    // valueYAxis.renderer.minWidth = 35;
 
     chart.legend = new am4charts.Legend();
     chart.logo.disabled = true;
@@ -322,7 +326,9 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     chart.cursor = new am4charts.XYCursor();
     chart.legend.itemContainers.template.togglable = false;
     dateAxis.dateFormatter = new am4core.DateFormatter();
-    dateAxis.dateFormatter.dateFormat = 'dd-MMM-yyyy';
+    chart.scrollbarX = new am4core.Scrollbar();
+    chart.scrollbarX.parent = chart.bottomAxesContainer;
+    // dateAxis.dateFormatter.dateFormat = 'W';
     this.chart = chart;
   }
 

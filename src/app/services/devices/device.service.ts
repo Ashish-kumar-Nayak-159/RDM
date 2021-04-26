@@ -637,4 +637,26 @@ export class DeviceService {
       encodeURIComponent(app), encodeURIComponent(deviceId)), {params});
   }
 
+  getHistoricalMTTRData(app, deviceId, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_HISTORICAL_MTTR_DATA,
+      encodeURIComponent(app), encodeURIComponent(deviceId)), {params});
+  }
+
+  getHistoricalMTBFData(app, deviceId, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_HISTORICAL_MTBF_DATA,
+      encodeURIComponent(app), encodeURIComponent(deviceId)), {params});
+  }
+
 }

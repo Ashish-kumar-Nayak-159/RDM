@@ -1,5 +1,5 @@
 import { ToasterService } from './../../../services/toaster.service';
-import { Component, Input, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ViewChild, NgZone } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -7,6 +7,8 @@ import { CONSTANTS } from 'src/app/app.constants';
 import { Device } from 'src/app/models/device.model';
 import { CommonService } from 'src/app/services/common.service';
 import { DeviceService } from 'src/app/services/devices/device.service';
+import * as am4core from '@amcharts/amcharts4/core';
+import * as am4charts from '@amcharts/amcharts4/charts';
 
 declare var $: any;
 @Component({
@@ -31,14 +33,17 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
   averageMTTR: any;
   displayMode: string;
   averageMTTRString: any;
-  @ViewChild('dtInput1', {static: false}) dtInput1: any;
-  @ViewChild('dtInput2', {static: false}) dtInput2: any;
+  chart: any;
+  @ViewChild('dt1Input', {static: false}) dtInput1: any;
+  @ViewChild('dt2Input', {static: false}) dtInput2: any;
+  @ViewChild('dt3Input', {static: false}) dtInput3: any;
   today = new Date();
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
     private route: ActivatedRoute,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private zone: NgZone
   ) { }
 
   ngOnInit(): void {
@@ -62,6 +67,9 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     } else {
       this.filterObj.count = 10;
     }
+    if (type === 'history' && this.chart) {
+      this.chart.dispose();
+    }
   }
 
   onDateOptionChange() {
@@ -75,6 +83,9 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     if (this.dtInput2) {
       this.dtInput2.value = null;
     }
+    if (this.dtInput3) {
+      this.dtInput3.value = null;
+    }
   }
 
   onDateChange(event) {
@@ -82,6 +93,9 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     this.filterObj.to_date = moment(event.value[1]).second(0).utc();
     if (this.dtInput2) {
       this.dtInput2.value = null;
+    }
+    if (this.dtInput3) {
+      this.dtInput3.value = null;
     }
     if (this.filterObj.dateOption !== 'date range') {
       this.filterObj.dateOption = undefined;
@@ -119,6 +133,9 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     if (this.dtInput2) {
       this.dtInput2.value = null;
     }
+    if (this.dtInput3) {
+      this.dtInput3.value = null;
+    }
   }
 
   searchEvents(filterObj) {
@@ -138,10 +155,25 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
       const today = moment();
       obj.from_date = today.startOf('isoWeek').unix();
       obj.to_date = now.unix();
-    }  else if (filterObj.dateOption === 'this month') {
+    } else if (filterObj.dateOption === 'this month') {
       const today = moment();
       obj.from_date = today.startOf('month').unix();
       obj.to_date = now.unix();
+    } else if (filterObj.dateOption === 'last 4 weeks') {
+      obj.from_date = moment().subtract(4, 'weeks').startOf('isoWeek').unix();
+      obj.to_date = moment().subtract(1, 'weeks').endOf('isoWeek').unix();
+    } else if (filterObj.dateOption === 'last month') {
+      obj.from_date = moment().subtract(1, 'month').startOf('month').unix();
+      obj.to_date = moment().subtract(1, 'month').endOf('month').unix();
+    } else if (filterObj.dateOption === 'last 3 month') {
+      obj.from_date = moment().subtract(3, 'month').startOf('month').unix();
+      obj.to_date = moment().subtract(1, 'month').endOf('month').unix();
+    } else if (filterObj.dateOption === 'last 6 month') {
+      obj.from_date = moment().subtract(6, 'month').startOf('month').unix();
+      obj.to_date = moment().subtract(1, 'month').endOf('month').unix();
+    } else if (filterObj.dateOption === 'last 12 month') {
+      obj.from_date = moment().subtract(12, 'month').startOf('month').unix();
+      obj.to_date = moment().subtract(1, 'month').endOf('month').unix();
     } else {
       if (filterObj.from_date) {
         obj.from_date = (filterObj.from_date.unix());
@@ -168,6 +200,9 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     } else if (this.displayMode === 'machine_failure') {
       delete obj.count;
       method = this.deviceService.getDeviceMachineFailureEvents(this.device.app, this.device.device_id, obj);
+    } else if (this.displayMode === 'history') {
+      delete obj.count;
+      method = this.deviceService.getHistoricalMTTRData(this.device.app, this.device.device_id, obj);
     }
     this.apiSubscriptions.push(method.subscribe(
       (response: any) => {
@@ -184,6 +219,9 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
               item.mttr = this.splitTime(item.event_timespan_in_sec / 60);
             }
           });
+          if (this.displayMode === 'history') {
+            setTimeout(() =>  this.plotChart(), 500);
+          }
         }
         this.isLifeCycleEventsLoading = false;
       }, error => this.isLifeCycleEventsLoading = false
@@ -235,8 +273,63 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
   }
 
 
+  plotChart() {
+
+    const chart = am4core.create('chartdiv', am4charts.XYChart);
+    const data = [];
+    // this.lifeCycleEvents.reverse();
+    this.lifeCycleEvents.forEach((obj, i) => {
+      const newObj = {...obj};
+      const date = this.commonService.convertUTCDateToLocal(obj.start_time);
+      newObj.date = new Date(date);
+      data.splice(data.length, 0, newObj);
+    });
+    console.log(data);
+    chart.data = data;
+    chart.dateFormatter.inputDateFormat = 'x';
+    chart.dateFormatter.dateFormat = 'dd-MMM-yyyy';
+    const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+    // Add data
+    // Set input format for the dates
+    // chart.dateFormatter.inputDateFormat = 'yyyy-MM-dd';
+
+    // Create axes
+    const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    const series = chart.series.push(new am4charts.LineSeries());
+    series.name =  'MTTR';
+    series.yAxis = valueYAxis;
+    series.dataFields.dateX = 'date';
+    series.dataFields.valueY =  'mttr';
+    series.strokeWidth = 2;
+    series.strokeOpacity = 1;
+    series.legendSettings.labelText = '{name}';
+    series.fillOpacity = 0;
+    series.tooltipText = 'Date: {dateX} \n {name}: [bold]{valueY}[/]';
+
+    const bullet = series.bullets.push(new am4charts.CircleBullet());
+    bullet.strokeWidth = 2;
+    bullet.circle.radius = 1.5;
+    valueYAxis.tooltip.disabled = true;
+    valueYAxis.renderer.labels.template.fill = am4core.color('gray');
+    valueYAxis.renderer.minWidth = 35;
+
+    chart.legend = new am4charts.Legend();
+    chart.logo.disabled = true;
+    chart.legend.maxHeight = 80;
+    chart.legend.scrollable = true;
+    chart.legend.labels.template.maxWidth = 30;
+    chart.legend.labels.template.truncate = true;
+    chart.cursor = new am4charts.XYCursor();
+    chart.legend.itemContainers.template.togglable = false;
+    dateAxis.dateFormatter = new am4core.DateFormatter();
+    dateAxis.dateFormatter.dateFormat = 'dd-MMM-yyyy';
+    this.chart = chart;
+  }
+
+
 
   ngOnDestroy() {
     this.apiSubscriptions.forEach(subscribe => subscribe.unsubscribe());
+    this.chart?.dispose();
   }
 }

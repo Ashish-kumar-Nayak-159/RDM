@@ -19,22 +19,6 @@
           <span>Historical MTTR</span></a>
       </li>
     </ul>
-    <!-- <div class="timer" *ngIf="timerObj">
-      <div>
-         <span class="hours" id="hour">{{timerObj?.hours}}</span>
-         <div class="smalltext">Hours</div>
-      </div>
-      <div>
-         <span class="minutes" id="minute">{{timerObj?.minutes}}</span>
-         <div class="smalltext">Minutes</div>
-      </div>
-      <div>
-         <span class="seconds" id="second">{{timerObj?.seconds}}</span>
-         <div class="smalltext">Seconds</div>
-      </div>
-      <p id="time-up"></p>
-   </div> -->
-
   </div>
   <div class="row">
     <div class="col-lg-12">
@@ -47,7 +31,7 @@
 <div class="con-pad-c2d" style="max-height: calc(100vh - 6rem);">
   <ng-container *ngIf="displayMode === 'network_failure' || displayMode === 'machine_failure' ">
 
-    <div class="row">
+    <div class="row mt-1">
       <div class="col-xl-12 col-md-12 mb-12" >
           <form>
             <div class="form-group form-inline my-1">
@@ -87,7 +71,8 @@
            </form>
       </div>
       </div>
-      <div class="row">
+
+      <div class="row mt-n2">
         <div class="col-lg-12">
           <hr class="solid">
         </div>
@@ -150,7 +135,51 @@
         </table>
     </div>
   </div>
-</ng-container>
+  </ng-container>
+  <ng-container *ngIf="displayMode === 'history'">
+    <div class="row mt-1">
+      <div class="col-xl-12 col-md-12 mb-12" >
+          <form>
+
+            <div class="form-group form-inline my-1" >
+              <div class="bg-dateRow form-group form-inline" id="dateRow"
+              [style.width]="(filterObj.dateOption === 'date' ? '23rem' : (filterObj.dateOption === 'date range' ? '33rem' : ''))">
+              <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
+              [(ngModel)]="filterObj.dateOption" name="dateOptions" (change)="onDateOptionChange()">
+                <option [ngValue]="undefined"> Quick Date Options </option>
+                <option [ngValue]="'last 4 weeks'">Last 4 Weeks</option>
+                <option [ngValue]="'last month'">Last Month</option>
+                <option [ngValue]="'last 3 month'">Last 3 Months</option>
+                <option [ngValue]="'last 6 month'">Last 6 Months</option>
+                <option [ngValue]="'last 12 month'">Last 12 Months</option>
+                <option [ngValue]="'date range'">Select Date Range</option>
+              </select>
+              <ng-container *ngIf="filterObj.dateOption === 'date range'">
+              <input [owlDateTime]="dt3" [selectMode]="'range'" [max]="today" #dt3Input
+              (dateTimeChange)="onDateChange($event)" class="form-control form-control-sm mx-1 my-1 date-range-picket-width" [owlDateTimeTrigger]="dt3" placeholder="Select Date Time">
+              <span [owlDateTimeTrigger]="dt3" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
+              <owl-date-time #dt3  [pickerType]="'calendar'" ></owl-date-time>
+              </ng-container>
+              </div>
+              <button type="button" class="btn btn-warning btn-sm ml-3 mr-1 my-1" title="Search" (click)="searchEvents(this.filterObj)" ><i class="fa fa-search fa-sm"></i></button>
+              <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear Filters" (click)="clear();">
+              <img class="filter-clear-icon" src="./assets/img/filter.svg"></button>
+            </div>
+          </form>
+      </div>
+    </div>
+    <div class="row mt-n2">
+      <div class="col-lg-12">
+        <hr class="solid">
+      </div>
+    </div>
+    <div class="row mx-auto">
+      <ng-container *ngIf="isLifeCycleEventsLoading"> <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></ng-container>
+      <ng-container  *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">Select filter and press search button to load the TTR data.</ng-container>
+      <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected"> No MTTR Data found.</ng-container>
+      <div id="chartdiv" *ngIf="!isLifeCycleEventsLoading && lifeCycleEvents.length > 0" [ngStyle]="{'width': '100%', 'height': '18rem'}"></div>
+    </div>
+  </ng-container>
 </div>
 
 

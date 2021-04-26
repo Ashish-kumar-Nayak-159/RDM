@@ -6,7 +6,8 @@ import { CONSTANTS } from 'src/app/app.constants';
 import { Device } from 'src/app/models/device.model';
 import { CommonService } from 'src/app/services/common.service';
 import { DeviceService } from 'src/app/services/devices/device.service';
-
+import * as am4core from '@amcharts/amcharts4/core';
+import * as am4charts from '@amcharts/amcharts4/charts';
 @Component({
   selector: 'app-device-mtbf',
   templateUrl: './device-mtbf.component.html',
@@ -30,6 +31,8 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
   @ViewChild('dtInput1', {static: false}) dtInput1: any;
   @ViewChild('dtInput2', {static: false}) dtInput2: any;
   today = new Date();
+  displayMode: string;
+  chart: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -47,6 +50,17 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
     }));
     this.filterObj.epoch = true;
 
+  }
+
+  onTabChange(type) {
+    this.filterObj = {};
+    this.avrgMTBF = undefined;
+    this.avrgMTBFString = undefined;
+    this.filterObj.epoch = true;
+    this.lifeCycleEvents = [];
+    if (type === 'history' && this.chart) {
+      this.chart.dispose();
+    }
   }
 
   searchMTBFEvents(filterObj) {
@@ -70,6 +84,21 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
       const today = moment();
       obj.from_date = today.startOf('month').unix();
       obj.to_date = now.unix();
+    } else if (filterObj.dateOption === 'last 4 weeks') {
+      obj.from_date = moment().subtract(4, 'weeks').startOf('isoWeek').unix();
+      obj.to_date = moment().subtract(1, 'weeks').endOf('isoWeek').unix();
+    } else if (filterObj.dateOption === 'last month') {
+      obj.from_date = moment().subtract(1, 'month').startOf('month').unix();
+      obj.to_date = moment().subtract(1, 'month').endOf('month').unix();
+    } else if (filterObj.dateOption === 'last 3 month') {
+      obj.from_date = moment().subtract(3, 'month').startOf('month').unix();
+      obj.to_date = moment().subtract(1, 'month').endOf('month').unix();
+    } else if (filterObj.dateOption === 'last 6 month') {
+      obj.from_date = moment().subtract(6, 'month').startOf('month').unix();
+      obj.to_date = moment().subtract(1, 'month').endOf('month').unix();
+    } else if (filterObj.dateOption === 'last 12 month') {
+      obj.from_date = moment().subtract(12, 'month').startOf('month').unix();
+      obj.to_date = moment().subtract(1, 'month').endOf('month').unix();
     } else {
       if (filterObj.from_date) {
         obj.from_date = (filterObj.from_date.unix());
@@ -81,8 +110,14 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
     delete obj.dateOption;
     delete obj.countNotShow;
     this.filterObj = filterObj;
+    let method;
+    if (this.displayMode === 'events') {
+      method = this.deviceService.getDeviceMTBFEvents(this.device.app, this.device.device_id, obj);
+    } else {
+      method = this.deviceService.getHistoricalMTBFData(this.device.app, this.device.device_id, obj);
+    }
     this.lifeCycleEvents = [];
-    this.apiSubscriptions.push(this.deviceService.getDeviceMTBFEvents(this.device.app, this.device.device_id, obj).subscribe(
+    this.apiSubscriptions.push(method.subscribe(
       (response: any) => {
         if (response && response.data) {
           this.lifeCycleEvents = response.data;
@@ -92,8 +127,11 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
         this.lifeCycleEvents .forEach((item, index) => {
           item.local_event_start_time = this.commonService.convertUTCDateToLocal(item.event_start_time);
           item.local_event_end_time = this.commonService.convertUTCDateToLocal(item.event_end_time);
-          item.mtbf = this.splitTime(item.event_timespan_in_sec / 60);
+          item.mtbfString = this.splitTime(item.event_timespan_in_sec / 60);
         });
+        if (this.displayMode === 'history') {
+          setTimeout(() =>  this.plotChart(), 500);
+        }
         this.isLifeCycleEventsLoading = false;
       }, error => this.isLifeCycleEventsLoading = false
     ));
@@ -165,12 +203,66 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
     }
   }
 
+  plotChart() {
+
+    const chart = am4core.create('chartdiv', am4charts.XYChart);
+    const data = [];
+    // this.lifeCycleEvents.reverse();
+    this.lifeCycleEvents.forEach((obj, i) => {
+      const newObj = {...obj};
+      const date = this.commonService.convertUTCDateToLocal(obj.start_time);
+      newObj.date = new Date(date);
+      data.splice(data.length, 0, newObj);
+    });
+    console.log(data);
+    chart.data = data;
+    chart.dateFormatter.inputDateFormat = 'x';
+    chart.dateFormatter.dateFormat = 'dd-MMM-yyyy';
+    const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+    // Add data
+    // Set input format for the dates
+    // chart.dateFormatter.inputDateFormat = 'yyyy-MM-dd';
+
+    // Create axes
+    const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    const series = chart.series.push(new am4charts.LineSeries());
+    series.name =  'MTBF';
+    series.yAxis = valueYAxis;
+    series.dataFields.dateX = 'date';
+    series.dataFields.valueY =  'mtbf';
+    series.strokeWidth = 2;
+    series.strokeOpacity = 1;
+    series.legendSettings.labelText = '{name}';
+    series.fillOpacity = 0;
+    series.tooltipText = 'Date: {dateX} \n {name}: [bold]{valueY}[/]';
+
+    const bullet = series.bullets.push(new am4charts.CircleBullet());
+    bullet.strokeWidth = 2;
+    bullet.circle.radius = 1.5;
+    valueYAxis.tooltip.disabled = true;
+    valueYAxis.renderer.labels.template.fill = am4core.color('gray');
+    valueYAxis.renderer.minWidth = 35;
+
+    chart.legend = new am4charts.Legend();
+    chart.logo.disabled = true;
+    chart.legend.maxHeight = 80;
+    chart.legend.scrollable = true;
+    chart.legend.labels.template.maxWidth = 30;
+    chart.legend.labels.template.truncate = true;
+    chart.cursor = new am4charts.XYCursor();
+    chart.legend.itemContainers.template.togglable = false;
+    dateAxis.dateFormatter = new am4core.DateFormatter();
+    dateAxis.dateFormatter.dateFormat = 'dd-MMM-yyyy';
+    this.chart = chart;
+  }
+
 
 
 
 
   ngOnDestroy() {
     this.apiSubscriptions.forEach(subscribe => subscribe.unsubscribe());
+    this.chart?.dispose();
   }
 
 }

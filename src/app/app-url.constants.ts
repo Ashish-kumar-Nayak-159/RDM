@@ -117,5 +117,7 @@ export class AppUrls {
   public static GET_MACHINE_FAILURE_EVENT = 'apps/{0}/devices/{1}/mttr_events';
   public static UPDATE_MTTR_RECORD = 'apps/{0}/devices/{1}/telemetry_loss_events/{2}';
   public static GET_MTBF_EVENTS = 'apps/{0}/devices/{1}/mtbf_events';
+  public static GET_HISTORICAL_MTTR_DATA = 'apps/{0}/devices/{1}/historical_mttr_events';
+  public static GET_HISTORICAL_MTBF_DATA = 'apps/{0}/devices/{1}/historical_mtbf_events';
   public static DELETE_USER_ACCESS = 'apps/{0}/users/{1}';
 }

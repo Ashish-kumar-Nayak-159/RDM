@@ -103,13 +103,13 @@ export class DeviceTypeControlPanelComponent implements OnInit, OnDestroy {
   setToggleClassForMenu() {
     if ($(window).width() > 768 && $('.sidebar').hasClass('toggled')) {
       $('.container-fluid').removeClass('sb-collapse');
-      $('.container-fluid').removeClass('sb-notoggle');
-      $('.container-fluid').addClass('sb-toggle');
+      $('.container-fluid').addClass('sb-notoggle');
+      $('.container-fluid').removeClass('sb-toggle');
     }
     if ($(window).width() > 768 && !$('.sidebar').hasClass('toggled')) {
       $('.container-fluid').removeClass('sb-collapse');
-      $('.container-fluid').removeClass('sb-toggle');
-      $('.container-fluid').addClass('sb-notoggle');
+      $('.container-fluid').addClass('sb-toggle');
+      $('.container-fluid').removeClass('sb-notoggle');
     }
     if ($(window).width() < 768 && $('.sidebar').hasClass('toggled')) {
       $('.container-fluid').removeClass('sb-collapse');

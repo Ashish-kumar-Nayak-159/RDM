@@ -50,7 +50,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
     this.deviceMethods = [];
     this.deviceMethodTableConfig = {
       freezed: this.deviceType.freezed,
-      tableHeight: 'calc(100vh - 14rem)',
+      tableHeight: 'calc(100vh - 11rem)',
       type: 'Direct Methods',
       data: [
         {

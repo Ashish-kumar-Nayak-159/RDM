@@ -50,7 +50,7 @@ export class DeviceTypePackageManagementComponent implements OnInit {
   setUpPackageData() {
     this.packageTableConfig = {
       type: 'Packages',
-      tableHeight: 'calc(100vh - 14rem)',
+      tableHeight: 'calc(100vh - 11rem)',
       freezed: this.deviceType.freezed,
       data: [
         {

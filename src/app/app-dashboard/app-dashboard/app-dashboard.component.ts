@@ -1,3 +1,4 @@
+import { ActivatedRoute } from '@angular/router';
 import { environment } from './../../../environments/environment';
 import { ChartService } from 'src/app/chart/chart.service';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
@@ -62,7 +63,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     private toasterService: ToasterService,
     private signalRService: SignalRService,
     private chartService: ChartService,
-    private cdr: ChangeDetectorRef  ) {
+    private route: ActivatedRoute  ) {
   }
 
   async ngOnInit(): Promise<void> {
@@ -79,13 +80,19 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       ]
     });
 
-
+    this.apiSubscriptions.push(this.route.fragment.subscribe(
+      fragment => {
+        if (fragment) {
+          // this.selectedTab = fragment;
+          this.onTabChange(fragment);
+        } else {
+          this.selectedTab = 'telemetry';
+        }
+    }));
     await this.getDevices(this.contextApp.user.hierarchy);
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
     }
-
-
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
       this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
@@ -311,6 +318,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.telemetryObj = undefined;
     this.telemetryInterval = undefined;
     this.selectedTab = type;
+    window.location.hash = type;
     this.filterObj.device = undefined;
     this.hierarchyArr = [];
     this.configureHierarchy = {};

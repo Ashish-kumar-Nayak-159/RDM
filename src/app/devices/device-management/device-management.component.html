@@ -4,7 +4,7 @@
       {{ tileData && tileData[0] ? tileData[0]?.value : "" }}
     </h5>
   </div>
-  <div id="telemetry-tabs" class="d-sm-flex justify-content-end" style="margin-right: 12rem; margin-top: -3.2rem">
+  <div id="telemetry-tabs" class="d-sm-flex justify-content-end" style="margin-right: 8rem; margin-top: -3.2rem">
     <nav>
       <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
         <a class="nav-item nav-link" [ngClass]="{'active' : selectedTab === 'iot-devices'}" id="nav-iot-device-tab" data-toggle="tab" href="#iot-devices" role="tab"
@@ -23,7 +23,7 @@
   </div>
 </div>
 <div class="container-tab-pad" style="margin-top: 6.7rem">
-  <div class="row pl-4" style="padding-right: 0.8rem">
+  <div class="row" style="padding-right: 0.8rem">
     <div id="tabs">
       <div class="tab-content px-3 px-sm-0" id="nav-tabContent">
         <div class="tab-pane fade show " [ngClass]="{'active' : selectedTab === 'iot-devices'}" id="iot-devices" role="tabpanel" aria-labelledby="nav-iot-device-tab">

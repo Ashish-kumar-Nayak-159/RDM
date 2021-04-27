@@ -43,7 +43,7 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
   setUpDocumentData() {
     this.docTableConfig = {
       type: 'Documents',
-      tableHeight: 'calc(100vh - 14rem)',
+      tableHeight: 'calc(100vh - 11rem)',
       freezed: this.deviceType.freezed,
       data: [
         {

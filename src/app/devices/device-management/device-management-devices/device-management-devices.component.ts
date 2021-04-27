@@ -145,7 +145,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
               item.hierarchyString = '';
               const keys = Object.keys(item.hierarchy);
               this.contextApp.hierarchy.levels.forEach((key, index) => {
-                item.hierarchyString += item.hierarchy[key] + ( keys[index + 1] ? ' / ' : '');
+                item.hierarchyString += item.hierarchy[key] ? (item.hierarchy[key] + ( keys[index + 1] ? ' / ' : '')) : '';
               });
             }
             if (this.componentState === CONSTANTS.NON_IP_DEVICE) {

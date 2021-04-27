@@ -153,20 +153,20 @@
     </ng-container>
 
   </div>
-  <div class="con-pad" id="mainChartDiv" style="max-height: calc(100vh - 20rem);margin-top: 8rem;">
-  <div class="row mt-2 col-12 ml-1" *ngIf="historyData.length > 0 && isFilterSelected && !isHistoryAPILoading">
+  <div class="con-pad" id="mainChartDiv" style="max-height: calc(100vh - 18rem);margin-top: 7rem;">
+  <div class="row mt-n2 col-12 ml-1" *ngIf="historyData.length > 0 && isFilterSelected && !isHistoryAPILoading">
 
     <div class="col-md-3 form-group " *ngFor="let prop of propList">
       <input type="checkbox" class="form-check-input" id="{{prop}}"
       name="{{prop}}" (change)="toggleProperty(prop)" [checked]="selectedPropertyForChart.indexOf(prop) !== -1">
-      <label class="form-check-label" for="{{prop}}">{{getPropertyName(prop)}}</label>
+      <label class="form-check-label text-elipsis" title="{{getPropertyName(prop)}}" for="{{prop}}">{{getPropertyName(prop)}}</label>
     </div>
 
-    <div class="col-md-3 pull-right" *ngIf="selectedWidgets.length > 0">
-      <input type="checkbox" class="form-check-input" id="threshold"
-        name="threshold" (change)="toggleThreshold()" [(ngModel)]="showThreshold">
-        <label class="form-check-label" for="threshold">Show Threshold</label>
-    </div>
+      <!-- <div class="col-md-3 pull-right" *ngIf="selectedWidgets.length > 0">
+        <input type="checkbox" class="form-check-input" id="threshold"
+          name="threshold" (change)="toggleThreshold()" [(ngModel)]="showThreshold">
+          <label class="form-check-label" for="threshold">Show Threshold</label>
+      </div> -->
   </div>
   <div id="widgetContainer" class="showLayout"></div>
 </div>

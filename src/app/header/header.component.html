@@ -3,9 +3,14 @@
 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top" *ngIf="!isLoginRoute && userData">
 
   <!-- Sidebar Toggle (Topbar) -->
-  <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3" (click)="onSideBarToggleTopClick()">
+  <!-- <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3" (click)="onSideBarToggleTopClick()">
     <i class="fa fa-bars"></i>
+  </button> -->
+
+  <button id="sidebarToggleTop" class="btn btn-link rounded-circle" (click)="onSideBarToggleTopClick()">
+    <i class="fa fa-bars text-primary"></i>
   </button>
+
 
   <!-- Sidebar - Brand -->
   <a class="d-flex align-items-center justify-content-center" *ngIf="!userData?.is_super_admin"
@@ -17,8 +22,8 @@
     <img src="../../assets/img/logo.png" class="d-block img-fluid img-logo">
   </a>
 
-  <div class="topbar-divider ml-3 mr-4 mt-n2 d-none d-xl-block"></div>
-
+  <!-- <div class="topbar-divider ml-3 mr-4 mt-n2 d-none d-xl-block"></div> -->
+<!--
   <nav aria-label="breadcrumb" class="d-none d-xl-block">
     <ol class="breadcrumb py-2 mb-1">
       <li class="breadcrumb-item active" aria-current="page" >
@@ -29,7 +34,7 @@
       </ng-container>
       </li>
     </ol>
-  </nav>
+  </nav> -->
 
 
 
@@ -74,6 +79,27 @@
     <!-- </li> -->
 
 
+    <div class="topbar-divider d-none d-sm-block"></div>
+
+    <li class="nav-item mx-1">
+      <a class="nav-link" href="javascript:void(0)" title="'Telemetry'" (click)="navigateToDashboard('telemetry')" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-globe fa-fw"></i>
+        <!-- Counter - Messages -->
+      </a>
+
+    </li>
+
+    <div class="topbar-divider d-none d-sm-block"></div>
+
+    <!-- Nav Item - Alerts -->
+    <li class="nav-item no-arrow mx-1">
+      <a class="nav-link" href="javascript:void(0)" title="'Alert'" (click)="navigateToDashboard('alert')" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-bell fa-fw"></i>
+        <!-- Counter - Alerts -->
+      </a>
+      <!-- Dropdown - Alerts -->
+
+    </li>
 
 
     <div class="topbar-divider d-none d-sm-block"></div>
@@ -85,12 +111,15 @@
         <!-- <span>{{contextApp?.user.role}}</span>
         <br/>
         <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{userData?.name}}</span> -->
-        <span class="mr-2 d-none d-lg-block">
+        <!-- <span class="mr-2 d-none d-lg-block"> -->
+          <img class="img-profile rounded-circle mr-3" src="../../assets/img/user.jpg">
+          <span class=" d-none d-lg-block">
+
           <span class="text-gray-600">{{userData?.name}}</span>
           <small class="text-muted-dark d-block ">{{contextApp?.user.role}}</small>
         </span>
 
-        <img class="img-profile rounded-circle" src="../../assets/img/user.jpg">
+        <!-- <img class="img-profile rounded-circle" src="../../assets/img/user.jpg"> -->
       </a>
       <!-- Dropdown - User Information -->
       <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">

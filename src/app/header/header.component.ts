@@ -105,6 +105,11 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  navigateToDashboard(type) {
+    const url = 'applications/' + this.contextApp.app + '/dashboard#' + type;
+    this.router.navigateByUrl(url);
+  }
+
   openChangePasswordModal() {
     this.isResetPassword = true;
     // $('#changePasswordModal').modal({

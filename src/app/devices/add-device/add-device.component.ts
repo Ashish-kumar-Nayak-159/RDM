@@ -173,7 +173,7 @@ export class AddDeviceComponent implements OnInit {
       average: modelObj?.telemetry_frequency.average || 30
     };
     this.deviceDetail.tags.hierarchy = JSON.stringify(this.deviceDetail.tags.hierarchy_json );
-    this.deviceDetail.tags.created_by = this.userData.email + '(' + this.userData.name + ')';
+    this.deviceDetail.tags.created_by = this.userData.email + ' (' + this.userData.name + ')';
     this.deviceDetail.app = this.contextApp.app;
     delete this.deviceDetail.tags.reserved_tags;
     this.deviceDetail.tags.category = this.componentState === CONSTANTS.NON_IP_DEVICE ?
@@ -211,10 +211,11 @@ export class AddDeviceComponent implements OnInit {
 
   updateGatewayTags(deviceObj) {
     const obj = {
-      device_id: deviceObj.gateway_id,
-      device_partition_key: {}
+      device_id: deviceObj.device_id,
+      partition_key: deviceObj.tags.partition_key,
+      model_id: deviceObj.tags.device_type
     };
-    obj.device_partition_key[deviceObj.device_id] = deviceObj.tags.partition_key;
+    // obj.partition_key[deviceObj.device_id] = deviceObj.tags.partition_key;
     this.subscriptions.push(this.deviceService.attachLegacyDeviceToGateway(this.contextApp.app, deviceObj.gateway_id, obj).subscribe(
       (response: any) => {
         this.isCreateDeviceAPILoading = false;

@@ -76,11 +76,11 @@
 <!-- Content Row -->
 
 <!-- DataTales Example -->
-<div class="contain-pad" style="margin-top: 14.5rem!important;max-height: calc(100vh - 16.5rem)">
+<div class="contain-pad" style="margin-top: 12.5rem!important;max-height: calc(100vh - 14.5rem)">
 <div class="mb-4 ">
 
   <div class="" *ngIf="currentPageView === 'list'">
-    <div class="table-wrapper" id="table-wrapper" style="max-height: calc(100vh - 20rem)">
+    <div class="table-wrapper" id="table-wrapper" style="max-height: calc(100vh - 18rem)">
       <table class="table table-bordered  table-striped" id="deviceTable" width="100%" cellspacing="0">
         <thead >
           <th></th>
@@ -140,7 +140,8 @@
   </div>
   <ng-container *ngIf="currentPageView === 'map'">
     <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" >
-      <agm-marker-cluster imagePath="https://raw.githubusercontent.com/googlemaps/v3-utility-library/master/markerclustererplus/images/m">
+      <agm-marker-cluster
+      imagePath="https://raw.githubusercontent.com/googlemaps/v3-utility-library/master/markerclustererplus/images/m">
     <ng-container  *ngFor="let device of devicesList; let i = index; ">
       <agm-marker *ngIf="device.latitude && device.longitude"
       [latitude]="device.latitude" [longitude]="device.longitude"

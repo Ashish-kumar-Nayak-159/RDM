@@ -84,18 +84,18 @@ export class CONSTANTS {
       showAccordion: [],
       priority: 1
     },
-    {
-      page: 'Dashboard',
-      system_name: 'Dashboard',
-      url: 'applications/:appName/dashboard',
-      display_name: 'Dashboard',
-      icon: 'fa fa-fw fa-bar-chart',
-      visible: true,
-      showAccordion: [
-        { name: 'Title', value: 'Dashboard'},
-      ],
-      priority: 1
-    },
+    // {
+    //   page: 'Dashboard',
+    //   system_name: 'Dashboard',
+    //   url: 'applications/:appName/dashboard',
+    //   display_name: 'Dashboard',
+    //   icon: 'fa fa-fw fa-bar-chart',
+    //   visible: true,
+    //   showAccordion: [
+    //     { name: 'Title', value: 'Dashboard'},
+    //   ],
+    //   priority: 1
+    // },
     {
       page: 'Assets',
       system_name: 'IoT Assets',
@@ -975,10 +975,10 @@ export class CONSTANTS {
       isTitle: false
     },
     {
-      page: 'device_methods',
-      system_name: 'Device Methods',
+      page: 'direct_methods',
+      system_name: 'Direct Methods',
       url: '#device_type_methods',
-      display_name: 'Device Methods',
+      display_name: 'Direct Methods',
       icon: 'fa fa-fw fa-archive',
       visible: true,
       isTitle: false

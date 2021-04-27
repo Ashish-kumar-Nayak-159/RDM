@@ -372,3 +372,20 @@ thead th{
 .gm-ui-hover-effect {
   opacity: 0!important;
 }
+
+.no-topnavbar {
+  margin-top: 3.5rem;
+  max-height: calc(100vh - 4.5rem);
+}
+
+.two-row-topbar {
+  margin-top: 10rem;
+  max-height: calc(100vh - 11.5rem);
+}
+
+.text-elipsis {
+  text-overflow: ellipsis;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+}

@@ -1,3 +1,4 @@
+import { AgmMarkerClustererModule } from '@agm/markerclusterer';
 import { VisualizationModule } from './../visualization/visualization.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -130,7 +131,8 @@ import { RuleEngineComponent } from './device-control-panel/rule-engine/rule-eng
     AccordionModule.forRoot(),
     AgmCoreModule.forRoot({
       libraries: ['places']
-    })
+    }),
+    AgmMarkerClustererModule
   ],
   exports: [
     FilterComponent,

@@ -61,7 +61,6 @@ import { AddDeviceComponent } from './add-device/add-device.component';
 import { DeviceMttrComponent } from './device-control-panel/device-mttr/device-mttr.component';
 import { DeviceMtbfComponent } from './device-control-panel/device-mtbf/device-mtbf.component';
 import { AgmCoreModule } from '@agm/core';
-import { ProtocolFieldsComponent } from './add-device/protocol-fields/protocol-fields.component';
 import { RuleEngineComponent } from './device-control-panel/rule-engine/rule-engine.component';
 
 @NgModule({
@@ -110,8 +109,7 @@ import { RuleEngineComponent } from './device-control-panel/rule-engine/rule-eng
     AddDeviceComponent,
     DeviceMttrComponent,
     DeviceMtbfComponent,
-    RuleEngineComponent,
-    ProtocolFieldsComponent
+    RuleEngineComponent
   ],
   imports: [
     CommonModule,

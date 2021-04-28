@@ -7,6 +7,7 @@ import { CommonService } from './../../services/common.service';
 import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
 import * as moment from 'moment';
 import { Device } from 'src/app/models/device.model';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 declare var $: any;
 @Component({
   selector: 'app-add-device',
@@ -30,6 +31,8 @@ export class AddDeviceComponent implements OnInit {
   deviceTypes: any[] = [];
   userData: any;
   subscriptions: any[] = [];
+  setupForm: FormGroup;
+  protocolList = CONSTANTS.PROTOCOLS;
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -56,7 +59,9 @@ export class AddDeviceComponent implements OnInit {
     });
     this.getThingsModels(this.componentState);
     this.deviceDetail = new Device();
-    this.deviceDetail.metadata = {};
+    this.deviceDetail.metadata = {
+      setup_details: {}
+    };
     this.deviceDetail.tags = {};
     this.deviceDetail.tags.app = this.contextApp.app;
     this.deviceDetail.tags.hierarchy_json = JSON.parse(JSON.stringify(this.contextApp.user.hierarchy));
@@ -109,6 +114,31 @@ export class AddDeviceComponent implements OnInit {
       };
       const obj = {...this.deviceDetail.tags, ...modelObj.tags};
       this.deviceDetail.tags = obj;
+    }
+    this.setupFormData();
+  }
+
+  setupFormData() {
+    if (this.deviceDetail.tags.protocol === 'ModbusTCPMaster') {
+      this.setupForm = new FormGroup({
+        host_address: new FormControl(null, [Validators.required]),
+        port_number: new FormControl(null, [Validators.required]),
+        slave_id: new FormControl(null, [Validators.required]),
+      });
+    } else if (this.deviceDetail.tags.protocol === 'ModbusRTUMaster') {
+      this.setupForm = new FormGroup({
+        baud_rate: new FormControl(null, [Validators.required]),
+        data_bits: new FormControl(null, [Validators.required, Validators.min(5), Validators.max(9)]),
+        slave_id: new FormControl(null, [Validators.required]),
+        parity: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(2)]),
+        stop_bits: new FormControl(null, [Validators.required]),
+      });
+    } else  if (this.deviceDetail.tags.protocol === 'SiemensTCPIP') {
+      this.setupForm = new FormGroup({
+        host_address: new FormControl(null, [Validators.required]),
+        rack: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(7)]),
+        slot: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(31)]),
+      });
     }
   }
 
@@ -173,6 +203,9 @@ export class AddDeviceComponent implements OnInit {
       max: modelObj?.telemetry_frequency.max || 60,
       average: modelObj?.telemetry_frequency.average || 30
     };
+    this.deviceDetail.metadata.setup_details = this.setupForm.value;
+    const protocol = this.protocolList.find(protocolObj => protocolObj.name === this.deviceDetail.tags.protocol);
+    this.deviceDetail.metadata.deviceApp = protocol.metadata?.app;
     this.deviceDetail.tags.hierarchy = JSON.stringify(this.deviceDetail.tags.hierarchy_json );
     this.deviceDetail.tags.created_by = this.userData.email + ' (' + this.userData.name + ')';
     this.deviceDetail.app = this.contextApp.app;

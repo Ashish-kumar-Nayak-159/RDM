@@ -25,7 +25,7 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
   thingsModelFilterObj: any = {};
   isCreateThingsModelAPILoading = false;
   constantData = CONSTANTS;
-  protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
+  protocolList = CONSTANTS.PROTOCOLS;
   connectivityList: string[] = [];
   isFileUploading = false;
   originalThingsModelFilterObj: any;
@@ -185,7 +185,7 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
         cloud_connectivity: this.thingsModel.cloud_connectivity
       };
     }
-    await this.getProtocolList();
+    // await this.getProtocolList();
     if (this.thingsModel.id) {
       this.getConnectivityData();
       this.thingsModel.tags = {
@@ -209,35 +209,11 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
     // this.blobState.uploadItems(files);
   }
 
-  getProtocolList() {
-    const data = JSON.parse(JSON.stringify(CONSTANTS.PROTOCOL_CONNECTIVITY_LIST));
-    data.forEach(protocol => {
-      if (this.thingsModel.metadata.model_type === CONSTANTS.IP_DEVICE || this.thingsModel.metadata.model_type === CONSTANTS.IP_GATEWAY) {
-        if (!protocol.name.includes('IP')) {
-          protocol.display = false;
-        }
-        if (this.thingsModel.metadata.model_type === CONSTANTS.IP_GATEWAY && protocol.name.includes('IP')) {
-          protocol.name = protocol.name.replace('Asset', 'Gateway');
-          const list = [];
-          protocol.connectivity.forEach(item => {
-            list.push(item.replace('Asset', 'Gateway'));
-          });
-          protocol.connectivity = JSON.parse(JSON.stringify(list));
-        }
-      } else {
-        if (protocol.name.includes('IP')) {
-          protocol.display = false;
-        }
-      }
-    });
-    this.protocolList = JSON.parse(JSON.stringify(data));
-
-  }
-
   getConnectivityData() {
     this.thingsModel.tags.cloud_connectivity = undefined;
     if (this.thingsModel && this.thingsModel.tags && this.thingsModel.tags.protocol) {
-      this.connectivityList = this.protocolList.find(protocol => protocol.name === this.thingsModel.tags.protocol)?.connectivity || [];
+      this.connectivityList = this.protocolList.find(protocol => protocol.name === this.thingsModel.tags.protocol)?.cloud_connectivity
+       || [];
     }
   }
 

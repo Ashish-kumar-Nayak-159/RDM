@@ -153,7 +153,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       if (!this.isFilterSelected) {
         this.searchDevices();
       }
-      this.protocolList = CONSTANTS.PROTOCOL_CONNECTIVITY_LIST;
+      this.protocolList = CONSTANTS.PROTOCOLS;
 
       const keys = Object.keys(this.contextApp.user.hierarchy);
       this.hierarchyDropdown = [];
@@ -213,27 +213,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
           valueclass: ''
         });
       }
-      const data = JSON.parse(JSON.stringify(this.protocolList));
-      data.forEach(protocol => {
-        if (this.componentState === CONSTANTS.IP_DEVICE || this.componentState === CONSTANTS.IP_GATEWAY) {
-          if (!protocol.name.includes('IP')) {
-            protocol.display = false;
-          }
-          if (this.componentState === CONSTANTS.IP_GATEWAY && protocol.name.includes('IP')) {
-            protocol.name = protocol.name.replace('Asset', 'Gateway');
-            const list = [];
-            protocol.connectivity.forEach(item => {
-              list.push(item.replace('Asset', 'Gateway'));
-            });
-            protocol.connectivity = JSON.parse(JSON.stringify(list));
-          }
-        } else {
-          if (protocol.name.includes('IP')) {
-            protocol.display = false;
-          }
-        }
-      });
-      this.protocolList = JSON.parse(JSON.stringify(data));
 
 
     }));
@@ -460,13 +439,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       }
       }
     });
-  }
-
-  getConnectivityData() {
-    this.deviceDetail.tags.cloud_connectivity = undefined;
-    if (this.deviceDetail && this.deviceDetail.tags && this.deviceDetail.tags.protocol) {
-      this.connectivityList = (this.protocolList.filter(protocol => protocol.name === this.deviceDetail.tags.protocol)[0]).connectivity;
-    }
   }
 
   onTableFunctionCall(obj) {

@@ -2,57 +2,23 @@ import { environment } from 'src/environments/environment';
 
 export class CONSTANTS {
 
-  // device tags list based on device protocol
-  public static PROTOCOL_CONNECTIVITY_LIST = [
-    {
-      name: 'IP Device (WiFi)',
-      connectivity: ['IP Device -> Azure IOT Hub SDK -> WiFi -> Cloud', 'IP Device -> MQTT Client -> WiFi -> Cloud'],
-      display: true
-    },
-    {
-      name: 'IP Device (SIM)',
-      connectivity: ['IP Device -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Device -> MQTT Client -> SIM -> Cloud'],
-      display: true
-    },
-    {
-      name: 'BLE',
-      connectivity: ['BLE Asset -> Mobile App -> Azure IOT Hub SDK -> Cloud', 'BLE Asset -> Mobile App -> MQTT Client -> Cloud',
-    'BLE Asset -> Gateway -> Azure IOT Hub SDK -> Cloud', 'BLE Asset -> Gateway -> MQTT Client -> Cloud'],
-      display: true
-    },
-    {
-    name: 'LoRa',
-      connectivity: ['LoRa Node -> LoRa Public Gateway -> Azure Integration -> Cloud',
-      'LoRa Node -> LoRa Private Gateway -> Azure IOT Hub SDK -> Cloud',
-      'LoRa Node -> LoRa Private Gateway -> MQTT Client -> Cloud'],
-      display: true
-    },
-    {
-      name: 'ModBus',
-      connectivity: ['ModBus Asset -> IoT Gateway -> Azure IoT Hub SDK -> Azure Cloud'],
-      display: true
-    },
-    {
-      name: 'NB-IoT',
-      connectivity: ['NB-IoT Node -> Public Gateway -> Azure Integration -> Cloud'],
-      display: true
-    },
-    {
-      name: 'LwM2M',
-      connectivity: ['LwM2M Node -> LwM2M Server -> Azure Integration -> Cloud'],
-      display: true
-    },
-    {
-      name: 'PLC',
-      connectivity: ['PLC Protocol -> IoT Gateway -> Azure IoT Hub SDK -> Azure Cloud'],
-      display: true
-    },
-    {
-      name: 'Other',
-      connectivity: ['Custom Protocol -> IoT Gateway -> Azure IoT Hub SDK -> Azure Cloud', 'Custom Protocol -> IoT Gateway -> MQTT Client -> Azure Cloud'],
-      display: true
-    }
+  public static DEVICEAPPPS = [
+    {id: 4, name: 'CommunicationApp', display_name: 'Communication App', metadata: {}, deleted: false},
+    {id: 5, name: 'DataCacherApp', display_name: 'Data Cacher App', metadata: {}, deleted: false},
+    {id: 2, name: 'ModbusRTUApplication', display_name: 'Modbus RTU App', metadata: {}, deleted: false},
+    {id: 1, name: 'ModbusTCPApplication', display_name: 'Modbus TCP App', metadata: {}, deleted: false},
+    {id: 3, name: 'SiemensTCPIPApplication', display_name: 'Siemens TCP/IP App', metadata: {}, deleted: false}
   ];
+
+  public static PROTOCOLS = [
+    {id: 1, asset_type: 'IoT Device', name: 'IP Device (WiFi)', display_name: 'IP Device (WiFi)', cloud_connectivity: ['IP Device -> Azure IOT Hub SDK -> WiFi -> Cloud', 'IP Device -> MQTT Client -> WiFi -> Cloud'], metadata: {}, deleted: false},
+    {id: 2, asset_type: 'IoT Device', name: 'IP Device (SIM)', display_name: 'IP Device (SIM)', cloud_connectivity: ['IP Device -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Device -> MQTT Client -> SIM -> Cloud'], metadata: {}, deleted: false},
+    {id: 3, asset_type: 'IoT Gateway', name: 'IP Gateway (WiFi)', display_name: 'IP Gateway (WiFi)', cloud_connectivity: ['IP Gateway -> Azure IOT Hub SDK -> WiFi -> Cloud', 'IP Gateway -> MQTT Client -> WiFi -> Cloud'], metadata: {}, deleted: false},
+    {id: 4, asset_type: 'IoT Gateway', name: 'IP Gateway (SIM)', display_name: 'IP Gateway (SIM)', cloud_connectivity: ['IP Gateway -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Gateway -> MQTT Client -> SIM -> Cloud'], metadata: {}, deleted: false},
+    {id: 5, asset_type: 'Legacy Device', name: 'ModbusTCPMaster', display_name: 'Modbus TCP', cloud_connectivity: ['ModBus TCP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusTCPApplication'}, deleted: false},
+    {id: 6, asset_type: 'Legacy Device', name: 'ModbusRTUMaster', display_name: 'Modbus RTU', cloud_connectivity: ['ModBus RTU Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusRTUApplication'}, deleted: false},
+    {id: 7, asset_type: 'Legacy Device', name: 'SiemensTCPIP', display_name: 'Siemens TCP/IP', cloud_connectivity: ['Siemens TCP/IP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'SiemensTCPIPApplication'}, deleted: false}
+  ]
 
   public static NON_IP_DEVICE_OPTIONS = [
     {

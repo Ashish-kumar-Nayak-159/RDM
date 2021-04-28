@@ -8,16 +8,16 @@
     <nav>
       <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
         <a class="nav-item nav-link" [ngClass]="{'active' : selectedTab === 'iot-devices'}" id="nav-iot-device-tab" data-toggle="tab" href="#iot-devices" role="tab"
-          *ngIf="contextApp.configuration.main_menu[2]?.visible" aria-controls="nav-home" aria-selected="true"
-          (click)="onTabChange('iot-devices')">{{contextApp.configuration.main_menu[2]?.display_name}}</a>
+          *ngIf="contextApp.configuration.main_menu[1]?.visible" aria-controls="nav-home" aria-selected="true"
+          (click)="onTabChange('iot-devices')">{{contextApp.configuration.main_menu[1]?.display_name}}</a>
         <a class="nav-item nav-link" id="nav-legacy-device-tab" data-toggle="tab" href="#legacy-devices" role="tab"
           [ngClass]="{'active':  selectedTab === 'legacy-devices'}"
-          *ngIf="contextApp.configuration.main_menu[3]?.visible" aria-controls="nav-home" aria-selected="true"
-          (click)="onTabChange('legacy-devices')">{{contextApp.configuration.main_menu[3]?.display_name}}</a>
+          *ngIf="contextApp.configuration.main_menu[2]?.visible" aria-controls="nav-home" aria-selected="true"
+          (click)="onTabChange('legacy-devices')">{{contextApp.configuration.main_menu[2]?.display_name}}</a>
         <a class="nav-item nav-link" id="nav-iot-gateway-tab" data-toggle="tab" href="#iot-gateways" role="tab"
         [ngClass]="{'active': selectedTab === 'iot-gateways'}"
-          *ngIf="contextApp.configuration.main_menu[9]?.visible" aria-controls="nav-home" aria-selected="true"
-          (click)="onTabChange('iot-gateways')">{{contextApp.configuration.main_menu[9]?.display_name}}</a>
+          *ngIf="contextApp.configuration.main_menu[8]?.visible" aria-controls="nav-home" aria-selected="true"
+          (click)="onTabChange('iot-gateways')">{{contextApp.configuration.main_menu[8]?.display_name}}</a>
       </div>
     </nav>
   </div>

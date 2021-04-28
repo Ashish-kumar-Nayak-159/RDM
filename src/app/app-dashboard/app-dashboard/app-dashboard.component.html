@@ -21,9 +21,7 @@
   </div> -->
 </div>
 <div class="container-tab-pad" style="margin-top: 6.7rem">
-  <div class="row" style="padding-right: 0.8rem">
 
-      <div class="">
         <div class="tab-pane" [ngClass]="{'active': selectedTab === 'telemetry'}" id="dashboard_telemetry" role="tabpanel" aria-labelledby="nav-home-tab">
           <div class="topnavbar" style="margin-top: 1.5rem" *ngIf="selectedTab === 'telemetry'">
             <div class="card row bg-white">
@@ -223,7 +221,5 @@
           <ng-container *ngIf="selectedTab === 'alert'">
             <app-application-visualization [pageType]="'live'"></app-application-visualization>
           </ng-container>
-        </div>
-      </div>
   </div>
 </div>

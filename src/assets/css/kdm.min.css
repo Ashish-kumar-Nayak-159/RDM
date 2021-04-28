@@ -38,32 +38,12 @@
   --breakpoint-md: 768px;
   --breakpoint-lg: 992px;
   --breakpoint-xl: 1200px;
-  --font-family-sans-serif:  "Segoe UI", "Nunito", -apple-system, BlinkMacSystemFont,Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-family-sans-serif: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace
 }
 
 *, ::after, ::before {
     box-sizing: border-box;
-}
-
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #c1c1c1 #f1f1f1;
-}
-
-/* Works on Chrome, Edge, and Safari */
-*::-webkit-scrollbar {
-  width: 6px;
-}
-
-*::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-*::-webkit-scrollbar-thumb {
-  background-color: #c1c1c1;
-  border-radius: 20px;
-  border: 1px solid #f1f1f1;
 }
 
 html {
@@ -79,7 +59,7 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 
 body {
     margin: 0;
-    font-family: "Segoe UI", Nunito, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: Nunito, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.5;
@@ -410,8 +390,8 @@ template {
 }
 
 hr {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     border: 0;
     border-top: 1px solid rgba(0, 0, 0, .1);
 }
@@ -568,7 +548,7 @@ pre code {
 .container-fluid, .container-lg, .container-md, .container-sm, .container-xl {
     width: 100%;
     padding-right: 0rem;
-    padding-left: 0rem;
+    padding-left: .75rem;
     margin-right: auto;
     margin-left: auto;
 }
@@ -2323,7 +2303,7 @@ a.btn.disabled, fieldset:disabled a.btn {
 .btn-secondary {
   color: #fff;
   background-color: #858796;
-  border-color: #858796;
+  border-color: #858796
 }
 
 .btn-secondary:hover {
@@ -2342,7 +2322,7 @@ a.btn.disabled, fieldset:disabled a.btn {
 .btn-secondary.disabled, .btn-secondary:disabled {
   color: #fff;
   background-color: #858796;
-  border-color: #858796;
+  border-color: #858796
 }
 
 .btn-secondary:not(:disabled):not(.disabled).active, .btn-secondary:not(:disabled):not(.disabled):active, .show>.btn-secondary.dropdown-toggle {
@@ -5643,7 +5623,7 @@ a.close.disabled {
   z-index: 1070;
   display: block;
   margin: 0;
-  font-family: "Segoe UI", Nunito, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: Nunito, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-style: normal;
   font-weight: 400;
   line-height: 1.5;
@@ -5756,7 +5736,7 @@ a.close.disabled {
   z-index: 1060;
   display: block;
   max-width: 276px;
-  font-family: "Segoe UI", Nunito, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: Nunito, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-style: normal;
   font-weight: 400;
   line-height: 1.5;
@@ -9187,11 +9167,11 @@ a:focus {
 }
 
 .sb-collapse {
-  padding-left: 0rem
+  padding-left: 1.5rem
 }
 
 .sb-toggle {
-  padding-left: 3.5rem
+  padding-left: 5rem
 }
 
 .sb-notoggle {
@@ -9551,13 +9531,12 @@ a:focus {
 }
 
 .topbar {
-  height: 3.5rem;
+  height: 4.375rem;
   position: fixed;
   z-index: 3;
   left: 0;
   right: 0;
-  top: 0;
-  border-bottom: 1px solid #e3e6f0;
+  top: 0
 }
 
 .topbar #sidebarToggleTop {
@@ -9585,8 +9564,8 @@ a:focus {
 .topbar .topbar-divider {
   width: 0;
   border-right: 1px solid #e3e6f0;
-  height: calc(3.5rem - 0rem);
-  margin: auto 0.35rem
+  height: calc(4.375rem - 0rem);
+  margin: auto 1rem
 }
 
 .topbar .nav-item .nav-link {
@@ -9710,7 +9689,7 @@ a:focus {
 
 .sidebar {
   width: 3.5rem;
-  margin-top: 3.5rem;
+  margin-top: 4.5rem;
   min-height: 100vh
 }
 
@@ -9730,7 +9709,7 @@ a:focus {
 
 .sidebar .nav-item .nav-link span {
   font-size: .65rem;
-  display: none;
+  display: none
 }
 
 .sidebar .nav-item.active .nav-link {
@@ -9869,8 +9848,8 @@ font-size:0.8rem;
 
 @media (min-width:768px) {
   .sidebar {
-    width: 3.5rem!important;
-    margin-top: 3.5rem;
+    width: 12rem!important;
+    margin-top: 4.5rem;
   }
   .sidebar .nav-item .collapse {
     position: relative;
@@ -9896,7 +9875,7 @@ font-size:0.8rem;
     width: 100%;
     text-align: left;
     padding: 0.65rem 1rem;
-    width: 3.5rem
+    width: 11rem
   }
   .sidebar .nav-item .nav-link i {
     font-size: .85rem;
@@ -9904,7 +9883,7 @@ font-size:0.8rem;
   }
   .sidebar .nav-item .nav-link span {
     font-size: .85rem;
-    display: none
+    display: inline
   }
   .sidebar .nav-item .nav-link[data-toggle=collapse]::after {
     width: 1rem;
@@ -9917,8 +9896,7 @@ font-size:0.8rem;
     font-family: 'Font Awesome 5 Free'
   }
   .sidebar .nav-item .nav-link[data-toggle=collapse].collapsed::after {
-    content: '\f105';
-    display: none;
+    content: '\f105'
   }
   .sidebar .sidebar-brand .sidebar-brand-icon i {
     font-size: 2rem
@@ -9930,8 +9908,8 @@ font-size:0.8rem;
     text-align: left
   }
   .sidebar.toggled {
-    overflow: hidden;
-    width: 0rem!important
+    overflow: visible;
+    width: 3.5rem!important
   }
   .sidebar.toggled .nav-item .collapse {
     position: absolute;
@@ -10684,7 +10662,7 @@ body.sidebar-toggled footer.sticky-footer {
 .container-fluid .sidebar1 {
     width: 4.5rem;
     position: fixed;
-    margin-top: 3.5rem;
+    margin-top: 6rem;
 }
 
 .container-fluid .sidebar1 .nav-item {
@@ -10796,7 +10774,7 @@ body.sidebar-toggled footer.sticky-footer {
 
 .container-fluid .sidebar1 #sidebar1Toggle::after {
   font-weight: 900;
-  content: '\f03b';
+  content: '\f100';
   font-family: FontAwesome;
   margin-right: 0.1rem;
 }
@@ -10815,7 +10793,7 @@ body.sidebar-toggled footer.sticky-footer {
 }
 
 .container-fluid .sidebar1.toggled #sidebar1Toggle::after {
-  content: '\f03c';
+  content: '\f101';
   font-family: FontAwesome;
   margin-left: 0.1rem;
 }
@@ -10981,7 +10959,7 @@ body.sidebar-toggled footer.sticky-footer {
     display: block;
     text-align: center;
     padding-left: 0.25rem;
-    font-family: "Segoe UI", Nunito, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: Nunito, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   }
   .container-fluid .sidebar1.toggled .nav-item .nav-link i {
     margin-right: 0;
@@ -11169,7 +11147,7 @@ body.sidebar1-toggled footer.sticky-footer {
     margin-bottom: 0;
     list-style: none;
     /*min-height: 140vh;*/
-    max-height: calc(100vh - 7.5rem);
+    max-height: calc(100vh - 10.2rem);
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -11482,16 +11460,16 @@ body.sidebar1-toggled footer.sticky-footer {
 }
 
 .container-fluid .container1, .container-fluid .container1-fluid, .container-fluid .container1-sm, .container-fluid .container1-md, .container-fluid .container1-lg, .container-fluid .container1-xl {
-    padding-left: 0rem;
+    padding-left: 1.5rem;
     padding-right: 0rem;
 }
 
 .sb1-toggle {
-  margin-left: 4.5rem;
+  margin-left: 6rem;
 }
 
 .sb1-notoggle {
-  margin-left: 14rem;
+  margin-left: 15.5rem;
 }
 
 .sb1-collapse {
@@ -11499,11 +11477,11 @@ body.sidebar1-toggled footer.sticky-footer {
 }
 
 .container-fluid .container1 .sb1-toggle, .container-fluid .container1-fluid .sb1-toggle, .container-fluid .container1-sm .sb1-toggle, .container-fluid .container1-md .sb1-toggle, .container-fluid .container1-lg .sb1-toggle, .container-fluid .container1-xl .sb1-toggle {
-  margin-left: 4.5rem;
+  margin-left: 6rem;
 }
 
 .container-fluid .container1 .sb1-notoggle, .container-fluid .container1-fluid .sb1-notoggle, .container-fluid .container1-sm .sb1-notoggle, .container-fluid .container1-md .sb1-notoggle, .container-fluid .container1-lg .sb1-notoggle, .container-fluid .container1-xl .sb1-notoggle {
-  margin-left: 14rem;
+  margin-left: 15.5rem;
 }
 
 .container-fluid .container1 {
@@ -11683,10 +11661,9 @@ ul.timeline > li:before {
 .topnavbar  {
 	position: fixed;
 	z-index: 1;
-    top: 3.5rem;
+    top: 6rem;
 	width:100%;
-	margin-left: 0rem;
-  padding-top:1.5rem;
+	margin-left: -1.5rem;
     padding-left: 1.5rem;
 	height: 3.5rem;
 	/*min-width:  calc(100vw - 33rem);
@@ -11699,10 +11676,9 @@ ul.timeline > li:before {
 }
 
 .con-pad-c2d  {
-  margin-top: 6.5rem;
-max-height: calc(100vh - 8.5rem);
+  margin-top: 8.5rem;
+max-height: calc(100vh - 10rem);
 padding-right: 1rem;
-padding-left: 1rem;
   overflow-y: auto;
   overflow-x: hidden;
 padding-top: 0.5rem;
@@ -11713,9 +11689,9 @@ padding-bottom: 1.5rem;
 .topnavbar-c2d  {
 	position: fixed;
 	z-index: 1;
-    top: 3.5rem;
+    top: 6rem;
 	width:100%;
-	margin-left: 0rem;
+	margin-left: -1.5rem;
     padding-left: 1.5rem;
 	height: 3rem;
 	/*min-width:  calc(100vw - 33rem);
@@ -11731,7 +11707,6 @@ padding-bottom: 1.5rem;
 .container-pad {
     margin-top: 4.5rem;
     padding-top: 1.5rem;
-    padding-left: 1rem;
     padding-right: 1rem;
     max-height: calc(100vh - 6rem);
     overflow-y: auto;
@@ -11744,10 +11719,9 @@ body {
 }
 
 .con-pad  {
-  margin-top: 7rem;
-max-height: calc(100vh - 8.5rem);
+  margin-top: 9.5rem;
+max-height: calc(100vh - 11rem);
 padding-right: 1rem;
-padding-left: 1rem;
   overflow-y: auto;
   overflow-x: hidden;
 padding-top: 0.5rem;
@@ -11757,7 +11731,6 @@ padding-bottom: 1.5rem;
 .contain-pad  {
   margin-top: 11.5rem;
 max-height: calc(100vh - 15rem);
-padding-left: 1rem;
 padding-right: 1rem;
   overflow-y: auto;
   overflow-x: hidden;
@@ -11778,21 +11751,22 @@ padding-bottom: 1.5rem;
 
 @media (max-width:575.98px) {
 	.con-pad  {
-		margin-top: 13.5rem;
-		max-height: calc(100vh - 16rem);
+		margin-top: 15rem;
+		max-height: calc(100vh - 17.5rem);
 	}
 	.topnavbar  {
 		height: 9rem;
 	}
 	.contain-pad  {
-    margin-top: 23.5rem;
-    max-height: calc(100vh - 26rem);
+    margin-top: 25rem;
+    max-height: calc(100vh - 27.5rem);
     }
 }
 
 
 .container-tab-pad  {
-	margin-top: 3.5rem;
+	margin-top: 4.5rem;
+	margin-left: -1.5rem;
 	padding-top: 1.5rem;
 	padding-right: 0rem;
 	max-height: calc(100vh - 6rem);
@@ -11849,8 +11823,8 @@ padding-bottom: 1.5rem;
 
 
 .img-logo {
-	width: 8rem;
-    height: 2.5rem;
+	width: 10rem;
+    height: 3rem;
     object-fit: contain;
     mix-blend-mode: multiply;
 }
@@ -12053,4 +12027,3 @@ padding-bottom: 1.5rem;
 .canvasjs-chart-credit {
   display:none;
 }
-

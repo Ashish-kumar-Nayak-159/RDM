@@ -56,6 +56,7 @@ export class AddDeviceComponent implements OnInit {
     });
     this.getThingsModels(this.componentState);
     this.deviceDetail = new Device();
+    this.deviceDetail.metadata = {};
     this.deviceDetail.tags = {};
     this.deviceDetail.tags.app = this.contextApp.app;
     this.deviceDetail.tags.hierarchy_json = JSON.parse(JSON.stringify(this.contextApp.user.hierarchy));

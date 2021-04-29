@@ -177,7 +177,7 @@ export class PreGeneratedReportsComponent implements OnInit {
     this.devices = JSON.parse(JSON.stringify(arr));
     }
     this.filterObj.deviceArr = undefined;
-    this.filterObj.devices = undefined;
+    this.filterObj.device_id = undefined;
     let count = 0;
     Object.keys(this.configureHierarchy).forEach(key => {
       if (this.configureHierarchy[key]) {
@@ -193,18 +193,18 @@ export class PreGeneratedReportsComponent implements OnInit {
   }
 
   onAssetDeselect() {
-    this.filterObj.devices = undefined;
+    this.filterObj.device_id = undefined;
     this.filterObj.deviceArr = undefined;
   }
 
   onAssetSelection() {
     if (this.filterObj?.deviceArr.length > 0) {
-      this.filterObj.devices = '';
+      this.filterObj.device_id = '';
       this.filterObj.deviceArr.forEach(device => {
-        this.filterObj.devices += (this.filterObj.devices.length > 0 ? ',' : '') + device.device_id;
+        this.filterObj.device_id += (this.filterObj.device_id.length > 0 ? ',' : '') + device.device_id;
       });
     } else {
-      this.filterObj.devices = undefined;
+      this.filterObj.device_id = undefined;
       this.filterObj.deviceArr = undefined;
     }
     // this.nonIPDevices = [];
@@ -213,9 +213,9 @@ export class PreGeneratedReportsComponent implements OnInit {
 
   onAllAssetSelection() {
     if (this.filterObj?.deviceArr.length > 0) {
-      this.filterObj.devices = '';
+      this.filterObj.device_id = '';
       this.filterObj.deviceArr.forEach(device => {
-        this.filterObj.devices += (this.filterObj.devices.length > 0 ? ',' : '') + device.device_id;
+        this.filterObj.device_id += (this.filterObj.device_id.length > 0 ? ',' : '') + device.device_id;
       });
     }
   }
@@ -299,6 +299,16 @@ export class PreGeneratedReportsComponent implements OnInit {
       obj.frequency = 'daily';
     } else {
       obj.frequency = 'weekly';
+    }
+    if (obj.report_type.toLowerCase().includes('raw')) {
+      obj.type = 'raw';
+    } else {
+      obj.type = 'sampling';
+    }
+    if (obj.report_type.toLowerCase().includes('single')) {
+      obj.devices = 'single';
+    } else {
+      obj.devices = 'multiple';
     }
     if (!obj.hierarchy) {
       obj.hierarchy =  { App: this.contextApp.app};

@@ -126,6 +126,10 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       this.toasterService.showError('Please select all the data to add widget', 'Add Widget');
       return;
     }
+    if (this.y1AxisProps.length + this.y2AxisProps.length > 4) {
+      this.toasterService.showError('Max 4 properties are allowed in a widget', 'Add Widget');
+      return;
+    }
     let arr = [];
     this.y1AxisProps.forEach(prop => arr.push(prop.value.json_key));
     this.y1AxisProps = [...arr];

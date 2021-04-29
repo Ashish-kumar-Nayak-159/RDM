@@ -24,7 +24,7 @@
           primaryKey: 'device_id',
           badgeShowLimit: 1,
           labelKey: 'display_name'
-        }"  #device="ngModel"
+        }"  #device_id="ngModel"
         (onSelect)="onAssetSelection()"
         (onSelectAll)="onAllAssetSelection()"
         (onDeSelectAll)="onAssetDeselect()">
@@ -57,9 +57,15 @@
           <select class="form-control form-control-sm mr-2 ml-1 my-1" id="report_type" [(ngModel)]="filterObj.report_type"
           name="report_type" #reportType="ngModel">
           <option [ngValue]="undefined">Select Report Type</option>
-          <option [ngValue]="'Daily Single Asset Telemetry Report'">Daily Single Asset Telemetry Report</option>
-          <option [ngValue]="'Weekly Single Asset Telemetry Report'">Weekly Single Asset Telemetry Report</option>
-          <option [ngValue]="'Daily Multiple Asset Telemetry Report'">Daily Multiple Asset Telemetry Report</option>
+          <option [ngValue]="'Daily Single Asset Raw Telemetry Report'">Daily Single Asset Raw Telemetry Report</option>
+          <option [ngValue]="'Daily Multiple Asset Raw Telemetry Report'">Daily Multiple Asset Raw Telemetry Report</option>
+          <option [ngValue]="'Daily Single Asset Sampling Telemetry Report'">Daily Single Asset Sampling Telemetry Report</option>
+          <option [ngValue]="'Daily Multiple Asset Sampling Telemetry Report'">Daily Multiple Asset Sampling Telemetry Report</option>
+          <option [ngValue]="'Weekly Single Asset Raw Telemetry Report'">Weekly Single Asset Raw Telemetry Report</option>
+          <option [ngValue]="'Weekly Multiple Asset Raw Telemetry Report'">Weekly Multiple Asset Raw Telemetry Report</option>
+          <!-- <option [ngValue]="'Weekly Single Asset Sampling Telemetry Report'">Weekly Single Asset Sampling Telemetry Report</option>
+          <option [ngValue]="'Weekly Multiple Asset Sampling Telemetry Report'">Weekly Multiple Asset Sampling Telemetry Report</option> -->
+
 
           </select>
           <div class="bg-dateRow form-group form-inline" id="dateRow"

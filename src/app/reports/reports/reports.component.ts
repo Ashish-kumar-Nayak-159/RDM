@@ -409,6 +409,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Date selection is required', 'View Report');
       return;
     }
+    if (obj.report_type === 'Process Parameter Report' && this.props.length === 0) {
+      this.toasterService.showError('Please select properties to view data', 'View Telemetry');
+      return;
+    }
     this.isTelemetryLoading = true;
     // this.telemetry = [];
     // this.latestAlerts = [];
@@ -482,6 +486,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     if (type === 'all') {
       delete obj.count;
     }
+
     delete obj.report_type;
     delete obj.deviceArr;
     this.isTelemetryLoading = false;

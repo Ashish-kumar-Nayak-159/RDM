@@ -216,17 +216,22 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
       newObj.endDate = new Date(endDate);
       data.splice(data.length, 0, newObj);
     });
-    console.log(data);
+    console.log(JSON.stringify(data));
     chart.data = data;
     chart.dateFormatter.inputDateFormat = 'x';
     chart.dateFormatter.dateFormat = 'dd-MMM-yyyy';
     const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+    dateAxis.renderer.minGridDistance = 70;
+    dateAxis.baseInterval = { count: 1, timeUnit: "day" };
+    dateAxis.strictMinMax = true;
+    dateAxis.renderer.tooltipLocation = 0;
     // Add data
     // Set input format for the dates
     // chart.dateFormatter.inputDateFormat = 'yyyy-MM-dd';
 
     // Create axes
     const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    valueYAxis.renderer.grid.template.location = 0;
     const series = chart.series.push(new am4charts.ColumnSeries());
     series.name =  'MTBF';
     series.yAxis = valueYAxis;
@@ -236,14 +241,15 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
     series.strokeWidth = 2;
     series.strokeOpacity = 1;
     series.legendSettings.labelText = '{name}';
-    series.tooltipText = 'Start Date: {openDateX} \n End Date: {dateX} \n {name}: [bold]{valueY}[/]';
+    // series.fillOpacity = 0;
+    series.columns.template.tooltipText = 'Start Date: {openDateX} \n End Date: {dateX} \n {name}: [bold]{valueY} seconds[/]';
 
     // const bullet = series.bullets.push(new am4charts.CircleBullet());
     // bullet.strokeWidth = 2;
     // bullet.circle.radius = 1.5;
     valueYAxis.tooltip.disabled = true;
     valueYAxis.renderer.labels.template.fill = am4core.color('gray');
-    valueYAxis.renderer.minWidth = 35;
+    // valueYAxis.renderer.minWidth = 35;
 
     chart.legend = new am4charts.Legend();
     chart.logo.disabled = true;
@@ -251,13 +257,14 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
     chart.legend.scrollable = true;
     chart.legend.labels.template.maxWidth = 30;
     chart.legend.labels.template.truncate = true;
-    chart.cursor = new am4charts.XYCursor();
+   //  chart.cursor = new am4charts.XYCursor();
     chart.legend.itemContainers.template.togglable = false;
     dateAxis.dateFormatter = new am4core.DateFormatter();
-    dateAxis.dateFormatter.dateFormat = 'dd-MMM-yyyy';
+    chart.scrollbarX = new am4core.Scrollbar();
+    chart.scrollbarX.parent = chart.bottomAxesContainer;
+    // dateAxis.dateFormatter.dateFormat = 'W';
     this.chart = chart;
   }
-
 
 
 

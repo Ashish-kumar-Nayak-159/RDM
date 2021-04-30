@@ -67,6 +67,7 @@
               <button type="button" class="btn btn-warning btn-sm ml-3 mr-1 my-1" title="Search" (click)="searchEvents(this.filterObj)" ><i class="fa fa-search fa-sm"></i></button>
               <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear Filters" (click)="clear();">
                 <img class="filter-clear-icon" src="./assets/img/filter.svg"></button>
+              <h6 class="pull-right" style="margin-left: 39rem;" *ngIf="displayMode === 'machine_failure' && averageMTTR && averageMTTR > 0 && isFilterSelected"><b> MTTR: {{averageMTTRString}}</b></h6>
             </div>
            </form>
       </div>
@@ -89,22 +90,22 @@
             <th></th>
             <th>Event Start Time</th>
             <th>Event End Time</th>
-            <th *ngIf="displayMode === 'machine_failure'">TTR</th>
+            <th >{{displayMode === 'machine_failure' ? 'Machine Downtime' : 'Network Offtime'}}</th>
             <th>Action</th>
           </thead>
-          <tfoot *ngIf="averageMTTR && averageMTTR > 0 && isFilterSelected">
+          <!-- <tfoot *ngIf="averageMTTR && averageMTTR > 0 && isFilterSelected">
             <tr>
               <td colspan="3" class="text-right">MTTR</td>
               <td colspan="2"> {{averageMTTRString}}</td>
             </tr>
-          </tfoot>
+          </tfoot> -->
           <tbody>
             <ng-container *ngIf="lifeCycleEvents.length > 0 && isFilterSelected">
               <tr *ngFor="let event of lifeCycleEvents; let i = index">
                 <td>{{i + 1}}</td>
                 <td>{{event.local_event_start_time}}</td>
                 <td>{{event.local_event_end_time}}</td>
-                <td *ngIf="displayMode === 'machine_failure'">{{event.mttr}}</td>
+                <td>{{event.mttrString}}</td>
                 <td>
                   <a href="javascript:void(0)" (click)="openModal(event)">
                     <i class="fa fa-edit"></i>
@@ -177,7 +178,7 @@
       <ng-container *ngIf="isLifeCycleEventsLoading"> <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></ng-container>
       <ng-container  *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">Select filter and press search button to load the TTR data.</ng-container>
       <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected"> No MTTR Data found.</ng-container>
-      <div id="chartdiv" *ngIf="!isLifeCycleEventsLoading && lifeCycleEvents.length > 0" [ngStyle]="{'width': '100%', 'height': '18rem'}"></div>
+      <div id="chartdiv" *ngIf="!isLifeCycleEventsLoading && lifeCycleEvents.length > 0" [ngStyle]="{'width': '100%', 'height': '26rem'}"></div>
     </div>
   </ng-container>
 </div>

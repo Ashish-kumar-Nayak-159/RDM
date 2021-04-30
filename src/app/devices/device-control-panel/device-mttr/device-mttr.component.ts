@@ -215,9 +215,7 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
           this.lifeCycleEvents .forEach((item, index) => {
             item.local_event_start_time = this.commonService.convertUTCDateToLocal(item.event_start_time);
             item.local_event_end_time = this.commonService.convertUTCDateToLocal(item.event_end_time);
-            if (this.displayMode === 'machine_failure') {
-              item.mttr = this.splitTime(item.event_timespan_in_sec / 60);
-            }
+            item.mttrString = this.splitTime(item.event_timespan_in_sec / 60);
           });
           if (this.displayMode === 'history') {
             setTimeout(() =>  this.plotChart(), 500);
@@ -286,18 +284,22 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
       newObj.endDate = new Date(endDate);
       data.splice(data.length, 0, newObj);
     });
-    console.log(data);
+    console.log(JSON.stringify(data));
     chart.data = data;
     chart.dateFormatter.inputDateFormat = 'x';
     chart.dateFormatter.dateFormat = 'dd-MMM-yyyy';
     const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+    dateAxis.renderer.minGridDistance = 70;
+    dateAxis.baseInterval = { count: 1, timeUnit: "day" };
+    dateAxis.strictMinMax = true;
+    dateAxis.renderer.tooltipLocation = 0;
     // Add data
     // Set input format for the dates
     // chart.dateFormatter.inputDateFormat = 'yyyy-MM-dd';
 
     // Create axes
     const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
-    dateAxis.syncWithAxis = valueYAxis;
+    valueYAxis.renderer.grid.template.location = 0;
     const series = chart.series.push(new am4charts.ColumnSeries());
     series.name =  'MTTR';
     series.yAxis = valueYAxis;
@@ -308,7 +310,7 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     series.strokeOpacity = 1;
     series.legendSettings.labelText = '{name}';
     // series.fillOpacity = 0;
-    series.tooltipText = 'Start Date: {openDateX} \n End Date: {dateX} \n {name}: [bold]{valueY}[/]';
+    series.columns.template.tooltipText = 'Start Date: {openDateX} \n End Date: {dateX} \n {name}: [bold]{valueY} seconds[/]';
 
     // const bullet = series.bullets.push(new am4charts.CircleBullet());
     // bullet.strokeWidth = 2;
@@ -323,7 +325,7 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     chart.legend.scrollable = true;
     chart.legend.labels.template.maxWidth = 30;
     chart.legend.labels.template.truncate = true;
-    chart.cursor = new am4charts.XYCursor();
+   //  chart.cursor = new am4charts.XYCursor();
     chart.legend.itemContainers.template.togglable = false;
     dateAxis.dateFormatter = new am4core.DateFormatter();
     chart.scrollbarX = new am4core.Scrollbar();

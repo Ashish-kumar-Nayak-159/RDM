@@ -159,7 +159,7 @@
       <ng-container *ngIf="isLifeCycleEventsLoading"> <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></ng-container>
       <ng-container  *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">Select filter and press search button to load the TBF data.</ng-container>
       <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected"> No MTBF Data found.</ng-container>
-      <div id="chartdiv" *ngIf="!isLifeCycleEventsLoading && lifeCycleEvents.length > 0" [ngStyle]="{'width': '100%', 'height': '18rem'}"></div>
+      <div id="chartdiv" *ngIf="!isLifeCycleEventsLoading && lifeCycleEvents.length > 0" [ngStyle]="{'width': '100%', 'height': '26rem'}"></div>
     </div>
   </ng-container>
 </div>

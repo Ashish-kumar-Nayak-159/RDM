@@ -207,6 +207,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
         }
       }
     });
+    this.c2dMessageData.request_type = 'Custom';
     this.c2dMessageData.message['timestamp'] = this.c2dMessageData.timestamp;
     if (!this.c2dMessageData.message) {
       this.toasterService.showError('Please type JSON in given box', 'Validate Message Detail');

@@ -3,6 +3,7 @@ import { filter } from 'rxjs/operators';
 import { DeviceTypeService } from './../../../services/device-type/device-type.service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 
 declare var $: any;
@@ -14,10 +15,10 @@ declare var $: any;
 export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
 
   @Input() deviceType: any;
-  alertConditions: {id?: string, message?: string, code?: string, severity?: string, recommendations?: any[], visualization_widgets?: any[],
-    reference_documents?: any[], actions?: any}[] = [];
-  alertObj: {id?: string, message?: string, code?: string, severity?: string, recommendations?: any[], visualization_widgets?: any[],
-    reference_documents?: any[], actions?: any};
+  alertConditions: {id?: string, message?: string, metadata?: any, code?: string, severity?: string, recommendations?: any[],
+    visualization_widgets?: any[], reference_documents?: any[], actions?: any}[] = [];
+  alertObj: {id?: string, message?: string, metadata?: any, code?: string, severity?: string,
+    recommendations?: any[], visualization_widgets?: any[], reference_documents?: any[], actions?: any};
   isAlertConditionsLoading = false;
   isCreateAlertConditionLoading = false;
   widgets: any[] = [];
@@ -31,6 +32,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
   recommendationObj: any;
   docName: any;
   subscriptions: Subscription[] = [];
+  setupForm: FormGroup;
   constructor(
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService
@@ -229,13 +231,96 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
   openAddAlertConditionModal(alertObj = undefined) {
     if (alertObj) {
       this.alertObj = alertObj;
+      if (this.deviceType.tags.protocol === 'ModbusTCPMaster' || this.deviceType.tags.protocol === 'ModbusRTUMaster') {
+        this.setupForm = new FormGroup({
+          d: new FormControl(alertObj.metadata.d, [Validators.required]),
+          sa: new FormControl(alertObj.metadata.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
+          a: new FormControl(true),
+          fc: new FormControl(alertObj.metadata.fc, [Validators.required]),
+        });
+      } else if (this.deviceType.tags.protocol === 'SiemensTCPIP') {
+        this.setupForm = new FormGroup({
+          d: new FormControl(alertObj.metadata.d, [Validators.required]),
+          sa: new FormControl(alertObj.metadata.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
+          a: new FormControl(true),
+          mt: new FormControl(alertObj.metadata.mt, [Validators.required]),
+        });
+      }
+      this.onChangeOfSetupType(alertObj.metadata);
+      this.onChangeOfSetupSecondaryType(alertObj.metadata);
+      this.onChangeOfSetupFunctionCode(alertObj.metadata);
+      console.log(this.setupForm);
     } else {
       this.alertObj = {};
+      if (this.deviceType.tags.protocol === 'ModbusTCPMaster' || this.deviceType.tags.protocol === 'ModbusRTUMaster') {
+        this.setupForm = new FormGroup({
+          d: new FormControl(null, [Validators.required]),
+          sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
+          a: new FormControl(true),
+          fc: new FormControl(null, [Validators.required]),
+        });
+      } else if (this.deviceType.tags.protocol === 'SiemensTCPIP') {
+        this.setupForm = new FormGroup({
+          d: new FormControl(null, [Validators.required]),
+          sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
+          a: new FormControl(true),
+          mt: new FormControl(null, [Validators.required]),
+        });
+      }
+
     }
     this.toggleRows = {};
     this.editRecommendationStep = {};
     this.editDocuments = {};
     $('#addAlertConditionModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onChangeOfSetupType(obj = undefined) {
+    if (this.setupForm.value.d !== 'a') {
+      this.setupForm.removeControl('sd');
+    } else {
+      this.setupForm.addControl('sd', new FormControl(obj?.sd || null, [Validators.required]));
+    }
+    if (this.setupForm.value.d !== 's') {
+      this.setupForm.removeControl('la');
+    } else {
+      this.setupForm.addControl('la', new FormControl(obj?.la || null, [Validators.required, Validators.min(1), Validators.max(99999)]));
+    }
+    if (this.setupForm.value.d === 'a' &&
+    (this.setupForm.value.sd === 5 || this.setupForm.value.sd === 6)) {
+      this.setupForm.removeControl('p');
+      this.setupForm.addControl('p', new FormControl(obj?.p || null, [Validators.required, Validators.min(1), Validators.max(5)]));
+    } else {
+      this.setupForm.removeControl('p');
+      this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
+    }
+    if (this.deviceType.tags.protocol === 'SiemensTCPIP' && this.setupForm.value.d === 'd') {
+      this.setupForm.removeControl('bn');
+      this.setupForm.addControl('bn', new FormControl(obj?.bn || null, [Validators.required, Validators.min(0), Validators.max(15)]));
+    } else {
+      this.setupForm.removeControl('bn');
+    }
+  }
+
+  onChangeOfSetupSecondaryType(obj = undefined) {
+    if (this.setupForm.value.d === 'a' &&
+    (this.setupForm.value.sd === 5 || this.setupForm.value.sd === 6)) {
+      this.setupForm.removeControl('p');
+      this.setupForm.addControl('p', new FormControl(obj?.p || null, [Validators.required, Validators.min(1), Validators.max(5)]));
+    } else {
+      this.setupForm.removeControl('p');
+      this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
+    }
+  }
+
+  onChangeOfSetupFunctionCode(obj = undefined) {
+    if (this.setupForm.value.d === 'd' && (this.setupForm.value.fc === 3 || this.setupForm.value.fc === 4)) {
+      this.setupForm.removeControl('bn');
+      this.setupForm.addControl('bn', new FormControl(obj?.bn || null, [Validators.required, Validators.min(0), Validators.max(15)]));
+    } else {
+      this.setupForm.removeControl('bn');
+      this.setupForm.addControl('bn', new FormControl(-1, [Validators.required]));
+    }
   }
 
   openConfirmModal(id, alertObj) {
@@ -265,6 +350,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
 
   onUpdateAlertConditions() {
     this.isCreateAlertConditionLoading = true;
+    this.alertObj.metadata = this.setupForm.value;
     let arr = [];
     arr = this.alertObj.recommendations;
     arr.forEach((step, i) => {
@@ -326,6 +412,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
 
 
   onCreateAlertCondition() {
+    this.alertObj.metadata = this.setupForm.value;
     if (!this.alertObj.message || (this.alertObj.message.trim()).length === 0 ||  !this.alertObj.code
      || (this.alertObj.code.trim()).length === 0 || !this.alertObj.severity) {
       this.toasterService.showError('Please add all the data', 'Add Alert Condition');

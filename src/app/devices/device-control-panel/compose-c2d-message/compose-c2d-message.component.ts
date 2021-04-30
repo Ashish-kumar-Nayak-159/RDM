@@ -110,6 +110,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
       this.c2dMessageData.gateway_id = this.device.device_id;
     }
     this.sentMessageData = undefined;
+    this.c2dMessageData.request_type = 'Custom';
     if (!this.c2dMessageData.message) {
       this.toasterService.showError('Please type JSON in given box', 'Validate Message Detail');
       return;

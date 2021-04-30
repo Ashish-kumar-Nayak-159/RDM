@@ -1,3 +1,4 @@
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ToasterService } from './../../../services/toaster.service';
 import { CONSTANTS } from 'src/app/app.constants';
@@ -28,6 +29,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
   isCreatePropertyLoading = false;
   selectedProperty: any;
   dependentProperty: any[] = [];
+  setupForm: FormGroup;
   editorOptions: JsonEditorOptions;
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   subscriptions: Subscription[] = [];
@@ -185,8 +187,73 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       json_model : {},
       threshold: {}
     };
+    console.log(this.setupForm);
+    if (this.deviceType.tags.protocol === 'ModbusTCPMaster' || this.deviceType.tags.protocol === 'ModbusRTUMaster') {
+      this.setupForm = new FormGroup({
+        d: new FormControl(null, [Validators.required]),
+        sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
+        a: new FormControl(false),
+        fc: new FormControl(null, [Validators.required]),
+      });
+    } else if (this.deviceType.tags.protocol === 'SiemensTCPIP') {
+      this.setupForm = new FormGroup({
+        d: new FormControl(null, [Validators.required]),
+        sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
+        a: new FormControl(false),
+        mt: new FormControl(null, [Validators.required]),
+      });
+    }
+    console.log(this.setupForm);
    // this.thingsModel.tags.app = this.contextApp.app;
     $('#addPropertiesModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onChangeOfSetupType(obj = undefined) {
+    if (this.setupForm.value.d !== 'a') {
+      this.setupForm.removeControl('sd');
+    } else {
+      this.setupForm.addControl('sd', new FormControl(obj?.sd || null, [Validators.required]));
+    }
+    if (this.setupForm.value.d !== 's') {
+      this.setupForm.removeControl('la');
+    } else {
+      this.setupForm.addControl('la', new FormControl(obj?.la || null, [Validators.required, Validators.min(1), Validators.max(99999)]));
+    }
+    if (this.setupForm.value.d === 'a' &&
+    (this.setupForm.value.sd === 5 || this.setupForm.value.sd === 6)) {
+      this.setupForm.removeControl('p');
+      this.setupForm.addControl('p', new FormControl(obj?.p || null, [Validators.required, Validators.min(1), Validators.max(5)]));
+    } else {
+      this.setupForm.removeControl('p');
+      this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
+    }
+    if (this.deviceType.tags.protocol === 'SiemensTCPIP' && this.setupForm.value.d === 'd') {
+      this.setupForm.removeControl('bn');
+      this.setupForm.addControl('bn', new FormControl(obj?.bn || null, [Validators.required, Validators.min(0), Validators.max(15)]));
+    } else {
+      this.setupForm.removeControl('bn');
+    }
+  }
+
+  onChangeOfSetupSecondaryType(obj = undefined) {
+    if (this.setupForm.value.d === 'a' &&
+    (this.setupForm.value.sd === 5 || this.setupForm.value.sd === 6)) {
+      this.setupForm.removeControl('p');
+      this.setupForm.addControl('p', new FormControl(obj?.p || null, [Validators.required, Validators.min(1), Validators.max(5)]));
+    } else {
+      this.setupForm.removeControl('p');
+      this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
+    }
+  }
+
+  onChangeOfSetupFunctionCode(obj = undefined) {
+    if (this.setupForm.value.d === 'd' && (this.setupForm.value.fc === 3 || this.setupForm.value.fc === 4)) {
+      this.setupForm.removeControl('bn');
+      this.setupForm.addControl('bn', new FormControl(obj?.bn || null, [Validators.required, Validators.min(0), Validators.max(15)]));
+    } else {
+      this.setupForm.removeControl('bn');
+      this.setupForm.addControl('bn', new FormControl(-1, [Validators.required]));
+    }
   }
 
   onJSONKeyChange() {
@@ -236,7 +303,12 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
 
 
   onSavePropertyObj() {
+    this.propertyObj.metadata = this.setupForm.value;
     if (!this.propertyObj.name || !this.propertyObj.json_key || !this.propertyObj.data_type ) {
+      this.toasterService.showError('Please fill the form correctly', 'Add Property');
+      return;
+    }
+    if (Object.keys(this.propertyObj.metadata).length === 0) {
       this.toasterService.showError('Please fill the form correctly', 'Add Property');
       return;
     }
@@ -350,6 +422,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
   }
 
   updatePropertyData() {
+    this.propertyObj.metadata = this.setupForm.value;
     const index = this.properties[this.type].findIndex(prop => prop.json_key === this.selectedProperty.json_key);
     this.properties[this.type].splice(index, 1);
     if (this.propertyObj?.edit) {
@@ -399,9 +472,28 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       //   }
       // }, 50);
     } else if (obj.for === 'Edit') {
-      $('#addPropertiesModal').modal({ backdrop: 'static', keyboard: false, show: true });
       this.propertyObj = JSON.parse(JSON.stringify(obj.data));
       this.propertyObj.edit = true;
+      if (this.deviceType.tags.protocol === 'ModbusTCPMaster' || this.deviceType.tags.protocol === 'ModbusRTUMaster') {
+        this.setupForm = new FormGroup({
+          d: new FormControl(this.propertyObj.metadata.d, [Validators.required]),
+          sa: new FormControl(this.propertyObj.metadata.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
+          a: new FormControl(true),
+          fc: new FormControl(this.propertyObj.metadata.fc, [Validators.required]),
+        });
+      } else if (this.deviceType.tags.protocol === 'SiemensTCPIP') {
+        this.setupForm = new FormGroup({
+          d: new FormControl(this.propertyObj.metadata.d, [Validators.required]),
+          sa: new FormControl(this.propertyObj.metadata.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
+          a: new FormControl(true),
+          mt: new FormControl(this.propertyObj.metadata.mt, [Validators.required]),
+        });
+      }
+      this.onChangeOfSetupType(this.propertyObj.metadata);
+      this.onChangeOfSetupSecondaryType(this.propertyObj.metadata);
+      this.onChangeOfSetupFunctionCode(this.propertyObj.metadata);
+
+      $('#addPropertiesModal').modal({ backdrop: 'static', keyboard: false, show: true });
       setTimeout(() => {
       this.editor.set(this.propertyObj.json_model);
       }, 1000);

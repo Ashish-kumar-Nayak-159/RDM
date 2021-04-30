@@ -459,7 +459,8 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
         }
       },
       job_id: null,
-      timestamp: moment().utc().unix()
+      timestamp: moment().utc().unix(),
+      request_type: 'FOTA'
     };
     obj.job_id = obj.desired_properties.package_management.job_id;
     if (type === 'Install') {
@@ -469,6 +470,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
     } else if (type === 'Uninstall') {
       obj.desired_properties.package_management.command = 'DELETE_PACKAGE';
     }
+
     this.subscriptions.push(
       this.deviceService.updateDeviceTwin(this.contextApp.app, this.selectedDevices[0].device_id, obj).subscribe(
         (response: any) => {

@@ -66,6 +66,10 @@
   border: 1px solid #f1f1f1;
 }
 
+.color-primary {
+  color: #676c6e;
+}
+
 html {
     font-family: sans-serif;
     line-height: 1.15;
@@ -80,7 +84,7 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 body {
     margin: 0;
     font-family: "Segoe UI", Nunito, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 400;
     line-height: 1.5;
     color: #858796;
@@ -3939,7 +3943,7 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  padding: .5rem 1rem
+  padding: .5rem 0.6rem
 }
 
 .navbar .container, .navbar .container-fluid, .navbar .container-lg, .navbar .container-md, .navbar .container-sm, .navbar .container-xl {
@@ -9169,11 +9173,11 @@ a:focus {
 }
 
 #wrapper #content-wrapper {
-  background-color: #f8f9fc;
+  background-color: #fff;
   width: 100%;
   overflow-x: hidden;
-  z-index;
-  1
+  /*z-index:1;*/
+
 }
 
 #wrapper #content-wrapper #content {
@@ -9187,7 +9191,7 @@ a:focus {
 }
 
 .sb-collapse {
-  padding-left: 0rem
+  padding-left: 1.5rem
 }
 
 .sb-toggle {
@@ -9195,7 +9199,7 @@ a:focus {
 }
 
 .sb-notoggle {
-  padding-left: 13.5rem
+  padding-left: 12rem
 }
 
 .scroll-to-top {
@@ -9710,7 +9714,7 @@ a:focus {
 
 .sidebar {
   width: 3.5rem;
-  margin-top: 3.5rem;
+  margin-top: 4.5rem;
   min-height: 100vh
 }
 
@@ -9869,7 +9873,7 @@ font-size:0.8rem;
 
 @media (min-width:768px) {
   .sidebar {
-    width: 3.5rem!important;
+    width: 12rem!important;
     margin-top: 3.5rem;
   }
   .sidebar .nav-item .collapse {
@@ -9896,15 +9900,15 @@ font-size:0.8rem;
     width: 100%;
     text-align: left;
     padding: 0.65rem 1rem;
-    width: 3.5rem
+
   }
   .sidebar .nav-item .nav-link i {
     font-size: .85rem;
-    margin-right: .25rem
+    margin-right: .5rem
   }
   .sidebar .nav-item .nav-link span {
     font-size: .85rem;
-    display: none
+    display: inline;
   }
   .sidebar .nav-item .nav-link[data-toggle=collapse]::after {
     width: 1rem;
@@ -9930,8 +9934,8 @@ font-size:0.8rem;
     text-align: left
   }
   .sidebar.toggled {
-    overflow: hidden;
-    width: 0rem!important
+    overflow: visible;
+    width: 3.5rem!important
   }
   .sidebar.toggled .nav-item .collapse {
     position: absolute;
@@ -10070,7 +10074,21 @@ font-size:0.8rem;
 }
 
 .sidebar-dark .nav-item.active .nav-link {
-  color: #fff
+  color: #fff;
+  /* background-color: #43528e;
+  border-left: 3px solid #fff; */
+}
+
+.sidebar-dark .nav-item .nav-link:hover {
+  color: #fff;
+  /* background-color: #43528e; */
+
+}
+
+.sidebar-dark .nav-item .nav-link:active, .sidebar-dark .nav-item .nav-link:focus {
+  color: #fff;
+  /* background-color: #43528e;
+  border-left: 3px solid #fff; */
 }
 
 .sidebar-dark .nav-item.active .nav-link i {
@@ -10897,7 +10915,7 @@ body.sidebar-toggled footer.sticky-footer {
   }
   .container-fluid .sidebar1 .nav-item .nav-link i {
     font-size: 0.75rem;
-    margin-right: 0.25rem;
+    margin-right: 0.5rem;
   }
   .container-fluid .sidebar1 .nav-item .nav-link span {
     font-size: 0.8rem;
@@ -12053,4 +12071,37 @@ padding-bottom: 1.5rem;
 .canvasjs-chart-credit {
   display:none;
 }
-
+/*.navbar-nav li a .ttip {opacity:0;position:absolute;    background: #333;
+  left: 0px;
+  white-space: nowrap;
+  top: 16px;
+  border-radius: 3px;
+  padding: 5px 10px;
+  transition: .5s ease all;}
+.navbar-nav li a:hover .ttip {opacity:1;left: 70px;}
+.navbar-nav li a .ttip:after {
+  right: 100%;
+  top: 50%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-color: rgba(136, 183, 213, 0);
+  border-right-color: #333;
+  border-width: 5px;
+  margin-top: -5px;
+}
+.cut-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.overflow-information{
+  overflow: hidden;
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width:150px; //change based on when you want the dots to appear
+}*/

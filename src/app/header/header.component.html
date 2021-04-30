@@ -7,7 +7,7 @@
     <i class="fa fa-bars"></i>
   </button> -->
 
-  <button id="sidebarToggleTop" class="btn btn-link rounded-circle" (click)="onSideBarToggleTopClick()">
+  <button id="sidebarToggleTop" class="btn btn-link" (click)="onSidebarToggle()">
     <i class="fa fa-bars text-primary"></i>
   </button>
 
@@ -82,8 +82,8 @@
     <div class="topbar-divider d-none d-sm-block"></div>
 
     <li class="nav-item mx-1">
-      <a class="nav-link" href="javascript:void(0)" title="Telemetry" (click)="navigateToDashboard('telemetry')" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fa fa-globe fa-fw"></i>
+      <a class="nav-link" href="javascript:void(0)" title="Telemetry" (click)="navigateToDashboard('telemetry')" id="messagesDropdown" aria-expanded="false">
+        <i class="fa fa-globe fa-fw color-primary"></i>
         <!-- Counter - Messages -->
       </a>
 
@@ -93,8 +93,8 @@
 
     <!-- Nav Item - Alerts -->
     <li class="nav-item no-arrow mx-1">
-      <a class="nav-link" href="javascript:void(0)" title="Alert" (click)="navigateToDashboard('alert')" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fa fa-bell fa-fw"></i>
+      <a class="nav-link" href="javascript:void(0)" title="Alert" (click)="navigateToDashboard('alert')" id="alertsDropdown" aria-expanded="false">
+        <i class="fa fa-bell fa-fw  color-primary"></i>
         <!-- Counter - Alerts -->
       </a>
       <!-- Dropdown - Alerts -->

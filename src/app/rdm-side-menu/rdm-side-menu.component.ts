@@ -154,19 +154,38 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   onSidebarToggle() {
     $('body').toggleClass('sidebar-toggled');
     $('.sidebar').toggleClass('toggled');
-    if ($('.sidebar').hasClass('toggled')) {
-      // $(".sidebar .collapse").collapse("hide");
+    // if ($('.sidebar').hasClass('toggled')) {
+    //   // $(".sidebar .collapse").collapse("hide");
+    //   $('.container-fluid').removeClass('sb-notoggle');
+    //   $('.container-fluid').addClass('sb-toggle');
+    // }
+    // if (!$('.sidebar').hasClass('toggled')) {
+    //   // $(".sidebar .collapse").collapse("show");
+    //   $('.container-fluid').addClass('sb-notoggle');
+    //   $('.container-fluid').removeClass('sb-toggle');
+    // }
+    if (!$('.sidebar').hasClass('toggled')) {
+      alert('in if');
+      $('body').addClass('sidebar-toggled');
+      $('.sidebar').addClass('toggled');
+      $('.sidebar .collapse').collapse('hide');
       $('.container-fluid').removeClass('sb-notoggle');
       $('.container-fluid').addClass('sb-toggle');
-    }
-    if (!$('.sidebar').hasClass('toggled')) {
-      // $(".sidebar .collapse").collapse("show");
+    } else {
+      alert('in else');
+      $('body').removeClass('sidebar-toggled');
+      $('.sidebar').removeClass('toggled');
       $('.container-fluid').addClass('sb-notoggle');
       $('.container-fluid').removeClass('sb-toggle');
     }
   }
 
   getURL(url) {
+    // if ($('.sidebar').hasClass('toggled')) {
+    //   $('body').removeClass('sidebar-toggled');
+    //   $('.sidebar').removeClass('toggled');
+    //   $('.sidebar .collapse').collapse('show');
+    // }
     return url ? url.replace(':appName', this.decode(this.contextApp.app)) : url;
   }
 

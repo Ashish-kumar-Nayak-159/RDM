@@ -103,33 +103,33 @@ export class CONSTANTS {
       ],
       priority: 1
     },
-    {
-      page: 'Asset Groups',
-      system_name: 'Asset Groups',
-      url: null,
-      display_name: 'Asset Groups',
-      icon: 'fa fa-fw fa-table',
-      visible: true,
-      children: [
-        {
-          page: 'Group Jobs',
-          system_name: 'Group Jobs',
-          url: null,
-          display_name: 'Group Jobs',
-          visible: true,
-          showAccordion: []
-        },
-        {
-          page: 'Group Type',
-          system_name: 'Group Type',
-          url: null,
-          display_name: 'Group Type',
-          visible: true,
-          showAccordion: []
-        }
-      ],
-      priority: 1
-    },
+    // {
+    //   page: 'Asset Groups',
+    //   system_name: 'Asset Groups',
+    //   url: null,
+    //   display_name: 'Asset Groups',
+    //   icon: 'fa fa-fw fa-table',
+    //   visible: true,
+    //   children: [
+    //     {
+    //       page: 'Group Jobs',
+    //       system_name: 'Group Jobs',
+    //       url: null,
+    //       display_name: 'Group Jobs',
+    //       visible: true,
+    //       showAccordion: []
+    //     },
+    //     {
+    //       page: 'Group Type',
+    //       system_name: 'Group Type',
+    //       url: null,
+    //       display_name: 'Group Type',
+    //       visible: true,
+    //       showAccordion: []
+    //     }
+    //   ],
+    //   priority: 1
+    // },
     {
       page: 'Alert Visualization',
       system_name: 'Alert Visualization',

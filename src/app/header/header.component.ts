@@ -105,6 +105,33 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  onSidebarToggle() {
+    $('body').toggleClass('sidebar-toggled');
+    $('.sidebar').toggleClass('toggled');
+    // if ($('.sidebar').hasClass('toggled')) {
+    //   // $(".sidebar .collapse").collapse("hide");
+    //   $('.container-fluid').removeClass('sb-notoggle');
+    //   $('.container-fluid').addClass('sb-toggle');
+    // }
+    // if (!$('.sidebar').hasClass('toggled')) {
+    //   // $(".sidebar .collapse").collapse("show");
+    //   $('.container-fluid').addClass('sb-notoggle');
+    //   $('.container-fluid').removeClass('sb-toggle');
+    // }
+    if ($('.sidebar').hasClass('toggled')) {
+      $('body').addClass('sidebar-toggled');
+      $('.sidebar').addClass('toggled');
+      $('.sidebar .collapse').collapse('hide');
+      $('.container-fluid').removeClass('sb-notoggle');
+      $('.container-fluid').addClass('sb-toggle');
+    } else {
+      $('body').removeClass('sidebar-toggled');
+      $('.sidebar').removeClass('toggled');
+      $('.container-fluid').addClass('sb-notoggle');
+      $('.container-fluid').removeClass('sb-toggle');
+    }
+  }
+
   navigateToDashboard(type) {
     const url = 'applications/' + this.contextApp.app + '/dashboard#' + type;
     this.router.navigateByUrl(url);
@@ -144,21 +171,6 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
     this.router.navigate([obj.url], {queryParams: (obj.queryParams ? obj.queryParams : undefined)});
   }
 
-
-  onSideBarToggleTopClick() {
-    $('body').toggleClass('sidebar-toggled');
-    $('.sidebar').toggleClass('toggled');
-    if ($('.sidebar').hasClass('toggled')) {
-      // $(".sidebar .collapse").collapse("hide");
-      $('.container-fluid').addClass('sb-collapse');
-      $('.container-fluid').removeClass('sb-toggle');
-    }
-    if (!$('.sidebar').hasClass('toggled')) {
-      // $(".sidebar .collapse").collapse("show");
-      $('.container-fluid').removeClass('sb-collapse');
-      $('.container-fluid').addClass('sb-toggle');
-    }
-  }
 
   decode(item) {
     return decodeURIComponent(item);

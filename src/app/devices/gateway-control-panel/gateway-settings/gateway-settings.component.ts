@@ -108,7 +108,7 @@ export class GatewaySettingsComponent implements OnInit {
     this.subscriptions.push(
       this.deviceService.callDeviceMethod(obj, obj.app).subscribe(
         (response: any) => {
-          if (response.status === 'connected') {
+          if (response?.device_response?.status?.toLowerCase() === 'connected') {
             this.testConnectionMessage = 'Gateway connection is successful';
           }
           this.isTestConnectionAPILoading = false;

@@ -34,7 +34,7 @@ export class ManageApplicationsComponent implements OnInit {
   startApp(app, index) {
     const obj = {
       device_id: this.device.device_id,
-      command: 'START_APP',
+      method: 'START_APP',
       message: {
       command: 'START_APP',
       app_name: app.name
@@ -43,6 +43,7 @@ export class ManageApplicationsComponent implements OnInit {
       timestamp: (moment().utc()).unix(),
       acknowledge: 'Full',
       expire_in_min: 1,
+      request_type: 'Start App',
       message_id: this.device.device_id + '_' + (moment().utc()).unix()
     };
     this.callDirectMethod(obj, 'Start', index);
@@ -51,7 +52,7 @@ export class ManageApplicationsComponent implements OnInit {
   stopApp(app, index) {
     const obj = {
       device_id: this.device.device_id,
-      command: 'STOP_APP',
+      method: 'STOP_APP',
       message: {
         command: 'STOP_APP',
         app_name: app.name
@@ -60,7 +61,8 @@ export class ManageApplicationsComponent implements OnInit {
       timestamp: (moment().utc()).unix(),
       acknowledge: 'Full',
       expire_in_min: 1,
-      message_id: this.device.device_id + '_' + (moment().utc()).unix()
+      message_id: this.device.device_id + '_' + (moment().utc()).unix(),
+      request_type: 'Stop App',
     };
     this.callDirectMethod(obj, 'Stop', index);
   }
@@ -68,7 +70,7 @@ export class ManageApplicationsComponent implements OnInit {
   restartApp(app, index) {
     const obj = {
       device_id: this.device.device_id,
-      command: 'RESTART_APP',
+      method: 'RESTART_APP',
       message: {
         command: 'RESTART_APP',
         app_name: app.name
@@ -77,7 +79,8 @@ export class ManageApplicationsComponent implements OnInit {
       timestamp: (moment().utc()).unix(),
       acknowledge: 'Full',
       expire_in_min: 1,
-      message_id: this.device.device_id + '_' + (moment().utc()).unix()
+      message_id: this.device.device_id + '_' + (moment().utc()).unix(),
+      request_type: 'Restart App',
     };
     this.callDirectMethod(obj, 'Restart', index);
   }
@@ -88,10 +91,10 @@ export class ManageApplicationsComponent implements OnInit {
     this.deviceService.callDeviceMethod(obj, this.contextApp.app).subscribe(
       (response: any) => {
         this.isAPILoading[index] = false;
-        this.toasterService.showSuccess(response.message, type + ' App');
+        this.toasterService.showSuccess(response?.device_response?.message, type + ' App');
       }, error => {
         this.isAPILoading[index] = false;
-        this.toasterService.showError(error.message, type + ' App');
+        this.toasterService.showError(error?.device_response?.message, type + ' App');
       }
       );
 

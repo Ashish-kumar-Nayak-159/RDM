@@ -45,11 +45,7 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
     this.c2dMsgFilter.tableType = 'C2D Message';
 
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
-      this.c2dMsgFilter.gateway_id = this.device.device_id;
-    } else {
-      this.c2dMsgFilter.device_id = this.device.device_id;
-    }
+    this.c2dMsgFilter.device_id = this.device.device_id;
     this.c2dMsgFilter.epoch = true;
     this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
       this.appName = params.get('applicationId');

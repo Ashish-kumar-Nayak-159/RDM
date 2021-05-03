@@ -104,7 +104,7 @@ export class DeviceTypeControlPanelComponent implements OnInit, OnDestroy {
     if (!$('.sidebar').hasClass('toggled')) {
       $('body').addClass('sidebar-toggled');
       $('.sidebar').addClass('toggled');
-      $('.sidebar .collapse').collapse('hide');
+      // $('.sidebar .collapse').collapse('hide');
     } else {
       $('body').removeClass('sidebar-toggled');
       $('.sidebar').removeClass('toggled');

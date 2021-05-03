@@ -9,6 +9,11 @@
           <span class="text-secondary">Test Connection</span></a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Manage Applications')" [class.disabled]="isSaveSettingAPILoading">
+          <i class="fa fa-fw fa-laptop"></i>
+          <span class="text-secondary">Manage Applications</span></a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Manage Devices')" [class.disabled]="isSaveSettingAPILoading">
           <i class="fa fa-fw fa-laptop"></i>
           <span class="text-secondary">Manage Devices</span></a>
@@ -46,13 +51,27 @@
       'alert-danger': testConnectionMessage.toLowerCase().includes('not connected')}"> {{testConnectionMessage}} </span>
     </div>
   </ng-container>
+  <ng-container *ngIf="selectedTab === 'Manage Applications'">
+    <app-manage-applications [device]="device" [deviceTwin]="deviceTwin" (refreshDeviceTwin)="getDeviceTwinData()"></app-manage-applications>
+  </ng-container>
   <ng-container *ngIf="selectedTab === 'Manage Devices'">
-    <app-register-devices [device]="device" [deviceTwin]="deviceTwin"></app-register-devices>
+    <app-register-devices [device]="device" [deviceTwin]="deviceTwin" (refreshDeviceTwin)="getDeviceTwinData()" [pageType]="'register-devices'"></app-register-devices>
   </ng-container>
   <ng-container *ngIf="selectedTab === 'Register Properties'">
-    <app-register-properties ></app-register-properties>
+    <app-register-properties [device]="device" [deviceTwin]="deviceTwin" (refreshDeviceTwin)="getDeviceTwinData()"></app-register-properties>
   </ng-container>
-  <ng-container *ngIf="selectedTab === 'Settings'"></ng-container>
+  <ng-container *ngIf="selectedTab === 'Settings'">
+    <accordion [closeOthers]="'true'">
+      <accordion-group heading="" [panelClass]="'customClass'" >
+        <ng-container  accordion-heading>
+          <button class="btn" type="button">
+              Telemetry Parameter Setting
+          </button>
+        </ng-container>
+        <app-register-devices [device]="device" [deviceTwin]="deviceTwin" (refreshDeviceTwin)="getDeviceTwinData()" [pageType]="'telemetry-settings'"></app-register-devices>
+      </accordion-group>
+    </accordion>
+  </ng-container>
 </div>
 
 <!-- <div class="con-pad" *ngIf="device?.tags?.settings">

@@ -203,9 +203,11 @@ export class AddDeviceComponent implements OnInit {
       max: modelObj?.telemetry_frequency.max || 60,
       average: modelObj?.telemetry_frequency.average || 30
     };
+    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
     this.deviceDetail.metadata.setup_details = this.setupForm.value;
+    }
     const protocol = this.protocolList.find(protocolObj => protocolObj.name === this.deviceDetail.tags.protocol);
-    this.deviceDetail.metadata.deviceApp = protocol.metadata?.app;
+    this.deviceDetail.metadata.package_app = protocol.metadata?.app;
     this.deviceDetail.tags.hierarchy = JSON.stringify(this.deviceDetail.tags.hierarchy_json );
     this.deviceDetail.tags.created_by = this.userData.email + ' (' + this.userData.name + ')';
     this.deviceDetail.app = this.contextApp.app;

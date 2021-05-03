@@ -43,8 +43,7 @@ import { AgmCoreModule } from '@agm/core';
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyCGnaF9LBIEhAgc5wwktQtWOBu9pnNNfK0',
       libraries: ['places']
-    })
-  ],
+    })  ],
   providers: [
     HttpInterceptorProviders
   ],

@@ -451,7 +451,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
           job_id: 'job_' + this.commonService.generateUUID(),
           command: null,
           package_details: {
-            name: this.selectedDevicePackage.name,
+            app_name: this.selectedDevicePackage.name,
             version: this.selectedDevicePackage.version,
             url: environment.blobURL + this.selectedDevicePackage.url,
             token: environment.blobKey
@@ -509,7 +509,8 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.deviceService.getDeviceTwinHistory(this.contextApp.app, obj).subscribe(
         (response: any) => {
-          if (response.data?.length > 0 && response.data[response.data.length - 1]?.twin?.reported[this.selectedDevicePackage.name]) {
+          if (response.data?.length > 0 && response.data[response.data.length - 1]?.twin?.reported[this.selectedDevicePackage.name]
+            && this.displyaMsgArr.length < response.data.length) {
             this.displyaMsgArr.push({
               message: response.data[response.data.length - 1].twin.reported[this.selectedDevicePackage.name].fw_update_sub_status,
               error: false

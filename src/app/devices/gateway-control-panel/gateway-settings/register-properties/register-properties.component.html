@@ -1,1 +1,84 @@
-<p>register-properties works!</p>
+<i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isDevicesAPILoading"></i>
+<div class="table-responsive" *ngIf="!isDevicesAPILoading">
+  <table class="table table-bordered  table-striped text-gray-800" id="dataTable" width="100%" cellspacing="0">
+    <thead>
+      <tr>
+        <th>Device</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let device of devices; let i = index">
+
+        <td>
+            {{device.display_name}}
+        </td>
+        <td> <a
+          class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm mr-2"
+          href="javascript:void(0)"
+          (click)="openRegisterPropModal(device)"
+          ><i class="fa fa- fa-sm text-white-50"></i> Register</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" style="z-index: 1400;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Register Properties/Alerts</h5>
+        <button type="button" class="close"  aria-label="Close"  (click)="onModalClose()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+        <ng-container *ngIf="showPropOptions">
+          <div>
+            <input type="checkbox" name="alerts"
+              id="alerts" [(ngModel)]="optionsValue.alerts" />
+              <label class="ml-1 form-label">Alerts</label>
+              &nbsp;&nbsp;&nbsp;
+            <input type="checkbox" name="measured_properties"
+                id="measured_properties" [(ngModel)]="optionsValue.measured_properties" />
+            <label class="ml-1 form-label">Measured Properties</label>
+            &nbsp;&nbsp;&nbsp;
+            <input type="checkbox" name="readable_properties"
+            id="readable_properties" [(ngModel)]="optionsValue.readable_properties" />
+            <label class="ml-1 form-label">Readable Properties</label>
+            </div>
+            <div>
+              <input type="checkbox" name="writable_properties"
+                  id="writable_properties" [(ngModel)]="optionsValue.writable_properties" />
+              <label class="ml-1 form-label">Writable Properties</label>
+              &nbsp;&nbsp;&nbsp;
+              <input type="checkbox" name="derived_properties"
+              id="derived_properties" [(ngModel)]="optionsValue.derived_properties" />
+              <label class="ml-1 form-label">Derived Properties</label>
+              </div>
+        </ng-container>
+        <ng-container *ngIf="displyaMsgArr.length > 0">
+          <ul>
+            <li *ngFor="let msg of displyaMsgArr; let last = last;">
+              {{msg.message}}
+              <i class="fa fa-check" style="color: green;" *ngIf="!msg.error"></i>
+              <i class="fa fa-cancel" style="color: red;" *ngIf="msg.error"></i>
+              </li>
+          </ul>
+        </ng-container>
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAPILoading"></i>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button  type="button" class="btn btn-primary" *ngIf="showPropOptions" (click)="registerProperties()">
+          Save
+        </button>
+        <button  type="button" class="btn btn-secondary" (click)="onModalClose()">
+          Close
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

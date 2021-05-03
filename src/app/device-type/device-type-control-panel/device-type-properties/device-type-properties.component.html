@@ -75,7 +75,7 @@
               <option [ngValue]="dataType.name" *ngFor="let dataType of dataTypeList">{{dataType.name}}</option>
             </select>
           </div>
-          <accordion [closeOthers]="'true'" *ngIf="type === 'measured_properties'">
+          <accordion [closeOthers]="'true'">
             <accordion-group heading="" [panelClass]="'customClass'" >
               <ng-container  accordion-heading>
                 <button class="btn" type="button">

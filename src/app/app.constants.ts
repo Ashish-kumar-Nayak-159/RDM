@@ -3,11 +3,20 @@ import { environment } from 'src/environments/environment';
 export class CONSTANTS {
 
   public static DEVICEAPPPS = [
-    {id: 4, name: 'CommunicationApp', display_name: 'Communication App', metadata: {}, deleted: false},
-    {id: 5, name: 'DataCacherApp', display_name: 'Data Cacher App', metadata: {}, deleted: false},
-    {id: 2, name: 'ModbusRTUApplication', display_name: 'Modbus RTU App', metadata: {}, deleted: false},
-    {id: 1, name: 'ModbusTCPApplication', display_name: 'Modbus TCP App', metadata: {}, deleted: false},
-    {id: 3, name: 'SiemensTCPIPApplication', display_name: 'Siemens TCP/IP App', metadata: {}, deleted: false}
+    {id: 4, name: 'GatewayAgent', is_start: false, is_stop: false, is_restart: false, is_install: false, is_uninstall: false,
+    is_update: false, display_name: 'Gateway Agent', metadata: {}, deleted: false},
+    {id: 4, name: 'MQTTAgent', is_start: false, is_stop: false, is_restart: false, is_install: false, is_uninstall: false,
+    is_update: false, display_name: 'MQTT Agent', metadata: {}, deleted: false},
+    {id: 5, name: 'CachingAgent', is_start: false, is_stop: false, is_restart: false, is_install: false, is_uninstall: false,
+    is_update: false, display_name: 'Caching Agent', metadata: {}, deleted: false},
+    {id: 3, name: 'RuleEngine', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
+    is_update: true, display_name: 'Rule Engine', metadata: {}, deleted: false},
+    {id: 2, name: 'ModbusRTUApplication', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
+    is_update: true, display_name: 'Modbus RTU App', metadata: {}, deleted: false},
+    {id: 1, name: 'ModbusTCPApplication', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
+    is_update: true, display_name: 'Modbus TCP App', metadata: {}, deleted: false},
+    {id: 3, name: 'SiemensTCPIPApplication', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
+    is_update: true, display_name: 'Siemens TCP/IP App', metadata: {}, deleted: false}
   ];
 
   public static PROTOCOLS = [
@@ -227,7 +236,7 @@ export class CONSTANTS {
       showAccordion: [
         { name: 'Delete all', key: 'delete'}
       ],
-      accordion_value: {}
+      accordion_value: { delete: true}
     },
     {
       page: 'settings',
@@ -370,7 +379,7 @@ export class CONSTANTS {
         { name: 'Control', key: 'control'},
         { name: 'Purge', key: 'purge'}
       ],
-      accordion_value: {}
+      accordion_value: {configuration: true, control: true, purge: true}
     },
     {
       page: 'visualization',
@@ -480,7 +489,7 @@ export class CONSTANTS {
       showAccordion: [
         { name: 'Delete all', key: 'delete'}
       ],
-      accordion_value: {}
+      accordion_value: {delete: true}
     },
     {
       page: 'settings',
@@ -623,7 +632,7 @@ export class CONSTANTS {
         { name: 'Control', key: 'control'},
         { name: 'Purge', key: 'purge'}
       ],
-      accordion_value: {}
+      accordion_value: {configuration: true, purge: true, control: true}
     },
     {
       page: 'visualization',
@@ -722,13 +731,13 @@ export class CONSTANTS {
       showAccordion: [
         { name: 'Delete all', key: 'delete'}
       ],
-      accordion_value: {}
+      accordion_value: { delete: true}
     },
     {
-      page: 'settings',
-      system_name: 'Settings',
+      page: 'setup',
+      system_name: 'Setup',
       url: '#device_settings',
-      display_name: 'Settings',
+      display_name: 'Setup',
       icon: 'fa fa-fw fa-cog',
       visible: true,
       isTitle: false,
@@ -854,7 +863,7 @@ export class CONSTANTS {
         { name: 'Control', key: 'control'},
         { name: 'Purge', key: 'purge'}
       ],
-      accordion_value: {}
+      accordion_value: {configuration: true, purge: true, control: true}
     }
   ];
 

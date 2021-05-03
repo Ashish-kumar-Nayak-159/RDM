@@ -1,0 +1,19 @@
+<div class="container-pad">
+<agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" >
+  <agm-marker-cluster
+  imagePath="https://raw.githubusercontent.com/googlemaps/v3-utility-library/master/markerclustererplus/images/m">
+<ng-container  *ngFor="let device of devices; let i = index; ">
+  <agm-marker *ngIf="device.latitude && device.longitude"
+  [latitude]="device.latitude" [longitude]="device.longitude"
+  (mouseOver)="onMarkerClick(infowindow, gm)"  >
+  <agm-info-window #infowindow >
+    <a class="blue-font ml-2" href="javascript:void(0)" (click)="redirectToDevice(device)">{{device.display_name ? device.display_name: device.device_id}}</a>
+    <!-- <hr>
+    <p><b>MTTR:</b> {{device.mttr}}</p>
+    <p><b>MTBF:</b> {{device.mtbf}}</p> -->
+  </agm-info-window>
+  </agm-marker>
+</ng-container>
+</agm-marker-cluster>
+</agm-map>
+</div>

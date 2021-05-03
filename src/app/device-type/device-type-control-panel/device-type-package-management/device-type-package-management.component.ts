@@ -31,6 +31,7 @@ export class DeviceTypePackageManagementComponent implements OnInit {
   modalType: string;
   constantData = CONSTANTS;
   appPackages: any[] = [];
+  applicationList = CONSTANTS.DEVICEAPPPS;
   constructor(
     private commonService: CommonService,
     private deviceTypeService: DeviceTypeService,

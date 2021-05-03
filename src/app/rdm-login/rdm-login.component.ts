@@ -116,20 +116,21 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.router.navigate(['applications', 'selection']);
               } else if (this.userData.apps && this.userData.apps.length === 1) {
                 await this.getApplicationData(this.userData.apps[0]);
-                const menu = this.applicationData.configuration.main_menu.length > 0 ?
-                this.applicationData.configuration.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
-                let i = 0;
-                menu.forEach(menuObj => {
-                  if ( i === 0 && menuObj.visible) {
-                    i++;
-                    const url = menuObj.url;
-                    if (menuObj.url?.includes(':appName')) {
-                      menuObj.url = menuObj.url.replace(':appName', this.applicationData.app);
-                      console.log(menuObj.url);
-                      this.router.navigateByUrl(menuObj.url);
-                    }
-                  }
-                });
+                this.router.navigate(['applications', this.applicationData.app]);
+                // const menu = this.applicationData.configuration.main_menu.length > 0 ?
+                // this.applicationData.configuration.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+                // let i = 0;
+                // menu.forEach(menuObj => {
+                //   if ( i === 0 && menuObj.visible) {
+                //     i++;
+                //     const url = menuObj.url;
+                //     if (menuObj.url?.includes(':appName')) {
+                //       menuObj.url = menuObj.url.replace(':appName', this.applicationData.app);
+                //       console.log(menuObj.url);
+                //       this.router.navigateByUrl(menuObj.url);
+                //     }
+                //   }
+                // });
               }
             } else {
               this.isLoginAPILoading = false;

@@ -382,7 +382,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.originalFilter = JSON.parse(JSON.stringify(filterObj));
     this.isTelemetryDataLoading = true;
-    await this.getDeviceSignalRMode(this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : this.filterObj.device.device_id);
+    await this.getDeviceSignalRMode(this.filterObj.device.device_id);
     await this.getDeviceData();
     if (device_type) {
       await this.getThingsModelProperties(device_type);

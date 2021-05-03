@@ -1,3 +1,24 @@
+<div class="container-tab-pad" style="margin-top: 2rem!important;overflow-y: hidden;">
+  <tabset>
+    <tab heading="{{contextApp.configuration.main_menu[1]?.display_name}}" id="tab1"
+    *ngIf="contextApp.configuration.main_menu[1]?.visible"
+     (selectTab)="onTabChange('iot-devices')">
+     <app-device-management-devices [type]="selectedTab" *ngIf="selectedTab === 'iot-devices'"></app-device-management-devices>
+    </tab>
+    <tab heading="{{contextApp.configuration.main_menu[2]?.display_name}}" id="tab2"
+    *ngIf="contextApp.configuration.main_menu[2]?.visible"
+     (selectTab)="onTabChange('legacy-devices')">
+     <app-device-management-devices [type]="selectedTab" *ngIf="selectedTab === 'legacy-devices'"></app-device-management-devices>
+    </tab>
+    <tab heading="{{contextApp.configuration.main_menu[7]?.display_name}}" id="tab3"
+    *ngIf="contextApp.configuration.main_menu[7]?.visible"
+     (selectTab)="onTabChange('iot-gateways')">
+     <app-device-management-devices [type]="selectedTab" *ngIf="selectedTab === 'iot-gateways'"></app-device-management-devices>
+    </tab>
+  </tabset>
+</div>
+
+<!--
 <div class="topnavbar">
   <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3">
     <h5 class="h4 mb-0 text-gray-800">
@@ -37,4 +58,4 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->

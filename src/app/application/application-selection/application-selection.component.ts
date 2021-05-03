@@ -60,26 +60,27 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     // await this.getDevices(this.applicationData.user.hierarchy);
     // await this.getDeviceModels(this.applicationData.user.hierarchy);
     this.commonService.refreshSideMenuData.emit(this.applicationData);
-    const menu = this.applicationData.configuration.main_menu.length > 0 ?
-    this.applicationData.configuration.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
-    let i = 0;
-    menu.forEach(menuObj => {
-      if (menuObj.page === 'Things Modelling' && this.applicationData.user.role === CONSTANTS.APP_ADMIN_ROLE) {
-        menuObj.visible = true;
-      }
-      if ( i === 0 && menuObj.visible) {
-        i++;
-        let url = menuObj.url;
-        if (menuObj.url?.includes(':appName')) {
-          url = menuObj.url.replace(':appName', this.applicationData.app);
-          console.log('after url   ', url);
-          this.router.navigateByUrl(url);
-        }
-      }
-    });
-    if (i === 0) {
-      this.toasterService.showError('All the menu items visibility are off. Please contact administrator', 'App Selection');
-    }
+    this.router.navigate(['applications', this.applicationData.app]);
+    // const menu = this.applicationData.configuration.main_menu.length > 0 ?
+    // this.applicationData.configuration.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+    // let i = 0;
+    // menu.forEach(menuObj => {
+    //   if (menuObj.page === 'Things Modelling' && this.applicationData.user.role === CONSTANTS.APP_ADMIN_ROLE) {
+    //     menuObj.visible = true;
+    //   }
+    //   if ( i === 0 && menuObj.visible) {
+    //     i++;
+    //     let url = menuObj.url;
+    //     if (menuObj.url?.includes(':appName')) {
+    //       url = menuObj.url.replace(':appName', this.applicationData.app);
+    //       console.log('after url   ', url);
+    //       this.router.navigateByUrl(url);
+    //     }
+    //   }
+    // });
+    // if (i === 0) {
+    //   this.toasterService.showError('All the menu items visibility are off. Please contact administrator', 'App Selection');
+    // }
     this.isAppDataLoading = undefined;
   }
 

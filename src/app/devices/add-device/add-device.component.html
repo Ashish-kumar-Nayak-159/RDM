@@ -268,7 +268,9 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary add-row" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) ||isCreateDeviceAPILoading"
+        <button *ngIf="componentState === constantData.NON_IP_DEVICE" type="button" class="btn btn-primary add-row" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) ||isCreateDeviceAPILoading"
+          (click)="onCreateDevice()">Save</button>
+          <button *ngIf="componentState !== constantData.NON_IP_DEVICE" type="button" class="btn btn-primary add-row" [disabled]="isCreateDeviceAPILoading"
           (click)="onCreateDevice()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreateDeviceAPILoading"
           (click)="onCloseCreateDeviceModal()">

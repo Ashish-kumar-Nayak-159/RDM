@@ -1,3 +1,4 @@
+import { TabsModule } from 'ngx-bootstrap/tabs';
 import { AgmMarkerClustererModule } from '@agm/markerclusterer';
 import { VisualizationModule } from './../visualization/visualization.module';
 import { NgModule } from '@angular/core';
@@ -64,6 +65,7 @@ import { AgmCoreModule } from '@agm/core';
 import { RuleEngineComponent } from './device-control-panel/rule-engine/rule-engine.component';
 import { RegisterDevicesComponent } from './gateway-control-panel/gateway-settings/register-devices/register-devices.component';
 import { RegisterPropertiesComponent } from './gateway-control-panel/gateway-settings/register-properties/register-properties.component';
+import { ManageApplicationsComponent } from './gateway-control-panel/gateway-settings/manage-applications/manage-applications.component';
 
 @NgModule({
   declarations: [
@@ -113,7 +115,8 @@ import { RegisterPropertiesComponent } from './gateway-control-panel/gateway-set
     DeviceMtbfComponent,
     RuleEngineComponent,
     RegisterDevicesComponent,
-    RegisterPropertiesComponent
+    RegisterPropertiesComponent,
+    ManageApplicationsComponent
   ],
   imports: [
     CommonModule,
@@ -136,7 +139,8 @@ import { RegisterPropertiesComponent } from './gateway-control-panel/gateway-set
     AgmCoreModule.forRoot({
       libraries: ['places']
     }),
-    AgmMarkerClustererModule
+    AgmMarkerClustererModule,
+    TabsModule
   ],
   exports: [
     FilterComponent,

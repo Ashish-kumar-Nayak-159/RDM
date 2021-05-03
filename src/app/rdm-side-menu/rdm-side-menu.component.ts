@@ -151,34 +151,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
     this.displayMenuList = JSON.parse(JSON.stringify(arr));
   }
 
-  onSidebarToggle() {
-    $('body').toggleClass('sidebar-toggled');
-    $('.sidebar').toggleClass('toggled');
-    // if ($('.sidebar').hasClass('toggled')) {
-    //   // $(".sidebar .collapse").collapse("hide");
-    //   $('.container-fluid').removeClass('sb-notoggle');
-    //   $('.container-fluid').addClass('sb-toggle');
-    // }
-    // if (!$('.sidebar').hasClass('toggled')) {
-    //   // $(".sidebar .collapse").collapse("show");
-    //   $('.container-fluid').addClass('sb-notoggle');
-    //   $('.container-fluid').removeClass('sb-toggle');
-    // }
-    if (!$('.sidebar').hasClass('toggled')) {
-      alert('in if');
-      $('body').addClass('sidebar-toggled');
-      $('.sidebar').addClass('toggled');
-      $('.sidebar .collapse').collapse('hide');
-      $('.container-fluid').removeClass('sb-notoggle');
-      $('.container-fluid').addClass('sb-toggle');
-    } else {
-      alert('in else');
-      $('body').removeClass('sidebar-toggled');
-      $('.sidebar').removeClass('toggled');
-      $('.container-fluid').addClass('sb-notoggle');
-      $('.container-fluid').removeClass('sb-toggle');
-    }
-  }
+
 
   getURL(url) {
     // if ($('.sidebar').hasClass('toggled')) {

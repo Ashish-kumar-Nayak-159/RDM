@@ -49,8 +49,12 @@
         <form>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">App Name:</label>
-            <input type="text" class="form-control" id="name" name="name" [(ngModel)]="packageObj.name"
-              placeholder="Enter Package Name" (change)="onAppChange()">
+            <!-- <input type="text" class="form-control" id="name" name="name" [(ngModel)]="packageObj.name"
+              placeholder="Enter Package Name" (change)="onAppChange()"> -->
+            <select class="custom-select" id="appname" name="appname"
+            [(ngModel)]="packageObj.name"> <option [ngValue]="undefined">Select App</option>
+              <option [ngValue]="app.name" *ngFor="let app of applicationList"> {{app.display_name}}</option>
+            </select>
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Package Name:</label>
@@ -73,23 +77,6 @@
                 placeholder="Patch">
             </div>
           </div>
-          <!-- <div class="form-group">
-            <label for="recipient-name" class="col-form-label required">Upgradable From:</label>
-            <angular2-multiselect [data]="appPackages" id="y1AxisProperty"
-              [(ngModel)]="packageObj.metadata.upgradable_from" name="y1AxisProperty" [settings]="{
-                text: 'Select Package',
-                selectAllText: 'Select All',
-                unSelectAllText: 'UnSelect All',
-                classes: 'col-lg-2 col-xl-2 p-0 ml-2',
-                enableSearchFilter: true,
-                badgeShowLimit: 1,
-                maxHeight: 200,
-                primaryKey: 'id',
-                labelKey: 'display_name'
-              }"
-              (onDeSelectAll)="y1Deselect($event)">
-            </angular2-multiselect>
-          </div> -->
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Document:</label>
             {{packageObj?.metadata ? packageObj?.metadata?.file_name : 'Not yet uploaded'}}

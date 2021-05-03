@@ -194,6 +194,10 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
         name: 'App Admin',
         level: 0
       }];
+      const env = environment.environment;
+      if (env) {
+        this.applicationDetail.environment = env;
+      }
       this.applicationDetail.configuration = {main_menu: [], device_control_panel_menu : [],
         model_control_panel_menu: [], gateway_control_panel_menu: [], legacy_device_control_panel_menu: []};
       const methodToCall = this.appModalType === 'Create' ? this.applicationService.createApp(this.applicationDetail) :

@@ -81,6 +81,10 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
       if (app) {
         this.loginForm.app = app;
       }
+      const env = environment.environment;
+      if (env) {
+        this.loginForm.environment = env;
+      }
       this.subscriptions.push(this.commonService.loginUser(this.loginForm).subscribe(
         async (response: any) => {
           this.userData = response;

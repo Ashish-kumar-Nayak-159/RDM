@@ -11,11 +11,11 @@ export class CONSTANTS {
     is_update: false, display_name: 'Caching Agent', metadata: {}, deleted: false},
     {id: 3, name: 'RuleEngine', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
     is_update: true, display_name: 'Rule Engine', metadata: {}, deleted: false},
-    {id: 2, name: 'ModbusRTUApplication', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
+    {id: 2, name: 'ModbusRTUMaster', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
     is_update: true, display_name: 'Modbus RTU App', metadata: {}, deleted: false},
-    {id: 1, name: 'ModbusTCPApplication', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
+    {id: 1, name: 'ModbusTCPMaster', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
     is_update: true, display_name: 'Modbus TCP App', metadata: {}, deleted: false},
-    {id: 3, name: 'SiemensTCPIPApplication', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
+    {id: 3, name: 'SiemensTCPIP', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
     is_update: true, display_name: 'Siemens TCP/IP App', metadata: {}, deleted: false}
   ];
 
@@ -24,9 +24,9 @@ export class CONSTANTS {
     {id: 2, asset_type: 'IoT Device', name: 'IP Device (SIM)', display_name: 'IP Device (SIM)', cloud_connectivity: ['IP Device -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Device -> MQTT Client -> SIM -> Cloud'], metadata: {}, deleted: false},
     {id: 3, asset_type: 'IoT Gateway', name: 'IP Gateway (WiFi)', display_name: 'IP Gateway (WiFi)', cloud_connectivity: ['IP Gateway -> Azure IOT Hub SDK -> WiFi -> Cloud', 'IP Gateway -> MQTT Client -> WiFi -> Cloud'], metadata: {}, deleted: false},
     {id: 4, asset_type: 'IoT Gateway', name: 'IP Gateway (SIM)', display_name: 'IP Gateway (SIM)', cloud_connectivity: ['IP Gateway -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Gateway -> MQTT Client -> SIM -> Cloud'], metadata: {}, deleted: false},
-    {id: 5, asset_type: 'Legacy Device', name: 'ModbusTCPMaster', display_name: 'Modbus TCP', cloud_connectivity: ['ModBus TCP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusTCPApplication'}, deleted: false},
-    {id: 6, asset_type: 'Legacy Device', name: 'ModbusRTUMaster', display_name: 'Modbus RTU', cloud_connectivity: ['ModBus RTU Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusRTUApplication'}, deleted: false},
-    {id: 7, asset_type: 'Legacy Device', name: 'SiemensTCPIP', display_name: 'Siemens TCP/IP', cloud_connectivity: ['Siemens TCP/IP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'SiemensTCPIPApplication'}, deleted: false}
+    {id: 5, asset_type: 'Legacy Device', name: 'ModbusTCPMaster', display_name: 'Modbus TCP', cloud_connectivity: ['ModBus TCP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusTCPMaster'}, deleted: false},
+    {id: 6, asset_type: 'Legacy Device', name: 'ModbusRTUMaster', display_name: 'Modbus RTU', cloud_connectivity: ['ModBus RTU Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusRTUMaster'}, deleted: false},
+    {id: 7, asset_type: 'Legacy Device', name: 'SiemensTCPIP', display_name: 'Siemens TCP/IP', cloud_connectivity: ['Siemens TCP/IP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'SiemensTCPIP'}, deleted: false}
   ]
 
   public static NON_IP_DEVICE_OPTIONS = [

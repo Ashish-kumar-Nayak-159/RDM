@@ -153,12 +153,12 @@ style="margin-top: 7.5rem;max-height: calc(100vh - 15rem)">
             </ng-container>
             <ng-container *ngIf="reports.length === 0 && !isReportDataLoading">
               <tr>
-                <td colspan="5">No reports available.</td>
+                <td colspan="6">No reports available.</td>
               </tr>
             </ng-container>
             <ng-container *ngIf="isReportDataLoading">
               <tr>
-                <td colspan="5">
+                <td colspan="6">
                   <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
                 </td>
               </tr>
@@ -173,8 +173,6 @@ style="margin-top: 7.5rem;max-height: calc(100vh - 15rem)">
           title="Load More Records...">Load More...</a>
       </span>
       </ng-container>
-
-
     </div>
   </div>
 </div>

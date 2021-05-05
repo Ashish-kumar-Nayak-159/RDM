@@ -9,6 +9,7 @@ import { ApplicationService } from 'src/app/services/application/application.ser
 import { CommonService } from 'src/app/services/common.service';
 import * as moment from 'moment';
 import { environment } from 'src/environments/environment';
+import { NgTranscludeDirective } from 'ngx-bootstrap/tabs';
 declare var $: any;
 @Component({
   selector: 'app-pre-generated-reports',
@@ -306,9 +307,9 @@ export class PreGeneratedReportsComponent implements OnInit {
       obj.type = 'sampling';
     }
     if (obj.report_type.toLowerCase().includes('single')) {
-      obj.multiple_devices = 'single';
+      obj.multiple_devices = false;
     } else {
-      obj.multiple_devices = 'multiple';
+      obj.multiple_devices = true;
     }
     if (!obj.hierarchy) {
       obj.hierarchy =  { App: this.contextApp.app};

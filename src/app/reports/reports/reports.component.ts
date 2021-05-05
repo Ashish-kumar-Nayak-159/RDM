@@ -669,9 +669,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
         });
 
       }
-      ws = XLSX.utils.json_to_sheet(data);
-
-
 
       const colA = XLSX.utils.decode_col('B'); // timestamp is in first column
 

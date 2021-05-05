@@ -1,10 +1,11 @@
 
   <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isDevicesAPILoading"></i>
+  <h6 *ngIf="deviceApps.length === 0 && !isDevicesAPILoading"> No devices available.</h6>
   <accordion [closeOthers]="'true'">
     <accordion-group heading="" [panelClass]="'customClass'" *ngFor="let app of deviceApps">
       <ng-container  accordion-heading>
         <button class="btn" type="button" (click)="selectedDevices = [];isAllDeviceSelected = false;selectedApp = app.app">
-            {{app.app}}
+            {{app.app_name}}
         </button>
       </ng-container>
       <div class="float-right mt-n2" *ngIf="pageType === 'register-devices'">
@@ -49,9 +50,12 @@
               </td>
               <td *ngIf="pageType === 'register-devices'">{{deviceTwin.twin_properties.reported.registered_devices.indexOf(device.device_id) !== -1 ? 'Registered' : 'Not Registered'}}</td>
               <td *ngIf="pageType === 'telemetry-settings'">
-                <input type="checkbox" name="visible{{i}}"
-                    id="visible{{i}}" [(ngModel)]="telemetrySettings[device.device_id]" />
-                    <label class="form-label">&nbsp;Pass Only Changed Properties as Telemetry</label>
+                <input type="radio" name="visible{{i}}" value="changed"
+                    id="visible_1_{{i}}" [(ngModel)]="telemetrySettings[device.device_id]" />
+                    <label class="form-label">&nbsp;Ingest Only Changed Properties</label> &nbsp;
+                    <input type="radio" name="visible{{i}}" value="all"
+                    id="visible_2_{{i}}" [(ngModel)]="telemetrySettings[device.device_id]" />
+                    <label class="form-label">&nbsp;Ingest All Properties</label>
               </td>
             </tr>
           </tbody>

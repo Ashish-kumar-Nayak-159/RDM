@@ -34,6 +34,9 @@
       </div>
       <div class="modal-body">
         <div>
+          <ng-container *ngIf="selectedDevice">
+            <p class="alert-warning" *ngIf="!selectedDevice.model_freeze">Please freeze asset model first.</p>
+          </ng-container>
         <ng-container *ngIf="showPropOptions">
           <div>
             <input type="checkbox" name="alerts"

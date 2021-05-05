@@ -33,6 +33,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   showPropOptions = false;
   properties: any;
   alertConditions: any[] = [];
+  thingsModels: any[] = [];
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -40,9 +41,28 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     private deviceTypeService: DeviceTypeService
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    await this.getThingsModels();
     this.getDevicesOfGateway();
+
+  }
+
+  getThingsModels() {
+    return new Promise<void>((resolve1, reject) => {
+    this.thingsModels = [];
+    const obj = {
+      app: this.contextApp.app,
+    };
+    this.subscriptions.push(this.deviceTypeService.getThingsModelsList(obj).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.thingsModels = response.data;
+        }
+        resolve1();
+      }
+    ));
+    });
   }
 
   getDevicesOfGateway() {
@@ -57,6 +77,13 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         (response: any) => {
           if (response.data) {
             this.devices = response.data;
+            this.devices.forEach(device => {
+              this.thingsModels.forEach(model => {
+              if (device.device_type === model.name) {
+                device.model_freeze = model.freezed;
+              }
+              });
+            });
           }
           this.isDevicesAPILoading = false;
         }, error => this.isDevicesAPILoading = false
@@ -128,7 +155,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     await this.getAlertConditions();
     const obj = {
       device_id: this.selectedDevice.device_id,
-      command: 'set_properties_info',
+      command: 'set_properties',
       measured_properties: this.optionsValue?.measured_properties ? {} : undefined,
       alerts: this.optionsValue.alerts ? {} : undefined,
       writable_properties: this.optionsValue.writable_properties ? {} : undefined,
@@ -147,7 +174,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     }
     if (this.optionsValue.alerts) {
       this.alertConditions.forEach(prop => {
-        obj.alerts[prop.message] = prop.metadata;
+        obj.alerts[prop.code] = prop.metadata;
       });
     }
     if (this.optionsValue.readable_properties) {
@@ -175,7 +202,8 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         acknowledge: 'Full',
         expire_in_min: 1
       },
-      message_id: this.device.device_id + '_' + moment().unix()
+      message_id: this.device.device_id + '_' + moment().unix(),
+      request_type: 'Register Properties/Alerts'
     };
     this.subscriptions.push(
       this.deviceService.sendC2DMessage(c2dObj, this.contextApp.app).subscribe(
@@ -199,7 +227,8 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     const obj = {
       correlation_id: c2dObj.message_id,
       app: this.contextApp.app,
-      device_id: this.device.device_id,
+      device_id: this.device.type !== CONSTANTS.IP_GATEWAY ? this.device.device_id : undefined,
+      gateway_id: this.device.type === CONSTANTS.IP_GATEWAY ? this.device.device_id : undefined,
       from_date: c2dObj.timestamp - 5,
       to_date: moment().unix(),
       epoch: true
@@ -209,7 +238,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         // response.data = this.generateResponse();
         if (response.data?.length > 0) {
           this.displyaMsgArr.push({
-            message:  response.data[response.data.length - 1].device_id + ': ' + response.data[response.data.length - 1].message,
+            message:  response.data[response.data.length - 1].device_id + ': ' + response.data[response.data.length - 1]?.message.message,
             error: response.data[response.data.length - 1].status === 'failure' ? true : false
           });
           clearInterval(this.c2dResponseInterval);

@@ -92,6 +92,7 @@ export class ManageApplicationsComponent implements OnInit {
       (response: any) => {
         this.isAPILoading[index] = false;
         this.toasterService.showSuccess(response?.device_response?.message, type + ' App');
+        this.refreshDeviceTwin.emit();
       }, error => {
         this.isAPILoading[index] = false;
         this.toasterService.showError(error?.device_response?.message, type + ' App');

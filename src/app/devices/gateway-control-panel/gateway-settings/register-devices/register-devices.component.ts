@@ -1,3 +1,4 @@
+import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { Subscription } from 'rxjs';
@@ -5,6 +6,7 @@ import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { Component, Input, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import * as moment from 'moment';
+import { noUndefined } from '@angular/compiler/src/util';
 declare var $: any;
 @Component({
   selector: 'app-register-devices',
@@ -30,17 +32,20 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
   headerMessage: any;
   c2dResponseInterval: any;
   telemetrySettings: any = {};
+  thingsModels: any[] = [];
   count = 0;
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private deviceTypeService: DeviceTypeService
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getDevicesOfGateway();
   }
+
 
   getDevicesOfGateway() {
     this.isDevicesAPILoading = true;
@@ -57,6 +62,7 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
             const apps = CONSTANTS.DEVICEAPPPS;
             apps.forEach(app => {
               const appObj = {
+                app_name: app.display_name,
                 app: app.name,
                 devices: []
               };
@@ -128,7 +134,7 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
 
   deregisterDevices() {
     const obj = {
-      command: 'register_devices',
+      command: 'deregister_devices',
       app_name: this.selectedApp,
       devices: []
     };
@@ -144,8 +150,10 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
       app_name: this.selectedApp,
       devices: {}
     };
+    console.log(this.telemetrySettings);
     this.selectedDevices.forEach(device => {
-      obj.devices[device.device_id] = {scv: this.telemetrySettings[device.device_id] ? true : false }
+      obj.devices[device.device_id] = {scv: this.telemetrySettings[device.device_id] === 'changed' ? true :
+      (this.telemetrySettings[device.device_id] === 'all' ? false : undefined) };
     });
     this.callC2dMethod(obj, 'Change Telemtry Settings');
   }
@@ -168,6 +176,9 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
       request_type: type
     };
     this.subscriptions.push(
+
+
+
       this.deviceService.sendC2DMessage(c2dObj, this.contextApp.app).subscribe(
         (response: any) => {
           this.displyaMsgArr.push({
@@ -190,7 +201,8 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
     const obj = {
       correlation_id: c2dObj.message_id,
       app: this.contextApp.app,
-      device_id: this.device.device_id,
+      device_id: this.device.type !== CONSTANTS.IP_GATEWAY ? this.device.device_id : undefined,
+      gateway_id: this.device.type === CONSTANTS.IP_GATEWAY ? this.device.device_id : undefined,
       from_date: c2dObj.timestamp - 5,
       to_date: moment().unix(),
       epoch: true
@@ -200,7 +212,7 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
         // response.data = this.generateResponse();
         if (response.data?.length > 0 && this.displyaMsgArr.length < response.data.length) {
           this.displyaMsgArr.push({
-            message:  response.data[response.data.length - 1].device_id + ': ' + response.data[response.data.length - 1].message,
+            message:  response.data[response.data.length - 1].device_id + ': ' + response.data[response.data.length - 1]?.message?.message,
             error: response.data[response.data.length - 1].status === 'failure' ? true : false
           });
         }

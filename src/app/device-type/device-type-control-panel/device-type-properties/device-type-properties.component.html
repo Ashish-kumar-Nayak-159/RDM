@@ -121,16 +121,16 @@
                     </div>
                 </div>
                 <div class="form-group">
-                  <label for="message-text" class="col-form-label required">PLC Register Type:</label>
+                  <label for="message-text" class="col-form-label required">PLC Register Address:</label>
                   <input type="number" class="form-control" id="sa" name="sa" formControlName="sa"
-                  placeholder="Enter PLC Register Type">
+                  placeholder="Enter PLC Register Address">
                   <div *ngIf="setupForm.get('sa').invalid && (setupForm.get('sa').dirty || setupForm.get('sa').touched)"
                     class="alert-danger">
                     <div *ngIf="setupForm.get('sa').errors.required">
-                      PLC Register Type is required.
+                      PLC Register Address is required.
                     </div>
                     <div *ngIf="setupForm.get('sa').errors.min || setupForm.get('sa').errors.max">
-                      PLC Register Type value must be between 0 and 99999.
+                      PLC Register Address value must be between 0 and 99999.
                     </div>
                   </div>
                 </div>

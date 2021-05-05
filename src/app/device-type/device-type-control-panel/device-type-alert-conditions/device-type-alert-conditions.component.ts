@@ -4,6 +4,7 @@ import { DeviceTypeService } from './../../../services/device-type/device-type.s
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { CONSTANTS } from 'src/app/app.constants';
 
 
 declare var $: any;
@@ -33,6 +34,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
   docName: any;
   subscriptions: Subscription[] = [];
   setupForm: FormGroup;
+  constantData = CONSTANTS;
   constructor(
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService

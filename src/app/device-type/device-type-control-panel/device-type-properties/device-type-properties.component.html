@@ -75,7 +75,7 @@
               <option [ngValue]="dataType.name" *ngFor="let dataType of dataTypeList">{{dataType.name}}</option>
             </select>
           </div>
-          <accordion [closeOthers]="'true'">
+          <accordion [closeOthers]="'true'" *ngIf="deviceType.metadata?.model_type === constantData.NON_IP_DEVICE">
             <accordion-group heading="" [panelClass]="'customClass'" >
               <ng-container  accordion-heading>
                 <button class="btn" type="button">
@@ -290,7 +290,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary add-row" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreatePropertyLoading" (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
+        <button *ngIf="deviceType.metadata?.model_type === constantData.NON_IP_DEVICE" type="button" class="btn btn-primary add-row" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreatePropertyLoading" (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
+        <button *ngIf="deviceType.metadata?.model_type !== constantData.NON_IP_DEVICE" type="button" class="btn btn-primary add-row" [disabled]="isCreatePropertyLoading" (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading" (click)="onCloseThingsPropertyModal()">Cancel</button>
         <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreatePropertyLoading"></i>
       </div>

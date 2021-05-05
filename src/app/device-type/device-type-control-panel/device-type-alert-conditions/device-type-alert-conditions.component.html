@@ -319,7 +319,7 @@
             <option [ngValue]="'Informational'" >Informational</option>
           </select>
         </div>
-        <accordion [closeOthers]="'true'">
+        <accordion [closeOthers]="'true'" *ngIf="deviceType.metadata?.model_type === constantData.NON_IP_DEVICE" >
           <accordion-group heading="" [panelClass]="'customClass'" >
             <ng-container  accordion-heading>
               <button class="btn" type="button">
@@ -483,7 +483,8 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-primary add-row" [disabled]="isCreateAlertConditionLoading" (click)="!alertObj.id ? onCreateAlertCondition() : onUpdateAlertConditions()">Save</button>
+      <button *ngIf="deviceType.metadata?.model_type === constantData.NON_IP_DEVICE"  type="button" class="btn btn-primary add-row" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreateAlertConditionLoading" (click)="!alertObj.id ? onCreateAlertCondition() : onUpdateAlertConditions()">Save</button>
+      <button *ngIf="deviceType.metadata?.model_type !== constantData.NON_IP_DEVICE"  type="button" class="btn btn-primary add-row" [disabled]="isCreateAlertConditionLoading" (click)="!alertObj.id ? onCreateAlertCondition() : onUpdateAlertConditions()">Save</button>
       <button type="button" class="btn btn-secondary" [disabled]="isCreateAlertConditionLoading" (click)="onCloseAlertConditionModal()">Cancel</button>
       <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></i>
     </div>

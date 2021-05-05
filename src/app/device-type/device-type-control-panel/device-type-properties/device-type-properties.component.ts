@@ -34,6 +34,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   subscriptions: Subscription[] = [];
   @ViewChild('jsEditor', {static: false}) jsEditor: any;
+  constantData = CONSTANTS;
   code = `function calculate () {
   return null;
 }`;

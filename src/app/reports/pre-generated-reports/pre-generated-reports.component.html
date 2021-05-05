@@ -125,6 +125,7 @@ style="margin-top: 7.5rem;max-height: calc(100vh - 15rem)">
               <th class="w-10">Asset Name</th>
               <th class="w-17">Start Date</th>
               <th class="w-17">Last Date</th>
+              <th >Size</th>
               <!-- <th>Type</th>
               <th>Frequency</th> -->
               <th>Action</th>
@@ -141,6 +142,7 @@ style="margin-top: 7.5rem;max-height: calc(100vh - 15rem)">
                 </td>
               <td>{{ reportObj.local_start_date }}</td>
                 <td>{{ reportObj.local_end_date }}</td>
+                <td>{{reportObj.metadata?.file_size}}</td>
                 <!-- <td>{{reportObj.report_type.method | titlecase}}</td>
                 <td>{{reportObj.report_frequency | titlecase}}</td> -->
                 <td>

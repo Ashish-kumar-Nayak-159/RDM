@@ -306,9 +306,9 @@ export class PreGeneratedReportsComponent implements OnInit {
       obj.type = 'sampling';
     }
     if (obj.report_type.toLowerCase().includes('single')) {
-      obj.devices = 'single';
+      obj.multiple_devices = 'single';
     } else {
-      obj.devices = 'multiple';
+      obj.multiple_devices = 'multiple';
     }
     if (!obj.hierarchy) {
       obj.hierarchy =  { App: this.contextApp.app};

@@ -27,8 +27,9 @@ export class CustomHttpInterceptor implements HttpInterceptor {
         if (error.status === 401) {
           // logout code
         }
-        if (error.status === 500) {
+        if (error.status === 500 || error.status === 503) {
           // toaster to display data of 500
+          this.toasterService.showError('Something went wrong. Please try again after sometime', 'Contact Administrator');
         }
         return throwError(error.error);
       }),

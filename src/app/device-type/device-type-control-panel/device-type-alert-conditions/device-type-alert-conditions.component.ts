@@ -352,7 +352,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
 
   onUpdateAlertConditions() {
     this.isCreateAlertConditionLoading = true;
-    this.alertObj.metadata = this.setupForm.value;
+    this.alertObj.metadata = this.setupForm?.value;
     let arr = [];
     arr = this.alertObj.recommendations;
     arr.forEach((step, i) => {
@@ -414,7 +414,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
 
 
   onCreateAlertCondition() {
-    this.alertObj.metadata = this.setupForm.value;
+    this.alertObj.metadata = this.setupForm?.value;
     if (!this.alertObj.message || (this.alertObj.message.trim()).length === 0 ||  !this.alertObj.code
      || (this.alertObj.code.trim()).length === 0 || !this.alertObj.severity) {
       this.toasterService.showError('Please add all the data', 'Add Alert Condition');

@@ -304,7 +304,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
 
 
   onSavePropertyObj() {
-    this.propertyObj.metadata = this.setupForm.value;
+    this.propertyObj.metadata = this.setupForm?.value;
     if (!this.propertyObj.name || !this.propertyObj.json_key || !this.propertyObj.data_type ) {
       this.toasterService.showError('Please fill the form correctly', 'Add Property');
       return;
@@ -423,7 +423,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
   }
 
   updatePropertyData() {
-    this.propertyObj.metadata = this.setupForm.value;
+    this.propertyObj.metadata = this.setupForm?.value;
     const index = this.properties[this.type].findIndex(prop => prop.json_key === this.selectedProperty.json_key);
     this.properties[this.type].splice(index, 1);
     if (this.propertyObj?.edit) {

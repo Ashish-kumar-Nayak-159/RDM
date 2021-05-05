@@ -187,4 +187,18 @@
       <input [style.background]="prop.color" style="width: 3rem;"/>
     </div>
     </div>
+    <div class="row" *ngFor="let prop of widgetObj.y2AxisProps">
+      <div class="form-group col-5">
+        <label for="recipient-name" class="col-form-label required">{{prop.name}}:</label>
+      </div>
+      <div class="form-group col-1">
+        <span [(colorPicker)]="prop.color"
+        title="Pick Color">
+         <i class="fa fa-paint-brush"></i>
+      </span>
+      </div>
+      <div class="form-group col-3">
+        <input [style.background]="prop.color" style="width: 3rem;"/>
+      </div>
+      </div>
 </ng-template>

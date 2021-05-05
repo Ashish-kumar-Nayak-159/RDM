@@ -1,7 +1,7 @@
 <div class="topnavbar">
   <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3">
     <h5 class="h4 mb-0 text-gray-800">
-      {{selectedTab === 'telemetry' ? 'Telemetry' : 'Alerts'}}
+      {{selectedTab === 'telemetry' ? 'Live Data' : 'Live Alerts'}}
       <ui-switch class="mr-1" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry'"
         [disabled]="isC2dAPILoading" defaultBgColor="#f6c23e" checkedTextColor="white" uncheckedTextColor="white"
         checkedLabel="Normal Mode" uncheckedLabel="Turbo Mode" name="tpye" [(ngModel)]="signalRModeValue"
@@ -23,7 +23,7 @@
 <div class="container-tab-pad" style="margin-top: 6.7rem">
 
         <div class="tab-pane" [ngClass]="{'active': selectedTab === 'telemetry'}" id="dashboard_telemetry" role="tabpanel" aria-labelledby="nav-home-tab">
-          <div class="topnavbar" style="margin-top: 1.5rem" *ngIf="selectedTab === 'telemetry'">
+          <div class="topnavbar pl-0" style="margin-top: 1.5rem" *ngIf="selectedTab === 'telemetry'">
             <div class="card row bg-white">
               <div class="col-xl-12 col-md-12 mb-12">
                 <form class="row">

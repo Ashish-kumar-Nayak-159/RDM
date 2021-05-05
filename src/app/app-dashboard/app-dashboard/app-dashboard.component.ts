@@ -172,7 +172,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     };
     this.apiSubscriptions.push(this.deviceService.callDeviceMethod(obj, this.contextApp.app).subscribe(
       (response: any) => {
-        if (response?.device_response?.configuration) {
+        // {"code":200,"device_response":{"gateway_id":"Gateway_Test_1","message":"Message received Successfully","timestamp":"2021-05-04T12:28:50.513Z"},"message":"Message received Successfully"}
+        if (response?.device_response) {
         this.chartService.clearDashboardTelemetryList.emit([]);
         const arr = [];
         this.telemetryData = JSON.parse(JSON.stringify([]));

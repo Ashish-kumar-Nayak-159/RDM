@@ -202,6 +202,7 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
       method = this.deviceService.getDeviceMachineFailureEvents(this.device.app, this.device.device_id, obj);
     } else if (this.displayMode === 'history') {
       delete obj.count;
+      obj.date_frequency = 'weekly';
       method = this.deviceService.getHistoricalMTTRData(this.device.app, this.device.device_id, obj);
     }
     this.apiSubscriptions.push(method.subscribe(

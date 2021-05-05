@@ -107,6 +107,7 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
         obj.to_date = filterObj.to_date.unix();
       }
     }
+    obj.date_frequency = 'weekly';
     delete obj.dateOption;
     delete obj.countNotShow;
     this.filterObj = filterObj;

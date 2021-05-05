@@ -111,11 +111,7 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
     delete obj.countNotShow;
     this.filterObj = filterObj;
     let method;
-    if (this.displayMode === 'events') {
-      method = this.deviceService.getDeviceMTBFEvents(this.device.app, this.device.device_id, obj);
-    } else {
-      method = this.deviceService.getHistoricalMTBFData(this.device.app, this.device.device_id, obj);
-    }
+    method = this.deviceService.getHistoricalMTBFData(this.device.app, this.device.device_id, obj);
     this.lifeCycleEvents = [];
     this.apiSubscriptions.push(method.subscribe(
       (response: any) => {
@@ -125,9 +121,9 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
           this.avrgMTBFString = this.splitTime(response.mtbf / 60);
         }
         this.lifeCycleEvents .forEach((item, index) => {
-          item.local_event_start_time = this.commonService.convertUTCDateToLocal(item.event_start_time);
-          item.local_event_end_time = this.commonService.convertUTCDateToLocal(item.event_end_time);
-          item.mtbfString = this.splitTime(item.event_timespan_in_sec / 60);
+          item.local_event_start_time = this.commonService.convertUTCDateToLocal(item.start_time);
+          item.local_event_end_time = this.commonService.convertUTCDateToLocal(item.end_time);
+          item.mtbfString = this.splitTime(item.mtbf / 60);
         });
         if (this.displayMode === 'history') {
           setTimeout(() =>  this.plotChart(), 500);
@@ -214,35 +210,39 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
       const endDate = this.commonService.convertUTCDateToLocal(obj.end_time);
       newObj.date = new Date(date);
       newObj.endDate = new Date(endDate);
+      newObj.mtbfHr = obj.mtbf / 3600;
       data.splice(data.length, 0, newObj);
+
     });
     console.log(JSON.stringify(data));
     chart.data = data;
     chart.dateFormatter.inputDateFormat = 'x';
     chart.dateFormatter.dateFormat = 'dd-MMM-yyyy';
     const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-    dateAxis.renderer.minGridDistance = 70;
-    dateAxis.baseInterval = { count: 1, timeUnit: "day" };
+    // dateAxis.renderer.minGridDistance = 70;
+    dateAxis.baseInterval = { count: 1, timeUnit: 'week' };
     dateAxis.strictMinMax = true;
     dateAxis.renderer.tooltipLocation = 0;
     // Add data
     // Set input format for the dates
-    // chart.dateFormatter.inputDateFormat = 'yyyy-MM-dd';
+    // chart.dateFormatter.inpuDateFormat = 'yyyy-MM-dd';
 
     // Create axes
     const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
     valueYAxis.renderer.grid.template.location = 0;
     const series = chart.series.push(new am4charts.ColumnSeries());
+    series.columns.template.width = am4core.percent(100);
     series.name =  'MTBF';
     series.yAxis = valueYAxis;
     series.dataFields.openDateX = 'date';
     series.dataFields.dateX = 'endDate';
-    series.dataFields.valueY =  'mtbf';
+    series.dataFields.valueY =  'mtbfHr';
+    series['mtbfString'] = 'mtbfString';
     series.strokeWidth = 2;
     series.strokeOpacity = 1;
-    series.legendSettings.labelText = '{name}';
+    series.legendSettings.labelText = '{name} (Hrs)';
     // series.fillOpacity = 0;
-    series.columns.template.tooltipText = 'Start Date: {openDateX} \n End Date: {dateX} \n {name}: [bold]{valueY} seconds[/]';
+    series.columns.template.tooltipText = 'Start Date: {openDateX} \n End Date: {dateX} \n {name}: [bold]{mtbfString}[/]';
 
     // const bullet = series.bullets.push(new am4charts.CircleBullet());
     // bullet.strokeWidth = 2;

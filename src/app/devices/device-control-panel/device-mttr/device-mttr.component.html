@@ -67,7 +67,7 @@
               <button type="button" class="btn btn-warning btn-sm ml-3 mr-1 my-1" title="Search" (click)="searchEvents(this.filterObj)" ><i class="fa fa-search fa-sm"></i></button>
               <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear Filters" (click)="clear();">
                 <img class="filter-clear-icon" src="./assets/img/filter.svg"></button>
-              <h6 class="pull-right" style="margin-left: 39rem;" *ngIf="displayMode === 'machine_failure' && averageMTTR && averageMTTR > 0 && isFilterSelected"><b> MTTR: {{averageMTTRString}}</b></h6>
+              <h6 class="pull-right" *ngIf="displayMode === 'machine_failure' && averageMTTR && averageMTTR > 0 && isFilterSelected"><b> MTTR: {{averageMTTRString}}</b></h6>
             </div>
            </form>
       </div>

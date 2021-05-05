@@ -2278,7 +2278,7 @@ textarea.form-control {
 
 .btn.disabled, .btn:disabled {
   cursor: not-allowed;
-  opacity: .65
+  opacity: .45
 }
 
 .btn:not(:disabled):not(.disabled) {

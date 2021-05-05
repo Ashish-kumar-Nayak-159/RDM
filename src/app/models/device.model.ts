@@ -27,4 +27,5 @@ export class Device {
   app: string;
   metadata: any;
   configuration: any;
+  type: string;
 }

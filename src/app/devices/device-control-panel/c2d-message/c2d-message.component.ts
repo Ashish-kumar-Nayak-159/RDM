@@ -189,7 +189,8 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
       const obj = {
         correlation_id: message.message_id,
         app: this.appName,
-        device_id: this.device.device_id,
+        device_id: this.device.type !== CONSTANTS.IP_GATEWAY ? this.device.device_id : undefined,
+        gateway_id: this.device.type === CONSTANTS.IP_GATEWAY ? this.device.device_id : undefined,
         from_date: null,
         to_date: null,
         epoch: true

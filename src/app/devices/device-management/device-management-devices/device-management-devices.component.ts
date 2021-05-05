@@ -49,6 +49,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
   updatePackages: any[] = [];
   uninstallPackages: any[] = [];
   displyaMsgArr = [];
+  applicationList: any[] = CONSTANTS.DEVICEAPPPS;
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -388,6 +389,13 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
                 if (this.deviceApps.indexOf(packageObj.name) === -1) {
                   this.deviceApps.push(packageObj.name);
                 }
+                this.applicationList.forEach(app => {
+                  if (packageObj.name === app.name) {
+                    packageObj['is_install'] = app.is_install;
+                    packageObj['is_uninstall'] = app.is_uninstall;
+                    packageObj['is_update'] = app.is_update;
+                  }
+                });
               });
             }
             resolve();
@@ -454,7 +462,8 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
             app_name: this.selectedDevicePackage.name,
             version: this.selectedDevicePackage.version,
             url: environment.blobURL + this.selectedDevicePackage.url,
-            token: environment.blobKey
+            token: environment.blobKey,
+            job_id: null
           }
         }
       },
@@ -463,10 +472,11 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
       request_type: 'FOTA'
     };
     obj.job_id = obj.desired_properties.package_management.job_id;
+    obj.desired_properties.package_management.package_details.job_id = obj.desired_properties.package_management.job_id;
     if (type === 'Install') {
       obj.desired_properties.package_management.command = 'INSTALL_PACKAGE';
     } else if (type === 'Upgrade' || type === 'Downgrade') {
-      obj.desired_properties.package_management.command = 'UPDATE_PACKAGE';
+      obj.desired_properties.package_management.command = 'UPGRADE_PACKAGE';
     } else if (type === 'Uninstall') {
       obj.desired_properties.package_management.command = 'DELETE_PACKAGE';
     }
@@ -483,6 +493,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
           clearInterval(this.twinResponseInterval);
           this.loadDeviceTwinChangeResponse(obj);
         }, error => {
+          clearInterval(this.twinResponseInterval);
           this.confirmBodyMessage = error.message;
           this.modalConfig.isDisplaySave = false;
           this.isAPILoading = false;
@@ -500,6 +511,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
   }
 
   loadDeviceTwinChangeResponse(requestObj) {
+    clearInterval(this.twinResponseInterval);
     const obj = {
       job_id: requestObj.job_id,
       twin_event: 'Reported',
@@ -510,7 +522,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
       this.deviceService.getDeviceTwinHistory(this.contextApp.app, obj).subscribe(
         (response: any) => {
           if (response.data?.length > 0 && response.data[response.data.length - 1]?.twin?.reported[this.selectedDevicePackage.name]
-            && this.displyaMsgArr.length < response.data.length) {
+            && this.displyaMsgArr.length <= response.data.length) {
             this.displyaMsgArr.push({
               message: response.data[response.data.length - 1].twin.reported[this.selectedDevicePackage.name].fw_update_sub_status,
               error: false

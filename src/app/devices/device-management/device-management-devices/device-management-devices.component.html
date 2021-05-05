@@ -178,7 +178,7 @@ style="z-index: 1200;">
                     <ng-container *ngIf="installPackages.length > 0">
                     <tr *ngFor="let package of installPackages; let i = index">
                     <td><input type="checkbox" name="install" [checked]="selectedDevicePackage?.id === package.id"
-                      id="install{{i}}" (change)="onCheckboxChange($event, package)"
+                      id="install{{i}}" (change)="onCheckboxChange($event, package)" [disabled]="!package.is_install"
                      /></td>
                     <td>{{package.name}}</td>
                     <td>{{package.display_name}}</td>
@@ -214,8 +214,8 @@ style="z-index: 1200;">
                   href="javascript:void(0)"
                   (click)="openConfirmDialog('Downgrade')"
                   [class.disabled]="!selectedDevicePackage"
-                  ><i class="fa fa- fa-sm text-white-50"></i> Downgrade</a -->
-                >
+                  ><i class="fa fa- fa-sm text-white-50"></i> Downgrade</a
+                >-->
               </p>
               <div class="table-responsive table-wrapper" id="table-wrapper" style="max-height: 20rem;">
 
@@ -231,7 +231,7 @@ style="z-index: 1200;">
                     <ng-container *ngIf="updatePackages.length > 0">
                     <tr *ngFor="let package of updatePackages; let i = index;">
                     <td><input type="checkbox" name="visible{{i}}" (change)="onCheckboxChange($event, package)"
-                      id="visible{{i}}" [checked]="selectedDevicePackage?.id === package.id"
+                      id="visible{{i}}" [checked]="selectedDevicePackage?.id === package.id" [disabled]="!package.is_update"
                      /></td>
                     <td>{{package.name}}</td>
                     <td>{{package.display_name}}</td>
@@ -275,7 +275,7 @@ style="z-index: 1200;">
                     <ng-container *ngIf="uninstallPackages.length > 0">
                     <tr *ngFor="let package of uninstallPackages;let i = index;">
                     <td><input type="checkbox" name="visible{{i}}" (change)="onCheckboxChange($event, package)"
-                      id="visible{{i}}" [checked]="selectedDevicePackage?.id === package.id"
+                      id="visible{{i}}" [checked]="selectedDevicePackage?.id === package.id" [disabled]="!package.is_uninstall"
                      /></td>
                     <td>{{package.name}}</td>
                     <td>{{package.display_name}}</td>

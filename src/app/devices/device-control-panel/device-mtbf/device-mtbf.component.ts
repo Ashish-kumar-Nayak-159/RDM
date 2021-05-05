@@ -219,8 +219,8 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
     chart.dateFormatter.inputDateFormat = 'x';
     chart.dateFormatter.dateFormat = 'dd-MMM-yyyy';
     const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-    // dateAxis.renderer.minGridDistance = 70;
-    dateAxis.baseInterval = { count: 1, timeUnit: 'week' };
+    dateAxis.renderer.minGridDistance = 70;
+    dateAxis.baseInterval = { count: 1, timeUnit: 'day' };
     dateAxis.strictMinMax = true;
     dateAxis.renderer.tooltipLocation = 0;
     // Add data
@@ -260,8 +260,8 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
    //  chart.cursor = new am4charts.XYCursor();
     chart.legend.itemContainers.template.togglable = false;
     dateAxis.dateFormatter = new am4core.DateFormatter();
-    chart.scrollbarX = new am4core.Scrollbar();
-    chart.scrollbarX.parent = chart.bottomAxesContainer;
+    // chart.scrollbarX = new am4core.Scrollbar();
+    // chart.scrollbarX.parent = chart.bottomAxesContainer;
     // dateAxis.dateFormatter.dateFormat = 'W';
     this.chart = chart;
   }

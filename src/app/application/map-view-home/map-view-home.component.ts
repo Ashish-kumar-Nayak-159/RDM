@@ -17,6 +17,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   devices: any[] = [];
   contextApp: any;
   apiSubscriptions: Subscription[] = [];
+  constantData = CONSTANTS;
   constructor(
     private deviceService: DeviceService,
     private router: Router,

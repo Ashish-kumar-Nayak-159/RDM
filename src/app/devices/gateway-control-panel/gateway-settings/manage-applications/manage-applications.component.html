@@ -17,26 +17,27 @@
               {{app.display_name}}
           </td>
           <td>{{
-            deviceTwin.twin_properties.reported.system_apps[app.name] || deviceTwin.twin_properties.reported.apps[app.name] || 'Not Installed'}}</td>
+            deviceTwin.twin_properties.reported[app.type][app.name] || 'Not Installed'}}</td>
           <td><a
             class="d-none d-sm-inline-block btn btn-sm shadow-sm mb-1 mr-1"
-            href="javascript:void(0)"  [class.disabled]="isAPILoading[i] || !app.is_start ||
-            deviceTwin.twin_properties.reported.system_apps[app.name]?.toLowerCase() === 'running' || deviceTwin.twin_properties.reported.apps[app.name]?.toLowerCase() === 'running'
-            || (deviceTwin.twin_properties.reported.system_apps[app.name] === undefined || deviceTwin.twin_properties.reported.apps[app.name] === undefined)"
+            href="javascript:void(0)"  [class.disabled]="isAPILoading[i] || !app.is_start
+            || deviceTwin.twin_properties.reported[app.type][app.name] === undefined ||
+            deviceTwin.twin_properties.reported[app.type][app.name]?.toLowerCase() === 'running'
+            "
             (click)="startApp(app, i)" title="Start"
             ><img style="width: 12px;" src="./assets/img/start.svg"/></a>
             <a
             class="d-none d-sm-inline-block btn btn-sm shadow-sm mb-1 mr-1"
-            href="javascript:void(0)"  [class.disabled]="isAPILoading[i] || !app.is_stop ||
-            deviceTwin.twin_properties.reported.system_apps[app.name]?.toLowerCase() === 'not running' || deviceTwin.twin_properties.reported.apps[app.name]?.toLowerCase() === 'not running'
-            || (deviceTwin.twin_properties.reported.system_apps[app.name] === undefined || deviceTwin.twin_properties.reported.apps[app.name] === undefined)"
+            href="javascript:void(0)"  [class.disabled]="isAPILoading[i] || !app.is_stop
+            || deviceTwin.twin_properties.reported[app.type][app.name] === undefined ||
+            deviceTwin.twin_properties.reported[app.type][app.name]?.toLowerCase() === 'not running'"
             (click)="stopApp(app, i)" title="Stop"
             ><img style="width: 12px;" src="./assets/img/stop.svg"/></a>
             <a
             class="d-none d-sm-inline-block btn btn-sm shadow-sm mb-1 mr-1"
             href="javascript:void(0)"
             (click)="restartApp(app, i)" title="Restart" [class.disabled]="isAPILoading[i] || !app.is_restart
-            || (deviceTwin.twin_properties.reported.system_apps[app.name] === undefined || deviceTwin.twin_properties.reported.apps[app.name] === undefined)"
+            || deviceTwin.twin_properties.reported[app.type][app.name] === undefined"
             ><img style="width: 12px;" src="./assets/img/restart.svg"/></a>
             <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAPILoading && isAPILoading[i]"></i>
           </td>

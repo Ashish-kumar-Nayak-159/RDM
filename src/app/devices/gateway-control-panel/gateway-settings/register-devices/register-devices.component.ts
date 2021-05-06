@@ -170,7 +170,7 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
       timestamp:  moment().unix(),
       metadata: {
         acknowledge: 'Full',
-        expire_in_min: 1
+        expire_in_min: 2880
       },
       message_id: this.device.device_id + '_' + moment().unix(),
       request_type: type
@@ -210,11 +210,13 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.deviceService.getC2dResponseJSON(obj).subscribe(
       (response: any) => {
         // response.data = this.generateResponse();
-        if (response.data?.length > 0 && this.displyaMsgArr.length < response.data.length) {
-          this.displyaMsgArr.push({
-            message:  response.data[response.data.length - 1].device_id + ': ' + response.data[response.data.length - 1]?.message?.message,
-            error: response.data[response.data.length - 1].status === 'failure' ? true : false
-          });
+        if (response.data?.length > 0 && this.displyaMsgArr.length <= response.data.length) {
+          for (let i = this.displyaMsgArr.length - 1; i < response.data.length; i++) {
+            this.displyaMsgArr.push({
+              message:  response.data[i].device_id + ': ' + response.data[i]?.message?.message,
+              error: response.data[i].status === 'failure' ? true : false
+            });
+          }
         }
         console.log(response.data.length, '======', this.selectedDevices.length);
         if (response.data.length < this.selectedDevices.length) {

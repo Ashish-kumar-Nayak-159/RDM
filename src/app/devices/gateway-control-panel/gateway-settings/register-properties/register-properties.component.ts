@@ -177,9 +177,9 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         obj.alerts[prop.code] = prop.metadata;
       });
     }
-    if (this.optionsValue.readable_properties) {
-      this.properties.readable_properties.forEach(prop => {
-        obj.readable_properties[prop.json_key] = prop.metadata;
+    if (this.optionsValue.derived_properties) {
+      this.properties.derived_properties.forEach(prop => {
+        obj.derived_properties[prop.json_key] = prop.metadata;
       });
     }
     if (this.optionsValue.writable_properties) {
@@ -200,7 +200,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
       timestamp:  moment().unix(),
       metadata: {
         acknowledge: 'Full',
-        expire_in_min: 1
+        expire_in_min: 2880
       },
       message_id: this.device.device_id + '_' + moment().unix(),
       request_type: 'Register Properties/Alerts'
@@ -236,24 +236,26 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.deviceService.getC2dResponseJSON(obj).subscribe(
       (response: any) => {
         // response.data = this.generateResponse();
-        if (response.data?.length > 0) {
+        if (response.data?.length > 0 && this.displyaMsgArr.length <= response.data.length) {
           this.displyaMsgArr.push({
             message:  response.data[response.data.length - 1].device_id + ': ' + response.data[response.data.length - 1]?.message.message,
             error: response.data[response.data.length - 1].status === 'failure' ? true : false
           });
-          clearInterval(this.c2dResponseInterval);
-          // this.refreshDeviceTwin.emit();
-          setTimeout(() => {
-            this.onModalClose();
-            this.isAPILoading = false;
-          }, 1000);
-        } else {
+        }
+        if (response.data.length < (Object.keys(c2dObj.message).length - 2)) {
           clearInterval(this.c2dResponseInterval);
           this.c2dResponseInterval = setInterval(
           () => {
             this.loadC2DResponse(c2dObj);
           }, 5000);
-        }
+        } else {
+        clearInterval(this.c2dResponseInterval);
+        // this.refreshDeviceTwin.emit();
+        setTimeout(() => {
+          this.onModalClose();
+          this.isAPILoading = false;
+        }, 1000);
+      }
       }
       ));
   }

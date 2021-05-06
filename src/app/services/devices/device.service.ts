@@ -565,7 +565,7 @@ export class DeviceService {
   getPregeneratedReports(filterObj, app) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
-      if (filterObj[key]) {
+      if (filterObj[key] !== undefined || filterObj[key] !== null) {
         params = params.set(key, filterObj[key]);
       }
     });

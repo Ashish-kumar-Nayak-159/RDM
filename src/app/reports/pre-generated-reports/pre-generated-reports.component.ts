@@ -306,8 +306,10 @@ export class PreGeneratedReportsComponent implements OnInit {
     } else {
       obj.type = 'sampling';
     }
+    console.log(obj.report_type.toLowerCase().includes('single'));
     if (obj.report_type.toLowerCase().includes('single')) {
       obj.multiple_devices = false;
+      console.log(obj);
     } else {
       obj.multiple_devices = true;
     }

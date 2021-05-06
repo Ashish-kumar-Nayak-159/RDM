@@ -45,6 +45,23 @@ export class CommonService {
     return null;
   }
 
+  convertUTCDateToLocalDate(utcDate) {
+    if (utcDate) {
+      const options = { year: 'numeric', month: 'short', day: '2-digit' };
+      if (utcDate.includes('T') && utcDate.includes('Z')) {
+        // 2011-06-29T16:52:48.000Z
+        return new Date(utcDate).toLocaleString('en-GB', options);
+      } else if (utcDate.includes('T') && !utcDate.includes('Z')) {
+        // 2011-06-29T16:52:48.000
+        return new Date(utcDate + 'Z').toLocaleString('en-GB', options);
+      } else {
+        // 1/20/2021 10:47:59 AM
+        return new Date(utcDate + ' UTC').toLocaleString('en-GB', options);
+      }
+    }
+    return null;
+  }
+
   convertDateToEpoch(date: string) {
     if (date) {
       return (moment.utc(date)).unix();

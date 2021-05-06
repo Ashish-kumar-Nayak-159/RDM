@@ -61,16 +61,7 @@
     <app-register-properties [device]="device" [deviceTwin]="deviceTwin" (refreshDeviceTwin)="getDeviceTwinData()"></app-register-properties>
   </ng-container>
   <ng-container *ngIf="selectedTab === 'Settings'">
-    <accordion [closeOthers]="'true'">
-      <accordion-group heading="" [panelClass]="'customClass'" >
-        <ng-container  accordion-heading>
-          <button class="btn" type="button">
-              Telemetry Parameter Setting
-          </button>
-        </ng-container>
-        <app-register-devices [device]="device" [deviceTwin]="deviceTwin" (refreshDeviceTwin)="getDeviceTwinData()" [pageType]="'telemetry-settings'"></app-register-devices>
-      </accordion-group>
-    </accordion>
+    <app-gateway-devices-setting [device]="device" [deviceTwin]="deviceTwin" (refreshDeviceTwin)="getDeviceTwinData()"></app-gateway-devices-setting>
   </ng-container>
 </div>
 

@@ -66,6 +66,7 @@ import { RuleEngineComponent } from './device-control-panel/rule-engine/rule-eng
 import { RegisterDevicesComponent } from './gateway-control-panel/gateway-settings/register-devices/register-devices.component';
 import { RegisterPropertiesComponent } from './gateway-control-panel/gateway-settings/register-properties/register-properties.component';
 import { ManageApplicationsComponent } from './gateway-control-panel/gateway-settings/manage-applications/manage-applications.component';
+import { GatewayDevicesSettingComponent } from './gateway-control-panel/gateway-settings/gateway-devices-setting/gateway-devices-setting.component';
 
 @NgModule({
   declarations: [
@@ -116,7 +117,8 @@ import { ManageApplicationsComponent } from './gateway-control-panel/gateway-set
     RuleEngineComponent,
     RegisterDevicesComponent,
     RegisterPropertiesComponent,
-    ManageApplicationsComponent
+    ManageApplicationsComponent,
+    GatewayDevicesSettingComponent
   ],
   imports: [
     CommonModule,

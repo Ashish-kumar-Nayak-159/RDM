@@ -2,7 +2,7 @@
 <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4 pt-3">
   <h1 class="h3 mb-0 text-gray-800">Access Control</h1>
 </div> -->
-<div class="topnavbar bg-white py-2" >
+<div class="topnavbar bg-white py-2"  *ngIf="!type.includes('derived')">
   <div class="row">
     <ul class="nav pull-left col-md-7">
       <li class="nav-item">
@@ -32,7 +32,7 @@
   </div>
   </div>
 
-  <div class="con-pad">
+  <div class="con-pad" [ngClass]="{'derived-con-pad' : type.includes('derived')}">
   <div class="table-responsive">
     <app-common-table [tableData]="properties[type]" [tableConfig]="propertyTableConfig" [isTableFilterSelected]="true"
     [isTableDataLoading]="isPropertiesLoading" (viewMessageEvent)="onTableFunctionCall($event)"></app-common-table>
@@ -311,8 +311,8 @@
         <div class="modal-body">
           <label>JSON Model: </label>
           <pre  [innerHTML]="selectedProperty.json_model | json"></pre>
-          <label *ngIf="type === 'measured_properties'">Metadata: </label>
-          <pre *ngIf="type === 'measured_properties'" [innerHTML]="selectedProperty.metadata ? (selectedProperty.metadata | json) : ({} | json)"></pre>
+          <label *ngIf="deviceType.metadata?.model_type === constantData.NON_IP_DEVICE">Metadata: </label>
+          <pre *ngIf="deviceType.metadata?.model_type === constantData.NON_IP_DEVICE" [innerHTML]="selectedProperty.metadata ? (selectedProperty.metadata | json) : ({} | json)"></pre>
           <label *ngIf="type === 'measured_properties'">Thresholds: </label>
           <pre *ngIf="type === 'measured_properties'" [innerHTML]="selectedProperty.threshold ? (selectedProperty.threshold | json) : ({} | json)"></pre>
         </div>

@@ -122,8 +122,8 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
           this.avrgMTBFString = this.splitTime(response.mtbf / 60);
         }
         this.lifeCycleEvents .forEach((item, index) => {
-          item.local_event_start_time = this.commonService.convertUTCDateToLocal(item.start_time);
-          item.local_event_end_time = this.commonService.convertUTCDateToLocal(item.end_time);
+          item.local_event_start_time = this.commonService.convertUTCDateToLocalDate(item.start_time);
+          item.local_event_end_time = this.commonService.convertUTCDateToLocalDate(item.end_time);
           item.mtbfString = this.splitTime(item.mtbf / 60);
         });
         if (this.displayMode === 'history') {
@@ -207,13 +207,12 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
     // this.lifeCycleEvents.reverse();
     this.lifeCycleEvents.forEach((obj, i) => {
       const newObj = {...obj};
-      const date = this.commonService.convertUTCDateToLocal(obj.start_time);
-      const endDate = this.commonService.convertUTCDateToLocal(obj.end_time);
+      const date = this.commonService.convertUTCDateToLocalDate(obj.start_time);
+      const endDate = this.commonService.convertUTCDateToLocalDate(obj.end_time);
       newObj.date = new Date(date);
       newObj.endDate = new Date(endDate);
       newObj.mtbfHr = obj.mtbf / 3600;
       data.splice(data.length, 0, newObj);
-
     });
     console.log(JSON.stringify(data));
     chart.data = data;

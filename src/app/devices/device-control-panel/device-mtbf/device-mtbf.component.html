@@ -36,6 +36,7 @@
                 name="dateOptions" (change)="onDateOptionChange()">
                 <option [ngValue]="undefined"> Quick Date Options </option>
                 <option [ngValue]="'last 4 weeks'">Last 4 Weeks</option>
+                <option [ngValue]="'this month'">This Month</option>
                 <option [ngValue]="'last month'">Last Month</option>
                 <option [ngValue]="'last 3 month'">Last 3 Months</option>
                 <option [ngValue]="'last 6 month'">Last 6 Months</option>
@@ -78,7 +79,7 @@
           <thead>
             <th></th>
             <th>Date</th>
-            <th>TBF</th>
+            <th>TBF (Asset Uptime)</th>
           </thead>
           <!-- <tfoot *ngIf="avrgMTBF && avrgMTBF > 0 && isFilterSelected">
                 <tr>
@@ -90,7 +91,7 @@
             <ng-container *ngIf="lifeCycleEvents.length > 0 && isFilterSelected">
               <tr *ngFor="let event of lifeCycleEvents; let i = index">
                 <td>{{i + 1}}</td>
-                <td>{{event.local_event_start_time}}</td>
+                <td>{{event.local_event_start_time}} to {{event.local_event_end_time}}</td>
                 <td>{{event.mtbfString}}</td>
               </tr>
             </ng-container>

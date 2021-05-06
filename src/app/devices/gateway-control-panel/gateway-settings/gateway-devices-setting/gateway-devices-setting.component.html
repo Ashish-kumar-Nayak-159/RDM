@@ -1,0 +1,118 @@
+<i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isDevicesAPILoading"></i>
+<h6 *ngIf="devices.length === 0 && !isDevicesAPILoading"> No devices available.</h6>
+<accordion [closeOthers]="'true'" *ngIf="!isDevicesAPILoading">
+  <accordion-group heading="" [panelClass]="'customClass'" *ngFor="let device of devices;let i = index">
+    <ng-container  accordion-heading>
+      <button class="btn" type="button" (click)="selectedDevice = device;">
+          {{device.display_name}}
+      </button>
+    </ng-container>
+    <accordion [closeOthers]="'true'" *ngIf="!isDevicesAPILoading">
+      <accordion-group heading="" [panelClass]="'customClass'">
+        <ng-container  accordion-heading>
+          <button class="btn" type="button" (click)="telemetrySettings = {}">
+              Telemetry Parameter Setting
+          </button>
+        </ng-container>
+        <div class="row col-md-12">
+          <input type="radio" class="mt-1" name="visible_{{i}}" value="changed"
+            id="visible_{{i}}_1" [(ngModel)]="telemetrySettings[device.device_id]" />
+            <label class="form-label">&nbsp;Ingest Only Changed Properties</label> &nbsp;
+            <input  class="mt-1" type="radio" name="visible_{{i}}" value="all"
+            id="visible_{{i}}_2" [(ngModel)]="telemetrySettings[device.device_id]" />
+            <label class="form-label">&nbsp;Ingest All Properties</label> &nbsp;
+          <a
+          class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm mb-1 mr-2"
+          href="javascript:void(0)"
+          (click)="changeTelemetrySetting()"
+          ><i class="fa fa- fa-sm text-white-50"></i> Change Settings</a>
+        </div>
+      </accordion-group>
+    </accordion>
+    <accordion [closeOthers]="'true'" *ngIf="!isDevicesAPILoading">
+      <accordion-group heading="" [panelClass]="'customClass'">
+        <ng-container  accordion-heading>
+          <button class="btn" type="button" (click)="telemetrySettings = {}">
+              Telemetry Mode Setting
+          </button>
+        </ng-container>
+        <div class="float-right">
+        <a  class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm mb-1 mr-2"
+         href="javascript:void(0)" (click)="saveGatewaySettings()" [class.disabled]="isSaveSettingAPILoading">
+          <i class="fa fa-fw fa-save"></i>
+          <span class="text-secondary">Save</span></a>
+          <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isSaveSettingAPILoading"></i>
+
+        </div>
+        <div class="table-responsive">
+          <table class="table table-bordered  table-striped text-gray-800" id="dataTable" width="100%" cellspacing="0">
+
+            <tbody>
+              <tr>
+                <td style="width: 50%;">Normal mode Frequency (In Sec): </td>
+                <td>
+                    <input type="number" class="form-control form-control-sm bg-light border-0 small"
+                      [(ngModel)]="device.metadata.telemetry_mode_settings.normal_mode_frequency" name="frequency_in_normal"
+                      placeholder="Frequency">
+                </td>
+              </tr>
+              <tr>
+                <td style="width: 50%;">Turbo mode Frequency (In Sec): </td>
+                <td>
+
+                    <input type="number" class="form-control form-control-sm bg-light border-0 small"
+                      [(ngModel)]="device.metadata.telemetry_mode_settings.turbo_mode_frequency" name="frequency_in_turbo"
+                      placeholder="Frequency">
+                </td>
+              </tr>
+              <tr>
+                <td >Turbo mode Timeout (In Sec): </td>
+                <td>
+                    <input type="number" class="form-control form-control-sm bg-light border-0 small"
+                      [(ngModel)]="device.metadata.telemetry_mode_settings.turbo_mode_timeout_time" name="timeout_in_turbo"
+                      placeholder="Timeout">
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+      </accordion-group>
+    </accordion>
+  </accordion-group>
+</accordion>
+
+<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" style="z-index: 1400;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{headerMessage}}</h5>
+        <button type="button" class="close"  aria-label="Close"  (click)="onModalClose()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+        <ng-container *ngIf="displayMsgArr.length > 0">
+          <ul>
+            <li *ngFor="let msg of displayMsgArr; let last = last;">
+              {{msg.message}}
+              <i class="fa fa-check" style="color: green;" *ngIf="!msg.error"></i>
+              <i class="fa fa-cancel" style="color: red;" *ngIf="msg.error"></i>
+              </li>
+          </ul>
+        </ng-container>
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAPILoading"></i>
+        </div>
+      </div>
+      <div class="modal-footer">
+
+        <button  type="button" class="btn btn-secondary" (click)="onModalClose()">
+          Close
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

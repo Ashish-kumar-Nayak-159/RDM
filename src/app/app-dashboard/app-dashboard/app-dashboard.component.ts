@@ -101,7 +101,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       }
     });
-    this.loadFromCache();
+    // if (this.selectedTab === 'telemetry') {
+    //   this.loadFromCache();
+    // }
   }
 
   getTileName() {
@@ -155,13 +157,13 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       message: {
         telemetry_mode: this.signalRModeValue ? 'normal' : 'turbo',
         frequency_in_sec: this.signalRModeValue ?
-        (this.deviceDetailData?.tags?.settings?.normal_mode?.frequency ?
-          this.deviceDetailData?.tags?.settings?.normal_mode?.frequency : 60) :
-        (this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency ?
-          this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency : 1),
+        (this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency ?
+          this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency : 60) :
+        (this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency ?
+          this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency : 1),
         turbo_mode_timeout_in_sec : !this.signalRModeValue ?
-        (this.deviceDetailData?.tags?.settings?.turbo_mode?.timeout_time ?
-          this.deviceDetailData?.tags?.settings?.turbo_mode?.timeout_time : 120) : undefined,
+        (this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_timeout_time ?
+          this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_timeout_time : 120) : undefined,
         device_id: this.filterObj.device.device_id
       },
       app: this.contextApp.app,
@@ -172,7 +174,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     };
     this.apiSubscriptions.push(this.deviceService.callDeviceMethod(obj, this.contextApp.app).subscribe(
       (response: any) => {
-        // {"code":200,"device_response":{"gateway_id":"Gateway_Test_1","message":"Message received Successfully","timestamp":"2021-05-04T12:28:50.513Z"},"message":"Message received Successfully"}
         if (response?.device_response) {
         this.chartService.clearDashboardTelemetryList.emit([]);
         const arr = [];
@@ -197,19 +198,18 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.deviceDetailData = undefined;
 
     this.apiSubscriptions.push(
-      this.deviceService.getDeviceData
-      (this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id :
-        this.filterObj.device.device_id, this.contextApp.app).subscribe(
+      this.deviceService.getDeviceDetailById
+      (this.contextApp.app, this.filterObj.device.device_id).subscribe(
       async (response: any) => {
         this.deviceDetailData = JSON.parse(JSON.stringify(response));
-        this.normalModelInterval = (this.deviceDetailData?.tags?.settings?.normal_mode?.frequency ?
-          this.deviceDetailData?.tags?.settings?.normal_mode?.frequency : 60);
-        this.turboModeInterval = (this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency ?
-          this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency : 1);
-        this.frequencyDiffInterval = Math.abs((this.deviceDetailData?.tags?.settings?.normal_mode?.frequency ?
-          this.deviceDetailData?.tags?.settings?.normal_mode?.frequency : 60) -
-          (this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency ?
-            this.deviceDetailData?.tags?.settings?.turbo_mode?.frequency : 1));
+        this.normalModelInterval = (this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency ?
+          this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency : 60);
+        this.turboModeInterval = (this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency ?
+          this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency : 1);
+        this.frequencyDiffInterval = Math.abs((this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency ?
+          this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency : 60) -
+          (this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency ?
+            this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency : 1));
         resolve1();
       }, error => this.isTelemetryDataLoading = false));
     });
@@ -417,6 +417,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(
       data => {
         if (data.type !== 'alert') {
+          console.log(data);
           this.processTelemetryData(data);
           this.isTelemetryDataLoading = false;
         }
@@ -464,7 +465,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         ((diff1 < diff2 && !this.signalRModeValue) || (diff1 > diff2 && this.signalRModeValue))) {
         this.isTelemetryModeAPICalled = true;
         setTimeout(() => {
-        this.getDeviceSignalRMode(this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : this.filterObj.device.device_id);
+        this.getDeviceSignalRMode(this.filterObj.device.device_id);
       }, 2000);
       }
       this.telemetryInterval = interval;

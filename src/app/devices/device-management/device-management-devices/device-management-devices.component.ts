@@ -255,8 +255,13 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
       this.confirmHeaderMessage = 'Disable ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '');
     } else if (type === 'Deprovision') {
       this.confirmHeaderMessage = 'Deprovision ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '');
+      if (this.type !== 'legacy-devices') {
       this.confirmBodyMessage = 'This ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' will be permanently deleted. Instead, you can temporarily disable the ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + '.' +
       ' Are you sure you want to continue?';
+      } else {
+        this.confirmBodyMessage = 'This ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' will be permanently deleted.' +
+      ' Are you sure you want to continue?';
+      }
     } else if (type === 'Install' || type === 'Uninstall' ||
     type === 'Upgrade' || type === 'Downgrade') {
       this.confirmHeaderMessage = type + ' Package';
@@ -486,7 +491,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
         (response: any) => {
           // this.confirmBodyMessage = response.message;
           this.displyaMsgArr.push({
-            message: 'Firmware update request sent to Asset.',
+            message: 'Firmware ' + type.toLowerCase() + ' request sent to Asset.',
             error: false
           });
           this.modalConfig.isDisplaySave = false;

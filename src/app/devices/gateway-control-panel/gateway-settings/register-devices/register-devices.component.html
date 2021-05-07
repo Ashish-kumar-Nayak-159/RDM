@@ -48,7 +48,8 @@
               <td>
                   {{device.display_name}}
               </td>
-              <td *ngIf="pageType === 'register-devices'">{{deviceTwin.twin_properties.reported.registered_devices.indexOf(device.device_id) !== -1 ? 'Registered' : 'Not Registered'}}</td>
+              <td *ngIf="pageType === 'register-devices'">
+                {{device.metadata?.package_app && deviceTwin.twin_properties.reported.registered_devices[device.metadata.package_app] ? (deviceTwin.twin_properties.reported?.registered_devices[device?.metadata?.package_app]?.indexOf(device.device_id) > -1 ? 'Registered' : 'Not Registered') : 'Not Registered'}}
               <td *ngIf="pageType === 'telemetry-settings'">
                 <input type="radio" name="visible{{i}}" value="changed"
                     id="visible_1_{{i}}" [(ngModel)]="telemetrySettings[device.device_id]" />

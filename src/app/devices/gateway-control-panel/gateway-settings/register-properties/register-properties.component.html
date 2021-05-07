@@ -15,7 +15,7 @@
         <td>
             {{device.display_name}}
         </td>
-        <td >{{deviceTwin.twin_properties.reported.registered_devices.indexOf(device.device_id) !== -1 ? 'Registered' : 'Not Registered'}}</td>
+        <td >{{device.metadata?.package_app && deviceTwin.twin_properties.reported.registered_devices[device.metadata.package_app] ? (deviceTwin.twin_properties.reported?.registered_devices[device?.metadata?.package_app]?.indexOf(device.device_id) > -1 ? 'Registered' : 'Not Registered') : 'Not Registered'}}</td>
         <td>{{device.device_type}}</td>
         <td> <a
           class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm mr-2"

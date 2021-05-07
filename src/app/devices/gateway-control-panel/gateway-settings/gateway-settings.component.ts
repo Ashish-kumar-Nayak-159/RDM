@@ -80,7 +80,7 @@ export class GatewaySettingsComponent implements OnInit {
               this.deviceTwin.twin_properties.reported = {};
             }
             if (!this.deviceTwin.twin_properties.reported.registered_devices) {
-              this.deviceTwin.twin_properties.reported.registered_devices = [];
+              this.deviceTwin.twin_properties.reported.registered_devices = {};
             }
             if (!this.deviceTwin.twin_properties.reported.apps) {
               this.deviceTwin.twin_properties.reported.apps = {};

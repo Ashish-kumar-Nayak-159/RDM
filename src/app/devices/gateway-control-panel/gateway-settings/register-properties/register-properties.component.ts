@@ -236,26 +236,24 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.deviceService.getC2dResponseJSON(obj).subscribe(
       (response: any) => {
         // response.data = this.generateResponse();
-        if (response.data?.length > 0 && this.displyaMsgArr.length <= response.data.length) {
+        if (response.data?.length > 0) {
           this.displyaMsgArr.push({
             message:  response.data[response.data.length - 1].device_id + ': ' + response.data[response.data.length - 1]?.message.message,
             error: response.data[response.data.length - 1].status === 'failure' ? true : false
           });
-        }
-        if (response.data.length < (Object.keys(c2dObj.message).length - 2)) {
+          clearInterval(this.c2dResponseInterval);
+          // this.refreshDeviceTwin.emit();
+          setTimeout(() => {
+            this.onModalClose();
+            this.isAPILoading = false;
+          }, 1000);
+        } else {
           clearInterval(this.c2dResponseInterval);
           this.c2dResponseInterval = setInterval(
           () => {
             this.loadC2DResponse(c2dObj);
           }, 5000);
-        } else {
-        clearInterval(this.c2dResponseInterval);
-        // this.refreshDeviceTwin.emit();
-        setTimeout(() => {
-          this.onModalClose();
-          this.isAPILoading = false;
-        }, 1000);
-      }
+        }
       }
       ));
   }

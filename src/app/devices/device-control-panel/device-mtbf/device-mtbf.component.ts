@@ -33,6 +33,7 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
   today = new Date();
   displayMode: string;
   chart: any;
+  originalFilterObj: any = {};
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -107,10 +108,11 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
         obj.to_date = filterObj.to_date.unix();
       }
     }
-    obj.date_frequency = 'weekly';
+    // obj.date_frequency = 'weekly';
     delete obj.dateOption;
     delete obj.countNotShow;
     this.filterObj = filterObj;
+    this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
     let method;
     method = this.deviceService.getHistoricalMTBFData(this.device.app, this.device.device_id, obj);
     this.lifeCycleEvents = [];
@@ -242,7 +244,11 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
     series.strokeOpacity = 1;
     series.legendSettings.labelText = '{name} (Hrs)';
     // series.fillOpacity = 0;
+    if (this.originalFilterObj.date_frequency === 'weekly') {
     series.columns.template.tooltipText = 'Start Date: {openDateX} \n End Date: {dateX} \n {name}: [bold]{mtbfString}[/]';
+    } else {
+      series.columns.template.tooltipText = 'Date: {openDateX} \n  {name}: [bold]{mtbfString}[/]';
+    }
 
     // const bullet = series.bullets.push(new am4charts.CircleBullet());
     // bullet.strokeWidth = 2;

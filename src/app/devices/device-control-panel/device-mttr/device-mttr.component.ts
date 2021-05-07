@@ -33,6 +33,7 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
   averageMTTR: any;
   displayMode: string;
   averageMTTRString: any;
+  originalFilterObj: any = {};
   chart: any;
   @ViewChild('dt1Input', {static: false}) dtInput1: any;
   @ViewChild('dt2Input', {static: false}) dtInput2: any;
@@ -193,16 +194,19 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     delete obj.dateOption;
     delete obj.countNotShow;
     this.filterObj = filterObj;
+    this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
     this.lifeCycleEvents = [];
     let method;
     if (this.displayMode === 'network_failure') {
+      delete obj.date_frequency;
       method = this.deviceService.getDeviceNetworkFailureEvents(this.device.app, this.device.device_id, obj);
     } else if (this.displayMode === 'machine_failure') {
+      delete obj.date_frequency;
       delete obj.count;
       method = this.deviceService.getDeviceMachineFailureEvents(this.device.app, this.device.device_id, obj);
     } else if (this.displayMode === 'history') {
       delete obj.count;
-      obj.date_frequency = 'weekly';
+      // obj.date_frequency = 'weekly';
       method = this.deviceService.getHistoricalMTTRData(this.device.app, this.device.device_id, obj);
     }
     this.apiSubscriptions.push(method.subscribe(
@@ -316,7 +320,11 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     series.strokeOpacity = 1;
     series.legendSettings.labelText = '{name} (Hrs)';
     // series.fillOpacity = 0;
-    series.columns.template.tooltipText = 'Start Date: {openDateX} \n End Date: {dateX} \n {name}: [bold]{mttrString} [/]';
+    if (this.originalFilterObj.date_frequency === 'weekly') {
+      series.columns.template.tooltipText = 'Start Date: {openDateX} \n End Date: {dateX} \n {name}: [bold]{mttrString} [/]';
+    } else {
+      series.columns.template.tooltipText = 'Date: {openDateX} \n {name}: [bold]{mttrString} [/]';
+    }
 
     // const bullet = series.bullets.push(new am4charts.CircleBullet());
     // bullet.strokeWidth = 2;

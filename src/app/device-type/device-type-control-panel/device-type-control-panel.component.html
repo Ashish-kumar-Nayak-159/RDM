@@ -69,6 +69,9 @@
       <div class="tab-pane" [ngClass]="{'active': activeTab.includes('package_management')}" role="tabpanel" id="device_type_package_management">
         <app-device-type-package-management *ngIf="activeTab.includes('package_management') && deviceType" [deviceType]="deviceType"></app-device-type-package-management>
       </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab.includes('rules')}" role="tabpanel" id="device_type_rules">
+        <app-device-type-rules *ngIf="activeTab.includes('rules') && deviceType" [deviceType]="deviceType"></app-device-type-rules>
+      </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'jsonpacket'}" role="tabpanel" id="device_type_jsonpacket">
         <app-device-type-json-packet-format *ngIf="activeTab === 'jsonpacket' && deviceType" [deviceType]="deviceType"></app-device-type-json-packet-format>
       </div>

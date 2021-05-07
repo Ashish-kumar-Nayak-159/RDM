@@ -408,4 +408,9 @@ export class DeviceTypeService {
     return this.http.delete(this.url + String.Format(AppUrls.DELETE_PACKAGE, encodeURIComponent(app),
     encodeURIComponent(deviceType), encodeURIComponent(packageId)), {});
   }
+
+  getRules(app, deviceType) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_MODEL_RULES, encodeURIComponent(app),
+    encodeURIComponent(deviceType)));
+  }
 }

@@ -4,19 +4,19 @@ export class CONSTANTS {
 
   public static DEVICEAPPPS = [
     {id: 4, name: 'GatewayAgent', is_start: false, is_stop: false, is_restart: false, is_install: false, is_uninstall: false,
-    is_update: false, display_name: 'Gateway Agent', metadata: {}, deleted: false},
+    is_update: false, display_name: 'Gateway Agent', metadata: {}, deleted: false, type: 'system_apps'},
     {id: 4, name: 'MQTTAgent', is_start: false, is_stop: false, is_restart: false, is_install: false, is_uninstall: false,
-    is_update: true, display_name: 'MQTT Agent', metadata: {}, deleted: false},
+    is_update: true, display_name: 'MQTT Agent', metadata: {}, deleted: false, type: 'system_apps'},
     {id: 5, name: 'CachingAgent', is_start: false, is_stop: false, is_restart: false, is_install: false, is_uninstall: false,
-    is_update: true, display_name: 'Caching Agent', metadata: {}, deleted: false},
+    is_update: true, display_name: 'Caching Agent', metadata: {}, deleted: false, type: 'system_apps'},
     {id: 3, name: 'RuleEngine', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
-    is_update: true, display_name: 'Rule Engine', metadata: {}, deleted: false},
+    is_update: true, display_name: 'Rule Engine', metadata: {}, deleted: false, type: 'apps'},
     {id: 2, name: 'ModbusRTUMaster', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
-    is_update: true, display_name: 'Modbus RTU App', metadata: {}, deleted: false},
+    is_update: true, display_name: 'Modbus RTU App', metadata: {}, deleted: false, type: 'apps'},
     {id: 1, name: 'ModbusTCPMaster', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
-    is_update: true, display_name: 'Modbus TCP App', metadata: {}, deleted: false},
+    is_update: true, display_name: 'Modbus TCP App', metadata: {}, deleted: false, type: 'apps'},
     {id: 3, name: 'SiemensTCPIP', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
-    is_update: true, display_name: 'Siemens TCP/IP App', metadata: {}, deleted: false}
+    is_update: true, display_name: 'Siemens TCP/IP App', metadata: {}, deleted: false, type: 'apps'}
   ];
 
   public static PROTOCOLS = [
@@ -964,6 +964,15 @@ export class CONSTANTS {
       url: '#device_type_package_management',
       display_name: 'Package Management',
       icon: 'fa fa-fw fa-tags',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'rules',
+      system_name: 'Rule Engine',
+      url: '#device_type_rules',
+      display_name: 'Rule Engine',
+      icon: 'fa fa-fw fa-archive',
       visible: true,
       isTitle: false
     },

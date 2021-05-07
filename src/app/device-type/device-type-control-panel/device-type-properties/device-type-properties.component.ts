@@ -318,7 +318,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       this.toasterService.showError('Please fill the form correctly', 'Add Property');
       return;
     }
-    if (Object.keys(this.propertyObj.metadata).length === 0) {
+    if (this.deviceType.metadata?.model_type === this.constantData.NON_IP_DEVICE && Object.keys(this.propertyObj?.metadata).length === 0) {
       this.toasterService.showError('Please fill the form correctly', 'Add Property');
       return;
     }

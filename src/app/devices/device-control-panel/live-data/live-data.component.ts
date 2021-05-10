@@ -25,6 +25,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
   liveWidgets: any[] = [];
   isGetLiveWidgetsAPILoading = false;
   selectedWidgets: any[] = [];
+  selectedWidgetsForSearch: any[] = [];
   signalRTelemetrySubscription: any;
   isTelemetryDataLoading = false;
   telemetryObj: any;
@@ -100,6 +101,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     obj['message_props'] = message_props;
     obj['partition_key'] = this.device?.tags?.partition_key;
     obj['device_id'] = this.device.device_id;
+    this.selectedWidgets = JSON.parse(JSON.stringify(this.selectedWidgetsForSearch));
     const obj1 = {
       hierarchy: this.contextApp.user.hierarchy,
       levels: this.contextApp.hierarchy.levels,

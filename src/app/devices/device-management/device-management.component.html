@@ -1,17 +1,17 @@
 <div class="container-tab-pad" style="margin-top: 2rem!important;overflow-y: hidden;">
   <tabset>
-    <tab heading="{{contextApp.configuration.main_menu[1]?.display_name}}" id="tab1"
-    *ngIf="contextApp.configuration.main_menu[1]?.visible"
+    <tab heading="{{contextApp.configuration.main_menu[3]?.display_name}}" id="tab1"
+    *ngIf="contextApp.configuration.main_menu[3]?.visible"
      (selectTab)="onTabChange('iot-devices')">
      <app-device-management-devices [type]="selectedTab" *ngIf="selectedTab === 'iot-devices'"></app-device-management-devices>
     </tab>
-    <tab heading="{{contextApp.configuration.main_menu[2]?.display_name}}" id="tab2"
-    *ngIf="contextApp.configuration.main_menu[2]?.visible"
+    <tab heading="{{contextApp.configuration.main_menu[4]?.display_name}}" id="tab2"
+    *ngIf="contextApp.configuration.main_menu[4]?.visible"
      (selectTab)="onTabChange('legacy-devices')">
      <app-device-management-devices [type]="selectedTab" *ngIf="selectedTab === 'legacy-devices'"></app-device-management-devices>
     </tab>
-    <tab heading="{{contextApp.configuration.main_menu[7]?.display_name}}" id="tab3"
-    *ngIf="contextApp.configuration.main_menu[7]?.visible"
+    <tab heading="{{contextApp.configuration.main_menu[8]?.display_name}}" id="tab3"
+    *ngIf="contextApp.configuration.main_menu[8]?.visible"
      (selectTab)="onTabChange('iot-gateways')">
      <app-device-management-devices [type]="selectedTab" *ngIf="selectedTab === 'iot-gateways'"></app-device-management-devices>
     </tab>

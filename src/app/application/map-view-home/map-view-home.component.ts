@@ -39,6 +39,45 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
         (response: any) => {
           if (response?.data) {
             this.devices = response.data;
+            this.devices.forEach(device => {
+              if (device.type === this.constantData.IP_DEVICE && device?.configuration?.connection_state?.toLowerCase() === 'connected') {
+                device.icon = {
+                  url: './assets/img/iot-assets-green.svg',
+                  scaledSize: {
+                    width: 35,
+                    height: 35
+                  }};
+              } else if (device.type === this.constantData.IP_DEVICE && device?.configuration?.connection_state?.toLowerCase() === 'disconnected') {
+                device.icon = {
+                  url: './assets/img/iot-assets-red.svg',
+                  scaledSize: {
+                    width: 35,
+                    height: 35
+                  }};
+              } else if (device.type === this.constantData.IP_GATEWAY && device?.configuration?.connection_state?.toLowerCase() === 'connected') {
+                device.icon = {
+                  url: './assets/img/iot-gateways-green.svg',
+                  scaledSize: {
+                    width: 30,
+                    height: 30
+                  }};
+              } else if (device.type === this.constantData.IP_GATEWAY && device?.configuration?.connection_state?.toLowerCase() === 'disconnected') {
+                device.icon = {
+                  url: './assets/img/iot-gateways-red.svg',
+                  scaledSize: {
+                    width: 30,
+                    height: 30
+                  }};
+              } else if (device.type === this.constantData.NON_IP_DEVICE) {
+                device.icon = {
+                  url: './assets/img/legacy-assets.svg',
+                  scaledSize: {
+                    width: 25,
+                    height: 25
+                  }};
+              }
+              console.log(device.icon);
+            });
             const center = this.commonService.averageGeolocation(this.devices);
             this.centerLatitude = center?.latitude || 23.0225;
             this.centerLongitude = center?.longitude || 72.5714;

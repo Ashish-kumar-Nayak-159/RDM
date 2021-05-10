@@ -76,13 +76,18 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
       this.deviceService.getLegacyDevices(obj, this.contextApp.app).subscribe(
         (response: any) => {
           if (response.data) {
-            this.devices = response.data;
-            this.devices.forEach(device => {
+            // this.devices = response.data;
+            response.data.forEach(device => {
               this.thingsModels.forEach(model => {
               if (device.device_type === model.name) {
                 device.model_freeze = model.freezed;
               }
               });
+              if (device.metadata?.package_app && this.deviceTwin.twin_properties.reported.registered_devices[device.metadata.package_app]
+                && (this.deviceTwin.twin_properties.reported?.registered_devices[device?.metadata?.package_app]?.
+                  indexOf(device.device_id) > -1)) {
+                this.devices.push(device);
+              }
             });
           }
           this.isDevicesAPILoading = false;

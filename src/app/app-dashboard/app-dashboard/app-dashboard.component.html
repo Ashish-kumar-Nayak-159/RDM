@@ -140,30 +140,7 @@
                   </div>
                 </ng-container>
                 <ng-container *ngIf="defaultAppName === 'SopanCMS'">
-                <div style="width:23%;margin-left:2%;margin-top: 2%" >
-                  <div class="mt-1">
-                    <div class="card">
-                      <div class="card-header">
-                        <h6 class=" m-0 font-weight-bold live-widget-title col-md-12" title="Status">
-                          Status
-                        </h6>
-                      </div>
-                      <div class="card-body1" style="height: 12rem;">
-                        <div class="row text-center " *ngIf="telemetryObj">
-                          <div class="col-md-12">
-                            <span class="text-xs">Motor Status</span>
-                            <div class="mt-4">
-                              <span class="text-darkblue display-5 font-weight-bold text-lg" style="font-size: 2rem;">
-                                <!-- {{telemetryObj[prop.property.json_key]}} -->
-                                {{ telemetryObj.hasOwnProperty(getPropertyKey('Motor')) ? (telemetryObj[getPropertyKey("Motor")] === 0 ? 'OFF' : 'ON') : 'NA' }}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    </div>
-                  </div>
+
                 <div style="width:23%;margin-left:2%;margin-top: 2%"  >
                   <div class="mt-1">
                     <div class="card">

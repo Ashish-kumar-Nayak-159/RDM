@@ -27,7 +27,7 @@ export class CONSTANTS {
     {id: 5, asset_type: 'Legacy Device', name: 'ModbusTCPMaster', display_name: 'Modbus TCP', cloud_connectivity: ['ModBus TCP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusTCPMaster'}, deleted: false},
     {id: 6, asset_type: 'Legacy Device', name: 'ModbusRTUMaster', display_name: 'Modbus RTU', cloud_connectivity: ['ModBus RTU Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusRTUMaster'}, deleted: false},
     {id: 7, asset_type: 'Legacy Device', name: 'SiemensTCPIP', display_name: 'Siemens TCP/IP', cloud_connectivity: ['Siemens TCP/IP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'SiemensTCPIP'}, deleted: false}
-  ]
+  ];
 
   public static NON_IP_DEVICE_OPTIONS = [
     {
@@ -59,18 +59,38 @@ export class CONSTANTS {
       showAccordion: [],
       priority: 1
     },
-    // {
-    //   page: 'Dashboard',
-    //   system_name: 'Dashboard',
-    //   url: 'applications/:appName/dashboard',
-    //   display_name: 'Dashboard',
-    //   icon: 'fa fa-fw fa-bar-chart',
-    //   visible: true,
-    //   showAccordion: [
-    //     { name: 'Title', value: 'Dashboard'},
-    //   ],
-    //   priority: 1
-    // },
+    {
+      page: 'Live Data',
+      system_name: 'Live Data',
+      url: 'applications/:appName/dashboard',
+      fragment: 'telemetry',
+      display_name: 'Live Data',
+      icon: 'fa fa-fw fa-globe',
+      visible: true,
+      showAccordion: [
+        {
+          name: 'Title',
+          value: 'Live Data'
+        }
+      ],
+      priority: 1
+    },
+    {
+      page: 'Live Alerts',
+      system_name: 'Live Alerts',
+      url: 'applications/:appName/dashboard',
+      display_name: 'Live Alerts',
+      fragment: 'alert',
+      icon: 'fa fa-fw fa-bell',
+      visible: true,
+      showAccordion: [
+        {
+          name: 'Title',
+          value: 'Live Alerts'
+        }
+      ],
+      priority: 1
+    },
     {
       page: 'Assets',
       system_name: 'IoT Assets',
@@ -96,6 +116,18 @@ export class CONSTANTS {
         { name: 'Title', value: 'Assets'},
         { name: 'Table Key Name', value: 'Asset'},
         { name: 'Records Limit', value: 20, type: 'number'},
+      ],
+      priority: 1
+    },
+    {
+      page: 'Assets Management',
+      system_name: 'Assets Management',
+      url: 'applications/:appName/asset/management',
+      display_name: 'Assets Management',
+      icon: 'fa fa-fw fa-cog',
+      visible: true,
+      showAccordion: [
+        { name: 'Title', value: 'Assets Management'}
       ],
       priority: 1
     },
@@ -139,18 +171,18 @@ export class CONSTANTS {
     //   ],
     //   priority: 1
     // },
-    {
-      page: 'Alert Visualization',
-      system_name: 'Alert Visualization',
-      url: 'applications/:appName/data/visualization',
-      display_name: 'Alert Visualization',
-      icon: 'fa fa-fw fa-bar-chart',
-      visible: true,
-      showAccordion: [
-        { name: 'Title', value: 'Alerts'},
-      ],
-      priority: 1
-    },
+    // {
+    //   page: 'Alert Visualization',
+    //   system_name: 'Alert Visualization',
+    //   url: 'applications/:appName/data/visualization',
+    //   display_name: 'Alert Visualization',
+    //   icon: 'fa fa-fw fa-bar-chart',
+    //   visible: true,
+    //   showAccordion: [
+    //     { name: 'Title', value: 'Alerts'},
+    //   ],
+    //   priority: 1
+    // },
     {
       page: 'Reports',
       system_name: 'Reports',
@@ -164,18 +196,7 @@ export class CONSTANTS {
       ],
       priority: 1
     },
-    {
-      page: 'Assets Management',
-      system_name: 'Assets Management',
-      url: 'applications/:appName/asset/management',
-      display_name: 'Assets Management',
-      icon: 'fa fa-fw fa-cog',
-      visible: true,
-      showAccordion: [
-        { name: 'Title', value: 'Assets Management'}
-      ],
-      priority: 1
-    },
+
     {
       page: 'Gateways',
       system_name: 'IoT Gateways',

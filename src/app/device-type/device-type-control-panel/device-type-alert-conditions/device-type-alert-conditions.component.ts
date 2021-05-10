@@ -250,7 +250,9 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
       }
       this.onChangeOfSetupType(alertObj.metadata);
       this.onChangeOfSetupSecondaryType(alertObj.metadata);
-      this.onChangeOfSetupFunctionCode(alertObj.metadata);
+      if (this.deviceType.tags.protocol === 'ModbusTCPMaster' || this.deviceType.tags.protocol === 'ModbusRTUMaster') {
+        this.onChangeOfSetupFunctionCode(alertObj.metadata);
+      }
       console.log(this.setupForm);
     } else {
       this.alertObj = {};
@@ -278,6 +280,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
   }
 
   onChangeOfSetupType(obj = undefined) {
+    console.log(obj);
     if (this.setupForm.value.d !== 'a') {
       this.setupForm.removeControl('sd');
     } else {

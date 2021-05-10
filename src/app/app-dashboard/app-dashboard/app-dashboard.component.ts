@@ -85,8 +85,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         if (fragment) {
           // this.selectedTab = fragment;
           this.onTabChange(fragment);
-        } else {
-          this.selectedTab = 'telemetry';
         }
     }));
     await this.getDevices(this.contextApp.user.hierarchy);

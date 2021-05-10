@@ -13,7 +13,7 @@
   </div> -->
 
   <!-- Nav Item - Dashboard -->
-  <li class="nav-item" routerLinkActive="active"  *ngIf="userData?.is_super_admin">
+  <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngIf="userData?.is_super_admin">
       <a class="nav-link collapsed" [routerLink]="['applications']"  >
         <i class="fa fa-fw fa-th-large" title="Applications"></i>
         <span>Apps</span></a>
@@ -22,10 +22,10 @@
   <!-- Nav Item - Charts -->
   <ng-container *ngFor="let item of displayMenuList">
     <ng-container *ngIf="!item.children && item.visible && item?.priority === 1">
-      <li class="nav-item" routerLinkActive="active"  *ngIf="!userData?.is_super_admin && item.url"
+      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"  *ngIf="!userData?.is_super_admin && item.url"
 
       >
-        <a class="nav-link" [routerLink]="getURL(item.url)">
+        <a class="nav-link" [routerLink]="getURL(item.url)" [fragment]="item.fragment">
           <i class="{{item.icon}}" title="{{item.display_name ? item.display_name : item.system_name}}"></i>
           <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
 
@@ -39,7 +39,7 @@
     </ng-container>
     <ng-container *ngIf="!item.children && item.visible && item?.priority === 2">
       <hr class="sidebar-divider d-none d-md-block m-0">
-      <li class="nav-item" routerLinkActive="active"  *ngIf="!userData?.is_super_admin && item.url"
+      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"  *ngIf="!userData?.is_super_admin && item.url"
       >
         <a class="nav-link" [routerLink]="getURL(item.url)">
           <i class="{{item.icon}}" title="{{item.display_name ? item.display_name : item.system_name}}"></i>

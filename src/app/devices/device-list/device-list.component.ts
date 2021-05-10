@@ -398,6 +398,46 @@ export class DeviceListComponent implements OnInit, OnDestroy {
             const name = this.gateways.filter(gateway => gateway.device_id === item.gateway_id)[0]?.display_name;
             item.gateway_display_name = name ? name : item.gateway_id;
             }
+            console.log(this.componentState);
+            if (this.componentState === this.constantData.IP_DEVICE &&
+              item?.connection_state?.toLowerCase() === 'connected') {
+              item.icon = {
+                url: './assets/img/iot-assets-green.svg',
+                scaledSize: {
+                  width: 35,
+                  height: 35
+                }};
+            } else if (this.componentState === this.constantData.IP_DEVICE && item?.connection_state?.toLowerCase() === 'disconnected') {
+              item.icon = {
+                url: './assets/img/iot-assets-red.svg',
+                scaledSize: {
+                  width: 35,
+                  height: 35
+                }};
+            } else if (this.componentState === this.constantData.IP_GATEWAY && item?.connection_state?.toLowerCase() === 'connected') {
+              item.icon = {
+                url: './assets/img/iot-gateways-green.svg',
+                scaledSize: {
+                  width: 30,
+                  height: 30
+                }};
+            } else if (this.componentState === this.constantData.IP_GATEWAY &&
+              item?.connection_state?.toLowerCase() === 'disconnected') {
+              item.icon = {
+                url: './assets/img/iot-gateways-red.svg',
+                scaledSize: {
+                  width: 30,
+                  height: 30
+                }};
+            } else if (this.componentState === this.constantData.NON_IP_DEVICE) {
+              item.icon = {
+                url: './assets/img/legacy-assets.svg',
+                scaledSize: {
+                  width: 25,
+                  height: 25
+                }};
+            }
+            console.log(item.icon);
             if (item.hierarchy) {
               item.hierarchyString = '';
               const keys = Object.keys(item.hierarchy);

@@ -88,33 +88,35 @@ export class DeviceTypePackageManagementComponent implements OnInit {
               valueclass: '',
               tooltip: 'Download'
             },
-            {
-              icon: 'fa fa-fw fa-pencil',
-              text: '',
-              id: 'Edit',
-              valueclass: '',
-              tooltip: 'Edit',
-              disableConditions: {
-                key: 'freezed',
-                value: true
-              }
-            },
-            {
-              icon: 'fa fa-fw fa-trash',
-              text: '',
-              id: 'Delete',
-              valueclass: '',
-              tooltip: 'Delete',
-              disableConditions: {
-                key: 'freezed',
-                value: true
-              }
-            }
+
           ]
         }
       ]
     };
   }
+
+  // {
+  //   icon: 'fa fa-fw fa-pencil',
+  //   text: '',
+  //   id: 'Edit',
+  //   valueclass: '',
+  //   tooltip: 'Edit',
+  //   disableConditions: {
+  //     key: 'freezed',
+  //     value: true
+  //   }
+  // },
+  // {
+  //   icon: 'fa fa-fw fa-trash',
+  //   text: '',
+  //   id: 'Delete',
+  //   valueclass: '',
+  //   tooltip: 'Delete',
+  //   disableConditions: {
+  //     key: 'freezed',
+  //     value: true
+  //   }
+  // }
 
   getPackages() {
     this.packages = [];

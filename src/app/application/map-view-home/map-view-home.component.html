@@ -6,15 +6,7 @@
   <agm-marker *ngIf="device.latitude && device.longitude"
   [latitude]="device.latitude" [longitude]="device.longitude"
   (mouseOver)="onMarkerClick(infowindow, gm)"
-  [iconUrl]="{
-    url: (device.type === constantData.IP_DEVICE ? './assets/img/iot-asset.png' :
-    (device.type === constantData.IP_GATEWAY ? './assets/img/iot-gateway.png' :
-    (device.type === constantData.NON_IP_DEVICE ? './assets/img/legacy-asset.png' : '' ))),
-    scaledSize: {
-      width: 30,
-      height: 30
-    }
-}"
+  [iconUrl]="device.icon"
  >
   <agm-info-window #infowindow >
     <a class="blue-font ml-2" href="javascript:void(0)" (click)="redirectToDevice(device)">{{device.display_name ? device.display_name: device.device_id}}</a>

@@ -11,6 +11,9 @@ export class DeviceManagementComponent implements OnInit {
   contextApp: any;
   tileData: any;
   selectedTab: any;
+  iotAssetsTab: any;
+  legacyAssetsTab: any;
+  iotGatewaysTab: any;
   constructor(
     private commonService: CommonService
   ) { }
@@ -18,6 +21,7 @@ export class DeviceManagementComponent implements OnInit {
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
+    this.getTabData();
     const obj = {
       type: 'replace',
       data: [
@@ -46,13 +50,24 @@ export class DeviceManagementComponent implements OnInit {
   getTileName() {
     let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {
-      console.log(item.page);
       if (item.page === 'Assets Management' || item.page === 'Device Management') {
         selectedItem = item.showAccordion;
       }
     });
     console.log(this.tileData);
     this.tileData = selectedItem;
+  }
+
+  getTabData() {
+    this.contextApp.configuration.main_menu.forEach(item => {
+      if (item.page === 'Assets') {
+        this.iotAssetsTab = item;
+      } else if (item.page === 'Non IP Assets') {
+        this.legacyAssetsTab = item;
+      } else if (item.page === 'Gateways') {
+        this.iotGatewaysTab = item;
+      }
+    });
   }
 
   onTabChange(type) {

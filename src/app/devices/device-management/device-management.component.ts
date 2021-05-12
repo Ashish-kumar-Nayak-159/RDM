@@ -1,19 +1,21 @@
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from './../../services/common.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { TabsetComponent } from 'ngx-bootstrap/tabs';
 
 @Component({
   selector: 'app-device-management',
   templateUrl: './device-management.component.html',
   styleUrls: ['./device-management.component.css']
 })
-export class DeviceManagementComponent implements OnInit {
+export class DeviceManagementComponent implements OnInit, AfterViewInit {
   contextApp: any;
   tileData: any;
   selectedTab: any;
   iotAssetsTab: any;
   legacyAssetsTab: any;
   iotGatewaysTab: any;
+  @ViewChild('staticTabs', { static: false }) staticTabs: TabsetComponent;
   constructor(
     private commonService: CommonService
   ) { }
@@ -37,14 +39,18 @@ export class DeviceManagementComponent implements OnInit {
     };
     this.commonService.breadcrumbEvent.emit(obj);
     console.log(obj);
-    if (this.contextApp.configuration.main_menu[2].visible) {
+  }
+
+  ngAfterViewInit() {
+    if (this.iotAssetsTab.visible) {
       this.selectedTab = 'iot-devices';
-    } else if (this.contextApp.configuration.main_menu[3].visible) {
+    } else if (this.legacyAssetsTab.visible) {
+      this.staticTabs.tabs[0].active = true;
       this.selectedTab = 'legacy-devices';
-    } else if (this.contextApp.configuration.main_menu[9].visible) {
+    } else if (this.iotGatewaysTab.visible) {
+      this.staticTabs.tabs[0].active = true;
       this.selectedTab = 'iot-gateways';
     }
-
   }
 
   getTileName() {

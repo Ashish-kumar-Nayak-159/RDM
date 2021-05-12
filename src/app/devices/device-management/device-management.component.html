@@ -1,5 +1,6 @@
 <div class="container-tab-pad" style="margin-top: 2rem!important;overflow-y: hidden;">
-  <tabset>
+
+  <tabset #staticTabs>
     <tab heading="{{iotAssetsTab?.display_name}}" id="tab1"
     *ngIf="iotAssetsTab?.visible"
      (selectTab)="onTabChange('iot-devices')">

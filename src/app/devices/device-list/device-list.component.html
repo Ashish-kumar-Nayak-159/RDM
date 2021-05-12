@@ -104,7 +104,10 @@
                 <!-- <a  href="javascript:void(0)" (click)="onRedirectToGateway(device)" >
                   {{device.gateway_display_name}}</a> -->
                   {{device.gateway_display_name}}</td>
-              <td><a  href="javascript:void(0)" (click)="onTableFunctionCall(device)" title="View Control Panel" >
+              <td>
+                <a *ngIf="componentState === constantData.NON_IP_DEVICE" href="javascript:void(0)" (click)="openDeviceEditModal(device)" title="Edit Device" >
+                <i class="fa fa-fw fa-pencil"></i></a>
+                <a  href="javascript:void(0)" (click)="onTableFunctionCall(device)" title="View Control Panel" >
                 <i class="fa fa-fw fa-table"></i></a>
                 <a *ngIf="componentState === constantData.NON_IP_DEVICE" href="javascript:void(0)" (click)="redirectToGatewayPanel(device)" title="View Gateway Diagnosis Panel" >
                   <i class="fa fa-fw fa-book"></i></a></td>
@@ -161,3 +164,7 @@
   </ng-container>
 </div>
 </div>
+
+
+<app-add-device *ngIf="isOpenDeviceCreateModal" [deviceDetail]="selectedDeviceForEdit" [gateways]="gateways" (getDeviceEmit)="devicesList = [];searchDevices()"
+[componentState]="componentState" [tileData]="tileData" (cancelModal)="onEditDeviceCancelModal()"></app-add-device>

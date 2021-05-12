@@ -54,7 +54,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
             key: 'message_text',
           },
           {
-            name: 'Message',
+            name: '',
             key: undefined,
           }
         ]

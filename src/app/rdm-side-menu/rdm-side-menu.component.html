@@ -22,13 +22,18 @@
   <!-- Nav Item - Charts -->
   <ng-container *ngFor="let item of displayMenuList">
     <ng-container *ngIf="!item.children && item.visible && item?.priority === 1">
-      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"  *ngIf="!userData?.is_super_admin && item.url"
-
+      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"  *ngIf="!userData?.is_super_admin && item.url && !item.fragment"
       >
         <a class="nav-link" [routerLink]="getURL(item.url)" [fragment]="item.fragment">
           <i class="{{item.icon}}" title="{{item.display_name ? item.display_name : item.system_name}}"></i>
           <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
-
+      </li>
+      <li class="nav-item" *ngIf="!userData?.is_super_admin && item.url && item.fragment"
+      [class.active]="item.fragment && (activeFragment) === item.fragment"
+      >
+        <a class="nav-link" [routerLink]="getURL(item.url)" [fragment]="item.fragment">
+          <i class="{{item.icon}}" title="{{item.display_name ? item.display_name : item.system_name}}"></i>
+          <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
       </li>
       <li class="nav-item" *ngIf="!userData?.is_super_admin && !item.url"
       >

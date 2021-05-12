@@ -35,7 +35,7 @@
                         ">
                         <select *ngIf="index !== 0" class="form-control form-control-sm mx-1 my-1" id="{{ level }}"
                           [disabled]="contextApp?.user?.hierarchy[level]" [(ngModel)]="configureHierarchy[index]"
-                          name="{{ level }}" (change)="onChangeOfHierarchy(index)">
+                          name="{{ level }}" (change)="onChangeOfHierarchy(index, true)">
                           <option [ngValue]="undefined">
                             Select {{ level }}
                           </option>
@@ -130,8 +130,6 @@
                     </app-only-number-widget>
                     <app-gauge-chart [chartConfig]="widget" [device]="filterObj?.device"
                       *ngIf="widget.widgetType === 'GaugeChart'" [telemetryObj]="telemetryObj"></app-gauge-chart>
-
-
                     <app-live-line-chart [chartConfig]="widget" [device]="filterObj?.device"
                       [telemetryObj]="telemetryObj"
                       *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">

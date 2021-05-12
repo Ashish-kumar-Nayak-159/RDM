@@ -2,7 +2,9 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add New {{(tileData && tileData[1] ? tileData[1]?.value: '')}}
+        <h5 class="modal-title" id="exampleModalLabel">
+          {{isDeviceEditable ? ('Edit ' + (tileData && tileData[1] ? tileData[1]?.value: '')) :
+            ('Add New ' + (tileData && tileData[1] ? tileData[1]?.value: ''))}}
         </h5>
         <button type="button" class="close" (click)="onCloseCreateDeviceModal()" aria-label="Close"
           [disabled]="isCreateDeviceAPILoading">
@@ -11,6 +13,7 @@
       </div>
       <div class="modal-body" *ngIf="deviceDetail">
         <form>
+          <ng-container *ngIf="!isDeviceEditable">
           <div class="form-group">
             <label for="message-text" class="col-form-label">App:</label>
             <input type="text" class="form-control" id="app_name" [defaultValue]="contextApp.app" disabled>
@@ -95,6 +98,7 @@
             <input type="text" class="form-control" id="cloud_connectivity" name="cloud_connectivity"
               [(ngModel)]="deviceDetail.tags.cloud_connectivity" placeholder="Cloud Connectivity" disabled>
           </div>
+          </ng-container>
           <form *ngIf="deviceDetail.tags.protocol && setupForm" [formGroup]="setupForm">
             <ng-container *ngIf="deviceDetail.tags.protocol === 'ModbusTCPMaster'">
               <div class="form-group">
@@ -264,14 +268,13 @@
               </div>
             </ng-container>
             </form>
-
         </form>
       </div>
       <div class="modal-footer">
         <button *ngIf="componentState === constantData.NON_IP_DEVICE" type="button" class="btn btn-primary add-row" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) ||isCreateDeviceAPILoading"
-          (click)="onCreateDevice()">Save</button>
+          (click)="isDeviceEditable ? onEditDevice() : onCreateDevice()">Save</button>
           <button *ngIf="componentState !== constantData.NON_IP_DEVICE" type="button" class="btn btn-primary add-row" [disabled]="isCreateDeviceAPILoading"
-          (click)="onCreateDevice()">Save</button>
+          (click)="isDeviceEditable ? onEditDevice() : onCreateDevice()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreateDeviceAPILoading"
           (click)="onCloseCreateDeviceModal()">
           Cancel

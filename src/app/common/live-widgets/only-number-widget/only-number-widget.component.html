@@ -35,7 +35,7 @@
         <div [ngClass]="{'mt-4': chartConfig.widgetType === 'OnlyNumber' || chartConfig.widgetType === 'StringWidget'}">
           <span class="text-darkblue display-5 font-weight-bold text-lg" [ngStyle]="{'font-size': chartConfig.widgetType === 'OnlyNumber' || chartConfig.widgetType === 'StringWidget' ? '2rem' : '' }">
             <!-- {{telemetryObj[prop.property.json_key]}} -->
-            {{ prop.property.data_type === 'Number' ? (telemetryObj[prop.property.json_key]?.toFixed(prop.digitsAfterDecimals)) : (telemetryObj[prop.property.json_key])}} {{prop.unit}}
+            {{ (telemetryObj[prop.property.json_key] !== undefined && telemetryObj[prop.property.json_key] !== null) ? (prop.property.data_type === 'Number' ? (telemetryObj[prop.property.json_key]?.toFixed(prop.digitsAfterDecimals)) : (telemetryObj[prop.property.json_key])) : 'NA'}} {{prop.unit}}
           </span>
         </div>
       </div>

@@ -130,7 +130,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         if (index !== 0) {
         this.configureHierarchy[index] = item.device.hierarchy[level];
         if (item.device.hierarchy[level]) {
-          this.onChangeOfHierarchy(index, true);
+          this.onChangeOfHierarchy(index, true, false);
         }
         }
       });
@@ -219,7 +219,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     return c1 && c2 ? c1.device_id === c2.device_id : c1 === c2;
   }
 
-  async onChangeOfHierarchy(i, flag = true) {
+  async onChangeOfHierarchy(i, flag, persistDeviceSelection = true) {
     Object.keys(this.configureHierarchy).forEach(key => {
       if (key > i) {
         delete this.configureHierarchy[key];
@@ -271,8 +271,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.devices?.length === 1) {
         this.filterObj.device = this.devices[0];
       }
+      if (persistDeviceSelection) {
       this.filterObj.deviceArr = undefined;
       this.filterObj.device = undefined;
+      }
       // await this.getDevices(hierarchyObj);
     }
     let count = 0;

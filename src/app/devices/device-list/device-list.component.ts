@@ -54,6 +54,8 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   currentPageView = 'list';
   centerLatitude: any;
   centerLongitude: any;
+  isOpenDeviceCreateModal = false;
+  selectedDeviceForEdit: any;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -330,6 +332,36 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.currentLimit = Number(this.tileData[2]?.value) || 20;
   }
 
+  async openDeviceEditModal(device) {
+    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+      this.getGatewayList();
+    }
+    await this.getDeviceData(device.device_id);
+    this.isOpenDeviceCreateModal = true;
+  }
+
+  onEditDeviceCancelModal() {
+    this.isOpenDeviceCreateModal = false;
+    this.selectedDeviceForEdit = undefined;
+  }
+
+
+  getDeviceData(deviceId) {
+    return new Promise<void>((resolve) => {
+      const obj = {
+        app: this.contextApp.app,
+        device_id: deviceId
+      };
+      const methodToCall =
+        this.deviceService.getDeviceDetailById(obj.app, obj.device_id);
+      this.subscriptions.push(methodToCall.subscribe(
+      (response: any) => {
+        this.selectedDeviceForEdit = response;
+        resolve();
+      }
+      ));
+    });
+  }
 
 
 

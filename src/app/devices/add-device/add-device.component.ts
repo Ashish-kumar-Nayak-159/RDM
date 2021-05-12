@@ -20,7 +20,7 @@ export class AddDeviceComponent implements OnInit {
   @Input() componentState: any;
   @Output() getDeviceEmit: EventEmitter<any> = new EventEmitter<any>();
   @Output() cancelModal: EventEmitter<any> = new EventEmitter<any>();
-  deviceDetail: any;
+  @Input() deviceDetail: any;
   isCreateDeviceAPILoading = false;
   contextApp: any;
   addDeviceConfigureHierarchy = {};
@@ -33,6 +33,7 @@ export class AddDeviceComponent implements OnInit {
   subscriptions: any[] = [];
   setupForm: FormGroup;
   protocolList = CONSTANTS.PROTOCOLS;
+  isDeviceEditable = false;
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -42,6 +43,7 @@ export class AddDeviceComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.getApplicationUsers();
@@ -58,13 +60,21 @@ export class AddDeviceComponent implements OnInit {
       }
     });
     this.getThingsModels(this.componentState);
+    if (this.deviceDetail) {
+      console.log(this.deviceDetail);
+      this.isDeviceEditable = true;
+      this.setupFormData(this.deviceDetail);
+    } else {
     this.deviceDetail = new Device();
+    if (!this.deviceDetail.metadata) {
     this.deviceDetail.metadata = {
       setup_details: {}
     };
+    }
     this.deviceDetail.tags = {};
     this.deviceDetail.tags.app = this.contextApp.app;
     this.deviceDetail.tags.hierarchy_json = JSON.parse(JSON.stringify(this.contextApp.user.hierarchy));
+    }
     $('#createDeviceModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -118,28 +128,32 @@ export class AddDeviceComponent implements OnInit {
     this.setupFormData();
   }
 
-  setupFormData() {
+  setupFormData(obj = undefined) {
+    console.log(this.deviceDetail.tags.protocol);
+    console.log(this.deviceDetail.tags.protocol === 'ModbusTCPMaster');
+    console.log(this.deviceDetail.tags.protocol === 'ModbusRTUMaster');
     if (this.deviceDetail.tags.protocol === 'ModbusTCPMaster') {
       this.setupForm = new FormGroup({
-        host_address: new FormControl(null, [Validators.required]),
-        port_number: new FormControl(null, [Validators.required]),
-        slave_id: new FormControl(null, [Validators.required]),
+        host_address: new FormControl(obj.metadata?.setup_details?.host_address, [Validators.required]),
+        port_number: new FormControl(obj.metadata?.setup_details?.port_number, [Validators.required]),
+        slave_id: new FormControl(obj.metadata?.setup_details?.slave_id, [Validators.required]),
       });
     } else if (this.deviceDetail.tags.protocol === 'ModbusRTUMaster') {
       this.setupForm = new FormGroup({
-        baud_rate: new FormControl(null, [Validators.required]),
-        data_bits: new FormControl(null, [Validators.required, Validators.min(5), Validators.max(9)]),
-        slave_id: new FormControl(null, [Validators.required]),
-        parity: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(2)]),
-        stop_bits: new FormControl(null, [Validators.required]),
+        baud_rate: new FormControl(obj.metadata?.setup_details?.baud_rate, [Validators.required]),
+        data_bits: new FormControl(obj.metadata?.setup_details?.data_bits, [Validators.required, Validators.min(5), Validators.max(9)]),
+        slave_id: new FormControl(obj.metadata?.setup_details?.slave_id, [Validators.required]),
+        parity: new FormControl(obj.metadata?.setup_details?.parity, [Validators.required, Validators.min(0), Validators.max(2)]),
+        stop_bits: new FormControl(obj.metadata?.setup_details?.stop_bits, [Validators.required]),
       });
     } else  if (this.deviceDetail.tags.protocol === 'SiemensTCPIP') {
       this.setupForm = new FormGroup({
-        host_address: new FormControl(null, [Validators.required]),
-        rack: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(7)]),
-        slot: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(31)]),
+        host_address: new FormControl(obj.metadata?.setup_details?.host_address, [Validators.required]),
+        rack: new FormControl(obj.metadata?.setup_details?.rack, [Validators.required, Validators.min(0), Validators.max(7)]),
+        slot: new FormControl(obj.metadata?.setup_details?.slot, [Validators.required, Validators.min(0), Validators.max(31)]),
       });
     }
+    console.log(this.setupForm.value);
   }
 
   getApplicationUsers() {
@@ -149,6 +163,28 @@ export class AddDeviceComponent implements OnInit {
         if (response && response.data) {
           this.appUsers = response.data;
         }
+      }
+    ));
+  }
+
+  onEditDevice() {
+    this.isCreateDeviceAPILoading = true;
+    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+      this.deviceDetail.metadata.setup_details = this.setupForm.value;
+      }
+    const obj = {
+      app : this.contextApp.app,
+      metadata: this.deviceDetail.metadata
+    };
+    this.subscriptions.push(this.deviceService.updateDeviceMetadata(obj, this.contextApp.app, this.deviceDetail.device_id).subscribe(
+      (response: any) => {
+        this.toasterService.showSuccess(response.message, 'Update Asset Settings');
+        this.getDeviceEmit.emit();
+        this.onCloseCreateDeviceModal();
+        this.isCreateDeviceAPILoading = false;
+      }, error => {
+        this.toasterService.showError(error.message, 'Update Asset Settings');
+        this.isCreateDeviceAPILoading = false;
       }
     ));
   }

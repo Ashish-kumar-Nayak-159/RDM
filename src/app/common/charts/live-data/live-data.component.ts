@@ -49,7 +49,9 @@ export class LiveChartComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loader = true;
-    setTimeout(() => this.plotChart(), 200);
+    setTimeout(() => {
+      this.plotChart();
+    }, 200);
     this.subscriptions.push(this.chartService.toggleThresholdEvent.subscribe((ev) => {
       this.showThreshold = ev;
       this.toggleThreshold(ev);
@@ -232,9 +234,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   }
 
   createValueAxis(chart, axis) {
-
     const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
-
     if (chart.yAxes.indexOf(valueYAxis) !== 0){
       valueYAxis.syncWithAxis = chart.yAxes.getIndex(0);
     }
@@ -291,7 +291,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   }
 
   getPropertyName(key) {
-    return this.propertyList.filter(prop => prop.json_key === key)[0].name;
+    return this.propertyList.filter(prop => prop.json_key === key)[0]?.name || key;
   }
 
   toggleProperty(prop) {

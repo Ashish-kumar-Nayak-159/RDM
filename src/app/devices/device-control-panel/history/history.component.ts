@@ -332,7 +332,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   getPropertyName(key) {
-    return this.propertyList.filter(prop => prop.json_key === key)[0].name;
+    return this.propertyList.filter(prop => prop.json_key === key)[0]?.name || key;
   }
 
   onDeSelectAll(event) {

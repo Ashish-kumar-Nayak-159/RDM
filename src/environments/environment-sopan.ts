@@ -8,7 +8,7 @@ export const environment = {
   cachedTelemetryContainer: 'telemetry',
   app: 'SopanCMS',
   environment: 'PROD',
-  version: '6.0.1',
+  version: '6.0.3',
   packageManagementContainer: 'packages',
   storgageSecretKey: '$0p@Ncm$'
 };

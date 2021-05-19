@@ -8,14 +8,18 @@ import { TabsetComponent } from 'ngx-bootstrap/tabs';
   templateUrl: './device-management.component.html',
   styleUrls: ['./device-management.component.css']
 })
-export class DeviceManagementComponent implements OnInit {
+export class DeviceManagementComponent implements OnInit, AfterViewInit {
   contextApp: any;
   tileData: any;
   iotAssetsTab: any;
   legacyAssetsTab: any;
   iotGatewaysTab: any;
+<<<<<<< HEAD
   componentState = CONSTANTS.IP_DEVICE;
   constantData = CONSTANTS;
+=======
+  @ViewChild('staticTabs', { static: false }) staticTabs: TabsetComponent;
+>>>>>>> e25e9306ac45909c9490dae645e687d9f43e099c
   constructor(
     private commonService: CommonService
   ) { }
@@ -23,7 +27,38 @@ export class DeviceManagementComponent implements OnInit {
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
+<<<<<<< HEAD
     // this.getTabData();
+=======
+    this.getTabData();
+    const obj = {
+      type: 'replace',
+      data: [
+        {
+          title: this.contextApp.user.hierarchyString,
+          url: 'applications/' + this.contextApp.app
+        },
+        {
+          title: this.tileData && this.tileData[0] ? this.tileData[0]?.value : '',
+          url: 'applications/' + this.contextApp.app + '/asset/management'
+        }
+      ]
+    };
+    this.commonService.breadcrumbEvent.emit(obj);
+    console.log(obj);
+  }
+
+  ngAfterViewInit() {
+    if (this.iotAssetsTab.visible) {
+      this.selectedTab = 'iot-devices';
+    } else if (this.legacyAssetsTab.visible) {
+      this.staticTabs.tabs[0].active = true;
+      this.selectedTab = 'legacy-devices';
+    } else if (this.iotGatewaysTab.visible) {
+      this.staticTabs.tabs[0].active = true;
+      this.selectedTab = 'iot-gateways';
+    }
+>>>>>>> e25e9306ac45909c9490dae645e687d9f43e099c
   }
 
   getTileName() {

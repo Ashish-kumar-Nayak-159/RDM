@@ -43,8 +43,12 @@ export class AddDeviceComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+<<<<<<< HEAD
     console.log('aaaaaaaaaa', this.tileData);
     console.log('aaaaaaaaaa', this.componentState);
+=======
+
+>>>>>>> e25e9306ac45909c9490dae645e687d9f43e099c
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.getApplicationUsers();
@@ -135,6 +139,7 @@ export class AddDeviceComponent implements OnInit {
     console.log(this.deviceDetail.tags.protocol === 'ModbusRTUMaster');
     if (this.deviceDetail.tags.protocol === 'ModbusTCPMaster') {
       this.setupForm = new FormGroup({
+<<<<<<< HEAD
         host_address: new FormControl(obj?.metadata?.setup_details?.host_address || null, [Validators.required]),
         port_number: new FormControl(obj?.metadata?.setup_details?.port_number || null, [Validators.required]),
         slave_id: new FormControl(obj?.metadata?.setup_details?.slave_id || null, [Validators.required]),
@@ -152,6 +157,25 @@ export class AddDeviceComponent implements OnInit {
         host_address: new FormControl(obj?.metadata?.setup_details?.host_address || null, [Validators.required]),
         rack: new FormControl(obj?.metadata?.setup_details?.rack || null, [Validators.required, Validators.min(0), Validators.max(7)]),
         slot: new FormControl(obj?.metadata?.setup_details?.slot || null, [Validators.required, Validators.min(0), Validators.max(31)]),
+=======
+        host_address: new FormControl(obj.metadata?.setup_details?.host_address, [Validators.required]),
+        port_number: new FormControl(obj.metadata?.setup_details?.port_number, [Validators.required]),
+        slave_id: new FormControl(obj.metadata?.setup_details?.slave_id, [Validators.required]),
+      });
+    } else if (this.deviceDetail.tags.protocol === 'ModbusRTUMaster') {
+      this.setupForm = new FormGroup({
+        baud_rate: new FormControl(obj.metadata?.setup_details?.baud_rate, [Validators.required]),
+        data_bits: new FormControl(obj.metadata?.setup_details?.data_bits, [Validators.required, Validators.min(5), Validators.max(9)]),
+        slave_id: new FormControl(obj.metadata?.setup_details?.slave_id, [Validators.required]),
+        parity: new FormControl(obj.metadata?.setup_details?.parity, [Validators.required, Validators.min(0), Validators.max(2)]),
+        stop_bits: new FormControl(obj.metadata?.setup_details?.stop_bits, [Validators.required]),
+      });
+    } else  if (this.deviceDetail.tags.protocol === 'SiemensTCPIP') {
+      this.setupForm = new FormGroup({
+        host_address: new FormControl(obj.metadata?.setup_details?.host_address, [Validators.required]),
+        rack: new FormControl(obj.metadata?.setup_details?.rack, [Validators.required, Validators.min(0), Validators.max(7)]),
+        slot: new FormControl(obj.metadata?.setup_details?.slot, [Validators.required, Validators.min(0), Validators.max(31)]),
+>>>>>>> e25e9306ac45909c9490dae645e687d9f43e099c
       });
     }
     console.log(this.setupForm.value);

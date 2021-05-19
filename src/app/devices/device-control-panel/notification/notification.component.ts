@@ -39,7 +39,6 @@ export class NotificationComponent implements OnInit, OnDestroy {
     } else {
       this.notificationFilter.device_id = this.device.device_id;
     }
-<<<<<<< HEAD
     this.notificationTableConfig = {
       type: 'notification',
       headers: ['Timestamp', 'Message ID', 'Message'],
@@ -58,30 +57,6 @@ export class NotificationComponent implements OnInit, OnDestroy {
         }
       ]
     };
-=======
-    this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
-      this.pageType = params.get('listName');
-      this.pageType = this.pageType.slice(0, -1);
-      this.notificationTableConfig = {
-        type: 'notification',
-        headers: ['Timestamp', 'Message ID', 'Message'],
-        data: [
-          {
-            name: 'Timestamp',
-            key: 'local_created_date',
-          },
-          {
-            name: 'Message',
-            key: 'message_text',
-          },
-          {
-            name: '',
-            key: undefined,
-          }
-        ]
-      };
-    }));
->>>>>>> e25e9306ac45909c9490dae645e687d9f43e099c
     this.notificationFilter.epoch = true;
   }
 

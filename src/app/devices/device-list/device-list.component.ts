@@ -55,12 +55,9 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   centerLongitude: any;
   isOpenDeviceCreateModal = false;
   selectedDeviceForEdit: any;
-<<<<<<< HEAD
   iotAssetsTab: any;
   legacyAssetsTab: any;
   iotGatewaysTab: any;
-=======
->>>>>>> e25e9306ac45909c9490dae645e687d9f43e099c
   constructor(
     private route: ActivatedRoute,
     private router: Router,

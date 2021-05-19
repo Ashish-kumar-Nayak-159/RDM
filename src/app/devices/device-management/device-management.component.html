@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <div class="blue-nav-bar">
 
   <div class="d-flex">
@@ -26,27 +25,6 @@
       </div>
    </div>
 </div>
-=======
-<div class="container-tab-pad" style="margin-top: 2rem!important;overflow-y: hidden;">
-
-  <tabset #staticTabs>
-    <tab heading="{{iotAssetsTab?.display_name}}" id="tab1"
-    *ngIf="iotAssetsTab?.visible"
-     (selectTab)="onTabChange('iot-devices')">
-     <app-device-management-devices [type]="selectedTab" *ngIf="selectedTab === 'iot-devices'"></app-device-management-devices>
-    </tab>
-    <tab heading="{{legacyAssetsTab?.display_name}}" id="tab2"
-    *ngIf="legacyAssetsTab?.visible"
-     (selectTab)="onTabChange('legacy-devices')">
-     <app-device-management-devices [type]="selectedTab" *ngIf="selectedTab === 'legacy-devices'"></app-device-management-devices>
-    </tab>
-    <tab heading="{{iotGatewaysTab?.display_name}}" id="tab3"
-    *ngIf="iotGatewaysTab?.visible"
-     (selectTab)="onTabChange('iot-gateways')">
-     <app-device-management-devices [type]="selectedTab" *ngIf="selectedTab === 'iot-gateways'"></app-device-management-devices>
-    </tab>
-  </tabset>
->>>>>>> e25e9306ac45909c9490dae645e687d9f43e099c
 </div>
 
 <div class="">

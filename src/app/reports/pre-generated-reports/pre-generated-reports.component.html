@@ -1,60 +1,38 @@
-<div class="topnavbar pl-0" style="top:5.5rem;" *ngIf="isFilterOpen">
-  <div class="card row bg-white"  >
-    <div class="col-xl-12 mb-12">
-      <form>
-        <div class="d-flex form-group form-inline my-1 mx-3">
-          <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let index = index;">
-          <select *ngIf="index !== 0" class="form-control form-control-sm mx-1 my-1" id="{{level}}"
-          [disabled]="contextApp?.user?.hierarchy[level]"
-          [(ngModel)]="configureHierarchy[index]" name="{{level}}" (change)="onChangeOfHierarchy(index)">
-            <option [ngValue]="undefined">Select {{level}}</option>
-            <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">
-              {{tag}}
-            </option>
-          </select>
-          <input  type="text" *ngIf="index === 0"  defaultValue="{{contextApp.app}}" disabled class="form-control form-control-sm mx-1 my-1">
+
+<div class="tab-bar">
+  <form class="form-inline">
+    <div class="form-group">
+      <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
+        (click)="onDeviceFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-fw fa-filter fa-sm"></i> Select Hierarchy</button>
+      <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
+        <ng-container *ngFor="
+                    let level of contextApp?.hierarchy?.levels;
+                    let index = index
+                  ">
+          <div class="">
+            <select *ngIf="index !== 0" name="{{level}}_{{index}}" class="dropdown-form" id="{{ level }}"
+              [disabled]="contextApp?.user?.hierarchy[level]" [(ngModel)]="configureHierarchy[index]"
+              name="{{ level }}" (change)="onChangeOfHierarchy(index)">
+              <option [ngValue]="undefined">
+                Select {{ level }}
+              </option>
+              <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">
+                {{ tag }}
+              </option>
+            </select>
+            <input type="text" *ngIf="index === 0" name="{{level}}_{{index}}" defaultValue="{{ contextApp.app }}"
+              disabled class="dropdown-form" />
+          </div>
         </ng-container>
-        <angular2-multiselect [data]="devices" id="deviceSelect"
-        [(ngModel)]="filterObj.deviceArr" name="devices" [settings]="{
-          text: 'Select Asset',
-          classes: 'w-16 mr-1 p-0',
-          enableSearchFilter: true,
-          showCheckbox: false,
-          maxHeight: 400,
-          primaryKey: 'device_id',
-          badgeShowLimit: 1,
-          labelKey: 'display_name'
-        }"  #device_id="ngModel"
-        (onSelect)="onAssetSelection()"
-        (onSelectAll)="onAllAssetSelection()"
-        (onDeSelectAll)="onAssetDeselect()">
-      </angular2-multiselect>
-      <!-- <div *ngIf="device.invalid && (device.dirty || device.touched)"
-        class="ml-1 alert-danger">
-        <div *ngIf="device.errors.required">
-          Asset Selection is required.
-        </div>
-        </div> -->
-        </div>
-        <div class="d-flex row form-group form-inline  my-2 mx-3">
-
-          <!-- <input type="number" min="1" class="form-control form-control-sm mx-1 my-1 record-input" id="inputEmail4"
-            placeholder="No of Records" [(ngModel)]="filterObj.count" name="count"> -->
-
-          <!-- <select class="form-control form-control-sm mr-2 ml-1 my-1" id="type" [(ngModel)]="filterObj.type"
-          name="type" #type="ngModel">
-          <option [ngValue]="undefined">Select Type</option>
-          <option [ngValue]="'raw'">Raw Data</option>
-          <option [ngValue]="'sampling'">Sampled Data</option>
-          <option [ngValue]="'affreagtion'">Aggregated Data</option>
-          </select> -->
-          <!-- <select class="form-control form-control-sm mr-2 ml-1 my-1" id="frequency" [(ngModel)]="filterObj.frequency"
-          name="frequency" #frequency="ngModel">
-          <option [ngValue]="undefined">Select Frequency</option>
-          <option [ngValue]="'daily'">Daily</option>
-          <option [ngValue]="'weekly'">Weekly</option>
-          </select> -->
-          <select class="form-control form-control-sm mr-2 ml-1 my-1" id="report_type" [(ngModel)]="filterObj.report_type"
+        <!-- <ng-select [items]="devices" class="custom-dropdown w-12" bindLabel="display_name" [clearable]="false"
+          [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
+          dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.device" (onSelect)="onAssetSelection()">
+        </ng-select> -->
+      </div>
+    </div>
+    <!-- <div class="form-group">
+      <select class="custom-select custom-select-sm" id="report_type" [(ngModel)]="filterObj.report_type"
           name="report_type" #reportType="ngModel">
           <option [ngValue]="undefined">Select Report Type</option>
           <option [ngValue]="'Daily Single Asset Raw Telemetry Report'">Daily Single Asset Raw Telemetry Report</option>
@@ -62,120 +40,82 @@
           <option [ngValue]="'Daily Single Asset Sampling Telemetry Report'">Daily Single Asset Sampling Telemetry Report</option>
           <option [ngValue]="'Daily Multiple Asset Sampling Telemetry Report'">Daily Multiple Asset Sampling Telemetry Report</option>
           <option [ngValue]="'Weekly Single Asset Raw Telemetry Report'">Weekly Single Asset Raw Telemetry Report</option>
-          <option [ngValue]="'Weekly Multiple Asset Raw Telemetry Report'">Weekly Multiple Asset Raw Telemetry Report</option>
-          <!-- <option [ngValue]="'Weekly Single Asset Sampling Telemetry Report'">Weekly Single Asset Sampling Telemetry Report</option>
-          <option [ngValue]="'Weekly Multiple Asset Sampling Telemetry Report'">Weekly Multiple Asset Sampling Telemetry Report</option> -->
-
+          <option [ngValue]="'Weekly Single Asset Sampling Telemetry Report'">Weekly Single Asset Sampling Telemetry Report</option>
 
           </select>
-          <div class="bg-dateRow form-group form-inline" id="dateRow"
-            [style.width]="(filterObj.dateOption === 'date' ? '23rem' : (filterObj.dateOption === 'date range' ? '34rem' : ''))">
-          <select class="form-control form-control-sm mx-1 my-1" id="dateoptions" [(ngModel)]="filterObj.dateOption"
-            name="dateOptions" (change)="onDateOptionChange()">
-            <option [ngValue]="undefined">Quick Date Options</option>
-            <option [ngValue]="'date'">Select Date</option>
-            <option [ngValue]="'date range'">Select Date Range</option>
-          </select>
-          <!-- <label class="ml-1 mr-1">OR</label> -->
-          <ng-container *ngIf="filterObj.dateOption === 'date'">
-            <input #dt2Input [owlDateTime]="dt2"  (dateTimeChange)="onSingleDateChange($event);"
-              class="form-control form-control-sm mx-2 my-1 w-10" [max]="today" [owlDateTimeTrigger]="dt2"
-              placeholder="Select Date">
-            <span [owlDateTimeTrigger]="dt2"  class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
-            <owl-date-time #dt2 [pickerType]="'calendar'"></owl-date-time>
-          </ng-container>
-          <!-- <label class="ml-3 mr-1">OR</label> -->
-          <ng-container *ngIf="filterObj.dateOption === 'date range'">
-            <input #dt1Input [owlDateTime]="dt1" [selectMode]="'range'" (dateTimeChange)="onDateChange($event)"
-              class="form-control form-control-sm mx-2 my-1 date-range-picket-width" [owlDateTimeTrigger]="dt1"
-              placeholder="Select Date Range" [max]="today">
-            <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
-            <owl-date-time  #dt1 [pickerType]="'calendar'"></owl-date-time>
-          </ng-container>
-          </div>
-          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search"
+    </div> -->
+    <div class="form-group" >
+      <input type="text"  class="form-control form-control-sm active" daterangepicker name="daterangeInput"
+      [options]="options" (selected)="selectedDate($event, daterange)" />
+    </div>
+    <div class="form-group">
+      <button type="button" class="btn btn-sm searchBtn btn-primary" title="Search"
            (click)="reports = [];currentOffset = 0;getReportsData()" ><i
             class="fa fa-search fa-sm" ></i></button>
-
-          <!-- <bu<button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="onFilterSelection()" ><i
-            class="fa fa-search fa-sm"></i></button>tton type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fa fa-trash  fa-sm"></i></button> -->
-
-        </div>
-      </form>
     </div>
-  </div>
-
+  </form>
 </div>
-<div class="contain-pad-report mx-2"
-style="margin-top: 7.5rem;max-height: calc(100vh - 15rem)">
-  <div class="mb-2" >
-    <h6 *ngIf="!isFilterSelected"> Please select filters to view the pre-generated reports.</h6>
-    <div class="table-responsive" *ngIf="isFilterSelected || isReportDataLoading"
-    class="mt-1"
-    >
-
-      <ng-container *ngIf="isFilterSelected && previousFilterObj.report_type.toLowerCase().includes('telemetry report')">
-        <h5  >{{previousFilterObj.report_type}}s</h5>
-      <div class="table-wrapper" id="table-wrapper" style="max-height: calc(100vh - 21.5rem)" >
-        <table class="table table-bordered table-striped"  id="dataTable1" width="100%" cellspacing="0"
-       >
-          <thead>
-            <tr>
-              <th></th>
-              <th class="w-10">Asset Name</th>
-              <th class="w-17">Start Date</th>
-              <th class="w-17">Last Date</th>
-              <th >Size</th>
-              <!-- <th>Type</th>
-              <th>Frequency</th> -->
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <ng-container *ngIf="reports.length > 0">
-              <tr *ngFor="let reportObj of reports; let index = index">
-                <td>{{index + 1}}</td>
-                <td >
-                  <ng-container *ngFor="let deviceId of reportObj.devices">
-                    <p>{{ getDeviceNameById(deviceId)}}</p>
-                  </ng-container>
-                </td>
-              <td>{{ reportObj.local_start_date }}</td>
-                <td>{{ reportObj.local_end_date }}</td>
-                <td>{{reportObj.metadata?.file_size}}</td>
-                <!-- <td>{{reportObj.report_type.method | titlecase}}</td>
-                <td>{{reportObj.report_frequency | titlecase}}</td> -->
-                <td>
-                  <a *ngIf="reportObj.process_status.toLowerCase() === 'success'" href="javascript:void(0)"  (click)="downloadFile(reportObj)" title="Download Excel"><i class="fa fa-sm fa-download" ></i></a>
-                  <ng-container *ngIf="reportObj.process_status.toLowerCase() !== 'success'">{{reportObj.process_status}}</ng-container>
-                </td>
-                </tr>
+<h6 *ngIf="!isFilterSelected"> Please select filters to view the pre-generated reports.</h6>
+<ng-container *ngIf="isFilterSelected">
+  <!-- <h5  >Pre-generated</h5> -->
+  <div class="table-responsive">
+    <div class="tableFixHead report-table ">
+  <table class="table table-hover"
+ >
+    <thead>
+      <tr>
+        <th></th>
+        <th class="w-10">Asset Name</th>
+        <th class="w-17">Start Date</th>
+        <th class="w-17">Last Date</th>
+        <th >Size</th>
+        <!-- <th>Type</th>
+        <th>Frequency</th> -->
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngIf="reports.length > 0">
+        <tr *ngFor="let reportObj of reports; let index = index">
+          <td>{{index + 1}}</td>
+          <td >
+            <ng-container *ngFor="let deviceId of reportObj.devices">
+              <p>{{ getDeviceNameById(deviceId)}}</p>
             </ng-container>
-            <ng-container *ngIf="reports.length === 0 && !isReportDataLoading">
-              <tr>
-                <td colspan="6">No reports available.</td>
-              </tr>
-            </ng-container>
-            <ng-container *ngIf="isReportDataLoading">
-              <tr>
-                <td colspan="6">
-                  <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
-                </td>
-              </tr>
-            </ng-container>
-
-          </tbody>
-        </table>
-
-      </div>
-      <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && reports.length > 0">
-        <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;getReportsData();"
-          title="Load More Records...">Load More...</a>
-      </span>
+          </td>
+        <td>{{ reportObj.local_start_date }}</td>
+          <td>{{ reportObj.local_end_date }}</td>
+          <td>{{reportObj.metadata?.file_size}}</td>
+          <!-- <td>{{reportObj.report_type.method | titlecase}}</td>
+          <td>{{reportObj.report_frequency | titlecase}}</td> -->
+          <td>
+            <a *ngIf="reportObj.process_status.toLowerCase() === 'success'" href="javascript:void(0)"  (click)="downloadFile(reportObj)" title="Download Excel"><i class="fa fa-sm fa-download" ></i></a>
+            <ng-container *ngIf="reportObj.process_status.toLowerCase() !== 'success'">{{reportObj.process_status}}</ng-container>
+          </td>
+          </tr>
       </ng-container>
-    </div>
-  </div>
+      <ng-container *ngIf="reports.length === 0 && !isReportDataLoading">
+        <tr>
+          <td colspan="6">No reports available.</td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="isReportDataLoading">
+        <tr>
+          <td colspan="6">
+            <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+          </td>
+        </tr>
+      </ng-container>
+
+    </tbody>
+  </table>
 </div>
+</div>
+<span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && reports.length > 0">
+  <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;getReportsData();"
+    title="Load More Records...">Load More...</a>
+</span>
+</ng-container>
 <div class="modal fade" id="downloadPreGeneratedReportReportModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <div class="modal-content">

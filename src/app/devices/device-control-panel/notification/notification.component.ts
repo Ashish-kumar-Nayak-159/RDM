@@ -18,6 +18,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
   notificationFilter: any = {};
   notifications: any[] = [];
   @Input() device: Device = new Device();
+  @Input() componentState: any;
   isNotificationLoading = false;
   apiSubscriptions: Subscription[] = [];
   selectedNotification: any;
@@ -38,57 +39,32 @@ export class NotificationComponent implements OnInit, OnDestroy {
     } else {
       this.notificationFilter.device_id = this.device.device_id;
     }
-    this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
-      this.pageType = params.get('listName');
-      this.pageType = this.pageType.slice(0, -1);
-      this.notificationTableConfig = {
-        type: 'notification',
-        headers: ['Timestamp', 'Message ID', 'Message'],
-        data: [
-          {
-            name: 'Timestamp',
-            key: 'local_created_date',
-          },
-          {
-            name: 'Message',
-            key: 'message_text',
-          },
-          {
-            name: 'Message',
-            key: undefined,
-          }
-        ]
-      };
-    }));
+    this.notificationTableConfig = {
+      type: 'notification',
+      headers: ['Timestamp', 'Message ID', 'Message'],
+      data: [
+        {
+          name: 'Timestamp',
+          key: 'local_created_date',
+        },
+        {
+          name: 'Message',
+          key: 'message_text',
+        },
+        {
+          name: '',
+          key: undefined,
+        }
+      ]
+    };
     this.notificationFilter.epoch = true;
-
   }
 
   searchNotifications(filterObj) {
     this.isFilterSelected = true;
     this.isNotificationLoading = true;
     const obj = {...filterObj};
-    const now = moment().utc();
-    if (filterObj.dateOption === '5 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(5, 'minute')).unix();
-    } else if (filterObj.dateOption === '30 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(30, 'minute')).unix();
-    } else if (filterObj.dateOption === '1 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(1, 'hour')).unix();
-    } else if (filterObj.dateOption === '24 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(24, 'hour')).unix();
-    } else {
-      if (filterObj.from_date) {
-        obj.from_date = (filterObj.from_date.unix());
-      }
-      if (filterObj.to_date) {
-        obj.to_date = filterObj.to_date.unix();
-      }
-    }
+
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'View Notifications');
       this.isNotificationLoading = false;

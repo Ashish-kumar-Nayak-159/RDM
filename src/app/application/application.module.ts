@@ -1,3 +1,4 @@
+import { NgSelectModule } from '@ng-select/ng-select';
 import { AgmCoreModule } from '@agm/core';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { CommonCustomModule } from './../common/common.module';
@@ -53,7 +54,8 @@ import { MapViewHomeComponent } from './map-view-home/map-view-home.component';
     OwlNativeDateTimeModule,
     CommonCustomModule,
     AgmCoreModule,
-    AgmMarkerClustererModule
+    AgmMarkerClustererModule,
+    NgSelectModule
   ],
   providers: [
     {provide: OWL_DATE_TIME_LOCALE, useValue: {useUtc: true}}

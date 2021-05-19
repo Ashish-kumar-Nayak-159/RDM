@@ -58,6 +58,22 @@ export class HistoryComponent implements OnInit, OnDestroy {
   fromDate: any;
   toDate: any;
   today = new Date();
+  daterange: any = {};
+  options: any = {
+    locale: { format: 'DD-MM-YYYY HH:mm' },
+    alwaysShowCalendars: false,
+    timePicker: true,
+    ranges: {
+      'Last 5 Mins': [moment().subtract(5, 'minutes'), moment()],
+      'Last 30 Mins': [moment().subtract(30, 'minutes'), moment()],
+      'Last 1 hour': [moment().subtract(1, 'hour'), moment()],
+      'Last 24 hours': [moment().subtract(24, 'hours'), moment()],
+      'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+      'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+      'This Month': [moment().startOf('month'), moment().endOf('month')],
+      'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    }
+  };
   constructor(
     private deviceService: DeviceService,
     private deviceTypeService: DeviceTypeService,
@@ -139,40 +155,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.chartService.toggleThresholdEvent.emit(this.showThreshold);
   }
 
-  onDateOptionChange() {
-    this.historyFilter.from_date = undefined;
-    this.historyFilter.to_date = undefined;
-    $('#txtDt1').val('');
-    if (this.historyFilter.dateOption === '24 hour') {
-      this.historyFilter.isTypeEditable = true;
-    } else {
-      this.historyFilter.type = true;
-      this.historyFilter.isTypeEditable = false;
-    }
-    if (this.dtInput1) {
-      this.dtInput1.value = null;
-    }
-    if (this.dtInput2) {
-      this.dtInput2.value = null;
-    }
-  }
-
-  onSingleDateChange(event) {
-    this.historyFilter.from_date = moment(event.value).utc();
-    this.historyFilter.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
-    if (this.dtInput1) {
-      this.dtInput1.value = null;
-    }
-    if (this.historyFilter.dateOption !== 'date') {
-      this.historyFilter.dateOption = undefined;
-    }
-    const from = this.historyFilter.from_date.unix();
-    const to = this.historyFilter.to_date.unix();
-    const current = (moment().utc()).unix();
-    if (current < to) {
-      this.historyFilter.to_date = moment().utc();
-    }
-    if (to - from > 3600) {
+  selectedDate(value: any, datepicker?: any) {
+    this.historyFilter.from_date = moment(value.start).utc().unix();
+    this.historyFilter.to_date = moment(value.end).utc().unix();
+    console.log(this.historyFilter);
+    if (this.historyFilter.to_date - this.historyFilter.from_date > 3600) {
       this.historyFilter.isTypeEditable = true;
     } else {
       this.historyFilter.isTypeEditable = false;
@@ -186,6 +173,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       for (const child of children) {
         $(child).remove();
       }
+      console.log('wdigetssss', this.selectedWidgets);
       this.propList = [];
       if (this.selectedWidgets.length === 0) {
         this.toasterService.showError('Please select widgets first.', 'View Widget');
@@ -193,12 +181,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
 
       this.selectedWidgets.forEach(widget => {
-        widget.value.y1axis.forEach(prop => {
+        widget.y1axis.forEach(prop => {
           if (this.propList.indexOf(prop) === -1) {
             this.propList.push(prop);
           }
         });
-        widget.value.y2axis.forEach(prop => {
+        widget.y2axis.forEach(prop => {
           if (this.propList.indexOf(prop) === -1) {
             this.propList.push(prop);
           }
@@ -224,26 +212,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       currentHistoryFilter.from_date = this.historyFilter.from_date;
 
       const obj = { ...currentHistoryFilter };
-      const now = moment().utc();
-      obj.to_date = now.unix();
-      if (this.historyFilter.dateOption === '5 mins') {
-        obj.from_date = (now.subtract(5, 'minute')).unix();
-      } else if (this.historyFilter.dateOption === '30 mins') {
-        obj.from_date = (now.subtract(30, 'minute')).unix();
-      } else if (this.historyFilter.dateOption === '1 hour') {
-        obj.from_date = (now.subtract(1, 'hour')).unix();
-      } else if (this.historyFilter.dateOption === '24 hour') {
-        obj.from_date = (now.subtract(24, 'hour')).unix();
-      } else {
-        if (this.historyFilter.from_date) {
-          obj.from_date = (this.historyFilter.from_date.unix());
-        }
-        if (this.historyFilter.to_date) {
-          obj.to_date = this.historyFilter.to_date.unix();
-        }
-      }
       obj.partition_key = this.device?.tags?.partition_key;
-
       delete obj.dateOption;
       obj.order_dir = 'ASC';
       let method;
@@ -332,7 +301,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   getPropertyName(key) {
-    return this.propertyList.filter(prop => prop.json_key === key)[0].name;
+    return this.propertyList.filter(prop => prop.json_key === key)[0]?.name || key;
   }
 
   onDeSelectAll(event) {
@@ -406,7 +375,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   plotChart(layoutJson) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       $('.overlay').show();
       this.chartCount++;
       const y1Axis = layoutJson.y1axis;
@@ -468,7 +437,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     let widgetsToLoad = [];
     if (this.selectedWidgets.length > 0) {
       this.selectedWidgets.forEach((item) => {
-        widgetsToLoad.push(item.value);
+        widgetsToLoad.push(item);
       });
     } else {
       widgetsToLoad = this.layoutJson;
@@ -506,12 +475,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
         if (response?.historical_widgets?.length > 0) {
           this.layoutJson = response.historical_widgets;
           this.storedLayout = response.historical_widgets[0];
-          this.layoutJson.forEach((item) => {
-            this.dropdownWidgetList.push({
-              id: item.title,
-              value: item
-            });
-          });
+          // this.layoutJson.forEach((item) => {
+          //   this.dropdownWidgetList.push({
+          //     id: item.title,
+          //     value: item
+          //   });
+          // });
         }
         this.isHistoryAPILoading = false;
       }

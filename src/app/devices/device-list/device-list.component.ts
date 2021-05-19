@@ -34,7 +34,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   gateways: any[];
   originalGateways: any[] = [];
   tableConfig: any;
-  pageType: string;
   deviceCategory = CONSTANTS.NON_IP_DEVICE_OPTIONS;
   gatewayId: string;
   contextApp: any;
@@ -54,6 +53,11 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   currentPageView = 'list';
   centerLatitude: any;
   centerLongitude: any;
+  isOpenDeviceCreateModal = false;
+  selectedDeviceForEdit: any;
+  iotAssetsTab: any;
+  legacyAssetsTab: any;
+  iotGatewaysTab: any;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -68,41 +72,11 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-
   //  this.commonService.setFlag(true);
     this.subscriptions.push(this.route.paramMap.subscribe(async params => {
-      this.currentOffset = 0;
-      this.currentLimit = 20;
-      this.insideScrollFunFlag = false;
-      this.isFilterSelected = false;
-      this.currentPageView = 'list';
-      this.deviceFilterObj = new DeviceListFilter();
-      this.deviceFilterObj.app = this.contextApp.app;
-      this.deviceFilterObj.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
-      this.deviceFilterObj.hierarchyString =  this.contextApp.user.hierarchyString;
-      this.originalDeviceFilterObj = JSON.parse(JSON.stringify(this.deviceFilterObj));
-      const filterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
-      if (filterObj?.gateway_id) {
-        this.deviceFilterObj.gateway_id = filterObj.gateway_id;
-        localStorage.removeItem(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
-      }
       this.devicesList = [];
-      if (params.get('listName')) {
-        const listName = params.get('listName');
-
-        if (listName.toLowerCase() === 'nonipdevices') {
-          this.componentState = CONSTANTS.NON_IP_DEVICE;
-          this.pageType = 'Device';
-          this.getGatewayList();
-        } else if (listName.toLowerCase() === 'gateways') {
-          this.componentState = CONSTANTS.IP_GATEWAY;
-          this.pageType = 'Gateway';
-        } else if (listName.toLowerCase() === 'devices') {
-          this.componentState = CONSTANTS.IP_DEVICE;
-          this.pageType = 'Device';
-        }
-      }
       await this.getTileName();
+      this.onTabChange(CONSTANTS.IP_DEVICE);
       if (this.contextApp.hierarchy.levels.length > 1) {
         this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
       }
@@ -114,48 +88,11 @@ export class DeviceListComponent implements OnInit, OnDestroy {
         }
         }
       });
-      const obj = {
-        type: 'replace',
-        data: [
-          {
-            title: this.contextApp.user.hierarchyString,
-            url: 'applications/' + this.contextApp.app
-          },
-            {
-              title:
-              this.tileData && this.tileData[0] ? this.tileData[0]?.value : '',
-              url: 'applications/' + this.contextApp.app + '/' +
-              (this.componentState === CONSTANTS.NON_IP_DEVICE ? 'nonIPDevices' : (this.pageType + 's')),
-              queryParams: {
-                  connection_state: this.deviceFilterObj.connection_state ? this.deviceFilterObj.connection_state : undefined
-              }
-            }
-        ]
-      };
-      this.commonService.breadcrumbEvent.emit(obj);
-      if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
-        this.deviceFilterObj.type = undefined;
-      } else {
-        this.deviceFilterObj.type = this.componentState;
-      }
-
-      this.subscriptions.push(this.route.queryParamMap.subscribe(
-        params1 => {
-          this.devicesList = [];
-          if (params1.get('connection_state')) {
-            this.deviceFilterObj.status = params1.get('connection_state');
-          }
-          if (params1.keys.length > 0) {
-            this.searchDevices();
-          }
-        }
-      ));
       if (!this.isFilterSelected) {
         this.searchDevices();
       }
       this.protocolList = CONSTANTS.PROTOCOLS;
-
-      const keys = Object.keys(this.contextApp.user.hierarchy);
+      // const keys = Object.keys(this.contextApp.user.hierarchy);
       this.hierarchyDropdown = [];
       // this.contextApp.hierarchy.forEach(item => {
       //   if (item.level >= keys.length - 1 && item.name !== 'App') {
@@ -163,70 +100,13 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       //   }
       // });
 
-      this.tableConfig = {
-        type: this.pageType.toLowerCase(),
-        data: [
-          {
-            name: (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Name',
-            key: 'display_name',
-            type: 'text',
-            headerClass: '',
-            valueclass: ''
-          },
-          {
-            name: (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Manager',
-            key: 'device_manager',
-            type: 'text',
-            headerClass: 'w-30',
-            valueclass: ''
-          },
-          {
-            name: 'Hierarchy',
-            key: 'hierarchyString',
-            type: 'text',
-            headerClass: 'w-30',
-            valueclass: ''
-          },
-          {
-            name: 'Actions',
-            key: undefined,
-            type: 'button',
-            headerClass: '',
-            btnData: [
-              {
-                icon: 'fa fa-fw fa-table',
-                text: '',
-                id: 'View Control Panel',
-                valueclass: '',
-                tooltip: 'View Control panel'
-              }
-            ]
-          }
-        ]
-      };
-      if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
-        this.tableConfig.data.splice((this.tableConfig.data.length - 2), 0, {
-          name: 'Reporting Via GW',
-          key: 'gateway_display_name',
-          type: 'text',
-          headerClass: '',
-          valueclass: ''
-        });
-      }
-
-
     }));
-    setTimeout(() => {
-    $('#table-wrapper').on('scroll', () => {
-      const element = document.getElementById('table-wrapper');
-      if (parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0))
-      >= parseFloat(element.scrollHeight.toFixed(0)) && !this.insideScrollFunFlag) {
-        this.currentOffset += this.currentLimit;
-        this.searchDevices();
-        this.insideScrollFunFlag = true;
-      }
+  }
+
+  onDeviceFilterBtnClick() {
+    $('.dropdown-menu').on('click.bs.dropdown', (e) => {
+      e.stopPropagation();
     });
-  }, 2000);
   }
 
   onChangeOfHierarchy(i) {
@@ -302,6 +182,109 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     infowindow.close();
   }
 
+  onTabChange(type) {
+    this.devicesList = [];
+    this.currentOffset = 0;
+    this.currentLimit = 20;
+    this.insideScrollFunFlag = false;
+    this.isFilterSelected = false;
+    this.currentPageView = 'list';
+    this.deviceFilterObj = new DeviceListFilter();
+    this.deviceFilterObj.app = this.contextApp.app;
+    this.deviceFilterObj.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
+    this.deviceFilterObj.hierarchyString =  this.contextApp.user.hierarchyString;
+    this.originalDeviceFilterObj = JSON.parse(JSON.stringify(this.deviceFilterObj));
+    if (type === CONSTANTS.NON_IP_DEVICE) {
+      this.getGatewayList();
+    }
+    this.componentState = type;
+    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+      this.deviceFilterObj.type = undefined;
+    } else {
+      this.deviceFilterObj.type = this.componentState;
+    }
+
+    setTimeout(() => {
+      $('#table-wrapper').on('scroll', () => {
+        const element = document.getElementById('table-wrapper');
+        if (parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0))
+        >= parseFloat(element.scrollHeight.toFixed(0)) && !this.insideScrollFunFlag) {
+          this.currentOffset += this.currentLimit;
+          this.searchDevices();
+          this.insideScrollFunFlag = true;
+        }
+      });
+    }, 2000);
+    this.tableConfig = undefined;
+    const obj = (this.componentState === CONSTANTS.IP_DEVICE ? this.iotAssetsTab :
+      (this.componentState === CONSTANTS.NON_IP_DEVICE ? this.legacyAssetsTab :
+        (this.componentState === CONSTANTS.IP_GATEWAY ? this.iotGatewaysTab : {})));
+    this.tableConfig = {
+      type: obj.tab_name,
+      is_load_more_required: true,
+      item_count: this.currentLimit,
+      is_table_data_loading: this.isDeviceListLoading,
+      no_data_message: '',
+      table_class: 'tableFixHead-assets-list',
+      data : [
+      {
+        header_name: (obj.table_key || '') + ' Name',
+        is_display_filter: true,
+        value_type: 'string',
+        is_sort_required: true,
+        fixed_value_list: [],
+        data_type: 'text',
+        data_key: 'display_name'
+      },
+      {
+        header_name: (obj.table_key || '') + ' Manager',
+        is_display_filter: true,
+        value_type: 'string',
+        is_sort_required: true,
+        fixed_value_list: [],
+        data_type: 'text',
+        data_key: 'device_manager'
+      },
+      {
+        header_name: 'Hierarchy',
+        is_display_filter: true,
+        value_type: 'string',
+        is_sort_required: true,
+        fixed_value_list: [],
+        data_type: 'text',
+        data_key: 'hierarchyString'
+      },
+      {
+        header_name: 'Actions',
+        key: undefined,
+        data_type: 'button',
+        btn_list: [
+          {
+            icon: 'fa fa-fw fa-table',
+            text: '',
+            id: 'View Control Panel',
+            valueclass: '',
+            tooltip: 'View Control panel'
+          }
+        ]
+      }
+      ]
+    };
+    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+      this.tableConfig.data.splice((this.tableConfig.data.length - 2), 0,
+      {
+        header_name: 'Reporting Via GW',
+        is_display_filter: true,
+        value_type: 'string',
+        is_sort_required: true,
+        fixed_value_list: [],
+        data_type: 'text',
+        data_key: 'gateway_display_name'
+      });
+    }
+    this.searchDevices();
+  }
+
 
   onCurrentPageViewChange(type) {
     console.log(type);
@@ -320,16 +303,59 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   getTileName() {
     let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {
-      if ((item.page === this.iotDevicesPage && this.componentState === CONSTANTS.IP_DEVICE) ||
-      (item.page === this.legacyDevicesPage && this.componentState === CONSTANTS.NON_IP_DEVICE) ||
-      (item.page === this.iotGatewaysPage && this.componentState === CONSTANTS.IP_GATEWAY)) {
+      if (item.page === 'Assets') {
         selectedItem = item.showAccordion;
       }
     });
-    this.tileData = selectedItem;
+    this.tileData = {};
+    selectedItem.forEach(item => {
+      this.tileData[item.name] = item.value;
+    });
+    this.iotAssetsTab = {
+      tab_name: this.tileData['IOT Assets Tab Name'],
+      table_key: this.tileData['IOT Assets Table Key Name']
+    };
+    this.legacyAssetsTab = {
+      tab_name: this.tileData['Legacy Assets Tab Name'],
+      table_key: this.tileData['Legacy Assets Table Key Name']
+    };
+    this.iotGatewaysTab = {
+      tab_name: this.tileData['IOT Gateways Tab Name'],
+      table_key: this.tileData['IOT Gateways Table Key Name']
+    };
     this.currentLimit = Number(this.tileData[2]?.value) || 20;
   }
 
+  async openDeviceEditModal(device) {
+    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+      this.getGatewayList();
+    }
+    await this.getDeviceData(device.device_id);
+    this.isOpenDeviceCreateModal = true;
+  }
+
+  onEditDeviceCancelModal() {
+    this.isOpenDeviceCreateModal = false;
+    this.selectedDeviceForEdit = undefined;
+  }
+
+
+  getDeviceData(deviceId) {
+    return new Promise<void>((resolve) => {
+      const obj = {
+        app: this.contextApp.app,
+        device_id: deviceId
+      };
+      const methodToCall =
+        this.deviceService.getDeviceDetailById(obj.app, obj.device_id);
+      this.subscriptions.push(methodToCall.subscribe(
+      (response: any) => {
+        this.selectedDeviceForEdit = response;
+        resolve();
+      }
+      ));
+    });
+  }
 
 
 
@@ -364,7 +390,14 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     }
   }
 
+  loadMoreDevices() {
+    this.currentOffset += this.currentLimit;
+    this.searchDevices();
+    this.insideScrollFunFlag = true;
+  }
+
   searchDevices() {
+    this.tableConfig.is_table_data_loading = true;
     this.isDeviceListLoading = true;
     this.isFilterSelected = true;
     const obj = JSON.parse(JSON.stringify(this.deviceFilterObj));
@@ -398,7 +431,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
             const name = this.gateways.filter(gateway => gateway.device_id === item.gateway_id)[0]?.display_name;
             item.gateway_display_name = name ? name : item.gateway_id;
             }
-            console.log(this.componentState);
             if (this.componentState === this.constantData.IP_DEVICE &&
               item?.connection_state?.toLowerCase() === 'connected') {
               item.icon = {
@@ -437,7 +469,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
                   height: 25
                 }};
             }
-            console.log(item.icon);
             if (item.hierarchy) {
               item.hierarchyString = '';
               const keys = Object.keys(item.hierarchy);
@@ -453,10 +484,11 @@ export class DeviceListComponent implements OnInit, OnDestroy {
         } else {
           this.insideScrollFunFlag = true;
         }
-
+        this.tableConfig.is_table_data_loading = false;
         this.isDeviceListLoading = false;
       }, error => {
         this.isDeviceListLoading = false;
+        this.tableConfig.is_table_data_loading = false;
         this.insideScrollFunFlag = false;
     }));
   }
@@ -482,21 +514,9 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   }
 
   onTableFunctionCall(obj) {
-    if (this.gatewayId) {
-      this.router.navigate(['applications', this.contextApp.app,
-      'nonIPDevices',
-      obj.device_id, 'control-panel']);
-    } else {
-      if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
-        this.router.navigate(['applications', this.contextApp.app,
-      'nonIPDevices',
-      obj.device_id, 'control-panel']);
-      } else {
-        this.router.navigate(['applications', this.contextApp.app,
-        (this.pageType.toLowerCase() + 's') ,
-        obj.device_id, 'control-panel']);
-      }
-    }
+    this.router.navigate(['applications', this.contextApp.app,
+      'devices',
+      obj.data.device_id, 'control-panel']);
   }
 
   onAssetSelection() {

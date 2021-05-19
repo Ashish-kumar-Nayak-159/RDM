@@ -58,6 +58,22 @@ export class ReportsComponent implements OnInit, OnDestroy {
   today = new Date();
   activeTab = 'pre_generated_reports';
   loadingMessage: any;
+  daterange: any = {};
+  options: any = {
+    locale: { format: 'DD-MM-YYYY HH:mm' },
+    alwaysShowCalendars: false,
+    timePicker: true,
+    ranges: {
+      'Last 5 Mins': [moment().subtract(5, 'minutes'), moment()],
+      'Last 30 Mins': [moment().subtract(30, 'minutes'), moment()],
+      'Last 1 hour': [moment().subtract(1, 'hour'), moment()],
+      'Last 24 hours': [moment().subtract(24, 'hours'), moment()],
+      'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+      'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+      'This Month': [moment().startOf('month'), moment().endOf('month')],
+      'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    }
+  };
 
   constructor(
     private commonService: CommonService,
@@ -123,6 +139,23 @@ export class ReportsComponent implements OnInit, OnDestroy {
     });
     this.tileData = selectedItem;
     this.currentLimit = Number(this.tileData[1]?.value) || 100;
+  }
+
+  onDeviceFilterBtnClick() {
+    $('.dropdown-menu').on('click.bs.dropdown', (e) => {
+      e.stopPropagation();
+    });
+  }
+
+  selectedDate(value: any, datepicker?: any) {
+    this.filterObj.from_date = moment(value.start).utc().unix();
+    this.filterObj.to_date = moment(value.end).utc().unix();
+    console.log(this.filterObj);
+    if (this.filterObj.to_date - this.filterObj.from_date > 3600) {
+      this.filterObj.isTypeEditable = true;
+    } else {
+      this.filterObj.isTypeEditable = false;
+    }
   }
 
   getDevices(hierarchy) {
@@ -221,12 +254,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   onAssetSelection() {
-    if (this.filterObj?.deviceArr.length > 0) {
-      this.filterObj.device = this.filterObj.deviceArr[0];
-    } else {
-      this.filterObj.device = undefined;
-      this.filterObj.deviceArr = undefined;
-    }
     // this.nonIPDevices = [];
     // this.filterObj.device_id = this.filterObj.device.device_id;
     if (this.filterObj.device) {
@@ -262,64 +289,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
         this.getThingsModelProperties(device_type);
       }
       }
-    }
-  }
-
-  onDateOptionChange() {
-    if (this.filterObj.dateOption !== 'custom') {
-      this.filterObj.from_date = undefined;
-      this.filterObj.to_date = undefined;
-    }
-    if (this.dtInput1) {
-      this.dtInput1.value = null;
-    }
-    if (this.dtInput2) {
-      this.dtInput2.value = null;
-    }
-    if (this.filterObj.dateOption.includes('hour')) {
-      this.filterObj.isTypeEditable = true;
-    } else {
-      this.filterObj.isTypeEditable = false;
-    }
-  }
-
-  onDateChange(event) {
-    this.filterObj.from_date = moment(event.value[0]).second(0).utc();
-    this.filterObj.to_date = moment(event.value[1]).second(0).utc();
-    if (this.dtInput2) {
-      this.dtInput2.value = null;
-    }
-    if (this.filterObj.dateOption !== 'date range') {
-      this.filterObj.dateOption = undefined;
-    }
-    const from = this.filterObj.from_date.unix();
-    const to = this.filterObj.to_date.unix();
-    if (to - from > 3600) {
-      this.filterObj.isTypeEditable = true;
-    } else {
-      this.filterObj.isTypeEditable = false;
-    }
-  }
-
-  onSingleDateChange(event) {
-    this.filterObj.from_date = moment(event.value).utc();
-    this.filterObj.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
-    if (this.dtInput1) {
-      this.dtInput1.value = null;
-    }
-    if (this.filterObj.dateOption !== 'date') {
-      this.filterObj.dateOption = undefined;
-    }
-    const from = this.filterObj.from_date.unix();
-    const to = this.filterObj.to_date.unix();
-    const current = (moment().utc()).unix();
-    if (current < to) {
-      this.filterObj.to_date = moment().utc();
-    }
-    if (to - from > 3600) {
-      this.filterObj.isTypeEditable = true;
-    } else {
-      this.filterObj.isTypeEditable = false;
     }
   }
 
@@ -384,27 +353,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
     obj.offset = this.currentOffset;
     obj.count = this.currentLimit;
     this.deviceFilterObj = this.filterObj.device;
-    const now = moment().utc();
-    if (this.filterObj.dateOption === '5 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(5, 'minute')).unix();
-    } else if (this.filterObj.dateOption === '30 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(30, 'minute')).unix();
-    } else if (this.filterObj.dateOption === '1 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(1, 'hour')).unix();
-    } else if (this.filterObj.dateOption === '24 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(24, 'hour')).unix();
-    } else {
-      if (this.filterObj.from_date) {
-        obj.from_date = (this.filterObj.from_date.unix());
-      }
-      if (this.filterObj.to_date) {
-        obj.to_date = this.filterObj.to_date.unix();
-      }
-    }
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is required', 'View Report');
       return;

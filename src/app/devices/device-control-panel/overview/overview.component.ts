@@ -28,7 +28,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   contextApp: any;
   blobSASToken = environment.blobKey;
   blobStorageURL = environment.blobURL;
-  pageType: string;
+  // pageType: string;
   deviceCount = null;
   isAPILoading = false;
   modalConfig: any;
@@ -37,7 +37,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   constantData = CONSTANTS;
   @Input() tileData: any;
   @Input() menuDetail: any;
-  componentState: any;
+  @Input() componentState: any;
   deviceType: any;
   subscriptions: Subscription[] = [];
   isDeviceTwinLoading = false;
@@ -60,18 +60,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
 
     this.subscriptions.push(this.route.paramMap.subscribe(params => {
-      this.pageType = params.get('listName');
-      this.pageType = this.pageType.slice(0, -1).toLowerCase();
-      if (this.pageType === 'device') {
-        this.componentState = CONSTANTS.IP_DEVICE;
-      } else if (this.pageType === 'gateway') {
-        this.componentState = CONSTANTS.IP_GATEWAY;
-      } else if (this.pageType === 'nonipdevice') {
-        this.componentState = CONSTANTS.NON_IP_DEVICE;
-      }
       this.getDeviceCredentials();
       this.getDeviceTypeDetail();
-      if (this.pageType === 'gateway') {
+      if (this.componentState === CONSTANTS.IP_GATEWAY) {
         this.getDeviceCount();
       }
     }));
@@ -80,7 +71,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   getDeviceCredentials() {
     this.deviceCredentials = undefined;
-    const id = (this.pageType === 'nonipdevice') ? this.device.gateway_id : this.device.device_id;
+    const id = (this.componentState === CONSTANTS.NON_IP_DEVICE) ? this.device.gateway_id : this.device.device_id;
     this.subscriptions.push(this.deviceService.getDeviceCredentials(id, this.contextApp.app).subscribe(
       response => {
         this.deviceCredentials = response;
@@ -89,7 +80,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   getDeviceTypeDetail() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(this.device.tags.hierarchy_json),
         name: this.device.tags.device_type,

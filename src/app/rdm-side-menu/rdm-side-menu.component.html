@@ -1,34 +1,26 @@
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark fixed-top accordion" id="accordionSidebar"  *ngIf="userData">
-
-  <!-- Sidebar - Brand -->
-  <!-- <a class="sidebar-brand d-flex align-items-center justify-content-center" [routerLink]="['/home/applications/ccd']" routerLinkActive="active" >
-    <img src="../../assets/img/logo-kemsys.jpg" style="height:3rem" class="mx-auto d-block img-fluid">
-  </a> -->
-
-  <!-- Divider -->
-  <hr class="sidebar-divider my-0">
-
-  <!-- <div class="text-center d-none d-md-inline">
-   <button class="rounded-circle border-0 my-2" id="sidebarToggle" (click)="onSidebarToggle()"></button>
-  </div> -->
-
-  <!-- Nav Item - Dashboard -->
+<ul class="navbar-nav bg-primary sidebar sidebar-lightblue fixed-top accordion" id="accordionSidebar"  *ngIf="userData">
+  <!-- side menu HTML for super admin start-->
   <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngIf="userData?.is_super_admin">
       <a class="nav-link collapsed" [routerLink]="['applications']"  >
         <i class="fa fa-fw fa-th-large" title="Applications"></i>
         <span>Apps</span></a>
   </li>
-
-  <!-- Nav Item - Charts -->
+  <!-- side menu HTML for super admin end-->
+  <!-- side menu HTML for other user -->
   <ng-container *ngFor="let item of displayMenuList">
     <ng-container *ngIf="!item.children && item.visible && item?.priority === 1">
-      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"  *ngIf="!userData?.is_super_admin && item.url"
-
+      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"  *ngIf="!userData?.is_super_admin && item.url && !item.fragment"
       >
         <a class="nav-link" [routerLink]="getURL(item.url)" [fragment]="item.fragment">
           <i class="{{item.icon}}" title="{{item.display_name ? item.display_name : item.system_name}}"></i>
           <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
-
+      </li>
+      <li class="nav-item" *ngIf="!userData?.is_super_admin && item.url && item.fragment"
+      [class.active]="item.fragment && (activeFragment) === item.fragment"
+      >
+        <a class="nav-link" [routerLink]="getURL(item.url)" [fragment]="item.fragment">
+          <i class="{{item.icon}}" title="{{item.display_name ? item.display_name : item.system_name}}"></i>
+          <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
       </li>
       <li class="nav-item" *ngIf="!userData?.is_super_admin && !item.url"
       >
@@ -38,7 +30,6 @@
         </li>
     </ng-container>
     <ng-container *ngIf="!item.children && item.visible && item?.priority === 2">
-      <hr class="sidebar-divider d-none d-md-block m-0">
       <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"  *ngIf="!userData?.is_super_admin && item.url"
       >
         <a class="nav-link" [routerLink]="getURL(item.url)">
@@ -72,12 +63,4 @@
       </li>
     </ng-container>
   </ng-container>
-  <hr class="sidebar-divider d-none d-md-block m-0">
-
-
-   <!-- Sidebar Toggler (Sidebar) -->
-  <div class="text-center d-none d-md-inline" *ngIf="!userData?.is_super_admin">
-
-  </div>
-
 </ul>

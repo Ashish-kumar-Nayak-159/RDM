@@ -1,16 +1,13 @@
-<div class="topnavbar bg-white py-2" >
+<div class="tab-bar">
+  <div class="">
 <app-filter [filterObj]="otherFilter" (filterSearch)="searchOther($event)"></app-filter>
-
 </div>
-<div class="con-pad">
-<div class="row mx-auto">
-
-  <div class="table-responsive" >
-
+</div>
+<div class="table-responsive">
+  <div class="tableFixHead">
     <app-table [tableData]="othersList" [tableConfig]="otherTableConfig" [isTableFilterSelected]="isFilterSelected"
     [isTableDataLoading]="isOthersLoading" (viewMessageEvent)="openOtherMessageModal($event)"></app-table>
   </div>
-</div>
 </div>
 <div class="modal right fade" id="otherMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">

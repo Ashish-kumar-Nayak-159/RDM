@@ -68,27 +68,6 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
     this.isC2dMsgsLoading = true;
     const obj = {...filterObj};
     delete obj.displayOptions;
-    const now = moment().utc();
-    if (filterObj.dateOption === '5 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(5, 'minute')).unix();
-    } else if (filterObj.dateOption === '30 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(30, 'minute')).unix();
-    } else if (filterObj.dateOption === '1 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(1, 'hour')).unix();
-    } else if (filterObj.dateOption === '24 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(24, 'hour')).unix();
-    }else {
-      if (filterObj.from_date) {
-        obj.from_date = (filterObj.from_date.unix());
-      }
-      if (filterObj.to_date) {
-        obj.to_date = filterObj.to_date.unix();
-      }
-    }
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'View ' + obj.tableType);
       this.isC2dMsgsLoading = false;

@@ -9,7 +9,7 @@ const routes: Routes = [
     loadChildren: () => import('./application/application.module').then(module => module.ApplicationModule)
   },
   {
-    path: 'applications/:applicationId/data/visualization',
+    path: 'applications/:applicationId/alerts/visualization',
     loadChildren: () => import('./visualization/visualization.module').then(module => module.VisualizationModule)
   },
   {
@@ -29,7 +29,7 @@ const routes: Routes = [
     loadChildren: () => import('./devices/devices.module').then(module => module.DevicesModule),
   },
   {
-    path: 'applications/:applicationId/:listName',
+    path: 'applications/:applicationId/devices',
     loadChildren: () => import('./devices/devices.module').then(module => module.DevicesModule),
   },
   {

@@ -1,13 +1,22 @@
-<div class="col-lg-12 col-xl-12">
-  <a
-    class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm mb-1 float-right"
-    href="javascript:void(0)"
-    (click)="openCreateUserModal()"
-    ><i class="fa fa- fa-sm text-white-50"></i> Add User</a
-  >
-  <table class="table table-bordered table-striped" cellspacing="0">
+
+<div class="tab-bar">
+  <div class="d-flex">
+
+       <div class="d-flex">
+         <div class="main-heading">Application Users</div>
+         <div id="view-tabs" >
+
+       <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCreateUserModal()"
+      title="Add User"><i class="fas fa-plus fa-sm"></i></button>
+      </div>
+     </div>
+</div>
+</div>
+
+  <div class="tableFixHead table-responsive">
+  <table class="table table-hover">
     <thead>
-      <tr class="bg-secondary text-white">
+      <tr>
         <th>Email</th>
         <th>Full Name</th>
         <th>Role</th>
@@ -35,7 +44,7 @@
       </tr>
     </tbody>
   </table>
-</div>
+  </div>
 
 <div
   class="modal right fade"
@@ -63,7 +72,7 @@
             <label for="message-text" class="col-form-label">App Name:</label>
             <input
               type="text"
-              class="form-control"
+              class="form-control form-control-sm"
               id="app"
               [defaultValue]="applicationData.app"
               disabled
@@ -75,7 +84,7 @@
             >
             <input
               type="text"
-              class="form-control"
+              class="form-control form-control-sm"
               name="user_name"
               id="user_name"
               placeholder="Enter User name"
@@ -87,7 +96,7 @@
             <input
               type="email"
               pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
-              class="form-control"
+              class="form-control form-control-sm"
               id="user_email"
               name="user_email"
               placeholder="Enter User Email"
@@ -96,7 +105,7 @@
           </div>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Role:</label>
-            <select class="custom-select" id="role" (change)="onUserRoleChange()" name="role" [(ngModel)]="addUserObj.role">
+            <select class="form-control form-control-sm" id="role" (change)="onUserRoleChange()" name="role" [(ngModel)]="addUserObj.role">
               <option [ngValue]="role.name" *ngFor="let role of applicationData.roles">{{role.name}}</option>
             </select>
           </div>
@@ -106,7 +115,7 @@
             >
             <input
               type="text"
-              class="form-control"
+              class="form-control form-control-sm"
               id="user_email"
               [defaultValue]="getAccessLevelHierarchy()"
               disabled
@@ -114,12 +123,12 @@
           </div>
           <div class="form-group" *ngFor="let hierarchyItem of hierarchyList; let hIndex = index">
             <label for="message-text" class="col-form-label">{{hierarchyItem}}:</label>
-            <select class="custom-select" id="hierarchy{{hIndex}}"  name="hierarchy{{hIndex}}" [(ngModel)]="configureHierarchy[hIndex]"
+            <select class="form-control form-control-sm" id="hierarchy{{hIndex}}"  name="hierarchy{{hIndex}}" [(ngModel)]="configureHierarchy[hIndex]"
             (change)="onChangeOfHierarchy(hIndex)" *ngIf="hIndex !== 0">
               <option [ngValue]="undefined">Select {{hierarchyItem}}</option>
               <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[hIndex]">{{tag}}</option>
             </select>
-            <input type="text" *ngIf="hIndex === 0"  defaultValue="{{applicationData.app}}" disabled class="form-control">
+            <input type="text" *ngIf="hIndex === 0"  defaultValue="{{applicationData.app}}" disabled class="form-control form-control-sm">
           </div>
         </form>
       </div>
@@ -156,12 +165,12 @@
         <form>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Email:</label>
-            <input type="text" class="form-control form-control" id="email" name="email" [(ngModel)]="userData.email"
+            <input type="text" class="form-control form-control-sm form-control form-control-sm" id="email" name="email" [(ngModel)]="userData.email"
               placeholder="Enter Email" disabled>
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Password:</label>
-            <input  type="{{this.isPasswordVisible ? 'text' : 'password'}}" class="form-control" id="display_name" name="display_name" [(ngModel)]="password"
+            <input  type="{{this.isPasswordVisible ? 'text' : 'password'}}" class="form-control form-control-sm" id="display_name" name="display_name" [(ngModel)]="password"
               placeholder="Enter Your Password">
               <i class="fa fa-fw  field-icon toggle-password" (click)="togglePasswordVisibility()"
                       [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}" ></i>

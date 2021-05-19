@@ -38,8 +38,8 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
   devices: any[] = [];
   controlWidgets: any[] = [];
   deviceMethods: any[] = [];
-  selectedWidget: any;
-  jsonModelKeys: any[] = [];
+  @Input() selectedWidget: any;
+  @Input() jsonModelKeys: any[] = [];
 
   constructor(
     private toasterService: ToasterService,
@@ -71,11 +71,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
       if (this.listName === 'gateway') {
         this.getDevicesListByGateway();
       }
-      if (this.pageType.includes('control')) {
-        this.getControlWidgets();
-      } else {
-        this.getConfigureWidgets();
-      }
+
     }));
 
     // this.messageIdInterval = setInterval(() => {
@@ -83,33 +79,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     // }, 1000);
   }
 
-  getControlWidgets() {
-    const obj = {
-      app: this.appName,
-      device_type: this.device.tags?.device_type
-    };
-    this.apiSubscriptions.push(this.deviceTypeService.getThingsModelControlWidgets(obj).subscribe(
-      (response: any) => {
-        if (response?.data) {
-          this.controlWidgets = response.data.filter(widget => widget.metadata.communication_technique === 'C2D Message');
-        }
-      }
-    ));
-  }
 
-  getConfigureWidgets() {
-    const obj = {
-      app: this.appName,
-      device_type: this.device.tags?.device_type
-    };
-    this.apiSubscriptions.push(this.deviceTypeService.getThingsModelConfigurationWidgets(obj).subscribe(
-      (response: any) => {
-        if (response?.data) {
-          this.controlWidgets = response.data.filter(widget => widget.metadata.communication_technique === 'C2D Message');
-        }
-      }
-    ));
-  }
 
   getThingsModelDeviceMethod() {
     // this.deviceMethods = {};
@@ -128,32 +98,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
   onSwitchValueChange(event, index) {
   }
 
-  onChangeOfDropdownData() {
-    this.jsonModelKeys = [];
-    const keys =  Object.keys(this.selectedWidget.json);
-    const index = keys.findIndex(key => key === 'timestamp');
-    keys.splice(index, 1);
-    keys.forEach(key => {
-      const obj = {
-        key,
-        json: {},
-        name: null,
-        value: null
-      };
-      this.selectedWidget.properties.forEach(prop => {
-        if (prop.json_key === key) {
-          obj.name = prop.name;
-          obj.json = this.selectedWidget.json[key];
-          if (obj.json['type'] === 'boolean') {
-            obj.value = obj.json['defaultValue'] === obj.json['trueValue'] ? true : false;
-          } else {
-            obj.value = this.selectedWidget.json[key].defaultValue;
-          }
-        }
-      });
-      this.jsonModelKeys.splice(this.jsonModelKeys.length, 0, obj);
-    });
-  }
+
 
   getDevicesListByGateway() {
     this.devices = [];

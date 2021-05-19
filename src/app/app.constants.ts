@@ -54,7 +54,7 @@ export class CONSTANTS {
       system_name: 'Home',
       url: 'applications/:appName',
       display_name: 'Home',
-      icon: 'fa fa-fw fa-home',
+      icon: 'fas fa-fw fa-home',
       visible: true,
       showAccordion: [],
       priority: 1
@@ -63,9 +63,8 @@ export class CONSTANTS {
       page: 'Live Data',
       system_name: 'Live Data',
       url: 'applications/:appName/dashboard',
-      fragment: 'telemetry',
       display_name: 'Live Data',
-      icon: 'fa fa-fw fa-globe',
+      icon: 'fa fa-fw fa-chart-bar',
       visible: true,
       showAccordion: [
         {
@@ -78,9 +77,8 @@ export class CONSTANTS {
     {
       page: 'Live Alerts',
       system_name: 'Live Alerts',
-      url: 'applications/:appName/dashboard',
+      url: 'applications/:appName/alerts/visualization',
       display_name: 'Live Alerts',
-      fragment: 'alert',
       icon: 'fa fa-fw fa-bell',
       visible: true,
       showAccordion: [
@@ -93,49 +91,40 @@ export class CONSTANTS {
     },
     {
       page: 'Assets',
-      system_name: 'IoT Assets',
+      system_name: 'Assets',
       url: 'applications/:appName/devices',
-      display_name: 'IoT Assets',
-      icon: 'fa fa-fw fa-desktop',
+      display_name: 'Assets',
+      icon: 'fas fa-fw fa-cloud',
       visible: true,
       showAccordion: [
         { name: 'Title', value: 'Assets'},
-        { name: 'Table Key Name', value: 'Asset'},
         { name: 'Records Limit', value: 20, type: 'number'},
+        { name: 'IOT Assets Tab Name', value: 'IOT Assets'},
+        { name: 'IOT Assets Table Key Name', value: 'IOT Asset'},
+        { name: 'IOT Gateways Tab Name', value: 'IOT Gateways'},
+        { name: 'IOT Gateways Table Key Name', value: 'IOT Gateway'},
+        { name: 'Legacy Assets Tab Name', value: 'Legacy Assets'},
+        { name: 'Legacy Assets Table Key Name', value: 'Legacy Asset'},
       ],
       priority: 1
     },
     {
-      page: 'Non IP Assets',
-      system_name: 'Legacy Assets',
-      url: 'applications/:appName/nonIPDevices',
-      display_name: 'Legacy Assets',
-      icon: 'fa fa-fw fa-folder',
-      visible: true,
-      showAccordion: [
-        { name: 'Title', value: 'Assets'},
-        { name: 'Table Key Name', value: 'Asset'},
-        { name: 'Records Limit', value: 20, type: 'number'},
-      ],
-      priority: 1
-    },
-    {
-      page: 'Assets Management',
-      system_name: 'Assets Management',
+      page: 'Asset Management',
+      system_name: 'Asset Management',
       url: 'applications/:appName/asset/management',
-      display_name: 'Assets Management',
-      icon: 'fa fa-fw fa-cog',
+      display_name: 'Asset Management',
+      icon: 'fa fa-fw fa-cogs',
       visible: true,
       showAccordion: [
-        { name: 'Title', value: 'Assets Management'}
+        { name: 'Title', value: 'Asset Management'}
       ],
       priority: 1
     },
     {
-      page: 'Things Modelling',
-      system_name: 'Things Modelling',
+      page: 'Things Models',
+      system_name: 'Things Models',
       url: 'applications/:appName/things/model',
-      display_name: 'Asset Modelling',
+      display_name: 'Asset Models',
       icon: 'fa fa-fw fa-list',
       visible: true,
       showAccordion: [
@@ -188,7 +177,7 @@ export class CONSTANTS {
       system_name: 'Reports',
       url: 'applications/:appName/reports',
       display_name: 'Reports',
-      icon: 'fa fa-fw fa-file',
+      icon: 'fa fa-fw fa-chart-line',
       visible: true,
       showAccordion: [
         { name: 'Title', value: 'Reports'},
@@ -197,20 +186,20 @@ export class CONSTANTS {
       priority: 1
     },
 
-    {
-      page: 'Gateways',
-      system_name: 'IoT Gateways',
-      url: 'applications/:appName/gateways',
-      display_name: 'IoT Gateways',
-      icon: 'fa fa-fw fa-desktop',
-      visible: true,
-      showAccordion: [
-        { name: 'Title', value: 'Gateways'},
-        { name: 'Table Key Name', value: 'Gateway'},
-        { name: 'Records Limit', value: 20, type: 'number'},
-      ],
-      priority: 2
-    }
+    // {
+    //   page: 'Gateways',
+    //   system_name: 'IoT Gateways',
+    //   url: 'applications/:appName/gateways',
+    //   display_name: 'IoT Gateways',
+    //   icon: 'fa fa-fw fa-desktop',
+    //   visible: true,
+    //   showAccordion: [
+    //     { name: 'Title', value: 'Gateways'},
+    //     { name: 'Table Key Name', value: 'Gateway'},
+    //     { name: 'Records Limit', value: 20, type: 'number'},
+    //   ],
+    //   priority: 2
+    // }
   ];
 
   public static DEVICE_CONTROL_PANEL_SIDE_MENU_LIST = [

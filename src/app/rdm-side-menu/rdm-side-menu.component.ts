@@ -23,16 +23,24 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   displayMenuList = [];
   signalRAlertSubscription: any;
   apiSubscriptions: Subscription[] = [];
+  activeFragment: any;
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private commonService: CommonService,
     private router: Router,
     private toasterService: ToasterService,
-    private signalRService: SignalRService
+    private signalRService: SignalRService,
+    public route: ActivatedRoute
   ) { }
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.route.fragment.subscribe(
+      fragment => {
+      this.activeFragment = fragment;
+      console.log('activeFragment   ', this.activeFragment);
+    });
+
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     // if (this.userData && !this.userData.is_super_admin) {
     //   this.appName = this.userData.apps[0].app;
@@ -140,7 +148,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
     // alert('here');
     const arr = JSON.parse(JSON.stringify(data));
     arr.forEach(element1 => {
-      if (element1.page === 'Things Modelling') {
+      if (element1.page === 'Things Models') {
         if (this.contextApp?.user.role !== CONSTANTS.APP_ADMIN_ROLE) {
         element1.visible = false;
         } else {

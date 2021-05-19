@@ -5,7 +5,7 @@ import { Component, OnInit, Inject, AfterViewInit, OnDestroy } from '@angular/co
 import { DOCUMENT } from '@angular/common';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { Device } from 'src/app/models/device.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/app.constants';
 declare var $: any;
@@ -22,7 +22,8 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
   userData: any;
   componentState: any;
   gatewayId: string;
-  pageType: any;
+  deviceId: string;
+  // pageType: any;
   tagsObj: any;
   contextApp: any;
   menuItems: any[] = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
@@ -32,55 +33,28 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
   iotDevicesPage = 'Assets';
   legacyDevicesPage = 'Non IP Assets';
   iotGatewaysPage = 'Gateways';
+  iotAssetsTab: any;
+  legacyAssetsTab: any;
+  iotGatewaysTab: any;
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private deviceService: DeviceService,
     private route: ActivatedRoute,
     private applicationService: ApplicationService,
     private commonService: CommonService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private router: Router
   ) { }
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     await this.getApplicationUsers();
-
     this.subscriptions.push(this.route.paramMap.subscribe(
       async params => {
         if (params.get('deviceId')) {
-          if (params.get('listName')) {
-            const listName = params.get('listName');
-            if (listName.toLowerCase() === 'nonipdevices') {
-              this.componentState = CONSTANTS.NON_IP_DEVICE;
-              this.pageType = 'Device';
-            } else if (listName.toLowerCase() === 'devices') {
-              this.componentState = CONSTANTS.IP_DEVICE;
-              this.pageType = 'Device';
-            }
-            if (this.componentState === CONSTANTS.IP_DEVICE) {
-              if (this.contextApp?.configuration?.device_control_panel_menu.length > 0) {
-                this.menuItems = this.contextApp.configuration.device_control_panel_menu;
-              } else {
-                this.menuItems = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
-              }
-            } else if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
-              if (this.contextApp?.configuration?.legacy_device_control_panel_menu.length > 0) {
-                this.menuItems = this.contextApp.configuration.legacy_device_control_panel_menu;
-              } else {
-                this.menuItems = CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
-              }
-            }
-          }
-            // if (params.get('gatewayId')) {
-            //   this.gatewayId = params.get('gatewayId');
-            //   this.componentState = CONSTANTS.NON_IP_DEVICE;
-            //   this.pageType = 'Device';
-            // }
-          this.getTileName();
-          this.pageType = this.pageType.slice(0, -1);
-          this.device = new Device();
-          this.device.device_id = params.get('deviceId');
+          // this.device = new Device();
+          this.deviceId = params.get('deviceId');
           this.getDeviceDetail();
           }
       }
@@ -89,25 +63,6 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
       fragment => {
         if (fragment) {
           this.activeTab = fragment;
-
-        } else {
-          const menu = this.componentState !== CONSTANTS.NON_IP_DEVICE ?
-          (this.contextApp.configuration.device_control_panel_menu.length > 0 ?
-          this.contextApp.configuration.device_control_panel_menu :
-          JSON.parse(JSON.stringify(CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST))) :
-          (this.contextApp.configuration.legacy_device_control_panel_menu.length > 0 ?
-            this.contextApp.configuration.legacy_device_control_panel_menu :
-            JSON.parse(JSON.stringify(CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST)))
-          menu.forEach(menuObj => {
-            if ( !this.activeTab && menuObj.visible && !menuObj.isTitle) {
-              this.activeTab = menuObj.page;
-              return;
-            }
-          });
-          if (!this.activeTab) {
-            this.toasterService.showError('All the menu items visibility are off. Please contact administrator', 'App Selection');
-            return;
-          }
         }
       }
     ));
@@ -118,6 +73,8 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
     ));
   }
 
+
+
   getMenuDetail(pageType) {
     return this.menuItems.find(menu => menu.page === pageType);
   }
@@ -125,13 +82,26 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
   getTileName() {
     let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {
-      if ((item.page === this.iotDevicesPage && this.componentState === CONSTANTS.IP_DEVICE) ||
-      (item.page === this.legacyDevicesPage && this.componentState === CONSTANTS.NON_IP_DEVICE) ||
-      (item.page === this.iotGatewaysPage && this.componentState === CONSTANTS.IP_GATEWAY)) {
+      if (item.page === 'Assets') {
         selectedItem = item.showAccordion;
       }
     });
-    this.tileData = selectedItem[1];
+    this.tileData = {};
+    selectedItem.forEach(item => {
+      this.tileData[item.name] = item.value;
+    });
+    this.iotAssetsTab = {
+      tab_name: this.tileData['IOT Assets Tab Name'],
+      table_key: this.tileData['IOT Assets Table Key Name']
+    };
+    this.legacyAssetsTab = {
+      tab_name: this.tileData['Legacy Assets Tab Name'],
+      table_key: this.tileData['Legacy Assets Table Key Name']
+    };
+    this.iotGatewaysTab = {
+      tab_name: this.tileData['IOT Gateways Tab Name'],
+      table_key: this.tileData['IOT Gateways Table Key Name']
+    };
   }
 
   ngAfterViewInit(): void {
@@ -239,7 +209,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
       this.isDeviceDataLoading = true;
     }
     let methodToCall;
-    methodToCall = this.deviceService.getDeviceDetailById(this.contextApp.app, this.device.device_id);
+    methodToCall = this.deviceService.getDeviceDetailById(this.contextApp.app, this.deviceId);
     this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         this.device = response;
@@ -252,17 +222,38 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
             user_name: 'NA'
           };
         }
-        this.commonService.breadcrumbEvent.emit({
-          type: 'append',
-          data: [
-              {
-                title: (this.device.tags.display_name ? this.device.tags.display_name : this.device.device_id) + ' / Control Panel',
-                url:
-                'applications/' + this.contextApp.app + '/' + (this.componentState === CONSTANTS.NON_IP_DEVICE ? 'nonIPDevices' :
-                (this.pageType.toLowerCase() + 's')) + '/' + this.device.device_id + '/control-panel'
-              }
-          ]
-        });
+        this.componentState = this.device.type;
+        this.getTileName();
+        if (this.componentState === CONSTANTS.IP_DEVICE) {
+          if (this.contextApp?.configuration?.device_control_panel_menu.length > 0) {
+            this.menuItems = this.contextApp.configuration.device_control_panel_menu;
+          } else {
+            this.menuItems = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
+          }
+        } else if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+          if (this.contextApp?.configuration?.legacy_device_control_panel_menu.length > 0) {
+            this.menuItems = this.contextApp.configuration.legacy_device_control_panel_menu;
+          } else {
+            this.menuItems = CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
+          }
+        }
+        const menu = this.componentState !== CONSTANTS.NON_IP_DEVICE ?
+          (this.contextApp.configuration.device_control_panel_menu.length > 0 ?
+          this.contextApp.configuration.device_control_panel_menu :
+          JSON.parse(JSON.stringify(CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST))) :
+          (this.contextApp.configuration.legacy_device_control_panel_menu.length > 0 ?
+            this.contextApp.configuration.legacy_device_control_panel_menu :
+            JSON.parse(JSON.stringify(CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST)))
+        menu.forEach(menuObj => {
+            if ( !this.activeTab && menuObj.visible && !menuObj.isTitle) {
+              this.activeTab = menuObj.page;
+              return;
+            }
+          });
+        if (!this.activeTab) {
+          this.toasterService.showError('All the menu items visibility are off. Please contact administrator', 'App Selection');
+          return;
+        }
         this.isDeviceDataLoading = false;
         if (!callFromMenu) {
           setTimeout(

@@ -32,6 +32,9 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
   iotDevicesPage = 'Assets';
   legacyDevicesPage = 'Non IP Assets';
   iotGatewaysPage = 'Gateways';
+  iotAssetsTab: any;
+  legacyAssetsTab: any;
+  iotGatewaysTab: any;
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private deviceService: DeviceService,
@@ -49,20 +52,20 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
           this.menuItems = this.contextApp.configuration.gateway_control_panel_menu;
         }
         if (params.get('deviceId')) {
-          if (params.get('listName')) {
-            const listName = params.get('listName');
-            if (listName.toLowerCase() === 'gateways') {
-              this.componentState = CONSTANTS.IP_GATEWAY;
-              this.pageType = 'Gateway';
-            }
-          }
-          if (params.get('gatewayId')) {
-            this.gatewayId = params.get('gatewayId');
-            this.componentState = CONSTANTS.NON_IP_DEVICE;
-            this.pageType = 'Device';
-          }
-          this.getTileName();
-          this.pageType = this.pageType.slice(0, -1);
+          // if (params.get('listName')) {
+          //   const listName = params.get('listName');
+          //   if (listName.toLowerCase() === 'gateways') {
+          //     this.componentState = CONSTANTS.IP_GATEWAY;
+          //     this.pageType = 'Gateway';
+          //   }
+          // }
+          // if (params.get('gatewayId')) {
+          //   this.gatewayId = params.get('gatewayId');
+          //   this.componentState = CONSTANTS.NON_IP_DEVICE;
+          //   this.pageType = 'Device';
+          // }
+
+          // this.pageType = this.pageType.slice(0, -1);
           this.device = new Device();
           this.device.device_id = params.get('deviceId');
           this.getDeviceDetail();
@@ -105,13 +108,26 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
   getTileName() {
     let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {
-      if ((item.page === this.iotDevicesPage && this.componentState === CONSTANTS.IP_DEVICE) ||
-      (item.page === this.legacyDevicesPage && this.componentState === CONSTANTS.NON_IP_DEVICE) ||
-      (item.page === this.iotGatewaysPage && this.componentState === CONSTANTS.IP_GATEWAY)) {
+      if (item.page === 'Assets') {
         selectedItem = item.showAccordion;
       }
     });
-    this.tileData = selectedItem[1];
+    this.tileData = {};
+    selectedItem.forEach(item => {
+      this.tileData[item.name] = item.value;
+    });
+    this.iotAssetsTab = {
+      tab_name: this.tileData['IOT Assets Tab Name'],
+      table_key: this.tileData['IOT Assets Table Key Name']
+    };
+    this.legacyAssetsTab = {
+      tab_name: this.tileData['Legacy Assets Tab Name'],
+      table_key: this.tileData['Legacy Assets Table Key Name']
+    };
+    this.iotGatewaysTab = {
+      tab_name: this.tileData['IOT Gateways Tab Name'],
+      table_key: this.tileData['IOT Gateways Table Key Name']
+    };
   }
 
 
@@ -204,18 +220,9 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
     this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         this.device = response;
+        this.componentState = this.device.type;
         // this.device.gateway_id = this.device.metadata?.gateway_id;
-        this.commonService.breadcrumbEvent.emit({
-          type: 'append',
-          data: [
-              {
-                title: (this.device.tags.display_name ? this.device.tags.display_name : this.device.device_id) + ' / Diagnosis Panel',
-                url:
-                'applications/' + this.contextApp.app + '/' + (this.componentState === CONSTANTS.NON_IP_DEVICE ? 'nonIPDevices' :
-                (this.pageType.toLowerCase() + 's')) + '/' + this.device.device_id + '/control-panel'
-              }
-          ]
-        });
+        this.getTileName();
         this.isDeviceDataLoading = false;
         if (!callFromMenu) {
           setTimeout(

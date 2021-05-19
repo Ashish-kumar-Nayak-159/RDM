@@ -1,3 +1,5 @@
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
 /* You can add global styles to this file, and also import other style files */
 /*
 thead {
@@ -23,10 +25,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
   cursor: pointer;
 }
 
-select.form-control {
-  width: 9rem !important;
-}
-
 .li.nav-item.active {
   text-decoration: underline;
   color: blue;
@@ -43,17 +41,6 @@ a.disabled {
   opacity: 0.65;
 }
 
-table {
-  width: 100%;
-}
-
-.table-device {
-  max-height: 60vh;
-}
-.datepicker-calendar {
-  margin-left: -1.6rem;
-  z-index: 999;
-}
 
 .scroll-container {
   max-height: 70vh;
@@ -62,22 +49,6 @@ table {
   overflow-y: auto;
 }
 
-.mat-header-cell {
-  color: #fff !important;
-  padding-left: 20px;
-  border-right: 1px solid #fff;
-  font-size: 16px;
-}
-
-.mat-row {
-  border-bottom: 0px;
-}
-
-.mat-cell {
-  border: 1px solid #e3e6f0;
-  padding-left: 20px;
-  color: #858796 !important;
-}
 
 input:invalid {
   border: 1px solid red;
@@ -86,67 +57,6 @@ input:invalid {
 .compose-c2d-button-line {
   max-width: 2%;
   flex: 0 0 8.33333%;
-}
-
-/* multi select css */
-
-.custom-class-example {
-  width: 11% !important;
-}
-
-.c-btn {
-  display: inline-block;
-  border-width: 1px;
-  line-height: 1.25;
-  border-radius: 3px;
-  font-size: 0.85rem;
-  padding: 5px 10px;
-  cursor: pointer;
-  align-items: center;
-  height: calc(1.5em + 0.5rem + 2px) !important;
-  min-height: calc(1.5em + 0.5rem + 2px) !important;
-  color: #858796 !important;
-  padding: 14px !important;
-  color: #858796;
-}
-
-
-
-.c-label {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 10px;
-  width: 7rem;
-  color: #858796 !important;
-}
-
-.c-remove svg {
-  fill: #858796 !important;
-}
-
-.c-remove {
-  right: auto !important;
-}
-
-.clear-all {
-  right: 1.9rem !important;
-}
-
-.selected-list .c-angle-down,
-.selected-list .c-angle-up {
-  top: 42% !important;
-}
-.selected-list .c-list .c-token {
-  background: transparent;
-  padding: 0 !important;
-  margin-right: 20px!important;
-}
-
-.cuppa-dropdown {
-  /* width: 20.5rem!important; */
-  font: 400 13.3333px Arial;
-  color: #6e707e;
 }
 
 .lazyContainer {
@@ -187,43 +97,6 @@ input:invalid {
   opacity: 0.7;
 }
 
-.form-control {
-  line-height: 1.2;
-}
-
-.date-range-picket-width {
-  width: 22rem!important;
-}
-
-
-.bg-dateRow {
-  background-color: #F8F9Fc;
-}
-
-.bg-dateRow input
-{
-  border: 0;
-  border-bottom: 1px solid #ccc;
-  outline: 0;
-  background-color: transparent;
-}
-.bg-dateRow select {
-  background-color: transparent!important;
-  background: url('./assets/img/arrow-down.png') no-repeat right #ddd;
-  background-position: 98%;
-  padding: 2px 20px 2px 8px;
-  padding-right: 20px;
-  background-size: 14px;
-  -webkit-appearance: none;
-  outline: none !important;
-  -webkit-border-radius: 4px;
-  border: 0;
-  border-bottom: 1px solid #ccc;
-}
-
-select#dateoptions {
-  width: 10rem!important;
-}
 
 .filter-clear-icon {
   width: 1rem;
@@ -248,32 +121,6 @@ select#dateoptions {
   margin-right: 0.5rem;
 }
 */
- .owl-dt-timer {
-  height: 5.25rem!important;
-  padding: 0!important;
-}
-
-.owl-dt-timer-content .owl-dt-timer-input {
-  font-size: 0.9rem;
-}
-
-.owl-dt-calendar {
-  height: 16rem!important;
-}
-
-.owl-dt-calendar-table .owl-dt-calendar-cell {
-  padding-top: 0!important;
-  padding-bottom: 0!important;
-  height: 32px!important;
-}
-
-.owl-dt-calendar-table .owl-dt-calendar-header .owl-dt-weekdays th {
-  padding-bottom: 0!important;
-}
-
-.owl-dt-timer-box {
-  height: 90%;
-}
 
 
 
@@ -284,10 +131,6 @@ select#dateoptions {
 }
 .w-10 {
   width:  10rem!important;
-}
-
-.selected-list .c-btn {
-  outline: none!important;
 }
 
 .live-widget-title {
@@ -333,7 +176,7 @@ select#dateoptions {
   position: absolute;
   z-index: 9999999 !important;
 }
- /* // table header sticky */
+ /* // table header sticky
 .table-wrapper{
   overflow-y: auto;
   max-height: calc(100vh - 18rem)
@@ -353,7 +196,7 @@ tfoot th:first-child {
   z-index: 5;
 } */
 
-.table-wrapper th{
+/* .table-wrapper th{
   position: -webkit-sticky;
     position: sticky;
     top: 0;
@@ -367,7 +210,7 @@ table{
 thead th{
     background: #858796;
     color: #fff;
-}
+}  */
 
 .gm-ui-hover-effect {
   opacity: 0!important;
@@ -392,3 +235,33 @@ thead th{
 .derived-con-pad {
   margin-top: 4rem;max-height: calc(100vh - 6.5rem);
 }
+
+
+.content-scroll-live-data {
+  max-height: calc(100vh - 11rem)!important;
+}
+
+.tableFixHead-assets-list {
+  max-height: calc(100vh - 12.5rem)!important;
+}
+
+.ng-select.custom {
+}
+
+
+.ng-select.custom .ng-select-container {
+  border: none;
+  line-height: 1.5;
+  border-bottom: 1px solid #d1d3e2;
+  color: #6e707e;
+  background-color: #fff;
+  padding: 0rem;
+  font-size: 0.85rem;
+  background-clip: padding-box;
+  width: 15rem;
+}
+
+.ng-select.custom .ng-select-container .ng-value-container {
+  padding-left: 0rem;
+}
+

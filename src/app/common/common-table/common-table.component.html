@@ -1,9 +1,8 @@
-<div class="table-responsive table-wrapper" [ngStyle]="{maxHeight: tableConfig.tableHeight}">
 
-  <table  class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
+  <table  class="table table-hover" >
     <thead>
-      <tr class="bg-secondary text-white">
-        <th></th>
+      <tr>
+        <th ></th>
         <th  *ngFor="let item of tableConfig?.data;let i = index;" class="{{item.headerClass}}">
           {{item.name}}</th>
       </tr>
@@ -50,7 +49,7 @@
     </ng-container>
     <ng-container *ngIf="tableData.length === 0 && !isTableDataLoading && !isTableFilterSelected">
       <tr>
-        <td [attr.colspan]="tableConfig.data.length + 1">Select filter and press search button to load the {{tableConfig.type}} data.</td>
+        <td [attr.colspan]="tableConfig?.data.length + 1">Select filter and press search button to load the {{tableConfig.type}} data.</td>
       </tr>
     </ng-container>
     <ng-container *ngIf="isTableDataLoading">
@@ -62,4 +61,3 @@
     </ng-container>
   </tbody>
   </table>
-</div>

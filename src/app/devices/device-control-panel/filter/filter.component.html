@@ -1,69 +1,24 @@
-<div class="row">
-<div class="col-xl-12 col-md-12 mb-12" >
-    <form>
-      <div class="form-group form-inline my-1">
-        <input type="number" min="1" class="form-control form-control-sm mr-1 my-1 record-input" id="inputEmail4" placeholder="No of Records"
+
+    <form class="form-inline">
+      <div class="form-group">
+        <input type="number" min="1" id="countId"
+        name="count" class="form-control form-control-sm active record-input"
         [(ngModel)]="filterObj.count" name="count" *ngIf="!filterObj.countNotShow">
-        <!-- <select *ngIf="pageType === 'gateway' && filterObj.gateway_id" class="form-control form-control-sm mx-1 my-1" id="deviceCategory"
-         [(ngModel)]="filterObj.device_id" name="deviceCategory">
-          <option [ngValue]="undefined">Select Asset</option>
-          <option [ngValue]="device.device_id" *ngFor="let device of devices">
-            {{device?.tags?.dislay_name ? device.tags?.display_name: device.device_id}}
-          </option>
-        </select> -->
-        <select class="form-control form-control-sm mx-1 my-1" id="tableType" *ngIf="filterObj.displayOptions"
+      </div>
+      <div class="form-group" *ngIf="filterObj.displayOptions">
+        <select class="form-control form-control-sm active" id="messageType"
         [(ngModel)]="filterObj.tableType" name="tableType">
           <option [ngValue]="'C2D Message'">C2D Message</option>
           <option [ngValue]="'Direct Method'">Direct Method</option>
           <option [ngValue]="'Twin Change'">Twin Change</option>
         </select>
-        <div class="bg-dateRow form-group form-inline" id="dateRow"
-        [style.width]="(filterObj.dateOption === 'date' ? '23rem' : (filterObj.dateOption === 'date range' ? '33rem' : ''))">
-        <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
-        [(ngModel)]="filterObj.dateOption" name="dateOptions" (change)="onDateOptionChange()">
-          <option [ngValue]="undefined">Quick Date Options</option>
-          <option [ngValue]="'5 mins'">Last 5 minutes</option>
-          <option [ngValue]="'30 mins'">Last 30 minutes</option>
-          <option [ngValue]="'1 hour'">Last 1 hour</option>
-          <option [ngValue]="'24 hour'">Last 24 hours</option>
-          <option [ngValue]="'date'">Select Date</option>
-          <option [ngValue]="'date range'">Select Date Range</option>
-        </select>
-        <!-- <label class="ml-1 mr-1">OR</label> -->
-        <ng-container *ngIf="filterObj.dateOption === 'date'">
-          <input #dt2Input [owlDateTime]="dt2" [max]="today"  (dateTimeChange)="onSingleDateChange($event);"
-            class="form-control form-control-sm mx-2 my-1 w-10" [owlDateTimeTrigger]="dt2"
-            placeholder="Select Date">
-          <span [owlDateTimeTrigger]="dt2"  class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
-          <owl-date-time #dt2 [pickerType]="'calendar'"></owl-date-time>
-        </ng-container>
-        <!-- <label class="ml-3 mr-1">OR</label> -->
-        <ng-container *ngIf="filterObj.dateOption === 'date range'">
-          <!-- <mat-date-range-picker #picker></mat-date-range-picker>
-
-          <mat-date-range-input [rangePicker]="picr"ke class="form-control form-control-sm mx-1 my-1 col-md-2"
-          >
-            <input matStartDate [(ngModel)]="filterObj.from_date" name="from_date" placeholder="Date Range">
-            <input matEndDate [(ngModel)]="filterObj.to_date" name="to_date">
-          </mat-date-range-input>
-
-        <mat-datepicker-toggle  matSuffix [for]="picker"></mat-datepicker-toggle> -->
-        <input [owlDateTime]="dt1" [selectMode]="'range'" [max]="today" #dt1Input
-        (dateTimeChange)="onDateChange($event)" class="form-control form-control-sm mx-1 my-1 date-range-picket-width" [owlDateTimeTrigger]="dt1" placeholder="Select Date Time">
-        <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
-        <owl-date-time #dt1></owl-date-time>
-        </ng-container>
       </div>
 
-        <button type="button" class="btn btn-warning btn-sm ml-3 mr-1 my-1" title="Search" (click)="search()" ><i class="fa fa-search fa-sm"></i></button>
-        <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear Filters" (click)="clear();">
-          <img class="filter-clear-icon" src="./assets/img/filter.svg"></button>
+      <div class="form-group" >
+        <input type="text"  class="form-control form-control-sm active" daterangepicker name="daterangeInput"  [options]="options" (selected)="selectedDate($event, daterange)" />
       </div>
+      <div class="form-group"><button type="button" title="Search" class="btn btn-sm searchBtn btn-primary" (click)="search()" ><i class="fas fa-search fa-sm"></i></button></div>
+        <!-- <button type="button" class="btn btn-warning btn-sm ml-3 mr-1 my-1" title="Search" ><i class="fa fa-search fa-sm"></i></button> -->
+        <div class="form-group"><button type="button" title="Search" class="btn btn-sm searchBtn btn-primary" title="Clear Filters" (click)="clear();" > <img class="filter-clear-icon" src="./assets/img/filter.svg"></button></div>
      </form>
-</div>
-</div>
-<div class="row">
-  <div class="col-lg-12">
-    <hr class="solid">
-  </div>
-</div>
+

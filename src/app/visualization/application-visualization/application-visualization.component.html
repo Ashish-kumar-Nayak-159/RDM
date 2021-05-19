@@ -1,396 +1,323 @@
-<div class="topnavbar" [style.marginTop]="pageType === 'live' ? '1.5rem' : ''" [style.top]="pageType === 'history' ? '2rem' : ''" >
-  <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-1" *ngIf="pageType === 'side_menu'">
-    <h5 class="h4 mb-0 text-gray-800">{{tileData && tileData[0] ? tileData[0]?.value : ''}}</h5>
-  </div>
-  <div class="card row bg-white" [style.marginLeft]="pageType === 'live' ? '-2rem' : '-1.5rem'"
-  [style.borderRadius]= "pageType === 'live' ? '' : '0'"
-  [style.border]= "pageType === 'live' ? '' : 'none'">
-    <div class="col-xl-12 col-md-12 mb-12">
-      <form>
-        <div class="form-group form-inline my-2" [ngClass]="pageType !== 'live' ? 'mx-3' : 'mx-4'" *ngIf="pageType !== 'history'">
-          <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let index = index;">
-          <select *ngIf="index !== 0" class="form-control form-control-sm ml-2 mr-1 my-1" id="{{level}}"
-          [disabled]="contextApp?.user?.hierarchy[level]"
-          [(ngModel)]="configureHierarchy[index]" name="{{level}}" (change)="onChangeOfHierarchy(index)">
-            <option [ngValue]="undefined">Select {{level}}</option>
-            <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">
-              {{tag}}
-            </option>
-          </select>
-          <input  type="text" *ngIf="index === 0"  defaultValue="{{contextApp.app}}" disabled class="form-control form-control-sm mx-1 my-1">
+<div [ngClass]="{'tab-bar' : pageType === 'history', 'blue-nav-bar': pageType === 'live'}">
+  <div class="d-flex align-items-center">
+    <div class="d-none d-md-block" *ngIf="pageType === 'live'">
+      <div class="main-heading">Live Alerts</div>
+    </div>
+    <div class="ml-auto align-items-center">
+      <div class="d-none d-sm-block">
+        <form class="form-inline">
+          <ng-container *ngIf="pageType === 'history'">
+            <div class="form-group">
+              <input type="number" min="1" id="countId" name="count"
+                class="form-control form-control-sm active record-input" [(ngModel)]="filterObj.count" name="count">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control form-control-sm active" daterangepicker name="daterangeInput"
+                [options]="options" (selected)="selectedDate($event, daterange)" />
+            </div>
           </ng-container>
-
-          <angular2-multiselect [data]="devices" id="deviceSelect"
-            [(ngModel)]="filterObj.deviceArr" name="devices" [settings]="{
-              text: 'Select Asset',
-              classes: 'w-16 p-0 mx-1',
-              singleSelection: true,
-              enableSearchFilter: true,
-              showCheckbox: false,
-              maxHeight: 400,
-              primaryKey: 'device_id',
-              labelKey: 'display_name'
-            }"
-            (onSelect)="onAssetSelection()"
-            (onDeSelectAll)="onAssetDeselect()">
-          </angular2-multiselect>
-
-          <button type="button" *ngIf="pageType === 'live'" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="getLatestAlerts()"><i
-            class="fa fa-search fa-sm"></i></button>
-        </div>
-        <ng-container *ngIf="pageType === 'history' || pageType === 'side_menu'">
-        <div class="form-group form-inline  my-2 mx-3">
-
-          <input type="number" min="1" class="form-control form-control-sm mx-1 my-1 record-input" id="inputEmail4"
-            placeholder="No of Records" [(ngModel)]="filterObj.count" name="count">
-
-          <div class="bg-dateRow form-group form-inline" id="dateRow"
-          [style.width]="(filterObj.dateOption === 'date' ? '23rem' : (filterObj.dateOption === 'date range' ? '33rem' : ''))">
-          <select class="form-control form-control-sm mx-2 my-1" id="dateoptions" [(ngModel)]="filterObj.dateOption"
-            name="dateOptions" (change)="onDateOptionChange()">
-            <option [ngValue]="undefined">Quick Date Options</option>
-            <option [ngValue]="'5 mins'">Last 5 minutes</option>
-            <option [ngValue]="'30 mins'">Last 30 minutes</option>
-            <option [ngValue]="'1 hour'">Last 1 hour</option>
-            <option [ngValue]="'24 hour'">Last 24 hours</option>
-            <option [ngValue]="'date'">Select Date</option>
-            <option [ngValue]="'date range'">Select Date Range</option>
-          </select>
-          <!-- <label class="ml-1 mr-1">OR</label> -->
-          <ng-container *ngIf="filterObj.dateOption === 'date'">
-            <input [max]="today" #dt2Input [owlDateTime]="dt2"  (dateTimeChange)="onSingleDateChange($event);"
-              class="form-control form-control-sm mx-2 my-1 w-10" [owlDateTimeTrigger]="dt2"
-              placeholder="Select Date">
-            <span [owlDateTimeTrigger]="dt2"  class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
-            <owl-date-time #dt2 [pickerType]="'calendar'"></owl-date-time>
+          <ng-container *ngIf="pageType === 'live'">
+            <div class="form-group">
+              <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
+                (click)="onDeviceFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-fw fa-filter fa-sm"></i> Select Asset</button>
+              <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
+                <ng-container *ngFor="
+                          let level of contextApp?.hierarchy?.levels;
+                          let index = index
+                        ">
+                  <div class="">
+                    <select *ngIf="index !== 0" name="{{level}}_{{index}}" class="dropdown-form" id="{{ level }}"
+                      [disabled]="contextApp?.user?.hierarchy[level]" [(ngModel)]="configureHierarchy[index]"
+                      name="{{ level }}" (change)="onChangeOfHierarchy(index)">
+                      <option [ngValue]="undefined">
+                        Select {{ level }}
+                      </option>
+                      <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">
+                        {{ tag }}
+                      </option>
+                    </select>
+                    <input type="text" *ngIf="index === 0" name="{{level}}_{{index}}"
+                      defaultValue="{{ contextApp.app }}" disabled class="dropdown-form" />
+                  </div>
+                </ng-container>
+                <ng-select [items]="devices" class="custom-dropdown w-12" bindLabel="display_name" [clearable]="false"
+                  [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
+                  dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.device"
+                  (onSelect)="onAssetSelection()">
+                </ng-select>
+              </div>
+            </div>
           </ng-container>
-          <ng-container *ngIf="filterObj.dateOption === 'date range'">
-            <input [max]="today"  #dt1Input [owlDateTime]="dt1" [selectMode]="'range'" (dateTimeChange)="onDateChange($event)"
-              class="form-control form-control-sm mx-2 my-1 date-range-picket-width" [owlDateTimeTrigger]="dt1"
-              placeholder="Select Date Time">
-            <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
-            <owl-date-time #dt1></owl-date-time>
-          </ng-container>
+          <div class="form-group">
+            <button type="button" class="btn btn-sm searchBtn btn-primary" title="Search" (click)="getLatestAlerts()"
+              [disabled]="isAlertAPILoading"><i class="fa fa-search fa-sm"></i></button>
           </div>
-          <button type="button" class="btn btn-warning btn-sm mx-3 my-1" title="Search" (click)="getLatestAlerts()"
-          [disabled]="isAlertAPILoading"><i
-              class="fa fa-search fa-sm"></i></button>
-          <!-- <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fa fa-trash  fa-sm"></i></button> -->
-        </div>
-      </ng-container>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col-lg-12">
-      <hr class="solid">
-    </div>
-  </div>
-
 </div>
+<div class="inbox">
+  <div class="row">
 
-<div class="contain-pad" [ngStyle]="{marginTop: pageType === 'live' ? '3rem': (pageType === 'history' ? '7rem': '13.5rem'),
-maxHeight: 'calc(100vh - 10.5rem)'}"
->
-  <div class="mb-2">
-    <div class="table-responsive mx-2 table-wrapper" style="max-height: calc(100vh - 13rem)">
+      <ng-container *ngIf="isAlertAPILoading">
+        <div class="pl-3">
+        <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+      </div>
+      </ng-container>
+      <ng-container *ngIf="!isAlertAPILoading && latestAlerts.length === 0">
+        <div class="pl-3">
+        No Alerts available.
+      </div>
+      </ng-container>
 
+    <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3">
 
-      <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
-        <thead>
-          <tr >
-            <th></th>
-            <th></th>
-            <th *ngIf="!this.device">Asset Name</th>
-            <th>Description</th>
-            <th>Time</th>
-            <th>Status</th>
-            <th>Acknowledged By</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <ng-container *ngIf="latestAlerts.length > 0 && !isAlertAPILoading">
-            <tr *ngFor="let alert of latestAlerts;let i = index" [ngClass]="{
-                    'bg-alert-selection':
-                      alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id,
-                      'bg-danger text-white': alert?.severity?.toLowerCase() === 'critical'
-                  }" >
-                <td>{{i + 1}}</td>
-              <td><i class="fa fa-exclamation-triangle" [style.color]="
+      <ul class="mail_list list-group list-unstyled alert-scroll" *ngIf="!isAlertAPILoading && latestAlerts.length > 0">
+
+        <li class="list-group-item" [ngClass]="{'active': selectedAlert.message_id === alert.message_id}"
+        *ngFor="let alert of latestAlerts">
+          <div class="media">
+            <div class="pull-left">
+              <div class="controls">
+                <i class="fa fa-fw fa-circle" [style.color]="
                 (alert?.severity?.toLowerCase() === 'critical' ? '#cc0000' :
                 (alert?.severity?.toLowerCase() === 'error' ? '#fb5515' :
                 (alert?.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
                 (alert?.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                 )
-                )" title="{{alert.severity}}"></i></td>
-              <td *ngIf="!this.device">{{ alert.device_display_name ? alert.device_display_name : alert.device_id }}</td>
-              <td>{{ alert.message }}</td>
-              <td>{{ alert.local_created_date }}</td>
-              <td>
-                <ng-container *ngIf="alert.metadata?.acknowledged_date">Acknowledged</ng-container>
-                <button *ngIf="!alert.metadata?.acknowledged_date" class="btn btn-sm btn-secondary"
-                  (click)="onClickOfAcknowledgeAlert(alert)">Acknowledge</button>
-              </td>
-              <td>{{ alert.metadata?.user_id }}</td>
-              <td>
-                <a href="javascript:void(0)" (click)="onClickOfViewGraph(alert)">
-                  <i class="fa fa-search" [style.color]="alert?.severity?.toLowerCase() === 'critical' ? 'white' : ''"></i>
-                </a>
-              </td>
-            </tr>
-          </ng-container>
-          <ng-container *ngIf="latestAlerts.length === 0 && !isAlertAPILoading">
-            <tr>
-              <td colspan="8">No Alert data available.</td>
-            </tr>
-          </ng-container>
-          <ng-container *ngIf="isAlertAPILoading">
-            <tr>
-              <td colspan="8">
-                <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
-              </td>
-            </tr>
-          </ng-container>
-        </tbody>
-      </table>
+                )"></i>
+              </div>
+            </div>
+            <div class="media-body"><a (click)="onClickOfViewGraph(alert)" class="m-r-10">
+                <div class="media-heading">
+
+                  <p class="overflow">{{ alert.message }}</p>
+                  <!--<span class="badge bg-amber">Shop</span>
+                          <small class="float-right text-muted"><i class="fa fa-check-square fa-fw"></i> </small>-->
+                </div>
+                <p class="msg">{{ alert.device_display_name ? alert.device_display_name : alert.device_id }}</p>
+                <p class="msg"><time class="hidden-sm-down">{{ alert.local_created_date }}</time> </p>
+              </a>
+            </div>
+            <div class="pull-right">
+              <div class="">
+                <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down" *ngIf="!selectedAlert?.metadata?.acknowledged_date" (click)="onClickOfAcknowledgeAlert(alert)"
+                ><i class="fa fa-folder-open text-gray" aria-hidden="true"></i></a>
+                <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down" *ngIf="selectedAlert?.metadata?.acknowledged_date"
+                ><i class="fa  fa-check-square text-gray" aria-hidden="true"></i></a>
+              </div>
+            </div>
+          </div>
+        </li>
+
+      </ul>
     </div>
-  </div>
+    <div class="col-sm-9 col-md-9 col-lg-9 col-xl-9 p-0" *ngIf="selectedAlert">
+      <div class="">
 
-</div>
-
-
-<div class="modal fade" id="alertVisualizationModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
-  <div class="modal-dialog modal-xl" role="document">
-    <div class="modal-content" *ngIf="selectedAlert">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">View Alert Data</h5>
-        <button type="button" class="close" (click)="closeModal('alertVisualizationModal')" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <ul id="assetTab" role="tablist" class="nav alert-tabs flex-column flex-sm-row text-center border-0 ">
+          <li class="nav-item flex-sm-fill" [ngClass]="{'active': selectedTab === 'visualization'}">
+            <a id="visualization-tab" data-toggle="tab" href="#visualization" role="tab" aria-controls="visualization"
+              aria-selected="true" class="nav-link active" (click)="onTabClick('visualization')">
+              <i class="fas fa-fw fa-chart-bar pr-2"></i> <span
+                class="d-none d-md-inline-block">Visualization</span></a>
+          </li>
+          <li class="nav-item flex-sm-fill" [ngClass]="{'active': selectedTab === 'recommendation'}">
+            <a id="recommendation-tab" data-toggle="tab" href="#recommendation" role="tab"
+              aria-controls="recommendation" aria-selected="false" class="nav-link "
+              (click)="onTabClick('recommendation')"><i class="fas fa-fw fa-info pr-2"></i>
+              <span class="d-none d-md-inline-block">Recommendations</span></a>
+          </li>
+          <li class="nav-item flex-sm-fill" [ngClass]="{'active': selectedTab === 'documents'}">
+            <a id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents"
+              aria-selected="false" class="nav-link " (click)="onTabClick('documents')"><i
+                class="fas fa-fw fa-book pr-2"></i>
+              <span class="d-none d-md-inline-block">Reference Documents</span></a>
+          </li>
+          <li class="nav-item flex-sm-fill" [ngClass]="{'active': selectedTab === 'actions'}">
+            <a id="actions-tab" data-toggle="tab" href="#actions" role="tab" aria-controls="actions"
+              aria-selected="false" class="nav-link " (click)="onTabClick('actions')"><i
+                class="fas fa-fw fa-clipboard pr-2"></i>
+              <span class="d-none d-md-inline-block">Actions Taken</span></a>
+          </li>
+        </ul>
       </div>
-      <div class="modal-body">
-        <ng-container *ngIf="isAlertModalDataLoading"> <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i></ng-container>
-        <ng-container *ngIf="!isAlertModalDataLoading">
-          <accordion *ngIf="selectedAlert" class="mb-2 mx-2">
-            <accordion-group heading=""  [panelClass]="'customClass'" [isOpen]="isOpen">
-              <ng-container accordion-heading>
-                <a class="btn" >
-                  Filters
-                </a>
-              </ng-container>
-              <div class="">
-                <div class="">
-                  <div class="">
-                    <div class="col-xl-10 col-lg-10 col-md-10">
-                      <form>
-                        <div class="form-group form-inline my-1">
-                          <label class="mr-2"> Time Range: </label>
-                          <input type="number" class="form-control form-control-sm my-1" step="1" min="0" id="beforeInterval" style="width: 9%;"
-                            name="beforeInterval" [(ngModel)]="beforeInterval" (change)="onChangeTimeValue()">
-                          <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins before alert</button>
-                          <input type="number" class="form-control form-control-sm my-1" step="1" min="0" id="afterInterval" style="width: 9%;"
-                            name="afterInterval" [(ngModel)]="afterInterval" (change)="onChangeTimeValue()">
-                          <button class="btn btn-secondary btn-sm" style="pointer-events: none;">mins after alert</button>
-                        </div>
-                        <div class="form-group form-inline my-1">
-                          <label class="mr-2">Widgets: </label>
-                          <angular2-multiselect
-                            [data]="dropdownWidgetList"
-                            id="widgets"
-                            [(ngModel)]="selectedWidgets"
-                            name="widgets"
-                            (onDeSelectAll)="onDeSelectAll($event)"
-                            [settings]="{
-                              text: 'Select Widgets',
-                              selectAllText: 'Select All',
-                              unSelectAllText: 'UnSelect All',
-                              classes: 'col-lg-3 col-xl-3 p-0',
-                              enableSearchFilter: true,
-                              badgeShowLimit: 1,
-                              maxHeight: 200,
-                              labelKey: 'id'
-                            }"
-                          >
-                          </angular2-multiselect>
-
-                        </div>
-
-                        <div class="form-group form-inline my-1">
-                          <input type="checkbox" class="mx-1 my-1 big-checkbox" id="checkbox" min="1"
-                          name="checkbox" [(ngModel)]="filterObj.isTypeEditable" (change)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
-                          filterObj.sampling_format = 'minute'; filterObj.sampling_time = 1;
-                          ">
-
-                          <fieldset [disabled]="!filterObj.isTypeEditable" class="form-group form-inline my-1">
-                          <ui-switch   class="mr-1" [disabled]="!filterObj.isTypeEditable"
-                          defaultBgColor="#f6c23e" checkedTextColor="white" uncheckedTextColor="white"
-                          checkedLabel="Sampling Frequency" (valueChange)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
-                          filterObj.sampling_format = 'minute'; filterObj.sampling_time = 1;
-                          "
-                          uncheckedLabel="Aggregation" [(ngModel)]="filterObj.type" name="tpye"></ui-switch>
-
-                          <ng-container *ngIf="!filterObj.type">
-                          <input type="number" class="form-control form-control-sm my-1 w-7" id="minutes" min="1"
-                            name="minutes" [(ngModel)]="filterObj.aggregation_minutes" placeholder="Agreegation Time"
-                            (change)="onNumberChange($event, 'aggregation')">
-                          <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
-                          <select class="form-control form-control-sm mx-1 my-1" id="aggregationFormat" [(ngModel)]="filterObj.aggregation_format"
-                          name="aggregationFormat" style="width: 11rem!important;">
-                          <option [ngValue]="undefined">Aggregartion Format</option>
-                          <option [ngValue]="'AVG'">Average</option>
-                          <option [ngValue]="'SUM'">Sum</option>
-                          <option [ngValue]="'MIN'">Min</option>
-                          <option [ngValue]="'MAX'">Max</option>
-                          <option [ngValue]="'COUNT'">Count</option>
-                          </select>
-                          </ng-container>
-                          <ng-container *ngIf="filterObj.type">
-                          <input type="number" class="form-control form-control-sm ml-1 my-1 w-7" id="minutes" min="1"
-                            name="minutes" [(ngModel)]="filterObj.sampling_time" placeholder="Sampling" disabled
-                            (change)="onNumberChange($event, 'sampling')" title="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development.">
-                          <!-- <select class="form-control form-control-sm mx-1 my-1" id="samplingFrequency" [(ngModel)]="filterObj.sampling_format"
-                          name="samplingFrequency" style="width: 11rem!important;" disabled>
-                          <option [ngValue]="undefined">Frequency</option>
-                          <option [ngValue]="'second'">Second</option>
-                          <option [ngValue]="'minute'">Minute</option>
-                          <option [ngValue]="'hour'">Hour</option>
-                          </select> -->
-                          <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
-                          </ng-container>
-                          </fieldset>
-                          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Apply Filter"
-                          (click)="getDeviceTelemetryData()" [disabled]="isTelemetryDataLoading">Apply</button>
-                          <ng-container  *ngIf="isTelemetryDataLoading">
-                            {{loadingMessage}}
-                            <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
-                          </ng-container>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
+      <div id="assetTabContent" class="tab-content">
+        <div id="visualization" role="tabpanel" [ngClass]="{'active': selectedTab === 'visualization'}" aria-labelledby="visualization-tab" class="tab-pane fade show"
+          [ngClass]="{'active': selectedTab === 'visualization'}">
+          <div class="">
+            <div class="filter-bar d-none d-sm-block sticky-top ">
+              <form class="form-inline">
+              <div class="form-group input-group">
+                <input type="number" step="1" min="0" id="beforeInterval" name="beforeInterval"
+                  class="form-control form-control-sm " [(ngModel)]="beforeInterval" (change)="onChangeTimeValue()"
+                  style="width: 4em;">
+                <div class="input-group-append"><span class="input-group-text bg-light">mins before alert</span>
                 </div>
               </div>
-            </accordion-group>
-            <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="isChartViewOpen">
-              <ng-container accordion-heading>
-                <a class="btn" >
-                  Alert Visualization
-                </a>
-              </ng-container>
-              <div  id="mainChartDiv" >
-                <div class="row col-12 pl-5"  *ngIf="!isTelemetryDataLoading && telemetryData.length > 0">
-
-                  <div class="col-2 form-group " *ngFor="let prop of propList">
-                    <input type="checkbox" class="form-check-input" id="{{prop}}"
-                    name="{{prop}}" (change)="toggleProperty(prop)" [checked]="selectedPropertyForChart.indexOf(prop) !== -1">
-                    <label class="form-check-label text-elipsis" for="{{prop}}" title="{{getPropertyName(prop)}}">{{getPropertyName(prop)}}</label>
-                  </div>
-
-                  <!-- <div class="col-2 pull-right">
-                    <input type="checkbox" class="form-check-input" id="threshold"
-                      name="threshold" (change)="toggleThreshold()" [(ngModel)]="showThreshold">
-                      <label class="form-check-label" for="threshold">Show Threshold</label>
-                  </div> -->
+              <div class="form-group input-group">
+                <input type="number" step="1" min="0" id="afterInterval" name="afterInterval"
+                  class="form-control form-control-sm " [(ngModel)]="afterInterval" (change)="onChangeTimeValue()"
+                  style="width: 4em;">
+                <div class="input-group-append"><span class="input-group-text bg-light">mins after alert</span>
                 </div>
-                <div class="row col-12 pl-5" *ngIf="!isTelemetryDataLoading && telemetryData.length === 0">
-                  No data found.
-                </div>
-                <ng-container  *ngIf="isTelemetryDataLoading">
+              </div>
+              <div class="form-group">
+                <ng-select [items]="dropdownWidgetList" class="custom-dropdown w-12 active" bindLabel="id"
+                  [clearable]="false" [searchable]="false" [multiple]="true" [closeOnSelect]="false"
+                  placeholder="Select Widgets" dropdownPosition="bottom" name="asset-dropdown"
+                  [(ngModel)]="selectedWidgets" (onDeSelectAll)="onDeSelectAll($event)">
+                  <ng-template ng-multi-label-tmp let-items="items">
+                    {{items.length}} widgets selected
+                  </ng-template>
+                </ng-select>
+              </div>
+              <div class="form-group">
+                <input type="checkbox" id="checkbox" min="1" name="checkbox" class="big-checkbox"
+                  [(ngModel)]="filterObj.isTypeEditable" (change)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
+              filterObj.sampling_format = 'minute'; filterObj.sampling_time = 1;">
+              </div>
+              <div class="form-group">
+                <fieldset [disabled]="!filterObj.isTypeEditable">
+                  <ui-switch [disabled]="!filterObj.isTypeEditable" defaultBgColor="#f6c23e"
+                    checkedTextColor="white" uncheckedTextColor="white" checkedLabel="Sampling"
+                    (valueChange)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
+                filterObj.sampling_format = 'minute'; filterObj.sampling_time = 1;
+                " uncheckedLabel="Aggregation" [(ngModel)]="filterObj.type" name="tpye"></ui-switch>
+                </fieldset>
+              </div>
+              <div class="form-group input-group" *ngIf="filterObj.type">
+
+                <input class="form-control form-control-sm bg-light" type="number" id="minutes" min="1"
+                  name="minutes" [(ngModel)]="filterObj.sampling_time" placeholder="Sampling" disabled
+                  title="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development."
+                  style="width: 3em;">
+                <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
+              </div>
+              <div class="form-group input-group" *ngIf="!filterObj.type">
+                <fieldset [disabled]="!filterObj.isTypeEditable"></fieldset>
+                <input class="form-control form-control-sm bg-light" type="number" id="aggr_mins" min="1"
+                  name="aggr_mins" [(ngModel)]="filterObj.aggregation_minutes" placeholder="Sampling"
+                  (change)="onNumberChange($event, 'aggregation')" [disabled]="!filterObj.isTypeEditable"
+                  style="width: 3em;">
+                <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
+              </div>
+              <div class="form-group " *ngIf="!filterObj.type">
+                <fieldset [disabled]="!filterObj.isTypeEditable">
+                  <select class="form-control form-control-sm" id="aggregationFormat"
+                    [(ngModel)]="filterObj.aggregation_format" name="aggregationFormat"
+                    style="width: 11rem!important;">
+                    <option [ngValue]="undefined">Aggregartion Format</option>
+                    <option [ngValue]="'AVG'">Average</option>
+                    <option [ngValue]="'SUM'">Sum</option>
+                    <option [ngValue]="'MIN'">Min</option>
+                    <option [ngValue]="'MAX'">Max</option>
+                    <option [ngValue]="'COUNT'">Count</option>
+                  </select>
+                </fieldset>
+              </div>
+              <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
+                  (click)="getDeviceTelemetryData()" [disabled]="isTelemetryDataLoading"><i
+                    class="fas fa-search fa-sm"></i></button></div>
+              </form>
+            </div>
+            <div class="content-scroll content-scroll-alert p-3">
+              <div class="row">
+                <ng-container *ngIf="isTelemetryDataLoading">
                   {{loadingMessage}}
-                  <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+                  <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
                 </ng-container>
-                <div id="charts" classs="w-100 row"></div>
-              </div>
-            </accordion-group>
-            <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="isOpen" *ngIf="alertCondition">
-              <ng-container accordion-heading>
-                <a class="btn" >
-                 Recommendations
-                </a>
-              </ng-container>
-              <div class="">
-                <div class="">
-                  <div class="">
-                    <div class="table-responsive" *ngIf="alertCondition?.recommendations?.length > 0">
-                      Following recommendations have been pre-configured.
-                      <table id="mytable" width="100%" class="table table-bordered table-striped col-12">
-                        <tbody>
-                          <ng-container *ngFor="let step of alertCondition.recommendations; let i = index;" >
-                          <tr  *ngIf="alertCondition.recommendations.length > 0">
+                <!-- Content Row -->
+                <div id="mainChartDiv">
+                  <div class="row col-md-12" *ngIf="!isTelemetryDataLoading && telemetryData.length > 0">
 
-                          <ng-container >
-                            <td style="width: 10%;">Step - {{i + 1}}</td>
-                            <td style="width: 30%;">{{step.description}}</td>
-                            <td style="width: 30%;">{{step.activity}} Activity</td>
-
-                          </ng-container>
-                          </tr>
-                          <tr *ngIf="alertCondition.recommendations.length === 0">
-                            <td colspan="4"> No Recommedation Steps added.</td>
-                          </tr>
-                          </ng-container>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div class="table-responsive" *ngIf="alertCondition?.recommendations?.length === 0">
-                      No Recommendations added yet.
+                    <div class="form-group col-md-2 pl-3" *ngFor="let prop of propList">
+                      <input type="checkbox" class="form-check-input" id="{{prop}}" name="{{prop}}"
+                        (change)="toggleProperty(prop)" [checked]="selectedPropertyForChart.indexOf(prop) !== -1">
+                      <label class="form-check-label text-elipsis" for="{{prop}}"
+                        title="{{getPropertyName(prop)}}">{{getPropertyName(prop)}}</label>
                     </div>
 
+                    <!-- <div class="col-2 pull-right">
+                        <input type="checkbox" class="form-check-input" id="threshold"
+                          name="threshold" (change)="toggleThreshold()" [(ngModel)]="showThreshold">
+                          <label class="form-check-label" for="threshold">Show Threshold</label>
+                      </div> -->
                   </div>
+                  <div class="row col-12 pl-5" *ngIf="!isTelemetryDataLoading && telemetryData.length === 0">
+                    No data found.
+                  </div>
+                  <div id="charts" classs="w-100 row"></div>
                 </div>
               </div>
-            </accordion-group>
-            <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="isOpen" *ngIf="alertCondition">
-              <ng-container accordion-heading>
-                <a class="btn" >
-                  Reference Documents
-                </a>
-              </ng-container>
-              <div class="">
-                <div class="">
-                  <div class="">
-                    <div class="tagsinput" style="width: auto; height: auto;min-height: auto;" *ngIf="alertCondition?.reference_documents?.length > 0">
+            </div>
+          </div>
+        </div>
+        <div id="recommendation" role="tabpanel" [ngClass]="{'active': selectedTab === 'recommendation'}" aria-labelledby="recommendation-tab" class="tab-pane fade p-2">
+          <ng-container *ngIf="alertCondition?.recommendations?.length > 0">
+            Following recommendations have been pre-configured.
+            <table  class="table table-hover">
+              <tbody>
+                <ng-container *ngFor="let step of alertCondition.recommendations; let i = index;">
+                  <tr *ngIf="alertCondition.recommendations.length > 0">
+
+                    <ng-container>
+                      <td style="width: 10%;">Step - {{i + 1}}</td>
+                      <td style="width: 30%;">{{step.description}}</td>
+                      <td style="width: 30%;">{{step.activity}} Activity</td>
+
+                    </ng-container>
+                  </tr>
+                  <tr *ngIf="alertCondition.recommendations.length === 0">
+                    <td colspan="4"> No Recommedation Steps added.</td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </ng-container>
+          <ng-container *ngIf="alertCondition?.recommendations?.length === 0">
+            No Recommendations added yet.
+          </ng-container>
+        </div>
+        <div id="documents" role="tabpanel" aria-labelledby="documents-tab" [ngClass]="{'active': selectedTab === 'documents'}" class="tab-pane fade p-2">
+          <div class="tagsinput" style="width: auto; height: auto;min-height: auto;"
+                      *ngIf="alertCondition?.reference_documents?.length > 0">
                       <ng-container *ngFor="let item of alertCondition.reference_documents; let index = index">
-                        <span class="tag" >
+                        <span class="tag">
                           <span class="tag-text">{{item}}</span>
                         </span>
                       </ng-container>
                     </div>
-                    <div  class="table-responsive"  *ngIf="alertCondition?.reference_documents?.length === 0">
-                    No Reference documents added yet.</div>
-                  </div>
-                </div>
-              </div>
-            </accordion-group>
-            <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="isOpen" *ngIf="alertCondition">
-              <ng-container accordion-heading>
-                <a class="btn" >
-                 Actions Taken
-                </a>
-              </ng-container>
-              <div class="">
-                <div class="">
-                  <div class="">
-                    <h6 class="font-weight-bold"><u>By Field Staff:</u></h6>
-                    <div class="table-responsive" *ngIf="!selectedAlert?.metadata?.acknowledged_date; else actionTakenTemplate">
+                    <ng-container *ngIf="alertCondition?.reference_documents?.length === 0">
+                      No Reference documents added yet.</ng-container>
+        </div>
+        <div id="actions" role="tabpanel" aria-labelledby="actions-tab" [ngClass]="{'active': selectedTab === 'actions'}" class="tab-pane fade p-2">
+          <h6 class="font-weight-bold"><u>By Field Staff:</u></h6>
+                    <ng-container
+                      *ngIf="!selectedAlert?.metadata?.acknowledged_date; else actionTakenTemplate">
                       No Actions recorded by field staff yet.
-                    </div>
+                    </ng-container>
                     <ng-template #actionTakenTemplate>
                       <div class="table-responsive">
-                        <p> Alert acknowledged by {{selectedAlert?.metadata?.user_id}} at {{selectedAlert?.metadata?.acknowledged_date}}.</p>
-                        <p>Reason: {{selectedAlert?.metadata?.reason?.reason ? selectedAlert?.metadata?.reason?.reason: 'NA'}}</p>
+                        <p> Alert acknowledged by {{selectedAlert?.metadata?.user_id}} at
+                          {{selectedAlert?.metadata?.acknowledged_date}}.</p>
+                        <p>Reason: {{selectedAlert?.metadata?.reason?.reason ? selectedAlert?.metadata?.reason?.reason:
+                          'NA'}}</p>
                         <p>Notes: {{selectedAlert?.metadata?.note ? selectedAlert?.metadata?.note : 'NA'}}</p>
                         <p *ngIf="!selectedAlert?.metadata?.files || selectedAlert?.metadata?.files.length === 0">
                           Documents: NA</p>
                         <div *ngIf="selectedAlert?.metadata?.files && selectedAlert?.metadata?.files.length > 0">
                           <ng-container *ngFor="let file of selectedAlert?.metadata?.files; let i  = index;">
                             <p><b>{{file.data.name}}</b></p>
-                            <img *ngIf="file.type === 'Image'" width="420" height="350" [src]="blobStorageURL + file.data.url + sasToken"/>
+                            <img *ngIf="file.type === 'Image'" width="420" height="350"
+                              [src]="blobStorageURL + file.data.url + sasToken" />
                             <video *ngIf="file.type === 'Video'" width="420" height="350" controls>
                               <source [src]="blobStorageURL + file.data.url + sasToken" type="video/mp4">
                             </video>
-                            <iframe *ngIf="file.type === 'PDF'"  [src]="file.data.sanitizedURL" style="width: 100%;height: 80vh"></iframe>
+                            <iframe *ngIf="file.type === 'PDF'" [src]="file.data.sanitizedURL"
+                              style="width: 100%;height: 80vh"></iframe>
                           </ng-container>
                         </div>
                       </div>
@@ -399,27 +326,22 @@ maxHeight: 'calc(100vh - 10.5rem)'}"
                     <div class="table-responsive">
                       No Actions recorded by RDM yet.
                     </div>
-                  </div>
-                </div>
-              </div>
-            </accordion-group>
-          </accordion>
+        </div>
 
-        </ng-container>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary add-row" (click)="closeModal('alertVisualizationModal')">Cancel</button>
-      </div>
+
     </div>
   </div>
 </div>
+
 
 <div class="modal right fade" id="acknowledgemenConfirmModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <div class="modal-content" *ngIf="acknowledgedAlert">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Acknowledge Alert</h5>
-        <button type="button" class="close" (click)="closeAcknowledgementModal(true)" [disabled]="isFileUploading" aria-label="Close">
+        <button type="button" class="close" (click)="closeAcknowledgementModal(true)" [disabled]="isFileUploading"
+          aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -437,42 +359,41 @@ maxHeight: 'calc(100vh - 10.5rem)'}"
           </div>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Notes:</label>
-            <textarea type="text" rows="3" class="form-control" id="note" name="note" [(ngModel)]="acknowledgedAlert.metadata.note"
-          placeholder="Enter Notes"></textarea>
+            <textarea type="text" rows="3" class="form-control" id="note" name="note"
+              [(ngModel)]="acknowledgedAlert.metadata.note" placeholder="Enter Notes"></textarea>
           </div>
           <ng-container *ngFor="let file of acknowledgedAlert.metadata.files; let i = index;">
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Type:
-              <a *ngIf="i === 0"
-              class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2"
-              href="javascript:void(0)" (click)="addDocument()"
-              title="Add Document"
-              ><i class="fa fa-plus fa-sm text-white"></i></a>
-            </label>
-            <select class="custom-select" id="template_{{i}}" name="model_type_{{i}}" [(ngModel)]="file.type"
-            >
-              <option [ngValue]="undefined" >Select Document Type</option>
-              <option [ngValue]="'PDF'" >PDF</option>
-              <option [ngValue]="'Image'" >Image</option>
-              <option [ngValue]="'Video'" >Video</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Document:</label>
-            {{file ? file?.name : 'Not yet uploaded'}}
-            <input type="file" accept="{{(file.type === 'PDF' ? '.pdf' : (
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Type:
+                <a *ngIf="i === 0" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2"
+                  href="javascript:void(0)" (click)="addDocument()" title="Add Document"><i
+                    class="fa fa-plus fa-sm text-white"></i></a>
+              </label>
+              <select class="custom-select" id="template_{{i}}" name="model_type_{{i}}" [(ngModel)]="file.type">
+                <option [ngValue]="undefined">Select Document Type</option>
+                <option [ngValue]="'PDF'">PDF</option>
+                <option [ngValue]="'Image'">Image</option>
+                <option [ngValue]="'Video'">Video</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Document:</label>
+              {{file ? file?.name : 'Not yet uploaded'}}
+              <input type="file" accept="{{(file.type === 'PDF' ? '.pdf' : (
               file.type === 'Image' ? '.jpeg,.png,.svg' : (
                 file.type === 'Video' ? '.mp4,' : '*'
               )
             ))}}" (change)="onDocumentFileSelected($event.target.files, i)" [disabled]="file.type === undefined"
-            class="form-control" id="app_logo_{{i}}" name="app_logo_{{i}}">
-          </div>
+                class="form-control" id="app_logo_{{i}}" name="app_logo_{{i}}">
+            </div>
           </ng-container>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="acknowledgeAlert()" [disabled]="isFileUploading">Acknowledge</button>
-        <button type="button" class="btn btn-secondary add-row" (click)="closeAcknowledgementModal(true)" [disabled]="isFileUploading">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="acknowledgeAlert()"
+          [disabled]="isFileUploading">Acknowledge</button>
+        <button type="button" class="btn btn-secondary add-row" (click)="closeAcknowledgementModal(true)"
+          [disabled]="isFileUploading">Cancel</button>
         <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isFileUploading"></i>
 
       </div>

@@ -35,9 +35,22 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
   averageMTTRString: any;
   originalFilterObj: any = {};
   chart: any;
-  @ViewChild('dt1Input', {static: false}) dtInput1: any;
-  @ViewChild('dt2Input', {static: false}) dtInput2: any;
-  @ViewChild('dt3Input', {static: false}) dtInput3: any;
+  daterange: any = {};
+  options: any = {
+    locale: { format: 'DD-MM-YYYY HH:mm' },
+    alwaysShowCalendars: false,
+    timePicker: true,
+    ranges: {
+      'Last 24 hours': [moment().subtract(24, 'hours'), moment()],
+      'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+      'This Week': [moment().startOf('isoWeek'), moment()],
+      'Last 4 Weeks': [moment().subtract(4, 'weeks').startOf('isoWeek'), moment().subtract(1, 'weeks').endOf('isoWeek')],
+      'Last Month': [ moment().subtract(1, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
+      'Last 3 Months': [moment().subtract(3, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
+      'Last 6 Months': [moment().subtract(3, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
+      'Last 12 Months': [moment().subtract(3, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')]
+    }
+  };
   today = new Date();
   constructor(
     private deviceService: DeviceService,
@@ -48,11 +61,7 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
-      this.pageType = params.get('listName');
-      this.pageType = this.pageType.slice(0, -1);
 
-    }));
     // this.filterObj.count = 50;
     this.filterObj.epoch = true;
   }
@@ -73,50 +82,10 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     }
   }
 
-  onDateOptionChange() {
-    if (this.filterObj.dateOption !== 'custom') {
-      this.filterObj.from_date = undefined;
-      this.filterObj.to_date = undefined;
-    }
-    if (this.dtInput1) {
-      this.dtInput1.value = null;
-    }
-    if (this.dtInput2) {
-      this.dtInput2.value = null;
-    }
-    if (this.dtInput3) {
-      this.dtInput3.value = null;
-    }
-  }
-
-  onDateChange(event) {
-    this.filterObj.from_date = moment(event.value[0]).second(0).utc();
-    this.filterObj.to_date = moment(event.value[1]).second(0).utc();
-    if (this.dtInput2) {
-      this.dtInput2.value = null;
-    }
-    if (this.dtInput3) {
-      this.dtInput3.value = null;
-    }
-    if (this.filterObj.dateOption !== 'date range') {
-      this.filterObj.dateOption = undefined;
-    }
-  }
-
-  onSingleDateChange(event) {
-    this.filterObj.from_date = moment(event.value).utc();
-    this.filterObj.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
-    const to = this.filterObj.to_date.unix();
-    const current = (moment().utc()).unix();
-    if (current < to) {
-      this.filterObj.to_date = moment().utc();
-    }
-    if (this.dtInput1) {
-      this.dtInput1.value = null;
-    }
-    if (this.filterObj.dateOption !== 'date') {
-      this.filterObj.dateOption = undefined;
-    }
+  selectedDate(value: any, datepicker?: any) {
+    this.filterObj.from_date = moment(value.start).utc().unix();
+    this.filterObj.to_date = moment(value.end).utc().unix();
+    console.log(this.filterObj);
   }
 
   clear() {
@@ -128,15 +97,6 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     } else {
       this.filterObj.count = 10;
     }
-    if (this.dtInput1) {
-      this.dtInput1.value = null;
-    }
-    if (this.dtInput2) {
-      this.dtInput2.value = null;
-    }
-    if (this.dtInput3) {
-      this.dtInput3.value = null;
-    }
   }
 
   searchEvents(filterObj) {
@@ -145,46 +105,6 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     this.averageMTTRString = undefined;
     this.isLifeCycleEventsLoading = true;
     const obj = {...filterObj};
-    const now = moment().utc();
-    if (filterObj.dateOption === '24 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(24, 'hour')).unix();
-    } else if (filterObj.dateOption === 'last 7 days') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(7, 'days')).unix();
-    } else if (filterObj.dateOption === 'this week') {
-      const today = moment();
-      obj.from_date = today.startOf('isoWeek').unix();
-      obj.to_date = now.unix();
-    } else if (filterObj.dateOption === 'this month') {
-      const today = moment();
-      obj.from_date = today.startOf('month').unix();
-      obj.to_date = now.unix();
-    } else if (filterObj.dateOption === 'last 4 weeks') {
-      obj.from_date = moment().subtract(4, 'weeks').startOf('isoWeek').unix();
-      obj.to_date = moment().subtract(1, 'weeks').endOf('isoWeek').unix();
-    } else if (filterObj.dateOption === 'last month') {
-      obj.from_date = moment().subtract(1, 'month').startOf('month').unix();
-      obj.to_date = moment().subtract(1, 'month').endOf('month').unix();
-    } else if (filterObj.dateOption === 'last 3 month') {
-      obj.from_date = moment().subtract(3, 'month').startOf('month').unix();
-      obj.to_date = moment().subtract(1, 'month').endOf('month').unix();
-    } else if (filterObj.dateOption === 'last 6 month') {
-      obj.from_date = moment().subtract(6, 'month').startOf('month').unix();
-      obj.to_date = moment().subtract(1, 'month').endOf('month').unix();
-    } else if (filterObj.dateOption === 'last 12 month') {
-      obj.from_date = moment().subtract(12, 'month').startOf('month').unix();
-      obj.to_date = moment().subtract(1, 'month').endOf('month').unix();
-    } else {
-      if (filterObj.from_date) {
-        obj.from_date = (filterObj.from_date.unix());
-      }
-      if (filterObj.to_date) {
-        obj.to_date = filterObj.to_date.unix();
-      }
-    }
-    console.log(obj.from_date);
-    console.log(obj.to_date);
     if (!obj.from_date || !obj.to_date) {
       this.isLifeCycleEventsLoading = false;
       this.toasterService.showError('Date Time selection is required', 'View MTTR Data');

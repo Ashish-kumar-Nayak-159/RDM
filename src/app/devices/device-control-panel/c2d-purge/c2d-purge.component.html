@@ -1,41 +1,37 @@
-<div class="topnavbar bg-white py-2" style="margin-top: 3.5rem;">
-  <div class="row">
-    <div class="col-xl-12 col-lg-12">
-      <ul class="nav">
-        <!-- Nav Item - Charts -->
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            href="javascript:void(0)"
-            (click)="verifyQueueMessages()"
-          >
-            <i class="fa fa-fw fa-check-circle"></i>
-            <span>Verify Queue Messages</span></a
-          >
-        </li>
+<div class="tab-bar">
+  <div class="">
+    <ul class="nav">
+      <!-- Nav Item - Charts -->
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          href="javascript:void(0)"
+          (click)="verifyQueueMessages()"
+        >
+          <i class="fa fa-fw fa-check-circle"></i>
+          <span>Verify Queue Messages</span></a
+        >
+      </li>
 
-        <!-- Nav Item - Tables -->
-        <li class="nav-item">
-          <a
-            class="nav-link delete-table"
-            [class.disabled]="!messageCount|| messageCount === 0"
-            href="javascript:void(0)"
-            (click)="openConfirmDialog()"
-          >
-            <i class="fa fa-fw fa-trash"></i>
-            <span>Purge Queue Messages</span></a
-          >
-        </li>
-      </ul>
+      <!-- Nav Item - Tables -->
+      <li class="nav-item">
+        <a
+          class="nav-link delete-table"
+          [class.disabled]="!messageCount|| messageCount === 0"
+          href="javascript:void(0)"
+          (click)="openConfirmDialog()"
+        >
+          <i class="fa fa-fw fa-trash"></i>
+          <span>Purge Queue Messages</span></a
+        >
+      </li>
+    </ul>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-12">
-      <hr class="solid" />
     </div>
-  </div>
-</div>
-<div class="con-pad" style="margin-top: 3rem;">
+
+
+    <div class="table-responsive">
+      <div class="tableFixHead" >
   <div class="row mx-auto" *ngIf="messageCount?.toString().length > 0">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-2 pt-3">
@@ -44,6 +40,7 @@
         {{ messageCount }}</h6>
     </div>
   </div>
+</div>
 </div>
 
 <div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">

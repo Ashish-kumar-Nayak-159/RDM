@@ -22,10 +22,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
   currentOffset = 0;
   currentLimit = 20;
   contextApp: any;
-  tileData: any;
-  iotDevicesPage = 'Assets';
-  legacyDevicesPage = 'Non IP Assets';
-  iotGatewaysPage = 'Gateways';
+  tileData = {};
   subscriptions: Subscription[] = [];
   isOpenDeviceCreateModal = false;
   componentState: any;
@@ -50,6 +47,10 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
   uninstallPackages: any[] = [];
   displyaMsgArr = [];
   applicationList: any[] = CONSTANTS.DEVICEAPPPS;
+  iotAssetsTab: any;
+  legacyAssetsTab: any;
+  iotGatewaysTab: any;
+  tabData: any;
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -61,13 +62,13 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
     this.getDevices();
-    if (this.type === 'legacy-devices') {
-      this.componentState = CONSTANTS.NON_IP_DEVICE;
-    } else if (this.type === 'iot-devices') {
-      this.componentState = CONSTANTS.IP_DEVICE;
-    } else if (this.type === 'iot-gateways') {
-      this.componentState = CONSTANTS.IP_GATEWAY;
-    }
+    // if (this.type === 'legacy-devices') {
+    //   this.componentState = CONSTANTS.NON_IP_DEVICE;
+    // } else if (this.type === 'iot-devices') {
+    //   this.componentState = CONSTANTS.IP_DEVICE;
+    // } else if (this.type === 'iot-gateways') {
+    //   this.componentState = CONSTANTS.IP_GATEWAY;
+    // }
     setTimeout(() => {
       $('#table-wrapper').on('scroll', () => {
         const element = document.getElementById('table-wrapper');
@@ -105,13 +106,31 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
     let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {
       console.log(item.page);
-      if ((item.page === this.iotDevicesPage && this.type === 'iot-devices') ||
-        (item.page === this.legacyDevicesPage && this.type === 'legacy-devices') ||
-        (item.page === this.iotGatewaysPage && this.type === 'iot-gateways')) {
+      if (item.page === 'Assets') {
         selectedItem = item.showAccordion;
       }
     });
-    this.tileData = selectedItem;
+    selectedItem.forEach(item => {
+      this.tileData[item.name] = item.value;
+    });
+    if (this.type === CONSTANTS.IP_DEVICE) {
+    this.tabData = {
+      tab_name: this.tileData['IOT Assets Tab Name'],
+      table_key: this.tileData['IOT Assets Table Key Name']
+    };
+    }
+    if (this.type === CONSTANTS.NON_IP_DEVICE) {
+    this.tabData = {
+      tab_name: this.tileData['Legacy Assets Tab Name'],
+      table_key: this.tileData['Legacy Assets Table Key Name']
+    };
+    }
+    if (this.type === CONSTANTS.IP_GATEWAY) {
+    this.tabData = {
+      tab_name: this.tileData['IOT Gateways Tab Name'],
+      table_key: this.tileData['IOT Gateways Table Key Name']
+    };
+    }
     this.currentLimit = this.tileData && this.tileData[2] ? Number(this.tileData[2]?.value) : 20;
   }
 
@@ -125,14 +144,10 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
       obj.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
     }
     let methodToCall;
-    if (this.type === 'legacy-devices') {
+    if (this.type === CONSTANTS.NON_IP_DEVICE) {
       methodToCall = this.deviceService.getNonIPDeviceList(obj);
     } else {
-      if (this.type === 'iot-devices') {
-        obj.type = CONSTANTS.IP_DEVICE;
-      } else if (this.type === 'iot-gateways') {
-        obj.type = CONSTANTS.IP_GATEWAY;
-      }
+      obj.type = this.type;
       methodToCall = this.deviceService.getDeviceList(obj);
     }
     this.subscriptions.push(methodToCall.subscribe(
@@ -170,7 +185,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
   }
 
   openDeviceCreateModal() {
-    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+    if (this.type === CONSTANTS.NON_IP_DEVICE) {
       this.getGatewayList();
     }
     this.isOpenDeviceCreateModal = true;
@@ -249,17 +264,17 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
     };
     if (type === 'Enable') {
       this.confirmBodyMessage = 'Are you sure you want to enable this asset?';
-      this.confirmHeaderMessage = 'Enable ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '');
+      this.confirmHeaderMessage = 'Enable ' + (this.tabData?.table_key || 'Asset');
     } else if (type === 'Disable') {
-      this.confirmBodyMessage = 'This ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' will be temporarily disabled. Are you sure you want to continue?';
-      this.confirmHeaderMessage = 'Disable ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '');
+      this.confirmBodyMessage = 'This ' + (this.tabData?.table_key || 'Asset') + ' will be temporarily disabled. Are you sure you want to continue?';
+      this.confirmHeaderMessage = 'Disable ' + (this.tabData?.table_key || 'Asset');
     } else if (type === 'Deprovision') {
-      this.confirmHeaderMessage = 'Deprovision ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '');
+      this.confirmHeaderMessage = 'Deprovision ' + (this.tabData?.table_key || 'Asset');
       if (this.type !== 'legacy-devices') {
-      this.confirmBodyMessage = 'This ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' will be permanently deleted. Instead, you can temporarily disable the ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + '.' +
+      this.confirmBodyMessage = 'This ' + (this.tabData?.table_key || 'Asset') + ' will be permanently deleted. Instead, you can temporarily disable the ' + (this.tabData?.table_key || 'Asset') + '.' +
       ' Are you sure you want to continue?';
       } else {
-        this.confirmBodyMessage = 'This ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' will be permanently deleted.' +
+        this.confirmBodyMessage = 'This ' + (this.tabData?.table_key || 'Asset') + ' will be permanently deleted.' +
       ' Are you sure you want to continue?';
       }
     } else if (type === 'Install' || type === 'Uninstall' ||

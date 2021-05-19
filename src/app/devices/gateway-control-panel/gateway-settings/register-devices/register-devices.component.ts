@@ -128,6 +128,7 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
     };
     this.selectedDevices.forEach(device => {
       obj.devices[device.device_id] = device.metadata.setup_details;
+      obj.app_name = device?.metadata?.package_app;
     });
     this.callC2dMethod(obj, 'Register Devices');
   }
@@ -140,6 +141,7 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
     };
     this.selectedDevices.forEach(device => {
       obj.devices.push(device.device_id);
+      obj.app_name = device?.metadata?.package_app;
     });
     this.callC2dMethod(obj, 'Deregister Devices');
   }
@@ -154,6 +156,7 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
     this.selectedDevices.forEach(device => {
       obj.devices[device.device_id] = {scv: this.telemetrySettings[device.device_id] === 'changed' ? true :
       (this.telemetrySettings[device.device_id] === 'all' ? false : undefined) };
+      obj.app_name = device?.metadata?.package_app;
     });
     this.callC2dMethod(obj, 'Change Telemtry Settings');
   }

@@ -1,96 +1,122 @@
-<div id="wrapper">
+<i class="fa fa-spinner fa-spin fa-fw fa-2x text-center" *ngIf="isDeviceDataLoading"></i>
+<div id="wrapper" *ngIf="!isDeviceDataLoading">
   <!-- Sidebar -->
   <div class="sidebar1 sidebar-light mb-3 ">
 
-    <div class="sidebar1-heading bg-warning text-white py-2">
+    <div class="sidebar1-heading sidebar1-top-heading">
       <span style="font-size:0.9rem; margin-right:2rem;">Diagnosis Panel </span>
-      <button class="d-none d-md-inline rounded-circle border-0 mb-0" id="sidebar1Toggle" title="Minimize" (click)="onSidebarToggle()"></button>
+      <button class="d-none d-md-inline rounded-circle border-0 mb-0" id="sidebar1Toggle" title="Minimize"
+        (click)="onSidebarToggle()"></button>
       <i class="fa fa-fw fa" style="font-size:1rem; margin-top:0.5rem;margin-left:0.3rem">DP</i>
-		</div>
-    <ul class="navbar-nav bg-white" id="controlPanelSidebar">
-      <ng-container *ngFor="let menu of menuItems">
-        <ng-container *ngIf="menu.isTitle">
-        <div class="sidebar1-heading ">
-          {{menu.display_name}}
-        </div>
+    </div>
+    <div class="scrollbox scrollbox_delayed" tabindex="0">
+      <ul class="navbar-nav scrollbox-content" id="controlPanelSidebar">
+        <ng-container *ngFor="let menu of menuItems">
+          <ng-container *ngIf="menu.isTitle">
+            <div class="sidebar1-heading ">
+              {{menu.display_name}}
+            </div>
+            <!-- Divider -->
+            <hr class="sidebar1-divider">
+          </ng-container>
+          <ng-container *ngIf="!menu.isTitle && menu.visible">
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item" [ngClass]="{'active': activeTab === menu.page}">
+              <a class="nav-link collapsed" href="{{menu.url}}" data-toggle="tab" aria-expanded="false"
+                (click)="setActiveTab(menu.page)">
+                <i class="{{menu.icon}}" title="{{menu.display_name}}"></i>
+                <span>{{menu.display_name}}</span></a>
+            </li>
+          </ng-container>
+
+        </ng-container>
         <!-- Divider -->
-        <hr class="sidebar1-divider">
-        </ng-container>
-        <ng-container *ngIf="!menu.isTitle && menu.visible">
-        <!-- Nav Item - Dashboard -->
-        <li class="nav-item" [ngClass]="{'active': activeTab === menu.page}">
-          <a class="nav-link collapsed" href="{{menu.url}}" data-toggle="tab" aria-expanded="false"
-            (click)="setActiveTab(menu.page)">
-            <i class="{{menu.icon}}" title="{{menu.display_name}}"></i>
-            <span>{{menu.display_name}}</span></a>
-        </li>
-        </ng-container>
+        <hr class="sidebar1-divider d-none d-md-block">
 
-      </ng-container>
-      <!-- Divider -->
-      <hr class="sidebar1-divider d-none d-md-block">
-
-    </ul>
-  </div>
-  <!-- End of Sidebar -->
-   <!-- Content Wrapper -->
-   <div id="content-wrapper" class="d-flex flex-column">
-
-    <!-- Main Content -->
-    <div >
-  <div  class="container1-fluid bg-white pb-3 mb-3" *ngIf="isDeviceDataLoading">
-    <div class="topnavbar bg-white py-2" >
-    <i class="fa fa-spinner fa-spin fa-fw fa-2x text-center"></i>
-  </div>
-  </div>
-  <div class="container1-fluid bg-white pb-3 mb-3" *ngIf="!isDeviceDataLoading">
-
-    <!-- Sidebar Toggle (Topbar) -->
-    <!-- <button id="sidebar1ToggleTop" class="btn btn-link d-md-none rounded-circle mr-3" (click)="onSideBarToggleTopClick()">
-      <i class="fa fa-bars"></i>
-    </button> -->
-    <div class="">
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'overview'}" id="device_overview" role="tabpanel">
-        <app-overview *ngIf="activeTab === 'overview' && device" [tileData]="tileData" [device]="device" [menuDetail]="getMenuDetail('overview')"></app-overview>
-      </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="device_device_tags">
-        <app-tags *ngIf="activeTab === 'tags'  && device" [tileData]="tileData" [device]="device"  [menuDetail]="getMenuDetail('tags')"></app-tags>
-      </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'setup'}" role="tabpanel" id="device_settings">
-        <app-gateway-settings *ngIf="activeTab === 'setup'  && device" [tileData]="tileData" [device]="device"></app-gateway-settings>
-      </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel" id="device_notifications">
-        <app-notification *ngIf="activeTab === 'notifications' && device" [device]="device"></app-notification>
-      </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'cached_telemetry'}" role="tabpanel" id="device_cached_telemetry">
-        <app-gateway-cached-telemetry *ngIf="activeTab === 'cached_telemetry' && device" [device]="device"></app-gateway-cached-telemetry>
-      </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'cached_alerts'}" role="tabpanel" id="device_cached_alerts">
-        <app-gateway-cached-alerts *ngIf="activeTab === 'cached_alerts' && device" [device]="device"></app-gateway-cached-alerts>
-      </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'device_life_cycle'}" role="tabpanel" id="device_life_cycle_events">
-        <app-device-life-cycle-events *ngIf="activeTab === 'device_life_cycle' && device" [device]="device"></app-device-life-cycle-events>
-      </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'config_history'}" role="tabpanel" id="device_config_history">
-        <app-gateway-configuration-history *ngIf="activeTab === 'config_history' && device" [device]="device"></app-gateway-configuration-history>
-      </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'current_config'}" role="tabpanel" id="device_current_config">
-        <app-gateway-current-configuration *ngIf="activeTab === 'current_config' && device" [device]="device"></app-gateway-current-configuration>
-      </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'error'}" role="tabpanel" id="device_error">
-        <app-rdmdevice-control-panel-error *ngIf="activeTab === 'error' && device" [device]="device"></app-rdmdevice-control-panel-error>
-      </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel" id="device_control_widgets">
-        <app-commands *ngIf="activeTab === 'control_widgets' && device" [device]="device" [menuDetail]="getMenuDetail('control_widgets')" ></app-commands>
-      </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'count'}" role="tabpanel" id="device_count">
-        <app-device-count *ngIf="activeTab === 'count' && device" [device]="device"  ></app-device-count>
-      </div>
-      <!-- /.container1-fluid -->
-
+      </ul>
     </div>
   </div>
-  </div>
-  </div>
+  <!-- End of Sidebar -->
+  <!-- Content Wrapper -->
+  <div id="content-wrapper" class="d-flex flex-column">
 
-</div>
+    <!-- Main Content -->
+    <div>
+
+      <div id="content">
+        <div class="container1-fluid">
+          <div class="blue-nav-bar">
+
+            <div class="d-flex">
+              <div>
+                <div class="main-heading">{{device?.display_name || device?.device_id}}</div>
+              </div>
+            </div>
+          </div>
+          <!-- Sidebar Toggle (Topbar) -->
+          <!-- <button id="sidebar1ToggleTop" class="btn btn-link d-md-none rounded-circle mr-3" (click)="onSideBarToggleTopClick()">
+      <i class="fa fa-bars"></i>
+    </button> -->
+          <div class="">
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'overview'}" id="device_overview" role="tabpanel">
+              <app-overview *ngIf="activeTab === 'overview' && device" [tileData]="tileData"
+                [componentState]="componentState" [device]="device" [menuDetail]="getMenuDetail('overview')">
+              </app-overview>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="device_device_tags">
+              <app-tags *ngIf="activeTab === 'tags'  && device" [tileData]="tileData" [device]="device"
+                [menuDetail]="getMenuDetail('tags')"></app-tags>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'setup'}" role="tabpanel" id="device_settings">
+              <app-gateway-settings *ngIf="activeTab === 'setup'  && device" [tileData]="tileData" [device]="device">
+              </app-gateway-settings>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel"
+              id="device_notifications">
+              <app-notification *ngIf="activeTab === 'notifications' && device" [device]="device"></app-notification>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'cached_telemetry'}" role="tabpanel"
+              id="device_cached_telemetry">
+              <app-gateway-cached-telemetry *ngIf="activeTab === 'cached_telemetry' && device" [device]="device">
+              </app-gateway-cached-telemetry>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'cached_alerts'}" role="tabpanel"
+              id="device_cached_alerts">
+              <app-gateway-cached-alerts *ngIf="activeTab === 'cached_alerts' && device" [device]="device">
+              </app-gateway-cached-alerts>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'device_life_cycle'}" role="tabpanel"
+              id="device_life_cycle_events">
+              <app-device-life-cycle-events *ngIf="activeTab === 'device_life_cycle' && device" [device]="device">
+              </app-device-life-cycle-events>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'config_history'}" role="tabpanel"
+              id="device_config_history">
+              <app-gateway-configuration-history *ngIf="activeTab === 'config_history' && device" [device]="device">
+              </app-gateway-configuration-history>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'current_config'}" role="tabpanel"
+              id="device_current_config">
+              <app-gateway-current-configuration *ngIf="activeTab === 'current_config' && device" [device]="device">
+              </app-gateway-current-configuration>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'error'}" role="tabpanel" id="device_error">
+              <app-rdmdevice-control-panel-error *ngIf="activeTab === 'error' && device" [device]="device">
+              </app-rdmdevice-control-panel-error>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel"
+              id="device_control_widgets">
+              <app-commands *ngIf="activeTab === 'control_widgets' && device" [device]="device"
+                [menuDetail]="getMenuDetail('control_widgets')"></app-commands>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'count'}" role="tabpanel" id="device_count">
+              <app-device-count *ngIf="activeTab === 'count' && device" [device]="device"></app-device-count>
+            </div>
+            <!-- /.container1-fluid -->
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>

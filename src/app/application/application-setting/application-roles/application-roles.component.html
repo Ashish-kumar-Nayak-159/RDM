@@ -1,13 +1,18 @@
+<div class="tab-bar">
+  <div class="d-flex">
+    <div class="pb-4 text-orange ">
+      *Note: You can define more user roles based on your organization needs. (For ex: Manager, Supervisor, Operator, etc.,)
+      <a href="javascript:void(0)" title="Edit Tags" *ngIf="!isAppSetingsEditable" title="Edit"
+          (click)="isAppSetingsEditable = true;"><i class="fa fa-edit"></i></a>
+        <a href="javascript:void(0)" title="Cancel" *ngIf="isAppSetingsEditable" title="Cancel"
+          (click)="onCancelClick();"><i class="fa fa-times"></i></a>
+     </div>
+</div>
+</div>
 
-<div class="pb-4 text-orange ">
-  *Note: You can define more user roles based on your organization needs. (For ex: Manager, Supervisor, Operator, etc.,)
-  <a href="javascript:void(0)" title="Edit Tags" *ngIf="!isAppSetingsEditable" title="Edit"
-      (click)="isAppSetingsEditable = true;"><i class="fa fa-edit"></i></a>
-    <a href="javascript:void(0)" title="Cancel" *ngIf="isAppSetingsEditable" title="Cancel"
-      (click)="onCancelClick();"><i class="fa fa-times"></i></a>
- </div>
-<div class="col-lg-5 col-xl-5">
-<table id="mytable1" class="table table-bordered">
+
+<div class="tableFixHead table-responsive col-xl-5 col-lg-5">
+<table class="table table-hover">
   <thead>
     <tr>
       <th  style="font-size:1rem; border-right-color:#f8f9fc">Roles </th>
@@ -22,14 +27,14 @@
   <tfoot>
     <tr>
       <th colspan="3">
-        <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="onSaveRoles()"
+        <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="onSaveRoles()"
         [disabled]="saveRoleAPILoading || !isAppSetingsEditable">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveRoleAPILoading"></i></button>
-        <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="onCancelClick()" [disabled]="!isAppSetingsEditable">CANCEL</button>
+        <button type="button" class="btn btn-sm searchBtn btn-primary ml-1" (click)="onCancelClick()" [disabled]="!isAppSetingsEditable">CANCEL</button>
       </th>
 
     </tr>
     </tfoot>
-  <tbody class="bg-white">
+  <tbody>
       <tr *ngFor="let item of applicationData.roles; let i = index">
       <td>
         <ng-container *ngIf="!item.isEditable">{{item.name}}</ng-container>

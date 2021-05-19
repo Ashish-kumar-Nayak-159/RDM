@@ -1,120 +1,116 @@
-<div class="topnavbar bg-white py-2">
-  <div class="row">
-
+<div class="tab-bar">
+  <div class="">
     <ul class="nav">
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="isSettingsEditable = true;" *ngIf="!isSettingsEditable" [class.disabled]="isSaveSettingAPILoading">
-          <i class="fa fa-fw fa-pencil"></i>
+        <a class="nav-link" href="javascript:void(0)" (click)="isSettingsEditable = true;" *ngIf="!isSettingsEditable"
+          [class.disabled]="isSaveSettingAPILoading">
+          <i class="fa fa-fw fa-pencil-square-o"></i>
           <span class="text-secondary">Edit</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="onCancelClick()" *ngIf="isSettingsEditable" [class.disabled]="isSaveSettingAPILoading">
+        <a class="nav-link" href="javascript:void(0)" (click)="onCancelClick()" *ngIf="isSettingsEditable"
+          [class.disabled]="isSaveSettingAPILoading">
           <i class="fa fa-fw fa-close"></i>
           <span class="text-secondary">Cancel</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="saveSettings()" *ngIf="isSettingsEditable" [class.disabled]="isSaveSettingAPILoading">
+        <a class="nav-link" href="javascript:void(0)" (click)="saveSettings()" *ngIf="isSettingsEditable"
+          [class.disabled]="isSaveSettingAPILoading">
           <i class="fa fa-fw fa-save"></i>
           <span class="text-secondary">Save</span></a>
       </li>
       <li class="nav-item" *ngIf="isSaveSettingAPILoading">
-      <a class="nav-link" href="javascript:void(0)">
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+        <a class="nav-link" href="javascript:void(0)">
+          <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
         </a>
       </li>
     </ul>
   </div>
-  <div class="row">
-    <div class="col-lg-12">
-      <hr class="solid">
-    </div>
-  </div>
-
 </div>
 
-
-<div class="con-pad" *ngIf="deviceType?.metadata">
-
-  <div class="row mt-1 mx-auto">
-
-    <div class="col-xl-6 col-lg-6">
-      <!-- Page Heading -->
-      <h1 class="h6 mb-3 text-secondary-400 "><b>Telemetry Frequency Operating Range (In Sec):</b></h1>
-      <div class="table-responsive">
-        <table class="table table-bordered  table-striped text-gray-800" id="dataTable" width="100%" cellspacing="0">
+<div class="table-responsive">
+  <div class="tableFixHead">
+    <accordion [closeOthers]="true">
+      <accordion-group heading="">
+        <ng-container accordion-heading>
+          <a class="btn">
+            Telemetry Frequency Operating Range (In Sec):
+          </a>
+        </ng-container>
+        <table class="table table-hover">
           <tbody>
             <tr>
               <td style="width: 50%;">Min Value: </td>
               <td>
-                  <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                    [(ngModel)]="device?.metadata.telemetry_frequency.min" name="min_frequency"
-                    placeholder="Minimum Frequency" *ngIf="isSettingsEditable">
-                  <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata?.telemetry_frequency?.min}}</ng-container>
+                <input type="number" class="form-control form-control-sm bg-light border-0 small"
+                  [(ngModel)]="device?.metadata.telemetry_frequency.min" name="min_frequency"
+                  placeholder="Minimum Frequency" *ngIf="isSettingsEditable">
+                <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata?.telemetry_frequency?.min}}</ng-container>
               </td>
             </tr>
             <tr>
               <td style="width: 50%;">Max Value: </td>
               <td>
                 <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata?.telemetry_frequency?.max}}</ng-container>
-                  <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                    [(ngModel)]="device?.metadata.telemetry_frequency.max" name="max_frequency"
-                    placeholder="Maximum Frequency" *ngIf="isSettingsEditable">
+                <input type="number" class="form-control form-control-sm bg-light border-0 small"
+                  [(ngModel)]="device?.metadata.telemetry_frequency.max" name="max_frequency"
+                  placeholder="Maximum Frequency" *ngIf="isSettingsEditable">
               </td>
             </tr>
             <tr>
               <td style="width: 50%;">Default Value: </td>
               <td>
-                <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata?.telemetry_frequency?.average}}</ng-container>
-                  <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                    [(ngModel)]="device?.metadata.telemetry_frequency.average" name="avrg_frequency"
-                    placeholder="Average Frequency" *ngIf="isSettingsEditable">
+                <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata?.telemetry_frequency?.average}}
+                </ng-container>
+                <input type="number" class="form-control form-control-sm bg-light border-0 small"
+                  [(ngModel)]="device?.metadata.telemetry_frequency.average" name="avrg_frequency"
+                  placeholder="Average Frequency" *ngIf="isSettingsEditable">
               </td>
             </tr>
           </tbody>
         </table>
-      </div>
-    </div>
-    <div class="col-xl-6 col-lg-6">
-
-      <!-- Page Heading -->
-      <h1 class="h6 mb-3 text-secondary-400"><b>Measurement Frequency Operating Range (In Sec):</b></h1>
-      <div class="table-responsive">
-        <table class="table table-bordered  table-striped text-gray-800" id="dataTable" width="100%" cellspacing="0">
+      </accordion-group>
+      <accordion-group heading="">
+        <ng-container accordion-heading>
+          <a class="btn">
+            Measurement Frequency Operating Range (In Sec):
+          </a>
+        </ng-container>
+        <table class="table table-hover">
           <tbody>
             <tr>
               <td style="width: 50%;">Min Value: </td>
               <td>
-                <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata?.measurement_frequency?.min}}</ng-container>
-                  <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                    [(ngModel)]="device?.metadata.measurement_frequency.min" name="min_frequency"
-                    placeholder="Minimum Frequency" *ngIf="isSettingsEditable">
+                <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata?.measurement_frequency?.min}}
+                </ng-container>
+                <input type="number" class="form-control form-control-sm bg-light border-0 small"
+                  [(ngModel)]="device?.metadata.measurement_frequency.min" name="min_frequency"
+                  placeholder="Minimum Frequency" *ngIf="isSettingsEditable">
               </td>
             </tr>
             <tr>
               <td style="width: 50%;">Max Value: </td>
               <td>
-                <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata?.measurement_frequency?.max}}</ng-container>
-                  <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                    [(ngModel)]="device?.metadata.measurement_frequency.max" name="max_frequency"
-                    placeholder="Maximum Frequency" *ngIf="isSettingsEditable">
+                <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata?.measurement_frequency?.max}}
+                </ng-container>
+                <input type="number" class="form-control form-control-sm bg-light border-0 small"
+                  [(ngModel)]="device?.metadata.measurement_frequency.max" name="max_frequency"
+                  placeholder="Maximum Frequency" *ngIf="isSettingsEditable">
               </td>
             </tr>
             <tr>
               <td style="width: 50%;">Default Value: </td>
               <td>
-                <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata?.measurement_frequency?.average}}</ng-container>
-                  <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                    [(ngModel)]="device?.metadata.measurement_frequency.average" name="avrg_frequency"
-                    placeholder="Average Frequency" *ngIf="isSettingsEditable">
+                <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata?.measurement_frequency?.average}}
+                </ng-container>
+                <input type="number" class="form-control form-control-sm bg-light border-0 small"
+                  [(ngModel)]="device?.metadata.measurement_frequency.average" name="avrg_frequency"
+                  placeholder="Average Frequency" *ngIf="isSettingsEditable">
               </td>
             </tr>
           </tbody>
         </table>
-      </div>
-    </div>
-  </div>
-  <div class="row mt-1 mx-auto">
-
-
+      </accordion-group>
+    </accordion>
   </div>
 </div>

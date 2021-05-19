@@ -1,11 +1,14 @@
-<div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-3">
-  <h5 class="mb-0 text-gray-800">Application Menu Settings
-    <a href="javascript:void(0)" title="Edit Tags" *ngIf="!isAppSettingsEditable" title="Edit"
+<div class="tab-bar">
+  <div class="d-flex">
+    <div class="main-heading">Application Menu Settings
+      <a href="javascript:void(0)" title="Edit Tags" *ngIf="!isAppSettingsEditable" title="Edit"
       (click)="isAppSettingsEditable = true;"><i class="fa fa-edit"></i></a>
     <a href="javascript:void(0)" title="Cancel" *ngIf="isAppSettingsEditable" title="Cancel"
       (click)="onCancelClick();"><i class="fa fa-times"></i></a>
-  </h5>
+    </div>
 </div>
+</div>
+<div class="tableFixHead table-responsive">
 <accordion class="mb-2"  [closeOthers]="'true'">
   <accordion-group heading="" [panelClass]="'customClass'">
     <ng-container accordion-heading>
@@ -333,4 +336,4 @@
   </accordion-group>
 
 </accordion>
-
+</div>

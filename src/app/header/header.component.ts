@@ -133,8 +133,13 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   navigateToDashboard(type) {
-    const url = 'applications/' + this.contextApp.app + '/dashboard#' + type;
+    if (type === 'telemetry' ) {
+    const url = 'applications/' + this.contextApp.app + '/dashboard';
     this.router.navigateByUrl(url);
+    } else if (type === 'alert') {
+      const url = 'applications/' + this.contextApp.app + '/alerts/visualization';
+      this.router.navigateByUrl(url);
+    }
   }
 
   openChangePasswordModal() {

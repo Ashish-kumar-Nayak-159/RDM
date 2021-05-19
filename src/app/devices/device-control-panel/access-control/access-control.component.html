@@ -1,25 +1,42 @@
-<!-- Page Heading -->
-<!-- <div class="d-sm-flex align-items-center justify-content-between mb-4 pt-3">
-  <h1 class="h3 mb-0 text-gray-800">Access Control</h1>
-</div> -->
-<div class="topnavbar bg-white py-2" >
-<div class="row">
-
-  <ul class="nav">
-    <li class="nav-item">
-      <a class="nav-link" href="javascript:void(0)" (click)="openAddUserModal()">
-        <i class="fa fa-fw fa-plus"></i>
-        <span class="text-secondary">Add</span></a>
-    </li>
-     </ul>
-  <!-- Divider
-    <hr class="sidebar-divider d-none d-md-block mt-n1">-->
-
+<div class="tab-bar">
+  <div class="">
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)" (click)="openAddUserModal()">
+          <i class="fa fa-fw fa-plus"></i>
+          <span class="text-secondary">Add</span></a>
+      </li>
+       </ul>
 </div>
-<div class="row">
-  <div class="col-lg-12">
-    <hr class="solid">
-  </div>
+</div>
+
+<div class="table-responsive">
+  <div class="tableFixHead" >
+    <table class="table table-hover" cellspacing="0" width="100%" >
+      <thead >
+        <tr>
+          <th class="sticky-top">No</th>
+          <th>Email</th>
+          <th>Name</th>
+          <th>Role</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of deviceUsers;let i = index">
+          <td>{{i + 1}}</td>
+          <td>{{user.user_email}}</td>
+          <td>{{user.user_name}}</td>
+          <td>{{user?.role || 'NA'}}</td>
+          <td>
+            <a href="javascript:void(0)" (click)="openConfirmModal(user)" class="mr-1"
+              title="Delete User Access">
+                <i class="fa fa-fw fa-trash" ></i>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 </div>
 </div>
 

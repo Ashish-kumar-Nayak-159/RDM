@@ -19,6 +19,7 @@ export class TagsComponent implements OnInit, OnDestroy {
   @Input() device: Device = new Device();
   @Input() tileData: any;
   @Input() menuDetail: any;
+  @Input() componentState: any;
   originalDevice: Device = new Device();
   deviceCustomTags: any[] = [];
   reservedTags: any[] = [];
@@ -30,7 +31,7 @@ export class TagsComponent implements OnInit, OnDestroy {
   tagsListToNotEdit = ['app', 'created_date', 'created_by', 'manufacturer',
   'serial_number', 'mac_address', 'protocol', 'cloud_connectivity'];
   userData: any;
-  pageType: string;
+  // pageType: string;
   hierarchyTags: any[] = [];
   contextApp: any;
   deviceType: any;
@@ -65,16 +66,13 @@ export class TagsComponent implements OnInit, OnDestroy {
     this.device = JSON.parse(JSON.stringify(device));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.subscriptions.push(this.route.paramMap.subscribe(async params => {
-      this.pageType = params.get('listName').toLowerCase();
-      this.getDeviceData();
-    }));
+    this.getDeviceData();
   }
 
   getDeviceData() {
     this.device.tags = undefined;
     let methodToCall;
-    if (this.pageType === 'nonipdevices') {
+    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
       const obj = {
         gateway_id: this.device.gateway_id,
         app: this.contextApp.app,
@@ -87,7 +85,7 @@ export class TagsComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(methodToCall.subscribe(
       async (response: any) => {
-        if (this.pageType === 'nonipdevices' && response && response.tags) {
+        if (this.componentState === CONSTANTS.NON_IP_DEVICE && response && response.tags) {
             this.device.tags = JSON.parse(JSON.stringify(response.tags));
         } else {
           this.device = JSON.parse(JSON.stringify(response));
@@ -268,7 +266,7 @@ export class TagsComponent implements OnInit, OnDestroy {
       sync_with_cache: this.device?.tags?.display_name !== this.originalDevice?.tags?.display_name
     };
     let methodToCall;
-    if (this.pageType === 'nonipdevices') {
+    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
       methodToCall = this.deviceService.updateNonIPDeviceTags(obj, this.contextApp.app);
     } else {
       methodToCall = this.deviceService.updateDeviceTags(obj, this.contextApp.app);
@@ -308,7 +306,7 @@ export class TagsComponent implements OnInit, OnDestroy {
       tags: this.device.tags
     };
     let methodToCall;
-    if (this.pageType === 'nonipdevices') {
+    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
       methodToCall = this.deviceService.updateNonIPDeviceTags(obj, this.contextApp.app);
     } else {
       methodToCall = this.deviceService.updateDeviceTags(obj, this.contextApp.app);

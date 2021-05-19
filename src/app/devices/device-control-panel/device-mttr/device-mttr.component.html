@@ -1,91 +1,54 @@
-<div class="topnavbar-c2d bg-white py-2" >
-  <div class="row">
+<div class="tab-bar">
+  <div class="">
     <ul class="nav">
-        <!-- Nav Item - Tables -->
-        <li class="nav-item" [ngClass]="{'active': displayMode === 'network_failure'}">
-          <a class="nav-link"  href="javascript:void(0)" (click)="onTabChange('network_failure');displayMode = 'network_failure'">
-            <i class="fa fa-fw fa-angle-right"></i>
-            <span>Network Failure Events</span></a>
-        </li>
-        <li class="nav-item"  [ngClass]="{'active': displayMode === 'machine_failure'}">
-          <a class="nav-link"  href="javascript:void(0)" (click)="onTabChange('machine_failure');displayMode = 'machine_failure'">
-            <i class="fa fa-fw fa-cog"></i>
-            <span>Machine Failure Events</span></a>
-        </li>
-      <!-- Nav Item - Charts -->
-      <li class="nav-item" [ngClass]="{'active': displayMode === 'history'}">
-        <a class="nav-link"  href="javascript:void(0)" (click)="onTabChange('history');displayMode = 'history'">
-          <i class="fa fa-fw fa-eye"></i>
-          <span>Historical MTTR</span></a>
+      <!-- Nav Item - Tables -->
+      <li class="nav-item" [ngClass]="{'active': displayMode === 'network_failure'}">
+        <a class="nav-link"  href="javascript:void(0)" (click)="onTabChange('network_failure');displayMode = 'network_failure'">
+          <i class="fa fa-fw fa-angle-right"></i>
+          <span>Network Failure Events</span></a>
       </li>
-    </ul>
-  </div>
-  <div class="row">
-    <div class="col-lg-12">
-      <hr class="solid">
+      <li class="nav-item"  [ngClass]="{'active': displayMode === 'machine_failure'}">
+        <a class="nav-link"  href="javascript:void(0)" (click)="onTabChange('machine_failure');displayMode = 'machine_failure'">
+          <i class="fa fa-fw fa-cog"></i>
+          <span>Machine Failure Events</span></a>
+      </li>
+    <!-- Nav Item - Charts -->
+    <li class="nav-item" [ngClass]="{'active': displayMode === 'history'}">
+      <a class="nav-link"  href="javascript:void(0)" (click)="onTabChange('history');displayMode = 'history'">
+        <i class="fa fa-fw fa-eye"></i>
+        <span>Historical MTTR</span></a>
+    </li>
+  </ul>
     </div>
-  </div>
-  </div>
+    </div>
 
+<div class="tab-bar"  *ngIf="displayMode">
+  <div class="">
+    <form class="form-inline">
+      <div class="form-group" *ngIf="displayMode !== 'history'">
+        <input type="number" min="1" id="countId"
+        name="count" class="form-control form-control-sm active record-input"
+        [(ngModel)]="filterObj.count" name="count" *ngIf="!filterObj.countNotShow">
+      </div>
+      <div class="form-group" >
+        <input type="text"  class="form-control form-control-sm active" daterangepicker name="daterangeInput"  [options]="options" (selected)="selectedDate($event, daterange)" />
+      </div>
+      <div class="form-group" >
+      <button type="button" class="btn btn-sm searchBtn btn-primary" title="Search" (click)="searchEvents(this.filterObj)" ><i class="fa fa-search fa-sm"></i></button>
+      </div>
+      <div class="form-group" >
+      <button type="button" class="btn btn-sm searchBtn btn-primary" title="Clear Filters" (click)="clear();">
+        <img class="filter-clear-icon" src="./assets/img/filter.svg"></button>
+      </div>
+      <h6 class="flex-end" *ngIf="displayMode === 'machine_failure' && averageMTTR && averageMTTR > 0 && isFilterSelected"><b> MTTR: {{averageMTTRString}}</b></h6>
+     </form>
+    </div>
+    </div>
 
-<div class="con-pad-c2d" style="max-height: calc(100vh - 6rem);">
+    <div class="table-responsive">
+      <div class="tableFixHead" >
   <ng-container *ngIf="displayMode === 'network_failure' || displayMode === 'machine_failure' ">
-
-    <div class="row">
-      <div class="col-xl-12 col-md-12 mb-12" >
-          <form>
-            <div class="form-group form-inline my-1">
-              <input type="number" min="1" class="form-control form-control-sm mr-1 my-1 record-input" id="inputEmail4" placeholder="No of Records"
-              [(ngModel)]="filterObj.count" name="count" *ngIf="!filterObj.countNotShow">
-              <div class="bg-dateRow form-group form-inline" id="dateRow"
-              [style.width]="(filterObj.dateOption === 'date' ? '23rem' : (filterObj.dateOption === 'date range' ? '33rem' : ''))">
-              <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
-              [(ngModel)]="filterObj.dateOption" name="dateOptions" (change)="onDateOptionChange()">
-                <option [ngValue]="undefined"> Quick Date Options </option>
-                <option [ngValue]="'24 hour'">Last 24 hours</option>
-                <option [ngValue]="'last 7 days'">Last 7 Days</option>
-                <option [ngValue]="'this week'">This Week</option>
-                <option [ngValue]="'this month'">This Month</option>
-                <option [ngValue]="'date'">Select Date</option>
-                <option [ngValue]="'date range'">Select Date Range</option>
-              </select>
-              <!-- <lab class="ml-1 mr-1">OR</lab el> -->
-              <ng-container *ngIf="filterObj.dateOption === 'date'">
-                <input #dt2Input [owlDateTime]="dt2" [max]="today"  (dateTimeChange)="onSingleDateChange($event);"
-                  class="form-control form-control-sm mx-2 my-1 w-10" [owlDateTimeTrigger]="dt2"
-                  placeholder="Select Date">
-                <span [owlDateTimeTrigger]="dt2"  class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
-                <owl-date-time #dt2 [pickerType]="'calendar'"></owl-date-time>
-              </ng-container>
-              <ng-container *ngIf="filterObj.dateOption === 'date range'">
-              <input [owlDateTime]="dt1" [selectMode]="'range'" [max]="today" #dt1Input
-              (dateTimeChange)="onDateChange($event)" class="form-control form-control-sm mx-1 my-1 date-range-picket-width" [owlDateTimeTrigger]="dt1" placeholder="Select Date Time">
-              <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
-              <owl-date-time #dt1></owl-date-time>
-              </ng-container>
-            </div>
-              <button type="button" class="btn btn-warning btn-sm ml-3 mr-1 my-1" title="Search" (click)="searchEvents(this.filterObj)" ><i class="fa fa-search fa-sm"></i></button>
-              <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear Filters" (click)="clear();">
-                <img class="filter-clear-icon" src="./assets/img/filter.svg"></button>
-              <h6 class="pull-right" *ngIf="displayMode === 'machine_failure' && averageMTTR && averageMTTR > 0 && isFilterSelected"><b> MTTR: {{averageMTTRString}}</b></h6>
-            </div>
-           </form>
-      </div>
-      </div>
-
-      <div class="row">
-        <div class="col-lg-12">
-          <hr class="solid">
-        </div>
-      </div>
-
-
-  <div class="row mx-auto">
-
-    <div class="table-responsive  table-wrapper" style="max-height: calc(100vh - 17rem)">
-      <!-- <app-table [tableData]="lifeCycleEvents" [tableConfig]="eventTableConfig"
-        [isTableFilterSelected]="isFilterSelected" [isTableDataLoading]="isLifeCycleEventsLoading"></app-table> -->
-        <table class="table table-bordered  table-striped" id="deviceTable" width="100%" cellspacing="0">
+        <table class="table table-hover " >
           <thead>
             <th></th>
             <th>Event Start Time</th>
@@ -134,60 +97,16 @@
             </ng-container>
           </tbody>
         </table>
-    </div>
-  </div>
   </ng-container>
   <ng-container *ngIf="displayMode === 'history'">
-    <div class="row">
-      <div class="col-xl-12 col-md-12 mb-12" >
-          <form>
 
-            <div class="form-group form-inline my-1" >
-              <div class="bg-dateRow form-group form-inline" id="dateRow"
-              [style.width]="(filterObj.dateOption === 'date' ? '23rem' : (filterObj.dateOption === 'date range' ? '33rem' : ''))">
-              <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
-              [(ngModel)]="filterObj.dateOption" name="dateOptions" (change)="onDateOptionChange()">
-                <option [ngValue]="undefined"> Quick Date Options </option>
-                <option [ngValue]="'last 4 weeks'">Last 4 Weeks</option>
-                <option [ngValue]="'this month'">This Month</option>
-                <option [ngValue]="'last month'">Last Month</option>
-                <option [ngValue]="'last 3 month'">Last 3 Months</option>
-                <option [ngValue]="'last 6 month'">Last 6 Months</option>
-                <option [ngValue]="'last 12 month'">Last 12 Months</option>
-                <option [ngValue]="'date range'">Select Date Range</option>
-              </select>
-              <ng-container *ngIf="filterObj.dateOption === 'date range'">
-              <input [owlDateTime]="dt3" [selectMode]="'range'" [max]="today" #dt3Input
-              (dateTimeChange)="onDateChange($event)" class="form-control form-control-sm mx-1 my-1 date-range-picket-width" [owlDateTimeTrigger]="dt3" placeholder="Select Date Time">
-              <span [owlDateTimeTrigger]="dt3" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
-              <owl-date-time #dt3  [pickerType]="'calendar'" ></owl-date-time>
-              </ng-container>
-              <select class="form-control form-control-sm mx-1 my-1" id="date_frequency"
-              [(ngModel)]="filterObj.date_frequency" name="date_frequency" >
-                <option [ngValue]="undefined">Date Frequency </option>
-                <option [ngValue]="'daily'">Daily</option>
-                <option [ngValue]="'weekly'">Weekly</option>
-              </select>
-              </div>
-              <button type="button" class="btn btn-warning btn-sm ml-3 mr-1 my-1" title="Search" (click)="searchEvents(this.filterObj)" ><i class="fa fa-search fa-sm"></i></button>
-              <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear Filters" (click)="clear();">
-              <img class="filter-clear-icon" src="./assets/img/filter.svg"></button>
-            </div>
-          </form>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-12">
-        <hr class="solid">
-      </div>
-    </div>
-    <div class="row mx-auto">
       <ng-container *ngIf="isLifeCycleEventsLoading"> <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></ng-container>
       <ng-container  *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">Select filter and press search button to load the TTR data.</ng-container>
       <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected"> No MTTR Data found.</ng-container>
       <div id="chartdiv" *ngIf="!isLifeCycleEventsLoading && lifeCycleEvents.length > 0" [ngStyle]="{'width': '100%', 'height': '26rem'}"></div>
-    </div>
+
   </ng-container>
+</div>
 </div>
 
 

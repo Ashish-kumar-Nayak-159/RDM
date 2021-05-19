@@ -1,15 +1,16 @@
-<div class="topnavbar bg-white py-2" >
-<app-filter [filterObj]="heartBeatFilter" (filterSearch)="searchHeartBeat($event)"></app-filter>
+<div class="tab-bar">
+  <div class="">
+    <app-filter [filterObj]="heartBeatFilter" [componentState]="componentState" (filterSearch)="searchHeartBeat($event)"></app-filter>
 </div>
-<div class="con-pad">
-<div class="row mx-auto">
+</div>
 
-  <div class="table-responsive" >
+<div class="table-responsive">
+  <div class="tableFixHead" >
     <app-table [tableData]="heartbeats" [tableConfig]="heartbeatTableConfig" [isTableFilterSelected]="isFilterSelected"
-    [isTableDataLoading]="isHeartbeatLoading" (viewMessageEvent)="openHeratbeatMessageModal($event)"></app-table>
+    [isTableDataLoading]="isHeartbeatLoading"  (viewMessageEvent)="openHeratbeatMessageModal($event)"></app-table>
   </div>
 </div>
-</div>
+
 <div class="modal right fade" id="heartbeatMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <app-message-modal *ngIf="modalConfig" [bodyMessage]="selectedHeartbeat?.message" [headerMessage]="'Heartbeat Message'"

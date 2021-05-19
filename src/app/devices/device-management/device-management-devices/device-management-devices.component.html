@@ -1,45 +1,47 @@
-<div class="topnavbar pl-0" style="margin-top: 1.5rem">
-  <div class="card row bg-white">
-    <div class="col-xl-12 col-md-12 mb-12">
-      <form class="row">
-        <div class="col-md-12">
-          <div class="form-group form-inline my-1 ml-4">
-            Single Operations:
-            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="openDeviceCreateModal()"> Provision</a>
-            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="onSingleOperationClick('Deprovision')"> Deprovision</a>
-            <a class="ml-3 blue-font" href="javascript:void(0)"  (click)="onSingleOperationClick('Enable')"> Enable</a>
-            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="onSingleOperationClick('Disable')"> Disable</a>
-            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="onSingleOperationClick('Package Management')"> Package Management</a>
-            <!-- <a class="ml-3 blue-font" href="javascript:void(0)"> Regenerate Symmetric Keys</a>
-            <a class="ml-3 blue-font" href="javascript:void(0)"> Revoke Security Certificate</a> -->
-          </div>
-          <div class="form-group form-inline my-1 ml-4">
-            Bulk Operations:
-            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="onBulkOperationClick('Provision')"> Provision</a>
-            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="onBulkOperationClick('Deprovision')"> Deprovision</a>
-            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="onBulkOperationClick('Enable')"> Enable</a>
-            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="onBulkOperationClick('Disable')"> Disable</a>
-            <a class="ml-3 blue-font" href="javascript:void(0)" (click)="onBulkOperationClick('Package Management')"> Package Management</a>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-<!-- DataTales Example -->
-<div class="contain-pad" style="margin-top: 4.5rem;max-height: calc(100vh - 11rem)!important;">
-  <div class="mb-4 ">
+<div class="tab-bar">
+  <ul class="nav ml-n3">
+    <li class="nav-item">
+     <a class="nav-link" href="javascript:void(0)" (click)="openDeviceCreateModal()" >
+     <i class="fas fa-fw fa-plus-circle"></i>
+     <span class="text-secondary">Provision</span></a>
+    </li>
+    <li class="nav-item">
+     <a class="nav-link" href="javascript:void(0)" (click)="onSingleOperationClick('Deprovision')" >
+     <i class="fas fa-fw fa-times-circle"></i>
+     <span class="text-secondary">Deprovision</span></a>
+    </li>
+    <li class="nav-item">
+     <a class="nav-link" href="javascript:void(0)"  (click)="onSingleOperationClick('Enable')">
+     <i class="fas fa-fw fa-toggle-on"></i>
+     <span class="text-secondary">Enable</span></a>
+    </li>
+    <li class="nav-item">
+     <a class="nav-link" href="javascript:void(0)" (click)="onSingleOperationClick('Disable')">
+     <i class="fas fa-fw fa-toggle-off"></i>
+     <span class="text-secondary delete-row">Disable</span></a>
+    </li>
+   <li class="nav-item">
+     <a class="nav-link" href="javascript:void(0)" (click)="onSingleOperationClick('Package Management')">
+     <!--<i class="fad fa-fw fa-sync"></i>-->
+     <i class="fas fa-fw fa">&#xf021;</i>
+     <span class="text-secondary delete-row">Package Management</span></a>
+    </li>
+   </ul>
 
-    <div class="">
-      <div class="table-responsiven table-wrapper" id="table-wrapper" style="max-height: calc(100vh - 16rem)">
-        <table class="table table-bordered  table-striped" id="deviceTable" width="100%" cellspacing="0">
+</div>
+
+<!-- DataTales Example -->
+<div class="table-responsive">
+
+  <div class="tableFixHead" style="max-height: calc(100vh - 12.5rem)">
+            <table class="table table-hover" >
           <thead>
             <th class="text-center"><input type="checkbox" name="visibleall"
               id="visibleall" (change)="onClickOfDeviceAllCheckbox()" [(ngModel)]="isAllDeviceSelected"
               title="{{isAllDeviceSelected ? 'Deselect All' : 'Select All'}}"/></th>
-            <th></th>
-            <th>{{(tileData && tileData[1] ? tileData[1]?.value : '') + ' Name' }}</th>
-            <th>{{(tileData && tileData[1] ? tileData[1]?.value : '') + ' ID' }}</th>
+            <th>No</th>
+            <th>{{(tabData?.table_key || 'Asset') + ' Name' }}</th>
+            <th>{{(tabData?.table_key || 'Asset') + ' ID' }}</th>
             <th>Hierarchy</th>
           </thead>
           <tbody>
@@ -59,7 +61,7 @@
             <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading">
               <tr>
                 <td colspan="5">
-                  No {{(tileData && tileData[1] ? tileData[1]?.value : '')}} data found.
+                  No {{(tabData?.table_key || 'Asset')}} data found.
                 </td>
               </tr>
             </ng-container>
@@ -80,11 +82,9 @@
       <!-- <app-common-table *ngIf="tableConfig" [tableData]="devicesList" [tableConfig]="tableConfig" [isTableFilterSelected]="isFilterSelected"
      [isTableDataLoading]="isDeviceListLoading" (viewMessageEvent)="onTableFunctionCall($event)"></app-common-table> -->
     </div>
-  </div>
-</div>
 
 <app-add-device *ngIf="isOpenDeviceCreateModal"  [gateways]="gateways" (getDeviceEmit)="devicesList = [];getDevices()"
-[componentState]="componentState" [tileData]="tileData" (cancelModal)="onCreateDeviceCancelModal()"></app-add-device>
+[componentState]="type" [tileData]="tabData" (cancelModal)="onCreateDeviceCancelModal()"></app-add-device>
 
 <div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" style="z-index: 1400;">
   <div class="modal-dialog" role="document">
@@ -157,7 +157,7 @@ style="z-index: 1200;">
                   Install Package
                 </button>
               </ng-container>
-              <p class="mt-n3">
+              <p class="">
               <a
                   class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm mb-1 float-right"
                   href="javascript:void(0)"
@@ -166,8 +166,8 @@ style="z-index: 1200;">
                   ><i class="fa fa- fa-sm text-white-50"></i> Install</a
                 >
               </p>
-              <div class="table-responsive table-wrapper" id="table-wrapper" style="max-height: 20rem;">
-                <table class="table table-bordered table-striped" id="deviceTable" width="100%" cellspacing="0">
+
+                <table class="table table-hover">
                   <thead>
                     <th></th>
                     <th>App</th>
@@ -193,7 +193,7 @@ style="z-index: 1200;">
                   </tbody>
 
                 </table>
-              </div>
+
             </accordion-group>
             <accordion-group heading="" [panelClass]="'customClass'">
               <ng-container  accordion-heading>
@@ -201,7 +201,7 @@ style="z-index: 1200;">
                   Upgrade/Downgrade Package
                 </button>
               </ng-container>
-              <p class="mt-n3 float-right">
+              <p class=" float-right">
                 <a
                   class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm mr-2"
                   href="javascript:void(0)"
@@ -209,17 +209,11 @@ style="z-index: 1200;">
                   [class.disabled]="!selectedDevicePackage"
                   ><i class="fa fa- fa-sm text-white-50"></i> Upgrade/Downgrade</a
                 >
-                <!-- <a
-                  class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm"
-                  href="javascript:void(0)"
-                  (click)="openConfirmDialog('Downgrade')"
-                  [class.disabled]="!selectedDevicePackage"
-                  ><i class="fa fa- fa-sm text-white-50"></i> Downgrade</a
-                >-->
+
               </p>
               <div class="table-responsive table-wrapper" id="table-wrapper" style="max-height: 20rem;">
 
-                <table class="table table-bordered  table-striped" id="deviceTable" width="100%" cellspacing="0">
+                <table class="table table-hover" >
                   <thead>
                     <th></th>
                     <th>App</th>
@@ -254,7 +248,7 @@ style="z-index: 1200;">
                   Uninstall Package
                 </button>
               </ng-container>
-              <p class="mt-n3">
+              <p>
                 <a
                 class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm mb-1 float-right"
                 href="javascript:void(0)"
@@ -263,8 +257,7 @@ style="z-index: 1200;">
                 ><i class="fa fa- fa-sm text-white-50"></i> Uninstall</a
               >
               </p>
-              <div class="table-responsive table-wrapper" id="table-wrapper" style="max-height: 20rem;">
-                <table class="table table-bordered  table-striped" id="deviceTable" width="100%" cellspacing="0">
+                <table class="table table-hover">
                   <thead>
                     <th></th>
                     <th>App</th>
@@ -290,7 +283,6 @@ style="z-index: 1200;">
                   </tbody>
 
                 </table>
-              </div>
             </accordion-group>
           </accordion>
           </ng-container>

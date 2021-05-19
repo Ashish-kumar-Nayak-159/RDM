@@ -1,22 +1,57 @@
-<div class="container-pad">
-<agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" >
-  <agm-marker-cluster
-  imagePath="./assets/img/m">
-<ng-container  *ngFor="let device of devices; let i = index; ">
-  <agm-marker *ngIf="device.latitude && device.longitude"
-  [latitude]="device.latitude" [longitude]="device.longitude"
-  (mouseOver)="onMarkerClick(infowindow, gm)"
-  [iconUrl]="device.icon"
- >
-  <agm-info-window #infowindow >
-    <a class="blue-font ml-2" href="javascript:void(0)" (click)="redirectToDevice(device)">{{device.display_name ? device.display_name: device.device_id}}</a>
-    <!-- <hr>
-    <p><b>MTTR:</b> {{device.mttr}}</p>
-    <p><b>MTBF:</b> {{device.mtbf}}</p> -->
-  </agm-info-window>
-  </agm-marker>
-</ng-container>
-</agm-marker-cluster>
-</agm-map>
+<div class="blue-nav-bar align-items-center">
+  <div class="main-heading">Home</div>
+</div>
+<div class="">
+  <div id="map-container-google-1" class="z-depth-1-half map-container">
+    <div class="form-group select-box-map" >
+      <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
+      (click)="onDeviceFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
+      <i class="fas fa-fw fa-filter fa-sm"></i> Select Hierarchy</button>
+    <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
+      <ng-container *ngFor="
+                  let level of contextApp?.hierarchy?.levels;
+                  let index = index
+                ">
+        <div class="">
+          <select *ngIf="index !== 0" name="{{level}}_{{index}}" class="dropdown-form" id="{{ level }}"
+            [disabled]="contextApp?.user?.hierarchy[level]" [(ngModel)]="configureHierarchy[index]"
+            name="{{ level }}" (change)="onChangeOfHierarchy(index, true)">
+            <option [ngValue]="undefined">
+              Select {{ level }}
+            </option>
+            <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">
+              {{ tag }}
+            </option>
+          </select>
+          <input type="text" *ngIf="index === 0" name="{{level}}_{{index}}" defaultValue="{{ contextApp.app }}"
+            disabled class="dropdown-form" />
+        </div>
+      </ng-container>
+      <!-- <ng-select [items]="devices" class="custom-dropdown" bindLabel="display_name" [clearable]="false"
+        [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
+        dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.device">
+      </ng-select> -->
+      <div class="">
+        <button class="btn btn-sm searchBtn btn-primary" type="button" (click)="onDeviceFilterApply()">Apply</button>
+      </div>
+    </div>
+    </div>
+    <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" >
+      <agm-marker-cluster
+      imagePath="./assets/img/m">
+    <ng-container  *ngFor="let device of mapDevices; let i = index; ">
+      <agm-marker *ngIf="device.latitude && device.longitude"
+      [latitude]="device.latitude" [longitude]="device.longitude"
+      (mouseOver)="onMarkerClick(infowindow, gm)"
+      [iconUrl]="device.icon"
+     >
+      <agm-info-window #infowindow >
+        <a class="blue-font ml-2" href="javascript:void(0)" (click)="redirectToDevice(device)">{{device.display_name ? device.display_name: device.device_id}}</a>
+      </agm-info-window>
+      </agm-marker>
+    </ng-container>
+    </agm-marker-cluster>
+    </agm-map>
+  </div>
 </div>
 

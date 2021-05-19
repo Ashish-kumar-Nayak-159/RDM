@@ -1,3 +1,4 @@
+import { NgSelectModule } from '@ng-select/ng-select';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { AgmMarkerClustererModule } from '@agm/markerclusterer';
 import { VisualizationModule } from './../visualization/visualization.module';
@@ -12,8 +13,8 @@ import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import {MatTableModule} from '@angular/material/table';
 import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 import { GoogleMapsModule } from '@angular/google-maps';
-import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { UiSwitchModule } from 'ngx-ui-switch';
+import { Daterangepicker } from 'ng2-daterangepicker';
 
 import { DeviceControlPanelComponent } from './device-control-panel/device-control-panel.component';
 import { OverviewComponent } from './device-control-panel/overview/overview.component';
@@ -133,7 +134,6 @@ import { GatewayDevicesSettingComponent } from './gateway-control-panel/gateway-
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     GoogleMapsModule,
-    NgMultiSelectDropDownModule.forRoot(),
     UiSwitchModule,
     VisualizationModule,
     NgJsonEditorModule,
@@ -142,7 +142,9 @@ import { GatewayDevicesSettingComponent } from './gateway-control-panel/gateway-
       libraries: ['places']
     }),
     AgmMarkerClustererModule,
-    TabsModule
+    TabsModule,
+    NgSelectModule,
+    Daterangepicker
   ],
   exports: [
     FilterComponent,

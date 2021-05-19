@@ -2,13 +2,8 @@
 
 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top" *ngIf="!isLoginRoute && userData">
 
-  <!-- Sidebar Toggle (Topbar) -->
-  <!-- <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3" (click)="onSideBarToggleTopClick()">
+  <button id="sidebarToggleTop" class="btn btn-link rounded-square mr-3" (click)="onSidebarToggle()">
     <i class="fa fa-bars"></i>
-  </button> -->
-
-  <button id="sidebarToggleTop" class="btn btn-link" (click)="onSidebarToggle()">
-    <i class="fa fa-bars text-primary"></i>
   </button>
 
 
@@ -22,82 +17,23 @@
     <img src="../../assets/img/logo.png" class="d-block img-fluid img-logo">
   </a>
 
-  <!-- <div class="topbar-divider ml-3 mr-4 mt-n2 d-none d-xl-block"></div> -->
-<!--
-  <nav aria-label="breadcrumb" class="d-none d-xl-block">
-    <ol class="breadcrumb py-2 mb-1">
-      <li class="breadcrumb-item active" aria-current="page" >
-        <ng-container *ngFor="let data of breadcrumbData; last as isLast; let i = index;">
-        <a *ngIf="!isLast" href="javascript:void(0)" (click)="onClickOfBreadcrumbItem(data, i)">{{data.title}}</a>
-        <span *ngIf="!isLast">&nbsp;/&nbsp;</span>
-        <a *ngIf="isLast">{{data.title}}</a>
-      </ng-container>
-      </li>
-    </ol>
-  </nav> -->
-
-
-
-  <!-- Topbar Navbar -->
   <ul class="navbar-nav ml-auto">
-
-    <!-- Topbar Search -->
-    <!-- <li class="nav-item ml-3 mt-3">
-      <form class="d-none d-sm-inline-block form-inline navbar-search">
-        <div class="input-group">
-          <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-            aria-label="Search" aria-describedby="basic-addon2">
-          <div class="input-group-append">
-            <button class="btn btn-primary" type="button">
-              <i class="fa fa-search fa-sm"></i>
-            </button>
-          </div>
-        </div>
-      </form>
-    </li> -->
-
-    <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-    <!-- <li class="nav-item dropdown no-arrow d-sm-none">
-      <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown"
-        aria-haspopup="true" aria-expanded="false">
-        <i class="fa fa-search fa-fw"></i>
-      </a> -->
-      <!-- Dropdown - Messages -->
-      <!-- <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
-        <form class="form-inline mr-auto w-100 navbar-search">
-          <div class="input-group">
-            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-              aria-label="Search" aria-describedby="basic-addon2">
-            <div class="input-group-append">
-              <button class="btn btn-primary" type="button">
-                <i class="fa fa-search fa-sm"></i>
-              </button>
-            </div>
-          </div>
-        </form>
-      </div> -->
-    <!-- </li> -->
-
 
     <div class="topbar-divider d-none d-sm-block"></div>
 
     <li class="nav-item mx-1">
       <a class="nav-link" href="javascript:void(0)" title="Telemetry" (click)="navigateToDashboard('telemetry')" id="messagesDropdown" aria-expanded="false">
-        <i class="fa fa-globe fa-fw color-primary"></i>
-        <!-- Counter - Messages -->
+        <i class="fa fa-globe fa-fw  text-dark"></i>
       </a>
 
     </li>
 
     <div class="topbar-divider d-none d-sm-block"></div>
 
-    <!-- Nav Item - Alerts -->
     <li class="nav-item no-arrow mx-1">
       <a class="nav-link" href="javascript:void(0)" title="Alert" (click)="navigateToDashboard('alert')" id="alertsDropdown" aria-expanded="false">
-        <i class="fa fa-bell fa-fw  color-primary"></i>
-        <!-- Counter - Alerts -->
+        <i class="fa fa-bell fa-fw   text-dark"></i>
       </a>
-      <!-- Dropdown - Alerts -->
 
     </li>
 
@@ -112,11 +48,11 @@
         <br/>
         <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{userData?.name}}</span> -->
         <!-- <span class="mr-2 d-none d-lg-block"> -->
-          <img class="img-profile rounded-circle mr-3" src="../../assets/img/user.jpg">
-          <span class=" d-none d-lg-block">
+          <img class="img-profile rounded-circle mr-3" src="../../assets/img/user.png">
+          <span class="d-block">
 
           <span class="text-gray-600">{{userData?.name}}</span>
-          <small class="text-muted-dark d-block ">{{contextApp?.user.role}}</small>
+          <small class="d-block text-gray-400 small">{{contextApp?.user.role}}</small>
         </span>
 
         <!-- <img class="img-profile rounded-circle" src="../../assets/img/user.jpg"> -->
@@ -216,7 +152,7 @@
           <!-- <small class="text-muted-dark d-block ">{{contextApp?.user.role}}</small> -->
         </span>
 
-        <img class="img-profile rounded-circle" src="../../assets/img/user.jpg">
+        <img class="img-profile rounded-circle" src="../../assets/img/user.png">
       </a>
       <!-- Dropdown - User Information -->
       <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">

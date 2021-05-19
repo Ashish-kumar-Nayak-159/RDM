@@ -1,6 +1,6 @@
+import { CONSTANTS } from './../../../app.constants';
 import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { CONSTANTS } from 'src/app/app.constants';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { CommonService } from 'src/app/services/common.service';
 import { DeviceService } from 'src/app/services/devices/device.service';
@@ -19,9 +19,10 @@ export class AccessControlComponent implements OnInit, OnChanges {
   apiSubscriptions: any[] = [];
   selectedUser: any;
   @Input() device: any;
+  @Input() componentState: any;
   deviceUsers: any[] = [];
   deviceUserForDelete: any;
-  pageType: string;
+  // pageType: string;
   isUpdateAPILoading: boolean;
   isAddUserModalOpen = false;
   constructor(
@@ -34,9 +35,6 @@ export class AccessControlComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.apiSubscriptions.push(this.route.paramMap.subscribe(async params => {
-      this.pageType = params.get('listName').toLowerCase();
-    }));
   }
 
   async ngOnChanges(changes) {
@@ -60,7 +58,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
   }
 
   getApplicationUsers() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
     this.appUsers = [];
     this.apiSubscriptions.push(this.applicationService.getApplicationUsers(this.contextApp.app).subscribe(
       (response: any) => {
@@ -144,7 +142,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
     this.isUpdateAPILoading = true;
     let methodToCall;
     this.device['sync_with_cache'] = true;
-    if (this.pageType === 'nonipdevices') {
+    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
       methodToCall = this.deviceService.updateNonIPDeviceTags(this.device, this.contextApp.app);
     } else {
       methodToCall = this.deviceService.updateDeviceTags(this.device, this.contextApp.app);

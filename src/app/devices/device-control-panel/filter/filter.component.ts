@@ -1,45 +1,53 @@
 import { Subscription } from 'rxjs';
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from './../../../app.constants';
-import { ActivatedRoute } from '@angular/router';
-import { DeviceService } from 'src/app/services/devices/device.service';
 import * as moment from 'moment';
+import { DaterangepickerComponent } from 'ng2-daterangepicker';
+
 
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.css']
 })
-export class FilterComponent implements OnInit, OnDestroy {
+export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() filterObj: any;
+  @Input() componentState: any;
   originalFilterObj: any = {};
   userData: any;
   @Output() filterSearch: EventEmitter<any> = new EventEmitter<any>();
-  appName: any;
-  pageType: string;
+  contextApp: any;
   constantData: CONSTANTS;
   devices: any[] = [];
-  @ViewChild('dtInput1', {static: false}) dtInput1: any;
-  @ViewChild('dtInput2', {static: false}) dtInput2: any;
+  @ViewChild(DaterangepickerComponent, {static: false}) datepicker: DaterangepickerComponent;
   today = new Date();
   subscriptions: Subscription[] = [];
+  daterange: any = {};
+  options: any = {
+    locale: { format: 'DD-MM-YYYY HH:mm' },
+    alwaysShowCalendars: false,
+    timePicker: true,
+    ranges: {
+      'Last 5 Mins': [moment().subtract(5, 'minutes'), moment()],
+      'Last 30 Mins': [moment().subtract(30, 'minutes'), moment()],
+      'Last 1 hour': [moment().subtract(1, 'hour'), moment()],
+      'Last 24 hours': [moment().subtract(24, 'hours'), moment()],
+      'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+      'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+      'This Month': [moment().startOf('month'), moment().endOf('month')],
+      'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    }
+  };
   constructor(
-    private commonService: CommonService,
-    private route: ActivatedRoute,
-    private deviceService: DeviceService
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.subscriptions.push(this.route.paramMap.subscribe(params => {
-      this.appName = params.get('applicationId');
-      this.filterObj.app = this.appName;
-      this.pageType = params.get('listName');
-      this.pageType = this.pageType.slice(0, -1);
-    }));
-
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.filterObj.app = this.contextApp.app;
     if (this.filterObj.gateway_id) {
      // this.getDevicesListByGateway();
     }
@@ -48,47 +56,18 @@ export class FilterComponent implements OnInit, OnDestroy {
     }
     this.originalFilterObj = {};
     this.originalFilterObj = {...this.filterObj};
+
   }
 
-
-  onDateOptionChange() {
-    if (this.filterObj.dateOption !== 'custom') {
-      this.filterObj.from_date = undefined;
-      this.filterObj.to_date = undefined;
-    }
-    if (this.dtInput1) {
-      this.dtInput1.value = null;
-    }
-    if (this.dtInput2) {
-      this.dtInput2.value = null;
-    }
+  ngAfterViewInit() {
+    // this.datepicker.datePicker.setStartDate(null);
+    // this.datepicker.datePicker.setEndDate(null);
   }
 
-  onDateChange(event) {
-    this.filterObj.from_date = moment(event.value[0]).second(0).utc();
-    this.filterObj.to_date = moment(event.value[1]).second(0).utc();
-    if (this.dtInput2) {
-      this.dtInput2.value = null;
-    }
-    if (this.filterObj.dateOption !== 'date range') {
-      this.filterObj.dateOption = undefined;
-    }
-  }
-
-  onSingleDateChange(event) {
-    this.filterObj.from_date = moment(event.value).utc();
-    this.filterObj.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
-    const to = this.filterObj.to_date.unix();
-    const current = (moment().utc()).unix();
-    if (current < to) {
-      this.filterObj.to_date = moment().utc();
-    }
-    if (this.dtInput1) {
-      this.dtInput1.value = null;
-    }
-    if (this.filterObj.dateOption !== 'date') {
-      this.filterObj.dateOption = undefined;
-    }
+  selectedDate(value: any, datepicker?: any) {
+    this.filterObj.from_date = moment(value.start).utc().unix();
+    this.filterObj.to_date = moment(value.end).utc().unix();
+    console.log(this.filterObj);
   }
 
   search() {
@@ -97,17 +76,16 @@ export class FilterComponent implements OnInit, OnDestroy {
 
   clear() {
     // this.filterSearch.emit(this.originalFilterObj);
+    // this.datepicker.datePicker.setStartDate(null);
+    // this.datepicker.datePicker.setEndDate(null);
     this.filterObj = {};
     this.filterObj = {...this.originalFilterObj};
-    if (this.dtInput1) {
-      this.dtInput1.value = null;
-    }
-    if (this.dtInput2) {
-      this.dtInput2.value = null;
-    }
+    console.log(this.filterObj);
   }
 
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
+
+
 }

@@ -1,3 +1,5 @@
+import { Daterangepicker } from 'ng2-daterangepicker';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { UiSwitchModule } from 'ngx-ui-switch';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
@@ -22,7 +24,9 @@ import { CommonCustomModule } from '../common/common.module';
     OwlNativeDateTimeModule,
     AccordionModule.forRoot(),
     CommonCustomModule,
-    UiSwitchModule
+    UiSwitchModule,
+    NgSelectModule,
+    Daterangepicker
   ],
   providers: [
     {provide: OWL_DATE_TIME_LOCALE, useValue: {useUtc: true}}

@@ -1,296 +1,258 @@
-<div class="container-tab-pad" style="margin-top: 2rem!important;overflow-y: hidden;">
-<tabset>
-  <tab heading="Pre-Generated {{tileData && tileData[0] ? tileData[0]?.value : ''}}" id="tab1" (selectTab)="onTabSelect('pre-generated')">
-    <app-pre-generated-reports *ngIf="tabType === 'pre-generated'"></app-pre-generated-reports>
-  </tab>
-  <tab heading="Custom {{tileData && tileData[0] ? tileData[0]?.value : ''}}" (selectTab)="onTabSelect('custom')">
-    <ng-container *ngIf="tabType === 'custom'">
-    <div class="topnavbar pl-0" style="top:5.5rem;" *ngIf="isFilterOpen">
-      <div class="card row bg-white"  >
-        <div class="col-xl-12 mb-12">
-          <form>
-            <div class="d-flex form-group form-inline my-1 mx-3">
-              <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let index = index;">
-              <select *ngIf="index !== 0" class="form-control form-control-sm mx-1 my-1" id="{{level}}"
-              [disabled]="contextApp?.user?.hierarchy[level]"
-              [(ngModel)]="configureHierarchy[index]" name="{{level}}" (change)="onChangeOfHierarchy(index)">
-                <option [ngValue]="undefined">Select {{level}}</option>
-                <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">
-                  {{tag}}
-                </option>
-              </select>
-              <input  type="text" *ngIf="index === 0"  defaultValue="{{contextApp.app}}" disabled class="form-control form-control-sm mx-1 my-1">
-            </ng-container>
-            <!-- <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory" [(ngModel)]="filterObj.device"
-            name="deviceCategory" (change)="onAssetSelection()">
-            <option [ngValue]="undefined">Select Asset</option>
-            <option [ngValue]="device" *ngFor="let device of devices">
-              {{device?.display_name ? device?.display_name: device.device_id}}
-            </option>
-            </select> -->
-            <angular2-multiselect [data]="devices" id="deviceSelect"
-            [(ngModel)]="filterObj.deviceArr" name="devices" [settings]="{
-              text: 'Select Asset',
-              classes: 'w-16 p-0',
-              singleSelection: true,
-              enableSearchFilter: true,
-              showCheckbox: false,
-              maxHeight: 400,
-              primaryKey: 'device_id',
-              labelKey: 'display_name'
-            }"  #device="ngModel"
-            (onSelect)="onAssetSelection()"
-            (onDeSelectAll)="onAssetDeselect()">
-          </angular2-multiselect>
-          <!-- <div *ngIf="device.invalid && (device.dirty || device.touched)"
-            class="ml-1 alert-danger">
-            <div *ngIf="device.errors.required">
-              Asset Selection is required.
-            </div>
-            </div> -->
-            </div>
-            <div class="d-flex row form-group form-inline  my-2 mx-3">
+<div class="blue-nav-bar">
 
-              <!-- <input type="number" min="1" class="form-control form-control-sm mx-1 my-1 record-input" id="inputEmail4"
-                placeholder="No of Records" [(ngModel)]="filterObj.count" name="count"> -->
-
-              <select class="form-control form-control-sm mr-2 ml-1 my-1" id="report_type" [(ngModel)]="filterObj.report_type"
-              name="report_type" (change)="onNonIPDeviceChange()" #reportType="ngModel">
-              <option [ngValue]="undefined">Select Report Type</option>
-              <option [ngValue]="'Process Parameter Report'">Process Parameter Report</option>
-              <option [ngValue]="'Alert Report'">Alert Report</option>
-              </select>
-              <!-- <div *ngIf="reportType.invalid && (reportType.dirty || reportType.touched)"
-              class="alert alert-danger">
-              <div *ngIf="reportType.errors.required">
-                Report Type Selection is required.
-              </div>
-              </div> -->
-              <angular2-multiselect [data]="dropdownPropList" id="y1AxisProperty" *ngIf=" filterObj.report_type === 'Process Parameter Report'"
-                  [(ngModel)]="props" name="props" [settings]="{
-                    text: 'Select Property',
-                    selectAllText: 'Select All',
-                    unSelectAllText: 'UnSelect All',
-                    classes: 'col-lg-2 col-xl-2 p-0 mx-1',
-                    enableSearchFilter: true,
-                    badgeShowLimit: 1,
-                    maxHeight: 400,
-                    labelKey: 'id'
-                  }"
-                  (onDeSelectAll)="y1Deselect($event)">
-                </angular2-multiselect>
-                <div class="bg-dateRow form-group form-inline" id="dateRow"
-                [style.width]="(filterObj.dateOption === 'date' ? '23rem' : (filterObj.dateOption === 'date range' ? '34rem' : ''))">
-              <select class="form-control form-control-sm mx-1 my-1" id="dateoptions" [(ngModel)]="filterObj.dateOption"
-                name="dateOptions" (change)="onDateOptionChange()">
-                <option [ngValue]="undefined">Quick Date Options</option>
-                <option [ngValue]="'5 mins'">Last 5 minutes</option>
-                <option [ngValue]="'30 mins'">Last 30 minutes</option>
-                <option [ngValue]="'1 hour'">Last 1 hour</option>
-                <option [ngValue]="'24 hour'">Last 24 hours</option>
-                <option [ngValue]="'date'">Select Date</option>
-                <option [ngValue]="'date range'">Select Date Range</option>
-              </select>
-              <!-- <label class="ml-1 mr-1">OR</label> -->
-              <ng-container *ngIf="filterObj.dateOption === 'date'">
-                <input #dt2Input [owlDateTime]="dt2"  (dateTimeChange)="onSingleDateChange($event);"
-                  class="form-control form-control-sm mx-2 my-1 w-10" [max]="today" [owlDateTimeTrigger]="dt2"
-                  placeholder="Select Date">
-                <span [owlDateTimeTrigger]="dt2"  class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
-                <owl-date-time #dt2 [pickerType]="'calendar'"></owl-date-time>
-              </ng-container>
-              <!-- <label class="ml-3 mr-1">OR</label> -->
-              <ng-container *ngIf="filterObj.dateOption === 'date range'">
-                <input #dt1Input [owlDateTime]="dt1" [selectMode]="'range'" (dateTimeChange)="onDateChange($event)"
-                  class="form-control form-control-sm mx-2 my-1 date-range-picket-width" [owlDateTimeTrigger]="dt1"
-                  placeholder="Select Date Range" [max]="today">
-                <span [owlDateTimeTrigger]="dt1" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
-                <owl-date-time  #dt1></owl-date-time>
-              </ng-container>
-              </div>
-              <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search"
-              *ngIf=" filterObj.report_type !== 'Process Parameter Report'" (click)="currentOffset = 0;telemetry = [];latestAlerts = [];onFilterSelection(true)" ><i
-                class="fa fa-search fa-sm" ></i></button>
-
-              <!-- <bu<button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="onFilterSelection()" ><i
-                class="fa fa-search fa-sm"></i></button>tton type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()"><i class="fa fa-trash  fa-sm"></i></button> -->
-
-            </div>
-            <div class="d-flex form-group form-inline my-2 mx-3" *ngIf=" filterObj.report_type === 'Process Parameter Report'">
-              <input type="checkbox" class="mx-1 my-1 big-checkbox" id="checkbox" min="1"
-                name="checkbox" [(ngModel)]="filterObj.isTypeEditable" (change)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
-                filterObj.sampling_format = 'minute'; filterObj.sampling_time = 1;
-                ">
-
-                <fieldset [disabled]="!filterObj.isTypeEditable" class="form-group form-inline my-1">
-                <ui-switch   class="mr-1" [disabled]="!filterObj.isTypeEditable"
-                defaultBgColor="#f6c23e" checkedTextColor="white" uncheckedTextColor="white"
-                checkedLabel="Sampling Frequency" (valueChange)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
-                filterObj.sampling_format = 'minute'; filterObj.sampling_time = 1"
-                uncheckedLabel="Aggregation" [(ngModel)]="filterObj.type" name="tpye"></ui-switch>
-
-                <ng-container *ngIf="!filterObj.type">
-                <input type="number" class="form-control form-control-sm my-1 w-7" id="minutes" min="1"
-                  name="minutes" [(ngModel)]="filterObj.aggregation_minutes" placeholder="Agreegation Time"
-                  (change)="onNumberChange($event, 'aggregation')">
-                <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
-                <select class="form-control form-control-sm mx-1 my-1" id="aggregationFormat" [(ngModel)]="filterObj.aggregation_format"
-                name="aggregationFormat" style="width: 11rem!important;">
-                <option [ngValue]="undefined">Aggregartion Format</option>
-                <option [ngValue]="'AVG'">Average</option>
-                <option [ngValue]="'SUM'">Sum</option>
-                <option [ngValue]="'MIN'">Min</option>
-                <option [ngValue]="'MAX'">Max</option>
-                <option [ngValue]="'COUNT'">Count</option>
-                </select>
-                </ng-container>
-                <ng-container *ngIf="filterObj.type">
-                <input type="number" class="form-control form-control-sm ml-1 my-1 w-7" id="minutes" min="1"
-                  name="minutes" [(ngModel)]="filterObj.sampling_time" placeholder="Sampling" disabled
-                  (change)="onNumberChange($event, 'sampling')" title="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development.">
-                <!-- <select class="form-control form-control-sm mx-1 my-1" id="samplingFrequency" [(ngModel)]="filterObj.sampling_format"
-                name="samplingFrequency" style="width: 11rem!important;" disabled>
-                <option [ngValue]="undefined">Frequency</option>
-                <option [ngValue]="'second'">Second</option>
-                <option [ngValue]="'minute'">Minute</option>
-                <option [ngValue]="'hour'">Hour</option>
-                </select> -->
-                <button class="btn btn-secondary btn-sm mr-1" style="pointer-events: none;">mins</button>
-                </ng-container>
-                </fieldset>
-              <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Search" (click)="currentOffset = 0;telemetry = [];latestAlerts = [];onFilterSelection(true)" [disabled]="isTelemetryLoading" ><i
-                class="fa fa-search fa-sm"></i></button>
-            </div>
-          </form>
-        </div>
+  <div class="d-flex">
+   <div class="main-heading">{{tileData && tileData[0] ? tileData[0]?.value : ''}}</div>
+   <div class="ml-auto">
+     <div class="asset-nav-tabs" >
+       <nav>
+         <div class="nav nav-tabs nav-fill " id="nav-tab" role="tablist">
+           <a class="nav-item nav-link border-0" [ngClass]="{'active': tabType === 'pre-generated'}" id="nav-pre-generated-tab" data-toggle="tab" href="#pre-generated"
+           role="tab" aria-controls="nav-pre-generated" aria-selected="true" (click)="onTabSelect('pre-generated')">
+           <i class="fas fa-chart-line mr-2"></i>
+           <span class="d-none d-md-inline-block">Pre-Generated {{tileData && tileData[0] ? tileData[0]?.value : ''}}</span>
+          </a>
+           <a class="nav-item nav-link border-0"  [ngClass]="{'active': tabType === 'custom'}"  id="nav-custom-tab" data-toggle="tab" href="#custom"
+           role="tab" aria-controls="nav-custom" aria-selected="false" (click)="onTabSelect('custom')">
+           <i class="fa fa-chart-pie mr-2" aria-hidden="true"></i>
+           <span class="d-none d-md-inline-block">Custom {{tileData && tileData[0] ? tileData[0]?.value : ''}}</span>
+          </a>
+         </div>
+       </nav>
       </div>
+   </div>
+</div>
+</div>
 
+<div class="">
+  <div id="assetTabContent" class="tab-content">
+    <div id="pre-generated" role="tabpanel" aria-labelledby="pre-generated-tab" class="tab-pane fade show" [ngClass]="{'active': tabType === 'pre-generated'}">
+      <!-- <div class="tab-bar">
+        <form class="form-inline">
+        </form>
+      </div> -->
+      <app-pre-generated-reports *ngIf="tabType === 'pre-generated'"></app-pre-generated-reports>
     </div>
-    <div class="contain-pad-report mx-2" [ngStyle]="{maxHeight: !isFilterOpen ? 'calc(100vh - 3.5rem)' : 'calc(100vh - 15rem)'}"
-     [style.marginTop]="filterObj.report_type === 'Process Parameter Report' ? (!isFilterOpen ? '0rem' : '10.5rem')
-     : (!isFilterOpen ? '-2.5rem' : '7.5rem')">
-      <div class="mb-2" >
-        <h6 *ngIf="!isFilterSelected"> Please select filters to view the report data.</h6>
-        <div class="table-responsive" *ngIf="isFilterSelected || isTelemetryLoading"
-        [ngClass]="{'mt-5' : filterObj.report_type === 'Alert Report' && !isFilterOpen,
-        'mt-1' : filterObj.report_type === 'Process Parameter Report'}"
-        >
-          <h5  >{{filterObj.report_type}}
-            <a href="javascript:void(0)"  (click)="savePDF()" title="Export as PDF"><i class="fa fa-sm fa-file-pdf-o" ></i></a>
-            <a href="javascript:void(0)"  (click)="saveExcel()" title="Export as Excel" class="ml-1"><i class="fa fa-sm fa-file-excel-o" ></i></a>
-            <a href="javascript:void(0)" class="ml-1" (click)="isFilterOpen = !isFilterOpen;"
-             title="Show Filters"><i class="fa fa-sm fa-filter" ></i></a>
-            <!-- <i  class="fa fa-fw fa-2x  fa-spin fa-spinner" *ngIf="isFileDownloading"></i> -->
-          </h5>
-          <ng-container *ngIf="isFilterSelected && filterObj.report_type === 'Process Parameter Report'">
-          <div class="table-wrapper" id="table-wrapper" [ngStyle]="{maxHeight: !isFilterOpen ? ' calc(100vh - 15rem)' : 'calc(100vh - 26rem)'}" >
-            <table class="table table-bordered table-striped"  id="dataTable1" width="100%" cellspacing="0"
-           >
-              <thead>
-                <tr>
-                  <th></th>
-                  <th class="w-10">Asset Name</th>
-                  <th class="w-17">Time</th>
-                  <th *ngFor="let property of selectedProps"> {{property.id}}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <ng-container *ngIf="telemetry.length > 0">
-                  <tr *ngFor="let telemetryObj of telemetry; let index = index">
-                    <td>{{index + 1}}</td>
-                    <td >{{ (deviceFilterObj ?
-                    (deviceFilterObj.display_name ? deviceFilterObj.display_name : deviceFilterObj.device_id)
-                    : '' )}}</td>
-                    <td>{{ telemetryObj.local_created_date }}</td>
-                    <td *ngFor="let prop of selectedProps"> {{telemetryObj[prop.value.json_key]}}</td>
-                                </tr>
-                </ng-container>
-                <ng-container *ngIf="telemetry.length === 0 && !isTelemetryLoading">
-                  <tr>
-                    <td [attr.colspan]="3 + selectedProps.length">No telemetry data available.</td>
-                  </tr>
-                </ng-container>
-                <ng-container *ngIf="isTelemetryLoading">
-                  <tr>
-                    <td [attr.colspan]="3 + selectedProps.length">
-                      {{loadingMessage}}
-                      <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
-                    </td>
-                  </tr>
-                </ng-container>
-
-              </tbody>
-            </table>
-
+    <div id="custom" role="tabpanel" aria-labelledby="custom-tab" class="tab-pane fade show" [ngClass]="{'active': tabType === 'custom'}">
+      <div class="tab-bar">
+        <form class="form-inline">
+          <div class="form-group">
+            <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
+              (click)="onDeviceFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-fw fa-filter fa-sm"></i> Select Asset</button>
+            <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
+              <ng-container *ngFor="
+                          let level of contextApp?.hierarchy?.levels;
+                          let index = index
+                        ">
+                <div class="">
+                  <select *ngIf="index !== 0" name="{{level}}_{{index}}" class="dropdown-form" id="{{ level }}"
+                    [disabled]="contextApp?.user?.hierarchy[level]" [(ngModel)]="configureHierarchy[index]"
+                    name="{{ level }}" (change)="onChangeOfHierarchy(index)">
+                    <option [ngValue]="undefined">
+                      Select {{ level }}
+                    </option>
+                    <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">
+                      {{ tag }}
+                    </option>
+                  </select>
+                  <input type="text" *ngIf="index === 0" name="{{level}}_{{index}}" defaultValue="{{ contextApp.app }}"
+                    disabled class="dropdown-form" />
+                </div>
+              </ng-container>
+              <ng-select [items]="devices" class="custom-dropdown w-12" bindLabel="display_name" [clearable]="false"
+                [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
+                dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.device" (onSelect)="onAssetSelection()">
+              </ng-select>
+            </div>
+          </div>
+          <div class="form-group">
+            <select class="custom-select custom-select-sm"id="report_type" [(ngModel)]="filterObj.report_type"
+            name="report_type" (change)="onNonIPDeviceChange()" #reportType="ngModel">
+            <option [ngValue]="undefined">Select Report Type</option>
+            <option [ngValue]="'Process Parameter Report'">Process Parameter Report</option>
+            <option [ngValue]="'Alert Report'">Alert Report</option>
+            </select>
+          </div>
+          <div class="form-group" >
+            <input type="text"  class="form-control form-control-sm active" daterangepicker name="daterangeInput"
+            [options]="options" (selected)="selectedDate($event, daterange)" />
+          </div>
+          <ng-container *ngIf=" filterObj.report_type === 'Process Parameter Report'">
+          <div class="form-group">
+            <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 active" bindLabel="id" [clearable]="false"
+              [searchable]="false"  [multiple]="true"
+              [closeOnSelect]="false" placeholder="Select Properties"
+              dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="props" (onDeSelectAll)="y1Deselect($event)">
+              <ng-template ng-multi-label-tmp let-items="items">
+                {{items.length}} properties selected
+              </ng-template>
+            </ng-select>
           </div>
 
-          <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && telemetry.length > 0">
-            <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;onFilterSelection();"
-            title="Load More Records...">Load More...</a>
-          </span>
-          </ng-container>
-          <ng-container *ngIf="isFilterSelected && filterObj.report_type === 'Alert Report'">
-          <div class="table-wrapper" id="table-wrapper"
-          [ngStyle]="{maxHeight: !isFilterOpen ? ' calc(100vh - 15rem)' : 'calc(100vh - 22rem)'}">
-          <table class="table table-bordered table-striped"  id="dataTable" width="100%" cellspacing="0"
-          >
-            <thead>
-              <tr class="bg-secondary text-white">
-                <th></th>
-                <th></th>
-                <th class="w-10">Asset Name</th>
-                <th class="w-17">Time</th>
-                <th>Description</th>
-                <th>Status</th>
-                <th>Acknowledged By</th>
-              </tr>
-            </thead>
-            <tbody>
-              <ng-container *ngIf="latestAlerts.length > 0">
-                <tr *ngFor="let alert of latestAlerts; let i = index;" [ngClass]="{'bg-danger text-white': alert.severity?.toLowerCase() === 'critical'}">
-                  <td>{{i + 1}}</td>
-                  <td><i class="fa fa-exclamation-triangle" [style.color]="
-                    (alert.severity?.toLowerCase() === 'critical' ? '#cc0000' :
-                    (alert.severity?.toLowerCase() === 'error' ? '#fb5515' :
-                    (alert.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
-                    (alert.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
-                    )
-                    )" title="{{alert.severity}}"></i></td>
-
-                  <td>{{ alert.device_display_name ? alert.device_display_name : alert.device_id }}</td>
-
-                  <td>{{ alert.local_created_date }}</td>
-                  <td>{{ alert.message }}</td>
-                  <td> {{alert.metadata?.acknowledged_date ? 'Acknowledged' : 'Not Acknowledged'}}
-                  </td>
-                  <td>{{ alert.metadata?.user_id }}</td>
-                </tr>
-              </ng-container>
-              <ng-container *ngIf="latestAlerts.length === 0 && !isTelemetryLoading">
-                <tr>
-                  <td colspan="7">No Alert data available.</td>
-                </tr>
-              </ng-container>
-              <ng-container *ngIf="isTelemetryLoading">
-                <tr>
-                  <td [attr.colspan]="7">
-                    <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
-                  </td>
-                </tr>
-              </ng-container>
-            </tbody>
-          </table>
+          <div class="form-group" *ngIf=" filterObj.report_type === 'Process Parameter Report'">
+            <input type="checkbox" id="checkbox" min="1" name="checkbox" class="big-checkbox"
+            [(ngModel)]="filterObj.isTypeEditable" (change)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
+            filterObj.sampling_format = 'minute'; filterObj.sampling_time = 1;"
+            >
           </div>
-          <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && latestAlerts.length > 0">
-            <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;onFilterSelection();"
-            title="Load More Records...">Load More...</a>
-          </span>
-          </ng-container>
+          <div class="form-group">
+            <fieldset [disabled]="!filterObj.isTypeEditable">
+              <ui-switch  [disabled]="!filterObj.isTypeEditable"
+              defaultBgColor="#f6c23e" checkedTextColor="white" uncheckedTextColor="white"
+              checkedLabel="Sampling" (valueChange)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
+              filterObj.sampling_format = 'minute'; filterObj.sampling_time = 1;
+              "
+              uncheckedLabel="Aggregation" [(ngModel)]="filterObj.type" name="tpye"></ui-switch>
+            </fieldset>
+          </div>
+          <div class="form-group input-group" *ngIf="filterObj.type">
 
-          <table class="table table-bordered table-striped"  id="dataTable1" width="100%" cellspacing="0" hidden
-          *ngIf="isFilterSelected && filterObj.report_type === 'Alert Report'">
+            <input class="form-control form-control-sm bg-light" type="number" id="minutes" min="1"
+            name="minutes" [(ngModel)]="filterObj.sampling_time" placeholder="Sampling" disabled
+            title="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development." style="width: 3em;" >
+            <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
+          </div>
+            <div class="form-group input-group" *ngIf="!filterObj.type">
+              <fieldset [disabled]="!filterObj.isTypeEditable"></fieldset>
+              <input class="form-control form-control-sm bg-light" type="number" id="aggr_mins" min="1"
+              name="aggr_mins" [(ngModel)]="filterObj.aggregation_minutes" placeholder="Sampling"
+              (change)="onNumberChange($event, 'aggregation')" [disabled]="!filterObj.isTypeEditable"
+               style="width: 3em;" >
+              <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
+            </div>
+            <div class="form-group " *ngIf="!filterObj.type">
+              <fieldset [disabled]="!filterObj.isTypeEditable">
+            <select class="form-control form-control-sm" id="aggregationFormat" [(ngModel)]="filterObj.aggregation_format"
+            name="aggregationFormat" style="width: 11rem!important;">
+            <option [ngValue]="undefined">Aggregartion Format</option>
+            <option [ngValue]="'AVG'">Average</option>
+            <option [ngValue]="'SUM'">Sum</option>
+            <option [ngValue]="'MIN'">Min</option>
+            <option [ngValue]="'MAX'">Max</option>
+            <option [ngValue]="'COUNT'">Count</option>
+            </select>
+            </fieldset>
+          </div>
+        </ng-container>
+        <div class="form-group" *ngIf=" filterObj.report_type !== 'Process Parameter Report'" >
+          <button type="button" class="btn btn-sm searchBtn btn-primary" title="Search"
+              (click)="currentOffset = 0;telemetry = [];latestAlerts = [];onFilterSelection(true)" ><i
+                class="fa fa-search fa-sm" ></i></button>
+        </div>
+        <div class="form-group" *ngIf=" filterObj.report_type === 'Process Parameter Report'" >
+          <button type="button" class="btn btn-sm searchBtn btn-primary" title="Search" (click)="currentOffset = 0;telemetry = [];latestAlerts = [];onFilterSelection(true)" [disabled]="isTelemetryLoading" ><i
+            class="fa fa-search fa-sm"></i></button>
+        </div>
+        </form>
+      </div>
+      <h6 class="pl-3" *ngIf="!isFilterSelected"> Please select filters to view the report data.</h6>
+      <h5 class="pl-3" *ngIf="isFilterSelected || isTelemetryLoading" >{{filterObj.report_type}}
+        <a href="javascript:void(0)"  (click)="savePDF()" title="Export as PDF"><i class="fa fa-sm fa-file-pdf-o" ></i></a>
+        <a href="javascript:void(0)"  (click)="saveExcel()" title="Export as Excel" class="ml-1"><i class="fa fa-sm fa-file-excel-o" ></i></a>
+        <!-- <i  class="fa fa-fw fa-2x  fa-spin fa-spinner" *ngIf="isFileDownloading"></i> -->
+      </h5>
+      <div class="table-responsive">
+        <div class="tableFixHead report-table">
+          <ng-container *ngIf="isFilterSelected || isTelemetryLoading">
+
+            <ng-container *ngIf="isFilterSelected && filterObj.report_type === 'Process Parameter Report'">
+                <table class="table table-hover" id="dataTable1">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th class="w-10">Asset Name</th>
+                      <th class="w-17">Time</th>
+                      <th *ngFor="let property of selectedProps"> {{property.id}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngIf="telemetry.length > 0">
+                      <tr *ngFor="let telemetryObj of telemetry; let index = index">
+                        <td>{{index + 1}}</td>
+                        <td >{{ (deviceFilterObj ?
+                        (deviceFilterObj.display_name ? deviceFilterObj.display_name : deviceFilterObj.device_id)
+                        : '' )}}</td>
+                        <td>{{ telemetryObj.local_created_date }}</td>
+                        <td *ngFor="let prop of selectedProps"> {{telemetryObj[prop.value.json_key]}}</td>
+                                    </tr>
+                    </ng-container>
+                    <ng-container *ngIf="telemetry.length === 0 && !isTelemetryLoading">
+                      <tr>
+                        <td [attr.colspan]="3 + selectedProps.length">No telemetry data available.</td>
+                      </tr>
+                    </ng-container>
+                    <ng-container *ngIf="isTelemetryLoading">
+                      <tr>
+                        <td [attr.colspan]="3 + selectedProps.length">
+                          {{loadingMessage}}
+                          <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+                        </td>
+                      </tr>
+                    </ng-container>
+
+                  </tbody>
+                </table>
+              <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && telemetry.length > 0">
+                <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;onFilterSelection();"
+                title="Load More Records...">Load More...</a>
+              </span>
+            </ng-container>
+            <ng-container *ngIf="isFilterSelected && filterObj.report_type === 'Alert Report'">
+              <table class="table table-hover"  id="dataTable">
+                <thead>
+                  <tr >
+                    <th></th>
+                    <th></th>
+                    <th class="w-10">Asset Name</th>
+                    <th class="w-17">Time</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Acknowledged By</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngIf="latestAlerts.length > 0">
+                    <tr *ngFor="let alert of latestAlerts; let i = index;" [ngClass]="{'bg-danger text-white': alert.severity?.toLowerCase() === 'critical'}">
+                      <td>{{i + 1}}</td>
+                      <td><i class="fa fa-exclamation-triangle" [style.color]="
+                        (alert.severity?.toLowerCase() === 'critical' ? '#cc0000' :
+                        (alert.severity?.toLowerCase() === 'error' ? '#fb5515' :
+                        (alert.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
+                        (alert.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
+                        )
+                        )" title="{{alert.severity}}"></i></td>
+
+                      <td>{{ alert.device_display_name ? alert.device_display_name : alert.device_id }}</td>
+
+                      <td>{{ alert.local_created_date }}</td>
+                      <td>{{ alert.message }}</td>
+                      <td> {{alert.metadata?.acknowledged_date ? 'Acknowledged' : 'Not Acknowledged'}}
+                      </td>
+                      <td>{{ alert.metadata?.user_id }}</td>
+                    </tr>
+                  </ng-container>
+                  <ng-container *ngIf="latestAlerts.length === 0 && !isTelemetryLoading">
+                    <tr>
+                      <td colspan="7">No Alert data available.</td>
+                    </tr>
+                  </ng-container>
+                  <ng-container *ngIf="isTelemetryLoading">
+                    <tr>
+                      <td [attr.colspan]="7">
+                        <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+              <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && latestAlerts.length > 0">
+                <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;onFilterSelection();"
+                title="Load More Records...">Load More...</a>
+              </span>
+            </ng-container>
+            <table class="table table-hover"  id="dataTable1" hidden *ngIf="isFilterSelected && filterObj.report_type === 'Alert Report'">
             <thead>
-              <tr class="bg-secondary text-white">
+              <tr>
                 <th></th>
                 <th></th>
                 <th>Asset Name</th>
@@ -338,15 +300,12 @@
             </tbody>
           </table>
 
+          </ng-container>
         </div>
       </div>
     </div>
-  </ng-container>
-  </tab>
-</tabset>
-
+  </div>
 </div>
-
 
 <div class="modal fade" id="downloadReportModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">

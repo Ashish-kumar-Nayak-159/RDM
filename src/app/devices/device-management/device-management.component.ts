@@ -1,6 +1,7 @@
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from './../../app.constants';
 import { CommonService } from './../../services/common.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { TabsetComponent } from 'ngx-bootstrap/tabs';
 
 @Component({
   selector: 'app-device-management',
@@ -10,10 +11,11 @@ import { Component, OnInit } from '@angular/core';
 export class DeviceManagementComponent implements OnInit {
   contextApp: any;
   tileData: any;
-  selectedTab: any;
   iotAssetsTab: any;
   legacyAssetsTab: any;
   iotGatewaysTab: any;
+  componentState = CONSTANTS.IP_DEVICE;
+  constantData = CONSTANTS;
   constructor(
     private commonService: CommonService
   ) { }
@@ -21,41 +23,42 @@ export class DeviceManagementComponent implements OnInit {
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
-    this.getTabData();
-    const obj = {
-      type: 'replace',
-      data: [
-        {
-          title: this.contextApp.user.hierarchyString,
-          url: 'applications/' + this.contextApp.app
-        },
-        {
-          title: this.tileData && this.tileData[0] ? this.tileData[0]?.value : '',
-          url: 'applications/' + this.contextApp.app + '/asset/management'
-        }
-      ]
-    };
-    this.commonService.breadcrumbEvent.emit(obj);
-    console.log(obj);
-    if (this.contextApp.configuration.main_menu[2].visible) {
-      this.selectedTab = 'iot-devices';
-    } else if (this.contextApp.configuration.main_menu[3].visible) {
-      this.selectedTab = 'legacy-devices';
-    } else if (this.contextApp.configuration.main_menu[9].visible) {
-      this.selectedTab = 'iot-gateways';
-    }
-
+    // this.getTabData();
   }
 
   getTileName() {
     let selectedItem;
+    let deviceItem;
+    let deviceDataItem = {};
     this.contextApp.configuration.main_menu.forEach(item => {
-      if (item.page === 'Assets Management' || item.page === 'Device Management') {
+      if (item.page === 'Asset Management' || item.page === 'Device Management') {
         selectedItem = item.showAccordion;
       }
+      if (item.page === 'Assets') {
+        deviceItem = item.showAccordion;
+      }
     });
-    console.log(this.tileData);
     this.tileData = selectedItem;
+    console.log(this.tileData);
+    selectedItem.forEach(item => {
+      this.tileData[item.name] = item.value;
+    });
+    deviceItem.forEach(item => {
+      deviceDataItem[item.name] = item.value;
+    });
+    this.iotAssetsTab = {
+      tab_name: deviceDataItem['IOT Assets Tab Name'],
+      table_key: deviceDataItem['IOT Assets Table Key Name']
+    };
+    this.legacyAssetsTab = {
+      tab_name: deviceDataItem['Legacy Assets Tab Name'],
+      table_key: deviceDataItem['Legacy Assets Table Key Name']
+    };
+    this.iotGatewaysTab = {
+      tab_name: deviceDataItem['IOT Gateways Tab Name'],
+      table_key: deviceDataItem['IOT Gateways Table Key Name']
+    };
+    console.log(this.iotAssetsTab);
   }
 
   getTabData() {
@@ -71,7 +74,7 @@ export class DeviceManagementComponent implements OnInit {
   }
 
   onTabChange(type) {
-    this.selectedTab = type;
+    this.componentState = type;
   }
 
 }

@@ -1,163 +1,114 @@
+<div class="blue-nav-bar">
+  <div class="d-flex">
+       <div class="d-flex">
+         <div class="main-heading">{{tileData ? tileData['Title'] : ''}}</div>
+         <div id="view-tabs" >
+       <nav>
+         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+           <!-- <a class="nav-item nav-link border-0 active" id="nav-home-tab" data-toggle="tab" href="#Meta-data" role="tab" aria-controls="nav-home" aria-selected="true"><i class="fas fa-list"></i></a>
+           <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab" href="#Device" role="tab" aria-controls="nav-profile" aria-selected="false"><i class="fa fa-map-marker-alt" aria-hidden="true"></i></a> -->
+           <a href="javascript:void(0)" class="nav-item nav-link border-0" [ngClass]="{'active': currentPageView === 'list'}"  title="List View" (click)="onCurrentPageViewChange('list')">
+            <i class="fas fa-list" ></i></a>
+          <a href="javascript:void(0)" class="nav-item nav-link border-0" [ngClass]="{'active': currentPageView === 'map'}"  title="Map View" (click)="onCurrentPageViewChange('map')">
+            <i class="fa fa-map-marker-alt"></i></a>
+         </div>
+       </nav>
+      </div>
+     </div>
+   <div class="ml-auto">
+     <div class="asset-nav-tabs" >
+       <nav>
+         <div class="nav nav-tabs nav-fill " id="nav-tab" role="tablist">
+           <a class="nav-item nav-link border-0 active" id="nav-home-tab" data-toggle="tab" (click)="onTabChange(constantData.IP_DEVICE)"
+           href="#{{iotAssetsTab?.tab_name}}" role="tab" aria-controls="nav-home" aria-selected="true" [ngClass]="{'active': componentState === constantData.IP_DEVICE}">
+             <i class="fab fa-mixcloud mr-2"></i>
+            <span class="d-none d-md-inline-block">{{iotAssetsTab?.tab_name}}</span></a>
+           <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab" (click)="onTabChange(constantData.NON_IP_DEVICE)"
+           href="#{{legacyAssetsTab?.tab_name}}" role="tab" aria-controls="nav-profile" aria-selected="false" [ngClass]="{'active': componentState === constantData.NON_IP_DEVICE}">
+           <i class="fa fa-microchip mr-2" aria-hidden="true"></i>
+           <span class="d-none d-md-inline-block">{{legacyAssetsTab?.tab_name}}</span></a>
+           <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab" (click)="onTabChange(constantData.IP_GATEWAY)"
+           href="#{{iotGatewaysTab?.tab_name}}" role="tab" aria-controls="nav-profile" aria-selected="false" [ngClass]="{'active': componentState === constantData.IP_GATEWAY}">
+           <i class="fas fa-sitemap mr-2" aria-hidden="true"></i>
+           <span class="d-none d-md-inline-block">{{iotGatewaysTab?.tab_name}}</span></a>
+         </div>
+       </nav>
+      </div>
+   </div>
+</div>
+</div>
+<div class="">
+  <div id="assetTabContent" class="tab-content">
+     <div class="tab-pane fade show active">
 
-<div class="topnavbar" >
-  <!-- <div class="d-sm-flex align-items-center justify-content-start mb-4 pl-1">
-    <h1 class="h3 mb-0 text-gray-800">{{(componentState.includes('Device') ? 'Assets' : 'Gateways')}}</h1>
-
-
-
-  </div> -->
-  <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-1">
-    <h5 class="h4 mb-0 text-gray-800" >{{tileData && tileData[0] ? tileData[0]?.value : ''}}</h5>
-    <span class="pull-right ml-3">
-    <a href="javascript:void(0)"  title="List View" (click)="onCurrentPageViewChange('list')">
-      <i class="fa fa-fw fa-list" [style.color]="currentPageView === 'list' ? '#f6c23e' : ''"></i></a>
-    <a href="javascript:void(0)"  title="Map View" (click)="onCurrentPageViewChange('map')">
-      <i class="fa fa-fw fa-map-marker" [style.color]="currentPageView === 'map' ? '#f6c23e' : ''"></i></a>
-    </span>
-  </div>
-  <div class="card row bg-white" style="margin-left:-2rem">
-    <div class="col-xl-12 col-md-12 mb-12">
-<!-- Page Heading -->
-      <form>
-        <div class="form-group form-inline my-2 mx-3">
-          <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let index = index;">
-          <select *ngIf="index !== 0" class="form-control form-control-sm mx-1 my-1" id="{{level}}"
-          [disabled]="contextApp?.user?.hierarchy[level]"
-          [(ngModel)]="configureHierarchy[index]" name="{{level}}" (change)="onChangeOfHierarchy(index)">
-            <option [ngValue]="undefined">Select {{level}}</option>
-            <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">
-              {{tag}}
-            </option>
-          </select>
-          <input  type="text" *ngIf="index === 0"  defaultValue="{{contextApp.app}}" disabled class="form-control form-control-sm  mx-1 my-1">
+      <div class="tab-bar">
+        <form class="form-inline">
+          <div class="form-group">
+            <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
+              (click)="onDeviceFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-fw fa-filter fa-sm"></i> Select Hierarchy</button>
+            <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
+              <ng-container *ngFor="
+                          let level of contextApp?.hierarchy?.levels;
+                          let index = index
+                        ">
+                <div class="">
+                  <select *ngIf="index !== 0" name="{{level}}_{{index}}" class="dropdown-form" id="{{ level }}"
+                    [disabled]="contextApp?.user?.hierarchy[level]" [(ngModel)]="configureHierarchy[index]"
+                    name="{{ level }}" (change)="onChangeOfHierarchy(index)">
+                    <option [ngValue]="undefined">
+                      Select {{ level }}
+                    </option>
+                    <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">
+                      {{ tag }}
+                    </option>
+                  </select>
+                  <input type="text" *ngIf="index === 0" name="{{level}}_{{index}}" defaultValue="{{ contextApp.app }}"
+                    disabled class="dropdown-form" />
+                </div>
+              </ng-container>
+            </div>
+          </div>
+          <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
+              (click)="currentOffset = 0;devicesList = [];searchDevices()" [disabled]="isDeviceListLoading"><i
+                class="fas fa-search fa-sm"></i></button></div>
+        </form>
+      </div>
+      <div class="">
+        <ng-container class="" *ngIf="currentPageView === 'list'">
+          <div class="" id="table-wrapper">
+            <app-common-data-table [tableData]="devicesList" *ngIf="tableConfig"
+            [tableConfig]="tableConfig" (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
+          </div>
+          <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && devicesList.length > 0">
+            <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;searchDevices();"
+            title="Load More Records...">Load More...</a>
+          </span>
         </ng-container>
-        </div>
-        <div class="form-group form-inline my-2 mx-3">
-          <!-- <input type="text" class="form-control form-control-sm mx-1 my-1" id="hierarchy"
-          placeholder="Hierarchy" disabled [(ngModel)]="deviceFilterObj.hierarchyString"
-             name="hierarchy" title="{{deviceFilterObj.hierarchyString}}"> -->
-          <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4"
-          placeholder="{{(tileData && tileData[1] ? tileData[1]?.value: '')}} Name"
-          [(ngModel)]="deviceFilterObj.name" name="name">
-          <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputPassword4"
-          placeholder="{{(tileData && tileData[1] ? tileData[1]?.value: '')}} Manager"
-          [(ngModel)]="deviceFilterObj.device_manager" name="device_manager">
-          <angular2-multiselect [data]="gateways" id="deviceSelect" *ngIf="componentState === constantData.NON_IP_DEVICE"
-            [(ngModel)]="deviceFilterObj.gatewayArr" name="devices" [settings]="{
-              text: 'Select Gateway',
-              classes: 'w-16 p-0 mx-1',
-              singleSelection: true,
-              enableSearchFilter: true,
-              showCheckbox: false,
-              maxHeight: 400,
-              height: 400,
-              primaryKey: 'device_id',
-              labelKey: 'display_name'
-            }"
-            (onSelect)="onAssetSelection()"
-            (onDeSelectAll)="onAssetDeselect()">
-          </angular2-multiselect>
+        <ng-container *ngIf="currentPageView === 'map'">
+          <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" >
+            <agm-marker-cluster
+            imagePath="./assets/img/m">
+          <ng-container  *ngFor="let device of devicesList; let i = index; ">
+            <agm-marker *ngIf="device.latitude && device.longitude"
+            [latitude]="device.latitude" [longitude]="device.longitude"
+            (mouseOver)="onMarkerClick(infowindow, gm)"
+            [iconUrl]="device.icon"  >
+            <agm-info-window #infowindow >
+              <a class="blue-font ml-2" href="javascript:void(0)" (click)="onTableFunctionCall(device)">{{device.display_name ? device.display_name: device.device_id}}</a>
+              <!-- <hr>
+              <p><b>MTTR:</b> {{device.mttr}}</p>
+              <p><b>MTBF:</b> {{device.mtbf}}</p> -->
+            </agm-info-window>
+            </agm-marker>
+          </ng-container>
+          </agm-marker-cluster>
+          </agm-map>
 
-          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="currentOffset = 0;devicesList = [];searchDevices()" [disabled]="isDeviceListLoading" title="Search"><i class="fa fa-search fa-sm"></i></button>
-          <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="clearFilter()" title="Clear Filters">
-            <img class="filter-clear-icon" src="./assets/img/filter.svg">
-          </button>
-
-        </div>
-       </form>
+        </ng-container>
+      </div>
   </div>
 </div>
-<!-- <div class="row">
-  <div class="col-lg-12">
-    <hr class="solid">
-  </div>
-</div> -->
-</div>
-<!-- Content Row -->
 
-<!-- DataTales Example -->
-<div class="contain-pad" style="margin-top: 12.5rem!important;max-height: calc(100vh - 14.5rem)">
-<div class="mb-4 ">
-
-  <div class="" *ngIf="currentPageView === 'list'">
-    <div class="table-wrapper" id="table-wrapper" style="max-height: calc(100vh - 18rem)">
-      <table class="table table-bordered  table-striped" id="deviceTable" width="100%" cellspacing="0">
-        <thead >
-          <th></th>
-          <th>{{(tileData && tileData[1] ? tileData[1]?.value : '') + ' Name' }}</th>
-          <th>{{(tileData && tileData[1] ? tileData[1]?.value : '') + ' Manager' }}</th>
-          <th>Hierarchy</th>
-          <th *ngIf="componentState === constantData.NON_IP_DEVICE">Reporting Via GW</th>
-          <th>Actions</th>
-        </thead>
-        <tbody>
-          <ng-container *ngIf="devicesList.length > 0 && isFilterSelected">
-            <tr *ngFor="let device of devicesList; let i = index">
-              <td>{{i + 1}}</td>
-              <td>{{device.display_name}}</td>
-              <td>
-                <ng-container *ngFor="let user of device.device_manager_users; let last = last">{{user}}
-                <ng-container *ngIf="!last"><br/></ng-container></ng-container>
-              </td>
-              <td>{{device.hierarchyString}}</td>
-              <td *ngIf="componentState === constantData.NON_IP_DEVICE">
-                <!-- <a  href="javascript:void(0)" (click)="onRedirectToGateway(device)" >
-                  {{device.gateway_display_name}}</a> -->
-                  {{device.gateway_display_name}}</td>
-              <td><a  href="javascript:void(0)" (click)="onTableFunctionCall(device)" title="View Control Panel" >
-                <i class="fa fa-fw fa-table"></i></a>
-                <a *ngIf="componentState === constantData.NON_IP_DEVICE" href="javascript:void(0)" (click)="redirectToGatewayPanel(device)" title="View Gateway Diagnosis Panel" >
-                  <i class="fa fa-fw fa-book"></i></a></td>
-            </tr>
-          </ng-container>
-          <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading && isFilterSelected">
-            <tr>
-              <td [attr.colspan]="componentState === constantData.NON_IP_DEVICE ? '6' : '5'">
-                No {{pageType.toLowerCase()}} data found.
-              </td>
-            </tr>
-          </ng-container>
-          <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading && !isFilterSelected">
-            <tr>
-              <td [attr.colspan]="componentState === constantData.NON_IP_DEVICE ? '6' : '5'">Select filter and press search button to load the {{tableConfig?.type}} data.</td>
-            </tr>
-          </ng-container>
-          <ng-container *ngIf="isDeviceListLoading">
-            <tr>
-              <td [attr.colspan]="componentState === constantData.NON_IP_DEVICE ? '6' : '5'">
-                <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-              </td>
-            </tr>
-          </ng-container>
-        </tbody>
-      </table>
-    </div>
-    <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && devicesList.length > 0">
-      <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;searchDevices();"
-      title="Load More Records...">Load More...</a>
-    </span>
-
-  </div>
-  <ng-container *ngIf="currentPageView === 'map'">
-    <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" >
-      <agm-marker-cluster
-      imagePath="https://raw.githubusercontent.com/googlemaps/v3-utility-library/master/markerclustererplus/images/m">
-    <ng-container  *ngFor="let device of devicesList; let i = index; ">
-      <agm-marker *ngIf="device.latitude && device.longitude"
-      [latitude]="device.latitude" [longitude]="device.longitude"
-      (mouseOver)="onMarkerClick(infowindow, gm)"
-      [iconUrl]="device.icon"  >
-      <agm-info-window #infowindow >
-        <a class="blue-font ml-2" href="javascript:void(0)" (click)="onTableFunctionCall(device)">{{device.display_name ? device.display_name: device.device_id}}</a>
-        <!-- <hr>
-        <p><b>MTTR:</b> {{device.mttr}}</p>
-        <p><b>MTBF:</b> {{device.mtbf}}</p> -->
-      </agm-info-window>
-      </agm-marker>
-    </ng-container>
-    </agm-marker-cluster>
-    </agm-map>
-
-  </ng-container>
-</div>
-</div>
+<app-add-device *ngIf="isOpenDeviceCreateModal" [deviceDetail]="selectedDeviceForEdit" [gateways]="gateways" (getDeviceEmit)="devicesList = [];searchDevices()"
+[componentState]="componentState" [tileData]="tileData" (cancelModal)="onEditDeviceCancelModal()"></app-add-device>

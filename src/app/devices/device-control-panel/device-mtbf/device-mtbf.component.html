@@ -1,5 +1,5 @@
-<div class="topnavbar-c2d bg-white py-2">
-  <div class="row">
+<div class="tab-bar">
+  <div class="">
     <ul class="nav">
       <li class="nav-item" [ngClass]="{'active': displayMode === 'events'}">
         <a class="nav-link" href="javascript:void(0)" (click)="onTabChange('events');displayMode = 'events'">
@@ -13,122 +13,86 @@
       </li>
     </ul>
   </div>
-  <div class="row">
-    <div class="col-lg-12">
-      <hr class="solid">
-    </div>
+</div>
+
+<div class="tab-bar" *ngIf="displayMode === 'events' || displayMode === 'history'">
+  <div class="">
+    <form class="form-inline">
+      <div class="form-group">
+        <input type="text" class="form-control form-control-sm active" daterangepicker name="daterangeInput"
+          [options]="options" (selected)="selectedDate($event, daterange)" />
+      </div>
+      <div class="form-group">
+        <select class="form-control form-control-sm active" id="date_frequency"
+              [(ngModel)]="filterObj.date_frequency" name="date_frequency" >
+                <option [ngValue]="undefined">Frequency </option>
+                <option [ngValue]="'daily'">Daily</option>
+                <option [ngValue]="'weekly'">Weekly</option>
+              </select>
+      </div>
+      <div class="form-group">
+        <button type="button" class="btn btn-sm searchBtn btn-primary" title="Search"
+          (click)="searchMTBFEvents(this.filterObj)"><i class="fa fa-search fa-sm"></i></button>
+      </div>
+      <div class="form-group">
+        <button type="button" class="btn btn-sm searchBtn btn-primary" title="Clear Filters" (click)="clear();">
+          <img class="filter-clear-icon" src="./assets/img/filter.svg"></button>
+      </div>
+      <h6 class="pull-right" *ngIf="avrgMTBF && avrgMTBF > 0 && isFilterSelected"><b> MTBF: {{avrgMTBFString}}</b></h6>
+    </form>
   </div>
 </div>
 
 
+<div class="table-responsive">
+  <div class="tableFixHead">
 
-
-<div class="con-pad-c2d" style="max-height: calc(100vh - 6rem);">
-  <ng-container *ngIf="displayMode === 'events' || displayMode === 'history'">
-    <div class="row">
-      <div class="col-xl-12 col-md-12 mb-12">
-        <form>
-
-          <div class="form-group form-inline my-1">
-            <div class="bg-dateRow form-group form-inline" id="dateRow"
-              [style.width]="(filterObj.dateOption === 'date' ? '23rem' : (filterObj.dateOption === 'date range' ? '33rem' : ''))">
-              <select class="form-control form-control-sm mx-1 my-1" id="dateoptions" [(ngModel)]="filterObj.dateOption"
-                name="dateOptions" (change)="onDateOptionChange()">
-                <option [ngValue]="undefined"> Quick Date Options </option>
-                <option [ngValue]="'last 4 weeks'">Last 4 Weeks</option>
-                <option [ngValue]="'this month'">This Month</option>
-                <option [ngValue]="'last month'">Last Month</option>
-                <option [ngValue]="'last 3 month'">Last 3 Months</option>
-                <option [ngValue]="'last 6 month'">Last 6 Months</option>
-                <option [ngValue]="'last 12 month'">Last 12 Months</option>
-                <option [ngValue]="'date range'">Select Date Range</option>
-              </select>
-              <ng-container *ngIf="filterObj.dateOption === 'date range'">
-                <input [owlDateTime]="dt3" [selectMode]="'range'" [max]="today" #dt3Input
-                  (dateTimeChange)="onDateChange($event)"
-                  class="form-control form-control-sm mx-1 my-1 date-range-picket-width" [owlDateTimeTrigger]="dt3"
-                  placeholder="Select Date Time">
-                <span [owlDateTimeTrigger]="dt3" class="datepicker-calendar"><i class="fa fa-calendar"></i></span>
-                <owl-date-time #dt3 [pickerType]="'calendar'"></owl-date-time>
-              </ng-container>
-              <select class="form-control form-control-sm mx-1 my-1" id="date_frequency"
-              [(ngModel)]="filterObj.date_frequency" name="date_frequency" >
-                <option [ngValue]="undefined">Date Frequency </option>
-                <option [ngValue]="'daily'">Daily</option>
-                <option [ngValue]="'weekly'">Weekly</option>
-              </select>
-            </div>
-            <button type="button" class="btn btn-warning btn-sm ml-3 mr-1 my-1" title="Search"
-              (click)="searchMTBFEvents(this.filterObj)"><i class="fa fa-search fa-sm"></i></button>
-            <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear Filters" (click)="clear();">
-              <img class="filter-clear-icon" src="./assets/img/filter.svg"></button>
-            <h6 class="pull-right" *ngIf="avrgMTBF && avrgMTBF > 0 && isFilterSelected"><b> MTBF: {{avrgMTBFString}}</b>
-            </h6>
-          </div>
-        </form>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-12">
-        <hr class="solid">
-      </div>
-    </div>
-  </ng-container>
-  <ng-container *ngIf="displayMode === 'events'">
-
-    <div class="row mx-auto">
-
-      <div class="table-responsive  table-wrapper" style="max-height: calc(100vh - 13rem)">
-        <!-- <app-table [tableData]="lifeCycleEvents" [tableConfig]="eventTableConfig"
-            [isTableFilterSelected]="isFilterSelected" [isTableDataLoading]="isLifeCycleEventsLoading"></app-table> -->
-        <table class="table table-bordered  table-striped" id="deviceTable" width="100%" cellspacing="0">
-          <thead>
-            <th></th>
-            <th>Date</th>
-            <th>TBF (Asset Uptime)</th>
-          </thead>
-          <!-- <tfoot *ngIf="avrgMTBF && avrgMTBF > 0 && isFilterSelected">
+    <ng-container *ngIf="displayMode === 'events'">
+      <table class="table table-hover">
+        <thead>
+          <th></th>
+          <th>Date</th>
+          <th>TBF (Asset Uptime)</th>
+        </thead>
+        <!-- <tfoot *ngIf="avrgMTBF && avrgMTBF > 0 && isFilterSelected">
                 <tr>
                   <td class="text-right" colspan="3"> MTBF</td>
                   <td colspan="2">{{avrgMTBFString}}</td>
                 </tr>
               </tfoot> -->
-          <tbody>
-            <ng-container *ngIf="lifeCycleEvents.length > 0 && isFilterSelected">
-              <tr *ngFor="let event of lifeCycleEvents; let i = index">
-                <td>{{i + 1}}</td>
-                <td *ngIf="originalFilterObj.date_frequency === 'weekly'">{{event.local_event_start_time}} to {{event.local_event_end_time}}</td>
-                <td *ngIf="originalFilterObj.date_frequency === 'daily'">{{event.local_event_start_time}}</td>
-                <td>{{event.mtbfString}}</td>
-              </tr>
-            </ng-container>
-            <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected">
-              <tr>
-                <td colspan="5">
-                  No TBF data found.
-                </td>
-              </tr>
-            </ng-container>
-            <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">
-              <tr>
-                <td colspan="5">Select filter and press search button to load the TBF data.</td>
-              </tr>
-            </ng-container>
-            <ng-container *ngIf="isLifeCycleEventsLoading">
-              <tr>
-                <td colspan="5">
-                  <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-                </td>
-              </tr>
-            </ng-container>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </ng-container>
-  <ng-container *ngIf="displayMode === 'history'">
-
-    <div class="row mx-auto">
+        <tbody>
+          <ng-container *ngIf="lifeCycleEvents.length > 0 && isFilterSelected">
+            <tr *ngFor="let event of lifeCycleEvents; let i = index">
+              <td>{{i + 1}}</td>
+              <td *ngIf="originalFilterObj.date_frequency === 'weekly'">{{event.local_event_start_time}} to
+                {{event.local_event_end_time}}</td>
+              <td *ngIf="originalFilterObj.date_frequency === 'daily'">{{event.local_event_start_time}}</td>
+              <td>{{event.mtbfString}}</td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected">
+            <tr>
+              <td colspan="5">
+                No TBF data found.
+              </td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">
+            <tr>
+              <td colspan="5">Select filter and press search button to load the TBF data.</td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="isLifeCycleEventsLoading">
+            <tr>
+              <td colspan="5">
+                <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </ng-container>
+    <ng-container *ngIf="displayMode === 'history'">
       <ng-container *ngIf="isLifeCycleEventsLoading"> <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></ng-container>
       <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">Select filter
         and press search button to load the TBF data.</ng-container>
@@ -136,6 +100,7 @@
         found.</ng-container>
       <div id="chartdiv" *ngIf="!isLifeCycleEventsLoading && lifeCycleEvents.length > 0"
         [ngStyle]="{'width': '100%', 'height': '26rem'}"></div>
-    </div>
-  </ng-container>
+    </ng-container>
+
+  </div>
 </div>

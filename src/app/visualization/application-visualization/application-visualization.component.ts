@@ -28,7 +28,7 @@ declare var $: any;
 export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   @Input() device: any;
-  @Input() pageType = 'side_menu';
+  @Input() pageType = 'live';
   userData: any;
   contextApp: any = {};
   latestAlerts: any[] = [];
@@ -76,6 +76,23 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   isFileUploading = false;
   today = new Date();
   loadingMessage: string;
+  selectedTab: any;
+  daterange: any = {};
+  options: any = {
+    locale: { format: 'DD-MM-YYYY HH:mm' },
+    alwaysShowCalendars: false,
+    timePicker: true,
+    ranges: {
+      'Last 5 Mins': [moment().subtract(5, 'minutes'), moment()],
+      'Last 30 Mins': [moment().subtract(30, 'minutes'), moment()],
+      'Last 1 hour': [moment().subtract(1, 'hour'), moment()],
+      'Last 24 hours': [moment().subtract(24, 'hours'), moment()],
+      'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+      'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+      'This Month': [moment().startOf('month'), moment().endOf('month')],
+      'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    }
+  };
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -133,6 +150,27 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.getLatestAlerts();
     }
     }
+  }
+
+  onDeviceFilterBtnClick() {
+    $('.dropdown-menu').on('click.bs.dropdown', (e) => {
+      e.stopPropagation();
+    });
+  }
+
+  selectedDate(value: any, datepicker?: any) {
+    this.filterObj.from_date = moment(value.start).utc().unix();
+    this.filterObj.to_date = moment(value.end).utc().unix();
+    console.log(this.filterObj);
+    if (this.filterObj.to_date - this.filterObj.from_date > 3600) {
+      this.filterObj.isTypeEditable = true;
+    } else {
+      this.filterObj.isTypeEditable = false;
+    }
+  }
+
+  onTabClick(type) {
+    this.selectedTab = type;
   }
 
   onNumberChange(event, type) {
@@ -244,23 +282,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDateOptionChange() {
-    if (this.filterObj.dateOption !== 'custom') {
-      this.filterObj.from_date = undefined;
-      this.filterObj.to_date = undefined;
-    }
-    if (this.dtInput1) {
-      this.dtInput1.value = null;
-    }
-    if (this.dtInput2) {
-      this.dtInput2.value = null;
-    }
-    if (this.filterObj.dateOption === '24 hour') {
-      this.filterObj.isTypeEditable = true;
-    } else {
-      this.filterObj.isTypeEditable = false;
-    }
-  }
 
   onAssetSelection() {
     if (this.filterObj?.deviceArr.length > 0) {
@@ -274,46 +295,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   onAssetDeselect() {
     this.filterObj.device = undefined;
     this.filterObj.deviceArr = undefined;
-  }
-
-  onSingleDateChange(event) {
-    this.filterObj.from_date = moment(event.value).utc();
-    this.filterObj.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
-    if (this.dtInput1) {
-      this.dtInput1.value = null;
-    }
-    if (this.filterObj.dateOption !== 'date') {
-      this.filterObj.dateOption = undefined;
-    }
-    const from = this.filterObj.from_date.unix();
-    const to = this.filterObj.to_date.unix();
-    const current = (moment().utc()).unix();
-    if (current < to) {
-      this.filterObj.to_date = moment().utc();
-    }
-    if (to - from > 3600) {
-      this.filterObj.isTypeEditable = true;
-    } else {
-      this.filterObj.isTypeEditable = false;
-    }
-  }
-
-  onDateChange(event) {
-    this.filterObj.from_date = moment(event.value[0]).second(0).utc();
-    this.filterObj.to_date = moment(event.value[1]).second(0).utc();
-    if (this.dtInput2) {
-      this.dtInput2.value = null;
-    }
-    if (this.filterObj.dateOption !== 'date range') {
-      this.filterObj.dateOption = undefined;
-    }
-    const from = this.filterObj.from_date.unix();
-    const to = this.filterObj.to_date.unix();
-    if (to - from > 3600) {
-      this.filterObj.isTypeEditable = true;
-    } else {
-      this.filterObj.isTypeEditable = false;
-    }
   }
 
   getLatestAlerts() {
@@ -345,28 +326,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       obj.from_date = midnight;
       obj.to_date = now;
     } else {
-    const now = moment().utc();
-    if (this.filterObj.dateOption === '5 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(5, 'minute')).unix();
-    } else if (this.filterObj.dateOption === '30 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(30, 'minute')).unix();
-    } else if (this.filterObj.dateOption === '1 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(1, 'hour')).unix();
-    } else if (this.filterObj.dateOption === '24 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(24, 'hour')).unix();
-    } else {
-      if (this.filterObj.from_date) {
-        obj.from_date = (this.filterObj.from_date.unix());
-      }
-      if (this.filterObj.to_date) {
-        obj.to_date = this.filterObj.to_date.unix();
-      }
-    }
-    delete obj.dateOption;
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'Get Alert Data');
       this.isAlertAPILoading = false;
@@ -376,6 +335,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.deviceService.getDeviceAlerts(obj).subscribe(
       (response: any) => {
         this.latestAlerts = response.data;
+        if (this.latestAlerts.length > 0) {
+
+          this.onClickOfViewGraph(this.latestAlerts[0]);
+        }
         this.latestAlerts.forEach((item, i) =>  {
           item.alert_id = 'alert_' +  i;
           item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
@@ -588,10 +551,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   async onClickOfViewGraph(alert) {
+    this.onTabClick('visualization');
     this.isOpen = true;
     this.beforeInterval = 1.5;
     this.afterInterval = 0.5;
-    $('#alertVisualizationModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    // $('#alertVisualizationModal').modal({ backdrop: 'static', keyboard: false, show: true });
     this.isAlertModalDataLoading = true;
     this.y1AxisProps = [];
     this.y2AxisProps = [];

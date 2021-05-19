@@ -1,6 +1,5 @@
-<div class="topnavbar bg-white py-2">
-  <div class="row">
-
+<div class="tab-bar">
+  <div class="">
     <ul class="nav">
 
       <li class="nav-item">
@@ -30,93 +29,33 @@
       </li>
     </ul>
   </div>
-  <div class="row">
-    <div class="col-lg-12">
-      <hr class="solid">
-    </div>
+</div>
+<div class="table-responsive">
+  <div class="tableFixHead" >
+    <ng-container *ngIf="selectedTab === 'Test Connection'">
+      <div class="row mt-1 mx-auto">
+        Check gateway is connected or not, &nbsp;
+        <a class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm mb-1" href="javascript:void(0)"
+        (click)="testConnectionWithGateway()" [class.disabled]="isTestConnectionAPILoading">
+          Test Connection</a>  <i *ngIf="isTestConnectionAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x text-center"></i>
+      </div>
+      <div class="row mt-1 mx-auto" *ngIf="testConnectionMessage">
+        <span [ngClass]="{'alert-success': testConnectionMessage.toLowerCase().includes('success'),
+        'alert-danger': testConnectionMessage.toLowerCase().includes('not connected')}"> {{testConnectionMessage}} </span>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="selectedTab === 'Manage Applications'">
+      <app-manage-applications [device]="device" [deviceTwin]="deviceTwin" (refreshDeviceTwin)="getDeviceTwinData()"></app-manage-applications>
+    </ng-container>
+    <ng-container *ngIf="selectedTab === 'Manage Devices'">
+      <app-register-devices [device]="device" [deviceTwin]="deviceTwin" (refreshDeviceTwin)="getDeviceTwinData()" [pageType]="'register-devices'"></app-register-devices>
+    </ng-container>
+    <ng-container *ngIf="selectedTab === 'Register Properties'">
+      <app-register-properties [device]="device" [deviceTwin]="deviceTwin" (refreshDeviceTwin)="getDeviceTwinData()"></app-register-properties>
+    </ng-container>
+    <ng-container *ngIf="selectedTab === 'Settings'">
+      <app-gateway-devices-setting [device]="device" [deviceTwin]="deviceTwin" (refreshDeviceTwin)="getDeviceTwinData()"></app-gateway-devices-setting>
+    </ng-container>
   </div>
-
 </div>
 
-<div class="con-pad">
-  <ng-container *ngIf="selectedTab === 'Test Connection'">
-    <div class="row mt-1 mx-auto">
-      Check gateway is connected or not, &nbsp;
-      <a class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm mb-1" href="javascript:void(0)"
-      (click)="testConnectionWithGateway()" [class.disabled]="isTestConnectionAPILoading">
-        Test Connection</a>  <i *ngIf="isTestConnectionAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x text-center"></i>
-    </div>
-    <div class="row mt-1 mx-auto" *ngIf="testConnectionMessage">
-      <span [ngClass]="{'alert-success': testConnectionMessage.toLowerCase().includes('success'),
-      'alert-danger': testConnectionMessage.toLowerCase().includes('not connected')}"> {{testConnectionMessage}} </span>
-    </div>
-  </ng-container>
-  <ng-container *ngIf="selectedTab === 'Manage Applications'">
-    <app-manage-applications [device]="device" [deviceTwin]="deviceTwin" (refreshDeviceTwin)="getDeviceTwinData()"></app-manage-applications>
-  </ng-container>
-  <ng-container *ngIf="selectedTab === 'Manage Devices'">
-    <app-register-devices [device]="device" [deviceTwin]="deviceTwin" (refreshDeviceTwin)="getDeviceTwinData()" [pageType]="'register-devices'"></app-register-devices>
-  </ng-container>
-  <ng-container *ngIf="selectedTab === 'Register Properties'">
-    <app-register-properties [device]="device" [deviceTwin]="deviceTwin" (refreshDeviceTwin)="getDeviceTwinData()"></app-register-properties>
-  </ng-container>
-  <ng-container *ngIf="selectedTab === 'Settings'">
-    <app-gateway-devices-setting [device]="device" [deviceTwin]="deviceTwin" (refreshDeviceTwin)="getDeviceTwinData()"></app-gateway-devices-setting>
-  </ng-container>
-</div>
-
-<!-- <div class="con-pad" *ngIf="device?.tags?.settings">
-
-  <div class="row mt-1 mx-auto">
-
-    <div class="col-xl-6 col-lg-6">
-      <h1 class="h6 mb-3 text-secondary-400 "><b>Normal Telemetry Mode Settings:</b></h1>
-      <div class="table-responsive">
-        <table class="table table-bordered  table-striped text-gray-800" id="dataTable" width="100%" cellspacing="0">
-
-          <tbody>
-            <tr>
-              <td style="width: 50%;">Frequency (In Sec): </td>
-              <td>
-                  <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                    [(ngModel)]="device.tags.settings.normal_mode.frequency" name="frequency_in_normal"
-                    placeholder="Frequency">
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  <div class="row mt-1 mx-auto">
-
-    <div class="col-xl-6 col-lg-6">
-
-      <h1 class="h6 mb-3 text-secondary-400"><b>Turbo Telemetry Mode Settings:</b></h1>
-      <div class="table-responsive">
-        <table class="table table-bordered  table-striped text-gray-800" id="dataTable" width="100%" cellspacing="0">
-
-          <tbody>
-            <tr>
-              <td style="width: 50%;">Frequency (In Sec): </td>
-              <td>
-
-                  <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                    [(ngModel)]="device.tags.settings.turbo_mode.frequency" name="frequency_in_turbo"
-                    placeholder="Frequency">
-              </td>
-            </tr>
-            <tr>
-              <td >Turbo mode Timeout (In Sec): </td>
-              <td>
-                  <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                    [(ngModel)]="device.tags.settings.turbo_mode.timeout_time" name="timeout_in_turbo"
-                    placeholder="Timeout">
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div> -->

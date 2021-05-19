@@ -1,3 +1,4 @@
+import { ToasterService } from './../../../services/toaster.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
 import { DeviceService } from 'src/app/services/devices/device.service';
@@ -17,17 +18,19 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
   heartBeatFilter: any = {};
   heartbeats: any[] = [];
   @Input() device: Device = new Device();
+  @Input() componentState: any;
   isHeartbeatLoading = false;
   apiSubscriptions: Subscription[] = [];
   selectedHeartbeat: any;
   isFilterSelected = false;
   modalConfig: any;
-  pageType: string;
+  // pageType: string;
   heartbeatTableConfig: any = {};
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -36,35 +39,31 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
     } else {
       this.heartBeatFilter.device_id = this.device.device_id;
     }
-    this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
-      this.pageType = params.get('listName');
-      this.pageType = this.pageType.slice(0, -1);
-      this.heartbeatTableConfig = {
-        type: 'heartbeat',
-        headers: ['Timestamp', 'Message ID', 'Message'],
-        data: [
-          {
-            name: 'Timestamp',
-            key: 'local_created_date',
-          },
-          {
-            name: 'Message ID',
-            key: 'message_id',
-          },
-          {
-            name: 'Message',
-            key: undefined,
-          }
-        ]
-      };
-      if (this.pageType === 'gateway') {
-        this.heartbeatTableConfig.data.splice(1, 1);
-        this.heartbeatTableConfig.data.splice(1, 0, {
-          name: 'Asset Name',
-          key: 'device_id'
-        });
-      }
-    }));
+    this.heartbeatTableConfig = {
+      type: 'heartbeat',
+      headers: ['Timestamp', 'Message ID', 'Message'],
+      data: [
+        {
+          name: 'Timestamp',
+          key: 'local_created_date',
+        },
+        {
+          name: 'Message ID',
+          key: 'message_id',
+        },
+        {
+          name: 'Message',
+          key: undefined,
+        }
+      ]
+    };
+    if (this.componentState === CONSTANTS.IP_GATEWAY) {
+      this.heartbeatTableConfig.data.splice(1, 1);
+      this.heartbeatTableConfig.data.splice(1, 0, {
+        name: 'Asset Name',
+        key: 'device_id'
+      });
+    }
     this.heartBeatFilter.epoch = true;
 
   }
@@ -73,28 +72,12 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
     this.isFilterSelected = true;
     this.isHeartbeatLoading = true;
     const obj = {...filterObj};
-    const now = moment().utc();
-    if (filterObj.dateOption === '5 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(5, 'minute')).unix();
-    } else if (filterObj.dateOption === '30 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(30, 'minute')).unix();
-    } else if (filterObj.dateOption === '1 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(1, 'hour')).unix();
-    } else if (filterObj.dateOption === '24 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(24, 'hour')).unix();
-    } else {
-      if (filterObj.from_date) {
-        obj.from_date = (filterObj.from_date.unix());
-      }
-      if (filterObj.to_date) {
-        obj.to_date = filterObj.to_date.unix();
-      }
+    if (!obj.from_date || !obj.to_date) {
+      this.toasterService.showError('Date selection is requierd.', 'View Heartbeats');
+      this.isHeartbeatLoading = false;
+      this.isFilterSelected = false;
+      return;
     }
-    delete obj.dateOption;
     this.heartBeatFilter = filterObj;
     this.apiSubscriptions.push(this.deviceService.getDeviceHeartBeats(obj).subscribe(
       (response: any) => {

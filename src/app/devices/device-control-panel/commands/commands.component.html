@@ -1,10 +1,6 @@
-<!-- Page Heading -->
-<!-- <div class="d-sm-flex align-items-center justify-content-between mb-2 pt-3">
-  <h1 class="h3 mb-0 text-gray-800">C2D</h1>
-</div> -->
-<div class="topnavbar-c2d bg-white" >
-<div class="row">
-  <ul class="nav">
+<div class="tab-bar">
+  <div class="">
+    <ul class="nav">
       <!-- Nav Item - Tables -->
       <li class="nav-item" [ngClass]="{'active': displayMode === 'view'}">
         <a class="nav-link"  href="javascript:void(0)" (click)="displayMode = 'view'; timerObj = undefined;">
@@ -32,66 +28,43 @@
         <i class="fa fa-fw fa-trash"></i>
         <span>Purge</span></a>
     </li>
-
-
-
-  </ul>
-  <!-- <div class="timer" *ngIf="timerObj">
-    <div>
-       <span class="hours" id="hour">{{timerObj?.hours}}</span>
-       <div class="smalltext">Hours</div>
-    </div>
-    <div>
-       <span class="minutes" id="minute">{{timerObj?.minutes}}</span>
-       <div class="smalltext">Minutes</div>
-    </div>
-    <div>
-       <span class="seconds" id="second">{{timerObj?.seconds}}</span>
-       <div class="smalltext">Seconds</div>
-    </div>
-    <p id="time-up"></p>
- </div> -->
-
-</div>
-<div class="row">
-  <div class="col-lg-12">
-    <hr class="solid">
+  </ul></div>
   </div>
-</div>
-</div>
-<div class="con-pad-c2d">
 <ng-container *ngIf="displayMode === 'view'">
-
 <app-c2d-message [device]="device"></app-c2d-message>
 </ng-container>
 <ng-container *ngIf="displayMode === 'configure_specific_commands' || displayMode === 'control_specific_commands'">
-  <form>
-    <div class="mt-n2 row">
-      <div class="form-group col-md-3">
-        <input type="radio" class="mx-1 my-1" value="C2D Message"
+  <div class="tab-bar">
+    <div class="">
+  <form class="form-inline">
+      <div class="form-group ">
+        <input type="radio" value="C2D Message"
             name="communicationTechnique" [(ngModel)]="selectedCommunicationTechnique" >
-        <label class="col-form-label"> C2D Message</label>
+        <label class="col-form-label">&nbsp; C2D Message</label>
       </div>
-      <div class="form-group col-md-3">
-        <input type="radio" class="mx-1 my-1" value="Direct Method"
+      <div class="form-group">
+        <input type="radio" value="Direct Method"
             name="communicationTechnique" [(ngModel)]="selectedCommunicationTechnique" >
-        <label class="col-form-label"> Direct Method</label>
+        <label class="col-form-label">&nbsp; Direct Method</label>
       </div>
-      <div class="form-group col-md-3">
-        <input type="radio" class="mx-1 my-1" value="Twin Change"
+      <div class="form-group">
+        <input type="radio" value="Twin Change"
             name="communicationTechnique" [(ngModel)]="selectedCommunicationTechnique" >
-        <label class="col-form-label"> Twin Change</label>
+        <label class="col-form-label"> &nbsp;Twin Change</label>
       </div>
-    </div>
+      <div class="form-group" *ngIf="selectedCommunicationTechnique" >
+          <select class="form-control form-control-sm" id="widget" name="acknowledge" [(ngModel)]="selectedWidget"
+            (change)="onChangeOfDropdownData()" style="width: 15rem!important;">
+            <option [ngValue]="undefined"> Select {{pageType.includes('configure') ? 'Configuration ' : 'Control '}} Widget</option>
+            <option [ngValue]="widget" *ngFor="let widget of controlWidgets">{{widget.name}}</option>
+          </select>
+      </div>
   </form>
-  <div class="row mt-n3">
-    <div class="col-lg-12">
-      <hr class="solid">
-    </div>
   </div>
-  <app-specific-c2d-message [device]="device" [pageType]="displayMode" *ngIf="selectedCommunicationTechnique === 'C2D Message'"></app-specific-c2d-message>
-  <app-specific-direct-method [device]="device" [pageType]="displayMode" *ngIf="selectedCommunicationTechnique === 'Direct Method'"></app-specific-direct-method>
-  <app-specific-twin-change [device]="device" [pageType]="displayMode" *ngIf="selectedCommunicationTechnique === 'Twin Change'"></app-specific-twin-change>
+  </div>
+  <app-specific-c2d-message [device]="device" [pageType]="displayMode" [selectedWidget]="selectedWidget" [jsonModelKeys]="jsonModelKeys" *ngIf="selectedCommunicationTechnique === 'C2D Message' && selectedWidget"></app-specific-c2d-message>
+  <app-specific-direct-method [device]="device" [pageType]="displayMode" [selectedWidget]="selectedWidget" [jsonModelKeys]="jsonModelKeys" *ngIf="selectedCommunicationTechnique === 'Direct Method' && selectedWidget"></app-specific-direct-method>
+  <app-specific-twin-change [device]="device" [pageType]="displayMode" *ngIf="selectedCommunicationTechnique === 'Twin Change' && selectedWidget"></app-specific-twin-change>
 </ng-container>
 
 <ng-container *ngIf="displayMode === 'general_commands'">
@@ -100,5 +73,5 @@
 <ng-container *ngIf="displayMode === 'purge'">
   <app-c2d-purge [device]="device"></app-c2d-purge>
   </ng-container>
-</div>
+
 

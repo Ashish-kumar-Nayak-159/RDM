@@ -1,3 +1,6 @@
+.report-table {
+  height: calc(100vh - 14.5rem)
+}
 .w-16 {
   width: 16rem;
 }

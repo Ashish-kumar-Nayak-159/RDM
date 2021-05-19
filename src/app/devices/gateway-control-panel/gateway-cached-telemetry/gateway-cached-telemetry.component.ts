@@ -50,70 +50,65 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
     this.editorOptions.statusBar = false;
     this.filterObj.gateway_id = this.device.device_id;
     this.devices = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICES_LIST);
-    this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
-      this.pageType = params.get('listName');
-      this.pageType = this.pageType.slice(0, -1);
-      this.telemetryTableConfig = {
-        type: 'cached telemetry',
-        data: [
-          {
-            name: 'Uploaded At',
-            key: 'local_upload_date',
-            type: 'text',
-            headerClass: '',
-            valueclass: ''
-          },
-          {
-            name: 'Processed At',
-            key: 'local_created_date',
-            type: 'text',
-            headerClass: '',
-            valueclass: ''
-          },
-          {
-            name: 'Asset',
-            key: 'display_name',
-            type: 'text',
-            headerClass: '',
-            valueclass: ''
-          },
-          {
-            name: 'File',
-            key: 'file_name',
-            type: 'text',
-            headerClass: '',
-            valueclass: ''
-          },
-          {
-            name: 'Actions',
-            key: undefined,
-            type: 'button',
-            headerClass: '',
-            btnData: [
-              {
-                icon: 'fa fa-fw fa-download',
-                text: '',
-                id: 'Download',
-                valueclass: '',
-                tooltip: 'Download'
-              },
-              {
-                icon: 'fa fa-fw fa-eye',
-                text: '',
-                id: 'View Document',
-                valueclass: '',
-                tooltip: 'View Document'
-              }
-            ]
-          }
-        ],
-        rowHighlight: {
-          param: 'process_status',
-          value: 'Success'
+    this.telemetryTableConfig = {
+      type: 'cached telemetry',
+      data: [
+        {
+          name: 'Uploaded At',
+          key: 'local_upload_date',
+          type: 'text',
+          headerClass: '',
+          valueclass: ''
+        },
+        {
+          name: 'Processed At',
+          key: 'local_created_date',
+          type: 'text',
+          headerClass: '',
+          valueclass: ''
+        },
+        {
+          name: 'Asset',
+          key: 'display_name',
+          type: 'text',
+          headerClass: '',
+          valueclass: ''
+        },
+        {
+          name: 'File',
+          key: 'file_name',
+          type: 'text',
+          headerClass: '',
+          valueclass: ''
+        },
+        {
+          name: 'Actions',
+          key: undefined,
+          type: 'button',
+          headerClass: '',
+          btnData: [
+            {
+              icon: 'fa fa-fw fa-download',
+              text: '',
+              id: 'Download',
+              valueclass: '',
+              tooltip: 'Download'
+            },
+            {
+              icon: 'fa fa-fw fa-eye',
+              text: '',
+              id: 'View Document',
+              valueclass: '',
+              tooltip: 'View Document'
+            }
+          ]
         }
-      };
-
-    }));
+      ],
+      rowHighlight: {
+        param: 'process_status',
+        value: 'Success'
+      }
+    };
     this.filterObj.epoch = true;
 
   }
@@ -122,27 +117,7 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
     this.isFilterSelected = true;
     this.isTelemetryLoading = true;
     const obj = {...filterObj};
-    const now = moment().utc();
-    if (filterObj.dateOption === '5 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(5, 'minute')).unix();
-    } else if (filterObj.dateOption === '30 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(30, 'minute')).unix();
-    } else if (filterObj.dateOption === '1 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(1, 'hour')).unix();
-    } else if (filterObj.dateOption === '24 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(24, 'hour')).unix();
-    } else {
-      if (filterObj.from_date) {
-        obj.from_date = (filterObj.from_date.unix());
-      }
-      if (filterObj.to_date) {
-        obj.to_date = filterObj.to_date.unix();
-      }
-    }
+
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'Get Cached Telemetry');
       this.isTelemetryLoading = false;

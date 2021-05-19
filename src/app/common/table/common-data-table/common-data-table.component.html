@@ -1,0 +1,104 @@
+<div class="tableFixHead  table-responsive" [ngClass]="tableConfig?.table_class">
+<table  class="table table-hover" *ngIf="tableConfig">
+  <thead>
+    <tr >
+      <th ></th>
+      <ng-container *ngFor="let item of tableConfig?.data; let headerIndex = index">
+        <ng-container *ngIf="!item.is_display_filter; else filterTemplate">
+          <th ><span>{{item.header_name}}</span>
+            <!-- <span class="sort-icon" id="sort-icon" *ngIf="item.is_sort_required"></span> -->
+          </th>
+        </ng-container>
+        <ng-template #filterTemplate>
+          <th>
+            <span>{{item.header_name}}
+              <ng-container *ngIf="item.value_type === 'number'">
+                <a href="javascript:void(0)" id="userDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fa fa-fw fa-search fa-sm ml-1"></i>
+                </a>
+                <div class="dropdown-menu dropdown-filter-content" aria-labelledby="userDropdown1">
+                <div class="dropdown-filter-search">
+                  <input type="number" class="form-design" placeholder="Search {{item.header_name}} " id="{{item.header_name}}_{{headerIndex}}"
+                  (input)="onStringValueChange()" [(ngModel)]="tableFilterObj[item.data_key]" name="{{item.header_name}}_{{headerIndex}}"/>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="item.value_type === 'string'">
+                <a href="javascript:void(0)" id="userDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fa fa-fw fa-search fa-sm ml-1"></i>
+                </a>
+                <div class="dropdown-menu dropdown-filter-content" aria-labelledby="userDropdown2">
+                <div class="dropdown-filter-search">
+                  <input type="text" class="form-design" placeholder="Search {{item.header_name}}" id="{{item.header_name}}_{{headerIndex}}"
+                  (input)="onStringValueChange()" [(ngModel)]="tableFilterObj[item.data_key]" name="{{item.header_name}}_{{headerIndex}}"/>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="item.value_type === 'fixed_values'">
+                <a href="javascript:void(0)" id="userDropdown3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-filter fa-sm ml-1"></i></a>
+                <div class="dropdown-menu dropdown-filter-content" id="table-filter" aria-labelledby="userDropdown3" >
+                <div class="checkbox-container">
+                  <div class="dropdown-filter-item">
+                    <input type="radio" value="" [(ngModel)]="tableFilterObj[item.data_key]"
+                    name="{{item.header_name}}_{{headerIndex}}"  (change)="onStringValueChange()"  id="{{item.header_name}}_{{headerIndex}}_all" />
+                  Select All</div>
+                  <div class="dropdown-divider"></div>
+                  <div class="dropdown-filter-item " *ngFor="let data of item.fixed_value_list;let i = index">
+                    <input type="radio" value="{{data}}"  name="{{item.header_name}}_{{headerIndex}}"
+                     [(ngModel)]="tableFilterObj[item.data_key]"  (change)="onStringValueChange()" id="{{item.header_name}}_{{headerIndex}}_{{i}}" />{{data}}</div>
+                  </div>
+                </div>
+              </ng-container>
+
+            </span>
+            <!-- <span class="sort-icon" id="sort-icon" *ngIf="item.is_sort_required"></span> -->
+          </th>
+        </ng-template>
+      </ng-container>
+    </tr>
+  </thead>
+  <tbody >
+    <ng-container *ngIf="filteredTableData.length > 0">
+    <tr *ngFor="let dataItem of filteredTableData; let dataIndex = index;">
+      <td class="pl-3">{{dataIndex + 1}}</td>
+      <ng-container *ngFor="let item of tableConfig.data">
+      <td class="{{item.value_class}}">
+        <ng-container *ngIf="item.data_type === 'text'">
+          {{resolve(dataItem, item.data_key)}}
+        </ng-container>
+        <ng-container *ngIf="item.data_type  === 'button'">
+          <ng-container *ngFor="let btn of item.btn_list">
+            <a href="javascript:void(0)" style="z-index: 1" class="{{btn.valueclass}}" (click)="onClickOfButton(dataItem, btn.id)"
+            >
+              <i class="{{btn.icon}}" title="{{btn.tooltip}}"></i>
+              {{btn.text}}
+            </a>
+          </ng-container>
+        </ng-container>
+      </td>
+      </ng-container>
+    </tr>
+    </ng-container>
+    <ng-container *ngIf="filteredTableData.length === 0 && !tableConfig.is_table_data_loading">
+      <tr>
+        <td [attr.colspan]="tableConfig?.data?.length + 1">{{noTableDataMessage ? noTableDataMessage : tableConfig?.no_data_message}}</td>
+      </tr>
+    </ng-container>
+    <ng-container *ngIf="tableConfig.is_table_data_loading">
+      <tr>
+        <td [attr.colspan]="tableConfig?.data?.length + 1"> <i class="fa fa-spinner fa-spin fa-fw fa-2x" ></i></td>
+      </tr>
+    </ng-container>
+  </tbody>
+  <!-- <tfoot>
+    <tr>
+      <td  [attr.colspan]="tableConfig?.data?.length + 1" class="text-right">
+        <span class="pull-right mt-1 mr-1" *ngIf="tableData.length > 0">
+          <a href="javascript:void(0)" class="mr-1" (click)="onLoadMoreClick()"
+          title="Load More Records...">Load More...</a>
+        </span>
+      </td>
+    </tr>
+  </tfoot> -->
+</table>
+</div>

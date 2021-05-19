@@ -1,13 +1,16 @@
-<div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-3">
-  <h5 class="mb-0 text-gray-800">Application Metadata
-    <a href="javascript:void(0)" title="Edit Tags" *ngIf="!isMetadataEditable" title="Edit"
+<div class="tab-bar">
+  <div class="d-flex">
+    <div class="main-heading">Application Metadata
+      <a href="javascript:void(0)" title="Edit Tags" *ngIf="!isMetadataEditable" title="Edit"
       (click)="isMetadataEditable = true;"><i class="fa fa-edit"></i></a>
-    <a href="javascript:void(0)" title="Cancel" *ngIf="isMetadataEditable" title="Cancel"
+      <a href="javascript:void(0)" title="Cancel" *ngIf="isMetadataEditable" title="Cancel"
       (click)="onCancelClick();"><i class="fa fa-times"></i></a>
-  </h5>
+    </div>
 </div>
-<div class="col-6">
-<table class="table table-bordered table-striped" cellspacing="0">
+</div>
+
+<div class="tableFixHead table-responsive" >
+  <table class="table table-hover">
   <!--<thead>
     <tr>
       <th>Project Name</th>
@@ -16,11 +19,11 @@
     </tr>
   </thead>-->
   <tfoot>
-    <tr class="bg-transparent text-white">
+    <tr >
       <th colspan="3" >
-        <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="onSaveMetadata()"
+        <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="onSaveMetadata()"
         [disabled]="saveMetadataAPILoading || isFileUploading || !isMetadataEditable">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMetadataAPILoading || isFileUploading"></i></button>
-        <button type="button" class="btn btn-white btn-sm mx-1 my-1"
+        <button type="button" class="btn btn-sm searchBtn btn-primary ml-1"
         (click)="onCancelClick();" [disabled]="!isMetadataEditable">
         CANCEL</button>
       </th>
@@ -53,7 +56,7 @@
         class="form-control" id="app_logo" name="app_logo" accept=".jpeg,.png,.svg">
       </td>
     </tr>
-    <tr class="bg-white">
+    <tr>
       <!--<td><a href="#">Work 3</a></td>-->
       <td>App Icon</td>
       <td>{{applicationData?.metadata?.icon ? applicationData?.metadata?.icon.name : 'Not yet uploaded'}}

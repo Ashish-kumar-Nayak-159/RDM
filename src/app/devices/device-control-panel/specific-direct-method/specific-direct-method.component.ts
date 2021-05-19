@@ -24,8 +24,8 @@ export class SpecificDirectMethodComponent implements OnInit {
   appName: string;
   apiSubscriptions: Subscription[] = [];
   controlWidgets: any[] = [];
-  selectedWidget: any;
-  jsonModelKeys = [];
+  @Input() selectedWidget: any;
+  @Input() jsonModelKeys: any[] = [];
   isInvokeDirectMethod: boolean;
   responseMessage: any;
   constructor(
@@ -44,11 +44,7 @@ export class SpecificDirectMethodComponent implements OnInit {
       this.appName = params.get('applicationId');
       this.listName = params.get('listName');
       this.listName = this.listName.slice(0, -1);
-      if (this.pageType.includes('control')) {
-        this.getControlWidgets();
-      } else {
-        this.getConfigureWidgets();
-      }
+
     }));
   }
 

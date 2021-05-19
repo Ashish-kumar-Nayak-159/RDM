@@ -40,6 +40,22 @@ export class PreGeneratedReportsComponent implements OnInit {
   insideScrollFunFlag = false;
   currentOffset = 0;
   currentLimit = 20;
+  daterange: any = {};
+  options: any = {
+    locale: { format: 'DD-MM-YYYY HH:mm' },
+    alwaysShowCalendars: false,
+    timePicker: true,
+    ranges: {
+      'Last 5 Mins': [moment().subtract(5, 'minutes'), moment()],
+      'Last 30 Mins': [moment().subtract(30, 'minutes'), moment()],
+      'Last 1 hour': [moment().subtract(1, 'hour'), moment()],
+      'Last 24 hours': [moment().subtract(24, 'hours'), moment()],
+      'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+      'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+      'This Month': [moment().startOf('month'), moment().endOf('month')],
+      'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    }
+  };
 
   constructor(
     private commonService: CommonService,
@@ -99,6 +115,24 @@ export class PreGeneratedReportsComponent implements OnInit {
      // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
     }));
   }
+
+  onDeviceFilterBtnClick() {
+    $('.dropdown-menu').on('click.bs.dropdown', (e) => {
+      e.stopPropagation();
+    });
+  }
+
+  selectedDate(value: any, datepicker?: any) {
+    this.filterObj.from_date = moment(value.start).utc().unix();
+    this.filterObj.to_date = moment(value.end).utc().unix();
+    console.log(this.filterObj);
+    // if (this.filterObj.to_date - this.filterObj.from_date > 3600) {
+    //   this.filterObj.isTypeEditable = true;
+    // } else {
+    //   this.filterObj.isTypeEditable = false;
+    // }
+  }
+
 
   getTileName() {
     let selectedItem;
@@ -221,60 +255,13 @@ export class PreGeneratedReportsComponent implements OnInit {
     }
   }
 
-  onDateOptionChange() {
-    if (this.filterObj.dateOption !== 'custom') {
-      this.filterObj.from_date = undefined;
-      this.filterObj.to_date = undefined;
-    }
-    if (this.dtInput1) {
-      this.dtInput1.value = null;
-    }
-    if (this.dtInput2) {
-      this.dtInput2.value = null;
-    }
-  }
-
-  onDateChange(event) {
-    this.filterObj.from_date = moment(event.value[0]).utc();
-    this.filterObj.to_date = ((((moment(event.value[1])).add(23, 'hours')).add(59, 'minute')).add(59, 'second')).utc();
-    const from = this.filterObj.from_date.unix();
-    const to = this.filterObj.to_date.unix();
-    const current = (moment().utc()).unix();
-    if (current < to) {
-      this.filterObj.to_date = moment().utc();
-    }
-    if (this.dtInput2) {
-      this.dtInput2.value = null;
-    }
-    if (this.filterObj.dateOption !== 'date range') {
-      this.filterObj.dateOption = undefined;
-    }
-  }
-
-  onSingleDateChange(event) {
-    this.filterObj.from_date = moment(event.value).utc();
-    this.filterObj.to_date = (((moment(event.value).add(23, 'hours')).add(59, 'minute')).add(59, 'second')).utc();
-    if (this.dtInput1) {
-      this.dtInput1.value = null;
-    }
-    if (this.filterObj.dateOption !== 'date') {
-      this.filterObj.dateOption = undefined;
-    }
-    const from = this.filterObj.from_date.unix();
-    const to = this.filterObj.to_date.unix();
-    const current = (moment().utc()).unix();
-    if (current < to) {
-      this.filterObj.to_date = moment().utc();
-    }
-  }
-
   getReportsData() {
     this.insideScrollFunFlag = true;
     const obj = {...this.filterObj};
-    if (!obj.report_type) {
-      this.toasterService.showError('Report Type selection is required', 'View Report');
-      return;
-    }
+    // if (!obj.report_type) {
+    //   this.toasterService.showError('Report Type selection is required', 'View Report');
+    //   return;
+    // }
     setTimeout(() => {
       $('#table-wrapper').on('scroll', () => {
         const element = document.getElementById('table-wrapper');
@@ -286,33 +273,27 @@ export class PreGeneratedReportsComponent implements OnInit {
         }
       });
     }, 2000);
-    if (this.filterObj.from_date) {
-      obj.from_date = (this.filterObj.from_date.unix());
-    }
-    if (this.filterObj.to_date) {
-      obj.to_date = this.filterObj.to_date.unix();
-    }
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'View Report');
       return;
     }
-    if (obj.report_type.toLowerCase().includes('daily')) {
-      obj.frequency = 'daily';
-    } else {
-      obj.frequency = 'weekly';
-    }
-    if (obj.report_type.toLowerCase().includes('raw')) {
-      obj.type = 'raw';
-    } else {
-      obj.type = 'sampling';
-    }
-    console.log(obj.report_type.toLowerCase().includes('single'));
-    if (obj.report_type.toLowerCase().includes('single')) {
-      obj.multiple_devices = false;
-      console.log(obj);
-    } else {
-      obj.multiple_devices = true;
-    }
+    // if (obj.report_type.toLowerCase().includes('daily')) {
+    //   obj.frequency = 'daily';
+    // } else {
+    //   obj.frequency = 'weekly';
+    // }
+    // if (obj.report_type.toLowerCase().includes('raw')) {
+    //   obj.type = 'raw';
+    // } else {
+    //   obj.type = 'sampling';
+    // }
+    // console.log(obj.report_type.toLowerCase().includes('single'));
+    // if (obj.report_type.toLowerCase().includes('single')) {
+    //   obj.multiple_devices = false;
+    //   console.log(obj);
+    // } else {
+    //   obj.multiple_devices = true;
+    // }
     if (!obj.hierarchy) {
       obj.hierarchy =  { App: this.contextApp.app};
     }
@@ -321,6 +302,7 @@ export class PreGeneratedReportsComponent implements OnInit {
     delete obj.deviceArr;
     delete obj.dateOption;
     delete obj.report_type;
+    delete obj.device_id;
     obj.offset = this.currentOffset;
     obj.count = this.currentLimit;
     this.isReportDataLoading = true;

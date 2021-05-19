@@ -1,15 +1,16 @@
+<div class="blue-nav-bar">
+  <div class="d-flex">
 
-<div class="topnavbar" >
-  <!-- <div class="d-sm-flex align-items-center justify-content-start mb-4 pl-1">
-    <h1 class="h3 mb-0 text-gray-800">Asset Model</h1>
-  </div> -->
-  <div class="d-sm-flex align-items-center justify-content-start mb-2 mt-n3 pl-1">
-    <h5 class="h4 mb-0 text-gray-800">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}</h5>
-    <a
-    class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-4"
-    href="javascript:void(0)"  (click)="openCreateDeviceTypeModal()" title="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"
-    ><i class="fa fa- fa-sm fa-plus text-white"></i></a>
-  </div>
+    <div class="main-heading">{{(tileData && tileData[1] ? tileData[1]?.value : '')}}
+      <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCreateDeviceTypeModal()"
+      title="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"><i class="fas fa-plus fa-sm"></i></button>
+    </div>
+   </div>
+</div>
+
+
+
+<!-- <div class="topnavbar" >
   <div class="card row bg-white" style="margin-left:-1.5rem">
     <div class="col-xl-12 col-md-12 mb-12">
       <form>
@@ -38,23 +39,17 @@
        </form>
   </div>
 </div>
-<!-- <div class="row">
-  <div class="col-lg-12">
-    <hr class="solid">
-  </div>
+
 </div> -->
-</div>
 <!-- Content Row -->
 
 <!-- DataTales Example -->
-<div class="contain-pad" style="max-height: calc(100vh - 14rem)">
-<div class="mb-4 ">
+<div class="table-responsive">
+  <div class="tableFixHead" >
 
-  <div class="">
-   <app-common-table [tableData]="thingsModels" [tableConfig]="tableConfig" [isTableFilterSelected]="isFilterSelected"
-   [isTableDataLoading]="isthingsModelsListLoading" (viewMessageEvent)="onTableFunctionCall($event)"></app-common-table>
+    <app-common-data-table [tableData]="thingsModels"
+      [tableConfig]="tableConfig" (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
   </div>
-</div>
 </div>
 
 <div class="modal right fade" id="createDeviceTypeModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
@@ -70,16 +65,16 @@
       <form name="createThingsModelForm">
         <div class="form-group" *ngIf="!thingsModel.id">
           <label for="message-text" class="col-form-label">App:</label>
-          <input type="text" class="form-control" id="app_name" [defaultValue]="contextApp.app" disabled>
+          <input type="text" class="form-control form-control-sm" id="app_name" [defaultValue]="contextApp.app" disabled>
         </div>
         <div class="form-group" *ngIf="!thingsModel.id">
           <label for="message-text" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name:</label>
-          <input type="text" class="form-control" id="name" name="name" [(ngModel)]="thingsModel.name"
+          <input type="text" class="form-control form-control-sm" id="name" name="name" [(ngModel)]="thingsModel.name"
           placeholder="Enter {{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name">
         </div>
         <div class="form-group" *ngIf="!thingsModel.id">
           <label for="recipient-name" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Type:</label>
-          <select class="custom-select" id="template" name="model_type" [(ngModel)]="thingsModel.metadata.model_type"
+          <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="thingsModel.metadata.model_type"
           >
             <option [ngValue]="constantData.IP_DEVICE">{{constantData.IP_DEVICE}}</option>
             <option [ngValue]="constantData.IP_GATEWAY">{{constantData.IP_GATEWAY}}</option>
@@ -88,7 +83,7 @@
         </div>
         <div class="form-group" *ngIf="!thingsModel.id">
           <label for="recipient-name" class="col-form-label required">Protocol:</label>
-          <select class="custom-select" id="protocol" name="protocol"
+          <select class="form-control form-control-sm" id="protocol" name="protocol"
           (change)="getConnectivityData()" [(ngModel)]="thingsModel.tags.protocol">
             <option [ngValue]="undefined"> Select Protocol</option>
             <ng-container *ngFor="let protocol of protocolList">
@@ -98,7 +93,7 @@
         </div>
         <div class="form-group" *ngIf="!thingsModel.id">
           <label for="recipient-name" class="col-form-label required">Cloud Connectivity followed by the {{(tileData && tileData[1] ? tileData[1]?.value : '')}}:</label>
-          <select class="custom-select" id="template" name="connectivity"  [(ngModel)]="thingsModel.tags.cloud_connectivity">
+          <select class="form-control form-control-sm" id="template" name="connectivity"  [(ngModel)]="thingsModel.tags.cloud_connectivity">
             <option [ngValue]="undefined"> Select Connectivity</option>
           <option *ngFor="let item of connectivityList" [ngValue]="item">
             {{item}}</option>
@@ -109,7 +104,7 @@
           {{thingsModel.metadata?.image?.name ? thingsModel.metadata.image.name : 'Not yet uploaded'}}
           <input type="file"
           #typeLogoFileInput (change)="onLogoFileSelected($event.target.files)"
-           class="form-control" id="app_logo" name="app_logo" >
+           class="form-control form-control-sm" id="app_logo" name="app_logo" >
         </div>
 
         <!-- <div class="form-group">

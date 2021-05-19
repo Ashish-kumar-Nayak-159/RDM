@@ -1,10 +1,9 @@
 
 
 <!-- Page Heading -->
-
-<div class="con-pad no-topnavbar">
-  <div class="d-sm-flex align-items-center justify-content-between mt-1">
-    <h4 class="mb-0 text-gray-800 row col-md-6">Welcome to {{device?.tags?.display_name ? device?.tags?.display_name : device?.device_id}}</h4>
+<div class="table-responsive p-3">
+  <div class="tableFixHead" >
+  <div class="flex-end">
     <a
     class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm pull-right mr-2"
     href="javascript:void(0)"
@@ -12,14 +11,14 @@
     (click)="syncWithCache()"
     >Sync with cache <i class="fa fa-refresh fa-sm text-white"></i></a>
   </div>
-  <div class="row col-12 mt-1" *ngIf="pageType.toLowerCase() === 'nonipdevice'">
-    <h6>This {{tileData.value}} is managed by an IP Gateway
+  <div class="row col-12 mt-1" *ngIf="componentState === constantData.NON_IP_DEVICE">
+    <h6>This Asset is managed by an IP Gateway
       <a  href="javascript:void(0)" class="blue-font" (click)="onRedirectToGateway(device)">({{device.gateway_id}})</a></h6>
   </div>
   <div class="row col-12 mt-1">
-    <h6>{{tileData.value}} Id is {{device?.device_id}}</h6>
+    <h6>Asset Id is {{device?.device_id}}</h6>
   </div>
-  <div class="row col-12 mt-1" *ngIf="pageType === 'gateway'">
+  <div class="row col-12 mt-1" *ngIf="componentState === constantData.IP_GATEWAY">
     <h6>This is the gateway of type ({{device.tags.device_type}}) managing
       <a class="blue-font"  href="javascript:void(0)" (click)="onRedirectToDevices()">
         {{deviceCount}} {{deviceCount === 1 ? 'asset' : 'assets'}}</a>.</h6>
@@ -27,32 +26,32 @@
   <div class="row col-12 mt-1">
 
     <p *ngIf="device?.configuration?.status?.toLowerCase() === 'enabled' && device?.configuration?.connection_state?.toLowerCase() === 'connected'">
-      Currently, {{pageType}} is
+      Currently, {{constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
       <span class="enabled-font">
         {{device?.configuration.status}} & Online.</span>
     </p>
     <p *ngIf="device?.configuration?.status?.toLowerCase() === 'enabled' && device?.configuration?.connection_state?.toLowerCase() === 'disconnected'">
-      Currently, {{pageType}} is
+      Currently, {{constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
       <span class="enabled-font">
         {{device?.configuration.status}}</span>, but it is
         <span class="disabled-font">
           Offline.</span>
     </p>
     <p *ngIf="device?.configuration?.status?.toLowerCase() === 'disabled' && device?.configuration?.connection_state?.toLowerCase() === 'disconnected'">
-      Currently, {{pageType}} is
+      Currently, {{constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
       <span class="disabled-font">
         {{device?.configuration.status}} & Offline.</span>
     </p>
   </div>
-  <div *ngIf="deviceCredentials" class="mt-1">
-    <h6 class="row col-12"><ng-container *ngIf="pageType.toLowerCase() === 'nonipdevice'">Gateway</ng-container>
+  <div *ngIf="deviceCredentials" class="row col-12 mt-1">
+    <h6 class="row col-12"><ng-container *ngIf="componentState === constantData.NON_IP_DEVICE">Gateway</ng-container>
       Connection String:
       <a class="blue-font ml-2" href="javascript:void(0)" (click)="viewonnectionString()"> View</a>
       <a class="blue-font ml-2" href="javascript:void(0)" (click)="copyConnectionString()"> {{isCopyClicked ? 'Copied' : 'Copy'}}</a>
     </h6>
     <h6  class="row col-12" *ngIf="isViewClicked">{{deviceCredentials.primary_connection_string}}</h6>
   </div>
-  <div *ngIf="pageType.toLowerCase() !== 'nonipdevice'" class="mt-1">
+  <div *ngIf="componentState !== constantData.NON_IP_DEVICE" class="row col-12 mt-1">
     <h6 class="row col-12">
       Asset Twin:
       <a class="blue-font ml-2" href="javascript:void(0)" (click)="viewDeviceTwin()"> View</a>
@@ -64,28 +63,8 @@
   src="{{(blobStorageURL + deviceType?.metadata?.image?.url + blobSASToken)}}" alt="" style="width:15rem;">
 </div>
 </div>
-<!-- <div class="d-sm-flex align-items-center justify-content-between mb-4 pt-3">
+</div>
 
-  Meta Data <br />
-  Device Name: {{device?.device_id}}<br />
-  MAC ID:<br />
-  Device Type: {{device?.tags?.device_type}}<br /><br />
-
-  Properties List:<br /><br />
-
-  D2C Messages Possible:<br /><br />
-
-  Direct Methods Exposed:<br /><br />
-
-  Twin Patches Possible:<br /><br />
-
-  C2D Commands Possible:<br /><br />
-
-  FOTA format:<br /><br />
-
-  Reboot Format:<br />
-
-</div> -->
 
 <div class="modal right fade" id="deviceTwinModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">

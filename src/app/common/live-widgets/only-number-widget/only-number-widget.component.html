@@ -2,7 +2,7 @@
 <div class="mt-1">
 <div class="card" id="{{chartConfig.chartId}}">
   <div class="card-header">
-    <h6 class=" m-0 font-weight-bold live-widget-title" [ngClass]="!device ? 'col-md-10' : 'col-md-12'" title="{{chartConfig.widgetTitle}}">
+    <h6 class="mx-2 my-0 live-widget-title" [ngClass]="!device ? 'col-md-10' : 'col-md-12'" title="{{chartConfig.widgetTitle}}">
       {{chartConfig.widgetTitle}}
     </h6>
     <a *ngIf="!device && !chartConfig.freezed" class="float-right pull-right col-md-1 mt-n4" href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()"
@@ -33,10 +33,15 @@
           />
         </div>
         <div [ngClass]="{'mt-4': chartConfig.widgetType === 'OnlyNumber' || chartConfig.widgetType === 'StringWidget'}">
-          <span class="text-darkblue display-5 font-weight-bold text-lg" [ngStyle]="{'font-size': chartConfig.widgetType === 'OnlyNumber' || chartConfig.widgetType === 'StringWidget' ? '2rem' : '' }">
+          <span class="text-darkblue display-5 font-weight-bold" [ngStyle]="{'font-size': chartConfig.widgetType === 'OnlyNumber' || chartConfig.widgetType === 'StringWidget' ? '2rem' : '' }">
             <!-- {{telemetryObj[prop.property.json_key]}} -->
-            {{ prop.property.data_type === 'Number' ? (telemetryObj[prop.property.json_key]?.toFixed(prop.digitsAfterDecimals)) : (telemetryObj[prop.property.json_key])}} {{prop.unit}}
+            {{ (telemetryObj[prop.property.json_key] !== undefined && telemetryObj[prop.property.json_key] !== null) ? (prop.property.data_type === 'Number' ? (telemetryObj[prop.property.json_key]?.toFixed(prop.digitsAfterDecimals)) : (telemetryObj[prop.property.json_key])) : 'NA'}} {{prop.unit}}
           </span>
+        </div>
+        <div>
+          <span class="text-darkblue display-5" >
+            {{telemetryObj.date}}
+           </span>
         </div>
       </div>
     </div>

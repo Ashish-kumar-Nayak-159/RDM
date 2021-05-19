@@ -19,6 +19,7 @@ export class AlertEndEventComponent implements OnInit, OnDestroy {
   alertFilter: any = {};
   alerts: any[] = [];
   @Input() device: Device = new Device();
+  @Input() componentState: any;
   isAlertLoading = false;
   apiSubscriptions: Subscription[] = [];
   selectedAlert: any;
@@ -39,39 +40,35 @@ export class AlertEndEventComponent implements OnInit, OnDestroy {
     } else {
       this.alertFilter.device_id = this.device.device_id;
     }
-    this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
-      this.pageType = params.get('listName');
-      this.pageType = this.pageType.slice(0, -1);
-      this.alertTableConfig = {
-        type: 'alert',
-        headers: ['Timestamp', 'Message ID', 'Message'],
-        data: [
-          {
-            name: 'Code',
-            key: 'code',
-          },
-          {
-            name: 'Timestamp',
-            key: 'local_created_date',
-          },
-          {
-            name: 'Message',
-            key: 'message'
-          },
-          {
-            name: '',
-            key: undefined,
-          }
-        ]
-      };
-      if (this.pageType === 'gateway') {
-        // this.alertTableConfig.data.splice(1, 1);
-        this.alertTableConfig.data.splice(2, 0, {
-          name: 'Asset Name',
-          key: 'device_id'
-        });
-      }
-    }));
+    this.alertTableConfig = {
+      type: 'alert',
+      headers: ['Timestamp', 'Message ID', 'Message'],
+      data: [
+        {
+          name: 'Code',
+          key: 'code',
+        },
+        {
+          name: 'Timestamp',
+          key: 'local_created_date',
+        },
+        {
+          name: 'Message',
+          key: 'message'
+        },
+        {
+          name: '',
+          key: undefined,
+        }
+      ]
+    };
+    if (this.componentState === CONSTANTS.IP_GATEWAY) {
+      // this.alertTableConfig.data.splice(1, 1);
+      this.alertTableConfig.data.splice(2, 0, {
+        name: 'Asset Name',
+        key: 'device_id'
+      });
+    }
     this.alertFilter.epoch = true;
 
   }
@@ -80,27 +77,6 @@ export class AlertEndEventComponent implements OnInit, OnDestroy {
     this.isFilterSelected = true;
     this.isAlertLoading = true;
     const obj = {...filterObj};
-    const now = moment().utc();
-    if (filterObj.dateOption === '5 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(5, 'minute')).unix();
-    } else if (filterObj.dateOption === '30 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(30, 'minute')).unix();
-    } else if (filterObj.dateOption === '1 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(1, 'hour')).unix();
-    } else if (filterObj.dateOption === '24 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(24, 'hour')).unix();
-    }else {
-      if (filterObj.from_date) {
-        obj.from_date = (filterObj.from_date.unix());
-      }
-      if (filterObj.to_date) {
-        obj.to_date = filterObj.to_date.unix();
-      }
-    }
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'Get Alert End Events');
       this.isAlertLoading = false;

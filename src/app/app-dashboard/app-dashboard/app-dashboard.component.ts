@@ -1,7 +1,7 @@
 import { ActivatedRoute } from '@angular/router';
 import { environment } from './../../../environments/environment';
 import { ChartService } from 'src/app/chart/chart.service';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/app.constants';
@@ -11,7 +11,7 @@ import { DeviceService } from 'src/app/services/devices/device.service';
 import { SignalRService } from 'src/app/services/signalR/signal-r.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 
-
+declare var $: any;
 @Component({
   selector: 'app-app-dashboard',
   templateUrl: './app-dashboard.component.html',
@@ -70,15 +70,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
-    this.commonService.breadcrumbEvent.emit({
-      type: 'replace',
-      data: [
-        {
-          title: this.contextApp.user.hierarchyString,
-          url: 'applications/' + this.contextApp.app
-        }
-      ]
-    });
 
     this.apiSubscriptions.push(this.route.fragment.subscribe(
       fragment => {
@@ -120,6 +111,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  onDeviceFilterBtnClick() {
+    $('.dropdown-menu').on('click.bs.dropdown', (e) => {
+      e.stopPropagation();
+    });
+  }
+
   loadFromCache() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION);
     if (item && item.device) {
@@ -130,7 +127,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         if (index !== 0) {
         this.configureHierarchy[index] = item.device.hierarchy[level];
         if (item.device.hierarchy[level]) {
-          this.onChangeOfHierarchy(index, true);
+          this.onChangeOfHierarchy(index, true, false);
         }
         }
       });
@@ -219,7 +216,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     return c1 && c2 ? c1.device_id === c2.device_id : c1 === c2;
   }
 
-  async onChangeOfHierarchy(i, flag = true) {
+  async onChangeOfHierarchy(i, flag, persistDeviceSelection = true) {
     Object.keys(this.configureHierarchy).forEach(key => {
       if (key > i) {
         delete this.configureHierarchy[key];
@@ -271,8 +268,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.devices?.length === 1) {
         this.filterObj.device = this.devices[0];
       }
+      if (persistDeviceSelection) {
       this.filterObj.deviceArr = undefined;
       this.filterObj.device = undefined;
+      }
       // await this.getDevices(hierarchyObj);
     }
     let count = 0;
@@ -364,6 +363,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   async onFilterSelection(filterObj) {
+    console.log(this.filterObj);
     this.c2dResponseMessage = [];
     $('#overlay').hide();
     clearInterval(this.c2dResponseInterval);
@@ -517,6 +517,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onAssetSelection() {
+    console.log(this.filterObj);
     if (this.filterObj?.deviceArr.length > 0) {
       this.filterObj.device = this.filterObj.deviceArr[0];
     } else {

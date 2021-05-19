@@ -1,3 +1,6 @@
+import { CONSTANTS } from './../../../app.constants';
+import { CommonService } from './../../../services/common.service';
+import { DeviceTypeService } from './../../../services/device-type/device-type.service';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
@@ -20,12 +23,19 @@ export class CommandsComponent implements OnInit, OnDestroy {
   timerObj: any;
   selectedCommunicationTechnique: string;
   subscriptions: Subscription[] = [];
+  selectedWidget: any;
+  jsonModelKeys: any[] = [];
+  contextApp: any;
+  controlWidgets: any[] = [];
+  deviceMethods: any[] = [];
   constructor(
-    private deviceService: DeviceService
+    private deviceService: DeviceService,
+    private deviceTypeService: DeviceTypeService,
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
-
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.subscriptions.push(this.deviceService.composeC2DMessageStartEmitter.subscribe(data => {
       this.timerObj = {
         hours: data.hours,
@@ -50,11 +60,72 @@ export class CommandsComponent implements OnInit, OnDestroy {
   onClickOfSpecificCommands(type) {
     this.displayMode = '';
     setTimeout(() => {
-
       this.displayMode = type + '_specific_commands';
     }, 500);
+    if (type.includes('control')) {
+      this.getControlWidgets();
+    } else {
+      this.getConfigureWidgets();
+    }
     this.timerObj = undefined;
     this.selectedCommunicationTechnique = undefined;
+  }
+
+  getControlWidgets() {
+    const obj = {
+      app: this.contextApp.app,
+      device_type: this.device.tags?.device_type
+    };
+    this.subscriptions.push(this.deviceTypeService.getThingsModelControlWidgets(obj).subscribe(
+      (response: any) => {
+        if (response?.data) {
+          this.controlWidgets = response.data.filter(widget =>
+            widget.metadata.communication_technique === this.selectedCommunicationTechnique);
+        }
+      }
+    ));
+  }
+
+  getConfigureWidgets() {
+    const obj = {
+      app: this.contextApp.app,
+      device_type: this.device.tags?.device_type
+    };
+    this.subscriptions.push(this.deviceTypeService.getThingsModelConfigurationWidgets(obj).subscribe(
+      (response: any) => {
+        if (response?.data) {
+          this.controlWidgets = response.data.filter(widget =>
+            widget.metadata.communication_technique === this.selectedCommunicationTechnique);
+        }
+      }
+    ));
+  }
+
+  onChangeOfDropdownData() {
+    this.jsonModelKeys = [];
+    const keys =  Object.keys(this.selectedWidget.json);
+    const index = keys.findIndex(key => key === 'timestamp');
+    keys.splice(index, 1);
+    keys.forEach(key => {
+      const obj = {
+        key,
+        json: {},
+        name: null,
+        value: null
+      };
+      this.selectedWidget.properties.forEach(prop => {
+        if (prop.json_key === key) {
+          obj.name = prop.name;
+          obj.json = this.selectedWidget.json[key];
+          if (obj.json['type'] === 'boolean') {
+            obj.value = obj.json['defaultValue'] === obj.json['trueValue'] ? true : false;
+          } else {
+            obj.value = this.selectedWidget.json[key].defaultValue;
+          }
+        }
+      });
+      this.jsonModelKeys.splice(this.jsonModelKeys.length, 0, obj);
+    });
   }
 
   ngOnDestroy() {

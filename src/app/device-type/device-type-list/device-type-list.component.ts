@@ -46,68 +46,62 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.route.paramMap.subscribe(async params => {
       this.thingsModelFilterObj.app = this.contextApp.app;
       this.originalThingsModelFilterObj = JSON.parse(JSON.stringify(this.thingsModelFilterObj));
-      this.searchThingsModels();
       this.getTileName();
-      const obj = {
-        type: 'replace',
-        data: [
-          {
-            title: this.contextApp.user.hierarchyString,
-            url: 'applications/' + this.contextApp.app
-          },
-            {
-              title: (this.tileData && this.tileData[0] ? this.tileData[0]?.value : ''),
-              url: 'applications/' + this.contextApp.app + '/' + 'things/model'
-            }
-        ]
-      };
-      this.commonService.breadcrumbEvent.emit(obj);
-    }));
-    this.tableConfig = {
-      type: 'Things Model',
-      tableHeight: 'calc(100vh - 18rem)',
-      data: [
+      this.tableConfig = {
+        type:  (this.tileData && this.tileData[1] ? this.tileData[1]?.value : ''),
+        is_table_data_loading: this.isthingsModelsListLoading,
+        no_data_message: '',
+        data : [
         {
-          name: (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Name',
-          key: 'name',
-          type: 'text',
-          headerClass: 'w-20',
-          valueclass: ''
+          header_name: (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Name',
+          is_display_filter: true,
+          value_type: 'string',
+          is_sort_required: true,
+          fixed_value_list: [],
+          data_type: 'text',
+          data_key: 'name'
         },
         {
-          name: (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Template',
-          key: 'cloud_connectivity',
-          type: 'text',
-          headerClass: 'w-20',
-          valueclass: ''
+          header_name: (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Template',
+          is_display_filter: true,
+          value_type: 'string',
+          is_sort_required: true,
+          fixed_value_list: [],
+          data_type: 'text',
+          data_key: 'cloud_connectivity'
         },
         {
-          name: 'Type',
-          key: 'model_type',
-          type: 'text',
-          headerClass: 'w-10',
-          valueclass: ''
+          header_name: 'Type',
+          is_display_filter: true,
+          value_type: 'string',
+          is_sort_required: true,
+          fixed_value_list: [],
+          data_type: 'text',
+          data_key: 'model_type'
         },
         {
-          name: 'Created By',
-          key: 'created_by',
-          type: 'text',
-          headerClass: 'w-10',
-          valueclass: ''
+          header_name: 'Created By',
+          is_display_filter: true,
+          value_type: 'string',
+          is_sort_required: true,
+          fixed_value_list: [],
+          data_type: 'text',
+          data_key: 'created_by'
         },
         {
-          name: 'No of Assets inherited',
-          key: 'inherited_device_count',
-          type: 'text',
-          headerClass: 'w-5',
-          valueclass: ''
+          header_name: 'No of Assets inherited',
+          is_display_filter: true,
+          value_type: 'number',
+          is_sort_required: true,
+          fixed_value_list: [],
+          data_type: 'text',
+          data_key: 'inherited_device_count'
         },
         {
-          name: 'Actions',
+          header_name: 'Actions',
           key: undefined,
-          type: 'button',
-          headerClass: '',
-          btnData: [
+          data_type: 'button',
+          btn_list: [
             {
               icon: 'fa fa-fw fa-pencil',
               text: '',
@@ -124,14 +118,33 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
             }
           ]
         }
-      ]
-    };
+        ]
+      };
+      this.searchThingsModels();
+
+      const obj = {
+        type: 'replace',
+        data: [
+          {
+            title: this.contextApp.user.hierarchyString,
+            url: 'applications/' + this.contextApp.app
+          },
+            {
+              title: (this.tileData && this.tileData[0] ? this.tileData[0]?.value : ''),
+              url: 'applications/' + this.contextApp.app + '/' + 'things/model'
+            }
+        ]
+      };
+      this.commonService.breadcrumbEvent.emit(obj);
+    }));
+
+
   }
 
   getTileName() {
     let name;
     this.contextApp.configuration.main_menu.forEach(item => {
-      if (item.system_name === 'Things Modelling') {
+      if (item.system_name === 'Things Models') {
         name = item.showAccordion;
       }
     });
@@ -139,6 +152,7 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
   }
 
   searchThingsModels() {
+    this.tableConfig.is_table_data_loading = true;
     this.isthingsModelsListLoading = true;
     this.isFilterSelected = true;
     this.thingsModels = [];
@@ -149,7 +163,11 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
           this.thingsModels = response.data;
         }
         this.isthingsModelsListLoading = false;
-      }, error => this.isthingsModelsListLoading = false
+        this.tableConfig.is_table_data_loading = false;
+      }, error => {
+        this.isthingsModelsListLoading = false;
+        this.tableConfig.is_table_data_loading = false;
+      }
     ));
   }
 

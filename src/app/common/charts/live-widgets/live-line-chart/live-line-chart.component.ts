@@ -209,7 +209,7 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getPropertyName(key) {
-    return this.propertyList.filter(prop => prop.json_key === key)[0].name;
+    return this.propertyList.filter(prop => prop.json_key === key)[0]?.name || key;
   }
 
   openConfirmRemoveWidgetModal() {

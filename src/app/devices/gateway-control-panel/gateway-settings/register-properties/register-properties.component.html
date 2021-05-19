@@ -1,6 +1,5 @@
 <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isDevicesAPILoading"></i>
-<div class="table-responsive" *ngIf="!isDevicesAPILoading">
-  <table class="table table-bordered  table-striped text-gray-800" id="dataTable" width="100%" cellspacing="0">
+  <table class="table table-hover" *ngIf="!isDevicesAPILoading">
     <thead>
       <tr>
         <th>Device</th>
@@ -31,7 +30,7 @@
     </ng-container>
     </tbody>
   </table>
-</div>
+
 
 <div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" style="z-index: 1400;">
   <div class="modal-dialog" role="document">

@@ -37,25 +37,20 @@ export class DeviceLifeCycleEventsComponent implements OnInit, OnDestroy {
 
     this.filterObj.device_id = this.device.device_id;
 
-    this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
-      this.pageType = params.get('listName');
-      this.pageType = this.pageType.slice(0, -1);
-      this.eventTableConfig = {
-        type: 'life cycle events',
-        headers: ['Timestamp', 'View'],
-        data: [
-          {
-            name: 'Timestamp',
-            key: 'local_created_date',
-          },
-          {
-            name: 'Event',
-            key: 'event_type',
-          }
-        ]
-      };
-
-    }));
+    this.eventTableConfig = {
+      type: 'life cycle events',
+      headers: ['Timestamp', 'View'],
+      data: [
+        {
+          name: 'Timestamp',
+          key: 'local_created_date',
+        },
+        {
+          name: 'Event',
+          key: 'event_type',
+        }
+      ]
+    };
     this.filterObj.epoch = true;
   }
 
@@ -63,27 +58,7 @@ export class DeviceLifeCycleEventsComponent implements OnInit, OnDestroy {
     this.isFilterSelected = true;
     this.isLifeCycleEventsLoading = true;
     const obj = {...filterObj};
-    const now = moment().utc();
-    if (filterObj.dateOption === '5 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(5, 'minute')).unix();
-    } else if (filterObj.dateOption === '30 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(30, 'minute')).unix();
-    } else if (filterObj.dateOption === '1 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(1, 'hour')).unix();
-    } else if (filterObj.dateOption === '24 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(24, 'hour')).unix();
-    } else {
-      if (filterObj.from_date) {
-        obj.from_date = (filterObj.from_date.unix());
-      }
-      if (filterObj.to_date) {
-        obj.to_date = filterObj.to_date.unix();
-      }
-    }
+
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'Get Asset Life cycle events');
       this.isLifeCycleEventsLoading = false;

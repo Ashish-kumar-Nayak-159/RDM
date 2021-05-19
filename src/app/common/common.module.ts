@@ -21,6 +21,12 @@ import { OnlyNumberWidgetComponent } from './live-widgets/only-number-widget/onl
 import { AddOnlyNumberWidgetComponent } from './live-widgets/only-number-widget/add-only-number-widget/add-only-number-widget.component';
 import { LiveLineChartComponent } from './charts/live-widgets/live-line-chart/live-line-chart.component';
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
+import { CommonDataTableComponent } from './table/common-data-table/common-data-table.component';
+import { DataTablesModule } from 'angular-datatables';
+import { CommonTableFilterComponent } from './table/common-table-filter/common-table-filter.component';
+import { CommonMultiSelectDropdownComponent } from './common-multi-select-dropdown/common-multi-select-dropdown.component';
+import { MultiSelectFilterPipe } from './common-multi-select-dropdown/multi-select-filter.pipe';
+import { MultiSelectClickOutsideDirective } from './common-multi-select-dropdown/multi-select-click-outside.directive';
 
 @NgModule({
   declarations: [
@@ -38,7 +44,11 @@ import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
     OnlyNumberWidgetComponent,
     AddOnlyNumberWidgetComponent,
     LiveLineChartComponent,
-  ],
+    CommonDataTableComponent,
+    CommonTableFilterComponent,
+    CommonMultiSelectDropdownComponent,
+    MultiSelectFilterPipe,
+    MultiSelectClickOutsideDirective  ],
   imports: [
     CommonModule,
     MatDatepickerModule,
@@ -48,7 +58,8 @@ import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
     AccordionModule.forRoot(),
     FormsModule,
     ColorPickerModule,
-    AngularMultiSelectModule
+    AngularMultiSelectModule,
+    DataTablesModule
   ],
   exports: [
     // FilterComponent,
@@ -63,7 +74,9 @@ import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
     LineChartWithoutAxisComponent,
     OnlyNumberWidgetComponent,
     AddOnlyNumberWidgetComponent,
-    LiveLineChartComponent
+    LiveLineChartComponent,
+    CommonDataTableComponent,
+    CommonMultiSelectDropdownComponent,
   ],
   providers: [
     {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}

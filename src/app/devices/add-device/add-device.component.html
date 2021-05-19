@@ -2,7 +2,9 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add New {{(tileData && tileData[1] ? tileData[1]?.value: '')}}
+        <h5 class="modal-title" id="exampleModalLabel">
+          {{isDeviceEditable ? ('Edit ' + (tileData?.table_key || 'Asset')) :
+            ('Add New ' + (tileData?.table_key || 'Asset'))}}
         </h5>
         <button type="button" class="close" (click)="onCloseCreateDeviceModal()" aria-label="Close"
           [disabled]="isCreateDeviceAPILoading">
@@ -11,14 +13,15 @@
       </div>
       <div class="modal-body" *ngIf="deviceDetail">
         <form>
+          <ng-container *ngIf="!isDeviceEditable">
           <div class="form-group">
             <label for="message-text" class="col-form-label">App:</label>
-            <input type="text" class="form-control" id="app_name" [defaultValue]="contextApp.app" disabled>
+            <input type="text" class="form-control form-control-sm" id="app_name" [defaultValue]="contextApp.app" disabled>
           </div>
           <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let hIndex = index">
             <div class="form-group" *ngIf="hIndex !== 0">
               <label for="message-text" class="col-form-label">{{level}}:</label>
-              <select class="custom-select" id="hierarchy{{hIndex}}" name="hierarchy{{hIndex}}"
+              <select class="form-control form-control-sm" id="hierarchy{{hIndex}}" name="hierarchy{{hIndex}}"
                 [(ngModel)]="addDeviceConfigureHierarchy[hIndex]" [disabled]="contextApp.user.hierarchy[level]"
                 (change)="onChangeOfAddDeviceHierarchy(hIndex)">
                 <option [ngValue]="undefined"> Select {{level}}</option>
@@ -29,21 +32,21 @@
           <div class="form-group">
             <label for="message-text" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value:
               '')}} Name:</label>
-            <input type="text" class="form-control" id="device_name" name="device_id"
+            <input type="text" class="form-control form-control-sm" id="device_name" name="device_id"
               [(ngModel)]="deviceDetail.device_id"
               placeholder="Enter {{(tileData && tileData[1] ? tileData[1]?.value: '')}} Name">
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value:
               '')}} Display Name:</label>
-            <input type="text" class="form-control" id="device_name" name="device_id"
+            <input type="text" class="form-control form-control-sm" id="device_name" name="device_id"
               [(ngModel)]="deviceDetail.tags.display_name"
               placeholder="Enter {{(tileData && tileData[1] ? tileData[1]?.value: '')}} Display Name">
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value:
               '')}} Manager:</label>
-            <select class="custom-select" id="user" name="user" [(ngModel)]="deviceDetail.tags.device_manager">
+            <select class="form-control form-control-sm" id="user" name="user" [(ngModel)]="deviceDetail.tags.device_manager">
               <option [ngValue]="undefined">Select {{(tileData && tileData[1] ? tileData[1]?.value: '')}} Manager
               </option>
               <option *ngFor="let user of appUsers" [ngValue]="user">{{user.user_name}} ({{user.user_email}})</option>
@@ -51,7 +54,7 @@
           </div>
           <div class="form-group" *ngIf="componentState === constantData.NON_IP_DEVICE">
             <label for="message-text" class="col-form-label">Gateway:</label>
-            <select class="custom-select" id="template" name="gateway_id" [(ngModel)]="deviceDetail.gateway_id">
+            <select class="form-control form-control-sm" id="template" name="gateway_id" [(ngModel)]="deviceDetail.gateway_id">
               <option [ngValue]="undefined"> Select Gateway</option>
               <option *ngFor="let item of gateways" [ngValue]="item.device_id">
                 {{item.display_name ? item.display_name : item.device_id}}</option>
@@ -59,7 +62,7 @@
           </div>
           <!-- <div class="form-group" *ngIf="componentState === constantData.NON_IP_DEVICE">
             <label for="message-text" class="col-form-label required">Device Category:</label>
-            <select class="custom-select" id="template" name="gateway_id"
+            <select class="form-control form-control-sm" id="template" name="gateway_id"
             [(ngModel)]="deviceDetail.tags.category">
               <option [ngValue]="undefined"> Select Device Category</option>
             <option *ngFor="let item of deviceCategory" [ngValue]="item.name">
@@ -68,13 +71,13 @@
           </div> -->
           <div class="form-group" *ngIf="contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Device ID'">
             <label for="recipient-name" class="col-form-label">Partition Key:</label>
-            <input type="text" class="form-control" id="partition_key" name="partition_key"
+            <input type="text" class="form-control form-control-sm" id="partition_key" name="partition_key"
               [(ngModel)]="deviceDetail.tags.partition_key" placeholder="Partition Key">
           </div>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value:
               '')}} Type:</label>
-            <select class="custom-select" id="device_type" name="device_type"
+            <select class="form-control form-control-sm" id="device_type" name="device_type"
               [(ngModel)]="deviceDetail.tags.device_type" (change)="onChangeThingsModel()">
               <option [ngValue]="undefined"> Select {{(tileData && tileData[1] ? tileData[1]?.value: '')}} Type</option>
               <option *ngFor="let item of deviceTypes" [ngValue]="item.name">
@@ -85,22 +88,23 @@
           </div>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Protocol:</label>
-            <input type="text" class="form-control" id="protocol" name="protocol"
+            <input type="text" class="form-control form-control-sm" id="protocol" name="protocol"
               [(ngModel)]="deviceDetail.tags.protocol" placeholder="Protocol" disabled>
           </div>
 
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Cloud Connectivity followed by the {{(tileData &&
               tileData[1] ? tileData[1]?.value: '')}}:</label>
-            <input type="text" class="form-control" id="cloud_connectivity" name="cloud_connectivity"
+            <input type="text" class="form-control form-control-sm" id="cloud_connectivity" name="cloud_connectivity"
               [(ngModel)]="deviceDetail.tags.cloud_connectivity" placeholder="Cloud Connectivity" disabled>
           </div>
+          </ng-container>
           <form *ngIf="deviceDetail.tags.protocol && setupForm" [formGroup]="setupForm">
             <ng-container *ngIf="deviceDetail.tags.protocol === 'ModbusTCPMaster'">
               <div class="form-group">
                 <label for="recipient-name" class="col-form-label required">Host Address:</label>
                 <div class="input-group">
-                <input type="text" class="form-control" id="host_address" name="host_address"
+                <input type="text" class="form-control form-control-sm" id="host_address" name="host_address"
                 formControlName="host_address" placeholder="Host Address">
                 </div>
                 <div *ngIf="setupForm.get('host_address').invalid && (setupForm.get('host_address').dirty || setupForm.get('host_address').touched)"
@@ -113,7 +117,7 @@
               <div class="form-group">
                 <label for="recipient-name" class="col-form-label required">Port Number:</label>
                 <div class="input-group">
-                <input type="number" class="form-control" id="port_number" name="port_number"
+                <input type="number" class="form-control form-control-sm" id="port_number" name="port_number"
                   formControlName="port_number" placeholder="Port Number">
                 </div>
                 <div *ngIf="setupForm.get('port_number').invalid && (setupForm.get('port_number').dirty || setupForm.get('port_number').touched)"
@@ -126,7 +130,7 @@
               <div class="form-group">
                 <label for="recipient-name" class="col-form-label required">Slave ID:</label>
                 <div class="input-group">
-                <input type="number" class="form-control" id="slave_id" name="slave_id"
+                <input type="number" class="form-control form-control-sm" id="slave_id" name="slave_id"
                   formControlName="slave_id" placeholder="Slave ID">
                 </div>
                 <div *ngIf="setupForm.get('slave_id').invalid && (setupForm.get('slave_id').dirty || setupForm.get('slave_id').touched)"
@@ -141,7 +145,7 @@
               <div class="form-group">
                 <label for="recipient-name" class="col-form-label required">Host Address:</label>
                 <div class="input-group">
-                <input type="text" class="form-control" id="host_address" name="host_address"
+                <input type="text" class="form-control form-control-sm" id="host_address" name="host_address"
                 formControlName="host_address" placeholder="Host Address">
                 </div>
                 <div *ngIf="setupForm.get('host_address').invalid && (setupForm.get('host_address').dirty || setupForm.get('host_address').touched)"
@@ -154,7 +158,7 @@
               <div class="form-group">
                 <label for="recipient-name" class="col-form-label required">Rack:</label>
                 <div class="input-group">
-                <input type="number" class="form-control" id="rack" name="rack"
+                <input type="number" class="form-control form-control-sm" id="rack" name="rack"
                   formControlName="rack" placeholder="Rack">
                 </div>
                 <div *ngIf="setupForm.get('rack').invalid && (setupForm.get('rack').dirty || setupForm.get('rack').touched)"
@@ -171,7 +175,7 @@
               <div class="form-group">
                 <label for="recipient-name" class="col-form-label required">Slot:</label>
                 <div class="input-group">
-                <input type="number" class="form-control" id="slot" name="slot"
+                <input type="number" class="form-control form-control-sm" id="slot" name="slot"
                   formControlName="slot" placeholder="Slot">
                 </div>
                 <div *ngIf="setupForm.get('slot').invalid && (setupForm.get('slot').dirty || setupForm.get('slot').touched)"
@@ -189,7 +193,7 @@
               <div class="form-group">
                 <label for="recipient-name" class="col-form-label required">Baud Rate:</label>
                 <div class="input-group">
-                <input type="number" class="form-control" id="baud_rate" name="baud_rate"
+                <input type="number" class="form-control form-control-sm" id="baud_rate" name="baud_rate"
                 formControlName="baud_rate" placeholder="Baud Rate">
                 </div>
                 <div *ngIf="setupForm.get('baud_rate').invalid && (setupForm.get('baud_rate').dirty || setupForm.get('baud_rate').touched)"
@@ -202,7 +206,7 @@
               <div class="form-group">
                 <label for="recipient-name" class="col-form-label required">Data Bits:</label>
                 <div class="input-group">
-                <input type="number" class="form-control" id="data_bits" name="data_bits"
+                <input type="number" class="form-control form-control-sm" id="data_bits" name="data_bits"
                   formControlName="data_bits" placeholder="Data Bits">
                 </div>
                 <div *ngIf="setupForm.get('data_bits').invalid && (setupForm.get('data_bits').dirty || setupForm.get('data_bits').touched)"
@@ -218,7 +222,7 @@
               <div class="form-group">
                 <label for="recipient-name" class="col-form-label required">Slave ID:</label>
                 <div class="input-group">
-                <input type="number" class="form-control" id="slave_id" name="slave_id"
+                <input type="number" class="form-control form-control-sm" id="slave_id" name="slave_id"
                   formControlName="slave_id" placeholder="Slave ID">
                 </div>
                 <div *ngIf="setupForm.get('slave_id').invalid && (setupForm.get('slave_id').dirty || setupForm.get('slave_id').touched)"
@@ -231,7 +235,7 @@
               <div class="form-group">
                 <label for="recipient-name" class="col-form-label required">Parity:</label>
                 <div class="input-group">
-                <input type="number" class="form-control" id="parity" name="parity"
+                <input type="number" class="form-control form-control-sm" id="parity" name="parity"
                   formControlName="parity" placeholder="Parity">
                 </div>
                 <div *ngIf="setupForm.get('parity').invalid && (setupForm.get('parity').dirty || setupForm.get('parity').touched)"
@@ -247,7 +251,7 @@
               <div class="form-group">
                 <label for="recipient-name" class="col-form-label required">Stop Bits:</label>
                 <div class="input-group">
-                  <select class="custom-select" id="stop_bits" name="stop_bits"
+                  <select class="form-control form-control-sm" id="stop_bits" name="stop_bits"
                   formControlName="stop_bits">
                   <option [ngValue]="null"> Select Stop Bits</option>
                   <option  [ngValue]="1">1</option>
@@ -269,9 +273,9 @@
       </div>
       <div class="modal-footer">
         <button *ngIf="componentState === constantData.NON_IP_DEVICE" type="button" class="btn btn-primary add-row" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) ||isCreateDeviceAPILoading"
-          (click)="onCreateDevice()">Save</button>
+          (click)="isDeviceEditable ? onEditDevice() : onCreateDevice()">Save</button>
           <button *ngIf="componentState !== constantData.NON_IP_DEVICE" type="button" class="btn btn-primary add-row" [disabled]="isCreateDeviceAPILoading"
-          (click)="onCreateDevice()">Save</button>
+          (click)="isDeviceEditable ? onEditDevice() : onCreateDevice()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreateDeviceAPILoading"
           (click)="onCloseCreateDeviceModal()">
           Cancel

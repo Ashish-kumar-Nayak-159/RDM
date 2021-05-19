@@ -18,6 +18,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   telemetryFilter: any = {};
   telemetry: any[] = [];
   @Input() device: Device = new Device();
+  @Input() componentState: any;
   isTelemetryLoading = false;
   apiSubscriptions: Subscription[] = [];
   selectedTelemetry: any;
@@ -27,8 +28,22 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   pageType: string;
   devices: any[] = [];
   originalTelemetryFilter: any;
-  @ViewChild('dtInput1', {static: false}) dtInput1: any;
-  @ViewChild('dtInput2', {static: false}) dtInput2: any;
+  daterange: any;
+  options: any = {
+    locale: { format: 'DD-MM-YYYY HH:mm' },
+    alwaysShowCalendars: false,
+    timePicker: true,
+    ranges: {
+      'Last 5 Mins': [moment().subtract(5, 'minutes'), moment()],
+      'Last 30 Mins': [moment().subtract(30, 'minutes'), moment()],
+      'Last 1 hour': [moment().subtract(1, 'hour'), moment()],
+      'Last 24 hours': [moment().subtract(24, 'hours'), moment()],
+      'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+      'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+      'This Month': [moment().startOf('month'), moment().endOf('month')],
+      'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    }
+  };
   today = new Date();
   constructor(
     private deviceService: DeviceService,
@@ -43,56 +58,52 @@ export class TelemetryComponent implements OnInit, OnDestroy {
     } else {
       this.telemetryFilter.device_id = this.device.device_id;
     }
-    this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
-      this.pageType = params.get('listName');
-      this.pageType = this.pageType.slice(0, -1);
-      this.telemetryTableConfig = {
-        type: 'process parameter',
-        tableHeight: 'calc(100vh - 13.5rem)',
-        headers: ['Timestamp', 'Message ID', 'Message'],
-        data: [
-          {
-            name: 'Timestamp',
-            key: 'local_message_date',
-            type: 'text',
-            headerClass: 'w-15',
-            valueclass: ''
-          },
-          // {
-          //   name: 'Message ID',
-          //   key: 'message_id',
-          // },
-          {
-            name: 'IOT Hub Date',
-            key: 'local_iothub_date',
-            type: 'text',
-            headerClass: 'w-15',
-            valueclass: ''
-          },
-          {
-            name: 'Database Record Date',
-            key: 'local_created_date',
-            type: 'text',
-            headerClass: 'w-15',
-            valueclass: ''
-          },
-          {
-            name: 'Message',
-            key: undefined,
-            type: 'button',
-            btnData: [
-              {
-                icon: 'fa fa-fw fa-eye',
-                text: '',
-                id: 'View Process Parameter Message',
-                valueclass: '',
-                tooltip: 'View Process Parameter Message'
-              }
-            ]
-          }
-        ]
-      };
-    }));
+    this.telemetryTableConfig = {
+      type: 'process parameter',
+      tableHeight: 'calc(100vh - 13.5rem)',
+      headers: ['Timestamp', 'Message ID', 'Message'],
+      data: [
+        {
+          name: 'Timestamp',
+          key: 'local_message_date',
+          type: 'text',
+          headerClass: 'w-15',
+          valueclass: ''
+        },
+        // {
+        //   name: 'Message ID',
+        //   key: 'message_id',
+        // },
+        {
+          name: 'IOT Hub Date',
+          key: 'local_iothub_date',
+          type: 'text',
+          headerClass: 'w-15',
+          valueclass: ''
+        },
+        {
+          name: 'Database Record Date',
+          key: 'local_created_date',
+          type: 'text',
+          headerClass: 'w-15',
+          valueclass: ''
+        },
+        {
+          name: 'Message',
+          key: undefined,
+          type: 'button',
+          btnData: [
+            {
+              icon: 'fa fa-fw fa-eye',
+              text: '',
+              id: 'View Process Parameter Message',
+              valueclass: '',
+              tooltip: 'View Process Parameter Message'
+            }
+          ]
+        }
+      ]
+    };
 
     if (this.telemetryFilter.gateway_id) {
       this.getDevicesListByGateway();
@@ -124,58 +135,11 @@ export class TelemetryComponent implements OnInit, OnDestroy {
     ));
   }
 
-  onDateOptionChange() {
-    if (this.telemetryFilter.dateOption !== 'custom') {
-      this.telemetryFilter.from_date = undefined;
-      this.telemetryFilter.to_date = undefined;
-    }
-    if (this.dtInput1) {
-      this.dtInput1.value = null;
-    }
-    if (this.dtInput2) {
-      this.dtInput2.value = null;
-    }
-    if (this.telemetryFilter.dateOption === '24 hour') {
-      this.telemetryFilter.isTypeEditable = true;
-    } else {
-      this.telemetryFilter.isTypeEditable = false;
-    }
-  }
-
-  onSingleDateChange(event) {
-    this.telemetryFilter.from_date = moment(event.value).utc();
-    this.telemetryFilter.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
-    if (this.dtInput1) {
-      this.dtInput1.value = null;
-    }
-    if (this.telemetryFilter.dateOption !== 'date') {
-      this.telemetryFilter.dateOption = undefined;
-    }
-    const from = this.telemetryFilter.from_date.unix();
-    const to = this.telemetryFilter.to_date.unix();
-    const current = (moment().utc()).unix();
-    if (current < to) {
-      this.telemetryFilter.to_date = moment().utc();
-    }
-    if (to - from > 3600) {
-      this.telemetryFilter.isTypeEditable = true;
-    } else {
-      this.telemetryFilter.isTypeEditable = false;
-    }
-  }
-
-  onDateChange(event) {
-    this.telemetryFilter.from_date = moment(event.value[0]).second(0).utc();
-    this.telemetryFilter.to_date = moment(event.value[1]).second(0).utc();
-    if (this.dtInput2) {
-      this.dtInput2.value = null;
-    }
-    if (this.telemetryFilter.dateOption !== 'date range') {
-      this.telemetryFilter.dateOption = undefined;
-    }
-    const from = this.telemetryFilter.from_date.unix();
-    const to = this.telemetryFilter.to_date.unix();
-    if (to - from > 3600) {
+  selectedDate(value: any, datepicker?: any) {
+    this.telemetryFilter.from_date = moment(value.start).utc().unix();
+    this.telemetryFilter.to_date = moment(value.end).utc().unix();
+    console.log(this.telemetryFilter);
+    if (this.telemetryFilter.to_date - this.telemetryFilter.from_date > 3600) {
       this.telemetryFilter.isTypeEditable = true;
     } else {
       this.telemetryFilter.isTypeEditable = false;
@@ -184,41 +148,16 @@ export class TelemetryComponent implements OnInit, OnDestroy {
 
   clear() {
     // this.filterSearch.emit(this.originalFilterObj);
+    // this.datepicker.datePicker.setStartDate(null);
+    // this.datepicker.datePicker.setEndDate(null);
     this.telemetryFilter = {};
-    // this.isFilterSelected = false;
     this.telemetryFilter = {...this.originalTelemetryFilter};
-    if (this.dtInput1) {
-      this.dtInput1.value = null;
-    }
-    if (this.dtInput2) {
-      this.dtInput2.value = null;
-    }
+    console.log(this.telemetryFilter);
   }
 
   searchTelemetry(filterObj) {
     this.telemetry = [];
     const obj = {...filterObj};
-    const now = moment().utc();
-    if (filterObj.dateOption === '5 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(5, 'minute')).unix();
-    } else if (filterObj.dateOption === '30 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(30, 'minute')).unix();
-    } else if (filterObj.dateOption === '1 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(1, 'hour')).unix();
-    } else if (filterObj.dateOption === '24 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(24, 'hour')).unix();
-    }else {
-      if (filterObj.from_date) {
-        obj.from_date = (filterObj.from_date.unix());
-      }
-      if (filterObj.to_date) {
-        obj.to_date = filterObj.to_date.unix();
-      }
-    }
     obj.partition_key = this.device?.tags?.partition_key;
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'Get Telemetry Data');
@@ -226,7 +165,6 @@ export class TelemetryComponent implements OnInit, OnDestroy {
       this.isFilterSelected = false;
       return;
     }
-    delete obj.dateOption;
     delete obj.isTypeEditable;
     let method;
     if (obj.to_date - obj.from_date > 3600 && !this.telemetryFilter.isTypeEditable) {

@@ -37,37 +37,33 @@ export class GatewayCachedAlertsComponent implements OnInit, OnDestroy {
 
     this.filterObj.gateway_id = this.device.device_id;
     this.devices = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICES_LIST);
-    this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
-      this.pageType = params.get('listName');
-      this.pageType = this.pageType.slice(0, -1);
-      this.alertTableConfig = {
-        type: 'cached alerts',
-        headers: ['Timestamp', 'Asset Name', 'File Name', 'Process Status', 'View'],
-        data: [
-          {
-            name: 'Uploaded At',
-            key: 'local_upload_date',
-          },
-          {
-            name: 'Processed At',
-            key: 'local_created_date',
-          },
-          {
-            name: 'Asset Name',
-            key: 'display_name',
-          },
-          {
-            name: '',
-            key: undefined,
-          }
-        ],
-        rowHighlight: {
-          param: 'process_status',
-          value: 'Success'
+    this.alertTableConfig = {
+      type: 'cached alerts',
+      headers: ['Timestamp', 'Asset Name', 'File Name', 'Process Status', 'View'],
+      data: [
+        {
+          name: 'Uploaded At',
+          key: 'local_upload_date',
+        },
+        {
+          name: 'Processed At',
+          key: 'local_created_date',
+        },
+        {
+          name: 'Asset Name',
+          key: 'display_name',
+        },
+        {
+          name: '',
+          key: undefined,
         }
-      };
+      ],
+      rowHighlight: {
+        param: 'process_status',
+        value: 'Success'
+      }
+    };
 
-    }));
     this.filterObj.epoch = true;
   }
 
@@ -75,27 +71,7 @@ export class GatewayCachedAlertsComponent implements OnInit, OnDestroy {
     this.isFilterSelected = true;
     this.isAlertLoading = true;
     const obj = {...filterObj};
-    const now = moment().utc();
-    if (filterObj.dateOption === '5 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(5, 'minute')).unix();
-    } else if (filterObj.dateOption === '30 mins') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(30, 'minute')).unix();
-    } else if (filterObj.dateOption === '1 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(1, 'hour')).unix();
-    } else if (filterObj.dateOption === '24 hour') {
-      obj.to_date = now.unix();
-      obj.from_date = (now.subtract(24, 'hour')).unix();
-    } else {
-      if (filterObj.from_date) {
-        obj.from_date = (filterObj.from_date.unix());
-      }
-      if (filterObj.to_date) {
-        obj.to_date = filterObj.to_date.unix();
-      }
-    }
+
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'Get Cached Alerts');
       this.isAlertLoading = false;

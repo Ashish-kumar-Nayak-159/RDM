@@ -125,8 +125,8 @@ export class CommonService {
   }
 
   getItemFromLocalStorage(key) {
-    // const data = this.decryptString(localStorage.getItem(key));
-    const data = localStorage.getItem(key);
+    const data = this.decryptString(localStorage.getItem(key));
+    // const data = localStorage.getItem(key);
     if (data) {
       return JSON.parse(data);
     }
@@ -134,8 +134,8 @@ export class CommonService {
   }
 
   setItemInLocalStorage(key, value) {
-    // localStorage.setItem(key, this.encryptJSON(value));
-    localStorage.setItem(key, JSON.stringify(value));
+    localStorage.setItem(key, this.encryptJSON(value));
+    // localStorage.setItem(key, JSON.stringify(value));
     // let expiryObj: any = localStorage.getItem(CONSTANTS.EXPIRY_TIME);
     // const userData: any = JSON.parse(localStorage.getItem(CONSTANTS.USER_DETAILS));
     // if (!expiryObj && userData) {

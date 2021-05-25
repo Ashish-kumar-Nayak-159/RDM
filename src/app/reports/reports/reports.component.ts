@@ -12,6 +12,7 @@ import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Subscription } from 'rxjs';
+import { DaterangepickerComponent } from 'ng2-daterangepicker';
 declare var $: any;
 @Component({
   selector: 'app-reports',
@@ -22,7 +23,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   userData: any;
   filterObj: any = {};
-  originalFilterObj: any = {};
   contextApp: any;
   hierarchyArr: any = {};
   configureHierarchy: any = {};
@@ -41,6 +41,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     scale: 0.42,
     landscape: true
   };
+  originalFilterObj: any = {};
   tabType = 'pre-generated';
   isFilterSelected = false;
   props: any[] = [];
@@ -62,18 +63,13 @@ export class ReportsComponent implements OnInit, OnDestroy {
   options: any = {
     locale: { format: 'DD-MM-YYYY HH:mm' },
     alwaysShowCalendars: false,
+    autoUpdateInput: false,
+    maxDate: moment(),
     timePicker: true,
-    ranges: {
-      'Last 5 Mins': [moment().subtract(5, 'minutes'), moment()],
-      'Last 30 Mins': [moment().subtract(30, 'minutes'), moment()],
-      'Last 1 hour': [moment().subtract(1, 'hour'), moment()],
-      'Last 24 hours': [moment().subtract(24, 'hours'), moment()],
-      'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-      'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-      'This Month': [moment().startOf('month'), moment().endOf('month')],
-      'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-    }
+    ranges: CONSTANTS.DATE_OPTIONS
   };
+  @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
+  selectedDateRange: string;
 
   constructor(
     private commonService: CommonService,
@@ -100,22 +96,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
         if (index !== 0) {
           this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
           if (this.contextApp.user.hierarchy[level]) {
-            this.onChangeOfHierarchy(index);
+            this.onChangeOfHierarchy(index, false);
           }
         }
-      });
-      this.commonService.breadcrumbEvent.emit({
-        type: 'replace',
-        data: [
-          {
-            title: this.contextApp.user.hierarchyString,
-            url: 'applications/' + this.contextApp.app
-          },
-            {
-              title: this.tileData && this.tileData[0] ? this.tileData[0]?.value : '',
-              url: 'applications/' + this.contextApp.app + '/reports'
-            }
-        ]
       });
       this.filterObj.type = true;
       this.filterObj.sampling_format = 'minute';
@@ -128,6 +111,57 @@ export class ReportsComponent implements OnInit, OnDestroy {
      // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
     }));
 
+  }
+
+  loadFromCache() {
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    if (item) {
+      if (item.devices) {
+      this.filterObj.device = item.devices;
+
+      }
+      if (item.hierarchy) {
+      if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
+      this.contextApp.hierarchy.levels.forEach((level, index) => {
+        if (index !== 0) {
+        this.configureHierarchy[index] = item.hierarchy[level];
+        if (item.hierarchy[level]) {
+          this.onChangeOfHierarchy(index, false);
+        }
+        }
+      });
+      }
+      }
+      if (item.dateOption) {
+        this.filterObj.dateOption = item.dateOption;
+        if (item.dateOption !== 'Custom Range') {
+          const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+          this.filterObj.from_date = dateObj.from_date;
+          this.filterObj.to_date = dateObj.to_date;
+        } else {
+          this.filterObj.from_date = item.from_date;
+          this.filterObj.to_date = item.to_date;
+        }
+        this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
+        this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
+        if (this.filterObj.dateOption !== 'Custom Range') {
+          this.selectedDateRange = this.filterObj.dateOption;
+        } else {
+          this.selectedDateRange = moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
+          moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+        }
+        if (this.filterObj.to_date - this.filterObj.from_date > 3600) {
+          this.filterObj.isTypeEditable = true;
+        } else {
+          this.filterObj.isTypeEditable = false;
+        }
+      }
+      console.log(this.originalFilterObj);
+      this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+      // if (this.filterObj.device) {
+      //   this.onFilterSelection(false, false);
+      // }
+    }
   }
 
   getTileName() {
@@ -150,7 +184,13 @@ export class ReportsComponent implements OnInit, OnDestroy {
   selectedDate(value: any, datepicker?: any) {
     this.filterObj.from_date = moment(value.start).utc().unix();
     this.filterObj.to_date = moment(value.end).utc().unix();
+    this.filterObj.dateOption = value.label;
     console.log(this.filterObj);
+    if (value.label === 'Custom Range') {
+      this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
+    } else {
+      this.selectedDateRange = value.label;
+    }
     if (this.filterObj.to_date - this.filterObj.from_date > 3600) {
       this.filterObj.isTypeEditable = true;
     } else {
@@ -179,7 +219,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     });
   }
 
-  async onChangeOfHierarchy(i) {
+  async onChangeOfHierarchy(i, persistDeviceSelection = true) {
     Object.keys(this.configureHierarchy).forEach(key => {
       if (key > i) {
         delete this.configureHierarchy[key];
@@ -229,8 +269,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
     if (this.devices?.length === 1) {
       this.filterObj.device = this.devices[0];
     }
+    if (persistDeviceSelection) {
     this.filterObj.deviceArr = undefined;
     this.filterObj.device = undefined;
+    }
     this.props = [];
     this.dropdownPropList = [];
     let count = 0;
@@ -302,7 +344,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
-          response.properties.derived_properties.forEach(prop => this.propertyList.push(prop));
+          response.properties.derived_properties.forEach(prop => {
+            this.propertyList.push(prop);
+          });
           this.dropdownPropList = [];
           this.props = [];
           this.propertyList.forEach(prop => {
@@ -325,14 +369,14 @@ export class ReportsComponent implements OnInit, OnDestroy {
         if (parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0)) >=
         parseFloat(element.scrollHeight.toFixed(0)) && !this.insideScrollFunFlag) {
           this.currentOffset += this.currentLimit;
-          this.onFilterSelection();
+          this.onFilterSelection(false, false);
         }
       });
     }, 1000);
 
   }
 
-  onFilterSelection(callScrollFnFlag = false) {
+  onFilterSelection(callScrollFnFlag = false, updateFilterObj = true) {
     this.insideScrollFunFlag = true;
     this.deviceFilterObj = undefined;
     const obj = {...this.filterObj};
@@ -361,6 +405,16 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Please select properties to view data', 'View Telemetry');
       return;
     }
+    if (updateFilterObj) {
+      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS)
+      pagefilterObj['hierarchy'] = this.filterObj.device.hierarchy;
+      pagefilterObj['devices'] = this.filterObj.device;
+      pagefilterObj['from_date'] = obj.from_date;
+      pagefilterObj['to_date'] = obj.to_date;
+      pagefilterObj['dateOption'] = obj.dateOption;
+      this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
+    }
+    this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
     this.isTelemetryLoading = true;
     // this.telemetry = [];
     // this.latestAlerts = [];
@@ -418,6 +472,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.latestAlerts = [];
       this.isFilterOpen = true;
       this.isFilterSelected = false;
+      this.loadFromCache();
     } else {
       this.isFilterSelected = false;
     }

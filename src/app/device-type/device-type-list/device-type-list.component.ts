@@ -62,13 +62,13 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
           data_key: 'name'
         },
         {
-          header_name: (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Template',
+          header_name: 'Protocol',
           is_display_filter: true,
           value_type: 'string',
           is_sort_required: true,
           fixed_value_list: [],
           data_type: 'text',
-          data_key: 'cloud_connectivity'
+          data_key: 'protocol'
         },
         {
           header_name: 'Type',
@@ -89,7 +89,7 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
           data_key: 'created_by'
         },
         {
-          header_name: 'No of Assets inherited',
+          header_name: 'Assets inherited',
           is_display_filter: true,
           value_type: 'number',
           is_sort_required: true,
@@ -102,13 +102,13 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
           key: undefined,
           data_type: 'button',
           btn_list: [
-            {
-              icon: 'fa fa-fw fa-pencil',
-              text: '',
-              id: 'Change ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Image',
-              valueclass: '',
-              tooltip: 'Change ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Image'
-            },
+            // {
+            //   icon: 'fa fa-fw fa-edit',
+            //   text: '',
+            //   id: 'Change ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Image',
+            //   valueclass: '',
+            //   tooltip: 'Change ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : '') + ' Image'
+            // },
             {
               icon: 'fa fa-fw fa-table',
               text: '',

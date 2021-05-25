@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, EventEmitter, Output } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, EventEmitter, Output, AfterViewInit } from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 declare var $: any;
@@ -7,7 +7,7 @@ declare var $: any;
   templateUrl: './gauge-chart.component.html',
   styleUrls: ['./gauge-chart.component.css']
 })
-export class GaugeChartComponent implements OnInit, OnChanges {
+export class GaugeChartComponent implements OnInit, OnChanges, AfterViewInit {
 
   @Input() id: string;
   @Input() value: string;
@@ -24,7 +24,10 @@ export class GaugeChartComponent implements OnInit, OnChanges {
   constructor() { }
 
   ngOnInit(): void {
-    setTimeout(() => this.loadChart(), 500);
+  }
+
+  ngAfterViewInit() {
+    this.loadChart();
   }
 
   ngOnChanges(changes) {
@@ -40,6 +43,7 @@ export class GaugeChartComponent implements OnInit, OnChanges {
 
   loadChart() {
     this.chartConfig.properties.forEach((prop, index) => {
+    am4core.options.autoDispose = true;
     const chart = am4core.create(this.chartConfig.chartId + '_chart_' + index, am4charts.GaugeChart);
     chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
     if (this.chartConfig.startAngle !== undefined && this.chartConfig.startAngle !== null ) {
@@ -65,7 +69,7 @@ export class GaugeChartComponent implements OnInit, OnChanges {
     range0.value = prop.low_min || prop?.minRangeValue || 0;
     range0.endValue = prop.low_max || prop.normal_min || prop?.maxRangeValue || 50;
     range0.axisFill.fillOpacity = 1;
-    range0.axisFill.fill = am4core.color(prop.low_color || '#6dc068');
+    range0.axisFill.fill = am4core.color(prop.low_color || '#308014');
     range0.axisFill.zIndex = - 1;
 
     const range1 = axis.axisRanges.create();
@@ -79,7 +83,7 @@ export class GaugeChartComponent implements OnInit, OnChanges {
     range2.value = prop.high_min || prop.normal_max || prop?.minRangeValue ||  50;
     range2.endValue = prop.high_max || prop?.maxRangeValue || 100;
     range2.axisFill.fillOpacity = 1;
-    range2.axisFill.fill = am4core.color(prop.high_color || '#fe5959');
+    range2.axisFill.fill = am4core.color(prop.high_color || '#c80815');
     range2.axisFill.zIndex = -1;
     const hand = chart.hands.push(new am4charts.ClockHand());
     hand.radius = am4core.percent(97);

@@ -124,7 +124,8 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
       return;
     }
     this.isSendC2DMessageAPILoading = true;
-    this.subscriptions.push(this.deviceService.sendC2DMessage(this.sentMessageData, this.appName).subscribe(
+    this.subscriptions.push(this.deviceService.sendC2DMessage(this.sentMessageData, this.appName,
+      this.device?.gateway_id || this.device.device_id).subscribe(
       (response: any) => {
         this.isMessageValidated = undefined;
         this.sendMessageResponse = 'Successfully sent.';

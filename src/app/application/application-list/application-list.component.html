@@ -22,8 +22,8 @@
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputPassword4" placeholder="App Manager"
           [(ngModel)]="applicationFilterObj.admin_email" name="admin">
 
-          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="searchApplications()"  title="Search"><i class="fa fa-search fa-sm"></i></button>
-          <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="clearFilter()" title="Clear Filters">
+          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="searchApplications()" placement="bottom" tooltip="Search"><i class="fa fa-search fa-sm"></i></button>
+          <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="clearFilter()" tooltip="Clear Filters" placement="bottom">
             <img class="filter-clear-icon" src="./assets/img/filter.svg">
           </button>
 
@@ -67,9 +67,9 @@
               <td>{{app.app}}</td>
               <td>{{app.admin_email}} ({{app.admin_name}})</td>
               <td>
-                <a href="javascript:void(0)" (click)="redirectToDevices(app)" title="View Assets">
+                <a href="javascript:void(0)" (click)="redirectToDevices(app)" tooltip="View Assets" placement="bottom">
                 <i class="fa fa-fw fa-eye"></i></a></td>
-              <td><a  href="javascript:void(0)" (click)="openViewIconModal(app)" title="View Icons" >
+              <td><a  href="javascript:void(0)" (click)="openViewIconModal(app)" tooltip="View Icons" placement="bottom">
                 <i class="fa fa-fw fa-eye"></i></a></td>
               <!-- <td><a href="javascript:void(0)" (click)="openEditAppModal(app)" title="Edit App" >
                 <i class="fa fa-fw fa-edit"></i></a></td> -->

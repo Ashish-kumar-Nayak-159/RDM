@@ -7,9 +7,9 @@
          <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
            <!-- <a class="nav-item nav-link border-0 active" id="nav-home-tab" data-toggle="tab" href="#Meta-data" role="tab" aria-controls="nav-home" aria-selected="true"><i class="fas fa-list"></i></a>
            <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab" href="#Device" role="tab" aria-controls="nav-profile" aria-selected="false"><i class="fa fa-map-marker-alt" aria-hidden="true"></i></a> -->
-           <a href="javascript:void(0)" class="nav-item nav-link border-0" [ngClass]="{'active': currentPageView === 'list'}"  title="List View" (click)="onCurrentPageViewChange('list')">
+           <a href="javascript:void(0)" class="nav-item nav-link border-0" [ngClass]="{'active': currentPageView === 'list'}"  placement="bottom" tooltip="List View" (click)="onCurrentPageViewChange('list')">
             <i class="fas fa-list" ></i></a>
-          <a href="javascript:void(0)" class="nav-item nav-link border-0" [ngClass]="{'active': currentPageView === 'map'}"  title="Map View" (click)="onCurrentPageViewChange('map')">
+          <a href="javascript:void(0)" class="nav-item nav-link border-0" [ngClass]="{'active': currentPageView === 'map'}"  placement="bottom" tooltip="Map View" (click)="onCurrentPageViewChange('map')">
             <i class="fa fa-map-marker-alt"></i></a>
          </div>
        </nav>
@@ -45,8 +45,10 @@
         <form class="form-inline">
           <div class="form-group">
             <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
+            [ngClass]="{'active': hierarchyString}"
+            placement="bottom" [tooltip]="hierarchyString ? hierarchyString : 'Select Hierarchy'"
               (click)="onDeviceFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
-              <i class="fas fa-fw fa-filter fa-sm"></i> Select Hierarchy</button>
+              <i class="fas fa-fw fa-filter fa-sm button-divider"></i> {{hierarchyString ? displayHierarchyString : 'Select Hierarchy'}}</button>
             <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
               <ng-container *ngFor="
                           let level of contextApp?.hierarchy?.levels;
@@ -82,7 +84,7 @@
           </div>
           <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && devicesList.length > 0">
             <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;searchDevices();"
-            title="Load More Records...">Load More...</a>
+            placement="bottom" tooltip="Load More Records...">Load More...</a>
           </span>
         </ng-container>
         <ng-container *ngIf="currentPageView === 'map'">

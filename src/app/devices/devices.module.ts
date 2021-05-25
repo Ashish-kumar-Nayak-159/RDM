@@ -15,6 +15,7 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from
 import { GoogleMapsModule } from '@angular/google-maps';
 import { UiSwitchModule } from 'ngx-ui-switch';
 import { Daterangepicker } from 'ng2-daterangepicker';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 import { DeviceControlPanelComponent } from './device-control-panel/device-control-panel.component';
 import { OverviewComponent } from './device-control-panel/overview/overview.component';
@@ -144,7 +145,8 @@ import { GatewayDevicesSettingComponent } from './gateway-control-panel/gateway-
     AgmMarkerClustererModule,
     TabsModule,
     NgSelectModule,
-    Daterangepicker
+    Daterangepicker,
+    TooltipModule
   ],
   exports: [
     FilterComponent,

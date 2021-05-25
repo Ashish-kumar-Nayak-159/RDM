@@ -30,7 +30,7 @@
           <td>{{user?.role || 'NA'}}</td>
           <td>
             <a href="javascript:void(0)" (click)="openConfirmModal(user)" class="mr-1"
-              title="Delete User Access">
+              placement="bottom" tooltip="Delete User Access">
                 <i class="fa fa-fw fa-trash" ></i>
             </a>
           </td>
@@ -60,7 +60,7 @@
         <td>{{user?.role || 'NA'}}</td>
         <td>
           <a href="javascript:void(0)" (click)="openConfirmModal(user)" class="mr-1"
-            title="Delete User Access">
+            placement="bottom" tooltip="Delete User Access">
               <i class="fa fa-fw fa-trash" ></i>
           </a>
         </td>

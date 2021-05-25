@@ -1,36 +1,27 @@
-<div class="topnavbar bg-white py-2" >
-  <div class="row">
-
-    <ul class="nav pull-left col-md-7">
+<div class="tab-bar">
+  <div class="">
+    <ul class="nav">
       <!-- <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)">
           <i class="fa fa-fw fa-eye"></i>
           <span class="text-secondary">View</span></a>
       </li> -->
-      <li class="nav-item" [ngClass]="{'active': viewType === 'history'}">
-        <a class="nav-link" href="javascript:void(0)" (click)="setViewType('history')">
+      <li class="nav-item">
+        <a class="nav-link"  [ngClass]="{'active': viewType === 'history'}" href="javascript:void(0)" (click)="setViewType('history')">
           <i class="fa fa-fw fa-history"></i>
           <span class="text-secondary">Historical Widgets</span></a>
       </li>
-      <li class="nav-item" [ngClass]="{'active': viewType === 'live'}">
-        <a class="nav-link" href="javascript:void(0)" (click)="setViewType('live')">
+      <li class="nav-item" >
+        <a class="nav-link" [ngClass]="{'active': viewType === 'live'}" href="javascript:void(0)" (click)="setViewType('live')">
           <i class="fa fa-fw fa-bar-chart"></i>
           <span class="text-secondary">Live Widgets</span></a>
       </li>
 
     </ul>
-    <div class="pull-right mt-2"  *ngIf="deviceType.freezed">
-      <h6>This model is freezed.</h6>
-    </div>
-  </div>
-    <div class="row">
-      <div class="col-lg-12">
-        <hr class="solid">
-      </div>
-    </div>
 
   </div>
-  <div class="" style="margin-top: 6rem;">
+  </div>
+  <div >
         <app-device-type-history-layout *ngIf="viewType === 'history'" [deviceType]="deviceType"></app-device-type-history-layout>
         <app-device-type-live-layout *ngIf="viewType === 'live'" [deviceType]="deviceType"></app-device-type-live-layout>
   </div>

@@ -70,26 +70,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
-
-    this.apiSubscriptions.push(this.route.fragment.subscribe(
-      fragment => {
-        if (fragment) {
-          // this.selectedTab = fragment;
-          this.onTabChange(fragment);
-        }
-    }));
     await this.getDevices(this.contextApp.user.hierarchy);
-    if (this.contextApp.hierarchy.levels.length > 1) {
-      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
-    }
-    this.contextApp.hierarchy.levels.forEach((level, index) => {
-      if (index !== 0) {
-      this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-      if (this.contextApp.user.hierarchy[level]) {
-        this.onChangeOfHierarchy(index, false);
-      }
-      }
-    });
+    this.onTabChange();
+
     // if (this.selectedTab === 'telemetry') {
     //   this.loadFromCache();
     // }
@@ -118,21 +101,27 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   loadFromCache() {
-    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION);
-    if (item && item.device) {
-      this.originalFilter = JSON.parse(JSON.stringify(item));
-      this.filterObj = JSON.parse(JSON.stringify(item));
-      if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
-      this.contextApp.hierarchy.levels.forEach((level, index) => {
-        if (index !== 0) {
-        this.configureHierarchy[index] = item.device.hierarchy[level];
-        if (item.device.hierarchy[level]) {
-          this.onChangeOfHierarchy(index, true, false);
-        }
-        }
-      });
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    if (item) {
+      if (item.devices) {
+      this.filterObj.device = item.devices;
+      this.originalFilter = JSON.parse(JSON.stringify(this.filterObj));
       }
-      this.onFilterSelection(this.filterObj);
+      if (item.hierarchy) {
+        if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
+        this.contextApp.hierarchy.levels.forEach((level, index) => {
+          if (index !== 0) {
+          this.configureHierarchy[index] = item.hierarchy[level];
+          if (item.hierarchy[level]) {
+            this.onChangeOfHierarchy(index, true, false);
+          }
+          }
+        });
+        }
+      }
+      if (this.filterObj.device) {
+        this.onFilterSelection(this.filterObj, false);
+      }
     }
   }
 
@@ -151,7 +140,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       gateway_id: this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : undefined,
       message: {
         telemetry_mode: this.signalRModeValue ? 'normal' : 'turbo',
-        frequency_in_sec: this.signalRModeValue ?
+        turbo_mode_frequency_in_sec: this.signalRModeValue ?
         (this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency ?
           this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency : 60) :
         (this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency ?
@@ -162,12 +151,14 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         device_id: this.filterObj.device.device_id
       },
       app: this.contextApp.app,
-      timestamp: (moment().utc()).unix(),
-      acknowledge: 'Full',
-      expire_in_min: 1,
-      message_id: this.filterObj.device.device_id + '_' + (moment().utc()).unix()
+      job_type: 'DirectMethod',
+      request_type: 'change_device_mode',
+      job_id: this.filterObj.device.device_id + '_' + this.commonService.generateUUID(),
+      sub_job_id: null
     };
-    this.apiSubscriptions.push(this.deviceService.callDeviceMethod(obj, this.contextApp.app).subscribe(
+    obj.sub_job_id = obj.job_id + '_1';
+    this.apiSubscriptions.push(this.deviceService.callDeviceMethod(obj, this.contextApp.app,
+      this.filterObj?.device?.gateway_id || this.filterObj?.device?.device_id).subscribe(
       (response: any) => {
         if (response?.device_response) {
         this.chartService.clearDashboardTelemetryList.emit([]);
@@ -180,7 +171,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.c2dLoadingMessage = undefined;
         this.telemetryInterval = undefined;
       }, error => {
-        this.toasterService.showError(error.message, 'Change Telemetry Mode');
+        this.toasterService.showError(error?.message, 'Change Telemetry Mode');
         this.signalRModeValue = !this.signalRModeValue;
         this.isC2dAPILoading = false;
         this.c2dLoadingMessage = undefined;
@@ -311,14 +302,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
-  onTabChange(type) {
+  onTabChange() {
     this.signalRService.disconnectFromSignalR('telemetry');
     this.signalRService.disconnectFromSignalR('alert');
     this.telemetryData = JSON.parse(JSON.stringify([]));
     this.telemetryObj = undefined;
     this.telemetryInterval = undefined;
-    this.selectedTab = type;
-    window.location.hash = type;
     this.filterObj.device = undefined;
     this.hierarchyArr = [];
     this.configureHierarchy = {};
@@ -329,9 +318,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
     }
-    if (type === 'telemetry') {
-      this.loadFromCache();
-    }
+    this.loadFromCache();
     $('#overlay').hide();
   }
 
@@ -362,15 +349,15 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  async onFilterSelection(filterObj) {
-    console.log(this.filterObj);
+  async onFilterSelection(filterObj, updateFilterObj = true) {
+    console.log('aaaaaa   ', filterObj);
     this.c2dResponseMessage = [];
     $('#overlay').hide();
     clearInterval(this.c2dResponseInterval);
     this.signalRService.disconnectFromSignalR('telemetry');
     this.signalRTelemetrySubscription?.unsubscribe();
 
-    this.commonService.setItemInLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION, filterObj);
+    // this.commonService.setItemInLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION, filterObj);
     const obj = JSON.parse(JSON.stringify(filterObj));
     let device_type: any;
     if (obj.device) {
@@ -380,6 +367,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this.toasterService.showError('Asset selection is required', 'View Live Telemetry');
       return;
+    }
+    if (updateFilterObj) {
+      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+      pagefilterObj['hierarchy'] = filterObj.device.hierarchy;
+      pagefilterObj['devices'] = filterObj.device;
+      this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
     }
     this.originalFilter = JSON.parse(JSON.stringify(filterObj));
     this.isTelemetryDataLoading = true;

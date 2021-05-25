@@ -6,13 +6,13 @@
           <i class="fa fa-fw fa-eye"></i>
           <span class="text-secondary">View</span></a>
       </li> -->
-      <li class="nav-item" [ngClass]="{'active': viewType === 'history'}">
-        <a class="nav-link" href="javascript:void(0)" (click)="setViewType('history')">
+      <li class="nav-item" >
+        <a class="nav-link" [ngClass]="{'active': viewType === 'history'}" href="javascript:void(0)" (click)="setViewType('history')">
           <i class="fa fa-fw fa-history"></i>
           <span class="text-secondary">History</span></a>
       </li>
-      <li class="nav-item" [ngClass]="{'active': viewType === 'live'}">
-        <a class="nav-link" href="javascript:void(0)" (click)="setViewType('live')">
+      <li class="nav-item" >
+        <a class="nav-link" [ngClass]="{'active': viewType === 'live'}" href="javascript:void(0)" (click)="setViewType('live')">
           <i class="fa fa-fw fa-bar-chart"></i>
           <span class="text-secondary">Live</span></a>
       </li>

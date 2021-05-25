@@ -1,80 +1,64 @@
-<div class="mx-auto">
-  <div class="topnavbar bg-white py-2" style="margin-top: 3.1rem;height:6rem">
-    <div class="row">
-      <div class="col-xl-10 col-lg-10 col-md-10 mb-12">
-        <form>
-          <div class="form-group form-inline my-1">
-            <span class="badge badge-warning col-xl-2 col-lg-2"
-              style="line-height:24px; font-size: 14px;">Add Historical Widget</span>
-            <input type="text" id="chartTitle" class="form-control form-control-sm col-xl-2 col-lg-2 ml-2"
+<div class="tab-bar">
+  <div class="">
+    <form class="form-inline">
+      <div class="form-group">
+        <input type="text" id="chartTitle" class="form-control form-control-sm"
               name="chartTitle" placeholder="Display Name" [(ngModel)]="chartTitle" >
-            <div class=" dropdown chartTypeDropdown col-xl-2 col-lg-2 ml-2 p-0 form-control form-control-sm"
-             >
-              <button class="btn btn-default dropdown-toggle col-xl-12 col-lg-12 col-md-12 pb-0 pt-1" type="button"
-                id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{selectedChartType}}
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="javascript:void(0)" *ngFor="let item of chartTypes;let i=index"
-                  (click)="setChartType(i)">
-                  <i class="fa {{chartIcons[i]}} chartTypeIcon"></i>
-                  {{item}}
-                </a>
-              </div>
-            </div>
-          </div>
-          <div class="form-group form-inline my-1">
-            <input class="form-control form-control-sm col-xl-2 col-lg-2" type="text"
-              placeholder="X-Axis parameter" id="xAxisProperty" [(ngModel)]="xAxisProps" name="xAxisProperty">
-            <angular2-multiselect [data]="dropdownPropList" id="y1AxisProperty"
-              [(ngModel)]="y1AxisProps" name="y1AxisProperty" [settings]="{
-                text: 'Select Y1 Axis',
-                selectAllText: 'Select All',
-                unSelectAllText: 'UnSelect All',
-                classes: 'col-lg-2 col-xl-2 p-0 ml-2',
-                enableSearchFilter: true,
-                badgeShowLimit: 1,
-                maxHeight: 200,
-                labelKey: 'id'
-              }"
-              (onDeSelectAll)="y1Deselect($event)">
-            </angular2-multiselect>
-            <!-- <input class="form-control form-control-sm col-xl-3 col-lg-3 mr-2 ml-1"  type="text" *ngIf="isLayout"
-              placeholder="Comma separated list of Y1 parameters" id="y1AxisProperty" [(ngModel)]="y1AxisProps"
-              name="y1AxisProperty"> -->
-            <angular2-multiselect [data]="dropdownPropList" id="y2AxisProps" [(ngModel)]="y2AxisProps"
-              name="y2AxisProps" [settings]="{
-                text: 'Select Y2 Axis',
-                selectAllText: 'Select All',
-                unSelectAllText: 'UnSelect All',
-                classes: 'col-lg-2 col-xl-2 p-0 ml-2',
-                enableSearchFilter: true,
-                badgeShowLimit: 1,
-                maxHeight: 200,
-                labelKey: 'id'
-              }"
-              (onDeSelectAll)="y2Deselect($event)" >
-            </angular2-multiselect>
-
-            <button type="button" class="btn btn-warning btn-sm mx-1 my-1" title="Add Widget"
-              (click)="addChart()" [disabled]="deviceType.freezed"><i class="fa fa-plus fa-sm"></i></button>
-            <button type="button" class="btn btn-success btn-sm mx-1 my-1" title="Save"
-              (click)="saveLayout()" [disabled]="deviceType.freezed"><i class="fa fa-save fa-sm"></i></button>
-
-            <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear" (click)="clear()" [disabled]="deviceType.freezed">
-              <img class="filter-clear-icon" src="./assets/img/filter.svg">
-            </button>
-          </div>
-        </form>
       </div>
-    </div>
-    <hr class="solid mb-4">
-
+      <div class="for-group">
+        <ng-select [items]="chartTypes" class="custom-dropdown" [clearable]="false"
+          [searchable]="true" [closeOnSelect]="true" placeholder="Select Widget Type"
+          dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="selectedChartType">
+          <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+            <span ><i class="fa {{chartIcons[index]}}"></i>{{item}}</span>
+          </ng-template>
+              </ng-select>
+      </div>
+      <div class="form-group">
+        <input class="form-control form-control-sm" type="text"
+              placeholder="X-Axis parameter" id="xAxisProperty" [(ngModel)]="xAxisProps" name="xAxisProperty">
+      </div>
+      <div class="form-group">
+        <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" bindLabel="id" (onDeSelectAll)="y1Deselect($event)"
+        [searchable]="false" placeholder="Y1 Axis Props" [multiple]="true"
+        [closeOnSelect]="false"
+        dropdownPosition="bottom" name="widget-dropdown1" [(ngModel)]="y1AxisProps">
+        <ng-template ng-multi-label-tmp let-items="items">
+        {{items.length}} properties selected
+        </ng-template>
+      </ng-select>
+      </div>
+      <div class="form-group">
+        <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" bindLabel="id" (onDeSelectAll)="y2Deselect($event)"
+        [searchable]="false" placeholder="Y2 Axis Props" [multiple]="true"
+        [closeOnSelect]="false"
+        dropdownPosition="bottom" name="widget-dropdown2" [(ngModel)]="y2AxisProps">
+        <ng-template ng-multi-label-tmp let-items="items">
+        {{items.length}} properties selected
+        </ng-template>
+      </ng-select>
+      </div>
+      <div class="form-group">
+        <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Add Widget"
+        (click)="addChart()" [disabled]="deviceType.freezed"><i class="fa fa-plus fa-sm"></i></button>
+      </div>
+      <div class="form-group">
+        <button type="button" class="btn btn-sm searchBtn btn-white" placement="bottom" tooltip="Save"
+        (click)="saveLayout()" [disabled]="deviceType.freezed"><i class="fa fa-save fa-sm"></i></button>
+      </div>
+      <div class="form-group">
+        <button type="button" class="btn btn-sm searchBtn btn-white" placement="bottom" tooltip="Clear" (click)="clear()" [disabled]="deviceType.freezed">
+          <img class="filter-clear-icon" src="./assets/img/filter.svg">
+        </button>
+      </div>
+    </form>
   </div>
-  <div class="con-pad" id="mainChartDiv"  style="margin-top: 12.5rem;max-height: calc(100vh - 14.5rem)">
-    <h6 *ngIf="layoutJson.length === 0  && !isHistoryAPILoading">
+</div>
+<div class="table-responsive">
+  <div class="tableFixHead">
+    <p *ngIf="layoutJson.length === 0  && !isHistoryAPILoading">
       No Historical Widgets found.
-    </h6>
+    </p>
     <i *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
     <div id="layoutWidgetContainer" class="showLayout">
     </div>

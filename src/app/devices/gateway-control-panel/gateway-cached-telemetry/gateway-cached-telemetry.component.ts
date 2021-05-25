@@ -35,6 +35,7 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
   isFileDataLoading: boolean;
   editorOptions: JsonEditorOptions;
   devices: any[] = [];
+  contextApp: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -48,7 +49,10 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.mode = 'view';
     this.editorOptions.statusBar = false;
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.filterObj.gateway_id = this.device.device_id;
+    this.filterObj.app = this.contextApp.app;
+    this.filterObj.count = 10;
     this.devices = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICES_LIST);
     this.telemetryTableConfig = {
       type: 'cached telemetry',
@@ -109,11 +113,27 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
         value: 'Success'
       }
     };
+    this.loadFromCache();
     this.filterObj.epoch = true;
 
   }
+  loadFromCache() {
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+    if (item.dateOption) {
+      this.filterObj.dateOption = item.dateOption;
+      if (item.dateOption !== 'Custom Range') {
+        const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+        this.filterObj.from_date = dateObj.from_date;
+        this.filterObj.to_date = dateObj.to_date;
+      } else {
+        this.filterObj.from_date = item.from_date;
+        this.filterObj.to_date = item.to_date;
+      }
+    }
+    this.searchTelemetry(this.filterObj, false);
+  }
 
-  searchTelemetry(filterObj) {
+  searchTelemetry(filterObj, updateFilterObj = true) {
     this.isFilterSelected = true;
     this.isTelemetryLoading = true;
     const obj = {...filterObj};
@@ -123,6 +143,13 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
       this.isTelemetryLoading = false;
       this.isFilterSelected = false;
       return;
+    }
+    if (updateFilterObj) {
+      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+      pagefilterObj['from_date'] = obj.from_date;
+      pagefilterObj['to_date'] = obj.to_date;
+      pagefilterObj['dateOption'] = obj.dateOption;
+      this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, pagefilterObj);
     }
     delete obj.dateOption;
     this.filterObj = filterObj;

@@ -1,14 +1,43 @@
 @import "~@ng-select/ng-select/themes/default.theme.css";
 
-/* You can add global styles to this file, and also import other style files */
-/*
-thead {
-  background-color: #8f8f8f!important;
-  color: white!important;
-} */
 
-/* html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
+
+/* ng-select class changes */
+.text-grey {
+  color: #909090;
+  font-size: 0.6rem;
+}
+
+
+.ng-select.custom .ng-select-container {
+  border:0px;
+  min-height: 30px;
+  border-radius: 0;
+  border-bottom: 1px solid #d1d3e2;
+  color: #6e707e;
+  font-family: "Segoe UI", Nunito, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.ng-select.custom.active {
+  color: #5570da !important;
+  border-color: #89a7ff;
+}
+
+.ng-select.sm.active {
+  color: #5570da !important;
+  border-color: #89a7ff;
+}
+
+.ng-select.sm .ng-select-container  {
+  min-height: 30px;
+  /*border-radius: 0;*/
+}
+
+.ng-select.sm.ng-select-multiple .ng-select-container .ng-value-container {
+  padding-top: 0;
+}
+
+
 
 .accordion-toggle .btn:focus {
   box-shadow: none!important;
@@ -30,8 +59,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
   color: blue;
 }
 .blue-font {
-  color: #4e73df;
-  text-decoration: none;
+  color: #4e73df!important;
+  text-decoration: underline;
   background-color: transparent;
 }
 
@@ -39,6 +68,10 @@ a.disabled {
   pointer-events: none;
   cursor: default;
   opacity: 0.65;
+}
+
+.date-range-picker {
+  width: 10rem!important;
 }
 
 
@@ -62,15 +95,7 @@ input:invalid {
 .lazyContainer {
   max-height: 100px;
 }
-/* .dropdown-list {
-  min-width: 100% !important;
-  width: 150% !important;
-}
 
-.modal-select.cuppa-dropdown.dropdown-list {
-  min-width: 100% !important;
-  width: 100% !important;
-} */
 
 .accordion-toggle[aria-expanded="true"]:before {
   content: "\f139";
@@ -101,26 +126,6 @@ input:invalid {
 .filter-clear-icon {
   width: 1rem;
 }
-
-
-/* .owl-dt-timer-box {
-  flex-direction: row;
-}
-
-.owl-dt-timer-box:nth-of-type(2) {
-  flex-direction: row;
-  padding-left: 1.7rem;
-}
-
-.owl-dt-timer-divider {
-  margin-left: 2.25rem;
-}
-
-.owl-dt-control-button-content {
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-}
-*/
 
 
 
@@ -176,41 +181,7 @@ input:invalid {
   position: absolute;
   z-index: 9999999 !important;
 }
- /* // table header sticky
-.table-wrapper{
-  overflow-y: auto;
-  max-height: calc(100vh - 18rem)
-}
 
-/* .table-wrapper tfoot,
-.table-wrapper tfoot th,
-.table-wrapper tfoot td {
-  position: -webkit-sticky;
-  position: sticky;
-  bottom: 1px;
-  background: #f8f9fc;
-  z-index:4;
-}
-
-tfoot th:first-child {
-  z-index: 5;
-} */
-
-/* .table-wrapper th{
-  position: -webkit-sticky;
-    position: sticky;
-    top: 0;
-}
-
-table{
-  border-collapse: collapse;
-  width: 100%;
-}
-
-thead th{
-    background: #858796;
-    color: #fff;
-}  */
 
 .gm-ui-hover-effect {
   opacity: 0!important;
@@ -243,25 +214,5 @@ thead th{
 
 .tableFixHead-assets-list {
   max-height: calc(100vh - 12.5rem)!important;
-}
-
-.ng-select.custom {
-}
-
-
-.ng-select.custom .ng-select-container {
-  border: none;
-  line-height: 1.5;
-  border-bottom: 1px solid #d1d3e2;
-  color: #6e707e;
-  background-color: #fff;
-  padding: 0rem;
-  font-size: 0.85rem;
-  background-clip: padding-box;
-  width: 15rem;
-}
-
-.ng-select.custom .ng-select-container .ng-value-container {
-  padding-left: 0rem;
 }
 

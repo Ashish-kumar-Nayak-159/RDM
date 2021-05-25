@@ -24,6 +24,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   signalRAlertSubscription: any;
   apiSubscriptions: Subscription[] = [];
   activeFragment: any;
+  currentURL: string;
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private commonService: CommonService,
@@ -65,6 +66,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
     this.processAppMenuData();
     let i = 0;
     this.apiSubscriptions.push(this.router.events.subscribe(async event => {
+      this.currentURL = this.router.url;
       if (event instanceof NavigationEnd && i === 0) {
         i++;
         this.processAppMenuData();

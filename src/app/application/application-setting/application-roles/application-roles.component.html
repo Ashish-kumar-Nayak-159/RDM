@@ -1,10 +1,10 @@
 <div class="tab-bar">
-  <div class="d-flex">
-    <div class="pb-4 text-orange ">
-      *Note: You can define more user roles based on your organization needs. (For ex: Manager, Supervisor, Operator, etc.,)
-      <a href="javascript:void(0)" title="Edit Tags" *ngIf="!isAppSetingsEditable" title="Edit"
+  <div class="d-flex d-flex align-items-center">
+    <div class="h6 m-0 p-0">
+      Application Roles
+      <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isAppSetingsEditable"
           (click)="isAppSetingsEditable = true;"><i class="fa fa-edit"></i></a>
-        <a href="javascript:void(0)" title="Cancel" *ngIf="isAppSetingsEditable" title="Cancel"
+        <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isAppSetingsEditable"
           (click)="onCancelClick();"><i class="fa fa-times"></i></a>
      </div>
 </div>
@@ -19,7 +19,7 @@
       <th></th>
       <th  style="padding:0.2rem 0.5rem; font-size:1rem; ">
         <button type="button" id="insert-tb-row" class="btn btn-red btn-sm mx-1 my-1" style="float:right"
-        (click)="onAddNewRoleObj()" [disabled]="!isAppSetingsEditable" title="Add Role">
+        (click)="onAddNewRoleObj()" [disabled]="!isAppSetingsEditable" placement="bottom" tooltip="Add Role">
           <i class="fa fa-plus fa-sm"></i></button></th>
     <!--<a href="#" id="insert-more" ><i class="fa fa-fw fa-plus" style="color:red"></i></a>-->
     </tr>
@@ -55,7 +55,7 @@
       </td>
       <td>
         <a [class.disabled]="i === 0 || !isAppSetingsEditable" href="javascript:void(0)" (click)="openConfirmRoleDeleteModal(item)">
-          <i class="fa fa-trash" title="Delete Role"></i>
+          <i class="fa fa-trash" placement="bottom" tooltip="Delete Role"></i>
         </a>
       </td>
     </tr>

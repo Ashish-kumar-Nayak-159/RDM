@@ -1,13 +1,16 @@
-<div id="wrapper">
+
+ <i class="fa fa-spinner fa-spin fa-fw fa-2x text-center"  *ngIf="isDeviceTypeDataLoading"></i>
+<div id="wrapper"  *ngIf="!isDeviceTypeDataLoading">
   <!-- Sidebar -->
   <div class="sidebar1 sidebar-light mb-3 ">
 
-    <div class="sidebar1-heading bg-warning text-white py-2">
-      <span style="font-size:0.8rem; margin-right:1.5rem;">Model Definition </span>
-      <button class="d-none d-md-inline rounded-circle border-0 mb-0" id="sidebar1Toggle" title="Minimize" (click)="onSidebarToggle()"></button>
-      <i class="fa fa-fw fa" style="font-size:1rem; margin-top:0.5rem;margin-left:0.3rem">CP</i>
+    <div class="sidebar1-heading sidebar1-top-heading">
+      <span>Model Definition </span>
+      <!-- <button class="d-none d-md-inline mb-0" id="sidebar1Toggle" placement="bottom" tooltip="Minimize" (click)="onSidebarToggle()"></button> -->
+      <i class="fa fa-fw fa" >MD</i>
 		</div>
-    <ul class="navbar-nav bg-white" id="controlPanelSidebar">
+    <div class="scrollbox scrollbox_delayed" tabindex="0">
+    <ul class="navbar-nav scrollbox-content" id="controlPanelSidebar">
 
       <ng-container *ngFor="let menu of menuItems">
         <ng-container *ngIf="menu.isTitle">
@@ -22,7 +25,7 @@
         <li class="nav-item" [ngClass]="{'active': activeTab === menu.page}">
           <a class="nav-link collapsed" href="{{menu.url}}" data-toggle="tab" aria-expanded="false"
             (click)="setActiveTab(menu.page)">
-            <i class="{{menu.icon}}" title="{{menu.display_name}}"></i>
+            <i class="{{menu.icon}}" placement="bottom" [tooltip]="menu.display_name"></i>
             <span>{{menu.display_name}}</span></a>
         </li>
         </ng-container>
@@ -33,23 +36,25 @@
       <hr class="sidebar1-divider d-none d-md-block">
     </ul>
   </div>
+  </div>
   <!-- End of Sidebar -->
    <!-- Content Wrapper -->
    <div id="content-wrapper" class="d-flex flex-column">
+    <div id="content">
+    <div class="container1-fluid">
+      <div class="blue-nav-bar">
 
-    <!-- Main Content -->
-    <div>
-  <div  class="container1-fluid bg-white pb-3 mb-3" *ngIf="isDeviceTypeDataLoading">
-    <div class="topnavbar bg-white py-2" >
-    <i class="fa fa-spinner fa-spin fa-fw fa-2x text-center"></i>
-  </div>
-  </div>
-  <div class="container1-fluid bg-white pb-3 mb-3" *ngIf="!isDeviceTypeDataLoading">
+        <div class="d-flex">
+          <div>
+            <div class="main-heading">
 
-    <!-- Sidebar Toggle (Topbar) -->
-    <!-- <button id="sidebar1ToggleTop" class="btn btn-link d-md-none rounded-circle mr-3" (click)="onSideBarToggleTopClick()">
-      <i class="fa fa-bars"></i>
-    </button> -->
+              {{deviceType?.name}}
+              <i class="fa fa-fw fa-lock" placement="bottom" tooltip="Freezed" *ngIf="deviceType.freezed"></i>
+              <i class="fa fa-fw fa-unlock"  placement="bottom" tooltip="Not Freezed"  *ngIf="!deviceType.freezed"></i></div>
+          </div>
+        </div>
+      </div>
+
     <div class="">
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'overview'}" id="device_type_overview" role="tabpanel">
         <app-device-type-overview *ngIf="activeTab === 'overview' && deviceType" [deviceType]="deviceType"></app-device-type-overview>
@@ -96,5 +101,4 @@
   </div>
   </div>
   </div>
-
-</div>
+  </div>

@@ -2,53 +2,56 @@
   <!-- side menu HTML for super admin start-->
   <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngIf="userData?.is_super_admin">
       <a class="nav-link collapsed" [routerLink]="['applications']"  >
-        <i class="fa fa-fw fa-th-large" title="Applications"></i>
+        <i class="fa fa-fw fa-th-large"  tooltip="Applications"></i>
         <span>Apps</span></a>
   </li>
   <!-- side menu HTML for super admin end-->
   <!-- side menu HTML for other user -->
   <ng-container *ngFor="let item of displayMenuList">
     <ng-container *ngIf="!item.children && item.visible && item?.priority === 1">
-      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"  *ngIf="!userData?.is_super_admin && item.url && !item.fragment"
+      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: item.exactMatch}"  *ngIf="!userData?.is_super_admin && item.url && !item.fragment"
       >
-        <a class="nav-link" [routerLink]="getURL(item.url)" [fragment]="item.fragment">
-          <i class="{{item.icon}}" title="{{item.display_name ? item.display_name : item.system_name}}"></i>
+        <a class="nav-link" [routerLink]="getURL(item.url)" [fragment]="item.fragment"
+        [tooltip]="item.display_name ? item.display_name : item.system_name" >
+          <i class="{{item.icon}}"  ></i>
           <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
       </li>
       <li class="nav-item" *ngIf="!userData?.is_super_admin && item.url && item.fragment"
       [class.active]="item.fragment && (activeFragment) === item.fragment"
       >
-        <a class="nav-link" [routerLink]="getURL(item.url)" [fragment]="item.fragment">
-          <i class="{{item.icon}}" title="{{item.display_name ? item.display_name : item.system_name}}"></i>
+        <a class="nav-link" [routerLink]="getURL(item.url)" [fragment]="item.fragment"
+        [tooltip]="item.display_name ? item.display_name : item.system_name"  >
+          <i class="{{item.icon}}" ></i>
           <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
       </li>
       <li class="nav-item" *ngIf="!userData?.is_super_admin && !item.url"
       >
-      <a class="nav-link" >
-        <i class="{{item.icon}}" title="{{item.display_name ? item.display_name : item.system_name}}"></i>
+      <a class="nav-link" [tooltip]="item.display_name ? item.display_name : item.system_name" >
+        <i class="{{item.icon}}"  ></i>
         <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
         </li>
     </ng-container>
     <ng-container *ngIf="!item.children && item.visible && item?.priority === 2">
       <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"  *ngIf="!userData?.is_super_admin && item.url"
       >
-        <a class="nav-link" [routerLink]="getURL(item.url)">
-          <i class="{{item.icon}}" title="{{item.display_name ? item.display_name : item.system_name}}"></i>
+        <a class="nav-link" [routerLink]="getURL(item.url)"
+         [tooltip]="item.display_name ? item.display_name : item.system_name">
+          <i class="{{item.icon}}" ></i>
           <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
 
       </li>
       <li class="nav-item" *ngIf="!userData?.is_super_admin && !item.url"
       >
-      <a class="nav-link" >
-        <i class="{{item.icon}}" title="{{item.display_name ? item.display_name : item.system_name}}"></i>
+      <a class="nav-link"   [tooltip]="item.display_name ? item.display_name : item.system_name">
+        <i class="{{item.icon}}" ></i>
         <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
         </li>
     </ng-container>
     <ng-container *ngIf="item.children && item.children.length > 0  && item.visible">
       <li class="nav-item" >
         <a class="nav-link collapsed" href="#device-groups" data-toggle="collapse"
-        aria-expanded="true">
-          <i class="{{item.icon}}" title="{{item.display_name ? item.display_name : item.system_name}}"></i>
+        aria-expanded="true"   [tooltip]="item.display_name ? item.display_name : item.system_name">
+          <i class="{{item.icon}}" ></i>
           <span>{{item.display_name ? item.display_name : item.system_name}}</span>
         </a>
         <div id="device-groups" class="collapse" aria-labelledby="headingPages">

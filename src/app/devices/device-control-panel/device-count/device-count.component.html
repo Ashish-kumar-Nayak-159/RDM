@@ -7,8 +7,8 @@
         name="count" class="form-control form-control-sm active record-input"
         [(ngModel)]="telemetryFilter.count" name="count" >
       </div>
-      <div class="form-group active">
-        <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory"
+      <div class="form-group">
+        <select class="form-control form-control-sm" style="width: 10em;" id="deviceCategory"
              [(ngModel)]="telemetryFilter.device" name="deviceCategory">
               <option [ngValue]="undefined">Select Asset</option>
               <option [ngValue]="device" *ngFor="let device of devices">
@@ -16,8 +16,11 @@
               </option>
             </select>
       </div>
-      <div class="form-group" >
-        <input type="text"  class="form-control form-control-sm active" daterangepicker name="daterangeInput"  [options]="options" (selected)="selectedDate($event, daterange)" />
+      <div class="form-group left-inner-addon" >
+        <i class="fa fa-calendar"></i>
+        <input type="text"  class="form-control form-control-sm active date-range-picker" daterangepicker [(ngModel)]="selectedDateRange"
+        name="daterangeInput"  [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"  [(ngModel)]="selectedDateRange"
+        [tooltip]="selectedDateRange" placement="bottom"/>
       </div>
 
       <label class="">Aggreagtion: </label>
@@ -37,23 +40,15 @@
             <option [ngValue]="'COUNT'">Count</option>
             </select>
       </div>
-      <div class="form-group"><button type="button" title="Search" class="btn btn-sm searchBtn btn-primary" (click)="searchTelemetry(telemetryFilter)" ><i class="fas fa-search fa-sm"></i></button></div>
-        <!-- <button type="button" class="btn btn-warning btn-sm ml-3 mr-1 my-1" title="Search" ><i class="fa fa-search fa-sm"></i></button> -->
-        <div class="form-group"><button type="button" title="Search" class="btn btn-sm searchBtn btn-primary" title="Clear Filters" (click)="clear();" > <img class="filter-clear-icon" src="./assets/img/filter.svg"></button></div>
+      <div class="form-group"><button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary" (click)="searchTelemetry(telemetryFilter)" ><i class="fas fa-search fa-sm"></i></button></div>
+        <!-- <button type="button" class="btn btn-warning btn-sm ml-3 mr-1 my-1" placement="bottom" tooltip="Search" ><i class="fa fa-search fa-sm"></i></button> -->
+        <div class="form-group"><button type="button"  class="btn btn-sm searchBtn btn-white" placement="bottom" tooltip="Clear Filters" (click)="clear();" > <img class="filter-clear-icon" src="./assets/img/filter.svg"></button></div>
      </form>
 
     </div>
     </div>
-<<<<<<< HEAD
     <div class="table-responsive">
       <div class="tableFixHead" >
-=======
-
-</div>
-<div class="con-pad" style="margin-top: 9.5rem;max-height: calc(100vh - 13rem);">
-  <div class="row mx-auto">
-
->>>>>>> e25e9306ac45909c9490dae645e687d9f43e099c
     <div class="table-responsive">
       <app-common-table [tableData]="telemetry" [tableConfig]="telemetryTableConfig" [isTableFilterSelected]="isFilterSelected"
       [isTableDataLoading]="isTelemetryLoading" ></app-common-table>

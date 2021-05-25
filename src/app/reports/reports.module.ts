@@ -1,3 +1,4 @@
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { UiSwitchModule } from 'ngx-ui-switch';
@@ -27,6 +28,7 @@ import { Daterangepicker } from 'ng2-daterangepicker';
     AccordionModule,
     TabsModule,
     NgSelectModule,
+    TooltipModule,
     Daterangepicker
   ],
   providers: [

@@ -106,13 +106,15 @@ export class GatewaySettingsComponent implements OnInit {
       app: this.contextApp.app,
       gateway_id: this.device.device_id,
       message: {},
-      timestamp: (moment().utc()).unix(),
-      acknowledge: 'Full',
-      expire_in_min: 1,
-      message_id: this.device.device_id + '_' + (moment().utc()).unix()
+      job_type: 'DirectMethod',
+      request_type: 'test_gateway_connection',
+      job_id: this.device.device_id + '_' + this.commonService.generateUUID(),
+      sub_job_id: null
     };
+    obj.sub_job_id = obj.job_id + '_1';
     this.subscriptions.push(
-      this.deviceService.callDeviceMethod(obj, obj.app).subscribe(
+      this.deviceService.callDeviceMethod(obj, obj.app,
+        this.device?.gateway_id || this.device.device_id).subscribe(
         (response: any) => {
           if (response?.device_response?.status?.toLowerCase() === 'connected') {
             this.testConnectionMessage = 'Gateway connection is successful';

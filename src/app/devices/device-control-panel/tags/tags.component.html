@@ -45,9 +45,9 @@
         </ng-container>
 
             <h1 class="h6 mb-3 text-secondary-400">Reserved Tags:
-              <a href="javascript:void(0)" title="Edit Tags" *ngIf="!isReservedTagsEditable" title="Edit"
+              <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isReservedTagsEditable"
                 (click)="isReservedTagsEditable = true;"><i class="fa fa-edit"></i></a>
-              <a href="javascript:void(0)" title="Cancel" *ngIf="isReservedTagsEditable" title="Cancel"
+              <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isReservedTagsEditable"
                 (click)="isReservedTagsEditable = false;"><i class="fa fa-times"></i></a>
             </h1>
             <table class="table table-hover">
@@ -83,7 +83,7 @@
                     </ul>
                   </td>
                 </tr>
-                <tr>
+                <tr *ngIf="contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Device ID'">
                   <td>Partition Key</td>
                   <td>{{device?.tags?.partition_key}}</td>
                 </tr>
@@ -141,10 +141,10 @@
         </ng-container>
 
             <h1 class="h6 mb-3 text-secondary-800">Custom Tags:
-              <a href="javascript:void(0)" title="Edit Custom Tags"
+              <a href="javascript:void(0)" placement="bottom" tooltip="Edit Custom Tags"
                 *ngIf="!isCustomTagsEditable && deviceCustomTags.length > 1" (click)="isCustomTagsEditable = true;"><i
                   class="fa fa-edit"></i></a>
-              <a href="javascript:void(0)" title="Cancel" *ngIf="isCustomTagsEditable"
+              <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isCustomTagsEditable"
                 (click)="isCustomTagsEditable = false;"><i class="fa fa-times"></i></a>
             </h1>
             <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">

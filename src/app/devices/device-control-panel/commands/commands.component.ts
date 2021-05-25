@@ -16,6 +16,7 @@ declare var $: any;
 export class CommandsComponent implements OnInit, OnDestroy {
 
   @Input() pageType;
+  @Input() componentState;
   @Input() device: Device = new Device();
   @Input() menuDetail: any;
   @Input() callingPage = 'Device';
@@ -28,6 +29,7 @@ export class CommandsComponent implements OnInit, OnDestroy {
   contextApp: any;
   controlWidgets: any[] = [];
   deviceMethods: any[] = [];
+  allControlWidgets: any[] = [];
   constructor(
     private deviceService: DeviceService,
     private deviceTypeService: DeviceTypeService,
@@ -43,10 +45,8 @@ export class CommandsComponent implements OnInit, OnDestroy {
         seconds: data.seconds
       };
     }));
-    if (this.callingPage === 'gateway') {
-      this.displayMode = 'view';
-      this.timerObj = undefined;
-    }
+    this.displayMode = 'view';
+    this.timerObj = undefined;
   }
 
   onClickOfGeneralCommands() {
@@ -79,11 +79,16 @@ export class CommandsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.deviceTypeService.getThingsModelControlWidgets(obj).subscribe(
       (response: any) => {
         if (response?.data) {
-          this.controlWidgets = response.data.filter(widget =>
-            widget.metadata.communication_technique === this.selectedCommunicationTechnique);
+          this.allControlWidgets = response.data;
         }
       }
     ));
+  }
+
+  onChangeOfTechnique() {
+    this.selectedWidget = undefined;
+    this.controlWidgets = this.allControlWidgets.filter(widget =>
+      widget.metadata.communication_technique === this.selectedCommunicationTechnique);
   }
 
   getConfigureWidgets() {
@@ -94,8 +99,7 @@ export class CommandsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.deviceTypeService.getThingsModelConfigurationWidgets(obj).subscribe(
       (response: any) => {
         if (response?.data) {
-          this.controlWidgets = response.data.filter(widget =>
-            widget.metadata.communication_technique === this.selectedCommunicationTechnique);
+          this.allControlWidgets = response.data;
         }
       }
     ));

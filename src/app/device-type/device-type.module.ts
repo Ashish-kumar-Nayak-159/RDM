@@ -1,3 +1,5 @@
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -59,7 +61,9 @@ import { DeviceTypeRulesComponent } from './device-type-control-panel/device-typ
     NgJsonEditorModule,
     AngularMultiSelectModule,
     FileSaverModule,
-    MonacoEditorModule // use forRoot() in main app
+    MonacoEditorModule, // use forRoot() in main app
+    NgSelectModule,
+    TooltipModule
   ]
 })
 export class DeviceTypeModule { }

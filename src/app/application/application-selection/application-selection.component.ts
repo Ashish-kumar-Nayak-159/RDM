@@ -55,6 +55,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       localStorage.removeItem(CONSTANTS.APP_USERS);
       localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
       localStorage.removeItem(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
+      localStorage.removeItem(CONSTANTS.MAIN_MENU_FILTERS);
     }
     await this.getApplicationData(app);
     // await this.getDevices(this.applicationData.user.hierarchy);
@@ -147,6 +148,15 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
             JSON.parse(JSON.stringify(CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST));
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
+          const obj = {
+            hierarchy : this.applicationData.user.hierarchy,
+            dateOption : 'Last 24 Hours'
+          };
+          this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, obj);
+          const obj1 = {
+            dateOption : 'Last 30 Mins'
+          };
+          this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, obj1);
           resolve();
       }));
     });

@@ -1,5 +1,5 @@
-
-<div class="row ml-1" *ngIf="selectedWidget">
+<div class="table-responsive table-fixHead mt-2">
+<div class="col-lg-12" *ngIf="selectedWidget">
 
   <div class="col-lg-6 col-xl-6 align-self-center">
     <div class="row">
@@ -11,20 +11,17 @@
             <i class="fa fa-spinner fa-spin fa-fw " *ngIf="isInvokeDirectMethod"></i>
           </button>
         </a></div>
-      <div class='px-1'>
-        <hr>
-      </div>
       </div>
       </div>
 </div>
 
-<div class="row mt-2" *ngIf="selectedWidget">
+<div class="row col-lg-12 mt-2" *ngIf="selectedWidget">
   <div class="col-lg-8 col-xl-8">
     <!-- Page Heading -->
     <div class="table-responsive">
-      <table class="table table-striped table-bordered" id="dataTable" cellspacing="0">
+      <table class="table table-hover table-bordered">
         <thead>
-          <tr class="bg-secondary text-white">
+          <tr>
             <th>Key</th>
             <th class="border-left">Value</th>
           </tr>
@@ -43,17 +40,17 @@
             </td>
             <td>
             <div >
-            <ng-container *ngIf="item.json.type === 'string'">
+            <ng-container *ngIf="item?.json?.type === 'string'">
               <input type="text" class="form-control form-control-sm" name="{{item.name}}"
               [(ngModel)]="item.value" minlength="{{item.json.minLength ? item.json.minLength : 1}}"
               maxLength="{{item.json.maxLength ? item.json.maxLength : 50}}">
             </ng-container>
-            <ng-container *ngIf="item.json.type === 'number'">
+            <ng-container *ngIf="item?.json?.type === 'number'">
               <input type="number" class="form-control form-control-sm" name="{{item.name}}"
               [(ngModel)]="item.value" min="{{item.json.minValue ? item.json.minValue : 1}}"
               max="{{item.json.maxValue ? item.json.maxValue : 1000}}">
             </ng-container>
-            <ng-container *ngIf="item.json.type === 'boolean'">
+            <ng-container *ngIf="item?.json?.type === 'boolean'">
               <div class="btn-group"  name="booleandata">
 
                 <ui-switch checkedLabel="{{item.json.trueValue}}"
@@ -74,19 +71,13 @@
           </td>
         </tr>
           </ng-container>
-          <ng-container *ngIf="jsonModelKeys.length === 0">
-            <tr>
-              <td colspan="2">Please select widget.</td>
-            </tr>
-
-          </ng-container>
         </tbody>
       </table>
     </div>
 
     <div class="table-responsive">
       <h6><b> Connection Settings: </b></h6>
-      <table class="table table-striped table-bordered" id="dataTable" cellspacing="0">
+      <table class="table table-hover table-bordered">
         <tbody>
           <tr>
             <td>Connection Timeout (In Seconds)</td>
@@ -120,7 +111,5 @@
   </div>
 
 </div>
-
-<div class="row">
 
 </div>

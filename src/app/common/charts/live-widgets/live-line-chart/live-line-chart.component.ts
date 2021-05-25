@@ -86,6 +86,7 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
 
   plotChart() {
     this.zone.runOutsideAngular(() => {
+      am4core.options.autoDispose = true;
       const chart = am4core.create(this.chartConfig.chartId, am4charts.XYChart);
       chart.paddingRight = 20;
       this.telemetryObj['TMD'] = Number(this.telemetryObj['TMD']);

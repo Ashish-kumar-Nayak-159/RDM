@@ -5,7 +5,7 @@
   <label for="message-text" class="col-form-label ">Property <a *ngIf="i === 0"
     class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2"
     href="javascript:void(0)" (click)="addProperty()"
-    title="Add Property"
+    placement="bottom" tooltip="Add Property"
     ><i class="fa fa-plus fa-sm text-white"></i></a
   ></label>
   <!-- <select class="custom-select" id="template" name="model_type" [(ngModel)]="prop.property"
@@ -73,7 +73,7 @@
     </div>
     <div class="form-group col-1">
       <span [(colorPicker)]="prop.low_color"
-       title="Pick Color">
+      placement="bottom" tooltip="Pick Color">
        <i class="fa fa-paint-brush"></i>
     </span>
     </div>
@@ -97,7 +97,7 @@
     </div>
     <div class="form-group col-1">
       <span [(colorPicker)]="prop.normal_color"
-      title="Pick Color">
+      placement="bottom" tooltip="Pick Color">
        <i class="fa fa-paint-brush"></i>
     </span>
     </div>
@@ -121,7 +121,7 @@
     </div>
     <div class="form-group col-1">
       <span [(colorPicker)]="prop.high_color"
-      title="Pick Color">
+      placement="bottom" tooltip="Pick Color">
        <i class="fa fa-paint-brush"></i>
     </span>
     </div>
@@ -179,7 +179,7 @@
     </div>
     <div class="form-group col-1">
       <span [(colorPicker)]="prop.color"
-      title="Pick Color">
+      placement="bottom" tooltip="Pick Color">
        <i class="fa fa-paint-brush"></i>
     </span>
     </div>
@@ -193,7 +193,7 @@
       </div>
       <div class="form-group col-1">
         <span [(colorPicker)]="prop.color"
-        title="Pick Color">
+        placement="bottom" tooltip="Pick Color">
          <i class="fa fa-paint-brush"></i>
       </span>
       </div>

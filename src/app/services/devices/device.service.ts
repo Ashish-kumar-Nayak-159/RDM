@@ -367,8 +367,9 @@ export class DeviceService {
     return this.http.get(this.url + AppUrls.GET_C2D_RESPONSE_JSON, { params });
   }
 
-  sendC2DMessage(message, app) {
-    return this.http.post(this.url + String.Format(AppUrls.SEND_C2D_MESSAGE, encodeURIComponent(app)), message);
+  sendC2DMessage(message, app, deviceId) {
+    return this.http.post(this.url + String.Format(AppUrls.SEND_C2D_MESSAGE, encodeURIComponent(app),
+    encodeURIComponent(deviceId)), message);
   }
 
   getNonIPDeviceCount(filterObj) {
@@ -494,8 +495,9 @@ export class DeviceService {
     return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_CONFIGURATION_HISTORY, encodeURIComponent(filterObj.app)), { params });
   }
 
-  callDeviceMethod(obj, app) {
-    return this.http.post(this.url + String.Format(AppUrls.CALL_DEVICE_METHOD, encodeURIComponent(app)), obj);
+  callDeviceMethod(obj, app, deviceId) {
+    return this.http.post(this.url + String.Format(AppUrls.CALL_DEVICE_METHOD, encodeURIComponent(app),
+    encodeURIComponent(deviceId)), obj);
   }
 
   syncDeviceCache(app, filterObj) {
@@ -657,6 +659,28 @@ export class DeviceService {
     });
     return this.http.get(this.url + String.Format(AppUrls.GET_HISTORICAL_MTBF_DATA,
       encodeURIComponent(app), encodeURIComponent(deviceId)), {params});
+  }
+
+  getMessageRequestDetails(jobId, app, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_MESSAGE_REQUEST_DETAILS,
+      encodeURIComponent(app), encodeURIComponent(jobId)), { params });
+  }
+
+  getMessageResponseDetails(app, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_MESSAGE_RESPONSE_DETAILS,
+      encodeURIComponent(app)), { params });
   }
 
 }

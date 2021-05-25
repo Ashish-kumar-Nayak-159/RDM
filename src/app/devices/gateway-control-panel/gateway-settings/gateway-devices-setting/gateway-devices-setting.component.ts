@@ -90,18 +90,16 @@ export class GatewayDevicesSettingComponent implements OnInit {
       message: obj,
       app: this.contextApp.app,
       timestamp:  moment().unix(),
-      metadata: {
-        acknowledge: 'Full',
-        expire_in_min: 2880
-      },
-      message_id: this.device.device_id + '_' + moment().unix(),
-      request_type: type
+      acknowledge: 'Full',
+      expire_in_min: 2880,
+      job_id: this.device.device_id + '_' + this.commonService.generateUUID(),
+      request_type: obj.command,
+      job_type: 'Message',
+      sub_job_id: null
     };
+    c2dObj.sub_job_id = c2dObj.job_id + '_1';
     this.subscriptions.push(
-
-
-
-      this.deviceService.sendC2DMessage(c2dObj, this.contextApp.app).subscribe(
+      this.deviceService.sendC2DMessage(c2dObj, this.contextApp.app, this.device.device_id).subscribe(
         (response: any) => {
           this.displayMsgArr.push({
             message: type + ' request sent to gateway.',
@@ -121,7 +119,7 @@ export class GatewayDevicesSettingComponent implements OnInit {
 
   loadC2DResponse(c2dObj) {
     const obj = {
-      correlation_id: c2dObj.message_id,
+      sub_job_id: c2dObj.sub_job_id,
       app: this.contextApp.app,
       device_id: this.device.type !== CONSTANTS.IP_GATEWAY ? this.device.device_id : undefined,
       gateway_id: this.device.type === CONSTANTS.IP_GATEWAY ? this.device.device_id : undefined,
@@ -129,7 +127,7 @@ export class GatewayDevicesSettingComponent implements OnInit {
       to_date: moment().unix(),
       epoch: true
     };
-    this.subscriptions.push(this.deviceService.getC2dResponseJSON(obj).subscribe(
+    this.subscriptions.push(this.deviceService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
       (response: any) => {
         // response.data = this.generateResponse();
         if (response.data?.length > 0 && this.displayMsgArr.length <= response.data.length) {

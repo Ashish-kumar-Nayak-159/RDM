@@ -5,7 +5,7 @@ import { DevicesModule } from './../devices/devices.module';
 import { CommonCustomModule } from './../common/common.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { AppDashboardRoutingModule } from './app-dashboard-routing.module';
 import { AppDashboardComponent } from './app-dashboard/app-dashboard.component';
 import { UiSwitchModule } from 'ngx-ui-switch';
@@ -24,7 +24,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
     FormsModule,
     VisualizationModule,
     UiSwitchModule,
-    NgSelectModule
+    NgSelectModule,
+    TooltipModule
   ]
 })
 export class AppDashboardModule { }

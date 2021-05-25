@@ -1,3 +1,4 @@
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { Daterangepicker } from 'ng2-daterangepicker';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { UiSwitchModule } from 'ngx-ui-switch';
@@ -26,7 +27,8 @@ import { CommonCustomModule } from '../common/common.module';
     CommonCustomModule,
     UiSwitchModule,
     NgSelectModule,
-    Daterangepicker
+    Daterangepicker,
+    TooltipModule
   ],
   providers: [
     {provide: OWL_DATE_TIME_LOCALE, useValue: {useUtc: true}}

@@ -26,6 +26,7 @@ export class RDMDeviceControlPanelErrorComponent implements OnInit, OnDestroy {
   modalConfig: any;
   errorTableConfig: any = {};
   pageType: string;
+  contextApp: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -33,11 +34,14 @@ export class RDMDeviceControlPanelErrorComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.device?.tags?.category === CONSTANTS.IP_GATEWAY) {
       this.errorFilter.gateway_id = this.device.device_id;
     } else {
       this.errorFilter.device_id = this.device.device_id;
     }
+    this.errorFilter.count = 10;
+    this.errorFilter.app = this.contextApp.app;
     this.errorTableConfig = {
       type: 'error',
       headers: ['Timestamp', 'Message ID', 'Error Code', 'Message'],
@@ -60,14 +64,38 @@ export class RDMDeviceControlPanelErrorComponent implements OnInit, OnDestroy {
         }
       ]
     };
+    this.loadFromCache();
     this.errorFilter.epoch = true;
 
   }
 
-  searchError(filterObj) {
+  loadFromCache() {
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+    if (item.dateOption) {
+      this.errorFilter.dateOption = item.dateOption;
+      if (item.dateOption !== 'Custom Range') {
+        const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+        this.errorFilter.from_date = dateObj.from_date;
+        this.errorFilter.to_date = dateObj.to_date;
+      } else {
+        this.errorFilter.from_date = item.from_date;
+        this.errorFilter.to_date = item.to_date;
+      }
+    }
+    this.searchError(this.errorFilter, false);
+  }
+
+  searchError(filterObj, updateFilterObj = true) {
     this.isFilterSelected = true;
     this.isErrorLoading = true;
     const obj = {...filterObj};
+    if (updateFilterObj) {
+      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+      pagefilterObj['from_date'] = obj.from_date;
+      pagefilterObj['to_date'] = obj.to_date;
+      pagefilterObj['dateOption'] = obj.dateOption;
+      this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, pagefilterObj);
+    }
     this.errorFilter = filterObj;
     this.apiSubscriptions.push(this.deviceService.getDeviceError(obj).subscribe(
       (response: any) => {

@@ -40,12 +40,12 @@ export class ManageApplicationsComponent implements OnInit {
       app_name: app.name
       },
       app: this.contextApp.app,
-      timestamp: (moment().utc()).unix(),
-      acknowledge: 'Full',
-      expire_in_min: 1,
-      request_type: 'Start App',
-      message_id: this.device.device_id + '_' + (moment().utc()).unix()
+      job_type: 'DirectMethod',
+      request_type: 'START_APP',
+      job_id: this.device.device_id + '_' + this.commonService.generateUUID(),
+      sub_job_id: null
     };
+    obj.sub_job_id = obj.job_id + '_1';
     this.callDirectMethod(obj, 'Start', index);
   }
 
@@ -54,16 +54,16 @@ export class ManageApplicationsComponent implements OnInit {
       device_id: this.device.device_id,
       method: 'STOP_APP',
       message: {
-        command: 'STOP_APP',
-        app_name: app.name
+      command: 'STOP_APP',
+      app_name: app.name
       },
       app: this.contextApp.app,
-      timestamp: (moment().utc()).unix(),
-      acknowledge: 'Full',
-      expire_in_min: 1,
-      message_id: this.device.device_id + '_' + (moment().utc()).unix(),
-      request_type: 'Stop App',
+      job_type: 'DirectMethod',
+      request_type: 'STOP_APP',
+      job_id: this.device.device_id + '_' + this.commonService.generateUUID(),
+      sub_job_id: null
     };
+    obj.sub_job_id = obj.job_id + '_1';
     this.callDirectMethod(obj, 'Stop', index);
   }
 
@@ -72,23 +72,24 @@ export class ManageApplicationsComponent implements OnInit {
       device_id: this.device.device_id,
       method: 'RESTART_APP',
       message: {
-        command: 'RESTART_APP',
-        app_name: app.name
+      command: 'RESTART_APP',
+      app_name: app.name
       },
       app: this.contextApp.app,
-      timestamp: (moment().utc()).unix(),
-      acknowledge: 'Full',
-      expire_in_min: 1,
-      message_id: this.device.device_id + '_' + (moment().utc()).unix(),
-      request_type: 'Restart App',
+      job_type: 'DirectMethod',
+      request_type: 'RESTART_APP',
+      job_id: this.device.device_id + '_' + this.commonService.generateUUID(),
+      sub_job_id: null
     };
+    obj.sub_job_id = obj.job_id + '_1';
     this.callDirectMethod(obj, 'Restart', index);
   }
 
   callDirectMethod(obj, type, index) {
     this.isAPILoading = {};
     this.isAPILoading[index] = true;
-    this.deviceService.callDeviceMethod(obj, this.contextApp.app).subscribe(
+    this.deviceService.callDeviceMethod(obj, this.contextApp.app,
+      this.device?.gateway_id || this.device.device_id).subscribe(
       (response: any) => {
         this.isAPILoading[index] = false;
         this.toasterService.showSuccess(response?.device_response?.message, type + ' App');
@@ -100,7 +101,6 @@ export class ManageApplicationsComponent implements OnInit {
         this.toasterService.showError(error?.device_response?.message, type + ' App');
       }
       );
-
   }
 
 }

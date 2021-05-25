@@ -3,10 +3,12 @@
 </div>
 <div class="">
   <div id="map-container-google-1" class="z-depth-1-half map-container">
-    <div class="form-group select-box-map" >
-      <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
+    <div class="form-group select-box-map w-100 m-2" >
+      <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown" [ngClass]="{'active': hierarchyString}"
+      placement="bottom"
+              [tooltip]="hierarchyString ? hierarchyString : 'Select Hierarchy'"
       (click)="onDeviceFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
-      <i class="fas fa-fw fa-filter fa-sm"></i> Select Hierarchy</button>
+      <i class="fas fa-fw fa-filter fa-sm button-divider"></i> {{hierarchyString ? displayHierarchyString : 'Select Hierarchy'}}</button>
     <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
       <ng-container *ngFor="
                   let level of contextApp?.hierarchy?.levels;

@@ -26,6 +26,7 @@ export class OthersComponent implements OnInit, OnDestroy {
   modalConfig: any;
   otherTableConfig: any = {};
   pageType: any;
+  contextApp: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -33,11 +34,14 @@ export class OthersComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
       this.otherFilter.gateway_id = this.device.device_id;
     } else {
       this.otherFilter.device_id = this.device.device_id;
     }
+    this.otherFilter.count = 10;
+    this.otherFilter.app = this.contextApp.app;
     this.otherTableConfig = {
       type: 'other',
       headers: ['Timestamp', 'Message ID', 'Message Type', 'Other Message'],
@@ -67,14 +71,37 @@ export class OthersComponent implements OnInit, OnDestroy {
         key: 'device_id'
       });
     }
-
+    this.loadFromCache();
   }
 
-  searchOther(filterObj) {
+  loadFromCache() {
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+    if (item.dateOption) {
+      this.otherFilter.dateOption = item.dateOption;
+      if (item.dateOption !== 'Custom Range') {
+        const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+        this.otherFilter.from_date = dateObj.from_date;
+        this.otherFilter.to_date = dateObj.to_date;
+      } else {
+        this.otherFilter.from_date = item.from_date;
+        this.otherFilter.to_date = item.to_date;
+      }
+    }
+    this.searchOther(this.otherFilter, false);
+  }
+
+  searchOther(filterObj, updateFilterObj = true) {
     console.log(filterObj);
     this.isFilterSelected = true;
     this.isOthersLoading = true;
     const obj = {...filterObj};
+    if (updateFilterObj) {
+      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+      pagefilterObj['from_date'] = obj.from_date;
+      pagefilterObj['to_date'] = obj.to_date;
+      pagefilterObj['dateOption'] = obj.dateOption;
+      this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, pagefilterObj);
+    }
     this.otherFilter = filterObj;
     this.apiSubscriptions.push(this.deviceService.getDeviceotherMessagesList(obj).subscribe(
       (response: any) => {

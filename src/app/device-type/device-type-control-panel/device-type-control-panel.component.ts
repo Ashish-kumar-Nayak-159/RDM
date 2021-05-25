@@ -105,9 +105,6 @@ export class DeviceTypeControlPanelComponent implements OnInit, OnDestroy {
       $('body').addClass('sidebar-toggled');
       $('.sidebar').addClass('toggled');
       // $('.sidebar .collapse').collapse('hide');
-    } else {
-      $('body').removeClass('sidebar-toggled');
-      $('.sidebar').removeClass('toggled');
     }
     if (($(window).width() > 768) && $('.sidebar').hasClass('toggled')) {
       $('.container-fluid').removeClass( 'sb-collapse' );
@@ -160,25 +157,11 @@ export class DeviceTypeControlPanelComponent implements OnInit, OnDestroy {
           this.deviceType = response;
           this.deviceType.name = obj.name;
           this.deviceType.app = obj.app;
-          this.commonService.breadcrumbEvent.emit({
-            type: 'append',
-            data: [
-                {
-                  title: (this.deviceType.name) + ' / Model Definition',
-                  url:
-                  'applications/' + this.contextApp.app + '/things/model/' + this.deviceType.name + '/control-panel'
-                }
-            ]
-          });
+        }
+        if (!callFromMenu) {
+          setTimeout(() => this.setToggleClassForMenu(), 50);
         }
         this.isDeviceTypeDataLoading = false;
-        if (!callFromMenu) {
-          setTimeout(
-            () => {
-              this.setToggleClassForMenu();
-            }, 50
-          );
-        }
       }
     ));
   }
@@ -186,6 +169,7 @@ export class DeviceTypeControlPanelComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
     $('.sidebar').addClass('toggled');
-    this.setToggleClassForMenu();
+    $('body').removeClass('sidebar-toggled');
+    $('.sidebar').removeClass('toggled');
   }
 }

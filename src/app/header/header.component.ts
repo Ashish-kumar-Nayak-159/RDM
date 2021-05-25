@@ -54,7 +54,7 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
         event.url === event.urlAfterRedirects
       ) {
         this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-        this.breadcrumbData = this.commonService.getItemFromLocalStorage(CONSTANTS.CURRENT_BREADCRUMB_STATE);
+        // this.breadcrumbData = this.commonService.getItemFromLocalStorage(CONSTANTS.CURRENT_BREADCRUMB_STATE);
       }
     }));
     this.apiSubscriptions.push(this.commonService.refreshSideMenuData.subscribe(list => {

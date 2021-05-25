@@ -24,27 +24,56 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   hierarchyArr: any = {};
   configureHierarchy: any = {};
   filterObj: any = {};
+  hierarchyString: any;
+  displayHierarchyString: any;
   constructor(
     private deviceService: DeviceService,
     private router: Router,
     private commonService: CommonService
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.getAllDevices();
+    await this.getAllDevices();
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    console.log(item);
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
     }
-    this.contextApp.hierarchy.levels.forEach((level, index) => {
-      if (index !== 0) {
-      this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-      if (this.contextApp.user.hierarchy[level]) {
-        this.onChangeOfHierarchy(index, false);
+    if (item) {
+      this.loadFromCache(item);
+    } else {
+      this.contextApp.hierarchy.levels.forEach((level, index) => {
+        if (index !== 0) {
+        this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+        if (this.contextApp.user.hierarchy[level]) {
+          this.onChangeOfHierarchy(index, false);
+        }
+        }
+      });
+      this.onDeviceFilterApply();
+    }
+  }
+
+  loadFromCache(item) {
+      // this.originalFilter = JSON.parse(JSON.stringify(item));
+      // this.filterObj = JSON.parse(JSON.stringify(item));
+    if (item.hierarchy) {
+      if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
+      this.contextApp.hierarchy.levels.forEach((level, index) => {
+        if (index !== 0) {
+        this.configureHierarchy[index] = item.hierarchy[level];
+        console.log(this.configureHierarchy);
+        if (item.hierarchy[level]) {
+          this.onChangeOfHierarchy(index, true, false);
+        }
+        }
+      });
       }
-      }
-    });
+      this.onDeviceFilterApply(false);
+    }
+
   }
 
 
@@ -120,7 +149,9 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       }
     });
     let nextHierarchy = this.contextApp.hierarchy.tags;
+
     Object.keys(this.configureHierarchy).forEach((key, index) => {
+
       if (this.configureHierarchy[index + 1]) {
         nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
       }
@@ -132,8 +163,10 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
 
     if (flag) {
       const hierarchyObj: any = { App: this.contextApp.app};
+
       Object.keys(this.configureHierarchy).forEach((key) => {
         if (this.configureHierarchy[key]) {
+
           hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
         }
       });
@@ -187,10 +220,30 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDeviceFilterApply() {
+  onDeviceFilterApply(updateFilterObj = true) {
     console.log(this.filterObj);
     console.log(this.configureHierarchy);
     this.mapDevices = JSON.parse(JSON.stringify(this.devices));
+    this.hierarchyString = this.contextApp.app;
+    this.displayHierarchyString = this.contextApp.app;
+    Object.keys(this.configureHierarchy).forEach((key) => {
+      if (this.configureHierarchy[key]) {
+        this.hierarchyString += (' > ' + this.configureHierarchy[key]);
+        this.displayHierarchyString = this.configureHierarchy[key];
+      }
+    });
+    if (updateFilterObj) {
+      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+      pagefilterObj['hierarchy'] = this.configureHierarchy;
+      pagefilterObj.hierarchy = { App: this.contextApp.app};
+      pagefilterObj.dateOption = 'Last 30 Mins';
+      Object.keys(this.configureHierarchy).forEach((key) => {
+        if (this.configureHierarchy[key]) {
+          pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
+        }
+      });
+      this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
+    }
     const center = this.commonService.averageGeolocation(this.mapDevices);
     this.centerLatitude = center?.latitude || 23.0225;
     this.centerLongitude = center?.longitude || 72.5714;

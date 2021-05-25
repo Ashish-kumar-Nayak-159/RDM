@@ -18,6 +18,7 @@ import { ToasterService } from 'src/app/services/toaster.service';
 export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
 
   @Input() pageType: any;
+  @Input() componentState: any;
   @Input() device: Device = new Device();
   c2dMessageData: any = {};
   userData: any;
@@ -32,14 +33,14 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
   remainingTime: any;
   apiSubscriptions: Subscription[] = [];
   timerInterval: any;
-  appName: any;
   timerObj: any;
-  listName: string;
   devices: any[] = [];
+  constantData = CONSTANTS;
   controlWidgets: any[] = [];
   deviceMethods: any[] = [];
   @Input() selectedWidget: any;
   @Input() jsonModelKeys: any[] = [];
+  contextApp: any;
 
   constructor(
     private toasterService: ToasterService,
@@ -51,28 +52,21 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.displayType = 'compose';
-    this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
-      this.appName = params.get('applicationId');
-      this.listName = params.get('listName');
-      this.listName = this.listName.slice(0, -1);
-      this.c2dMessageData = {
-        device_id: this.device.device_id,
-        gateway_id: this.device.gateway_id,
-        app: this.appName,
-        timestamp:  moment().unix(),
-        message: null,
-        metadata: {
-        acknowledge: 'Full',
-        expire_in_min: 1,
-        type: this.pageType.includes('configure') ? 'configuration_widget' : 'control_widget'
-        }
-      };
-      if (this.listName === 'gateway') {
-        this.getDevicesListByGateway();
-      }
-
-    }));
+    this.c2dMessageData = {
+      device_id: this.device.device_id,
+      gateway_id: this.device.gateway_id,
+      timestamp:  moment().unix(),
+      message: null,
+      job_id: this.device.device_id + '_' + this.commonService.generateUUID(),
+      acknowledge: 'Full',
+      expire_in_min: 1,
+      request_type: this.selectedWidget.name
+    };
+    if (this.componentState === CONSTANTS.IP_GATEWAY) {
+      this.getDevicesListByGateway();
+    }
 
     // this.messageIdInterval = setInterval(() => {
     //   this.c2dMessageData.message_id = this.device.device_id + '_' + moment().unix();
@@ -84,7 +78,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
   getThingsModelDeviceMethod() {
     // this.deviceMethods = {};
     const obj = {
-      app: this.appName,
+      app: this.contextApp.app,
       name: this.device.tags?.device_type
     };
     this.apiSubscriptions.push(this.deviceTypeService.getThingsModelDeviceMethods(obj).subscribe(
@@ -104,7 +98,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     this.devices = [];
     const obj = {
       gateway_id: this.device.device_id,
-      app: this.appName
+      app: this.contextApp.app
     };
     this.apiSubscriptions.push(this.deviceService.getNonIPDeviceList(obj).subscribe(
       (response: any) => {
@@ -137,8 +131,9 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     this.displayType = 'compose';
     this.isMessageValidated = undefined;
     this.remainingTime = null;
-    this.c2dMessageData.message_id = this.c2dMessageData.device_id + '_' + this.c2dMessageData.timestamp;
-    if (this.listName === 'gateway') {
+    // this.c2dMessageData.job_id = this.c2dMessageData.device_id + '_' + this.commonService.generateUUID();
+    this.c2dMessageData.sub_job_id = this.c2dMessageData.job_id + '_1';
+    if (this.componentState === CONSTANTS.IP_GATEWAY) {
       this.c2dMessageData.gateway_id = this.device.device_id;
     }
     this.sentMessageData = undefined;
@@ -152,8 +147,8 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
         }
       }
     });
-    this.c2dMessageData.request_type = 'Custom';
-    this.c2dMessageData.message['timestamp'] = this.c2dMessageData.timestamp;
+    // this.c2dMessageData.request_type = 'Custom';
+    this.c2dMessageData.message['timestamp'] = moment().unix();
     if (!this.c2dMessageData.message) {
       this.toasterService.showError('Please type JSON in given box', 'Validate Message Detail');
       return;
@@ -167,16 +162,18 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
       this.sentMessageData = undefined;
       return;
     }
-
+    delete this.c2dMessageData.gateway_id;
     this.isSendC2DMessageAPILoading = true;
-    this.apiSubscriptions.push(this.deviceService.sendC2DMessage(this.sentMessageData, this.appName).subscribe(
+    this.apiSubscriptions.push(this.deviceService.sendC2DMessage(this.sentMessageData, this.contextApp.app,
+      this.device?.gateway_id || this.device.device_id).subscribe(
       (response: any) => {
+        this.getMessageDetails();
         this.isMessageValidated = undefined;
         this.sendMessageResponse = 'Successfully sent.';
         this.sendMessageStatus = 'success';
         this.toasterService.showSuccess('C2D message sent successfully', 'Send C2D Message');
         this.isSendC2DMessageAPILoading = false;
-        const expiryDate = moment().add(this.sentMessageData.metadata.expire_in_min, 'minutes').toDate();
+        const expiryDate = moment().add(this.sentMessageData.expire_in_min, 'minutes').toDate();
         this.timerInterval = setInterval(() => {
           const time = Math.floor((expiryDate.getTime() - new Date().getTime()) / 1000);
           this.timerObj = this.dhms(time);
@@ -191,12 +188,35 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     ));
   }
 
+  getMessageDetails() {
+    const filterObj = {
+      device_id: this.device.device_id,
+      from_date: null,
+      to_date: null,
+      epoch: true,
+      job_type: 'Message',
+      sub_job_id: this.sentMessageData.sub_job_id,
+      app: this.contextApp.app
+    };
+    const epoch =  this.sentMessageData.timestamp;
+    filterObj.from_date = epoch ? (epoch - 5) : null;
+    filterObj.to_date = (epoch ? (epoch + (this.sentMessageData?.expire_in_min ?
+      this.sentMessageData.expire_in_min * 60 : 300)) : null) + 5;
+    this.apiSubscriptions.push(this.deviceService.getDeviceC2DMessages(filterObj).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.sentMessageData = response.data[0];
+        }
+      }
+    ));
+  }
+
   verifyQueueMessages() {
     this.noOfMessageInQueue = null;
     let params = new HttpParams();
     params = params.set(this.device.tags.category === CONSTANTS.IP_GATEWAY ? 'gateway_id' : 'device_id', this.device.device_id);
-    // params = params.set('app', this.appName);
-    this.apiSubscriptions.push(this.deviceService.getQueueMessagesCount(params, this.appName).subscribe(
+    // params = params.set('app', this.contextApp.app);
+    this.apiSubscriptions.push(this.deviceService.getQueueMessagesCount(params, this.contextApp.app).subscribe(
       (response: any) => {
         this.noOfMessageInQueue = response.count;
       }
@@ -206,8 +226,8 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
   purgeQueueMessages() {
     let params = new HttpParams();
     params = params.set(this.device.tags.category === CONSTANTS.IP_GATEWAY ? 'gateway_id' : 'device_id', this.device.device_id);
-    // params = params.set('app', this.appName);
-    this.apiSubscriptions.push(this.deviceService.purgeQueueMessages(params, this.appName).subscribe(
+    // params = params.set('app', this.contextApp.app);
+    this.apiSubscriptions.push(this.deviceService.purgeQueueMessages(params, this.contextApp.app).subscribe(
       response => {
         this.toasterService.showSuccess('Messages purged successfully', 'Purge Messages');
         this.verifyQueueMessages();

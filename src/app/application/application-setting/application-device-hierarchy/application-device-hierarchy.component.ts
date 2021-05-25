@@ -171,6 +171,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
         this.addedTagItem = undefined;
         if (this.forceUpdate) {
           this.onCloseModal();
+          this.isAppSetingsEditable = false;
         }
         this.saveHierarchyAPILoading = false;
         this.isAppSetingsEditable = false;
@@ -182,10 +183,14 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
     ));
   }
 
-  openConfirmHierarchyDeleteModal(hierarchy) {
+  openConfirmHierarchyDeleteModal(hierarchy, index) {
     this.selectedHierarchy = hierarchy;
     this.selectedHierarchyItem = undefined;
-    $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    if (!this.applicationData.hierarchy.levels[index] || (this.applicationData.hierarchy.levels[index].trim()).length === 0 ) {
+      this.deleteHierarchy();
+    } else {
+      $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    }
   }
 
   deleteHierarchy() {
@@ -210,7 +215,6 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
   onCloseModal() {
     this.selectedHierarchy = undefined;
     $('#confirmMessageModal').modal('hide');
-    this.isAppSetingsEditable = false;
   }
 
   onCancelClick() {

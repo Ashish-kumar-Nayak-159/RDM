@@ -2,7 +2,7 @@
   <div class="">
     <form class="form-inline">
       <div class="form-group">
-        <ng-select [items]="liveWidgets" class="custom-dropdown w-12 active" bindLabel="id"
+        <ng-select [items]="liveWidgets" class="custom-dropdown w-12 active sm" bindLabel="id"
           (onDeSelectAll)="onDeSelectAll()" [searchable]="false" placeholder="Select Widgets" [multiple]="true"
           [selectableGroup]="true" [closeOnSelect]="false" dropdownPosition="bottom" name="widget-dropdown"
           [(ngModel)]="selectedWidgetsForSearch">
@@ -12,12 +12,12 @@
         </ng-select>
       </div>
       <div class="form-group">
-        <button type="button" class="btn btn-sm searchBtn btn-primary" title="Search" (click)="getTelemetryData()"
-          title="Search"><i class="fa fa-search fa-sm"></i></button>
+        <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="getTelemetryData()"
+          placement="bottom" tooltip="Search"><i class="fa fa-search fa-sm"></i></button>
       </div>
       <div class="form-group">
-        <button type="button" class="btn btn-sm searchBtn btn-primary" title="Clear" (click)="onDeSelectAll()"
-          title="Clear Filters">
+        <button type="button" class="btn btn-sm searchBtn btn-white" (click)="onDeSelectAll()"
+          placement="bottom" tooltip="Clear Filters">
           <img class="filter-clear-icon" src="./assets/img/filter.svg">
         </button>
       </div>

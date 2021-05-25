@@ -1,5 +1,4 @@
 <div class="blue-nav-bar">
-
   <div class="d-flex">
    <div class="main-heading">{{tileData && tileData[0] ? tileData[0]?.value : ''}}</div>
    <div class="ml-auto">
@@ -37,8 +36,15 @@
         <form class="form-inline">
           <div class="form-group">
             <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
+              [ngClass]="{'active' : originalFilterObj?.device}"
+              placement="bottom" [tooltip]="originalFilterObj?.device ?
+              (originalFilterObj.device.display_name ? originalFilterObj.device.display_name :
+              originalFilterObj.device.device_id) : 'Select Asset'"
               (click)="onDeviceFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
-              <i class="fas fa-fw fa-filter fa-sm"></i> Select Asset</button>
+              <i class="fas fa-fw fa-filter fa-sm button-divider"></i>
+              {{originalFilterObj?.device ?
+                (originalFilterObj.device.display_name ? originalFilterObj.device.display_name :
+                originalFilterObj.device.device_id) : 'Select Asset'}}</button>
             <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
               <ng-container *ngFor="
                           let level of contextApp?.hierarchy?.levels;
@@ -59,7 +65,7 @@
                     disabled class="dropdown-form" />
                 </div>
               </ng-container>
-              <ng-select [items]="devices" class="custom-dropdown w-12" bindLabel="display_name" [clearable]="false"
+              <ng-select [items]="devices" class="custom" bindLabel="display_name" [clearable]="false"
                 [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
                 dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.device" (onSelect)="onAssetSelection()">
               </ng-select>
@@ -67,19 +73,22 @@
           </div>
           <div class="form-group">
             <select class="custom-select custom-select-sm"id="report_type" [(ngModel)]="filterObj.report_type"
-            name="report_type" (change)="onNonIPDeviceChange()" #reportType="ngModel">
+            name="report_type" (change)="onNonIPDeviceChange()" #reportType="ngModel" [ngClass]="{'active': filterObj.report_type}">
             <option [ngValue]="undefined">Select Report Type</option>
             <option [ngValue]="'Process Parameter Report'">Process Parameter Report</option>
             <option [ngValue]="'Alert Report'">Alert Report</option>
             </select>
           </div>
-          <div class="form-group" >
-            <input type="text"  class="form-control form-control-sm active" daterangepicker name="daterangeInput"
-            [options]="options" (selected)="selectedDate($event, daterange)" />
+          <div class="form-group left-inner-addon" >
+            <i class="fa fa-calendar"></i>
+            <input type="text"  class="form-control form-control-sm date-range-picker"
+            [ngClass]="{'active': originalFilterObj.from_date && originalFilterObj.to_date}" daterangepicker name="daterangeInput"
+            [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"  [(ngModel)]="selectedDateRange"
+            [tooltip]="selectedDateRange" placement="bottom"/>
           </div>
           <ng-container *ngIf=" filterObj.report_type === 'Process Parameter Report'">
           <div class="form-group">
-            <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 active" bindLabel="id" [clearable]="false"
+            <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" bindLabel="id" [clearable]="false"
               [searchable]="false"  [multiple]="true"
               [closeOnSelect]="false" placeholder="Select Properties"
               dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="props" (onDeSelectAll)="y1Deselect($event)">
@@ -88,9 +97,8 @@
               </ng-template>
             </ng-select>
           </div>
-
           <div class="form-group" *ngIf=" filterObj.report_type === 'Process Parameter Report'">
-            <input type="checkbox" id="checkbox" min="1" name="checkbox" class="big-checkbox"
+            <input type="checkbox" id="checkbox" min="1" name="checkbox" class="big-checkbox"  [ngClass]="{'active': filterObj.isTypeEditable}"
             [(ngModel)]="filterObj.isTypeEditable" (change)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
             filterObj.sampling_format = 'minute'; filterObj.sampling_time = 1;"
             >
@@ -107,15 +115,17 @@
           </div>
           <div class="form-group input-group" *ngIf="filterObj.type">
 
-            <input class="form-control form-control-sm bg-light" type="number" id="minutes" min="1"
+            <input class="form-control form-control-sm bg-light"  type="number" id="minutes" min="1"
             name="minutes" [(ngModel)]="filterObj.sampling_time" placeholder="Sampling" disabled
-            title="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development." style="width: 3em;" >
+            [ngClass]="{'active': filterObj.sampling_time}"
+            placement="bottom" tooltip="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development." style="width: 3em;" >
             <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
           </div>
             <div class="form-group input-group" *ngIf="!filterObj.type">
               <fieldset [disabled]="!filterObj.isTypeEditable"></fieldset>
               <input class="form-control form-control-sm bg-light" type="number" id="aggr_mins" min="1"
               name="aggr_mins" [(ngModel)]="filterObj.aggregation_minutes" placeholder="Sampling"
+              [ngClass]="{'active': filterObj.aggregation_minutes}"
               (change)="onNumberChange($event, 'aggregation')" [disabled]="!filterObj.isTypeEditable"
                style="width: 3em;" >
               <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
@@ -123,7 +133,7 @@
             <div class="form-group " *ngIf="!filterObj.type">
               <fieldset [disabled]="!filterObj.isTypeEditable">
             <select class="form-control form-control-sm" id="aggregationFormat" [(ngModel)]="filterObj.aggregation_format"
-            name="aggregationFormat" style="width: 11rem!important;">
+            name="aggregationFormat" style="width: 11rem!important;" [ngClass]="{'active': filterObj.aggregation_format}">
             <option [ngValue]="undefined">Aggregartion Format</option>
             <option [ngValue]="'AVG'">Average</option>
             <option [ngValue]="'SUM'">Sum</option>
@@ -135,27 +145,27 @@
           </div>
         </ng-container>
         <div class="form-group" *ngIf=" filterObj.report_type !== 'Process Parameter Report'" >
-          <button type="button" class="btn btn-sm searchBtn btn-primary" title="Search"
-              (click)="currentOffset = 0;telemetry = [];latestAlerts = [];onFilterSelection(true)" ><i
+          <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
+              (click)="currentOffset = 0;telemetry = [];latestAlerts = [];onFilterSelection(true, true)" ><i
                 class="fa fa-search fa-sm" ></i></button>
         </div>
         <div class="form-group" *ngIf=" filterObj.report_type === 'Process Parameter Report'" >
-          <button type="button" class="btn btn-sm searchBtn btn-primary" title="Search" (click)="currentOffset = 0;telemetry = [];latestAlerts = [];onFilterSelection(true)" [disabled]="isTelemetryLoading" ><i
+          <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search" (click)="currentOffset = 0;telemetry = [];latestAlerts = [];onFilterSelection(true, true)" [disabled]="isTelemetryLoading" ><i
             class="fa fa-search fa-sm"></i></button>
         </div>
         </form>
       </div>
       <h6 class="pl-3" *ngIf="!isFilterSelected"> Please select filters to view the report data.</h6>
       <h5 class="pl-3" *ngIf="isFilterSelected || isTelemetryLoading" >{{filterObj.report_type}}
-        <a href="javascript:void(0)"  (click)="savePDF()" title="Export as PDF"><i class="fa fa-sm fa-file-pdf-o" ></i></a>
-        <a href="javascript:void(0)"  (click)="saveExcel()" title="Export as Excel" class="ml-1"><i class="fa fa-sm fa-file-excel-o" ></i></a>
+        <a href="javascript:void(0)"  (click)="savePDF()" placement="bottom" tooltip="Export as PDF"><i class="fa fa-sm fa-file-pdf-o" ></i></a>
+        <a href="javascript:void(0)"  (click)="saveExcel()" placement="bottom" tooltip="Export as Excel" class="ml-1"><i class="fa fa-sm fa-file-excel-o" ></i></a>
         <!-- <i  class="fa fa-fw fa-2x  fa-spin fa-spinner" *ngIf="isFileDownloading"></i> -->
       </h5>
       <div class="table-responsive">
         <div class="tableFixHead report-table">
           <ng-container *ngIf="isFilterSelected || isTelemetryLoading">
 
-            <ng-container *ngIf="isFilterSelected && filterObj.report_type === 'Process Parameter Report'">
+            <ng-container *ngIf="isFilterSelected && originalFilterObj.report_type === 'Process Parameter Report'">
                 <table class="table table-hover" id="dataTable1">
                   <thead>
                     <tr>
@@ -193,11 +203,11 @@
                   </tbody>
                 </table>
               <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && telemetry.length > 0">
-                <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;onFilterSelection();"
-                title="Load More Records...">Load More...</a>
+                <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;onFilterSelection(false, false);"
+                placement="bottom" tooltip="Load More Records...">Load More...</a>
               </span>
             </ng-container>
-            <ng-container *ngIf="isFilterSelected && filterObj.report_type === 'Alert Report'">
+            <ng-container *ngIf="isFilterSelected && originalFilterObj.report_type === 'Alert Report'">
               <table class="table table-hover"  id="dataTable">
                 <thead>
                   <tr >
@@ -220,7 +230,7 @@
                         (alert.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
                         (alert.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                         )
-                        )" title="{{alert.severity}}"></i></td>
+                        )" placement="bottom" [tooltip]="alert.severity"></i></td>
 
                       <td>{{ alert.device_display_name ? alert.device_display_name : alert.device_id }}</td>
 
@@ -246,11 +256,11 @@
                 </tbody>
               </table>
               <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && latestAlerts.length > 0">
-                <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;onFilterSelection();"
-                title="Load More Records...">Load More...</a>
+                <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;onFilterSelection(false, false);"
+                placement="bottom" tooltip="Load More Records...">Load More...</a>
               </span>
             </ng-container>
-            <table class="table table-hover"  id="dataTable1" hidden *ngIf="isFilterSelected && filterObj.report_type === 'Alert Report'">
+            <table class="table table-hover"  id="dataTable1" hidden *ngIf="isFilterSelected && originalFilterObj.report_type === 'Alert Report'">
             <thead>
               <tr>
                 <th></th>
@@ -273,7 +283,7 @@
                     (alert.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
                     (alert.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                     )
-                    )" title="{{alert.severity}}"></i></td>
+                    )" placement="bottom" [tooltip]="alert.severity"></i></td>
 
                   <td>{{ alert.device_display_name ? alert.device_display_name : alert.device_id }}</td>
 

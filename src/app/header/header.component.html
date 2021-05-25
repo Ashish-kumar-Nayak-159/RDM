@@ -22,7 +22,7 @@
     <div class="topbar-divider d-none d-sm-block"></div>
 
     <li class="nav-item mx-1">
-      <a class="nav-link" href="javascript:void(0)" title="Telemetry" (click)="navigateToDashboard('telemetry')" id="messagesDropdown" aria-expanded="false">
+      <a class="nav-link" href="javascript:void(0)" placement="bottom" tooltip="Telemetry" (click)="navigateToDashboard('telemetry')" id="messagesDropdown" aria-expanded="false">
         <i class="fa fa-globe fa-fw  text-dark"></i>
       </a>
 
@@ -31,7 +31,7 @@
     <div class="topbar-divider d-none d-sm-block"></div>
 
     <li class="nav-item no-arrow mx-1">
-      <a class="nav-link" href="javascript:void(0)" title="Alert" (click)="navigateToDashboard('alert')" id="alertsDropdown" aria-expanded="false">
+      <a class="nav-link" href="javascript:void(0)" placement="bottom" tooltip="Alert" (click)="navigateToDashboard('alert')" id="alertsDropdown" aria-expanded="false">
         <i class="fa fa-bell fa-fw   text-dark"></i>
       </a>
 
@@ -119,7 +119,7 @@
   </div>
 </div>
 
-<nav class="navbar navbar-expand navbar-light bg-gradient-light topbar static-top" *ngIf="isLoginRoute">
+<nav class="navbar navbar-expand navbar-light bg-white topbar static-top" *ngIf="isLoginRoute">
 
   <button id="sidebarToggleTop" class="btn btn-link d-md-none mr-3" (click)="onSidebarToggle()">
     <i class="fa fa-bars"></i>

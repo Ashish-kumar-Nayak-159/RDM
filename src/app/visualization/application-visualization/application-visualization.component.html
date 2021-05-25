@@ -11,16 +11,27 @@
               <input type="number" min="1" id="countId" name="count"
                 class="form-control form-control-sm active record-input" [(ngModel)]="filterObj.count" name="count">
             </div>
-            <div class="form-group">
-              <input type="text" class="form-control form-control-sm active" daterangepicker name="daterangeInput"
-                [options]="options" (selected)="selectedDate($event, daterange)" />
+            <div class="form-group left-inner-addon">
+              <i class="fa fa-calendar"></i>
+              <input type="text" class="form-control form-control-sm active date-range-picker" daterangepicker name="daterangeInput"
+                [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"  [(ngModel)]="selectedDateRange"
+                [tooltip]="selectedDateRange" placement="bottom"/>
             </div>
           </ng-container>
           <ng-container *ngIf="pageType === 'live'">
             <div class="form-group">
               <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
+              placement="bottom" [tooltip]="originalFilterObj.device ?
+              (originalFilterObj.device.display_name ? originalFilterObj.device.display_name :
+              originalFilterObj.device.device_id) :
+              (hierarchyString ? hierarchyString : 'Select Asset')"
+              [ngClass]="{'active' : filterObj?.device || (configureHierarchy && configureHierarchy[1])}"
                 (click)="onDeviceFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-fw fa-filter fa-sm"></i> Select Asset</button>
+                <i class="fas fa-fw fa-filter fa-sm button-divider"></i>
+                {{originalFilterObj.device ?
+                  (originalFilterObj.device.display_name ? originalFilterObj.device.display_name :
+                  originalFilterObj.device.device_id) :
+                  (hierarchyString ? displayHierarchyString : 'Select Asset')}}</button>
               <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
                 <ng-container *ngFor="
                           let level of contextApp?.hierarchy?.levels;
@@ -29,7 +40,7 @@
                   <div class="">
                     <select *ngIf="index !== 0" name="{{level}}_{{index}}" class="dropdown-form" id="{{ level }}"
                       [disabled]="contextApp?.user?.hierarchy[level]" [(ngModel)]="configureHierarchy[index]"
-                      name="{{ level }}" (change)="onChangeOfHierarchy(index)">
+                      name="{{ level }}" (change)="onChangeOfHierarchy(index, true)">
                       <option [ngValue]="undefined">
                         Select {{ level }}
                       </option>
@@ -41,7 +52,7 @@
                       defaultValue="{{ contextApp.app }}" disabled class="dropdown-form" />
                   </div>
                 </ng-container>
-                <ng-select [items]="devices" class="custom-dropdown w-12" bindLabel="display_name" [clearable]="false"
+                <ng-select [items]="devices" class="custom" bindLabel="display_name" [clearable]="false"
                   [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
                   dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.device"
                   (onSelect)="onAssetSelection()">
@@ -50,7 +61,7 @@
             </div>
           </ng-container>
           <div class="form-group">
-            <button type="button" class="btn btn-sm searchBtn btn-primary" title="Search" (click)="getLatestAlerts()"
+            <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search" (click)="getLatestAlerts()"
               [disabled]="isAlertAPILoading"><i class="fa fa-search fa-sm"></i></button>
           </div>
         </form>
@@ -59,7 +70,7 @@
   </div>
 </div>
 <div class="inbox">
-  <div class="row">
+  <div class="row col-md-12">
 
       <ng-container *ngIf="isAlertAPILoading">
         <div class="pl-3">
@@ -72,7 +83,7 @@
       </div>
       </ng-container>
 
-    <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3">
+    <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3 pr-0">
 
       <ul class="mail_list list-group list-unstyled alert-scroll" *ngIf="!isAlertAPILoading && latestAlerts.length > 0">
 
@@ -81,18 +92,17 @@
           <div class="media">
             <div class="pull-left">
               <div class="controls">
-                <i class="fa fa-fw fa-circle" [style.color]="
+                <i class="fa fa-fw fa-exclamation-triangle" [style.color]="
                 (alert?.severity?.toLowerCase() === 'critical' ? '#cc0000' :
                 (alert?.severity?.toLowerCase() === 'error' ? '#fb5515' :
                 (alert?.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
                 (alert?.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                 )
-                )"></i>
+                )" [tooltip]="alert?.severity"></i>
               </div>
             </div>
             <div class="media-body"><a (click)="onClickOfViewGraph(alert)" class="m-r-10">
                 <div class="media-heading">
-
                   <p class="overflow">{{ alert.message }}</p>
                   <!--<span class="badge bg-amber">Shop</span>
                           <small class="float-right text-muted"><i class="fa fa-check-square fa-fw"></i> </small>-->
@@ -101,20 +111,20 @@
                 <p class="msg"><time class="hidden-sm-down">{{ alert.local_created_date }}</time> </p>
               </a>
             </div>
-            <div class="pull-right">
+            <!-- <div class="pull-right">
               <div class="">
                 <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down" *ngIf="!selectedAlert?.metadata?.acknowledged_date" (click)="onClickOfAcknowledgeAlert(alert)"
                 ><i class="fa fa-folder-open text-gray" aria-hidden="true"></i></a>
                 <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down" *ngIf="selectedAlert?.metadata?.acknowledged_date"
                 ><i class="fa  fa-check-square text-gray" aria-hidden="true"></i></a>
               </div>
-            </div>
+            </div> -->
           </div>
         </li>
 
       </ul>
     </div>
-    <div class="col-sm-9 col-md-9 col-lg-9 col-xl-9 p-0" *ngIf="selectedAlert">
+    <div class="col-sm-9 col-md-9 col-lg-9 col-xl-9 pl-0" *ngIf="selectedAlert">
       <div class="">
 
         <ul id="assetTab" role="tablist" class="nav alert-tabs flex-column flex-sm-row text-center border-0 ">
@@ -154,18 +164,18 @@
                 <input type="number" step="1" min="0" id="beforeInterval" name="beforeInterval"
                   class="form-control form-control-sm " [(ngModel)]="beforeInterval" (change)="onChangeTimeValue()"
                   style="width: 4em;">
-                <div class="input-group-append"><span class="input-group-text bg-light">mins before alert</span>
+                <div class="input-group-append"><span class="input-group-text bg-light">mins before</span>
                 </div>
               </div>
               <div class="form-group input-group">
                 <input type="number" step="1" min="0" id="afterInterval" name="afterInterval"
                   class="form-control form-control-sm " [(ngModel)]="afterInterval" (change)="onChangeTimeValue()"
                   style="width: 4em;">
-                <div class="input-group-append"><span class="input-group-text bg-light">mins after alert</span>
+                <div class="input-group-append"><span class="input-group-text bg-light">mins after</span>
                 </div>
               </div>
               <div class="form-group">
-                <ng-select [items]="dropdownWidgetList" class="custom-dropdown w-12 active" bindLabel="id"
+                <ng-select [items]="dropdownWidgetList" class="custom-dropdown w-12 active sm" bindLabel="id"
                   [clearable]="false" [searchable]="false" [multiple]="true" [closeOnSelect]="false"
                   placeholder="Select Widgets" dropdownPosition="bottom" name="asset-dropdown"
                   [(ngModel)]="selectedWidgets" (onDeSelectAll)="onDeSelectAll($event)">
@@ -192,7 +202,7 @@
 
                 <input class="form-control form-control-sm bg-light" type="number" id="minutes" min="1"
                   name="minutes" [(ngModel)]="filterObj.sampling_time" placeholder="Sampling" disabled
-                  title="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development."
+                  placement="bottom" tooltip="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development."
                   style="width: 3em;">
                 <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
               </div>
@@ -223,35 +233,33 @@
                     class="fas fa-search fa-sm"></i></button></div>
               </form>
             </div>
-            <div class="content-scroll content-scroll-alert p-3">
-              <div class="row">
+            <div class="content-scroll content-scroll-alert">
                 <ng-container *ngIf="isTelemetryDataLoading">
                   {{loadingMessage}}
                   <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
                 </ng-container>
                 <!-- Content Row -->
                 <div id="mainChartDiv">
-                  <div class="row col-md-12" *ngIf="!isTelemetryDataLoading && telemetryData.length > 0">
+                  <div class="row col-xl-12 col-lg-12 m-2" *ngIf="!isTelemetryDataLoading && telemetryData.length > 0">
 
-                    <div class="form-group col-md-2 pl-3" *ngFor="let prop of propList">
+                    <div class="form-group col-md-2 pl-3 mb-0" *ngFor="let prop of propList">
                       <input type="checkbox" class="form-check-input" id="{{prop}}" name="{{prop}}"
                         (change)="toggleProperty(prop)" [checked]="selectedPropertyForChart.indexOf(prop) !== -1">
                       <label class="form-check-label text-elipsis" for="{{prop}}"
-                        title="{{getPropertyName(prop)}}">{{getPropertyName(prop)}}</label>
+                      placement="bottom" [tooltip]="getPropertyName(prop)">{{getPropertyName(prop)}}</label>
                     </div>
 
-                    <!-- <div class="col-2 pull-right">
-                        <input type="checkbox" class="form-check-input" id="threshold"
-                          name="threshold" (change)="toggleThreshold()" [(ngModel)]="showThreshold">
-                          <label class="form-check-label" for="threshold">Show Threshold</label>
-                      </div> -->
+
                   </div>
-                  <div class="row col-12 pl-5" *ngIf="!isTelemetryDataLoading && telemetryData.length === 0">
+                  <div class="col-xl-12 col-lg-12 pl-3" *ngIf="!isTelemetryDataLoading && telemetryData.length === 0 && selectedWidgets?.length > 0">
                     No data found.
+                  </div>
+                  <div class="col-xl-12 col-lg-12 pl-3" *ngIf="selectedWidgets?.length === 0 && !isTelemetryDataLoading">
+                    No widgets configured for this alert.
                   </div>
                   <div id="charts" classs="w-100 row"></div>
                 </div>
-              </div>
+
             </div>
           </div>
         </div>
@@ -277,9 +285,9 @@
               </tbody>
             </table>
           </ng-container>
-          <ng-container *ngIf="alertCondition?.recommendations?.length === 0">
+          <div class="col-xl-12 col-lg-12 pl-3" *ngIf="!alertCondition || alertCondition?.recommendations?.length === 0">
             No Recommendations added yet.
-          </ng-container>
+          </div>
         </div>
         <div id="documents" role="tabpanel" aria-labelledby="documents-tab" [ngClass]="{'active': selectedTab === 'documents'}" class="tab-pane fade p-2">
           <div class="tagsinput" style="width: auto; height: auto;min-height: auto;"
@@ -290,15 +298,17 @@
                         </span>
                       </ng-container>
                     </div>
-                    <ng-container *ngIf="alertCondition?.reference_documents?.length === 0">
-                      No Reference documents added yet.</ng-container>
+                    <div class="col-xl-12 col-lg-12 pl-3" *ngIf="!alertCondition || alertCondition?.reference_documents?.length === 0">
+                      No Reference documents added yet.</div>
         </div>
         <div id="actions" role="tabpanel" aria-labelledby="actions-tab" [ngClass]="{'active': selectedTab === 'actions'}" class="tab-pane fade p-2">
           <h6 class="font-weight-bold"><u>By Field Staff:</u></h6>
-                    <ng-container
+                    <div class="col-xl-12 col-lg-12 pl-3"
                       *ngIf="!selectedAlert?.metadata?.acknowledged_date; else actionTakenTemplate">
                       No Actions recorded by field staff yet.
-                    </ng-container>
+                      <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down blue-font" *ngIf="!selectedAlert?.metadata?.acknowledged_date" (click)="onClickOfAcknowledgeAlert(selectedAlert)"
+                >Acknowledge</a>
+                    </div>
                     <ng-template #actionTakenTemplate>
                       <div class="table-responsive">
                         <p> Alert acknowledged by {{selectedAlert?.metadata?.user_id}} at
@@ -323,7 +333,7 @@
                       </div>
                     </ng-template>
                     <h6 class="font-weight-bold"><u>By RDM:</u></h6>
-                    <div class="table-responsive">
+                    <div class="col-xl-12 col-lg-12 pl-3">
                       No Actions recorded by RDM yet.
                     </div>
         </div>
@@ -350,7 +360,7 @@
           <h6>Are you sure you want to acknowledge this alert?</h6>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Reason:</label>
-            <select class="custom-select" id="alertReason" [(ngModel)]="acknowledgedAlert.metadata.reason"
+            <select class="form-control form-control-sm" id="alertReason" [(ngModel)]="acknowledgedAlert.metadata.reason"
               name="alertReason">
               <option [ngValue]="undefined">Select Reason</option>
               <option [ngValue]="reason" *ngFor="let reason of reasons">{{reason.reason}}</option>
@@ -359,17 +369,17 @@
           </div>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Notes:</label>
-            <textarea type="text" rows="3" class="form-control" id="note" name="note"
+            <textarea type="text" rows="3" class="form-control form-control-sm" id="note" name="note"
               [(ngModel)]="acknowledgedAlert.metadata.note" placeholder="Enter Notes"></textarea>
           </div>
           <ng-container *ngFor="let file of acknowledgedAlert.metadata.files; let i = index;">
             <div class="form-group">
               <label for="recipient-name" class="col-form-label">Type:
-                <a *ngIf="i === 0" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2"
-                  href="javascript:void(0)" (click)="addDocument()" title="Add Document"><i
+                <a *ngIf="i === 0" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2"
+                  href="javascript:void(0)" (click)="addDocument()" placement="bottom" tooltip="Add Document"><i
                     class="fa fa-plus fa-sm text-white"></i></a>
               </label>
-              <select class="custom-select" id="template_{{i}}" name="model_type_{{i}}" [(ngModel)]="file.type">
+              <select class="form-control form-control-sm" id="template_{{i}}" name="model_type_{{i}}" [(ngModel)]="file.type">
                 <option [ngValue]="undefined">Select Document Type</option>
                 <option [ngValue]="'PDF'">PDF</option>
                 <option [ngValue]="'Image'">Image</option>

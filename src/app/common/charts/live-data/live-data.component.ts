@@ -75,6 +75,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
 
     // am4core.options.queue = true;
     this.zone.runOutsideAngular(() => {
+      am4core.options.autoDispose = true;
       const chart = am4core.create(this.chartId, am4charts.XYChart);
       chart.paddingRight = 20;
       const data = [];

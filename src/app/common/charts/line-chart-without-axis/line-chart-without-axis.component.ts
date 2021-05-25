@@ -1,5 +1,5 @@
 import { Subscription } from 'rxjs';
-import { Component, Input, NgZone, OnInit, OnDestroy, OnChanges } from '@angular/core';
+import { Component, Input, NgZone, OnInit, OnDestroy, OnChanges, AfterViewInit } from '@angular/core';
 import { ChartService } from 'src/app/chart/chart.service';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
@@ -10,7 +10,7 @@ declare var $: any;
   templateUrl: './line-chart-without-axis.component.html',
   styleUrls: ['./line-chart-without-axis.component.css']
 })
-export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChanges {
+export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
 
   @Input() chartId: string;
   @Input() telemetryData: any[] = [];
@@ -31,7 +31,6 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
   ) { }
 
   ngOnInit(): void {
-    setTimeout(() => this.plotChart(), 200);
     this.subscriptions.push(this.chartService.clearDashboardTelemetryList.subscribe(arr => {
       this.telemetryData = JSON.parse(JSON.stringify([]));
       if (this.chart) {
@@ -39,6 +38,10 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
         this.chart.invalidateData();
       }
     }));
+  }
+
+  ngAfterViewInit() {
+    this.plotChart();
   }
 
   ngOnChanges(changes) {
@@ -84,6 +87,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
 
   plotChart() {
     this.zone.runOutsideAngular(() => {
+      am4core.options.autoDispose = true;
       const chart = am4core.create(this.chartId, am4charts.XYChart);
       const data = [];
       const valueArr = [];
@@ -161,7 +165,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
     const series = chart.series.push(new am4charts.LineSeries());
     series.dataFields.dateX = 'message_date';
     series.name =  this.property;
-    series.stroke = 'darkgreen';
+    series.stroke = '#1A5A9E';
     series.yAxis = valueYAxis;
     series.dataFields.valueY =  this.property;
     series.compareText = true;
@@ -171,7 +175,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
     series.fillOpacity = 0;
 
     const bullet = series.bullets.push(new am4charts.CircleBullet());
-    bullet.stroke = 'darkgreen';
+    bullet.stroke = '#1A5A9E';
     bullet.strokeWidth = 2;
     bullet.circle.radius = 1;
 

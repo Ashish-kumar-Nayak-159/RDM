@@ -4,8 +4,8 @@
       <div class="main-heading ">{{selectedTab === 'telemetry' ? 'Live Data' : 'Live Alerts'}}</div>
       <div class="ml-2 pt-15">
         <ui-switch class="mr-1" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry'"
-          [disabled]="isC2dAPILoading" defaultBgColor="#f6c23e" checkedTextColor="white" uncheckedTextColor="white"
-          checkedLabel="Normal Mode" uncheckedLabel="Turbo Mode" name="tpye" [(ngModel)]="signalRModeValue"
+          [disabled]="isC2dAPILoading" defaultBgColor="#c80815" checkedTextColor="white" uncheckedTextColor="white"
+          checkedLabel="Turbo Mode ON" uncheckedLabel="Turbo Mode OFF" name="tpye" [(ngModel)]="signalRModeValue"
           (valueChange)="onSwitchValueChange($event)"></ui-switch>
       </div>
 
@@ -15,8 +15,16 @@
         <form class="form-inline">
           <div class="form-group">
             <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
+              [ngClass]="{'active' : originalFilter?.device}" placement="bottom"
+              [tooltip]="originalFilter?.device ?
+              (originalFilter.device.display_name ? originalFilter.device.display_name :
+              originalFilter.device.device_id) : 'Select Asset'"
               (click)="onDeviceFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
-              <i class="fas fa-fw fa-filter fa-sm"></i> Select Asset</button>
+              <i class="fas fa-fw fa-filter fa-sm button-divider"></i>
+              {{originalFilter?.device ?
+                (originalFilter.device.display_name ? originalFilter.device.display_name :
+                originalFilter.device.device_id) : 'Select Asset'}}
+            </button>
             <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
               <ng-container *ngFor="
                           let level of contextApp?.hierarchy?.levels;
@@ -37,7 +45,7 @@
                     disabled class="dropdown-form" />
                 </div>
               </ng-container>
-              <ng-select [items]="devices" class="custom-dropdown" bindLabel="display_name" [clearable]="false"
+              <ng-select [items]="devices" class="custom" bindLabel="display_name" [clearable]="false"
                 [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
                 dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.device">
               </ng-select>
@@ -50,13 +58,12 @@
               (click)="onFilterSelection(this.filterObj)" [disabled]="isTelemetryDataLoading"><i
                 class="fas fa-search fa-sm"></i></button></div>
         </form>
-
       </div>
     </div>
   </div>
 </div>
 <div class="tab-bar">
-  <ng-container *ngIf="selectedTab === 'telemetry'">
+  <ng-container >
     <div class="" *ngIf="isTelemetryDataLoading">
       <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
     </div>
@@ -65,7 +72,7 @@
           ">
       No data available since mid night.
     </div>
-    <div class="" *ngIf="liveWidgets.length === 0 && isFilterSelected
+    <div class="ml-1" *ngIf="liveWidgets.length === 0 && isFilterSelected
           ">
       No widgets configured for this asset. Please contact administrator.
     </div>
@@ -82,7 +89,7 @@
     </div>
   </ng-container>
 </div>
-<ng-container *ngIf="selectedTab === 'telemetry'">
+<ng-container >
   <div class="content-scroll content-scroll-live-data">
     <div class="row col-md-12 mt-n2" *ngIf="telemetryObj && liveWidgets.length > 0">
       <ng-container *ngFor="let widget of liveWidgets; let i = index;">
@@ -109,7 +116,7 @@
           <div class="mt-1">
             <div class="card">
               <div class="card-header py-3">
-                <h6 class="mx-2 my-0 live-widget-title col-md-12" title="Status">
+                <h6 class="mx-2 my-0 live-widget-title col-md-12" >
                   Since Beginning
                 </h6>
               </div>
@@ -118,7 +125,7 @@
                   <div class="col-md-12">
                     <span class="text-xs">HH:MM</span>
                     <div class="mt-4">
-                      <span class="text-darkblue display-5 font-weight-bold">
+                      <span class="text-darkblue display-5 font-weight-bold" style="font-size: 2rem;">
                         <!-- {{telemetryObj[prop.property.json_key]}} -->
                         {{ telemetryObj[getPropertyKey("Running Hours")] + ':' +
                         (telemetryObj[getPropertyKey('Running Minutes')] || 0)}}
@@ -139,7 +146,7 @@
           <div class="mt-1">
             <div class="card">
               <div class="card-header">
-                <h6 class="mx-2 my-0  live-widget-title col-md-12" title="Status">
+                <h6 class="mx-2 my-0  live-widget-title col-md-12">
                   Since Mid-Night
                 </h6>
               </div>

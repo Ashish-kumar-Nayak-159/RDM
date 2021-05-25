@@ -17,6 +17,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
 
   alertFilter: any = {};
   alerts: any[] = [];
+  contextApp: any;
   @Input() device: Device = new Device();
   @Input() componentState: any;
   isAlertLoading = false;
@@ -34,11 +35,14 @@ export class AlertsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
       this.alertFilter.gateway_id = this.device.device_id;
     } else {
       this.alertFilter.device_id = this.device.device_id;
     }
+    this.alertFilter.count = 10;
+    this.alertFilter.app = this.contextApp.app;
     this.alertTableConfig = {
       type: 'alert',
       headers: ['Timestamp', 'Message ID', 'Message'],
@@ -68,11 +72,28 @@ export class AlertsComponent implements OnInit, OnDestroy {
         key: 'device_id'
       });
     }
+    this.loadFromCache();
     this.alertFilter.epoch = true;
 
   }
 
-  searchAlerts(filterObj) {
+  loadFromCache() {
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+    if (item.dateOption) {
+      this.alertFilter.dateOption = item.dateOption;
+      if (item.dateOption !== 'Custom Range') {
+        const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+        this.alertFilter.from_date = dateObj.from_date;
+        this.alertFilter.to_date = dateObj.to_date;
+      } else {
+        this.alertFilter.from_date = item.from_date;
+        this.alertFilter.to_date = item.to_date;
+      }
+    }
+    this.searchAlerts(this.alertFilter, false);
+  }
+
+  searchAlerts(filterObj, updateFilterObj = true) {
     this.isFilterSelected = true;
     this.isAlertLoading = true;
     const obj = {...filterObj};
@@ -81,6 +102,13 @@ export class AlertsComponent implements OnInit, OnDestroy {
       this.isAlertLoading = false;
       this.isFilterSelected = false;
       return;
+    }
+    if (updateFilterObj) {
+      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+      pagefilterObj['from_date'] = obj.from_date;
+      pagefilterObj['to_date'] = obj.to_date;
+      pagefilterObj['dateOption'] = obj.dateOption;
+      this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, pagefilterObj);
     }
     delete obj.dateOption;
     this.alertFilter = filterObj;

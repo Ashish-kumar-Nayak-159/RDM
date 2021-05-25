@@ -3,8 +3,10 @@
   <form class="form-inline">
     <div class="form-group">
       <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
-        (click)="onDeviceFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
-        <i class="fas fa-fw fa-filter fa-sm"></i> Select Hierarchy</button>
+      placement="bottom" [tooltip]="hierarchyString ? hierarchyString : 'Select Hierarchy'"
+        (click)="onDeviceFilterBtnClick()" aria-haspopup="true" aria-expanded="false"
+        [ngClass]="{'active': hierarchyString}">
+        <i class="fas fa-fw fa-filter fa-sm button-divider mr-1"></i>{{hierarchyString ? displayHierarchyString : 'Select Hierarchy'}} </button>
       <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
         <ng-container *ngFor="
                     let level of contextApp?.hierarchy?.levels;
@@ -44,18 +46,20 @@
 
           </select>
     </div> -->
-    <div class="form-group" >
-      <input type="text"  class="form-control form-control-sm active" daterangepicker name="daterangeInput"
-      [options]="options" (selected)="selectedDate($event, daterange)" />
+    <div class="form-group left-inner-addon" >
+      <i class="fa fa-calendar"></i>
+      <input type="text"  class="form-control form-control-sm date-range-picker" daterangepicker name="daterangeInput" autocomplete="off"  [(ngModel)]="selectedDateRange"
+      [options]="options" (selected)="selectedDate($event, daterange)" [ngClass]="{'active': filterObj.from_date && filterObj?.to_date}"
+      [tooltip]="selectedDateRange" placement="bottom"/>
     </div>
     <div class="form-group">
-      <button type="button" class="btn btn-sm searchBtn btn-primary" title="Search"
-           (click)="reports = [];currentOffset = 0;getReportsData()" ><i
+      <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
+           (click)="reports = [];currentOffset = 0;getReportsData(true)" ><i
             class="fa fa-search fa-sm" ></i></button>
     </div>
   </form>
 </div>
-<h6 *ngIf="!isFilterSelected"> Please select filters to view the pre-generated reports.</h6>
+<h6 class="p-3" *ngIf="!isFilterSelected"> Please select filters to view the pre-generated reports.</h6>
 <ng-container *ngIf="isFilterSelected">
   <!-- <h5  >Pre-generated</h5> -->
   <div class="table-responsive">
@@ -89,7 +93,7 @@
           <!-- <td>{{reportObj.report_type.method | titlecase}}</td>
           <td>{{reportObj.report_frequency | titlecase}}</td> -->
           <td>
-            <a *ngIf="reportObj.process_status.toLowerCase() === 'success'" href="javascript:void(0)"  (click)="downloadFile(reportObj)" title="Download Excel"><i class="fa fa-sm fa-download" ></i></a>
+            <a *ngIf="reportObj.process_status.toLowerCase() === 'success'" href="javascript:void(0)"  (click)="downloadFile(reportObj)" placement="bottom" tooltip="Download Excel"><i class="fa fa-sm fa-download" ></i></a>
             <ng-container *ngIf="reportObj.process_status.toLowerCase() !== 'success'">{{reportObj.process_status}}</ng-container>
           </td>
           </tr>
@@ -112,8 +116,8 @@
 </div>
 </div>
 <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && reports.length > 0">
-  <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;getReportsData();"
-    title="Load More Records...">Load More...</a>
+  <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;getReportsData(false);"
+  placement="bottom" tooltip="Load More Records...">Load More...</a>
 </span>
 </ng-container>
 <div class="modal fade" id="downloadPreGeneratedReportReportModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">

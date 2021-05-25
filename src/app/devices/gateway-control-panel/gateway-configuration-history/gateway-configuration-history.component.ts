@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { Device } from 'src/app/models/device.model';
 import { CommonService } from 'src/app/services/common.service';
 import { DeviceService } from 'src/app/services/devices/device.service';
+import { CONSTANTS } from 'src/app/app.constants';
 
 declare var $: any;
 @Component({
@@ -25,6 +26,7 @@ export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
   modalConfig: any;
   pageType: string;
   configHistoryTableConfig: any = {};
+  contextApp: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -33,9 +35,10 @@ export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.filterObj.gateway_id = this.device.device_id;
-
+    this.filterObj.app = this.contextApp.app;
+    this.filterObj.count = 10;
     this.configHistoryTableConfig = {
       type: 'configuration history',
       headers: ['Timestamp', 'Asset Name', 'File Name', 'Process Status', 'View'],
@@ -55,11 +58,28 @@ export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
         }
       ]
     };
+    this.loadFromCache();
     this.filterObj.epoch = true;
 
   }
 
-  searchConfigHistory(filterObj) {
+  loadFromCache() {
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+    if (item.dateOption) {
+      this.filterObj.dateOption = item.dateOption;
+      if (item.dateOption !== 'Custom Range') {
+        const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+        this.filterObj.from_date = dateObj.from_date;
+        this.filterObj.to_date = dateObj.to_date;
+      } else {
+        this.filterObj.from_date = item.from_date;
+        this.filterObj.to_date = item.to_date;
+      }
+    }
+    this.searchConfigHistory(this.filterObj, false);
+  }
+
+  searchConfigHistory(filterObj, updateFilterObj = true) {
     this.isFilterSelected = true;
     this.isConfigHistoryLoading = true;
     const obj = {...filterObj};
@@ -68,6 +88,13 @@ export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
       this.isConfigHistoryLoading = false;
       this.isFilterSelected = false;
       return;
+    }
+    if (updateFilterObj) {
+      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+      pagefilterObj['from_date'] = obj.from_date;
+      pagefilterObj['to_date'] = obj.to_date;
+      pagefilterObj['dateOption'] = obj.dateOption;
+      this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, pagefilterObj);
     }
     delete obj.dateOption;
     this.filterObj = filterObj;

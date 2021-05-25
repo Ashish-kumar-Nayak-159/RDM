@@ -3,27 +3,32 @@
     <ul class="nav">
 
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Test Connection')" [class.disabled]="isSaveSettingAPILoading">
+        <a class="nav-link" [ngClass]="{'active': selectedTab === 'Test Connection'}" href="javascript:void(0)"
+        (click)="onClickOfTab('Test Connection')" [class.disabled]="isSaveSettingAPILoading">
           <i class="fa fa-fw fa-plug"></i>
           <span class="text-secondary">Test Connection</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Manage Applications')" [class.disabled]="isSaveSettingAPILoading">
+        <a class="nav-link" [ngClass]="{'active': selectedTab === 'Manage Applications'}" href="javascript:void(0)"
+        (click)="onClickOfTab('Manage Applications')" [class.disabled]="isSaveSettingAPILoading">
           <i class="fa fa-fw fa-microchip"></i>
           <span class="text-secondary">Manage Applications</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Manage Devices')" [class.disabled]="isSaveSettingAPILoading">
+        <a class="nav-link" [ngClass]="{'active': selectedTab === 'Manage Devices'}" href="javascript:void(0)"
+        (click)="onClickOfTab('Manage Devices')" [class.disabled]="isSaveSettingAPILoading">
           <i class="fa fa-fw fa-laptop"></i>
           <span class="text-secondary">Manage Devices</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Register Properties')" [class.disabled]="isSaveSettingAPILoading">
+        <a class="nav-link" [ngClass]="{'active': selectedTab === 'Register Properties'}" href="javascript:void(0)"
+        (click)="onClickOfTab('Register Properties')" [class.disabled]="isSaveSettingAPILoading">
           <i class="fa fa-fw fa-building-o"></i>
           <span class="text-secondary">Register Properties</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Settings')" [class.disabled]="isSaveSettingAPILoading">
+        <a class="nav-link" [ngClass]="{'active': selectedTab === 'Settings'}" href="javascript:void(0)"
+        (click)="onClickOfTab('Settings')" [class.disabled]="isSaveSettingAPILoading">
           <i class="fa fa-fw fa-cog"></i>
           <span class="text-secondary">Settings</span></a>
       </li>

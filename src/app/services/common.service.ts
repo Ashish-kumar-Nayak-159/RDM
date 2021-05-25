@@ -125,7 +125,8 @@ export class CommonService {
   }
 
   getItemFromLocalStorage(key) {
-    const data = this.decryptString(localStorage.getItem(key));
+    // const data = this.decryptString(localStorage.getItem(key));
+    const data = localStorage.getItem(key);
     if (data) {
       return JSON.parse(data);
     }
@@ -133,7 +134,8 @@ export class CommonService {
   }
 
   setItemInLocalStorage(key, value) {
-    localStorage.setItem(key, this.encryptJSON(value));
+    // localStorage.setItem(key, this.encryptJSON(value));
+    localStorage.setItem(key, JSON.stringify(value));
     // let expiryObj: any = localStorage.getItem(CONSTANTS.EXPIRY_TIME);
     // const userData: any = JSON.parse(localStorage.getItem(CONSTANTS.USER_DETAILS));
     // if (!expiryObj && userData) {
@@ -142,6 +144,36 @@ export class CommonService {
     //   expiryObj.user = userData.email;
     //   localStorage.setItem(CONSTANTS.EXPIRY_TIME, JSON.stringify(expiryObj));
     // }
+  }
+
+  getMomentStartEndDate(label) {
+    const obj: any = {};
+    if (label === 'Last 5 Mins') {
+      obj.from_date = moment().subtract(5, 'minutes').utc().unix();
+      obj.to_date = moment().utc().unix();
+    } else if (label === 'Last 30 Mins') {
+      obj.from_date = moment().subtract(30, 'minutes').utc().unix();
+      obj.to_date = moment().utc().unix();
+    } else if (label === 'Last 1 Hour') {
+      obj.from_date = moment().subtract(1, 'hour').utc().unix();
+      obj.to_date = moment().utc().unix();
+    } else if (label === 'Last 24 Hours') {
+      obj.from_date = moment().subtract(24, 'hours').utc().unix();
+      obj.to_date = moment().utc().unix();
+    } else if (label === 'Last 7 Days') {
+      obj.from_date = moment().subtract(6, 'days').utc().unix();
+      obj.to_date = moment().utc().unix();
+    } else if (label === 'Last 30 Days') {
+      obj.from_date = moment().subtract(29, 'days').utc().unix();
+      obj.to_date = moment().utc().unix();
+    } else if (label === 'This Month') {
+      obj.from_date = moment().startOf('month').utc().unix();
+      obj.to_date = moment().endOf('month').utc().unix();
+    } else if (label === 'Last Month') {
+      obj.from_date = moment().subtract(1, 'month').startOf('month').utc().unix();
+      obj.to_date = moment().subtract(1, 'month').endOf('month').utc().unix();
+    }
+    return obj;
   }
 
   generateUUID() {

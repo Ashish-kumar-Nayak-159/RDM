@@ -26,6 +26,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
   modalConfig: any;
   notificationTableConfig: any = {};
   pageType: string;
+  contextApp: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -34,11 +35,14 @@ export class NotificationComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.device?.tags?.category === CONSTANTS.IP_GATEWAY) {
       this.notificationFilter.gateway_id = this.device.device_id;
     } else {
       this.notificationFilter.device_id = this.device.device_id;
     }
+    this.notificationFilter.count = 10;
+    this.notificationFilter.app = this.contextApp.app;
     this.notificationTableConfig = {
       type: 'notification',
       headers: ['Timestamp', 'Message ID', 'Message'],
@@ -57,10 +61,27 @@ export class NotificationComponent implements OnInit, OnDestroy {
         }
       ]
     };
+    this.loadFromCache();
     this.notificationFilter.epoch = true;
   }
 
-  searchNotifications(filterObj) {
+  loadFromCache() {
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+    if (item.dateOption) {
+      this.notificationFilter.dateOption = item.dateOption;
+      if (item.dateOption !== 'Custom Range') {
+        const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+        this.notificationFilter.from_date = dateObj.from_date;
+        this.notificationFilter.to_date = dateObj.to_date;
+      } else {
+        this.notificationFilter.from_date = item.from_date;
+        this.notificationFilter.to_date = item.to_date;
+      }
+    }
+    this.searchNotifications(this.notificationFilter, false);
+  }
+
+  searchNotifications(filterObj, updateFilterObj = true) {
     this.isFilterSelected = true;
     this.isNotificationLoading = true;
     const obj = {...filterObj};
@@ -70,6 +91,13 @@ export class NotificationComponent implements OnInit, OnDestroy {
       this.isNotificationLoading = false;
       this.isFilterSelected = false;
       return;
+    }
+    if (updateFilterObj) {
+      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+      pagefilterObj['from_date'] = obj.from_date;
+      pagefilterObj['to_date'] = obj.to_date;
+      pagefilterObj['dateOption'] = obj.dateOption;
+      this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, pagefilterObj);
     }
     delete obj.dateOption;
     this.notificationFilter = filterObj;

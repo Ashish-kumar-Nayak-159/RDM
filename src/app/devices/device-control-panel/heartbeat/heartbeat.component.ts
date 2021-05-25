@@ -17,6 +17,7 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
 
   heartBeatFilter: any = {};
   heartbeats: any[] = [];
+  contextApp: any;
   @Input() device: Device = new Device();
   @Input() componentState: any;
   isHeartbeatLoading = false;
@@ -34,11 +35,15 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.device.tags.category === CONSTANTS.IP_GATEWAY ) {
       this.heartBeatFilter.gateway_id = this.device.device_id;
     } else {
       this.heartBeatFilter.device_id = this.device.device_id;
     }
+    this.heartBeatFilter.count = 10;
+    this.heartBeatFilter.app = this.contextApp.app;
+    this.loadFromCache();
     this.heartbeatTableConfig = {
       type: 'heartbeat',
       headers: ['Timestamp', 'Message ID', 'Message'],
@@ -65,10 +70,25 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
       });
     }
     this.heartBeatFilter.epoch = true;
-
   }
 
-  searchHeartBeat(filterObj) {
+  loadFromCache() {
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+    if (item.dateOption) {
+      this.heartBeatFilter.dateOption = item.dateOption;
+      if (item.dateOption !== 'Custom Range') {
+        const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+        this.heartBeatFilter.from_date = dateObj.from_date;
+        this.heartBeatFilter.to_date = dateObj.to_date;
+      } else {
+        this.heartBeatFilter.from_date = item.from_date;
+        this.heartBeatFilter.to_date = item.to_date;
+      }
+    }
+    this.searchHeartBeat(this.heartBeatFilter, false);
+  }
+
+  searchHeartBeat(filterObj, updateFilterObj = true) {
     this.isFilterSelected = true;
     this.isHeartbeatLoading = true;
     const obj = {...filterObj};
@@ -77,6 +97,13 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
       this.isHeartbeatLoading = false;
       this.isFilterSelected = false;
       return;
+    }
+    if (updateFilterObj) {
+      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+      pagefilterObj['from_date'] = obj.from_date;
+      pagefilterObj['to_date'] = obj.to_date;
+      pagefilterObj['dateOption'] = obj.dateOption;
+      this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, pagefilterObj);
     }
     this.heartBeatFilter = filterObj;
     this.apiSubscriptions.push(this.deviceService.getDeviceHeartBeats(obj).subscribe(

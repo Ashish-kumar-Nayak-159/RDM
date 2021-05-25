@@ -17,17 +17,18 @@ import { ToasterService } from 'src/app/services/toaster.service';
 export class SpecificDirectMethodComponent implements OnInit {
 
   @Input() pageType: any;
+  @Input() componentState: any;
   @Input() device: Device = new Device();
   userData: any;
   displayType: string;
-  listName: string;
-  appName: string;
+  contextApp: any;
   apiSubscriptions: Subscription[] = [];
   controlWidgets: any[] = [];
   @Input() selectedWidget: any;
   @Input() jsonModelKeys: any[] = [];
   isInvokeDirectMethod: boolean;
   responseMessage: any;
+  constantData = CONSTANTS;
   constructor(
 
     private commonService: CommonService,
@@ -39,18 +40,37 @@ export class SpecificDirectMethodComponent implements OnInit {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.displayType = 'compose';
-    this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
-      this.appName = params.get('applicationId');
-      this.listName = params.get('listName');
-      this.listName = this.listName.slice(0, -1);
+    this.jsonModelKeys = [];
+    if (this.selectedWidget) {
+      this.selectedWidget.response_timeout_in_sec = 30;
+      this.selectedWidget.connection_timeout_in_sec = 30;
+      const keys = Object.keys(this.selectedWidget.json);
+      const index = keys.findIndex(key => key.toLowerCase() === 'timestamp');
+      if (index > -1) {
+        keys.splice(index, 1);
+      }
+      this.selectedWidget.method_name = keys[0];
+      this.selectedWidget.json[keys[0]].params.forEach(obj => {
+        if (obj.key) {
+        obj.name = obj.key;
+        obj.value = obj?.json?.defaultValue;
+        this.jsonModelKeys.splice(this.jsonModelKeys.length, 0, obj);
+        }
+      });
+    }
+    // this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
+    //   this.contextApp.app = params.get('applicationId');
+    //   this.listName = params.get('listName');
+    //   this.listName = this.listName.slice(0, -1);
 
-    }));
+    // }));
   }
 
   getControlWidgets() {
     const obj = {
-      app: this.appName,
+      app: this.contextApp.app,
       device_type: this.device.tags?.device_type
     };
     this.apiSubscriptions.push(this.deviceTypeService.getThingsModelControlWidgets(obj).subscribe(
@@ -83,7 +103,7 @@ export class SpecificDirectMethodComponent implements OnInit {
 
   getConfigureWidgets() {
     const obj = {
-      app: this.appName,
+      app: this.contextApp.app,
       device_type: this.device.tags?.device_type
     };
     this.apiSubscriptions.push(this.deviceTypeService.getThingsModelConfigurationWidgets(obj).subscribe(
@@ -105,12 +125,14 @@ export class SpecificDirectMethodComponent implements OnInit {
       return;
     }
     this.responseMessage = undefined;
-    const timestamp = moment().unix();
     const obj: any = {};
     obj.method = this.selectedWidget.method_name;
     obj.app = this.device.app;
-    obj.message_id = this.device.device_id + '_' + timestamp;
-    if (this.listName === 'gateway') {
+    obj.request_type = this.selectedWidget.name;
+    obj.job_type = 'DirectMethod';
+    obj.job_id = this.device.device_id + '_' + this.commonService.generateUUID();
+    obj.sub_job_id = obj.job_id + '_1';
+    if (this.componentState === CONSTANTS.IP_GATEWAY) {
       obj.gateway_id = this.device.device_id;
     } else {
       obj.device_id = this.device.device_id;
@@ -128,9 +150,10 @@ export class SpecificDirectMethodComponent implements OnInit {
         }
       }
     });
-    obj.message['timestamp'] = timestamp;
+    // obj.message['timestamp'] = timestamp;
     this.isInvokeDirectMethod = true;
-    this.apiSubscriptions.push(this.deviceService.callDeviceMethod(obj, obj.app).subscribe(
+    this.apiSubscriptions.push(this.deviceService.callDeviceMethod(obj, obj.app,
+      this.device?.gateway_id || this.device.device_id).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Invoke Direct Method');
         this.isInvokeDirectMethod = false;

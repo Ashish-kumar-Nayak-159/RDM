@@ -13,6 +13,7 @@ import { LiveChartComponent } from 'src/app/common/charts/live-data/live-data.co
 import { BarChartComponent } from 'src/app/common/charts/bar-chart/bar-chart.component';
 import { PieChartComponent } from 'src/app/common/charts/pie-chart/pie-chart.component';
 import { DataTableComponent } from 'src/app/common/charts/data-table/data-table.component';
+import { DaterangepickerComponent } from 'ng2-daterangepicker';
 declare var $: any;
 @Component({
   selector: 'app-history',
@@ -62,18 +63,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
   options: any = {
     locale: { format: 'DD-MM-YYYY HH:mm' },
     alwaysShowCalendars: false,
+    autoUpdateInput: false,
+    maxDate: moment(),
     timePicker: true,
-    ranges: {
-      'Last 5 Mins': [moment().subtract(5, 'minutes'), moment()],
-      'Last 30 Mins': [moment().subtract(30, 'minutes'), moment()],
-      'Last 1 hour': [moment().subtract(1, 'hour'), moment()],
-      'Last 24 hours': [moment().subtract(24, 'hours'), moment()],
-      'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-      'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-      'This Month': [moment().startOf('month'), moment().endOf('month')],
-      'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-    }
+    ranges: CONSTANTS.DATE_OPTIONS
   };
+  @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
+  selectedDateRange: string;
   constructor(
     private deviceService: DeviceService,
     private deviceTypeService: DeviceTypeService,
@@ -110,6 +106,35 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     this.isHistoryAPILoading = true;
     this.getLayout();
+    this.loadFromCache();
+  }
+
+  loadFromCache() {
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+    if (item.dateOption) {
+      this.historyFilter.dateOption = item.dateOption;
+      if (item.dateOption !== 'Custom Range') {
+        const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+        this.historyFilter.from_date = dateObj.from_date;
+        this.historyFilter.to_date = dateObj.to_date;
+      } else {
+        this.historyFilter.from_date = item.from_date;
+        this.historyFilter.to_date = item.to_date;
+      }
+      this.picker.datePicker.setStartDate(moment.unix(this.historyFilter.from_date));
+      this.picker.datePicker.setEndDate(moment.unix(this.historyFilter.to_date));
+      if (this.historyFilter.dateOption !== 'Custom Range') {
+        this.selectedDateRange = this.historyFilter.dateOption;
+      } else {
+        this.selectedDateRange = moment.unix(this.historyFilter.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
+        moment.unix(this.historyFilter.to_date).format('DD-MM-YYYY HH:mm');
+      }
+      if (this.historyFilter.to_date - this.historyFilter.from_date > 3600) {
+        this.historyFilter.isTypeEditable = true;
+      } else {
+        this.historyFilter.isTypeEditable = false;
+      }
+    }
   }
 
   onNumberChange(event, type) {
@@ -159,6 +184,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.historyFilter.from_date = moment(value.start).utc().unix();
     this.historyFilter.to_date = moment(value.end).utc().unix();
     console.log(this.historyFilter);
+    if (value.label === 'Custom Range') {
+      this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
+    } else {
+      this.selectedDateRange = value.label;
+    }
     if (this.historyFilter.to_date - this.historyFilter.from_date > 3600) {
       this.historyFilter.isTypeEditable = true;
     } else {

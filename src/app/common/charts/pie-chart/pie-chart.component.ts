@@ -40,6 +40,7 @@ export class PieChartComponent implements OnInit, OnDestroy {
   }
 
   plotChart() {
+    am4core.options.autoDispose = true;
     const chart = am4core.create(this.chartId, am4charts.PieChart);
 
     const data = [];

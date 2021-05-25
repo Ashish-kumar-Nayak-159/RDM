@@ -1,13 +1,13 @@
-
-<div class="row ml-1">
+<div class="table-responsive table-fixHead">
+<div class="row col-lg-12 mt-2">
 
   <div class="col-lg-6 col-xl-6 align-self-center">
-    <div class="row">
+    <div class="row col-lg-12">
       <!-- <div><a href="javascript:void(0)" [class.disabled]="sentMessageData || !selectedWidget" (click)="validateMessage()" ><button type="button" class="btn btn-warning contact-form" > 1. Validate</button></a></div>
     <div class='px-1'><hr></div> -->
       <div><a href="javascript:void(0)" [class.disabled]="sentMessageData || !selectedWidget"
           (click)="sentC2DMessage()">
-          <button type="button" class="btn btn-warning"> 1. Send
+          <button type="button" class="btn btn-primary"> 1. Send
             <i class="fa fa-spinner fa-spin fa-fw " *ngIf="isSendC2DMessageAPILoading"></i>
           </button>
         </a></div>
@@ -16,18 +16,18 @@
       </div>
       <div><a href="javascript:void(0)" [class.disabled]="!sentMessageData  || !selectedWidget"
           (click)="onClickOfFeedback()">
-          <button type="button" class="btn btn-warning"> 2. Feedback</button></a></div>
+          <button type="button" class="btn btn-primary"> 2. Feedback</button></a></div>
       <div class='px-1'>
         <hr>
       </div>
       <div><a href="javascript:void(0)" [class.disabled]="!sentMessageData  || !selectedWidget"
           (click)="onClickOfResponse()">
-          <button type="submit" class="btn btn-warning"> 3. Response</button></a></div>
+          <button type="submit" class="btn btn-primary"> 3. Response</button></a></div>
     </div>
   </div>
 
   <div class="col-lg-6 col-xl-6 border" >
-    <div class="row">
+    <div class="row col-lg-12">
       <div class="bg-light px-1 py-1"
         style="writing-mode: tb-rl; transform: rotate(-180deg); font-size:0.75rem; color:black;">STATUS</div>
       <div class="justify-content-center align-self-center px-1 red-font" *ngIf="isMessageValidated === 'invalid'">
@@ -65,34 +65,33 @@
 
 </div>
 
-<div class="row" *ngIf="!sentMessageData">
+<div class="" *ngIf="!sentMessageData">
   <div class="col-lg-12">
-    <hr class="solid" />
-  </div>
+    <hr class="solid" /></div>
 </div>
 
-<div class="row" *ngIf="displayType === 'compose'">
+<div class="row col-lg-12" *ngIf="displayType === 'compose'">
   <div class="col-lg-6 col-xl-6">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-2 pt-3">
       <h6 class="h6 mb-0 text-gray-800">Meta Data:</h6>
     </div>
 
-    <div class="table-responsive">
-      <table class="table table-striped table-bordered" id="dataTable" cellspacing="0">
-        <thead>
-          <tr class="bg-secondary text-white">
+
+      <table class="table table-hover table-bordered" >
+        <!-- <thead>
+          <tr >
             <th>Key</th>
-            <th class="border-left">Value</th>
+            <th>Value</th>
           </tr>
-        </thead>
+        </thead> -->
 
         <tbody>
           <tr>
             <td>Asset ID</td>
-            <td *ngIf="listName === 'device' || listName.toLowerCase() === 'nonipdevice'">{{c2dMessageData.device_id}}
+            <td *ngIf="componentState !== constantData.IP_GATEWAY">{{c2dMessageData.device_id}}
             </td>
-            <td *ngIf="listName === 'gateway'">
+            <td *ngIf="componentState === constantData.IP_GATEWAY">
               <select class="custom-select" id="device_id" name="device_id" [(ngModel)]="c2dMessageData.device_id">
 
                 <option *ngFor="let device of devices" [ngValue]="device.device_id">
@@ -102,26 +101,26 @@
               </select>
             </td>
           </tr>
-          <tr *ngIf="listName.toLowerCase() === 'nonipdevice'">
+          <tr *ngIf="componentState === constantData.NON_IP_DEVICE">
             <td>Gateway ID</td>
             <td>{{c2dMessageData.gateway_id}}</td>
           </tr>
           <tr>
-            <td>Message ID</td>
-            <td>{{c2dMessageData.device_id}}_{{c2dMessageData.timestamp}}</td>
+            <td>Job ID</td>
+            <td>{{c2dMessageData.job_id}}</td>
           </tr>
           <tr>
             <td>TTL (In minutes)</td>
             <td>
               <input class="form-control form-control-sm" type="number" min="0" name="expire_in_min"
-                [(ngModel)]="c2dMessageData.metadata.expire_in_min">
+                [(ngModel)]="c2dMessageData.expire_in_min">
             </td>
           </tr>
           <tr>
             <td>ACK</td>
             <td>
               <select class="custom-select" id="acknowledge" name="acknowledge"
-                [(ngModel)]="c2dMessageData.metadata.acknowledge">
+                [(ngModel)]="c2dMessageData.acknowledge">
                 <option value="Full">Full</option>
                 <option value="Positive">Positive</option>
                 <option value="Negative">Negative</option>
@@ -131,7 +130,6 @@
           </tr>
         </tbody>
       </table>
-    </div>
   </div>
 
   <div class="col-lg-6 col-xl-6">
@@ -147,14 +145,8 @@
       </div>
     </form> -->
     <form id="contact-form" class="col-12" >
-      <div class="table-responsive">
-        <table class="table table-striped table-bordered" id="dataTable" cellspacing="0">
-          <thead>
-            <tr class="bg-secondary text-white">
-              <th style="width: 60%;">Property</th>
-              <th class="border-left"  style="width: 40%;">Value</th>
-            </tr>
-          </thead>
+
+        <table class="table table-hover table-bordered">
           <tbody>
         <ng-container *ngFor="let item of jsonModelKeys; let i = index;">
           <tr>
@@ -184,7 +176,7 @@
             </div>
           </ng-container>
           <ng-container *ngIf="item.json.type === 'enum'">
-            <select class="form-control form-control-sm custom-select" id="widget" name="acknowledge" [(ngModel)]="item.value"
+            <select class="form-control form-control-sm" id="widget" name="acknowledge" [(ngModel)]="item.value"
             >
             <option [ngValue]="val" *ngFor="let val of item.json.enum">{{val}}</option>
             </select>
@@ -202,7 +194,7 @@
         </ng-container>
       </tbody>
         </table>
-      </div>
+
     </form>
   </div>
 </div>
@@ -211,4 +203,5 @@
 </div>
 <div *ngIf="displayType === 'response'">
   <app-c2d-message [device]="device" [type]="displayType" [message]="sentMessageData"></app-c2d-message>
+</div>
 </div>

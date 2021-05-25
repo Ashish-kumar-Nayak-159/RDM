@@ -1,10 +1,10 @@
-<div class="topnavbar bg-white py-2">
-  <div class="row">
+<div class="tab-bar">
+  <div class="">
 
-    <ul class="nav pull-left col-md-7">
+    <ul class="nav">
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="isSettingsEditable = true;" *ngIf="!isSettingsEditable" [class.disabled]="isSaveSettingAPILoading  || deviceType.freezed">
-          <i class="fa fa-fw fa-pencil"></i>
+          <i class="fa fa-fw fa-edit"></i>
           <span class="text-secondary">Edit</span></a>
       </li>
       <li class="nav-item">
@@ -23,28 +23,18 @@
         </a>
       </li>
     </ul>
-    <div class="pull-right mt-2"  *ngIf="deviceType.freezed">
-      <h6>This model is freezed.</h6>
-    </div>
   </div>
-  <div class="row">
-    <div class="col-lg-12">
-      <hr class="solid">
-    </div>
-  </div>
-
 </div>
-
-
-<div class="con-pad" *ngIf="deviceType?.metadata">
-
-  <div class="row mt-1 mx-auto">
-
-    <div class="col-xl-6 col-lg-6">
-      <!-- Page Heading -->
-      <h1 class="h6 mb-3 text-secondary-400 "><b>Telemetry Frequency Operating Range (In Sec):</b></h1>
-      <div class="table-responsive">
-        <table class="table table-bordered  table-striped text-gray-800" id="dataTable" width="100%" cellspacing="0">
+<div class="table-responsive">
+  <div class="tableFixHead">
+    <accordion [closeOthers]="true">
+      <accordion-group heading="">
+        <ng-container accordion-heading>
+          <a class="btn">
+            Telemetry Frequency Operating Range (In Sec):
+          </a>
+        </ng-container>
+        <table class="table table-hover">
           <tbody>
             <tr>
               <td style="width: 50%;">Min Value: </td>
@@ -75,14 +65,14 @@
             </tr>
           </tbody>
         </table>
-      </div>
-    </div>
-    <div class="col-xl-6 col-lg-6">
-
-      <!-- Page Heading -->
-      <h1 class="h6 mb-3 text-secondary-400"><b>Measurement Frequency Operating Range (In Sec):</b></h1>
-      <div class="table-responsive">
-        <table class="table table-bordered  table-striped text-gray-800" id="dataTable" width="100%" cellspacing="0">
+      </accordion-group>
+      <accordion-group heading="">
+        <ng-container accordion-heading>
+          <a class="btn">
+            Measurement Frequency Operating Range (In Sec):
+          </a>
+        </ng-container>
+        <table class="table table-hover">
           <tbody>
             <tr>
               <td style="width: 50%;">Min Value: </td>
@@ -113,11 +103,7 @@
             </tr>
           </tbody>
         </table>
-      </div>
-    </div>
-  </div>
-  <div class="row mt-1 mx-auto">
-
-
+      </accordion-group>
+    </accordion>
   </div>
 </div>

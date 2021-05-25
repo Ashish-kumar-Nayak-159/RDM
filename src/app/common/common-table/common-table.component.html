@@ -2,7 +2,7 @@
   <table  class="table table-hover" >
     <thead>
       <tr>
-        <th ></th>
+        <th >No</th>
         <th  *ngFor="let item of tableConfig?.data;let i = index;" class="{{item.headerClass}}">
           {{item.name}}</th>
       </tr>
@@ -24,13 +24,13 @@
                   (data?.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
                   (data?.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                   )
-                  )" title="{{data?.severity}}"></i>&nbsp;{{resolve(data, header.key)}}  </span>
+                  )" placement="bottom" [tooltip]="data?.severity"></i>&nbsp;{{resolve(data, header.key)}}  </span>
             </ng-container>
             <ng-container *ngIf="header.type === 'button'">
               <ng-container *ngFor="let btnData of header.btnData">
                 <a href="javascript:void(0)" style="z-index: 1" class="{{btnData.valueclass}}" (click)="onClickOfButton(data, btnData.id)"
                 [class.disabled]="tableConfig[btnData.disableConditions?.key] === btnData.disableConditions?.value">
-                  <i class="{{btnData.icon}}" title="{{btnData.tooltip}}"
+                  <i class="{{btnData.icon}}" placement="bottom" [tooltip]="btnData.tooltip"
                   [style.color]="(tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value) ||
                   (tableConfig.type === 'alert'
                   && data?.severity?.toLowerCase() === 'critical') ? 'white' : ''"></i>

@@ -1,10 +1,11 @@
+import * as moment from 'moment';
 import { environment } from 'src/environments/environment';
 
 export class CONSTANTS {
 
   public static DEVICEAPPPS = [
     {id: 4, name: 'GatewayAgent', is_start: false, is_stop: false, is_restart: false, is_install: false, is_uninstall: false,
-    is_update: false, display_name: 'Gateway Agent', metadata: {}, deleted: false, type: 'system_apps'},
+    is_update: true, display_name: 'Gateway Agent', metadata: {}, deleted: false, type: 'system_apps'},
     {id: 4, name: 'MQTTAgent', is_start: false, is_stop: false, is_restart: false, is_install: false, is_uninstall: false,
     is_update: true, display_name: 'MQTT Agent', metadata: {}, deleted: false, type: 'system_apps'},
     {id: 5, name: 'CachingAgent', is_start: false, is_stop: false, is_restart: false, is_install: false, is_uninstall: false,
@@ -56,6 +57,7 @@ export class CONSTANTS {
       display_name: 'Home',
       icon: 'fas fa-fw fa-home',
       visible: true,
+      exactMatch: true,
       showAccordion: [],
       priority: 1
     },
@@ -66,6 +68,7 @@ export class CONSTANTS {
       display_name: 'Live Data',
       icon: 'fa fa-fw fa-chart-bar',
       visible: true,
+      exactMatch: true,
       showAccordion: [
         {
           name: 'Title',
@@ -80,6 +83,7 @@ export class CONSTANTS {
       url: 'applications/:appName/alerts/visualization',
       display_name: 'Live Alerts',
       icon: 'fa fa-fw fa-bell',
+      exactMatch: true,
       visible: true,
       showAccordion: [
         {
@@ -94,6 +98,7 @@ export class CONSTANTS {
       system_name: 'Assets',
       url: 'applications/:appName/devices',
       display_name: 'Assets',
+      exactMatch: false,
       icon: 'fas fa-fw fa-cloud',
       visible: true,
       showAccordion: [
@@ -113,6 +118,7 @@ export class CONSTANTS {
       system_name: 'Asset Management',
       url: 'applications/:appName/asset/management',
       display_name: 'Asset Management',
+      exactMatch: true,
       icon: 'fa fa-fw fa-cogs',
       visible: true,
       showAccordion: [
@@ -125,6 +131,7 @@ export class CONSTANTS {
       system_name: 'Things Models',
       url: 'applications/:appName/things/model',
       display_name: 'Asset Models',
+      exactMatch: false,
       icon: 'fa fa-fw fa-list',
       visible: true,
       showAccordion: [
@@ -179,6 +186,7 @@ export class CONSTANTS {
       display_name: 'Reports',
       icon: 'fa fa-fw fa-chart-line',
       visible: true,
+      exactMatch: true,
       showAccordion: [
         { name: 'Title', value: 'Reports'},
         { name: 'Records Limit', value: 100, type: 'number'}
@@ -361,7 +369,7 @@ export class CONSTANTS {
       system_name: 'Other',
       url: '#device_other',
       display_name: 'Other',
-      icon: 'fa fa-fw fa-stack-exchange',
+      icon: 'fa fa-fw fa-globe',
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -392,10 +400,10 @@ export class CONSTANTS {
       accordion_value: {configuration: true, control: true, purge: true}
     },
     {
-      page: 'visualization',
-      system_name: 'Visualizations',
+      page: 'visualize',
+      system_name: 'Visualize',
       url: 'null',
-      display_name: 'Visualization',
+      display_name: 'Visualize',
       icon: null,
       visible: true,
       isTitle: true
@@ -423,10 +431,10 @@ export class CONSTANTS {
       accordion_value: {}
     },
     {
-      page: 'maintenance',
-      system_name: 'Maintenance',
+      page: 'maintain',
+      system_name: 'Maintain',
       url: null,
-      display_name: 'Maintenance',
+      display_name: 'Maintain',
       icon: null,
       visible: true,
       isTitle: true
@@ -614,7 +622,7 @@ export class CONSTANTS {
       system_name: 'Other',
       url: '#device_other',
       display_name: 'Other',
-      icon: 'fa fa-fw fa-stack-exchange',
+      icon: 'fa fa-fw fa-globe',
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -823,7 +831,7 @@ export class CONSTANTS {
       system_name: 'Cached Telemetry',
       url: '#device_cached_telemetry',
       display_name: 'Cached Telemetry',
-      icon: 'fa fa-fw fa-stack-exchange',
+      icon: 'fa fa-fw fa-globe',
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -831,9 +839,9 @@ export class CONSTANTS {
     },
     {
       page: 'count',
-      system_name: 'Count',
+      system_name: 'Telemetry Count',
       url: '#device_count',
-      display_name: 'Count',
+      display_name: 'Telemetry Count',
       icon: 'fa fa-fw fa-calculator',
       visible: true,
       isTitle: false,
@@ -916,9 +924,9 @@ export class CONSTANTS {
     },
     {
       page: 'capabilities',
-      system_name: 'Capabilities',
+      system_name: 'Edge Capabilities',
       url: null,
-      display_name: 'Capabilities',
+      display_name: 'Edge Capabilities',
       icon: null,
       visible: true,
       isTitle: true
@@ -959,15 +967,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false
     },
-    {
-      page: 'direct_methods',
-      system_name: 'Direct Methods',
-      url: '#device_type_methods',
-      display_name: 'Direct Methods',
-      icon: 'fa fa-fw fa-archive',
-      visible: true,
-      isTitle: false
-    },
+
     {
       page: 'package_management',
       system_name: 'Package Management',
@@ -976,6 +976,16 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-tags',
       visible: true,
       isTitle: false
+    },
+
+    {
+      page: 'cloud-capabilities',
+      system_name: 'Cloud Capabilities',
+      url: null,
+      display_name: 'Cloud Capabilities',
+      icon: null,
+      visible: true,
+      isTitle: true
     },
     {
       page: 'rules',
@@ -988,30 +998,39 @@ export class CONSTANTS {
     },
     {
       page: 'd2c',
-      system_name: 'D2C (Monitor)',
+      system_name: 'Monitor',
       url: null,
-      display_name: 'D2C (Monitor)',
+      display_name: 'Monitor',
       icon: null,
       visible: true,
       isTitle: true
     },
     {
       page: 'alert_conditioning',
-      system_name: 'Alert Conditioning',
+      system_name: 'Alert Conditions',
       url: '#device_type_alert_conditioning',
-      display_name: 'Alert Conditioning',
+      display_name: 'Alert Conditions',
       icon: 'fa fa-fw fa-exclamation-triangle',
       visible: true,
       isTitle: false
     },
     {
       page: 'c2d',
-      system_name: 'C2D (Control)',
+      system_name: 'Cloud Control',
       url: null,
-      display_name: 'C2D (Control)',
+      display_name: 'Cloud Control',
       icon: null,
       visible: true,
       isTitle: true
+    },
+    {
+      page: 'direct_methods',
+      system_name: 'Direct Methods',
+      url: '#device_type_methods',
+      display_name: 'Direct Methods',
+      icon: 'fa fa-fw fa-archive',
+      visible: true,
+      isTitle: false
     },
     {
       page: 'configuration_widgets',
@@ -1033,9 +1052,9 @@ export class CONSTANTS {
     },
     {
       page: 'visualization',
-      system_name: 'Visualizations',
+      system_name: 'Visualize',
       url: 'null',
-      display_name: 'Visualization',
+      display_name: 'Visualize',
       icon: null,
       visible: true,
       isTitle: true
@@ -1094,6 +1113,19 @@ export class CONSTANTS {
     'TELEMETRY_INTERVAL_CHANGE'
   ];
 
+  public static DATE_OPTIONS = {
+    'Last 5 Mins': [moment().subtract(5, 'minutes'), moment()],
+    'Last 30 Mins': [moment().subtract(30, 'minutes'), moment()],
+    'Last 1 Hour': [moment().subtract(1, 'hour'), moment()],
+    'Last 3 Hours': [moment().subtract(3, 'hours'), moment()],
+    'Last 6 Hours': [moment().subtract(6, 'hours'), moment()],
+    'Last 12 Hours': [moment().subtract(12, 'hours'), moment()],
+    'Last 24 Hours': [moment().subtract(24, 'hours'), moment()],
+    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+    'This Month': [moment().startOf('month'), moment().endOf('month')],
+    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+  };
   public static USER_DETAILS = 'userData';
   public static SELECTED_APP_DATA = 'selectedAppData';
   public static DASHBOARD_TELEMETRY_SELECTION = 'dashboardTelemetryFilterObj';
@@ -1116,7 +1148,8 @@ export class CONSTANTS {
   public static ONLY_NOS_AND_CHARS = /^[a-zA-Z0-9]+$/;
   public static APP_ADMIN_ROLE = 'App Admin';
   public static APP_VERSION = 'version';
-
+  public static MAIN_MENU_FILTERS = 'main_menu_filter';
+  public static CONTROL_PANEL_FILTERS = 'control_panel_filter';
 
   // public static DEFAULT_APP_ICON = environment.blobContainerName + '/default_app_icon.png';
   // public static DEFAULT_APP_LOGO = environment.blobContainerName + '/default_app_logo.jpg';

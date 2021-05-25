@@ -21,9 +21,9 @@
                 (data?.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
                 (data?.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                 )
-                )" title="{{data?.severity}}"></i>&nbsp;{{data[header.key]}} </span>
+                )" placement="bottom" [tooltip]="data?.severity"></i>&nbsp;{{data[header.key]}} </span>
             <a href="javascript:void(0)" *ngIf="!header.key" (click)="onClickOfButton(data, header.name)">
-              <i class="fa fa-fw fa-eye" title="View {{tableConfig?.type}} message"
+              <i class="fa fa-fw fa-eye" placement="bottom" tooltip="View {{tableConfig?.type}} message"
               [style.color]="(tableConfig.type === 'alert'  && data?.severity?.toLowerCase() === 'critical') ? 'white' : ''"></i>
             </a>
           </td>

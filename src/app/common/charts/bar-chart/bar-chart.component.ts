@@ -68,6 +68,7 @@ export class BarChartComponent implements OnInit, OnDestroy {
   plotChart() {
     this.zone.runOutsideAngular(() => {
     am4core.options.onlyShowOnViewport = true;
+    am4core.options.autoDispose = true;
     am4core.options.viewportTarget = [document.getElementById('mainChartDiv')];
     const chart = am4core.create(this.chartId, am4charts.XYChart);
 

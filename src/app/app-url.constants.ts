@@ -12,9 +12,11 @@ export class AppUrls {
   public static GET_ERROR_LIST = 'D2C_GetDeviceErrors';
   public static GET_OTHER_MESSAGE_LIST = 'D2C_GetDeviceOtherMessages';
   public static GET_DEVICE_BATTERY_LIST = 'D2C_GetDeviceBatteryMessages';
-  public static GET_C2D_MESSAGE_LIST = 'apps/{0}/c2d/messages';
+  public static GET_C2D_MESSAGE_LIST = 'apps/{0}/c2d/jobs';
   public static GET_QUEUE_MESSAGE_COUNT = 'apps/{0}/c2d/queue_message_count';
   public static PURGE_QUEUE_MESSAGE = 'apps/{0}/c2d/purge_messages';
+  public static GET_MESSAGE_REQUEST_DETAILS = 'apps/{0}/c2d/jobs/{1}';
+  public static GET_MESSAGE_RESPONSE_DETAILS = 'apps/{0}/c2d/job_responses';
   public static GET_C2D_MESSAGE_JSON = 'apps/{0}/c2d/messages/{1}';
   public static GET_C2D_RESPONSE_JSON = 'D2C_GetDeviceResponses';
   public static GET_DEVICE_CREDENTIALS = 'DLM_GetDeviceCredentials';
@@ -23,7 +25,7 @@ export class AppUrls {
   public static DISABLE_DEVICE = 'DLM_DisableDevice';
   public static DELETE_DEVICE = 'DLM_DeleteDevice';
   public static CREATE_DEVICE = 'DLM_CreateDevice';
-  public static SEND_C2D_MESSAGE = 'apps/{0}/c2d/messages';
+  public static SEND_C2D_MESSAGE = 'apps/{0}/iot_assets/{1}/c2d_messages';
   public static LOGIN = 'login';
   public static GET_APPLICATIONS_LIST = 'apps';
   public static CREATE_APP = 'apps';
@@ -94,7 +96,7 @@ export class AppUrls {
   public static GET_LIVE_WIDGETS_FOR_MODEL = 'apps/{0}/device_types/{1}/live_widgets';
   public static SYNC_MODEL_CACHE = 'apps/{0}/cache/sync_device_type';
   public static SYNC_DEVICE_CACHE = 'apps/{0}/cache/sync_devices';
-  public static CALL_DEVICE_METHOD = 'apps/{0}/c2d/call_direct_method';
+  public static CALL_DEVICE_METHOD = 'apps/{0}/iot_assets/{1}/call_direct_method';
   public static GET_DEVICE_METHODS = 'apps/{0}/c2d/direct_method_calls';
   public static GET_DEVICE_METHOD_BY_ID = 'apps/{0}/c2d/direct_method_calls/{1}';
   public static GET_DEVICE_FIRST_TELEMETRY = 'apps/{0}/d2c/first_telemetry';
@@ -110,7 +112,7 @@ export class AppUrls {
   public static UPDATE_PACKAGE = 'apps/{0}/device_types/{1}/packages/{2}';
   public static DELETE_PACKAGE = 'apps/{0}/device_types/{1}/packages/{2}';
   public static GET_DEVICE_TWIN = 'apps/{0}/iot_devices/{1}/twin_properties';
-  public static UPDATE_DEVICE_TWIN = 'apps/{0}/iot_devices/{1}/twin_desired_properties';
+  public static UPDATE_DEVICE_TWIN = 'apps/{0}/iot_assets/{1}/twin_desired_properties';
   public static GET_DEVICE_TWIN_HISTORY = 'apps/{0}/d2c/twin_updates';
   public static ATTACH_LEGACY_DEVICE_TO_GATEWAY = 'apps/{0}/iot_devices/{1}/attach_legacy_device';
   public static GET_NETWORK_FAILURE_EVENT = 'apps/{0}/devices/{1}/telemetry_loss_events';

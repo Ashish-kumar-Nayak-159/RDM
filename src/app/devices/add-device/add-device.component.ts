@@ -133,24 +133,51 @@ export class AddDeviceComponent implements OnInit {
     console.log(this.deviceDetail.tags.protocol === 'ModbusRTUMaster');
     if (this.deviceDetail.tags.protocol === 'ModbusTCPMaster') {
       this.setupForm = new FormGroup({
-        host_address: new FormControl(obj?.metadata?.setup_details?.host_address || null, [Validators.required]),
-        port_number: new FormControl(obj?.metadata?.setup_details?.port_number || null, [Validators.required]),
-        slave_id: new FormControl(obj?.metadata?.setup_details?.slave_id || null, [Validators.required]),
+        host_address: new FormControl(
+          (obj && obj.metadata && obj.metadata.setup_details && obj.metadata.setup_details.host_address !== undefined
+            && obj.metadata.setup_details.host_address !== null) ? obj.metadata.setup_details.host_address : null, [Validators.required]),
+        port_number: new FormControl(
+          (obj && obj.metadata && obj.metadata.setup_details && obj.metadata.setup_details.port_number !== undefined
+            && obj.metadata.setup_details.port_number !== null) ? obj.metadata.setup_details.port_number : null, [Validators.required]),
+        slave_id: new FormControl(
+          (obj && obj.metadata && obj.metadata.setup_details && obj.metadata.setup_details.slave_id !== undefined
+            && obj.metadata.setup_details.slave_id !== null) ? obj.metadata.setup_details.slave_id : null, [Validators.required]),
       });
     } else if (this.deviceDetail.tags.protocol === 'ModbusRTUMaster') {
       this.setupForm = new FormGroup({
-        baud_rate: new FormControl(obj?.metadata?.setup_details?.baud_rate || null, [Validators.required]),
-        data_bits: new FormControl(obj?.metadata?.setup_details?.data_bits || null,
+        baud_rate: new FormControl(
+          (obj && obj.metadata && obj.metadata.setup_details && obj.metadata.setup_details.baud_rate !== undefined
+            && obj.metadata.setup_details.baud_rate !== null) ? obj.metadata.setup_details.baud_rate : null, [Validators.required]),
+        data_bits: new FormControl(
+          (obj && obj.metadata && obj.metadata.setup_details && obj.metadata.setup_details.data_bits !== undefined
+            && obj.metadata.setup_details.data_bits !== null) ? obj.metadata.setup_details.data_bits : null,
           [Validators.required, Validators.min(5), Validators.max(9)]),
-        slave_id: new FormControl(obj?.metadata?.setup_details?.slave_id || null, [Validators.required]),
-        parity: new FormControl(obj?.metadata?.setup_details?.parity || null, [Validators.required, Validators.min(0), Validators.max(2)]),
-        stop_bits: new FormControl(obj?.metadata?.setup_details?.stop_bits || null, [Validators.required]),
+        slave_id: new FormControl(
+          (obj && obj.metadata && obj.metadata.setup_details && obj.metadata.setup_details.slave_id !== undefined
+            && obj.metadata.setup_details.slave_id !== null) ? obj.metadata.setup_details.slave_id : null, [Validators.required]),
+        parity: new FormControl(
+          (obj && obj.metadata && obj.metadata.setup_details && obj.metadata.setup_details.parity !== undefined
+            && obj.metadata.setup_details.parity !== null) ? obj.metadata.setup_details.parity : null,
+            [Validators.required, Validators.min(0), Validators.max(2)]),
+        stop_bits: new FormControl(
+          (obj && obj.metadata && obj.metadata.setup_details && obj.metadata.setup_details.stop_bits !== undefined
+            && obj.metadata.setup_details.stop_bits !== null) ? obj.metadata.setup_details.stop_bits : null,
+            [Validators.required]),
       });
     } else  if (this.deviceDetail.tags.protocol === 'SiemensTCPIP') {
       this.setupForm = new FormGroup({
-        host_address: new FormControl(obj?.metadata?.setup_details?.host_address || null, [Validators.required]),
-        rack: new FormControl(obj?.metadata?.setup_details?.rack || null, [Validators.required, Validators.min(0), Validators.max(7)]),
-        slot: new FormControl(obj?.metadata?.setup_details?.slot || null, [Validators.required, Validators.min(0), Validators.max(31)]),
+        host_address: new FormControl(
+          (obj && obj.metadata && obj.metadata.setup_details && obj.metadata.setup_details.host_address !== undefined
+            && obj.metadata.setup_details.host_address !== null) ? obj.metadata.setup_details.host_address : null,
+          [Validators.required]),
+        rack: new FormControl(
+          (obj && obj.metadata && obj.metadata.setup_details && obj.metadata.setup_details.rack !== undefined
+            && obj.metadata.setup_details.rack !== null) ? obj.metadata.setup_details.rack : null,
+          [Validators.required, Validators.min(0), Validators.max(7)]),
+        slot: new FormControl(
+          (obj && obj.metadata && obj.metadata.setup_details && obj.metadata.setup_details.slot !== undefined
+            && obj.metadata.setup_details.slot !== null) ? obj.metadata.setup_details.slot : null,
+          [Validators.required, Validators.min(0), Validators.max(31)]),
       });
     }
     console.log(this.setupForm.value);

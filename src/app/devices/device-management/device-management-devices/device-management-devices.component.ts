@@ -476,7 +476,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
     const obj = {
       desired_properties: {
         package_management: {
-          job_id: 'job_' + this.commonService.generateUUID(),
+          job_id: this.selectedDevices[0].device_id + '_' + this.commonService.generateUUID(),
           command: null,
           package_details: {
             app_name: this.selectedDevicePackage.name,
@@ -489,16 +489,22 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
       },
       job_id: null,
       timestamp: moment().utc().unix(),
+      sub_job_id: null,
+      device_id: this.selectedDevices[0].device_id,
       request_type: 'FOTA'
     };
     obj.job_id = obj.desired_properties.package_management.job_id;
+    obj.sub_job_id = obj.job_id + '_1';
     obj.desired_properties.package_management.package_details.job_id = obj.desired_properties.package_management.job_id;
     if (type === 'Install') {
       obj.desired_properties.package_management.command = 'INSTALL_PACKAGE';
+      obj.request_type = 'FOTA - INSTALL_PACKAGE';
     } else if (type === 'Upgrade' || type === 'Downgrade') {
       obj.desired_properties.package_management.command = 'UPGRADE_PACKAGE';
+      obj.request_type = 'FOTA - UPGRADE_PACKAGE';
     } else if (type === 'Uninstall') {
       obj.desired_properties.package_management.command = 'DELETE_PACKAGE';
+      obj.request_type = 'FOTA - DELETE_PACKAGE';
     }
 
     this.subscriptions.push(
@@ -533,13 +539,13 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
   loadDeviceTwinChangeResponse(requestObj) {
     clearInterval(this.twinResponseInterval);
     const obj = {
-      job_id: requestObj.job_id,
-      twin_event: 'Reported',
+      sub_job_id: requestObj.sub_job_id,
       from_date: requestObj.timestamp - 5,
-      to_date: moment().utc().unix()
+      to_date: moment().utc().unix(),
+      epoch: true
     };
     this.subscriptions.push(
-      this.deviceService.getDeviceTwinHistory(this.contextApp.app, obj).subscribe(
+      this.deviceService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
         (response: any) => {
           if (response.data?.length > 0 && response.data[response.data.length - 1]?.twin?.reported[this.selectedDevicePackage.name]
             && this.displyaMsgArr.length <= response.data.length) {

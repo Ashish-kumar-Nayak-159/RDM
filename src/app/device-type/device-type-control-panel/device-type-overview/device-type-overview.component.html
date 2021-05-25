@@ -1,47 +1,48 @@
 
-
 <!-- Page Heading -->
-
-<div class="topnavbar bg-white" >
-  <div class="d-sm-flex align-items-center justify-content-between mt-3">
-    <div class="row col-md-12">
-      <h4 class="mb-0 text-gray-800 row col-md-6 pull-left">Welcome to
-        {{deviceType.name}}
-      </h4>
-      <!-- <a
-        class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm pull-right"
-        href="javascript:void(0)"
-        title="Sync with cache"
-        (click)="syncWithCache()"
-        >Sync with cache <i class="fa fa-refresh fa-sm text-white"></i></a> -->
-      <div class="row col-md-12 mt-3">
-          <h6 *ngIf="deviceType.freezed && contextApp.user.role === appAdminRole">
-          This model is freezed. <br/>
-          You can't add, modify, delete any attribute of this model.<br/>
-          Please Unfreeze, if you want to add, modify, delete any.
-          <a href="javascript:void(0)" (click)="openUnfreezeModal()" [class.disabled]="isModelFreezeUnfreezeAPILoading"
-          class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2">Unfreeze It <i class="fa fa-unlock"></i></a>
-          <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></i>
-          </h6>
-          <h6 *ngIf="!deviceType.freezed && contextApp.user.role === appAdminRole">
-          This model is not freezed.<br/>
-          Once you complete modifications (add, edit, delete), Please freeze it for better performance.
-          <a href="javascript:void(0)" (click)="freezeModel()" [class.disabled]="isModelFreezeUnfreezeAPILoading"
-          class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2">Freeze It <i class="fa fa-lock"></i></a>
-          <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></i>
-          </h6>
+<div class="table-responsive p-3">
+  <div class="tableFixHead" >
+    <div class="p-3">
+      <div class="d-flex">
+          <div class="">
+    <div class="row">
+      <h6 *ngIf="deviceType.freezed && contextApp.user.role === appAdminRole">
+      This model is freezed. <br/>
+      You can't add, modify, delete any attribute of this model.<br/>
+      Please Unfreeze, if you want to add, modify, delete any.
+      <a href="javascript:void(0)" (click)="openUnfreezeModal()" [class.disabled]="isModelFreezeUnfreezeAPILoading"
+      class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2">Unfreeze It <i class="fa fa-unlock"></i></a>
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></i>
+      </h6>
       </div>
-    </div>
+      <div class="row">
+      <h6 *ngIf="!deviceType.freezed && contextApp.user.role === appAdminRole">
+      This model is not freezed.<br/>
+      Once you complete modifications (add, edit, delete), Please freeze it for better performance.
+      <a href="javascript:void(0)" (click)="freezeModel()" [class.disabled]="isModelFreezeUnfreezeAPILoading"
+      class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2">Freeze It <i class="fa fa-lock"></i></a>
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></i>
+      </h6>
+  </div>
+  <div class="row">
+    <h6>Device Model Image:
+      <a href="javascript:void(0)" (click)="openCreateDeviceTypeModal()"
+      class="d-none d-sm-inline-block shadow-sm ml-2"><i class="fa fa-edit"></i></a>
+    </h6>
+  </div>
+  </div>
+  </div>
+
+  <div class="text-center py-5">
+
+    <img class="img-fluid px-3 px-sm-2 mb-4"
+    src="{{blobStorageURL + (deviceType?.metadata?.image?.url + blobSASToken)}}" alt="" style="width:15rem;">
+  </div>
+  </div>
+
   </div>
 </div>
-<div class="con-pad ">
-
-
-<div class="text-center" style="margin-top: 5.5rem;">
-  <img class="img-fluid px-3 px-sm-2 mb-4"
-  src="{{blobStorageURL + (deviceType?.metadata?.image?.url + blobSASToken)}}" alt="" style="width:15rem;">
-</div>
-</div>
+<!-- Page Heading -->
 
 
 <div class="modal fade" id="passwordCheckModal" role="dialog">
@@ -58,12 +59,12 @@
         <form>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Email:</label>
-            <input type="text" class="form-control form-control" id="email" name="email" [(ngModel)]="userData.email"
+            <input type="text" class="form-control form-control-sm" id="email" name="email" [(ngModel)]="userData.email"
               placeholder="Enter Email" disabled>
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Password:</label>
-            <input  type="{{this.isPasswordVisible ? 'text' : 'password'}}" class="form-control" id="display_name" name="display_name" [(ngModel)]="password"
+            <input  type="{{this.isPasswordVisible ? 'text' : 'password'}}" class="form-control form-control-sm" id="display_name" name="display_name" [(ngModel)]="password"
               placeholder="Enter Your Password">
               <i class="fa fa-fw  field-icon toggle-password" (click)="togglePasswordVisibility()"
                       [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}" ></i>
@@ -73,12 +74,51 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="unfreezeModel()" [disabled]="isModelFreezeUnfreezeAPILoading">
           Unfreeze</button>
-        <button type="button" class="btn btn-secondary" (click)="onCloseModal('passwordCheckModal')" [disabled]="isModelFreezeUnfreezeAPILoading">
+        <button type="button" class="btn btn-white" (click)="onCloseModal('passwordCheckModal')" [disabled]="isModelFreezeUnfreezeAPILoading">
           Cancel
         </button>
         <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></i>
       </div>
     </div>
 
+  </div>
+</div>
+
+<div class="modal right fade" id="createDeviceTypeModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Change Model Image</h5>
+      <button type="button" class="close"  (click)="onCloseThingsModelModal()" aria-label="Close" [disabled]="isUpdateThingsModelAPILoading">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body" *ngIf="thingsModel">
+      <form name="createThingsModelForm">
+
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">Upload Image: </label>
+          {{thingsModel.metadata?.image?.name ? thingsModel.metadata.image.name : 'Not yet uploaded'}}
+          <input type="file"
+          #typeLogoFileInput (change)="onLogoFileSelected($event.target.files)"
+           class="form-control" id="app_logo" name="app_logo" >
+        </div>
+
+        <!-- <div class="form-group">
+          <label for="message-text" class="col-form-label">Manufactured By:</label>
+          <input type="text" class="form-control" id="manufactured_by" name="manufacturer"
+          placeholder="Enter Manufacturer" [(ngModel)]="thingsModel.tags.manufacturer">
+        </div> -->
+
+      </form>
+    </div>
+    <div class="modal-footer" *ngIf="thingsModel">
+      <button type="button" class="btn btn-primary add-row" [disabled]="isUpdateThingsModelAPILoading || isFileUploading" (click)="updateThingsModel()">Save</button>
+      <button type="button" class="btn btn-white" [disabled]="isUpdateThingsModelAPILoading || isFileUploading" (click)="onCloseThingsModelModal()">
+        Cancel
+      </button>
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUpdateThingsModelAPILoading || isFileUploading"></i>
+    </div>
+  </div>
   </div>
 </div>

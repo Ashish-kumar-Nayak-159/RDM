@@ -2,23 +2,38 @@
     <form class="form-inline">
       <div class="form-group">
         <input type="number" min="1" id="countId"
-        name="count" class="form-control form-control-sm active record-input"
+        name="count" class="form-control form-control-sm record-input"
+        [ngClass]="{'active': filterObj.count}"
         [(ngModel)]="filterObj.count" name="count" *ngIf="!filterObj.countNotShow">
       </div>
       <div class="form-group" *ngIf="filterObj.displayOptions">
-        <select class="form-control form-control-sm active" id="messageType"
+        <select class="form-control form-control-sm active"
+        [ngClass]="{'active': filterObj.tableType}" id="messageType"
         [(ngModel)]="filterObj.tableType" name="tableType">
-          <option [ngValue]="'C2D Message'">C2D Message</option>
-          <option [ngValue]="'Direct Method'">Direct Method</option>
-          <option [ngValue]="'Twin Change'">Twin Change</option>
+        <option [ngValue]="'All'">All</option>
+          <option [ngValue]="'Message'">C2D Message</option>
+          <option [ngValue]="'DirectMethod'">Direct Method</option>
+          <option [ngValue]="'Twin'">Twin Change</option>
         </select>
       </div>
+      <!-- <div class="form-group" id="reportrange">
+        <div class="date-input" daterangepicker [options]="options" (selected)="selectedDate($event, daterange)">
+          <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;<span></span>
+          <b class="caret"></b></div></div> -->
 
-      <div class="form-group" >
-        <input type="text"  class="form-control form-control-sm active" daterangepicker name="daterangeInput"  [options]="options" (selected)="selectedDate($event, daterange)" />
-      </div>
-      <div class="form-group"><button type="button" title="Search" class="btn btn-sm searchBtn btn-primary" (click)="search()" ><i class="fas fa-search fa-sm"></i></button></div>
+          <div class="form-group  left-inner-addon">
+          <i class="fa fa-calendar"></i>
+          <input type="text" class="form-control form-control-sm date-range-picker" [ngClass]="{'active': filterObj.from_date && filterObj.to_date}" daterangepicker
+          name="daterangeInput"  [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"  [(ngModel)]="selectedDateRange"
+          [tooltip]="selectedDateRange" placement="bottom"/>
+          </div>
+
+
+      <!-- <div class="form-group" >
+        <input type="text"  class="form-control form-control-sm" [ngClass]="{'active': filterObj.from_date && filterObj.to_date}" daterangepicker
+        name="daterangeInput"  [options]="options" (selected)="selectedDate($event, daterange)" />
+      </div> -->
+      <div class="form-group"><button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary" (click)="search()" ><i class="fas fa-search fa-sm"></i></button></div>
         <!-- <button type="button" class="btn btn-warning btn-sm ml-3 mr-1 my-1" title="Search" ><i class="fa fa-search fa-sm"></i></button> -->
-        <div class="form-group"><button type="button" title="Search" class="btn btn-sm searchBtn btn-primary" title="Clear Filters" (click)="clear();" > <img class="filter-clear-icon" src="./assets/img/filter.svg"></button></div>
+        <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-white" placement="bottom" tooltip="Clear Filters" (click)="clear();" > <img class="filter-clear-icon" src="./assets/img/filter.svg"></button></div>
      </form>
-

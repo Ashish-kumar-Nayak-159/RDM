@@ -26,6 +26,7 @@ export class DeviceLifeCycleEventsComponent implements OnInit, OnDestroy {
   modalConfig: any;
   pageType: string;
   eventTableConfig: any = {};
+  contextApp: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -34,9 +35,10 @@ export class DeviceLifeCycleEventsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.filterObj.device_id = this.device.device_id;
-
+    this.filterObj.app = this.contextApp.app;
+    this.filterObj.count = 10;
     this.eventTableConfig = {
       type: 'life cycle events',
       headers: ['Timestamp', 'View'],
@@ -51,10 +53,27 @@ export class DeviceLifeCycleEventsComponent implements OnInit, OnDestroy {
         }
       ]
     };
+    this.loadFromCache();
     this.filterObj.epoch = true;
   }
 
-  searchLifeCycleEvents(filterObj) {
+  loadFromCache() {
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+    if (item.dateOption) {
+      this.filterObj.dateOption = item.dateOption;
+      if (item.dateOption !== 'Custom Range') {
+        const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+        this.filterObj.from_date = dateObj.from_date;
+        this.filterObj.to_date = dateObj.to_date;
+      } else {
+        this.filterObj.from_date = item.from_date;
+        this.filterObj.to_date = item.to_date;
+      }
+    }
+    this.searchLifeCycleEvents(this.filterObj, false);
+  }
+
+  searchLifeCycleEvents(filterObj, updateFilterObj = true) {
     this.isFilterSelected = true;
     this.isLifeCycleEventsLoading = true;
     const obj = {...filterObj};
@@ -64,6 +83,13 @@ export class DeviceLifeCycleEventsComponent implements OnInit, OnDestroy {
       this.isLifeCycleEventsLoading = false;
       this.isFilterSelected = false;
       return;
+    }
+    if (updateFilterObj) {
+      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+      pagefilterObj['from_date'] = obj.from_date;
+      pagefilterObj['to_date'] = obj.to_date;
+      pagefilterObj['dateOption'] = obj.dateOption;
+      this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, pagefilterObj);
     }
     delete obj.dateOption;
     this.filterObj = filterObj;

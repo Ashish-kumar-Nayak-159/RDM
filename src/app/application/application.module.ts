@@ -5,7 +5,7 @@ import { CommonCustomModule } from './../common/common.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ApplicationRoutingModule } from './application-routing.module';
 import { ApplicationDashboardComponent } from './application-dashboard/application-dashboard.component';
 import { ApplicationListComponent } from './application-list/application-list.component';
@@ -55,7 +55,8 @@ import { MapViewHomeComponent } from './map-view-home/map-view-home.component';
     CommonCustomModule,
     AgmCoreModule,
     AgmMarkerClustererModule,
-    NgSelectModule
+    NgSelectModule,
+    TooltipModule
   ],
   providers: [
     {provide: OWL_DATE_TIME_LOCALE, useValue: {useUtc: true}}

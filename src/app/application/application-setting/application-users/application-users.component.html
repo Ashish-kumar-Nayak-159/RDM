@@ -1,15 +1,12 @@
 
 <div class="tab-bar">
-  <div class="d-flex">
-
-       <div class="d-flex">
-         <div class="main-heading">Application Users</div>
+  <div class="d-flex d-flex align-items-center">
+         <div class="h6 m-0 p-0">Application Users</div>
          <div id="view-tabs" >
 
        <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCreateUserModal()"
-      title="Add User"><i class="fas fa-plus fa-sm"></i></button>
+      tooltip="Add User" placement="bottom"><i class="fas fa-plus fa-sm"></i></button>
       </div>
-     </div>
 </div>
 </div>
 
@@ -33,11 +30,11 @@
         <td>{{ getUserHierarchy(user) }}</td>
         <td>
           <a href="javascript:void(0)" (click)="openCreateUserModal(user)" class="mr-1"
-            title="Edit User">
+          placement="bottom" tooltip="Edit User">
               <i class="fa fa-fw fa-pencil" ></i>
           </a>
           <a href="javascript:void(0)" (click)="openDeleteUserModal(user)" class="mr-1"
-            title="Edit User">
+          placement="bottom"tooltip="Edit User">
               <i class="fa fa-fw fa-trash" ></i>
           </a>
         </td>

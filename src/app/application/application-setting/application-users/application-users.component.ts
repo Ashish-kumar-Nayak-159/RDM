@@ -171,12 +171,12 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     this.userService.createUser(this.addUserObj, this.applicationData.app);
     this.apiSubscriptions.push(method.subscribe(
       (response: any) => {
-        this.toasterService.showSuccess(response.message, 'App User');
+        this.toasterService.showSuccess(response.message, (this.addUserObj.id ? 'Update' : 'Add') + ' User');
         this.isCreateUserAPILoading = false;
         this.onCloseCreateUserModal();
         this.getApplicationUsers();
       }, error => {
-        this.toasterService.showError(error.message, 'App User');
+        this.toasterService.showError(error.message, (this.addUserObj.id ? 'Update' : 'Add') + ' User');
         this.isCreateUserAPILoading = false;
       }
     ));

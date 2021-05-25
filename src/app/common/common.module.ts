@@ -1,3 +1,4 @@
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule } from '@angular/forms';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { NgModule } from '@angular/core';
@@ -59,7 +60,8 @@ import { MultiSelectClickOutsideDirective } from './common-multi-select-dropdown
     FormsModule,
     ColorPickerModule,
     AngularMultiSelectModule,
-    DataTablesModule
+    DataTablesModule,
+    TooltipModule
   ],
   exports: [
     // FilterComponent,

@@ -1,70 +1,71 @@
-
-
-<!-- Page Heading -->
-<div class="table-responsive p-3">
+<div class="table-responsive">
   <div class="tableFixHead" >
-  <div class="flex-end">
-    <a
-    class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm pull-right mr-2"
+<div class="p-3">
+  <div class="d-flex">
+      <div class="pl-3">
+          <div class="row" *ngIf="componentState === constantData.NON_IP_DEVICE">
+              <h6>This Asset is managed by an IP Gateway
+                <a  href="javascript:void(0)" class="blue-font" (click)="onRedirectToGateway(device)">({{device.gateway_id}})</a></h6>
+          </div>
+          <div class="row">
+            <h6>Asset Id is {{device?.device_id}}</h6>
+          </div>
+          <div class="row"  *ngIf="componentState === constantData.IP_GATEWAY">
+            <h6>This is the gateway of type ({{device.tags.device_type}}) managing
+              <a class="blue-font"  href="javascript:void(0)" (click)="onRedirectToDevices()">
+                {{deviceCount}} {{deviceCount === 1 ? 'asset' : 'assets'}}</a>.</h6>
+          </div>
+          <div class="row">
+            <p *ngIf="device?.configuration?.status?.toLowerCase() === 'enabled' && device?.configuration?.connection_state?.toLowerCase() === 'connected'">
+              Currently, {{constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
+              <span class="enabled-font">
+                {{device?.configuration.status}} & Online.</span>
+            </p>
+            <p *ngIf="device?.configuration?.status?.toLowerCase() === 'enabled' && device?.configuration?.connection_state?.toLowerCase() === 'disconnected'">
+              Currently, {{constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
+              <span class="enabled-font">
+                {{device?.configuration.status}}</span>, but it is
+                <span class="disabled-font">
+                  Offline.</span>
+            </p>
+            <p *ngIf="device?.configuration?.status?.toLowerCase() === 'disabled' && device?.configuration?.connection_state?.toLowerCase() === 'disconnected'">
+              Currently, {{constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
+              <span class="disabled-font">
+                {{device?.configuration.status}} & Offline.</span>
+            </p>
+          </div>
+          <div *ngIf="deviceCredentials" class="row">
+            <h6 ><ng-container *ngIf="componentState === constantData.NON_IP_DEVICE">Gateway</ng-container>
+              Connection String:
+              <a class="blue-font ml-2" href="javascript:void(0)" (click)="viewonnectionString()"> View</a>
+              <a class="blue-font ml-2" href="javascript:void(0)" (click)="copyConnectionString()"> {{isCopyClicked ? 'Copied' : 'Copy'}}</a>
+            </h6>
+            <h6  class="row col-12" *ngIf="isViewClicked">{{deviceCredentials.primary_connection_string}}</h6>
+          </div>
+          <div *ngIf="componentState !== constantData.NON_IP_DEVICE" class="row">
+            <h6>
+              Asset Twin:
+              <a class="blue-font ml-2" href="javascript:void(0)" (click)="viewDeviceTwin()"> View</a>
+            </h6>
+            <h6  class="row col-12" *ngIf="isViewClicked">{{deviceCredentials.primary_connection_string}}</h6>
+          </div>
+      </div>
+      <div class="ml-auto">
+        <a
+    class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm pull-right mr-2"
     href="javascript:void(0)"
-    title="Sync with cache"
+    placement="bottom" tooltip="Sync with cache"
     (click)="syncWithCache()"
     >Sync with cache <i class="fa fa-refresh fa-sm text-white"></i></a>
+      </div>
   </div>
-  <div class="row col-12 mt-1" *ngIf="componentState === constantData.NON_IP_DEVICE">
-    <h6>This Asset is managed by an IP Gateway
-      <a  href="javascript:void(0)" class="blue-font" (click)="onRedirectToGateway(device)">({{device.gateway_id}})</a></h6>
+  <div class="text-center py-5">
+    <img class="img-fluid px-3 px-sm-2 mb-4"
+    src="{{(blobStorageURL + deviceType?.metadata?.image?.url + blobSASToken)}}" alt="" style="width:15rem;">
   </div>
-  <div class="row col-12 mt-1">
-    <h6>Asset Id is {{device?.device_id}}</h6>
-  </div>
-  <div class="row col-12 mt-1" *ngIf="componentState === constantData.IP_GATEWAY">
-    <h6>This is the gateway of type ({{device.tags.device_type}}) managing
-      <a class="blue-font"  href="javascript:void(0)" (click)="onRedirectToDevices()">
-        {{deviceCount}} {{deviceCount === 1 ? 'asset' : 'assets'}}</a>.</h6>
-  </div>
-  <div class="row col-12 mt-1">
-
-    <p *ngIf="device?.configuration?.status?.toLowerCase() === 'enabled' && device?.configuration?.connection_state?.toLowerCase() === 'connected'">
-      Currently, {{constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
-      <span class="enabled-font">
-        {{device?.configuration.status}} & Online.</span>
-    </p>
-    <p *ngIf="device?.configuration?.status?.toLowerCase() === 'enabled' && device?.configuration?.connection_state?.toLowerCase() === 'disconnected'">
-      Currently, {{constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
-      <span class="enabled-font">
-        {{device?.configuration.status}}</span>, but it is
-        <span class="disabled-font">
-          Offline.</span>
-    </p>
-    <p *ngIf="device?.configuration?.status?.toLowerCase() === 'disabled' && device?.configuration?.connection_state?.toLowerCase() === 'disconnected'">
-      Currently, {{constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
-      <span class="disabled-font">
-        {{device?.configuration.status}} & Offline.</span>
-    </p>
-  </div>
-  <div *ngIf="deviceCredentials" class="row col-12 mt-1">
-    <h6 class="row col-12"><ng-container *ngIf="componentState === constantData.NON_IP_DEVICE">Gateway</ng-container>
-      Connection String:
-      <a class="blue-font ml-2" href="javascript:void(0)" (click)="viewonnectionString()"> View</a>
-      <a class="blue-font ml-2" href="javascript:void(0)" (click)="copyConnectionString()"> {{isCopyClicked ? 'Copied' : 'Copy'}}</a>
-    </h6>
-    <h6  class="row col-12" *ngIf="isViewClicked">{{deviceCredentials.primary_connection_string}}</h6>
-  </div>
-  <div *ngIf="componentState !== constantData.NON_IP_DEVICE" class="row col-12 mt-1">
-    <h6 class="row col-12">
-      Asset Twin:
-      <a class="blue-font ml-2" href="javascript:void(0)" (click)="viewDeviceTwin()"> View</a>
-    </h6>
-    <h6  class="row col-12" *ngIf="isViewClicked">{{deviceCredentials.primary_connection_string}}</h6>
-  </div>
-<div class="text-center mt-5">
-  <img class="img-fluid px-3 px-sm-2 mb-4"
-  src="{{(blobStorageURL + deviceType?.metadata?.image?.url + blobSASToken)}}" alt="" style="width:15rem;">
 </div>
 </div>
 </div>
-
 
 <div class="modal right fade" id="deviceTwinModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">

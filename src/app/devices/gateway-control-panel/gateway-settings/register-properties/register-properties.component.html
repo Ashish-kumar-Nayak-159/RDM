@@ -3,7 +3,7 @@
     <thead>
       <tr>
         <th>Device</th>
-        <!-- <th>Status</th> -->
+        <th>App</th>
         <th>Model</th>
         <th></th>
       </tr>
@@ -14,6 +14,7 @@
         <td>
             {{device.display_name}}
         </td>
+        <td>{{device?.metadata?.package_app}}</td>
         <!-- <td >{{device.metadata?.package_app && deviceTwin.twin_properties.reported.registered_devices[device.metadata.package_app] ? (deviceTwin.twin_properties.reported?.registered_devices[device?.metadata?.package_app]?.indexOf(device.device_id) > -1 ? 'Registered' : 'Not Registered') : 'Not Registered'}}</td> -->
         <td>{{device.device_type}}</td>
         <td> <a

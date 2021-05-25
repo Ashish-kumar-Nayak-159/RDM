@@ -19,6 +19,7 @@ import { SignalRService } from 'src/app/services/signalR/signal-r.service';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { DomSanitizer } from '@angular/platform-browser';
+import { DaterangepickerComponent } from 'ng2-daterangepicker';
 declare var $: any;
 @Component({
   selector: 'app-application-visualization',
@@ -40,6 +41,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   beforeInterval = 10;
   telemetryData: any[] = [];
   filterObj: any = {};
+  originalFilterObj: any = {};
   devices: any[] = [];
   nonIPDevices: any[] = [];
   afterInterval = 10;
@@ -77,22 +79,19 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   today = new Date();
   loadingMessage: string;
   selectedTab: any;
+  hierarchyString: any;
   daterange: any = {};
   options: any = {
     locale: { format: 'DD-MM-YYYY HH:mm' },
     alwaysShowCalendars: false,
     timePicker: true,
-    ranges: {
-      'Last 5 Mins': [moment().subtract(5, 'minutes'), moment()],
-      'Last 30 Mins': [moment().subtract(30, 'minutes'), moment()],
-      'Last 1 hour': [moment().subtract(1, 'hour'), moment()],
-      'Last 24 hours': [moment().subtract(24, 'hours'), moment()],
-      'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-      'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-      'This Month': [moment().startOf('month'), moment().endOf('month')],
-      'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-    }
+    autoUpdateInput: false,
+    maxDate: moment(),
+    ranges: CONSTANTS.DATE_OPTIONS
   };
+  @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
+  selectedDateRange: string;
+  displayHierarchyString: string;
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -117,7 +116,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       if (index !== 0) {
         this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
         if (this.contextApp.user.hierarchy[level]) {
-          this.onChangeOfHierarchy(index);
+          this.onChangeOfHierarchy(index, false);
         }
       }
     });
@@ -133,22 +132,55 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.filterObj.aggregation_format = 'AVG';
     await this.getDevices(this.contextApp.user.hierarchy);
 
-    if (this.pageType === 'live') {
-    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.DASHBOARD_ALERT_SELECTION);
+    this.loadFromCache();
+  }
+
+  loadFromCache() {
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     if (item) {
-      this.filterObj = JSON.parse(JSON.stringify(item));
+      if (this.pageType === 'live') {
+      if (item.devices) {
+        this.filterObj.device = item.devices;
+        this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+        }
+      // this.filterObj = JSON.parse(JSON.stringify(item));
+      if (item.hierarchy) {
       if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
       this.contextApp.hierarchy.levels.forEach((level, index) => {
-        if (index !== 0 && this.filterObj.device) {
-        this.configureHierarchy[index] = this.filterObj.device.hierarchy[level];
-        if (this.filterObj.device.hierarchy[level]) {
-          this.onChangeOfHierarchy(index);
+        if (index !== 0) {
+        this.configureHierarchy[index] = item.hierarchy[level];
+        if (item.hierarchy[level]) {
+          this.onChangeOfHierarchy(index, false);
         }
         }
       });
       }
-      this.getLatestAlerts();
-    }
+      }
+      this.getLatestAlerts(false);
+      } else if (this.pageType === 'history') {
+        if (item.dateOption) {
+          this.filterObj.dateOption = item.dateOption;
+          if (item.dateOption !== 'Custom Range') {
+            const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+            this.filterObj.from_date = dateObj.from_date;
+            this.filterObj.to_date = dateObj.to_date;
+          } else {
+            this.filterObj.from_date = item.from_date;
+            this.filterObj.to_date = item.to_date;
+          }
+          this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
+          this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
+          if (this.filterObj.dateOption !== 'Custom Range') {
+            this.selectedDateRange = this.filterObj.dateOption;
+          } else {
+            this.selectedDateRange = moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
+            moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+          }
+          this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+          this.getLatestAlerts(false);
+        }
+      }
+
     }
   }
 
@@ -162,6 +194,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.filterObj.from_date = moment(value.start).utc().unix();
     this.filterObj.to_date = moment(value.end).utc().unix();
     console.log(this.filterObj);
+    if (value.label === 'Custom Range') {
+      this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
+    } else {
+      this.selectedDateRange = value.label;
+    }
     if (this.filterObj.to_date - this.filterObj.from_date > 3600) {
       this.filterObj.isTypeEditable = true;
     } else {
@@ -184,7 +221,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
   }
 
-  async onChangeOfHierarchy(i) {
+  async onChangeOfHierarchy(i, persistDeviceSelection = true) {
+    console.log(i);
     Object.keys(this.configureHierarchy).forEach(key => {
       if (key > i) {
         delete this.configureHierarchy[key];
@@ -195,6 +233,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.hierarchyArr[key] = [];
       }
     });
+    console.log('2088888');
     let nextHierarchy = this.contextApp.hierarchy.tags;
     Object.keys(this.configureHierarchy).forEach((key, index) => {
       if (this.configureHierarchy[index + 1]) {
@@ -230,12 +269,14 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     });
     this.devices = JSON.parse(JSON.stringify(arr));
     }
-    if (!this.filterObj.device) {
     if (this.devices?.length === 1) {
       this.filterObj.device = this.devices[0];
-    } else {
-      this.filterObj.device = undefined;
     }
+    console.log(persistDeviceSelection);
+    if (persistDeviceSelection) {
+      console.log('2477777');
+      this.filterObj.deviceArr = undefined;
+      this.filterObj.device = undefined;
     }
     let count = 0;
     Object.keys(this.configureHierarchy).forEach(key => {
@@ -262,7 +303,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   getDevices(hierarchy) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
@@ -297,16 +338,42 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.filterObj.deviceArr = undefined;
   }
 
-  getLatestAlerts() {
+  getLatestAlerts(updateFilterObj = true) {
     this.latestAlerts = [];
     this.isAlertAPILoading = true;
     // const filterObj = {
     //   app: this.contextApp.app,
     //   count: 10
     // };
-    if (this.pageType === 'live') {
-    this.commonService.setItemInLocalStorage(CONSTANTS.DASHBOARD_ALERT_SELECTION, this.filterObj);
+    this.hierarchyString = this.contextApp.app;
+    this.displayHierarchyString = this.contextApp.app;
+    Object.keys(this.configureHierarchy).forEach((key) => {
+      if (this.configureHierarchy[key]) {
+        this.hierarchyString += (' > ' + this.configureHierarchy[key]);
+        this.displayHierarchyString = this.configureHierarchy[key];
+      }
+    });
+    if (updateFilterObj) {
+      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+      if (!this.filterObj.device) {
+        pagefilterObj.hierarchy = { App: this.contextApp.app};
+        Object.keys(this.configureHierarchy).forEach((key) => {
+          if (this.configureHierarchy[key]) {
+            pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
+          }
+        });
+      } else {
+        pagefilterObj['hierarchy'] = this.filterObj.device.hierarchy;
+        pagefilterObj['devices'] = this.filterObj.device;
+      }
+      if (this.pageType === 'history') {
+        pagefilterObj['from_date'] = this.filterObj.from_date;
+        pagefilterObj['to_date'] = this.filterObj.to_date;
+        pagefilterObj['dateOption'] = this.filterObj.dateOption;
+      }
+      this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
     }
+    this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
     const obj = {...this.filterObj};
     obj.hierarchy = { App: this.contextApp.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
@@ -321,9 +388,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
     delete obj.deviceArr;
     if (this.pageType === 'live') {
-      const midnight =  ((((moment().hour(0)).minute(0)).second(0)).utc()).unix();
       const now = (moment().utc()).unix();
-      obj.from_date = midnight;
+      obj.from_date = moment().subtract(24, 'hour').utc().unix();
       obj.to_date = now;
     } else {
     if (!obj.from_date || !obj.to_date) {
@@ -336,7 +402,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       (response: any) => {
         this.latestAlerts = response.data;
         if (this.latestAlerts.length > 0) {
-
+          this.selectedAlert = undefined;
           this.onClickOfViewGraph(this.latestAlerts[0]);
         }
         this.latestAlerts.forEach((item, i) =>  {
@@ -389,7 +455,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     //       this.latestAlerts.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
     //     }
     //   });
-
 
   }
 
@@ -551,6 +616,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   async onClickOfViewGraph(alert) {
+    this.selectedAlert = undefined;
     this.onTabClick('visualization');
     this.isOpen = true;
     this.beforeInterval = 1.5;
@@ -785,7 +851,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   async onClickOfAcknowledgeAlert(alert): Promise<void> {
     this.acknowledgedAlert = alert;
-    if (!this.acknowledgedAlert.metadata) {
+    if (!this.acknowledgedAlert || !this.acknowledgedAlert.metadata) {
       this.acknowledgedAlert.metadata = {
         files: [{
           type: undefined,

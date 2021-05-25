@@ -21,25 +21,19 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
   contextApp: any;
   constantData: CONSTANTS;
   devices: any[] = [];
-  @ViewChild(DaterangepickerComponent, {static: false}) datepicker: DaterangepickerComponent;
+  @ViewChild(DaterangepickerComponent, {static: false}) picker: DaterangepickerComponent;
   today = new Date();
   subscriptions: Subscription[] = [];
   daterange: any = {};
   options: any = {
     locale: { format: 'DD-MM-YYYY HH:mm' },
     alwaysShowCalendars: false,
+    autoUpdateInput: false,
+    maxDate: moment(),
     timePicker: true,
-    ranges: {
-      'Last 5 Mins': [moment().subtract(5, 'minutes'), moment()],
-      'Last 30 Mins': [moment().subtract(30, 'minutes'), moment()],
-      'Last 1 hour': [moment().subtract(1, 'hour'), moment()],
-      'Last 24 hours': [moment().subtract(24, 'hours'), moment()],
-      'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-      'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-      'This Month': [moment().startOf('month'), moment().endOf('month')],
-      'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-    }
+    ranges: CONSTANTS.DATE_OPTIONS
   };
+  selectedDateRange: string;
   constructor(
     private commonService: CommonService
   ) { }
@@ -54,12 +48,25 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!this.filterObj.count) {
       this.filterObj.count = 10;
     }
+
     this.originalFilterObj = {};
     this.originalFilterObj = {...this.filterObj};
 
   }
 
   ngAfterViewInit() {
+    if (this.filterObj.from_date) {
+      this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
+    }
+    if (this.filterObj.to_date) {
+      this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
+    }
+    if (this.filterObj.dateOption !== 'Custom Range') {
+      this.selectedDateRange = this.filterObj.dateOption;
+    } else {
+      this.selectedDateRange = moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
+      moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+    }
     // this.datepicker.datePicker.setStartDate(null);
     // this.datepicker.datePicker.setEndDate(null);
   }
@@ -67,6 +74,12 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedDate(value: any, datepicker?: any) {
     this.filterObj.from_date = moment(value.start).utc().unix();
     this.filterObj.to_date = moment(value.end).utc().unix();
+    this.filterObj.dateOption = value.label;
+    if (value.label === 'Custom Range') {
+      this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
+    } else {
+      this.selectedDateRange = value.label;
+    }
     console.log(this.filterObj);
   }
 

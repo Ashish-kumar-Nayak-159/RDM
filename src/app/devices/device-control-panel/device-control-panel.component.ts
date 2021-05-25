@@ -113,9 +113,6 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
       $('body').addClass('sidebar-toggled');
       $('.sidebar').addClass('toggled');
       // $('.sidebar .collapse').collapse('hide');
-    } else {
-      $('body').removeClass('sidebar-toggled');
-      $('.sidebar').removeClass('toggled');
     }
     if (($(window).width() > 768) && $('.sidebar').hasClass('toggled')) {
       $('.container-fluid').removeClass( 'sb-collapse' );
@@ -280,6 +277,7 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
     $('.sidebar').addClass('toggled');
-    this.setToggleClassForMenu();
+    $('body').removeClass('sidebar-toggled');
+    $('.sidebar').removeClass('toggled');
   }
 }

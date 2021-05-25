@@ -4,8 +4,8 @@
     <div class="d-flex">
       <div class="main-heading">App Settings</div>
   </div>
-  <i *ngIf="isApplicationDataLoading" class="fa fa-spinner fa-spin fa-fw fa-2x text-center"></i>
-  <div class="ml-auto" *ngIf="!isApplicationDataLoading">
+
+  <div class="ml-auto" >
     <div class="asset-nav-tabs">
       <nav>
         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
@@ -34,8 +34,8 @@
   </div>
 
 </div>
-
-<div class="">
+<i *ngIf="isApplicationDataLoading" class="fa fa-spinner fa-spin fa-fw fa-2x text-center"></i>
+<div class="" *ngIf="!isApplicationDataLoading">
   <div id="assetTabContent" class="tab-content">
     <div class="tab-pane" id="app-meta-data" role="tabpanel" aria-labelledby="nav-home-tab"
     [ngClass]="{'active': activeTab === 'meta-data'}">

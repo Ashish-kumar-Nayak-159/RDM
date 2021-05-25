@@ -9,6 +9,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
+import { DaterangepickerComponent } from 'ng2-daterangepicker';
 @Component({
   selector: 'app-device-mtbf',
   templateUrl: './device-mtbf.component.html',
@@ -39,9 +40,11 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
   options: any = {
     locale: { format: 'DD-MM-YYYY HH:mm' },
     alwaysShowCalendars: false,
+    autoUpdateInput: false,
+    maxDate: moment(),
     timePicker: true,
     ranges: {
-      'Last 24 hours': [moment().subtract(24, 'hours'), moment()],
+      'Last 24 Hours': [moment().subtract(24, 'hours'), moment()],
       'Last 7 Days': [moment().subtract(6, 'days'), moment()],
       'This Week': [moment().startOf('isoWeek'), moment()],
       'Last 4 Weeks': [moment().subtract(4, 'weeks').startOf('isoWeek'), moment().subtract(1, 'weeks').endOf('isoWeek')],
@@ -51,6 +54,10 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
       'Last 12 Months': [moment().subtract(3, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')]
     }
   };
+  loader = false;
+  loadingMessage = 'Loading Data. Please wait...';
+  @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
+  selectedDateRange: string;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -61,22 +68,36 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.filterObj.countNotShow = true;
     this.filterObj.epoch = true;
-
   }
 
   onTabChange(type) {
     this.filterObj = {};
+    this.filterObj.dateOption = 'Last 24 Hours';
+    this.filterObj.from_date = moment().subtract(24, 'hours').utc().unix();
+    this.filterObj.to_date = moment().utc().unix();
     this.avrgMTBF = undefined;
     this.avrgMTBFString = undefined;
     this.filterObj.epoch = true;
     this.lifeCycleEvents = [];
+    if (this.filterObj.dateOption !== 'Custom Range') {
+      this.selectedDateRange = this.filterObj.dateOption;
+    } else {
+      this.selectedDateRange = moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
+      moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+    }
     if (type === 'history' && this.chart) {
       this.chart.dispose();
     }
+    setTimeout(() => {
+      this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
+      this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
+    }, 1000);
+
   }
 
   searchMTBFEvents(filterObj) {
     this.avrgMTBF = undefined;
+    this.loader = true;
     this.avrgMTBFString = undefined;
     this.isFilterSelected = true;
     this.isLifeCycleEventsLoading = true;
@@ -130,6 +151,11 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
   selectedDate(value: any, datepicker?: any) {
     this.filterObj.from_date = moment(value.start).utc().unix();
     this.filterObj.to_date = moment(value.end).utc().unix();
+    if (value.label === 'Custom Range') {
+      this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
+    } else {
+      this.selectedDateRange = value.label;
+    }
     console.log(this.filterObj);
   }
 
@@ -146,7 +172,8 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
   }
 
   plotChart() {
-
+    this.loadingMessage = 'Loading Chart. Please wait...';
+    am4core.options.autoDispose = true;
     const chart = am4core.create('chartdiv', am4charts.XYChart);
     const data = [];
     // this.lifeCycleEvents.reverse();
@@ -209,6 +236,10 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
    //  chart.cursor = new am4charts.XYCursor();
     chart.legend.itemContainers.template.togglable = false;
     dateAxis.dateFormatter = new am4core.DateFormatter();
+    chart.events.on('ready', (ev) => {
+      this.loader = false;
+      this.loadingMessage = 'Loading Data. Wait...';
+    });
     // chart.scrollbarX = new am4core.Scrollbar();
     // chart.scrollbarX.parent = chart.bottomAxesContainer;
     // dateAxis.dateFormatter.dateFormat = 'W';

@@ -2,7 +2,7 @@
 <table  class="table table-hover" *ngIf="tableConfig">
   <thead>
     <tr >
-      <th ></th>
+      <th >No</th>
       <ng-container *ngFor="let item of tableConfig?.data; let headerIndex = index">
         <ng-container *ngIf="!item.is_display_filter; else filterTemplate">
           <th ><span>{{item.header_name}}</span>
@@ -70,7 +70,7 @@
           <ng-container *ngFor="let btn of item.btn_list">
             <a href="javascript:void(0)" style="z-index: 1" class="{{btn.valueclass}}" (click)="onClickOfButton(dataItem, btn.id)"
             >
-              <i class="{{btn.icon}}" title="{{btn.tooltip}}"></i>
+              <i class="{{btn.icon}}" placement="bottom" [tooltip]="btn.tooltip"></i>
               {{btn.text}}
             </a>
           </ng-container>

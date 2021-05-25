@@ -49,8 +49,8 @@
               <option [ngValue]="undefined">Quick Date Options</option>
               <option [ngValue]="'5 mins'">Last 5 minutes</option>
               <option [ngValue]="'30 mins'">Last 30 minutes</option>
-              <option [ngValue]="'1 hour'">Last 1 hour</option>
-              <option [ngValue]="'24 hour'">Last 24 hours</option>
+              <option [ngValue]="'1 hour'">Last 1 Hour</option>
+              <option [ngValue]="'24 hour'">Last 24 Hours</option>
               <option [ngValue]="'date'">Select Date</option>
               <option [ngValue]="'date range'">Select Date Range</option>
             </select>
@@ -70,7 +70,8 @@
               <owl-date-time #dt1></owl-date-time>
             </ng-container>
           </div>
-          <button type="button" class="btn btn-warning btn-sm ml-3 mr-1 my-1" title="Search"
+          <button type="button" class="btn btn-warning btn-sm ml-3 mr-1 my-1" tooltip="Search"
+          placement="bottom"
             (click)="searchAlerts()"><i class="fa fa-search fa-sm"></i></button>
           <!-- <button type="button" class="btn btn-white btn-sm mx-1 my-1" title="Clear Filters" (click)="clear();">
             <img class="filter-clear-icon" src="./assets/img/filter.svg"></button> -->

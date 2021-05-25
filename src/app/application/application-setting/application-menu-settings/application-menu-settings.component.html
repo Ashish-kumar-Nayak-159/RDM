@@ -1,9 +1,9 @@
 <div class="tab-bar">
-  <div class="d-flex">
-    <div class="main-heading">Application Menu Settings
-      <a href="javascript:void(0)" title="Edit Tags" *ngIf="!isAppSettingsEditable" title="Edit"
+  <div class="d-flex d-flex align-items-center">
+    <div class="h6 m-0 p-0">Application Menu Settings
+      <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isAppSettingsEditable"
       (click)="isAppSettingsEditable = true;"><i class="fa fa-edit"></i></a>
-    <a href="javascript:void(0)" title="Cancel" *ngIf="isAppSettingsEditable" title="Cancel"
+    <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isAppSettingsEditable"
       (click)="onCancelClick();"><i class="fa fa-times"></i></a>
     </div>
 </div>
@@ -19,9 +19,9 @@
     <div class="row">
       <div class="col-12">
         <div class="col-8">
-          <table class="table table-bordered table-striped" cellspacing="0">
+          <table class="table table-hover">
             <thead>
-              <tr class="bg-secondary text-white">
+              <tr >
                 <th></th>
                 <th>Page</th>
                 <th>System Name</th>
@@ -53,7 +53,7 @@
                 <td>{{item.page}}</td>
                 <td>{{item.system_name}}</td>
                 <td>
-                  <input type="text" class="form-control" name="display_name_main_menu{{configIndex}}" id="display_name_main_menu{{configIndex}}"
+                  <input type="text" class="form-control form-control-sm" name="display_name_main_menu{{configIndex}}" id="display_name_main_menu{{configIndex}}"
                     [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/>
 
                   </td>
@@ -69,7 +69,7 @@
                       <label for="recipient-name" class="col-form-label">{{control.name}}</label>
                     </div>
                     <div class="col-md-5">
-                      <input type="{{control.type === 'number' ? 'number' : 'text'}}" class="form-control form-control-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
+                      <input type="{{control.type === 'number' ? 'number' : 'text'}}" class="form-control form-control-sm form-control form-control-sm-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
                         placeholder="Enter {{control.name}}" [disabled]="!isAppSettingsEditable">
                     </div>
                   </ng-container>
@@ -92,9 +92,9 @@
     <div class="row">
       <div class="col-12">
         <div class="col-8">
-          <table class="table table-bordered table-striped" cellspacing="0">
+          <table class="table table-hover">
             <thead>
-              <tr class="bg-secondary text-white">
+              <tr>
                 <th></th>
                 <th>System Name</th>
                 <th>Display Name</th>
@@ -123,7 +123,7 @@
                     </ng-container>
                   </td>
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control" name="display_name_asset{{configIndex}}" id="display_name_asset{{configIndex}}"
+                  <td><input type="text" class="form-control form-control-sm" name="display_name_asset{{configIndex}}" id="display_name_asset{{configIndex}}"
                       [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/></td>
                   <td><input type="checkbox" name="visible_asset_{{configIndex}}" [disabled]="!isAppSettingsEditable"
                       id="visible_asset_{{configIndex}}" [(ngModel)]="item.visible" /></td>
@@ -139,7 +139,7 @@
                       </div>
 
                       <!-- <div class="col-md-5">
-                        <input type="text" class="form-control form-control-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
+                        <input type="text" class="form-control form-control-sm form-control form-control-sm-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
                           placeholder="Enter {{control.name}}" [disabled]="!isAppSettingsEditable">
                       </div> -->
                     </div>
@@ -162,9 +162,9 @@
       <div class="col-12">
 
         <div class="col-8">
-          <table class="table table-bordered table-striped" cellspacing="0">
+          <table class="table table-hover">
             <thead>
-              <tr class="bg-secondary text-white">
+              <tr >
                 <th></th>
                 <th>System Name</th>
                 <th>Display Name</th>
@@ -193,7 +193,7 @@
                     </ng-container>
                   </td>
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control" name="display_name_legacy_asset{{configIndex}}" id="display_name_asset{{configIndex}}"
+                  <td><input type="text" class="form-control form-control-sm" name="display_name_legacy_asset{{configIndex}}" id="display_name_asset{{configIndex}}"
                       [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/></td>
                   <td><input type="checkbox" name="visible_legacy_{{configIndex}}" [disabled]="!isAppSettingsEditable"
                       id="visible_legacy_{{configIndex}}" [(ngModel)]="item.visible" /></td>
@@ -209,7 +209,7 @@
                       </div>
 
                       <!-- <div class="col-md-5">
-                        <input type="text" class="form-control form-control-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
+                        <input type="text" class="form-control form-control-sm form-control form-control-sm-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
                           placeholder="Enter {{control.name}}" [disabled]="!isAppSettingsEditable">
                       </div> -->
                     </div>
@@ -231,9 +231,9 @@
     <div class="row">
       <div class="col-12">
         <div class="col-8">
-          <table class="table table-bordered table-striped" cellspacing="0">
+          <table class="table table-hover">
             <thead>
-              <tr class="bg-secondary text-white">
+              <tr >
                 <th></th>
                 <th>System Name</th>
                 <th>Display Name</th>
@@ -261,7 +261,7 @@
                     </ng-container>
                   </td>
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control" name="display_name_gateway{{configIndex}}" id="display_name_asset{{configIndex}}"
+                  <td><input type="text" class="form-control form-control-sm" name="display_name_gateway{{configIndex}}" id="display_name_asset{{configIndex}}"
                       [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" /></td>
                   <td><input type="checkbox" name="visible_gateway{{configIndex}}" [disabled]="!isAppSettingsEditable"
                       id="visible_gateway{{configIndex}}" [(ngModel)]="item.visible" /></td>
@@ -277,7 +277,7 @@
                       </div>
 
                       <!-- <div class="col-md-5">
-                        <input type="text" class="form-control form-control-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
+                        <input type="text" class="form-control form-control-sm form-control form-control-sm-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
                           placeholder="Enter {{control.name}}" [disabled]="!isAppSettingsEditable">
                       </div> -->
                     </div>
@@ -299,9 +299,9 @@
     <div class="row">
       <div class="col-12">
         <div class="col-8">
-          <table class="table table-bordered table-striped" cellspacing="0">
+          <table class="table table-hover">
             <thead>
-              <tr class="bg-secondary text-white">
+              <tr>
                 <th>System Name</th>
                 <th>Display Name</th>
                 <th>Visibility</th>
@@ -322,7 +322,7 @@
               <ng-container *ngFor="let item of applicationData?.configuration?.model_control_panel_menu; let configIndex = index">
                 <tr *ngIf="!item.isTitle">
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control" name="display_name_asset_type{{configIndex}}" id="display_name_asset_type{{configIndex}}"
+                  <td><input type="text" class="form-control form-control-sm" name="display_name_asset_type{{configIndex}}" id="display_name_asset_type{{configIndex}}"
                       [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/></td>
                   <td><input type="checkbox" name="visible{{configIndex}}" [disabled]="!isAppSettingsEditable"
                       id="visible{{configIndex}}" [(ngModel)]="item.visible" /></td>

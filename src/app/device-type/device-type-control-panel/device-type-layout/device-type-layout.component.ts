@@ -14,6 +14,7 @@ export class DeviceTypeLayoutComponent implements OnInit {
 
   }
   ngOnInit(): void {
+    this.setViewType('history');
   }
 
   setViewType(type) {

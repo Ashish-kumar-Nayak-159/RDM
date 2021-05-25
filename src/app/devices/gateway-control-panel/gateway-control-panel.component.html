@@ -4,9 +4,7 @@
   <div class="sidebar1 sidebar-light mb-3 ">
 
     <div class="sidebar1-heading sidebar1-top-heading">
-      <span style="font-size:0.9rem; margin-right:2rem;">Diagnosis Panel </span>
-      <button class="d-none d-md-inline rounded-circle border-0 mb-0" id="sidebar1Toggle" title="Minimize"
-        (click)="onSidebarToggle()"></button>
+      <span>Diagnosis Panel </span>
       <i class="fa fa-fw fa" style="font-size:1rem; margin-top:0.5rem;margin-left:0.3rem">DP</i>
     </div>
     <div class="scrollbox scrollbox_delayed" tabindex="0">
@@ -24,7 +22,7 @@
             <li class="nav-item" [ngClass]="{'active': activeTab === menu.page}">
               <a class="nav-link collapsed" href="{{menu.url}}" data-toggle="tab" aria-expanded="false"
                 (click)="setActiveTab(menu.page)">
-                <i class="{{menu.icon}}" title="{{menu.display_name}}"></i>
+                <i class="{{menu.icon}}" placement="bottom" [tooltip]="menu.display_name"></i>
                 <span>{{menu.display_name}}</span></a>
             </li>
           </ng-container>

@@ -191,7 +191,7 @@
                 <a *ngIf="i === 0"
                 class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2"
                 href="javascript:void(0)" (click)="addDocument()"
-                title="Add Document"
+                placement="bottom" tooltip="Add Document"
                 ><i class="fa fa-plus fa-sm text-white"></i></a>
               </label>
               <select class="custom-select" id="template_{{i}}" name="model_type_{{i}}" [(ngModel)]="file.type"

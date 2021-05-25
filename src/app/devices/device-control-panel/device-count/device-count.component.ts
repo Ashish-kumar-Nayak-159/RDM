@@ -34,17 +34,11 @@ export class DeviceCountComponent implements OnInit {
     locale: { format: 'DD-MM-YYYY HH:mm' },
     alwaysShowCalendars: false,
     timePicker: true,
-    ranges: {
-      'Last 5 Mins': [moment().subtract(5, 'minutes'), moment()],
-      'Last 30 Mins': [moment().subtract(30, 'minutes'), moment()],
-      'Last 1 hour': [moment().subtract(1, 'hour'), moment()],
-      'Last 24 hours': [moment().subtract(24, 'hours'), moment()],
-      'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-      'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-      'This Month': [moment().startOf('month'), moment().endOf('month')],
-      'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-    }
+    autoUpdateInput: false,
+    maxDate: moment(),
+    ranges: CONSTANTS.DATE_OPTIONS
   };
+  selectedDateRange: any;
   constructor(
     private toasterService: ToasterService,
     private deviceService: DeviceService,
@@ -54,6 +48,9 @@ export class DeviceCountComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.telemetryFilter = {};
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.telemetryFilter.app = this.contextApp.app;
+    this.telemetryFilter.count = 10;
     if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
       this.telemetryFilter.gateway_id = this.device.device_id;
     } else {
@@ -73,18 +70,33 @@ export class DeviceCountComponent implements OnInit {
         }
       ]
     };
-    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.telemetryFilter.aggregation_format = 'COUNT';
     this.telemetryFilter.aggregation_minutes = 1;
 
     this.telemetryFilter.count = 10;
-    this.telemetryFilter.app = this.device?.tags?.app;
     this.telemetryFilter.epoch = true;
     this.originalTelemetryFilter = {...this.telemetryFilter};
     if (this.telemetryFilter.gateway_id) {
       this.getDevicesListByGateway();
     }
+    this.loadFromCache();
 
+  }
+
+  loadFromCache() {
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+    if (item.dateOption) {
+      this.telemetryFilter.dateOption = item.dateOption;
+      if (item.dateOption !== 'Custom Range') {
+        const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+        this.telemetryFilter.from_date = dateObj.from_date;
+        this.telemetryFilter.to_date = dateObj.to_date;
+      } else {
+        this.telemetryFilter.from_date = item.from_date;
+        this.telemetryFilter.to_date = item.to_date;
+      }
+    }
+    // this.searchTelemetry(this.telemetryFilter, false);
   }
 
   getDevicesListByGateway() {
@@ -126,7 +138,7 @@ export class DeviceCountComponent implements OnInit {
 
 
 
-  async searchTelemetry(filterObj) {
+  async searchTelemetry(filterObj, updateFilterObj = true) {
     this.telemetry = [];
     const obj = {...filterObj};
     delete obj.device;
@@ -153,6 +165,13 @@ export class DeviceCountComponent implements OnInit {
       this.isTelemetryLoading = false;
       this.isFilterSelected = false;
       return;
+    }
+    if (updateFilterObj) {
+      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+      pagefilterObj['from_date'] = obj.from_date;
+      pagefilterObj['to_date'] = obj.to_date;
+      pagefilterObj['dateOption'] = obj.dateOption;
+      this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, pagefilterObj);
     }
     delete obj.dateOption;
     delete obj.isTypeEditable;
@@ -203,6 +222,11 @@ export class DeviceCountComponent implements OnInit {
     this.telemetryFilter.from_date = moment(value.start).utc().unix();
     this.telemetryFilter.to_date = moment(value.end).utc().unix();
     console.log(this.telemetryFilter);
+    if (value.label === 'Custom Range') {
+      this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
+    } else {
+      this.selectedDateRange = value.label;
+    }
     if (this.telemetryFilter.to_date - this.telemetryFilter.from_date > 3600) {
       this.telemetryFilter.isTypeEditable = true;
     } else {

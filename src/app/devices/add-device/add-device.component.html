@@ -3,13 +3,8 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">
-<<<<<<< HEAD
           {{isDeviceEditable ? ('Edit ' + (tileData?.table_key || 'Asset')) :
             ('Add New ' + (tileData?.table_key || 'Asset'))}}
-=======
-          {{isDeviceEditable ? ('Edit ' + (tileData && tileData[1] ? tileData[1]?.value: '')) :
-            ('Add New ' + (tileData && tileData[1] ? tileData[1]?.value: ''))}}
->>>>>>> e25e9306ac45909c9490dae645e687d9f43e099c
         </h5>
         <button type="button" class="close" (click)="onCloseCreateDeviceModal()" aria-label="Close"
           [disabled]="isCreateDeviceAPILoading">

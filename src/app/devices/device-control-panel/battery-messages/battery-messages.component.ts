@@ -26,6 +26,7 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
   modalConfig: any;
   batteryMessageTableConfig: any = {};
   pageType: any;
+  contextApp: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -33,11 +34,14 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
       this.batteryMessageFilter.gateway_id = this.device.device_id;
     } else {
       this.batteryMessageFilter.device_id = this.device.device_id;
     }
+    this.batteryMessageFilter.count = 10;
+    this.batteryMessageFilter.app = this.contextApp.app;
     this.batteryMessageTableConfig = {
       type: 'battery',
       headers: ['Timestamp', 'Message ID', 'Message'],
@@ -56,6 +60,7 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
         }
       ]
     };
+    this.loadFromCache();
     if (this.componentState === CONSTANTS.IP_GATEWAY) {
       this.batteryMessageTableConfig.data.splice(1, 1);
       this.batteryMessageTableConfig.data.splice(1, 0, {
@@ -65,10 +70,33 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
     }
   }
 
-  searchBatteryMessage(filterObj) {
+  loadFromCache() {
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+    if (item.dateOption) {
+      this.batteryMessageFilter.dateOption = item.dateOption;
+      if (item.dateOption !== 'Custom Range') {
+        const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+        this.batteryMessageFilter.from_date = dateObj.from_date;
+        this.batteryMessageFilter.to_date = dateObj.to_date;
+      } else {
+        this.batteryMessageFilter.from_date = item.from_date;
+        this.batteryMessageFilter.to_date = item.to_date;
+      }
+    }
+    this.searchBatteryMessage(this.batteryMessageFilter, false);
+  }
+
+  searchBatteryMessage(filterObj, updateFilterObj = true) {
     this.isFilterSelected = true;
     this.isBatteryMessageLoading = true;
     const obj = {...filterObj};
+    if (updateFilterObj) {
+      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+      pagefilterObj['from_date'] = obj.from_date;
+      pagefilterObj['to_date'] = obj.to_date;
+      pagefilterObj['dateOption'] = obj.dateOption;
+      this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, pagefilterObj);
+    }
     this.batteryMessageFilter = filterObj;
     this.apiSubscriptions.push(this.deviceService.getDeviceBatteryMessagesList(obj).subscribe(
       (response: any) => {

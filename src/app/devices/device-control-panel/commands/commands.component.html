@@ -2,19 +2,19 @@
   <div class="">
     <ul class="nav">
       <!-- Nav Item - Tables -->
-      <li class="nav-item" [ngClass]="{'active': displayMode === 'view'}">
-        <a class="nav-link"  href="javascript:void(0)" (click)="displayMode = 'view'; timerObj = undefined;">
+      <li class="nav-item" >
+        <a class="nav-link" [ngClass]="{'active': displayMode === 'view'}" href="javascript:void(0)" (click)="displayMode = 'view'; timerObj = undefined;">
           <i class="fa fa-fw fa-eye"></i>
           <span>View</span></a>
       </li>
-      <li class="nav-item" *ngIf="menuDetail?.accordion_value?.configuration" [ngClass]="{'active': displayMode === 'configure_specific_commands'}">
-        <a class="nav-link"  href="javascript:void(0)" (click)="onClickOfSpecificCommands('configure')">
+      <li class="nav-item" *ngIf="menuDetail?.accordion_value?.configuration" >
+        <a class="nav-link" [ngClass]="{'active': displayMode === 'configure_specific_commands'}" href="javascript:void(0)" (click)="onClickOfSpecificCommands('configure')">
           <i class="fa fa-fw fa-cog"></i>
           <span>Configuration</span></a>
       </li>
     <!-- Nav Item - Charts -->
-    <li class="nav-item" *ngIf="menuDetail?.accordion_value?.control" [ngClass]="{'active': displayMode === 'control_specific_commands'}">
-      <a class="nav-link"  href="javascript:void(0)" (click)="onClickOfSpecificCommands('control')">
+    <li class="nav-item" *ngIf="menuDetail?.accordion_value?.control" >
+      <a class="nav-link" [ngClass]="{'active': displayMode === 'control_specific_commands'}" href="javascript:void(0)" (click)="onClickOfSpecificCommands('control')">
         <i class="fa fa-fw fa-angle-right"></i>
         <span>Control</span></a>
     </li>
@@ -23,15 +23,15 @@
         <i class="fa fa-fw fa-edit"></i>
         <span>Send General Command</span></a>
     </li> -->
-    <li class="nav-item" *ngIf="menuDetail?.accordion_value?.purge" [ngClass]="{'active': displayMode === 'purge'}">
-      <a class="nav-link" href="javascript:void(0)" (click)="displayMode = 'purge'; timerObj = undefined;">
+    <li class="nav-item" *ngIf="menuDetail?.accordion_value?.purge" >
+      <a class="nav-link" [ngClass]="{'active': displayMode === 'purge'}" href="javascript:void(0)" (click)="displayMode = 'purge'; timerObj = undefined;">
         <i class="fa fa-fw fa-trash"></i>
         <span>Purge</span></a>
     </li>
   </ul></div>
   </div>
 <ng-container *ngIf="displayMode === 'view'">
-<app-c2d-message [device]="device"></app-c2d-message>
+<app-c2d-message [device]="device" [pageType]="pageType"></app-c2d-message>
 </ng-container>
 <ng-container *ngIf="displayMode === 'configure_specific_commands' || displayMode === 'control_specific_commands'">
   <div class="tab-bar">
@@ -39,17 +39,17 @@
   <form class="form-inline">
       <div class="form-group ">
         <input type="radio" value="C2D Message"
-            name="communicationTechnique" [(ngModel)]="selectedCommunicationTechnique" >
+            name="communicationTechnique" [(ngModel)]="selectedCommunicationTechnique"  (change)="onChangeOfTechnique()">
         <label class="col-form-label">&nbsp; C2D Message</label>
       </div>
       <div class="form-group">
         <input type="radio" value="Direct Method"
-            name="communicationTechnique" [(ngModel)]="selectedCommunicationTechnique" >
+            name="communicationTechnique" [(ngModel)]="selectedCommunicationTechnique" (change)="onChangeOfTechnique()">
         <label class="col-form-label">&nbsp; Direct Method</label>
       </div>
       <div class="form-group">
         <input type="radio" value="Twin Change"
-            name="communicationTechnique" [(ngModel)]="selectedCommunicationTechnique" >
+            name="communicationTechnique" [(ngModel)]="selectedCommunicationTechnique"  (change)="onChangeOfTechnique()">
         <label class="col-form-label"> &nbsp;Twin Change</label>
       </div>
       <div class="form-group" *ngIf="selectedCommunicationTechnique" >
@@ -62,8 +62,8 @@
   </form>
   </div>
   </div>
-  <app-specific-c2d-message [device]="device" [pageType]="displayMode" [selectedWidget]="selectedWidget" [jsonModelKeys]="jsonModelKeys" *ngIf="selectedCommunicationTechnique === 'C2D Message' && selectedWidget"></app-specific-c2d-message>
-  <app-specific-direct-method [device]="device" [pageType]="displayMode" [selectedWidget]="selectedWidget" [jsonModelKeys]="jsonModelKeys" *ngIf="selectedCommunicationTechnique === 'Direct Method' && selectedWidget"></app-specific-direct-method>
+  <app-specific-c2d-message [device]="device" [pageType]="displayMode" [componentState]="componentState" [selectedWidget]="selectedWidget" [jsonModelKeys]="jsonModelKeys" *ngIf="selectedCommunicationTechnique === 'C2D Message' && selectedWidget"></app-specific-c2d-message>
+  <app-specific-direct-method [device]="device" [pageType]="displayMode"  [componentState]="componentState" [selectedWidget]="selectedWidget" [jsonModelKeys]="jsonModelKeys" *ngIf="selectedCommunicationTechnique === 'Direct Method' && selectedWidget"></app-specific-direct-method>
   <app-specific-twin-change [device]="device" [pageType]="displayMode" *ngIf="selectedCommunicationTechnique === 'Twin Change' && selectedWidget"></app-specific-twin-change>
 </ng-container>
 

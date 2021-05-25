@@ -73,6 +73,12 @@ export class CommonDataTableComponent implements OnInit, OnChanges {
     }
   }
 
+  onClear(item) {
+    this.tableFilterObj[item.data_key] = undefined;
+    this.onStringValueChange();
+
+  }
+
   resetFilterData(index, data) {
     const keys = Object.keys(this.tableFilterObj);
     const key = keys[index];

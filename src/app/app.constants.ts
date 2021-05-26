@@ -963,7 +963,7 @@ export class CONSTANTS {
       system_name: 'Writable Properties',
       url: '#device_type_properties',
       display_name: 'Writable Properties',
-      icon: 'fa fa-fw fa-pencil-square-o',
+      icon: 'fa fa-fw fa-edit-square-o',
       visible: true,
       isTitle: false
     },

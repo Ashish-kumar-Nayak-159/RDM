@@ -3,11 +3,11 @@
 
   <div class="col-lg-6 col-xl-6 align-self-center">
     <div class="row">
-      <!-- <div><a href="javascript:void(0)" [class.disabled]="sentMessageData || !selectedWidget" (click)="validateMessage()" ><button type="button" class="btn btn-warning contact-form" > 1. Validate</button></a></div>
+      <!-- <div><a href="javascript:void(0)" [class.disabled]="sentMessageData || !selectedWidget" (click)="validateMessage()" ><button type="button" class="btn btn-primary contact-form" > 1. Validate</button></a></div>
     <div class='px-1'><hr></div> -->
       <div><a href="javascript:void(0)" [class.disabled]="!selectedWidget && !isInvokeDirectMethod"
           (click)="invokeDirectMethod()">
-          <button type="button" class="btn btn-warning"> Invoke Method
+          <button type="button" class="btn btn-primary"> Invoke Method
             <i class="fa fa-spinner fa-spin fa-fw " *ngIf="isInvokeDirectMethod"></i>
           </button>
         </a></div>

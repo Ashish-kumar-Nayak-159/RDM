@@ -202,11 +202,10 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
     const obj = {
       sub_job_id: c2dObj.sub_job_id,
       app: this.contextApp.app,
-      device_id: this.device.type !== CONSTANTS.IP_GATEWAY ? this.device.device_id : undefined,
-      gateway_id: this.device.type === CONSTANTS.IP_GATEWAY ? this.device.device_id : undefined,
       from_date: c2dObj.timestamp - 5,
       to_date: moment().unix(),
-      epoch: true
+      epoch: true,
+      job_type: 'Message'
     };
     this.subscriptions.push(this.deviceService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
       (response: any) => {
@@ -214,7 +213,7 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
         if (response.data?.length > 0 && this.displyaMsgArr.length <= response.data.length) {
           for (let i = this.displyaMsgArr.length - 1; i < response.data.length; i++) {
             this.displyaMsgArr.push({
-              message:  response.data[i].device_id + ': ' + response.data[i]?.message?.message,
+              message:  response.data[i].device_id + ': ' + response.data[i]?.payload?.message,
               error: response.data[i].status === 'failure' ? true : false
             });
           }

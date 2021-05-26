@@ -64,9 +64,9 @@
     </div>
     </accordion-group>
   </accordion>
-  <div *ngIf="controlWidgets.length === 0 && !isGetControlWidgetAPILoading">
+  <p class="m-3" *ngIf="controlWidgets.length === 0 && !isGetControlWidgetAPILoading">
     No configuration widgets are added.
-  </div>
+  </p>
 </div>
 </div>
 
@@ -94,7 +94,7 @@
 
         <div class="form-group">
           <label for="message-text" class="col-form-label">Cloud to Device Communication technique:</label>
-          <select class="custom-select" id="template" name="model_type" [(ngModel)]="controlWidget.metadata.communication_technique"
+          <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="controlWidget.metadata.communication_technique"
           (change)="controlWidget.properties = []">
             <option [ngValue]="undefined" >Select Communication Technique</option>
             <option [ngValue]="'C2D Message'" >C2D Message</option>

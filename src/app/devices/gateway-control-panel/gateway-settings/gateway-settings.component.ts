@@ -64,6 +64,7 @@ export class GatewaySettingsComponent implements OnInit {
             timeout_time: 120
           };
         }
+        this.onClickOfTab('Test Connection');
       }));
   }
 

@@ -1,8 +1,6 @@
-<!-- Topbar -->
-
 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top" *ngIf="!isLoginRoute && userData">
 
-  <button id="sidebarToggleTop" class="btn btn-link rounded-square mr-3" (click)="onSidebarToggle()">
+  <button id="sidebarToggleTop" class="btn btn-link rounded-square mr-3">
     <i class="fa fa-bars"></i>
   </button>
 
@@ -22,7 +20,7 @@
     <div class="topbar-divider d-none d-sm-block"></div>
 
     <li class="nav-item mx-1">
-      <a class="nav-link" href="javascript:void(0)" placement="bottom" tooltip="Telemetry" (click)="navigateToDashboard('telemetry')" id="messagesDropdown" aria-expanded="false">
+      <a class="nav-link" href="javascript:void(0)" title="Telemetry" (click)="navigateToDashboard('telemetry')" id="messagesDropdown" aria-expanded="false">
         <i class="fa fa-globe fa-fw  text-dark"></i>
       </a>
 
@@ -31,7 +29,7 @@
     <div class="topbar-divider d-none d-sm-block"></div>
 
     <li class="nav-item no-arrow mx-1">
-      <a class="nav-link" href="javascript:void(0)" placement="bottom" tooltip="Alert" (click)="navigateToDashboard('alert')" id="alertsDropdown" aria-expanded="false">
+      <a class="nav-link" href="javascript:void(0)" title="Alert" (click)="navigateToDashboard('alert')" id="alertsDropdown" aria-expanded="false">
         <i class="fa fa-bell fa-fw   text-dark"></i>
       </a>
 
@@ -52,7 +50,8 @@
           <span class="d-block">
 
           <span class="text-gray-600">{{userData?.name}}</span>
-          <small class="d-block text-gray-400 small">{{contextApp?.user.role}}</small>
+          <span class="d-block text-grey small">{{contextApp?.app}}</span>
+          <small class="d-block text-grey ">{{contextApp?.user.role}}</small>
         </span>
 
         <!-- <img class="img-profile rounded-circle" src="../../assets/img/user.jpg"> -->
@@ -119,74 +118,85 @@
   </div>
 </div>
 
-<nav class="navbar navbar-expand navbar-light bg-white topbar static-top" *ngIf="isLoginRoute">
-
-  <button id="sidebarToggleTop" class="btn btn-link d-md-none mr-3" (click)="onSidebarToggle()">
-    <i class="fa fa-bars"></i>
-  </button>
-
-
-  <!-- Sidebar - Brand -->
+<nav class="navbar navbar-expand navbar-light bg-white topbar static-top" style="height:5rem !important" *ngIf="isLoginRoute  && url.includes('login')">
   <ng-container *ngIf="defaultAppName !== 'SopanCMS'">
-  <a class="d-flex align-items-center justify-content-center">
-  <img src="../../assets/img/logo.png" class="d-block img-fluid">
-  </a>
-</ng-container>
- <!-- Sidebar - Brand -->
-  <!-- <a class="d-flex justify-content-end" style="margin-right:7rem;">
-  <img src="../../assets/img/kaynes-logo.png" class="d-none d-md-block img-fluid">
-  </a> -->
+    <div class="container" id="header">
+      <div class="" ><a><img
+          src="../../assets/img/logo.png" class="d-block img-fluid"></a>
+      </div>
+      <div class="ml-auto" ><a><img
+          src="../../assets/img/kaynes-logo.png" class="d-none d-md-block img-fluid"></a>
+      </div>
+    </div>
+  </ng-container>
+</nav>
 
-  <!-- Topbar Navbar -->
-  <ul class="navbar-nav ml-auto" *ngIf="!url.includes('login')">
-
-    <!-- Nav Item - User Information -->
-    <li class="nav-item dropdown no-arrow">
-      <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
-        aria-haspopup="true" aria-expanded="false">
-        <!-- <span>{{contextApp?.user.role}}</span>
-        <br/>
-        <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{userData?.name}}</span> -->
-        <span class="mr-2 d-none d-lg-block">
-          <span class="text-gray-600">{{userData?.name}}</span>
-          <!-- <small class="text-muted-dark d-block ">{{contextApp?.user.role}}</small> -->
-        </span>
-
-        <img class="img-profile rounded-circle" src="../../assets/img/user.png">
-      </a>
-      <!-- Dropdown - User Information -->
-      <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-        <a class="dropdown-item" href="javascript:void(0)">
-          <i class="fa fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-          Profile
+<nav class="navbar navbar-expand navbar-light bg-white topbar static-top" *ngIf="isLoginRoute && !url.includes('login')">
+  <div class="container">
+        <!-- Sidebar - Brand-->
+        <ng-container *ngIf="defaultAppName !== 'SopanCMS'">
+        <a class="d-flex align-items-center justify-content-center">
+        <img src="../../assets/img/logo.png" class="d-block img-fluid">
         </a>
-        <!-- <a class="dropdown-item" href="#">
-          <i class="fa fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-          Settings
-        </a>
-        <a class="dropdown-item" href="#">
-          <i class="fa fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-          Activity Log
+        </ng-container>
+        <!-- Sidebar - Brand -->
+        <!-- <a class="d-flex justify-content-end" style="margin-right:7rem;">
+        <img src="../../assets/img/kaynes-logo.png" class="d-none d-md-block img-fluid">
         </a> -->
 
-        <ng-container  *ngIf="userData?.apps.length > 1">
+        <!-- Topbar Navbar -->
+        <ul class="navbar-nav ml-auto" *ngIf="!url.includes('login')">
 
-        <a class="dropdown-item"
-        [routerLink]="['applications', 'selection']" routerLinkActive="active" >
-          <i class="fa fa-th-large fa-sm fa-fw mr-2 text-gray-400"></i>
-          Change Application
-        </a>
-        <div class="dropdown-divider"></div>
-        </ng-container>
-        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-          <i class="fa fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-          Logout
-        </a>
+          <!-- Nav Item - User Information -->
+          <li class="nav-item dropdown no-arrow">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              <!-- <span>{{contextApp?.user.role}}</span>
+              <br/>
+              <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{userData?.name}}</span> -->
+              <!-- <span class="mr-2 d-none d-lg-block">
+                <span class="text-gray-600">{{userData?.name}}</span>
+              </span> -->
+              <img class="img-profile rounded-circle mr-3" src="../../assets/img/user.png">
+              <span class="d-none d-lg-block">
+                 <span class="text-gray-600">{{userData?.name}}</span>
+              </span>
+
+              <!-- <img class="img-profile rounded-circle" src="../../assets/img/user.png"> -->
+            </a>
+            <!-- Dropdown - User Information -->
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+              <a class="dropdown-item" href="javascript:void(0)">
+                <i class="fa fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                Profile
+              </a>
+              <!-- <a class="dropdown-item" href="#">
+                <i class="fa fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                Settings
+              </a>
+              <a class="dropdown-item" href="#">
+                <i class="fa fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                Activity Log
+              </a> -->
+
+              <ng-container  *ngIf="userData?.apps.length > 1">
+
+              <a class="dropdown-item"
+              [routerLink]="['applications', 'selection']" routerLinkActive="active" >
+                <i class="fa fa-th-large fa-sm fa-fw mr-2 text-gray-400"></i>
+                Change Application
+              </a>
+              <div class="dropdown-divider"></div>
+              </ng-container>
+              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                <i class="fa fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                Logout
+              </a>
+            </div>
+          </li>
+
+        </ul>
       </div>
-    </li>
-
-  </ul>
-
-      </nav>
+ </nav>
 
 <app-reset-password [isFirstTimeLogin]="false" [loginData]="userData" (modalClose)="onModalClose()" *ngIf="isResetPassword"></app-reset-password>

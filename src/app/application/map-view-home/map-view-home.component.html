@@ -5,7 +5,7 @@
   <div id="map-container-google-1" class="z-depth-1-half map-container">
     <div class="form-group select-box-map w-100 m-2" >
       <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown" [ngClass]="{'active': hierarchyString}"
-      placement="bottom"
+
               [tooltip]="hierarchyString ? hierarchyString : 'Select Hierarchy'"
       (click)="onDeviceFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
       <i class="fas fa-fw fa-filter fa-sm button-divider"></i> {{hierarchyString ? displayHierarchyString : 'Select Hierarchy'}}</button>
@@ -15,7 +15,7 @@
                   let index = index
                 ">
         <div class="">
-          <select *ngIf="index !== 0" name="{{level}}_{{index}}" class="dropdown-form" id="{{ level }}"
+          <select *ngIf="index !== 0" name="{{level}}_{{index}}" class="dropdown-form dropdown-open" id="{{ level }}"
             [disabled]="contextApp?.user?.hierarchy[level]" [(ngModel)]="configureHierarchy[index]"
             name="{{ level }}" (change)="onChangeOfHierarchy(index, true)">
             <option [ngValue]="undefined">
@@ -26,7 +26,7 @@
             </option>
           </select>
           <input type="text" *ngIf="index === 0" name="{{level}}_{{index}}" defaultValue="{{ contextApp.app }}"
-            disabled class="dropdown-form" />
+            disabled class="dropdown-form dropdown-open" />
         </div>
       </ng-container>
       <!-- <ng-select [items]="devices" class="custom-dropdown" bindLabel="display_name" [clearable]="false"

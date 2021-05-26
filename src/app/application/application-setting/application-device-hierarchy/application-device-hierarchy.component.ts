@@ -85,17 +85,17 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Blank values are not allowed', 'Add Tag');
       return;
     }
-    let flag;
-    CONSTANTS.NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach(char => {
-      if (this.addedTagItem.includes(char)) {
-        flag = `Hierarchy name should not contain space, dot, '#' and '$'`;
-        return;
-      }
-    });
-    if (flag) {
-      this.toasterService.showError(flag, 'Add Tag');
-      return;
-    }
+    // let flag;
+    // CONSTANTS.NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach(char => {
+    //   if (this.addedTagItem.includes(char)) {
+    //     flag = `Hierarchy name should not contain space, dot, '#' and '$'`;
+    //     return;
+    //   }
+    // });
+    // if (flag) {
+    //   this.toasterService.showError(flag, 'Add Tag');
+    //   return;
+    // }
     if (this.hierarchyArr[this.selectedHierarchyItem].indexOf(this.addedTagItem) !== -1) {
       this.toasterService.showError('Tag already exists', 'Add Tag');
       return;

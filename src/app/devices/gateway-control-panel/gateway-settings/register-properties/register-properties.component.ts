@@ -233,18 +233,17 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     const obj = {
       sub_job_id: c2dObj.sub_job_id,
       app: this.contextApp.app,
-      device_id: this.device.type !== CONSTANTS.IP_GATEWAY ? this.device.device_id : undefined,
-      gateway_id: this.device.type === CONSTANTS.IP_GATEWAY ? this.device.device_id : undefined,
       from_date: c2dObj.timestamp - 5,
       to_date: moment().unix(),
-      epoch: true
+      epoch: true,
+      job_type: 'Message'
     };
     this.subscriptions.push(this.deviceService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
       (response: any) => {
         // response.data = this.generateResponse();
         if (response.data?.length > 0) {
           this.displyaMsgArr.push({
-            message:  response.data[response.data.length - 1].device_id + ': ' + response.data[response.data.length - 1]?.message.message,
+            message:  response.data[response.data.length - 1].device_id + ': ' + response.data[response.data.length - 1]?.payload?.message,
             error: response.data[response.data.length - 1].status === 'failure' ? true : false
           });
           clearInterval(this.c2dResponseInterval);

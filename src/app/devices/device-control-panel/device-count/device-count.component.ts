@@ -3,17 +3,18 @@ import { CONSTANTS } from './../../../app.constants';
 import { CommonService } from './../../../services/common.service';
 import { DeviceService } from './../../../services/devices/device.service';
 import { ToasterService } from './../../../services/toaster.service';
-import { ViewChild } from '@angular/core';
+import { ViewChild, AfterViewInit } from '@angular/core';
 import { Component, Input, OnInit } from '@angular/core';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
+import { DaterangepickerComponent } from 'ng2-daterangepicker';
 
 @Component({
   selector: 'app-device-count',
   templateUrl: './device-count.component.html',
   styleUrls: ['./device-count.component.css']
 })
-export class DeviceCountComponent implements OnInit {
+export class DeviceCountComponent implements OnInit, AfterViewInit {
 
   @Input() device: any;
   telemetryFilter: any;
@@ -39,6 +40,7 @@ export class DeviceCountComponent implements OnInit {
     ranges: CONSTANTS.DATE_OPTIONS
   };
   selectedDateRange: any;
+  @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   constructor(
     private toasterService: ToasterService,
     private deviceService: DeviceService,
@@ -79,8 +81,11 @@ export class DeviceCountComponent implements OnInit {
     if (this.telemetryFilter.gateway_id) {
       this.getDevicesListByGateway();
     }
-    this.loadFromCache();
 
+  }
+
+  ngAfterViewInit() {
+    this.loadFromCache();
   }
 
   loadFromCache() {
@@ -94,6 +99,14 @@ export class DeviceCountComponent implements OnInit {
       } else {
         this.telemetryFilter.from_date = item.from_date;
         this.telemetryFilter.to_date = item.to_date;
+      }
+      this.picker.datePicker.setStartDate(moment.unix(this.telemetryFilter.from_date));
+      this.picker.datePicker.setEndDate(moment.unix(this.telemetryFilter.to_date));
+      if (this.telemetryFilter.dateOption !== 'Custom Range') {
+        this.selectedDateRange = this.telemetryFilter.dateOption;
+      } else {
+        this.selectedDateRange = moment.unix(this.telemetryFilter.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
+        moment.unix(this.telemetryFilter.to_date).format('DD-MM-YYYY HH:mm');
       }
     }
     // this.searchTelemetry(this.telemetryFilter, false);
@@ -221,6 +234,7 @@ export class DeviceCountComponent implements OnInit {
   selectedDate(value: any, datepicker?: any) {
     this.telemetryFilter.from_date = moment(value.start).utc().unix();
     this.telemetryFilter.to_date = moment(value.end).utc().unix();
+    this.telemetryFilter.dateOption = value.label;
     console.log(this.telemetryFilter);
     if (value.label === 'Custom Range') {
       this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');

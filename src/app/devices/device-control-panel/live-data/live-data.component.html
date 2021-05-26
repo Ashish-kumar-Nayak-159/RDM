@@ -47,11 +47,11 @@
         </ng-container>
       </div>
     </ng-container>
-    <ng-container *ngIf="!isTelemetryDataLoading && selectedWidgets.length === 0 && !telemetryObj ">
+    <p class="m-3" *ngIf="!isTelemetryDataLoading && selectedWidgets.length === 0 && !telemetryObj ">
       Please select widgets first.
-    </ng-container>
-    <ng-container *ngIf="!isTelemetryDataLoading && selectedWidgets.length > 0 && !telemetryObj">
+    </p>
+    <p class="m-3" *ngIf="!isTelemetryDataLoading && selectedWidgets.length > 0 && !telemetryObj">
       Please search to view the data.
-    </ng-container>
+    </p>
   </div>
 </div>

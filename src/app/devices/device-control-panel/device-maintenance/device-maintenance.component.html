@@ -40,7 +40,7 @@
               </a>
 
               <a href="javascript:void(0)" class="mr-1" (click)="openAddMaintenanceRecordModal(record)">
-                <i class="fa fa-pencil" ></i>
+                <i class="fa fa-edit" ></i>
               </a>
               <a href="javascript:void(0)" (click)="openRemoveRecordModal(record)">
                 <i class="fa fa-trash" ></i>
@@ -189,7 +189,7 @@
             <div class="form-group">
               <label for="recipient-name" class="col-form-label">Type:
                 <a *ngIf="i === 0"
-                class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-2"
+                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2"
                 href="javascript:void(0)" (click)="addDocument()"
                 placement="bottom" tooltip="Add Document"
                 ><i class="fa fa-plus fa-sm text-white"></i></a>

@@ -136,7 +136,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   loadFromCache() {
-    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    let item;
+    if (this.pageType === 'live') {
+      item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    } else if (this.pageType === 'history') {
+      item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+    }
     if (item) {
       if (this.pageType === 'live') {
       if (item.devices) {
@@ -193,6 +198,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   selectedDate(value: any, datepicker?: any) {
     this.filterObj.from_date = moment(value.start).utc().unix();
     this.filterObj.to_date = moment(value.end).utc().unix();
+    this.filterObj.dateOption = value.label;
     console.log(this.filterObj);
     if (value.label === 'Custom Range') {
       this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
@@ -353,26 +359,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.displayHierarchyString = this.configureHierarchy[key];
       }
     });
-    if (updateFilterObj) {
-      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-      if (!this.filterObj.device) {
-        pagefilterObj.hierarchy = { App: this.contextApp.app};
-        Object.keys(this.configureHierarchy).forEach((key) => {
-          if (this.configureHierarchy[key]) {
-            pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
-          }
-        });
-      } else {
-        pagefilterObj['hierarchy'] = this.filterObj.device.hierarchy;
-        pagefilterObj['devices'] = this.filterObj.device;
-      }
-      if (this.pageType === 'history') {
-        pagefilterObj['from_date'] = this.filterObj.from_date;
-        pagefilterObj['to_date'] = this.filterObj.to_date;
-        pagefilterObj['dateOption'] = this.filterObj.dateOption;
-      }
-      this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
-    }
     this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
     const obj = {...this.filterObj};
     obj.hierarchy = { App: this.contextApp.app};
@@ -398,6 +384,31 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       return;
     }
     }
+    if (updateFilterObj) {
+      let pagefilterObj ;
+      if (this.pageType === 'live') {
+        pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+        if (!this.filterObj.device) {
+          pagefilterObj.hierarchy = { App: this.contextApp.app};
+          Object.keys(this.configureHierarchy).forEach((key) => {
+            if (this.configureHierarchy[key]) {
+              pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
+            }
+          });
+        } else {
+          pagefilterObj['hierarchy'] = this.filterObj.device.hierarchy;
+          pagefilterObj['devices'] = this.filterObj.device;
+        }
+        this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
+      } else if (this.pageType === 'history') {
+        pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+        pagefilterObj['from_date'] = this.filterObj.from_date;
+        pagefilterObj['to_date'] = this.filterObj.to_date;
+        pagefilterObj['dateOption'] = this.filterObj.dateOption;
+        this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, pagefilterObj);
+      }
+    }
+    console.log(obj);
     this.subscriptions.push(this.deviceService.getDeviceAlerts(obj).subscribe(
       (response: any) => {
         this.latestAlerts = response.data;
@@ -413,6 +424,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.isAlertAPILoading = false;
         this.singalRService.disconnectFromSignalR('alert');
         this.signalRAlertSubscription?.unsubscribe();
+        console.log(obj);
+        console.log('filterObj', this.filterObj);
         if (this.pageType === 'live') {
           const obj1 = {
             levels: this.contextApp.hierarchy.levels,
@@ -421,6 +434,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             app: this.contextApp.app,
             device_id: obj.device_id,
           };
+          console.log(obj1);
           this.singalRService.connectToSignalR(obj1);
           this.signalRAlertSubscription = this.singalRService.signalRAlertData.subscribe(
             msg => {

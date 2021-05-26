@@ -2,7 +2,8 @@
 <div class="tab-bar">
   <div class="">
     <form class="form-inline">
-      Following Live widgets are already added.&nbsp;
+      <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length === 0"> No Live widgets added.&nbsp;</ng-container>
+      <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length !== 0">Following Live widgets are already added.&nbsp;</ng-container>
       <div class="form-group">
         <button class="btn btn-sm searchBtn btn-primary" [disabled]="deviceType.freezed" (click)="onOpenAddWidgetModal()" placement="bottom" tooltip="Add Live Widget"
           ><i class="fa fa-plus fa-sm"></i></button>
@@ -39,10 +40,10 @@
     </ng-container>
     </div>
     </ng-container>
-    <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length === 0">
-      No Live Widgets added. <button class="btn btn-sm btn-warning"  [disabled]="deviceType.freezed" (click)="onOpenAddWidgetModal()"
+    <!-- <p class="m-3" *ngIf="!isGetWidgetsAPILoading && liveWidgets.length === 0">
+      No Live Widgets added. <button class="btn btn-sm btn-primary"  [disabled]="deviceType.freezed" (click)="onOpenAddWidgetModal()"
       ><i class="fa fa-plus fa-sm text-white"></i></button>
-    </ng-container>
+    </p> -->
   </div>
 </div>
 

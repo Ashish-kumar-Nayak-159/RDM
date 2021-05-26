@@ -37,6 +37,13 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    if ($('.container-fluid').hasClass('sb-notoggle')) {
+      $('.container-fluid').removeClass('sb-notoggle');
+    }
+    else if ($('.container-fluid').hasClass('sb-toggle')) {
+      $('.container-fluid').removeClass('sb-toggle');
+    }
+
   }
 
   async redirectToApp(app, index) {

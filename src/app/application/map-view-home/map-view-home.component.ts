@@ -215,7 +215,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   }
 
   onDeviceFilterBtnClick() {
-    $('.dropdown-menu').on('click.bs.dropdown', (e) => {
+    $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
       e.stopPropagation();
     });
   }

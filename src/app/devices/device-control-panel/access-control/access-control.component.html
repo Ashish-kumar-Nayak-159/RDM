@@ -83,7 +83,7 @@
       <form>
         <div class="form-group">
           <label for="recipient-name" class="col-form-label">User:</label>
-          <select class="custom-select" id="user" name="user" [(ngModel)]="selectedUser">
+          <select class="form-control form-control-sm" id="user" name="user" [(ngModel)]="selectedUser">
             <option [ngValue]="{}">Select User</option>
             <option *ngFor="let user of appUsers" [ngValue]="user">{{user.user_name}} ({{user.user_email}})</option>
           </select>

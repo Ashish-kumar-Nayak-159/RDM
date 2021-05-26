@@ -46,7 +46,7 @@
       <!-- Page Heading -->
       <!-- <p class="mb-3 text-secondary-800">
         Following tags will be added when asset is instantiated with this model.
-        <button type="button" class="btn btn-warning btn-sm mx-2 my-1"  [disabled]="deviceType.freezed"
+        <button type="button" class="btn btn-primary btn-sm mx-2 my-1"  [disabled]="deviceType.freezed"
         placement="bottom" tooltip="Add Tag" (click)="addTagObject()" >
           <i class="fa fa-plus fa-sm"></i></button>
       </p>
@@ -119,7 +119,7 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" (click)="message.includes('reset') ? resetDeviceTypeTags() : ( deleteTagIndex !== undefined ? removeTag() : deleteAllDeviceTypeTags())">
             Ok</button>
-          <button type="button" class="btn btn-secondary" (click)="closeModal('confirmMessageModal')">
+          <button type="button" class="btn btn-white" (click)="closeModal('confirmMessageModal')">
             Cancel
           </button>
         </div>

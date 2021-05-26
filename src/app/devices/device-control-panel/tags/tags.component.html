@@ -24,7 +24,7 @@
         <a class="nav-link" href="javascript:void(0)" (click)="openModal('changeLocationModal')"
           [class.disabled]="isUpdateAPILoading">
           <i class="fa fa-fw fa-map-marker"></i>
-          <span class="text-secondary delete-row">Change {{tileData.value}} Location</span></a>
+          <span class="text-secondary delete-row">Change Asset Location</span></a>
       </li>
       <li class="nav-item" *ngIf="isUpdateAPILoading">
         <a class="nav-link" href="javascript:void(0)">
@@ -53,7 +53,7 @@
             <table class="table table-hover">
               <tbody>
                 <tr>
-                  <td>{{tileData.value}} Display Name</td>
+                  <td>Asset Display Name</td>
                   <td>
                     <ng-container *ngIf="!isReservedTagsEditable">{{device?.tags?.display_name}}</ng-container>
                     <ng-container *ngIf="isReservedTagsEditable">
@@ -76,7 +76,7 @@
                 </tr>
 
                 <tr>
-                  <td>{{tileData.value}} Manager</td>
+                  <td>Asset Manager</td>
                   <td>
                     <ul>
                       <li *ngFor="let user of device?.tags?.device_users_arr">{{user}}</li>
@@ -191,7 +191,7 @@
   <div class="modal-dialog" role="document">
     <app-message-modal
       [bodyMessage]="'All the unsaved tags will get reverted. Are you sure you want to reset the tags?'"
-      [headerMessage]="'Reset ' + this.tileData.value + ' Tags'" (modalEvents)="resetDeviceTags($event)"
+      [headerMessage]="'Reset Asset Tags'" (modalEvents)="resetDeviceTags($event)"
       [modalConfig]="modalConfig"></app-message-modal>
   </div>
 </div>
@@ -200,7 +200,7 @@
 <div class="modal fade" id="confirmdeleteTagsModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <app-message-modal [bodyMessage]="'All the custom tags will get deleted. Are you sure you want to delete the tags?'"
-      [headerMessage]="'Delete ' + this.tileData.value + ' Tags'" (modalEvents)="deleteAllDeviceTags($event)"
+      [headerMessage]="'Delete Asset Tags'" (modalEvents)="deleteAllDeviceTags($event)"
       [modalConfig]="modalConfig"></app-message-modal>
   </div>
 </div>
@@ -210,7 +210,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Change {{tileData.value}} Location</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Change Asset Location</h5>
         <button type="button" class="close" aria-label="Close" (click)="onModalClose('changeLocationModal')">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -278,7 +278,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" [disabled]="isUpdateAPILoading" (click)="updateDeviceTags()">
           Save</button>
-        <button type="button" class="btn btn-secondary" [disabled]="isUpdateAPILoading"
+        <button type="button" class="btn btn-white" [disabled]="isUpdateAPILoading"
           (click)="onModalClose('changeLocationModal')">
           Cancel
         </button>

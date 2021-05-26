@@ -168,6 +168,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedDate(value: any, datepicker?: any) {
     this.telemetryFilter.from_date = moment(value.start).utc().unix();
     this.telemetryFilter.to_date = moment(value.end).utc().unix();
+    this.telemetryFilter.dateOption = value.label;
     console.log(this.telemetryFilter);
     if (value.label === 'Custom Range') {
       this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');

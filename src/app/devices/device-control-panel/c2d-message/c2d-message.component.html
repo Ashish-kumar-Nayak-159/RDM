@@ -58,7 +58,7 @@
           <!-- <th >Message ID</th> -->
           <th  *ngIf="type !== 'response'">TTL</th>
           <th  *ngIf="type !== 'response'">ACK</th>
-          <!-- <th  *ngIf="type !== 'response'">Feedback</th> -->
+          <th  *ngIf="type !== 'response'">Feedback</th>
           <!-- <th >F Time Stamp</th> -->
           <th  style="width:7%" *ngIf="type !== 'response'">Request</th>
           <th  style="width:7%">Response</th>
@@ -74,7 +74,7 @@
           <!-- <td>{{msg.message_id}}</td> -->
           <td *ngIf="type !== 'response'">{{msg?.metadata?.expire_in_min}}</td>
           <td *ngIf="type !== 'response'">{{msg?.metadata?.acknowledge}}</td>
-          <!-- <td *ngIf="type !== 'response'">{{msg?.metadata?.feedback_status_code}}</td> -->
+          <td *ngIf="type !== 'response'">{{msg?.metadata?.feedback_description}}</td>
           <!-- <td></td> -->
           <td *ngIf="type !== 'response'">
             <a (click)="loadMessageDetail(msg, true)" href="javascript:void(0)" placement="bottom" tooltip="View Message">

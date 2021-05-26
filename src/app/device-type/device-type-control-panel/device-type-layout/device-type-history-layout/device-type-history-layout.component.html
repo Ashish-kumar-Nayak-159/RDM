@@ -55,8 +55,8 @@
   </div>
 </div>
 <div class="table-responsive">
-  <div class="tableFixHead">
-    <p *ngIf="layoutJson.length === 0  && !isHistoryAPILoading">
+  <div class="tableFixHead" id="mainChartDiv">
+    <p class="m-3" *ngIf="layoutJson.length === 0  && !isHistoryAPILoading">
       No Historical Widgets found.
     </p>
     <i *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>

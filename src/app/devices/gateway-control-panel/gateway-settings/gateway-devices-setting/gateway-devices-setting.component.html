@@ -22,7 +22,7 @@
             id="visible_{{i}}_2" [(ngModel)]="telemetrySettings[device.device_id]" />
             <label class="form-label">&nbsp;Ingest All Properties</label> &nbsp;
           <a
-          class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm mb-1 mr-2"
+          class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mb-1 mr-2"
           href="javascript:void(0)"
           (click)="changeTelemetrySetting()"
           ><i class="fa fa- fa-sm text-white-50"></i> Change Settings</a>
@@ -37,7 +37,7 @@
           </button>
         </ng-container>
         <div class="float-right">
-        <a  class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm mb-1 mr-2"
+        <a  class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mb-1 mr-2"
          href="javascript:void(0)" (click)="saveGatewaySettings()" [class.disabled]="isSaveSettingAPILoading">
           <i class="fa fa-fw fa-save"></i>
          Save</a>

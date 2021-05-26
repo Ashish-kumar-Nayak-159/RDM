@@ -107,6 +107,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.isHistoryAPILoading = true;
     this.getLayout();
     this.loadFromCache();
+    this.historyFilter.type = true;
   }
 
   loadFromCache() {
@@ -135,6 +136,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.historyFilter.isTypeEditable = false;
       }
     }
+    this.historyFilter.type = true;
+    console.log(this.historyFilter);
   }
 
   onNumberChange(event, type) {
@@ -183,6 +186,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   selectedDate(value: any, datepicker?: any) {
     this.historyFilter.from_date = moment(value.start).utc().unix();
     this.historyFilter.to_date = moment(value.end).utc().unix();
+    this.historyFilter.dateOption = value.label;
     console.log(this.historyFilter);
     if (value.label === 'Custom Range') {
       this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');

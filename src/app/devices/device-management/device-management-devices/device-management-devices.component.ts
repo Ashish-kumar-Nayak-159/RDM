@@ -542,19 +542,20 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
       sub_job_id: requestObj.sub_job_id,
       from_date: requestObj.timestamp - 5,
       to_date: moment().utc().unix(),
-      epoch: true
+      epoch: true,
+      job_type: 'Twin'
     };
     this.subscriptions.push(
       this.deviceService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
         (response: any) => {
-          if (response.data?.length > 0 && response.data[response.data.length - 1]?.twin?.reported[this.selectedDevicePackage.name]
+          if (response.data?.length > 0 && response.data[response.data.length - 1].payload?.reported[this.selectedDevicePackage.name]
             && this.displyaMsgArr.length <= response.data.length) {
             this.displyaMsgArr.push({
-              message: response.data[response.data.length - 1].twin.reported[this.selectedDevicePackage.name].fw_update_sub_status,
+              message: response.data[response.data.length - 1].payload.reported[this.selectedDevicePackage.name].fw_update_sub_status,
               error: false
             });
             this.modalConfig.isDisplaySave = false;
-            if (response.data[response.data.length - 1].twin.reported[this.selectedDevicePackage.name].fw_pending_version) {
+            if (response.data[response.data.length - 1].payload.reported[this.selectedDevicePackage.name].fw_pending_version) {
               clearInterval(this.twinResponseInterval);
               this.twinResponseInterval = setInterval(
               () => {

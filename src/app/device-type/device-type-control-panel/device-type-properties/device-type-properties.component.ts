@@ -105,7 +105,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
               tooltip: 'View JSON Model'
             },
             {
-              icon: 'fa fa-fw fa-pencil',
+              icon: 'fa fa-fw fa-edit',
               text: '',
               id: 'Edit',
               valueclass: '',

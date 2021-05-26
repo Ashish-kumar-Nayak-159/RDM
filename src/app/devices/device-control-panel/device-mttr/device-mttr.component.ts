@@ -106,6 +106,7 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
   selectedDate(value: any, datepicker?: any) {
     this.filterObj.from_date = moment(value.start).utc().unix();
     this.filterObj.to_date = moment(value.end).utc().unix();
+    this.filterObj.dateOption = value.label;
     console.log(this.filterObj);
     if (value.label === 'Custom Range') {
       this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
@@ -176,7 +177,13 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
           }
         }
         this.isLifeCycleEventsLoading = false;
-      }, error => this.isLifeCycleEventsLoading = false
+        if (this.lifeCycleEvents.length === 0) {
+          this.loader = false;
+        }
+      }, error => {
+        this.isLifeCycleEventsLoading = false;
+        this.loader = false;
+      }
     ));
   }
 

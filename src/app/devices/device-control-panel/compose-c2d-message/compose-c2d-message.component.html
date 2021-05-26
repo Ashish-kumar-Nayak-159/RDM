@@ -2,17 +2,17 @@
 
   <div class="col-lg-7 col-xl-7 align-self-center">
     <div class="row">
-    <div><a href="javascript:void(0)" [class.disabled]="sentMessageData" (click)="validateMessage()" ><button type="button" class="btn btn-warning contact-form" > 1. Validate</button></a></div>
+    <div><a href="javascript:void(0)" [class.disabled]="sentMessageData" (click)="validateMessage()" ><button type="button" class="btn btn-primary contact-form" > 1. Validate</button></a></div>
     <div class='px-1'><hr></div>
     <div><a  href="javascript:void(0)" [class.disabled]="sentMessageData" (click)="sentC2DMessage()" >
-      <button type="button" class="btn btn-warning" > 2. Send
+      <button type="button" class="btn btn-primary" > 2. Send
         <i class="fa fa-spinner fa-spin fa-fw " *ngIf="isSendC2DMessageAPILoading"></i>
       </button>
     </a></div>
     <div class='px-1'><hr></div>
-    <div><a href="javascript:void(0)" [class.disabled]="!sentMessageData" (click)="onClickOfFeedback()"><button type="button" class="btn btn-warning"> 3. Feedback</button></a></div>
+    <div><a href="javascript:void(0)" [class.disabled]="!sentMessageData" (click)="onClickOfFeedback()"><button type="button" class="btn btn-primary"> 3. Feedback</button></a></div>
     <div class='px-1'><hr></div>
-    <div><a  href="javascript:void(0)"  [class.disabled]="!sentMessageData" (click)="onClickOfResponse()" ><button type="submit" class="btn btn-warning" > 4. Response</button></a></div>
+    <div><a  href="javascript:void(0)"  [class.disabled]="!sentMessageData" (click)="onClickOfResponse()" ><button type="submit" class="btn btn-primary" > 4. Response</button></a></div>
     </div>
   </div>
 

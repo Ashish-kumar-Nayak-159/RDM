@@ -96,7 +96,7 @@ export class DeviceTypePackageManagementComponent implements OnInit {
   }
 
   // {
-  //   icon: 'fa fa-fw fa-pencil',
+  //   icon: 'fa fa-fw fa-edit',
   //   text: '',
   //   id: 'Edit',
   //   valueclass: '',

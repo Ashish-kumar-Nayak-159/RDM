@@ -80,7 +80,7 @@
             </select>
           </div>
           <div class="form-group left-inner-addon" >
-            <i class="fa fa-calendar"></i>
+            <i class="fa fa-calendar" [ngClass]="{'active': originalFilterObj.from_date && originalFilterObj.to_date}"></i>
             <input type="text"  class="form-control form-control-sm date-range-picker"
             [ngClass]="{'active': originalFilterObj.from_date && originalFilterObj.to_date}" daterangepicker name="daterangeInput"
             [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"  [(ngModel)]="selectedDateRange"
@@ -106,7 +106,7 @@
           <div class="form-group">
             <fieldset [disabled]="!filterObj.isTypeEditable">
               <ui-switch  [disabled]="!filterObj.isTypeEditable"
-              defaultBgColor="#f6c23e" checkedTextColor="white" uncheckedTextColor="white"
+              defaultBgColor="#1a5a9e" checkedTextColor="white" uncheckedTextColor="white"
               checkedLabel="Sampling" (valueChange)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
               filterObj.sampling_format = 'minute'; filterObj.sampling_time = 1;
               "
@@ -155,7 +155,7 @@
         </div>
         </form>
       </div>
-      <h6 class="pl-3" *ngIf="!isFilterSelected"> Please select filters to view the report data.</h6>
+      <p class="m-3" *ngIf="!isFilterSelected"> Please select filters to view the report data.</p>
       <h5 class="pl-3" *ngIf="isFilterSelected || isTelemetryLoading" >{{filterObj.report_type}}
         <a href="javascript:void(0)"  (click)="savePDF()" placement="bottom" tooltip="Export as PDF"><i class="fa fa-sm fa-file-pdf-o" ></i></a>
         <a href="javascript:void(0)"  (click)="saveExcel()" placement="bottom" tooltip="Export as Excel" class="ml-1"><i class="fa fa-sm fa-file-excel-o" ></i></a>

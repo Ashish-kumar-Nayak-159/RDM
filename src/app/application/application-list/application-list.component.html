@@ -5,7 +5,7 @@
 
     <a
 
-      class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm ml-4"
+      class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-4"
       href="javascript:void(0)" (click)="openCreateAppModal()"
       ><i class="fa fa- fa-sm text-white-50"></i> Add App</a
     >
@@ -22,7 +22,7 @@
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputPassword4" placeholder="App Manager"
           [(ngModel)]="applicationFilterObj.admin_email" name="admin">
 
-          <button type="button" class="btn btn-warning btn-sm mx-1 my-1" (click)="searchApplications()" placement="bottom" tooltip="Search"><i class="fa fa-search fa-sm"></i></button>
+          <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="searchApplications()" placement="bottom" tooltip="Search"><i class="fa fa-search fa-sm"></i></button>
           <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="clearFilter()" tooltip="Clear Filters" placement="bottom">
             <img class="filter-clear-icon" src="./assets/img/filter.svg">
           </button>

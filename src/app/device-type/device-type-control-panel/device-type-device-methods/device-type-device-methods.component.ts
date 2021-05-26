@@ -81,7 +81,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
               tooltip: 'View JSON Model'
             },
             {
-              icon: 'fa fa-fw fa-pencil',
+              icon: 'fa fa-fw fa-edit',
               text: '',
               id: 'Edit',
               valueclass: '',

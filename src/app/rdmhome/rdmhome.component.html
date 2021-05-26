@@ -1,48 +1,14 @@
-<!--==========================
-  Header
-  ============================-->
 <header id="header" class="fixed-top  main-div">
   <div class="container">
 
-    <!-- <div class="logo float-left">
-        <a class="scrollto"><img src="../../assets/img/logo.png" alt="" class="img-fluid"></a>
-      </div> -->
-
-    <nav class="navbar topbar static-top">
-      <ng-container *ngIf="defaultAppName !== 'SopanCMS'">
-      <a class="d-flex justify-content-start" style="margin-left: 8rem;"><img
-          src="../../assets/img/logo.png" class="d-block img-fluid"></a><a
-        class="d-flex justify-content-end" style="margin-right: 7rem;"><img
+    <ng-container *ngIf="defaultAppName !== 'SopanCMS'">
+      <div class="logo float-left"><a><img
+          src="../../assets/img/logo.png" class="d-block img-fluid"></a>
+      </div>
+      <div class="logo float-right"><a><img
           src="../../assets/img/kaynes-logo.png" class="d-none d-md-block img-fluid"></a>
-        </ng-container>
-        </nav>
-    <nav class="main-nav float-right d-none d-lg-block">
-      <ul>
-        <!--<li class="active"><a href="#intro">Home</a></li>
-          <li><a href="#about">About Us</a></li>
-          <li><a href="#services">Services</a></li>
-          <li><a href="#portfolio">Portfolio</a></li>
-          <li><a href="#team">Team</a></li>
-          <li class="drop-down"><a href="">Drop Down</a>
-            <ul>
-              <li><a href="#">Drop Down 1</a></li>
-              <li class="drop-down"><a href="#">Drop Down 2</a>
-                <ul>
-                  <li><a href="#">Deep Drop Down 1</a></li>
-                  <li><a href="#">Deep Drop Down 2</a></li>
-                  <li><a href="#">Deep Drop Down 3</a></li>
-                  <li><a href="#">Deep Drop Down 4</a></li>
-                  <li><a href="#">Deep Drop Down 5</a></li>
-                </ul>
-              </li>
-              <li><a href="#">Drop Down 3</a></li>
-              <li><a href="#">Drop Down 4</a></li>
-              <li><a href="#">Drop Down 5</a></li>
-            </ul>
-          </li>-->
-        <!-- <li><a [routerLink]="['/login']" routerLinkActive="active" >Login</a></li> -->
-      </ul>
-    </nav><!-- .main-nav -->
+      </div>
+    </ng-container>
 
   </div>
 </header><!-- #header -->
@@ -73,14 +39,14 @@
 
   <!--==========================
       About Us Section
-    ============================-->
+    ============================
   <section id="about">
     <div class="container">
 
-      <!--<header class="section-header">
+      <header class="section-header">
           <h3>About Us</h3>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-        </header>-->
+        </header>
 
       <div class="row about-container">
 
@@ -98,11 +64,11 @@
       </div>
 
     </div>
-  </section><!-- #about -->
+  </section> -->
 
   <!--==========================
       Services Section
-    ============================-->
+    ============================--
   <section id="services" class="section-bg">
     <div class="container py-5">
 
@@ -118,11 +84,11 @@
       </div>
 
     </div>
-  </section><!-- #services -->
+  </section>
 
-  <!--==========================
+    ==========================
       Why Us Section
-    ============================-->
+    ============================
   <section id="why-us" class="wow fadeIn">
     <div class="container">
 
@@ -143,9 +109,9 @@
     </div>
   </section>
 
-  <!--==========================
+    ==========================
       About Us Section
-    ============================-->
+    ============================
   <section id="services">
     <div class="container py-5">
 
@@ -160,12 +126,12 @@
         </div>
       </div>
     </div>
-  </section><!-- #services -->
+  </section>
 
 
-  <!--==========================
+     ==========================
       Services Section
-    ============================-->
+    ============================
 
   <section id="services" class="section-bg">
     <div class="container">
@@ -186,7 +152,7 @@
 
 
     </div>
-  </section><!-- #about -->
+  </section> -->
 
   <!--==========================
       Contact Section
@@ -232,27 +198,27 @@
             <form action="" method="post" role="form" class="contactForm">
               <div class="form-row">
                 <div class="form-group col-lg-6">
-                  <input type="text" name="name" class="form-control" id="name" placeholder="Your Name"
+                  <input type="text" name="name" class="form-control form-control-sm" id="name" placeholder="Your Name"
                     data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
                   <div class="validation"></div>
                 </div>
                 <div class="form-group col-lg-6">
-                  <input type="email" class="form-control" name="email" id="email" placeholder="Your Email"
+                  <input type="email" class="form-control form-control-sm" name="email" id="email" placeholder="Your Email"
                     data-rule="email" data-msg="Please enter a valid email" />
                   <div class="validation"></div>
                 </div>
               </div>
               <div class="form-group">
-                <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject"
+                <input type="text" class="form-control form-control-sm" name="subject" id="subject" placeholder="Subject"
                   data-rule="minlen:4" data-msg="Please enter at least 8 chars of subject" />
                 <div class="validation"></div>
               </div>
               <div class="form-group">
-                <textarea class="form-control" name="message" rows="5" data-rule="required"
+                <textarea class="form-control form-control-sm" name="message" rows="5" data-rule="required"
                   data-msg="Please write something for us" placeholder="Message"></textarea>
                 <div class="validation"></div>
               </div>
-              <div class="text-center"><button type="submit" placement="bottom" tooltip="Send Message">Send Message</button></div>
+              <div class="text-center"><button type="submit" title="Send Message">Send Message</button></div>
             </form>
           </div>
         </div>
@@ -260,7 +226,7 @@
       </div>
 
     </div>
-  </section><!-- #contact -->
+  </section>
 
 </main>
 

@@ -157,9 +157,9 @@ style="z-index: 1200;">
                   Install Package
                 </button>
               </ng-container>
-              <p class="">
+              <p class="" *ngIf="installPackages.length > 0">
               <a
-                  class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm mb-1 float-right"
+                  class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mb-1 float-right"
                   href="javascript:void(0)"
                   (click)="openConfirmDialog('Install')"
                   [class.disabled]="!selectedDevicePackage"
@@ -201,9 +201,9 @@ style="z-index: 1200;">
                   Upgrade/Downgrade Package
                 </button>
               </ng-container>
-              <p class=" float-right">
+              <p class=" float-right" *ngIf="updatePackages.length > 0">
                 <a
-                  class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm mr-2"
+                  class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-2"
                   href="javascript:void(0)"
                   (click)="openConfirmDialog('Upgrade')"
                   [class.disabled]="!selectedDevicePackage"
@@ -248,9 +248,9 @@ style="z-index: 1200;">
                   Uninstall Package
                 </button>
               </ng-container>
-              <p>
+              <p *ngIf="uninstallPackages.length > 0">
                 <a
-                class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm mb-1 float-right"
+                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mb-1 float-right"
                 href="javascript:void(0)"
                 (click)="openConfirmDialog('Uninstall')"
                 [class.disabled]="!selectedDevicePackage"

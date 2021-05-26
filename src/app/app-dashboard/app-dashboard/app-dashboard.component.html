@@ -72,6 +72,11 @@
           ">
       No data available since mid night.
     </div>
+    <div class="" *ngIf="
+            !isFilterSelected
+          ">
+      Please select asset to view the data.
+    </div>
     <div class="ml-1" *ngIf="liveWidgets.length === 0 && isFilterSelected
           ">
       No widgets configured for this asset. Please contact administrator.

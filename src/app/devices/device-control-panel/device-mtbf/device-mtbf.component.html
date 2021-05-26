@@ -19,7 +19,7 @@
   <div class="">
     <form class="form-inline">
       <div class="form-group  left-inner-addon">
-        <i class="fa fa-calendar"></i>
+        <i class="fa fa-calendar" [ngClass]="{'active': filterObj.from_date && filterObj.to_date}"></i>
         <input type="text" class="form-control form-control-sm date-range-picker"
         daterangepicker name="daterangeInput" [ngClass]="{'active': filterObj.from_date && filterObj.to_date}"
           [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"  [(ngModel)]="selectedDateRange"
@@ -98,10 +98,10 @@
     </ng-container>
     <ng-container *ngIf="displayMode === 'history'">
       <span  *ngIf="loader"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> {{loadingMessage}}</span>
-      <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">Select filter
-        and press search button to load the TBF data.</ng-container>
-      <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected"> No MTBF Data
-        found.</ng-container>
+      <p class="m-3" *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">Select filter
+        and press search button to load the TBF data.</p>
+      <p  class="m-3" *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected"> No MTBF Data
+        found.</p>
       <div id="chartdiv mt-2" *ngIf="!isLifeCycleEventsLoading && lifeCycleEvents.length > 0"
         [ngStyle]="{'width': '100%', 'height': '23rem'}"></div>
     </ng-container>

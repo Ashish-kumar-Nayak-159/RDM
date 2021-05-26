@@ -108,28 +108,23 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
   onSidebarToggle() {
     $('body').toggleClass('sidebar-toggled');
     $('.sidebar').toggleClass('toggled');
-    // if ($('.sidebar').hasClass('toggled')) {
-    //   // $(".sidebar .collapse").collapse("hide");
-    //   $('.container-fluid').removeClass('sb-notoggle');
-    //   $('.container-fluid').addClass('sb-toggle');
-    // }
-    // if (!$('.sidebar').hasClass('toggled')) {
-    //   // $(".sidebar .collapse").collapse("show");
-    //   $('.container-fluid').addClass('sb-notoggle');
-    //   $('.container-fluid').removeClass('sb-toggle');
-    // }
-    if ($('.sidebar').hasClass('toggled')) {
-      $('body').addClass('sidebar-toggled');
-      $('.sidebar').addClass('toggled');
-      $('.sidebar .collapse').collapse('hide');
-      $('.container-fluid').removeClass('sb-notoggle');
+    if (($(window).width() > 768) && $('.sidebar').hasClass('toggled')) {
       $('.container-fluid').addClass('sb-toggle');
-    } else {
-      $('body').removeClass('sidebar-toggled');
-      $('.sidebar').removeClass('toggled');
-      $('.container-fluid').addClass('sb-notoggle');
-      $('.container-fluid').removeClass('sb-toggle');
+      $('.container-fluid').removeClass('sb-notoggle');
     }
+    if (($(window).width() > 768) && !$('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').removeClass('sb-toggle');
+      $('.container-fluid').addClass('sb-notoggle');
+    }
+  	 if (($(window).width() < 768) && $('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').removeClass('sb-toggle');
+      $('.container-fluid').addClass('sb-collapse');
+    }
+    if (($(window).width() < 768) && !$('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').addClass('sb-toggle');
+      $('.container-fluid').removeClass('sb-collapse');
+    }
+
   }
 
   navigateToDashboard(type) {

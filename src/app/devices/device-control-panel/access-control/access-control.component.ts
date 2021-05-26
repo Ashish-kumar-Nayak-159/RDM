@@ -17,7 +17,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
   appUsers: any[] = [];
   constantData = CONSTANTS;
   apiSubscriptions: any[] = [];
-  selectedUser: any;
+  selectedUser: any = {};
   @Input() device: any;
   @Input() componentState: any;
   deviceUsers: any[] = [];
@@ -85,7 +85,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
   onModalClose() {
     $('#userAccessAddModal').modal('hide');
     this.isAddUserModalOpen = false;
-    this.selectedUser = undefined;
+    this.selectedUser = {};
   }
 
   onCloseConfirmModal() {

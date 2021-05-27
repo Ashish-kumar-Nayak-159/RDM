@@ -61,6 +61,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
+    this.devicesList = [];
     this.getDevices();
     // if (this.type === 'legacy-devices') {
     //   this.componentState = CONSTANTS.NON_IP_DEVICE;

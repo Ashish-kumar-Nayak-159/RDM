@@ -59,22 +59,20 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
         (response: any) => {
           if (response.data) {
             this.devices = response.data;
-            const apps = CONSTANTS.DEVICEAPPPS;
-            apps.forEach(app => {
-              const appObj = {
-                app_name: app.display_name,
-                app: app.name,
-                devices: []
-              };
-              console.log(appObj);
-              this.devices.forEach(device => {
-                if (device?.metadata?.package_app === app.name) {
-                  appObj.devices.push(device);
-                }
-              });
-              console.log(appObj);
-              if (appObj.devices.length > 0) {
-                this.deviceApps.push(appObj);
+            this.devices.forEach(device => {
+              if (device.metadata?.package_app) {
+              if (this.deviceTwin.twin_properties.reported.registered_devices[device.metadata.package_app]
+                && (this.deviceTwin.twin_properties.reported?.registered_devices[device?.metadata?.package_app]?.
+                  indexOf(device.device_id) > -1)) {
+                  device.register_enabled = false;
+                  device.deregister_enabled = true;
+              } else {
+                device.register_enabled = true;
+                device.deregister_enabled = false;
+              }
+              } else {
+                device.register_enabled = false;
+                device.deregister_enabled = false;
               }
             });
           }
@@ -120,29 +118,24 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  registerDevices() {
+  registerDevices(device) {
     const obj = {
       command: 'register_devices',
-      app_name: this.selectedApp,
+      app_name: device?.metadata?.package_app,
       devices: {}
     };
-    this.selectedDevices.forEach(device => {
-      obj.devices[device.device_id] = device.metadata.setup_details;
-      obj.app_name = device?.metadata?.package_app;
-    });
+    obj.devices[device.device_id] = device.metadata.setup_details;
     this.callC2dMethod(obj, 'Register Devices');
   }
 
-  deregisterDevices() {
+  deregisterDevices(device) {
     const obj = {
       command: 'deregister_devices',
-      app_name: this.selectedApp,
-      devices: []
+      app_name: device?.metadata?.package_app,
+      devices: [
+        device.device_id
+      ]
     };
-    this.selectedDevices.forEach(device => {
-      obj.devices.push(device.device_id);
-      obj.app_name = device?.metadata?.package_app;
-    });
     this.callC2dMethod(obj, 'Deregister Devices');
   }
 
@@ -219,9 +212,8 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
           }
         }
         console.log(response.data.length, '======', this.selectedDevices.length);
-        if (response.data.length < this.selectedDevices.length) {
+        if (response?.data?.length < 1) {
           clearInterval(this.c2dResponseInterval);
-
           this.c2dResponseInterval = setInterval(
           () => {
             this.loadC2DResponse(c2dObj);

@@ -8,15 +8,15 @@
      <div class="asset-nav-tabs" >
        <nav>
          <div class="nav nav-tabs nav-fill " id="nav-tab" role="tablist">
-          <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab" (click)="onTabChange(constantData.IP_DEVICE)"
+          <a class="nav-item nav-link border-0" *ngIf="iotAssetsTab?.visibility" id="nav-home-tab" data-toggle="tab" (click)="onTabChange(constantData.IP_DEVICE)"
           href="#{{iotAssetsTab?.tab_name}}" role="tab" aria-controls="nav-home" aria-selected="true" [ngClass]="{'active': componentState === constantData.IP_DEVICE}">
             <i class="fab fa-mixcloud mr-2"></i>
            <span class="d-none d-md-inline-block">{{iotAssetsTab?.tab_name}}</span></a>
-          <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab" (click)="onTabChange(constantData.NON_IP_DEVICE)"
+          <a class="nav-item nav-link border-0" *ngIf="legacyAssetsTab?.visibility" id="nav-profile-tab" data-toggle="tab" (click)="onTabChange(constantData.NON_IP_DEVICE)"
           href="#{{legacyAssetsTab?.tab_name}}" role="tab" aria-controls="nav-profile" aria-selected="false" [ngClass]="{'active': componentState === constantData.NON_IP_DEVICE}">
           <i class="fa fa-microchip mr-2" aria-hidden="true"></i>
           <span class="d-none d-md-inline-block">{{legacyAssetsTab?.tab_name}}</span></a>
-          <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab" (click)="onTabChange(constantData.IP_GATEWAY)"
+          <a class="nav-item nav-link border-0" *ngIf="iotGatewaysTab?.visibility" id="nav-profile-tab" data-toggle="tab" (click)="onTabChange(constantData.IP_GATEWAY)"
           href="#{{iotGatewaysTab?.tab_name}}" role="tab" aria-controls="nav-profile" aria-selected="false" [ngClass]="{'active': componentState === constantData.IP_GATEWAY}">
           <i class="fas fa-sitemap mr-2" aria-hidden="true"></i>
           <span class="d-none d-md-inline-block">{{iotGatewaysTab?.tab_name}}</span></a>

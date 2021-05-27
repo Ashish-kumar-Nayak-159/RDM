@@ -104,6 +104,9 @@ export class CONSTANTS {
       showAccordion: [
         { name: 'Title', value: 'Assets'},
         { name: 'Records Limit', value: 20, type: 'number'},
+        { name: 'IOT Assets', type: 'checkbox', value: true},
+        { name: 'Legacy Assets', type: 'checkbox', value: true},
+        { name: 'IOT Gateways', type: 'checkbox', value: true},
         { name: 'IOT Assets Tab Name', value: 'IOT Assets'},
         { name: 'IOT Assets Table Key Name', value: 'IOT Asset'},
         { name: 'IOT Gateways Tab Name', value: 'IOT Gateways'},

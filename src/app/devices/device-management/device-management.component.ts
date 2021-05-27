@@ -1,4 +1,4 @@
-import { CONSTANTS } from './../../app.constants';
+import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from './../../services/common.service';
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { TabsetComponent } from 'ngx-bootstrap/tabs';
@@ -14,15 +14,22 @@ export class DeviceManagementComponent implements OnInit {
   iotAssetsTab: any;
   legacyAssetsTab: any;
   iotGatewaysTab: any;
-  componentState = CONSTANTS.IP_DEVICE;
+  componentState;
   constantData = CONSTANTS;
   constructor(
     private commonService: CommonService
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.getTileName();
+    await this.getTileName();
+    if (this.iotAssetsTab?.visibility) {
+      this.componentState = CONSTANTS.IP_DEVICE;
+    } else if (this.legacyAssetsTab?.visibility) {
+      this.componentState = CONSTANTS.NON_IP_DEVICE;
+    } else if (this.iotGatewaysTab?.visibility) {
+      this.componentState = CONSTANTS.IP_GATEWAY;
+    }
     // this.getTabData();
   }
 
@@ -47,14 +54,17 @@ export class DeviceManagementComponent implements OnInit {
       deviceDataItem[item.name] = item.value;
     });
     this.iotAssetsTab = {
+      visibility: deviceDataItem['IOT Assets'],
       tab_name: deviceDataItem['IOT Assets Tab Name'],
       table_key: deviceDataItem['IOT Assets Table Key Name']
     };
     this.legacyAssetsTab = {
+      visibility: deviceDataItem['Legacy Assets'],
       tab_name: deviceDataItem['Legacy Assets Tab Name'],
       table_key: deviceDataItem['Legacy Assets Table Key Name']
     };
     this.iotGatewaysTab = {
+      visibility: deviceDataItem['IOT Gateways'],
       tab_name: deviceDataItem['IOT Gateways Tab Name'],
       table_key: deviceDataItem['IOT Gateways Table Key Name']
     };

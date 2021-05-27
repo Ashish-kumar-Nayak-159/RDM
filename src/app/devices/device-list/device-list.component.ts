@@ -59,6 +59,27 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   iotGatewaysTab: any;
   hierarchyString: string;
   displayHierarchyString: string;
+  customMapStyle =  [
+    {
+      featureType: 'poi',
+      stylers: [
+        { visibility: 'off' }
+      ]
+    },
+    {
+      featureType: 'transit',
+      stylers: [
+        { visibility: 'off' }
+      ]
+    },
+   {
+      featureType: 'road',
+      elementType: 'labels.icon',
+      stylers: [
+        { visibility: 'off' }
+      ]
+    }
+  ];
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -69,34 +90,31 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     private applicationService: ApplicationService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(
       CONSTANTS.USER_DETAILS
     );
     this.contextApp = this.commonService.getItemFromLocalStorage(
       CONSTANTS.SELECTED_APP_DATA
     );
+    this.devicesList = [];
+    await this.getTileName();
+    if (this.iotAssetsTab?.visibility) {
+      this.onTabChange(CONSTANTS.IP_DEVICE);
+    } else if (this.legacyAssetsTab?.visibility) {
+      this.onTabChange(CONSTANTS.NON_IP_DEVICE);
+    } else if (this.iotGatewaysTab?.visibility) {
+      this.onTabChange(CONSTANTS.IP_GATEWAY);
+    }
+
+    if (this.contextApp.hierarchy.levels.length > 1) {
+      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+    }
+
+    this.protocolList = CONSTANTS.PROTOCOLS;
+    // const keys = Object.keys(this.contextApp.user.hierarchy);
+    this.hierarchyDropdown = [];
     //  this.commonService.setFlag(true);
-    this.subscriptions.push(
-      this.route.paramMap.subscribe(async (params) => {
-        this.devicesList = [];
-        await this.getTileName();
-        this.onTabChange(CONSTANTS.IP_DEVICE);
-
-        if (this.contextApp.hierarchy.levels.length > 1) {
-          this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
-        }
-
-        this.protocolList = CONSTANTS.PROTOCOLS;
-        // const keys = Object.keys(this.contextApp.user.hierarchy);
-        this.hierarchyDropdown = [];
-        // this.contextApp.hierarchy.forEach(item => {
-        //   if (item.level >= keys.length - 1 && item.name !== 'App') {
-        //     this.hierarchyDropdown.push(item);
-        //   }
-        // });
-      })
-    );
   }
 
   loadFromCache(item) {
@@ -331,6 +349,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     const item = this.commonService.getItemFromLocalStorage(
       CONSTANTS.MAIN_MENU_FILTERS
     );
+    this.devicesList = [];
     console.log(item);
     if (item) {
       this.loadFromCache(item);
@@ -375,14 +394,17 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       this.tileData[item.name] = item.value;
     });
     this.iotAssetsTab = {
+      visibility: this.tileData['IOT Assets'],
       tab_name: this.tileData['IOT Assets Tab Name'],
       table_key: this.tileData['IOT Assets Table Key Name'],
     };
     this.legacyAssetsTab = {
+      visibility: this.tileData['Legacy Assets'],
       tab_name: this.tileData['Legacy Assets Tab Name'],
       table_key: this.tileData['Legacy Assets Table Key Name'],
     };
     this.iotGatewaysTab = {
+      visibility: this.tileData['IOT Gateways'],
       tab_name: this.tileData['IOT Gateways Tab Name'],
       table_key: this.tileData['IOT Gateways Table Key Name'],
     };

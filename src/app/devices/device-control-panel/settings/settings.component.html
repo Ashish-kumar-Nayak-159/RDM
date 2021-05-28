@@ -4,7 +4,7 @@
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="isSettingsEditable = true;" *ngIf="!isSettingsEditable"
           [class.disabled]="isSaveSettingAPILoading">
-          <i class="fa fa-fw fa-edit-square-o"></i>
+          <i class="fa fa-fw fa-edit"></i>
           <span class="text-secondary">Edit</span></a>
       </li>
       <li class="nav-item">
@@ -30,7 +30,7 @@
 
 <div class="table-responsive">
   <div class="tableFixHead">
-    <accordion [closeOthers]="true">
+    <accordion [closeOthers]="true" class="p-3">
       <accordion-group heading="">
         <ng-container accordion-heading>
           <a class="btn">

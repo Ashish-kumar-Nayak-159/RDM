@@ -80,6 +80,7 @@ export class DeviceTypeSettingsComponent implements OnInit {
     const tagObj = {};
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.app = this.contextApp.app;
+    obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.contextApp.app).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Update Model Settings');

@@ -231,14 +231,19 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
   }
 
   onSingleOperationClick(type) {
-    if (!type.toLowerCase().includes('provision') && this.componentState === CONSTANTS.NON_IP_DEVICE) {
+    if (this.selectedDevices?.length === 0) {
+      this.toasterService.showError('Please select an asset to perform the operation', 'Asset Management');
+      return;
+    }
+    if (this.selectedDevices?.length > 1) {
+      this.toasterService.showError('Please select only one asset to perform the operation', 'Asset Management');
+      return;
+    }
+    if (!type.toLowerCase().includes('provision') && this.type === CONSTANTS.NON_IP_DEVICE) {
       this.toasterService.showError(`You can't perform this operation on legacy asset.`, 'Asset Management');
       return;
     }
-    if (this.selectedDevices?.length !== 1) {
-      this.toasterService.showError('To perform single operations, please select only one asset', 'Asset Management');
-      return;
-    }
+
     if (type === 'Deprovision' || type === 'Enable' || type === 'Disable') {
       this.openConfirmDialog(type);
     } else if (type === 'Package Management') {
@@ -549,33 +554,45 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.deviceService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
         (response: any) => {
-          if (response.data?.length > 0 && response.data[response.data.length - 1].payload?.reported[this.selectedDevicePackage.name]
-            && this.displyaMsgArr.length <= response.data.length) {
-            this.displyaMsgArr.push({
-              message: response.data[response.data.length - 1].payload.reported[this.selectedDevicePackage.name].fw_update_sub_status,
-              error: false
-            });
-            this.modalConfig.isDisplaySave = false;
-            if (response.data[response.data.length - 1].payload.reported[this.selectedDevicePackage.name].fw_pending_version) {
+          response.data.reverse();
+          if (response.data.length > 0) {
+          this.displyaMsgArr.length = 1;
+          response.data.forEach(item => {
+            if (item.payload?.reported && item.payload?.reported[this.selectedDevicePackage.name]) {
+              this.displyaMsgArr.push({
+                message: item.payload.reported[this.selectedDevicePackage.name].fw_update_sub_status,
+                error: false
+              });
+              this.modalConfig.isDisplaySave = false;
+              if (item.payload.reported[this.selectedDevicePackage.name].fw_pending_version) {
+                clearInterval(this.twinResponseInterval);
+                this.twinResponseInterval = setInterval(
+                () => {
+                  this.loadDeviceTwinChangeResponse(requestObj);
+                }, 5000);
+              } else {
+                clearInterval(this.twinResponseInterval);
+                setTimeout(() => {
+                  this.onModalEvents('close');
+                  this.isAPILoading = false;
+                }, 1000);
+              }
+            } else {
               clearInterval(this.twinResponseInterval);
               this.twinResponseInterval = setInterval(
               () => {
                 this.loadDeviceTwinChangeResponse(requestObj);
               }, 5000);
-            } else {
-              clearInterval(this.twinResponseInterval);
-              setTimeout(() => {
-                this.onModalEvents('close');
-                this.isAPILoading = false;
-              }, 1000);
             }
-          } else {
+          });
+        } else {
           clearInterval(this.twinResponseInterval);
           this.twinResponseInterval = setInterval(
           () => {
             this.loadDeviceTwinChangeResponse(requestObj);
           }, 5000);
           }
+
         }, error => {
           this.displyaMsgArr.push({
             message: error.message,

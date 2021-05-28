@@ -1,8 +1,13 @@
 
- <i class="fa fa-spinner fa-spin fa-fw fa-2x text-center"  *ngIf="isDeviceTypeDataLoading"></i>
-<div id="wrapper"  *ngIf="!isDeviceTypeDataLoading">
+
+<div id="wrapper"  >
+  <div id="content-wrapper" class="d-flex flex-column m-5 py-3" *ngIf="isDeviceTypeDataLoading">
+    Loading Model Data...
+    <i class="fa fa-spinner fa-spin fa-fw fa-2x text-center"  ></i>
+  </div>
+
   <!-- Sidebar -->
-  <div class="sidebar1 sidebar-light mb-3 ">
+  <div class="sidebar1 sidebar-light mb-3 " *ngIf="!isDeviceTypeDataLoading">
 
     <div class="sidebar1-heading sidebar1-top-heading">
       <span>Model Definition </span>
@@ -39,7 +44,7 @@
   </div>
   <!-- End of Sidebar -->
    <!-- Content Wrapper -->
-   <div id="content-wrapper" class="d-flex flex-column">
+   <div id="content-wrapper" class="d-flex flex-column" *ngIf="!isDeviceTypeDataLoading">
     <div id="content">
     <div class="container1-fluid">
       <div class="blue-nav-bar">
@@ -74,8 +79,11 @@
       <div class="tab-pane" [ngClass]="{'active': activeTab.includes('package_management')}" role="tabpanel" id="device_type_package_management">
         <app-device-type-package-management *ngIf="activeTab.includes('package_management') && deviceType" [deviceType]="deviceType"></app-device-type-package-management>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab.includes('rules')}" role="tabpanel" id="device_type_rules">
-        <app-device-type-rules *ngIf="activeTab.includes('rules') && deviceType" [deviceType]="deviceType"></app-device-type-rules>
+      <div class="tab-pane" [ngClass]="{'active': activeTab.includes('cloud_rules')}" role="tabpanel" id="device_type_cloud_rules">
+        <app-device-type-rules *ngIf="activeTab.includes('cloud_rules') && deviceType" [pageType]="'cloud'" [deviceType]="deviceType"></app-device-type-rules>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab.includes('edge_rules')}" role="tabpanel" id="device_type_edge_rules">
+        <app-device-type-rules *ngIf="activeTab.includes('edge_rules') && deviceType" [pageType]="'edge'" [deviceType]="deviceType"></app-device-type-rules>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'jsonpacket'}" role="tabpanel" id="device_type_jsonpacket">
         <app-device-type-json-packet-format *ngIf="activeTab === 'jsonpacket' && deviceType" [deviceType]="deviceType"></app-device-type-json-packet-format>
@@ -94,6 +102,12 @@
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'reference_material'}" role="tabpanel" id="device_type_reference_material">
         <app-device-type-reference-documents *ngIf="activeTab === 'reference_material' && deviceType" [deviceType]="deviceType"></app-device-type-reference-documents>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'derived_kpis'}" role="tabpanel" id="device_type_derived_kpis">
+        <app-device-type-derived-kpis *ngIf="activeTab === 'derived_kpis' && deviceType"></app-device-type-derived-kpis>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'stream_processing'}" role="tabpanel" id="device_type_stream_processing">
+        <app-device-type-stream-processing *ngIf="activeTab === 'stream_processing' && deviceType"></app-device-type-stream-processing>
       </div>
       <!-- /.container1-fluid -->
 

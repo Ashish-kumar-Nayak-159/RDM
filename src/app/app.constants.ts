@@ -99,7 +99,7 @@ export class CONSTANTS {
       url: 'applications/:appName/devices',
       display_name: 'Assets',
       exactMatch: false,
-      icon: 'fas fa-fw fa-cloud',
+      icon: 'fab fa-fw fa-mixcloud',
       visible: true,
       showAccordion: [
         { name: 'Title', value: 'Assets'},
@@ -135,7 +135,7 @@ export class CONSTANTS {
       url: 'applications/:appName/things/model',
       display_name: 'Asset Models',
       exactMatch: false,
-      icon: 'fa fa-fw fa-list',
+      icon: 'icon icon-cubes',
       visible: true,
       showAccordion: [
         { name: 'Title', value: 'Models'},
@@ -197,6 +197,19 @@ export class CONSTANTS {
       priority: 1
     },
 
+    {
+      page: 'campaigns',
+      system_name: 'Campaigns',
+      url: 'applications/:appName/campaigns',
+      display_name: 'Campaigns',
+      icon: 'fa fa-fw fa-object-group',
+      visible: true,
+      exactMatch: true,
+      showAccordion: [
+        { name: 'Title', value: 'Campaigns'}
+      ],
+      priority: 1
+    },
     // {
     //   page: 'Gateways',
     //   system_name: 'IoT Gateways',
@@ -657,9 +670,9 @@ export class CONSTANTS {
     },
     {
       page: 'visualization',
-      system_name: 'Visualizations',
+      system_name: 'Visualize',
       url: 'null',
-      display_name: 'Visualization',
+      display_name: 'Visualize',
       icon: null,
       visible: true,
       isTitle: true
@@ -926,6 +939,15 @@ export class CONSTANTS {
       isTitle: false
     },
     {
+      page: 'package_management',
+      system_name: 'Package Management',
+      url: '#device_type_package_management',
+      display_name: 'Package Management',
+      icon: 'fa fa-fw fa-tags',
+      visible: true,
+      isTitle: false
+    },
+    {
       page: 'capabilities',
       system_name: 'Edge Capabilities',
       url: null,
@@ -966,20 +988,20 @@ export class CONSTANTS {
       system_name: 'Writable Properties',
       url: '#device_type_properties',
       display_name: 'Writable Properties',
-      icon: 'fa fa-fw fa-edit-square-o',
+      icon: 'fa fa-fw fa-edit',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'edge_rules',
+      system_name: 'Edge Rules',
+      url: '#device_type_edge_rules',
+      display_name: 'Edge Rules',
+      icon: 'fa fa-fw fa-archive',
       visible: true,
       isTitle: false
     },
 
-    {
-      page: 'package_management',
-      system_name: 'Package Management',
-      url: '#device_type_package_management',
-      display_name: 'Package Management',
-      icon: 'fa fa-fw fa-tags',
-      visible: true,
-      isTitle: false
-    },
 
     {
       page: 'cloud-capabilities',
@@ -991,10 +1013,28 @@ export class CONSTANTS {
       isTitle: true
     },
     {
-      page: 'rules',
-      system_name: 'Rule Engine',
-      url: '#device_type_rules',
-      display_name: 'Rule Engine',
+      page: 'stream_processing',
+      system_name: 'Stream Processing',
+      url: '#device_type_stream_processing',
+      display_name: 'Stream Processing',
+      icon: 'fa fa-fw fa-microchip',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'derived_kpis',
+      system_name: 'Derived KPIs',
+      url: '#device_type_derived_kpis',
+      display_name: 'Derived KPIs',
+      icon: 'fa fa-fw fa-retweet',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'cloud_rules',
+      system_name: 'Cloud Rules',
+      url: '#device_type_cloud_rules',
+      display_name: 'Cloud Rules',
       icon: 'fa fa-fw fa-archive',
       visible: true,
       isTitle: false
@@ -1019,9 +1059,9 @@ export class CONSTANTS {
     },
     {
       page: 'c2d',
-      system_name: 'Cloud Control',
+      system_name: 'Control',
       url: null,
-      display_name: 'Cloud Control',
+      display_name: 'Control',
       icon: null,
       visible: true,
       isTitle: true

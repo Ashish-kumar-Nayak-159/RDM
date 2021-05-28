@@ -27,7 +27,7 @@
 			<div class="form-group input-group">
         <input class="form-control form-control-sm bg-light" type="number" id="minutes" min="1"
         name="minutes" [(ngModel)]="telemetryFilter.aggregation_minutes" placeholder="Agreegation Time"
-        (change)="onNumberChange($event, 'aggregation')" style="width: 3em;" >
+        (change)="onNumberChange($event, 'aggregation')" style="width: 4em;" >
         <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div></div>
       <div class="form-group">
         <select class="form-control form-control-sm" id="aggregationFormat" [(ngModel)]="telemetryFilter.aggregation_format"

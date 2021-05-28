@@ -137,6 +137,13 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  openLogoutModal() {
+    $('#logoutModal').modal({
+      backdrop: 'static',
+      keyboard: false
+    });
+  }
+
   openChangePasswordModal() {
     this.isResetPassword = true;
     // $('#changePasswordModal').modal({

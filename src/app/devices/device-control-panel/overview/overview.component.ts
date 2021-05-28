@@ -109,11 +109,11 @@ export class OverviewComponent implements OnInit, OnDestroy {
       gateway_id: this.device.device_id
     };
     this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY, obj);
-    this.router.navigate(['applications', this.contextApp.app, 'nonIPDevices']);
+    this.router.navigate(['applications', this.contextApp.app, 'devices']);
   }
 
   onRedirectToGateway(device) {
-    this.router.navigate(['applications', this.contextApp.app, 'gateways', device.gateway_id, 'control-panel']);
+    this.router.navigate(['applications', this.contextApp.app, 'devices', device.gateway_id, 'control-panel']);
   }
 
   getDeviceCount() {

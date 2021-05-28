@@ -22,7 +22,7 @@
           (click)="openConfirmDialog()"
         >
           <i class="fa fa-fw fa-trash"></i>
-          <span>Purge Queue Messages</span></a
+        Purge Queue Messages</a
         >
       </li>
     </ul>
@@ -34,10 +34,10 @@
       <div class="tableFixHead" >
   <div class="row mx-auto" *ngIf="messageCount?.toString().length > 0">
     <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-2 pt-3">
-      <h6 class="h6 mb-0">Total Messages {{pageType !== 'devices' ?
+    <div class="d-sm-flex align-items-center justify-content-between">
+      <p class="h6 mb-0 p-3">Total Messages {{componentState === constantData.IP_GATEWAY ?
         ('in Gateway (' + (device.gateway_id ? device.gateway_id : device.device_id) + ') queue is ') : 'in asset (' + device.device_id + ') queue is '}}:
-        {{ messageCount }}</h6>
+        {{ messageCount }}</p>
     </div>
   </div>
 </div>
@@ -47,7 +47,7 @@
   <div class="modal-dialog" role="document">
     <app-message-modal
     [bodyMessage]="'This will purge all the messages from ' +
-    (pageType !== 'devices' ? ('gateway (' + (device.gateway_id ? device.gateway_id : device.device_id)) :'asset (' + device.device_id ) + ') queue.' +
+    (componentState === constantData.IP_GATEWAY ? ('gateway (' + (device.gateway_id ? device.gateway_id : device.device_id)) :'asset (' + device.device_id ) + ') queue.' +
     ' Are you sure you want to continue?'"
      [headerMessage]="'Purge Queue Messages'"
       (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>

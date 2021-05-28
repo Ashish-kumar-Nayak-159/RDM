@@ -36,11 +36,8 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    if (this.device?.tags?.category === CONSTANTS.IP_GATEWAY) {
-      this.notificationFilter.gateway_id = this.device.device_id;
-    } else {
-      this.notificationFilter.device_id = this.device.device_id;
-    }
+
+    this.notificationFilter.device_id = this.device.device_id;
     this.notificationFilter.count = 10;
     this.notificationFilter.app = this.contextApp.app;
     this.notificationTableConfig = {

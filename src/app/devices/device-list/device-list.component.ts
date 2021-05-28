@@ -99,6 +99,11 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     );
     this.devicesList = [];
     await this.getTileName();
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
+    if (item?.gateway_id) {
+      this.deviceFilterObj.gateway_id = item.gateway_id;
+      this.onTabChange(CONSTANTS.NON_IP_DEVICE);
+    } else {
     if (this.iotAssetsTab?.visibility) {
       this.onTabChange(CONSTANTS.IP_DEVICE);
     } else if (this.legacyAssetsTab?.visibility) {
@@ -106,7 +111,8 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     } else if (this.iotGatewaysTab?.visibility) {
       this.onTabChange(CONSTANTS.IP_GATEWAY);
     }
-
+    }
+    localStorage.removeItem(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
     }
@@ -231,7 +237,11 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.deviceFilterObj.hierarchy = JSON.stringify(
       this.contextApp.user.hierarchy
     );
-
+    const item1 = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
+    if (item1?.gateway_id) {
+      this.deviceFilterObj.gateway_id = item1.gateway_id;
+    }
+    localStorage.removeItem(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
     this.deviceFilterObj.hierarchyString = this.contextApp.user.hierarchyString;
     this.originalDeviceFilterObj = JSON.parse(
       JSON.stringify(this.deviceFilterObj)
@@ -293,8 +303,8 @@ export class DeviceListComponent implements OnInit, OnDestroy {
           value_type: 'string',
           is_sort_required: true,
           fixed_value_list: [],
-          data_type: 'text',
-          data_key: 'device_manager',
+          data_type: 'list',
+          data_key: 'device_manager_users',
         },
         {
           header_name: 'Hierarchy',
@@ -550,6 +560,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
                 )[0]?.display_name;
                 item.gateway_display_name = name ? name : item.gateway_id;
               }
+              // item.tags.device_users_arr = item.tags.device_manager.split(',');
               if (
                 this.componentState === this.constantData.IP_DEVICE &&
                 item?.connection_state?.toLowerCase() === 'connected'
@@ -614,6 +625,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
                     : '';
                 });
               }
+              console.log(item.device_id , '=====', item.icon);
             });
             this.devicesList = [...this.devicesList, ...response.data];
           }

@@ -1,7 +1,11 @@
-<i class="fa fa-spinner fa-spin fa-fw fa-2x text-center" *ngIf="isDeviceDataLoading"></i>
-<div id="wrapper" *ngIf="!isDeviceDataLoading">
+<div id="wrapper" >
+  <div id="content-wrapper" class="d-flex flex-column m-5 py-3" *ngIf="isDeviceDataLoading">
+    Loading Asset Data...
+    <i class="fa fa-spinner fa-spin fa-fw fa-2x text-center"  ></i>
+  </div>
+
   <!-- Sidebar -->
-  <div class="sidebar1 sidebar-light mb-3 ">
+  <div class="sidebar1 sidebar-light mb-3 " *ngIf="!isDeviceDataLoading">
 
     <div class="sidebar1-heading sidebar1-top-heading">
       <span >Control Panel </span>
@@ -37,7 +41,7 @@
   </div>
   <!-- End of Sidebar -->
   <!-- Content Wrapper -->
-  <div id="content-wrapper" class="d-flex flex-column">
+  <div id="content-wrapper" class="d-flex flex-column" *ngIf="!isDeviceDataLoading">
 
     <!-- Main Content -->
     <div id="content">

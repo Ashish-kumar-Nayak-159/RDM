@@ -78,6 +78,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
           value: item
         });
       });
+      console.log(this.dropdownPropList);
     }
     this.isHistoryAPILoading = true;
     this.getLayout();
@@ -96,6 +97,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
           response.properties.derived_properties.forEach(prop => this.propertyList.push(prop));
+          console.log(this.propertyList);
           resolve();
         }
       ));
@@ -270,6 +272,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
     }
     // this.layoutJson.reverse();
     this.deviceType.historical_widgets = this.layoutJson;
+    this.deviceType.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(this.deviceTypeService.updateThingsModel(this.deviceType, this.contextApp.app).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Save Layout');

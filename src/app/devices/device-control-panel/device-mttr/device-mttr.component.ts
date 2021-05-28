@@ -49,6 +49,7 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
       'Last 7 Days': [moment().subtract(6, 'days'), moment()],
       'This Week': [moment().startOf('isoWeek'), moment()],
       'Last 4 Weeks': [moment().subtract(4, 'weeks').startOf('isoWeek'), moment().subtract(1, 'weeks').endOf('isoWeek')],
+      'This Month': [moment().startOf('month'), moment().endOf('month')],
       'Last Month': [ moment().subtract(1, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
       'Last 3 Months': [moment().subtract(3, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
       'Last 6 Months': [moment().subtract(3, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
@@ -104,9 +105,16 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
   }
 
   selectedDate(value: any, datepicker?: any) {
-    this.filterObj.from_date = moment(value.start).utc().unix();
-    this.filterObj.to_date = moment(value.end).utc().unix();
+
     this.filterObj.dateOption = value.label;
+    if (this.filterObj.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
+      this.filterObj.from_date = dateObj.from_date;
+      this.filterObj.to_date = dateObj.to_date;
+    } else {
+      this.filterObj.from_date = moment(value.start).utc().unix();
+      this.filterObj.to_date = moment(value.end).utc().unix();
+    }
     console.log(this.filterObj);
     if (value.label === 'Custom Range') {
       this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
@@ -127,17 +135,17 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
   }
 
   searchEvents(filterObj) {
-    this.isFilterSelected = true;
-    this.loader = true;
     this.averageMTTR = undefined;
     this.averageMTTRString = undefined;
-    this.isLifeCycleEventsLoading = true;
     const obj = {...filterObj};
     if (!obj.from_date || !obj.to_date) {
       this.isLifeCycleEventsLoading = false;
       this.toasterService.showError('Date Time selection is required', 'View MTTR Data');
       return;
     }
+    this.isFilterSelected = true;
+    this.loader = true;
+    this.isLifeCycleEventsLoading = true;
     delete obj.dateOption;
     delete obj.countNotShow;
     this.filterObj = filterObj;
@@ -172,7 +180,7 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
               item.mttrString = this.splitTime(item.mttr / 60);
             }
           });
-          if (this.displayMode === 'history') {
+          if (this.displayMode === 'history' && this.lifeCycleEvents.length > 0) {
             setTimeout(() =>  this.plotChart(), 500);
           }
         }
@@ -235,7 +243,7 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
   plotChart() {
     this.loadingMessage = 'Loading Chart. Please wait...';
     am4core.options.autoDispose = true;
-    const chart = am4core.create('chartdiv', am4charts.XYChart);
+    const chart = am4core.create('mttrChart', am4charts.XYChart);
     const data = [];
     // this.lifeCycleEvents.reverse();
     this.lifeCycleEvents.forEach((obj, i) => {

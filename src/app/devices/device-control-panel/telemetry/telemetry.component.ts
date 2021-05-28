@@ -166,9 +166,17 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   selectedDate(value: any, datepicker?: any) {
-    this.telemetryFilter.from_date = moment(value.start).utc().unix();
-    this.telemetryFilter.to_date = moment(value.end).utc().unix();
+    // this.telemetryFilter.from_date = moment(value.start).utc().unix();
+    // this.telemetryFilter.to_date = moment(value.end).utc().unix();
     this.telemetryFilter.dateOption = value.label;
+    if (this.telemetryFilter.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(this.telemetryFilter.dateOption);
+      this.telemetryFilter.from_date = dateObj.from_date;
+      this.telemetryFilter.to_date = dateObj.to_date;
+    } else {
+      this.telemetryFilter.from_date = moment(value.start).utc().unix();
+      this.telemetryFilter.to_date = moment(value.end).utc().unix();
+    }
     console.log(this.telemetryFilter);
     if (value.label === 'Custom Range') {
       this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');

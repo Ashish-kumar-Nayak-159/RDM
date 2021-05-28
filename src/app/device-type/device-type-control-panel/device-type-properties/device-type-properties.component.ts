@@ -39,12 +39,15 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
   return null;
 }`;
   options: any;
+  userData: any;
   constructor(
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService,
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
+    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.mode = 'code';
     this.editorOptions.statusBar = false;
@@ -385,6 +388,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
     obj.properties[this.type].push(this.propertyObj);
+    obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.deviceType.app).subscribe(
       (response: any) => {
         this.isCreatePropertyLoading = false;
@@ -403,6 +407,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
     obj.properties = JSON.parse(JSON.stringify(this.properties));
     const index = obj.properties[this.type].findIndex(prop => prop.json_key === this.selectedProperty.json_key);
     obj.properties[this.type].splice(index, 1);
+    obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.deviceType.app).subscribe(
       (response: any) => {
         this.isCreatePropertyLoading = false;
@@ -445,6 +450,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
     this.isCreatePropertyLoading = true;
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
+    obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.deviceType.app).subscribe(
       (response: any) => {
         this.isCreatePropertyLoading = false;

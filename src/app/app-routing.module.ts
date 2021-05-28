@@ -1,3 +1,4 @@
+import { CampaignManagementComponent } from './campaign-management/campaign-management.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { RDMLoginComponent } from './rdm-login/rdm-login.component';
@@ -31,6 +32,10 @@ const routes: Routes = [
   {
     path: 'applications/:applicationId/devices',
     loadChildren: () => import('./devices/devices.module').then(module => module.DevicesModule),
+  },
+  {
+    path: 'applications/:applicationId/campaigns',
+    component: CampaignManagementComponent
   },
   {
     path: 'login',

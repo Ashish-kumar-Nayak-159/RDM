@@ -8,8 +8,8 @@
           </tr>
         </thead>
         <tbody>
-          <ng-container *ngIf="deviceMetadataKeys.length > 0">
-            <tr *ngFor="let key of deviceMetadataKeys">
+          <ng-container  *ngFor="let key of deviceMetadataKeys" >
+            <tr *ngIf="deviceMetadataKeys.length > 0 && key !== 'status' && key !== 'connection_state'">
               <td>{{key}}</td>
               <td>{{device.configuration[key]}}</td>
             </tr>

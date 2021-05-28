@@ -1,3 +1,4 @@
+import { ToasterService } from './../../../services/toaster.service';
 import { SignalRService } from 'src/app/services/signalR/signal-r.service';
 import { DeviceTypeService } from './../../../services/device-type/device-type.service';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
@@ -5,7 +6,6 @@ import { Subscription } from 'rxjs';
 import { Device } from 'src/app/models/device.model';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { CommonService } from 'src/app/services/common.service';
-import { ToasterService } from 'src/app/services/toaster.service';
 import { CONSTANTS } from 'src/app/app.constants';
 import * as moment from 'moment';
 
@@ -33,7 +33,8 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     private deviceService: DeviceService,
     private commonService: CommonService,
     private deviceTypeService: DeviceTypeService,
-    private signalRService: SignalRService
+    private signalRService: SignalRService,
+    private toasterService: ToasterService
     ) { }
 
   async ngOnInit(): Promise<void> {
@@ -83,6 +84,10 @@ export class LiveDataComponent implements OnInit, OnDestroy {
   }
 
   getTelemetryData() {
+    if (this.selectedWidgetsForSearch?.length === 0) {
+      this.toasterService.showError('Select widgets first.', 'Live Widgets');
+      return;
+    }
     this.signalRService.disconnectFromSignalR('telemetry');
     this.signalRTelemetrySubscription?.unsubscribe();
     const obj = {};

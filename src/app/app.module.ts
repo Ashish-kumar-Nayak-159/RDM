@@ -19,6 +19,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { LoaderComponent } from './loader/loader.component';
 import { AgmCoreModule } from '@agm/core';
+import { CampaignManagementComponent } from './campaign-management/campaign-management.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { AgmCoreModule } from '@agm/core';
     RDMLoginComponent,
     RDMHomeComponent,
     ResetPasswordComponent,
-    LoaderComponent
+    LoaderComponent,
+    CampaignManagementComponent
   ],
   imports: [
     BrowserModule,

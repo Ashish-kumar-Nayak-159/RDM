@@ -36,6 +36,15 @@
          daterangepicker name="daterangeInput"  [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"  [(ngModel)]="selectedDateRange"
          [tooltip]="selectedDateRange" placement="bottom"/>
       </div>
+      <div class="form-group" *ngIf="displayMode === 'history'">
+        <select class="form-control form-control-sm " id="date_frequency"
+        [ngClass]="{'active': filterObj.date_frequency}"
+              [(ngModel)]="filterObj.date_frequency" name="date_frequency" >
+                <option [ngValue]="undefined">Frequency </option>
+                <option [ngValue]="'daily'">Daily</option>
+                <option [ngValue]="'weekly'">Weekly</option>
+              </select>
+      </div>
       <div class="form-group" >
       <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search" (click)="searchEvents(this.filterObj)" ><i class="fa fa-search fa-sm"></i></button>
       </div>
@@ -106,7 +115,8 @@
       <p class="m-3" *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">Select filter and press search button to load the TTR data.</p>
       <p class="m-3" *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected"> No MTTR Data found.</p>
       <span  *ngIf="loader"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> {{loadingMessage}}</span>
-      <div id="chartdiv mt-2" *ngIf="!isLifeCycleEventsLoading && lifeCycleEvents.length > 0" [ngStyle]="{'width': '100%', 'height': '23rem'}"></div>
+      <div id="mttrChart" class="mt-2" *ngIf="!isLifeCycleEventsLoading && lifeCycleEvents.length > 0"
+      [ngStyle]="{'width': '100%', 'height': '25rem'}"></div>
 
   </ng-container>
 </div>

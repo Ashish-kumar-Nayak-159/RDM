@@ -147,7 +147,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                     height: 25
                   }};
               }
-              console.log(device.icon);
+              console.log(device.device_id , '=====', device.icon);
             });
             const center = this.commonService.averageGeolocation(this.devices);
             this.centerLatitude = center?.latitude || 23.0225;

@@ -16,29 +16,29 @@
                 {{deviceCount}} {{deviceCount === 1 ? 'asset' : 'assets'}}</a>.</h6>
           </div>
           <div class="row">
-            <p *ngIf="device?.configuration?.status?.toLowerCase() === 'enabled' && device?.configuration?.connection_state?.toLowerCase() === 'connected'">
-              Currently, {{constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
+            <h6 *ngIf="device?.configuration?.status?.toLowerCase() === 'enabled' && device?.configuration?.connection_state?.toLowerCase() === 'connected'">
+              Currently, {{constantData.IP_GATEWAY ? 'gateway' : 'asset'}} is
               <span class="enabled-font">
                 {{device?.configuration.status}} & Online.</span>
-            </p>
-            <p *ngIf="device?.configuration?.status?.toLowerCase() === 'enabled' && device?.configuration?.connection_state?.toLowerCase() === 'disconnected'">
+            </h6>
+            <h6 *ngIf="device?.configuration?.status?.toLowerCase() === 'enabled' && device?.configuration?.connection_state?.toLowerCase() === 'disconnected'">
               Currently, {{constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
               <span class="enabled-font">
                 {{device?.configuration.status}}</span>, but it is
                 <span class="disabled-font">
                   Offline.</span>
-            </p>
-            <p *ngIf="device?.configuration?.status?.toLowerCase() === 'disabled' && device?.configuration?.connection_state?.toLowerCase() === 'disconnected'">
+            </h6>
+            <h6 *ngIf="device?.configuration?.status?.toLowerCase() === 'disabled' && device?.configuration?.connection_state?.toLowerCase() === 'disconnected'">
               Currently, {{constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
               <span class="disabled-font">
                 {{device?.configuration.status}} & Offline.</span>
-            </p>
+            </h6>
           </div>
           <div *ngIf="deviceCredentials" class="row">
             <h6 ><ng-container *ngIf="componentState === constantData.NON_IP_DEVICE">Gateway</ng-container>
               Connection String:
-              <a class="blue-font ml-2" href="javascript:void(0)" (click)="viewonnectionString()"> View</a>
-              <a class="blue-font ml-2" href="javascript:void(0)" (click)="copyConnectionString()"> {{isCopyClicked ? 'Copied' : 'Copy'}}</a>
+              <a class="blue-font ml-2" href="javascript:void(0)" (click)="viewonnectionString()">View</a>
+              <a class="blue-font ml-2" href="javascript:void(0)" (click)="copyConnectionString()">{{isCopyClicked ? 'Copied' : 'Copy'}}</a>
             </h6>
             <h6  class="row col-12" *ngIf="isViewClicked">{{deviceCredentials.primary_connection_string}}</h6>
           </div>

@@ -100,6 +100,9 @@ export class DeviceTypeOverviewComponent implements OnInit, OnDestroy {
       max: 60,
       average: 30
     };
+    if (this.thingsModel.id) {
+      this.thingsModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
+    }
     this.isUpdateThingsModelAPILoading = true;
     const method = this.thingsModel.id ? this.deviceTypeService.updateThingsModel(this.thingsModel, this.contextApp.app) :
     this.deviceTypeService.createThingsModel(this.thingsModel, this.contextApp.app);

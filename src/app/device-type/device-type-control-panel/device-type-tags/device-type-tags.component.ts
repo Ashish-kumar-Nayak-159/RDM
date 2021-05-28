@@ -105,8 +105,10 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.tags = this.deviceType.tags;
     obj.app = this.contextApp.app;
+    obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.contextApp.app).subscribe(
       (response: any) => {
+
         this.tagObj = undefined;
         this.toasterService.showSuccess(response.message, 'Set Tags');
         this.getDeviceTypeDetail();

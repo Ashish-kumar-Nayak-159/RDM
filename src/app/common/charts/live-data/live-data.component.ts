@@ -70,8 +70,9 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   }
 
   plotChart() {
-    am4core.options.onlyShowOnViewport = true;
-    am4core.options.viewportTarget = [document.getElementById('mainChartDiv')];
+    // am4core.options.onlyShowOnViewport = true;
+    am4core.options.minPolylineStep = 5;
+    // am4core.options.viewportTarget = [document.getElementById('mainChartDiv')];
 
     // am4core.options.queue = true;
     this.zone.runOutsideAngular(() => {

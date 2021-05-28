@@ -56,7 +56,8 @@
         <thead>
           <th></th>
           <th>Date</th>
-          <th>TBF (Asset Uptime)</th>
+          <th>TBF</th>
+          <th>Asset Uptime</th>
         </thead>
         <!-- <tfoot *ngIf="avrgMTBF && avrgMTBF > 0 && isFilterSelected">
                 <tr>
@@ -72,23 +73,24 @@
                 {{event.local_event_end_time}}</td>
               <td *ngIf="originalFilterObj.date_frequency === 'daily'">{{event.local_event_start_time}}</td>
               <td>{{event.mtbfString}}</td>
+              <td>{{event.uptime}}</td>
             </tr>
           </ng-container>
           <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected">
             <tr>
-              <td colspan="5">
+              <td colspan="4">
                 No TBF data found.
               </td>
             </tr>
           </ng-container>
           <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">
             <tr>
-              <td colspan="5">Select filter and press search button to load the TBF data.</td>
+              <td colspan="4">Select filter and press search button to load the TBF data.</td>
             </tr>
           </ng-container>
           <ng-container *ngIf="isLifeCycleEventsLoading">
             <tr>
-              <td colspan="5">
+              <td colspan="4">
                 <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
               </td>
             </tr>
@@ -102,9 +104,11 @@
         and press search button to load the TBF data.</p>
       <p  class="m-3" *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected"> No MTBF Data
         found.</p>
-      <div id="chartdiv mt-2" *ngIf="!isLifeCycleEventsLoading && lifeCycleEvents.length > 0"
-        [ngStyle]="{'width': '100%', 'height': '23rem'}"></div>
+      <div id="mtbfChart" class="mt-2" *ngIf="!isLifeCycleEventsLoading && lifeCycleEvents.length > 0"
+      [ngStyle]="{'width': '100%', 'height': '25rem'}"></div>
     </ng-container>
+
+
 
   </div>
 </div>

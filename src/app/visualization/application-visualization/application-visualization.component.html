@@ -56,6 +56,9 @@
                   [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
                   dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.device"
                   (onSelect)="onAssetSelection()">
+                  <ng-template ng-option-tmp let-device="item">
+                    <span [tooltip]="device.display_name ? device.display_name: device.device_id"> {{device.display_name ? device.display_name: device.device_id}}</span>
+                  </ng-template>
                 </ng-select>
               </div>
             </div>
@@ -87,7 +90,8 @@
 
       <ul class="mail_list list-group list-unstyled alert-scroll" *ngIf="!isAlertAPILoading && latestAlerts.length > 0">
 
-        <li class="list-group-item" [ngClass]="{'active': selectedAlert?.message_id === alert?.message_id}"
+        <li class="list-group-item"
+         [ngClass]="{'active': alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id}"
         *ngFor="let alert of latestAlerts">
           <div class="media">
             <div class="pull-left">
@@ -101,7 +105,7 @@
                 )" [tooltip]="alert?.severity"></i>
               </div>
             </div>
-            <div class="media-body"><a (click)="onClickOfViewGraph(alert)" class="m-r-10">
+            <div class="media-body"><a  class="m-r-10">
                 <div class="media-heading">
                   <p class="overflow" [tooltip]="alert.message">{{ alert.message }}</p>
                   <!--<span class="badge bg-amber">Shop</span>
@@ -111,17 +115,16 @@
                 <p class="msg"><time class="hidden-sm-down">{{ alert.local_created_date }}</time> </p>
               </a>
             </div>
-            <!-- <div class="pull-right">
+            <div class="pull-right">
               <div class="">
-                <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down" *ngIf="!selectedAlert?.metadata?.acknowledged_date" (click)="onClickOfAcknowledgeAlert(alert)"
-                ><i class="fa fa-folder-open text-gray" aria-hidden="true"></i></a>
-                <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down" *ngIf="selectedAlert?.metadata?.acknowledged_date"
-                ><i class="fa  fa-check-square text-gray" aria-hidden="true"></i></a>
+                <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down" (click)="onClickOfViewGraph(alert)"
+                ><i class="fa fa-external-link-alt text-dark" aria-hidden="true"></i></a>
+                <!-- <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down" *ngIf="selectedAlert?.metadata?.acknowledged_date"
+                ><i class="fa  fa-check-square text-gray" aria-hidden="true"></i></a> -->
               </div>
-            </div> -->
+            </div>
           </div>
         </li>
-
       </ul>
     </div>
     <div class="col-sm-9 col-md-9 col-lg-9 col-xl-9 pl-0" *ngIf="selectedAlert">
@@ -211,7 +214,7 @@
                 <input class="form-control form-control-sm bg-light" type="number" id="aggr_mins" min="1"
                   name="aggr_mins" [(ngModel)]="filterObj.aggregation_minutes" placeholder="Sampling"
                   (change)="onNumberChange($event, 'aggregation')" [disabled]="!filterObj.isTypeEditable"
-                  style="width: 3em;">
+                  style="width: 4em;">
                 <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
               </div>
               <div class="form-group " *ngIf="!filterObj.type">
@@ -248,8 +251,6 @@
                       <label class="form-check-label text-elipsis" for="{{prop}}"
                       placement="bottom" [tooltip]="getPropertyName(prop)">{{getPropertyName(prop)}}</label>
                     </div>
-
-
                   </div>
                   <div class="col-xl-12 col-lg-12 m-3" *ngIf="!isTelemetryDataLoading && telemetryData.length === 0 && selectedWidgets?.length > 0">
                     No data found.
@@ -257,7 +258,7 @@
                   <div class="col-xl-12 col-lg-12 m-3" *ngIf="selectedWidgets?.length === 0 && !isTelemetryDataLoading">
                     No widgets configured for this alert.
                   </div>
-                  <div id="charts" classs="w-100 row"></div>
+                  <div id="charts" classs="w-100 row" *ngIf="selectedWidgets?.length > 0"></div>
                 </div>
 
             </div>
@@ -302,7 +303,7 @@
                       No Reference documents added yet.</div>
         </div>
         <div id="actions" role="tabpanel" aria-labelledby="actions-tab" [ngClass]="{'active': selectedTab === 'actions'}" class="tab-pane fade p-2">
-          <h6 class="font-weight-bold"><u>By Field Staff:</u></h6>
+          <h6 class="m-3">Action taken by Field Staff:</h6>
                     <div class="col-xl-12 col-lg-12 pl-3"
                       *ngIf="!selectedAlert?.metadata?.acknowledged_date; else actionTakenTemplate">
                       No Actions recorded by field staff yet.
@@ -332,7 +333,7 @@
                         </div>
                       </div>
                     </ng-template>
-                    <h6 class="font-weight-bold"><u>By RDM:</u></h6>
+                    <h6 class="">Action taken by RDM:</h6>
                     <div class="col-xl-12 col-lg-12 pl-3">
                       No Actions recorded by RDM yet.
                     </div>
@@ -386,7 +387,7 @@
                 <option [ngValue]="'Video'">Video</option>
               </select>
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
               <label for="recipient-name" class="col-form-label">Document:</label>
               {{file ? file?.name : 'Not yet uploaded'}}
               <input type="file" accept="{{(file.type === 'PDF' ? '.pdf' : (
@@ -395,6 +396,32 @@
               )
             ))}}" (change)="onDocumentFileSelected($event.target.files, i)" [disabled]="file.type === undefined"
                 class="form-control" id="app_logo_{{i}}" name="app_logo_{{i}}">
+            </div> -->
+
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label required">Document:</label>
+              <div class="form-group input-group row m-0">
+                <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
+                <div class="file-input form-control form-control-sm p-0 col-8">
+                 <input type="file" id="file" class="file" (change)="onDocumentFileSelected($event.target.files, i)"
+                 [disabled]="file.type === undefined" accept="{{(file.type === 'PDF' ? '.pdf' : (
+              file.type === 'Image' ? '.jpeg,.png,.svg' : (
+                file.type === 'Video' ? '.mp4,' : '*'
+              )
+            ))}}">
+
+                 <label for="file">{{file ? file?.name : 'Choose File'}}</label>
+                </div>
+                <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+                <input type="file" [disabled]="file.type === undefined" id="file" class="file"
+                accept="{{(file.type === 'PDF' ? '.pdf' : (
+              file.type === 'Image' ? '.jpeg,.png,.svg' : (
+                file.type === 'Video' ? '.mp4,' : '*'
+              )
+            ))}}">
+                   <label for="file" class="bg-secondary text-white">Browse</label>
+                </div>
+                </div>
             </div>
           </ng-container>
         </form>

@@ -125,8 +125,8 @@ export class CommonService {
   }
 
   getItemFromLocalStorage(key) {
-    // const data = this.decryptString(localStorage.getItem(key));
-    const data = localStorage.getItem(key);
+    const data = this.decryptString(localStorage.getItem(key));
+    // const data = localStorage.getItem(key);
     if (data) {
       return JSON.parse(data);
     }
@@ -134,8 +134,8 @@ export class CommonService {
   }
 
   setItemInLocalStorage(key, value) {
-    // localStorage.setItem(key, this.encryptJSON(value));
-    localStorage.setItem(key, JSON.stringify(value));
+    localStorage.setItem(key, this.encryptJSON(value));
+    // localStorage.setItem(key, JSON.stringify(value));
     // let expiryObj: any = localStorage.getItem(CONSTANTS.EXPIRY_TIME);
     // const userData: any = JSON.parse(localStorage.getItem(CONSTANTS.USER_DETAILS));
     // if (!expiryObj && userData) {
@@ -156,6 +156,15 @@ export class CommonService {
       obj.to_date = moment().utc().unix();
     } else if (label === 'Last 1 Hour') {
       obj.from_date = moment().subtract(1, 'hour').utc().unix();
+      obj.to_date = moment().utc().unix();
+    } else if (label === 'Last 3 Hours') {
+      obj.from_date = moment().subtract(3, 'hours').utc().unix();
+      obj.to_date = moment().utc().unix();
+    } else if (label === 'Last 6 Hours') {
+      obj.from_date = moment().subtract(6, 'hours').utc().unix();
+      obj.to_date = moment().utc().unix();
+    } else if (label === 'Last 12 Hours') {
+      obj.from_date = moment().subtract(12, 'hours').utc().unix();
       obj.to_date = moment().utc().unix();
     } else if (label === 'Last 24 Hours') {
       obj.from_date = moment().subtract(24, 'hours').utc().unix();

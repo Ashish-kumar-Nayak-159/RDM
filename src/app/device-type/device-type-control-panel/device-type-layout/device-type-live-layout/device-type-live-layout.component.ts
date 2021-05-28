@@ -218,6 +218,7 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
 
   updateDeviceType(arr, message) {
     this.deviceType.live_widgets = arr;
+    this.deviceType.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(this.deviceTypeService.updateThingsModel(this.deviceType, this.contextApp.app).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(message, 'Live Widgets');

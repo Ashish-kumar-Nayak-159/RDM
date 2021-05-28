@@ -182,9 +182,17 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   selectedDate(value: any, datepicker?: any) {
-    this.filterObj.from_date = moment(value.start).utc().unix();
-    this.filterObj.to_date = moment(value.end).utc().unix();
+    // this.filterObj.from_date = moment(value.start).utc().unix();
+    // this.filterObj.to_date = moment(value.end).utc().unix();
     this.filterObj.dateOption = value.label;
+    if (this.filterObj.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
+      this.filterObj.from_date = dateObj.from_date;
+      this.filterObj.to_date = dateObj.to_date;
+    } else {
+      this.filterObj.from_date = moment(value.start).utc().unix();
+      this.filterObj.to_date = moment(value.end).utc().unix();
+    }
     console.log(this.filterObj);
     if (value.label === 'Custom Range') {
       this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
@@ -670,7 +678,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
           });
           data.push(obj);
         });
-
+        ws = XLSX.utils.json_to_sheet(data);
       }
 
       const colA = XLSX.utils.decode_col('B'); // timestamp is in first column

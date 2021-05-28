@@ -12,6 +12,7 @@ import { DeviceTypeService } from 'src/app/services/device-type/device-type.serv
 export class DeviceTypeRulesComponent implements OnInit, OnDestroy {
 
   @Input() deviceType: any;
+  @Input() pageType: any;
   rules: any[] = [];
   rulesTableConfig: any;
   isRulesLaoading = false;
@@ -53,13 +54,6 @@ export class DeviceTypeRulesComponent implements OnInit, OnDestroy {
           valueclass: ''
         },
         {
-          name: 'Type',
-          key: 'type',
-          type: 'text',
-          headerClass: '',
-          valueclass: ''
-        },
-        {
           name: 'Condition',
           key: 'metadata.condition',
           type: 'text',
@@ -73,7 +67,10 @@ export class DeviceTypeRulesComponent implements OnInit, OnDestroy {
   getRules() {
     this.rules = [];
     this.isRulesLaoading = true;
-    this.subscriptions.push(this.deviceTypeService.getRules(this.contextApp.app, this.deviceType.name).subscribe(
+    const obj = {
+      type: this.pageType
+    };
+    this.subscriptions.push(this.deviceTypeService.getRules(this.contextApp.app, this.deviceType.name, obj).subscribe(
       (response: any) => {
         if (response?.data) {
           this.rules = response.data;

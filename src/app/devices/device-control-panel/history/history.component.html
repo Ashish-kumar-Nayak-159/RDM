@@ -45,7 +45,7 @@
           <input class="form-control form-control-sm bg-light" type="number" id="aggr_mins" min="1"
           name="aggr_mins" [(ngModel)]="historyFilter.aggregation_minutes" placeholder="Sampling"
           (change)="onNumberChange($event, 'aggregation')" [disabled]="!historyFilter.isTypeEditable"
-           style="width: 3em;" >
+           style="width: 4em;" >
           <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
         </div>
         <div class="form-group " *ngIf="!historyFilter.type">
@@ -117,7 +117,7 @@
         placement="bottom" [tooltip]="getPropertyName(prop)">{{getPropertyName(prop)}}</label>
       </div>
     </div>
-    <div id="widgetContainer" class="showLayout"></div>
+    <div id="widgetContainer" class="showLayout p-3"></div>
         </div>
         </div>
 

@@ -28,6 +28,8 @@ import { DeviceTypeConfigurationWidgetsComponent } from './device-type-control-p
 import { DeviceTypeSettingsComponent } from './device-type-control-panel/device-type-settings/device-type-settings.component';
 import { DeviceTypePackageManagementComponent } from './device-type-control-panel/device-type-package-management/device-type-package-management.component';
 import { DeviceTypeRulesComponent } from './device-type-control-panel/device-type-rules/device-type-rules.component';
+import { DeviceTypeDerivedKpisComponent } from './device-type-control-panel/device-type-derived-kpis/device-type-derived-kpis.component';
+import { DeviceTypeStreamProcessingComponent } from './device-type-control-panel/device-type-stream-processing/device-type-stream-processing.component';
 
 
 
@@ -49,7 +51,9 @@ import { DeviceTypeRulesComponent } from './device-type-control-panel/device-typ
     DeviceTypeConfigurationWidgetsComponent,
     DeviceTypeSettingsComponent,
     DeviceTypePackageManagementComponent,
-    DeviceTypeRulesComponent
+    DeviceTypeRulesComponent,
+    DeviceTypeDerivedKpisComponent,
+    DeviceTypeStreamProcessingComponent
   ],
   imports: [
     CommonModule,

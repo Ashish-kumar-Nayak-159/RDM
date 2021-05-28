@@ -96,7 +96,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
   onAddUserAccess() {
     if (!this.selectedUser.user_email || !this.selectedUser.user_name) {
       this.toasterService.showError('Please fill all details',
-        'Create User');
+        'Access Control');
       return;
     }
     if (!CONSTANTS.EMAIL_REGEX.test(this.selectedUser.user_email)) {

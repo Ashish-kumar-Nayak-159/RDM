@@ -1,7 +1,7 @@
 <div class="blue-nav-bar">
   <div class="d-flex align-items-center">
 
-    <div class="main-heading">{{(tileData && tileData[1] ? tileData[1]?.value : '')}}&nbsp;
+    <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}&nbsp;
     </div>
     <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCreateDeviceTypeModal()"
     placement="bottom" tooltip="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"><i class="fas fa-plus fa-sm"></i></button>
@@ -99,12 +99,28 @@
             {{item}}</option>
           </select>
         </div>
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label for="message-text" class="col-form-label">Upload Image: </label>
           {{thingsModel.metadata?.image?.name ? thingsModel.metadata.image.name : 'Not yet uploaded'}}
           <input type="file"
           #typeLogoFileInput (change)="onLogoFileSelected($event.target.files)"
            class="form-control form-control-sm" id="app_logo" name="app_logo" >
+        </div> -->
+
+        <div class="form-group">
+          <label for="recipient-name" class="col-form-label required">Upload Image:</label>
+          <div class="form-group input-group row m-0">
+            <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
+            <div class="file-input form-control form-control-sm p-0 col-8">
+             <input type="file" id="file" accept=".jpeg,.png,.svg" class="file" (change)="onLogoFileSelected($event.target.files)">
+
+             <label for="file">{{(thingsModel && thingsModel.metadata && thingsModel.metadata.image && thingsModel.metadata.image.name) ? (thingsModel.metadata.image.name) : 'Choose File'}}</label>
+            </div>
+            <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+            <input type="file" accept=".jpeg,.png,.svg" id="file" class="file" >
+               <label for="file" class="bg-secondary text-white">Browse</label>
+            </div>
+            </div>
         </div>
 
         <!-- <div class="form-group">

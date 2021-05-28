@@ -32,6 +32,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   subscriptions: Subscription[] = [];
   contextApp: any;
+  userData: any;
   constructor(
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService,
@@ -39,6 +40,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.setUpDeviceMethodsData();
     this.editorOptions = new JsonEditorOptions();
@@ -252,6 +254,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.device_methods = JSON.parse(JSON.stringify(this.deviceMethods));
     obj.device_methods.push(this.deviceMethodObj);
+    obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.deviceType.app).subscribe(
       (response: any) => {
         this.isCreateDeviceMethodLoading = false;
@@ -270,6 +273,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
     obj.device_methods = JSON.parse(JSON.stringify(this.deviceMethods));
     const index = obj.device_methods.findIndex(prop => prop.json_key === this.selectedDeviceMethod.json_key);
     obj.device_methods.splice(index, 1);
+    obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.deviceType.app).subscribe(
       (response: any) => {
         this.isCreateDeviceMethodLoading = false;

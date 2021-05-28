@@ -1,12 +1,12 @@
 
 <!-- Page Heading -->
-<div class="table-responsive p-3">
+<div class="table-responsive">
   <div class="tableFixHead" >
     <div class="p-3">
       <div class="d-flex">
           <div class="">
     <div class="row">
-      <h6 *ngIf="deviceType.freezed && contextApp.user.role === appAdminRole">
+      <h6 class="p-3" *ngIf="deviceType.freezed && contextApp.user.role === appAdminRole">
       This model is freezed. <br/>
       You can't add, modify, delete any attribute of this model.<br/>
       Please Unfreeze, if you want to add, modify, delete any.
@@ -16,7 +16,7 @@
       </h6>
       </div>
       <div class="row">
-      <h6 *ngIf="!deviceType.freezed && contextApp.user.role === appAdminRole">
+      <h6 class="p-3" *ngIf="!deviceType.freezed && contextApp.user.role === appAdminRole">
       This model is not freezed.<br/>
       Once you complete modifications (add, edit, delete), Please freeze it for better performance.
       <a href="javascript:void(0)" (click)="freezeModel()" [class.disabled]="isModelFreezeUnfreezeAPILoading"
@@ -25,7 +25,7 @@
       </h6>
   </div>
   <div class="row">
-    <h6>Device Model Image:
+    <h6 class="pl-3">Asset Model Image:
       <a href="javascript:void(0)" (click)="openCreateDeviceTypeModal()"
       class="d-none d-sm-inline-block shadow-sm ml-2"><i class="fa fa-edit"></i></a>
     </h6>
@@ -96,12 +96,28 @@
     <div class="modal-body" *ngIf="thingsModel">
       <form name="createThingsModelForm">
 
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label for="message-text" class="col-form-label">Upload Image: </label>
           {{thingsModel.metadata?.image?.name ? thingsModel.metadata.image.name : 'Not yet uploaded'}}
           <input type="file"
           #typeLogoFileInput (change)="onLogoFileSelected($event.target.files)"
            class="form-control" id="app_logo" name="app_logo" >
+        </div> -->
+
+        <div class="form-group">
+          <label for="recipient-name" class="col-form-label required">Upload Image:</label>
+          <div class="form-group input-group row m-0">
+            <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
+            <div class="file-input form-control form-control-sm p-0 col-8">
+             <input type="file" accept=".jpeg,.png,.svg" id="file" class="file" (change)="onLogoFileSelected($event.target.files)">
+
+             <label for="file">{{(thingsModel && thingsModel.metadata && thingsModel.metadata.image && thingsModel.metadata.image.name) ? (thingsModel.metadata.image.name) : 'Choose File'}}</label>
+            </div>
+            <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+            <input type="file" accept=".jpeg,.png,.svg" id="file" class="file" >
+               <label for="file" class="bg-secondary text-white">Browse</label>
+            </div>
+            </div>
         </div>
 
         <!-- <div class="form-group">

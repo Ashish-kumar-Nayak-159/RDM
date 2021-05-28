@@ -156,9 +156,15 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit {
 
   selectedDate(value: any, datepicker?: any) {
     console.log(value);
-    this.filterObj.from_date = moment(value.start).utc().unix();
-    this.filterObj.to_date = moment(value.end).utc().unix();
     this.filterObj.dateOption = value.label;
+    if (this.filterObj.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
+      this.filterObj.from_date = dateObj.from_date;
+      this.filterObj.to_date = dateObj.to_date;
+    } else {
+      this.filterObj.from_date = moment(value.start).utc().unix();
+      this.filterObj.to_date = moment(value.end).utc().unix();
+    }
     if (value.label === 'Custom Range') {
       this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
     } else {

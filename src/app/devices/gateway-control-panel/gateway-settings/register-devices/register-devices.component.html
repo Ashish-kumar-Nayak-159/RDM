@@ -1,4 +1,5 @@
-
+<div class="table-responsive">
+  <div class="tableFixHead" >
   <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isDevicesAPILoading"></i>
   <h6 *ngIf="devices.length === 0 && !isDevicesAPILoading"> No devices available.</h6>
   <table class="table table-hover">
@@ -30,13 +31,23 @@
           <a class=""
             href="javascript:void(0)" tooltip="Register Device"
             (click)="registerDevices(device)"
-            [class.disabled]="!device.register_enabled"
+            [class.disabled]="device.metadata?.package_app ? (
+              deviceTwin.twin_properties.reported && deviceTwin.twin_properties.reported.registered_devices &&
+               deviceTwin.twin_properties.reported.registered_devices[device.metadata.package_app]
+                && (deviceTwin.twin_properties.reported.registered_devices[device.metadata.package_app].
+                  indexOf(device.device_id) > -1) ? true : false
+            ) : true"
             ><i class="fa fa-link fa-sm "></i>
           </a>
           <a class="ml-2"
             href="javascript:void(0)" tooltip="Deregister Device"
             (click)="deregisterDevices(device)"
-            [class.disabled]="!device.deregister_enabled"
+            [class.disabled]="device.metadata?.package_app ? (
+              deviceTwin.twin_properties.reported && deviceTwin.twin_properties.reported.registered_devices &&
+               deviceTwin.twin_properties.reported.registered_devices[device.metadata.package_app]
+                && (deviceTwin.twin_properties.reported.registered_devices[device.metadata.package_app].
+                  indexOf(device.device_id) > -1) ? false : true
+            ) : true"
             ><i class="fa fa-unlink fa-sm "></i>
           </a>
         </td>
@@ -44,7 +55,7 @@
       </tr>
     </tbody>
   </table>
-
+  </div></div>
   <div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" style="z-index: 1400;">
     <div class="modal-dialog" role="document">
       <div class="modal-content">

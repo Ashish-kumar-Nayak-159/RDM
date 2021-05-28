@@ -273,7 +273,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     }
     this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
-        this.toasterService.showSuccess(this.tileData.value + ' tags updated successfully.', 'Set Tags');
+        this.toasterService.showSuccess('Asset tags updated successfully.', 'Set Tags');
         this.onModalClose('changeLocationModal');
         this.getDeviceData();
         this.isReservedTagsEditable = false;

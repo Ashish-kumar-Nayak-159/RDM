@@ -10,7 +10,7 @@
           [searchable]="true" [closeOnSelect]="true" placeholder="Select Widget Type"
           dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="selectedChartType">
           <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
-            <span ><i class="fa {{chartIcons[index]}}"></i>{{item}}</span>
+            <span [tooltip]="item"><i class="fa {{chartIcons[index]}}"></i>&nbsp;{{item}}</span>
           </ng-template>
               </ng-select>
       </div>
@@ -19,22 +19,28 @@
               placeholder="X-Axis parameter" id="xAxisProperty" [(ngModel)]="xAxisProps" name="xAxisProperty">
       </div>
       <div class="form-group">
-        <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" bindLabel="id" (onDeSelectAll)="y1Deselect($event)"
+        <ng-select [items]="propertyList" class="custom-dropdown w-12 sm" (onDeSelectAll)="y1Deselect($event)"
         [searchable]="false" placeholder="Y1 Axis Props" [multiple]="true"
         [closeOnSelect]="false"
         dropdownPosition="bottom" name="widget-dropdown1" [(ngModel)]="y1AxisProps">
         <ng-template ng-multi-label-tmp let-items="items">
         {{items.length}} properties selected
         </ng-template>
+        <ng-template ng-option-tmp let-item="item">
+          <span > {{item.name}}</span>
+        </ng-template>
       </ng-select>
       </div>
       <div class="form-group">
-        <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" bindLabel="id" (onDeSelectAll)="y2Deselect($event)"
+        <ng-select [items]="propertyList" class="custom-dropdown w-12 sm" (onDeSelectAll)="y2Deselect($event)"
         [searchable]="false" placeholder="Y2 Axis Props" [multiple]="true"
         [closeOnSelect]="false"
         dropdownPosition="bottom" name="widget-dropdown2" [(ngModel)]="y2AxisProps">
         <ng-template ng-multi-label-tmp let-items="items">
         {{items.length}} properties selected
+        </ng-template>
+        <ng-template ng-option-tmp let-item="item">
+          <span > {{item.name}}</span>
         </ng-template>
       </ng-select>
       </div>
@@ -60,7 +66,7 @@
       No Historical Widgets found.
     </p>
     <i *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-    <div id="layoutWidgetContainer" class="showLayout">
+    <div id="layoutWidgetContainer" class="showLayout p-3">
     </div>
   </div>
 </div>

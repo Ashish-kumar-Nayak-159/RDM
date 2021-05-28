@@ -46,7 +46,7 @@
               <option [ngValue]="'Video'" >Video</option>
             </select>
           </div>
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Document:</label>
             {{documentObj?.metadata ? documentObj?.metadata?.name : 'Not yet uploaded'}}
             <input type="file" accept="{{(documentObj.type === 'PDF' ? '.pdf' : (
@@ -55,8 +55,30 @@
               )
             ))}}" (change)="onDocumentFileSelected($event.target.files)" [disabled]="documentObj.type === undefined "
             class="form-control" id="app_logo" name="app_logo">
-          </div>
+          </div> -->
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label required">Document:</label>
+            <div class="form-group input-group row m-0">
+              <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
+              <div class="file-input form-control form-control-sm p-0 col-8">
+               <input type="file" id="file" class="file" (change)="onDocumentFileSelected($event.target.files)"
+               [disabled]="documentObj.type === undefined " accept="{{(documentObj.type === 'PDF' ? '.pdf' : (
+                documentObj.type === 'Image' ? '.jpeg,.png,.svg' : (
+                  documentObj.type === 'Video' ? '.mp4,' : '*'
+                )))}}">
 
+               <label for="file">{{(documentObj && documentObj.metadata && documentObj.metadata.name) ? (documentObj.metadata.name) : 'Choose File'}}</label>
+              </div>
+              <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+              <input type="file" id="file" class="file" [disabled]="documentObj.type === undefined "
+              accept="{{(documentObj.type === 'PDF' ? '.pdf' : (
+              documentObj.type === 'Image' ? '.jpeg,.png,.svg' : (
+                documentObj.type === 'Video' ? '.mp4,' : '*'
+              )))}}">
+                 <label for="file" class="bg-secondary text-white">Browse</label>
+              </div>
+              </div>
+          </div>
         </form>
       </div>
       <div class="modal-footer">

@@ -184,9 +184,17 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   selectedDate(value: any, datepicker?: any) {
-    this.historyFilter.from_date = moment(value.start).utc().unix();
-    this.historyFilter.to_date = moment(value.end).utc().unix();
+    // this.historyFilter.from_date = moment(value.start).utc().unix();
+    // this.historyFilter.to_date = moment(value.end).utc().unix();
     this.historyFilter.dateOption = value.label;
+    if (this.historyFilter.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(this.historyFilter.dateOption);
+      this.historyFilter.from_date = dateObj.from_date;
+      this.historyFilter.to_date = dateObj.to_date;
+    } else {
+      this.historyFilter.from_date = moment(value.start).utc().unix();
+      this.historyFilter.to_date = moment(value.end).utc().unix();
+    }
     console.log(this.historyFilter);
     if (value.label === 'Custom Range') {
       this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');

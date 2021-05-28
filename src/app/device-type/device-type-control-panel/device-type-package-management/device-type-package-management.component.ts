@@ -180,6 +180,7 @@ export class DeviceTypePackageManagementComponent implements OnInit {
   }
 
   async onDocumentFileSelected(files: FileList): Promise<void> {
+    console.log('hereeeee');
     const arr = files?.item(0)?.name?.split('.') || [];
     if (!files?.item(0).type.includes('zip') && !files?.item(0).type.includes('rar')) {
       this.toasterService.showError('Only .zip and .rar files are allowed', 'Select File');

@@ -19,9 +19,11 @@ export class C2dPurgeComponent implements OnInit, OnDestroy {
   @Input() device: Device = new Device();
   userData: any;
   appName: string;
-  pageType: string;
+  @Input() componentState: string;
   modalConfig: { isDisplaySave: boolean; isDisplayCancel: boolean; saveBtnText: string; cancelBtnText: string; stringDisplay: boolean; };
   subscriptions: Subscription[] = [];
+  contextApp: any;
+  constantData = CONSTANTS;
   constructor(
     private deviceService: DeviceService,
     private toasterServie: ToasterService,
@@ -31,17 +33,14 @@ export class C2dPurgeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.subscriptions.push(this.route.paramMap.subscribe(params => {
-      this.appName = params.get('applicationId');
-      this.pageType = params.get('listName');
-    }));
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
   }
 
   verifyQueueMessages() {
     this.messageCount = null;
     let params = new HttpParams();
     let deviceId = this.device.device_id;
-    if (this.pageType.toLowerCase() === 'nonipdevices') {
+    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
       deviceId = this.device.gateway_id;
     }
     params = params.set('device_id', deviceId);
@@ -74,7 +73,7 @@ export class C2dPurgeComponent implements OnInit, OnDestroy {
   purgeQueueMessages() {
     let params = new HttpParams();
     let deviceId = this.device.device_id;
-    if (this.pageType.toLowerCase() === 'nonipdevices') {
+    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
       deviceId = this.device.gateway_id;
     }
     params = params.set('device_id', deviceId);

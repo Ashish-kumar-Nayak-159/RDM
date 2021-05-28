@@ -68,10 +68,10 @@
 </ng-container>
 
 <ng-container *ngIf="displayMode === 'general_commands'">
-<app-compose-c2d-message [device]="device"></app-compose-c2d-message>
+<app-compose-c2d-message [device]="device" ></app-compose-c2d-message>
 </ng-container>
 <ng-container *ngIf="displayMode === 'purge'">
-  <app-c2d-purge [device]="device"></app-c2d-purge>
+  <app-c2d-purge [device]="device" [componentState]="componentState"></app-c2d-purge>
   </ng-container>
 
 

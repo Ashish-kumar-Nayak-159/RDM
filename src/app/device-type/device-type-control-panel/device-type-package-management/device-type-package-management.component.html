@@ -63,12 +63,23 @@
                 placeholder="Patch">
             </div>
           </div>
+
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Document:</label>
-            {{packageObj?.metadata ? packageObj?.metadata?.file_name : 'Not yet uploaded'}}
-            <input type="file" accept=".zip,.rar,.7zip" (change)="onDocumentFileSelected($event.target.files)"
-              class="form-control" id="app_logo" name="app_logo">
+            <div class="form-group input-group row m-0">
+              <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
+              <div class="file-input form-control form-control-sm p-0 col-8">
+               <input type="file"  accept=".zip,.rar,.7zip" id="file" class="file" (change)="onDocumentFileSelected($event.target.files)">
+
+               <label for="file">{{(packageObj && packageObj.metadata && packageObj.metadata.file_name) ? (packageObj.metadata.file_name) : 'Choose File'}}</label>
+              </div>
+              <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+              <input type="file"  accept=".zip,.rar,.7zip" id="file" class="file" >
+                 <label for="file" class="bg-secondary text-white">Browse</label>
+              </div>
+              </div>
           </div>
+
         </form>
       </div>
       <div class="modal-footer">

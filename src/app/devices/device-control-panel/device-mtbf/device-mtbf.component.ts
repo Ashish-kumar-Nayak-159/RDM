@@ -48,6 +48,7 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
       'Last 7 Days': [moment().subtract(6, 'days'), moment()],
       'This Week': [moment().startOf('isoWeek'), moment()],
       'Last 4 Weeks': [moment().subtract(4, 'weeks').startOf('isoWeek'), moment().subtract(1, 'weeks').endOf('isoWeek')],
+      'This Month': [moment().startOf('month'), moment().endOf('month')],
       'Last Month': [ moment().subtract(1, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
       'Last 3 Months': [moment().subtract(3, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
       'Last 6 Months': [moment().subtract(3, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
@@ -72,6 +73,9 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
 
   onTabChange(type) {
     this.filterObj = {};
+    this.loader = false;
+    this.lifeCycleEvents = [];
+    this.isFilterSelected = false;
     this.filterObj.dateOption = 'Last 24 Hours';
     this.filterObj.from_date = moment().subtract(24, 'hours').utc().unix();
     this.filterObj.to_date = moment().utc().unix();
@@ -92,23 +96,25 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
       this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
       this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
     }, 1000);
-
+    this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
   }
 
   searchMTBFEvents(filterObj) {
+    this.chart?.dispose();
     this.avrgMTBF = undefined;
-    this.loader = true;
     this.avrgMTBFString = undefined;
-    this.isFilterSelected = true;
-    this.isLifeCycleEventsLoading = true;
+
     const obj = {...filterObj};
     delete obj.countNotShow;
     if (!obj.date_frequency) {
-      this.toasterService.showError('Date frequency is required.', 'MTBF Data');
+      this.toasterService.showError('Frequency is required.', 'MTBF Data');
       this.isFilterSelected = false;
       this.isLifeCycleEventsLoading = false;
       return;
     }
+    this.loader = true;
+    this.isFilterSelected = true;
+    this.isLifeCycleEventsLoading = true;
     this.filterObj = filterObj;
     this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
     let method;
@@ -125,9 +131,13 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
           item.local_event_start_time = this.commonService.convertUTCDateToLocalDate(item.start_time);
           item.local_event_end_time = this.commonService.convertUTCDateToLocalDate(item.end_time);
           item.mtbfString = this.splitTime(item.mtbf / 60);
+          item.uptime = this.splitTime(item.metadata?.total_uptime_in_sec / 60 || 0);
+          console.log(item.uptime);
         });
-        if (this.displayMode === 'history') {
-          setTimeout(() =>  this.plotChart(), 500);
+        if (this.displayMode === 'history' && this.lifeCycleEvents.length > 0) {
+          setTimeout(() =>  {
+            this.plotChart();
+          }, 100);
         }
         this.isLifeCycleEventsLoading = false;
         if (this.lifeCycleEvents.length === 0) {
@@ -155,9 +165,16 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
   }
 
   selectedDate(value: any, datepicker?: any) {
-    this.filterObj.from_date = moment(value.start).utc().unix();
-    this.filterObj.to_date = moment(value.end).utc().unix();
+
     this.filterObj.dateOption = value.label;
+    if (this.filterObj.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
+      this.filterObj.from_date = dateObj.from_date;
+      this.filterObj.to_date = dateObj.to_date;
+    } else {
+      this.filterObj.from_date = moment(value.start).utc().unix();
+      this.filterObj.to_date = moment(value.end).utc().unix();
+    }
     if (value.label === 'Custom Range') {
       this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
     } else {
@@ -170,18 +187,22 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
     // this.filterSearch.emit(this.originalFilterObj);
     this.filterObj = {};
     this.filterObj.epoch = true;
-    if (this.dtInput1) {
-      this.dtInput1.value = null;
+    this.filterObj = JSON.parse(JSON.stringify(this.originalFilterObj));
+    if (this.filterObj.dateOption !== 'Custom Range') {
+      this.selectedDateRange = this.filterObj.dateOption;
+    } else {
+      this.selectedDateRange = moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
+      moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
     }
-    if (this.dtInput2) {
-      this.dtInput2.value = null;
-    }
+    this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
+    this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
   }
 
   plotChart() {
     this.loadingMessage = 'Loading Chart. Please wait...';
     am4core.options.autoDispose = true;
-    const chart = am4core.create('chartdiv', am4charts.XYChart);
+    console.log(document.getElementById('mtbfChart'));
+    const chart = am4core.create('mtbfChart', am4charts.XYChart);
     const data = [];
     // this.lifeCycleEvents.reverse();
     this.lifeCycleEvents.forEach((obj, i) => {

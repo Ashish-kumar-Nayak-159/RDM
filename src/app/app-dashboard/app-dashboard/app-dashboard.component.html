@@ -3,9 +3,10 @@
     <div class="d-flex align-items-center">
       <div class="main-heading ">{{selectedTab === 'telemetry' ? 'Live Data' : 'Live Alerts'}}</div>
       <div class="ml-2 pt-15">
-        <ui-switch class="mr-1" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry'"
+        Turbo Mode:
+        <ui-switch size="small" class="mr-1" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry'"
           [disabled]="isC2dAPILoading" defaultBgColor="#c80815" checkedTextColor="white" uncheckedTextColor="white"
-          checkedLabel="Turbo Mode ON" uncheckedLabel="Turbo Mode OFF" name="tpye" [(ngModel)]="signalRModeValue"
+          checkedLabel="OFF" uncheckedLabel="ON" name="tpye" [(ngModel)]="signalRModeValue"
           (valueChange)="onSwitchValueChange($event)"></ui-switch>
       </div>
 
@@ -48,6 +49,9 @@
               <ng-select [items]="devices" class="custom" bindLabel="display_name" [clearable]="false"
                 [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
                 dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.device">
+                <ng-template ng-option-tmp let-device="item">
+                  <span [tooltip]="device.display_name ? device.display_name: device.device_id"> {{device.display_name ? device.display_name: device.device_id}}</span>
+                </ng-template>
               </ng-select>
               <!-- <div class="">
                 <button class="btn btn-sm searchBtn btn-primary" type="button">Apply</button>

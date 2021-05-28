@@ -15,6 +15,9 @@
           <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'database-configuration'}"
           href="#app-database-configuration" role="tab" aria-controls="nav-home" aria-selected="true" (click)="setActiveTab('database-configuration')">
           Database Configuration</a>
+          <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'menu-settings'}"
+          href="#app-menu-settings" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('menu-settings')">
+          Menu Settings</a>
           <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'device-hierarchy'}"
           href="#app-device-hierarchy" role="tab" aria-controls="nav-profile" aria-selected="false" (click)="setActiveTab('device-hierarchy')">
           Hierarchy</a>
@@ -24,9 +27,7 @@
           <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'users'}"
           href="#app-users" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('users')">
           Users</a>
-          <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'menu-settings'}"
-          href="#app-menu-settings" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('menu-settings')">
-          Menu Settings</a>
+
         </div>
       </nav>
     </div>

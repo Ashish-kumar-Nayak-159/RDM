@@ -65,9 +65,9 @@
 }
 
 a.disabled {
-  pointer-events: none;
-  cursor: default;
-  opacity: 0.65;
+  pointer-events: none!important;
+  cursor: not-allowed!important;
+  opacity: 0.45;
 }
 
 .date-range-picker {
@@ -96,6 +96,9 @@ input:invalid {
   max-height: 100px;
 }
 
+.panel-default>.panel-heading {
+  background-color: #eff5ff!important;
+}
 
 .accordion-toggle[aria-expanded="true"]:before {
   content: "\f139";

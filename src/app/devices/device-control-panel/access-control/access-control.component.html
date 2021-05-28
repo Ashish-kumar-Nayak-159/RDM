@@ -40,41 +40,11 @@
 </div>
 </div>
 
-<div class="con-pad" style="max-height:100vh;">
-<div class="table-responsive table-wrapper" style="height: 100vh">
-  <table class="table  table-bordered table-striped" id="dataTable"  width="100%" cellspacing="0">
-    <thead class="bg-secondary text-white">
-      <tr>
-        <th></th>
-        <th>Email</th>
-        <th>Name</th>
-        <th>Role</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let user of deviceUsers;let i = index">
-        <td>{{i + 1}}</td>
-        <td>{{user.user_email}}</td>
-        <td>{{user.user_name}}</td>
-        <td>{{user?.role || 'NA'}}</td>
-        <td>
-          <a href="javascript:void(0)" (click)="openConfirmModal(user)" class="mr-1"
-            placement="bottom" tooltip="Delete User Access">
-              <i class="fa fa-fw fa-trash" ></i>
-          </a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-</div>
-
 <div class="modal right fade" id="userAccessAddModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
   <div class="modal-dialog" role="document">
     <div class="modal-content" *ngIf="isAddUserModalOpen">
     <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">Add Role Assignment</h5>
+      <h5 class="modal-title" id="exampleModalLabel">Access Control</h5>
       <button type="button" class="close" (click)="onModalClose()" aria-label="Close" [disabled]="isUpdateAPILoading">
         <span aria-hidden="true">&times;</span>
       </button>

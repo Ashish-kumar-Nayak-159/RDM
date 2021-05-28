@@ -196,9 +196,15 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   selectedDate(value: any, datepicker?: any) {
-    this.filterObj.from_date = moment(value.start).utc().unix();
-    this.filterObj.to_date = moment(value.end).utc().unix();
     this.filterObj.dateOption = value.label;
+    if (this.filterObj.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
+      this.filterObj.from_date = dateObj.from_date;
+      this.filterObj.to_date = dateObj.to_date;
+    } else {
+      this.filterObj.from_date = moment(value.start).utc().unix();
+      this.filterObj.to_date = moment(value.end).utc().unix();
+    }
     console.log(this.filterObj);
     if (value.label === 'Custom Range') {
       this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
@@ -517,7 +523,13 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             }
             resolve();
           }
-        }, () => reject()
+          if (response.data.length === 0) {
+            this.isTelemetryDataLoading = false;
+          }
+        }, () =>  {
+          reject();
+          this.isTelemetryDataLoading = false;
+        }
       ));
     });
   }
@@ -638,6 +650,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     // $('#alertVisualizationModal').modal({ backdrop: 'static', keyboard: false, show: true });
     this.isAlertModalDataLoading = true;
     this.y1AxisProps = [];
+    this.propList = [];
     this.y2AxisProps = [];
     this.selectedAlert = alert;
     this.filterObj.type = true;
@@ -653,6 +666,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       file.data.sanitizedURL = this.sanitizeURL(file.data.url);
     });
     this.isTelemetryFilterSelected = false;
+    this.isTelemetryDataLoading = true;
     this.selectedDevice = this.originalDevices.find(device => device.device_id === this.selectedAlert.device_id);
     // await this.getDeviceData(this.selectedAlert.device_id);
     await this.getAlertConditions();

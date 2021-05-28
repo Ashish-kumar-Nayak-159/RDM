@@ -77,7 +77,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <accordion class="mb-2 mx-2">
+          <accordion class="mb-2 p-3">
             <accordion-group heading="" [panelClass]="'customClass'" >
               <ng-container accordion-heading>
                 <a class="btn" >
@@ -202,7 +202,7 @@
                 <option [ngValue]="'Video'" >Video</option>
               </select>
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
               <label for="recipient-name" class="col-form-label">Document:</label>
               {{file ? file?.name : 'Not yet uploaded'}}
               <input type="file" accept="{{(file.type === 'PDF' ? '.pdf' : (
@@ -211,6 +211,32 @@
                 )
               ))}}" (change)="onDocumentFileSelected($event.target.files, i)" [disabled]="file.type === undefined"
               class="form-control" id="app_logo_{{i}}" name="app_logo_{{i}}">
+            </div> -->
+
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label required">Upload Image:</label>
+              <div class="form-group input-group row m-0">
+                <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
+                <div class="file-input form-control form-control-sm p-0 col-8">
+                 <input type="file" id="file" class="file" (change)="onDocumentFileSelected($event.target.files, i)"
+                 [disabled]="file.type === undefined" accept="{{(file.type === 'PDF' ? '.pdf' : (
+                  file.type === 'Image' ? '.jpeg,.png,.svg' : (
+                    file.type === 'Video' ? '.mp4,' : '*'
+                  )
+                ))}}">
+
+                 <label for="file">{{(selectedMaintenanceData?.documents[i]?.data.name) ? (selectedMaintenanceData.documents[i].data.name) : 'Choose File'}}</label>
+                </div>
+                <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+                <input type="file"  id="file" class="file" [disabled]="file.type === undefined"
+                accept="{{(file.type === 'PDF' ? '.pdf' : (
+                file.type === 'Image' ? '.jpeg,.png,.svg' : (
+                  file.type === 'Video' ? '.mp4,' : '*'
+                )
+              ))}}">
+                   <label for="file" class="bg-secondary text-white">Browse</label>
+                </div>
+                </div>
             </div>
             </ng-container>
         </form>

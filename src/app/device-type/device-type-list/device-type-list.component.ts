@@ -200,7 +200,8 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
       };
       this.thingsModel.tags = {
         protocol: this.thingsModel.protocol,
-        cloud_connectivity: this.thingsModel.cloud_connectivity
+        cloud_connectivity: this.thingsModel.cloud_connectivity,
+        reserved_tags: []
       };
     }
     // await this.getProtocolList();
@@ -251,6 +252,21 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
       max: 60,
       average: 30
     };
+    this.thingsModel.tags.reserved_tags = [];
+    console.log(this.thingsModel.tags);
+    this.thingsModel.tags.reserved_tags.push({
+      name: 'Protocol',
+      key: 'protocol',
+      defaultValue: this.thingsModel.tags.protocol,
+      nonEditable: true
+    });
+    console.log(this.thingsModel.tags);
+    this.thingsModel.tags.reserved_tags.push({
+      name: 'Cloud Connectivity',
+      key: 'cloud_connectivity',
+      defaultValue: this.thingsModel.tags.cloud_connectivity,
+      nonEditable: true
+    });
     this.isCreateThingsModelAPILoading = true;
     const method = this.thingsModel.id ? this.deviceTypeService.updateThingsModel(this.thingsModel, this.contextApp.app) :
     this.deviceTypeService.createThingsModel(this.thingsModel, this.contextApp.app);

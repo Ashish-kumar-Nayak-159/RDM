@@ -81,6 +81,10 @@
         <ng-container *ngIf="item.data_type === 'text'">
           {{resolve(dataItem, item.data_key)}}
         </ng-container>
+        <ng-container *ngIf="item.data_type === 'list'">
+          <!-- {{resolve(dataItem, item.data_key)}} -->
+          <span *ngFor="let item of resolve(dataItem, item.data_key)">{{item}}<br/></span>
+        </ng-container>
         <ng-container *ngIf="item.data_type  === 'button'">
           <ng-container *ngFor="let btn of item.btn_list">
             <a href="javascript:void(0)" style="z-index: 1" class="{{btn.valueclass}}" (click)="onClickOfButton(dataItem, btn.id)"
@@ -110,7 +114,7 @@
       <td  [attr.colspan]="tableConfig?.data?.length + 1" class="text-right">
         <span class="pull-right mt-1 mr-1" *ngIf="tableData.length > 0">
           <a href="javascript:void(0)" class="mr-1" (click)="onLoadMoreClick()"
-          title="Load More Records...">Load More...</a>
+          tooltip="Load More Records...">Load More...</a>
         </span>
       </td>
     </tr>

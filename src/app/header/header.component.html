@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top" *ngIf="!isLoginRoute && userData">
 
-  <button id="sidebarToggleTop" class="btn btn-link rounded-square mr-3">
+  <button id="sidebarToggleTop" class="btn btn-link rounded-square mr-3"  (click)="onSidebarToggle()">
     <i class="fa fa-bars"></i>
   </button>
 
@@ -20,7 +20,7 @@
     <div class="topbar-divider d-none d-sm-block"></div>
 
     <li class="nav-item mx-1">
-      <a class="nav-link" href="javascript:void(0)" title="Telemetry" (click)="navigateToDashboard('telemetry')" id="messagesDropdown" aria-expanded="false">
+      <a class="nav-link" href="javascript:void(0)" tooltip="Telemetry" (click)="navigateToDashboard('telemetry')" id="messagesDropdown" aria-expanded="false">
         <i class="fa fa-globe fa-fw  text-dark"></i>
       </a>
 
@@ -29,7 +29,7 @@
     <div class="topbar-divider d-none d-sm-block"></div>
 
     <li class="nav-item no-arrow mx-1">
-      <a class="nav-link" href="javascript:void(0)" title="Alert" (click)="navigateToDashboard('alert')" id="alertsDropdown" aria-expanded="false">
+      <a class="nav-link" href="javascript:void(0)" tooltip="Alert" (click)="navigateToDashboard('alert')" id="alertsDropdown" aria-expanded="false">
         <i class="fa fa-bell fa-fw   text-dark"></i>
       </a>
 
@@ -88,8 +88,8 @@
         </a>
         <div class="dropdown-divider"></div>
         </ng-container>
-        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-          <i class="fa fa-sign-out fa-sm fa-fw mr-2 text-gray-400"></i>
+        <a class="dropdown-item" href="javascript:void(0)" (click)="openLogoutModal()">
+          <i class="fa fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
           Logout
         </a>
       </div>

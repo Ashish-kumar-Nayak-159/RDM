@@ -18,12 +18,16 @@
           <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'menu-settings'}"
           href="#app-menu-settings" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('menu-settings')">
           Menu Settings</a>
-          <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'device-hierarchy'}"
-          href="#app-device-hierarchy" role="tab" aria-controls="nav-profile" aria-selected="false" (click)="setActiveTab('device-hierarchy')">
-          Hierarchy</a>
+          <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'org-tree'}"
+          href="#app-org-tree" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('org-tree')">
+          Org Tree</a>
           <a class="nav-item nav-link border-0" id="nav-contact-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'roles'}"
           href="#app-roles" role="tab" aria-controls="nav-contact" aria-selected="false" (click)="setActiveTab('roles')">
           Roles</a>
+          <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'device-hierarchy'}"
+          href="#app-device-hierarchy" role="tab" aria-controls="nav-profile" aria-selected="false" (click)="setActiveTab('device-hierarchy')">
+          Hierarchy</a>
+
           <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'users'}"
           href="#app-users" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('users')">
           Users</a>
@@ -45,6 +49,10 @@
     <div class="tab-pane" id="app-database-configuration" role="tabpanel" aria-labelledby="nav-home-tab"
     [ngClass]="{'active': activeTab === 'database-configuration'}">
       <app-application-database-configuration *ngIf="activeTab === 'database-configuration' && applicationData" [applicationData]="applicationData"></app-application-database-configuration>
+    </div>
+    <div class="tab-pane" id="app-org-tree" role="tabpanel" aria-labelledby="nav-home-tab"
+    [ngClass]="{'active': activeTab === 'org-tree'}">
+      <app-application-org-tree *ngIf="activeTab === 'org-tree' && applicationData" [applicationData]="applicationData"></app-application-org-tree>
     </div>
     <div class="tab-pane" id="app-device-hierarchy" role="tabpanel" aria-labelledby="nav-profile-tab"
     [ngClass]="{'active': activeTab === 'device-hierarchy'}">

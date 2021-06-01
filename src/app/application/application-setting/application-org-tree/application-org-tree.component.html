@@ -1,0 +1,82 @@
+<div class="tab-bar">
+  <div class="d-flex d-flex align-items-center">
+    <div class="h6 m-0 p-0">
+      Application Org Tree
+      <a href="javascript:void(0)" placement="bottom" class="ml-1" tooltip="Add Tree Node"
+          (click)="onAddNewNodeObj()"><i class="fa fa-plus"></i></a>
+     </div>
+</div>
+</div>
+
+<div class="tableFixHead table-responsive">
+  <table class="table table-hover">
+    <tfoot>
+      <tr>
+        <th colspan="3">
+          <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="onSaveNodes()"
+          [disabled]="isSaveNodeAPILoading || !isAppSetingsEditable">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isSaveNodeAPILoading"></i></button>
+          <button type="button" class="btn btn-sm searchBtn btn-white ml-1" (click)="onCancelClick()" [disabled]="!isAppSetingsEditable">CANCEL</button>
+        </th>
+      </tr>
+      </tfoot>
+    <tbody>
+        <tr>
+          <td> Level - 1</td>
+          <td>App</td>
+          <td></td>
+        </tr>
+        <ng-container *ngFor="let item of applicationData?.hierarchy?.levels; let i = index;trackBy:trackByFn">
+        <tr *ngIf="i !== 0">
+        <td > Level - {{i + 1}}:</td>
+        <td>
+          <ng-container *ngIf="originalAppData?.hierarchy?.levels?.indexOf(item) !== -1">{{item}}</ng-container>
+          <ng-container *ngIf="originalAppData?.hierarchy?.levels?.indexOf(item) === -1">
+            <input type="text" name="level{{i}}" id="level{{i}}" [(ngModel)]="applicationData.hierarchy.levels[i]"
+            placeholder="Enter Node Name" class="form-control form-control-sm">
+          </ng-container>
+        </td>
+        <td>
+          <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Edit Node" class="ml-1" *ngIf="!isAppSetingsEditable[i]"
+          (click)="isAppSetingsEditable[i] = true;"><i class="fa fa-edit"></i></a>
+          <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Cancel" *ngIf="isAppSetingsEditable[i]"
+          (click)="onCancelClick();"><i class="fa fa-times"></i></a> -->
+          <a class="ml-2" href="javascript:void(0)" (click)="openConfirmNodeDeleteModal(item, i)">
+            <i class="fa fa-trash" placement="bottom" tooltip="Delete Role"></i>
+          </a>
+        </td>
+      </tr>
+    </ng-container>
+      <tr>
+        <td> Level - {{applicationData?.hierarchy?.levels.length + 1}}</td>
+        <td>Asset</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+
+<div class="modal fade" id="confirmMessageModal" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Remove Tree Node</h5>
+        <button type="button" class="close"  aria-label="Close" [disabled]="isSaveNodeAPILoading" (click)="onCloseModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        All the users and devices with this tree node will get impacted. Are you sure you want to delete this node?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" [disabled]="isSaveNodeAPILoading" (click)="deleteNode()">
+          Ok</button>
+        <button type="button" class="btn btn-secondary" [disabled]="isSaveNodeAPILoading" (click)="onCloseModal()">
+          Cancel
+        </button>
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isSaveNodeAPILoading"></i>
+      </div>
+    </div>
+
+  </div>
+</div>

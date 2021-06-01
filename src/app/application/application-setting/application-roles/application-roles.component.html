@@ -44,15 +44,18 @@
         </ng-container>
       </td>
       <td>
-        <ng-container *ngIf="i === 0">Level: App</ng-container>
-        <ng-container >
+        <ng-container *ngIf="i === 0; else otherLevels">Level: App</ng-container>
+        <ng-template #otherLevels>
+        <ng-container *ngIf="!item.isEditable || !isAppSetingsEditable; else roleEditTemplate">Level: {{applicationData.hierarchy.levels[item.level]}}</ng-container>
+        <ng-template #roleEditTemplate >
         <select *ngIf="i !== 0" class="form-control form-control-sm mx-1 my-1" id="deviceCategory"
          [(ngModel)]="item.level" name="deviceCategory" [disabled]="!item.isEditable || !isAppSetingsEditable">
           <option [ngValue]="i" *ngFor="let level of applicationData.hierarchy.levels; let i = index;">
             {{level}}
           </option>
         </select>
-      </ng-container>
+      </ng-template>
+    </ng-template>
       </td>
       <td>
         <a [class.disabled]="i === 0 || !isAppSetingsEditable" href="javascript:void(0)" (click)="openConfirmRoleDeleteModal(item)">

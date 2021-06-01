@@ -24,6 +24,7 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from
 import { AgmMarkerClustererModule } from '@agm/markerclusterer';
 import { ApplicationDatabaseConfigurationComponent } from './application-setting/application-database-configuration/application-database-configuration.component';
 import { MapViewHomeComponent } from './map-view-home/map-view-home.component';
+import { ApplicationOrgTreeComponent } from './application-setting/application-org-tree/application-org-tree.component';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { MapViewHomeComponent } from './map-view-home/map-view-home.component';
     ApplicationAlertsComponent,
     ApplicationEventsComponent,
     ApplicationDatabaseConfigurationComponent,
-    MapViewHomeComponent
+    MapViewHomeComponent,
+    ApplicationOrgTreeComponent
   ],
   imports: [
     CommonModule,

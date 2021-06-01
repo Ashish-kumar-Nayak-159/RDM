@@ -25,9 +25,6 @@ import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import { CommonDataTableComponent } from './table/common-data-table/common-data-table.component';
 import { DataTablesModule } from 'angular-datatables';
 import { CommonTableFilterComponent } from './table/common-table-filter/common-table-filter.component';
-import { CommonMultiSelectDropdownComponent } from './common-multi-select-dropdown/common-multi-select-dropdown.component';
-import { MultiSelectFilterPipe } from './common-multi-select-dropdown/multi-select-filter.pipe';
-import { MultiSelectClickOutsideDirective } from './common-multi-select-dropdown/multi-select-click-outside.directive';
 
 @NgModule({
   declarations: [
@@ -47,9 +44,7 @@ import { MultiSelectClickOutsideDirective } from './common-multi-select-dropdown
     LiveLineChartComponent,
     CommonDataTableComponent,
     CommonTableFilterComponent,
-    CommonMultiSelectDropdownComponent,
-    MultiSelectFilterPipe,
-    MultiSelectClickOutsideDirective  ],
+    ],
   imports: [
     CommonModule,
     MatDatepickerModule,
@@ -78,7 +73,6 @@ import { MultiSelectClickOutsideDirective } from './common-multi-select-dropdown
     AddOnlyNumberWidgetComponent,
     LiveLineChartComponent,
     CommonDataTableComponent,
-    CommonMultiSelectDropdownComponent,
   ],
   providers: [
     {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}

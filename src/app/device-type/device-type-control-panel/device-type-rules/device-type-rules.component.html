@@ -1,3 +1,17 @@
+<div class="tab-bar">
+  <div class="">
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)"  (click)="addRule()"
+        [class.disabled]="deviceType.freezed">
+          <i class="fa fa-fw fa-plus"></i>
+          Add</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+
 <div class="table-responsive">
   <div class="tableFixHead">
     <app-common-table [tableData]="rules" [tableConfig]="rulesTableConfig" [isTableFilterSelected]="true"

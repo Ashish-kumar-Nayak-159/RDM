@@ -218,10 +218,11 @@ export class DeviceTypeService {
     }
   }
 
-  freezeDeviceModel(app, deviceType) {
+  freezeDeviceModel(app, deviceType, obj) {
     localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
     localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
-    return this.http.get(this.url + String.Format(AppUrls.FREEZE_THINGS_MODEL, encodeURIComponent(app), encodeURIComponent(deviceType)));
+    return this.http.post(this.url + String.Format(AppUrls.FREEZE_THINGS_MODEL, encodeURIComponent(app),
+    encodeURIComponent(deviceType)), obj);
   }
 
   unfreezeDeviceModel(app, deviceType, obj) {

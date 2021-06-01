@@ -126,7 +126,10 @@ export class DeviceTypeOverviewComponent implements OnInit, OnDestroy {
 
   freezeModel() {
     this.isModelFreezeUnfreezeAPILoading = true;
-    this.subscriptions.push(this.deviceTypeService.freezeDeviceModel(this.contextApp.app, this.deviceType.name).subscribe(
+    const obj = {
+      updated_by: this.userData.email + ' (' + this.userData.name + ')'
+    };
+    this.subscriptions.push(this.deviceTypeService.freezeDeviceModel(this.contextApp.app, this.deviceType.name, obj).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Freeze Model');
         this.isModelFreezeUnfreezeAPILoading = false;
@@ -146,7 +149,8 @@ export class DeviceTypeOverviewComponent implements OnInit, OnDestroy {
     this.isModelFreezeUnfreezeAPILoading = true;
     const obj = {
       email: this.userData.email,
-      password: this.password
+      password: this.password,
+      updated_by: this.userData.email + ' (' + this.userData.name + ')'
     };
     this.subscriptions.push(this.deviceTypeService.unfreezeDeviceModel(this.contextApp.app, this.deviceType.name, obj).subscribe(
       (response: any) => {

@@ -13078,10 +13078,6 @@ color: #1a5ab4;
   padding: 3px;
 }
 
-.right {
-  transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-}
 
 .searchBtn1 {
     font-size: .875rem;

@@ -1,3 +1,4 @@
+import { ToasterService } from './../../../services/toaster.service';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from 'src/app/services/common.service';
@@ -21,7 +22,8 @@ export class DeviceTypeRulesComponent implements OnInit, OnDestroy {
 
   constructor(
     private deviceTypeService: DeviceTypeService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -59,6 +61,43 @@ export class DeviceTypeRulesComponent implements OnInit, OnDestroy {
           type: 'text',
           headerClass: '',
           valueclass: ''
+        },
+        {
+          name: 'Actions',
+          key: undefined,
+          type: 'button',
+          headerClass: 'w-10',
+          btnData: [
+            // {
+            //   icon: 'fa fa-fw fa-eye',
+            //   text: '',
+            //   id: 'View JSON Model',
+            //   valueclass: '',
+            //   tooltip: 'View JSON Model'
+            // },
+            {
+              icon: 'fa fa-fw fa-edit',
+              text: '',
+              id: 'Edit',
+              valueclass: '',
+              tooltip: 'Edit',
+              disableConditions: {
+                key: 'freezed',
+                value: true
+              }
+            },
+            {
+              icon: 'fa fa-fw fa-trash',
+              text: '',
+              id: 'Delete',
+              valueclass: '',
+              tooltip: 'Delete',
+              disableConditions: {
+                key: 'freezed',
+                value: true
+              }
+            }
+          ]
         }
       ]
     };
@@ -81,7 +120,11 @@ export class DeviceTypeRulesComponent implements OnInit, OnDestroy {
   }
 
   onTableFunctionCall(event) {
+    this.toasterService.showWarning('Work in Progress', 'Manage ' + this.pageType +  ' Rule');
+  }
 
+  addRule() {
+    this.toasterService.showWarning('Work in Progress', 'Add ' + this.pageType +  ' Rule');
   }
 
   ngOnDestroy() {

@@ -274,9 +274,9 @@ export class CONSTANTS {
     },
     {
       page: 'settings',
-      system_name: 'Settings',
+      system_name: 'Setup',
       url: '#device_settings',
-      display_name: 'Settings',
+      display_name: 'Setup',
       icon: 'fa fa-fw fa-cog',
       visible: true,
       isTitle: false,
@@ -448,9 +448,9 @@ export class CONSTANTS {
     },
     {
       page: 'maintain',
-      system_name: 'Maintain',
+      system_name: 'Predict',
       url: null,
-      display_name: 'Maintain',
+      display_name: 'Predict',
       icon: null,
       visible: true,
       isTitle: true
@@ -700,10 +700,10 @@ export class CONSTANTS {
       accordion_value: {}
     },
     {
-      page: 'maintenance',
-      system_name: 'Maintenance',
+      page: 'maintain',
+      system_name: 'Predict',
       url: null,
-      display_name: 'Maintenance',
+      display_name: 'Predict',
       icon: null,
       visible: true,
       isTitle: true
@@ -1003,6 +1003,25 @@ export class CONSTANTS {
     },
 
 
+
+    {
+      page: 'd2c',
+      system_name: 'Monitor',
+      url: null,
+      display_name: 'Monitor',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'alert_conditioning',
+      system_name: 'Alert Conditioning',
+      url: '#device_type_alert_conditioning',
+      display_name: 'Alert Conditioning',
+      icon: 'fa fa-fw fa-exclamation-triangle',
+      visible: true,
+      isTitle: false
+    },
     {
       page: 'cloud-capabilities',
       system_name: 'Cloud Capabilities',
@@ -1036,24 +1055,6 @@ export class CONSTANTS {
       url: '#device_type_cloud_rules',
       display_name: 'Cloud Rules',
       icon: 'fa fa-fw fa-archive',
-      visible: true,
-      isTitle: false
-    },
-    {
-      page: 'd2c',
-      system_name: 'Monitor',
-      url: null,
-      display_name: 'Monitor',
-      icon: null,
-      visible: true,
-      isTitle: true
-    },
-    {
-      page: 'alert_conditioning',
-      system_name: 'Alert Conditions',
-      url: '#device_type_alert_conditioning',
-      display_name: 'Alert Conditions',
-      icon: 'fa fa-fw fa-exclamation-triangle',
       visible: true,
       isTitle: false
     },

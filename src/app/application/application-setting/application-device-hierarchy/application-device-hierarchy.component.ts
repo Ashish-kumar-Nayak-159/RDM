@@ -202,7 +202,6 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
         this.selectedHierarchyItem = undefined;
         this.addedTagItem = undefined;
         if (this.forceUpdate) {
-          this.onCloseModal();
           this.isAppSetingsEditable = false;
         }
         this.saveHierarchyAPILoading = false;

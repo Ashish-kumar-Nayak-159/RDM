@@ -207,7 +207,7 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
           for (let i = this.displyaMsgArr.length - 1; i < response.data.length; i++) {
             this.displyaMsgArr.push({
               message:  response.data[i].device_id + ': ' + response.data[i]?.payload?.message,
-              error: response.data[i].status === 'failure' ? true : false
+              error: response.data[i]?.payload?.status === 'failure' ? true : false
             });
           }
         }

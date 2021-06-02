@@ -15,7 +15,7 @@ declare var $: any;
 })
 export class OthersComponent implements OnInit, OnDestroy {
 
-  otherFilter: any = {};
+  @Input() otherFilter: any = {};
   othersList: any[] = [];
   @Input() device: Device = new Device();
   @Input() componentState: any;
@@ -35,13 +35,15 @@ export class OthersComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
-      this.otherFilter.gateway_id = this.device.device_id;
-    } else {
-      this.otherFilter.device_id = this.device.device_id;
-    }
-    this.otherFilter.count = 10;
-    this.otherFilter.app = this.contextApp.app;
+    this.apiSubscriptions.push(this.deviceService.searchNotificationsEventEmitter.subscribe(
+      () => this.searchOther(this.otherFilter)));
+    // if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
+    //   this.otherFilter.gateway_id = this.device.device_id;
+    // } else {
+    //   this.otherFilter.device_id = this.device.device_id;
+    // }
+    // this.otherFilter.count = 10;
+    // this.otherFilter.app = this.contextApp.app;
     this.otherTableConfig = {
       type: 'other',
       headers: ['Timestamp', 'Message ID', 'Message Type', 'Other Message'],
@@ -50,10 +52,7 @@ export class OthersComponent implements OnInit, OnDestroy {
           name: 'Timestamp',
           key: 'local_created_date',
         },
-        {
-          name: 'Message Type',
-          key: 'type',
-        },
+        
         {
           name: 'Message ID',
           key: 'message_id',
@@ -64,30 +63,7 @@ export class OthersComponent implements OnInit, OnDestroy {
         }
       ]
     };
-    if (this.componentState === CONSTANTS.IP_GATEWAY) {
-      this.otherTableConfig.data.splice(1, 1);
-      this.otherTableConfig.data.splice(1, 0, {
-        name: 'Asset Name',
-        key: 'device_id'
-      });
-    }
-    this.loadFromCache();
-  }
-
-  loadFromCache() {
-    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
-    if (item.dateOption) {
-      this.otherFilter.dateOption = item.dateOption;
-      if (item.dateOption !== 'Custom Range') {
-        const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
-        this.otherFilter.from_date = dateObj.from_date;
-        this.otherFilter.to_date = dateObj.to_date;
-      } else {
-        this.otherFilter.from_date = item.from_date;
-        this.otherFilter.to_date = item.to_date;
-      }
-    }
-    this.searchOther(this.otherFilter, false);
+    // this.loadFromCache();
   }
 
   searchOther(filterObj, updateFilterObj = true) {

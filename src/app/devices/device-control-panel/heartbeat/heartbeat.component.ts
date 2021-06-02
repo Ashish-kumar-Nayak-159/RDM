@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/app.constants';
+import { expInOut } from '@amcharts/amcharts4/.internal/core/utils/Ease';
 declare var $: any;
 @Component({
   selector: 'app-heartbeat',
@@ -15,7 +16,7 @@ declare var $: any;
 })
 export class HeartbeatComponent implements OnInit, OnDestroy {
 
-  heartBeatFilter: any = {};
+  @Input() heartBeatFilter: any = {};
   heartbeats: any[] = [];
   contextApp: any;
   @Input() device: Device = new Device();
@@ -36,6 +37,9 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.apiSubscriptions.push(this.deviceService.searchNotificationsEventEmitter.subscribe(
+      () => this.searchHeartBeat(this.heartBeatFilter))
+    );
     if (this.device.tags.category === CONSTANTS.IP_GATEWAY ) {
       this.heartBeatFilter.gateway_id = this.device.device_id;
     } else {
@@ -43,7 +47,7 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
     }
     this.heartBeatFilter.count = 10;
     this.heartBeatFilter.app = this.contextApp.app;
-    this.loadFromCache();
+
     this.heartbeatTableConfig = {
       type: 'heartbeat',
       headers: ['Timestamp', 'Message ID', 'Message'],
@@ -69,6 +73,7 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
         key: 'device_id'
       });
     }
+    // this.searchHeartBeat(this.heartBeatFilter);
     this.heartBeatFilter.epoch = true;
   }
 

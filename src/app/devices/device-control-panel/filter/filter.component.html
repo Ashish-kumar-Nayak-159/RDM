@@ -6,7 +6,7 @@
         [ngClass]="{'active': filterObj.count}"
         [(ngModel)]="filterObj.count" name="count" *ngIf="!filterObj.countNotShow">
       </div>
-      <div class="form-group" *ngIf="filterObj.displayOptions">
+      <div class="form-group" *ngIf="filterObj.displayJobOptions">
         <select class="form-control form-control-sm active"
         [ngClass]="{'active': filterObj.tableType}" id="messageType"
         [(ngModel)]="filterObj.tableType" name="tableType">
@@ -14,6 +14,27 @@
           <option [ngValue]="'Message'">C2D Message</option>
           <option [ngValue]="'DirectMethod'">Direct Method</option>
           <option [ngValue]="'Twin'">Twin Change</option>
+        </select>
+      </div>
+      <div class="form-group" *ngIf="filterObj.displayAlertOptions">
+        <select class="form-control form-control-sm active"
+        [ngClass]="{'active': filterObj.source}" id="alertType"
+        [(ngModel)]="filterObj.source" name="alertType">
+        <option [ngValue]="undefined">All</option>
+          <option [ngValue]="'Asset'">Asset</option>
+          <option [ngValue]="'Edge'">Edge</option>
+          <option [ngValue]="'Cloud'">Cloud</option>
+        </select>
+      </div>
+      <div class="form-group" *ngIf="filterObj.displayNotificationOptions">
+        <select class="form-control form-control-sm active"
+        [ngClass]="{'active': filterObj.source}" id="alertType"
+        [(ngModel)]="filterObj.source" name="alertType">
+        <option [ngValue]="'Notification'">Notification</option>
+          <option [ngValue]="'Error'">Error</option>
+          <option [ngValue]="'Heratbeat'">Heratbeat</option>
+          <option [ngValue]="'Battery'">Battery Messages</option>
+          <option [ngValue]="'Other'">Other</option>
         </select>
       </div>
       <!-- <div class="form-group" id="reportrange">

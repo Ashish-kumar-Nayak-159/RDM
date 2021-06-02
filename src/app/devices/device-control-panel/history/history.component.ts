@@ -316,7 +316,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           obj['message_props'] = message_props;
         }
         const records = this.commonService.calculateEstimatedRecords
-          ((this.device.metadata?.measurement_frequency?.average ? this.device.metadata.measurement_frequency.average : 5),
+          ((this.device.metadata?.measurement_settings?.measurement_frequency ? this.device.metadata.measurement_settings.measurement_frequency : 5),
           obj.from_date, obj.to_date);
         if (records > 500 ) {
           this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';

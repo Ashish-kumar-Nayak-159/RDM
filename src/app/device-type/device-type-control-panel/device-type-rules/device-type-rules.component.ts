@@ -19,7 +19,7 @@ export class DeviceTypeRulesComponent implements OnInit, OnDestroy {
   isRulesLaoading = false;
   contextApp: any;
   subscriptions: Subscription[] = [];
-
+  selectedTab: any;
   constructor(
     private deviceTypeService: DeviceTypeService,
     private commonService: CommonService,
@@ -28,7 +28,7 @@ export class DeviceTypeRulesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.getRules();
+    this.onClickOfTab('Cloud');
     this.rulesTableConfig = {
       type: 'Rules',
       tableHeight: 'calc(100vh - 11rem)',
@@ -103,11 +103,16 @@ export class DeviceTypeRulesComponent implements OnInit, OnDestroy {
     };
   }
 
+  onClickOfTab(type) {
+    this.selectedTab = type;
+    this.getRules();
+  }
+
   getRules() {
     this.rules = [];
     this.isRulesLaoading = true;
     const obj = {
-      type: this.pageType
+      type: this.selectedTab
     };
     this.subscriptions.push(this.deviceTypeService.getRules(this.contextApp.app, this.deviceType.name, obj).subscribe(
       (response: any) => {

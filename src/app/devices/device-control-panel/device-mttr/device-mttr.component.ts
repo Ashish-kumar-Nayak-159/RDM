@@ -52,8 +52,8 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
       'This Month': [moment().startOf('month'), moment().endOf('month')],
       'Last Month': [ moment().subtract(1, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
       'Last 3 Months': [moment().subtract(3, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
-      'Last 6 Months': [moment().subtract(3, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
-      'Last 12 Months': [moment().subtract(3, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')]
+      'Last 6 Months': [moment().subtract(6, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
+      'Last 12 Months': [moment().subtract(12, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')]
     }
   };
   @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
@@ -141,6 +141,12 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     if (!obj.from_date || !obj.to_date) {
       this.isLifeCycleEventsLoading = false;
       this.toasterService.showError('Date Time selection is required', 'View MTTR Data');
+      return;
+    }
+    if (this.displayMode === 'history' && !obj.date_frequency) {
+      this.toasterService.showError('Frequency is required.', 'MTBF Data');
+      this.isFilterSelected = false;
+      this.isLifeCycleEventsLoading = false;
       return;
     }
     this.isFilterSelected = true;

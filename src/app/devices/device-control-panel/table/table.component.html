@@ -3,7 +3,7 @@
     <thead>
       <tr >
         <th>No</th>
-        <th  *ngFor="let item of tableConfig?.data;let i = index;" [ngClass]="{'w-2': i === 0 && !item.key,
+        <th  *ngFor="let item of tableConfig?.data;let i = index;" class="{{item.headerClass}}" [ngClass]="{'w-2': i === 0 && !item.key,
         'w-15': ( tableConfig.type === 'alert' && item.name === 'Code' && i === 1), 'w-35': item.name === 'Timestamp'}">
           {{item.name}}</th>
       </tr>
@@ -14,14 +14,14 @@
         && data?.severity?.toLowerCase() === 'critical'}">
           <td>{{i + 1}}</td>
           <td *ngFor="let header of tableConfig?.data" >
-            <span *ngIf="header.key">
+            <ng-container *ngIf="header.key">
               <i class="fa fa-exclamation-triangle" *ngIf="tableConfig.type === 'alert' && header.key === 'code'" [style.color]="
                 (data?.severity?.toLowerCase() === 'critical' ? '#cc0000' :
                 (data?.severity?.toLowerCase() === 'error' ? '#fb5515' :
                 (data?.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
                 (data?.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                 )
-                )" placement="bottom" [tooltip]="data?.severity"></i>&nbsp;{{data[header.key]}} </span>
+                )" placement="bottom" [tooltip]="data?.severity"></i>&nbsp;{{data[header.key]}} </ng-container>
             <a href="javascript:void(0)" *ngIf="!header.key" (click)="onClickOfButton(data, header.name)">
               <i class="fa fa-fw fa-eye" placement="bottom" tooltip="View {{tableConfig?.type}} message"
               [style.color]="(tableConfig.type === 'alert'  && data?.severity?.toLowerCase() === 'critical') ? 'white' : ''"></i>

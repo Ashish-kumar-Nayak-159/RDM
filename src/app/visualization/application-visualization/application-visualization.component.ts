@@ -526,6 +526,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           if (response.data.length === 0) {
             this.isTelemetryDataLoading = false;
           }
+
         }, () =>  {
           reject();
           this.isTelemetryDataLoading = false;
@@ -610,7 +611,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.selectedWidgets = [];
     this.subscriptions.push(this.deviceTypeService.getThingsModelLayout(params).subscribe(
       async (response: any) => {
+        console.log(response);
         if (response?.historical_widgets?.length > 0) {
+          console.log(response?.historical_widgets);
           response.historical_widgets.forEach((item) => {
             this.dropdownWidgetList.push({
               id: item.title,
@@ -625,11 +628,17 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
                 });
               }
             });
+            console.log(this.selectedWidgets);
           }
           });
           if (this.selectedWidgets.length > 0) {
             this.getDeviceTelemetryData();
+          } else {
+            console.log('in else');
+            this.isTelemetryDataLoading = false;
           }
+        } else {
+          this.isTelemetryDataLoading = false;
         }
         resolve();
       }));

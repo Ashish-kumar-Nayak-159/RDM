@@ -273,6 +273,15 @@ export class CONSTANTS {
       accordion_value: { delete: true}
     },
     {
+      page: 'package_management',
+      system_name: 'Software Packages',
+      url: '#device_package_management',
+      display_name: 'Software Packages',
+      icon: 'fa fa-fw fa-tags',
+      visible: true,
+      isTitle: false
+    },
+    {
       page: 'settings',
       system_name: 'Setup',
       url: '#device_settings',
@@ -285,18 +294,29 @@ export class CONSTANTS {
     },
     {
       page: 'd2c',
-      system_name: 'D2C (Monitor)',
+      system_name: 'Monitor (D2C)',
       url: null,
-      display_name: 'D2C (Monitor)',
+      display_name: 'Monitor (D2C)',
       icon: null,
       visible: true,
       isTitle: true
     },
+    // {
+    //   page: 'heartbeat',
+    //   system_name: 'Heartbeat',
+    //   url: '#device_heartbeat',
+    //   display_name: 'Heartbeat',
+    //   icon: 'fa fa-fw fa-heartbeat',
+    //   visible: true,
+    //   isTitle: false,
+    //   showAccordion: [],
+    //   accordion_value: {}
+    // },
     {
-      page: 'heartbeat',
-      system_name: 'Heartbeat',
-      url: '#device_heartbeat',
-      display_name: 'Heartbeat',
+      page: 'device_life_cycle',
+      system_name: 'Life Cycle Events',
+      url: '#device_life_cycle_events',
+      display_name: 'Life Cycle Events',
       icon: 'fa fa-fw fa-heartbeat',
       visible: true,
       isTitle: false,
@@ -316,9 +336,9 @@ export class CONSTANTS {
     },
     {
       page: 'alerts',
-      system_name: 'Alerts',
+      system_name: 'Alert Raise Events',
       url: '#device_alerts',
-      display_name: 'Alerts',
+      display_name: 'Alert Raise Events',
       icon: 'fa fa-fw fa-bolt',
       visible: true,
       isTitle: false,
@@ -347,28 +367,28 @@ export class CONSTANTS {
       showAccordion: [],
       accordion_value: {}
     },
-    {
-      page: 'error',
-      system_name: 'Error',
-      url: '#device_error',
-      display_name: 'Error',
-      icon: 'fa fa-fw fa-exclamation-triangle',
-      visible: true,
-      isTitle: false,
-      showAccordion: [],
-      accordion_value: {}
-    },
-    {
-      page: 'battery_message',
-      system_name: 'Battery',
-      url: '#device_battery_message',
-      display_name: 'Battery',
-      icon: 'fa fa-fw fa-battery-full',
-      visible: true,
-      isTitle: false,
-      showAccordion: [],
-      accordion_value: {}
-    },
+    // {
+    //   page: 'error',
+    //   system_name: 'Error',
+    //   url: '#device_error',
+    //   display_name: 'Error',
+    //   icon: 'fa fa-fw fa-exclamation-triangle',
+    //   visible: true,
+    //   isTitle: false,
+    //   showAccordion: [],
+    //   accordion_value: {}
+    // },
+    // {
+    //   page: 'battery_message',
+    //   system_name: 'Battery',
+    //   url: '#device_battery_message',
+    //   display_name: 'Battery',
+    //   icon: 'fa fa-fw fa-battery-full',
+    //   visible: true,
+    //   isTitle: false,
+    //   showAccordion: [],
+    //   accordion_value: {}
+    // },
     {
       page: 'logs',
       system_name: 'Logs',
@@ -380,22 +400,22 @@ export class CONSTANTS {
       showAccordion: [],
       accordion_value: {}
     },
-    {
-      page: 'other',
-      system_name: 'Other',
-      url: '#device_other',
-      display_name: 'Other',
-      icon: 'fa fa-fw fa-globe',
-      visible: true,
-      isTitle: false,
-      showAccordion: [],
-      accordion_value: {}
-    },
+    // {
+    //   page: 'other',
+    //   system_name: 'Other',
+    //   url: '#device_other',
+    //   display_name: 'Other',
+    //   icon: 'fa fa-fw fa-globe',
+    //   visible: true,
+    //   isTitle: false,
+    //   showAccordion: [],
+    //   accordion_value: {}
+    // },
     {
       page: 'c2d',
-      system_name: 'C2D (Control)',
+      system_name: 'Control (C2D)',
       url: null,
-      display_name: 'C2D (Control)',
+      display_name: 'Control (C2D)',
       icon: null,
       visible: true,
       isTitle: true
@@ -414,6 +434,48 @@ export class CONSTANTS {
         { name: 'Purge', key: 'purge'}
       ],
       accordion_value: {configuration: true, control: true, purge: true}
+    },
+    {
+      page: 'compute',
+      system_name: 'Compute',
+      url: 'null',
+      display_name: 'Compute',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'stream_processing',
+      system_name: 'Cloud Derived Properties',
+      url: '#device_stream_processing',
+      display_name: 'Cloud Derived Properties',
+      icon: 'fa fa-fw fa-globe',
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
+    },
+    {
+      page: 'derived_kpis',
+      system_name: 'Derived KPIs',
+      url: '#device_derived_kpis',
+      display_name: 'Derived KPIs',
+      icon: 'fa fa-fw fa-angle-right',
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
+    },
+    {
+      page: 'rules',
+      system_name: 'Rules',
+      url: '#device_rules',
+      display_name: 'Rules',
+      icon: 'fa fa-fw fa-archive',
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'visualize',
@@ -448,18 +510,18 @@ export class CONSTANTS {
     },
     {
       page: 'maintain',
-      system_name: 'Predict',
+      system_name: 'Maintain',
       url: null,
-      display_name: 'Predict',
+      display_name: 'Maintain',
       icon: null,
       visible: true,
       isTitle: true
     },
     {
       page: 'mttr',
-      system_name: 'TTR',
+      system_name: 'MTTR',
       url: '#device_mttr',
-      display_name: 'TTR',
+      display_name: 'MTTR',
       icon: 'fa fa-fw fa-wrench',
       visible: true,
       isTitle: false,
@@ -468,9 +530,31 @@ export class CONSTANTS {
     },
     {
       page: 'mtbf',
-      system_name: 'TBF',
+      system_name: 'MTBF',
       url: '#device_mtbf',
-      display_name: 'TBF',
+      display_name: 'MTBF',
+      icon: 'fa fa-fw fa-wrench',
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
+    },
+    {
+      page: 'maintenance_schedule',
+      system_name: 'Maintenance Schedules',
+      url: '#device_maintenance_schedule',
+      display_name: 'Maintenance Schedules',
+      icon: 'fa fa-fw fa-wrench',
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
+    },
+    {
+      page: 'predictions',
+      system_name: 'Predictions',
+      url: '#device_predictions',
+      display_name: 'Predictions',
       icon: 'fa fa-fw fa-wrench',
       visible: true,
       isTitle: false,
@@ -526,6 +610,15 @@ export class CONSTANTS {
       accordion_value: {delete: true}
     },
     {
+      page: 'package_management',
+      system_name: 'Software Packages',
+      url: '#device_package_management',
+      display_name: 'Software Packages',
+      icon: 'fa fa-fw fa-tags',
+      visible: true,
+      isTitle: false
+    },
+    {
       page: 'settings',
       system_name: 'Settings',
       url: '#device_settings',
@@ -538,24 +631,24 @@ export class CONSTANTS {
     },
     {
       page: 'd2c',
-      system_name: 'D2C (Monitor)',
+      system_name: 'Monitor (D2C)',
       url: null,
-      display_name: 'D2C (Monitor)',
+      display_name: 'Monitor (D2C)',
       icon: null,
       visible: true,
       isTitle: true
     },
-    {
-      page: 'heartbeat',
-      system_name: 'Heartbeat',
-      url: '#device_heartbeat',
-      display_name: 'Heartbeat',
-      icon: 'fa fa-fw fa-heartbeat',
-      visible: true,
-      isTitle: false,
-      showAccordion: [],
-      accordion_value: {}
-    },
+    // {
+    //   page: 'heartbeat',
+    //   system_name: 'Heartbeat',
+    //   url: '#device_heartbeat',
+    //   display_name: 'Heartbeat',
+    //   icon: 'fa fa-fw fa-heartbeat',
+    //   visible: true,
+    //   isTitle: false,
+    //   showAccordion: [],
+    //   accordion_value: {}
+    // },
     {
       page: 'notifications',
       system_name: 'Notifications',
@@ -569,9 +662,9 @@ export class CONSTANTS {
     },
     {
       page: 'alerts',
-      system_name: 'Alerts',
+      system_name: 'Alert Raise Events',
       url: '#device_alerts',
-      display_name: 'Alerts',
+      display_name: 'Alert Raise Events',
       icon: 'fa fa-fw fa-bolt',
       visible: true,
       isTitle: false,
@@ -600,28 +693,28 @@ export class CONSTANTS {
       showAccordion: [],
       accordion_value: {}
     },
-    {
-      page: 'error',
-      system_name: 'Error',
-      url: '#device_error',
-      display_name: 'Error',
-      icon: 'fa fa-fw fa-exclamation-triangle',
-      visible: true,
-      isTitle: false,
-      showAccordion: [],
-      accordion_value: {}
-    },
-    {
-      page: 'battery_message',
-      system_name: 'Battery',
-      url: '#device_battery_message',
-      display_name: 'Battery',
-      icon: 'fa fa-fw fa-battery-full',
-      visible: true,
-      isTitle: false,
-      showAccordion: [],
-      accordion_value: {}
-    },
+    // {
+    //   page: 'error',
+    //   system_name: 'Error',
+    //   url: '#device_error',
+    //   display_name: 'Error',
+    //   icon: 'fa fa-fw fa-exclamation-triangle',
+    //   visible: true,
+    //   isTitle: false,
+    //   showAccordion: [],
+    //   accordion_value: {}
+    // },
+    // {
+    //   page: 'battery_message',
+    //   system_name: 'Battery',
+    //   url: '#device_battery_message',
+    //   display_name: 'Battery',
+    //   icon: 'fa fa-fw fa-battery-full',
+    //   visible: true,
+    //   isTitle: false,
+    //   showAccordion: [],
+    //   accordion_value: {}
+    // },
     {
       page: 'logs',
       system_name: 'Logs',
@@ -633,22 +726,22 @@ export class CONSTANTS {
       showAccordion: [],
       accordion_value: {}
     },
-    {
-      page: 'other',
-      system_name: 'Other',
-      url: '#device_other',
-      display_name: 'Other',
-      icon: 'fa fa-fw fa-globe',
-      visible: true,
-      isTitle: false,
-      showAccordion: [],
-      accordion_value: {}
-    },
+    // {
+    //   page: 'other',
+    //   system_name: 'Other',
+    //   url: '#device_other',
+    //   display_name: 'Other',
+    //   icon: 'fa fa-fw fa-globe',
+    //   visible: true,
+    //   isTitle: false,
+    //   showAccordion: [],
+    //   accordion_value: {}
+    // },
     {
       page: 'c2d',
-      system_name: 'C2D (Control)',
+      system_name: 'Control (C2D)',
       url: null,
-      display_name: 'C2D (Control)',
+      display_name: 'Control (C2D)',
       icon: null,
       visible: true,
       isTitle: true
@@ -667,6 +760,48 @@ export class CONSTANTS {
         { name: 'Purge', key: 'purge'}
       ],
       accordion_value: {configuration: true, purge: true, control: true}
+    },
+    {
+      page: 'compute',
+      system_name: 'Compute',
+      url: 'null',
+      display_name: 'Compute',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'stream_processing',
+      system_name: 'Cloud Derived Properties',
+      url: '#device_stream_processing',
+      display_name: 'Cloud Derived Properties',
+      icon: 'fa fa-fw fa-globe',
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
+    },
+    {
+      page: 'derived_kpis',
+      system_name: 'Derived KPIs',
+      url: '#device_derived_kpis',
+      display_name: 'Derived KPIs',
+      icon: 'fa fa-fw fa-angle-right',
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
+    },
+    {
+      page: 'rules',
+      system_name: 'Rules',
+      url: '#device_rules',
+      display_name: 'Rules',
+      icon: 'fa fa-fw fa-archive',
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
     },
     {
       page: 'visualization',
@@ -701,9 +836,9 @@ export class CONSTANTS {
     },
     {
       page: 'maintain',
-      system_name: 'Predict',
+      system_name: 'Maintain',
       url: null,
-      display_name: 'Predict',
+      display_name: 'Maintain',
       icon: null,
       visible: true,
       isTitle: true
@@ -724,6 +859,28 @@ export class CONSTANTS {
       system_name: 'TBF',
       url: '#device_mtbf',
       display_name: 'TBF',
+      icon: 'fa fa-fw fa-wrench',
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
+    },
+    {
+      page: 'maintenance_schedule',
+      system_name: 'Maintenance Schedules',
+      url: '#device_maintenance_schedule',
+      display_name: 'Maintenance Schedules',
+      icon: 'fa fa-fw fa-wrench',
+      visible: true,
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {}
+    },
+    {
+      page: 'predictions',
+      system_name: 'Predictions',
+      url: '#device_predictions',
+      display_name: 'Predictions',
       icon: 'fa fa-fw fa-wrench',
       visible: true,
       isTitle: false,
@@ -768,6 +925,15 @@ export class CONSTANTS {
       accordion_value: { delete: true}
     },
     {
+      page: 'package_management',
+      system_name: 'Software Packages',
+      url: '#device_package_management',
+      display_name: 'Software Packages',
+      icon: 'fa fa-fw fa-tags',
+      visible: true,
+      isTitle: false
+    },
+    {
       page: 'setup',
       system_name: 'Setup',
       url: '#device_settings',
@@ -780,9 +946,9 @@ export class CONSTANTS {
     },
     {
       page: 'd2c',
-      system_name: 'D2C (Monitor)',
+      system_name: 'Monitor (D2C)',
       url: null,
-      display_name: 'D2C (Monitor)',
+      display_name: 'Monitor (D2C)',
       icon: null,
       visible: true,
       isTitle: true
@@ -822,9 +988,9 @@ export class CONSTANTS {
     },
     {
       page: 'device_life_cycle',
-      system_name: 'Gateway Life Cycle Events',
+      system_name: 'Life Cycle Events',
       url: '#device_life_cycle_events',
-      display_name: 'Gateway Life Cycle Events',
+      display_name: 'Life Cycle Events',
       icon: 'fa fa-fw fa-heartbeat',
       visible: true,
       isTitle: false,
@@ -864,31 +1030,31 @@ export class CONSTANTS {
       showAccordion: [],
       accordion_value: {}
     },
-    {
-      page: 'error',
-      system_name: 'Error',
-      url: '#device_error',
-      display_name: 'Error',
-      icon: 'fa fa-fw fa-exclamation-triangle',
-      visible: true,
-      isTitle: false,
-      showAccordion: [],
-      accordion_value: {}
-    },
+    // {
+    //   page: 'error',
+    //   system_name: 'Error',
+    //   url: '#device_error',
+    //   display_name: 'Error',
+    //   icon: 'fa fa-fw fa-exclamation-triangle',
+    //   visible: true,
+    //   isTitle: false,
+    //   showAccordion: [],
+    //   accordion_value: {}
+    // },
     {
       page: 'c2d',
-      system_name: 'C2D (Control)',
+      system_name: 'Control(C2D)',
       url: null,
-      display_name: 'C2D (Control)',
+      display_name: 'Control(C2D)',
       icon: null,
       visible: true,
       isTitle: true
     },
     {
       page: 'control_widgets',
-      system_name: 'Control Widgets',
+      system_name: 'Control/Configure',
       url: '#device_control_widgets',
-      display_name: 'Control Widgets',
+      display_name: 'Control/Configure',
       icon: 'fa fa-fw fa-angle-right',
       visible: true,
       isTitle: false,
@@ -930,28 +1096,28 @@ export class CONSTANTS {
       isTitle: false
     },
     {
-      page: 'settings',
-      system_name: 'Settings',
-      url: '#device_type_settings',
-      display_name: 'Settings',
-      icon: 'fa fa-fw fa-cog',
-      visible: true,
-      isTitle: false
-    },
-    {
       page: 'package_management',
-      system_name: 'Package Management',
+      system_name: 'Software Packages',
       url: '#device_type_package_management',
-      display_name: 'Package Management',
+      display_name: 'Software Packages',
       icon: 'fa fa-fw fa-tags',
       visible: true,
       isTitle: false
     },
     {
-      page: 'capabilities',
-      system_name: 'Edge Capabilities',
+      page: 'settings',
+      system_name: 'Setup',
+      url: '#device_type_settings',
+      display_name: 'Setup',
+      icon: 'fa fa-fw fa-cog',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'd2c',
+      system_name: 'Monitor',
       url: null,
-      display_name: 'Edge Capabilities',
+      display_name: 'Monitor',
       icon: null,
       visible: true,
       isTitle: true
@@ -967,94 +1133,38 @@ export class CONSTANTS {
     },
     {
       page: 'derived_properties',
-      system_name: 'Derived Properties',
+      system_name: 'Edge Derived Properties',
       url: '#device_type_properties',
-      display_name: 'Derived Properties',
+      display_name: 'Edge Derived Properties',
       icon: 'fa fa-fw fa-retweet',
       visible: true,
       isTitle: false
     },
     {
-      page: 'readable_properties',
-      system_name: 'Readable Properties',
-      url: '#device_type_properties',
-      display_name: 'Readable Properties',
-      icon: 'fa fa-fw fa-book',
-      visible: true,
-      isTitle: false
-    },
-    {
       page: 'writable_properties',
-      system_name: 'Writable Properties',
+      system_name: 'Controllable Properties',
       url: '#device_type_properties',
-      display_name: 'Writable Properties',
+      display_name: 'Controllable Properties',
       icon: 'fa fa-fw fa-edit',
       visible: true,
       isTitle: false
     },
     {
-      page: 'edge_rules',
-      system_name: 'Edge Rules',
-      url: '#device_type_edge_rules',
-      display_name: 'Edge Rules',
-      icon: 'fa fa-fw fa-archive',
+      page: 'readable_properties',
+      system_name: 'Configurable Properties',
+      url: '#device_type_properties',
+      display_name: 'Configurable Properties',
+      icon: 'fa fa-fw fa-book',
       visible: true,
       isTitle: false
     },
 
-
-
-    {
-      page: 'd2c',
-      system_name: 'Monitor',
-      url: null,
-      display_name: 'Monitor',
-      icon: null,
-      visible: true,
-      isTitle: true
-    },
     {
       page: 'alert_conditioning',
       system_name: 'Alert Conditioning',
       url: '#device_type_alert_conditioning',
       display_name: 'Alert Conditioning',
       icon: 'fa fa-fw fa-exclamation-triangle',
-      visible: true,
-      isTitle: false
-    },
-    {
-      page: 'cloud-capabilities',
-      system_name: 'Cloud Capabilities',
-      url: null,
-      display_name: 'Cloud Capabilities',
-      icon: null,
-      visible: true,
-      isTitle: true
-    },
-    {
-      page: 'stream_processing',
-      system_name: 'Stream Processing',
-      url: '#device_type_stream_processing',
-      display_name: 'Stream Processing',
-      icon: 'fa fa-fw fa-microchip',
-      visible: true,
-      isTitle: false
-    },
-    {
-      page: 'derived_kpis',
-      system_name: 'Derived KPIs',
-      url: '#device_type_derived_kpis',
-      display_name: 'Derived KPIs',
-      icon: 'fa fa-fw fa-retweet',
-      visible: true,
-      isTitle: false
-    },
-    {
-      page: 'cloud_rules',
-      system_name: 'Cloud Rules',
-      url: '#device_type_cloud_rules',
-      display_name: 'Cloud Rules',
-      icon: 'fa fa-fw fa-archive',
       visible: true,
       isTitle: false
     },
@@ -1095,6 +1205,43 @@ export class CONSTANTS {
       isTitle: false
     },
     {
+      page: 'compute',
+      system_name: 'Compute',
+      url: null,
+      display_name: 'Compute',
+      icon: null,
+      visible: true,
+      isTitle: true
+    },
+    {
+      page: 'stream_processing',
+      system_name: 'Cloud Derived Properties',
+      url: '#device_type_stream_processing',
+      display_name: 'Cloud Derived Properties',
+      icon: 'fa fa-fw fa-microchip',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'derived_kpis',
+      system_name: 'Derived KPIs',
+      url: '#device_type_derived_kpis',
+      display_name: 'Derived KPIs',
+      icon: 'fa fa-fw fa-retweet',
+      visible: true,
+      isTitle: false
+    },
+    {
+      page: 'rules',
+      system_name: 'Rules',
+      url: '#device_type_rules',
+      display_name: 'Rules',
+      icon: 'fa fa-fw fa-archive',
+      visible: true,
+      isTitle: false
+    },
+
+    {
       page: 'visualization',
       system_name: 'Visualize',
       url: 'null',
@@ -1105,9 +1252,9 @@ export class CONSTANTS {
     },
     {
       page: 'layout',
-      system_name: 'Widgets',
+      system_name: 'Visualization Widgets',
       url: '#device_type_layout',
-      display_name: 'Widgets',
+      display_name: 'Visualization Widgets',
       icon: 'fa fa-fw fa-bar-chart',
       visible: true,
       isTitle: false
@@ -1123,9 +1270,9 @@ export class CONSTANTS {
     },
     {
       page: 'reference_material',
-      system_name: 'Documents',
+      system_name: 'Reference Documents',
       url: '#device_type_reference_material',
-      display_name: 'Documents',
+      display_name: 'Reference Documents',
       icon: 'fa fa-fw fa-file',
       visible: true,
       isTitle: false

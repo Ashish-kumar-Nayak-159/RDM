@@ -2,10 +2,31 @@
   <div class="">
     <ul class="nav">
       <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Asset')"
+        [ngClass]="{'active': selectedTab === 'Asset'}">
+          <i class="fa fa-fw fa-laptop"></i>
+          <span class="text-secondary">Asset Alerts
+          </span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Edge')"
+           [ngClass]="{'active': selectedTab === 'Edge'}">
+            <i class="fab fa-fw fa-edge"></i>
+            <span class="text-secondary">Edge Alerts
+            </span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Cloud')"
+            [ngClass]="{'active': selectedTab === 'Cloud'}">
+              <i class="fa fa-fw fa-cloud"></i>
+              <span class="text-secondary">Cloud Alerts
+              </span></a>
+            </li>
+            <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="openAddAlertConditionModal()"
         [class.disabled]="deviceType.freezed">
           <i class="fa fa-fw fa-plus"></i>
-          <span class="text-secondary">Add Alert Condition
+          <span class="text-secondary">Add Alert
           </span></a>
       </li>
     </ul>
@@ -63,7 +84,7 @@
                   <i class="fa fa-fw fa-edit" ></i>
                 </a>
                 <a href="javascript:void(0)" (click)="openConfirmModal('confirmMessageModal', alert)"
-                placement="bottom" tooltip="Delete Alert Condition" [class.disabled]="deviceType.freezed">
+                placement="bottom" tooltip="Delete Alert" [class.disabled]="deviceType.freezed">
                   <i class="fa fa-fw fa-trash"></i>
                 </a>
               </td>
@@ -79,7 +100,7 @@
                     <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
                     [disabled]="alertObj?.visualization_widgets?.length === 0 || isCreateAlertConditionLoading" placement="bottom" tooltip="Edit"
                     (click)="editWidgets()"><i class="fa fa-edit fa-sm"></i></button> -->
-                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" [disabled]="alertObj?.visualization_widgets?.length === 0 || isCreateAlertConditionLoading || deviceType.freezed"
+                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" [disabled]="isCreateAlertConditionLoading || deviceType.freezed"
                     placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()" ><i class="fa fa-save fa-sm"></i></button>
                     <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></i>
                   </div>
@@ -270,7 +291,7 @@
         </ng-container>
         <ng-container *ngIf="!isAlertConditionsLoading && alertConditions.length === 0">
           <tr>
-            <td colspan="6"> No Alert Conditions added.</td>
+            <td colspan="6"> No {{selectedTab}} Alerts added.</td>
           </tr>
         </ng-container>
       </tbody>
@@ -282,7 +303,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content" *ngIf="alertObj">
     <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">{{ !alertObj.id ? 'Add' : 'Edit'}} Alert Condition
+      <h5 class="modal-title" id="exampleModalLabel">{{ !alertObj.id ? 'Add' : 'Edit'}} Alert
         </h5>
       <button type="button" class="close" [disabled]="isCreateAlertConditionLoading" (click)="onCloseAlertConditionModal()" aria-label="Close">
         <span aria-hidden="true">&times;</span>
@@ -308,6 +329,15 @@
             <option [ngValue]="'Error'" >Error</option>
             <option [ngValue]="'Warning'" >Warning</option>
             <option [ngValue]="'Informational'" >Informational</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="recipient-name" class="col-form-label required">Alert Type:</label>
+          <select class="form-control form-control-sm" id="alert_type" name="alert_type" [(ngModel)]="alertObj.alert_type">
+            <option [ngValue]="undefined" >Select Alert Type</option>
+            <option [ngValue]="'Asset'" >Asset</option>
+            <option [ngValue]="'Edge'" >Edge</option>
+            <option [ngValue]="'Cloud'" >Cloud</option>
           </select>
         </div>
         <accordion [closeOthers]="'true'" *ngIf="deviceType.metadata?.model_type === constantData.NON_IP_DEVICE" >
@@ -488,7 +518,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Remove Alert Condition</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Remove Alert</h5>
         <button type="button" class="close"  aria-label="Close" (click)="onCloseModal('confirmMessageModal')">
           <span aria-hidden="true">&times;</span>
         </button>

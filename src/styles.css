@@ -18,6 +18,13 @@
   font-family: "Segoe UI", Nunito, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
+.ng-select.sm .ng-select-container {
+
+  min-height: 30px;
+  color: #6e707e;
+  font-family: "Segoe UI", Nunito, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
 .ng-select.custom.active {
   color: #5570da !important;
   border-color: #89a7ff;
@@ -28,9 +35,14 @@
   border-color: #89a7ff;
 }
 
-.ng-select.sm .ng-select-container  {
-  min-height: 30px;
-  /*border-radius: 0;*/
+
+
+.ng-select.sm.ng-select-single .ng-select-container {
+  height: 30px;
+}
+
+.ng-select.sm.ng-select-single .ng-select-container .ng-value-container {
+  padding-top: 0;
 }
 
 .ng-select.sm.ng-select-multiple .ng-select-container .ng-value-container {

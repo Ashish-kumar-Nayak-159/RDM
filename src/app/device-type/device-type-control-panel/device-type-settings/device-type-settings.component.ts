@@ -48,18 +48,21 @@ export class DeviceTypeSettingsComponent implements OnInit {
           if (!this.deviceType.tags.reserved_tags) {
             this.deviceType.tags.reserved_tags = [];
           }
-          if (!this.deviceType.metadata.measurement_frequency) {
-            this.deviceType.metadata.measurement_frequency = {
-              min: 1,
-              max: 10,
-              average: 5
+          if (!this.deviceType.metadata.telemetry_mode_settings) {
+            this.deviceType.metadata.telemetry_mode_settings = {
+              normal_mode_frequency: 60,
+              turbo_mode_frequency: 5,
+              turbo_mode_timeout_time: 120
             };
           }
-          if (!this.deviceType.metadata.telemetry_frequency) {
-            this.deviceType.metadata.telemetry_frequency = {
-              min: 1,
-              max: 60,
-              average: 30
+          if (!this.deviceType.metadata.data_ingestion_settings) {
+            this.deviceType.metadata.data_ingestion_settings = {
+              value: 'all'
+            };
+          }
+          if (!this.deviceType.metadata.measurement_settings) {
+            this.deviceType.metadata.measurement_settings = {
+              measurement_frequency: 5
             };
           }
           this.originalDeviceType = JSON.parse(JSON.stringify(this.deviceType));

@@ -80,6 +80,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       ]
     }
   ];
+  deviceListAPISubscription: Subscription;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -226,6 +227,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   }
 
   onTabChange(type) {
+    this.deviceListAPISubscription?.unsubscribe();
     this.devicesList = [];
     this.currentOffset = 0;
     this.currentLimit = 20;
@@ -545,7 +547,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       this.componentState === CONSTANTS.NON_IP_DEVICE
         ? this.deviceService.getNonIPDeviceList(obj)
         : this.deviceService.getDeviceList(obj);
-    this.subscriptions.push(
+    this.deviceListAPISubscription =
       methodToCall.subscribe(
         (response: any) => {
           if (response.data) {
@@ -642,8 +644,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
           this.tableConfig.is_table_data_loading = false;
           this.insideScrollFunFlag = false;
         }
-      )
-    );
+      );
   }
 
   clearFilter() {

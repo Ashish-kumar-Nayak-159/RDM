@@ -36,11 +36,12 @@ export class AlertsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
-      this.alertFilter.gateway_id = this.device.device_id;
-    } else {
-      this.alertFilter.device_id = this.device.device_id;
-    }
+    // if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
+    //   this.alertFilter.gateway_id = this.device.device_id;
+    // } else {
+    //   this.alertFilter.device_id = this.device.device_id;
+    // }
+    this.alertFilter.displayAlertOptions = true;
     this.alertFilter.count = 10;
     this.alertFilter.app = this.contextApp.app;
     this.alertTableConfig = {
@@ -50,6 +51,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
         {
           name: 'Code',
           key: 'code',
+          headerClass: 'w-5'
         },
         {
           name: 'Timestamp',
@@ -62,16 +64,17 @@ export class AlertsComponent implements OnInit, OnDestroy {
         {
           name: '',
           key: undefined,
+          headerClass: 'w-5'
         }
       ]
     };
-    if (this.componentState === CONSTANTS.IP_GATEWAY) {
-      // this.alertTableConfig.data.splice(1, 1);
-      this.alertTableConfig.data.splice(2, 0, {
-        name: 'Asset Name',
-        key: 'device_id'
-      });
-    }
+    // if (this.componentState === CONSTANTS.IP_GATEWAY) {
+    //   // this.alertTableConfig.data.splice(1, 1);
+    //   this.alertTableConfig.data.splice(2, 0, {
+    //     name: 'Asset Name',
+    //     key: 'device_id'
+    //   });
+    // }
     this.loadFromCache();
     this.alertFilter.epoch = true;
 
@@ -96,6 +99,12 @@ export class AlertsComponent implements OnInit, OnDestroy {
   searchAlerts(filterObj, updateFilterObj = true) {
     this.isFilterSelected = true;
     this.isAlertLoading = true;
+    // if (!filterObj.source) {
+    //   this.alertTableConfig.data.splice(3, 0, {
+    //     name: 'Source',
+    //     key: 'source'
+    //   });
+    // }
     const obj = {...filterObj};
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'Get Alert Data');

@@ -51,8 +51,8 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
       'This Month': [moment().startOf('month'), moment().endOf('month')],
       'Last Month': [ moment().subtract(1, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
       'Last 3 Months': [moment().subtract(3, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
-      'Last 6 Months': [moment().subtract(3, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
-      'Last 12 Months': [moment().subtract(3, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')]
+      'Last 6 Months': [moment().subtract(6, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
+      'Last 12 Months': [moment().subtract(12, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')]
     }
   };
   loader = false;

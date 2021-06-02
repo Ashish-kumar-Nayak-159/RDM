@@ -1,5 +1,5 @@
 import { Subscription } from 'rxjs';
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, OnDestroy, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from './../../../app.constants';
 import * as moment from 'moment';
@@ -35,7 +35,8 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
   };
   selectedDateRange: string;
   constructor(
-    private commonService: CommonService
+    private commonService: CommonService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -70,6 +71,7 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
       this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
     }
     }, 500);
+    this.cdr.detectChanges();
     // this.datepicker.datePicker.setStartDate(null);
     // this.datepicker.datePicker.setEndDate(null);
   }

@@ -21,6 +21,10 @@ export class AuthGuardService {
       this.commonService.onLogOut();
       return false;
     }
+    if (this.getResolvedUrl(route) === '/applications/' && !userData.is_super_admin) {
+      this.commonService.onLogOut();
+      return false;
+    }
     if (this.getResolvedUrl(route)?.includes('selection')) {
       if (!userData) {
         this.commonService.onLogOut();

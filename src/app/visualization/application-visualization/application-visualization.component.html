@@ -103,6 +103,12 @@
                 (alert?.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                 )
                 )" [tooltip]="alert?.severity"></i>
+                <span class="icon-circle-sm" [style.background-color]="
+                (alert?.source?.toLowerCase() === 'gateway' ? '#89a7ff' :
+                (alert?.source?.toLowerCase() === 'asset' ? '#fb5515' :
+                (alert?.source?.toLowerCase() === 'cloud' ? '#229954' : '')))">
+                {{ alert?.source?.toLowerCase() === 'gateway' ? 'G' : alert?.source?.toLowerCase() === 'asset' ? 'A' : alert?.source?.toLowerCase() === 'cloud' ? 'C' : '' }}
+                </span>
               </div>
             </div>
             <div class="media-body"><a  class="m-r-10">
@@ -333,7 +339,7 @@
                         </div>
                       </div>
                     </ng-template>
-                    <h6 class="">Action taken by RDM:</h6>
+                    <h6 class="m-3">Action taken by RDM:</h6>
                     <div class="col-xl-12 col-lg-12 pl-3">
                       No Actions recorded by RDM yet.
                     </div>

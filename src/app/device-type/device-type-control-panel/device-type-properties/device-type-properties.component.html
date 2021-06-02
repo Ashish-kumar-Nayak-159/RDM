@@ -11,9 +11,9 @@
         [class.disabled]="deviceType.freezed">
           <i class="fa fa-fw fa-plus"></i>
           <span class="text-secondary">Add {{(type.includes('measured') ? 'Measured ' : (
-            type.includes('writable') ? 'Writable ' : (
-              type.includes('readable') ? 'Readable ' : (
-                type.includes('derived') ? 'Derived ' : ''
+            type.includes('Controllable') ? 'Controllable ' : (
+              type.includes('Configurable') ? 'Configurable ' : (
+                type.includes('derived') ? 'Edge Derived ' : ''
               )
             )
           ))}}
@@ -39,8 +39,8 @@
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">{{propertyObj.edit ? 'Edit' : 'Add'}}
           {{(type.includes('measured') ? 'Measured ' : (
-            type.includes('writable') ? 'Writable ' : (
-              type.includes('readable') ? 'Readable ' : (
+            type.includes('Controllable') ? 'Controllable ' : (
+              type.includes('Configurable') ? 'Configurable ' : (
                 type.includes('derived') ? 'Derived ' : ''
               )
             )
@@ -234,7 +234,7 @@
           <div class="form-group" *ngIf="type.includes('read') || type.includes('writ')">
             <input type="checkbox" class="mx-1 my-1" id="checkbox" min="1"
             name="checkbox" [(ngModel)]="propertyObj.isAdd" >
-            <label for="read_prop" class="col-form-label">Add as {{(type.includes('read') ? 'Writeable' : (type.includes('writ') ? 'Readable' : ''))}} Properties</label>
+            <label for="read_prop" class="col-form-label">Add as {{(type.includes('read') ? 'Controllable' : (type.includes('writ') ? 'Configurable' : ''))}} Properties</label>
           </div>
           <div class="row col-12" *ngIf="type === 'measured_properties'">
             <label for="recipient-name" class="col-form-label">Thresholds:</label>

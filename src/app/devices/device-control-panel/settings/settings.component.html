@@ -34,37 +34,32 @@
       <accordion-group heading="">
         <ng-container accordion-heading>
           <a class="btn">
-            Telemetry Frequency Operating Range (In Sec):
+            Data Ingestion Setting
+          </a>
+        </ng-container>
+        <div class="row col-md-12">
+          <input type="radio" class="mt-1" name="visible" value="changed" [disabled]="!isSettingsEditable"
+            id="visible_1" [(ngModel)]="device.metadata.data_ingestion_settings.value" />
+            <label class="form-label">&nbsp;Ingest Only Changed Properties</label> &nbsp;
+            <input  class="mt-1" type="radio" name="visible" value="all" [disabled]="!isSettingsEditable"
+            id="visible_2" [(ngModel)]="device.metadata.data_ingestion_settings.value" />
+            <label class="form-label">&nbsp;Ingest All Properties</label> &nbsp;
+        </div>
+      </accordion-group>
+      <accordion-group heading="">
+        <ng-container accordion-heading>
+          <a class="btn">
+            Measurement Frequency Setting
           </a>
         </ng-container>
         <table class="table table-hover">
           <tbody>
             <tr>
-              <td style="width: 50%;">Min Value: </td>
+              <td style="width: 50%;">Measurement Frequency (In Sec): </td>
               <td>
-                <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                  [(ngModel)]="device?.metadata.telemetry_frequency.min" name="min_frequency"
-                  placeholder="Minimum Frequency" *ngIf="isSettingsEditable">
-                <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata?.telemetry_frequency?.min}}</ng-container>
-              </td>
-            </tr>
-            <tr>
-              <td style="width: 50%;">Max Value: </td>
-              <td>
-                <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata?.telemetry_frequency?.max}}</ng-container>
-                <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                  [(ngModel)]="device?.metadata.telemetry_frequency.max" name="max_frequency"
-                  placeholder="Maximum Frequency" *ngIf="isSettingsEditable">
-              </td>
-            </tr>
-            <tr>
-              <td style="width: 50%;">Default Value: </td>
-              <td>
-                <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata?.telemetry_frequency?.average}}
-                </ng-container>
-                <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                  [(ngModel)]="device?.metadata.telemetry_frequency.average" name="avrg_frequency"
-                  placeholder="Average Frequency" *ngIf="isSettingsEditable">
+                  <input type="number" class="form-control form-control-sm bg-light border-0 small"
+                    [(ngModel)]="device.metadata.measurement_settings.measurement_frequency" name="frequency_in_normal"
+                    placeholder="Frequency" [disabled]="!isSettingsEditable">
               </td>
             </tr>
           </tbody>
@@ -73,39 +68,34 @@
       <accordion-group heading="">
         <ng-container accordion-heading>
           <a class="btn">
-            Measurement Frequency Operating Range (In Sec):
+            Telemetry Mode Settings
           </a>
         </ng-container>
         <table class="table table-hover">
           <tbody>
             <tr>
-              <td style="width: 50%;">Min Value: </td>
+              <td style="width: 50%;">Normal mode Frequency (In Sec): </td>
               <td>
-                <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata?.measurement_frequency?.min}}
-                </ng-container>
-                <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                  [(ngModel)]="device?.metadata.measurement_frequency.min" name="min_frequency"
-                  placeholder="Minimum Frequency" *ngIf="isSettingsEditable">
+                  <input type="number" class="form-control form-control-sm bg-light border-0 small"
+                    [(ngModel)]="device.metadata.telemetry_mode_settings.normal_mode_frequency" name="frequency_in_normal"
+                    placeholder="Frequency" [disabled]="!isSettingsEditable">
               </td>
             </tr>
             <tr>
-              <td style="width: 50%;">Max Value: </td>
+              <td style="width: 50%;">Turbo mode Frequency (In Sec): </td>
               <td>
-                <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata?.measurement_frequency?.max}}
-                </ng-container>
-                <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                  [(ngModel)]="device?.metadata.measurement_frequency.max" name="max_frequency"
-                  placeholder="Maximum Frequency" *ngIf="isSettingsEditable">
+
+                  <input type="number" class="form-control form-control-sm bg-light border-0 small"
+                    [(ngModel)]="device.metadata.telemetry_mode_settings.turbo_mode_frequency" name="frequency_in_turbo"
+                    placeholder="Frequency" [disabled]="!isSettingsEditable">
               </td>
             </tr>
             <tr>
-              <td style="width: 50%;">Default Value: </td>
+              <td >Turbo mode Timeout (In Sec): </td>
               <td>
-                <ng-container *ngIf="!isSettingsEditable"> {{device?.metadata?.measurement_frequency?.average}}
-                </ng-container>
-                <input type="number" class="form-control form-control-sm bg-light border-0 small"
-                  [(ngModel)]="device?.metadata.measurement_frequency.average" name="avrg_frequency"
-                  placeholder="Average Frequency" *ngIf="isSettingsEditable">
+                  <input type="number" class="form-control form-control-sm bg-light border-0 small"
+                    [(ngModel)]="device.metadata.telemetry_mode_settings.turbo_mode_timeout_time" name="timeout_in_turbo"
+                    placeholder="Timeout" [disabled]="!isSettingsEditable">
               </td>
             </tr>
           </tbody>

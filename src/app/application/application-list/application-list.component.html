@@ -1,97 +1,19 @@
+<div class="blue-nav-bar">
+  <div class="d-flex align-items-center">
 
-<div class="topnavbar" >
-  <div class="d-sm-flex align-items-center justify-content-start mb-4">
-    <h1 class="h3 mb-0 text-gray-800">App Management</h1>
-
-    <a
-
-      class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-4"
-      href="javascript:void(0)" (click)="openCreateAppModal()"
-      ><i class="fa fa- fa-sm text-white-50"></i> Add App</a
-    >
-  </div>
-  <div class="card row shadow bg-light" style="margin-left:0rem">
-    <div class="col-xl-12 col-md-12 mb-12 my-1">
-<!-- Page Heading -->
-
-      <form>
-        <div class="form-group form-inline my-1">
-
-          <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4" placeholder="App Name"
-          [(ngModel)]="applicationFilterObj.app" name="app">
-          <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputPassword4" placeholder="App Manager"
-          [(ngModel)]="applicationFilterObj.admin_email" name="admin">
-
-          <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="searchApplications()" placement="bottom" tooltip="Search"><i class="fa fa-search fa-sm"></i></button>
-          <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="clearFilter()" tooltip="Clear Filters" placement="bottom">
-            <img class="filter-clear-icon" src="./assets/img/filter.svg">
-          </button>
-
-        </div>
-       </form>
-  </div>
-</div>
-</div>
-<!-- Content Row -->
-
-<!-- DataTales Example -->
-<div class="con-pad" style="margin-top:13.5rem;">
-<div class="mb-4 ">
-
-  <div class="">
-    <div class="table-responsive">
-      <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
-        <thead>
-          <tr  class="bg-secondary text-white">
-            <th>App Name</th>
-            <th>App Admin</th>
-            <th>Assetss</th>
-
-            <th>Icons</th>
-            <!-- <th>Actions</th> -->
-          </tr>
-        </thead>
-        <!-- <tfoot>
-          <tr>
-            <th>Name</th>
-            <th>Position</th>
-            <th>Office</th>
-            <th>Age</th>
-            <th>Start date</th>
-            <th>Salary</th>
-          </tr>
-        </tfoot>-->
-        <tbody>
-          <ng-container *ngIf="applications.length > 0 && !isApplicationListLoading">
-            <tr *ngFor="let app of applications">
-              <td>{{app.app}}</td>
-              <td>{{app.admin_email}} ({{app.admin_name}})</td>
-              <td>
-                <a href="javascript:void(0)" (click)="redirectToDevices(app)" tooltip="View Assets" placement="bottom">
-                <i class="fa fa-fw fa-eye"></i></a></td>
-              <td><a  href="javascript:void(0)" (click)="openViewIconModal(app)" tooltip="View Icons" placement="bottom">
-                <i class="fa fa-fw fa-eye"></i></a></td>
-              <!-- <td><a href="javascript:void(0)" (click)="openEditAppModal(app)" tooltip="Edit App" >
-                <i class="fa fa-fw fa-edit"></i></a></td> -->
-            </tr>
-          </ng-container>
-          <ng-container *ngIf="applications.length === 0 && !isApplicationListLoading">
-            <tr>
-              <td colspan="4">No Applications found.</td>
-            </tr>
-          </ng-container>
-          <ng-container *ngIf="isApplicationListLoading">
-            <tr>
-              <td colspan="4">
-                <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-              </td>
-            </tr>
-          </ng-container>
-        </tbody>
-      </table>
+    <div class="main-heading">App Management&nbsp;
     </div>
-  </div>
+    <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCreateAppModal()"
+    placement="bottom" tooltip="Add App"><i class="fas fa-plus fa-sm"></i></button>
+   </div>
 </div>
+
+<div class="table-responsive">
+  <div class="tableFixHead" >
+
+    <app-common-data-table [tableData]="applications"
+      [tableConfig]="tableConfig" (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
+  </div>
 </div>
 
 <div class="modal right fade" id="createAppModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
@@ -107,18 +29,18 @@
       <form>
         <div class="form-group">
           <label for="message-text" class="col-form-label">App name:</label>
-          <input type="text" class="form-control" id="app_name" name='app_name' [(ngModel)]="applicationDetail.app"
+          <input type="text" class="form-control form-control-sm" id="app_name" name='app_name' [(ngModel)]="applicationDetail.app"
           placeholder="Enter App name">
         </div>
         <div class="form-group">
           <label for="message-text" class="col-form-label">App Admin Full Name:</label>
-          <input type="text" class="form-control"
+          <input type="text" class="form-control form-control-sm"
           id="admin_name" name="admin_name" [(ngModel)]="applicationDetail.admin_name"
           placeholder="Enter App Admin">
         </div>
         <div class="form-group">
           <label for="message-text" class="col-form-label">App Admin Email:</label>
-          <input type="email" class="form-control" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+          <input type="email" class="form-control form-control-sm" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
           id="app_admin" name="app_admin" [(ngModel)]="applicationDetail.admin_email"
           placeholder="Enter App Admin Email">
         </div>
@@ -136,13 +58,13 @@
         </div> -->
         <div class="form-group">
           <label for="message-text" class="col-form-label">Customer Name:</label>
-          <input type="text" class="form-control"
+          <input type="text" class="form-control form-control-sm"
           id="customer_name" name="customer_name" [(ngModel)]="applicationDetail.metadata.customer.name"
           placeholder="Enter Customer Name">
         </div>
         <div class="form-group">
           <label for="message-text" class="col-form-label">Customer Address:</label>
-          <textarea type="text" rows="3" class="form-control" id="customer_address" name="customer_address" [(ngModel)]="applicationDetail.metadata.customer.address"
+          <textarea type="text" rows="3" class="form-control form-control-sm" id="customer_address" name="customer_address" [(ngModel)]="applicationDetail.metadata.customer.address"
           placeholder="Enter Customer Address"></textarea>
         </div>
 
@@ -150,14 +72,14 @@
           <label for="message-text" class="col-form-label">Header Logo: {{appModalType === 'Edit' ? applicationDetail?.metadata?.header_logo?.name : ''}}</label>
           <input type="file"
           #appHeaderLogoFileInput (change)="onHeaderLogoFileSelected($event.target.files)"
-           class="form-control" id="app_logo" name="app_logo" >
+           class="form-control form-control-sm" id="app_logo" name="app_logo" >
         </div> -->
 
         <div class="form-group">
           <label for="recipient-name" class="col-form-label required">Header Logo:</label>
           <div class="form-group input-group row m-0">
             <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
-            <div class="file-input form-control form-control-sm p-0 col-8">
+            <div class="file-input form-control form-control-sm  p-0 col-8">
              <input type="file" id="file" accept=".jpeg,.png,.svg"  class="file" (change)="onHeaderLogoFileSelected($event.target.files)">
 
              <label for="file">{{applicationDetail?.metadata?.header_logo?.name ? applicationDetail?.metadata?.header_logo?.name : 'Choose File'}}</label>
@@ -172,18 +94,18 @@
           <label for="message-text" class="col-form-label">App Logo: {{appModalType === 'Edit' ? applicationDetail?.metadata?.logo?.name : ''}}</label>
           <input type="file"
           #appLogoFileInput (change)="onLogoFileSelected($event.target.files)"
-           class="form-control" id="app_logo" name="app_logo" >
+           class="form-control form-control-sm" id="app_logo" name="app_logo" >
         </div> -->
         <div class="form-group">
           <label for="recipient-name" class="col-form-label required">App Logo:</label>
           <div class="form-group input-group row m-0">
             <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
-            <div class="file-input form-control form-control-sm p-0 col-8">
+            <div class="file-input form-control form-control-sm  p-0 col-8">
              <input type="file" id="file" accept=".jpeg,.png,.svg"  class="file" (change)="onLogoFileSelected($event.target.files)">
 
              <label for="file">{{applicationDetail?.metadata?.logo?.name ? applicationDetail?.metadata?.logo?.name : 'Choose File'}}</label>
             </div>
-            <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+            <div class="file-input form-control form-control-sm  p-0 col-4" style="background-color:#ccc !important">
             <input type="file" accept=".jpeg,.png,.svg"   id="file" class="file" >
                <label for="file" class="bg-secondary text-white">Browse</label>
             </div>
@@ -192,18 +114,18 @@
         <!-- <div class="form-group">
           <label for="message-text" class="col-form-label">App Icon: {{appModalType === 'Edit' ? applicationDetail?.metadata?.icon?.name : ''}}</label>
           <input type="file" #appIconFileInput (change)="onIconFileSelected($event.target.files)"
-           class="form-control" id="app_icon" name="app_icon" >
+           class="form-control form-control-sm" id="app_icon" name="app_icon" >
         </div> -->
         <div class="form-group">
           <label for="recipient-name" class="col-form-label required">App Icon:</label>
           <div class="form-group input-group row m-0">
             <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
-            <div class="file-input form-control form-control-sm p-0 col-8">
+            <div class="file-input form-control form-control-sm  p-0 col-8">
              <input type="file" id="file" accept=".jpeg,.png,.svg"  class="file" (change)="onIconFileSelected($event.target.files)">
 
              <label for="file">{{applicationDetail?.metadata?.icon?.name ? applicationDetail?.metadata?.icon?.name : 'Choose File'}}</label>
             </div>
-            <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+            <div class="file-input form-control form-control-sm  p-0 col-4" style="background-color:#ccc !important">
             <input type="file" accept=".jpeg,.png,.svg"   id="file" class="file" >
                <label for="file" class="bg-secondary text-white">Browse</label>
             </div>
@@ -227,22 +149,22 @@
               <ng-container *ngIf="applicationDetail.metadata.app_specific_db">
                   <div class="form-group">
                     <label for="message-text" class="col-form-label">Host name:</label>
-                    <input type="text" class="form-control" id="host_name" name='host_name' [(ngModel)]="applicationDetail.metadata.database_settings.host_name"
+                    <input type="text" class="form-control form-control-sm" id="host_name" name='host_name' [(ngModel)]="applicationDetail.metadata.database_settings.host_name"
                     placeholder="Enter Host name">
                   </div>
                   <div class="form-group">
                     <label for="message-text" class="col-form-label">User name:</label>
-                    <input type="text" class="form-control" id="user_name" name='user_name' [(ngModel)]="applicationDetail.metadata.database_settings.user_name"
+                    <input type="text" class="form-control form-control-sm" id="user_name" name='user_name' [(ngModel)]="applicationDetail.metadata.database_settings.user_name"
                     placeholder="Enter User name">
                   </div>
                   <div class="form-group">
                     <label for="message-text" class="col-form-label">Database name:</label>
-                    <input type="text" class="form-control" id="database_name" name='database_name' [(ngModel)]="applicationDetail.metadata.database_settings.database_name"
+                    <input type="text" class="form-control form-control-sm" id="database_name" name='database_name' [(ngModel)]="applicationDetail.metadata.database_settings.database_name"
                     placeholder="Enter Database name">
                   </div>
                   <div class="form-group">
                     <label for="message-text" class="col-form-label">Port:</label>
-                    <input type="number" class="form-control" id="port" name='port' [(ngModel)]="applicationDetail.metadata.database_settings.port"
+                    <input type="number" class="form-control form-control-sm" id="port" name='port' [(ngModel)]="applicationDetail.metadata.database_settings.port"
                     placeholder="Enter Port">
                   </div>
                 </ng-container>
@@ -261,7 +183,7 @@
                 </div>
                 <div class="form-group" *ngIf="applicationDetail.metadata.app_specific_schema || applicationDetail.metadata.app_specific_db || applicationDetail.metadata.app_telemetry_specific_schema">
                   <label for="recipient-name" class="col-form-label">Telemetry Partition Technique:</label>
-                  <select class="custom-select" id="alertReason" [(ngModel)]="applicationDetail.metadata.partition.telemetry.partition_strategy"
+                  <select class="form-control form-control-sm" id="alertReason" [(ngModel)]="applicationDetail.metadata.partition.telemetry.partition_strategy"
                     name="alertReason">
                     <option [ngValue]="undefined">Select Partition Technique</option>
                     <option [ngValue]="'Device ID'">Asset ID</option>
@@ -270,7 +192,7 @@
                 </div>
                 <div class="form-group" *ngIf="applicationDetail.metadata.app_specific_schema || applicationDetail.metadata.app_specific_db || applicationDetail.metadata.app_telemetry_specific_schema">
                   <label for="recipient-name" class="col-form-label">Telemetry Sub-Partition Technique:</label>
-                  <select class="custom-select" id="alertReason" [(ngModel)]="applicationDetail.metadata.partition.telemetry.sub_partition_strategy"
+                  <select class="form-control form-control-sm" id="alertReason" [(ngModel)]="applicationDetail.metadata.partition.telemetry.sub_partition_strategy"
                     name="alertReason">
                     <option [ngValue]="undefined">Select Sub-Partition Technique</option>
                     <option [ngValue]="'Daily'">Daily</option>
@@ -304,22 +226,27 @@
 
 <div class="modal right fade" id="viewAppIconModal" role="dialog" aria-labelledby="ModalLabel1" >
   <div class="modal-dialog" role="document" >
-    <div class="modal-content" *ngIf="applicationDetail">
+    <div class="modal-content" *ngIf="selectedApp">
     <div class="modal-header">
-      <h5 class="modal-title">View App Icons: {{applicationDetail.app}}</h5>
+      <h5 class="modal-title">View App Icons: {{selectedApp.app}}</h5>
       <button type="button" class="close"  (click)="onCloseCreateAppModal('viewAppIconModal')">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
     <div class="modal-body">
       <div class="col-12">
-        <h6><b>{{applicationDetail.app}} Logo</b></h6>
-        <img class="icon-display" *ngIf="applicationDetail?.metadata?.logo?.url; else noFileUploaded" src="{{blobStorageURL + applicationDetail?.metadata?.logo?.url + blobSASToken}}"/>
+        <h6><b>{{selectedApp.app}} header Logo</b></h6>
+        <img class="icon-display" *ngIf="selectedApp?.metadata?.header_logo?.url; else noFileUploaded" src="{{blobStorageURL + selectedApp?.metadata?.header_logo?.url + blobSASToken}}"/>
       </div>
       <hr/>
       <div class="col-12">
-        <h6><b>{{applicationDetail.app}} Icon</b></h6>
-        <img class="icon-display" *ngIf="applicationDetail?.metadata?.icon?.url; else noFileUploaded" src="{{blobStorageURL + applicationDetail?.metadata?.icon?.url + blobSASToken}}"/>
+        <h6><b>{{selectedApp.app}} Logo</b></h6>
+        <img class="icon-display" *ngIf="selectedApp?.metadata?.logo?.url; else noFileUploaded" src="{{blobStorageURL + selectedApp?.metadata?.logo?.url + blobSASToken}}"/>
+      </div>
+      <hr/>
+      <div class="col-12">
+        <h6><b>{{selectedApp.app}} Icon</b></h6>
+        <img class="icon-display" *ngIf="selectedApp?.metadata?.icon?.url; else noFileUploaded" src="{{blobStorageURL + selectedApp?.metadata?.icon?.url + blobSASToken}}"/>
       </div>
       <ng-template #noFileUploaded>
         <p>No File uploaded</p>

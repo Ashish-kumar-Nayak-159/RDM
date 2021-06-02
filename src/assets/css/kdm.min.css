@@ -13091,4 +13091,6 @@ color: #1a5ab4;
   justify-content: center
 }
 
+.daterangepicker { box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); max-height: 50%;  overflow-y: auto; }
+
 

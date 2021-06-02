@@ -180,7 +180,6 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       y2axis: this.y2AxisProps,
       xAxis: this.xAxisProps
     };
-    console.log(obj);
     const index = this.layoutJson.findIndex(widget => widget.title.toLowerCase() === obj.title.toLowerCase());
     if (index === -1) {
       await this.plotChart(obj);
@@ -235,7 +234,6 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
         data.splice(0, 0, obj);
       }
       let componentRef;
-      console.log(layoutJson)
       if (layoutJson.chartType === 'LineChart' || layoutJson.chartType === 'AreaChart') {
         componentRef = this.factoryResolver.resolveComponentFactory(LiveChartComponent).create(this.injector);
       } else if (layoutJson.chartType === 'ColumnChart') {
@@ -247,7 +245,6 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       } else if (layoutJson.chartType === 'Table') {
         componentRef = this.factoryResolver.resolveComponentFactory(DataTableComponent).create(this.injector);
       }
-      console.log(componentRef);
       componentRef.instance.telemetryData = JSON.parse(JSON.stringify(data));
       componentRef.instance.propertyList = this.propertyList;
       componentRef.instance.y1AxisProps = layoutJson.y1axis;

@@ -2,7 +2,7 @@ import { FileSaverService } from 'ngx-filesaver';
 import { ToasterService } from './../../services/toaster.service';
 import { DeviceService } from './../../services/devices/device.service';
 import { Subscription } from 'rxjs';
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CONSTANTS } from 'src/app/app.constants';
 import { ApplicationService } from 'src/app/services/application/application.service';
@@ -60,7 +60,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private deviceService: DeviceService,
     private toasterService: ToasterService,
-    private fileSaverService: FileSaverService
+    private fileSaverService: FileSaverService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -146,6 +147,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit {
       this.previousFilterObj = JSON.parse(JSON.stringify(this.filterObj));
       this.getReportsData(false);
     }
+    this.cdr.detectChanges();
   }
 
   onDeviceFilterBtnClick() {

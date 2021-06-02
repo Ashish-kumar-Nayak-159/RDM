@@ -702,5 +702,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
+this.deviceListAPISubscription?.unsubscribe();
   }
 }

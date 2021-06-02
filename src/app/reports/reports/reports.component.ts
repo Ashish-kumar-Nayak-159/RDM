@@ -363,6 +363,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
               value: prop
             });
           });
+          this.dropdownPropList = JSON.parse(JSON.stringify(this.dropdownPropList));
+          console.log(this.dropdownPropList);
           // this.props = [...this.dropdownPropList];
           resolve();
         }

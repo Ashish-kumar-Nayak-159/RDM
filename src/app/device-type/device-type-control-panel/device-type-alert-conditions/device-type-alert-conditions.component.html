@@ -26,7 +26,7 @@
         <a class="nav-link" href="javascript:void(0)" (click)="openAddAlertConditionModal()"
         [class.disabled]="deviceType.freezed">
           <i class="fa fa-fw fa-plus"></i>
-          <span class="text-secondary">Add Alert
+          <span class="text-secondary">Add Alert Condition
           </span></a>
       </li>
     </ul>
@@ -84,7 +84,7 @@
                   <i class="fa fa-fw fa-edit" ></i>
                 </a>
                 <a href="javascript:void(0)" (click)="openConfirmModal('confirmMessageModal', alert)"
-                placement="bottom" tooltip="Delete Alert" [class.disabled]="deviceType.freezed">
+                placement="bottom" tooltip="Delete Alert Condition" [class.disabled]="deviceType.freezed">
                   <i class="fa fa-fw fa-trash"></i>
                 </a>
               </td>
@@ -303,7 +303,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content" *ngIf="alertObj">
     <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">{{ !alertObj.id ? 'Add' : 'Edit'}} Alert
+      <h5 class="modal-title" id="exampleModalLabel">{{ !alertObj.id ? 'Add' : 'Edit'}} Alert Condition
         </h5>
       <button type="button" class="close" [disabled]="isCreateAlertConditionLoading" (click)="onCloseAlertConditionModal()" aria-label="Close">
         <span aria-hidden="true">&times;</span>
@@ -518,7 +518,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Remove Alert</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Remove Alert Condition</h5>
         <button type="button" class="close"  aria-label="Close" (click)="onCloseModal('confirmMessageModal')">
           <span aria-hidden="true">&times;</span>
         </button>

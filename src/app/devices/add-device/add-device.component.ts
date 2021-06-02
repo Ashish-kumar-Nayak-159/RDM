@@ -43,7 +43,6 @@ export class AddDeviceComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.tileData);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.getApplicationUsers();
@@ -181,7 +180,6 @@ export class AddDeviceComponent implements OnInit {
           [Validators.required, Validators.min(0), Validators.max(31)]),
       });
     }
-    console.log(this.setupForm?.value);
   }
 
   getApplicationUsers() {

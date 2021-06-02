@@ -620,9 +620,9 @@ export class CONSTANTS {
     },
     {
       page: 'settings',
-      system_name: 'Settings',
+      system_name: 'Setup',
       url: '#device_settings',
-      display_name: 'Settings',
+      display_name: 'Setup',
       icon: 'fa fa-fw fa-cog',
       visible: true,
       isTitle: false,
@@ -845,9 +845,9 @@ export class CONSTANTS {
     },
     {
       page: 'mttr',
-      system_name: 'TTR',
+      system_name: 'MTTR',
       url: '#device_mttr',
-      display_name: 'TTR',
+      display_name: 'MTTR',
       icon: 'fa fa-fw fa-wrench',
       visible: true,
       isTitle: false,
@@ -856,9 +856,9 @@ export class CONSTANTS {
     },
     {
       page: 'mtbf',
-      system_name: 'TBF',
+      system_name: 'MTBF',
       url: '#device_mtbf',
-      display_name: 'TBF',
+      display_name: 'MTBF',
       icon: 'fa fa-fw fa-wrench',
       visible: true,
       isTitle: false,
@@ -1270,9 +1270,9 @@ export class CONSTANTS {
     },
     {
       page: 'reference_material',
-      system_name: 'Reference Documents',
+      system_name: 'Documents',
       url: '#device_type_reference_material',
-      display_name: 'Reference Documents',
+      display_name: 'Documents',
       icon: 'fa fa-fw fa-file',
       visible: true,
       isTitle: false

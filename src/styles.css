@@ -18,6 +18,11 @@
   font-family: "Segoe UI", Nunito, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
+.ng-select.sm.active .ng-select-container {
+  color: #5570da !important;
+    border-color: #89a7ff;
+}
+
 .ng-select.sm .ng-select-container {
 
   min-height: 30px;

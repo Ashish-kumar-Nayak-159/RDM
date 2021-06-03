@@ -248,6 +248,9 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
       if (this.deviceType.tags.protocol === 'ModbusTCPMaster' || this.deviceType.tags.protocol === 'ModbusRTUMaster') {
         this.onChangeOfSetupFunctionCode(alertObj.metadata);
       }
+      if (this.deviceType.tags.protocol === 'SiemensTCPIP') {
+        this.onChageOfMemoryType(alertObj.metadata);
+      }
       console.log(this.setupForm);
     } else {
       this.alertObj = {};
@@ -310,6 +313,14 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
     } else {
       this.setupForm.removeControl('p');
       this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
+    }
+  }
+
+  onChageOfMemoryType(obj = undefined) {
+    if (this.setupForm.value.mt === 'DB') {
+      this.setupForm.addControl('dbn', new FormControl(obj?.dbn || null, [Validators.required, Validators.min(1)]));
+    } else {
+      this.setupForm.removeControl('dbn');
     }
   }
 

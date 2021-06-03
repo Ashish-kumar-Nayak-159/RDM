@@ -259,6 +259,14 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
     }
   }
 
+  onChageOfMemoryType(obj = undefined) {
+    if (this.setupForm.value.mt === 'DB') {
+      this.setupForm.addControl('dbn', new FormControl(obj?.dbn || null, [Validators.required, Validators.min(1)]));
+    } else {
+      this.setupForm.removeControl('dbn');
+    }
+  }
+
   onChangeOfSetupFunctionCode(obj = undefined) {
     if (this.setupForm.value.d === 'd' && (this.setupForm.value.fc === 3 || this.setupForm.value.fc === 4)) {
       this.setupForm.removeControl('bn');
@@ -508,6 +516,9 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       this.onChangeOfSetupType(this.propertyObj.metadata);
       this.onChangeOfSetupSecondaryType(this.propertyObj.metadata);
       this.onChangeOfSetupFunctionCode(this.propertyObj.metadata);
+      if (this.deviceType.tags.protocol === 'SiemensTCPIP') {
+        this.onChageOfMemoryType(this.propertyObj.metadata);
+      }
 
       $('#addPropertiesModal').modal({ backdrop: 'static', keyboard: false, show: true });
       setTimeout(() => {

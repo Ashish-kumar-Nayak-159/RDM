@@ -145,6 +145,9 @@ export class AddDeviceComponent implements OnInit {
       });
     } else if (this.deviceDetail.tags.protocol === 'ModbusRTUMaster') {
       this.setupForm = new FormGroup({
+        com_port: new FormControl(
+          (obj && obj.metadata && obj.metadata.setup_details && obj.metadata.setup_details.com_port !== undefined
+            && obj.metadata.setup_details.com_port !== null) ? obj.metadata.setup_details.com_port : null, [Validators.required]),
         baud_rate: new FormControl(
           (obj && obj.metadata && obj.metadata.setup_details && obj.metadata.setup_details.baud_rate !== undefined
             && obj.metadata.setup_details.baud_rate !== null) ? obj.metadata.setup_details.baud_rate : null, [Validators.required]),

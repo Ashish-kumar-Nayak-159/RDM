@@ -123,4 +123,7 @@ export class AppUrls {
   public static GET_HISTORICAL_MTBF_DATA = 'apps/{0}/devices/{1}/historical_mtbf_events';
   public static DELETE_USER_ACCESS = 'apps/{0}/users/{1}';
   public static GET_DEVICE_MODEL_RULES = 'apps/{0}/device_types/{1}/rules';
+  public static GET_DEVICE_MODEL_DERIVED_KPIS = 'apps/{0}/device_types/{1}/derived_kpis';
+  public static GET_DERIVED_KPI_LATEST_DATA = 'apps/{0}/derived_kpis/{1}/asset_wise_latest_data';
+  public static GET_DERIVED_KPI_HISTORICAL_DATA = 'apps/{0}/derived_kpis/{1}/processing_history';
 }

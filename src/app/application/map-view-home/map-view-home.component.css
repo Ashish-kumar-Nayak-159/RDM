@@ -1,5 +1,5 @@
 agm-map {
-  height: calc(100vh - 7rem)
+  height: calc(100vh - 7.5rem)
 }
 
 .map-container {
@@ -9,5 +9,43 @@ agm-map {
 .select-box-map {
   position: absolute;
   z-index: 9;
+}
+
+.redNumberCircle {
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  padding: 2px;
+  z-index: 9;
+  background: rgb(212, 13, 13);
+  border: 2px solid rgb(212, 13, 13);
+  color: white;
+  text-align: center;
+  font-size: 1.3em;
+}
+
+.greenNumberCircle {
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  padding: 2px;
+  z-index: 9;
+  background: #269e26;
+  border: 2px solid #269e26;
+  color: white;
+  text-align: center;
+  font-size: 1.3em;
+}
+
+.numberCircle {
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  padding: 2px;
+  background: #fff;
+  border: 2px solid #666;
+  color: #666;
+  text-align: center;
+  font-size: 1.3em;
 }
 

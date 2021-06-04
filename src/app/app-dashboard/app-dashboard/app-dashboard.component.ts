@@ -397,7 +397,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isFilterSelected = true;
     if (environment.app === 'SopanCMS') {
       await this.getMidNightHours(obj);
-      // alert('call rejected');
     }
     const obj1 = {
       hierarchy: this.contextApp.user.hierarchy,

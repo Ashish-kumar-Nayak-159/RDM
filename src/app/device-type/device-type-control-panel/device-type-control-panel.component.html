@@ -102,7 +102,7 @@
         <app-device-type-reference-documents *ngIf="activeTab === 'reference_material' && deviceType" [deviceType]="deviceType"></app-device-type-reference-documents>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'derived_kpis'}" role="tabpanel" id="device_type_derived_kpis">
-        <app-device-type-derived-kpis *ngIf="activeTab === 'derived_kpis' && deviceType"></app-device-type-derived-kpis>
+        <app-device-type-derived-kpis *ngIf="activeTab === 'derived_kpis' && deviceType"  [deviceType]="deviceType"></app-device-type-derived-kpis>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'stream_processing'}" role="tabpanel" id="device_type_stream_processing">
         <app-device-type-stream-processing *ngIf="activeTab === 'stream_processing' && deviceType"></app-device-type-stream-processing>

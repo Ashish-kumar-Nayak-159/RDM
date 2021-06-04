@@ -78,7 +78,6 @@ export class LiveDataComponent implements OnInit, OnDestroy {
               id: widget.widgetTitle,
               value: widget
             });
-            console.log(this.liveWidgets);
           });
           this.liveWidgets = JSON.parse(JSON.stringify(this.liveWidgets));
         }

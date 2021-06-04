@@ -421,9 +421,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         if (this.latestAlerts.length > 0) {
           this.selectedAlert = undefined;
           this.onClickOfViewGraph(this.latestAlerts[0]);
+        } else {
+          this.selectedAlert = undefined;
+          this.selectedTab = undefined;
         }
         this.latestAlerts.forEach((item, i) =>  {
-          item.alert_id = 'alert_' +  i;
+          item.alert_id = 'alert_' +  this.commonService.generateUUID();
           item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
           item.device_display_name = this.devices.filter(device => device.device_id === item.device_id)[0]?.display_name;
         });
@@ -611,14 +614,13 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.selectedWidgets = [];
     this.subscriptions.push(this.deviceTypeService.getThingsModelLayout(params).subscribe(
       async (response: any) => {
-        console.log(response);
         if (response?.historical_widgets?.length > 0) {
-          console.log(response?.historical_widgets);
           response.historical_widgets.forEach((item) => {
             this.dropdownWidgetList.push({
               id: item.title,
               value: item
             });
+
             if (this.alertCondition) {
             this.alertCondition.visualization_widgets.forEach(widget => {
               if (widget === item.title) {
@@ -628,9 +630,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
                 });
               }
             });
-            console.log(this.selectedWidgets);
           }
           });
+          this.dropdownWidgetList = JSON.parse(JSON.stringify(this.dropdownWidgetList));
+          this.selectedWidgets = JSON.parse(JSON.stringify(this.selectedWidgets));
           if (this.selectedWidgets.length > 0) {
             this.getDeviceTelemetryData();
           } else {

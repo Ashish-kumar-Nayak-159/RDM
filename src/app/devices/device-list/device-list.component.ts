@@ -1,3 +1,4 @@
+import { environment } from './../../../environments/environment';
 import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from 'src/app/services/application/application.service';
@@ -10,6 +11,8 @@ import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/app.constants';
 import { ToasterService } from './../../services/toaster.service';
 import * as moment from 'moment';
+import * as am4core from '@amcharts/amcharts4/core';
+import * as am4charts from '@amcharts/amcharts4/charts';
 declare var $: any;
 @Component({
   selector: 'app-device-list',
@@ -80,7 +83,14 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       ]
     }
   ];
+  derivedKPILatestData: any[] = [];
   deviceListAPISubscription: Subscription;
+  isDerivedKPIDataLoading = false;
+  derivedKPIData: any[] = [];
+  loader = false;
+  loadingMessage = 'Loading Data. Please wait...';
+  chart: am4charts.XYChart;
+  environmentApp = environment.app;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -226,7 +236,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     infowindow.close();
   }
 
-  onTabChange(type) {
+  async onTabChange(type) {
     this.deviceListAPISubscription?.unsubscribe();
     this.devicesList = [];
     this.currentOffset = 0;
@@ -252,6 +262,12 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       this.getGatewayList();
     }
     this.componentState = type;
+    // if (environment.app === 'SopanCMS') {
+
+    if (this.contextApp.app === 'CMS_Dev' && this.componentState === CONSTANTS.NON_IP_DEVICE) {
+      await this.getLatestDerivedKPIData();
+    }
+
     if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
       this.deviceFilterObj.type = undefined;
     } else {
@@ -289,6 +305,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       is_table_data_loading: this.isDeviceListLoading,
       no_data_message: '',
       table_class: 'tableFixHead-assets-list',
+      border_left_key: this.contextApp.app === 'CMS_Dev' && this.componentState === CONSTANTS.NON_IP_DEVICE ? 'kpiValue' : undefined,
       data: [
         {
           header_name: (obj.table_key || '') + ' Name',
@@ -343,6 +360,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
         data_type: 'text',
         data_key: 'gateway_display_name',
       });
+
       this.tableConfig.data[4].btn_list.splice(0, 0, {
         icon: 'fa fa-fw fa-edit',
         text: '',
@@ -350,6 +368,15 @@ export class DeviceListComponent implements OnInit, OnDestroy {
         valueclass: '',
         tooltip: 'Edit',
       });
+      if (this.contextApp.app === 'CMS_Dev') {
+        this.tableConfig.data[4].btn_list.splice(0, 0, {
+          icon: 'fa fa-fw fa-eye',
+          text: '',
+          id: 'View Device Status',
+          valueclass: '',
+          tooltip: 'View Specific Power Consumption',
+        });
+      }
       this.tableConfig.data[4].btn_list.push({
         icon: 'fa fa-fw fa-book',
         text: '',
@@ -357,6 +384,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
         valueclass: '',
         tooltip: 'View Gateway panel',
       });
+
     }
     const item = this.commonService.getItemFromLocalStorage(
       CONSTANTS.MAIN_MENU_FILTERS
@@ -377,7 +405,33 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       });
       this.searchDevices();
     }
+  }
 
+  getLatestDerivedKPIData() {
+    return new Promise<void>((resolve) => {
+      const derivedKPICode = 'SPCD';
+      const obj = {
+        from_date: moment().subtract(24, 'hours').utc().unix(),
+        to_date: moment().utc().unix(),
+        epoch: true,
+        asset_model: 'Hydraulic Booster Compressor 1.2'
+      };
+      this.subscriptions.push(this.deviceService.getDerivedKPILatestData(this.contextApp.app, derivedKPICode, obj)
+      .subscribe((response: any) => {
+        if (response?.data) {
+          this.derivedKPILatestData = response.data;
+          this.devicesList.forEach(deviceObj => {
+            this.derivedKPILatestData.forEach(kpiObj => {
+              if (deviceObj.device_id === kpiObj.device_id) {
+                deviceObj.kpiValue = kpiObj?.metadata?.healthy;
+              }
+            });
+          });
+        }
+        resolve();
+      })
+      );
+    });
   }
 
   onCurrentPageViewChange(type) {
@@ -562,7 +616,18 @@ export class DeviceListComponent implements OnInit, OnDestroy {
                 )[0]?.display_name;
                 item.gateway_display_name = name ? name : item.gateway_id;
               }
-              // item.tags.device_users_arr = item.tags.device_manager.split(',');
+              if (this.environmentApp === 'KCMS') {
+                item.mttr = '7 Mins';
+                item.mtbf = '2 days 5 hours';
+                item.gas = '0.4%';
+                item.power = '45 SCMH';
+              }
+              if (this.contextApp.app === 'CMS_Dev') {
+              this.derivedKPILatestData.forEach(kpiObj => {
+                if (item.device_id === kpiObj.device_id) {
+                  item.kpiValue = kpiObj?.metadata?.healthy;
+                }
+              });
               if (
                 this.componentState === this.constantData.IP_DEVICE &&
                 item?.connection_state?.toLowerCase() === 'connected'
@@ -589,6 +654,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
                 this.componentState === this.constantData.IP_GATEWAY &&
                 item?.connection_state?.toLowerCase() === 'connected'
               ) {
+                console.log('11111111111111111111111111');
                 item.icon = {
                   url: './assets/img/iot-gateways-green.svg',
                   scaledSize: {
@@ -607,16 +673,71 @@ export class DeviceListComponent implements OnInit, OnDestroy {
                     height: 30,
                   },
                 };
-              } else if (
-                this.componentState === this.constantData.NON_IP_DEVICE
-              ) {
+              } else if (this.componentState === this.constantData.NON_IP_DEVICE) {
                 item.icon = {
-                  url: './assets/img/legacy-assets.svg',
+                  url: item.kpiValue === false ? './assets/img/legacy-asset-green.svg' : (item.kpiValue === true ? './assets/img/legacy-asset-red.svg' : './assets/img/legacy-assets.svg'),
                   scaledSize: {
                     width: 25,
-                    height: 25,
-                  },
-                };
+                    height: 25
+                  }};
+              }
+             } else {
+                if (
+                  this.componentState === this.constantData.IP_DEVICE &&
+                  item?.connection_state?.toLowerCase() === 'connected'
+                ) {
+                  item.icon = {
+                    url: './assets/img/iot-assets-green.svg',
+                    scaledSize: {
+                      width: 35,
+                      height: 35,
+                    },
+                  };
+                } else if (
+                  this.componentState === this.constantData.IP_DEVICE &&
+                  item?.connection_state?.toLowerCase() === 'disconnected'
+                ) {
+                  item.icon = {
+                    url: './assets/img/iot-assets-red.svg',
+                    scaledSize: {
+                      width: 35,
+                      height: 35,
+                    },
+                  };
+                } else if (
+                  this.componentState === this.constantData.IP_GATEWAY &&
+                  item?.connection_state?.toLowerCase() === 'connected'
+                ) {
+                  console.log('11111111111111111111111111');
+                  item.icon = {
+                    url: './assets/img/iot-gateways-green.svg',
+                    scaledSize: {
+                      width: 30,
+                      height: 30,
+                    },
+                  };
+                } else if (
+                  this.componentState === this.constantData.IP_GATEWAY &&
+                  item?.connection_state?.toLowerCase() === 'disconnected'
+                ) {
+                  item.icon = {
+                    url: './assets/img/iot-gateways-red.svg',
+                    scaledSize: {
+                      width: 30,
+                      height: 30,
+                    },
+                  };
+                } else if (
+                  this.componentState === this.constantData.NON_IP_DEVICE
+                ) {
+                  item.icon = {
+                    url: './assets/img/legacy-assets.svg',
+                    scaledSize: {
+                      width: 25,
+                      height: 25,
+                    },
+                  };
+                }
               }
               if (item.hierarchy) {
                 item.hierarchyString = '';
@@ -630,6 +751,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
               console.log(item.device_id , '=====', item.icon);
             });
             this.devicesList = [...this.devicesList, ...response.data];
+
           }
           if (response.data.length === this.currentLimit) {
             this.insideScrollFunFlag = false;
@@ -682,7 +804,124 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       this.redirectToGatewayPanel(obj.data);
     } else if (obj.for === 'Edit') {
       this.openDeviceEditModal(obj.data);
+    } else if (obj.for === 'View Device Status') {
+      this.getDerivedKPIsHistoricData(obj.data);
+      $('#derivedKPIModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
+  }
+
+  getDerivedKPIsHistoricData(device) {
+    this.isDerivedKPIDataLoading = true;
+    this.loader = true;
+    const kpiCode = 'SPCD';
+    const obj = {
+      device_id: device.device_id,
+      from_date: moment().subtract(14, 'days').utc().unix(),
+      to_date: moment().utc().unix(),
+      epoch: true,
+      asset_model: device.device_type
+    };
+    this.derivedKPIData = [];
+    this.subscriptions.push(this.deviceService.getDerivedKPIHistoricalData(this.contextApp.app, kpiCode, obj)
+    .subscribe((response: any) => {
+      if (response?.data) {
+        // this.derivedKPIData = response.data;
+        this.derivedKPIData = response.data.filter(item => item.metadata.specific_power_consumption_discharge !== undefined
+          && item.metadata.specific_power_consumption_discharge !== null);
+        console.log(this.derivedKPIData.length);
+        // this.derivedKPILatestData.reverse();
+        this.isDerivedKPIDataLoading = false;
+        if (this.derivedKPIData.length > 0) {
+          setTimeout(() => this.plotChart(), 500);
+        } else {
+          this.isDerivedKPIDataLoading = false;
+          this.loader = false;
+        }
+      }
+    }, error => {
+      this.isDerivedKPIDataLoading = false;
+      this.loader = false;
+    })
+    );
+  }
+
+  plotChart() {
+    this.loadingMessage = 'Loading Chart. Please wait...';
+    am4core.options.autoDispose = true;
+    const chart = am4core.create('derivedKPIChart', am4charts.XYChart);
+    const data = [];
+    this.derivedKPIData.reverse();
+    console.log(this.derivedKPIData);
+    this.derivedKPIData.forEach((obj, i) => {
+      const newObj: any = {};
+      const date = this.commonService.convertUTCDateToLocal(obj?.metadata.process_start_interval);
+      const endDate = this.commonService.convertUTCDateToLocal(obj?.metadata.process_end_interval);
+      newObj.date = new Date(date);
+      newObj.endDate = new Date(endDate);
+      newObj.spc = obj.metadata?.specific_power_consumption_discharge || null;
+      console.log(newObj);
+      data.splice(data.length, 0, newObj);
+    });
+    console.log(data);
+    chart.data = data;
+    chart.dateFormatter.inputDateFormat = 'x';
+    chart.dateFormatter.dateFormat = 'dd-MMM-yyyy';
+    const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+    dateAxis.renderer.minGridDistance = 70;
+    dateAxis.baseInterval = { count: 1, timeUnit: 'day' };
+    dateAxis.strictMinMax = true;
+    dateAxis.renderer.tooltipLocation = 0;
+    // Add data
+    // Set input format for the dates
+    // chart.dateFormatter.inputDateFormat = 'yyyy-MM-dd';
+
+    // Create axes
+    const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    valueYAxis.renderer.grid.template.location = 0;
+    const series = chart.series.push(new am4charts.ColumnSeries());
+    series.name =  'Specific Power Consumption';
+    series.yAxis = valueYAxis;
+    series.dataFields.openDateX = 'date';
+    series.dataFields.dateX = 'endDate';
+    series.dataFields.valueY =  'spc';
+    series.strokeWidth = 2;
+    series.strokeOpacity = 1;
+    series.legendSettings.labelText = '{name}';
+    // series.fillOpacity = 0;
+    series.columns.template.tooltipText = 'Start Date: {openDateX} \n End Date: {dateX} \n {name}: [bold]{spc} [/]';
+
+    // const bullet = series.bullets.push(new am4charts.CircleBullet());
+    // bullet.strokeWidth = 2;
+    // bullet.circle.radius = 1.5;
+    valueYAxis.tooltip.disabled = true;
+    valueYAxis.renderer.labels.template.fill = am4core.color('gray');
+    // valueYAxis.renderer.minWidth = 35;
+
+    chart.legend = new am4charts.Legend();
+    chart.logo.disabled = true;
+    chart.legend.maxHeight = 80;
+    chart.legend.scrollable = true;
+    chart.legend.labels.template.maxWidth = 30;
+    chart.legend.labels.template.truncate = true;
+   //  chart.cursor = new am4charts.XYCursor();
+    chart.legend.itemContainers.template.togglable = false;
+    dateAxis.dateFormatter = new am4core.DateFormatter();
+    chart.events.on('ready', (ev) => {
+      this.loader = false;
+      this.loadingMessage = 'Loading Data. Wait...';
+    });
+    // chart.scrollbarX = new am4core.Scrollbar();
+    // chart.scrollbarX.parent = chart.bottomAxesContainer;
+    // dateAxis.dateFormatter.dateFormat = 'W';
+    this.chart = chart;
+  }
+
+  onCloseModal() {
+    $('#derivedKPIModal').modal('hide');
+    this.isDerivedKPIDataLoading = false;
+    this.loader = false;
+    this.loadingMessage = 'Loading Data. Please wait...';
+    this.derivedKPIData = [];
   }
 
   onAssetSelection() {
@@ -702,6 +941,6 @@ export class DeviceListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
-this.deviceListAPISubscription?.unsubscribe();
+    this.deviceListAPISubscription?.unsubscribe();
   }
 }

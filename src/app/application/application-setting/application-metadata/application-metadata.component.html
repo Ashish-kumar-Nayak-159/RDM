@@ -45,17 +45,17 @@
       <td>
         <ng-container *ngIf="!isMetadataEditable">{{applicationData?.metadata?.header_logo ? applicationData?.metadata?.header_logo.name : 'Not yet uploaded'}}</ng-container>
         <!-- <input *ngIf="isMetadataEditable" type="file"  (change)="onHeaderLogoFileSelected($event.target.files)" #headerFileInput
-        class="form-control" id="app_logo" name="app_logo" accept=".jpeg,.png,.svg"> -->
+        class="form-control" id="app_logo" name="app_logo" accept=".jpeg,.png,.svg,.jpg"> -->
           <div class="form-group input-group row col-4 m-0" *ngIf="isMetadataEditable">
             <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
             <div class="file-input form-control form-control-sm p-0 col-8">
-             <input type="file" accept=".jpeg,.png,.svg" id="file" class="file" (change)="onHeaderLogoFileSelected($event.target.files)">
+             <input type="file" accept=".jpeg,.png,.svg,.jpg" id="header_logo" class="file" (change)="onHeaderLogoFileSelected($event.target.files)">
 
-             <label for="file">{{applicationData?.metadata?.header_logo?.name ? applicationData?.metadata?.header_logo.name : 'Choose File'}}</label>
+             <label for="header_logo">{{applicationData?.metadata?.header_logo?.name ? applicationData?.metadata?.header_logo.name : 'Choose File'}}</label>
             </div>
             <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
-            <input type="file" accept=".jpeg,.png,.svg" id="file" class="file" >
-               <label for="file" class="bg-secondary text-white">Browse</label>
+            <input type="file" accept=".jpeg,.png,.svg,.jpg" id="header_logo" class="file" >
+               <label for="header_logo" class="bg-secondary text-white">Browse</label>
             </div>
             </div>
       </td>
@@ -66,17 +66,17 @@
       <td>
         <ng-container *ngIf="!isMetadataEditable">{{applicationData?.metadata?.logo ? applicationData?.metadata?.logo.name : 'Not yet uploaded'}}</ng-container>
         <!-- <input  *ngIf="isMetadataEditable"  type="file"  (change)="onLogoFileSelected($event.target.files)" #logoFileInput
-        class="form-control" id="app_logo" name="app_logo" accept=".jpeg,.png,.svg"> -->
+        class="form-control" id="app_logo" name="app_logo" accept=".jpeg,.png,.svg,.jpg"> -->
         <div class="form-group input-group row col-4 m-0" *ngIf="isMetadataEditable">
           <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
           <div class="file-input form-control form-control-sm p-0 col-8">
-           <input type="file" accept=".jpeg,.png,.svg" id="file" class="file" (change)="onLogoFileSelected($event.target.files)">
+           <input type="file" accept=".jpeg,.png,.svg,.jpg" id="logo" class="file" (change)="onLogoFileSelected($event.target.files)">
 
-           <label for="file">{{applicationData?.metadata?.logo?.name ? applicationData?.metadata?.logo.name : 'Choose File'}}</label>
+           <label for="logo">{{applicationData?.metadata?.logo?.name ? applicationData?.metadata?.logo.name : 'Choose File'}}</label>
           </div>
           <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
-          <input type="file" accept=".jpeg,.png,.svg" id="file" class="file" >
-             <label for="file" class="bg-secondary text-white">Browse</label>
+          <input type="file" accept=".jpeg,.png,.svg,.jpg" id="logo" class="file" >
+             <label for="logo" class="bg-secondary text-white">Browse</label>
           </div>
           </div>
       </td>
@@ -87,17 +87,17 @@
       <td>
         <ng-container *ngIf="!isMetadataEditable">{{applicationData?.metadata?.icon ? applicationData?.metadata?.icon.name : 'Not yet uploaded'}}</ng-container>
         <!-- <input  *ngIf="isMetadataEditable"  type="file"  (change)="onIconFileSelected($event.target.files)" #iconFileInput
-        class="form-control" id="app_logo" name="app_logo" accept=".jpeg,.png,.svg"> -->
+        class="form-control" id="app_logo" name="app_logo" accept=".jpeg,.png,.svg,.jpg"> -->
         <div class="form-group input-group row col-4 m-0" *ngIf="isMetadataEditable">
           <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
           <div class="file-input form-control form-control-sm p-0 col-8">
-           <input type="file" accept=".jpeg,.png,.svg" id="file" class="file" (change)="onIconFileSelected($event.target.files)">
+           <input type="file" accept=".jpeg,.png,.svg,.jpg" id="icon" class="file" (change)="onIconFileSelected($event.target.files)">
 
-           <label for="file">{{applicationData?.metadata?.icon?.name ? applicationData?.metadata?.icon.name : 'Choose File'}}</label>
+           <label for="icon">{{applicationData?.metadata?.icon?.name ? applicationData?.metadata?.icon.name : 'Choose File'}}</label>
           </div>
           <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
-          <input type="file" accept=".jpeg,.png,.svg" id="file" class="file" >
-             <label for="file" class="bg-secondary text-white">Browse</label>
+          <input type="file" accept=".jpeg,.png,.svg,.jpg" id="icon" class="file" >
+             <label for="icon" class="bg-secondary text-white">Browse</label>
           </div>
           </div>
       </td>

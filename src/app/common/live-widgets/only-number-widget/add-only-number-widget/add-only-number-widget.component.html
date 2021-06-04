@@ -51,12 +51,12 @@
   <div class="form-group input-group row m-0">
     <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
     <div class="file-input form-control form-control-sm p-0 col-8">
-     <input type="file" id="file" accept=".jpeg,.png,.svg" class="file" [disabled]="isFileUploading" (change)="onLogoFileSelected($event.target.files, i)">
+     <input type="file" id="file" accept=".jpeg,.png,.svg,.jpg" class="file" [disabled]="isFileUploading" (change)="onLogoFileSelected($event.target.files, i)">
 
      <label for="file">{{(widgetObj?.properties[i]?.image) ? (widgetObj.properties[i].image.name) : 'Choose File'}}</label>
     </div>
     <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
-    <input type="file" accept=".jpeg,.png,.svg"  id="file" class="file" [disabled]="isFileUploading">
+    <input type="file" accept=".jpeg,.png,.svg,.jpg"  id="file" class="file" [disabled]="isFileUploading">
        <label for="file" class="bg-secondary text-white">Browse</label>
     </div>
     </div>

@@ -684,4 +684,27 @@ export class DeviceService {
       encodeURIComponent(app)), { params });
   }
 
+  getDerivedKPILatestData(app, kpiCode, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_DERIVED_KPI_LATEST_DATA,
+      encodeURIComponent(app), encodeURIComponent(kpiCode)), { params });
+  }
+
+
+  getDerivedKPIHistoricalData(app, kpiCode, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_DERIVED_KPI_HISTORICAL_DATA,
+      encodeURIComponent(app), encodeURIComponent(kpiCode)), { params });
+  }
+
 }

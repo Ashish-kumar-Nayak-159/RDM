@@ -73,6 +73,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
     }
     console.log(this.hierarchyArr);
     this.originalHierarchyArr = JSON.parse(JSON.stringify(this.hierarchyArr));
+    console.log(this.selectedHierarchyData);
   }
 
   addTag(index) {
@@ -131,11 +132,12 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
     this.applicationData.hierarchy.levels.forEach((_, i) => {
       arr[i] = [];
     });
+    this.selectedHierarchyData = {};
     if (this.applicationData?.hierarchy?.levels.length > 1) {
       arr['1'] = Object.keys(this.applicationData.hierarchy.tags);
       this.selectedHierarchyData['1'] = this.applicationData.hierarchy.tags;
     }
-    this.selectedHierarchyData = {};
+
     let nextHierarchy = this.applicationData.hierarchy.tags;
     Object.keys(this.configureHierarchy).forEach((_, i) => {
         console.log('1111111 ', nextHierarchy);
@@ -151,6 +153,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
     this.hierarchyArr = JSON.parse(JSON.stringify(arr));
     console.log(this.hierarchyArr);
     this.originalHierarchyArr = JSON.parse(JSON.stringify(this.hierarchyArr));
+    console.log(this.selectedHierarchyData);
   }
 
   trackByFn(index: any, item: any) {

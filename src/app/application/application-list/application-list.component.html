@@ -80,12 +80,12 @@
           <div class="form-group input-group row m-0">
             <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
             <div class="file-input form-control form-control-sm  p-0 col-8">
-             <input type="file" id="file" accept=".jpeg,.png,.svg"  class="file" (change)="onHeaderLogoFileSelected($event.target.files)">
+             <input type="file" id="file" accept=".jpeg,.png,.svg,.jpg"  class="file" (change)="onHeaderLogoFileSelected($event.target.files)">
 
              <label for="file">{{applicationDetail?.metadata?.header_logo?.name ? applicationDetail?.metadata?.header_logo?.name : 'Choose File'}}</label>
             </div>
             <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
-            <input type="file" accept=".jpeg,.png,.svg"   id="file" class="file" >
+            <input type="file" accept=".jpeg,.png,.svg,.jpg"   id="file" class="file" >
                <label for="file" class="bg-secondary text-white">Browse</label>
             </div>
             </div>
@@ -101,12 +101,12 @@
           <div class="form-group input-group row m-0">
             <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
             <div class="file-input form-control form-control-sm  p-0 col-8">
-             <input type="file" id="file" accept=".jpeg,.png,.svg"  class="file" (change)="onLogoFileSelected($event.target.files)">
+             <input type="file" id="file" accept=".jpeg,.png,.svg,.jpg"  class="file" (change)="onLogoFileSelected($event.target.files)">
 
              <label for="file">{{applicationDetail?.metadata?.logo?.name ? applicationDetail?.metadata?.logo?.name : 'Choose File'}}</label>
             </div>
             <div class="file-input form-control form-control-sm  p-0 col-4" style="background-color:#ccc !important">
-            <input type="file" accept=".jpeg,.png,.svg"   id="file" class="file" >
+            <input type="file" accept=".jpeg,.png,.svg,.jpg"   id="file" class="file" >
                <label for="file" class="bg-secondary text-white">Browse</label>
             </div>
             </div>
@@ -121,12 +121,12 @@
           <div class="form-group input-group row m-0">
             <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
             <div class="file-input form-control form-control-sm  p-0 col-8">
-             <input type="file" id="file" accept=".jpeg,.png,.svg"  class="file" (change)="onIconFileSelected($event.target.files)">
+             <input type="file" id="file" accept=".jpeg,.png,.svg,.jpg"  class="file" (change)="onIconFileSelected($event.target.files)">
 
              <label for="file">{{applicationDetail?.metadata?.icon?.name ? applicationDetail?.metadata?.icon?.name : 'Choose File'}}</label>
             </div>
             <div class="file-input form-control form-control-sm  p-0 col-4" style="background-color:#ccc !important">
-            <input type="file" accept=".jpeg,.png,.svg"   id="file" class="file" >
+            <input type="file" accept=".jpeg,.png,.svg,.jpg"   id="file" class="file" >
                <label for="file" class="bg-secondary text-white">Browse</label>
             </div>
             </div>

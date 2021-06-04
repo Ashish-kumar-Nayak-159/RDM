@@ -10,6 +10,11 @@
           <div class="row">
             <h6>Asset Id is {{device?.device_id}}</h6>
           </div>
+          <div class="row">
+            <h6>Asset Model is
+              <a  href="javascript:void(0)" class="blue-font" (click)="onRedirectToModel(device)">({{device?.tags?.device_type}})</a>
+            </h6>
+          </div>
           <div class="row"  *ngIf="componentState === constantData.IP_GATEWAY">
             <h6>This is the gateway of type ({{device.tags.device_type}}) managing
               <a class="blue-font"  href="javascript:void(0)" (click)="onRedirectToDevices()">

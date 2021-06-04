@@ -105,6 +105,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
     //     key: 'source'
     //   });
     // }
+    filterObj.device_id = this.device.device_id;
     const obj = {...filterObj};
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'Get Alert Data');

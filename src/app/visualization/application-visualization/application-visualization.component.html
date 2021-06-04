@@ -86,18 +86,24 @@
       </div>
       </ng-container>
 
-    <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3 pr-0 right-border">
-
-      <ul class="mail_list list-group list-unstyled alert-scroll" *ngIf="!isAlertAPILoading && latestAlerts.length > 0">
-
-        <li class="list-group-item"
-         [ngClass]="{'active': alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id,
+    <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3 pr-0 " [ngClass]="{'right-border': latestAlerts.length > 0}">
+      <div class="alert-scrollbox alert-scrollbox_delayed">
+      <ul class="mail_list list-group list-unstyled alert-scrollbox-content" *ngIf="!isAlertAPILoading && latestAlerts.length > 0">
+        <!-- [ngClass]="{'active': alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id,
         'border-left-success': alert?.source?.toLowerCase() === 'cloud', 'border-left-info': alert?.source?.toLowerCase() === 'asset',
         'border-left-warning': alert?.source?.toLowerCase() === 'edge'
-      }"
+      }" -->
+        <li class="list-group-item"
+        [ngClass]="{'active': alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id}"
         *ngFor="let alert of latestAlerts"
        >
           <div class="media">
+            <!-- <span class="icon-circle-sm" [style.background-color]="
+                (alert?.source?.toLowerCase() === 'gateway' ? '#89a7ff' :
+                (alert?.source?.toLowerCase() === 'asset' ? '#fb5515' :
+                (alert?.source?.toLowerCase() === 'cloud' ? '#229954' : '')))">
+                {{ alert?.source?.toLowerCase() === 'gateway' ? 'G' : alert?.source?.toLowerCase() === 'asset' ? 'A' : alert?.source?.toLowerCase() === 'cloud' ? 'C' : '' }}
+                </span> -->
             <div class="pull-left">
               <div class="controls">
                 <i class="fa fa-fw fa-exclamation-triangle" [style.color]="
@@ -107,14 +113,33 @@
                 (alert?.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                 )
                 )" [tooltip]="alert?.severity"></i>
-                <!-- <span class="icon-circle-sm" [style.background-color]="
-                (alert?.source?.toLowerCase() === 'gateway' ? '#89a7ff' :
-                (alert?.source?.toLowerCase() === 'asset' ? '#fb5515' :
-                (alert?.source?.toLowerCase() === 'cloud' ? '#229954' : '')))">
-                {{ alert?.source?.toLowerCase() === 'gateway' ? 'G' : alert?.source?.toLowerCase() === 'asset' ? 'A' : alert?.source?.toLowerCase() === 'cloud' ? 'C' : '' }}
-                </span> -->
+
               </div>
+              <div class="status-circle mt-2"
+              tooltip="{{( alert?.source?.toLowerCase() === 'edge' ? 'Edge' : alert?.source?.toLowerCase() === 'asset' ? 'Asset' : alert?.source?.toLowerCase() === 'cloud' ? 'Cloud' : '' )}}"
+                  [style.backgroundColor]="(alert?.source?.toLowerCase() === 'edge' ? '#89a7ff' :
+                  (alert?.source?.toLowerCase() === 'asset' ? '#fb5515' :
+                  (alert?.source?.toLowerCase() === 'cloud' ? '#229954' : '')))"></div>
             </div>
+            <!-- <div class="pull-left">
+              <div class='icon-container' [tooltip]="popTemplate" >
+                  <div class="icon-circle-1 bg-blue" >
+                    {{ alert?.source?.toLowerCase() === 'edge' ? 'E' : alert?.source?.toLowerCase() === 'asset' ? 'A' : alert?.source?.toLowerCase() === 'cloud' ? 'C' : '' }}
+                  </div>
+                  <div class="status-circle"
+                  [style.backgroundColor]="(alert?.severity?.toLowerCase() === 'critical' ? '#cc0000' :
+                  (alert?.severity?.toLowerCase() === 'error' ? '#fb5515' :
+                  (alert?.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
+                  (alert?.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
+                  )
+                  )"></div>
+                  <ng-template #popTemplate>
+                    Source: {{( alert?.source?.toLowerCase() === 'edge' ? 'Edge' : alert?.source?.toLowerCase() === 'asset' ? 'Asset' : alert?.source?.toLowerCase() === 'cloud' ? 'Cloud' : '' )}}
+                    <br/>
+                    Severity: {{ alert?.severity}}
+                  </ng-template>
+              </div>
+            </div> -->
             <div class="media-body"><a  class="m-r-10">
                 <div class="media-heading">
                   <p class="overflow" [tooltip]="alert.message">{{ alert.message }}</p>
@@ -132,35 +157,36 @@
                 <!-- <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down" *ngIf="selectedAlert?.metadata?.acknowledged_date"
                 ><i class="fa  fa-check-square text-gray" aria-hidden="true"></i></a> -->
               </div>
+
             </div>
           </div>
         </li>
       </ul>
+      </div>
     </div>
     <div class="col-sm-9 col-md-9 col-lg-9 col-xl-9 pl-0" *ngIf="selectedAlert">
       <div class="">
-
         <ul id="assetTab" role="tablist" class="nav alert-tabs flex-column flex-sm-row text-center border-0 ">
-          <li class="nav-item flex-sm-fill" [ngClass]="{'active': selectedTab === 'visualization'}">
+          <li class="nav-item flex-sm-fill">
             <a id="visualization-tab" data-toggle="tab" href="#visualization" role="tab" aria-controls="visualization"
-              aria-selected="true" class="nav-link active" (click)="onTabClick('visualization')">
+              aria-selected="true" class="nav-link" (click)="onTabClick('visualization')" [ngClass]="{'active': selectedTab === 'visualization'}">
               <i class="fas fa-fw fa-chart-bar pr-2"></i> <span
                 class="d-none d-md-inline-block">Visualization</span></a>
           </li>
-          <li class="nav-item flex-sm-fill" [ngClass]="{'active': selectedTab === 'recommendation'}">
+          <li class="nav-item flex-sm-fill" >
             <a id="recommendation-tab" data-toggle="tab" href="#recommendation" role="tab"
-              aria-controls="recommendation" aria-selected="false" class="nav-link "
+              aria-controls="recommendation" aria-selected="false" class="nav-link " [ngClass]="{'active': selectedTab === 'recommendation'}"
               (click)="onTabClick('recommendation')"><i class="fas fa-fw fa-info pr-2"></i>
               <span class="d-none d-md-inline-block">Recommendations</span></a>
           </li>
-          <li class="nav-item flex-sm-fill" [ngClass]="{'active': selectedTab === 'documents'}">
+          <li class="nav-item flex-sm-fill" >
             <a id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents"
-              aria-selected="false" class="nav-link " (click)="onTabClick('documents')"><i
+              aria-selected="false" class="nav-link " (click)="onTabClick('documents')" [ngClass]="{'active': selectedTab === 'documents'}"><i
                 class="fas fa-fw fa-book pr-2"></i>
               <span class="d-none d-md-inline-block">Reference Documents</span></a>
           </li>
-          <li class="nav-item flex-sm-fill" [ngClass]="{'active': selectedTab === 'actions'}">
-            <a id="actions-tab" data-toggle="tab" href="#actions" role="tab" aria-controls="actions"
+          <li class="nav-item flex-sm-fill">
+            <a id="actions-tab" data-toggle="tab" href="#actions" role="tab" aria-controls="actions" [ngClass]="{'active': selectedTab === 'actions'}"
               aria-selected="false" class="nav-link " (click)="onTabClick('actions')"><i
                 class="fas fa-fw fa-clipboard pr-2"></i>
               <span class="d-none d-md-inline-block">Actions Taken</span></a>
@@ -168,7 +194,7 @@
         </ul>
       </div>
       <div id="assetTabContent" class="tab-content">
-        <div id="visualization" role="tabpanel" [ngClass]="{'active': selectedTab === 'visualization'}" aria-labelledby="visualization-tab" class="tab-pane fade show"
+        <div id="visualization" role="tabpanel" [ngClass]="{'show active': selectedTab === 'visualization'}" aria-labelledby="visualization-tab" class="tab-pane fade show"
           [ngClass]="{'active': selectedTab === 'visualization'}">
           <div class="">
             <div class="filter-bar d-none d-sm-block sticky-top ">
@@ -274,7 +300,7 @@
             </div>
           </div>
         </div>
-        <div id="recommendation" role="tabpanel" [ngClass]="{'active': selectedTab === 'recommendation'}" aria-labelledby="recommendation-tab" class="tab-pane fade p-2">
+        <div id="recommendation" role="tabpanel" [ngClass]="{'show active': selectedTab === 'recommendation'}" aria-labelledby="recommendation-tab" class="tab-pane fade p-2">
           <ng-container *ngIf="alertCondition?.recommendations?.length > 0">
             Following recommendations have been pre-configured.
             <table  class="table table-hover">
@@ -300,7 +326,7 @@
             No Recommendations added yet.
           </div>
         </div>
-        <div id="documents" role="tabpanel" aria-labelledby="documents-tab" [ngClass]="{'active': selectedTab === 'documents'}" class="tab-pane fade p-2">
+        <div id="documents" role="tabpanel" aria-labelledby="documents-tab" [ngClass]="{'show active': selectedTab === 'documents'}" class="tab-pane fade p-2">
           <div class="tagsinput" style="width: auto; height: auto;min-height: auto;"
                       *ngIf="alertCondition?.reference_documents?.length > 0">
                       <ng-container *ngFor="let item of alertCondition.reference_documents; let index = index">
@@ -312,7 +338,7 @@
                     <div class="col-xl-12 col-lg-12 m-3" *ngIf="!alertCondition || alertCondition?.reference_documents?.length === 0">
                       No Reference documents added yet.</div>
         </div>
-        <div id="actions" role="tabpanel" aria-labelledby="actions-tab" [ngClass]="{'active': selectedTab === 'actions'}" class="tab-pane fade p-2">
+        <div id="actions" role="tabpanel" aria-labelledby="actions-tab" [ngClass]="{'show active': selectedTab === 'actions'}" class="tab-pane fade p-2">
           <h6 class="m-3">Action taken by Field Staff:</h6>
                     <div class="col-xl-12 col-lg-12 pl-3"
                       *ngIf="!selectedAlert?.metadata?.acknowledged_date; else actionTakenTemplate">
@@ -397,17 +423,6 @@
                 <option [ngValue]="'Video'">Video</option>
               </select>
             </div>
-            <!-- <div class="form-group">
-              <label for="recipient-name" class="col-form-label">Document:</label>
-              {{file ? file?.name : 'Not yet uploaded'}}
-              <input type="file" accept="{{(file.type === 'PDF' ? '.pdf' : (
-              file.type === 'Image' ? '.jpeg,.png,.svg' : (
-                file.type === 'Video' ? '.mp4,' : '*'
-              )
-            ))}}" (change)="onDocumentFileSelected($event.target.files, i)" [disabled]="file.type === undefined"
-                class="form-control" id="app_logo_{{i}}" name="app_logo_{{i}}">
-            </div> -->
-
             <div class="form-group">
               <label for="recipient-name" class="col-form-label required">Document:</label>
               <div class="form-group input-group row m-0">
@@ -420,7 +435,7 @@
               )
             ))}}">
 
-                 <label for="file">{{file ? file?.name : 'Choose File'}}</label>
+                 <label for="file">{{acknowledgedAlert?.metadata?.files[i]?.data?.name ? acknowledgedAlert.metadata.files[i].data.name : 'Choose File'}}</label>
                 </div>
                 <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
                 <input type="file" [disabled]="file.type === undefined" id="file" class="file"

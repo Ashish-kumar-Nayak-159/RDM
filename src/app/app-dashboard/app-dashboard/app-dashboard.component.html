@@ -2,12 +2,15 @@
   <div class="d-flex align-items-center">
     <div class="d-flex align-items-center">
       <div class="main-heading ">{{selectedTab === 'telemetry' ? 'Live Data' : 'Live Alerts'}}</div>
-      <div class="ml-2 pt-15">
-        Turbo Mode:
+      <div class="ml-2 pt-15" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry'">
+        Turbo Mode:</div>
+        <div class="ml-1 pt-15">
+
         <ui-switch size="small" class="mr-1" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry'"
           [disabled]="isC2dAPILoading" defaultBgColor="#c80815" checkedTextColor="white" uncheckedTextColor="white"
           checkedLabel="OFF" uncheckedLabel="ON" name="tpye" [(ngModel)]="signalRModeValue"
           (valueChange)="onSwitchValueChange($event)"></ui-switch>
+
       </div>
 
     </div>

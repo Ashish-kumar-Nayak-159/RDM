@@ -420,4 +420,9 @@ export class DeviceTypeService {
     return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_MODEL_RULES, encodeURIComponent(app),
     encodeURIComponent(deviceType)), {params});
   }
+
+  getDerivedKPIs(app, deviceType) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_MODEL_DERIVED_KPIS, encodeURIComponent(app),
+    encodeURIComponent(deviceType)));
+  }
 }

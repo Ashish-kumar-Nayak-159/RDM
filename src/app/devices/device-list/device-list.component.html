@@ -97,10 +97,21 @@
             (mouseOver)="onMarkerClick(infowindow, gm)"
             [iconUrl]="device.icon"  >
             <agm-info-window #infowindow >
-              <a class="blue-font ml-2" href="javascript:void(0)" (click)="onTableFunctionCall(device)">{{device.display_name ? device.display_name: device.device_id}}</a>
-              <!-- <hr>
-              <p><b>MTTR:</b> {{device.mttr}}</p>
-              <p><b>MTBF:</b> {{device.mtbf}}</p> -->
+              <b><a class="blue-font" href="javascript:void(0)" (click)="onTableFunctionCall(device)">{{device.display_name ? device.display_name: device.device_id}}</a></b>
+              <ng-container *ngIf="contextApp.app === 'CMS_Dev'">
+                <hr>
+                <p *ngIf="device.spcd !== undefined && device.spcd !== null; else noSPCDTemplate"><b>Specific Power Consumption:</b> {{device.spcd}}</p>
+                <ng-template #noSPCDTemplate>
+                  <p>No data available.</p>
+                </ng-template>
+                </ng-container>
+                <ng-container *ngIf="environmentApp === 'KCMS'">
+                  <hr>
+                  <p><b>MTTR:</b> {{device.mttr}}</p>
+                  <p><b>MTBF:</b> {{device.mtbf}}</p>
+                  <p><b>Gas loss:</b>{{device.gas}}</p>
+                  <p><b>Gas Consumption:</b>{{device.power}}</p>
+                </ng-container>
             </agm-info-window>
             </agm-marker>
           </ng-container>
@@ -114,3 +125,30 @@
 
 <app-add-device *ngIf="isOpenDeviceCreateModal" [deviceDetail]="selectedDeviceForEdit" [gateways]="gateways" (getDeviceEmit)="devicesList = [];searchDevices()"
 [componentState]="componentState" [tileData]="tileData" (cancelModal)="onEditDeviceCancelModal()"></app-add-device>
+
+
+<div class="modal fade" id="derivedKPIModal" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" *ngIf="contextApp.app === 'CMS_Dev' && componentState === constantData.NON_IP_DEVICE">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">View Specific Power Consumption Data</h5>
+        <button type="button" class="close"  aria-label="Close" [disabled]="isDerivedKPIDataLoading" (click)="onCloseModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="m-3" *ngIf="derivedKPIData.length === 0 && !isDerivedKPIDataLoading"> No Specific Power Consumption data found.</p>
+        <span  *ngIf="loader"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> {{loadingMessage}}</span>
+        <div id="derivedKPIChart" class="mt-2" *ngIf="!isDerivedKPIDataLoading && derivedKPIData.length > 0"
+          [ngStyle]="{'width': '100%', 'height': '25rem'}"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" [disabled]="isDerivedKPIDataLoading" (click)="onCloseModal()">
+          Cancel
+        </button>
+
+      </div>
+    </div>
+
+  </div>
+</div>

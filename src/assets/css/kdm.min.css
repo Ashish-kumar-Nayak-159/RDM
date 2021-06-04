@@ -12596,7 +12596,7 @@ padding-bottom: 1.5rem;
 }
 
 .inbox .mail_list .list-group-item .controls i {
-    font-size: 0.5rem;
+    font-size: 0.7rem;
 }
 
 .inbox .mail_list .list-group-item .thumb {
@@ -13055,14 +13055,6 @@ color: #1a5ab4;
   color: #1a5ab4;
 }
 
-.arrow {
-  border: solid #1a5ab4;
-  border-width: 0 3px 3px 0;
-  display: inline-block;
-  padding: 3px;
-}
-
-
 .searchBtn1 {
     font-size: .875rem;
     padding: .1rem .35rem;
@@ -13094,3 +13086,85 @@ color: #1a5ab4;
 .daterangepicker { box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); max-height: 50%;  overflow-y: auto; }
 
 
+.inbox .mail_list .list-group-item .media-heading .overflow {
+width: 14em;
+margin: 0 0 0 0;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+font-size: 0.9rem;
+font-weight:500;
+}
+
+
+
+.inbox .right-border {
+box-shadow: inset -8px 0 10px -6px #dbe9f5 !important;
+}
+
+.bg-white{
+  background-color: #fff !important;
+ border: 1px solid #ccc;
+}
+
+
+.alert-scrollbox {
+width: 100%;
+height: calc(100vh - 8rem);
+overflow: scroll;
+visibility: hidden;
+}
+.alert-scrollbox-content,
+.alert-scrollbox:hover,
+.alert-scrollbox:focus {
+visibility: visible;
+}
+.alert-scrollbox_delayed {
+transition: visibility 0.2s;
+}
+.alert-scrollbox_delayed:hover {
+transition: visibility 0s 0.2s;
+}
+
+
+
+@media (max-width:575.98px) {
+.alert-scrollbox {
+padding: 0;
+max-height: calc(100vh - 30rem) !important;
+overflow-y: auto;
+overflow-x: hidden;
+}
+}
+
+.icon-container {
+  width: 30px;
+  height: 30px;
+  position: relative;
+  margin-right:0.5rem;
+}
+.icon-circle-1 {
+  height: 100%;
+  width: 100%;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight:500;
+  font-size: .8rem;
+}
+.status-circle {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  /*background-color: red;*/
+  /* border: 1px solid white; */
+  /* bottom: 0;
+  right: 0;
+  position: absolute; */
+}
+
+.bg-blue {
+    background-color: #bccbf9 !important;
+    color: #fff;
+}

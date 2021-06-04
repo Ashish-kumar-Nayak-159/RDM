@@ -1,9 +1,11 @@
+import { environment } from './../../../environments/environment';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { DeviceService } from 'src/app/services/devices/device.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-map-view-home',
@@ -26,6 +28,10 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   filterObj: any = {};
   hierarchyString: any;
   displayHierarchyString: any;
+  derivedKPILatestData: any[] = [];
+  healthyDeviceCount = 0;
+  unhealthyDeviceCount = 0;
+  environmentApp = environment.app;
   customMapStyle =  [
     {
       featureType: 'poi',
@@ -57,7 +63,11 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    if (this.contextApp.app === 'CMS_Dev') {
+      await this.getLatestDerivedKPIData();
+    }
     await this.getAllDevices();
+
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     console.log(item);
     if (this.contextApp.hierarchy.levels.length > 1) {
@@ -99,56 +109,92 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   }
 
 
+
   getAllDevices() {
     return new Promise<void>((resolve) => {
       const obj = {
-        hierarchy: JSON.stringify(this.contextApp.user.hierarchy)
+        hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
+        type: this.contextApp.app === 'CMS_Dev' ? CONSTANTS.NON_IP_DEVICE : undefined
       };
+      if (this.contextApp.app === 'CMS_Dev') {
+      this.healthyDeviceCount = 0;
+      this.unhealthyDeviceCount = 0;
+      }
       this.apiSubscriptions.push(this.deviceService.getLegacyDevices(obj, this.contextApp.app).subscribe(
         (response: any) => {
           if (response?.data) {
             this.devices = response.data;
-            this.originalDevices = JSON.parse(JSON.stringify(this.devices));
             this.mapDevices = JSON.parse(JSON.stringify(this.devices));
             this.devices.forEach(device => {
-              if (device.type === this.constantData.IP_DEVICE && device?.configuration?.connection_state?.toLowerCase() === 'connected') {
-                device.icon = {
-                  url: './assets/img/iot-assets-green.svg',
-                  scaledSize: {
-                    width: 35,
-                    height: 35
-                  }};
-              } else if (device.type === this.constantData.IP_DEVICE && device?.configuration?.connection_state?.toLowerCase() === 'disconnected') {
-                device.icon = {
-                  url: './assets/img/iot-assets-red.svg',
-                  scaledSize: {
-                    width: 35,
-                    height: 35
-                  }};
-              } else if (device.type === this.constantData.IP_GATEWAY && device?.configuration?.connection_state?.toLowerCase() === 'connected') {
-                device.icon = {
-                  url: './assets/img/iot-gateways-green.svg',
-                  scaledSize: {
-                    width: 30,
-                    height: 30
-                  }};
-              } else if (device.type === this.constantData.IP_GATEWAY && device?.configuration?.connection_state?.toLowerCase() === 'disconnected') {
-                device.icon = {
-                  url: './assets/img/iot-gateways-red.svg',
-                  scaledSize: {
-                    width: 30,
-                    height: 30
-                  }};
-              } else if (device.type === this.constantData.NON_IP_DEVICE) {
-                device.icon = {
-                  url: './assets/img/legacy-assets.svg',
-                  scaledSize: {
-                    width: 25,
-                    height: 25
-                  }};
+              if (this.environmentApp === 'KCMS') {
+                device.mttr = '7 Mins';
+                device.mtbf = '2 days 5 hours';
+                device.gas = '0.4%';
+                device.power = '45 SCMH';
               }
-              console.log(device.device_id , '=====', device.icon);
+              if (this.contextApp.app === 'CMS_Dev') {
+                this.derivedKPILatestData.forEach(kpiObj => {
+                  if (device.device_id === kpiObj.device_id) {
+                    device.kpiValue = kpiObj?.metadata?.healthy;
+                    device.spcd = kpiObj?.metadata?.specific_power_consumption_discharge;
+                    console.log(kpiObj?.metadata?.healthy);
+                    if (kpiObj?.metadata?.healthy === false) {
+                      this.healthyDeviceCount++;
+                      console.log('healthy');
+                    } else if (kpiObj?.metadata?.healthy === true){
+                      this.unhealthyDeviceCount++;
+                      console.log('unhealthy');
+                    }
+                  }
+                });
+                if (device.type === this.constantData.NON_IP_DEVICE) {
+                  device.icon = {
+                    url: device.kpiValue === false ? './assets/img/legacy-asset-green.svg' : (device.kpiValue === true ? './assets/img/legacy-asset-red.svg' : './assets/img/legacy-assets.svg'),
+                    scaledSize: {
+                      width: 25,
+                      height: 25
+                    }};
+                }
+              } else {
+                if (device.type === this.constantData.IP_DEVICE && device?.configuration?.connection_state?.toLowerCase() === 'connected') {
+                  device.icon = {
+                    url: './assets/img/iot-assets-green.svg',
+                    scaledSize: {
+                      width: 35,
+                      height: 35
+                    }};
+                } else if (device.type === this.constantData.IP_DEVICE && device?.configuration?.connection_state?.toLowerCase() === 'disconnected') {
+                  device.icon = {
+                    url: './assets/img/iot-assets-red.svg',
+                    scaledSize: {
+                      width: 35,
+                      height: 35
+                    }};
+                } else if (device.type === this.constantData.IP_GATEWAY && device?.configuration?.connection_state?.toLowerCase() === 'connected') {
+                  device.icon = {
+                    url: './assets/img/iot-gateways-green.svg',
+                    scaledSize: {
+                      width: 30,
+                      height: 30
+                    }};
+                } else if (device.type === this.constantData.IP_GATEWAY && device?.configuration?.connection_state?.toLowerCase() === 'disconnected') {
+                  device.icon = {
+                    url: './assets/img/iot-gateways-red.svg',
+                    scaledSize: {
+                      width: 30,
+                      height: 30
+                    }};
+                } else if (device.type === this.constantData.NON_IP_DEVICE) {
+                  device.icon = {
+                    url: './assets/img/legacy-asset-black.svg',
+                    scaledSize: {
+                      width: 25,
+                      height: 25
+                    }};
+                }
+              }
             });
+            this.originalDevices = JSON.parse(JSON.stringify(this.devices));
             const center = this.commonService.averageGeolocation(this.devices);
             this.centerLatitude = center?.latitude || 23.0225;
             this.centerLongitude = center?.longitude || 72.5714;
@@ -233,6 +279,47 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
         this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
       }
     }
+  }
+
+  getLatestDerivedKPIData() {
+    return new Promise<void>((resolve) => {
+      const derivedKPICode = 'SPCD';
+      const obj = {
+        from_date: moment().subtract(24, 'hours').utc().unix(),
+        to_date: moment().utc().unix(),
+        epoch: true,
+        asset_model: 'Hydraulic Booster Compressor 1.2'
+      };
+      this.apiSubscriptions.push(this.deviceService.getDerivedKPILatestData(this.contextApp.app, derivedKPICode, obj)
+      .subscribe((response: any) => {
+        if (response?.data) {
+          this.derivedKPILatestData = response.data;
+        }
+        resolve();
+      })
+      );
+    });
+  }
+
+  onClickOfCount(type) {
+    const arr = [];
+    if (type !== 'all') {
+    this.devices.forEach(device => {
+      console.log(device.kpiValue === false);
+      if (type === 'healthy' && device.kpiValue === false) {
+        arr.push(device);
+      }
+      if (type === 'unhealthy' && device.kpiValue === true) {
+        arr.push(device);
+      }
+    });
+    this.mapDevices = JSON.parse(JSON.stringify(arr));
+    } else {
+      this.mapDevices = JSON.parse(JSON.stringify(this.devices));
+    }
+    const center = this.commonService.averageGeolocation(this.mapDevices);
+    this.centerLatitude = center?.latitude || 23.0225;
+    this.centerLongitude = center?.longitude || 72.5714;
 
   }
 
@@ -245,7 +332,25 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   onDeviceFilterApply(updateFilterObj = true) {
     console.log(this.filterObj);
     console.log(this.configureHierarchy);
+
     this.mapDevices = JSON.parse(JSON.stringify(this.devices));
+    if (this.contextApp.app === 'CMS_Dev') {
+      this.healthyDeviceCount = 0;
+      this.unhealthyDeviceCount = 0;
+      this.devices.forEach(deviceObj => {
+        this.derivedKPILatestData.forEach(kpiObj => {
+          if (deviceObj.device_id === kpiObj.device_id) {
+            deviceObj.kpiValue = kpiObj?.metadata?.healthy;
+            if (kpiObj?.metadata?.healthy === false) {
+              this.healthyDeviceCount++;
+            } else if (kpiObj?.metadata?.healthy === true){
+              this.unhealthyDeviceCount++;
+            }
+          }
+        });
+      });
+    }
+    console.log(JSON.stringify(this.mapDevices));
     this.hierarchyString = this.contextApp.app;
     this.displayHierarchyString = this.contextApp.app;
     Object.keys(this.configureHierarchy).forEach((key) => {
@@ -289,20 +394,9 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   }
 
   redirectToDevice(device) {
-    if (device.type === CONSTANTS.NON_IP_DEVICE) {
-      this.router.navigate(['applications', this.contextApp.app,
-    'nonIPDevices',
-    device.device_id, 'control-panel']);
-    } else if (device.type === CONSTANTS.IP_DEVICE) {
-      this.router.navigate(['applications', this.contextApp.app,
+    this.router.navigate(['applications', this.contextApp.app,
     'devices',
     device.device_id, 'control-panel']);
-    } else if (device.type === CONSTANTS.IP_GATEWAY) {
-      this.router.navigate(['applications', this.contextApp.app,
-    'gateways',
-    device.device_id, 'control-panel']);
-    }
-
   }
 
   ngOnDestroy() {

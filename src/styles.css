@@ -202,11 +202,6 @@ input:invalid {
   z-index: 9999999 !important;
 }
 
-
-.gm-ui-hover-effect {
-  opacity: 0!important;
-}
-
 .no-topnavbar {
   margin-top: 3.5rem;
   max-height: calc(100vh - 4.5rem);

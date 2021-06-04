@@ -29,6 +29,7 @@ export class ApplicationOrgTreeComponent implements OnInit {
     if (!this.applicationData?.hierarchy?.levels) {
       this.applicationData.hierarchy.levels = [];
     }
+    this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
     this.originalAppData = JSON.parse(JSON.stringify(this.applicationData));
   }
 

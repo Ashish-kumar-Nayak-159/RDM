@@ -32,10 +32,12 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   }
 
   async onHeaderLogoFileSelected(files: FileList): Promise<void> {
+    console.log('11111');
     this.isFileUploading = true;
     const data = await this.commonService.uploadImageToBlob(files.item(0), 'app-images/header-logo');
     if (data) {
       this.applicationData.metadata.header_logo = data;
+      console.log(this.applicationData.metadata);
     } else {
       this.toasterService.showError('Error in uploading file', 'Upload file');
     }
@@ -44,10 +46,12 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   }
 
   async onLogoFileSelected(files: FileList): Promise<void> {
+    console.log('22222222');
     this.isFileUploading = true;
     const data = await this.commonService.uploadImageToBlob(files.item(0), 'app-images');
     if (data) {
       this.applicationData.metadata.logo = data;
+      console.log(this.applicationData.metadata);
     } else {
       this.toasterService.showError('Error in uploading file', 'Upload file');
     }
@@ -56,10 +60,12 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   }
 
   async onIconFileSelected(files: FileList): Promise<void> {
+    console.log('33333333');
     this.isFileUploading = true;
     const data = await this.commonService.uploadImageToBlob(files.item(0), 'app-images');
     if (data) {
       this.applicationData.metadata.icon = data;
+      console.log(this.applicationData.metadata);
     } else {
       this.toasterService.showError('Error in uploading file', 'Upload file');
     }

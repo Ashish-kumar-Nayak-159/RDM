@@ -73,6 +73,7 @@
         <th class="w-17">Start Date</th>
         <th class="w-17">Last Date</th>
         <th >Size</th>
+        <th>Type</th>
         <!-- <th>Type</th>
         <th>Frequency</th> -->
         <th>Action</th>
@@ -90,6 +91,7 @@
         <td>{{ reportObj.local_start_date }}</td>
           <td>{{ reportObj.local_end_date }}</td>
           <td>{{reportObj.metadata?.file_size}}</td>
+          <td>{{reportObj?.report_category?.toLowerCase() === 'telemetry' ? 'Telemetry Report' : (reportObj?.report_category?.toLowerCase() === 'alert' ? 'Alert Report' : '')}}</td>
           <!-- <td>{{reportObj.report_type.method | titlecase}}</td>
           <td>{{reportObj.report_frequency | titlecase}}</td> -->
           <td>

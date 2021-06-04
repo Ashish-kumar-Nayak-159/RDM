@@ -116,6 +116,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.router.navigate(['applications', this.contextApp.app, 'devices', device.gateway_id, 'control-panel']);
   }
 
+  onRedirectToModel(device) {
+    this.router.navigate(['applications', this.contextApp.app, 'things', 'model', device?.tags?.device_type, 'control-panel']);
+  }
+
   getDeviceCount() {
     this.deviceCount = null;
     const obj = {

@@ -25,7 +25,6 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
   tileData = {};
   subscriptions: Subscription[] = [];
   isOpenDeviceCreateModal = false;
-  componentState: any;
   gateways: any[] = [];
   confirmBodyMessage: string;
   confirmHeaderMessage: string;
@@ -165,7 +164,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
                 item.hierarchyString += item.hierarchy[key] ? (item.hierarchy[key] + ( keys[index + 1] ? ' / ' : '')) : '';
               });
             }
-            if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+            if (this.type === CONSTANTS.NON_IP_DEVICE) {
               const name = this.gateways.filter(gateway => gateway.device_id === item.gateway_id)[0]?.display_name;
               item.gateway_display_name = name ? name : item.gateway_id;
             }
@@ -370,7 +369,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
     const device = this.selectedDevices[0];
     this.isAPILoading = true;
     let methodToCall;
-    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+    if (this.type === CONSTANTS.NON_IP_DEVICE) {
       methodToCall = this.deviceService.deleteNonIPDevice(device.device_id, this.contextApp.app);
     } else {
       methodToCall = this.deviceService.deleteDevice(device.device_id, this.contextApp.app);

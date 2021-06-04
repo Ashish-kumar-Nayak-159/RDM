@@ -137,11 +137,12 @@
               <ul class="hierarchy_list list-group list-unstyled" *ngIf="selectedHierarchyData[i]">
                 <li class="list-group-item" [ngClass]="{'active': configureHierarchy[i] === tag}"
                 *ngFor="let tag of hierarchyArr[i];let tagIndex = index; trackBy:trackByFn1">
-                  <a href="javascript:void(0)" id="tag{{tagIndex}}" class=""
+                  <a href="javascript:void(0)" id="tag{{tagIndex}}" class="" [class.disabled]="!applicationData.hierarchy.levels[i+1]"
                   *ngIf="originalHierarchyArr[i] && originalHierarchyArr[i][tagIndex]">
                     <div class="media">
-                    <div class="overflow" (click)="onHierarchyConfigurationChange(i, tag)">{{tag}}</div>
-                    <a href="javascript:void(0)" class="ml-2"
+                    <div class="overflow" *ngIf="applicationData.hierarchy.levels[i+1]" (click)="onHierarchyConfigurationChange(i, tag)">{{tag}}</div>
+                    <div class="overflow" *ngIf="!applicationData.hierarchy.levels[i+1]" >{{tag}}</div>
+                    <a href="javascript:void(0)" class="ml-2" *ngIf="isAppSetingsEditable"
                     (click)="onRemoveTag(i, tagIndex)"><i class="fa fa-trash"></i></a>
                     <span class="ml-auto"><i class="fa fa-angle-right fa-lg" ></i> </span> <!--fa fa-fw fa-angle-right-->
                   </div></a>

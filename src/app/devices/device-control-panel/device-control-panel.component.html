@@ -70,13 +70,10 @@
             <app-tags *ngIf="activeTab === 'tags'  && device" [componentState]="componentState" [tileData]="tileData" [device]="device"
               [menuDetail]="getMenuDetail('tags')"></app-tags>
           </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'heartbeat'}" role="tabpanel" id="device_heartbeat">
+          <!-- <div class="tab-pane" [ngClass]="{'active': activeTab === 'heartbeat'}" role="tabpanel" id="device_heartbeat">
             <app-heartbeat *ngIf="activeTab === 'heartbeat' && device" [componentState]="componentState" [device]="device"></app-heartbeat>
-          </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel"
-            id="device_notifications">
-            <app-notification *ngIf="activeTab === 'notifications' && device" [componentState]="componentState" [device]="device"></app-notification>
-          </div>
+          </div> -->
+
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'telemetry'}" role="tabpanel" id="device_telemetry">
             <app-telemetry *ngIf="activeTab === 'telemetry' && device"  [componentState]="componentState" [device]="device"></app-telemetry>
           </div>
@@ -88,17 +85,8 @@
             <app-alert-end-event *ngIf="activeTab === 'alertendevents' && device" [componentState]="componentState" [device]="device">
             </app-alert-end-event>
           </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'error'}" role="tabpanel" id="device_error">
-            <app-rdmdevice-control-panel-error *ngIf="activeTab === 'error' && device" [componentState]="componentState" [device]="device">
-            </app-rdmdevice-control-panel-error>
-          </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'other'}" role="tabpanel" id="device_other">
-            <app-others *ngIf="activeTab === 'other' && device" [device]="device" [componentState]="componentState"></app-others>
-          </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'battery_message'}" role="tabpanel"
-            id="device_battery_message">
-            <app-battery-messages *ngIf="activeTab === 'battery_message' && device" [componentState]="componentState" [device]="device">
-            </app-battery-messages>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel" id="device_notifications">
+            <app-device-messages-wrapper *ngIf="activeTab === 'notifications' && device" [device]="device"></app-device-messages-wrapper>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'logs'}" role="tabpanel" id="device_logs">
             <app-logs *ngIf="activeTab === 'logs' && device" [device]="device"></app-logs>
@@ -139,6 +127,14 @@
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'settings'}" role="tabpanel" id="device_settings">
             <app-settings *ngIf="activeTab === 'settings'  && device" [device]="device"></app-settings>
           </div>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'package_management'}" role="tabpanel" id="device_package_management">
+            <app-device-packages *ngIf="activeTab === 'package_management' && device" [device]="device"></app-device-packages>
+          </div>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'device_life_cycle'}" role="tabpanel"
+              id="device_life_cycle_events">
+              <app-device-life-cycle-events *ngIf="activeTab === 'device_life_cycle' && device" [device]="device">
+              </app-device-life-cycle-events>
+            </div>
           <!-- /.container1-fluid -->
 
         </div>

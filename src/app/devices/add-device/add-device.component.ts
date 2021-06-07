@@ -145,6 +145,9 @@ export class AddDeviceComponent implements OnInit {
       });
     } else if (this.deviceDetail.tags.protocol === 'ModbusRTUMaster') {
       this.setupForm = new FormGroup({
+        com_port: new FormControl(
+          (obj && obj.metadata && obj.metadata.setup_details && obj.metadata.setup_details.com_port !== undefined
+            && obj.metadata.setup_details.com_port !== null) ? obj.metadata.setup_details.com_port : null, [Validators.required]),
         baud_rate: new FormControl(
           (obj && obj.metadata && obj.metadata.setup_details && obj.metadata.setup_details.baud_rate !== undefined
             && obj.metadata.setup_details.baud_rate !== null) ? obj.metadata.setup_details.baud_rate : null, [Validators.required]),
@@ -180,7 +183,6 @@ export class AddDeviceComponent implements OnInit {
           [Validators.required, Validators.min(0), Validators.max(31)]),
       });
     }
-    console.log(this.setupForm.value);
   }
 
   getApplicationUsers() {
@@ -241,7 +243,7 @@ export class AddDeviceComponent implements OnInit {
     if (this.contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Device ID' &&
     !CONSTANTS.ONLY_NOS_AND_CHARS.test(this.deviceDetail.tags.partition_key)) {
       this.toasterService.showError('Partition Key only contains numbers and characters.',
-      'Create ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : ''));
+      'Create ' + (this.tileData  ? this.tileData.table_key : ''));
       return;
     }
     if (this.contextApp.metadata?.partition?.telemetry?.partition_strategy === 'Device ID') {
@@ -256,15 +258,16 @@ export class AddDeviceComponent implements OnInit {
     if (!this.deviceDetail.metadata) {
       this.deviceDetail.metadata = {};
     }
-    this.deviceDetail.metadata.measurement_frequency = {
-      min: modelObj?.measurement_frequency.min || 1,
-      max: modelObj?.measurement_frequency.max || 10,
-      average: modelObj?.measurement_frequency.average || 5
+    this.deviceDetail.metadata.telemetry_mode_settings = {
+      normal_mode_frequency: modelObj?.telemetry_mode_settings?.normal_mode_frequency || 60,
+      turbo_mode_frequency: modelObj?.telemetry_mode_settings?.turbo_mode_frequency || 5,
+      turbo_mode_timeout_time: modelObj?.telemetry_mode_settings?.turbo_mode_timeout_time || 120
     };
-    this.deviceDetail.metadata.telemetry_frequency = {
-      min: modelObj?.telemetry_frequency.min || 1,
-      max: modelObj?.telemetry_frequency.max || 60,
-      average: modelObj?.telemetry_frequency.average || 30
+    this.deviceDetail.metadata.data_ingestion_settings = {
+      value: modelObj?.data_ingestion_settings?.vaule || 'all'
+    };
+    this.deviceDetail.metadata.measurement_settings = {
+      measurement_frequency: modelObj?.measurement_settings?.measurement_frequency || 5
     };
     if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
     this.deviceDetail.metadata.setup_details = this.setupForm.value;
@@ -295,14 +298,14 @@ export class AddDeviceComponent implements OnInit {
         } else {
         this.isCreateDeviceAPILoading = false;
         this.toasterService.showSuccess(response.message,
-          'Create ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : ''));
+          'Create ' + (this.tileData  ? this.tileData.table_key : ''));
         this.getDeviceEmit.emit();
         this.onCloseCreateDeviceModal();
       }
       }, error => {
         this.isCreateDeviceAPILoading = false;
         this.toasterService.showError(error.message,
-          'Create ' + (this.tileData && this.tileData[1] ? this.tileData[1]?.value : ''));
+          'Create ' + (this.tileData  ? this.tileData.table_key : ''));
         // this.onCloseCreateDeviceModal();
       }
     ));

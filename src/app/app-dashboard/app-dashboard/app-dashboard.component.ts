@@ -397,6 +397,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isFilterSelected = true;
     if (environment.app === 'SopanCMS') {
       await this.getMidNightHours(obj);
+      // alert('call rejected');
     }
     const obj1 = {
       hierarchy: this.contextApp.user.hierarchy,
@@ -478,7 +479,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getMidNightHours(filterObj) {
-    return new Promise<void>((resolve1) => {
+    return new Promise<void>((resolve1, reject) => {
       const obj = {...filterObj};
       obj.order_dir = 'ASC';
       let message_props = '';
@@ -497,7 +498,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.midNightMinute = response.message[this.getPropertyKey('Running Minutes')] ?
             Math.floor(Number(response.message[this.getPropertyKey('Running Minutes')])) : 0;
             resolve1();
-        }, error => this.isTelemetryDataLoading = false));
+        }, error => {
+          // this.isTelemetryDataLoading = false;
+          // alert('111111');
+          resolve1();
+        }));
     });
   }
 

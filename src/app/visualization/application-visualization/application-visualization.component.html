@@ -86,13 +86,17 @@
       </div>
       </ng-container>
 
-    <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3 pr-0">
+    <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3 pr-0 right-border">
 
       <ul class="mail_list list-group list-unstyled alert-scroll" *ngIf="!isAlertAPILoading && latestAlerts.length > 0">
 
         <li class="list-group-item"
-         [ngClass]="{'active': alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id}"
-        *ngFor="let alert of latestAlerts">
+         [ngClass]="{'active': alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id,
+        'border-left-success': alert?.source?.toLowerCase() === 'cloud', 'border-left-info': alert?.source?.toLowerCase() === 'asset',
+        'border-left-warning': alert?.source?.toLowerCase() === 'edge'
+      }"
+        *ngFor="let alert of latestAlerts"
+       >
           <div class="media">
             <div class="pull-left">
               <div class="controls">
@@ -103,6 +107,12 @@
                 (alert?.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                 )
                 )" [tooltip]="alert?.severity"></i>
+                <!-- <span class="icon-circle-sm" [style.background-color]="
+                (alert?.source?.toLowerCase() === 'gateway' ? '#89a7ff' :
+                (alert?.source?.toLowerCase() === 'asset' ? '#fb5515' :
+                (alert?.source?.toLowerCase() === 'cloud' ? '#229954' : '')))">
+                {{ alert?.source?.toLowerCase() === 'gateway' ? 'G' : alert?.source?.toLowerCase() === 'asset' ? 'A' : alert?.source?.toLowerCase() === 'cloud' ? 'C' : '' }}
+                </span> -->
               </div>
             </div>
             <div class="media-body"><a  class="m-r-10">
@@ -333,7 +343,7 @@
                         </div>
                       </div>
                     </ng-template>
-                    <h6 class="">Action taken by RDM:</h6>
+                    <h6 class="m-3">Action taken by RDM:</h6>
                     <div class="col-xl-12 col-lg-12 pl-3">
                       No Actions recorded by RDM yet.
                     </div>

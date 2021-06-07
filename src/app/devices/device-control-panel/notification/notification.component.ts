@@ -1,6 +1,6 @@
 import { ToasterService } from './../../../services/toaster.service';
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Output } from '@angular/core';
 import { Device } from 'src/app/models/device.model';
 import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/devices/device.service';
@@ -15,7 +15,7 @@ declare var $: any;
 })
 export class NotificationComponent implements OnInit, OnDestroy {
 
-  notificationFilter: any = {};
+  @Input() notificationFilter: any = {};
   notifications: any[] = [];
   @Input() device: Device = new Device();
   @Input() componentState: any;
@@ -36,10 +36,11 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-
-    this.notificationFilter.device_id = this.device.device_id;
-    this.notificationFilter.count = 10;
-    this.notificationFilter.app = this.contextApp.app;
+    this.apiSubscriptions.push(this.deviceService.searchNotificationsEventEmitter.subscribe(
+      () => this.searchNotifications(this.notificationFilter)));
+    // this.notificationFilter.device_id = this.device.device_id;
+    // this.notificationFilter.count = 10;
+    // this.notificationFilter.app = this.contextApp.app;
     this.notificationTableConfig = {
       type: 'notification',
       headers: ['Timestamp', 'Message ID', 'Message'],
@@ -58,25 +59,25 @@ export class NotificationComponent implements OnInit, OnDestroy {
         }
       ]
     };
-    this.loadFromCache();
+    // this.searchNotifications(this.notificationFilter, false);
     this.notificationFilter.epoch = true;
   }
 
-  loadFromCache() {
-    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
-    if (item.dateOption) {
-      this.notificationFilter.dateOption = item.dateOption;
-      if (item.dateOption !== 'Custom Range') {
-        const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
-        this.notificationFilter.from_date = dateObj.from_date;
-        this.notificationFilter.to_date = dateObj.to_date;
-      } else {
-        this.notificationFilter.from_date = item.from_date;
-        this.notificationFilter.to_date = item.to_date;
-      }
-    }
-    this.searchNotifications(this.notificationFilter, false);
-  }
+  // loadFromCache() {
+  //   const item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+  //   if (item.dateOption) {
+  //     this.notificationFilter.dateOption = item.dateOption;
+  //     if (item.dateOption !== 'Custom Range') {
+  //       const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
+  //       this.notificationFilter.from_date = dateObj.from_date;
+  //       this.notificationFilter.to_date = dateObj.to_date;
+  //     } else {
+  //       this.notificationFilter.from_date = item.from_date;
+  //       this.notificationFilter.to_date = item.to_date;
+  //     }
+  //   }
+  //   this.searchNotifications(this.notificationFilter, false);
+  // }
 
   searchNotifications(filterObj, updateFilterObj = true) {
     this.isFilterSelected = true;

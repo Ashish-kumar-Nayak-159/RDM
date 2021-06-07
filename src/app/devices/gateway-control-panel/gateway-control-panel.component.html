@@ -73,9 +73,8 @@
               <app-gateway-settings *ngIf="activeTab === 'setup'  && device" [tileData]="tileData" [device]="device">
               </app-gateway-settings>
             </div>
-            <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel"
-              id="device_notifications">
-              <app-notification *ngIf="activeTab === 'notifications' && device" [device]="device"></app-notification>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel" id="device_notifications">
+              <app-device-messages-wrapper *ngIf="activeTab === 'notifications' && device" [device]="device"></app-device-messages-wrapper>
             </div>
             <div class="tab-pane" [ngClass]="{'active': activeTab === 'cached_telemetry'}" role="tabpanel"
               id="device_cached_telemetry">
@@ -102,10 +101,7 @@
               <app-gateway-current-configuration *ngIf="activeTab === 'current_config' && device" [device]="device">
               </app-gateway-current-configuration>
             </div>
-            <div class="tab-pane" [ngClass]="{'active': activeTab === 'error'}" role="tabpanel" id="device_error">
-              <app-rdmdevice-control-panel-error *ngIf="activeTab === 'error' && device" [device]="device">
-              </app-rdmdevice-control-panel-error>
-            </div>
+
             <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel"
               id="device_control_widgets">
               <app-commands *ngIf="activeTab === 'control_widgets' && device" [device]="device"
@@ -113,6 +109,9 @@
             </div>
             <div class="tab-pane" [ngClass]="{'active': activeTab === 'count'}" role="tabpanel" id="device_count">
               <app-device-count *ngIf="activeTab === 'count' && device" [device]="device"></app-device-count>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'package_management'}" role="tabpanel" id="device_package_management">
+              <app-device-packages *ngIf="activeTab === 'package_management' && device" [device]="device"></app-device-packages>
             </div>
             <!-- /.container1-fluid -->
 

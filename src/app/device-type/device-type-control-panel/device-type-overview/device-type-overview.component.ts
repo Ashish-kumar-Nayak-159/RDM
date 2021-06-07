@@ -90,16 +90,6 @@ export class DeviceTypeOverviewComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Please fill all the fields', 'Update Things Model');
       return;
     }
-    this.thingsModel.metadata.measurement_frequency = {
-      min: 1,
-      max: 10,
-      average: 5
-    };
-    this.thingsModel.metadata.telemetry_frequency = {
-      min: 1,
-      max: 60,
-      average: 30
-    };
     if (this.thingsModel.id) {
       this.thingsModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     }

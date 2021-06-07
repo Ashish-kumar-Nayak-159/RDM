@@ -42,7 +42,7 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.c2dMsgFilter.displayOptions = true;
+    this.c2dMsgFilter.displayJobOptions = true;
     this.c2dMsgFilter.tableType = 'All';
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.c2dMsgFilter.device_id = this.device.device_id;
@@ -111,7 +111,7 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
   searchMessages(filterObj) {
     this.c2dMsgs = [];
     delete filterObj.tableType;
-    delete filterObj.displayOptions;
+    delete filterObj.displayJobOptions;
     this.apiSubscriptions.push(this.deviceService.getDeviceC2DMessages(filterObj).subscribe(
       (response: any) => {
         if (response && response.data) {

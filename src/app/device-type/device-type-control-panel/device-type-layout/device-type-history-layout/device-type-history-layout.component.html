@@ -5,8 +5,8 @@
         <input type="text" id="chartTitle" class="form-control form-control-sm"
               name="chartTitle" placeholder="Display Name" [(ngModel)]="chartTitle" >
       </div>
-      <div class="for-group">
-        <ng-select [items]="chartTypes" class="custom-dropdown" [clearable]="false"
+      <div class="form-group">
+        <ng-select [items]="chartTypes"  class="custom-dropdown sm" [clearable]="false"
           [searchable]="true" [closeOnSelect]="true" placeholder="Select Widget Type"
           dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="selectedChartType">
           <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
@@ -16,7 +16,7 @@
       </div>
       <div class="form-group">
         <input class="form-control form-control-sm" type="text"
-              placeholder="X-Axis parameter" id="xAxisProperty" [(ngModel)]="xAxisProps" name="xAxisProperty">
+              placeholder="X-Axis Prop(dateTime)" id="xAxisProperty" [(ngModel)]="xAxisProps" name="xAxisProperty">
       </div>
       <div class="form-group">
         <ng-select [items]="propertyList" class="custom-dropdown w-12 sm" (onDeSelectAll)="y1Deselect($event)"

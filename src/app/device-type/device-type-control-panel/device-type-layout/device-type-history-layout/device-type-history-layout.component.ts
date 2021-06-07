@@ -39,7 +39,36 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
   // chart selection
   chartCount = 0;
   chartTypes = ['Bar Chart', 'Column Chart', 'Line Chart', 'Area Chart', 'Pie Chart', 'Data Table'];
-  chartTypeValues = ['BarChart', 'ColumnChart', 'LineChart', 'AreaChart', 'PieChart', 'Table'];
+  chartTypeValues = [{
+    name: 'Bar Chart',
+    value: 'BarChart',
+    icon: 'fa-bar-chart fa-rotate-90'
+  },
+  {
+    name: 'Column Chart',
+    value: 'ColumnChart',
+    icon: 'fa-bar-chart'
+  },
+  {
+    name: 'Line Chart',
+    value: 'LineChart',
+    icon: 'fa-line-chart'
+  },
+  {
+    name: 'Area Chart',
+    value: 'AreaChart',
+    icon: 'fa-area-chart'
+  },
+  {
+    name: 'Pie Chart',
+    value: 'PieChart',
+    icon: 'fa-pie-chart'
+  },
+  {
+    name: 'Data Table',
+    value: 'Table',
+    icon: 'fa-table'
+  }];
   chartIcons = ['fa-bar-chart fa-rotate-90', 'fa-bar-chart', 'fa-line-chart', 'fa-area-chart', 'fa-pie-chart', 'fa-table'];
   public selectedChartType = 'Widget Type';
   columnNames = [];
@@ -119,8 +148,11 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
     this.y2AxisProps = [];
   }
 
-  setChartType(chartTypeIndex) {
-    this.selectedChartType = this.chartTypeValues[chartTypeIndex];
+  setChartType() {
+    return this.chartTypeValues.find(type => {
+      console.log(type.name, '======', this.selectedChartType, '======', type);
+      return type.name === this.selectedChartType;
+    })?.value;
   }
 
   async addChart() {
@@ -133,14 +165,14 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       return;
     }
     let arr = [];
-    this.y1AxisProps.forEach(prop => arr.push(prop.value.json_key));
+    this.y1AxisProps.forEach(prop => arr.push(prop.json_key));
     this.y1AxisProps = [...arr];
     arr = [];
-    this.y2AxisProps.forEach(prop => arr.push(prop.value.json_key));
+    this.y2AxisProps.forEach(prop => arr.push(prop.json_key));
     this.y2AxisProps = [...arr];
     const obj = {
       title: this.chartTitle,
-      chartType: this.selectedChartType,
+      chartType: this.setChartType(),
       chartCount: this.chartCount,
       chart_Id: 'chart_' + moment().utc().unix(),
       showDataTable: this.showDataTable,

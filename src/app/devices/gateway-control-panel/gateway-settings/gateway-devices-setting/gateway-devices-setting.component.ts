@@ -59,7 +59,7 @@ export class GatewayDevicesSettingComponent implements OnInit {
               if (!device.metadata.telemetry_mode_settings) {
                 device.metadata.telemetry_mode_settings = {};
               }
-            })
+            });
           }
           this.isDevicesAPILoading = false;
         }, error => this.isDevicesAPILoading = false
@@ -133,7 +133,7 @@ export class GatewayDevicesSettingComponent implements OnInit {
           for (let i = this.displayMsgArr.length - 1; i < response.data.length; i++) {
             this.displayMsgArr.push({
               message:  response.data[i].device_id + ': ' + response.data[i]?.payload?.message,
-              error: response.data[i].status === 'failure' ? true : false
+              error: response.data[i]?.payload?.status === 'failure' ? true : false
             });
           }
         }

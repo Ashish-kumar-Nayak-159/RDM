@@ -98,7 +98,7 @@ export class ManageApplicationsComponent implements OnInit {
         }, 500);
       }, error => {
         this.isAPILoading[index] = false;
-        this.toasterService.showError(error?.device_response?.message, type + ' App');
+        this.toasterService.showError(error?.device_response?.message || error?.message, type + ' App');
       }
       );
   }

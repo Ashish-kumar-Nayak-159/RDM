@@ -244,7 +244,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         if (response.data?.length > 0) {
           this.displyaMsgArr.push({
             message:  response.data[response.data.length - 1].device_id + ': ' + response.data[response.data.length - 1]?.payload?.message,
-            error: response.data[response.data.length - 1].status === 'failure' ? true : false
+            error: response.data[response.data.length - 1]?.payload?.status === 'failure' ? true : false
           });
           clearInterval(this.c2dResponseInterval);
           // this.refreshDeviceTwin.emit();

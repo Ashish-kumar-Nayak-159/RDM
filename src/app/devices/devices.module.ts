@@ -69,6 +69,8 @@ import { RegisterDevicesComponent } from './gateway-control-panel/gateway-settin
 import { RegisterPropertiesComponent } from './gateway-control-panel/gateway-settings/register-properties/register-properties.component';
 import { ManageApplicationsComponent } from './gateway-control-panel/gateway-settings/manage-applications/manage-applications.component';
 import { GatewayDevicesSettingComponent } from './gateway-control-panel/gateway-settings/gateway-devices-setting/gateway-devices-setting.component';
+import { DevicePackagesComponent } from './device-control-panel/device-packages/device-packages.component';
+import { DeviceMessagesWrapperComponent } from './device-control-panel/device-messages-wrapper/device-messages-wrapper.component';
 
 @NgModule({
   declarations: [
@@ -120,7 +122,9 @@ import { GatewayDevicesSettingComponent } from './gateway-control-panel/gateway-
     RegisterDevicesComponent,
     RegisterPropertiesComponent,
     ManageApplicationsComponent,
-    GatewayDevicesSettingComponent
+    GatewayDevicesSettingComponent,
+    DevicePackagesComponent,
+    DeviceMessagesWrapperComponent
   ],
   imports: [
     CommonModule,

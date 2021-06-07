@@ -102,7 +102,7 @@
             <li *ngFor="let msg of displayMsgArr; let last = last;">
               {{msg.message}}
               <i class="fa fa-check" style="color: green;" *ngIf="!msg.error"></i>
-              <i class="fa fa-cancel" style="color: red;" *ngIf="msg.error"></i>
+              <i class="fa fa-times" style="color: red;" *ngIf="msg.error"></i>
               </li>
           </ul>
         </ng-container>

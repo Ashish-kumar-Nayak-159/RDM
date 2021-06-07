@@ -17,8 +17,8 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
 
   @Input() deviceType: any;
   alertConditions: {id?: string, message?: string, metadata?: any, code?: string, severity?: string, recommendations?: any[],
-    visualization_widgets?: any[], reference_documents?: any[], actions?: any}[] = [];
-  alertObj: {id?: string, message?: string, metadata?: any, code?: string, severity?: string,
+    visualization_widgets?: any[], reference_documents?: any[], actions?: any, alert_type?: string}[] = [];
+  alertObj: {id?: string, message?: string, metadata?: any, code?: string, severity?: string, alert_type?: string,
     recommendations?: any[], visualization_widgets?: any[], reference_documents?: any[], actions?: any};
   isAlertConditionsLoading = false;
   isCreateAlertConditionLoading = false;
@@ -35,15 +35,21 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   setupForm: FormGroup;
   constantData = CONSTANTS;
+  selectedTab = 'Asset';
   constructor(
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService
   ) { }
 
-  ngOnInit(): void {
-    this.getThingsModelDeviceMethod();
-    this.getDocuments();
+  async ngOnInit(): Promise<void> {
+    await this.getDocuments();
     this.getDeviceTypeWidgets();
+    this.onClickOfTab('Asset');
+  }
+
+  onClickOfTab(type) {
+    this.selectedTab = type;
+    this.getAlertConditions();
   }
 
   getDeviceTypeWidgets() {
@@ -62,21 +68,9 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getThingsModelDeviceMethod() {
-    this.isAlertConditionsLoading = true;
-    // this.deviceMethods = {};
-    const obj = {
-      app: this.deviceType.app,
-      device_type: this.deviceType.name
-    };
-    this.subscriptions.push(this.deviceTypeService.getThingsModelControlWidgets(obj).subscribe(
-      (response: any) => {
-        this.deviceMethods = response.device_methods;
-      }
-    ));
-  }
 
   getDocuments() {
+    return new Promise<void>((resolve) => {
     this.documents = [];
     const obj = {
       app: this.deviceType.app,
@@ -86,16 +80,17 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response?.data) {
           this.documents = response.data;
-          this.getAlertConditions();
         }
-      }
-    ));
+        resolve();
+      }));
+  });
   }
 
   getAlertConditions() {
     this.isAlertConditionsLoading = true;
     const filterObj = {
-      device_type: this.deviceType.name
+      device_type: this.deviceType.name,
+      alert_type: this.selectedTab
     };
     this.subscriptions.push(this.deviceTypeService.getAlertConditions(this.deviceType.app, filterObj).subscribe(
       (response: any) => {
@@ -253,6 +248,9 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
       if (this.deviceType.tags.protocol === 'ModbusTCPMaster' || this.deviceType.tags.protocol === 'ModbusRTUMaster') {
         this.onChangeOfSetupFunctionCode(alertObj.metadata);
       }
+      if (this.deviceType.tags.protocol === 'SiemensTCPIP') {
+        this.onChageOfMemoryType(alertObj.metadata);
+      }
       console.log(this.setupForm);
     } else {
       this.alertObj = {};
@@ -315,6 +313,14 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
     } else {
       this.setupForm.removeControl('p');
       this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
+    }
+  }
+
+  onChageOfMemoryType(obj = undefined) {
+    if (this.setupForm.value.mt === 'DB') {
+      this.setupForm.addControl('dbn', new FormControl(obj?.dbn || null, [Validators.required, Validators.min(1)]));
+    } else {
+      this.setupForm.removeControl('dbn');
     }
   }
 

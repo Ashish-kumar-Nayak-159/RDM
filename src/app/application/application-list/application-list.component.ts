@@ -27,6 +27,8 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
   blobStorageURL = environment.blobURL;
   appModalType: string;
   apiSubscriptions: Subscription[] = [];
+  tableConfig: any;
+  selectedApp: any;
   constructor(
     private applicationService: ApplicationService,
     private commonService: CommonService,
@@ -37,15 +39,46 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.commonService.breadcrumbEvent.emit({
-      type: 'replace',
-      data: [
-        {
-          title: 'Applications',
-          url: 'applications'
-        }
+    
+    this.tableConfig = {
+      type:  'Applications',
+      is_table_data_loading: this.isApplicationListLoading,
+      no_data_message: '',
+      data : [
+      {
+        header_name: 'App Name',
+        is_display_filter: true,
+        value_type: 'string',
+        is_sort_required: true,
+        fixed_value_list: [],
+        data_type: 'text',
+        data_key: 'app'
+      },
+      {
+        header_name: 'App Admin',
+        is_display_filter: true,
+        value_type: 'string',
+        is_sort_required: true,
+        fixed_value_list: [],
+        data_type: 'text',
+        data_key: 'app_admin'
+      },
+      {
+        header_name: 'Icons',
+        key: undefined,
+        data_type: 'button',
+        btn_list: [
+          {
+            icon: 'fa fa-fw fa-eye',
+            text: '',
+            id: 'View',
+            valueclass: '',
+            tooltip: 'View'
+          }
+        ]
+      }
       ]
-    });
+    };
     this.searchApplications();
   }
 
@@ -61,14 +94,22 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
 
   searchApplications() {
     this.isApplicationListLoading = true;
+    this.tableConfig.is_table_data_loading = true;
     this.applications = [];
     this.apiSubscriptions.push(this.applicationService.getApplications(this.applicationFilterObj).subscribe(
       (response: any) => {
         if (response && response.data) {
           this.applications = response.data;
+          this.applications.forEach(app => {
+            app.app_admin = app.admin_email + ' (' + app.admin_name + ')';
+          });
         }
         this.isApplicationListLoading = false;
-      }, error => this.isApplicationListLoading = false
+        this.tableConfig.is_table_data_loading = false;
+      }, error => {
+        this.isApplicationListLoading = false;
+        this.tableConfig.is_table_data_loading = false;
+      }
     ));
   }
 
@@ -77,6 +118,12 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   redirectToDevices(app) {
+  }
+
+  onTableFunctionCall(obj) {
+    if (obj.for === 'View') {
+      this.openViewIconModal(obj.data);
+    }
   }
 
   onCheckboxValueChange() {
@@ -108,12 +155,12 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   openViewIconModal(app) {
-    this.applicationDetail = app;
-    if (!this.applicationDetail.customer) {
-      this.applicationDetail.customer = {};
+    this.selectedApp = app;
+    if (!this.selectedApp.customer) {
+      this.selectedApp.customer = {};
     }
-    if (!this.applicationDetail.partition) {
-      this.applicationDetail.partition = { telemetry: {}};
+    if (!this.selectedApp.partition) {
+      this.selectedApp.partition = { telemetry: {}};
     }
     $('#viewAppIconModal').modal({ backdrop: 'static', keyboard: false, show: true });
 

@@ -2,6 +2,27 @@
   <div class="">
     <ul class="nav">
       <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Asset')"
+        [ngClass]="{'active': selectedTab === 'Asset'}">
+          <i class="fa fa-fw fa-laptop"></i>
+          <span class="text-secondary">Asset Alerts
+          </span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Edge')"
+           [ngClass]="{'active': selectedTab === 'Edge'}">
+            <i class="fab fa-fw fa-edge"></i>
+            <span class="text-secondary">Edge Alerts
+            </span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Cloud')"
+            [ngClass]="{'active': selectedTab === 'Cloud'}">
+              <i class="fa fa-fw fa-cloud"></i>
+              <span class="text-secondary">Cloud Alerts
+              </span></a>
+            </li>
+            <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="openAddAlertConditionModal()"
         [class.disabled]="deviceType.freezed">
           <i class="fa fa-fw fa-plus"></i>
@@ -79,7 +100,7 @@
                     <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
                     [disabled]="alertObj?.visualization_widgets?.length === 0 || isCreateAlertConditionLoading" placement="bottom" tooltip="Edit"
                     (click)="editWidgets()"><i class="fa fa-edit fa-sm"></i></button> -->
-                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" [disabled]="alertObj?.visualization_widgets?.length === 0 || isCreateAlertConditionLoading || deviceType.freezed"
+                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" [disabled]="isCreateAlertConditionLoading || deviceType.freezed"
                     placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()" ><i class="fa fa-save fa-sm"></i></button>
                     <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></i>
                   </div>
@@ -270,7 +291,7 @@
         </ng-container>
         <ng-container *ngIf="!isAlertConditionsLoading && alertConditions.length === 0">
           <tr>
-            <td colspan="6"> No Alert Conditions added.</td>
+            <td colspan="6"> No {{selectedTab}} Alerts added.</td>
           </tr>
         </ng-container>
       </tbody>
@@ -308,6 +329,15 @@
             <option [ngValue]="'Error'" >Error</option>
             <option [ngValue]="'Warning'" >Warning</option>
             <option [ngValue]="'Informational'" >Informational</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="recipient-name" class="col-form-label required">Alert Type:</label>
+          <select class="form-control form-control-sm" id="alert_type" name="alert_type" [(ngModel)]="alertObj.alert_type">
+            <option [ngValue]="undefined" >Select Alert Type</option>
+            <option [ngValue]="'Asset'" >Asset</option>
+            <option [ngValue]="'Edge'" >Edge</option>
+            <option [ngValue]="'Cloud'" >Cloud</option>
           </select>
         </div>
         <accordion [closeOthers]="'true'" *ngIf="deviceType.metadata?.model_type === constantData.NON_IP_DEVICE" >
@@ -437,7 +467,7 @@
                 <label for="recipient-name" class="col-form-label required">Memory Type:</label>
                 <div class="input-group">
                 <select class="form-control form-control-sm" id="mt" name="mt" formControlName="mt"
-                > <option [ngValue]="null">Select Memory Type</option>
+                (change)="onChageOfMemoryType()"> <option [ngValue]="null">Select Memory Type</option>
                   <option [ngValue]="'DB'" >DB</option>
                   <option [ngValue]="'PE'" >PE</option>
                   <option [ngValue]="'PA'" >PA</option>
@@ -452,6 +482,20 @@
                     Memory Type is required.
                   </div>
                   </div>
+              </div>
+              <div class="form-group" *ngIf="setupForm.get('mt').value === 'DB'">
+                <label for="message-text" class="col-form-label required">DB Number:</label>
+                <input type="number" class="form-control form-control-sm" id="dbn" name="dbn" formControlName="dbn"
+                placeholder="Enter DB Number">
+                <div *ngIf="setupForm.get('dbn').invalid && (setupForm.get('dbn').dirty || setupForm.get('dbn').touched)"
+                  class="alert-danger">
+                  <div *ngIf="setupForm.get('dbn').errors.required">
+                    DB Number is required.
+                  </div>
+                  <div *ngIf="setupForm.get('dbn').errors.min || setupForm.get('dbn').errors.max">
+                    DB Number value must be greater than 0.
+                  </div>
+                </div>
               </div>
               <div class="form-group" *ngIf="setupForm.get('d').value === 'd'">
                 <label for="message-text" class="col-form-label required">Bit Number:</label>

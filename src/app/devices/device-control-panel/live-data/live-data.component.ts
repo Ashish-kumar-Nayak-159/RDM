@@ -40,8 +40,9 @@ export class LiveDataComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    await this.getThingsModelProperties();
     this.getLiveWidgets();
+    await this.getThingsModelProperties();
+    
 
   }
 
@@ -77,7 +78,9 @@ export class LiveDataComponent implements OnInit, OnDestroy {
               id: widget.widgetTitle,
               value: widget
             });
+            console.log(this.liveWidgets);
           });
+          this.liveWidgets = JSON.parse(JSON.stringify(this.liveWidgets));
         }
       }
     ));

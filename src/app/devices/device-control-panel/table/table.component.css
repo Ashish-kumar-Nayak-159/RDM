@@ -7,7 +7,7 @@
 }
 
 .w-35 {
-  width: 35%!important;
+  width: 30%!important;
 }
 
 .w-15 {
@@ -17,3 +17,8 @@
 .w-10 {
   width: 10%!important;
 }
+
+.w-5 {
+  width: 6rem!important;
+}
+

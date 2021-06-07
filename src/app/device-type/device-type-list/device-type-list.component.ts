@@ -242,15 +242,16 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Please fill all the fieds', 'Create Things Model');
       return;
     }
-    this.thingsModel.metadata.measurement_frequency = {
-      min: 1,
-      max: 10,
-      average: 5
+    this.thingsModel.metadata.telemetry_mode_settings = {
+      normal_mode_frequency: 60,
+      turbo_mode_frequency: 5,
+      turbo_mode_timeout_time: 120
     };
-    this.thingsModel.metadata.telemetry_frequency = {
-      min: 1,
-      max: 60,
-      average: 30
+    this.thingsModel.metadata.measurement_settings = {
+      measurement_frequency: 5
+    };
+    this.thingsModel.metadata.data_ingestion_settings = {
+      value: 'all'
     };
     this.thingsModel.tags.reserved_tags = [];
     console.log(this.thingsModel.tags);

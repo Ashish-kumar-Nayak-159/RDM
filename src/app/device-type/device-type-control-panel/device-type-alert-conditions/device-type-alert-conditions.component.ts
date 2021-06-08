@@ -49,6 +49,8 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
 
   onClickOfTab(type) {
     this.selectedTab = type;
+    this.toggleRows = {};
+
     this.getAlertConditions();
   }
 
@@ -119,7 +121,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
   }
 
   onToggleRows(i) {
-    if (this.toggleRows[i]) {
+    if (this.toggleRows[this.selectedTab + '_' + i]) {
       this.toggleRows = {};
     } else {
       this.onClickOfViewActionIcon('Visualization', i);
@@ -196,7 +198,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
     this.editRecommendationStep = {};
     this.editDocuments = {};
     this.viewType = type;
-    this.toggleRows[index] = true;
+    this.toggleRows[this.selectedTab + '_' + index] = true;
     this.alertObj = this.alertConditions[index];
     // if (type === 'Visualization') {
     //   this.alertObj.visualization_widgets.splice(this.alertObj.visualization_widgets.length, 0, null);

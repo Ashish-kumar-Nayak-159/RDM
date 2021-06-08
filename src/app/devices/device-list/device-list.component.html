@@ -98,7 +98,7 @@
             (mouseOver)="onMarkerClick(infowindow, gm)"
             [iconUrl]="device.icon"  >
             <agm-info-window #infowindow >
-              <b><a class="blue-font" href="javascript:void(0)" (click)="onTableFunctionCall(device)">{{device.display_name ? device.display_name: device.device_id}}</a></b>
+              <b><a class="blue-font" href="javascript:void(0)" (click)="redirectToDevice(device)">{{device.display_name ? device.display_name: device.device_id}}</a></b>
               <ng-container *ngIf="contextApp.app === 'CMS_Dev'">
                 <hr>
                 <p *ngIf="device.spcd !== undefined && device.spcd !== null; else noSPCDTemplate"><b>Specific Power Consumption:</b> {{device.spcd}}</p>

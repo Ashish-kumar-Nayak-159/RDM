@@ -814,6 +814,12 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     }
   }
 
+  redirectToDevice(device) {
+    this.router.navigate(['applications', this.contextApp.app,
+    'devices',
+    device.device_id, 'control-panel']);
+  }
+
   getDerivedKPIsHistoricData(device) {
     this.isDerivedKPIDataLoading = true;
     this.loader = true;

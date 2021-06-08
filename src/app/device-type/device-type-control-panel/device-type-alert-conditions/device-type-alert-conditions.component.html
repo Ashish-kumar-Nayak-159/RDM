@@ -52,7 +52,7 @@
             <tr >
               <td>
                 <a href="javascript:void(0)" (click)="onToggleRows(i)">
-                <i [ngClass]="toggleRows[i] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
+                <i [ngClass]="toggleRows[selectedTab + '_' + i] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
                 </a>
               </td>
               <td>{{i + 1}}</td>
@@ -89,7 +89,7 @@
                 </a>
               </td>
             </tr>
-            <tr *ngIf="toggleRows[i]">
+            <tr *ngIf="toggleRows[selectedTab + '_' + i]">
               <td colspan="6" *ngIf="viewType === 'Visualization'">
                 <div class="row col-12">
                   <p *ngIf="alertObj?.visualization_widgets?.length === 0"> No Visualization widgets defined yet.</p>

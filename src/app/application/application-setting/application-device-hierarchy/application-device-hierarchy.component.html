@@ -142,12 +142,12 @@
                     <div class="media">
                     <div class="overflow" *ngIf="applicationData.hierarchy.levels[i+1]" (click)="onHierarchyConfigurationChange(i, tag)">{{tag}}</div>
                     <div class="overflow" *ngIf="!applicationData.hierarchy.levels[i+1]" >{{tag}}</div>
-                    <a href="javascript:void(0)" class="ml-2" *ngIf="isAppSetingsEditable"
+                    <div class="ml-auto">
+                    <a href="javascript:void(0)" class="pr-1" *ngIf="isAppSetingsEditable"
                     (click)="onRemoveTag(i, tagIndex)"><i class="fa fa-trash"></i></a>
-                    <span class="ml-auto">
+                    <span >
                       <i class="fa fa-angle-right fa-lg" ></i>
-
-                    </span> <!--fa fa-fw fa-angle-right-->
+                    </span></div>
                   </div></a>
                   <ng-container *ngIf="originalHierarchyArr[i] && !originalHierarchyArr[i][tagIndex]">
                     <div class="media">

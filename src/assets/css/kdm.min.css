@@ -13041,7 +13041,7 @@ background: #f9fafb;
 font-weight: 600;
 }
 .hierarchy_list .list-group-item .media .overflow{
-    width: 16em;
+    width: 85%;
     margin: 0 0 0 0;
     white-space: nowrap;
     overflow: hidden;
@@ -13055,12 +13055,12 @@ color: #1a5ab4;
 }
 
 .hierarchy_list .list-group-item span {
-  display: none;
+  visibility: hidden;
 }
 
 .hierarchy_list .list-group-item.active span {
-  display: inline-block;
-  color: #1a5ab4;
+  visibility: visible;
+    color: #1a5ab4;
 }
 
 .searchBtn1 {

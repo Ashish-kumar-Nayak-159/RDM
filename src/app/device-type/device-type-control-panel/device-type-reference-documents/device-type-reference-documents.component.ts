@@ -152,6 +152,7 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
   }
 
   downloadFile(fileObj) {
+    this.openModal('downloadDocumentModal');
     // const link = document.createElement('a');
     // link.setAttribute('target', '_blank');
     // link.setAttribute('href', fileObj.url + this.sasToken);
@@ -163,8 +164,10 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
     this.subscriptions.push(this.commonService.getFileData(url).subscribe(
       response => {
         this.fileSaverService.save(response, fileObj.name);
+        this.closeModal('downloadDocumentModal');
       }
     ));
+
   }
 
   sanitizeURL() {
@@ -176,6 +179,7 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
   }
 
   closeModal(id) {
+    console.log('hereeee');
     $('#' + id).modal('hide');
     this.selectedDocument = undefined;
   }

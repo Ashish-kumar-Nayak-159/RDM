@@ -156,10 +156,10 @@
             <div class="tab-pane active" id="D2C">
               <div role="tabpanel" class="tab-pane active no-padding" id="home">
                 <!-- <img class="img-fluid" src="../../../assets/img/chart.png" style="height: 20rem;"> -->
-                <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" >
+                <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [fitBounds]="true">
                   <agm-marker-cluster imagePath="https://raw.githubusercontent.com/googlemaps/v3-utility-library/master/markerclustererplus/images/m">
                 <ng-container  *ngFor="let device of devices; let i = index; ">
-                  <agm-marker *ngIf="device.latitude && device.longitude"
+                  <agm-marker *ngIf="device.latitude && device.longitude" [agmFitBounds]="true"
                   [latitude]="device.latitude" [longitude]="device.longitude"
                   (mouseOver)="onMarkerClick(infowindow, gm)" (mouseOut)="onMarkerMouseOut(infowindow, gm)" >
                   <agm-info-window #infowindow [disableAutoPan]="false">

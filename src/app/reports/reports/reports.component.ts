@@ -106,6 +106,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.filterObj.aggregation_minutes = 1;
       this.filterObj.aggregation_format = 'AVG';
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+      console.log(this.originalFilterObj.report_type);
      // this.getLatestAlerts();
       await this.getDevices(this.contextApp.user.hierarchy);
      // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
@@ -157,7 +158,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
         }
       }
       console.log(this.originalFilterObj);
+
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+      console.log(this.originalFilterObj.report_type);
       // if (this.filterObj.device) {
       //   this.onFilterSelection(false, false);
       // }
@@ -332,6 +335,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   onNonIPDeviceChange() {
     // this.filterObj.device_id = this.filterObj.device.device_id;
+    console.log(this.originalFilterObj.report_type);
     if (this.filterObj.report_type === 'Process Parameter Report') {
     if (this.filterObj.device) {
       const device_type = this.filterObj.device.device_type;
@@ -340,6 +344,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       }
       }
     }
+    console.log(this.originalFilterObj.report_type);
   }
 
   getThingsModelProperties(deviceType) {
@@ -389,6 +394,14 @@ export class ReportsComponent implements OnInit, OnDestroy {
   onFilterSelection(callScrollFnFlag = false, updateFilterObj = true) {
     this.insideScrollFunFlag = true;
     this.deviceFilterObj = undefined;
+    if (this.filterObj.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
+      this.filterObj.from_date = dateObj.from_date;
+      this.filterObj.to_date = dateObj.to_date;
+    } else {
+      this.filterObj.from_date = this.filterObj.from_date;
+      this.filterObj.to_date = this.filterObj.to_date;
+    }
     const obj = {...this.filterObj};
     let device_type: any;
     if (obj.device) {
@@ -425,6 +438,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
     }
     this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+    console.log(this.originalFilterObj.report_type);
     this.isTelemetryLoading = true;
     // this.telemetry = [];
     // this.latestAlerts = [];
@@ -452,7 +466,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     delete obj.deviceArr;
     this.subscriptions.push(this.deviceService.getDeviceAlerts(obj).subscribe(
       (response: any) => {
-        response.data.reverse();
+        // response.data.reverse();
         response.data.forEach(item => {
           item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
           item.device_display_name = this.devices.filter(device => device.device_id === item.device_id)[0]?.display_name;
@@ -477,7 +491,15 @@ export class ReportsComponent implements OnInit, OnDestroy {
   onTabSelect(type) {
     this.tabType = type;
     if (type === 'custom') {
-      this.filterObj = JSON.parse(JSON.stringify(this.originalFilterObj));
+      this.filterObj = {};
+      this.filterObj.app = this.contextApp.app;
+      this.filterObj.type = true;
+      this.filterObj.sampling_format = 'minute';
+      this.filterObj.sampling_time = 1;
+      this.filterObj.aggregation_minutes = 1;
+      this.filterObj.aggregation_format = 'AVG';
+      this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+      console.log(this.originalFilterObj.report_type);
       this.telemetry = [];
       this.latestAlerts = [];
       this.isFilterOpen = true;
@@ -495,7 +517,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     delete obj.dateOption;
     delete obj.isTypeEditable;
     delete obj.type;
-    obj.order_dir = 'ASC';
+    // obj.order_dir = 'ASC';
     if (type === 'all') {
       delete obj.count;
     }
@@ -602,15 +624,15 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   async savePDF(): Promise<void> {
-    if (this.filterObj.report_type === 'Process Parameter Report' && this.props.length > 8) {
+    if (this.originalFilterObj.report_type === 'Process Parameter Report' && this.props.length > 8) {
       this.toasterService.showWarning('For more properties, Excel Reports work better.', 'Export as PDF');
     }
     $('#downloadReportModal').modal({ backdrop: 'static', keyboard: false, show: true });
-    if (this.filterObj.report_type === 'Process Parameter Report' && !this.insideScrollFunFlag) {
+    if (this.originalFilterObj.report_type === 'Process Parameter Report' && !this.insideScrollFunFlag) {
       this.currentOffset += this.currentLimit;
       await this.getTelemetryData(this.newFilterObj, 'all');
       this.insideScrollFunFlag = true;
-    } else if (this.filterObj.report_type === 'Alert Report' && !this.insideScrollFunFlag) {
+    } else if (this.originalFilterObj.report_type === 'Alert Report' && !this.insideScrollFunFlag) {
       this.currentOffset += this.currentLimit;
       await this.getAlertData(this.newFilterObj, 'all');
       this.insideScrollFunFlag = true;
@@ -619,14 +641,14 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.isFileDownloading = true;
     setTimeout(() => {
       const pdf = new jsPDF('p', 'pt', 'A3');
-      pdf.text(this.filterObj.report_type + ' for ' +
+      pdf.text(this.originalFilterObj.report_type + ' for ' +
       (this.deviceFilterObj.display_name ? this.deviceFilterObj.display_name : this.deviceFilterObj.device_id) +
       ' for ' + this.commonService.convertEpochToDate(this.newFilterObj.from_date) + ' to ' +
       this.commonService.convertEpochToDate(this.newFilterObj.to_date), 20, 50);
       autoTable(pdf, { html: '#dataTable1', margin: { top: 70 } });
       const now = moment().utc().unix();
       pdf.save((this.deviceFilterObj.display_name ? this.deviceFilterObj.display_name : this.deviceFilterObj.device_id)
-             + '_' + this.filterObj.report_type + '_' + now + '.pdf');
+             + '_' + this.originalFilterObj.report_type + '_' + now + '.pdf');
       this.isFileDownloading = false;
       this.loadingMessage = undefined;
       $('#downloadReportModal').modal('hide');
@@ -639,24 +661,25 @@ export class ReportsComponent implements OnInit, OnDestroy {
     let ws: XLSX.WorkSheet;
     let data = [];
     $('#downloadReportModal').modal({ backdrop: 'static', keyboard: false, show: true });
-    if (this.filterObj.report_type === 'Process Parameter Report' && !this.insideScrollFunFlag) {
+    if (this.originalFilterObj.report_type === 'Process Parameter Report' && !this.insideScrollFunFlag) {
       this.currentOffset += this.currentLimit;
       await this.getTelemetryData(this.newFilterObj, 'all');
       this.insideScrollFunFlag = true;
-    } else if (this.filterObj.report_type === 'Alert Report' && !this.insideScrollFunFlag) {
+    } else if (this.originalFilterObj.report_type === 'Alert Report' && !this.insideScrollFunFlag) {
       this.currentOffset += this.currentLimit;
       await this.getAlertData(this.newFilterObj, 'all');
       this.insideScrollFunFlag = true;
     }
     this.loadingMessage = 'Preparing Report.';
     setTimeout(() => {
-      if (this.filterObj.report_type === 'Alert Report') {
+      if (this.originalFilterObj.report_type === 'Alert Report') {
         this.latestAlerts.forEach(alert => {
           data.push({
             'Asset Name': (this.deviceFilterObj.display_name ? this.deviceFilterObj.display_name : this.deviceFilterObj.device_id),
             Time: alert.local_created_date,
             Severity: alert.severity,
             Description: alert.message,
+            Source: alert.source,
             Status: alert.metadata?.acknowledged_date ? 'Acknowledged' : 'Not Acknowledged',
             'Acknowledged By': alert.metadata?.user_id
           });
@@ -667,9 +690,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
         data = [];
         this.telemetry.forEach(telemetryObj => {
           const obj = {
-            'Asset Name': this.filterObj.non_ip_device ?
-              (this.filterObj.non_ip_device.device_display_name ? this.filterObj.non_ip_device?.device_display_name
-                : this.filterObj.non_ip_device?.device_id)
+            'Asset Name': this.originalFilterObj.non_ip_device ?
+              (this.originalFilterObj.non_ip_device.device_display_name ? this.originalFilterObj.non_ip_device?.device_display_name
+                : this.originalFilterObj.non_ip_device?.device_id)
               : (this.deviceFilterObj ?
               (this.deviceFilterObj.device_display_name ? this.deviceFilterObj.device_display_name : this.deviceFilterObj.device_id)
               : '' ),
@@ -715,8 +738,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
       const now = moment().utc().unix();
       /* save to file */
-      XLSX.writeFile(wb, (this.filterObj.device.display_name ? this.filterObj.device.display_name : this.filterObj.device.device_id)
-        + '_' + this.filterObj.report_type + '_' + now + '.xlsx');
+      XLSX.writeFile(wb, (this.originalFilterObj.device.display_name ? this.originalFilterObj.device.display_name : this.originalFilterObj.device.device_id)
+        + '_' + this.originalFilterObj.report_type + '_' + now + '.xlsx');
       this.loadingMessage = undefined;
       $('#downloadReportModal').modal('hide');
     }, 1000);

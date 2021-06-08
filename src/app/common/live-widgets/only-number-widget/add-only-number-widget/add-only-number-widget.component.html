@@ -53,7 +53,8 @@
     <div class="file-input form-control form-control-sm p-0 col-8">
      <input type="file" id="file" accept=".jpeg,.png,.svg,.jpg" class="file" [disabled]="isFileUploading" (change)="onLogoFileSelected($event.target.files, i)">
 
-     <label for="file">{{(widgetObj?.properties[i]?.image) ? (widgetObj.properties[i].image.name) : 'Choose File'}}</label>
+     <label for="file" class="overflow-text" [tooltip]="(widgetObj?.properties[i]?.image) ? (widgetObj.properties[i].image.name) : ''">
+       {{(widgetObj?.properties[i]?.image) ? (widgetObj.properties[i].image.name) : 'Choose File'}}</label>
     </div>
     <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
     <input type="file" accept=".jpeg,.png,.svg,.jpg"  id="file" class="file" [disabled]="isFileUploading">

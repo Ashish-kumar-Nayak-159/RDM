@@ -277,7 +277,7 @@ export class CONSTANTS {
       system_name: 'Software Packages',
       url: '#device_package_management',
       display_name: 'Software Packages',
-      icon: 'fa fa-fw fa-tags',
+      icon: 'fa fa-fw fa-file',
       visible: true,
       isTitle: false
     },
@@ -614,7 +614,7 @@ export class CONSTANTS {
       system_name: 'Software Packages',
       url: '#device_package_management',
       display_name: 'Software Packages',
-      icon: 'fa fa-fw fa-tags',
+      icon: 'fa fa-fw fa-file',
       visible: true,
       isTitle: false
     },
@@ -929,7 +929,7 @@ export class CONSTANTS {
       system_name: 'Software Packages',
       url: '#device_package_management',
       display_name: 'Software Packages',
-      icon: 'fa fa-fw fa-tags',
+      icon: 'fa fa-fw fa-file',
       visible: true,
       isTitle: false
     },
@@ -1100,7 +1100,7 @@ export class CONSTANTS {
       system_name: 'Software Packages',
       url: '#device_type_package_management',
       display_name: 'Software Packages',
-      icon: 'fa fa-fw fa-tags',
+      icon: 'fa fa-fw fa-file',
       visible: true,
       isTitle: false
     },

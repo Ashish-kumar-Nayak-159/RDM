@@ -119,7 +119,7 @@
                 <div class="form-group">
                   <label for="message-text" class="col-form-label required">PLC Register Address:</label>
                   <input type="number" class="form-control form-control-sm" id="sa" name="sa" formControlName="sa"
-                  placeholder="Enter PLC Register Address">
+                  placeholder="Enter PLC Register Address" min="0" max="99999">
                   <div *ngIf="setupForm.get('sa').invalid && (setupForm.get('sa').dirty || setupForm.get('sa').touched)"
                     class="alert-danger">
                     <div *ngIf="setupForm.get('sa').errors.required">
@@ -133,7 +133,7 @@
                 <div class="form-group" *ngIf="setupForm.get('d').value === 's'">
                   <label for="message-text" class="col-form-label required">String Length:</label>
                   <input type="number" class="form-control form-control-sm" id="la" name="la" formControlName="la"
-                  placeholder="Enter String Length">
+                  placeholder="Enter String Length" min="1" max="99999">
                   <div *ngIf="setupForm.get('la').invalid && (setupForm.get('la').dirty || setupForm.get('la').touched)"
                     class="alert-danger">
                     <div *ngIf="setupForm.get('la').errors.required">
@@ -148,7 +148,7 @@
                 && setupForm.get('d').value === 'a'">
                   <label for="message-text" class="col-form-label required">Precision:</label>
                   <input type="number" class="form-control form-control-sm" id="p" name="p" formControlName="p"
-                  placeholder="Enter Precision">
+                  placeholder="Enter Precision" min="1" max="5">
                   <div *ngIf="setupForm.get('p').invalid && (setupForm.get('p').dirty || setupForm.get('p').touched)"
                     class="alert-danger">
                     <div *ngIf="setupForm.get('p').errors.required">
@@ -181,7 +181,7 @@
                 <div class="form-group" *ngIf="setupForm.get('d').value === 'd' && (setupForm.get('fc').value === 3 || setupForm.get('fc').value === 4)">
                   <label for="message-text" class="col-form-label required">Bit Number:</label>
                   <input type="number" class="form-control form-control-sm" id="bn" name="bn" formControlName="bn"
-                  placeholder="Enter Bit Number">
+                  placeholder="Enter Bit Number" min="0" max="15">
                   <div *ngIf="setupForm.get('bn').invalid && (setupForm.get('bn').dirty || setupForm.get('bn').touched)"
                     class="alert-danger">
                     <div *ngIf="setupForm.get('bn').errors.required">
@@ -217,7 +217,7 @@
                 <div class="form-group" *ngIf="setupForm.get('mt').value === 'DB'">
                   <label for="message-text" class="col-form-label required">DB Number:</label>
                   <input type="number" class="form-control form-control-sm" id="dbn" name="dbn" formControlName="dbn"
-                  placeholder="Enter DB Number">
+                  placeholder="Enter DB Number" min="0">
                   <div *ngIf="setupForm.get('dbn').invalid && (setupForm.get('dbn').dirty || setupForm.get('dbn').touched)"
                     class="alert-danger">
                     <div *ngIf="setupForm.get('dbn').errors.required">
@@ -231,7 +231,7 @@
                 <div class="form-group" *ngIf="setupForm.get('d').value === 'd'">
                   <label for="message-text" class="col-form-label required">Bit Number:</label>
                   <input type="number" class="form-control form-control-sm" id="bn" name="bn" formControlName="bn"
-                  placeholder="Enter Bit Number">
+                  placeholder="Enter Bit Number" min="0" max="15">
                   <div *ngIf="setupForm.get('bn').invalid && (setupForm.get('bn').dirty || setupForm.get('bn').touched)"
                     class="alert-danger">
                     <div *ngIf="setupForm.get('bn').errors.required">
@@ -247,7 +247,7 @@
             </accordion-group>
           </accordion>
 
-          <div class="form-group" *ngIf="type.includes('read') || type.includes('writ')">
+          <div class="form-group" *ngIf="!propertyObj.edit && (type.includes('read') || type.includes('writ') )">
             <input type="checkbox" class="mx-1 my-1" id="checkbox" min="1"
             name="checkbox" [(ngModel)]="propertyObj.isAdd" >
             <label for="read_prop" class="col-form-label">Add as {{(type.includes('read') ? 'Controllable' : (type.includes('writ') ? 'Configurable' : ''))}} Properties</label>

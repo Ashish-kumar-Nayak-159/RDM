@@ -18,7 +18,7 @@
       </div>
       <div class="form-group" *ngIf="filterObj.displayAlertOptions">
         <select class="form-control form-control-sm active"
-        [ngClass]="{'active': filterObj.source}" id="alertType"
+        id="alertType"
         [(ngModel)]="filterObj.source" name="alertType">
         <option [ngValue]="undefined">All</option>
           <option [ngValue]="'Asset'">Asset</option>
@@ -28,7 +28,7 @@
       </div>
       <div class="form-group" *ngIf="filterObj.displayNotificationOptions">
         <select class="form-control form-control-sm active"
-        [ngClass]="{'active': filterObj.source}" id="alertType"
+         id="alertType"
         [(ngModel)]="filterObj.source" name="alertType">
         <option [ngValue]="'Notification'">Notification</option>
           <option [ngValue]="'Error'">Error</option>

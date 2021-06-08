@@ -113,7 +113,7 @@
                 <label for="recipient-name" class="col-form-label required">Port Number:</label>
                 <div class="input-group">
                 <input type="number" class="form-control form-control-sm" id="port_number" name="port_number"
-                  formControlName="port_number" placeholder="Port Number">
+                  formControlName="port_number" placeholder="Port Number" min="0">
                 </div>
                 <div *ngIf="setupForm.get('port_number').invalid && (setupForm.get('port_number').dirty || setupForm.get('port_number').touched)"
                 class="alert-danger">
@@ -275,7 +275,12 @@
                 </div>
               </div>
             </ng-container>
+
             </form>
+            <ng-container  *ngIf="deviceDetail.tags.protocol !== 'ModbusTCPMaster' && deviceDetail.tags.protocol !== 'SiemensTCPIP' &&
+            deviceDetail.tags.protocol !== 'ModbusRTUMaster' && componentState === constantData.NON_IP_DEVICE && isDeviceEditable">
+            This protocol is not supported currently.
+          </ng-container>
         </form>
       </div>
       <div class="modal-footer">

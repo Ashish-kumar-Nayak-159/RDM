@@ -42,6 +42,7 @@
             <th>No</th>
             <th>{{(tabData?.table_key || 'Asset') + ' Name' }}</th>
             <th>{{(tabData?.table_key || 'Asset') + ' ID' }}</th>
+            <th *ngIf="type !== constantData.NON_IP_DEVICE">Status</th>
             <th>Hierarchy</th>
           </thead>
           <tbody>
@@ -55,6 +56,7 @@
                 <td>{{i + 1}}</td>
                 <td>{{device.display_name}}</td>
                 <td>{{device.device_id}}</td>
+                <td *ngIf="type !== constantData.NON_IP_DEVICE">{{device.status}}</td>
                 <td>{{device.hierarchyString}}</td>
               </tr>
             </ng-container>

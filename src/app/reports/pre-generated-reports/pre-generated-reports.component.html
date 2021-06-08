@@ -63,7 +63,7 @@
 <ng-container *ngIf="isFilterSelected">
   <!-- <h5  >Pre-generated</h5> -->
   <div class="table-responsive">
-    <div class="tableFixHead report-table ">
+    <div class="tableFixHead">
   <table class="table table-hover"
  >
     <thead>
@@ -102,12 +102,12 @@
       </ng-container>
       <ng-container *ngIf="reports.length === 0 && !isReportDataLoading">
         <tr>
-          <td colspan="6">No reports available.</td>
+          <td colspan="7">No reports available.</td>
         </tr>
       </ng-container>
       <ng-container *ngIf="isReportDataLoading">
         <tr>
-          <td colspan="6">
+          <td colspan="7">
             <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
           </td>
         </tr>

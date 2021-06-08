@@ -85,11 +85,13 @@ export class GaugeChartComponent implements OnInit, OnChanges, AfterViewInit {
     range2.axisFill.fillOpacity = 1;
     range2.axisFill.fill = am4core.color(prop.high_color || '#c80815');
     range2.axisFill.zIndex = -1;
-    const hand = chart.hands.push(new am4charts.ClockHand());
-    hand.radius = am4core.percent(97);
-    hand.value = Number(this.telemetryObj[prop.property.json_key] || '0');
-    this.chart.splice(index, 0, chart);
-    this.hand.splice(index, 0, hand);
+    if (this.telemetryObj[prop.property.json_key] !== undefined && this.telemetryObj[prop.property.json_key] !== null) {
+      const hand = chart.hands.push(new am4charts.ClockHand());
+      hand.radius = am4core.percent(97);
+      hand.value = Number(this.telemetryObj[prop.property.json_key] || '0');
+      this.chart.splice(index, 0, chart);
+      this.hand.splice(index, 0, hand);
+    }
     });
   }
 

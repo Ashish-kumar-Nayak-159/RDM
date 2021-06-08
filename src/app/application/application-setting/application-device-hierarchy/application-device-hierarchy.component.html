@@ -128,7 +128,7 @@
                <div class="d-flex align-items-center">
                 <div class="hierarchy-heading">{{level}}</div>
                  <div class="ml-auto" *ngIf="selectedHierarchyData[i]">
-                   <button type="submit" class="btn btn-sm searchBtn1 btn-primary" *ngIf="isAppSetingsEditable"
+                   <button type="submit" class="btn btn-sm searchBtn1 btn-primary" *ngIf="isAppSetingsEditable && !isAddHierarchyThere"
                    (click)="addTag(i)">
                    <i class="fas fa-plus fa-sm"></i></button></div>
               </div>
@@ -137,14 +137,17 @@
               <ul class="hierarchy_list list-group list-unstyled" *ngIf="selectedHierarchyData[i]">
                 <li class="list-group-item" [ngClass]="{'active': configureHierarchy[i] === tag}"
                 *ngFor="let tag of hierarchyArr[i];let tagIndex = index; trackBy:trackByFn1">
-                  <a href="javascript:void(0)" id="tag{{tagIndex}}" class="" [class.disabled]="!applicationData.hierarchy.levels[i+1]"
+                  <a href="javascript:void(0)" id="tag{{tagIndex}}" class=""
                   *ngIf="originalHierarchyArr[i] && originalHierarchyArr[i][tagIndex]">
                     <div class="media">
                     <div class="overflow" *ngIf="applicationData.hierarchy.levels[i+1]" (click)="onHierarchyConfigurationChange(i, tag)">{{tag}}</div>
                     <div class="overflow" *ngIf="!applicationData.hierarchy.levels[i+1]" >{{tag}}</div>
                     <a href="javascript:void(0)" class="ml-2" *ngIf="isAppSetingsEditable"
                     (click)="onRemoveTag(i, tagIndex)"><i class="fa fa-trash"></i></a>
-                    <span class="ml-auto"><i class="fa fa-angle-right fa-lg" ></i> </span> <!--fa fa-fw fa-angle-right-->
+                    <span class="ml-auto">
+                      <i class="fa fa-angle-right fa-lg" ></i>
+
+                    </span> <!--fa fa-fw fa-angle-right-->
                   </div></a>
                   <ng-container *ngIf="originalHierarchyArr[i] && !originalHierarchyArr[i][tagIndex]">
                     <div class="media">

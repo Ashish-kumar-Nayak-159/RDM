@@ -96,18 +96,15 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
         const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
         this.telemetryFilter.from_date = dateObj.from_date;
         this.telemetryFilter.to_date = dateObj.to_date;
+        this.selectedDateRange = this.telemetryFilter.dateOption;
       } else {
         this.telemetryFilter.from_date = item.from_date;
         this.telemetryFilter.to_date = item.to_date;
-      }
-      this.picker.datePicker.setStartDate(moment.unix(this.telemetryFilter.from_date));
-      this.picker.datePicker.setEndDate(moment.unix(this.telemetryFilter.to_date));
-      if (this.telemetryFilter.dateOption !== 'Custom Range') {
-        this.selectedDateRange = this.telemetryFilter.dateOption;
-      } else {
         this.selectedDateRange = moment.unix(this.telemetryFilter.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
         moment.unix(this.telemetryFilter.to_date).format('DD-MM-YYYY HH:mm');
       }
+      this.picker.datePicker.setStartDate(moment.unix(this.telemetryFilter.from_date));
+      this.picker.datePicker.setEndDate(moment.unix(this.telemetryFilter.to_date));
     }
     // this.searchTelemetry(this.telemetryFilter, false);
   }
@@ -153,6 +150,14 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
 
   async searchTelemetry(filterObj, updateFilterObj = true) {
     this.telemetry = [];
+    if (filterObj.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(filterObj.dateOption);
+      filterObj.from_date = dateObj.from_date;
+      filterObj.to_date = dateObj.to_date;
+    } else {
+      filterObj.from_date = filterObj.from_date;
+      filterObj.to_date = filterObj.to_date;
+    }
     const obj = {...filterObj};
     delete obj.device;
     obj.device_id = filterObj?.device?.device_id;
@@ -237,15 +242,11 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
       const dateObj = this.commonService.getMomentStartEndDate(this.telemetryFilter.dateOption);
       this.telemetryFilter.from_date = dateObj.from_date;
       this.telemetryFilter.to_date = dateObj.to_date;
+      this.selectedDateRange = value.label;
     } else {
       this.telemetryFilter.from_date = moment(value.start).utc().unix();
       this.telemetryFilter.to_date = moment(value.end).utc().unix();
-    }
-    console.log(this.telemetryFilter);
-    if (value.label === 'Custom Range') {
       this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
-    } else {
-      this.selectedDateRange = value.label;
     }
     if (this.telemetryFilter.to_date - this.telemetryFilter.from_date > 3600) {
       this.telemetryFilter.isTypeEditable = true;
@@ -258,12 +259,20 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
     // this.filterSearch.emit(this.originalFilterObj);
     this.telemetryFilter = {};
     // this.isFilterSelected = false;
-    this.telemetryFilter = {...this.originalTelemetryFilter};
-    if (this.dtInput1) {
-      this.dtInput1.value = null;
+    this.telemetryFilter = JSON.parse(JSON.stringify(this.originalTelemetryFilter));
+    this.telemetryFilter.dateOption = 'Last 30 Mins';
+    if ( this.telemetryFilter.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate( this.telemetryFilter.dateOption);
+      this.telemetryFilter.from_date = dateObj.from_date;
+      this.telemetryFilter.to_date = dateObj.to_date;
+      this.selectedDateRange = this.telemetryFilter.dateOption;
+    } else {
+      this.telemetryFilter.from_date =  this.telemetryFilter.from_date;
+      this.telemetryFilter.to_date =  this.telemetryFilter.to_date;
+      this.selectedDateRange = moment.unix(this.telemetryFilter.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
+      moment.unix(this.telemetryFilter.to_date).format('DD-MM-YYYY HH:mm');
     }
-    if (this.dtInput2) {
-      this.dtInput2.value = null;
-    }
+    this.picker.datePicker.setStartDate(moment.unix(this.telemetryFilter.from_date));
+    this.picker.datePicker.setEndDate(moment.unix(this.telemetryFilter.to_date));
   }
 }

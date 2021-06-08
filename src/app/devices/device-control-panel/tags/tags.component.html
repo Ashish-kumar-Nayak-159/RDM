@@ -37,7 +37,7 @@
 <div class="table-responsive">
   <div class="tableFixHead">
     <accordion [closeOthers]="true" class="p-3">
-      <accordion-group heading="">
+      <accordion-group heading=""  [panelClass]="'customClass'">
         <ng-container accordion-heading>
           <a class="btn">
             Reserved Tags
@@ -133,7 +133,7 @@
             </table>
 
       </accordion-group>
-      <accordion-group heading="">
+      <accordion-group heading=""  [panelClass]="'customClass'">
         <ng-container accordion-heading>
           <a class="btn">
             Custom Tags
@@ -158,21 +158,21 @@
                     </ng-container>
                     <ng-container *ngIf="isCustomTagsEditable">
                       <td>
-                        <input type="text" class="form-control-sm bg-light border-0 small mr-3" aria-label="Search"
+                        <input type="text" class="form-control form-control-sm bg-light border-0 small" aria-label="Search"
                           aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name"
                           (focusout)="checkKeyDuplicacy(tag, i)">
                       </td>
-                      <td><input type="text" class="form-control-sm bg-light border-0 small mr-3" aria-label="Value"
+                      <td><input type="text" class="form-control form-control-sm bg-light border-0 small" aria-label="Value"
                           aria-describedby="basic-addon3" [(ngModel)]="tag.value" name="value"></td>
                     </ng-container>
                   </ng-container>
                   <ng-template #lastRowTemplate>
                     <td>
-                      <input type="text" class="form-control-sm bg-light border-0 small mr-3" placeholder="Name"
+                      <input type="text" class="form-control form-control-sm bg-light border-0 small" placeholder="Name"
                         aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.name" name="name"
                         (input)="onCustomTagInputChange()" (focusout)="checkKeyDuplicacy(tag, i)">
                     </td>
-                    <td><input type="text" class="form-control-sm bg-light border-0 small mr-3" placeholder="Value"
+                    <td><input type="text" class="form-control form-control-sm bg-light border-0 small" placeholder="Value"
                         aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.value" name="value"
                         (input)="onCustomTagInputChange()"></td>
                   </ng-template>
@@ -253,8 +253,8 @@
         <ng-container *ngIf="changeLocationOption === 'pick_from_map' || changeLocationOption === 'address'">
           <div class="mt-2">
             <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" (mapReady)="mapReadyHandler($event)"
-              [zoom]="zoom">
-              <agm-marker [latitude]="device?.tags.latitude" [longitude]="device?.tags.longitude"></agm-marker>
+            [fitBounds]="true">
+              <agm-marker [latitude]="device?.tags.latitude" [longitude]="device?.tags.longitude" [agmFitBounds]="true"></agm-marker>
             </agm-map>
           </div>
         </ng-container>

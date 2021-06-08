@@ -70,6 +70,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   isChartViewOpen = true;
   sasToken = environment.blobKey;
   blobStorageURL = environment.blobURL;
+  acknowledgedAlertIndex: number = undefined;
   @ViewChild('dtInput1', {static: false}) dtInput1: any;
   @ViewChild('dtInput2', {static: false}) dtInput2: any;
   toDate: any;
@@ -366,6 +367,16 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       }
     });
     this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+    if (this.pageType === 'history') {
+      if (this.filterObj.dateOption !== 'Custom Range') {
+        const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
+        this.filterObj.from_date = dateObj.from_date;
+        this.filterObj.to_date = dateObj.to_date;
+      } else {
+        this.filterObj.from_date = this.filterObj.from_date;
+        this.filterObj.to_date = this.filterObj.to_date;
+      }
+    }
     const obj = {...this.filterObj};
     obj.hierarchy = { App: this.contextApp.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
@@ -384,11 +395,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       obj.from_date = moment().subtract(24, 'hour').utc().unix();
       obj.to_date = now;
     } else {
-    if (!obj.from_date || !obj.to_date) {
-      this.toasterService.showError('Date selection is requierd.', 'Get Alert Data');
-      this.isAlertAPILoading = false;
-      return;
-    }
+      if (!obj.from_date || !obj.to_date) {
+        this.toasterService.showError('Date selection is requierd.', 'Get Alert Data');
+        this.isAlertAPILoading = false;
+        return;
+      }
     }
     if (updateFilterObj) {
       let pagefilterObj ;
@@ -408,9 +419,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
       } else if (this.pageType === 'history') {
         pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
-        pagefilterObj['from_date'] = this.filterObj.from_date;
-        pagefilterObj['to_date'] = this.filterObj.to_date;
-        pagefilterObj['dateOption'] = this.filterObj.dateOption;
+        pagefilterObj['from_date'] = obj.from_date;
+        pagefilterObj['to_date'] = obj.to_date;
+        pagefilterObj['dateOption'] = obj.dateOption;
         this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, pagefilterObj);
       }
     }
@@ -420,7 +431,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.latestAlerts = response.data;
         if (this.latestAlerts.length > 0) {
           this.selectedAlert = undefined;
-          this.onClickOfViewGraph(this.latestAlerts[0]);
+          this.onClickOfViewGraph(this.latestAlerts[this.acknowledgedAlertIndex || 0]);
+          this.acknowledgedAlertIndex = undefined;
         } else {
           this.selectedAlert = undefined;
           this.selectedTab = undefined;
@@ -733,13 +745,14 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       $(child).remove();
     }
     this.telemetryData = [];
-    this.filterObj.epoch = true;
-    this.filterObj.app = this.contextApp.app;
-    this.filterObj.device_id = this.selectedAlert.device_id;
-    this.filterObj.message_props = '';
-    this.filterObj.from_date = null;
-    this.filterObj.to_date = null;
     const filterObj = JSON.parse(JSON.stringify(this.filterObj));
+    filterObj.epoch = true;
+    filterObj.app = this.contextApp.app;
+    filterObj.device_id = this.selectedAlert.device_id;
+    filterObj.message_props = '';
+    filterObj.from_date = null;
+    filterObj.to_date = null;
+
     this.propList.forEach((prop, index) =>
     filterObj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
     if (this.beforeInterval > 0) {
@@ -891,6 +904,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   async onClickOfAcknowledgeAlert(alert): Promise<void> {
     this.acknowledgedAlert = alert;
+    this.acknowledgedAlertIndex = this.latestAlerts.findIndex(alertObj => alertObj.id === alert.id);
     if (!this.acknowledgedAlert || !this.acknowledgedAlert.metadata) {
       this.acknowledgedAlert.metadata = {
         files: [{

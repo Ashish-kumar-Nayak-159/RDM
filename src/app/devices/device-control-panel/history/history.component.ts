@@ -92,11 +92,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
     } else {
       this.historyFilter.device_id = this.device.device_id;
     }
-    this.historyFilter.type = true;
     this.historyFilter.sampling_format = 'minute';
     this.historyFilter.sampling_time = 1;
     this.historyFilter.aggregation_minutes = 1;
     this.historyFilter.aggregation_format = 'AVG';
+    this.historyFilter.type = true;
     if (this.propertyList) {
       this.propertyList.forEach(item => {
         this.dropdownPropList.push({
@@ -253,6 +253,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
       currentHistoryFilter.to_date = this.historyFilter.to_date;
       currentHistoryFilter.from_date = this.historyFilter.from_date;
 
+      if (currentHistoryFilter.dateOption !== 'Custom Range') {
+        const dateObj = this.commonService.getMomentStartEndDate(currentHistoryFilter.dateOption);
+        currentHistoryFilter.from_date = dateObj.from_date;
+        currentHistoryFilter.to_date = dateObj.to_date;
+      } else {
+        currentHistoryFilter.from_date = currentHistoryFilter.from_date;
+        currentHistoryFilter.to_date = currentHistoryFilter.to_date;
+      }
       const obj = { ...currentHistoryFilter };
       obj.partition_key = this.device?.tags?.partition_key;
       delete obj.dateOption;
@@ -366,8 +374,25 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.xAxisProps = '';
     this.y1AxisProps = [];
     this.y2AxisProp = [];
-
     this.selectedWidgets = [];
+    this.historyFilter.dateOption = 'Last 30 Mins';
+    if (this.historyFilter.dateOption !== 'Custom Range') {
+      this.selectedDateRange = this.historyFilter.dateOption;
+    } else {
+      const dateObj = this.commonService.getMomentStartEndDate(this.historyFilter.dateOption);
+      this.historyFilter.from_date = dateObj.from_date;
+      this.historyFilter.to_date = dateObj.to_date;
+      this.selectedDateRange = moment.unix(this.historyFilter.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
+      moment.unix(this.historyFilter.to_date).format('DD-MM-YYYY HH:mm');
+    }
+    this.picker.datePicker.setStartDate(moment.unix(this.historyFilter.from_date));
+    this.picker.datePicker.setEndDate(moment.unix(this.historyFilter.to_date));
+
+    if (this.historyFilter.to_date - this.historyFilter.from_date > 3600) {
+      this.historyFilter.isTypeEditable = true;
+    } else {
+      this.historyFilter.isTypeEditable = false;
+    }
   }
 
   onDateChange(event) {

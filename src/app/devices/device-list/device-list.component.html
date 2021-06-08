@@ -88,11 +88,12 @@
           </span>
         </ng-container>
         <ng-container *ngIf="currentPageView === 'map'">
-          <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle">
+          <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle"
+          [fitBounds]="true">
             <agm-marker-cluster
             imagePath="./assets/img/m">
           <ng-container  *ngFor="let device of devicesList; let i = index; ">
-            <agm-marker *ngIf="device.latitude && device.longitude"
+            <agm-marker *ngIf="device.latitude && device.longitude" [agmFitBounds]="true"
             [latitude]="device.latitude" [longitude]="device.longitude"
             (mouseOver)="onMarkerClick(infowindow, gm)"
             [iconUrl]="device.icon"  >
@@ -127,8 +128,26 @@
 [componentState]="componentState" [tileData]="tileData" (cancelModal)="onEditDeviceCancelModal()"></app-add-device>
 
 
-<div class="modal fade" id="derivedKPIModal" role="dialog">
-  <div class="modal-dialog modal-lg" role="document">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="modal fade right" id="derivedKPIModal" role="dialog">
+  <div class="modal-dialog modal-lg" role="document" style="width: 45%;">
     <div class="modal-content" *ngIf="contextApp.app === 'CMS_Dev' && componentState === constantData.NON_IP_DEVICE">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">View Specific Power Consumption Data</h5>

@@ -28,7 +28,7 @@
 <div class="table-responsive">
   <div class="tableFixHead">
     <accordion [closeOthers]="true" class="p-3" *ngIf="originalDeviceType?.metadata">
-      <accordion-group heading="">
+      <accordion-group heading=""  [panelClass]="'customClass'">
         <ng-container accordion-heading>
           <a class="btn">
             Data Ingestion Setting
@@ -43,7 +43,7 @@
             <label class="form-label">&nbsp;Ingest All Properties</label> &nbsp;
         </div>
       </accordion-group>
-      <accordion-group heading="">
+      <accordion-group heading=""  [panelClass]="'customClass'">
         <ng-container accordion-heading>
           <a class="btn">
             Measurement Frequency Setting
@@ -62,7 +62,7 @@
           </tbody>
         </table>
       </accordion-group>
-      <accordion-group heading="">
+      <accordion-group heading=""  [panelClass]="'customClass'">
         <ng-container accordion-heading>
           <a class="btn">
             Telemetry Mode Settings

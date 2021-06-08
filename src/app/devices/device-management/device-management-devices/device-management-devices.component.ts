@@ -238,7 +238,10 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Please select only one asset to perform the operation', 'Asset Management');
       return;
     }
-    if (!type.toLowerCase().includes('provision') && this.type === CONSTANTS.NON_IP_DEVICE) {
+    if (type.toLowerCase().includes('package') && this.type === CONSTANTS.NON_IP_DEVICE) {
+      this.toasterService.showError(`Package Management is not avilable for Legacy asset.`, 'Asset Management');
+      return;
+    } else if (!type.toLowerCase().includes('provision') && this.type === CONSTANTS.NON_IP_DEVICE) {
       this.toasterService.showError(`You can't perform this operation on legacy asset.`, 'Asset Management');
       return;
     }
@@ -325,6 +328,9 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
     const device = this.selectedDevices[0];
     if (device.status.toLowerCase() === 'enabled') {
       this.toasterService.showError('Asset is already enabled.', 'Enable Asset');
+      $('#confirmMessageModal').modal('hide');
+      this.selectedDevices = [];
+      this.isAllDeviceSelected = false;
       return;
     }
     this.isAPILoading = true;
@@ -334,6 +340,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
         this.isAPILoading = false;
         this.devicesList = [];
         this.selectedDevices = [];
+        this.isAllDeviceSelected = false;
         this.getDevices();
         $('#confirmMessageModal').modal('hide');
       }, error => {
@@ -347,6 +354,9 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
     const device = this.selectedDevices[0];
     if (device.status.toLowerCase() === 'disabled') {
       this.toasterService.showError('Asset is already disabled.', 'Disable Asset');
+      $('#confirmMessageModal').modal('hide');
+      this.selectedDevices = [];
+      this.isAllDeviceSelected = false;
       return;
     }
     this.isAPILoading = true;
@@ -356,6 +366,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
         this.isAPILoading = false;
         this.devicesList = [];
         this.selectedDevices = [];
+        this.isAllDeviceSelected = false;
         this.getDevices();
         $('#confirmMessageModal').modal('hide');
       }, error => {
@@ -380,6 +391,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
         this.isAPILoading = false;
         this.devicesList = [];
         this.selectedDevices = [];
+        this.isAllDeviceSelected = false;
         this.getDevices();
         $('#confirmMessageModal').modal('hide');
       }, error => {

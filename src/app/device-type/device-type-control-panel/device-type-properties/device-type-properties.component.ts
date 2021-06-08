@@ -201,6 +201,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       threshold: {}
     };
     console.log(this.setupForm);
+    if (this.deviceType.metadata?.model_type === CONSTANTS.NON_IP_DEVICE) {
     if (this.deviceType.tags.protocol === 'ModbusTCPMaster' || this.deviceType.tags.protocol === 'ModbusRTUMaster') {
       this.setupForm = new FormGroup({
         d: new FormControl(null, [Validators.required]),
@@ -217,6 +218,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       });
     }
     console.log(this.setupForm);
+    }
    // this.thingsModel.tags.app = this.contextApp.app;
     $('#addPropertiesModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
@@ -498,6 +500,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
     } else if (obj.for === 'Edit') {
       this.propertyObj = JSON.parse(JSON.stringify(obj.data));
       this.propertyObj.edit = true;
+      if (this.deviceType.metadata?.model_type === CONSTANTS.NON_IP_DEVICE) {
       if (this.deviceType.tags.protocol === 'ModbusTCPMaster' || this.deviceType.tags.protocol === 'ModbusRTUMaster') {
         this.setupForm = new FormGroup({
           d: new FormControl(this.propertyObj.metadata.d, [Validators.required]),
@@ -518,6 +521,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       this.onChangeOfSetupFunctionCode(this.propertyObj.metadata);
       if (this.deviceType.tags.protocol === 'SiemensTCPIP') {
         this.onChageOfMemoryType(this.propertyObj.metadata);
+      }
       }
 
       $('#addPropertiesModal').modal({ backdrop: 'static', keyboard: false, show: true });

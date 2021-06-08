@@ -133,7 +133,7 @@ export class ApplicationOrgTreeComponent implements OnInit {
     this.applicationData.hierarchy.levels = JSON.parse(JSON.stringify(levels));
     this.forceUpdate = true;
     console.log(JSON.stringify(this.applicationData.hierarchy));
-    // this.updateAppData();
+    this.updateAppData();
   }
 
   removeHierarchyIndexTags(tags, index) {

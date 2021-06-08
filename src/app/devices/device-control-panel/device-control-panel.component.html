@@ -88,8 +88,8 @@
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel" id="device_notifications">
             <app-device-messages-wrapper *ngIf="activeTab === 'notifications' && device" [device]="device"></app-device-messages-wrapper>
           </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'logs'}" role="tabpanel" id="device_logs">
-            <app-logs *ngIf="activeTab === 'logs' && device" [device]="device"></app-logs>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'logs' || activeTab === 'stream_processing' || activeTab === 'rules' || activeTab === 'derived_kpis' || activeTab === 'maintenance_schedule' || activeTab === 'predictions'}" role="tabpanel" id="device_logs">
+            <app-logs *ngIf="activeTab === 'logs'  || activeTab === 'stream_processing' || activeTab === 'rules' || activeTab === 'derived_kpis' || activeTab === 'maintenance_schedule' || activeTab === 'predictions' && device" [device]="device"></app-logs>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'trend-analysis'}" role="tabpanel"
             id="device_trend_analysis">

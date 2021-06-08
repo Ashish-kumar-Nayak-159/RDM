@@ -304,6 +304,14 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit {
 
   getReportsData(updateFilterObj = true) {
     this.insideScrollFunFlag = true;
+    if (this.filterObj.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
+      this.filterObj.from_date = dateObj.from_date;
+      this.filterObj.to_date = dateObj.to_date;
+    } else {
+      this.filterObj.from_date = this.filterObj.from_date;
+      this.filterObj.to_date = this.filterObj.to_date;
+    }
     const obj = {...this.filterObj};
     // if (!obj.report_type) {
     //   this.toasterService.showError('Report Type selection is required', 'View Report');

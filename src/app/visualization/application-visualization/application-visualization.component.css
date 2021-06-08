@@ -12,7 +12,7 @@ input:invalid {
 }
 
 .content-scroll-alert {
-  max-height: calc(100vh - 13.5rem);
+  max-height: calc(100vh - 18rem);
 }
 
 

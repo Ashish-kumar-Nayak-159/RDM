@@ -37,7 +37,7 @@
   <div class="tab-bar">
     <div class="">
   <form class="form-inline">
-      <div class="form-group ">
+      <!-- <div class="form-group ">
         <input type="radio" value="C2D Message"
             name="communicationTechnique" [(ngModel)]="selectedCommunicationTechnique"  (change)="onChangeOfTechnique()">
         <label class="col-form-label">&nbsp; C2D Message</label>
@@ -51,11 +51,20 @@
         <input type="radio" value="Twin Change"
             name="communicationTechnique" [(ngModel)]="selectedCommunicationTechnique"  (change)="onChangeOfTechnique()">
         <label class="col-form-label"> &nbsp;Twin Change</label>
-      </div>
+      </div> -->
+      <div class="form-group" >
+        <select class="form-control form-control-sm" id="technique" name="acknowledge" [(ngModel)]="selectedCommunicationTechnique"
+          (change)="onChangeOfTechnique()">
+          <option [ngValue]="undefined"> Select Communication Technique</option>
+          <option [ngValue]="'C2D Message'" >C2D Message</option>
+            <option [ngValue]="'Direct Method'" >Direct Method</option>
+            <option [ngValue]="'Twin Change'" >Twin Change</option>
+        </select>
+    </div>
       <div class="form-group" *ngIf="selectedCommunicationTechnique" >
           <select class="form-control form-control-sm" id="widget" name="acknowledge" [(ngModel)]="selectedWidget"
-            (change)="onChangeOfDropdownData()" style="width: 15rem!important;">
-            <option [ngValue]="undefined"> Select {{pageType.includes('configure') ? 'Configuration ' : 'Control '}} Widget</option>
+            (change)="onChangeOfDropdownData()">
+            <option [ngValue]="undefined"> Select {{displayMode.includes('configure') ? 'Configuration ' : 'Control '}} Widget</option>
             <option [ngValue]="widget" *ngFor="let widget of controlWidgets">{{widget.name}}</option>
           </select>
       </div>

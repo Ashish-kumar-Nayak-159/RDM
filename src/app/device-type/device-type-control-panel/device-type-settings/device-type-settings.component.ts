@@ -79,8 +79,16 @@ export class DeviceTypeSettingsComponent implements OnInit {
   }
 
   saveSettings() {
+    if (this.deviceType.metadata.measurement_settings.measurement_frequency <= 0) {
+      this.toasterService.showError('Measurement frequency should be greater than 0', 'Model Settings');
+      return;
+    }
+    if (this.deviceType.metadata.telemetry_mode_settings.normal_mode_frequency <= 0 || this.deviceType.metadata.telemetry_mode_settings.turbo_mode_frequency <= 0 ||
+      this.deviceType.metadata.telemetry_mode_settings.turbo_mode_timeout_time <= 0) {
+        this.toasterService.showError('Telemtry frequency values should be greater than 0', 'Model Settings');
+        return;
+    }
     this.isSaveSettingAPILoading = true;
-    const tagObj = {};
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.app = this.contextApp.app;
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
@@ -89,6 +97,7 @@ export class DeviceTypeSettingsComponent implements OnInit {
         this.toasterService.showSuccess(response.message, 'Update Model Settings');
         this.getDeviceTypeDetail();
         this.isSaveSettingAPILoading = false;
+        this.isSettingsEditable = false;
       }, error => {
         this.toasterService.showError(error.message, 'Update Model Settings');
         this.isSaveSettingAPILoading = false;

@@ -6,15 +6,15 @@
       <form class="form-inline">
         <ng-container *ngIf="contextApp.app === 'CMS_Dev'">
         <div class="form-group">
-          <div class="numberCircle"  tooltip="All Assets">
+          <div class="numberCircle" [ngClass]="{'active': activeCircle === 'all'}" tooltip="All Assets">
             <a href="javascript:void(0)" (click)="onClickOfCount('all')">{{devices.length}}</a></div>
         </div>
         <div class="form-group">
-          <div class="greenNumberCircle" tooltip="Healthy Assets">
+          <div class="greenNumberCircle" [ngClass]="{'active': activeCircle === 'healthy'}" tooltip="Healthy Assets">
             <a href="javascript:void(0)" class="text-white" (click)="onClickOfCount('healthy')">{{healthyDeviceCount}}</a></div>
         </div>
         <div class="form-group">
-          <div class="redNumberCircle" tooltip="Unhealthy Assets">
+          <div class="redNumberCircle" [ngClass]="{'active': activeCircle === 'unhealthy'}" tooltip="Unhealthy Assets">
             <a href="javascript:void(0)" class="text-white" (click)="onClickOfCount('unhealthy')">{{unhealthyDeviceCount}}</a></div>
         </div>
       </ng-container>
@@ -47,11 +47,14 @@
             [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
             dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.device">
           </ng-select> -->
-          <div class="">
+          <!-- <div class="">
             <button class="btn btn-sm searchBtn btn-primary" type="button" (click)="onDeviceFilterApply()">Apply</button>
-          </div>
+          </div> -->
         </div>
         </div>
+        <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
+          (click)="onDeviceFilterApply()"><i
+            class="fas fa-search fa-sm"></i></button></div>
       </form>
     </div>
   </div>
@@ -61,11 +64,12 @@
 <div class="">
   <div id="map-container-google-1" class="z-depth-1-half map-container">
 
-    <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle">
+    <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle"
+     [fitBounds]="true">
       <agm-marker-cluster
       imagePath="./assets/img/m">
     <ng-container  *ngFor="let device of mapDevices; let i = index; ">
-      <agm-marker *ngIf="device.latitude && device.longitude"
+      <agm-marker *ngIf="device.latitude && device.longitude" [agmFitBounds]="true"
       [latitude]="device.latitude" [longitude]="device.longitude"
       (mouseOver)="onMarkerClick(infowindow, gm)"
       [iconUrl]="device.icon"

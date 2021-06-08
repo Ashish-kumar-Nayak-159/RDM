@@ -64,7 +64,7 @@
       <div class="modal-body">
         <form>
           <div class="form-group">
-            <label for="message-text" class="col-form-label">App Name:</label>
+            <label for="message-text" class="col-form-label required">App Name:</label>
             <input
               type="text"
               class="form-control form-control-sm"
@@ -74,7 +74,7 @@
             />
           </div>
           <div class="form-group">
-            <label for="message-text" class="col-form-label"
+            <label for="message-text" class="col-form-label required"
               >User Full Name:</label
             >
             <input
@@ -87,7 +87,7 @@
             />
           </div>
           <div class="form-group">
-            <label for="message-text" class="col-form-label">User Email:</label>
+            <label for="message-text" class="col-form-label required">User Email:</label>
             <input
               type="email"
               pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
@@ -99,7 +99,7 @@
             />
           </div>
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Role:</label>
+            <label for="recipient-name" class="col-form-label required">Role:</label>
             <select class="form-control form-control-sm" id="role" (change)="onUserRoleChange()" name="role" [(ngModel)]="addUserObj.role">
               <option [ngValue]="role.name" *ngFor="let role of applicationData.roles">{{role.name}}</option>
             </select>
@@ -117,7 +117,7 @@
             />
           </div>
           <div class="form-group" *ngFor="let hierarchyItem of hierarchyList; let hIndex = index">
-            <label for="message-text" class="col-form-label">{{hierarchyItem}}:</label>
+            <label for="message-text" class="col-form-label required">{{hierarchyItem}}:</label>
             <select class="form-control form-control-sm" id="hierarchy{{hIndex}}"  name="hierarchy{{hIndex}}" [(ngModel)]="configureHierarchy[hIndex]"
             (change)="onChangeOfHierarchy(hIndex)" *ngIf="hIndex !== 0">
               <option [ngValue]="undefined">Select {{hierarchyItem}}</option>

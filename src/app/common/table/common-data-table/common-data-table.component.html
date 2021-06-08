@@ -21,7 +21,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-filter-content" aria-labelledby="userDropdown1">
                 <div class="dropdown-filter-search">
-                  <input type="number" class="dropdown-form" placeholder="Search {{item.header_name}} " id="{{item.header_name}}_{{headerIndex}}"
+                  <input type="number" class="dropdown-form" min="0" placeholder="Search Text" id="{{item.header_name}}_{{headerIndex}}"
                   [(ngModel)]="tableFilterObj[item.data_key]" name="{{item.header_name}}_{{headerIndex}}"/>
                   </div>
                   <div class="form-group"><button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary" (click)="onStringValueChange()" >Search</button>
@@ -36,7 +36,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-filter-content" aria-labelledby="userDropdown2">
                 <div class="dropdown-filter-search">
-                  <input type="text" class="dropdown-form" placeholder="Search {{item.header_name}}" id="{{item.header_name}}_{{headerIndex}}"
+                  <input type="text" class="dropdown-form" placeholder="Search Text" id="{{item.header_name}}_{{headerIndex}}"
                    [(ngModel)]="tableFilterObj[item.data_key]" name="{{item.header_name}}_{{headerIndex}}"/>
                   </div>
                   <div class="form-group"><button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary" (click)="onStringValueChange()" >Search</button>
@@ -78,9 +78,9 @@
     <tr *ngFor="let dataItem of filteredTableData; let dataIndex = index;">
       <td class="pl-3" *ngIf="tableConfig.border_left_key"
       >
-      <div class="status-icon-circle"   [tooltip]="dataItem[tableConfig.border_left_key] === false ? 'Healthy Asset' : (dataItem[tableConfig.border_left_key] ? 'Unhealthy Asset' : '')"
-      [ngClass]="dataItem[tableConfig.border_left_key] === false ? 'bg-success' : (dataItem[tableConfig.border_left_key] ? 'bg-danger' : 'bg-white')">
-        <i class="fas text-white" [ngClass]="dataItem[tableConfig.border_left_key] === false ? 'fa-check' : (dataItem[tableConfig.border_left_key] ? 'fa-times' : 'fa-check')"></i>
+      <div class="status-icon-circle"   [tooltip]="dataItem[tableConfig.border_left_key] === true ? 'Healthy Asset' : (dataItem[tableConfig.border_left_key] === false ? 'Unhealthy Asset' : '')"
+      [ngClass]="dataItem[tableConfig.border_left_key] === true ? 'bg-success' : (dataItem[tableConfig.border_left_key]  === false ? 'bg-danger' : 'bg-white-asset')">
+        <i class="fas text-white" [ngClass]="dataItem[tableConfig.border_left_key] === true ? 'fa-check' : (dataItem[tableConfig.border_left_key] === false ? 'fa-times' : 'fa-check')"></i>
       </div>
       </td>
       <td [ngClass]="{'pl-3': !tableConfig.border_left_key}" >

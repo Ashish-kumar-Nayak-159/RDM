@@ -71,7 +71,8 @@
               <div class="file-input form-control form-control-sm p-0 col-8">
                <input type="file"  accept=".zip,.rar,.7zip" id="file" class="file" (change)="onDocumentFileSelected($event.target.files)">
 
-               <label for="file">{{(packageObj && packageObj.metadata && packageObj.metadata.file_name) ? (packageObj.metadata.file_name) : 'Choose File'}}</label>
+               <label for="file" class="overflow-text" [tooltip]="(packageObj && packageObj.metadata && packageObj.metadata.file_name) ? (packageObj.metadata.file_name) : ''">
+                 {{(packageObj && packageObj.metadata && packageObj.metadata.file_name) ? (packageObj.metadata.file_name) : 'Choose File'}}</label>
               </div>
               <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
               <input type="file"  accept=".zip,.rar,.7zip" id="file" class="file" >

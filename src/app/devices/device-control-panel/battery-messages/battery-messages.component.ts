@@ -91,6 +91,14 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
   searchBatteryMessage(filterObj, updateFilterObj = true) {
     this.isFilterSelected = true;
     this.isBatteryMessageLoading = true;
+    if (filterObj.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(filterObj.dateOption);
+      filterObj.from_date = dateObj.from_date;
+      filterObj.to_date = dateObj.to_date;
+    } else {
+      filterObj.from_date = filterObj.from_date;
+      filterObj.to_date = filterObj.to_date;
+    }
     const obj = {...filterObj};
     if (updateFilterObj) {
       const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};

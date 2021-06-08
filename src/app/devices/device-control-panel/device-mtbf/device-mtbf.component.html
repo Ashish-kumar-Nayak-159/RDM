@@ -2,12 +2,12 @@
   <div class="">
     <ul class="nav">
       <li class="nav-item">
-        <a class="nav-link"  [ngClass]="{'active': displayMode === 'events'}" href="javascript:void(0)" (click)="onTabChange('events');displayMode = 'events'">
+        <a class="nav-link"  [ngClass]="{'active': displayMode === 'events'}" href="javascript:void(0)" (click)="onTabChange('events');">
           <i class="fa fa-fw fa-angle-right"></i>
           <span>TBF Events</span></a>
       </li>
       <li class="nav-item" >
-        <a class="nav-link" [ngClass]="{'active': displayMode === 'history'}" href="javascript:void(0)" (click)="onTabChange('history');displayMode = 'history'">
+        <a class="nav-link" [ngClass]="{'active': displayMode === 'history'}" href="javascript:void(0)" (click)="onTabChange('history');">
           <i class="fa fa-fw fa-eye"></i>
           <span>Historical MTBF</span></a>
       </li>

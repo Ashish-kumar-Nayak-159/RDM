@@ -124,28 +124,26 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
     if (item.dateOption) {
       this.telemetryFilter.dateOption = item.dateOption;
-      if (item.dateOption !== 'Custom Range') {
-        const dateObj = this.commonService.getMomentStartEndDate(item.dateOption);
-        this.telemetryFilter.from_date = dateObj.from_date;
-        this.telemetryFilter.to_date = dateObj.to_date;
-      } else {
+      if (item.dateOption === 'Custom Range') {
         this.telemetryFilter.from_date = item.from_date;
         this.telemetryFilter.to_date = item.to_date;
+        this.selectedDateRange = moment.unix(this.telemetryFilter.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
+        moment.unix(this.telemetryFilter.to_date).format('DD-MM-YYYY HH:mm');
+      } else {
+        const dateObj = this.commonService.getMomentStartEndDate(this.telemetryFilter.dateOption);
+        this.telemetryFilter.from_date = dateObj.from_date;
+        this.telemetryFilter.to_date = dateObj.to_date;
+        this.selectedDateRange = this.telemetryFilter.dateOption;
       }
       this.picker.datePicker.setStartDate(moment.unix(this.telemetryFilter.from_date));
       this.picker.datePicker.setEndDate(moment.unix(this.telemetryFilter.to_date));
-      if (this.telemetryFilter.dateOption !== 'Custom Range') {
-        this.selectedDateRange = this.telemetryFilter.dateOption;
-      } else {
-        this.selectedDateRange = moment.unix(this.telemetryFilter.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
-        moment.unix(this.telemetryFilter.to_date).format('DD-MM-YYYY HH:mm');
-      }
       if (this.telemetryFilter.to_date - this.telemetryFilter.from_date > 3600) {
         this.telemetryFilter.isTypeEditable = true;
       } else {
         this.telemetryFilter.isTypeEditable = false;
       }
     }
+    this.originalTelemetryFilter = JSON.parse(JSON.stringify(this.telemetryFilter));
     this.searchTelemetry(this.telemetryFilter, false);
   }
 
@@ -191,18 +189,43 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   clear() {
-    // this.filterSearch.emit(this.originalFilterObj);
-    // this.datepicker.datePicker.setStartDate(null);
-    // this.datepicker.datePicker.setEndDate(null);
+    console.log('before', JSON.stringify(this.originalTelemetryFilter));
     this.telemetryFilter = {};
-    this.telemetryFilter = {...this.originalTelemetryFilter};
+    this.telemetryFilter = JSON.parse(JSON.stringify(this.originalTelemetryFilter));
+    this.telemetryFilter.dateOption = 'Last 30 Mins';
+    if (this.telemetryFilter.dateOption !== 'Custom Range') {
+      this.selectedDateRange = this.telemetryFilter.dateOption;
+    } else {
+      const dateObj = this.commonService.getMomentStartEndDate(this.telemetryFilter.dateOption);
+      this.telemetryFilter.from_date = dateObj.from_date;
+      this.telemetryFilter.to_date = dateObj.to_date;
+      this.selectedDateRange = moment.unix(this.telemetryFilter.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
+      moment.unix(this.telemetryFilter.to_date).format('DD-MM-YYYY HH:mm');
+    }
+    this.picker.datePicker.setStartDate(moment.unix(this.telemetryFilter.from_date));
+    this.picker.datePicker.setEndDate(moment.unix(this.telemetryFilter.to_date));
+
+    if (this.telemetryFilter.to_date - this.telemetryFilter.from_date > 3600) {
+      this.telemetryFilter.isTypeEditable = true;
+    } else {
+      this.telemetryFilter.isTypeEditable = false;
+    }
     console.log(this.telemetryFilter);
   }
 
   searchTelemetry(filterObj, updateFilterObj = true) {
     this.telemetry = [];
+    if (filterObj.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(filterObj.dateOption);
+      filterObj.from_date = dateObj.from_date;
+      filterObj.to_date = dateObj.to_date;
+    } else {
+      filterObj.from_date = filterObj.from_date;
+      filterObj.to_date = filterObj.to_date;
+    }
     const obj = {...filterObj};
     obj.partition_key = this.device?.tags?.partition_key;
+
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'Get Telemetry Data');
       this.isTelemetryLoading = false;

@@ -27,6 +27,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
   isAppSetingsEditable = false;
   originalHierarchyArr = {};
   selectedHierarchyData = {};
+  isAddHierarchyThere = false;
   constructor(
     private toasterService: ToasterService,
     private applicationService: ApplicationService
@@ -78,6 +79,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
 
   addTag(index) {
     this.hierarchyArr[index].push(null);
+    this.isAddHierarchyThere = true;
   }
 
   onAddNewTag(i, tagIndex) {
@@ -89,6 +91,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Tag already exists', 'Add Tag');
       return;
     }
+    this.isAddHierarchyThere = false;
     this.hierarchyArr[i][tagIndex] = this.addedTagItem;
     let obj = this.applicationData.hierarchy.tags;
     Object.keys(this.configureHierarchy).forEach((_, index) => {
@@ -219,6 +222,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
 
   onAddTagCancel(index, tagIndex) {
     this.hierarchyArr[index].splice(tagIndex, 1);
+    this.isAddHierarchyThere = false;
     this.originalHierarchyArr = JSON.parse(JSON.stringify(this.hierarchyArr));
   }
 

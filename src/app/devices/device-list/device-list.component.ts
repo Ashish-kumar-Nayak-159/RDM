@@ -675,7 +675,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
                 };
               } else if (this.componentState === this.constantData.NON_IP_DEVICE) {
                 item.icon = {
-                  url: item.kpiValue === false ? './assets/img/legacy-asset-green.svg' : (item.kpiValue === true ? './assets/img/legacy-asset-red.svg' : './assets/img/legacy-assets.svg'),
+                  url: item.kpiValue === true ? './assets/img/legacy-asset-green.svg' : (item.kpiValue === false ? './assets/img/legacy-asset-red.svg' : './assets/img/legacy-assets.svg'),
                   scaledSize: {
                     width: 25,
                     height: 25
@@ -751,6 +751,10 @@ export class DeviceListComponent implements OnInit, OnDestroy {
               console.log(item.device_id , '=====', item.icon);
             });
             this.devicesList = [...this.devicesList, ...response.data];
+            const center = this.commonService.averageGeolocation(this.devicesList);
+            console.log(center);
+            this.centerLatitude = center?.latitude || 23.0225;
+            this.centerLongitude = center?.longitude || 72.5714;
 
           }
           if (response.data.length === this.currentLimit) {

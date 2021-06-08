@@ -122,7 +122,6 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
   }
 
   deleteAllDeviceTypeTags() {
-
     this.tagObj = undefined;
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.tags = this.deviceType.tags;
@@ -135,7 +134,8 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
     if (type === 'reset') {
       this.message = 'All the unsaved changes will removed. Are you sure you want to reset the tags?';
     } else {
-      this.message = 'All the assets with this model will get affected. Are you sure you want to remove ' + (type === 'all' ? 'all tags?' : 'this tag?');
+      this.message = 'All the assets with this model will get affected. Are you sure you want to remove ' +
+      (type === 'all' ? 'all tags?' : (this.deviceType?.tags?.reserved_tags[index]?.name + ' tag?'));
     }
     this.deleteTagIndex =  index;
     $('#' + id).modal({ backdrop: 'static', keyboard: false, show: true });

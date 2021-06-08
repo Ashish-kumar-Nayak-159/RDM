@@ -32,6 +32,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   healthyDeviceCount = 0;
   unhealthyDeviceCount = 0;
   environmentApp = environment.app;
+  activeCircle = 'all';
   customMapStyle =  [
     {
       featureType: 'poi',
@@ -138,10 +139,10 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                     device.kpiValue = kpiObj?.metadata?.healthy;
                     device.spcd = kpiObj?.metadata?.specific_power_consumption_discharge;
                     console.log(kpiObj?.metadata?.healthy);
-                    if (kpiObj?.metadata?.healthy === false) {
+                    if (kpiObj?.metadata?.healthy === true) {
                       this.healthyDeviceCount++;
                       console.log('healthy');
-                    } else if (kpiObj?.metadata?.healthy === true){
+                    } else if (kpiObj?.metadata?.healthy === false){
                       this.unhealthyDeviceCount++;
                       console.log('unhealthy');
                     }
@@ -149,7 +150,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                 });
                 if (device.type === this.constantData.NON_IP_DEVICE) {
                   device.icon = {
-                    url: device.kpiValue === false ? './assets/img/legacy-asset-green.svg' : (device.kpiValue === true ? './assets/img/legacy-asset-red.svg' : './assets/img/legacy-assets.svg'),
+                    url: device.kpiValue === true ? './assets/img/legacy-asset-green.svg' : (device.kpiValue === false ? './assets/img/legacy-asset-red.svg' : './assets/img/legacy-assets.svg'),
                     scaledSize: {
                       width: 25,
                       height: 25
@@ -186,7 +187,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                     }};
                 } else if (device.type === this.constantData.NON_IP_DEVICE) {
                   device.icon = {
-                    url: './assets/img/legacy-asset-black.svg',
+                    url: './assets/img/legacy-assets.svg',
                     scaledSize: {
                       width: 25,
                       height: 25
@@ -306,13 +307,14 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     if (type !== 'all') {
     this.devices.forEach(device => {
       console.log(device.kpiValue === false);
-      if (type === 'healthy' && device.kpiValue === false) {
+      if (type === 'healthy' && device.kpiValue === true) {
         arr.push(device);
       }
-      if (type === 'unhealthy' && device.kpiValue === true) {
+      if (type === 'unhealthy' && device.kpiValue === false) {
         arr.push(device);
       }
     });
+    this.activeCircle = type;
     this.mapDevices = JSON.parse(JSON.stringify(arr));
     } else {
       this.mapDevices = JSON.parse(JSON.stringify(this.devices));
@@ -332,7 +334,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   onDeviceFilterApply(updateFilterObj = true) {
     console.log(this.filterObj);
     console.log(this.configureHierarchy);
-
+    this.activeCircle = 'all';
     this.mapDevices = JSON.parse(JSON.stringify(this.devices));
     if (this.contextApp.app === 'CMS_Dev') {
       this.healthyDeviceCount = 0;
@@ -341,9 +343,9 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
         this.derivedKPILatestData.forEach(kpiObj => {
           if (deviceObj.device_id === kpiObj.device_id) {
             deviceObj.kpiValue = kpiObj?.metadata?.healthy;
-            if (kpiObj?.metadata?.healthy === false) {
+            if (kpiObj?.metadata?.healthy === true) {
               this.healthyDeviceCount++;
-            } else if (kpiObj?.metadata?.healthy === true){
+            } else if (kpiObj?.metadata?.healthy === false){
               this.unhealthyDeviceCount++;
             }
           }

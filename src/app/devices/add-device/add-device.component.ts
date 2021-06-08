@@ -138,7 +138,7 @@ export class AddDeviceComponent implements OnInit {
             && obj.metadata.setup_details.host_address !== null) ? obj.metadata.setup_details.host_address : null, [Validators.required]),
         port_number: new FormControl(
           (obj && obj.metadata && obj.metadata.setup_details && obj.metadata.setup_details.port_number !== undefined
-            && obj.metadata.setup_details.port_number !== null) ? obj.metadata.setup_details.port_number : null, [Validators.required]),
+            && obj.metadata.setup_details.port_number !== null) ? obj.metadata.setup_details.port_number : null, [Validators.required, Validators.min(0)]),
         slave_id: new FormControl(
           (obj && obj.metadata && obj.metadata.setup_details && obj.metadata.setup_details.slave_id !== undefined
             && obj.metadata.setup_details.slave_id !== null) ? obj.metadata.setup_details.slave_id : null, [Validators.required]),
@@ -249,6 +249,7 @@ export class AddDeviceComponent implements OnInit {
     if (this.contextApp.metadata?.partition?.telemetry?.partition_strategy === 'Device ID') {
       this.deviceDetail.tags.partition_key = this.deviceDetail.device_id;
     }
+
     this.isCreateDeviceAPILoading = true;
     this.deviceDetail.tags.hierarchy_json = { App: this.contextApp.app};
     Object.keys(this.addDeviceConfigureHierarchy).forEach((key) => {
@@ -288,6 +289,7 @@ export class AddDeviceComponent implements OnInit {
     };
     const obj = JSON.parse(JSON.stringify(this.deviceDetail));
     obj.tags.device_manager = this.deviceDetail.tags.device_manager.user_email;
+    obj.tags.email_recipients = obj.tags.device_manager;
     const methodToCall = this.componentState === CONSTANTS.NON_IP_DEVICE
     ? this.deviceService.createNonIPDevice(obj, this.contextApp.app)
     : this.deviceService.createDevice(obj, this.contextApp.app);

@@ -116,7 +116,7 @@
 
               </div>
               <div class="status-circle mt-2"
-              tooltip="{{( alert?.source?.toLowerCase() === 'edge' ? 'Edge' : alert?.source?.toLowerCase() === 'asset' ? 'Asset' : alert?.source?.toLowerCase() === 'cloud' ? 'Cloud' : '' )}}"
+              tooltip="{{( alert?.source?.toLowerCase() === 'edge' ? 'Generated At: Edge' : alert?.source?.toLowerCase() === 'asset' ? 'Generated At: Asset' : alert?.source?.toLowerCase() === 'cloud' ? 'Generated At: Cloud' : '' )}}"
                   [style.backgroundColor]="(alert?.source?.toLowerCase() === 'edge' ? '#89a7ff' :
                   (alert?.source?.toLowerCase() === 'asset' ? '#fb5515' :
                   (alert?.source?.toLowerCase() === 'cloud' ? '#229954' : '')))"></div>
@@ -272,6 +272,15 @@
                     class="fas fa-search fa-sm"></i></button></div>
               </form>
             </div>
+            <div class="row col-xl-12 col-lg-12 m-2" *ngIf="!isTelemetryDataLoading && telemetryData.length > 0">
+
+              <div class="form-group col-md-2 pl-3 mb-0" *ngFor="let prop of propList">
+                <input type="checkbox" class="form-check-input" id="{{prop}}" name="{{prop}}"
+                  (change)="toggleProperty(prop)" [checked]="selectedPropertyForChart.indexOf(prop) !== -1">
+                <label class="form-check-label text-elipsis" for="{{prop}}"
+                placement="bottom" [tooltip]="getPropertyName(prop)">{{getPropertyName(prop)}}</label>
+              </div>
+            </div>
             <div class="content-scroll content-scroll-alert">
                 <ng-container *ngIf="isTelemetryDataLoading">
                   {{loadingMessage}}
@@ -279,15 +288,7 @@
                 </ng-container>
                 <!-- Content Row -->
                 <div id="mainChartDiv">
-                  <div class="row col-xl-12 col-lg-12 m-2" *ngIf="!isTelemetryDataLoading && telemetryData.length > 0">
 
-                    <div class="form-group col-md-2 pl-3 mb-0" *ngFor="let prop of propList">
-                      <input type="checkbox" class="form-check-input" id="{{prop}}" name="{{prop}}"
-                        (change)="toggleProperty(prop)" [checked]="selectedPropertyForChart.indexOf(prop) !== -1">
-                      <label class="form-check-label text-elipsis" for="{{prop}}"
-                      placement="bottom" [tooltip]="getPropertyName(prop)">{{getPropertyName(prop)}}</label>
-                    </div>
-                  </div>
                   <div class="col-xl-12 col-lg-12 m-3" *ngIf="!isTelemetryDataLoading && telemetryData.length === 0 && selectedWidgets?.length > 0">
                     No data found.
                   </div>
@@ -303,6 +304,7 @@
         <div id="recommendation" role="tabpanel" [ngClass]="{'show active': selectedTab === 'recommendation'}" aria-labelledby="recommendation-tab" class="tab-pane fade p-2">
           <ng-container *ngIf="alertCondition?.recommendations?.length > 0">
             Following recommendations have been pre-configured.
+            <div class="content-scroll content-scroll-alert" style="max-height: calc(100vh - 13.5rem);">
             <table  class="table table-hover">
               <tbody>
                 <ng-container *ngFor="let step of alertCondition.recommendations; let i = index;">
@@ -321,12 +323,14 @@
                 </ng-container>
               </tbody>
             </table>
+            </div>
           </ng-container>
           <div class="col-xl-12 col-lg-12 m-3" *ngIf="!alertCondition || alertCondition?.recommendations?.length === 0">
             No Recommendations added yet.
           </div>
         </div>
         <div id="documents" role="tabpanel" aria-labelledby="documents-tab" [ngClass]="{'show active': selectedTab === 'documents'}" class="tab-pane fade p-2">
+          <div class="content-scroll content-scroll-alert" style="max-height: calc(100vh - 13.5rem);">
           <div class="tagsinput" style="width: auto; height: auto;min-height: auto;"
                       *ngIf="alertCondition?.reference_documents?.length > 0">
                       <ng-container *ngFor="let item of alertCondition.reference_documents; let index = index">
@@ -337,17 +341,19 @@
                     </div>
                     <div class="col-xl-12 col-lg-12 m-3" *ngIf="!alertCondition || alertCondition?.reference_documents?.length === 0">
                       No Reference documents added yet.</div>
+          </div>
         </div>
         <div id="actions" role="tabpanel" aria-labelledby="actions-tab" [ngClass]="{'show active': selectedTab === 'actions'}" class="tab-pane fade p-2">
+          <div class="content-scroll content-scroll-alert" style="max-height: calc(100vh - 13.5rem);">
           <h6 class="m-3">Action taken by Field Staff:</h6>
-                    <div class="col-xl-12 col-lg-12 pl-3"
+                    <div class="col-xl-12 col-lg-12 ml-3"
                       *ngIf="!selectedAlert?.metadata?.acknowledged_date; else actionTakenTemplate">
                       No Actions recorded by field staff yet.
                       <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down blue-font" *ngIf="!selectedAlert?.metadata?.acknowledged_date" (click)="onClickOfAcknowledgeAlert(selectedAlert)"
                 >Acknowledge</a>
                     </div>
                     <ng-template #actionTakenTemplate>
-                      <div class="table-responsive">
+                      <div class="table-responsive ml-3">
                         <p> Alert acknowledged by {{selectedAlert?.metadata?.user_id}} at
                           {{selectedAlert?.metadata?.acknowledged_date}}.</p>
                         <p>Reason: {{selectedAlert?.metadata?.reason?.reason ? selectedAlert?.metadata?.reason?.reason:
@@ -370,9 +376,10 @@
                       </div>
                     </ng-template>
                     <h6 class="m-3">Action taken by RDM:</h6>
-                    <div class="col-xl-12 col-lg-12 pl-3">
+                    <div class="col-xl-12 col-lg-12 ml-3">
                       No Actions recorded by RDM yet.
                     </div>
+                  </div>
         </div>
 
       </div>
@@ -435,7 +442,8 @@
               )
             ))}}">
 
-                 <label for="file">{{acknowledgedAlert?.metadata?.files[i]?.data?.name ? acknowledgedAlert.metadata.files[i].data.name : 'Choose File'}}</label>
+                 <label for="file" class="overflow-text" [tooltip]="acknowledgedAlert?.metadata?.files[i]?.data?.name ? acknowledgedAlert.metadata.files[i].data.name : ''">
+                   {{acknowledgedAlert?.metadata?.files[i]?.data?.name ? acknowledgedAlert.metadata.files[i].data.name : 'Choose File'}}</label>
                 </div>
                 <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
                 <input type="file" [disabled]="file.type === undefined" id="file" class="file"

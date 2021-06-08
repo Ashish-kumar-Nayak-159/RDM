@@ -60,7 +60,7 @@ export class CommonDataTableComponent implements OnInit, OnChanges {
   onStringValueChange() {
     this.isFilterSelected = false;
     Object.keys(this.tableFilterObj).forEach(key => {
-      if (this.tableFilterObj[key]) {
+      if (this.tableFilterObj[key] !== undefined && this.tableFilterObj[key] !== null) {
         this.isFilterSelected = true;
       } else {
         delete this.tableFilterObj[key];

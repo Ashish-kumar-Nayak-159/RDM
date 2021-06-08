@@ -6,7 +6,7 @@
     </button>
   </div>
   <div class="modal-body">
-    <pre *ngIf="modalConfig?.jsonDisplay" [innerHTML]="bodyMessage | json"></pre>
+    <pre class="text-sm" *ngIf="modalConfig?.jsonDisplay" [innerHTML]="bodyMessage | json"></pre>
     <div *ngIf="modalConfig?.stringDisplay">{{bodyMessage}}</div>
   </div>
   <div class="modal-footer">

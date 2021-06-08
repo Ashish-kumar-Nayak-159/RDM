@@ -9493,6 +9493,14 @@ a:focus {
   font-size: .7rem
 }
 
+.text-sm {
+  font-size: .85rem
+}
+
+.text-md {
+  font-size: 1rem;
+}
+
 .text-lg {
   font-size: 1.2rem
 }
@@ -12379,10 +12387,10 @@ padding-bottom: 1.5rem;
     overflow-x: hidden;
 }
 
-.inbox .right-border {
+/* .inbox .right-border {
   border-right: 1px solid #c7e0f4;
   height: calc(100vh - 8rem);
-}
+} */
 
 .scrollbox {
   width: 12.5rem;
@@ -12829,7 +12837,7 @@ padding-bottom: 1.5rem;
 .tableFixHead thead th { position: sticky; top: 0; z-index: 1; font-weight:500; background:#fff; }
 .tableFixHead thead th:first-child, .tableFixHead tbody td:first-child { padding-left:1rem; }
 .tableFixHead th { box-shadow: inset 0 -5px 2px -5px #9fc0ef; }
-.tableFixHead th a.active i { color:#1a5a9e }
+.tableFixHead th a.active i { color:#5570da }
 .tableFixHead tfoot,.tableFixHead tfoot th, .tableFixHead tfoot td { position: sticky; bottom: 0;  z-index:1; background:#fff; box-shadow: inset 0 7px 2px -7px #9fc0ef;}
 table.hover tbody tr:hover, table.display tbody tr:hover { background-color: #f8fafb !important; }
 table.order-column tbody tr > .sorting_1, table.order-column tbody tr > .sorting_2, table.order-column tbody tr > .sorting_3,
@@ -12841,7 +12849,7 @@ table.display tbody tr:hover > .sorting_1 { background-color: #eff8fc !important
 .tableFixHead, .tableFixHead td { box-shadow: inset 1px -1px #000; }*/
 
 /* Date picker CSS */
-.daterangepicker { box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); }
+.daterangepicker { box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); max-height: 70%;  overflow-y: auto; }
 .daterangepicker td.active, .daterangepicker td.active:hover { background-color: #67afed !important/*#357ebd*/; }
 .daterangepicker .ranges li.active { background-color: #89a7ff !important/*08c*/; }
 
@@ -13083,7 +13091,7 @@ color: #1a5ab4;
   justify-content: center
 }
 
-.daterangepicker { box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); max-height: 50%;  overflow-y: auto; }
+.daterangepicker { box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); max-height: 70%;  overflow-y: auto; }
 
 
 .inbox .mail_list .list-group-item .media-heading .overflow {
@@ -13102,7 +13110,7 @@ font-weight:500;
 box-shadow: inset -8px 0 10px -6px #dbe9f5 !important;
 }
 
-.bg-white{
+.bg-white-asset {
   background-color: #fff !important;
  border: 1px solid #ccc;
 }
@@ -13111,7 +13119,8 @@ box-shadow: inset -8px 0 10px -6px #dbe9f5 !important;
 .alert-scrollbox {
 width: 100%;
 height: calc(100vh - 8rem);
-overflow: scroll;
+overflow-y: scroll;
+    overflow-x: auto;
 visibility: hidden;
 }
 .alert-scrollbox-content,
@@ -13167,4 +13176,89 @@ overflow-x: hidden;
 .bg-blue {
     background-color: #bccbf9 !important;
     color: #fff;
+}
+
+@media (min-width:992px) {
+  .modal.right.fade .modal-dialog .modal-lg, .modal.right.fade .modal-dialog .modal-xl {
+    max-width: 800px
+  }
+}
+@media (min-width:1200px) {
+  .modal.right.fade .modal-dialog .modal-xl {
+    max-width: 1140px
+  }
+}
+.live-table-fix-head {
+  max-height: calc(100vh - 13.5rem);
+}
+
+.history-table-fix-head {
+  max-height: calc(100vh - 15rem);
+}
+
+.file-input .overflow-text {
+  width: 95%;
+  padding-left: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  justify-content: left;
+}
+
+.redNumberCircle {
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  padding: 2px;
+  background: rgb(212, 13, 13);
+  border: 2px solid rgb(212, 13, 13);
+  color: white;
+  text-align: center;
+  font-size: 1.3em;
+}
+
+.greenNumberCircle {
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  padding: 2px;
+  background: #269e26;
+  border: 2px solid #269e26;
+  color: white;
+  text-align: center;
+  font-size: 1.3em;
+}
+
+.numberCircle {
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  padding: 2px;
+  background: #fff;
+  border: 2px solid #666;
+  color: #666;
+  text-align: center;
+  font-size: 1.3em;
+}
+
+.form-group .numberCircle.active {
+  box-shadow: 0 0 0 0.2rem rgb(78 115 223 / 25%);
+}
+.form-group .numberCircle:focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgb(78 115 223 / 25%);
+}
+.form-group .greenNumberCircle.active {
+  box-shadow: 0 0 0 0.2rem rgb(78 115 223 / 25%);
+}
+.form-group .greenNumberCircle:focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgb(78 115 223 / 25%);
+}
+.form-group .redNumberCircle.active {
+  box-shadow: 0 0 0 0.2rem rgb(78 115 223 / 25%);
+}
+.form-group .redNumberCircle:focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgb(78 115 223 / 25%);
 }

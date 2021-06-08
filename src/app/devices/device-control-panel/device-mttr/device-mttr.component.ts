@@ -76,14 +76,18 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
   }
 
   onTabChange(type) {
+    this.displayMode = undefined;
     this.filterObj = {};
-    this.filterObj.dateOption = 'Last 24 Hours';
-    this.filterObj.from_date = moment().subtract(24, 'hours').utc().unix();
-    this.filterObj.to_date = moment().utc().unix();
     this.averageMTTR = undefined;
     this.averageMTTRString = undefined;
     this.filterObj.epoch = true;
     this.lifeCycleEvents = [];
+    this.isFilterSelected = false;
+    this.displayMode = type;
+    this.loader = false;
+    this.filterObj.dateOption = 'Last 24 Hours';
+    this.filterObj.from_date = moment().subtract(24, 'hours').utc().unix();
+    this.filterObj.to_date = moment().utc().unix();
     if (this.filterObj.dateOption !== 'Custom Range') {
       this.selectedDateRange = this.filterObj.dateOption;
     } else {
@@ -132,11 +136,33 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     } else {
       this.filterObj.count = 10;
     }
+    this.filterObj.date_frequency = undefined;
+    this.filterObj.dateOption = 'Last 24 Hours';
+    if (this.filterObj.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
+      this.filterObj.from_date = dateObj.from_date;
+      this.filterObj.to_date = dateObj.to_date;
+      this.selectedDateRange = this.filterObj.dateOption;
+    } else {
+      this.selectedDateRange = moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
+      moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+    }
+    this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
+    this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
   }
 
   searchEvents(filterObj) {
     this.averageMTTR = undefined;
     this.averageMTTRString = undefined;
+    this.lifeCycleEvents = [];
+    if (filterObj.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(filterObj.dateOption);
+      filterObj.from_date = dateObj.from_date;
+      filterObj.to_date = dateObj.to_date;
+    } else {
+      filterObj.from_date = filterObj.from_date;
+      filterObj.to_date = filterObj.to_date;
+    }
     const obj = {...filterObj};
     if (!obj.from_date || !obj.to_date) {
       this.isLifeCycleEventsLoading = false;
@@ -156,7 +182,7 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     delete obj.countNotShow;
     this.filterObj = filterObj;
     this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
-    this.lifeCycleEvents = [];
+
     let method;
     if (this.displayMode === 'network_failure') {
       delete obj.date_frequency;

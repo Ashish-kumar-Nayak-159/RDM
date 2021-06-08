@@ -159,7 +159,7 @@
       </div>
       <p class="m-3" *ngIf="!isFilterSelected"> Please select filters to view the report data.</p>
       <div class="filter-bar" *ngIf="isFilterSelected || isTelemetryLoading">
-      <h5 class="mb-0" *ngIf="isFilterSelected || isTelemetryLoading" >{{filterObj.report_type}}
+      <h5 class="mb-0" *ngIf="isFilterSelected || isTelemetryLoading" >{{originalFilterObj.report_type}}
         <a href="javascript:void(0)"  (click)="savePDF()" placement="bottom" tooltip="Export as PDF"><i class="fa fa-sm fa-file-pdf-o" ></i></a>
         <a href="javascript:void(0)"  (click)="saveExcel()" placement="bottom" tooltip="Export as Excel" class="ml-1"><i class="fa fa-sm fa-file-excel-o" ></i></a>
         <!-- <i  class="fa fa-fw fa-2x  fa-spin fa-spinner" *ngIf="isFileDownloading"></i> -->
@@ -221,6 +221,7 @@
                     <th class="w-10">Asset Name</th>
                     <th class="w-17">Time</th>
                     <th>Description</th>
+                    <th>Source</th>
                     <th>Status</th>
                     <th>Acknowledged By</th>
                   </tr>
@@ -241,6 +242,7 @@
 
                       <td>{{ alert.local_created_date }}</td>
                       <td>{{ alert.message }}</td>
+                      <td>{{ alert.source}}</td>
                       <td> {{alert.metadata?.acknowledged_date ? 'Acknowledged' : 'Not Acknowledged'}}
                       </td>
                       <td>{{ alert.metadata?.user_id }}</td>
@@ -274,6 +276,7 @@
                 <th>Time</th>
                 <th>Severity</th>
                 <th>Description</th>
+                <th>Source</th>
                 <th>Status</th>
                 <th>Acknowledged By</th>
               </tr>
@@ -295,6 +298,7 @@
                   <td>{{ alert.local_created_date }}</td>
                   <td>{{alert.severity}}</td>
                   <td>{{ alert.message }}</td>
+                  <td>{{ alert.source}}</td>
                   <td> {{alert.metadata?.acknowledged_date ? 'Acknowledged' : 'Not Acknowledged'}}
                   </td>
                   <td>{{ alert.metadata?.user_id }}</td>

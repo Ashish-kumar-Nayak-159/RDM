@@ -228,6 +228,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
   openAddAlertConditionModal(alertObj = undefined) {
     if (alertObj) {
       this.alertObj = alertObj;
+      if (this.deviceType.metadata?.model_type === CONSTANTS.NON_IP_DEVICE) {
       if (this.deviceType.tags.protocol === 'ModbusTCPMaster' || this.deviceType.tags.protocol === 'ModbusRTUMaster') {
         this.setupForm = new FormGroup({
           d: new FormControl(alertObj.metadata.d, [Validators.required]),
@@ -251,9 +252,11 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
       if (this.deviceType.tags.protocol === 'SiemensTCPIP') {
         this.onChageOfMemoryType(alertObj.metadata);
       }
+      }
       console.log(this.setupForm);
     } else {
       this.alertObj = {};
+      if (this.deviceType.metadata?.model_type === CONSTANTS.NON_IP_DEVICE) {
       if (this.deviceType.tags.protocol === 'ModbusTCPMaster' || this.deviceType.tags.protocol === 'ModbusRTUMaster') {
         this.setupForm = new FormGroup({
           d: new FormControl(null, [Validators.required]),
@@ -268,6 +271,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
           a: new FormControl(true),
           mt: new FormControl(null, [Validators.required]),
         });
+      }
       }
 
     }

@@ -31,17 +31,18 @@ export class SettingsComponent implements OnInit, OnDestroy {
   ) { }
 
   async ngOnInit(): Promise<void> {
-    this.device = JSON.parse(JSON.stringify(this.device));
+    const device = JSON.parse(JSON.stringify(this.device));
+    this.device = undefined;
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    await this.getDeviceTypeDetail();
-    this.getDeviceData();
+    await this.getDeviceTypeDetail(device);
+    this.getDeviceData(device);
   }
 
-  getDeviceTypeDetail() {
+  getDeviceTypeDetail(device) {
     return new Promise<void>((resolve) => {
     const obj = {
-      name: this.device.tags.device_type,
+      name: device.tags.device_type,
       app: this.contextApp.app
     };
     this.subscriptions.push(this.deviceTypeService.getThingsModelDetails(obj.app, obj.name).subscribe(
@@ -52,6 +53,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
           this.deviceType.app = obj.app;
           if (!this.deviceType.tags.reserved_tags) {
             this.deviceType.tags.reserved_tags = [];
+          }
+          if (!this.deviceType.metadata) {
+            this.deviceType.metdata = {};
           }
           if (!this.deviceType.metadata.measurement_settings) {
             this.deviceType.metadata.measurement_settings = {
@@ -77,27 +81,31 @@ export class SettingsComponent implements OnInit, OnDestroy {
   });
   }
 
-  getDeviceData() {
+  getDeviceData(device) {
     // this.device.tags = undefined;
     this.subscriptions.push(
-      this.deviceService.getDeviceDetailById(this.contextApp.app, this.device.device_id).subscribe(
+      this.deviceService.getDeviceDetailById(this.contextApp.app, device.device_id).subscribe(
       async (response: any) => {
         this.device = JSON.parse(JSON.stringify(response));
         if (!this.device.metadata) {
           this.device.metadata = {};
         }
-        if (!this.device.metadata.measurement_frequency) {
-          this.device.metadata.measurement_frequency = {
-            min: this.deviceType.metadata.measurement_frequency.min,
-            max: this.deviceType.metadata.measurement_frequency.max,
-            average: this.deviceType.metadata.measurement_frequency.average
+        console.log(this.device.metadata.measurement_frequency);
+        if (!this.device.metadata.telemetry_mode_settings) {
+          this.device.metadata.telemetry_mode_settings = {
+            normal_mode_frequency: 60,
+            turbo_mode_frequency: 5,
+            turbo_mode_timeout_time: 120
           };
         }
-        if (!this.device.metadata.telemetry_frequency) {
-          this.device.metadata.telemetry_frequency = {
-            min: this.deviceType.metadata.telemetry_frequency.min,
-            max: this.deviceType.metadata.telemetry_frequency.max,
-            average: this.deviceType.metadata.telemetry_frequency.average
+        if (!this.device.metadata.data_ingestion_settings) {
+          this.device.metadata.data_ingestion_settings = {
+            value: 'all'
+          };
+        }
+        if (!this.device.metadata.measurement_settings) {
+          this.device.metadata.measurement_settings = {
+            measurement_frequency: 5
           };
         }
         this.originalDevice = JSON.parse(JSON.stringify(this.device));
@@ -119,7 +127,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.deviceService.updateDeviceMetadata(obj, this.contextApp.app, this.device.device_id).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Update Asset Settings');
-        this.getDeviceData();
+        this.getDeviceData(this.device);
         this.isSettingsEditable = false;
         this.isSaveSettingAPILoading = false;
       }, error => {

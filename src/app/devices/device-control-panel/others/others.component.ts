@@ -52,7 +52,7 @@ export class OthersComponent implements OnInit, OnDestroy {
           name: 'Timestamp',
           key: 'local_created_date',
         },
-        
+
         {
           name: 'Message ID',
           key: 'message_id',
@@ -70,6 +70,14 @@ export class OthersComponent implements OnInit, OnDestroy {
     console.log(filterObj);
     this.isFilterSelected = true;
     this.isOthersLoading = true;
+    if (filterObj.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(filterObj.dateOption);
+      filterObj.from_date = dateObj.from_date;
+      filterObj.to_date = dateObj.to_date;
+    } else {
+      filterObj.from_date = filterObj.from_date;
+      filterObj.to_date = filterObj.to_date;
+    }
     const obj = {...filterObj};
     if (updateFilterObj) {
       const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};

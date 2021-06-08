@@ -72,17 +72,20 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
   }
 
   onTabChange(type) {
+    this.displayMode = undefined;
     this.filterObj = {};
     this.loader = false;
     this.lifeCycleEvents = [];
     this.isFilterSelected = false;
-    this.filterObj.dateOption = 'Last 24 Hours';
-    this.filterObj.from_date = moment().subtract(24, 'hours').utc().unix();
-    this.filterObj.to_date = moment().utc().unix();
+
     this.avrgMTBF = undefined;
     this.avrgMTBFString = undefined;
     this.filterObj.epoch = true;
     this.lifeCycleEvents = [];
+    this.displayMode = type;
+    this.filterObj.dateOption = 'Last 24 Hours';
+    this.filterObj.from_date = moment().subtract(24, 'hours').utc().unix();
+    this.filterObj.to_date = moment().utc().unix();
     if (this.filterObj.dateOption !== 'Custom Range') {
       this.selectedDateRange = this.filterObj.dateOption;
     } else {
@@ -103,7 +106,15 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
     this.chart?.dispose();
     this.avrgMTBF = undefined;
     this.avrgMTBFString = undefined;
-
+    this.lifeCycleEvents = [];
+    if (filterObj.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(filterObj.dateOption);
+      filterObj.from_date = dateObj.from_date;
+      filterObj.to_date = dateObj.to_date;
+    } else {
+      filterObj.from_date = filterObj.from_date;
+      filterObj.to_date = filterObj.to_date;
+    }
     const obj = {...filterObj};
     delete obj.countNotShow;
     if (!obj.date_frequency) {
@@ -188,7 +199,12 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
     this.filterObj = {};
     this.filterObj.epoch = true;
     this.filterObj = JSON.parse(JSON.stringify(this.originalFilterObj));
+    this.filterObj.date_frequency = undefined;
+    this.filterObj.dateOption = 'Last 24 Hours';
     if (this.filterObj.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
+      this.filterObj.from_date = dateObj.from_date;
+      this.filterObj.to_date = dateObj.to_date;
       this.selectedDateRange = this.filterObj.dateOption;
     } else {
       this.selectedDateRange = moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +

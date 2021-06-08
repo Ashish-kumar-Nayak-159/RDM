@@ -25,6 +25,8 @@ export class AccessControlComponent implements OnInit, OnChanges {
   // pageType: string;
   isUpdateAPILoading: boolean;
   isAddUserModalOpen = false;
+  deviceAccessUsers: any[] = [];
+  selectedTab = 'Access Control';
   constructor(
     private commonService: CommonService,
     private applicationService: ApplicationService,
@@ -35,6 +37,11 @@ export class AccessControlComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.getDeviceAccessUsers();
+  }
+
+  onClickOfTab(type) {
+    this.selectedTab = type;
   }
 
   async ngOnChanges(changes) {
@@ -55,6 +62,25 @@ export class AccessControlComponent implements OnInit, OnChanges {
           this.device.tags.device_users = {};
         }
     }
+  }
+
+  getDeviceAccessUsers() {
+    this.deviceAccessUsers = [];
+
+    this.appUsers.forEach(user => {
+      let flag = false;
+      this.contextApp.hierarchy.levels.forEach(level => {
+        if (user.hierarchy[level] === this.device.tags.hierarchy_json[level] || user.hierarchy[level] === undefined) {
+          flag = true;
+        } else {
+          flag = false;
+        }
+      });
+      console.log(user.name, '=====', flag);
+      if (flag) {
+        this.deviceAccessUsers.push(user);
+      }
+    });
   }
 
   getApplicationUsers() {
@@ -113,10 +139,10 @@ export class AccessControlComponent implements OnInit, OnChanges {
       user_email: this.selectedUser.user_email,
       user_name: this.selectedUser.user_name
     };
-    this.device.tags.device_manager = '';
+    this.device.tags.email_recipients = '';
     const keys = (Object.keys(this.device.tags.device_users));
     keys.forEach((key, index) => {
-      this.device.tags.device_manager += this.device.tags.device_users[key].user_email + (keys[index + 1] ? ',' : '');
+      this.device.tags.email_recipients += this.device.tags.device_users[key].user_email + (keys[index + 1] ? ',' : '');
     });
     this.updateDeviceData();
   }
@@ -130,9 +156,9 @@ export class AccessControlComponent implements OnInit, OnChanges {
     this.device.tags.device_users[this.deviceUserForDelete] = null;
     const index = keys.findIndex(key => key === this.deviceUserForDelete);
     keys.splice(index, 1);
-    this.device.tags.device_manager = '';
+    this.device.tags.email_recipients = '';
     keys.forEach((key, i) => {
-      this.device.tags.device_manager += this.device.tags.device_users[key].user_email + (keys[i + 1] ? ',' : '');
+      this.device.tags.email_recipients += this.device.tags.device_users[key].user_email + (keys[i + 1] ? ',' : '');
     });
     this.updateDeviceData();
   }

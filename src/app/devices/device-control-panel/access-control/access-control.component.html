@@ -2,9 +2,21 @@
   <div class="">
     <ul class="nav">
       <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Access Control')"
+        [ngClass]="{'active': selectedTab === 'Access Control'}">
+          <i class="fa fa-fw fa-users"></i>
+          <span class="text-secondary">Access Control</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Email Recipients')"
+        [ngClass]="{'active': selectedTab === 'Email Recipients'}">
+          <i class="fa fa-fw fa-envelope"></i>
+          <span class="text-secondary">Email Recipients</span></a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="openAddUserModal()">
           <i class="fa fa-fw fa-plus"></i>
-          <span class="text-secondary">Add</span></a>
+          <span class="text-secondary">Add Email Recipient</span></a>
       </li>
        </ul>
 </div>
@@ -12,6 +24,7 @@
 
 <div class="table-responsive">
   <div class="tableFixHead" >
+    <ng-container *ngIf="selectedTab === 'Email Recipients'">
     <table class="table table-hover" cellspacing="0" width="100%" >
       <thead >
         <tr>
@@ -37,6 +50,42 @@
         </tr>
       </tbody>
     </table>
+    </ng-container>
+    <ng-container *ngIf="selectedTab === 'Access Control'">
+      <div class="row m-3">
+        Following users are having access of this asset.
+        <table class="table table-hover" cellspacing="0" width="100%" >
+          <thead >
+            <tr>
+              <th class="sticky-top">No</th>
+              <th>Email</th>
+              <th>Name</th>
+              <th>Role</th>
+              <!-- <th>Action</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="deviceAccessUsers.length > 0">
+            <tr *ngFor="let user of deviceAccessUsers;let i = index">
+              <td>{{i + 1}}</td>
+              <td>{{user.user_email}}</td>
+              <td>{{user.user_name}}</td>
+              <td>{{user?.role || 'NA'}}</td>
+              <!-- <td>
+                <a href="javascript:void(0)" (click)="openConfirmModal(user)" class="mr-1"
+                  placement="bottom" tooltip="Delete User Access">
+                    <i class="fa fa-fw fa-trash" ></i>
+                </a>
+              </td> -->
+            </tr>
+            </ng-container>
+            <tr *ngIf="deviceAccessUsers.length === 0">
+              <td colspan="4">No users have access of this asset.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
 </div>
 </div>
 

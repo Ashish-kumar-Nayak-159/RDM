@@ -301,8 +301,8 @@
             </div>
           </div>
         </div>
-        <div id="recommendation" role="tabpanel" [ngClass]="{'show active': selectedTab === 'recommendation'}" aria-labelledby="recommendation-tab" class="tab-pane fade p-2">
-          <ng-container *ngIf="alertCondition?.recommendations?.length > 0">
+        <div id="recommendation" role="tabpanel" [ngClass]="{'show active': selectedTab === 'recommendation'}" aria-labelledby="recommendation-tab" class="tab-pane fade">
+          <div class="ml-3 mt-3" *ngIf="alertCondition?.recommendations?.length > 0">
             Following recommendations have been pre-configured.
             <div class="content-scroll content-scroll-alert" style="max-height: calc(100vh - 13.5rem);">
             <table  class="table table-hover">
@@ -324,13 +324,13 @@
               </tbody>
             </table>
             </div>
-          </ng-container>
+          </div>
           <div class="col-xl-12 col-lg-12 m-3" *ngIf="!alertCondition || alertCondition?.recommendations?.length === 0">
             No Recommendations added yet.
           </div>
         </div>
-        <div id="documents" role="tabpanel" aria-labelledby="documents-tab" [ngClass]="{'show active': selectedTab === 'documents'}" class="tab-pane fade p-2">
-          <div class="content-scroll content-scroll-alert" style="max-height: calc(100vh - 13.5rem);">
+        <div id="documents" role="tabpanel" aria-labelledby="documents-tab" [ngClass]="{'show active': selectedTab === 'documents'}" class="tab-pane fade">
+          <div class="content-scroll content-scroll-alert ml-3 mt-3" style="max-height: calc(100vh - 13.5rem);">
           <div class="tagsinput" style="width: auto; height: auto;min-height: auto;"
                       *ngIf="alertCondition?.reference_documents?.length > 0">
                       <ng-container *ngFor="let item of alertCondition.reference_documents; let index = index">
@@ -343,7 +343,7 @@
                       No Reference documents added yet.</div>
           </div>
         </div>
-        <div id="actions" role="tabpanel" aria-labelledby="actions-tab" [ngClass]="{'show active': selectedTab === 'actions'}" class="tab-pane fade p-2">
+        <div id="actions" role="tabpanel" aria-labelledby="actions-tab" [ngClass]="{'show active': selectedTab === 'actions'}" class="tab-pane fade">
           <div class="content-scroll content-scroll-alert" style="max-height: calc(100vh - 13.5rem);">
           <h6 class="m-3">Action taken by Field Staff:</h6>
                     <div class="col-xl-12 col-lg-12 ml-3"

@@ -304,6 +304,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
 
   onClickOfCount(type) {
     const arr = [];
+    this.activeCircle = type;
     if (type !== 'all') {
     this.devices.forEach(device => {
       console.log(device.kpiValue === false);
@@ -314,7 +315,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
         arr.push(device);
       }
     });
-    this.activeCircle = type;
+
     this.mapDevices = JSON.parse(JSON.stringify(arr));
     } else {
       this.mapDevices = JSON.parse(JSON.stringify(this.devices));

@@ -13296,3 +13296,7 @@ overflow-x: hidden;
 .border-left-darkblue {
     border-left: .25rem solid #89a7ff!important
 }
+
+.modal-live-widget-container {
+  height: calc(100vh - 14rem);
+}

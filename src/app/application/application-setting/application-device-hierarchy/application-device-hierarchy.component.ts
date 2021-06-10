@@ -50,6 +50,17 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
   }
 
   onHierarchyConfigurationChange(i, tag) {
+    console.log(i);
+    console.log(JSON.stringify(this.selectedHierarchyData));
+    const obj = JSON.parse(JSON.stringify(this.selectedHierarchyData));
+    Object.keys(this.selectedHierarchyData).forEach((key) => {
+      console.log(key, '======', i);
+      if (key > i) {
+        delete obj[key];
+      }
+    });
+    this.selectedHierarchyData = JSON.parse(JSON.stringify(obj));
+    console.log(JSON.stringify(this.selectedHierarchyData));
     this.selectedHierarchyData[i + 1] = tag;
     this.configureHierarchy[i] = tag;
     Object.keys(this.configureHierarchy).forEach(key => {

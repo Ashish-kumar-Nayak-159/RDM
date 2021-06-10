@@ -85,16 +85,16 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     this.isFilterSelected = false;
     this.displayMode = type;
     this.loader = false;
-    this.filterObj.dateOption = 'Last 24 Hours';
-    this.filterObj.from_date = moment().subtract(24, 'hours').utc().unix();
-    this.filterObj.to_date = moment().utc().unix();
+    this.filterObj.dateOption = 'This Month';
+    this.filterObj.from_date = moment().startOf('month').utc().unix();
+    this.filterObj.to_date = moment().endOf('month').utc().unix();
     if (this.filterObj.dateOption !== 'Custom Range') {
       this.selectedDateRange = this.filterObj.dateOption;
     } else {
       this.selectedDateRange = moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
       moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
     }
-    if (type === 'machine_failure') {
+    if (type === 'history') {
       this.filterObj.countNotShow = true;
     } else {
       this.filterObj.count = 10;
@@ -131,13 +131,13 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
     // this.filterSearch.emit(this.originalFilterObj);
     this.filterObj = {};
     this.filterObj.epoch = true;
-    if (this.displayMode === 'machine_failure') {
+    if (this.displayMode === 'history') {
       this.filterObj.countNotShow = true;
     } else {
       this.filterObj.count = 10;
     }
     this.filterObj.date_frequency = undefined;
-    this.filterObj.dateOption = 'Last 24 Hours';
+    this.filterObj.dateOption = 'This Month';
     if (this.filterObj.dateOption !== 'Custom Range') {
       const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
       this.filterObj.from_date = dateObj.from_date;

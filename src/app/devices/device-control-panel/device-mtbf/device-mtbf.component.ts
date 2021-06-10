@@ -83,9 +83,9 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
     this.filterObj.epoch = true;
     this.lifeCycleEvents = [];
     this.displayMode = type;
-    this.filterObj.dateOption = 'Last 24 Hours';
-    this.filterObj.from_date = moment().subtract(24, 'hours').utc().unix();
-    this.filterObj.to_date = moment().utc().unix();
+    this.filterObj.dateOption = 'This Month';
+    this.filterObj.from_date = moment().startOf('month').utc().unix();
+    this.filterObj.to_date = moment().endOf('month').utc().unix();
     if (this.filterObj.dateOption !== 'Custom Range') {
       this.selectedDateRange = this.filterObj.dateOption;
     } else {
@@ -200,7 +200,7 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
     this.filterObj.epoch = true;
     this.filterObj = JSON.parse(JSON.stringify(this.originalFilterObj));
     this.filterObj.date_frequency = undefined;
-    this.filterObj.dateOption = 'Last 24 Hours';
+    this.filterObj.dateOption = 'This Month';
     if (this.filterObj.dateOption !== 'Custom Range') {
       const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
       this.filterObj.from_date = dateObj.from_date;

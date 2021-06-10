@@ -135,7 +135,7 @@
             <tbody>
               <ng-container *ngFor="let item of configureDashboardWidgets; let index = index">
                 <!-- <tr [ngClass]="{'handle': item.dashboardVisibility}"> -->
-                  <tr id="{{item.dashboardVisibility ? item.chartId : ''}}" [ngClass]="{'favoriteOrderId': item.dashboardVisibility}">
+                  <tr class=" cursor-move" id="{{item.dashboardVisibility ? item.chartId : ''}}" [ngClass]="{'favoriteOrderId': item.dashboardVisibility}">
                   <td class="index">{{item.index}}
                     <!-- <input type="hidden" class="favoriteOrderId" value="{{item.chartId}}" *ngIf="item.dashboardVisibility"
                             #favOrder="ngModel" name="{{item.chartId}}" [(ngModel)]="item.chartId"> -->

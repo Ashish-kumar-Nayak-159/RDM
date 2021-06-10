@@ -255,10 +255,16 @@ export class DeviceService {
     .pipe( map((data: any) => {
       const arr = [];
       data.data.forEach(item => {
-        let obj = {...item.m, ...item.d};
-        delete item.m;
-        delete item.d;
-        arr.push({...item, ...obj});
+        // let obj = {...item.m, ...item.d};
+        // delete item.m;
+        // delete item.d;
+        // arr.push({...item, ...obj});
+        let obj = JSON.parse(JSON.stringify(item));
+        delete obj.m;
+        delete obj.d;
+        obj = {...obj, ...item?.m, ...item?.d};
+        arr.push(obj);
+        console.log(obj);
       });
       data.data = JSON.parse(JSON.stringify(arr));
       return data;
@@ -279,10 +285,11 @@ export class DeviceService {
     .pipe( map((data: any) => {
       const arr = [];
       data.data.forEach(item => {
-        let obj = {...item.m, ...item.d};
-        delete item.m;
-        delete item.d;
-        arr.push({...item, ...obj});
+        let obj = JSON.parse(JSON.stringify(item));
+        delete obj.m;
+        delete obj.d;
+        obj = {...obj, ...item?.m, ...item?.d};
+        arr.push(obj);
       });
       data.data = JSON.parse(JSON.stringify(arr));
       return data;
@@ -548,10 +555,11 @@ export class DeviceService {
     });
     return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_LAST_TELEMETRY, encodeURIComponent(app)), { params })
     .pipe( map((data: any) => {
-      let obj;
       if (data.message) {
-        let obj = {...data.message?.m, ...data.message?.d};
-        obj['ts'] = data.message.ts;
+        let obj = JSON.parse(JSON.stringify(data.message));
+        delete obj.m;
+        delete obj.d;
+        obj = {...obj, ...data.message?.m, ...data.message?.d};
         data.message = JSON.parse(JSON.stringify(obj));
       }
       return data;
@@ -571,8 +579,10 @@ export class DeviceService {
     return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_FIRST_TELEMETRY, encodeURIComponent(app)), { params })
     .pipe( map((data: any) => {
       if (data.message) {
-        let obj = {...data.message?.m, ...data.message?.d};
-        obj['ts'] = data.message.ts;
+        let obj = JSON.parse(JSON.stringify(data.message));
+        delete obj.m;
+        delete obj.d;
+        obj = {...obj, ...data.message?.m, ...data.message?.d};
         data.message = JSON.parse(JSON.stringify(obj));
       }
       return data;

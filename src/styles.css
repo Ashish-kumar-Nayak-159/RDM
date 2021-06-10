@@ -162,6 +162,11 @@ input:invalid {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 13rem;
+}
+
+.w-11 {
+  width: 11rem;
 }
 
 .field-icon {

@@ -11142,7 +11142,13 @@ body.sidebar-toggled footer.sticky-footer {
   }
   .container-fluid .sidebar1 .nav-item .nav-link span {
     font-size: 0.8rem;
-    display: inline;
+    /* display: inline; */
+    font-size: .8rem;
+    display: -webkit-inline-box;
+    width: 8rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .container-fluid .sidebar1 .sidebar1-heading span {
     font-size: 0.8rem;
@@ -13304,3 +13310,6 @@ overflow-x: hidden;
 .modal-live-widget-container {
   height: calc(100vh - 14rem);
 }
+
+
+

@@ -153,7 +153,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   viewonnectionString() {
     this.isViewClicked = true;
-    setTimeout(() => this.isViewClicked = false, 10000);
+  }
+
+  hideConnectionString() {
+    this.isViewClicked = false;
   }
 
   viewDeviceTwin() {

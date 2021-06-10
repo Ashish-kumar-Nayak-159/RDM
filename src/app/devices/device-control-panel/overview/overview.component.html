@@ -42,7 +42,7 @@
           <div *ngIf="deviceCredentials" class="row">
             <h6 ><ng-container *ngIf="componentState === constantData.NON_IP_DEVICE">Gateway</ng-container>
               Connection String:
-              <a class="blue-font ml-2" href="javascript:void(0)" (click)="viewonnectionString()">View</a>
+              <a class="blue-font ml-2" href="javascript:void(0)" (click)="isViewClicked ? hideConnectionString() : viewonnectionString()">{{isViewClicked ? 'Hide' : 'View'}}</a>
               <a class="blue-font ml-2" href="javascript:void(0)" (click)="copyConnectionString()">{{isCopyClicked ? 'Copied' : 'Copy'}}</a>
             </h6>
             <h6  class="row col-12" *ngIf="isViewClicked">{{deviceCredentials.primary_connection_string}}</h6>

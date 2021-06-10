@@ -106,7 +106,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <pre  [innerHTML]="selectedDeviceMethod.json_model | json"></pre>
+          <pre class="text-sm" [innerHTML]="selectedDeviceMethod.json_model | json"></pre>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="onCloseModal('PropJSONModal')">

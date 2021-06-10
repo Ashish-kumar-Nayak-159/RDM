@@ -320,11 +320,11 @@
         </div>
         <div class="modal-body">
           <label>JSON Model: </label>
-          <pre  [innerHTML]="selectedProperty.json_model | json"></pre>
+          <pre class="text-sm" [innerHTML]="selectedProperty.json_model | json"></pre>
           <label *ngIf="deviceType.metadata?.model_type === constantData.NON_IP_DEVICE">Metadata: </label>
-          <pre *ngIf="deviceType.metadata?.model_type === constantData.NON_IP_DEVICE" [innerHTML]="selectedProperty.metadata ? (selectedProperty.metadata | json) : ({} | json)"></pre>
+          <pre class="text-sm" *ngIf="deviceType.metadata?.model_type === constantData.NON_IP_DEVICE" [innerHTML]="selectedProperty.metadata ? (selectedProperty.metadata | json) : ({} | json)"></pre>
           <label *ngIf="type === 'measured_properties'">Thresholds: </label>
-          <pre *ngIf="type === 'measured_properties'" [innerHTML]="selectedProperty.threshold ? (selectedProperty.threshold | json) : ({} | json)"></pre>
+          <pre class="text-sm" *ngIf="type === 'measured_properties'" [innerHTML]="selectedProperty.threshold ? (selectedProperty.threshold | json) : ({} | json)"></pre>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="onCloseModal('PropJSONModal')">

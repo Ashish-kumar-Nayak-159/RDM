@@ -172,11 +172,11 @@
         <div class="modal-body">
           <ng-container *ngIf="c2dMessageDetail">
           <h5>Reqeust: </h5>
-          <pre *ngIf="modalConfig?.jsonDisplay" [innerHTML]="c2dMessageDetail?.request | json"></pre>
+          <pre  class="text-sm" *ngIf="modalConfig?.jsonDisplay" [innerHTML]="c2dMessageDetail?.request | json"></pre>
           </ng-container>
           <ng-container *ngIf="c2dResponseDetail">
           <h5>Response: </h5>
-          <pre *ngIf="modalConfig?.jsonDisplay" [innerHTML]="selectedMessage?.metadata | json"></pre>
+          <pre class="text-sm" *ngIf="modalConfig?.jsonDisplay" [innerHTML]="selectedMessage?.metadata | json"></pre>
           </ng-container>
         </div>
         <div class="modal-footer">

@@ -42,7 +42,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getLiveWidgets();
     await this.getThingsModelProperties();
-    
+
 
   }
 
@@ -57,7 +57,10 @@ export class LiveDataComponent implements OnInit, OnDestroy {
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
-          response.properties.derived_properties.forEach(prop => this.propertyList.push(prop));
+          response.properties.derived_properties.forEach(prop => {
+            prop.type = 'derived';
+            this.propertyList.push(prop)
+          });
           resolve();
         }
       ));
@@ -74,6 +77,15 @@ export class LiveDataComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response?.live_widgets?.length > 0) {
           response.live_widgets.forEach(widget => {
+            widget.derived_props = false;
+            widget.measured_props = false;
+            widget.properties.forEach(prop => {
+              if (prop.property.type === 'derived') {
+                widget.derived_props = true;
+              } else {
+                widget.measured_props = true;
+              }
+            });
             this.liveWidgets.push({
               id: widget.widgetTitle,
               value: widget
@@ -97,15 +109,28 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     this.telemetryObj = undefined;
     obj['app'] = this.contextApp.app;
     obj['device_type'] = this.device.tags.device_type;
-    let message_props = '';
+    // let message_props = '';
     obj['count'] = 1;
     const midnight =  ((((moment().hour(0)).minute(0)).second(0)).utc()).unix();
     const now = (moment().utc()).unix();
     obj['from_date'] = midnight;
     obj['to_date'] = now;
-    this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key
-    + (this.propertyList[index + 1] ? ',' : ''));
-    obj['message_props'] = message_props;
+    let measured_message_props = '';
+    let derived_message_props = '';
+    this.propertyList.forEach((prop, index) => {
+      if (prop.type === 'derived') {
+        derived_message_props = derived_message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : '');
+      } else {
+        measured_message_props = measured_message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : '');
+      }
+    });
+    measured_message_props = measured_message_props.replace(/,\s*$/, '');
+    derived_message_props = derived_message_props.replace(/,\s*$/, '');
+    obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
+    obj['derived_message_props'] = derived_message_props ? derived_message_props : undefined;
+    // this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key
+    // + (this.propertyList[index + 1] ? ',' : ''));
+    // obj['message_props'] = message_props;
     obj['partition_key'] = this.device?.tags?.partition_key;
     obj['device_id'] = this.device.device_id;
     this.selectedWidgets = JSON.parse(JSON.stringify(this.selectedWidgetsForSearch));
@@ -120,8 +145,16 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(
       data => {
         if (data.type !== 'alert') {
+          if (data) {
+            let obj =  JSON.parse(JSON.stringify(data));
+            delete obj.m;
+            delete obj.d;
+            obj = {...obj, ...data.m, ...data.d};
+            data = JSON.parse(JSON.stringify(obj));
+          }
           this.telemetryObj = undefined;
-          data.message_date = this.commonService.convertUTCDateToLocal(data.ts);
+          data.date = this.commonService.convertUTCDateToLocal(data.ts || data.timestamp);
+          data.message_date = this.commonService.convertUTCDateToLocal(data.ts || data.timestamp);
           this.telemetryObj = JSON.parse(JSON.stringify(data));
           this.isTelemetryDataLoading = false;
         }
@@ -130,6 +163,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     this.apiSubscriptions.push(this.deviceService.getLastTelmetry(this.contextApp.app, obj).subscribe(
       (response: any) => {
         if (response.message) {
+          response.message.date = this.commonService.convertUTCDateToLocal(response.message_date);
           response.message_date = this.commonService.convertUTCDateToLocal(response.message_date);
           this.telemetryObj = response.message;
           // Object.keys(this.telemetryObj).forEach(key => {

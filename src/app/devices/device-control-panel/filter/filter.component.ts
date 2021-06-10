@@ -105,6 +105,9 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log(this.filterObj);
     if (this.filterObj.dateOption !== 'Custom Range') {
       this.selectedDateRange = this.filterObj.dateOption;
+      const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
+      this.filterObj.from_date = dateObj.from_date;
+      this.filterObj.to_date = dateObj.to_date;
     } else {
       this.selectedDateRange = moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
       moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');

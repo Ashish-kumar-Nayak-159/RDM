@@ -195,6 +195,9 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.telemetryFilter.dateOption = 'Last 30 Mins';
     if (this.telemetryFilter.dateOption !== 'Custom Range') {
       this.selectedDateRange = this.telemetryFilter.dateOption;
+      const dateObj = this.commonService.getMomentStartEndDate(this.telemetryFilter.dateOption);
+      this.telemetryFilter.from_date = dateObj.from_date;
+      this.telemetryFilter.to_date = dateObj.to_date;
     } else {
       const dateObj = this.commonService.getMomentStartEndDate(this.telemetryFilter.dateOption);
       this.telemetryFilter.from_date = dateObj.from_date;

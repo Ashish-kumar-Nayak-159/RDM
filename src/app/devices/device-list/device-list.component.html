@@ -89,11 +89,11 @@
         </ng-container>
         <ng-container *ngIf="currentPageView === 'map'">
           <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle"
-          [fitBounds]="true">
+          [fitBounds]="mapFitBounds">
             <agm-marker-cluster
             imagePath="./assets/img/m">
           <ng-container  *ngFor="let device of devicesList; let i = index; ">
-            <agm-marker *ngIf="device.latitude && device.longitude" [agmFitBounds]="true"
+            <agm-marker *ngIf="device.latitude && device.longitude" [agmFitBounds]="mapFitBounds"
             [latitude]="device.latitude" [longitude]="device.longitude"
             (mouseOver)="onMarkerClick(infowindow, gm)"
             [iconUrl]="device.icon"  >

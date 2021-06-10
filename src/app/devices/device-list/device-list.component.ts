@@ -88,6 +88,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   isDerivedKPIDataLoading = false;
   derivedKPIData: any[] = [];
   loader = false;
+  mapFitBounds = false;
   loadingMessage = 'Loading Data. Please wait...';
   chart: am4charts.XYChart;
   environmentApp = environment.app;
@@ -409,6 +410,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
 
   getLatestDerivedKPIData() {
     return new Promise<void>((resolve) => {
+      this.isDeviceListLoading = true;
       const derivedKPICode = 'SPCD';
       const obj = {
         from_date: moment().subtract(24, 'hours').utc().unix(),
@@ -429,7 +431,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
           });
         }
         resolve();
-      })
+      }, error => resolve())
       );
     });
   }
@@ -438,12 +440,16 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     console.log(type);
     if (type === 'map') {
       console.log('here');
-      const center = this.commonService.averageGeolocation(this.devicesList);
-      console.log(center);
-      this.centerLatitude = center?.latitude || 23.0225;
-      this.centerLongitude = center?.longitude || 72.5714;
-      console.log(this.centerLatitude);
-      console.log(this.centerLongitude);
+      if (this.devicesList.length === 0) {
+        this.mapFitBounds = false;
+        const center = this.commonService.averageGeolocation(this.devicesList);
+        this.centerLatitude = center?.latitude || 23.0225;
+        this.centerLongitude = center?.longitude || 72.5714;
+        // this.zoom = 8;
+      } else {
+        this.mapFitBounds = true;
+        // this.zoom = undefined;
+      }
     }
     this.currentPageView = type;
   }
@@ -751,10 +757,16 @@ export class DeviceListComponent implements OnInit, OnDestroy {
               console.log(item.device_id , '=====', item.icon);
             });
             this.devicesList = [...this.devicesList, ...response.data];
-            const center = this.commonService.averageGeolocation(this.devicesList);
-            console.log(center);
-            this.centerLatitude = center?.latitude || 23.0225;
-            this.centerLongitude = center?.longitude || 72.5714;
+            if (this.devicesList.length === 0) {
+              this.mapFitBounds = false;
+              const center = this.commonService.averageGeolocation(this.devicesList);
+              this.centerLatitude = center?.latitude || 23.0225;
+              this.centerLongitude = center?.longitude || 72.5714;
+              // this.zoom = 8;
+            } else {
+              this.mapFitBounds = true;
+              // this.zoom = undefined;
+            }
 
           }
           if (response.data.length === this.currentLimit) {

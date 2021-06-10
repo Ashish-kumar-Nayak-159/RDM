@@ -65,11 +65,11 @@
   <div id="map-container-google-1" class="z-depth-1-half map-container">
 
     <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle"
-     [fitBounds]="true">
+     [fitBounds]="mapFitBounds">
       <agm-marker-cluster
       imagePath="./assets/img/m">
     <ng-container  *ngFor="let device of mapDevices; let i = index; ">
-      <agm-marker *ngIf="device.latitude && device.longitude" [agmFitBounds]="true"
+      <agm-marker *ngIf="device.latitude && device.longitude" [agmFitBounds]="mapFitBounds"
       [latitude]="device.latitude" [longitude]="device.longitude"
       (mouseOver)="onMarkerClick(infowindow, gm)"
       [iconUrl]="device.icon"

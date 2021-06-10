@@ -33,6 +33,8 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   unhealthyDeviceCount = 0;
   environmentApp = environment.app;
   activeCircle = 'all';
+  mapFitBounds = false;
+  zoom = undefined;
   customMapStyle =  [
     {
       featureType: 'poi',
@@ -320,9 +322,16 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     } else {
       this.mapDevices = JSON.parse(JSON.stringify(this.devices));
     }
-    const center = this.commonService.averageGeolocation(this.mapDevices);
-    this.centerLatitude = center?.latitude || 23.0225;
-    this.centerLongitude = center?.longitude || 72.5714;
+    if (this.mapDevices.length === 0) {
+      this.mapFitBounds = false;
+      const center = this.commonService.averageGeolocation(this.mapDevices);
+      this.centerLatitude = center?.latitude || 23.0225;
+      this.centerLongitude = center?.longitude || 72.5714;
+      // this.zoom = 5;
+    } else {
+      this.mapFitBounds = true;
+      // this.zoom = undefined;
+    }
 
   }
 
@@ -374,9 +383,16 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       });
       this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
     }
-    const center = this.commonService.averageGeolocation(this.mapDevices);
-    this.centerLatitude = center?.latitude || 23.0225;
-    this.centerLongitude = center?.longitude || 72.5714;
+    if (this.mapDevices.length === 0) {
+      this.mapFitBounds = false;
+      const center = this.commonService.averageGeolocation(this.mapDevices);
+      this.centerLatitude = center?.latitude || 23.0225;
+      this.centerLongitude = center?.longitude || 72.5714;
+      // this.zoom = 8;
+    } else {
+      this.mapFitBounds = true;
+      // this.zoom = undefined;
+    }
   }
 
   onSelect() {

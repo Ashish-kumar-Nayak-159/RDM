@@ -1,3 +1,4 @@
+import { NgSelectModule } from '@ng-select/ng-select';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule } from '@angular/forms';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
@@ -56,7 +57,8 @@ import { CommonTableFilterComponent } from './table/common-table-filter/common-t
     ColorPickerModule,
     AngularMultiSelectModule,
     DataTablesModule,
-    TooltipModule
+    TooltipModule,
+    NgSelectModule
   ],
   exports: [
     // FilterComponent,

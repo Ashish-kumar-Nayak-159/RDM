@@ -378,7 +378,7 @@ template {
 }
 
 .h6, h6 {
-    font-size: 1rem;
+    font-size: 0.95rem;
 }
 
 .lead {
@@ -13133,7 +13133,7 @@ box-shadow: inset -8px 0 10px -6px #dbe9f5 !important;
 
 .alert-scrollbox {
 width: 100%;
-height: calc(100vh - 8rem);
+height: calc(100vh - 11rem);
 overflow-y: scroll;
     overflow-x: auto;
 visibility: hidden;
@@ -13309,6 +13309,18 @@ overflow-x: hidden;
 
 .modal-live-widget-container {
   height: calc(100vh - 14rem);
+}
+
+.content-scroll-alert {
+  max-height: calc(100vh - 20rem);
+}
+
+.alert-box-live-alerts {
+  height: calc(100vh - 8rem);
+}
+
+.content-scroll-live-alert {
+  max-height: calc(100vh - 16rem);
 }
 
 

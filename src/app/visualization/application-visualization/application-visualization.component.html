@@ -87,7 +87,7 @@
       </ng-container>
 
     <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3 pr-0 " [ngClass]="{'right-border': latestAlerts.length > 0}">
-      <div class="alert-scrollbox alert-scrollbox_delayed">
+      <div class="alert-scrollbox alert-scrollbox_delayed" [ngClass]="{'alert-box-live-alerts': pageType === 'live'}">
       <ul class="mail_list list-group list-unstyled alert-scrollbox-content" *ngIf="!isAlertAPILoading && latestAlerts.length > 0">
         <!-- [ngClass]="{'active': alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id,
         'border-left-success': alert?.source?.toLowerCase() === 'cloud', 'border-left-info': alert?.source?.toLowerCase() === 'asset',
@@ -281,7 +281,7 @@
                 placement="bottom" [tooltip]="getPropertyName(prop)">{{getPropertyName(prop)}}</label>
               </div>
             </div>
-            <div class="content-scroll content-scroll-alert">
+            <div class="content-scroll content-scroll-alert" [ngClass]="{'content-scroll-live-alert': pageType === 'live'}">
                 <ng-container *ngIf="isTelemetryDataLoading">
                   {{loadingMessage}}
                   <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
@@ -304,7 +304,7 @@
         <div id="recommendation" role="tabpanel" [ngClass]="{'show active': selectedTab === 'recommendation'}" aria-labelledby="recommendation-tab" class="tab-pane fade">
           <div class="ml-3 mt-3" *ngIf="alertCondition?.recommendations?.length > 0">
             Following recommendations have been pre-configured.
-            <div class="content-scroll content-scroll-alert" style="max-height: calc(100vh - 13.5rem);">
+            <div class="content-scroll content-scroll-alert" [style.maxHeight]="pageType === 'live' ? 'calc(100vh - 13.5rem)' : 'calc(100vh - 15rem)'">
             <table  class="table table-hover">
               <tbody>
                 <ng-container *ngFor="let step of alertCondition.recommendations; let i = index;">
@@ -330,7 +330,7 @@
           </div>
         </div>
         <div id="documents" role="tabpanel" aria-labelledby="documents-tab" [ngClass]="{'show active': selectedTab === 'documents'}" class="tab-pane fade">
-          <div class="content-scroll content-scroll-alert ml-3 mt-3" style="max-height: calc(100vh - 13.5rem);">
+          <div class="content-scroll content-scroll-alert ml-3 mt-3" [style.maxHeight]="pageType === 'live' ? 'calc(100vh - 13.5rem)' : 'calc(100vh - 15rem)'">
           <div class="tagsinput" style="width: auto; height: auto;min-height: auto;"
                       *ngIf="alertCondition?.reference_documents?.length > 0">
                       <ng-container *ngFor="let item of alertCondition.reference_documents; let index = index">
@@ -344,7 +344,7 @@
           </div>
         </div>
         <div id="actions" role="tabpanel" aria-labelledby="actions-tab" [ngClass]="{'show active': selectedTab === 'actions'}" class="tab-pane fade">
-          <div class="content-scroll content-scroll-alert" style="max-height: calc(100vh - 13.5rem);">
+          <div class="content-scroll content-scroll-alert" [style.maxHeight]="pageType === 'live' ? 'calc(100vh - 13.5rem)' : 'calc(100vh - 15rem)'">
           <h6 class="m-3">Action taken by Field Staff:</h6>
                     <div class="col-xl-12 col-lg-12 ml-3"
                       *ngIf="!selectedAlert?.metadata?.acknowledged_date; else actionTakenTemplate">

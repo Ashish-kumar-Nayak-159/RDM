@@ -11,9 +11,6 @@ input:invalid {
   width: 10rem;
 }
 
-.content-scroll-alert {
-  max-height: calc(100vh - 18rem);
-}
 
 
 #bar-chart text {

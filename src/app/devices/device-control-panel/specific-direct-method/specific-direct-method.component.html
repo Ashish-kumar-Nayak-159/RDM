@@ -83,6 +83,7 @@
             <td>Connection Timeout (In Seconds)</td>
             <td>
               <input type="number" class="form-control form-control-sm" name="connection_timeout"
+              min="5" max="300"
               [(ngModel)]="selectedWidget.connection_timeout_in_sec">
             </td>
           </tr>
@@ -90,6 +91,7 @@
             <td>Response Timeout (In Seconds)</td>
             <td>
               <input type="number" class="form-control form-control-sm" name="response_timeout_in_sec"
+              min="5" max="300"
               [(ngModel)]="selectedWidget.response_timeout_in_sec">
             </td>
           </tr>

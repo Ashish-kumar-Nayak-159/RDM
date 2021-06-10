@@ -170,7 +170,7 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.displayMode === 'history' && !obj.date_frequency) {
-      this.toasterService.showError('Frequency is required.', 'MTBF Data');
+      this.toasterService.showError('Frequency is required.', 'MTTR Data');
       this.isFilterSelected = false;
       this.isLifeCycleEventsLoading = false;
       return;

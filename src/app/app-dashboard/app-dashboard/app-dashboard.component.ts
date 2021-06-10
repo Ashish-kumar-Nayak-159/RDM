@@ -337,6 +337,15 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             if (widget.dashboardVisibility) {
               this.liveWidgets.push(widget);
             }
+            widget.derived_props = false;
+            widget.measured_props = false;
+            widget.properties.forEach(prop => {
+              if (prop.property.type === 'derived') {
+                widget.derived_props = true;
+              } else {
+                widget.measured_props = true;
+              }
+            });
           });
         }
         this.isGetWidgetsAPILoading = false;
@@ -410,6 +419,13 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(
       data => {
         if (data.type !== 'alert') {
+          if (data) {
+            let obj =  JSON.parse(JSON.stringify(data));
+            delete obj.m;
+            delete obj.d;
+            obj = {...obj, ...data.m, ...data.d};
+            data = JSON.parse(JSON.stringify(obj));
+          }
           console.log(data);
           this.processTelemetryData(data);
           this.isTelemetryDataLoading = false;
@@ -539,7 +555,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           (response: any) => {
             this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
             response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
-            response.properties.derived_properties.forEach(prop => this.propertyList.push(prop));
+            response.properties.derived_properties.forEach(prop => {
+              prop.type = 'derived';
+              this.propertyList.push(prop)
+            });
             resolve1();
           }, error => this.isTelemetryDataLoading = false
         ));

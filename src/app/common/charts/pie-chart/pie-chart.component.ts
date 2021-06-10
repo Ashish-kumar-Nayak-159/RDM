@@ -24,6 +24,7 @@ export class PieChartComponent implements OnInit, OnDestroy {
   chartType: any;
   chartTitle: any;
   chartId: any;
+  chartConfig: any;
   showThreshold = false;
   isOverlayVisible = false;
   modalConfig: any;

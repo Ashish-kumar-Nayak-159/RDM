@@ -91,12 +91,15 @@
           </div>
           <ng-container *ngIf=" filterObj.report_type === 'Process Parameter Report'">
           <div class="form-group">
-            <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" bindLabel="id" [clearable]="false"
+            <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" [clearable]="false"
               [searchable]="false"  [multiple]="true" [ngClass]="{'active': props.length > 0}"
               [closeOnSelect]="false" placeholder="Select Properties"
               dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="props" (onDeSelectAll)="y1Deselect($event)">
               <ng-template ng-multi-label-tmp let-items="items">
                 {{items.length}} properties selected
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item">
+                <span > <i [ngClass]="{'icon icon-function': item.value.type === 'derived'}"></i> {{item.id}}</span>
               </ng-template>
             </ng-select>
           </div>
@@ -176,7 +179,7 @@
                       <th></th>
                       <th class="w-10">Asset Name</th>
                       <th class="w-17">Time</th>
-                      <th *ngFor="let property of selectedProps"> {{property.id}}</th>
+                      <th *ngFor="let property of selectedProps"> <i class="icon icon-function" *ngIf="property.value.type === 'derived'"></i> {{property.id}}</th>
                     </tr>
                   </thead>
                   <tbody>

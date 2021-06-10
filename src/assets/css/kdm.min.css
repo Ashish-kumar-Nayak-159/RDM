@@ -3410,6 +3410,7 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.5;
+  height: calc(1.5em + .5rem + 2px);
   color: #6e707e;
   text-align: center;
   white-space: nowrap;
@@ -12957,6 +12958,10 @@ border-radius: 5px;
   background-image: url(../img/end-points.svg);
 }
 
+.icon-function {
+  background-image: url(../img/function.svg);
+}
+
 .sidebar .nav-item.active .icon-cubes {
   background-image: url(../img/end-points-active.svg);
 }
@@ -13261,4 +13266,33 @@ overflow-x: hidden;
 .form-group .redNumberCircle:focus {
   outline: 0;
   box-shadow: 0 0 0 0.2rem rgb(78 115 223 / 25%);
+}
+
+
+.round-badge {
+  height: 1.25rem;
+  width: 1.25rem;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  display: inline-block;
+  text-align:center;
+  font-weight:500;
+  margin-right:0.5rem;
+  font-size: 0.8rem;
+}
+.badge-blue {
+    background-color: #60bafd !important;
+    color: #fff;
+}
+.badge-darkblue {
+    background-color: #89a7ff !important;
+    color: #fff;
+}
+.border-left-blue {
+    border-left: .25rem solid #60bafd!important
+}
+.border-left-darkblue {
+    border-left: .25rem solid #89a7ff!important
 }

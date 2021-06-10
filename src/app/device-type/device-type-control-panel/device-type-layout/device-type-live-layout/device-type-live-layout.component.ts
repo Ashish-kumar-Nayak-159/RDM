@@ -57,7 +57,10 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
-          response.properties.derived_properties.forEach(prop => this.propertyList.push(prop));
+          response.properties.derived_properties.forEach(prop => {
+            prop.type = 'derived';
+            this.propertyList.push(prop);
+          });
           resolve();
         }
       ));
@@ -117,10 +120,20 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
     this.subscriptions.push(this.deviceTypeService.getThingsModelLiveWidgets(params).subscribe(
       async (response: any) => {
         if (response?.live_widgets?.length > 0) {
+          // alert('hereeee');
           this.liveWidgets = response.live_widgets;
           // let count = 1;
           this.liveWidgets.forEach(widget => {
             widget.freezed = this.deviceType.freezed;
+            widget.derived_props = false;
+            widget.measured_props = false;
+            widget.properties.forEach(prop => {
+              if (prop.property.type === 'derived') {
+                widget.derived_props = true;
+              } else {
+                widget.measured_props = true;
+              }
+            })
           });
           this.getTelemetryData();
           setInterval(() =>

@@ -25,6 +25,7 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
   chartType: any;
   chartTitle: any;
   chartId: any;
+  chartConfig: any;
   showThreshold = false;
   isOverlayVisible = false;
   modalConfig: any;
@@ -236,18 +237,19 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
         }
       });
       series.name = this.getPropertyName(prop);
+      series.propType = this.getPropertyType(prop) === 'derived' ? 'D' : 'M';
       series.propKey = prop;
       series.columns.template.fillOpacity = .8;
       series.compareText = true;
       if (series.units) {
-        series.legendSettings.labelText = '{name} ({units})';
+        series.legendSettings.labelText = '({propType}) {name} ({units})';
         } else {
-          series.legendSettings.labelText = '{name}';
+          series.legendSettings.labelText = '({propType}) {name}';
         }
       if (series.units) {
-        series.columns.template.tooltipText = 'Date: {dateX} \n {name} ({units}): [bold]{valueY}[/]';
+        series.columns.template.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
       } else {
-        series.columns.template.tooltipText = 'Date: {dateX} \n {name}: [bold]{valueY}[/]';
+        series.columns.template.tooltipText = 'Date: {dateX} \n ({propType}) {name}: [bold]{valueY}[/]';
       }
       const columnTemplate = series.columns.template;
       columnTemplate.strokeWidth = 2;
@@ -330,6 +332,9 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
     return this.propertyList.filter(prop => prop.json_key === key)[0]?.name || key;
   }
 
+  getPropertyType(key) {
+    return this.propertyList.filter(prop => prop.json_key === key)[0]?.type || 'Measured';
+  }
 
   removeWidget(chartId) {
   }

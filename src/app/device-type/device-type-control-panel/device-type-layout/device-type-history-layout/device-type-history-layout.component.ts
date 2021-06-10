@@ -125,7 +125,10 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
-          response.properties.derived_properties.forEach(prop => this.propertyList.push(prop));
+          response.properties.derived_properties.forEach(prop => {
+            prop.type = 'derived';
+            this.propertyList.push(prop);
+          });
           console.log(this.propertyList);
           resolve();
         }
@@ -178,8 +181,26 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       showDataTable: this.showDataTable,
       y1axis: this.y1AxisProps,
       y2axis: this.y2AxisProps,
-      xAxis: this.xAxisProps
+      xAxis: this.xAxisProps,
+      derived_props: false,
+      measured_props: false
     };
+    obj.y1axis.forEach(prop => {
+      const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
+      if (type === 'derived') {
+        obj.derived_props = true;
+      } else {
+        obj.measured_props = true;
+      }
+    });
+    obj.y2axis.forEach(prop => {
+      const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
+      if (type === 'derived') {
+        obj.derived_props = true;
+      } else {
+        obj.measured_props = true;
+      }
+    });
     const index = this.layoutJson.findIndex(widget => widget.title.toLowerCase() === obj.title.toLowerCase());
     if (index === -1) {
       await this.plotChart(obj);
@@ -254,7 +275,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       componentRef.instance.chartHeight = '23rem';
       componentRef.instance.chartWidth = '100%';
       componentRef.instance.device = this.device;
-      // componentRef.instance.chartStartdate = this.fromDate;
+      componentRef.instance.chartConfig = layoutJson;
       // componentRef.instance.chartEnddate = this.toDate;
       componentRef.instance.chartTitle = layoutJson.title;
       componentRef.instance.chartId = layoutJson.chart_Id;
@@ -334,6 +355,24 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
             this.dropdownWidgetList.push({
               id: item.title,
               value: item
+            });
+            item.derived_props = false;
+            item.measured_props = false;
+            item.y1axis.forEach(prop => {
+              const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
+              if (type === 'derived') {
+                item.derived_props = true;
+              } else {
+                item.measured_props = true;
+              }
+            });
+            item.y2axis.forEach(prop => {
+              const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
+              if (type === 'derived') {
+                item.derived_props = true;
+              } else {
+                item.measured_props = true;
+              }
             });
           });
           this.renderLayout();

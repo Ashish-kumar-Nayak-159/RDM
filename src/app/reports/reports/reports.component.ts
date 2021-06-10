@@ -358,6 +358,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
           response.properties.derived_properties.forEach(prop => {
+            prop.type = 'derived';
             this.propertyList.push(prop);
           });
           this.dropdownPropList = [];
@@ -541,9 +542,19 @@ export class ReportsComponent implements OnInit, OnDestroy {
       } else {
         delete obj.aggregation_minutes;
         delete obj.aggregation_format;
-        let message_props = '';
-        this.props.forEach((prop, index) => message_props = message_props + prop.value.json_key + (this.props[index + 1] ? ',' : ''));
-        obj['message_props'] = message_props;
+        let measured_message_props = '';
+        let derived_message_props = '';
+        this.props.forEach((prop, index) => {
+          if (prop.value.type === 'derived') {
+            derived_message_props = derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+          } else {
+            measured_message_props = measured_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+          }
+        });
+        measured_message_props = measured_message_props.replace(/,\s*$/, '');
+        derived_message_props = derived_message_props.replace(/,\s*$/, '');
+        obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
+        obj['derived_message_props'] = derived_message_props ? derived_message_props : undefined;
         const records = this.commonService.calculateEstimatedRecords(filterObj.sampling_time * 60, obj.from_date, obj.to_date);
         if (records > 500 ) {
           this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
@@ -557,9 +568,19 @@ export class ReportsComponent implements OnInit, OnDestroy {
       } else {
         delete obj.sampling_time;
         delete obj.sampling_format;
-        let message_props = '';
-        this.props.forEach((prop, index) => message_props = message_props + prop.value.json_key + (this.props[index + 1] ? ',' : ''));
-        obj['message_props'] = message_props;
+        let measured_message_props = '';
+        let derived_message_props = '';
+        this.props.forEach((prop, index) => {
+          if (prop.value.type === 'derived') {
+            derived_message_props = derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+          } else {
+            measured_message_props = measured_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+          }
+        });
+        measured_message_props = measured_message_props.replace(/,\s*$/, '');
+        derived_message_props = derived_message_props.replace(/,\s*$/, '');
+        obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
+        obj['derived_message_props'] = derived_message_props ? derived_message_props : undefined;
         const records = this.commonService.calculateEstimatedRecords
           (filterObj.aggregation_minutes * 60, obj.from_date, obj.to_date);
         if (records > 500 ) {
@@ -576,10 +597,23 @@ export class ReportsComponent implements OnInit, OnDestroy {
       if (this.props.length === this.propertyList.length && !obj.sampling_format && !obj.aggregation_format) {
         obj['all_message_props'] = true;
       } else {
-        let message_props = '';
-        this.props.forEach((prop, index) => message_props = message_props + prop.value.json_key +
-        (this.props[index + 1] ? ',' : ''));
-        obj['message_props'] = message_props;
+        // let message_props = '';
+        // this.props.forEach((prop, index) => message_props = message_props + prop.value.json_key +
+        // (this.props[index + 1] ? ',' : ''));
+        // obj['message_props'] = message_props;
+        let measured_message_props = '';
+        let derived_message_props = '';
+        this.props.forEach((prop, index) => {
+          if (prop.value.type === 'derived') {
+            derived_message_props = derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+          } else {
+            measured_message_props = measured_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+          }
+        });
+        measured_message_props = measured_message_props.replace(/,\s*$/, '');
+        derived_message_props = derived_message_props.replace(/,\s*$/, '');
+        obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
+        obj['derived_message_props'] = derived_message_props ? derived_message_props : undefined;
       }
       const records = this.commonService.calculateEstimatedRecords
           ((device?.measurement_frequency?.average ? device.measurement_frequency.average : 5),

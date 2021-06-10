@@ -348,9 +348,11 @@
           <h6 class="m-3">Action taken by Field Staff:</h6>
                     <div class="col-xl-12 col-lg-12 ml-3"
                       *ngIf="!selectedAlert?.metadata?.acknowledged_date; else actionTakenTemplate">
-                      No Actions recorded by field staff yet.
-                      <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down blue-font" *ngIf="!selectedAlert?.metadata?.acknowledged_date" (click)="onClickOfAcknowledgeAlert(selectedAlert)"
-                >Acknowledge</a>
+                     <p> This alert is not yet acknowledged, please <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down blue-font" *ngIf="!selectedAlert?.metadata?.acknowledged_date" (click)="onClickOfAcknowledgeAlert(selectedAlert)"
+                      >Acknowledge.</a></p>
+                      <p>No Actions recorded by field staff yet. <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down blue-font" *ngIf="!selectedAlert?.metadata?.acknowledged_date" (click)="onClickOfAcknowledgeAlert(selectedAlert)"
+                      >Take Action now</a></p>
+
                     </div>
                     <ng-template #actionTakenTemplate>
                       <div class="table-responsive ml-3">

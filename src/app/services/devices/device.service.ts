@@ -251,7 +251,21 @@ export class DeviceService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + AppUrls.GET_TELEMETRY_LIST, { params });
+    return this.http.get(this.url + String.Format(AppUrls.GET_TELEMETRY_LIST, encodeURIComponent(filterObj.app)), { params })
+    .pipe( map((data: any) => {
+      const arr = [];
+      data.data.forEach(item => {
+        let obj = {...item.m, ...item.d};
+        delete item.m;
+        delete item.d;
+        arr.push({...item, ...obj});
+      });
+      data.data = JSON.parse(JSON.stringify(arr));
+      return data;
+    }), catchError( error => {
+      return throwError( error);
+    })
+    );
   }
 
   getDeviceSamplingTelemetry(filterObj, app) {
@@ -261,7 +275,21 @@ export class DeviceService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_SAMPLING_DEVICE_TELEMETRY, encodeURIComponent(app)), { params });
+    return this.http.get(this.url + String.Format(AppUrls.GET_SAMPLING_DEVICE_TELEMETRY, encodeURIComponent(app)), { params })
+    .pipe( map((data: any) => {
+      const arr = [];
+      data.data.forEach(item => {
+        let obj = {...item.m, ...item.d};
+        delete item.m;
+        delete item.d;
+        arr.push({...item, ...obj});
+      });
+      data.data = JSON.parse(JSON.stringify(arr));
+      return data;
+    }), catchError( error => {
+      return throwError( error);
+    })
+    );
   }
 
   getDeviceTelemetryForReport(filterObj, app) {
@@ -518,7 +546,19 @@ export class DeviceService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_LAST_TELEMETRY, encodeURIComponent(app)), { params });
+    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_LAST_TELEMETRY, encodeURIComponent(app)), { params })
+    .pipe( map((data: any) => {
+      let obj;
+      if (data.message) {
+        let obj = {...data.message?.m, ...data.message?.d};
+        obj['ts'] = data.message.ts;
+        data.message = JSON.parse(JSON.stringify(obj));
+      }
+      return data;
+    }), catchError( error => {
+      return throwError( error);
+    })
+    );
   }
 
   getFirstTelmetry(app, filterObj) {
@@ -528,7 +568,18 @@ export class DeviceService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_FIRST_TELEMETRY, encodeURIComponent(app)), { params });
+    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_FIRST_TELEMETRY, encodeURIComponent(app)), { params })
+    .pipe( map((data: any) => {
+      if (data.message) {
+        let obj = {...data.message?.m, ...data.message?.d};
+        obj['ts'] = data.message.ts;
+        data.message = JSON.parse(JSON.stringify(obj));
+      }
+      return data;
+    }), catchError( error => {
+      return throwError( error);
+    })
+    );
   }
 
   getDeviceMaintenanceActivityData(app, deviceId, filterObj) {

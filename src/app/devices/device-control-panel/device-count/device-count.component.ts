@@ -40,6 +40,7 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
     ranges: CONSTANTS.DATE_OPTIONS
   };
   selectedDateRange: any;
+  selectedProps: any[] = [];
   @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   constructor(
     private toasterService: ToasterService,
@@ -121,6 +122,7 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
           this.devices = response.data;
           if (this.devices.length === 1) {
             this.telemetryFilter.device = this.devices[0];
+            this.onSelectionOfDevice();
           }
           // this.devices.splice(0, 0, { device_id: this.telemetryFilter.gateway_id});
         }
@@ -138,7 +140,11 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
-          response.properties.derived_properties.forEach(prop => this.propertyList.push(prop));
+          response.properties.derived_properties.forEach(prop => {
+            prop.type = 'derived';
+            this.propertyList.push(prop)
+          });
+          this.propertyList = JSON.parse(JSON.stringify(this.propertyList));
           // this.props = [...this.dropdownPropList];
           resolve();
         }
@@ -146,9 +152,14 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
     });
   }
 
+  onSelectionOfDevice() {
+    this.getThingsModelProperties(this.telemetryFilter.device);
+  }
+
 
 
   async searchTelemetry(filterObj, updateFilterObj = true) {
+    console.log(filterObj);
     this.telemetry = [];
     if (filterObj.dateOption !== 'Custom Range') {
       const dateObj = this.commonService.getMomentStartEndDate(filterObj.dateOption);
@@ -164,7 +175,7 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
     if (!obj.device_id) {
       this.toasterService.showError('Asset selection is required.', 'View Count Data');
     }
-    await this.getThingsModelProperties(filterObj.device);
+
     if (this.telemetryTableConfig.data.length !== (this.propertyList.length + 1)) {
     this.propertyList.forEach(prop => {
       this.telemetryTableConfig.headers.push(prop.name);
@@ -198,10 +209,20 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
       this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
       return;
     }
-    let message_props = '';
-    this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key +
-    (this.propertyList[index + 1] ? ',' : ''));
-    obj['message_props'] = message_props;
+    let measured_message_props = '';
+    let derived_message_props = '';
+    filterObj.props.forEach((prop, index) => {
+      if (prop.type === 'derived') {
+        derived_message_props = derived_message_props + prop.json_key + (filterObj.props[index + 1] ? ',' : '');
+      } else {
+        measured_message_props = measured_message_props + prop.json_key + (filterObj.props[index + 1] ? ',' : '');
+      }
+    });
+    measured_message_props = measured_message_props.replace(/,\s*$/, '');
+    derived_message_props = derived_message_props.replace(/,\s*$/, '');
+    obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
+    obj['derived_message_props'] = derived_message_props ? derived_message_props : undefined;
+    delete obj.props;
     obj.partition_key = this.device?.tags?.partition_key;
     if (this.device.tags.category === CONSTANTS.IP_GATEWAY) {
       obj.partition_key = filterObj.device.partition_key;

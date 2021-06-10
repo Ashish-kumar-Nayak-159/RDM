@@ -1,12 +1,31 @@
+<!-- <div class="ml-2 round-badge badge-darkblue" tooltip="Derived Property" *ngIf="chartConfig.derived_props">D</div>
+    <div class="ml-2 round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M</div>
+    <div><h6 class="my-0 live-widget-title" placement="bottom" [tooltip]="chartConfig.widgetTitle">
+      {{chartConfig.widgetTitle}}
+    </h6>
+    </div>
+
+    <div class="ml-auto">
+    <a *ngIf="!device && !chartConfig.freezed" class="" href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()"
+    placement="bottom" tooltip="Remove Widget"><i class="fa fa-close"></i></a>
+  </div> -->
+
 
 <div class="mt-1">
 <div class="card" id="{{chartConfig.chartId}}">
-  <div class="card-header">
-    <h6 class="my-0 live-widget-title" [ngClass]="!device ? 'col-md-10' : 'col-md-12'" placement="bottom" [tooltip]="chartConfig.widgetTitle">
+  <div class="card-header d-flex px-2">
+    <div><h6 class="my-0 live-widget-title" placement="bottom" [tooltip]="chartConfig.widgetTitle">
       {{chartConfig.widgetTitle}}
     </h6>
-    <a *ngIf="!device && !chartConfig.freezed" class="float-right pull-right col-md-1 mt-n4" href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()"
+    </div>
+    <div class="ml-auto">
+    <div class="round-badge badge-darkblue" tooltip="Derived Property" *ngIf="chartConfig.derived_props">D</div>
+    <div class="round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M</div>
+
+    <a *ngIf="!device && !chartConfig.freezed" href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()"
     placement="bottom" tooltip="Remove Widget"><i class="fa fa-close"></i></a>
+
+</div>
   </div>
   <div class="card-body1" style="height: 12rem;">
     <div class="row text-center " *ngIf="telemetryObj">
@@ -14,7 +33,8 @@
       [ngClass]="{'border-left': i > 0}">
 
         <p class="text-xs live-widget-title" placement="bottom" [tooltip]="prop.title + ' ' + (prop.property.json_model[prop.property.json_key].units ? ('(' + prop.property.json_model[prop.property.json_key].units + ')') : '')">
-          {{prop.title}}
+
+          ({{chartConfig.derived_props ? 'D' : 'M'}}) {{prop.title}}
           {{prop.property.json_model[prop.property.json_key].units ? ('(' + prop.property.json_model[prop.property.json_key].units + ')') : ''}}
         </p>
 

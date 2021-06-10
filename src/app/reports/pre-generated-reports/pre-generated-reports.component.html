@@ -85,7 +85,7 @@
           <td>{{index + 1}}</td>
           <td >
             <ng-container *ngFor="let deviceId of reportObj.devices">
-              <p>{{ getDeviceNameById(deviceId)}}</p>
+             {{ getDeviceNameById(deviceId)}}
             </ng-container>
           </td>
         <td>{{ reportObj.local_start_date }}</td>

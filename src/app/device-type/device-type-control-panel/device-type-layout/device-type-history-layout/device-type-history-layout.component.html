@@ -27,7 +27,7 @@
         {{items.length}} properties selected
         </ng-template>
         <ng-template ng-option-tmp let-item="item">
-          <span > {{item.name}}</span>
+          <span > <i [ngClass]="{'icon icon-function': item.type === 'derived'}"></i> {{item.name}}</span>
         </ng-template>
       </ng-select>
       </div>
@@ -40,7 +40,7 @@
         {{items.length}} properties selected
         </ng-template>
         <ng-template ng-option-tmp let-item="item">
-          <span > {{item.name}}</span>
+          <span > <i [ngClass]="{'icon icon-function': item.type === 'derived'}"></i> {{item.name}}</span>
         </ng-template>
       </ng-select>
       </div>

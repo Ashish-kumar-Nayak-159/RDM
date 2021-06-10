@@ -28,6 +28,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   chartWidth: any;
   chartType: any;
   chartTitle: any;
+  chartConfig: any;
   chartId: any = 'XYChart';
   showThreshold = false;
   isOverlayVisible = false;
@@ -250,6 +251,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         }
       });
       series.name =  this.getPropertyName(prop);
+      series.propType = this.getPropertyType(prop) === 'derived' ? 'D' : 'M';
       series.propKey = prop;
       // series.stroke = this.commonService.getRandomColor();
       series.yAxis = valueYAxis;
@@ -264,16 +266,16 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       // series.tensionX = 0.77;
       series.strokeOpacity = 1;
       if (series.units) {
-      series.legendSettings.labelText = '{name} ({units})';
+      series.legendSettings.labelText = '({propType}) {name} ({units})';
       } else {
-        series.legendSettings.labelText = '{name}';
+        series.legendSettings.labelText = '({propType}) {name}';
       }
 
       series.fillOpacity = this.chartType.includes('Area') ? 0.3 : 0;
       if (series.units) {
-      series.tooltipText = 'Date: {dateX} \n {name} ({units}): [bold]{valueY}[/]';
+      series.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
       } else {
-        series.tooltipText = 'Date: {dateX} \n {name}: [bold]{valueY}[/]';
+        series.tooltipText = 'Date: {dateX} \n ({propType}) {name}: [bold]{valueY}[/]';
       }
 
       const bullet = series.bullets.push(new am4charts.CircleBullet());
@@ -294,6 +296,10 @@ export class LiveChartComponent implements OnInit, OnDestroy {
 
   getPropertyName(key) {
     return this.propertyList.filter(prop => prop.json_key === key)[0]?.name || key;
+  }
+
+  getPropertyType(key) {
+    return this.propertyList.filter(prop => prop.json_key === key)[0]?.type || 'Measured';
   }
 
   toggleProperty(prop) {

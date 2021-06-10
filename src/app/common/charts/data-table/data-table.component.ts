@@ -21,6 +21,7 @@ export class DataTableComponent implements OnInit {
   chartType: any;
   chartTitle: any;
   chartId: any;
+  chartConfig: any;
   showThreshold = false;
   isOverlayVisible = false;
   modalConfig: any;
@@ -36,6 +37,10 @@ export class DataTableComponent implements OnInit {
   }
 
   plotChart() {
+  }
+
+  getPropertyType(key) {
+    return this.propertyList.filter(prop => prop.json_key === key)[0]?.type || 'Measured';
   }
 
   openConfirmRemoveWidgetModal() {

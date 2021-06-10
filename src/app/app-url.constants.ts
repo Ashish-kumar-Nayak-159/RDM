@@ -8,7 +8,7 @@ export class AppUrls {
   public static GET_NOTIFICAION_LIST = 'D2C_GetDeviceNotifications';
   public static GET_ALERTS_LIST = 'D2C_GetDeviceAlerts';
   public static GET_ALERT_END_EVENT_LIST = 'D2C_GetDeviceAlertEndEvents';
-  public static GET_TELEMETRY_LIST = 'D2C_GetDeviceTelemetry';
+  public static GET_TELEMETRY_LIST = 'apps/{0}/d2c/telemetry';
   public static GET_ERROR_LIST = 'D2C_GetDeviceErrors';
   public static GET_OTHER_MESSAGE_LIST = 'D2C_GetDeviceOtherMessages';
   public static GET_DEVICE_BATTERY_LIST = 'D2C_GetDeviceBatteryMessages';
@@ -84,7 +84,7 @@ export class AppUrls {
   public static GET_REPORT_TELEMETRY_DATA = 'apps/{0}/d2c/telemetry_report';
   public static SIGNALR_NEGOTIATE = 'signalr/negotiate';
   public static GET_MODEL_ALERT_REASONS = 'apps/{0}/device_types/{1}/alert_acknowledge_reasons';
-  public static GET_SAMPLING_DEVICE_TELEMETRY = 'apps/{0}/d2c/telemetry_messages_with_sampling';
+  public static GET_SAMPLING_DEVICE_TELEMETRY = 'apps/{0}/d2c/telemetry_sampling';
   public static GET_DEVICE_SIGNALR_MODE = 'apps/{0}/devices/{1}/get_telemetry_mode';
   // public static CHANGE_TELEMETRY_MODE = 'apps/{0}/c2d/change_telemetry_mode';
   public static CHANGE_TELEMETRY_MODE = 'apps/{0}/c2d/change_telemetry_mode_using_direct_method';

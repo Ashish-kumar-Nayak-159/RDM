@@ -162,7 +162,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
-          response.properties.derived_properties.forEach(prop => this.propertyList.push(prop));
+          response.properties.derived_properties.forEach(prop => {
+            prop.type = 'derived';
+            this.propertyList.push(prop);
+          });
           resolve();
         }
       ));
@@ -265,6 +268,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
       obj.partition_key = this.device?.tags?.partition_key;
       delete obj.dateOption;
       obj.order_dir = 'ASC';
+      const propArr = [];
+      this.propertyList.forEach(propObj => {
+        this.propList.forEach(prop => {
+          if (prop === propObj.json_key) {
+            propArr.push(propObj);
+          }
+        });
+      });
       let method;
       if (!obj.to_date || !obj.from_date) {
         this.toasterService.showError('Date Selection is required', 'View Trend Analysis');
@@ -283,9 +294,22 @@ export class HistoryComponent implements OnInit, OnDestroy {
         } else {
           delete obj.aggregation_minutes;
           delete obj.aggregation_format;
-          obj.message_props = '';
-          this.propList.forEach((prop, index) =>
-          obj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
+          // obj.message_props = '';
+          // this.propList.forEach((prop, index) =>
+          // obj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
+          let measured_message_props = '';
+          let derived_message_props = '';
+          propArr.forEach((prop, index) => {
+            if (prop.type === 'derived') {
+              derived_message_props = derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+            } else {
+              measured_message_props = measured_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+            }
+          });
+          measured_message_props = measured_message_props.replace(/,\s*$/, '');
+          derived_message_props = derived_message_props.replace(/,\s*$/, '');
+          obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
+          obj['derived_message_props'] = derived_message_props ? derived_message_props : undefined;
           const records = this.commonService.calculateEstimatedRecords(this.historyFilter.sampling_time * 60, obj.from_date, obj.to_date);
           if (records > 500 ) {
             this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
@@ -299,9 +323,19 @@ export class HistoryComponent implements OnInit, OnDestroy {
         } else {
           delete obj.sampling_time;
           delete obj.sampling_format;
-          obj.message_props = '';
-          this.propList.forEach((prop, index) =>
-          obj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
+          let measured_message_props = '';
+          let derived_message_props = '';
+          propArr.forEach((prop, index) => {
+            if (prop.type === 'derived') {
+              derived_message_props = derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+            } else {
+              measured_message_props = measured_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+            }
+          });
+          measured_message_props = measured_message_props.replace(/,\s*$/, '');
+          derived_message_props = derived_message_props.replace(/,\s*$/, '');
+          obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
+          obj['derived_message_props'] = derived_message_props ? derived_message_props : undefined;
           const records = this.commonService.calculateEstimatedRecords
           (this.historyFilter.aggregation_minutes * 60, obj.from_date, obj.to_date);
           if (records > 500 ) {
@@ -318,10 +352,19 @@ export class HistoryComponent implements OnInit, OnDestroy {
         if (this.propList.length === this.propertyList.length) {
           obj['all_message_props'] = true;
         } else {
-          let message_props = '';
-          this.propList.forEach((prop, index) => message_props = message_props + prop +
-          (this.propList[index + 1] ? ',' : ''));
-          obj['message_props'] = message_props;
+          let measured_message_props = '';
+          let derived_message_props = '';
+          propArr.forEach((prop, index) => {
+            if (prop.type === 'derived') {
+              derived_message_props = derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+            } else {
+              measured_message_props = measured_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+            }
+          });
+          measured_message_props = measured_message_props.replace(/,\s*$/, '');
+          derived_message_props = derived_message_props.replace(/,\s*$/, '');
+          obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
+          obj['derived_message_props'] = derived_message_props ? derived_message_props : undefined;
         }
         const records = this.commonService.calculateEstimatedRecords
           ((this.device.metadata?.measurement_settings?.measurement_frequency ? this.device.metadata.measurement_settings.measurement_frequency : 5),
@@ -378,10 +421,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.historyFilter.dateOption = 'Last 30 Mins';
     if (this.historyFilter.dateOption !== 'Custom Range') {
       this.selectedDateRange = this.historyFilter.dateOption;
-    } else {
       const dateObj = this.commonService.getMomentStartEndDate(this.historyFilter.dateOption);
       this.historyFilter.from_date = dateObj.from_date;
       this.historyFilter.to_date = dateObj.to_date;
+    } else {
+
       this.selectedDateRange = moment.unix(this.historyFilter.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
       moment.unix(this.historyFilter.to_date).format('DD-MM-YYYY HH:mm');
     }
@@ -478,6 +522,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       componentRef.instance.y2AxisProps = layoutJson.y2axis;
       componentRef.instance.xAxisProps = layoutJson.xAxis;
       componentRef.instance.chartType = layoutJson.chartType;
+      componentRef.instance.chartConfig = layoutJson;
       componentRef.instance.chartHeight = '23rem';
       componentRef.instance.device = this.device;
       componentRef.instance.chartStartdate = this.fromDate;
@@ -548,6 +593,30 @@ export class HistoryComponent implements OnInit, OnDestroy {
           //     value: item
           //   });
           // });
+          this.layoutJson.forEach((item) => {
+            this.dropdownWidgetList.push({
+              id: item.title,
+              value: item
+            });
+            item.derived_props = false;
+            item.measured_props = false;
+            item.y1axis.forEach(prop => {
+              const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
+              if (type === 'derived') {
+                item.derived_props = true;
+              } else {
+                item.measured_props = true;
+              }
+            });
+            item.y2axis.forEach(prop => {
+              const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
+              if (type === 'derived') {
+                item.derived_props = true;
+              } else {
+                item.measured_props = true;
+              }
+            });
+          });
         }
         this.isHistoryAPILoading = false;
       }

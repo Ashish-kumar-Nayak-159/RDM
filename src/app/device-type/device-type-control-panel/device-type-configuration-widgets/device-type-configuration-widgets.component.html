@@ -116,7 +116,7 @@
           <ng-container  *ngIf="properties?.writable_properties.length === 0">
             <div> No properties added.</div>
           </ng-container> -->
-          <angular2-multiselect [data]="(controlWidget?.metadata?.communication_technique === 'Direct Method' ? deviceMethods : properties?.writable_properties)" id="y1AxisProperty"
+          <!-- <angular2-multiselect [data]="(controlWidget?.metadata?.communication_technique === 'Direct Method' ? deviceMethods : properties?.writable_properties)" id="y1AxisProperty"
           [(ngModel)]="controlWidget.properties" (onDeSelect)="onPropertyChecked($event)"
           (onSelectAll)="selectAllProps($event)" (onDeSelectAll)="deselectAllProps($event)"
           (onSelect)="onPropertyChecked($event)" name="property" [settings]="{
@@ -128,7 +128,21 @@
               labelKey: 'name',
               primaryKey: 'name'
             }">
-          </angular2-multiselect>
+          </angular2-multiselect> -->
+
+          <ng-select [items]="(controlWidget?.metadata?.communication_technique === 'Direct Method' ? deviceMethods : properties?.writable_properties)"
+           class="custom-dropdown sm"  [clearable]="false"
+          [searchable]="false"  [multiple]="true"
+          [closeOnSelect]="false" placeholder="{{'Select' + (controlWidget?.metadata?.communication_technique === 'Direct Method' ? ' Direct Method' : ' Property')}}"
+          dropdownPosition="bottom" name="propArr" ngDefaultControl [(ngModel)]="controlWidget.properties"
+          (add)="onPropertyChecked($event)" (remove)="onPropertyChecked($event)">
+          <ng-template ng-option-tmp let-item="item">
+            <span >{{item.name}}</span>
+          </ng-template>
+          <ng-template ng-multi-label-tmp let-items="items">
+            {{items.length}} selected
+          </ng-template>
+        </ng-select>
         </div>
         <div class="form-group mr-3">
           <label for="message-text" class="col-form-label">JSON Format:</label>

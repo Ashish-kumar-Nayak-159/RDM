@@ -122,20 +122,22 @@
 
         </div>
       </ng-container>
-      <ng-container *ngIf="defaultAppName === 'SopanCMS'">
-
+      <ng-container  *ngIf="defaultAppName === 'SopanCMS'">
         <div style="width:23%;margin-left:2%;margin-top: 2%">
           <div class="mt-1">
             <div class="card">
-              <div class="card-header py-3">
-                <h6 class="mx-2 my-0 live-widget-title col-md-12" >
+              <div class="card-header d-flex px-2">
+                <div><h6 class="my-0 live-widget-title" >
                   Since Beginning
-                </h6>
+                </h6></div>
+                <div class="ml-auto">
+                  <div class="round-badge badge-blue" tooltip="Measured Property">M</div>
+                </div>
               </div>
               <div class="card-body1" style="height: 12rem;">
                 <div class="row text-center " *ngIf="telemetryObj">
                   <div class="col-md-12">
-                    <span class="text-xs">HH:MM</span>
+                    <span class="text-xs">(M) HH:MM</span>
                     <div class="mt-4">
                       <span class="text-darkblue display-5 font-weight-bold" style="font-size: 2rem;">
                         <!-- {{telemetryObj[prop.property.json_key]}} -->
@@ -157,15 +159,19 @@
         <div style="width:23%;margin-left:2%;margin-top: 2%">
           <div class="mt-1">
             <div class="card">
-              <div class="card-header">
-                <h6 class="mx-2 my-0  live-widget-title col-md-12">
+              <div class="card-header d-flex px-2">
+                <div><h6 class=" my-0  live-widget-title ">
                   Since Mid-Night
-                </h6>
+                </h6></div>
+                <div class="ml-auto">
+
+                  <div class="round-badge badge-blue" tooltip="Measured Property">M</div>
+                </div>
               </div>
               <div class="card-body1" style="height: 12rem;">
                 <div class="row text-center " *ngIf="telemetryObj">
                   <div class="col-md-12">
-                    <span class="text-xs">HH:MM</span>
+                    <span class="text-xs">(M) HH:MM</span>
                     <div class="mt-4">
                       <span class="text-darkblue display-5 font-weight-bold" style="font-size: 2rem;"
                       *ngIf="currentHour && currentMinute">

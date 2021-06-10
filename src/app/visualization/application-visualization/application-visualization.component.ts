@@ -604,7 +604,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
-          response.properties.derived_properties.forEach(prop => this.propertyList.push(prop));
+          response.properties.derived_properties.forEach(prop => {
+            prop.type = 'derived';
+            this.propertyList.push(prop)
+          });
           this.propertyList.forEach(item => {
             this.dropdownPropList.push({
               id: item.json_key
@@ -631,6 +634,24 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             this.dropdownWidgetList.push({
               id: item.title,
               value: item
+            });
+            item.derived_props = false;
+            item.measured_props = false;
+            item.y1axis.forEach(prop => {
+              const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
+              if (type === 'derived') {
+                item.derived_props = true;
+              } else {
+                item.measured_props = true;
+              }
+            });
+            item.y2axis.forEach(prop => {
+              const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
+              if (type === 'derived') {
+                item.derived_props = true;
+              } else {
+                item.measured_props = true;
+              }
             });
 
             if (this.alertCondition) {
@@ -749,12 +770,32 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     filterObj.epoch = true;
     filterObj.app = this.contextApp.app;
     filterObj.device_id = this.selectedAlert.device_id;
-    filterObj.message_props = '';
+    // filterObj.message_props = '';
     filterObj.from_date = null;
     filterObj.to_date = null;
-
-    this.propList.forEach((prop, index) =>
-    filterObj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
+    const propArr = [];
+    this.propertyList.forEach(propObj => {
+      this.propList.forEach(prop => {
+        if (prop === propObj.json_key) {
+          propArr.push(propObj);
+        }
+      });
+    });
+    // this.propList.forEach((prop, index) =>
+    // filterObj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
+    let measured_message_props = '';
+    let derived_message_props = '';
+    propArr.forEach((prop, index) => {
+      if (prop.type === 'derived') {
+        derived_message_props = derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+      } else {
+        measured_message_props = measured_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+      }
+    });
+    measured_message_props = measured_message_props.replace(/,\s*$/, '');
+    derived_message_props = derived_message_props.replace(/,\s*$/, '');
+    filterObj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
+    filterObj['derived_message_props'] = derived_message_props ? derived_message_props : undefined;
     if (this.beforeInterval > 0) {
       filterObj.from_date = (this.commonService.convertDateToEpoch(
         this.selectedAlert?.message_date || this.selectedAlert.timestamp)) - (this.beforeInterval * 60);
@@ -871,6 +912,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             componentRef.instance.y2AxisProps = widget.value.y2axis;
             componentRef.instance.xAxisProps = widget.value.xAxis;
             componentRef.instance.chartType = widget.value.chartType;
+            componentRef.instance.chartConfig = widget.value;
             componentRef.instance.chartStartdate = this.fromDate;
             componentRef.instance.chartEnddate = this.toDate;
             componentRef.instance.chartHeight = '23rem';

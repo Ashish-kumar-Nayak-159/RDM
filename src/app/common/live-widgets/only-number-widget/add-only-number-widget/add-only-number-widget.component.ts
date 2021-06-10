@@ -19,6 +19,7 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log(this.propertyList);
     this.propertyList.forEach(prop => {
       this.dropdownProperties.push({
         id: prop.json_key,
@@ -33,19 +34,20 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
   }
 
   onPropertySelection(prop) {
-    if (prop?.propertyArr.length > 0) {
-      prop.property = prop.propertyArr[0];
+    console.log(prop);
+    if (prop?.property) {
+      // prop.property = prop.propertyArr;
       prop.title = prop.property.name;
     } else {
       prop.property = undefined;
-      prop.propertyArr = undefined;
+      // prop.propertyArr = undefined;
       prop.title = undefined;
     }
   }
 
   onPropertyDeselect(prop) {
     prop.property = undefined;
-    prop.propertyArr = undefined;
+    // prop.propertyArr = undefined;
     prop.title = undefined;
   }
 

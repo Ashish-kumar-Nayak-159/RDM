@@ -10,17 +10,17 @@
      <i class="fas fa-fw fa-times-circle"></i>
      <span class="text-secondary">Deprovision</span></a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="type !== constantData.NON_IP_DEVICE">
      <a class="nav-link" href="javascript:void(0)"  (click)="onSingleOperationClick('Enable')">
      <i class="fas fa-fw fa-toggle-on"></i>
      <span class="text-secondary">Enable</span></a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="type !== constantData.NON_IP_DEVICE">
      <a class="nav-link" href="javascript:void(0)" (click)="onSingleOperationClick('Disable')">
      <i class="fas fa-fw fa-toggle-off"></i>
      <span class="text-secondary delete-row">Disable</span></a>
     </li>
-   <li class="nav-item">
+   <li class="nav-item" *ngIf="type !== constantData.NON_IP_DEVICE">
      <a class="nav-link" href="javascript:void(0)" (click)="onSingleOperationClick('Package Management')">
      <!--<i class="fad fa-fw fa-sync"></i>-->
      <i class="fas fa-fw fa">&#xf021;</i>

@@ -278,7 +278,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
       this.confirmHeaderMessage = 'Disable ' + (this.tabData?.table_key || 'Asset');
     } else if (type === 'Deprovision') {
       this.confirmHeaderMessage = 'Deprovision ' + (this.tabData?.table_key || 'Asset');
-      if (this.type !== 'legacy-devices') {
+      if (this.type !== CONSTANTS.NON_IP_DEVICE) {
       this.confirmBodyMessage = 'This ' + (this.tabData?.table_key || 'Asset') + ' will be permanently deleted. Instead, you can temporarily disable the ' + (this.tabData?.table_key || 'Asset') + '.' +
       ' Are you sure you want to continue?';
       } else {

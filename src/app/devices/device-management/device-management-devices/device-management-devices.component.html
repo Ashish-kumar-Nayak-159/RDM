@@ -62,14 +62,14 @@
             </ng-container>
             <ng-container *ngIf="devicesList.length === 0 && !isDeviceListLoading">
               <tr>
-                <td colspan="5">
-                  No {{(tabData?.table_key || 'Asset')}} data found.
+                <td [attr.colspan]="type !== constantData.NON_IP_DEVICE ? 6 : 5">
+                No {{(tabData?.table_key || 'Asset')}} data found.
                 </td>
               </tr>
             </ng-container>
             <ng-container *ngIf="isDeviceListLoading">
               <tr>
-                <td colspan="5">
+                <td [attr.colspan]="type !== constantData.NON_IP_DEVICE ? 6 : 5">
                   <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
                 </td>
               </tr>
@@ -140,7 +140,8 @@ style="z-index: 1200;">
       <div class="modal-body">
         <div *ngIf="!deviceTwin; else packageTemplate"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></div>
         <ng-template #packageTemplate>
-          <ng-container *ngIf="devicePackages.length === 0"> No Packages are added for this asset. Please add it first.</ng-container>
+          <ng-container *ngIf="devicePackages.length === 0">
+            <h6> No Packages are added for this asset. Please add it first.</h6></ng-container>
           <ng-container *ngIf="currentDeviceApps.length > 0">
             <h6> Currently, this asset is having below packages installed.</h6>
             <ul>

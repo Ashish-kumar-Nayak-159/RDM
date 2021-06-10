@@ -54,7 +54,7 @@
             <tr>
               <td style="width: 50%;">Measurement Frequency (In Sec): </td>
               <td>
-                  <input type="number" class="form-control form-control-sm bg-light border-0 small"
+                  <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
                     [(ngModel)]="deviceType.metadata.measurement_settings.measurement_frequency" name="frequency_in_normal"
                     placeholder="Frequency" [disabled]="!isSettingsEditable">
               </td>
@@ -73,7 +73,7 @@
             <tr>
               <td style="width: 50%;">Normal mode Frequency (In Sec): </td>
               <td>
-                  <input type="number" class="form-control form-control-sm bg-light border-0 small"
+                  <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
                     [(ngModel)]="deviceType.metadata.telemetry_mode_settings.normal_mode_frequency" name="frequency_in_normal"
                     placeholder="Frequency" [disabled]="!isSettingsEditable">
               </td>
@@ -82,7 +82,7 @@
               <td style="width: 50%;">Turbo mode Frequency (In Sec): </td>
               <td>
 
-                  <input type="number" class="form-control form-control-sm bg-light border-0 small"
+                  <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
                     [(ngModel)]="deviceType.metadata.telemetry_mode_settings.turbo_mode_frequency" name="frequency_in_turbo"
                     placeholder="Frequency" [disabled]="!isSettingsEditable">
               </td>
@@ -90,7 +90,7 @@
             <tr>
               <td >Turbo mode Timeout (In Sec): </td>
               <td>
-                  <input type="number" class="form-control form-control-sm bg-light border-0 small"
+                  <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
                     [(ngModel)]="deviceType.metadata.telemetry_mode_settings.turbo_mode_timeout_time" name="timeout_in_turbo"
                     placeholder="Timeout" [disabled]="!isSettingsEditable">
               </td>

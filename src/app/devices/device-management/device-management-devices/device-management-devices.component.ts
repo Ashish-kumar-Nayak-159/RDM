@@ -239,7 +239,7 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
       return;
     }
     if (type.toLowerCase().includes('package') && this.type === CONSTANTS.NON_IP_DEVICE) {
-      this.toasterService.showError(`Package Management is not avilable for Legacy asset.`, 'Asset Management');
+      this.toasterService.showError(`Package Management is not available for Legacy asset.`, 'Asset Management');
       return;
     } else if (!type.toLowerCase().includes('provision') && this.type === CONSTANTS.NON_IP_DEVICE) {
       this.toasterService.showError(`You can't perform this operation on legacy asset.`, 'Asset Management');

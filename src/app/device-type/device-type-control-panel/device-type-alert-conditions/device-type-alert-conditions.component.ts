@@ -233,17 +233,17 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
       if (this.deviceType.metadata?.model_type === CONSTANTS.NON_IP_DEVICE) {
       if (this.deviceType.tags.protocol === 'ModbusTCPMaster' || this.deviceType.tags.protocol === 'ModbusRTUMaster') {
         this.setupForm = new FormGroup({
-          d: new FormControl(alertObj.metadata.d, [Validators.required]),
-          sa: new FormControl(alertObj.metadata.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
+          d: new FormControl(alertObj?.metadata?.d, [Validators.required]),
+          sa: new FormControl(alertObj?.metadata?.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
           a: new FormControl(true),
-          fc: new FormControl(alertObj.metadata.fc, [Validators.required]),
+          fc: new FormControl(alertObj?.metadata?.fc, [Validators.required]),
         });
       } else if (this.deviceType.tags.protocol === 'SiemensTCPIP') {
         this.setupForm = new FormGroup({
-          d: new FormControl(alertObj.metadata.d, [Validators.required]),
-          sa: new FormControl(alertObj.metadata.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
+          d: new FormControl(alertObj?.metadata?.d, [Validators.required]),
+          sa: new FormControl(alertObj?.metadata?.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
           a: new FormControl(true),
-          mt: new FormControl(alertObj.metadata.mt, [Validators.required]),
+          mt: new FormControl(alertObj?.metadata?.mt, [Validators.required]),
         });
       }
       this.onChangeOfSetupType(alertObj.metadata);

@@ -40,8 +40,6 @@
   border-color: #89a7ff;
 }
 
-
-
 .ng-select.sm.ng-select-single .ng-select-container {
   height: 30px;
 }
@@ -53,6 +51,8 @@
 .ng-select.sm.ng-select-multiple .ng-select-container .ng-value-container {
   padding-top: 0;
 }
+
+
 
 
 

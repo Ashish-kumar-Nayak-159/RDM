@@ -251,7 +251,8 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
       measurement_frequency: 5
     };
     this.thingsModel.metadata.data_ingestion_settings = {
-      value: 'all'
+      type: 'all_props_at_fixed_interval',
+      frequency_in_sec: 10
     };
     this.thingsModel.tags.reserved_tags = [];
     console.log(this.thingsModel.tags);

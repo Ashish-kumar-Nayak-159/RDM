@@ -282,9 +282,9 @@ export class CONSTANTS {
       isTitle: false
     },
     {
-      page: 'settings',
+      page: 'setup',
       system_name: 'Setup',
-      url: '#device_settings',
+      url: '#device_setup',
       display_name: 'Setup',
       icon: 'fa fa-fw fa-cog',
       visible: true,
@@ -619,9 +619,9 @@ export class CONSTANTS {
       isTitle: false
     },
     {
-      page: 'settings',
+      page: 'setup',
       system_name: 'Setup',
-      url: '#device_settings',
+      url: '#device_setup',
       display_name: 'Setup',
       icon: 'fa fa-fw fa-cog',
       visible: true,
@@ -936,7 +936,7 @@ export class CONSTANTS {
     {
       page: 'setup',
       system_name: 'Setup',
-      url: '#device_settings',
+      url: '#device_setup',
       display_name: 'Setup',
       icon: 'fa fa-fw fa-cog',
       visible: true,

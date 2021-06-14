@@ -20,6 +20,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   @Input() deviceTwin: any;
   @Input() device: any;
   @Output() refreshDeviceTwin: EventEmitter<any> = new EventEmitter<any>();
+  @Input() componentstate: any;
   devices: any[] = [];
   contextApp: any;
   subscriptions: Subscription[] = [];
@@ -42,9 +43,25 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   ) { }
 
   async ngOnInit(): Promise<void> {
+    console.log(JSON.stringify(this.deviceTwin));
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     await this.getThingsModels();
-    this.getDevicesOfGateway();
+    if (this.componentstate === CONSTANTS.IP_GATEWAY) {
+      this.getDevicesOfGateway();
+    } else {
+      this.device.gateway_id = this.device.configuration?.gateway_id;
+      this.thingsModels.forEach(model => {
+        if (this.device.device_type === model.name) {
+          this.device.model_freeze = model.freezed;
+        }
+      });
+      if (this.device.metadata?.package_app && this.deviceTwin?.twin_properties?.reported.registered_devices[this.device.metadata.package_app]
+        && (this.deviceTwin.twin_properties.reported?.registered_devices[this.device?.metadata?.package_app]?.
+          indexOf(this.device.device_id) > -1)) {
+        this.device.is_registered = true;
+      }
+      this.devices.push(this.device);
+    }
 
   }
 
@@ -86,9 +103,10 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
               if (device.metadata?.package_app && this.deviceTwin.twin_properties.reported.registered_devices[device.metadata.package_app]
                 && (this.deviceTwin.twin_properties.reported?.registered_devices[device?.metadata?.package_app]?.
                   indexOf(device.device_id) > -1)) {
-                this.devices.push(device);
+                device.is_registered = true;
               }
             });
+            this.devices = response.data;
           }
           this.isDevicesAPILoading = false;
         }, error => this.isDevicesAPILoading = false
@@ -107,7 +125,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     return new Promise<void>((resolve1, reject) => {
         const obj = {
           app: this.contextApp.app,
-          name: this.selectedDevice.device_type
+          name: this.selectedDevice.device_type || this.selectedDevice.tags?.device_type
         };
         this.subscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
           (response: any) => {
@@ -130,7 +148,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   getAlertConditions() {
     return new Promise<void>((resolve1, reject) => {
     const filterObj = {
-      device_type: this.selectedDevice.device_type
+      device_type: this.selectedDevice.device_type || this.selectedDevice.tags?.device_type
     };
     this.subscriptions.push(this.deviceTypeService.getAlertConditions(this.contextApp.app, filterObj).subscribe(
       (response: any) => {
@@ -199,20 +217,22 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     console.log(obj);
     this.isAPILoading = true;
     const c2dObj = {
-      device_id: this.device.device_id,
+      device_id: this.componentstate !== CONSTANTS.NON_IP_DEVICE ? this.device.device_id : this.device.gateway_id,
       message: obj,
       app: this.contextApp.app,
       timestamp:  moment().unix(),
       acknowledge: 'Full',
       expire_in_min: 2880,
-      job_id: this.device.device_id + '_' + this.commonService.generateUUID(),
+      job_id: (this.componentstate !== CONSTANTS.NON_IP_DEVICE ? this.device.device_id : this.device.gateway_id)
+      + '_' + this.commonService.generateUUID(),
       request_type: obj.command,
       job_type: 'Message',
       sub_job_id: null
     };
     c2dObj.sub_job_id = c2dObj.job_id + '_1';
     this.subscriptions.push(
-      this.deviceService.sendC2DMessage(c2dObj, this.contextApp.app, this.device.device_id).subscribe(
+      this.deviceService.sendC2DMessage(c2dObj, this.contextApp.app,
+        this.componentstate !== CONSTANTS.NON_IP_DEVICE ? this.device.device_id : this.device.gateway_id).subscribe(
         (response: any) => {
           this.displyaMsgArr.push({
             message: 'Device properties/alert registration request sent to gateway.',
@@ -261,17 +281,6 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         }
       }
       ));
-  }
-
-  generateResponse() {
-    const rand = this.commonService.randomIntFromInterval(0, 1);
-    const arr = [];
-    arr.push({
-      device_id: this.selectedDevice.device_id,
-      status: rand === 0 ? 'Success' : 'Failure',
-      message: rand === 0 ? 'Device registered successfully.' : 'Error in device registration'
-    });
-    return arr;
   }
 
   onModalClose() {

@@ -124,8 +124,10 @@
             <app-device-maintenance *ngIf="activeTab === 'maintenance_data' && device" [device]="device">
             </app-device-maintenance>
           </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'settings'}" role="tabpanel" id="device_settings">
-            <app-settings *ngIf="activeTab === 'settings'  && device" [device]="device"></app-settings>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'setup'}" role="tabpanel" id="device_setup">
+            <!-- <app-settings *ngIf="activeTab === 'settings'  && device" [device]="device"></app-settings> -->
+            <app-gateway-settings *ngIf="activeTab === 'setup'  && device" [tileData]="tileData" [device]="device" [componentState]="componentState">
+            </app-gateway-settings>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'package_management'}" role="tabpanel" id="device_package_management">
             <app-device-packages *ngIf="activeTab === 'package_management' && device" [device]="device"></app-device-packages>

@@ -71,6 +71,7 @@ import { ManageApplicationsComponent } from './gateway-control-panel/gateway-set
 import { GatewayDevicesSettingComponent } from './gateway-control-panel/gateway-settings/gateway-devices-setting/gateway-devices-setting.component';
 import { DevicePackagesComponent } from './device-control-panel/device-packages/device-packages.component';
 import { DeviceMessagesWrapperComponent } from './device-control-panel/device-messages-wrapper/device-messages-wrapper.component';
+import { FotaComponent } from './gateway-control-panel/gateway-settings/fota/fota.component';
 
 @NgModule({
   declarations: [
@@ -124,7 +125,8 @@ import { DeviceMessagesWrapperComponent } from './device-control-panel/device-me
     ManageApplicationsComponent,
     GatewayDevicesSettingComponent,
     DevicePackagesComponent,
-    DeviceMessagesWrapperComponent
+    DeviceMessagesWrapperComponent,
+    FotaComponent
   ],
   imports: [
     CommonModule,

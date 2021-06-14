@@ -35,10 +35,10 @@
           </a>
         </ng-container>
         <div class="row col-md-12">
-          <input type="radio" class="mt-1" name="visible" value="changed" [disabled]="!isSettingsEditable"
+          <input type="radio" class="mt-1" name="visible" value="changed_props" [disabled]="!isSettingsEditable"
             id="visible_1" [(ngModel)]="deviceType.metadata.data_ingestion_settings.value" />
             <label class="form-label">&nbsp;Ingest Only Changed Properties</label> &nbsp;
-            <input  class="mt-1" type="radio" name="visible" value="all" [disabled]="!isSettingsEditable"
+            <input  class="mt-1" type="radio" name="visible" value="all_props_at_fixed_interval" [disabled]="!isSettingsEditable"
             id="visible_2" [(ngModel)]="deviceType.metadata.data_ingestion_settings.value" />
             <label class="form-label">&nbsp;Ingest All Properties</label> &nbsp;
         </div>

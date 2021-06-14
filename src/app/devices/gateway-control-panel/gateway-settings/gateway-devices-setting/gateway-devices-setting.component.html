@@ -2,84 +2,99 @@
 <div class="table-responsive">
   <div class="tableFixHead" >
 <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isDevicesAPILoading"></i>
-<h6 *ngIf="devices.length === 0 && !isDevicesAPILoading"> No devices available.</h6>
-<accordion [closeOthers]="'true'" *ngIf="!isDevicesAPILoading" class="p-3">
-  <accordion-group heading="" [panelClass]="'customClass'" *ngFor="let device of devices;let i = index">
+<h6 class="m-3" *ngIf="devices.length === 0 && !isDevicesAPILoading"> No devices available.</h6>
+<accordion *ngIf="!isDevicesAPILoading" class="p-3">
+  <accordion-group heading="" [isOpen]="constantData.IP_GATEWAY === componentState ? false : true"  [panelClass]="'customClass'" *ngFor="let device of devices;let i = index">
     <ng-container  accordion-heading>
       <button class="btn" type="button" (click)="selectedDevice = device;">
-          {{device.display_name}}
+          {{device.display_name || device.tags?.display_name}}
       </button>
     </ng-container>
-    <accordion [closeOthers]="'true'" *ngIf="!isDevicesAPILoading">
-      <accordion-group heading="" [panelClass]="'customClass'">
-        <ng-container  accordion-heading>
-          <button class="btn" type="button" (click)="telemetrySettings = {}">
+    <div class="row d-flex px-3 pb-1">
+    <div class="ml-auto">
+      <a  class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+       href="javascript:void(0)" (click)="saveGatewaySettings()" [class.disabled]="isSaveSettingAPILoading">
+        <i class="fa fa-fw fa-save"></i>
+       Save</a>
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isSaveSettingAPILoading"></i>
+      </div>
+    </div>
+    <accordion [closeOthers]="'true'" *ngIf="!isDevicesAPILoading" id="ac2">
+      <accordion-group heading=""  [panelClass]="'customClass1'">
+        <ng-container accordion-heading>
+          <a class="btn">
             Data Ingestion Setting
-          </button>
+          </a>
         </ng-container>
-        <div class="row col-md-12">
-          <input type="radio" class="mt-1" name="visible_{{i}}" value="changed"
-            id="visible_{{i}}_1" [(ngModel)]="telemetrySettings[device.device_id]" />
-            <label class="form-label">&nbsp;Ingest Only Changed Properties</label> &nbsp;
-            <input  class="mt-1" type="radio" name="visible_{{i}}" value="all"
-            id="visible_{{i}}_2" [(ngModel)]="telemetrySettings[device.device_id]" />
-            <label class="form-label">&nbsp;Ingest All Properties</label> &nbsp;
-          <a
-          class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mb-1 mr-2"
-          href="javascript:void(0)"
-          (click)="changeTelemetrySetting()"
-          ><i class="fa fa- fa-sm text-white-50"></i> Change Settings</a>
+        <div class="row col-md-12" *ngIf="device?.metadata">
+          <input type="radio" class="mt-1" name="visible" value="changed_props"
+            id="visible_1" [(ngModel)]="device.metadata.data_ingestion_settings.type" />
+            <label class="form-label">&nbsp;Ingest Only Changed Properties</label>
+
+        </div>
+        <div class="row col-md-12 form-row" *ngIf="device?.metadata">
+          <input  class="mt-1" type="radio" name="visible" value="all_props_at_fixed_interval"
+            id="visible_2" [(ngModel)]="device.metadata.data_ingestion_settings.value" />
+            <label class="form-label">&nbsp;Ingest All Properties </label>
+            <!-- <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                    [(ngModel)]="device.metadata.data_ingestion_settings.frequency_in_sec" name="frequency_in_sec"
+                    placeholder="Frequency">
+            <label class="form-label">&nbsp; second interval</label> -->
         </div>
       </accordion-group>
-    </accordion>
-    <accordion [closeOthers]="'true'" *ngIf="!isDevicesAPILoading">
-      <accordion-group heading="" [panelClass]="'customClass'">
-        <ng-container  accordion-heading>
-          <button class="btn" type="button" (click)="telemetrySettings = {}">
-              Telemetry Mode Setting
-          </button>
+      <accordion-group heading=""  [panelClass]="'customClass1'">
+        <ng-container accordion-heading>
+          <a class="btn">
+            Measurement Frequency Setting
+          </a>
         </ng-container>
-        <div class="float-right">
-        <a  class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mb-1 mr-2"
-         href="javascript:void(0)" (click)="saveGatewaySettings()" [class.disabled]="isSaveSettingAPILoading">
-          <i class="fa fa-fw fa-save"></i>
-         Save</a>
-          <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isSaveSettingAPILoading"></i>
-
-        </div>
-          <table class="table table-hover">
-
-            <tbody>
-              <tr>
-                <td style="width: 50%;">Normal mode Frequency (In Sec): </td>
-                <td>
-                    <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
-                      [(ngModel)]="device.metadata.telemetry_mode_settings.normal_mode_frequency" name="frequency_in_normal"
-                      placeholder="Frequency">
-                </td>
-              </tr>
-              <tr>
-                <td style="width: 50%;">Turbo mode Frequency (In Sec): </td>
-                <td>
-
-                    <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
-                      [(ngModel)]="device.metadata.telemetry_mode_settings.turbo_mode_frequency" name="frequency_in_turbo"
-                      placeholder="Frequency">
-                </td>
-              </tr>
-              <tr>
-                <td >Turbo mode Timeout (In Sec): </td>
-                <td>
-                    <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
-                      [(ngModel)]="device.metadata.telemetry_mode_settings.turbo_mode_timeout_time" name="timeout_in_turbo"
-                      placeholder="Timeout">
-                </td>
-              </tr>
-
-            </tbody>
-          </table>
-
-
+        <table class="table table-hover" *ngIf="device?.metadata">
+          <tbody>
+            <tr>
+              <td style="width: 50%;">Measurement Frequency (In Sec): </td>
+              <td>
+                  <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                    [(ngModel)]="device.metadata.measurement_settings.measurement_frequency" name="frequency_in_normal"
+                    placeholder="Frequency">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </accordion-group>
+      <accordion-group heading=""  [panelClass]="'customClass1'">
+        <ng-container accordion-heading>
+          <a class="btn">
+            Telemetry Mode Settings
+          </a>
+        </ng-container>
+        <table class="table table-hover" *ngIf="device?.metadata">
+          <tbody>
+            <tr>
+              <td style="width: 50%;">Normal mode Frequency (In Sec): </td>
+              <td>
+                  <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                    [(ngModel)]="device.metadata.telemetry_mode_settings.normal_mode_frequency" name="frequency_in_normal"
+                    placeholder="Frequency">
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 50%;">Turbo mode Frequency (In Sec): </td>
+              <td>
+                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                    [(ngModel)]="device.metadata.telemetry_mode_settings.turbo_mode_frequency" name="frequency_in_turbo"
+                    placeholder="Frequency">
+              </td>
+            </tr>
+            <tr>
+              <td >Turbo mode Timeout (In Sec): </td>
+              <td>
+                  <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                    [(ngModel)]="device.metadata.telemetry_mode_settings.turbo_mode_timeout_time" name="timeout_in_turbo"
+                    placeholder="Timeout">
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </accordion-group>
     </accordion>
   </accordion-group>

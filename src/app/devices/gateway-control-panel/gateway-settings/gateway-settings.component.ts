@@ -15,6 +15,7 @@ export class GatewaySettingsComponent implements OnInit {
 
   @Input() device: any;
   @Input() tileData: any;
+  @Input() componentState: any;
   subscriptions: Subscription[] = [];
   contextApp: any;
   userData: any;
@@ -23,6 +24,7 @@ export class GatewaySettingsComponent implements OnInit {
   isTestConnectionAPILoading = false;
   testConnectionMessage: string;
   deviceTwin: any;
+  constantData = CONSTANTS;
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -31,10 +33,12 @@ export class GatewaySettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.device = JSON.parse(JSON.stringify(this.device));
+
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.getDeviceData();
     this.getDeviceTwinData();
+    this.getDeviceData();
+
   }
 
   getDeviceData() {
@@ -42,6 +46,7 @@ export class GatewaySettingsComponent implements OnInit {
       this.deviceService.getDeviceDetailById(this.contextApp.app, this.device.device_id).subscribe(
       async (response: any) => {
         this.device = JSON.parse(JSON.stringify(response));
+        this.device.gateway_id = this.device?.configuration?.gateway_id;
         if (!this.device.tags.settings) {
           this.device.tags.settings = {
             normal_mode: {
@@ -64,14 +69,19 @@ export class GatewaySettingsComponent implements OnInit {
             timeout_time: 120
           };
         }
-        this.onClickOfTab('Test Connection');
+        if (this.componentState === this.constantData.NON_IP_DEVICE) {
+          this.onClickOfTab('Register Properties');
+        } else {
+          this.onClickOfTab('Test Connection');
+        }
       }));
   }
 
   getDeviceTwinData() {
     return new Promise<void>((resolve) => {
       this.subscriptions.push(
-        this.deviceService.getDeviceTwin(this.contextApp.app, this.device.device_id).subscribe(
+        this.deviceService.getDeviceTwin(this.contextApp.app,
+          this.componentState === this.constantData.NON_IP_DEVICE ? this.device.gateway_id : this.device.device_id).subscribe(
           (response) => {
             this.deviceTwin = response;
             if (!this.deviceTwin.twin_properties) {
@@ -128,25 +138,4 @@ export class GatewaySettingsComponent implements OnInit {
       )
     );
   }
-
-  saveGatewaySettings() {
-    this.isSaveSettingAPILoading = true;
-    const obj = {
-      device_id: this.device.device_id,
-      display_name: this.device.display_name,
-      tags: this.device.tags,
-      app: this.contextApp.app
-    };
-    this.subscriptions.push(this.deviceService.updateDeviceTags(obj, this.contextApp.app).subscribe(
-      (response: any) => {
-        this.toasterService.showSuccess('Gateway Settings updated successfully.', 'Gateway Settings');
-        this.deviceService.reloadDeviceInControlPanelEmitter.emit();
-        this.isSaveSettingAPILoading = false;
-      }, error => {
-        this.toasterService.showError(error.message, 'Gateway Settings');
-        this.isSaveSettingAPILoading = false;
-      }
-    ));
-  }
-
 }

@@ -16,6 +16,7 @@ export class GatewayDevicesSettingComponent implements OnInit {
   @Input() deviceTwin: any;
   @Input() device: any;
   @Output() refreshDeviceTwin: EventEmitter<any> = new EventEmitter<any>();
+  @Input() componentState: any;
   contextApp: any;
   isDevicesAPILoading = false;
   devices: any[] = [];
@@ -27,6 +28,7 @@ export class GatewayDevicesSettingComponent implements OnInit {
   isAPILoading = false;
   headerMessage: any;
   isSaveSettingAPILoading = false;
+  constantData = CONSTANTS;
   constructor(
     private commonService: CommonService,
     private deviceService: DeviceService,
@@ -35,7 +37,35 @@ export class GatewayDevicesSettingComponent implements OnInit {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    if (this.componentState === CONSTANTS.IP_GATEWAY) {
     this.getDevicesOfGateway();
+    } else {
+      this.device.gateway_id = this.device.configuration?.gateway_id;
+      this.selectedDevice = this.device;
+      if (!this.device.metadata) {
+        this.device.metadata = {};
+      }
+
+      if (!this.device.metadata.measurement_settings) {
+        this.device.metadata.measurement_settings = {
+          measurement_frequency: 5
+        };
+      }
+      if (!this.device.metadata.data_ingestion_settings) {
+        this.device.metadata.data_ingestion_settings = {
+          type: 'all_props_at_fixed_interval',
+          frequency_in_sec: 10
+        };
+      }
+      if (!this.device.metadata.telemetry_mode_settings) {
+        this.device.metadata.telemetry_mode_settings = {
+          normal_mode_frequency: 60,
+          turbo_mode_frequency: 5,
+          turbo_mode_timeout_time: 120
+        };
+      }
+      this.devices.push(this.device);
+    }
   }
 
   getDevicesOfGateway() {
@@ -52,12 +82,25 @@ export class GatewayDevicesSettingComponent implements OnInit {
             this.devices = response.data;
             this.devices.forEach(device => {
               if (!device.metadata) {
-                device.metadata = {
-                  telemetry_mode_settings: {}
+                device.metadata = {};
+              }
+              if (!device.metadata.measurement_settings) {
+                device.metadata.measurement_settings = {
+                  measurement_frequency: 5
+                };
+              }
+              if (!device.metadata.data_ingestion_settings) {
+                device.metadata.data_ingestion_settings = {
+                  type: 'all_props_at_fixed_interval',
+                  frequency_in_sec: 10
                 };
               }
               if (!device.metadata.telemetry_mode_settings) {
-                device.metadata.telemetry_mode_settings = {};
+                device.metadata.telemetry_mode_settings = {
+                  normal_mode_frequency: 60,
+                  turbo_mode_frequency: 5,
+                  turbo_mode_timeout_time: 120
+                };
               }
             });
           }
@@ -69,14 +112,22 @@ export class GatewayDevicesSettingComponent implements OnInit {
 
   changeTelemetrySetting() {
     const obj = {
-      command: 'set_change_value_state',
+      command: 'set_configuration',
       app_name: this.selectedDevice?.metadata?.package_app,
       devices: {}
     };
     console.log(this.telemetrySettings);
-    obj.devices[this.selectedDevice.device_id] = {scv: this.telemetrySettings[this.selectedDevice.device_id] === 'changed' ? true :
-      (this.telemetrySettings[this.selectedDevice.device_id] === 'all' ? false : undefined) };
-    this.callC2dMethod(obj, 'Change Telemetry Settings');
+    obj.devices[this.selectedDevice.device_id] = {
+      measurement_frequency_in_sec: this.selectedDevice.metadata.measurement_settings.measurement_frequency,
+      turbo_mode_frequency_in_sec: this.selectedDevice.metadata.telemetry_mode_settings.turbo_mode_frequency,
+      turbo_mode_timeout_in_sec: this.selectedDevice.metadata.telemetry_mode_settings.turbo_mode_timeout_time,
+      ingestion_settings:
+        {
+            type: this.selectedDevice.metadata.data_ingestion_settings.type,
+            frequency_in_sec: this.selectedDevice.metadata.data_ingestion_settings.frequency_in_sec
+        }
+    };
+    this.callC2dMethod(obj, 'Change Asset Settings');
   }
 
 
@@ -86,7 +137,7 @@ export class GatewayDevicesSettingComponent implements OnInit {
     this.headerMessage = type;
     $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     const c2dObj = {
-      device_id: this.device.device_id,
+      device_id: this.componentState !== CONSTANTS.NON_IP_DEVICE ? this.device.device_id : this.device.gateway_id,
       message: obj,
       app: this.contextApp.app,
       timestamp:  moment().unix(),
@@ -99,7 +150,8 @@ export class GatewayDevicesSettingComponent implements OnInit {
     };
     c2dObj.sub_job_id = c2dObj.job_id + '_1';
     this.subscriptions.push(
-      this.deviceService.sendC2DMessage(c2dObj, this.contextApp.app, this.device.device_id).subscribe(
+      this.deviceService.sendC2DMessage(c2dObj, this.contextApp.app,
+        this.componentState !== CONSTANTS.NON_IP_DEVICE ? this.device.device_id : this.device.gateway_id).subscribe(
         (response: any) => {
           this.displayMsgArr.push({
             message: type + ' request sent to gateway.',
@@ -167,6 +219,7 @@ export class GatewayDevicesSettingComponent implements OnInit {
   }
 
   saveGatewaySettings() {
+    this.changeTelemetrySetting();
     this.isSaveSettingAPILoading = true;
     const obj = {
       metadata: this.selectedDevice.metadata,

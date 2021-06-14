@@ -57,7 +57,8 @@ export class DeviceTypeSettingsComponent implements OnInit {
           }
           if (!this.deviceType.metadata.data_ingestion_settings) {
             this.deviceType.metadata.data_ingestion_settings = {
-              value: 'all'
+              type: 'all_props_at_fixed_interval',
+              frequency_in_sec: 10
             };
           }
           if (!this.deviceType.metadata.measurement_settings) {

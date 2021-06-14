@@ -57,7 +57,7 @@ export class DeviceTypeRulesComponent implements OnInit, OnDestroy {
         },
         {
           name: 'Condition',
-          key: 'metadata.condition',
+          key: 'condition',
           type: 'text',
           headerClass: '',
           valueclass: ''

@@ -265,9 +265,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.componentState = type;
     // if (environment.app === 'SopanCMS') {
 
-    if (this.contextApp.app === 'CMS_Dev' && this.componentState === CONSTANTS.NON_IP_DEVICE) {
-      await this.getLatestDerivedKPIData();
-    }
+
 
     if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
       this.deviceFilterObj.type = undefined;
@@ -387,6 +385,9 @@ export class DeviceListComponent implements OnInit, OnDestroy {
       });
 
     }
+    if (this.contextApp.app === 'CMS_Dev' && this.componentState === CONSTANTS.NON_IP_DEVICE) {
+      await this.getLatestDerivedKPIData();
+    }
     const item = this.commonService.getItemFromLocalStorage(
       CONSTANTS.MAIN_MENU_FILTERS
     );
@@ -411,6 +412,7 @@ export class DeviceListComponent implements OnInit, OnDestroy {
   getLatestDerivedKPIData() {
     return new Promise<void>((resolve) => {
       this.isDeviceListLoading = true;
+      this.tableConfig.is_table_data_loading = true;
       const derivedKPICode = 'SPCD';
       const obj = {
         from_date: moment().subtract(24, 'hours').utc().unix(),

@@ -464,7 +464,7 @@ export class DeviceService {
     } else if (type === 'alertendevent') {
       url = AppUrls.GET_ALERT_END_EVENT_MESSAGE_BY_ID;
     } else if (type === 'telemetry') {
-      url = AppUrls.GET_TELEMETRY_MESSAGE_BY_ID;
+      url = String.Format(AppUrls.GET_TELEMETRY_MESSAGE_BY_ID, filterObj.app, filterObj.id);
     } else if (type === 'battery') {
       url = AppUrls.GET_BATTERY_MESSAGE_BY_ID;
     } else if (type === 'heartbeat') {

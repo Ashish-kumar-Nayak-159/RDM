@@ -64,7 +64,7 @@ export class AppUrls {
   public static RESET_PASSWORD = 'users/reset_password';
   public static GET_ALERT_MESSAGE_BY_ID = 'D2C_GetDeviceAlertMessage';
   public static GET_ALERT_END_EVENT_MESSAGE_BY_ID = 'D2C_GetDeviceAlertEndEventMessage';
-  public static GET_TELEMETRY_MESSAGE_BY_ID = 'D2C_GetDeviceTelemetryMessage';
+  public static GET_TELEMETRY_MESSAGE_BY_ID = 'apps/{0}/d2c/telemetry/{1}';
   public static GET_BATTERY_MESSAGE_BY_ID = 'D2C_GetDeviceBatteryMessage';
   public static GET_HEARTBEAT_MESSAGE_BY_ID = 'D2C_GetDeviceHeartbeat';
   public static GET_LOG_MESSAGE_BY_ID = 'D2C_GetDeviceLog';

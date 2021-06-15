@@ -135,7 +135,7 @@
             </div>
             <div class="card-body-p0" style="overflow-y:auto;">
               <ul class="hierarchy_list list-group list-unstyled" >
-                <ng-container *ngIf="selectedHierarchyData[i]">
+                <ng-container *ngIf="selectedHierarchyData[i] && hierarchyArr[i].length > 0">
                 <li class="list-group-item" [ngClass]="{'active': configureHierarchy[i] === tag}"
                 *ngFor="let tag of hierarchyArr[i];let tagIndex = index; trackBy:trackByFn1">
                   <a href="javascript:void(0)" id="tag{{tagIndex}}" class=""
@@ -167,6 +167,15 @@
                     <div class="media">
                       <div class="overflow">
                       Please select specific {{applicationData.hierarchy.levels[i-1] ? applicationData.hierarchy.levels[i-1] : 'previous'}} to <br> view {{level}} list.
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li class="list-group-item" *ngIf="selectedHierarchyData[i] && hierarchyArr[i].length === 0">
+                  <a href="javascript:void(0)">
+                    <div class="media">
+                      <div class="overflow">
+                      No {{applicationData.hierarchy.levels[i]}} tags available.
                       </div>
                     </div>
                   </a>

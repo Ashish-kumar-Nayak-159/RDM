@@ -2,12 +2,12 @@
   <div class="d-flex d-flex align-items-center">
     <div class="h6 m-0 p-0">
       Application Roles
-      <a href="javascript:void(0)" placement="bottom" class="ml-1" tooltip="Add Role" *ngIf="isAppSetingsEditable"
+      <a href="javascript:void(0)" placement="bottom" class="ml-1" tooltip="Add Role"
           (click)="onAddNewRoleObj()"><i class="fa fa-plus"></i></a>
-      <a href="javascript:void(0)" placement="bottom" tooltip="Edit Role" class="ml-1" *ngIf="!isAppSetingsEditable"
+      <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Edit Role" class="ml-1" *ngIf="!isAppSetingsEditable"
           (click)="isAppSetingsEditable = true;"><i class="fa fa-edit"></i></a>
         <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Cancel" *ngIf="isAppSetingsEditable"
-          (click)="onCancelClick();"><i class="fa fa-times"></i></a>
+          (click)="onCancelClick();"><i class="fa fa-times"></i></a> -->
      </div>
 </div>
 </div>
@@ -29,8 +29,8 @@
     <tr>
       <th colspan="3">
         <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="onSaveRoles()"
-        [disabled]="saveRoleAPILoading || !isAppSetingsEditable">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveRoleAPILoading"></i></button>
-        <button type="button" class="btn btn-sm searchBtn btn-white ml-1" (click)="onCancelClick()" [disabled]="!isAppSetingsEditable">CANCEL</button>
+        [disabled]="saveRoleAPILoading">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveRoleAPILoading"></i></button>
+        <button type="button" class="btn btn-sm searchBtn btn-white ml-1" (click)="onCancelClick()">CANCEL</button>
       </th>
 
     </tr>
@@ -39,17 +39,17 @@
       <tr *ngFor="let item of applicationData.roles; let i = index">
       <td>
         <ng-container *ngIf="!item.isEditable">{{item.name}}</ng-container>
-        <ng-container *ngIf="item.isEditable && isAppSetingsEditable">
+        <ng-container *ngIf="item.isEditable">
           <input type="text" name="roleName{{i}}" [(ngModel)]="item.name" class="form-control form-control-sm">
         </ng-container>
       </td>
       <td>
         <ng-container *ngIf="i === 0; else otherLevels">Level: App</ng-container>
         <ng-template #otherLevels>
-        <ng-container *ngIf="!item.isEditable || !isAppSetingsEditable; else roleEditTemplate">Level: {{applicationData.hierarchy.levels[item.level]}}</ng-container>
+        <ng-container *ngIf="!item.isEditable; else roleEditTemplate">Level: {{applicationData.hierarchy.levels[item.level]}}</ng-container>
         <ng-template #roleEditTemplate >
         <select *ngIf="i !== 0" class="form-control form-control-sm mx-1 my-1" id="deviceCategory"
-         [(ngModel)]="item.level" name="deviceCategory" [disabled]="!item.isEditable || !isAppSetingsEditable">
+         [(ngModel)]="item.level" name="deviceCategory" [disabled]="!item.isEditable">
           <option [ngValue]="i" *ngFor="let level of applicationData.hierarchy.levels; let i = index;">
             {{level}}
           </option>
@@ -58,7 +58,7 @@
     </ng-template>
       </td>
       <td>
-        <a [class.disabled]="i === 0 || !isAppSetingsEditable" href="javascript:void(0)" (click)="openConfirmRoleDeleteModal(item)">
+        <a *ngIf="i !== 0" href="javascript:void(0)" (click)="openConfirmRoleDeleteModal(item)">
           <i class="fa fa-trash" placement="bottom" tooltip="Delete Role"></i>
         </a>
       </td>

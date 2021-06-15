@@ -67,7 +67,7 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
         this.toasterService.showSuccess(response.message, 'Save Role');
         this.saveRoleAPILoading = false;
         this.forceUpdate = false;
-        this.isAppSetingsEditable = false;
+        // this.isAppSetingsEditable = false;
         this.applicationService.refreshAppData.emit();
       }, (error) => {
         this.toasterService.showError(error.message, 'Save Role');
@@ -90,6 +90,7 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
     });
     this.applicationData.roles = roles;
     this.forceUpdate = true;
+    this.onSaveRoles(this.forceUpdate);
     this.onCloseModal();
   }
 

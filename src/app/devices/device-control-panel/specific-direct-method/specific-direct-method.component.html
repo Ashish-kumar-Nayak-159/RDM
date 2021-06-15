@@ -7,16 +7,16 @@
     <div class='px-1'><hr></div> -->
       <div><a href="javascript:void(0)" [class.disabled]="!selectedWidget && !isInvokeDirectMethod"
           (click)="invokeDirectMethod()">
-          <button type="button" class="btn btn-primary"> Invoke Method
+          <button type="button" class="btn btn-sm btn-primary"> Invoke Method
             <i class="fa fa-spinner fa-spin fa-fw " *ngIf="isInvokeDirectMethod"></i>
           </button>
         </a></div>
       </div>
       </div>
 </div>
-
+<div class="content-scroll content-scroll-control-c2d">
 <div class="row col-lg-12 mt-2" *ngIf="selectedWidget">
-  <div class="col-lg-8 col-xl-8">
+  <div class="col-lg-12 col-xl-12">
     <!-- Page Heading -->
     <div class="table-responsive">
       <table class="table table-hover table-bordered">
@@ -75,8 +75,8 @@
       </table>
     </div>
 
-    <div class="table-responsive">
-      <h6><b> Connection Settings: </b></h6>
+    <div class="table-responsive mt-2">
+      <h6> Connection Settings:</h6>
       <table class="table table-hover table-bordered">
         <tbody>
           <tr>
@@ -99,9 +99,9 @@
       </table>
     </div>
   </div>
-  <div class="col-lg-4 col-xl-4 col-md-4 mt-n3" *ngIf="responseMessage">
+  <div class="col-lg-12 col-xl-12 col-md-12" *ngIf="responseMessage">
     <div class="d-sm-flex align-items-center justify-content-between mb-2 pt-3">
-      <h6 class="h6 mb-0 text-gray-800">Response:</h6>
+      <h6 class="h6 mb-0">Response:</h6>
     </div>
 
     <form id="contact-form">
@@ -113,5 +113,5 @@
   </div>
 
 </div>
-
+</div>
 </div>

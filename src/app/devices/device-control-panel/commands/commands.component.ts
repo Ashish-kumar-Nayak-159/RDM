@@ -59,6 +59,7 @@ export class CommandsComponent implements OnInit, OnDestroy {
 
   onClickOfSpecificCommands(type) {
     this.displayMode = '';
+    this.selectedWidget = undefined;
     setTimeout(() => {
       this.displayMode = type + '_specific_commands';
     }, 500);
@@ -80,16 +81,19 @@ export class CommandsComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response?.data) {
           this.allControlWidgets = response.data;
+          if (this.allControlWidgets.length > 0) {
+            this.selectedWidget = this.allControlWidgets[0];
+          }
         }
       }
     ));
   }
 
-  onChangeOfTechnique() {
-    this.selectedWidget = undefined;
-    this.controlWidgets = this.allControlWidgets.filter(widget =>
-      widget.metadata.communication_technique === this.selectedCommunicationTechnique);
-  }
+  // onChangeOfTechnique() {
+  //   this.selectedWidget = undefined;
+  //   this.controlWidgets = this.allControlWidgets.filter(widget =>
+  //     widget.metadata.communication_technique === this.selectedCommunicationTechnique);
+  // }
 
   getConfigureWidgets() {
     const obj = {
@@ -100,36 +104,44 @@ export class CommandsComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response?.data) {
           this.allControlWidgets = response.data;
+          if (this.allControlWidgets.length > 0) {
+            this.selectedWidget = this.allControlWidgets[0];
+          }
         }
       }
     ));
   }
 
-  onChangeOfDropdownData() {
+  onChangeOfDropdownData(widget) {
+    this.selectedWidget = undefined;
     this.jsonModelKeys = [];
-    const keys =  Object.keys(this.selectedWidget.json);
-    const index = keys.findIndex(key => key === 'timestamp');
-    keys.splice(index, 1);
-    keys.forEach(key => {
-      const obj = {
-        key,
-        json: {},
-        name: null,
-        value: null
-      };
-      this.selectedWidget.properties.forEach(prop => {
-        if (prop.json_key === key) {
-          obj.name = prop.name;
-          obj.json = this.selectedWidget.json[key];
-          if (obj.json['type'] === 'boolean') {
-            obj.value = obj.json['defaultValue'] === obj.json['trueValue'] ? true : false;
-          } else {
-            obj.value = this.selectedWidget.json[key].defaultValue;
+    setTimeout(() => {
+      this.selectedWidget = widget;
+      const keys =  Object.keys(this.selectedWidget.json);
+      const index = keys.findIndex(key => key === 'timestamp');
+      keys.splice(index, 1);
+      keys.forEach(key => {
+        const obj = {
+          key,
+          json: {},
+          name: null,
+          value: null
+        };
+        this.selectedWidget.properties.forEach(prop => {
+          if (prop.json_key === key) {
+            obj.name = prop.name;
+            obj.json = this.selectedWidget.json[key];
+            if (obj.json['type'] === 'boolean') {
+              obj.value = obj.json['defaultValue'] === obj.json['trueValue'] ? true : false;
+            } else {
+              obj.value = this.selectedWidget.json[key].defaultValue;
+            }
           }
-        }
+        });
+        this.jsonModelKeys.splice(this.jsonModelKeys.length, 0, obj);
       });
-      this.jsonModelKeys.splice(this.jsonModelKeys.length, 0, obj);
-    });
+    }, 500);
+
   }
 
   ngOnDestroy() {

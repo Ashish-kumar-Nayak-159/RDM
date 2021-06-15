@@ -1,6 +1,6 @@
-<div class="tab-bar">
+<div class="tab-bar" *ngIf="type === 'all'">
   <div class="">
-<app-filter *ngIf="type === 'all'" [filterObj]="c2dMsgFilter" (filterSearch)="searchTableData($event)"></app-filter>
+<app-filter  [filterObj]="c2dMsgFilter" (filterSearch)="searchTableData($event)"></app-filter>
 </div>
 </div>
 <div class="table-responsive">

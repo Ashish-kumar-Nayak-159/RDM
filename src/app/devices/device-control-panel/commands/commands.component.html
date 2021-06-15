@@ -34,24 +34,10 @@
 <app-c2d-message [device]="device" [pageType]="pageType"></app-c2d-message>
 </ng-container>
 <ng-container *ngIf="displayMode === 'configure_specific_commands' || displayMode === 'control_specific_commands'">
-  <div class="tab-bar">
+  <!-- <div class="tab-bar">
     <div class="">
   <form class="form-inline">
-      <!-- <div class="form-group ">
-        <input type="radio" value="C2D Message"
-            name="communicationTechnique" [(ngModel)]="selectedCommunicationTechnique"  (change)="onChangeOfTechnique()">
-        <label class="col-form-label">&nbsp; C2D Message</label>
-      </div>
-      <div class="form-group">
-        <input type="radio" value="Direct Method"
-            name="communicationTechnique" [(ngModel)]="selectedCommunicationTechnique" (change)="onChangeOfTechnique()">
-        <label class="col-form-label">&nbsp; Direct Method</label>
-      </div>
-      <div class="form-group">
-        <input type="radio" value="Twin Change"
-            name="communicationTechnique" [(ngModel)]="selectedCommunicationTechnique"  (change)="onChangeOfTechnique()">
-        <label class="col-form-label"> &nbsp;Twin Change</label>
-      </div> -->
+
       <div class="form-group" >
         <select class="form-control form-control-sm" id="technique" name="acknowledge" [(ngModel)]="selectedCommunicationTechnique"
           (change)="onChangeOfTechnique()">
@@ -70,10 +56,49 @@
       </div>
   </form>
   </div>
-  </div>
-  <app-specific-c2d-message [device]="device" [pageType]="displayMode" [componentState]="componentState" [selectedWidget]="selectedWidget" [jsonModelKeys]="jsonModelKeys" *ngIf="selectedCommunicationTechnique === 'C2D Message' && selectedWidget"></app-specific-c2d-message>
-  <app-specific-direct-method [device]="device" [pageType]="displayMode"  [componentState]="componentState" [selectedWidget]="selectedWidget" [jsonModelKeys]="jsonModelKeys" *ngIf="selectedCommunicationTechnique === 'Direct Method' && selectedWidget"></app-specific-direct-method>
-  <app-specific-twin-change [device]="device" [pageType]="displayMode" *ngIf="selectedCommunicationTechnique === 'Twin Change' && selectedWidget"></app-specific-twin-change>
+  </div> -->
+  <p class="m-3" *ngIf="allControlWidgets.length === 0"> No {{displayMode?.includes('control') ? 'control' : 'configure'}} widgets available.</p>
+  <div class="inbox" *ngIf="allControlWidgets.length > 0">
+    <div class="row">
+      <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3 pr-0 right-border">
+        <ul class="mail_list list-group list-unstyled alert-scroll" >
+          <li class="list-group-item" [ngClass]="{'active': selectedWidget?.id === widget.id}"
+           *ngFor="let widget of allControlWidgets; let i = index;">
+            <div class="media">
+              <!-- <div class="pull-left">
+                <div class="controls"><i class="fa fa-fw fa-exclamation-triangle" ></i></div>
+              </div> -->
+              <div class="media-body">
+                <a class="m-r-10">
+                  <div class="media-heading"><p class="overflow" aria-describedby="tooltip-320">{{widget.name}}</p></div>
+                  <p class="msg"><time class="hidden-sm-down">{{widget?.metadata.description || 'NA'}}</time></p>
+                </a>
+              </div>
+              <div class="pull-right">
+                <div>
+                  <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down" (click)="onChangeOfDropdownData(widget)"
+                  ><i aria-hidden="true" class="fa fa-external-link-alt text-dark"></i></a>
+                </div>
+              </div>
+            </div>
+          </li>
+
+        </ul>
+
+      </div>
+      <div class="col-sm-9 col-md-9 col-lg-9 col-xl-9 pl-0 " *ngIf="selectedWidget">
+
+        <app-specific-c2d-message [device]="device" [pageType]="displayMode" [componentState]="componentState" [selectedWidget]="selectedWidget" [jsonModelKeys]="jsonModelKeys" *ngIf="selectedWidget?.metadata?.communication_technique === 'C2D Message' && selectedWidget"></app-specific-c2d-message>
+        <app-specific-direct-method [device]="device" [pageType]="displayMode"  [componentState]="componentState" [selectedWidget]="selectedWidget" [jsonModelKeys]="jsonModelKeys" *ngIf="selectedWidget?.metadata?.communication_technique === 'Direct Method' && selectedWidget"></app-specific-direct-method>
+        <app-specific-twin-change [device]="device" [pageType]="displayMode" *ngIf="selectedWidget?.metadata?.communication_technique === 'Twin Change' && selectedWidget"></app-specific-twin-change>
+
+
+        </div>
+
+    </div>
+
+    </div>
+
 </ng-container>
 
 <ng-container *ngIf="displayMode === 'general_commands'">

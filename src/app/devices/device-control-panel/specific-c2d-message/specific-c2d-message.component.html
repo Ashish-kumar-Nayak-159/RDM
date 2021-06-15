@@ -1,10 +1,63 @@
-<div class="table-responsive table-fixHead">
-<div class="row col-lg-12 mt-2">
+
+<div class="filter-bar" >
+  <div class="col-lg-6 col-xl-6 align-self-center">
+    <div class="row">
+      <nav>
+        <ol class="cd-multi-steps text-top count mb-0">
+          <li class="" [ngClass]="{'visited': selectedLevel === 1 || selectedLevel > 1}">
+            <a  href="javascript:void(0)" [class.disabled]="sentMessageData || !selectedWidget"
+            (click)="sentC2DMessage()">Send
+            <i class="fa fa-spinner fa-spin fa-fw " *ngIf="isSendC2DMessageAPILoading"></i></a></li>
+          <!-- <li class="" ><a href="#">Compose</a></li> -->
+          <li class=""  [ngClass]="{'visited': selectedLevel === 2 || selectedLevel > 2}">
+            <a href="javascript:void(0)" [class.disabled]="!sentMessageData  || !selectedWidget"
+            (click)="onClickOfFeedback()">Feedback</a></li>
+          <li  [ngClass]="{'visited': selectedLevel === 3}">
+            <a href="javascript:void(0)" [class.disabled]="!sentMessageData  || !selectedWidget"
+            (click)="onClickOfResponse()">Response</a></li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <div class="col-lg-6 col-xl-6 border">
+    <div class="row">
+      <div class="bg-light px-1 py-1" style="writing-mode: tb-rl; transform: rotate(-180deg); font-size:0.75rem; color:black;">STATUS</div>
+      <div class="justify-content-center align-self-center px-2 red-font" *ngIf="isMessageValidated === 'invalid'">
+        <i class="fa fa-times"></i> Please verify JSON.</div>
+      <div class="justify-content-center align-self-center px-2 green-font" *ngIf="isMessageValidated === 'valid'">
+        <i class="fa fa-check"></i> Successfully Validated.</div>
+      <div class="justify-content-center align-self-center px-2" *ngIf="sendMessageStatus && sendMessageResponse"
+        [ngClass]="{'green-font': sendMessageStatus === 'success', 'red-font': sendMessageStatus === 'error'}">
+        <i class="fa"
+          [ngClass]="{'fa-check': sendMessageStatus === 'success', 'fa-times': sendMessageStatus === 'error'}"></i>
+        {{sendMessageResponse}}</div>
+      <div class="bg-light px-1 py-1" *ngIf="timerObj" style="writing-mode: tb-rl; transform: rotate(-180deg); font-size:0.75rem; color:black;">&nbsp;TIMER</div>
+      <div class="justify-content-center align-self-center px-3">
+        <div class="timer" *ngIf="timerObj">
+          <div>
+            <span class="hours" id="hour">{{timerObj?.hours}}</span>
+            <div class="smalltext">Hours</div>
+          </div>
+          <div>
+            <span class="minutes" id="minute">{{timerObj?.minutes}}</span>
+            <div class="smalltext">Minutes</div>
+          </div>
+          <div>
+            <span class="seconds" id="second">{{timerObj?.seconds}}</span>
+            <div class="smalltext">Seconds</div>
+          </div>
+          <p id="time-up"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content-scroll content-scroll-control-c2d">
+<!-- <div class="row col-lg-12 mt-2">
 
   <div class="col-lg-6 col-xl-6 align-self-center">
     <div class="row col-lg-12">
-      <!-- <div><a href="javascript:void(0)" [class.disabled]="sentMessageData || !selectedWidget" (click)="validateMessage()" ><button type="button" class="btn btn-primary contact-form" > 1. Validate</button></a></div>
-    <div class='px-1'><hr></div> -->
       <div><a href="javascript:void(0)" [class.disabled]="sentMessageData || !selectedWidget"
           (click)="sentC2DMessage()">
           <button type="button" class="btn btn-primary"> 1. Send
@@ -26,66 +79,22 @@
     </div>
   </div>
 
-  <div class="col-lg-6 col-xl-6 border" >
-    <div class="row col-lg-12">
-      <div class="bg-light px-1 py-1"
-        style="writing-mode: tb-rl; transform: rotate(-180deg); font-size:0.75rem; color:black;">STATUS</div>
-      <div class="justify-content-center align-self-center px-1 red-font" *ngIf="isMessageValidated === 'invalid'">
-        <i class="fa fa-times"></i> Please verify JSON.</div>
-      <div class="justify-content-center align-self-center px-1 green-font" *ngIf="isMessageValidated === 'valid'">
-        <i class="fa fa-check"></i> Successfully Validated.</div>
-      <div class="justify-content-center align-self-center px-1" *ngIf="sendMessageStatus && sendMessageResponse"
-        [ngClass]="{'green-font': sendMessageStatus === 'success', 'red-font': sendMessageStatus === 'error'}">
-        <i class="fa"
-          [ngClass]="{'fa-check': sendMessageStatus === 'success', 'fa-times': sendMessageStatus === 'error'}"></i>
-        {{sendMessageResponse}}</div>
 
-      <div *ngIf="timerObj" class="bg-light px-1 py-1"
-        style="writing-mode: tb-rl; transform: rotate(-180deg); font-size:0.75rem; color:black;">&nbsp;TIMER</div>
-      <div class="justify-content-center align-self-center px-3">
-        <div class="timer" *ngIf="timerObj">
-          <div>
-            <span class="hours" id="hour">{{timerObj?.hours}}</span>
-            <div class="smalltext">Hours</div>
-          </div>
-          <div>
-            <span class="minutes" id="minute">{{timerObj?.minutes}}</span>
-            <div class="smalltext">Minutes</div>
-          </div>
-          <div>
-            <span class="seconds" id="second">{{timerObj?.seconds}}</span>
-            <div class="smalltext">Seconds</div>
-          </div>
-          <p id="time-up"></p>
-        </div>
-      </div>
-    </div>
-  </div>
+</div> -->
 
-
-</div>
-
-<div class="" *ngIf="!sentMessageData">
+<!-- <div class="" *ngIf="!sentMessageData">
   <div class="col-lg-12">
     <hr class="solid" /></div>
-</div>
+</div> -->
 
 <div class="row col-lg-12" *ngIf="displayType === 'compose'">
-  <div class="col-lg-6 col-xl-6">
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-2 pt-3">
-      <h6 class="h6 mb-0 text-gray-800">Meta Data:</h6>
+  <div class="col-lg-12 col-xl-12 col-md-12">
+    <div class="d-sm-flex align-items-center justify-content-between my-2">
+      <h6 class="h6 mb-0">Meta Data:</h6>
     </div>
 
 
       <table class="table table-hover table-bordered" >
-        <!-- <thead>
-          <tr >
-            <th>Key</th>
-            <th>Value</th>
-          </tr>
-        </thead> -->
-
         <tbody>
           <tr>
             <td>Asset ID</td>
@@ -132,20 +141,11 @@
       </table>
   </div>
 
-  <div class="col-lg-6 col-xl-6">
+  <div class="col-lg-12 col-xl-12">
     <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-2 pt-3">
-      <h6 class="h6 mb-0 text-gray-800">Message Body / Message JSON:</h6>
+    <div class="d-sm-flex align-items-center justify-content-between my-2">
+      <h6 class="h6 mb-0">Message Body / Message JSON:</h6>
     </div>
-
-    <!-- <form id="contact-form" *ngIf="selectedWidget?.type === 'device_method'">
-      <div class="form-group mr-3">
-        <textarea class="form-control" id="message" rows="13" placeholder="Please type your JSON here.." name="message"
-          disabled [defaultValue]="selectedWidget.json_model | json"></textarea>
-      </div>
-    </form> -->
-    <form id="contact-form" class="col-12" >
-
         <table class="table table-hover table-bordered">
           <tbody>
         <ng-container *ngFor="let item of jsonModelKeys; let i = index;">
@@ -188,14 +188,12 @@
         </ng-container>
         <ng-container *ngIf="jsonModelKeys.length === 0">
           <tr>
-            <td colspan="2">Please select widget.</td>
+            <td colspan="2">No {{pageType?.includes('control') ? 'control' : 'configure'}} parameters available.</td>
           </tr>
 
         </ng-container>
       </tbody>
         </table>
-
-    </form>
   </div>
 </div>
 <div *ngIf="displayType === 'feedback'">
@@ -205,3 +203,6 @@
   <app-c2d-message [device]="device" [type]="displayType" [message]="sentMessageData"></app-c2d-message>
 </div>
 </div>
+<!-- <div class="" style="position:fixed; bottom:1.5rem;">
+  <div class="form-group px-3"><button type="button" placement="bottom" class="btn btn-sm searchBtn btn-primary" onclick="changeClass()">Next</button></div>
+</div> -->

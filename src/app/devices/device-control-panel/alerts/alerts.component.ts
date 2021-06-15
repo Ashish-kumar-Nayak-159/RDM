@@ -58,6 +58,10 @@ export class AlertsComponent implements OnInit, OnDestroy {
           key: 'local_created_date',
         },
         {
+          name: 'Source',
+          key: 'source'
+        },
+        {
           name: 'Message',
           key: 'message'
         },
@@ -99,12 +103,6 @@ export class AlertsComponent implements OnInit, OnDestroy {
   searchAlerts(filterObj, updateFilterObj = true) {
     this.isFilterSelected = true;
     this.isAlertLoading = true;
-    // if (!filterObj.source) {
-    //   this.alertTableConfig.data.splice(3, 0, {
-    //     name: 'Source',
-    //     key: 'source'
-    //   });
-    // }
     filterObj.device_id = this.device.device_id;
     if (filterObj.dateOption !== 'Custom Range') {
       const dateObj = this.commonService.getMomentStartEndDate(filterObj.dateOption);

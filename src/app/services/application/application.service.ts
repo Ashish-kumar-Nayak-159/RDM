@@ -53,10 +53,12 @@ export class ApplicationService {
   }
 
   updateAppHierarchy(appObj) {
+    localStorage.removeItem(CONSTANTS.APP_USERS);
     return this.http.put(this.url + String.Format(AppUrls.UPDATE_APP_HIERARCHY, encodeURIComponent(appObj.app)), appObj);
   }
 
   updateAppRoles(appObj) {
+    localStorage.removeItem(CONSTANTS.APP_USERS);
     return this.http.put(this.url + String.Format(AppUrls.UPDATE_APP_ROLES, encodeURIComponent(appObj.app)), appObj);
   }
 

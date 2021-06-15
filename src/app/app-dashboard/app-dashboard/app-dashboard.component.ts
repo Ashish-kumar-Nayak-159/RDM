@@ -334,9 +334,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       async (response: any) => {
         if (response?.live_widgets?.length > 0) {
           response.live_widgets.forEach(widget => {
-            if (widget.dashboardVisibility) {
-              this.liveWidgets.push(widget);
-            }
             widget.derived_props = false;
             widget.measured_props = false;
             widget.properties.forEach(prop => {
@@ -346,6 +343,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 widget.measured_props = true;
               }
             });
+            console.log('11111111111111111    ', widget);
+            if (widget.dashboardVisibility) {
+              this.liveWidgets.push(widget);
+            }
           });
         }
         this.isGetWidgetsAPILoading = false;
@@ -557,7 +558,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
             response.properties.derived_properties.forEach(prop => {
               prop.type = 'derived';
-              this.propertyList.push(prop)
+              console.log(prop);
+              this.propertyList.push(prop);
             });
             resolve1();
           }, error => this.isTelemetryDataLoading = false

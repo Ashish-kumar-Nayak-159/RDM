@@ -73,20 +73,20 @@
   </div>
 </div>
 <div class="inbox">
-  <div class="row">
+  <div class="row ml-0">
 
       <ng-container *ngIf="isAlertAPILoading">
-        <div class="m-3">
+        <div class="p-3">
         <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
       </div>
       </ng-container>
       <ng-container *ngIf="!isAlertAPILoading && latestAlerts.length === 0">
-        <div class="col-md-12 m-3">
+        <div class="col-md-12 p-3">
         No Alerts available.
       </div>
       </ng-container>
 
-    <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3 pr-0 " [ngClass]="{'right-border': latestAlerts.length > 0}">
+    <div class="col-sp-3 col-md-3 col-lg-3 col-xl-3 p-0" [ngClass]="{'right-border': latestAlerts.length > 0}">
       <div class="alert-scrollbox alert-scrollbox_delayed" [ngClass]="{'alert-box-live-alerts': pageType === 'live'}">
       <ul class="mail_list list-group list-unstyled alert-scrollbox-content" *ngIf="!isAlertAPILoading && latestAlerts.length > 0">
         <!-- [ngClass]="{'active': alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id,
@@ -289,13 +289,13 @@
                 <!-- Content Row -->
                 <div id="mainChartDiv">
 
-                  <div class="col-xl-12 col-lg-12 m-3" *ngIf="!isTelemetryDataLoading && telemetryData.length === 0 && selectedWidgets?.length > 0">
+                  <div class="col-xl-12 col-lg-12 p-3" *ngIf="!isTelemetryDataLoading && telemetryData.length === 0 && selectedWidgets?.length > 0">
                     No data found.
                   </div>
-                  <div class="col-xl-12 col-lg-12 m-3" *ngIf="selectedWidgets?.length === 0 && !isTelemetryDataLoading">
+                  <div class="col-xl-12 col-lg-12 p-3" *ngIf="selectedWidgets?.length === 0 && !isTelemetryDataLoading">
                     No widgets configured for this alert.
                   </div>
-                  <div id="charts" class="ml-3" *ngIf="selectedWidgets?.length > 0"></div>
+                  <div id="charts" class="px-3" *ngIf="selectedWidgets?.length > 0"></div>
                 </div>
 
             </div>
@@ -325,7 +325,7 @@
             </table>
             </div>
           </div>
-          <div class="col-xl-12 col-lg-12 m-3" *ngIf="!alertCondition || alertCondition?.recommendations?.length === 0">
+          <div class="col-xl-12 col-lg-12 p-3" *ngIf="!alertCondition || alertCondition?.recommendations?.length === 0">
             No Recommendations added yet.
           </div>
         </div>
@@ -339,13 +339,13 @@
                         </span>
                       </ng-container>
                     </div>
-                    <div class="col-xl-12 col-lg-12 m-3" *ngIf="!alertCondition || alertCondition?.reference_documents?.length === 0">
+                    <div class="col-xl-12 col-lg-12 p-3" *ngIf="!alertCondition || alertCondition?.reference_documents?.length === 0">
                       No Reference documents added yet.</div>
           </div>
         </div>
         <div id="actions" role="tabpanel" aria-labelledby="actions-tab" [ngClass]="{'show active': selectedTab === 'actions'}" class="tab-pane fade">
           <div class="content-scroll content-scroll-alert" [style.maxHeight]="pageType === 'live' ? 'calc(100vh - 13.5rem)' : 'calc(100vh - 15rem)'">
-          <h6 class="m-3">Action taken by Field Staff:</h6>
+          <h6 class="p-3">Action taken by Field Staff:</h6>
                     <div class="col-xl-12 col-lg-12 ml-3"
                       *ngIf="!selectedAlert?.metadata?.acknowledged_date; else actionTakenTemplate">
                      <p> This alert is not yet acknowledged, please <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down blue-font" *ngIf="!selectedAlert?.metadata?.acknowledged_date" (click)="onClickOfAcknowledgeAlert(selectedAlert)"
@@ -377,7 +377,7 @@
                         </div>
                       </div>
                     </ng-template>
-                    <h6 class="m-3">Action taken by RDM:</h6>
+                    <h6 class="p-3">Action taken by RDM:</h6>
                     <div class="col-xl-12 col-lg-12 ml-3">
                       No Actions recorded by RDM yet.
                     </div>

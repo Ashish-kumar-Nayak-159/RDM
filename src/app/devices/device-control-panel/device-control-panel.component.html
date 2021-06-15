@@ -26,8 +26,8 @@
             <!-- Nav Item - Dashboard -->
             <li class="nav-item" [ngClass]="{'active': activeTab === menu.page}">
               <a class="nav-link collapsed" href="{{menu.url}}" data-toggle="tab" aria-expanded="false"
-                (click)="setActiveTab(menu.page)">
-                <i class="{{menu.icon}}" placement="bottom" [tooltip]="menu.display_nam"></i>
+                (click)="setActiveTab(menu.page)" [tooltip]="menu.display_name" [tooltip]="menu.display_nam">
+                <i class="{{menu.icon}}" placement="bottom" ></i>
                 <span>{{menu.display_name}}</span></a>
             </li>
           </ng-container>

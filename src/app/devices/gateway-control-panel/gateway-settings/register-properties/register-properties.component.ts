@@ -148,7 +148,8 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   getAlertConditions() {
     return new Promise<void>((resolve1, reject) => {
     const filterObj = {
-      device_type: this.selectedDevice.device_type || this.selectedDevice.tags?.device_type
+      device_type: this.selectedDevice.device_type || this.selectedDevice.tags?.device_type,
+      source: 'Asset'
     };
     this.subscriptions.push(this.deviceTypeService.getAlertConditions(this.contextApp.app, filterObj).subscribe(
       (response: any) => {

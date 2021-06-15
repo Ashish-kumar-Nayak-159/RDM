@@ -396,6 +396,11 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
         this.alertObj.reference_documents.splice(index, 1);
       }
     });
+    if (!this.alertObj.message || (this.alertObj.message.trim()).length === 0 ||  !this.alertObj.code
+     || (this.alertObj.code.trim()).length === 0 || !this.alertObj.severity || !this.alertObj.alert_type) {
+      this.toasterService.showError('Please add all the data', 'Add Alert Condition');
+      return;
+    }
     // let distinctArray = this.alertObj.visualization_widgets.filter((n, i) => this.alertObj.visualization_widgets.indexOf(n) === i);
     // this.alertObj.visualization_widgets = distinctArray;
     // distinctArray = this.alertObj.reference_documents.filter((n, i) => this.alertObj.reference_documents.indexOf(n) === i);
@@ -431,7 +436,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
   onCreateAlertCondition() {
     this.alertObj.metadata = this.setupForm?.value;
     if (!this.alertObj.message || (this.alertObj.message.trim()).length === 0 ||  !this.alertObj.code
-     || (this.alertObj.code.trim()).length === 0 || !this.alertObj.severity) {
+     || (this.alertObj.code.trim()).length === 0 || !this.alertObj.severity || !this.alertObj.alert_type) {
       this.toasterService.showError('Please add all the data', 'Add Alert Condition');
       return;
     }

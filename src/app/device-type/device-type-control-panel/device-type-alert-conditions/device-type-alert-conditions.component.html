@@ -34,7 +34,11 @@
 </div>
 
 <div class="table-responsive">
-  <div class="tableFixHead">
+  <p class="pl-3 pt-3" *ngIf="selectedTab === 'Asset'"> Following alerts are read from PLC/Modbus registers...</p>
+    <p class="pl-3 pt-3" *ngIf="selectedTab === 'Edge'"> Following alerts are possible by executing rules on Gateways...</p>
+    <p class="pl-3 pt-3" *ngIf="selectedTab === 'Cloud'"> Following alerts are possible by executing rules on Cloud...</p>
+  <div class="tableFixHead table-fix-head-alert-conditions">
+
     <table class="table table-hover">
       <thead>
         <tr>

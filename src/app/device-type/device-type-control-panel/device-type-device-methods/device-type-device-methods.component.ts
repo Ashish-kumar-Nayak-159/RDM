@@ -271,7 +271,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
   deleteDeviceMethod() {
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.device_methods = JSON.parse(JSON.stringify(this.deviceMethods));
-    const index = obj.device_methods.findIndex(prop => prop.json_key === this.selectedDeviceMethod.json_key);
+    const index = obj.device_methods.findIndex(prop => prop.name === this.selectedDeviceMethod.name);
     obj.device_methods.splice(index, 1);
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.deviceType.app).subscribe(

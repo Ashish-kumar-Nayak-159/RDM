@@ -13334,7 +13334,7 @@ overflow-x: hidden;
 /* Works on Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
   width: 12px;
-  height: 6px;
+  height: 12px;
   cursor: pointer !important;
 }
 

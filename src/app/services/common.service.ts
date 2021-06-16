@@ -183,7 +183,7 @@ export class CommonService {
       obj.to_date = moment().utc().unix();
     } else if (label === 'This Month') {
       obj.from_date = moment().startOf('month').utc().unix();
-      obj.to_date = moment();
+      obj.to_date = moment().utc().unix();
     } else if (label === 'Last Month') {
       obj.from_date = moment().subtract(1, 'month').startOf('month').utc().unix();
       obj.to_date = moment().subtract(1, 'month').endOf('month').utc().unix();

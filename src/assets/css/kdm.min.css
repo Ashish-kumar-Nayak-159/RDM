@@ -13630,3 +13630,10 @@ overflow-x: hidden;
     padding-top: 34px;
   }
 }
+.card {
+  border-radius: 0rem;
+}
+
+.table-fix-head-alert-conditions {
+  max-height: calc(100vh - 13.8rem);
+}

@@ -234,6 +234,7 @@ export class ApplicationDeviceHierarchyComponent implements OnInit, OnDestroy {
   onAddTagCancel(index, tagIndex) {
     this.hierarchyArr[index].splice(tagIndex, 1);
     this.isAddHierarchyThere = false;
+    this.addedTagItem = undefined;
     this.originalHierarchyArr = JSON.parse(JSON.stringify(this.hierarchyArr));
   }
 

@@ -26,13 +26,19 @@
       <div class="form-group">
         <ng-select [items]="propertyList" class="custom-dropdown w-12 sm" bindLabel="name" [clearable]="false"
           [searchable]="false"  [multiple]="true" [ngClass]="{'active': telemetryFilter.props?.length > 0}"
-          [closeOnSelect]="false" placeholder="Select Properties"
+          [closeOnSelect]="false" placeholder="Select Properties" groupBy="type"
           dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="telemetryFilter.props">
           <ng-template ng-multi-label-tmp let-items="items">
             {{items.length}} properties selected
           </ng-template>
+          <ng-template ng-header-tmp>
+            <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+              <li *ngIf="telemetryFilter.props?.length !== propertyList.length"> <a  href="javascript:void(0)" (click)="telemetryFilter.props = propertyList">Select All</a></li>
+              <li *ngIf="telemetryFilter.props?.length === propertyList.length"> <a  href="javascript:void(0)" (click)="telemetryFilter.props = []">Deselect All</a></li>
+            </ul>
+          </ng-template>
           <ng-template ng-option-tmp let-item="item">
-            <span > <i [ngClass]="{'icon icon-function': item.type === 'derived'}"></i> {{item.name}}</span>
+            <span > <i [ngClass]="{'icon icon-function': item.type === 'Derived Properties'}"></i> {{item.name}}</span>
           </ng-template>
         </ng-select>
       </div>

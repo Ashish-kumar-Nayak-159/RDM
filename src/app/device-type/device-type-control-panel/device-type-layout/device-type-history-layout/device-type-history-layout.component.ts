@@ -123,10 +123,11 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       };
       this.subscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
+          response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
           response.properties.derived_properties.forEach(prop => {
-            prop.type = 'derived';
+            prop.type = 'Derived Properties';
             this.propertyList.push(prop);
           });
           console.log(this.propertyList);
@@ -187,7 +188,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
     };
     obj.y1axis.forEach(prop => {
       const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-      if (type === 'derived') {
+      if (type === 'Derived Properties') {
         obj.derived_props = true;
       } else {
         obj.measured_props = true;
@@ -195,7 +196,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
     });
     obj.y2axis.forEach(prop => {
       const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-      if (type === 'derived') {
+      if (type === 'Derived Properties') {
         obj.derived_props = true;
       } else {
         obj.measured_props = true;
@@ -360,7 +361,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
             item.measured_props = false;
             item.y1axis.forEach(prop => {
               const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'derived') {
+              if (type === 'Derived Properties') {
                 item.derived_props = true;
               } else {
                 item.measured_props = true;
@@ -368,7 +369,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
             });
             item.y2axis.forEach(prop => {
               const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'derived') {
+              if (type === 'Derived Properties') {
                 item.derived_props = true;
               } else {
                 item.measured_props = true;

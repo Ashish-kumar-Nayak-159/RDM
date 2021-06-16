@@ -93,13 +93,19 @@
           <div class="form-group">
             <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" [clearable]="false"
               [searchable]="false"  [multiple]="true" [ngClass]="{'active': props.length > 0}"
-              [closeOnSelect]="false" placeholder="Select Properties"
+              [closeOnSelect]="false" placeholder="Select Properties" groupBy="type"
               dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="props" (onDeSelectAll)="y1Deselect($event)">
+              <ng-template ng-header-tmp>
+                <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                  <li *ngIf="props.length !== dropdownPropList.length"> <a  href="javascript:void(0)" (click)="props = dropdownPropList">Select All</a></li>
+                  <li *ngIf="props.length === dropdownPropList.length"> <a  href="javascript:void(0)" (click)="props = []">Deselect All</a></li>
+                </ul>
+              </ng-template>
               <ng-template ng-multi-label-tmp let-items="items">
                 {{items.length}} properties selected
               </ng-template>
               <ng-template ng-option-tmp let-item="item">
-                <span > <i [ngClass]="{'icon icon-function': item.value.type === 'derived'}"></i> {{item.id}}</span>
+                <span > <i [ngClass]="{'icon icon-function': item.value.type === 'Derived Properties'}"></i> {{item.id}}</span>
               </ng-template>
             </ng-select>
           </div>
@@ -179,7 +185,7 @@
                       <th></th>
                       <th class="w-10">Asset Name</th>
                       <th class="w-17">Time</th>
-                      <th *ngFor="let property of selectedProps"> <i class="icon icon-function" *ngIf="property.value.type === 'derived'"></i> {{property.id}}</th>
+                      <th *ngFor="let property of selectedProps"> <i class="icon icon-function" *ngIf="property.value.type === 'Derived Properties'"></i> {{property.id}}</th>
                     </tr>
                   </thead>
                   <tbody>

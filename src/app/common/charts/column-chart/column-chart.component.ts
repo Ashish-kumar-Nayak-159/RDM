@@ -237,7 +237,7 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
         }
       });
       series.name = this.getPropertyName(prop);
-      series.propType = this.getPropertyType(prop) === 'derived' ? 'D' : 'M';
+      series.propType = this.getPropertyType(prop) === 'Derived Properties' ? 'D' : 'M';
       series.propKey = prop;
       series.columns.template.fillOpacity = .8;
       series.compareText = true;

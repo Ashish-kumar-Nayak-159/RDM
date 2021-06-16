@@ -54,7 +54,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   isTelemetryFilterSelected = false;
   acknowledgedAlert: any;
   dropdownWidgetList: any[];
-  selectedWidgets: any[];
+  selectedWidgets: any[] = [];
+  selectedWidgetsForSearch: any[] = [];
   propList: any[];
   showThreshold = false;
   selectedPropertyForChart: any[] = [];
@@ -605,7 +606,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
           response.properties.derived_properties.forEach(prop => {
-            prop.type = 'derived';
+            prop.type = 'Derived Properties';
             this.propertyList.push(prop)
           });
           this.propertyList.forEach(item => {
@@ -639,7 +640,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             item.measured_props = false;
             item.y1axis.forEach(prop => {
               const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'derived') {
+              if (type === 'Derived Properties') {
                 item.derived_props = true;
               } else {
                 item.measured_props = true;
@@ -647,7 +648,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             });
             item.y2axis.forEach(prop => {
               const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'derived') {
+              if (type === 'Derived Properties') {
                 item.derived_props = true;
               } else {
                 item.measured_props = true;
@@ -747,6 +748,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   getDeviceTelemetryData() {
     this.isChartViewOpen = false;
     this.propList = [];
+    this.selectedWidgets = JSON.parse(JSON.stringify(this.selectedWidgetsForSearch));
     this.selectedWidgets.forEach(widget => {
       widget.value.y1axis.forEach(prop => {
         if (this.propList.indexOf(prop) === -1) {
@@ -786,7 +788,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     let measured_message_props = '';
     let derived_message_props = '';
     propArr.forEach((prop, index) => {
-      if (prop.type === 'derived') {
+      if (prop.type === 'Derived Properties') {
         derived_message_props = derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
       } else {
         measured_message_props = measured_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
@@ -832,9 +834,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           delete filterObj.aggregation_format;
           const records = this.commonService.calculateEstimatedRecords(this.filterObj.sampling_time * 60,
             filterObj.from_date, filterObj.to_date);
-            if (records > 500 ) {
-              this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
-            }
+          if (records > 500 ) {
+            this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+          }
           method = this.deviceService.getDeviceSamplingTelemetry(filterObj, this.contextApp.app);
         }
       } else {
@@ -867,6 +869,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.toDate = filterObj.to_date;
     if (this.selectedWidgets.length === 0) {
       this.toasterService.showError('Please select at least one widget.', 'View Visualization');
+      this.isTelemetryDataLoading = false;
       return;
     }
     this.isOpen = false;

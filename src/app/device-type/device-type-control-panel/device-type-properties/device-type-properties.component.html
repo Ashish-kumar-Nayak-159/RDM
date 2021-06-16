@@ -3,7 +3,7 @@
   <h1 class="h3 mb-0 text-gray-800">Access Control</h1>
 </div> -->
 
-    <div class="tab-bar" *ngIf="!type.includes('derived')">
+    <div class="tab-bar" *ngIf="!type.includes('Derived Properties')">
       <div class="">
     <ul class="nav">
       <li class="nav-item">
@@ -13,7 +13,7 @@
           <span class="text-secondary">Add {{(type.includes('measured') ? 'Measured ' : (
             type.includes('Controllable') ? 'Controllable ' : (
               type.includes('Configurable') ? 'Configurable ' : (
-                type.includes('derived') ? 'Edge Derived ' : ''
+                type.includes('Derived Properties') ? 'Edge Derived ' : ''
               )
             )
           ))}}
@@ -41,7 +41,7 @@
           {{(type.includes('measured') ? 'Measured ' : (
             type.includes('Controllable') ? 'Controllable ' : (
               type.includes('Configurable') ? 'Configurable ' : (
-                type.includes('derived') ? 'Derived ' : ''
+                type.includes('Derived Properties') ? 'Derived ' : ''
               )
             )
           ))}}

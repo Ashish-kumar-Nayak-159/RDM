@@ -355,10 +355,11 @@ export class ReportsComponent implements OnInit, OnDestroy {
       };
       this.subscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
+          response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
           response.properties.derived_properties.forEach(prop => {
-            prop.type = 'derived';
+            prop.type = 'Derived Properties';
             this.propertyList.push(prop);
           });
           this.dropdownPropList = [];
@@ -366,6 +367,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
           this.propertyList.forEach(prop => {
             this.dropdownPropList.push({
               id: prop.name,
+              type: prop.type,
               value: prop
             });
           });
@@ -545,7 +547,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         let measured_message_props = '';
         let derived_message_props = '';
         this.props.forEach((prop, index) => {
-          if (prop.value.type === 'derived') {
+          if (prop.value.type === 'Derived Properties') {
             derived_message_props = derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
           } else {
             measured_message_props = measured_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
@@ -571,7 +573,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         let measured_message_props = '';
         let derived_message_props = '';
         this.props.forEach((prop, index) => {
-          if (prop.value.type === 'derived') {
+          if (prop.value.type === 'Derived Properties') {
             derived_message_props = derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
           } else {
             measured_message_props = measured_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
@@ -604,7 +606,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         let measured_message_props = '';
         let derived_message_props = '';
         this.props.forEach((prop, index) => {
-          if (prop.value.type === 'derived') {
+          if (prop.value.type === 'Derived Properties') {
             derived_message_props = derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
           } else {
             measured_message_props = measured_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');

@@ -58,7 +58,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
           response.properties.derived_properties.forEach(prop => {
-            prop.type = 'derived';
+            prop.type = 'Derived Properties';
             this.propertyList.push(prop)
           });
           resolve();
@@ -80,7 +80,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
             widget.derived_props = false;
             widget.measured_props = false;
             widget.properties.forEach(prop => {
-              if (prop.property.type === 'derived') {
+              if (prop.property.type === 'Derived Properties') {
                 widget.derived_props = true;
               } else {
                 widget.measured_props = true;
@@ -118,7 +118,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     let measured_message_props = '';
     let derived_message_props = '';
     this.propertyList.forEach((prop, index) => {
-      if (prop.type === 'derived') {
+      if (prop.type === 'Derived Properties') {
         derived_message_props = derived_message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : '');
       } else {
         measured_message_props = measured_message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : '');

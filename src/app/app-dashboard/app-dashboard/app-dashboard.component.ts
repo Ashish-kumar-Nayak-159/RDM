@@ -337,7 +337,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             widget.derived_props = false;
             widget.measured_props = false;
             widget.properties.forEach(prop => {
-              if (prop.property.type === 'derived') {
+              if (prop.property.type === 'Derived Properties') {
                 widget.derived_props = true;
               } else {
                 widget.measured_props = true;
@@ -557,7 +557,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
             response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
             response.properties.derived_properties.forEach(prop => {
-              prop.type = 'derived';
+              prop.type = 'Derived Properties';
               console.log(prop);
               this.propertyList.push(prop);
             });

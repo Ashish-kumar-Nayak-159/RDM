@@ -14,12 +14,18 @@
     <option [ngValue]="prop" *ngFor="let prop of propertyList">{{prop.name}}</option>
   </select> -->
   <ng-select [items]="propertyList" class="custom-dropdown sm" bindLabel="name" [clearable]="false"
-    [searchable]="true" [closeOnSelect]="true" placeholder="Select Property"
+    [searchable]="true" [closeOnSelect]="true" placeholder="Select Property" groupBy="type"
     dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="prop.property" (change)="onPropertySelection(prop)"
     (clear)="onPropertyDeselect(prop)">
     <ng-template ng-option-tmp let-item="item">
-      <span > <i [ngClass]="{'icon icon-function': item.type === 'derived'}"></i> {{item.name}}</span>
+      <span > <i [ngClass]="{'icon icon-function': item.type === 'Derived Properties'}"></i> {{item.name}}</span>
     </ng-template>
+    <!-- <ng-template ng-header-tmp>
+      <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+        <li *ngIf="prop.property?.length !== propertyList.length"> <a  href="javascript:void(0)" (click)="prop.property = propertyList">Select All</a></li>
+        <li *ngIf="prop.property?.length === propertyList.length"> <a  href="javascript:void(0)" (click)="prop.property = []">Deselect All</a></li>
+      </ul>
+    </ng-template> -->
   </ng-select>
   <!-- <angular2-multiselect [data]="propertyList" id="PropertySelect"
     [(ngModel)]="prop.propertyArr" name="Propertys" [settings]="{
@@ -36,7 +42,7 @@
     (onDeSelectAll)="onPropertyDeselect(prop)">
     <c-item>
           <ng-template let-item="item">
-            <span ><i [ngClass]="{'icon icon-function': item.type === 'derived'}"></i> {{item.name}}</span>
+            <span ><i [ngClass]="{'icon icon-function': item.type === 'Derived Properties'}"></i> {{item.name}}</span>
           </ng-template>
   </c-item>
   </angular2-multiselect> -->
@@ -45,7 +51,7 @@
     [closeOnSelect]="false" placeholder="Select Properties" (remove)="onPropertyDeselect(prop)"
     dropdownPosition="bottom" name="propArr" ngDefaultControl [(ngModel)]="prop.propertyArr" (add)="onPropertySelection(prop)">
     <ng-template ng-option-tmp let-item="item">
-      <span ><i [ngClass]="{'icon-function': item.type === 'derived'}"></i> {{item.name}}</span>
+      <span ><i [ngClass]="{'icon-function': item.type === 'Derived Properties'}"></i> {{item.name}}</span>
     </ng-template>
     <ng-template ng-multi-label-tmp let-items="items">
       {{items.length}} properties selected

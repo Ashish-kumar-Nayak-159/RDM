@@ -21,26 +21,38 @@
       <div class="form-group">
         <ng-select [items]="propertyList" class="custom-dropdown w-12 sm" (onDeSelectAll)="y1Deselect($event)"
         [searchable]="false" placeholder="Y1 Axis Props" [multiple]="true"
-        [closeOnSelect]="false"
+        [closeOnSelect]="false" groupBy="type"
         dropdownPosition="bottom" name="widget-dropdown1" [(ngModel)]="y1AxisProps">
         <ng-template ng-multi-label-tmp let-items="items">
         {{items.length}} properties selected
         </ng-template>
+        <ng-template ng-header-tmp>
+          <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+            <li *ngIf="y1AxisProps.length !== propertyList.length"> <a  href="javascript:void(0)" (click)="y1AxisProps = propertyList">Select All</a></li>
+            <li *ngIf="y1AxisProps.length === propertyList.length"> <a  href="javascript:void(0)" (click)="y1AxisProps = []">Deselect All</a></li>
+          </ul>
+        </ng-template>
         <ng-template ng-option-tmp let-item="item">
-          <span > <i [ngClass]="{'icon icon-function': item.type === 'derived'}"></i> {{item.name}}</span>
+          <span > <i [ngClass]="{'icon icon-function': item.type === 'Derived Properties'}"></i> {{item.name}}</span>
         </ng-template>
       </ng-select>
       </div>
       <div class="form-group">
         <ng-select [items]="propertyList" class="custom-dropdown w-12 sm" (onDeSelectAll)="y2Deselect($event)"
         [searchable]="false" placeholder="Y2 Axis Props" [multiple]="true"
-        [closeOnSelect]="false"
+        [closeOnSelect]="false" groupBy="type"
         dropdownPosition="bottom" name="widget-dropdown2" [(ngModel)]="y2AxisProps">
         <ng-template ng-multi-label-tmp let-items="items">
         {{items.length}} properties selected
         </ng-template>
+        <ng-template ng-header-tmp>
+          <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+            <li *ngIf="y2AxisProps.length !== propertyList.length"> <a  href="javascript:void(0)" (click)="y2AxisProps = propertyList">Select All</a></li>
+            <li *ngIf="y2AxisProps.length === propertyList.length"> <a  href="javascript:void(0)" (click)="y2AxisProps = []">Deselect All</a></li>
+          </ul>
+        </ng-template>
         <ng-template ng-option-tmp let-item="item">
-          <span > <i [ngClass]="{'icon icon-function': item.type === 'derived'}"></i> {{item.name}}</span>
+          <span > <i [ngClass]="{'icon icon-function': item.type === 'Derived Properties'}"></i> {{item.name}}</span>
         </ng-template>
       </ng-select>
       </div>

@@ -133,7 +133,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
         }
       ]
     };
-    if (this.type.includes('derived')) {
+    if (this.type.includes('Derived Properties')) {
       // this.propertyTableConfig.data[3].btnData.splice(1, 0, {
       //   icon: 'fa fa-fw fa-cog',
       //   text: '',

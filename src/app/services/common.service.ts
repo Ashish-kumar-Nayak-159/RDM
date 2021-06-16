@@ -183,7 +183,7 @@ export class CommonService {
       obj.to_date = moment().utc().unix();
     } else if (label === 'This Month') {
       obj.from_date = moment().startOf('month').utc().unix();
-      obj.to_date = moment().endOf('month').utc().unix();
+      obj.to_date = moment();
     } else if (label === 'Last Month') {
       obj.from_date = moment().subtract(1, 'month').startOf('month').utc().unix();
       obj.to_date = moment().subtract(1, 'month').endOf('month').utc().unix();
@@ -196,6 +196,15 @@ export class CommonService {
     } else if (label === 'Last 12 Months') {
       obj.from_date = moment().subtract(12, 'month').startOf('month').utc().unix();
       obj.to_date = moment().subtract(1, 'month').endOf('month').utc().unix();
+    } else if (label === 'Today') {
+      obj.from_date = moment().startOf('day').utc().unix();
+      obj.to_date = moment().utc().unix();
+    } else if (label === 'Yesterday') {
+      obj.from_date = moment().subtract(1, 'days').startOf('day').utc().unix();
+      obj.to_date = moment().subtract(1, 'days').endOf('day').utc().unix();
+    } else if (label === 'Last Week') {
+      obj.from_date = moment().subtract(1, 'week').startOf('week').utc().unix();
+      obj.to_date = moment().subtract(1, 'week').endOf('week').utc().unix();
     }
     return obj;
   }

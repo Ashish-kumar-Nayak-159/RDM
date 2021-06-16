@@ -1312,10 +1312,14 @@ export class CONSTANTS {
     'Last 6 Hours': [moment().subtract(6, 'hours'), moment()],
     'Last 12 Hours': [moment().subtract(12, 'hours'), moment()],
     'Last 24 Hours': [moment().subtract(24, 'hours'), moment()],
-    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-    'This Month': [moment().startOf('month'), moment().endOf('month')],
-    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    Today: [moment().startOf('day'), moment()],
+    Yesterday: [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')],
+    'This Week': [moment().startOf('week'), moment()],
+    'Last Week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+    // 'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+    // 'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+    'This Month': [moment().startOf('month'), moment()],
+    // 'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
   };
   public static USER_DETAILS = 'userData';
   public static SELECTED_APP_DATA = 'selectedAppData';

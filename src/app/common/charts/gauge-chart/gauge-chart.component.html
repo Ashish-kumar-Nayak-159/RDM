@@ -24,6 +24,9 @@
             ({{chartConfig.derived_props ? 'D' : 'M'}}) {{prop.title}}
             {{prop.property.json_model[prop.property.json_key].units ? ('(' + prop.property.json_model[prop.property.json_key].units + ')') : ''}}
           </p>
+          <div class="live-overlay" *ngIf="!device">
+            <div style="font-family:'Arial Black'; font-size: 10px;">Sample Chart</div>
+          </div>
           <div >
             <div class="mt-n4 ml-1 mb-2">
               <div id="{{chartConfig.chartId}}_chart_{{i}}" style="width: 100%;height: 130px"></div>

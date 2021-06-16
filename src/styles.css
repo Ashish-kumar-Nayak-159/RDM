@@ -52,7 +52,14 @@
   padding-top: 0;
 }
 
-
+.live-overlay {
+width: 100px;
+height: 100px;
+position: absolute;
+top: 90px;
+left: 83px;
+opacity: 3;
+}
 
 
 

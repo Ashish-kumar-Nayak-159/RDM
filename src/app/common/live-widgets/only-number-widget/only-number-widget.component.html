@@ -39,6 +39,10 @@
           {{prop.property.json_model[prop.property.json_key].units ? ('(' + prop.property.json_model[prop.property.json_key].units + ')') : ''}}
         </p>
 
+        <div class="live-overlay" *ngIf="!device">
+          <div style="font-family:'Arial Black'; font-size: 10px;">Sample Chart</div>
+        </div>
+
         <div class="mt-1 ml-1 mr-3" *ngIf="chartConfig.widgetType === 'NumberWithTrend'">
           <app-line-chart-without-axis
           [chartId]="chartConfig.chartId + '_' + (prop?.property?.json_key || prop.title) + '_' + i"

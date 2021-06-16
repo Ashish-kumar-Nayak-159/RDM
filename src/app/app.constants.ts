@@ -609,15 +609,15 @@ export class CONSTANTS {
       ],
       accordion_value: {delete: true}
     },
-    {
-      page: 'package_management',
-      system_name: 'Software Packages',
-      url: '#device_package_management',
-      display_name: 'Software Packages',
-      icon: 'fa fa-fw fa-file',
-      visible: true,
-      isTitle: false
-    },
+    // {
+    //   page: 'package_management',
+    //   system_name: 'Software Packages',
+    //   url: '#device_package_management',
+    //   display_name: 'Software Packages',
+    //   icon: 'fa fa-fw fa-file',
+    //   visible: true,
+    //   isTitle: false
+    // },
     {
       page: 'setup',
       system_name: 'Setup',

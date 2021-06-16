@@ -165,8 +165,8 @@
                 <li class="list-group-item" *ngIf="!selectedHierarchyData[i]">
                   <a href="javascript:void(0)">
                     <div class="media">
-                      <div class="overflow">
-                      Please select specific {{applicationData.hierarchy.levels[i-1] ? applicationData.hierarchy.levels[i-1] : 'previous'}} to <br> view {{level}} list.
+                      <div class="overflow" style="white-space: break-spaces;">
+                      Please select specific {{applicationData.hierarchy.levels[i-1] ? applicationData.hierarchy.levels[i-1] : 'previous'}} to view {{level}} list.
                       </div>
                     </div>
                   </a>
@@ -174,7 +174,7 @@
                 <li class="list-group-item" *ngIf="selectedHierarchyData[i] && hierarchyArr[i].length === 0">
                   <a href="javascript:void(0)">
                     <div class="media">
-                      <div class="overflow">
+                      <div class="overflow" style="white-space: break-spaces;">
                       No {{applicationData.hierarchy.levels[i]}} tags available.
                       </div>
                     </div>

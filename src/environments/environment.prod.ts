@@ -8,7 +8,7 @@ export const environment = {
   cachedTelemetryContainer: 'telemetry',
   app: undefined,
   environment: 'DEV',
-  version: '7.3',
+  version: '8.0',
   storgageSecretKey: 'kEm$Y$*RdM',
   packageManagementContainer: 'packages'
 };

@@ -140,14 +140,14 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       gateway_id: this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : undefined,
       message: {
         telemetry_mode: this.signalRModeValue ? 'normal' : 'turbo',
-        turbo_mode_frequency_in_sec: this.signalRModeValue ?
-        (this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency ?
-          this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency : 60) :
-        (this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency ?
-          this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency : 1),
-        turbo_mode_timeout_in_sec : !this.signalRModeValue ?
-        (this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_timeout_time ?
-          this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_timeout_time : 120) : undefined,
+        // turbo_mode_frequency_in_sec: this.signalRModeValue ?
+        // (this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency ?
+        //   this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency : 60) :
+        // (this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency ?
+        //   this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency : 1),
+        // turbo_mode_timeout_in_sec : !this.signalRModeValue ?
+        // (this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_timeout_time ?
+        //   this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_timeout_time : 120) : undefined,
         device_id: this.filterObj.device.device_id
       },
       app: this.contextApp.app,

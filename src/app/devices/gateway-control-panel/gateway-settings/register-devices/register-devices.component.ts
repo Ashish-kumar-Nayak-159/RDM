@@ -33,6 +33,7 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
   c2dResponseInterval: any;
   telemetrySettings: any = {};
   thingsModels: any[] = [];
+  applications = CONSTANTS.DEVICEAPPPS;
   count = 0;
   constructor(
     private commonService: CommonService,
@@ -61,18 +62,23 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
             this.devices = response.data;
             this.devices.forEach(device => {
               if (device.metadata?.package_app) {
-              if (this.deviceTwin.twin_properties.reported.registered_devices[device.metadata.package_app]
-                && (this.deviceTwin.twin_properties.reported?.registered_devices[device?.metadata?.package_app]?.
-                  indexOf(device.device_id) > -1)) {
-                  device.register_enabled = false;
-                  device.deregister_enabled = true;
-              } else {
-                device.register_enabled = true;
-                device.deregister_enabled = false;
-              }
-              } else {
-                device.register_enabled = false;
-                device.deregister_enabled = false;
+                device.appObj = this.applications.find(appObj => appObj.name === device.metadata.package_app);
+              // if (this.deviceTwin.twin_properties.reported[app.type] &&
+              //   this.deviceTwin.twin_properties.reported[app.type][app.name] &&
+              //   this.deviceTwin.twin_properties.reported[app.type][app.name].device_configuration &&
+              //   this.deviceTwin.twin_properties.reported.registered_devices[device.metadata.package_app]
+              //   && (this.deviceTwin.twin_properties.reported?.registered_devices[device?.metadata?.package_app]?.
+              //     indexOf(device.device_id) > -1)) {
+              //     device.register_enabled = false;
+              //     device.deregister_enabled = true;
+              // } else {
+              //   device.register_enabled = true;
+              //   device.deregister_enabled = false;
+              // }
+              // } else {
+              //   device.register_enabled = false;
+              //   device.deregister_enabled = false;
+              // }
               }
             });
           }

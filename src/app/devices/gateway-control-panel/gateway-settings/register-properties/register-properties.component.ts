@@ -34,6 +34,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   showPropOptions = false;
   properties: any;
   alertConditions: any[] = [];
+  applications = CONSTANTS.DEVICEAPPPS;
   thingsModels: any[] = [];
   constructor(
     private commonService: CommonService,
@@ -100,11 +101,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
                 device.model_freeze = model.freezed;
               }
               });
-              if (device.metadata?.package_app && this.deviceTwin.twin_properties.reported.registered_devices[device.metadata.package_app]
-                && (this.deviceTwin.twin_properties.reported?.registered_devices[device?.metadata?.package_app]?.
-                  indexOf(device.device_id) > -1)) {
-                device.is_registered = true;
-              }
+              device.appObj = this.applications.find(appObj => appObj.name === device.metadata.package_app);
             });
             this.devices = response.data;
           }

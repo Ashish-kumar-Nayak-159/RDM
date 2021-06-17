@@ -10017,13 +10017,14 @@ font-size:0.8rem;
   }
   .sidebar .nav-item .nav-link span {
     font-size: .8rem;
-    /*display: inline;*/
-	display: -webkit-inline-box;
-	width: 8rem;
+    display: inline-block;
+    vertical-align: top;
+    width: 8.5rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
+}
+
   /*.sidebar .nav-item .nav-link span {
     font-size: .8rem;
     display: inline;
@@ -11124,12 +11125,12 @@ body.sidebar-toggled footer.sticky-footer {
   .container-fluid .sidebar1 .nav-item .nav-link span {
     font-size: 0.8rem;
     /* display: inline; */
-    font-size: .8rem;
-    display: -webkit-inline-box;
-    width: 8rem;
-    white-space: nowrap;
+    display: inline-block;
+    width: 9rem;
+    vertical-align: top;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .container-fluid .sidebar1 .sidebar1-heading span {
     font-size: 0.8rem;
@@ -13033,11 +13034,11 @@ background: #f9fafb;
 font-weight: 600;
 }
 .hierarchy_list .list-group-item .media .overflow{
-    width: 85%;
-    margin: 0 0 0 0;
-    white-space: nowrap;
-    overflow: hidden;
-text-overflow: clip;
+  width: 85%;
+  margin: 0 0 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .hierarchy_list .list-group-item:hover a, .hierarchy_list .list-group-item.active  a {
 text-decoration: none;

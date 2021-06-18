@@ -56,6 +56,7 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
     this.devices = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICES_LIST);
     this.telemetryTableConfig = {
       type: 'cached telemetry',
+      DateRange: [],
       data: [
         {
           name: 'Uploaded At',
@@ -176,6 +177,13 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
             }
           });
         }
+        if (this.filterObj.dateOption !== 'Custom Range') {
+          this.telemetryTableConfig.DateRange = this.filterObj.dateOption;
+        }
+        else {
+          this.telemetryTableConfig.DateRange = "this selected range";
+        }
+        //this.telemetryTableConfig.DateRange = this.filterObj.dateOption;
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false
     ));

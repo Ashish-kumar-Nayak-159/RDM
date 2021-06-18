@@ -16,6 +16,7 @@ export class CommonTableComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    console.log(this.tableConfig);
   }
 
   onClickOfButton(data, value) {

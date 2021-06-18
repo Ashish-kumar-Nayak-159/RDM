@@ -59,6 +59,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.telemetryTableConfig = {
       type: 'process parameter',
       tableHeight: 'calc(100vh - 13.5rem)',
+      DateRange: [],
       headers: ['Timestamp', 'Message ID', 'Message'],
       data: [
         {
@@ -175,7 +176,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
       this.telemetryFilter.from_date = moment(value.start).utc().unix();
       this.telemetryFilter.to_date = moment(value.end).utc().unix();
     }
-    console.log(this.telemetryFilter);
+  
     if (value.label === 'Custom Range') {
       this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
     } else {
@@ -236,7 +237,6 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
     obj.app = this.contextApp.app;
-    console.log(obj);
     delete obj.isTypeEditable;
     let method;
     if (obj.to_date - obj.from_date > 3600 && !this.telemetryFilter.isTypeEditable) {
@@ -266,8 +266,8 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.isFilterSelected = true;
     this.isTelemetryLoading = true;
-
     this.telemetryFilter = filterObj;
+    
     this.apiSubscriptions.push(method.subscribe(
       (response: any) => {
         if (response && response.data) {
@@ -279,6 +279,13 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
           });
 
         }
+        if (this.telemetryFilter.dateOption !== 'Custom Range') {
+          this.telemetryTableConfig.DateRange = this.telemetryFilter.dateOption;
+        }
+        else {
+          this.telemetryTableConfig.DateRange = "this selected range";
+        }
+        //this.telemetryTableConfig.DateRange = this.telemetryFilter.dateOption;
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false
     ));

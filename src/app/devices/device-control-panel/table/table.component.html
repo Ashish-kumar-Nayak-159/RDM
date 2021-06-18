@@ -31,7 +31,7 @@
       </ng-container>
     <ng-container *ngIf="tableData.length === 0 && !isTableDataLoading && isTableFilterSelected">
       <tr>
-        <td colspan="7">No {{tableConfig.type}} data found.</td>
+        <td colspan="7">No {{tableConfig.type}} data found for {{tableConfig.DateRange}}. <p *ngIf="tableConfig.DateRange !== 'this selected range'" class="pt-2">You can choose large time window.</p><p *ngIf="tableConfig.DateRange === 'this selected range'" class="pt-2">You can choose different time window.</p></td>
       </tr>
     </ng-container>
     <ng-container *ngIf="tableData.length === 0 && !isTableDataLoading && !isTableFilterSelected">

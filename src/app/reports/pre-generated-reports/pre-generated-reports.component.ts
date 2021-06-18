@@ -42,6 +42,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit {
   currentOffset = 0;
   currentLimit = 20;
   daterange: any = {};
+  DateRange: string;
   options: any = {
     locale: { format: 'DD-MM-YYYY HH:mm' },
     alwaysShowCalendars: false,
@@ -400,6 +401,13 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit {
             this.insideScrollFunFlag = true;
           }
         }
+        if (this.filterObj.dateOption !== 'Custom Range') {
+          this.DateRange = this.filterObj.dateOption;
+        }
+        else {
+          this.DateRange = "this selected range";
+        }
+        //this.DateRange = this.filterObj.dateOption;
         this.isReportDataLoading = false;
       }, error => this.isReportDataLoading = false
     )

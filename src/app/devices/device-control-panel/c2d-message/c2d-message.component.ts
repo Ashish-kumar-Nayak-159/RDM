@@ -31,6 +31,7 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
   modalConfig: any;
   userData: any;
   selectedMessage: any;
+  DateRange: string;
   @Input() pageType: string;
   contextApp: any;
   constructor(
@@ -126,6 +127,13 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
           this.c2dMsgs = response.data;
           this.c2dMsgs.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.request_date));
         }
+        if (this.c2dMsgFilter.dateOption !== 'Custom Range') {
+          this.DateRange = this.c2dMsgFilter.dateOption;
+        }
+        else {
+          this.DateRange = "this selected range";
+        }
+       //this.DateRange = this.c2dMsgFilter.dateOption;
         this.isC2dMsgsLoading = false;
       }, error => this.isC2dMsgsLoading = false
     ));

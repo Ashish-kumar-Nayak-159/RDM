@@ -60,6 +60,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   activeTab = 'pre_generated_reports';
   loadingMessage: any;
   daterange: any = {};
+  DateRange: string;
   options: any = {
     locale: { format: 'DD-MM-YYYY HH:mm' },
     alwaysShowCalendars: false,
@@ -483,6 +484,12 @@ export class ReportsComponent implements OnInit, OnDestroy {
           this.onScrollFn();
         }
         resolve();
+        if (this.filterObj.dateOption !== 'Custom Range') {
+          this.DateRange = this.filterObj.dateOption;
+        }
+        else {
+          this.DateRange = "this selected range";
+        }
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false
     ));
@@ -644,6 +651,13 @@ export class ReportsComponent implements OnInit, OnDestroy {
         if (callScrollFnFlag) {
           this.onScrollFn();
         }
+        if (this.filterObj.dateOption !== 'Custom Range') {
+          this.DateRange = this.filterObj.dateOption;
+        }
+        else {
+          this.DateRange = "this selected range";
+        }
+        //this.DateRange = this.filterObj.dateOption;
         this.isTelemetryLoading = false;
         resolve();
       }, error => this.isTelemetryLoading = false

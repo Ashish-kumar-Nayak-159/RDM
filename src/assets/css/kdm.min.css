@@ -10017,9 +10017,9 @@ font-size:0.8rem;
   }
   .sidebar .nav-item .nav-link span {
     font-size: .8rem;
-    /*display: inline;*/
-	display: -webkit-inline-box;
-	width: 8rem;
+    display: inline-block;
+    vertical-align: top;
+    width: 8.5rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -11122,11 +11122,10 @@ body.sidebar-toggled footer.sticky-footer {
     color:#1a5a9e;
   }
   .container-fluid .sidebar1 .nav-item .nav-link span {
-    font-size: 0.8rem;
-    /* display: inline; */
     font-size: .8rem;
-    display: -webkit-inline-box;
-    width: 8rem;
+    display: inline-block;
+    vertical-align: top;
+    width: 9rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -13037,7 +13036,7 @@ font-weight: 600;
     margin: 0 0 0 0;
     white-space: nowrap;
     overflow: hidden;
-text-overflow: clip;
+    text-overflow: ellipsis;
 }
 .hierarchy_list .list-group-item:hover a, .hierarchy_list .list-group-item.active  a {
 text-decoration: none;

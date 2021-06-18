@@ -102,7 +102,7 @@
       </ng-container>
       <ng-container *ngIf="reports.length === 0 && !isReportDataLoading">
         <tr>
-          <td colspan="7">No reports available.</td>
+          <td colspan="7">No reports available for {{this.DateRange}}. <p *ngIf="this.DateRange !== 'this selected range'" class="pt-2">You can choose large time window.</p><p *ngIf="this.DateRange === 'this selected range'" class="pt-2">You can choose different time window.</p></td>
         </tr>
       </ng-container>
       <ng-container *ngIf="isReportDataLoading">

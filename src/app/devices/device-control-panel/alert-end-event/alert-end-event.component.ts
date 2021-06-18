@@ -46,6 +46,7 @@ export class AlertEndEventComponent implements OnInit, OnDestroy {
     this.alertFilter.app = this.contextApp.app;
     this.alertTableConfig = {
       type: 'alert',
+      DateRange: [],
       headers: ['Timestamp', 'Message ID', 'Message'],
       data: [
         {
@@ -127,6 +128,13 @@ export class AlertEndEventComponent implements OnInit, OnDestroy {
           this.alerts = response.data;
           this.alerts.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
         }
+        if (this.alertFilter.dateOption !== 'Custom Range') {
+          this.alertTableConfig.DateRange = this.alertFilter.dateOption;
+        }
+        else {
+          this.alertTableConfig.DateRange = "this selected range";
+        }
+        //this.alertTableConfig.DateRange = this.alertFilter.dateOption;
         this.isAlertLoading = false;
       }, error => this.isAlertLoading = false
     ));

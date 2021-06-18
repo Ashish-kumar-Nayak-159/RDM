@@ -43,6 +43,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
     // this.notificationFilter.app = this.contextApp.app;
     this.notificationTableConfig = {
       type: 'notification',
+      DateRange: [],
       headers: ['Timestamp', 'Message ID', 'Message'],
       data: [
         {
@@ -61,6 +62,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
     };
     // this.searchNotifications(this.notificationFilter, false);
     this.notificationFilter.epoch = true;
+    
   }
 
   // loadFromCache() {
@@ -91,7 +93,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
       filterObj.to_date = filterObj.to_date;
     }
     const obj = {...filterObj};
-
+    
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'View Notifications');
       this.isNotificationLoading = false;
@@ -116,6 +118,13 @@ export class NotificationComponent implements OnInit, OnDestroy {
             item.message_text = item.message;
           });
         }
+        if (this.notificationFilter.dateOption !== 'Custom Range') {
+          this.notificationTableConfig.DateRange = this.notificationFilter.dateOption;
+        }
+        else {
+          this.notificationTableConfig.DateRange = "this selected range";
+        }
+        //this.notificationTableConfig.DateRange = this.notificationFilter.dateOption;
         this.isNotificationLoading = false;
       }, error => this.isNotificationLoading = false
     ));

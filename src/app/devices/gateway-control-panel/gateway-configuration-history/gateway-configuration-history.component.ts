@@ -41,6 +41,7 @@ export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
     this.filterObj.count = 10;
     this.configHistoryTableConfig = {
       type: 'configuration history',
+      DateRange: [],
       headers: ['Timestamp', 'Asset Name', 'File Name', 'Process Status', 'View'],
       data: [
 
@@ -114,6 +115,13 @@ export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
             item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
           });
         }
+        if (this.filterObj.dateOption !== 'Custom Range') {
+          this.configHistoryTableConfig.DateRange = this.filterObj.dateOption;
+        }
+        else {
+          this.configHistoryTableConfig.DateRange = "this selected range";
+        }
+        //this.configHistoryTableConfig.DateRange = this.filterObj.dateOption;
         this.isConfigHistoryLoading = false;
       }, error => this.isConfigHistoryLoading = false
     ));

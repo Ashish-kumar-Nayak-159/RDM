@@ -101,7 +101,7 @@
         historyData.length === 0 && isFilterSelected && !isHistoryAPILoading
       "
     >
-      No data found for {{this.DateRange}}. <span *ngIf="this.DateRange !== 'this selected range'" class="pt-2">You can choose large time window.</span><span *ngIf="this.DateRange === 'this selected range'" class="pt-2">You can choose different time window.</span>
+      No data found for {{this.dateRange}}. <span *ngIf="this.dateRange !== 'this selected range'; else differentMsg"><p class="pt-2">You can choose large time window.</p></span><ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template>
     </p>
     <p class="m-3" *ngIf="!isFilterSelected && !isHistoryAPILoading">
       Please select widget to load the data.

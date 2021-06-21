@@ -46,7 +46,7 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
     // this.batteryMessageFilter.app = this.contextApp.app;
     this.batteryMessageTableConfig = {
       type: 'battery',
-      DateRange: [],
+      dateRange: '',
       headers: ['Timestamp', 'Message ID', 'Message'],
       data: [
         {
@@ -116,12 +116,11 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
           this.batteryMessageList.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
         }
         if (this.batteryMessageFilter.dateOption !== 'Custom Range') {
-          this.batteryMessageTableConfig.DateRange = this.batteryMessageFilter.dateOption;
+          this.batteryMessageTableConfig.dateRange = this.batteryMessageFilter.dateOption;
         }
         else {
-          this.batteryMessageTableConfig.DateRange = "this selected range";
+          this.batteryMessageTableConfig.dateRange = "this selected range";
         }
-        //this.batteryMessageTableConfig.DateRange = this.batteryMessageFilter.dateOption;
         this.isBatteryMessageLoading = false;
       }, error => this.isBatteryMessageLoading = false
     ));

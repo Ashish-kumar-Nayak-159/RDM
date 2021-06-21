@@ -59,7 +59,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.telemetryTableConfig = {
       type: 'process parameter',
       tableHeight: 'calc(100vh - 13.5rem)',
-      DateRange: [],
+      dateRange: '',
       headers: ['Timestamp', 'Message ID', 'Message'],
       data: [
         {
@@ -280,12 +280,11 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
 
         }
         if (this.telemetryFilter.dateOption !== 'Custom Range') {
-          this.telemetryTableConfig.DateRange = this.telemetryFilter.dateOption;
+          this.telemetryTableConfig.dateRange = this.telemetryFilter.dateOption;
         }
         else {
-          this.telemetryTableConfig.DateRange = "this selected range";
+          this.telemetryTableConfig.dateRange = "this selected range";
         }
-        //this.telemetryTableConfig.DateRange = this.telemetryFilter.dateOption;
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false
     ));

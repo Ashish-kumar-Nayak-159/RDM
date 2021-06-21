@@ -42,7 +42,7 @@ export class GatewayCachedAlertsComponent implements OnInit, OnDestroy {
     this.devices = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICES_LIST);
     this.alertTableConfig = {
       type: 'cached alerts',
-      DateRange: [],
+      dateRange: '',
       headers: ['Timestamp', 'Asset Name', 'File Name', 'Process Status', 'View'],
       data: [
         {
@@ -131,12 +131,11 @@ export class GatewayCachedAlertsComponent implements OnInit, OnDestroy {
           });
         }
         if (this.filterObj.dateOption !== 'Custom Range') {
-          this.alertTableConfig.DateRange = this.filterObj.dateOption;
+          this.alertTableConfig.dateRange = this.filterObj.dateOption;
         }
         else {
-          this.alertTableConfig.DateRange = "this selected range";
+          this.alertTableConfig.dateRange = "this selected range";
         }
-        //this.alertTableConfig.DateRange = this.filterObj.dateOption;
         this.isAlertLoading = false;
       }, error => this.isAlertLoading = false
     ));

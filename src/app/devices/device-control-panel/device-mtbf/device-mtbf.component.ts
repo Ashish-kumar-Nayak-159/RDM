@@ -37,7 +37,6 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
   chart: any;
   originalFilterObj: any = {};
   daterange: any = {};
-  DateRange: string;
   options: any = {
     locale: { format: 'DD-MM-YYYY HH:mm' },
     alwaysShowCalendars: false,
@@ -151,13 +150,9 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
             this.plotChart();
           }, 100);
         }
-        if (this.filterObj.dateOption !== 'Custom Range') {
-          this.DateRange = this.filterObj.dateOption;
+        if (this.filterObj.dateOption == 'Custom Range') {
+              this.originalFilterObj.dateOption = "this selected range";
         }
-        else {
-          this.DateRange = "this selected range";
-        }
-        //this.DateRange = this.filterObj.dateOption;
         this.isLifeCycleEventsLoading = false;
         if (this.lifeCycleEvents.length === 0) {
           this.loader = false;

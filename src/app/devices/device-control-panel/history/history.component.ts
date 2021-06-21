@@ -60,7 +60,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   toDate: any;
   today = new Date();
   daterange: any = {};
-  DateRange: string;
+  dateRange: string;
   options: any = {
     locale: { format: 'DD-MM-YYYY HH:mm' },
     alwaysShowCalendars: false,
@@ -390,12 +390,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
             resolve();
           }
           if (this.historyFilter.dateOption !== 'Custom Range') {
-            this.DateRange = this.historyFilter.dateOption;
+            this.dateRange = this.historyFilter.dateOption;
           }
           else {
-            this.DateRange = "this selected range";
+            this.dateRange = "this selected range";
           }
-          //this.DateRange = this.historyFilter.dateOption;
         }, () => this.isHistoryAPILoading = false
       ));
     });

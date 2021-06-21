@@ -82,7 +82,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   selectedTab: any;
   hierarchyString: any;
   daterange: any = {};
-  DateRange: string;
   options: any = {
     locale: { format: 'DD-MM-YYYY HH:mm' },
     alwaysShowCalendars: false,
@@ -443,13 +442,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
           item.device_display_name = this.devices.filter(device => device.device_id === item.device_id)[0]?.display_name;
         });
-        if (this.filterObj.dateOption !== 'Custom Range') {
-          this.DateRange = this.filterObj.dateOption;
+        if (this.filterObj.dateOption == 'Custom Range') {
+          this.originalFilterObj.dateOption = "this selected range";
         }
-        else {
-          this.DateRange = "this selected range";
-        }
-        //this.DateRange = this.filterObj.dateOption
         this.isAlertAPILoading = false;
         this.singalRService.disconnectFromSignalR('alert');
         this.signalRAlertSubscription?.unsubscribe();

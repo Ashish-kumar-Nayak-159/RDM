@@ -46,7 +46,7 @@ export class OthersComponent implements OnInit, OnDestroy {
     // this.otherFilter.app = this.contextApp.app;
     this.otherTableConfig = {
       type: 'other',
-      DateRange: [],
+      dateRange: '',
       headers: ['Timestamp', 'Message ID', 'Message Type', 'Other Message'],
       data: [
         {
@@ -95,12 +95,11 @@ export class OthersComponent implements OnInit, OnDestroy {
           this.othersList.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
         }
         if (this.otherFilter.dateOption !== 'Custom Range') {
-          this.otherTableConfig.DateRange = this.otherFilter.dateOption;
+          this.otherTableConfig.dateRange = this.otherFilter.dateOption;
         }
         else {
-          this.otherTableConfig.DateRange = "this selected range";
+          this.otherTableConfig.dateRange = "this selected range";
         }
-        //this.otherTableConfig.DateRange = this.otherFilter.dateOption;
         this.isOthersLoading = false;
       }, error => this.isOthersLoading = false
     ));

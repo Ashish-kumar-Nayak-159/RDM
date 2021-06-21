@@ -43,7 +43,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
     // this.notificationFilter.app = this.contextApp.app;
     this.notificationTableConfig = {
       type: 'notification',
-      DateRange: [],
+      dateRange: '',
       headers: ['Timestamp', 'Message ID', 'Message'],
       data: [
         {
@@ -119,12 +119,11 @@ export class NotificationComponent implements OnInit, OnDestroy {
           });
         }
         if (this.notificationFilter.dateOption !== 'Custom Range') {
-          this.notificationTableConfig.DateRange = this.notificationFilter.dateOption;
+          this.notificationTableConfig.dateRange = this.notificationFilter.dateOption;
         }
         else {
-          this.notificationTableConfig.DateRange = "this selected range";
+          this.notificationTableConfig.dateRange = "this selected range";
         }
-        //this.notificationTableConfig.DateRange = this.notificationFilter.dateOption;
         this.isNotificationLoading = false;
       }, error => this.isNotificationLoading = false
     ));

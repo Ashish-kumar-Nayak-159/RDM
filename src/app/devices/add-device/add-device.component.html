@@ -154,7 +154,7 @@
                 <label for="recipient-name" class="col-form-label required">Rack:</label>
                 <div class="input-group">
                 <input type="number" class="form-control form-control-sm" id="rack" name="rack"
-                  formControlName="rack" placeholder="Rack">
+                  formControlName="rack" placeholder="Rack" min="0">
                 </div>
                 <div *ngIf="setupForm.get('rack').invalid && (setupForm.get('rack').dirty || setupForm.get('rack').touched)"
                 class="alert-danger">
@@ -171,7 +171,7 @@
                 <label for="recipient-name" class="col-form-label required">Slot:</label>
                 <div class="input-group">
                 <input type="number" class="form-control form-control-sm" id="slot" name="slot"
-                  formControlName="slot" placeholder="Slot">
+                  formControlName="slot" placeholder="Slot" min="0">
                 </div>
                 <div *ngIf="setupForm.get('slot').invalid && (setupForm.get('slot').dirty || setupForm.get('slot').touched)"
                 class="alert-danger">
@@ -202,7 +202,7 @@
                 <label for="recipient-name" class="col-form-label required">Baud Rate:</label>
                 <div class="input-group">
                 <input type="number" class="form-control form-control-sm" id="baud_rate" name="baud_rate"
-                formControlName="baud_rate" placeholder="Baud Rate">
+                formControlName="baud_rate" placeholder="Baud Rate" min="0">
                 </div>
                 <div *ngIf="setupForm.get('baud_rate').invalid && (setupForm.get('baud_rate').dirty || setupForm.get('baud_rate').touched)"
                 class="alert-danger">
@@ -215,7 +215,7 @@
                 <label for="recipient-name" class="col-form-label required">Data Bits:</label>
                 <div class="input-group">
                 <input type="number" class="form-control form-control-sm" id="data_bits" name="data_bits"
-                  formControlName="data_bits" placeholder="Data Bits">
+                  formControlName="data_bits" placeholder="Data Bits" min="5" max="9">
                 </div>
                 <div *ngIf="setupForm.get('data_bits').invalid && (setupForm.get('data_bits').dirty || setupForm.get('data_bits').touched)"
                 class="alert-danger">
@@ -231,7 +231,7 @@
                 <label for="recipient-name" class="col-form-label required">Slave ID:</label>
                 <div class="input-group">
                 <input type="number" class="form-control form-control-sm" id="slave_id" name="slave_id"
-                  formControlName="slave_id" placeholder="Slave ID">
+                  formControlName="slave_id" placeholder="Slave ID" min="0">
                 </div>
                 <div *ngIf="setupForm.get('slave_id').invalid && (setupForm.get('slave_id').dirty || setupForm.get('slave_id').touched)"
                 class="alert-danger">
@@ -244,7 +244,7 @@
                 <label for="recipient-name" class="col-form-label required">Parity:</label>
                 <div class="input-group">
                 <input type="number" class="form-control form-control-sm" id="parity" name="parity"
-                  formControlName="parity" placeholder="Parity">
+                  formControlName="parity" placeholder="Parity" min="0" max="2">
                 </div>
                 <div *ngIf="setupForm.get('parity').invalid && (setupForm.get('parity').dirty || setupForm.get('parity').touched)"
                 class="alert-danger">

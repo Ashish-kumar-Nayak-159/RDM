@@ -242,8 +242,5 @@
       }
     }
   },
-  "defaultProject": "RDM",
-  "cli": {
-    "analytics": "4236f2a9-22b0-47e7-8214-324a5d5efa2e"
-  }
+  "defaultProject": "RDM"
 }

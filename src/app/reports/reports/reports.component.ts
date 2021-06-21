@@ -68,6 +68,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     timePicker: true,
     ranges: CONSTANTS.DATE_OPTIONS
   };
+  reportsFetchDataSubscription: Subscription;
   @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   selectedDateRange: string;
 
@@ -467,7 +468,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }
     delete obj.report_type;
     delete obj.deviceArr;
-    this.subscriptions.push(this.deviceService.getDeviceAlerts(obj).subscribe(
+    this.reportsFetchDataSubscription = this.deviceService.getDeviceAlerts(obj).subscribe(
       (response: any) => {
         // response.data.reverse();
         response.data.forEach(item => {
@@ -487,7 +488,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
         resolve();
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false
-    ));
+    );
+    this.subscriptions.push(this.reportsFetchDataSubscription);
     });
   }
 
@@ -628,7 +630,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
     this.isTelemetryLoading = true;
     this.isFilterSelected = true;
-    this.subscriptions.push(method.subscribe(
+    this.reportsFetchDataSubscription = method.subscribe(
       (response: any) => {
         if (response && response.data) {
           // this.telemetry = response.data;
@@ -649,7 +651,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
         this.isTelemetryLoading = false;
         resolve();
       }, error => this.isTelemetryLoading = false
-    ));
+    );
+    this.subscriptions.push(this.reportsFetchDataSubscription);
     });
   }
 
@@ -701,6 +704,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.currentOffset += this.currentLimit;
       await this.getTelemetryData(this.newFilterObj, 'all');
       this.insideScrollFunFlag = true;
+      alert('after fun');
     } else if (this.originalFilterObj.report_type === 'Alert Report' && !this.insideScrollFunFlag) {
       this.currentOffset += this.currentLimit;
       await this.getAlertData(this.newFilterObj, 'all');
@@ -741,11 +745,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
         });
         ws = XLSX.utils.json_to_sheet(data);
       }
-
       const colA = XLSX.utils.decode_col('B'); // timestamp is in first column
-
       const fmt = 'DD-MMM-YYYY hh:mm:ss.SSS'; // excel datetime format
-
       // get worksheet range
       const range = XLSX.utils.decode_range(ws['!ref']);
       for (let i = range.s.r + 1; i <= range.e.r; ++i) {
@@ -766,20 +767,23 @@ export class ReportsComponent implements OnInit, OnDestroy {
       const wscols = [
         { wch: 10 }
       ];
-
       ws['!cols'] = wscols;
-
       /* generate workbook and add the worksheet */
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
       const now = moment().utc().unix();
       /* save to file */
-      XLSX.writeFile(wb, (this.originalFilterObj.device.display_name ? this.originalFilterObj.device.display_name : this.originalFilterObj.device.device_id)
+      XLSX.writeFile(wb, (this.originalFilterObj.device.display_name ? this.originalFilterObj.device.display_name
+        : this.originalFilterObj.device.device_id)
         + '_' + this.originalFilterObj.report_type + '_' + now + '.xlsx');
       this.loadingMessage = undefined;
       $('#downloadReportModal').modal('hide');
     }, 1000);
+  }
 
+  cancelDownloadModal() {
+    this.reportsFetchDataSubscription?.unsubscribe();
+    $('#downloadReportModal').modal('hide');
   }
 
   ngOnDestroy() {

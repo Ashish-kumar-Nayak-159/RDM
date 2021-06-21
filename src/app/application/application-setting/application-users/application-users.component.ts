@@ -158,7 +158,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     });
     if (!this.addUserObj.name || !this.addUserObj.email || !this.addUserObj.role ||
       Object.keys(this.addUserObj.hierarchy).length !== this.hierarchyList.length) {
-      this.toasterService.showError('Please fill all the details', 'Create User');
+      this.toasterService.showError('Please enter all required fields', 'Create User');
       return;
     }
     if (!CONSTANTS.EMAIL_REGEX.test(this.addUserObj.email)) {

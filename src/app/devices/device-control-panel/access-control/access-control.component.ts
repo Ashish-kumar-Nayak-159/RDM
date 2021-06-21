@@ -121,7 +121,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
 
   onAddUserAccess() {
     if (!this.selectedUser.user_email || !this.selectedUser.user_name) {
-      this.toasterService.showError('Please fill all details',
+      this.toasterService.showError('Please enter all required fields',
         'Access Control');
       return;
     }

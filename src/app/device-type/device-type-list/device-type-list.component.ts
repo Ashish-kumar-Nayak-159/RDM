@@ -307,7 +307,7 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
   createThingsModel() {
     if (!this.thingsModel.name || !this.thingsModel.tags.protocol || !this.thingsModel.tags.cloud_connectivity
     || !this.thingsModel.metadata.model_type) {
-      this.toasterService.showError('Please fill all the fields', 'Create Things Model');
+      this.toasterService.showError('Please enter all required fields', 'Create Things Model');
       return;
     }
     this.thingsModel.metadata.telemetry_mode_settings = {

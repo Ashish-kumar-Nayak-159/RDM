@@ -226,7 +226,7 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
 
   onSaveDocumentObj() {
     if (!this.documentObj.name || (this.documentObj.name.trim()).length === 0 || !this.documentObj.type || !this.documentObj.metadata) {
-      this.toasterService.showError('Please select all the data', ((this.documentObj.id ? 'Edit' : 'Add') + ' Document'));
+      this.toasterService.showError('Please enter all required fields', ((this.documentObj.id ? 'Edit' : 'Add') + ' Document'));
       return;
     }
     let flag = false;

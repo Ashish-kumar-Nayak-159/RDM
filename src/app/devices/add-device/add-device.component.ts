@@ -221,7 +221,7 @@ export class AddDeviceComponent implements OnInit {
   onCreateDevice() {
     if (!this.deviceDetail.device_id || !this.deviceDetail.tags.device_manager ||
       !this.deviceDetail.tags.protocol || !this.deviceDetail.tags.cloud_connectivity  ) {
-        this.toasterService.showError('Please fill all the details',
+        this.toasterService.showError('Please enter all required fields',
         'Create ' + this.componentState);
         return;
     }

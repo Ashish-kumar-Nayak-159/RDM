@@ -246,7 +246,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
 
   onSavedeviceMethodObj() {
     if (!this.deviceMethodObj.name || !this.deviceMethodObj.method_name) {
-      this.toasterService.showError('Please fill the form correctly', 'Add Direct Method');
+      this.toasterService.showError('Please enter all required fields', 'Add Direct Method');
       return;
     }
     if (this.deviceMethodObj.json_model.params) {
@@ -257,7 +257,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
         }
       });
       if (flag) {
-        this.toasterService.showError('Please fill the form correctly', 'Add Direct Method');
+        this.toasterService.showError('Please enter all required fields', 'Add Direct Method');
         return;
       }
     }

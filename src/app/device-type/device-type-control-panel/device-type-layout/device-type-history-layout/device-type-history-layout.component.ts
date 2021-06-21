@@ -161,7 +161,7 @@ export class DeviceTypeHistoryLayoutComponent implements OnInit, OnChanges, OnDe
 
   async addChart() {
     if (!this.chartTitle || !this.selectedChartType || this.y1AxisProps.length === 0) {
-      this.toasterService.showError('Please select all the data to add widget', 'Add Widget');
+      this.toasterService.showError('Please enter all required fields', 'Add Widget');
       return;
     }
     if (this.y1AxisProps.length + this.y2AxisProps.length > 4) {

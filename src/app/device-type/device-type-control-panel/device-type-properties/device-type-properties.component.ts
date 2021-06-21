@@ -329,11 +329,11 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
     this.propertyObj.metadata = this.setupForm?.value;
     this.propertyObj.id = this.commonService.generateUUID();
     if (!this.propertyObj.name || !this.propertyObj.json_key || !this.propertyObj.data_type ) {
-      this.toasterService.showError('Please fill the form correctly', 'Add Property');
+      this.toasterService.showError('Please enter all required fields', 'Add Property');
       return;
     }
     if (this.deviceType.metadata?.model_type === this.constantData.NON_IP_DEVICE && Object.keys(this.propertyObj?.metadata).length === 0) {
-      this.toasterService.showError('Please fill the form correctly', 'Add Property');
+      this.toasterService.showError('Please enter all required fields', 'Add Property');
       return;
     }
     try {

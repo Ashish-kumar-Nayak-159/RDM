@@ -13,7 +13,6 @@ import { DeviceTypeService } from 'src/app/services/device-type/device-type.serv
 export class DeviceTypeRulesComponent implements OnInit, OnDestroy {
 
   @Input() deviceType: any;
-  @Input() pageType: any;
   rules: any[] = [];
   rulesTableConfig: any;
   isRulesLaoading = false;
@@ -125,11 +124,11 @@ export class DeviceTypeRulesComponent implements OnInit, OnDestroy {
   }
 
   onTableFunctionCall(event) {
-    this.toasterService.showWarning('Work in Progress', 'Manage ' + this.pageType +  ' Rule');
+    this.toasterService.showWarning('Work in Progress', 'Manage ' + this.selectedTab +  ' Rule');
   }
 
   addRule() {
-    this.toasterService.showWarning('Work in Progress', 'Add ' + this.pageType +  ' Rule');
+    this.toasterService.showWarning('Work in Progress', 'Add ' + this.selectedTab +  ' Rule');
   }
 
   ngOnDestroy() {

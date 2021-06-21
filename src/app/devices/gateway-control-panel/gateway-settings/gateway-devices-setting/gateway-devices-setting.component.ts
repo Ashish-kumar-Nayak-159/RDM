@@ -118,14 +118,11 @@ export class GatewayDevicesSettingComponent implements OnInit {
     };
     console.log(this.telemetrySettings);
     obj.devices[this.selectedDevice.device_id] = {
-      measurement_frequency_in_sec: this.selectedDevice.metadata.measurement_settings.measurement_frequency * 1000,
-      turbo_mode_frequency_in_sec: this.selectedDevice.metadata.telemetry_mode_settings.turbo_mode_frequency * 1000,
-      turbo_mode_timeout_in_sec: this.selectedDevice.metadata.telemetry_mode_settings.turbo_mode_timeout_time * 1000,
-      ingestion_settings:
-        {
-            type: this.selectedDevice.metadata.data_ingestion_settings.type,
-            frequency_in_sec: this.selectedDevice.metadata.telemetry_mode_settings.normal_mode_frequency * 1000
-        }
+      measurement_frequency_in_milli_sec: this.selectedDevice.metadata.measurement_settings.measurement_frequency * 1000,
+      turbo_mode_frequency_in_milli_sec: this.selectedDevice.metadata.telemetry_mode_settings.turbo_mode_frequency * 1000,
+      turbo_mode_timeout_in_milli_sec: this.selectedDevice.metadata.telemetry_mode_settings.turbo_mode_timeout_time * 1000,
+      ingestion_settings_type: this.selectedDevice.metadata.data_ingestion_settings.type,
+      ingestion_settings_frequency_in_milli_sec: this.selectedDevice.metadata.telemetry_mode_settings.normal_mode_frequency * 1000
     };
     this.callC2dMethod(obj, 'Change Asset Settings');
   }

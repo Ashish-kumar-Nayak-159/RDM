@@ -451,14 +451,21 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
     if (!this.propertyObj.id) {
       this.propertyObj.id = this.commonService.generateUUID();
     }
+    try {
+      this.propertyObj.json_model = this.editor.get();
+    } catch (e) {
+      this.toasterService.showError('Invalid JSON data', 'Edit Property');
+      return;
+    }
     this.propertyObj.metadata = this.setupForm?.value;
     const index = this.properties[this.type].findIndex(prop => prop.json_key === this.selectedProperty.json_key);
     this.properties[this.type].splice(index, 1);
+
     if (this.propertyObj?.edit) {
-      this.propertyObj.derived_function = this.code;
+      // this.propertyObj.derived_function = this.code;
       this.properties[this.type].splice(index, 0, this.propertyObj);
     } else {
-      this.selectedProperty.derived_function = this.code;
+      // this.selectedProperty.derived_function = this.code;
       this.properties[this.type].splice(index, 0, this.selectedProperty);
     }
     this.isCreatePropertyLoading = true;
@@ -470,11 +477,11 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
         this.isCreatePropertyLoading = false;
         this.onCloseModal('configureDerivedPropModal');
         this.onCloseThingsPropertyModal();
-        this.toasterService.showSuccess(response.message, 'Configure Property');
+        this.toasterService.showSuccess(response.message, 'Edit Property');
         this.getThingsModelProperties();
       }, error => {
         this.isCreatePropertyLoading = false;
-        this.toasterService.showError(error.message, 'Configure Property');
+        this.toasterService.showError(error.message, 'Edit Property');
       }
     ));
   }

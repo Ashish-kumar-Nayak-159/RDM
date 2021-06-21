@@ -81,7 +81,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   getTileName() {
     let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {
-      if (item.page === 'Dashboard') {
+      if (item.page === 'Live Data') {
         selectedItem = item.showAccordion;
       }
     });
@@ -336,13 +336,37 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           response.live_widgets.forEach(widget => {
             widget.derived_props = false;
             widget.measured_props = false;
-            widget.properties.forEach(prop => {
-              if (prop.property.type === 'Derived Properties') {
-                widget.derived_props = true;
+            // widget.properties.forEach(prop => {
+            //   if (prop.property.type === 'Derived Properties') {
+            //     widget.derived_props = true;
+            //   } else {
+            //     widget.measured_props = true;
+            //   }
+            // });
+            if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
+              widget?.properties.forEach(prop => {
+                if (prop?.property?.type === 'Derived Properties') {
+                  widget.derived_props = true;
+                } else {
+                  widget.measured_props = true;
+                }
+              });
               } else {
-                widget.measured_props = true;
+                widget?.y1AxisProps.forEach(prop => {
+                  if (prop?.type === 'Derived Properties') {
+                    widget.derived_props = true;
+                  } else {
+                    widget.measured_props = true;
+                  }
+                });
+                widget?.y2AxisProps.forEach(prop => {
+                  if (prop?.type === 'Derived Properties') {
+                    widget.derived_props = true;
+                  } else {
+                    widget.measured_props = true;
+                  }
+                });
               }
-            });
             console.log('11111111111111111    ', widget);
             if (widget.dashboardVisibility) {
               this.liveWidgets.push(widget);

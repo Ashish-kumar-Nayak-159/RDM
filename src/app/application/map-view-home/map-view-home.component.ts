@@ -56,6 +56,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       ]
     }
   ];
+  tileData: any;
 
   constructor(
     private deviceService: DeviceService,
@@ -89,6 +90,16 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       });
       this.onDeviceFilterApply();
     }
+  }
+
+  getTileName() {
+    let selectedItem;
+    this.contextApp.configuration.main_menu.forEach(item => {
+      if (item.system_name === 'Home') {
+        selectedItem = item.showAccordion;
+      }
+    });
+    this.tileData = selectedItem;
   }
 
   loadFromCache(item) {

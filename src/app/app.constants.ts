@@ -58,7 +58,12 @@ export class CONSTANTS {
       icon: 'fas fa-fw fa-home',
       visible: true,
       exactMatch: true,
-      showAccordion: [],
+      showAccordion: [
+        {
+          name: 'Title',
+          value: 'Home'
+        }
+      ],
       priority: 1
     },
     {

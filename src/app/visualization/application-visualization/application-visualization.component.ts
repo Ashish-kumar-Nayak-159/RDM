@@ -309,7 +309,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   getTileName() {
     let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {
-      if (item.system_name === 'Alert Visualization') {
+      if (item.system_name === 'Live Alerts') {
         selectedItem = item.showAccordion;
       }
     });
@@ -476,22 +476,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     obj.message_date = obj.timestamp;
     obj.alert_id = 'alert_' + this.latestAlerts.length;
     this.latestAlerts.splice(0, 0, obj);
-    // obj.count = 1;
-    // if (obj.from_date) {
-    //   obj.from_date = obj.from_date + 5;
-    // }
-    // if (obj.to_date) {
-    //   obj.to_date = obj.to_date + 5;
-    // }
-
-    // this.deviceService.getDeviceAlerts(obj).subscribe(
-    //   (response: any) => {
-    //     if (response?.data?.length > 0) {
-    //       this.latestAlerts = response.data;
-    //       this.latestAlerts.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
-    //     }
-    //   });
-
   }
 
 
@@ -552,7 +536,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   onDeSelectAll(event) {
-    this.selectedWidgets = [];
+    this.selectedWidgetsForSearch = [];
   }
 
   getDocuments() {
@@ -627,7 +611,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       name: this.alertCondition?.device_type ?  this.alertCondition.device_type : this.selectedDevice.device_type
     };
     this.dropdownWidgetList = [];
-    this.selectedWidgets = [];
+    this.selectedWidgetsForSearch = [];
     this.subscriptions.push(this.deviceTypeService.getThingsModelLayout(params).subscribe(
       async (response: any) => {
         if (response?.historical_widgets?.length > 0) {
@@ -658,7 +642,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             if (this.alertCondition) {
             this.alertCondition.visualization_widgets.forEach(widget => {
               if (widget === item.title) {
-                this.selectedWidgets.push({
+                this.selectedWidgetsForSearch.push({
                   id: item.title,
                   value: item
                 });
@@ -667,11 +651,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           }
           });
           this.dropdownWidgetList = JSON.parse(JSON.stringify(this.dropdownWidgetList));
-          this.selectedWidgets = JSON.parse(JSON.stringify(this.selectedWidgets));
-          if (this.selectedWidgets.length > 0) {
+          // this.selectedWidgets = JSON.parse(JSON.stringify(this.selectedWidgets));
+          console.log(JSON.stringify(this.selectedWidgetsForSearch));
+          if (this.selectedWidgetsForSearch.length > 0) {
             this.getDeviceTelemetryData();
           } else {
-            console.log('in else');
             this.isTelemetryDataLoading = false;
           }
         } else {

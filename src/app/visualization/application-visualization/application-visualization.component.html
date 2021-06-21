@@ -1,7 +1,7 @@
 <div [ngClass]="{'tab-bar' : pageType === 'history', 'blue-nav-bar': pageType === 'live'}">
   <div class="d-flex align-items-center">
     <div class="d-none d-md-block" *ngIf="pageType === 'live'">
-      <div class="main-heading">Live Alerts</div>
+      <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}</div>
     </div>
     <div class="ml-auto align-items-center">
       <div class="d-none d-sm-block">

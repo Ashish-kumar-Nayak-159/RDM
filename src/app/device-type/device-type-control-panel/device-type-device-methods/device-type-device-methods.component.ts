@@ -127,6 +127,16 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
   }
 
   addParameter() {
+    let flag = false;
+    this.deviceMethodObj.json_model.params.forEach(param => {
+      if (!param.key || !param.data_type) {
+        flag = true;
+      }
+    });
+    if (flag) {
+      this.toasterService.showError('Please fill the previous parameters correctly', 'Add Parameter');
+      return;
+    }
     const data = this.editor.get() as any;
     const list = data?.params || [];
     list.forEach((item, i) => {
@@ -137,6 +147,12 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
       data_type: null,
       json: null
     });
+    this.editor.set(this.deviceMethodObj.json_model);
+  }
+
+  removeParameter(index) {
+    console.log(index);
+    this.deviceMethodObj.json_model.params.splice(index, 1);
     this.editor.set(this.deviceMethodObj.json_model);
   }
 
@@ -232,6 +248,18 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
     if (!this.deviceMethodObj.name || !this.deviceMethodObj.method_name) {
       this.toasterService.showError('Please fill the form correctly', 'Add Direct Method');
       return;
+    }
+    if (this.deviceMethodObj.json_model.params) {
+      let flag = false;
+      this.deviceMethodObj.json_model.params.forEach(param => {
+        if (!param.key || !param.data_type) {
+          flag = true;
+        }
+      });
+      if (flag) {
+        this.toasterService.showError('Please fill the form correctly', 'Add Direct Method');
+        return;
+      }
     }
     try {
       this.deviceMethodObj.json_model = this.editor.get();

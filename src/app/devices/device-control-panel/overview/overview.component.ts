@@ -43,6 +43,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   isDeviceTwinLoading = false;
   deviceTwin: any;
   editorOptions: JsonEditorOptions;
+  isSyncAPILoading = false;
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -134,14 +135,17 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   syncWithCache() {
+    this.isSyncAPILoading = true;
     const obj = {
       device_id: this.device.device_id
     };
     this.subscriptions.push(this.deviceService.syncDeviceCache(this.deviceType.app, obj)
     .subscribe((response: any) => {
       this.toasterService.showSuccess(response.message, 'Sync Asset Data');
+      this.isSyncAPILoading = false;
     }, error => {
       this.toasterService.showError(error.message, 'Sync Asset Data');
+      this.isSyncAPILoading = false;
     }));
   }
 

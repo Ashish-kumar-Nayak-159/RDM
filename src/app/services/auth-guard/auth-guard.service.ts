@@ -23,8 +23,9 @@ export class AuthGuardService {
     }
     const resolvedRoute = this.getResolvedUrl(route);
     console.log(resolvedRoute);
-    console.log(appData.app);
-    if (resolvedRoute?.includes(appData.app) || resolvedRoute?.includes('selection')) {
+    console.log(appData?.app);
+    if (appData) {
+    if (resolvedRoute?.includes(appData.app) || resolvedRoute?.includes('selection' )) {
     if (resolvedRoute === '/applications/' && !userData.is_super_admin) {
       this.commonService.onLogOut();
       return false;
@@ -46,6 +47,9 @@ export class AuthGuardService {
       }, 500);
 
     }
+  } else {
+    return true;
+  }
   }
 
   getResolvedUrl(route: ActivatedRouteSnapshot): string {

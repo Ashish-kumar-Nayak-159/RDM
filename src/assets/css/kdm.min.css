@@ -13099,9 +13099,9 @@ font-weight:500;
 
 
 
-.inbox .right-border {
+/* .inbox .right-border {
 box-shadow: inset -8px 0 10px -6px #dbe9f5 !important;
-}
+} */
 
 .bg-white-asset {
   background-color: #fff !important;
@@ -13133,10 +13133,10 @@ box-shadow: inset -8px 0 10px -6px #dbe9f5 !important;
 .alert-scrollbox_delayed:hover {
   transition: visibility 0s 0.2s;
 }*/
-.inbox .right-border {
+/* .inbox .right-border {
 box-shadow: inset -8px 0 10px -6px #dbe9f5 !important;
 height: calc(100vh - 8rem);
-}
+} */
 .inbox .mail_list .list-group-item {
 border: 0;
 padding: 10px;
@@ -13638,3 +13638,9 @@ overflow-x: hidden;
 .table-fix-head-alert-conditions {
   max-height: calc(100vh - 13.8rem);
 }
+
+.inbox .right-border {
+  box-shadow: inset -8px 0 10px -6px #dbe9f5 !important;
+  height: calc(100vh - 8rem);
+  border-right: 1px solid #c7e0f4;
+  }

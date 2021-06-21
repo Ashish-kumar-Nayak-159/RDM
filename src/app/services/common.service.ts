@@ -136,14 +136,7 @@ export class CommonService {
   setItemInLocalStorage(key, value) {
     localStorage.setItem(key, this.encryptJSON(value));
     // localStorage.setItem(key, JSON.stringify(value));
-    // let expiryObj: any = localStorage.getItem(CONSTANTS.EXPIRY_TIME);
-    // const userData: any = JSON.parse(localStorage.getItem(CONSTANTS.USER_DETAILS));
-    // if (!expiryObj && userData) {
-    //   expiryObj = {};
-    //   expiryObj.expired_at = (new Date().getTime()) + CONSTANTS.LOCAL_STORAGE_EXPIRY_INTERVAL;
-    //   expiryObj.user = userData.email;
-    //   localStorage.setItem(CONSTANTS.EXPIRY_TIME, JSON.stringify(expiryObj));
-    // }
+
   }
 
   getMomentStartEndDate(label) {

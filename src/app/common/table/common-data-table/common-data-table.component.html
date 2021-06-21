@@ -88,7 +88,17 @@
       </td>
       <ng-container *ngFor="let item of tableConfig.data">
       <td class="{{item.value_class}}">
-        <ng-container *ngIf="item.data_type === 'text'">
+        <ng-container *ngIf="item.data_type === 'text' && item.btn_list?.length > 0">
+
+            <!-- {{resolve(dataItem, item.data_key)}} -->
+            <ng-container *ngFor="let btn of item.btn_list">
+            <a href="javascript:void(0)" style="z-index: 1" class="{{btn.valueclass}} blue-font" (click)="onClickOfButton(dataItem, btn.id)"
+              >
+              {{resolve(dataItem, item.data_key)}}
+              </a>
+              </ng-container>
+        </ng-container>
+        <ng-container *ngIf="item.data_type === 'text' && (!item.btn_list || item.btn_list.length === 0) ">
           {{resolve(dataItem, item.data_key)}}
         </ng-container>
         <ng-container *ngIf="item.data_type === 'list'">

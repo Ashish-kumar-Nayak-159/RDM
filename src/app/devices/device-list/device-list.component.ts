@@ -112,9 +112,11 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     this.devicesList = [];
     await this.getTileName();
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
-    if (item?.gateway_id) {
-      this.deviceFilterObj.gateway_id = item.gateway_id;
-      this.onTabChange(CONSTANTS.NON_IP_DEVICE);
+    // if (item?.device_type) {
+    //   this.deviceFilterObj.device_type = item.device_type;
+    // }
+    if (item?.type) {
+      this.onTabChange(item.type);
     } else {
     if (this.iotAssetsTab?.visibility) {
       this.onTabChange(CONSTANTS.IP_DEVICE);
@@ -253,6 +255,9 @@ export class DeviceListComponent implements OnInit, OnDestroy {
     const item1 = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
     if (item1?.gateway_id) {
       this.deviceFilterObj.gateway_id = item1.gateway_id;
+    }
+    if (item1?.device_type) {
+      this.deviceFilterObj.device_type = item1.device_type;
     }
     localStorage.removeItem(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
     this.deviceFilterObj.hierarchyString = this.contextApp.user.hierarchyString;

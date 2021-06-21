@@ -31,6 +31,10 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
   originalThingsModelFilterObj: any;
   tileData: any;
   subscriptions: Subscription[] = [];
+  iotAssetsTab: { visibility: any; tab_name: any; table_key: any; };
+  legacyAssetsTab: { visibility: any; tab_name: any; table_key: any; };
+  iotGatewaysTab: { visibility: any; tab_name: any; table_key: any; };
+  componentState: any;
   constructor(
     private deviceTypeService: DeviceTypeService,
     private commonService: CommonService,
@@ -46,10 +50,18 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.route.paramMap.subscribe(async params => {
       this.thingsModelFilterObj.app = this.contextApp.app;
       this.originalThingsModelFilterObj = JSON.parse(JSON.stringify(this.thingsModelFilterObj));
-      this.getTileName();
+      await this.getTileName();
+      if (this.iotAssetsTab?.visibility) {
+        this.componentState = CONSTANTS.IP_DEVICE;
+      } else if (this.legacyAssetsTab?.visibility) {
+        this.componentState = CONSTANTS.NON_IP_DEVICE;
+      } else if (this.iotGatewaysTab?.visibility) {
+        this.componentState = CONSTANTS.IP_GATEWAY;
+      }
       this.tableConfig = {
         type:  (this.tileData && this.tileData[1] ? this.tileData[1]?.value : ''),
         is_table_data_loading: this.isthingsModelsListLoading,
+        table_class: 'table-fix-head-device-model',
         no_data_message: '',
         data : [
         {
@@ -95,7 +107,15 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
           is_sort_required: true,
           fixed_value_list: [],
           data_type: 'text',
-          data_key: 'inherited_device_count'
+          data_key: 'inherited_device_count',
+          btn_list: [
+            {
+              text: '',
+              id: 'View Devices',
+              valueclass: '',
+              tooltip: 'View Devices'
+            }
+          ]
         },
         {
           header_name: 'Actions',
@@ -137,18 +157,47 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
       };
       this.commonService.breadcrumbEvent.emit(obj);
     }));
+  }
 
-
+  onTabChange(type) {
+    this.componentState = undefined;
+    setTimeout(() => {
+      this.componentState = type;
+      this.searchThingsModels();
+    }, 300);
   }
 
   getTileName() {
-    let name;
+    let selectedItem;
+    let deviceItem;
+    const deviceDataItem = {};
     this.contextApp.configuration.main_menu.forEach(item => {
       if (item.system_name === 'Things Models') {
-        name = item.showAccordion;
+        selectedItem = item.showAccordion;
+      }
+      if (item.page === 'Assets') {
+        deviceItem = item.showAccordion;
       }
     });
-    this.tileData = name;
+    this.tileData = selectedItem;
+    deviceItem.forEach(item => {
+      deviceDataItem[item.name] = item.value;
+    });
+    this.iotAssetsTab = {
+      visibility: deviceDataItem['IOT Assets'],
+      tab_name: deviceDataItem['IOT Assets Tab Name'],
+      table_key: deviceDataItem['IOT Assets Table Key Name']
+    };
+    this.legacyAssetsTab = {
+      visibility: deviceDataItem['Legacy Assets'],
+      tab_name: deviceDataItem['Legacy Assets Tab Name'],
+      table_key: deviceDataItem['Legacy Assets Table Key Name']
+    };
+    this.iotGatewaysTab = {
+      visibility: deviceDataItem['IOT Gateways'],
+      tab_name: deviceDataItem['IOT Gateways Tab Name'],
+      table_key: deviceDataItem['IOT Gateways Table Key Name']
+    };
   }
 
   searchThingsModels() {
@@ -157,10 +206,15 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
     this.isFilterSelected = true;
     this.thingsModels = [];
     const obj = JSON.parse(JSON.stringify(this.thingsModelFilterObj));
+    // obj.model_type = this.componentState;
     this.subscriptions.push(this.deviceTypeService.getThingsModelsList(obj).subscribe(
       (response: any) => {
         if (response && response.data) {
-          this.thingsModels = response.data;
+          response.data.forEach(model => {
+            if (model.model_type === this.componentState) {
+              this.thingsModels.push(model);
+            }
+          });
         }
         this.isthingsModelsListLoading = false;
         this.tableConfig.is_table_data_loading = false;
@@ -179,8 +233,16 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
   onTableFunctionCall(obj) {
     if (obj.for === 'View Control Panel') {
       this.router.navigate(['applications', this.contextApp.app, 'things', 'model', obj.data.name, 'control-panel']);
-    } else {
-      this.openCreateDeviceTypeModal(obj.data);
+    } else if (obj.for === 'View Devices') {
+      let data = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
+      if (!data) {
+        data = {};
+      }
+      data['device_type'] = obj.data.name;
+      data['type'] = obj.data.model_type;
+      console.log(data);
+      this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY, data);
+      this.router.navigate(['applications', this.contextApp.app, 'devices']);
     }
   }
 
@@ -190,7 +252,13 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
     this.thingsModel.app = this.contextApp.app;
     this.thingsModel.created_by = this.userData.email + ' (' + this.userData.name + ')';
     this.thingsModel.metadata = {};
-    this.thingsModel.metadata.model_type = CONSTANTS.IP_DEVICE;
+    if (this.iotAssetsTab?.visibility) {
+      this.thingsModel.metadata.model_type = CONSTANTS.IP_DEVICE;
+    } else if (this.iotGatewaysTab?.visibility) {
+      this.thingsModel.metadata.model_type = CONSTANTS.IP_GATEWAY;
+    } else if (this.legacyAssetsTab?.visibility) {
+      this.thingsModel.metadata.model_type = CONSTANTS.NON_IP_DEVICE;
+    }
     this.thingsModel.tags = {};
     } else {
       this.thingsModel = JSON.parse(JSON.stringify(obj));

@@ -24,13 +24,18 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
       this.dropdownProperties.push({
         id: prop.json_key,
         value: prop,
-        name: prop.name
+        name: prop.name,
+        type: prop.type
       });
     });
   }
 
   addProperty() {
     this.widgetObj.properties.push({});
+  }
+
+  removeProperty(index) {
+    this.widgetObj.properties.splice(index, 1);
   }
 
   onPropertySelection(prop) {

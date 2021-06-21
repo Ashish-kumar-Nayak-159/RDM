@@ -2,17 +2,18 @@
 && widgetObj.widgetType !== 'AreaChart'; else singleChartTemplate">
 <ng-container *ngFor="let prop of widgetObj.properties; let i = index;" >
 <div class="form-group">
-  <label for="message-text" class="col-form-label ">Property <a *ngIf="i === 0"
-    class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2"
-    href="javascript:void(0)" (click)="addProperty()"
-    placement="bottom" tooltip="Add Property"
-    ><i class="fa fa-plus fa-sm text-white"></i></a
-  ></label>
-  <!-- <select class="custom-select" id="template" name="model_type" [(ngModel)]="prop.property"
-  >
-  <option [ngValue]="undefined" >Select Property</option>
-    <option [ngValue]="prop" *ngFor="let prop of propertyList">{{prop.name}}</option>
-  </select> -->
+  <label for="message-text" class="col-form-label required">Property </label>
+  <a *ngIf="i === 0"
+  class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2 mb-1"
+  href="javascript:void(0)" (click)="addProperty()"
+  placement="bottom" tooltip="Add Property"
+  ><i class="fa fa-plus fa-sm text-white"></i></a>
+  <a *ngIf="i !== 0"
+  class="d-none d-sm-inline-block btn btn-sm btn-white shadow-sm ml-2 mb-1"
+  href="javascript:void(0)" (click)="removeProperty(i)"
+  placement="bottom" tooltip="Remove Property"
+  ><i class="fa fa-trash fa-sm"></i></a>
+
   <ng-select [items]="propertyList" class="custom-dropdown sm" bindLabel="name" [clearable]="false"
     [searchable]="true" [closeOnSelect]="true" placeholder="Select Property" groupBy="type"
     dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="prop.property" (change)="onPropertySelection(prop)"
@@ -20,43 +21,8 @@
     <ng-template ng-option-tmp let-item="item">
       <span > <i [ngClass]="{'icon icon-function': item.type === 'Derived Properties'}"></i> {{item.name}}</span>
     </ng-template>
-    <!-- <ng-template ng-header-tmp>
-      <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-        <li *ngIf="prop.property?.length !== propertyList.length"> <a  href="javascript:void(0)" (click)="prop.property = propertyList">Select All</a></li>
-        <li *ngIf="prop.property?.length === propertyList.length"> <a  href="javascript:void(0)" (click)="prop.property = []">Deselect All</a></li>
-      </ul>
-    </ng-template> -->
   </ng-select>
-  <!-- <angular2-multiselect [data]="propertyList" id="PropertySelect"
-    [(ngModel)]="prop.propertyArr" name="Propertys" [settings]="{
-      text: 'Select Property',
-      classes: 'w-16 p-0',
-      singleSelection: true,
-      enableSearchFilter: true,
-      showCheckbox: false,
-      maxHeight: 400,
-      primaryKey: 'json_key',
-      labelKey: 'name'
-    }"
-    (onSelect)="onPropertySelection(prop)"
-    (onDeSelectAll)="onPropertyDeselect(prop)">
-    <c-item>
-          <ng-template let-item="item">
-            <span ><i [ngClass]="{'icon icon-function': item.type === 'Derived Properties'}"></i> {{item.name}}</span>
-          </ng-template>
-  </c-item>
-  </angular2-multiselect> -->
-  <!-- <ng-select [items]="propertyList" class="custom-dropdown sm"  [clearable]="false"
-    [searchable]="false"  [multiple]="true"
-    [closeOnSelect]="false" placeholder="Select Properties" (remove)="onPropertyDeselect(prop)"
-    dropdownPosition="bottom" name="propArr" ngDefaultControl [(ngModel)]="prop.propertyArr" (add)="onPropertySelection(prop)">
-    <ng-template ng-option-tmp let-item="item">
-      <span ><i [ngClass]="{'icon-function': item.type === 'Derived Properties'}"></i> {{item.name}}</span>
-    </ng-template>
-    <ng-template ng-multi-label-tmp let-items="items">
-      {{items.length}} properties selected
-    </ng-template>
-  </ng-select> -->
+
 </div>
 <div class="form-group" >
   <label for="message-text" class="col-form-label ">Property Title:</label>
@@ -186,7 +152,7 @@
 <ng-template #singleChartTemplate>
   <div class="form-group" >
     <label for="message-text" class="col-form-label ">Y1 Axis Property:</label>
-    <angular2-multiselect [data]="dropdownProperties" id="y1AxisProperty"
+    <!-- <angular2-multiselect [data]="dropdownProperties" id="y1AxisProperty"
               [(ngModel)]="widgetObj.y1AxisProps" name="y1AxisProperty" [settings]="{
                 text: 'Select Y1 Axis',
                 selectAllText: 'Select All',
@@ -198,11 +164,45 @@
                 labelKey: 'name'
               }"
               (onDeSelectAll)="y1Deselect($event)">
-            </angular2-multiselect>
+            </angular2-multiselect> -->
+      <ng-select [items]="dropdownProperties" class="custom-dropdown w-12 sm"
+      [searchable]="false" placeholder="Y1 Axis Props" [multiple]="true"
+      [closeOnSelect]="false" groupBy="type"
+      dropdownPosition="bottom" name="widget-dropdown1" [(ngModel)]="widgetObj.y1AxisProps">
+      <ng-template ng-multi-label-tmp let-items="items">
+      {{items.length}} properties selected
+      </ng-template>
+      <ng-template ng-header-tmp>
+        <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+          <li *ngIf="widgetObj.y1AxisProps?.length !== dropdownProperties.length"> <a  href="javascript:void(0)" (click)="widgetObj.y1AxisProps = dropdownProperties">Select All</a></li>
+          <li *ngIf="widgetObj.y1AxisProps?.length === dropdownProperties.length"> <a  href="javascript:void(0)" (click)="widgetObj.y1AxisProps = []">Deselect All</a></li>
+        </ul>
+      </ng-template>
+      <ng-template ng-option-tmp let-item="item">
+        <span > <i [ngClass]="{'icon icon-function': item.type === 'Derived Properties'}"></i> {{item.name}}</span>
+      </ng-template>
+    </ng-select>
   </div>
   <div class="form-group" >
     <label for="message-text" class="col-form-label ">Y2 Axis Property:</label>
-    <angular2-multiselect [data]="dropdownProperties" id="y2AxisProperty"
+    <ng-select [items]="dropdownProperties" class="custom-dropdown w-12 sm"
+      [searchable]="false" placeholder="Y1 Axis Props" [multiple]="true"
+      [closeOnSelect]="false" groupBy="type"
+      dropdownPosition="bottom" name="widget-dropdown1" [(ngModel)]="widgetObj.y2AxisProps">
+      <ng-template ng-multi-label-tmp let-items="items">
+      {{items.length}} properties selected
+      </ng-template>
+      <ng-template ng-header-tmp>
+        <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+          <li *ngIf="widgetObj.y2AxisProps?.length !== dropdownProperties.length"> <a  href="javascript:void(0)" (click)="widgetObj.y2AxisProps = dropdownProperties">Select All</a></li>
+          <li *ngIf="widgetObj.y2AxisProps?.length === dropdownProperties.length"> <a  href="javascript:void(0)" (click)="widgetObj.y2AxisProps = []">Deselect All</a></li>
+        </ul>
+      </ng-template>
+      <ng-template ng-option-tmp let-item="item">
+        <span > <i [ngClass]="{'icon icon-function': item.type === 'Derived Properties'}"></i> {{item.name}}</span>
+      </ng-template>
+    </ng-select>
+    <!-- <angular2-multiselect [data]="dropdownProperties" id="y2AxisProperty"
               [(ngModel)]="widgetObj.y2AxisProps" name="y2AxisProperty" [settings]="{
                 text: 'Select Y2 Axis',
                 selectAllText: 'Select All',
@@ -214,7 +214,7 @@
                 labelKey: 'name'
               }"
               (onDeSelectAll)="y2Deselect($event)">
-            </angular2-multiselect>
+            </angular2-multiselect> -->
   </div>
   <div class="row col-12" >
     <label for="recipient-name" class="col-form-label">Color:</label>

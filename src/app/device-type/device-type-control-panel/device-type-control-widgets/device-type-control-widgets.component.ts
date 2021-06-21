@@ -85,7 +85,9 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
   openAddWidgetModal() {
     this.controlWidget = {
       properties: [],
-      metadata: {},
+      metadata: {
+        communication_technique: 'C2D Message'
+      },
       json: {
         timestamp: {
           type: 'string'
@@ -94,6 +96,15 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
     };
     this.viewType = 'add';
     $('#createWidgetModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onCommunicationTechniqueChange() {
+    this.controlWidget.properties = [];
+    this.controlWidget.json = {
+      timestamp: {
+        type: 'string'
+      }
+    };
   }
 
   onPropertyChecked(event) {

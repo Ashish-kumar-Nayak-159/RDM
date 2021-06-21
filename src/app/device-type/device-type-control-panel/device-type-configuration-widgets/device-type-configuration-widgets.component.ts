@@ -52,6 +52,15 @@ export class DeviceTypeConfigurationWidgetsComponent implements OnInit, OnDestro
     ));
   }
 
+  onCommunicationTechniqueChange() {
+    this.controlWidget.properties = [];
+    this.controlWidget.json = {
+      timestamp: {
+        type: 'string'
+      }
+    };
+  }
+
   getThingsModelDeviceMethod() {
     // this.deviceMethods = {};
     this.deviceMethods = [];
@@ -86,7 +95,9 @@ export class DeviceTypeConfigurationWidgetsComponent implements OnInit, OnDestro
   openAddWidgetModal() {
     this.controlWidget = {
       properties: [],
-      metadata: {},
+      metadata: {
+        communication_technique: 'C2D Message'
+      },
       json: {
         timestamp: {
           type: 'string'

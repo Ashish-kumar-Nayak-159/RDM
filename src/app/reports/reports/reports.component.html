@@ -202,7 +202,7 @@
                     </ng-container>
                     <ng-container *ngIf="telemetry.length === 0 && !isTelemetryLoading">
                       <tr>
-                        <td [attr.colspan]="3 + selectedProps.length">No telemetry data available.</td>
+                        <td [attr.colspan]="3 + selectedProps.length">No telemetry data available for {{this.originalFilterObj.dateOption}}. <p *ngIf="this.originalFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template></td>
                       </tr>
                     </ng-container>
                     <ng-container *ngIf="isTelemetryLoading">
@@ -259,7 +259,7 @@
                   </ng-container>
                   <ng-container *ngIf="latestAlerts.length === 0 && !isTelemetryLoading">
                     <tr>
-                      <td colspan="7">No Alert data available.</td>
+                      <td colspan="7">No Alert data available for {{this.originalFilterObj.dateOption}}.  <p *ngIf="this.originalFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template></td>
                     </tr>
                   </ng-container>
                   <ng-container *ngIf="isTelemetryLoading">
@@ -315,7 +315,7 @@
               </ng-container>
               <ng-container *ngIf="latestAlerts.length === 0 && !isTelemetryLoading">
                 <tr>
-                  <td colspan="6">No Alert data available.</td>
+                  <td colspan="6">No Alert data available for {{this.originalFilterObj.dateOption}}.  <p *ngIf="this.originalFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template></td>
                 </tr>
               </ng-container>
               <ng-container *ngIf="latestAlerts.length === 0 && isTelemetryLoading">

@@ -486,6 +486,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
           this.onScrollFn();
         }
         resolve();
+        if (this.filterObj.dateOption == 'Custom Range') {
+          this.originalFilterObj.dateOption = "this selected range";
+        }
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false
     );
@@ -647,6 +650,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
         }
         if (callScrollFnFlag) {
           this.onScrollFn();
+        }
+        if (this.filterObj.dateOption == 'Custom Range') {
+          this.originalFilterObj.dateOption = "this selected range";
         }
         this.isTelemetryLoading = false;
         resolve();

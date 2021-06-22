@@ -61,6 +61,7 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
     }
     this.telemetryTableConfig = {
       type: 'telemetry count',
+      dateRange: '',
       tableHeight: 'calc(100vh - 16rem)',
       headers: ['Timestamp'],
       data: [
@@ -252,6 +253,12 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
             item.local_message_date = this.commonService.convertUTCDateToLocal(item.message_date);
           });
 
+        }
+        if (this.telemetryFilter.dateOption !== 'Custom Range') {
+          this.telemetryTableConfig.dateRange = this.telemetryFilter.dateOption;
+        }
+        else {
+          this.telemetryTableConfig.dateRange = "this selected range";
         }
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false

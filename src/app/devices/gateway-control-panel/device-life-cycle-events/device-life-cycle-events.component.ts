@@ -41,6 +41,7 @@ export class DeviceLifeCycleEventsComponent implements OnInit, OnDestroy {
     this.filterObj.count = 10;
     this.eventTableConfig = {
       type: 'life cycle events',
+      dateRange: '',
       headers: ['Timestamp', 'View'],
       data: [
         {
@@ -113,6 +114,12 @@ export class DeviceLifeCycleEventsComponent implements OnInit, OnDestroy {
             item.event_type = eventMsg[eventMsg.length - 1];
             item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
           });
+        }
+        if (this.filterObj.dateOption !== 'Custom Range') {
+          this.eventTableConfig.dateRange = this.filterObj.dateOption;
+        }
+        else {
+          this.eventTableConfig.dateRange = "this selected range";
         }
         this.isLifeCycleEventsLoading = false;
       }, error => this.isLifeCycleEventsLoading = false

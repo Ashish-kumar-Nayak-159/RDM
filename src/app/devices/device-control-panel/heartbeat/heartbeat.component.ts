@@ -50,6 +50,7 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
 
     this.heartbeatTableConfig = {
       type: 'heartbeat',
+      dateRange: '',
       headers: ['Timestamp', 'Message ID', 'Message'],
       data: [
         {
@@ -124,6 +125,12 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
         if (response && response.data) {
           this.heartbeats = response.data;
           this.heartbeats.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
+        }
+        if (this.heartBeatFilter.dateOption !== 'Custom Range') {
+          this.heartbeatTableConfig.dateRange = this.heartBeatFilter.dateOption;
+        }
+        else {
+          this.heartbeatTableConfig.dateRange = "this selected range";
         }
         this.isHeartbeatLoading = false;
       }, error => this.isHeartbeatLoading = false

@@ -216,6 +216,9 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
             setTimeout(() =>  this.plotChart(), 500);
           }
         }
+        if (this.filterObj.dateOption == 'Custom Range') {
+          this.originalFilterObj.dateOption = "this selected range";
+        }
         this.isLifeCycleEventsLoading = false;
         if (this.lifeCycleEvents.length === 0) {
           this.loader = false;

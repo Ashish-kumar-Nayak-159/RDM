@@ -400,6 +400,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit {
             this.insideScrollFunFlag = true;
           }
         }
+        if (this.filterObj.dateOption == 'Custom Range') {
+          this.previousFilterObj.dateOption = "this selected range";
+        }
         this.isReportDataLoading = false;
       }, error => this.isReportDataLoading = false
     )

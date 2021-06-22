@@ -32,7 +32,7 @@
       </ng-container>
         <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading && isFilterSelected">
           <tr>
-            <td colspan="9">No messages found.</td>
+            <td colspan="9">No messages found for {{this.previousMsgFilter.dateOption}}. <p *ngIf="this.previousMsgFilter.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template> </td>
           </tr>
         </ng-container>
         <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading && !isFilterSelected">
@@ -86,7 +86,7 @@
       </ng-container>
         <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading && isFilterSelected">
           <tr>
-            <td colspan="9">No messages found.</td>
+            <td colspan="9">No messages found for {{this.previousMsgFilter.dateOption}}. <p *ngIf="this.previousMsgFilter.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template> </td>
           </tr>
         </ng-container>
         <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading && !isFilterSelected">
@@ -133,7 +133,7 @@
       </ng-container>
         <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading && isFilterSelected">
           <tr>
-            <td colspan="9">No direct method calls found.</td>
+            <td colspan="9">No direct method calls found for {{this.previousMsgFilter.dateOption}}. <p *ngIf="this.previousMsgFilter.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template> </td>
           </tr>
         </ng-container>
         <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading && !isFilterSelected">

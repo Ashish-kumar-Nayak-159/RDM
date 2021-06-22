@@ -443,6 +443,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
           item.device_display_name = this.devices.filter(device => device.device_id === item.device_id)[0]?.display_name;
         });
+        if (this.filterObj.dateOption == 'Custom Range') {
+          this.originalFilterObj.dateOption = "this selected range";
+        }
         this.isAlertAPILoading = false;
         this.singalRService.disconnectFromSignalR('alert');
         this.signalRAlertSubscription?.unsubscribe();

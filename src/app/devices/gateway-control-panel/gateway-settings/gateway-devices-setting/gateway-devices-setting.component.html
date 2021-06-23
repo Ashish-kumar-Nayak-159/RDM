@@ -13,7 +13,7 @@
     <div class="row d-flex px-3 pb-1">
     <div class="ml-auto">
       <a  class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
-       href="javascript:void(0)" (click)="saveGatewaySettings()" [class.disabled]="isSaveSettingAPILoading">
+       href="javascript:void(0)" (click)="saveGatewaySettings()" [class.disabled]="isSaveSettingAPILoading || !device.settings_enabled">
         <i class="fa fa-fw fa-save"></i>
        Save</a>
         <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isSaveSettingAPILoading"></i>

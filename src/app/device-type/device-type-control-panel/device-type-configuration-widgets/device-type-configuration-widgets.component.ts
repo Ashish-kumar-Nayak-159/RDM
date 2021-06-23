@@ -110,17 +110,18 @@ export class DeviceTypeConfigurationWidgetsComponent implements OnInit, OnDestro
 
   onPropertyChecked(event) {
     if (this.controlWidget?.metadata?.communication_technique === 'Direct Method') {
-      const propObj = event;
+      const propObj = event.value || event;
+      console.log(propObj.name);
       if (this.controlWidget.json[propObj.method_name]) {
         delete this.controlWidget.json[propObj.method_name];
-        const index =  this.controlWidget.properties.findIndex(prop => prop.name === propObj.name);
+        // const index =  this.controlWidget.properties.findIndex(prop => prop.name === propObj.name);
         // this.controlWidget.properties.splice(index, 1);
       } else {
         this.controlWidget.json[propObj.method_name] = propObj.json_model;
         // this.controlWidget.properties.push(propObj);
       }
     } else {
-    const propObj = event;
+    const propObj = event.value || event;
     if (this.controlWidget.json[propObj.json_key]) {
       delete this.controlWidget.json[propObj.json_key];
       const index =  this.controlWidget.properties.findIndex(prop => prop.json_key === propObj.json_key);

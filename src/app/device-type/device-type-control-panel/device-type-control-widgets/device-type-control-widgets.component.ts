@@ -109,7 +109,7 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
 
   onPropertyChecked(event) {
     if (this.controlWidget?.metadata?.communication_technique === 'Direct Method') {
-      const propObj = event;
+      const propObj = event.value || event;
       if (this.controlWidget.json[propObj.method_name]) {
         delete this.controlWidget.json[propObj.method_name];
         const index =  this.controlWidget.properties.findIndex(prop => prop.name === propObj.name);
@@ -119,7 +119,7 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
         // this.controlWidget.properties.push(propObj);
       }
     } else {
-    const propObj = event;
+    const propObj = event.value || event;
     if (this.controlWidget.json[propObj.json_key]) {
       delete this.controlWidget.json[propObj.json_key];
       const index =  this.controlWidget.properties.findIndex(prop => prop.json_key === propObj.json_key);

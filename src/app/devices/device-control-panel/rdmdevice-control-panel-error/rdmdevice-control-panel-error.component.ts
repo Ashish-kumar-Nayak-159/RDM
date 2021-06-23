@@ -103,7 +103,7 @@ export class RDMDeviceControlPanelErrorComponent implements OnInit, OnDestroy {
           this.errorTableConfig.dateRange = this.errorFilter.dateOption;
         }
         else {
-          this.errorTableConfig.dateRange = "this selected range";
+          this.errorTableConfig.dateRange = 'this selected range';
         }
         this.isErrorLoading = false;
       }, error => this.isErrorLoading = false

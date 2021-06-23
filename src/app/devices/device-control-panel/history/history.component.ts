@@ -393,7 +393,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             this.dateRange = this.historyFilter.dateOption;
           }
           else {
-            this.dateRange = "this selected range";
+            this.dateRange = 'this selected range';
           }
         }, () => this.isHistoryAPILoading = false
       ));

@@ -62,7 +62,7 @@
               <a *ngIf="i !== 0"
               class="d-none d-sm-inline-block btn btn-sm btn-white shadow-sm  ml-2 mb-1"
               href="javascript:void(0)" (click)="removeParameter(i)"
-              placement="bottom" tooltip="REmove Property"
+              placement="bottom" tooltip="Remove Property"
               ><i class="fa fa-trash fa-sm"></i></a>
             <input type="text"  class="form-control form-control-sm" id="title{{i}}" name="title{{i}}"
               [(ngModel)]="param.key" (change)="onParamKeyChange(i)"

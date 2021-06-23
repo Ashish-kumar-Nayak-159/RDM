@@ -126,6 +126,19 @@ export class DeviceTypeTagsComponent implements OnInit, OnDestroy {
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.tags = this.deviceType.tags;
     obj.tags.reserved_tags = [];
+    this.deviceType.tags.reserved_tags.push({
+      name: 'Protocol',
+      key: 'protocol',
+      defaultValue: this.deviceType.tags.protocol,
+      nonEditable: true
+    });
+    console.log(this.deviceType.tags);
+    this.deviceType.tags.reserved_tags.push({
+      name: 'Cloud Connectivity',
+      key: 'cloud_connectivity',
+      defaultValue: this.deviceType.tags.cloud_connectivity,
+      nonEditable: true
+    });
     obj.app = this.contextApp.app;
     this.closeModal('confirmMessageModal');
   }

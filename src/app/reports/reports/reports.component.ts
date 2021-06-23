@@ -486,8 +486,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
           this.onScrollFn();
         }
         resolve();
-        if (this.filterObj.dateOption == 'Custom Range') {
-          this.originalFilterObj.dateOption = "this selected range";
+        if (this.filterObj.dateOption === 'Custom Range') {
+          this.originalFilterObj.dateOption = 'this selected range';
         }
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false
@@ -651,8 +651,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
         if (callScrollFnFlag) {
           this.onScrollFn();
         }
-        if (this.filterObj.dateOption == 'Custom Range') {
-          this.originalFilterObj.dateOption = "this selected range";
+        if (this.filterObj.dateOption === 'Custom Range') {
+          this.originalFilterObj.dateOption = 'this selected range';
         }
         this.isTelemetryLoading = false;
         resolve();
@@ -715,7 +715,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.currentOffset += this.currentLimit;
       await this.getTelemetryData(this.newFilterObj, 'all');
       this.insideScrollFunFlag = true;
-      alert('after fun');
     } else if (this.originalFilterObj.report_type === 'Alert Report' && !this.insideScrollFunFlag) {
       this.currentOffset += this.currentLimit;
       await this.getAlertData(this.newFilterObj, 'all');
@@ -794,6 +793,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   cancelDownloadModal() {
     this.reportsFetchDataSubscription?.unsubscribe();
+    this.loadingMessage = undefined;
+    this.isTelemetryLoading = false;
     $('#downloadReportModal').modal('hide');
   }
 

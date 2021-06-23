@@ -216,6 +216,7 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
             }
           });
         }
+        this.thingsModels = JSON.parse(JSON.stringify(this.thingsModels));
         this.isthingsModelsListLoading = false;
         this.tableConfig.is_table_data_loading = false;
       }, error => {

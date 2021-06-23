@@ -104,8 +104,15 @@ export class AccessControlComponent implements OnInit, OnChanges {
   }
 
   openConfirmModal(user) {
+    const keys = Object.keys(this.device?.tags?.device_users);
+    if (keys.length === 1) {
+      this.toasterService.showError('At least one user is required', 'Access control');
+      this.onModalClose();
+      return;
+    } else {
     this.deviceUserForDelete = btoa(user.user_email);
     $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    }
   }
 
   onModalClose() {
@@ -149,10 +156,11 @@ export class AccessControlComponent implements OnInit, OnChanges {
 
   removeUserAccess() {
     const keys = Object.keys(this.device?.tags?.device_users);
-    if (keys.length === 1) {
-      this.toasterService.showError('At least one user is required', 'Access control');
-      return;
-    }
+    // if (keys.length === 1) {
+    //   this.toasterService.showError('At least one user is required', 'Access control');
+    //   this.onModalClose();
+    //   return;
+    // }
     this.device.tags.device_users[this.deviceUserForDelete] = null;
     const index = keys.findIndex(key => key === this.deviceUserForDelete);
     keys.splice(index, 1);

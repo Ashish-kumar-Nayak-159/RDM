@@ -18,6 +18,7 @@ export class GatewayDevicesSettingComponent implements OnInit {
   @Output() refreshDeviceTwin: EventEmitter<any> = new EventEmitter<any>();
   @Input() componentState: any;
   contextApp: any;
+  applications = CONSTANTS.DEVICEAPPPS;
   isDevicesAPILoading = false;
   devices: any[] = [];
   subscriptions: Subscription[] = [];
@@ -101,6 +102,23 @@ export class GatewayDevicesSettingComponent implements OnInit {
                   turbo_mode_frequency: 5,
                   turbo_mode_timeout_time: 120
                 };
+              }
+              device.settings_enabled = false;
+              if (device.metadata?.package_app) {
+              device.appObj = this.applications.find(appObj => appObj.name === device.metadata.package_app);
+              if (this.deviceTwin.twin_properties.reported && this.deviceTwin.twin_properties.reported[device.appObj.type] &&
+                this.deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name]) {
+                  if (this.deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name].status?.toLowerCase() !== 'running') {
+                    device.settings_enabled = false;
+                  } else {
+                    if (this.deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name].device_configuration
+                    && this.deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name].device_configuration[device.device_id]) {
+                      device.settings_enabled = true;
+                    } else {
+                      device.settings_enabled = false;
+                    }
+                  }
+                }
               }
             });
           }
@@ -207,7 +225,6 @@ export class GatewayDevicesSettingComponent implements OnInit {
 
   onModalClose() {
     $('#confirmMessageModal').modal('hide');
-    this.selectedDevice = undefined;
     this.isAPILoading = false;
     clearInterval(this.c2dResponseInterval);
     this.telemetrySettings = {};

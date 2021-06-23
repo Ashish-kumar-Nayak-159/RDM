@@ -119,7 +119,7 @@ export class BatteryMessagesComponent implements OnInit, OnDestroy {
           this.batteryMessageTableConfig.dateRange = this.batteryMessageFilter.dateOption;
         }
         else {
-          this.batteryMessageTableConfig.dateRange = "this selected range";
+          this.batteryMessageTableConfig.dateRange = 'this selected range';
         }
         this.isBatteryMessageLoading = false;
       }, error => this.isBatteryMessageLoading = false

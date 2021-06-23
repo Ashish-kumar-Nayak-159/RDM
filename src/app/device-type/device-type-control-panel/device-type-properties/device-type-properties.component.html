@@ -11,9 +11,9 @@
         [class.disabled]="deviceType.freezed">
           <i class="fa fa-fw fa-plus"></i>
           <span class="text-secondary">Add {{(type.includes('measured') ? 'Measured ' : (
-            type.includes('Controllable') ? 'Controllable ' : (
-              type.includes('Configurable') ? 'Configurable ' : (
-                type.includes('Derived Properties') ? 'Edge Derived ' : ''
+            type.includes('controllable') ? 'Controllable ' : (
+              type.includes('configurable') ? 'Configurable ' : (
+                type.includes('derived') ? 'Edge Derived ' : ''
               )
             )
           ))}}
@@ -39,9 +39,9 @@
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">{{propertyObj.edit ? 'Edit' : 'Add'}}
           {{(type.includes('measured') ? 'Measured ' : (
-            type.includes('Controllable') ? 'Controllable ' : (
-              type.includes('Configurable') ? 'Configurable ' : (
-                type.includes('Derived Properties') ? 'Derived ' : ''
+            type.includes('controllable') ? 'Controllable ' : (
+              type.includes('configurable') ? 'Configurable ' : (
+                type.includes('derived') ? 'Edge Derived ' : ''
               )
             )
           ))}}

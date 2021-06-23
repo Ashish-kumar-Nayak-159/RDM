@@ -126,8 +126,8 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
           this.c2dMsgs = response.data;
           this.c2dMsgs.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.request_date));
         }
-        if (this.c2dMsgFilter.dateOption == 'Custom Range') {
-              this.previousMsgFilter.dateOption = "this selected range";
+        if (this.c2dMsgFilter.dateOption === 'Custom Range') {
+              this.previousMsgFilter.dateOption = 'this selected range';
         }
         this.isC2dMsgsLoading = false;
       }, error => this.isC2dMsgsLoading = false

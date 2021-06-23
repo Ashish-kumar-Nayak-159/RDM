@@ -36,24 +36,13 @@
           <a class=""
             href="javascript:void(0)" tooltip="Register Device"
             (click)="registerDevices(device)"
-            [class.disabled]="device.appObj ? (
-              deviceTwin.twin_properties.reported && deviceTwin.twin_properties.reported[device.appObj.type] &&
-               deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name]
-               && deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name].device_configuration
-                && deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name].device_configuration[device.device_id] ? true : false
-            ) : true"
+            [class.disabled]="!device.register_enabled"
             ><i class="fa fa-link fa-sm "></i>
           </a>
           <a class="ml-2"
             href="javascript:void(0)" tooltip="Deregister Device"
             (click)="deregisterDevices(device)"
-            [class.disabled]="
-            device.appObj ? (
-              deviceTwin.twin_properties.reported && deviceTwin.twin_properties.reported[device.appObj.type] &&
-               deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name]
-               && deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name].device_configuration
-                && deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name].device_configuration[device.device_id] ? false : true
-            ) : true"
+            [class.disabled]="!device.deregister_enabled"
             ><i class="fa fa-unlink fa-sm "></i>
           </a>
         </td>

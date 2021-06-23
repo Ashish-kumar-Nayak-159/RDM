@@ -258,7 +258,7 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
           this.telemetryTableConfig.dateRange = this.telemetryFilter.dateOption;
         }
         else {
-          this.telemetryTableConfig.dateRange = "this selected range";
+          this.telemetryTableConfig.dateRange = 'this selected range';
         }
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false

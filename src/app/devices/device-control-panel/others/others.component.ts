@@ -98,7 +98,7 @@ export class OthersComponent implements OnInit, OnDestroy {
           this.otherTableConfig.dateRange = this.otherFilter.dateOption;
         }
         else {
-          this.otherTableConfig.dateRange = "this selected range";
+          this.otherTableConfig.dateRange = 'this selected range';
         }
         this.isOthersLoading = false;
       }, error => this.isOthersLoading = false

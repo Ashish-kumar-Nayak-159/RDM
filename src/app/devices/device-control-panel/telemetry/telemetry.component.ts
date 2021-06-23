@@ -176,7 +176,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
       this.telemetryFilter.from_date = moment(value.start).utc().unix();
       this.telemetryFilter.to_date = moment(value.end).utc().unix();
     }
-  
+
     if (value.label === 'Custom Range') {
       this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
     } else {
@@ -267,7 +267,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isFilterSelected = true;
     this.isTelemetryLoading = true;
     this.telemetryFilter = filterObj;
-    
+
     this.apiSubscriptions.push(method.subscribe(
       (response: any) => {
         if (response && response.data) {
@@ -283,7 +283,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
           this.telemetryTableConfig.dateRange = this.telemetryFilter.dateOption;
         }
         else {
-          this.telemetryTableConfig.dateRange = "this selected range";
+          this.telemetryTableConfig.dateRange = 'this selected range';
         }
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false

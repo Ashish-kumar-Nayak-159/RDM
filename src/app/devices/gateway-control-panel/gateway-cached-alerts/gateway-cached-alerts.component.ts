@@ -134,7 +134,7 @@ export class GatewayCachedAlertsComponent implements OnInit, OnDestroy {
           this.alertTableConfig.dateRange = this.filterObj.dateOption;
         }
         else {
-          this.alertTableConfig.dateRange = "this selected range";
+          this.alertTableConfig.dateRange = 'this selected range';
         }
         this.isAlertLoading = false;
       }, error => this.isAlertLoading = false

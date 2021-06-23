@@ -61,24 +61,26 @@ export class RegisterDevicesComponent implements OnInit, OnDestroy {
           if (response.data) {
             this.devices = response.data;
             this.devices.forEach(device => {
+              device.register_enabled = false;
+              device.deregister_enabled = false;
               if (device.metadata?.package_app) {
                 device.appObj = this.applications.find(appObj => appObj.name === device.metadata.package_app);
-              // if (this.deviceTwin.twin_properties.reported[app.type] &&
-              //   this.deviceTwin.twin_properties.reported[app.type][app.name] &&
-              //   this.deviceTwin.twin_properties.reported[app.type][app.name].device_configuration &&
-              //   this.deviceTwin.twin_properties.reported.registered_devices[device.metadata.package_app]
-              //   && (this.deviceTwin.twin_properties.reported?.registered_devices[device?.metadata?.package_app]?.
-              //     indexOf(device.device_id) > -1)) {
-              //     device.register_enabled = false;
-              //     device.deregister_enabled = true;
-              // } else {
-              //   device.register_enabled = true;
-              //   device.deregister_enabled = false;
-              // }
-              // } else {
-              //   device.register_enabled = false;
-              //   device.deregister_enabled = false;
-              // }
+                if (this.deviceTwin.twin_properties.reported && this.deviceTwin.twin_properties.reported[device.appObj.type] &&
+                  this.deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name]) {
+                    if (this.deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name].status?.toLowerCase() !== 'running') {
+                      device.register_enabled = false;
+                      device.deregister_enabled = false;
+                    } else {
+                      if (this.deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name].device_configuration
+                      && this.deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name].device_configuration[device.device_id]) {
+                        device.register_enabled = false;
+                        device.deregister_enabled = true;
+                      } else {
+                        device.register_enabled = true;
+                        device.deregister_enabled = false;
+                      }
+                    }
+                  }
               }
             });
           }

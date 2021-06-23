@@ -9297,12 +9297,12 @@ a:focus {
   right: 1rem;
   bottom: 2rem;
   display: none;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 2.25rem;
+  height: 2.25rem;
   text-align: center;
   color: #fff;
   background: rgba(90, 92, 105, .5);
-  line-height: 46px
+  line-height: 35px;
 }
 
 .scroll-to-top:focus, .scroll-to-top:hover {
@@ -9323,12 +9323,12 @@ a:focus {
   right: 1rem;
   bottom: 2rem;
   display: none;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 2.25rem;
+  height: 2.25rem;
   text-align: center;
   color: #fff;
   background: rgba(90, 92, 105, .5);
-  line-height: 46px
+  line-height: 35px;
 }
 
 .scroll-to-top1:focus, .scroll-to-top1:hover {

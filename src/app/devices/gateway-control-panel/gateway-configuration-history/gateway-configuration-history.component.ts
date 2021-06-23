@@ -119,7 +119,7 @@ export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
           this.configHistoryTableConfig.dateRange = this.filterObj.dateOption;
         }
         else {
-          this.configHistoryTableConfig.dateRange = "this selected range";
+          this.configHistoryTableConfig.dateRange = 'this selected range';
         }
         this.isConfigHistoryLoading = false;
       }, error => this.isConfigHistoryLoading = false

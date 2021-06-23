@@ -119,7 +119,7 @@ export class DeviceLifeCycleEventsComponent implements OnInit, OnDestroy {
           this.eventTableConfig.dateRange = this.filterObj.dateOption;
         }
         else {
-          this.eventTableConfig.dateRange = "this selected range";
+          this.eventTableConfig.dateRange = 'this selected range';
         }
         this.isLifeCycleEventsLoading = false;
       }, error => this.isLifeCycleEventsLoading = false

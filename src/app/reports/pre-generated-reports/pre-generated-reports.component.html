@@ -27,11 +27,11 @@
               disabled class="dropdown-form" />
           </div>
         </ng-container>
-        
+
         <div class="">
           <button class="btn btn-sm searchBtn btn-primary" type="button" (click)="onDeviceFilterApply()">Apply</button>
         </div>
-       
+
         <!-- <ng-select [items]="devices" class="custom-dropdown w-12" bindLabel="display_name" [clearable]="false"
           [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
           dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.device" (onSelect)="onAssetSelection()">
@@ -75,10 +75,11 @@
       <tr>
         <th></th>
         <th >Asset Name</th>
-        <th >Start Date</th>
-        <th >Last Date</th>
-        <th >Size</th>
+        <th >Date</th>
+
+        <th>Category</th>
         <th>Type</th>
+        <th >Size</th>
         <!-- <th>Type</th>
         <th>Frequency</th> -->
         <th>Action</th>
@@ -93,12 +94,14 @@
              {{ getDeviceNameById(deviceId)}}
             </ng-container>
           </td>
-        <td>{{ reportObj.local_start_date }}</td>
-          <td>{{ reportObj.local_end_date }}</td>
-          <td>{{reportObj.metadata?.file_size}}</td>
+        <td>{{ reportObj.report_frequency?.toLowerCase() === 'daily' ? (reportObj.local_start_date) : (reportObj.local_start_date + ' to ' + reportObj.local_end_date)}}</td>
+          <!-- <td>{{ reportObj.local_end_date }}</td> -->
+
+          <td>{{reportObj.report_type}}</td>
           <td>{{reportObj?.report_category?.toLowerCase() === 'telemetry' ? 'Telemetry Report' : (reportObj?.report_category?.toLowerCase() === 'alert' ? 'Alert Report' : '')}}</td>
           <!-- <td>{{reportObj.report_type.method | titlecase}}</td>
           <td>{{reportObj.report_frequency | titlecase}}</td> -->
+          <td>{{reportObj.metadata?.file_size}}</td>
           <td>
             <a *ngIf="reportObj.process_status.toLowerCase() === 'success'" href="javascript:void(0)"  (click)="downloadFile(reportObj)" placement="bottom" tooltip="Download Excel"><i class="fa fa-sm fa-download" ></i></a>
             <ng-container *ngIf="reportObj.process_status.toLowerCase() !== 'success'">{{reportObj.process_status}}</ng-container>
@@ -132,6 +135,11 @@
     <div class="modal-content">
       <div class="modal-header">
         <h6 class="modal-title" id="exampleModalLabel">Download Report</h6>
+        <button type="button" class="close" (click)="cancelDownloadModal()"
+        *ngIf="isDownloadCloseOptionAvailable"
+          aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
       <div class="modal-body">
         <ng-container >
@@ -140,6 +148,10 @@
           class="fa fa-spinner fa-spin fa-fw fa-2x"
         ></i>
         </ng-container>
+      </div>
+      <div class="modal-footer" *ngIf="isDownloadCloseOptionAvailable">
+        <button type="button" class="btn btn-secondary add-row" (click)="cancelDownloadModal()"
+        >Cancel</button>
       </div>
     </div>
 

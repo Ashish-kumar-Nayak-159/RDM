@@ -132,7 +132,7 @@ export class AlertEndEventComponent implements OnInit, OnDestroy {
           this.alertTableConfig.dateRange = this.alertFilter.dateOption;
         }
         else {
-          this.alertTableConfig.dateRange = "this selected range";
+          this.alertTableConfig.dateRange = 'this selected range';
         }
         this.isAlertLoading = false;
       }, error => this.isAlertLoading = false

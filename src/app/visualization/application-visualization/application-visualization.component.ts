@@ -443,8 +443,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
           item.device_display_name = this.devices.filter(device => device.device_id === item.device_id)[0]?.display_name;
         });
-        if (this.filterObj.dateOption == 'Custom Range') {
-          this.originalFilterObj.dateOption = "this selected range";
+        if (this.filterObj.dateOption === 'Custom Range') {
+          this.originalFilterObj.dateOption = 'this selected range';
         }
         this.isAlertAPILoading = false;
         this.singalRService.disconnectFromSignalR('alert');
@@ -721,7 +721,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       };
       this.subscriptions.push(this.deviceTypeService.getModelReasons(obj.app, obj.name).subscribe(
         (response: any) => {
-          this.reasons = response.alert_acknowledge_reasons;
+          this.reasons = response.data;
           resolve();
         }
       ));

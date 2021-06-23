@@ -29,12 +29,7 @@
         </td>
         <td> <a
           class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-2"
-          href="javascript:void(0)" [class.disabled]=" device.appObj ? (
-            deviceTwin.twin_properties.reported && deviceTwin.twin_properties.reported[device.appObj.type] &&
-             deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name]
-             && deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name].device_configuration
-              && deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name].device_configuration[device.device_id] ? false : true
-          ) : true"
+          href="javascript:void(0)" [class.disabled]="!device.register_enabled"
           (click)="openRegisterPropModal(device)"
           ><i class="fa fa- fa-sm text-white-50"></i> Register</a></td>
       </tr>

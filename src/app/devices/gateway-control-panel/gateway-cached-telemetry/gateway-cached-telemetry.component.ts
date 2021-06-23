@@ -181,7 +181,7 @@ export class GatewayCachedTelemetryComponent implements OnInit, OnDestroy {
           this.telemetryTableConfig.dateRange = this.filterObj.dateOption;
         }
         else {
-          this.telemetryTableConfig.dateRange = "this selected range";
+          this.telemetryTableConfig.dateRange = 'this selected range';
         }
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false

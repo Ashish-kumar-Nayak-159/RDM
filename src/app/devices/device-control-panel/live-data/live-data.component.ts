@@ -184,7 +184,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
   }
 
   onDeSelectAll() {
-    this.selectedWidgets = [];
+    // this.selectedWidgets = [];
     this.selectedWidgetsForSearch = [];
   }
 

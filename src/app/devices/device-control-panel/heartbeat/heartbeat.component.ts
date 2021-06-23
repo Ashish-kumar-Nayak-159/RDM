@@ -130,7 +130,7 @@ export class HeartbeatComponent implements OnInit, OnDestroy {
           this.heartbeatTableConfig.dateRange = this.heartBeatFilter.dateOption;
         }
         else {
-          this.heartbeatTableConfig.dateRange = "this selected range";
+          this.heartbeatTableConfig.dateRange = 'this selected range';
         }
         this.isHeartbeatLoading = false;
       }, error => this.isHeartbeatLoading = false

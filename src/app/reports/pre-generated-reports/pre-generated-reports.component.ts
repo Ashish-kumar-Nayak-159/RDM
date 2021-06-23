@@ -156,6 +156,26 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit {
     });
   }
 
+  onDeviceFilterApply() {
+    $('.dropdown-menu .searchBtn').on('click.bs.dropdown', (e) => {
+      $('button.dropdown-btn').dropdown('toggle');
+    });
+  }
+
+  preventClose(event: MouseEvent) {
+    $('#dd-open').on('hide.bs.dropdown', function (e) {
+      if (e.clickEvent) {
+        e.preventDefault();
+      }
+    });
+  }
+  
+  scrollToTop(){
+    $('#table-top').animate({ scrollTop: "0px" });
+    //window.scrollTo(0, 0);
+  }
+ 
+
   selectedDate(value: any, datepicker?: any) {
     console.log(value);
     this.filterObj.dateOption = value.label;

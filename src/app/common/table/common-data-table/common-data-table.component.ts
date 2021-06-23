@@ -38,6 +38,10 @@ export class CommonDataTableComponent implements OnInit, OnChanges {
     this.loadMoreEvent.emit();
   }
 
+  scrollToTop(){
+    $('#table-top').animate({ scrollTop: "0px" });
+  }
+  
   resolve(obj, path){
     path = path.split('.');
     let current = obj;

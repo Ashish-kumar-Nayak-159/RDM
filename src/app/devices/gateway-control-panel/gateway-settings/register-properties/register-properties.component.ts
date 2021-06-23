@@ -34,6 +34,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   showPropOptions = false;
   properties: any;
   alertConditions: any[] = [];
+  applications = CONSTANTS.DEVICEAPPPS;
   thingsModels: any[] = [];
   constructor(
     private commonService: CommonService,
@@ -100,10 +101,22 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
                 device.model_freeze = model.freezed;
               }
               });
-              if (device.metadata?.package_app && this.deviceTwin.twin_properties.reported.registered_devices[device.metadata.package_app]
-                && (this.deviceTwin.twin_properties.reported?.registered_devices[device?.metadata?.package_app]?.
-                  indexOf(device.device_id) > -1)) {
-                device.is_registered = true;
+              device.register_enabled = false;
+              if (device.metadata?.package_app) {
+              device.appObj = this.applications.find(appObj => appObj.name === device.metadata.package_app);
+              if (this.deviceTwin.twin_properties.reported && this.deviceTwin.twin_properties.reported[device.appObj.type] &&
+                this.deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name]) {
+                  if (this.deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name].status?.toLowerCase() !== 'running') {
+                    device.register_enabled = false;
+                  } else {
+                    if (this.deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name].device_configuration
+                    && this.deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name].device_configuration[device.device_id]) {
+                      device.register_enabled = true;
+                    } else {
+                      device.register_enabled = false;
+                    }
+                  }
+                }
               }
             });
             this.devices = response.data;

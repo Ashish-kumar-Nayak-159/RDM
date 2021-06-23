@@ -1,7 +1,7 @@
 <div [ngClass]="{'tab-bar' : pageType === 'history', 'blue-nav-bar': pageType === 'live'}">
   <div class="d-flex align-items-center">
     <div class="d-none d-md-block" *ngIf="pageType === 'live'">
-      <div class="main-heading">Live Alerts</div>
+      <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}</div>
     </div>
     <div class="ml-auto align-items-center">
       <div class="d-none d-sm-block">
@@ -82,7 +82,7 @@
       </ng-container>
       <ng-container *ngIf="!isAlertAPILoading && latestAlerts.length === 0">
         <div class="col-md-12 p-3">
-        No Alerts available.
+        No Alerts available for <span *ngIf="pageType !== 'history'">Last 24hours.</span><span *ngIf="pageType === 'history'">{{this.originalFilterObj.dateOption}}. <p *ngIf="this.originalFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template></span>
       </div>
       </ng-container>
 
@@ -217,9 +217,15 @@
                 <ng-select [items]="dropdownWidgetList" class="custom-dropdown w-12 active sm" bindLabel="id"
                   [clearable]="false" [searchable]="false" [multiple]="true" [closeOnSelect]="false"
                   placeholder="Select Widgets" dropdownPosition="bottom" name="asset-dropdown"
-                  [(ngModel)]="selectedWidgets" (onDeSelectAll)="onDeSelectAll($event)">
+                  [(ngModel)]="selectedWidgetsForSearch" (onDeSelectAll)="onDeSelectAll($event)">
                   <ng-template ng-multi-label-tmp let-items="items">
                     {{items.length}} widgets selected
+                  </ng-template>
+                  <ng-template ng-header-tmp>
+                    <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                      <li *ngIf="dropdownWidgetList.length !== selectedWidgetsForSearch.length"> <a  href="javascript:void(0)" (click)="selectedWidgetsForSearch = dropdownWidgetList">Select All</a></li>
+                      <li *ngIf="dropdownWidgetList.length === selectedWidgetsForSearch.length"> <a  href="javascript:void(0)" (click)="selectedWidgetsForSearch = []">Deselect All</a></li>
+                    </ul>
                   </ng-template>
                 </ng-select>
               </div>

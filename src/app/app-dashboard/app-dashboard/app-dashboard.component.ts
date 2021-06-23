@@ -81,7 +81,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   getTileName() {
     let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {
-      if (item.page === 'Dashboard') {
+      if (item.page === 'Live Data') {
         selectedItem = item.showAccordion;
       }
     });
@@ -140,14 +140,14 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       gateway_id: this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : undefined,
       message: {
         telemetry_mode: this.signalRModeValue ? 'normal' : 'turbo',
-        turbo_mode_frequency_in_sec: this.signalRModeValue ?
-        (this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency ?
-          this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency : 60) :
-        (this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency ?
-          this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency : 1),
-        turbo_mode_timeout_in_sec : !this.signalRModeValue ?
-        (this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_timeout_time ?
-          this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_timeout_time : 120) : undefined,
+        // turbo_mode_frequency_in_sec: this.signalRModeValue ?
+        // (this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency ?
+        //   this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency : 60) :
+        // (this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency ?
+        //   this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency : 1),
+        // turbo_mode_timeout_in_sec : !this.signalRModeValue ?
+        // (this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_timeout_time ?
+        //   this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_timeout_time : 120) : undefined,
         device_id: this.filterObj.device.device_id
       },
       app: this.contextApp.app,
@@ -336,13 +336,37 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           response.live_widgets.forEach(widget => {
             widget.derived_props = false;
             widget.measured_props = false;
-            widget.properties.forEach(prop => {
-              if (prop.property.type === 'derived') {
-                widget.derived_props = true;
+            // widget.properties.forEach(prop => {
+            //   if (prop.property.type === 'Derived Properties') {
+            //     widget.derived_props = true;
+            //   } else {
+            //     widget.measured_props = true;
+            //   }
+            // });
+            if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
+              widget?.properties.forEach(prop => {
+                if (prop?.property?.type === 'Derived Properties') {
+                  widget.derived_props = true;
+                } else {
+                  widget.measured_props = true;
+                }
+              });
               } else {
-                widget.measured_props = true;
+                widget?.y1AxisProps.forEach(prop => {
+                  if (prop?.type === 'Derived Properties') {
+                    widget.derived_props = true;
+                  } else {
+                    widget.measured_props = true;
+                  }
+                });
+                widget?.y2AxisProps.forEach(prop => {
+                  if (prop?.type === 'Derived Properties') {
+                    widget.derived_props = true;
+                  } else {
+                    widget.measured_props = true;
+                  }
+                });
               }
-            });
             console.log('11111111111111111    ', widget);
             if (widget.dashboardVisibility) {
               this.liveWidgets.push(widget);
@@ -557,7 +581,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
             response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
             response.properties.derived_properties.forEach(prop => {
-              prop.type = 'derived';
+              prop.type = 'Derived Properties';
               console.log(prop);
               this.propertyList.push(prop);
             });

@@ -87,7 +87,7 @@ export class DeviceTypeOverviewComponent implements OnInit, OnDestroy {
     console.log(this.thingsModel);
     if (!this.thingsModel.name || !this.thingsModel.tags.protocol || !this.thingsModel.tags.cloud_connectivity
     || !this.thingsModel.metadata.model_type) {
-      this.toasterService.showError('Please fill all the fields', 'Update Things Model');
+      this.toasterService.showError('Please enter all required fields', 'Update Things Model');
       return;
     }
     if (this.thingsModel.id) {

@@ -9297,12 +9297,12 @@ a:focus {
   right: 1rem;
   bottom: 2rem;
   display: none;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 2.25rem;
+  height: 2.25rem;
   text-align: center;
   color: #fff;
   background: rgba(90, 92, 105, .5);
-  line-height: 46px
+  line-height: 35px;
 }
 
 .scroll-to-top:focus, .scroll-to-top:hover {
@@ -9323,12 +9323,12 @@ a:focus {
   right: 1rem;
   bottom: 2rem;
   display: none;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 2.25rem;
+  height: 2.25rem;
   text-align: center;
   color: #fff;
   background: rgba(90, 92, 105, .5);
-  line-height: 46px
+  line-height: 35px;
 }
 
 .scroll-to-top1:focus, .scroll-to-top1:hover {
@@ -10044,13 +10044,14 @@ font-size:0.8rem;
   }
   .sidebar .nav-item .nav-link span {
     font-size: .8rem;
-    /*display: inline;*/
-	display: -webkit-inline-box;
-	width: 8rem;
+    display: inline-block;
+    vertical-align: top;
+    width: 8.5rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
+}
+
   /*.sidebar .nav-item .nav-link span {
     font-size: .8rem;
     display: inline;
@@ -11151,12 +11152,12 @@ body.sidebar-toggled footer.sticky-footer {
   .container-fluid .sidebar1 .nav-item .nav-link span {
     font-size: 0.8rem;
     /* display: inline; */
-    font-size: .8rem;
-    display: -webkit-inline-box;
-    width: 8rem;
-    white-space: nowrap;
+    display: inline-block;
+    width: 9rem;
+    vertical-align: top;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .container-fluid .sidebar1 .sidebar1-heading span {
     font-size: 0.8rem;
@@ -13060,11 +13061,11 @@ background: #f9fafb;
 font-weight: 600;
 }
 .hierarchy_list .list-group-item .media .overflow{
-    width: 85%;
-    margin: 0 0 0 0;
-    white-space: nowrap;
-    overflow: hidden;
-text-overflow: clip;
+  width: 85%;
+  margin: 0 0 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .hierarchy_list .list-group-item:hover a, .hierarchy_list .list-group-item.active  a {
 text-decoration: none;
@@ -13125,9 +13126,9 @@ font-weight:500;
 
 
 
-.inbox .right-border {
+/* .inbox .right-border {
 box-shadow: inset -8px 0 10px -6px #dbe9f5 !important;
-}
+} */
 
 .bg-white-asset {
   background-color: #fff !important;
@@ -13159,10 +13160,10 @@ box-shadow: inset -8px 0 10px -6px #dbe9f5 !important;
 .alert-scrollbox_delayed:hover {
   transition: visibility 0s 0.2s;
 }*/
-.inbox .right-border {
+/* .inbox .right-border {
 box-shadow: inset -8px 0 10px -6px #dbe9f5 !important;
 height: calc(100vh - 8rem);
-}
+} */
 .inbox .mail_list .list-group-item {
 border: 0;
 padding: 10px;
@@ -13361,7 +13362,7 @@ overflow-x: hidden;
 /* Works on Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
   width: 12px;
-  height: 6px;
+  height: 12px;
   cursor: pointer !important;
 }
 
@@ -13663,4 +13664,13 @@ overflow-x: hidden;
 
 .table-fix-head-alert-conditions {
   max-height: calc(100vh - 13.8rem);
+}
+
+.inbox .right-border {
+  box-shadow: inset -8px 0 10px -6px #dbe9f5 !important;
+  height: calc(100vh - 8rem);
+  border-right: 1px solid #c7e0f4;
+  }
+.table-fix-head-device-model {
+  height: calc(100vh - 8rem)
 }

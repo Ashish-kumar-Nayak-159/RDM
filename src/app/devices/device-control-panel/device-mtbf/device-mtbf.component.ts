@@ -136,19 +136,22 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
         if (response && response.data) {
           this.lifeCycleEvents = response.data;
           this.avrgMTBF = response.mtbf;
-          this.avrgMTBFString = this.splitTime(response.mtbf / 60);
+          this.avrgMTBFString = this.splitTime(response.mtbf);
         }
         this.lifeCycleEvents .forEach((item, index) => {
           item.local_event_start_time = this.commonService.convertUTCDateToLocalDate(item.start_time);
           item.local_event_end_time = this.commonService.convertUTCDateToLocalDate(item.end_time);
-          item.mtbfString = this.splitTime(item.mtbf / 60);
-          item.uptime = this.splitTime(item.metadata?.total_uptime_in_sec / 60 || 0);
+          item.mtbfString = this.splitTime(item.mtbf);
+          item.uptime = this.splitTime(item.metadata?.total_uptime_in_sec || 0);
           console.log(item.uptime);
         });
         if (this.displayMode === 'history' && this.lifeCycleEvents.length > 0) {
           setTimeout(() =>  {
             this.plotChart();
           }, 100);
+        }
+        if (this.filterObj.dateOption === 'Custom Range') {
+              this.originalFilterObj.dateOption = 'this selected range';
         }
         this.isLifeCycleEventsLoading = false;
         if (this.lifeCycleEvents.length === 0) {
@@ -162,17 +165,18 @@ export class DeviceMtbfComponent implements OnInit, OnDestroy {
   }
 
   splitTime(num){
-    // const numberOfHours = minutes / 60;
-    const d = Math.floor(num / 1440); // 60*24
-    const h = Math.floor((num - (d * 1440)) / 60);
-    const m = Math.round(num % 60);
-    if (d > 0){
-      return(d + ' Days, ' + h + ' Hrs, ' + m + ' Mins');
-    } else if (h > 0) {
-      return(h + ' Hrs, ' + m + ' Mins');
-    } else {
-      return m + ' Mins';
-    }
+
+
+    let d = Math.floor(num / (3600*24));
+    let h = Math.floor(num % (3600*24) / 3600);
+    let m = Math.floor(num % 3600 / 60);
+    let s = Math.floor(num % 60);
+    let dDisplay = d > 0 ? (d + (d == 1 ? " Day, " : " Days, ")) : "";
+    let hDisplay = h > 0 ? (h + (h == 1 ? " Hr, " : " Hrs, ")) : "";
+    let mDisplay = m > 0 ? (m + (m == 1 ? " Min, " : " Minutes, ")) : "";
+    let sDisplay = s > 0 ? (s + (s == 1 ? " Second" : " Seconds")) : "";
+
+    return dDisplay + hDisplay + mDisplay + sDisplay;
   }
 
   selectedDate(value: any, datepicker?: any) {

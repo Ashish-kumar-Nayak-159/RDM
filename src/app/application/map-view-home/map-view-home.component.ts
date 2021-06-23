@@ -56,6 +56,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       ]
     }
   ];
+  tileData: any;
 
   constructor(
     private deviceService: DeviceService,
@@ -70,7 +71,6 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       await this.getLatestDerivedKPIData();
     }
     await this.getAllDevices();
-
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     console.log(item);
     if (this.contextApp.hierarchy.levels.length > 1) {
@@ -91,6 +91,16 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  getTileName() {
+    let selectedItem;
+    this.contextApp.configuration.main_menu.forEach(item => {
+      if (item.system_name === 'Home') {
+        selectedItem = item.showAccordion;
+      }
+    });
+    this.tileData = selectedItem;
+  }
+
   loadFromCache(item) {
       // this.originalFilter = JSON.parse(JSON.stringify(item));
       // this.filterObj = JSON.parse(JSON.stringify(item));
@@ -108,10 +118,42 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       }
       this.onDeviceFilterApply(false);
     }
-
   }
 
+  onSaveHierachy() {
+    this.hierarchyString = this.contextApp.app;
+    this.displayHierarchyString = this.contextApp.app;
+    Object.keys(this.configureHierarchy).forEach((key) => {
+      if (this.configureHierarchy[key]) {
+        this.hierarchyString += (' > ' + this.configureHierarchy[key]);
+        this.displayHierarchyString = this.configureHierarchy[key];
+      }
+    });
+  }
 
+  onClearHierarchy() {
+    this.hierarchyArr = {};
+    this.configureHierarchy = {};
+    if (this.contextApp.hierarchy.levels.length > 1) {
+      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+    }
+    this.contextApp.hierarchy.levels.forEach((level, index) => {
+      if (index !== 0) {
+      this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+      if (this.contextApp.user.hierarchy[level]) {
+        this.onChangeOfHierarchy(index, false);
+      }
+      }
+    });
+    this.hierarchyString = this.contextApp.app;
+    this.displayHierarchyString = this.contextApp.app;
+    Object.keys(this.configureHierarchy).forEach((key) => {
+      if (this.configureHierarchy[key]) {
+        this.hierarchyString += (' > ' + this.configureHierarchy[key]);
+        this.displayHierarchyString = this.configureHierarchy[key];
+      }
+    });
+  }
 
   getAllDevices() {
     return new Promise<void>((resolve) => {
@@ -246,6 +288,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       } else {
       const arr = [];
       this.devices = [];
+      console.log(hierarchyObj);
       this.originalDevices.forEach(device => {
         let flag1 = false;
         Object.keys(hierarchyObj).forEach(hierarchyKey => {
@@ -339,11 +382,17 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
       e.stopPropagation();
     });
+  //   $('#dd-open').on('hide.bs.dropdown', (e: any) => {
+  //     if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
+  //       e.preventDefault();
+  //     }
+  // });
   }
 
   onDeviceFilterApply(updateFilterObj = true) {
     console.log(this.filterObj);
     console.log(this.configureHierarchy);
+    console.log(JSON.stringify(this.devices));
     this.activeCircle = 'all';
     this.mapDevices = JSON.parse(JSON.stringify(this.devices));
     if (this.contextApp.app === 'CMS_Dev') {
@@ -362,15 +411,8 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
         });
       });
     }
-    console.log(JSON.stringify(this.mapDevices));
-    this.hierarchyString = this.contextApp.app;
-    this.displayHierarchyString = this.contextApp.app;
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (this.configureHierarchy[key]) {
-        this.hierarchyString += (' > ' + this.configureHierarchy[key]);
-        this.displayHierarchyString = this.configureHierarchy[key];
-      }
-    });
+    this.onSaveHierachy();
+
     if (updateFilterObj) {
       const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
       pagefilterObj['hierarchy'] = this.configureHierarchy;

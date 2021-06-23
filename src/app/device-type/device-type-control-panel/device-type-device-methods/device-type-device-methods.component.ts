@@ -127,6 +127,16 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
   }
 
   addParameter() {
+    let flag = false;
+    this.deviceMethodObj.json_model.params.forEach(param => {
+      if (!param.key || !param.data_type) {
+        flag = true;
+      }
+    });
+    if (flag) {
+      this.toasterService.showError('Please fill the previous parameters correctly', 'Add Parameter');
+      return;
+    }
     const data = this.editor.get() as any;
     const list = data?.params || [];
     list.forEach((item, i) => {
@@ -137,6 +147,12 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
       data_type: null,
       json: null
     });
+    this.editor.set(this.deviceMethodObj.json_model);
+  }
+
+  removeParameter(index) {
+    console.log(index);
+    this.deviceMethodObj.json_model.params.splice(index, 1);
     this.editor.set(this.deviceMethodObj.json_model);
   }
 
@@ -230,8 +246,20 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
 
   onSavedeviceMethodObj() {
     if (!this.deviceMethodObj.name || !this.deviceMethodObj.method_name) {
-      this.toasterService.showError('Please fill the form correctly', 'Add Direct Method');
+      this.toasterService.showError('Please enter all required fields', 'Add Direct Method');
       return;
+    }
+    if (this.deviceMethodObj.json_model.params) {
+      let flag = false;
+      this.deviceMethodObj.json_model.params.forEach(param => {
+        if (!param.key || !param.data_type) {
+          flag = true;
+        }
+      });
+      if (flag) {
+        this.toasterService.showError('Please enter all required fields', 'Add Direct Method');
+        return;
+      }
     }
     try {
       this.deviceMethodObj.json_model = this.editor.get();
@@ -271,7 +299,7 @@ export class DeviceTypeDeviceMethodsComponent implements OnInit, OnDestroy {
   deleteDeviceMethod() {
     const obj = JSON.parse(JSON.stringify(this.deviceType));
     obj.device_methods = JSON.parse(JSON.stringify(this.deviceMethods));
-    const index = obj.device_methods.findIndex(prop => prop.json_key === this.selectedDeviceMethod.json_key);
+    const index = obj.device_methods.findIndex(prop => prop.name === this.selectedDeviceMethod.name);
     obj.device_methods.splice(index, 1);
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(this.deviceTypeService.updateThingsModel(obj, this.deviceType.app).subscribe(

@@ -116,6 +116,9 @@ export class ResetPasswordComponent implements OnInit, OnDestroy  {
         },
         (error: HttpErrorResponse) => {
           this.changePasswordAPILoading = false;
+          this.resetPasswordForm.reset();
+          this.resetPasswordForm.patchValue({email: this.loginData?.email || null});
+          console.log(this.resetPasswordForm);
           this.toasterService.showError(error.message, 'Change Password');
         }
       );
@@ -133,6 +136,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy  {
     const confirmPass = group.controls.confirmNewPassword.value;
     return pass === confirmPass ? null : { notSame: true };
   }
+
   /**
    * It will reset the form group and close the 'changePasswordModal' modal.
    */

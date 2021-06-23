@@ -181,22 +181,24 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
     }
     const arr = axis === 0 ? this.chartConfig.y1AxisProps : this.chartConfig.y2AxisProps;
     arr.forEach((prop) => {
+      console.log(prop);
       const series = chart.series.push(new am4charts.LineSeries());
       series.units = prop.value.json_model[prop.id].units;
       series.name =  prop.name;
+      series.propType = prop.type === 'Derived Properties' ? 'D' : 'M';
       series.propKey = prop.id;
       series.yAxis = valueYAxis;
       series.dataFields.dateX = 'message_date';
-      series.dataFields.valueY =  prop.id;
+      series.dataFields.valueY =  prop. id;
       series.compareText = true;
       if (prop.color) {
         series.stroke = am4core.color(prop.color);
       }
       series.strokeWidth = 2;
       series.strokeOpacity = 1;
-      series.legendSettings.labelText = '{name} ({units})';
+      series.legendSettings.labelText = '({propType}) {name} ({units})';
       series.fillOpacity = this.chartConfig.widgetType.includes('Area') ? 0.3 : 0;
-      series.tooltipText = 'Date: {dateX} \n {name} ({units}): [bold]{valueY}[/]';
+      series.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
 
       const bullet = series.bullets.push(new am4charts.CircleBullet());
       bullet.strokeWidth = 2;
@@ -211,6 +213,10 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
 
   getPropertyName(key) {
     return this.propertyList.filter(prop => prop.json_key === key)[0]?.name || key;
+  }
+
+  getPropertyType(key) {
+    return this.propertyList.filter(prop => prop.json_key === key)[0]?.type || 'Measured';
   }
 
   openConfirmRemoveWidgetModal() {

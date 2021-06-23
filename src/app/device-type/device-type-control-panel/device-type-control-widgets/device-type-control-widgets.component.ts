@@ -85,7 +85,9 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
   openAddWidgetModal() {
     this.controlWidget = {
       properties: [],
-      metadata: {},
+      metadata: {
+        communication_technique: 'C2D Message'
+      },
       json: {
         timestamp: {
           type: 'string'
@@ -96,9 +98,18 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
     $('#createWidgetModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
+  onCommunicationTechniqueChange() {
+    this.controlWidget.properties = [];
+    this.controlWidget.json = {
+      timestamp: {
+        type: 'string'
+      }
+    };
+  }
+
   onPropertyChecked(event) {
     if (this.controlWidget?.metadata?.communication_technique === 'Direct Method') {
-      const propObj = event;
+      const propObj = event.value || event;
       if (this.controlWidget.json[propObj.method_name]) {
         delete this.controlWidget.json[propObj.method_name];
         const index =  this.controlWidget.properties.findIndex(prop => prop.name === propObj.name);
@@ -108,7 +119,7 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
         // this.controlWidget.properties.push(propObj);
       }
     } else {
-    const propObj = event;
+    const propObj = event.value || event;
     if (this.controlWidget.json[propObj.json_key]) {
       delete this.controlWidget.json[propObj.json_key];
       const index =  this.controlWidget.properties.findIndex(prop => prop.json_key === propObj.json_key);
@@ -152,7 +163,7 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
 
   createControlWidget() {
     if (!this.controlWidget.name || !this.controlWidget.metadata || !this.controlWidget.metadata?.communication_technique) {
-      this.toasterService.showError('Please fill the form properly', 'Create Control Widget');
+      this.toasterService.showError('Please enter all required fields', 'Create Control Widget');
       return;
     }
     if (this.controlWidget.properties.length === 0) {

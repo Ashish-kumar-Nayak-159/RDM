@@ -136,14 +136,7 @@ export class CommonService {
   setItemInLocalStorage(key, value) {
     localStorage.setItem(key, this.encryptJSON(value));
     // localStorage.setItem(key, JSON.stringify(value));
-    // let expiryObj: any = localStorage.getItem(CONSTANTS.EXPIRY_TIME);
-    // const userData: any = JSON.parse(localStorage.getItem(CONSTANTS.USER_DETAILS));
-    // if (!expiryObj && userData) {
-    //   expiryObj = {};
-    //   expiryObj.expired_at = (new Date().getTime()) + CONSTANTS.LOCAL_STORAGE_EXPIRY_INTERVAL;
-    //   expiryObj.user = userData.email;
-    //   localStorage.setItem(CONSTANTS.EXPIRY_TIME, JSON.stringify(expiryObj));
-    // }
+
   }
 
   getMomentStartEndDate(label) {
@@ -183,7 +176,7 @@ export class CommonService {
       obj.to_date = moment().utc().unix();
     } else if (label === 'This Month') {
       obj.from_date = moment().startOf('month').utc().unix();
-      obj.to_date = moment();
+      obj.to_date = moment().utc().unix();
     } else if (label === 'Last Month') {
       obj.from_date = moment().subtract(1, 'month').startOf('month').utc().unix();
       obj.to_date = moment().subtract(1, 'month').endOf('month').utc().unix();

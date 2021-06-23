@@ -69,7 +69,7 @@
               <td >{{tag.name}}</td>
               <td>{{tag.key}}</td>
               <td>{{tag.defaultValue}}</td>
-              <td ><a href="javascript:void(0)" class="mx-1" placement="bottom" tooltip="Delete" (click)="openModal('confirmMessageModal', 'single', i)"
+              <td ><a *ngIf="!tag.nonEditable" href="javascript:void(0)" class="mx-1" placement="bottom" tooltip="Delete" (click)="openModal('confirmMessageModal', 'single', i)"
                 [class.disabled]="deviceType.freezed">
                 <i class="fa fa-trash fa-sm"></i> </a></td>
             </tr>

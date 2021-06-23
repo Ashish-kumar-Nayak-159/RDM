@@ -37,6 +37,7 @@ export class FotaComponent implements OnInit {
   btnClickType: any;
   confirmBodyMessage: any;
   confirmHeaderMessage: string;
+  isGetAPILoading = false;
 
   constructor(
     private deviceService: DeviceService,
@@ -46,6 +47,7 @@ export class FotaComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.isGetAPILoading = true;
     this.getDevicesOfGateway();
     await this.getDeviceTypeData();
     await this.getDeviceTwinData();
@@ -92,6 +94,8 @@ export class FotaComponent implements OnInit {
               });
             }
             resolve();
+          }, error => {
+            resolve();
           }
         )
       );
@@ -137,8 +141,9 @@ export class FotaComponent implements OnInit {
             } else {
               this.installPackages = JSON.parse(JSON.stringify(this.devicePackages));
             }
+            this.isGetAPILoading = false;
             resolve();
-          }
+          }, error => this.isGetAPILoading = false
         ));
     });
   }
@@ -294,16 +299,19 @@ export class FotaComponent implements OnInit {
       $('#confirmMessageModal').modal('hide');
       $('#packageManagementModal').modal('hide');
       clearInterval(this.twinResponseInterval);
+      this.refreshDeviceTwin.emit();
       this.installPackages = [];
       this.updatePackages = [];
       this.uninstallPackages = [];
       this.selectedDevice = undefined;
-      this.devicePackages = [];
+      // this.devicePackages = [];
       this.currentDeviceApps = [];
       this.displyaMsgArr = [];
       // this.deviceTwin = undefined;
       this.isAPILoading = false;
       this.selectedDevicePackage = undefined;
+      this.isGetAPILoading = true;
+      this.getDeviceTwinData();
     }
   }
 

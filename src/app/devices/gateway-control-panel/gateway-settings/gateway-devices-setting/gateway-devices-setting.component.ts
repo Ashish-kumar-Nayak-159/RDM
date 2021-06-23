@@ -18,6 +18,7 @@ export class GatewayDevicesSettingComponent implements OnInit {
   @Output() refreshDeviceTwin: EventEmitter<any> = new EventEmitter<any>();
   @Input() componentState: any;
   contextApp: any;
+  applications = CONSTANTS.DEVICEAPPPS;
   isDevicesAPILoading = false;
   devices: any[] = [];
   subscriptions: Subscription[] = [];
@@ -102,6 +103,23 @@ export class GatewayDevicesSettingComponent implements OnInit {
                   turbo_mode_timeout_time: 120
                 };
               }
+              device.settings_enabled = false;
+              if (device.metadata?.package_app) {
+              device.appObj = this.applications.find(appObj => appObj.name === device.metadata.package_app);
+              if (this.deviceTwin.twin_properties.reported && this.deviceTwin.twin_properties.reported[device.appObj.type] &&
+                this.deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name]) {
+                  if (this.deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name].status?.toLowerCase() !== 'running') {
+                    device.settings_enabled = false;
+                  } else {
+                    if (this.deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name].device_configuration
+                    && this.deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name].device_configuration[device.device_id]) {
+                      device.settings_enabled = true;
+                    } else {
+                      device.settings_enabled = false;
+                    }
+                  }
+                }
+              }
             });
           }
           this.isDevicesAPILoading = false;
@@ -118,14 +136,11 @@ export class GatewayDevicesSettingComponent implements OnInit {
     };
     console.log(this.telemetrySettings);
     obj.devices[this.selectedDevice.device_id] = {
-      measurement_frequency_in_sec: this.selectedDevice.metadata.measurement_settings.measurement_frequency,
-      turbo_mode_frequency_in_sec: this.selectedDevice.metadata.telemetry_mode_settings.turbo_mode_frequency,
-      turbo_mode_timeout_in_sec: this.selectedDevice.metadata.telemetry_mode_settings.turbo_mode_timeout_time,
-      ingestion_settings:
-        {
-            type: this.selectedDevice.metadata.data_ingestion_settings.type,
-            frequency_in_sec: this.selectedDevice.metadata.data_ingestion_settings.frequency_in_sec
-        }
+      measurement_frequency_in_milli_sec: this.selectedDevice.metadata.measurement_settings.measurement_frequency * 1000,
+      turbo_mode_frequency_in_milli_sec: this.selectedDevice.metadata.telemetry_mode_settings.turbo_mode_frequency * 1000,
+      turbo_mode_timeout_in_milli_sec: this.selectedDevice.metadata.telemetry_mode_settings.turbo_mode_timeout_time * 1000,
+      ingestion_settings_type: this.selectedDevice.metadata.data_ingestion_settings.type,
+      ingestion_settings_frequency_in_milli_sec: this.selectedDevice.metadata.telemetry_mode_settings.normal_mode_frequency * 1000
     };
     this.callC2dMethod(obj, 'Change Asset Settings');
   }
@@ -210,7 +225,6 @@ export class GatewayDevicesSettingComponent implements OnInit {
 
   onModalClose() {
     $('#confirmMessageModal').modal('hide');
-    this.selectedDevice = undefined;
     this.isAPILoading = false;
     clearInterval(this.c2dResponseInterval);
     this.telemetrySettings = {};

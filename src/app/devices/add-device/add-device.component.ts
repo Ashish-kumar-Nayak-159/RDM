@@ -221,7 +221,7 @@ export class AddDeviceComponent implements OnInit {
   onCreateDevice() {
     if (!this.deviceDetail.device_id || !this.deviceDetail.tags.device_manager ||
       !this.deviceDetail.tags.protocol || !this.deviceDetail.tags.cloud_connectivity  ) {
-        this.toasterService.showError('Please fill all the details',
+        this.toasterService.showError('Please enter all required fields',
         'Create ' + this.componentState);
         return;
     }
@@ -265,8 +265,8 @@ export class AddDeviceComponent implements OnInit {
       turbo_mode_timeout_time: modelObj?.telemetry_mode_settings?.turbo_mode_timeout_time || 120
     };
     this.deviceDetail.metadata.data_ingestion_settings = {
-      type: modelObj?.data_ingestion_settings.type || 'all_props_at_fixed_interval',
-      frequency_in_sec: modelObj?.data_ingestion_settings.frequency_in_sec || 10
+      type: modelObj?.data_ingestion_settings?.type || 'all_props_at_fixed_interval',
+      frequency_in_sec: modelObj?.data_ingestion_settings?.frequency_in_sec || 10
     };
     this.deviceDetail.metadata.measurement_settings = {
       measurement_frequency: modelObj?.measurement_settings?.measurement_frequency || 5

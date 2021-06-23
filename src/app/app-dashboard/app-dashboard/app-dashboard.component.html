@@ -1,7 +1,7 @@
 <div class="blue-nav-bar" *ngIf="selectedTab === 'telemetry'">
   <div class="d-flex align-items-center">
     <div class="d-flex align-items-center">
-      <div class="main-heading ">{{selectedTab === 'telemetry' ? 'Live Data' : 'Live Alerts'}}</div>
+      <div class="main-heading ">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}</div>
       <div class="ml-2 pt-15" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry'">
         Turbo Mode:</div>
         <div class="ml-1 pt-15">

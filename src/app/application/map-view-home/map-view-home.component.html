@@ -1,6 +1,6 @@
 <div class="blue-nav-bar ">
   <div class="d-flex align-items-center">
-  <div class="main-heading">Home</div>
+  <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}</div>
   <div class="ml-auto">
     <div class="">
       <form class="form-inline">
@@ -18,7 +18,7 @@
             <a href="javascript:void(0)" class="text-white" (click)="onClickOfCount('unhealthy')">{{unhealthyDeviceCount}}</a></div>
         </div>
       </ng-container>
-        <div class="form-group" >
+        <div class="form-group" id="dd-open">
           <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown" [ngClass]="{'active': hierarchyString}"
                   [tooltip]="hierarchyString ? hierarchyString : 'Select Hierarchy'"
           (click)="onDeviceFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
@@ -43,13 +43,9 @@
                 disabled class="dropdown-form dropdown-open" />
             </div>
           </ng-container>
-          <!-- <ng-select [items]="devices" class="custom-dropdown" bindLabel="display_name" [clearable]="false"
-            [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
-            dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.device">
-          </ng-select> -->
-          <!-- <div class="">
-            <button class="btn btn-sm searchBtn btn-primary" type="button" (click)="onDeviceFilterApply()">Apply</button>
-          </div> -->
+          <!-- <div class="form-group" ><button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary" (click)="onSaveHierachy()">Apply</button>
+            <button type="button" placement="bottom" tooltip="Clear" class="btn btn-sm searchBtn btn-white ml-1" (click)="onClearHierarchy()" >Clear</button></div> -->
+
         </div>
         </div>
         <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"

@@ -9,6 +9,12 @@
           <ng-template ng-multi-label-tmp let-items="items">
             {{items.length}} widgets selected
           </ng-template>
+          <ng-template ng-header-tmp>
+            <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+              <li *ngIf="selectedWidgetsForSearch.length !== liveWidgets.length"> <a  href="javascript:void(0)" (click)="selectedWidgetsForSearch = liveWidgets">Select All</a></li>
+              <li *ngIf="selectedWidgetsForSearch.length === liveWidgets.length"> <a  href="javascript:void(0)" (click)="selectedWidgetsForSearch = []">Deselect All</a></li>
+            </ul>
+          </ng-template>
         </ng-select>
       </div>
       <div class="form-group">

@@ -57,8 +57,9 @@
       <div class="row col-md-12 mt-1">
         <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mb-1" href="javascript:void(0)"
         (click)="testConnectionWithGateway()" [class.disabled]="isTestConnectionAPILoading">
-          Test Connection</a>  <i *ngIf="isTestConnectionAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+          Test Connection</a>
       </div>
+      <i *ngIf="isTestConnectionAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
       <div class="row mt-1 col-md-12 pl-3" *ngIf="testConnectionMessage">
         <span [ngClass]="{'alert-success': testConnectionMessage.toLowerCase().includes('success'),
         'alert-danger': testConnectionMessage.toLowerCase().includes('not connected')}"> {{testConnectionMessage}} </span>

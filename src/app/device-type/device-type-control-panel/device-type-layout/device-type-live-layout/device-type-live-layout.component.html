@@ -127,9 +127,11 @@
               <tr class="bg-secondary text-white">
                 <th>Index</th>
                 <th style="width: 60%">Widget Name</th>
-                <th>Visibility &nbsp;<input type="checkbox" name="visibleall"
+                <th>
+                  <input type="checkbox" name="visibleall"
                   id="visibleall" (change)="onClickOfCheckbox()" [(ngModel)]="isAllWidgestSelectedForDashboard"
-                  placement="bottom" [tooltip]="isAllWidgestSelectedForDashboard ? 'Deselect All' : 'Select All'"/></th>
+                  placement="bottom" [tooltip]="isAllWidgestSelectedForDashboard ? 'Deselect All' : 'Select All'"/>
+                  &nbsp;Visibility </th>
               </tr>
             </thead>
             <tbody>

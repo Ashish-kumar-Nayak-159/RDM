@@ -54,7 +54,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   isTelemetryFilterSelected = false;
   acknowledgedAlert: any;
   dropdownWidgetList: any[];
-  selectedWidgets: any[];
+  selectedWidgets: any[] = [];
+  selectedWidgetsForSearch: any[] = [];
   propList: any[];
   showThreshold = false;
   selectedPropertyForChart: any[] = [];
@@ -308,7 +309,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   getTileName() {
     let selectedItem;
     this.contextApp.configuration.main_menu.forEach(item => {
-      if (item.system_name === 'Alert Visualization') {
+      if (item.system_name === 'Live Alerts') {
         selectedItem = item.showAccordion;
       }
     });
@@ -442,6 +443,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
           item.device_display_name = this.devices.filter(device => device.device_id === item.device_id)[0]?.display_name;
         });
+        if (this.filterObj.dateOption === 'Custom Range') {
+          this.originalFilterObj.dateOption = 'this selected range';
+        }
         this.isAlertAPILoading = false;
         this.singalRService.disconnectFromSignalR('alert');
         this.signalRAlertSubscription?.unsubscribe();
@@ -475,22 +479,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     obj.message_date = obj.timestamp;
     obj.alert_id = 'alert_' + this.latestAlerts.length;
     this.latestAlerts.splice(0, 0, obj);
-    // obj.count = 1;
-    // if (obj.from_date) {
-    //   obj.from_date = obj.from_date + 5;
-    // }
-    // if (obj.to_date) {
-    //   obj.to_date = obj.to_date + 5;
-    // }
-
-    // this.deviceService.getDeviceAlerts(obj).subscribe(
-    //   (response: any) => {
-    //     if (response?.data?.length > 0) {
-    //       this.latestAlerts = response.data;
-    //       this.latestAlerts.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
-    //     }
-    //   });
-
   }
 
 
@@ -551,7 +539,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   onDeSelectAll(event) {
-    this.selectedWidgets = [];
+    this.selectedWidgetsForSearch = [];
   }
 
   getDocuments() {
@@ -605,7 +593,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
           response.properties.derived_properties.forEach(prop => {
-            prop.type = 'derived';
+            prop.type = 'Derived Properties';
             this.propertyList.push(prop)
           });
           this.propertyList.forEach(item => {
@@ -626,7 +614,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       name: this.alertCondition?.device_type ?  this.alertCondition.device_type : this.selectedDevice.device_type
     };
     this.dropdownWidgetList = [];
-    this.selectedWidgets = [];
+    this.selectedWidgetsForSearch = [];
     this.subscriptions.push(this.deviceTypeService.getThingsModelLayout(params).subscribe(
       async (response: any) => {
         if (response?.historical_widgets?.length > 0) {
@@ -639,7 +627,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             item.measured_props = false;
             item.y1axis.forEach(prop => {
               const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'derived') {
+              if (type === 'Derived Properties') {
                 item.derived_props = true;
               } else {
                 item.measured_props = true;
@@ -647,7 +635,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             });
             item.y2axis.forEach(prop => {
               const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'derived') {
+              if (type === 'Derived Properties') {
                 item.derived_props = true;
               } else {
                 item.measured_props = true;
@@ -657,7 +645,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             if (this.alertCondition) {
             this.alertCondition.visualization_widgets.forEach(widget => {
               if (widget === item.title) {
-                this.selectedWidgets.push({
+                this.selectedWidgetsForSearch.push({
                   id: item.title,
                   value: item
                 });
@@ -666,11 +654,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           }
           });
           this.dropdownWidgetList = JSON.parse(JSON.stringify(this.dropdownWidgetList));
-          this.selectedWidgets = JSON.parse(JSON.stringify(this.selectedWidgets));
-          if (this.selectedWidgets.length > 0) {
+          // this.selectedWidgets = JSON.parse(JSON.stringify(this.selectedWidgets));
+          console.log(JSON.stringify(this.selectedWidgetsForSearch));
+          if (this.selectedWidgetsForSearch.length > 0) {
             this.getDeviceTelemetryData();
           } else {
-            console.log('in else');
             this.isTelemetryDataLoading = false;
           }
         } else {
@@ -733,7 +721,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       };
       this.subscriptions.push(this.deviceTypeService.getModelReasons(obj.app, obj.name).subscribe(
         (response: any) => {
-          this.reasons = response.alert_acknowledge_reasons;
+          this.reasons = response.data;
           resolve();
         }
       ));
@@ -747,6 +735,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   getDeviceTelemetryData() {
     this.isChartViewOpen = false;
     this.propList = [];
+    this.selectedWidgets = JSON.parse(JSON.stringify(this.selectedWidgetsForSearch));
     this.selectedWidgets.forEach(widget => {
       widget.value.y1axis.forEach(prop => {
         if (this.propList.indexOf(prop) === -1) {
@@ -786,7 +775,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     let measured_message_props = '';
     let derived_message_props = '';
     propArr.forEach((prop, index) => {
-      if (prop.type === 'derived') {
+      if (prop.type === 'Derived Properties') {
         derived_message_props = derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
       } else {
         measured_message_props = measured_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
@@ -832,9 +821,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           delete filterObj.aggregation_format;
           const records = this.commonService.calculateEstimatedRecords(this.filterObj.sampling_time * 60,
             filterObj.from_date, filterObj.to_date);
-            if (records > 500 ) {
-              this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
-            }
+          if (records > 500 ) {
+            this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+          }
           method = this.deviceService.getDeviceSamplingTelemetry(filterObj, this.contextApp.app);
         }
       } else {
@@ -867,6 +856,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.toDate = filterObj.to_date;
     if (this.selectedWidgets.length === 0) {
       this.toasterService.showError('Please select at least one widget.', 'View Visualization');
+      this.isTelemetryDataLoading = false;
       return;
     }
     this.isOpen = false;

@@ -79,7 +79,7 @@
           <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected">
             <tr>
               <td colspan="4">
-                No TBF data found.
+                No TBF data found for {{this.originalFilterObj.dateOption}}. <p *ngIf="this.originalFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template>
               </td>
             </tr>
           </ng-container>
@@ -103,7 +103,7 @@
       <p class="m-3" *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">Select filter
         and press search button to load the TBF data.</p>
       <p  class="m-3" *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected"> No MTBF Data
-        found.</p>
+        found for {{this.originalFilterObj.dateOption}}. <span *ngIf="this.originalFilterObj.dateOption !== 'this selected range'; else differentMsg"><p class="pt-2">You can choose large time window.</p></span> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template></p>
       <div id="mtbfChart" class="mt-2" *ngIf="!isLifeCycleEventsLoading && lifeCycleEvents.length > 0"
       [ngStyle]="{'width': '100%', 'height': '25rem'}"></div>
     </ng-container>

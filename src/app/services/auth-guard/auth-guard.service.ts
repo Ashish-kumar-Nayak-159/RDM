@@ -21,11 +21,15 @@ export class AuthGuardService {
       this.commonService.onLogOut();
       return false;
     }
-    if (this.getResolvedUrl(route) === '/applications/' && !userData.is_super_admin) {
+    const resolvedRoute = this.getResolvedUrl(route);
+    console.log(resolvedRoute);
+    if (appData) {
+    if (resolvedRoute?.includes(appData.app) || resolvedRoute?.includes('selection' )) {
+    if (resolvedRoute === '/applications/' && !userData.is_super_admin) {
       this.commonService.onLogOut();
       return false;
     }
-    if (this.getResolvedUrl(route)?.includes('selection')) {
+    if (resolvedRoute?.includes('selection')) {
       if (!userData) {
         this.commonService.onLogOut();
         return false;
@@ -35,6 +39,16 @@ export class AuthGuardService {
       return false;
     }
     return true;
+    } else {
+      this.router.navigate(['applications', appData.app]);
+      setTimeout(() => {
+        location.reload();
+      }, 500);
+
+    }
+    } else {
+      return true;
+    }
   }
 
   getResolvedUrl(route: ActivatedRouteSnapshot): string {

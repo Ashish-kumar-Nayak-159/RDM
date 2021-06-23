@@ -17,7 +17,7 @@ declare var $: any;
   templateUrl: './pre-generated-reports.component.html',
   styleUrls: ['./pre-generated-reports.component.css']
 })
-export class PreGeneratedReportsComponent implements OnInit, AfterViewInit {
+export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   userData: any;
   filterObj: any = {};
@@ -28,6 +28,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit {
   devices: any[] = [];
   originalDevices: any[] = [];
   tileData: any;
+  isDownloadCloseOptionAvailable = false;
+  reportDownloadSubscription: Subscription;
   subscriptions: Subscription[] = [];
   isFilterOpen = true;
   today = new Date();
@@ -169,12 +171,12 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit {
       }
     });
   }
-  
+
   scrollToTop(){
     $('#table-top').animate({ scrollTop: "0px" });
     //window.scrollTo(0, 0);
   }
- 
+
 
   selectedDate(value: any, datepicker?: any) {
     console.log(value);
@@ -410,8 +412,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit {
         if (response.data?.length > 0) {
           // this.reports = response.data;
           response.data.forEach(report => {
-            report.local_start_date = this.commonService.convertUTCDateToLocal(report.report_start_date);
-            report.local_end_date = this.commonService.convertUTCDateToLocal(report.report_end_date);
+            report.local_start_date = this.commonService.convertUTCDateToLocalDate(report.report_start_date);
+            report.local_end_date = this.commonService.convertUTCDateToLocalDate(report.report_end_date);
           });
           this.reports = [...this.reports, ...response.data];
           if (response.data.length === this.currentLimit) {
@@ -419,6 +421,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit {
           } else {
             this.insideScrollFunFlag = true;
           }
+        }
+        if (this.filterObj.dateOption === 'Custom Range') {
+          this.previousFilterObj.dateOption = 'this selected range';
         }
         this.isReportDataLoading = false;
       }, error => this.isReportDataLoading = false
@@ -432,18 +437,31 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit {
   }
 
   downloadFile(reportObj) {
+    this.isDownloadCloseOptionAvailable = true;
     $('#downloadPreGeneratedReportReportModal').modal({ backdrop: 'static', keyboard: false, show: true });
     setTimeout(() => {
       const url = this.blobStorageURL + reportObj.report_url + this.sasToken;
-      this.subscriptions.push(this.commonService.getFileData(url).subscribe(
+      this.reportDownloadSubscription = this.commonService.getFileData(url).subscribe(
         response => {
           this.fileSaverService.save(response, reportObj.report_file_name);
           $('#downloadPreGeneratedReportReportModal').modal('hide');
         }, error => {
           $('#downloadPreGeneratedReportReportModal').modal('hide');
         }
-      ));
+      );
     }, 1000);
+  }
+
+  cancelDownloadModal() {
+    $('#downloadPreGeneratedReportReportModal').modal('hide');
+    this.reportDownloadSubscription?.unsubscribe();
+    this.isDownloadCloseOptionAvailable = false;
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.reportDownloadSubscription?.unsubscribe();
+    $('#downloadPreGeneratedReportReportModal').modal('hide');
   }
 
 

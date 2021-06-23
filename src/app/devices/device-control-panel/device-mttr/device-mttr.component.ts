@@ -202,19 +202,22 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
           this.lifeCycleEvents = response.data;
           if (this.displayMode === 'machine_failure') {
             this.averageMTTR = response.mttr;
-            this.averageMTTRString = this.splitTime(response.mttr / 60);
+            this.averageMTTRString = this.splitTime(response.mttr);
           }
           this.lifeCycleEvents .forEach((item, index) => {
             item.local_event_start_time = this.commonService.convertUTCDateToLocal(item.event_start_time);
             item.local_event_end_time = this.commonService.convertUTCDateToLocal(item.event_end_time);
-            item.mttrString = this.splitTime(item.event_timespan_in_sec / 60);
+            item.mttrString = this.splitTime(item.event_timespan_in_sec);
             if (this.displayMode === 'history') {
-              item.mttrString = this.splitTime(item.mttr / 60);
+              item.mttrString = this.splitTime(item.mttr);
             }
           });
           if (this.displayMode === 'history' && this.lifeCycleEvents.length > 0) {
             setTimeout(() =>  this.plotChart(), 500);
           }
+        }
+        if (this.filterObj.dateOption == 'Custom Range') {
+          this.originalFilterObj.dateOption = 'this selected range';
         }
         this.isLifeCycleEventsLoading = false;
         if (this.lifeCycleEvents.length === 0) {
@@ -228,16 +231,15 @@ export class DeviceMttrComponent implements OnInit, OnDestroy {
   }
 
   splitTime(num){
-    const d = Math.floor(num / 1440); // 60*24
-    const h = Math.floor((num - (d * 1440)) / 60);
-    const m = Math.round(num % 60);
-    if (d > 0){
-      return(d + ' Days, ' + h + ' Hrs, ' + m + ' Mins');
-    } else if (h > 0) {
-      return(h + ' Hrs, ' + m + ' Mins');
-    } else {
-      return m + ' Mins';
-    }
+    let d = Math.floor(num / (3600*24));
+    let h = Math.floor(num % (3600*24) / 3600);
+    let m = Math.floor(num % 3600 / 60);
+    let s = Math.floor(num % 60);
+    let dDisplay = d > 0 ? (d + (d == 1 ? " Day, " : " Days, ")) : "";
+    let hDisplay = h > 0 ? (h + (h == 1 ? " Hr, " : " Hrs, ")) : "";
+    let mDisplay = m > 0 ? (m + (m == 1 ? " Min, " : " Minutes, ")) : "";
+    let sDisplay = s > 0 ? (s + (s == 1 ? " Second" : " Seconds")) : "";
+    return dDisplay + hDisplay + mDisplay + sDisplay;
   }
 
   openModal(event) {

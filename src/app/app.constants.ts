@@ -58,7 +58,12 @@ export class CONSTANTS {
       icon: 'fas fa-fw fa-home',
       visible: true,
       exactMatch: true,
-      showAccordion: [],
+      showAccordion: [
+        {
+          name: 'Title',
+          value: 'Home'
+        }
+      ],
       priority: 1
     },
     {
@@ -1141,7 +1146,7 @@ export class CONSTANTS {
       isTitle: false
     },
     {
-      page: 'writable_properties',
+      page: 'controllable_properties',
       system_name: 'Controllable Properties',
       url: '#device_type_properties',
       display_name: 'Controllable Properties',
@@ -1150,7 +1155,7 @@ export class CONSTANTS {
       isTitle: false
     },
     {
-      page: 'readable_properties',
+      page: 'configurable_properties',
       system_name: 'Configurable Properties',
       url: '#device_type_properties',
       display_name: 'Configurable Properties',

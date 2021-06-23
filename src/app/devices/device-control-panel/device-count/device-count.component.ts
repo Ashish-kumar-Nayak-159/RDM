@@ -61,6 +61,7 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
     }
     this.telemetryTableConfig = {
       type: 'telemetry count',
+      dateRange: '',
       tableHeight: 'calc(100vh - 16rem)',
       headers: ['Timestamp'],
       data: [
@@ -138,11 +139,12 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
       };
       this.apiSubscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
+          response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
           response.properties.derived_properties.forEach(prop => {
-            prop.type = 'derived';
-            this.propertyList.push(prop)
+            prop.type = 'Derived Properties';
+            this.propertyList.push(prop);
           });
           this.propertyList = JSON.parse(JSON.stringify(this.propertyList));
           // this.props = [...this.dropdownPropList];
@@ -174,10 +176,19 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
     obj.device_id = filterObj?.device?.device_id;
     if (!obj.device_id) {
       this.toasterService.showError('Asset selection is required.', 'View Count Data');
+      this.isTelemetryLoading = false;
+      this.isFilterSelected = false;
+      return;
     }
 
+    if (!filterObj.props || filterObj.props?.length === 0) {
+      this.toasterService.showError('Property selection is required.', 'View Count Data');
+      this.isTelemetryLoading = false;
+      this.isFilterSelected = false;
+      return;
+    }
     if (this.telemetryTableConfig.data.length !== (this.propertyList.length + 1)) {
-    this.propertyList.forEach(prop => {
+      filterObj.props.forEach(prop => {
       this.telemetryTableConfig.headers.push(prop.name);
       this.telemetryTableConfig.data.push({
         name: prop.name,
@@ -191,8 +202,10 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
 
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'Get Telemetry Data');
+
       this.isTelemetryLoading = false;
       this.isFilterSelected = false;
+      return;
       return;
     }
     if (updateFilterObj) {
@@ -212,7 +225,7 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
     let measured_message_props = '';
     let derived_message_props = '';
     filterObj.props.forEach((prop, index) => {
-      if (prop.type === 'derived') {
+      if (prop.type === 'Derived Properties') {
         derived_message_props = derived_message_props + prop.json_key + (filterObj.props[index + 1] ? ',' : '');
       } else {
         measured_message_props = measured_message_props + prop.json_key + (filterObj.props[index + 1] ? ',' : '');
@@ -240,6 +253,12 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
             item.local_message_date = this.commonService.convertUTCDateToLocal(item.message_date);
           });
 
+        }
+        if (this.telemetryFilter.dateOption !== 'Custom Range') {
+          this.telemetryTableConfig.dateRange = this.telemetryFilter.dateOption;
+        }
+        else {
+          this.telemetryTableConfig.dateRange = 'this selected range';
         }
         this.isTelemetryLoading = false;
       }, error => this.isTelemetryLoading = false

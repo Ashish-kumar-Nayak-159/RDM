@@ -15,12 +15,12 @@
               {{app.display_name}}
           </td>
           <td>{{
-            deviceTwin.twin_properties.reported[app.type][app.name] || 'Not Installed'}}</td>
+            deviceTwin.twin_properties.reported[app.type][app.name]?.status || 'Not Installed'}}</td>
           <td><a
             class="d-none d-sm-inline-block btn btn-sm shadow-sm mb-1 mr-1"
             href="javascript:void(0)"  [class.disabled]="isAPILoading[i] || !app.is_start
             || deviceTwin.twin_properties.reported[app.type][app.name] === undefined ||
-            deviceTwin.twin_properties.reported[app.type][app.name]?.toLowerCase() === 'running'
+            deviceTwin.twin_properties.reported[app.type][app.name]?.status?.toLowerCase() === 'running'
             "
             (click)="startApp(app, i)" placement="bottom" tooltip="Start"
             ><img style="width: 12px;" src="./assets/img/start.svg"/></a>
@@ -28,7 +28,7 @@
             class="d-none d-sm-inline-block btn btn-sm shadow-sm mb-1 mr-1"
             href="javascript:void(0)"  [class.disabled]="isAPILoading[i] || !app.is_stop
             || deviceTwin.twin_properties.reported[app.type][app.name] === undefined ||
-            deviceTwin.twin_properties.reported[app.type][app.name]?.toLowerCase() === 'not running'"
+            deviceTwin.twin_properties.reported[app.type][app.name]?.status?.toLowerCase() === 'not running'"
             (click)="stopApp(app, i)" placement="bottom" tooltip="Stop"
             ><img style="width: 12px;" src="./assets/img/stop.svg"/></a>
             <a

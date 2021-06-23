@@ -55,10 +55,11 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
       };
       this.subscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
+          response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
           response.properties.derived_properties.forEach(prop => {
-            prop.type = 'derived';
+            prop.type = 'Derived Properties';
             this.propertyList.push(prop);
           });
           resolve();
@@ -127,13 +128,30 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
             widget.freezed = this.deviceType.freezed;
             widget.derived_props = false;
             widget.measured_props = false;
-            widget.properties.forEach(prop => {
-              if (prop.property.type === 'derived') {
+            if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
+            widget?.properties.forEach(prop => {
+              if (prop?.property?.type === 'Derived Properties') {
                 widget.derived_props = true;
               } else {
                 widget.measured_props = true;
               }
-            })
+            });
+            } else {
+              widget?.y1AxisProps.forEach(prop => {
+                if (prop?.type === 'Derived Properties') {
+                  widget.derived_props = true;
+                } else {
+                  widget.measured_props = true;
+                }
+              });
+              widget?.y2AxisProps.forEach(prop => {
+                if (prop?.type === 'Derived Properties') {
+                  widget.derived_props = true;
+                } else {
+                  widget.measured_props = true;
+                }
+              });
+            }
           });
           this.getTelemetryData();
           setInterval(() =>

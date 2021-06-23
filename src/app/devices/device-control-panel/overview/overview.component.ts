@@ -1,10 +1,10 @@
+import { CONSTANTS } from 'src/app/app.constants';
 import { Subscription } from 'rxjs';
 import { DeviceTypeService } from './../../../services/device-type/device-type.service';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { DeviceService } from './../../../services/devices/device.service';
 import { Device } from 'src/app/models/device.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CONSTANTS } from './../../../app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { ApplicationService } from './../../../services/application/application.service';
 import { environment } from './../../../../environments/environment';
@@ -43,6 +43,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   isDeviceTwinLoading = false;
   deviceTwin: any;
   editorOptions: JsonEditorOptions;
+  isSyncAPILoading = false;
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -105,10 +106,13 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   onRedirectToDevices() {
-    const obj = {
-      gateway_id: this.device.device_id
-    };
-    this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY, obj);
+    let data = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
+    if (!data) {
+      data = {};
+    }
+    data['gateway_id'] = this.device.device_id;
+    data['type'] = CONSTANTS.NON_IP_DEVICE;
+    this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY, data);
     this.router.navigate(['applications', this.contextApp.app, 'devices']);
   }
 
@@ -134,14 +138,17 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   syncWithCache() {
+    this.isSyncAPILoading = true;
     const obj = {
       device_id: this.device.device_id
     };
     this.subscriptions.push(this.deviceService.syncDeviceCache(this.deviceType.app, obj)
     .subscribe((response: any) => {
       this.toasterService.showSuccess(response.message, 'Sync Asset Data');
+      this.isSyncAPILoading = false;
     }, error => {
       this.toasterService.showError(error.message, 'Sync Asset Data');
+      this.isSyncAPILoading = false;
     }));
   }
 

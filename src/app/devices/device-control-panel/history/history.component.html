@@ -10,6 +10,12 @@
         <ng-template ng-multi-label-tmp let-items="items">
         {{items.length}} widgets selected
         </ng-template>
+        <ng-template ng-header-tmp>
+          <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+            <li *ngIf="selectedWidgets.length !== layoutJson.length"> <a  href="javascript:void(0)" (click)="selectedWidgets = layoutJson">Select All</a></li>
+            <li *ngIf="selectedWidgets.length === layoutJson.length"> <a  href="javascript:void(0)" (click)="selectedWidgets = []">Deselect All</a></li>
+          </ul>
+        </ng-template>
       </ng-select>
       </div>
       <div class="form-group left-inner-addon" >
@@ -101,7 +107,7 @@
         historyData.length === 0 && isFilterSelected && !isHistoryAPILoading
       "
     >
-      No data found.
+      No data found for {{this.dateRange}}. <span *ngIf="this.dateRange !== 'this selected range'; else differentMsg"><p class="pt-2">You can choose large time window.</p></span><ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template>
     </p>
     <p class="m-3" *ngIf="!isFilterSelected && !isHistoryAPILoading">
       Please select widget to load the data.

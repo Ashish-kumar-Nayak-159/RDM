@@ -46,6 +46,7 @@ export class RDMDeviceControlPanelErrorComponent implements OnInit, OnDestroy {
     // this.errorFilter.app = this.contextApp.app;
     this.errorTableConfig = {
       type: 'error',
+      dateRange: '',
       headers: ['Timestamp', 'Message ID', 'Error Code', 'Message'],
       data: [
         {
@@ -97,6 +98,12 @@ export class RDMDeviceControlPanelErrorComponent implements OnInit, OnDestroy {
           this.errors = response.data;
           this.errors.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
 
+        }
+        if (this.errorFilter.dateOption !== 'Custom Range') {
+          this.errorTableConfig.dateRange = this.errorFilter.dateOption;
+        }
+        else {
+          this.errorTableConfig.dateRange = 'this selected range';
         }
         this.isErrorLoading = false;
       }, error => this.isErrorLoading = false

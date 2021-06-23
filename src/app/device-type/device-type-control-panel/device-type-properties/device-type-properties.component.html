@@ -3,7 +3,7 @@
   <h1 class="h3 mb-0 text-gray-800">Access Control</h1>
 </div> -->
 
-    <div class="tab-bar" *ngIf="!type.includes('derived')">
+    <div class="tab-bar" *ngIf="!type.includes('Derived Properties')">
       <div class="">
     <ul class="nav">
       <li class="nav-item">
@@ -11,8 +11,8 @@
         [class.disabled]="deviceType.freezed">
           <i class="fa fa-fw fa-plus"></i>
           <span class="text-secondary">Add {{(type.includes('measured') ? 'Measured ' : (
-            type.includes('Controllable') ? 'Controllable ' : (
-              type.includes('Configurable') ? 'Configurable ' : (
+            type.includes('controllable') ? 'Controllable ' : (
+              type.includes('configurable') ? 'Configurable ' : (
                 type.includes('derived') ? 'Edge Derived ' : ''
               )
             )
@@ -39,9 +39,9 @@
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">{{propertyObj.edit ? 'Edit' : 'Add'}}
           {{(type.includes('measured') ? 'Measured ' : (
-            type.includes('Controllable') ? 'Controllable ' : (
-              type.includes('Configurable') ? 'Configurable ' : (
-                type.includes('derived') ? 'Derived ' : ''
+            type.includes('controllable') ? 'Controllable ' : (
+              type.includes('configurable') ? 'Configurable ' : (
+                type.includes('derived') ? 'Edge Derived ' : ''
               )
             )
           ))}}
@@ -167,8 +167,8 @@
                   (change)="onChangeOfSetupFunctionCode()"> <option [ngValue]="null">Select Function Code</option>
                     <option [ngValue]="1" >Read Coil (DIGITAL)</option>
                     <option [ngValue]="2" >Read Discrete Input (DIGITAL)</option>
-                    <option [ngValue]="3" >Read Holding Registers (ANALOG)</option>
-                    <option [ngValue]="4" >Read Input Registers (ANALOG)</option>
+                    <option [ngValue]="3" *ngIf="setupForm.get('d').value === 'a' || setupForm.get('d').value === 's'">Read Holding Registers (ANALOG)</option>
+                    <option [ngValue]="4" *ngIf="setupForm.get('d').value === 'a' || setupForm.get('d').value === 's'">Read Input Registers (ANALOG)</option>
                   </select>
                   </div>
                   <div *ngIf="setupForm.get('fc').invalid && (setupForm.get('fc').dirty || setupForm.get('fc').touched)"

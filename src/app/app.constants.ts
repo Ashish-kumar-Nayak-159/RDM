@@ -1281,6 +1281,15 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-file',
       visible: true,
       isTitle: false
+    },
+    {
+      page: 'alert_acknowledgement_reasons',
+      system_name: 'Alert Acknowledgement Reasons',
+      url: '#device_type_alert_acknowledgement_reasons',
+      display_name: 'Alert Acknowledgement Reasons',
+      icon: 'fa fa-fw fa-exclamation-triangle',
+      visible: true,
+      isTitle: false
     }
   ];
 

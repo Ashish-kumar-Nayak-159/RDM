@@ -1,4 +1,4 @@
-<div class="tableFixHead  table-responsive" [ngClass]="tableConfig?.table_class">
+<div class="tableFixHead  table-responsive" [ngClass]="tableConfig?.table_class" id="table-top">
 <table  class="table table-hover" *ngIf="tableConfig">
   <thead>
     <tr >
@@ -141,3 +141,7 @@
   </tfoot> -->
 </table>
 </div>
+ <!-- Scroll to Top Button-->
+ <a class="scroll-to-top rounded" (click)="scrollToTop()">
+  <i class="fas fa-angle-up"></i>
+</a>

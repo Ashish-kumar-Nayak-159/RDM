@@ -668,6 +668,11 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }
   }
 
+  scrollToTop(){
+      $('#table-top1').animate({ scrollTop: "0px" });
+      //window.scrollTo(0, 0);
+  }
+
   async savePDF(): Promise<void> {
     if (this.originalFilterObj.report_type === 'Process Parameter Report' && this.props.length > 8) {
       this.toasterService.showWarning('For more properties, Excel Reports work better.', 'Export as PDF');

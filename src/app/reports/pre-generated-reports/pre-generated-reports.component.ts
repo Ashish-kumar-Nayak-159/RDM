@@ -2,7 +2,7 @@ import { FileSaverService } from 'ngx-filesaver';
 import { ToasterService } from './../../services/toaster.service';
 import { DeviceService } from './../../services/devices/device.service';
 import { Subscription } from 'rxjs';
-import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CONSTANTS } from 'src/app/app.constants';
 import { ApplicationService } from 'src/app/services/application/application.service';

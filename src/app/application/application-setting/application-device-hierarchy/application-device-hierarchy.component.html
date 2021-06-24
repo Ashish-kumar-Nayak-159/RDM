@@ -1,13 +1,19 @@
 <div class="tab-bar">
   <div class="d-flex d-flex align-items-center">
     <div class="h6 m-0 p-0">
-      Application Hierarchy
-        <a href="javascript:void(0)" placement="bottom" class="ml-1" tooltip="Edit Hierarchy" *ngIf="!isAppSetingsEditable"
-          (click)="isAppSetingsEditable = true;"><i class="fa fa-edit"></i></a>
-        <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Cancel" *ngIf="isAppSetingsEditable"
-          (click)="onCancelClick();"><i class="fa fa-times"></i></a>
-        <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Save Hierarchy" *ngIf="isAppSetingsEditable"
-        (click)="onSaveHierarchyTags();"><i class="fa fa-check"></i></a>
+      Hierarchy
+      <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="isAppSetingsEditable = true;" *ngIf="!isAppSetingsEditable"
+      placement="bottom" tooltip="Edit Hierarchy"><i class="fas fa-edit fa-sm"></i></button>
+        <!-- <a href="javascript:void(0)" placement="bottom" class="ml-1" tooltip="Edit Hierarchy" *ngIf="!isAppSetingsEditable"
+          (click)="isAppSetingsEditable = true;"><i class="fa fa-edit"></i></a> -->
+          <button type="button" class="btn btn-sm searchBtn btn-success mr-2" (click)="onSaveHierarchyTags()" *ngIf="isAppSetingsEditable"
+          placement="bottom" tooltip="Save Hierarchy"><i class="fas fa-check fa-sm"></i></button>
+        <!-- <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Save Hierarchy" *ngIf="isAppSetingsEditable"
+        (click)="onSaveHierarchyTags();"><i class="fa fa-check"></i></a> -->
+        <button type="button" class="btn btn-sm searchBtn btn-secondary" (click)="onCancelClick()" *ngIf="isAppSetingsEditable"
+      placement="bottom" tooltip="Cancel"><i class="fas fa-times fa-sm"></i></button>
+        <!-- <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Cancel" *ngIf="isAppSetingsEditable"
+          (click)="onCancelClick();"><i class="fa fa-times"></i></a> -->
     </div>
 </div>
 </div>

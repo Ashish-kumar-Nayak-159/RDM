@@ -1,10 +1,14 @@
 <div class="tab-bar">
   <div class="d-flex d-flex align-items-center">
-    <div class="h6 m-0 p-0">Application Menu Settings
-      <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isAppSettingsEditable"
-      (click)="isAppSettingsEditable = true;"><i class="fa fa-edit"></i></a>
-    <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isAppSettingsEditable"
-      (click)="onCancelClick();"><i class="fa fa-times"></i></a>
+    <div class="h6 m-0 p-0">Menu Settings
+      <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isAppSettingsEditable"
+      (click)="isAppSettingsEditable = true;"><i class="fa fa-edit"></i></a> -->
+      <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="isAppSettingsEditable = true;" *ngIf="!isAppSettingsEditable"
+      placement="bottom" tooltip="Edit Tags"><i class="fas fa-edit fa-sm"></i></button>
+    <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isAppSettingsEditable"
+      (click)="onCancelClick();"><i class="fa fa-times"></i></a> -->
+      <button type="button" class="btn btn-sm searchBtn btn-secondary" (click)="onCancelClick()" *ngIf="isAppSettingsEditable"
+      placement="bottom" tooltip="Cancel"><i class="fas fa-times fa-sm"></i></button>
     </div>
 </div>
 </div>

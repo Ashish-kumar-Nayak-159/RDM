@@ -1,9 +1,11 @@
 <div class="tab-bar">
   <div class="d-flex d-flex align-items-center">
     <div class="h6 m-0 p-0">
-      Application Roles
-      <a href="javascript:void(0)" placement="bottom" class="ml-1" tooltip="Add Role"
-          (click)="onAddNewRoleObj()"><i class="fa fa-plus"></i></a>
+    Roles
+      <!-- <a href="javascript:void(0)" placement="bottom" class="ml-1" tooltip="Add Role"
+          (click)="onAddNewRoleObj()"><i class="fa fa-plus"></i></a> -->
+          <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="onAddNewRoleObj()"
+          placement="bottom" tooltip="Add Role"><i class="fas fa-plus fa-sm"></i></button>
       <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Edit Role" class="ml-1" *ngIf="!isAppSetingsEditable"
           (click)="isAppSetingsEditable = true;"><i class="fa fa-edit"></i></a>
         <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Cancel" *ngIf="isAppSetingsEditable"
@@ -32,7 +34,6 @@
         [disabled]="saveRoleAPILoading">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveRoleAPILoading"></i></button>
         <button type="button" class="btn btn-sm searchBtn btn-white ml-1" (click)="onCancelClick()">CANCEL</button>
       </th>
-
     </tr>
     </tfoot>
   <tbody>

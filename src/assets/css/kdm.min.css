@@ -13674,3 +13674,7 @@ overflow-x: hidden;
 .table-fix-head-device-model {
   height: calc(100vh - 8rem)
 }
+.td-padding {
+  padding: 0 0.6rem !important;
+  vertical-align: middle !important;
+}

@@ -26,22 +26,28 @@
           <table class="table table-hover">
             <thead>
               <tr >
-                <th>No</th>
-                <th>Reason</th>
-                <th>Action</th>
+                <th class="w-25">No</th>
+                <th class="w-50">Reason</th>
+                <th class="w-25">Action</th>
               </tr>
             </thead>
             <tbody>
+              <tr *ngIf="reasonObj">
+                <td></td>
+                <td><input type="text" min="1" class="form-control form-control-sm w-50" id="name" placeholder="Add Reason here..."
+                  [(ngModel)]="reasonObj.reason" name="name"></td>
+                <td></td>
+              </tr>
               <ng-container *ngIf="ackReasons.length > 0">
               <tr *ngFor="let ack of ackReasons; let i = index;">
                 <td>{{i + 1}}</td>
                 <!-- <td >{{ack.reason}}</td> -->
-                <td>
+                <td [ngClass]="{'td-padding': isEnableEdit && isEnableEdit[i]}">
                   <ng-container *ngIf="isEnableEdit && !isEnableEdit[i]">
                     {{ack.reason}}
                   </ng-container> 
                   <ng-container *ngIf="isEnableEdit && isEnableEdit[i]">
-                    <input type="text" class="form-control form-control-sm border-0 small"
+                    <input type="text" class="form-control form-control-sm small w-50" 
                     [(ngModel)]="ack.reason" name="{{ack.reason}}">
                   </ng-container>
                 </td>
@@ -57,12 +63,6 @@
                   <i class="fa fa-trash fa-sm"></i> </a></td>
               </tr>
             </ng-container>
-              <tr *ngIf="reasonObj">
-                <td></td>
-                <td><input type="text" min="1" class="form-control form-control-sm mx-2 my-1" id="name" placeholder="Reason"
-                  [(ngModel)]="reasonObj.reason" name="name"></td>
-                <td></td>
-              </tr>
               <tr *ngIf="ackReasons.length === 0 && !firstReasonAdded">
                 <td colspan="3">No Acknowledge Reasons added.</td>
               </tr>

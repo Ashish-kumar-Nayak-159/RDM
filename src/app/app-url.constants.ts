@@ -76,6 +76,10 @@ export class AppUrls {
   public static CREATE_MODEL_REFERENCE_DOCUMENTS = 'apps/{0}/device_types/{1}/reference_documents';
   public static UPDATE_MODEL_REFERENCE_DOCUMENTS = 'apps/{0}/device_types/{1}/reference_documents/{2}';
   public static DELETE_MODEL_REFERENCE_DOCUMENTS = 'apps/{0}/device_types/{1}/reference_documents/{2}';
+  public static GET_MODEL_ACKNOWLEDGEMENT_REASONS = 'apps/{0}/asset_models/{1}/alert_acknowledge_reasons';
+  public static CREATE_MODEL_ACKNOWLEDGEMENT_REASONS = 'apps/{0}/asset_models/{1}/alert_acknowledge_reasons';
+  public static UPDATE_MODEL_ACKNOWLEDGEMENT_REASONS = 'apps/{0}/asset_models/{1}/alert_acknowledge_reasons/{2}';
+  public static DELETE_MODEL_ACKNOWLEDGEMENT_REASONS = 'apps/{0}/asset_models/{1}/alert_acknowledge_reasons/{2}';
   public static GET_ALERT_CONDITIONS = 'apps/{0}/device_types/{1}/alert_conditions';
   public static CREATE_ALERT_CONDITION = 'apps/{0}/device_types/{1}/alert_conditions';
   public static UPDATE_ALERT_CONDITION = 'apps/{0}/device_types/{1}/alert_conditions/{2}';

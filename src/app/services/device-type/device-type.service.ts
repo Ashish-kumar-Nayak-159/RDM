@@ -350,6 +350,26 @@ export class DeviceTypeService {
       encodeURIComponent(app), encodeURIComponent(deviceType), encodeURIComponent(id)), {});
   }
 
+  getThingsModelAckReasons(modelObj) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_MODEL_ACKNOWLEDGEMENT_REASONS, encodeURIComponent(modelObj.app),
+    encodeURIComponent(modelObj.name)));
+  }
+
+  createThingsModelAckReasons(obj, modelObj) {
+    return this.http.post(this.url + String.Format(AppUrls.GET_MODEL_ACKNOWLEDGEMENT_REASONS, encodeURIComponent(modelObj.app),
+    encodeURIComponent(modelObj.name)), obj);
+  }
+
+  updateThingsModelAckReasons(id, obj, modelObj) {
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_MODEL_ACKNOWLEDGEMENT_REASONS, encodeURIComponent(modelObj.app),
+    encodeURIComponent(modelObj.name), encodeURIComponent(id)), obj);
+  }
+
+  deleteThingsModelAckReasons(id, modelObj) {
+    return this.http.delete(this.url + String.Format(AppUrls.UPDATE_MODEL_ACKNOWLEDGEMENT_REASONS, encodeURIComponent(modelObj.app),
+    encodeURIComponent(modelObj.name), encodeURIComponent(id)), {});
+  }
+
   getAlertConditions(app, filterObj) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {

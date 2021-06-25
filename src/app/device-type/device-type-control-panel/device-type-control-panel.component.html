@@ -108,7 +108,7 @@
         <app-device-type-stream-processing *ngIf="activeTab === 'stream_processing' && deviceType"></app-device-type-stream-processing>
       </div>
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'alert_acknowledgement_reasons'}" role="tabpanel" id="device_type_alert_acknowledgement_reasons">
-        <app-device-type-alert-acknowledgement-reasons *ngIf="activeTab === 'alert_acknowledgement_reasons' && deviceType"></app-device-type-alert-acknowledgement-reasons>
+        <app-device-type-alert-acknowledgement-reasons *ngIf="activeTab === 'alert_acknowledgement_reasons' && deviceType" [deviceType]="deviceType"></app-device-type-alert-acknowledgement-reasons>
       </div>
       <!-- /.container1-fluid -->
 

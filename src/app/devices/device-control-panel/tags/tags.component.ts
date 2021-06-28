@@ -286,6 +286,10 @@ export class TagsComponent implements OnInit, OnDestroy {
     ));
   }
 
+  deleteCustomTag(index) {
+    this.deviceCustomTags.splice(index, 1);
+  }
+
   deleteAllDeviceTags(event) {
     if (event === 'save') {
     this.isUpdateAPILoading = true;

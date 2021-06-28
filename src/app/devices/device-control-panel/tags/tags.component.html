@@ -1,7 +1,6 @@
 <div class="tab-bar">
   <div class="">
     <ul class="nav">
-
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="updateDeviceTags()"
           [class.disabled]="isUpdateAPILoading">
@@ -43,7 +42,6 @@
             Reserved Tags
           </a>
         </ng-container>
-
             <h1 class="h6 mb-3 text-secondary-400">Reserved Tags:
               <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isReservedTagsEditable"
                 (click)="isReservedTagsEditable = true;"><i class="fa fa-edit"></i></a>
@@ -78,9 +76,7 @@
                 <tr>
                   <td>Asset Manager</td>
                   <td>
-
                       <span *ngFor="let user of device?.tags?.device_users_arr">{{user}}<br/></span>
-
                   </td>
                 </tr>
                 <tr *ngIf="contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Device ID'">
@@ -139,7 +135,6 @@
             Custom Tags
           </a>
         </ng-container>
-
             <h1 class="h6 mb-3 text-secondary-800">Custom Tags:
               <a href="javascript:void(0)" placement="bottom" tooltip="Edit Custom Tags"
                 *ngIf="!isCustomTagsEditable && deviceCustomTags.length > 1" (click)="isCustomTagsEditable = true;"><i
@@ -148,13 +143,17 @@
                 (click)="isCustomTagsEditable = false;"><i class="fa fa-times"></i></a>
             </h1>
             <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
-
               <tbody>
                 <tr *ngFor="let tag of deviceCustomTags;let i = index">
                   <ng-container *ngIf="!tag.editable; else lastRowTemplate">
                     <ng-container *ngIf="!isCustomTagsEditable">
                       <td>{{tag.name}}</td>
                       <td>{{tag.value}}</td>
+                      <td>
+                        <a href="javascript:void(0)" (click)="deleteCustomTag(i)">
+                          <i class="fa fa-fw fa-trash"></i>
+                        </a>
+                      </td>
                     </ng-container>
                     <ng-container *ngIf="isCustomTagsEditable">
                       <td>
@@ -164,6 +163,7 @@
                       </td>
                       <td><input type="text" class="form-control form-control-sm bg-light border-0 small" aria-label="Value"
                           aria-describedby="basic-addon3" [(ngModel)]="tag.value" name="value"></td>
+                      <td></td>
                     </ng-container>
                   </ng-container>
                   <ng-template #lastRowTemplate>
@@ -175,17 +175,15 @@
                     <td><input type="text" class="form-control form-control-sm bg-light border-0 small" placeholder="Value"
                         aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.value" name="value"
                         (input)="onCustomTagInputChange()"></td>
+                    <td></td>
                   </ng-template>
                 </tr>
               </tbody>
             </table>
-
       </accordion-group>
-
     </accordion>
   </div>
 </div>
-
 
 <div class="modal fade" id="confirmResetTagsModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
@@ -196,7 +194,6 @@
   </div>
 </div>
 
-
 <div class="modal fade" id="confirmdeleteTagsModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <app-message-modal [bodyMessage]="'All the custom tags will get deleted. Are you sure you want to delete the tags?'"
@@ -204,7 +201,6 @@
       [modalConfig]="modalConfig"></app-message-modal>
   </div>
 </div>
-
 
 <div class="modal fade" id="changeLocationModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog modal-lg" role="document">

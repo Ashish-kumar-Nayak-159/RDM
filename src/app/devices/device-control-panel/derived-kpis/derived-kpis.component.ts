@@ -41,7 +41,6 @@ export class DerivedKpisComponent implements OnInit {
     // this.derivedKPIFilter.app = this.contextApp.app;
     this.derivedKPITableConfig = {
       type: 'derivedKPI',
-      dateRange: '',
       headers: ['KPI Name', 'Description', 'Condition', 'Value'],
       data: [
         {

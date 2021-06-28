@@ -2,25 +2,25 @@
     <div class="">
       <ul class="nav">
        <li class="nav-item">
-          <a class="nav-link" href="javascript:void(0)"  (click)="addReason()" [class.disabled]="isUpdateReasonsAPILoading || deviceType.freezed">
+          <a class="nav-link" href="javascript:void(0)"  (click)="addReason()" [class.disabled]="ReasonBtnClicked || isUpdateReasonsAPILoading || deviceType.freezed">
             <i class="fa fa-fw fa-plus"></i>
             <span class="text-secondary">Add</span></a>
         </li>
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a class="nav-link" href="javascript:void(0)" (click)="updateReason()" [class.disabled]="isUpdateReasonsAPILoading || deviceType.freezed">
             <i class="fa fa-fw fa-save"></i>
             <span class="text-secondary">Save</span></a>
-        </li>
+        </li> -->
         <li class="nav-item" *ngIf="isUpdateReasonsAPILoading">
-          <a class="nav-link" href="javascript:void(0)">
+          <a href="javascript:void(0)">
             <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
             </a>
-          </li> 
+          </li>
       </ul>
     </div>
   </div>
-  
-  
+
+
   <div class="table-responsive">
     <div class="tableFixHead">
           <table class="table table-hover">
@@ -34,9 +34,13 @@
             <tbody>
               <tr *ngIf="reasonObj">
                 <td></td>
-                <td><input type="text" min="1" class="form-control form-control-sm w-50" id="name" placeholder="Add Reason here..."
+                <td class="td-padding"><input type="text" min="1" class="form-control form-control-sm w-50" id="name" placeholder="Add Reason here..."
                   [(ngModel)]="reasonObj.reason" name="name"></td>
-                <td></td>
+                <td><a href="javascript:void(0)" placement="bottom" tooltip="Cancel" 
+                  (click)="reasonObj = undefined; ReasonBtnClicked = false;"><i class="fa fa-times"></i></a>
+                  <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Save Reason" 
+                  (click)="updateReason()"><i class="fa fa-check"></i></a>
+                </td>
               </tr>
               <ng-container *ngIf="ackReasons.length > 0">
               <tr *ngFor="let ack of ackReasons; let i = index;">
@@ -45,20 +49,20 @@
                 <td [ngClass]="{'td-padding': isEnableEdit && isEnableEdit[i]}">
                   <ng-container *ngIf="isEnableEdit && !isEnableEdit[i]">
                     {{ack.reason}}
-                  </ng-container> 
+                  </ng-container>
                   <ng-container *ngIf="isEnableEdit && isEnableEdit[i]">
-                    <input type="text" class="form-control form-control-sm small w-50" 
+                    <input type="text" class="form-control form-control-sm small w-50"
                     [(ngModel)]="ack.reason" name="{{ack.reason}}">
                   </ng-container>
                 </td>
                 <td >
                   <a href="javascript:void(0)" placement="bottom" tooltip="Edit Reasons" *ngIf="isEnableEdit && !isEnableEdit[i]"><i class="fa fa-edit"
                   [class.disabled]="deviceType.freezed" (click)="enableEditMethod(i)"></i></a>
-                  <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Cancel" *ngIf="isEnableEdit && isEnableEdit[i]"
+                  <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isEnableEdit && isEnableEdit[i]"
                   (click)="onCancelClick(ack.reason, ack.id, i);"><i class="fa fa-times"></i></a>
                   <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Save Reason" *ngIf="isEnableEdit && isEnableEdit[i]"
                   (click)="onSaveReason(ack.reason, ack.id, i);"><i class="fa fa-check"></i></a>
-                  <a href="javascript:void(0)" class="mx-1" placement="bottom" tooltip="Delete" 
+                  <a href="javascript:void(0)" class="ml-2" placement="bottom" tooltip="Delete" 
                   [class.disabled]="deviceType.freezed"  (click)="openModal('confirmMessageModal', ack.id, i)">
                   <i class="fa fa-trash fa-sm"></i> </a></td>
               </tr>

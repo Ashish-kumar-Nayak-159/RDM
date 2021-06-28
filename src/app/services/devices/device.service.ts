@@ -664,6 +664,11 @@ export class DeviceService {
       encodeURIComponent(app), encodeURIComponent(gatewayId)), obj);
   }
 
+  getDerivedKPIs(app, deviceId) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_DERIVEDKPI_LIST,
+      encodeURIComponent(app), encodeURIComponent(deviceId)));
+  }
+
   getDeviceNetworkFailureEvents(app, deviceId, filterObj) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {

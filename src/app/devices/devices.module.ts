@@ -72,6 +72,7 @@ import { GatewayDevicesSettingComponent } from './gateway-control-panel/gateway-
 import { DevicePackagesComponent } from './device-control-panel/device-packages/device-packages.component';
 import { DeviceMessagesWrapperComponent } from './device-control-panel/device-messages-wrapper/device-messages-wrapper.component';
 import { FotaComponent } from './gateway-control-panel/gateway-settings/fota/fota.component';
+import { DerivedKpisComponent } from './device-control-panel/derived-kpis/derived-kpis.component';
 
 @NgModule({
   declarations: [
@@ -126,7 +127,8 @@ import { FotaComponent } from './gateway-control-panel/gateway-settings/fota/fot
     GatewayDevicesSettingComponent,
     DevicePackagesComponent,
     DeviceMessagesWrapperComponent,
-    FotaComponent
+    FotaComponent,
+    DerivedKpisComponent
   ],
   imports: [
     CommonModule,

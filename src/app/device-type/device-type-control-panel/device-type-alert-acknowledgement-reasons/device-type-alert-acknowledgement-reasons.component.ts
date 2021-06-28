@@ -23,6 +23,7 @@ export class DeviceTypeAlertAcknowledgementReasonsComponent implements OnInit {
   reasonObj: any;
   originalReasonObj: any;
   firstReasonAdded = false;
+  ReasonBtnClicked = false;
   isEnableEdit: any = {};
   deleteTagIndex: any;
   selectedid: any;
@@ -54,11 +55,14 @@ export class DeviceTypeAlertAcknowledgementReasonsComponent implements OnInit {
           this.ackReasons = response.data;
         }
         this.isAckReasonsLoading = false;
+      }, error => {
+        this.isAckReasonsLoading = false;
       }
     ));
   }
 
   addReason() {
+    this.ReasonBtnClicked = true;
     if (this.reasonObj) {
       if (!this.reasonObj.reason) {
         this.toasterService.showError('Please add reason', 'Add Reason');
@@ -92,14 +96,17 @@ export class DeviceTypeAlertAcknowledgementReasonsComponent implements OnInit {
         this.isUpdateReasonsAPILoading = false;
       }
     ));
+    this.ReasonBtnClicked = false;
   }
 
   enableEditMethod(i) {
+    this.originalReasonObj = JSON.parse(JSON.stringify(this.ackReasons[i]));
     this.isEnableEdit = {};
     this.isEnableEdit[i] = true;
   }
 
   onCancelClick(r, e, i) {
+    this.ackReasons[i].reason = this.originalReasonObj.reason;
     this.isEnableEdit[i] = false;
   }
 

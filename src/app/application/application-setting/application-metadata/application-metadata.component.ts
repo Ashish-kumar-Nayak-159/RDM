@@ -33,7 +33,7 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
 
   async onHeaderLogoFileSelected(files: FileList): Promise<void> {
     this.isFileUploading = true;
-    const data = await this.commonService.uploadImageToBlob(files.item(0), 'app-images/header-logo');
+    const data = await this.commonService.uploadImageToBlob(files.item(0), this.applicationData.app + '/app-images');
     if (data) {
       this.applicationData.metadata.header_logo = data;
     } else {
@@ -43,21 +43,21 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
     // this.blobState.uploadItems(files);
   }
 
-  async onLogoFileSelected(files: FileList): Promise<void> {
-    this.isFileUploading = true;
-    const data = await this.commonService.uploadImageToBlob(files.item(0), 'app-images');
-    if (data) {
-      this.applicationData.metadata.logo = data;
-    } else {
-      this.toasterService.showError('Error in uploading file', 'Upload file');
-    }
-    this.isFileUploading = false;
-    // this.blobState.uploadItems(files);
-  }
+  // async onLogoFileSelected(files: FileList): Promise<void> {
+  //   this.isFileUploading = true;
+  //   const data = await this.commonService.uploadImageToBlob(files.item(0), 'app-images');
+  //   if (data) {
+  //     this.applicationData.metadata.logo = data;
+  //   } else {
+  //     this.toasterService.showError('Error in uploading file', 'Upload file');
+  //   }
+  //   this.isFileUploading = false;
+  //   // this.blobState.uploadItems(files);
+  // }
 
   async onIconFileSelected(files: FileList): Promise<void> {
     this.isFileUploading = true;
-    const data = await this.commonService.uploadImageToBlob(files.item(0), 'app-images');
+    const data = await this.commonService.uploadImageToBlob(files.item(0), this.applicationData.app + '/app-images'  );
     if (data) {
       this.applicationData.metadata.icon = data;
     } else {

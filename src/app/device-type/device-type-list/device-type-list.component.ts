@@ -285,17 +285,16 @@ export class DeviceTypeListComponent implements OnInit, OnDestroy {
    // this.thingsModel.tags.app = this.contextApp.app;
   }
 
-  async onLogoFileSelected(files: FileList): Promise<void> {
-    this.isFileUploading = true;
-    const data = await this.commonService.uploadImageToBlob(files.item(0), 'device-type-images');
-    if (data) {
-      this.thingsModel.metadata.image = data;
-    } else {
-      this.toasterService.showError('Error in uploading file', 'Upload file');
-    }
-    this.isFileUploading = false;
-    // this.blobState.uploadItems(files);
-  }
+  // async onLogoFileSelected(files: FileList): Promise<void> {
+  //   this.isFileUploading = true;
+  //   const data = await this.commonService.uploadImageToBlob(files.item(0), 'device-type-images');
+  //   if (data) {
+  //     this.thingsModel.metadata.image = data;
+  //   } else {
+  //     this.toasterService.showError('Error in uploading file', 'Upload file');
+  //   }
+  //   this.isFileUploading = false;
+  // }
 
   getConnectivityData() {
     this.thingsModel.tags.cloud_connectivity = undefined;

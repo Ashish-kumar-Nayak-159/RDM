@@ -142,7 +142,7 @@
             </div> -->
             <div class="media-body"><a  class="m-r-10">
                 <div class="media-heading">
-                  <p class="overflow" [tooltip]="alert.message">{{ alert.message }}</p>
+                  <p class="overflow" [tooltip]="alert?.message || alert.code">{{ alert?.message || alert.code}}</p>
                   <!--<span class="badge bg-amber">Shop</span>
                           <small class="float-right text-muted"><i class="fa fa-check-square fa-fw"></i> </small>-->
                 </div>

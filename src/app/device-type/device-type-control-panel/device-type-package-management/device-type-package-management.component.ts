@@ -188,7 +188,7 @@ export class DeviceTypePackageManagementComponent implements OnInit {
     }
     this.isFileUploading = true;
     const data = await this.commonService.uploadImageToBlob(files.item(0),
-    this.contextApp.app, environment.packageManagementContainer);
+    this.contextApp.app + '/models/' + this.deviceType.name + '/packages', environment.packageManagementContainer);
     if (data) {
       this.packageObj.url = data.url;
       if (!this.packageObj.metadata) {

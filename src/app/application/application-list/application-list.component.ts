@@ -166,41 +166,41 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
 
   }
 
-  async onHeaderLogoFileSelected(files: FileList): Promise<void> {
-    this.isFileUploading = true;
-    const data = await this.commonService.uploadImageToBlob(files.item(0), 'app-images/header-logo');
-    if (data) {
-      this.applicationDetail.metadata.header_logo = data;
-    } else {
-      this.toasterService.showError('Error in uploading file', 'Upload file');
-    }
-    this.isFileUploading = false;
-    // this.blobState.uploadItems(files);
-  }
+  // async onHeaderLogoFileSelected(files: FileList): Promise<void> {
+  //   this.isFileUploading = true;
+  //   const data = await this.commonService.uploadImageToBlob(files.item(0), 'app-images/header-logo');
+  //   if (data) {
+  //     this.applicationDetail.metadata.header_logo = data;
+  //   } else {
+  //     this.toasterService.showError('Error in uploading file', 'Upload file');
+  //   }
+  //   this.isFileUploading = false;
+  //   // this.blobState.uploadItems(files);
+  // }
 
-  async onLogoFileSelected(files: FileList): Promise<void> {
-    this.isFileUploading = true;
-    const data = await this.commonService.uploadImageToBlob(files.item(0), 'app-images');
-    if (data) {
-      this.applicationDetail.metadata.logo = data;
-    } else {
-      this.toasterService.showError('Error in uploading file', 'Upload file');
-    }
-    this.isFileUploading = false;
-    // this.blobState.uploadItems(files);
-  }
+  // async onLogoFileSelected(files: FileList): Promise<void> {
+  //   this.isFileUploading = true;
+  //   const data = await this.commonService.uploadImageToBlob(files.item(0), 'app-images');
+  //   if (data) {
+  //     this.applicationDetail.metadata.logo = data;
+  //   } else {
+  //     this.toasterService.showError('Error in uploading file', 'Upload file');
+  //   }
+  //   this.isFileUploading = false;
+  //   // this.blobState.uploadItems(files);
+  // }
 
-  async onIconFileSelected(files: FileList): Promise<void> {
-    this.isFileUploading = true;
-    const data = await this.commonService.uploadImageToBlob(files.item(0), 'app-images');
-    if (data) {
-      this.applicationDetail.metadata.icon = data;
-    } else {
-      this.toasterService.showError('Error in uploading file', 'Upload file');
-    }
-    this.isFileUploading = false;
-    // this.blobState.uploadItems(files);
-  }
+  // async onIconFileSelected(files: FileList): Promise<void> {
+  //   this.isFileUploading = true;
+  //   const data = await this.commonService.uploadImageToBlob(files.item(0), 'app-images');
+  //   if (data) {
+  //     this.applicationDetail.metadata.icon = data;
+  //   } else {
+  //     this.toasterService.showError('Error in uploading file', 'Upload file');
+  //   }
+  //   this.isFileUploading = false;
+  //   // this.blobState.uploadItems(files);
+  // }
 
   onCloseCreateAppModal(modalId) {
     $('#' + modalId).modal('hide');
@@ -208,9 +208,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
     this.appModalType = undefined;
   }
 
-
   async createApp() {
-
     if (!this.applicationDetail.metadata.app_specific_schema && !this.applicationDetail.metadata.app_specific_db &&
       !this.applicationDetail.metadata.app_telemetry_specific_schema) {
       this.applicationDetail.metadata.partition.telemetry.partition_strategy = 'Device ID';
@@ -262,7 +260,6 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
           }
         ));
       }
-
     }
   }
 

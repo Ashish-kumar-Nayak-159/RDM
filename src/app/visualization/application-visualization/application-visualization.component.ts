@@ -982,10 +982,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.toasterService.showError('This file is not valid for selected document type', 'Select File');
       return;
     }
-
     this.isFileUploading = true;
     const data = await this.commonService.uploadImageToBlob(files.item(0),
-    'devices/' + this.acknowledgedAlert.device_id + '/alerts/' + this.acknowledgedAlert.code);
+    this.contextApp.app + '/devices/' + this.acknowledgedAlert.device_id + '/alerts/' + this.acknowledgedAlert.code);
     if (data) {
       this.acknowledgedAlert.metadata.files[index].data = data;
     } else {
@@ -994,7 +993,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.isFileUploading = false;
     // this.blobState.uploadItems(files);
   }
-
 
   acknowledgeAlert(): void {
     const files = [];

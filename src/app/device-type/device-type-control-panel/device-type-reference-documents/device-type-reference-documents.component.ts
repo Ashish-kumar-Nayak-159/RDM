@@ -1,7 +1,6 @@
 import { CONSTANTS } from './../../../app.constants';
 import { Subscription } from 'rxjs';
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
-import { CONSTANTS } from 'src/app/app.constants';
 import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';

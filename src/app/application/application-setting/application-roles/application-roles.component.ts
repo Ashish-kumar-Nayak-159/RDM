@@ -19,6 +19,7 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
   apiSubscriptions: Subscription[] = [];
   forceUpdate = false;
   isAppSetingsEditable = false;
+  isSaveButtonDisable = true;
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService
@@ -34,6 +35,7 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
   }
 
   onAddNewRoleObj() {
+    this.isSaveButtonDisable = false;
     this.applicationData.roles.splice(this.applicationData.roles.length, 0, {
       name: null,
       level: 0,
@@ -67,6 +69,7 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
         this.toasterService.showSuccess(response.message, 'Save Role');
         this.saveRoleAPILoading = false;
         this.forceUpdate = false;
+        this.isSaveButtonDisable = true;
         // this.isAppSetingsEditable = false;
         this.applicationService.refreshAppData.emit();
       }, (error) => {
@@ -103,6 +106,7 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
   onCancelClick() {
     this.applicationData = JSON.parse(JSON.stringify(this.originalApplicationData));
     this.isAppSetingsEditable = false;
+    this.isSaveButtonDisable = true;
   }
 
   ngOnDestroy() {

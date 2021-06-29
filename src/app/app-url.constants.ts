@@ -9,6 +9,7 @@ export class AppUrls {
   public static GET_ALERTS_LIST = 'D2C_GetDeviceAlerts';
   public static GET_ALERT_END_EVENT_LIST = 'D2C_GetDeviceAlertEndEvents';
   public static GET_TELEMETRY_LIST = 'apps/{0}/d2c/telemetry';
+  public static GET_DERIVEDKPI_LIST = 'apps/{0}/asset_derived_kpis/{1}';
   public static GET_ERROR_LIST = 'D2C_GetDeviceErrors';
   public static GET_OTHER_MESSAGE_LIST = 'D2C_GetDeviceOtherMessages';
   public static GET_DEVICE_BATTERY_LIST = 'D2C_GetDeviceBatteryMessages';

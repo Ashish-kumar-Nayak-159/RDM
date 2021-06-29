@@ -154,8 +154,16 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     this.addUserObj.hierarchy[this.applicationData.hierarchy.levels[0]] = this.applicationData.app;
     this.addUserObj.hierarchy = {App: this.applicationData.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
+      if (this.configureHierarchy[key]) {
       this.addUserObj.hierarchy[this.applicationData.hierarchy.levels[key]] = this.configureHierarchy[key];
+      }
     });
+    // const obj = {};
+    // Object.keys(this.hierarchyList).forEach(key => {
+    //   if (this.hierarchyList[key]) {
+    //     obj[key] = this.hierarchyList[key];
+    //   }
+    // })
     if (!this.addUserObj.name || !this.addUserObj.email || !this.addUserObj.role ||
       Object.keys(this.addUserObj.hierarchy).length !== this.hierarchyList.length) {
       this.toasterService.showError('Please enter all required fields', 'Create User');

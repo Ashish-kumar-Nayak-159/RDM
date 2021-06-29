@@ -203,8 +203,8 @@ export class DeviceMaintenanceComponent implements OnInit, OnDestroy {
     }
 
     this.isFileUploading = true;
-    const data = await this.commonService.uploadImageToBlob(files.item(0),
-    'devices/' + this.device.device_id + '/maintenance-records');
+    const data = await this.commonService.uploadImageToBlob(files.item(0), this.contextApp.app +
+    '/devices/' + this.device.device_id + '/maintenance-records');
     if (data) {
       this.selectedMaintenanceData.documents[index].data = data;
     } else {

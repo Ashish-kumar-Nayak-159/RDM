@@ -21,7 +21,10 @@ export class DeviceTypeControlPanelComponent implements OnInit, OnDestroy {
   menuItems: any[] = CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST;
   contextApp: any;
   userData: any;
+  password: any;
   subscriptions: Subscription[] = [];
+  isModelFreezeUnfreezeAPILoading = false;
+  isPasswordVisible = false;
   constructor(
     private route: ActivatedRoute,
     private deviceTypeService: DeviceTypeService,
@@ -43,7 +46,6 @@ export class DeviceTypeControlPanelComponent implements OnInit, OnDestroy {
         this.getDeviceTypeData(name);
       }
     ));
-
     this.subscriptions.push(this.route.fragment.subscribe(
       fragment => {
         if (fragment) {
@@ -162,6 +164,59 @@ export class DeviceTypeControlPanelComponent implements OnInit, OnDestroy {
           setTimeout(() => this.setToggleClassForMenu(), 50);
         }
         this.isDeviceTypeDataLoading = false;
+      }
+    ));
+  }
+
+  togglePasswordVisibility() {
+    this.isPasswordVisible = !this.isPasswordVisible;
+  }
+
+  freezeModel() {
+    this.isModelFreezeUnfreezeAPILoading = true;
+    const obj = {
+      updated_by: this.userData.email + ' (' + this.userData.name + ')'
+    };
+    this.subscriptions.push(this.deviceTypeService.freezeDeviceModel(this.contextApp.app, this.deviceType.name, obj).subscribe(
+      (response: any) => {
+        this.toasterService.showSuccess(response.message, 'Freeze Model');
+        this.isModelFreezeUnfreezeAPILoading = false;
+        this.getDeviceTypeData(this.deviceType.name);
+      }, error => {
+        this.toasterService.showError(error.message, 'Freeze Model');
+        this.isModelFreezeUnfreezeAPILoading = false;
+      }
+    ));
+  }
+
+  onCloseModal(id) {
+    $('#' + id).modal('hide');
+  }
+
+  openUnfreezeModal() {
+    this.password = undefined;
+    $('#passwordCheckModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  unfreezeModel() {
+    if (!this.password) {
+      this.toasterService.showError('Password is compulsory.', 'Unfreeze Model');
+    }
+    this.isModelFreezeUnfreezeAPILoading = true;
+    const obj = {
+      email: this.userData.email,
+      password: this.password,
+      updated_by: this.userData.email + ' (' + this.userData.name + ')'
+    };
+    this.subscriptions.push(this.deviceTypeService.unfreezeDeviceModel(this.contextApp.app, this.deviceType.name, obj).subscribe(
+      (response: any) => {
+        this.toasterService.showSuccess(response.message, 'Unfreeze Model');
+        this.isModelFreezeUnfreezeAPILoading = false;
+        this.getDeviceTypeData(this.deviceType.name);
+        this.onCloseModal('passwordCheckModal');
+      }, error => {
+        this.toasterService.showError(error.message, 'Unfreeze Model');
+        this.isModelFreezeUnfreezeAPILoading = false;
       }
     ));
   }

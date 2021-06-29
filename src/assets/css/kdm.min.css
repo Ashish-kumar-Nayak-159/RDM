@@ -9295,14 +9295,14 @@ a:focus {
 .scroll-to-top {
   position: fixed;
   right: 1rem;
-  bottom: 2rem;
+  bottom: 1rem;
   display: none;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.75rem;
+  height: 2.75rem;
   text-align: center;
   color: #fff;
   background: rgba(90, 92, 105, .5);
-  line-height: 35px;
+  line-height: 46px
 }
 
 .scroll-to-top:focus, .scroll-to-top:hover {

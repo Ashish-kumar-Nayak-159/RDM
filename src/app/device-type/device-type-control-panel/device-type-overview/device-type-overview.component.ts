@@ -73,7 +73,7 @@ export class DeviceTypeOverviewComponent implements OnInit, OnDestroy {
 
   async onLogoFileSelected(files: FileList): Promise<void> {
     this.isFileUploading = true;
-    const data = await this.commonService.uploadImageToBlob(files.item(0), 'device-type-images');
+    const data = await this.commonService.uploadImageToBlob(files.item(0), this.contextApp.app + '/models/' + this.deviceType.name);
     if (data) {
       this.thingsModel.metadata.image = data;
     } else {

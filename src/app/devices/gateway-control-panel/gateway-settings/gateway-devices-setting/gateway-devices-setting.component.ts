@@ -65,6 +65,25 @@ export class GatewayDevicesSettingComponent implements OnInit {
           turbo_mode_timeout_time: 120
         };
       }
+      this.device.settings_enabled = false;
+      if (this.device.metadata?.package_app) {
+        this.device.appObj = this.applications.find(appObj => appObj.name === this.device.metadata.package_app);
+        console.log(this.device.appObj);
+        console.log(this.deviceTwin);
+        if (this.deviceTwin.twin_properties.reported && this.deviceTwin.twin_properties.reported[this.device.appObj.type] &&
+          this.deviceTwin.twin_properties.reported[this.device.appObj.type][this.device.appObj.name]) {
+            if (this.deviceTwin.twin_properties.reported[this.device.appObj.type][this.device.appObj.name].status?.toLowerCase() !== 'running') {
+              this.device.settings_enabled = false;
+            } else {
+              if (this.deviceTwin.twin_properties.reported[this.device.appObj.type][this.device.appObj.name].device_configuration
+              && this.deviceTwin.twin_properties.reported[this.device.appObj.type][this.device.appObj.name].device_configuration[this.device.device_id]) {
+                this.device.settings_enabled = true;
+              } else {
+                this.device.settings_enabled = false;
+              }
+            }
+          }
+        }
       this.devices.push(this.device);
     }
   }

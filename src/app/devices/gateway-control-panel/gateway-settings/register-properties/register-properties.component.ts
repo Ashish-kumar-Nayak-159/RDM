@@ -56,11 +56,25 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
           this.device.model_freeze = model.freezed;
         }
       });
-      if (this.device.metadata?.package_app && this.deviceTwin?.twin_properties?.reported.registered_devices[this.device.metadata.package_app]
-        && (this.deviceTwin.twin_properties.reported?.registered_devices[this.device?.metadata?.package_app]?.
-          indexOf(this.device.device_id) > -1)) {
-        this.device.is_registered = true;
-      }
+      this.device.register_enabled = false;
+      if (this.device.metadata?.package_app) {
+        this.device.appObj = this.applications.find(appObj => appObj.name === this.device.metadata.package_app);
+        console.log(this.device.appObj);
+        console.log(this.deviceTwin);
+        if (this.deviceTwin.twin_properties.reported && this.deviceTwin.twin_properties.reported[this.device.appObj.type] &&
+          this.deviceTwin.twin_properties.reported[this.device.appObj.type][this.device.appObj.name]) {
+            if (this.deviceTwin.twin_properties.reported[this.device.appObj.type][this.device.appObj.name].status?.toLowerCase() !== 'running') {
+              this.device.register_enabled = false;
+            } else {
+              if (this.deviceTwin.twin_properties.reported[this.device.appObj.type][this.device.appObj.name].device_configuration
+              && this.deviceTwin.twin_properties.reported[this.device.appObj.type][this.device.appObj.name].device_configuration[this.device.device_id]) {
+                this.device.register_enabled = true;
+              } else {
+                this.device.register_enabled = false;
+              }
+            }
+          }
+        }
       this.devices.push(this.device);
     }
 
@@ -104,6 +118,8 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
               device.register_enabled = false;
               if (device.metadata?.package_app) {
               device.appObj = this.applications.find(appObj => appObj.name === device.metadata.package_app);
+              console.log(device.appObj);
+              console.log(this.deviceTwin);
               if (this.deviceTwin.twin_properties.reported && this.deviceTwin.twin_properties.reported[device.appObj.type] &&
                 this.deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name]) {
                   if (this.deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name].status?.toLowerCase() !== 'running') {

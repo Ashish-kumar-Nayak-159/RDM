@@ -1,3 +1,4 @@
+import { CONSTANTS } from './../../../app.constants';
 import { Subscription } from 'rxjs';
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
 import { CONSTANTS } from 'src/app/app.constants';
@@ -27,6 +28,7 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
   blobStorageURL = environment.blobURL;
   selectedDocument: any;
   subscriptions: Subscription[] = [];
+  contextApp: any;
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -36,6 +38,7 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
   ) { }
 
   ngOnInit(): void {
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.setUpDocumentData();
     this.getDocuments();
   }
@@ -153,13 +156,6 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
 
   downloadFile(fileObj) {
     this.openModal('downloadDocumentModal');
-    // const link = document.createElement('a');
-    // link.setAttribute('target', '_blank');
-    // link.setAttribute('href', fileObj.url + this.sasToken);
-    // link.setAttribute('download', fileObj.name);
-    // document.body.appendChild(link);
-    // link.click();
-    // link.remove();
     const url = this.blobStorageURL + fileObj.url + this.sasToken;
     this.subscriptions.push(this.commonService.getFileData(url).subscribe(
       response => {
@@ -167,7 +163,6 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
         this.closeModal('downloadDocumentModal');
       }
     ));
-
   }
 
   sanitizeURL() {
@@ -197,7 +192,7 @@ export class DeviceTypeReferenceDocumentsComponent implements OnInit, OnDestroy 
     }
     this.isFileUploading = true;
     const data = await this.commonService.uploadImageToBlob(files.item(0),
-    'models/' + this.deviceType.id + '_' + this.deviceType.name + '/reference-material');
+    this.contextApp.app + '/models/' + this.deviceType.name + '/reference-material');
     if (data) {
       this.documentObj.metadata = data;
     } else {

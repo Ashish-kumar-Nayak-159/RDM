@@ -525,6 +525,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
     delete obj.dateOption;
     delete obj.isTypeEditable;
     delete obj.type;
+    obj.offset = this.currentOffset;
+    obj.count = this.currentLimit;
     // obj.order_dir = 'ASC';
     if (type === 'all') {
       delete obj.count;

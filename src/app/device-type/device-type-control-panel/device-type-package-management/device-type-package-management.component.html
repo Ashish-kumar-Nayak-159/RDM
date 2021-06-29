@@ -10,7 +10,6 @@
     </ul>
   </div>
 </div>
-
 <div class="table-responsive">
   <div class="tableFixHead"  *ngIf="deviceType.metadata.model_type !== constantData.NON_IP_DEVICE">
     <app-common-table [tableData]="packages" [tableConfig]="packageTableConfig" [isTableFilterSelected]="true"
@@ -49,7 +48,6 @@
           </div>
           <label for="message-text" class="col-form-label required">Version:</label>
           <div class="form-row">
-
             <div class="form-group col-md-4">
               <input type="number" class="form-control form-control-sm" id="major" name="major" [(ngModel)]="packageObj.metadata.major"
                 placeholder="Major">
@@ -63,14 +61,12 @@
                 placeholder="Patch">
             </div>
           </div>
-
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Document:</label>
             <div class="form-group input-group row m-0">
               <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
               <div class="file-input form-control form-control-sm p-0 col-8">
                <input type="file"  accept=".zip,.rar,.7zip" id="file" class="file" (change)="onDocumentFileSelected($event.target.files)">
-
                <label for="file" class="overflow-text" [tooltip]="(packageObj && packageObj.metadata && packageObj.metadata.file_name) ? (packageObj.metadata.file_name) : ''">
                  {{(packageObj && packageObj.metadata && packageObj.metadata.file_name) ? (packageObj.metadata.file_name) : 'Choose File'}}</label>
               </div>

@@ -1,5 +1,4 @@
 import * as moment from 'moment';
-import { environment } from 'src/environments/environment';
 
 export class CONSTANTS {
 
@@ -276,6 +275,15 @@ export class CONSTANTS {
         { name: 'Delete all', key: 'delete'}
       ],
       accordion_value: { delete: true}
+    },
+    {
+      page: 'slave_info',
+      system_name: 'Sensor / Source / Slave Info',
+      url: '#device_type_slave_info',
+      display_name: 'Sensor / Source / Slave Info',
+      icon: 'fa fa-fw fa-user-secret',
+      visible: true,
+      isTitle: false
     },
     {
       page: 'package_management',
@@ -613,6 +621,15 @@ export class CONSTANTS {
         { name: 'Delete all', key: 'delete'}
       ],
       accordion_value: {delete: true}
+    },
+    {
+      page: 'slave_info',
+      system_name: 'Sensor / Source / Slave Info',
+      url: '#device_slave_info',
+      display_name: 'Sensor / Source / Slave Info',
+      icon: 'fa fa-fw fa-user-secret',
+      visible: true,
+      isTitle: false
     },
     // {
     //   page: 'package_management',
@@ -1126,6 +1143,15 @@ export class CONSTANTS {
       icon: null,
       visible: true,
       isTitle: true
+    },
+    {
+      page: 'slave_info',
+      system_name: 'Sensor / Source / Slave Info',
+      url: '#device_type_slave_info',
+      display_name: 'Sensor / Source / Slave Info',
+      icon: 'fa fa-fw fa-user-secret',
+      visible: true,
+      isTitle: false
     },
     {
       page: 'measured_properties',

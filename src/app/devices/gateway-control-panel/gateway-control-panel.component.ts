@@ -50,6 +50,34 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
       async params => {
         if (this.contextApp?.configuration?.gateway_control_panel_menu.length > 0) {
           this.menuItems = this.contextApp.configuration.gateway_control_panel_menu;
+          let titleObj;
+          let count;
+          this.menuItems.forEach((menu, index) => {
+            if (menu.isTitle) {
+              console.log(count);
+              if (titleObj) {
+                titleObj.isDisplay = count > 0 ? true : false;
+                console.log('isideeeeee', titleObj);
+              }
+              count = 0;
+              titleObj = menu;
+              console.log(titleObj);
+            } else {
+              if (menu.visible) {
+                count++;
+              }
+              if (!this.menuItems[index + 1]) {
+                if (titleObj) {
+                  titleObj.isDisplay = count > 0 ? true : false;
+                  console.log('isideeeeee', titleObj);
+                }
+                count = 0;
+                titleObj = menu;
+              }
+              console.log(count);
+            }
+          });
+          console.log(JSON.stringify(this.menuItems));
         }
         if (params.get('deviceId')) {
           // if (params.get('listName')) {

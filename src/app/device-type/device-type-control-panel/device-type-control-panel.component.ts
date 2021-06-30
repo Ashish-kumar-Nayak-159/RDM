@@ -38,6 +38,23 @@ export class DeviceTypeControlPanelComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.route.paramMap.subscribe(async params => {
       if (this.contextApp?.configuration?.model_control_panel_menu?.length > 0) {
         this.menuItems = this.contextApp.configuration.model_control_panel_menu;
+        let titleObj;
+          let count;
+          this.menuItems.forEach(menu => {
+            if (menu.isTitle) {
+              console.log(count);
+              if (titleObj) {
+                titleObj.isDisplay = count > 0 ? true : false;
+              }
+              count = 0;
+              titleObj = menu;
+            } else {
+              if (menu.visible) {
+                count++;
+              }
+            }
+          });
+          console.log(JSON.stringify(this.menuItems));
       }
       this.getDeviceTypeData(params.get('deviceTypeId'));
     }));

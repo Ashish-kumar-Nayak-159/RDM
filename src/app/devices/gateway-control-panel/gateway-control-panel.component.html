@@ -14,7 +14,7 @@
     <div class="scrollbox scrollbox_delayed" tabindex="0">
       <ul class="navbar-nav scrollbox-content" id="controlPanelSidebar">
         <ng-container *ngFor="let menu of menuItems">
-          <ng-container *ngIf="menu.isTitle">
+          <ng-container *ngIf="menu.isTitle  && menu.isDisplay">
             <div class="sidebar1-heading ">
               {{menu.display_name}}
             </div>

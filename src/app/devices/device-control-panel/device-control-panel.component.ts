@@ -201,7 +201,6 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
   }
 
   async getDeviceDetail(callFromMenu = false) {
-
     if (!callFromMenu) {
       this.isDeviceDataLoading = true;
     }
@@ -234,6 +233,22 @@ export class DeviceControlPanelComponent implements OnInit, AfterViewInit, OnDes
             this.menuItems = CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
           }
         }
+        let titleObj;
+        let count;
+        this.menuItems.forEach(menu => {
+          if (menu.isTitle) {
+            console.log(count);
+            if (titleObj) {
+              titleObj.isDisplay = count > 0 ? true : false;
+            }
+            count = 0;
+            titleObj = menu;
+          } else {
+            if (menu.visible) {
+              count++;
+            }
+          }
+        });
         const menu = this.componentState !== CONSTANTS.NON_IP_DEVICE ?
           (this.contextApp.configuration.device_control_panel_menu.length > 0 ?
           this.contextApp.configuration.device_control_panel_menu :

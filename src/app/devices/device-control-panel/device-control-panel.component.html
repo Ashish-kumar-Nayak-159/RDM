@@ -88,11 +88,14 @@
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel" id="device_notifications">
             <app-device-messages-wrapper *ngIf="activeTab === 'notifications' && device" [device]="device"></app-device-messages-wrapper>
           </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'logs' || activeTab === 'stream_processing' || activeTab === 'rules' || activeTab === 'maintenance_schedule' || activeTab === 'predictions'}" role="tabpanel" id="device_logs">
-            <app-logs *ngIf="activeTab === 'logs'  || activeTab === 'stream_processing' || activeTab === 'rules' || activeTab === 'maintenance_schedule' || activeTab === 'predictions' && device" [device]="device"></app-logs>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'logs' || activeTab === 'stream_processing' || activeTab === 'maintenance_schedule' || activeTab === 'predictions'}" role="tabpanel" id="device_logs">
+            <app-logs *ngIf="activeTab === 'logs'  || activeTab === 'stream_processing' || activeTab === 'maintenance_schedule' || activeTab === 'predictions' && device" [device]="device"></app-logs>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'derived_kpis'}" role="tabpanel" id="device_derived_kpis">
             <app-derived-kpis *ngIf="activeTab === 'derived_kpis' && device" [device]="device"></app-derived-kpis>
+          </div>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'rules'}" role="tabpanel" id="device_rules">
+            <app-rules *ngIf="activeTab === 'rules' && device" [device]="device"></app-rules>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'trend-analysis'}" role="tabpanel"
             id="device_trend_analysis">

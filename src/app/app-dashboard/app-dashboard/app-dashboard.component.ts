@@ -98,6 +98,36 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     $('.dropdown-menu').on('click.bs.dropdown', (e) => {
       e.stopPropagation();
     });
+    $('#dd-open').on('hide.bs.dropdown', (e: any) => {
+      if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
+        e.preventDefault();
+      }
+    });
+  }
+
+  onSaveHierachy() {
+  }
+
+  onClearHierarchy() {
+    this.hierarchyArr = {};
+    this.configureHierarchy = {};
+    if (this.contextApp.hierarchy.levels.length > 1) {
+      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+    }
+    console.log(this.hierarchyArr);
+    this.contextApp.hierarchy.levels.forEach((level, index) => {
+      if (index !== 0) {
+      this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+      console.log(this.configureHierarchy);
+      console.log(level);
+      console.log(this.contextApp.user.hierarchy);
+      if (this.contextApp.user.hierarchy[level]) {
+        this.onChangeOfHierarchy(index, false);
+      }
+      } else {
+        this.devices = JSON.parse(JSON.stringify(this.originalDevices));
+      }
+    });
   }
 
   loadFromCache() {
@@ -127,12 +157,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async onSwitchValueChange(event) {
     $('#overlay').show();
-    // alert(this.signalRModeValue);
     this.c2dResponseMessage = [];
     this.signalRModeValue = event;
     this.isC2dAPILoading = true;
-
-    // this.c2dLoadingMessage = 'Sending C2D Command';
     clearInterval(this.c2dResponseInterval);
     const obj = {
       method: 'change_device_mode',
@@ -140,14 +167,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       gateway_id: this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : undefined,
       message: {
         telemetry_mode: this.signalRModeValue ? 'normal' : 'turbo',
-        // turbo_mode_frequency_in_sec: this.signalRModeValue ?
-        // (this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency ?
-        //   this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency : 60) :
-        // (this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency ?
-        //   this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency : 1),
-        // turbo_mode_timeout_in_sec : !this.signalRModeValue ?
-        // (this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_timeout_time ?
-        //   this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_timeout_time : 120) : undefined,
         device_id: this.filterObj.device.device_id
       },
       app: this.contextApp.app,
@@ -200,8 +219,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       }, error => this.isTelemetryDataLoading = false));
     });
   }
-
-
 
   compareFn(c1, c2): boolean {
     return c1 && c2 ? c1.device_id === c2.device_id : c1 === c2;

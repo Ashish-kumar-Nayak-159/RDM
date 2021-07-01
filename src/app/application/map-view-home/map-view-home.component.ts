@@ -132,17 +132,25 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   }
 
   onClearHierarchy() {
+    console.log('in clear');
     this.hierarchyArr = {};
     this.configureHierarchy = {};
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
     }
+    console.log(this.hierarchyArr);
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
       this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+      console.log(this.configureHierarchy);
+      console.log(level);
+      console.log(this.contextApp.user.hierarchy);
       if (this.contextApp.user.hierarchy[level]) {
+        console.log('hereeeee');
         this.onChangeOfHierarchy(index, false);
       }
+      } else {
+        this.devices = JSON.parse(JSON.stringify(this.originalDevices));
       }
     });
     this.hierarchyString = this.contextApp.app;
@@ -288,7 +296,6 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       } else {
       const arr = [];
       this.devices = [];
-      console.log(hierarchyObj);
       this.originalDevices.forEach(device => {
         let flag1 = false;
         Object.keys(hierarchyObj).forEach(hierarchyKey => {
@@ -333,8 +340,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       const obj = {
         from_date: moment().subtract(24, 'hours').utc().unix(),
         to_date: moment().utc().unix(),
-        epoch: true,
-        asset_model: 'Hydraulic Booster Compressor 1.2'
+        epoch: true
       };
       this.apiSubscriptions.push(this.deviceService.getDerivedKPILatestData(this.contextApp.app, derivedKPICode, obj)
       .subscribe((response: any) => {
@@ -382,17 +388,16 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
       e.stopPropagation();
     });
-  //   $('#dd-open').on('hide.bs.dropdown', (e: any) => {
-  //     if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
-  //       e.preventDefault();
-  //     }
-  // });
+    $('#dd-open').on('hide.bs.dropdown', (e: any) => {
+      if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
+        e.preventDefault();
+      }
+    });
   }
 
   onDeviceFilterApply(updateFilterObj = true) {
     console.log(this.filterObj);
     console.log(this.configureHierarchy);
-    console.log(JSON.stringify(this.devices));
     this.activeCircle = 'all';
     this.mapDevices = JSON.parse(JSON.stringify(this.devices));
     if (this.contextApp.app === 'CMS_Dev') {

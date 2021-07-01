@@ -7,7 +7,7 @@
         <ng-container *ngIf="contextApp.app === 'CMS_Dev'">
         <div class="form-group">
           <div class="numberCircle" [ngClass]="{'active': activeCircle === 'all'}" tooltip="All Assets">
-            <a href="javascript:void(0)" (click)="onClickOfCount('all')">{{devices.length}}</a></div>
+            <a href="javascript:void(0)" (click)="onClickOfCount('all')">{{mapDevices.length}}</a></div>
         </div>
         <div class="form-group">
           <div class="greenNumberCircle" [ngClass]="{'active': activeCircle === 'healthy'}" tooltip="Healthy Assets">
@@ -43,8 +43,9 @@
                 disabled class="dropdown-form dropdown-open" />
             </div>
           </ng-container>
-          <!-- <div class="form-group" ><button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary" (click)="onSaveHierachy()">Apply</button>
-            <button type="button" placement="bottom" tooltip="Clear" class="btn btn-sm searchBtn btn-white ml-1" (click)="onClearHierarchy()" >Clear</button></div> -->
+          <div class="form-group" >
+            <button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary" (click)="onSaveHierachy()">Apply</button>
+            <button type="button" placement="bottom" tooltip="Clear" class="btn btn-sm searchBtn btn-white ml-1" (click)="onClearHierarchy()" >Clear</button></div>
 
         </div>
         </div>

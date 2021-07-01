@@ -5,19 +5,16 @@
       <div class="ml-2 pt-15" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry'">
         Turbo Mode:</div>
         <div class="ml-1 pt-15">
-
         <ui-switch size="small" class="mr-1" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry'"
           [disabled]="isC2dAPILoading" defaultBgColor="#c80815" checkedTextColor="white" uncheckedTextColor="white"
           checkedLabel="OFF" uncheckedLabel="ON" name="tpye" [(ngModel)]="signalRModeValue"
           (valueChange)="onSwitchValueChange($event)"></ui-switch>
-
       </div>
-
     </div>
     <div class="ml-auto">
       <div class="">
         <form class="form-inline">
-          <div class="form-group">
+          <div class="form-group" id="dd-open">
             <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
               [ngClass]="{'active' : originalFilter?.device}" placement="bottom"
               [tooltip]="originalFilter?.device ?
@@ -56,6 +53,9 @@
                   <span [tooltip]="device.display_name ? device.display_name: device.device_id"> {{device.display_name ? device.display_name: device.device_id}}</span>
                 </ng-template>
               </ng-select>
+              <!-- <div class="form-group" >
+                <button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary" (click)="onSaveHierachy()">Apply</button>
+                <button type="button" placement="bottom" tooltip="Clear" class="btn btn-sm searchBtn btn-white ml-1" (click)="onClearHierarchy()" >Clear</button></div> -->
               <!-- <div class="">
                 <button class="btn btn-sm searchBtn btn-primary" type="button">Apply</button>
               </div> -->
@@ -74,14 +74,10 @@
     <div class="" *ngIf="isTelemetryDataLoading">
       <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
     </div>
-    <div class="" *ngIf="
-            !isTelemetryDataLoading && !telemetryObj && isFilterSelected
-          ">
+    <div class="" *ngIf="!isTelemetryDataLoading && !telemetryObj && isFilterSelected">
       No data available since mid night.
     </div>
-    <div class="" *ngIf="
-            !isFilterSelected && !filterObj.device
-          ">
+    <div class="" *ngIf="!isFilterSelected && !filterObj.device">
       Please select asset to view the data.
     </div>
     <div class="ml-1" *ngIf="liveWidgets.length === 0 && isFilterSelected
@@ -114,12 +110,9 @@
           </app-only-number-widget>
           <app-gauge-chart [chartConfig]="widget" [device]="filterObj?.device"
             *ngIf="widget.widgetType === 'GaugeChart'" [telemetryObj]="telemetryObj"></app-gauge-chart>
-
-
           <app-live-line-chart [chartConfig]="widget" [device]="filterObj?.device" [telemetryObj]="telemetryObj"
             *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
           </app-live-line-chart>
-
         </div>
       </ng-container>
       <ng-container  *ngIf="defaultAppName === 'SopanCMS'">

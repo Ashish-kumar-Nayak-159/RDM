@@ -2,23 +2,25 @@
     <div class="">
       <ul class="nav">
         <li class="nav-item">
-          <a class="nav-link" href="javascript:void(0)"  (click)="onTabClick('Cloud')">
+          <a class="nav-link" href="javascript:void(0)"  (click)="onTabClick('Cloud')"
+          [ngClass]="{'active': selectedTab === 'Cloud'}">
             <i class="fa fa-fw fa-cloud"></i>
             Cloud Rules</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="javascript:void(0)"  (click)="onTabClick('Edge')">
+          <a class="nav-link" href="javascript:void(0)"  (click)="onTabClick('Edge')"
+          [ngClass]="{'active': selectedTab === 'Edge'}">
             <i class="fab fa-fw fa-edge"></i>
             Edge Rules</a>
         </li>
       </ul>
     </div>
 </div>
-  
+
 <div class="table-responsive">
     <div class="tableFixHead">
       <app-common-table [tableData]="rules" [tableConfig]="rulesTableConfig" [isTableFilterSelected]="true"
       [isTableDataLoading]="isRulesLoading"></app-common-table>
     </div>
 </div>
-  
+

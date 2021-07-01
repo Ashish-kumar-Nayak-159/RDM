@@ -266,8 +266,13 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
   }
 
   onSaveWidgetObj() {
-    let found = true;
     console.log(this.widgetObj);
+    if (!this.widgetObj.widgetTitle || !this.widgetObj.widgetType) {
+      this.toasterService.showError('Please enter all required fields.', 'Add Widget');
+      return;
+    }
+    let found = true;
+
     this.widgetObj.properties.forEach(prop => {
       console.log(prop);
       if (Object.keys(prop).length === 0) {
@@ -275,7 +280,7 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
       }
     });
     if (!found && this.widgetObj.widgetType !== 'LineChart' && this.widgetObj.widgetType !== 'AreaChart') {
-      this.toasterService.showError('Please select all properties.', 'Add Widget');
+      this.toasterService.showError('Please select properties details.', 'Add Widget');
       return;
     }
     this.isCreateWidgetAPILoading = true;

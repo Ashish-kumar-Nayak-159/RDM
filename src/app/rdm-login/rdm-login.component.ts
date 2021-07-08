@@ -45,6 +45,8 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.userData.apps && this.userData.apps.length > 1) {
           this.router.navigate(['applications', 'selection']);
         } else if (this.userData.apps && this.userData.apps.length === 1) {
+          localStorage.removeItem(CONSTANTS.APP_TOKEN);
+          localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.apps[0].token);
           await this.getApplicationData(this.userData.apps[0]);
           this.router.navigate(['applications', this.userData.apps[0].app]);
         }

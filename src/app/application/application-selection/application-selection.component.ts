@@ -49,6 +49,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
   async redirectToApp(app, index) {
     this.apiSubscriptions.forEach(sub => sub.unsubscribe());
     this.signalRService.disconnectFromSignalR('all');
+
     const localStorageAppData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.isAppDataLoading = {};
     this.isAppDataLoading[index] = true;
@@ -63,7 +64,9 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
       localStorage.removeItem(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
       localStorage.removeItem(CONSTANTS.MAIN_MENU_FILTERS);
+      localStorage.removeItem(CONSTANTS.APP_TOKEN);
     }
+    localStorage.setItem(CONSTANTS.APP_TOKEN, app.token);
     await this.getApplicationData(app);
     // await this.getDevices(this.applicationData.user.hierarchy);
     // await this.getDeviceModels(this.applicationData.user.hierarchy);
@@ -129,7 +132,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
   getApplicationData(app) {
     return new Promise<void>((resolve) => {
     this.applicationData = undefined;
-    this.apiSubscriptions.push(this.applicationService.getApplicationDetail(app.app).subscribe(
+    this.apiSubscriptions.push(this.applicationService.getApplicationDetail(app.app, app.token).subscribe(
       (response: any) => {
           this.applicationData = response;
           this.applicationData.app = app.app;

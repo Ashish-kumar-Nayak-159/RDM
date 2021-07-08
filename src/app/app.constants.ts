@@ -1385,6 +1385,7 @@ export class CONSTANTS {
   public static APP_VERSION = 'version';
   public static MAIN_MENU_FILTERS = 'main_menu_filter';
   public static CONTROL_PANEL_FILTERS = 'control_panel_filter';
+  public static APP_TOKEN = 'app_token';
 
   // public static DEFAULT_APP_ICON = environment.blobContainerName + '/default_app_icon.png';
   // public static DEFAULT_APP_LOGO = environment.blobContainerName + '/default_app_logo.jpg';

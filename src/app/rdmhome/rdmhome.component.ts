@@ -32,6 +32,8 @@ export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.userData.apps && this.userData.apps.length > 1) {
           this.router.navigate(['applications', 'selection']);
         } else if (this.userData.apps && this.userData.apps.length === 1) {
+          localStorage.removeItem(CONSTANTS.APP_TOKEN);
+          localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.apps[0].token);
           await this.getApplicationData(this.userData.apps[0]);
           const menu = this.applicationData.configuration.main_menu.length > 0 ?
           this.applicationData.configuration.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));

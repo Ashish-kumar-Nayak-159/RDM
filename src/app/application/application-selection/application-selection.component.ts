@@ -132,7 +132,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
   getApplicationData(app) {
     return new Promise<void>((resolve) => {
     this.applicationData = undefined;
-    this.apiSubscriptions.push(this.applicationService.getApplicationDetail(app.app, app.token).subscribe(
+    this.apiSubscriptions.push(this.applicationService.getApplicationDetail(app.app).subscribe(
       (response: any) => {
           this.applicationData = response;
           this.applicationData.app = app.app;

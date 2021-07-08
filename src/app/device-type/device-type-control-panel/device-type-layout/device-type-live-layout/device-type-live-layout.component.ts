@@ -84,7 +84,6 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
           $(this).html(i + 1 + '');
         });
         $('tr.favoriteOrderId', ui.item.parent()).each(function(i) {
-
         // tslint:disable-next-line: prefer-for-of
         for (let j = 0; j < that.configureDashboardWidgets.length; j++) {
           if ($(this).attr('id') === that.configureDashboardWidgets[j].chartId) {
@@ -144,7 +143,7 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
                   widget.measured_props = true;
                 }
               });
-              widget?.y2AxisProps.forEach(prop => {
+              widget?.y2AxisProps?.forEach(prop => {
                 if (prop?.type === 'Derived Properties') {
                   widget.derived_props = true;
                 } else {
@@ -177,10 +176,13 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
     this.telemetryObj = {};
     this.telemetryObj.message_date = moment().subtract(10, 'second').format('DD-MMM-YYYY hh:mm:ss A').toString();
     this.propertyList.forEach(prop => {
-      this.telemetryObj[prop.json_key] = this.commonService.randomIntFromInterval(
-        prop.json_model[prop.json_key].minValue ? prop.json_model[prop.json_key].minValue : 0,
-        prop.json_model[prop.json_key].maxValue ? prop.json_model[prop.json_key].maxValue : 100
-      );
+      this.telemetryObj[prop.json_key] = {
+        value:  this.commonService.randomIntFromInterval(
+          prop.json_model[prop.json_key].minValue ? prop.json_model[prop.json_key].minValue : 0,
+          prop.json_model[prop.json_key].maxValue ? prop.json_model[prop.json_key].maxValue : 100
+        ),
+        date: this.telemetryObj.message_date
+      };
     });
   }
 
@@ -272,7 +274,6 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
       return;
     }
     let found = true;
-
     this.widgetObj.properties.forEach(prop => {
       console.log(prop);
       if (Object.keys(prop).length === 0) {
@@ -297,5 +298,4 @@ export class DeviceTypeLiveLayoutComponent implements OnInit {
       this.configureDashboardWidgets.forEach((widget) => widget.dashboardVisibility = false);
     }
   }
-
 }

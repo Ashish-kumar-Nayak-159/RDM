@@ -52,11 +52,11 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
       const dateArr = [];
       this.telemetryData.forEach((obj, i) => {
         const newObj = {
-          message_date: new Date(obj.message_date)
+          message_date: new Date(obj[this.property]?.date)
         };
-        newObj[this.property] = obj[this.property];
+        newObj[this.property] = obj[this.property]?.value;
         data.splice(data.length, 0, newObj);
-        valueArr.push(Number(obj[this.property]));
+        valueArr.push(Number(obj[this.property]?.value));
         dateArr.push(newObj.message_date);
       });
       if (valueArr.length > 0) {
@@ -93,11 +93,11 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
       const valueArr = [];
       this.telemetryData.forEach((obj, i) => {
         const newObj = {
-          message_date: new Date(obj.message_date)
+          message_date: new Date(obj[this.property]?.date)
         };
-        newObj[this.property] = obj[this.property];
+        newObj[this.property] = obj[this.property]?.value;
         data.splice(data.length, 0, newObj);
-        valueArr.push(Number(obj[this.property]));
+        valueArr.push(Number(obj[this.property]?.value));
       });
       if (valueArr.length > 0) {
         this.max = Math.ceil(valueArr.reduce((a, b) => Math.max(a, b)));

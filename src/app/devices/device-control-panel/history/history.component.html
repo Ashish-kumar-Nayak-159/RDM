@@ -4,9 +4,12 @@
     <form class="form-inline">
       <div class="form-group">
         <ng-select [items]="layoutJson" class="custom-dropdown w-12 active sm" bindLabel="title" (onDeSelectAll)="onDeSelectAll($event)"
-        [searchable]="false" placeholder="Select Widgets" [multiple]="true"
+        [searchable]="true" placeholder="Select Widgets" [multiple]="true"
         [closeOnSelect]="false"
         dropdownPosition="bottom" name="widget-dropdown" [(ngModel)]="selectedWidgets">
+        <ng-template ng-option-tmp let-item="item">
+          <span [tooltip]="item.title">{{item.title}}</span>
+        </ng-template>
         <ng-template ng-multi-label-tmp let-items="items">
         {{items.length}} widgets selected
         </ng-template>

@@ -28,6 +28,8 @@ export class LiveDataComponent implements OnInit, OnDestroy {
   selectedWidgetsForSearch: any[] = [];
   signalRTelemetrySubscription: any;
   isTelemetryDataLoading = false;
+  widgetPropertyList: any[] = [];
+
   telemetryObj: any;
   constructor(
     private deviceService: DeviceService,
@@ -79,13 +81,33 @@ export class LiveDataComponent implements OnInit, OnDestroy {
           response.live_widgets.forEach(widget => {
             widget.derived_props = false;
             widget.measured_props = false;
-            widget.properties.forEach(prop => {
-              if (prop.property.type === 'Derived Properties') {
-                widget.derived_props = true;
+            if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
+              widget?.properties.forEach(prop => {
+                this.addPropertyInList(prop.property);
+                if (prop?.property?.type === 'Derived Properties') {
+                  widget.derived_props = true;
+                } else {
+                  widget.measured_props = true;
+                }
+              });
               } else {
-                widget.measured_props = true;
+                widget?.y1AxisProps.forEach(prop => {
+                  this.addPropertyInList(prop);
+                  if (prop?.type === 'Derived Properties') {
+                    widget.derived_props = true;
+                  } else {
+                    widget.measured_props = true;
+                  }
+                });
+                widget?.y2AxisProps.forEach(prop => {
+                  this.addPropertyInList(prop);
+                  if (prop?.type === 'Derived Properties') {
+                    widget.derived_props = true;
+                  } else {
+                    widget.measured_props = true;
+                  }
+                });
               }
-            });
             this.liveWidgets.push({
               id: widget.widgetTitle,
               value: widget
@@ -95,6 +117,17 @@ export class LiveDataComponent implements OnInit, OnDestroy {
         }
       }
     ));
+  }
+
+  addPropertyInList(prop) {
+    if (this.widgetPropertyList.length === 0 ) {
+      this.widgetPropertyList.push(prop);
+    } else {
+      const index = this.widgetPropertyList.findIndex(propObj => propObj.json_key === prop.json_key);
+      if (index === -1) {
+        this.widgetPropertyList.push(prop);
+      }
+    }
   }
 
   getTelemetryData() {
@@ -152,10 +185,24 @@ export class LiveDataComponent implements OnInit, OnDestroy {
             obj = {...obj, ...data.m, ...data.d};
             data = JSON.parse(JSON.stringify(obj));
           }
-          this.telemetryObj = undefined;
+
           data.date = this.commonService.convertUTCDateToLocal(data.ts || data.timestamp);
           data.message_date = this.commonService.convertUTCDateToLocal(data.ts || data.timestamp);
-          this.telemetryObj = JSON.parse(JSON.stringify(data));
+          const obj = JSON.parse(JSON.stringify(this.telemetryObj));
+          this.telemetryObj = undefined;
+          // console.log(this.widgetPropertyList);
+          this.widgetPropertyList.forEach(prop => {
+            if (prop?.json_key && data[prop.json_key] !== undefined && data[prop.json_key] !== null) {
+              obj[prop?.json_key] = {
+                value: data[prop?.json_key],
+                date: data.date
+              };
+            }
+          });
+          // console.log(obj);
+          this.telemetryObj = obj;
+          // this.lastReportedTelemetryValues = obj;
+          // this.telemetryObj = JSON.parse(JSON.stringify(data));
           this.isTelemetryDataLoading = false;
         }
       }
@@ -165,7 +212,17 @@ export class LiveDataComponent implements OnInit, OnDestroy {
         if (response.message) {
           response.message.date = this.commonService.convertUTCDateToLocal(response.message_date);
           response.message_date = this.commonService.convertUTCDateToLocal(response.message_date);
-          this.telemetryObj = response.message;
+          const obj = {};
+          // console.log(this.widgetPropertyList);
+          this.widgetPropertyList.forEach(prop => {
+            obj[prop?.json_key] = {
+              value: response.message[prop?.json_key],
+              date: response.message_date
+            };
+          });
+          // console.log(obj);
+          this.telemetryObj = obj;
+          // this.telemetryObj = response.message;
           // Object.keys(this.telemetryObj).forEach(key => {
           //   if (key !== 'message_date') {
           //     this.telemetryObj[key] = Number(this.telemetryObj[key]);

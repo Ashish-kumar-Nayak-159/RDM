@@ -1,7 +1,7 @@
 import { CommonService } from 'src/app/services/common.service';
 import { Injectable, EventEmitter } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { AppUrls } from '../../app-url.constants';
 import { String } from 'typescript-string-operations';
 import { CONSTANTS } from 'src/app/app.constants';

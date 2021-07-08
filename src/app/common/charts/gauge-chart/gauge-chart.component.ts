@@ -35,7 +35,15 @@ export class GaugeChartComponent implements OnInit, OnChanges, AfterViewInit {
      //  this.label.text = changes.value.currentValue;
       this.chartConfig.properties.forEach((prop, index) => {
         if (this.hand[index] && this.chart[index]) {
-          this.hand[index].value = Number(this.telemetryObj[prop.property.json_key] || '0');
+          this.hand[index].value = Number(this.telemetryObj[prop.property.json_key]?.value || '0');
+        }
+        console.log('gauge charttttt ', this.chart, 'aaaaaaaaa', this.hand, '----', index);
+        if (this.chart[index] && !this.hand[index] &&
+          this.telemetryObj[prop.property.json_key]?.value !== undefined && this.telemetryObj[prop.property.json_key]?.value !== null) {
+            const hand = this.chart[index].hands.push(new am4charts.ClockHand());
+            hand.radius = am4core.percent(97);
+            hand.value = Number(this.telemetryObj[prop.property.json_key]?.value || '0');
+            this.hand.splice(index, 0, hand);
         }
       });
     }
@@ -71,27 +79,27 @@ export class GaugeChartComponent implements OnInit, OnChanges, AfterViewInit {
     range0.axisFill.fillOpacity = 1;
     range0.axisFill.fill = am4core.color(prop.low_color || '#308014');
     range0.axisFill.zIndex = - 1;
-
+    console.log(range0.value, '===range0==', range0.endValue);
     const range1 = axis.axisRanges.create();
     range1.value = prop.normal_min || prop.low_max ||  prop?.minRangeValue ||  50;
     range1.endValue = prop.normal_max || prop.high_min || prop?.maxRangeValue || 80;
     range1.axisFill.fillOpacity = 1;
     range1.axisFill.fill = am4core.color(prop.normal_color || '#fecc4d');
     range1.axisFill.zIndex = -1;
-
+    console.log(range1.value, '===range1==', range1.endValue);
     const range2 = axis.axisRanges.create();
     range2.value = prop.high_min || prop.normal_max || prop?.minRangeValue ||  50;
     range2.endValue = prop.high_max || prop?.maxRangeValue || 100;
     range2.axisFill.fillOpacity = 1;
     range2.axisFill.fill = am4core.color(prop.high_color || '#c80815');
     range2.axisFill.zIndex = -1;
-    if (this.telemetryObj[prop.property.json_key] !== undefined && this.telemetryObj[prop.property.json_key] !== null) {
+    if (this.telemetryObj[prop.property.json_key]?.value !== undefined && this.telemetryObj[prop.property.json_key]?.value !== null) {
       const hand = chart.hands.push(new am4charts.ClockHand());
       hand.radius = am4core.percent(97);
-      hand.value = Number(this.telemetryObj[prop.property.json_key] || '0');
-      this.chart.splice(index, 0, chart);
+      hand.value = Number(this.telemetryObj[prop.property.json_key]?.value || '0');
       this.hand.splice(index, 0, hand);
     }
+    this.chart.splice(index, 0, chart);
     });
   }
 

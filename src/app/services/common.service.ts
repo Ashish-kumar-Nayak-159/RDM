@@ -2,10 +2,11 @@ import { SignalRService } from './signalR/signal-r.service';
 import { Injectable, EventEmitter } from '@angular/core';
 import * as moment from 'moment';
 import { environment } from 'src/environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppUrls } from '../app-url.constants';
 import { Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js';
+import jwt_decode from 'jwt-decode';
 import { CONSTANTS } from 'src/app/app.constants';
 import { AnonymousCredential, BlobServiceClient, newPipeline } from '@azure/storage-blob';
 
@@ -99,8 +100,22 @@ export class CommonService {
     return this.http.post(this.url + AppUrls.LOGIN,  obj);
   }
 
-  resetUserPassword(obj) {
-    return this.http.post(this.url + AppUrls.RESET_PASSWORD,  obj);
+  decodeJWTToken(token): any {
+    if (token) {
+      try{
+        return jwt_decode(token);
+    } catch (e) {
+        return null;
+    }
+    }
+  }
+
+  resetUserPassword(obj, app) {
+    let params = new HttpParams();
+    if (app) {
+    params = params.set('app', app);
+    }
+    return this.http.post(this.url + AppUrls.RESET_PASSWORD,  obj, {params});
   }
 
   encryptJSON(data) {
@@ -133,10 +148,13 @@ export class CommonService {
     return data;
   }
 
+  getToken() {
+    return localStorage.getItem(CONSTANTS.APP_TOKEN);
+  }
+
   setItemInLocalStorage(key, value) {
     localStorage.setItem(key, this.encryptJSON(value));
     // localStorage.setItem(key, JSON.stringify(value));
-
   }
 
   getMomentStartEndDate(label) {

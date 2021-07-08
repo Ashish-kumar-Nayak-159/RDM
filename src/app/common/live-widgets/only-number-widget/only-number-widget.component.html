@@ -61,12 +61,14 @@
         <div [ngClass]="{'mt-4': chartConfig.widgetType === 'OnlyNumber' || chartConfig.widgetType === 'StringWidget'}">
           <span class="text-darkblue display-5 font-weight-bold" [ngStyle]="{'font-size': chartConfig.widgetType === 'OnlyNumber' || chartConfig.widgetType === 'StringWidget' ? '2rem' : '' }">
             <!-- {{telemetryObj[prop.property.json_key]}} -->
-            {{ (telemetryObj[prop.property.json_key] !== undefined && telemetryObj[prop.property.json_key] !== null) ? (prop.property.data_type === 'Number' ? (telemetryObj[prop.property.json_key]?.toFixed(prop.digitsAfterDecimals)) : (telemetryObj[prop.property.json_key])) : 'NA'}} {{prop.unit}}
+            {{ (telemetryObj[prop.property.json_key] && (telemetryObj[prop.property.json_key]?.value !== undefined && telemetryObj[prop.property.json_key]?.value !== null)) ?
+              (prop.property.data_type === 'Number' ? (telemetryObj[prop.property.json_key]?.value?.toFixed(prop.digitsAfterDecimals)) : (telemetryObj[prop.property.json_key].value))
+              : 'NA'}} {{prop.unit}}
           </span>
         </div>
         <div>
           <span class="text-grey" >
-            {{telemetryObj.date}}
+            {{telemetryObj[prop.property.json_key]?.date}}
            </span>
         </div>
       </div>

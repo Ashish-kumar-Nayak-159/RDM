@@ -677,6 +677,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   async onClickOfViewGraph(alert) {
     this.selectedAlert = undefined;
     this.onTabClick('visualization');
+    const children = $('#charts').children();
+    for (const child of children) {
+      $(child).remove();
+    }
     this.isOpen = true;
     this.beforeInterval = 1.5;
     this.afterInterval = 0.5;

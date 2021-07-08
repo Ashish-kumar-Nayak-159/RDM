@@ -29,11 +29,10 @@
                 </thead>
                 <tbody>
                   <ng-container>
-                    <tr *ngFor="let alert of telemetryData">
-
-                      <td>{{ alert.message_date }}</td>
-                      <td *ngFor="let item of y1AxisProps">{{ alert[item] }}</td>
-                      <td *ngFor="let item of y2AxisProps">{{ alert[item] }}</td>
+                    <tr *ngFor="let obj of telemetryData">
+                      <td>{{ obj.message_date }}</td>
+                      <td *ngFor="let item of y1AxisProps">{{ obj[item] }}</td>
+                      <td *ngFor="let item of y2AxisProps">{{ obj[item] }}</td>
                     </tr>
                   </ng-container>
                   <ng-container *ngIf="telemetryData.length === 0">

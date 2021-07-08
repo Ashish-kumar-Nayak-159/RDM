@@ -22,30 +22,28 @@ export class AuthGuardService {
       return false;
     }
     const resolvedRoute = this.getResolvedUrl(route);
-    console.log(resolvedRoute);
     if (appData) {
-    if (resolvedRoute?.includes(appData.app) || resolvedRoute?.includes('selection')) {
-    if (resolvedRoute === '/applications/' && !userData.is_super_admin) {
-      this.commonService.onLogOut();
-      return false;
-    }
-    if (resolvedRoute?.includes('selection')) {
-      if (!userData) {
-        this.commonService.onLogOut();
-        return false;
+      if (resolvedRoute?.includes(encodeURIComponent(appData.app)) || resolvedRoute?.includes('selection')) {
+        if (resolvedRoute === '/applications/' && !userData.is_super_admin) {
+          this.commonService.onLogOut();
+          return false;
+        }
+        if (resolvedRoute?.includes('selection')) {
+          if (!userData) {
+            this.commonService.onLogOut();
+            return false;
+          }
+        } else if (!userData && !appData) {
+          this.commonService.onLogOut();
+          return false;
+        }
+        return true;
+      } else {
+        this.router.navigate(['applications', appData.app]);
+        setTimeout(() => {
+          location.reload();
+        }, 500);
       }
-    } else if (!userData && !appData) {
-      this.commonService.onLogOut();
-      return false;
-    }
-    return true;
-    } else {
-      this.router.navigate(['applications', appData.app]);
-      setTimeout(() => {
-        location.reload();
-      }, 500);
-
-    }
     } else {
       return true;
     }

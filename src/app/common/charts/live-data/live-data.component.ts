@@ -1,3 +1,4 @@
+import { environment } from './../../../../environments/environment';
 import { Subscription } from 'rxjs';
 import { CommonService } from './../../../services/common.service';
 import { isPlatformBrowser } from '@angular/common';
@@ -42,6 +43,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   hideCancelButton = false;
   loader = false;
   loaderMessage = 'Loading Data. Wait...';
+  environmentApp = environment.app;
   constructor(
     private commonService: CommonService,
     private chartService: ChartService,
@@ -82,20 +84,35 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       chart.paddingRight = 20;
       const data = [];
       this.telemetryData.forEach((obj, i) => {
-        const newObj = {...obj};
+        const newObj: any = {};
+        if (this.environmentApp === 'SopanCMS') {
+          newObj['TMD'] = Number(newObj['TMD']);
+          newObj['TMS'] = Number(newObj['TMS']);
+          if (newObj['TMD'] < 1) {
+            newObj['TMD'] = undefined;
+          }
+          if (newObj['TMS'] < 1) {
+            newObj['TMS'] = undefined;
+          }
+        }
+        this.y1AxisProps.forEach(prop => {
+          if (obj[prop]) {
+            newObj[prop] = obj[prop];
+          }
+        });
+        this.y2AxisProps.forEach(prop => {
+          if (obj[prop]) {
+            newObj[prop] = obj[prop];
+          }
+        });
+        if (Object.keys(newObj).length > 0) {
         newObj.message_date = new Date(obj.message_date);
         delete newObj.aggregation_end_time;
         delete newObj.aggregation_start_time;
-        newObj['TMD'] = Number(newObj['TMD']);
-        newObj['TMS'] = Number(newObj['TMS']);
-        if (newObj['TMD'] < 1) {
-          newObj['TMD'] = undefined;
-        }
-        if (newObj['TMS'] < 1) {
-          newObj['TMS'] = undefined;
-        }
         data.splice(data.length, 0, newObj);
+        }
       });
+      console.log(JSON.stringify(data));
       chart.data = data;
       this.loaderMessage = 'Loading Chart. Wait...';
       chart.dateFormatter.inputDateFormat = 'x';

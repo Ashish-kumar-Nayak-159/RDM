@@ -543,6 +543,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
         this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
         return;
     }
+    if (this.props.length > 50) {
+      this.toasterService.showError('Please select less than 50 properties at a time.', 'View Telemetry');
+      return;
+    }
     if (filterObj.isTypeEditable) {
     if (filterObj.type) {
       if (!filterObj.sampling_time || !filterObj.sampling_format ) {

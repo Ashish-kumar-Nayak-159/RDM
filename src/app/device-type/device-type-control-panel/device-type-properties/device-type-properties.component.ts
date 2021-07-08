@@ -38,6 +38,8 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
   code = `function calculate () {
   return null;
 }`;
+  slaveData: any[] = [];
+  contextApp: any;
   options: any;
   userData: any;
   constructor(
@@ -47,10 +49,12 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
   ) { }
 
   ngOnInit(): void {
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.mode = 'code';
     this.editorOptions.statusBar = false;
+    this.getSlaveData();
   }
 
   onMonacoInit(editorInstance) {
@@ -64,6 +68,18 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       this.type = changes.type.currentValue;
       this.setUpPropertyData();
     }
+  }
+
+  getSlaveData() {
+    this.slaveData = [];
+    const filterObj = {};
+    this.subscriptions.push(this.deviceTypeService.getModelSlaveDetails(this.contextApp.app, this.deviceType.name, filterObj)
+    .subscribe((response: any) => {
+      if (response?.data) {
+        this.slaveData = response.data;
+      }
+    })
+    );
   }
 
   setUpPropertyData() {
@@ -204,6 +220,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
     if (this.deviceType.metadata?.model_type === CONSTANTS.NON_IP_DEVICE) {
     if (this.deviceType.tags.protocol === 'ModbusTCPMaster' || this.deviceType.tags.protocol === 'ModbusRTUMaster') {
       this.setupForm = new FormGroup({
+        slave: new FormControl(null, [Validators.required]),
         d: new FormControl(null, [Validators.required]),
         sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
         a: new FormControl(false),
@@ -211,6 +228,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       });
     } else if (this.deviceType.tags.protocol === 'SiemensTCPIP') {
       this.setupForm = new FormGroup({
+        slave: new FormControl(null, [Validators.required]),
         d: new FormControl(null, [Validators.required]),
         sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
         a: new FormControl(false),
@@ -258,6 +276,13 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
     } else {
       this.setupForm.removeControl('p');
       this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
+    }
+    if (this.setupForm.value.d === 'a' &&
+    this.setupForm.value.sd === 9) {
+      this.setupForm.removeControl('bytn');
+      this.setupForm.addControl('bytn', new FormControl(obj?.bytn || null, [Validators.required]));
+    } else {
+      this.setupForm.removeControl('bytn');
     }
   }
 
@@ -379,19 +404,19 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
     }
     if (this.propertyObj.isAdd) {
       if (this.type.includes('read')) {
-        this.properties.writable_properties = this.properties.writable_properties ? this.properties.writable_properties : [];
-        const windex = this.properties.writable_properties.findIndex(prop => prop.json_key === this.propertyObj.json_key);
+        this.properties.controllable_properties = this.properties.controllable_properties ? this.properties.controllable_properties : [];
+        const windex = this.properties.controllable_properties.findIndex(prop => prop.json_key === this.propertyObj.json_key);
         delete this.propertyObj.isAdd;
         if (windex === -1) {
-          this.properties.writable_properties.push(this.propertyObj);
+          this.properties.controllable_properties.push(this.propertyObj);
         }
       }
       if (this.type.includes('writ')) {
-        this.properties.readable_properties = this.properties.readable_properties ? this.properties.readable_properties : [];
-        const windex = this.properties.readable_properties.findIndex(prop => prop.json_key === this.propertyObj.json_key);
+        this.properties.configurable_properties = this.properties.configurable_properties ? this.properties.configurable_properties : [];
+        const windex = this.properties.configurable_properties.findIndex(prop => prop.json_key === this.propertyObj.json_key);
         delete this.propertyObj.isAdd;
         if (windex === -1) {
-          this.properties.readable_properties.push(this.propertyObj);
+          this.properties.configurable_properties.push(this.propertyObj);
         }
       }
     }
@@ -514,6 +539,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       if (this.deviceType.metadata?.model_type === CONSTANTS.NON_IP_DEVICE) {
       if (this.deviceType.tags.protocol === 'ModbusTCPMaster' || this.deviceType.tags.protocol === 'ModbusRTUMaster') {
         this.setupForm = new FormGroup({
+          slave: new FormControl(this.propertyObj?.metadata?.slave, [Validators.required]),
           d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),
           sa: new FormControl(this.propertyObj?.metadata?.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
           a: new FormControl(true),
@@ -521,6 +547,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
         });
       } else if (this.deviceType.tags.protocol === 'SiemensTCPIP') {
         this.setupForm = new FormGroup({
+          slave: new FormControl(this.propertyObj?.metadata?.slave, [Validators.required]),
           d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),
           sa: new FormControl(this.propertyObj?.metadata?.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
           a: new FormControl(true),

@@ -73,10 +73,23 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
 
     const data = [];
     this.telemetryData.forEach((obj, i) => {
-      obj.message_date = new Date(obj.message_date);
-      delete obj.aggregation_end_time;
-      delete obj.aggregation_start_time;
-      data.splice(data.length, 0, obj);
+      const newObj: any = {};
+      this.y1AxisProps.forEach(prop => {
+        if (obj[prop]) {
+          newObj[prop] = obj[prop];
+        }
+      });
+      this.y2AxisProps.forEach(prop => {
+        if (obj[prop]) {
+          newObj[prop] = obj[prop];
+        }
+      });
+      if (Object.keys(newObj).length > 0) {
+        newObj.message_date = new Date(obj.message_date);
+        delete obj.aggregation_end_time;
+        delete obj.aggregation_start_time;
+        data.splice(data.length, 0, newObj);
+      }
     });
     chart.data = data;
     this.loaderMessage = 'Loading Chart. Wait...';

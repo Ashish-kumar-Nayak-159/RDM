@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { DeviceTypeService } from './../../../services/device-type/device-type.service';
 import { CONSTANTS } from './../../../app.constants';
 import { CommonService } from './../../../services/common.service';
@@ -180,15 +181,33 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
       this.isFilterSelected = false;
       return;
     }
-
     if (!filterObj.props || filterObj.props?.length === 0) {
       this.toasterService.showError('Property selection is required.', 'View Count Data');
       this.isTelemetryLoading = false;
       this.isFilterSelected = false;
       return;
+    } else if (filterObj.props.length > 50 ) {
+      this.toasterService.showError('Property selection is required.', 'View Count Data');
+      this.isTelemetryLoading = false;
+      this.isFilterSelected = false;
+      return;
     }
-    if (this.telemetryTableConfig.data.length !== (this.propertyList.length + 1)) {
-      filterObj.props.forEach(prop => {
+    this.telemetryTableConfig = {
+      type: 'telemetry count',
+      dateRange: '',
+      tableHeight: 'calc(100vh - 16rem)',
+      headers: ['Timestamp'],
+      data: [
+        {
+          name: 'Timestamp',
+          key: 'local_message_date',
+          type: 'text',
+          headerClass: 'w-15',
+          valueclass: ''
+        }
+      ]
+    };
+    filterObj.props.forEach(prop => {
       this.telemetryTableConfig.headers.push(prop.name);
       this.telemetryTableConfig.data.push({
         name: prop.name,
@@ -198,7 +217,6 @@ export class DeviceCountComponent implements OnInit, AfterViewInit {
         valueclass: ''
       });
     });
-    }
 
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'Get Telemetry Data');

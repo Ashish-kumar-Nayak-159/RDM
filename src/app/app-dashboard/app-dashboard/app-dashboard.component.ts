@@ -58,8 +58,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   turboModeInterval: number;
   widgetPropertyList: any[] = [];
   previousProperties = [];
-  sampleCountArr = new Array(60);
+  sampleCountArr = Array(60).fill(0);
   sampleCountValue = 0;
+  sampleCountInterval: any;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -426,6 +427,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     clearInterval(this.c2dResponseInterval);
     this.signalRService.disconnectFromSignalR('telemetry');
     this.signalRTelemetrySubscription?.unsubscribe();
+    clearInterval(this.sampleCountInterval);
 
     // this.commonService.setItemInLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION, filterObj);
     const obj = JSON.parse(JSON.stringify(filterObj));
@@ -525,12 +527,18 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         } else {
           this.isTelemetryDataLoading = false;
         }
+        this.sampleCountInterval = setInterval(() => {
+          this.sampleCountArr.pop();
+          this.sampleCountArr.unshift(0);
+          this.sampleCountValue = this.sampleCountArr.reduce((a, b) => a + b, 0);
+        }, 1000);
     }, error => this.isTelemetryDataLoading = false));
   }
 
   processTelemetryData(telemetryObj) {
     telemetryObj.date = this.commonService.convertUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
     telemetryObj.message_date = this.commonService.convertUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
+    this.sampleCountArr[0] = this.sampleCountArr[0] + 1;
     if (environment.app === 'SopanCMS') {
       this.getTimeDifference(
         Math.floor(Number(telemetryObj[this.getPropertyKey('Running Hours')])),
@@ -671,6 +679,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy() {
     clearInterval(this.refreshInterval);
+    clearInterval(this.c2dResponseInterval);
     this.signalRTelemetrySubscription?.unsubscribe();
     this.signalRService.disconnectFromSignalR('telemetry');
     clearInterval(this.c2dResponseInterval);

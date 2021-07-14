@@ -91,7 +91,7 @@
     </div>
     <div class="ml-auto"
       *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.device && liveWidgets.length > 0">
-      <div class="">*{{telemetryData?.length}} samples
+      <div class="">*{{sampleCountValue}} samples in last 1 minute
         <!-- with {{telemetryInterval !== undefined ? telemetryInterval :
           '(?)'
         second refresh rate--></div>

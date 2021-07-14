@@ -16,7 +16,6 @@ export class CommonTableComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log(this.tableConfig);
   }
 
   onClickOfButton(data, value) {
@@ -34,7 +33,11 @@ export class CommonTableComponent implements OnInit {
       if (typeof current !== 'object') {
         return undefined;
       }
-      current = current[path.shift()];
+      if (current) {
+        current = current[path.shift()];
+      } else {
+        return undefined;
+      }
     }
     return current;
   }

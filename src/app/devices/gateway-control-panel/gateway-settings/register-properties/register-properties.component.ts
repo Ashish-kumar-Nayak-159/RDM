@@ -118,8 +118,6 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
               device.register_enabled = false;
               if (device.metadata?.package_app) {
               device.appObj = this.applications.find(appObj => appObj.name === device.metadata.package_app);
-              console.log(device.appObj);
-              console.log(this.deviceTwin);
               if (this.deviceTwin.twin_properties.reported && this.deviceTwin.twin_properties.reported[device.appObj.type] &&
                 this.deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name]) {
                   if (this.deviceTwin.twin_properties.reported[device.appObj.type][device.appObj.name].status?.toLowerCase() !== 'running') {
@@ -162,10 +160,10 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
             response.properties.measured_properties = response.properties.measured_properties ?
             response.properties.measured_properties : [];
             response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
-            response.properties.readable_properties = response.properties.readable_properties ?
-            response.properties.readable_properties : [];
-            response.properties.writable_properties = response.properties.writable_properties ?
-            response.properties.writable_properties : [];
+            response.properties.configurable_properties = response.properties.configurable_properties ?
+            response.properties.configurable_properties : [];
+            response.properties.controllable_properties = response.properties.controllable_properties ?
+            response.properties.controllable_properties : [];
             this.properties = response.properties;
             resolve1();
           }, error => reject()
@@ -211,8 +209,8 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
       command: 'set_properties',
       measured_properties: this.optionsValue?.measured_properties ? {} : undefined,
       alerts: this.optionsValue.alerts ? {} : undefined,
-      writable_properties: this.optionsValue.writable_properties ? {} : undefined,
-      readable_properties: this.optionsValue.readable_properties ? {} : undefined,
+      controllable_properties: this.optionsValue.controllable_properties ? {} : undefined,
+      configurable_properties: this.optionsValue.configurable_properties ? {} : undefined,
       derived_properties: this.optionsValue.derived_properties ? {} : undefined
     };
     if (this.optionsValue.measured_properties) {
@@ -220,9 +218,9 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         obj.measured_properties[prop.json_key] = prop.metadata;
       });
     }
-    if (this.optionsValue.readable_properties) {
-      this.properties.readable_properties.forEach(prop => {
-        obj.readable_properties[prop.json_key] = prop.metadata;
+    if (this.optionsValue.configurable_properties) {
+      this.properties.configurable_properties.forEach(prop => {
+        obj.configurable_properties[prop.json_key] = prop.metadata;
       });
     }
     if (this.optionsValue.alerts) {
@@ -235,9 +233,9 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         obj.derived_properties[prop.json_key] = prop.metadata;
       });
     }
-    if (this.optionsValue.writable_properties) {
-      this.properties.writable_properties.forEach(prop => {
-        obj.writable_properties[prop.json_key] = prop.metadata;
+    if (this.optionsValue.controllable_properties) {
+      this.properties.controllable_properties.forEach(prop => {
+        obj.controllable_properties[prop.json_key] = prop.metadata;
       });
     }
     this.callC2dMethod(obj);

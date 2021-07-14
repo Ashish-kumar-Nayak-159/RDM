@@ -392,6 +392,11 @@ export class DeviceManagementDevicesComponent implements OnInit, OnDestroy {
         this.devicesList = [];
         this.selectedDevices = [];
         this.isAllDeviceSelected = false;
+        const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+        if (item) {
+          delete item.device;
+        }
+        this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, item);
         this.getDevices();
         $('#confirmMessageModal').modal('hide');
       }, error => {

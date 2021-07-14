@@ -31,6 +31,7 @@ import { DeviceTypeRulesComponent } from './device-type-control-panel/device-typ
 import { DeviceTypeDerivedKpisComponent } from './device-type-control-panel/device-type-derived-kpis/device-type-derived-kpis.component';
 import { DeviceTypeStreamProcessingComponent } from './device-type-control-panel/device-type-stream-processing/device-type-stream-processing.component';
 import { DeviceTypeAlertAcknowledgementReasonsComponent } from './device-type-control-panel/device-type-alert-acknowledgement-reasons/device-type-alert-acknowledgement-reasons.component';
+import { DeviceTypeSlaveInfoComponent } from './device-type-control-panel/device-type-slave-info/device-type-slave-info.component';
 
 
 
@@ -56,6 +57,7 @@ import { DeviceTypeAlertAcknowledgementReasonsComponent } from './device-type-co
     DeviceTypeDerivedKpisComponent,
     DeviceTypeStreamProcessingComponent,
     DeviceTypeAlertAcknowledgementReasonsComponent,
+    DeviceTypeSlaveInfoComponent,
   ],
   imports: [
     CommonModule,

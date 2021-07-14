@@ -74,6 +74,7 @@ import { DeviceMessagesWrapperComponent } from './device-control-panel/device-me
 import { FotaComponent } from './gateway-control-panel/gateway-settings/fota/fota.component';
 import { DerivedKpisComponent } from './device-control-panel/derived-kpis/derived-kpis.component';
 import { RulesComponent } from './device-control-panel/rules/rules.component';
+import { SlavesInfoComponent } from './device-control-panel/slaves-info/slaves-info.component';
 
 @NgModule({
   declarations: [
@@ -130,7 +131,8 @@ import { RulesComponent } from './device-control-panel/rules/rules.component';
     DeviceMessagesWrapperComponent,
     FotaComponent,
     DerivedKpisComponent,
-    RulesComponent
+    RulesComponent,
+    SlavesInfoComponent
   ],
   imports: [
     CommonModule,

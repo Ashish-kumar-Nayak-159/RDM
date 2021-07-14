@@ -445,4 +445,85 @@ export class DeviceTypeService {
     return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_MODEL_DERIVED_KPIS, encodeURIComponent(app),
     encodeURIComponent(deviceType)));
   }
+
+  getModelSlaveDetails(app, deviceType, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_MODEL_SLAVE_DETAILS,
+      encodeURIComponent(app), encodeURIComponent(deviceType)), {params});
+  }
+
+  createModelSlaveDetail(app, deviceType, obj) {
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_MODEL_SLAVE_DETAILS,
+      encodeURIComponent(app), encodeURIComponent(deviceType)), obj);
+  }
+
+  updateModelSlaveDetail(app, deviceType, slaveId, obj) {
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_MODEL_SLAVE_DETAILS,
+      encodeURIComponent(app), encodeURIComponent(deviceType),
+    encodeURIComponent(slaveId)), obj);
+  }
+
+  deleteModelSlaveDetail(app, deviceType, slaveId) {
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_MODEL_SLAVE_DETAILS, encodeURIComponent(app),
+    encodeURIComponent(deviceType), encodeURIComponent(slaveId)), {});
+  }
+
+  getModelSlavePositions(app, deviceType, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_MODEL_SLAVE_POSITIONS,
+      encodeURIComponent(app), encodeURIComponent(deviceType)), {params});
+  }
+
+  createModelSlavePosition(app, deviceType, obj) {
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_MODEL_SLAVE_POSITIONS,
+      encodeURIComponent(app), encodeURIComponent(deviceType)), obj);
+  }
+
+  updateModelSlavePosition(app, deviceType, slaveId, obj) {
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_MODEL_SLAVE_POSITIONS,
+      encodeURIComponent(app), encodeURIComponent(deviceType),
+    encodeURIComponent(slaveId)), obj);
+  }
+
+  deleteModelSlavePosition(app, deviceType, slaveId) {
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_MODEL_SLAVE_POSITIONS, encodeURIComponent(app),
+    encodeURIComponent(deviceType), encodeURIComponent(slaveId)), {});
+  }
+
+  getModelSlaveCategories(app, deviceType, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_MODEL_SLAVE_CATEGORIES,
+      encodeURIComponent(app), encodeURIComponent(deviceType)), {params});
+  }
+
+  createModelSlaveCategory(app, deviceType, obj) {
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_MODEL_SLAVE_CATEGORIES,
+      encodeURIComponent(app), encodeURIComponent(deviceType)), obj);
+  }
+
+  updateModelSlaveCategory(app, deviceType, slaveId, obj) {
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_MODEL_SLAVE_CATEGORIES,
+      encodeURIComponent(app), encodeURIComponent(deviceType),
+    encodeURIComponent(slaveId)), obj);
+  }
+
+  deleteModelSlaveCategory(app, deviceType, slaveId) {
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_MODEL_SLAVE_CATEGORIES, encodeURIComponent(app),
+    encodeURIComponent(deviceType), encodeURIComponent(slaveId)), {});
+  }
 }

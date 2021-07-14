@@ -111,6 +111,9 @@
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'alert_acknowledgement_reasons'}" role="tabpanel" id="device_type_alert_acknowledgement_reasons">
         <app-device-type-alert-acknowledgement-reasons *ngIf="activeTab === 'alert_acknowledgement_reasons' && deviceType" [deviceType]="deviceType"></app-device-type-alert-acknowledgement-reasons>
       </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'slave_info'}" role="tabpanel" id="device_type_slave_info">
+        <app-device-type-slave-info *ngIf="activeTab === 'slave_info' && deviceType" [deviceType]="deviceType"></app-device-type-slave-info>
+      </div>
       <!-- /.container1-fluid -->
     </div>
   </div>

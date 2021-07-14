@@ -264,7 +264,6 @@ export class DeviceService {
         delete obj.d;
         obj = {...obj, ...item?.m, ...item?.d};
         arr.push(obj);
-        console.log(obj);
       });
       data.data = JSON.parse(JSON.stringify(arr));
       return data;
@@ -782,6 +781,33 @@ export class DeviceService {
     });
     return this.http.get(this.url + String.Format(AppUrls.GET_DERIVED_KPI_HISTORICAL_DATA,
       encodeURIComponent(app), encodeURIComponent(kpiCode)), { params });
+  }
+
+  getAssetSlaveDetails(app, deviceId, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_SLAVE_DETAILS,
+      encodeURIComponent(app), encodeURIComponent(deviceId)), {params});
+  }
+
+  createAssetSlaveDetail(app, deviceId, obj) {
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_DEVICE_SLAVE_DETAILS,
+      encodeURIComponent(app), encodeURIComponent(deviceId)), obj);
+  }
+
+  updateAssetSlaveDetail(app, deviceId, slaveId, obj) {
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_DEVICE_SLAVE_DETAILS,
+      encodeURIComponent(app), encodeURIComponent(deviceId),
+    encodeURIComponent(slaveId)), obj);
+  }
+
+  deleteAssetSlaveDetail(app, deviceId, slaveId) {
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_DEVICE_SLAVE_DETAILS, encodeURIComponent(app),
+    encodeURIComponent(deviceId), encodeURIComponent(slaveId)), {});
   }
 
 }

@@ -94,7 +94,7 @@
               [(ngModel)]="deviceDetail.tags.cloud_connectivity" placeholder="Cloud Connectivity" disabled>
           </div>
           </ng-container>
-          <form *ngIf="deviceDetail.tags.protocol && setupForm" [formGroup]="setupForm">
+          <!-- <form *ngIf="deviceDetail.tags.protocol && setupForm" [formGroup]="setupForm">
             <ng-container *ngIf="deviceDetail.tags.protocol === 'ModbusTCPMaster'">
               <div class="form-group">
                 <label for="recipient-name" class="col-form-label required">Host Address:</label>
@@ -276,17 +276,17 @@
               </div>
             </ng-container>
 
-            </form>
-            <ng-container  *ngIf="deviceDetail.tags.protocol !== 'ModbusTCPMaster' && deviceDetail.tags.protocol !== 'SiemensTCPIP' &&
+            </form> -->
+            <!-- <ng-container  *ngIf="deviceDetail.tags.protocol !== 'ModbusTCPMaster' && deviceDetail.tags.protocol !== 'SiemensTCPIP' &&
             deviceDetail.tags.protocol !== 'ModbusRTUMaster' && componentState === constantData.NON_IP_DEVICE && isDeviceEditable">
             This protocol is not supported currently.
-          </ng-container>
+          </ng-container> -->
         </form>
       </div>
       <div class="modal-footer">
-        <button *ngIf="componentState === constantData.NON_IP_DEVICE" type="button" class="btn btn-primary add-row" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) ||isCreateDeviceAPILoading"
-          (click)="isDeviceEditable ? onEditDevice() : onCreateDevice()">Save</button>
-          <button *ngIf="componentState !== constantData.NON_IP_DEVICE" type="button" class="btn btn-primary add-row" [disabled]="isCreateDeviceAPILoading"
+        <!-- <button *ngIf="componentState === constantData.NON_IP_DEVICE" type="button" class="btn btn-primary add-row" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) ||isCreateDeviceAPILoading"
+          (click)="isDeviceEditable ? onEditDevice() : onCreateDevice()">Save</button> -->
+          <button type="button" class="btn btn-primary add-row" [disabled]="isCreateDeviceAPILoading"
           (click)="isDeviceEditable ? onEditDevice() : onCreateDevice()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreateDeviceAPILoading"
           (click)="onCloseCreateDeviceModal()">

@@ -91,13 +91,14 @@
     </div>
     <div class="ml-auto"
       *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.device && liveWidgets.length > 0">
-      <div class="">*{{telemetryData.length}} samples with {{telemetryInterval !== undefined ? telemetryInterval :
-        '(?)'}}
-        second refresh rate</div>
+      <div class="">*{{telemetryData?.length}} samples
+        <!-- with {{telemetryInterval !== undefined ? telemetryInterval :
+          '(?)'
+        second refresh rate--></div>
     </div>
   </ng-container>
 </div>
-<ng-container >
+<ng-container>
   <div class="content-scroll content-scroll-live-data">
     <div class="row col-md-12 mt-n2" *ngIf="telemetryObj && liveWidgets.length > 0">
       <ng-container *ngFor="let widget of liveWidgets; let i = index;">
@@ -106,11 +107,11 @@
               'margin-left':'2%', 'margin-top': '2%'}">
           <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
               || widget?.widgetType === 'NumberWithImage' || widget?.widgetType === 'StringWidget'"
-            [chartConfig]="widget" [device]="filterObj?.device" [telemetryObj]="telemetryObj">
+            [chartConfig]="widget" [device]="originalFilter?.device" [telemetryObj]="telemetryObj">
           </app-only-number-widget>
-          <app-gauge-chart [chartConfig]="widget" [device]="filterObj?.device"
+          <app-gauge-chart [chartConfig]="widget" [device]="originalFilter?.device"
             *ngIf="widget.widgetType === 'GaugeChart'" [telemetryObj]="telemetryObj"></app-gauge-chart>
-          <app-live-line-chart [chartConfig]="widget" [device]="filterObj?.device" [telemetryObj]="telemetryObj"
+          <app-live-line-chart [chartConfig]="widget" [device]="originalFilter?.device" [telemetryObj]="telemetryObj"
             *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
           </app-live-line-chart>
         </div>

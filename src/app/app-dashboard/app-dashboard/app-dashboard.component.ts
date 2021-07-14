@@ -56,6 +56,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   frequencyDiffInterval: number;
   normalModelInterval: number;
   turboModeInterval: number;
+  widgetPropertyList: any[] = [];
+  previousProperties = [];
+  sampleCountArr = new Array(60);
+  sampleCountValue = 0;
   constructor(
     private deviceService: DeviceService,
     private commonService: CommonService,
@@ -67,6 +71,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   async ngOnInit(): Promise<void> {
+
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
@@ -98,11 +103,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     $('.dropdown-menu').on('click.bs.dropdown', (e) => {
       e.stopPropagation();
     });
-    $('#dd-open').on('hide.bs.dropdown', (e: any) => {
-      if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
-        e.preventDefault();
-      }
-    });
+    // $('#dd-open').on('hide.bs.dropdown', (e: any) => {
+    //   if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
+    //     e.preventDefault();
+    //   }
+    // });
   }
 
   onSaveHierachy() {
@@ -328,6 +333,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.filterObj.device = undefined;
     this.hierarchyArr = [];
     this.configureHierarchy = {};
+    this.widgetPropertyList = [];
     this.c2dResponseMessage = [];
     this.isC2dAPILoading = false;
     this.c2dLoadingMessage = undefined;
@@ -362,6 +368,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             // });
             if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
               widget?.properties.forEach(prop => {
+                this.addPropertyInList(prop.property);
                 if (prop?.property?.type === 'Derived Properties') {
                   widget.derived_props = true;
                 } else {
@@ -370,6 +377,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
               });
               } else {
                 widget?.y1AxisProps.forEach(prop => {
+                  this.addPropertyInList(prop);
                   if (prop?.type === 'Derived Properties') {
                     widget.derived_props = true;
                   } else {
@@ -377,6 +385,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                   }
                 });
                 widget?.y2AxisProps.forEach(prop => {
+                  this.addPropertyInList(prop);
                   if (prop?.type === 'Derived Properties') {
                     widget.derived_props = true;
                   } else {
@@ -384,7 +393,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                   }
                 });
               }
-            console.log('11111111111111111    ', widget);
             if (widget.dashboardVisibility) {
               this.liveWidgets.push(widget);
             }
@@ -398,6 +406,17 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     ));
     });
+  }
+
+  addPropertyInList(prop) {
+    if (this.widgetPropertyList.length === 0 ) {
+      this.widgetPropertyList.push(prop);
+    } else {
+      const index = this.widgetPropertyList.findIndex(propObj => propObj.json_key === prop.json_key);
+      if (index === -1) {
+        this.widgetPropertyList.push(prop);
+      }
+    }
   }
 
   async onFilterSelection(filterObj, updateFilterObj = true) {
@@ -468,7 +487,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             obj = {...obj, ...data.m, ...data.d};
             data = JSON.parse(JSON.stringify(obj));
           }
-          console.log(data);
           this.processTelemetryData(data);
           this.isTelemetryDataLoading = false;
         }
@@ -479,7 +497,19 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         if (response?.message) {
           response.message.date = this.commonService.convertUTCDateToLocal(response.message_date);
           response.message.message_date = this.commonService.convertUTCDateToLocal(response.message_date);
-          this.telemetryObj = response.message;
+          const obj = {};
+          // console.log(this.widgetPropertyList);
+          this.widgetPropertyList.forEach(prop => {
+            obj[prop?.json_key] = {
+              value: response.message[prop?.json_key],
+              date: response.message.message_date
+            };
+          });
+          this.previousProperties = [];
+          obj['previous_properties'] = [];
+          // console.log(obj);
+          this.telemetryObj = obj;
+          // this.telemetryObj = response.message;
           // const hours = this.telemetryObj['Running Hours'].split(':');
           // this.telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
           // this.telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
@@ -490,7 +520,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           }
           this.lastReportedTelemetryValues = JSON.parse(JSON.stringify(this.telemetryObj));
           this.telemetryData = [];
-          this.telemetryData.push(response.message);
+          this.telemetryData.push(this.telemetryObj);
           this.isTelemetryDataLoading = false;
         } else {
           this.isTelemetryDataLoading = false;
@@ -499,7 +529,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   processTelemetryData(telemetryObj) {
-
     telemetryObj.date = this.commonService.convertUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
     telemetryObj.message_date = this.commonService.convertUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
     if (environment.app === 'SopanCMS') {
@@ -507,29 +536,34 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         Math.floor(Number(telemetryObj[this.getPropertyKey('Running Hours')])),
         Math.floor(Number(telemetryObj[this.getPropertyKey('Running Minutes')])));
     }
-    this.lastReportedTelemetryValues = telemetryObj;
     if (this.telemetryObj) {
       const interval = Math.round((moment(telemetryObj.message_date).diff(moment(this.telemetryObj.message_date), 'milliseconds')) / 1000);
       const diff1 = Math.abs(interval - this.normalModelInterval);
       const diff2 = Math.abs(interval - this.turboModeInterval);
-      if (interval !== undefined && !this.isTelemetryModeAPICalled &&
-        ((diff1 < diff2 && !this.signalRModeValue) || (diff1 > diff2 && this.signalRModeValue))) {
-        this.isTelemetryModeAPICalled = true;
-        setTimeout(() => {
-        this.getDeviceSignalRMode(this.filterObj.device.device_id);
-      }, 2000);
-      }
       this.telemetryInterval = interval;
     }
-
-    this.telemetryObj = telemetryObj;
+    const obj = JSON.parse(JSON.stringify(this.telemetryObj));
+    // console.log(this.widgetPropertyList);
+    this.widgetPropertyList.forEach(prop => {
+      if (prop?.json_key && telemetryObj[prop.json_key] !== undefined && telemetryObj[prop.json_key] !== null) {
+        obj[prop?.json_key] = {
+          value: telemetryObj[prop?.json_key],
+          date: telemetryObj.date
+        };
+      }
+    });
+    obj['previous_properties'] = this.previousProperties;
+    // console.log(obj);
+    this.telemetryObj = obj;
+    this.previousProperties = [];
+    Object.keys(this.telemetryObj).forEach(key => this.previousProperties.push(key));
+    this.lastReportedTelemetryValues = obj;
     if (this.telemetryData.length >= 15) {
       this.telemetryData.splice(0, 1);
     }
-    this.telemetryData.push(this.lastReportedTelemetryValues);
+    this.telemetryData.push(this.telemetryObj);
     this.telemetryData = JSON.parse(JSON.stringify(this.telemetryData));
   }
-
 
   getPropertyKey(name) {
     return this.propertyList.filter(prop => prop.name === name)[0]?.json_key || name;

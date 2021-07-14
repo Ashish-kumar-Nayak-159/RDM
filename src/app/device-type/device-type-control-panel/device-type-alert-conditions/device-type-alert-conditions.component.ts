@@ -1,3 +1,4 @@
+import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from './../../../services/toaster.service';
 import { filter } from 'rxjs/operators';
 import { DeviceTypeService } from './../../../services/device-type/device-type.service';
@@ -36,15 +37,20 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
   setupForm: FormGroup;
   constantData = CONSTANTS;
   selectedTab = 'Asset';
+  slaveData: any[] = [];
+  contextApp: any;
   constructor(
+    private commonService: CommonService,
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService
   ) { }
 
   async ngOnInit(): Promise<void> {
+    this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     await this.getDocuments();
     this.getDeviceTypeWidgets();
     this.onClickOfTab('Asset');
+    this.getSlaveData();
   }
 
   onClickOfTab(type) {
@@ -68,6 +74,18 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
          }
       ));
     }
+  }
+
+  getSlaveData() {
+    this.slaveData = [];
+    const filterObj = {};
+    this.subscriptions.push(this.deviceTypeService.getModelSlaveDetails(this.contextApp.app, this.deviceType.name, filterObj)
+    .subscribe((response: any) => {
+      if (response?.data) {
+        this.slaveData = response.data;
+      }
+    })
+    );
   }
 
 
@@ -233,6 +251,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
       if (this.deviceType.metadata?.model_type === CONSTANTS.NON_IP_DEVICE) {
       if (this.deviceType.tags.protocol === 'ModbusTCPMaster' || this.deviceType.tags.protocol === 'ModbusRTUMaster') {
         this.setupForm = new FormGroup({
+          sid: new FormControl(alertObj?.metadata?.sid, [Validators.required]),
           d: new FormControl(alertObj?.metadata?.d, [Validators.required]),
           sa: new FormControl(alertObj?.metadata?.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
           a: new FormControl(true),
@@ -240,6 +259,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
         });
       } else if (this.deviceType.tags.protocol === 'SiemensTCPIP') {
         this.setupForm = new FormGroup({
+          sid: new FormControl(alertObj?.metadata?.sid, [Validators.required]),
           d: new FormControl(alertObj?.metadata?.d, [Validators.required]),
           sa: new FormControl(alertObj?.metadata?.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
           a: new FormControl(true),
@@ -261,6 +281,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
       if (this.deviceType.metadata?.model_type === CONSTANTS.NON_IP_DEVICE) {
       if (this.deviceType.tags.protocol === 'ModbusTCPMaster' || this.deviceType.tags.protocol === 'ModbusRTUMaster') {
         this.setupForm = new FormGroup({
+          sid: new FormControl(null, [Validators.required]),
           d: new FormControl(null, [Validators.required]),
           sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
           a: new FormControl(true),
@@ -268,6 +289,7 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
         });
       } else if (this.deviceType.tags.protocol === 'SiemensTCPIP') {
         this.setupForm = new FormGroup({
+          sid: new FormControl(null, [Validators.required]),
           d: new FormControl(null, [Validators.required]),
           sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
           a: new FormControl(true),
@@ -319,6 +341,13 @@ export class DeviceTypeAlertConditionsComponent implements OnInit, OnDestroy {
     } else {
       this.setupForm.removeControl('p');
       this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
+    }
+    if (this.setupForm.value.d === 'a' &&
+    this.setupForm.value.sd === 9) {
+      this.setupForm.removeControl('bytn');
+      this.setupForm.addControl('bytn', new FormControl(obj?.bytn || null, [Validators.required]));
+    } else {
+      this.setupForm.removeControl('bytn');
     }
   }
 

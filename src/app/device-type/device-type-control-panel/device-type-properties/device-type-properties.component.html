@@ -80,17 +80,17 @@
                 <div class="form-group">
                   <label for="recipient-name" class="col-form-label required">Slave:</label>
                   <div class="input-group">
-                  <select class="form-control form-control-sm" id="slave" name="slave" formControlName="slave"
+                  <select class="form-control form-control-sm" id="sid" name="sid" formControlName="sid"
                   > <option [ngValue]="null">Select Slave</option>
-                    <option [ngValue]="slave.id" *ngFor="let slave of slaveData">{{slave.slave_name}}</option>
+                    <option [ngValue]="slave.slave_id" *ngFor="let slave of slaveData">{{slave.slave_name}}</option>
                     <!-- <option [ngValue]="'d'" >Digital</option>
                     <option [ngValue]="'s'" >String</option> -->
                   </select>
                   </div>
-                  <div *ngIf="setupForm.get('d').invalid && (setupForm.get('d').dirty || setupForm.get('d').touched)"
+                  <div *ngIf="setupForm.get('sid').invalid && (setupForm.get('sid').dirty || setupForm.get('sid').touched)"
                     class="alert-danger">
-                    <div *ngIf="setupForm.get('d').errors.required">
-                      Type is required.
+                    <div *ngIf="setupForm.get('sid').errors.required">
+                      Slave is required.
                     </div>
                     </div>
                 </div>

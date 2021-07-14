@@ -220,7 +220,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
     if (this.deviceType.metadata?.model_type === CONSTANTS.NON_IP_DEVICE) {
     if (this.deviceType.tags.protocol === 'ModbusTCPMaster' || this.deviceType.tags.protocol === 'ModbusRTUMaster') {
       this.setupForm = new FormGroup({
-        slave: new FormControl(null, [Validators.required]),
+        sid: new FormControl(null, [Validators.required]),
         d: new FormControl(null, [Validators.required]),
         sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
         a: new FormControl(false),
@@ -228,7 +228,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       });
     } else if (this.deviceType.tags.protocol === 'SiemensTCPIP') {
       this.setupForm = new FormGroup({
-        slave: new FormControl(null, [Validators.required]),
+        sid: new FormControl(null, [Validators.required]),
         d: new FormControl(null, [Validators.required]),
         sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
         a: new FormControl(false),
@@ -539,7 +539,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
       if (this.deviceType.metadata?.model_type === CONSTANTS.NON_IP_DEVICE) {
       if (this.deviceType.tags.protocol === 'ModbusTCPMaster' || this.deviceType.tags.protocol === 'ModbusRTUMaster') {
         this.setupForm = new FormGroup({
-          slave: new FormControl(this.propertyObj?.metadata?.slave, [Validators.required]),
+          sid: new FormControl(this.propertyObj?.metadata?.sid, [Validators.required]),
           d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),
           sa: new FormControl(this.propertyObj?.metadata?.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
           a: new FormControl(true),
@@ -547,7 +547,7 @@ export class DeviceTypePropertiesComponent implements OnInit, OnChanges, OnDestr
         });
       } else if (this.deviceType.tags.protocol === 'SiemensTCPIP') {
         this.setupForm = new FormGroup({
-          slave: new FormControl(this.propertyObj?.metadata?.slave, [Validators.required]),
+          sid: new FormControl(this.propertyObj?.metadata?.sid, [Validators.required]),
           d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),
           sa: new FormControl(this.propertyObj?.metadata?.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
           a: new FormControl(true),

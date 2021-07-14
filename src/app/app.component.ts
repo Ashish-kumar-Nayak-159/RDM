@@ -63,6 +63,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!this.applicationData) {
         if (this.userData ) {
           if (this.userData.is_super_admin) {
+            localStorage.removeItem(CONSTANTS.APP_TOKEN);
+            localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.token);
             this.router.navigate(['applications']);
           } else {
             if (this.userData.apps && this.userData.apps.length > 1) {

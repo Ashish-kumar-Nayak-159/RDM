@@ -40,6 +40,9 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     if (this.userData) {
       if (this.userData.is_super_admin) {
+        localStorage.removeItem(CONSTANTS.APP_TOKEN);
+        console.log(this.userData.token);
+        localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.token);
         this.router.navigate(['applications']);
       } else {
         if (this.userData.apps && this.userData.apps.length > 1) {
@@ -96,7 +99,8 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
           // }
           localStorage.setItem(CONSTANTS.APP_VERSION, environment.version);
           if (response.is_super_admin) {
-            console.log('in login 28');
+            localStorage.removeItem(CONSTANTS.APP_TOKEN);
+            localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.token);
             this.router.navigate(['applications']);
             this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, response);
           } else {
@@ -121,6 +125,8 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
               if (this.userData.apps && this.userData.apps.length > 1) {
                 this.router.navigate(['applications', 'selection']);
               } else if (this.userData.apps && this.userData.apps.length === 1) {
+                localStorage.removeItem(CONSTANTS.APP_TOKEN);
+                localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.apps[0].token);
                 await this.getApplicationData(this.userData.apps[0]);
                 this.router.navigate(['applications', this.applicationData.app]);
                 // const menu = this.applicationData.configuration.main_menu.length > 0 ?

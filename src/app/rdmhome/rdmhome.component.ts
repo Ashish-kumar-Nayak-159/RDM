@@ -27,6 +27,8 @@ export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log(this.userData);
     if (this.userData) {
       if (this.userData.is_super_admin) {
+        localStorage.removeItem(CONSTANTS.APP_TOKEN);
+        localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.token);
         this.router.navigate(['applications']);
       } else {
         if (this.userData.apps && this.userData.apps.length > 1) {

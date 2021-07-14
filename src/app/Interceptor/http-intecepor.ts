@@ -34,7 +34,6 @@ export class CustomHttpInterceptor implements HttpInterceptor {
       return new Observable();
     }
     if (!userToken && !request.url.includes('api/login')
-    && request.url !== (environment.appServerURL + AppUrls.GET_APPLICATIONS_LIST)
     && !request.url.includes('users/reset_password')
     && !request.url.includes(environment.blobURL)) {
       this.toasterService.showError('Please login again', 'Session Expired');

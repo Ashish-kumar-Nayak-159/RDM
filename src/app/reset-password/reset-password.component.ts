@@ -7,6 +7,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { UserService } from '../services/user.service';
+import { environment } from 'src/environments/environment';
 declare var $: any;
 @Component({
   selector: 'app-reset-password',
@@ -102,7 +103,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy  {
     this.changePasswordAPILoading = true;
     delete this.resetPasswordForm.value.confirmNewPassword;
     this.changePasswordSubscription = this.commonService
-      .resetUserPassword(this.resetPasswordForm.value)
+      .resetUserPassword(this.resetPasswordForm.value, environment.app)
       .subscribe(
         (response: any) => {
           // this.commonService.resetPassword.emit(false);

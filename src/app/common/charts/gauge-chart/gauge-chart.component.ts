@@ -37,7 +37,6 @@ export class GaugeChartComponent implements OnInit, OnChanges, AfterViewInit {
         if (this.hand[index] && this.chart[index]) {
           this.hand[index].value = Number(this.telemetryObj[prop.property.json_key]?.value || '0');
         }
-        console.log('gauge charttttt ', this.chart, 'aaaaaaaaa', this.hand, '----', index);
         if (this.chart[index] && !this.hand[index] &&
           this.telemetryObj[prop.property.json_key]?.value !== undefined && this.telemetryObj[prop.property.json_key]?.value !== null) {
             const hand = this.chart[index].hands.push(new am4charts.ClockHand());

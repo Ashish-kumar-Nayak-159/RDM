@@ -169,7 +169,7 @@ input:invalid {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: 13rem;
+  /* width: 13rem; */
 }
 
 .w-11 {

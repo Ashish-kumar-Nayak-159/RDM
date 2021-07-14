@@ -2,7 +2,7 @@
 <div class="mt-1">
   <div class="card" id="{{chartConfig.chartId}}">
     <div class="card-header d-flex px-2">
-      <div>
+      <div  style="min-width: 0; flex:1">
       <h6 class="my-0 live-widget-title" [ngClass]="{'w-11': !device  && !chartConfig.freezed}"
       placement="bottom" [tooltip]="chartConfig.widgetTitle">
         {{chartConfig.widgetTitle}}

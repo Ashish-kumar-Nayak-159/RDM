@@ -138,6 +138,9 @@
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'package_management'}" role="tabpanel" id="device_package_management">
             <app-device-packages *ngIf="activeTab === 'package_management' && device" [device]="device"></app-device-packages>
           </div>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'slave_info'}" role="tabpanel" id="device_slave_info">
+            <app-slaves-info *ngIf="activeTab === 'slave_info' && device" [device]="device"></app-slaves-info>
+          </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'device_life_cycle'}" role="tabpanel"
               id="device_life_cycle_events">
               <app-device-life-cycle-events *ngIf="activeTab === 'device_life_cycle' && device" [device]="device">

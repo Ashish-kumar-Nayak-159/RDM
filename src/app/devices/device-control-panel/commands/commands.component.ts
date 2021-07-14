@@ -83,6 +83,7 @@ export class CommandsComponent implements OnInit, OnDestroy {
           this.allControlWidgets = response.data;
           if (this.allControlWidgets.length > 0) {
             this.selectedWidget = this.allControlWidgets[0];
+            this.onChangeOfDropdownData(this.selectedWidget);
           }
         }
       }
@@ -106,6 +107,7 @@ export class CommandsComponent implements OnInit, OnDestroy {
           this.allControlWidgets = response.data;
           if (this.allControlWidgets.length > 0) {
             this.selectedWidget = this.allControlWidgets[0];
+            this.onChangeOfDropdownData(this.selectedWidget);
           }
         }
       }
@@ -127,8 +129,10 @@ export class CommandsComponent implements OnInit, OnDestroy {
           name: null,
           value: null
         };
+        let flag = false;
         this.selectedWidget.properties.forEach(prop => {
           if (prop.json_key === key) {
+            flag = true;
             obj.name = prop.name;
             obj.json = this.selectedWidget.json[key];
             if (obj.json['type'] === 'boolean') {
@@ -138,7 +142,17 @@ export class CommandsComponent implements OnInit, OnDestroy {
             }
           }
         });
-        this.jsonModelKeys.splice(this.jsonModelKeys.length, 0, obj);
+        if (!flag) {
+          obj.name = key;
+          obj.json = this.selectedWidget.json[key];
+          if (obj.json['type'] === 'boolean') {
+            obj.value = obj.json['defaultValue'] === obj.json['trueValue'] ? true : false;
+          } else {
+            obj.value = this.selectedWidget.json[key].defaultValue;
+          }
+        }
+        this.jsonModelKeys.push(obj);
+        console.log(this.jsonModelKeys);
       });
     }, 500);
 

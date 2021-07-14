@@ -163,11 +163,10 @@
           <ng-container *ngIf="item.json.type === 'number'">
             <input type="number" class="form-control form-control-sm" name="{{item.name}}"
             [(ngModel)]="item.value" min="{{item.json.minValue ? item.json.minValue : 1}}"
-            max="{{item.json.maxValue ? item.json.maxValue : 1000}}">
+            max="{{item.json.maxValue ? item.json.maxValue : 1000}}" >
           </ng-container>
           <ng-container *ngIf="item.json.type === 'boolean'">
             <div class="btn-group"  name="booleandata">
-
               <ui-switch checkedLabel="{{item.json.trueValue}}"
               uncheckedLabel="{{item.json.falseValue}}" size="small"
               [(ngModel)]="item.value" id="{{item.name}}" name="{{item.name}}"

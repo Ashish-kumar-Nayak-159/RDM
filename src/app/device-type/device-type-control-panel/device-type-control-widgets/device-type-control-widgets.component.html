@@ -103,7 +103,7 @@
         </div>
 
         <div class="form-group">
-          <label for="message-text" class="col-form-label required">Controls following properties:</label>
+          <label for="message-text" class="col-form-label required">Controls following {{(controlWidget?.metadata?.communication_technique === 'Direct Method' ? 'methods' : 'properties')}}:</label>
           <!-- <angular2-multiselect [data]="(controlWidget?.metadata?.communication_technique === 'Direct Method' ? deviceMethods : properties?.controllable_properties)" id="y1AxisProperty"
           [(ngModel)]="controlWidget.properties" (onDeSelect)="onPropertyChecked($event)"
           (onSelectAll)="selectAllProps($event)" (onDeSelectAll)="deselectAllProps($event)"
@@ -131,6 +131,35 @@
            {{items.length}} selected
          </ng-template>
        </ng-select>
+
+       
+<label for="message-text" class="col-form-label">OR </label>
+
+       <ng-container *ngFor="let param of extraParams; let i = index;" >
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">Extra Parameters </label>
+          <a *ngIf="i === 0"
+            class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm  ml-2 mb-1"
+            href="javascript:void(0)" (click)="addParameter()"
+            placement="bottom" tooltip="Add Property"
+            ><i class="fa fa-plus fa-sm text-white"></i></a>
+            <a *ngIf="i !== 0"
+            class="d-none d-sm-inline-block btn btn-sm btn-white shadow-sm  ml-2 mb-1"
+            href="javascript:void(0)" (click)="removeParameter(i)"
+            placement="bottom" tooltip="Remove Property"
+            ><i class="fa fa-trash fa-sm"></i></a>
+          <input type="text"  class="form-control form-control-sm" id="title{{i}}" name="title{{i}}"
+            [(ngModel)]="param.name" (change)="onKeyChange($event, i)"
+              placeholder="Parameter Key">
+        </div>
+        <div class="form-group">
+          <label for="recipient-name" class="col-form-label required">Data Type:</label>
+          <select class="form-control form-control-sm" id="template{{i}}" name="model_type{{i}}" [(ngModel)]="param.type"
+          (change)="onKeyChange($event, i)">
+            <option [ngValue]="dataType.name" *ngFor="let dataType of dataTypeList">{{dataType.name}}</option>
+          </select>
+        </div>
+        </ng-container>
         </div>
         <div class="form-group mr-3">
           <label for="message-text" class="col-form-label">JSON Format:</label>
@@ -147,8 +176,6 @@
           <!-- <json-editor [options]="editorOptions" name="json" [data]="controlWidget.json">
           </json-editor> -->
         </div>
-
-
       </form>
     </div>
     <div class="modal-footer">

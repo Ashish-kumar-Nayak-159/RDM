@@ -1,6 +1,7 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { JsonEditorOptions, JsonEditorComponent } from 'ang-jsoneditor';
 import { Subscription } from 'rxjs';
+import { CONSTANTS } from 'src/app/app.constants';
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 
@@ -24,6 +25,9 @@ export class DeviceTypeConfigurationWidgetsComponent implements OnInit, OnDestro
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   isGetControlWidgetAPILoading = false;
   subscriptions: Subscription[] = [];
+  extraParams: any[] = [];
+  originalExtraParams: any[] = [];
+  dataTypeList = CONSTANTS.PROPERTY_DATA_TYPE_LIST;
   constructor(
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService
@@ -104,8 +108,64 @@ export class DeviceTypeConfigurationWidgetsComponent implements OnInit, OnDestro
         }
       }
     };
+    this.addParameter();
     this.viewType = 'add';
     $('#createWidgetModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  addParameter() {
+    this.extraParams.push({
+      name: undefined,
+      type: undefined
+    });
+    this.originalExtraParams = JSON.parse(JSON.stringify(this.extraParams));
+  }
+
+  removeParameter(index) {
+    const obj = this.extraParams[index];
+    delete this.controlWidget.json[obj.name];
+    this.extraParams.splice(index, 1);
+    this.editor.set(this.controlWidget.json);
+    this.originalExtraParams = JSON.parse(JSON.stringify(this.extraParams));
+  }
+
+  onKeyChange(event, i) {
+    this.controlWidget.json = this.editor.get();
+    console.log(event);
+    const obj = this.extraParams[i];
+    const originalObj = this.originalExtraParams[i];
+    console.log(obj);
+    console.log(originalObj);
+    let valueObj;
+    if (originalObj.name && originalObj.type && originalObj.name !== obj.name) {
+      valueObj = JSON.parse(JSON.stringify(this.controlWidget.json[originalObj.name]));
+      console.log(valueObj);
+      delete this.controlWidget.json[originalObj.name];
+    }
+    if (obj.name && obj.type) {
+      if (valueObj) {
+        this.controlWidget.json[obj.name] = valueObj;
+      } else {
+        const propObj = {};
+        propObj['type'] = obj.type.toLowerCase();
+        const validations = this.dataTypeList.find(type => type.name === obj.type).validations;
+        validations.forEach(item => {
+          if (item === 'enum') {
+            propObj[item] = [];
+          } else if (item === 'trueValue') {
+            propObj[item] = true;
+          } else if (item === 'falseValue') {
+            propObj[item] = false;
+          } else {
+            propObj[item] = null;
+          }
+        });
+        this.controlWidget.json[obj.name] = propObj;
+      }
+    }
+    console.log(this.controlWidget);
+    this.originalExtraParams = JSON.parse(JSON.stringify(this.extraParams));
+    this.editor.set(this.controlWidget.json);
   }
 
   onPropertyChecked(event) {
@@ -168,14 +228,14 @@ export class DeviceTypeConfigurationWidgetsComponent implements OnInit, OnDestro
       this.toasterService.showError('Please add widget name', 'Create Configuration Widget');
       return;
     }
-    if (this.controlWidget.properties.length === 0) {
-      this.toasterService.showError('Please select at least one property', 'Create Configuration Widget');
-      return;
-    }
     try {
       this.controlWidget.json = this.editor.get();
     } catch (e) {
       this.toasterService.showError('Invalid JSON data', 'Create Configuration Widget');
+      return;
+    }
+    if (Object.keys(this.controlWidget.json).length < 2) {
+      this.toasterService.showError('Please select at least one property/parameter', 'Create Control Widget');
       return;
     }
     this.isCreateWidgetAPILoading = true;
@@ -228,6 +288,8 @@ export class DeviceTypeConfigurationWidgetsComponent implements OnInit, OnDestro
     this.controlWidget = {};
     $('#createWidgetModal').modal('hide');
     this.viewType = undefined;
+    this.extraParams = [];
+    this.originalExtraParams = [];
   }
 
   ngOnDestroy() {

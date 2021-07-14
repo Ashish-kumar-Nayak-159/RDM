@@ -3,6 +3,7 @@ import { ToasterService } from './../../../services/toaster.service';
 import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
 import { Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { JsonEditorOptions, JsonEditorComponent } from 'ang-jsoneditor';
+import { CONSTANTS } from 'src/app/app.constants';
 
 declare var $: any;
 @Component({
@@ -24,6 +25,9 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   isGetControlWidgetAPILoading = false;
   subscriptions: Subscription[] = [];
+  extraParams: any[] = [];
+  originalExtraParams: any[] = [];
+  dataTypeList = CONSTANTS.PROPERTY_DATA_TYPE_LIST;
   constructor(
     private deviceTypeService: DeviceTypeService,
     private toasterService: ToasterService
@@ -94,6 +98,7 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
         }
       }
     };
+    this.addParameter();
     this.viewType = 'add';
     $('#createWidgetModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
@@ -133,6 +138,60 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
     this.editor.set(this.controlWidget.json);
   }
 
+  addParameter() {
+    this.extraParams.push({
+      name: undefined,
+      type: undefined
+    });
+    this.originalExtraParams = JSON.parse(JSON.stringify(this.extraParams));
+  }
+
+  removeParameter(index) {
+    const obj = this.extraParams[index];
+    delete this.controlWidget.json[obj.name];
+    this.extraParams.splice(index, 1);
+    this.editor.set(this.controlWidget.json);
+    this.originalExtraParams = JSON.parse(JSON.stringify(this.extraParams));
+  }
+
+  onKeyChange(event, i) {
+    this.controlWidget.json = this.editor.get();
+    console.log(event);
+    const obj = this.extraParams[i];
+    const originalObj = this.originalExtraParams[i];
+    console.log(obj);
+    console.log(originalObj);
+    let valueObj;
+    if (originalObj.name && originalObj.type  && originalObj.name !== obj.name) {
+      valueObj = JSON.parse(JSON.stringify(this.controlWidget.json[originalObj.name]));
+      console.log(valueObj);
+      delete this.controlWidget.json[originalObj.name];
+    }
+    if (obj.name && obj.type) {
+      if (valueObj) {
+        this.controlWidget.json[obj.name] = valueObj;
+      } else {
+        const propObj = {};
+        propObj['type'] = obj.type.toLowerCase();
+        const validations = this.dataTypeList.find(type => type.name === obj.type).validations;
+        validations.forEach(item => {
+          if (item === 'enum') {
+            propObj[item] = [];
+          } else if (item === 'trueValue') {
+            propObj[item] = true;
+          } else if (item === 'falseValue') {
+            propObj[item] = false;
+          } else {
+            propObj[item] = null;
+          }
+        });
+        this.controlWidget.json[obj.name] = propObj;
+      }
+    }
+    this.originalExtraParams = JSON.parse(JSON.stringify(this.extraParams));
+    this.editor.set(this.controlWidget.json);
+  }
+
   selectAllProps(event) {
     this.controlWidget.json = {
       timestamp: {
@@ -162,18 +221,21 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
   }
 
   createControlWidget() {
+
     if (!this.controlWidget.name || !this.controlWidget.metadata || !this.controlWidget.metadata?.communication_technique) {
       this.toasterService.showError('Please enter all required fields', 'Create Control Widget');
-      return;
-    }
-    if (this.controlWidget.properties.length === 0) {
-      this.toasterService.showError('Please select at least one property', 'Create Control Widget');
       return;
     }
     try {
       this.controlWidget.json = this.editor.get();
     } catch (e) {
       this.toasterService.showError('Invalid JSON data', 'Create Control Widget');
+      return;
+    }
+    console.log(this.controlWidget);
+    console.log(Object.keys(this.controlWidget.json).length );
+    if (Object.keys(this.controlWidget.json).length < 2) {
+      this.toasterService.showError('Please select at least one property/parameter', 'Create Control Widget');
       return;
     }
     this.isCreateWidgetAPILoading = true;
@@ -191,7 +253,6 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
       }
     ));
   }
-
 
   deleteControlWidget() {
     const obj = {
@@ -226,6 +287,8 @@ export class DeviceTypeControlWidgetsComponent implements OnInit, OnDestroy {
     this.controlWidget = {};
     $('#createWidgetModal').modal('hide');
     this.viewType = undefined;
+    this.extraParams = [];
+    this.originalExtraParams = [];
   }
 
   ngOnDestroy() {

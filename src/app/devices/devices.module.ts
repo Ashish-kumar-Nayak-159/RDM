@@ -75,6 +75,7 @@ import { FotaComponent } from './gateway-control-panel/gateway-settings/fota/fot
 import { DerivedKpisComponent } from './device-control-panel/derived-kpis/derived-kpis.component';
 import { RulesComponent } from './device-control-panel/rules/rules.component';
 import { SlavesInfoComponent } from './device-control-panel/slaves-info/slaves-info.component';
+import { NonProvisionedAssetsComponent } from './non-provisioned-assets/non-provisioned-assets.component';
 
 @NgModule({
   declarations: [
@@ -132,7 +133,8 @@ import { SlavesInfoComponent } from './device-control-panel/slaves-info/slaves-i
     FotaComponent,
     DerivedKpisComponent,
     RulesComponent,
-    SlavesInfoComponent
+    SlavesInfoComponent,
+    NonProvisionedAssetsComponent
   ],
   imports: [
     CommonModule,

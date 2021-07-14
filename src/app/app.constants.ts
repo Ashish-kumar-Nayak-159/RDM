@@ -202,7 +202,7 @@ export class CONSTANTS {
     },
 
     {
-      page: 'campaigns',
+      page: 'Campaigns',
       system_name: 'Campaigns',
       url: 'applications/:appName/campaigns',
       display_name: 'Campaigns',
@@ -214,6 +214,18 @@ export class CONSTANTS {
       ],
       priority: 1
     },
+     {
+      page: 'Non-provisioned Assets',
+      system_name: 'Non-provisioned Assets',
+      url: 'applications/:appName/asset/non-provisioned',
+      display_name: 'Non-provisioned Assets',
+      icon: 'fab fa-fw fa-mixcloud',
+      visible: true,
+      showAccordion: [
+        { name: 'Title', value: 'Non-provisioned Assets'}
+      ],
+      priority: 2
+    }
     // {
     //   page: 'Gateways',
     //   system_name: 'IoT Gateways',

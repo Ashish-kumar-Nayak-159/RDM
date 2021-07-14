@@ -1,3 +1,4 @@
+import { NonProvisionedAssetsComponent } from './non-provisioned-assets/non-provisioned-assets.component';
 import { DeviceManagementComponent } from './device-management/device-management.component';
 import { ControlPanelComponent } from './control-panel/control-panel.component';
 import { NgModule } from '@angular/core';
@@ -17,10 +18,16 @@ const routes: Routes = [
     canActivate: [AuthGuardService]
   },
   {
+    path: 'non-provisioned',
+    component: NonProvisionedAssetsComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
     path: ':deviceId/control-panel',
     component: ControlPanelComponent,
     canActivate: [AuthGuardService]
-  }
+  },
+
 ];
 
 @NgModule({

@@ -1,7 +1,7 @@
 import { filter } from 'rxjs/operators';
-import { DeviceTypeService } from './../../services/device-type/device-type.service';
+import { AssetModelService } from './../../services/asset-model/asset-model.service';
 import { ToasterService } from './../../services/toaster.service';
-import { DeviceService } from './../../services/devices/device.service';
+import { AssetService } from './../../services/assets/asset.service';
 import { ApplicationService } from './../../services/application/application.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonService } from './../../services/common.service';
@@ -26,9 +26,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
   contextApp: any;
   hierarchyArr: any = {};
   configureHierarchy: any = {};
-  devices: any[] = [];
-  nonIPDevices: any[] = [];
-  originalDevices: any[] = [];
+  assets: any[] = [];
+  nonIPAssets: any[] = [];
+  originalAssets: any[] = [];
   isTelemetryLoading = false;
   telemetry: any[] = [];
   propertyList: any[] = [];
@@ -48,7 +48,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   selectedProps: any[] = [];
   newFilterObj: any;
   tileData: any;
-  deviceFilterObj: any;
+  assetFilterObj: any;
   subscriptions: Subscription[] = [];
   @ViewChild('dtInput1', {static: false}) dtInput1: any;
   @ViewChild('dtInput2', {static: false}) dtInput2: any;
@@ -76,9 +76,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private route: ActivatedRoute,
     private applicationService: ApplicationService,
-    private deviceService: DeviceService,
+    private assetService: AssetService,
     private toasterService: ToasterService,
-    private deviceTypeService: DeviceTypeService
+    private assetModelService: AssetModelService
   ) { }
 
   ngOnInit(): void {
@@ -109,7 +109,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
       console.log(this.originalFilterObj.report_type);
      // this.getLatestAlerts();
-      await this.getDevices(this.contextApp.user.hierarchy);
+      await this.getAssets(this.contextApp.user.hierarchy);
      // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
     }));
 
@@ -118,8 +118,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
   loadFromCache() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     if (item) {
-      if (item.devices) {
-      this.filterObj.device = item.devices;
+      if (item.assets) {
+      this.filterObj.asset = item.assets;
 
       }
       if (item.hierarchy) {
@@ -162,7 +162,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
       console.log(this.originalFilterObj.report_type);
-      // if (this.filterObj.device) {
+      // if (this.filterObj.asset) {
       //   this.onFilterSelection(false, false);
       // }
     }
@@ -170,7 +170,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   getTileName() {
     let selectedItem;
-    this.contextApp.configuration.main_menu.forEach(item => {
+    this.contextApp.menu_settings.main_menu.forEach(item => {
       if (item.system_name === 'Reports') {
         selectedItem = item.showAccordion;
       }
@@ -179,7 +179,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.currentLimit = Number(this.tileData[1]?.value) || 100;
   }
 
-  onDeviceFilterBtnClick() {
+  onAssetFilterBtnClick() {
     $('.dropdown-menu').on('click.bs.dropdown', (e) => {
       e.stopPropagation();
     });
@@ -210,19 +210,19 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getDevices(hierarchy) {
+  getAssets(hierarchy) {
     return new Promise<void>((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
       };
-      this.subscriptions.push(this.deviceService.getIPAndLegacyDevices(obj, this.contextApp.app).subscribe(
+      this.subscriptions.push(this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe(
         (response: any) => {
           if (response?.data) {
-            this.devices = response.data;
-            this.originalDevices = JSON.parse(JSON.stringify(this.devices));
-            if (this.devices?.length === 1) {
-              this.filterObj.device = this.devices[0];
+            this.assets = response.data;
+            this.originalAssets = JSON.parse(JSON.stringify(this.assets));
+            if (this.assets?.length === 1) {
+              this.filterObj.asset = this.assets[0];
             }
           }
           resolve();
@@ -231,7 +231,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     });
   }
 
-  async onChangeOfHierarchy(i, persistDeviceSelection = true) {
+  async onChangeOfHierarchy(i, persistAssetSelection = true) {
     Object.keys(this.configureHierarchy).forEach(key => {
       if (key > i) {
         delete this.configureHierarchy[key];
@@ -259,31 +259,31 @@ export class ReportsComponent implements OnInit, OnDestroy {
       }
     });
     if (Object.keys(hierarchyObj).length === 1) {
-      this.devices = JSON.parse(JSON.stringify(this.originalDevices));
+      this.assets = JSON.parse(JSON.stringify(this.originalAssets));
     } else {
     const arr = [];
-    this.devices = [];
-    this.originalDevices.forEach(device => {
+    this.assets = [];
+    this.originalAssets.forEach(asset => {
       let flag = false;
       Object.keys(hierarchyObj).forEach(hierarchyKey => {
-        if (device.hierarchy[hierarchyKey] && device.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+        if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
           flag = true;
         } else {
           flag = false;
         }
       });
       if (flag) {
-        arr.push(device);
+        arr.push(asset);
       }
     });
-    this.devices = JSON.parse(JSON.stringify(arr));
+    this.assets = JSON.parse(JSON.stringify(arr));
     }
-    if (this.devices?.length === 1) {
-      this.filterObj.device = this.devices[0];
+    if (this.assets?.length === 1) {
+      this.filterObj.asset = this.assets[0];
     }
-    if (persistDeviceSelection) {
-    this.filterObj.deviceArr = undefined;
-    this.filterObj.device = undefined;
+    if (persistAssetSelection) {
+    this.filterObj.assetArr = undefined;
+    this.filterObj.asset = undefined;
     }
     this.props = [];
     this.dropdownPropList = [];
@@ -303,18 +303,18 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   onAssetDeselect() {
-    this.filterObj.device = undefined;
-    this.filterObj.deviceArr = undefined;
+    this.filterObj.asset = undefined;
+    this.filterObj.assetArr = undefined;
   }
 
   onAssetSelection() {
-    // this.nonIPDevices = [];
-    // this.filterObj.device_id = this.filterObj.device.device_id;
-    if (this.filterObj.device) {
-    const device_type = this.filterObj?.device?.device_type;
+    // this.nonIPAssets = [];
+    // this.filterObj.asset_id = this.filterObj.asset.asset_id;
+    if (this.filterObj.asset) {
+    const asset_type = this.filterObj?.asset?.asset_type;
 
-    if (device_type) {
-      this.getThingsModelProperties(device_type);
+    if (asset_type) {
+      this.getThingsModelProperties(asset_type);
     }
     } else {
       this.dropdownPropList = [];
@@ -334,27 +334,27 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onNonIPDeviceChange() {
-    // this.filterObj.device_id = this.filterObj.device.device_id;
+  onNonIPAssetChange() {
+    // this.filterObj.asset_id = this.filterObj.asset.asset_id;
     console.log(this.originalFilterObj.report_type);
     if (this.filterObj.report_type === 'Process Parameter Report') {
-    if (this.filterObj.device) {
-      const device_type = this.filterObj.device.device_type;
-      if (device_type) {
-        this.getThingsModelProperties(device_type);
+    if (this.filterObj.asset) {
+      const asset_type = this.filterObj.asset.asset_type;
+      if (asset_type) {
+        this.getThingsModelProperties(asset_type);
       }
       }
     }
     console.log(this.originalFilterObj.report_type);
   }
 
-  getThingsModelProperties(deviceType) {
+  getThingsModelProperties(assetModel) {
     return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
-        name: deviceType
+        name: assetModel
       };
-      this.subscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
+      this.subscriptions.push(this.assetModelService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
           response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
@@ -397,7 +397,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   onFilterSelection(callScrollFnFlag = false, updateFilterObj = true) {
     this.insideScrollFunFlag = true;
-    this.deviceFilterObj = undefined;
+    this.assetFilterObj = undefined;
     if (this.filterObj.dateOption !== 'Custom Range') {
       const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
       this.filterObj.from_date = dateObj.from_date;
@@ -407,23 +407,23 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.filterObj.to_date = this.filterObj.to_date;
     }
     const obj = {...this.filterObj};
-    let device_type: any;
-    if (obj.device) {
-      obj.device_id = obj.device.device_id;
-      device_type = obj.device.device_type;
-      delete obj.device;
+    let asset_type: any;
+    if (obj.asset) {
+      obj.asset_id = obj.asset.asset_id;
+      asset_type = obj.asset.asset_type;
+      delete obj.asset;
     }
     if (!obj.report_type) {
       this.toasterService.showError('Report Type selection is required', 'View Report');
       return;
     }
-    if (!obj.device_id) {
+    if (!obj.asset_id) {
       this.toasterService.showError('Asset selection is required', 'View Report');
       return;
     }
     obj.offset = this.currentOffset;
     obj.count = this.currentLimit;
-    this.deviceFilterObj = this.filterObj.device;
+    this.assetFilterObj = this.filterObj.asset;
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is required', 'View Report');
       return;
@@ -434,8 +434,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }
     if (updateFilterObj) {
       const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS)
-      pagefilterObj['hierarchy'] = this.filterObj.device.hierarchy;
-      pagefilterObj['devices'] = this.filterObj.device;
+      pagefilterObj['hierarchy'] = this.filterObj.asset.hierarchy;
+      pagefilterObj['assets'] = this.filterObj.asset;
       pagefilterObj['from_date'] = obj.from_date;
       pagefilterObj['to_date'] = obj.to_date;
       pagefilterObj['dateOption'] = obj.dateOption;
@@ -467,13 +467,13 @@ export class ReportsComponent implements OnInit, OnDestroy {
       delete obj.count;
     }
     delete obj.report_type;
-    delete obj.deviceArr;
-    this.reportsFetchDataSubscription = this.deviceService.getDeviceAlerts(obj).subscribe(
+    delete obj.assetArr;
+    this.reportsFetchDataSubscription = this.assetService.getAssetAlerts(obj).subscribe(
       (response: any) => {
         // response.data.reverse();
         response.data.forEach(item => {
           item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
-          item.device_display_name = this.devices.filter(device => device.device_id === item.device_id)[0]?.display_name;
+          item.asset_display_name = this.assets.filter(asset => asset.asset_id === item.asset_id)[0]?.display_name;
         });
         this.latestAlerts = [...this.latestAlerts, ...response.data];
         this.isFilterOpen = false;
@@ -533,11 +533,11 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }
 
     delete obj.report_type;
-    delete obj.deviceArr;
+    delete obj.assetArr;
     this.isTelemetryLoading = false;
     this.isFilterSelected = false;
-    const device = this.devices.find(deviceObj => deviceObj.device_id ===  obj.device_id);
-    obj.partition_key = device.partition_key;
+    const asset = this.assets.find(assetObj => assetObj.asset_id ===  obj.asset_id);
+    obj.partition_key = asset.partition_key;
     let method;
     if (obj.to_date - obj.from_date > 3600 && !filterObj.isTypeEditable) {
         this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
@@ -572,7 +572,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         if (records > 500 ) {
           this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
         }
-        method = this.deviceService.getDeviceSamplingTelemetry(obj, this.contextApp.app);
+        method = this.assetService.getAssetSamplingTelemetry(obj, this.contextApp.app);
       }
     } else {
       if (!filterObj.aggregation_minutes || !filterObj.aggregation_format ) {
@@ -599,7 +599,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         if (records > 500 ) {
           this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
         }
-        method = this.deviceService.getDeviceTelemetry(obj);
+        method = this.assetService.getAssetTelemetry(obj);
       }
     }
     } else {
@@ -629,12 +629,12 @@ export class ReportsComponent implements OnInit, OnDestroy {
         obj['derived_message_props'] = derived_message_props ? derived_message_props : undefined;
       }
       const records = this.commonService.calculateEstimatedRecords
-          ((device?.measurement_frequency?.average ? device.measurement_frequency.average : 5),
+          ((asset?.measurement_frequency?.average ? asset.measurement_frequency.average : 5),
           filterObj.from_date, filterObj.to_date);
       if (records > 500 ) {
         this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
       }
-      method = this.deviceService.getDeviceTelemetry(obj);
+      method = this.assetService.getAssetTelemetry(obj);
     }
 
     this.isTelemetryLoading = true;
@@ -698,12 +698,12 @@ export class ReportsComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       const pdf = new jsPDF('p', 'pt', 'A3');
       pdf.text(this.originalFilterObj.report_type + ' for ' +
-      (this.deviceFilterObj.display_name ? this.deviceFilterObj.display_name : this.deviceFilterObj.device_id) +
+      (this.assetFilterObj.display_name ? this.assetFilterObj.display_name : this.assetFilterObj.asset_id) +
       ' for ' + this.commonService.convertEpochToDate(this.newFilterObj.from_date) + ' to ' +
       this.commonService.convertEpochToDate(this.newFilterObj.to_date), 20, 50);
       autoTable(pdf, { html: '#dataTable1', margin: { top: 70 } });
       const now = moment().utc().unix();
-      pdf.save((this.deviceFilterObj.display_name ? this.deviceFilterObj.display_name : this.deviceFilterObj.device_id)
+      pdf.save((this.assetFilterObj.display_name ? this.assetFilterObj.display_name : this.assetFilterObj.asset_id)
              + '_' + this.originalFilterObj.report_type + '_' + now + '.pdf');
       this.isFileDownloading = false;
       this.loadingMessage = undefined;
@@ -731,7 +731,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       if (this.originalFilterObj.report_type === 'Alert Report') {
         this.latestAlerts.forEach(alert => {
           data.push({
-            'Asset Name': (this.deviceFilterObj.display_name ? this.deviceFilterObj.display_name : this.deviceFilterObj.device_id),
+            'Asset Name': (this.assetFilterObj.display_name ? this.assetFilterObj.display_name : this.assetFilterObj.asset_id),
             Time: alert.local_created_date,
             Severity: alert.severity,
             Description: alert.message,
@@ -746,11 +746,11 @@ export class ReportsComponent implements OnInit, OnDestroy {
         data = [];
         this.telemetry.forEach(telemetryObj => {
           const obj = {
-            'Asset Name': this.originalFilterObj.non_ip_device ?
-              (this.originalFilterObj.non_ip_device.device_display_name ? this.originalFilterObj.non_ip_device?.device_display_name
-                : this.originalFilterObj.non_ip_device?.device_id)
-              : (this.deviceFilterObj ?
-              (this.deviceFilterObj.device_display_name ? this.deviceFilterObj.device_display_name : this.deviceFilterObj.device_id)
+            'Asset Name': this.originalFilterObj.non_ip_asset ?
+              (this.originalFilterObj.non_ip_asset.asset_display_name ? this.originalFilterObj.non_ip_asset?.asset_display_name
+                : this.originalFilterObj.non_ip_asset?.asset_id)
+              : (this.assetFilterObj ?
+              (this.assetFilterObj.asset_display_name ? this.assetFilterObj.asset_display_name : this.assetFilterObj.asset_id)
               : '' ),
             Time: telemetryObj.local_created_date
           };
@@ -789,8 +789,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
       const now = moment().utc().unix();
       /* save to file */
-      XLSX.writeFile(wb, (this.originalFilterObj.device.display_name ? this.originalFilterObj.device.display_name
-        : this.originalFilterObj.device.device_id)
+      XLSX.writeFile(wb, (this.originalFilterObj.asset.display_name ? this.originalFilterObj.asset.display_name
+        : this.originalFilterObj.asset.asset_id)
         + '_' + this.originalFilterObj.report_type + '_' + now + '.xlsx');
       this.loadingMessage = undefined;
       $('#downloadReportModal').modal('hide');

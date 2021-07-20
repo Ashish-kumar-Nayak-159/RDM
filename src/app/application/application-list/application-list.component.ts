@@ -117,7 +117,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
     this.applicationFilterObj = {};
   }
 
-  redirectToDevices(app) {
+  redirectToAssets(app) {
   }
 
   onTableFunctionCall(obj) {
@@ -211,7 +211,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
   async createApp() {
     if (!this.applicationDetail.metadata.app_specific_schema && !this.applicationDetail.metadata.app_specific_db &&
       !this.applicationDetail.metadata.app_telemetry_specific_schema) {
-      this.applicationDetail.metadata.partition.telemetry.partition_strategy = 'Device ID';
+      this.applicationDetail.metadata.partition.telemetry.partition_strategy = 'Asset ID';
       this.applicationDetail.metadata.partition.telemetry.sub_partition_strategy = 'Weekly';
     }
     if (!this.applicationDetail.app || !this.applicationDetail.admin_email || !this.applicationDetail.admin_name ||
@@ -243,8 +243,8 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
       if (env) {
         this.applicationDetail.environment = env;
       }
-      this.applicationDetail.configuration = {main_menu: [], device_control_panel_menu : [],
-        model_control_panel_menu: [], gateway_control_panel_menu: [], legacy_device_control_panel_menu: []};
+      this.applicationDetail.menu_settings = {main_menu: [], asset_control_panel_menu : [],
+        model_control_panel_menu: [], gateway_control_panel_menu: [], legacy_asset_control_panel_menu: []};
       const methodToCall = this.appModalType === 'Create' ? this.applicationService.createApp(this.applicationDetail) :
       (this.appModalType === 'Edit' ? this.applicationService.updateApp(this.applicationDetail) : null);
       if (methodToCall) {

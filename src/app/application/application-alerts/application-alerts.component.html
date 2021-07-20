@@ -25,14 +25,14 @@
             <input type="text" *ngIf="index === 0" defaultValue="{{ contextApp.app }}" disabled
               class="form-control form-control-sm mr-1 my-1" />
           </ng-container>
-          <select class="form-control form-control-sm mx-1 my-1" id="deviceCategory" [(ngModel)]="filterObj.device"
-            name="deviceCategory" [compareWith]="compareFn">
+          <select class="form-control form-control-sm mx-1 my-1" id="assetCategory" [(ngModel)]="filterObj.asset"
+            name="assetCategory" [compareWith]="compareFn">
             <option [ngValue]="undefined">Select Asset</option>
-            <option [ngValue]="device" *ngFor="let device of devices">
+            <option [ngValue]="asset" *ngFor="let asset of assets">
               {{
-              device?.display_name
-              ? device?.display_name
-              : device.device_id
+              asset?.display_name
+              ? asset?.display_name
+              : asset.asset_id
               }}
             </option>
           </select>

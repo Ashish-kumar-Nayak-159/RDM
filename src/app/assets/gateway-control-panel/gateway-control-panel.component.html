@@ -1,0 +1,124 @@
+<i class="fa fa-spinner fa-spin fa-fw fa-2x text-center" *ngIf="isAssetDataLoading"></i>
+<div id="wrapper">
+  <div id="content-wrapper" class="d-flex flex-column m-5 py-3" *ngIf="isAssetDataLoading">
+    Loading Asset Data...
+    <i class="fa fa-spinner fa-spin fa-fw fa-2x text-center"  ></i>
+  </div>
+  <!-- Sidebar -->
+  <div class="sidebar1 sidebar-light mb-3 " *ngIf="!isAssetDataLoading">
+
+    <div class="sidebar1-heading sidebar1-top-heading">
+      <span>Diagnosis Panel </span>
+      <i class="fa fa-fw fa" style="font-size:1rem; margin-top:0.5rem;margin-left:0.3rem">DP</i>
+    </div>
+    <div class="scrollbox scrollbox_delayed" tabindex="0">
+      <ul class="navbar-nav scrollbox-content" id="controlPanelSidebar">
+        <ng-container *ngFor="let menu of menuItems">
+          <ng-container *ngIf="menu.isTitle  && menu.isDisplay">
+            <div class="sidebar1-heading ">
+              {{menu.display_name}}
+            </div>
+            <!-- Divider -->
+            <hr class="sidebar1-divider">
+          </ng-container>
+          <ng-container *ngIf="!menu.isTitle && menu.visible">
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item" [ngClass]="{'active': activeTab === menu.page}">
+              <a class="nav-link collapsed" href="{{menu.url}}" data-toggle="tab" aria-expanded="false"
+                (click)="setActiveTab(menu.page)" [tooltip]="menu.display_name">
+                <i class="{{menu.icon}}" placement="bottom" ></i>
+                <span>{{menu.display_name}}</span></a>
+            </li>
+          </ng-container>
+
+        </ng-container>
+        <!-- Divider -->
+        <hr class="sidebar1-divider d-none d-md-block">
+
+      </ul>
+    </div>
+  </div>
+  <!-- End of Sidebar -->
+  <!-- Content Wrapper -->
+  <div id="content-wrapper" class="d-flex flex-column" *ngIf="!isAssetDataLoading">
+
+    <!-- Main Content -->
+    <div>
+
+      <div id="content">
+        <div class="container1-fluid">
+          <div class="blue-nav-bar">
+
+            <div class="d-flex">
+              <div>
+                <div class="main-heading">{{asset?.display_name || asset?.asset_id}}</div>
+              </div>
+            </div>
+          </div>
+          <!-- Sidebar Toggle (Topbar) -->
+          <!-- <button id="sidebar1ToggleTop" class="btn btn-link d-md-none rounded-circle mr-3" (click)="onSideBarToggleTopClick()">
+      <i class="fa fa-bars"></i>
+    </button> -->
+          <div class="">
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'overview'}" id="asset_overview" role="tabpanel">
+              <app-overview *ngIf="activeTab === 'overview' && asset" [tileData]="tileData"
+                [componentState]="componentState" [asset]="asset" [menuDetail]="getMenuDetail('overview')">
+              </app-overview>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="asset_asset_tags">
+              <app-tags *ngIf="activeTab === 'tags'  && asset" [tileData]="tileData" [asset]="asset"
+                [menuDetail]="getMenuDetail('tags')"></app-tags>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'setup'}" role="tabpanel" id="asset_settings">
+              <app-gateway-settings *ngIf="activeTab === 'setup'  && asset" [tileData]="tileData" [asset]="asset" [componentState]="componentState"
+              >
+              </app-gateway-settings>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel" id="asset_notifications">
+              <app-asset-messages-wrapper *ngIf="activeTab === 'notifications' && asset" [asset]="asset"></app-asset-messages-wrapper>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'cached_telemetry'}" role="tabpanel"
+              id="asset_cached_telemetry">
+              <app-gateway-cached-telemetry *ngIf="activeTab === 'cached_telemetry' && asset" [asset]="asset">
+              </app-gateway-cached-telemetry>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'cached_alerts'}" role="tabpanel"
+              id="asset_cached_alerts">
+              <app-gateway-cached-alerts *ngIf="activeTab === 'cached_alerts' && asset" [asset]="asset">
+              </app-gateway-cached-alerts>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'asset_life_cycle'}" role="tabpanel"
+              id="asset_life_cycle_events">
+              <app-asset-life-cycle-events *ngIf="activeTab === 'asset_life_cycle' && asset" [asset]="asset">
+              </app-asset-life-cycle-events>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'config_history'}" role="tabpanel"
+              id="asset_config_history">
+              <app-gateway-configuration-history *ngIf="activeTab === 'config_history' && asset" [asset]="asset">
+              </app-gateway-configuration-history>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'current_config'}" role="tabpanel"
+              id="asset_current_config">
+              <app-gateway-current-configuration *ngIf="activeTab === 'current_config' && asset" [asset]="asset">
+              </app-gateway-current-configuration>
+            </div>
+
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel"
+              id="asset_control_widgets">
+              <app-commands *ngIf="activeTab === 'control_widgets' && asset" [asset]="asset"
+                [menuDetail]="getMenuDetail('control_widgets')"></app-commands>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'count'}" role="tabpanel" id="asset_count">
+              <app-asset-count *ngIf="activeTab === 'count' && asset" [asset]="asset"></app-asset-count>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'package_management'}" role="tabpanel" id="asset_package_management">
+              <app-asset-packages *ngIf="activeTab === 'package_management' && asset" [asset]="asset"></app-asset-packages>
+            </div>
+            <!-- /.container1-fluid -->
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>

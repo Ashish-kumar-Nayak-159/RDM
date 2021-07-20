@@ -1,0 +1,66 @@
+<div class="tab-bar">
+  <div class="">
+    <form class="form-inline">
+      <div class="form-group">
+        <ng-select [items]="liveWidgets" class="custom-dropdown w-12 active sm" bindLabel="id"
+          (onDeSelectAll)="onDeSelectAll()" [searchable]="true" placeholder="Select Widgets" [multiple]="true"
+          [selectableGroup]="true" [closeOnSelect]="false" dropdownPosition="bottom" name="widget-dropdown"
+          [(ngModel)]="selectedWidgetsForSearch" >
+          <ng-template ng-multi-label-tmp let-items="items">
+            {{items.length}} widgets selected
+          </ng-template>
+          <ng-template ng-header-tmp>
+            <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+              <li *ngIf="selectedWidgetsForSearch.length !== liveWidgets.length"> <a  href="javascript:void(0)" (click)="selectedWidgetsForSearch = liveWidgets">Select All</a></li>
+              <li *ngIf="selectedWidgetsForSearch.length === liveWidgets.length"> <a  href="javascript:void(0)" (click)="selectedWidgetsForSearch = []">Deselect All</a></li>
+            </ul>
+          </ng-template>
+          <ng-template ng-option-tmp let-item="item">
+            <span [tooltip]="item.id">{{item.id}}</span>
+          </ng-template>
+        </ng-select>
+      </div>
+      <div class="form-group">
+        <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="getTelemetryData()"
+          placement="bottom" tooltip="Search"><i class="fa fa-search fa-sm"></i></button>
+      </div>
+      <div class="form-group">
+        <button type="button" class="btn btn-sm searchBtn btn-white" (click)="onDeSelectAll()"
+          placement="bottom" tooltip="Clear Filters">
+          <img class="filter-clear-icon" src="./assets/img/filter.svg">
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="table-responsive">
+  <div class="tableFixHead live-table-fix-head" id="mainChartDiv">
+    <i *ngIf="isTelemetryDataLoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+    <ng-container *ngIf="!isTelemetryDataLoading && selectedWidgets.length > 0 && telemetryObj">
+      <div class="row col-md-12">
+        <ng-container *ngFor="let widget of selectedWidgets">
+          <div [style]="{ 'width': widget?.value.widgetType === 'OnlyNumber' || widget?.value.widgetType === 'NumberWithTrend'
+      || widget?.value.widgetType === 'NumberWithImage' || widget?.value.widgetType === 'GaugeChart' || widget.value.widgetType === 'StringWidget'? (23 * widget.value.properties.length + (widget.value.properties.length > 1 ? (2 * (widget.value.properties.length - 1)) : 0) +'%') : '48%',
+      'margin-left':'2%', 'margin-top': '2%'}">
+            <app-only-number-widget *ngIf="widget?.value.widgetType === 'OnlyNumber' || widget?.value.widgetType === 'NumberWithTrend'
+      || widget?.value.widgetType === 'NumberWithImage' || widget.value.widgetType === 'StringWidget'"
+              [chartConfig]="widget.value" [telemetryObj]="telemetryObj" [asset]="asset">
+            </app-only-number-widget>
+            <app-gauge-chart [chartConfig]="widget.value" *ngIf="widget.value.widgetType === 'GaugeChart'"
+              [telemetryObj]="telemetryObj" [asset]="asset">
+            </app-gauge-chart>
+            <app-live-line-chart [chartConfig]="widget.value" [telemetryObj]="telemetryObj" [asset]="asset"
+              *ngIf="widget.value.widgetType === 'LineChart' || widget.value.widgetType === 'AreaChart'">
+            </app-live-line-chart>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+    <p class="m-3" *ngIf="!isTelemetryDataLoading && selectedWidgets.length === 0 && !telemetryObj ">
+      Please select widgets first.
+    </p>
+    <p class="m-3" *ngIf="!isTelemetryDataLoading && selectedWidgets.length > 0 && !telemetryObj">
+      Please search to view the data.
+    </p>
+  </div>
+</div>

@@ -1,0 +1,84 @@
+<div class="tab-bar">
+  <div class="">
+    <form class="form-inline">
+      <div class="form-group">
+        <input type="text" id="chartTitle" class="form-control form-control-sm"
+              name="chartTitle" placeholder="Display Name" [(ngModel)]="chartTitle" >
+      </div>
+      <div class="form-group">
+        <ng-select [items]="chartTypes"  class="custom-dropdown sm" [clearable]="false"
+          [searchable]="true" [closeOnSelect]="true" placeholder="Select Widget Type"
+          dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="selectedChartType">
+          <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+            <span [tooltip]="item"><i class="fa {{chartIcons[index]}}"></i>&nbsp;{{item}}</span>
+          </ng-template>
+              </ng-select>
+      </div>
+      <div class="form-group">
+        <input class="form-control form-control-sm" type="text"
+              placeholder="X-Axis Prop(dateTime)" id="xAxisProperty" [(ngModel)]="xAxisProps" name="xAxisProperty">
+      </div>
+      <div class="form-group">
+        <ng-select [items]="propertyList" class="custom-dropdown w-12 sm" (onDeSelectAll)="y1Deselect($event)"
+        [searchable]="true" placeholder="Y1 Axis Props" [multiple]="true" bindLabel="name"
+        [closeOnSelect]="false" groupBy="type"
+        dropdownPosition="bottom" name="widget-dropdown1" [(ngModel)]="y1AxisProps">
+        <ng-template ng-multi-label-tmp let-items="items">
+        {{items.length}} properties selected
+        </ng-template>
+        <ng-template ng-header-tmp>
+          <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+            <li *ngIf="y1AxisProps.length !== propertyList.length"> <a  href="javascript:void(0)" (click)="y1AxisProps = propertyList">Select All</a></li>
+            <li *ngIf="y1AxisProps.length === propertyList.length"> <a  href="javascript:void(0)" (click)="y1AxisProps = []">Deselect All</a></li>
+          </ul>
+        </ng-template>
+        <ng-template ng-option-tmp let-item="item">
+          <span [tooltip]="item.name"> <i [ngClass]="{'icon icon-function': item.type === 'Derived Properties'}"></i> {{item.name}}</span>
+        </ng-template>
+      </ng-select>
+      </div>
+      <div class="form-group">
+        <ng-select [items]="propertyList" class="custom-dropdown w-12 sm" (onDeSelectAll)="y2Deselect($event)"
+        [searchable]="true" placeholder="Y2 Axis Props" [multiple]="true"
+        [closeOnSelect]="false" groupBy="type" bindLabel="name"
+        dropdownPosition="bottom" name="widget-dropdown2" [(ngModel)]="y2AxisProps">
+        <ng-template ng-multi-label-tmp let-items="items">
+        {{items.length}} properties selected
+        </ng-template>
+        <ng-template ng-header-tmp>
+          <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+            <li *ngIf="y2AxisProps.length !== propertyList.length"> <a  href="javascript:void(0)" (click)="y2AxisProps = propertyList">Select All</a></li>
+            <li *ngIf="y2AxisProps.length === propertyList.length"> <a  href="javascript:void(0)" (click)="y2AxisProps = []">Deselect All</a></li>
+          </ul>
+        </ng-template>
+        <ng-template ng-option-tmp let-item="item">
+          <span  [tooltip]="item.name" > <i [ngClass]="{'icon icon-function': item.type === 'Derived Properties'}"></i> {{item.name}}</span>
+        </ng-template>
+      </ng-select>
+      </div>
+      <div class="form-group">
+        <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Add Widget"
+        (click)="addChart()" [disabled]="assetModel.freezed"><i class="fa fa-plus fa-sm"></i></button>
+      </div>
+      <div class="form-group">
+        <button type="button" class="btn btn-sm searchBtn btn-success" placement="bottom" tooltip="Save"
+        (click)="saveLayout()" [disabled]="assetModel.freezed"><i class="fa fa-save fa-sm"></i></button>
+      </div>
+      <div class="form-group">
+        <button type="button" class="btn btn-sm searchBtn btn-white" placement="bottom" tooltip="Clear" (click)="clear()" [disabled]="assetModel.freezed">
+          <img class="filter-clear-icon" src="./assets/img/filter.svg">
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="table-responsive">
+  <div class="tableFixHead modal-live-widget-container" id="mainChartDiv">
+    <p class="m-3" *ngIf="layoutJson.length === 0  && !isHistoryAPILoading">
+      No Historical Widgets found.
+    </p>
+    <i *ngIf="isHistoryAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+    <div id="layoutWidgetContainer" class="showLayout p-3">
+    </div>
+  </div>
+</div>

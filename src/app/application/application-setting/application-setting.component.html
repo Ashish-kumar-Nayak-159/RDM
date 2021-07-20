@@ -24,8 +24,8 @@
           <a class="nav-item nav-link border-0" id="nav-contact-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'roles'}"
           href="#app-roles" role="tab" aria-controls="nav-contact" aria-selected="false" (click)="setActiveTab('roles')">
           Roles</a>
-          <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'device-hierarchy'}"
-          href="#app-device-hierarchy" role="tab" aria-controls="nav-profile" aria-selected="false" (click)="setActiveTab('device-hierarchy')">
+          <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'asset-hierarchy'}"
+          href="#app-asset-hierarchy" role="tab" aria-controls="nav-profile" aria-selected="false" (click)="setActiveTab('asset-hierarchy')">
           Hierarchy</a>
 
           <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'users'}"
@@ -54,9 +54,9 @@
     [ngClass]="{'active': activeTab === 'org-tree'}">
       <app-application-org-tree *ngIf="activeTab === 'org-tree' && applicationData" [applicationData]="applicationData"></app-application-org-tree>
     </div>
-    <div class="tab-pane" id="app-device-hierarchy" role="tabpanel" aria-labelledby="nav-profile-tab"
-    [ngClass]="{'active': activeTab === 'device-hierarchy'}">
-      <app-application-device-hierarchy *ngIf="activeTab === 'device-hierarchy' && applicationData" [applicationData]="applicationData"></app-application-device-hierarchy>
+    <div class="tab-pane" id="app-asset-hierarchy" role="tabpanel" aria-labelledby="nav-profile-tab"
+    [ngClass]="{'active': activeTab === 'asset-hierarchy'}">
+      <app-application-asset-hierarchy *ngIf="activeTab === 'asset-hierarchy' && applicationData" [applicationData]="applicationData"></app-application-asset-hierarchy>
     </div>
     <div class="tab-pane" id="app-roles" role="tabpanel" aria-labelledby="nav-contact-tab"
     [ngClass]="{'active': activeTab === 'roles'}">

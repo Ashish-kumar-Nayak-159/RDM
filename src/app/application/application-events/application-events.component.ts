@@ -1,7 +1,7 @@
 import { ToasterService } from './../../services/toaster.service';
 import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
-import { DeviceService } from './../../services/devices/device.service';
+import { AssetService } from './../../services/assets/asset.service';
 import { CommonService } from './../../services/common.service';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import * as moment from 'moment';
@@ -20,8 +20,8 @@ export class ApplicationEventsComponent implements OnInit {
   @ViewChild('dtInput1', {static: false}) dtInput1: any;
   @ViewChild('dtInput2', {static: false}) dtInput2: any;
   apiSubscriptions: Subscription[] = [];
-  devices: any[] = [];
-  originalDevices: any[] = [];
+  assets: any[] = [];
+  originalAssets: any[] = [];
   isEventLoading = false;
   events: any[] = [];
   eventTableConfig: any;
@@ -33,7 +33,7 @@ export class ApplicationEventsComponent implements OnInit {
   today = new Date();
   constructor(
     private commonService: CommonService,
-    private deviceService: DeviceService,
+    private assetService: AssetService,
     private toasterService: ToasterService
   ) { }
 
@@ -81,7 +81,7 @@ export class ApplicationEventsComponent implements OnInit {
         }
       ]
     };
-    await this.getAllDevices();
+    await this.getAllAssets();
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
     }
@@ -127,29 +127,29 @@ export class ApplicationEventsComponent implements OnInit {
         }
       });
       if (Object.keys(hierarchyObj).length === 1) {
-        this.devices = JSON.parse(JSON.stringify(this.originalDevices));
+        this.assets = JSON.parse(JSON.stringify(this.originalAssets));
       } else {
       const arr = [];
-      this.devices = [];
-      this.originalDevices.forEach(device => {
+      this.assets = [];
+      this.originalAssets.forEach(asset => {
         let flag1 = false;
         Object.keys(hierarchyObj).forEach(hierarchyKey => {
-          if (device.hierarchy[hierarchyKey] && device.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+          if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
             flag1 = true;
           } else {
             flag1 = false;
           }
         });
         if (flag1) {
-          arr.push(device);
+          arr.push(asset);
         }
       });
-      this.devices = JSON.parse(JSON.stringify(arr));
+      this.assets = JSON.parse(JSON.stringify(arr));
       }
-      if (this.devices?.length === 1) {
-        this.filterObj.device = this.devices[0];
+      if (this.assets?.length === 1) {
+        this.filterObj.asset = this.assets[0];
       }
-      // await this.getDevices(hierarchyObj);
+      // await this.getAssets(hierarchyObj);
     }
     let count = 0;
     Object.keys(this.configureHierarchy).forEach(key => {
@@ -167,20 +167,20 @@ export class ApplicationEventsComponent implements OnInit {
   }
 
   compareFn(c1, c2): boolean {
-    return c1 && c2 ? c1.device_id === c2.device_id : c1 === c2;
+    return c1 && c2 ? c1.asset_id === c2.asset_id : c1 === c2;
   }
 
-  getAllDevices() {
+  getAllAssets() {
     return new Promise<void>((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
         type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.IP_GATEWAY
       };
-      this.apiSubscriptions.push(this.deviceService.getIPDevicesAndGateways(obj, this.contextApp.app).subscribe(
+      this.apiSubscriptions.push(this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app).subscribe(
         (response: any) => {
           if (response?.data) {
-            this.devices = response.data;
-            this.originalDevices = JSON.parse(JSON.stringify(this.devices));
+            this.assets = response.data;
+            this.originalAssets = JSON.parse(JSON.stringify(this.assets));
           }
           resolve();
         }
@@ -266,10 +266,10 @@ export class ApplicationEventsComponent implements OnInit {
       }
     });
     obj.hierarchy = JSON.stringify(obj.hierarchy);
-    obj.device_id = obj.device?.device_id;
-    delete obj.device;
+    obj.asset_id = obj.asset?.asset_id;
+    delete obj.asset;
     delete obj.dateOption;
-    this.apiSubscriptions.push(this.deviceService.getDeviceLifeCycleEvents(obj).subscribe(
+    this.apiSubscriptions.push(this.assetService.getAssetLifeCycleEvents(obj).subscribe(
       (response: any) => {
         if (response && response.data) {
           this.events = response.data;

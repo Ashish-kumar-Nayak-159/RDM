@@ -12,7 +12,7 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
 
   @Input() widgetObj: any;
   @Input() propertyList: any[];
-  @Input() deviceType: any;
+  @Input() assetModel: any;
   isFileUploading = false;
   dropdownProperties: any[] = [];
   contextApp: any;
@@ -62,7 +62,7 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
 
   async onLogoFileSelected(files: FileList, index): Promise<void> {
     this.isFileUploading = true;
-    const data = await this.commonService.uploadImageToBlob(files.item(0), this.contextApp.app + '/models/' + this.deviceType.name + '/live-widgets' );
+    const data = await this.commonService.uploadImageToBlob(files.item(0), this.contextApp.app + '/models/' + this.assetModel.name + '/live-widgets' );
     if (data) {
       this.widgetObj.properties[index].image = data;
     } else {

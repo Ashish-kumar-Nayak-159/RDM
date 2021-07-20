@@ -29,4 +29,4 @@ https://cmsblobstorageaccount.blob.core.windows.net/?sv=2019-12-12&ss=bf&srt=co&
 https://cmsblobstorageaccount.file.core.windows.net/?sv=2019-12-12&ss=bf&srt=co&sp=rwlac&se=2049-12-31T18:30:00Z&st=2020-12-31T18:30:00Z&spr=https,http&sig=oddGuC1HeJ4b%2F3kCF2cBzUuuOWqBjwg1R0RwAshbb1o%3D
 
 
-https://cmsblobstorageaccount.blob.core.windows.net/ui-media/device-type-media/kirloshkar.png?sv=2019-12-12&ss=bf&srt=co&sp=rwlac&se=2049-12-31T18:30:00Z&st=2020-12-31T18:30:00Z&spr=https,http&sig=oddGuC1HeJ4b%2F3kCF2cBzUuuOWqBjwg1R0RwAshbb1o%3D
+https://cmsblobstorageaccount.blob.core.windows.net/ui-media/asset-model-media/kirloshkar.png?sv=2019-12-12&ss=bf&srt=co&sp=rwlac&se=2049-12-31T18:30:00Z&st=2020-12-31T18:30:00Z&spr=https,http&sig=oddGuC1HeJ4b%2F3kCF2cBzUuuOWqBjwg1R0RwAshbb1o%3D

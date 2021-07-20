@@ -16,7 +16,7 @@ export class OnlyNumberWidgetComponent implements OnInit, OnChanges, OnDestroy {
   telemetryData: any[] = [];
   blobToken = environment.blobKey;
   blobStorageURL = environment.blobURL;
-  @Input() device: any;
+  @Input() asset: any;
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean; };
   bodyMessage: string;
   headerMessage: string;

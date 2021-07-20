@@ -31,7 +31,7 @@ export class PieChartComponent implements OnInit, OnDestroy {
   bodyMessage: string;
   headerMessage: string;
   hideCancelButton = false;
-  device: any;
+  asset: any;
   constructor(
     private commonService: CommonService
   ) { }
@@ -110,9 +110,9 @@ export class PieChartComponent implements OnInit, OnDestroy {
     chart.exporting.getFormatOptions('pdf').addURL = false;
     chart.exporting.dateFormat = 'dd-MM-yyyy HH:mm:ss.nnn';
     if (this.selectedAlert) {
-      chart.exporting.filePrefix = this.selectedAlert.device_id + '_Alert_' + this.selectedAlert.local_created_date;
+      chart.exporting.filePrefix = this.selectedAlert.asset_id + '_Alert_' + this.selectedAlert.local_created_date;
     } else {
-      chart.exporting.filePrefix = this.device.device_id + '_' +
+      chart.exporting.filePrefix = this.asset.asset_id + '_' +
       chart.data[0].message_date.toString() + '_' + chart.data[chart.data.length - 1].message_date.toString();
     }
     this.chart = chart;

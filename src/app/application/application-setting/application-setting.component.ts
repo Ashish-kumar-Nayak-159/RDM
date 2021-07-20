@@ -64,32 +64,32 @@ export class ApplicationSettingComponent implements OnInit, OnDestroy {
           this.applicationData.user = this.contextApp.user;
           this.applicationData.app = this.contextApp.app;
           this.isApplicationDataLoading = false;
-          if (!this.applicationData.configuration) {
-            this.applicationData.configuration  = {
-              device_control_panel_menu: [],
-              legacy_device_control_panel_menu: [],
+          if (!this.applicationData.menu_settings) {
+            this.applicationData.menu_settings  = {
+              asset_control_panel_menu: [],
+              legacy_asset_control_panel_menu: [],
               gateway_control_panel_menu : [],
               model_control_panel_menu: [],
               main_menu: []
             };
           }
-          if (this.applicationData?.configuration?.device_control_panel_menu?.length === 0) {
-            this.applicationData.configuration.device_control_panel_menu = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
+          if (this.applicationData?.menu_settings?.asset_control_panel_menu?.length === 0) {
+            this.applicationData.menu_settings.asset_control_panel_menu = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
           }
-          console.log(this.applicationData?.configuration?.legacy_device_control_panel_menu.length);
-          if (this.applicationData?.configuration?.legacy_device_control_panel_menu?.length === 0) {
+          console.log(this.applicationData?.menu_settings?.legacy_asset_control_panel_menu.length);
+          if (this.applicationData?.menu_settings?.legacy_asset_control_panel_menu?.length === 0) {
             console.log('in igf');
-            this.applicationData.configuration.legacy_device_control_panel_menu = CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
-            console.log(this.applicationData?.configuration?.legacy_device_control_panel_menu.length);
+            this.applicationData.menu_settings.legacy_asset_control_panel_menu = CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
+            console.log(this.applicationData?.menu_settings?.legacy_asset_control_panel_menu.length);
           }
-          if (this.applicationData?.configuration?.gateway_control_panel_menu?.length === 0) {
-            this.applicationData.configuration.gateway_control_panel_menu = CONSTANTS.GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST;
+          if (this.applicationData?.menu_settings?.gateway_control_panel_menu?.length === 0) {
+            this.applicationData.menu_settings.gateway_control_panel_menu = CONSTANTS.GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST;
           }
-          if (this.applicationData?.configuration?.model_control_panel_menu?.length === 0) {
-            this.applicationData.configuration.model_control_panel_menu = CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST;
+          if (this.applicationData?.menu_settings?.model_control_panel_menu?.length === 0) {
+            this.applicationData.menu_settings.model_control_panel_menu = CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST;
           }
-          if (this.applicationData.configuration?.main_menu?.length === 0) {
-            this.applicationData.configuration.main_menu = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+          if (this.applicationData.menu_settings?.main_menu?.length === 0) {
+            this.applicationData.menu_settings.main_menu = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
           }
           this.commonService.refreshSideMenuData.emit(this.applicationData);
           this.contextApp = JSON.parse(JSON.stringify(this.applicationData));

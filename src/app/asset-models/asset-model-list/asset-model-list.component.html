@@ -1,0 +1,163 @@
+<div class="blue-nav-bar">
+  <div class="d-flex align-items-center">
+
+    <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}&nbsp;
+    </div>
+    <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCreateAssetModelModal()"
+    placement="bottom" tooltip="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"><i class="fas fa-plus fa-sm"></i></button>
+    <div class="ml-auto">
+      <div class="asset-nav-tabs" >
+        <nav>
+          <div class="nav nav-tabs nav-fill " id="nav-tab" role="tablist">
+           <a class="nav-item nav-link border-0" *ngIf="iotAssetsTab?.visibility" id="nav-home-tab" data-toggle="tab" (click)="onTabChange(constantData.IP_DEVICE)"
+           href="#{{iotAssetsTab?.tab_name}}" role="tab" aria-controls="nav-home" aria-selected="true" [ngClass]="{'active': componentState === constantData.IP_DEVICE}">
+             <i class="fab fa-mixcloud mr-2"></i>
+            <span class="d-none d-md-inline-block">{{iotAssetsTab?.tab_name}}</span></a>
+           <a class="nav-item nav-link border-0" *ngIf="legacyAssetsTab?.visibility" id="nav-profile-tab" data-toggle="tab" (click)="onTabChange(constantData.NON_IP_DEVICE)"
+           href="#{{legacyAssetsTab?.tab_name}}" role="tab" aria-controls="nav-profile" aria-selected="false" [ngClass]="{'active': componentState === constantData.NON_IP_DEVICE}">
+           <i class="fa fa-microchip mr-2" aria-hidden="true"></i>
+           <span class="d-none d-md-inline-block">{{legacyAssetsTab?.tab_name}}</span></a>
+           <a class="nav-item nav-link border-0" *ngIf="iotGatewaysTab?.visibility" id="nav-profile-tab" data-toggle="tab" (click)="onTabChange(constantData.IP_GATEWAY)"
+           href="#{{iotGatewaysTab?.tab_name}}" role="tab" aria-controls="nav-profile" aria-selected="false" [ngClass]="{'active': componentState === constantData.IP_GATEWAY}">
+           <i class="fas fa-sitemap mr-2" aria-hidden="true"></i>
+           <span class="d-none d-md-inline-block">{{iotGatewaysTab?.tab_name}}</span></a>
+          </div>
+        </nav>
+       </div>
+    </div>
+   </div>
+</div>
+
+
+
+<!-- <div class="topnavbar" >
+  <div class="card row bg-white" style="margin-left:-1.5rem">
+    <div class="col-xl-12 col-md-12 mb-12">
+      <form>
+        <div class="form-group form-inline  my-2 mx-2">
+
+          <input type="text" class="form-control form-control-sm mx-1 my-1" id="app"
+          placeholder="App" disabled [(ngModel)]="thingsModelFilterObj.app"
+          name="app">
+          <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4"
+          [(ngModel)]="thingsModelFilterObj.name" name="name" placeholder="{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name">
+          <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputPassword4"
+          [(ngModel)]="thingsModelFilterObj.created_by" name="created_by" placeholder="Created By">
+          <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
+          [(ngModel)]="thingsModelFilterObj.model_type" name="status">
+          <option [ngValue]="undefined">Model Type</option>
+          <option [ngValue]="constantData.IP_DEVICE">{{constantData.IP_DEVICE}}</option>
+          <option [ngValue]="constantData.IP_GATEWAY">{{constantData.IP_GATEWAY}}</option>
+          <option [ngValue]="constantData.NON_IP_DEVICE">{{constantData.NON_IP_DEVICE}}</option>
+          </select>
+          <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="searchThingsModels()" [disabled]="isthingsModelsListLoading" placement="bottom" tooltip="Search">
+            <i class="fa fa-search fa-sm"></i></button>
+          <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="clearFilter()" placement="bottom" tooltip="Clear Filters">
+            <img class="filter-clear-icon" src="./assets/img/filter.svg"></button>
+
+        </div>
+       </form>
+  </div>
+</div>
+
+</div> -->
+<!-- Content Row -->
+
+<!-- DataTales Example -->
+<!-- <div class="table-responsive">
+  <div class="tableFixHead" > -->
+
+    <app-common-data-table [tableData]="thingsModels" *ngIf="componentState"
+      [tableConfig]="tableConfig" (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
+  <!-- </div>
+</div> -->
+
+<div class="modal right fade" id="createAssetModelModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">{{thingsModel?.id ? 'Change Model Image' : ('Create ' + (tileData && tileData[1] ? tileData[1]?.value : ''))}}</h5>
+      <button type="button" class="close"  (click)="onCloseThingsModelModal()" aria-label="Close" [disabled]="isCreateThingsModelAPILoading">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body" *ngIf="thingsModel">
+      <form name="createThingsModelForm">
+        <div class="form-group" *ngIf="!thingsModel.id">
+          <label for="message-text" class="col-form-label">App:</label>
+          <input type="text" class="form-control form-control-sm" id="app_name" [defaultValue]="contextApp.app" disabled>
+        </div>
+        <div class="form-group" *ngIf="!thingsModel.id">
+          <label for="message-text" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name:</label>
+          <input type="text" class="form-control form-control-sm" id="name" name="name" [(ngModel)]="thingsModel.name"
+          placeholder="Enter {{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name">
+        </div>
+        <div class="form-group" *ngIf="!thingsModel.id">
+          <label for="recipient-name" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Type:</label>
+          <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="thingsModel.metadata.model_type"
+          >
+            <option [ngValue]="constantData.IP_DEVICE" *ngIf="iotAssetsTab?.visibility">{{constantData.IP_DEVICE}}</option>
+            <option [ngValue]="constantData.IP_GATEWAY" *ngIf="legacyAssetsTab?.visibility">{{constantData.IP_GATEWAY}}</option>
+            <option [ngValue]="constantData.NON_IP_DEVICE" *ngIf="iotGatewaysTab?.visibility">{{constantData.NON_IP_DEVICE}}</option>
+          </select>
+        </div>
+        <div class="form-group" *ngIf="!thingsModel.id">
+          <label for="recipient-name" class="col-form-label required">Protocol:</label>
+          <select class="form-control form-control-sm" id="protocol" name="protocol"
+          (change)="getConnectivityData()" [(ngModel)]="thingsModel.tags.protocol">
+            <option [ngValue]="undefined"> Select Protocol</option>
+            <ng-container *ngFor="let protocol of protocolList">
+              <option [ngValue]="protocol.name" *ngIf="protocol.asset_type === thingsModel.metadata.model_type">{{protocol.display_name}}</option>
+            </ng-container>
+          </select>
+        </div>
+        <div class="form-group" *ngIf="!thingsModel.id">
+          <label for="recipient-name" class="col-form-label required">Cloud Connectivity followed by the {{(tileData && tileData[1] ? tileData[1]?.value : '')}}:</label>
+          <select class="form-control form-control-sm" id="template" name="connectivity"  [(ngModel)]="thingsModel.tags.cloud_connectivity">
+            <option [ngValue]="undefined"> Select Connectivity</option>
+          <option *ngFor="let item of connectivityList" [ngValue]="item">
+            {{item}}</option>
+          </select>
+        </div>
+        <!-- <div class="form-group">
+          <label for="message-text" class="col-form-label">Upload Image: </label>
+          {{thingsModel.metadata?.image?.name ? thingsModel.metadata.image.name : 'Not yet uploaded'}}
+          <input type="file"
+          #typeLogoFileInput (change)="onLogoFileSelected($event.target.files)"
+           class="form-control form-control-sm" id="app_logo" name="app_logo" >
+        </div> -->
+
+        <!-- <div class="form-group">
+          <label for="recipient-name" class="col-form-label">Upload Image:</label>
+          <div class="form-group input-group row m-0">
+            <div class="file-input form-control form-control-sm p-0 col-8">
+             <input type="file" id="file" accept=".jpeg,.png,.svg,.jpg" class="file" (change)="onLogoFileSelected($event.target.files)">
+
+             <label for="file" class="overflow-text" [tooltip]="(thingsModel && thingsModel.metadata && thingsModel.metadata.image && thingsModel.metadata.image.name) ? (thingsModel.metadata.image.name) : ''">
+               {{(thingsModel && thingsModel.metadata && thingsModel.metadata.image && thingsModel.metadata.image.name) ? (thingsModel.metadata.image.name) : 'Choose File'}}</label>
+            </div>
+            <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+            <input type="file" accept=".jpeg,.png,.svg,.jpg" id="file" class="file" >
+               <label for="file" class="bg-secondary text-white">Browse</label>
+            </div>
+            </div>
+        </div> -->
+
+        <!-- <div class="form-group">
+          <label for="message-text" class="col-form-label">Manufactured By:</label>
+          <input type="text" class="form-control" id="manufactured_by" name="manufacturer"
+          placeholder="Enter Manufacturer" [(ngModel)]="thingsModel.tags.manufacturer">
+        </div> -->
+
+      </form>
+    </div>
+    <div class="modal-footer" *ngIf="thingsModel">
+      <button type="button" class="btn btn-primary add-row" [disabled]="isCreateThingsModelAPILoading" (click)="createThingsModel()">Save</button>
+      <button type="button" class="btn btn-secondary" [disabled]="isCreateThingsModelAPILoading" (click)="onCloseThingsModelModal()">
+        Cancel
+      </button>
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateThingsModelAPILoading"></i>
+    </div>
+  </div>
+  </div>
+</div>

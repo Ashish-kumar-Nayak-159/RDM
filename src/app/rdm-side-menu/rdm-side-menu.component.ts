@@ -55,7 +55,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
           if (msg?.severity?.toLowerCase() === 'critical') {
           this.toasterService.showCriticalAlert(
             msg.message,
-            msg.device_display_name ? msg.device_display_name : msg.device_id,
+            msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
             'toast-bottom-right',
             60000
           );
@@ -74,7 +74,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
     }));
 
     this.apiSubscriptions.push(this.commonService.refreshSideMenuData.subscribe(list => {
-      let config = list.configuration?.main_menu?.length > 0 ? list.configuration.main_menu :
+      let config = list.menu_settings?.main_menu?.length > 0 ? list.menu_settings.main_menu :
       JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
       config = JSON.parse(JSON.stringify(config));
       this.processSideMenuData(config, list);
@@ -87,10 +87,10 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
       if (!this.userData?.is_super_admin) {
       let data = [];
       const arr = JSON.parse(JSON.stringify(this.constantsData.SIDE_MENU_LIST));
-      if (this.contextApp.configuration?.main_menu?.length > 0) {
+      if (this.contextApp.menu_settings?.main_menu?.length > 0) {
         arr.forEach(config => {
           let found = false;
-          this.contextApp.configuration.main_menu.forEach(item => {
+          this.contextApp.menu_settings.main_menu.forEach(item => {
             if (config.page === item.page) {
               found = true;
               config.display_name = item.display_name;
@@ -123,7 +123,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
             if (msg?.severity?.toLowerCase() === 'critical') {
             this.toasterService.showCriticalAlert(
               msg.message,
-              msg.device_display_name ? msg.device_display_name : msg.device_id,
+              msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
               'toast-bottom-right',
               60000
             );

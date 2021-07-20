@@ -17,7 +17,7 @@ export class GaugeChartComponent implements OnInit, OnChanges, AfterViewInit {
   hand: any[] = [];
   chart: any[] = [];
   label: am4core.Label[] = [];
-  @Input() device: any;
+  @Input() asset: any;
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean; };
   bodyMessage: string;
   headerMessage: string;

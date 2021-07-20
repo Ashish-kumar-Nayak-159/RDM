@@ -16,7 +16,7 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
 
   private chart: am4charts.XYChart;
   @Input() chartConfig: any;
-  @Input() device: any;
+  @Input() asset: any;
   @Input() telemetryObj: any;
   @Output() removeWidget: EventEmitter<string> = new EventEmitter<string>();
   telemetryData: any[] = [];

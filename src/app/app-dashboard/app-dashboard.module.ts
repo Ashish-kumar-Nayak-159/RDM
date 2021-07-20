@@ -1,7 +1,7 @@
 import { FormsModule } from '@angular/forms';
 import { VisualizationModule } from './../visualization/visualization.module';
 import { GoogleMapsModule } from '@angular/google-maps';
-import { DevicesModule } from './../devices/devices.module';
+import { AssetsModule } from './../assets/assets.module';
 import { CommonCustomModule } from './../common/common.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -20,7 +20,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     AppDashboardRoutingModule,
     CommonCustomModule,
     GoogleMapsModule,
-    DevicesModule,
+    AssetsModule,
     FormsModule,
     VisualizationModule,
     UiSwitchModule,

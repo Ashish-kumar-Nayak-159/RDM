@@ -22,7 +22,7 @@ export class CampaignManagementComponent implements OnInit {
 
   getTileName() {
     let selectedItem;
-    this.contextApp.configuration.main_menu.forEach(item => {
+    this.contextApp.menu_settings.main_menu.forEach(item => {
       if (item.system_name === 'Campaigns') {
         selectedItem = item.showAccordion;
       }

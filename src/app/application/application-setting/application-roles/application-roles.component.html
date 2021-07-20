@@ -49,8 +49,8 @@
         <ng-template #otherLevels>
         <ng-container *ngIf="!item.isEditable; else roleEditTemplate">Level: {{applicationData.hierarchy.levels[item.level]}}</ng-container>
         <ng-template #roleEditTemplate >
-        <select *ngIf="i !== 0" class="form-control form-control-sm mx-1" id="deviceCategory"
-         [(ngModel)]="item.level" name="deviceCategory" [disabled]="!item.isEditable">
+        <select *ngIf="i !== 0" class="form-control form-control-sm mx-1" id="assetCategory"
+         [(ngModel)]="item.level" name="assetCategory" [disabled]="!item.isEditable">
           <option [ngValue]="i" *ngFor="let level of applicationData.hierarchy.levels; let i = index;">
             {{level}}
           </option>

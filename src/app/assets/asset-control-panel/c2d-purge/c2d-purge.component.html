@@ -1,0 +1,55 @@
+<div class="tab-bar">
+  <div class="">
+    <ul class="nav">
+      <!-- Nav Item - Charts -->
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          href="javascript:void(0)"
+          (click)="verifyQueueMessages()"
+        >
+          <i class="fa fa-fw fa-check-circle"></i>
+          <span>Verify Queue Messages</span></a
+        >
+      </li>
+
+      <!-- Nav Item - Tables -->
+      <li class="nav-item">
+        <a
+          class="nav-link delete-table"
+          [class.disabled]="!messageCount|| messageCount === 0"
+          href="javascript:void(0)"
+          (click)="openConfirmDialog()"
+        >
+          <i class="fa fa-fw fa-trash"></i>
+        Purge Queue Messages</a
+        >
+      </li>
+    </ul>
+    </div>
+    </div>
+
+
+    <div class="table-responsive">
+      <div class="tableFixHead" >
+  <div class="row mx-auto" *ngIf="messageCount?.toString().length > 0">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between">
+      <p class="h6 mb-0 p-3">Total Messages {{componentState === constantData.IP_GATEWAY ?
+        ('in Gateway (' + (asset.gateway_id ? asset.gateway_id : asset.asset_id) + ') queue is ') : 'in asset (' + asset.asset_id + ') queue is '}}:
+        {{ messageCount }}</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <app-message-modal
+    [bodyMessage]="'This will purge all the messages from ' +
+    (componentState === constantData.IP_GATEWAY ? ('gateway (' + (asset.gateway_id ? asset.gateway_id : asset.asset_id)) :'asset (' + asset.asset_id ) + ') queue.' +
+    ' Are you sure you want to continue?'"
+     [headerMessage]="'Purge Queue Messages'"
+      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
+  </div>
+</div>

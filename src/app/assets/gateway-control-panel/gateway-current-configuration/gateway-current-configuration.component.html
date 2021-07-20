@@ -1,0 +1,25 @@
+<div class="table-responsive">
+  <div class="tableFixHead" >
+      <table class="table table-hover">
+        <thead>
+          <tr >
+            <th>Key</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container  *ngFor="let key of assetMetadataKeys" >
+            <tr *ngIf="assetMetadataKeys.length > 0 && key !== 'status' && key !== 'connection_state'">
+              <td>{{key}}</td>
+              <td>{{asset.configuration[key]}}</td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="assetMetadataKeys.length === 0">
+            <tr>
+              <td colspan="2">No configuration data available.</td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+ </div>
+ </div>

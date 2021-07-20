@@ -15,7 +15,7 @@ const routes: Routes = [
   },
   {
     path: 'applications/:applicationId/things/model',
-    loadChildren: () => import('./device-type/device-type.module').then(module => module.DeviceTypeModule)
+    loadChildren: () => import('./asset-models/asset-model.module').then(module => module.AssetModelModule)
   },
   {
     path: 'applications/:applicationId/dashboard',
@@ -27,11 +27,11 @@ const routes: Routes = [
   },
   {
     path: 'applications/:applicationId/asset',
-    loadChildren: () => import('./devices/devices.module').then(module => module.DevicesModule),
+    loadChildren: () => import('./assets/assets.module').then(module => module.AssetsModule),
   },
   {
-    path: 'applications/:applicationId/devices',
-    loadChildren: () => import('./devices/devices.module').then(module => module.DevicesModule),
+    path: 'applications/:applicationId/assets',
+    loadChildren: () => import('./assets/assets.module').then(module => module.AssetsModule),
   },
   {
     path: 'applications/:applicationId/campaigns',

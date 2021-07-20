@@ -1,0 +1,173 @@
+<div class="blue-nav-bar">
+  <div class="d-flex">
+       <div class="d-flex">
+         <div class="main-heading">{{tileData ? tileData['Title'] : ''}}</div>
+         <div id="view-tabs" >
+       <nav>
+         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+           <!-- <a class="nav-item nav-link border-0 active" id="nav-home-tab" data-toggle="tab" href="#Meta-data" role="tab" aria-controls="nav-home" aria-selected="true"><i class="fas fa-list"></i></a>
+           <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab" href="#Asset" role="tab" aria-controls="nav-profile" aria-selected="false"><i class="fa fa-map-marker-alt" aria-hidden="true"></i></a> -->
+           <a href="javascript:void(0)" class="nav-item nav-link border-0" [ngClass]="{'active': currentPageView === 'list'}"  placement="bottom" tooltip="List View" (click)="onCurrentPageViewChange('list')">
+            <i class="fas fa-list" ></i></a>
+          <a href="javascript:void(0)" class="nav-item nav-link border-0" [ngClass]="{'active': currentPageView === 'map'}"  placement="bottom" tooltip="Map View" (click)="onCurrentPageViewChange('map')">
+            <i class="fa fa-map-marker-alt"></i></a>
+         </div>
+       </nav>
+      </div>
+     </div>
+   <div class="ml-auto">
+     <div class="asset-nav-tabs" >
+       <nav>
+         <div class="nav nav-tabs nav-fill " id="nav-tab" role="tablist">
+           <a class="nav-item nav-link border-0" *ngIf="iotAssetsTab?.visibility" id="nav-home-tab" data-toggle="tab" (click)="onTabChange(constantData.IP_DEVICE)"
+           href="#{{iotAssetsTab?.tab_name}}" role="tab" aria-controls="nav-home" aria-selected="true" [ngClass]="{'active': componentState === constantData.IP_DEVICE}">
+             <i class="fab fa-mixcloud mr-2"></i>
+            <span class="d-none d-md-inline-block">{{iotAssetsTab?.tab_name}}</span></a>
+           <a class="nav-item nav-link border-0"  *ngIf="legacyAssetsTab?.visibility" id="nav-profile-tab" data-toggle="tab" (click)="onTabChange(constantData.NON_IP_DEVICE)"
+           href="#{{legacyAssetsTab?.tab_name}}" role="tab" aria-controls="nav-profile" aria-selected="false" [ngClass]="{'active': componentState === constantData.NON_IP_DEVICE}">
+           <i class="fa fa-microchip mr-2" aria-hidden="true"></i>
+           <span class="d-none d-md-inline-block">{{legacyAssetsTab?.tab_name}}</span></a>
+           <a class="nav-item nav-link border-0" *ngIf="iotGatewaysTab?.visibility" id="nav-profile-tab" data-toggle="tab" (click)="onTabChange(constantData.IP_GATEWAY)"
+           href="#{{iotGatewaysTab?.tab_name}}" role="tab" aria-controls="nav-profile" aria-selected="false" [ngClass]="{'active': componentState === constantData.IP_GATEWAY}">
+           <i class="fas fa-sitemap mr-2" aria-hidden="true"></i>
+           <span class="d-none d-md-inline-block">{{iotGatewaysTab?.tab_name}}</span></a>
+         </div>
+       </nav>
+      </div>
+   </div>
+</div>
+</div>
+<div class="">
+  <div id="assetTabContent" class="tab-content">
+     <div class="tab-pane fade show active">
+
+      <div class="tab-bar">
+        <form class="form-inline">
+          <div class="form-group">
+            <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
+            [ngClass]="{'active': hierarchyString}"
+            placement="bottom" [tooltip]="hierarchyString ? hierarchyString : 'Select Hierarchy'"
+              (click)="onAssetFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-fw fa-filter fa-sm button-divider"></i> {{hierarchyString ? displayHierarchyString : 'Select Hierarchy'}}</button>
+            <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
+              <ng-container *ngFor="
+                          let level of contextApp?.hierarchy?.levels;
+                          let index = index
+                        ">
+                <div class="">
+                  <select *ngIf="index !== 0" name="{{level}}_{{index}}" class="dropdown-form" id="{{ level }}"
+                    [disabled]="contextApp?.user?.hierarchy[level]" [(ngModel)]="configureHierarchy[index]"
+                    name="{{ level }}" (change)="onChangeOfHierarchy(index)">
+                    <option [ngValue]="undefined">
+                      Select {{ level }}
+                    </option>
+                    <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">
+                      {{ tag }}
+                    </option>
+                  </select>
+                  <input type="text" *ngIf="index === 0" name="{{level}}_{{index}}" defaultValue="{{ contextApp.app }}"
+                    disabled class="dropdown-form" />
+                </div>
+              </ng-container>
+            </div>
+          </div>
+          <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
+              (click)="currentOffset = 0;assetsList = [];searchAssets()" [disabled]="isAssetListLoading"><i
+                class="fas fa-search fa-sm"></i></button></div>
+        </form>
+      </div>
+      <div class="">
+        <ng-container class="" *ngIf="currentPageView === 'list'">
+          <div class="" id="table-wrapper">
+            <app-common-data-table [tableData]="assetsList" *ngIf="tableConfig"
+            [tableConfig]="tableConfig" (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
+          </div>
+          <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && assetsList.length > 0">
+            <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;searchAssets();"
+            placement="bottom" tooltip="Load More Records...">Load More...</a>
+          </span>
+        </ng-container>
+        <ng-container *ngIf="currentPageView === 'map'">
+          <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [styles]="customMapStyle"
+          [fitBounds]="mapFitBounds">
+            <agm-marker-cluster
+            imagePath="./assets/img/m">
+          <ng-container  *ngFor="let asset of assetsList; let i = index; ">
+            <agm-marker *ngIf="asset.latitude && asset.longitude" [agmFitBounds]="mapFitBounds"
+            [latitude]="asset.latitude" [longitude]="asset.longitude"
+            (mouseOver)="onMarkerClick(infowindow, gm)"
+            [iconUrl]="asset.icon"  >
+            <agm-info-window #infowindow >
+              <b><a class="blue-font" href="javascript:void(0)" (click)="redirectToAsset(asset)">{{asset.display_name ? asset.display_name: asset.asset_id}}</a></b>
+              <ng-container *ngIf="contextApp.app === 'CMS_Dev'">
+                <hr>
+                <p *ngIf="asset.spcd !== undefined && asset.spcd !== null; else noSPCDTemplate"><b>Specific Power Consumption:</b> {{asset.spcd}}</p>
+                <ng-template #noSPCDTemplate>
+                  <p>No data available.</p>
+                </ng-template>
+                </ng-container>
+                <ng-container *ngIf="environmentApp === 'KCMS'">
+                  <hr>
+                  <p><b>MTTR:</b> {{asset.mttr}}</p>
+                  <p><b>MTBF:</b> {{asset.mtbf}}</p>
+                  <p><b>Gas loss:</b>{{asset.gas}}</p>
+                  <p><b>Gas Consumption:</b>{{asset.power}}</p>
+                </ng-container>
+            </agm-info-window>
+            </agm-marker>
+          </ng-container>
+          </agm-marker-cluster>
+          </agm-map>
+
+        </ng-container>
+      </div>
+  </div>
+</div>
+
+<app-add-asset *ngIf="isOpenAssetCreateModal" [assetDetail]="selectedAssetForEdit" [gateways]="gateways" (getAssetEmit)="assetsList = [];searchAssets()"
+[componentState]="componentState" [tileData]="tileData" (cancelModal)="onEditAssetCancelModal()"></app-add-asset>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="modal fade right" id="derivedKPIModal" role="dialog">
+  <div class="modal-dialog modal-lg" role="document" style="width: 45%;">
+    <div class="modal-content" *ngIf="contextApp.app === 'CMS_Dev' && componentState === constantData.NON_IP_DEVICE">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">View Specific Power Consumption Data</h5>
+        <button type="button" class="close"  aria-label="Close" [disabled]="isDerivedKPIDataLoading" (click)="onCloseModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="m-3" *ngIf="derivedKPIData.length === 0 && !isDerivedKPIDataLoading"> No Specific Power Consumption data found.</p>
+        <span  *ngIf="loader"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> {{loadingMessage}}</span>
+        <div id="derivedKPIChart" class="mt-2" *ngIf="!isDerivedKPIDataLoading && derivedKPIData.length > 0"
+          [ngStyle]="{'width': '100%', 'height': '25rem'}"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" [disabled]="isDerivedKPIDataLoading" (click)="onCloseModal()">
+          Cancel
+        </button>
+
+      </div>
+    </div>
+
+  </div>
+</div>

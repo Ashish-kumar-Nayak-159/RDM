@@ -16,15 +16,15 @@
         <form class="form-inline">
           <div class="form-group" id="dd-open">
             <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
-              [ngClass]="{'active' : originalFilter?.device}" placement="bottom"
-              [tooltip]="originalFilter?.device ?
-              (originalFilter.device.display_name ? originalFilter.device.display_name :
-              originalFilter.device.device_id) : 'Select Asset'"
-              (click)="onDeviceFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
+              [ngClass]="{'active' : originalFilter?.asset}" placement="bottom"
+              [tooltip]="originalFilter?.asset ?
+              (originalFilter.asset.display_name ? originalFilter.asset.display_name :
+              originalFilter.asset.asset_id) : 'Select Asset'"
+              (click)="onAssetFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
               <i class="fas fa-fw fa-filter fa-sm button-divider"></i>
-              {{originalFilter?.device ?
-                (originalFilter.device.display_name ? originalFilter.device.display_name :
-                originalFilter.device.device_id) : 'Select Asset'}}
+              {{originalFilter?.asset ?
+                (originalFilter.asset.display_name ? originalFilter.asset.display_name :
+                originalFilter.asset.asset_id) : 'Select Asset'}}
             </button>
             <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
               <ng-container *ngFor="
@@ -46,11 +46,11 @@
                     disabled class="dropdown-form" />
                 </div>
               </ng-container>
-              <ng-select [items]="devices" class="custom" bindLabel="display_name" [clearable]="false"
+              <ng-select [items]="assets" class="custom" bindLabel="display_name" [clearable]="false"
                 [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
-                dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.device">
-                <ng-template ng-option-tmp let-device="item">
-                  <span [tooltip]="device.display_name ? device.display_name: device.device_id"> {{device.display_name ? device.display_name: device.device_id}}</span>
+                dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.asset">
+                <ng-template ng-option-tmp let-asset="item">
+                  <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ? asset.display_name: asset.asset_id}}</span>
                 </ng-template>
               </ng-select>
               <!-- <div class="form-group" >
@@ -77,7 +77,7 @@
     <div class="" *ngIf="!isTelemetryDataLoading && !telemetryObj && isFilterSelected">
       No data available since mid night.
     </div>
-    <div class="" *ngIf="!isFilterSelected && !filterObj.device">
+    <div class="" *ngIf="!isFilterSelected && !filterObj.asset">
       Please select asset to view the data.
     </div>
     <div class="ml-1" *ngIf="liveWidgets.length === 0 && isFilterSelected
@@ -85,12 +85,12 @@
       No widgets configured for this asset. Please contact administrator.
     </div>
     <div class=""
-      *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.device && liveWidgets.length > 0">
-      <div class="">Welcome to {{originalFilter.device?.display_name ? originalFilter.device?.display_name :
-        originalFilter.device?.device_id}}</div>
+      *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.asset && liveWidgets.length > 0">
+      <div class="">Welcome to {{originalFilter.asset?.display_name ? originalFilter.asset?.display_name :
+        originalFilter.asset?.asset_id}}</div>
     </div>
     <div class="ml-auto"
-      *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.device && liveWidgets.length > 0">
+      *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.asset && liveWidgets.length > 0">
       <div class="">*{{sampleCountValue}} samples in last 1 minute
         <!-- with {{telemetryInterval !== undefined ? telemetryInterval :
           '(?)'
@@ -107,11 +107,11 @@
               'margin-left':'2%', 'margin-top': '2%'}">
           <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
               || widget?.widgetType === 'NumberWithImage' || widget?.widgetType === 'StringWidget'"
-            [chartConfig]="widget" [device]="originalFilter?.device" [telemetryObj]="telemetryObj">
+            [chartConfig]="widget" [asset]="originalFilter?.asset" [telemetryObj]="telemetryObj">
           </app-only-number-widget>
-          <app-gauge-chart [chartConfig]="widget" [device]="originalFilter?.device"
+          <app-gauge-chart [chartConfig]="widget" [asset]="originalFilter?.asset"
             *ngIf="widget.widgetType === 'GaugeChart'" [telemetryObj]="telemetryObj"></app-gauge-chart>
-          <app-live-line-chart [chartConfig]="widget" [device]="originalFilter?.device" [telemetryObj]="telemetryObj"
+          <app-live-line-chart [chartConfig]="widget" [asset]="originalFilter?.asset" [telemetryObj]="telemetryObj"
             *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
           </app-live-line-chart>
         </div>

@@ -49,12 +49,12 @@
     </ng-container>
     <ng-container *ngIf="item.children && item.children.length > 0  && item.visible">
       <li class="nav-item" >
-        <a class="nav-link collapsed" href="#device-groups" data-toggle="collapse"
+        <a class="nav-link collapsed" href="#asset-groups" data-toggle="collapse"
         aria-expanded="true"   [tooltip]="item.display_name ? item.display_name : item.system_name">
           <i class="{{item.icon}}" ></i>
           <span>{{item.display_name ? item.display_name : item.system_name}}</span>
         </a>
-        <div id="device-groups" class="collapse" aria-labelledby="headingPages">
+        <div id="asset-groups" class="collapse" aria-labelledby="headingPages">
           <div class="bg-white py-2 collapse-inner rounded">
             <ng-container  *ngFor="let child of item.children">
             <a class="collapse-item" href="javascript:void(0)" *ngIf="child.visible">

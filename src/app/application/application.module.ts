@@ -11,12 +11,12 @@ import { ApplicationDashboardComponent } from './application-dashboard/applicati
 import { ApplicationListComponent } from './application-list/application-list.component';
 import { ApplicationSettingComponent } from './application-setting/application-setting.component';
 import { ApplicationMetadataComponent } from './application-setting/application-metadata/application-metadata.component';
-import { ApplicationDeviceHierarchyComponent } from './application-setting/application-device-hierarchy/application-device-hierarchy.component';
+import { ApplicationAssetHierarchyComponent } from './application-setting/application-asset-hierarchy/application-asset-hierarchy.component';
 import { ApplicationRolesComponent } from './application-setting/application-roles/application-roles.component';
 import { ApplicationUsersComponent } from './application-setting/application-users/application-users.component';
 import { ApplicationMenuSettingsComponent } from './application-setting/application-menu-settings/application-menu-settings.component';
 import { ApplicationSelectionComponent } from './application-selection/application-selection.component';
-import { DevicesModule } from '../devices/devices.module';
+import { AssetsModule } from '../assets/assets.module';
 import { ApplicationNotificationsComponent } from './application-notifications/application-notifications.component';
 import { ApplicationAlertsComponent } from './application-alerts/application-alerts.component';
 import { ApplicationEventsComponent } from './application-events/application-events.component';
@@ -33,7 +33,7 @@ import { ApplicationOrgTreeComponent } from './application-setting/application-o
     ApplicationListComponent,
     ApplicationSettingComponent,
     ApplicationMetadataComponent,
-    ApplicationDeviceHierarchyComponent,
+    ApplicationAssetHierarchyComponent,
     ApplicationRolesComponent,
     ApplicationUsersComponent,
     ApplicationMenuSettingsComponent,
@@ -50,7 +50,7 @@ import { ApplicationOrgTreeComponent } from './application-setting/application-o
     ApplicationRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    DevicesModule,
+    AssetsModule,
     AccordionModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,

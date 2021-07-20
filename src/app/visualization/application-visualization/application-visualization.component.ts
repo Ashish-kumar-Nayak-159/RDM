@@ -2,13 +2,13 @@ import { filter } from 'rxjs/operators';
 import { ColumnChartComponent } from './../../common/charts/column-chart/column-chart.component';
 import { DataTableComponent } from './../../common/charts/data-table/data-table.component';
 import { PieChartComponent } from './../../common/charts/pie-chart/pie-chart.component';
-import { DeviceTypeService } from './../../services/device-type/device-type.service';
+import { AssetModelService } from './../../services/asset-model/asset-model.service';
 import { ToasterService } from './../../services/toaster.service';
 import { Component, OnInit, OnDestroy, EmbeddedViewRef,
   ApplicationRef, ComponentFactoryResolver, Injector, Input, ViewChild } from '@angular/core';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from './../../services/common.service';
-import { DeviceService } from './../../services/devices/device.service';
+import { AssetService } from './../../services/assets/asset.service';
 import * as moment from 'moment';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
@@ -28,7 +28,7 @@ declare var $: any;
 })
 export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
-  @Input() device: any;
+  @Input() asset: any;
   @Input() pageType = 'live';
   userData: any;
   contextApp: any = {};
@@ -36,14 +36,14 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   isAlertAPILoading = false;
   propertyList: any[] = [];
   selectedAlert: any;
-  selectedDevice: any;
+  selectedAsset: any;
   refreshInterval: any;
   beforeInterval = 10;
   telemetryData: any[] = [];
   filterObj: any = {};
   originalFilterObj: any = {};
-  devices: any[] = [];
-  nonIPDevices: any[] = [];
+  assets: any[] = [];
+  nonIPAssets: any[] = [];
   afterInterval = 10;
   seriesArr: any[] = [];
   isOpen = true;
@@ -65,7 +65,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   hierarchyArr = {};
   tileData: any;
   signalRAlertSubscription: any;
-  originalDevices: any[] = [];
+  originalAssets: any[] = [];
   reasons: any[] = [];
   isAlertModalDataLoading = false;
   isChartViewOpen = true;
@@ -96,8 +96,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   displayHierarchyString: string;
   constructor(
     private commonService: CommonService,
-    private deviceService: DeviceService,
-    private deviceTypeService: DeviceTypeService,
+    private assetService: AssetService,
+    private assetModelService: AssetModelService,
     private toasterService: ToasterService,
     private chartService: ChartService,
     private factoryResolver: ComponentFactoryResolver,
@@ -123,7 +123,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       }
     });
     if (this.pageType === 'history') {
-      this.filterObj.device = this.device;
+      this.filterObj.asset = this.asset;
     }
     this.filterObj.app = this.contextApp.app;
     this.filterObj.count = 10;
@@ -132,7 +132,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.filterObj.sampling_time = 1;
     this.filterObj.aggregation_minutes = 1;
     this.filterObj.aggregation_format = 'AVG';
-    await this.getDevices(this.contextApp.user.hierarchy);
+    await this.getAssets(this.contextApp.user.hierarchy);
 
     this.loadFromCache();
   }
@@ -146,8 +146,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
     if (item) {
       if (this.pageType === 'live') {
-      if (item.devices) {
-        this.filterObj.device = item.devices;
+      if (item.assets) {
+        this.filterObj.asset = item.assets;
         this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
         }
       // this.filterObj = JSON.parse(JSON.stringify(item));
@@ -191,7 +191,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
   }
 
-  onDeviceFilterBtnClick() {
+  onAssetFilterBtnClick() {
     $('.dropdown-menu').on('click.bs.dropdown', (e) => {
       e.stopPropagation();
     });
@@ -235,7 +235,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
   }
 
-  async onChangeOfHierarchy(i, persistDeviceSelection = true) {
+  async onChangeOfHierarchy(i, persistAssetSelection = true) {
     console.log(i);
     Object.keys(this.configureHierarchy).forEach(key => {
       if (key > i) {
@@ -264,33 +264,33 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       }
     });
     if (Object.keys(hierarchyObj).length === 1) {
-      this.devices = JSON.parse(JSON.stringify(this.originalDevices));
+      this.assets = JSON.parse(JSON.stringify(this.originalAssets));
     } else {
     const arr = [];
-    this.devices = [];
-    this.originalDevices.forEach(device => {
+    this.assets = [];
+    this.originalAssets.forEach(asset => {
       let flag = false;
       Object.keys(hierarchyObj).forEach(hierarchyKey => {
-        if (device.hierarchy[hierarchyKey] && device.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+        if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
           flag = true;
         } else {
           flag = false;
         }
       });
       if (flag) {
-        arr.push(device);
+        arr.push(asset);
       }
     });
-    this.devices = JSON.parse(JSON.stringify(arr));
+    this.assets = JSON.parse(JSON.stringify(arr));
     }
-    if (this.devices?.length === 1) {
-      this.filterObj.device = this.devices[0];
+    if (this.assets?.length === 1) {
+      this.filterObj.asset = this.assets[0];
     }
-    console.log(persistDeviceSelection);
-    if (persistDeviceSelection) {
+    console.log(persistAssetSelection);
+    if (persistAssetSelection) {
       console.log('2477777');
-      this.filterObj.deviceArr = undefined;
-      this.filterObj.device = undefined;
+      this.filterObj.assetArr = undefined;
+      this.filterObj.asset = undefined;
     }
     let count = 0;
     Object.keys(this.configureHierarchy).forEach(key => {
@@ -308,7 +308,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   getTileName() {
     let selectedItem;
-    this.contextApp.configuration.main_menu.forEach(item => {
+    this.contextApp.menu_settings.main_menu.forEach(item => {
       if (item.system_name === 'Live Alerts') {
         selectedItem = item.showAccordion;
       }
@@ -316,19 +316,19 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.tileData = selectedItem;
   }
 
-  getDevices(hierarchy) {
+  getAssets(hierarchy) {
     return new Promise<void>((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
       };
-      this.subscriptions.push(this.deviceService.getIPAndLegacyDevices(obj, this.contextApp.app).subscribe(
+      this.subscriptions.push(this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe(
         (response: any) => {
           if (response?.data) {
-            this.devices = response.data;
-            this.originalDevices = JSON.parse(JSON.stringify(this.devices));
-            if (this.devices?.length === 1) {
-              this.filterObj.device = this.devices[0];
+            this.assets = response.data;
+            this.originalAssets = JSON.parse(JSON.stringify(this.assets));
+            if (this.assets?.length === 1) {
+              this.filterObj.asset = this.assets[0];
             }
           }
           resolve();
@@ -339,17 +339,17 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
 
   onAssetSelection() {
-    if (this.filterObj?.deviceArr.length > 0) {
-      this.filterObj.device = this.filterObj.deviceArr[0];
+    if (this.filterObj?.assetArr.length > 0) {
+      this.filterObj.asset = this.filterObj.assetArr[0];
     } else {
-      this.filterObj.device = undefined;
-      this.filterObj.deviceArr = undefined;
+      this.filterObj.asset = undefined;
+      this.filterObj.assetArr = undefined;
     }
   }
 
   onAssetDeselect() {
-    this.filterObj.device = undefined;
-    this.filterObj.deviceArr = undefined;
+    this.filterObj.asset = undefined;
+    this.filterObj.assetArr = undefined;
   }
 
   getLatestAlerts(updateFilterObj = true) {
@@ -386,11 +386,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       }
     });
     obj.hierarchy = JSON.stringify(obj.hierarchy);
-    if (obj.device) {
-      obj.device_id = obj.device.device_id;
-      delete obj.device;
+    if (obj.asset) {
+      obj.asset_id = obj.asset.asset_id;
+      delete obj.asset;
     }
-    delete obj.deviceArr;
+    delete obj.assetArr;
     if (this.pageType === 'live') {
       const now = (moment().utc()).unix();
       obj.from_date = moment().subtract(24, 'hour').utc().unix();
@@ -406,7 +406,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       let pagefilterObj ;
       if (this.pageType === 'live') {
         pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-        if (!this.filterObj.device) {
+        if (!this.filterObj.asset) {
           pagefilterObj.hierarchy = { App: this.contextApp.app};
           Object.keys(this.configureHierarchy).forEach((key) => {
             if (this.configureHierarchy[key]) {
@@ -414,8 +414,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             }
           });
         } else {
-          pagefilterObj['hierarchy'] = this.filterObj.device.hierarchy;
-          pagefilterObj['devices'] = this.filterObj.device;
+          pagefilterObj['hierarchy'] = this.filterObj.asset.hierarchy;
+          pagefilterObj['assets'] = this.filterObj.asset;
         }
         this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
       } else if (this.pageType === 'history') {
@@ -427,7 +427,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       }
     }
     console.log(obj);
-    this.subscriptions.push(this.deviceService.getDeviceAlerts(obj).subscribe(
+    this.subscriptions.push(this.assetService.getAssetAlerts(obj).subscribe(
       (response: any) => {
         this.latestAlerts = response.data;
         if (this.latestAlerts.length > 0) {
@@ -441,7 +441,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.latestAlerts.forEach((item, i) =>  {
           item.alert_id = 'alert_' +  this.commonService.generateUUID();
           item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
-          item.device_display_name = this.devices.filter(device => device.device_id === item.device_id)[0]?.display_name;
+          item.asset_display_name = this.assets.filter(asset => asset.asset_id === item.asset_id)[0]?.display_name;
         });
         if (this.filterObj.dateOption === 'Custom Range') {
           this.originalFilterObj.dateOption = 'this selected range';
@@ -454,10 +454,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         if (this.pageType === 'live') {
           const obj1 = {
             levels: this.contextApp.hierarchy.levels,
-            hierarchy: this.filterObj.device ? this.filterObj.device.hierarchy : JSON.parse(obj.hierarchy),
+            hierarchy: this.filterObj.asset ? this.filterObj.asset.hierarchy : JSON.parse(obj.hierarchy),
             type: 'alert',
             app: this.contextApp.app,
-            device_id: obj.device_id,
+            asset_id: obj.asset_id,
           };
           console.log(obj1);
           this.singalRService.connectToSignalR(obj1);
@@ -482,20 +482,20 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
 
-  getDeviceData(deviceId) {
+  getAssetData(assetId) {
     return new Promise((resolve) => {
       const obj = {
         app: this.contextApp.app,
-        device_id: deviceId
+        asset_id: assetId
       };
       const methodToCall =
-        this.deviceService.getIPAndLegacyDevices(obj, obj.app);
+        this.assetService.getIPAndLegacyAssets(obj, obj.app);
       this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         if (response?.data?.length > 0) {
-          this.selectedDevice = response.data[0];
+          this.selectedAsset = response.data[0];
         } else {
-          this.selectedDevice = response;
+          this.selectedAsset = response;
         }
         resolve();
       }
@@ -507,9 +507,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     return new Promise((resolve, reject) => {
       const filterObj = {
         app: this.contextApp.app,
-        device_id: this.selectedAlert.device_id,
-        device_type: this.selectedDevice.device_type,
-        legacy: !(this.selectedAlert.device_id === this.selectedAlert.gateway_id)
+        asset_id: this.selectedAlert.asset_id,
+        asset_type: this.selectedAsset.asset_type,
+        legacy: !(this.selectedAlert.asset_id === this.selectedAlert.gateway_id)
       };
       if (this.selectedAlert.code) {
         filterObj['code'] = this.selectedAlert.code;
@@ -517,7 +517,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         filterObj['message'] = this.selectedAlert.message;
       }
       this.alertCondition = undefined;
-      this.subscriptions.push(this.deviceTypeService.getAlertConditions(this.contextApp.app, filterObj).subscribe(
+      this.subscriptions.push(this.assetModelService.getAlertConditions(this.contextApp.app, filterObj).subscribe(
         (response: any) => {
           if (response?.data) {
             this.alertCondition = response.data[0];
@@ -547,9 +547,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.documents = [];
       const obj = {
         app: this.contextApp.app,
-        device_type: this.alertCondition?.device_type ?  this.alertCondition.device_type : this.selectedDevice.device_type
+        asset_type: this.alertCondition?.asset_type ?  this.alertCondition.asset_type : this.selectedAsset.asset_type
       };
-      this.subscriptions.push(this.deviceTypeService.getThingsModelDocuments(obj).subscribe(
+      this.subscriptions.push(this.assetModelService.getThingsModelDocuments(obj).subscribe(
         (response: any) => {
           if (response?.data) {
             this.documents = response.data;
@@ -586,9 +586,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       const obj = {
         app: this.contextApp.app,
-        name: this.alertCondition?.device_type ?  this.alertCondition.device_type : this.selectedDevice.device_type
+        name: this.alertCondition?.asset_type ?  this.alertCondition.asset_type : this.selectedAsset.asset_type
       };
-      this.subscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
+      this.subscriptions.push(this.assetModelService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
@@ -611,11 +611,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
     const params = {
       app: this.contextApp.app,
-      name: this.alertCondition?.device_type ?  this.alertCondition.device_type : this.selectedDevice.device_type
+      name: this.alertCondition?.asset_type ?  this.alertCondition.asset_type : this.selectedAsset.asset_type
     };
     this.dropdownWidgetList = [];
     this.selectedWidgetsForSearch = [];
-    this.subscriptions.push(this.deviceTypeService.getThingsModelLayout(params).subscribe(
+    this.subscriptions.push(this.assetModelService.getThingsModelLayout(params).subscribe(
       async (response: any) => {
         if (response?.historical_widgets?.length > 0) {
           response.historical_widgets.forEach((item) => {
@@ -657,7 +657,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           // this.selectedWidgets = JSON.parse(JSON.stringify(this.selectedWidgets));
           console.log(JSON.stringify(this.selectedWidgetsForSearch));
           if (this.selectedWidgetsForSearch.length > 0) {
-            this.getDeviceTelemetryData();
+            this.getAssetTelemetryData();
           } else {
             this.isTelemetryDataLoading = false;
           }
@@ -704,8 +704,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     });
     this.isTelemetryFilterSelected = false;
     this.isTelemetryDataLoading = true;
-    this.selectedDevice = this.originalDevices.find(device => device.device_id === this.selectedAlert.device_id);
-    // await this.getDeviceData(this.selectedAlert.device_id);
+    this.selectedAsset = this.originalAssets.find(asset => asset.asset_id === this.selectedAlert.asset_id);
+    // await this.getAssetData(this.selectedAlert.asset_id);
     await this.getAlertConditions();
     await this.getThingsModelProperties();
     await this.getDocuments();
@@ -714,16 +714,16 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   compareFn(c1, c2): boolean {
-    return c1 && c2 ? c1.device_id === c2.device_id : c1 === c2;
+    return c1 && c2 ? c1.asset_id === c2.asset_id : c1 === c2;
 }
 
   getModelReasons() {
     return new Promise((resolve) => {
       const obj = {
         app: this.contextApp.app,
-        name: this.alertCondition?.device_type ?  this.alertCondition.device_type : this.selectedDevice.device_type
+        name: this.alertCondition?.asset_type ?  this.alertCondition.asset_type : this.selectedAsset.asset_type
       };
-      this.subscriptions.push(this.deviceTypeService.getModelReasons(obj.app, obj.name).subscribe(
+      this.subscriptions.push(this.assetModelService.getModelReasons(obj.app, obj.name).subscribe(
         (response: any) => {
           this.reasons = response.data;
           resolve();
@@ -736,7 +736,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     return this.propertyList.filter(prop => prop.json_key === key)[0]?.name || key;
   }
 
-  getDeviceTelemetryData() {
+  getAssetTelemetryData() {
     this.isChartViewOpen = false;
     this.propList = [];
     this.selectedWidgets = JSON.parse(JSON.stringify(this.selectedWidgetsForSearch));
@@ -762,7 +762,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     const filterObj = JSON.parse(JSON.stringify(this.filterObj));
     filterObj.epoch = true;
     filterObj.app = this.contextApp.app;
-    filterObj.device_id = this.selectedAlert.device_id;
+    filterObj.asset_id = this.selectedAlert.asset_id;
     // filterObj.message_props = '';
     filterObj.from_date = null;
     filterObj.to_date = null;
@@ -809,10 +809,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
         return;
     }
-    const device = this.devices.find(deviceObj => deviceObj.device_id ===  filterObj.device_id);
-    filterObj.partition_key = device.partition_key;
+    const asset = this.assets.find(assetObj => assetObj.asset_id ===  filterObj.asset_id);
+    filterObj.partition_key = asset.partition_key;
     delete filterObj.count;
-    delete filterObj.device;
+    delete filterObj.asset;
     this.isChartViewOpen = true;
     filterObj.order_dir = 'ASC';
     if (this.filterObj.isTypeEditable) {
@@ -828,7 +828,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           if (records > 500 ) {
             this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
           }
-          method = this.deviceService.getDeviceSamplingTelemetry(filterObj, this.contextApp.app);
+          method = this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app);
         }
       } else {
         if (!this.filterObj.aggregation_minutes || !this.filterObj.aggregation_format ) {
@@ -840,7 +840,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           const records = this.commonService.calculateEstimatedRecords
           (this.filterObj.aggregation_minutes * 60, filterObj.from_date, filterObj.to_date);
           this.loadingMessage = 'Loading ' + records + ' data points.' + (records > 100 ? 'It may take some time.' : '') + 'Please wait...';
-          method = this.deviceService.getDeviceTelemetry(filterObj);
+          method = this.assetService.getAssetTelemetry(filterObj);
         }
       }
     } else {
@@ -849,12 +849,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       delete filterObj.sampling_time;
       delete filterObj.sampling_format;
       const records = this.commonService.calculateEstimatedRecords
-          ((device?.measurement_frequency?.average ? device.measurement_frequency.average : 5),
+          ((asset?.measurement_frequency?.average ? asset.measurement_frequency.average : 5),
           filterObj.from_date, filterObj.to_date);
       if (records > 500 ) {
         this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
       }
-      method = this.deviceService.getDeviceTelemetry(filterObj);
+      method = this.assetService.getAssetTelemetry(filterObj);
     }
     this.fromDate = filterObj.from_date;
     this.toDate = filterObj.to_date;
@@ -954,7 +954,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         data : {}
       }];
     }
-    await this.getDeviceData(this.acknowledgedAlert.device_id);
+    await this.getAssetData(this.acknowledgedAlert.asset_id);
     await this.getModelReasons();
     $('#acknowledgemenConfirmModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
@@ -988,7 +988,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
     this.isFileUploading = true;
     const data = await this.commonService.uploadImageToBlob(files.item(0),
-    this.contextApp.app + '/devices/' + this.acknowledgedAlert.device_id + '/alerts/' + this.acknowledgedAlert.code);
+    this.contextApp.app + '/assets/' + this.acknowledgedAlert.asset_id + '/alerts/' + this.acknowledgedAlert.code);
     if (data) {
       this.acknowledgedAlert.metadata.files[index].data = data;
     } else {
@@ -1008,7 +1008,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.acknowledgedAlert.metadata.files = files;
     const obj = {
       app: this.contextApp.app,
-      device_id: this.acknowledgedAlert.device_id,
+      asset_id: this.acknowledgedAlert.asset_id,
       message_id: this.acknowledgedAlert.message_id,
       message_date: this.acknowledgedAlert.message_date,
       code: this.acknowledgedAlert.code,
@@ -1023,7 +1023,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     obj.to_date = (epoch ? (epoch + 300) : null);
     obj.metadata['user_id'] = this.userData.name;
     obj.metadata['acknowledged_date'] = (moment.utc(new Date(), 'M/DD/YYYY h:mm:ss A'));
-    this.subscriptions.push(this.deviceService.acknowledgeDeviceAlert(obj).subscribe(
+    this.subscriptions.push(this.assetService.acknowledgeAssetAlert(obj).subscribe(
       response => {
         this.toasterService.showSuccess('Alert acknowledged successfully', 'Acknowledge Alert');
         this.getLatestAlerts();

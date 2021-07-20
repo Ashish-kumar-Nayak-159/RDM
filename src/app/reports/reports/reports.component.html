@@ -36,15 +36,15 @@
         <form class="form-inline">
           <div class="form-group">
             <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
-              [ngClass]="{'active' : filterObj?.device}"
-              placement="bottom" [tooltip]="filterObj?.device ?
-              (filterObj.device.display_name ? filterObj.device.display_name :
-              filterObj.device.device_id) : 'Select Asset'"
-              (click)="onDeviceFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
+              [ngClass]="{'active' : filterObj?.asset}"
+              placement="bottom" [tooltip]="filterObj?.asset ?
+              (filterObj.asset.display_name ? filterObj.asset.display_name :
+              filterObj.asset.asset_id) : 'Select Asset'"
+              (click)="onAssetFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
               <i class="fas fa-fw fa-filter fa-sm button-divider"></i>
-              {{filterObj?.device ?
-                (filterObj.device.display_name ? filterObj.device.display_name :
-                filterObj.device.device_id) : 'Select Asset'}}</button>
+              {{filterObj?.asset ?
+                (filterObj.asset.display_name ? filterObj.asset.display_name :
+                filterObj.asset.asset_id) : 'Select Asset'}}</button>
             <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
               <ng-container *ngFor="
                           let level of contextApp?.hierarchy?.levels;
@@ -65,18 +65,18 @@
                     disabled class="dropdown-form" />
                 </div>
               </ng-container>
-              <ng-select [items]="devices" class="custom" bindLabel="display_name" [clearable]="false"
+              <ng-select [items]="assets" class="custom" bindLabel="display_name" [clearable]="false"
                 [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
-                dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.device" (change)="onAssetSelection()">
-                <ng-template ng-option-tmp let-device="item">
-                  <span [tooltip]="device.display_name ? device.display_name: device.device_id"> {{device.display_name ? device.display_name: device.device_id}}</span>
+                dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.asset" (change)="onAssetSelection()">
+                <ng-template ng-option-tmp let-asset="item">
+                  <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ? asset.display_name: asset.asset_id}}</span>
                 </ng-template>
               </ng-select>
             </div>
           </div>
           <div class="form-group">
             <select class="custom-select custom-select-sm"id="report_type" [(ngModel)]="filterObj.report_type"
-            name="report_type" (change)="onNonIPDeviceChange()" #reportType="ngModel" [ngClass]="{'active': filterObj.report_type}">
+            name="report_type" (change)="onNonIPAssetChange()" #reportType="ngModel" [ngClass]="{'active': filterObj.report_type}">
             <option [ngValue]="undefined">Select Report Type</option>
             <option [ngValue]="'Process Parameter Report'">Process Parameter Report</option>
             <option [ngValue]="'Alert Report'">Alert Report</option>
@@ -196,8 +196,8 @@
                     <ng-container *ngIf="telemetry.length > 0">
                       <tr *ngFor="let telemetryObj of telemetry; let index = index">
                         <td>{{index + 1}}</td>
-                        <td >{{ (deviceFilterObj ?
-                        (deviceFilterObj.display_name ? deviceFilterObj.display_name : deviceFilterObj.device_id)
+                        <td >{{ (assetFilterObj ?
+                        (assetFilterObj.display_name ? assetFilterObj.display_name : assetFilterObj.asset_id)
                         : '' )}}</td>
                         <td>{{ telemetryObj.local_created_date }}</td>
                         <td *ngFor="let prop of selectedProps">
@@ -251,7 +251,7 @@
                         )
                         )" placement="bottom" [tooltip]="alert.severity"></i></td>
 
-                      <td>{{ alert.device_display_name ? alert.device_display_name : alert.device_id }}</td>
+                      <td>{{ alert.asset_display_name ? alert.asset_display_name : alert.asset_id }}</td>
 
                       <td>{{ alert.local_created_date }}</td>
                       <td>{{ alert.message }}</td>
@@ -306,7 +306,7 @@
                     )
                     )" placement="bottom" [tooltip]="alert.severity"></i></td>
 
-                  <td>{{ alert.device_display_name ? alert.device_display_name : alert.device_id }}</td>
+                  <td>{{ alert.asset_display_name ? alert.asset_display_name : alert.asset_id }}</td>
 
                   <td>{{ alert.local_created_date }}</td>
                   <td>{{alert.severity}}</td>

@@ -7,21 +7,21 @@
         <ng-container *ngIf="contextApp.app === 'CMS_Dev'">
         <div class="form-group">
           <div class="numberCircle" [ngClass]="{'active': activeCircle === 'all'}" tooltip="All Assets">
-            <a href="javascript:void(0)" (click)="onClickOfCount('all')">{{mapDevices.length}}</a></div>
+            <a href="javascript:void(0)" (click)="onClickOfCount('all')">{{mapAssets.length}}</a></div>
         </div>
         <div class="form-group">
           <div class="greenNumberCircle" [ngClass]="{'active': activeCircle === 'healthy'}" tooltip="Healthy Assets">
-            <a href="javascript:void(0)" class="text-white" (click)="onClickOfCount('healthy')">{{healthyDeviceCount}}</a></div>
+            <a href="javascript:void(0)" class="text-white" (click)="onClickOfCount('healthy')">{{healthyAssetCount}}</a></div>
         </div>
         <div class="form-group">
           <div class="redNumberCircle" [ngClass]="{'active': activeCircle === 'unhealthy'}" tooltip="Unhealthy Assets">
-            <a href="javascript:void(0)" class="text-white" (click)="onClickOfCount('unhealthy')">{{unhealthyDeviceCount}}</a></div>
+            <a href="javascript:void(0)" class="text-white" (click)="onClickOfCount('unhealthy')">{{unhealthyAssetCount}}</a></div>
         </div>
       </ng-container>
         <div class="form-group" id="dd-open">
           <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown" [ngClass]="{'active': hierarchyString}"
                   [tooltip]="hierarchyString ? hierarchyString : 'Select Hierarchy'"
-          (click)="onDeviceFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
+          (click)="onAssetFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
           <i class="fas fa-fw fa-filter fa-sm button-divider"></i> {{hierarchyString ? displayHierarchyString : 'Select Hierarchy'}}</button>
         <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
           <ng-container *ngFor="
@@ -50,7 +50,7 @@
         </div>
         </div>
         <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
-          (click)="onDeviceFilterApply()"><i
+          (click)="onAssetFilterApply()"><i
             class="fas fa-search fa-sm"></i></button></div>
       </form>
     </div>
@@ -65,27 +65,27 @@
      [fitBounds]="mapFitBounds">
       <agm-marker-cluster
       imagePath="./assets/img/m">
-    <ng-container  *ngFor="let device of mapDevices; let i = index; ">
-      <agm-marker *ngIf="device.latitude && device.longitude" [agmFitBounds]="mapFitBounds"
-      [latitude]="device.latitude" [longitude]="device.longitude"
+    <ng-container  *ngFor="let asset of mapAssets; let i = index; ">
+      <agm-marker *ngIf="asset.latitude && asset.longitude" [agmFitBounds]="mapFitBounds"
+      [latitude]="asset.latitude" [longitude]="asset.longitude"
       (mouseOver)="onMarkerClick(infowindow, gm)"
-      [iconUrl]="device.icon"
+      [iconUrl]="asset.icon"
      >
       <agm-info-window #infowindow >
-        <b> <a class="blue-font" href="javascript:void(0)" (click)="redirectToDevice(device)">{{device.display_name ? device.display_name: device.device_id}}</a></b>
+        <b> <a class="blue-font" href="javascript:void(0)" (click)="redirectToAsset(asset)">{{asset.display_name ? asset.display_name: asset.asset_id}}</a></b>
         <ng-container *ngIf="contextApp.app === 'CMS_Dev'">
         <hr>
-        <p *ngIf="device.spcd !== undefined && device.spcd !== null; else noSPCDTemplate"><b>Specific Power Consumption:</b> {{device.spcd}}</p>
+        <p *ngIf="asset.spcd !== undefined && asset.spcd !== null; else noSPCDTemplate"><b>Specific Power Consumption:</b> {{asset.spcd}}</p>
         <ng-template #noSPCDTemplate>
           <p>No data available.</p>
         </ng-template>
         </ng-container>
         <ng-container *ngIf="environmentApp === 'KCMS'">
           <hr>
-          <p><b>MTTR:</b> {{device.mttr}}</p>
-          <p><b>MTBF:</b> {{device.mtbf}}</p>
-          <p><b>Gas loss:</b>{{device.gas}}</p>
-          <p><b>Gas Consumption:</b>{{device.power}}</p>
+          <p><b>MTTR:</b> {{asset.mttr}}</p>
+          <p><b>MTBF:</b> {{asset.mtbf}}</p>
+          <p><b>Gas loss:</b>{{asset.gas}}</p>
+          <p><b>Gas Consumption:</b>{{asset.power}}</p>
         </ng-container>
       </agm-info-window>
       </agm-marker>

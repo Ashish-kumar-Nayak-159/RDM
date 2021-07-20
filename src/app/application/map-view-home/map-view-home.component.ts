@@ -2,7 +2,7 @@ import { environment } from './../../../environments/environment';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from 'src/app/services/common.service';
-import { DeviceService } from 'src/app/services/devices/device.service';
+import { AssetService } from 'src/app/services/assets/asset.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
@@ -17,9 +17,9 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   userData: any;
   centerLatitude: any;
   centerLongitude: any;
-  devices: any[] = [];
-  originalDevices: any[] = [];
-  mapDevices: any[] = [];
+  assets: any[] = [];
+  originalAssets: any[] = [];
+  mapAssets: any[] = [];
   contextApp: any;
   apiSubscriptions: Subscription[] = [];
   constantData = CONSTANTS;
@@ -29,8 +29,8 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   hierarchyString: any;
   displayHierarchyString: any;
   derivedKPILatestData: any[] = [];
-  healthyDeviceCount = 0;
-  unhealthyDeviceCount = 0;
+  healthyAssetCount = 0;
+  unhealthyAssetCount = 0;
   environmentApp = environment.app;
   activeCircle = 'all';
   mapFitBounds = false;
@@ -59,7 +59,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   tileData: any;
 
   constructor(
-    private deviceService: DeviceService,
+    private assetService: AssetService,
     private router: Router,
     private commonService: CommonService
   ) { }
@@ -70,7 +70,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     if (this.contextApp.app === 'CMS_Dev') {
       await this.getLatestDerivedKPIData();
     }
-    await this.getAllDevices();
+    await this.getAllAssets();
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     console.log(item);
     if (this.contextApp.hierarchy.levels.length > 1) {
@@ -87,13 +87,13 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
         }
         }
       });
-      this.onDeviceFilterApply();
+      this.onAssetFilterApply();
     }
   }
 
   getTileName() {
     let selectedItem;
-    this.contextApp.configuration.main_menu.forEach(item => {
+    this.contextApp.menu_settings.main_menu.forEach(item => {
       if (item.system_name === 'Home') {
         selectedItem = item.showAccordion;
       }
@@ -116,7 +116,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
         }
       });
       }
-      this.onDeviceFilterApply(false);
+      this.onAssetFilterApply(false);
     }
   }
 
@@ -150,7 +150,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
         this.onChangeOfHierarchy(index, false);
       }
       } else {
-        this.devices = JSON.parse(JSON.stringify(this.originalDevices));
+        this.assets = JSON.parse(JSON.stringify(this.originalAssets));
       }
     });
     this.hierarchyString = this.contextApp.app;
@@ -163,82 +163,82 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  getAllDevices() {
+  getAllAssets() {
     return new Promise<void>((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
         type: this.contextApp.app === 'CMS_Dev' ? CONSTANTS.NON_IP_DEVICE : undefined
       };
       if (this.contextApp.app === 'CMS_Dev') {
-      this.healthyDeviceCount = 0;
-      this.unhealthyDeviceCount = 0;
+      this.healthyAssetCount = 0;
+      this.unhealthyAssetCount = 0;
       }
-      this.apiSubscriptions.push(this.deviceService.getLegacyDevices(obj, this.contextApp.app).subscribe(
+      this.apiSubscriptions.push(this.assetService.getLegacyAssets(obj, this.contextApp.app).subscribe(
         (response: any) => {
           if (response?.data) {
-            this.devices = response.data;
-            this.mapDevices = JSON.parse(JSON.stringify(this.devices));
-            this.devices.forEach(device => {
+            this.assets = response.data;
+            this.mapAssets = JSON.parse(JSON.stringify(this.assets));
+            this.assets.forEach(asset => {
               if (this.environmentApp === 'KCMS') {
-                device.mttr = '7 Mins';
-                device.mtbf = '2 days 5 hours';
-                device.gas = '0.4%';
-                device.power = '45 SCMH';
+                asset.mttr = '7 Mins';
+                asset.mtbf = '2 days 5 hours';
+                asset.gas = '0.4%';
+                asset.power = '45 SCMH';
               }
               if (this.contextApp.app === 'CMS_Dev') {
                 this.derivedKPILatestData.forEach(kpiObj => {
-                  if (device.device_id === kpiObj.device_id) {
-                    device.kpiValue = kpiObj?.metadata?.healthy;
-                    device.spcd = kpiObj?.metadata?.specific_power_consumption_discharge;
+                  if (asset.asset_id === kpiObj.asset_id) {
+                    asset.kpiValue = kpiObj?.metadata?.healthy;
+                    asset.spcd = kpiObj?.metadata?.specific_power_consumption_discharge;
                     console.log(kpiObj?.metadata?.healthy);
                     if (kpiObj?.metadata?.healthy === true) {
-                      this.healthyDeviceCount++;
+                      this.healthyAssetCount++;
                       console.log('healthy');
                     } else if (kpiObj?.metadata?.healthy === false){
-                      this.unhealthyDeviceCount++;
+                      this.unhealthyAssetCount++;
                       console.log('unhealthy');
                     }
                   }
                 });
-                if (device.type === this.constantData.NON_IP_DEVICE) {
-                  device.icon = {
-                    url: device.kpiValue === true ? './assets/img/legacy-asset-green.svg' : (device.kpiValue === false ? './assets/img/legacy-asset-red.svg' : './assets/img/legacy-assets.svg'),
+                if (asset.type === this.constantData.NON_IP_DEVICE) {
+                  asset.icon = {
+                    url: asset.kpiValue === true ? './assets/img/legacy-asset-green.svg' : (asset.kpiValue === false ? './assets/img/legacy-asset-red.svg' : './assets/img/legacy-assets.svg'),
                     scaledSize: {
                       width: 25,
                       height: 25
                     }};
                 }
               } else {
-                if (device.type === this.constantData.IP_DEVICE && device?.configuration?.connection_state?.toLowerCase() === 'connected') {
-                  device.icon = {
+                if (asset.type === this.constantData.IP_DEVICE && asset?.configuration?.connection_state?.toLowerCase() === 'connected') {
+                  asset.icon = {
                     url: './assets/img/iot-assets-green.svg',
                     scaledSize: {
                       width: 35,
                       height: 35
                     }};
-                } else if (device.type === this.constantData.IP_DEVICE && device?.configuration?.connection_state?.toLowerCase() === 'disconnected') {
-                  device.icon = {
+                } else if (asset.type === this.constantData.IP_DEVICE && asset?.configuration?.connection_state?.toLowerCase() === 'disconnected') {
+                  asset.icon = {
                     url: './assets/img/iot-assets-red.svg',
                     scaledSize: {
                       width: 35,
                       height: 35
                     }};
-                } else if (device.type === this.constantData.IP_GATEWAY && device?.configuration?.connection_state?.toLowerCase() === 'connected') {
-                  device.icon = {
+                } else if (asset.type === this.constantData.IP_GATEWAY && asset?.configuration?.connection_state?.toLowerCase() === 'connected') {
+                  asset.icon = {
                     url: './assets/img/iot-gateways-green.svg',
                     scaledSize: {
                       width: 30,
                       height: 30
                     }};
-                } else if (device.type === this.constantData.IP_GATEWAY && device?.configuration?.connection_state?.toLowerCase() === 'disconnected') {
-                  device.icon = {
+                } else if (asset.type === this.constantData.IP_GATEWAY && asset?.configuration?.connection_state?.toLowerCase() === 'disconnected') {
+                  asset.icon = {
                     url: './assets/img/iot-gateways-red.svg',
                     scaledSize: {
                       width: 30,
                       height: 30
                     }};
-                } else if (device.type === this.constantData.NON_IP_DEVICE) {
-                  device.icon = {
+                } else if (asset.type === this.constantData.NON_IP_DEVICE) {
+                  asset.icon = {
                     url: './assets/img/legacy-assets.svg',
                     scaledSize: {
                       width: 25,
@@ -247,8 +247,8 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                 }
               }
             });
-            this.originalDevices = JSON.parse(JSON.stringify(this.devices));
-            const center = this.commonService.averageGeolocation(this.devices);
+            this.originalAssets = JSON.parse(JSON.stringify(this.assets));
+            const center = this.commonService.averageGeolocation(this.assets);
             this.centerLatitude = center?.latitude || 23.0225;
             this.centerLongitude = center?.longitude || 72.5714;
           }
@@ -258,7 +258,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  async onChangeOfHierarchy(i, flag, persistDeviceSelection = true) {
+  async onChangeOfHierarchy(i, flag, persistAssetSelection = true) {
     Object.keys(this.configureHierarchy).forEach(key => {
       if (key > i) {
         delete this.configureHierarchy[key];
@@ -292,33 +292,33 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
         }
       });
       if (Object.keys(hierarchyObj).length === 1) {
-        this.devices = JSON.parse(JSON.stringify(this.originalDevices));
+        this.assets = JSON.parse(JSON.stringify(this.originalAssets));
       } else {
       const arr = [];
-      this.devices = [];
-      this.originalDevices.forEach(device => {
+      this.assets = [];
+      this.originalAssets.forEach(asset => {
         let flag1 = false;
         Object.keys(hierarchyObj).forEach(hierarchyKey => {
-          if (device.hierarchy[hierarchyKey] && device.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+          if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
             flag1 = true;
           } else {
             flag1 = false;
           }
         });
         if (flag1) {
-          arr.push(device);
+          arr.push(asset);
         }
       });
-      this.devices = JSON.parse(JSON.stringify(arr));
+      this.assets = JSON.parse(JSON.stringify(arr));
       }
-      if (this.devices?.length === 1) {
-        this.filterObj.device = this.devices[0];
+      if (this.assets?.length === 1) {
+        this.filterObj.asset = this.assets[0];
       }
-      if (persistDeviceSelection) {
-      this.filterObj.deviceArr = undefined;
-      this.filterObj.device = undefined;
+      if (persistAssetSelection) {
+      this.filterObj.assetArr = undefined;
+      this.filterObj.asset = undefined;
       }
-      // await this.getDevices(hierarchyObj);
+      // await this.getAssets(hierarchyObj);
     }
     let count = 0;
     Object.keys(this.configureHierarchy).forEach(key => {
@@ -342,7 +342,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
         to_date: moment().utc().unix(),
         epoch: true
       };
-      this.apiSubscriptions.push(this.deviceService.getDerivedKPILatestData(this.contextApp.app, derivedKPICode, obj)
+      this.apiSubscriptions.push(this.assetService.getDerivedKPILatestData(this.contextApp.app, derivedKPICode, obj)
       .subscribe((response: any) => {
         if (response?.data) {
           this.derivedKPILatestData = response.data;
@@ -357,23 +357,23 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     const arr = [];
     this.activeCircle = type;
     if (type !== 'all') {
-    this.devices.forEach(device => {
-      console.log(device.kpiValue === false);
-      if (type === 'healthy' && device.kpiValue === true) {
-        arr.push(device);
+    this.assets.forEach(asset => {
+      console.log(asset.kpiValue === false);
+      if (type === 'healthy' && asset.kpiValue === true) {
+        arr.push(asset);
       }
-      if (type === 'unhealthy' && device.kpiValue === false) {
-        arr.push(device);
+      if (type === 'unhealthy' && asset.kpiValue === false) {
+        arr.push(asset);
       }
     });
 
-    this.mapDevices = JSON.parse(JSON.stringify(arr));
+    this.mapAssets = JSON.parse(JSON.stringify(arr));
     } else {
-      this.mapDevices = JSON.parse(JSON.stringify(this.devices));
+      this.mapAssets = JSON.parse(JSON.stringify(this.assets));
     }
-    if (this.mapDevices.length === 0) {
+    if (this.mapAssets.length === 0) {
       this.mapFitBounds = false;
-      const center = this.commonService.averageGeolocation(this.mapDevices);
+      const center = this.commonService.averageGeolocation(this.mapAssets);
       this.centerLatitude = center?.latitude || 23.0225;
       this.centerLongitude = center?.longitude || 72.5714;
       // this.zoom = 5;
@@ -384,7 +384,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
 
   }
 
-  onDeviceFilterBtnClick() {
+  onAssetFilterBtnClick() {
     $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
       e.stopPropagation();
     });
@@ -395,22 +395,22 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDeviceFilterApply(updateFilterObj = true) {
+  onAssetFilterApply(updateFilterObj = true) {
     console.log(this.filterObj);
     console.log(this.configureHierarchy);
     this.activeCircle = 'all';
-    this.mapDevices = JSON.parse(JSON.stringify(this.devices));
+    this.mapAssets = JSON.parse(JSON.stringify(this.assets));
     if (this.contextApp.app === 'CMS_Dev') {
-      this.healthyDeviceCount = 0;
-      this.unhealthyDeviceCount = 0;
-      this.devices.forEach(deviceObj => {
+      this.healthyAssetCount = 0;
+      this.unhealthyAssetCount = 0;
+      this.assets.forEach(assetObj => {
         this.derivedKPILatestData.forEach(kpiObj => {
-          if (deviceObj.device_id === kpiObj.device_id) {
-            deviceObj.kpiValue = kpiObj?.metadata?.healthy;
+          if (assetObj.asset_id === kpiObj.asset_id) {
+            assetObj.kpiValue = kpiObj?.metadata?.healthy;
             if (kpiObj?.metadata?.healthy === true) {
-              this.healthyDeviceCount++;
+              this.healthyAssetCount++;
             } else if (kpiObj?.metadata?.healthy === false){
-              this.unhealthyDeviceCount++;
+              this.unhealthyAssetCount++;
             }
           }
         });
@@ -430,9 +430,9 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
       });
       this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
     }
-    if (this.mapDevices.length === 0) {
+    if (this.mapAssets.length === 0) {
       this.mapFitBounds = false;
-      const center = this.commonService.averageGeolocation(this.mapDevices);
+      const center = this.commonService.averageGeolocation(this.mapAssets);
       this.centerLatitude = center?.latitude || 23.0225;
       this.centerLongitude = center?.longitude || 72.5714;
       // this.zoom = 8;
@@ -443,7 +443,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   }
 
   onSelect() {
-    this.devices = JSON.parse(JSON.stringify(this.filterObj.device));
+    this.assets = JSON.parse(JSON.stringify(this.filterObj.asset));
   }
 
   onMarkerClick(infowindow, gm) {
@@ -459,10 +459,10 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     infowindow.close();
   }
 
-  redirectToDevice(device) {
+  redirectToAsset(asset) {
     this.router.navigate(['applications', this.contextApp.app,
-    'devices',
-    device.device_id, 'control-panel']);
+    'assets',
+    asset.asset_id, 'control-panel']);
   }
 
   ngOnDestroy() {

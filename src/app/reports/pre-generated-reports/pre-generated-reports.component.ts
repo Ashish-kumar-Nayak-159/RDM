@@ -1,6 +1,6 @@
 import { FileSaverService } from 'ngx-filesaver';
 import { ToasterService } from './../../services/toaster.service';
-import { DeviceService } from './../../services/devices/device.service';
+import { AssetService } from './../../services/assets/asset.service';
 import { Subscription } from 'rxjs';
 import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -25,8 +25,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   contextApp: any;
   hierarchyArr: any = {};
   configureHierarchy: any = {};
-  devices: any[] = [];
-  originalDevices: any[] = [];
+  assets: any[] = [];
+  originalAssets: any[] = [];
   tileData: any;
   isDownloadCloseOptionAvailable = false;
   reportDownloadSubscription: Subscription;
@@ -60,7 +60,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
-    private deviceService: DeviceService,
+    private assetService: AssetService,
     private toasterService: ToasterService,
     private fileSaverService: FileSaverService,
     private cdr: ChangeDetectorRef
@@ -77,7 +77,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       }
 
      // this.getLatestAlerts();
-      await this.getDevices(this.contextApp.user.hierarchy);
+      await this.getAssets(this.contextApp.user.hierarchy);
       setTimeout(() => {
         $('#table-wrapper').on('scroll', () => {
           const element = document.getElementById('table-wrapper');
@@ -152,13 +152,13 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     this.cdr.detectChanges();
   }
 
-  onDeviceFilterBtnClick() {
+  onAssetFilterBtnClick() {
     $('.dropdown-menu').on('click.bs.dropdown', (e) => {
       e.stopPropagation();
     });
   }
 
-  onDeviceFilterApply() {
+  onAssetFilterApply() {
     $('.dropdown-menu .searchBtn').on('click.bs.dropdown', (e) => {
       $('button.dropdown-btn').dropdown('toggle');
     });
@@ -205,7 +205,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
 
   getTileName() {
     let selectedItem;
-    this.contextApp.configuration.main_menu.forEach(item => {
+    this.contextApp.menu_settings.main_menu.forEach(item => {
       if (item.system_name === 'Reports') {
         selectedItem = item.showAccordion;
       }
@@ -214,17 +214,17 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     this.currentLimit = Number(this.tileData[1]?.value) || 100;
   }
 
-  getDevices(hierarchy) {
+  getAssets(hierarchy) {
     return new Promise<void>((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
       };
-      this.subscriptions.push(this.deviceService.getIPAndLegacyDevices(obj, this.contextApp.app).subscribe(
+      this.subscriptions.push(this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe(
         (response: any) => {
           if (response?.data) {
-            this.devices = response.data;
-            this.originalDevices = JSON.parse(JSON.stringify(this.devices));
+            this.assets = response.data;
+            this.originalAssets = JSON.parse(JSON.stringify(this.assets));
           }
           resolve();
         }
@@ -261,27 +261,27 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     });
     this.filterObj.hierarchy = JSON.parse(JSON.stringify(hierarchyObj));
     if (Object.keys(hierarchyObj).length === 1) {
-      this.devices = JSON.parse(JSON.stringify(this.originalDevices));
+      this.assets = JSON.parse(JSON.stringify(this.originalAssets));
     } else {
     const arr = [];
-    this.devices = [];
-    this.originalDevices.forEach(device => {
+    this.assets = [];
+    this.originalAssets.forEach(asset => {
       let flag = false;
       Object.keys(hierarchyObj).forEach(hierarchyKey => {
-        if (device.hierarchy[hierarchyKey] && device.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+        if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
           flag = true;
         } else {
           flag = false;
         }
       });
       if (flag) {
-        arr.push(device);
+        arr.push(asset);
       }
     });
-    this.devices = JSON.parse(JSON.stringify(arr));
+    this.assets = JSON.parse(JSON.stringify(arr));
     }
-    this.filterObj.deviceArr = undefined;
-    this.filterObj.device_id = undefined;
+    this.filterObj.assetArr = undefined;
+    this.filterObj.asset_id = undefined;
     let count = 0;
     Object.keys(this.configureHierarchy).forEach(key => {
       if (this.configureHierarchy[key]) {
@@ -297,29 +297,29 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   onAssetDeselect() {
-    this.filterObj.device_id = undefined;
-    this.filterObj.deviceArr = undefined;
+    this.filterObj.asset_id = undefined;
+    this.filterObj.assetArr = undefined;
   }
 
   onAssetSelection() {
-    if (this.filterObj?.deviceArr.length > 0) {
-      this.filterObj.device_id = '';
-      this.filterObj.deviceArr.forEach(device => {
-        this.filterObj.device_id += (this.filterObj.device_id.length > 0 ? ',' : '') + device.device_id;
+    if (this.filterObj?.assetArr.length > 0) {
+      this.filterObj.asset_id = '';
+      this.filterObj.assetArr.forEach(asset => {
+        this.filterObj.asset_id += (this.filterObj.asset_id.length > 0 ? ',' : '') + asset.asset_id;
       });
     } else {
-      this.filterObj.device_id = undefined;
-      this.filterObj.deviceArr = undefined;
+      this.filterObj.asset_id = undefined;
+      this.filterObj.assetArr = undefined;
     }
-    // this.nonIPDevices = [];
-    // this.filterObj.device_id = this.filterObj.device.device_id;
+    // this.nonIPAssets = [];
+    // this.filterObj.asset_id = this.filterObj.asset.asset_id;
   }
 
   onAllAssetSelection() {
-    if (this.filterObj?.deviceArr.length > 0) {
-      this.filterObj.device_id = '';
-      this.filterObj.deviceArr.forEach(device => {
-        this.filterObj.device_id += (this.filterObj.device_id.length > 0 ? ',' : '') + device.device_id;
+    if (this.filterObj?.assetArr.length > 0) {
+      this.filterObj.asset_id = '';
+      this.filterObj.assetArr.forEach(asset => {
+        this.filterObj.asset_id += (this.filterObj.asset_id.length > 0 ? ',' : '') + asset.asset_id;
       });
     }
   }
@@ -366,10 +366,10 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     // }
     // console.log(obj.report_type.toLowerCase().includes('single'));
     // if (obj.report_type.toLowerCase().includes('single')) {
-    //   obj.multiple_devices = false;
+    //   obj.multiple_assets = false;
     //   console.log(obj);
     // } else {
-    //   obj.multiple_devices = true;
+    //   obj.multiple_assets = true;
     // }
     this.hierarchyString = this.contextApp.app;
     this.displayHierarchyString = this.contextApp.app;
@@ -398,16 +398,16 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     }
     obj.hierarchy = JSON.stringify(obj.hierarchy);
     this.isFilterSelected = true;
-    delete obj.deviceArr;
+    delete obj.assetArr;
     delete obj.dateOption;
     delete obj.report_type;
-    delete obj.device_id;
+    delete obj.asset_id;
     obj.offset = this.currentOffset;
     obj.count = this.currentLimit;
     this.isReportDataLoading = true;
     this.previousFilterObj = JSON.parse(JSON.stringify(this.filterObj));
     // this.reports = [];
-    this.subscriptions.push(this.deviceService.getPregeneratedReports(obj, this.contextApp.app).subscribe(
+    this.subscriptions.push(this.assetService.getPregeneratedReports(obj, this.contextApp.app).subscribe(
       (response: any) => {
         if (response.data?.length > 0) {
           // this.reports = response.data;
@@ -431,9 +431,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     );
   }
 
-  getDeviceNameById(deviceId) {
-    const device = this.originalDevices.find(deviceObj => deviceObj.device_id === deviceId);
-    return (device?.display_name ? device.display_name : deviceId);
+  getAssetNameById(assetId) {
+    const asset = this.originalAssets.find(assetObj => assetObj.asset_id === assetId);
+    return (asset?.display_name ? asset.display_name : assetId);
   }
 
   downloadFile(reportObj) {

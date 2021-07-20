@@ -129,8 +129,8 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
                 localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.apps[0].token);
                 await this.getApplicationData(this.userData.apps[0]);
                 this.router.navigate(['applications', this.applicationData.app]);
-                // const menu = this.applicationData.configuration.main_menu.length > 0 ?
-                // this.applicationData.configuration.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+                // const menu = this.applicationData.menu_settings.main_menu.length > 0 ?
+                // this.applicationData.menu_settings.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
                 // let i = 0;
                 // menu.forEach(menuObj => {
                 //   if ( i === 0 && menuObj.visible) {
@@ -171,21 +171,21 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
           this.applicationData = response;
           this.applicationData.app = app.app;
           this.applicationData.user = app.user;
-          if (this.applicationData.configuration.main_menu.length === 0) {
-            this.applicationData.configuration.main_menu = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+          if (this.applicationData.menu_settings.main_menu.length === 0) {
+            this.applicationData.menu_settings.main_menu = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
           } else {
             this.processAppMenuData();
           }
-          if (this.applicationData.configuration.device_control_panel_menu.length === 0) {
-            this.applicationData.configuration.device_control_panel_menu =
+          if (this.applicationData.menu_settings.asset_control_panel_menu.length === 0) {
+            this.applicationData.menu_settings.asset_control_panel_menu =
             JSON.parse(JSON.stringify(CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST));
           }
-          if (this.applicationData.configuration.legacy_device_control_panel_menu.length === 0) {
-            this.applicationData.configuration.legacy_device_control_panel_menu =
+          if (this.applicationData.menu_settings.legacy_asset_control_panel_menu.length === 0) {
+            this.applicationData.menu_settings.legacy_asset_control_panel_menu =
             JSON.parse(JSON.stringify(CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST));
           }
-          if (this.applicationData.configuration.model_control_panel_menu.length === 0) {
-            this.applicationData.configuration.model_control_panel_menu =
+          if (this.applicationData.menu_settings.model_control_panel_menu.length === 0) {
+            this.applicationData.menu_settings.model_control_panel_menu =
             JSON.parse(JSON.stringify(CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST));
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
@@ -209,10 +209,10 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
       if (!this.userData?.is_super_admin) {
       const data = [];
       const arr = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
-      if (this.applicationData.configuration?.main_menu?.length > 0) {
+      if (this.applicationData.menu_settings?.main_menu?.length > 0) {
         arr.forEach(config => {
           let found = false;
-          this.applicationData.configuration.main_menu.forEach(item => {
+          this.applicationData.menu_settings.main_menu.forEach(item => {
             if (config.page === item.page) {
               found = true;
               config.display_name = item.display_name;
@@ -226,7 +226,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         });
       }
-      this.applicationData.configuration.main_menu = JSON.parse(JSON.stringify(data));
+      this.applicationData.menu_settings.main_menu = JSON.parse(JSON.stringify(data));
       }
       }
   }

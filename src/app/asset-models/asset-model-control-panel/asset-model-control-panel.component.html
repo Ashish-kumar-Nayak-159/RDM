@@ -1,0 +1,160 @@
+
+
+<div id="wrapper"  >
+  <div id="content-wrapper" class="d-flex flex-column m-5 py-3" *ngIf="isAssetModelDataLoading">
+    Loading Model Data...
+    <i class="fa fa-spinner fa-spin fa-fw fa-2x text-center"  ></i>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar1 sidebar-light mb-3 " *ngIf="!isAssetModelDataLoading">
+
+    <div class="sidebar1-heading sidebar1-top-heading">
+      <span>Model Definition </span>
+      <!-- <button class="d-none d-md-inline mb-0" id="sidebar1Toggle" placement="bottom" tooltip="Minimize" (click)="onSidebarToggle()"></button> -->
+      <i class="fa fa-fw fa" >MD</i>
+		</div>
+    <div class="scrollbox scrollbox_delayed" tabindex="0">
+    <ul class="navbar-nav scrollbox-content" id="controlPanelSidebar">
+
+      <ng-container *ngFor="let menu of menuItems">
+        <ng-container *ngIf="menu.isTitle && menu.isDisplay">
+        <div class="sidebar1-heading ">
+          {{menu.display_name}}
+        </div>
+        <!-- Divider -->
+        <hr class="sidebar1-divider">
+        </ng-container>
+        <ng-container *ngIf="!menu.isTitle && menu.visible">
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item" [ngClass]="{'active': activeTab === menu.page}">
+          <a class="nav-link collapsed" href="{{menu.url}}" data-toggle="tab" aria-expanded="false"
+            (click)="setActiveTab(menu.page)" [tooltip]="menu.display_name" [tooltip]="menu.display_name">
+            <i class="{{menu.icon}}" placement="bottom" ></i>
+            <span>{{menu.display_name}}</span></a>
+        </li>
+        </ng-container>
+      </ng-container>
+
+      <!-- Divider -->
+      <hr class="sidebar1-divider d-none d-md-block">
+    </ul>
+  </div>
+  </div>
+  <!-- End of Sidebar -->
+   <!-- Content Wrapper -->
+   <div id="content-wrapper" class="d-flex flex-column" *ngIf="!isAssetModelDataLoading">
+    <div id="content">
+    <div class="container1-fluid">
+      <div class="blue-nav-bar">
+
+        <div class="d-flex">
+          <div>
+            <div class="main-heading">
+
+              {{assetModel?.name}}
+              <a href="javascript:void(0)" (click)="openUnfreezeModal()" [class.disabled]="isModelFreezeUnfreezeAPILoading"  *ngIf="assetModel.freezed"><i class="fa fa-fw fa-lock" placement="bottom" tooltip="Freezed"></i></a>
+              <a href="javascript:void(0)" (click)="freezeModel()" [class.disabled]="isModelFreezeUnfreezeAPILoading"  *ngIf="!assetModel.freezed"><i class="fa fa-fw fa-unlock"  placement="bottom" tooltip="Not Freezed"  *ngIf="!assetModel.freezed"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <div class="">
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'overview'}" id="asset_type_overview" role="tabpanel">
+        <app-asset-model-overview *ngIf="activeTab === 'overview' && assetModel" [assetModel]="assetModel"></app-asset-model-overview>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="asset_type_tags">
+        <app-asset-model-tags *ngIf="activeTab === 'tags'  && assetModel" [assetModel]="assetModel"></app-asset-model-tags>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'settings'}" role="tabpanel" id="asset_type_settings">
+        <app-asset-model-settings *ngIf="activeTab === 'settings'  && assetModel" [assetModel]="assetModel"></app-asset-model-settings>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab.includes('properties')}" role="tabpanel" id="asset_type_properties">
+        <app-asset-model-properties *ngIf="activeTab.includes('properties') && assetModel" [type]="activeTab" [assetModel]="assetModel"></app-asset-model-properties>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab.includes('direct_methods')}" role="tabpanel" id="asset_type_methods">
+        <app-asset-model-device-methods *ngIf="activeTab.includes('direct_methods') && assetModel" [assetModel]="assetModel"></app-asset-model-device-methods>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab.includes('package_management')}" role="tabpanel" id="asset_type_package_management">
+        <app-asset-model-package-management *ngIf="activeTab.includes('package_management') && assetModel" [assetModel]="assetModel"></app-asset-model-package-management>
+      </div>
+
+
+      <div class="tab-pane" [ngClass]="{'active': activeTab.includes('rules')}" role="tabpanel" id="asset_type_rules">
+        <app-asset-model-rules *ngIf="activeTab.includes('rules') && assetModel" [assetModel]="assetModel"></app-asset-model-rules>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'jsonpacket'}" role="tabpanel" id="asset_type_jsonpacket">
+        <app-asset-model-json-packet-format *ngIf="activeTab === 'jsonpacket' && assetModel" [assetModel]="assetModel"></app-asset-model-json-packet-format>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'alert_conditioning'}" role="tabpanel" id="asset_type_alert_conditioning">
+        <app-asset-model-alert-conditions *ngIf="activeTab === 'alert_conditioning' && assetModel" [assetModel]="assetModel"></app-asset-model-alert-conditions>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel" id="asset_type_control_widgets">
+        <app-asset-model-control-widgets *ngIf="activeTab === 'control_widgets' && assetModel" [assetModel]="assetModel"></app-asset-model-control-widgets>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'configuration_widgets'}" role="tabpanel" id="asset_type_configuration_widgets">
+        <app-asset-model-configuration-widgets *ngIf="activeTab === 'configuration_widgets' && assetModel" [assetModel]="assetModel"></app-asset-model-configuration-widgets>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'layout'}" role="tabpanel" id="asset_type_layout">
+        <app-asset-model-layout *ngIf="activeTab === 'layout' && assetModel" [assetModel]="assetModel"></app-asset-model-layout>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'reference_material'}" role="tabpanel" id="asset_type_reference_material">
+        <app-asset-model-reference-documents *ngIf="activeTab === 'reference_material' && assetModel" [assetModel]="assetModel"></app-asset-model-reference-documents>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'derived_kpis'}" role="tabpanel" id="asset_type_derived_kpis">
+        <app-asset-model-derived-kpis *ngIf="activeTab === 'derived_kpis' && assetModel"  [assetModel]="assetModel"></app-asset-model-derived-kpis>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'stream_processing'}" role="tabpanel" id="asset_type_stream_processing">
+        <app-asset-model-stream-processing *ngIf="activeTab === 'stream_processing' && assetModel"></app-asset-model-stream-processing>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'alert_acknowledgement_reasons'}" role="tabpanel" id="asset_type_alert_acknowledgement_reasons">
+        <app-asset-model-alert-acknowledgement-reasons *ngIf="activeTab === 'alert_acknowledgement_reasons' && assetModel" [assetModel]="assetModel"></app-asset-model-alert-acknowledgement-reasons>
+      </div>
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'slave_info'}" role="tabpanel" id="asset_type_slave_info">
+        <app-asset-model-slave-info *ngIf="activeTab === 'slave_info' && assetModel" [assetModel]="assetModel"></app-asset-model-slave-info>
+      </div>
+      <!-- /.container1-fluid -->
+    </div>
+  </div>
+  </div>
+  </div>
+  </div>
+
+  <div class="modal fade" id="passwordCheckModal" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Unfreeze Model</h5>
+          <button type="button" class="close"  aria-label="Close" (click)="onCloseModal('passwordCheckModal')" [disabled]="isModelFreezeUnfreezeAPILoading">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h6>Please Enter your password to unfreeze the modal.</h6>
+          <form>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label required">Email:</label>
+              <input type="text" class="form-control form-control-sm" id="email" name="email" [(ngModel)]="userData.email"
+                placeholder="Enter Email" disabled>
+            </div>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label required">Password:</label>
+              <input  type="{{this.isPasswordVisible ? 'text' : 'password'}}" class="form-control form-control-sm" id="display_name" name="display_name" [(ngModel)]="password"
+                placeholder="Enter Your Password">
+                <i class="fa fa-fw  field-icon-small toggle-password" (click)="togglePasswordVisibility()"
+                        [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}" ></i>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" (click)="unfreezeModel()" [disabled]="isModelFreezeUnfreezeAPILoading">
+            Unfreeze</button>
+          <button type="button" class="btn btn-white" (click)="onCloseModal('passwordCheckModal')" [disabled]="isModelFreezeUnfreezeAPILoading">
+            Cancel
+          </button>
+          <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></i>
+        </div>
+      </div>
+    </div>
+  </div>

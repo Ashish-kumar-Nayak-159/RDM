@@ -1,0 +1,86 @@
+<div class="table-responsive">
+  <div class="tableFixHead" >
+  <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAssetsAPILoading"></i>
+  <h6 *ngIf="assets.length === 0 && !isAssetsAPILoading"> No assets available.</h6>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <!-- <th class="text-center"><input type="checkbox" name="visibleall"
+          id="visibleall" (change)="onClickOfAssetAllCheckbox(app.app)" [(ngModel)]="isAllAssetSelected"
+          placement="bottom" [tooltip]="isAllAssetSelected ? 'Deselect All' : 'Select All'"/></th> -->
+        <th>Asset</th>
+        <th>App</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let asset of assets; let i = index">
+        <!-- <td  class="text-center">
+          <input type="checkbox" name="visible{{i}}"
+              id="visible{{i}}" (change)="onAssetSelection(asset, app.app)"
+              [checked]="checkForAssetVisibility(asset)" />
+        </td> -->
+        <td>
+            {{asset.display_name}}
+        </td>
+        <td>{{asset?.metadata?.package_app}}</td>
+        <td >
+          {{asset.appObj ? (
+            assetTwin.twin_properties.reported && assetTwin.twin_properties.reported[asset.appObj.type] &&
+             assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name]
+             && assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name].asset_configuration
+              && assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name].asset_configuration[asset.asset_id] ? 'Registered' : 'Not Registered') : 'Not Registered'}}
+          <!-- {{asset.metadata?.package_app && assetTwin.twin_properties.reported.registered_assets[asset.metadata.package_app] ? (assetTwin.twin_properties.reported?.registered_assets[asset?.metadata?.package_app]?.indexOf(asset.asset_id) > -1 ? 'Registered' : 'Not Registered') : 'Not Registered'}} -->
+        <td >
+          <a class=""
+            href="javascript:void(0)" tooltip="Register Asset"
+            (click)="registerAssets(asset)"
+            [class.disabled]="!asset.register_enabled"
+            ><i class="fa fa-link fa-sm "></i>
+          </a>
+          <a class="ml-2"
+            href="javascript:void(0)" tooltip="Deregister Asset"
+            (click)="deregisterAssets(asset)"
+            [class.disabled]="!asset.deregister_enabled"
+            ><i class="fa fa-unlink fa-sm "></i>
+          </a>
+        </td>
+
+      </tr>
+    </tbody>
+  </table>
+  </div></div>
+  <div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" style="z-index: 1400;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">{{headerMessage}}</h5>
+          <button type="button" class="close"  aria-label="Close"  (click)="onModalClose()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>
+          <ng-container *ngIf="displyaMsgArr.length > 0">
+            <ul>
+              <li *ngFor="let msg of displyaMsgArr; let last = last;">
+                {{msg.message}}
+                <i class="fa fa-check" style="color: green;" *ngIf="!msg.error"></i>
+                <i class="fa fa-times" style="color: red;" *ngIf="msg.error"></i>
+                </li>
+            </ul>
+          </ng-container>
+          <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAPILoading"></i>
+          </div>
+        </div>
+        <div class="modal-footer">
+
+          <button  type="button" class="btn btn-secondary" (click)="onModalClose()">
+            Close
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>

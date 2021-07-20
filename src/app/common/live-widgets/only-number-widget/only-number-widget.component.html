@@ -6,7 +6,7 @@
     </div>
 
     <div class="ml-auto">
-    <a *ngIf="!device && !chartConfig.freezed" class="" href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()"
+    <a *ngIf="!asset && !chartConfig.freezed" class="" href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()"
     placement="bottom" tooltip="Remove Widget"><i class="fa fa-close"></i></a>
   </div> -->
 
@@ -15,7 +15,7 @@
 <div class="card" id="{{chartConfig.chartId}}">
   <div class="card-header d-flex px-2">
     <div style="min-width: 0; flex:1"><h6 class="my-0 live-widget-title" placement="bottom" [tooltip]="chartConfig.widgetTitle"
-      [ngClass]="{'w-11': !device  && !chartConfig.freezed}">
+      [ngClass]="{'w-11': !asset  && !chartConfig.freezed}">
       {{chartConfig.widgetTitle}}
     </h6>
     </div>
@@ -23,7 +23,7 @@
     <div class="round-badge badge-darkblue" tooltip="Derived Property" *ngIf="chartConfig.derived_props">D</div>
     <div class="round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M</div>
 
-    <a *ngIf="!device && !chartConfig.freezed" href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()"
+    <a *ngIf="!asset && !chartConfig.freezed" href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()"
     placement="bottom" tooltip="Remove Widget"><i class="fa fa-close"></i></a>
 
 </div>
@@ -39,7 +39,7 @@
           {{prop.property.json_model[prop.property.json_key].units ? ('(' + prop.property.json_model[prop.property.json_key].units + ')') : ''}}
         </p>
 
-        <div class="live-overlay" *ngIf="!device">
+        <div class="live-overlay" *ngIf="!asset">
           <div style="font-family:'Arial Black'; font-size: 10px;">Sample Chart</div>
         </div>
 

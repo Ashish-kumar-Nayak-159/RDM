@@ -71,8 +71,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
               this.router.navigate(['applications', 'selection']);
             } else if (this.userData.apps && this.userData.apps.length === 1) {
               await this.getApplicationData(this.userData.apps[0]);
-              const menu = this.applicationData.configuration.main_menu.length > 0 ?
-              this.applicationData.configuration.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+              const menu = this.applicationData.menu_settings.main_menu.length > 0 ?
+              this.applicationData.menu_settings.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
               let i = 0;
               menu.forEach(menuObj => {
                 if ( i === 0 && menuObj.visible) {
@@ -128,19 +128,19 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
           this.applicationData = response;
           this.applicationData.app = app.app;
           this.applicationData.user = app.user;
-          if (this.applicationData.configuration.main_menu.length === 0) {
-            this.applicationData.configuration.main_menu = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+          if (this.applicationData.menu_settings.main_menu.length === 0) {
+            this.applicationData.menu_settings.main_menu = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
           }
-          if (this.applicationData.configuration.device_control_panel_menu.length === 0) {
-            this.applicationData.configuration.device_control_panel_menu =
+          if (this.applicationData.menu_settings.asset_control_panel_menu.length === 0) {
+            this.applicationData.menu_settings.asset_control_panel_menu =
             JSON.parse(JSON.stringify(CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST));
           }
-          if (this.applicationData.configuration.legacy_device_control_panel_menu.length === 0) {
-            this.applicationData.configuration.legacy_device_control_panel_menu =
+          if (this.applicationData.menu_settings.legacy_asset_control_panel_menu.length === 0) {
+            this.applicationData.menu_settings.legacy_asset_control_panel_menu =
             JSON.parse(JSON.stringify(CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST));
           }
-          if (this.applicationData.configuration.model_control_panel_menu.length === 0) {
-            this.applicationData.configuration.model_control_panel_menu =
+          if (this.applicationData.menu_settings.model_control_panel_menu.length === 0) {
+            this.applicationData.menu_settings.model_control_panel_menu =
             JSON.parse(JSON.stringify(CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST));
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);

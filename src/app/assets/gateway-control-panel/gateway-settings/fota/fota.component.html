@@ -1,0 +1,182 @@
+<i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isGetAPILoading"></i>
+<div class="table-responsive" *ngIf="!isGetAPILoading">
+  <div class="tableFixHead">
+    <div *ngIf="!assetTwin; else packageTemplate"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></div>
+    <ng-template #packageTemplate>
+      <ng-container *ngIf="assetPackages.length === 0">
+        <p class="m-3"> No Packages are added for this asset. Please add it first.</p>
+      </ng-container>
+      <ng-container *ngIf="currentAssetApps.length > 0">
+        <p class="m-3"> Currently, this asset is having below packages installed.</p>
+        <ul class="m-3">
+          <li *ngFor="let app of currentAssetApps"> {{app}} -
+            {{assetTwin.twin_properties.reported.installed_packages[app]}}</li>
+        </ul>
+      </ng-container>
+      <ng-container *ngIf="currentAssetApps.length === 0">
+        <p class="m-3">No packages are installed in this asset.</p>
+      </ng-container>
+      <ng-container *ngIf="assetPackages.length > 0">
+        <accordion [closeOthers]="'true'" class="mb-2 ml-3">
+          <accordion-group heading="" [panelClass]="'customClass'">
+            <ng-container accordion-heading>
+              <button class="btn" type="button" (click)="selectedAssetPackage = undefined">
+                Install Package
+              </button>
+            </ng-container>
+            <p class="" *ngIf="installPackages.length > 0">
+              <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mb-1 float-right"
+                href="javascript:void(0)" (click)="openConfirmDialog('Install')"
+                [class.disabled]="!selectedAssetPackage"><i class="fa fa- fa-sm text-white-50"></i> Install</a>
+            </p>
+
+            <table class="table table-hover">
+              <thead>
+                <th></th>
+                <th>App</th>
+                <th>Package</th>
+                <th>Version</th>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="installPackages.length > 0">
+                  <tr *ngFor="let package of installPackages; let i = index">
+                    <td><input type="checkbox" name="install" [checked]="selectedAssetPackage?.id === package.id"
+                        id="install{{i}}" (change)="onCheckboxChange($event, package)"
+                        [disabled]="!package.is_install" /></td>
+                    <td>{{package.name}}</td>
+                    <td>{{package.display_name}}</td>
+                    <td>{{package.version}}</td>
+                  </tr>
+                </ng-container>
+                <ng-container *ngIf="installPackages.length === 0">
+                  <tr>
+                    <td colspan="4">No packages are available to install.</td>
+                  </tr>
+                </ng-container>
+              </tbody>
+
+            </table>
+
+          </accordion-group>
+          <accordion-group heading="" [panelClass]="'customClass'">
+            <ng-container accordion-heading>
+              <button class="btn" type="button" (click)="selectedAssetPackage = undefined">
+                Upgrade/Downgrade Package
+              </button>
+            </ng-container>
+            <p class=" float-right" *ngIf="updatePackages.length > 0">
+              <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-2" href="javascript:void(0)"
+                (click)="openConfirmDialog('Upgrade')" [class.disabled]="!selectedAssetPackage"><i
+                  class="fa fa- fa-sm text-white-50"></i> Upgrade/Downgrade</a>
+
+            </p>
+            <div class="table-responsive table-wrapper" id="table-wrapper" style="max-height: 20rem;">
+
+              <table class="table table-hover">
+                <thead>
+                  <th></th>
+                  <th>App</th>
+                  <th>Package</th>
+                  <th>Version</th>
+                </thead>
+
+                <tbody>
+                  <ng-container *ngIf="updatePackages.length > 0">
+                    <tr *ngFor="let package of updatePackages; let i = index;">
+                      <td><input type="checkbox" name="visible{{i}}" (change)="onCheckboxChange($event, package)"
+                          id="visible{{i}}" [checked]="selectedAssetPackage?.id === package.id"
+                          [disabled]="!package.is_update" /></td>
+                      <td>{{package.name}}</td>
+                      <td>{{package.display_name}}</td>
+                      <td>{{package.version}}</td>
+                    </tr>
+                  </ng-container>
+                  <ng-container *ngIf="updatePackages.length === 0">
+                    <tr>
+                      <td colspan="4">No packages are available to upgrade/downgrade.</td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+
+              </table>
+            </div>
+          </accordion-group>
+          <accordion-group heading="" [panelClass]="'customClass'">
+            <ng-container accordion-heading>
+              <button class="btn" type="button" (click)="selectedAssetPackage = undefined">
+                Uninstall Package
+              </button>
+            </ng-container>
+            <p *ngIf="uninstallPackages.length > 0">
+              <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mb-1 float-right"
+                href="javascript:void(0)" (click)="openConfirmDialog('Uninstall')"
+                [class.disabled]="!selectedAssetPackage"><i class="fa fa- fa-sm text-white-50"></i> Uninstall</a>
+            </p>
+            <table class="table table-hover">
+              <thead>
+                <th></th>
+                <th>App</th>
+                <th>Package</th>
+                <th>Version</th>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="uninstallPackages.length > 0">
+                  <tr *ngFor="let package of uninstallPackages;let i = index;">
+                    <td><input type="checkbox" name="visible{{i}}" (change)="onCheckboxChange($event, package)"
+                        id="visible{{i}}" [checked]="selectedAssetPackage?.id === package.id"
+                        [disabled]="!package.is_uninstall" /></td>
+                    <td>{{package.name}}</td>
+                    <td>{{package.display_name}}</td>
+                    <td>{{package.version}}</td>
+                  </tr>
+                </ng-container>
+                <ng-container *ngIf="uninstallPackages.length === 0">
+                  <tr>
+                    <td colspan="4">No packages are available to uninstall.</td>
+                  </tr>
+                </ng-container>
+              </tbody>
+
+            </table>
+          </accordion-group>
+        </accordion>
+      </ng-container>
+    </ng-template>
+
+  </div>
+</div>
+
+<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" style="z-index: 1400;">
+  <div class="modal-dialog" role="document">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{confirmHeaderMessage}}</h5>
+        <button type="button" class="close"  aria-label="Close"  (click)="onModalEvents('close')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+        <ng-container *ngIf="modalConfig?.stringDisplay && displyaMsgArr.length === 0">{{confirmBodyMessage}}<i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAPILoading"></i></ng-container>
+        <ng-container *ngIf="displyaMsgArr.length > 0">
+          <ul>
+            <li *ngFor="let msg of displyaMsgArr; let last = last;">
+              {{msg.message}} <i class="fa fa-check" style="color: green;" *ngIf="!msg.error"></i> <i class="fa fa-times" style="color: red;" *ngIf="msg.error"></i>
+              <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAPILoading && last"></i></li>
+          </ul>
+        </ng-container>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button *ngIf="modalConfig?.isDisplaySave" type="button" class="btn btn-primary" (click)="onModalEvents('save')">
+          {{modalConfig?.saveBtnText ? modalConfig?.saveBtnText : 'Save'}}</button>
+        <button *ngIf="modalConfig?.isDisplayCancel" type="button" class="btn btn-secondary" (click)="onModalEvents('close')">
+          {{modalConfig?.cancelBtnText ? modalConfig?.cancelBtnText : 'Cancel'}}
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

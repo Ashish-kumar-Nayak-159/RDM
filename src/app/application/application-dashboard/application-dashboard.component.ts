@@ -1,4 +1,4 @@
-import { DeviceService } from './../../services/devices/device.service';
+import { AssetService } from './../../services/assets/asset.service';
 import { Component, OnInit, ElementRef, ViewChildren, OnDestroy, AfterViewInit } from '@angular/core';
 import { ApplicationService } from './../../services/application/application.service';
 import { ApplicationDashboardSnapshot, Alert, Event, Notification } from 'src/app/models/applicationDashboard.model';
@@ -67,13 +67,13 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
   previousInfoWindow: any;
   centerLatitude: any;
   centerLongitude: any;
-  devices: any[] = [];
+  assets: any[] = [];
   constructor(
     private applicationService: ApplicationService,
     private router: Router,
     private commonService: CommonService,
     private route: ActivatedRoute,
-    private deviceService: DeviceService
+    private assetService: AssetService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -105,11 +105,11 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
       this.getLastAlertData();
       this.getLastEventData();
     }));
-    await this.getAllDevices();
-    const center = this.commonService.averageGeolocation(this.devices);
+    await this.getAllAssets();
+    const center = this.commonService.averageGeolocation(this.assets);
     this.centerLatitude = center?.latitude || 23.0225;
     this.centerLongitude = center?.longitude || 72.5714;
-    this.devices.forEach(marker => {
+    this.assets.forEach(marker => {
       const mtbfHours = this.commonService.randomIntFromInterval(0, 7);
       const mtbfMinutes = this.commonService.randomIntFromInterval(10, 59);
       if (mtbfHours > 0) {
@@ -130,7 +130,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
 
   getTileName(type) {
     let name;
-    this.contextApp.configuration.main_menu.forEach(item => {
+    this.contextApp.menu_settings.main_menu.forEach(item => {
       if (item.system_name === type) {
         name = item.display_name;
       }
@@ -138,15 +138,15 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     return name;
   }
 
-  getAllDevices() {
+  getAllAssets() {
     return new Promise<void>((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(this.contextApp.user.hierarchy)
       };
-      this.apiSubscriptions.push(this.deviceService.getAllGatewaysAndDevicesList(obj, this.contextApp.app).subscribe(
+      this.apiSubscriptions.push(this.assetService.getAllGatewaysAndAssetsList(obj, this.contextApp.app).subscribe(
         (response: any) => {
           if (response?.data) {
-            this.devices = response.data;
+            this.assets = response.data;
           }
           resolve();
         }
@@ -240,7 +240,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
       from_date: ((((moment().hour(0)).minute(0)).second(0)).utc()).unix(),
       to_date: (moment().utc()).unix()
     };
-    this.apiSubscriptions.push(this.applicationService.getDeviceLifeCycleEvents(obj)
+    this.apiSubscriptions.push(this.applicationService.getAssetLifeCycleEvents(obj)
     .subscribe(
       (response: any) => {
         if (response.data) {
@@ -248,8 +248,8 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
           this.lastGeneratedEvents.forEach(event => {
             event.time_diff = this.calculateTimeDifference(event.created_date);
             const eventMsg = event.event_type.split('.');
-            eventMsg[eventMsg.length - 1] = eventMsg[eventMsg.length - 1].replace('Device', '');
-            eventMsg[eventMsg.length - 1] = (event.category === CONSTANTS.IP_GATEWAY ? 'Gateway ' : 'Device ' ) +
+            eventMsg[eventMsg.length - 1] = eventMsg[eventMsg.length - 1].replace('Asset', '');
+            eventMsg[eventMsg.length - 1] = (event.category === CONSTANTS.IP_GATEWAY ? 'Gateway ' : 'Asset ' ) +
             eventMsg[eventMsg.length - 1];
             event.event_type = eventMsg[eventMsg.length - 1];
           });
@@ -279,7 +279,7 @@ export class ApplicationDashboardComponent implements OnInit, OnDestroy {
     return timeString;
   }
 
-  redirectToDevice(type?: string) {
+  redirectToAsset(type?: string) {
     const fromValue = CONSTANTS.IP_GATEWAY;
     let obj;
     if (type || fromValue) {

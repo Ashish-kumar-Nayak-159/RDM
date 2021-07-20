@@ -45,7 +45,7 @@
               </tr>
             </tfoot>
             <tbody>
-              <ng-container *ngFor="let item of applicationData?.configuration.main_menu; let configIndex = index">
+              <ng-container *ngFor="let item of applicationData?.menu_settings.main_menu; let configIndex = index">
               <tr >
                 <td>
                   <ng-container *ngIf="item.showAccordion?.length > 0">
@@ -120,7 +120,7 @@
               </tr>
             </tfoot>
             <tbody>
-              <ng-container *ngFor="let item of applicationData?.configuration?.device_control_panel_menu; let configIndex = index">
+              <ng-container *ngFor="let item of applicationData?.menu_settings?.asset_control_panel_menu; let configIndex = index">
                 <tr *ngIf="!item.isTitle">
                   <td>
                     <ng-container *ngIf="item.showAccordion?.length > 0">
@@ -190,7 +190,7 @@
               </tr>
             </tfoot>
             <tbody>
-              <ng-container *ngFor="let item of applicationData?.configuration?.legacy_device_control_panel_menu; let configIndex = index">
+              <ng-container *ngFor="let item of applicationData?.menu_settings?.legacy_asset_control_panel_menu; let configIndex = index">
                 <tr *ngIf="!item.isTitle">
                   <td>
                     <ng-container *ngIf="item.showAccordion?.length > 0">
@@ -258,7 +258,7 @@
               </tr>
             </tfoot>
             <tbody>
-              <ng-container *ngFor="let item of applicationData?.configuration?.gateway_control_panel_menu; let configIndex = index">
+              <ng-container *ngFor="let item of applicationData?.menu_settings?.gateway_control_panel_menu; let configIndex = index">
                 <tr *ngIf="!item.isTitle">
                   <td>
                     <ng-container *ngIf="item.showAccordion?.length > 0">
@@ -326,7 +326,7 @@
               </tr>
             </tfoot>
             <tbody>
-              <ng-container *ngFor="let item of applicationData?.configuration?.model_control_panel_menu; let configIndex = index">
+              <ng-container *ngFor="let item of applicationData?.menu_settings?.model_control_panel_menu; let configIndex = index">
                 <tr *ngIf="!item.isTitle">
                   <td>{{item.system_name}}</td>
                   <td><input type="text" class="form-control form-control-sm" name="display_name_asset_type{{configIndex}}" id="display_name_asset_type{{configIndex}}"

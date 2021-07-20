@@ -1,14 +1,14 @@
 import { SignalRService } from './../../services/signalR/signal-r.service';
 import { ToasterService } from './../../services/toaster.service';
 import { Subscription } from 'rxjs';
-import { DeviceTypeService } from './../../services/device-type/device-type.service';
+import { AssetModelService } from './../../services/asset-model/asset-model.service';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from './../../services/common.service';
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
-import { DeviceService } from 'src/app/services/devices/device.service';
+import { AssetService } from 'src/app/services/assets/asset.service';
 
 @Component({
   selector: 'app-application-selection',
@@ -29,8 +29,8 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private router: Router,
     private applicationService: ApplicationService,
-    private deviceService: DeviceService,
-    private deviceTypeService: DeviceTypeService,
+    private assetService: AssetService,
+    private assetModelService: AssetModelService,
     private toasterService: ToasterService,
     private signalRService: SignalRService
   ) { }
@@ -68,12 +68,12 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     }
     localStorage.setItem(CONSTANTS.APP_TOKEN, app.token);
     await this.getApplicationData(app);
-    // await this.getDevices(this.applicationData.user.hierarchy);
-    // await this.getDeviceModels(this.applicationData.user.hierarchy);
+    // await this.getAssets(this.applicationData.user.hierarchy);
+    // await this.getAssetModels(this.applicationData.user.hierarchy);
     this.commonService.refreshSideMenuData.emit(this.applicationData);
     this.router.navigate(['applications', this.applicationData.app]);
-    // const menu = this.applicationData.configuration.main_menu.length > 0 ?
-    // this.applicationData.configuration.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+    // const menu = this.applicationData.menu_settings.main_menu.length > 0 ?
+    // this.applicationData.menu_settings.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
     // let i = 0;
     // menu.forEach(menuObj => {
     //   if (menuObj.page === 'Things Modelling' && this.applicationData.user.role === CONSTANTS.APP_ADMIN_ROLE) {
@@ -95,13 +95,13 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     this.isAppDataLoading = undefined;
   }
 
-  getDevices(hierarchy) {
+  getAssets(hierarchy) {
     return new Promise((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
       };
-      this.apiSubscriptions.push(this.deviceService.getIPAndLegacyDevices(obj, this.applicationData.app).subscribe(
+      this.apiSubscriptions.push(this.assetService.getIPAndLegacyAssets(obj, this.applicationData.app).subscribe(
         (response: any) => {
           if (response?.data) {
             this.commonService.setItemInLocalStorage(CONSTANTS.DEVICES_LIST, response.data);
@@ -112,13 +112,13 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     });
   }
 
-  getDeviceModels(hierarchy) {
+  getAssetModels(hierarchy) {
     return new Promise((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
         app: this.applicationData.app
       };
-      this.apiSubscriptions.push(this.deviceTypeService.getThingsModelsList(obj).subscribe(
+      this.apiSubscriptions.push(this.assetModelService.getThingsModelsList(obj).subscribe(
         (response: any) => {
           if (response?.data) {
             this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_MODELS_LIST, response.data);
@@ -137,24 +137,24 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
           this.applicationData = response;
           this.applicationData.app = app.app;
           this.applicationData.user = app.user;
-          if (!this.applicationData.configuration.main_menu || this.applicationData.configuration.main_menu.length === 0) {
-            this.applicationData.configuration.main_menu = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+          if (!this.applicationData.menu_settings.main_menu || this.applicationData.menu_settings.main_menu.length === 0) {
+            this.applicationData.menu_settings.main_menu = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
           } else {
             this.processAppMenuData();
           }
-          if (!this.applicationData.configuration.device_control_panel_menu ||
-            this.applicationData.configuration.device_control_panel_menu.length === 0) {
-            this.applicationData.configuration.device_control_panel_menu =
+          if (!this.applicationData.menu_settings.asset_control_panel_menu ||
+            this.applicationData.menu_settings.asset_control_panel_menu.length === 0) {
+            this.applicationData.menu_settings.asset_control_panel_menu =
             JSON.parse(JSON.stringify(CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST));
           }
-          if (!this.applicationData.configuration.legacy_device_control_panel_menu ||
-            this.applicationData.configuration.legacy_device_control_panel_menu.length === 0) {
-            this.applicationData.configuration.legacy_device_control_panel_menu =
+          if (!this.applicationData.menu_settings.legacy_asset_control_panel_menu ||
+            this.applicationData.menu_settings.legacy_asset_control_panel_menu.length === 0) {
+            this.applicationData.menu_settings.legacy_asset_control_panel_menu =
             JSON.parse(JSON.stringify(CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST));
           }
-          if (this.applicationData.configuration.model_control_panel_menu ||
-            this.applicationData.configuration.model_control_panel_menu.length === 0) {
-            this.applicationData.configuration.model_control_panel_menu =
+          if (this.applicationData.menu_settings.model_control_panel_menu ||
+            this.applicationData.menu_settings.model_control_panel_menu.length === 0) {
+            this.applicationData.menu_settings.model_control_panel_menu =
             JSON.parse(JSON.stringify(CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST));
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
@@ -178,10 +178,10 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       if (!this.userData?.is_super_admin) {
       const data = [];
       const arr = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
-      if (this.applicationData.configuration?.main_menu?.length > 0) {
+      if (this.applicationData.menu_settings?.main_menu?.length > 0) {
         arr.forEach(config => {
           let found = false;
-          this.applicationData.configuration.main_menu.forEach(item => {
+          this.applicationData.menu_settings.main_menu.forEach(item => {
             if (config.page === item.page) {
               found = true;
               config.display_name = item.display_name;
@@ -195,7 +195,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
           }
         });
       }
-      this.applicationData.configuration.main_menu = JSON.parse(JSON.stringify(data));
+      this.applicationData.menu_settings.main_menu = JSON.parse(JSON.stringify(data));
       }
       }
   }

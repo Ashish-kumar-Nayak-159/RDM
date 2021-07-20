@@ -33,7 +33,7 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
   headerMessage: string;
   chartStartdate: any;
   chartEnddate: any;
-  device: any;
+  asset: any;
   chartDataFields: any;
   subscriptions: Subscription[] = [];
   hideCancelButton = false;
@@ -155,9 +155,9 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
     chart.exporting.getFormatOptions('pdf').addURL = false;
     chart.exporting.dateFormat = 'dd-MM-yyyy HH:mm:ss.nnn';
     if (this.selectedAlert) {
-      chart.exporting.filePrefix = this.selectedAlert.device_id + '_Alert_' + this.selectedAlert.local_created_date;
+      chart.exporting.filePrefix = this.selectedAlert.asset_id + '_Alert_' + this.selectedAlert.local_created_date;
     } else {
-      chart.exporting.filePrefix = this.device.device_id + '_' + chart.data[0].message_date.toString()
+      chart.exporting.filePrefix = this.asset.asset_id + '_' + chart.data[0].message_date.toString()
       + '_' + chart.data[chart.data.length - 1].message_date.toString();
     }
     chart.cursor = new am4charts.XYCursor();

@@ -153,8 +153,8 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   redirectToFirstMenu() {
-    const menu = this.contextApp.configuration.main_menu.length > 0 ?
-    this.contextApp.configuration.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+    const menu = this.contextApp.menu_settings.main_menu.length > 0 ?
+    this.contextApp.menu_settings.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
     let i = 0;
     menu.forEach(menuObj => {
       if ( i === 0 && menuObj.visible) {

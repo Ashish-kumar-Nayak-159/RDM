@@ -19,7 +19,7 @@
         <div class="col-lg-6 col-md-3 col-sm-3 col-6 mb-4">
           <div class="card border-left-secondary shadow h-100">
             <div class="card-body">
-              <a href="javascript:void(0)" (click)="redirectToDevice()"
+              <a href="javascript:void(0)" (click)="redirectToAsset()"
                 ><div class="text-center">
                   <img
                     class="img-fluid px-2 mt-2 mb-3 img-szsm"
@@ -34,7 +34,7 @@
                     class="fa fa-spinner fa-spin fa-fw"
                   ></i>
                   <span *ngIf="!isDashboardSnapshotLoading">{{
-                    dashboardSnapshot?.device_count
+                    dashboardSnapshot?.asset_count
                   }}</span>
                 </div>
                 <div class="text-black-50 text-center small">{{tileName}}</div
@@ -48,7 +48,7 @@
             <div class="card-body">
               <a
                 href="javascript:void(0)"
-                (click)="redirectToDevice('Connected')"
+                (click)="redirectToAsset('Connected')"
                 ><div class="text-center">
                   <img
                     class="img-fluid px-2 mt-2 mb-3 img-szsm"
@@ -63,7 +63,7 @@
                     class="fa fa-spinner fa-spin fa-fw"
                   ></i>
                   <span *ngIf="!isDashboardSnapshotLoading">{{
-                    dashboardSnapshot?.connected_device_count
+                    dashboardSnapshot?.connected_asset_count
                   }}</span>
                 </div>
                 <div class="text-black-50 text-center small">Online</div></a
@@ -77,7 +77,7 @@
             <div class="card-body">
               <a
                 href="javascript:void(0)"
-                (click)="redirectToDevice('Disconnected')"
+                (click)="redirectToAsset('Disconnected')"
                 ><div class="text-center">
                   <img
                     class="img-fluid px-2 mt-2 mb-3 img-szsm"
@@ -92,7 +92,7 @@
                     class="fa fa-spinner fa-spin fa-fw"
                   ></i>
                   <span *ngIf="!isDashboardSnapshotLoading">{{
-                    dashboardSnapshot?.disconnected_device_count
+                    dashboardSnapshot?.disconnected_asset_count
                   }}</span>
                 </div>
                 <div class="text-black-50 text-center small">
@@ -158,15 +158,15 @@
                 <!-- <img class="img-fluid" src="../../../assets/img/chart.png" style="height: 20rem;"> -->
                 <agm-map #gm [latitude]="centerLatitude" [longitude]="centerLongitude" [fitBounds]="true">
                   <agm-marker-cluster imagePath="https://raw.githubusercontent.com/googlemaps/v3-utility-library/master/markerclustererplus/images/m">
-                <ng-container  *ngFor="let device of devices; let i = index; ">
-                  <agm-marker *ngIf="device.latitude && device.longitude" [agmFitBounds]="true"
-                  [latitude]="device.latitude" [longitude]="device.longitude"
+                <ng-container  *ngFor="let asset of assets; let i = index; ">
+                  <agm-marker *ngIf="asset.latitude && asset.longitude" [agmFitBounds]="true"
+                  [latitude]="asset.latitude" [longitude]="asset.longitude"
                   (mouseOver)="onMarkerClick(infowindow, gm)" (mouseOut)="onMarkerMouseOut(infowindow, gm)" >
                   <agm-info-window #infowindow [disableAutoPan]="false">
-                    <h6>{{device.display_name ? device.display_name: device.device_id}}</h6>
+                    <h6>{{asset.display_name ? asset.display_name: asset.asset_id}}</h6>
                     <!-- <hr>
-                    <p><b>MTTR:</b> {{device.mttr}}</p>
-                    <p><b>MTBF:</b> {{device.mtbf}}</p> -->
+                    <p><b>MTTR:</b> {{asset.mttr}}</p>
+                    <p><b>MTBF:</b> {{asset.mtbf}}</p> -->
                   </agm-info-window>
                   </agm-marker>
                 </ng-container>
@@ -243,8 +243,8 @@
               "
             >
               <li *ngFor="let notification of lastGeneratedNotifications">
-                <div class="device-name-text">
-                  {{ notification.device_display_name ? notification.device_display_name : notification.device_id }}
+                <div class="asset-name-text">
+                  {{ notification.asset_display_name ? notification.asset_display_name : notification.asset_id }}
                   | {{ notification.time_diff }}
                 </div>
                 <p>{{ notification.message }}</p>
@@ -287,8 +287,8 @@
               *ngIf="!isLastAlertDataLoading && lastGeneratedAlerts.length > 0"
             >
               <li *ngFor="let alert of lastGeneratedAlerts">
-                <div class="device-name-text">
-                  {{ alert.device_display_name ? alert.device_display_name : alert.device_id }}
+                <div class="asset-name-text">
+                  {{ alert.asset_display_name ? alert.asset_display_name : alert.asset_id }}
                    | {{ alert.time_diff }}
                 </div>
                 <p>{{ alert.message }}</p>
@@ -311,7 +311,7 @@
       <div class="card shadow mb-4">
         <div class="card-header py-3">
           <h6 class="m-0 font-weight-bold text-primary">
-            Device Life Cycle Events
+            Asset Life Cycle Events
             <span class="float-right">
               <a class="watch-eye" [routerLink]="['events']"
                 ><i class="fa fa-eye" aria-hidden="true"></i
@@ -330,7 +330,7 @@
               *ngIf="!isLastEventDataLoading && lastGeneratedEvents.length > 0"
             >
               <li *ngFor="let event of lastGeneratedEvents">
-                <div class="device-name-text">
+                <div class="asset-name-text">
                   {{ event.display_name }} | {{ event.time_diff }}
                 </div>
                 <p>{{ event.event_type }}</p>
@@ -341,7 +341,7 @@
                 !isLastEventDataLoading && lastGeneratedEvents.length === 0
               "
             >
-              No Device Lifecycle events found.
+              No Asset Lifecycle events found.
             </div>
           </div>
         </div>

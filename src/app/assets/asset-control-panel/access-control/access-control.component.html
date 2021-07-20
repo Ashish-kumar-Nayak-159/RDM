@@ -1,0 +1,153 @@
+<div class="tab-bar">
+  <div class="">
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Access Control')"
+        [ngClass]="{'active': selectedTab === 'Access Control'}">
+          <i class="fa fa-fw fa-users"></i>
+          <span class="text-secondary">Access Control</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Email Recipients')"
+        [ngClass]="{'active': selectedTab === 'Email Recipients'}">
+          <i class="fa fa-fw fa-envelope"></i>
+          <span class="text-secondary">Email Recipients</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)" (click)="openAddUserModal()">
+          <i class="fa fa-fw fa-plus"></i>
+          <span class="text-secondary">Add Email Recipient</span></a>
+      </li>
+       </ul>
+</div>
+</div>
+
+<div class="table-responsive">
+  <div class="tableFixHead" >
+    <ng-container *ngIf="selectedTab === 'Email Recipients'">
+    <table class="table table-hover" cellspacing="0" width="100%" >
+      <thead >
+        <tr>
+          <th class="sticky-top">No</th>
+          <th>Email</th>
+          <th>Name</th>
+          <th>Role</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of assetUsers;let i = index">
+          <td>{{i + 1}}</td>
+          <td>{{user.user_email}}</td>
+          <td>{{user.user_name}}</td>
+          <td>{{user?.role || 'NA'}}</td>
+          <td>
+            <a href="javascript:void(0)" (click)="openConfirmModal(user)" class="mr-1"
+              placement="bottom" tooltip="Delete User Access">
+                <i class="fa fa-fw fa-trash" ></i>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    </ng-container>
+    <ng-container *ngIf="selectedTab === 'Access Control'">
+      <div class="row m-3">
+        Following users are having access of this asset.
+        <table class="table table-hover" cellspacing="0" width="100%" >
+          <thead >
+            <tr>
+              <th class="sticky-top">No</th>
+              <th>Email</th>
+              <th>Name</th>
+              <th>Role</th>
+              <!-- <th>Action</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="assetAccessUsers.length > 0">
+            <tr *ngFor="let user of assetAccessUsers;let i = index">
+              <td>{{i + 1}}</td>
+              <td>{{user.user_email}}</td>
+              <td>{{user.user_name}}</td>
+              <td>{{user?.role || 'NA'}}</td>
+              <!-- <td>
+                <a href="javascript:void(0)" (click)="openConfirmModal(user)" class="mr-1"
+                  placement="bottom" tooltip="Delete User Access">
+                    <i class="fa fa-fw fa-trash" ></i>
+                </a>
+              </td> -->
+            </tr>
+            </ng-container>
+            <tr *ngIf="assetAccessUsers.length === 0">
+              <td colspan="4">No users have access of this asset.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+</div>
+</div>
+
+<div class="modal right fade" id="userAccessAddModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" *ngIf="isAddUserModalOpen">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Access Control</h5>
+      <button type="button" class="close" (click)="onModalClose()" aria-label="Close" [disabled]="isUpdateAPILoading">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="form-group">
+          <label for="recipient-name" class="col-form-label">User:</label>
+          <select class="form-control form-control-sm" id="user" name="user" [(ngModel)]="selectedUser">
+            <option [ngValue]="{}">Select User</option>
+            <option *ngFor="let user of appUsers" [ngValue]="user">{{user.user_name}} ({{user.user_email}})</option>
+          </select>
+        </div>
+        <label for="or" >OR</label>
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">User Name:</label>
+          <input type="text" class="form-control form-control-sm" id="name"  name="name" [(ngModel)]="selectedUser.user_name" placeholder="Enter user name">
+        </div>
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">User Email:</label>
+          <input type="text" class="form-control form-control-sm" id="email" name="email" [(ngModel)]="selectedUser.user_email" placeholder="Enter email address">
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary add-row" [disabled]="isUpdateAPILoading" (click)="onAddUserAccess()">Save</button>
+      <button type="button" class="btn btn-secondary" [disabled]="isUpdateAPILoading" (click)="onModalClose()">Cancel</button>
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUpdateAPILoading"></i>
+    </div>
+  </div>
+  </div>
+</div>
+
+<div class="modal fade" id="confirmMessageModal" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Remove User Access</h5>
+        <button type="button" class="close"  aria-label="Close" [disabled]="isUpdateAPILoading" (click)="onCloseConfirmModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to remove this user's access?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" [disabled]="isUpdateAPILoading" (click)="removeUserAccess()">
+          Ok</button>
+        <button type="button" class="btn btn-secondary" [disabled]="isUpdateAPILoading" (click)="onCloseConfirmModal()">
+          Cancel
+        </button>
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUpdateAPILoading"></i>
+      </div>
+    </div>
+
+  </div>
+</div>

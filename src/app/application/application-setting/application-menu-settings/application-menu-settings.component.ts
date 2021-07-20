@@ -28,14 +28,14 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
-    // this.applicationData.configuration = {};
-    if (this.applicationData?.configuration?.device_control_panel_menu?.length === 0) {
-      this.applicationData.configuration.device_control_panel_menu = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
+    // this.applicationData.menu_settings = {};
+    if (this.applicationData?.menu_settings?.asset_control_panel_menu?.length === 0) {
+      this.applicationData.menu_settings.asset_control_panel_menu = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
     } else {
       const arr = [];
       CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST.forEach(item => {
         let flag = false;
-        this.applicationData.configuration.device_control_panel_menu.forEach(menu => {
+        this.applicationData.menu_settings.asset_control_panel_menu.forEach(menu => {
           if (menu.system_name === item.system_name) {
             flag = true;
             item.display_name = menu.display_name;
@@ -47,15 +47,15 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
           arr.push(item);
         }
       });
-      this.applicationData.configuration.device_control_panel_menu = [...arr];
+      this.applicationData.menu_settings.asset_control_panel_menu = [...arr];
     }
-    if (this.applicationData?.configuration?.legacy_device_control_panel_menu?.length === 0) {
-      this.applicationData.configuration.legacy_device_control_panel_menu = CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
+    if (this.applicationData?.menu_settings?.legacy_asset_control_panel_menu?.length === 0) {
+      this.applicationData.menu_settings.legacy_asset_control_panel_menu = CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
     } else {
       const arr = [];
       CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST.forEach(item => {
         let flag = false;
-        this.applicationData.configuration.legacy_device_control_panel_menu.forEach(menu => {
+        this.applicationData.menu_settings.legacy_asset_control_panel_menu.forEach(menu => {
           if (menu.system_name === item.system_name) {
             flag = true;
             item.display_name = menu.display_name;
@@ -68,18 +68,18 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
         }
       });
       console.log(arr);
-      this.applicationData.configuration.legacy_device_control_panel_menu = [...arr];
+      this.applicationData.menu_settings.legacy_asset_control_panel_menu = [...arr];
     }
-    if (this.applicationData?.configuration?.gateway_control_panel_menu?.length === 0) {
-      this.applicationData.configuration.gateway_control_panel_menu = CONSTANTS.GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST;
+    if (this.applicationData?.menu_settings?.gateway_control_panel_menu?.length === 0) {
+      this.applicationData.menu_settings.gateway_control_panel_menu = CONSTANTS.GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST;
     } else {
       const arr = [];
       CONSTANTS.GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST.forEach(item => {
         let flag = false;
-        if (!this.applicationData.configuration.gateway_control_panel_menu) {
-          this.applicationData.configuration.gateway_control_panel_menu = [];
+        if (!this.applicationData.menu_settings.gateway_control_panel_menu) {
+          this.applicationData.menu_settings.gateway_control_panel_menu = [];
         }
-        this.applicationData.configuration.gateway_control_panel_menu.forEach(menu => {
+        this.applicationData.menu_settings.gateway_control_panel_menu.forEach(menu => {
           if (menu.system_name === item.system_name) {
             flag = true;
             item.display_name = menu.display_name;
@@ -91,15 +91,15 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
           arr.push(item);
         }
       });
-      this.applicationData.configuration.gateway_control_panel_menu = [...arr];
+      this.applicationData.menu_settings.gateway_control_panel_menu = [...arr];
     }
-    if (this.applicationData?.configuration?.model_control_panel_menu?.length === 0) {
-      this.applicationData.configuration.model_control_panel_menu = CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST;
+    if (this.applicationData?.menu_settings?.model_control_panel_menu?.length === 0) {
+      this.applicationData.menu_settings.model_control_panel_menu = CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST;
     } else {
       const arr = [];
       CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST.forEach(item => {
         let flag = false;
-        this.applicationData.configuration.model_control_panel_menu.forEach(menu => {
+        this.applicationData.menu_settings.model_control_panel_menu.forEach(menu => {
           if (menu.system_name === item.system_name) {
             flag = true;
             item.display_name = menu.display_name;
@@ -111,15 +111,15 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
           arr.push(item);
         }
       });
-      this.applicationData.configuration.model_control_panel_menu = [...arr];
+      this.applicationData.menu_settings.model_control_panel_menu = [...arr];
     }
-    if (this.applicationData.configuration?.main_menu?.length === 0) {
-      this.applicationData.configuration.main_menu = this.sideMenuList;
+    if (this.applicationData.menu_settings?.main_menu?.length === 0) {
+      this.applicationData.menu_settings.main_menu = this.sideMenuList;
     } else {
       const arr = [];
       this.sideMenuList.forEach(item => {
         let flag = false;
-        this.applicationData.configuration.main_menu.forEach(menu => {
+        this.applicationData.menu_settings.main_menu.forEach(menu => {
           if (menu.page === item.page) {
             flag = true;
             item.display_name = menu.display_name;
@@ -140,14 +140,14 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
           arr.push(item);
         }
       });
-      this.applicationData.configuration.main_menu = [...arr];
+      this.applicationData.menu_settings.main_menu = [...arr];
     }
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
 
   }
   // onChangeOfVisibilityCheckbox(index) {
   //   alert('here');
-  //   this.applicationData.configuration[index].visible = !this.applicationData.configuration[index].visible;
+  //   this.applicationData.menu_settings[index].visible = !this.applicationData.menu_settings[index].visible;
   // }
 
   onToggleRows(i) {
@@ -167,14 +167,14 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
     this.saveMenuSettingAPILoading = true;
     this.applicationData.id = this.applicationData.app;
     this.sideMenuList.forEach(item => {
-      this.applicationData.configuration.main_menu.forEach(config => {
+      this.applicationData.menu_settings.main_menu.forEach(config => {
         if (item.system_name === config.system_name) {
           item.display_name = config.display_name;
           item.visible = config.visible;
         }
       });
     });
-    this.applicationData.configuration.main_menu = [...this.sideMenuList];
+    this.applicationData.menu_settings.main_menu = [...this.sideMenuList];
     this.apiSubscriptions.push(this.applicationService.updateApp(this.applicationData).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Save Menu Settings');

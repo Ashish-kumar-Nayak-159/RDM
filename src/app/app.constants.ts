@@ -20,13 +20,13 @@ export class CONSTANTS {
   ];
 
   public static PROTOCOLS = [
-    {id: 1, asset_type: 'IoT Device', name: 'IP Device (WiFi)', display_name: 'IP Device (WiFi)', cloud_connectivity: ['IP Device -> Azure IOT Hub SDK -> WiFi -> Cloud', 'IP Device -> MQTT Client -> WiFi -> Cloud'], metadata: {}, deleted: false},
-    {id: 2, asset_type: 'IoT Device', name: 'IP Device (SIM)', display_name: 'IP Device (SIM)', cloud_connectivity: ['IP Device -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Device -> MQTT Client -> SIM -> Cloud'], metadata: {}, deleted: false},
+    {id: 1, asset_type: 'IoT Asset', name: 'IP Asset (WiFi)', display_name: 'IP Asset (WiFi)', cloud_connectivity: ['IP Asset -> Azure IOT Hub SDK -> WiFi -> Cloud', 'IP Asset -> MQTT Client -> WiFi -> Cloud'], metadata: {}, deleted: false},
+    {id: 2, asset_type: 'IoT Asset', name: 'IP Asset (SIM)', display_name: 'IP Asset (SIM)', cloud_connectivity: ['IP Asset -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Asset -> MQTT Client -> SIM -> Cloud'], metadata: {}, deleted: false},
     {id: 3, asset_type: 'IoT Gateway', name: 'IP Gateway (WiFi)', display_name: 'IP Gateway (WiFi)', cloud_connectivity: ['IP Gateway -> Azure IOT Hub SDK -> WiFi -> Cloud', 'IP Gateway -> MQTT Client -> WiFi -> Cloud'], metadata: {}, deleted: false},
     {id: 4, asset_type: 'IoT Gateway', name: 'IP Gateway (SIM)', display_name: 'IP Gateway (SIM)', cloud_connectivity: ['IP Gateway -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Gateway -> MQTT Client -> SIM -> Cloud'], metadata: {}, deleted: false},
-    {id: 5, asset_type: 'Legacy Device', name: 'ModbusTCPMaster', display_name: 'Modbus TCP', cloud_connectivity: ['ModBus TCP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusTCPMaster'}, deleted: false},
-    {id: 6, asset_type: 'Legacy Device', name: 'ModbusRTUMaster', display_name: 'Modbus RTU', cloud_connectivity: ['ModBus RTU Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusRTUMaster'}, deleted: false},
-    {id: 7, asset_type: 'Legacy Device', name: 'SiemensTCPIP', display_name: 'Siemens TCP/IP', cloud_connectivity: ['Siemens TCP/IP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'SiemensTCPIP'}, deleted: false}
+    {id: 5, asset_type: 'Legacy Asset', name: 'ModbusTCPMaster', display_name: 'Modbus TCP', cloud_connectivity: ['ModBus TCP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusTCPMaster'}, deleted: false},
+    {id: 6, asset_type: 'Legacy Asset', name: 'ModbusRTUMaster', display_name: 'Modbus RTU', cloud_connectivity: ['ModBus RTU Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusRTUMaster'}, deleted: false},
+    {id: 7, asset_type: 'Legacy Asset', name: 'SiemensTCPIP', display_name: 'Siemens TCP/IP', cloud_connectivity: ['Siemens TCP/IP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'SiemensTCPIP'}, deleted: false}
   ];
 
   public static NON_IP_DEVICE_OPTIONS = [
@@ -100,7 +100,7 @@ export class CONSTANTS {
     {
       page: 'Assets',
       system_name: 'Assets',
-      url: 'applications/:appName/devices',
+      url: 'applications/:appName/assets',
       display_name: 'Assets',
       exactMatch: false,
       icon: 'fab fa-fw fa-mixcloud',
@@ -255,7 +255,7 @@ export class CONSTANTS {
     {
       page: 'overview',
       system_name: 'Overview',
-      url: '#device_overview',
+      url: '#asset_overview',
       display_name: 'Overview',
       icon: 'fa fa-fw fa-life-ring',
       visible: true,
@@ -267,7 +267,7 @@ export class CONSTANTS {
     {
       page: 'access_control',
       system_name: 'Access Control',
-      url: '#device_access_control',
+      url: '#asset_access_control',
       display_name: 'Access Control (IAM)',
       icon: 'fa fa-fw fa-users',
       visible: true,
@@ -278,7 +278,7 @@ export class CONSTANTS {
     {
       page: 'tags',
       system_name: 'Tags',
-      url: '#device_tags',
+      url: '#asset_tags',
       display_name: 'Tags',
       icon: 'fa fa-fw fa-tags',
       visible: true,
@@ -291,7 +291,7 @@ export class CONSTANTS {
     {
       page: 'slave_info',
       system_name: 'Sensor / Source / Slave Info',
-      url: '#device_type_slave_info',
+      url: '#asset_type_slave_info',
       display_name: 'Sensor / Source / Slave Info',
       icon: 'fa fa-fw fa-user-secret',
       visible: true,
@@ -300,7 +300,7 @@ export class CONSTANTS {
     {
       page: 'package_management',
       system_name: 'Software Packages',
-      url: '#device_package_management',
+      url: '#asset_package_management',
       display_name: 'Software Packages',
       icon: 'fa fa-fw fa-file',
       visible: true,
@@ -309,7 +309,7 @@ export class CONSTANTS {
     {
       page: 'setup',
       system_name: 'Setup',
-      url: '#device_setup',
+      url: '#asset_setup',
       display_name: 'Setup',
       icon: 'fa fa-fw fa-cog',
       visible: true,
@@ -329,7 +329,7 @@ export class CONSTANTS {
     // {
     //   page: 'heartbeat',
     //   system_name: 'Heartbeat',
-    //   url: '#device_heartbeat',
+    //   url: '#asset_heartbeat',
     //   display_name: 'Heartbeat',
     //   icon: 'fa fa-fw fa-heartbeat',
     //   visible: true,
@@ -338,9 +338,9 @@ export class CONSTANTS {
     //   accordion_value: {}
     // },
     {
-      page: 'device_life_cycle',
+      page: 'asset_life_cycle',
       system_name: 'Life Cycle Events',
-      url: '#device_life_cycle_events',
+      url: '#asset_life_cycle_events',
       display_name: 'Life Cycle Events',
       icon: 'fa fa-fw fa-heartbeat',
       visible: true,
@@ -351,7 +351,7 @@ export class CONSTANTS {
     {
       page: 'notifications',
       system_name: 'Notifications',
-      url: '#device_notifications',
+      url: '#asset_notifications',
       display_name: 'Notifications',
       icon: 'fa fa-fw fa-bell',
       visible: true,
@@ -362,7 +362,7 @@ export class CONSTANTS {
     {
       page: 'alerts',
       system_name: 'Alert Raise Events',
-      url: '#device_alerts',
+      url: '#asset_alerts',
       display_name: 'Alert Raise Events',
       icon: 'fa fa-fw fa-bolt',
       visible: true,
@@ -373,7 +373,7 @@ export class CONSTANTS {
     {
       page: 'alertendevents',
       system_name: 'Alert End Events',
-      url: '#device_alert_end_events',
+      url: '#asset_alert_end_events',
       display_name: 'Alert End Events',
       icon: 'fa fa-fw fa-hourglass-end',
       visible: true,
@@ -384,7 +384,7 @@ export class CONSTANTS {
     {
       page: 'telemetry',
       system_name: 'Telemetry',
-      url: '#device_telemetry',
+      url: '#asset_telemetry',
       display_name: 'Telemetry',
       icon: 'fa fa-fw fa-history',
       visible: true,
@@ -395,7 +395,7 @@ export class CONSTANTS {
     // {
     //   page: 'error',
     //   system_name: 'Error',
-    //   url: '#device_error',
+    //   url: '#asset_error',
     //   display_name: 'Error',
     //   icon: 'fa fa-fw fa-exclamation-triangle',
     //   visible: true,
@@ -406,7 +406,7 @@ export class CONSTANTS {
     // {
     //   page: 'battery_message',
     //   system_name: 'Battery',
-    //   url: '#device_battery_message',
+    //   url: '#asset_battery_message',
     //   display_name: 'Battery',
     //   icon: 'fa fa-fw fa-battery-full',
     //   visible: true,
@@ -417,7 +417,7 @@ export class CONSTANTS {
     {
       page: 'logs',
       system_name: 'Logs',
-      url: '#device_logs',
+      url: '#asset_logs',
       display_name: 'Logs',
       icon: 'fa fa-fw fa-file',
       visible: true,
@@ -428,7 +428,7 @@ export class CONSTANTS {
     // {
     //   page: 'other',
     //   system_name: 'Other',
-    //   url: '#device_other',
+    //   url: '#asset_other',
     //   display_name: 'Other',
     //   icon: 'fa fa-fw fa-globe',
     //   visible: true,
@@ -448,7 +448,7 @@ export class CONSTANTS {
     {
       page: 'control_widgets',
       system_name: 'Control / Configure',
-      url: '#device_control_widgets',
+      url: '#asset_control_widgets',
       display_name: 'Control / Configure',
       icon: 'fa fa-fw fa-angle-right',
       visible: true,
@@ -472,7 +472,7 @@ export class CONSTANTS {
     {
       page: 'stream_processing',
       system_name: 'Cloud Derived Properties',
-      url: '#device_stream_processing',
+      url: '#asset_stream_processing',
       display_name: 'Cloud Derived Properties',
       icon: 'fa fa-fw fa-globe',
       visible: true,
@@ -483,7 +483,7 @@ export class CONSTANTS {
     {
       page: 'derived_kpis',
       system_name: 'Derived KPIs',
-      url: '#device_derived_kpis',
+      url: '#asset_derived_kpis',
       display_name: 'Derived KPIs',
       icon: 'fa fa-fw fa-angle-right',
       visible: true,
@@ -494,7 +494,7 @@ export class CONSTANTS {
     {
       page: 'rules',
       system_name: 'Rules',
-      url: '#device_rules',
+      url: '#asset_rules',
       display_name: 'Rules',
       icon: 'fa fa-fw fa-archive',
       visible: true,
@@ -514,7 +514,7 @@ export class CONSTANTS {
     {
       page: 'trend-analysis',
       system_name: 'Trend Analysis',
-      url: '#device_trend_analysis',
+      url: '#asset_trend_analysis',
       display_name: 'Telemetry Trend Analysis',
       icon: 'fa fa-fw fa-area-chart',
       visible: true,
@@ -525,7 +525,7 @@ export class CONSTANTS {
     {
       page: 'alert-visualization',
       system_name: 'Alert Visualization',
-      url: '#device_alert_visualization',
+      url: '#asset_alert_visualization',
       display_name: 'Alert Visualization',
       icon: 'fa fa-fw fa-bar-chart',
       visible: true,
@@ -545,7 +545,7 @@ export class CONSTANTS {
     {
       page: 'mttr',
       system_name: 'MTTR',
-      url: '#device_mttr',
+      url: '#asset_mttr',
       display_name: 'MTTR',
       icon: 'fa fa-fw fa-wrench',
       visible: true,
@@ -556,7 +556,7 @@ export class CONSTANTS {
     {
       page: 'mtbf',
       system_name: 'MTBF',
-      url: '#device_mtbf',
+      url: '#asset_mtbf',
       display_name: 'MTBF',
       icon: 'fa fa-fw fa-wrench',
       visible: true,
@@ -567,7 +567,7 @@ export class CONSTANTS {
     {
       page: 'maintenance_schedule',
       system_name: 'Maintenance Schedules',
-      url: '#device_maintenance_schedule',
+      url: '#asset_maintenance_schedule',
       display_name: 'Maintenance Schedules',
       icon: 'fa fa-fw fa-wrench',
       visible: true,
@@ -578,7 +578,7 @@ export class CONSTANTS {
     {
       page: 'predictions',
       system_name: 'Predictions',
-      url: '#device_predictions',
+      url: '#asset_predictions',
       display_name: 'Predictions',
       icon: 'fa fa-fw fa-wrench',
       visible: true,
@@ -601,7 +601,7 @@ export class CONSTANTS {
     {
       page: 'overview',
       system_name: 'Overview',
-      url: '#device_overview',
+      url: '#asset_overview',
       display_name: 'Overview',
       icon: 'fa fa-fw fa-life-ring',
       visible: true,
@@ -613,7 +613,7 @@ export class CONSTANTS {
     {
       page: 'access_control',
       system_name: 'Access Control',
-      url: '#device_access_control',
+      url: '#asset_access_control',
       display_name: 'Access Control (IAM)',
       icon: 'fa fa-fw fa-users',
       visible: true,
@@ -624,7 +624,7 @@ export class CONSTANTS {
     {
       page: 'tags',
       system_name: 'Tags',
-      url: '#device_tags',
+      url: '#asset_tags',
       display_name: 'Tags',
       icon: 'fa fa-fw fa-tags',
       visible: true,
@@ -637,7 +637,7 @@ export class CONSTANTS {
     {
       page: 'slave_info',
       system_name: 'Sensor / Source / Slave Info',
-      url: '#device_slave_info',
+      url: '#asset_slave_info',
       display_name: 'Sensor / Source / Slave Info',
       icon: 'fa fa-fw fa-user-secret',
       visible: true,
@@ -646,7 +646,7 @@ export class CONSTANTS {
     // {
     //   page: 'package_management',
     //   system_name: 'Software Packages',
-    //   url: '#device_package_management',
+    //   url: '#asset_package_management',
     //   display_name: 'Software Packages',
     //   icon: 'fa fa-fw fa-file',
     //   visible: true,
@@ -655,7 +655,7 @@ export class CONSTANTS {
     {
       page: 'setup',
       system_name: 'Setup',
-      url: '#device_setup',
+      url: '#asset_setup',
       display_name: 'Setup',
       icon: 'fa fa-fw fa-cog',
       visible: true,
@@ -675,7 +675,7 @@ export class CONSTANTS {
     // {
     //   page: 'heartbeat',
     //   system_name: 'Heartbeat',
-    //   url: '#device_heartbeat',
+    //   url: '#asset_heartbeat',
     //   display_name: 'Heartbeat',
     //   icon: 'fa fa-fw fa-heartbeat',
     //   visible: true,
@@ -686,7 +686,7 @@ export class CONSTANTS {
     {
       page: 'notifications',
       system_name: 'Notifications',
-      url: '#device_notifications',
+      url: '#asset_notifications',
       display_name: 'Notifications',
       icon: 'fa fa-fw fa-bell',
       visible: true,
@@ -697,7 +697,7 @@ export class CONSTANTS {
     {
       page: 'alerts',
       system_name: 'Alert Raise Events',
-      url: '#device_alerts',
+      url: '#asset_alerts',
       display_name: 'Alert Raise Events',
       icon: 'fa fa-fw fa-bolt',
       visible: true,
@@ -708,7 +708,7 @@ export class CONSTANTS {
     {
       page: 'alertendevents',
       system_name: 'Alert End Events',
-      url: '#device_alert_end_events',
+      url: '#asset_alert_end_events',
       display_name: 'Alert End Events',
       icon: 'fa fa-fw fa-hourglass-end',
       visible: true,
@@ -719,7 +719,7 @@ export class CONSTANTS {
     {
       page: 'telemetry',
       system_name: 'Telemetry',
-      url: '#device_telemetry',
+      url: '#asset_telemetry',
       display_name: 'Telemetry',
       icon: 'fa fa-fw fa-history',
       visible: true,
@@ -730,7 +730,7 @@ export class CONSTANTS {
     // {
     //   page: 'error',
     //   system_name: 'Error',
-    //   url: '#device_error',
+    //   url: '#asset_error',
     //   display_name: 'Error',
     //   icon: 'fa fa-fw fa-exclamation-triangle',
     //   visible: true,
@@ -741,7 +741,7 @@ export class CONSTANTS {
     // {
     //   page: 'battery_message',
     //   system_name: 'Battery',
-    //   url: '#device_battery_message',
+    //   url: '#asset_battery_message',
     //   display_name: 'Battery',
     //   icon: 'fa fa-fw fa-battery-full',
     //   visible: true,
@@ -752,7 +752,7 @@ export class CONSTANTS {
     {
       page: 'logs',
       system_name: 'Logs',
-      url: '#device_logs',
+      url: '#asset_logs',
       display_name: 'Logs',
       icon: 'fa fa-fw fa-file',
       visible: true,
@@ -763,7 +763,7 @@ export class CONSTANTS {
     // {
     //   page: 'other',
     //   system_name: 'Other',
-    //   url: '#device_other',
+    //   url: '#asset_other',
     //   display_name: 'Other',
     //   icon: 'fa fa-fw fa-globe',
     //   visible: true,
@@ -783,7 +783,7 @@ export class CONSTANTS {
     {
       page: 'control_widgets',
       system_name: 'Control / Configure',
-      url: '#device_control_widgets',
+      url: '#asset_control_widgets',
       display_name: 'Control / Configure',
       icon: 'fa fa-fw fa-angle-right',
       visible: true,
@@ -807,7 +807,7 @@ export class CONSTANTS {
     {
       page: 'stream_processing',
       system_name: 'Cloud Derived Properties',
-      url: '#device_stream_processing',
+      url: '#asset_stream_processing',
       display_name: 'Cloud Derived Properties',
       icon: 'fa fa-fw fa-globe',
       visible: true,
@@ -818,7 +818,7 @@ export class CONSTANTS {
     {
       page: 'derived_kpis',
       system_name: 'Derived KPIs',
-      url: '#device_derived_kpis',
+      url: '#asset_derived_kpis',
       display_name: 'Derived KPIs',
       icon: 'fa fa-fw fa-angle-right',
       visible: true,
@@ -829,7 +829,7 @@ export class CONSTANTS {
     {
       page: 'rules',
       system_name: 'Rules',
-      url: '#device_rules',
+      url: '#asset_rules',
       display_name: 'Rules',
       icon: 'fa fa-fw fa-archive',
       visible: true,
@@ -849,7 +849,7 @@ export class CONSTANTS {
     {
       page: 'trend-analysis',
       system_name: 'Trend Analysis',
-      url: '#device_trend_analysis',
+      url: '#asset_trend_analysis',
       display_name: 'Telemetry Trend Analysis',
       icon: 'fa fa-fw fa-area-chart',
       visible: true,
@@ -860,7 +860,7 @@ export class CONSTANTS {
     {
       page: 'alert-visualization',
       system_name: 'Alert Visualization',
-      url: '#device_alert_visualization',
+      url: '#asset_alert_visualization',
       display_name: 'Alert Visualization',
       icon: 'fa fa-fw fa-bar-chart',
       visible: true,
@@ -880,7 +880,7 @@ export class CONSTANTS {
     {
       page: 'mttr',
       system_name: 'MTTR',
-      url: '#device_mttr',
+      url: '#asset_mttr',
       display_name: 'MTTR',
       icon: 'fa fa-fw fa-wrench',
       visible: true,
@@ -891,7 +891,7 @@ export class CONSTANTS {
     {
       page: 'mtbf',
       system_name: 'MTBF',
-      url: '#device_mtbf',
+      url: '#asset_mtbf',
       display_name: 'MTBF',
       icon: 'fa fa-fw fa-wrench',
       visible: true,
@@ -902,7 +902,7 @@ export class CONSTANTS {
     {
       page: 'maintenance_schedule',
       system_name: 'Maintenance Schedules',
-      url: '#device_maintenance_schedule',
+      url: '#asset_maintenance_schedule',
       display_name: 'Maintenance Schedules',
       icon: 'fa fa-fw fa-wrench',
       visible: true,
@@ -913,7 +913,7 @@ export class CONSTANTS {
     {
       page: 'predictions',
       system_name: 'Predictions',
-      url: '#device_predictions',
+      url: '#asset_predictions',
       display_name: 'Predictions',
       icon: 'fa fa-fw fa-wrench',
       visible: true,
@@ -936,7 +936,7 @@ export class CONSTANTS {
     {
       page: 'overview',
       system_name: 'Overview',
-      url: '#device_overview',
+      url: '#asset_overview',
       display_name: 'Overview',
       icon: 'fa fa-fw fa-life-ring',
       visible: true,
@@ -948,7 +948,7 @@ export class CONSTANTS {
     {
       page: 'tags',
       system_name: 'Tags',
-      url: '#device_tags',
+      url: '#asset_tags',
       display_name: 'Tags',
       icon: 'fa fa-fw fa-tags',
       visible: true,
@@ -961,7 +961,7 @@ export class CONSTANTS {
     {
       page: 'package_management',
       system_name: 'Software Packages',
-      url: '#device_package_management',
+      url: '#asset_package_management',
       display_name: 'Software Packages',
       icon: 'fa fa-fw fa-file',
       visible: true,
@@ -970,7 +970,7 @@ export class CONSTANTS {
     {
       page: 'setup',
       system_name: 'Setup',
-      url: '#device_setup',
+      url: '#asset_setup',
       display_name: 'Setup',
       icon: 'fa fa-fw fa-cog',
       visible: true,
@@ -990,7 +990,7 @@ export class CONSTANTS {
     {
       page: 'current_config',
       system_name: 'Current Configuration',
-      url: '#device_current_config',
+      url: '#asset_current_config',
       display_name: 'Current Configuration',
       icon: 'fa fa-fw fa-cog',
       visible: true,
@@ -1001,7 +1001,7 @@ export class CONSTANTS {
     {
       page: 'config_history',
       system_name: 'Configuration History',
-      url: '#device_config_history',
+      url: '#asset_config_history',
       display_name: 'Configuration History',
       icon: 'fa fa-fw fa-history',
       visible: true,
@@ -1012,7 +1012,7 @@ export class CONSTANTS {
     {
       page: 'notifications',
       system_name: 'Notifications',
-      url: '#device_notifications',
+      url: '#asset_notifications',
       display_name: 'Notifications',
       icon: 'fa fa-fw fa-bell',
       visible: true,
@@ -1021,9 +1021,9 @@ export class CONSTANTS {
       accordion_value: {}
     },
     {
-      page: 'device_life_cycle',
+      page: 'asset_life_cycle',
       system_name: 'Life Cycle Events',
-      url: '#device_life_cycle_events',
+      url: '#asset_life_cycle_events',
       display_name: 'Life Cycle Events',
       icon: 'fa fa-fw fa-heartbeat',
       visible: true,
@@ -1034,7 +1034,7 @@ export class CONSTANTS {
     {
       page: 'cached_alerts',
       system_name: 'Cached Alerts',
-      url: '#device_cached_alerts',
+      url: '#asset_cached_alerts',
       display_name: 'Cached Alerts',
       icon: 'fa fa-fw fa-bolt',
       visible: true,
@@ -1045,7 +1045,7 @@ export class CONSTANTS {
     {
       page: 'cached_telemetry',
       system_name: 'Cached Telemetry',
-      url: '#device_cached_telemetry',
+      url: '#asset_cached_telemetry',
       display_name: 'Cached Telemetry',
       icon: 'fa fa-fw fa-globe',
       visible: true,
@@ -1056,7 +1056,7 @@ export class CONSTANTS {
     {
       page: 'count',
       system_name: 'Telemetry Count',
-      url: '#device_count',
+      url: '#asset_count',
       display_name: 'Telemetry Count',
       icon: 'fa fa-fw fa-calculator',
       visible: true,
@@ -1067,7 +1067,7 @@ export class CONSTANTS {
     // {
     //   page: 'error',
     //   system_name: 'Error',
-    //   url: '#device_error',
+    //   url: '#asset_error',
     //   display_name: 'Error',
     //   icon: 'fa fa-fw fa-exclamation-triangle',
     //   visible: true,
@@ -1087,7 +1087,7 @@ export class CONSTANTS {
     {
       page: 'control_widgets',
       system_name: 'Control/Configure',
-      url: '#device_control_widgets',
+      url: '#asset_control_widgets',
       display_name: 'Control/Configure',
       icon: 'fa fa-fw fa-angle-right',
       visible: true,
@@ -1114,7 +1114,7 @@ export class CONSTANTS {
     {
       page: 'overview',
       system_name: 'Overview',
-      url: '#device_type_overview',
+      url: '#asset_type_overview',
       display_name: 'Overview',
       icon: 'fa fa-fw fa-life-ring',
       visible: true,
@@ -1123,7 +1123,7 @@ export class CONSTANTS {
     {
       page: 'tags',
       system_name: 'Tags',
-      url: '#device_type_tags',
+      url: '#asset_type_tags',
       display_name: 'Tags',
       icon: 'fa fa-fw fa-tags',
       visible: true,
@@ -1132,7 +1132,7 @@ export class CONSTANTS {
     {
       page: 'package_management',
       system_name: 'Software Packages',
-      url: '#device_type_package_management',
+      url: '#asset_type_package_management',
       display_name: 'Software Packages',
       icon: 'fa fa-fw fa-file',
       visible: true,
@@ -1141,7 +1141,7 @@ export class CONSTANTS {
     {
       page: 'settings',
       system_name: 'Setup',
-      url: '#device_type_settings',
+      url: '#asset_type_settings',
       display_name: 'Setup',
       icon: 'fa fa-fw fa-cog',
       visible: true,
@@ -1159,7 +1159,7 @@ export class CONSTANTS {
     {
       page: 'slave_info',
       system_name: 'Sensor / Source / Slave Info',
-      url: '#device_type_slave_info',
+      url: '#asset_type_slave_info',
       display_name: 'Sensor / Source / Slave Info',
       icon: 'fa fa-fw fa-user-secret',
       visible: true,
@@ -1168,7 +1168,7 @@ export class CONSTANTS {
     {
       page: 'measured_properties',
       system_name: 'Measured Properties',
-      url: '#device_type_properties',
+      url: '#asset_type_properties',
       display_name: 'Measured Properties',
       icon: 'fa fa-fw fa-history',
       visible: true,
@@ -1177,7 +1177,7 @@ export class CONSTANTS {
     {
       page: 'derived_properties',
       system_name: 'Edge Derived Properties',
-      url: '#device_type_properties',
+      url: '#asset_type_properties',
       display_name: 'Edge Derived Properties',
       icon: 'fa fa-fw fa-retweet',
       visible: true,
@@ -1186,7 +1186,7 @@ export class CONSTANTS {
     {
       page: 'controllable_properties',
       system_name: 'Controllable Properties',
-      url: '#device_type_properties',
+      url: '#asset_type_properties',
       display_name: 'Controllable Properties',
       icon: 'fa fa-fw fa-edit',
       visible: true,
@@ -1195,7 +1195,7 @@ export class CONSTANTS {
     {
       page: 'configurable_properties',
       system_name: 'Configurable Properties',
-      url: '#device_type_properties',
+      url: '#asset_type_properties',
       display_name: 'Configurable Properties',
       icon: 'fa fa-fw fa-book',
       visible: true,
@@ -1205,7 +1205,7 @@ export class CONSTANTS {
     {
       page: 'alert_conditioning',
       system_name: 'Alert Conditioning',
-      url: '#device_type_alert_conditioning',
+      url: '#asset_type_alert_conditioning',
       display_name: 'Alert Conditioning',
       icon: 'fa fa-fw fa-exclamation-triangle',
       visible: true,
@@ -1223,7 +1223,7 @@ export class CONSTANTS {
     {
       page: 'direct_methods',
       system_name: 'Direct Methods',
-      url: '#device_type_methods',
+      url: '#asset_type_methods',
       display_name: 'Direct Methods',
       icon: 'fa fa-fw fa-archive',
       visible: true,
@@ -1232,7 +1232,7 @@ export class CONSTANTS {
     {
       page: 'configuration_widgets',
       system_name: 'Configuration Widgets',
-      url: '#device_type_configuration_widgets',
+      url: '#asset_type_configuration_widgets',
       display_name: 'Configuration Widgets',
       icon: 'fa fa-fw fa-cog',
       visible: true,
@@ -1241,7 +1241,7 @@ export class CONSTANTS {
     {
       page: 'control_widgets',
       system_name: 'Control Widgets',
-      url: '#device_type_control_widgets',
+      url: '#asset_type_control_widgets',
       display_name: 'Control Widgets',
       icon: 'fa fa-fw fa-angle-right',
       visible: true,
@@ -1259,7 +1259,7 @@ export class CONSTANTS {
     {
       page: 'stream_processing',
       system_name: 'Cloud Derived Properties',
-      url: '#device_type_stream_processing',
+      url: '#asset_type_stream_processing',
       display_name: 'Cloud Derived Properties',
       icon: 'fa fa-fw fa-microchip',
       visible: true,
@@ -1268,7 +1268,7 @@ export class CONSTANTS {
     {
       page: 'derived_kpis',
       system_name: 'Derived KPIs',
-      url: '#device_type_derived_kpis',
+      url: '#asset_type_derived_kpis',
       display_name: 'Derived KPIs',
       icon: 'fa fa-fw fa-retweet',
       visible: true,
@@ -1277,7 +1277,7 @@ export class CONSTANTS {
     {
       page: 'rules',
       system_name: 'Rules',
-      url: '#device_type_rules',
+      url: '#asset_type_rules',
       display_name: 'Rules',
       icon: 'fa fa-fw fa-archive',
       visible: true,
@@ -1296,7 +1296,7 @@ export class CONSTANTS {
     {
       page: 'layout',
       system_name: 'Visualization Widgets',
-      url: '#device_type_layout',
+      url: '#asset_type_layout',
       display_name: 'Visualization Widgets',
       icon: 'fa fa-fw fa-bar-chart',
       visible: true,
@@ -1314,7 +1314,7 @@ export class CONSTANTS {
     {
       page: 'reference_material',
       system_name: 'Documents',
-      url: '#device_type_reference_material',
+      url: '#asset_type_reference_material',
       display_name: 'Documents',
       icon: 'fa fa-fw fa-file',
       visible: true,
@@ -1323,7 +1323,7 @@ export class CONSTANTS {
     {
       page: 'alert_acknowledgement_reasons',
       system_name: 'Alert Acknowledgement Reasons',
-      url: '#device_type_alert_acknowledgement_reasons',
+      url: '#asset_type_alert_acknowledgement_reasons',
       display_name: 'Alert Acknowledgement Reasons',
       icon: 'fa fa-fw fa-exclamation-triangle',
       visible: true,
@@ -1377,18 +1377,18 @@ export class CONSTANTS {
   public static SELECTED_APP_DATA = 'selectedAppData';
   public static DASHBOARD_TELEMETRY_SELECTION = 'dashboardTelemetryFilterObj';
   public static DASHBOARD_ALERT_SELECTION = 'dashboardAlertFilterObj';
-  public static DEVICES_LIST = 'devices_list';
-  public static DEVICES_GATEWAYS_LIST = 'devices_gateways_list';
-  public static DEVICE_MODELS_LIST = 'device_models_list';
-  public static DEVICE_MODEL_DATA = 'device_model_data';
-  public static DEVICE_LIST_FILTER_FOR_GATEWAY = 'deviceListFilterObj';
+  public static DEVICES_LIST = 'assets_list';
+  public static DEVICES_GATEWAYS_LIST = 'assets_gateways_list';
+  public static DEVICE_MODELS_LIST = 'asset_models_list';
+  public static DEVICE_MODEL_DATA = 'asset_model_data';
+  public static DEVICE_LIST_FILTER_FOR_GATEWAY = 'assetListFilterObj';
   public static APP_USERS = 'application_users';
   public static EXPIRY_TIME = 'expiry_time';
   public static CURRENT_BREADCRUMB_STATE = 'breadcrumbState';
-  public static NON_IP_DEVICES = 'Non IP Devices';
-  public static IP_DEVICE = 'IoT Device';
+  public static NON_IP_DEVICES = 'Non IP Assets';
+  public static IP_DEVICE = 'IoT Asset';
   public static IP_GATEWAY = 'IoT Gateway';
-  public static NON_IP_DEVICE = 'Legacy Device';
+  public static NON_IP_DEVICE = 'Legacy Asset';
   public static NOT_ALLOWED_SPECIAL_CHARS_NAME = [' ', '.', '$', '#'];
   public static PASSWORD_REGEX = '^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,20}$';
   public static EMAIL_REGEX = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
@@ -1402,11 +1402,11 @@ export class CONSTANTS {
   // public static DEFAULT_APP_ICON = environment.blobContainerName + '/default_app_icon.png';
   // public static DEFAULT_APP_LOGO = environment.blobContainerName + '/default_app_logo.jpg';
   // public static DEFAULT_HEADER_LOGO = environment.blobContainerName + '/app-media/logo.png';
-  // public static DEFAULT_MODEL_IMAGE = environment.blobContainerName + '/device-type-media/device.svg';
+  // public static DEFAULT_MODEL_IMAGE = environment.blobContainerName + '/asset-model-media/asset.svg';
 
   public static DEFAULT_APP_ICON = 'rdm-images/default_app_icon.png';
   public static DEFAULT_APP_LOGO = 'rdm-images/default_app_logo.jpg';
   public static DEFAULT_HEADER_LOGO = 'rdm-images/app-images/header-logo/logo.png';
-  public static DEFAULT_MODEL_IMAGE = 'rdm-images/device-type-images/device.svg';
+  public static DEFAULT_MODEL_IMAGE = 'rdm-images/asset-model-images/asset.svg';
 
 }

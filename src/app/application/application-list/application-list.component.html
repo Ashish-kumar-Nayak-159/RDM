@@ -43,14 +43,14 @@
         <!-- <div class="form-check">
           <input type="checkbox" class="form-check-input" id="contains-gateway"
           name="contains-gateway" [(ngModel)]="applicationDetail.metadata.contain_gateways"
-          (ngModelChange)="applicationDetail.metadata.contain_devices = false;">
+          (ngModelChange)="applicationDetail.metadata.contain_assets = false;">
           <label class="form-check-label" for="contains-gateway">Contains Gateways</label>
         </div>
         <div class="form-check">
-          <input type="checkbox" class="form-check-input" id="contains-devices"
-          name="contains-device" [(ngModel)]="applicationDetail.metadata.contain_devices"
+          <input type="checkbox" class="form-check-input" id="contains-assets"
+          name="contains-asset" [(ngModel)]="applicationDetail.metadata.contain_assets"
           (ngModelChange)="applicationDetail.metadata.contain_gateways = false;">
-          <label class="form-check-label" for="contains-devices">Contains Devices</label>
+          <label class="form-check-label" for="contains-assets">Contains Assets</label>
         </div> -->
         <div class="form-group">
           <label for="message-text" class="col-form-label">Customer Name:</label>
@@ -181,7 +181,7 @@
                   <select class="form-control form-control-sm" id="alertReason" [(ngModel)]="applicationDetail.metadata.partition.telemetry.partition_strategy"
                     name="alertReason">
                     <option [ngValue]="undefined">Select Partition Technique</option>
-                    <option [ngValue]="'Device ID'">Asset ID</option>
+                    <option [ngValue]="'Asset ID'">Asset ID</option>
                     <option [ngValue]="'Partition Key'">Partition Key</option>
                   </select>
                 </div>

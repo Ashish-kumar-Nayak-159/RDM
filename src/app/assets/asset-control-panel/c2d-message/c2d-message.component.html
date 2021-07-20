@@ -1,0 +1,197 @@
+<div class="tab-bar" *ngIf="type === 'all'">
+  <div class="">
+<app-filter  [filterObj]="c2dMsgFilter" (filterSearch)="searchTableData($event)"></app-filter>
+</div>
+</div>
+<div class="table-responsive">
+  <div class="tableFixHead">
+    <table class="table table-hover" *ngIf="previousMsgFilter.tableType === 'All' || previousMsgFilter.tableType === 'Twin'">
+      <thead>
+        <tr >
+          <th>No</th>
+          <th>Time Stamp</th>
+          <th>Job Type</th>
+          <th >Type</th>
+          <th  style="width:7%">Request</th>
+          <th  style="width:7%">Response</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <ng-container *ngIf="c2dMsgs.length > 0 && !isC2dMsgsLoading">
+        <tr *ngFor="let msg of c2dMsgs; let i = index;">
+          <td>{{i + 1}}</td>
+          <td>{{msg.local_created_date}}</td>
+          <td>{{msg.job_type === 'Message' ? 'C2D Message' : (msg.job_type === 'DirectMethod' ? 'Direct Method' : (msg.job_type === 'Twin' ? 'Twin Change' : ''))}}</td>
+          <td >{{msg.request_type}}</td>
+          <td >
+            <a (click)="loadMessageDetail(msg, true)" href="javascript:void(0)" placement="bottom" tooltip="View Message">
+              <i class="fa fa-fw fa-eye"></i></a></td>
+          <td>
+            <a (click)="loadResponseDetail(msg, true)" href="javascript:void(0)" placement="bottom" tooltip="View Response">
+              <i class="fa fa-fw fa-eye"></i></a></td>
+        </tr>
+      </ng-container>
+        <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading && isFilterSelected">
+          <tr>
+            <td colspan="6">No messages found for {{this.previousMsgFilter.dateOption}}. <p *ngIf="this.previousMsgFilter.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template> </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading && !isFilterSelected">
+          <tr>
+            <td colspan="6">Select filter and press search button to load the data.</td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="isC2dMsgsLoading">
+          <tr>
+            <td colspan="6">
+              <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+    <table class="table table-hover" *ngIf="previousMsgFilter.tableType === 'Message'">
+      <thead>
+        <tr >
+          <th>No</th>
+          <th>Time Stamp</th>
+          <th >Type</th>
+          <!-- <th  *ngIf="pageType === 'gateway'">Asset Name</th> -->
+          <!-- <th >Message ID</th> -->
+          <th  *ngIf="type !== 'response'">TTL</th>
+          <th  *ngIf="type !== 'response'">ACK</th>
+          <th  *ngIf="type !== 'response'">Feedback</th>
+          <!-- <th >F Time Stamp</th> -->
+          <th  style="width:7%" *ngIf="type !== 'response'">Request</th>
+          <th  style="width:7%">Response</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <ng-container *ngIf="c2dMsgs.length > 0 && !isC2dMsgsLoading">
+        <tr *ngFor="let msg of c2dMsgs;let i = index">
+          <td>{{i + 1}}</td>
+          <td>{{msg.local_created_date}}</td>
+          <td >{{msg.request_type}}</td>
+          <!-- <td *ngIf="pageType === 'gateway'">{{msg.asset_id}}</td> -->
+          <!-- <td>{{msg.message_id}}</td> -->
+          <td *ngIf="type !== 'response'">{{msg?.metadata?.expire_in_min}}</td>
+          <td *ngIf="type !== 'response'">{{msg?.metadata?.acknowledge}}</td>
+          <td *ngIf="type !== 'response'">{{msg?.metadata?.feedback_description}}</td>
+          <!-- <td></td> -->
+          <td *ngIf="type !== 'response'">
+            <a (click)="loadMessageDetail(msg, true)" href="javascript:void(0)" placement="bottom" tooltip="View Message">
+              <i class="fa fa-fw fa-eye"></i></a></td>
+          <td>
+            <a (click)="loadResponseDetail(msg, true)" href="javascript:void(0)" placement="bottom" tooltip="View Response">
+              <i class="fa fa-fw fa-eye"></i></a></td>
+        </tr>
+      </ng-container>
+        <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading && isFilterSelected">
+          <tr>
+            <td colspan="8">No messages found for {{this.previousMsgFilter.dateOption}}. <p *ngIf="this.previousMsgFilter.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template> </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading && !isFilterSelected">
+          <tr>
+            <td colspan="8">Select filter and press search button to load the data.</td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="isC2dMsgsLoading">
+          <tr>
+            <td colspan="8">
+              <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+    <table class="table table-hover" *ngIf="previousMsgFilter.tableType === 'DirectMethod'">
+      <thead>
+        <tr >
+          <th>No</th>
+          <th>Request Date</th>
+          <!-- <th>Response Date</th> -->
+          <th>Type</th>
+          <!-- <th class="border-left">F Time Stamp</th> -->
+          <th  style="width:7%">Status</th>
+          <th  style="width:7%">Request</th>
+          <th style="width:7%">Response</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <ng-container *ngIf="c2dMsgs.length > 0 && !isC2dMsgsLoading">
+        <tr *ngFor="let msg of c2dMsgs;let i = index;">
+          <td>{{i + 1}}</td>
+          <td>{{msg.local_created_date}}</td>
+          <!-- <td>{{msg.local_response_date}}</td> -->
+          <td>{{msg.request_type}}</td>
+          <td>{{msg?.metadata?.process_status}}</td>
+          <td >
+            <a (click)="loadMessageDetail(msg, true)" href="javascript:void(0)" placement="bottom" tooltip="View Message">
+              <i class="fa fa-fw fa-eye"></i></a></td>
+          <td>
+            <a (click)="loadResponseDetail(msg, true)" href="javascript:void(0)" placement="bottom" tooltip="View Response">
+              <i class="fa fa-fw fa-eye"></i></a></td>
+        </tr>
+      </ng-container>
+        <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading && isFilterSelected">
+          <tr>
+            <td colspan="6">No direct method calls found for {{this.previousMsgFilter.dateOption}}. <p *ngIf="this.previousMsgFilter.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template> </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading && !isFilterSelected">
+          <tr>
+            <td colspan="6">Select filter and press search button to load the data.</td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="isC2dMsgsLoading">
+          <tr>
+            <td colspan="6">
+              <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal right fade" id="c2dmessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <ng-container *ngIf="selectedMessage?.job_type === 'Message' || selectedMessage?.job_type === 'Twin'">
+      <app-message-modal *ngIf="c2dMessageDetail" [bodyMessage]="c2dMessageDetail.request" [headerMessage]="'Request: ' + selectedMessage?.job_id"
+      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
+      <app-message-modal *ngIf="c2dResponseDetail" [bodyMessage]="c2dResponseDetail" [headerMessage]="'Response: ' + selectedMessage?.job_id"
+      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
+    </ng-container>
+    <ng-container *ngIf="selectedMessage?.job_type === 'DirectMethod'">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">View Direct Method</h5>
+          <button type="button" class="close"  aria-label="Close" (click)="onModalEvents('close')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <ng-container *ngIf="c2dMessageDetail">
+          <h5>Reqeust: </h5>
+          <pre  class="text-sm" *ngIf="modalConfig?.jsonDisplay" [innerHTML]="c2dMessageDetail?.request | json"></pre>
+          </ng-container>
+          <ng-container *ngIf="c2dResponseDetail">
+          <h5>Response: </h5>
+          <pre class="text-sm" *ngIf="modalConfig?.jsonDisplay" [innerHTML]="selectedMessage?.metadata | json"></pre>
+          </ng-container>
+        </div>
+        <div class="modal-footer">
+          <button  type="button" class="btn btn-secondary" (click)="onModalEvents('close')">
+            Cancel
+          </button>
+        </div>
+      </div>
+
+    </ng-container>
+  </div>
+</div>

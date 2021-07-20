@@ -6,8 +6,8 @@ import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from 'src/app/services/common.service';
-import { DeviceTypeService } from 'src/app/services/device-type/device-type.service';
-import { DeviceService } from 'src/app/services/devices/device.service';
+import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
+import { AssetService } from 'src/app/services/assets/asset.service';
 import { SignalRService } from 'src/app/services/signalR/signal-r.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 
@@ -25,8 +25,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   tileData: any;
   hierarchyArr: any = {};
   configureHierarchy: any = {};
-  devices: any[] = [];
-  originalDevices: any[] = [];
+  assets: any[] = [];
+  originalAssets: any[] = [];
   filterObj: any = {};
   propertyList: any[] = [];
   telemetryObj: any;
@@ -52,7 +52,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   apiSubscriptions: Subscription[] = [];
   liveWidgets: any[] = [];
   isGetWidgetsAPILoading = false;
-  deviceDetailData: any;
+  assetDetailData: any;
   frequencyDiffInterval: number;
   normalModelInterval: number;
   turboModeInterval: number;
@@ -62,9 +62,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   sampleCountValue = 0;
   sampleCountInterval: any;
   constructor(
-    private deviceService: DeviceService,
+    private assetService: AssetService,
     private commonService: CommonService,
-    private deviceTypeService: DeviceTypeService,
+    private assetModelService: AssetModelService,
     private toasterService: ToasterService,
     private signalRService: SignalRService,
     private chartService: ChartService,
@@ -76,7 +76,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
-    await this.getDevices(this.contextApp.user.hierarchy);
+    await this.getAssets(this.contextApp.user.hierarchy);
     this.onTabChange();
 
     // if (this.selectedTab === 'telemetry') {
@@ -86,7 +86,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getTileName() {
     let selectedItem;
-    this.contextApp.configuration.main_menu.forEach(item => {
+    this.contextApp.menu_settings.main_menu.forEach(item => {
       if (item.page === 'Live Data') {
         selectedItem = item.showAccordion;
       }
@@ -100,7 +100,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  onDeviceFilterBtnClick() {
+  onAssetFilterBtnClick() {
     $('.dropdown-menu').on('click.bs.dropdown', (e) => {
       e.stopPropagation();
     });
@@ -131,7 +131,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.onChangeOfHierarchy(index, false);
       }
       } else {
-        this.devices = JSON.parse(JSON.stringify(this.originalDevices));
+        this.assets = JSON.parse(JSON.stringify(this.originalAssets));
       }
     });
   }
@@ -139,8 +139,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   loadFromCache() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     if (item) {
-      if (item.devices) {
-      this.filterObj.device = item.devices;
+      if (item.assets) {
+      this.filterObj.asset = item.assets;
       this.originalFilter = JSON.parse(JSON.stringify(this.filterObj));
       }
       if (item.hierarchy) {
@@ -155,7 +155,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         });
         }
       }
-      if (this.filterObj.device) {
+      if (this.filterObj.asset) {
         this.onFilterSelection(this.filterObj, false);
       }
     }
@@ -168,29 +168,29 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isC2dAPILoading = true;
     clearInterval(this.c2dResponseInterval);
     const obj = {
-      method: 'change_device_mode',
-      device_id: this.filterObj.device.device_id,
-      gateway_id: this.filterObj.device.gateway_id ? this.filterObj.device.gateway_id : undefined,
+      method: 'change_asset_mode',
+      asset_id: this.filterObj.asset.asset_id,
+      gateway_id: this.filterObj.asset.gateway_id ? this.filterObj.asset.gateway_id : undefined,
       message: {
         telemetry_mode: this.signalRModeValue ? 'normal' : 'turbo',
-        device_id: this.filterObj.device.device_id
+        asset_id: this.filterObj.asset.asset_id
       },
       app: this.contextApp.app,
       job_type: 'DirectMethod',
-      request_type: 'change_device_mode',
-      job_id: this.filterObj.device.device_id + '_' + this.commonService.generateUUID(),
+      request_type: 'change_asset_mode',
+      job_id: this.filterObj.asset.asset_id + '_' + this.commonService.generateUUID(),
       sub_job_id: null
     };
     obj.sub_job_id = obj.job_id + '_1';
-    this.apiSubscriptions.push(this.deviceService.callDeviceMethod(obj, this.contextApp.app,
-      this.filterObj?.device?.gateway_id || this.filterObj?.device?.device_id).subscribe(
+    this.apiSubscriptions.push(this.assetService.callAssetMethod(obj, this.contextApp.app,
+      this.filterObj?.asset?.gateway_id || this.filterObj?.asset?.asset_id).subscribe(
       (response: any) => {
-        if (response?.device_response) {
+        if (response?.asset_response) {
         this.chartService.clearDashboardTelemetryList.emit([]);
         const arr = [];
         this.telemetryData = JSON.parse(JSON.stringify([]));
         this.telemetryData = JSON.parse(JSON.stringify(arr));
-        this.toasterService.showSuccess(response.device_response.message, 'Change Telemetry Mode');
+        this.toasterService.showSuccess(response.asset_response.message, 'Change Telemetry Mode');
       }
         this.isC2dAPILoading = false;
         this.c2dLoadingMessage = undefined;
@@ -204,33 +204,33 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     ));
   }
 
-  getDeviceData() {
+  getAssetData() {
     return new Promise<void>((resolve1) => {
-    this.deviceDetailData = undefined;
+    this.assetDetailData = undefined;
 
     this.apiSubscriptions.push(
-      this.deviceService.getDeviceDetailById
-      (this.contextApp.app, this.filterObj.device.device_id).subscribe(
+      this.assetService.getAssetDetailById
+      (this.contextApp.app, this.filterObj.asset.asset_id).subscribe(
       async (response: any) => {
-        this.deviceDetailData = JSON.parse(JSON.stringify(response));
-        this.normalModelInterval = (this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency ?
-          this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency : 60);
-        this.turboModeInterval = (this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency ?
-          this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency : 1);
-        this.frequencyDiffInterval = Math.abs((this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency ?
-          this.deviceDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency : 60) -
-          (this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency ?
-            this.deviceDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency : 1));
+        this.assetDetailData = JSON.parse(JSON.stringify(response));
+        this.normalModelInterval = (this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency ?
+          this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency : 60);
+        this.turboModeInterval = (this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency ?
+          this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency : 1);
+        this.frequencyDiffInterval = Math.abs((this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency ?
+          this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency : 60) -
+          (this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency ?
+            this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency : 1));
         resolve1();
       }, error => this.isTelemetryDataLoading = false));
     });
   }
 
   compareFn(c1, c2): boolean {
-    return c1 && c2 ? c1.device_id === c2.device_id : c1 === c2;
+    return c1 && c2 ? c1.asset_id === c2.asset_id : c1 === c2;
   }
 
-  async onChangeOfHierarchy(i, flag, persistDeviceSelection = true) {
+  async onChangeOfHierarchy(i, flag, persistAssetSelection = true) {
     Object.keys(this.configureHierarchy).forEach(key => {
       if (key > i) {
         delete this.configureHierarchy[key];
@@ -260,33 +260,33 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
       if (Object.keys(hierarchyObj).length === 1) {
-        this.devices = JSON.parse(JSON.stringify(this.originalDevices));
+        this.assets = JSON.parse(JSON.stringify(this.originalAssets));
       } else {
       const arr = [];
-      this.devices = [];
-      this.originalDevices.forEach(device => {
+      this.assets = [];
+      this.originalAssets.forEach(asset => {
         let flag1 = false;
         Object.keys(hierarchyObj).forEach(hierarchyKey => {
-          if (device.hierarchy[hierarchyKey] && device.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+          if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
             flag1 = true;
           } else {
             flag1 = false;
           }
         });
         if (flag1) {
-          arr.push(device);
+          arr.push(asset);
         }
       });
-      this.devices = JSON.parse(JSON.stringify(arr));
+      this.assets = JSON.parse(JSON.stringify(arr));
       }
-      if (this.devices?.length === 1) {
-        this.filterObj.device = this.devices[0];
+      if (this.assets?.length === 1) {
+        this.filterObj.asset = this.assets[0];
       }
-      if (persistDeviceSelection) {
-      this.filterObj.deviceArr = undefined;
-      this.filterObj.device = undefined;
+      if (persistAssetSelection) {
+      this.filterObj.assetArr = undefined;
+      this.filterObj.asset = undefined;
       }
-      // await this.getDevices(hierarchyObj);
+      // await this.getAssets(hierarchyObj);
     }
     let count = 0;
     Object.keys(this.configureHierarchy).forEach(key => {
@@ -303,19 +303,19 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
-  getDevices(hierarchy) {
+  getAssets(hierarchy) {
     return new Promise<void>((resolve1) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
         type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
       };
-      this.apiSubscriptions.push(this.deviceService.getIPAndLegacyDevices(obj, this.contextApp.app).subscribe(
+      this.apiSubscriptions.push(this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe(
         (response: any) => {
           if (response?.data) {
-            this.devices = response.data;
-            this.originalDevices = JSON.parse(JSON.stringify(this.devices));
-            if (this.devices?.length === 1) {
-              this.filterObj.device = this.devices[0];
+            this.assets = response.data;
+            this.originalAssets = JSON.parse(JSON.stringify(this.assets));
+            if (this.assets?.length === 1) {
+              this.filterObj.asset = this.assets[0];
             }
           }
           resolve1();
@@ -331,7 +331,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.telemetryData = JSON.parse(JSON.stringify([]));
     this.telemetryObj = undefined;
     this.telemetryInterval = undefined;
-    this.filterObj.device = undefined;
+    this.filterObj.asset = undefined;
     this.hierarchyArr = [];
     this.configureHierarchy = {};
     this.widgetPropertyList = [];
@@ -346,15 +346,15 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     $('#overlay').hide();
   }
 
-  getLiveWidgets(deviceType) {
+  getLiveWidgets(assetModel) {
     return new Promise<void>((resolve1) => {
     const params = {
       app: this.contextApp.app,
-      name: deviceType
+      name: assetModel
     };
     this.liveWidgets = [];
     this.isGetWidgetsAPILoading = true;
-    this.apiSubscriptions.push(this.deviceTypeService.getThingsModelLiveWidgets(params).subscribe(
+    this.apiSubscriptions.push(this.assetModelService.getThingsModelLiveWidgets(params).subscribe(
       async (response: any) => {
         if (response?.live_widgets?.length > 0) {
           response.live_widgets.forEach(widget => {
@@ -431,28 +431,28 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // this.commonService.setItemInLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION, filterObj);
     const obj = JSON.parse(JSON.stringify(filterObj));
-    let device_type: any;
-    if (obj.device) {
-      obj.device_id = obj.device.device_id;
-      device_type = obj.device.device_type;
-      delete obj.device;
+    let asset_type: any;
+    if (obj.asset) {
+      obj.asset_id = obj.asset.asset_id;
+      asset_type = obj.asset.asset_type;
+      delete obj.asset;
     } else {
       this.toasterService.showError('Asset selection is required', 'View Live Telemetry');
       return;
     }
     if (updateFilterObj) {
       const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
-      pagefilterObj['hierarchy'] = filterObj.device.hierarchy;
-      pagefilterObj['devices'] = filterObj.device;
+      pagefilterObj['hierarchy'] = filterObj.asset.hierarchy;
+      pagefilterObj['assets'] = filterObj.asset;
       this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
     }
     this.originalFilter = JSON.parse(JSON.stringify(filterObj));
     this.isTelemetryDataLoading = true;
-    await this.getDeviceSignalRMode(this.filterObj.device.device_id);
-    await this.getDeviceData();
-    if (device_type) {
-      await this.getThingsModelProperties(device_type);
-      await this.getLiveWidgets(device_type);
+    await this.getAssetSignalRMode(this.filterObj.asset.asset_id);
+    await this.getAssetData();
+    if (asset_type) {
+      await this.getThingsModelProperties(asset_type);
+      await this.getLiveWidgets(asset_type);
     }
     this.telemetryObj = undefined;
     this.telemetryInterval = undefined;
@@ -464,8 +464,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     obj.from_date = midnight;
     obj.to_date = now;
     obj.app = this.contextApp.app;
-    obj.partition_key = this.filterObj.device.partition_key;
-    delete obj.deviceArr;
+    obj.partition_key = this.filterObj.asset.partition_key;
+    delete obj.assetArr;
     this.isFilterSelected = true;
     if (environment.app === 'SopanCMS') {
       await this.getMidNightHours(obj);
@@ -473,7 +473,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     const obj1 = {
       hierarchy: this.contextApp.user.hierarchy,
       levels: this.contextApp.hierarchy.levels,
-      device_id: this.filterObj?.device?.device_id,
+      asset_id: this.filterObj?.asset?.asset_id,
       type: 'telemetry',
       app: this.contextApp.app,
 
@@ -494,7 +494,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     );
-    this.apiSubscriptions.push(this.deviceService.getLastTelmetry(this.contextApp.app, obj).subscribe(
+    this.apiSubscriptions.push(this.assetService.getLastTelmetry(this.contextApp.app, obj).subscribe(
       (response: any) => {
         if (response?.message) {
           response.message.date = this.commonService.convertUTCDateToLocal(response.message_date);
@@ -589,8 +589,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       });
 
       obj.message_props = message_props;
-      obj.partition_key = this.filterObj?.device?.partition_key;
-      this.apiSubscriptions.push(this.deviceService.getFirstTelmetry(this.contextApp.app, obj).subscribe(
+      obj.partition_key = this.filterObj?.asset?.partition_key;
+      this.apiSubscriptions.push(this.assetService.getFirstTelmetry(this.contextApp.app, obj).subscribe(
         (response: any) => {
             this.midNightHour = response.message[this.getPropertyKey('Running Hours')] ?
             Math.floor(Number(response.message[this.getPropertyKey('Running Hours')])) : 0;
@@ -615,27 +615,27 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onAssetSelection() {
     console.log(this.filterObj);
-    if (this.filterObj?.deviceArr.length > 0) {
-      this.filterObj.device = this.filterObj.deviceArr[0];
+    if (this.filterObj?.assetArr.length > 0) {
+      this.filterObj.asset = this.filterObj.assetArr[0];
     } else {
-      this.filterObj.device = undefined;
-      this.filterObj.deviceArr = undefined;
+      this.filterObj.asset = undefined;
+      this.filterObj.assetArr = undefined;
     }
   }
 
   onAssetDeselect() {
-    this.filterObj.device = undefined;
-    this.filterObj.deviceArr = undefined;
+    this.filterObj.asset = undefined;
+    this.filterObj.assetArr = undefined;
   }
 
-  getThingsModelProperties(deviceType) {
+  getThingsModelProperties(assetModel) {
     return new Promise<void>((resolve1) => {
       if (this.propertyList.length === 0) {
         const obj = {
           app: this.contextApp.app,
-          name: deviceType
+          name: assetModel
         };
-        this.apiSubscriptions.push(this.deviceTypeService.getThingsModelProperties(obj).subscribe(
+        this.apiSubscriptions.push(this.assetModelService.getThingsModelProperties(obj).subscribe(
           (response: any) => {
             this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
             response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
@@ -653,9 +653,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  getDeviceSignalRMode(deviceId) {
+  getAssetSignalRMode(assetId) {
     // this.signalRModeValue = true;
-    this.apiSubscriptions.push(this.deviceService.getDeviceSignalRMode(this.contextApp.app, deviceId).subscribe(
+    this.apiSubscriptions.push(this.assetService.getAssetSignalRMode(this.contextApp.app, assetId).subscribe(
       (response: any) => {
         const newMode = response?.mode?.toLowerCase() === 'normal' ? true :
         (response?.mode?.toLowerCase() === 'turbo' ? false : true);

@@ -329,7 +329,7 @@
               <ng-container *ngFor="let item of applicationData?.menu_settings?.model_control_panel_menu; let configIndex = index">
                 <tr *ngIf="!item.isTitle">
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control form-control-sm" name="display_name_asset_type{{configIndex}}" id="display_name_asset_type{{configIndex}}"
+                  <td><input type="text" class="form-control form-control-sm" name="display_name_asset_model{{configIndex}}" id="display_name_asset_model{{configIndex}}"
                       [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/></td>
                   <td><input type="checkbox" name="visible{{configIndex}}" [disabled]="!isAppSettingsEditable"
                       id="visible{{configIndex}}" [(ngModel)]="item.visible" /></td>

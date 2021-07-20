@@ -431,10 +431,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // this.commonService.setItemInLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION, filterObj);
     const obj = JSON.parse(JSON.stringify(filterObj));
-    let asset_type: any;
+    let asset_model: any;
     if (obj.asset) {
       obj.asset_id = obj.asset.asset_id;
-      asset_type = obj.asset.asset_type;
+      asset_model = obj.asset.asset_model;
       delete obj.asset;
     } else {
       this.toasterService.showError('Asset selection is required', 'View Live Telemetry');
@@ -450,9 +450,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isTelemetryDataLoading = true;
     await this.getAssetSignalRMode(this.filterObj.asset.asset_id);
     await this.getAssetData();
-    if (asset_type) {
-      await this.getThingsModelProperties(asset_type);
-      await this.getLiveWidgets(asset_type);
+    if (asset_model) {
+      await this.getThingsModelProperties(asset_model);
+      await this.getLiveWidgets(asset_model);
     }
     this.telemetryObj = undefined;
     this.telemetryInterval = undefined;

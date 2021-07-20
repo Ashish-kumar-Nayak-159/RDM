@@ -20,13 +20,13 @@ export class CONSTANTS {
   ];
 
   public static PROTOCOLS = [
-    {id: 1, asset_type: 'IoT Asset', name: 'IP Asset (WiFi)', display_name: 'IP Asset (WiFi)', cloud_connectivity: ['IP Asset -> Azure IOT Hub SDK -> WiFi -> Cloud', 'IP Asset -> MQTT Client -> WiFi -> Cloud'], metadata: {}, deleted: false},
-    {id: 2, asset_type: 'IoT Asset', name: 'IP Asset (SIM)', display_name: 'IP Asset (SIM)', cloud_connectivity: ['IP Asset -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Asset -> MQTT Client -> SIM -> Cloud'], metadata: {}, deleted: false},
-    {id: 3, asset_type: 'IoT Gateway', name: 'IP Gateway (WiFi)', display_name: 'IP Gateway (WiFi)', cloud_connectivity: ['IP Gateway -> Azure IOT Hub SDK -> WiFi -> Cloud', 'IP Gateway -> MQTT Client -> WiFi -> Cloud'], metadata: {}, deleted: false},
-    {id: 4, asset_type: 'IoT Gateway', name: 'IP Gateway (SIM)', display_name: 'IP Gateway (SIM)', cloud_connectivity: ['IP Gateway -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Gateway -> MQTT Client -> SIM -> Cloud'], metadata: {}, deleted: false},
-    {id: 5, asset_type: 'Legacy Asset', name: 'ModbusTCPMaster', display_name: 'Modbus TCP', cloud_connectivity: ['ModBus TCP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusTCPMaster'}, deleted: false},
-    {id: 6, asset_type: 'Legacy Asset', name: 'ModbusRTUMaster', display_name: 'Modbus RTU', cloud_connectivity: ['ModBus RTU Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusRTUMaster'}, deleted: false},
-    {id: 7, asset_type: 'Legacy Asset', name: 'SiemensTCPIP', display_name: 'Siemens TCP/IP', cloud_connectivity: ['Siemens TCP/IP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'SiemensTCPIP'}, deleted: false}
+    {id: 1, asset_model: 'IoT Asset', name: 'IP Asset (WiFi)', display_name: 'IP Asset (WiFi)', cloud_connectivity: ['IP Asset -> Azure IOT Hub SDK -> WiFi -> Cloud', 'IP Asset -> MQTT Client -> WiFi -> Cloud'], metadata: {}, deleted: false},
+    {id: 2, asset_model: 'IoT Asset', name: 'IP Asset (SIM)', display_name: 'IP Asset (SIM)', cloud_connectivity: ['IP Asset -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Asset -> MQTT Client -> SIM -> Cloud'], metadata: {}, deleted: false},
+    {id: 3, asset_model: 'IoT Gateway', name: 'IP Gateway (WiFi)', display_name: 'IP Gateway (WiFi)', cloud_connectivity: ['IP Gateway -> Azure IOT Hub SDK -> WiFi -> Cloud', 'IP Gateway -> MQTT Client -> WiFi -> Cloud'], metadata: {}, deleted: false},
+    {id: 4, asset_model: 'IoT Gateway', name: 'IP Gateway (SIM)', display_name: 'IP Gateway (SIM)', cloud_connectivity: ['IP Gateway -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Gateway -> MQTT Client -> SIM -> Cloud'], metadata: {}, deleted: false},
+    {id: 5, asset_model: 'Legacy Asset', name: 'ModbusTCPMaster', display_name: 'Modbus TCP', cloud_connectivity: ['ModBus TCP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusTCPMaster'}, deleted: false},
+    {id: 6, asset_model: 'Legacy Asset', name: 'ModbusRTUMaster', display_name: 'Modbus RTU', cloud_connectivity: ['ModBus RTU Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusRTUMaster'}, deleted: false},
+    {id: 7, asset_model: 'Legacy Asset', name: 'SiemensTCPIP', display_name: 'Siemens TCP/IP', cloud_connectivity: ['Siemens TCP/IP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'SiemensTCPIP'}, deleted: false}
   ];
 
   public static NON_IP_DEVICE_OPTIONS = [
@@ -291,7 +291,7 @@ export class CONSTANTS {
     {
       page: 'slave_info',
       system_name: 'Sensor / Source / Slave Info',
-      url: '#asset_type_slave_info',
+      url: '#asset_model_slave_info',
       display_name: 'Sensor / Source / Slave Info',
       icon: 'fa fa-fw fa-user-secret',
       visible: true,
@@ -1114,7 +1114,7 @@ export class CONSTANTS {
     {
       page: 'overview',
       system_name: 'Overview',
-      url: '#asset_type_overview',
+      url: '#asset_model_overview',
       display_name: 'Overview',
       icon: 'fa fa-fw fa-life-ring',
       visible: true,
@@ -1123,7 +1123,7 @@ export class CONSTANTS {
     {
       page: 'tags',
       system_name: 'Tags',
-      url: '#asset_type_tags',
+      url: '#asset_model_tags',
       display_name: 'Tags',
       icon: 'fa fa-fw fa-tags',
       visible: true,
@@ -1132,7 +1132,7 @@ export class CONSTANTS {
     {
       page: 'package_management',
       system_name: 'Software Packages',
-      url: '#asset_type_package_management',
+      url: '#asset_model_package_management',
       display_name: 'Software Packages',
       icon: 'fa fa-fw fa-file',
       visible: true,
@@ -1141,7 +1141,7 @@ export class CONSTANTS {
     {
       page: 'settings',
       system_name: 'Setup',
-      url: '#asset_type_settings',
+      url: '#asset_model_settings',
       display_name: 'Setup',
       icon: 'fa fa-fw fa-cog',
       visible: true,
@@ -1159,7 +1159,7 @@ export class CONSTANTS {
     {
       page: 'slave_info',
       system_name: 'Sensor / Source / Slave Info',
-      url: '#asset_type_slave_info',
+      url: '#asset_model_slave_info',
       display_name: 'Sensor / Source / Slave Info',
       icon: 'fa fa-fw fa-user-secret',
       visible: true,
@@ -1168,7 +1168,7 @@ export class CONSTANTS {
     {
       page: 'measured_properties',
       system_name: 'Measured Properties',
-      url: '#asset_type_properties',
+      url: '#asset_model_properties',
       display_name: 'Measured Properties',
       icon: 'fa fa-fw fa-history',
       visible: true,
@@ -1177,7 +1177,7 @@ export class CONSTANTS {
     {
       page: 'derived_properties',
       system_name: 'Edge Derived Properties',
-      url: '#asset_type_properties',
+      url: '#asset_model_properties',
       display_name: 'Edge Derived Properties',
       icon: 'fa fa-fw fa-retweet',
       visible: true,
@@ -1186,7 +1186,7 @@ export class CONSTANTS {
     {
       page: 'controllable_properties',
       system_name: 'Controllable Properties',
-      url: '#asset_type_properties',
+      url: '#asset_model_properties',
       display_name: 'Controllable Properties',
       icon: 'fa fa-fw fa-edit',
       visible: true,
@@ -1195,7 +1195,7 @@ export class CONSTANTS {
     {
       page: 'configurable_properties',
       system_name: 'Configurable Properties',
-      url: '#asset_type_properties',
+      url: '#asset_model_properties',
       display_name: 'Configurable Properties',
       icon: 'fa fa-fw fa-book',
       visible: true,
@@ -1205,7 +1205,7 @@ export class CONSTANTS {
     {
       page: 'alert_conditioning',
       system_name: 'Alert Conditioning',
-      url: '#asset_type_alert_conditioning',
+      url: '#asset_model_alert_conditioning',
       display_name: 'Alert Conditioning',
       icon: 'fa fa-fw fa-exclamation-triangle',
       visible: true,
@@ -1223,7 +1223,7 @@ export class CONSTANTS {
     {
       page: 'direct_methods',
       system_name: 'Direct Methods',
-      url: '#asset_type_methods',
+      url: '#asset_model_methods',
       display_name: 'Direct Methods',
       icon: 'fa fa-fw fa-archive',
       visible: true,
@@ -1232,7 +1232,7 @@ export class CONSTANTS {
     {
       page: 'configuration_widgets',
       system_name: 'Configuration Widgets',
-      url: '#asset_type_configuration_widgets',
+      url: '#asset_model_configuration_widgets',
       display_name: 'Configuration Widgets',
       icon: 'fa fa-fw fa-cog',
       visible: true,
@@ -1241,7 +1241,7 @@ export class CONSTANTS {
     {
       page: 'control_widgets',
       system_name: 'Control Widgets',
-      url: '#asset_type_control_widgets',
+      url: '#asset_model_control_widgets',
       display_name: 'Control Widgets',
       icon: 'fa fa-fw fa-angle-right',
       visible: true,
@@ -1259,7 +1259,7 @@ export class CONSTANTS {
     {
       page: 'stream_processing',
       system_name: 'Cloud Derived Properties',
-      url: '#asset_type_stream_processing',
+      url: '#asset_model_stream_processing',
       display_name: 'Cloud Derived Properties',
       icon: 'fa fa-fw fa-microchip',
       visible: true,
@@ -1268,7 +1268,7 @@ export class CONSTANTS {
     {
       page: 'derived_kpis',
       system_name: 'Derived KPIs',
-      url: '#asset_type_derived_kpis',
+      url: '#asset_model_derived_kpis',
       display_name: 'Derived KPIs',
       icon: 'fa fa-fw fa-retweet',
       visible: true,
@@ -1277,7 +1277,7 @@ export class CONSTANTS {
     {
       page: 'rules',
       system_name: 'Rules',
-      url: '#asset_type_rules',
+      url: '#asset_model_rules',
       display_name: 'Rules',
       icon: 'fa fa-fw fa-archive',
       visible: true,
@@ -1296,7 +1296,7 @@ export class CONSTANTS {
     {
       page: 'layout',
       system_name: 'Visualization Widgets',
-      url: '#asset_type_layout',
+      url: '#asset_model_layout',
       display_name: 'Visualization Widgets',
       icon: 'fa fa-fw fa-bar-chart',
       visible: true,
@@ -1314,7 +1314,7 @@ export class CONSTANTS {
     {
       page: 'reference_material',
       system_name: 'Documents',
-      url: '#asset_type_reference_material',
+      url: '#asset_model_reference_material',
       display_name: 'Documents',
       icon: 'fa fa-fw fa-file',
       visible: true,
@@ -1323,7 +1323,7 @@ export class CONSTANTS {
     {
       page: 'alert_acknowledgement_reasons',
       system_name: 'Alert Acknowledgement Reasons',
-      url: '#asset_type_alert_acknowledgement_reasons',
+      url: '#asset_model_alert_acknowledgement_reasons',
       display_name: 'Alert Acknowledgement Reasons',
       icon: 'fa fa-fw fa-exclamation-triangle',
       visible: true,

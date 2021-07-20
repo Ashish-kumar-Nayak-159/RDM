@@ -508,7 +508,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       const filterObj = {
         app: this.contextApp.app,
         asset_id: this.selectedAlert.asset_id,
-        asset_type: this.selectedAsset.asset_type,
+        asset_model: this.selectedAsset.asset_model,
         legacy: !(this.selectedAlert.asset_id === this.selectedAlert.gateway_id)
       };
       if (this.selectedAlert.code) {
@@ -547,7 +547,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.documents = [];
       const obj = {
         app: this.contextApp.app,
-        asset_type: this.alertCondition?.asset_type ?  this.alertCondition.asset_type : this.selectedAsset.asset_type
+        asset_model: this.alertCondition?.asset_model ?  this.alertCondition.asset_model : this.selectedAsset.asset_model
       };
       this.subscriptions.push(this.assetModelService.getThingsModelDocuments(obj).subscribe(
         (response: any) => {
@@ -586,7 +586,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       const obj = {
         app: this.contextApp.app,
-        name: this.alertCondition?.asset_type ?  this.alertCondition.asset_type : this.selectedAsset.asset_type
+        name: this.alertCondition?.asset_model ?  this.alertCondition.asset_model : this.selectedAsset.asset_model
       };
       this.subscriptions.push(this.assetModelService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
@@ -611,7 +611,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
     const params = {
       app: this.contextApp.app,
-      name: this.alertCondition?.asset_type ?  this.alertCondition.asset_type : this.selectedAsset.asset_type
+      name: this.alertCondition?.asset_model ?  this.alertCondition.asset_model : this.selectedAsset.asset_model
     };
     this.dropdownWidgetList = [];
     this.selectedWidgetsForSearch = [];
@@ -721,7 +721,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       const obj = {
         app: this.contextApp.app,
-        name: this.alertCondition?.asset_type ?  this.alertCondition.asset_type : this.selectedAsset.asset_type
+        name: this.alertCondition?.asset_model ?  this.alertCondition.asset_model : this.selectedAsset.asset_model
       };
       this.subscriptions.push(this.assetModelService.getModelReasons(obj.app, obj.name).subscribe(
         (response: any) => {

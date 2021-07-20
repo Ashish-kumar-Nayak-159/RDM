@@ -19,7 +19,7 @@
         </td>
         <td>{{asset?.metadata?.package_app || 'NA'}}</td>
         <!-- <td >{{asset.metadata?.package_app && assetTwin.twin_properties.reported.registered_assets[asset.metadata.package_app] ? (assetTwin.twin_properties.reported?.registered_assets[asset?.metadata?.package_app]?.indexOf(asset.asset_id) > -1 ? 'Registered' : 'Not Registered') : 'Not Registered'}}</td> -->
-        <td>{{asset.asset_type || asset.tags?.asset_type}}</td>
+        <td>{{asset.asset_model || asset.tags?.asset_model}}</td>
         <td>
           {{asset.appObj ? (
             assetTwin.twin_properties.reported && assetTwin.twin_properties.reported[asset.appObj.type] &&

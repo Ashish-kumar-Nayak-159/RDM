@@ -74,7 +74,7 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
     this.isGetControlWidgetAPILoading = true;
     const obj = {
       app: this.assetModel.app,
-      asset_type: this.assetModel.name
+      asset_model: this.assetModel.name
     };
     this.subscriptions.push(this.assetModelService.getThingsModelControlWidgets(obj).subscribe(
       (response: any) => {
@@ -240,7 +240,7 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
     }
     this.isCreateWidgetAPILoading = true;
     this.controlWidget.app = this.assetModel.app;
-    this.controlWidget.asset_type = this.assetModel.name;
+    this.controlWidget.asset_model = this.assetModel.name;
     this.subscriptions.push(this.assetModelService.createThingsModelControlWidget(this.controlWidget).subscribe(
       (response: any) => {
         this.isCreateWidgetAPILoading = false;
@@ -258,7 +258,7 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
     const obj = {
       app: this.assetModel.app,
       id: this.selectedWidget.id,
-      asset_type: this.assetModel.id
+      asset_model: this.assetModel.id
     };
     this.subscriptions.push(this.assetModelService.deleteThingsModelControlWidget(obj).subscribe(
       (response: any) => {

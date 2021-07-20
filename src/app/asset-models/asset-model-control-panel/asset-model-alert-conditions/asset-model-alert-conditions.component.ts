@@ -94,7 +94,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.documents = [];
     const obj = {
       app: this.assetModel.app,
-      asset_type: this.assetModel.name
+      asset_model: this.assetModel.name
     };
     this.subscriptions.push(this.assetModelService.getThingsModelDocuments(obj).subscribe(
       (response: any) => {
@@ -109,7 +109,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   getAlertConditions() {
     this.isAlertConditionsLoading = true;
     const filterObj = {
-      asset_type: this.assetModel.name,
+      asset_model: this.assetModel.name,
       alert_type: this.selectedTab
     };
     this.subscriptions.push(this.assetModelService.getAlertConditions(this.assetModel.app, filterObj).subscribe(

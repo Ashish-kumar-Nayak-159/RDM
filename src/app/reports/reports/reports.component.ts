@@ -311,10 +311,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
     // this.nonIPAssets = [];
     // this.filterObj.asset_id = this.filterObj.asset.asset_id;
     if (this.filterObj.asset) {
-    const asset_type = this.filterObj?.asset?.asset_type;
+    const asset_model = this.filterObj?.asset?.asset_model;
 
-    if (asset_type) {
-      this.getThingsModelProperties(asset_type);
+    if (asset_model) {
+      this.getThingsModelProperties(asset_model);
     }
     } else {
       this.dropdownPropList = [];
@@ -339,9 +339,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
     console.log(this.originalFilterObj.report_type);
     if (this.filterObj.report_type === 'Process Parameter Report') {
     if (this.filterObj.asset) {
-      const asset_type = this.filterObj.asset.asset_type;
-      if (asset_type) {
-        this.getThingsModelProperties(asset_type);
+      const asset_model = this.filterObj.asset.asset_model;
+      if (asset_model) {
+        this.getThingsModelProperties(asset_model);
       }
       }
     }
@@ -407,10 +407,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.filterObj.to_date = this.filterObj.to_date;
     }
     const obj = {...this.filterObj};
-    let asset_type: any;
+    let asset_model: any;
     if (obj.asset) {
       obj.asset_id = obj.asset.asset_id;
-      asset_type = obj.asset.asset_type;
+      asset_model = obj.asset.asset_model;
       delete obj.asset;
     }
     if (!obj.report_type) {

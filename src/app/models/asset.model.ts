@@ -9,7 +9,7 @@ export class AssetListFilter {
   type: string;
   hierarchy: any;
   hierarchyString: string;
-  asset_type: string;
+  asset_model: string;
   gatewayArr: any[];
 }
 
@@ -19,7 +19,7 @@ export class Asset {
   status: string;
   connection_state: string;
   gateway_id?: string;
-  asset_type: string;
+  asset_model: string;
   category?: string;
   display_name: string;
   hierarchy: string;

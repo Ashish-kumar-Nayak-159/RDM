@@ -46,7 +46,7 @@ export class SlavesInfoComponent implements OnInit {
   getModelSlaveData() {
     this.modelSlaveData = [];
     const obj = {};
-    this.subscriptions.push(this.assetModelService.getModelSlaveDetails(this.contextApp.app, this.asset?.tags?.asset_type, obj)
+    this.subscriptions.push(this.assetModelService.getModelSlaveDetails(this.contextApp.app, this.asset?.tags?.asset_model, obj)
     .subscribe((response: any) => {
       if (response.data) {
         this.modelSlaveData = response.data;
@@ -148,7 +148,7 @@ export class SlavesInfoComponent implements OnInit {
     }
     this.isAddSlaveAPILoading = true;
     this.slaveObj.created_by = this.userData.email + ' (' + this.userData.name + ')';
-    this.slaveObj.asset_model = this.asset?.tags?.asset_type || this.asset?.asset_type;
+    this.slaveObj.asset_model = this.asset?.tags?.asset_model || this.asset?.asset_model;
     const macID = this.slaveObj.metadata.mac_id;
     this.slaveObj.metadata = this.setupForm?.value;
     this.slaveObj.metadata.mac_id = macID;

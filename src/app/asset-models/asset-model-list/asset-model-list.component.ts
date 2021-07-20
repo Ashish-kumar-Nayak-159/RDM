@@ -239,7 +239,7 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
       if (!data) {
         data = {};
       }
-      data['asset_type'] = obj.data.name;
+      data['asset_model'] = obj.data.name;
       data['type'] = obj.data.model_type;
       console.log(data);
       this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY, data);

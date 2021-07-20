@@ -115,8 +115,8 @@ export class AddAssetComponent implements OnInit {
   }
 
   onChangeThingsModel() {
-    if (this.assetDetail.tags.asset_type) {
-      const modelObj = this.assetModels.filter(type => type.name === this.assetDetail.tags.asset_type)[0];
+    if (this.assetDetail.tags.asset_model) {
+      const modelObj = this.assetModels.filter(type => type.name === this.assetDetail.tags.asset_model)[0];
       modelObj.tags = {
         cloud_connectivity: modelObj.cloud_connectivity,
         protocol: modelObj.protocol
@@ -197,7 +197,7 @@ export class AddAssetComponent implements OnInit {
     Object.keys(this.addAssetConfigureHierarchy).forEach((key) => {
       this.assetDetail.tags.hierarchy_json[this.contextApp.hierarchy.levels[key]] = this.addAssetConfigureHierarchy[key];
     });
-    const modelObj = this.assetModels.filter(type => type.name === this.assetDetail.tags.asset_type)[0];
+    const modelObj = this.assetModels.filter(type => type.name === this.assetDetail.tags.asset_model)[0];
     if (!this.assetDetail.metadata) {
       this.assetDetail.metadata = {};
     }
@@ -260,7 +260,7 @@ export class AddAssetComponent implements OnInit {
     const obj = {
       asset_id: assetObj.asset_id,
       partition_key: assetObj.tags.partition_key,
-      model_id: assetObj.tags.asset_type
+      model_id: assetObj.tags.asset_model
     };
     // obj.partition_key[assetObj.asset_id] = assetObj.tags.partition_key;
     this.subscriptions.push(this.assetService.attachLegacyAssetToGateway(this.contextApp.app, assetObj.gateway_id, obj).subscribe(

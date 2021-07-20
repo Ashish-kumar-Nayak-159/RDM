@@ -53,7 +53,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       const obj = {
         app: this.contextApp.app,
-        name: this.asset.tags.asset_type
+        name: this.asset.tags.asset_model
       };
       this.apiSubscriptions.push(this.assetModelService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
@@ -73,7 +73,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     this.liveWidgets = [];
     const params = {
       app: this.contextApp.app,
-      name: this.asset.tags.asset_type
+      name: this.asset.tags.asset_model
     };
     this.apiSubscriptions.push(this.assetModelService.getThingsModelLiveWidgets(params).subscribe(
       (response: any) => {
@@ -141,7 +141,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     this.isTelemetryDataLoading = true;
     this.telemetryObj = undefined;
     obj['app'] = this.contextApp.app;
-    obj['asset_type'] = this.asset.tags.asset_type;
+    obj['asset_model'] = this.asset.tags.asset_model;
     // let message_props = '';
     obj['count'] = 1;
     const midnight =  ((((moment().hour(0)).minute(0)).second(0)).utc()).unix();

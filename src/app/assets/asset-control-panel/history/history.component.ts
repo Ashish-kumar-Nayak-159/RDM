@@ -157,7 +157,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
-        name: this.asset.tags.asset_type
+        name: this.asset.tags.asset_model
       };
       this.apiSubscriptions.push(this.assetModelService.getThingsModelProperties(obj).subscribe(
         (response: any) => {
@@ -584,7 +584,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   getLayout() {
     const params = {
       app: this.contextApp.app,
-      name: this.asset?.tags?.asset_type
+      name: this.asset?.tags?.asset_model
     };
     this.dropdownWidgetList = [];
     this.selectedWidgets = [];

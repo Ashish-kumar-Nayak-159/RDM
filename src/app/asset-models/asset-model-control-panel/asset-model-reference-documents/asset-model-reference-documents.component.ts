@@ -115,7 +115,7 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
     this.isDocumentsLoading = true;
     const obj = {
       app: this.assetModel.app,
-      asset_type: this.assetModel.name
+      asset_model: this.assetModel.name
     };
     this.subscriptions.push(this.assetModelService.getThingsModelDocuments(obj).subscribe(
       (response: any) => {

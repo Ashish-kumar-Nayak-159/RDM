@@ -79,7 +79,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     // this.assetMethods = {};
     const obj = {
       app: this.contextApp.app,
-      name: this.asset.tags?.asset_type
+      name: this.asset.tags?.asset_model
     };
     this.apiSubscriptions.push(this.assetModelService.getThingsModelAssetMethods(obj).subscribe(
       (response: any) => {

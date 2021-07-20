@@ -107,7 +107,7 @@
           (change)="getConnectivityData()" [(ngModel)]="thingsModel.tags.protocol">
             <option [ngValue]="undefined"> Select Protocol</option>
             <ng-container *ngFor="let protocol of protocolList">
-              <option [ngValue]="protocol.name" *ngIf="protocol.asset_type === thingsModel.metadata.model_type">{{protocol.display_name}}</option>
+              <option [ngValue]="protocol.name" *ngIf="protocol.asset_model === thingsModel.metadata.model_type">{{protocol.display_name}}</option>
             </ng-container>
           </select>
         </div>

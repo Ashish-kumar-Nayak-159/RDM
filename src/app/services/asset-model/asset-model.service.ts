@@ -240,12 +240,12 @@ export class AssetModelService {
 
   getThingsModelControlWidgets(filterObj) {
     return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_CONTROL_WIDGETS,
-      encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.asset_type)));
+      encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.asset_model)));
   }
 
   createThingsModelControlWidget(modelObj) {
     return this.http.post(this.url + String.Format(AppUrls.CREATE_THINGS_MODEL_CONTROL_WIDGETS,
-      encodeURIComponent(modelObj.app), encodeURIComponent(modelObj.asset_type)), modelObj);
+      encodeURIComponent(modelObj.app), encodeURIComponent(modelObj.asset_model)), modelObj);
   }
 
   updateThingsModelControlWidget(modelObj, app) {
@@ -255,17 +255,17 @@ export class AssetModelService {
 
   deleteThingsModelControlWidget(filterObj) {
     return this.http.delete(this.url + String.Format(AppUrls.DELETE_CONTROL_WIDGET,
-      encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.asset_type), encodeURIComponent(filterObj.id)));
+      encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.asset_model), encodeURIComponent(filterObj.id)));
   }
 
   getThingsModelConfigurationWidgets(filterObj) {
     return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_CONFIGURATION_WIDGETS,
-      encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.asset_type)));
+      encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.asset_model)));
   }
 
   createThingsModelConfigurationWidget(modelObj) {
     return this.http.post(this.url + String.Format(AppUrls.CREATE_THINGS_MODEL_CONFIGURATION_WIDGETS,
-      encodeURIComponent(modelObj.app), encodeURIComponent(modelObj.asset_type)), modelObj);
+      encodeURIComponent(modelObj.app), encodeURIComponent(modelObj.asset_model)), modelObj);
   }
 
   updateThingsModelConfigurationWidget(modelObj, app) {
@@ -275,20 +275,20 @@ export class AssetModelService {
 
   deleteThingsModelConfigurationWidget(filterObj) {
     return this.http.delete(this.url + String.Format(AppUrls.DELETE_CONFIGURATION_WIDGET,
-      encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.asset_type), encodeURIComponent(filterObj.id)));
+      encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.asset_model), encodeURIComponent(filterObj.id)));
   }
 
   getThingsModelDocuments(filterObj) {
     let assetModel = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_MODEL_DATA);
-    if (assetModel?.id !== filterObj.id || assetModel?.name !== filterObj.asset_type) {
+    if (assetModel?.id !== filterObj.id || assetModel?.name !== filterObj.asset_model) {
       assetModel = undefined;
     }
-    if (assetModel && assetModel.documents && (filterObj['id'] || filterObj['asset_type'])) {
+    if (assetModel && assetModel.documents && (filterObj['id'] || filterObj['asset_model'])) {
       let flag = false;
       if (filterObj['id']) {
         flag = assetModel.id === filterObj.id;
-      } else if (filterObj['asset_type']) {
-        flag = assetModel.name === filterObj.asset_type;
+      } else if (filterObj['asset_model']) {
+        flag = assetModel.name === filterObj.asset_model;
       }
       if (flag) {
         return new Observable((observer) => {
@@ -299,7 +299,7 @@ export class AssetModelService {
       }
     } else {
     return this.http.get(this.url + String.Format(AppUrls.GET_MODEL_REFERENCE_DOCUMENTS,
-      encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.asset_type)))
+      encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.asset_model)))
       .pipe( map((data: any) => {
         let obj = {};
         if (assetModel) {
@@ -308,7 +308,7 @@ export class AssetModelService {
         if (Object.keys(obj).length === 0) {
           obj = {
             id: filterObj?.id,
-            name: filterObj?.asset_type,
+            name: filterObj?.asset_model,
             documents: data
           };
         } else {
@@ -377,7 +377,7 @@ export class AssetModelService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_ALERT_CONDITIONS, encodeURIComponent(app), filterObj.asset_type), {params});
+    return this.http.get(this.url + String.Format(AppUrls.GET_ALERT_CONDITIONS, encodeURIComponent(app), filterObj.asset_model), {params});
   }
 
   createAlertCondition(modelObj, app, assetModel) {
@@ -402,7 +402,7 @@ export class AssetModelService {
 
   syncModelCache(app, assetModel) {
     let params = new HttpParams();
-    params = params.set('asset_type', assetModel);
+    params = params.set('asset_model', assetModel);
     return this.http.get(this.url + String.Format(AppUrls.SYNC_MODEL_CACHE, encodeURIComponent(app)), { params });
   }
 

@@ -79,7 +79,7 @@ export class AssetPackagesComponent implements OnInit {
     this.packages = [];
     this.isPackagesAPILoading = true;
     this.subscriptions.push(
-      this.assetModelService.getPackages(this.contextApp.app, this.asset.tags.asset_type, {}).subscribe(
+      this.assetModelService.getPackages(this.contextApp.app, this.asset.tags.asset_model, {}).subscribe(
         (response: any) => {
           if (response.data?.length > 0) {
             this.packages = response.data;

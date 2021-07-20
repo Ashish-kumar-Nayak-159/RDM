@@ -136,7 +136,7 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
     return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
-        name: asset.asset_type
+        name: asset.asset_model
       };
       this.apiSubscriptions.push(this.assetModelService.getThingsModelProperties(obj).subscribe(
         (response: any) => {

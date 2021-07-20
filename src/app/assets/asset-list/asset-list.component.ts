@@ -112,8 +112,8 @@ export class AssetListComponent implements OnInit, OnDestroy {
     this.assetsList = [];
     await this.getTileName();
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
-    // if (item?.asset_type) {
-    //   this.assetFilterObj.asset_type = item.asset_type;
+    // if (item?.asset_model) {
+    //   this.assetFilterObj.asset_model = item.asset_model;
     // }
     if (item?.type) {
       this.onTabChange(item.type);
@@ -256,8 +256,8 @@ export class AssetListComponent implements OnInit, OnDestroy {
     if (item1?.gateway_id) {
       this.assetFilterObj.gateway_id = item1.gateway_id;
     }
-    if (item1?.asset_type) {
-      this.assetFilterObj.asset_type = item1.asset_type;
+    if (item1?.asset_model) {
+      this.assetFilterObj.asset_model = item1.asset_model;
     }
     localStorage.removeItem(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
     this.assetFilterObj.hierarchyString = this.contextApp.user.hierarchyString;
@@ -848,7 +848,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
       from_date: moment().subtract(14, 'days').utc().unix(),
       to_date: moment().utc().unix(),
       epoch: true,
-      asset_model: asset.asset_type
+      asset_model: asset.asset_model
     };
     this.derivedKPIData = [];
     this.subscriptions.push(this.assetService.getDerivedKPIHistoricalData(this.contextApp.app, kpiCode, obj)

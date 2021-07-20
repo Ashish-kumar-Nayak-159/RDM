@@ -61,57 +61,57 @@
       </div>
 
     <div class="">
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'overview'}" id="asset_type_overview" role="tabpanel">
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'overview'}" id="asset_model_overview" role="tabpanel">
         <app-asset-model-overview *ngIf="activeTab === 'overview' && assetModel" [assetModel]="assetModel"></app-asset-model-overview>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="asset_type_tags">
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="asset_model_tags">
         <app-asset-model-tags *ngIf="activeTab === 'tags'  && assetModel" [assetModel]="assetModel"></app-asset-model-tags>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'settings'}" role="tabpanel" id="asset_type_settings">
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'settings'}" role="tabpanel" id="asset_model_settings">
         <app-asset-model-settings *ngIf="activeTab === 'settings'  && assetModel" [assetModel]="assetModel"></app-asset-model-settings>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab.includes('properties')}" role="tabpanel" id="asset_type_properties">
+      <div class="tab-pane" [ngClass]="{'active': activeTab.includes('properties')}" role="tabpanel" id="asset_model_properties">
         <app-asset-model-properties *ngIf="activeTab.includes('properties') && assetModel" [type]="activeTab" [assetModel]="assetModel"></app-asset-model-properties>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab.includes('direct_methods')}" role="tabpanel" id="asset_type_methods">
+      <div class="tab-pane" [ngClass]="{'active': activeTab.includes('direct_methods')}" role="tabpanel" id="asset_model_methods">
         <app-asset-model-device-methods *ngIf="activeTab.includes('direct_methods') && assetModel" [assetModel]="assetModel"></app-asset-model-device-methods>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab.includes('package_management')}" role="tabpanel" id="asset_type_package_management">
+      <div class="tab-pane" [ngClass]="{'active': activeTab.includes('package_management')}" role="tabpanel" id="asset_model_package_management">
         <app-asset-model-package-management *ngIf="activeTab.includes('package_management') && assetModel" [assetModel]="assetModel"></app-asset-model-package-management>
       </div>
 
 
-      <div class="tab-pane" [ngClass]="{'active': activeTab.includes('rules')}" role="tabpanel" id="asset_type_rules">
+      <div class="tab-pane" [ngClass]="{'active': activeTab.includes('rules')}" role="tabpanel" id="asset_model_rules">
         <app-asset-model-rules *ngIf="activeTab.includes('rules') && assetModel" [assetModel]="assetModel"></app-asset-model-rules>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'jsonpacket'}" role="tabpanel" id="asset_type_jsonpacket">
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'jsonpacket'}" role="tabpanel" id="asset_model_jsonpacket">
         <app-asset-model-json-packet-format *ngIf="activeTab === 'jsonpacket' && assetModel" [assetModel]="assetModel"></app-asset-model-json-packet-format>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'alert_conditioning'}" role="tabpanel" id="asset_type_alert_conditioning">
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'alert_conditioning'}" role="tabpanel" id="asset_model_alert_conditioning">
         <app-asset-model-alert-conditions *ngIf="activeTab === 'alert_conditioning' && assetModel" [assetModel]="assetModel"></app-asset-model-alert-conditions>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel" id="asset_type_control_widgets">
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'control_widgets'}" role="tabpanel" id="asset_model_control_widgets">
         <app-asset-model-control-widgets *ngIf="activeTab === 'control_widgets' && assetModel" [assetModel]="assetModel"></app-asset-model-control-widgets>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'configuration_widgets'}" role="tabpanel" id="asset_type_configuration_widgets">
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'configuration_widgets'}" role="tabpanel" id="asset_model_configuration_widgets">
         <app-asset-model-configuration-widgets *ngIf="activeTab === 'configuration_widgets' && assetModel" [assetModel]="assetModel"></app-asset-model-configuration-widgets>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'layout'}" role="tabpanel" id="asset_type_layout">
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'layout'}" role="tabpanel" id="asset_model_layout">
         <app-asset-model-layout *ngIf="activeTab === 'layout' && assetModel" [assetModel]="assetModel"></app-asset-model-layout>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'reference_material'}" role="tabpanel" id="asset_type_reference_material">
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'reference_material'}" role="tabpanel" id="asset_model_reference_material">
         <app-asset-model-reference-documents *ngIf="activeTab === 'reference_material' && assetModel" [assetModel]="assetModel"></app-asset-model-reference-documents>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'derived_kpis'}" role="tabpanel" id="asset_type_derived_kpis">
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'derived_kpis'}" role="tabpanel" id="asset_model_derived_kpis">
         <app-asset-model-derived-kpis *ngIf="activeTab === 'derived_kpis' && assetModel"  [assetModel]="assetModel"></app-asset-model-derived-kpis>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'stream_processing'}" role="tabpanel" id="asset_type_stream_processing">
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'stream_processing'}" role="tabpanel" id="asset_model_stream_processing">
         <app-asset-model-stream-processing *ngIf="activeTab === 'stream_processing' && assetModel"></app-asset-model-stream-processing>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'alert_acknowledgement_reasons'}" role="tabpanel" id="asset_type_alert_acknowledgement_reasons">
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'alert_acknowledgement_reasons'}" role="tabpanel" id="asset_model_alert_acknowledgement_reasons">
         <app-asset-model-alert-acknowledgement-reasons *ngIf="activeTab === 'alert_acknowledgement_reasons' && assetModel" [assetModel]="assetModel"></app-asset-model-alert-acknowledgement-reasons>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'slave_info'}" role="tabpanel" id="asset_type_slave_info">
+      <div class="tab-pane" [ngClass]="{'active': activeTab === 'slave_info'}" role="tabpanel" id="asset_model_slave_info">
         <app-asset-model-slave-info *ngIf="activeTab === 'slave_info' && assetModel" [assetModel]="assetModel"></app-asset-model-slave-info>
       </div>
       <!-- /.container1-fluid -->

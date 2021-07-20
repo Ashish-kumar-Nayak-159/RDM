@@ -84,7 +84,7 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
     this.isGetControlWidgetAPILoading = true;
     const obj = {
       app: this.assetModel.app,
-      asset_type: this.assetModel.name
+      asset_model: this.assetModel.name
     };
     this.subscriptions.push(this.assetModelService.getThingsModelConfigurationWidgets(obj).subscribe(
       (response: any) => {
@@ -240,7 +240,7 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
     }
     this.isCreateWidgetAPILoading = true;
     this.controlWidget.app = this.assetModel.app;
-    this.controlWidget.asset_type = this.assetModel.name;
+    this.controlWidget.asset_model = this.assetModel.name;
     this.subscriptions.push(this.assetModelService.createThingsModelConfigurationWidget(this.controlWidget).subscribe(
       (response: any) => {
         this.isCreateWidgetAPILoading = false;
@@ -259,7 +259,7 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
     const obj = {
       app: this.assetModel.app,
       id: this.selectedWidget.id,
-      asset_type: this.assetModel.id
+      asset_model: this.assetModel.id
     };
     this.subscriptions.push(this.assetModelService.deleteThingsModelConfigurationWidget(obj).subscribe(
       (response: any) => {

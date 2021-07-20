@@ -42,7 +42,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   getAssetModelDetail(asset) {
     return new Promise<void>((resolve) => {
     const obj = {
-      name: asset.tags.asset_type,
+      name: asset.tags.asset_model,
       app: this.contextApp.app
     };
     this.subscriptions.push(this.assetModelService.getThingsModelDetails(obj.app, obj.name).subscribe(

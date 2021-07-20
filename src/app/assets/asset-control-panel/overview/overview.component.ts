@@ -84,7 +84,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     return new Promise<void>((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(this.asset.tags.hierarchy_json),
-        name: this.asset.tags.asset_type,
+        name: this.asset.tags.asset_model,
         app: this.contextApp.app
       };
       this.subscriptions.push(this.assetModelService.getThingsModelDetails(obj.app, obj.name).subscribe(
@@ -121,7 +121,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   onRedirectToModel(asset) {
-    this.router.navigate(['applications', this.contextApp.app, 'things', 'model', asset?.tags?.asset_type, 'control-panel']);
+    this.router.navigate(['applications', this.contextApp.app, 'things', 'model', asset?.tags?.asset_model, 'control-panel']);
   }
 
   getAssetCount() {

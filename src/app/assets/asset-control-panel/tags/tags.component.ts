@@ -113,7 +113,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     return new Promise<void>((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(this.asset.hierarchy),
-        name: this.asset?.asset_type || this.asset?.tags?.asset_type,
+        name: this.asset?.asset_model || this.asset?.tags?.asset_model,
         app: this.contextApp.app
       };
       this.subscriptions.push(this.assetModelService.getThingsModelDetails(obj.app, obj.name).subscribe(

@@ -75,7 +75,7 @@ export class FotaComponent implements OnInit {
   getAssetModelData() {
     return new Promise<void>((resolve) => {
       this.subscriptions.push(
-        this.assetModelService.getPackages(this.contextApp.app, this.asset.tags.asset_type, {}).subscribe(
+        this.assetModelService.getPackages(this.contextApp.app, this.asset.tags.asset_model, {}).subscribe(
           (response: any) => {
             if (response.data?.length > 0) {
               this.assetPackages = response.data;

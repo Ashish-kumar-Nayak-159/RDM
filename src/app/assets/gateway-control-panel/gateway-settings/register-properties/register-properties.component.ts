@@ -52,7 +52,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     } else {
       this.asset.gateway_id = this.asset.configuration?.gateway_id;
       this.thingsModels.forEach(model => {
-        if (this.asset.asset_type === model.name) {
+        if (this.asset.asset_model === model.name) {
           this.asset.model_freeze = model.freezed;
         }
       });
@@ -111,7 +111,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
             // this.assets = response.data;
             response.data.forEach(asset => {
               this.thingsModels.forEach(model => {
-              if (asset.asset_type === model.name) {
+              if (asset.asset_model === model.name) {
                 asset.model_freeze = model.freezed;
               }
               });
@@ -152,7 +152,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     return new Promise<void>((resolve1, reject) => {
         const obj = {
           app: this.contextApp.app,
-          name: this.selectedAsset.asset_type || this.selectedAsset.tags?.asset_type
+          name: this.selectedAsset.asset_model || this.selectedAsset.tags?.asset_model
         };
         this.subscriptions.push(this.assetModelService.getThingsModelProperties(obj).subscribe(
           (response: any) => {
@@ -175,7 +175,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   getAlertConditions() {
     return new Promise<void>((resolve1, reject) => {
     const filterObj = {
-      asset_type: this.selectedAsset.asset_type || this.selectedAsset.tags?.asset_type,
+      asset_model: this.selectedAsset.asset_model || this.selectedAsset.tags?.asset_model,
       source: 'Asset'
     };
     this.subscriptions.push(this.assetModelService.getAlertConditions(this.contextApp.app, filterObj).subscribe(

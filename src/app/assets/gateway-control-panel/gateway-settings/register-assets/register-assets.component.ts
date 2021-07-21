@@ -32,7 +32,7 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
   headerMessage: any;
   c2dResponseInterval: any;
   telemetrySettings: any = {};
-  thingsModels: any[] = [];
+  assetModels: any[] = [];
   applications = CONSTANTS.ASSETAPPPS;
   count = 0;
   constructor(

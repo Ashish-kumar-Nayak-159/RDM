@@ -72,9 +72,10 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
     this.assets = [];
     const obj = {
       gateway_id: this.asset.asset_id,
-      app: this.appName
+      app: this.appName,
+      type: CONSTANTS.NON_IP_ASSET
     };
-    this.subscriptions.push(this.assetService.getNonIPAssetList(obj).subscribe(
+    this.subscriptions.push(this.assetService.getIPAssetsAndGateways(obj, this.appName).subscribe(
       (response: any) => {
         if (response && response.data) {
           this.assets = response.data;

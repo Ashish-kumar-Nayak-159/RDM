@@ -98,9 +98,10 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     this.assets = [];
     const obj = {
       gateway_id: this.asset.asset_id,
-      app: this.contextApp.app
+      app: this.contextApp.app,
+      type: CONSTANTS.NON_IP_ASSET
     };
-    this.apiSubscriptions.push(this.assetService.getNonIPAssetList(obj).subscribe(
+    this.apiSubscriptions.push(this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app).subscribe(
       (response: any) => {
         if (response && response.data) {
           this.assets = response.data;

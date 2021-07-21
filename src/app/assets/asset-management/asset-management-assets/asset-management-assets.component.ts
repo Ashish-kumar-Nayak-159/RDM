@@ -89,7 +89,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
       type: CONSTANTS.IP_GATEWAY,
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy)
     };
-    this.subscriptions.push(this.assetService.getAssetList(obj).subscribe(
+    this.subscriptions.push(this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app).subscribe(
       (response: any) => {
         if (response.data) {
           this.gateways = response.data;
@@ -145,10 +145,11 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     }
     let methodToCall;
     if (this.type === CONSTANTS.NON_IP_ASSET) {
-      methodToCall = this.assetService.getNonIPAssetList(obj);
+      obj.type = CONSTANTS.NON_IP_ASSET;
+      methodToCall = this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app);
     } else {
       obj.type = this.type;
-      methodToCall = this.assetService.getAssetList(obj);
+      methodToCall = this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app);
     }
     this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {

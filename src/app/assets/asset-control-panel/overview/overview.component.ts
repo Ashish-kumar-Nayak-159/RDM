@@ -122,7 +122,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   onRedirectToModel(asset) {
-    this.router.navigate(['applications', this.contextApp.app, 'things', 'model', asset?.tags?.asset_model, 'control-panel']);
+    this.router.navigate(['applications', this.contextApp.app, 'assets', 'model', asset?.tags?.asset_model, 'control-panel']);
   }
 
   getAssetCount() {

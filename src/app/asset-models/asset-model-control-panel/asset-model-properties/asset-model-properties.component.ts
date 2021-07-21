@@ -237,7 +237,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     }
     console.log(this.setupForm);
     }
-   // this.thingsModel.tags.app = this.contextApp.app;
+   // this.assetModel.tags.app = this.contextApp.app;
     $('#addPropertiesModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 

@@ -23,7 +23,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
   password: any;
   isPasswordVisible = false;
   subscriptions: Subscription[] = [];
-  thingsModel: any;
+  assetModel: any;
   protocolList = CONSTANTS.PROTOCOLS;
   connectivityList: string[] = [];
   isUpdateThingsModelAPILoading = false;
@@ -59,14 +59,14 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
   }
 
   openCreateAssetModelModal() {
-    this.thingsModel = JSON.parse(JSON.stringify(this.assetModel));
+    this.assetModel = JSON.parse(JSON.stringify(this.assetModel));
     $('#createAssetModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
   getConnectivityData() {
-    this.thingsModel.tags.cloud_connectivity = undefined;
-    if (this.thingsModel && this.thingsModel.tags && this.thingsModel.tags.protocol) {
-      this.connectivityList = this.protocolList.find(protocol => protocol.name === this.thingsModel.tags.protocol)?.cloud_connectivity
+    this.assetModel.tags.cloud_connectivity = undefined;
+    if (this.assetModel && this.assetModel.tags && this.assetModel.tags.protocol) {
+      this.connectivityList = this.protocolList.find(protocol => protocol.name === this.assetModel.tags.protocol)?.cloud_connectivity
        || [];
     }
   }
@@ -75,7 +75,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
     this.isFileUploading = true;
     const data = await this.commonService.uploadImageToBlob(files.item(0), this.contextApp.app + '/models/' + this.assetModel.name);
     if (data) {
-      this.thingsModel.metadata.image = data;
+      this.assetModel.metadata.image = data;
     } else {
       this.toasterService.showError('Error in uploading file', 'Upload file');
     }
@@ -84,18 +84,18 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
   }
 
   updateThingsModel() {
-    console.log(this.thingsModel);
-    if (!this.thingsModel.name || !this.thingsModel.tags.protocol || !this.thingsModel.tags.cloud_connectivity
-    || !this.thingsModel.metadata.model_type) {
+    console.log(this.assetModel);
+    if (!this.assetModel.name || !this.assetModel.tags.protocol || !this.assetModel.tags.cloud_connectivity
+    || !this.assetModel.metadata.model_type) {
       this.toasterService.showError('Please enter all required fields', 'Update Things Model');
       return;
     }
-    if (this.thingsModel.id) {
-      this.thingsModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
+    if (this.assetModel.id) {
+      this.assetModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     }
     this.isUpdateThingsModelAPILoading = true;
-    const method = this.thingsModel.id ? this.assetModelService.updateThingsModel(this.thingsModel, this.contextApp.app) :
-    this.assetModelService.createThingsModel(this.thingsModel, this.contextApp.app);
+    const method = this.assetModel.id ? this.assetModelService.updateThingsModel(this.assetModel, this.contextApp.app) :
+    this.assetModelService.createThingsModel(this.assetModel, this.contextApp.app);
     this.subscriptions.push(method.subscribe(
       (response: any) => {
         this.isUpdateThingsModelAPILoading = false;
@@ -111,7 +111,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
 
   onCloseThingsModelModal() {
     $('#createAssetModelModal').modal('hide');
-    this.thingsModel = undefined;
+    this.assetModel = undefined;
   }
 
   freezeModel() {

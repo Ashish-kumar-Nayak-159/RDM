@@ -134,9 +134,9 @@ export class CONSTANTS {
       priority: 1
     },
     {
-      page: 'Things Models',
-      system_name: 'Things Models',
-      url: 'applications/:appName/things/model',
+      page: 'Asset Models',
+      system_name: 'Asset Models',
+      url: 'applications/:appName/assets/model',
       display_name: 'Asset Models',
       exactMatch: false,
       icon: 'icon icon-cubes',

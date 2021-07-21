@@ -152,9 +152,10 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.assets = [];
     const obj = {
       gateway_id: this.telemetryFilter.gateway_id,
-      app: this.asset?.tags?.app
+      app: this.asset?.tags?.app,
+      type: CONSTANTS.NON_IP_ASSET
     };
-    this.apiSubscriptions.push(this.assetService.getNonIPAssetList(obj).subscribe(
+    this.apiSubscriptions.push(this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app).subscribe(
       (response: any) => {
         if (response && response.data) {
           this.assets = response.data;

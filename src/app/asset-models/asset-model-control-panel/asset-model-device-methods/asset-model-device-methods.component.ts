@@ -168,7 +168,7 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
         ]
       },
     };
-   // this.thingsModel.tags.app = this.contextApp.app;
+   // this.assetModel.tags.app = this.contextApp.app;
     $('#addAssetMethodModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 

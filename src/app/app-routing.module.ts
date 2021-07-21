@@ -14,7 +14,7 @@ const routes: Routes = [
     loadChildren: () => import('./visualization/visualization.module').then(module => module.VisualizationModule)
   },
   {
-    path: 'applications/:applicationId/things/model',
+    path: 'applications/:applicationId/assets/model',
     loadChildren: () => import('./asset-models/asset-model.module').then(module => module.AssetModelModule)
   },
   {

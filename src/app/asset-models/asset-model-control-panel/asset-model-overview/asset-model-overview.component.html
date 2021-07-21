@@ -93,12 +93,12 @@
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-    <div class="modal-body" *ngIf="thingsModel">
+    <div class="modal-body" *ngIf="assetModel">
       <form name="createThingsModelForm">
 
         <!-- <div class="form-group">
           <label for="message-text" class="col-form-label">Upload Image: </label>
-          {{thingsModel.metadata?.image?.name ? thingsModel.metadata.image.name : 'Not yet uploaded'}}
+          {{assetModel.metadata?.image?.name ? assetModel.metadata.image.name : 'Not yet uploaded'}}
           <input type="file"
           #typeLogoFileInput (change)="onLogoFileSelected($event.target.files)"
            class="form-control" id="app_logo" name="app_logo" >
@@ -111,8 +111,8 @@
             <div class="file-input form-control form-control-sm p-0 col-8">
              <input type="file" accept=".jpeg,.png,.svg,.jpg" id="file" class="file" (change)="onLogoFileSelected($event.target.files)">
 
-             <label for="file" class="overflow-text" [tooltip]="(thingsModel && thingsModel.metadata && thingsModel.metadata.image && thingsModel.metadata.image.name) ? (thingsModel.metadata.image.name) : ''">
-               {{(thingsModel && thingsModel.metadata && thingsModel.metadata.image && thingsModel.metadata.image.name) ? (thingsModel.metadata.image.name) : 'Choose File'}}</label>
+             <label for="file" class="overflow-text" [tooltip]="(assetModel && assetModel.metadata && assetModel.metadata.image && assetModel.metadata.image.name) ? (assetModel.metadata.image.name) : ''">
+               {{(assetModel && assetModel.metadata && assetModel.metadata.image && assetModel.metadata.image.name) ? (assetModel.metadata.image.name) : 'Choose File'}}</label>
             </div>
             <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
             <input type="file" accept=".jpeg,.png,.svg,.jpg" id="file" class="file" >
@@ -124,12 +124,12 @@
         <!-- <div class="form-group">
           <label for="message-text" class="col-form-label">Manufactured By:</label>
           <input type="text" class="form-control" id="manufactured_by" name="manufacturer"
-          placeholder="Enter Manufacturer" [(ngModel)]="thingsModel.tags.manufacturer">
+          placeholder="Enter Manufacturer" [(ngModel)]="assetModel.tags.manufacturer">
         </div> -->
 
       </form>
     </div>
-    <div class="modal-footer" *ngIf="thingsModel">
+    <div class="modal-footer" *ngIf="assetModel">
       <button type="button" class="btn btn-primary add-row" [disabled]="isUpdateThingsModelAPILoading || isFileUploading" (click)="updateThingsModel()">Save</button>
       <button type="button" class="btn btn-white" [disabled]="isUpdateThingsModelAPILoading || isFileUploading" (click)="onCloseThingsModelModal()">
         Cancel

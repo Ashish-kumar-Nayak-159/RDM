@@ -35,7 +35,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   properties: any;
   alertConditions: any[] = [];
   applications = CONSTANTS.ASSETAPPPS;
-  thingsModels: any[] = [];
+  assetModels: any[] = [];
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -50,7 +50,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     if (this.componentstate === CONSTANTS.IP_GATEWAY) {
       this.getAssetsOfGateway();
     } else {
-      this.thingsModels.forEach(model => {
+      this.assetModels.forEach(model => {
         if (this.asset.asset_model === model.name) {
           this.asset.model_freeze = model.freezed;
         }
@@ -81,14 +81,14 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
 
   getThingsModels() {
     return new Promise<void>((resolve1, reject) => {
-    this.thingsModels = [];
+    this.assetModels = [];
     const obj = {
       app: this.contextApp.app,
     };
     this.subscriptions.push(this.assetModelService.getThingsModelsList(obj).subscribe(
       (response: any) => {
         if (response && response.data) {
-          this.thingsModels = response.data;
+          this.assetModels = response.data;
         }
         resolve1();
       }
@@ -109,7 +109,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
           if (response.data) {
             // this.assets = response.data;
             response.data.forEach(asset => {
-              this.thingsModels.forEach(model => {
+              this.assetModels.forEach(model => {
               if (asset.asset_model === model.name) {
                 asset.model_freeze = model.freezed;
               }

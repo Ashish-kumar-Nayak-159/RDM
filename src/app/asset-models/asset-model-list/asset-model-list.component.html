@@ -37,20 +37,20 @@
         <div class="form-group form-inline  my-2 mx-2">
 
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="app"
-          placeholder="App" disabled [(ngModel)]="thingsModelFilterObj.app"
+          placeholder="App" disabled [(ngModel)]="assetModelFilterObj.app"
           name="app">
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputEmail4"
-          [(ngModel)]="thingsModelFilterObj.name" name="name" placeholder="{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name">
+          [(ngModel)]="assetModelFilterObj.name" name="name" placeholder="{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name">
           <input type="text" class="form-control form-control-sm mx-1 my-1" id="inputPassword4"
-          [(ngModel)]="thingsModelFilterObj.created_by" name="created_by" placeholder="Created By">
+          [(ngModel)]="assetModelFilterObj.created_by" name="created_by" placeholder="Created By">
           <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
-          [(ngModel)]="thingsModelFilterObj.model_type" name="status">
+          [(ngModel)]="assetModelFilterObj.model_type" name="status">
           <option [ngValue]="undefined">Model Type</option>
           <option [ngValue]="constantData.IP_ASSET">{{constantData.IP_ASSET}}</option>
           <option [ngValue]="constantData.IP_GATEWAY">{{constantData.IP_GATEWAY}}</option>
           <option [ngValue]="constantData.NON_IP_ASSET">{{constantData.NON_IP_ASSET}}</option>
           </select>
-          <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="searchThingsModels()" [disabled]="isthingsModelsListLoading" placement="bottom" tooltip="Search">
+          <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="searchThingsModels()" [disabled]="isassetModelsListLoading" placement="bottom" tooltip="Search">
             <i class="fa fa-search fa-sm"></i></button>
           <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="clearFilter()" placement="bottom" tooltip="Clear Filters">
             <img class="filter-clear-icon" src="./assets/img/filter.svg"></button>
@@ -67,7 +67,7 @@
 <!-- <div class="table-responsive">
   <div class="tableFixHead" > -->
 
-    <app-common-data-table [tableData]="thingsModels" *ngIf="componentState"
+    <app-common-data-table [tableData]="assetModels" *ngIf="componentState"
       [tableConfig]="tableConfig" (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
   <!-- </div>
 </div> -->
@@ -76,44 +76,44 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
     <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">{{thingsModel?.id ? 'Change Model Image' : ('Create ' + (tileData && tileData[1] ? tileData[1]?.value : ''))}}</h5>
+      <h5 class="modal-title" id="exampleModalLabel">{{assetModel?.id ? 'Change Model Image' : ('Create ' + (tileData && tileData[1] ? tileData[1]?.value : ''))}}</h5>
       <button type="button" class="close"  (click)="onCloseThingsModelModal()" aria-label="Close" [disabled]="isCreateThingsModelAPILoading">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-    <div class="modal-body" *ngIf="thingsModel">
+    <div class="modal-body" *ngIf="assetModel">
       <form name="createThingsModelForm">
-        <div class="form-group" *ngIf="!thingsModel.id">
+        <div class="form-group" *ngIf="!assetModel.id">
           <label for="message-text" class="col-form-label">App:</label>
           <input type="text" class="form-control form-control-sm" id="app_name" [defaultValue]="contextApp.app" disabled>
         </div>
-        <div class="form-group" *ngIf="!thingsModel.id">
+        <div class="form-group" *ngIf="!assetModel.id">
           <label for="message-text" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name:</label>
-          <input type="text" class="form-control form-control-sm" id="name" name="name" [(ngModel)]="thingsModel.name"
+          <input type="text" class="form-control form-control-sm" id="name" name="name" [(ngModel)]="assetModel.name"
           placeholder="Enter {{(tileData && tileData[1] ? tileData[1]?.value : '')}} Name">
         </div>
-        <div class="form-group" *ngIf="!thingsModel.id">
+        <div class="form-group" *ngIf="!assetModel.id">
           <label for="recipient-name" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Type:</label>
-          <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="thingsModel.metadata.model_type"
+          <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="assetModel.metadata.model_type"
           >
             <option [ngValue]="constantData.IP_ASSET" *ngIf="iotAssetsTab?.visibility">{{constantData.IP_ASSET}}</option>
             <option [ngValue]="constantData.IP_GATEWAY" *ngIf="legacyAssetsTab?.visibility">{{constantData.IP_GATEWAY}}</option>
             <option [ngValue]="constantData.NON_IP_ASSET" *ngIf="iotGatewaysTab?.visibility">{{constantData.NON_IP_ASSET}}</option>
           </select>
         </div>
-        <div class="form-group" *ngIf="!thingsModel.id">
+        <div class="form-group" *ngIf="!assetModel.id">
           <label for="recipient-name" class="col-form-label required">Protocol:</label>
           <select class="form-control form-control-sm" id="protocol" name="protocol"
-          (change)="getConnectivityData()" [(ngModel)]="thingsModel.tags.protocol">
+          (change)="getConnectivityData()" [(ngModel)]="assetModel.tags.protocol">
             <option [ngValue]="undefined"> Select Protocol</option>
             <ng-container *ngFor="let protocol of protocolList">
-              <option [ngValue]="protocol.name" *ngIf="protocol.asset_model === thingsModel.metadata.model_type">{{protocol.display_name}}</option>
+              <option [ngValue]="protocol.name" *ngIf="protocol.asset_model === assetModel.metadata.model_type">{{protocol.display_name}}</option>
             </ng-container>
           </select>
         </div>
-        <div class="form-group" *ngIf="!thingsModel.id">
+        <div class="form-group" *ngIf="!assetModel.id">
           <label for="recipient-name" class="col-form-label required">Cloud Connectivity followed by the {{(tileData && tileData[1] ? tileData[1]?.value : '')}}:</label>
-          <select class="form-control form-control-sm" id="template" name="connectivity"  [(ngModel)]="thingsModel.tags.cloud_connectivity">
+          <select class="form-control form-control-sm" id="template" name="connectivity"  [(ngModel)]="assetModel.tags.cloud_connectivity">
             <option [ngValue]="undefined"> Select Connectivity</option>
           <option *ngFor="let item of connectivityList" [ngValue]="item">
             {{item}}</option>
@@ -121,7 +121,7 @@
         </div>
         <!-- <div class="form-group">
           <label for="message-text" class="col-form-label">Upload Image: </label>
-          {{thingsModel.metadata?.image?.name ? thingsModel.metadata.image.name : 'Not yet uploaded'}}
+          {{assetModel.metadata?.image?.name ? assetModel.metadata.image.name : 'Not yet uploaded'}}
           <input type="file"
           #typeLogoFileInput (change)="onLogoFileSelected($event.target.files)"
            class="form-control form-control-sm" id="app_logo" name="app_logo" >
@@ -133,8 +133,8 @@
             <div class="file-input form-control form-control-sm p-0 col-8">
              <input type="file" id="file" accept=".jpeg,.png,.svg,.jpg" class="file" (change)="onLogoFileSelected($event.target.files)">
 
-             <label for="file" class="overflow-text" [tooltip]="(thingsModel && thingsModel.metadata && thingsModel.metadata.image && thingsModel.metadata.image.name) ? (thingsModel.metadata.image.name) : ''">
-               {{(thingsModel && thingsModel.metadata && thingsModel.metadata.image && thingsModel.metadata.image.name) ? (thingsModel.metadata.image.name) : 'Choose File'}}</label>
+             <label for="file" class="overflow-text" [tooltip]="(assetModel && assetModel.metadata && assetModel.metadata.image && assetModel.metadata.image.name) ? (assetModel.metadata.image.name) : ''">
+               {{(assetModel && assetModel.metadata && assetModel.metadata.image && assetModel.metadata.image.name) ? (assetModel.metadata.image.name) : 'Choose File'}}</label>
             </div>
             <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
             <input type="file" accept=".jpeg,.png,.svg,.jpg" id="file" class="file" >
@@ -146,12 +146,12 @@
         <!-- <div class="form-group">
           <label for="message-text" class="col-form-label">Manufactured By:</label>
           <input type="text" class="form-control" id="manufactured_by" name="manufacturer"
-          placeholder="Enter Manufacturer" [(ngModel)]="thingsModel.tags.manufacturer">
+          placeholder="Enter Manufacturer" [(ngModel)]="assetModel.tags.manufacturer">
         </div> -->
 
       </form>
     </div>
-    <div class="modal-footer" *ngIf="thingsModel">
+    <div class="modal-footer" *ngIf="assetModel">
       <button type="button" class="btn btn-primary add-row" [disabled]="isCreateThingsModelAPILoading" (click)="createThingsModel()">Save</button>
       <button type="button" class="btn btn-secondary" [disabled]="isCreateThingsModelAPILoading" (click)="onCloseThingsModelModal()">
         Cancel

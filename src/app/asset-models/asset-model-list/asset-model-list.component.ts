@@ -15,14 +15,14 @@ declare var $: any;
 })
 export class AssetModelListComponent implements OnInit, OnDestroy {
 
-  thingsModels: any[] = [];
-  thingsModel: any;
+  assetModels: any[] = [];
+  assetModel: any;
   tableConfig: any;
   isFilterSelected = true;
-  isthingsModelsListLoading = false;
+  isassetModelsListLoading = false;
   userData: any;
   contextApp: any;
-  thingsModelFilterObj: any = {};
+  assetModelFilterObj: any = {};
   isCreateThingsModelAPILoading = false;
   constantData = CONSTANTS;
   protocolList = CONSTANTS.PROTOCOLS;
@@ -48,8 +48,8 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.subscriptions.push(this.route.paramMap.subscribe(async params => {
-      this.thingsModelFilterObj.app = this.contextApp.app;
-      this.originalThingsModelFilterObj = JSON.parse(JSON.stringify(this.thingsModelFilterObj));
+      this.assetModelFilterObj.app = this.contextApp.app;
+      this.originalThingsModelFilterObj = JSON.parse(JSON.stringify(this.assetModelFilterObj));
       await this.getTileName();
       if (this.iotAssetsTab?.visibility) {
         this.componentState = CONSTANTS.IP_ASSET;
@@ -60,7 +60,7 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
       }
       this.tableConfig = {
         type:  (this.tileData && this.tileData[1] ? this.tileData[1]?.value : ''),
-        is_table_data_loading: this.isthingsModelsListLoading,
+        is_table_data_loading: this.isassetModelsListLoading,
         table_class: 'table-fix-head-asset-model',
         no_data_message: '',
         data : [
@@ -151,7 +151,7 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
           },
             {
               title: (this.tileData && this.tileData[0] ? this.tileData[0]?.value : ''),
-              url: 'applications/' + this.contextApp.app + '/' + 'things/model'
+              url: 'applications/' + this.contextApp.app + '/' + 'assets/model'
             }
         ]
       };
@@ -172,7 +172,7 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
     let assetItem;
     const assetDataItem = {};
     this.contextApp.menu_settings.main_menu.forEach(item => {
-      if (item.system_name === 'Things Models') {
+      if (item.system_name === 'Asset Models') {
         selectedItem = item.showAccordion;
       }
       if (item.page === 'Assets') {
@@ -202,38 +202,38 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
 
   searchThingsModels() {
     this.tableConfig.is_table_data_loading = true;
-    this.isthingsModelsListLoading = true;
+    this.isassetModelsListLoading = true;
     this.isFilterSelected = true;
-    this.thingsModels = [];
-    const obj = JSON.parse(JSON.stringify(this.thingsModelFilterObj));
+    this.assetModels = [];
+    const obj = JSON.parse(JSON.stringify(this.assetModelFilterObj));
     // obj.model_type = this.componentState;
     this.subscriptions.push(this.assetModelService.getThingsModelsList(obj).subscribe(
       (response: any) => {
         if (response && response.data) {
           response.data.forEach(model => {
             if (model.model_type === this.componentState) {
-              this.thingsModels.push(model);
+              this.assetModels.push(model);
             }
           });
         }
-        this.thingsModels = JSON.parse(JSON.stringify(this.thingsModels));
-        this.isthingsModelsListLoading = false;
+        this.assetModels = JSON.parse(JSON.stringify(this.assetModels));
+        this.isassetModelsListLoading = false;
         this.tableConfig.is_table_data_loading = false;
       }, error => {
-        this.isthingsModelsListLoading = false;
+        this.isassetModelsListLoading = false;
         this.tableConfig.is_table_data_loading = false;
       }
     ));
   }
 
   clearFilter() {
-    this.thingsModelFilterObj = undefined;
-    this.thingsModelFilterObj = JSON.parse(JSON.stringify(this.originalThingsModelFilterObj));
+    this.assetModelFilterObj = undefined;
+    this.assetModelFilterObj = JSON.parse(JSON.stringify(this.originalThingsModelFilterObj));
   }
 
   onTableFunctionCall(obj) {
     if (obj.for === 'View Control Panel') {
-      this.router.navigate(['applications', this.contextApp.app, 'things', 'model', obj.data.name, 'control-panel']);
+      this.router.navigate(['applications', this.contextApp.app, 'assets', 'model', obj.data.name, 'control-panel']);
     } else if (obj.for === 'View Assets') {
       let data = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);
       if (!data) {
@@ -249,47 +249,47 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
 
   async openCreateAssetModelModal(obj = undefined) {
     if (!obj) {
-    this.thingsModel = {};
-    this.thingsModel.app = this.contextApp.app;
-    this.thingsModel.created_by = this.userData.email + ' (' + this.userData.name + ')';
-    this.thingsModel.metadata = {};
+    this.assetModel = {};
+    this.assetModel.app = this.contextApp.app;
+    this.assetModel.created_by = this.userData.email + ' (' + this.userData.name + ')';
+    this.assetModel.metadata = {};
     if (this.iotAssetsTab?.visibility) {
-      this.thingsModel.metadata.model_type = CONSTANTS.IP_ASSET;
+      this.assetModel.metadata.model_type = CONSTANTS.IP_ASSET;
     } else if (this.iotGatewaysTab?.visibility) {
-      this.thingsModel.metadata.model_type = CONSTANTS.IP_GATEWAY;
+      this.assetModel.metadata.model_type = CONSTANTS.IP_GATEWAY;
     } else if (this.legacyAssetsTab?.visibility) {
-      this.thingsModel.metadata.model_type = CONSTANTS.NON_IP_ASSET;
+      this.assetModel.metadata.model_type = CONSTANTS.NON_IP_ASSET;
     }
-    this.thingsModel.tags = {};
+    this.assetModel.tags = {};
     } else {
-      this.thingsModel = JSON.parse(JSON.stringify(obj));
-      this.thingsModel.metadata = {
-        model_type: this.thingsModel.model_type,
-        image: this.thingsModel.model_image
+      this.assetModel = JSON.parse(JSON.stringify(obj));
+      this.assetModel.metadata = {
+        model_type: this.assetModel.model_type,
+        image: this.assetModel.model_image
       };
-      this.thingsModel.tags = {
-        protocol: this.thingsModel.protocol,
-        cloud_connectivity: this.thingsModel.cloud_connectivity,
+      this.assetModel.tags = {
+        protocol: this.assetModel.protocol,
+        cloud_connectivity: this.assetModel.cloud_connectivity,
         reserved_tags: []
       };
     }
     // await this.getProtocolList();
-    if (this.thingsModel.id) {
+    if (this.assetModel.id) {
       this.getConnectivityData();
-      this.thingsModel.tags = {
-        protocol: this.thingsModel.protocol,
-        cloud_connectivity: this.thingsModel.cloud_connectivity
+      this.assetModel.tags = {
+        protocol: this.assetModel.protocol,
+        cloud_connectivity: this.assetModel.cloud_connectivity
       };
     }
     $('#createAssetModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
-   // this.thingsModel.tags.app = this.contextApp.app;
+   // this.assetModel.tags.app = this.contextApp.app;
   }
 
   // async onLogoFileSelected(files: FileList): Promise<void> {
   //   this.isFileUploading = true;
   //   const data = await this.commonService.uploadImageToBlob(files.item(0), 'asset-model-images');
   //   if (data) {
-  //     this.thingsModel.metadata.image = data;
+  //     this.assetModel.metadata.image = data;
   //   } else {
   //     this.toasterService.showError('Error in uploading file', 'Upload file');
   //   }
@@ -297,49 +297,49 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
   // }
 
   getConnectivityData() {
-    this.thingsModel.tags.cloud_connectivity = undefined;
-    if (this.thingsModel && this.thingsModel.tags && this.thingsModel.tags.protocol) {
-      this.connectivityList = this.protocolList.find(protocol => protocol.name === this.thingsModel.tags.protocol)?.cloud_connectivity
+    this.assetModel.tags.cloud_connectivity = undefined;
+    if (this.assetModel && this.assetModel.tags && this.assetModel.tags.protocol) {
+      this.connectivityList = this.protocolList.find(protocol => protocol.name === this.assetModel.tags.protocol)?.cloud_connectivity
        || [];
     }
   }
 
   createThingsModel() {
-    if (!this.thingsModel.name || !this.thingsModel.tags.protocol || !this.thingsModel.tags.cloud_connectivity
-    || !this.thingsModel.metadata.model_type) {
+    if (!this.assetModel.name || !this.assetModel.tags.protocol || !this.assetModel.tags.cloud_connectivity
+    || !this.assetModel.metadata.model_type) {
       this.toasterService.showError('Please enter all required fields', 'Create Things Model');
       return;
     }
-    this.thingsModel.metadata.telemetry_mode_settings = {
+    this.assetModel.metadata.telemetry_mode_settings = {
       normal_mode_frequency: 60,
       turbo_mode_frequency: 5,
       turbo_mode_timeout_time: 120
     };
-    this.thingsModel.metadata.measurement_settings = {
+    this.assetModel.metadata.measurement_settings = {
       measurement_frequency: 5
     };
-    this.thingsModel.metadata.data_ingestion_settings = {
+    this.assetModel.metadata.data_ingestion_settings = {
       type: 'all_props_at_fixed_interval',
       frequency_in_sec: 10
     };
-    this.thingsModel.tags.reserved_tags = [];
-    console.log(this.thingsModel.tags);
-    this.thingsModel.tags.reserved_tags.push({
+    this.assetModel.tags.reserved_tags = [];
+    console.log(this.assetModel.tags);
+    this.assetModel.tags.reserved_tags.push({
       name: 'Protocol',
       key: 'protocol',
-      defaultValue: this.thingsModel.tags.protocol,
+      defaultValue: this.assetModel.tags.protocol,
       nonEditable: true
     });
-    console.log(this.thingsModel.tags);
-    this.thingsModel.tags.reserved_tags.push({
+    console.log(this.assetModel.tags);
+    this.assetModel.tags.reserved_tags.push({
       name: 'Cloud Connectivity',
       key: 'cloud_connectivity',
-      defaultValue: this.thingsModel.tags.cloud_connectivity,
+      defaultValue: this.assetModel.tags.cloud_connectivity,
       nonEditable: true
     });
     this.isCreateThingsModelAPILoading = true;
-    const method = this.thingsModel.id ? this.assetModelService.updateThingsModel(this.thingsModel, this.contextApp.app) :
-    this.assetModelService.createThingsModel(this.thingsModel, this.contextApp.app);
+    const method = this.assetModel.id ? this.assetModelService.updateThingsModel(this.assetModel, this.contextApp.app) :
+    this.assetModelService.createThingsModel(this.assetModel, this.contextApp.app);
     this.subscriptions.push(method.subscribe(
       (response: any) => {
         this.isCreateThingsModelAPILoading = false;
@@ -355,7 +355,7 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
 
   onCloseThingsModelModal() {
     $('#createAssetModelModal').modal('hide');
-    this.thingsModel = undefined;
+    this.assetModel = undefined;
   }
 
   ngOnDestroy() {

@@ -531,7 +531,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
       hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
     };
     this.subscriptions.push(
-      this.assetService.getAssetList(obj).subscribe((response: any) => {
+      this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app).subscribe((response: any) => {
         if (response.data) {
           this.gateways = response.data;
           this.originalGateways = JSON.parse(JSON.stringify(this.gateways));
@@ -610,10 +610,13 @@ export class AssetListComponent implements OnInit, OnDestroy {
       obj.connection_state = obj.status;
       delete obj.status;
     }
+    if (this.componentState === CONSTANTS.NON_IP_ASSET) {
+      obj.type = CONSTANTS.NON_IP_ASSET;
+    }
     const methodToCall =
       this.componentState === CONSTANTS.NON_IP_ASSET
-        ? this.assetService.getNonIPAssetList(obj)
-        : this.assetService.getAssetList(obj);
+        ? this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app)
+        : this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app);
     this.assetListAPISubscription =
       methodToCall.subscribe(
         (response: any) => {
@@ -622,7 +625,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
               if (!item.display_name) {
                 item.display_name = item.asset_id;
               }
-              item.asset_manager_users = item.asset_manager.split(',');
+              item.asset_manager_users = item.asset_manager?.split(',');
               if (this.componentState === CONSTANTS.NON_IP_ASSET) {
                 const name = this.gateways.filter(
                   (gateway) => gateway.asset_id === item.gateway_id

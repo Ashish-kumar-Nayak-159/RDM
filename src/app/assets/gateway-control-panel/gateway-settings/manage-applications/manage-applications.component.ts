@@ -18,7 +18,7 @@ export class ManageApplicationsComponent implements OnInit {
   @Input() asset: any;
   @Output() refreshAssetTwin: EventEmitter<any> = new EventEmitter<any>();
   contextApp: any;
-  applications = CONSTANTS.DEVICEAPPPS;
+  applications = CONSTANTS.ASSETAPPPS;
   isAPILoading: any = {};
 
   constructor(

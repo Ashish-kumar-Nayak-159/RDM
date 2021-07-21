@@ -25,6 +25,7 @@ import { AgmMarkerClustererModule } from '@agm/markerclusterer';
 import { ApplicationDatabaseConfigurationComponent } from './application-setting/application-database-configuration/application-database-configuration.component';
 import { MapViewHomeComponent } from './map-view-home/map-view-home.component';
 import { ApplicationOrgTreeComponent } from './application-setting/application-org-tree/application-org-tree.component';
+import { ApplicationDashboardConfigurationComponent } from './application-setting/application-dashboard-configuration/application-dashboard-configuration.component';
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import { ApplicationOrgTreeComponent } from './application-setting/application-o
     ApplicationEventsComponent,
     ApplicationDatabaseConfigurationComponent,
     MapViewHomeComponent,
-    ApplicationOrgTreeComponent
+    ApplicationOrgTreeComponent,
+    ApplicationDashboardConfigurationComponent
   ],
   imports: [
     CommonModule,

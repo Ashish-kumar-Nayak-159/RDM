@@ -3,7 +3,7 @@
   <h1 class="h3 mb-0 text-gray-800">Access Control</h1>
 </div> -->
 
-    <div class="tab-bar" *ngIf="!type.includes('Derived Properties')">
+    <div class="tab-bar" *ngIf="!type.includes('derived')">
       <div class="">
     <ul class="nav">
       <li class="nav-item">
@@ -69,7 +69,7 @@
               <option [ngValue]="dataType.name" *ngFor="let dataType of dataTypeList">{{dataType.name}}</option>
             </select>
           </div>
-          <accordion [closeOthers]="'true'" *ngIf="assetModel.metadata?.model_type === constantData.NON_IP_DEVICE">
+          <accordion [closeOthers]="'true'" *ngIf="assetModel.metadata?.model_type === constantData.NON_IP_ASSET">
             <accordion-group heading="" [panelClass]="'customClass'" >
               <ng-container  accordion-heading>
                 <button class="btn" type="button">
@@ -334,8 +334,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button *ngIf="assetModel.metadata?.model_type === constantData.NON_IP_DEVICE" type="button" class="btn btn-primary " [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreatePropertyLoading" (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
-        <button *ngIf="assetModel.metadata?.model_type !== constantData.NON_IP_DEVICE" type="button" class="btn btn-primary" [disabled]="isCreatePropertyLoading" (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
+        <button *ngIf="assetModel.metadata?.model_type === constantData.NON_IP_ASSET" type="button" class="btn btn-primary " [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreatePropertyLoading" (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
+        <button *ngIf="assetModel.metadata?.model_type !== constantData.NON_IP_ASSET" type="button" class="btn btn-primary" [disabled]="isCreatePropertyLoading" (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading" (click)="onCloseThingsPropertyModal()">Cancel</button>
         <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreatePropertyLoading"></i>
       </div>
@@ -355,8 +355,8 @@
         <div class="modal-body">
           <label>JSON Model: </label>
           <pre class="text-sm" [innerHTML]="selectedProperty.json_model | json"></pre>
-          <label *ngIf="assetModel.metadata?.model_type === constantData.NON_IP_DEVICE">Metadata: </label>
-          <pre class="text-sm" *ngIf="assetModel.metadata?.model_type === constantData.NON_IP_DEVICE" [innerHTML]="selectedProperty.metadata ? (selectedProperty.metadata | json) : ({} | json)"></pre>
+          <label *ngIf="assetModel.metadata?.model_type === constantData.NON_IP_ASSET">Metadata: </label>
+          <pre class="text-sm" *ngIf="assetModel.metadata?.model_type === constantData.NON_IP_ASSET" [innerHTML]="selectedProperty.metadata ? (selectedProperty.metadata | json) : ({} | json)"></pre>
           <label *ngIf="type === 'measured_properties'">Thresholds: </label>
           <pre class="text-sm" *ngIf="type === 'measured_properties'" [innerHTML]="selectedProperty.threshold ? (selectedProperty.threshold | json) : ({} | json)"></pre>
         </div>

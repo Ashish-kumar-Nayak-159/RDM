@@ -40,7 +40,7 @@ export class C2dPurgeComponent implements OnInit, OnDestroy {
     this.messageCount = null;
     let params = new HttpParams();
     let assetId = this.asset.asset_id;
-    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+    if (this.componentState === CONSTANTS.NON_IP_ASSET) {
       assetId = this.asset.gateway_id;
     }
     params = params.set('asset_id', assetId);
@@ -73,7 +73,7 @@ export class C2dPurgeComponent implements OnInit, OnDestroy {
   purgeQueueMessages() {
     let params = new HttpParams();
     let assetId = this.asset.asset_id;
-    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+    if (this.componentState === CONSTANTS.NON_IP_ASSET) {
       assetId = this.asset.gateway_id;
     }
     params = params.set('asset_id', assetId);

@@ -140,7 +140,7 @@ export class AddAssetComponent implements OnInit {
 
   onEditAsset() {
     this.isCreateAssetAPILoading = true;
-    // if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+    // if (this.componentState === CONSTANTS.NON_IP_ASSET) {
     //   this.assetDetail.metadata.setup_details = this.setupForm.value;
     //   }
     const obj = {
@@ -167,7 +167,7 @@ export class AddAssetComponent implements OnInit {
         'Create ' + this.componentState);
         return;
     }
-    if (this.componentState === CONSTANTS.NON_IP_DEVICE && !this.assetDetail.gateway_id) {
+    if (this.componentState === CONSTANTS.NON_IP_ASSET && !this.assetDetail.gateway_id) {
       this.toasterService.showError('Gateway Selection is compulsory.',
         'Create ' + this.componentState);
       return;
@@ -177,7 +177,7 @@ export class AddAssetComponent implements OnInit {
         'Create ' + this.componentState);
       return;
     }
-    if (this.componentState === CONSTANTS.NON_IP_DEVICE && this.assetDetail.asset_id === this.assetDetail.gateway_id) {
+    if (this.componentState === CONSTANTS.NON_IP_ASSET && this.assetDetail.asset_id === this.assetDetail.gateway_id) {
       this.toasterService.showError('Gateway and Asset name can not be the same.',
       'Create ' + this.componentState);
       return;
@@ -213,7 +213,7 @@ export class AddAssetComponent implements OnInit {
     this.assetDetail.metadata.measurement_settings = {
       measurement_frequency: modelObj?.measurement_settings?.measurement_frequency || 5
     };
-    // if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+    // if (this.componentState === CONSTANTS.NON_IP_ASSET) {
     // this.assetDetail.metadata.setup_details = this.setupForm.value;
     // }
     const protocol = this.protocolList.find(protocolObj => protocolObj.name === this.assetDetail.tags.protocol);
@@ -222,7 +222,7 @@ export class AddAssetComponent implements OnInit {
     this.assetDetail.tags.created_by = this.userData.email + ' (' + this.userData.name + ')';
     this.assetDetail.app = this.contextApp.app;
     delete this.assetDetail.tags.reserved_tags;
-    this.assetDetail.tags.category = this.componentState === CONSTANTS.NON_IP_DEVICE ?
+    this.assetDetail.tags.category = this.componentState === CONSTANTS.NON_IP_ASSET ?
     null : this.componentState;
     // this.assetDetail.tags.created_date = moment().utc().format('M/DD/YYYY h:mm:ss A');
     this.assetDetail.tags.asset_users = {};
@@ -233,12 +233,12 @@ export class AddAssetComponent implements OnInit {
     const obj = JSON.parse(JSON.stringify(this.assetDetail));
     obj.tags.asset_manager = this.assetDetail.tags.asset_manager.user_email;
     obj.tags.email_recipients = obj.tags.asset_manager;
-    const methodToCall = this.componentState === CONSTANTS.NON_IP_DEVICE
+    const methodToCall = this.componentState === CONSTANTS.NON_IP_ASSET
     ? this.assetService.createNonIPAsset(obj, this.contextApp.app)
     : this.assetService.createAsset(obj, this.contextApp.app);
     this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
-        if ( this.componentState === CONSTANTS.NON_IP_DEVICE) {
+        if ( this.componentState === CONSTANTS.NON_IP_ASSET) {
           this.updateGatewayTags(this.assetDetail);
         } else {
         this.isCreateAssetAPILoading = false;

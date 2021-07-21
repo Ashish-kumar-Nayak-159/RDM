@@ -52,9 +52,9 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
       this.originalThingsModelFilterObj = JSON.parse(JSON.stringify(this.thingsModelFilterObj));
       await this.getTileName();
       if (this.iotAssetsTab?.visibility) {
-        this.componentState = CONSTANTS.IP_DEVICE;
+        this.componentState = CONSTANTS.IP_ASSET;
       } else if (this.legacyAssetsTab?.visibility) {
-        this.componentState = CONSTANTS.NON_IP_DEVICE;
+        this.componentState = CONSTANTS.NON_IP_ASSET;
       } else if (this.iotGatewaysTab?.visibility) {
         this.componentState = CONSTANTS.IP_GATEWAY;
       }
@@ -235,14 +235,14 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
     if (obj.for === 'View Control Panel') {
       this.router.navigate(['applications', this.contextApp.app, 'things', 'model', obj.data.name, 'control-panel']);
     } else if (obj.for === 'View Assets') {
-      let data = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
+      let data = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);
       if (!data) {
         data = {};
       }
       data['asset_model'] = obj.data.name;
       data['type'] = obj.data.model_type;
       console.log(data);
-      this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY, data);
+      this.commonService.setItemInLocalStorage(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY, data);
       this.router.navigate(['applications', this.contextApp.app, 'assets']);
     }
   }
@@ -254,11 +254,11 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
     this.thingsModel.created_by = this.userData.email + ' (' + this.userData.name + ')';
     this.thingsModel.metadata = {};
     if (this.iotAssetsTab?.visibility) {
-      this.thingsModel.metadata.model_type = CONSTANTS.IP_DEVICE;
+      this.thingsModel.metadata.model_type = CONSTANTS.IP_ASSET;
     } else if (this.iotGatewaysTab?.visibility) {
       this.thingsModel.metadata.model_type = CONSTANTS.IP_GATEWAY;
     } else if (this.legacyAssetsTab?.visibility) {
-      this.thingsModel.metadata.model_type = CONSTANTS.NON_IP_DEVICE;
+      this.thingsModel.metadata.model_type = CONSTANTS.NON_IP_ASSET;
     }
     this.thingsModel.tags = {};
     } else {

@@ -46,7 +46,6 @@ export class GatewaySettingsComponent implements OnInit {
       this.assetService.getAssetDetailById(this.contextApp.app, this.asset.asset_id).subscribe(
       async (response: any) => {
         this.asset = JSON.parse(JSON.stringify(response));
-        this.asset.gateway_id = this.asset?.configuration?.gateway_id;
         if (!this.asset.tags.settings) {
           this.asset.tags.settings = {
             normal_mode: {
@@ -69,7 +68,7 @@ export class GatewaySettingsComponent implements OnInit {
             timeout_time: 120
           };
         }
-        if (this.componentState === this.constantData.NON_IP_DEVICE) {
+        if (this.componentState === this.constantData.NON_IP_ASSET) {
           this.onClickOfTab('Register Properties');
         } else {
           this.onClickOfTab('Test Connection');
@@ -81,7 +80,7 @@ export class GatewaySettingsComponent implements OnInit {
     return new Promise<void>((resolve) => {
       this.subscriptions.push(
         this.assetService.getAssetTwin(this.contextApp.app,
-          this.componentState === this.constantData.NON_IP_DEVICE ? this.asset.gateway_id : this.asset.asset_id).subscribe(
+          this.componentState === this.constantData.NON_IP_ASSET ? this.asset.gateway_id : this.asset.asset_id).subscribe(
           (response) => {
             this.assetTwin = response;
             if (!this.assetTwin.twin_properties) {

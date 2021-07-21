@@ -1,7 +1,7 @@
 import { ActivatedRoute } from '@angular/router';
 import { environment } from './../../../environments/environment';
 import { ChartService } from 'src/app/chart/chart.service';
-import { Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, AfterViewInit, EmbeddedViewRef, ApplicationRef, ComponentFactoryResolver, Injector, ViewChild } from '@angular/core';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/app.constants';
@@ -10,6 +10,13 @@ import { AssetModelService } from 'src/app/services/asset-model/asset-model.serv
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { SignalRService } from 'src/app/services/signalR/signal-r.service';
 import { ToasterService } from 'src/app/services/toaster.service';
+import { BarChartComponent } from 'src/app/common/charts/bar-chart/bar-chart.component';
+import { ColumnChartComponent } from 'src/app/common/charts/column-chart/column-chart.component';
+import { DataTableComponent } from 'src/app/common/charts/data-table/data-table.component';
+import { LiveChartComponent } from 'src/app/common/charts/live-data/live-data.component';
+import { PieChartComponent } from 'src/app/common/charts/pie-chart/pie-chart.component';
+import { resolveCname } from 'dns';
+import { DaterangepickerComponent } from 'ng2-daterangepicker';
 
 declare var $: any;
 @Component({
@@ -51,6 +58,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   originalFilter: any;
   apiSubscriptions: Subscription[] = [];
   liveWidgets: any[] = [];
+  historicalWidgets: any[] = [];
   isGetWidgetsAPILoading = false;
   assetDetailData: any;
   frequencyDiffInterval: number;
@@ -61,6 +69,20 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   sampleCountArr = Array(60).fill(0);
   sampleCountValue = 0;
   sampleCountInterval: any;
+  loadingMessage: string;
+  propList: any[];
+  historicalDateFilter: any = {};
+  daterange: any = {};
+  options: any = {
+    locale: { format: 'DD-MM-YYYY HH:mm' },
+    alwaysShowCalendars: false,
+    autoUpdateInput: false,
+    maxDate: moment(),
+    timePicker: true,
+    ranges: CONSTANTS.DATE_OPTIONS
+  };
+  @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
+  selectedDateRange: string;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -68,6 +90,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     private toasterService: ToasterService,
     private signalRService: SignalRService,
     private chartService: ChartService,
+    private factoryResolver: ComponentFactoryResolver,
+    private appRef: ApplicationRef,
+    private injector: Injector,
     private route: ActivatedRoute  ) {
   }
 
@@ -78,7 +103,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.getTileName();
     await this.getAssets(this.contextApp.user.hierarchy);
     this.onTabChange();
-
+    if (this.contextApp?.metadata?.dashboard_config?.show_historical_widgets) {
+      this.historicalDateFilter.dateOption = 'Last 30 Mins';
+      this.historicalDateFilter.from_date = moment().subtract(30, 'minutes').utc().unix();
+      this.historicalDateFilter.to_date = moment().utc().unix();
+      this.selectedDateRange = this.historicalDateFilter.dateOption;
+    }
     // if (this.selectedTab === 'telemetry') {
     //   this.loadFromCache();
     // }
@@ -307,7 +337,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     return new Promise<void>((resolve1) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
-        type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
+        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET
       };
       this.apiSubscriptions.push(this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe(
         (response: any) => {
@@ -346,11 +376,55 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     $('#overlay').hide();
   }
 
-  getLiveWidgets(assetModel) {
+  getHistoricalWidgets(assetModel) {
     return new Promise<void>((resolve1) => {
     const params = {
       app: this.contextApp.app,
       name: assetModel
+    };
+    this.historicalWidgets = [];
+    this.apiSubscriptions.push(this.assetModelService.getThingsModelLayout(params).subscribe(
+      async (response: any) => {
+        if (response?.historical_widgets?.length > 0) {
+          this.historicalWidgets = response.historical_widgets;
+          this.historicalWidgets.forEach((item) => {
+            item.derived_props = false;
+            item.measured_props = false;
+            item.y1axis.forEach(prop => {
+              const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
+              if (type === 'Derived Properties') {
+                item.derived_props = true;
+              } else {
+                item.measured_props = true;
+              }
+            });
+            item.y2axis.forEach(prop => {
+              const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
+              if (type === 'Derived Properties') {
+                item.derived_props = true;
+              } else {
+                item.measured_props = true;
+              }
+            });
+          });
+        }
+        this.isGetWidgetsAPILoading = false;
+        resolve1();
+      }, () => {
+        this.isGetWidgetsAPILoading = false;
+        this.isTelemetryDataLoading = false;
+        resolve1();
+      }
+    ));
+    });
+  }
+
+
+  getLiveWidgets(assetType) {
+    return new Promise<void>((resolve1) => {
+    const params = {
+      app: this.contextApp.app,
+      name: assetType
     };
     this.liveWidgets = [];
     this.isGetWidgetsAPILoading = true;
@@ -360,13 +434,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           response.live_widgets.forEach(widget => {
             widget.derived_props = false;
             widget.measured_props = false;
-            // widget.properties.forEach(prop => {
-            //   if (prop.property.type === 'Derived Properties') {
-            //     widget.derived_props = true;
-            //   } else {
-            //     widget.measured_props = true;
-            //   }
-            // });
             if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
               widget?.properties.forEach(prop => {
                 this.addPropertyInList(prop.property);
@@ -407,6 +474,44 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     ));
     });
+  }
+
+
+  selectedDate(value: any, datepicker?: any) {
+    // this.historyFilter.from_date = moment(value.start).utc().unix();
+    // this.historyFilter.to_date = moment(value.end).utc().unix();
+    this.historicalDateFilter.dateOption = value.label;
+    if (this.historicalDateFilter.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(this.historicalDateFilter.dateOption);
+      this.historicalDateFilter.from_date = dateObj.from_date;
+      this.historicalDateFilter.to_date = dateObj.to_date;
+    } else {
+      this.historicalDateFilter.from_date = moment(value.start).utc().unix();
+      this.historicalDateFilter.to_date = moment(value.end).utc().unix();
+    }
+    console.log(this.historicalDateFilter);
+    if (value.label === 'Custom Range') {
+      this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
+    } else {
+      this.selectedDateRange = value.label;
+    }
+    if (this.historicalDateFilter.to_date - this.historicalDateFilter.from_date > 3600) {
+      this.historicalDateFilter.isTypeEditable = true;
+    } else {
+      this.historicalDateFilter.isTypeEditable = false;
+    }
+  }
+
+
+  onNumberChange(event, type) {
+    if (Number(event.target.value) % 1 !== 0) {
+      this.toasterService.showError('Decimal values are not allowed.', 'View History');
+      if (type === 'aggregation') {
+        this.historicalDateFilter.aggregation_minutes = Math.floor(Number(event.target.value));
+      } else {
+        this.historicalDateFilter.sampling_time = Math.floor(Number(event.target.value));
+      }
+    }
   }
 
   addPropertyInList(prop) {
@@ -452,8 +557,18 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     await this.getAssetData();
     if (asset_model) {
       await this.getThingsModelProperties(asset_model);
-      await this.getLiveWidgets(asset_model);
+       if (this.contextApp?.metadata?.dashboard_config?.show_live_widgets) {
+        await this.getLiveWidgets(asset_model);
+        this.getLiveWidgetTelemetryDetails(obj);
+      } else if (this.contextApp?.metadata?.dashboard_config?.show_historical_widgets) {
+        console.log('herrrrrrrrrreeeeeeee');
+        await this.getHistoricalWidgets(asset_model);
+        this.getHistoricalWidgetTelemetryDetails();
+      }
     }
+  }
+
+  async getLiveWidgetTelemetryDetails(obj) {
     this.telemetryObj = undefined;
     this.telemetryInterval = undefined;
     this.lastReportedTelemetryValues = undefined;
@@ -534,6 +649,175 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }, 1000);
     }, error => this.isTelemetryDataLoading = false));
   }
+
+  getHistoricalWidgetTelemetryDetails() {
+    this.propList = [];
+    this.historicalWidgets.forEach(widget => {
+      widget.y1axis.forEach(prop => {
+        if (this.propList.indexOf(prop) === -1) {
+          this.propList.push(prop);
+        }
+      });
+      widget.y2axis.forEach(prop => {
+        if (this.propList.indexOf(prop) === -1) {
+          this.propList.push(prop);
+        }
+      });
+    });
+    const children = $('#charts').children();
+    for (const child of children) {
+      $(child).remove();
+    }
+    this.telemetryData = [];
+    const filterObj = JSON.parse(JSON.stringify(this.filterObj));
+    filterObj.epoch = true;
+    filterObj.app = this.contextApp.app;
+    filterObj.asset_id = this.filterObj.asset.asset_id;
+    // filterObj.message_props = '';
+    filterObj.from_date = null;
+    filterObj.to_date = null;
+    const propArr = [];
+    this.propertyList.forEach(propObj => {
+      this.propList.forEach(prop => {
+        if (prop === propObj.json_key) {
+          propArr.push(propObj);
+        }
+      });
+    });
+    // this.propList.forEach((prop, index) =>
+    // filterObj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
+    let measured_message_props = '';
+    let derived_message_props = '';
+    propArr.forEach((prop, index) => {
+      if (prop.type === 'Derived Properties') {
+        derived_message_props = derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+      } else {
+        measured_message_props = measured_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+      }
+    });
+    measured_message_props = measured_message_props.replace(/,\s*$/, '');
+    derived_message_props = derived_message_props.replace(/,\s*$/, '');
+    filterObj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
+    filterObj['derived_message_props'] = derived_message_props ? derived_message_props : undefined;
+    const now = (moment().utc()).unix();
+    if (this.historicalDateFilter.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(this.historicalDateFilter.dateOption);
+      filterObj.from_date = dateObj.from_date;
+      filterObj.to_date = dateObj.to_date;
+    } else {
+      filterObj.from_date = this.historicalDateFilter.from_date;
+      filterObj.to_date = this.historicalDateFilter.to_date;
+    }
+    // filterObj.from_date = moment().subtract(30, 'minutes').utc().unix();
+    // filterObj.to_date = now;
+    let method;
+    if (filterObj.to_date - filterObj.from_date > 3600 && !this.filterObj.isTypeEditable) {
+        this.filterObj.isTypeEditable = true;
+        this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
+        return;
+    }
+    const asset = this.assets.find(assetObj => assetObj.asset_id ===  filterObj.asset_id);
+    filterObj.partition_key = asset.partition_key;
+    delete filterObj.count;
+    delete filterObj.asset;
+    filterObj.order_dir = 'ASC';
+    if (this.filterObj.isTypeEditable) {
+      if (this.filterObj.type) {
+        if (!this.filterObj.sampling_time || !this.filterObj.sampling_format ) {
+          this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
+          return;
+        } else {
+          delete filterObj.aggregation_minutes;
+          delete filterObj.aggregation_format;
+          const records = this.commonService.calculateEstimatedRecords(this.filterObj.sampling_time * 60,
+            filterObj.from_date, filterObj.to_date);
+          if (records > 500 ) {
+            this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+          }
+          method = this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app);
+        }
+      } else {
+        if (!this.filterObj.aggregation_minutes || !this.filterObj.aggregation_format ) {
+          this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
+          return;
+        } else {
+          delete filterObj.sampling_time;
+          delete filterObj.sampling_format;
+          const records = this.commonService.calculateEstimatedRecords
+          (this.filterObj.aggregation_minutes * 60, filterObj.from_date, filterObj.to_date);
+          this.loadingMessage = 'Loading ' + records + ' data points.' + (records > 100 ? 'It may take some time.' : '') + 'Please wait...';
+          method = this.assetService.getAssetTelemetry(filterObj);
+        }
+      }
+    } else {
+      delete filterObj.aggregation_minutes;
+      delete filterObj.aggregation_format;
+      delete filterObj.sampling_time;
+      delete filterObj.sampling_format;
+      const records = this.commonService.calculateEstimatedRecords
+          ((asset?.measurement_frequency?.average ? asset.measurement_frequency.average : 5),
+          filterObj.from_date, filterObj.to_date);
+      if (records > 500 ) {
+        this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+      }
+      method = this.assetService.getAssetTelemetry(filterObj);
+    }
+    this.isTelemetryDataLoading = true;
+    this.isFilterSelected = true;
+    // this.y2AxisProps.forEach((prop, index) =>
+    // filterObj.message_props += prop.id + (index !== (this.y2AxisProps.length - 1) ? ',' : ''));
+    // if (filterObj.message_props.charAt(filterObj.message_props.length - 1) === ',') {
+    //   filterObj.message_props = filterObj.message_props.substring(0, filterObj.message_props.length - 1);
+    // }
+    this.apiSubscriptions.push(method.subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.telemetryData = response.data;
+          const telemetryData = response.data;
+          telemetryData.forEach(item => {
+            item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
+          });
+          // this.loadGaugeChart(telemetryData[0]);
+          // telemetryData.reverse();
+          this.isTelemetryDataLoading = false;          // this.loadLineChart(telemetryData);
+          if (telemetryData.length > 0) {
+          this.historicalWidgets.forEach(widget => {
+            let componentRef;
+            if (widget.chartType === 'LineChart' || widget.chartType === 'AreaChart') {
+              componentRef = this.factoryResolver.resolveComponentFactory(LiveChartComponent).create(this.injector);
+            } else if (widget.chartType === 'ColumnChart') {
+              componentRef = this.factoryResolver.resolveComponentFactory(ColumnChartComponent).create(this.injector);
+            } else if (widget.chartType === 'BarChart') {
+              componentRef = this.factoryResolver.resolveComponentFactory(BarChartComponent).create(this.injector);
+            } else if (widget.chartType === 'PieChart') {
+              componentRef = this.factoryResolver.resolveComponentFactory(PieChartComponent).create(this.injector);
+            } else if (widget.chartType === 'Table') {
+              componentRef = this.factoryResolver.resolveComponentFactory(DataTableComponent).create(this.injector);
+            }
+            componentRef.instance.telemetryData = JSON.parse(JSON.stringify(telemetryData));
+            componentRef.instance.propertyList = this.propertyList;
+            componentRef.instance.y1AxisProps = widget.y1axis;
+            componentRef.instance.y2AxisProps = widget.y2axis;
+            componentRef.instance.xAxisProps = widget.xAxis;
+            componentRef.instance.chartType = widget.chartType;
+            componentRef.instance.chartConfig = widget;
+            componentRef.instance.chartStartdate = filterObj.from_date;
+            componentRef.instance.chartEnddate = filterObj.to_date;
+            componentRef.instance.chartHeight = '23rem';
+            componentRef.instance.chartWidth = '100%';
+            componentRef.instance.chartTitle = widget.title;
+            componentRef.instance.chartId = widget.chart_Id;
+            this.appRef.attachView(componentRef.hostView);
+            const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
+            .rootNodes[0] as HTMLElement;
+            document.getElementById('historic_charts').prepend(domElem);
+          });
+          }
+        }
+      }
+    ));
+  }
+
 
   processTelemetryData(telemetryObj) {
     telemetryObj.date = this.commonService.convertUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);

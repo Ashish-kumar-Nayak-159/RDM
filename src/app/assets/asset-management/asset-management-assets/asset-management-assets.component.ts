@@ -45,7 +45,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
   updatePackages: any[] = [];
   uninstallPackages: any[] = [];
   displyaMsgArr = [];
-  applicationList: any[] = CONSTANTS.DEVICEAPPPS;
+  applicationList: any[] = CONSTANTS.ASSETAPPPS;
   iotAssetsTab: any;
   legacyAssetsTab: any;
   iotGatewaysTab: any;
@@ -63,9 +63,9 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     this.assetsList = [];
     this.getAssets();
     // if (this.type === 'legacy-assets') {
-    //   this.componentState = CONSTANTS.NON_IP_DEVICE;
+    //   this.componentState = CONSTANTS.NON_IP_ASSET;
     // } else if (this.type === 'iot-assets') {
-    //   this.componentState = CONSTANTS.IP_DEVICE;
+    //   this.componentState = CONSTANTS.IP_ASSET;
     // } else if (this.type === 'iot-gateways') {
     //   this.componentState = CONSTANTS.IP_GATEWAY;
     // }
@@ -113,13 +113,13 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     selectedItem.forEach(item => {
       this.tileData[item.name] = item.value;
     });
-    if (this.type === CONSTANTS.IP_DEVICE) {
+    if (this.type === CONSTANTS.IP_ASSET) {
     this.tabData = {
       tab_name: this.tileData['IOT Assets Tab Name'],
       table_key: this.tileData['IOT Assets Table Key Name']
     };
     }
-    if (this.type === CONSTANTS.NON_IP_DEVICE) {
+    if (this.type === CONSTANTS.NON_IP_ASSET) {
     this.tabData = {
       tab_name: this.tileData['Legacy Assets Tab Name'],
       table_key: this.tileData['Legacy Assets Table Key Name']
@@ -144,7 +144,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
       obj.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
     }
     let methodToCall;
-    if (this.type === CONSTANTS.NON_IP_DEVICE) {
+    if (this.type === CONSTANTS.NON_IP_ASSET) {
       methodToCall = this.assetService.getNonIPAssetList(obj);
     } else {
       obj.type = this.type;
@@ -164,7 +164,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
                 item.hierarchyString += item.hierarchy[key] ? (item.hierarchy[key] + ( keys[index + 1] ? ' / ' : '')) : '';
               });
             }
-            if (this.type === CONSTANTS.NON_IP_DEVICE) {
+            if (this.type === CONSTANTS.NON_IP_ASSET) {
               const name = this.gateways.filter(gateway => gateway.asset_id === item.gateway_id)[0]?.display_name;
               item.gateway_display_name = name ? name : item.gateway_id;
             }
@@ -185,7 +185,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
   }
 
   openAssetCreateModal() {
-    if (this.type === CONSTANTS.NON_IP_DEVICE) {
+    if (this.type === CONSTANTS.NON_IP_ASSET) {
       this.getGatewayList();
     }
     this.isOpenAssetCreateModal = true;
@@ -238,10 +238,10 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Please select only one asset to perform the operation', 'Asset Management');
       return;
     }
-    if (type.toLowerCase().includes('package') && this.type === CONSTANTS.NON_IP_DEVICE) {
+    if (type.toLowerCase().includes('package') && this.type === CONSTANTS.NON_IP_ASSET) {
       this.toasterService.showError(`Package Management is not available for Legacy asset.`, 'Asset Management');
       return;
-    } else if (!type.toLowerCase().includes('provision') && this.type === CONSTANTS.NON_IP_DEVICE) {
+    } else if (!type.toLowerCase().includes('provision') && this.type === CONSTANTS.NON_IP_ASSET) {
       this.toasterService.showError(`You can't perform this operation on legacy asset.`, 'Asset Management');
       return;
     }
@@ -254,7 +254,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
   }
 
   onBulkOperationClick(type) {
-    // if (!type.toLowerCase().includes('provision') && this.componentState === CONSTANTS.NON_IP_DEVICE) {
+    // if (!type.toLowerCase().includes('provision') && this.componentState === CONSTANTS.NON_IP_ASSET) {
     //   this.toasterService.showError(`You can't perform this operation on legacy asset.`, 'Asset Management');
     //   return;
     // }
@@ -278,7 +278,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
       this.confirmHeaderMessage = 'Disable ' + (this.tabData?.table_key || 'Asset');
     } else if (type === 'Deprovision') {
       this.confirmHeaderMessage = 'Deprovision ' + (this.tabData?.table_key || 'Asset');
-      if (this.type !== CONSTANTS.NON_IP_DEVICE) {
+      if (this.type !== CONSTANTS.NON_IP_ASSET) {
       this.confirmBodyMessage = 'This ' + (this.tabData?.table_key || 'Asset') + ' will be permanently deleted. Instead, you can temporarily disable the ' + (this.tabData?.table_key || 'Asset') + '.' +
       ' Are you sure you want to continue?';
       } else {
@@ -380,7 +380,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     const asset = this.selectedAssets[0];
     this.isAPILoading = true;
     let methodToCall;
-    if (this.type === CONSTANTS.NON_IP_DEVICE) {
+    if (this.type === CONSTANTS.NON_IP_ASSET) {
       methodToCall = this.assetService.deleteNonIPAsset(asset.asset_id, this.contextApp.app);
     } else {
       methodToCall = this.assetService.deleteAsset(asset.asset_id, this.contextApp.app);

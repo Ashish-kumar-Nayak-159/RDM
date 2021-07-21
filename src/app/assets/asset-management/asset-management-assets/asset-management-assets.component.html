@@ -10,17 +10,17 @@
      <i class="fas fa-fw fa-times-circle"></i>
      <span class="text-secondary">Deprovision</span></a>
     </li>
-    <li class="nav-item" *ngIf="type !== constantData.NON_IP_DEVICE">
+    <li class="nav-item" *ngIf="type !== constantData.NON_IP_ASSET">
      <a class="nav-link" href="javascript:void(0)"  (click)="onSingleOperationClick('Enable')">
      <i class="fas fa-fw fa-toggle-on"></i>
      <span class="text-secondary">Enable</span></a>
     </li>
-    <li class="nav-item" *ngIf="type !== constantData.NON_IP_DEVICE">
+    <li class="nav-item" *ngIf="type !== constantData.NON_IP_ASSET">
      <a class="nav-link" href="javascript:void(0)" (click)="onSingleOperationClick('Disable')">
      <i class="fas fa-fw fa-toggle-off"></i>
      <span class="text-secondary delete-row">Disable</span></a>
     </li>
-   <li class="nav-item" *ngIf="type !== constantData.NON_IP_DEVICE">
+   <li class="nav-item" *ngIf="type !== constantData.NON_IP_ASSET">
      <a class="nav-link" href="javascript:void(0)" (click)="onSingleOperationClick('Package Management')">
      <!--<i class="fad fa-fw fa-sync"></i>-->
      <i class="fas fa-fw fa">&#xf021;</i>
@@ -42,7 +42,7 @@
             <th>No</th>
             <th>{{(tabData?.table_key || 'Asset') + ' Name' }}</th>
             <th>{{(tabData?.table_key || 'Asset') + ' ID' }}</th>
-            <th *ngIf="type !== constantData.NON_IP_DEVICE">Status</th>
+            <th *ngIf="type !== constantData.NON_IP_ASSET">Status</th>
             <th>Hierarchy</th>
           </thead>
           <tbody>
@@ -56,20 +56,20 @@
                 <td>{{i + 1}}</td>
                 <td>{{asset.display_name}}</td>
                 <td>{{asset.asset_id}}</td>
-                <td *ngIf="type !== constantData.NON_IP_DEVICE">{{asset.status}}</td>
+                <td *ngIf="type !== constantData.NON_IP_ASSET">{{asset.status}}</td>
                 <td>{{asset.hierarchyString}}</td>
               </tr>
             </ng-container>
             <ng-container *ngIf="assetsList.length === 0 && !isAssetListLoading">
               <tr>
-                <td [attr.colspan]="type !== constantData.NON_IP_DEVICE ? 6 : 5">
+                <td [attr.colspan]="type !== constantData.NON_IP_ASSET ? 6 : 5">
                 No {{(tabData?.table_key || 'Asset')}} data found.
                 </td>
               </tr>
             </ng-container>
             <ng-container *ngIf="isAssetListLoading">
               <tr>
-                <td [attr.colspan]="type !== constantData.NON_IP_DEVICE ? 6 : 5">
+                <td [attr.colspan]="type !== constantData.NON_IP_ASSET ? 6 : 5">
                   <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
                 </td>
               </tr>

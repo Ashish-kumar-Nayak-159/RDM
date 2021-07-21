@@ -18,7 +18,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
   @Output() refreshAssetTwin: EventEmitter<any> = new EventEmitter<any>();
   @Input() componentState: any;
   contextApp: any;
-  applications = CONSTANTS.DEVICEAPPPS;
+  applications = CONSTANTS.ASSETAPPPS;
   isAssetsAPILoading = false;
   assets: any[] = [];
   subscriptions: Subscription[] = [];
@@ -93,7 +93,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
     this.assets = [];
     const obj = {
       gateway_id: this.asset.asset_id,
-      type: CONSTANTS.NON_IP_DEVICE,
+      type: CONSTANTS.NON_IP_ASSET,
     };
     this.subscriptions.push(
       this.assetService.getLegacyAssets(obj, this.contextApp.app).subscribe(
@@ -171,7 +171,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
     this.headerMessage = type;
     $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     const c2dObj = {
-      asset_id: this.componentState !== CONSTANTS.NON_IP_DEVICE ? this.asset.asset_id : this.asset.gateway_id,
+      asset_id: this.componentState !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id,
       message: obj,
       app: this.contextApp.app,
       timestamp:  moment().unix(),
@@ -185,7 +185,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
     c2dObj.sub_job_id = c2dObj.job_id + '_1';
     this.subscriptions.push(
       this.assetService.sendC2DMessage(c2dObj, this.contextApp.app,
-        this.componentState !== CONSTANTS.NON_IP_DEVICE ? this.asset.asset_id : this.asset.gateway_id).subscribe(
+        this.componentState !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id).subscribe(
         (response: any) => {
           this.displayMsgArr.push({
             message: type + ' request sent to gateway.',

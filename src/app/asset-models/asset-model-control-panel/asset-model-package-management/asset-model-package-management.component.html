@@ -1,4 +1,4 @@
-<div class="tab-bar" *ngIf="assetModel.metadata.model_type !== constantData.NON_IP_DEVICE">
+<div class="tab-bar" *ngIf="assetModel.metadata.model_type !== constantData.NON_IP_ASSET">
   <div class="">
     <ul class="nav">
       <li class="nav-item">
@@ -11,11 +11,11 @@
   </div>
 </div>
 <div class="table-responsive">
-  <div class="tableFixHead"  *ngIf="assetModel.metadata.model_type !== constantData.NON_IP_DEVICE">
+  <div class="tableFixHead"  *ngIf="assetModel.metadata.model_type !== constantData.NON_IP_ASSET">
     <app-common-table [tableData]="packages" [tableConfig]="packageTableConfig" [isTableFilterSelected]="true"
       [isTableDataLoading]="isPackagesAPILoading" (viewMessageEvent)="onTableFunctionCall($event)"></app-common-table>
   </div>
-  <p class="m-3" *ngIf="assetModel.metadata.model_type === constantData.NON_IP_DEVICE">Package Management is not avilable for
+  <p class="m-3" *ngIf="assetModel.metadata.model_type === constantData.NON_IP_ASSET">Package Management is not avilable for
     Legacy assets. </p>
 </div>
 

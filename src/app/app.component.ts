@@ -133,11 +133,11 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
           }
           if (this.applicationData.menu_settings.asset_control_panel_menu.length === 0) {
             this.applicationData.menu_settings.asset_control_panel_menu =
-            JSON.parse(JSON.stringify(CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST));
+            JSON.parse(JSON.stringify(CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST));
           }
           if (this.applicationData.menu_settings.legacy_asset_control_panel_menu.length === 0) {
             this.applicationData.menu_settings.legacy_asset_control_panel_menu =
-            JSON.parse(JSON.stringify(CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST));
+            JSON.parse(JSON.stringify(CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST));
           }
           if (this.applicationData.menu_settings.model_control_panel_menu.length === 0) {
             this.applicationData.menu_settings.model_control_panel_menu =

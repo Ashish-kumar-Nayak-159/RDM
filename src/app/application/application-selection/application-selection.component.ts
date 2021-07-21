@@ -57,12 +57,12 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       localStorage.removeItem(CONSTANTS.DASHBOARD_ALERT_SELECTION);
       localStorage.removeItem(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION);
       localStorage.removeItem(CONSTANTS.SELECTED_APP_DATA);
-      localStorage.removeItem(CONSTANTS.DEVICES_LIST);
-      localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
-      localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
+      localStorage.removeItem(CONSTANTS.ASSETS_LIST);
+      localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
+      localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
       localStorage.removeItem(CONSTANTS.APP_USERS);
-      localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
-      localStorage.removeItem(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
+      localStorage.removeItem(CONSTANTS.ASSETS_GATEWAYS_LIST);
+      localStorage.removeItem(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);
       localStorage.removeItem(CONSTANTS.MAIN_MENU_FILTERS);
       localStorage.removeItem(CONSTANTS.APP_TOKEN);
     }
@@ -99,12 +99,12 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
-        type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
+        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET
       };
       this.apiSubscriptions.push(this.assetService.getIPAndLegacyAssets(obj, this.applicationData.app).subscribe(
         (response: any) => {
           if (response?.data) {
-            this.commonService.setItemInLocalStorage(CONSTANTS.DEVICES_LIST, response.data);
+            this.commonService.setItemInLocalStorage(CONSTANTS.ASSETS_LIST, response.data);
           }
           resolve();
         }
@@ -121,7 +121,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       this.apiSubscriptions.push(this.assetModelService.getThingsModelsList(obj).subscribe(
         (response: any) => {
           if (response?.data) {
-            this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_MODELS_LIST, response.data);
+            this.commonService.setItemInLocalStorage(CONSTANTS.ASSET_MODELS_LIST, response.data);
           }
           resolve();
         }
@@ -145,12 +145,12 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
           if (!this.applicationData.menu_settings.asset_control_panel_menu ||
             this.applicationData.menu_settings.asset_control_panel_menu.length === 0) {
             this.applicationData.menu_settings.asset_control_panel_menu =
-            JSON.parse(JSON.stringify(CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST));
+            JSON.parse(JSON.stringify(CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST));
           }
           if (!this.applicationData.menu_settings.legacy_asset_control_panel_menu ||
             this.applicationData.menu_settings.legacy_asset_control_panel_menu.length === 0) {
             this.applicationData.menu_settings.legacy_asset_control_panel_menu =
-            JSON.parse(JSON.stringify(CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST));
+            JSON.parse(JSON.stringify(CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST));
           }
           if (this.applicationData.menu_settings.model_control_panel_menu ||
             this.applicationData.menu_settings.model_control_panel_menu.length === 0) {

@@ -176,7 +176,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
     this.isUpdateAPILoading = true;
     let methodToCall;
     this.asset['sync_with_cache'] = true;
-    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+    if (this.componentState === CONSTANTS.NON_IP_ASSET) {
       methodToCall = this.assetService.updateNonIPAssetTags(this.asset, this.contextApp.app);
     } else {
       methodToCall = this.assetService.updateAssetTags(this.asset, this.contextApp.app);

@@ -2,10 +2,10 @@
   <div class="d-flex align-items-center">
     <div class="d-flex align-items-center">
       <div class="main-heading ">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}</div>
-      <div class="ml-2 pt-15" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry'">
+      <div class="ml-2 pt-15" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry' && contextApp?.metadata?.dashboard_config?.show_live_widgets">
         Turbo Mode:</div>
-        <div class="ml-1 pt-15">
-        <ui-switch size="small" class="mr-1" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry'"
+        <div class="ml-1 pt-15" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry' && contextApp?.metadata?.dashboard_config?.show_live_widgets">
+        <ui-switch size="small" class="mr-1"
           [disabled]="isC2dAPILoading" defaultBgColor="#c80815" checkedTextColor="white" uncheckedTextColor="white"
           checkedLabel="OFF" uncheckedLabel="ON" name="tpye" [(ngModel)]="signalRModeValue"
           (valueChange)="onSwitchValueChange($event)"></ui-switch>
@@ -70,37 +70,115 @@
   </div>
 </div>
 <div class="tab-bar">
+
   <ng-container >
-    <div class="" *ngIf="isTelemetryDataLoading">
-      <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-    </div>
-    <div class="" *ngIf="!isTelemetryDataLoading && !telemetryObj && isFilterSelected">
-      No data available since mid night.
-    </div>
-    <div class="" *ngIf="!isFilterSelected && !filterObj.asset">
-      Please select asset to view the data.
-    </div>
-    <div class="ml-1" *ngIf="liveWidgets.length === 0 && isFilterSelected
-          ">
-      No widgets configured for this asset. Please contact administrator.
-    </div>
+
+
     <div class=""
       *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.asset && liveWidgets.length > 0">
       <div class="">Welcome to {{originalFilter.asset?.display_name ? originalFilter.asset?.display_name :
         originalFilter.asset?.asset_id}}</div>
     </div>
+
+    <ng-container *ngIf="contextApp?.metadata?.dashboard_config?.show_live_widgets">
+      <div class="" *ngIf="!isTelemetryDataLoading && !telemetryObj && isFilterSelected">
+        No data available since mid night.
+      </div>
+      <div class="ml-1" *ngIf="liveWidgets.length === 0 && isFilterSelected
+          ">
+      No widgets configured for this asset. Please contact administrator.
+    </div>
     <div class="ml-auto"
       *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.asset && liveWidgets.length > 0">
       <div class="">*{{sampleCountValue}} samples in last 1 minute
-        <!-- with {{telemetryInterval !== undefined ? telemetryInterval :
-          '(?)'
-        second refresh rate--></div>
+      </div>
     </div>
+    </ng-container>
+    <ng-container *ngIf="contextApp?.metadata?.dashboard_config?.show_hostorical_widgets">
+      <div class="ml-1" *ngIf="historicalWidgets.length === 0 && isFilterSelected
+      ">
+  No widgets configured for this asset. Please contact administrator.
+</div>
+    </ng-container>
+    <div class="" *ngIf="isTelemetryDataLoading">
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+    </div>
+
+    <div class="" *ngIf="!isFilterSelected && !filterObj.asset">
+      Please select asset to view the data.
+    </div>
+
+
   </ng-container>
+  <form class="form-inline" *ngIf="isFilterSelected && contextApp?.metadata?.dashboard_config?.show_historical_widgets">
+    <div class="form-group left-inner-addon" >
+      <i class="fa fa-calendar active"></i>
+      <input type="text"  class="form-control form-control-sm active date-range-picker" daterangepicker name="daterangeInput"
+       [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"  [(ngModel)]="selectedDateRange"
+       [tooltip]="selectedDateRange" placement="bottom"/>
+    </div>
+    <div class="form-group">
+      <input type="checkbox" id="checkbox" min="1" name="checkbox" class="big-checkbox"
+      [(ngModel)]="historicalDateFilter.isTypeEditable" (change)="historicalDateFilter.aggregation_format = 'AVG'; historicalDateFilter.aggregation_minutes = 1;
+      historicalDateFilter.sampling_format = 'minute'; historicalDateFilter.sampling_time = 1;"
+      >
+    </div>
+    <div class="form-group">
+      <fieldset [disabled]="!historicalDateFilter.isTypeEditable">
+        <ui-switch  [disabled]="!historicalDateFilter.isTypeEditable"
+        defaultBgColor="#1a5a9e" checkedTextColor="white" uncheckedTextColor="white"
+        checkedLabel="Sampling" (valueChange)="historicalDateFilter.aggregation_format = 'AVG'; historicalDateFilter.aggregation_minutes = 1;
+        historicalDateFilter.sampling_format = 'minute'; historicalDateFilter.sampling_time = 1;
+        " uncheckedLabel="Aggregation" [(ngModel)]="historicalDateFilter.type" name="tpye"></ui-switch>
+      </fieldset>
+    </div>
+    <div class="form-group input-group" *ngIf="historicalDateFilter.type">
+
+      <input class="form-control form-control-sm bg-light" type="number" id="minutes" min="1"
+      name="minutes" [(ngModel)]="historicalDateFilter.sampling_time" placeholder="Sampling" disabled
+      placement="bottom" tooltip="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development." style="width: 3em;" >
+      <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
+    </div>
+      <div class="form-group input-group" *ngIf="!historicalDateFilter.type">
+        <fieldset [disabled]="!historicalDateFilter.isTypeEditable"></fieldset>
+        <input class="form-control form-control-sm bg-light" type="number" id="aggr_mins" min="1"
+        name="aggr_mins" [(ngModel)]="historicalDateFilter.aggregation_minutes" placeholder="Sampling"
+        (change)="onNumberChange($event, 'aggregation')" [disabled]="!historicalDateFilter.isTypeEditable"
+         style="width: 4em;" >
+        <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
+      </div>
+      <div class="form-group " *ngIf="!historicalDateFilter.type">
+        <fieldset [disabled]="!historicalDateFilter.isTypeEditable">
+      <select class="form-control form-control-sm" id="aggregationFormat" [(ngModel)]="historicalDateFilter.aggregation_format"
+      name="aggregationFormat" style="width: 11rem!important;">
+      <option [ngValue]="undefined">Aggregartion Format</option>
+      <option [ngValue]="'AVG'">Average</option>
+      <option [ngValue]="'SUM'">Sum</option>
+      <option [ngValue]="'MIN'">Min</option>
+      <option [ngValue]="'MAX'">Max</option>
+      <option [ngValue]="'COUNT'">Count</option>
+      </select>
+      </fieldset>
+    </div>
+
+      <div class="form-group">
+      <button
+      type="button"
+      class="btn btn-sm searchBtn btn-primary"
+      placement="bottom" tooltip="Search"
+      (click)="onFilterSelection(this.filterObj)"
+    >
+      <i class="fa fa-search fa-sm"></i>
+    </button>
+    </div>
+  </form>
 </div>
 <ng-container>
   <div class="content-scroll content-scroll-live-data">
-    <div class="row col-md-12 mt-n2" *ngIf="telemetryObj && liveWidgets.length > 0">
+    <ng-container *ngIf="(!contextApp || !contextApp.metadata || !contextApp.metadata.dashboard_config) && isFilterSelected">
+      <div class="ml-1">No dashboard configuration added for this application.</div>
+    </ng-container>
+    <div class="row col-md-12 mt-n2" *ngIf="telemetryObj && liveWidgets.length > 0 && contextApp?.metadata?.dashboard_config?.show_live_widgets">
       <ng-container *ngFor="let widget of liveWidgets; let i = index;">
         <div [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
               || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
@@ -185,6 +263,9 @@
           </div>
         </div>
       </ng-container>
+    </div>
+    <div class="row col-md-12" *ngIf="historicalWidgets.length > 0 && contextApp?.metadata?.dashboard_config?.show_historical_widgets">
+      <div id="historic_charts" class="pl-3 pt-3 w-100"></div>
     </div>
   </div>
 </ng-container>

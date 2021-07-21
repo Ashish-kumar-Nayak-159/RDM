@@ -6,7 +6,7 @@
           <div class="row" >
             <h6>This Asset is of {{componentState}} type.</h6>
          </div>
-          <div class="row" *ngIf="componentState === constantData.NON_IP_DEVICE">
+          <div class="row" *ngIf="componentState === constantData.NON_IP_ASSET">
               <h6>This Asset is managed by an IP Gateway
                 <a  href="javascript:void(0)" class="blue-font" (click)="onRedirectToGateway(asset)">({{asset.gateway_id}})</a></h6>
           </div>
@@ -43,14 +43,14 @@
             </h6>
           </div>
           <div *ngIf="assetCredentials" class="row">
-            <h6 ><ng-container *ngIf="componentState === constantData.NON_IP_DEVICE">Gateway</ng-container>
+            <h6 ><ng-container *ngIf="componentState === constantData.NON_IP_ASSET">Gateway</ng-container>
               Connection String:
               <a class="blue-font ml-2" href="javascript:void(0)" (click)="isViewClicked ? hideConnectionString() : viewonnectionString()">{{isViewClicked ? 'Hide' : 'View'}}</a>
               <a class="blue-font ml-2" href="javascript:void(0)" (click)="copyConnectionString()">{{isCopyClicked ? 'Copied' : 'Copy'}}</a>
             </h6>
             <h6  class="row col-12" *ngIf="isViewClicked">{{assetCredentials.primary_connection_string}}</h6>
           </div>
-          <div *ngIf="componentState !== constantData.NON_IP_DEVICE" class="row">
+          <div *ngIf="componentState !== constantData.NON_IP_ASSET" class="row">
             <h6>
               Asset Twin:
               <a class="blue-font ml-2" href="javascript:void(0)" (click)="viewAssetTwin()"> View</a>

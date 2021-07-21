@@ -30,7 +30,7 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    const assets = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICES_LIST);
+    const assets = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSETS_LIST);
     if (assets) {
       return new Observable((observer) => {
         observer.next({
@@ -38,9 +38,9 @@ export class AssetService {
         });
       });
     } else {
-      return this.http.get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_DEVICES, encodeURIComponent(app)), { params })
+      return this.http.get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_ASSETS, encodeURIComponent(app)), { params })
       .pipe( map((data: any) => {
-        this.commonService.setItemInLocalStorage(CONSTANTS.DEVICES_LIST, data.data);
+        this.commonService.setItemInLocalStorage(CONSTANTS.ASSETS_LIST, data.data);
         return data;
       }), catchError( error => {
         return throwError( error);
@@ -56,7 +56,7 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    const assets = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICES_GATEWAYS_LIST);
+    const assets = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSETS_GATEWAYS_LIST);
     if (assets) {
       return new Observable((observer) => {
         observer.next({
@@ -64,9 +64,9 @@ export class AssetService {
         });
       });
     } else {
-      return this.http.get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_DEVICES, encodeURIComponent(app)), { params })
+      return this.http.get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_ASSETS, encodeURIComponent(app)), { params })
       .pipe( map((data: any) => {
-        this.commonService.setItemInLocalStorage(CONSTANTS.DEVICES_GATEWAYS_LIST, data.data);
+        this.commonService.setItemInLocalStorage(CONSTANTS.ASSETS_GATEWAYS_LIST, data.data);
         return data;
       }), catchError( error => {
         return throwError( error);
@@ -82,7 +82,7 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_DEVICES, encodeURIComponent(app)), { params });
+    return this.http.get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_ASSETS, encodeURIComponent(app)), { params });
   }
 
   getLegacyAssets(filterObj, app) {
@@ -92,7 +92,7 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_DEVICES, encodeURIComponent(app)), { params });
+    return this.http.get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_ASSETS, encodeURIComponent(app)), { params });
   }
 
   getAssetList(filterObj) {
@@ -102,7 +102,7 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + AppUrls.GET_DEVICE_FILTER_LIST, { params });
+    return this.http.get(this.url + AppUrls.GET_ASSET_FILTER_LIST, { params });
   }
 
   getNonIPAssetList(filterObj) {
@@ -112,95 +112,95 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_NON_IP_DEVICE, encodeURIComponent(filterObj.app)), { params });
+    return this.http.get(this.url + String.Format(AppUrls.GET_NON_IP_ASSET, encodeURIComponent(filterObj.app)), { params });
   }
 
   getAssetDetailById(app, assetId) {
-    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_DETAIL, encodeURIComponent(app), encodeURIComponent(assetId)));
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_DETAIL, encodeURIComponent(app), encodeURIComponent(assetId)));
   }
 
   getAssetData(assetId, app) {
     // let params = new HttpParams().set('asset_id', assetId);
     // params = params.set('app', app);
-    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_DATA, encodeURIComponent(app), encodeURIComponent(assetId)));
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_DATA, encodeURIComponent(app), encodeURIComponent(assetId)));
   }
 
   createAsset(assetObj, app) {
     let params = new HttpParams();
     params = params.set('app', app);
-    localStorage.removeItem(CONSTANTS.DEVICES_LIST);
-    localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
-    localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
-    localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
-    return this.http.post(this.url + AppUrls.CREATE_DEVICE, assetObj, {params});
+    localStorage.removeItem(CONSTANTS.ASSETS_LIST);
+    localStorage.removeItem(CONSTANTS.ASSETS_GATEWAYS_LIST);
+    localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
+    localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
+    return this.http.post(this.url + AppUrls.CREATE_ASSET, assetObj, {params});
   }
 
   createNonIPAsset(assetObj, app) {
-    localStorage.removeItem(CONSTANTS.DEVICES_LIST);
-    localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
-    localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
-    localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
-    return this.http.post(this.url + String.Format(AppUrls.CREATE_NON_IP_DEVICE, encodeURIComponent(app)), assetObj);
+    localStorage.removeItem(CONSTANTS.ASSETS_LIST);
+    localStorage.removeItem(CONSTANTS.ASSETS_GATEWAYS_LIST);
+    localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
+    localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_NON_IP_ASSET, encodeURIComponent(app)), assetObj);
   }
 
   enableAsset(assetId, appId) {
     let params = new HttpParams().set('asset_id', assetId);
     params = params.set('app', appId);
-    return this.http.patch(this.url + AppUrls.ENABLE_DEVICE, {}, { params });
+    return this.http.patch(this.url + AppUrls.ENABLE_ASSET, {}, { params });
   }
 
   disableAsset(assetId, appId) {
     let params = new HttpParams().set('asset_id', assetId);
     params = params.set('app', appId);
-    return this.http.patch(this.url + AppUrls.DISABLE_DEVICE, {}, { params });
+    return this.http.patch(this.url + AppUrls.DISABLE_ASSET, {}, { params });
   }
 
   deleteAsset(assetId, appId) {
     let params = new HttpParams().set('asset_id', assetId);
     params = params.set('app', appId);
-    localStorage.removeItem(CONSTANTS.DEVICES_LIST);
-    localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
-    localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
-    localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
-    return this.http.delete(this.url + AppUrls.DELETE_DEVICE, { params });
+    localStorage.removeItem(CONSTANTS.ASSETS_LIST);
+    localStorage.removeItem(CONSTANTS.ASSETS_GATEWAYS_LIST);
+    localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
+    localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
+    return this.http.delete(this.url + AppUrls.DELETE_ASSET, { params });
   }
 
   deleteNonIPAsset(assetId, appId) {
     // let params = new HttpParams().set('asset_id', assetId);
     // params = params.set('app', appId);
-    localStorage.removeItem(CONSTANTS.DEVICES_LIST);
-    localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
-    localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
-    localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
-    return this.http.delete(this.url + String.Format(AppUrls.DELETE_NON_IP_DEVICE,
+    localStorage.removeItem(CONSTANTS.ASSETS_LIST);
+    localStorage.removeItem(CONSTANTS.ASSETS_GATEWAYS_LIST);
+    localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
+    localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_NON_IP_ASSET,
       encodeURIComponent(appId), encodeURIComponent(assetId)));
   }
 
   getAssetCredentials(assetId, appId) {
     let params = new HttpParams().set('asset_id', assetId);
     params = params.set('app', appId);
-    return this.http.get(this.url + AppUrls.GET_DEVICE_CREDENTIALS, { params });
+    return this.http.get(this.url + AppUrls.GET_ASSET_CREDENTIALS, { params });
   }
 
   getAssetConnectionStatus(assetId, app) {
     let params = new HttpParams().set('asset_id', assetId);
     params = params.set('app', app);
-    return this.http.get(this.url + AppUrls.GET_DEVICE_CONNECTION_STATUS, { params });
+    return this.http.get(this.url + AppUrls.GET_ASSET_CONNECTION_STATUS, { params });
   }
 
   updateAssetTags(assetObj, app) {
-    localStorage.removeItem(CONSTANTS.DEVICES_LIST);
-    localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
-    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_DEVICE_TAGS,
+    localStorage.removeItem(CONSTANTS.ASSETS_LIST);
+    localStorage.removeItem(CONSTANTS.ASSETS_GATEWAYS_LIST);
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_ASSET_TAGS,
       encodeURIComponent(app), encodeURIComponent(assetObj.asset_id)), assetObj);
   }
 
   updateNonIPAssetTags(assetObj, app) {
     let params = new HttpParams();
     params = params.set('app', app);
-    localStorage.removeItem(CONSTANTS.DEVICES_LIST);
-    localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
-    return this.http.post(this.url + String.Format(AppUrls.UPDATE_NON_IP_DEVICE_TAGS,
+    localStorage.removeItem(CONSTANTS.ASSETS_LIST);
+    localStorage.removeItem(CONSTANTS.ASSETS_GATEWAYS_LIST);
+    return this.http.post(this.url + String.Format(AppUrls.UPDATE_NON_IP_ASSET_TAGS,
       encodeURIComponent(app), encodeURIComponent(assetObj.asset_id)), assetObj, {params});
   }
 
@@ -280,7 +280,7 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_SAMPLING_DEVICE_TELEMETRY, encodeURIComponent(app)), { params })
+    return this.http.get(this.url + String.Format(AppUrls.GET_SAMPLING_ASSET_TELEMETRY, encodeURIComponent(app)), { params })
     .pipe( map((data: any) => {
       const arr = [];
       data.data.forEach(item => {
@@ -335,7 +335,7 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + AppUrls.GET_DEVICE_BATTERY_LIST, { params });
+    return this.http.get(this.url + AppUrls.GET_ASSET_BATTERY_LIST, { params });
   }
 
   getAssetC2DMessages(filterObj) {
@@ -359,7 +359,7 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_METHODS, encodeURIComponent(app)), { params });
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_METHODS, encodeURIComponent(app)), { params });
   }
 
   getQueueMessagesCount(params, app) {
@@ -388,7 +388,7 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_METHOD_BY_ID,
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_METHOD_BY_ID,
       encodeURIComponent(app), encodeURIComponent(messageId)), { params });
   }
 
@@ -414,7 +414,7 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GE_NON_IP_DEVICES_COUNT, encodeURIComponent(filterObj.app)), { params });
+    return this.http.get(this.url + String.Format(AppUrls.GE_NON_IP_ASSETS_COUNT, encodeURIComponent(filterObj.app)), { params });
   }
 
   createLayout(layoutObj) {
@@ -436,7 +436,7 @@ export class AssetService {
   }
 
   acknowledgeAssetAlert(obj): Observable<any> {
-    return this.http.put(this.url + AppUrls.ACKNOWLEGE_DEVICE_ALERT, obj);
+    return this.http.put(this.url + AppUrls.ACKNOWLEGE_ASSET_ALERT, obj);
   }
 
   getNonIPAssetTags(filterObj) {
@@ -446,7 +446,7 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_NON_IP_DEVICE_TAGS,
+    return this.http.get(this.url + String.Format(AppUrls.GET_NON_IP_ASSET_TAGS,
       encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.asset_id)), { params });
   }
 
@@ -483,7 +483,7 @@ export class AssetService {
   }
 
   getAssetSignalRMode(app, assetId) {
-    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_SIGNALR_MODE, encodeURIComponent(app), encodeURIComponent(assetId)));
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_SIGNALR_MODE, encodeURIComponent(app), encodeURIComponent(assetId)));
   }
 
   changeTelemetryMode(msgObj, app) {
@@ -517,7 +517,7 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + AppUrls.GET_DEVICE_LIFECYCLE_EVENTS, { params });
+    return this.http.get(this.url + AppUrls.GET_ASSET_LIFECYCLE_EVENTS, { params });
   }
 
   getAssetConfigurationHistory(filterObj: any) {
@@ -531,7 +531,7 @@ export class AssetService {
   }
 
   callAssetMethod(obj, app, assetId) {
-    return this.http.post(this.url + String.Format(AppUrls.CALL_DEVICE_METHOD, encodeURIComponent(app),
+    return this.http.post(this.url + String.Format(AppUrls.CALL_ASSET_METHOD, encodeURIComponent(app),
     encodeURIComponent(assetId)), obj);
   }
 
@@ -542,7 +542,7 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.SYNC_DEVICE_CACHE, encodeURIComponent(app)), { params });
+    return this.http.get(this.url + String.Format(AppUrls.SYNC_ASSET_CACHE, encodeURIComponent(app)), { params });
   }
 
   getLastTelmetry(app, filterObj) {
@@ -552,7 +552,7 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_LAST_TELEMETRY, encodeURIComponent(app)), { params })
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_LAST_TELEMETRY, encodeURIComponent(app)), { params })
     .pipe( map((data: any) => {
       if (data.message) {
         let obj = JSON.parse(JSON.stringify(data.message));
@@ -575,7 +575,7 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_FIRST_TELEMETRY, encodeURIComponent(app)), { params })
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_FIRST_TELEMETRY, encodeURIComponent(app)), { params })
     .pipe( map((data: any) => {
       if (data.message) {
         let obj = JSON.parse(JSON.stringify(data.message));
@@ -599,29 +599,29 @@ export class AssetService {
       }
     });
 
-    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_MAINTENANCE_DATA,
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_MAINTENANCE_DATA,
       encodeURIComponent(app), encodeURIComponent(assetId)), {params});
   }
 
   createAssetMaintenanceActivityData(app, assetId, obj) {
-    return this.http.post(this.url + String.Format(AppUrls.CREATE_DEVICE_MAINTENANCE_DATA,
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_ASSET_MAINTENANCE_DATA,
       encodeURIComponent(app), encodeURIComponent(assetId)), obj);
   }
 
   deleteAssetMaintenanceActivityData(app, assetId, maintenanceId) {
-    return this.http.delete(this.url + String.Format(AppUrls.DELETE_DEVICE_MAINTENANCE_DATA,
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_ASSET_MAINTENANCE_DATA,
       encodeURIComponent(app), encodeURIComponent(assetId), encodeURIComponent(maintenanceId)));
   }
 
   updateAssetMaintenanceActivityData(app, assetId, maintenanceId, obj) {
-    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_DEVICE_MAINTENANCE_DATA,
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_ASSET_MAINTENANCE_DATA,
       encodeURIComponent(app), encodeURIComponent(assetId), encodeURIComponent(maintenanceId)), obj);
   }
 
   updateAssetMetadata(obj, app, assetId) {
-    localStorage.removeItem(CONSTANTS.DEVICES_LIST);
-    localStorage.removeItem(CONSTANTS.DEVICES_GATEWAYS_LIST);
-    return this.http.put(this.url + String.Format(AppUrls.UPDATE_DEVICE_METADATA,
+    localStorage.removeItem(CONSTANTS.ASSETS_LIST);
+    localStorage.removeItem(CONSTANTS.ASSETS_GATEWAYS_LIST);
+    return this.http.put(this.url + String.Format(AppUrls.UPDATE_ASSET_METADATA,
       encodeURIComponent(app), encodeURIComponent(assetId)), obj);
   }
 
@@ -637,12 +637,12 @@ export class AssetService {
   }
 
   getAssetTwin(app, assetId) {
-    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_TWIN,
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_TWIN,
       encodeURIComponent(app), encodeURIComponent(assetId)));
   }
 
   updateAssetTwin(app, assetId, obj) {
-    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_DEVICE_TWIN,
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_ASSET_TWIN,
       encodeURIComponent(app), encodeURIComponent(assetId)), obj);
   }
 
@@ -653,13 +653,13 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_TWIN_HISTORY,
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_TWIN_HISTORY,
       encodeURIComponent(app)), {params});
   }
 
 
   attachLegacyAssetToGateway(app, gatewayId, obj) {
-    return this.http.post(this.url + String.Format(AppUrls.ATTACH_LEGACY_DEVICE_TO_GATEWAY,
+    return this.http.post(this.url + String.Format(AppUrls.ATTACH_LEGACY_ASSET_TO_GATEWAY,
       encodeURIComponent(app), encodeURIComponent(gatewayId)), obj);
   }
 
@@ -790,23 +790,23 @@ export class AssetService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_SLAVE_DETAILS,
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_SLAVE_DETAILS,
       encodeURIComponent(app), encodeURIComponent(assetId)), {params});
   }
 
   createAssetSlaveDetail(app, assetId, obj) {
-    return this.http.post(this.url + String.Format(AppUrls.CREATE_DEVICE_SLAVE_DETAILS,
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_ASSET_SLAVE_DETAILS,
       encodeURIComponent(app), encodeURIComponent(assetId)), obj);
   }
 
   updateAssetSlaveDetail(app, assetId, slaveId, obj) {
-    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_DEVICE_SLAVE_DETAILS,
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_ASSET_SLAVE_DETAILS,
       encodeURIComponent(app), encodeURIComponent(assetId),
     encodeURIComponent(slaveId)), obj);
   }
 
   deleteAssetSlaveDetail(app, assetId, slaveId) {
-    return this.http.delete(this.url + String.Format(AppUrls.DELETE_DEVICE_SLAVE_DETAILS, encodeURIComponent(app),
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_ASSET_SLAVE_DETAILS, encodeURIComponent(app),
     encodeURIComponent(assetId), encodeURIComponent(slaveId)), {});
   }
 

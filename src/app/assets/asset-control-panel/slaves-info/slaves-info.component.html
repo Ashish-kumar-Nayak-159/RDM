@@ -228,8 +228,8 @@
 
         </form>
       <div class="form-group">
-        <button type="button" class="btn btn-primary" *ngIf="asset.type === constantData.NON_IP_DEVICE" class="btn btn-primary" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isAddSlaveAPILoading" (click)="updateSlaveObj(slave)">Save</button>
-        <button type="button" class="btn btn-primary" *ngIf="asset.type !== constantData.NON_IP_DEVICE" class="btn btn-primary" [disabled]="isAddSlaveAPILoading" (click)="updateSlaveObj(slave)">Save</button>
+        <button type="button" class="btn btn-primary" *ngIf="asset.type === constantData.NON_IP_ASSET" class="btn btn-primary" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isAddSlaveAPILoading" (click)="updateSlaveObj(slave)">Save</button>
+        <button type="button" class="btn btn-primary" *ngIf="asset.type !== constantData.NON_IP_ASSET" class="btn btn-primary" [disabled]="isAddSlaveAPILoading" (click)="updateSlaveObj(slave)">Save</button>
         <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAddSlaveAPILoading"></i>
       </div>
     </form>
@@ -450,8 +450,8 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" *ngIf="asset.type === constantData.NON_IP_DEVICE" class="btn btn-primary" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) ||isAddSlaveAPILoading" (click)="addSlaveObj()">Save</button>
-      <button type="button"  *ngIf="asset.type !== constantData.NON_IP_DEVICE" class="btn btn-primary" [disabled]="isAddSlaveAPILoading" (click)="addSlaveObj()">Save</button>
+      <button type="button" *ngIf="asset.type === constantData.NON_IP_ASSET" class="btn btn-primary" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) ||isAddSlaveAPILoading" (click)="addSlaveObj()">Save</button>
+      <button type="button"  *ngIf="asset.type !== constantData.NON_IP_ASSET" class="btn btn-primary" [disabled]="isAddSlaveAPILoading" (click)="addSlaveObj()">Save</button>
       <button type="button" class="btn btn-secondary" [disabled]="isAddSlaveAPILoading" (click)="onCloseModal('addSlaveModal')">Cancel</button>
       <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAddSlaveAPILoading"></i>
     </div>

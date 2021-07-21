@@ -26,7 +26,7 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
   // pageType: any;
   tagsObj: any;
   contextApp: any;
-  menuItems: any[] = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
+  menuItems: any[] = CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST;
   tileData: any;
   subscriptions: Subscription[] = [];
   appUsers: any[] = [];
@@ -209,7 +209,6 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
     this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         this.asset = response;
-        this.asset.gateway_id = this.asset.configuration?.gateway_id;
         if (!this.asset.tags.asset_users) {
           const userObj = this.appUsers.find(user => user.user_email === this.asset.tags.asset_manager);
           this.asset.tags.asset_users = {};
@@ -220,17 +219,17 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
         }
         this.componentState = this.asset.type;
         this.getTileName();
-        if (this.componentState === CONSTANTS.IP_DEVICE) {
+        if (this.componentState === CONSTANTS.IP_ASSET) {
           if (this.contextApp?.menu_settings?.asset_control_panel_menu.length > 0) {
             this.menuItems = this.contextApp.menu_settings.asset_control_panel_menu;
           } else {
-            this.menuItems = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
+            this.menuItems = CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST;
           }
-        } else if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+        } else if (this.componentState === CONSTANTS.NON_IP_ASSET) {
           if (this.contextApp?.menu_settings?.legacy_asset_control_panel_menu.length > 0) {
             this.menuItems = this.contextApp.menu_settings.legacy_asset_control_panel_menu;
           } else {
-            this.menuItems = CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
+            this.menuItems = CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST;
           }
         }
         let titleObj;
@@ -249,13 +248,13 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
             }
           }
         });
-        const menu = this.componentState !== CONSTANTS.NON_IP_DEVICE ?
+        const menu = this.componentState !== CONSTANTS.NON_IP_ASSET ?
           (this.contextApp.menu_settings.asset_control_panel_menu.length > 0 ?
           this.contextApp.menu_settings.asset_control_panel_menu :
-          JSON.parse(JSON.stringify(CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST))) :
+          JSON.parse(JSON.stringify(CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST))) :
           (this.contextApp.menu_settings.legacy_asset_control_panel_menu.length > 0 ?
             this.contextApp.menu_settings.legacy_asset_control_panel_menu :
-            JSON.parse(JSON.stringify(CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST)))
+            JSON.parse(JSON.stringify(CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST)))
         menu.forEach(menuObj => {
             if ( !this.activeTab && menuObj.visible && !menuObj.isTitle) {
               this.activeTab = menuObj.page;

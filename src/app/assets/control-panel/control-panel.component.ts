@@ -42,7 +42,6 @@ export class ControlPanelComponent implements OnInit {
     this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         this.asset = response;
-        this.asset.gateway_id = this.asset.configuration?.gateway_id;
         this.componentState = this.asset.type;
       }
     ));

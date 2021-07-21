@@ -92,6 +92,10 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
       }
     });
     chart.data = data;
+    if (chart.data.length > 0) {
+      chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date?.toString()
+      + ' to ' + chart.data[chart.data.length - 1].message_date.toString();
+    }
     this.loaderMessage = 'Loading Chart. Wait...';
     // Create axes
 
@@ -130,8 +134,10 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
     chart.exporting.menu = new am4core.ExportMenu();
     chart.exporting.getFormatOptions('xlsx').useLocale = false;
     chart.exporting.getFormatOptions('pdf').pageOrientation = 'landscape';
-    chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date.toString()
-    + ' to ' + chart.data[chart.data.length - 1].message_date.toString();
+    if (chart.data.length > 0) {
+      chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date?.toString()
+      + ' to ' + chart.data[chart.data.length - 1].message_date.toString();
+    }
     this.chartDataFields = {
       message_date: 'Timestamp'
     };
@@ -154,11 +160,16 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
     chart.exporting.dataFields = this.chartDataFields;
     chart.exporting.getFormatOptions('pdf').addURL = false;
     chart.exporting.dateFormat = 'dd-MM-yyyy HH:mm:ss.nnn';
-    if (this.selectedAlert) {
+    if (chart.data.length > 0) {
+   if (this.selectedAlert) {
       chart.exporting.filePrefix = this.selectedAlert.asset_id + '_Alert_' + this.selectedAlert.local_created_date;
-    } else {
+    } else if (this.asset?.asset_id) {
       chart.exporting.filePrefix = this.asset.asset_id + '_' + chart.data[0].message_date.toString()
       + '_' + chart.data[chart.data.length - 1].message_date.toString();
+    } else {
+      chart.exporting.filePrefix = chart.data[0].message_date.toString()
+      + '_' + chart.data[chart.data.length - 1].message_date.toString();
+    }
     }
     chart.cursor = new am4charts.XYCursor();
     chart.scrollbarX = new am4core.Scrollbar();

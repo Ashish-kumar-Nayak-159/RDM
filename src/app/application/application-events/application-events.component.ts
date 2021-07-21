@@ -174,7 +174,7 @@ export class ApplicationEventsComponent implements OnInit {
     return new Promise<void>((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
-        type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.IP_GATEWAY
+        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.IP_GATEWAY
       };
       this.apiSubscriptions.push(this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app).subscribe(
         (response: any) => {

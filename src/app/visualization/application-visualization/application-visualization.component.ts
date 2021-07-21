@@ -320,7 +320,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     return new Promise<void>((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
-        type: CONSTANTS.IP_DEVICE + ',' + CONSTANTS.NON_IP_DEVICE
+        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET
       };
       this.subscriptions.push(this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe(
         (response: any) => {

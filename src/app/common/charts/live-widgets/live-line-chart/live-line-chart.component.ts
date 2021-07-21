@@ -95,7 +95,7 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
               obj[prop.value.json_key] = this.telemetryObj[prop.value.json_key].value;
               obj['message_date'] = new Date(this.telemetryObj[prop.value.json_key].date);
             }
-          })
+          });
           this.telemetryData.push(obj);
         }
         console.log(this.telemetryData);

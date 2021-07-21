@@ -30,10 +30,10 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
     // this.applicationData.menu_settings = {};
     if (this.applicationData?.menu_settings?.asset_control_panel_menu?.length === 0) {
-      this.applicationData.menu_settings.asset_control_panel_menu = CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
+      this.applicationData.menu_settings.asset_control_panel_menu = CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST;
     } else {
       const arr = [];
-      CONSTANTS.DEVICE_CONTROL_PANEL_SIDE_MENU_LIST.forEach(item => {
+      CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST.forEach(item => {
         let flag = false;
         this.applicationData.menu_settings.asset_control_panel_menu.forEach(menu => {
           if (menu.system_name === item.system_name) {
@@ -50,10 +50,10 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
       this.applicationData.menu_settings.asset_control_panel_menu = [...arr];
     }
     if (this.applicationData?.menu_settings?.legacy_asset_control_panel_menu?.length === 0) {
-      this.applicationData.menu_settings.legacy_asset_control_panel_menu = CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST;
+      this.applicationData.menu_settings.legacy_asset_control_panel_menu = CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST;
     } else {
       const arr = [];
-      CONSTANTS.LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST.forEach(item => {
+      CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST.forEach(item => {
         let flag = false;
         this.applicationData.menu_settings.legacy_asset_control_panel_menu.forEach(menu => {
           if (menu.system_name === item.system_name) {

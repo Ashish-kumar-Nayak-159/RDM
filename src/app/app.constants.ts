@@ -2,7 +2,7 @@ import * as moment from 'moment';
 
 export class CONSTANTS {
 
-  public static DEVICEAPPPS = [
+  public static ASSETAPPPS = [
     {id: 4, name: 'GatewayAgent', is_start: false, is_stop: false, is_restart: false, is_install: false, is_uninstall: false,
     is_update: true, display_name: 'Gateway Agent', metadata: {}, deleted: false, type: 'system_apps'},
     {id: 4, name: 'MQTTAgent', is_start: false, is_stop: false, is_restart: false, is_install: false, is_uninstall: false,
@@ -29,7 +29,7 @@ export class CONSTANTS {
     {id: 7, asset_model: 'Legacy Asset', name: 'SiemensTCPIP', display_name: 'Siemens TCP/IP', cloud_connectivity: ['Siemens TCP/IP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'SiemensTCPIP'}, deleted: false}
   ];
 
-  public static NON_IP_DEVICE_OPTIONS = [
+  public static NON_IP_ASSET_OPTIONS = [
     {
       name: 'BLE Mesh Assets',
       protocol: 'BLE'
@@ -242,7 +242,7 @@ export class CONSTANTS {
     // }
   ];
 
-  public static DEVICE_CONTROL_PANEL_SIDE_MENU_LIST = [
+  public static ASSET_CONTROL_PANEL_SIDE_MENU_LIST = [
     {
       page: 'manage',
       system_name: 'Manage',
@@ -588,7 +588,7 @@ export class CONSTANTS {
     }
   ];
 
-  public static LEGACY_DEVICE_CONTROL_PANEL_SIDE_MENU_LIST = [
+  public static LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST = [
     {
       page: 'manage',
       system_name: 'Manage',
@@ -1350,7 +1350,7 @@ export class CONSTANTS {
     }
   ];
 
-  public static DEVICE_METHODS = [
+  public static ASSET_METHODS = [
     'REBOOT',
     'FOTA',
     'TELEMETRY_INTERVAL_CHANGE'
@@ -1377,18 +1377,18 @@ export class CONSTANTS {
   public static SELECTED_APP_DATA = 'selectedAppData';
   public static DASHBOARD_TELEMETRY_SELECTION = 'dashboardTelemetryFilterObj';
   public static DASHBOARD_ALERT_SELECTION = 'dashboardAlertFilterObj';
-  public static DEVICES_LIST = 'assets_list';
-  public static DEVICES_GATEWAYS_LIST = 'assets_gateways_list';
-  public static DEVICE_MODELS_LIST = 'asset_models_list';
-  public static DEVICE_MODEL_DATA = 'asset_model_data';
-  public static DEVICE_LIST_FILTER_FOR_GATEWAY = 'assetListFilterObj';
+  public static ASSETS_LIST = 'assets_list';
+  public static ASSETS_GATEWAYS_LIST = 'assets_gateways_list';
+  public static ASSET_MODELS_LIST = 'asset_models_list';
+  public static ASSET_MODEL_DATA = 'asset_model_data';
+  public static ASSET_LIST_FILTER_FOR_GATEWAY = 'assetListFilterObj';
   public static APP_USERS = 'application_users';
   public static EXPIRY_TIME = 'expiry_time';
   public static CURRENT_BREADCRUMB_STATE = 'breadcrumbState';
-  public static NON_IP_DEVICES = 'Non IP Assets';
-  public static IP_DEVICE = 'IoT Asset';
+  public static NON_IP_ASSETS = 'Non IP Assets';
+  public static IP_ASSET = 'IoT Asset';
   public static IP_GATEWAY = 'IoT Gateway';
-  public static NON_IP_DEVICE = 'Legacy Asset';
+  public static NON_IP_ASSET = 'Legacy Asset';
   public static NOT_ALLOWED_SPECIAL_CHARS_NAME = [' ', '.', '$', '#'];
   public static PASSWORD_REGEX = '^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,20}$';
   public static EMAIL_REGEX = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;

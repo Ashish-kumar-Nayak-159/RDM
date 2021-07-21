@@ -89,7 +89,7 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
           // }
           // if (params.get('gatewayId')) {
           //   this.gatewayId = params.get('gatewayId');
-          //   this.componentState = CONSTANTS.NON_IP_DEVICE;
+          //   this.componentState = CONSTANTS.NON_IP_ASSET;
           //   this.pageType = 'Asset';
           // }
 

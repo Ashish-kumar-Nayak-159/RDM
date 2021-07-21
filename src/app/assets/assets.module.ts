@@ -65,7 +65,6 @@ import { AssetMttrComponent } from './asset-control-panel/asset-mttr/asset-mttr.
 import { AssetMtbfComponent } from './asset-control-panel/asset-mtbf/asset-mtbf.component';
 import { AgmCoreModule } from '@agm/core';
 import { RuleEngineComponent } from './asset-control-panel/rule-engine/rule-engine.component';
-import { RegisterAssetsComponent } from './gateway-control-panel/gateway-settings/register-assets/register-assets.component';
 import { RegisterPropertiesComponent } from './gateway-control-panel/gateway-settings/register-properties/register-properties.component';
 import { ManageApplicationsComponent } from './gateway-control-panel/gateway-settings/manage-applications/manage-applications.component';
 import { GatewayAssetsSettingComponent } from './gateway-control-panel/gateway-settings/gateway-assets-setting/gateway-assets-setting.component';
@@ -76,6 +75,7 @@ import { DerivedKpisComponent } from './asset-control-panel/derived-kpis/derived
 import { RulesComponent } from './asset-control-panel/rules/rules.component';
 import { SlavesInfoComponent } from './asset-control-panel/slaves-info/slaves-info.component';
 import { NonProvisionedAssetsComponent } from './non-provisioned-assets/non-provisioned-assets.component';
+import { RegisterAssetsComponent } from './gateway-control-panel/gateway-settings/register-assets/register-assets.component';
 
 @NgModule({
   declarations: [

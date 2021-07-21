@@ -72,7 +72,7 @@ export class TagsComponent implements OnInit, OnDestroy {
   getAssetData() {
     this.asset.tags = undefined;
     let methodToCall;
-    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+    if (this.componentState === CONSTANTS.NON_IP_ASSET) {
       const obj = {
         gateway_id: this.asset.gateway_id,
         app: this.contextApp.app,
@@ -85,7 +85,7 @@ export class TagsComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(methodToCall.subscribe(
       async (response: any) => {
-        if (this.componentState === CONSTANTS.NON_IP_DEVICE && response && response.tags) {
+        if (this.componentState === CONSTANTS.NON_IP_ASSET && response && response.tags) {
             this.asset.tags = JSON.parse(JSON.stringify(response.tags));
         } else {
           this.asset = JSON.parse(JSON.stringify(response));
@@ -266,7 +266,7 @@ export class TagsComponent implements OnInit, OnDestroy {
       sync_with_cache: this.asset?.tags?.display_name !== this.originalAsset?.tags?.display_name
     };
     let methodToCall;
-    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+    if (this.componentState === CONSTANTS.NON_IP_ASSET) {
       methodToCall = this.assetService.updateNonIPAssetTags(obj, this.contextApp.app);
     } else {
       methodToCall = this.assetService.updateAssetTags(obj, this.contextApp.app);
@@ -310,7 +310,7 @@ export class TagsComponent implements OnInit, OnDestroy {
       tags: this.asset.tags
     };
     let methodToCall;
-    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+    if (this.componentState === CONSTANTS.NON_IP_ASSET) {
       methodToCall = this.assetService.updateNonIPAssetTags(obj, this.contextApp.app);
     } else {
       methodToCall = this.assetService.updateAssetTags(obj, this.contextApp.app);

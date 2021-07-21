@@ -33,7 +33,7 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
   c2dResponseInterval: any;
   telemetrySettings: any = {};
   thingsModels: any[] = [];
-  applications = CONSTANTS.DEVICEAPPPS;
+  applications = CONSTANTS.ASSETAPPPS;
   count = 0;
   constructor(
     private commonService: CommonService,
@@ -53,7 +53,7 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
     this.assets = [];
     const obj = {
       gateway_id: this.asset.asset_id,
-      type: CONSTANTS.NON_IP_DEVICE,
+      type: CONSTANTS.NON_IP_ASSET,
     };
     this.subscriptions.push(
       this.assetService.getLegacyAssets(obj, this.contextApp.app).subscribe(

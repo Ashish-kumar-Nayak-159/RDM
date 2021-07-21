@@ -165,8 +165,10 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       chart.exporting.menu = new am4core.ExportMenu();
       chart.exporting.getFormatOptions('xlsx').useLocale = false;
       chart.exporting.getFormatOptions('pdf').pageOrientation = 'landscape';
-      chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date.toString()
-      + ' to ' + chart.data[chart.data.length - 1].message_date.toString();
+      if (chart.data.length > 0) {
+        chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date?.toString()
+        + ' to ' + chart.data[chart.data.length - 1].message_date.toString();
+      }
       this.chartDataFields = {
         message_date: 'Timestamp'
       };
@@ -190,11 +192,16 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       chart.zoomOutButton.disabled = true;
       chart.exporting.getFormatOptions('pdf').addURL = false;
       chart.exporting.dateFormat = 'dd-MM-yyyy HH:mm:ss.nnn';
-      if (this.selectedAlert) {
-        chart.exporting.filePrefix = this.selectedAlert.asset_id + '_Alert_' + this.selectedAlert.local_created_date;
-      } else {
-        chart.exporting.filePrefix = this.asset.asset_id + '_' + chart.data[0].message_date.toString()
-        + '_' + chart.data[chart.data.length - 1].message_date.toString();
+      if (chart.data.length > 0) {
+     if (this.selectedAlert) {
+      chart.exporting.filePrefix = this.selectedAlert.asset_id + '_Alert_' + this.selectedAlert.local_created_date;
+    } else if (this.asset?.asset_id) {
+      chart.exporting.filePrefix = this.asset.asset_id + '_' + chart.data[0].message_date.toString()
+      + '_' + chart.data[chart.data.length - 1].message_date.toString();
+    } else {
+      chart.exporting.filePrefix = chart.data[0].message_date.toString()
+      + '_' + chart.data[chart.data.length - 1].message_date.toString();
+    }
       }
       chart.scrollbarX = new am4core.Scrollbar();
       chart.scrollbarX.parent = chart.bottomAxesContainer;

@@ -21,7 +21,7 @@ export class AssetModelService {
   ) { }
 
   getThingsModelsList(filterObj) {
-    const assetModels = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_MODELS_LIST);
+    const assetModels = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODELS_LIST);
     if (assetModels) {
       if (filterObj['id'] || filterObj['name'] || filterObj['model_type'] || filterObj['created_by']) {
       let models = assetModels;
@@ -60,7 +60,7 @@ export class AssetModelService {
       return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODELS, encodeURIComponent(filterObj.app)), { params })
       .pipe( map((data: any) => {
         if (!filterObj['id'] && !filterObj['name'] && !filterObj['model_type'] && !filterObj['created_by']) {
-          this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_MODELS_LIST, data.data);
+          this.commonService.setItemInLocalStorage(CONSTANTS.ASSET_MODELS_LIST, data.data);
         }
         return data;
       }), catchError( error => {
@@ -75,19 +75,19 @@ export class AssetModelService {
   }
 
   createThingsModel(modelObj, app) {
-    localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
+    localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
     return this.http.post(this.url + String.Format(AppUrls.CREATE_THINGS_MODEL, encodeURIComponent(app)), modelObj);
   }
 
   updateThingsModel(modelObj, app) {
-    localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
-    localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
+    localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
+    localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
     return this.http.patch(this.url + String.Format(AppUrls.UPDATE_THINGS_MODEL, encodeURIComponent(app),
     encodeURIComponent(modelObj.name)), modelObj);
   }
 
   getThingsModelProperties(filterObj) {
-    let assetModel = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_MODEL_DATA);
+    let assetModel = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODEL_DATA);
     if (assetModel?.id !== filterObj.id || assetModel?.name !== filterObj.name) {
       assetModel = undefined;
     }
@@ -121,7 +121,7 @@ export class AssetModelService {
         } else {
           obj['properties'] = data.properties;
         }
-        this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_MODEL_DATA, obj);
+        this.commonService.setItemInLocalStorage(CONSTANTS.ASSET_MODEL_DATA, obj);
         return data;
       }), catchError( error => {
         return throwError( error);
@@ -131,7 +131,7 @@ export class AssetModelService {
   }
 
   getThingsModelLayout(filterObj) {
-    let assetModel = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_MODEL_DATA);
+    let assetModel = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODEL_DATA);
     if (assetModel?.id !== filterObj.id || assetModel?.name !== filterObj.name) {
       assetModel = undefined;
     }
@@ -165,7 +165,7 @@ export class AssetModelService {
         } else {
           obj['historical_widgets'] = data.historical_widgets;
         }
-        this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_MODEL_DATA, obj);
+        this.commonService.setItemInLocalStorage(CONSTANTS.ASSET_MODEL_DATA, obj);
         return data;
       }), catchError( error => {
         return throwError( error);
@@ -175,7 +175,7 @@ export class AssetModelService {
   }
 
   getThingsModelLiveWidgets(filterObj) {
-    let assetModel = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_MODEL_DATA);
+    let assetModel = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODEL_DATA);
     if (assetModel?.id !== filterObj.id || assetModel?.name !== filterObj.name) {
       assetModel = undefined;
     }
@@ -209,7 +209,7 @@ export class AssetModelService {
         } else {
           obj['live_widgets'] = data.live_widgets;
         }
-        this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_MODEL_DATA, obj);
+        this.commonService.setItemInLocalStorage(CONSTANTS.ASSET_MODEL_DATA, obj);
         return data;
       }), catchError( error => {
         return throwError( error);
@@ -219,22 +219,22 @@ export class AssetModelService {
   }
 
   freezeAssetModel(app, assetModel, obj) {
-    localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
-    localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
+    localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
+    localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
     return this.http.post(this.url + String.Format(AppUrls.FREEZE_THINGS_MODEL, encodeURIComponent(app),
     encodeURIComponent(assetModel)), obj);
   }
 
   unfreezeAssetModel(app, assetModel, obj) {
-    localStorage.removeItem(CONSTANTS.DEVICE_MODELS_LIST);
-    localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
+    localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
+    localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
     return this.http.post(this.url + String.Format(AppUrls.UNFREEZE_THINGS_MODEL,
       encodeURIComponent(app), encodeURIComponent(assetModel)), obj);
   }
 
 
   getThingsModelAssetMethods(filterObj) {
-    return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_DEVICE_METHODS,
+    return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_ASSET_METHODS,
       encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.name)));
   }
 
@@ -279,7 +279,7 @@ export class AssetModelService {
   }
 
   getThingsModelDocuments(filterObj) {
-    let assetModel = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_MODEL_DATA);
+    let assetModel = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODEL_DATA);
     if (assetModel?.id !== filterObj.id || assetModel?.name !== filterObj.asset_model) {
       assetModel = undefined;
     }
@@ -314,7 +314,7 @@ export class AssetModelService {
         } else {
           obj['documents'] = data;
         }
-        this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_MODEL_DATA, obj);
+        this.commonService.setItemInLocalStorage(CONSTANTS.ASSET_MODEL_DATA, obj);
         return data;
       }), catchError( error => {
         return throwError( error);
@@ -324,27 +324,27 @@ export class AssetModelService {
   }
 
   createThingsModelDocument(modelObj, app, assetModel) {
-    const assetModelItem = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_MODEL_DATA);
+    const assetModelItem = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODEL_DATA);
     if (assetModelItem && assetModelItem.documents && assetModelItem.name === assetModel) {
       delete assetModelItem.documents;
-      this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_MODEL_DATA, assetModelItem);
+      this.commonService.setItemInLocalStorage(CONSTANTS.ASSET_MODEL_DATA, assetModelItem);
     }
     return this.http.post(this.url + String.Format(AppUrls.CREATE_MODEL_REFERENCE_DOCUMENTS,
       encodeURIComponent(app), encodeURIComponent(assetModel)), modelObj);
   }
 
   updateThingsModelDocument(modelObj, app, assetModel, documentId) {
-    localStorage.removeItem(CONSTANTS.DEVICE_MODEL_DATA);
+    localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
     return this.http.patch(this.url + String.Format(AppUrls.UPDATE_MODEL_REFERENCE_DOCUMENTS,
       encodeURIComponent(app), encodeURIComponent(assetModel), encodeURIComponent(documentId)), modelObj);
   }
 
   deleteThingsModelDocument(id, app, assetModel) {
     const params = new HttpParams().set('id', id);
-    const assetModelItem = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_MODEL_DATA);
+    const assetModelItem = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODEL_DATA);
     if (assetModelItem && assetModelItem.documents && assetModelItem.name === assetModel) {
       delete assetModelItem.documents;
-      this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_MODEL_DATA, assetModelItem);
+      this.commonService.setItemInLocalStorage(CONSTANTS.ASSET_MODEL_DATA, assetModelItem);
     }
     return this.http.delete(this.url + String.Format(AppUrls.DELETE_MODEL_REFERENCE_DOCUMENTS,
       encodeURIComponent(app), encodeURIComponent(assetModel), encodeURIComponent(id)), {});
@@ -437,12 +437,12 @@ export class AssetModelService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_MODEL_RULES, encodeURIComponent(app),
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_MODEL_RULES, encodeURIComponent(app),
     encodeURIComponent(assetModel)), {params});
   }
 
   getDerivedKPIs(app, assetModel) {
-    return this.http.get(this.url + String.Format(AppUrls.GET_DEVICE_MODEL_DERIVED_KPIS, encodeURIComponent(app),
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_MODEL_DERIVED_KPIS, encodeURIComponent(app),
     encodeURIComponent(assetModel)));
   }
 

@@ -31,7 +31,7 @@ export class AssetModelPackageManagementComponent implements OnInit {
   modalType: string;
   constantData = CONSTANTS;
   appPackages: any[] = [];
-  applicationList = CONSTANTS.DEVICEAPPPS;
+  applicationList = CONSTANTS.ASSETAPPPS;
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -42,7 +42,7 @@ export class AssetModelPackageManagementComponent implements OnInit {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    if (this.assetModel.metadata.model_type !== this.constantData.NON_IP_DEVICE) {
+    if (this.assetModel.metadata.model_type !== this.constantData.NON_IP_ASSET) {
       this.setUpPackageData();
       this.getPackages();
     }

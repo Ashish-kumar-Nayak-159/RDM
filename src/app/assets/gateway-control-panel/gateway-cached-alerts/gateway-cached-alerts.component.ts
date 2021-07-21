@@ -39,7 +39,7 @@ export class GatewayCachedAlertsComponent implements OnInit, OnDestroy {
     this.filterObj.gateway_id = this.asset.asset_id;
     this.filterObj.app = this.contextApp.app;
     this.filterObj.count = 10;
-    this.assets = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICES_LIST);
+    this.assets = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSETS_LIST);
     this.alertTableConfig = {
       type: 'cached alerts',
       dateRange: '',

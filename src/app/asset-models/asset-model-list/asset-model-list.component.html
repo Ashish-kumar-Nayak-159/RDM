@@ -9,12 +9,12 @@
       <div class="asset-nav-tabs" >
         <nav>
           <div class="nav nav-tabs nav-fill " id="nav-tab" role="tablist">
-           <a class="nav-item nav-link border-0" *ngIf="iotAssetsTab?.visibility" id="nav-home-tab" data-toggle="tab" (click)="onTabChange(constantData.IP_DEVICE)"
-           href="#{{iotAssetsTab?.tab_name}}" role="tab" aria-controls="nav-home" aria-selected="true" [ngClass]="{'active': componentState === constantData.IP_DEVICE}">
+           <a class="nav-item nav-link border-0" *ngIf="iotAssetsTab?.visibility" id="nav-home-tab" data-toggle="tab" (click)="onTabChange(constantData.IP_ASSET)"
+           href="#{{iotAssetsTab?.tab_name}}" role="tab" aria-controls="nav-home" aria-selected="true" [ngClass]="{'active': componentState === constantData.IP_ASSET}">
              <i class="fab fa-mixcloud mr-2"></i>
             <span class="d-none d-md-inline-block">{{iotAssetsTab?.tab_name}}</span></a>
-           <a class="nav-item nav-link border-0" *ngIf="legacyAssetsTab?.visibility" id="nav-profile-tab" data-toggle="tab" (click)="onTabChange(constantData.NON_IP_DEVICE)"
-           href="#{{legacyAssetsTab?.tab_name}}" role="tab" aria-controls="nav-profile" aria-selected="false" [ngClass]="{'active': componentState === constantData.NON_IP_DEVICE}">
+           <a class="nav-item nav-link border-0" *ngIf="legacyAssetsTab?.visibility" id="nav-profile-tab" data-toggle="tab" (click)="onTabChange(constantData.NON_IP_ASSET)"
+           href="#{{legacyAssetsTab?.tab_name}}" role="tab" aria-controls="nav-profile" aria-selected="false" [ngClass]="{'active': componentState === constantData.NON_IP_ASSET}">
            <i class="fa fa-microchip mr-2" aria-hidden="true"></i>
            <span class="d-none d-md-inline-block">{{legacyAssetsTab?.tab_name}}</span></a>
            <a class="nav-item nav-link border-0" *ngIf="iotGatewaysTab?.visibility" id="nav-profile-tab" data-toggle="tab" (click)="onTabChange(constantData.IP_GATEWAY)"
@@ -46,9 +46,9 @@
           <select class="form-control form-control-sm mx-1 my-1" id="dateoptions"
           [(ngModel)]="thingsModelFilterObj.model_type" name="status">
           <option [ngValue]="undefined">Model Type</option>
-          <option [ngValue]="constantData.IP_DEVICE">{{constantData.IP_DEVICE}}</option>
+          <option [ngValue]="constantData.IP_ASSET">{{constantData.IP_ASSET}}</option>
           <option [ngValue]="constantData.IP_GATEWAY">{{constantData.IP_GATEWAY}}</option>
-          <option [ngValue]="constantData.NON_IP_DEVICE">{{constantData.NON_IP_DEVICE}}</option>
+          <option [ngValue]="constantData.NON_IP_ASSET">{{constantData.NON_IP_ASSET}}</option>
           </select>
           <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="searchThingsModels()" [disabled]="isthingsModelsListLoading" placement="bottom" tooltip="Search">
             <i class="fa fa-search fa-sm"></i></button>
@@ -96,9 +96,9 @@
           <label for="recipient-name" class="col-form-label required">{{(tileData && tileData[1] ? tileData[1]?.value : '')}} Type:</label>
           <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="thingsModel.metadata.model_type"
           >
-            <option [ngValue]="constantData.IP_DEVICE" *ngIf="iotAssetsTab?.visibility">{{constantData.IP_DEVICE}}</option>
+            <option [ngValue]="constantData.IP_ASSET" *ngIf="iotAssetsTab?.visibility">{{constantData.IP_ASSET}}</option>
             <option [ngValue]="constantData.IP_GATEWAY" *ngIf="legacyAssetsTab?.visibility">{{constantData.IP_GATEWAY}}</option>
-            <option [ngValue]="constantData.NON_IP_DEVICE" *ngIf="iotGatewaysTab?.visibility">{{constantData.NON_IP_DEVICE}}</option>
+            <option [ngValue]="constantData.NON_IP_ASSET" *ngIf="iotGatewaysTab?.visibility">{{constantData.NON_IP_ASSET}}</option>
           </select>
         </div>
         <div class="form-group" *ngIf="!thingsModel.id">

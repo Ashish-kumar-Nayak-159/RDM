@@ -34,7 +34,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   showPropOptions = false;
   properties: any;
   alertConditions: any[] = [];
-  applications = CONSTANTS.DEVICEAPPPS;
+  applications = CONSTANTS.ASSETAPPPS;
   thingsModels: any[] = [];
   constructor(
     private commonService: CommonService,
@@ -50,7 +50,6 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     if (this.componentstate === CONSTANTS.IP_GATEWAY) {
       this.getAssetsOfGateway();
     } else {
-      this.asset.gateway_id = this.asset.configuration?.gateway_id;
       this.thingsModels.forEach(model => {
         if (this.asset.asset_model === model.name) {
           this.asset.model_freeze = model.freezed;
@@ -102,7 +101,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     this.assets = [];
     const obj = {
       gateway_id: this.assetTwin.asset_id,
-      type: CONSTANTS.NON_IP_DEVICE,
+      type: CONSTANTS.NON_IP_ASSET,
     };
     this.subscriptions.push(
       this.assetService.getLegacyAssets(obj, this.contextApp.app).subscribe(
@@ -245,13 +244,13 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     console.log(obj);
     this.isAPILoading = true;
     const c2dObj = {
-      asset_id: this.componentstate !== CONSTANTS.NON_IP_DEVICE ? this.asset.asset_id : this.asset.gateway_id,
+      asset_id: this.componentstate !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id,
       message: obj,
       app: this.contextApp.app,
       timestamp:  moment().unix(),
       acknowledge: 'Full',
       expire_in_min: 2880,
-      job_id: (this.componentstate !== CONSTANTS.NON_IP_DEVICE ? this.asset.asset_id : this.asset.gateway_id)
+      job_id: (this.componentstate !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id)
       + '_' + this.commonService.generateUUID(),
       request_type: obj.command,
       job_type: 'Message',
@@ -260,7 +259,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     c2dObj.sub_job_id = c2dObj.job_id + '_1';
     this.subscriptions.push(
       this.assetService.sendC2DMessage(c2dObj, this.contextApp.app,
-        this.componentstate !== CONSTANTS.NON_IP_DEVICE ? this.asset.asset_id : this.asset.gateway_id).subscribe(
+        this.componentstate !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id).subscribe(
         (response: any) => {
           this.displyaMsgArr.push({
             message: 'Asset properties/alert registration request sent to gateway.',

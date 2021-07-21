@@ -243,6 +243,12 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
       if (env) {
         this.applicationDetail.environment = env;
       }
+      this.applicationDetail.metadata.dashboard_config = {};
+      this.applicationDetail.metadata.dashboard_config.show_historical_widgets = false;
+      this.applicationDetail.metadata.dashboard_config.show_live_widgets = true;
+
+
+
       this.applicationDetail.menu_settings = {main_menu: [], asset_control_panel_menu : [],
         model_control_panel_menu: [], gateway_control_panel_menu: [], legacy_asset_control_panel_menu: []};
       const methodToCall = this.appModalType === 'Create' ? this.applicationService.createApp(this.applicationDetail) :

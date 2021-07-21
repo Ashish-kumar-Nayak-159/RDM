@@ -72,7 +72,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   getAssetCredentials() {
     this.assetCredentials = undefined;
-    const id = (this.componentState === CONSTANTS.NON_IP_DEVICE) ? this.asset.gateway_id : this.asset.asset_id;
+    console.log(this.asset);
+    const id = (this.componentState === CONSTANTS.NON_IP_ASSET) ? this.asset.gateway_id : this.asset.asset_id;
     this.subscriptions.push(this.assetService.getAssetCredentials(id, this.contextApp.app).subscribe(
       response => {
         this.assetCredentials = response;
@@ -106,13 +107,13 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   onRedirectToAssets() {
-    let data = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
+    let data = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);
     if (!data) {
       data = {};
     }
     data['gateway_id'] = this.asset.asset_id;
-    data['type'] = CONSTANTS.NON_IP_DEVICE;
-    this.commonService.setItemInLocalStorage(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY, data);
+    data['type'] = CONSTANTS.NON_IP_ASSET;
+    this.commonService.setItemInLocalStorage(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY, data);
     this.router.navigate(['applications', this.contextApp.app, 'assets']);
   }
 

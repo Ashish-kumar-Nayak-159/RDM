@@ -11,6 +11,7 @@ import { AppDashboardComponent } from './app-dashboard/app-dashboard.component';
 import { UiSwitchModule } from 'ngx-ui-switch';
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { Daterangepicker } from 'ng2-daterangepicker';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
     VisualizationModule,
     UiSwitchModule,
     NgSelectModule,
-    TooltipModule
+    TooltipModule,
+    Daterangepicker,
   ]
 })
 export class AppDashboardModule { }

@@ -27,7 +27,7 @@ export class FotaComponent implements OnInit {
   updatePackages: any[] = [];
   uninstallPackages: any[] = [];
   displyaMsgArr = [];
-  applicationList: any[] = CONSTANTS.DEVICEAPPPS;
+  applicationList: any[] = CONSTANTS.ASSETAPPPS;
   isAssetsAPILoading = false;
   assets: any[] = [];
   selectedAssetPackage: any;
@@ -58,7 +58,7 @@ export class FotaComponent implements OnInit {
     this.assets = [];
     const obj = {
       gateway_id: this.asset.asset_id,
-      type: CONSTANTS.NON_IP_DEVICE,
+      type: CONSTANTS.NON_IP_ASSET,
     };
     this.subscriptions.push(
       this.assetService.getLegacyAssets(obj, this.contextApp.app).subscribe(

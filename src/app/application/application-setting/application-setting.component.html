@@ -15,6 +15,9 @@
           <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'database-configuration'}"
           href="#app-database-configuration" role="tab" aria-controls="nav-home" aria-selected="true" (click)="setActiveTab('database-configuration')">
           Database Configuration</a>
+          <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'dashboard-configuration'}"
+          href="#app-dashboard-configuration" role="tab" aria-controls="nav-home" aria-selected="true" (click)="setActiveTab('dashboard-configuration')">
+          Dashboard Configuration</a>
           <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'menu-settings'}"
           href="#app-menu-settings" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('menu-settings')">
           Menu Settings</a>
@@ -45,6 +48,10 @@
     <div class="tab-pane" id="app-meta-data" role="tabpanel" aria-labelledby="nav-home-tab"
     [ngClass]="{'active': activeTab === 'meta-data'}">
       <app-application-metadata *ngIf="activeTab === 'meta-data' && applicationData" [applicationData]="applicationData"></app-application-metadata>
+    </div>
+    <div class="tab-pane" id="app-dashboard-configuration" role="tabpanel" aria-labelledby="nav-home-tab"
+    [ngClass]="{'active': activeTab === 'dashboard-configuration'}">
+      <app-application-dashboard-configuration *ngIf="activeTab === 'dashboard-configuration' && applicationData" [applicationData]="applicationData"></app-application-dashboard-configuration>
     </div>
     <div class="tab-pane" id="app-database-configuration" role="tabpanel" aria-labelledby="nav-home-tab"
     [ngClass]="{'active': activeTab === 'database-configuration'}">

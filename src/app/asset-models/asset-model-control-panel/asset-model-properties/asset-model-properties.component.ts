@@ -217,7 +217,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       threshold: {}
     };
     console.log(this.setupForm);
-    if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_DEVICE) {
+    if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_ASSET) {
     if (this.assetModel.tags.protocol === 'ModbusTCPMaster' || this.assetModel.tags.protocol === 'ModbusRTUMaster') {
       this.setupForm = new FormGroup({
         sid: new FormControl(null, [Validators.required]),
@@ -357,7 +357,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.toasterService.showError('Please enter all required fields', 'Add Property');
       return;
     }
-    if (this.assetModel.metadata?.model_type === this.constantData.NON_IP_DEVICE && Object.keys(this.propertyObj?.metadata).length === 0) {
+    if (this.assetModel.metadata?.model_type === this.constantData.NON_IP_ASSET && Object.keys(this.propertyObj?.metadata).length === 0) {
       this.toasterService.showError('Please enter all required fields', 'Add Property');
       return;
     }
@@ -536,7 +536,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     } else if (obj.for === 'Edit') {
       this.propertyObj = JSON.parse(JSON.stringify(obj.data));
       this.propertyObj.edit = true;
-      if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_DEVICE) {
+      if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_ASSET) {
       if (this.assetModel.tags.protocol === 'ModbusTCPMaster' || this.assetModel.tags.protocol === 'ModbusRTUMaster') {
         this.setupForm = new FormGroup({
           sid: new FormControl(this.propertyObj?.metadata?.sid, [Validators.required]),

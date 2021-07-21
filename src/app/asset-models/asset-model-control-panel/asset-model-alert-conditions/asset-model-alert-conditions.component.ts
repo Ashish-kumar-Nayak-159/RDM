@@ -248,7 +248,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   openAddAlertConditionModal(alertObj = undefined) {
     if (alertObj) {
       this.alertObj = alertObj;
-      if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_DEVICE) {
+      if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_ASSET) {
       if (this.assetModel.tags.protocol === 'ModbusTCPMaster' || this.assetModel.tags.protocol === 'ModbusRTUMaster') {
         this.setupForm = new FormGroup({
           sid: new FormControl(alertObj?.metadata?.sid, [Validators.required]),
@@ -278,7 +278,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       console.log(this.setupForm);
     } else {
       this.alertObj = {};
-      if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_DEVICE) {
+      if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_ASSET) {
       if (this.assetModel.tags.protocol === 'ModbusTCPMaster' || this.assetModel.tags.protocol === 'ModbusRTUMaster') {
         this.setupForm = new FormGroup({
           sid: new FormControl(null, [Validators.required]),

@@ -167,7 +167,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     return new Promise<void>((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
-        type: this.contextApp.app === 'CMS_Dev' ? CONSTANTS.NON_IP_DEVICE : undefined
+        type: this.contextApp.app === 'CMS_Dev' ? CONSTANTS.NON_IP_ASSET : undefined
       };
       if (this.contextApp.app === 'CMS_Dev') {
       this.healthyAssetCount = 0;
@@ -200,7 +200,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                     }
                   }
                 });
-                if (asset.type === this.constantData.NON_IP_DEVICE) {
+                if (asset.type === this.constantData.NON_IP_ASSET) {
                   asset.icon = {
                     url: asset.kpiValue === true ? './assets/img/legacy-asset-green.svg' : (asset.kpiValue === false ? './assets/img/legacy-asset-red.svg' : './assets/img/legacy-assets.svg'),
                     scaledSize: {
@@ -209,14 +209,14 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                     }};
                 }
               } else {
-                if (asset.type === this.constantData.IP_DEVICE && asset?.configuration?.connection_state?.toLowerCase() === 'connected') {
+                if (asset.type === this.constantData.IP_ASSET && asset?.configuration?.connection_state?.toLowerCase() === 'connected') {
                   asset.icon = {
                     url: './assets/img/iot-assets-green.svg',
                     scaledSize: {
                       width: 35,
                       height: 35
                     }};
-                } else if (asset.type === this.constantData.IP_DEVICE && asset?.configuration?.connection_state?.toLowerCase() === 'disconnected') {
+                } else if (asset.type === this.constantData.IP_ASSET && asset?.configuration?.connection_state?.toLowerCase() === 'disconnected') {
                   asset.icon = {
                     url: './assets/img/iot-assets-red.svg',
                     scaledSize: {
@@ -237,7 +237,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                       width: 30,
                       height: 30
                     }};
-                } else if (asset.type === this.constantData.NON_IP_DEVICE) {
+                } else if (asset.type === this.constantData.NON_IP_ASSET) {
                   asset.icon = {
                     url: './assets/img/legacy-assets.svg',
                     scaledSize: {

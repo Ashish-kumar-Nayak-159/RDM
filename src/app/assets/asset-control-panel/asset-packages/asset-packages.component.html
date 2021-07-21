@@ -1,8 +1,8 @@
 <div class="table-responsive">
-  <div class="tableFixHead"  *ngIf="asset.type !== constantData.NON_IP_DEVICE">
+  <div class="tableFixHead"  *ngIf="asset.type !== constantData.NON_IP_ASSET">
     <app-common-table [tableData]="packages" [tableConfig]="packageTableConfig" [isTableFilterSelected]="true"
       [isTableDataLoading]="isPackagesAPILoading" ></app-common-table>
   </div>
-  <p class="m-3" *ngIf="asset.type === constantData.NON_IP_DEVICE">Package Management is not avilable for
+  <p class="m-3" *ngIf="asset.type === constantData.NON_IP_ASSET">Package Management is not avilable for
     Legacy assets. </p>
 </div>

@@ -36,7 +36,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
   gateways: any[];
   originalGateways: any[] = [];
   tableConfig: any;
-  assetCategory = CONSTANTS.NON_IP_DEVICE_OPTIONS;
+  assetCategory = CONSTANTS.NON_IP_ASSET_OPTIONS;
   gatewayId: string;
   contextApp: any;
   hierarchyDropdown: any[] = [];
@@ -111,7 +111,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
     );
     this.assetsList = [];
     await this.getTileName();
-    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);
     // if (item?.asset_model) {
     //   this.assetFilterObj.asset_model = item.asset_model;
     // }
@@ -119,14 +119,14 @@ export class AssetListComponent implements OnInit, OnDestroy {
       this.onTabChange(item.type);
     } else {
     if (this.iotAssetsTab?.visibility) {
-      this.onTabChange(CONSTANTS.IP_DEVICE);
+      this.onTabChange(CONSTANTS.IP_ASSET);
     } else if (this.legacyAssetsTab?.visibility) {
-      this.onTabChange(CONSTANTS.NON_IP_DEVICE);
+      this.onTabChange(CONSTANTS.NON_IP_ASSET);
     } else if (this.iotGatewaysTab?.visibility) {
       this.onTabChange(CONSTANTS.IP_GATEWAY);
     }
     }
-    localStorage.removeItem(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
+    localStorage.removeItem(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
     }
@@ -252,19 +252,19 @@ export class AssetListComponent implements OnInit, OnDestroy {
     this.assetFilterObj.hierarchy = JSON.stringify(
       this.contextApp.user.hierarchy
     );
-    const item1 = this.commonService.getItemFromLocalStorage(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
+    const item1 = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);
     if (item1?.gateway_id) {
       this.assetFilterObj.gateway_id = item1.gateway_id;
     }
     if (item1?.asset_model) {
       this.assetFilterObj.asset_model = item1.asset_model;
     }
-    localStorage.removeItem(CONSTANTS.DEVICE_LIST_FILTER_FOR_GATEWAY);
+    localStorage.removeItem(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);
     this.assetFilterObj.hierarchyString = this.contextApp.user.hierarchyString;
     this.originalAssetFilterObj = JSON.parse(
       JSON.stringify(this.assetFilterObj)
     );
-    if (type === CONSTANTS.NON_IP_DEVICE) {
+    if (type === CONSTANTS.NON_IP_ASSET) {
       this.getGatewayList();
     }
     this.componentState = type;
@@ -272,7 +272,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
 
 
 
-    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+    if (this.componentState === CONSTANTS.NON_IP_ASSET) {
       this.assetFilterObj.type = undefined;
     } else {
       this.assetFilterObj.type = this.componentState;
@@ -295,9 +295,9 @@ export class AssetListComponent implements OnInit, OnDestroy {
     }, 2000);
     this.tableConfig = undefined;
     const obj =
-      this.componentState === CONSTANTS.IP_DEVICE
+      this.componentState === CONSTANTS.IP_ASSET
         ? this.iotAssetsTab
-        : this.componentState === CONSTANTS.NON_IP_DEVICE
+        : this.componentState === CONSTANTS.NON_IP_ASSET
         ? this.legacyAssetsTab
         : this.componentState === CONSTANTS.IP_GATEWAY
         ? this.iotGatewaysTab
@@ -309,7 +309,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
       is_table_data_loading: this.isAssetListLoading,
       no_data_message: '',
       table_class: 'tableFixHead-assets-list',
-      border_left_key: this.contextApp.app === 'CMS_Dev' && this.componentState === CONSTANTS.NON_IP_DEVICE ? 'kpiValue' : undefined,
+      border_left_key: this.contextApp.app === 'CMS_Dev' && this.componentState === CONSTANTS.NON_IP_ASSET ? 'kpiValue' : undefined,
       data: [
         {
           header_name: (obj.table_key || '') + ' Name',
@@ -354,7 +354,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
         },
       ],
     };
-    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+    if (this.componentState === CONSTANTS.NON_IP_ASSET) {
       this.tableConfig.data.splice(this.tableConfig.data.length - 2, 0, {
         header_name: 'Reporting Via GW',
         is_display_filter: true,
@@ -390,7 +390,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
       });
 
     }
-    if (this.contextApp.app === 'CMS_Dev' && this.componentState === CONSTANTS.NON_IP_DEVICE) {
+    if (this.contextApp.app === 'CMS_Dev' && this.componentState === CONSTANTS.NON_IP_ASSET) {
       await this.getLatestDerivedKPIData();
     }
     const item = this.commonService.getItemFromLocalStorage(
@@ -491,7 +491,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
   }
 
   async openAssetEditModal(asset) {
-    if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+    if (this.componentState === CONSTANTS.NON_IP_ASSET) {
       this.getGatewayList();
     }
     await this.getAssetData(asset.asset_id);
@@ -611,7 +611,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
       delete obj.status;
     }
     const methodToCall =
-      this.componentState === CONSTANTS.NON_IP_DEVICE
+      this.componentState === CONSTANTS.NON_IP_ASSET
         ? this.assetService.getNonIPAssetList(obj)
         : this.assetService.getAssetList(obj);
     this.assetListAPISubscription =
@@ -623,7 +623,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
                 item.display_name = item.asset_id;
               }
               item.asset_manager_users = item.asset_manager.split(',');
-              if (this.componentState === CONSTANTS.NON_IP_DEVICE) {
+              if (this.componentState === CONSTANTS.NON_IP_ASSET) {
                 const name = this.gateways.filter(
                   (gateway) => gateway.asset_id === item.gateway_id
                 )[0]?.display_name;
@@ -642,7 +642,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
                 }
               });
               if (
-                this.componentState === this.constantData.IP_DEVICE &&
+                this.componentState === this.constantData.IP_ASSET &&
                 item?.connection_state?.toLowerCase() === 'connected'
               ) {
                 item.icon = {
@@ -653,7 +653,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
                   },
                 };
               } else if (
-                this.componentState === this.constantData.IP_DEVICE &&
+                this.componentState === this.constantData.IP_ASSET &&
                 item?.connection_state?.toLowerCase() === 'disconnected'
               ) {
                 item.icon = {
@@ -686,7 +686,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
                     height: 30,
                   },
                 };
-              } else if (this.componentState === this.constantData.NON_IP_DEVICE) {
+              } else if (this.componentState === this.constantData.NON_IP_ASSET) {
                 item.icon = {
                   url: item.kpiValue === true ? './assets/img/legacy-asset-green.svg' : (item.kpiValue === false ? './assets/img/legacy-asset-red.svg' : './assets/img/legacy-assets.svg'),
                   scaledSize: {
@@ -696,7 +696,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
               }
              } else {
                 if (
-                  this.componentState === this.constantData.IP_DEVICE &&
+                  this.componentState === this.constantData.IP_ASSET &&
                   item?.connection_state?.toLowerCase() === 'connected'
                 ) {
                   item.icon = {
@@ -707,7 +707,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
                     },
                   };
                 } else if (
-                  this.componentState === this.constantData.IP_DEVICE &&
+                  this.componentState === this.constantData.IP_ASSET &&
                   item?.connection_state?.toLowerCase() === 'disconnected'
                 ) {
                   item.icon = {
@@ -741,7 +741,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
                     },
                   };
                 } else if (
-                  this.componentState === this.constantData.NON_IP_DEVICE
+                  this.componentState === this.constantData.NON_IP_ASSET
                 ) {
                   item.icon = {
                     url: './assets/img/legacy-assets.svg',

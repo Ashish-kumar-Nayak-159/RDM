@@ -2,19 +2,19 @@
   <div class="">
     <ul class="nav">
 
-      <li class="nav-item" *ngIf="componentState !== constantData.NON_IP_DEVICE">
+      <li class="nav-item" *ngIf="componentState !== constantData.NON_IP_ASSET">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Test Connection'}" href="javascript:void(0)"
         (click)="onClickOfTab('Test Connection')" [class.disabled]="isSaveSettingAPILoading">
           <i class="fa fa-fw fa-plug"></i>
           <span class="text-secondary">Test Connection</span></a>
       </li>
-      <li class="nav-item"  *ngIf="componentState !== constantData.NON_IP_DEVICE">
+      <li class="nav-item"  *ngIf="componentState !== constantData.NON_IP_ASSET">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'FOTA'}" href="javascript:void(0)"
         (click)="onClickOfTab('FOTA')" [class.disabled]="isSaveSettingAPILoading">
           <i class="fa fa-fw fa-image"></i>
           <span class="text-secondary">FOTA</span></a>
       </li>
-      <li class="nav-item"  *ngIf="componentState !== constantData.NON_IP_DEVICE">
+      <li class="nav-item"  *ngIf="componentState !== constantData.NON_IP_ASSET">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Manage Applications'}" href="javascript:void(0)"
         (click)="onClickOfTab('Manage Applications')" [class.disabled]="isSaveSettingAPILoading">
           <i class="fa fa-fw fa-microchip"></i>

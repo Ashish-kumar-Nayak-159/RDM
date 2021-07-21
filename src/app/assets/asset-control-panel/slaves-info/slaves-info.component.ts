@@ -215,8 +215,8 @@ export class SlavesInfoComponent implements OnInit {
     }
     this.isAPILoading = true;
     const c2dObj = {
-      asset_id: this.asset.type !== CONSTANTS.NON_IP_DEVICE ? this.asset.asset_id : this.asset.gateway_id,
-      job_id: (this.asset.type !== CONSTANTS.NON_IP_DEVICE ? this.asset.asset_id : this.asset.gateway_id)
+      asset_id: this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id,
+      job_id: (this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id)
       + '_' + this.commonService.generateUUID(),
       request_type: 'register_slaves',
       job_type: 'Message',
@@ -237,7 +237,7 @@ export class SlavesInfoComponent implements OnInit {
     c2dObj.sub_job_id = c2dObj.job_id + '_1';
     this.subscriptions.push(
       this.assetService.sendC2DMessage(c2dObj, this.contextApp.app,
-        this.asset.type !== CONSTANTS.NON_IP_DEVICE ? this.asset.asset_id : this.asset.gateway_id).subscribe(
+        this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id).subscribe(
         (response: any) => {
           this.toasterService.showSuccess(response.message, 'Sync Slaves');
           this.isAPILoading = false;

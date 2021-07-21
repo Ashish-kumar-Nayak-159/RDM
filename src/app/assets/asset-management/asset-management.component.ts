@@ -24,9 +24,9 @@ export class AssetManagementComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     await this.getTileName();
     if (this.iotAssetsTab?.visibility) {
-      this.componentState = CONSTANTS.IP_DEVICE;
+      this.componentState = CONSTANTS.IP_ASSET;
     } else if (this.legacyAssetsTab?.visibility) {
-      this.componentState = CONSTANTS.NON_IP_DEVICE;
+      this.componentState = CONSTANTS.NON_IP_ASSET;
     } else if (this.iotGatewaysTab?.visibility) {
       this.componentState = CONSTANTS.IP_GATEWAY;
     }

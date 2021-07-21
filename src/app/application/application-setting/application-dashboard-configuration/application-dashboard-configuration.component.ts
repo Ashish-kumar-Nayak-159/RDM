@@ -25,26 +25,26 @@ export class ApplicationDashboardConfigurationComponent implements OnInit {
   ngOnInit(): void {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
-    if (!this.applicationData.metadata?.dashboard_config) {
-      this.applicationData.metadata.dashboard_config = {};
-      this.applicationData.metadata.dashboard_config.show_historical_widgets = false;
-      this.applicationData.metadata.dashboard_config.show_live_widgets = true;
+    if (!this.applicationData.dashboard_config) {
+      this.applicationData.dashboard_config = {};
+      this.applicationData.dashboard_config.show_historical_widgets = false;
+      this.applicationData.dashboard_config.show_live_widgets = true;
     }
   }
 
   toggleHistoryCheckbox() {
-    this.applicationData.metadata.dashboard_config.show_historical_widgets =
-    !this.applicationData.metadata.dashboard_config.show_historical_widgets;
-    if (this.applicationData.metadata.dashboard_config.show_historical_widgets) {
-      this.applicationData.metadata.dashboard_config.show_live_widgets = false;
+    this.applicationData.dashboard_config.show_historical_widgets =
+    !this.applicationData.dashboard_config.show_historical_widgets;
+    if (this.applicationData.dashboard_config.show_historical_widgets) {
+      this.applicationData.dashboard_config.show_live_widgets = false;
     }
   }
 
   toggleLiveCheckbox() {
-    this.applicationData.metadata.dashboard_config.show_live_widgets =
-    !this.applicationData.metadata.dashboard_config.show_live_widgets;
-    if (this.applicationData.metadata.dashboard_config.show_live_widgets) {
-      this.applicationData.metadata.dashboard_config.show_historical_widgets = false;
+    this.applicationData.dashboard_config.show_live_widgets =
+    !this.applicationData.dashboard_config.show_live_widgets;
+    if (this.applicationData.dashboard_config.show_live_widgets) {
+      this.applicationData.dashboard_config.show_historical_widgets = false;
     }
   }
 

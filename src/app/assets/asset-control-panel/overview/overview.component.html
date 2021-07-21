@@ -3,7 +3,8 @@
 <div class="p-3">
   <div class="d-flex">
       <div class="pl-3">
-          <div class="row" >
+        <!-- contextApp?.user?.role === constantData.APP_ADMIN_ROLE -->
+          <div class="row" *ngIf="environmentApp !== 'Indygo'">
             <h6>This Asset is of {{componentState}} type.</h6>
          </div>
           <div class="row" *ngIf="componentState === constantData.NON_IP_ASSET">
@@ -13,7 +14,7 @@
           <div class="row">
             <h6>Asset Id is {{asset?.asset_id}}</h6>
           </div>
-          <div class="row">
+          <div class="row" *ngIf="environmentApp !== 'Indygo'">
             <h6>This asset is inherited from asset model
               <a  href="javascript:void(0)" class="blue-font" (click)="onRedirectToModel(asset)">({{asset?.tags?.asset_model}})</a>
             </h6>
@@ -24,25 +25,25 @@
                 {{assetCount}} {{assetCount === 1 ? 'asset' : 'assets'}}</a>.</h6>
           </div>
           <div class="row">
-            <h6 *ngIf="asset?.configuration?.status?.toLowerCase() === 'enabled' && asset?.configuration?.connection_state?.toLowerCase() === 'connected'">
+            <h6 *ngIf="asset?.status?.toLowerCase() === 'enabled' && asset?.connection_state?.toLowerCase() === 'connected'">
               Currently, {{constantData.IP_GATEWAY ? 'gateway' : 'asset'}} is
               <span class="enabled-font">
-                {{asset?.configuration.status}} & Online.</span>
+                {{asset?.status}} & Online.</span>
             </h6>
-            <h6 *ngIf="asset?.configuration?.status?.toLowerCase() === 'enabled' && asset?.configuration?.connection_state?.toLowerCase() === 'disconnected'">
+            <h6 *ngIf="asset?.status?.toLowerCase() === 'enabled' && asset?.connection_state?.toLowerCase() === 'disconnected'">
               Currently, {{constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
               <span class="enabled-font">
-                {{asset?.configuration.status}}</span>, but it is
+                {{asset?.status}}</span>, but it is
                 <span class="disabled-font">
                   Offline.</span>
             </h6>
-            <h6 *ngIf="asset?.configuration?.status?.toLowerCase() === 'disabled' && asset?.configuration?.connection_state?.toLowerCase() === 'disconnected'">
+            <h6 *ngIf="asset?.status?.toLowerCase() === 'disabled' && asset?.connection_state?.toLowerCase() === 'disconnected'">
               Currently, {{constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
               <span class="disabled-font">
-                {{asset?.configuration.status}} & Offline.</span>
+                {{asset?.status}} & Offline.</span>
             </h6>
           </div>
-          <div *ngIf="assetCredentials" class="row">
+          <div *ngIf="assetCredentials && environmentApp !== 'Indygo'" class="row">
             <h6 ><ng-container *ngIf="componentState === constantData.NON_IP_ASSET">Gateway</ng-container>
               Connection String:
               <a class="blue-font ml-2" href="javascript:void(0)" (click)="isViewClicked ? hideConnectionString() : viewonnectionString()">{{isViewClicked ? 'Hide' : 'View'}}</a>
@@ -50,7 +51,7 @@
             </h6>
             <h6  class="row col-12" *ngIf="isViewClicked">{{assetCredentials.primary_connection_string}}</h6>
           </div>
-          <div *ngIf="componentState !== constantData.NON_IP_ASSET" class="row">
+          <div *ngIf="componentState !== constantData.NON_IP_ASSET && environmentApp !== 'Indygo'" class="row">
             <h6>
               Asset Twin:
               <a class="blue-font ml-2" href="javascript:void(0)" (click)="viewAssetTwin()"> View</a>

@@ -26,8 +26,7 @@ export class CONSTANTS {
     {id: 4, asset_model: 'IoT Gateway', name: 'IP Gateway (SIM)', display_name: 'IP Gateway (SIM)', cloud_connectivity: ['IP Gateway -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Gateway -> MQTT Client -> SIM -> Cloud'], metadata: {}, deleted: false},
     {id: 5, asset_model: 'Legacy Asset', name: 'ModbusTCPMaster', display_name: 'Modbus TCP', cloud_connectivity: ['ModBus TCP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusTCPMaster'}, deleted: false},
     {id: 6, asset_model: 'Legacy Asset', name: 'ModbusRTUMaster', display_name: 'Modbus RTU', cloud_connectivity: ['ModBus RTU Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusRTUMaster'}, deleted: false},
-    {id: 7, asset_model: 'Legacy Asset', name: 'SiemensTCPIP', display_name: 'Siemens TCP/IP', cloud_connectivity: ['Siemens TCP/IP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'SiemensTCPIP'}, deleted: false},
-    {id: 8, asset_model: 'Legacy Asset', name: 'BLE', display_name: 'BLE', cloud_connectivity: ['BLE Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'BLE'}, deleted: false}
+    {id: 7, asset_model: 'Legacy Asset', name: 'SiemensTCPIP', display_name: 'Siemens TCP/IP', cloud_connectivity: ['Siemens TCP/IP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'SiemensTCPIP'}, deleted: false}
   ];
 
   public static NON_IP_ASSET_OPTIONS = [

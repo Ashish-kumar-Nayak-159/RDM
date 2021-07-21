@@ -103,7 +103,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.getTileName();
     await this.getAssets(this.contextApp.user.hierarchy);
     this.onTabChange();
-    if (this.contextApp?.metadata?.dashboard_config?.show_historical_widgets) {
+    if (this.contextApp?.dashboard_config?.show_historical_widgets) {
       this.historicalDateFilter.dateOption = 'Last 30 Mins';
       this.historicalDateFilter.from_date = moment().subtract(30, 'minutes').utc().unix();
       this.historicalDateFilter.to_date = moment().utc().unix();
@@ -553,14 +553,19 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.originalFilter = JSON.parse(JSON.stringify(filterObj));
     this.isTelemetryDataLoading = true;
+    console.log('556666666');
     await this.getAssetSignalRMode(this.filterObj.asset.asset_id);
+    console.log('556666666777777777');
     await this.getAssetData();
+    console.log('5566666668888888', asset_model);
     if (asset_model) {
       await this.getThingsModelProperties(asset_model);
-       if (this.contextApp?.metadata?.dashboard_config?.show_live_widgets) {
+      console.log(this.contextApp.dashboard_config);
+      if (this.contextApp?.dashboard_config?.show_live_widgets) {
+        console.log('herrrrrrrrrreeeeeeee live widgets');
         await this.getLiveWidgets(asset_model);
         this.getLiveWidgetTelemetryDetails(obj);
-      } else if (this.contextApp?.metadata?.dashboard_config?.show_historical_widgets) {
+      } else if (this.contextApp?.dashboard_config?.show_historical_widgets) {
         console.log('herrrrrrrrrreeeeeeee');
         await this.getHistoricalWidgets(asset_model);
         this.getHistoricalWidgetTelemetryDetails();

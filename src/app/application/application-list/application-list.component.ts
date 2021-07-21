@@ -243,9 +243,9 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
       if (env) {
         this.applicationDetail.environment = env;
       }
-      this.applicationDetail.metadata.dashboard_config = {};
-      this.applicationDetail.metadata.dashboard_config.show_historical_widgets = false;
-      this.applicationDetail.metadata.dashboard_config.show_live_widgets = true;
+      this.applicationDetail.dashboard_config = {};
+      this.applicationDetail.dashboard_config.show_historical_widgets = false;
+      this.applicationDetail.dashboard_config.show_live_widgets = true;
 
 
 

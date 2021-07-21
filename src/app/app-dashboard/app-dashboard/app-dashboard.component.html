@@ -2,9 +2,9 @@
   <div class="d-flex align-items-center">
     <div class="d-flex align-items-center">
       <div class="main-heading ">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}</div>
-      <div class="ml-2 pt-15" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry' && contextApp?.metadata?.dashboard_config?.show_live_widgets">
+      <div class="ml-2 pt-15" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry' && contextApp?.dashboard_config?.show_live_widgets">
         Turbo Mode:</div>
-        <div class="ml-1 pt-15" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry' && contextApp?.metadata?.dashboard_config?.show_live_widgets">
+        <div class="ml-1 pt-15" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry' && contextApp?.dashboard_config?.show_live_widgets">
         <ui-switch size="small" class="mr-1"
           [disabled]="isC2dAPILoading" defaultBgColor="#c80815" checkedTextColor="white" uncheckedTextColor="white"
           checkedLabel="OFF" uncheckedLabel="ON" name="tpye" [(ngModel)]="signalRModeValue"
@@ -80,7 +80,7 @@
         originalFilter.asset?.asset_id}}</div>
     </div>
 
-    <ng-container *ngIf="contextApp?.metadata?.dashboard_config?.show_live_widgets">
+    <ng-container *ngIf="contextApp?.dashboard_config?.show_live_widgets">
       <div class="" *ngIf="!isTelemetryDataLoading && !telemetryObj && isFilterSelected">
         No data available since mid night.
       </div>
@@ -94,7 +94,7 @@
       </div>
     </div>
     </ng-container>
-    <ng-container *ngIf="contextApp?.metadata?.dashboard_config?.show_hostorical_widgets">
+    <ng-container *ngIf="contextApp?.dashboard_config?.show_hostorical_widgets">
       <div class="ml-1" *ngIf="historicalWidgets.length === 0 && isFilterSelected
       ">
   No widgets configured for this asset. Please contact administrator.
@@ -110,7 +110,7 @@
 
 
   </ng-container>
-  <form class="form-inline" *ngIf="isFilterSelected && contextApp?.metadata?.dashboard_config?.show_historical_widgets">
+  <form class="form-inline" *ngIf="isFilterSelected && contextApp?.dashboard_config?.show_historical_widgets">
     <div class="form-group left-inner-addon" >
       <i class="fa fa-calendar active"></i>
       <input type="text"  class="form-control form-control-sm active date-range-picker" daterangepicker name="daterangeInput"
@@ -175,10 +175,10 @@
 </div>
 <ng-container>
   <div class="content-scroll content-scroll-live-data">
-    <ng-container *ngIf="(!contextApp || !contextApp.metadata || !contextApp.metadata.dashboard_config) && isFilterSelected">
+    <ng-container *ngIf="(!contextApp || !contextApp.metadata || !contextApp.dashboard_config) && isFilterSelected">
       <div class="ml-1">No dashboard configuration added for this application.</div>
     </ng-container>
-    <div class="row col-md-12 mt-n2" *ngIf="telemetryObj && liveWidgets.length > 0 && contextApp?.metadata?.dashboard_config?.show_live_widgets">
+    <div class="row col-md-12 mt-n2" *ngIf="telemetryObj && liveWidgets.length > 0 && contextApp?.dashboard_config?.show_live_widgets">
       <ng-container *ngFor="let widget of liveWidgets; let i = index;">
         <div [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
               || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
@@ -264,7 +264,7 @@
         </div>
       </ng-container>
     </div>
-    <div class="row col-md-12" *ngIf="historicalWidgets.length > 0 && contextApp?.metadata?.dashboard_config?.show_historical_widgets">
+    <div class="row col-md-12" *ngIf="historicalWidgets.length > 0 && contextApp?.dashboard_config?.show_historical_widgets">
       <div id="historic_charts" class="pl-3 pt-3 w-100"></div>
     </div>
   </div>

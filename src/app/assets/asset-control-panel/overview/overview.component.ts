@@ -44,6 +44,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   assetTwin: any;
   editorOptions: JsonEditorOptions;
   isSyncAPILoading = false;
+  environmentApp = environment.app;
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,

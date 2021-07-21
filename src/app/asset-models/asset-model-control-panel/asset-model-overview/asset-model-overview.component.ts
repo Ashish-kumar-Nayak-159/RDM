@@ -23,7 +23,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
   password: any;
   isPasswordVisible = false;
   subscriptions: Subscription[] = [];
-  assetModel: any;
+  // assetModel: any;
   protocolList = CONSTANTS.PROTOCOLS;
   connectivityList: string[] = [];
   isUpdateThingsModelAPILoading = false;

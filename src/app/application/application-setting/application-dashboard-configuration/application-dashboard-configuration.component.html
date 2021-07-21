@@ -36,21 +36,21 @@
       <td>Historical Widgets on Dashboard?
       </td>
       <td>
-        <ng-container *ngIf="!isConfigEditable">{{applicationData.metadata.dashboard_config.show_historical_widgets ? 'Yes': 'No'}}</ng-container>
+        <ng-container *ngIf="!isConfigEditable">{{applicationData.dashboard_config.show_historical_widgets ? 'Yes': 'No'}}</ng-container>
         <input type="checkbox" name="historical_widgets" *ngIf="isConfigEditable"
         id="historical_widgets"
         (change)="toggleHistoryCheckbox()"
-        [checked]="applicationData.metadata.dashboard_config.show_historical_widgets" />
+        [checked]="applicationData.dashboard_config.show_historical_widgets" />
 
         </td>
     </tr>
     <tr>
       <td>Live Widgets on Dashboard?</td>
       <td>
-        <ng-container *ngIf="!isConfigEditable">{{applicationData.metadata.dashboard_config.show_live_widgets ? 'Yes': 'No'}}</ng-container>
+        <ng-container *ngIf="!isConfigEditable">{{applicationData.dashboard_config.show_live_widgets ? 'Yes': 'No'}}</ng-container>
         <input type="checkbox" name="live_widgets" *ngIf="isConfigEditable"
         id="live_widgets" (change)="toggleLiveCheckbox()"
-        [checked]="applicationData.metadata.dashboard_config.show_live_widgets"/>
+        [checked]="applicationData.dashboard_config.show_live_widgets"/>
         </td>
     </tr>
   </tbody>

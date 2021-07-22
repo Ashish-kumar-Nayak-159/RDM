@@ -39,13 +39,13 @@ export class AssetService {
       });
     } else {
       return this.http.get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_ASSETS, encodeURIComponent(app)), { params })
-      .pipe( map((data: any) => {
-        this.commonService.setItemInLocalStorage(CONSTANTS.ASSETS_LIST, data.data);
-        return data;
-      }), catchError( error => {
-        return throwError( error);
-      })
-      );
+        .pipe(map((data: any) => {
+          this.commonService.setItemInLocalStorage(CONSTANTS.ASSETS_LIST, data.data);
+          return data;
+        }), catchError(error => {
+          return throwError(error);
+        })
+        );
     }
   }
 
@@ -65,13 +65,13 @@ export class AssetService {
       });
     } else {
       return this.http.get(this.url + String.Format(AppUrls.GET_IOT_LEGACY_ASSETS, encodeURIComponent(app)), { params })
-      .pipe( map((data: any) => {
-        this.commonService.setItemInLocalStorage(CONSTANTS.ASSETS_GATEWAYS_LIST, data.data);
-        return data;
-      }), catchError( error => {
-        return throwError( error);
-      })
-      );
+        .pipe(map((data: any) => {
+          this.commonService.setItemInLocalStorage(CONSTANTS.ASSETS_GATEWAYS_LIST, data.data);
+          return data;
+        }), catchError(error => {
+          return throwError(error);
+        })
+        );
     }
   }
 
@@ -132,7 +132,7 @@ export class AssetService {
     localStorage.removeItem(CONSTANTS.ASSETS_GATEWAYS_LIST);
     localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
     localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
-    return this.http.post(this.url + AppUrls.CREATE_ASSET, assetObj, {params});
+    return this.http.post(this.url + AppUrls.CREATE_ASSET, assetObj, { params });
   }
 
   createNonIPAsset(assetObj, app) {
@@ -201,7 +201,7 @@ export class AssetService {
     localStorage.removeItem(CONSTANTS.ASSETS_LIST);
     localStorage.removeItem(CONSTANTS.ASSETS_GATEWAYS_LIST);
     return this.http.post(this.url + String.Format(AppUrls.UPDATE_NON_IP_ASSET_TAGS,
-      encodeURIComponent(app), encodeURIComponent(assetObj.asset_id)), assetObj, {params});
+      encodeURIComponent(app), encodeURIComponent(assetObj.asset_id)), assetObj, { params });
   }
 
   getAssetHeartBeats(filterObj) {
@@ -252,25 +252,25 @@ export class AssetService {
       }
     });
     return this.http.get(this.url + String.Format(AppUrls.GET_TELEMETRY_LIST, encodeURIComponent(filterObj.app)), { params })
-    .pipe( map((data: any) => {
-      const arr = [];
-      data.data.forEach(item => {
-        // let obj = {...item.m, ...item.d};
-        // delete item.m;
-        // delete item.d;
-        // arr.push({...item, ...obj});
-        let obj = JSON.parse(JSON.stringify(item));
-        delete obj.m;
-        delete obj.d;
-        obj = {...obj, ...item?.m, ...item?.d};
-        arr.push(obj);
-      });
-      data.data = JSON.parse(JSON.stringify(arr));
-      return data;
-    }), catchError( error => {
-      return throwError( error);
-    })
-    );
+      .pipe(map((data: any) => {
+        const arr = [];
+        data.data.forEach(item => {
+          // let obj = {...item.m, ...item.d};
+          // delete item.m;
+          // delete item.d;
+          // arr.push({...item, ...obj});
+          let obj = JSON.parse(JSON.stringify(item));
+          delete obj.m;
+          delete obj.d;
+          obj = { ...obj, ...item?.m, ...item?.d };
+          arr.push(obj);
+        });
+        data.data = JSON.parse(JSON.stringify(arr));
+        return data;
+      }), catchError(error => {
+        return throwError(error);
+      })
+      );
   }
 
   getAssetSamplingTelemetry(filterObj, app) {
@@ -281,21 +281,21 @@ export class AssetService {
       }
     });
     return this.http.get(this.url + String.Format(AppUrls.GET_SAMPLING_ASSET_TELEMETRY, encodeURIComponent(app)), { params })
-    .pipe( map((data: any) => {
-      const arr = [];
-      data.data.forEach(item => {
-        let obj = JSON.parse(JSON.stringify(item));
-        delete obj.m;
-        delete obj.d;
-        obj = {...obj, ...item?.m, ...item?.d};
-        arr.push(obj);
-      });
-      data.data = JSON.parse(JSON.stringify(arr));
-      return data;
-    }), catchError( error => {
-      return throwError( error);
-    })
-    );
+      .pipe(map((data: any) => {
+        const arr = [];
+        data.data.forEach(item => {
+          let obj = JSON.parse(JSON.stringify(item));
+          delete obj.m;
+          delete obj.d;
+          obj = { ...obj, ...item?.m, ...item?.d };
+          arr.push(obj);
+        });
+        data.data = JSON.parse(JSON.stringify(arr));
+        return data;
+      }), catchError(error => {
+        return throwError(error);
+      })
+      );
   }
 
   getAssetTelemetryForReport(filterObj, app) {
@@ -404,7 +404,7 @@ export class AssetService {
 
   sendC2DMessage(message, app, assetId) {
     return this.http.post(this.url + String.Format(AppUrls.SEND_C2D_MESSAGE, encodeURIComponent(app),
-    encodeURIComponent(assetId)), message);
+      encodeURIComponent(assetId)), message);
   }
 
   getNonIPAssetCount(filterObj) {
@@ -421,7 +421,7 @@ export class AssetService {
     return this.http.post(this.url + AppUrls.CREATE_LAYOUT, layoutObj);
   }
 
-  getLayout(filterObj){
+  getLayout(filterObj) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {
       if (filterObj[key]) {
@@ -431,7 +431,7 @@ export class AssetService {
     return this.http.get(this.url + AppUrls.GET_LAYOUT, { params });
   }
 
-  editLayout(layoutObj){
+  editLayout(layoutObj) {
     return this.http.patch(this.url + AppUrls.CREATE_LAYOUT, layoutObj);
   }
 
@@ -532,7 +532,7 @@ export class AssetService {
 
   callAssetMethod(obj, app, assetId) {
     return this.http.post(this.url + String.Format(AppUrls.CALL_ASSET_METHOD, encodeURIComponent(app),
-    encodeURIComponent(assetId)), obj);
+      encodeURIComponent(assetId)), obj);
   }
 
   syncAssetCache(app, filterObj) {
@@ -553,19 +553,19 @@ export class AssetService {
       }
     });
     return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_LAST_TELEMETRY, encodeURIComponent(app)), { params })
-    .pipe( map((data: any) => {
-      if (data.message) {
-        let obj = JSON.parse(JSON.stringify(data.message));
-        delete obj.m;
-        delete obj.d;
-        obj = {...obj, ...data.message?.m, ...data.message?.d};
-        data.message = JSON.parse(JSON.stringify(obj));
-      }
-      return data;
-    }), catchError( error => {
-      return throwError( error);
-    })
-    );
+      .pipe(map((data: any) => {
+        if (data.message) {
+          let obj = JSON.parse(JSON.stringify(data.message));
+          delete obj.m;
+          delete obj.d;
+          obj = { ...obj, ...data.message?.m, ...data.message?.d };
+          data.message = JSON.parse(JSON.stringify(obj));
+        }
+        return data;
+      }), catchError(error => {
+        return throwError(error);
+      })
+      );
   }
 
   getFirstTelmetry(app, filterObj) {
@@ -576,19 +576,19 @@ export class AssetService {
       }
     });
     return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_FIRST_TELEMETRY, encodeURIComponent(app)), { params })
-    .pipe( map((data: any) => {
-      if (data.message) {
-        let obj = JSON.parse(JSON.stringify(data.message));
-        delete obj.m;
-        delete obj.d;
-        obj = {...obj, ...data.message?.m, ...data.message?.d};
-        data.message = JSON.parse(JSON.stringify(obj));
-      }
-      return data;
-    }), catchError( error => {
-      return throwError( error);
-    })
-    );
+      .pipe(map((data: any) => {
+        if (data.message) {
+          let obj = JSON.parse(JSON.stringify(data.message));
+          delete obj.m;
+          delete obj.d;
+          obj = { ...obj, ...data.message?.m, ...data.message?.d };
+          data.message = JSON.parse(JSON.stringify(obj));
+        }
+        return data;
+      }), catchError(error => {
+        return throwError(error);
+      })
+      );
   }
 
   getAssetMaintenanceActivityData(app, assetId, filterObj) {
@@ -600,7 +600,7 @@ export class AssetService {
     });
 
     return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_MAINTENANCE_DATA,
-      encodeURIComponent(app), encodeURIComponent(assetId)), {params});
+      encodeURIComponent(app), encodeURIComponent(assetId)), { params });
   }
 
   createAssetMaintenanceActivityData(app, assetId, obj) {
@@ -633,7 +633,7 @@ export class AssetService {
       }
     });
     return this.http.get(this.url + String.Format(AppUrls.GET_PRE_GENERATED_REPORTS,
-      encodeURIComponent(app)), {params});
+      encodeURIComponent(app)), { params });
   }
 
   getAssetTwin(app, assetId) {
@@ -654,7 +654,7 @@ export class AssetService {
       }
     });
     return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_TWIN_HISTORY,
-      encodeURIComponent(app)), {params});
+      encodeURIComponent(app)), { params });
   }
 
 
@@ -676,7 +676,7 @@ export class AssetService {
       }
     });
     return this.http.get(this.url + String.Format(AppUrls.GET_RULES_LIST, encodeURIComponent(app),
-    encodeURIComponent(assetModel)), {params});
+      encodeURIComponent(assetModel)), { params });
   }
 
   getAssetNetworkFailureEvents(app, assetId, filterObj) {
@@ -687,7 +687,7 @@ export class AssetService {
       }
     });
     return this.http.get(this.url + String.Format(AppUrls.GET_NETWORK_FAILURE_EVENT,
-      encodeURIComponent(app), encodeURIComponent(assetId)), {params});
+      encodeURIComponent(app), encodeURIComponent(assetId)), { params });
   }
 
   getAssetMachineFailureEvents(app, assetId, filterObj) {
@@ -698,7 +698,7 @@ export class AssetService {
       }
     });
     return this.http.get(this.url + String.Format(AppUrls.GET_MACHINE_FAILURE_EVENT,
-      encodeURIComponent(app), encodeURIComponent(assetId)), {params});
+      encodeURIComponent(app), encodeURIComponent(assetId)), { params });
   }
   updateAssetMTTRData(app, assetId, mttrId, obj) {
     return this.http.patch(this.url + String.Format(AppUrls.UPDATE_MTTR_RECORD,
@@ -713,7 +713,7 @@ export class AssetService {
       }
     });
     return this.http.get(this.url + String.Format(AppUrls.GET_MTBF_EVENTS,
-      encodeURIComponent(app), encodeURIComponent(assetId)), {params});
+      encodeURIComponent(app), encodeURIComponent(assetId)), { params });
   }
 
   getHistoricalMTTRData(app, assetId, filterObj) {
@@ -724,7 +724,7 @@ export class AssetService {
       }
     });
     return this.http.get(this.url + String.Format(AppUrls.GET_HISTORICAL_MTTR_DATA,
-      encodeURIComponent(app), encodeURIComponent(assetId)), {params});
+      encodeURIComponent(app), encodeURIComponent(assetId)), { params });
   }
 
   getHistoricalMTBFData(app, assetId, filterObj) {
@@ -735,7 +735,7 @@ export class AssetService {
       }
     });
     return this.http.get(this.url + String.Format(AppUrls.GET_HISTORICAL_MTBF_DATA,
-      encodeURIComponent(app), encodeURIComponent(assetId)), {params});
+      encodeURIComponent(app), encodeURIComponent(assetId)), { params });
   }
 
   getMessageRequestDetails(jobId, app, filterObj) {
@@ -791,7 +791,7 @@ export class AssetService {
       }
     });
     return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_SLAVE_DETAILS,
-      encodeURIComponent(app), encodeURIComponent(assetId)), {params});
+      encodeURIComponent(app), encodeURIComponent(assetId)), { params });
   }
 
   createAssetSlaveDetail(app, assetId, obj) {
@@ -802,12 +802,23 @@ export class AssetService {
   updateAssetSlaveDetail(app, assetId, slaveId, obj) {
     return this.http.patch(this.url + String.Format(AppUrls.UPDATE_ASSET_SLAVE_DETAILS,
       encodeURIComponent(app), encodeURIComponent(assetId),
-    encodeURIComponent(slaveId)), obj);
+      encodeURIComponent(slaveId)), obj);
   }
 
   deleteAssetSlaveDetail(app, assetId, slaveId) {
     return this.http.delete(this.url + String.Format(AppUrls.DELETE_ASSET_SLAVE_DETAILS, encodeURIComponent(app),
-    encodeURIComponent(assetId), encodeURIComponent(slaveId)), {});
+      encodeURIComponent(assetId), encodeURIComponent(slaveId)), {});
+  }
+
+  // Non Provisioned Assets
+
+  getNonProvisionedAssets(app) {
+    return this.http.get(this.url + String.Format(AppUrls.NON_PROVISIONED_ASSETS, encodeURIComponent(app)));
+  }
+
+  updateNonProvisionedAsset(app, assetId, obj) {
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_NON_PROVISIONED_ASSETS,
+      encodeURIComponent(app), encodeURIComponent(assetId)), obj);
   }
 
 }

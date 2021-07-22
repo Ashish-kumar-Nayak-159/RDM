@@ -148,4 +148,6 @@ export class AppUrls {
   public static CREATE_ASSET_SLAVE_DETAILS = 'apps/{0}/assets/{1}/slaves';
   public static UPDATE_ASSET_SLAVE_DETAILS = 'apps/{0}/assets/{1}/slaves/{2}';
   public static DELETE_ASSET_SLAVE_DETAILS = 'apps/{0}/assets/{1}/slaves/{2}';
+  public static NON_PROVISIONED_ASSETS = 'apps/{0}/non_provisioned_assets';
+  public static UPDATE_NON_PROVISIONED_ASSETS = 'apps/{0}/non_provisioned_assets/{1}/tags';
 }

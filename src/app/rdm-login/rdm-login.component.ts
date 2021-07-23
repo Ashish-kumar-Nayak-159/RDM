@@ -24,6 +24,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   subscriptions: Subscription[] = [];
   isPasswordVisible = false;
   isForgotPassword = false;
+  isForgotAPILoading = false;
   constructor(
     private router: Router,
     private toasterService: ToasterService,
@@ -241,12 +242,13 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     let obj = {
       'email': this.loginForm.email
     }
-    this.isLoginAPILoading = true;
+    this.isForgotAPILoading = true;
     this.commonService.forgotPassword(obj).subscribe((response: any) => {
       this.isForgotPassword = true;
+      this.isForgotAPILoading = false;
       this.toasterService.showSuccess(response.message, 'Forgot Password');
     }, (err: HttpErrorResponse) => {
-      this.isLoginAPILoading = false;
+      this.isForgotAPILoading = false;
       this.toasterService.showError(err.message, 'Forgot Password');
       this.isForgotPassword = true;
 

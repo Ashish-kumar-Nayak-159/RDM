@@ -250,4 +250,4 @@ input:invalid {
 .tableFixHead-assets-list {
   max-height: calc(100vh - 12.5rem)!important;
 }
-
+.pointer {cursor: pointer;}

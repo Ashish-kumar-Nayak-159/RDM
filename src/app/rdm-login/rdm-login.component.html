@@ -205,7 +205,7 @@
                 </form>
                 <hr>
                 <div class="text-center">
-                  <a class="" href="javascript:void(0)"
+                  <a class="pointer" (click)="forgotPassword();"
                     >Forgot Password?</a
                   >
                 </div>
@@ -218,5 +218,6 @@
   </div>
 </div>
 
-<app-reset-password [isFirstTimeLogin]="true" (modalClose)="onResetModalClose()" [loginData]="loginForm" *ngIf="isResetPassword"></app-reset-password>
+<app-reset-password [isFirstTimeLogin]="true" [isForgotPassword] = "false" (modalClose)="onResetModalClose()" [loginData]="loginForm" *ngIf="isResetPassword"></app-reset-password>
+<app-reset-password [isFirstTimeLogin]="true" [isForgotPassword] = "true" (modalClose)="onResetModalClose()" [loginData]="loginForm" *ngIf="isForgotPassword"></app-reset-password>
 

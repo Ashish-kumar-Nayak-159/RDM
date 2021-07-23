@@ -6,6 +6,7 @@ import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToasterService } from '../services/toaster.service';
 import { CommonService } from 'src/app/services/common.service';
+import { HttpErrorResponse } from '@angular/common/http';
 declare var $: any;
 @Component({
   selector: 'app-rdm-login',
@@ -22,6 +23,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   applicationData: any;
   subscriptions: Subscription[] = [];
   isPasswordVisible = false;
+  isForgotPassword = false;
   constructor(
     private router: Router,
     private toasterService: ToasterService,
@@ -165,9 +167,9 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getApplicationData(app) {
     return new Promise((resolve) => {
-    this.applicationData = undefined;
-    this.subscriptions.push(this.applicationService.getApplicationDetail(app.app).subscribe(
-      (response: any) => {
+      this.applicationData = undefined;
+      this.subscriptions.push(this.applicationService.getApplicationDetail(app.app).subscribe(
+        (response: any) => {
           this.applicationData = response;
           this.applicationData.app = app.app;
           this.applicationData.user = app.user;
@@ -178,57 +180,77 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
           }
           if (this.applicationData.menu_settings.asset_control_panel_menu.length === 0) {
             this.applicationData.menu_settings.asset_control_panel_menu =
-            JSON.parse(JSON.stringify(CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST));
+              JSON.parse(JSON.stringify(CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST));
           }
           if (this.applicationData.menu_settings.legacy_asset_control_panel_menu.length === 0) {
             this.applicationData.menu_settings.legacy_asset_control_panel_menu =
-            JSON.parse(JSON.stringify(CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST));
+              JSON.parse(JSON.stringify(CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST));
           }
           if (this.applicationData.menu_settings.model_control_panel_menu.length === 0) {
             this.applicationData.menu_settings.model_control_panel_menu =
-            JSON.parse(JSON.stringify(CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST));
+              JSON.parse(JSON.stringify(CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST));
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
           const obj = {
-            hierarchy : this.applicationData.user.hierarchy,
-            dateOption : 'Last 24 Hours'
+            hierarchy: this.applicationData.user.hierarchy,
+            dateOption: 'Last 24 Hours'
           };
           this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, obj);
           const obj1 = {
-            dateOption : 'Last 30 Mins'
+            dateOption: 'Last 30 Mins'
           };
           this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, obj1);
           resolve();
-      }));
+        }));
     });
   }
 
   processAppMenuData() {
     if (this.applicationData?.app) {
       if (!this.userData?.is_super_admin) {
-      const data = [];
-      const arr = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
-      if (this.applicationData.menu_settings?.main_menu?.length > 0) {
-        arr.forEach(config => {
-          let found = false;
-          this.applicationData.menu_settings.main_menu.forEach(item => {
-            if (config.page === item.page) {
-              found = true;
-              config.display_name = item.display_name;
-              config.visible = item.visible;
-              config.showAccordion = item.showAccordion;
+        const data = [];
+        const arr = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+        if (this.applicationData.menu_settings?.main_menu?.length > 0) {
+          arr.forEach(config => {
+            let found = false;
+            this.applicationData.menu_settings.main_menu.forEach(item => {
+              if (config.page === item.page) {
+                found = true;
+                config.display_name = item.display_name;
+                config.visible = item.visible;
+                config.showAccordion = item.showAccordion;
+                data.push(config);
+              }
+            });
+            if (!found) {
               data.push(config);
             }
           });
-          if (!found) {
-            data.push(config);
-          }
-        });
+        }
+        this.applicationData.menu_settings.main_menu = JSON.parse(JSON.stringify(data));
       }
-      this.applicationData.menu_settings.main_menu = JSON.parse(JSON.stringify(data));
-      }
-      }
+    }
+  }
+
+  forgotPassword() {
+    if(!this.loginForm.email){
+      this.toasterService.showWarning('Please enter valid email', 'Forgot Password');
+      return
+    }
+    let obj = {
+      'email': this.loginForm.email
+    }
+    this.isLoginAPILoading = true;
+    this.commonService.forgotPassword(obj).subscribe((response: any) => {
+      this.isForgotPassword = true;
+      this.toasterService.showSuccess(response.message, 'Forgot Password');
+    }, (err: HttpErrorResponse) => {
+      this.isLoginAPILoading = false;
+      this.toasterService.showError(err.message, 'Forgot Password');
+      this.isForgotPassword = true;
+
+    });
   }
 
   ngOnDestroy() {

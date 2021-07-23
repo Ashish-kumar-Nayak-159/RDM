@@ -30,8 +30,10 @@ export class CommonService {
 
   convertUTCDateToLocal(utcDate) {
     if (utcDate) {
-      const options = { year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit',
-      minute: '2-digit', second: '2-digit', fractionalSecondDigits: 3, hour12: true  };
+      const options = {
+        year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit',
+        minute: '2-digit', second: '2-digit', fractionalSecondDigits: 3, hour12: true
+      };
       if (utcDate.includes('T') && utcDate.includes('Z')) {
         // 2011-06-29T16:52:48.000Z
         return new Date(utcDate).toLocaleString('en-GB', options);
@@ -97,25 +99,25 @@ export class CommonService {
   }
 
   loginUser(obj) {
-    return this.http.post(this.url + AppUrls.LOGIN,  obj);
+    return this.http.post(this.url + AppUrls.LOGIN, obj);
   }
 
   decodeJWTToken(token): any {
     if (token) {
-      try{
+      try {
         return jwt_decode(token);
-    } catch (e) {
+      } catch (e) {
         return null;
-    }
+      }
     }
   }
 
   resetUserPassword(obj, app) {
     let params = new HttpParams();
     if (app) {
-    params = params.set('app', app);
+      params = params.set('app', app);
     }
-    return this.http.post(this.url + AppUrls.RESET_PASSWORD,  obj, {params});
+    return this.http.post(this.url + AppUrls.RESET_PASSWORD, obj, { params });
   }
 
   encryptJSON(data) {
@@ -240,26 +242,26 @@ export class CommonService {
     fileNameArr.pop();
     const fileName = fileNameArr.join() + '_' + epoch + '.' + fileExtension;
     const pipeline = newPipeline(new AnonymousCredential(), {
-    retryOptions: { maxTries: 2 }, // Retry options
-    keepAliveOptions: {
+      retryOptions: { maxTries: 2 }, // Retry options
+      keepAliveOptions: {
         enable: false
-    }
+      }
     });
-    const blobServiceClient = new BlobServiceClient(environment.blobURL +  environment.blobKey, pipeline);
+    const blobServiceClient = new BlobServiceClient(environment.blobURL + environment.blobKey, pipeline);
     const containerClient = blobServiceClient.getContainerClient(containerName);
-    if (!containerClient.exists()){
-    await containerClient.create();
+    if (!containerClient.exists()) {
+      await containerClient.create();
     }
 
     const client = containerClient.getBlockBlobClient(folderName + '/' + fileName);
     const response = await client.uploadBrowserData(file, {
-          blockSize: 4 * 1024 * 1024, // 4MB block size
-          concurrency: 20, // 20 concurrency
-          blobHTTPHeaders : { blobContentType: file.type }
-          });
+      blockSize: 4 * 1024 * 1024, // 4MB block size
+      concurrency: 20, // 20 concurrency
+      blobHTTPHeaders: { blobContentType: file.type }
+    });
     if (response._response.status === 201) {
       return {
-        url:  containerName + '/' + folderName + '/' + fileName,
+        url: containerName + '/' + folderName + '/' + fileName,
         name: file.name
       };
     }
@@ -320,5 +322,9 @@ export class CommonService {
       location.reload();
     });
 
+  }
+
+  forgotPassword(obj) {
+    return this.http.post(this.url + AppUrls.FORGOT_PASSWORD, obj);
   }
 }

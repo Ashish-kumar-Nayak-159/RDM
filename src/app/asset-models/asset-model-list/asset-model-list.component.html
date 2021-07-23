@@ -50,7 +50,7 @@
           <option [ngValue]="constantData.IP_GATEWAY">{{constantData.IP_GATEWAY}}</option>
           <option [ngValue]="constantData.NON_IP_ASSET">{{constantData.NON_IP_ASSET}}</option>
           </select>
-          <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="searchThingsModels()" [disabled]="isassetModelsListLoading" placement="bottom" tooltip="Search">
+          <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="searchAssetsModels()" [disabled]="isassetModelsListLoading" placement="bottom" tooltip="Search">
             <i class="fa fa-search fa-sm"></i></button>
           <button type="button" class="btn btn-white btn-sm mx-1 my-1" (click)="clearFilter()" placement="bottom" tooltip="Clear Filters">
             <img class="filter-clear-icon" src="./assets/img/filter.svg"></button>
@@ -77,12 +77,12 @@
     <div class="modal-content">
     <div class="modal-header">
       <h5 class="modal-title" id="exampleModalLabel">{{assetModel?.id ? 'Change Model Image' : ('Create ' + (tileData && tileData[1] ? tileData[1]?.value : ''))}}</h5>
-      <button type="button" class="close"  (click)="onCloseThingsModelModal()" aria-label="Close" [disabled]="isCreateThingsModelAPILoading">
+      <button type="button" class="close"  (click)="onCloseAssetsModelModal()" aria-label="Close" [disabled]="isCreateAssetsModelAPILoading">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
     <div class="modal-body" *ngIf="assetModel">
-      <form name="createThingsModelForm">
+      <form name="createAssetsModelForm">
         <div class="form-group" *ngIf="!assetModel.id">
           <label for="message-text" class="col-form-label">App:</label>
           <input type="text" class="form-control form-control-sm" id="app_name" [defaultValue]="contextApp.app" disabled>
@@ -152,11 +152,11 @@
       </form>
     </div>
     <div class="modal-footer" *ngIf="assetModel">
-      <button type="button" class="btn btn-primary add-row" [disabled]="isCreateThingsModelAPILoading" (click)="createThingsModel()">Save</button>
-      <button type="button" class="btn btn-secondary" [disabled]="isCreateThingsModelAPILoading" (click)="onCloseThingsModelModal()">
+      <button type="button" class="btn btn-primary add-row" [disabled]="isCreateAssetsModelAPILoading" (click)="createAssetsModel()">Save</button>
+      <button type="button" class="btn btn-secondary" [disabled]="isCreateAssetsModelAPILoading" (click)="onCloseAssetsModelModal()">
         Cancel
       </button>
-      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateThingsModelAPILoading"></i>
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAssetsModelAPILoading"></i>
     </div>
   </div>
   </div>

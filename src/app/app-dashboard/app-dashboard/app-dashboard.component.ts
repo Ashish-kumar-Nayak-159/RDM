@@ -383,7 +383,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       name: assetModel
     };
     this.historicalWidgets = [];
-    this.apiSubscriptions.push(this.assetModelService.getThingsModelLayout(params).subscribe(
+    this.apiSubscriptions.push(this.assetModelService.getAssetsModelLayout(params).subscribe(
       async (response: any) => {
         if (response?.historical_widgets?.length > 0) {
           this.historicalWidgets = response.historical_widgets;
@@ -428,7 +428,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     };
     this.liveWidgets = [];
     this.isGetWidgetsAPILoading = true;
-    this.apiSubscriptions.push(this.assetModelService.getThingsModelLiveWidgets(params).subscribe(
+    this.apiSubscriptions.push(this.assetModelService.getAssetsModelLiveWidgets(params).subscribe(
       async (response: any) => {
         if (response?.live_widgets?.length > 0) {
           response.live_widgets.forEach(widget => {
@@ -559,7 +559,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     await this.getAssetData();
     console.log('5566666668888888', asset_model);
     if (asset_model) {
-      await this.getThingsModelProperties(asset_model);
+      await this.getAssetsModelProperties(asset_model);
       console.log(this.contextApp.dashboard_config);
       if (this.contextApp?.dashboard_config?.show_live_widgets) {
         console.log('herrrrrrrrrreeeeeeee live widgets');
@@ -917,14 +917,14 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.filterObj.assetArr = undefined;
   }
 
-  getThingsModelProperties(assetModel) {
+  getAssetsModelProperties(assetModel) {
     return new Promise<void>((resolve1) => {
       if (this.propertyList.length === 0) {
         const obj = {
           app: this.contextApp.app,
           name: assetModel
         };
-        this.apiSubscriptions.push(this.assetModelService.getThingsModelProperties(obj).subscribe(
+        this.apiSubscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
           (response: any) => {
             this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
             response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];

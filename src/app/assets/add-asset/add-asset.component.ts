@@ -58,7 +58,7 @@ export class AddAssetComponent implements OnInit {
       }
       }
     });
-    this.getThingsModels(this.componentState);
+    this.getAssetsModels(this.componentState);
     if (this.assetDetail) {
       console.log(this.assetDetail);
       this.isAssetEditable = true;
@@ -77,13 +77,13 @@ export class AddAssetComponent implements OnInit {
     $('#createAssetModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
-  getThingsModels(type) {
+  getAssetsModels(type) {
     this.assetModels = [];
     const obj = {
       app: this.contextApp.app,
       model_type: type
     };
-    this.subscriptions.push(this.assetModelService.getThingsModelsList(obj).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelsList(obj).subscribe(
       (response: any) => {
         if (response && response.data) {
           this.assetModels = response.data;
@@ -114,7 +114,7 @@ export class AddAssetComponent implements OnInit {
     }
   }
 
-  onChangeThingsModel() {
+  onChangeAssetsModel() {
     if (this.assetDetail.tags.asset_model) {
       const modelObj = this.assetModels.filter(type => type.name === this.assetDetail.tags.asset_model)[0];
       modelObj.tags = {

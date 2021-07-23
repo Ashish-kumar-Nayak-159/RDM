@@ -37,32 +37,32 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.mode = 'code';
     this.editorOptions.statusBar = false;
-    this.getThingsModelProperties();
-    this.getThingsModelAssetMethod();
+    this.getAssetsModelProperties();
+    this.getAssetsModelAssetMethod();
     this.getControlWidgets();
   }
 
 
-  getThingsModelProperties() {
+  getAssetsModelProperties() {
     // this.properties = {};
     const obj = {
       app: this.assetModel.app,
       name: this.assetModel.name
     };
-    this.subscriptions.push(this.assetModelService.getThingsModelProperties(obj).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
       (response: any) => {
         this.properties = response.properties;
       }
     ));
   }
 
-  getThingsModelAssetMethod() {
+  getAssetsModelAssetMethod() {
     // this.assetMethods = {};
     const obj = {
       app: this.assetModel.app,
       name: this.assetModel.name
     };
-    this.subscriptions.push(this.assetModelService.getThingsModelAssetMethods(obj).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelAssetMethods(obj).subscribe(
       (response: any) => {
         this.assetMethods = response.asset_methods;
       }
@@ -76,7 +76,7 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
       app: this.assetModel.app,
       asset_model: this.assetModel.name
     };
-    this.subscriptions.push(this.assetModelService.getThingsModelControlWidgets(obj).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelControlWidgets(obj).subscribe(
       (response: any) => {
         if (response?.data) {
           this.controlWidgets = response.data;
@@ -241,7 +241,7 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
     this.isCreateWidgetAPILoading = true;
     this.controlWidget.app = this.assetModel.app;
     this.controlWidget.asset_model = this.assetModel.name;
-    this.subscriptions.push(this.assetModelService.createThingsModelControlWidget(this.controlWidget).subscribe(
+    this.subscriptions.push(this.assetModelService.createAssetsModelControlWidget(this.controlWidget).subscribe(
       (response: any) => {
         this.isCreateWidgetAPILoading = false;
         this.toasterService.showSuccess(response.message, 'Create Control Widget');
@@ -260,7 +260,7 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
       id: this.selectedWidget.id,
       asset_model: this.assetModel.id
     };
-    this.subscriptions.push(this.assetModelService.deleteThingsModelControlWidget(obj).subscribe(
+    this.subscriptions.push(this.assetModelService.deleteAssetsModelControlWidget(obj).subscribe(
       (response: any) => {
         this.isCreateWidgetAPILoading = false;
         this.toasterService.showSuccess(response.message, 'Delete Control Widget');

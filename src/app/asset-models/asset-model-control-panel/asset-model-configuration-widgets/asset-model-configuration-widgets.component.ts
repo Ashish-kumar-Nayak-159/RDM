@@ -37,19 +37,19 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.mode = 'code';
     this.editorOptions.statusBar = false;
-    this.getThingsModelProperties();
-    this.getThingsModelAssetMethod();
+    this.getAssetsModelProperties();
+    this.getAssetsModelAssetMethod();
     this.getControlWidgets();
   }
 
 
-  getThingsModelProperties() {
+  getAssetsModelProperties() {
     // this.properties = {};
     const obj = {
       app: this.assetModel.app,
       name: this.assetModel.name
     };
-    this.subscriptions.push(this.assetModelService.getThingsModelProperties(obj).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
       (response: any) => {
         this.properties = response.properties;
       }
@@ -65,14 +65,14 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
     };
   }
 
-  getThingsModelAssetMethod() {
+  getAssetsModelAssetMethod() {
     // this.assetMethods = {};
     this.assetMethods = [];
     const obj = {
       app: this.assetModel.app,
       name: this.assetModel.name
     };
-    this.subscriptions.push(this.assetModelService.getThingsModelAssetMethods(obj).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelAssetMethods(obj).subscribe(
       (response: any) => {
         this.assetMethods = response.asset_methods;
       }
@@ -86,7 +86,7 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
       app: this.assetModel.app,
       asset_model: this.assetModel.name
     };
-    this.subscriptions.push(this.assetModelService.getThingsModelConfigurationWidgets(obj).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelConfigurationWidgets(obj).subscribe(
       (response: any) => {
         if (response?.data) {
           this.controlWidgets = response.data;
@@ -241,7 +241,7 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
     this.isCreateWidgetAPILoading = true;
     this.controlWidget.app = this.assetModel.app;
     this.controlWidget.asset_model = this.assetModel.name;
-    this.subscriptions.push(this.assetModelService.createThingsModelConfigurationWidget(this.controlWidget).subscribe(
+    this.subscriptions.push(this.assetModelService.createAssetsModelConfigurationWidget(this.controlWidget).subscribe(
       (response: any) => {
         this.isCreateWidgetAPILoading = false;
         this.toasterService.showSuccess(response.message, 'Create Configuration Widget');
@@ -261,7 +261,7 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
       id: this.selectedWidget.id,
       asset_model: this.assetModel.id
     };
-    this.subscriptions.push(this.assetModelService.deleteThingsModelConfigurationWidget(obj).subscribe(
+    this.subscriptions.push(this.assetModelService.deleteAssetsModelConfigurationWidget(obj).subscribe(
       (response: any) => {
         this.isCreateWidgetAPILoading = false;
         this.toasterService.showSuccess(response.message, 'Delete Configuration Widget');

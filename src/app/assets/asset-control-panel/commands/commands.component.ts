@@ -77,7 +77,7 @@ export class CommandsComponent implements OnInit, OnDestroy {
       app: this.contextApp.app,
       asset_model: this.asset.tags?.asset_model
     };
-    this.subscriptions.push(this.assetModelService.getThingsModelControlWidgets(obj).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelControlWidgets(obj).subscribe(
       (response: any) => {
         if (response?.data) {
           this.allControlWidgets = response.data;
@@ -101,7 +101,7 @@ export class CommandsComponent implements OnInit, OnDestroy {
       app: this.contextApp.app,
       asset_model: this.asset.tags?.asset_model
     };
-    this.subscriptions.push(this.assetModelService.getThingsModelConfigurationWidgets(obj).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelConfigurationWidgets(obj).subscribe(
       (response: any) => {
         if (response?.data) {
           this.allControlWidgets = response.data;

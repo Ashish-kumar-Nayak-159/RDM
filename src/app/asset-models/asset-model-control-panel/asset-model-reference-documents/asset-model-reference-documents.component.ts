@@ -117,7 +117,7 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
       app: this.assetModel.app,
       asset_model: this.assetModel.name
     };
-    this.subscriptions.push(this.assetModelService.getThingsModelDocuments(obj).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelDocuments(obj).subscribe(
       (response: any) => {
         if (response?.data) {
           this.documents = response.data;
@@ -202,7 +202,7 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
   }
 
   deleteDocument() {
-    this.subscriptions.push(this.assetModelService.deleteThingsModelDocument
+    this.subscriptions.push(this.assetModelService.deleteAssetsModelDocument
       (this.selectedDocument.id, this.assetModel.app, this.assetModel.name).
       subscribe((response: any) => {
         this.toasterService.showSuccess(response.message, 'Remove Document');
@@ -234,8 +234,8 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
       return;
     }
     this.isCreateDocumentLoading = true;
-    const method = this.documentObj.id ? this.assetModelService.updateThingsModelDocument(this.documentObj, this.assetModel.app,
-      this.assetModel.name, this.documentObj.id) : this.assetModelService.createThingsModelDocument(this.documentObj,
+    const method = this.documentObj.id ? this.assetModelService.updateAssetsModelDocument(this.documentObj, this.assetModel.app,
+      this.assetModel.name, this.documentObj.id) : this.assetModelService.createAssetsModelDocument(this.documentObj,
         this.assetModel.app, this.assetModel.name);
     this.subscriptions.push(method.subscribe(
         (response: any) => {

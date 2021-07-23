@@ -314,7 +314,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     const asset_model = this.filterObj?.asset?.asset_model;
 
     if (asset_model) {
-      this.getThingsModelProperties(asset_model);
+      this.getAssetsModelProperties(asset_model);
     }
     } else {
       this.dropdownPropList = [];
@@ -341,20 +341,20 @@ export class ReportsComponent implements OnInit, OnDestroy {
     if (this.filterObj.asset) {
       const asset_model = this.filterObj.asset.asset_model;
       if (asset_model) {
-        this.getThingsModelProperties(asset_model);
+        this.getAssetsModelProperties(asset_model);
       }
       }
     }
     console.log(this.originalFilterObj.report_type);
   }
 
-  getThingsModelProperties(assetModel) {
+  getAssetsModelProperties(assetModel) {
     return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
         name: assetModel
       };
-      this.subscriptions.push(this.assetModelService.getThingsModelProperties(obj).subscribe(
+      this.subscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
         (response: any) => {
           response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];

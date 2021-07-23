@@ -54,7 +54,28 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
         freezed: this.assetModel.freezed,
         data: [
           {
-            name: 'Slave ID',
+            name: 'Type',
+            key: 'slave_type',
+            type: 'text',
+            headerClass: '',
+            valueclass: ''
+          },
+          {
+            name: 'Category',
+            key: 'slave_category.slave_category',
+            type: 'text',
+            headerClass: '',
+            valueclass: ''
+          },
+          {
+            name: 'Position',
+            key: 'slave_position.slave_position',
+            type: 'text',
+            headerClass: '',
+            valueclass: ''
+          },
+          {
+            name: 'ID',
             key: 'slave_id',
             type: 'text',
             headerClass: '',
@@ -63,20 +84,6 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
           {
             name: 'Display Name',
             key: 'slave_name',
-            type: 'text',
-            headerClass: '',
-            valueclass: ''
-          },
-          {
-            name: 'Type',
-            key: 'slave_type',
-            type: 'text',
-            headerClass: '',
-            valueclass: ''
-          },
-          {
-            name: 'Slave Position',
-            key: 'slave_position.slave_position',
             type: 'text',
             headerClass: '',
             valueclass: ''

@@ -39,7 +39,7 @@ export class AssetModelSettingsComponent implements OnInit {
       name: this.assetModel.name,
       app: this.contextApp.app
     };
-    this.subscriptions.push(this.assetModelService.getThingsModelDetails(obj.app, obj.name).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelDetails(obj.app, obj.name).subscribe(
       (response: any) => {
         if (response) {
           this.assetModel = response;
@@ -93,7 +93,7 @@ export class AssetModelSettingsComponent implements OnInit {
     const obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.app = this.contextApp.app;
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    this.subscriptions.push(this.assetModelService.updateThingsModel(obj, this.contextApp.app).subscribe(
+    this.subscriptions.push(this.assetModelService.updateAssetsModel(obj, this.contextApp.app).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Update Model Settings');
         this.getAssetModelDetail();

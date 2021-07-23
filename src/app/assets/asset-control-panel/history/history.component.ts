@@ -85,7 +85,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    await this.getThingsModelProperties();
+    await this.getAssetsModelProperties();
     this.historyFilter.app = this.contextApp.app;
     this.historyFilter.epoch = true;
     if (this.asset.tags.category === CONSTANTS.IP_GATEWAY) {
@@ -152,14 +152,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  getThingsModelProperties() {
+  getAssetsModelProperties() {
     // this.properties = {};
     return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
         name: this.asset.tags.asset_model
       };
-      this.apiSubscriptions.push(this.assetModelService.getThingsModelProperties(obj).subscribe(
+      this.apiSubscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
@@ -589,7 +589,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.dropdownWidgetList = [];
     this.selectedWidgets = [];
     this.layoutJson = [];
-    this.apiSubscriptions.push(this.assetModelService.getThingsModelLayout(params).subscribe(
+    this.apiSubscriptions.push(this.assetModelService.getAssetsModelLayout(params).subscribe(
       async (response: any) => {
         if (response?.historical_widgets?.length > 0) {
           this.layoutJson = response.historical_widgets;

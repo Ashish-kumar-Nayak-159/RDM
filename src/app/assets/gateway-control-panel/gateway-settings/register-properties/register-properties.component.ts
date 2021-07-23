@@ -46,7 +46,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     console.log(JSON.stringify(this.assetTwin));
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    await this.getThingsModels();
+    await this.getAssetsModels();
     if (this.componentstate === CONSTANTS.IP_GATEWAY) {
       this.getAssetsOfGateway();
     } else {
@@ -79,13 +79,13 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
 
   }
 
-  getThingsModels() {
+  getAssetsModels() {
     return new Promise<void>((resolve1, reject) => {
     this.assetModels = [];
     const obj = {
       app: this.contextApp.app,
     };
-    this.subscriptions.push(this.assetModelService.getThingsModelsList(obj).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelsList(obj).subscribe(
       (response: any) => {
         if (response && response.data) {
           this.assetModels = response.data;
@@ -147,13 +147,13 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
-  getThingsModelProperties() {
+  getAssetsModelProperties() {
     return new Promise<void>((resolve1, reject) => {
         const obj = {
           app: this.contextApp.app,
           name: this.selectedAsset.asset_model || this.selectedAsset.tags?.asset_model
         };
-        this.subscriptions.push(this.assetModelService.getThingsModelProperties(obj).subscribe(
+        this.subscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
           (response: any) => {
 
             response.properties.measured_properties = response.properties.measured_properties ?
@@ -201,7 +201,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     }
     this.isAPILoading = true;
     this.showPropOptions = false;
-    await this.getThingsModelProperties();
+    await this.getAssetsModelProperties();
     await this.getAlertConditions();
     const obj = {
       asset_id: this.selectedAsset.asset_id,

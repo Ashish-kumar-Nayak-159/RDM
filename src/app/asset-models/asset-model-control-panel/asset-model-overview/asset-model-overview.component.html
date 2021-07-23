@@ -89,12 +89,12 @@
     <div class="modal-content">
     <div class="modal-header">
       <h5 class="modal-title" id="exampleModalLabel">Change Model Image</h5>
-      <button type="button" class="close"  (click)="onCloseThingsModelModal()" aria-label="Close" [disabled]="isUpdateThingsModelAPILoading">
+      <button type="button" class="close"  (click)="onCloseAssetsModelModal()" aria-label="Close" [disabled]="isUpdateAssetsModelAPILoading">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
     <div class="modal-body" *ngIf="assetModel">
-      <form name="createThingsModelForm">
+      <form name="createAssetsModelForm">
 
         <!-- <div class="form-group">
           <label for="message-text" class="col-form-label">Upload Image: </label>
@@ -130,11 +130,11 @@
       </form>
     </div>
     <div class="modal-footer" *ngIf="assetModel">
-      <button type="button" class="btn btn-primary add-row" [disabled]="isUpdateThingsModelAPILoading || isFileUploading" (click)="updateThingsModel()">Save</button>
-      <button type="button" class="btn btn-white" [disabled]="isUpdateThingsModelAPILoading || isFileUploading" (click)="onCloseThingsModelModal()">
+      <button type="button" class="btn btn-primary add-row" [disabled]="isUpdateAssetsModelAPILoading || isFileUploading" (click)="updateAssetsModel()">Save</button>
+      <button type="button" class="btn btn-white" [disabled]="isUpdateAssetsModelAPILoading || isFileUploading" (click)="onCloseAssetsModelModal()">
         Cancel
       </button>
-      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUpdateThingsModelAPILoading || isFileUploading"></i>
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUpdateAssetsModelAPILoading || isFileUploading"></i>
     </div>
   </div>
   </div>

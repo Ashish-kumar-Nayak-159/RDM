@@ -76,7 +76,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     // this.applicationData.menu_settings.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
     // let i = 0;
     // menu.forEach(menuObj => {
-    //   if (menuObj.page === 'Things Modelling' && this.applicationData.user.role === CONSTANTS.APP_ADMIN_ROLE) {
+    //   if (menuObj.page === 'Assets Modelling' && this.applicationData.user.role === CONSTANTS.APP_ADMIN_ROLE) {
     //     menuObj.visible = true;
     //   }
     //   if ( i === 0 && menuObj.visible) {
@@ -118,7 +118,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
         hierarchy: JSON.stringify(hierarchy),
         app: this.applicationData.app
       };
-      this.apiSubscriptions.push(this.assetModelService.getThingsModelsList(obj).subscribe(
+      this.apiSubscriptions.push(this.assetModelService.getAssetsModelsList(obj).subscribe(
         (response: any) => {
           if (response?.data) {
             this.commonService.setItemInLocalStorage(CONSTANTS.ASSET_MODELS_LIST, response.data);

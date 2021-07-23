@@ -42,18 +42,18 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    await this.getThingsModelProperties();
+    await this.getAssetsModelProperties();
     this.getLiveWidgets();
   }
 
-  getThingsModelProperties() {
+  getAssetsModelProperties() {
     // this.properties = {};
     return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
         name: this.assetModel.name
       };
-      this.subscriptions.push(this.assetModelService.getThingsModelProperties(obj).subscribe(
+      this.subscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
         (response: any) => {
           response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
@@ -117,7 +117,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     };
     this.liveWidgets = [];
     this.isGetWidgetsAPILoading = true;
-    this.subscriptions.push(this.assetModelService.getThingsModelLiveWidgets(params).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelLiveWidgets(params).subscribe(
       async (response: any) => {
         if (response?.live_widgets?.length > 0) {
           // alert('hereeee');
@@ -252,7 +252,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   updateAssetModel(arr, message) {
     this.assetModel.live_widgets = arr;
     this.assetModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    this.subscriptions.push(this.assetModelService.updateThingsModel(this.assetModel, this.contextApp.app).subscribe(
+    this.subscriptions.push(this.assetModelService.updateAssetsModel(this.assetModel, this.contextApp.app).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(message, 'Live Widgets');
         this.getLiveWidgets();

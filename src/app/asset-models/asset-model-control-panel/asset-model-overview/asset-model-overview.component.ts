@@ -26,7 +26,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
   // assetModel: any;
   protocolList = CONSTANTS.PROTOCOLS;
   connectivityList: string[] = [];
-  isUpdateThingsModelAPILoading = false;
+  isUpdateAssetsModelAPILoading = false;
   isFileUploading: boolean;
   constructor(
     private toasterService: ToasterService,
@@ -83,33 +83,33 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
     // this.blobState.uploadItems(files);
   }
 
-  updateThingsModel() {
+  updateAssetsModel() {
     console.log(this.assetModel);
     if (!this.assetModel.name || !this.assetModel.tags.protocol || !this.assetModel.tags.cloud_connectivity
     || !this.assetModel.metadata.model_type) {
-      this.toasterService.showError('Please enter all required fields', 'Update Things Model');
+      this.toasterService.showError('Please enter all required fields', 'Update Assets Model');
       return;
     }
     if (this.assetModel.id) {
       this.assetModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     }
-    this.isUpdateThingsModelAPILoading = true;
-    const method = this.assetModel.id ? this.assetModelService.updateThingsModel(this.assetModel, this.contextApp.app) :
-    this.assetModelService.createThingsModel(this.assetModel, this.contextApp.app);
+    this.isUpdateAssetsModelAPILoading = true;
+    const method = this.assetModel.id ? this.assetModelService.updateAssetsModel(this.assetModel, this.contextApp.app) :
+    this.assetModelService.createAssetsModel(this.assetModel, this.contextApp.app);
     this.subscriptions.push(method.subscribe(
       (response: any) => {
-        this.isUpdateThingsModelAPILoading = false;
-        this.onCloseThingsModelModal();
+        this.isUpdateAssetsModelAPILoading = false;
+        this.onCloseAssetsModelModal();
         this.assetModelService.assetModelRefreshData.emit(this.assetModel.name);
-        this.toasterService.showSuccess(response.message, 'Update Things Model');
+        this.toasterService.showSuccess(response.message, 'Update Assets Model');
       }, error => {
-        this.isUpdateThingsModelAPILoading = false;
-        this.toasterService.showError(error.message, 'Update Things Model');
+        this.isUpdateAssetsModelAPILoading = false;
+        this.toasterService.showError(error.message, 'Update Assets Model');
       }
     ));
   }
 
-  onCloseThingsModelModal() {
+  onCloseAssetsModelModal() {
     $('#createAssetModelModal').modal('hide');
     this.assetModel = undefined;
   }

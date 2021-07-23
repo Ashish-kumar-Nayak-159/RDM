@@ -74,7 +74,7 @@
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">{{(tileData  ? tileData.table_key : '')}} Type:</label>
             <select class="form-control form-control-sm" id="asset_model" name="asset_model"
-              [(ngModel)]="assetDetail.tags.asset_model" (change)="onChangeThingsModel()">
+              [(ngModel)]="assetDetail.tags.asset_model" (change)="onChangeAssetsModel()">
               <option [ngValue]="undefined"> Select {{(tileData  ? tileData.table_key : '')}} Type</option>
               <option *ngFor="let item of assetModels" [ngValue]="item.name">
                 {{item.name}}</option>

@@ -23,12 +23,12 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
   userData: any;
   contextApp: any;
   assetModelFilterObj: any = {};
-  isCreateThingsModelAPILoading = false;
+  isCreateAssetsModelAPILoading = false;
   constantData = CONSTANTS;
   protocolList = CONSTANTS.PROTOCOLS;
   connectivityList: string[] = [];
   isFileUploading = false;
-  originalThingsModelFilterObj: any;
+  originalAssetsModelFilterObj: any;
   tileData: any;
   subscriptions: Subscription[] = [];
   iotAssetsTab: { visibility: any; tab_name: any; table_key: any; };
@@ -49,7 +49,7 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.subscriptions.push(this.route.paramMap.subscribe(async params => {
       this.assetModelFilterObj.app = this.contextApp.app;
-      this.originalThingsModelFilterObj = JSON.parse(JSON.stringify(this.assetModelFilterObj));
+      this.originalAssetsModelFilterObj = JSON.parse(JSON.stringify(this.assetModelFilterObj));
       await this.getTileName();
       if (this.iotAssetsTab?.visibility) {
         this.componentState = CONSTANTS.IP_ASSET;
@@ -140,7 +140,7 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
         }
         ]
       };
-      this.searchThingsModels();
+      this.searchAssetsModels();
 
       const obj = {
         type: 'replace',
@@ -163,7 +163,7 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
     this.componentState = undefined;
     setTimeout(() => {
       this.componentState = type;
-      this.searchThingsModels();
+      this.searchAssetsModels();
     }, 300);
   }
 
@@ -200,14 +200,14 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
     };
   }
 
-  searchThingsModels() {
+  searchAssetsModels() {
     this.tableConfig.is_table_data_loading = true;
     this.isassetModelsListLoading = true;
     this.isFilterSelected = true;
     this.assetModels = [];
     const obj = JSON.parse(JSON.stringify(this.assetModelFilterObj));
     // obj.model_type = this.componentState;
-    this.subscriptions.push(this.assetModelService.getThingsModelsList(obj).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelsList(obj).subscribe(
       (response: any) => {
         if (response && response.data) {
           response.data.forEach(model => {
@@ -228,7 +228,7 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
 
   clearFilter() {
     this.assetModelFilterObj = undefined;
-    this.assetModelFilterObj = JSON.parse(JSON.stringify(this.originalThingsModelFilterObj));
+    this.assetModelFilterObj = JSON.parse(JSON.stringify(this.originalAssetsModelFilterObj));
   }
 
   onTableFunctionCall(obj) {
@@ -304,10 +304,10 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
     }
   }
 
-  createThingsModel() {
+  createAssetsModel() {
     if (!this.assetModel.name || !this.assetModel.tags.protocol || !this.assetModel.tags.cloud_connectivity
     || !this.assetModel.metadata.model_type) {
-      this.toasterService.showError('Please enter all required fields', 'Create Things Model');
+      this.toasterService.showError('Please enter all required fields', 'Create Assets Model');
       return;
     }
     this.assetModel.metadata.telemetry_mode_settings = {
@@ -337,23 +337,23 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
       defaultValue: this.assetModel.tags.cloud_connectivity,
       nonEditable: true
     });
-    this.isCreateThingsModelAPILoading = true;
-    const method = this.assetModel.id ? this.assetModelService.updateThingsModel(this.assetModel, this.contextApp.app) :
-    this.assetModelService.createThingsModel(this.assetModel, this.contextApp.app);
+    this.isCreateAssetsModelAPILoading = true;
+    const method = this.assetModel.id ? this.assetModelService.updateAssetsModel(this.assetModel, this.contextApp.app) :
+    this.assetModelService.createAssetsModel(this.assetModel, this.contextApp.app);
     this.subscriptions.push(method.subscribe(
       (response: any) => {
-        this.isCreateThingsModelAPILoading = false;
-        this.onCloseThingsModelModal();
-        this.toasterService.showSuccess(response.message, 'Create Things Model');
-        this.searchThingsModels();
+        this.isCreateAssetsModelAPILoading = false;
+        this.onCloseAssetsModelModal();
+        this.toasterService.showSuccess(response.message, 'Create Assets Model');
+        this.searchAssetsModels();
       }, error => {
-        this.isCreateThingsModelAPILoading = false;
-        this.toasterService.showError(error.message, 'Create Things Model');
+        this.isCreateAssetsModelAPILoading = false;
+        this.toasterService.showError(error.message, 'Create Assets Model');
       }
     ));
   }
 
-  onCloseThingsModelModal() {
+  onCloseAssetsModelModal() {
     $('#createAssetModelModal').modal('hide');
     this.assetModel = undefined;
   }

@@ -106,7 +106,7 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
     obj.tags = this.assetModel.tags;
     obj.app = this.contextApp.app;
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    this.subscriptions.push(this.assetModelService.updateThingsModel(obj, this.contextApp.app).subscribe(
+    this.subscriptions.push(this.assetModelService.updateAssetsModel(obj, this.contextApp.app).subscribe(
       (response: any) => {
 
         this.tagObj = undefined;
@@ -175,7 +175,7 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
       name: this.assetModel.name,
       app: this.contextApp.app
     };
-    this.subscriptions.push(this.assetModelService.getThingsModelDetails(obj.app, obj.name).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelDetails(obj.app, obj.name).subscribe(
       (response: any) => {
         if (response) {
           this.assetModel = response;

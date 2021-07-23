@@ -549,7 +549,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         app: this.contextApp.app,
         asset_model: this.alertCondition?.asset_model ?  this.alertCondition.asset_model : this.selectedAsset.asset_model
       };
-      this.subscriptions.push(this.assetModelService.getThingsModelDocuments(obj).subscribe(
+      this.subscriptions.push(this.assetModelService.getAssetsModelDocuments(obj).subscribe(
         (response: any) => {
           if (response?.data) {
             this.documents = response.data;
@@ -582,13 +582,13 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
   }
 
-  getThingsModelProperties() {
+  getAssetsModelProperties() {
     return new Promise((resolve) => {
       const obj = {
         app: this.contextApp.app,
         name: this.alertCondition?.asset_model ?  this.alertCondition.asset_model : this.selectedAsset.asset_model
       };
-      this.subscriptions.push(this.assetModelService.getThingsModelProperties(obj).subscribe(
+      this.subscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
@@ -615,7 +615,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     };
     this.dropdownWidgetList = [];
     this.selectedWidgetsForSearch = [];
-    this.subscriptions.push(this.assetModelService.getThingsModelLayout(params).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelLayout(params).subscribe(
       async (response: any) => {
         if (response?.historical_widgets?.length > 0) {
           response.historical_widgets.forEach((item) => {
@@ -707,7 +707,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.selectedAsset = this.originalAssets.find(asset => asset.asset_id === this.selectedAlert.asset_id);
     // await this.getAssetData(this.selectedAlert.asset_id);
     await this.getAlertConditions();
-    await this.getThingsModelProperties();
+    await this.getAssetsModelProperties();
     await this.getDocuments();
     await this.getLayout();
     this.isAlertModalDataLoading = false;

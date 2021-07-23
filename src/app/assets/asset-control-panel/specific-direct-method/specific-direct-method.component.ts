@@ -73,7 +73,7 @@ export class SpecificDirectMethodComponent implements OnInit {
       app: this.contextApp.app,
       asset_model: this.asset.tags?.asset_model
     };
-    this.apiSubscriptions.push(this.assetModelService.getThingsModelControlWidgets(obj).subscribe(
+    this.apiSubscriptions.push(this.assetModelService.getAssetsModelControlWidgets(obj).subscribe(
       (response: any) => {
         if (response?.data) {
           this.controlWidgets = response.data.filter(widget => widget.metadata.communication_technique === 'Direct Method');
@@ -106,7 +106,7 @@ export class SpecificDirectMethodComponent implements OnInit {
       app: this.contextApp.app,
       asset_model: this.asset.tags?.asset_model
     };
-    this.apiSubscriptions.push(this.assetModelService.getThingsModelConfigurationWidgets(obj).subscribe(
+    this.apiSubscriptions.push(this.assetModelService.getAssetsModelConfigurationWidgets(obj).subscribe(
       (response: any) => {
         if (response?.data) {
           this.controlWidgets = response.data.filter(widget => widget.metadata.communication_technique === 'Direct Method');

@@ -49,7 +49,7 @@ export class AssetModelAlertAcknowledgementReasonsComponent implements OnInit {
       app: this.contextApp.app,
       name: this.assetModel.name
     };
-    this.subscriptions.push(this.assetModelService.getThingsModelAckReasons(modelObj).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelAckReasons(modelObj).subscribe(
       (response: any) => {
         if (response?.data) {
           this.ackReasons = response.data;
@@ -84,7 +84,7 @@ export class AssetModelAlertAcknowledgementReasonsComponent implements OnInit {
       app: this.contextApp.app,
       name: this.assetModel.name
     };
-    this.subscriptions.push(this.assetModelService.createThingsModelAckReasons(obj, modelObj).subscribe(
+    this.subscriptions.push(this.assetModelService.createAssetsModelAckReasons(obj, modelObj).subscribe(
       (response: any) => {
         this.reasonObj = undefined;
         this.toasterService.showSuccess(response.message, 'Add Reasons');
@@ -117,7 +117,7 @@ export class AssetModelAlertAcknowledgementReasonsComponent implements OnInit {
       app: this.contextApp.app,
       name: this.assetModel.name
     };
-    this.subscriptions.push(this.assetModelService.updateThingsModelAckReasons(id, obj, modelObj).subscribe(
+    this.subscriptions.push(this.assetModelService.updateAssetsModelAckReasons(id, obj, modelObj).subscribe(
       (response: any) => {
         this.toasterService.showSuccess(response.message, 'Update Reasons');
         this.getAckReasons();
@@ -138,7 +138,7 @@ export class AssetModelAlertAcknowledgementReasonsComponent implements OnInit {
       app: this.contextApp.app,
       name: this.assetModel.name
     };
-    this.subscriptions.push(this.assetModelService.deleteThingsModelAckReasons
+    this.subscriptions.push(this.assetModelService.deleteAssetsModelAckReasons
       (id, modelObj).
       subscribe((response: any) => {
         this.toasterService.showSuccess(response.message, 'Remove Reason');

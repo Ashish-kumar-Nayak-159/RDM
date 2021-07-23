@@ -132,13 +132,13 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
     ));
   }
 
-  getThingsModelProperties(asset) {
+  getAssetsModelProperties(asset) {
     return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
         name: asset.asset_model
       };
-      this.apiSubscriptions.push(this.assetModelService.getThingsModelProperties(obj).subscribe(
+      this.apiSubscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
         (response: any) => {
           response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
@@ -156,7 +156,7 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
   }
 
   onSelectionOfAsset() {
-    this.getThingsModelProperties(this.telemetryFilter.asset);
+    this.getAssetsModelProperties(this.telemetryFilter.asset);
   }
 
 

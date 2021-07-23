@@ -66,7 +66,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
         app: this.assetModel.app,
         name: this.assetModel.name
       };
-      this.subscriptions.push(this.assetModelService.getThingsModelLayout(obj).subscribe(
+      this.subscriptions.push(this.assetModelService.getAssetsModelLayout(obj).subscribe(
         (response: any) => {
           if (response?.historical_widgets?.length > 0) {
             this.widgets = response.historical_widgets;
@@ -96,7 +96,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       app: this.assetModel.app,
       asset_model: this.assetModel.name
     };
-    this.subscriptions.push(this.assetModelService.getThingsModelDocuments(obj).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelDocuments(obj).subscribe(
       (response: any) => {
         if (response?.data) {
           this.documents = response.data;

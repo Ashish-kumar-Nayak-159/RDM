@@ -108,17 +108,17 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
         }
       ]
     };
-    this.getThingsModelAssetMethod();
+    this.getAssetsModelAssetMethod();
   }
 
-  getThingsModelAssetMethod() {
+  getAssetsModelAssetMethod() {
     // this.assetMethods = {};
     this.isAssetMethodsLoading = true;
     const obj = {
       app: this.contextApp.app,
       name: this.assetModel.name
     };
-    this.subscriptions.push(this.assetModelService.getThingsModelAssetMethods(obj).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelAssetMethods(obj).subscribe(
       (response: any) => {
         this.assetMethods = response.asset_methods;
         this.isAssetMethodsLoading = false;
@@ -283,12 +283,12 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     obj.asset_methods = JSON.parse(JSON.stringify(this.assetMethods));
     obj.asset_methods.push(this.assetMethodObj);
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    this.subscriptions.push(this.assetModelService.updateThingsModel(obj, this.assetModel.app).subscribe(
+    this.subscriptions.push(this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
       (response: any) => {
         this.isCreateAssetMethodLoading = false;
-        this.onCloseThingsAssetMethodModal();
+        this.onCloseAssetsAssetMethodModal();
         this.toasterService.showSuccess(response.message, 'Add Direct Method');
-        this.getThingsModelAssetMethod();
+        this.getAssetsModelAssetMethod();
       }, error => {
         this.isCreateAssetMethodLoading = false;
         this.toasterService.showError(error.message, 'Add Direct Method');
@@ -302,12 +302,12 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     const index = obj.asset_methods.findIndex(prop => prop.name === this.selectedAssetMethod.name);
     obj.asset_methods.splice(index, 1);
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    this.subscriptions.push(this.assetModelService.updateThingsModel(obj, this.assetModel.app).subscribe(
+    this.subscriptions.push(this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
       (response: any) => {
         this.isCreateAssetMethodLoading = false;
         this.onCloseModal('confirmMessageModal');
         this.toasterService.showSuccess(response.message, 'Delete Direct Method');
-        this.getThingsModelAssetMethod();
+        this.getAssetsModelAssetMethod();
       }, error => {
         this.isCreateAssetMethodLoading = false;
         this.toasterService.showError(error.message, 'Delete Direct Method');
@@ -315,7 +315,7 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     ));
   }
 
-  onCloseThingsAssetMethodModal() {
+  onCloseAssetsAssetMethodModal() {
     $('#addAssetMethodModal').modal('hide');
     this.assetMethodObj = undefined;
   }

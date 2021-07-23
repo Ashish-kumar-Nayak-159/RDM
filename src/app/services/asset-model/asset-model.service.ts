@@ -20,7 +20,7 @@ export class AssetModelService {
     private commonService: CommonService
   ) { }
 
-  getThingsModelsList(filterObj) {
+  getAssetsModelsList(filterObj) {
     const assetModels = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODELS_LIST);
     if (assetModels) {
       if (filterObj['id'] || filterObj['name'] || filterObj['model_type'] || filterObj['created_by']) {
@@ -57,7 +57,7 @@ export class AssetModelService {
         }
       });
 
-      return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODELS, encodeURIComponent(filterObj.app)), { params })
+      return this.http.get(this.url + String.Format(AppUrls.GET_ASSETS_MODELS, encodeURIComponent(filterObj.app)), { params })
       .pipe( map((data: any) => {
         if (!filterObj['id'] && !filterObj['name'] && !filterObj['model_type'] && !filterObj['created_by']) {
           this.commonService.setItemInLocalStorage(CONSTANTS.ASSET_MODELS_LIST, data.data);
@@ -70,23 +70,23 @@ export class AssetModelService {
     }
   }
 
-  getThingsModelDetails(app, name) {
-    return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_DETAILS, encodeURIComponent(app), encodeURIComponent(name)));
+  getAssetsModelDetails(app, name) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSETS_MODEL_DETAILS, encodeURIComponent(app), encodeURIComponent(name)));
   }
 
-  createThingsModel(modelObj, app) {
+  createAssetsModel(modelObj, app) {
     localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
-    return this.http.post(this.url + String.Format(AppUrls.CREATE_THINGS_MODEL, encodeURIComponent(app)), modelObj);
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_ASSETS_MODEL, encodeURIComponent(app)), modelObj);
   }
 
-  updateThingsModel(modelObj, app) {
+  updateAssetsModel(modelObj, app) {
     localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
     localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
-    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_THINGS_MODEL, encodeURIComponent(app),
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_ASSETS_MODEL, encodeURIComponent(app),
     encodeURIComponent(modelObj.name)), modelObj);
   }
 
-  getThingsModelProperties(filterObj) {
+  getAssetsModelProperties(filterObj) {
     let assetModel = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODEL_DATA);
     if (assetModel?.id !== filterObj.id || assetModel?.name !== filterObj.name) {
       assetModel = undefined;
@@ -106,7 +106,7 @@ export class AssetModelService {
         });
       }
     } else {
-      return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_PROPERTIES,
+      return this.http.get(this.url + String.Format(AppUrls.GET_ASSETS_MODEL_PROPERTIES,
         encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.name)))
       .pipe( map((data: any) => {
         let obj = {};
@@ -130,7 +130,7 @@ export class AssetModelService {
     }
   }
 
-  getThingsModelLayout(filterObj) {
+  getAssetsModelLayout(filterObj) {
     let assetModel = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODEL_DATA);
     if (assetModel?.id !== filterObj.id || assetModel?.name !== filterObj.name) {
       assetModel = undefined;
@@ -150,7 +150,7 @@ export class AssetModelService {
         });
       }
     } else {
-      return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_LAYOUT,
+      return this.http.get(this.url + String.Format(AppUrls.GET_ASSETS_MODEL_LAYOUT,
         encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.name)))
       .pipe( map((data: any) => {
         let obj = {};
@@ -174,7 +174,7 @@ export class AssetModelService {
     }
   }
 
-  getThingsModelLiveWidgets(filterObj) {
+  getAssetsModelLiveWidgets(filterObj) {
     let assetModel = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODEL_DATA);
     if (assetModel?.id !== filterObj.id || assetModel?.name !== filterObj.name) {
       assetModel = undefined;
@@ -221,64 +221,64 @@ export class AssetModelService {
   freezeAssetModel(app, assetModel, obj) {
     localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
     localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
-    return this.http.post(this.url + String.Format(AppUrls.FREEZE_THINGS_MODEL, encodeURIComponent(app),
+    return this.http.post(this.url + String.Format(AppUrls.FREEZE_ASSETS_MODEL, encodeURIComponent(app),
     encodeURIComponent(assetModel)), obj);
   }
 
   unfreezeAssetModel(app, assetModel, obj) {
     localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
     localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
-    return this.http.post(this.url + String.Format(AppUrls.UNFREEZE_THINGS_MODEL,
+    return this.http.post(this.url + String.Format(AppUrls.UNFREEZE_ASSETS_MODEL,
       encodeURIComponent(app), encodeURIComponent(assetModel)), obj);
   }
 
 
-  getThingsModelAssetMethods(filterObj) {
-    return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_ASSET_METHODS,
+  getAssetsModelAssetMethods(filterObj) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSETS_MODEL_ASSET_METHODS,
       encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.name)));
   }
 
-  getThingsModelControlWidgets(filterObj) {
-    return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_CONTROL_WIDGETS,
+  getAssetsModelControlWidgets(filterObj) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSETS_MODEL_CONTROL_WIDGETS,
       encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.asset_model)));
   }
 
-  createThingsModelControlWidget(modelObj) {
-    return this.http.post(this.url + String.Format(AppUrls.CREATE_THINGS_MODEL_CONTROL_WIDGETS,
+  createAssetsModelControlWidget(modelObj) {
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_ASSETS_MODEL_CONTROL_WIDGETS,
       encodeURIComponent(modelObj.app), encodeURIComponent(modelObj.asset_model)), modelObj);
   }
 
-  updateThingsModelControlWidget(modelObj, app) {
-    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_THINGS_MODEL_CONTROL_WIDGETS,
+  updateAssetsModelControlWidget(modelObj, app) {
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_ASSETS_MODEL_CONTROL_WIDGETS,
       encodeURIComponent(app), encodeURIComponent(modelObj.assetModel), encodeURIComponent(modelObj.id)), modelObj);
   }
 
-  deleteThingsModelControlWidget(filterObj) {
+  deleteAssetsModelControlWidget(filterObj) {
     return this.http.delete(this.url + String.Format(AppUrls.DELETE_CONTROL_WIDGET,
       encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.asset_model), encodeURIComponent(filterObj.id)));
   }
 
-  getThingsModelConfigurationWidgets(filterObj) {
-    return this.http.get(this.url + String.Format(AppUrls.GET_THINGS_MODEL_CONFIGURATION_WIDGETS,
+  getAssetsModelConfigurationWidgets(filterObj) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSETS_MODEL_CONFIGURATION_WIDGETS,
       encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.asset_model)));
   }
 
-  createThingsModelConfigurationWidget(modelObj) {
-    return this.http.post(this.url + String.Format(AppUrls.CREATE_THINGS_MODEL_CONFIGURATION_WIDGETS,
+  createAssetsModelConfigurationWidget(modelObj) {
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_ASSETS_MODEL_CONFIGURATION_WIDGETS,
       encodeURIComponent(modelObj.app), encodeURIComponent(modelObj.asset_model)), modelObj);
   }
 
-  updateThingsModelConfigurationWidget(modelObj, app) {
-    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_THINGS_MODEL_CONFIGURATION_WIDGETS,
+  updateAssetsModelConfigurationWidget(modelObj, app) {
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_ASSETS_MODEL_CONFIGURATION_WIDGETS,
       encodeURIComponent(app), encodeURIComponent(modelObj.assetModel), encodeURIComponent(modelObj.id)), modelObj);
   }
 
-  deleteThingsModelConfigurationWidget(filterObj) {
+  deleteAssetsModelConfigurationWidget(filterObj) {
     return this.http.delete(this.url + String.Format(AppUrls.DELETE_CONFIGURATION_WIDGET,
       encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.asset_model), encodeURIComponent(filterObj.id)));
   }
 
-  getThingsModelDocuments(filterObj) {
+  getAssetsModelDocuments(filterObj) {
     let assetModel = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODEL_DATA);
     if (assetModel?.id !== filterObj.id || assetModel?.name !== filterObj.asset_model) {
       assetModel = undefined;
@@ -323,7 +323,7 @@ export class AssetModelService {
     }
   }
 
-  createThingsModelDocument(modelObj, app, assetModel) {
+  createAssetsModelDocument(modelObj, app, assetModel) {
     const assetModelItem = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODEL_DATA);
     if (assetModelItem && assetModelItem.documents && assetModelItem.name === assetModel) {
       delete assetModelItem.documents;
@@ -333,13 +333,13 @@ export class AssetModelService {
       encodeURIComponent(app), encodeURIComponent(assetModel)), modelObj);
   }
 
-  updateThingsModelDocument(modelObj, app, assetModel, documentId) {
+  updateAssetsModelDocument(modelObj, app, assetModel, documentId) {
     localStorage.removeItem(CONSTANTS.ASSET_MODEL_DATA);
     return this.http.patch(this.url + String.Format(AppUrls.UPDATE_MODEL_REFERENCE_DOCUMENTS,
       encodeURIComponent(app), encodeURIComponent(assetModel), encodeURIComponent(documentId)), modelObj);
   }
 
-  deleteThingsModelDocument(id, app, assetModel) {
+  deleteAssetsModelDocument(id, app, assetModel) {
     const params = new HttpParams().set('id', id);
     const assetModelItem = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODEL_DATA);
     if (assetModelItem && assetModelItem.documents && assetModelItem.name === assetModel) {
@@ -350,22 +350,22 @@ export class AssetModelService {
       encodeURIComponent(app), encodeURIComponent(assetModel), encodeURIComponent(id)), {});
   }
 
-  getThingsModelAckReasons(modelObj) {
+  getAssetsModelAckReasons(modelObj) {
     return this.http.get(this.url + String.Format(AppUrls.GET_MODEL_ACKNOWLEDGEMENT_REASONS, encodeURIComponent(modelObj.app),
     encodeURIComponent(modelObj.name)));
   }
 
-  createThingsModelAckReasons(obj, modelObj) {
+  createAssetsModelAckReasons(obj, modelObj) {
     return this.http.post(this.url + String.Format(AppUrls.GET_MODEL_ACKNOWLEDGEMENT_REASONS, encodeURIComponent(modelObj.app),
     encodeURIComponent(modelObj.name)), obj);
   }
 
-  updateThingsModelAckReasons(id, obj, modelObj) {
+  updateAssetsModelAckReasons(id, obj, modelObj) {
     return this.http.patch(this.url + String.Format(AppUrls.UPDATE_MODEL_ACKNOWLEDGEMENT_REASONS, encodeURIComponent(modelObj.app),
     encodeURIComponent(modelObj.name), encodeURIComponent(id)), obj);
   }
 
-  deleteThingsModelAckReasons(id, modelObj) {
+  deleteAssetsModelAckReasons(id, modelObj) {
     return this.http.delete(this.url + String.Format(AppUrls.UPDATE_MODEL_ACKNOWLEDGEMENT_REASONS, encodeURIComponent(modelObj.app),
     encodeURIComponent(modelObj.name), encodeURIComponent(id)), {});
   }

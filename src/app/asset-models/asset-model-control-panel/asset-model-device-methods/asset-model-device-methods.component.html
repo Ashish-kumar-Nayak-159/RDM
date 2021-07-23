@@ -30,7 +30,7 @@
       <div class="modal-content" *ngIf="assetMethodObj">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">{{assetMethodObj.edit ? 'Edit' : 'Add'}} Direct Method</h5>
-        <button type="button" class="close" [disabled]="isCreateAssetMethodLoading" (click)="onCloseThingsAssetMethodModal()" aria-label="Close">
+        <button type="button" class="close" [disabled]="isCreateAssetMethodLoading" (click)="onCloseAssetsAssetMethodModal()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -94,7 +94,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary add-row" [disabled]="isCreateAssetMethodLoading" (click)="onSaveassetMethodObj()">Save</button>
-        <button type="button" class="btn btn-secondary" [disabled]="isCreateAssetMethodLoading" (click)="onCloseThingsAssetMethodModal()">Cancel</button>
+        <button type="button" class="btn btn-secondary" [disabled]="isCreateAssetMethodLoading" (click)="onCloseAssetsAssetMethodModal()">Cancel</button>
         <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAssetMethodLoading"></i>
       </div>
     </div>

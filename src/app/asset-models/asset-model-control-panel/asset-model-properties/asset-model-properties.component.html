@@ -46,7 +46,7 @@
             )
           ))}}
           Property</h5>
-        <button type="button" class="close" [disabled]="isCreatePropertyLoading" (click)="onCloseThingsPropertyModal()" aria-label="Close">
+        <button type="button" class="close" [disabled]="isCreatePropertyLoading" (click)="onCloseAssetsPropertyModal()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -336,7 +336,7 @@
       <div class="modal-footer">
         <button *ngIf="assetModel.metadata?.model_type === constantData.NON_IP_ASSET" type="button" class="btn btn-primary " [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreatePropertyLoading" (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
         <button *ngIf="assetModel.metadata?.model_type !== constantData.NON_IP_ASSET" type="button" class="btn btn-primary" [disabled]="isCreatePropertyLoading" (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
-        <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading" (click)="onCloseThingsPropertyModal()">Cancel</button>
+        <button type="button" class="btn btn-secondary" [disabled]="isCreatePropertyLoading" (click)="onCloseAssetsPropertyModal()">Cancel</button>
         <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreatePropertyLoading"></i>
       </div>
     </div>

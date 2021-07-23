@@ -167,10 +167,10 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.propertyTableConfig.data[4].btnData.splice(1);
       this.propertyTableConfig.data[4].btnData.splice(2);
     }
-    this.getThingsModelProperties();
+    this.getAssetsModelProperties();
   }
 
-  getThingsModelProperties() {
+  getAssetsModelProperties() {
     // this.properties = {};
     this.dependentProperty = [];
     this.isPropertiesLoading = true;
@@ -178,7 +178,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       app: this.assetModel.app,
       name: this.assetModel.name
     };
-    this.subscriptions.push(this.assetModelService.getThingsModelProperties(obj).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
       (response: any) => {
         this.properties = response.properties;
         this.properties[this.type] = this.properties[this.type] ? this.properties[this.type] : [];
@@ -425,12 +425,12 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     obj.properties = JSON.parse(JSON.stringify(this.properties));
     obj.properties[this.type].push(this.propertyObj);
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    this.subscriptions.push(this.assetModelService.updateThingsModel(obj, this.assetModel.app).subscribe(
+    this.subscriptions.push(this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
       (response: any) => {
         this.isCreatePropertyLoading = false;
-        this.onCloseThingsPropertyModal();
+        this.onCloseAssetsPropertyModal();
         this.toasterService.showSuccess(response.message, 'Add Property');
-        this.getThingsModelProperties();
+        this.getAssetsModelProperties();
       }, error => {
         this.isCreatePropertyLoading = false;
         this.toasterService.showError(error.message, 'Add Property');
@@ -444,12 +444,12 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     const index = obj.properties[this.type].findIndex(prop => prop.json_key === this.selectedProperty.json_key);
     obj.properties[this.type].splice(index, 1);
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    this.subscriptions.push(this.assetModelService.updateThingsModel(obj, this.assetModel.app).subscribe(
+    this.subscriptions.push(this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
       (response: any) => {
         this.isCreatePropertyLoading = false;
         this.onCloseModal('confirmMessageModal');
         this.toasterService.showSuccess(response.message, 'Delete Property');
-        this.getThingsModelProperties();
+        this.getAssetsModelProperties();
       }, error => {
         this.isCreatePropertyLoading = false;
         this.toasterService.showError(error.message, 'Delete Property');
@@ -457,7 +457,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     ));
   }
 
-  onCloseThingsPropertyModal() {
+  onCloseAssetsPropertyModal() {
     $('#addPropertiesModal').modal('hide');
     this.propertyObj = undefined;
     this.selectedProperty = undefined;
@@ -497,13 +497,13 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     const obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    this.subscriptions.push(this.assetModelService.updateThingsModel(obj, this.assetModel.app).subscribe(
+    this.subscriptions.push(this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
       (response: any) => {
         this.isCreatePropertyLoading = false;
         this.onCloseModal('configureDerivedPropModal');
-        this.onCloseThingsPropertyModal();
+        this.onCloseAssetsPropertyModal();
         this.toasterService.showSuccess(response.message, 'Edit Property');
-        this.getThingsModelProperties();
+        this.getAssetsModelProperties();
       }, error => {
         this.isCreatePropertyLoading = false;
         this.toasterService.showError(error.message, 'Edit Property');

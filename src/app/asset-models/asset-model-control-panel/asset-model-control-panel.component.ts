@@ -168,7 +168,7 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
       name: assetModelId,
       app: this.contextApp.app
     };
-    this.subscriptions.push(this.assetModelService.getThingsModelDetails(obj.app, obj.name).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelDetails(obj.app, obj.name).subscribe(
       (response: any) => {
         if (response) {
           this.assetModel = response;

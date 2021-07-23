@@ -43,19 +43,19 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getLiveWidgets();
-    await this.getThingsModelProperties();
+    await this.getAssetsModelProperties();
 
 
   }
 
-  getThingsModelProperties() {
+  getAssetsModelProperties() {
     // this.properties = {};
     return new Promise((resolve) => {
       const obj = {
         app: this.contextApp.app,
         name: this.asset.tags.asset_model
       };
-      this.apiSubscriptions.push(this.assetModelService.getThingsModelProperties(obj).subscribe(
+      this.apiSubscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
@@ -75,7 +75,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
       app: this.contextApp.app,
       name: this.asset.tags.asset_model
     };
-    this.apiSubscriptions.push(this.assetModelService.getThingsModelLiveWidgets(params).subscribe(
+    this.apiSubscriptions.push(this.assetModelService.getAssetsModelLiveWidgets(params).subscribe(
       (response: any) => {
         if (response?.live_widgets?.length > 0) {
           response.live_widgets.forEach(widget => {

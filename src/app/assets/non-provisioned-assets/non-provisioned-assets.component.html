@@ -8,7 +8,7 @@
 
 <div class="table-responsive">
     <div class="tableFixHead" style="max-height: calc(100vh - 12.5rem)" id="table-wrapper">
-        <table>
+        <table class="table table-hover">
             <thead>
                 <th>Device Id</th>
                 <th>Type</th>
@@ -21,6 +21,16 @@
                     <td>{{data.type}}</td>
                     <td>{{data.status}}</td>
                     <td><i class="fa fa-edit fa-fw" (click)="editAssetModel(data);"></i></td>
+                </tr>
+                <tr *ngIf="nonProvisionedAssetsList.length <= 0 && !isNonProvisionAssetsLoading">
+                    <td [attr.colspan]="4">
+                        No non-provisioned assets available
+                    </td>
+                </tr>
+                <tr *ngIf="isNonProvisionAssetsLoading">
+                    <td [attr.colspan]="4">
+                        <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -86,8 +96,9 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary add-row" (click)="updateAsset();">Save</button>
-                <button type="button" class="btn btn-secondary" (click)="closeAssetModal()">
+                <i *ngIf="isUpdateAsset" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+                <button type="button" class="btn btn-primary add-row" (click)="updateAsset();" [disabled]="isUpdateAsset">Save</button>
+                <button type="button" class="btn btn-secondary" (click)="closeAssetModal()" [disabled]="isUpdateAsset">
                     Cancel
                 </button>
                 <!-- <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateDeviceAPILoading"></i> -->

@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { CONSTANTS } from 'src/app/app.constants';
 import { ApplicationService } from 'src/app/services/application/application.service';
@@ -27,6 +28,8 @@ export class NonProvisionedAssetsComponent implements OnInit {
   configureHierarchy = {};
   selectedAsset: any;
   userData: any;
+  isNonProvisionAssetsLoading = false;
+  isUpdateAsset = false;
   assetModel: AssetModel = new AssetModel();
 
   constructor(
@@ -76,8 +79,12 @@ export class NonProvisionedAssetsComponent implements OnInit {
   }
 
   getNonProvisionedAssets() {
+    this.isNonProvisionAssetsLoading = true;
     this.assetService.getNonProvisionedAssets(this.contextApp.app).subscribe((response: any) => {
       this.nonProvisionedAssetsList = response.data;
+      this.isNonProvisionAssetsLoading = false;
+    }, (err: HttpErrorResponse) => {
+      this.isNonProvisionAssetsLoading = false;
     });
   }
 
@@ -139,9 +146,10 @@ export class NonProvisionedAssetsComponent implements OnInit {
   }
 
   updateAsset() {
+    this.isUpdateAsset = true;
     this.assetModel.app = this.contextApp.app;
-    this.assetModel.hierarchy = JSON.stringify({App: this.contextApp.app});
-    this.assetModel.hierarchy_json = { App: this.contextApp.app}
+    this.assetModel.hierarchy = JSON.stringify({ App: this.contextApp.app });
+    this.assetModel.hierarchy_json = { App: this.contextApp.app }
     this.assetModel.type = this.selectedAsset.type;
     Object.keys(this.configureHierarchy).forEach((key) => {
       this.assetModel.hierarchy_json[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
@@ -149,13 +157,18 @@ export class NonProvisionedAssetsComponent implements OnInit {
     this.assetModel.created_by = this.userData.email + ' (' + this.userData.name + ')';
     console.log(this.assetModel);
     let tags = {
-      'tags' : this.assetModel
+      'tags': this.assetModel
     }
     this.assetService.updateNonProvisionedAsset(this.contextApp.app, this.selectedAsset.asset_id, tags).subscribe((response: any) => {
       this.toasterService.showSuccess(response.message, 'Update Asset');
+      this.isUpdateAsset = false;
       $('#editAssetModal').modal('hide');
       this.assetModel = new AssetModel();
       this.getNonProvisionedAssets();
+    }, (err: HttpErrorResponse) => {
+      this.isUpdateAsset = false;
+      this.toasterService.showError(err.message, 'Non-provisioned Assets');
+      $('#editAssetModal').modal('hide');
     });
   }
 }

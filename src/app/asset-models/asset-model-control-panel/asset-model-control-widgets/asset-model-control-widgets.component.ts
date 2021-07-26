@@ -64,7 +64,7 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
     };
     this.subscriptions.push(this.assetModelService.getAssetsModelAssetMethods(obj).subscribe(
       (response: any) => {
-        this.assetMethods = response.asset_methods;
+        this.assetMethods = response.direct_methods;
       }
     ));
   }

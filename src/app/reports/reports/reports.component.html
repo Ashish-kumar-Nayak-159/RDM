@@ -263,12 +263,12 @@
                   </ng-container>
                   <ng-container *ngIf="latestAlerts.length === 0 && !isTelemetryLoading">
                     <tr>
-                      <td colspan="7">No Alert data available for {{this.originalFilterObj.dateOption}}.  <p *ngIf="this.originalFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template></td>
+                      <td colspan="8">No Alert data available for {{this.originalFilterObj.dateOption}}.  <p *ngIf="this.originalFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template></td>
                     </tr>
                   </ng-container>
                   <ng-container *ngIf="isTelemetryLoading">
                     <tr>
-                      <td [attr.colspan]="7">
+                      <td [attr.colspan]="8">
                         <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
                       </td>
                     </tr>

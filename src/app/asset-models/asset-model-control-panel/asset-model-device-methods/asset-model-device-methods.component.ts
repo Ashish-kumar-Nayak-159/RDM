@@ -120,7 +120,7 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     };
     this.subscriptions.push(this.assetModelService.getAssetsModelAssetMethods(obj).subscribe(
       (response: any) => {
-        this.assetMethods = response.asset_methods;
+        this.assetMethods = response.direct_methods;
         this.isAssetMethodsLoading = false;
       }
     ));
@@ -280,8 +280,8 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     }
     this.isCreateAssetMethodLoading = true;
     const obj = JSON.parse(JSON.stringify(this.assetModel));
-    obj.asset_methods = JSON.parse(JSON.stringify(this.assetMethods));
-    obj.asset_methods.push(this.assetMethodObj);
+    obj.direct_methods = JSON.parse(JSON.stringify(this.assetMethods));
+    obj.direct_methods.push(this.assetMethodObj);
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
       (response: any) => {
@@ -298,9 +298,9 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
 
   deleteAssetMethod() {
     const obj = JSON.parse(JSON.stringify(this.assetModel));
-    obj.asset_methods = JSON.parse(JSON.stringify(this.assetMethods));
-    const index = obj.asset_methods.findIndex(prop => prop.name === this.selectedAssetMethod.name);
-    obj.asset_methods.splice(index, 1);
+    obj.direct_methods = JSON.parse(JSON.stringify(this.assetMethods));
+    const index = obj.direct_methods.findIndex(prop => prop.name === this.selectedAssetMethod.name);
+    obj.direct_methods.splice(index, 1);
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
       (response: any) => {

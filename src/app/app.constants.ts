@@ -103,7 +103,8 @@ export class CONSTANTS {
       system_name: 'Assets',
       url: 'applications/:appName/assets',
       display_name: 'Assets',
-      exactMatch: false,
+      for_admin_only: true,
+      exactMatch: true,
       icon: 'fab fa-fw fa-mixcloud',
       visible: true,
       showAccordion: [
@@ -126,6 +127,7 @@ export class CONSTANTS {
       system_name: 'Asset Management',
       url: 'applications/:appName/asset/management',
       display_name: 'Asset Management',
+      for_admin_only: true,
       exactMatch: true,
       icon: 'fa fa-fw fa-cogs',
       visible: true,
@@ -139,7 +141,7 @@ export class CONSTANTS {
       system_name: 'Asset Models',
       url: 'applications/:appName/assets/model',
       display_name: 'Asset Models',
-      exactMatch: false,
+      exactMatch: true,
       icon: 'icon icon-cubes',
       visible: true,
       showAccordion: [

@@ -109,6 +109,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.historicalDateFilter.to_date = moment().utc().unix();
       this.selectedDateRange = this.historicalDateFilter.dateOption;
     }
+    this.historicalDateFilter.sampling_format = 'minute';
+    this.historicalDateFilter.sampling_time = 1;
     // if (this.selectedTab === 'telemetry') {
     //   this.loadFromCache();
     // }
@@ -533,7 +535,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.signalRService.disconnectFromSignalR('telemetry');
     this.signalRTelemetrySubscription?.unsubscribe();
     clearInterval(this.sampleCountInterval);
-
     // this.commonService.setItemInLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION, filterObj);
     const obj = JSON.parse(JSON.stringify(filterObj));
     let asset_model: any;
@@ -669,7 +670,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
     });
-    const children = $('#charts').children();
+    const children = $('#historic_charts').children();
     for (const child of children) {
       $(child).remove();
     }
@@ -716,8 +717,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     // filterObj.from_date = moment().subtract(30, 'minutes').utc().unix();
     // filterObj.to_date = now;
     let method;
-    if (filterObj.to_date - filterObj.from_date > 3600 && !this.filterObj.isTypeEditable) {
-        this.filterObj.isTypeEditable = true;
+    if (filterObj.to_date - filterObj.from_date > 3600 && !this.historicalDateFilter.isTypeEditable) {
+        this.historicalDateFilter.isTypeEditable = true;
         this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
         return;
     }
@@ -726,30 +727,36 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     delete filterObj.count;
     delete filterObj.asset;
     filterObj.order_dir = 'ASC';
-    if (this.filterObj.isTypeEditable) {
-      if (this.filterObj.type) {
-        if (!this.filterObj.sampling_time || !this.filterObj.sampling_format ) {
+    console.log(this.historicalDateFilter);
+    if (this.historicalDateFilter.isTypeEditable) {
+      console.log(this.historicalDateFilter.type);
+      if (this.historicalDateFilter.type) {
+        if (!this.historicalDateFilter.sampling_time || !this.historicalDateFilter.sampling_format ) {
           this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
           return;
         } else {
           delete filterObj.aggregation_minutes;
           delete filterObj.aggregation_format;
-          const records = this.commonService.calculateEstimatedRecords(this.filterObj.sampling_time * 60,
+          const records = this.commonService.calculateEstimatedRecords(this.historicalDateFilter.sampling_time * 60,
             filterObj.from_date, filterObj.to_date);
           if (records > 500 ) {
             this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
           }
+          filterObj.sampling_time = this.historicalDateFilter.sampling_time;
+          filterObj.sampling_format = this.historicalDateFilter.sampling_format;
           method = this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app);
         }
       } else {
-        if (!this.filterObj.aggregation_minutes || !this.filterObj.aggregation_format ) {
+        if (!this.historicalDateFilter.aggregation_minutes || !this.historicalDateFilter.aggregation_format ) {
           this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
           return;
         } else {
           delete filterObj.sampling_time;
           delete filterObj.sampling_format;
+          filterObj.aggregation_minutes = this.historicalDateFilter.aggregation_minutes;
+          filterObj.aggregation_format = this.historicalDateFilter.aggregation_format;
           const records = this.commonService.calculateEstimatedRecords
-          (this.filterObj.aggregation_minutes * 60, filterObj.from_date, filterObj.to_date);
+          (this.historicalDateFilter.aggregation_minutes * 60, filterObj.from_date, filterObj.to_date);
           this.loadingMessage = 'Loading ' + records + ' data points.' + (records > 100 ? 'It may take some time.' : '') + 'Please wait...';
           method = this.assetService.getAssetTelemetry(filterObj);
         }
@@ -784,7 +791,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           });
           // this.loadGaugeChart(telemetryData[0]);
           // telemetryData.reverse();
-          this.isTelemetryDataLoading = false;          // this.loadLineChart(telemetryData);
+          this.isTelemetryDataLoading = false;         // this.loadLineChart(telemetryData);
           if (telemetryData.length > 0) {
           this.historicalWidgets.forEach(widget => {
             let componentRef;

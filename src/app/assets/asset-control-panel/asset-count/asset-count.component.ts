@@ -187,7 +187,7 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
       this.isFilterSelected = false;
       return;
     } else if (filterObj.props.length > 50 ) {
-      this.toasterService.showError('Property selection is required.', 'View Count Data');
+      this.toasterService.showError('Please select only 50 properties at a time for better experience.', 'View Count Data');
       this.isTelemetryLoading = false;
       this.isFilterSelected = false;
       return;

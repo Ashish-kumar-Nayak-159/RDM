@@ -104,7 +104,7 @@
       <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
     </div>
 
-    <div class="" *ngIf="!isFilterSelected && !filterObj.asset">
+    <div class="" *ngIf="!isFilterSelected && !originalFilter?.asset">
       Please select asset to view the data.
     </div>
 
@@ -266,6 +266,7 @@
     </div>
     <div class="row col-md-12" *ngIf="historicalWidgets.length > 0 && contextApp?.dashboard_config?.show_historical_widgets">
       <div id="historic_charts" class="pl-3 pt-3 w-100"></div>
+      <div class="pl-3" *ngIf="telemetryData.length === 0 && !isTelemetryDataLoading">No Data available.</div>
     </div>
   </div>
 </ng-container>

@@ -307,7 +307,7 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
   createAssetsModel() {
     if (!this.assetModel.name || !this.assetModel.tags.protocol || !this.assetModel.tags.cloud_connectivity
     || !this.assetModel.metadata.model_type) {
-      this.toasterService.showError('Please enter all required fields', 'Create Assets Model');
+      this.toasterService.showError('Please enter all required fields', 'Create Asset Model');
       return;
     }
     this.assetModel.metadata.telemetry_mode_settings = {
@@ -344,11 +344,11 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
       (response: any) => {
         this.isCreateAssetsModelAPILoading = false;
         this.onCloseAssetsModelModal();
-        this.toasterService.showSuccess(response.message, 'Create Assets Model');
+        this.toasterService.showSuccess(response.message, 'Create Asset Model');
         this.searchAssetsModels();
       }, error => {
         this.isCreateAssetsModelAPILoading = false;
-        this.toasterService.showError(error.message, 'Create Assets Model');
+        this.toasterService.showError(error.message, 'Create Asset Model');
       }
     ));
   }

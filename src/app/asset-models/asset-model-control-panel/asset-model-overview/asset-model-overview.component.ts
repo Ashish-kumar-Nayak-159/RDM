@@ -28,6 +28,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
   connectivityList: string[] = [];
   isUpdateAssetsModelAPILoading = false;
   isFileUploading: boolean;
+  updatedAssetModel: any;
   constructor(
     private toasterService: ToasterService,
     private assetModelService: AssetModelService,
@@ -59,7 +60,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
   }
 
   openCreateAssetModelModal() {
-    this.assetModel = JSON.parse(JSON.stringify(this.assetModel));
+    this.updatedAssetModel = JSON.parse(JSON.stringify(this.assetModel));
     $('#createAssetModelModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -75,7 +76,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
     this.isFileUploading = true;
     const data = await this.commonService.uploadImageToBlob(files.item(0), this.contextApp.app + '/models/' + this.assetModel.name);
     if (data) {
-      this.assetModel.metadata.image = data;
+      this.updatedAssetModel.metadata.image = data;
     } else {
       this.toasterService.showError('Error in uploading file', 'Upload file');
     }
@@ -84,10 +85,11 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
   }
 
   updateAssetsModel() {
+    this.assetModel = JSON.parse(JSON.stringify(this.updatedAssetModel));
     console.log(this.assetModel);
     if (!this.assetModel.name || !this.assetModel.tags.protocol || !this.assetModel.tags.cloud_connectivity
     || !this.assetModel.metadata.model_type) {
-      this.toasterService.showError('Please enter all required fields', 'Update Assets Model');
+      this.toasterService.showError('Please enter all required fields', 'Update Asset Model');
       return;
     }
     if (this.assetModel.id) {
@@ -101,17 +103,18 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
         this.isUpdateAssetsModelAPILoading = false;
         this.onCloseAssetsModelModal();
         this.assetModelService.assetModelRefreshData.emit(this.assetModel.name);
-        this.toasterService.showSuccess(response.message, 'Update Assets Model');
+        this.toasterService.showSuccess(response.message, 'Update Asset Model');
       }, error => {
         this.isUpdateAssetsModelAPILoading = false;
-        this.toasterService.showError(error.message, 'Update Assets Model');
+        this.toasterService.showError(error.message, 'Update Asset Model');
       }
     ));
   }
 
   onCloseAssetsModelModal() {
     $('#createAssetModelModal').modal('hide');
-    this.assetModel = undefined;
+    // this.assetModel = undefined;
+    this.updatedAssetModel = undefined;
   }
 
   freezeModel() {

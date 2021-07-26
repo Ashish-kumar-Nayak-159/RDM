@@ -220,6 +220,11 @@ export class ReportsComponent implements OnInit, OnDestroy {
         (response: any) => {
           if (response?.data) {
             this.assets = response.data;
+            this.assets.forEach(asset => {
+              if (!asset.display_name) {
+                asset.display_name = asset.asset_id;
+              }
+            })
             this.originalAssets = JSON.parse(JSON.stringify(this.assets));
             if (this.assets?.length === 1) {
               this.filterObj.asset = this.assets[0];

@@ -156,7 +156,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   copyConnectionString() {
     this.isCopyClicked = true;
-    navigator.clipboard.writeText(this.assetCredentials.primary_connection_string);
+    navigator.clipboard.writeText(this.assetCredentials.primary_connection_string || this.assetCredentials.connection_string);
     setTimeout(() => this.isCopyClicked = false, 1000);
   }
 

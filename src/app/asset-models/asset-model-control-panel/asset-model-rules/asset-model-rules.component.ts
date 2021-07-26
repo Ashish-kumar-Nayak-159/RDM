@@ -41,22 +41,15 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
           valueclass: ''
         },
         {
-          name: 'Code',
-          key: 'code',
-          type: 'text',
-          headerClass: 'w-15',
-          valueclass: ''
-        },
-        {
-          name: 'Message',
-          key: 'message',
+          name: 'Category',
+          key: 'rule_category',
           type: 'text',
           headerClass: '',
           valueclass: ''
         },
         {
-          name: 'Condition',
-          key: 'condition',
+          name: 'Type',
+          key: 'type',
           type: 'text',
           headerClass: '',
           valueclass: ''

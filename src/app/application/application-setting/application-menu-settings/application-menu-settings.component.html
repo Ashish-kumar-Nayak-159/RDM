@@ -61,7 +61,7 @@
                     [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/>
 
                   </td>
-                <td><input type="checkbox" name="visible_menu_{{configIndex}}" [disabled]="!isAppSettingsEditable"
+                <td><input type="checkbox" name="visible_menu_{{configIndex}}" [disabled]="!isAppSettingsEditable || item.for_admin_only"
                     id="visible_menu_{{configIndex}}" [(ngModel)]="item.visible" /></td>
 
               </tr>

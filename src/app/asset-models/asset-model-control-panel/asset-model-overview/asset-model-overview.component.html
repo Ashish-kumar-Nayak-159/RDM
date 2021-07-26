@@ -93,7 +93,7 @@
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-    <div class="modal-body" *ngIf="assetModel">
+    <div class="modal-body" *ngIf="updatedAssetModel">
       <form name="createAssetsModelForm">
 
         <!-- <div class="form-group">
@@ -111,8 +111,8 @@
             <div class="file-input form-control form-control-sm p-0 col-8">
              <input type="file" accept=".jpeg,.png,.svg,.jpg" id="file" class="file" (change)="onLogoFileSelected($event.target.files)">
 
-             <label for="file" class="overflow-text" [tooltip]="(assetModel && assetModel.metadata && assetModel.metadata.image && assetModel.metadata.image.name) ? (assetModel.metadata.image.name) : ''">
-               {{(assetModel && assetModel.metadata && assetModel.metadata.image && assetModel.metadata.image.name) ? (assetModel.metadata.image.name) : 'Choose File'}}</label>
+             <label for="file" class="overflow-text" [tooltip]="(updatedAssetModel && updatedAssetModel.metadata && updatedAssetModel.metadata.image && updatedAssetModel.metadata.image.name) ? (updatedAssetModel.metadata.image.name) : ''">
+               {{(updatedAssetModel && updatedAssetModel.metadata && updatedAssetModel.metadata.image && updatedAssetModel.metadata.image.name) ? (updatedAssetModel.metadata.image.name) : 'Choose File'}}</label>
             </div>
             <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
             <input type="file" accept=".jpeg,.png,.svg,.jpg" id="file" class="file" >
@@ -129,7 +129,7 @@
 
       </form>
     </div>
-    <div class="modal-footer" *ngIf="assetModel">
+    <div class="modal-footer" *ngIf="updatedAssetModel">
       <button type="button" class="btn btn-primary add-row" [disabled]="isUpdateAssetsModelAPILoading || isFileUploading" (click)="updateAssetsModel()">Save</button>
       <button type="button" class="btn btn-white" [disabled]="isUpdateAssetsModelAPILoading || isFileUploading" (click)="onCloseAssetsModelModal()">
         Cancel

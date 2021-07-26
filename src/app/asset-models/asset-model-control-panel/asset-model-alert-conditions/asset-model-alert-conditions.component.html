@@ -34,9 +34,10 @@
 </div>
 
 <div class="table-responsive">
-  <p class="pl-3 pt-3" *ngIf="selectedTab === 'Asset'"> Following alerts are read from PLC/Modbus registers...</p>
-    <p class="pl-3 pt-3" *ngIf="selectedTab === 'Edge'"> Following alerts are possible by executing rules on Gateways...</p>
-    <p class="pl-3 pt-3" *ngIf="selectedTab === 'Cloud'"> Following alerts are possible by executing rules on Cloud...</p>
+    <p class="tab-bar mb-0" *ngIf="selectedTab === 'Asset'"> Following alerts are read from PLC/Modbus registers...</p>
+    <p class="tab-bar mb-0" *ngIf="selectedTab === 'Edge'"> Following alerts are possible by executing rules on Gateways...</p>
+    <p class="tab-bar mb-0" *ngIf="selectedTab === 'Cloud'"> Following alerts are possible by executing rules on Cloud...</p>
+
   <div class="tableFixHead table-fix-head-alert-conditions">
 
     <table class="table table-hover">
@@ -77,6 +78,11 @@
                 >
                   <img class="img-icon" src="../../../../assets/img/recommendation.png">
                 </a>
+                <a href="javascript:void(0)" class="mr-2" placement="bottom" tooltip="Attachments" (click)="onClickOfViewActionIcon('Attachments', i)"
+                >
+                  <i class="fa fa-paperclip"></i>
+                </a>
+
                 <a href="javascript:void(0)" placement="bottom" tooltip="Actions" (click)="onClickOfViewActionIcon('Actions', i)"
                 >
                   <i class="fa fa-tasks"></i>
@@ -93,12 +99,12 @@
                 </a>
               </td>
             </tr>
-            <tr *ngIf="toggleRows[selectedTab + '_' + i]">
-              <td colspan="6" *ngIf="viewType === 'Visualization'">
-                <div class="row col-12">
+            <tr *ngIf="toggleRows[selectedTab + '_' + i]" style="background-color:#fdfeff;">
+              <td colspan="6"  class="accordion-border" *ngIf="viewType === 'Visualization'">
+                <div class="col-12  my-2 accordion-padding">
                   <p *ngIf="alertObj?.visualization_widgets?.length === 0"> No Visualization widgets defined yet.</p>
-                  <p *ngIf="alertObj?.visualization_widgets?.length > 0"> Following widgets have been defined so far. You can define more.</p>
-                  <div class="">
+                  <p *ngIf="alertObj?.visualization_widgets?.length > 0"> Following widgets have been defined so far. You can define more.
+
                     <!-- <button type="button" class="btn btn-primary btn-sm mx-1 mt-n2" [disabled]="isCreateAlertConditionLoading"
                     placement="bottom" tooltip="Add" (click)="addVisualizationWidget()" ><i class="fa fa-plus fa-sm"></i></button> -->
                     <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
@@ -107,10 +113,11 @@
                     <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" [disabled]="isCreateAlertConditionLoading || assetModel.freezed"
                     placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()" ><i class="fa fa-save fa-sm"></i></button>
                     <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></i>
-                  </div>
+                  </p>
                 </div>
-                <div class="col-12 mt-2">
-                  <div class="form-inline row" >
+
+                <div class="col-12  my-2 accordion-padding">
+                  <div class="form-inline" >
                     <ng-container>
                     <div class="form-group">
                       <select class="form-control form-control-sm" id="template" name="model_type"
@@ -131,7 +138,7 @@
                   </ng-container>
                   </div>
                 </div>
-                <div class="row col-12 mt-2" *ngIf="alertObj?.visualization_widgets?.length > 0">
+                <div class="row col-12 my-2 accordion-padding" *ngIf="alertObj?.visualization_widgets?.length > 0">
                   <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
                     <ng-container *ngFor="let item of alertObj.visualization_widgets; let index = index">
                       <span class="tag" >
@@ -143,23 +150,23 @@
                 </div>
 
               </td>
-              <td colspan="6" *ngIf="viewType === 'Recommendations'">
+              <td colspan="6" class="accordion-border" *ngIf="viewType === 'Recommendations'">
 
-                <div class="row col-12">Following recommendations have been pre-configured. You can configure more.
+                <div class="col-12 my-3 accordion-padding">Following recommendations have been pre-configured. You can configure more.
 
                   <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
                   placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()" [disabled]="assetModel.freezed"><i class="fa fa-save fa-sm"></i></button></div>
-                <div class="row col-12 my-2">
+                  <div class="col-12 my-2 accordion-padding">
                   <h6 >Debugging Steps: </h6>
                   <!-- <a  class=" mx-1" href="javascript:void(0)"
                   placement="bottom" tooltip="Add" (click)="addRecommendationStep()" ><i class="fa fa-plus fa-sm"></i></a> -->
                    <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
                    placement="bottom" tooltip="Edit" (click)="editSteps()"><i class="fa fa-edit fa-sm"></i></button> -->
-                 <div class="row col-12 mt-2">
-                  <table id="mytable" width="100%" class="table-borderless col-12">
+                   <div class="">
+                    <table id="mytable" width="100%" class="">
                     <tbody>
                       <ng-container  >
-                      <tr *ngFor="let step of alertObj.recommendations; let i = index;" class="bg-white">
+                      <tr *ngFor="let step of alertObj.recommendations; let i = index;" style="background-color:transparent">
                       <ng-container >
                         <td style="width: 15%;">Step - {{i + 1}}</td>
                         <td style="width: 30%;">{{step.description}}</td>
@@ -172,13 +179,13 @@
                         </td>
                       </ng-container>
                       </tr>
-                      <tr *ngIf="recommendationObj" class="bg-white">
+                      <tr *ngIf="recommendationObj" style="background-color:transparent">
                         <ng-container >
                           <td style="width: 15%;">
                             Step - {{alertObj.recommendations.length + 1}}
                           </td>
                           <td style="width: 30%;">
-                            <input type="text"  id="description" name="description" size="20" class="mx-1 form-control form-control-sm"
+                            <input type="text"  id="description" name="description" size="20" class="form-control form-control-sm"
                             [(ngModel)]="recommendationObj.description">
                           </td>
                           <td style="width: 30%;">
@@ -209,22 +216,60 @@
                     </tbody>
                   </table>
                 </div>
-                <div class="row col-12">
-                  <div class="col-lg-12">
-                    <hr class="solid">
-                  </div>
-                </div>
-                <div class="row col-12">
+                <!-- <div class="row col-12">
                   <h6>Email / Whatsapp Attachments:
                     </h6>
+                </div>
+
+                <div class="col-12 mt-2">
+                  <div class="form-inline row" >
+                    <ng-container>
+                    <div class="form-group" >
+                      <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="docName"
+                      >
+                        <option [ngValue]="undefined">Select Document</option>
+                        <ng-container *ngFor="let document of documents">
+                          <option [ngValue]="document.name">
+                          {{document.name}}</option>
+                        </ng-container>
+                      </select>
+                      </div><div class="form-group" >
+                        <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add" [disabled]="assetModel.freezed" (click)="addReferenceDocument()" >
+                          <i class="fa fa-plus fa-sm"></i></button>
+                    </div>
+
+                  </ng-container>
+                  </div>
+                </div>
+
+                <div class="tagsinput" style="width: auto; height: auto;min-height: auto;" *ngIf="alertObj?.reference_documents?.length > 0">
+                  <ng-container *ngFor="let item of alertObj.reference_documents; let index = index">
+                    <span class="tag" >
+                      <span class="tag-text">{{item}}</span>
+                      <button class="tag-remove" [disabled]="assetModel.freezed" (click)="removeDocument(index)"></button>
+                    </span>
+                  </ng-container>
+                </div> -->
+                </div>
+              </td>
+              <td colspan="6"  class="accordion-border" *ngIf="viewType === 'Attachments'">
+
+                <div class="col-12 accordion-padding my-2">Following attachments have been added. You can add more.
+
+                  <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                  placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()" [disabled]="assetModel.freezed"><i class="fa fa-save fa-sm"></i></button></div>
+                <div class="col-12 my-3 accordion-padding ">
+
+                <div class="">
+                  <h6>Email / Whatsapp Attachments: </h6>
                   <!-- <button type="button" class="btn btn-primary btn-sm mx-1 mt-n2"
                    placement="bottom" tooltip="Add" (click)="addReferenceDocument()"><i class="fa fa-plus fa-sm"></i></button>
                    <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
                    placement="bottom" tooltip="Edit" (click)="editReferenceDocuments()"><i class="fa fa-edit fa-sm"></i></button> -->
                 </div>
 
-                <div class="col-12 mt-2">
-                  <div class="form-inline row" >
+                <div class="">
+                  <div class="form-inline" >
                     <ng-container>
                     <div class="form-group" >
                       <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="docName"
@@ -257,6 +302,8 @@
                 </div>
                 </div>
               </td>
+
+
               <td colspan="6" *ngIf="viewType === 'Actions'">
                 <div class="row col-md-12">
                   <h6>Actions:  <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"

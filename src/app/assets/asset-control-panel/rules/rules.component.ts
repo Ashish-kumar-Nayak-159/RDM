@@ -34,7 +34,7 @@ export class RulesComponent implements OnInit {
     this.onTabClick('Cloud');
     this.rulesTableConfig = {
       type: 'Rules',
-      headers: ['KPI Name', 'Description', 'Condition', 'Value'],
+      headers: ['Name', 'Category'],
       data: [
         {
           name: 'Name',
@@ -44,22 +44,15 @@ export class RulesComponent implements OnInit {
           valueclass: ''
         },
         {
-          name: 'Code',
-          key: 'code',
-          type: 'text',
-          headerClass: 'w-15',
-          valueclass: ''
-        },
-        {
-          name: 'Message',
-          key: 'message',
+          name: 'Category',
+          key: 'rule_category',
           type: 'text',
           headerClass: '',
           valueclass: ''
         },
         {
-          name: 'Condition',
-          key: 'condition',
+          name: 'Type',
+          key: 'type',
           type: 'text',
           headerClass: '',
           valueclass: ''

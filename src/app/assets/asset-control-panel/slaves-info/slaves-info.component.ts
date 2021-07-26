@@ -210,12 +210,9 @@ export class SlavesInfoComponent implements OnInit {
   }
 
   syncSlavesWithGateway() {
-    if (this.slaveData.length === 0) {
-      this.toasterService.showError('No slaves available to sync', 'Sync Slaves')
-    }
     this.isAPILoading = true;
     const c2dObj = {
-      asset_id: this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id,
+      asset_id: this.asset.asset_id,
       job_id: (this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id)
       + '_' + this.commonService.generateUUID(),
       request_type: 'register_slaves',

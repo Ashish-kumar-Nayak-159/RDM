@@ -107,10 +107,13 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.historicalDateFilter.dateOption = 'Last 30 Mins';
       this.historicalDateFilter.from_date = moment().subtract(30, 'minutes').utc().unix();
       this.historicalDateFilter.to_date = moment().utc().unix();
+      this.historicalDateFilter.widgets = [];
       this.selectedDateRange = this.historicalDateFilter.dateOption;
+      this.historicalDateFilter.type = true;
+      this.historicalDateFilter.sampling_format = 'minute';
+      this.historicalDateFilter.sampling_time = 1;
     }
-    this.historicalDateFilter.sampling_format = 'minute';
-    this.historicalDateFilter.sampling_time = 1;
+
     // if (this.selectedTab === 'telemetry') {
     //   this.loadFromCache();
     // }
@@ -188,7 +191,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
       if (this.filterObj.asset) {
-        this.onFilterSelection(this.filterObj, false);
+        this.onFilterSelection(this.filterObj, false, true);
       }
     }
   }
@@ -378,7 +381,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     $('#overlay').hide();
   }
 
-  getHistoricalWidgets(assetModel) {
+  onDeSelectAll(event) {
+    this.historicalDateFilter.widgets = [];
+  }
+
+  getHistoricalWidgets(assetModel, historicalWidgetUpgrade) {
     return new Promise<void>((resolve1) => {
     const params = {
       app: this.contextApp.app,
@@ -409,6 +416,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
               }
             });
           });
+          if (historicalWidgetUpgrade) {
+            this.historicalDateFilter.widgets = JSON.parse(JSON.stringify(this.historicalWidgets));
+          }
+        } else {
+          this.historicalDateFilter.widgets = [];
         }
         this.isGetWidgetsAPILoading = false;
         resolve1();
@@ -527,7 +539,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  async onFilterSelection(filterObj, updateFilterObj = true) {
+  async onFilterSelection(filterObj, updateFilterObj = true, historicalWidgetUpgrade = false) {
     console.log('aaaaaa   ', filterObj);
     this.c2dResponseMessage = [];
     $('#overlay').hide();
@@ -554,21 +566,16 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.originalFilter = JSON.parse(JSON.stringify(filterObj));
     this.isTelemetryDataLoading = true;
-    console.log('556666666');
-    await this.getAssetSignalRMode(this.filterObj.asset.asset_id);
-    console.log('556666666777777777');
     await this.getAssetData();
-    console.log('5566666668888888', asset_model);
     if (asset_model) {
+      await this.getAssetSignalRMode(this.filterObj.asset.asset_id);
       await this.getAssetsModelProperties(asset_model);
       console.log(this.contextApp.dashboard_config);
       if (this.contextApp?.dashboard_config?.show_live_widgets) {
-        console.log('herrrrrrrrrreeeeeeee live widgets');
         await this.getLiveWidgets(asset_model);
         this.getLiveWidgetTelemetryDetails(obj);
       } else if (this.contextApp?.dashboard_config?.show_historical_widgets) {
-        console.log('herrrrrrrrrreeeeeeee');
-        await this.getHistoricalWidgets(asset_model);
+        await this.getHistoricalWidgets(asset_model, historicalWidgetUpgrade);
         this.getHistoricalWidgetTelemetryDetails();
       }
     }
@@ -658,7 +665,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getHistoricalWidgetTelemetryDetails() {
     this.propList = [];
-    this.historicalWidgets.forEach(widget => {
+    const children = $('#historic_charts').children();
+    for (const child of children) {
+      $(child).remove();
+    }
+    console.log(this.historicalDateFilter);
+    this.historicalDateFilter?.widgets.forEach(widget => {
       widget.y1axis.forEach(prop => {
         if (this.propList.indexOf(prop) === -1) {
           this.propList.push(prop);
@@ -670,10 +682,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
     });
-    const children = $('#historic_charts').children();
-    for (const child of children) {
-      $(child).remove();
-    }
+
     this.telemetryData = [];
     const filterObj = JSON.parse(JSON.stringify(this.filterObj));
     filterObj.epoch = true;
@@ -793,7 +802,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           // telemetryData.reverse();
           this.isTelemetryDataLoading = false;         // this.loadLineChart(telemetryData);
           if (telemetryData.length > 0) {
-          this.historicalWidgets.forEach(widget => {
+          this.historicalDateFilter.widgets?.forEach(widget => {
             let componentRef;
             if (widget.chartType === 'LineChart' || widget.chartType === 'AreaChart') {
               componentRef = this.factoryResolver.resolveComponentFactory(LiveChartComponent).create(this.injector);

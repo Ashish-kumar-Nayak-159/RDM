@@ -62,7 +62,7 @@
             </div>
           </div>
           <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
-              (click)="onFilterSelection(this.filterObj)" [disabled]="isTelemetryDataLoading"><i
+              (click)="onFilterSelection(this.filterObj, false, true)" [disabled]="isTelemetryDataLoading"><i
                 class="fas fa-search fa-sm"></i></button></div>
         </form>
       </div>
@@ -70,16 +70,12 @@
   </div>
 </div>
 <div class="tab-bar">
-
   <ng-container >
-
-
     <div class=""
       *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.asset && liveWidgets.length > 0">
       <div class="">Welcome to {{originalFilter.asset?.display_name ? originalFilter.asset?.display_name :
         originalFilter.asset?.asset_id}}</div>
     </div>
-
     <ng-container *ngIf="contextApp?.dashboard_config?.show_live_widgets">
       <div class="" *ngIf="!isTelemetryDataLoading && !telemetryObj && isFilterSelected">
         No data available since mid night.
@@ -111,6 +107,27 @@
 
   </ng-container>
   <form class="form-inline" *ngIf="isFilterSelected && contextApp?.dashboard_config?.show_historical_widgets">
+    <div class="form-group">
+      <ng-select [items]="historicalWidgets" class="custom-dropdown w-12 active sm" bindLabel="chart_Id"
+        [clearable]="false" [searchable]="true" [multiple]="true" [closeOnSelect]="false"
+        placeholder="Select Widgets" dropdownPosition="bottom" name="asset-dropdown"
+        [(ngModel)]="historicalDateFilter.widgets" (onDeSelectAll)="onDeSelectAll($event)">
+        <ng-template ng-multi-label-tmp let-items="items">
+          {{items.length}} widgets selected
+        </ng-template>
+        <ng-template ng-header-tmp>
+          <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+            <li *ngIf="historicalWidgets.length !== historicalDateFilter?.widgets.length"> <a href="javascript:void(0)" (click)="historicalDateFilter.widgets = historicalWidgets">Select All</a></li>
+            <li *ngIf="historicalWidgets.length === historicalDateFilter?.widgets.length"> <a href="javascript:void(0)" (click)="historicalDateFilter.widgets = []">Deselect All</a></li>
+          </ul>
+        </ng-template>
+        <ng-template ng-option-tmp let-item="item">
+          <span [tooltip]="item.title">
+            {{item.title}}
+          </span>
+        </ng-template>
+      </ng-select>
+    </div>
     <div class="form-group left-inner-addon" >
       <i class="fa fa-calendar active"></i>
       <input type="text"  class="form-control form-control-sm active date-range-picker" daterangepicker name="daterangeInput"

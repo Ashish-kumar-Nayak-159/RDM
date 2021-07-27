@@ -63,6 +63,7 @@ export class AppUrls {
   public static DELETE_CONFIGURATION_WIDGET = 'apps/{0}/asset_models/{1}/configuration_widget/{2}';
   public static UPDATE_APP_HIERARCHY = 'apps/{0}/hierarchy';
   public static UPDATE_APP_ROLES = 'apps/{0}/roles';
+  public static FORGOT_PASSWORD = 'users/forgot_password';
   public static RESET_PASSWORD = 'users/reset_password';
   public static GET_ALERT_MESSAGE_BY_ID = 'D2C_GetAssetAlertMessage';
   public static GET_ALERT_END_EVENT_MESSAGE_BY_ID = 'D2C_GetAssetAlertEndEventMessage';
@@ -148,4 +149,6 @@ export class AppUrls {
   public static CREATE_ASSET_SLAVE_DETAILS = 'apps/{0}/assets/{1}/slaves';
   public static UPDATE_ASSET_SLAVE_DETAILS = 'apps/{0}/assets/{1}/slaves/{2}';
   public static DELETE_ASSET_SLAVE_DETAILS = 'apps/{0}/assets/{1}/slaves/{2}';
+  public static NON_PROVISIONED_ASSETS = 'apps/{0}/non_provisioned_assets';
+  public static UPDATE_NON_PROVISIONED_ASSETS = 'apps/{0}/non_provisioned_assets/{1}/tags';
 }

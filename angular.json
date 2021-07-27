@@ -274,5 +274,8 @@
       }
     }
   },
-  "defaultProject": "RDM"
+  "defaultProject": "RDM",
+  "cli": {
+    "analytics": "b432b1df-e414-4e40-b447-f8c62960eb57"
+  }
 }

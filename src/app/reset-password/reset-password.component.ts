@@ -14,13 +14,16 @@ declare var $: any;
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.css']
 })
-export class ResetPasswordComponent implements OnInit, OnDestroy  {
+export class ResetPasswordComponent implements OnInit, OnDestroy {
 
-   /**
-    * Flag to confirm if it is first time log in or user manually wants to change password.
-    */
+  /**
+   * Flag to confirm if it is first time log in or user manually wants to change password.
+   */
   @Input()
   isFirstTimeLogin: boolean;
+
+  @Input()
+  isForgotPassword: boolean;
 
   @Input()
   loginData: any;
@@ -49,7 +52,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy  {
     private userService: UserService,
     private commonService: CommonService,
     private toasterService: ToasterService
-  ) {}
+  ) { }
   /**
    * on init method
    * A callback method that is invoked immediately after the directive is instantiated.
@@ -63,6 +66,10 @@ export class ResetPasswordComponent implements OnInit, OnDestroy  {
     this.resetPasswordForm = new FormGroup(
       {
         email: new FormControl(this.loginData?.email || null, [
+          Validators.required,
+          this.noWhitespaceValidator
+        ]),
+        otp: new FormControl(null, [
           Validators.required,
           this.noWhitespaceValidator
         ]),
@@ -82,12 +89,12 @@ export class ResetPasswordComponent implements OnInit, OnDestroy  {
       },
       { validators: this.checkPasswords }
     );
-
+    this.isForgotPassword ? this.resetPasswordForm.removeControl('old_password') : this.resetPasswordForm.removeControl('otp') 
   }
 
   noWhitespaceValidator(control: FormControl) {
     return (control.value || '').trim().length === 0
-              ? { whitespace: true } : null;
+      ? { whitespace: true } : null;
   }
   /**
    * Calls the change password api.
@@ -96,9 +103,16 @@ export class ResetPasswordComponent implements OnInit, OnDestroy  {
    */
   onChangePassword() {
     const obj = JSON.parse(JSON.stringify(this.resetPasswordForm.value));
-    if (!obj.old_password || !obj.email || !obj.new_password || !obj.confirmNewPassword) {
-      this.toasterService.showError('Please enter all required fields', 'Change Password');
-      return;
+    if (this.isForgotPassword) {
+      if (!obj.otp || !obj.email || !obj.new_password || !obj.confirmNewPassword) {
+        this.toasterService.showError('Please enter all required fields', 'Forgot Password');
+        return;
+      }
+    } else {
+      if (!obj.old_password || !obj.email || !obj.new_password || !obj.confirmNewPassword) {
+        this.toasterService.showError('Please enter all required fields', 'Change Password');
+        return;
+      }
     }
     this.changePasswordAPILoading = true;
     delete this.resetPasswordForm.value.confirmNewPassword;
@@ -118,7 +132,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy  {
         (error: HttpErrorResponse) => {
           this.changePasswordAPILoading = false;
           this.resetPasswordForm.reset();
-          this.resetPasswordForm.patchValue({email: this.loginData?.email || null});
+          this.resetPasswordForm.patchValue({ email: this.loginData?.email || null });
           console.log(this.resetPasswordForm);
           this.toasterService.showError(error.message, 'Change Password');
         }

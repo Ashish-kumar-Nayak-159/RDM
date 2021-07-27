@@ -41,42 +41,42 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
 
     this.tableConfig = {
-      type:  'Applications',
+      type: 'Applications',
       is_table_data_loading: this.isApplicationListLoading,
       no_data_message: '',
-      data : [
-      {
-        header_name: 'App Name',
-        is_display_filter: true,
-        value_type: 'string',
-        is_sort_required: true,
-        fixed_value_list: [],
-        data_type: 'text',
-        data_key: 'app'
-      },
-      {
-        header_name: 'App Admin',
-        is_display_filter: true,
-        value_type: 'string',
-        is_sort_required: true,
-        fixed_value_list: [],
-        data_type: 'text',
-        data_key: 'app_admin'
-      },
-      {
-        header_name: 'Icons',
-        key: undefined,
-        data_type: 'button',
-        btn_list: [
-          {
-            icon: 'fa fa-fw fa-eye',
-            text: '',
-            id: 'View',
-            valueclass: '',
-            tooltip: 'View'
-          }
-        ]
-      }
+      data: [
+        {
+          header_name: 'App Name',
+          is_display_filter: true,
+          value_type: 'string',
+          is_sort_required: true,
+          fixed_value_list: [],
+          data_type: 'text',
+          data_key: 'app'
+        },
+        {
+          header_name: 'App Admin',
+          is_display_filter: true,
+          value_type: 'string',
+          is_sort_required: true,
+          fixed_value_list: [],
+          data_type: 'text',
+          data_key: 'app_admin'
+        },
+        {
+          header_name: 'Icons',
+          key: undefined,
+          data_type: 'button',
+          btn_list: [
+            {
+              icon: 'fa fa-fw fa-eye',
+              text: '',
+              id: 'View',
+              valueclass: '',
+              tooltip: 'View'
+            }
+          ]
+        }
       ]
     };
     this.searchApplications();
@@ -89,7 +89,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
       node.type = 'text/javascript';
       node.async = false;
       document.getElementsByTagName('head')[0].appendChild(node);
-      }, 500);
+    }, 500);
   }
 
   searchApplications() {
@@ -141,7 +141,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
         customer: {},
         database_settings: {},
         app_specific_schema: true,
-        partition: { telemetry: {}}
+        partition: { telemetry: {} }
       }
     };
     $('#createAppModal').modal({ backdrop: 'static', keyboard: false, show: true });
@@ -160,7 +160,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
       this.selectedApp.customer = {};
     }
     if (!this.selectedApp.partition) {
-      this.selectedApp.partition = { telemetry: {}};
+      this.selectedApp.partition = { telemetry: {} };
     }
     $('#viewAppIconModal').modal({ backdrop: 'static', keyboard: false, show: true });
 
@@ -208,6 +208,13 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
     this.appModalType = undefined;
   }
 
+  checkDatabaseConfigOption(a, b, c) {
+    if (a && !b && !c) return true;
+    if (!a && b && !c) return true;
+    if (!a && !b && c) return true;
+    return false;
+  }
+
   async createApp() {
     if (!this.applicationDetail.metadata.app_specific_schema && !this.applicationDetail.metadata.app_specific_db &&
       !this.applicationDetail.metadata.app_telemetry_specific_schema) {
@@ -217,9 +224,18 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
     if (!this.applicationDetail.app || !this.applicationDetail.admin_email || !this.applicationDetail.admin_name ||
       !this.applicationDetail.metadata.partition.telemetry.partition_strategy
       || !this.applicationDetail.metadata.partition.telemetry.sub_partition_strategy
-      ) {
+    ) {
       this.toasterService.showError('Please enter all required fields', 'Create App');
     } else {
+
+      if (this.checkDatabaseConfigOption(this.applicationDetail.metadata.app_specific_schema,
+        this.applicationDetail.metadata.app_specific_db,
+        this.applicationDetail.metadata.app_telemetry_specific_schema)) {
+        this.toasterService.showWarning(`You have requested seperate Database/Schema, This is manual step.
+          Until you perform that, this app will be in unprovisioned state. And won't be visible.
+          Please create seperate Database/Schema and manually change the app status 'Provisoned'`, 'Database Configuration');
+      }
+
       if (!CONSTANTS.ONLY_NOS_AND_CHARS.test(this.applicationDetail.app)) {
         this.toasterService.showError('App name only contains numbers and characters.',
           'Create App');
@@ -249,10 +265,12 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
 
 
 
-      this.applicationDetail.menu_settings = {main_menu: [], asset_control_panel_menu : [],
-        model_control_panel_menu: [], gateway_control_panel_menu: [], legacy_asset_control_panel_menu: []};
+      this.applicationDetail.menu_settings = {
+        main_menu: [], asset_control_panel_menu: [],
+        model_control_panel_menu: [], gateway_control_panel_menu: [], legacy_asset_control_panel_menu: []
+      };
       const methodToCall = this.appModalType === 'Create' ? this.applicationService.createApp(this.applicationDetail) :
-      (this.appModalType === 'Edit' ? this.applicationService.updateApp(this.applicationDetail) : null);
+        (this.appModalType === 'Edit' ? this.applicationService.updateApp(this.applicationDetail) : null);
       if (methodToCall) {
         this.apiSubscriptions.push(methodToCall.subscribe(
           (response: any) => {

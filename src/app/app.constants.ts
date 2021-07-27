@@ -428,6 +428,15 @@ export class CONSTANTS {
       showAccordion: [],
       accordion_value: {}
     },
+    {
+      page: 'alert_conditioning',
+      system_name: 'Alert Conditioning',
+      url: '#asset_model_alert_conditioning',
+      display_name: 'Alert Conditioning',
+      icon: 'fa fa-fw fa-exclamation-triangle',
+      visible: true,
+      isTitle: false
+    },
     // {
     //   page: 'other',
     //   system_name: 'Other',
@@ -762,6 +771,15 @@ export class CONSTANTS {
       isTitle: false,
       showAccordion: [],
       accordion_value: {}
+    },
+    {
+      page: 'alert_conditioning',
+      system_name: 'Alert Conditioning',
+      url: '#asset_model_alert_conditioning',
+      display_name: 'Alert Conditioning',
+      icon: 'fa fa-fw fa-exclamation-triangle',
+      visible: true,
+      isTitle: false
     },
     // {
     //   page: 'other',

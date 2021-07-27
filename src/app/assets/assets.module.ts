@@ -76,6 +76,7 @@ import { RulesComponent } from './asset-control-panel/rules/rules.component';
 import { SlavesInfoComponent } from './asset-control-panel/slaves-info/slaves-info.component';
 import { NonProvisionedAssetsComponent } from './non-provisioned-assets/non-provisioned-assets.component';
 import { RegisterAssetsComponent } from './gateway-control-panel/gateway-settings/register-assets/register-assets.component';
+import { AssetAlertConditionsComponent } from './asset-control-panel/asset-alert-conditions/asset-alert-conditions.component';
 
 @NgModule({
   declarations: [
@@ -134,7 +135,8 @@ import { RegisterAssetsComponent } from './gateway-control-panel/gateway-setting
     DerivedKpisComponent,
     RulesComponent,
     SlavesInfoComponent,
-    NonProvisionedAssetsComponent
+    NonProvisionedAssetsComponent,
+    AssetAlertConditionsComponent
   ],
   imports: [
     CommonModule,

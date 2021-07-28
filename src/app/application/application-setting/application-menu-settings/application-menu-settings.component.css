@@ -1,0 +1,11 @@
+
+.accordion-border {
+    border-bottom: 2px solid #9fc0ef;
+    border-top: 1px solid #9fc0ef;
+  }
+  .accordion-bg {
+    background-color:#eef3fa;
+  }
+  .table td {
+    vertical-align: middle !important;
+}    

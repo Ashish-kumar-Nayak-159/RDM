@@ -679,6 +679,132 @@ export class AssetService {
       encodeURIComponent(assetModel)), { params });
   }
 
+  getAlertConditions(app, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_ALERT_CONDITIONS,
+      encodeURIComponent(app), filterObj.asset_model), {params});
+  }
+
+  createAlertCondition(modelObj, app, assetModel) {
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_ASSET_ALERT_CONDITION,
+      encodeURIComponent(app), encodeURIComponent(assetModel)), modelObj);
+  }
+
+  updateAlertCondition(modelObj, app, assetModel, alertConditionId) {
+    return this.http.patch(this.url + String.Format(AppUrls.UPDATE_ASSET_ALERT_CONDITION,
+      encodeURIComponent(app), encodeURIComponent(assetModel), encodeURIComponent(alertConditionId)), modelObj);
+  }
+
+  deleteAlertCondition(app, assetModel, alertConditionId) {
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_ASSET_ALERT_CONDITION,
+      encodeURIComponent(app), encodeURIComponent(assetModel), encodeURIComponent(alertConditionId)), {});
+  }
+
+  getAssetsModelLayout(filterObj) {
+    let assetModel = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODEL_DATA);
+    if (assetModel?.id !== filterObj.id || assetModel?.name !== filterObj.name) {
+      assetModel = undefined;
+    }
+    if (assetModel && assetModel.historical_widgets && (filterObj['id'] || filterObj['name'])) {
+      let flag = false;
+      if (filterObj['id']) {
+        flag = assetModel.id === filterObj.id;
+      } else if (filterObj['name']) {
+        flag = assetModel.name === filterObj.name;
+      }
+      if (flag) {
+        return new Observable((observer) => {
+          observer.next(
+            assetModel
+          );
+        });
+      }
+    } else {
+      return this.http.get(this.url + String.Format(AppUrls.GET_ASSETS_MODEL_LAYOUT,
+        encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.name)))
+      .pipe( map((data: any) => {
+        let obj = {};
+        if (assetModel) {
+          obj = {...assetModel};
+        }
+        if (Object.keys(obj).length === 0) {
+          obj = {
+            name: data.name,
+            historical_widgets: data.historical_widgets
+          };
+        } else {
+          obj['historical_widgets'] = data.historical_widgets;
+        }
+        this.commonService.setItemInLocalStorage(CONSTANTS.ASSET_MODEL_DATA, obj);
+        return data;
+      }), catchError( error => {
+        return throwError( error);
+      })
+      );
+    }
+  }
+
+  getModelSlaveDetails(app, assetModel, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_MODEL_SLAVE_DETAILS,
+      encodeURIComponent(app), encodeURIComponent(assetModel)), {params});
+  }
+
+  getAssetsModelDocuments(filterObj) {
+    let assetModel = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_MODEL_DATA);
+    if (assetModel?.id !== filterObj.id || assetModel?.name !== filterObj.asset_model) {
+      assetModel = undefined;
+    }
+    if (assetModel && assetModel.documents && (filterObj['id'] || filterObj['asset_model'])) {
+      let flag = false;
+      if (filterObj['id']) {
+        flag = assetModel.id === filterObj.id;
+      } else if (filterObj['asset_model']) {
+        flag = assetModel.name === filterObj.asset_model;
+      }
+      if (flag) {
+        return new Observable((observer) => {
+          observer.next(
+            assetModel.documents
+          );
+        });
+      }
+    } else {
+    return this.http.get(this.url + String.Format(AppUrls.GET_MODEL_REFERENCE_DOCUMENTS,
+      encodeURIComponent(filterObj.app), encodeURIComponent(filterObj.asset_model)))
+      .pipe( map((data: any) => {
+        let obj = {};
+        if (assetModel) {
+          obj = {...assetModel};
+        }
+        if (Object.keys(obj).length === 0) {
+          obj = {
+            id: filterObj?.id,
+            name: filterObj?.asset_model,
+            documents: data
+          };
+        } else {
+          obj['documents'] = data;
+        }
+        this.commonService.setItemInLocalStorage(CONSTANTS.ASSET_MODEL_DATA, obj);
+        return data;
+      }), catchError( error => {
+        return throwError( error);
+      })
+      );
+    }
+  }
+
   getAssetNetworkFailureEvents(app, assetId, filterObj) {
     let params = new HttpParams();
     (Object.keys(filterObj)).forEach(key => {

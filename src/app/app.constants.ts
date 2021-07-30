@@ -431,7 +431,7 @@ export class CONSTANTS {
     {
       page: 'alert_conditioning',
       system_name: 'Alert Conditioning',
-      url: '#asset_model_alert_conditioning',
+      url: '#asset_alert_conditioning',
       display_name: 'Alert Conditioning',
       icon: 'fa fa-fw fa-exclamation-triangle',
       visible: true,
@@ -775,7 +775,7 @@ export class CONSTANTS {
     {
       page: 'alert_conditioning',
       system_name: 'Alert Conditioning',
-      url: '#asset_model_alert_conditioning',
+      url: '#asset_alert_conditioning',
       display_name: 'Alert Conditioning',
       icon: 'fa fa-fw fa-exclamation-triangle',
       visible: true,
@@ -1304,7 +1304,15 @@ export class CONSTANTS {
       visible: true,
       isTitle: false
     },
-
+    {
+      page: 'addrules',
+      system_name: 'addRules',
+      url: '#asset_model_add_rules',
+      display_name: 'AddRules',
+      icon: 'fa fa-fw fa-archive',
+      visible: true,
+      isTitle: false
+    },
     {
       page: 'visualization',
       system_name: 'Visualize',

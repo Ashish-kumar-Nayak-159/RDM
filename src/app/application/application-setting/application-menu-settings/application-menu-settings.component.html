@@ -57,7 +57,7 @@
                 <td>{{item.page}}</td>
                 <td>{{item.system_name}}</td>
                 <td>
-                  <input type="text" class="form-control form-control-sm" name="display_name_main_menu{{configIndex}}" id="display_name_main_menu{{configIndex}}"
+                  <input type="text" class="form-control form-control-sm w-75" name="display_name_main_menu{{configIndex}}" id="display_name_main_menu{{configIndex}}"
                     [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/>
 
                   </td>
@@ -75,7 +75,7 @@
                       <label for="recipient-name" class="col-form-label">{{control.name}}</label>
                     </div>
                     <div class="col-6">
-                      <input *ngIf="control?.type !== 'checkbox'" type="{{control.type === 'number' ? 'number' : 'text'}}" class="form-control form-control-sm form-control form-control-sm-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
+                      <input *ngIf="control?.type !== 'checkbox'" type="{{control.type === 'number' ? 'number' : 'text'}}" class="form-control form-control-sm w-75" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
                         placeholder="Enter {{control.name}}" [disabled]="!isAppSettingsEditable">
                       <input type="checkbox" *ngIf="control?.type === 'checkbox'" class="mt-1"
                       id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
@@ -133,7 +133,7 @@
                     </ng-container>
                   </td>
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control form-control-sm" name="display_name_asset{{configIndex}}" id="display_name_asset{{configIndex}}"
+                  <td><input type="text" class="form-control form-control-sm w-75" name="display_name_asset{{configIndex}}" id="display_name_asset{{configIndex}}"
                       [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/></td>
                   <td><input type="checkbox" name="visible_asset_{{configIndex}}" [disabled]="!isAppSettingsEditable"
                       id="visible_asset_{{configIndex}}" [(ngModel)]="item.visible" /></td>
@@ -204,7 +204,7 @@
                     </ng-container>
                   </td>
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control form-control-sm" name="display_name_legacy_asset{{configIndex}}" id="display_name_asset{{configIndex}}"
+                  <td><input type="text" class="form-control form-control-sm w-75" name="display_name_legacy_asset{{configIndex}}" id="display_name_asset{{configIndex}}"
                       [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/></td>
                   <td><input type="checkbox" name="visible_legacy_{{configIndex}}" [disabled]="!isAppSettingsEditable"
                       id="visible_legacy_{{configIndex}}" [(ngModel)]="item.visible" /></td>
@@ -273,7 +273,7 @@
                     </ng-container>
                   </td>
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control form-control-sm" name="display_name_gateway{{configIndex}}" id="display_name_asset{{configIndex}}"
+                  <td><input type="text" class="form-control form-control-sm w-75" name="display_name_gateway{{configIndex}}" id="display_name_asset{{configIndex}}"
                       [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" /></td>
                   <td><input type="checkbox" name="visible_gateway{{configIndex}}" [disabled]="!isAppSettingsEditable"
                       id="visible_gateway{{configIndex}}" [(ngModel)]="item.visible" /></td>
@@ -335,7 +335,7 @@
               <ng-container *ngFor="let item of applicationData?.menu_settings?.model_control_panel_menu; let configIndex = index">
                 <tr *ngIf="!item.isTitle">
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control form-control-sm" name="display_name_asset_model{{configIndex}}" id="display_name_asset_model{{configIndex}}"
+                  <td><input type="text" class="form-control form-control-sm w-75" name="display_name_asset_model{{configIndex}}" id="display_name_asset_model{{configIndex}}"
                       [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/></td>
                   <td><input type="checkbox" name="visible{{configIndex}}" [disabled]="!isAppSettingsEditable"
                       id="visible{{configIndex}}" [(ngModel)]="item.visible" /></td>

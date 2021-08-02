@@ -110,7 +110,7 @@ export class NonProvisionedAssetsComponent implements OnInit {
       app: this.contextApp.app,
       model_type: CONSTANTS.IP_GATEWAY
     };
-    this.subscriptions.push(this.assetModelService.getThingsModelsList(obj).subscribe(
+    this.subscriptions.push(this.assetModelService.getAssetsModelsList(obj).subscribe(
       (response: any) => {
         if (response && response.data) {
           this.deviceTypes = response.data;

@@ -13572,9 +13572,9 @@ overflow-x: hidden;
   .cd-multi-steps.text-top li::after, .cd-multi-steps.text-bottom li::after {
     /* this is the line connecting 2 adjacent items */
     position: absolute;
-    left: 82%;
+    left: 67%;
     /* 40px is the <li> right margin value */
-    width: calc(100% - 10px);
+    width: calc(100% + 15px);
   }
   .cd-multi-steps.text-top li > *::before, .cd-multi-steps.text-bottom li > *::before {
     /* this is the spot indicator */

@@ -21,8 +21,8 @@
       </a>
     </ng-container>
     <div class="row">
-      <div class="col-12">
-        <div class="col-8">
+      <div class="col-12 p-0">
+        <div class="col-12 p-0">
           <table class="table table-hover">
             <thead>
               <tr >
@@ -57,7 +57,7 @@
                 <td>{{item.page}}</td>
                 <td>{{item.system_name}}</td>
                 <td>
-                  <input type="text" class="form-control form-control-sm" name="display_name_main_menu{{configIndex}}" id="display_name_main_menu{{configIndex}}"
+                  <input type="text" class="form-control form-control-sm w-75" name="display_name_main_menu{{configIndex}}" id="display_name_main_menu{{configIndex}}"
                     [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/>
 
                   </td>
@@ -65,15 +65,17 @@
                     id="visible_menu_{{configIndex}}" [(ngModel)]="item.visible" /></td>
 
               </tr>
-              <tr *ngIf="toggleRows['main_menu_' + configIndex]">
-                <td colspan="5">
-                  <div class="form-group row mt-1" *ngFor="let control of item.showAccordion;" >
+              <tr *ngIf="toggleRows['main_menu_' + configIndex]" style="background-color: #fdfeff;">
+                <td colspan="1" class="accordion-border"></td>
+                <td colspan="2" class="accordion-border">
+                  <div class="form-group row my-2" *ngFor="let control of item.showAccordion;" >
                     <ng-container >
-                    <div class="col-md-4">
+                    
+                    <div class="col-6">
                       <label for="recipient-name" class="col-form-label">{{control.name}}</label>
                     </div>
-                    <div class="col-md-5">
-                      <input *ngIf="control?.type !== 'checkbox'" type="{{control.type === 'number' ? 'number' : 'text'}}" class="form-control form-control-sm form-control form-control-sm-sm" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
+                    <div class="col-6">
+                      <input *ngIf="control?.type !== 'checkbox'" type="{{control.type === 'number' ? 'number' : 'text'}}" class="form-control form-control-sm w-75" id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
                         placeholder="Enter {{control.name}}" [disabled]="!isAppSettingsEditable">
                       <input type="checkbox" *ngIf="control?.type === 'checkbox'" class="mt-1"
                       id="{{control.name}}" name="{{control.name}}" [(ngModel)]="control.value"
@@ -82,6 +84,7 @@
                   </ng-container>
                   </div>
                 </td>
+                <td colspan="2" class="accordion-border"></td>
               </tr>
               </ng-container>
             </tbody>
@@ -97,8 +100,8 @@
       </a>
     </ng-container>
     <div class="row">
-      <div class="col-12">
-        <div class="col-8">
+      <div class="col-12 p-0">
+        <div class="col-12 p-0">
           <table class="table table-hover">
             <thead>
               <tr>
@@ -122,7 +125,7 @@
             <tbody>
               <ng-container *ngFor="let item of applicationData?.menu_settings?.asset_control_panel_menu; let configIndex = index">
                 <tr *ngIf="!item.isTitle">
-                  <td>
+                  <td >
                     <ng-container *ngIf="item.showAccordion?.length > 0">
                       <a href="javascript:void(0)" (click)="onToggleRows('asset_' + configIndex)">
                         <i [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
@@ -130,16 +133,17 @@
                     </ng-container>
                   </td>
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control form-control-sm" name="display_name_asset{{configIndex}}" id="display_name_asset{{configIndex}}"
+                  <td><input type="text" class="form-control form-control-sm w-75" name="display_name_asset{{configIndex}}" id="display_name_asset{{configIndex}}"
                       [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/></td>
                   <td><input type="checkbox" name="visible_asset_{{configIndex}}" [disabled]="!isAppSettingsEditable"
                       id="visible_asset_{{configIndex}}" [(ngModel)]="item.visible" /></td>
                 </tr>
-                <tr *ngIf="toggleRows['asset_' + configIndex]">
-                  <td colspan="5">
-                    <div class="row col-md-12">
+                <tr *ngIf="toggleRows['asset_' + configIndex]" style="background-color: #fdfeff;">
+                  <td colspan="1" class="accordion-border"></td>
+                  <td colspan="4"  class="accordion-border">
+                    <div class="row">
 
-                      <div class="col-md-6 form-group mt-1" *ngFor="let control of item.showAccordion;let accordionIndex = index;">
+                      <div class="col-4 form-group my-2" *ngFor="let control of item.showAccordion;let accordionIndex = index;">
                         <input type="checkbox" name="visible_asset_{{control.name}}_{{accordionIndex}}" [disabled]="!isAppSettingsEditable"
                           id="visible_asset_{{control.name}}_{{accordionIndex}}" [(ngModel)]="item.accordion_value[control.key]" />
                         <label for="recipient-name" class="col-form-label">&nbsp;{{control.name}}</label>
@@ -166,9 +170,9 @@
       </a>
     </ng-container>
     <div class="row">
-      <div class="col-12">
+      <div class="col-12 p-0">
 
-        <div class="col-8">
+        <div class="col-12 p-0">
           <table class="table table-hover">
             <thead>
               <tr >
@@ -200,16 +204,17 @@
                     </ng-container>
                   </td>
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control form-control-sm" name="display_name_legacy_asset{{configIndex}}" id="display_name_asset{{configIndex}}"
+                  <td><input type="text" class="form-control form-control-sm w-75" name="display_name_legacy_asset{{configIndex}}" id="display_name_asset{{configIndex}}"
                       [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/></td>
                   <td><input type="checkbox" name="visible_legacy_{{configIndex}}" [disabled]="!isAppSettingsEditable"
                       id="visible_legacy_{{configIndex}}" [(ngModel)]="item.visible" /></td>
                 </tr>
-                <tr *ngIf="toggleRows['legacy_asset_' + configIndex]">
-                  <td colspan="5">
-                    <div class="row col-md-12">
+                <tr *ngIf="toggleRows['legacy_asset_' + configIndex]" style="background-color: #fdfeff;">
+                  <td colspan="1" class="accordion-border"></td>
+                  <td colspan="4"  class="accordion-border">
+                    <div class="row">
 
-                      <div class="col-md-6 form-group mt-1" *ngFor="let control of item.showAccordion;let accordionIndex = index;">
+                      <div class="col-4 form-group my-2" *ngFor="let control of item.showAccordion;let accordionIndex = index;">
                         <input type="checkbox" name="visible_legacy_asset_{{control.name}}_{{accordionIndex}}" [disabled]="!isAppSettingsEditable"
                           id="visible_legacy_asset_{{control.name}}_{{accordionIndex}}" [(ngModel)]="item.accordion_value[control.key]" />
                         <label for="recipient-name" class="col-form-label">&nbsp;{{control.name}}</label>
@@ -236,8 +241,8 @@
       </a>
     </ng-container>
     <div class="row">
-      <div class="col-12">
-        <div class="col-8">
+      <div class="col-12 p-0">
+        <div class="col-12 p-0">
           <table class="table table-hover">
             <thead>
               <tr >
@@ -268,16 +273,17 @@
                     </ng-container>
                   </td>
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control form-control-sm" name="display_name_gateway{{configIndex}}" id="display_name_asset{{configIndex}}"
+                  <td><input type="text" class="form-control form-control-sm w-75" name="display_name_gateway{{configIndex}}" id="display_name_asset{{configIndex}}"
                       [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable" /></td>
                   <td><input type="checkbox" name="visible_gateway{{configIndex}}" [disabled]="!isAppSettingsEditable"
                       id="visible_gateway{{configIndex}}" [(ngModel)]="item.visible" /></td>
                 </tr>
-                <tr *ngIf="toggleRows['gateway_' + configIndex]">
-                  <td colspan="5">
-                    <div class="row col-md-12">
+                <tr *ngIf="toggleRows['gateway_' + configIndex]" style="background-color: #fdfeff;">
+                  <td colspan="1" class="accordion-border"></td>
+                  <td colspan="4" class="accordion-border">
+                    <div class="row">
 
-                      <div class="col-md-6 form-group mt-1" *ngFor="let control of item.showAccordion;let accordionIndex = index;">
+                      <div class="col-4 form-group my-2" *ngFor="let control of item.showAccordion;let accordionIndex = index;">
                         <input type="checkbox" name="visible_gateway_{{control.name}}_{{accordionIndex}}" [disabled]="!isAppSettingsEditable"
                           id="visible_gateway_{{control.name}}_{{accordionIndex}}" [(ngModel)]="item.accordion_value[control.key]" />
                         <label for="recipient-name" class="col-form-label">&nbsp;{{control.name}}</label>
@@ -304,8 +310,8 @@
       </a>
     </ng-container>
     <div class="row">
-      <div class="col-12">
-        <div class="col-8">
+      <div class="col-12 p-0">
+        <div class="col-12 p-0">
           <table class="table table-hover">
             <thead>
               <tr>
@@ -329,7 +335,7 @@
               <ng-container *ngFor="let item of applicationData?.menu_settings?.model_control_panel_menu; let configIndex = index">
                 <tr *ngIf="!item.isTitle">
                   <td>{{item.system_name}}</td>
-                  <td><input type="text" class="form-control form-control-sm" name="display_name_asset_model{{configIndex}}" id="display_name_asset_model{{configIndex}}"
+                  <td><input type="text" class="form-control form-control-sm w-75" name="display_name_asset_model{{configIndex}}" id="display_name_asset_model{{configIndex}}"
                       [(ngModel)]="item.display_name" [disabled]="!isAppSettingsEditable"/></td>
                   <td><input type="checkbox" name="visible{{configIndex}}" [disabled]="!isAppSettingsEditable"
                       id="visible{{configIndex}}" [(ngModel)]="item.visible" /></td>

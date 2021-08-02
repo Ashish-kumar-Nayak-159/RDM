@@ -314,7 +314,7 @@
         </div>
         <div id="recommendation" role="tabpanel" [ngClass]="{'show active': selectedTab === 'recommendation'}" aria-labelledby="recommendation-tab" class="tab-pane fade">
           <div class="ml-3 mt-3" *ngIf="alertCondition?.recommendations?.length > 0">
-            Following recommendations have been pre-configured.
+            <p class="ml-2">Following recommendations have been pre-configured.</p>
             <div class="content-scroll content-scroll-alert" [style.maxHeight]="pageType === 'live' ? 'calc(100vh - 13.5rem)' : 'calc(100vh - 15rem)'">
             <table  class="table table-hover">
               <tbody>
@@ -341,7 +341,7 @@
           </div>
         </div>
         <div id="documents" role="tabpanel" aria-labelledby="documents-tab" [ngClass]="{'show active': selectedTab === 'documents'}" class="tab-pane fade">
-          <div class="content-scroll content-scroll-alert ml-3 mt-3" [style.maxHeight]="pageType === 'live' ? 'calc(100vh - 13.5rem)' : 'calc(100vh - 15rem)'">
+          <div class="content-scroll content-scroll-alert p-3" [style.maxHeight]="pageType === 'live' ? 'calc(100vh - 13.5rem)' : 'calc(100vh - 15rem)'">
           <div class="tagsinput" style="width: auto; height: auto;min-height: auto;"
                       *ngIf="alertCondition?.reference_documents?.length > 0">
                       <ng-container *ngFor="let item of alertCondition.reference_documents; let index = index">
@@ -350,13 +350,14 @@
                         </span>
                       </ng-container>
                     </div>
-                    <div class="col-xl-12 col-lg-12 p-3" *ngIf="!alertCondition || alertCondition?.reference_documents?.length === 0">
+                    <div class="" *ngIf="!alertCondition || alertCondition?.reference_documents?.length === 0">
                       No Reference documents added yet.</div>
           </div>
         </div>
         <div id="actions" role="tabpanel" aria-labelledby="actions-tab" [ngClass]="{'show active': selectedTab === 'actions'}" class="tab-pane fade">
-          <div class="content-scroll content-scroll-alert" [style.maxHeight]="pageType === 'live' ? 'calc(100vh - 13.5rem)' : 'calc(100vh - 15rem)'">
-          <h6 class="p-3">Action taken by Field Staff:</h6>
+          <div class="content-scroll content-scroll-alert pt-2" [style.maxHeight]="pageType === 'live' ? 'calc(100vh - 13.5rem)' : 'calc(100vh - 15rem)'">
+          <ul>
+             <li><h6 class="py-2 font-weight-light-bold">Action taken by Field Staff:</h6>
                     <div class="col-xl-12 col-lg-12 ml-3"
                       *ngIf="!selectedAlert?.metadata?.acknowledged_date; else actionTakenTemplate">
                      <p> This alert is not yet acknowledged, please <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down blue-font" *ngIf="!selectedAlert?.metadata?.acknowledged_date" (click)="onClickOfAcknowledgeAlert(selectedAlert)"
@@ -366,7 +367,7 @@
 
                     </div>
                     <ng-template #actionTakenTemplate>
-                      <div class="table-responsive ml-3">
+                      <div class="table-responsive col-xl-12 col-lg-12 ml-3">
                         <p> Alert acknowledged by {{selectedAlert?.metadata?.user_id}} at
                           {{selectedAlert?.metadata?.acknowledged_date}}.</p>
                         <p>Reason: {{selectedAlert?.metadata?.reason?.reason ? selectedAlert?.metadata?.reason?.reason:
@@ -388,11 +389,14 @@
                         </div>
                       </div>
                     </ng-template>
-                    <h6 class="p-3">Action taken by RDM:</h6>
+                </li>
+                <li><h6 class="py-2 font-weight-light-bold">Action taken by RDM:</h6>
                     <div class="col-xl-12 col-lg-12 ml-3">
                       No Actions recorded by RDM yet.
                     </div>
-                  </div>
+              </li>
+          </ul>
+         </div>
         </div>
 
       </div>

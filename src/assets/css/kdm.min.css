@@ -9046,6 +9046,10 @@ a.bg-dark:focus, a.bg-dark:hover, button.bg-dark:focus, button.bg-dark:hover {
   font-weight: 400!important
 }
 
+.font-weight-light-bold {
+  font-weight: 500!important
+}
+
 .font-weight-bold {
   font-weight: 700!important
 }
@@ -13568,9 +13572,9 @@ overflow-x: hidden;
   .cd-multi-steps.text-top li::after, .cd-multi-steps.text-bottom li::after {
     /* this is the line connecting 2 adjacent items */
     position: absolute;
-    left: 50%;
+    left: 82%;
     /* 40px is the <li> right margin value */
-    width: calc(100% + 40px);
+    width: calc(100% - 10px);
   }
   .cd-multi-steps.text-top li > *::before, .cd-multi-steps.text-bottom li > *::before {
     /* this is the spot indicator */
@@ -13586,8 +13590,8 @@ overflow-x: hidden;
     transform: translateX(-50%);
     height: 12px;
     width: 12px;
-    border-radius: 50%;
-    background-color: #edeff0;
+    border-radius: 5%;
+    background-color: #a5a6a7;
   }
   .cd-multi-steps.text-top li.visited > *::before,
   .cd-multi-steps.text-top li.current > *::before, .cd-multi-steps.text-bottom li.visited > *::before,
@@ -13635,7 +13639,7 @@ overflow-x: hidden;
     /* this is the spot indicator */
     content: counter(steps);
     height: 26px;
-    width: 26px;
+    width: 50px;
     line-height: 26px;
     font-size: 0.8rem;
     color: #ffffff;
@@ -13677,4 +13681,9 @@ overflow-x: hidden;
 .td-padding {
   padding: 0 0.6rem !important;
   vertical-align: middle !important;
+}
+
+.searchBtn {
+  font-size: .75rem;
+  padding: 0 0.25rem;
 }

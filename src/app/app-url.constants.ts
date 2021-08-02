@@ -151,4 +151,8 @@ export class AppUrls {
   public static DELETE_ASSET_SLAVE_DETAILS = 'apps/{0}/assets/{1}/slaves/{2}';
   public static NON_PROVISIONED_ASSETS = 'apps/{0}/non_provisioned_assets';
   public static UPDATE_NON_PROVISIONED_ASSETS = 'apps/{0}/non_provisioned_assets/{1}/tags';
+  public static GET_ASSET_ALERT_CONDITIONS = 'apps/{0}/assets/{1}/alert_conditions';
+  public static CREATE_ASSET_ALERT_CONDITION = 'apps/{0}/assets/{1}/alert_conditions';
+  public static UPDATE_ASSET_ALERT_CONDITION = 'apps/{0}/assets/{1}/alert_conditions/{2}';
+  public static DELETE_ASSET_ALERT_CONDITION = 'apps/{0}/assets/{1}/alert_conditions/{2}';
 }

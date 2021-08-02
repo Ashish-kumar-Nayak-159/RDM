@@ -141,6 +141,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   onToggleRows(i) {
     if (this.toggleRows[this.selectedTab + '_' + i]) {
       this.toggleRows = {};
+      this.alertObj = undefined;
     } else {
       this.onClickOfViewActionIcon('Visualization', i);
     }

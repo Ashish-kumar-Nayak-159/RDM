@@ -18,9 +18,9 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
   isReservedTagsEditable = false;
   reservedTags: any[] = [];
   tagsListToNotDelete = ['app', 'created_date', 'created_by', 'asset_manager', 'manufacturer',
-  , 'protocol', 'cloud_connectivity'];
+    , 'protocol', 'cloud_connectivity'];
   tagsListToNotEdit = ['app', 'created_date', 'created_by', 'manufacturer',
-  , 'protocol', 'cloud_connectivity'];
+    , 'protocol', 'cloud_connectivity'];
   originalAssetModel: any;
   reservedTagsBasedOnProtocol: any[] = [];
   assetModelCustomTags: any[] = [];
@@ -47,7 +47,7 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
     this.originalAssetModel = JSON.parse(JSON.stringify(this.assetModel));
     this.getAssetModelDetail();
     if (!this.assetModel.tags.reserved_tags) {
-    this.assetModel.tags.reserved_tags = [];
+      this.assetModel.tags.reserved_tags = [];
     }
     if (this.assetModel.metadata.model_type.includes('Gateway')) {
       this.reservedTags.forEach(item => {
@@ -64,7 +64,7 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
     if (this.tagObj) {
       if (!this.tagObj.name || !this.tagObj.key) {
         this.toasterService.showError('Please add tag name and key', 'Add Tag');
-        return;
+        return true;
       }
       let flag = false;
       CONSTANTS.NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach(char => {
@@ -74,7 +74,7 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
       });
       if (flag) {
         this.toasterService.showError(`Tag key should not contain space, dot, '#' and '$'`, 'Add Tag');
-        return;
+        return true;
       }
       flag = false;
       this.assetModel.tags.reserved_tags.forEach(tag => {
@@ -84,7 +84,7 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
       });
       if (flag) {
         this.toasterService.showError('Tag with same key is already exists.', 'Add Tag');
-        return;
+        return true;
       }
       this.assetModel.tags.reserved_tags.push(this.tagObj);
     }
@@ -100,7 +100,12 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
 
   async updateAssetModelTags() {
     this.isUpdateTagsAPILoading = true;
-    await this.addTagObject();
+    let isNotValid = await this.addTagObject();
+    if (isNotValid) {
+      this.firstTagAdded = false;
+      this.isUpdateTagsAPILoading = false;
+      return;
+    }
     const tagObj = {};
     const obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.tags = this.assetModel.tags;
@@ -148,9 +153,9 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
       this.message = 'All the unsaved changes will removed. Are you sure you want to reset the tags?';
     } else {
       this.message = 'All the assets with this model will get affected. Are you sure you want to remove ' +
-      (type === 'all' ? 'all tags?' : (this.assetModel?.tags?.reserved_tags[index]?.name + ' tag?'));
+        (type === 'all' ? 'all tags?' : (this.assetModel?.tags?.reserved_tags[index]?.name + ' tag?'));
     }
-    this.deleteTagIndex =  index;
+    this.deleteTagIndex = index;
     $('#' + id).modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -171,24 +176,24 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
 
   getAssetModelDetail() {
     return new Promise((resolve) => {
-    const obj = {
-      name: this.assetModel.name,
-      app: this.contextApp.app
-    };
-    this.subscriptions.push(this.assetModelService.getAssetsModelDetails(obj.app, obj.name).subscribe(
-      (response: any) => {
-        if (response) {
-          this.assetModel = response;
-          this.assetModel.name = obj.name;
-          this.assetModel.app = obj.app;
-          if (!this.assetModel.tags.reserved_tags) {
-            this.assetModel.tags.reserved_tags = [];
+      const obj = {
+        name: this.assetModel.name,
+        app: this.contextApp.app
+      };
+      this.subscriptions.push(this.assetModelService.getAssetsModelDetails(obj.app, obj.name).subscribe(
+        (response: any) => {
+          if (response) {
+            this.assetModel = response;
+            this.assetModel.name = obj.name;
+            this.assetModel.app = obj.app;
+            if (!this.assetModel.tags.reserved_tags) {
+              this.assetModel.tags.reserved_tags = [];
+            }
           }
+          resolve();
         }
-        resolve();
-      }
-    ));
-  });
+      ));
+    });
   }
 
   ngOnDestroy() {

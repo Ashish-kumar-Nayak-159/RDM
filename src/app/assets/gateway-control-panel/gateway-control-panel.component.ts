@@ -53,6 +53,11 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
           let titleObj;
           let count;
           this.menuItems.forEach((menu, index) => {
+            if (menu.for_admin_only && this.contextApp?.user.role !== CONSTANTS.APP_ADMIN_ROLE) {
+              menu.visible = false;
+            } else if (menu.for_admin_only && this.contextApp?.user.role === CONSTANTS.APP_ADMIN_ROLE){
+              menu.visible = true;
+            }
             if (menu.isTitle) {
               console.log(count);
               if (titleObj) {

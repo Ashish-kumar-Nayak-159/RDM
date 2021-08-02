@@ -235,6 +235,11 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
         let titleObj;
         let count;
         this.menuItems.forEach(menu => {
+          if (menu.for_admin_only && this.contextApp?.user.role !== CONSTANTS.APP_ADMIN_ROLE) {
+            menu.visible = false;
+          } else if (menu.for_admin_only && this.contextApp?.user.role === CONSTANTS.APP_ADMIN_ROLE){
+            menu.visible = true;
+          }
           if (menu.isTitle) {
             console.log(count);
             if (titleObj) {

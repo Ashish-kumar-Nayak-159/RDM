@@ -79,8 +79,6 @@
       <div class="tab-pane" [ngClass]="{'active': activeTab.includes('package_management')}" role="tabpanel" id="asset_model_package_management">
         <app-asset-model-package-management *ngIf="activeTab.includes('package_management') && assetModel" [assetModel]="assetModel"></app-asset-model-package-management>
       </div>
-
-
       <div class="tab-pane" [ngClass]="{'active': activeTab.includes('rules')}" role="tabpanel" id="asset_model_rules">
         <app-asset-model-rules *ngIf="activeTab.includes('rules') && assetModel" [assetModel]="assetModel"></app-asset-model-rules>
       </div>

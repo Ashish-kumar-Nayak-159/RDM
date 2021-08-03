@@ -275,7 +275,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
         this.setupForm = new FormGroup({
           slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
           sa: new FormControl(alertObj?.metadata?.sa, [Validators.required, Validators.min(1), Validators.max(99999)]),
-          a: new FormControl(false),
+          a: new FormControl(true),
           p: new FormControl(alertObj?.metadata?.p, [Validators.required]),
         });
       }
@@ -317,7 +317,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
         this.setupForm = new FormGroup({
           slave_id: new FormControl(null, [Validators.required]),
           sa: new FormControl(null, [Validators.required, Validators.min(1), Validators.max(99999)]),
-          a: new FormControl(false),
+          a: new FormControl(true),
           p: new FormControl(2, [Validators.required]),
         });
       }

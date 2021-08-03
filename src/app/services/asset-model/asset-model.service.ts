@@ -524,6 +524,55 @@ export class AssetModelService {
 
   deleteModelSlaveCategory(app, assetModel, slaveId) {
     return this.http.delete(this.url + String.Format(AppUrls.DELETE_MODEL_SLAVE_CATEGORIES, encodeURIComponent(app),
-    encodeURIComponent(assetModel), encodeURIComponent(slaveId)), {});
+      encodeURIComponent(assetModel), encodeURIComponent(slaveId)), {});
   }
+
+  // Rule
+  createNewCloudModelRule(app, modelName, ruleModel) {
+    return this.http.post(this.url + String.Format(AppUrls.UPDATE_CLOUD_MODEL_RULE,
+      encodeURIComponent(app), encodeURIComponent(modelName)), ruleModel);
+  }
+
+  updateCloudModelRule(app, modelName, ruleModel) {
+    return this.http.put(this.url + String.Format(AppUrls.UPDATE_CLOUD_MODEL_RULE,
+      encodeURIComponent(app), encodeURIComponent(modelName)), ruleModel);
+  }
+
+  deleteCloudModelRule(app, id, rule_type, updated_by, rule_type_id) {
+    let params = new HttpParams();
+    params = params.set('id', id).set('rule_type', rule_type).set('updated_by', updated_by).set('rule_type_id', rule_type_id);
+
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_CLOUD_MODEL_RULE,
+      encodeURIComponent(app), encodeURIComponent(id), encodeURIComponent(rule_type), encodeURIComponent(updated_by), encodeURIComponent(rule_type_id)), { params });
+  }
+  createNewEdgeModelRule(app, modelName, ruleModel) {
+    return this.http.post(this.url + String.Format(AppUrls.UPDATE_EDGE_MODEL_RULE,
+      encodeURIComponent(app), encodeURIComponent(modelName)), ruleModel);
+  }
+
+  updateEdgeModelRule(app, modelName, ruleModel) {
+    return this.http.put(this.url + String.Format(AppUrls.UPDATE_EDGE_MODEL_RULE,
+      encodeURIComponent(app), encodeURIComponent(modelName)), ruleModel);
+  }
+
+  deleteEdgeModelRule(app, id, rule_type, updated_by, rule_type_id) {
+    let params = new HttpParams();
+    params = params.set('id', id).set('rule_type', rule_type).set('updated_by', updated_by).set('rule_type_id', rule_type_id);
+
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_EDGE_MODEL_RULE,
+      encodeURIComponent(app), encodeURIComponent(id), encodeURIComponent(rule_type), encodeURIComponent(updated_by), encodeURIComponent(rule_type_id)), { params });
+  }
+
+  deployCloudModelRule(app, modelName, ruleModelId, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    console.log(params);
+    return this.http.post(this.url + String.Format(AppUrls.DEPLOY_CLOUD_MODEL_RULE,
+      encodeURIComponent(app), encodeURIComponent(modelName), encodeURIComponent(ruleModelId)), {}, {params});
+  }
+
 }

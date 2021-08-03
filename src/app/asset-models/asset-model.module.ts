@@ -32,6 +32,8 @@ import { AssetModelDerivedKpisComponent } from './asset-model-control-panel/asse
 import { AssetModelStreamProcessingComponent } from './asset-model-control-panel/asset-model-stream-processing/asset-model-stream-processing.component';
 import { AssetModelAlertAcknowledgementReasonsComponent } from './asset-model-control-panel/asset-model-alert-acknowledgement-reasons/asset-model-alert-acknowledgement-reasons.component';
 import { AssetModelSlaveInfoComponent } from './asset-model-control-panel/asset-model-slave-info/asset-model-slave-info.component';
+import { AddRuleComponent } from './asset-model-control-panel/add-rule/add-rule.component';
+import { UiSwitchModule } from 'ngx-ui-switch';
 
 
 
@@ -58,6 +60,7 @@ import { AssetModelSlaveInfoComponent } from './asset-model-control-panel/asset-
     AssetModelStreamProcessingComponent,
     AssetModelAlertAcknowledgementReasonsComponent,
     AssetModelSlaveInfoComponent,
+    AddRuleComponent,
   ],
   imports: [
     CommonModule,
@@ -71,7 +74,8 @@ import { AssetModelSlaveInfoComponent } from './asset-model-control-panel/asset-
     FileSaverModule,
     MonacoEditorModule, // use forRoot() in main app
     NgSelectModule,
-    TooltipModule
+    TooltipModule,
+    UiSwitchModule
   ]
 })
 export class AssetModelModule { }

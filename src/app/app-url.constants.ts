@@ -154,5 +154,19 @@ export class AppUrls {
   public static GET_ASSET_ALERT_CONDITIONS = 'apps/{0}/assets/{1}/alert_conditions';
   public static CREATE_ASSET_ALERT_CONDITION = 'apps/{0}/assets/{1}/alert_conditions';
   public static UPDATE_ASSET_ALERT_CONDITION = 'apps/{0}/assets/{1}/alert_conditions/{2}';
+
   public static DELETE_ASSET_ALERT_CONDITION = 'apps/{0}/assets/{1}/alert_conditions/{2}';
+  public static UPDATE_CLOUD_MODEL_RULE = 'apps/{0}/asset_models/{1}/cloud_rules';
+  public static DELETE_CLOUD_MODEL_RULE = 'apps/{0}/rule_types/cloud_rules';
+  public static UPDATE_EDGE_MODEL_RULE = 'apps/{0}/asset_models/{1}/edge_rules';
+  public static DELETE_EDGE_MODEL_RULE = 'apps/{0}/rule_types/edge_rules';
+
+  public static UPDATE_CLOUD_ASSET_RULE = 'apps/{0}/asset_models/{1}/cloud_rules';
+  public static DELETE_CLOUD_ASSET_RULE = 'apps/{0}/rule_types/cloud_rules';
+  public static UPDATE_EDGE_ASSET_RULE = 'apps/{0}/asset_models/{1}/edge_rules';
+  public static DELETE_EDGE_ASSET_RULE = 'apps/{0}/rule_types/edge_rules';
+
+  public static DEPLOY_CLOUD_MODEL_RULE = 'apps/{0}/deploy_model_rules/{1}/cloud_rules/{2}';
+  public static DEPLOY_CLOUD_ASSET_RULE = 'apps/{0}/deploy_asset_rules/{1}/cloud_rules/{2}';
+
 }

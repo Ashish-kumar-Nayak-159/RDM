@@ -1,0 +1,289 @@
+<div class="modal right fade" id="addRuleModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    Create New Rule
+                </h5>
+                <button type="button" class="close" (click)="closeRuleModal(false);" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <accordion class="mb-2" [closeOthers]="'true'">
+                    <accordion-group heading="" [panelClass]="'customClass'">
+                        <ng-container accordion-heading>
+                            <a class="btn">
+                                Metadata
+                            </a>
+                        </ng-container>
+                        <div class="">
+                            <form #form1="ngForm">
+                                <div class="form-group row">
+                                    <label for="exampleEmail" class="col-3 required">Name</label>
+                                    <div class="col-auto">
+                                        <input type="text" class="form-control form-control-sm" name="name"
+                                            [(ngModel)]="ruleModel.name" placeholder="Name" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="examplePassword" class="col-3 required">Description</label>
+                                    <div class="col-auto">
+                                        <input type="text" class="form-control form-control-sm" id="examplePassword"
+                                            placeholder="Description" name="description"
+                                            [(ngModel)]="ruleModel.description" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="examplePassword" class="col-3">Type</label>
+                                    <div class="col-auto">
+                                        <ui-switch size="small" class="mr-1" defaultBgColor="#f6c23e"
+                                            checkedTextColor="white" uncheckedTextColor="white"
+                                            (valueChange)="onSwitchValueChange($event)" checkedLabel="Edge Rule"
+                                            uncheckedLabel="Cloud Rule" name="tpye" [(ngModel)]="ruleModel.rule_type">
+                                        </ui-switch>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </accordion-group>
+                    <accordion-group heading="" [panelClass]="'customClass'">
+                        <ng-container accordion-heading>
+                            <a class="btn">
+                                Conditions
+                            </a>
+                        </ng-container>
+                        <div class="">
+                            <form #form2="ngForm">
+                                <div class="mb-3">Conditions define when your rule is triggered. Aggregation is
+                                    optional - Use it to cluster your data and trigger rules based on a time window
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group mb-3">
+                                            <div class="">
+                                                <label for="exampleEmail" class="required">Operator</label>
+                                            </div>
+                                            <div class="">
+                                                <select id="dateoptions" placeholder="Select Operator" name="operator"
+                                                    class="form-control form-control-sm"
+                                                    [(ngModel)]="ruleModel.operator" required>
+                                                    <option [value]="'&&'">AND</option>
+                                                    <option [value]="'||'">OR</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group mb-3">
+                                            <div class="">
+                                                <label for="exampleEmail">Time Aggregation</label>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-3 mt-1">
+                                                    <ui-switch size="small" class="mr-1" defaultBgColor="#f6c23e"
+                                                        checkedTextColor="white" uncheckedTextColor="white"
+                                                        checkedLabel="Off" uncheckedLabel="On" name="aggregation_switch"
+                                                        [(ngModel)]="ruleModel.aggregation_enabled"
+                                                        (valueChange)="onChangeTimeAggregation($event)">
+                                                    </ui-switch>
+                                                </div>
+                                                <div class="col-9">
+                                                    <select id="dateoptions" placeholder="Time Aggregation"
+                                                        [(ngModel)]="ruleModel.aggregation_window_in_sec"
+                                                        [disabled]="!ruleModel.aggregation_enabled" name="aggregation"
+                                                        class="form-control form-control-sm">
+                                                        <option value="300">5 minutes</option>
+                                                        <option value="600">10 minutes</option>
+                                                        <option value="900">15 minutes</option>
+                                                        <option value="1200">20 minutes</option>
+                                                        <option value="1800">30 minutes</option>
+                                                        <option value="3600">1 hour</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group mb-0">
+                                            <div class="">
+                                                <label for="exampleEmail" class="required">Escalation Time</label>
+                                            </div>
+                                            <div class="">
+                                                <input type="number" class="form-control form-control-sm"
+                                                    placeholder="Escalation Time" name="escalation_time_in_sec"
+                                                    [(ngModel)]="ruleModel.escalation_time_in_sec" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 mb-12">
+                                <form #form3="ngForm">
+                                    <div class="form-group row"
+                                        *ngFor="let condition of ruleModel.conditions; let i = index;">
+                                        <div class="col-6">
+                                            <label for="examplePassword" class="mb-2">Telemetry</label>
+                                            <select placeholder="Telemetry" name="telemetry_{{i}}"
+                                                class="form-control form-control-sm" [(ngModel)]="condition.property"
+                                                required>
+                                                <option *ngFor="let prop of dropdownPropList"
+                                                    [value]="prop.value.json_key">
+                                                    {{prop.id}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <label for="exampleEmail" class="mb-2">Operator</label>
+                                            <select placeholder="Operator" name="operator_{{i}}" required
+                                                class="form-control form-control-sm" [(ngModel)]="condition.operator">
+                                                <option *ngFor="let optr of operatorList;" [value]="optr.id">
+                                                    {{optr.value}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6 mt-3">
+                                            <label for="examplePassword" class="mb-2">Value</label>
+                                            <input type="number" class="form-control form-control-sm" required
+                                                placeholder="value" name="threshold_{{i}}"
+                                                [(ngModel)]="condition.threshold">
+                                        </div>
+                                        <div class="col-6 mt-3" *ngIf="ruleModel.aggregation_enabled">
+                                            <label for="examplePassword" class="mb-2">Aggregation Type</label>
+                                            <select placeholder="Aggregation Type" name="aggregation_type_{{i}}"
+                                                class="form-control form-control-sm" required
+                                                [(ngModel)]="condition.aggregation_type">
+                                                <option [value]="undefined">Aggregartion Format</option>
+                                                <option [value]="'AVG'">Average</option>
+                                                <option [value]="'SUM'">Sum</option>
+                                                <option [value]="'MIN'">Min</option>
+                                                <option [value]="'MAX'">Max</option>
+                                                <option [value]="'COUNT'">Count</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6" style="margin-top:20px">
+                                            <button id="delete" class="btn btn-sm btn-light cursor-pointer"
+                                                (click)="deleteCondition(i);"><i class="fas fa fa-trash mr-1 my-1"></i>
+                                                Delete this row</button>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                </form>
+                                <button id="insert-more" (click)="addNewCondition();"
+                                    class="btn btn-sm btn-primary cursor-pointer"><i
+                                        class="fas fa fa-plus-circle mr-1 my-2"></i>
+                                    Condition</button>
+                            </div>
+                        </div>
+
+                    </accordion-group>
+                    <accordion-group heading="" [panelClass]="'customClass'">
+                        <ng-container accordion-heading>
+                            <a class="btn">
+                                Actions
+                            </a>
+                        </ng-container>
+                        <div class="">
+
+                            <div class="row">
+                                <div class="col-lg-12 col-xl-12">
+                                    <form #form4="ngForm">
+                                        <div class="form-group row mb-0">
+                                            <div class="col-auto">
+                                                <label for="exampleEmail" class="required">Alert Condition</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-auto">
+                                                <select id="alertCondition" placeholder="Alert Condition" name="alertCondition"
+                                                    class="form-control form-control-sm"
+                                                    (change)="onChangeOfAssetCondition()"
+                                                    [(ngModel)]="ruleModel.alert_condition_code" required>
+                                                    <option [value]="undefined"> Select Alert Condition</option>
+                                                    <option *ngFor="let alert of alertConditionList;let i = index;"
+                                                        [value]="alert.code">
+                                                        {{alert.code}} - {{alert.message}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="mb-1">Action your rule should take</div>
+
+                            <div class="">
+                                <table id="mytable" width="100%" class="table table-borderless">
+                                    <tbody class="bg-white">
+                                        <tr>
+                                            <td width="3%">
+                                                <input type="checkbox" class="input mt-3"
+                                                    [(ngModel)]="selectedAlertCondition.email">
+                                            </td>
+                                            <td width="97%">
+                                                <div class="accordion-panel accordion-panel-default">
+                                                    <div class="accordion-panel-heading">
+                                                        <a><i class="fas fa-fw fa-envelope mr-2"></i>
+                                                            Email:
+                                                            Temperature Warning</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="3%">
+                                                <input type="checkbox" class="input mt-3"
+                                                    [(ngModel)]="selectedAlertCondition.sms">
+                                            </td>
+                                            <td width="97%">
+
+                                                <div class="accordion-panel accordion-panel-default">
+                                                    <div class="accordion-panel-heading">
+                                                        <a><i class="fas fa-fw fa-envelope mr-2"></i>
+                                                            SMS: Temperature
+                                                            Warning</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="3%">
+                                                <input type="checkbox" class="input mt-3"
+                                                    [(ngModel)]="selectedAlertCondition.whatsapp">
+                                            </td>
+                                            <td width="97%">
+                                                <div class="accordion-panel accordion-panel-default">
+                                                    <div class="accordion-panel-heading">
+                                                        <a><i class="fas fa-fw fa-envelope mr-2"></i> Whatsapp:
+                                                            Temperature Warning</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </accordion-group>
+                </accordion>
+            </div>
+            <div class="modal-footer">
+                <i *ngIf="isUpdateApiCall" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+                <button type="button" class="btn btn-primary add-row" (click)="createNewRule();"
+                    [disabled]="form1.invalid || form2.invalid || form3.invalid || form4.invalid || ruleModel.conditions.length <= 0">{{isEdit
+                    ? 'Update' :
+                    'Create'}}</button>
+                <button type="button" class="btn btn-secondary" (click)="closeRuleModal(false)">
+                    Cancel
+                </button>
+                <!-- <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateDeviceAPILoading"></i> -->
+            </div>
+        </div>
+    </div>
+</div>

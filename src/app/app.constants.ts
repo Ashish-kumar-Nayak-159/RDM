@@ -1304,15 +1304,15 @@ export class CONSTANTS {
       visible: true,
       isTitle: false
     },
-    {
-      page: 'addrules',
-      system_name: 'addRules',
-      url: '#asset_model_add_rules',
-      display_name: 'AddRules',
-      icon: 'fa fa-fw fa-archive',
-      visible: true,
-      isTitle: false
-    },
+    // {
+    //   page: 'addrules',
+    //   system_name: 'addRules',
+    //   url: '#asset_model_add_rules',
+    //   display_name: 'AddRules',
+    //   icon: 'fa fa-fw fa-archive',
+    //   visible: true,
+    //   isTitle: false
+    // },
     {
       page: 'visualization',
       system_name: 'Visualize',

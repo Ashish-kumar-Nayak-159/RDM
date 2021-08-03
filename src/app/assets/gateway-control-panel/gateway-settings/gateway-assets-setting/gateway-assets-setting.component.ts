@@ -5,6 +5,7 @@ import { CONSTANTS } from './../../../../app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as moment from 'moment';
+import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 declare var $: any;
 @Component({
   selector: 'app-gateway-assets-setting',
@@ -29,157 +30,18 @@ export class GatewayAssetsSettingComponent implements OnInit {
   isAPILoading = false;
   headerMessage: any;
   isSaveSettingAPILoading = false;
+  properties: any;
+  propertiesList: any;
   constantData = CONSTANTS;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
+    private assetModelService: AssetModelService,
     private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
-    this.assetTwin = {
-      "asset_id": "CT_GW_1",
-      "twin_properties": {
-        "desired": {
-          "$metadata": {
-            "$lastUpdated": "2021-07-26T12:32:14.4635062Z",
-            "$lastUpdatedVersion": 2
-          },
-          "$version": 2
-        },
-        "reported": {
-          "apps": {
-            "ModbusRTUMaster": {
-              "status": "Running",
-              "device_configuration": {
-                "CoolingTower_1": {
-                  "g1_ingestion_frequency_in_ms": 1800000,
-                  "g1_measurement_frequency_in_ms": 1800000,
-                  "g1_turbo_mode_frequency_in_ms": 18000000,
-                  "g2_measurement_frequency_in_ms": 1800000,
-                  "g2_turbo_mode_frequency_in_ms": 18000000,
-                  "g3_measurement_frequency_in_ms": 1800000,
-                  "g3_turbo_mode_frequency_in_ms": 18000000,
-                  "ingestion_settings_frequency_in_milli_sec": 10000,
-                  "ingestion_settings_type": "all_props_at_fixed_interval",
-                  "telemetry_mode": "",
-                  "turbo_mode_timeout_in_ms": 60000,
-                  "properties": {
-                    "measured_properties": {
-                      "p1": "G1",
-                      "p2": "G2"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "system_apps": {
-            "CachingAgent": {
-              "status": "Running"
-            },
-            "GatewayAgent": {
-              "status": "Running"
-            },
-            "MQTTAgent": {
-              "status": "Running"
-            }
-          },
-          "installed_packages": {
-            "CachingAgent": "1.2.1",
-            "MQTTAgent": "1.2.1",
-            "ModbusRTUMaster": "1.2.1"
-          },
-          "$metadata": {
-            "$lastUpdated": "2021-08-03T05:24:24.3928616Z",
-            "apps": {
-              "$lastUpdated": "2021-08-03T05:24:24.3928616Z",
-              "N_BlueNRG": {
-                "$lastUpdated": "2021-08-03T05:24:24.3928616Z",
-                "status": {
-                  "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
-                },
-                "device_configuration": {
-                  "$lastUpdated": "2021-08-03T05:24:24.3928616Z",
-                  "IndyGo_Comp_2": {
-                    "$lastUpdated": "2021-08-03T05:24:24.3928616Z",
-                    "g1_ingestion_frequency_in_ms": {
-                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
-                    },
-                    "g1_measurement_frequency_in_ms": {
-                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
-                    },
-                    "g1_turbo_mode_frequency_in_ms": {
-                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
-                    },
-                    "g2_measurement_frequency_in_ms": {
-                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
-                    },
-                    "g2_turbo_mode_frequency_in_ms": {
-                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
-                    },
-                    "g3_measurement_frequency_in_ms": {
-                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
-                    },
-                    "g3_turbo_mode_frequency_in_ms": {
-                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
-                    },
-                    "ingestion_settings_frequency_in_milli_sec": {
-                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
-                    },
-                    "ingestion_settings_type": {
-                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
-                    },
-                    "telemetry_mode": {
-                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
-                    },
-                    "turbo_mode_timeout_in_ms": {
-                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
-                    }
-                  }
-                }
-              }
-            },
-            "system_apps": {
-              "$lastUpdated": "2021-08-03T05:24:24.3169859Z",
-              "CachingAgent": {
-                "$lastUpdated": "2021-08-03T05:24:24.3169859Z",
-                "status": {
-                  "$lastUpdated": "2021-08-03T05:24:24.3169859Z"
-                }
-              },
-              "GatewayAgent": {
-                "$lastUpdated": "2021-08-03T05:24:24.3169859Z",
-                "status": {
-                  "$lastUpdated": "2021-08-03T05:24:24.3169859Z"
-                }
-              },
-              "MQTTAgent": {
-                "$lastUpdated": "2021-08-03T05:24:24.3169859Z",
-                "status": {
-                  "$lastUpdated": "2021-08-03T05:24:24.3169859Z"
-                }
-              }
-            },
-            "installed_packages": {
-              "$lastUpdated": "2021-08-03T05:24:24.3169859Z",
-              "CachingAgent": {
-                "$lastUpdated": "2021-08-03T05:24:24.3169859Z"
-              },
-              "MQTTAgent": {
-                "$lastUpdated": "2021-08-03T05:24:24.3169859Z"
-              },
-              "N_BlueNRG": {
-                "$lastUpdated": "2021-08-03T05:24:24.3169859Z"
-              }
-            }
-          },
-          "$version": 681
-        }
-      }
-    }
-    let properties = this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].device_configuration['CoolingTower_1'].properties;
-    debugger
+    
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.componentState === CONSTANTS.IP_GATEWAY) {
       this.getAssetsOfGateway();
@@ -229,6 +91,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
       }
       this.assets.push(this.asset);
     }
+    this.properties = this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration[this.asset.asset_id].properties;
   }
 
   getAssetsOfGateway() {
@@ -298,11 +161,20 @@ export class GatewayAssetsSettingComponent implements OnInit {
     };
     console.log(this.telemetrySettings);
     obj.assets[this.selectedAsset.asset_id] = {
-      measurement_frequency_in_milli_sec: this.selectedAsset.metadata.measurement_settings.measurement_frequency * 1000,
-      turbo_mode_frequency_in_milli_sec: this.selectedAsset.metadata.telemetry_mode_settings.turbo_mode_frequency * 1000,
+      g1_measurement_frequency_in_ms: this.selectedAsset.metadata.measurement_settings.g1_measurement_frequency_in_ms * 1000,
+      g2_measurement_frequency_in_ms: this.selectedAsset.metadata.measurement_settings.g2_measurement_frequency_in_ms * 1000,
+      g3_measurement_frequency_in_ms: this.selectedAsset.metadata.measurement_settings.g3_measurement_frequency_in_ms * 1000,
+
+      g1_turbo_mode_frequency_in_ms: this.selectedAsset.metadata.telemetry_mode_settings.g1_turbo_mode_frequency_in_ms * 1000,
+      g2_turbo_mode_frequency_in_ms: this.selectedAsset.metadata.telemetry_mode_settings.g2_turbo_mode_frequency_in_ms * 1000,
+      g3_turbo_mode_frequency_in_ms: this.selectedAsset.metadata.telemetry_mode_settings.g3_turbo_mode_frequency_in_ms * 1000,
+
       turbo_mode_timeout_in_milli_sec: this.selectedAsset.metadata.telemetry_mode_settings.turbo_mode_timeout_time * 1000,
       ingestion_settings_type: this.selectedAsset.metadata.data_ingestion_settings.type,
-      ingestion_settings_frequency_in_milli_sec: this.selectedAsset.metadata.telemetry_mode_settings.normal_mode_frequency * 1000
+
+      g1_ingestion_frequency_in_ms: this.selectedAsset.metadata.telemetry_mode_settings.g1_ingestion_frequency_in_ms * 1000,
+      g2_ingestion_frequency_in_ms: this.selectedAsset.metadata.telemetry_mode_settings.g2_ingestion_frequency_in_ms * 1000,
+      g3_ingestion_frequency_in_ms: this.selectedAsset.metadata.telemetry_mode_settings.g3_ingestion_frequency_in_ms * 1000
     };
     this.callC2dMethod(obj, 'Change Asset Settings');
   }
@@ -396,6 +268,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
 
   saveGatewaySettings() {
     this.changeTelemetrySetting();
+    this.registerProperties();
     this.isSaveSettingAPILoading = true;
     const obj = {
       metadata: this.selectedAsset.metadata,
@@ -419,5 +292,54 @@ export class GatewayAssetsSettingComponent implements OnInit {
 
   onPropertyModalClose() {
     $('#groupProperyModel').modal('hide');
+  }
+
+  async registerProperties() {
+    this.isAPILoading = true;
+    await this.getAssetsModelProperties();
+    const obj = {
+      asset_id: this.selectedAsset.asset_id,
+      command: 'set_properties',
+      measured_properties: {},
+      derived_properties: {}
+    };
+    this.propertiesList.measured_properties.forEach(prop => {
+      obj.measured_properties[prop.json_key] = prop.metadata;
+      obj.measured_properties[prop.json_key]['g'] = this.properties[prop.json_key];
+    });
+    this.propertiesList.derived_properties.forEach(prop => {
+      obj.derived_properties[prop.json_key] = prop.metadata;
+      obj.measured_properties[prop.json_key]['g'] = this.properties[prop.json_key];
+    });
+    this.callC2dMethod(obj, 'Register Properties');
+  }
+
+  getAssetsModelProperties() {
+    return new Promise<void>((resolve1, reject) => {
+      const obj = {
+        app: this.contextApp.app,
+        name: this.selectedAsset.asset_model || this.selectedAsset.tags?.asset_model
+      };
+      this.subscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
+        (response: any) => {
+          response.properties.measured_properties = response.properties.measured_properties ?
+            response.properties.measured_properties : [];
+          response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
+          response.properties.configurable_properties = response.properties.configurable_properties ?
+            response.properties.configurable_properties : [];
+          response.properties.controllable_properties = response.properties.controllable_properties ?
+            response.properties.controllable_properties : [];
+          this.propertiesList = response.properties;
+          resolve1();
+        }, error => reject()
+      ));
+
+    });
+  }
+
+
+  updatePropertyData() {
+    console.log(this.properties);
+    debugger
   }
 }

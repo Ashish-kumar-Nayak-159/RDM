@@ -78,7 +78,7 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
       }
       flag = false;
       this.assetModel.tags.reserved_tags.forEach(tag => {
-        if (tag.key === this.tagObj.key) {
+        if (tag.key === this.tagObj.key.trim()) {
           flag = true;
         }
       });

@@ -182,8 +182,8 @@ export class AssetModelPackageManagementComponent implements OnInit {
   async onDocumentFileSelected(files: FileList): Promise<void> {
     console.log('hereeeee');
     const arr = files?.item(0)?.name?.split('.') || [];
-    if (!files?.item(0).type.includes('zip') && !files?.item(0).type.includes('rar')) {
-      this.toasterService.showError('Only .zip and .rar files are allowed', 'Select File');
+    if (!files?.item(0).type.includes('zip')) {
+      this.toasterService.showError('Only .zip files are allowed', 'Select File');
       return;
     }
     this.isFileUploading = true;

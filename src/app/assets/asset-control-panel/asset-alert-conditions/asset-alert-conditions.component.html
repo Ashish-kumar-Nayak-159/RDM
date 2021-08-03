@@ -32,14 +32,14 @@
       </ul>
     </div>
   </div>
-  
+
   <div class="table-responsive">
       <p class="tab-bar mb-0" *ngIf="selectedTab === 'Asset'"> Following alerts are read from PLC/Modbus registers...</p>
       <p class="tab-bar mb-0" *ngIf="selectedTab === 'Edge'"> Following alerts are possible by executing rules on Gateways...</p>
       <p class="tab-bar mb-0" *ngIf="selectedTab === 'Cloud'"> Following alerts are possible by executing rules on Cloud...</p>
-  
+
     <div class="tableFixHead table-fix-head-alert-conditions">
-  
+
       <table class="table table-hover">
         <thead>
           <tr>
@@ -82,7 +82,7 @@
                   >
                     <i class="fa fa-paperclip"></i>
                   </a>
-  
+
                   <a href="javascript:void(0)" placement="bottom" tooltip="Actions" (click)="onClickOfViewActionIcon('Actions', i)"
                   >
                     <i class="fa fa-tasks"></i>
@@ -104,7 +104,7 @@
                   <div class="col-12  my-2 accordion-padding">
                     <p *ngIf="alertObj?.visualization_widgets?.length === 0"> No Visualization widgets defined yet.</p>
                     <p *ngIf="alertObj?.visualization_widgets?.length > 0"> Following widgets have been defined so far. You can define more.
-  
+
                       <!-- <button type="button" class="btn btn-primary btn-sm mx-1 mt-n2" [disabled]="isCreateAlertConditionLoading"
                       placement="bottom" tooltip="Add" (click)="addVisualizationWidget()" ><i class="fa fa-plus fa-sm"></i></button> -->
                       <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
@@ -115,7 +115,7 @@
                       <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></i>
                     </p>
                   </div>
-  
+
                   <div class="col-12  my-2 accordion-padding">
                     <div class="form-inline" >
                       <ng-container>
@@ -148,12 +148,12 @@
                       </ng-container>
                     </div>
                   </div>
-  
+
                 </td>
                 <td colspan="6" class="accordion-border" *ngIf="viewType === 'Recommendations'">
-  
+
                   <div class="col-12 my-3 accordion-padding">Following recommendations have been pre-configured. You can configure more.
-  
+
                     <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
                     placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()" ><i class="fa fa-save fa-sm"></i></button></div>
                     <div class="col-12 my-2 accordion-padding">
@@ -171,7 +171,7 @@
                           <td style="width: 15%;">Step - {{i + 1}}</td>
                           <td style="width: 30%;">{{step.description}}</td>
                           <td style="width: 30%;">{{step.activity}} Activity</td>
-  
+
                           <td style="width: 10%;">
                               <a href="javascript:void(0)" class="ml-2" (click)="removeRecommendationStep(i)" placement="bottom" tooltip="Remove"
                               >
@@ -209,7 +209,7 @@
                                 <!-- <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add" (click)="addRecommendationStep()" >
                                   <i class="fa fa-plus fa-sm"></i></button> -->
                               </td>
-  
+
                             </ng-container>
                         </tr>
                         </ng-container>
@@ -220,7 +220,7 @@
                     <h6>Email / Whatsapp Attachments:
                       </h6>
                   </div>
-  
+
                   <div class="col-12 mt-2">
                     <div class="form-inline row" >
                       <ng-container>
@@ -237,11 +237,11 @@
                           <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add" [disabled]="assetModel.freezed" (click)="addReferenceDocument()" >
                             <i class="fa fa-plus fa-sm"></i></button>
                       </div>
-  
+
                     </ng-container>
                     </div>
                   </div>
-  
+
                   <div class="tagsinput" style="width: auto; height: auto;min-height: auto;" *ngIf="alertObj?.reference_documents?.length > 0">
                     <ng-container *ngFor="let item of alertObj.reference_documents; let index = index">
                       <span class="tag" >
@@ -253,13 +253,13 @@
                   </div>
                 </td>
                 <td colspan="6"  class="accordion-border" *ngIf="viewType === 'Attachments'">
-  
+
                   <div class="col-12 accordion-padding my-2">Following attachments have been added. You can add more.
-  
+
                     <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
                     placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()"><i class="fa fa-save fa-sm"></i></button></div>
                   <div class="col-12 my-3 accordion-padding ">
-  
+
                   <div class="">
                     <h6>Email / Whatsapp Attachments: </h6>
                     <!-- <button type="button" class="btn btn-primary btn-sm mx-1 mt-n2"
@@ -267,7 +267,7 @@
                      <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
                      placement="bottom" tooltip="Edit" (click)="editReferenceDocuments()"><i class="fa fa-edit fa-sm"></i></button> -->
                   </div>
-  
+
                   <div class="">
                     <div class="form-inline" >
                       <ng-container>
@@ -286,12 +286,12 @@
                           <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add"  (click)="addReferenceDocument()" >
                             <i class="fa fa-plus fa-sm"></i></button>
                       </div>
-  
+
                     </ng-container>
                     </div>
                   </div>
                   <!-- <h6 class="mt-1" *ngIf="alertObj?.reference_documents?.length === 0"> No Attachments added yet.</h6> -->
-  
+
                   <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;" *ngIf="alertObj?.reference_documents?.length > 0">
                     <ng-container *ngFor="let item of alertObj.reference_documents; let index = index">
                       <span class="tag" >
@@ -302,8 +302,8 @@
                   </div>
                   </div>
                 </td>
-  
-  
+
+
                 <td colspan="6" *ngIf="viewType === 'Actions'" class="accordion-border">
                   <div class="col-12  accordion-padding mx-2">
                     <h6>Actions:  <button type="button" class="btn btn-success btn-sm mx-1"
@@ -322,7 +322,7 @@
                       <input type="checkbox" class="form-check-input" id="sms" name="sms"[(ngModel)]="alertObj.actions.sms.enabled">
                       <label class="form-check-label" for="sns">SMS</label>
                     </div>
-                   
+
                   </div>
                 </td>
               </tr>
@@ -342,7 +342,7 @@
       </table>
     </div>
   </div>
-  
+
   <div class="modal right fade" id="addAlertConditionModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
     <div class="modal-dialog" role="document">
       <div class="modal-content" *ngIf="alertObj">
@@ -392,24 +392,24 @@
                 </button>
               </ng-container>
               <form *ngIf="setupForm" [formGroup]="setupForm">
-                <div class="form-group">
-                  <label for="recipient-name" class="col-form-label required">Slave:</label>
+                <div class="form-group" *ngIf="setupForm.get('slave_id')">
+                  <label for="recipient-name" class="col-form-label">Slave:</label>
                   <div class="input-group">
-                  <select class="form-control form-control-sm" id="sid" name="sid" formControlName="sid"
+                  <select class="form-control form-control-sm" id="slave_id" name="slave_id" formControlName="slave_id"
                   > <option [ngValue]="null">Select Slave</option>
                     <option [ngValue]="slave.slave_id" *ngFor="let slave of slaveData">{{slave.slave_name}}</option>
                     <!-- <option [ngValue]="'d'" >Digital</option>
                     <option [ngValue]="'s'" >String</option> -->
                   </select>
                   </div>
-                  <div *ngIf="setupForm.get('sid').invalid && (setupForm.get('sid').dirty || setupForm.get('sid').touched)"
+                  <div *ngIf="setupForm.get('slave_id').invalid && (setupForm.get('slave_id').dirty || setupForm.get('slave_id').touched)"
                     class="alert-danger">
-                    <div *ngIf="setupForm.get('sid').errors.required">
+                    <div *ngIf="setupForm.get('slave_id').errors.required">
                       Slave is required.
                     </div>
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group" *ngIf="setupForm.get('d')">
                   <label for="recipient-name" class="col-form-label required">Type:</label>
                   <div class="input-group">
                   <select class="form-control form-control-sm" id="datatype" name="datatype" formControlName="d"
@@ -426,7 +426,7 @@
                     </div>
                     </div>
                 </div>
-                <div class="form-group" *ngIf="setupForm.get('d').value === 'a'">
+                <div class="form-group" *ngIf="setupForm.get('d') && setupForm.get('sd') && setupForm.get('d').value === 'a'">
                   <label for="recipient-name" class="col-form-label required">Secondary Type:</label>
                   <div class="input-group">
                   <select class="form-control form-control-sm" id="sd" name="sd" formControlName="sd"
@@ -449,7 +449,7 @@
                     </div>
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group" *ngIf="setupForm.get('sa')">
                   <label for="message-text" class="col-form-label required">PLC Register Address:</label>
                   <input type="number" class="form-control form-control-sm" id="sa" name="sa" formControlName="sa"
                   placeholder="Enter PLC Register Address" min="0" max="99999">
@@ -463,7 +463,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="form-group" *ngIf="setupForm.get('d').value === 's'">
+                <div class="form-group" *ngIf="setupForm.get('d') && setupForm.get('la') && setupForm.get('d').value === 's'">
                   <label for="message-text" class="col-form-label required">String Length:</label>
                   <input type="number" class="form-control form-control-sm" id="la" name="la" formControlName="la"
                   placeholder="Enter String Length" min="1" max="99999">
@@ -477,7 +477,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="form-group" *ngIf="(setupForm.get('sd')?.value === 5 ||setupForm.get('sd')?.value === 6 )
+                <div class="form-group" *ngIf="setupForm.get('sd') && setupForm.get('p') && (setupForm.get('sd')?.value === 5 ||setupForm.get('sd')?.value === 6 )
                 && setupForm.get('d').value === 'a'">
                   <label for="message-text" class="col-form-label required">Precision:</label>
                   <input type="number" class="form-control form-control-sm" id="p" name="p" formControlName="p"
@@ -492,7 +492,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="form-group" *ngIf="setupForm.get('sd')?.value === 9
+                <div class="form-group" *ngIf="setupForm.get('sd') && setupForm.get('bytn') && setupForm.get('sd')?.value === 9
                   && setupForm.get('d').value === 'a'">
                     <label for="message-text" class="col-form-label required">Byte Number:</label>
                     <select class="form-control form-control-sm" id="bytn" name="bytn" formControlName="bytn"
@@ -505,7 +505,7 @@
                       <div *ngIf="setupForm.get('bytn').errors.required">
                         Byte Number is required.
                       </div>
-  
+
                     </div>
                   </div>
                 <ng-container  *ngIf="asset.tags.protocol === 'ModbusTCPMaster' || asset.tags.protocol === 'ModbusRTUMaster'">
@@ -610,8 +610,8 @@
     </div>
     </div>
   </div>
-  
-  
+
+
   <div class="modal fade" id="confirmMessageModal" role="dialog">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -632,7 +632,7 @@
           </button>
         </div>
       </div>
-  
+
     </div>
   </div>
-  
+

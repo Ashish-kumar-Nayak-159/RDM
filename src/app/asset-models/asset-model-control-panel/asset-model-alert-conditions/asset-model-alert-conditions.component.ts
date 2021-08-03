@@ -249,10 +249,15 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   openAddAlertConditionModal(alertObj = undefined) {
     if (alertObj) {
       this.alertObj = alertObj;
+      if (this.assetModel.metadata?.model_type !== CONSTANTS.IP_GATEWAY) {
+        this.setupForm = new FormGroup({
+          slave_id: new FormControl(alertObj?.metadata?.slave_id),
+        });
+      }
       if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_ASSET) {
       if (this.assetModel.tags.protocol === 'ModbusTCPMaster' || this.assetModel.tags.protocol === 'ModbusRTUMaster') {
         this.setupForm = new FormGroup({
-          sid: new FormControl(alertObj?.metadata?.sid, [Validators.required]),
+          slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
           d: new FormControl(alertObj?.metadata?.d, [Validators.required]),
           sa: new FormControl(alertObj?.metadata?.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
           a: new FormControl(true),
@@ -260,11 +265,18 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
         });
       } else if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
         this.setupForm = new FormGroup({
-          sid: new FormControl(alertObj?.metadata?.sid, [Validators.required]),
+          slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
           d: new FormControl(alertObj?.metadata?.d, [Validators.required]),
           sa: new FormControl(alertObj?.metadata?.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
           a: new FormControl(true),
           mt: new FormControl(alertObj?.metadata?.mt, [Validators.required]),
+        });
+      } else if (this.assetModel.tags.protocol === 'BLE') {
+        this.setupForm = new FormGroup({
+          slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
+          sa: new FormControl(alertObj?.metadata?.sa, [Validators.required, Validators.min(1), Validators.max(99999)]),
+          a: new FormControl(false),
+          p: new FormControl(alertObj?.metadata?.p, [Validators.required]),
         });
       }
       this.onChangeOfSetupType(alertObj.metadata);
@@ -279,10 +291,15 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       console.log(this.setupForm);
     } else {
       this.alertObj = {};
+      if (this.assetModel.metadata?.model_type !== CONSTANTS.IP_GATEWAY) {
+        this.setupForm = new FormGroup({
+          slave_id: new FormControl(alertObj?.metadata?.slave_id),
+        });
+      }
       if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_ASSET) {
       if (this.assetModel.tags.protocol === 'ModbusTCPMaster' || this.assetModel.tags.protocol === 'ModbusRTUMaster') {
         this.setupForm = new FormGroup({
-          sid: new FormControl(null, [Validators.required]),
+          slave_id: new FormControl(null, [Validators.required]),
           d: new FormControl(null, [Validators.required]),
           sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
           a: new FormControl(true),
@@ -290,11 +307,18 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
         });
       } else if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
         this.setupForm = new FormGroup({
-          sid: new FormControl(null, [Validators.required]),
+          slave_id: new FormControl(null, [Validators.required]),
           d: new FormControl(null, [Validators.required]),
           sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
           a: new FormControl(true),
           mt: new FormControl(null, [Validators.required]),
+        });
+      } else if (this.assetModel.tags.protocol === 'BLE') {
+        this.setupForm = new FormGroup({
+          slave_id: new FormControl(null, [Validators.required]),
+          sa: new FormControl(null, [Validators.required, Validators.min(1), Validators.max(99999)]),
+          a: new FormControl(false),
+          p: new FormControl(2, [Validators.required]),
         });
       }
       }
@@ -470,6 +494,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Please enter all required fields', 'Add Alert Condition');
       return;
     }
+    this.alertObj.code = 'M_' + this.alertObj.code;
     let flag = false;
     this.alertConditions.forEach(alert => {
       if (this.alertObj.message === alert.message) {

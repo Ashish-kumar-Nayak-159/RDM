@@ -138,6 +138,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
   unfreezeModel() {
     if (!this.password) {
       this.toasterService.showError('Password is compulsory.', 'Unfreeze Model');
+      return;
     }
     this.isModelFreezeUnfreezeAPILoading = true;
     const obj = {

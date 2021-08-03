@@ -247,10 +247,15 @@ export class AssetAlertConditionsComponent implements OnInit {
   openAddAlertConditionModal(alertObj = undefined) {
     if (alertObj) {
       this.alertObj = alertObj;
+      if (this.asset.type !== CONSTANTS.IP_GATEWAY) {
+        this.setupForm = new FormGroup({
+          slave_id: new FormControl(alertObj?.metadata?.slave_id),
+        });
+      }
       if (this.asset?.type === CONSTANTS.NON_IP_ASSET) {
       if (this.asset.tags.protocol === 'ModbusTCPMaster' || this.asset.tags.protocol === 'ModbusRTUMaster') {
         this.setupForm = new FormGroup({
-          sid: new FormControl(alertObj?.metadata?.sid, [Validators.required]),
+          slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
           d: new FormControl(alertObj?.metadata?.d, [Validators.required]),
           sa: new FormControl(alertObj?.metadata?.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
           a: new FormControl(true),
@@ -258,11 +263,18 @@ export class AssetAlertConditionsComponent implements OnInit {
         });
       } else if (this.asset.tags.protocol === 'SiemensTCPIP') {
         this.setupForm = new FormGroup({
-          sid: new FormControl(alertObj?.metadata?.sid, [Validators.required]),
+          slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
           d: new FormControl(alertObj?.metadata?.d, [Validators.required]),
           sa: new FormControl(alertObj?.metadata?.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
           a: new FormControl(true),
           mt: new FormControl(alertObj?.metadata?.mt, [Validators.required]),
+        });
+      } else if (this.asset.tags.protocol === 'BLE') {
+        this.setupForm = new FormGroup({
+          slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
+          sa: new FormControl(alertObj?.metadata?.sa, [Validators.required, Validators.min(1), Validators.max(99999)]),
+          a: new FormControl(false),
+          p: new FormControl(alertObj?.metadata?.p, [Validators.required]),
         });
       }
       this.onChangeOfSetupType(alertObj.metadata);
@@ -277,10 +289,15 @@ export class AssetAlertConditionsComponent implements OnInit {
       console.log(this.setupForm);
     } else {
       this.alertObj = {};
+      if (this.asset.type !== CONSTANTS.IP_GATEWAY) {
+        this.setupForm = new FormGroup({
+          slave_id: new FormControl(null)
+        });
+      }
       if (this.asset?.type === CONSTANTS.NON_IP_ASSET) {
       if (this.asset.tags.protocol === 'ModbusTCPMaster' || this.asset.tags.protocol === 'ModbusRTUMaster') {
         this.setupForm = new FormGroup({
-          sid: new FormControl(null, [Validators.required]),
+          slave_id: new FormControl(null, [Validators.required]),
           d: new FormControl(null, [Validators.required]),
           sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
           a: new FormControl(true),
@@ -288,11 +305,18 @@ export class AssetAlertConditionsComponent implements OnInit {
         });
       } else if (this.asset.tags.protocol === 'SiemensTCPIP') {
         this.setupForm = new FormGroup({
-          sid: new FormControl(null, [Validators.required]),
+          slave_id: new FormControl(null, [Validators.required]),
           d: new FormControl(null, [Validators.required]),
           sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
           a: new FormControl(true),
           mt: new FormControl(null, [Validators.required]),
+        });
+      } else if (this.asset.tags.protocol === 'BLE') {
+        this.setupForm = new FormGroup({
+          slave_id: new FormControl(null, [Validators.required]),
+          sa: new FormControl(null, [Validators.required, Validators.min(1), Validators.max(99999)]),
+          a: new FormControl(false),
+          p: new FormControl(2, [Validators.required]),
         });
       }
       }

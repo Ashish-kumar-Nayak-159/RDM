@@ -101,7 +101,7 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
           data_key: 'created_by'
         },
         {
-          header_name: 'Assets inherited',
+          header_name: 'Assets Inherited',
           is_display_filter: true,
           value_type: 'number',
           is_sort_required: true,

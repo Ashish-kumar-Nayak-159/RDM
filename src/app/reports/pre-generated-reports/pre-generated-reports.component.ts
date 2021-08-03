@@ -159,9 +159,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   onAssetFilterApply() {
-    $('.dropdown-menu .searchBtn').on('click.bs.dropdown', (e) => {
-      $('button.dropdown-btn').dropdown('toggle');
-    });
+    // $('.dropdown-menu .searchBtn').on('click.bs.dropdown', (e) => {
+    //   $('button.dropdown-btn').dropdown('toggle');
+    // });
   }
 
   preventClose(event: MouseEvent) {

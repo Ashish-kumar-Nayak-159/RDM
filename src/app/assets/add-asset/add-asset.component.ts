@@ -123,6 +123,9 @@ export class AddAssetComponent implements OnInit {
       };
       const obj = {...this.assetDetail.tags, ...modelObj.tags};
       this.assetDetail.tags = obj;
+    } else {
+      this.assetDetail.tags.cloud_connectivity = undefined;
+      this.assetDetail.tags.protocol = undefined;
     }
     // this.setupFormData();
   }
@@ -162,7 +165,7 @@ export class AddAssetComponent implements OnInit {
 
   onCreateAsset() {
     if (!this.assetDetail.asset_id || !this.assetDetail.tags.asset_manager ||
-      !this.assetDetail.tags.protocol || !this.assetDetail.tags.cloud_connectivity  ) {
+      !this.assetDetail.tags.protocol || !this.assetDetail.tags.cloud_connectivity || !this.assetDetail.tags.asset_model  ) {
         this.toasterService.showError('Please enter all required fields',
         'Create ' + this.componentState);
         return;

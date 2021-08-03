@@ -37,9 +37,152 @@ export class GatewayAssetsSettingComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.assetTwin = {
+      "asset_id": "CT_GW_1",
+      "twin_properties": {
+        "desired": {
+          "$metadata": {
+            "$lastUpdated": "2021-07-26T12:32:14.4635062Z",
+            "$lastUpdatedVersion": 2
+          },
+          "$version": 2
+        },
+        "reported": {
+          "apps": {
+            "ModbusRTUMaster": {
+              "status": "Running",
+              "device_configuration": {
+                "CoolingTower_1": {
+                  "g1_ingestion_frequency_in_ms": 1800000,
+                  "g1_measurement_frequency_in_ms": 1800000,
+                  "g1_turbo_mode_frequency_in_ms": 18000000,
+                  "g2_measurement_frequency_in_ms": 1800000,
+                  "g2_turbo_mode_frequency_in_ms": 18000000,
+                  "g3_measurement_frequency_in_ms": 1800000,
+                  "g3_turbo_mode_frequency_in_ms": 18000000,
+                  "ingestion_settings_frequency_in_milli_sec": 10000,
+                  "ingestion_settings_type": "all_props_at_fixed_interval",
+                  "telemetry_mode": "",
+                  "turbo_mode_timeout_in_ms": 60000,
+                  "properties": {
+                    "measured_properties": {
+                      "p1": "G1",
+                      "p2": "G2"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "system_apps": {
+            "CachingAgent": {
+              "status": "Running"
+            },
+            "GatewayAgent": {
+              "status": "Running"
+            },
+            "MQTTAgent": {
+              "status": "Running"
+            }
+          },
+          "installed_packages": {
+            "CachingAgent": "1.2.1",
+            "MQTTAgent": "1.2.1",
+            "ModbusRTUMaster": "1.2.1"
+          },
+          "$metadata": {
+            "$lastUpdated": "2021-08-03T05:24:24.3928616Z",
+            "apps": {
+              "$lastUpdated": "2021-08-03T05:24:24.3928616Z",
+              "N_BlueNRG": {
+                "$lastUpdated": "2021-08-03T05:24:24.3928616Z",
+                "status": {
+                  "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
+                },
+                "device_configuration": {
+                  "$lastUpdated": "2021-08-03T05:24:24.3928616Z",
+                  "IndyGo_Comp_2": {
+                    "$lastUpdated": "2021-08-03T05:24:24.3928616Z",
+                    "g1_ingestion_frequency_in_ms": {
+                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
+                    },
+                    "g1_measurement_frequency_in_ms": {
+                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
+                    },
+                    "g1_turbo_mode_frequency_in_ms": {
+                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
+                    },
+                    "g2_measurement_frequency_in_ms": {
+                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
+                    },
+                    "g2_turbo_mode_frequency_in_ms": {
+                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
+                    },
+                    "g3_measurement_frequency_in_ms": {
+                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
+                    },
+                    "g3_turbo_mode_frequency_in_ms": {
+                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
+                    },
+                    "ingestion_settings_frequency_in_milli_sec": {
+                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
+                    },
+                    "ingestion_settings_type": {
+                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
+                    },
+                    "telemetry_mode": {
+                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
+                    },
+                    "turbo_mode_timeout_in_ms": {
+                      "$lastUpdated": "2021-08-03T05:24:24.3928616Z"
+                    }
+                  }
+                }
+              }
+            },
+            "system_apps": {
+              "$lastUpdated": "2021-08-03T05:24:24.3169859Z",
+              "CachingAgent": {
+                "$lastUpdated": "2021-08-03T05:24:24.3169859Z",
+                "status": {
+                  "$lastUpdated": "2021-08-03T05:24:24.3169859Z"
+                }
+              },
+              "GatewayAgent": {
+                "$lastUpdated": "2021-08-03T05:24:24.3169859Z",
+                "status": {
+                  "$lastUpdated": "2021-08-03T05:24:24.3169859Z"
+                }
+              },
+              "MQTTAgent": {
+                "$lastUpdated": "2021-08-03T05:24:24.3169859Z",
+                "status": {
+                  "$lastUpdated": "2021-08-03T05:24:24.3169859Z"
+                }
+              }
+            },
+            "installed_packages": {
+              "$lastUpdated": "2021-08-03T05:24:24.3169859Z",
+              "CachingAgent": {
+                "$lastUpdated": "2021-08-03T05:24:24.3169859Z"
+              },
+              "MQTTAgent": {
+                "$lastUpdated": "2021-08-03T05:24:24.3169859Z"
+              },
+              "N_BlueNRG": {
+                "$lastUpdated": "2021-08-03T05:24:24.3169859Z"
+              }
+            }
+          },
+          "$version": 681
+        }
+      }
+    }
+    let properties = this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].device_configuration['CoolingTower_1'].properties;
+    debugger
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.componentState === CONSTANTS.IP_GATEWAY) {
-    this.getAssetsOfGateway();
+      this.getAssetsOfGateway();
     } else {
       this.asset.gateway_id = this.asset.configuration?.gateway_id;
       this.selectedAsset = this.asset;
@@ -72,18 +215,18 @@ export class GatewayAssetsSettingComponent implements OnInit {
         console.log(this.assetTwin);
         if (this.assetTwin.twin_properties.reported && this.assetTwin.twin_properties.reported[this.asset.appObj.type] &&
           this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name]) {
-            if (this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].status?.toLowerCase() !== 'running') {
-              this.asset.settings_enabled = false;
-            } else {
-              if (this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration
+          if (this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].status?.toLowerCase() !== 'running') {
+            this.asset.settings_enabled = false;
+          } else {
+            if (this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration
               && this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration[this.asset.asset_id]) {
-                this.asset.settings_enabled = true;
-              } else {
-                this.asset.settings_enabled = false;
-              }
+              this.asset.settings_enabled = true;
+            } else {
+              this.asset.settings_enabled = false;
             }
           }
         }
+      }
       this.assets.push(this.asset);
     }
   }
@@ -124,14 +267,14 @@ export class GatewayAssetsSettingComponent implements OnInit {
               }
               asset.settings_enabled = false;
               if (asset.metadata?.package_app) {
-              asset.appObj = this.applications.find(appObj => appObj.name === asset.metadata.package_app);
-              if (this.assetTwin.twin_properties.reported && this.assetTwin.twin_properties.reported[asset.appObj.type] &&
-                this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name]) {
+                asset.appObj = this.applications.find(appObj => appObj.name === asset.metadata.package_app);
+                if (this.assetTwin.twin_properties.reported && this.assetTwin.twin_properties.reported[asset.appObj.type] &&
+                  this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name]) {
                   if (this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name].status?.toLowerCase() !== 'running') {
                     asset.settings_enabled = false;
                   } else {
                     if (this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name].asset_configuration
-                    && this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name].asset_configuration[asset.asset_id]) {
+                      && this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name].asset_configuration[asset.asset_id]) {
                       asset.settings_enabled = true;
                     } else {
                       asset.settings_enabled = false;
@@ -174,7 +317,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
       asset_id: this.componentState !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id,
       message: obj,
       app: this.contextApp.app,
-      timestamp:  moment().unix(),
+      timestamp: moment().unix(),
       acknowledge: 'Full',
       expire_in_min: 2880,
       job_id: this.asset.asset_id + '_' + this.commonService.generateUUID(),
@@ -186,20 +329,20 @@ export class GatewayAssetsSettingComponent implements OnInit {
     this.subscriptions.push(
       this.assetService.sendC2DMessage(c2dObj, this.contextApp.app,
         this.componentState !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id).subscribe(
-        (response: any) => {
-          this.displayMsgArr.push({
-            message: type + ' request sent to gateway.',
-            error: false
-          });
-          clearInterval(this.c2dResponseInterval);
-          this.loadC2DResponse(c2dObj);
-        }, error => {
-          this.toasterService.showError(error.message, type);
-          this.isAPILoading = false;
-          this.onModalClose();
-          clearInterval(this.c2dResponseInterval);
-        }
-      )
+          (response: any) => {
+            this.displayMsgArr.push({
+              message: type + ' request sent to gateway.',
+              error: false
+            });
+            clearInterval(this.c2dResponseInterval);
+            this.loadC2DResponse(c2dObj);
+          }, error => {
+            this.toasterService.showError(error.message, type);
+            this.isAPILoading = false;
+            this.onModalClose();
+            clearInterval(this.c2dResponseInterval);
+          }
+        )
     );
   }
 
@@ -218,7 +361,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
         if (response.data?.length > 0 && this.displayMsgArr.length <= response.data.length) {
           for (let i = this.displayMsgArr.length - 1; i < response.data.length; i++) {
             this.displayMsgArr.push({
-              message:  response.data[i].asset_id + ': ' + response.data[i]?.payload?.message,
+              message: response.data[i].asset_id + ': ' + response.data[i]?.payload?.message,
               error: response.data[i]?.payload?.status === 'failure' ? true : false
             });
           }
@@ -227,9 +370,9 @@ export class GatewayAssetsSettingComponent implements OnInit {
           clearInterval(this.c2dResponseInterval);
 
           this.c2dResponseInterval = setInterval(
-          () => {
-            this.loadC2DResponse(c2dObj);
-          }, 5000);
+            () => {
+              this.loadC2DResponse(c2dObj);
+            }, 5000);
         } else {
           clearInterval(this.c2dResponseInterval);
           this.refreshAssetTwin.emit();
@@ -239,7 +382,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
           }, 1000);
         }
       }
-      ));
+    ));
   }
 
   onModalClose() {
@@ -270,6 +413,11 @@ export class GatewayAssetsSettingComponent implements OnInit {
     ));
   }
 
+  openGroupPropertyModel() {
+    $('#groupProperyModel').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
 
-
+  onPropertyModalClose() {
+    $('#groupProperyModel').modal('hide');
+  }
 }

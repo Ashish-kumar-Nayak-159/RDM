@@ -1,132 +1,268 @@
-
 <div class="table-responsive">
-  <div class="tableFixHead" >
-<i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAssetsAPILoading"></i>
-<h6 class="m-3" *ngIf="assets.length === 0 && !isAssetsAPILoading"> No assets available.</h6>
-<accordion *ngIf="!isAssetsAPILoading" class="p-3">
-  <accordion-group heading="" [isOpen]="constantData.IP_GATEWAY === componentState ? false : true"  [panelClass]="'customClass'" *ngFor="let asset of assets;let i = index">
-    <ng-container  accordion-heading>
-      <button class="btn" type="button" (click)="selectedAsset = asset;">
-          {{asset.display_name || asset.tags?.display_name}}
-      </button>
-    </ng-container>
-    <div class="row d-flex px-3 pb-1">
-    <div class="ml-auto">
-      <a  class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
-       href="javascript:void(0)" (click)="saveGatewaySettings()" [class.disabled]="isSaveSettingAPILoading || !asset.settings_enabled">
-        <i class="fa fa-fw fa-save"></i>
-       Save</a>
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isSaveSettingAPILoading"></i>
-      </div>
-    </div>
-    <accordion [closeOthers]="'true'" *ngIf="!isAssetsAPILoading" id="ac2">
-      <accordion-group heading=""  [panelClass]="'customClass1'">
+  <div class="tableFixHead">
+    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAssetsAPILoading"></i>
+    <h6 class="m-3" *ngIf="assets.length === 0 && !isAssetsAPILoading"> No assets available.</h6>
+    <accordion *ngIf="!isAssetsAPILoading" class="p-3">
+      <accordion-group heading="" [isOpen]="constantData.IP_GATEWAY === componentState ? false : true"
+        [panelClass]="'customClass'" *ngFor="let asset of assets;let i = index">
         <ng-container accordion-heading>
-          <a class="btn">
-            Data Ingestion Setting
-          </a>
+          <button class="btn" type="button" (click)="selectedAsset = asset;">
+            {{asset.display_name || asset.tags?.display_name}}
+          </button>
         </ng-container>
-        <div class="row col-md-12" *ngIf="asset?.metadata">
-          <input type="radio" class="mt-1" name="visible" value="changed_props"
-            id="visible_1" [(ngModel)]="asset.metadata.data_ingestion_settings.type" />
-            <label class="form-label">&nbsp;Ingest Only Changed Properties</label>
-
+        <div class="row d-flex px-3 pb-1">
+          <div class="ml-auto">
+            <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="javascript:void(0)"
+              (click)="saveGatewaySettings()" [class.disabled]="isSaveSettingAPILoading || !asset.settings_enabled">
+              <i class="fa fa-fw fa-save"></i>
+              Save</a>
+            <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isSaveSettingAPILoading"></i>
+          </div>
         </div>
-        <div class="row col-md-12 form-row" *ngIf="asset?.metadata">
-          <input  class="mt-1" type="radio" name="visible" value="all_props_at_fixed_interval"
-            id="visible_2" [(ngModel)]="asset.metadata.data_ingestion_settings.value" />
-            <label class="form-label">&nbsp;Ingest All Properties </label>
-            <!-- <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+        <accordion [closeOthers]="'true'" *ngIf="!isAssetsAPILoading" id="ac2">
+          <accordion-group heading="" [panelClass]="'customClass1'">
+            <ng-container accordion-heading>
+              <a class="btn">
+                Data Ingestion Setting
+              </a>
+            </ng-container>
+            <div class="row col-md-12" *ngIf="asset?.metadata">
+              <input type="radio" class="mt-1" name="visible" value="changed_props" id="visible_1"
+                [(ngModel)]="asset.metadata.data_ingestion_settings.type" />
+              <label class="form-label">&nbsp;Ingest Only Changed Properties</label>
+
+            </div>
+            <div class="row col-md-12 form-row" *ngIf="asset?.metadata">
+              <input class="mt-1" type="radio" name="visible" value="all_props_at_fixed_interval" id="visible_2"
+                [(ngModel)]="asset.metadata.data_ingestion_settings.value" />
+              <label class="form-label">&nbsp;Ingest All Properties </label>
+              <!-- <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
                     [(ngModel)]="asset.metadata.data_ingestion_settings.frequency_in_sec" name="frequency_in_sec"
                     placeholder="Frequency">
             <label class="form-label">&nbsp; second interval</label> -->
-        </div>
-      </accordion-group>
-      <accordion-group heading=""  [panelClass]="'customClass1'">
-        <ng-container accordion-heading>
-          <a class="btn">
-            Measurement Frequency Setting
-          </a>
-        </ng-container>
-        <table class="table table-hover" *ngIf="asset?.metadata">
-          <tbody>
-            <tr>
+            </div>
+          </accordion-group>
+          <accordion-group heading="" [panelClass]="'customClass1'">
+            <ng-container accordion-heading>
+              <a class="btn">
+                Measurement Frequency Setting
+              </a>
+            </ng-container>
+            <table class="table table-hover" *ngIf="asset?.metadata">
+              <tbody>
+                <!-- <tr>
               <td style="width: 50%;">Measurement Frequency (In Sec): </td>
               <td>
                   <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
                     [(ngModel)]="asset.metadata.measurement_settings.measurement_frequency" name="frequency_in_normal"
                     placeholder="Frequency">
               </td>
-            </tr>
-          </tbody>
-        </table>
-      </accordion-group>
-      <accordion-group heading=""  [panelClass]="'customClass1'">
-        <ng-container accordion-heading>
-          <a class="btn">
-            Telemetry Mode Settings
-          </a>
-        </ng-container>
-        <table class="table table-hover" *ngIf="asset?.metadata">
-          <tbody>
-            <tr>
-              <td style="width: 50%;">Normal mode Frequency (In Sec): </td>
-              <td>
-                  <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
-                    [(ngModel)]="asset.metadata.telemetry_mode_settings.normal_mode_frequency" name="frequency_in_normal"
-                    placeholder="Frequency">
-              </td>
-            </tr>
-            <tr>
-              <td style="width: 50%;">Turbo mode Frequency (In Sec): </td>
-              <td>
-                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
-                    [(ngModel)]="asset.metadata.telemetry_mode_settings.turbo_mode_frequency" name="frequency_in_turbo"
-                    placeholder="Frequency">
-              </td>
-            </tr>
-            <tr>
-              <td >Turbo mode Timeout (In Sec): </td>
-              <td>
-                  <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
-                    [(ngModel)]="asset.metadata.telemetry_mode_settings.turbo_mode_timeout_time" name="timeout_in_turbo"
-                    placeholder="Timeout">
-              </td>
-            </tr>
-          </tbody>
-        </table>
+            </tr> -->
+                <tr>
+                  <td style="width: 50%;">G1 Measurement Frequency (In Sec): </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                      [(ngModel)]="asset.metadata.measurement_settings.g1_measurement_frequency_in_ms"
+                      name="g1_frequency_in_normal" placeholder="Frequency">
+                  </td>
+                  <td style="vertical-align: middle;">
+                    <i class="fa fa-fw fa-cog" (click)="openGroupPropertyModel();"></i>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width: 50%;">G2 Measurement Frequency (In Sec): </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                      [(ngModel)]="asset.metadata.measurement_settings.g2_measurement_frequency_in_ms"
+                      name="g2_frequency_in_normal" placeholder="Frequency">
+                  </td>
+                  <td style="vertical-align: middle;">
+                    <i class="fa fa-fw fa-cog" (click)="openGroupPropertyModel();"></i>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width: 50%;">G3 Measurement Frequency (In Sec): </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                      [(ngModel)]="asset.metadata.measurement_settings.g3_measurement_frequency_in_ms"
+                      name="g3_frequency_in_normal" placeholder="Frequency">
+                  </td>
+                  <td style="vertical-align: middle;">
+                    <i class="fa fa-fw fa-cog" (click)="openGroupPropertyModel();"></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </accordion-group>
+          <accordion-group heading="" [panelClass]="'customClass1'">
+            <ng-container accordion-heading>
+              <a class="btn">
+                Telemetry Mode Settings
+              </a>
+            </ng-container>
+            <table class="table table-hover" *ngIf="asset?.metadata">
+              <tbody>
+                <!-- <tr>
+                  <td style="width: 50%;">Normal mode Frequency (In Sec): </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                      [(ngModel)]="asset.metadata.telemetry_mode_settings.normal_mode_frequency"
+                      name="frequency_in_normal" placeholder="Frequency">
+                  </td>
+                </tr> -->
+                <tr>
+                  <td style="width: 50%;">G1 Normal mode Frequency (In Sec): </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                      [(ngModel)]="asset.metadata.telemetry_mode_settings.g1_ingestion_frequency_in_ms"
+                      name="g1_frequency_in_normal" placeholder="Frequency">
+                  </td>
+                  <td style="vertical-align: middle;">
+                    <i class="fa fa-fw fa-cog" (click)="openGroupPropertyModel();"></i>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width: 50%;">G2 Normal mode Frequency (In Sec): </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                      [(ngModel)]="asset.metadata.telemetry_mode_settings.g2_ingestion_frequency_in_ms"
+                      name="g2_frequency_in_normal" placeholder="Frequency">
+                  </td>
+                  <td style="vertical-align: middle;">
+                    <i class="fa fa-fw fa-cog" (click)="openGroupPropertyModel();"></i>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width: 50%;">G3 Normal mode Frequency (In Sec): </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                      [(ngModel)]="asset.metadata.telemetry_mode_settings.g3_ingestion_frequency_in_ms"
+                      name="g3_frequency_in_normal" placeholder="Frequency">
+                  </td>
+                  <td style="vertical-align: middle;">
+                    <i class="fa fa-fw fa-cog" (click)="openGroupPropertyModel();"></i>
+                  </td>
+                </tr>
+
+                <!-- <tr>
+                  <td style="width: 50%;">Turbo mode Frequency (In Sec): </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                      [(ngModel)]="asset.metadata.telemetry_mode_settings.turbo_mode_frequency"
+                      name="frequency_in_turbo" placeholder="Frequency">
+                  </td>
+                </tr> -->
+                <tr>
+                  <td style="width: 50%;">G1 Turbo mode Frequency (In Sec): </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                      [(ngModel)]="asset.metadata.telemetry_mode_settings.g1_turbo_mode_frequency_in_ms"
+                      name="g1_frequency_in_turbo" placeholder="Frequency">
+                  </td>
+                  <td style="vertical-align: middle;">
+                    <i class="fa fa-fw fa-cog" (click)="openGroupPropertyModel();"></i>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width: 50%;">G2 Turbo mode Frequency (In Sec): </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                      [(ngModel)]="asset.metadata.telemetry_mode_settings.g2_turbo_mode_frequency_in_ms"
+                      name="g2_frequency_in_turbo" placeholder="Frequency">
+                  </td>
+                  <td style="vertical-align: middle;">
+                    <i class="fa fa-fw fa-cog" (click)="openGroupPropertyModel();"></i>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width: 50%;">G3 Turbo mode Frequency (In Sec): </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                      [(ngModel)]="asset.metadata.telemetry_mode_settings.g3_turbo_mode_frequency_in_ms"
+                      name="g3_frequency_in_turbo" placeholder="Frequency">
+                  </td>
+                  <td style="vertical-align: middle;">
+                    <i class="fa fa-fw fa-cog" (click)="openGroupPropertyModel();"></i>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>Turbo mode Timeout (In Sec): </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                      [(ngModel)]="asset.metadata.telemetry_mode_settings.turbo_mode_timeout_time"
+                      name="timeout_in_turbo" placeholder="Timeout">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </accordion-group>
+        </accordion>
       </accordion-group>
     </accordion>
-  </accordion-group>
-</accordion>
+  </div>
 </div>
-</div>
-<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" style="z-index: 1400;">
+<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2"
+  style="z-index: 1400;">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">{{headerMessage}}</h5>
-        <button type="button" class="close"  aria-label="Close"  (click)="onModalClose()">
+        <button type="button" class="close" aria-label="Close" (click)="onModalClose()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div>
-        <ng-container *ngIf="displayMsgArr.length > 0">
-          <ul>
-            <li *ngFor="let msg of displayMsgArr; let last = last;">
-              {{msg.message}}
-              <i class="fa fa-check" style="color: green;" *ngIf="!msg.error"></i>
-              <i class="fa fa-times" style="color: red;" *ngIf="msg.error"></i>
+          <ng-container *ngIf="displayMsgArr.length > 0">
+            <ul>
+              <li *ngFor="let msg of displayMsgArr; let last = last;">
+                {{msg.message}}
+                <i class="fa fa-check" style="color: green;" *ngIf="!msg.error"></i>
+                <i class="fa fa-times" style="color: red;" *ngIf="msg.error"></i>
               </li>
-          </ul>
-        </ng-container>
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAPILoading"></i>
+            </ul>
+          </ng-container>
+          <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAPILoading"></i>
         </div>
       </div>
       <div class="modal-footer">
 
-        <button  type="button" class="btn btn-secondary" (click)="onModalClose()">
+        <button type="button" class="btn btn-secondary" (click)="onModalClose()">
+          Close
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal fade" id="groupProperyModel" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2"
+  style="z-index: 1400;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Set Group Property</h5>
+        <button type="button" class="close" aria-label="Close" (click)="onPropertyModalClose()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <accordion [closeOthers]="'true'" id="groupAc">
+            <accordion-group heading="" [panelClass]="'customClass'" *ngFor="let property of properties;let i = index">
+              <ng-container accordion-heading>
+                <a class="btn">
+                  {{}}
+                </a>
+              </ng-container>
+
+            </accordion-group>
+          </accordion>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onPropertyModalClose()">
           Close
         </button>
       </div>

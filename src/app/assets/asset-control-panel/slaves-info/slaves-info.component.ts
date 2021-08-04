@@ -150,7 +150,7 @@ export class SlavesInfoComponent implements OnInit {
     this.slaveObj.created_by = this.userData.email + ' (' + this.userData.name + ')';
     this.slaveObj.asset_model = this.asset?.tags?.asset_model || this.asset?.asset_model;
     const macID = this.slaveObj.metadata.mac_id;
-    this.slaveObj.metadata = this.setupForm?.value;
+    this.slaveObj.metadata = this.setupForm?.value || {};
     this.slaveObj.metadata.mac_id = macID;
     this.subscriptions.push(this.assetService.createAssetSlaveDetail(this.contextApp.app, this.asset.asset_id, this.slaveObj)
     .subscribe((response: any) => {
@@ -168,7 +168,7 @@ export class SlavesInfoComponent implements OnInit {
 
   updateSlaveObj(slave) {
     const obj: any = {
-      metadata: slave.metadata
+      metadata: slave?.metadata
     };
     if (!obj.metadata?.mac_id) {
       this.toasterService.showError('Please enter all required fields', 'Update Slave Detail');
@@ -176,7 +176,7 @@ export class SlavesInfoComponent implements OnInit {
     }
     this.isAddSlaveAPILoading = true;
     const macID = obj.metadata.mac_id;
-    obj.metadata = this.setupForm?.value;
+    obj.metadata = this.setupForm?.value ||{};
     obj.metadata.mac_id = macID;
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(this.assetService.updateAssetSlaveDetail(this.contextApp.app, this.asset.asset_id,

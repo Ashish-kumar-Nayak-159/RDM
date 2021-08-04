@@ -687,7 +687,7 @@ export class AssetService {
       }
     });
     return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_ALERT_CONDITIONS,
-      encodeURIComponent(app), filterObj.asset_model), {params});
+      encodeURIComponent(app), filterObj.asset_id), {params});
   }
 
   createAlertCondition(modelObj, app, assetModel) {

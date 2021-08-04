@@ -633,9 +633,12 @@ export class ReportsComponent implements OnInit, OnDestroy {
         obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
         obj['derived_message_props'] = derived_message_props ? derived_message_props : undefined;
       }
-      const records = this.commonService.calculateEstimatedRecords
-          ((asset?.measurement_frequency?.average ? asset.measurement_frequency.average : 5),
-          filterObj.from_date, filterObj.to_date);
+      const frequencyArr = [];
+      frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+      frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+      frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+      const frequency = this.commonService.getLowestValueFromList(frequencyArr);
+      const records = this.commonService.calculateEstimatedRecords(frequency, filterObj.from_date, filterObj.to_date);
       if (records > 500 ) {
         this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
       }

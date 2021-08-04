@@ -21,7 +21,7 @@
         <!-- <td >{{asset.metadata?.package_app && assetTwin.twin_properties.reported.registered_assets[asset.metadata.package_app] ? (assetTwin.twin_properties.reported?.registered_assets[asset?.metadata?.package_app]?.indexOf(asset.asset_id) > -1 ? 'Registered' : 'Not Registered') : 'Not Registered'}}</td> -->
         <td>{{asset.asset_model || asset.tags?.asset_model}}</td>
         <td>
-          {{asset.appObj ? (
+          {{asset.appObj && assetTwin ? (
             assetTwin.twin_properties.reported && assetTwin.twin_properties.reported[asset.appObj.type] &&
              assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name]
              && assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name].asset_configuration

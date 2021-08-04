@@ -108,7 +108,7 @@ export class AssetAlertConditionsComponent implements OnInit {
   getAlertConditions() {
     this.isAlertConditionsLoading = true;
     const filterObj = {
-      asset_model: this.asset.asset_id,
+      asset_id: this.asset.asset_id,
       alert_type: this.selectedTab
     };
     this.subscriptions.push(this.assetService.getAlertConditions(this.asset.app, filterObj).subscribe(
@@ -269,7 +269,7 @@ export class AssetAlertConditionsComponent implements OnInit {
           a: new FormControl(true),
           mt: new FormControl(alertObj?.metadata?.mt, [Validators.required]),
         });
-      } else if (this.asset.tags.protocol === 'BLE') {
+      } else if (this.asset.tags.protocol === 'BlueNRG') {
         this.setupForm = new FormGroup({
           slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
           sa: new FormControl(alertObj?.metadata?.sa, [Validators.required, Validators.min(1), Validators.max(99999)]),
@@ -311,7 +311,7 @@ export class AssetAlertConditionsComponent implements OnInit {
           a: new FormControl(true),
           mt: new FormControl(null, [Validators.required]),
         });
-      } else if (this.asset.tags.protocol === 'BLE') {
+      } else if (this.asset.tags.protocol === 'BlueNRG') {
         this.setupForm = new FormGroup({
           slave_id: new FormControl(null, [Validators.required]),
           sa: new FormControl(null, [Validators.required, Validators.min(1), Validators.max(99999)]),

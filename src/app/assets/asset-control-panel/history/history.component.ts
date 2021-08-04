@@ -367,9 +367,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
           obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
           obj['derived_message_props'] = derived_message_props ? derived_message_props : undefined;
         }
-        const records = this.commonService.calculateEstimatedRecords
-          ((this.asset.metadata?.measurement_settings?.measurement_frequency ? this.asset.metadata.measurement_settings.measurement_frequency : 5),
-          obj.from_date, obj.to_date);
+        const frequencyArr = [];
+        frequencyArr.push(this.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+        frequencyArr.push(this.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+        frequencyArr.push(this.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+        const frequency = this.commonService.getLowestValueFromList(frequencyArr);
+        const records = this.commonService.calculateEstimatedRecords(frequency,obj.from_date, obj.to_date);
         if (records > 500 ) {
           this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
         }

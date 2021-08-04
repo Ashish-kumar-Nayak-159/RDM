@@ -311,16 +311,21 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
       return;
     }
     this.assetModel.metadata.telemetry_mode_settings = {
-      normal_mode_frequency: 60,
-      turbo_mode_frequency: 5,
-      turbo_mode_timeout_time: 120
+      turbo_mode_timeout_time: 120,
+      g1_turbo_mode_frequency_in_ms: 60,
+      g2_turbo_mode_frequency_in_ms: 120,
+      g3_turbo_mode_frequency_in_ms: 180,
+      g1_ingestion_frequency_in_ms: 600,
+      g2_ingestion_frequency_in_ms: 1200,
+      g3_ingestion_frequency_in_ms: 1800
     };
     this.assetModel.metadata.measurement_settings = {
-      measurement_frequency: 5
+      g1_measurement_frequency_in_ms: 60,
+      g2_measurement_frequency_in_ms: 120,
+      g3_measurement_frequency_in_ms: 180
     };
     this.assetModel.metadata.data_ingestion_settings = {
       type: 'all_props_at_fixed_interval',
-      frequency_in_sec: 10
     };
     this.assetModel.tags.reserved_tags = [];
     console.log(this.assetModel.tags);

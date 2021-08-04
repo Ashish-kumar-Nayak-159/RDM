@@ -84,7 +84,7 @@ export class PieChartComponent implements OnInit, OnDestroy {
     chart.exporting.getFormatOptions('pdf').pageOrientation = 'landscape';
     if (chart.data.length > 0) {
       chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date?.toString()
-      + ' to ' + chart.data[chart.data.length - 1].message_date.toString();
+      + ' to ' + chart.data[chart.data.length - 1].message_date?.toString();
     }
     const obj = {
       message_date: 'Timestamp'
@@ -115,11 +115,11 @@ export class PieChartComponent implements OnInit, OnDestroy {
     if (this.selectedAlert) {
       chart.exporting.filePrefix = this.selectedAlert.asset_id + '_Alert_' + this.selectedAlert.local_created_date;
     } else if (this.asset?.asset_id) {
-      chart.exporting.filePrefix = this.asset.asset_id + '_' + chart.data[0].message_date.toString()
-      + '_' + chart.data[chart.data.length - 1].message_date.toString();
+      chart.exporting.filePrefix = this.asset.asset_id + '_' + chart.data[0].message_date?.toString()
+      + '_' + chart.data[chart.data.length - 1].message_date?.toString();
     } else {
-      chart.exporting.filePrefix = chart.data[0].message_date.toString()
-      + '_' + chart.data[chart.data.length - 1].message_date.toString();
+      chart.exporting.filePrefix = chart.data[0].message_date?.toString()
+      + '_' + chart.data[chart.data.length - 1].message_date?.toString();
     }
     }
     this.chart = chart;

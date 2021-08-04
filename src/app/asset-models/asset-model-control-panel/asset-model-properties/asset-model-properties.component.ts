@@ -219,7 +219,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     console.log(this.setupForm);
     if (this.assetModel.metadata?.model_type !== CONSTANTS.IP_GATEWAY) {
       this.setupForm = new FormGroup({
-        slave_id: new FormControl(null),
+        slave_id: new FormControl(null, [Validators.required]),
       });
     }
     if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_ASSET) {
@@ -239,7 +239,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         a: new FormControl(false),
         mt: new FormControl(null, [Validators.required]),
       });
-    } else if (this.assetModel.tags.protocol === 'BLE') {
+    } else if (this.assetModel.tags.protocol === 'BlueNRG') {
       this.setupForm = new FormGroup({
         slave_id: new FormControl(null, [Validators.required]),
         sa: new FormControl(null, [Validators.required, Validators.min(1), Validators.max(99999)]),
@@ -550,7 +550,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.propertyObj.edit = true;
       if (this.assetModel.metadata?.model_type !== CONSTANTS.IP_GATEWAY) {
         this.setupForm = new FormGroup({
-          slave_id: new FormControl(this.propertyObj?.metadata?.slave_id),
+          slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
         });
       }
       if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_ASSET) {
@@ -570,7 +570,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
           a: new FormControl(false),
           mt: new FormControl(this.propertyObj?.metadata?.mt, [Validators.required]),
         });
-      } else if (this.assetModel.tags.protocol === 'BLE') {
+      } else if (this.assetModel.tags.protocol === 'BlueNRG') {
         this.setupForm = new FormGroup({
           slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
           sa: new FormControl(this.propertyObj?.metadata?.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),

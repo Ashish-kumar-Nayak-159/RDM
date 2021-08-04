@@ -848,9 +848,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       delete filterObj.aggregation_format;
       delete filterObj.sampling_time;
       delete filterObj.sampling_format;
-      const records = this.commonService.calculateEstimatedRecords
-          ((asset?.measurement_frequency?.average ? asset.measurement_frequency.average : 5),
-          filterObj.from_date, filterObj.to_date);
+      const frequencyArr = [];
+      frequencyArr.push(this.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+      frequencyArr.push(this.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+      frequencyArr.push(this.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+      const frequency = this.commonService.getLowestValueFromList(frequencyArr);
+      const records = this.commonService.calculateEstimatedRecords(frequency, filterObj.from_date, filterObj.to_date);
       if (records > 500 ) {
         this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
       }

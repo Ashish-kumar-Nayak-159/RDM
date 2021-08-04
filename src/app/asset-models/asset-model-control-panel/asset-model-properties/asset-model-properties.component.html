@@ -72,7 +72,7 @@
             </select>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" *ngIf="type.includes('measured') || type.includes('derived')">
             <label for="recipient-name" class="col-form-label required">Group:</label>
             <select class="form-control form-control-sm" id="group" name="group" [(ngModel)]="propertyObj.group">
               <option value="g1">G1</option>
@@ -90,9 +90,9 @@
               </ng-container>
               <form *ngIf="setupForm" [formGroup]="setupForm">
                 <div class="form-group" *ngIf="setupForm.get('slave_id')">
-                  <label for="recipient-name" class="col-form-label">Slave:</label>
+                  <label for="recipient-name" class="col-form-label required">Slave:</label>
                   <div class="input-group">
-                    <select class="form-control form-control-sm" id="sid" name="sid" formControlName="sid">
+                    <select class="form-control form-control-sm" id="slave_id" name="slave_id" formControlName="slave_id">
                       <option [ngValue]="null">Select Slave</option>
                       <option [ngValue]="slave.slave_id" *ngFor="let slave of slaveData">{{slave.slave_name}}</option>
                       <!-- <option [ngValue]="'d'" >Digital</option>
@@ -100,78 +100,53 @@
                     </select>
                   </div>
                   <div
-                    *ngIf="setupForm.get('sid').invalid && (setupForm.get('sid').dirty || setupForm.get('sid').touched)"
+                    *ngIf="setupForm.get('slave_id').invalid && (setupForm.get('slave_id').dirty || setupForm.get('slave_id').touched)"
                     class="alert-danger">
                     <div *ngIf="setupForm.get('slave_id').errors.required">
                       Slave is required.
                     </div>
                   </div>
                 </div>
-                <div class="form-group">
-                  <label for="recipient-name" class="col-form-label required">Type:</label>
-                  <div class="input-group">
+                <ng-container  *ngIf="assetModel.tags.protocol === 'BlueNRG'">
+                  <div class="form-group" *ngIf="setupForm.get('sa')">
+                    <label for="message-text" class="col-form-label required">Register Address:</label>
+                    <input type="number" class="form-control form-control-sm" id="sa" name="sa" formControlName="sa"
+                    placeholder="Enter Register Address" min="0" max="99999">
+                    <div *ngIf="setupForm.get('sa').invalid && (setupForm.get('sa').dirty || setupForm.get('sa').touched)"
+                      class="alert-danger">
+                      <div *ngIf="setupForm.get('sa').errors.required">
+                        Register Address is required.
+                      </div>
+                      <div *ngIf="setupForm.get('sa').errors.min || setupForm.get('sa').errors.max">
+                        Register Address value must be between 1 and 99999.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group" *ngIf="setupForm.get('p')">
+                    <label for="message-text" class="col-form-label required">Precision:</label>
+                    <input type="number" class="form-control form-control-sm" id="p" name="p" formControlName="p"
+                    placeholder="Enter Precision" min="1" max="5">
+                    <div *ngIf="setupForm.get('p').invalid && (setupForm.get('p').dirty || setupForm.get('p').touched)"
+                      class="alert-danger">
+                      <div *ngIf="setupForm.get('p').errors.required">
+                        Precision is required.
+                      </div>
+                      <div *ngIf="setupForm.get('p').errors.min || setupForm.get('p').errors.max">
+                        Precision value must be between 1 and 5.
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+                <ng-container  *ngIf="assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster'">
+                  <div class="form-group" *ngIf="setupForm.get('d')">
+                    <label for="recipient-name" class="col-form-label required">Type:</label>
+                    <div class="input-group">
                     <select class="form-control form-control-sm" id="datatype" name="datatype" formControlName="d"
-                      (change)="onChangeOfSetupType()">
-                      <option [ngValue]="null">Select Type</option>
-                      <option [ngValue]="'a'">Analog</option>
-                      <option [ngValue]="'d'">Digital</option>
-                      <option [ngValue]="'s'">String</option>
+                    (change)="onChangeOfSetupType()"> <option [ngValue]="null">Select Type</option>
+                      <option [ngValue]="'a'" >Analog</option>
+                      <option [ngValue]="'d'" >Digital</option>
+                      <option [ngValue]="'s'" >String</option>
                     </select>
-                  </div>
-                  <div *ngIf="setupForm.get('d').invalid && (setupForm.get('d').dirty || setupForm.get('d').touched)"
-                    class="alert-danger">
-                    <div *ngIf="setupForm.get('d').errors.required">
-                      Type is required.
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group" *ngIf="setupForm.get('d').value === 'a'">
-                  <label for="recipient-name" class="col-form-label required">Secondary Type:</label>
-                  <div class="input-group">
-                    <select class="form-control form-control-sm" id="sd" name="sd" formControlName="sd"
-                      (change)="onChangeOfSetupSecondaryType()">
-                      <option [ngValue]="null">Select Secondary Type</option>
-                      <option [ngValue]="1">SIGNED_16_INT</option>
-                      <option [ngValue]="2">UNSIGNED_16_INT</option>
-                      <option [ngValue]="7">SIGNED_64_INT </option>
-                      <option [ngValue]="8">UNSIGNED_64_INT </option>
-                      <option [ngValue]="3">LONG</option>
-                      <option [ngValue]="4">LONG_REVERSE</option>
-                      <option [ngValue]="5">FLOAT</option>
-                      <option [ngValue]="6">FLOAT_REVERSE</option>
-                      <option [ngValue]="9">BYTE</option>
-                    </select>
-                  </div>
-                  <div
-                    *ngIf="setupForm.get('sd')?.invalid && (setupForm.get('sd')?.dirty || setupForm.get('sd')?.touched)"
-                    class="alert-danger">
-                    <div *ngIf="setupForm.get('sd')?.errors.required">
-                      Secondary Type is required.
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="message-text" class="col-form-label required">PLC Register Address:</label>
-                  <input type="number" class="form-control form-control-sm" id="sa" name="sa" formControlName="sa"
-                    placeholder="Enter PLC Register Address" min="0" max="99999">
-                  <div *ngIf="setupForm.get('sa').invalid && (setupForm.get('sa').dirty || setupForm.get('sa').touched)"
-                    class="alert-danger">
-                    <div *ngIf="setupForm.get('sa').errors.required">
-                      PLC Register Address is required.
-                    </div>
-                    <div *ngIf="setupForm.get('sa').errors.min || setupForm.get('sa').errors.max">
-                      PLC Register Address value must be between 0 and 99999.
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group" *ngIf="setupForm.get('d').value === 's'">
-                  <label for="message-text" class="col-form-label required">String Length:</label>
-                  <input type="number" class="form-control form-control-sm" id="la" name="la" formControlName="la"
-                    placeholder="Enter String Length" min="1" max="99999">
-                  <div *ngIf="setupForm.get('la').invalid && (setupForm.get('la').dirty || setupForm.get('la').touched)"
-                    class="alert-danger">
-                    <div *ngIf="setupForm.get('la').errors.required">
-                      String Length is required.
                     </div>
                     <div *ngIf="setupForm.get('d').invalid && (setupForm.get('d').dirty || setupForm.get('d').touched)"
                       class="alert-danger">
@@ -203,16 +178,18 @@
                       </div>
                       </div>
                   </div>
-                </div>
-                <div class="form-group" *ngIf="(setupForm.get('sd')?.value === 5 ||setupForm.get('sd')?.value === 6 )
-                && setupForm.get('d').value === 'a'">
-                  <label for="message-text" class="col-form-label required">Precision:</label>
-                  <input type="number" class="form-control form-control-sm" id="p" name="p" formControlName="p"
-                    placeholder="Enter Precision" min="1" max="5">
-                  <div *ngIf="setupForm.get('p').invalid && (setupForm.get('p').dirty || setupForm.get('p').touched)"
-                    class="alert-danger">
-                    <div *ngIf="setupForm.get('p').errors.required">
-                      Precision is required.
+                  <div class="form-group" *ngIf="setupForm.get('sa')">
+                    <label for="message-text" class="col-form-label required">Register Address:</label>
+                    <input type="number" class="form-control form-control-sm" id="sa" name="sa" formControlName="sa"
+                    placeholder="Enter Register Address" min="0" max="99999">
+                    <div *ngIf="setupForm.get('sa').invalid && (setupForm.get('sa').dirty || setupForm.get('sa').touched)"
+                      class="alert-danger">
+                      <div *ngIf="setupForm.get('sa').errors.required">
+                        Register Address is required.
+                      </div>
+                      <div *ngIf="setupForm.get('sa').errors.min || setupForm.get('sa').errors.max">
+                        Register Address value must be between 0 and 99999.
+                      </div>
                     </div>
                   </div>
                   <div class="form-group" *ngIf="setupForm.get('d') && setupForm.get('la') &&  setupForm.get('d').value === 's'">
@@ -229,20 +206,19 @@
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="form-group" *ngIf="setupForm.get('sd')?.value === 9
-                && setupForm.get('d').value === 'a'">
-                  <label for="message-text" class="col-form-label required">Byte Number:</label>
-                  <select class="form-control form-control-sm" id="bytn" name="bytn" formControlName="bytn">
-                    <option [ngValue]="null">Select Byte Number</option>
-                    <option [ngValue]="0">LSB</option>
-                    <option [ngValue]="1">MSB</option>
-                  </select>
-                  <div
-                    *ngIf="setupForm.get('bytn').invalid && (setupForm.get('bytn').dirty || setupForm.get('bytn').touched)"
-                    class="alert-danger">
-                    <div *ngIf="setupForm.get('bytn').errors.required">
-                      Byte Number is required.
+                  <div class="form-group" *ngIf="setupForm.get('sd') && setupForm.get('p') && (setupForm.get('sd')?.value === 5 ||setupForm.get('sd')?.value === 6 )
+                  && setupForm.get('d').value === 'a'">
+                    <label for="message-text" class="col-form-label required">Precision:</label>
+                    <input type="number" class="form-control form-control-sm" id="p" name="p" formControlName="p"
+                    placeholder="Enter Precision" min="1" max="5">
+                    <div *ngIf="setupForm.get('p').invalid && (setupForm.get('p').dirty || setupForm.get('p').touched)"
+                      class="alert-danger">
+                      <div *ngIf="setupForm.get('p').errors.required">
+                        Precision is required.
+                      </div>
+                      <div *ngIf="setupForm.get('p').errors.min || setupForm.get('p').errors.max">
+                        Precision value must be between 1 and 5.
+                      </div>
                     </div>
                   </div>
                   <div class="form-group" *ngIf="setupForm.get('sd') && setupForm.get('bytn') && setupForm.get('sd')?.value === 9
@@ -261,105 +237,189 @@
 
                     </div>
                   </div>
+                <div class="form-group" *ngIf="assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster'">
+                  <label for="recipient-name" class="col-form-label required">Function Code:</label>
+                  <div class="input-group">
+                  <select class="form-control form-control-sm" id="fc" name="fc" formControlName="fc"
+                  (change)="onChangeOfSetupFunctionCode()"> <option [ngValue]="null">Select Function Code</option>
+                    <option [ngValue]="1" >Read Coil (DIGITAL)</option>
+                    <option [ngValue]="2" >Read Discrete Input (DIGITAL)</option>
+                    <option [ngValue]="3" *ngIf="setupForm.get('d').value === 'a' || setupForm.get('d').value === 's'">Read Holding Registers (ANALOG)</option>
+                    <option [ngValue]="4" *ngIf="setupForm.get('d').value === 'a' || setupForm.get('d').value === 's'">Read Input Registers (ANALOG)</option>
+                  </select>
+                  </div>
+                  <div *ngIf="setupForm.get('fc').invalid && (setupForm.get('fc').dirty || setupForm.get('fc').touched)"
+                    class="alert-danger">
+                    <div *ngIf="setupForm.get('fc').errors.required">
+                      Function Code is required.
+                    </div>
+                    </div>
                 </div>
-                <ng-container
-                  *ngIf="assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster'">
-                  <div class="form-group"
-                    *ngIf="assetModel.tags.protocol === 'ModbusTCPMaster' || assetModel.tags.protocol === 'ModbusRTUMaster'">
-                    <label for="recipient-name" class="col-form-label required">Function Code:</label>
-                    <div class="input-group">
-                      <select class="form-control form-control-sm" id="fc" name="fc" formControlName="fc"
-                        (change)="onChangeOfSetupFunctionCode()">
-                        <option [ngValue]="null">Select Function Code</option>
-                        <option [ngValue]="1">Read Coil (DIGITAL)</option>
-                        <option [ngValue]="2">Read Discrete Input (DIGITAL)</option>
-                        <option [ngValue]="3"
-                          *ngIf="setupForm.get('d').value === 'a' || setupForm.get('d').value === 's'">Read Holding
-                          Registers (ANALOG)</option>
-                        <option [ngValue]="4"
-                          *ngIf="setupForm.get('d').value === 'a' || setupForm.get('d').value === 's'">Read Input
-                          Registers (ANALOG)</option>
-                      </select>
+                <div class="form-group" *ngIf="setupForm.get('d').value === 'd' && (setupForm.get('fc').value === 3 || setupForm.get('fc').value === 4)">
+                  <label for="message-text" class="col-form-label required">Bit Number:</label>
+                  <input type="number" class="form-control form-control-sm" id="bn" name="bn" formControlName="bn"
+                  placeholder="Enter Bit Number" min="0" max="15">
+                  <div *ngIf="setupForm.get('bn').invalid && (setupForm.get('bn').dirty || setupForm.get('bn').touched)"
+                    class="alert-danger">
+                    <div *ngIf="setupForm.get('bn').errors.required">
+                      Bit Number is required.
                     </div>
-                    <div
-                      *ngIf="setupForm.get('fc').invalid && (setupForm.get('fc').dirty || setupForm.get('fc').touched)"
-                      class="alert-danger">
-                      <div *ngIf="setupForm.get('fc').errors.required">
-                        Function Code is required.
-                      </div>
+                    <div *ngIf="setupForm.get('bn').errors.min || setupForm.get('bn').errors.max">
+                      Bit Number value must be between 0 and 15.
                     </div>
                   </div>
-                  <div class="form-group"
-                    *ngIf="setupForm.get('d').value === 'd' && (setupForm.get('fc').value === 3 || setupForm.get('fc').value === 4)">
-                    <label for="message-text" class="col-form-label required">Bit Number:</label>
-                    <input type="number" class="form-control form-control-sm" id="bn" name="bn" formControlName="bn"
-                      placeholder="Enter Bit Number" min="0" max="15">
-                    <div
-                      *ngIf="setupForm.get('bn').invalid && (setupForm.get('bn').dirty || setupForm.get('bn').touched)"
-                      class="alert-danger">
-                      <div *ngIf="setupForm.get('bn').errors.required">
-                        Bit Number is required.
-                      </div>
-                      <div *ngIf="setupForm.get('bn').errors.min || setupForm.get('bn').errors.max">
-                        Bit Number value must be between 0 and 15.
-                      </div>
-                    </div>
-                  </div>
+                </div>
                 </ng-container>
-                <ng-container *ngIf="assetModel.tags.protocol === 'SiemensTCPIP'">
-                  <div class="form-group">
-                    <label for="recipient-name" class="col-form-label required">Memory Type:</label>
+                <ng-container  *ngIf="assetModel.tags.protocol === 'SiemensTCPIP'">
+                  <div class="form-group" *ngIf="setupForm.get('d')">
+                    <label for="recipient-name" class="col-form-label required">Type:</label>
                     <div class="input-group">
-                      <select class="form-control form-control-sm" id="mt" name="mt" formControlName="mt"
-                        (change)="onChageOfMemoryType()">
-                        <option [ngValue]="null">Select Memory Type</option>
-                        <option [ngValue]="'DB'">DB</option>
-                        <option [ngValue]="'PE'">PE</option>
-                        <option [ngValue]="'PA'">PA</option>
-                        <option [ngValue]="'MK'">MK</option>
-                        <option [ngValue]="'CT'">CT</option>
-                        <option [ngValue]="'TM'">TM</option>
-                      </select>
+                    <select class="form-control form-control-sm" id="datatype" name="datatype" formControlName="d"
+                    (change)="onChangeOfSetupType()"> <option [ngValue]="null">Select Type</option>
+                      <option [ngValue]="'a'" >Analog</option>
+                      <option [ngValue]="'d'" >Digital</option>
+                      <option [ngValue]="'s'" >String</option>
+                    </select>
                     </div>
-                    <div
-                      *ngIf="setupForm.get('mt').invalid && (setupForm.get('mt').dirty || setupForm.get('mt').touched)"
+                    <div *ngIf="setupForm.get('d').invalid && (setupForm.get('d').dirty || setupForm.get('d').touched)"
                       class="alert-danger">
-                      <div *ngIf="setupForm.get('mt').errors.required">
-                        Memory Type is required.
+                      <div *ngIf="setupForm.get('d').errors.required">
+                        Type is required.
+                      </div>
+                      </div>
+                  </div>
+                  <div class="form-group" *ngIf="setupForm.get('sd') && setupForm.get('d') && setupForm.get('d').value === 'a'">
+                    <label for="recipient-name" class="col-form-label required">Secondary Type:</label>
+                    <div class="input-group">
+                    <select class="form-control form-control-sm" id="sd" name="sd" formControlName="sd"
+                    (change)="onChangeOfSetupSecondaryType()"> <option [ngValue]="null">Select Secondary Type</option>
+                      <option [ngValue]="1" >SIGNED_16_INT</option>
+                      <option [ngValue]="2" >UNSIGNED_16_INT</option>
+                      <option [ngValue]="7">SIGNED_64_INT </option>
+                      <option [ngValue]="8">UNSIGNED_64_INT </option>
+                      <option [ngValue]="3" >LONG</option>
+                      <option [ngValue]="4" >LONG_REVERSE</option>
+                      <option [ngValue]="5" >FLOAT</option>
+                      <option [ngValue]="6" >FLOAT_REVERSE</option>
+                      <option [ngValue]="9" >BYTE</option>
+                    </select>
+                    </div>
+                    <div *ngIf="setupForm.get('sd')?.invalid && (setupForm.get('sd')?.dirty || setupForm.get('sd')?.touched)"
+                      class="alert-danger">
+                      <div *ngIf="setupForm.get('sd')?.errors.required">
+                       Secondary Type is required.
+                      </div>
+                      </div>
+                  </div>
+                  <div class="form-group" *ngIf="setupForm.get('sa')">
+                    <label for="message-text" class="col-form-label required">Register Address:</label>
+                    <input type="number" class="form-control form-control-sm" id="sa" name="sa" formControlName="sa"
+                    placeholder="Enter Register Address" min="0" max="99999">
+                    <div *ngIf="setupForm.get('sa').invalid && (setupForm.get('sa').dirty || setupForm.get('sa').touched)"
+                      class="alert-danger">
+                      <div *ngIf="setupForm.get('sa').errors.required">
+                        Register Address is required.
+                      </div>
+                      <div *ngIf="setupForm.get('sa').errors.min || setupForm.get('sa').errors.max">
+                        Register Address value must be between 0 and 99999.
                       </div>
                     </div>
                   </div>
-                  <div class="form-group" *ngIf="setupForm.get('mt').value === 'DB'">
-                    <label for="message-text" class="col-form-label required">DB Number:</label>
-                    <input type="number" class="form-control form-control-sm" id="dbn" name="dbn" formControlName="dbn"
-                      placeholder="Enter DB Number" min="0">
-                    <div
-                      *ngIf="setupForm.get('dbn').invalid && (setupForm.get('dbn').dirty || setupForm.get('dbn').touched)"
+                  <div class="form-group" *ngIf="setupForm.get('d') && setupForm.get('la') &&  setupForm.get('d').value === 's'">
+                    <label for="message-text" class="col-form-label required">String Length:</label>
+                    <input type="number" class="form-control form-control-sm" id="la" name="la" formControlName="la"
+                    placeholder="Enter String Length" min="1" max="99999">
+                    <div *ngIf="setupForm.get('la').invalid && (setupForm.get('la').dirty || setupForm.get('la').touched)"
                       class="alert-danger">
-                      <div *ngIf="setupForm.get('dbn').errors.required">
-                        DB Number is required.
+                      <div *ngIf="setupForm.get('la').errors.required">
+                        String Length is required.
                       </div>
-                      <div *ngIf="setupForm.get('dbn').errors.min || setupForm.get('dbn').errors.max">
-                        DB Number value must be greater than 0.
+                      <div *ngIf="setupForm.get('la').errors.min || setupForm.get('la').errors.max">
+                        String Length value must be between 1 and 99999.
                       </div>
                     </div>
                   </div>
-                  <div class="form-group" *ngIf="setupForm.get('d').value === 'd'">
-                    <label for="message-text" class="col-form-label required">Bit Number:</label>
-                    <input type="number" class="form-control form-control-sm" id="bn" name="bn" formControlName="bn"
-                      placeholder="Enter Bit Number" min="0" max="15">
-                    <div
-                      *ngIf="setupForm.get('bn').invalid && (setupForm.get('bn').dirty || setupForm.get('bn').touched)"
+                  <div class="form-group" *ngIf="setupForm.get('sd') && setupForm.get('p') && (setupForm.get('sd')?.value === 5 ||setupForm.get('sd')?.value === 6 )
+                  && setupForm.get('d').value === 'a'">
+                    <label for="message-text" class="col-form-label required">Precision:</label>
+                    <input type="number" class="form-control form-control-sm" id="p" name="p" formControlName="p"
+                    placeholder="Enter Precision" min="1" max="5">
+                    <div *ngIf="setupForm.get('p').invalid && (setupForm.get('p').dirty || setupForm.get('p').touched)"
                       class="alert-danger">
-                      <div *ngIf="setupForm.get('bn').errors.required">
-                        Bit Number is required.
+                      <div *ngIf="setupForm.get('p').errors.required">
+                        Precision is required.
                       </div>
-                      <div *ngIf="setupForm.get('bn').errors.min || setupForm.get('bn').errors.max">
-                        Bit Number value must be between 0 and 15.
+                      <div *ngIf="setupForm.get('p').errors.min || setupForm.get('p').errors.max">
+                        Precision value must be between 1 and 5.
                       </div>
                     </div>
                   </div>
-                </ng-container>
+                  <div class="form-group" *ngIf="setupForm.get('sd') && setupForm.get('bytn') && setupForm.get('sd')?.value === 9
+                  && setupForm.get('d').value === 'a'">
+                    <label for="message-text" class="col-form-label required">Byte Number:</label>
+                    <select class="form-control form-control-sm" id="bytn" name="bytn" formControlName="bytn"
+                    > <option [ngValue]="null">Select Byte Number</option>
+                      <option [ngValue]="0" >LSB</option>
+                      <option [ngValue]="1" >MSB</option>
+                    </select>
+                    <div *ngIf="setupForm.get('bytn').invalid && (setupForm.get('bytn').dirty || setupForm.get('bytn').touched)"
+                      class="alert-danger">
+                      <div *ngIf="setupForm.get('bytn').errors.required">
+                        Byte Number is required.
+                      </div>
+
+                    </div>
+                  </div>
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label required">Memory Type:</label>
+                  <div class="input-group">
+                  <select class="form-control form-control-sm" id="mt" name="mt" formControlName="mt"
+                  (change)="onChageOfMemoryType()"> <option [ngValue]="null">Select Memory Type</option>
+                    <option [ngValue]="'DB'" >DB</option>
+                    <option [ngValue]="'PE'" >PE</option>
+                    <option [ngValue]="'PA'" >PA</option>
+                    <option [ngValue]="'MK'" >MK</option>
+                    <option [ngValue]="'CT'" >CT</option>
+                    <option [ngValue]="'TM'" >TM</option>
+                  </select>
+                  </div>
+                  <div *ngIf="setupForm.get('mt').invalid && (setupForm.get('mt').dirty || setupForm.get('mt').touched)"
+                    class="alert-danger">
+                    <div *ngIf="setupForm.get('mt').errors.required">
+                      Memory Type is required.
+                    </div>
+                    </div>
+                </div>
+                <div class="form-group" *ngIf="setupForm.get('mt').value === 'DB'">
+                  <label for="message-text" class="col-form-label required">DB Number:</label>
+                  <input type="number" class="form-control form-control-sm" id="dbn" name="dbn" formControlName="dbn"
+                  placeholder="Enter DB Number" min="0">
+                  <div *ngIf="setupForm.get('dbn').invalid && (setupForm.get('dbn').dirty || setupForm.get('dbn').touched)"
+                    class="alert-danger">
+                    <div *ngIf="setupForm.get('dbn').errors.required">
+                      DB Number is required.
+                    </div>
+                    <div *ngIf="setupForm.get('dbn').errors.min || setupForm.get('dbn').errors.max">
+                      DB Number value must be greater than 0.
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group" *ngIf="setupForm.get('d').value === 'd'">
+                  <label for="message-text" class="col-form-label required">Bit Number:</label>
+                  <input type="number" class="form-control form-control-sm" id="bn" name="bn" formControlName="bn"
+                  placeholder="Enter Bit Number" min="0" max="15">
+                  <div *ngIf="setupForm.get('bn').invalid && (setupForm.get('bn').dirty || setupForm.get('bn').touched)"
+                    class="alert-danger">
+                    <div *ngIf="setupForm.get('bn').errors.required">
+                      Bit Number is required.
+                    </div>
+                    <div *ngIf="setupForm.get('bn').errors.min || setupForm.get('bn').errors.max">
+                      Bit Number value must be between 0 and 15.
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+
               </form>
             </accordion-group>
           </accordion>

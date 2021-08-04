@@ -68,6 +68,7 @@
                                                 <select id="dateoptions" placeholder="Select Operator" name="operator"
                                                     class="form-control form-control-sm"
                                                     [(ngModel)]="ruleModel.operator" required>
+                                                    <option [value]="undefined">Select Operator</option>
                                                     <option [value]="'&&'">AND</option>
                                                     <option [value]="'||'">OR</option>
                                                 </select>
@@ -95,12 +96,13 @@
                                                         [(ngModel)]="ruleModel.aggregation_window_in_sec"
                                                         [disabled]="!ruleModel.aggregation_enabled" name="aggregation"
                                                         class="form-control form-control-sm">
-                                                        <option value="300">5 minutes</option>
-                                                        <option value="600">10 minutes</option>
-                                                        <option value="900">15 minutes</option>
-                                                        <option value="1200">20 minutes</option>
-                                                        <option value="1800">30 minutes</option>
-                                                        <option value="3600">1 hour</option>
+                                                        <option [value]="undefined">Select Aggregation Time</option>
+                                                        <option [value]="300">5 minutes</option>
+                                                        <option [value]="600">10 minutes</option>
+                                                        <option [value]="900">15 minutes</option>
+                                                        <option [value]="1200">20 minutes</option>
+                                                        <option [value]="1800">30 minutes</option>
+                                                        <option [value]="3600">1 hour</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -114,9 +116,19 @@
                                                 <label for="exampleEmail" class="required">Escalation Time</label>
                                             </div>
                                             <div class="">
-                                                <input type="number" class="form-control form-control-sm"
+                                                <!-- <input type="number" class="form-control form-control-sm"
                                                     placeholder="Escalation Time" name="escalation_time_in_sec"
-                                                    [(ngModel)]="ruleModel.escalation_time_in_sec" required>
+                                                    [(ngModel)]="ruleModel.escalation_time_in_sec" required> -->
+                                                <select id="escalation_time_in_sec"
+                                                    [(ngModel)]="ruleModel.escalation_time_in_sec"
+                                                     name="escalation_time_in_sec"
+                                                    class="form-control form-control-sm">
+                                                    <option [value]="undefined">Select Escalation Time</option>
+                                                    <!-- <option [value]="0">0 minutes</option> -->
+                                                    <option [value]="60">1 minutes</option>
+                                                    <option [value]="300">5 minutes</option>
+                                                    <option [value]="600">10 minutes</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -131,18 +143,31 @@
                                         *ngFor="let condition of ruleModel.conditions; let i = index;">
                                         <div class="col-6">
                                             <label for="examplePassword" class="mb-2">Telemetry</label>
-                                            <select placeholder="Telemetry" name="telemetry_{{i}}"
+                                            <!-- <select placeholder="Telemetry" name="telemetry_{{i}}"
                                                 class="form-control form-control-sm" [(ngModel)]="condition.property"
                                                 required>
+                                                <option [value]="''">Select Telemetry</option>
                                                 <option *ngFor="let prop of dropdownPropList"
                                                     [value]="prop.value.json_key">
                                                     {{prop.id}}</option>
-                                            </select>
+                                            </select> -->
+                                            <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" name="telemetry_{{i}}" [clearable]="false"
+                                              [searchable]="true" bindLabel="id" [ngClass]="{'active': condition.property}"
+                                              [closeOnSelect]="true" placeholder="Select Properties" groupBy="type"
+                                              dropdownPosition="bottom" name="asset-dropdown" bindValue="json_key" [(ngModel)]="condition.property" required>
+                                              <ng-template ng-option-tmp let-item="item">
+                                                <span [tooltip]="item.id">
+                                                  <i [ngClass]="{'icon icon-function': item.value.type === 'Derived Properties'}"></i>
+                                                  {{item.id}}
+                                                </span>
+                                              </ng-template>
+                                            </ng-select>
                                         </div>
                                         <div class="col-6">
                                             <label for="exampleEmail" class="mb-2">Operator</label>
                                             <select placeholder="Operator" name="operator_{{i}}" required
                                                 class="form-control form-control-sm" [(ngModel)]="condition.operator">
+                                                <option [value]="''">Select Operator</option>
                                                 <option *ngFor="let optr of operatorList;" [value]="optr.id">
                                                     {{optr.value}}
                                                 </option>
@@ -159,7 +184,7 @@
                                             <select placeholder="Aggregation Type" name="aggregation_type_{{i}}"
                                                 class="form-control form-control-sm" required
                                                 [(ngModel)]="condition.aggregation_type">
-                                                <option [value]="undefined">Aggregartion Format</option>
+                                                <option [value]="''">Aggregartion Type</option>
                                                 <option [value]="'AVG'">Average</option>
                                                 <option [value]="'SUM'">Sum</option>
                                                 <option [value]="'MIN'">Min</option>
@@ -199,18 +224,29 @@
                                                 <label for="exampleEmail" class="required">Alert Condition</label>
                                             </div>
                                         </div>
-                                        <div class="form-group row">
-                                            <div class="col-auto">
-                                                <select id="alertCondition" placeholder="Alert Condition" name="alertCondition"
+                                        <div class="form-group">
+                                            <!-- <div class="col-auto"> -->
+                                                <!-- <select id="alertCondition" placeholder="Alert Condition" name="alertCondition"
                                                     class="form-control form-control-sm"
                                                     (change)="onChangeOfAssetCondition()"
                                                     [(ngModel)]="ruleModel.alert_condition_code" required>
-                                                    <option [value]="undefined"> Select Alert Condition</option>
+                                                    <option [value]="''"> Select Alert Condition</option>
                                                     <option *ngFor="let alert of alertConditionList;let i = index;"
                                                         [value]="alert.code">
                                                         {{alert.code}} - {{alert.message}}</option>
-                                                </select>
-                                            </div>
+                                                </select> -->
+
+                                                <ng-select [items]="alertConditionList" class="custom-dropdown w-12 sm" name="alertCondition" [clearable]="false"
+                                              [searchable]="true" bindLabel="message"
+                                              [closeOnSelect]="true" placeholder="Select Alert Condition" groupBy="type"
+                                              dropdownPosition="bottom" name="asset-dropdown" bindValue="code" [(ngModel)]="ruleModel.alert_condition_code" required>
+                                              <ng-template ng-option-tmp let-item="item">
+                                                <span [tooltip]="item.code + ' - ' + item.message">
+                                                  {{item.code}} - {{item.message}}
+                                                </span>
+                                              </ng-template>
+                                            </ng-select>
+                                            <!-- </div> -->
                                         </div>
                                     </form>
                                 </div>

@@ -69,6 +69,7 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
     am4core.options.onlyShowOnViewport = true;
     am4core.options.autoDispose = true;
     am4core.options.viewportTarget = [document.getElementById('mainChartDiv')];
+    console.log(document.getElementById(this.chartId));
     const chart = am4core.create(this.chartId, am4charts.XYChart);
 
     const data = [];

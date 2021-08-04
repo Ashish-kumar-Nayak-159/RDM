@@ -99,6 +99,7 @@ export class AddRuleComponent implements OnInit {
         this.dropdownPropList.push({
           id: prop.name,
           type: prop.type,
+          json_key: prop.json_key,
           value: prop
         });
       });
@@ -112,8 +113,24 @@ export class AddRuleComponent implements OnInit {
       alert_type: alert_type
     }
     this.assetModelService.getAlertConditions(this.contextApp.app, obj).subscribe((response: any) => {
+      response.data.forEach(element => element.type = 'Model Alert Conditions');
       this.alertConditionList = response.data;
+      if (this.asset) {
+        let obj1 = {
+          asset_id: this.asset.asset_id,
+          alert_type: alert_type
+        };
+        this.assetService.getAlertConditions(this.contextApp.app, obj1).subscribe((response: any) => {
+          response.data.forEach(item => {
+            item.type = 'Asset Alert Conditions';
+            this.alertConditionList.push(item);
+          });
+          this.alertConditionList = JSON.parse(JSON.stringify(this.alertConditionList));
+        });
+      }
     });
+
+
   }
 
   onSwitchValueChange(event) {
@@ -159,6 +176,7 @@ export class AddRuleComponent implements OnInit {
   }
 
   createNewRule() {
+    console.log(this.ruleModel);
     if (!this.ruleModel.alert_condition_code || !this.ruleModel.name || !this.ruleModel.description || !this.ruleModel.operator
       || !this.ruleModel.escalation_time_in_sec ) {
         this.toasterService.showError('Please fill all required details', 'Add Rule');

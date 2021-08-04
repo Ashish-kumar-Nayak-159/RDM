@@ -60,7 +60,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         this.asset.appObj = this.applications.find(appObj => appObj.name === this.asset.metadata.package_app);
         console.log(this.asset.appObj);
         console.log(this.assetTwin);
-        if (this.assetTwin.twin_properties.reported && this.assetTwin.twin_properties.reported[this.asset.appObj.type] &&
+        if (this.assetTwin && this.assetTwin.twin_properties.reported && this.assetTwin.twin_properties.reported[this.asset.appObj.type] &&
           this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name]) {
             if (this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].status?.toLowerCase() !== 'running') {
               this.asset.register_enabled = false;
@@ -215,6 +215,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     if (this.optionsValue.measured_properties) {
       this.properties.measured_properties.forEach(prop => {
         obj.measured_properties[prop.json_key] = prop.metadata;
+        obj.measured_properties[prop.json_key].g = prop.group;
       });
     }
     if (this.optionsValue.configurable_properties) {
@@ -230,6 +231,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     if (this.optionsValue.derived_properties) {
       this.properties.derived_properties.forEach(prop => {
         obj.derived_properties[prop.json_key] = prop.metadata;
+        obj.measured_properties[prop.json_key].g = prop.group;
       });
     }
     if (this.optionsValue.controllable_properties) {

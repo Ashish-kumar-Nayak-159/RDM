@@ -16,7 +16,9 @@ export class CONSTANTS {
     {id: 1, name: 'ModbusTCPMaster', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
     is_update: true, display_name: 'Modbus TCP App', metadata: {}, deleted: false, type: 'apps'},
     {id: 3, name: 'SiemensTCPIP', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
-    is_update: true, display_name: 'Siemens TCP/IP App', metadata: {}, deleted: false, type: 'apps'}
+    is_update: true, display_name: 'Siemens TCP/IP App', metadata: {}, deleted: false, type: 'apps'},
+    {id: 3, name: 'N_BlueNRG', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
+    is_update: true, display_name: 'N_BlueNRG', metadata: {}, deleted: false, type: 'apps'}
   ];
 
   public static PROTOCOLS = [
@@ -27,7 +29,7 @@ export class CONSTANTS {
     {id: 5, asset_model: 'Legacy Asset', name: 'ModbusTCPMaster', display_name: 'Modbus TCP', cloud_connectivity: ['ModBus TCP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusTCPMaster'}, deleted: false},
     {id: 6, asset_model: 'Legacy Asset', name: 'ModbusRTUMaster', display_name: 'Modbus RTU', cloud_connectivity: ['ModBus RTU Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusRTUMaster'}, deleted: false},
     {id: 7, asset_model: 'Legacy Asset', name: 'SiemensTCPIP', display_name: 'Siemens TCP/IP', cloud_connectivity: ['Siemens TCP/IP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'SiemensTCPIP'}, deleted: false},
-    {id: 8, asset_model: 'Legacy Asset', name: 'BLE', display_name: 'BLE', cloud_connectivity: ['BLE Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'BLE'}, deleted: false}
+    {id: 8, asset_model: 'Legacy Asset', name: 'BlueNRG', display_name: 'BlueNRG', cloud_connectivity: ['BLE Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'N_BlueNRG'}, deleted: false}
   ];
 
   public static NON_IP_ASSET_OPTIONS = [

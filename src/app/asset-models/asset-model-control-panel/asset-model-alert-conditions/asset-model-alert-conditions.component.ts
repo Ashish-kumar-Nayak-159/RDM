@@ -271,7 +271,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
           a: new FormControl(true),
           mt: new FormControl(alertObj?.metadata?.mt, [Validators.required]),
         });
-      } else if (this.assetModel.tags.protocol === 'BLE') {
+      } else if (this.assetModel.tags.protocol === 'BlueNRG') {
         this.setupForm = new FormGroup({
           slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
           sa: new FormControl(alertObj?.metadata?.sa, [Validators.required, Validators.min(1), Validators.max(99999)]),
@@ -313,7 +313,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
           a: new FormControl(true),
           mt: new FormControl(null, [Validators.required]),
         });
-      } else if (this.assetModel.tags.protocol === 'BLE') {
+      } else if (this.assetModel.tags.protocol === 'BlueNRG') {
         this.setupForm = new FormGroup({
           slave_id: new FormControl(null, [Validators.required]),
           sa: new FormControl(null, [Validators.required, Validators.min(1), Validators.max(99999)]),

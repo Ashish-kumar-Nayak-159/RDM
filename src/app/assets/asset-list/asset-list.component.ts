@@ -365,13 +365,13 @@ export class AssetListComponent implements OnInit, OnDestroy {
         data_key: 'gateway_display_name',
       });
 
-      this.tableConfig.data[4].btn_list.splice(0, 0, {
-        icon: 'fa fa-fw fa-edit',
-        text: '',
-        id: 'Edit',
-        valueclass: '',
-        tooltip: 'Edit',
-      });
+      // this.tableConfig.data[4].btn_list.splice(0, 0, {
+      //   icon: 'fa fa-fw fa-edit',
+      //   text: '',
+      //   id: 'Edit',
+      //   valueclass: '',
+      //   tooltip: 'Edit',
+      // });
       if (this.contextApp.app === 'CMS_Dev') {
         this.tableConfig.data[4].btn_list.splice(0, 0, {
           icon: 'fa fa-fw fa-eye',

@@ -89,8 +89,8 @@
                 </button>
               </ng-container>
               <form *ngIf="setupForm" [formGroup]="setupForm">
-                <div class="form-group">
-                  <label for="recipient-name" class="col-form-label required">Slave:</label>
+                <div class="form-group" *ngIf="setupForm.get('slave_id')">
+                  <label for="recipient-name" class="col-form-label">Slave:</label>
                   <div class="input-group">
                     <select class="form-control form-control-sm" id="sid" name="sid" formControlName="sid">
                       <option [ngValue]="null">Select Slave</option>
@@ -102,7 +102,7 @@
                   <div
                     *ngIf="setupForm.get('sid').invalid && (setupForm.get('sid').dirty || setupForm.get('sid').touched)"
                     class="alert-danger">
-                    <div *ngIf="setupForm.get('sid').errors.required">
+                    <div *ngIf="setupForm.get('slave_id').errors.required">
                       Slave is required.
                     </div>
                   </div>
@@ -173,9 +173,35 @@
                     <div *ngIf="setupForm.get('la').errors.required">
                       String Length is required.
                     </div>
-                    <div *ngIf="setupForm.get('la').errors.min || setupForm.get('la').errors.max">
-                      String Length value must be between 1 and 99999.
+                    <div *ngIf="setupForm.get('d').invalid && (setupForm.get('d').dirty || setupForm.get('d').touched)"
+                      class="alert-danger">
+                      <div *ngIf="setupForm.get('d').errors.required">
+                        Type is required.
+                      </div>
+                      </div>
+                  </div>
+                  <div class="form-group" *ngIf="setupForm.get('sd') && setupForm.get('d') && setupForm.get('d').value === 'a'">
+                    <label for="recipient-name" class="col-form-label required">Secondary Type:</label>
+                    <div class="input-group">
+                    <select class="form-control form-control-sm" id="sd" name="sd" formControlName="sd"
+                    (change)="onChangeOfSetupSecondaryType()"> <option [ngValue]="null">Select Secondary Type</option>
+                      <option [ngValue]="1" >SIGNED_16_INT</option>
+                      <option [ngValue]="2" >UNSIGNED_16_INT</option>
+                      <option [ngValue]="7">SIGNED_64_INT </option>
+                      <option [ngValue]="8">UNSIGNED_64_INT </option>
+                      <option [ngValue]="3" >LONG</option>
+                      <option [ngValue]="4" >LONG_REVERSE</option>
+                      <option [ngValue]="5" >FLOAT</option>
+                      <option [ngValue]="6" >FLOAT_REVERSE</option>
+                      <option [ngValue]="9" >BYTE</option>
+                    </select>
                     </div>
+                    <div *ngIf="setupForm.get('sd')?.invalid && (setupForm.get('sd')?.dirty || setupForm.get('sd')?.touched)"
+                      class="alert-danger">
+                      <div *ngIf="setupForm.get('sd')?.errors.required">
+                       Secondary Type is required.
+                      </div>
+                      </div>
                   </div>
                 </div>
                 <div class="form-group" *ngIf="(setupForm.get('sd')?.value === 5 ||setupForm.get('sd')?.value === 6 )
@@ -188,8 +214,19 @@
                     <div *ngIf="setupForm.get('p').errors.required">
                       Precision is required.
                     </div>
-                    <div *ngIf="setupForm.get('p').errors.min || setupForm.get('p').errors.max">
-                      Precision value must be between 1 and 5.
+                  </div>
+                  <div class="form-group" *ngIf="setupForm.get('d') && setupForm.get('la') &&  setupForm.get('d').value === 's'">
+                    <label for="message-text" class="col-form-label required">String Length:</label>
+                    <input type="number" class="form-control form-control-sm" id="la" name="la" formControlName="la"
+                    placeholder="Enter String Length" min="1" max="99999">
+                    <div *ngIf="setupForm.get('la').invalid && (setupForm.get('la').dirty || setupForm.get('la').touched)"
+                      class="alert-danger">
+                      <div *ngIf="setupForm.get('la').errors.required">
+                        String Length is required.
+                      </div>
+                      <div *ngIf="setupForm.get('la').errors.min || setupForm.get('la').errors.max">
+                        String Length value must be between 1 and 99999.
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -207,7 +244,22 @@
                     <div *ngIf="setupForm.get('bytn').errors.required">
                       Byte Number is required.
                     </div>
+                  </div>
+                  <div class="form-group" *ngIf="setupForm.get('sd') && setupForm.get('bytn') && setupForm.get('sd')?.value === 9
+                  && setupForm.get('d').value === 'a'">
+                    <label for="message-text" class="col-form-label required">Byte Number:</label>
+                    <select class="form-control form-control-sm" id="bytn" name="bytn" formControlName="bytn"
+                    > <option [ngValue]="null">Select Byte Number</option>
+                      <option [ngValue]="0" >LSB</option>
+                      <option [ngValue]="1" >MSB</option>
+                    </select>
+                    <div *ngIf="setupForm.get('bytn').invalid && (setupForm.get('bytn').dirty || setupForm.get('bytn').touched)"
+                      class="alert-danger">
+                      <div *ngIf="setupForm.get('bytn').errors.required">
+                        Byte Number is required.
+                      </div>
 
+                    </div>
                   </div>
                 </div>
                 <ng-container

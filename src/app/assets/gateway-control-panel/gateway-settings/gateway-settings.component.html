@@ -1,7 +1,6 @@
 <div class="tab-bar">
   <div class="">
     <ul class="nav">
-
       <li class="nav-item" *ngIf="componentState !== constantData.NON_IP_ASSET">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Test Connection'}" href="javascript:void(0)"
         (click)="onClickOfTab('Test Connection')" [class.disabled]="isSaveSettingAPILoading">
@@ -81,7 +80,16 @@
       [componentstate]="componentState"></app-register-properties>
     </ng-container>
     <ng-container *ngIf="selectedTab === 'Register Rules'">
-      <p class="m-3"> Work in Progress... </p>
+      <div class="table-responsive">
+        <div class="tableFixHead  m-3" >
+      <div class="row col-md-12 mt-1">
+        <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mb-1" href="javascript:void(0)"
+        (click)="syncRules()" [class.disabled]="isRuleSyncAPILoading || !asset.sync_rules_enabled">
+          Sync Rules</a>
+      </div>
+      <i *ngIf="isRuleSyncAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+      </div>
+      </div>
     </ng-container>
     <ng-container *ngIf="selectedTab === 'Settings'">
       <app-gateway-assets-setting [asset]="asset" [assetTwin]="assetTwin" (refreshAssetTwin)="getAssetTwinData()"

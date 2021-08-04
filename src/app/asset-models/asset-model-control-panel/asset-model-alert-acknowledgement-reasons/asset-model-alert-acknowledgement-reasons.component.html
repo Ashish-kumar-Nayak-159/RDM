@@ -56,8 +56,8 @@
                   </ng-container>
                 </td>
                 <td >
-                  <a href="javascript:void(0)" placement="bottom" tooltip="Edit Reasons" *ngIf="isEnableEdit && !isEnableEdit[i]"><i class="fa fa-edit"
-                  [class.disabled]="assetModel.freezed" (click)="enableEditMethod(i)"></i></a>
+                  <a href="javascript:void(0)" placement="bottom" tooltip="Edit Reasons" [class.disabled]="assetModel.freezed" *ngIf="isEnableEdit && !isEnableEdit[i]"><i class="fa fa-edit"
+                   (click)="enableEditMethod(i)"></i></a>
                   <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isEnableEdit && isEnableEdit[i]"
                   (click)="onCancelClick(ack.reason, ack.id, i);"><i class="fa fa-times"></i></a>
                   <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Save Reason" *ngIf="isEnableEdit && isEnableEdit[i]"

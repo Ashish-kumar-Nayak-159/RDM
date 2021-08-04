@@ -947,4 +947,50 @@ export class AssetService {
       encodeURIComponent(app), encodeURIComponent(assetId)), obj);
   }
 
+
+  createNewCloudAssetRule(app, modelName, ruleModel) {
+    return this.http.post(this.url + String.Format(AppUrls.UPDATE_CLOUD_ASSET_RULE,
+      encodeURIComponent(app), encodeURIComponent(modelName)), ruleModel);
+  }
+
+  updateCloudAssetRule(app, modelName, ruleModel) {
+    return this.http.put(this.url + String.Format(AppUrls.UPDATE_CLOUD_ASSET_RULE,
+      encodeURIComponent(app), encodeURIComponent(modelName)), ruleModel);
+  }
+
+  deleteCloudAssetRule(app, id, rule_type, updated_by, rule_type_id) {
+    let params = new HttpParams();
+    params = params.set('id', id).set('rule_type', rule_type).set('updated_by', updated_by).set('rule_type_id', rule_type_id);
+
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_CLOUD_ASSET_RULE,
+      encodeURIComponent(app), encodeURIComponent(id), encodeURIComponent(rule_type), encodeURIComponent(updated_by), encodeURIComponent(rule_type_id)), { params });
+  }
+  createNewEdgeAssetRule(app, modelName, ruleModel) {
+    return this.http.post(this.url + String.Format(AppUrls.UPDATE_EDGE_ASSET_RULE,
+      encodeURIComponent(app), encodeURIComponent(modelName)), ruleModel);
+  }
+
+  updateEdgeAssetRule(app, modelName, ruleModel) {
+    return this.http.put(this.url + String.Format(AppUrls.UPDATE_EDGE_ASSET_RULE,
+      encodeURIComponent(app), encodeURIComponent(modelName)), ruleModel);
+  }
+
+  deleteEdgeAssetRule(app, id, rule_type, updated_by, rule_type_id) {
+    let params = new HttpParams();
+    params = params.set('id', id).set('rule_type', rule_type).set('updated_by', updated_by).set('rule_type_id', rule_type_id);
+
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_EDGE_ASSET_RULE,
+      encodeURIComponent(app), encodeURIComponent(id), encodeURIComponent(rule_type), encodeURIComponent(updated_by), encodeURIComponent(rule_type_id)), { params });
+  }
+
+  deployCloudAssetRule(app, modelName, ruleModelId, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.post(this.url + String.Format(AppUrls.DEPLOY_CLOUD_ASSET_RULE,
+      encodeURIComponent(app), encodeURIComponent(modelName), encodeURIComponent(ruleModelId)), {}, {params});
+  }
 }

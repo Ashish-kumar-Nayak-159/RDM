@@ -5,6 +5,7 @@ import { CONSTANTS } from './../../../../app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as moment from 'moment';
+import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 declare var $: any;
 @Component({
   selector: 'app-gateway-assets-setting',
@@ -29,17 +30,21 @@ export class GatewayAssetsSettingComponent implements OnInit {
   isAPILoading = false;
   headerMessage: any;
   isSaveSettingAPILoading = false;
+  properties: any;
+  propertiesList: any;
   constantData = CONSTANTS;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
+    private assetModelService: AssetModelService,
     private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
+    
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.componentState === CONSTANTS.IP_GATEWAY) {
-    this.getAssetsOfGateway();
+      this.getAssetsOfGateway();
     } else {
       this.asset.gateway_id = this.asset.configuration?.gateway_id;
       this.selectedAsset = this.asset;
@@ -72,20 +77,21 @@ export class GatewayAssetsSettingComponent implements OnInit {
         console.log(this.assetTwin);
         if (this.assetTwin.twin_properties.reported && this.assetTwin.twin_properties.reported[this.asset.appObj.type] &&
           this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name]) {
-            if (this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].status?.toLowerCase() !== 'running') {
-              this.asset.settings_enabled = false;
-            } else {
-              if (this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration
+          if (this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].status?.toLowerCase() !== 'running') {
+            this.asset.settings_enabled = false;
+          } else {
+            if (this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration
               && this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration[this.asset.asset_id]) {
-                this.asset.settings_enabled = true;
-              } else {
-                this.asset.settings_enabled = false;
-              }
+              this.asset.settings_enabled = true;
+            } else {
+              this.asset.settings_enabled = false;
             }
           }
         }
+      }
       this.assets.push(this.asset);
     }
+    this.properties = this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration[this.asset.asset_id].properties;
   }
 
   getAssetsOfGateway() {
@@ -124,14 +130,14 @@ export class GatewayAssetsSettingComponent implements OnInit {
               }
               asset.settings_enabled = false;
               if (asset.metadata?.package_app) {
-              asset.appObj = this.applications.find(appObj => appObj.name === asset.metadata.package_app);
-              if (this.assetTwin.twin_properties.reported && this.assetTwin.twin_properties.reported[asset.appObj.type] &&
-                this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name]) {
+                asset.appObj = this.applications.find(appObj => appObj.name === asset.metadata.package_app);
+                if (this.assetTwin.twin_properties.reported && this.assetTwin.twin_properties.reported[asset.appObj.type] &&
+                  this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name]) {
                   if (this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name].status?.toLowerCase() !== 'running') {
                     asset.settings_enabled = false;
                   } else {
                     if (this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name].asset_configuration
-                    && this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name].asset_configuration[asset.asset_id]) {
+                      && this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name].asset_configuration[asset.asset_id]) {
                       asset.settings_enabled = true;
                     } else {
                       asset.settings_enabled = false;
@@ -155,11 +161,20 @@ export class GatewayAssetsSettingComponent implements OnInit {
     };
     console.log(this.telemetrySettings);
     obj.assets[this.selectedAsset.asset_id] = {
-      measurement_frequency_in_milli_sec: this.selectedAsset.metadata.measurement_settings.measurement_frequency * 1000,
-      turbo_mode_frequency_in_milli_sec: this.selectedAsset.metadata.telemetry_mode_settings.turbo_mode_frequency * 1000,
+      g1_measurement_frequency_in_ms: this.selectedAsset.metadata.measurement_settings.g1_measurement_frequency_in_ms * 1000,
+      g2_measurement_frequency_in_ms: this.selectedAsset.metadata.measurement_settings.g2_measurement_frequency_in_ms * 1000,
+      g3_measurement_frequency_in_ms: this.selectedAsset.metadata.measurement_settings.g3_measurement_frequency_in_ms * 1000,
+
+      g1_turbo_mode_frequency_in_ms: this.selectedAsset.metadata.telemetry_mode_settings.g1_turbo_mode_frequency_in_ms * 1000,
+      g2_turbo_mode_frequency_in_ms: this.selectedAsset.metadata.telemetry_mode_settings.g2_turbo_mode_frequency_in_ms * 1000,
+      g3_turbo_mode_frequency_in_ms: this.selectedAsset.metadata.telemetry_mode_settings.g3_turbo_mode_frequency_in_ms * 1000,
+
       turbo_mode_timeout_in_milli_sec: this.selectedAsset.metadata.telemetry_mode_settings.turbo_mode_timeout_time * 1000,
       ingestion_settings_type: this.selectedAsset.metadata.data_ingestion_settings.type,
-      ingestion_settings_frequency_in_milli_sec: this.selectedAsset.metadata.telemetry_mode_settings.normal_mode_frequency * 1000
+
+      g1_ingestion_frequency_in_ms: this.selectedAsset.metadata.telemetry_mode_settings.g1_ingestion_frequency_in_ms * 1000,
+      g2_ingestion_frequency_in_ms: this.selectedAsset.metadata.telemetry_mode_settings.g2_ingestion_frequency_in_ms * 1000,
+      g3_ingestion_frequency_in_ms: this.selectedAsset.metadata.telemetry_mode_settings.g3_ingestion_frequency_in_ms * 1000
     };
     this.callC2dMethod(obj, 'Change Asset Settings');
   }
@@ -174,7 +189,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
       asset_id: this.componentState !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id,
       message: obj,
       app: this.contextApp.app,
-      timestamp:  moment().unix(),
+      timestamp: moment().unix(),
       acknowledge: 'Full',
       expire_in_min: 2880,
       job_id: this.asset.asset_id + '_' + this.commonService.generateUUID(),
@@ -186,20 +201,20 @@ export class GatewayAssetsSettingComponent implements OnInit {
     this.subscriptions.push(
       this.assetService.sendC2DMessage(c2dObj, this.contextApp.app,
         this.componentState !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id).subscribe(
-        (response: any) => {
-          this.displayMsgArr.push({
-            message: type + ' request sent to gateway.',
-            error: false
-          });
-          clearInterval(this.c2dResponseInterval);
-          this.loadC2DResponse(c2dObj);
-        }, error => {
-          this.toasterService.showError(error.message, type);
-          this.isAPILoading = false;
-          this.onModalClose();
-          clearInterval(this.c2dResponseInterval);
-        }
-      )
+          (response: any) => {
+            this.displayMsgArr.push({
+              message: type + ' request sent to gateway.',
+              error: false
+            });
+            clearInterval(this.c2dResponseInterval);
+            this.loadC2DResponse(c2dObj);
+          }, error => {
+            this.toasterService.showError(error.message, type);
+            this.isAPILoading = false;
+            this.onModalClose();
+            clearInterval(this.c2dResponseInterval);
+          }
+        )
     );
   }
 
@@ -218,7 +233,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
         if (response.data?.length > 0 && this.displayMsgArr.length <= response.data.length) {
           for (let i = this.displayMsgArr.length - 1; i < response.data.length; i++) {
             this.displayMsgArr.push({
-              message:  response.data[i].asset_id + ': ' + response.data[i]?.payload?.message,
+              message: response.data[i].asset_id + ': ' + response.data[i]?.payload?.message,
               error: response.data[i]?.payload?.status === 'failure' ? true : false
             });
           }
@@ -227,9 +242,9 @@ export class GatewayAssetsSettingComponent implements OnInit {
           clearInterval(this.c2dResponseInterval);
 
           this.c2dResponseInterval = setInterval(
-          () => {
-            this.loadC2DResponse(c2dObj);
-          }, 5000);
+            () => {
+              this.loadC2DResponse(c2dObj);
+            }, 5000);
         } else {
           clearInterval(this.c2dResponseInterval);
           this.refreshAssetTwin.emit();
@@ -239,7 +254,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
           }, 1000);
         }
       }
-      ));
+    ));
   }
 
   onModalClose() {
@@ -253,6 +268,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
 
   saveGatewaySettings() {
     this.changeTelemetrySetting();
+    this.registerProperties();
     this.isSaveSettingAPILoading = true;
     const obj = {
       metadata: this.selectedAsset.metadata,
@@ -270,6 +286,60 @@ export class GatewayAssetsSettingComponent implements OnInit {
     ));
   }
 
+  openGroupPropertyModel() {
+    $('#groupProperyModel').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onPropertyModalClose() {
+    $('#groupProperyModel').modal('hide');
+  }
+
+  async registerProperties() {
+    this.isAPILoading = true;
+    await this.getAssetsModelProperties();
+    const obj = {
+      asset_id: this.selectedAsset.asset_id,
+      command: 'set_properties',
+      measured_properties: {},
+      derived_properties: {}
+    };
+    this.propertiesList.measured_properties.forEach(prop => {
+      obj.measured_properties[prop.json_key] = prop.metadata;
+      obj.measured_properties[prop.json_key]['g'] = this.properties[prop.json_key];
+    });
+    this.propertiesList.derived_properties.forEach(prop => {
+      obj.derived_properties[prop.json_key] = prop.metadata;
+      obj.measured_properties[prop.json_key]['g'] = this.properties[prop.json_key];
+    });
+    this.callC2dMethod(obj, 'Register Properties');
+  }
+
+  getAssetsModelProperties() {
+    return new Promise<void>((resolve1, reject) => {
+      const obj = {
+        app: this.contextApp.app,
+        name: this.selectedAsset.asset_model || this.selectedAsset.tags?.asset_model
+      };
+      this.subscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
+        (response: any) => {
+          response.properties.measured_properties = response.properties.measured_properties ?
+            response.properties.measured_properties : [];
+          response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
+          response.properties.configurable_properties = response.properties.configurable_properties ?
+            response.properties.configurable_properties : [];
+          response.properties.controllable_properties = response.properties.controllable_properties ?
+            response.properties.controllable_properties : [];
+          this.propertiesList = response.properties;
+          resolve1();
+        }, error => reject()
+      ));
+
+    });
+  }
 
 
+  updatePropertyData() {
+    console.log(this.properties);
+    debugger
+  }
 }

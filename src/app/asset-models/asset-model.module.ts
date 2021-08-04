@@ -76,6 +76,9 @@ import { UiSwitchModule } from 'ngx-ui-switch';
     NgSelectModule,
     TooltipModule,
     UiSwitchModule
+  ],
+  exports: [
+    AddRuleComponent
   ]
 })
 export class AssetModelModule { }

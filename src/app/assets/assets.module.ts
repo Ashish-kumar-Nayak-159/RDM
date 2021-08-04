@@ -1,3 +1,4 @@
+import { AssetModelModule } from './../asset-models/asset-model.module';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { AgmMarkerClustererModule } from '@agm/markerclusterer';
@@ -136,7 +137,7 @@ import { AssetAlertConditionsComponent } from './asset-control-panel/asset-alert
     RulesComponent,
     SlavesInfoComponent,
     NonProvisionedAssetsComponent,
-    AssetAlertConditionsComponent
+    AssetAlertConditionsComponent,
   ],
   imports: [
     CommonModule,
@@ -162,7 +163,8 @@ import { AssetAlertConditionsComponent } from './asset-control-panel/asset-alert
     TabsModule,
     NgSelectModule,
     Daterangepicker,
-    TooltipModule
+    TooltipModule,
+    AssetModelModule
   ],
   exports: [
     FilterComponent,

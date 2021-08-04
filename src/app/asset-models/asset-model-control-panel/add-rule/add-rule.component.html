@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">
-                    Create New Rule
+                    {{isEdit ? 'Edit Rule' : 'Create New Rule'}}
                 </h5>
                 <button type="button" class="close" (click)="closeRuleModal(false);" aria-label="Close">
                     <span aria-hidden="true">&times;</span>

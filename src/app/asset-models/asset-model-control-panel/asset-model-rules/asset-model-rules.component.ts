@@ -266,8 +266,11 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
 
   onCloseRuleModel(event) {
     this.isAddRule = false;
-    if (event.status)
+    if (event.status) {
       this.getRules();
+    }
+    this.isEdit = false;
+    this.ruleData = undefined;
   }
 
   ngOnDestroy() {

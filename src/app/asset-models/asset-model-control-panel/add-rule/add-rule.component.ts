@@ -1,3 +1,4 @@
+import { AssetService } from 'src/app/services/assets/asset.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { EventEmitter } from '@angular/core';
 import { Component, Input, OnInit, Output } from '@angular/core';
@@ -16,6 +17,7 @@ declare var $: any;
 export class AddRuleComponent implements OnInit {
 
   @Input() isModel: any;
+  @Input() asset: any;
   @Input() name: any;
   @Input() isEdit: any;
   @Input() ruleData: any;
@@ -39,7 +41,8 @@ export class AddRuleComponent implements OnInit {
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
-    private assetModelService: AssetModelService) { }
+    private assetModelService: AssetModelService,
+    private assetService: AssetService) { }
 
   ngOnInit(): void {
     this.title = this.isEdit ? 'Update' : 'Create';
@@ -48,8 +51,11 @@ export class AddRuleComponent implements OnInit {
     $('#addRuleModal').modal({ backdrop: 'static', keyboard: false, show: true });
     this.addNewCondition();
     this.getAssetsModelProperties();
-    if (this.isEdit)
+    if (this.isEdit) {
       this.configureData();
+    } else {
+      this.getAlertConditions('Cloud');
+    }
   }
 
   configureData() {
@@ -78,7 +84,7 @@ export class AddRuleComponent implements OnInit {
   getAssetsModelProperties() {
     let obj = {
       app: this.contextApp.app,
-      name: this.name
+      name: this.asset ? this.asset.tags.asset_model : this.name
     }
     this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
       response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
@@ -102,7 +108,7 @@ export class AddRuleComponent implements OnInit {
 
   getAlertConditions(alert_type) {
     let obj = {
-      asset_model: this.name,
+      asset_model: this.asset ? this.asset.tags.asset_model : this.name,
       alert_type: alert_type
     }
     this.assetModelService.getAlertConditions(this.contextApp.app, obj).subscribe((response: any) => {
@@ -169,8 +175,14 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.created_by = this.userData.email + ' (' + this.userData.name + ')';
     if (this.isEdit) {
       this.ruleModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-      const method = !this.ruleModel.rule_type ? this.assetModelService.updateCloudModelRule(this.contextApp.app, this.name, this.ruleModel) :
-      this.assetModelService.updateEdgeModelRule(this.contextApp.app, this.name, this.ruleModel)
+      let method;
+      if (!this.asset) {
+        method = !this.ruleModel.rule_type ? this.assetModelService.updateCloudModelRule(this.contextApp.app, this.name, this.ruleModel) :
+        this.assetModelService.updateEdgeModelRule(this.contextApp.app, this.name, this.ruleModel);
+      } else {
+        method = !this.ruleModel.rule_type ? this.assetService.updateCloudAssetRule(this.contextApp.app, this.name, this.ruleModel) :
+        this.assetService.updateEdgeAssetRule(this.contextApp.app, this.name, this.ruleModel);
+      }
       method.subscribe((response: any) => {
 
         this.toasterService.showSuccess(response.message, this.title + 'Rule');
@@ -181,8 +193,14 @@ export class AddRuleComponent implements OnInit {
         this.toasterService.showError(err.message, this.title + 'Rule');
       });
     } else {
-      const method = !this.ruleModel.rule_type ? this.assetModelService.createNewCloudModelRule(this.contextApp.app, this.name, this.ruleModel) :
+      let method;
+      if (!this.asset) {
+      method = !this.ruleModel.rule_type ? this.assetModelService.createNewCloudModelRule(this.contextApp.app, this.name, this.ruleModel) :
       this.assetModelService.createNewEdgeModelRule(this.contextApp.app, this.name, this.ruleModel);
+      } else {
+        method = !this.ruleModel.rule_type ? this.assetService.createNewCloudAssetRule(this.contextApp.app, this.name, this.ruleModel) :
+      this.assetService.createNewEdgeAssetRule(this.contextApp.app, this.name, this.ruleModel);
+      }
       method.subscribe((response: any) => {
         this.onCloseRuleModel.emit({
           status: true

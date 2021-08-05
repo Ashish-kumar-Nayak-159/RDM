@@ -32,6 +32,100 @@ export class CONSTANTS {
     {id: 8, asset_model: 'Legacy Asset', name: 'BlueNRG', display_name: 'BlueNRG', cloud_connectivity: ['BLE Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'N_BlueNRG'}, deleted: false}
   ];
 
+  public static DEFAULT_PRIVILEGES = {
+    "APMM": {
+      "display_name": "App Management - Manage",
+      "enabled": true
+    },
+    "APMV": {
+      "display_name": "App Management - View",
+      "enabled": true
+    },
+    "ASCMM": {
+      "display_name": "Asset Campaign Management - Manage",
+      "enabled": true
+    },
+    "ASCMV": {
+      "display_name": "Asset Campaign Management - View",
+      "enabled": true
+    },
+    "ASMD": {
+      "display_name": "Asset Management - Deprovision",
+      "enabled": true
+    },
+    "ASMM": {
+      "display_name": "Asset Management - Manage",
+      "enabled": true
+    },
+    "ASMMM": {
+      "display_name": "Asset Model Management - Manage",
+      "enabled": true
+    },
+    "ASMMV": {
+      "display_name": "Asset Model Management - View",
+      "enabled": true
+    },
+    "ASMP": {
+      "display_name": "Asset Management - Provision",
+      "enabled": true
+    },
+    "ASMS": {
+      "display_name": "Asset Management - Setup",
+      "enabled": true
+    },
+    "ASMV": {
+      "display_name": "Asset Management - View",
+      "enabled": true
+    },
+    "ASMVC": {
+      "display_name": "Asset Management - View Creds",
+      "enabled": true
+    },
+    "RCC": {
+      "display_name": "Remote Control - Control",
+      "enabled": true
+    },
+    "RCP": {
+      "display_name": "Remote Control - Purge",
+      "enabled": true
+    },
+    "RCV": {
+      "display_name": "Remote Control - View",
+      "enabled": true
+    },
+    "RKPIM": {
+      "display_name": "Rules & KPIs - Manage",
+      "enabled": true
+    },
+    "RKPIV": {
+      "display_name": "Rules & KPIs - View",
+      "enabled": true
+    },
+    "RMM": {
+      "display_name": "Remote Monitoring - Manage",
+      "enabled": true
+    },
+    "RMV": {
+      "display_name": "Remote Monitoring - View",
+      "enabled": true
+    },
+    "RSM": {
+      "display_name": "Reports - Subscription Management",
+      "enabled": true
+    },
+    "RV": {
+      "display_name": "Reports - View",
+      "enabled": true
+    },
+    "UMM": {
+      "display_name": "User Management - Manage",
+      "enabled": true
+    },
+    "UMV": {
+      "display_name": "User Management - View",
+      "enabled": true
+    }
+  };
   public static NON_IP_ASSET_OPTIONS = [
     {
       name: 'BLE Mesh Assets',

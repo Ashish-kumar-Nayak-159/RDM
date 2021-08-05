@@ -252,8 +252,9 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
         tags: {}
       };
       this.applicationDetail.roles = [{
-        name: 'App Admin',
-        level: 0
+        role: 'App Admin',
+        level: 0,
+        privileges: CONSTANTS.DEFAULT_PRIVILEGES
       }];
       const env = environment.environment;
       if (env) {

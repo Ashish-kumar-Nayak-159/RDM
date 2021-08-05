@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { ToasterService } from '../services/toaster.service';
 import { CommonService } from 'src/app/services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { decode } from 'punycode';
 declare var $: any;
 @Component({
   selector: 'app-rdm-login',
@@ -126,10 +127,27 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
               });
               this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, response);
               if (this.userData.apps && this.userData.apps.length > 1) {
+
+                this.userData.apps.forEach(app => {
+                  const decodedToken = this.commonService.decodeJWTToken(app.token);
+                  const obj = {
+                    hierarchy: decodedToken.hierarchy,
+                    role: decodedToken.role,
+                    privileges: decodedToken.privileges
+                  };
+                  app.user = obj;
+                });
                 this.router.navigate(['applications', 'selection']);
               } else if (this.userData.apps && this.userData.apps.length === 1) {
                 localStorage.removeItem(CONSTANTS.APP_TOKEN);
                 localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.apps[0].token);
+                const decodedToken = this.commonService.decodeJWTToken(this.userData.apps[0].token);
+                const obj = {
+                  hierarchy: decodedToken.hierarchy,
+                  role: decodedToken.role,
+                  privileges: decodedToken.privileges
+                };
+                this.userData.apps[0].user = obj;
                 await this.getApplicationData(this.userData.apps[0]);
                 this.router.navigate(['applications', this.applicationData.app]);
                 // const menu = this.applicationData.menu_settings.main_menu.length > 0 ?

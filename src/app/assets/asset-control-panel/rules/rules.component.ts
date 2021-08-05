@@ -223,7 +223,9 @@ export class RulesComponent implements OnInit {
 
   onTableFunctionCall(event) {
     this.ruleData = event.data;
+    console.log(event);
     if (event.for === 'Delete') {
+      console.log('hereeeeeeeee');
       $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
       return;
     } else if (event.for === 'Deploy') {

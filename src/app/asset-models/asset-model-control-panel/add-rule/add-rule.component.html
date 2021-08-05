@@ -152,7 +152,7 @@
                                                     {{prop.id}}</option>
                                             </select> -->
                                             <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" name="telemetry_{{i}}" [clearable]="false"
-                                              [searchable]="true" bindLabel="id" [ngClass]="{'active': condition.property}"
+                                              [searchable]="true" bindLabel="id"
                                               [closeOnSelect]="true" placeholder="Select Properties" groupBy="type"
                                               dropdownPosition="bottom" name="asset-dropdown" bindValue="json_key" [(ngModel)]="condition.property" required>
                                               <ng-template ng-option-tmp let-item="item">

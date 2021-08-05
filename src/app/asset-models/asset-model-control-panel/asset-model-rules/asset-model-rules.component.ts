@@ -207,6 +207,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
   onTableFunctionCall(event) {
     this.ruleData = event.data;
     if (event.for === 'Delete') {
+      console.log('hereeeeeeeee');
       $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
       return;
     } else if (event.for === 'Deploy') {

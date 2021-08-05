@@ -49,7 +49,6 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
   async redirectToApp(app, index) {
     this.apiSubscriptions.forEach(sub => sub.unsubscribe());
     this.signalRService.disconnectFromSignalR('all');
-
     const localStorageAppData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.isAppDataLoading = {};
     this.isAppDataLoading[index] = true;

@@ -26,7 +26,7 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
   isResetPassword = false;
   apiSubscriptions: Subscription[] = [];
   defaultAppName = environment.app;
-
+  decodedToken: any;
   constructor(
     private router: Router,
     private commonService: CommonService,
@@ -38,6 +38,8 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     // this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.contextApp && this.userData) {
       if (this.contextApp.metadata && !this.contextApp.metadata.header_logo) {

@@ -4,8 +4,10 @@
     Roles
       <!-- <a href="javascript:void(0)" placement="bottom" class="ml-1" tooltip="Add Role"
           (click)="onAddNewRoleObj()"><i class="fa fa-plus"></i></a> -->
+          <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
           <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="onAddNewRoleObj()"
           placement="bottom" tooltip="Add Role"><i class="fas fa-plus fa-sm"></i></button>
+        </ng-container>
       <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Edit Role" class="ml-1" *ngIf="!isAppSetingsEditable"
           (click)="isAppSetingsEditable = true;"><i class="fa fa-edit"></i></a>
         <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Cancel" *ngIf="isAppSetingsEditable"
@@ -27,7 +29,7 @@
           <i class="fa fa-plus fa-sm"></i></button></th>
     </tr>
   </thead> -->
-  <tfoot>
+  <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
     <tr>
       <th colspan="3">
         <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="onSaveRoles()"
@@ -58,7 +60,7 @@
       </ng-template>
     </ng-template>
       </td>
-      <td>
+      <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
         <a *ngIf="i !== 0" href="javascript:void(0)" (click)="openConfirmRoleDeleteModal(item)">
           <i class="fa fa-trash" placement="bottom" tooltip="Delete Role"></i>
         </a>

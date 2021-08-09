@@ -1,8 +1,10 @@
+import { CommonService } from './../../../services/common.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { CONSTANTS } from 'src/app/app.constants';
 
 @Component({
   selector: 'app-application-dashboard-configuration',
@@ -16,14 +18,18 @@ export class ApplicationDashboardConfigurationComponent implements OnInit {
   saveConfigAPILoading  = false;
   originalApplicationData: any;
   apiSubscriptions: Subscription[] = [];
+  decodedToken: any;
   constructor(
     private assetService: AssetService,
     private applicationService: ApplicationService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
+    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
     if (!this.applicationData.dashboard_config) {
       this.applicationData.dashboard_config = {};

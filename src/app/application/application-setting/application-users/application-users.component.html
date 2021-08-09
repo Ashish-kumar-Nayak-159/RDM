@@ -4,8 +4,10 @@
          <div class="h6 m-0 p-0">Users
           <!-- <a href="javascript:void(0)" class="ml-1" (click)="openCreateUserModal()"
           tooltip="Add User" placement="bottom"><i class="fas fa-plus"></i></a> -->
+          <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
           <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="openCreateUserModal()"
       placement="bottom" tooltip="Add User"><i class="fas fa-plus fa-sm"></i></button>
+    </ng-container>
          </div>
 </div>
 </div>
@@ -18,7 +20,7 @@
         <th>Full Name</th>
         <th>Role</th>
         <th>Access Level</th>
-        <th>Action</th>
+        <th *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">Action</th>
       </tr>
     </thead>
 
@@ -28,7 +30,7 @@
         <td>{{ user.user_name }}</td>
         <td>{{ user.role }}</td>
         <td>{{ getUserHierarchy(user) }}</td>
-        <td>
+        <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
           <a href="javascript:void(0)" (click)="openCreateUserModal(user)" class="mr-1"
           placement="bottom" tooltip="Edit User">
               <i class="fa fa-fw fa-edit" ></i>

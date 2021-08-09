@@ -3,12 +3,14 @@
     <div class="h6 m-0 p-0">Menu Settings
       <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isAppSettingsEditable"
       (click)="isAppSettingsEditable = true;"><i class="fa fa-edit"></i></a> -->
+        <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
       <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="isAppSettingsEditable = true;" *ngIf="!isAppSettingsEditable"
       placement="bottom" tooltip="Edit Tags"><i class="fas fa-edit fa-sm"></i></button>
     <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isAppSettingsEditable"
       (click)="onCancelClick();"><i class="fa fa-times"></i></a> -->
       <button type="button" class="btn btn-sm searchBtn btn-secondary" (click)="onCancelClick()" *ngIf="isAppSettingsEditable"
       placement="bottom" tooltip="Cancel"><i class="fas fa-times fa-sm"></i></button>
+    </ng-container>
     </div>
 </div>
 </div>
@@ -33,7 +35,7 @@
                 <th>Visibility</th>
               </tr>
             </thead>
-            <tfoot>
+            <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
               <tr>
                 <th colspan="5">
                   <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
@@ -70,7 +72,7 @@
                 <td colspan="2" class="accordion-border">
                   <div class="form-group row my-2" *ngFor="let control of item.showAccordion;" >
                     <ng-container >
-                    
+
                     <div class="col-6">
                       <label for="recipient-name" class="col-form-label">{{control.name}}</label>
                     </div>
@@ -111,7 +113,7 @@
                 <th>Visibility</th>
               </tr>
             </thead>
-            <tfoot>
+            <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
               <tr>
                 <th colspan="5">
                   <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
@@ -182,7 +184,7 @@
                 <th>Visibility</th>
               </tr>
             </thead>
-            <tfoot>
+            <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
               <tr>
                 <th colspan="5">
                   <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
@@ -252,7 +254,7 @@
                 <th>Visibility</th>
               </tr>
             </thead>
-            <tfoot>
+            <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
               <tr>
                 <th colspan="5">
                   <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"
@@ -320,7 +322,7 @@
                 <th>Visibility</th>
               </tr>
             </thead>
-            <tfoot>
+            <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
               <tr>
                 <th colspan="5">
                   <button type="button" class="btn btn-primary btn-sm mx-1 my-1" (click)="onSaveMenuSettings()"

@@ -9,6 +9,7 @@ import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { AssetService } from 'src/app/services/assets/asset.service';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 
 @Component({
   selector: 'app-application-selection',
@@ -24,6 +25,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
   applicationData: any;
   apiSubscriptions: Subscription[] = [];
   isAppDataLoading;
+  decodedToken: any;
 
   constructor(
     private commonService: CommonService,
@@ -64,6 +66,12 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       localStorage.removeItem(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);
       localStorage.removeItem(CONSTANTS.MAIN_MENU_FILTERS);
       localStorage.removeItem(CONSTANTS.APP_TOKEN);
+    }
+    const decodedToken =  this.commonService.decodeJWTToken(app.token);
+    if (decodedToken.privileges.indexOf('APMV') === -1) {
+      this.toasterService.showError(APIMESSAGES.API_ACCESS_ERROR_MESSAGE, APIMESSAGES.CONTACT_ADMINISTRATOR);
+      this.commonService.onLogOut();
+      return;
     }
     localStorage.setItem(CONSTANTS.APP_TOKEN, app.token);
     await this.getApplicationData(app);

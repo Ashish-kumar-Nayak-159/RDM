@@ -1,3 +1,4 @@
+import { CommonService } from './../../../services/common.service';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from './../../../services/application/application.service';
 import { ToasterService } from './../../../services/toaster.service';
@@ -19,13 +20,17 @@ export class ApplicationOrgTreeComponent implements OnInit {
   forceUpdate = false;
   selectedItemForDelete: any;
   apiSubscriptions: Subscription[] = [];
+  decodedToken: any;
 
   constructor(
     private toasterService: ToasterService,
-    private applicationService: ApplicationService
+    private applicationService: ApplicationService,
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
+    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     if (!this.applicationData?.hierarchy?.levels) {
       this.applicationData.hierarchy.levels = [];
     }

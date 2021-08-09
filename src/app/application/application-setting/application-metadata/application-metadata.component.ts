@@ -3,6 +3,7 @@ import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { ApplicationService } from 'src/app/services/application/application.service';
+import { CONSTANTS } from 'src/app/app.constants';
 
 @Component({
   selector: 'app-application-metadata',
@@ -20,6 +21,7 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
   @ViewChild('logoFileInput') logoFileInput: ElementRef;
   @ViewChild('iconFileInput') iconFileInput: ElementRef;
   isMetadataEditable = false;
+  decodedToken: any;
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -28,6 +30,8 @@ export class ApplicationMetadataComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
+    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
   }
 

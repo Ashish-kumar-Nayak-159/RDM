@@ -1,8 +1,9 @@
+import { CONSTANTS } from 'src/app/app.constants';
 import { environment } from 'src/environments/environment';
 import { Injectable } from '@angular/core';
 import { Router, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 import { CommonService } from 'src/app/services/common.service';
-import { CONSTANTS } from './../../app.constants';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,12 @@ export class AuthGuardService {
           this.commonService.onLogOut();
           return false;
         }
+        const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
+        // const decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+        // if (!token || !decodedToken || !decodedToken.privileges || decodedToken.privileges?.length === 0) {
+        //   this.commonService.onLogOut();
+        //   return;
+        // }
         return true;
       } else {
         this.router.navigate(['applications', appData.app]);

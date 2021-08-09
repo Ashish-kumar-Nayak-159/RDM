@@ -27,6 +27,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   isDeleteUserAPILoadig = false;
   selectedUserForDelete: any;
   password: any;
+  decodedToken: any;
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
@@ -37,8 +38,9 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
+    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.getApplicationUsers();
-
     this.applicationData.hierarchy.levels.forEach((element, index) => {
       this.hierarchyArr[index] = [];
     });

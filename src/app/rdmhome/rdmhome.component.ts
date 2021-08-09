@@ -5,6 +5,7 @@ import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CONSTANTS } from '../app.constants';
 import { CommonService } from 'src/app/services/common.service';
+import { APIMESSAGES } from '../api-messages.constants';
 declare var $: any;
 @Component({
   selector: 'app-rdmhome',
@@ -46,6 +47,10 @@ export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
           localStorage.removeItem(CONSTANTS.APP_TOKEN);
           localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.apps[0].token);
           const decodedToken = this.commonService.decodeJWTToken(this.userData.apps[0].token);
+          if (decodedToken.privileges.indexOf('APMV') === -1) {
+            this.commonService.onLogOut();
+            return;
+          }
           const obj = {
             hierarchy: decodedToken.hierarchy,
             role: decodedToken.role,

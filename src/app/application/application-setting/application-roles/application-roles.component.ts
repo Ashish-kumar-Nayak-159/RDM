@@ -1,7 +1,9 @@
+import { CommonService } from './../../../services/common.service';
 import { Subscription } from 'rxjs';
 import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application/application.service';
+import { CONSTANTS } from 'src/app/app.constants';
 
 declare var $: any;
 @Component({
@@ -20,13 +22,17 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
   forceUpdate = false;
   isAppSetingsEditable = false;
   isSaveButtonDisable = true;
+  decodedToken: any;
   constructor(
     private applicationService: ApplicationService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
+    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
     this.applicationData.roles.forEach(element => {
       element.isEditable = false;

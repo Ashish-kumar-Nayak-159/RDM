@@ -30,9 +30,9 @@
           <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'asset-hierarchy'}"
           href="#app-asset-hierarchy" role="tab" aria-controls="nav-profile" aria-selected="false" (click)="setActiveTab('asset-hierarchy')">
           Hierarchy</a>
-
           <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'users'}"
-          href="#app-users" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('users')">
+          href="#app-users" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('users')"
+          *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('UMV') > -1">
           Users</a>
 
         </div>
@@ -70,7 +70,7 @@
       <app-application-roles *ngIf="activeTab === 'roles' && applicationData" [applicationData]="applicationData"></app-application-roles>
     </div>
     <div class="tab-pane" id="app-users" role="tabpanel" aria-labelledby="nav-about-tab"
-    [ngClass]="{'active': activeTab === 'users'}">
+    [ngClass]="{'active': activeTab === 'users'}" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('UMV') > -1">
        <app-application-users *ngIf="activeTab === 'users' && applicationData" [applicationData]="applicationData"></app-application-users>
     </div>
     <div class="tab-pane" id="app-menu-settings" role="tabpanel" aria-labelledby="nav-about-tab"

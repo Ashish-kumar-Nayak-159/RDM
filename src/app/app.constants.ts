@@ -33,99 +33,112 @@ export class CONSTANTS {
   ];
 
   public static DEFAULT_PRIVILEGES = {
-    "APMM": {
-      "display_name": "App Management - Manage",
-      "enabled": true
+    APMM: {
+      display_name: 'App Management - Manage',
+      enabled: true
     },
-    "APMV": {
-      "display_name": "App Management - View",
-      "enabled": true
+    APMV: {
+      display_name: 'App Management - View',
+      enabled: true
     },
-    "ASCMM": {
-      "display_name": "Asset Campaign Management - Manage",
-      "enabled": true
+    ASCMM: {
+      display_name: 'Asset Campaign Management - Manage',
+      enabled: true
     },
-    "ASCMV": {
-      "display_name": "Asset Campaign Management - View",
-      "enabled": true
+    ASCMV: {
+      display_name: 'Asset Campaign Management - View',
+      enabled: true
     },
-    "ASMD": {
-      "display_name": "Asset Management - Deprovision",
-      "enabled": true
+    ASMD: {
+      display_name: 'Asset Management - Deprovision',
+      enabled: true
     },
-    "ASMM": {
-      "display_name": "Asset Management - Manage",
-      "enabled": true
+    ASMM: {
+      display_name: 'Asset Management - Manage',
+      enabled: true
     },
-    "ASMMM": {
-      "display_name": "Asset Model Management - Manage",
-      "enabled": true
+    ASMMM: {
+      display_name: 'Asset Model Management - Manage',
+      enabled: true
     },
-    "ASMMV": {
-      "display_name": "Asset Model Management - View",
-      "enabled": true
+    ASMMV: {
+      display_name: 'Asset Model Management - View',
+      enabled: true
     },
-    "ASMP": {
-      "display_name": "Asset Management - Provision",
-      "enabled": true
+    ASMP: {
+      display_name: 'Asset Management - Provision',
+      enabled: true
     },
-    "ASMS": {
-      "display_name": "Asset Management - Setup",
-      "enabled": true
+    ASMS: {
+      display_name: 'Asset Management - Setup',
+      enabled: true
     },
-    "ASMV": {
-      "display_name": "Asset Management - View",
-      "enabled": true
+    ASMV: {
+      display_name: 'Asset Management - View',
+      enabled: true
     },
-    "ASMVC": {
-      "display_name": "Asset Management - View Creds",
-      "enabled": true
+    ASMVC: {
+      display_name: 'Asset Management - View Creds',
+      enabled: true
     },
-    "RCC": {
-      "display_name": "Remote Control - Control",
-      "enabled": true
+    RCC: {
+      display_name: 'Remote Control - Control',
+      enabled: true
     },
-    "RCP": {
-      "display_name": "Remote Control - Purge",
-      "enabled": true
+    RCP: {
+      display_name: 'Remote Control - Purge',
+      enabled: true
     },
-    "RCV": {
-      "display_name": "Remote Control - View",
-      "enabled": true
+    RCV: {
+      display_name: 'Remote Control - View',
+      enabled: true
     },
-    "RKPIM": {
-      "display_name": "Rules & KPIs - Manage",
-      "enabled": true
+    RKPIM: {
+      display_name: 'Rules & KPIs - Manage',
+      enabled: true
     },
-    "RKPIV": {
-      "display_name": "Rules & KPIs - View",
-      "enabled": true
+    RKPIV: {
+      display_name: 'Rules & KPIs - View',
+      enabled: true
     },
-    "RMM": {
-      "display_name": "Remote Monitoring - Manage",
-      "enabled": true
+    RMM: {
+      display_name: 'Remote Monitoring - Manage',
+      enabled: true
     },
-    "RMV": {
-      "display_name": "Remote Monitoring - View",
-      "enabled": true
+    RMV: {
+      display_name: 'Remote Monitoring - View',
+      enabled: true
     },
-    "RSM": {
-      "display_name": "Reports - Subscription Management",
-      "enabled": true
+    RSM: {
+      display_name: 'Reports - Subscription Management',
+      enabled: true
     },
-    "RV": {
-      "display_name": "Reports - View",
-      "enabled": true
+    RV: {
+      display_name: 'Reports - View',
+      enabled: true
     },
-    "UMM": {
-      "display_name": "User Management - Manage",
-      "enabled": true
+    UMM: {
+      display_name: 'User Management - Manage',
+      enabled: true
     },
-    "UMV": {
-      "display_name": "User Management - View",
-      "enabled": true
+    UMV: {
+      display_name: 'User Management - View',
+      enabled: true
     }
   };
+
+  public static PRIVILEGE_GROUPS = {
+    'App Management': ['APMM', 'APMV'],
+    'Asset Management': ['ASMD', 'ASMM', 'ASMP', 'ASMS', 'ASMV', 'ASMVC'],
+    'Asset Campaign Management': ['ASCMM', 'ASCMV'],
+    'Asset Model Management': ['ASMMM', 'ASMMV'],
+    'Remote Control': ['RCC', 'RCP', 'RCV'],
+    'Rules & KPIs': ['RKPIM', 'RKPIV'],
+    'Remote Monitoring': ['RMM', 'RMV'],
+    'Reports': ['RSM', 'RV'],
+    'User Management': ['UMM', 'UMV']
+  };
+
   public static NON_IP_ASSET_OPTIONS = [
     {
       name: 'BLE Mesh Assets',

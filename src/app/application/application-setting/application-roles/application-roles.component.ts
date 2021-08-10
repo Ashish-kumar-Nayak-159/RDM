@@ -18,10 +18,8 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
   isUserRolesAPILoading = false;
   isCreateUserAPILoading = false;
   userRoles: any[] = [];
-  addUserObj: any;
   privilegeObj: any;
-  privilegesKeys = [];
-  privilegesValues = [];
+  privilegeGroups: any;
   saveRoleAPILoading = false;
   selectedRole: any;
   isPasswordVisible = false;
@@ -38,6 +36,7 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
+    this.privilegeGroups = CONSTANTS.PRIVILEGE_GROUPS;
     this.getApplicationUserRoles();
   }
 
@@ -55,7 +54,6 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
 
   onToggleRows(i) {
     this.privilegeObj = this.userRoles[i];
-    this.privilegesValues = Object.values(this.privilegeObj.privileges);
     if (this.toggleRows[i]) {
       this.toggleRows = {};
     } else {
@@ -68,47 +66,20 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
       this.privilegeObj = {};
       this.privilegeObj.app = this.applicationData.app;
       this.privilegeObj.privileges = CONSTANTS.DEFAULT_PRIVILEGES;
-      // this.privilegesKeys = Object.keys(this.privilegeObj.privileges);
-      this.privilegesValues = Object.values(this.privilegeObj.privileges);
       $('#createUserModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
-
-  openEditUserModal(i) {
-      this.privilegeObj = this.userRoles[i];
-      // this.privilegesKeys = Object.keys(this.privilegeObj.privileges);
-      this.privilegesValues = Object.values(this.privilegeObj.privileges);
-      $('#createUserModal').modal({ backdrop: 'static', keyboard: false, show: true });
-  }
-
-  // openCreateUserModal(i) {
-  //   this.privilegeObj = undefined;
-  //   if (!this.userRoles[i] || !this.userRoles[i].id)
-  //   {
-  //     this.privilegeObj = {};
-  //     this.privilegeObj.app = this.applicationData.app;
-  //     this.privilegeObj.privileges = CONSTANTS.DEFAULT_PRIVILEGES;
-  //     this.privilegesKeys = Object.keys(this.privilegeObj.privileges);
-  //   } else {
-  //     this.privilegeObj = this.userRoles[i];
-  //     this.privilegesKeys = Object.keys(this.privilegeObj.privileges);
-  //     // console.log(this.privilegesKeys);
-  //     // console.log(this.privilegeObj);
-  //   }
-  //   $('#createUserModal').modal({ backdrop: 'static', keyboard: false, show: true });
-  // }
 
   onSaveRoles() {
     this.saveRoleAPILoading = true;
     const method = this.privilegeObj.id ? this.applicationService.updateUserRoles(this.applicationData.app, this.privilegeObj) :
     this.applicationService.addUserRoles(this.applicationData.app, this.privilegeObj);
     this.apiSubscriptions.push(method.subscribe(
-    // this.apiSubscriptions.push(this.applicationService.addUserRoles(this.applicationData.app, this.privilegeObj).subscribe(
-      (response: any) => {
+     (response: any) => {
         this.toasterService.showSuccess(response.message, 'Save User Roles');
         this.saveRoleAPILoading = false;
         this.onCloseCreateUserModal();
-        this.toggleRows = {};
         this.getApplicationUserRoles();
+        this.toggleRows = {};
       }, (error) => {
         this.toasterService.showError(error.message, 'Save User Roles');
         this.saveRoleAPILoading = false;

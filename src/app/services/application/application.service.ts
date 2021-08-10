@@ -109,6 +109,33 @@ export class ApplicationService {
       }));
     }
   }
+
+  getApplicationUserRoles(app) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_APP_USERROLES, encodeURIComponent(app)));
+  }
+
+  addUserRoles(app, obj) {
+    return this.http.post(this.url + String.Format(AppUrls.ADD_APP_USERROLES, encodeURIComponent(app)), obj);
+  }
+
+  updateUserRoles(app, obj) {
+    return this.http.put(this.url + String.Format(AppUrls.UPDATE_APP_USERROLES, encodeURIComponent(app),
+    encodeURIComponent(obj.id)), obj);
+  }
+
+  deleteUserRoles(app, filterObj) {
+    let params = new HttpParams();
+    (Object.keys(filterObj)).forEach(key => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.delete(this.url + String.Format(AppUrls.DELETE_APP_USERROLES, encodeURIComponent(app),
+    encodeURIComponent(filterObj.id), filterObj.role), {params});
+    // return this.http.delete(this.url + String.Format(AppUrls.DELETE_APP_USERROLES, encodeURIComponent(app),
+    // encodeURIComponent(obj.id)), obj);
+  }
+
 }
 
 

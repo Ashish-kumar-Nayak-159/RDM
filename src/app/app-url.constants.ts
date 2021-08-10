@@ -41,6 +41,10 @@ export class AppUrls {
   public static GE_NON_IP_ASSETS_COUNT = 'apps/{0}/legacy_assets_count';
   public static GET_APP_DETAILS = 'apps/{0}';
   public static GET_APP_USERS = 'apps/{0}/users';
+  public static GET_APP_USERROLES = 'apps/{0}/roles';
+  public static ADD_APP_USERROLES = 'apps/{0}/roles/';
+  public static UPDATE_APP_USERROLES = 'apps/{0}/roles/{1}/privileges';
+  public static DELETE_APP_USERROLES = 'apps/{0}/roles/{1}';
   public static CREATE_LAYOUT = 'layout';
   public static GET_LAYOUT = 'layouts';
   public static GET_ASSETS_MODELS = 'apps/{0}/asset_models';

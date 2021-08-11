@@ -1,9 +1,11 @@
+import { CommonService } from './../../../../services/common.service';
 import { environment } from './../../../../../environments/environment.prod';
 import { Subscription } from 'rxjs';
 import { Component, Input, NgZone, OnChanges, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import { ChartService } from 'src/app/chart/chart.service';
+import { CONSTANTS } from 'src/app/app.constants';
 declare var $: any;
 
 
@@ -40,12 +42,15 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
   chartEnddate: any;
   subscriptions: Subscription[] = [];
   environmentApp = environment.app;
+  decodedToken: any;
   constructor(
     private chartService: ChartService,
-    private zone: NgZone
+    private zone: NgZone,
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     if (!this.chartConfig.y1AxisProps) {
       this.chartConfig.y1AxisProps = [];
     }

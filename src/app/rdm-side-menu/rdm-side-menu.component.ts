@@ -149,12 +149,24 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   processSideMenuData(data, list) {
     // alert('here');
     const arr = JSON.parse(JSON.stringify(data));
+    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
+    const decodedToken =  this.commonService.decodeJWTToken(token);
     arr.forEach(element1 => {
-      if (element1.page === 'Asset Models' || element1.page === 'Asset Management') {
-        if (this.contextApp?.user.role !== CONSTANTS.APP_ADMIN_ROLE) {
-        element1.visible = false;
+      let trueCount = 0;
+      let falseCount = 0;
+      element1?.privileges_required?.forEach(privilege => {
+        if (decodedToken?.privileges?.indexOf(privilege) !== -1) {
+          trueCount++;
         } else {
-          element1.visible = true;
+          falseCount++;
+        }
+      });
+      console.log(element1.page, '=====true===', trueCount, '===== false====', falseCount);
+      if (trueCount > 0) {
+        element1.visible = true;
+      } else {
+        if (falseCount > 0 ) {
+          element1.visible = false;
         }
       }
     });

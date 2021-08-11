@@ -94,6 +94,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   selectedDateRange: string;
   displayHierarchyString: string;
+  decodedToken: any;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -110,6 +111,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
     }

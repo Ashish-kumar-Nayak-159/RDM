@@ -84,6 +84,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
   fromDate: any;
   toDate: any;
   subscriptions: Subscription[] = [];
+  decodedToken: any;
 
   constructor(
     private commonService: CommonService,
@@ -99,6 +100,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getAssetsModelProperties();
     if (this.propertyList) {
       this.propertyList.forEach(item => {

@@ -33,6 +33,7 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
   isUpdateTagsAPILoading = false;
   message: string;
   deleteTagIndex: any;
+  decodedToken: any;
   constructor(
     private route: ActivatedRoute,
     private commonService: CommonService,
@@ -44,6 +45,7 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.originalAssetModel = JSON.parse(JSON.stringify(this.assetModel));
     this.getAssetModelDetail();
     if (!this.assetModel.tags.reserved_tags) {

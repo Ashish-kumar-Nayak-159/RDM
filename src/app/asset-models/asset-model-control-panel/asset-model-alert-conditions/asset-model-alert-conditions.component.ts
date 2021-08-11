@@ -39,6 +39,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   selectedTab = 'Asset';
   slaveData: any[] = [];
   contextApp: any;
+  decodedToken: any;
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -47,6 +48,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
 
   async ngOnInit(): Promise<void> {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getDocuments();
     this.getAssetModelWidgets();
     this.onClickOfTab('Asset');

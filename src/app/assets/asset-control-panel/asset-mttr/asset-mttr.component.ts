@@ -61,6 +61,7 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
   selectedDateRange: string;
   loader = false;
   loadingMessage = 'Loading Data. Please wait...';
+  decodedToken: any;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -70,6 +71,7 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     // this.filterObj.count = 50;
     this.filterObj.epoch = true;
 

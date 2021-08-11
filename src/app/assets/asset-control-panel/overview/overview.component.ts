@@ -45,6 +45,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   editorOptions: JsonEditorOptions;
   isSyncAPILoading = false;
   environmentApp = environment.app;
+  decodedToken: any;
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -55,6 +56,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.decodedToken =  this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.mode = 'view';
     this.editorOptions.statusBar = false;
@@ -62,7 +64,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
 
     this.subscriptions.push(this.route.paramMap.subscribe(params => {
+      if (this.decodedToken?.privileges?.indexOf('ASMVC') > -1) {
       this.getAssetCredentials();
+      }
       this.getAssetModelDetail();
       if (this.componentState === CONSTANTS.IP_GATEWAY) {
         this.getAssetCount();

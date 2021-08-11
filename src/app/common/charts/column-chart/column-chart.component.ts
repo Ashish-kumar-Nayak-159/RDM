@@ -1,9 +1,10 @@
+import { CommonService } from './../../../services/common.service';
 import { Subscription } from 'rxjs';
 import { ChartService } from './../../../chart/chart.service';
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
-import { CommonService } from 'src/app/services/common.service';
+import { CONSTANTS } from 'src/app/app.constants';
 declare var $: any;
 @Component({
   selector: 'app-column-chart',
@@ -39,12 +40,15 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
   hideCancelButton = false;
   loader = false;
   loaderMessage = 'Loading Data. Wait...';
+  decodedToken: any;
   constructor(
     private zone: NgZone,
-    private chartService: ChartService
+    private chartService: ChartService,
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.loader = true;
     setTimeout(() => this.plotChart(), 200);
     this.subscriptions.push(this.chartService.toggleThresholdEvent.subscribe((ev) => {

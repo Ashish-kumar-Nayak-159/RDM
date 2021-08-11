@@ -30,6 +30,7 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
   slaveCategories: any[] = [];
   mainSelectedTab: string;
   filteredSlavePositions: any[] = [];
+  decodedToken: any;
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -37,9 +38,9 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
   ) { }
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.onTabClick('slaves');
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-
     this.getSlaveData();
     this.getSlavePositions();
     this.getSlaveCategories();
@@ -100,6 +101,7 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
                 id: 'Edit',
                 valueclass: '',
                 tooltip: 'Edit',
+                privilege_key: 'ASMMM',
                 disableConditions: {
                   key: 'freezed',
                   value: true
@@ -111,6 +113,7 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
                 id: 'Delete',
                 valueclass: '',
                 tooltip: 'Delete',
+                privilege_key: 'ASMMM',
                 disableConditions: {
                   key: 'freezed',
                   value: true
@@ -153,6 +156,7 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
                 id: 'Edit',
                 valueclass: '',
                 tooltip: 'Edit',
+                privilege_key: 'ASMMM',
                 disableConditions: {
                   key: 'freezed',
                   value: true
@@ -164,6 +168,7 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
                 id: 'Delete',
                 valueclass: '',
                 tooltip: 'Delete',
+                privilege_key: 'ASMMM',
                 disableConditions: {
                   key: 'freezed',
                   value: true
@@ -198,6 +203,7 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
                 id: 'Edit',
                 valueclass: '',
                 tooltip: 'Edit',
+                privilege_key: 'ASMMM',
                 disableConditions: {
                   key: 'freezed',
                   value: true
@@ -209,6 +215,7 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
                 id: 'Delete',
                 valueclass: '',
                 tooltip: 'Delete',
+                privilege_key: 'ASMMM',
                 disableConditions: {
                   key: 'freezed',
                   value: true

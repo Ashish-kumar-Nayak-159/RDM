@@ -48,10 +48,10 @@
             </tfoot>
             <tbody>
               <ng-container *ngFor="let item of applicationData?.menu_settings.main_menu; let configIndex = index">
-              <tr >
+              <tr *ngIf="item.privilege_show === undefined || item.privilege_show === true">
                 <td>
                   <ng-container *ngIf="item.showAccordion?.length > 0">
-                    <a href="javascript:void(0)" (click)="onToggleRows('main_menu_' + configIndex)">
+                    <a href="javascript :void(0)" (click)="onToggleRows('main_menu_' + configIndex)">
                       <i [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
                       </a>
                   </ng-container>

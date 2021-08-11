@@ -1,4 +1,6 @@
+import { CommonService } from './../../services/common.service';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { CONSTANTS } from 'src/app/app.constants';
 
 @Component({
   selector: 'app-common-table',
@@ -12,10 +14,14 @@ export class CommonTableComponent implements OnInit {
   @Input() isTableDataLoading = false;
   @Input() isTableFilterSelected = false;
   @Output() viewMessageEvent: EventEmitter<any> = new EventEmitter<any>();
+  decodedToken: any;
 
-  constructor() { }
+  constructor(
+    private commonService: CommonService
+  ) { }
 
   ngOnInit(): void {
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
   }
 
   onClickOfButton(data, value) {

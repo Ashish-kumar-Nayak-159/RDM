@@ -27,6 +27,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
   isAddUserModalOpen = false;
   assetAccessUsers: any[] = [];
   selectedTab = 'Access Control';
+  decodedToken: any;
   constructor(
     private commonService: CommonService,
     private applicationService: ApplicationService,
@@ -36,6 +37,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnInit() {
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getAssetAccessUsers();
   }

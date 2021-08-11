@@ -50,11 +50,13 @@
 
         <div class="d-flex">
           <div>
-            <div class="main-heading">
+            <div class="main-heading" >
 
               {{assetModel?.name}}
+              <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
               <a href="javascript:void(0)" (click)="openUnfreezeModal()" [class.disabled]="isModelFreezeUnfreezeAPILoading"  *ngIf="assetModel.freezed"><i class="fa fa-fw fa-lock" placement="bottom" tooltip="Freezed"></i></a>
               <a href="javascript:void(0)" (click)="freezeModel()" [class.disabled]="isModelFreezeUnfreezeAPILoading"  *ngIf="!assetModel.freezed"><i class="fa fa-fw fa-unlock"  placement="bottom" tooltip="Not Freezed"  *ngIf="!assetModel.freezed"></i></a>
+            </ng-container>
             </div>
           </div>
         </div>

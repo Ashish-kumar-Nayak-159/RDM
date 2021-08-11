@@ -360,11 +360,13 @@
              <li><h6 class="py-2 font-weight-light-bold">Action taken by Field Staff:</h6>
                     <div class="col-xl-12 col-lg-12 ml-3"
                       *ngIf="!selectedAlert?.metadata?.acknowledged_date; else actionTakenTemplate">
-                     <p> This alert is not yet acknowledged, please <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down blue-font" *ngIf="!selectedAlert?.metadata?.acknowledged_date" (click)="onClickOfAcknowledgeAlert(selectedAlert)"
+                      <ng-container >
+                     <p > This alert is not yet acknowledged.
+                       <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down blue-font" *ngIf="!selectedAlert?.metadata?.acknowledged_date && decodedToken?.privileges?.indexOf('RMM') > -1" (click)="onClickOfAcknowledgeAlert(selectedAlert)"
                       >Acknowledge.</a></p>
-                      <p>No Actions recorded by field staff yet. <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down blue-font" *ngIf="!selectedAlert?.metadata?.acknowledged_date" (click)="onClickOfAcknowledgeAlert(selectedAlert)"
+                      <p>No Actions recorded by field staff yet. <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down blue-font" *ngIf="!selectedAlert?.metadata?.acknowledged_date && decodedToken?.privileges?.indexOf('RMM') > -1" (click)="onClickOfAcknowledgeAlert(selectedAlert)"
                       >Take Action now</a></p>
-
+                    </ng-container>
                     </div>
                     <ng-template #actionTakenTemplate>
                       <div class="table-responsive col-xl-12 col-lg-12 ml-3">

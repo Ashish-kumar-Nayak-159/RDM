@@ -13,7 +13,7 @@
             <i class="fab fa-fw fa-edge"></i>
             Edge Rules</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="decodedToken?.privileges?.indexOf('RKPIM') > -1">
           <a class="nav-link" (click)="addRule()"  href="javascript:void(0)" >
             <i class="fa fa-fw fa-plus"></i>
             Add</a>

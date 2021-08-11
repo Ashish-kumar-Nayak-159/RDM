@@ -25,6 +25,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
   ruleData: any;
   isDeleteRuleLoading = false;
   userData: any;
+  decodedToken: any;
   constructor(
     private assetModelService: AssetModelService,
     private commonService: CommonService,
@@ -34,8 +35,8 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.onClickOfTab('Cloud');
-
   }
 
   onClickOfTab(type) {
@@ -85,6 +86,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
                 id: 'Edit',
                 valueclass: '',
                 tooltip: 'Edit',
+                privilege_key: 'RKPIM',
                 disableConditions: {
                   key: 'freezed',
                   value: true
@@ -96,6 +98,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
                 id: 'Delete',
                 valueclass: '',
                 tooltip: 'Delete',
+                privilege_key: 'RKPIM',
                 disableConditions: {
                   key: 'freezed',
                   value: true
@@ -107,6 +110,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
                 id: 'Deploy',
                 valueclass: '',
                 tooltip: 'Deploy',
+                privilege_key: 'RKPIM',
                 disableConditions: {
                   key: 'freezed',
                   value: true
@@ -162,6 +166,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
                 id: 'Edit',
                 valueclass: '',
                 tooltip: 'Edit',
+                privilege_key: 'RKPIM',
                 disableConditions: {
                   key: 'freezed',
                   value: true
@@ -173,6 +178,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
                 id: 'Delete',
                 valueclass: '',
                 tooltip: 'Delete',
+                privilege_key: 'RKPIM',
                 disableConditions: {
                   key: 'freezed',
                   value: true

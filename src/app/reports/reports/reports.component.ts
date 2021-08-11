@@ -42,7 +42,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     landscape: true
   };
   originalFilterObj: any = {};
-  tabType = 'pre-generated';
+  tabType;
   isFilterSelected = false;
   props: any[] = [];
   selectedProps: any[] = [];
@@ -71,6 +71,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   reportsFetchDataSubscription: Subscription;
   @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   selectedDateRange: string;
+  decodedToken: any;
 
   constructor(
     private commonService: CommonService,
@@ -84,7 +85,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.getTileName();
+
     this.subscriptions.push(this.route.paramMap.subscribe(async params => {
       if (params.get('applicationId')) {
         this.filterObj.app = this.contextApp.app;
@@ -112,7 +116,11 @@ export class ReportsComponent implements OnInit, OnDestroy {
       await this.getAssets(this.contextApp.user.hierarchy);
      // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
     }));
-
+    if (this.decodedToken?.privileges?.indexOf('RV') !== -1) {
+      this.onTabSelect('pre-generated');
+    } else if (this.decodedToken?.privileges?.indexOf('RMV') !== -1) {
+      this.onTabSelect('custom');
+    }
   }
 
   loadFromCache() {

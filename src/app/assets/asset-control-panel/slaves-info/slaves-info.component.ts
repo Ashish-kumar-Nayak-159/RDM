@@ -29,6 +29,7 @@ export class SlavesInfoComponent implements OnInit {
   isAPILoading = false;
   setupForm: FormGroup;
   constantData = CONSTANTS;
+  decodedToken: any;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -37,6 +38,7 @@ export class SlavesInfoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getModelSlaveData();

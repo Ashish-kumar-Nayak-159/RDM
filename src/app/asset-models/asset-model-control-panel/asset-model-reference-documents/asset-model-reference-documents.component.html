@@ -1,4 +1,4 @@
-<div class="tab-bar" >
+<div class="tab-bar" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
   <div class="">
 
     <ul class="nav ">

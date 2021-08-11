@@ -7,13 +7,13 @@
           <i class="fa fa-fw fa-eye"></i>
           <span>View</span></a>
       </li>
-      <li class="nav-item" *ngIf="menuDetail?.accordion_value?.configuration" >
+      <li class="nav-item" *ngIf="menuDetail?.accordion_value?.configuration && decodedToken?.privileges?.indexOf('RCC') > -1" >
         <a class="nav-link" [ngClass]="{'active': displayMode === 'configure_specific_commands'}" href="javascript:void(0)" (click)="onClickOfSpecificCommands('configure')">
           <i class="fa fa-fw fa-cog"></i>
           <span>Configuration</span></a>
       </li>
     <!-- Nav Item - Charts -->
-    <li class="nav-item" *ngIf="menuDetail?.accordion_value?.control" >
+    <li class="nav-item" *ngIf="menuDetail?.accordion_value?.control && decodedToken?.privileges?.indexOf('RCC') > -1" >
       <a class="nav-link" [ngClass]="{'active': displayMode === 'control_specific_commands'}" href="javascript:void(0)" (click)="onClickOfSpecificCommands('control')">
         <i class="fa fa-fw fa-angle-right"></i>
         <span>Control</span></a>
@@ -23,7 +23,7 @@
         <i class="fa fa-fw fa-edit"></i>
         <span>Send General Command</span></a>
     </li> -->
-    <li class="nav-item" *ngIf="menuDetail?.accordion_value?.purge" >
+    <li class="nav-item" *ngIf="menuDetail?.accordion_value?.purge && decodedToken?.privileges?.indexOf('RCP') > -1" >
       <a class="nav-link" [ngClass]="{'active': displayMode === 'purge'}" href="javascript:void(0)" (click)="displayMode = 'purge'; timerObj = undefined;">
         <i class="fa fa-fw fa-trash"></i>
         <span>Purge</span></a>
@@ -82,23 +82,15 @@
               </div>
             </div>
           </li>
-
         </ul>
-
       </div>
       <div class="col-sm-9 col-md-9 col-lg-9 col-xl-9 pl-0 " *ngIf="selectedWidget">
-
         <app-specific-c2d-message [asset]="asset" [pageType]="displayMode" [componentState]="componentState" [selectedWidget]="selectedWidget" [jsonModelKeys]="jsonModelKeys" *ngIf="selectedWidget?.metadata?.communication_technique === 'C2D Message' && selectedWidget"></app-specific-c2d-message>
         <app-specific-direct-method [asset]="asset" [pageType]="displayMode"  [componentState]="componentState" [selectedWidget]="selectedWidget" [jsonModelKeys]="jsonModelKeys" *ngIf="selectedWidget?.metadata?.communication_technique === 'Direct Method' && selectedWidget"></app-specific-direct-method>
         <app-specific-twin-change [asset]="asset" [pageType]="displayMode" *ngIf="selectedWidget?.metadata?.communication_technique === 'Twin Change' && selectedWidget"></app-specific-twin-change>
-
-
         </div>
-
     </div>
-
     </div>
-
 </ng-container>
 
 <ng-container *ngIf="displayMode === 'general_commands'">

@@ -28,6 +28,7 @@ export class AssetModelAlertAcknowledgementReasonsComponent implements OnInit {
   deleteTagIndex: any;
   selectedid: any;
   subscriptions: Subscription[] = [];
+  decodedToken: any;
   constructor(
     private route: ActivatedRoute,
     private commonService: CommonService,
@@ -39,6 +40,7 @@ export class AssetModelAlertAcknowledgementReasonsComponent implements OnInit {
     this.assetModel = JSON.parse(JSON.stringify(this.assetModel));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.decodedToken = this.commonService.getItemFromLocalStorage(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.getAckReasons();
   }
 

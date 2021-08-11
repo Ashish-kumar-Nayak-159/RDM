@@ -1,3 +1,4 @@
+import { CommonService } from './../../../services/common.service';
 import { Subscription } from 'rxjs';
 import { ToasterService } from './../../../services/toaster.service';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
@@ -28,12 +29,15 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
   extraParams: any[] = [];
   originalExtraParams: any[] = [];
   dataTypeList = CONSTANTS.PROPERTY_DATA_TYPE_LIST;
+  decodedToken: any;
   constructor(
     private assetModelService: AssetModelService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.mode = 'code';
     this.editorOptions.statusBar = false;

@@ -1,4 +1,4 @@
-<div class="tab-bar">
+<div class="tab-bar" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
   <div class="">
     <ul class="nav">
       <li class="nav-item">
@@ -43,10 +43,12 @@
           </a>
         </ng-container>
             <h1 class="h6 mb-3 text-secondary-400">Reserved Tags:
+              <ng-container *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
               <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isReservedTagsEditable"
                 (click)="isReservedTagsEditable = true;"><i class="fa fa-edit"></i></a>
               <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isReservedTagsEditable"
                 (click)="isReservedTagsEditable = false;"><i class="fa fa-times"></i></a>
+              </ng-container>
             </h1>
             <table class="table table-hover">
               <tbody>
@@ -136,11 +138,13 @@
           </a>
         </ng-container>
             <h1 class="h6 mb-3 text-secondary-800">Custom Tags:
+              <ng-container *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
               <a href="javascript:void(0)" placement="bottom" tooltip="Edit Custom Tags"
                 *ngIf="!isCustomTagsEditable && assetCustomTags.length > 1" (click)="isCustomTagsEditable = true;"><i
                   class="fa fa-edit"></i></a>
               <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isCustomTagsEditable"
                 (click)="isCustomTagsEditable = false;"><i class="fa fa-times"></i></a>
+              </ng-container>
             </h1>
             <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
               <tbody>
@@ -149,7 +153,7 @@
                     <ng-container *ngIf="!isCustomTagsEditable">
                       <td>{{tag.name}}</td>
                       <td>{{tag.value}}</td>
-                      <td>
+                      <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
                         <a href="javascript:void(0)" (click)="deleteCustomTag(i)">
                           <i class="fa fa-fw fa-trash"></i>
                         </a>
@@ -163,7 +167,7 @@
                       </td>
                       <td><input type="text" class="form-control form-control-sm bg-light border-0 small" aria-label="Value"
                           aria-describedby="basic-addon3" [(ngModel)]="tag.value" name="value"></td>
-                      <td></td>
+                      <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"></td>
                     </ng-container>
                   </ng-container>
                   <ng-template #lastRowTemplate>
@@ -175,7 +179,7 @@
                     <td><input type="text" class="form-control form-control-sm bg-light border-0 small" placeholder="Value"
                         aria-label="Search" aria-describedby="basic-addon2" [(ngModel)]="tag.value" name="value"
                         (input)="onCustomTagInputChange()"></td>
-                    <td></td>
+                    <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"></td>
                   </ng-template>
                 </tr>
               </tbody>

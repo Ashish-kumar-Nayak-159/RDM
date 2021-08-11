@@ -13,7 +13,7 @@
           <i class="fa fa-fw fa-envelope"></i>
           <span class="text-secondary">Email Recipients</span></a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
         <a class="nav-link" href="javascript:void(0)" (click)="openAddUserModal()">
           <i class="fa fa-fw fa-plus"></i>
           <span class="text-secondary">Add Email Recipient</span></a>
@@ -32,7 +32,7 @@
           <th>Email</th>
           <th>Name</th>
           <th>Role</th>
-          <th>Action</th>
+          <th *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -41,7 +41,7 @@
           <td>{{user.user_email}}</td>
           <td>{{user.user_name}}</td>
           <td>{{user?.role || 'NA'}}</td>
-          <td>
+          <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
             <a href="javascript:void(0)" (click)="openConfirmModal(user)" class="mr-1"
               placement="bottom" tooltip="Delete User Access">
                 <i class="fa fa-fw fa-trash" ></i>

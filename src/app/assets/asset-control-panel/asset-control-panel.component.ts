@@ -36,6 +36,7 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
   iotAssetsTab: any;
   legacyAssetsTab: any;
   iotGatewaysTab: any;
+  decodedToken: any;
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private assetService: AssetService,
@@ -47,6 +48,7 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
   ) { }
 
   async ngOnInit(): Promise<void> {
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     await this.getApplicationUsers();
@@ -234,12 +236,31 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
         }
         let titleObj;
         let count;
+        const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
+        const decodedToken =  this.commonService.decodeJWTToken(token);
         this.menuItems.forEach(menu => {
-          if (menu.for_admin_only && this.contextApp?.user.role !== CONSTANTS.APP_ADMIN_ROLE) {
-            menu.visible = false;
-          } else if (menu.for_admin_only && this.contextApp?.user.role === CONSTANTS.APP_ADMIN_ROLE){
+          let trueCount = 0;
+          let falseCount = 0;
+          menu?.privileges_required?.forEach(privilege => {
+            if (decodedToken?.privileges?.indexOf(privilege) !== -1) {
+              trueCount++;
+            } else {
+              falseCount++;
+            }
+          });
+          console.log(menu.page, '=====true===', trueCount, '===== false====', falseCount);
+          if (trueCount > 0) {
             menu.visible = true;
+          } else {
+            if (falseCount > 0 ) {
+              menu.visible = false;
+            }
           }
+          // if (menu.for_admin_only && this.contextApp?.user.role !== CONSTANTS.APP_ADMIN_ROLE) {
+          //   menu.visible = false;
+          // } else if (menu.for_admin_only && this.contextApp?.user.role === CONSTANTS.APP_ADMIN_ROLE){
+          //   menu.visible = true;
+          // }
           if (menu.isTitle) {
             console.log(count);
             if (titleObj) {

@@ -25,6 +25,7 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   isModelFreezeUnfreezeAPILoading = false;
   isPasswordVisible = false;
+  decodedToken: any;
   constructor(
     private route: ActivatedRoute,
     private assetModelService: AssetModelService,
@@ -35,12 +36,31 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.subscriptions.push(this.route.paramMap.subscribe(async params => {
       if (this.contextApp?.menu_settings?.model_control_panel_menu?.length > 0) {
         this.menuItems = this.contextApp.menu_settings.model_control_panel_menu;
         let titleObj;
         let count;
         this.menuItems.forEach(menu => {
+          let trueCount = 0;
+          let falseCount = 0;
+          menu?.privileges_required?.forEach(privilege => {
+            if (this.decodedToken?.privileges?.indexOf(privilege) !== -1) {
+              trueCount++;
+            } else {
+              falseCount++;
+            }
+          });
+          console.log(menu.page, '=====true===', trueCount, '===== false====', falseCount);
+          if (trueCount > 0) {
+            menu.visible = true;
+          } else {
+            if (falseCount > 0 ) {
+              menu.visible = false;
+            }
+          }
           if (menu.isTitle) {
             if (titleObj) {
               titleObj.isDisplay = count > 0 ? true : false;

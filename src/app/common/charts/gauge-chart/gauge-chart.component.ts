@@ -1,6 +1,8 @@
+import { CommonService } from './../../../services/common.service';
 import { Component, Input, OnInit, OnChanges, EventEmitter, Output, AfterViewInit } from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
+import { CONSTANTS } from 'src/app/app.constants';
 declare var $: any;
 @Component({
   selector: 'app-gauge-chart',
@@ -21,9 +23,13 @@ export class GaugeChartComponent implements OnInit, OnChanges, AfterViewInit {
   modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean; };
   bodyMessage: string;
   headerMessage: string;
-  constructor() { }
+  decodedToken: any;
+  constructor(
+    private commonService: CommonService
+  ) { }
 
   ngOnInit(): void {
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
   }
 
   ngAfterViewInit() {

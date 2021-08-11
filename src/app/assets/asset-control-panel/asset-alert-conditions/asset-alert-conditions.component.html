@@ -22,7 +22,7 @@
                 <span class="text-secondary">Cloud Alerts
                 </span></a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item"  *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
           <a class="nav-link" href="javascript:void(0)" (click)="openAddAlertConditionModal()"
           >
             <i class="fa fa-fw fa-plus"></i>
@@ -48,7 +48,7 @@
             <th>Alert Code</th>
             <th>Alert Message</th>
             <th>Actions</th>
-            <th></th>
+            <th *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"></th>
           </tr>
         </thead>
         <tbody>
@@ -88,7 +88,7 @@
                     <i class="fa fa-tasks"></i>
                   </a>
                 </td>
-                <td>
+                <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
                   <a href="javascript:void(0)" (click)="openAddAlertConditionModal(alert)" class="mr-1"
                   placement="bottom" tooltip="Edit">
                     <i class="fa fa-fw fa-edit" ></i>
@@ -111,12 +111,13 @@
                       [disabled]="alertObj?.visualization_widgets?.length === 0 || isCreateAlertConditionLoading" placement="bottom" tooltip="Edit"
                       (click)="editWidgets()"><i class="fa fa-edit fa-sm"></i></button> -->
                       <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" [disabled]="isCreateAlertConditionLoading"
+                      *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"
                       placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()" ><i class="fa fa-save fa-sm"></i></button>
                       <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></i>
                     </p>
                   </div>
 
-                  <div class="col-12  my-2 accordion-padding">
+                  <div class="col-12  my-2 accordion-padding" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
                     <div class="form-inline" >
                       <ng-container>
                       <div class="form-group">
@@ -143,7 +144,7 @@
                       <ng-container *ngFor="let item of alertObj.visualization_widgets; let index = index">
                         <span class="tag" >
                           <span class="tag-text">{{item}}</span>
-                          <button class="tag-remove" (click)="removeVisualizationWidget(index)" ></button>
+                          <button class="tag-remove" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1" (click)="removeVisualizationWidget(index)" ></button>
                         </span>
                       </ng-container>
                     </div>
@@ -154,7 +155,7 @@
 
                   <div class="col-12 my-3 accordion-padding">Following recommendations have been pre-configured. You can configure more.
 
-                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"
                     placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()" ><i class="fa fa-save fa-sm"></i></button></div>
                     <div class="col-12 my-2 accordion-padding">
                     <h6 >Debugging Steps: </h6>
@@ -172,14 +173,14 @@
                           <td style="width: 30%;">{{step.description}}</td>
                           <td style="width: 30%;">{{step.activity}} Activity</td>
 
-                          <td style="width: 10%;">
+                          <td style="width: 10%;" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
                               <a href="javascript:void(0)" class="ml-2" (click)="removeRecommendationStep(i)" placement="bottom" tooltip="Remove"
                               >
                                 <i class="fa fa-trash fa-sm"></i> </a>
                           </td>
                         </ng-container>
                         </tr>
-                        <tr *ngIf="recommendationObj" style="background-color:transparent">
+                        <tr *ngIf="recommendationObj && decodedToken?.privileges?.indexOf('ASMM') > -1" style="background-color:transparent">
                           <ng-container >
                             <td style="width: 15%;">
                               Step - {{alertObj.recommendations.length + 1}}
@@ -256,7 +257,7 @@
 
                   <div class="col-12 accordion-padding my-2">Following attachments have been added. You can add more.
 
-                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"
                     placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()"><i class="fa fa-save fa-sm"></i></button></div>
                   <div class="col-12 my-3 accordion-padding ">
 
@@ -268,7 +269,7 @@
                      placement="bottom" tooltip="Edit" (click)="editReferenceDocuments()"><i class="fa fa-edit fa-sm"></i></button> -->
                   </div>
 
-                  <div class="">
+                  <div class="" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
                     <div class="form-inline" >
                       <ng-container>
                       <div class="form-group" >
@@ -296,7 +297,7 @@
                     <ng-container *ngFor="let item of alertObj.reference_documents; let index = index">
                       <span class="tag" >
                         <span class="tag-text">{{item}}</span>
-                        <button class="tag-remove" (click)="removeDocument(index)"></button>
+                        <button class="tag-remove" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1" (click)="removeDocument(index)"></button>
                       </span>
                     </ng-container>
                   </div>
@@ -306,23 +307,26 @@
 
                 <td colspan="6" *ngIf="viewType === 'Actions'" class="accordion-border">
                   <div class="col-12  accordion-padding mx-2">
-                    <h6>Actions:  <button type="button" class="btn btn-success btn-sm mx-1"
+                    <h6>Actions:
+                      <button type="button" class="btn btn-success btn-sm mx-1" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"
                       placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()"><i class="fa fa-save fa-sm"></i></button></h6>
                   </div>
                   <div class="col-12 my-2">
                     <div class="form-group accordion-padding mx-3">
-                      <input type="checkbox" class="form-check-input" id="email" name="email"[(ngModel)]="alertObj.actions.email.enabled">
+                      <input type="checkbox" class="form-check-input" id="email" name="email"[(ngModel)]="alertObj.actions.email.enabled"
+                      [disabled]="decodedToken?.privileges?.indexOf('ASMM') === -1">
                       <label class="form-check-label" for="email">Email</label>
                     </div>
                     <div class="form-group accordion-padding mx-3">
-                      <input type="checkbox" class="form-check-input" id="whatsapp" name="whatsapp"[(ngModel)]="alertObj.actions.whatsapp.enabled">
+                      <input type="checkbox" class="form-check-input" id="whatsapp" name="whatsapp"[(ngModel)]="alertObj.actions.whatsapp.enabled"
+                      [disabled]="decodedToken?.privileges?.indexOf('ASMM') === -1">
                       <label class="form-check-label" for="whatsapp">Whatsapp</label>
                     </div>
                     <div class="form-group accordion-padding mx-3">
-                      <input type="checkbox" class="form-check-input" id="sms" name="sms"[(ngModel)]="alertObj.actions.sms.enabled">
+                      <input type="checkbox" class="form-check-input" id="sms" name="sms"[(ngModel)]="alertObj.actions.sms.enabled"
+                      [disabled]="decodedToken?.privileges?.indexOf('ASMM') === -1">
                       <label class="form-check-label" for="sns">SMS</label>
                     </div>
-
                   </div>
                 </td>
               </tr>

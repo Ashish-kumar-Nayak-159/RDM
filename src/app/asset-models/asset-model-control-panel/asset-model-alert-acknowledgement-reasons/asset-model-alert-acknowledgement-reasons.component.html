@@ -1,4 +1,4 @@
-<div class="tab-bar">
+<div class="tab-bar" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
     <div class="">
       <ul class="nav">
        <li class="nav-item">
@@ -28,7 +28,7 @@
               <tr >
                 <th class="w-25">No</th>
                 <th class="w-50">Reason</th>
-                <th class="w-25">Action</th>
+                <th class="w-25" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -36,7 +36,7 @@
                 <td></td>
                 <td class="td-padding"><input type="text" min="1" class="form-control form-control-sm w-50" id="name" placeholder="Add Reason here..."
                   [(ngModel)]="reasonObj.reason" name="name"></td>
-                <td><a href="javascript:void(0)" placement="bottom" tooltip="Cancel"
+                <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"><a href="javascript:void(0)" placement="bottom" tooltip="Cancel"
                   (click)="reasonObj = undefined; ReasonBtnClicked = false;"><i class="fa fa-times"></i></a>
                   <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Save Reason"
                   (click)="updateReason()"><i class="fa fa-check"></i></a>
@@ -55,7 +55,7 @@
                     [(ngModel)]="ack.reason" name="{{ack.reason}}">
                   </ng-container>
                 </td>
-                <td >
+                <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
                   <a href="javascript:void(0)" placement="bottom" tooltip="Edit Reasons" [class.disabled]="assetModel.freezed" *ngIf="isEnableEdit && !isEnableEdit[i]"><i class="fa fa-edit"
                    (click)="enableEditMethod(i)"></i></a>
                   <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isEnableEdit && isEnableEdit[i]"

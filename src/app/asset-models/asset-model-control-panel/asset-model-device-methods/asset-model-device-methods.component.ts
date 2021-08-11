@@ -33,6 +33,7 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   contextApp: any;
   userData: any;
+  decodedToken: any;
   constructor(
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
@@ -42,6 +43,7 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.setUpAssetMethodsData();
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.mode = 'code';
@@ -88,6 +90,7 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
               id: 'Edit',
               valueclass: '',
               tooltip: 'Edit',
+              privilege_key: 'ASMMM',
               disableConditions: {
                 key: 'freezed',
                 value: true
@@ -98,6 +101,7 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
               text: '',
               id: 'Delete',
               valueclass: '',
+              privilege_key: 'ASMMM',
               tooltip: 'Delete',
               disableConditions: {
                 key: 'freezed',

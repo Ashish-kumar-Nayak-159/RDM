@@ -1,4 +1,4 @@
-import { CONSTANTS } from './../../../app.constants';
+import { CONSTANTS } from 'src/app/app.constants';
 import { Subscription } from 'rxjs';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { ToasterService } from './../../../services/toaster.service';
@@ -28,6 +28,7 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
   selectedDocument: any;
   subscriptions: Subscription[] = [];
   contextApp: any;
+  decodedToken: any;
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -37,6 +38,7 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
   ) { }
 
   ngOnInit(): void {
+    this.decodedToken = this.commonService.getItemFromLocalStorage(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.setUpDocumentData();
     this.getDocuments();
@@ -88,6 +90,7 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
               id: 'Edit',
               valueclass: '',
               tooltip: 'Edit',
+              privilege_key: 'ASMMM',
               disableConditions: {
                 key: 'freezed',
                 value: true
@@ -99,6 +102,7 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
               id: 'Delete',
               valueclass: '',
               tooltip: 'Delete',
+              privilege_key: 'ASMMM',
               disableConditions: {
                 key: 'freezed',
                 value: true

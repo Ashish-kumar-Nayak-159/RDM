@@ -9,7 +9,7 @@
       <div class="float-right pull-right mt-1">
         <div class="round-badge badge-darkblue" tooltip="Derived Property" *ngIf="chartConfig.derived_props">D</div>
       <div class=" round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M</div>
-      <a *ngIf="hideCancelButton" (click)="openConfirmRemoveWidgetModal()"
+      <a *ngIf="hideCancelButton  && decodedToken?.privileges?.indexOf('ASMMM') > -1" (click)="openConfirmRemoveWidgetModal()"
       placement="bottom" tooltip="Remove Widget" class="float-right pull-right mt-1" href="javascript:void(0)"><i class="fa fa-close"></i></a>
       </div>
     </ng-container>

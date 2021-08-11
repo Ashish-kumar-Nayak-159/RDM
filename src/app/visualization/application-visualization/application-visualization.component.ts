@@ -723,7 +723,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       const obj = {
         app: this.contextApp.app,
-        name: this.alertCondition?.asset_model ?  this.alertCondition.asset_model : this.selectedAsset.asset_model
+        name: this.alertCondition?.asset_model || this.selectedAsset?.tags?.asset_model
       };
       this.subscriptions.push(this.assetModelService.getModelReasons(obj.app, obj.name).subscribe(
         (response: any) => {
@@ -851,9 +851,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       delete filterObj.sampling_time;
       delete filterObj.sampling_format;
       const frequencyArr = [];
-      frequencyArr.push(this.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
-      frequencyArr.push(this.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
-      frequencyArr.push(this.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+      frequencyArr.push(this.asset?.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+      frequencyArr.push(this.asset?.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+      frequencyArr.push(this.asset?.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
       const frequency = this.commonService.getLowestValueFromList(frequencyArr);
       const records = this.commonService.calculateEstimatedRecords(frequency, filterObj.from_date, filterObj.to_date);
       if (records > 500 ) {

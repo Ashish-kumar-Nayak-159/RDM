@@ -233,15 +233,17 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  onSingleOperationClick(type) {
-    if (this.selectedAssets?.length === 0) {
-      this.toasterService.showError('Please select an asset to perform the operation', 'Asset Management');
-      return;
-    }
-    if (this.selectedAssets?.length > 1) {
-      this.toasterService.showError('Please select only one asset to perform the operation', 'Asset Management');
-      return;
-    }
+  onSingleOperationClick(type, asset) {
+    // if (this.selectedAssets?.length === 0) {
+    //   this.toasterService.showError('Please select an asset to perform the operation', 'Asset Management');
+    //   return;
+    // }
+    // if (this.selectedAssets?.length > 1) {
+    //   this.toasterService.showError('Please select only one asset to perform the operation', 'Asset Management');
+    //   return;
+    // }
+    this.selectedAssets = [];
+    this.selectedAssets.push(asset);
     if (type.toLowerCase().includes('package') && this.type === CONSTANTS.NON_IP_ASSET) {
       this.toasterService.showError(`Package Management is not available for Legacy asset.`, 'Asset Management');
       return;

@@ -1,8 +1,11 @@
 <div class="blue-nav-bar">
 
-  <div class="d-flex">
+  <div class="d-flex align-items-center">
 
-   <div class="main-heading">{{tileData ? tileData['Title'] : ''}}</div>
+   <div class="main-heading">{{tileData ? tileData['Title'] : ''}}</div>&nbsp;
+   <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openAssetCreateModal()"
+   *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMP') > -1"
+   placement="bottom" tooltip="Provision"><i class="fas fa-plus fa-sm"></i></button>
 
    <div class="ml-auto">
      <div class="asset-nav-tabs" >
@@ -37,6 +40,9 @@
   </div>
 </div>
 
+
+<app-add-asset *ngIf="isOpenAssetCreateModal"  [gateways]="gateways" (getAssetEmit)="getAssets()"
+[componentState]="componentState" [tileData]="tabData" (cancelModal)="onCreateAssetCancelModal()"></app-add-asset>
 
 <!--
 <div class="topnavbar">

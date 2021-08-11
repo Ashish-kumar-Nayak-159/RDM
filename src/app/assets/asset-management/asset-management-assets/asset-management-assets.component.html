@@ -1,34 +1,12 @@
-<div class="tab-bar">
+<!-- <div class="tab-bar">
   <ul class="nav nav-pills">
     <li class="nav-item" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMP') > -1">
      <a class="nav-link" href="javascript:void(0)" (click)="openAssetCreateModal()" >
      <i class="fas fa-fw fa-plus-circle"></i>
      <span class="text-secondary">Provision</span></a>
     </li>
-    <li class="nav-item" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMD') > -1">
-     <a class="nav-link" href="javascript:void(0)" (click)="onSingleOperationClick('Deprovision')" >
-     <i class="fas fa-fw fa-times-circle"></i>
-     <span class="text-secondary">Deprovision</span></a>
-    </li>
-    <li class="nav-item" *ngIf="type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMM') > -1">
-     <a class="nav-link" href="javascript:void(0)"  (click)="onSingleOperationClick('Enable')">
-     <i class="fas fa-fw fa-toggle-on"></i>
-     <span class="text-secondary">Enable</span></a>
-    </li>
-    <li class="nav-item" *ngIf="type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMM') > -1">
-     <a class="nav-link" href="javascript:void(0)" (click)="onSingleOperationClick('Disable')">
-     <i class="fas fa-fw fa-toggle-off"></i>
-     <span class="text-secondary delete-row">Disable</span></a>
-    </li>
-   <li class="nav-item" *ngIf="type !== constantData.NON_IP_ASSET">
-     <a class="nav-link" href="javascript:void(0)" (click)="onSingleOperationClick('Package Management')">
-     <!--<i class="fad fa-fw fa-sync"></i>-->
-     <i class="fas fa-fw fa">&#xf021;</i>
-     <span class="text-secondary delete-row">Package Management</span></a>
-    </li>
    </ul>
-
-</div>
+</div> -->
 
 <!-- DataTales Example -->
 <div class="table-responsive">
@@ -36,28 +14,51 @@
   <div class="tableFixHead" style="max-height: calc(100vh - 12.5rem)">
             <table class="table table-hover" >
           <thead>
-            <th ><input type="checkbox" name="visibleall"
+            <!-- <th ><input type="checkbox" name="visibleall"
               id="visibleall" (change)="onClickOfAssetAllCheckbox()" [(ngModel)]="isAllAssetSelected"
-              placement="bottom" [tooltip]="isAllAssetSelected ? 'Deselect All' : 'Select All'"/></th>
+              placement="bottom" [tooltip]="isAllAssetSelected ? 'Deselect All' : 'Select All'"/></th> -->
             <th>No</th>
             <th>{{(tabData?.table_key || 'Asset') + ' Name' }}</th>
             <th>{{(tabData?.table_key || 'Asset') + ' ID' }}</th>
             <th *ngIf="type !== constantData.NON_IP_ASSET">Status</th>
             <th>Hierarchy</th>
+            <th>Action</th>
           </thead>
           <tbody>
             <ng-container *ngIf="assetsList.length > 0">
               <tr *ngFor="let asset of assetsList; let i = index">
-                <td  >
+                <!-- <td  >
                   <input type="checkbox" name="visible{{i}}"
                       id="visible{{i}}" (change)="onAssetSelection(asset)"
                       [checked]="checkForAssetVisibility(asset)" />
-                </td>
+                </td> -->
                 <td>{{i + 1}}</td>
                 <td>{{asset.display_name}}</td>
                 <td>{{asset.asset_id}}</td>
                 <td *ngIf="type !== constantData.NON_IP_ASSET">{{asset.status}}</td>
                 <td>{{asset.hierarchyString}}</td>
+                <td>
+                  <!-- <a href="javascript:void(0)" (click)="openAssetCreateModal()"
+                  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMP') > -1">
+                    <i class="fas fa-fw fa-plus-circle"></i>
+                   </a> -->
+                   <a href="javascript:void(0)" (click)="onSingleOperationClick('Deprovision', asset)" tooltip="Deprovision"
+                   *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMD') > -1">
+                     <i class="fas fa-fw fa-times-circle"></i>
+                    </a>
+                    <a href="javascript:void(0)" (click)="onSingleOperationClick('Enable', asset)" class="ml-2" tooltip="Enable"
+                  *ngIf="type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMM') > -1">
+                    <i class="fas fa-fw fa-toggle-on"></i>
+                   </a>
+                   <a href="javascript:void(0)" (click)="onSingleOperationClick('Disable', asset)" class="ml-2" tooltip="Disable"
+                   *ngIf="type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMM') > -1">
+                     <i class="fas fa-fw fa-toggle-off"></i>
+                    </a>
+                    <a href="javascript:void(0)" (click)="onSingleOperationClick('Package Management', asset)" class="ml-2" tooltip="Package Management"
+                    *ngIf="type !== constantData.NON_IP_ASSET && decodedToken?.privileges && decodedToken.privileges.indexOf('RCC') > -1">
+                       <i class="fas fa-fw fa">&#xf021;</i>
+                     </a>
+                </td>
               </tr>
             </ng-container>
             <ng-container *ngIf="assetsList.length === 0 && !isAssetListLoading">

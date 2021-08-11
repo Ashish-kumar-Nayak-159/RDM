@@ -1,3 +1,4 @@
+import { AssetService } from './../../services/assets/asset.service';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from './../../services/common.service';
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
@@ -16,19 +17,29 @@ export class AssetManagementComponent implements OnInit {
   iotGatewaysTab: any;
   componentState;
   constantData = CONSTANTS;
+  decodedToken: any;
+  isOpenAssetCreateModal = false;
+  gateways: any[] = [];
+  subscriptions: any[] = [];
+  tabData: { tab_name: any; table_key: any; };
   constructor(
-    private commonService: CommonService
+    private commonService: CommonService,
+    private assetService: AssetService
   ) { }
 
   async ngOnInit(): Promise<void> {
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    await this.getTileName();
+    this.getTileName();
     if (this.iotAssetsTab?.visibility) {
       this.componentState = CONSTANTS.IP_ASSET;
+      await this.onTabChange(this.componentState);
     } else if (this.legacyAssetsTab?.visibility) {
       this.componentState = CONSTANTS.NON_IP_ASSET;
+      await this.onTabChange(this.componentState);
     } else if (this.iotGatewaysTab?.visibility) {
       this.componentState = CONSTANTS.IP_GATEWAY;
+      await this.onTabChange(this.componentState);
     }
     // this.getTabData();
   }
@@ -68,23 +79,67 @@ export class AssetManagementComponent implements OnInit {
       tab_name: assetDataItem['IOT Gateways Tab Name'],
       table_key: assetDataItem['IOT Gateways Table Key Name']
     };
-    console.log(this.iotAssetsTab);
-  }
-
-  getTabData() {
-    this.contextApp.menu_settings.main_menu.forEach(item => {
-      if (item.page === 'Assets') {
-        this.iotAssetsTab = item;
-      } else if (item.page === 'Non IP Assets') {
-        this.legacyAssetsTab = item;
-      } else if (item.page === 'Gateways') {
-        this.iotGatewaysTab = item;
-      }
-    });
+    console.log(this.tileData);
+    if (this.componentState === CONSTANTS.IP_ASSET) {
+      this.tabData = {
+        tab_name: assetDataItem['IOT Assets Tab Name'],
+        table_key: assetDataItem['IOT Assets Table Key Name']
+      };
+    }
+    if (this.componentState === CONSTANTS.NON_IP_ASSET) {
+    this.tabData = {
+      tab_name: assetDataItem['Legacy Assets Tab Name'],
+      table_key: assetDataItem['Legacy Assets Table Key Name']
+    };
+    }
+    if (this.componentState === CONSTANTS.IP_GATEWAY) {
+    this.tabData = {
+      tab_name: assetDataItem['IOT Gateways Tab Name'],
+      table_key: assetDataItem['IOT Gateways Table Key Name']
+    };
+    }
+    console.log(this.tabData);
   }
 
   onTabChange(type) {
     this.componentState = type;
+    this.getTileName();
   }
+
+  onCreateAssetCancelModal() {
+    this.isOpenAssetCreateModal = false;
+  }
+
+  getAssets() {
+    const componentState = this.componentState;
+    this.componentState = undefined;
+    setTimeout(() => {
+      this.componentState = componentState;
+    }, 500);
+  }
+
+  openAssetCreateModal() {
+    if (this.componentState === CONSTANTS.NON_IP_ASSET) {
+      this.getGatewayList();
+    }
+    this.isOpenAssetCreateModal = true;
+  }
+
+  getGatewayList() {
+    this.gateways = [];
+    const obj = {
+      app: this.contextApp.app,
+      type: CONSTANTS.IP_GATEWAY,
+      hierarchy: JSON.stringify(this.contextApp.user.hierarchy)
+    };
+    this.subscriptions.push(this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app).subscribe(
+      (response: any) => {
+        if (response.data) {
+          this.gateways = response.data;
+        }
+      }
+    ));
+  }
+
 
 }

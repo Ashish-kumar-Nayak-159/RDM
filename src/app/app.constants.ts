@@ -126,6 +126,19 @@ export class CONSTANTS {
       enabled: true
     }
   };
+
+  public static PRIVILEGE_GROUPS = {
+    'App Management': ['APMM', 'APMV'],
+    'Asset Management': ['ASMD', 'ASMM', 'ASMP', 'ASMS', 'ASMV', 'ASMVC'],
+    'Asset Campaign Management': ['ASCMM', 'ASCMV'],
+    'Asset Model Management': ['ASMMM', 'ASMMV'],
+    'Remote Control': ['RCC', 'RCP', 'RCV'],
+    'Rules & KPIs': ['RKPIM', 'RKPIV'],
+    'Remote Monitoring': ['RMM', 'RMV'],
+    'Reports': ['RSM', 'RV'],
+    'User Management': ['UMM', 'UMV']
+  };
+
   public static NON_IP_ASSET_OPTIONS = [
     {
       name: 'BLE Mesh Assets',

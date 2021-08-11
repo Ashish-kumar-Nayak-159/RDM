@@ -4,6 +4,7 @@ import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { CONSTANTS } from 'src/app/app.constants';
+import { CommonService } from './../../../services/common.service';
 
 declare var $: any;
 @Component({
@@ -14,15 +15,19 @@ declare var $: any;
 export class ApplicationRolesComponent implements OnInit, OnDestroy {
 
   @Input() applicationData: any;
-  addedLevelItem: string;
+  userData: any;
+  isUserRolesAPILoading = false;
+  isCreateUserAPILoading = false;
+  userRoles: any[] = [];
+  privilegeObj: any;
+  privilegeGroups: any;
   saveRoleAPILoading = false;
-  originalApplicationData: any;
   selectedRole: any;
+  isPasswordVisible = false;
+  isDeleteUserAPILoading = false;
+  password: any;
   apiSubscriptions: Subscription[] = [];
-  forceUpdate = false;
-  isAppSetingsEditable = false;
-  isSaveButtonDisable = true;
-  decodedToken: any;
+  toggleRows: any = {};
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
@@ -30,89 +35,102 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
-    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
-    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-    this.originalApplicationData = JSON.parse(JSON.stringify(this.applicationData));
-    this.applicationData.roles.forEach(element => {
-      element.isEditable = false;
-    });
-
+    this.privilegeGroups = CONSTANTS.PRIVILEGE_GROUPS;
+    this.getApplicationUserRoles();
   }
 
-  onAddNewRoleObj() {
-    this.isSaveButtonDisable = false;
-    this.applicationData.roles.splice(this.applicationData.roles.length, 0, {
-      name: null,
-      level: 0,
-      isEditable: true
-    });
-  }
-
-  onSaveRoles(forceUpdate = false) {
-    this.applicationData.id = this.applicationData.app;
-    let flag = '';
-    this.applicationData.roles.forEach(element => {
-      if (!element.name || (element.name.trim()).length === 0) {
-        flag = 'Blank Name is not allowed.';
-      }
-    });
-    if (flag) {
-      this.toasterService.showError(flag, 'Save Role');
-      return;
-    }
-    this.saveRoleAPILoading = true;
-    this.applicationData.roles.forEach(item => {
-      delete item.isEditable;
-    });
-    const obj = {
-      app: this.applicationData.app,
-      roles: this.applicationData.roles,
-      force_update: this.forceUpdate ? this.forceUpdate : undefined
-    };
-    this.apiSubscriptions.push(this.applicationService.updateAppRoles(obj).subscribe(
+  getApplicationUserRoles() {
+    this.isUserRolesAPILoading = true;
+    this.apiSubscriptions.push(this.applicationService.getApplicationUserRoles(this.applicationData.app).subscribe(
       (response: any) => {
-        this.toasterService.showSuccess(response.message, 'Save Role');
+        if (response && response.data) {
+          this.userRoles = response.data;
+        }
+        this.isUserRolesAPILoading = false;
+      }, error => this.isUserRolesAPILoading = false
+    ));
+  }
+
+  onToggleRows(i) {
+    this.privilegeObj = this.userRoles[i];
+    if (this.toggleRows[i]) {
+      this.toggleRows = {};
+    } else {
+      this.toggleRows = {};
+      this.toggleRows[i] = true;
+    }
+  }
+
+  openCreateUserModal() {
+      this.privilegeObj = {};
+      this.privilegeObj.app = this.applicationData.app;
+      this.privilegeObj.privileges = CONSTANTS.DEFAULT_PRIVILEGES;
+      $('#createUserModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onSaveRoles() {
+    this.saveRoleAPILoading = true;
+    const method = this.privilegeObj.id ? this.applicationService.updateUserRoles(this.applicationData.app, this.privilegeObj) :
+    this.applicationService.addUserRoles(this.applicationData.app, this.privilegeObj);
+    this.apiSubscriptions.push(method.subscribe(
+     (response: any) => {
+        this.toasterService.showSuccess(response.message, 'Save User Roles');
         this.saveRoleAPILoading = false;
-        this.forceUpdate = false;
-        this.isSaveButtonDisable = true;
-        // this.isAppSetingsEditable = false;
-        this.applicationService.refreshAppData.emit();
+        this.onCloseCreateUserModal();
+        this.getApplicationUserRoles();
+        this.toggleRows = {};
       }, (error) => {
-        this.toasterService.showError(error.message, 'Save Role');
+        this.toasterService.showError(error.message, 'Save User Roles');
         this.saveRoleAPILoading = false;
       }
     ));
   }
 
-  openConfirmRoleDeleteModal(role) {
-    this.selectedRole = role;
-    $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  onCloseCreateUserModal() {
+    $('#createUserModal').modal('hide');
+    this.privilegeObj = undefined;
   }
 
-  deleteRole() {
-    const roles = [];
-    this.applicationData.roles.forEach(role => {
-      if (role.name !== this.selectedRole.name) {
-        roles.push(role);
-      }
-    });
-    this.applicationData.roles = roles;
-    this.forceUpdate = true;
-    this.onSaveRoles(this.forceUpdate);
-    this.onCloseModal();
+  openDeleteUserModal(i) {
+    this.selectedRole = this.userRoles[i];
+    $('#deleteUserModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  togglePasswordVisibility() {
+    this.isPasswordVisible = !this.isPasswordVisible;
   }
 
   onCloseModal() {
+    $('#deleteUserModal').modal('hide');
     this.selectedRole = undefined;
-    $('#confirmMessageModal').modal('hide');
-    this.isAppSetingsEditable = false;
+    this.isDeleteUserAPILoading = false;
+    this.password = undefined;
   }
 
-  onCancelClick() {
-    this.applicationData = JSON.parse(JSON.stringify(this.originalApplicationData));
-    this.isAppSetingsEditable = false;
-    this.isSaveButtonDisable = true;
+  deleteUser() {
+    if (!this.password || (this.password.trim()).length === 0) {
+      this.toasterService.showError('Please enter password.', 'Delete User Access');
+      return;
+    }
+    this.isDeleteUserAPILoading = true;
+    const obj = {
+      id: this.selectedRole.id,
+      role: this.selectedRole.role,
+      force_update: true
+    };
+    this.apiSubscriptions.push(this.applicationService.deleteUserRoles(
+      this.applicationData.app, obj).subscribe
+    ((response: any) => {
+      this.toasterService.showSuccess(response.message, 'Delete User Access');
+      this.isDeleteUserAPILoading = false;
+      this.onCloseModal();
+      this.getApplicationUserRoles();
+    }, error => {
+      this.toasterService.showError(error.message, 'Delete User Access');
+      this.isDeleteUserAPILoading = false;
+    }));
   }
 
   ngOnDestroy() {

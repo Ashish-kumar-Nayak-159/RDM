@@ -99,12 +99,12 @@ export class LiveChartComponent implements OnInit, OnDestroy {
           }
         }
         this.y1AxisProps.forEach(prop => {
-          if (obj[prop]) {
+          if (obj[prop] !== undefined && obj[prop] !== null) {
             newObj[prop] = obj[prop];
           }
         });
         this.y2AxisProps.forEach(prop => {
-          if (obj[prop]) {
+          if (obj[prop] !== undefined && obj[prop] !== null) {
             newObj[prop] = obj[prop];
           }
         });

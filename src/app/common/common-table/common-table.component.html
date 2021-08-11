@@ -3,8 +3,10 @@
     <thead>
       <tr>
         <th >No</th>
-        <th  *ngFor="let item of tableConfig?.data;let i = index;" class="{{item.headerClass}}">
+        <ng-container *ngFor="let item of tableConfig?.data;let i = index;">
+        <th class="{{item.headerClass}}" *ngIf="!item.isColumnHidden">
           {{item.name}}</th>
+        </ng-container>
       </tr>
   </thead>
     <tbody>
@@ -14,7 +16,8 @@
         (tableConfig.type === 'alert'
         && data?.severity?.toLowerCase() === 'critical')}">
           <td>{{i + 1}}</td>
-          <td *ngFor="let header of tableConfig?.data" class="{{header.valueClass}}">
+          <ng-container *ngFor="let header of tableConfig?.data">
+          <td *ngIf="!header.isColumnHidden" class="{{header.valueClass}}">
             <ng-container *ngIf="header.type === 'text'">
 
               <span *ngIf="header.key">
@@ -51,8 +54,8 @@
               </ng-template>
               </ng-container>
             </ng-container>
-
           </td>
+        </ng-container>
         </tr>
       </ng-container>
     <ng-container *ngIf="tableData.length === 0 && !isTableDataLoading && isTableFilterSelected">

@@ -1,4 +1,3 @@
-import { CommonService } from './../../../services/common.service';
 import { Subscription } from 'rxjs';
 import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
@@ -28,6 +27,8 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
   password: any;
   apiSubscriptions: Subscription[] = [];
   toggleRows: any = {};
+  decodedToken: any;
+  pageType: any;
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
@@ -36,6 +37,7 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
     this.privilegeGroups = CONSTANTS.PRIVILEGE_GROUPS;
     this.getApplicationUserRoles();
@@ -53,7 +55,7 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
     ));
   }
 
-  onToggleRows(i) {
+  onToggleRows(i, type) {
     this.privilegeObj = this.userRoles[i];
     if (this.toggleRows[i]) {
       this.toggleRows = {};
@@ -61,6 +63,7 @@ export class ApplicationRolesComponent implements OnInit, OnDestroy {
       this.toggleRows = {};
       this.toggleRows[i] = true;
     }
+    this.pageType = type;
   }
 
   openCreateUserModal() {

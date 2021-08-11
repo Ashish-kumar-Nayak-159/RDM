@@ -72,6 +72,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
             key: undefined,
             type: 'button',
             headerClass: 'w-10',
+            isColumnHidden: true,
             btnData: [
               // {
               //   icon: 'fa fa-fw fa-eye',
@@ -152,6 +153,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
             key: undefined,
             type: 'button',
             headerClass: 'w-10',
+            isColumnHidden: true,
             btnData: [
               // {
               //   icon: 'fa fa-fw fa-eye',

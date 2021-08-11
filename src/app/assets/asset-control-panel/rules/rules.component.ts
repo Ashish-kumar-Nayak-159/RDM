@@ -82,6 +82,7 @@ export class RulesComponent implements OnInit {
             key: undefined,
             type: 'button',
             headerClass: 'w-10',
+            isColumnHidden: true,
             btnData: [
               // {
               //   icon: 'fa fa-fw fa-eye',
@@ -160,6 +161,7 @@ export class RulesComponent implements OnInit {
             name: 'Actions',
             key: undefined,
             type: 'button',
+            isColumnHidden: true,
             headerClass: 'w-10',
             btnData: [
               // {

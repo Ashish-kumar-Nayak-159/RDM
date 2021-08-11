@@ -53,7 +53,8 @@ export class CustomHttpInterceptor implements HttpInterceptor {
         if (request.method === 'GET') {
           this.toasterService.showError(error?.error?.message || error.message, '');
         }
-        if (error.status === 401) {
+        if (error.status === 401 && (error?.error?.reason === 'token_expired' || error?.error?.reason === 'cors_error' ||
+        error?.error?.reason === 'invalid_token_signature' || error?.error?.reason === 'invalid_token' )) {
           this.ngUnsubscribe.next();
           this.ngUnsubscribe.complete();
           this.toasterService.showError('Please login again', 'Session Expired');
@@ -77,7 +78,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
     let headers = request.headers ? request.headers : new HttpHeaders();
     const accessToken = this.commonService.getToken();
     if (accessToken && !request.url.includes(environment.blobURL)) {
-      headers = headers.append('authorization', 'Bearer ' + accessToken);
+      headers = headers.append('Authorization', 'Bearer ' + accessToken);
     }
     return headers;
   }

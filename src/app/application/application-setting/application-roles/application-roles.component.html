@@ -2,8 +2,10 @@
   <div class="d-flex d-flex align-items-center">
     <div class="h6 m-0 p-0">
         Roles
+        <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
         <button type="button" class="btn btn-sm searchBtn btn-primary"
         placement="bottom" tooltip="Add Role" (click)="openCreateUserModal()"><i class="fas fa-plus fa-sm"></i></button>
+      </ng-container>
      </div>
 </div>
 </div>
@@ -13,9 +15,9 @@
     <tr>
       <th>Role Name </th>
       <th>Access Level</th>
-      <th>Actions</th>
+      <th >Actions</th>
     </tr>
-  </thead> 
+  </thead>
   <tbody>
     <ng-container *ngFor="let item of userRoles; let configIndex = index">
       <tr *ngIf="item.length === 0">
@@ -25,26 +27,30 @@
         <td>{{item.role}}</td>
         <td>Level: {{applicationData.hierarchy.levels[item.level]}}</td>
         <td>
-          <a href="javascript:void(0)" (click)="onToggleRows(configIndex)">
-           <i [ngClass]="toggleRows[configIndex] ? 'fa fa-angle-up' : (item.level !== 0 ? 'fa fa-edit' : 'fa fa-eye')"></i>
+          <a href="javascript:void(0)" (click)="onToggleRows(configIndex, 'view')" >
+            <i [ngClass]="toggleRows[configIndex] && pageType === 'view' ? 'fa fa-angle-up' : 'fa fa-eye'"></i>
+           </a>
+          <a href="javascript:void(0)" (click)="onToggleRows(configIndex, 'edit')"  class="ml-2" *ngIf="item.level !== 0 && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+           <i [ngClass]="toggleRows[configIndex] && pageType === 'edit' ? 'fa fa-angle-up' : 'fa fa-edit'"></i>
           </a>
-          <a href="javascript:void(0)" (click)="onSaveRoles()" *ngIf="item.level !== 0 && toggleRows[configIndex]" class="ml-2">
+          <a href="javascript:void(0)" (click)="onSaveRoles()" *ngIf="item.level !== 0 && toggleRows[configIndex] && pageType === 'edit' && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1" class="ml-2">
             <i [ngClass]="'fa fa-save'" placement="bottom" tooltip="Save Role" ></i>
           </a>
-          <a *ngIf="item.level !== 0" href="javascript:void(0)" class="ml-2" (click)="openDeleteUserModal(configIndex)">
+          <a *ngIf="item.level !== 0 && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1" href="javascript:void(0)" class="ml-2" (click)="openDeleteUserModal(configIndex)">
             <i class="fa fa-trash" placement="bottom" tooltip="Delete Role"></i>
           </a>
         </td>
       </tr>
       <tr *ngIf="toggleRows[configIndex]" style="background-color: #fdfeff;">
         <td colspan="3"  class="accordion-border">
-          <div class="row m-0 mb-4"> 
+          <div class="row m-0 mb-4">
             <div *ngFor="let group of privilegeGroups | keyvalue" class="col-6"><h6 class="mt-4 mb-2 font-weight-light-bold">{{group.key}}</h6>
               <div *ngFor="let privilege of group.value" class="pl-3">
                 <input type="checkbox" name="{{privilegeObj.privileges[privilege]?.display_name}}"
-                id="{{privilegeObj.privileges[privilege]?.display_name}}" [(ngModel)]="privilegeObj.privileges[privilege].enabled" [disabled]="item.level == 0" /> 
+                id="{{privilegeObj.privileges[privilege]?.display_name}}" [(ngModel)]="privilegeObj.privileges[privilege].enabled"
+                [disabled]="pageType == 'view'" />
                 <label for="recipient-name" class="col-form-label">&nbsp;&nbsp;{{privilegeObj.privileges[privilege]?.display_name}}</label>
-              </div> 
+              </div>
             </div>
           </div>
         </td>
@@ -112,9 +118,9 @@
             <div *ngFor="let group of privilegeGroups | keyvalue"><h6 class="my-3">{{group.key}}</h6>
               <div *ngFor="let privilege of group.value" class="ml-3">
                 <input type="checkbox" name="{{privilegeObj.privileges[privilege].display_name}}"
-                id="{{privilegeObj.privileges[privilege].display_name}}" [(ngModel)]="privilegeObj.privileges[privilege].enabled" /> 
+                id="{{privilegeObj.privileges[privilege].display_name}}" [(ngModel)]="privilegeObj.privileges[privilege].enabled" />
                 <label for="recipient-name" class="col-form-label">&nbsp;&nbsp;{{privilegeObj.privileges[privilege].display_name}}</label>
-              </div> 
+              </div>
             </div>
           </div>
         </form>
@@ -131,7 +137,7 @@
         </button>
         <button type="button" class="btn btn-secondary" [disabled]="isCreateUserAPILoading" (click)="onCloseCreateUserModal()">
           Cancel
-        </button> 
+        </button>
       </div>
     </div>
   </div>

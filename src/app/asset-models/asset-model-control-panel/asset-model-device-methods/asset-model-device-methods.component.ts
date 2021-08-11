@@ -75,6 +75,7 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
           name: 'Actions',
           key: undefined,
           type: 'button',
+          isColumnHidden: false,
           headerClass: '',
           btnData: [
             {

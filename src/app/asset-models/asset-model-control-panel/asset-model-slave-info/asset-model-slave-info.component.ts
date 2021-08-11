@@ -93,6 +93,7 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
             name: 'Actions',
             key: undefined,
             type: 'button',
+            isColumnHidden: true,
             headerClass: 'w-10',
             btnData: [
               {
@@ -149,6 +150,7 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
             key: undefined,
             type: 'button',
             headerClass: 'w-10',
+            isColumnHidden: true,
             btnData: [
               {
                 icon: 'fa fa-fw fa-edit',
@@ -195,6 +197,7 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
             name: 'Actions',
             key: undefined,
             type: 'button',
+            isColumnHidden: true,
             headerClass: 'w-10',
             btnData: [
               {

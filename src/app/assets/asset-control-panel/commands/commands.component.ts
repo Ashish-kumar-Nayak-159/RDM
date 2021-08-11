@@ -30,6 +30,7 @@ export class CommandsComponent implements OnInit, OnDestroy {
   controlWidgets: any[] = [];
   assetMethods: any[] = [];
   allControlWidgets: any[] = [];
+  decodedToken: any;
   constructor(
     private assetService: AssetService,
     private assetModelService: AssetModelService,
@@ -38,6 +39,7 @@ export class CommandsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.subscriptions.push(this.assetService.composeC2DMessageStartEmitter.subscribe(data => {
       this.timerObj = {
         hours: data.hours,

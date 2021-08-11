@@ -4,11 +4,11 @@
     <form class="form-inline">
       <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length === 0"> No Live widgets added.&nbsp;</ng-container>
       <ng-container *ngIf="!isGetWidgetsAPILoading && liveWidgets.length !== 0">Following Live widgets are already added.&nbsp;</ng-container>
-      <div class="form-group">
+      <div class="form-group"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
         <button class="btn btn-sm searchBtn btn-primary" [disabled]="assetModel.freezed" (click)="onOpenAddWidgetModal()" placement="bottom" tooltip="Add Live Widget"
           ><i class="fa fa-plus fa-sm"></i></button>
       </div>
-      <div class="form-group">
+      <div class="form-group"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
         <button class="btn btn-sm searchBtn btn-success" [disabled]="assetModel.freezed" (click)="onOpenConfigureDashboardModal()" placement="bottom" tooltip="Configure Dashboard Widgets"
         ><i class="fa fa-cog fa-sm text-white"></i></button>
       </div>

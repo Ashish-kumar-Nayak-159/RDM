@@ -1,3 +1,4 @@
+import { APIMESSAGES } from './../api-messages.constants';
 import { environment } from 'src/environments/environment';
 import { CONSTANTS } from 'src/app/app.constants';
 import { Subscription } from 'rxjs';
@@ -34,8 +35,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   ) { }
 
   async ngOnInit(): Promise<void> {
-
-    // this.subscriptions.push(this.commonService.resetPassword.subscribe((resetPassword: boolean) => {
+        // this.subscriptions.push(this.commonService.resetPassword.subscribe((resetPassword: boolean) => {
     //   if (!resetPassword) {
     //     // $('#changePasswordModal').modal('hide');
     //     this.loginForm.reset();
@@ -53,6 +53,12 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
           this.router.navigate(['applications', 'selection']);
         } else if (this.userData.apps && this.userData.apps.length === 1) {
           localStorage.removeItem(CONSTANTS.APP_TOKEN);
+          const decodedToken =  this.commonService.decodeJWTToken(this.userData.apps[0].token);
+          if (decodedToken?.privileges.indexOf('APMV') === -1) {
+            this.toasterService.showError(APIMESSAGES.API_ACCESS_ERROR_MESSAGE, APIMESSAGES.CONTACT_ADMINISTRATOR);
+            this.commonService.onLogOut();
+            return;
+          }
           localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.apps[0].token);
           await this.getApplicationData(this.userData.apps[0]);
           this.router.navigate(['applications', this.userData.apps[0].app]);

@@ -1,7 +1,9 @@
+import { CommonService } from './../../../services/common.service';
 import { Subscription } from 'rxjs';
 import { ChartService } from 'src/app/chart/chart.service';
 import { Component, Input, OnChanges, OnInit, EventEmitter, Output, OnDestroy } from '@angular/core';
 import { environment } from 'src/environments/environment';
+import { CONSTANTS } from 'src/app/app.constants';
 declare var $: any;
 @Component({
   selector: 'app-only-number-widget',
@@ -21,11 +23,14 @@ export class OnlyNumberWidgetComponent implements OnInit, OnChanges, OnDestroy {
   bodyMessage: string;
   headerMessage: string;
   subscriptions: Subscription[] = [];
+  decodedToken: any;
      constructor(
-       private chartService: ChartService
+       private chartService: ChartService,
+       private commonService: CommonService
      ) { }
 
   ngOnInit(): void {
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     if (this.telemetryObj) {
       this.telemetryData.push(this.telemetryObj);
     }

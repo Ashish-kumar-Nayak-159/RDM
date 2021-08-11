@@ -28,6 +28,7 @@ export class RulesComponent implements OnInit {
   ruleData: any;
   isDeleteRuleLoading = false;
   userData: any;
+  decodedToken: any;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -36,6 +37,7 @@ export class RulesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.onTabClick('Cloud');
@@ -94,6 +96,7 @@ export class RulesComponent implements OnInit {
                 id: 'Edit',
                 valueclass: '',
                 tooltip: 'Edit',
+                privilege_key: 'RKPIM',
                 disableConditions: {
                   key: 'freezed',
                   value: true
@@ -105,6 +108,7 @@ export class RulesComponent implements OnInit {
                 id: 'Delete',
                 valueclass: '',
                 tooltip: 'Delete',
+                privilege_key: 'RKPIM',
                 disableConditions: {
                   key: 'freezed',
                   value: true
@@ -116,6 +120,7 @@ export class RulesComponent implements OnInit {
                 id: 'Deploy',
                 valueclass: '',
                 tooltip: 'Deploy',
+                privilege_key: 'RKPIM',
                 disableConditions: {
                   key: 'freezed',
                   value: true
@@ -170,6 +175,7 @@ export class RulesComponent implements OnInit {
                 id: 'Edit',
                 valueclass: '',
                 tooltip: 'Edit',
+                privilege_key: 'RKPIM',
                 disableConditions: {
                   key: 'freezed',
                   value: true
@@ -181,6 +187,7 @@ export class RulesComponent implements OnInit {
                 id: 'Delete',
                 valueclass: '',
                 tooltip: 'Delete',
+                privilege_key: 'RKPIM',
                 disableConditions: {
                   key: 'freezed',
                   value: true

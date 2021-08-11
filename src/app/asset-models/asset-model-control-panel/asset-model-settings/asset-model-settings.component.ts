@@ -20,6 +20,7 @@ export class AssetModelSettingsComponent implements OnInit {
   userData: any;
   isSaveSettingAPILoading = false;
   isSettingsEditable = false;
+  decodedToken: any;
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -30,6 +31,7 @@ export class AssetModelSettingsComponent implements OnInit {
     this.assetModel = JSON.parse(JSON.stringify(this.assetModel));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.getAssetModelDetail();
   }
 

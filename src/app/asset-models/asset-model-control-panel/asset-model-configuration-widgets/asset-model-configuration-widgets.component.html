@@ -2,7 +2,7 @@
 <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4 pt-3">
   <h1 class="h3 mb-0 text-gray-800">Access Control</h1>
 </div> -->
-<div class="tab-bar">
+<div class="tab-bar" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
   <div class="">
     <ul class="nav">
       <li class="nav-item">
@@ -28,7 +28,9 @@
         <button class="btn" type="button">
           {{widget.name}}
         </button>
-        <a class="float-right pull-right mt-1" href="javascript:void(0)" [class.disabled]="assetModel.freezed" (click)="openConfirmModal(widget)"><i class="fa fa-close"></i></a>
+        <a class="float-right pull-right mt-1" href="javascript:void(0)" [class.disabled]="assetModel.freezed"
+        *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
+        (click)="openConfirmModal(widget)"><i class="fa fa-close"></i></a>
       </ng-container>
       <h6 *ngIf="widget?.metadata?.communication_technique">This configuration widget will process through {{widget?.metadata?.communication_technique}}.</h6>
       <div class="row">

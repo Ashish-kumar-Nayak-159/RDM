@@ -19,6 +19,7 @@ export class ApplicationSettingComponent implements OnInit, OnDestroy {
   userData: any;
   isApplicationDataLoading = false;
   apiSubscriptions: Subscription[] = [];
+  decodedToken: any;
   constructor(
     private route: ActivatedRoute,
     private applicationService: ApplicationService,
@@ -28,6 +29,8 @@ export class ApplicationSettingComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.getApplicationData();
     this.apiSubscriptions.push(this.route.paramMap.subscribe(params => {
       this.commonService.breadcrumbEvent.emit({

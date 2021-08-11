@@ -9,6 +9,7 @@ import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { AssetService } from 'src/app/services/assets/asset.service';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 
 @Component({
   selector: 'app-application-selection',
@@ -24,6 +25,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
   applicationData: any;
   apiSubscriptions: Subscription[] = [];
   isAppDataLoading;
+  decodedToken: any;
 
   constructor(
     private commonService: CommonService,
@@ -65,32 +67,16 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       localStorage.removeItem(CONSTANTS.MAIN_MENU_FILTERS);
       localStorage.removeItem(CONSTANTS.APP_TOKEN);
     }
+    const decodedToken =  this.commonService.decodeJWTToken(app.token);
+    if (decodedToken.privileges.indexOf('APMV') === -1) {
+      this.toasterService.showError(APIMESSAGES.API_ACCESS_ERROR_MESSAGE, APIMESSAGES.CONTACT_ADMINISTRATOR);
+      this.commonService.onLogOut();
+      return;
+    }
     localStorage.setItem(CONSTANTS.APP_TOKEN, app.token);
     await this.getApplicationData(app);
-    // await this.getAssets(this.applicationData.user.hierarchy);
-    // await this.getAssetModels(this.applicationData.user.hierarchy);
     this.commonService.refreshSideMenuData.emit(this.applicationData);
     this.router.navigate(['applications', this.applicationData.app]);
-    // const menu = this.applicationData.menu_settings.main_menu.length > 0 ?
-    // this.applicationData.menu_settings.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
-    // let i = 0;
-    // menu.forEach(menuObj => {
-    //   if (menuObj.page === 'Assets Modelling' && this.applicationData.user.role === CONSTANTS.APP_ADMIN_ROLE) {
-    //     menuObj.visible = true;
-    //   }
-    //   if ( i === 0 && menuObj.visible) {
-    //     i++;
-    //     let url = menuObj.url;
-    //     if (menuObj.url?.includes(':appName')) {
-    //       url = menuObj.url.replace(':appName', this.applicationData.app);
-    //       console.log('after url   ', url);
-    //       this.router.navigateByUrl(url);
-    //     }
-    //   }
-    // });
-    // if (i === 0) {
-    //   this.toasterService.showError('All the menu items visibility are off. Please contact administrator', 'App Selection');
-    // }
     this.isAppDataLoading = undefined;
   }
 

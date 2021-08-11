@@ -29,6 +29,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
   isUpdateAssetsModelAPILoading = false;
   isFileUploading: boolean;
   updatedAssetModel: any;
+  decodedToken: any;
   constructor(
     private toasterService: ToasterService,
     private assetModelService: AssetModelService,
@@ -38,6 +39,8 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     console.log(this.assetModel);
     if (!this.assetModel.metadata?.image) {
       this.assetModel.metadata.image = {

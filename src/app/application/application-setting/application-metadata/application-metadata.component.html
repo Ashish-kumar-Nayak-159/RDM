@@ -3,12 +3,15 @@
     <div class="h6 m-0 p-0">Metadata
       <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isMetadataEditable"
       (click)="isMetadataEditable = true;"><i class="fa fa-edit"></i></a> -->
+      <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
       <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="isMetadataEditable = true;" *ngIf="!isMetadataEditable"
+
       placement="bottom" tooltip="Edit Tags"><i class="fas fa-edit fa-sm"></i></button>
       <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isMetadataEditable"
       (click)="onCancelClick();"><i class="fa fa-times"></i></a> -->
       <button type="button" class="btn btn-sm searchBtn btn-secondary" (click)="onCancelClick()" *ngIf="isMetadataEditable"
       placement="bottom" tooltip="Cancel"><i class="fas fa-times fa-sm"></i></button>
+    </ng-container>
     </div>
 </div>
 </div>
@@ -22,7 +25,7 @@
       <th>Awards</th>
     </tr>
   </thead>-->
-  <tfoot>
+  <tfoot  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
     <tr >
       <th colspan="3" >
         <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="onSaveMetadata()"

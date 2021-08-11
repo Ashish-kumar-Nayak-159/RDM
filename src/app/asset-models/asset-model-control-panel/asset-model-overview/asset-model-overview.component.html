@@ -11,6 +11,7 @@
       You can't add, modify, delete any attribute of this model.<br/>
       Please Unfreeze, if you want to add, modify, delete any.
       <a href="javascript:void(0)" (click)="openUnfreezeModal()" [class.disabled]="isModelFreezeUnfreezeAPILoading"
+      *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
       class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2">Unfreeze It <i class="fa fa-unlock"></i></a>
       <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></i>
       </h6>
@@ -20,11 +21,12 @@
       This model is not freezed.<br/>
       Once you complete modifications (add, edit, delete), Please freeze it for better performance.
       <a href="javascript:void(0)" (click)="freezeModel()" [class.disabled]="isModelFreezeUnfreezeAPILoading"
+      *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
       class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2">Freeze It <i class="fa fa-lock"></i></a>
       <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></i>
       </h6>
   </div>
-  <div class="row">
+  <div class="row" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
     <h6 class="pl-3">Asset Model Image:
       <a href="javascript:void(0)" (click)="openCreateAssetModelModal()"
       class="d-none d-sm-inline-block shadow-sm ml-2"><i class="fa fa-edit"></i></a>

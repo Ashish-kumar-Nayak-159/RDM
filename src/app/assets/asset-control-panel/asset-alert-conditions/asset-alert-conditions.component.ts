@@ -38,6 +38,7 @@ export class AssetAlertConditionsComponent implements OnInit {
   slaveData: any[] = [];
   contextApp: any;
   loggedInUser: any;
+  decodedToken: any;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -47,6 +48,7 @@ export class AssetAlertConditionsComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.loggedInUser = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getDocuments();
     this.getAssetModelWidgets();
     this.onClickOfTab('Asset');

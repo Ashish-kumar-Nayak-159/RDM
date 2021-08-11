@@ -167,6 +167,7 @@ export class CONSTANTS {
       icon: 'fas fa-fw fa-home',
       visible: true,
       exactMatch: true,
+      privileges_required: ['ASMV'],
       showAccordion: [
         {
           name: 'Title',
@@ -183,6 +184,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-chart-bar',
       visible: true,
       exactMatch: true,
+      privileges_required: ['ASMV', 'ASMMV', 'RMV'],
       showAccordion: [
         {
           name: 'Title',
@@ -198,6 +200,7 @@ export class CONSTANTS {
       display_name: 'Live Alerts',
       icon: 'fa fa-fw fa-bell',
       exactMatch: true,
+      privileges_required: ['ASMV', 'ASMMV', 'RMV'],
       visible: true,
       showAccordion: [
         {
@@ -215,6 +218,7 @@ export class CONSTANTS {
       for_admin_only: true,
       exactMatch: true,
       icon: 'fab fa-fw fa-mixcloud',
+      privileges_required: ['ASMV', 'ASMMV'],
       visible: true,
       showAccordion: [
         { name: 'Title', value: 'Assets'},
@@ -243,6 +247,7 @@ export class CONSTANTS {
       showAccordion: [
         { name: 'Title', value: 'Asset Management'}
       ],
+      privileges_required: ['ASMV'],
       priority: 1
     },
     {
@@ -257,6 +262,7 @@ export class CONSTANTS {
         { name: 'Title', value: 'Models'},
         { name: 'Table Key Name', value: 'Model'}
       ],
+      privileges_required: ['ASMMV'],
       priority: 1
     },
     // {
@@ -310,6 +316,7 @@ export class CONSTANTS {
         { name: 'Title', value: 'Reports'},
         { name: 'Records Limit', value: 100, type: 'number'}
       ],
+      privileges_required: ['RV', 'RMV'],
       priority: 1
     },
 
@@ -321,6 +328,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-object-group',
       visible: true,
       exactMatch: true,
+      privileges_required: ['ASCMV'],
       showAccordion: [
         { name: 'Title', value: 'Campaigns'}
       ],
@@ -372,6 +380,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-life-ring',
       visible: true,
       isTitle: false,
+      privileges_required: [],
       showAccordion: [
       ],
       accordion_value: {}
@@ -385,6 +394,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
+      privileges_required: ['ASMV'],
       accordion_value: {}
     },
     {
@@ -395,6 +405,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-tags',
       visible: true,
       isTitle: false,
+      privileges_required: ['ASMV'],
       showAccordion: [
         { name: 'Delete all', key: 'delete'}
       ],
@@ -407,6 +418,7 @@ export class CONSTANTS {
       display_name: 'Sensor / Source / Slave Info',
       icon: 'fa fa-fw fa-user-secret',
       visible: true,
+      privileges_required: ['ASMS'],
       isTitle: false
     },
     {
@@ -415,6 +427,7 @@ export class CONSTANTS {
       url: '#asset_package_management',
       display_name: 'Software Packages',
       icon: 'fa fa-fw fa-file',
+      privileges_required: ['ASMMV'],
       visible: true,
       isTitle: false
     },
@@ -426,6 +439,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-cog',
       visible: true,
       isTitle: false,
+      privileges_required: ['RCC'],
       showAccordion: [],
       accordion_value: {}
     },
@@ -457,6 +471,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-heartbeat',
       visible: true,
       isTitle: false,
+      privileges_required: ['RMV'],
       showAccordion: [],
       accordion_value: {}
     },
@@ -468,6 +483,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-bell',
       visible: true,
       isTitle: false,
+      privileges_required: ['RMV'],
       showAccordion: [],
       accordion_value: {}
     },
@@ -479,6 +495,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-bolt',
       visible: true,
       isTitle: false,
+      privileges_required: ['RMV'],
       showAccordion: [],
       accordion_value: {}
     },
@@ -490,6 +507,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-hourglass-end',
       visible: true,
       isTitle: false,
+      privileges_required: ['RMV'],
       showAccordion: [],
       accordion_value: {}
     },
@@ -501,6 +519,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-history',
       visible: true,
       isTitle: false,
+      privileges_required: ['RMV'],
       showAccordion: [],
       accordion_value: {}
     },
@@ -533,6 +552,7 @@ export class CONSTANTS {
       display_name: 'Logs',
       icon: 'fa fa-fw fa-file',
       visible: true,
+      privileges_required: ['RMV'],
       isTitle: false,
       showAccordion: [],
       accordion_value: {}
@@ -543,6 +563,7 @@ export class CONSTANTS {
       url: '#asset_alert_conditioning',
       display_name: 'Alert Conditioning',
       icon: 'fa fa-fw fa-exclamation-triangle',
+      privileges_required: ['ASMV'],
       visible: true,
       isTitle: false
     },
@@ -574,6 +595,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-angle-right',
       visible: true,
       isTitle: false,
+      privileges_required: ['RCV'],
       showAccordion: [
         { name: 'Configuration', key: 'configuration'},
         { name: 'Control', key: 'control'},
@@ -609,6 +631,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-angle-right',
       visible: true,
       isTitle: false,
+      privileges_required: ['RKPIV'],
       showAccordion: [],
       accordion_value: {}
     },
@@ -620,6 +643,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-archive',
       visible: true,
       isTitle: false,
+      privileges_required: ['RKPIV'],
       showAccordion: [],
       accordion_value: {}
     },
@@ -638,6 +662,7 @@ export class CONSTANTS {
       url: '#asset_trend_analysis',
       display_name: 'Telemetry Trend Analysis',
       icon: 'fa fa-fw fa-area-chart',
+      privileges_required: ['RMV', 'ASMMV'],
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -651,6 +676,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-bar-chart',
       visible: true,
       isTitle: false,
+      privileges_required: ['RMV', 'ASMMV'],
       showAccordion: [],
       accordion_value: {}
     },
@@ -671,6 +697,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-wrench',
       visible: true,
       isTitle: false,
+      privileges_required: ['RMV'],
       showAccordion: [],
       accordion_value: {}
     },
@@ -682,6 +709,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-wrench',
       visible: true,
       isTitle: false,
+      privileges_required: ['RMV'],
       showAccordion: [],
       accordion_value: {}
     },
@@ -725,6 +753,7 @@ export class CONSTANTS {
       url: '#asset_overview',
       display_name: 'Overview',
       icon: 'fa fa-fw fa-life-ring',
+      privileges_required: [],
       visible: true,
       isTitle: false,
       showAccordion: [
@@ -739,6 +768,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-users',
       visible: true,
       isTitle: false,
+      privileges_required: ['ASMV'],
       showAccordion: [],
       accordion_value: {}
     },
@@ -750,6 +780,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-tags',
       visible: true,
       isTitle: false,
+      privileges_required: ['ASMV'],
       showAccordion: [
         { name: 'Delete all', key: 'delete'}
       ],
@@ -761,6 +792,7 @@ export class CONSTANTS {
       url: '#asset_slave_info',
       display_name: 'Sensor / Source / Slave Info',
       icon: 'fa fa-fw fa-user-secret',
+      privileges_required: ['ASMS'],
       visible: true,
       isTitle: false
     },
@@ -779,6 +811,7 @@ export class CONSTANTS {
       url: '#asset_setup',
       display_name: 'Setup',
       icon: 'fa fa-fw fa-cog',
+      privileges_required: ['RCC'],
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -811,6 +844,7 @@ export class CONSTANTS {
       display_name: 'Notifications',
       icon: 'fa fa-fw fa-bell',
       visible: true,
+      privileges_required: ['RMV'],
       isTitle: false,
       showAccordion: [],
       accordion_value: {}
@@ -821,6 +855,7 @@ export class CONSTANTS {
       url: '#asset_alerts',
       display_name: 'Alert Raise Events',
       icon: 'fa fa-fw fa-bolt',
+      privileges_required: ['RMV'],
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -832,6 +867,7 @@ export class CONSTANTS {
       url: '#asset_alert_end_events',
       display_name: 'Alert End Events',
       icon: 'fa fa-fw fa-hourglass-end',
+      privileges_required: ['RMV'],
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -843,6 +879,7 @@ export class CONSTANTS {
       url: '#asset_telemetry',
       display_name: 'Telemetry',
       icon: 'fa fa-fw fa-history',
+      privileges_required: ['RMV'],
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -874,6 +911,7 @@ export class CONSTANTS {
       page: 'logs',
       system_name: 'Logs',
       url: '#asset_logs',
+      privileges_required: ['RMV'],
       display_name: 'Logs',
       icon: 'fa fa-fw fa-file',
       visible: true,
@@ -887,6 +925,7 @@ export class CONSTANTS {
       url: '#asset_alert_conditioning',
       display_name: 'Alert Conditioning',
       icon: 'fa fa-fw fa-exclamation-triangle',
+      privileges_required: ['ASMV'],
       visible: true,
       isTitle: false
     },
@@ -918,6 +957,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-angle-right',
       visible: true,
       isTitle: false,
+      privileges_required: ['RCV'],
       showAccordion: [
         { name: 'Configuration', key: 'configuration'},
         { name: 'Control', key: 'control'},
@@ -951,6 +991,7 @@ export class CONSTANTS {
       url: '#asset_derived_kpis',
       display_name: 'Derived KPIs',
       icon: 'fa fa-fw fa-angle-right',
+      privileges_required: ['RKPIV'],
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -962,6 +1003,7 @@ export class CONSTANTS {
       url: '#asset_rules',
       display_name: 'Rules',
       icon: 'fa fa-fw fa-archive',
+      privileges_required: ['RKPIV'],
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -982,6 +1024,7 @@ export class CONSTANTS {
       url: '#asset_trend_analysis',
       display_name: 'Telemetry Trend Analysis',
       icon: 'fa fa-fw fa-area-chart',
+      privileges_required: ['RMV', 'ASMMV'],
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -993,6 +1036,7 @@ export class CONSTANTS {
       url: '#asset_alert_visualization',
       display_name: 'Alert Visualization',
       icon: 'fa fa-fw fa-bar-chart',
+      privileges_required: ['RMV', 'ASMMV'],
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -1013,6 +1057,7 @@ export class CONSTANTS {
       url: '#asset_mttr',
       display_name: 'MTTR',
       icon: 'fa fa-fw fa-wrench',
+      privileges_required: ['RMV'],
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -1024,6 +1069,7 @@ export class CONSTANTS {
       url: '#asset_mtbf',
       display_name: 'MTBF',
       icon: 'fa fa-fw fa-wrench',
+      privileges_required: ['RMV'],
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -1070,6 +1116,7 @@ export class CONSTANTS {
       display_name: 'Overview',
       icon: 'fa fa-fw fa-life-ring',
       visible: true,
+      privileges_required: [],
       isTitle: false,
       showAccordion: [
       ],
@@ -1081,6 +1128,7 @@ export class CONSTANTS {
       url: '#asset_tags',
       display_name: 'Tags',
       icon: 'fa fa-fw fa-tags',
+      privileges_required: ['ASMV'],
       visible: true,
       isTitle: false,
       showAccordion: [
@@ -1094,6 +1142,7 @@ export class CONSTANTS {
       url: '#asset_package_management',
       display_name: 'Software Packages',
       icon: 'fa fa-fw fa-file',
+      privileges_required: ['ASMMV'],
       visible: true,
       isTitle: false
     },
@@ -1103,6 +1152,7 @@ export class CONSTANTS {
       url: '#asset_setup',
       display_name: 'Setup',
       icon: 'fa fa-fw fa-cog',
+      privileges_required: ['RCC'],
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -1123,6 +1173,7 @@ export class CONSTANTS {
       url: '#asset_current_config',
       display_name: 'Current Configuration',
       icon: 'fa fa-fw fa-cog',
+      privileges_required: ['RMV'],
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -1134,6 +1185,7 @@ export class CONSTANTS {
       url: '#asset_config_history',
       display_name: 'Configuration History',
       icon: 'fa fa-fw fa-history',
+      privileges_required: ['RMV'],
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -1145,6 +1197,7 @@ export class CONSTANTS {
       url: '#asset_notifications',
       display_name: 'Notifications',
       icon: 'fa fa-fw fa-bell',
+      privileges_required: ['RMV'],
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -1156,6 +1209,7 @@ export class CONSTANTS {
       url: '#asset_life_cycle_events',
       display_name: 'Life Cycle Events',
       icon: 'fa fa-fw fa-heartbeat',
+      privileges_required: ['RMV'],
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -1167,6 +1221,7 @@ export class CONSTANTS {
       url: '#asset_cached_alerts',
       display_name: 'Cached Alerts',
       icon: 'fa fa-fw fa-bolt',
+      privileges_required: ['RMV'],
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -1178,6 +1233,7 @@ export class CONSTANTS {
       url: '#asset_cached_telemetry',
       display_name: 'Cached Telemetry',
       icon: 'fa fa-fw fa-globe',
+      privileges_required: ['RMV'],
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -1189,6 +1245,7 @@ export class CONSTANTS {
       url: '#asset_count',
       display_name: 'Telemetry Count',
       icon: 'fa fa-fw fa-calculator',
+      privileges_required: ['RMV'],
       visible: true,
       isTitle: false,
       showAccordion: [],
@@ -1220,6 +1277,7 @@ export class CONSTANTS {
       url: '#asset_control_widgets',
       display_name: 'Control/Configure',
       icon: 'fa fa-fw fa-angle-right',
+      privileges_required: ['RCV'],
       visible: true,
       isTitle: false,
       showAccordion: [

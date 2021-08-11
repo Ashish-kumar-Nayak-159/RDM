@@ -30,6 +30,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   isTelemetryDataLoading: boolean;
   configureDashboardWidgets: any[] = [];
   isAllWidgestSelectedForDashboard = false;
+  decodedToken: any;
 
   constructor(
     private commonService: CommonService,
@@ -42,6 +43,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getAssetsModelProperties();
     this.getLiveWidgets();
   }

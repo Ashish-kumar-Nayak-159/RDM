@@ -4,15 +4,17 @@
       Org Tree
       <!-- <a href="javascript:void(0)" placement="bottom" class="ml-1" tooltip="Add Tree Node"
           (click)="onAddNewNodeObj()"><i class="fa fa-plus"></i></a> -->
+          <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
           <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="onAddNewNodeObj()"
           placement="bottom" tooltip="Add Tree Node"><i class="fas fa-plus fa-sm"></i></button>
+        </ng-container>
      </div>
 </div>
 </div>
 
 <div class="tableFixHead table-responsive">
   <table class="table table-hover">
-    <tfoot>
+    <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
       <tr>
         <th colspan="3">
           <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="onSaveNodes()"
@@ -23,9 +25,9 @@
       </tfoot>
     <tbody>
         <tr>
-          <td> Level - 1</td>
+          <td> Level - 1:</td>
           <td>App</td>
-          <td></td>
+          <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"></td>
         </tr>
         <ng-container *ngFor="let item of applicationData?.hierarchy?.levels; let i = index;trackBy:trackByFn">
         <tr *ngIf="i !== 0">
@@ -37,7 +39,7 @@
             placeholder="Enter Node Name" class="form-control form-control-sm">
           </ng-container>
         </td>
-        <td>
+        <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
           <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Edit Node" class="ml-1" *ngIf="!isAppSetingsEditable[i]"
           (click)="isAppSetingsEditable[i] = true;"><i class="fa fa-edit"></i></a>
           <a href="javascript:void(0)" placement="bottom" class="ml-2" tooltip="Cancel" *ngIf="isAppSetingsEditable[i]"
@@ -51,7 +53,7 @@
       <tr>
         <td> Level - {{applicationData?.hierarchy?.levels.length + 1}}</td>
         <td>Asset</td>
-        <td></td>
+        <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"></td>
       </tr>
     </tbody>
   </table>

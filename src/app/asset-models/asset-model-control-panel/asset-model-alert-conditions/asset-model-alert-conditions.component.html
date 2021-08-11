@@ -24,7 +24,7 @@
             </li>
             <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="openAddAlertConditionModal()"
-        [class.disabled]="assetModel.freezed">
+        [class.disabled]="assetModel.freezed" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
           <i class="fa fa-fw fa-plus"></i>
           <span class="text-secondary">Add Alert Condition
           </span></a>
@@ -48,7 +48,7 @@
           <th>Alert Code</th>
           <th>Alert Message</th>
           <th>Actions</th>
-          <th></th>
+          <th  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"></th>
         </tr>
       </thead>
       <tbody>
@@ -88,7 +88,7 @@
                   <i class="fa fa-tasks"></i>
                 </a>
               </td>
-              <td>
+              <td  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
                 <a href="javascript:void(0)" (click)="openAddAlertConditionModal(alert)" class="mr-1"
                 [class.disabled]="assetModel.freezed" placement="bottom" tooltip="Edit">
                   <i class="fa fa-fw fa-edit" ></i>
@@ -111,12 +111,13 @@
                     [disabled]="alertObj?.visualization_widgets?.length === 0 || isCreateAlertConditionLoading" placement="bottom" tooltip="Edit"
                     (click)="editWidgets()"><i class="fa fa-edit fa-sm"></i></button> -->
                     <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" [disabled]="isCreateAlertConditionLoading || assetModel.freezed"
-                    placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()" ><i class="fa fa-save fa-sm"></i></button>
+                    placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()"
+                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"><i class="fa fa-save fa-sm"></i></button>
                     <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></i>
                   </p>
                 </div>
 
-                <div class="col-12  my-2 accordion-padding">
+                <div class="col-12  my-2 accordion-padding"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
                   <div class="form-inline" >
                     <ng-container>
                     <div class="form-group">
@@ -143,7 +144,8 @@
                     <ng-container *ngFor="let item of alertObj.visualization_widgets; let index = index">
                       <span class="tag" >
                         <span class="tag-text">{{item}}</span>
-                        <button class="tag-remove" (click)="removeVisualizationWidget(index)" [disabled]="assetModel.freezed"></button>
+                        <button class="tag-remove" (click)="removeVisualizationWidget(index)" [disabled]="assetModel.freezed"
+                        *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"></button>
                       </span>
                     </ng-container>
                   </div>
@@ -151,7 +153,7 @@
               </td>
               <td colspan="6" class="accordion-border" *ngIf="viewType === 'Recommendations'">
                 <div class="col-12 my-3 accordion-padding">Following recommendations have been pre-configured. You can configure more.
-                  <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                  <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
                   placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()" [disabled]="assetModel.freezed"><i class="fa fa-save fa-sm"></i></button></div>
                   <div class="col-12 my-2 accordion-padding">
                   <h6 >Debugging Steps: </h6>
@@ -169,13 +171,14 @@
                         <td style="width: 30%;">{{step.description}}</td>
                         <td style="width: 30%;">{{step.activity}} Activity</td>
 
-                        <td style="width: 10%;">
+                        <td style="width: 10%;"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
                             <a href="javascript:void(0)" class="ml-2" (click)="removeRecommendationStep(i)" placement="bottom" tooltip="Remove"
                             [class.disabled]="assetModel.freezed">
                               <i class="fa fa-trash fa-sm"></i> </a>
                         </td>
                       </ng-container>
                       </tr>
+                      <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
                       <tr *ngIf="recommendationObj" style="background-color:transparent">
                         <ng-container >
                           <td style="width: 15%;">
@@ -209,6 +212,7 @@
 
                           </ng-container>
                       </tr>
+                      </ng-container>
                       </ng-container>
                     </tbody>
                   </table>
@@ -253,11 +257,11 @@
 
                 <div class="col-12 accordion-padding my-2">Following attachments have been added. You can add more.
 
-                  <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                  <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
                   placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()" [disabled]="assetModel.freezed"><i class="fa fa-save fa-sm"></i></button></div>
                 <div class="col-12 my-3 accordion-padding ">
 
-                <div class="">
+                <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
                   <h6>Email / Whatsapp Attachments: </h6>
                   <!-- <button type="button" class="btn btn-primary btn-sm mx-1 mt-n2"
                    placement="bottom" tooltip="Add" (click)="addReferenceDocument()"><i class="fa fa-plus fa-sm"></i></button>
@@ -265,7 +269,7 @@
                    placement="bottom" tooltip="Edit" (click)="editReferenceDocuments()"><i class="fa fa-edit fa-sm"></i></button> -->
                 </div>
 
-                <div class="">
+                <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
                   <div class="form-inline" >
                     <ng-container>
                     <div class="form-group" >
@@ -293,7 +297,8 @@
                   <ng-container *ngFor="let item of alertObj.reference_documents; let index = index">
                     <span class="tag" >
                       <span class="tag-text">{{item}}</span>
-                      <button class="tag-remove" [disabled]="assetModel.freezed" (click)="removeDocument(index)"></button>
+                      <button class="tag-remove" [disabled]="assetModel.freezed" (click)="removeDocument(index)"
+                      *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"></button>
                     </span>
                   </ng-container>
                 </div>
@@ -303,20 +308,24 @@
 
               <td colspan="6" *ngIf="viewType === 'Actions'">
                 <div class="col-12  accordion-padding mx-2">
-                  <h6>Actions:  <button type="button" class="btn btn-success btn-sm mx-1"
+                  <h6>Actions:
+                    <button type="button" class="btn btn-success btn-sm mx-1" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
                     placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()" [disabled]="assetModel.freezed"><i class="fa fa-save fa-sm"></i></button></h6>
                 </div>
                 <div class="col-12 my-2">
                   <div class="form-group accordion-padding mx-3">
-                    <input type="checkbox" class="form-check-input" id="email" name="email"[(ngModel)]="alertObj.actions.email.enabled">
+                    <input type="checkbox" class="form-check-input" id="email" name="email"[(ngModel)]="alertObj.actions.email.enabled"
+                    [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
                     <label class="form-check-label" for="email">Email</label>
                   </div>
                   <div class="form-group accordion-padding mx-3">
-                    <input type="checkbox" class="form-check-input" id="whatsapp" name="whatsapp"[(ngModel)]="alertObj.actions.whatsapp.enabled">
+                    <input type="checkbox" class="form-check-input" id="whatsapp" name="whatsapp"[(ngModel)]="alertObj.actions.whatsapp.enabled"
+                    [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
                     <label class="form-check-label" for="whatsapp">Whatsapp</label>
                   </div>
                   <div class="form-group accordion-padding mx-3">
-                    <input type="checkbox" class="form-check-input" id="sms" name="sms"[(ngModel)]="alertObj.actions.sms.enabled">
+                    <input type="checkbox" class="form-check-input" id="sms" name="sms"[(ngModel)]="alertObj.actions.sms.enabled"
+                    [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
                     <label class="form-check-label" for="sns">SMS</label>
                   </div>
 

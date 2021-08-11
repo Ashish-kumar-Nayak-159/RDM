@@ -35,6 +35,7 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
   legacyAssetsTab: { visibility: any; tab_name: any; table_key: any; };
   iotGatewaysTab: { visibility: any; tab_name: any; table_key: any; };
   componentState: any;
+  decodedToken: any;
   constructor(
     private assetModelService: AssetModelService,
     private commonService: CommonService,
@@ -47,6 +48,8 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.subscriptions.push(this.route.paramMap.subscribe(async params => {
       this.assetModelFilterObj.app = this.contextApp.app;
       this.originalAssetsModelFilterObj = JSON.parse(JSON.stringify(this.assetModelFilterObj));

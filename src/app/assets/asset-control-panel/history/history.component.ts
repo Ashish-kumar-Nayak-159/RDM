@@ -71,6 +71,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   };
   @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   selectedDateRange: string;
+  decodedToken: any;
   constructor(
     private assetService: AssetService,
     private assetModelService: AssetModelService,
@@ -80,11 +81,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
     private appRef: ApplicationRef,
     private injector: Injector,
     private chartService: ChartService  ) {
-
   }
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getAssetsModelProperties();
     this.historyFilter.app = this.contextApp.app;
     this.historyFilter.epoch = true;

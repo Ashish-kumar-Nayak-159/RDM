@@ -50,6 +50,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
   legacyAssetsTab: any;
   iotGatewaysTab: any;
   tabData: any;
+  decodedToken: any;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -59,6 +60,8 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.getTileName();
     this.assetsList = [];
     this.getAssets();

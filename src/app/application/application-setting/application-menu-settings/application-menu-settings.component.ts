@@ -20,6 +20,7 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
   toggleRows: any = {};
   apiSubscriptions: Subscription[] = [];
   isAppSettingsEditable = false;
+  decodedToken: any;
   constructor(
     private toasterService: ToasterService,
     private applicationService: ApplicationService,
@@ -28,6 +29,8 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
+    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     // this.applicationData.menu_settings = {};
     if (this.applicationData?.menu_settings?.asset_control_panel_menu?.length === 0) {
       this.applicationData.menu_settings.asset_control_panel_menu = CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST;
@@ -135,6 +138,26 @@ export class ApplicationMenuSettingsComponent implements OnInit, OnDestroy {
             });
             arr.push(item);
           }
+          arr.forEach(element1 => {
+            let trueCount = 0;
+            let falseCount = 0;
+            const token1 = localStorage.getItem(CONSTANTS.APP_TOKEN);
+            const decodedToken =  this.commonService.decodeJWTToken(token1);
+            element1?.privileges_required?.forEach(privilege => {
+              if (decodedToken?.privileges?.indexOf(privilege) !== -1) {
+                trueCount++;
+              } else {
+                falseCount++;
+              }
+            });
+            if (trueCount > 0) {
+              element1.privilege_show = true;
+            } else {
+              if (falseCount > 0 ) {
+                element1.privilege_show = false;
+              }
+            }
+          });
         });
         if (!flag) {
           arr.push(item);

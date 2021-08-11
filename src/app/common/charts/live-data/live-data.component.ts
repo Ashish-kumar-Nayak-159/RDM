@@ -9,6 +9,7 @@ import { ChartService } from 'src/app/chart/chart.service';
 import * as moment from 'moment';
 declare var $: any;
 import am4themes_animated from '@amcharts/amcharts4/themes/animated';
+import { CONSTANTS } from 'src/app/app.constants';
 @Component({
   selector: 'app-live-chart-data',
   templateUrl: './live-data.component.html',
@@ -44,6 +45,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   loader = false;
   loaderMessage = 'Loading Data. Wait...';
   environmentApp = environment.app;
+  decodedToken: any;
   constructor(
     private commonService: CommonService,
     private chartService: ChartService,
@@ -51,6 +53,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.loader = true;
     setTimeout(() => {
       this.plotChart();

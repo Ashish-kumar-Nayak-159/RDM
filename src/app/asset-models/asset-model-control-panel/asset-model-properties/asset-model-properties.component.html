@@ -3,7 +3,7 @@
   <h1 class="h3 mb-0 text-gray-800">Access Control</h1>
 </div> -->
 
-<div class="tab-bar" *ngIf="!type.includes('derived')">
+<div class="tab-bar" *ngIf="!type.includes('derived') && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
   <div class="">
     <ul class="nav">
       <li class="nav-item">

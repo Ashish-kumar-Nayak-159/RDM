@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 
 declare var $: any;
@@ -28,11 +29,13 @@ export class DataTableComponent implements OnInit {
   bodyMessage: string;
   headerMessage: string;
   hideCancelButton = false;
+  decodedToken: any;
   constructor(
     private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     setTimeout(() => this.plotChart(), 200);
   }
 

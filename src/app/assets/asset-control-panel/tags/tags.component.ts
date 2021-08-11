@@ -51,6 +51,7 @@ export class TagsComponent implements OnInit, OnDestroy {
   centerLongitude = 72.5714;
   zoom = 8;
   @ViewChild('search') searchElementRef: ElementRef;
+  decodedToken: any;
   constructor(
     private route: ActivatedRoute,
     private assetService: AssetService,
@@ -61,6 +62,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     private ngZone: NgZone ) { }
 
   async ngOnInit(): Promise<void> {
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     const asset = JSON.parse(JSON.stringify(this.asset));
     this.asset = undefined;
     this.asset = JSON.parse(JSON.stringify(asset));

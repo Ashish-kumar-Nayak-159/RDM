@@ -42,6 +42,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   contextApp: any;
   options: any;
   userData: any;
+  decodedToken: any;
   constructor(
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
@@ -51,6 +52,8 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.mode = 'code';
     this.editorOptions.statusBar = false;
@@ -129,6 +132,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
               id: 'Edit',
               valueclass: '',
               tooltip: 'Edit',
+              privilege_key: 'ASMMM',
               disableConditions: {
                 key: 'freezed',
                 value: true
@@ -139,6 +143,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
               text: '',
               id: 'Delete',
               valueclass: '',
+              privilege_key: 'ASMMM',
               tooltip: 'Delete',
               disableConditions: {
                 key: 'freezed',

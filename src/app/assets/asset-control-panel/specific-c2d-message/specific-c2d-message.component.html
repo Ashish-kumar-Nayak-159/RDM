@@ -148,6 +148,27 @@
     </div>
         <table class="table table-hover table-bordered">
           <tbody>
+            <tr *ngIf="selectedWidget?.metadata?.widget_type === 'Asset'">
+              <td>Asset</td>
+              <td>
+                <select class="form-control form-control-sm" id="asset" name="asset" [(ngModel)]="selectedAssetValue"
+                >
+                  <option [ngValue]="undefined" >Select Asset</option>
+                  <option [ngValue]="asset.asset_id" *ngFor="let asset of assets;">{{asset.asset_id}}</option>
+                </select>
+              </td>
+            </tr>
+            <tr *ngIf="selectedWidget?.metadata?.widget_type === 'Slave'">
+              <td>Slave/Sensor</td>
+              <td>
+                <select class="form-control form-control-sm" id="slave" name="slave" [(ngModel)]="selectedSlaveValue"
+                >
+                  <!-- <option [ngValue]="undefined" >Select Communication Technique</option> -->
+                  <option [ngValue]="undefined" >Select Slave/Sensor</option>
+                  <option [ngValue]="slave.slave_id" *ngFor="let slave of slaves;">{{slave.slave_id}}</option>
+                </select>
+              </td>
+            </tr>
         <ng-container *ngFor="let item of jsonModelKeys; let i = index;">
           <tr>
           <td >
@@ -171,7 +192,6 @@
               uncheckedLabel="{{item.json.falseValue}}" size="small"
               [(ngModel)]="item.value" id="{{item.name}}" name="{{item.name}}"
               uncheckedTextColor="red" defaultBgColor="red" checkedTextColor="white" uncheckedTextColor="white"></ui-switch>
-
             </div>
           </ng-container>
           <ng-container *ngIf="item.json.type === 'enum'">
@@ -181,7 +201,6 @@
             </select>
           </ng-container>
           </div>
-
         </td>
       </tr>
         </ng-container>
@@ -189,7 +208,6 @@
           <tr>
             <td colspan="2">No {{pageType?.includes('control') ? 'control' : 'configure'}} parameters available.</td>
           </tr>
-
         </ng-container>
       </tbody>
         </table>

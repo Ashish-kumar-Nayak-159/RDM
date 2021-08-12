@@ -30,6 +30,7 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
   originalExtraParams: any[] = [];
   dataTypeList = CONSTANTS.PROPERTY_DATA_TYPE_LIST;
   decodedToken: any;
+  constantData = CONSTANTS;
   constructor(
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
@@ -94,7 +95,8 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
     this.controlWidget = {
       properties: [],
       metadata: {
-        communication_technique: 'C2D Message'
+        communication_technique: 'C2D Message',
+        widget_type: undefined
       },
       json: {
         timestamp: {

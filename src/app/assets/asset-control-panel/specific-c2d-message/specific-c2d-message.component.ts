@@ -41,6 +41,9 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
   @Input() selectedWidget: any;
   @Input() jsonModelKeys: any[] = [];
   contextApp: any;
+  selectedSlaveValue: any;
+  selectedAssetValue: any;
+  slaves = [];
   selectedLevel = 0;
   constructor(
     private toasterService: ToasterService,
@@ -64,16 +67,25 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
       expire_in_min: 1,
       request_type: this.selectedWidget.name
     };
-    if (this.componentState === CONSTANTS.IP_GATEWAY) {
+    if (this.asset?.type === CONSTANTS.IP_GATEWAY) {
       this.getAssetsListByGateway();
     }
-
+    if (this.selectedWidget?.metadata?.widget_type === 'Slave') {
+      this.getSlaveData();
+    }
     // this.messageIdInterval = setInterval(() => {
     //   this.c2dMessageData.message_id = this.asset.asset_id + '_' + moment().unix();
     // }, 1000);
   }
 
-
+  getSlaveData() {
+    this.slaves = [];
+    this.assetService.getAssetSlaveDetails(this.contextApp.app, this.asset.asset_id, {}).subscribe(
+      (response: any) => {
+        this.slaves = response.data;
+      }
+    );
+  }
 
   getAssetsModelAssetMethod() {
     // this.assetMethods = {};
@@ -88,10 +100,6 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
       }
     ));
   }
-
-  onSwitchValueChange(event, index) {
-  }
-
 
 
   getAssetsListByGateway() {
@@ -141,6 +149,8 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     }
     this.sentMessageData = undefined;
     obj.message = {};
+    obj.message['slave_id'] = this.selectedSlaveValue;
+    obj.message['asset_id'] = this.selectedAssetValue;
     this.jsonModelKeys.forEach(item => {
       if (item.value !== null || item.value !== undefined) {
         if (item.json.type === 'boolean') {

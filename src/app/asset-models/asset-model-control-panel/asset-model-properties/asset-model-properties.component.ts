@@ -106,6 +106,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
           headerClass: 'w-15',
           valueclass: ''
         },
+
         {
           name: 'Data Type',
           key: 'data_type',
@@ -154,7 +155,16 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         }
       ]
     };
-    if (this.type.includes('Derived Properties')) {
+    if (this.type.includes('measured')) {
+      this.propertyTableConfig.data.splice(3, 0, {
+        name: 'Group',
+        key: 'group',
+        type: 'text',
+        headerClass: '',
+        valueclass: ''
+      });
+    }
+    if (this.type.includes('derived')) {
       // this.propertyTableConfig.data[3].btnData.splice(1, 0, {
       //   icon: 'fa fa-fw fa-cog',
       //   text: '',
@@ -169,9 +179,17 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         headerClass: '',
         valueclass: ''
       });
-      this.propertyTableConfig.data[4].btnData.splice(1);
-      this.propertyTableConfig.data[4].btnData.splice(2);
+      this.propertyTableConfig.data.splice(4, 0, {
+        name: 'Group',
+        key: 'group',
+        type: 'text',
+        headerClass: '',
+        valueclass: ''
+      });
+      this.propertyTableConfig.data[5].btnData.splice(1);
+      this.propertyTableConfig.data[5].btnData.splice(2);
     }
+    console.log(this.propertyTableConfig);
     this.getAssetsModelProperties();
   }
 

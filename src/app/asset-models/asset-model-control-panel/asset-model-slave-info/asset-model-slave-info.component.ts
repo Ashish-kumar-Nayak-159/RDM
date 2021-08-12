@@ -93,7 +93,7 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
             name: 'Actions',
             key: undefined,
             type: 'button',
-            isColumnHidden: true,
+            isColumnHidden: this.decodedToken?.privileges?.indexOf('ASMMM') === -1,
             headerClass: 'w-10',
             btnData: [
               {
@@ -150,7 +150,7 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
             key: undefined,
             type: 'button',
             headerClass: 'w-10',
-            isColumnHidden: true,
+            isColumnHidden: this.decodedToken?.privileges?.indexOf('ASMMM') === -1,
             btnData: [
               {
                 icon: 'fa fa-fw fa-edit',
@@ -197,7 +197,7 @@ export class AssetModelSlaveInfoComponent implements OnInit, OnDestroy {
             name: 'Actions',
             key: undefined,
             type: 'button',
-            isColumnHidden: true,
+            isColumnHidden: this.decodedToken?.privileges?.indexOf('ASMMM') === -1,
             headerClass: 'w-10',
             btnData: [
               {

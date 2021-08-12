@@ -82,7 +82,7 @@ export class RulesComponent implements OnInit {
             key: undefined,
             type: 'button',
             headerClass: 'w-10',
-            isColumnHidden: true,
+            isColumnHidden: this.decodedToken?.privileges?.indexOf('RKPIM') === -1,
             btnData: [
               // {
               //   icon: 'fa fa-fw fa-eye',
@@ -161,7 +161,7 @@ export class RulesComponent implements OnInit {
             name: 'Actions',
             key: undefined,
             type: 'button',
-            isColumnHidden: true,
+            isColumnHidden: this.decodedToken?.privileges?.indexOf('RKPIM') === -1,
             headerClass: 'w-10',
             btnData: [
               // {

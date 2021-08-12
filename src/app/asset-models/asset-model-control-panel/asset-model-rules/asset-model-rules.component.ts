@@ -72,7 +72,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
             key: undefined,
             type: 'button',
             headerClass: 'w-10',
-            isColumnHidden: true,
+            isColumnHidden: this.decodedToken?.privileges?.indexOf('RKPIM') === -1,
             btnData: [
               // {
               //   icon: 'fa fa-fw fa-eye',
@@ -153,7 +153,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
             key: undefined,
             type: 'button',
             headerClass: 'w-10',
-            isColumnHidden: true,
+            isColumnHidden:  this.decodedToken?.privileges?.indexOf('RKPIM') === -1,
             btnData: [
               // {
               //   icon: 'fa fa-fw fa-eye',

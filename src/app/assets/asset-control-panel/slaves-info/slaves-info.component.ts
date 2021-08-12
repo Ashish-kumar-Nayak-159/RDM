@@ -30,6 +30,9 @@ export class SlavesInfoComponent implements OnInit {
   setupForm: FormGroup;
   constantData = CONSTANTS;
   decodedToken: any;
+  assetTwin: any;
+  applications = CONSTANTS.ASSETAPPPS;
+  slaveProvisionedStatus: any = {};
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -41,9 +44,46 @@ export class SlavesInfoComponent implements OnInit {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.getAssetTwinData();
     this.getModelSlaveData();
     this.getSlaveData();
   }
+
+  getAssetTwinData() {
+    return new Promise<void>((resolve) => {
+      this.subscriptions.push(
+        this.assetService.getAssetTwin(this.contextApp.app,
+          this.asset?.type === CONSTANTS.NON_IP_ASSET ? this.asset.gateway_id : this.asset.asset_id).subscribe(
+          (response) => {
+            this.assetTwin = response;
+            if (this.asset.metadata?.package_app) {
+              this.asset.appObj = this.applications.find(appObj => appObj.name === this.asset.metadata.package_app);
+              console.log(this.asset.appObj);
+              console.log(this.assetTwin);
+              if (this.assetTwin && this.assetTwin.twin_properties.reported && this.assetTwin.twin_properties.reported[this.asset.appObj.type] &&
+                this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name]) {
+                  if (this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].status?.toLowerCase() !== 'running') {
+                    this.slaveProvisionedStatus = {};
+                  } else {
+                    if (this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration
+                    && this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration[this.asset.asset_id]
+                    && this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration[this.asset.asset_id].
+                    slaves) {
+                      this.slaveProvisionedStatus = this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration[this.asset.asset_id].
+                      slaves;
+                    } else {
+                      this.slaveProvisionedStatus = {};
+                    }
+                  }
+                }
+              }
+              console.log(this.slaveProvisionedStatus);
+            resolve();
+          }
+        ));
+    });
+  }
+
 
   getModelSlaveData() {
     this.modelSlaveData = [];

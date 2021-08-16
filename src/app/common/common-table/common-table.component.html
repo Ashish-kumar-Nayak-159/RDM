@@ -33,7 +33,7 @@
               <ng-container *ngFor="let btnData of header.btnData">
                 <ng-container *ngIf="btnData.privilege_key; else normalBtns">
                 <a href="javascript:void(0)" style="z-index: 1" class="{{btnData.valueclass}}" (click)="onClickOfButton(data, btnData.id)"
-                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf(btnData.privilege_key) > -1"
+                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf(btnData.privilege_key) > -1 && resolve(data, 'source') !== 'Model'"
                 [class.disabled]="tableConfig[btnData.disableConditions?.key] === btnData.disableConditions?.value">
                   <i class="{{btnData.icon}}" placement="bottom" [tooltip]="btnData.tooltip"
                   [style.color]="(tableConfig.rowHighlight && data[tableConfig.rowHighlight.param] !== tableConfig.rowHighlight.value) ||

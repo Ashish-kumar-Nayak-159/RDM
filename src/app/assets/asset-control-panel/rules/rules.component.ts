@@ -64,6 +64,13 @@ export class RulesComponent implements OnInit {
             valueclass: ''
           },
           {
+            name: 'Source',
+            key: 'source',
+            type: 'text',
+            headerClass: '',
+            valueclass: ''
+          },
+          {
             name: 'Category',
             key: 'rule_category',
             type: 'text',
@@ -139,6 +146,13 @@ export class RulesComponent implements OnInit {
           {
             name: 'Name',
             key: 'name',
+            type: 'text',
+            headerClass: '',
+            valueclass: ''
+          },
+          {
+            name: 'Source',
+            key: 'source',
             type: 'text',
             headerClass: '',
             valueclass: ''

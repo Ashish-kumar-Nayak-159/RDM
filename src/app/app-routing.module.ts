@@ -2,6 +2,7 @@ import { CampaignManagementComponent } from './campaign-management/campaign-mana
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { RDMLoginComponent } from './rdm-login/rdm-login.component';
+import { RdmGuestLoginComponent } from './rdm-guest-login/rdm-guest-login.component';
 import { RDMHomeComponent } from './rdmhome/rdmhome.component';
 
 const routes: Routes = [
@@ -40,6 +41,10 @@ const routes: Routes = [
   {
     path: 'login',
     component: RDMLoginComponent
+  },
+  {
+    path: 'guest-login',
+    component: RdmGuestLoginComponent
   },
   {
     path: '',

@@ -20,6 +20,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { LoaderComponent } from './loader/loader.component';
 import { AgmCoreModule } from '@agm/core';
 import { CampaignManagementComponent } from './campaign-management/campaign-management.component';
+import { RdmGuestLoginComponent } from './rdm-guest-login/rdm-guest-login.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { CampaignManagementComponent } from './campaign-management/campaign-mana
     RDMHomeComponent,
     ResetPasswordComponent,
     LoaderComponent,
-    CampaignManagementComponent
+    CampaignManagementComponent,
+    RdmGuestLoginComponent
   ],
   imports: [
     BrowserModule,

@@ -29,6 +29,8 @@ export class AppUrls {
   public static CREATE_ASSET = 'DLM_CreateAsset';
   public static SEND_C2D_MESSAGE = 'apps/{0}/iot_assets/{1}/c2d_messages';
   public static LOGIN = 'login';
+  public static GUEST_SIGNUP = 'guest_signup';
+  public static GUEST_LOGIN = 'guest_login';
   public static GET_APPLICATIONS_LIST = 'apps';
   public static CREATE_APP = 'apps';
   public static UPDATE_APP = 'apps/{0}';

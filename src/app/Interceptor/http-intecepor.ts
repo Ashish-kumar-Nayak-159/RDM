@@ -34,6 +34,8 @@ export class CustomHttpInterceptor implements HttpInterceptor {
       return new Observable();
     }
     if (!userToken && !request.url.includes('api/login')
+    && !request.url.includes('api/guest_login')
+    && !request.url.includes('api/guest_signup')
     && !request.url.includes('users/reset_password')
     && !request.url.includes('users/forgot_password')
     && !request.url.includes(environment.blobURL)) {

@@ -102,6 +102,14 @@ export class CommonService {
     return this.http.post(this.url + AppUrls.LOGIN, obj);
   }
 
+  userSignUp(obj) {
+    return this.http.post(this.url + AppUrls.GUEST_SIGNUP, obj);
+  }
+
+  userSignIn(obj) {
+    return this.http.post(this.url + AppUrls.GUEST_LOGIN, obj);
+  }
+
   decodeJWTToken(token): any {
     if (token) {
       try {

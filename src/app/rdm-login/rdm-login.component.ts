@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 import { ToasterService } from '../services/toaster.service';
 import { CommonService } from 'src/app/services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { decode } from 'punycode';
 declare var $: any;
 @Component({
   selector: 'app-rdm-login',

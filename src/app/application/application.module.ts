@@ -26,6 +26,7 @@ import { ApplicationDatabaseConfigurationComponent } from './application-setting
 import { MapViewHomeComponent } from './map-view-home/map-view-home.component';
 import { ApplicationOrgTreeComponent } from './application-setting/application-org-tree/application-org-tree.component';
 import { ApplicationDashboardConfigurationComponent } from './application-setting/application-dashboard-configuration/application-dashboard-configuration.component';
+import { ApplicationEmailAliasComponent } from './application-setting/application-email-alias/application-email-alias.component';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { ApplicationDashboardConfigurationComponent } from './application-settin
     ApplicationDatabaseConfigurationComponent,
     MapViewHomeComponent,
     ApplicationOrgTreeComponent,
-    ApplicationDashboardConfigurationComponent
+    ApplicationDashboardConfigurationComponent,
+    ApplicationEmailAliasComponent
   ],
   imports: [
     CommonModule,

@@ -109,6 +109,18 @@ export class ApplicationService {
       }));
     }
   }
+getApplicationUserGroups(app) {
+    return this.http.get(this.url + String.Format(AppUrls.GET_APP_USERGROUPS, encodeURIComponent(app)));
+  }
+
+  updateApplicationUserGroups(appObj, app, group_name) {
+    return this.http.put(this.url + String.Format(AppUrls.UPDATE_APP_USERGROUPS, encodeURIComponent(app),
+    encodeURIComponent(group_name)), appObj);
+  }
+
+
+
+
 
   getApplicationUserRoles(app) {
     return this.http.get(this.url + String.Format(AppUrls.GET_APP_USERROLES, encodeURIComponent(app)));

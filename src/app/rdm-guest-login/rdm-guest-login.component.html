@@ -153,7 +153,7 @@
 
 
  <div class="" id="intro"  style="margin-top:3.5rem">
-    <!--<div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-center">
         <div class="">
             <div class="container2" id="container2">
                 <div class="form-container sign-up-container">
@@ -165,7 +165,7 @@
                         <hr style="border-top:1px solid #ccc;">
                         <a href="#">Forgot your password?</a>
                     </form>
-                    
+
                 </div>
                 <div class="form-container sign-in-container">
                     <form class="form-login" action="#">
@@ -200,9 +200,9 @@
                 </div>
             </div>
         </div>
-    </div> -->
-    
-    <div class="row mr-0">
+    </div>
+
+    <!-- <div class="row mr-0">
          <div class="col-lg-1"></div>
         <div class="col-lg-5 d-none d-lg-block align-self-center ">
             <div class="text-center"> <h5 class="h5 mb-3 text-white" >Azure RDM: Manage, Monitor, Control millions of IoT assets</h5></div>
@@ -216,7 +216,6 @@
                   <div class="text-center">
                     <h1 class="h4 mb-4" style="color:#1a5a9e">Guest Login !!</h1>
                   </div>
-                  <!-- <p class="text-center" >Temporary signup to watch the RDM demo.</p> -->
                   <form class="g-user" (submit)="onSignUp()" *ngIf="!otpData?.user_id">
                     <div class="form-group row">
                         <div class="col-sm-6 mb-3 mb-sm-0">
@@ -236,8 +235,8 @@
                         <div class="col-sm-6">
                           <input type="text" class="form-control form-control-user" id="designation" placeholder="Designation" [(ngModel)]="loginForm.designation" name="designation">
                         </div>
-                      </div> 
-                   
+                      </div>
+
                     <button type="submit"  style="background-color:#1a5a9e"
                       class="btn btn-primary btn-user btn-block text-white "
                       [class.disabled]="isLoginAPILoading"
@@ -267,12 +266,11 @@
                 </div>
               </div>
             </div>
-        </div> 
+        </div>
         <div class="col-lg-1"></div>
-    </div>
+    </div> -->
   </div>
-  
+
   <app-reset-password [isFirstTimeLogin]="true" [isForgotPassword] = "false" (modalClose)="onResetModalClose()" [loginData]="loginForm" *ngIf="isResetPassword"></app-reset-password>
   <app-reset-password [isFirstTimeLogin]="true" [isForgotPassword] = "true" (modalClose)="onResetModalClose()" [loginData]="loginForm" *ngIf="isForgotPassword"></app-reset-password>
-  
-  
+

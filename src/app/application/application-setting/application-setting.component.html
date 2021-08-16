@@ -18,6 +18,9 @@
           <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'dashboard-configuration'}"
           href="#app-dashboard-configuration" role="tab" aria-controls="nav-home" aria-selected="true" (click)="setActiveTab('dashboard-configuration')">
           Dashboard Configuration</a>
+          <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'email-alias'}"
+          href="#app-email-alias" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('email-alias')">
+          Email Alias</a>
           <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'menu-settings'}"
           href="#app-menu-settings" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('menu-settings')">
           Menu Settings</a>
@@ -56,6 +59,10 @@
     <div class="tab-pane" id="app-database-configuration" role="tabpanel" aria-labelledby="nav-home-tab"
     [ngClass]="{'active': activeTab === 'database-configuration'}">
       <app-application-database-configuration *ngIf="activeTab === 'database-configuration' && applicationData" [applicationData]="applicationData"></app-application-database-configuration>
+    </div>
+    <div class="tab-pane" id="app-email-alias" role="tabpanel" aria-labelledby="nav-home-tab"
+    [ngClass]="{'active': activeTab === 'email-alias'}">
+      <app-application-email-alias *ngIf="activeTab === 'email-alias' && applicationData" [applicationData]="applicationData"></app-application-email-alias>
     </div>
     <div class="tab-pane" id="app-org-tree" role="tabpanel" aria-labelledby="nav-home-tab"
     [ngClass]="{'active': activeTab === 'org-tree'}">

@@ -189,7 +189,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.propertyTableConfig.data[5]. btnData.splice(1);
       this.propertyTableConfig.data[5].btnData.splice(2);
     }
-    console.log(this.propertyTableConfig);
     this.getAssetsModelProperties();
   }
 

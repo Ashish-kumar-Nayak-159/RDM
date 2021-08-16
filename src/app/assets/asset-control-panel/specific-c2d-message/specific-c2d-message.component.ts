@@ -102,6 +102,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
   }
 
 
+
   getAssetsListByGateway() {
     this.assets = [];
     const obj = {

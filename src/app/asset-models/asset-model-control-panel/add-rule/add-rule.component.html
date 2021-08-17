@@ -1,16 +1,5 @@
-<div class="modal right fade" id="addRuleModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">
-                    {{isEdit ? 'Edit Rule' : 'Create New Rule'}}
-                </h5>
-                <button type="button" class="close" (click)="closeRuleModal(false);" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <accordion class="mb-2" [closeOthers]="'true'">
+        <div class="p-3">
+            <accordion class="mb-2" [closeOthers]="'true'">
                     <accordion-group heading="" [panelClass]="'customClass'">
                         <ng-container accordion-heading>
                             <a class="btn">
@@ -23,7 +12,14 @@
                                     <label for="exampleEmail" class="col-3 required">Name</label>
                                     <div class="col-auto">
                                         <input type="text" class="form-control form-control-sm" name="name"
-                                            [(ngModel)]="ruleModel.name" placeholder="Name" required>
+                                            [(ngModel)]="ruleModel.name" placeholder="Name" >
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="exampleEmail" class="col-3 required">Code</label>
+                                    <div class="col-auto">
+                                        <input type="text" class="form-control form-control-sm" name="code"
+                                            [(ngModel)]="ruleModel.code" placeholder="Code" minlength="1" maxlength="6" >
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -31,7 +27,7 @@
                                     <div class="col-auto">
                                         <input type="text" class="form-control form-control-sm" id="examplePassword"
                                             placeholder="Description" name="description"
-                                            [(ngModel)]="ruleModel.description" required>
+                                            [(ngModel)]="ruleModel.description">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -53,32 +49,34 @@
                                 Conditions
                             </a>
                         </ng-container>
-                        <div class="">
+                        <div class="row">
                             <form #form2="ngForm">
-                                <div class="mb-3">Conditions define when your rule is triggered. Aggregation is
-                                    optional - Use it to cluster your data and trigger rules based on a time window
+                                <div class="col-12">
+                                    <div class="mb-3">Conditions define when your rule is triggered. Aggregation is
+                                        optional - Use it to cluster your data and trigger rules based on a time window
+                                    </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="form-group mb-3">
+                                <div class="col-12">
+                                    <div class="row">
+                                    <div class="col-auto">
+                                        <div class="">
                                             <div class="">
-                                                <label for="exampleEmail" class="required">Operator</label>
+                                                <label for="exampleEmail" class="required">Trigger the rule if</label>
                                             </div>
                                             <div class="">
                                                 <select id="dateoptions" placeholder="Select Operator" name="operator"
-                                                    class="form-control form-control-sm"
+                                                    class="form-control form-control-sm w-auto"
                                                     [(ngModel)]="ruleModel.operator" required>
-                                                    <option [value]="undefined">Select Operator</option>
-                                                    <option [value]="'&&'">AND</option>
-                                                    <option [value]="'||'">OR</option>
+                                                    <option [value]="undefined">Select</option>
+                                                    <option [value]="'&&'">All of the conditions are true</option>
+                                                    <option [value]="'||'">Any of the conditions are true</option>
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="form-group mb-3">
+
+                                    <div class="col-auto">
+                                        <div class="">
                                             <div class="">
                                                 <label for="exampleEmail">Time Aggregation</label>
                                             </div>
@@ -95,7 +93,7 @@
                                                     <select id="dateoptions" placeholder="Time Aggregation"
                                                         [(ngModel)]="ruleModel.aggregation_window_in_sec"
                                                         [disabled]="!ruleModel.aggregation_enabled" name="aggregation"
-                                                        class="form-control form-control-sm">
+                                                        class="form-control form-control-sm w-auto">
                                                         <option [value]="undefined">Select Aggregation Time</option>
                                                         <option [value]="300">5 minutes</option>
                                                         <option [value]="600">10 minutes</option>
@@ -108,10 +106,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="form-group mb-0">
+
+                                    <div class="col-auto">
+                                        <div class="">
                                             <div class="">
                                                 <label for="exampleEmail" class="required">Escalation Time</label>
                                             </div>
@@ -122,7 +119,7 @@
                                                 <select id="escalation_time_in_sec"
                                                     [(ngModel)]="ruleModel.escalation_time_in_sec"
                                                      name="escalation_time_in_sec"
-                                                    class="form-control form-control-sm">
+                                                    class="form-control form-control-sm w-auto">
                                                     <option [value]="undefined">Select Escalation Time</option>
                                                     <!-- <option [value]="0">0 minutes</option> -->
                                                     <option [value]="60">1 minutes</option>
@@ -133,15 +130,20 @@
                                         </div>
                                     </div>
                                 </div>
+                                </div>
                             </form>
                         </div>
-                        <hr>
                         <div class="row">
-                            <div class="col-xl-12 col-lg-12 mb-12">
+                            <div class="col-12">
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
                                 <form #form3="ngForm">
                                     <div class="form-group row"
                                         *ngFor="let condition of ruleModel.conditions; let i = index;">
-                                        <div class="col-6">
+                                        <div class="col-3">
                                             <label for="examplePassword" class="mb-2">Telemetry</label>
                                             <!-- <select placeholder="Telemetry" name="telemetry_{{i}}"
                                                 class="form-control form-control-sm" [(ngModel)]="condition.property"
@@ -163,24 +165,24 @@
                                               </ng-template>
                                             </ng-select>
                                         </div>
-                                        <div class="col-6">
+                                        <div class="col-auto">
                                             <label for="exampleEmail" class="mb-2">Operator</label>
                                             <select placeholder="Operator" name="operator_{{i}}" required
-                                                class="form-control form-control-sm" [(ngModel)]="condition.operator">
+                                                class="form-control form-control-sm w-auto" [(ngModel)]="condition.operator">
                                                 <option [value]="''">Select Operator</option>
                                                 <option *ngFor="let optr of operatorList;" [value]="optr.id">
                                                     {{optr.value}}
                                                 </option>
                                             </select>
                                         </div>
-                                        <div class="col-6 mt-3">
+                                        <div class="col-auto">
                                             <label for="examplePassword" class="mb-2">Value</label>
-                                            <input type="number" class="form-control form-control-sm" required
+                                            <input type="number" class="form-control form-control-sm" style="width:60px;" required
                                                 placeholder="value" name="threshold_{{i}}"
                                                 [(ngModel)]="condition.threshold">
                                         </div>
-                                        <div class="col-6 mt-3" *ngIf="ruleModel.aggregation_enabled">
-                                            <label for="examplePassword" class="mb-2">Aggregation Type</label>
+                                        <div class="col-auto" *ngIf="ruleModel.aggregation_enabled">
+                                            <label for="examplePassword" class="mb-2 w-auto">Aggregation Type</label>
                                             <select placeholder="Aggregation Type" name="aggregation_type_{{i}}"
                                                 class="form-control form-control-sm" required
                                                 [(ngModel)]="condition.aggregation_type">
@@ -192,17 +194,17 @@
                                                 <option [value]="'COUNT'">Count</option>
                                             </select>
                                         </div>
-                                        <div class="col-6" style="margin-top:20px">
-                                            <button id="delete" class="btn btn-sm btn-light cursor-pointer"
-                                                (click)="deleteCondition(i);"><i class="fas fa fa-trash mr-1 my-1"></i>
-                                                Delete this row</button>
+                                        <div class="col-auto">
+                                            <button id="delete" class="btn btn-sm btn-light cursor-pointer" style="margin-top: 1.65rem;"
+                                                (click)="deleteCondition(i);"><i class="fas fa fa-trash"></i>
+                                               </button>
                                         </div>
                                     </div>
                                     <hr>
                                 </form>
                                 <button id="insert-more" (click)="addNewCondition();"
                                     class="btn btn-sm btn-primary cursor-pointer"><i
-                                        class="fas fa fa-plus-circle mr-1 my-2"></i>
+                                        class="fas fa fa-plus-circle mr-1 my-1"></i>
                                     Condition</button>
                             </div>
                         </div>
@@ -215,13 +217,16 @@
                             </a>
                         </ng-container>
                         <div class="">
-
+                          <div class="col-12">
+                            <div class="mb-3">Choose what action your rule should take.
+                            </div>
+                          </div>
                             <div class="row">
                                 <div class="col-lg-12 col-xl-12">
                                     <form #form4="ngForm">
                                         <div class="form-group row mb-0">
                                             <div class="col-auto">
-                                                <label for="exampleEmail" class="required">Alert Condition</label>
+                                                <label for="exampleEmail" class="required">Alert Code</label>
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -236,9 +241,9 @@
                                                         {{alert.code}} - {{alert.message}}</option>
                                                 </select> -->
 
-                                                <ng-select [items]="alertConditionList" class="custom-dropdown w-12 sm" name="alertCondition" [clearable]="false"
+                                                <ng-select [items]="alertConditionList" class="custom-dropdown w-25 sm" name="alertCondition" [clearable]="false"
                                               [searchable]="true" bindLabel="message"
-                                              [closeOnSelect]="true" placeholder="Select Alert Condition" groupBy="type"
+                                              [closeOnSelect]="true" placeholder="Select Alert Condition" groupBy="type"  (change)="onChangeOfAssetCondition()"
                                               dropdownPosition="bottom" name="asset-dropdown" bindValue="code" [(ngModel)]="ruleModel.alert_condition_code" required>
                                               <ng-template ng-option-tmp let-item="item">
                                                 <span [tooltip]="item.code + ' - ' + item.message">
@@ -251,10 +256,76 @@
                                     </form>
                                 </div>
                             </div>
+                            <div *ngIf="selectedAlertCondition" >
+                                <div class="mb-3">Action your rule should take</div>
+                                <ul>
+                                <!-- <div class="col-12  my-2 accordion-padding" *ngIf="selectedAlertCondition?.visualization_widgets?.length === 0">
+                                    <li><p> No Visualization widgets defined yet.</p></li>
+                                </div>
+                                <div class="col-12 my-2 accordion-padding" *ngIf="selectedAlertCondition?.visualization_widgets?.length > 0">
+                                    <li><p >Visualization Widgets:</p>
+                                    <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
+                                      <ng-container *ngFor="let item of selectedAlertCondition.visualization_widgets; let index = index">
+                                        <span class="tag" >
+                                          <span class="tag-text">{{item}}</span>
+                                        </span>
+                                      </ng-container>
+                                    </div>
+                                   </li>
+                                </div>
 
-                            <div class="mb-1">Action your rule should take</div>
+                                <div class="col-12 my-3 accordion-padding" *ngIf="selectedAlertCondition?.recommendations?.length === 0">
+                                    <li><p >No Recommendations added yet. </p></li>
+                                </div>
+                                <div class="col-12 my-3 accordion-padding" *ngIf="selectedAlertCondition?.recommendations?.length > 0">
+                                    <li><p >Recommendations:</p>
+                                    <table id="mytable" width="100%" class="">
+                                    <tbody>
+                                        <tr *ngFor="let step of selectedAlertCondition.recommendations; let i = index;" style="background-color:transparent">
+                                        <ng-container >
+                                        <td style="width: 15%;">Step - {{i + 1}}</td>
+                                        <td style="width: 30%;">{{step.description}}</td>
+                                        <td style="width: 30%;">{{step.activity}} Activity</td>
+                                        </ng-container>
+                                        </tr>
+                                    </tbody>
+                                    </table>
+                                    </li>
+                                </div>
 
-                            <div class="">
+                                <div class="col-12 accordion-padding my-2" *ngIf="selectedAlertCondition?.reference_documents?.length === 0">
+                                   <li><p>No Attachments added yet.</p></li>
+                                </div>
+                                <div class="col-12 accordion-padding my-2" *ngIf="selectedAlertCondition?.reference_documents?.length > 0">
+                                    <li><p>Attachments:</p>
+                                    <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;" *ngIf="selectedAlertCondition?.reference_documents?.length > 0">
+                                        <ng-container *ngFor="let item of selectedAlertCondition.reference_documents; let index = index">
+                                        <span class="tag" >
+                                            <span class="tag-text">{{item}}</span>
+                                        </span>
+                                        </ng-container>
+                                    </div>
+                                    </li>
+                                </div> -->
+
+                                <div class="col-12 accordion-padding my-2" >
+                                    <li><p>Communication Methods:</p></li>
+                                    <div class="form-group accordion-padding mx-4">
+                                        <input type="checkbox" class="form-check-input" id="email" name="email" [checked]="selectedAlertCondition?.actions?.email?.enabled" disabled>
+                                        <label class="form-check-label" for="email">Email</label>
+                                    </div>
+                                    <div class="form-group accordion-padding mx-4">
+                                        <input type="checkbox" class="form-check-input" id="whatsapp" name="whatsapp" [checked]="selectedAlertCondition?.actions?.whatsapp?.enabled" disabled>
+                                        <label class="form-check-label" for="whatsapp">Whatsapp</label>
+                                    </div>
+                                    <div class="form-group accordion-padding mx-4">
+                                        <input type="checkbox" class="form-check-input" id="sms" name="sms" [checked]="selectedAlertCondition?.actions?.sms?.enabled" disabled>
+                                        <label class="form-check-label" for="sms">SMS</label>
+                                    </div>
+                                </div>
+                              </ul>
+                            </div>
+                            <!-- <div class="">
                                 <table id="mytable" width="100%" class="table table-borderless">
                                     <tbody class="bg-white">
                                         <tr>
@@ -304,22 +375,16 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div>
+                            </div> -->
                         </div>
                     </accordion-group>
                 </accordion>
-            </div>
-            <div class="modal-footer">
-                <i *ngIf="isUpdateApiCall" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-                <button type="button" class="btn btn-primary add-row" (click)="createNewRule();"
-                    [disabled]="form1.invalid || form2.invalid || form3.invalid || form4.invalid || ruleModel.conditions.length <= 0">{{isEdit
-                    ? 'Update' :
-                    'Create'}}</button>
-                <button type="button" class="btn btn-secondary" (click)="closeRuleModal(false)">
-                    Cancel
-                </button>
-                <!-- <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateDeviceAPILoading"></i> -->
-            </div>
+                <div>
+                    <i *ngIf="isUpdateApiCall" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+                    <button type="button" class="btn btn-sm btn-primary add-row mr-2" (click)="createNewRule();"
+                        [disabled]="form1.invalid || form2.invalid || form3.invalid || form4.invalid || ruleModel.conditions.length <= 0">{{isEdit
+                        ? 'Update' :
+                        'Create'}}</button>
+                </div>
         </div>
-    </div>
-</div>
+

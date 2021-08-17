@@ -34,7 +34,7 @@ export class AssetAlertConditionsComponent implements OnInit {
   subscriptions: Subscription[] = [];
   setupForm: FormGroup;
   constantData = CONSTANTS;
-  selectedTab = 'Asset';
+  selectedTab = 'Edge';
   slaveData: any[] = [];
   contextApp: any;
   loggedInUser: any;
@@ -51,7 +51,7 @@ export class AssetAlertConditionsComponent implements OnInit {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getDocuments();
     this.getAssetModelWidgets();
-    this.onClickOfTab('Asset');
+    this.onClickOfTab('Edge');
     this.getSlaveData();
   }
 
@@ -249,45 +249,45 @@ export class AssetAlertConditionsComponent implements OnInit {
   openAddAlertConditionModal(alertObj = undefined) {
     if (alertObj) {
       this.alertObj = alertObj;
-      if (this.asset.type !== CONSTANTS.IP_GATEWAY) {
-        this.setupForm = new FormGroup({
-          slave_id: new FormControl(alertObj?.metadata?.slave_id),
-        });
-      }
-      if (this.asset?.type === CONSTANTS.NON_IP_ASSET) {
-      if (this.asset.tags.protocol === 'ModbusTCPMaster' || this.asset.tags.protocol === 'ModbusRTUMaster') {
-        this.setupForm = new FormGroup({
-          slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
-          d: new FormControl(alertObj?.metadata?.d, [Validators.required]),
-          sa: new FormControl(alertObj?.metadata?.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
-          a: new FormControl(true),
-          fc: new FormControl(alertObj?.metadata?.fc, [Validators.required]),
-        });
-      } else if (this.asset.tags.protocol === 'SiemensTCPIP') {
-        this.setupForm = new FormGroup({
-          slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
-          d: new FormControl(alertObj?.metadata?.d, [Validators.required]),
-          sa: new FormControl(alertObj?.metadata?.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
-          a: new FormControl(true),
-          mt: new FormControl(alertObj?.metadata?.mt, [Validators.required]),
-        });
-      } else if (this.asset.tags.protocol === 'BlueNRG') {
-        this.setupForm = new FormGroup({
-          slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
-          sa: new FormControl(alertObj?.metadata?.sa, [Validators.required, Validators.min(1), Validators.max(99999)]),
-          a: new FormControl(true),
-          p: new FormControl(alertObj?.metadata?.p, [Validators.required]),
-        });
-      }
-      this.onChangeOfSetupType(alertObj.metadata);
-      this.onChangeOfSetupSecondaryType(alertObj.metadata);
-      if (this.asset.tags.protocol === 'ModbusTCPMaster' || this.asset.tags.protocol === 'ModbusRTUMaster') {
-        this.onChangeOfSetupFunctionCode(alertObj.metadata);
-      }
-      if (this.asset.tags.protocol === 'SiemensTCPIP') {
-        this.onChageOfMemoryType(alertObj.metadata);
-      }
-      }
+      // if (this.asset.type !== CONSTANTS.IP_GATEWAY) {
+      //   this.setupForm = new FormGroup({
+      //     slave_id: new FormControl(alertObj?.metadata?.slave_id),
+      //   });
+      // }
+      // if (this.asset?.type === CONSTANTS.NON_IP_ASSET) {
+      // if (this.asset.tags.protocol === 'ModbusTCPMaster' || this.asset.tags.protocol === 'ModbusRTUMaster') {
+      //   this.setupForm = new FormGroup({
+      //     slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
+      //     d: new FormControl(alertObj?.metadata?.d, [Validators.required]),
+      //     sa: new FormControl(alertObj?.metadata?.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
+      //     a: new FormControl(true),
+      //     fc: new FormControl(alertObj?.metadata?.fc, [Validators.required]),
+      //   });
+      // } else if (this.asset.tags.protocol === 'SiemensTCPIP') {
+      //   this.setupForm = new FormGroup({
+      //     slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
+      //     d: new FormControl(alertObj?.metadata?.d, [Validators.required]),
+      //     sa: new FormControl(alertObj?.metadata?.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
+      //     a: new FormControl(true),
+      //     mt: new FormControl(alertObj?.metadata?.mt, [Validators.required]),
+      //   });
+      // } else if (this.asset.tags.protocol === 'BlueNRG') {
+      //   this.setupForm = new FormGroup({
+      //     slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
+      //     sa: new FormControl(alertObj?.metadata?.sa, [Validators.required, Validators.min(1), Validators.max(99999)]),
+      //     a: new FormControl(true),
+      //     p: new FormControl(alertObj?.metadata?.p, [Validators.required]),
+      //   });
+      // }
+      // this.onChangeOfSetupType(alertObj.metadata);
+      // this.onChangeOfSetupSecondaryType(alertObj.metadata);
+      // if (this.asset.tags.protocol === 'ModbusTCPMaster' || this.asset.tags.protocol === 'ModbusRTUMaster') {
+      //   this.onChangeOfSetupFunctionCode(alertObj.metadata);
+      // }
+      // if (this.asset.tags.protocol === 'SiemensTCPIP') {
+      //   this.onChageOfMemoryType(alertObj.metadata);
+      // }
+      // }
       console.log(this.setupForm);
     } else {
       this.alertObj = {};
@@ -330,69 +330,69 @@ export class AssetAlertConditionsComponent implements OnInit {
     $('#addAlertConditionModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
-  onChangeOfSetupType(obj = undefined) {
-    console.log(obj);
-    if (this.setupForm.value.d !== 'a') {
-      this.setupForm.removeControl('sd');
-    } else {
-      this.setupForm.addControl('sd', new FormControl(obj?.sd || null, [Validators.required]));
-    }
-    if (this.setupForm.value.d !== 's') {
-      this.setupForm.removeControl('la');
-    } else {
-      this.setupForm.addControl('la', new FormControl(obj?.la || null, [Validators.required, Validators.min(1), Validators.max(99999)]));
-    }
-    if (this.setupForm.value.d === 'a' &&
-    (this.setupForm.value.sd === 5 || this.setupForm.value.sd === 6)) {
-      this.setupForm.removeControl('p');
-      this.setupForm.addControl('p', new FormControl(obj?.p || null, [Validators.required, Validators.min(1), Validators.max(5)]));
-    } else {
-      this.setupForm.removeControl('p');
-      this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
-    }
-    if (this.asset.tags.protocol === 'SiemensTCPIP' && this.setupForm.value.d === 'd') {
-      this.setupForm.removeControl('bn');
-      this.setupForm.addControl('bn', new FormControl(obj?.bn || null, [Validators.required, Validators.min(0), Validators.max(15)]));
-    } else {
-      this.setupForm.removeControl('bn');
-    }
-  }
+  // onChangeOfSetupType(obj = undefined) {
+  //   console.log(obj);
+  //   if (this.setupForm.value.d !== 'a') {
+  //     this.setupForm.removeControl('sd');
+  //   } else {
+  //     this.setupForm.addControl('sd', new FormControl(obj?.sd || null, [Validators.required]));
+  //   }
+  //   if (this.setupForm.value.d !== 's') {
+  //     this.setupForm.removeControl('la');
+  //   } else {
+  //     this.setupForm.addControl('la', new FormControl(obj?.la || null, [Validators.required, Validators.min(1), Validators.max(99999)]));
+  //   }
+  //   if (this.setupForm.value.d === 'a' &&
+  //   (this.setupForm.value.sd === 5 || this.setupForm.value.sd === 6)) {
+  //     this.setupForm.removeControl('p');
+  //     this.setupForm.addControl('p', new FormControl(obj?.p || null, [Validators.required, Validators.min(1), Validators.max(5)]));
+  //   } else {
+  //     this.setupForm.removeControl('p');
+  //     this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
+  //   }
+  //   if (this.asset.tags.protocol === 'SiemensTCPIP' && this.setupForm.value.d === 'd') {
+  //     this.setupForm.removeControl('bn');
+  //     this.setupForm.addControl('bn', new FormControl(obj?.bn || null, [Validators.required, Validators.min(0), Validators.max(15)]));
+  //   } else {
+  //     this.setupForm.removeControl('bn');
+  //   }
+  // }
 
-  onChangeOfSetupSecondaryType(obj = undefined) {
-    if (this.setupForm.value.d === 'a' &&
-    (this.setupForm.value.sd === 5 || this.setupForm.value.sd === 6)) {
-      this.setupForm.removeControl('p');
-      this.setupForm.addControl('p', new FormControl(obj?.p || null, [Validators.required, Validators.min(1), Validators.max(5)]));
-    } else {
-      this.setupForm.removeControl('p');
-      this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
-    }
-    if (this.setupForm.value.d === 'a' &&
-    this.setupForm.value.sd === 9) {
-      this.setupForm.removeControl('bytn');
-      this.setupForm.addControl('bytn', new FormControl(obj?.bytn || null, [Validators.required]));
-    } else {
-      this.setupForm.removeControl('bytn');
-    }
-  }
+  // onChangeOfSetupSecondaryType(obj = undefined) {
+  //   if (this.setupForm.value.d === 'a' &&
+  //   (this.setupForm.value.sd === 5 || this.setupForm.value.sd === 6)) {
+  //     this.setupForm.removeControl('p');
+  //     this.setupForm.addControl('p', new FormControl(obj?.p || null, [Validators.required, Validators.min(1), Validators.max(5)]));
+  //   } else {
+  //     this.setupForm.removeControl('p');
+  //     this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
+  //   }
+  //   if (this.setupForm.value.d === 'a' &&
+  //   this.setupForm.value.sd === 9) {
+  //     this.setupForm.removeControl('bytn');
+  //     this.setupForm.addControl('bytn', new FormControl(obj?.bytn || null, [Validators.required]));
+  //   } else {
+  //     this.setupForm.removeControl('bytn');
+  //   }
+  // }
 
-  onChageOfMemoryType(obj = undefined) {
-    if (this.setupForm.value.mt === 'DB') {
-      this.setupForm.addControl('dbn', new FormControl(obj?.dbn || null, [Validators.required, Validators.min(1)]));
-    } else {
-      this.setupForm.removeControl('dbn');
-    }
-  }
+  // onChageOfMemoryType(obj = undefined) {
+  //   if (this.setupForm.value.mt === 'DB') {
+  //     this.setupForm.addControl('dbn', new FormControl(obj?.dbn || null, [Validators.required, Validators.min(1)]));
+  //   } else {
+  //     this.setupForm.removeControl('dbn');
+  //   }
+  // }
 
-  onChangeOfSetupFunctionCode(obj = undefined) {
-    if (this.setupForm.value.d === 'd' && (this.setupForm.value.fc === 3 || this.setupForm.value.fc === 4)) {
-      this.setupForm.removeControl('bn');
-      this.setupForm.addControl('bn', new FormControl(obj?.bn || null, [Validators.required, Validators.min(0), Validators.max(15)]));
-    } else {
-      this.setupForm.removeControl('bn');
-      this.setupForm.addControl('bn', new FormControl(-1, [Validators.required]));
-    }
-  }
+  // onChangeOfSetupFunctionCode(obj = undefined) {
+  //   if (this.setupForm.value.d === 'd' && (this.setupForm.value.fc === 3 || this.setupForm.value.fc === 4)) {
+  //     this.setupForm.removeControl('bn');
+  //     this.setupForm.addControl('bn', new FormControl(obj?.bn || null, [Validators.required, Validators.min(0), Validators.max(15)]));
+  //   } else {
+  //     this.setupForm.removeControl('bn');
+  //     this.setupForm.addControl('bn', new FormControl(-1, [Validators.required]));
+  //   }
+  // }
 
   openConfirmModal(id, alertObj) {
     $('#' + id).modal({ backdrop: 'static', keyboard: false, show: true });

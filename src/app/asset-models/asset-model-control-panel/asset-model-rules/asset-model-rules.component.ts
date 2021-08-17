@@ -26,6 +26,8 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
   isDeleteRuleLoading = false;
   userData: any;
   decodedToken: any;
+  toggleRows = {};
+  selectedrule: any;
   constructor(
     private assetModelService: AssetModelService,
     private commonService: CommonService,
@@ -37,163 +39,33 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.onClickOfTab('Cloud');
+
+
+  }
+
+  addRule() {
+    this.selectedTab = '';
+    this.isEdit = false;
+    this.ruleData = {};
+    this.isAddRule = true;
   }
 
   onClickOfTab(type) {
-    if (type === 'Cloud') {
-      this.rulesTableConfig = {
-        type: 'Rules',
-        tableHeight: 'calc(100vh - 11rem)',
-        freezed: this.assetModel.freezed,
-        data: [
-          {
-            name: 'Name',
-            key: 'name',
-            type: 'text',
-            headerClass: '',
-            valueclass: ''
-          },
-          {
-            name: 'Category',
-            key: 'rule_category',
-            type: 'text',
-            headerClass: '',
-            valueclass: ''
-          },
-          {
-            name: 'Type',
-            key: 'type',
-            type: 'text',
-            headerClass: '',
-            valueclass: ''
-          },
-          {
-            name: 'Actions',
-            key: undefined,
-            type: 'button',
-            headerClass: 'w-10',
-            isColumnHidden: this.decodedToken?.privileges?.indexOf('RKPIM') === -1,
-            btnData: [
-              // {
-              //   icon: 'fa fa-fw fa-eye',
-              //   text: '',
-              //   id: 'View JSON Model',
-              //   valueclass: '',
-              //   tooltip: 'View JSON Model'
-              // },
-              {
-                icon: 'fa fa-fw fa-edit',
-                text: '',
-                id: 'Edit',
-                valueclass: '',
-                tooltip: 'Edit',
-                privilege_key: 'RKPIM',
-                disableConditions: {
-                  key: 'freezed',
-                  value: true
-                }
-              },
-              {
-                icon: 'fa fa-fw fa-trash',
-                text: '',
-                id: 'Delete',
-                valueclass: '',
-                tooltip: 'Delete',
-                privilege_key: 'RKPIM',
-                disableConditions: {
-                  key: 'freezed',
-                  value: true
-                }
-              },
-              {
-                icon: 'fa fa-fw fa-sync',
-                text: '',
-                id: 'Deploy',
-                valueclass: '',
-                tooltip: 'Deploy',
-                privilege_key: 'RKPIM',
-                disableConditions: {
-                  key: 'freezed',
-                  value: true
-                }
-              }
-            ]
-          }
-        ]
-      };
-    } else {
-      this.rulesTableConfig = {
-        type: 'Rules',
-        tableHeight: 'calc(100vh - 11rem)',
-        freezed: this.assetModel.freezed,
-        data: [
-          {
-            name: 'Name',
-            key: 'name',
-            type: 'text',
-            headerClass: '',
-            valueclass: ''
-          },
-          {
-            name: 'Category',
-            key: 'rule_category',
-            type: 'text',
-            headerClass: '',
-            valueclass: ''
-          },
-          {
-            name: 'Type',
-            key: 'type',
-            type: 'text',
-            headerClass: '',
-            valueclass: ''
-          },
-          {
-            name: 'Actions',
-            key: undefined,
-            type: 'button',
-            headerClass: 'w-10',
-            isColumnHidden:  this.decodedToken?.privileges?.indexOf('RKPIM') === -1,
-            btnData: [
-              // {
-              //   icon: 'fa fa-fw fa-eye',
-              //   text: '',
-              //   id: 'View JSON Model',
-              //   valueclass: '',
-              //   tooltip: 'View JSON Model'
-              // },
-              {
-                icon: 'fa fa-fw fa-edit',
-                text: '',
-                id: 'Edit',
-                valueclass: '',
-                tooltip: 'Edit',
-                privilege_key: 'RKPIM',
-                disableConditions: {
-                  key: 'freezed',
-                  value: true
-                }
-              },
-              {
-                icon: 'fa fa-fw fa-trash',
-                text: '',
-                id: 'Delete',
-                valueclass: '',
-                tooltip: 'Delete',
-                privilege_key: 'RKPIM',
-                disableConditions: {
-                  key: 'freezed',
-                  value: true
-                }
-              }
-            ]
-          }
-        ]
-      };
-    }
+    this.isAddRule = false;
     this.selectedTab = type;
+    this.toggleRows = {};
     this.getRules();
+  }
 
+  onToggleRows(i, rule) {
+    if (this.toggleRows[this.selectedTab + '_' + i]) {
+        this.toggleRows = {};
+    } else {
+        this.toggleRows = {};
+        this.toggleRows[this.selectedTab + '_' + i] = true;
+        this.isEdit = true;
+        this.ruleData = rule;
+    }
   }
 
   getRules() {
@@ -212,22 +84,8 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
     ));
   }
 
-  onTableFunctionCall(event) {
-    this.ruleData = event.data;
-    if (event.for === 'Delete') {
-      console.log('hereeeeeeeee');
-      $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
-      return;
-    } else if (event.for === 'Deploy') {
-      this.deployRule();
-      return;
-    }
-    this.isEdit = event.for === 'Edit' ? true : false;
-    this.isAddRule = true;
-    // this.toasterService.showWarning('Work in Progress', 'Manage ' + this.selectedTab + ' Rule');
-  }
-
-  deployRule() {
+  deployRule(rule) {
+    this.ruleData = rule;
     this.isDeleteRuleLoading = true;
     const obj = {
       deployed_by: this.userData.email + ' (' + this.userData.name + ')'
@@ -247,12 +105,19 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
     });
   }
 
+  onDeleteRule(rule) {
+    this.selectedrule = rule;
+    $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
   deleteRule() {
+    this.ruleData = this.selectedrule;
     this.isDeleteRuleLoading = true;
     const method = this.ruleData.type === 'Edge' ? this.assetModelService.deleteEdgeModelRule(this.contextApp.app, this.ruleData.rule_id, 'model', this.ruleData.updated_by, this.assetModel.name) :
     this.assetModelService.deleteCloudModelRule(this.contextApp.app, this.ruleData.rule_id, 'model', this.ruleData.updated_by, this.assetModel.name)
     method.subscribe((response: any) => {
       this.onCloseDeleteModal();
+      this.toggleRows = {};
       this.getRules();
       this.isDeleteRuleLoading = false;
       this.toasterService.showSuccess(response.message, 'Delete Rule');
@@ -266,11 +131,6 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
   onCloseDeleteModal() {
     $('#confirmMessageModal').modal('hide');
     this.isDeleteRuleLoading = false;
-  }
-
-  addRule() {
-    this.isAddRule = true;
-    // this.toasterService.showWarning('Work in Progress', 'Add ' + this.selectedTab + ' Rule');
   }
 
   onCloseRuleModel(event) {

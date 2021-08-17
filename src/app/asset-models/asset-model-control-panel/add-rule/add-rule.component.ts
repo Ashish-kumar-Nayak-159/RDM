@@ -62,6 +62,7 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.rule_id = this.ruleData.rule_id;
     this.ruleModel.name = this.ruleData.name;
     this.ruleModel.operator = this.ruleData.operator;
+    this.ruleModel.code = this.ruleData.code;
     this.ruleModel.description = this.ruleData.description;
     this.ruleModel.aggregation_window_in_sec = this.ruleData.aggregation_window_in_sec;
     this.ruleModel.alert_condition_code = this.ruleData.alert_condition_code;
@@ -115,6 +116,7 @@ export class AddRuleComponent implements OnInit {
     this.assetModelService.getAlertConditions(this.contextApp.app, obj).subscribe((response: any) => {
       response.data.forEach(element => element.type = 'Model Alert Conditions');
       this.alertConditionList = response.data;
+      this.onChangeOfAssetCondition();
       if (this.asset) {
         let obj1 = {
           asset_id: this.asset.asset_id,
@@ -126,6 +128,7 @@ export class AddRuleComponent implements OnInit {
             this.alertConditionList.push(item);
           });
           this.alertConditionList = JSON.parse(JSON.stringify(this.alertConditionList));
+          this.onChangeOfAssetCondition();
         });
       }
     });
@@ -140,9 +143,10 @@ export class AddRuleComponent implements OnInit {
 
   onChangeOfAssetCondition() {
     let alertCondition = this.alertConditionList.find(condition => condition.code == this.ruleModel.alert_condition_code);
-    this.selectedAlertCondition.email = alertCondition.actions.email.enabled;
-    this.selectedAlertCondition.sms = alertCondition.actions.sms.enabled;
-    this.selectedAlertCondition.whatsapp = alertCondition.actions.whatsapp.enabled;
+    this.selectedAlertCondition = alertCondition;
+    // this.selectedAlertCondition.actions.email = alertCondition.actions.email.enabled;
+    // this.selectedAlertCondition.actions.sms = alertCondition.actions.sms.enabled;
+    // this.selectedAlertCondition.actions.whatsapp = alertCondition.actions.whatsapp.enabled;
   }
 
   closeRuleModal(status) {
@@ -177,8 +181,8 @@ export class AddRuleComponent implements OnInit {
 
   createNewRule() {
     console.log(this.ruleModel);
-    if (!this.ruleModel.alert_condition_code || !this.ruleModel.name || !this.ruleModel.description || !this.ruleModel.operator
-      || !this.ruleModel.escalation_time_in_sec ) {
+    if (!this.ruleModel.alert_condition_code || !this.ruleModel.name || !this.ruleModel.description || !this.ruleModel.code
+      || !this.ruleModel.operator  || !this.ruleModel.escalation_time_in_sec ) {
         this.toasterService.showError('Please fill all required details', 'Add Rule');
       }
     this.isUpdateApiCall = true;

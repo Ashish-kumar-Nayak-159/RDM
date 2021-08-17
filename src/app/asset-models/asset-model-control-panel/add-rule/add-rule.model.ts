@@ -1,6 +1,7 @@
 export class Rule {
     rule_id?: any;
     name: string;
+    code: string;
     escalation_time_in_sec: any;
     description: string;
     alert_condition_id: any;
@@ -35,6 +36,11 @@ export class Conditions {
 }
 
 export class AlertCondition {
+    recommendations?: any[];
+    visualization_widgets?: any[];
+    reference_documents?: any[];
+    actions?: any;
+
     email: boolean;
     sms: boolean;
     whatsapp: boolean;

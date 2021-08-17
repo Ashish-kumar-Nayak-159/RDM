@@ -1,13 +1,13 @@
 <div class="tab-bar">
     <div class="">
       <ul class="nav">
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Asset')"
           [ngClass]="{'active': selectedTab === 'Asset'}">
             <i class="fa fa-fw fa-laptop"></i>
             <span class="text-secondary">Asset Alerts
             </span></a>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Edge')"
              [ngClass]="{'active': selectedTab === 'Edge'}">
@@ -34,9 +34,9 @@
   </div>
 
   <div class="table-responsive">
-      <p class="tab-bar mb-0" *ngIf="selectedTab === 'Asset'"> Following alerts are read from PLC/Modbus registers...</p>
-      <p class="tab-bar mb-0" *ngIf="selectedTab === 'Edge'"> Following alerts are possible by executing rules on Gateways...</p>
-      <p class="tab-bar mb-0" *ngIf="selectedTab === 'Cloud'"> Following alerts are possible by executing rules on Cloud...</p>
+      <!-- <p class="tab-bar mb-0" *ngIf="selectedTab === 'Asset'"> Following alerts are read from PLC/Modbus registers...</p> -->
+      <p class="tab-bar mb-0" *ngIf="selectedTab === 'Edge'">These are the additional alerts conditions created by the user. Following alerts are possible by executing rules on Gateways...</p>
+      <p class="tab-bar mb-0" *ngIf="selectedTab === 'Cloud'">These are the additional alerts conditions created by the user. Following alerts are possible by executing rules on Cloud...</p>
 
     <div class="tableFixHead table-fix-head-alert-conditions">
 
@@ -383,12 +383,12 @@
             <label for="recipient-name" class="col-form-label required">Alert Type:</label>
             <select class="form-control form-control-sm" id="alert_type" name="alert_type" [(ngModel)]="alertObj.alert_type">
               <option [ngValue]="undefined" >Select Alert Type</option>
-              <option [ngValue]="'Asset'" >Asset</option>
+              <!-- <option [ngValue]="'Asset'" >Asset</option> -->
               <option [ngValue]="'Edge'" >Edge</option>
               <option [ngValue]="'Cloud'" >Cloud</option>
             </select>
           </div>
-          <accordion [closeOthers]="'true'" *ngIf="asset?.type === constantData.NON_IP_ASSET && alertObj.alert_type === 'Asset'" >
+          <!-- <accordion [closeOthers]="'true'" *ngIf="asset?.type === constantData.NON_IP_ASSET && alertObj.alert_type === 'Asset'" >
             <accordion-group heading="" [panelClass]="'customClass'" >
               <ng-container  accordion-heading>
                 <button class="btn" type="button">
@@ -402,8 +402,7 @@
                   <select class="form-control form-control-sm" id="slave_id" name="slave_id" formControlName="slave_id"
                   > <option [ngValue]="null">Select Slave</option>
                     <option [ngValue]="slave.slave_id" *ngFor="let slave of slaveData">{{slave.slave_name}}</option>
-                    <!-- <option [ngValue]="'d'" >Digital</option>
-                    <option [ngValue]="'s'" >String</option> -->
+                    
                   </select>
                   </div>
                   <div *ngIf="setupForm.get('slave_id').invalid && (setupForm.get('slave_id').dirty || setupForm.get('slave_id').touched)"
@@ -598,7 +597,7 @@
               </ng-container>
               </form>
             </accordion-group>
-          </accordion>
+          </accordion> -->
         </form>
       </div>
       <div class="modal-footer">

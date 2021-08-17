@@ -128,15 +128,15 @@ export class CONSTANTS {
   };
 
   public static PRIVILEGE_GROUPS = {
-    'App Management': ['APMM', 'APMV'],
-    'Asset Management': ['ASMD', 'ASMM', 'ASMP', 'ASMS', 'ASMV', 'ASMVC'],
-    'Asset Campaign Management': ['ASCMM', 'ASCMV'],
-    'Asset Model Management': ['ASMMM', 'ASMMV'],
-    'Remote Control': ['RCC', 'RCP', 'RCV'],
-    'Rules & KPIs': ['RKPIM', 'RKPIV'],
-    'Remote Monitoring': ['RMM', 'RMV'],
-    'Reports': ['RSM', 'RV'],
-    'User Management': ['UMM', 'UMV']
+    'App Management': ['APMV', 'APMM'],
+    'Asset Management': ['ASMV', 'ASMVC', 'ASMP', 'ASMD', 'ASMM', 'ASMS'],
+    'Asset Campaign Management': [ 'ASCMV', 'ASCMM'],
+    'Asset Model Management': [ 'ASMMV', 'ASMMM'],
+    'Remote Control': [ 'RCV', 'RCC', 'RCP'],
+    'Rules & KPIs': ['RKPIV', 'RKPIM'],
+    'Remote Monitoring': ['RMV', 'RMM'],
+    'Reports': ['RV', 'RSM'],
+    'User Management': ['UMV', 'UMM']
   };
 
   public static NON_IP_ASSET_OPTIONS = [

@@ -153,56 +153,7 @@
 
 
  <div class="" id="intro"  style="margin-top:3.5rem">
-    <div class="d-flex justify-content-center">
-        <div class="">
-            <div class="container2" id="container2">
-                <div class="form-container sign-up-container">
-                    <form class="form-login" action="#">
-                        <h3>Sign in</h3>
-                        <input type="email" placeholder="Email"  class="form-input"/>
-                        <input type="password" placeholder="Password"  class="form-input"/>
-                        <button class="btn-color my-2">Sign In</button>
-                        <hr style="border-top:1px solid #ccc;">
-                        <a href="#">Forgot your password?</a>
-                    </form>
-
-                </div>
-                <div class="form-container sign-in-container">
-                    <form class="form-login" action="#">
-                        <h3>Guest Login</h3>
-                        <input type="text" placeholder="Name"  class="form-input"/>
-                        <input type="email" placeholder="Work Email"  class="form-input"/>
-                        <input type="phone" placeholder="Mobile Phone"  class="form-input"/>
-                        <input type="text" placeholder="Company"  class="form-input"/>
-                        <input type="text" placeholder="Designation"  class="form-input"/>
-                        <button class="btn-color">Submit</button>
-                    </form>
-                    <-- <form class="form-login" action="#">
-                        <h3>Email Verification</h3>
-                        <p class="pt-2">OTP is sent to your email address</p>
-                        <input type="text" placeholder="One Time Password"  class="form-input" />
-                        <button class="btn-color my-2">Verify</button>
-                    </form> --
-                </div>
-                <div class="overlay-container">
-                    <div class="overlay1">
-                        <div class="overlay-panel overlay-left">
-                            <h3>Hello, Guest!</h3>
-                            <p class="py-2">Enter your details and start journey with us</p>
-                            <button class="btn-transparent" id="signUp" (click)=signup();>Continue</button>
-                        </div>
-                        <div class="overlay-panel overlay-right">
-                            <h3>Welcome Back!</h3>
-                            <p class="py-2">To keep connected with us please login here</p>
-                            <button class="btn-transparent" id="signIn" (click)=signin();>Sign In</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- <div class="row mr-0">
+    <div class="row mr-0">
          <div class="col-lg-1"></div>
         <div class="col-lg-5 d-none d-lg-block align-self-center ">
             <div class="text-center"> <h5 class="h5 mb-3 text-white" >Azure RDM: Manage, Monitor, Control millions of IoT assets</h5></div>
@@ -268,7 +219,7 @@
             </div>
         </div>
         <div class="col-lg-1"></div>
-    </div> -->
+    </div>
   </div>
 
   <app-reset-password [isFirstTimeLogin]="true" [isForgotPassword] = "false" (modalClose)="onResetModalClose()" [loginData]="loginForm" *ngIf="isResetPassword"></app-reset-password>

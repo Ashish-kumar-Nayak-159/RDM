@@ -162,6 +162,10 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         range.axisFill.interactionsEnabled = true;
         range.axisFill.isMeasured = true;
       }
+      chart.events.on('ready', (ev) => {
+        this.loader = false;
+        this.loaderMessage = 'Loading Data. Wait...';
+      });
       chart.legend.itemContainers.template.togglable = false;
       dateAxis.dateFormatter = new am4core.DateFormatter();
       dateAxis.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
@@ -208,10 +212,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       }
       chart.scrollbarX = new am4core.Scrollbar();
       chart.scrollbarX.parent = chart.bottomAxesContainer;
-      chart.events.on('ready', (ev) => {
-        this.loader = false;
-        this.loaderMessage = 'Loading Data. Wait...';
-      });
+
       this.chart = chart;
     });
 

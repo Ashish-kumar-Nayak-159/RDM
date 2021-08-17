@@ -82,16 +82,16 @@ export class RdmGuestLoginComponent implements OnInit {
       console.log('in sb-notoggle');
       $('.container-fluid').removeClass('sb-notoggle');
     }
-    $('.container2').addClass('right-panel-active');
+    // $('.container2').addClass('right-panel-active');
   }
 
-  signin() {
-    $('.container2').addClass('right-panel-active');
-  }
+  // signin() {
+  //   $('.container2').addClass('right-panel-active');
+  // }
 
-  signup() {
-    $('.container2').removeClass('right-panel-active');
-  }
+  // signup() {
+  //   $('.container2').removeClass('right-panel-active');
+  // }
 
   onResetModalClose() {
     this.loginForm.reset();

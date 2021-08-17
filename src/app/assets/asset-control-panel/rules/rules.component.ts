@@ -31,6 +31,7 @@ export class RulesComponent implements OnInit {
   decodedToken: any;
   toggleRows = {};
   selectedrule: any;
+  isView = false;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -62,13 +63,14 @@ export class RulesComponent implements OnInit {
     this.getRules();
   }
 
-  onToggleRows(i, rule) {
+  onToggleRows(i, rule, isView = false) {
     if (this.toggleRows[this.selectedTab + '_' + i]) {
         this.toggleRows = {};
     } else {
         this.toggleRows = {};
         this.toggleRows[this.selectedTab + '_' + i] = true;
         this.isEdit = true;
+        this.isView = isView;
         this.ruleData = rule;
     }
   }
@@ -83,6 +85,16 @@ export class RulesComponent implements OnInit {
       (response: any) => {
         if (response?.data) {
           this.rules = response.data;
+          this.rules.forEach(rule => {
+            if (rule.updated_date) {
+              rule.local_updated_date = this.commonService.convertUTCDateToLocal(rule.updated_date);
+              rule.epoch_updated_date = this.commonService.convertDateToEpoch(rule.updated_date);
+            }
+            if (rule.deployed_on) {
+              rule.local_deployed_on = this.commonService.convertUTCDateToLocal(rule.deployed_on);
+              rule.epoch_deployed_on = this.commonService.convertDateToEpoch(rule.deployed_on);
+            }
+          });
           console.log(this.rules);
         }
         this.isRulesLoading = false;
@@ -95,15 +107,18 @@ export class RulesComponent implements OnInit {
     if (event.status) {
       this.getRules();
     }
+    this.toggleRows = {};
+    this.isView = false
     this.isEdit = false;
     this.ruleData = undefined;
   }
 
-  deployRule(rule) {
+  deployRule(rule, isRevert = false) {
     this.ruleData = rule;
     this.isDeleteRuleLoading = true;
     const obj = {
-      deployed_by: this.userData.email + ' (' + this.userData.name + ')'
+      deployed_by: this.userData.email + ' (' + this.userData.name + ')',
+      is_revert: isRevert
     };
     console.log(this.ruleData);
     console.log(obj);
@@ -112,10 +127,10 @@ export class RulesComponent implements OnInit {
       this.onCloseDeleteModal();
       this.getRules();
       this.isDeleteRuleLoading = false;
-      this.toasterService.showSuccess(response.message, 'Deploy Rule');
+      this.toasterService.showSuccess(isRevert ? 'Rule reverted successfully' : response.message, isRevert ? 'Revert Rule' : 'Deploy Rule');
     }, (err: HttpErrorResponse) => {
       this.isDeleteRuleLoading = false;
-      this.toasterService.showSuccess(err.message, 'Deploy Rule');
+      this.toasterService.showSuccess(err.message, isRevert ? 'Revert Rule' : 'Deploy Rule');
       this.onCloseDeleteModal();
     });
   }

@@ -20,6 +20,7 @@ export class AddRuleComponent implements OnInit {
   @Input() asset: any;
   @Input() name: any;
   @Input() isEdit: any;
+  @Input() isView: any;
   @Input() ruleData: any;
   @Output() onCloseRuleModel: EventEmitter<any> = new EventEmitter<any>();
   ruleModel: Rule = new Rule();
@@ -206,7 +207,9 @@ export class AddRuleComponent implements OnInit {
         this.assetService.updateEdgeAssetRule(this.contextApp.app, this.name, this.ruleModel);
       }
       method.subscribe((response: any) => {
-
+        this.onCloseRuleModel.emit({
+          status: true
+        });
         this.toasterService.showSuccess(response.message, this.title + 'Rule');
         this.closeRuleModal(true);
         this.isUpdateApiCall = false;

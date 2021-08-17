@@ -38,9 +38,13 @@
         <tr>
           <th></th>
           <th>No</th>
-          <th>Name</th>
-          <th>Category</th>
-          <th>Type</th>
+          <th style="width: 20%;">Name</th>
+          <!-- <th>Category</th>
+          <th>Type</th> -->
+          <th>Code</th>
+          <th>Source</th>
+          <th>Updated On</th>
+          <th *ngIf="selectedTab === 'Cloud'">Deployed On</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -49,37 +53,62 @@
         <ng-container  *ngFor="let rule of rules; let i = index">
           <tr>
             <td class="pl-3">
-              <a href="javascript:void(0)" (click)="onToggleRows(i, rule)" class="mr-1">
+              <a href="javascript:void(0)" (click)="onToggleRows(i, rule, true)" class="mr-1">
               <i [ngClass]="toggleRows[selectedTab + '_' + i] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
               </a>
             </td>
             <td>{{i + 1}}</td>
             <td>{{rule.name}}</td>
-            <td>{{rule.rule_category}}</td>
-            <td>{{rule.type}}</td>
-            <td  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
+            <td>{{rule.code}}</td>
+            <td>{{rule.source}}</td>
+            <td>{{rule.local_updated_date}}</td>
+            <td *ngIf="rule.type === 'Cloud'">{{rule.local_deployed_on}}</td>
+            <td >
+              <a href="javascript:void(0)" (click)="onToggleRows(i, rule, true)" class="mr-1"
+              placement="bottom" tooltip="View">
+             <i class="fa fa-fw fa-eye"></i>
+             </a>
               <a href="javascript:void(0)" (click)="onToggleRows(i, rule)" class="mr-1"
-              placement="bottom" tooltip="Edit">
+              placement="bottom" tooltip="Edit"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1
+              && rule.source === 'Asset'">
               <i class="fa fa-fw fa-edit"></i>
               </a>
               <a href="javascript:void(0)" (click)="onDeleteRule(rule)" class="mr-1"
-              placement="bottom" tooltip="Delete" >
+              placement="bottom" tooltip="Delete"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1
+              && rule.source === 'Asset'">
                 <i class="fa fa-fw fa-trash"></i>
               </a>
-              <a href="javascript:void(0)" (click)="deployRule(rule)" *ngIf="rule.type === 'Cloud'"
-              placement="bottom" tooltip="Deploy" >
+              <a href="javascript:void(0)" (click)="deployRule(rule)" *ngIf="rule.type === 'Cloud' &&
+              decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 &&
+               rule.source === 'Asset' &&
+              ( !rule.epoch_deployed_on || rule.epoch_updated_date - rule.epoch_deployed_on > 0)"
+              placement="bottom" tooltip="Deploy"  >
                 <i class="fa fa-fw fa-sync"></i>
+              </a>
+              <a href="javascript:void(0)" (click)="deployRule(rule, true)" *ngIf="rule.type === 'Cloud' &&
+              decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && rule.source === 'Asset' &&
+                ( rule.epoch_deployed_on && rule.epoch_updated_date - rule.epoch_deployed_on < 0)"
+                placement="bottom" tooltip="Revert" >
+                <i class="fa fa-fw fa-undo"></i>
               </a>
             </td>
           </tr>
           <tr *ngIf="toggleRows[selectedTab + '_' + i]" style="background-color:#fdfeff;">
             <td colspan="6"  class="accordion-border">
               <div class="col-12  my-2 accordion-padding">
-                <app-add-rule [isModel]="false" [asset]="asset" [name]="asset.asset_id" [isEdit]="isEdit" [ruleData]="ruleData"
+                <app-add-rule [isModel]="false" [asset]="asset" [name]="asset.asset_id" [isEdit]="isEdit" [isView]="isView" [ruleData]="ruleData"
                 ></app-add-rule>
               </div>
             </td>
           </tr>
+          <tr  *ngIf="isRulesLoading">
+            <td colspan="6">
+              <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+            </td>
+          </tr>
+        <tr *ngIf="!isRulesLoading && rules.length === 0">
+          <td colspan="6">No Rules available.</td>
+        </tr>
           </ng-container>
         </ng-container>
       </tbody>

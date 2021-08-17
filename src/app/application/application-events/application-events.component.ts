@@ -132,15 +132,18 @@ export class ApplicationEventsComponent implements OnInit {
       const arr = [];
       this.assets = [];
       this.originalAssets.forEach(asset => {
-        let flag1 = false;
+        let trueFlag = 0;
+        let flaseFlag = 0;
         Object.keys(hierarchyObj).forEach(hierarchyKey => {
+          console.log(asset.hierarchy[hierarchyKey]);
+          console.log(hierarchyObj[hierarchyKey]);
           if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
-            flag1 = true;
+            trueFlag++;
           } else {
-            flag1 = false;
+            flaseFlag++;
           }
         });
-        if (flag1) {
+        if (trueFlag > 0 && flaseFlag === 0) {
           arr.push(asset);
         }
       });

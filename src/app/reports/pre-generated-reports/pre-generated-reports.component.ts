@@ -266,15 +266,18 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     const arr = [];
     this.assets = [];
     this.originalAssets.forEach(asset => {
-      let flag = false;
+      let trueFlag = 0;
+      let flaseFlag = 0;
       Object.keys(hierarchyObj).forEach(hierarchyKey => {
+        console.log(asset.hierarchy[hierarchyKey]);
+        console.log(hierarchyObj[hierarchyKey]);
         if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
-          flag = true;
+          trueFlag++;
         } else {
-          flag = false;
+          flaseFlag++;
         }
       });
-      if (flag) {
+      if (trueFlag > 0 && flaseFlag === 0) {
         arr.push(asset);
       }
     });

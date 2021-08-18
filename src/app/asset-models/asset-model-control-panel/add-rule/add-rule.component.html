@@ -226,22 +226,43 @@
                             <div class="row">
                                 <div class="col-lg-12 col-xl-12">
                                     <form #form4="ngForm">
+                                      <!-- <div class="col-auto">
+                                        <label for="examplePassword" class="mb-2 w-auto">Aggregation Type</label>
+                                        <select placeholder="Aggregation Type" name="aggregation_type_{{i}}"
+                                            class="form-control form-control-sm" required [disabled]="isView"
+                                            [(ngModel)]="condition.aggregation_type">
+                                            <option [value]="''">Aggregartion Type</option>
+                                            <option [value]="'AVG'">Average</option>
+                                            <option [value]="'SUM'">Sum</option>
+                                            <option [value]="'MIN'">Min</option>
+                                            <option [value]="'MAX'">Max</option>
+                                            <option [value]="'COUNT'">Count</option>
+                                        </select>
+                                    </div> -->
+
+                                    <div class="form-group row mb-0">
+                                      <div class="col-auto">
+                                          <label for="exampleEmail" class="required">Action Type</label>
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+
+                                    <select name="aggregation_type"
+                                    class="form-control form-control-sm  w-25" [disabled]="isView"
+                                    >
+                                    <option [value]="undefined">Action Type</option>
+                                    <option [value]="'Integrate with existing Alert Management Module'">Integrate with existing Alert Management Module</option>
+                                    <option [value]="'Send SMS / Email / Whatspp'">Send SMS / Email / Whatspp</option>
+                                    <option [value]="'Create Ticket'">Create Ticket</option>
+                                    </select>
+                                <!-- </div> -->
+                                </div>
                                         <div class="form-group row mb-0">
                                             <div class="col-auto">
                                                 <label for="exampleEmail" class="required">Alert Code</label>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <!-- <div class="col-auto"> -->
-                                                <!-- <select id="alertCondition" placeholder="Alert Condition" name="alertCondition"
-                                                    class="form-control form-control-sm"
-                                                    (change)="onChangeOfAssetCondition()"
-                                                    [(ngModel)]="ruleModel.alert_condition_code" required>
-                                                    <option [value]="''"> Select Alert Condition</option>
-                                                    <option *ngFor="let alert of alertConditionList;let i = index;"
-                                                        [value]="alert.code">
-                                                        {{alert.code}} - {{alert.message}}</option>
-                                                </select> -->
 
                                                 <ng-select [items]="alertConditionList" class="custom-dropdown w-25 sm" name="alertCondition" [clearable]="false"
                                               [searchable]="true" bindLabel="message" [disabled]="isView"

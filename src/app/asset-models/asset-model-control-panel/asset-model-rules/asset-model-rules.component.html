@@ -34,6 +34,8 @@
        ></app-add-rule>
     </div>
     <div *ngIf="!isAddRule">
+      <p class="tab-bar mb-0">Following rules will run on all assets of this model.</p>
+
     <table class="table table-hover">
       <thead>
         <tr>
@@ -95,7 +97,7 @@
             </td>
           </tr>
           <tr *ngIf="toggleRows[selectedTab + '_' + i]" style="background-color:#fdfeff;">
-            <td colspan="6"  class="accordion-border">
+            <td colspan="7"  class="accordion-border">
               <div class="col-12  my-2 accordion-padding">
                 <app-add-rule [isModel]="true" [name]="assetModel.name" [isEdit]="isEdit" [isView]="isView" [ruleData]="ruleData"
                 ></app-add-rule>
@@ -105,12 +107,12 @@
           </ng-container>
         </ng-container>
         <tr  *ngIf="isRulesLaoading">
-          <td colspan="6">
+          <td colspan="7">
             <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
           </td>
         </tr>
       <tr *ngIf="!isRulesLaoading && rules.length === 0">
-        <td colspan="6">No Rules available.</td>
+        <td colspan="7">No Rules available.</td>
       </tr>
       </tbody>
     </table>

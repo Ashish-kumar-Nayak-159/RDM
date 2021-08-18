@@ -13361,6 +13361,10 @@ overflow-x: hidden;
   height: calc(100vh - 8rem);
 }
 
+.alert-box-historic-alerts {
+  height: calc(100vh - 10.5rem);
+}
+
 .content-scroll-live-alert {
   max-height: calc(100vh - 17rem);
 }

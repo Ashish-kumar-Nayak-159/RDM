@@ -134,7 +134,6 @@
             </fieldset>
           </div>
           <div class="form-group input-group" *ngIf="filterObj.type">
-
             <input class="form-control form-control-sm bg-light"  type="number" id="minutes" min="1"
             name="minutes" [(ngModel)]="filterObj.sampling_time" placeholder="Sampling" disabled
             [ngClass]="{'active': filterObj.sampling_time}"
@@ -188,7 +187,6 @@
 
             <ng-container *ngIf="isFilterSelected && originalFilterObj.report_type === 'Process Parameter Report'">
                 <table class="table table-hover" id="dataTable1">
-
                   <thead>
                     <tr>
                       <th></th>
@@ -255,9 +253,7 @@
                         (alert.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                         )
                         )" placement="bottom" [tooltip]="alert.severity"></i></td>
-
                       <td>{{ alert.asset_display_name ? alert.asset_display_name : alert.asset_id }}</td>
-
                       <td>{{ alert.local_created_date }}</td>
                       <td>{{ alert.message }}</td>
                       <td>{{ alert.source}}</td>

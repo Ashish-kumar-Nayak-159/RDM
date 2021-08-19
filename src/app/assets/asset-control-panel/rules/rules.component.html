@@ -67,7 +67,7 @@
         <tbody>
         <ng-container *ngIf="!isRulesLoading && rules.length > 0">
           <ng-container  *ngFor="let rule of rules; let i = index">
-            <ng-container *ngIf="rule.source === 'Model'"></ng-container>
+            <ng-container *ngIf="rule.source === 'Model'">
             <tr>
               <td class="pl-3">
                 <a href="javascript:void(0)" (click)="onToggleRows(i, rule, true)" class="mr-1">
@@ -118,6 +118,7 @@
                 </div>
               </td>
             </tr>
+          </ng-container>
             <tr  *ngIf="isRulesLoading">
               <td colspan="8">
                 <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
@@ -161,7 +162,7 @@
         <tbody>
         <ng-container *ngIf="!isRulesLoading && rules.length > 0">
           <ng-container  *ngFor="let rule of rules; let i = index">
-            <ng-container *ngIf="rule.source === 'Asset'"></ng-container>
+            <ng-container *ngIf="rule.source === 'Asset'">
             <tr>
               <td class="pl-3">
                 <a href="javascript:void(0)" (click)="onToggleRows(i, rule, true)" class="mr-1">
@@ -212,6 +213,7 @@
                 </div>
               </td>
             </tr>
+          </ng-container>
             <tr  *ngIf="isRulesLoading">
               <td colspan="8">
                 <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>

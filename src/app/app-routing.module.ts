@@ -43,7 +43,7 @@ const routes: Routes = [
     component: RDMLoginComponent
   },
   {
-    path: 'guest-login',
+    path: ':tenantId/guest-login',
     component: RdmGuestLoginComponent
   },
   {

@@ -121,6 +121,14 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       (response: any) => {
           this.applicationData = response;
           this.applicationData.app = app.app;
+
+          this.userData.apps.forEach(appObj => {
+            if (app.app === appObj.app) {
+              console.log(appObj);
+              console.log(appObj.user);
+              this.applicationData.user = appObj.user;
+            }
+          });
           this.applicationData.user = app.user;
           if (!this.applicationData.menu_settings.main_menu || this.applicationData.menu_settings.main_menu.length === 0) {
             this.applicationData.menu_settings.main_menu = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
@@ -144,7 +152,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
           const obj = {
-            hierarchy : this.applicationData.user.hierarchy,
+            hierarchy : this.applicationData?.user?.hierarchy,
             dateOption : 'Last 24 Hours'
           };
           this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, obj);

@@ -34,12 +34,6 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   ) { }
 
   async ngOnInit(): Promise<void> {
-        // this.subscriptions.push(this.commonService.resetPassword.subscribe((resetPassword: boolean) => {
-    //   if (!resetPassword) {
-    //     // $('#changePasswordModal').modal('hide');
-    //     this.loginForm.reset();
-    //   }
-    // }));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     if (this.userData) {
       if (this.userData.is_super_admin) {
@@ -64,7 +58,6 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }
     }
-
   }
 
   ngAfterViewInit(): void {
@@ -122,17 +115,16 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
               return;
             }
             if (response.apps && response.apps.length > 0) {
-              response.apps.forEach(element => {
-                let hierarchy = '';
-                const keys = Object.keys(element.user.hierarchy);
-                keys.forEach((key, index) => {
-                  hierarchy = hierarchy + element.user.hierarchy[key] + (keys[index + 1] ? ' / ' : '');
-                });
-                element.user.hierarchyString = hierarchy;
-              });
-              this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, response);
-              if (this.userData.apps && this.userData.apps.length > 1) {
+              // response.apps.forEach(element => {
+              //   let hierarchy = '';
+              //   const keys = Object.keys(element.user.hierarchy);
+              //   keys.forEach((key, index) => {
+              //     hierarchy = hierarchy + element.user.hierarchy[key] + (keys[index + 1] ? ' / ' : '');
+              //   });
+              //   element.user.hierarchyString = hierarchy;
+              // });
 
+              if (this.userData.apps && this.userData.apps.length > 1) {
                 this.userData.apps.forEach(app => {
                   const decodedToken = this.commonService.decodeJWTToken(app.token);
                   const obj = {
@@ -142,6 +134,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
                   };
                   app.user = obj;
                 });
+                console.log(JSON.stringify(this.userData));
                 this.router.navigate(['applications', 'selection']);
               } else if (this.userData.apps && this.userData.apps.length === 1) {
                 localStorage.removeItem(CONSTANTS.APP_TOKEN);
@@ -155,21 +148,8 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.userData.apps[0].user = obj;
                 await this.getApplicationData(this.userData.apps[0]);
                 this.router.navigate(['applications', this.applicationData.app]);
-                // const menu = this.applicationData.menu_settings.main_menu.length > 0 ?
-                // this.applicationData.menu_settings.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
-                // let i = 0;
-                // menu.forEach(menuObj => {
-                //   if ( i === 0 && menuObj.visible) {
-                //     i++;
-                //     const url = menuObj.url;
-                //     if (menuObj.url?.includes(':appName')) {
-                //       menuObj.url = menuObj.url.replace(':appName', this.applicationData.app);
-                //       console.log(menuObj.url);
-                //       this.router.navigateByUrl(menuObj.url);
-                //     }
-                //   }
-                // });
               }
+              this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
             } else {
               this.isLoginAPILoading = false;
               this.toasterService.showError('No apps are assigned to this user', 'Contact Administrator');
@@ -196,7 +176,11 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         (response: any) => {
           this.applicationData = response;
           this.applicationData.app = app.app;
-          this.applicationData.user = app.user;
+          this.userData.apps.forEach(appObj => {
+            if (app.app === appObj.app) {
+              this.applicationData.user = appObj.user;
+            }
+          });
           if (this.applicationData.menu_settings.main_menu.length === 0) {
             this.applicationData.menu_settings.main_menu = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
           } else {
@@ -215,7 +199,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
               JSON.parse(JSON.stringify(CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST));
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
-          this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
+          // this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
           const obj = {
             hierarchy: this.applicationData.user.hierarchy,
             dateOption: 'Last 24 Hours'

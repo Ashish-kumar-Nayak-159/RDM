@@ -34,11 +34,11 @@ export class CONSTANTS {
 
   public static DEFAULT_PRIVILEGES = {
     APMM: {
-      display_name: 'Manage',
+      display_name: 'App Management - Manage',
       enabled: true
     },
     APMV: {
-      display_name: 'View',
+      display_name: 'App Management - View',
       enabled: true
     },
     ASCMM: {

@@ -129,7 +129,6 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
               this.applicationData.user = appObj.user;
             }
           });
-          this.applicationData.user = app.user;
           if (!this.applicationData.menu_settings.main_menu || this.applicationData.menu_settings.main_menu.length === 0) {
             this.applicationData.menu_settings.main_menu = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
           } else {

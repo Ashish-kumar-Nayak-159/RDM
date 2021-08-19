@@ -40,7 +40,6 @@ export class AssetModelAlertAcknowledgementReasonsComponent implements OnInit {
     this.assetModel = JSON.parse(JSON.stringify(this.assetModel));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    console.log(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.getAckReasons();
   }

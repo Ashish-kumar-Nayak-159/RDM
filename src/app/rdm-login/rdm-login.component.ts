@@ -34,6 +34,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   ) { }
 
   async ngOnInit(): Promise<void> {
+
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     if (this.userData) {
       if (this.userData.is_super_admin) {

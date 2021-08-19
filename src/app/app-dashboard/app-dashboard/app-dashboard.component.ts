@@ -294,7 +294,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
         }
       });
-      console.log(hierarchyObj);
       if (Object.keys(hierarchyObj).length === 1) {
         this.assets = JSON.parse(JSON.stringify(this.originalAssets));
       } else {
@@ -304,8 +303,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         let trueFlag = 0;
         let flaseFlag = 0;
         Object.keys(hierarchyObj).forEach(hierarchyKey => {
-          console.log(asset.hierarchy[hierarchyKey]);
-          console.log(hierarchyObj[hierarchyKey]);
           if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
             trueFlag++;
           } else {

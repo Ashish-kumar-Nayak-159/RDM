@@ -24,6 +24,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
   emailObj: any;
   smsObj: any;
   whatsappObj: any;
+  decodedToken: any;
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
@@ -31,6 +32,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
     this.getApplicationUserGroups();
   }

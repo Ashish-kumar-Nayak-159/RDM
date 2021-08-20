@@ -83,6 +83,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   };
   @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   selectedDateRange: string;
+  decodedToken: any;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -97,7 +98,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   async ngOnInit(): Promise<void> {
-
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();

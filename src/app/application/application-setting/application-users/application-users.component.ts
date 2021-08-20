@@ -28,6 +28,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   selectedUserForDelete: any;
   password: any;
   decodedToken: any;
+  userRoles: any = [];
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
@@ -40,11 +41,21 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
     const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.getApplicationUserRoles();
     this.getApplicationUsers();
     this.applicationData.hierarchy.levels.forEach((element, index) => {
       this.hierarchyArr[index] = [];
     });
+  }
 
+  getApplicationUserRoles() {
+    this.apiSubscriptions.push(this.applicationService.getApplicationUserRoles(this.applicationData.app).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.userRoles = response.data;
+        }
+      }
+    ));
   }
 
   getApplicationUsers() {
@@ -134,7 +145,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   getAccessLevelHierarchy() {
     this.hierarchyList = [];
     let hierarchy = '';
-    const roleObj = this.applicationData.roles.filter(role => role.name === this.addUserObj.role)[0];
+    const roleObj = this.userRoles.filter(role => role.role === this.addUserObj.role)[0];
     this.applicationData.hierarchy.levels.forEach((element, index) => {
       if (index <= roleObj.level) {
         hierarchy = hierarchy + element + ' / ';

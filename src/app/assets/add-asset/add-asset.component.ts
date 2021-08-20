@@ -4,7 +4,7 @@ import { AssetService } from 'src/app/services/assets/asset.service';
 import { ToasterService } from './../../services/toaster.service';
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from './../../services/common.service';
-import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output, OnChanges } from '@angular/core';
 import * as moment from 'moment';
 import { Asset } from 'src/app/models/asset.model';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -14,7 +14,7 @@ declare var $: any;
   templateUrl: './add-asset.component.html',
   styleUrls: ['./add-asset.component.css']
 })
-export class AddAssetComponent implements OnInit {
+export class AddAssetComponent implements OnInit, OnChanges {
 
   @Input() tileData: any;
   @Input() componentState: any;
@@ -28,6 +28,7 @@ export class AddAssetComponent implements OnInit {
   constantData = CONSTANTS;
   appUsers: any[] = [];
   @Input() gateways: any[] = [];
+  originalGateways: any[] = [];
   assetModels: any[] = [];
   userData: any;
   subscriptions: any[] = [];
@@ -45,6 +46,7 @@ export class AddAssetComponent implements OnInit {
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    this.originalGateways = JSON.parse(JSON.stringify(this.gateways));
     this.getApplicationUsers();
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.addAssetHierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
@@ -77,6 +79,12 @@ export class AddAssetComponent implements OnInit {
     $('#createAssetModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
+  ngOnChanges(changes) {
+    if (changes.gateways) {
+      this.originalGateways = JSON.parse(JSON.stringify(this.gateways));
+    }
+  }
+
   getAssetsModels(type) {
     this.assetModels = [];
     const obj = {
@@ -93,6 +101,7 @@ export class AddAssetComponent implements OnInit {
   }
 
   onChangeOfAddAssetHierarchy(i) {
+    console.log(this.originalGateways);
     Object.keys(this.addAssetConfigureHierarchy).forEach(key => {
       if (key > i) {
         delete this.addAssetConfigureHierarchy[key];
@@ -112,6 +121,42 @@ export class AddAssetComponent implements OnInit {
     if (nextHierarchy) {
       this.addAssetHierarchyArr[i + 1] = Object.keys(nextHierarchy);
     }
+
+    const hierarchyObj: any = { App: this.contextApp.app};
+    Object.keys(this.addAssetConfigureHierarchy).forEach((key) => {
+      if (this.addAssetConfigureHierarchy[key]) {
+        hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.addAssetConfigureHierarchy[key];
+      }
+    });
+    console.log(hierarchyObj);
+    console.log(Object.keys(hierarchyObj));
+    if (Object.keys(hierarchyObj).length === 1) {
+      this.gateways = JSON.parse(JSON.stringify(this.originalGateways));
+    } else {
+    const arr = [];
+    this.gateways = [];
+    console.log(hierarchyObj);
+    console.log(this.originalGateways);
+    this.originalGateways.forEach(asset => {
+      let trueFlag = 0;
+      let flaseFlag = 0;
+
+      Object.keys(hierarchyObj).forEach(hierarchyKey => {
+        console.log(asset.hierarchy[hierarchyKey] , '===' , hierarchyObj[hierarchyKey]);
+        if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+          trueFlag++;
+        } else {
+          flaseFlag++;
+        }
+      });
+      if (trueFlag > 0 && flaseFlag === 0) {
+        arr.push(asset);
+      }
+    });
+    this.assetDetail.gateway_id = undefined;
+    this.gateways = JSON.parse(JSON.stringify(arr));
+    }
+      // await this.getAssets(hierarchyObj);
   }
 
   onChangeAssetsModel() {

@@ -180,8 +180,8 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.propertyList.forEach(prop => {
       this.telemetryObj[prop.json_key] = {
         value:  this.commonService.randomIntFromInterval(
-          prop.json_model[prop.json_key].minValue ? prop.json_model[prop.json_key].minValue : 0,
-          prop.json_model[prop.json_key].maxValue ? prop.json_model[prop.json_key].maxValue : 100
+          prop.json_model[prop.json_key]?.minValue ? prop.json_model[prop.json_key]?.minValue : 0,
+          prop.json_model[prop.json_key]?.maxValue ? prop.json_model[prop.json_key]?.maxValue : 100
         ),
         date: this.telemetryObj.message_date
       };

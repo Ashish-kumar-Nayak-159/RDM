@@ -65,9 +65,9 @@
           </tr>
         </thead>
         <tbody>
-        <ng-container *ngIf="!isRulesLoading && rules.length > 0">
-          <ng-container  *ngFor="let rule of rules; let i = index">
-            <ng-container *ngIf="rule.source === 'Model'">
+        <ng-container *ngIf="!isRulesLoading && modelrules.length > 0">
+          <ng-container  *ngFor="let rule of modelrules; let i = index">
+            <ng-container>
             <tr>
               <td class="pl-3">
                 <a href="javascript:void(0)" (click)="onToggleRows(i, rule, true)" class="mr-1">
@@ -85,30 +85,7 @@
                 placement="bottom" tooltip="View">
                <i class="fa fa-fw fa-eye"></i>
                </a>
-                <a href="javascript:void(0)" (click)="onToggleRows(i, rule)" class="mr-1"
-                placement="bottom" tooltip="Edit"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1
-                ">
-                <i class="fa fa-fw fa-edit"></i>
-                </a>
-                <a href="javascript:void(0)" (click)="onDeleteRule(rule)" class="mr-1"
-                placement="bottom" tooltip="Delete"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1
-                ">
-                  <i class="fa fa-fw fa-trash"></i>
-                </a>
-                <a href="javascript:void(0)" (click)="deployRule(rule)" *ngIf="rule.type === 'Cloud' &&
-                decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 &&
-
-                ( !rule.epoch_deployed_on || rule.epoch_updated_date - rule.epoch_deployed_on > 0)"
-                placement="bottom" tooltip="Deploy"  >
-                  <i class="fa fa-fw fa-sync"></i>
-                </a>
-                <a href="javascript:void(0)" (click)="deployRule(rule, true)" *ngIf="rule.type === 'Cloud' &&
-                decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 &&
-                  ( rule.epoch_deployed_on && rule.epoch_updated_date - rule.epoch_deployed_on < 0)"
-                  placement="bottom" tooltip="Revert" >
-                  <i class="fa fa-fw fa-undo"></i>
-                </a>
-              </td>
+                            </td>
             </tr>
             <tr *ngIf="toggleRows[selectedTab + '_' + i]" style="background-color:#fdfeff;">
               <td colspan="8"  class="accordion-border">
@@ -124,7 +101,7 @@
                 <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
               </td>
             </tr>
-          <tr *ngIf="!isRulesLoading && rules.length === 0">
+          <tr *ngIf="!isRulesLoading && modelrules.length === 0">
             <td colspan="8">No Rules available.</td>
           </tr>
             </ng-container>
@@ -160,9 +137,9 @@
           </tr>
         </thead>
         <tbody>
-        <ng-container *ngIf="!isRulesLoading && rules.length > 0">
-          <ng-container  *ngFor="let rule of rules; let i = index">
-            <ng-container *ngIf="rule.source === 'Asset'">
+        <ng-container *ngIf="!isRulesLoading && assetRules.length > 0">
+          <ng-container  *ngFor="let rule of assetRules; let i = index">
+            <ng-container >
             <tr>
               <td class="pl-3">
                 <a href="javascript:void(0)" (click)="onToggleRows(i, rule, true)" class="mr-1">
@@ -219,7 +196,7 @@
                 <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
               </td>
             </tr>
-          <tr *ngIf="!isRulesLoading && rules.length === 0">
+          <tr *ngIf="!isRulesLoading && assetRules.length === 0">
             <td colspan="8">No Rules available.</td>
           </tr>
             </ng-container>

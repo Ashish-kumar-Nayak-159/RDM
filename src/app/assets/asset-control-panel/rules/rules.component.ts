@@ -17,7 +17,8 @@ declare var $: any;
 export class RulesComponent implements OnInit {
 
   @Input() asset: Asset = new Asset();
-  rules: any[] = [];
+  modelrules: any[] = [];
+  assetRules: any[] = [];
   rulesTableConfig: any;
   isRulesLoading = false;
   contextApp: any;
@@ -76,7 +77,8 @@ export class RulesComponent implements OnInit {
   }
 
   getRules() {
-    this.rules = [];
+    this.modelrules = [];
+this.assetRules = [];
     this.isRulesLoading = true;
     const obj = {
       type: this.selectedTab
@@ -84,8 +86,8 @@ export class RulesComponent implements OnInit {
     this.subscriptions.push(this.assetService.getRules(this.contextApp.app, this.asset.asset_id, obj).subscribe(
       (response: any) => {
         if (response?.data) {
-          this.rules = response.data;
-          this.rules.forEach(rule => {
+          // this.modelrules = response.data;
+          response.data.forEach(rule => {
             if (rule.updated_date) {
               rule.local_updated_date = this.commonService.convertUTCDateToLocal(rule.updated_date);
               rule.epoch_updated_date = this.commonService.convertDateToEpoch(rule.updated_date);
@@ -94,8 +96,13 @@ export class RulesComponent implements OnInit {
               rule.local_deployed_on = this.commonService.convertUTCDateToLocal(rule.deployed_on);
               rule.epoch_deployed_on = this.commonService.convertDateToEpoch(rule.deployed_on);
             }
+            if (rule.source === 'Model') {
+              this.modelrules.push(rule);
+            } else {
+              this.assetRules.push(rule);
+            }
           });
-          console.log(this.rules);
+          console.log(this.modelrules);
         }
         this.isRulesLoading = false;
       }, error => this.isRulesLoading = false

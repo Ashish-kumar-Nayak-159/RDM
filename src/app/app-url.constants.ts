@@ -179,4 +179,6 @@ export class AppUrls {
   public static DEPLOY_CLOUD_MODEL_RULE = 'apps/{0}/deploy_model_rules/{1}/cloud_rules/{2}';
   public static DEPLOY_CLOUD_ASSET_RULE = 'apps/{0}/deploy_asset_rules/{1}/cloud_rules/{2}';
 
+  public static GET_JOB_CAMPAIGNS = 'apps/{0}/job_campaigns';
+
 }

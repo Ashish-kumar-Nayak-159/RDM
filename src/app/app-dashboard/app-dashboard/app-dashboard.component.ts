@@ -573,6 +573,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       await this.getAssetSignalRMode(this.filterObj.asset.asset_id);
       await this.getAssetsModelProperties(asset_model);
       console.log(this.contextApp.dashboard_config);
+      if (!this.contextApp?.dashboard_config && !this.contextApp?.dashboard_config?.show_live_widgets
+        && !this.contextApp?.dashboard_config?.show_historical_widgets) {
+          this.contextApp.dashboard_config = {
+            show_live_widgets: true
+          };
+        }
       if (this.contextApp?.dashboard_config?.show_live_widgets) {
         await this.getLiveWidgets(asset_model);
         this.getLiveWidgetTelemetryDetails(obj);

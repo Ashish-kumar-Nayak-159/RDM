@@ -55,6 +55,11 @@ export class ApplicationDashboardConfigurationComponent implements OnInit {
   }
 
   onSaveMetadata() {
+    if (!this.applicationData.dashboard_config || (!this.applicationData.dashboard_config.show_live_widgets
+      && !this.applicationData.dashboard_config.show_historical_widgets)) {
+        this.toasterService.showError('Please select one type of dashboard', 'Save Dashboard Configuration');
+        return;
+      }
     this.saveConfigAPILoading = true;
     this.applicationData.id = this.applicationData.app;
     this.apiSubscriptions.push(this.applicationService.updateApp(this.applicationData).subscribe(

@@ -10,6 +10,10 @@ const routes: Routes = [
     loadChildren: () => import('./application/application.module').then(module => module.ApplicationModule)
   },
   {
+    path: 'applications/:applicationId/campaigns',
+    loadChildren: () => import('./campaign-management/campaign-management.module').then(module => module.CampaignManagementModule),
+  },
+  {
     path: 'applications/:applicationId/alerts/visualization',
     loadChildren: () => import('./visualization/visualization.module').then(module => module.VisualizationModule)
   },
@@ -33,10 +37,7 @@ const routes: Routes = [
     path: 'applications/:applicationId/assets',
     loadChildren: () => import('./assets/assets.module').then(module => module.AssetsModule),
   },
-  {
-    path: 'applications/:applicationId/campaigns',
-    loadChildren: () => import('./campaign-management/campaign-management.module').then(module => module.CampaignManagementModule),
-  },
+
   {
     path: 'login',
     component: RDMLoginComponent

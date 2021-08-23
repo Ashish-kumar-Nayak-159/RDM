@@ -33,10 +33,10 @@
       <div class="col-md-{{12 / chartConfig?.properties?.length}} text-center" *ngFor="let prop of chartConfig.properties; let i = index"
       [ngClass]="{'border-left': i > 0}">
 
-        <p class="text-xs live-widget-title" placement="bottom" [tooltip]="prop.title + ' ' + (prop.property.json_model[prop.property.json_key].units ? ('(' + prop.property.json_model[prop.property.json_key].units + ')') : '')">
+        <p class="text-xs live-widget-title" placement="bottom" [tooltip]="prop.title + ' ' + (prop.property.json_model[prop.property.json_key]?.units ? ('(' + prop.property.json_model[prop.property.json_key]?.units + ')') : '')">
 
           ({{chartConfig.derived_props ? 'D' : 'M'}}) {{prop.title}}
-          {{prop.property.json_model[prop.property.json_key].units ? ('(' + prop.property.json_model[prop.property.json_key].units + ')') : ''}}
+          {{prop.property.json_model[prop.property.json_key]?.units ? ('(' + prop.property.json_model[prop.property.json_key]?.units + ')') : ''}}
         </p>
 
         <div class="live-overlay" *ngIf="!asset">

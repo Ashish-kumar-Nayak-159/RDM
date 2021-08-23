@@ -5,6 +5,7 @@ import { AssetModelService } from 'src/app/services/asset-model/asset-model.serv
 import { Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { JsonEditorOptions, JsonEditorComponent } from 'ang-jsoneditor';
 import { CONSTANTS } from 'src/app/app.constants';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 
 declare var $: any;
 @Component({
@@ -229,7 +230,7 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
   createControlWidget() {
 
     if (!this.controlWidget.name || !this.controlWidget.metadata || !this.controlWidget.metadata?.communication_technique) {
-      this.toasterService.showError('Please enter all required fields', 'Create Control Widget');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Create Control Widget');
       return;
     }
     try {

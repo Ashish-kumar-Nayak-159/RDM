@@ -2,10 +2,10 @@
   <div class="d-flex align-items-center">
     <div class="d-flex align-items-center">
       <div class="main-heading ">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}</div>
-      <div class="ml-2 pt-15" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry' && contextApp?.dashboard_config?.show_live_widgets">
+      <div class="ml-2 pt-15" *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1 && signalRModeValue !== undefined && selectedTab === 'telemetry' && contextApp?.dashboard_config?.show_live_widgets">
         Turbo Mode:</div>
-        <div class="ml-1 pt-15" *ngIf="signalRModeValue !== undefined && selectedTab === 'telemetry' && contextApp?.dashboard_config?.show_live_widgets">
-        <ui-switch size="small" class="mr-1"  *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1"
+        <div class="ml-1 pt-15" *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1 && signalRModeValue !== undefined && selectedTab === 'telemetry' && contextApp?.dashboard_config?.show_live_widgets">
+        <ui-switch size="small" class="mr-1"
           [disabled]="isC2dAPILoading" defaultBgColor="#c80815" checkedTextColor="white" uncheckedTextColor="white"
           checkedLabel="OFF" uncheckedLabel="ON" name="tpye" [(ngModel)]="signalRModeValue"
           (valueChange)="onSwitchValueChange($event)"></ui-switch>

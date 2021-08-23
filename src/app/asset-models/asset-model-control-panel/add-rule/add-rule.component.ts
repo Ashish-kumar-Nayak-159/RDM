@@ -20,7 +20,7 @@ export class AddRuleComponent implements OnInit {
   @Input() asset: any;
   @Input() name: any;
   @Input() isEdit: any;
-  @Input() isView: any;
+  @Input() isView = false;
   @Input() ruleData: any;
   @Output() onCloseRuleModel: EventEmitter<any> = new EventEmitter<any>();
   ruleModel: Rule = new Rule();

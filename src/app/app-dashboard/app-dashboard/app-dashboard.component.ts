@@ -460,7 +460,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
               });
               } else {
-                widget?.y1AxisProps.forEach(prop => {
+                widget?.y1AxisProps?.forEach(prop => {
                   this.addPropertyInList(prop);
                   if (prop?.type === 'Derived Properties') {
                     widget.derived_props = true;
@@ -468,7 +468,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                     widget.measured_props = true;
                   }
                 });
-                widget?.y2AxisProps.forEach(prop => {
+                widget?.y2AxisProps?.forEach(prop => {
                   this.addPropertyInList(prop);
                   if (prop?.type === 'Derived Properties') {
                     widget.derived_props = true;

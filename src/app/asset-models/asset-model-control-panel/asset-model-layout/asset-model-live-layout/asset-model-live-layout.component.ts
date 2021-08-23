@@ -7,6 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CONSTANTS } from 'src/app/app.constants';
 import * as moment from 'moment';
 import { AssetService } from 'src/app/services/assets/asset.service';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 
 declare var $: any;
 @Component({
@@ -272,7 +273,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   onSaveWidgetObj() {
     console.log(this.widgetObj);
     if (!this.widgetObj.widgetTitle || !this.widgetObj.widgetType) {
-      this.toasterService.showError('Please enter all required fields.', 'Add Widget');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Widget');
       return;
     }
     let found = true;

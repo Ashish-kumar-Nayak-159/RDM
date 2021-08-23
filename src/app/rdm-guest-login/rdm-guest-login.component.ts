@@ -211,7 +211,7 @@ export class RdmGuestLoginComponent implements OnInit {
       ));
       } else {
       this.isLoginAPILoading = false;
-      this.toasterService.showError('Please enter username and password', 'Login');
+      this.toasterService.showError('Please enter OTP', 'Login');
     }
   }
 

@@ -79,6 +79,13 @@ export class CommonService {
     return null;
   }
 
+  convertEpochToOnlyDate(epoch) {
+    if (epoch) {
+      return moment.unix(epoch).format('DD-MMM-YYYY');
+    }
+    return null;
+  }
+
   getFileData(url) {
     return this.http.get(url, {
       responseType: 'blob'

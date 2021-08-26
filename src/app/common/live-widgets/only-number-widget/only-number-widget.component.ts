@@ -30,6 +30,7 @@ export class OnlyNumberWidgetComponent implements OnInit, OnChanges, OnDestroy {
      ) { }
 
   ngOnInit(): void {
+    console.log(this.chartConfig);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     if (this.telemetryObj) {
       this.telemetryData.push(this.telemetryObj);

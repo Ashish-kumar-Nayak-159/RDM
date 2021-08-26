@@ -482,7 +482,7 @@ export class AssetService {
     return this.http.get(this.url + url, { params });
   }
 
-  getAssetSignalRMode(app, assetId) {
+  getTelemetryMode(app, assetId) {
     return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_SIGNALR_MODE, encodeURIComponent(app), encodeURIComponent(assetId)));
   }
 

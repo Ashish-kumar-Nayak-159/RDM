@@ -1,4 +1,5 @@
-<div class="tab-bar" *ngIf="assetModel.metadata.model_type !== constantData.NON_IP_ASSET">
+<div class="tab-bar" *ngIf="assetModel.metadata.model_type !== constantData.NON_IP_ASSET &&
+decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
   <div class="">
     <ul class="nav">
       <li class="nav-item">

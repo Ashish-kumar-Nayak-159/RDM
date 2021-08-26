@@ -327,7 +327,8 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   }
 
   getPropertyType(key) {
-    return this.propertyList.filter(prop => prop.json_key === key)[0]?.type || 'Measured';
+    console.log(key);
+    return this.propertyList.filter(prop => prop.json_key === key)[0]?.type?.toLowerCase() || 'measured';
   }
 
   toggleProperty(prop) {

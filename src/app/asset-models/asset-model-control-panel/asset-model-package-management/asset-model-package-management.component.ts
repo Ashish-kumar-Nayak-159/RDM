@@ -33,6 +33,7 @@ export class AssetModelPackageManagementComponent implements OnInit {
   constantData = CONSTANTS;
   appPackages: any[] = [];
   applicationList = CONSTANTS.ASSETAPPPS;
+  decodedToken: any;
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -43,6 +44,7 @@ export class AssetModelPackageManagementComponent implements OnInit {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     if (this.assetModel.metadata.model_type !== this.constantData.NON_IP_ASSET) {
       this.setUpPackageData();
       this.getPackages();

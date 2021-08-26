@@ -217,6 +217,11 @@ export class RdmGuestLoginComponent implements OnInit {
 
   onSignUp() {
     if (this.loginForm.email && this.loginForm.name && this.loginForm.org) {
+      if (!CONSTANTS.EMAIL_REGEX.test(this.loginForm.email)) {
+        this.toasterService.showError('Email address is not valid',
+          'Guest Login');
+        return;
+      }
       this.isLoginAPILoading = true;
       this.loginForm.app = this.tenantId;
       // const env = environment.environment;

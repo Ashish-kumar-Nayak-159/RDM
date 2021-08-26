@@ -23,4 +23,16 @@ export class CampaignService {
     });
     return this.http.get(this.url + String.Format(AppUrls.GET_JOB_CAMPAIGNS, app), { params });
   }
+
+  createCampaign(app, obj) {
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_JOB_CAMPAIGN, app), obj);
+  }
+
+  startJobCampaign(app, campaignCode) {
+    return this.http.post(this.url + String.Format(AppUrls.START_JOB_CAMPAIGN, app, campaignCode), {});
+  }
+
+  stopJobCampaign(app, campaignCode) {
+    return this.http.post(this.url + String.Format(AppUrls.STOP_JOB_CAMPAIGN, app, campaignCode), {});
+  }
 }

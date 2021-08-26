@@ -208,8 +208,8 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
       command: 'set_properties',
       measured_properties: this.optionsValue?.measured_properties ? {} : undefined,
       alerts: this.optionsValue.alerts ? {} : undefined,
-      controllable_properties: this.optionsValue.controllable_properties ? {} : undefined,
-      configurable_properties: this.optionsValue.configurable_properties ? {} : undefined,
+      // controllable_properties: this.optionsValue.controllable_properties ? {} : undefined,
+      // configurable_properties: this.optionsValue.configurable_properties ? {} : undefined,
       derived_properties: this.optionsValue.derived_properties ? {} : undefined
     };
     if (this.optionsValue.measured_properties) {
@@ -218,11 +218,11 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         obj.measured_properties[prop.json_key].g = prop.group;
       });
     }
-    if (this.optionsValue.configurable_properties) {
-      this.properties.configurable_properties.forEach(prop => {
-        obj.configurable_properties[prop.json_key] = prop.metadata;
-      });
-    }
+    // if (this.optionsValue.configurable_properties) {
+    //   this.properties.configurable_properties.forEach(prop => {
+    //     obj.configurable_properties[prop.json_key] = prop.metadata;
+    //   });
+    // }
     if (this.optionsValue.alerts) {
       this.alertConditions.forEach(prop => {
         obj.alerts[prop.code] = prop.metadata;
@@ -231,14 +231,14 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     if (this.optionsValue.derived_properties) {
       this.properties.derived_properties.forEach(prop => {
         obj.derived_properties[prop.json_key] = prop.metadata;
-        obj.measured_properties[prop.json_key].g = prop.group;
+        obj.derived_properties[prop.json_key].g = prop.group;
       });
     }
-    if (this.optionsValue.controllable_properties) {
-      this.properties.controllable_properties.forEach(prop => {
-        obj.controllable_properties[prop.json_key] = prop.metadata;
-      });
-    }
+    // if (this.optionsValue.controllable_properties) {
+    //   this.properties.controllable_properties.forEach(prop => {
+    //     obj.controllable_properties[prop.json_key] = prop.metadata;
+    //   });
+    // }
     this.callC2dMethod(obj);
   }
 

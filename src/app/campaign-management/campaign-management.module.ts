@@ -7,10 +7,12 @@ import { CampaignManagementListComponent } from './campaign-management-list/camp
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonCustomModule } from '../common/common.module';
 import { Daterangepicker } from 'ng2-daterangepicker';
+import { AddCampaignComponent } from './add-campaign/add-campaign.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 @NgModule({
-  declarations: [CampaignManagementListComponent],
+  declarations: [CampaignManagementListComponent, AddCampaignComponent],
   imports: [
     CommonModule,
     CampaignManagementRoutingModule,
@@ -18,7 +20,8 @@ import { Daterangepicker } from 'ng2-daterangepicker';
     ReactiveFormsModule,
     CommonCustomModule,
     TooltipModule,
-    Daterangepicker
+    Daterangepicker,
+    NgSelectModule
   ]
 })
 export class CampaignManagementModule { }

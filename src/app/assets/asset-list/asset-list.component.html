@@ -139,35 +139,3 @@
 
 
 
-
-
-
-
-
-
-
-<div class="modal fade right" id="derivedKPIModal" role="dialog">
-  <div class="modal-dialog modal-lg" role="document" style="width: 45%;">
-    <div class="modal-content" *ngIf="contextApp.app === 'CMS_Dev' && componentState === constantData.NON_IP_ASSET">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">View Specific Power Consumption Data</h5>
-        <button type="button" class="close"  aria-label="Close" [disabled]="isDerivedKPIDataLoading" (click)="onCloseModal()">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p class="m-3" *ngIf="derivedKPIData.length === 0 && !isDerivedKPIDataLoading"> No Specific Power Consumption data found.</p>
-        <span  *ngIf="loader"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> {{loadingMessage}}</span>
-        <div id="derivedKPIChart" class="mt-2" *ngIf="!isDerivedKPIDataLoading && derivedKPIData.length > 0"
-          [ngStyle]="{'width': '100%', 'height': '25rem'}"></div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" [disabled]="isDerivedKPIDataLoading" (click)="onCloseModal()">
-          Cancel
-        </button>
-
-      </div>
-    </div>
-
-  </div>
-</div>

@@ -250,6 +250,9 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
         return;
       }
       this.isCreateAPILoading = true;
+      this.applicationDetail.dashboard_config = {
+        show_live_widgets: true
+      };
       this.applicationDetail.hierarchy = {
         levels: ['App'],
         tags: {}

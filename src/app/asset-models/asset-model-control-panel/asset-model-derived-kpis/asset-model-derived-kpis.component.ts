@@ -30,29 +30,29 @@ export class AssetModelDerivedKpisComponent implements OnInit {
       freezed: this.assetModel.freezed,
       data: [
         {
-          name: 'Name',
-          key: 'name',
+          name: 'Code',
+          key: 'code',
           type: 'text',
           headerClass: '',
           valueclass: ''
         },
         {
-          name: 'Message',
-          key: 'message',
+          name: 'Name',
+          key: 'name',
           type: 'text',
           headerClass: 'w-15',
           valueclass: ''
         },
         {
-          name: 'Condition',
-          key: 'condition',
+          name: 'Description',
+          key: 'description',
           type: 'text',
           headerClass: '',
           valueclass: ''
         },
         {
-          name: 'Code',
-          key: 'code',
+          name: 'JSON Key',
+          key: 'kpi_json_key',
           type: 'text',
           headerClass: '',
           valueclass: ''

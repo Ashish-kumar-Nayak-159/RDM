@@ -1,3 +1,4 @@
+import { environment } from './../../../environments/environment.prod';
 import { Subscription } from 'rxjs';
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonService } from './../../services/common.service';
@@ -97,6 +98,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
     this.isApplicationListLoading = true;
     this.tableConfig.is_table_data_loading = true;
     this.applications = [];
+    this.applicationFilterObj.environment = environment.environment;
     this.apiSubscriptions.push(this.applicationService.getApplications(this.applicationFilterObj).subscribe(
       (response: any) => {
         if (response && response.data) {

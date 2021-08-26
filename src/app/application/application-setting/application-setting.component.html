@@ -18,9 +18,7 @@
           <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'dashboard-configuration'}"
           href="#app-dashboard-configuration" role="tab" aria-controls="nav-home" aria-selected="true" (click)="setActiveTab('dashboard-configuration')">
           Dashboard Configuration</a>
-          <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'email-alias'}"
-          href="#app-email-alias" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('email-alias')">
-          Email Alias</a>
+
           <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'menu-settings'}"
           href="#app-menu-settings" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('menu-settings')">
           Menu Settings</a>
@@ -37,7 +35,9 @@
           href="#app-users" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('users')"
           *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('UMV') > -1">
           Users</a>
-
+          <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'email-alias'}"
+          href="#app-email-alias" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('email-alias')">
+          User Groups</a>
         </div>
       </nav>
     </div>

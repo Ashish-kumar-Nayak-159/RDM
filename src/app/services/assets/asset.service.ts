@@ -17,6 +17,7 @@ export class AssetService {
   reloadAssetInControlPanelEmitter: EventEmitter<any> = new EventEmitter<any>();
   composeC2DMessageStartEmitter: EventEmitter<any> = new EventEmitter<any>();
   searchNotificationsEventEmitter: EventEmitter<any> = new EventEmitter<any>();
+  refreshRecentJobs: EventEmitter<any> = new EventEmitter<any>();
   constructor(
     private http: HttpClient,
     private commonService: CommonService

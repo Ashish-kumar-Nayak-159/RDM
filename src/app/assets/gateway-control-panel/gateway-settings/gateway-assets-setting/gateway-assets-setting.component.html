@@ -1,5 +1,5 @@
 <div class="table-responsive">
-  <div class="tableFixHead">
+  <div class="tableFixHead"  style="height: calc(100vh - 23rem);">
     <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAssetsAPILoading"></i>
     <h6 class="m-3" *ngIf="assets.length === 0 && !isAssetsAPILoading"> No assets available.</h6>
     <accordion *ngIf="!isAssetsAPILoading" class="p-3">
@@ -177,8 +177,11 @@
         </accordion>
       </accordion-group>
     </accordion>
+    <app-c2d-jobs [asset]="asset" [filterObj]="c2dJobFilter" ></app-c2d-jobs>
   </div>
 </div>
+
+
 <div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2"
   style="z-index: 1400;">
   <div class="modal-dialog" role="document">

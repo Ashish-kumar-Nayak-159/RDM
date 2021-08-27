@@ -20,7 +20,7 @@ export class ManageApplicationsComponent implements OnInit {
   contextApp: any;
   applications = CONSTANTS.ASSETAPPPS;
   isAPILoading: any = {};
-
+  c2dJobFilter: any = {};
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -29,6 +29,8 @@ export class ManageApplicationsComponent implements OnInit {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.c2dJobFilter.request_type = 'START_APP,STOP_APP,RESTART_APP';
+    this.c2dJobFilter.job_type = 'DirectMethod';
   }
 
   startApp(app, index) {
@@ -96,8 +98,10 @@ export class ManageApplicationsComponent implements OnInit {
         setTimeout(() => {
         this.refreshAssetTwin.emit();
         }, 500);
+        this.assetService.refreshRecentJobs.emit();
       }, error => {
         this.isAPILoading[index] = false;
+        this.assetService.refreshRecentJobs.emit();
         this.toasterService.showError(error?.asset_response?.message || error?.message, type + ' App');
       }
       );

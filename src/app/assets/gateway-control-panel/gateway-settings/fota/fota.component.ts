@@ -1,6 +1,7 @@
 import { CONSTANTS } from 'src/app/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
+import { ToasterService } from 'src/app/services/toaster.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { environment } from 'src/environments/environment';
@@ -38,10 +39,11 @@ export class FotaComponent implements OnInit {
   confirmBodyMessage: any;
   confirmHeaderMessage: string;
   isGetAPILoading = false;
-
+  c2dJobFilter: any = {};
   constructor(
     private assetService: AssetService,
     private assetModelService: AssetModelService,
+    private toasterService: ToasterService,
     private commonService: CommonService
   ) { }
 
@@ -49,6 +51,8 @@ export class FotaComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.isGetAPILoading = true;
     this.getAssetsOfGateway();
+    this.c2dJobFilter.request_type = 'FOTA - INSTALL_PACKAGE,FOTA - UPGRADE_PACKAGE,FOTA - DELETE_PACKAGE';
+    this.c2dJobFilter.job_type = 'Twin';
     await this.getAssetModelData();
     await this.getAssetTwinData();
   }
@@ -188,18 +192,24 @@ export class FotaComponent implements OnInit {
     this.subscriptions.push(
       this.assetService.updateAssetTwin(this.contextApp.app, this.asset.asset_id, obj).subscribe(
         (response: any) => {
-          // this.confirmBodyMessage = response.message;
-          this.displyaMsgArr.push({
-            message: 'Firmware ' + type.toLowerCase() + ' request sent to Asset.',
-            error: false
-          });
           this.modalConfig.isDisplaySave = false;
-          clearInterval(this.twinResponseInterval);
-          this.loadAssetTwinChangeResponse(obj);
+          this.onModalEvents('close');
+          this.isAPILoading = false;
+          this.toasterService.showSuccess('Request sent to Asset', type);
+          this.assetService.refreshRecentJobs.emit();
+          // this.confirmBodyMessage = response.message;
+          // this.displyaMsgArr.push({
+          //   message: 'Firmware ' + type.toLowerCase() + ' request sent to Asset.',
+          //   error: false
+          // });
+          // this.modalConfig.isDisplaySave = false;
+          // clearInterval(this.twinResponseInterval);
+          // this.loadAssetTwinChangeResponse(obj);
         }, error => {
           clearInterval(this.twinResponseInterval);
           this.confirmBodyMessage = error.message;
           this.modalConfig.isDisplaySave = false;
+          this.assetService.refreshRecentJobs.emit();
           this.isAPILoading = false;
         }
       )
@@ -214,68 +224,68 @@ export class FotaComponent implements OnInit {
     }
   }
 
-  loadAssetTwinChangeResponse(requestObj) {
-    clearInterval(this.twinResponseInterval);
-    const obj = {
-      sub_job_id: requestObj.sub_job_id,
-      from_date: requestObj.timestamp - 5,
-      to_date: moment().utc().unix(),
-      epoch: true,
-      job_type: 'Twin'
-    };
-    this.subscriptions.push(
-      this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
-        (response: any) => {
-          response.data.reverse();
-          if (response.data.length > 0) {
-          this.displyaMsgArr.length = 1;
-          response.data.forEach(item => {
-            if (item.payload?.reported && item.payload?.reported[this.selectedAssetPackage.name]) {
-              this.displyaMsgArr.push({
-                message: item.payload.reported[this.selectedAssetPackage.name].fw_update_sub_status,
-                error: false
-              });
-              this.modalConfig.isDisplaySave = false;
-              if (item.payload.reported[this.selectedAssetPackage.name].fw_pending_version) {
-                clearInterval(this.twinResponseInterval);
-                this.twinResponseInterval = setInterval(
-                () => {
-                  this.loadAssetTwinChangeResponse(requestObj);
-                }, 5000);
-              } else {
-                clearInterval(this.twinResponseInterval);
-                setTimeout(() => {
-                  this.onModalEvents('close');
-                  this.isAPILoading = false;
-                }, 1000);
-              }
-            } else {
-              clearInterval(this.twinResponseInterval);
-              this.twinResponseInterval = setInterval(
-              () => {
-                this.loadAssetTwinChangeResponse(requestObj);
-              }, 5000);
-            }
-          });
-        } else {
-          clearInterval(this.twinResponseInterval);
-          this.twinResponseInterval = setInterval(
-          () => {
-            this.loadAssetTwinChangeResponse(requestObj);
-          }, 5000);
-          }
+  // loadAssetTwinChangeResponse(requestObj) {
+  //   clearInterval(this.twinResponseInterval);
+  //   const obj = {
+  //     sub_job_id: requestObj.sub_job_id,
+  //     from_date: requestObj.timestamp - 5,
+  //     to_date: moment().utc().unix(),
+  //     epoch: true,
+  //     job_type: 'Twin'
+  //   };
+  //   this.subscriptions.push(
+  //     this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
+  //       (response: any) => {
+  //         response.data.reverse();
+  //         if (response.data.length > 0) {
+  //         this.displyaMsgArr.length = 1;
+  //         response.data.forEach(item => {
+  //           if (item.payload?.reported && item.payload?.reported[this.selectedAssetPackage.name]) {
+  //             this.displyaMsgArr.push({
+  //               message: item.payload.reported[this.selectedAssetPackage.name].fw_update_sub_status,
+  //               error: false
+  //             });
+  //             this.modalConfig.isDisplaySave = false;
+  //             if (item.payload.reported[this.selectedAssetPackage.name].fw_pending_version) {
+  //               clearInterval(this.twinResponseInterval);
+  //               this.twinResponseInterval = setInterval(
+  //               () => {
+  //                 this.loadAssetTwinChangeResponse(requestObj);
+  //               }, 5000);
+  //             } else {
+  //               clearInterval(this.twinResponseInterval);
+  //               setTimeout(() => {
+  //                 this.onModalEvents('close');
+  //                 this.isAPILoading = false;
+  //               }, 1000);
+  //             }
+  //           } else {
+  //             clearInterval(this.twinResponseInterval);
+  //             this.twinResponseInterval = setInterval(
+  //             () => {
+  //               this.loadAssetTwinChangeResponse(requestObj);
+  //             }, 5000);
+  //           }
+  //         });
+  //       } else {
+  //         clearInterval(this.twinResponseInterval);
+  //         this.twinResponseInterval = setInterval(
+  //         () => {
+  //           this.loadAssetTwinChangeResponse(requestObj);
+  //         }, 5000);
+  //         }
 
-        }, error => {
-          this.displyaMsgArr.push({
-            message: error.message,
-            error: true
-          });
-          this.isAPILoading = false;
-          this.modalConfig.isDisplaySave = false;
-          clearInterval(this.twinResponseInterval);
-        }
-      ));
-  }
+  //       }, error => {
+  //         this.displyaMsgArr.push({
+  //           message: error.message,
+  //           error: true
+  //         });
+  //         this.isAPILoading = false;
+  //         this.modalConfig.isDisplaySave = false;
+  //         clearInterval(this.twinResponseInterval);
+  //       }
+  //     ));
+  // }
 
   openConfirmDialog(type) {
     this.btnClickType = type;

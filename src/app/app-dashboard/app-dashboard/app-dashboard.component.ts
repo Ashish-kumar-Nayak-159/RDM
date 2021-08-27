@@ -83,6 +83,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   };
   @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   selectedDateRange: string;
+  decodedToken: any;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -97,7 +98,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   async ngOnInit(): Promise<void> {
-
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
@@ -294,7 +295,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
         }
       });
-      console.log(hierarchyObj);
       if (Object.keys(hierarchyObj).length === 1) {
         this.assets = JSON.parse(JSON.stringify(this.originalAssets));
       } else {
@@ -304,8 +304,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         let trueFlag = 0;
         let flaseFlag = 0;
         Object.keys(hierarchyObj).forEach(hierarchyKey => {
-          console.log(asset.hierarchy[hierarchyKey]);
-          console.log(hierarchyObj[hierarchyKey]);
           if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
             trueFlag++;
           } else {
@@ -366,7 +364,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onTabChange() {
     this.signalRService.disconnectFromSignalR('telemetry');
-    this.signalRService.disconnectFromSignalR('alert');
+    // this.signalRService.disconnectFromSignalR('alert');
     this.telemetryData = JSON.parse(JSON.stringify([]));
     this.telemetryObj = undefined;
     this.telemetryInterval = undefined;
@@ -462,7 +460,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
               });
               } else {
-                widget?.y1AxisProps.forEach(prop => {
+                widget?.y1AxisProps?.forEach(prop => {
                   this.addPropertyInList(prop);
                   if (prop?.type === 'Derived Properties') {
                     widget.derived_props = true;
@@ -470,7 +468,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                     widget.measured_props = true;
                   }
                 });
-                widget?.y2AxisProps.forEach(prop => {
+                widget?.y2AxisProps?.forEach(prop => {
                   this.addPropertyInList(prop);
                   if (prop?.type === 'Derived Properties') {
                     widget.derived_props = true;
@@ -551,7 +549,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.signalRService.disconnectFromSignalR('telemetry');
     this.signalRTelemetrySubscription?.unsubscribe();
     clearInterval(this.sampleCountInterval);
-    // this.commonService.setItemInLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION, filterObj);
     const obj = JSON.parse(JSON.stringify(filterObj));
     let asset_model: any;
     if (obj.asset) {
@@ -572,9 +569,17 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isTelemetryDataLoading = true;
     await this.getAssetData();
     if (asset_model) {
-      await this.getAssetSignalRMode(this.filterObj.asset.asset_id);
+      if (this.contextApp?.dashboard_config?.show_live_widgets) {
+        await this.getTelemetryMode(this.filterObj.asset.asset_id);
+      }
       await this.getAssetsModelProperties(asset_model);
       console.log(this.contextApp.dashboard_config);
+      if (!this.contextApp?.dashboard_config && !this.contextApp?.dashboard_config?.show_live_widgets
+        && !this.contextApp?.dashboard_config?.show_historical_widgets) {
+          this.contextApp.dashboard_config = {
+            show_live_widgets: true
+          };
+        }
       if (this.contextApp?.dashboard_config?.show_live_widgets) {
         await this.getLiveWidgets(asset_model);
         this.getLiveWidgetTelemetryDetails(obj);
@@ -613,7 +618,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.signalRService.connectToSignalR(obj1);
     this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(
       data => {
-        if (data.type !== 'alert') {
+        // if (data.type !== 'alert') {
           if (data) {
             let obj =  JSON.parse(JSON.stringify(data));
             delete obj.m;
@@ -624,7 +629,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           this.processTelemetryData(data);
           this.isTelemetryDataLoading = false;
         }
-      }
+      // }
     );
     this.apiSubscriptions.push(this.assetService.getLastTelmetry(this.contextApp.app, obj).subscribe(
       (response: any) => {
@@ -783,7 +788,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
       frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
       frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
-      const frequency = this.commonService.getLowestValueFromList(frequencyArr)
+      const frequency = this.commonService.getLowestValueFromList(frequencyArr);
       const records = this.commonService.calculateEstimatedRecords(frequency, filterObj.from_date, filterObj.to_date);
       if (records > 500 ) {
         this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
@@ -965,14 +970,14 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  getAssetSignalRMode(assetId) {
+  getTelemetryMode(assetId) {
     // this.signalRModeValue = true;
-    this.apiSubscriptions.push(this.assetService.getAssetSignalRMode(this.contextApp.app, assetId).subscribe(
+    this.apiSubscriptions.push(this.assetService.getTelemetryMode(this.contextApp.app, assetId).subscribe(
       (response: any) => {
         const newMode = response?.mode?.toLowerCase() === 'normal' ? true :
         (response?.mode?.toLowerCase() === 'turbo' ? false : true);
         if (this.signalRModeValue === newMode) {
-          $('#overlay').hide();
+          // $('#overlay').hide();
           this.isC2dAPILoading = false;
           this.c2dResponseMessage = [];
           this.c2dLoadingMessage = undefined;

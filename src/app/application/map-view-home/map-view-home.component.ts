@@ -209,28 +209,28 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                     }};
                 }
               } else {
-                if (asset.type === this.constantData.IP_ASSET && asset?.configuration?.connection_state?.toLowerCase() === 'connected') {
+                if (asset.type === this.constantData.IP_ASSET && asset?.connection_state?.toLowerCase() === 'connected') {
                   asset.icon = {
                     url: './assets/img/iot-assets-green.svg',
                     scaledSize: {
                       width: 35,
                       height: 35
                     }};
-                } else if (asset.type === this.constantData.IP_ASSET && asset?.configuration?.connection_state?.toLowerCase() === 'disconnected') {
+                } else if (asset.type === this.constantData.IP_ASSET && asset?.connection_state?.toLowerCase() === 'disconnected') {
                   asset.icon = {
                     url: './assets/img/iot-assets-red.svg',
                     scaledSize: {
                       width: 35,
                       height: 35
                     }};
-                } else if (asset.type === this.constantData.IP_GATEWAY && asset?.configuration?.connection_state?.toLowerCase() === 'connected') {
+                } else if (asset.type === this.constantData.IP_GATEWAY && asset?.connection_state?.toLowerCase() === 'connected') {
                   asset.icon = {
                     url: './assets/img/iot-gateways-green.svg',
                     scaledSize: {
                       width: 30,
                       height: 30
                     }};
-                } else if (asset.type === this.constantData.IP_GATEWAY && asset?.configuration?.connection_state?.toLowerCase() === 'disconnected') {
+                } else if (asset.type === this.constantData.IP_GATEWAY && asset?.connection_state?.toLowerCase() === 'disconnected') {
                   asset.icon = {
                     url: './assets/img/iot-gateways-red.svg',
                     scaledSize: {
@@ -246,6 +246,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                     }};
                 }
               }
+              console.log(asset.asset_id, '=====', asset.icon);
             });
             this.originalAssets = JSON.parse(JSON.stringify(this.assets));
             const center = this.commonService.averageGeolocation(this.assets);
@@ -300,8 +301,6 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
         let trueFlag = 0;
         let flaseFlag = 0;
         Object.keys(hierarchyObj).forEach(hierarchyKey => {
-          console.log(asset.hierarchy[hierarchyKey]);
-          console.log(hierarchyObj[hierarchyKey]);
           if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
             trueFlag++;
           } else {

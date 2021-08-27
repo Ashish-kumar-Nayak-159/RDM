@@ -499,7 +499,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     });
     if (!this.alertObj.message || (this.alertObj.message.trim()).length === 0 ||  !this.alertObj.code
      || (this.alertObj.code.trim()).length === 0 || !this.alertObj.severity || !this.alertObj.alert_type) {
-      this.toasterService.showError('Please enter all required fields', 'Add Alert Condition');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Alert Condition');
       return;
     }
     // let distinctArray = this.alertObj.visualization_widgets.filter((n, i) => this.alertObj.visualization_widgets.indexOf(n) === i);
@@ -539,7 +539,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.alertObj.metadata = this.setupForm?.value;
     if (!this.alertObj.message || (this.alertObj.message.trim()).length === 0 ||  !this.alertObj.code
      || (this.alertObj.code.trim()).length === 0 || !this.alertObj.severity || !this.alertObj.alert_type) {
-      this.toasterService.showError('Please enter all required fields', 'Add Alert Condition');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Alert Condition');
       return;
     }
     this.alertObj.code = 'M_' + this.alertObj.code;

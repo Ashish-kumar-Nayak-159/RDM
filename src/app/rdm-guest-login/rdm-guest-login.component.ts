@@ -4,7 +4,7 @@ import { CONSTANTS } from 'src/app/app.constants';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Route, Router, ActivatedRoute } from '@angular/router';
 import { ToasterService } from '../services/toaster.service';
 import { CommonService } from 'src/app/services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -30,8 +30,10 @@ export class RdmGuestLoginComponent implements OnInit {
   isPasswordVisible = false;
   isForgotPassword = false;
   isForgotAPILoading = false;
+  tenantId: string;
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private toasterService: ToasterService,
     private commonService: CommonService,
     private applicationService: ApplicationService
@@ -68,6 +70,11 @@ export class RdmGuestLoginComponent implements OnInit {
         }
       }
     }
+    this.route.paramMap.subscribe(paramMap => {
+      if (paramMap.get('tenantId')) {
+        this.tenantId = paramMap.get('tenantId');
+      }
+    });
 
   }
 
@@ -204,18 +211,20 @@ export class RdmGuestLoginComponent implements OnInit {
       ));
       } else {
       this.isLoginAPILoading = false;
-      this.toasterService.showError('Please enter username and password', 'Login');
+      this.toasterService.showError('Please enter OTP', 'Login');
     }
   }
 
   onSignUp() {
-    if (this.loginForm.email && this.loginForm.phone) {
-      this.isLoginAPILoading = true;
-      const app = environment.app;
-      if (app) {
-        this.loginForm.app = app;
+    if (this.loginForm.email && this.loginForm.name && this.loginForm.org) {
+      if (!CONSTANTS.EMAIL_REGEX.test(this.loginForm.email)) {
+        this.toasterService.showError('Email address is not valid',
+          'Guest Login');
+        return;
       }
-      const env = environment.environment;
+      this.isLoginAPILoading = true;
+      this.loginForm.app = this.tenantId;
+      // const env = environment.environment;
       // if (env) {
       //   this.loginForm.environment = env;
       // }
@@ -231,7 +240,7 @@ export class RdmGuestLoginComponent implements OnInit {
       ));
       } else {
       this.isLoginAPILoading = false;
-      this.toasterService.showError('Please enter username and password', 'Login');
+      this.toasterService.showError('Please enter name, email and organization', 'Login');
     }
   }
 

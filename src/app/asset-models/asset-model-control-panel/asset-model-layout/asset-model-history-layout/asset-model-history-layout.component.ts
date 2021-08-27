@@ -13,6 +13,7 @@ import { BarChartComponent } from 'src/app/common/charts/bar-chart/bar-chart.com
 import { PieChartComponent } from 'src/app/common/charts/pie-chart/pie-chart.component';
 import { DataTableComponent } from 'src/app/common/charts/data-table/data-table.component';
 import { ApplicationService } from 'src/app/services/application/application.service';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 declare var $: any;
 
 @Component({
@@ -163,7 +164,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
 
   async addChart() {
     if (!this.chartTitle || !this.selectedChartType || this.y1AxisProps.length === 0) {
-      this.toasterService.showError('Please enter all required fields', 'Add Widget');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Widget');
       return;
     }
     if (this.y1AxisProps.length + this.y2AxisProps.length > 4) {

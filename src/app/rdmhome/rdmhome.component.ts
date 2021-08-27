@@ -97,7 +97,11 @@ export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
       (response: any) => {
           this.applicationData = response;
           this.applicationData.app = app.app;
-          this.applicationData.user = app.user;
+          this.userData.apps.forEach(appObj => {
+            if (app.app === appObj.app) {
+              this.applicationData.user = appObj.user;
+            }
+          });
           if (this.applicationData.menu_settings.main_menu.length === 0) {
             this.applicationData.menu_settings.main_menu = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
           } else {

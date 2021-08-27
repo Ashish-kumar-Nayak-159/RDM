@@ -1,4 +1,6 @@
         <div class="p-3">
+          <p *ngIf="ruleData.updated_date">This rule is last updated on {{ruleData.local_updated_date}} by {{ruleData.updated_by}}.</p>
+          <p *ngIf="ruleData.deployed_on">This rule is last deployed on {{ruleData.local_deployed_on}} by {{ruleData.deployed_by}}.</p>
             <accordion class="mb-2" [closeOthers]="'true'">
                     <accordion-group heading="" [panelClass]="'customClass'">
                         <ng-container accordion-heading>
@@ -12,13 +14,13 @@
                                     <label for="exampleEmail" class="col-3 required">Name</label>
                                     <div class="col-auto">
                                         <input type="text" class="form-control form-control-sm" name="name"
-                                            [(ngModel)]="ruleModel.name" placeholder="Name" >
+                                            [(ngModel)]="ruleModel.name" placeholder="Name" [disabled]="isView">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label for="exampleEmail" class="col-3 required">Code</label>
                                     <div class="col-auto">
-                                        <input type="text" class="form-control form-control-sm" name="code"
+                                        <input type="text" class="form-control form-control-sm" name="code" [disabled]="isView"
                                             [(ngModel)]="ruleModel.code" placeholder="Code" minlength="1" maxlength="6" >
                                     </div>
                                 </div>
@@ -26,16 +28,16 @@
                                     <label for="examplePassword" class="col-3 required">Description</label>
                                     <div class="col-auto">
                                         <input type="text" class="form-control form-control-sm" id="examplePassword"
-                                            placeholder="Description" name="description"
+                                            placeholder="Description" name="description" [disabled]="isView"
                                             [(ngModel)]="ruleModel.description">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label for="examplePassword" class="col-3">Type</label>
                                     <div class="col-auto">
-                                        <ui-switch size="small" class="mr-1" defaultBgColor="#f6c23e"
+                                          <ui-switch size="small" class="mr-1" defaultBgColor="#f6c23e"
                                             checkedTextColor="white" uncheckedTextColor="white"
-                                            (valueChange)="onSwitchValueChange($event)" checkedLabel="Edge Rule"
+                                            (valueChange)="onSwitchValueChange($event)" checkedLabel="Edge Rule" [disabled]="isView"
                                             uncheckedLabel="Cloud Rule" name="tpye" [(ngModel)]="ruleModel.rule_type">
                                         </ui-switch>
                                     </div>
@@ -65,7 +67,7 @@
                                             </div>
                                             <div class="">
                                                 <select id="dateoptions" placeholder="Select Operator" name="operator"
-                                                    class="form-control form-control-sm w-auto"
+                                                    class="form-control form-control-sm w-auto" [disabled]="isView"
                                                     [(ngModel)]="ruleModel.operator" required>
                                                     <option [value]="undefined">Select</option>
                                                     <option [value]="'&&'">All of the conditions are true</option>
@@ -83,7 +85,7 @@
                                             <div class="row">
                                                 <div class="col-3 mt-1">
                                                     <ui-switch size="small" class="mr-1" defaultBgColor="#f6c23e"
-                                                        checkedTextColor="white" uncheckedTextColor="white"
+                                                        checkedTextColor="white" uncheckedTextColor="white" [disabled]="isView"
                                                         checkedLabel="ON" uncheckedLabel="OFF" name="aggregation_switch"
                                                         [(ngModel)]="ruleModel.aggregation_enabled"
                                                         (valueChange)="onChangeTimeAggregation($event)">
@@ -92,7 +94,7 @@
                                                 <div class="col-9">
                                                     <select id="dateoptions" placeholder="Time Aggregation"
                                                         [(ngModel)]="ruleModel.aggregation_window_in_sec"
-                                                        [disabled]="!ruleModel.aggregation_enabled" name="aggregation"
+                                                        [disabled]="!ruleModel.aggregation_enabled || isView" name="aggregation"
                                                         class="form-control form-control-sm w-auto">
                                                         <option [value]="undefined">Select Aggregation Time</option>
                                                         <option [value]="300">5 minutes</option>
@@ -118,7 +120,7 @@
                                                     [(ngModel)]="ruleModel.escalation_time_in_sec" required> -->
                                                 <select id="escalation_time_in_sec"
                                                     [(ngModel)]="ruleModel.escalation_time_in_sec"
-                                                     name="escalation_time_in_sec"
+                                                     name="escalation_time_in_sec" [disabled]="isView"
                                                     class="form-control form-control-sm w-auto">
                                                     <option [value]="undefined">Select Escalation Time</option>
                                                     <!-- <option [value]="0">0 minutes</option> -->
@@ -154,7 +156,7 @@
                                                     {{prop.id}}</option>
                                             </select> -->
                                             <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" name="telemetry_{{i}}" [clearable]="false"
-                                              [searchable]="true" bindLabel="id"
+                                              [searchable]="true" bindLabel="id" [disabled]="isView"
                                               [closeOnSelect]="true" placeholder="Select Properties" groupBy="type"
                                               dropdownPosition="bottom" name="asset-dropdown" bindValue="json_key" [(ngModel)]="condition.property" required>
                                               <ng-template ng-option-tmp let-item="item">
@@ -167,7 +169,7 @@
                                         </div>
                                         <div class="col-auto">
                                             <label for="exampleEmail" class="mb-2">Operator</label>
-                                            <select placeholder="Operator" name="operator_{{i}}" required
+                                            <select placeholder="Operator" name="operator_{{i}}" required [disabled]="isView"
                                                 class="form-control form-control-sm w-auto" [(ngModel)]="condition.operator">
                                                 <option [value]="''">Select Operator</option>
                                                 <option *ngFor="let optr of operatorList;" [value]="optr.id">
@@ -178,13 +180,13 @@
                                         <div class="col-auto">
                                             <label for="examplePassword" class="mb-2">Value</label>
                                             <input type="number" class="form-control form-control-sm" style="width:60px;" required
-                                                placeholder="value" name="threshold_{{i}}"
+                                                placeholder="value" name="threshold_{{i}}" [disabled]="isView"
                                                 [(ngModel)]="condition.threshold">
                                         </div>
                                         <div class="col-auto" *ngIf="ruleModel.aggregation_enabled">
                                             <label for="examplePassword" class="mb-2 w-auto">Aggregation Type</label>
                                             <select placeholder="Aggregation Type" name="aggregation_type_{{i}}"
-                                                class="form-control form-control-sm" required
+                                                class="form-control form-control-sm" required [disabled]="isView"
                                                 [(ngModel)]="condition.aggregation_type">
                                                 <option [value]="''">Aggregartion Type</option>
                                                 <option [value]="'AVG'">Average</option>
@@ -194,7 +196,7 @@
                                                 <option [value]="'COUNT'">Count</option>
                                             </select>
                                         </div>
-                                        <div class="col-auto">
+                                        <div class="col-auto" *ngIf="!isView">
                                             <button id="delete" class="btn btn-sm btn-light cursor-pointer" style="margin-top: 1.65rem;"
                                                 (click)="deleteCondition(i);"><i class="fas fa fa-trash"></i>
                                                </button>
@@ -202,7 +204,7 @@
                                     </div>
                                     <hr>
                                 </form>
-                                <button id="insert-more" (click)="addNewCondition();"
+                                <button *ngIf="!isView" id="insert-more" (click)="addNewCondition();"
                                     class="btn btn-sm btn-primary cursor-pointer"><i
                                         class="fas fa fa-plus-circle mr-1 my-1"></i>
                                     Condition</button>
@@ -224,25 +226,46 @@
                             <div class="row">
                                 <div class="col-lg-12 col-xl-12">
                                     <form #form4="ngForm">
+                                      <!-- <div class="col-auto">
+                                        <label for="examplePassword" class="mb-2 w-auto">Aggregation Type</label>
+                                        <select placeholder="Aggregation Type" name="aggregation_type_{{i}}"
+                                            class="form-control form-control-sm" required [disabled]="isView"
+                                            [(ngModel)]="condition.aggregation_type">
+                                            <option [value]="''">Aggregartion Type</option>
+                                            <option [value]="'AVG'">Average</option>
+                                            <option [value]="'SUM'">Sum</option>
+                                            <option [value]="'MIN'">Min</option>
+                                            <option [value]="'MAX'">Max</option>
+                                            <option [value]="'COUNT'">Count</option>
+                                        </select>
+                                    </div> -->
+
+                                    <div class="form-group row mb-0">
+                                      <div class="col-auto">
+                                          <label for="exampleEmail" class="required">Action Type</label>
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+
+                                    <select name="aggregation_type"
+                                    class="form-control form-control-sm  w-25" [disabled]="isView"
+                                    >
+                                    <option [value]="undefined">Action Type</option>
+                                    <option [value]="'Integrate with existing Alert Management Module'">Integrate with existing Alert Management Module</option>
+                                    <option [value]="'Send SMS / Email / Whatspp'">Send SMS / Email / Whatspp</option>
+                                    <option [value]="'Create Ticket'">Create Ticket</option>
+                                    </select>
+                                <!-- </div> -->
+                                </div>
                                         <div class="form-group row mb-0">
                                             <div class="col-auto">
                                                 <label for="exampleEmail" class="required">Alert Code</label>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <!-- <div class="col-auto"> -->
-                                                <!-- <select id="alertCondition" placeholder="Alert Condition" name="alertCondition"
-                                                    class="form-control form-control-sm"
-                                                    (change)="onChangeOfAssetCondition()"
-                                                    [(ngModel)]="ruleModel.alert_condition_code" required>
-                                                    <option [value]="''"> Select Alert Condition</option>
-                                                    <option *ngFor="let alert of alertConditionList;let i = index;"
-                                                        [value]="alert.code">
-                                                        {{alert.code}} - {{alert.message}}</option>
-                                                </select> -->
 
                                                 <ng-select [items]="alertConditionList" class="custom-dropdown w-25 sm" name="alertCondition" [clearable]="false"
-                                              [searchable]="true" bindLabel="message"
+                                              [searchable]="true" bindLabel="message" [disabled]="isView"
                                               [closeOnSelect]="true" placeholder="Select Alert Condition" groupBy="type"  (change)="onChangeOfAssetCondition()"
                                               dropdownPosition="bottom" name="asset-dropdown" bindValue="code" [(ngModel)]="ruleModel.alert_condition_code" required>
                                               <ng-template ng-option-tmp let-item="item">
@@ -379,7 +402,7 @@
                         </div>
                     </accordion-group>
                 </accordion>
-                <div>
+                <div *ngIf="!isView">
                     <i *ngIf="isUpdateApiCall" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
                     <button type="button" class="btn btn-sm btn-primary add-row mr-2" (click)="createNewRule();"
                         [disabled]="form1.invalid || form2.invalid || form3.invalid || form4.invalid || ruleModel.conditions.length <= 0">{{isEdit

@@ -6,6 +6,7 @@ import { CONSTANTS } from 'src/app/app.constants';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { JsonEditorOptions, JsonEditorComponent } from 'ang-jsoneditor';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 
 declare var $: any;
 @Component({
@@ -251,7 +252,7 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
 
   onSaveassetMethodObj() {
     if (!this.assetMethodObj.name || !this.assetMethodObj.method_name) {
-      this.toasterService.showError('Please enter all required fields', 'Add Direct Method');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Direct Method');
       return;
     }
     if (this.assetMethodObj.json_model.params) {
@@ -262,7 +263,7 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
         }
       });
       if (flag) {
-        this.toasterService.showError('Please enter all required fields', 'Add Direct Method');
+        this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Direct Method');
         return;
       }
     }

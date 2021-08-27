@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { ApplicationService } from 'src/app/services/application/application.service';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 
 declare var $: any;
 @Component({
@@ -310,7 +311,7 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
   createAssetsModel() {
     if (!this.assetModel.name || !this.assetModel.tags.protocol || !this.assetModel.tags.cloud_connectivity
     || !this.assetModel.metadata.model_type) {
-      this.toasterService.showError('Please enter all required fields', 'Create Asset Model');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Create Asset Model');
       return;
     }
     this.assetModel.metadata.telemetry_mode_settings = {

@@ -274,8 +274,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       let trueFlag = 0;
       let flaseFlag = 0;
       Object.keys(hierarchyObj).forEach(hierarchyKey => {
-        console.log(asset.hierarchy[hierarchyKey]);
-        console.log(hierarchyObj[hierarchyKey]);
         if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
           trueFlag++;
         } else {
@@ -1029,7 +1027,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     const epoch =  this.commonService.convertDateToEpoch(this.acknowledgedAlert.message_date);
     obj.from_date = epoch ? (epoch - 300) : null;
     obj.to_date = (epoch ? (epoch + 300) : null);
-    obj.metadata['user_id'] = this.userData.name;
+    obj.metadata['user_id'] = this.userData.email;
     obj.metadata['acknowledged_date'] = (moment.utc(new Date(), 'M/DD/YYYY h:mm:ss A'));
     this.subscriptions.push(this.assetService.acknowledgeAssetAlert(obj).subscribe(
       response => {

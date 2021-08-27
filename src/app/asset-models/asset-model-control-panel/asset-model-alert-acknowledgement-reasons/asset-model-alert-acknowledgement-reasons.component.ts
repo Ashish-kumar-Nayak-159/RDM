@@ -40,7 +40,7 @@ export class AssetModelAlertAcknowledgementReasonsComponent implements OnInit {
     this.assetModel = JSON.parse(JSON.stringify(this.assetModel));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.decodedToken = this.commonService.getItemFromLocalStorage(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.getAckReasons();
   }
 
@@ -64,24 +64,33 @@ export class AssetModelAlertAcknowledgementReasonsComponent implements OnInit {
   }
 
   addReason() {
-    this.ReasonBtnClicked = true;
+
     if (this.reasonObj) {
       if (!this.reasonObj.reason) {
         this.toasterService.showError('Please add reason', 'Add Reason');
-        return;
+        return false;
       }
       // this.ackReasons.push(this.reasonObj);
       this.originalReasonObj = this.reasonObj;
     }
+    this.ReasonBtnClicked = true;
     this.firstReasonAdded = true;
     this.reasonObj = {};
+    return true;
   }
 
   async updateReason() {
+
+    const flag =  await this.addReason();
+    if (!flag) {
+      return;
+    }
     this.isUpdateReasonsAPILoading = true;
-    await this.addReason();
     // const obj = JSON.parse(JSON.stringify(this.ackReasons));
-    const obj = JSON.parse(JSON.stringify(this.originalReasonObj));
+    let obj = {};
+    if (this.originalReasonObj) {
+    obj = JSON.parse(JSON.stringify(this.originalReasonObj));
+    }
     const modelObj = {
       app: this.contextApp.app,
       name: this.assetModel.name

@@ -6,6 +6,7 @@ import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { CONSTANTS } from 'src/app/app.constants';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 declare var $: any;
 @Component({
   selector: 'app-application-users',
@@ -28,6 +29,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   selectedUserForDelete: any;
   password: any;
   decodedToken: any;
+  userRoles: any = [];
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
@@ -40,11 +42,21 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
     const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.getApplicationUserRoles();
     this.getApplicationUsers();
     this.applicationData.hierarchy.levels.forEach((element, index) => {
       this.hierarchyArr[index] = [];
     });
+  }
 
+  getApplicationUserRoles() {
+    this.apiSubscriptions.push(this.applicationService.getApplicationUserRoles(this.applicationData.app).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.userRoles = response.data;
+        }
+      }
+    ));
   }
 
   getApplicationUsers() {
@@ -134,7 +146,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
   getAccessLevelHierarchy() {
     this.hierarchyList = [];
     let hierarchy = '';
-    const roleObj = this.applicationData.roles.filter(role => role.name === this.addUserObj.role)[0];
+    const roleObj = this.userRoles.filter(role => role.role === this.addUserObj.role)[0];
     this.applicationData.hierarchy.levels.forEach((element, index) => {
       if (index <= roleObj.level) {
         hierarchy = hierarchy + element + ' / ';
@@ -168,7 +180,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     // })
     if (!this.addUserObj.name || !this.addUserObj.email || !this.addUserObj.role ||
       Object.keys(this.addUserObj.hierarchy).length !== this.hierarchyList.length) {
-      this.toasterService.showError('Please enter all required fields', 'Create User');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Create User');
       return;
     }
     if (!CONSTANTS.EMAIL_REGEX.test(this.addUserObj.email)) {

@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { UserService } from '../services/user.service';
 import { environment } from 'src/environments/environment';
+import { APIMESSAGES } from '../api-messages.constants';
 declare var $: any;
 @Component({
   selector: 'app-reset-password',
@@ -89,7 +90,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       },
       { validators: this.checkPasswords }
     );
-    this.isForgotPassword ? this.resetPasswordForm.removeControl('old_password') : this.resetPasswordForm.removeControl('otp') 
+    this.isForgotPassword ? this.resetPasswordForm.removeControl('old_password') : this.resetPasswordForm.removeControl('otp')
   }
 
   noWhitespaceValidator(control: FormControl) {
@@ -105,12 +106,12 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     const obj = JSON.parse(JSON.stringify(this.resetPasswordForm.value));
     if (this.isForgotPassword) {
       if (!obj.otp || !obj.email || !obj.new_password || !obj.confirmNewPassword) {
-        this.toasterService.showError('Please enter all required fields', 'Forgot Password');
+        this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Forgot Password');
         return;
       }
     } else {
       if (!obj.old_password || !obj.email || !obj.new_password || !obj.confirmNewPassword) {
-        this.toasterService.showError('Please enter all required fields', 'Change Password');
+        this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Change Password');
         return;
       }
     }

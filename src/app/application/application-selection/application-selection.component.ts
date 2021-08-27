@@ -55,8 +55,6 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     this.isAppDataLoading = {};
     this.isAppDataLoading[index] = true;
     if (localStorageAppData && localStorageAppData.app !== app.app)  {
-      localStorage.removeItem(CONSTANTS.DASHBOARD_ALERT_SELECTION);
-      localStorage.removeItem(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION);
       localStorage.removeItem(CONSTANTS.SELECTED_APP_DATA);
       localStorage.removeItem(CONSTANTS.ASSETS_LIST);
       localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
@@ -80,40 +78,6 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     this.isAppDataLoading = undefined;
   }
 
-  getAssets(hierarchy) {
-    return new Promise((resolve) => {
-      const obj = {
-        hierarchy: JSON.stringify(hierarchy),
-        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET
-      };
-      this.apiSubscriptions.push(this.assetService.getIPAndLegacyAssets(obj, this.applicationData.app).subscribe(
-        (response: any) => {
-          if (response?.data) {
-            this.commonService.setItemInLocalStorage(CONSTANTS.ASSETS_LIST, response.data);
-          }
-          resolve();
-        }
-      ));
-    });
-  }
-
-  getAssetModels(hierarchy) {
-    return new Promise((resolve) => {
-      const obj = {
-        hierarchy: JSON.stringify(hierarchy),
-        app: this.applicationData.app
-      };
-      this.apiSubscriptions.push(this.assetModelService.getAssetsModelsList(obj).subscribe(
-        (response: any) => {
-          if (response?.data) {
-            this.commonService.setItemInLocalStorage(CONSTANTS.ASSET_MODELS_LIST, response.data);
-          }
-          resolve();
-        }
-      ));
-    });
-  }
-
   getApplicationData(app) {
     return new Promise<void>((resolve) => {
     this.applicationData = undefined;
@@ -121,7 +85,14 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       (response: any) => {
           this.applicationData = response;
           this.applicationData.app = app.app;
-          this.applicationData.user = app.user;
+
+          this.userData.apps.forEach(appObj => {
+            if (app.app === appObj.app) {
+              console.log(appObj);
+              console.log(appObj.user);
+              this.applicationData.user = appObj.user;
+            }
+          });
           if (!this.applicationData.menu_settings.main_menu || this.applicationData.menu_settings.main_menu.length === 0) {
             this.applicationData.menu_settings.main_menu = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
           } else {
@@ -142,9 +113,14 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
             this.applicationData.menu_settings.model_control_panel_menu =
             JSON.parse(JSON.stringify(CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST));
           }
+          if (this.applicationData.menu_settings.gateway_control_panel_menu ||
+            this.applicationData.menu_settings.gateway_control_panel_menu.length === 0) {
+            this.applicationData.menu_settings.gateway_control_panel_menu =
+            JSON.parse(JSON.stringify(CONSTANTS.GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST));
+          }
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
           const obj = {
-            hierarchy : this.applicationData.user.hierarchy,
+            hierarchy : this.applicationData?.user?.hierarchy,
             dateOption : 'Last 24 Hours'
           };
           this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, obj);

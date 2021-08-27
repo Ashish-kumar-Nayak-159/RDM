@@ -7,6 +7,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { FileSaverService } from 'ngx-filesaver';
 import { DomSanitizer } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 
 declare var $: any;
 @Component({
@@ -38,7 +39,7 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
   ) { }
 
   ngOnInit(): void {
-    this.decodedToken = this.commonService.getItemFromLocalStorage(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.setUpDocumentData();
     this.getDocuments();
@@ -160,12 +161,18 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
   downloadFile(fileObj) {
     this.openModal('downloadDocumentModal');
     const url = this.blobStorageURL + fileObj.url + this.sasToken;
+    setTimeout(() => {
     this.subscriptions.push(this.commonService.getFileData(url).subscribe(
       response => {
         this.fileSaverService.save(response, fileObj.name);
-        this.closeModal('downloadDocumentModal');
+        this.closeDownloadModal();
       }
     ));
+    }, 500);
+    // $('#downloadDocumentModal').modal('toggle');
+    // setTimeout(() => {
+    //   this.closeDownloadModal();
+    // }, 4000);
   }
 
   sanitizeURL() {
@@ -180,6 +187,15 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
     console.log('hereeee');
     $('#' + id).modal('hide');
     this.selectedDocument = undefined;
+  }
+
+  closeDownloadModal() {
+    console.log('hereeeeYash');
+    this.selectedDocument = undefined;
+    $('#downloadDocumentModal').modal('hide');
+    setTimeout(() => {
+      $('#downloadDocumentModal').modal('toggle');
+    }, 4000);
   }
 
   onCloseAddDocModal() {
@@ -224,7 +240,7 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
 
   onSaveDocumentObj() {
     if (!this.documentObj.name || (this.documentObj.name.trim()).length === 0 || !this.documentObj.type || !this.documentObj.metadata) {
-      this.toasterService.showError('Please enter all required fields', ((this.documentObj.id ? 'Edit' : 'Add') + ' Document'));
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, ((this.documentObj.id ? 'Edit' : 'Add') + ' Document'));
       return;
     }
     let flag = false;

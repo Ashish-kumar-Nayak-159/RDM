@@ -9,6 +9,7 @@ import { Asset } from 'src/app/models/asset.model';
 export class LogsComponent implements OnInit {
 
   @Input() asset = new Asset();
+  @Input() messageText = 'Work in Progress';
   constructor() { }
 
   ngOnInit(): void {

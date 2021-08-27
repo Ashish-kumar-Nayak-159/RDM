@@ -11,7 +11,6 @@
          </div>
 </div>
 </div>
-
   <div class="tableFixHead table-responsive">
   <table class="table table-hover">
     <thead>
@@ -105,7 +104,7 @@
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Role:</label>
             <select class="form-control form-control-sm" id="role" (change)="onUserRoleChange()" name="role" [(ngModel)]="addUserObj.role">
-              <option [ngValue]="role.name" *ngFor="let role of applicationData.roles">{{role.name}}</option>
+              <option [ngValue]="role.role" *ngFor="let role of userRoles">{{role.role}}</option>
             </select>
           </div>
           <div class="form-group">

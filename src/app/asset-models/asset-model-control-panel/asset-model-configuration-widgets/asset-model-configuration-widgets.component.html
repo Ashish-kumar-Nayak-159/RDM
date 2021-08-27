@@ -142,7 +142,7 @@
               primaryKey: 'name'
             }">
           </angular2-multiselect> -->
-          <ng-select [items]="(controlWidget?.metadata?.communication_technique === 'Direct Method' ? assetMethods : properties?.controllable_properties)"
+          <ng-select [items]="(controlWidget?.metadata?.communication_technique === 'Direct Method' ? assetMethods : properties?.configurable_properties)"
           class="custom-dropdown sm"  [clearable]="false"
           [searchable]="true" [multiple]="true" bindLabel="name"
           [closeOnSelect]="false" placeholder="{{'Select' + (controlWidget?.metadata?.communication_technique === 'Direct Method' ? ' Direct Method' : ' Property')}}"

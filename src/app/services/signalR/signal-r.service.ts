@@ -33,7 +33,7 @@ export class SignalRService {
         .withUrl(con.url, options)
         .configureLogging(SignalR.LogLevel.Information)
         .build();
-
+        // connection start
         connection.start().then(() => {
           connection.on('notify', data => {
             if (connectionObj.type === 'telemetry') {

@@ -231,7 +231,7 @@
               *ngFor="let property of properties | keyvalue;let i = index">
               <ng-container accordion-heading>
                 <a class="btn">
-                  {{property.key === 'measured_properties' ? 'Measured Properties' : 'Derived Properties'}}
+                  {{property.key === 'measured_properties' ? 'Measured Properties' : 'Edge Derived Properties'}}
                 </a>
               </ng-container>
               <table class="table table-hover">

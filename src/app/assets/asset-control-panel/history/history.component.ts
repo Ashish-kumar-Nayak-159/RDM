@@ -163,9 +163,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.apiSubscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-          response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
-          response.properties.derived_properties.forEach(prop => {
-            prop.type = 'Derived Properties';
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
+          response.properties.edge_derived_properties.forEach(prop => {
+            prop.type = 'Edge Derived Properties';
             this.propertyList.push(prop);
           });
           resolve();
@@ -302,7 +302,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           let measured_message_props = '';
           let derived_message_props = '';
           propArr.forEach((prop, index) => {
-            if (prop.type === 'Derived Properties') {
+            if (prop.type === 'Edge Derived Properties') {
               derived_message_props = derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
             } else {
               measured_message_props = measured_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
@@ -328,7 +328,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           let measured_message_props = '';
           let derived_message_props = '';
           propArr.forEach((prop, index) => {
-            if (prop.type === 'Derived Properties') {
+            if (prop.type === 'Edge Derived Properties') {
               derived_message_props = derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
             } else {
               measured_message_props = measured_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
@@ -357,7 +357,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           let measured_message_props = '';
           let derived_message_props = '';
           propArr.forEach((prop, index) => {
-            if (prop.type === 'Derived Properties') {
+            if (prop.type === 'Edge Derived Properties') {
               derived_message_props = derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
             } else {
               measured_message_props = measured_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
@@ -613,7 +613,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             item.measured_props = false;
             item.y1axis.forEach(prop => {
               const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'Derived Properties') {
+              if (type === 'Edge Derived Properties') {
                 item.derived_props = true;
               } else {
                 item.measured_props = true;
@@ -621,7 +621,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             });
             item.y2axis.forEach(prop => {
               const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'Derived Properties') {
+              if (type === 'Edge Derived Properties') {
                 item.derived_props = true;
               } else {
                 item.measured_props = true;

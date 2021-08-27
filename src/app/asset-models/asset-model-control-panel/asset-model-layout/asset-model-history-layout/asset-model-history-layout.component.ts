@@ -128,9 +128,9 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
         (response: any) => {
           response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-          response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
-          response.properties.derived_properties.forEach(prop => {
-            prop.type = 'Derived Properties';
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
+          response.properties.edge_derived_properties.forEach(prop => {
+            prop.type = 'Edge Derived Properties';
             this.propertyList.push(prop);
           });
           console.log(this.propertyList);
@@ -191,7 +191,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
     };
     obj.y1axis.forEach(prop => {
       const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-      if (type === 'Derived Properties') {
+      if (type === 'Edge Derived Properties') {
         obj.derived_props = true;
       } else {
         obj.measured_props = true;
@@ -199,7 +199,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
     });
     obj.y2axis.forEach(prop => {
       const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-      if (type === 'Derived Properties') {
+      if (type === 'Edge Derived Properties') {
         obj.derived_props = true;
       } else {
         obj.measured_props = true;
@@ -364,7 +364,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
             item.measured_props = false;
             item.y1axis.forEach(prop => {
               const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'Derived Properties') {
+              if (type === 'Edge Derived Properties') {
                 item.derived_props = true;
               } else {
                 item.measured_props = true;
@@ -372,7 +372,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
             });
             item.y2axis.forEach(prop => {
               const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'Derived Properties') {
+              if (type === 'Edge Derived Properties') {
                 item.derived_props = true;
               } else {
                 item.measured_props = true;

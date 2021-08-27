@@ -161,7 +161,7 @@
                                               dropdownPosition="bottom" name="asset-dropdown" bindValue="json_key" [(ngModel)]="condition.property" required>
                                               <ng-template ng-option-tmp let-item="item">
                                                 <span [tooltip]="item.id">
-                                                  <i [ngClass]="{'icon icon-function': item.value.type === 'Derived Properties'}"></i>
+                                                  <i [ngClass]="{'icon icon-function': item.value.type === 'Edge Derived Properties'}"></i>
                                                   {{item.id}}
                                                 </span>
                                               </ng-template>

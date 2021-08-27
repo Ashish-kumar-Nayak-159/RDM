@@ -96,7 +96,7 @@
             ></app-logs>
           </div>
           <div class="tab-pane" [ngClass]="{'active':  activeTab === 'stream_processing'}" role="tabpanel" id="asset_logs">
-            <app-logs *ngIf="activeTab === 'stream_processing' && asset" [asset]="asset" [messageText]="'Customer Defined Derived Properties'"
+            <app-logs *ngIf="activeTab === 'stream_processing' && asset" [asset]="asset" [messageText]="'Customer Defined Edge Derived Properties'"
             ></app-logs>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'derived_kpis'}" role="tabpanel" id="asset_derived_kpis">

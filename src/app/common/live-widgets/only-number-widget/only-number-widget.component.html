@@ -35,7 +35,7 @@
 
         <p class="text-xs live-widget-title" placement="bottom" [tooltip]="prop.title + ' ' + (prop.property.json_model[prop.property.json_key]?.units ? ('(' + prop.property.json_model[prop.property.json_key]?.units + ')') : '')">
 
-          ({{prop?.property?.type === 'Derived Properties' ? 'D' : 'M'}}) {{prop.title}}
+          ({{prop?.property?.type === 'Edge Derived Properties' ? 'D' : 'M'}}) {{prop.title}}
           {{prop.property.json_model[prop.property.json_key]?.units ? ('(' + prop.property.json_model[prop.property.json_key]?.units + ')') : ''}}
         </p>
 

@@ -111,7 +111,7 @@
               </ng-template>
               <ng-template ng-option-tmp let-item="item">
                 <span [tooltip]="item.id">
-                  <i [ngClass]="{'icon icon-function': item.value.type === 'Derived Properties'}"></i>
+                  <i [ngClass]="{'icon icon-function': item.value.type === 'Edge Derived Properties'}"></i>
                   {{item.id}}
                 </span>
               </ng-template>
@@ -192,7 +192,7 @@
                       <th></th>
                       <th class="w-10">Asset Name</th>
                       <th class="w-17">Time</th>
-                      <th *ngFor="let property of selectedProps"> <i class="icon icon-function" *ngIf="property.value.type === 'Derived Properties'"></i> {{property.id}}</th>
+                      <th *ngFor="let property of selectedProps"> <i class="icon icon-function" *ngIf="property.value.type === 'Edge Derived Properties'"></i> {{property.id}}</th>
                     </tr>
                   </thead>
                   <tbody>

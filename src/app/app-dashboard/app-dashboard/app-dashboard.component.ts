@@ -403,7 +403,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             item.measured_props = false;
             item.y1axis.forEach(prop => {
               const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'Derived Properties') {
+              if (type === 'Edge Derived Properties') {
                 item.derived_props = true;
               } else {
                 item.measured_props = true;
@@ -411,7 +411,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             });
             item.y2axis.forEach(prop => {
               const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'Derived Properties') {
+              if (type === 'Edge Derived Properties') {
                 item.derived_props = true;
               } else {
                 item.measured_props = true;
@@ -453,7 +453,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
               widget?.properties.forEach(prop => {
                 this.addPropertyInList(prop.property);
-                if (prop?.property?.type === 'Derived Properties') {
+                if (prop?.property?.type === 'Edge Derived Properties') {
                   widget.derived_props = true;
                 } else {
                   widget.measured_props = true;
@@ -462,7 +462,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
               } else {
                 widget?.y1AxisProps?.forEach(prop => {
                   this.addPropertyInList(prop);
-                  if (prop?.type === 'Derived Properties') {
+                  if (prop?.type === 'Edge Derived Properties') {
                     widget.derived_props = true;
                   } else {
                     widget.measured_props = true;
@@ -470,7 +470,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 });
                 widget?.y2AxisProps?.forEach(prop => {
                   this.addPropertyInList(prop);
-                  if (prop?.type === 'Derived Properties') {
+                  if (prop?.type === 'Edge Derived Properties') {
                     widget.derived_props = true;
                   } else {
                     widget.measured_props = true;
@@ -713,7 +713,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     let measured_message_props = '';
     let derived_message_props = '';
     propArr.forEach((prop, index) => {
-      if (prop.type === 'Derived Properties') {
+      if (prop.type === 'Edge Derived Properties') {
         derived_message_props = derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
       } else {
         measured_message_props = measured_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
@@ -955,9 +955,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.apiSubscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
           (response: any) => {
             this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-            response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
-            response.properties.derived_properties.forEach(prop => {
-              prop.type = 'Derived Properties';
+            response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
+            response.properties.edge_derived_properties.forEach(prop => {
+              prop.type = 'Edge Derived Properties';
               console.log(prop);
               this.propertyList.push(prop);
             });

@@ -53,7 +53,6 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
               falseCount++;
             }
           });
-          console.log(menu.page, '=====true===', trueCount, '===== false====', falseCount);
           if (trueCount > 0) {
             menu.visible = true;
           } else {
@@ -96,7 +95,7 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
             }
           });
           if (!this.activeTab) {
-            this.toasterService.showError('All the menu items visibility are off. Please contact administrator', 'App Selection');
+            this.toasterService.showError('All the menu items visibility are off. Please contact administrator', 'Model Definition Panel');
             return;
           }
         }

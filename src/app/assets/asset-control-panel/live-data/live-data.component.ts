@@ -58,9 +58,9 @@ export class LiveDataComponent implements OnInit, OnDestroy {
       this.apiSubscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-          response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
-          response.properties.derived_properties.forEach(prop => {
-            prop.type = 'Derived Properties';
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
+          response.properties.edge_derived_properties.forEach(prop => {
+            prop.type = 'Edge Derived Properties';
             this.propertyList.push(prop)
           });
           resolve();
@@ -84,7 +84,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
             if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
               widget?.properties.forEach(prop => {
                 this.addPropertyInList(prop.property);
-                if (prop?.property?.type === 'Derived Properties') {
+                if (prop?.property?.type === 'Edge Derived Properties') {
                   widget.derived_props = true;
                 } else {
                   widget.measured_props = true;
@@ -93,7 +93,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
               } else {
                 widget?.y1AxisProps.forEach(prop => {
                   this.addPropertyInList(prop);
-                  if (prop?.type === 'Derived Properties') {
+                  if (prop?.type === 'Edge Derived Properties') {
                     widget.derived_props = true;
                   } else {
                     widget.measured_props = true;
@@ -101,7 +101,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
                 });
                 widget?.y2AxisProps.forEach(prop => {
                   this.addPropertyInList(prop);
-                  if (prop?.type === 'Derived Properties') {
+                  if (prop?.type === 'Edge Derived Properties') {
                     widget.derived_props = true;
                   } else {
                     widget.measured_props = true;
@@ -151,7 +151,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     let measured_message_props = '';
     let derived_message_props = '';
     this.propertyList.forEach((prop, index) => {
-      if (prop.type === 'Derived Properties') {
+      if (prop.type === 'Edge Derived Properties') {
         derived_message_props = derived_message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : '');
       } else {
         measured_message_props = measured_message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : '');

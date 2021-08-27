@@ -1,4 +1,3 @@
-import { environment } from './../../../environments/environment.prod';
 import { Subscription } from 'rxjs';
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonService } from './../../services/common.service';

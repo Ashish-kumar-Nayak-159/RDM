@@ -60,9 +60,9 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         (response: any) => {
           response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-          response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
-          response.properties.derived_properties.forEach(prop => {
-            prop.type = 'Derived Properties';
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
+          response.properties.edge_derived_properties.forEach(prop => {
+            prop.type = 'Edge Derived Properties';
             this.propertyList.push(prop);
           });
           resolve();
@@ -132,7 +132,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             widget.measured_props = false;
             if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
             widget?.properties.forEach(prop => {
-              if (prop?.property?.type === 'Derived Properties') {
+              if (prop?.property?.type === 'Edge Derived Properties') {
                 widget.derived_props = true;
               } else {
                 widget.measured_props = true;
@@ -140,14 +140,14 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             });
             } else {
               widget?.y1AxisProps.forEach(prop => {
-                if (prop?.type === 'Derived Properties') {
+                if (prop?.type === 'Edge Derived Properties') {
                   widget.derived_props = true;
                 } else {
                   widget.measured_props = true;
                 }
               });
               widget?.y2AxisProps?.forEach(prop => {
-                if (prop?.type === 'Derived Properties') {
+                if (prop?.type === 'Edge Derived Properties') {
                   widget.derived_props = true;
                 } else {
                   widget.measured_props = true;

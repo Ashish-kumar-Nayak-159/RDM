@@ -1344,7 +1344,7 @@ export class CONSTANTS {
       isTitle: false
     },
     {
-      page: 'derived_properties',
+      page: 'edge_derived_properties',
       system_name: 'Edge Derived Properties',
       url: '#asset_model_properties',
       display_name: 'Edge Derived Properties',

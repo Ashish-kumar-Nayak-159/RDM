@@ -252,6 +252,6 @@ input:invalid {
 }
 
 .tableFixHead-asset-rules-list {
-  height: calc(100vh - 24.5rem)!important;
+  height: calc(100vh - 30.5rem)!important;
 }
 .pointer {cursor: pointer;}

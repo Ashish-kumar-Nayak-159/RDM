@@ -372,9 +372,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
         (response: any) => {
           response.properties?.measured_properties?.forEach(prop => prop.type = 'Measured Properties');
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-          response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
-          response.properties.derived_properties.forEach(prop => {
-            prop.type = 'Derived Properties';
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
+          response.properties.edge_derived_properties.forEach(prop => {
+            prop.type = 'Edge Derived Properties';
             this.propertyList.push(prop);
           });
           this.dropdownPropList = [];
@@ -569,7 +569,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         let measured_message_props = '';
         let derived_message_props = '';
         this.props.forEach((prop, index) => {
-          if (prop.value.type === 'Derived Properties') {
+          if (prop.value.type === 'Edge Derived Properties') {
             derived_message_props = derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
           } else {
             measured_message_props = measured_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
@@ -595,7 +595,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         let measured_message_props = '';
         let derived_message_props = '';
         this.props.forEach((prop, index) => {
-          if (prop.value.type === 'Derived Properties') {
+          if (prop.value.type === 'Edge Derived Properties') {
             derived_message_props = derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
           } else {
             measured_message_props = measured_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
@@ -628,7 +628,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         let measured_message_props = '';
         let derived_message_props = '';
         this.props.forEach((prop, index) => {
-          if (prop.value.type === 'Derived Properties') {
+          if (prop.value.type === 'Edge Derived Properties') {
             derived_message_props = derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
           } else {
             measured_message_props = measured_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');

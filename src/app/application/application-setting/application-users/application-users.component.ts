@@ -92,7 +92,6 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
       this.addUserObj = JSON.parse(JSON.stringify(userObj));
       this.addUserObj.name = userObj.user_name;
       this.addUserObj.email = userObj.user_email;
-
       this.applicationData.hierarchy.levels.forEach((level, index) => {
         if (level !== 'App' && userObj.hierarchy[level]) {
 
@@ -143,6 +142,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
       }
     }
   }
+
   getAccessLevelHierarchy() {
     this.hierarchyList = [];
     let hierarchy = '';

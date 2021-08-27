@@ -6,6 +6,7 @@ import { AssetModelService } from './../../../services/asset-model/asset-model.s
 import { Component, Input, OnInit, OnChanges, ViewChild, OnDestroy } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { JsonEditorOptions, JsonEditorComponent } from 'ang-jsoneditor';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 
 declare var $: any;
 @Component({
@@ -204,7 +205,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       (response: any) => {
         this.properties = response.properties;
         this.properties[this.type] = this.properties[this.type] ? this.properties[this.type] : [];
-        if (this.type === 'derived_properties' && this.properties['measured_properties']) {
+        if (this.type === 'edge_derived_properties' && this.properties['measured_properties']) {
           this.dependentProperty = JSON.parse(JSON.stringify(this.properties['measured_properties']));
           this.properties[this.type].forEach(prop => this.dependentProperty.push(prop));
         }
@@ -388,11 +389,11 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.propertyObj.metadata = this.setupForm?.value;
     this.propertyObj.id = this.commonService.generateUUID();
     if (!this.propertyObj.name || !this.propertyObj.json_key || !this.propertyObj.data_type ) {
-      this.toasterService.showError('Please enter all required fields', 'Add Property');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Property');
       return;
     }
     if (this.assetModel.metadata?.model_type === this.constantData.NON_IP_ASSET && Object.keys(this.propertyObj?.metadata).length === 0) {
-      this.toasterService.showError('Please enter all required fields', 'Add Property');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Property');
       return;
     }
     try {

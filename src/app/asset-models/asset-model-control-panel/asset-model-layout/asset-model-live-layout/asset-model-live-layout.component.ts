@@ -7,6 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CONSTANTS } from 'src/app/app.constants';
 import * as moment from 'moment';
 import { AssetService } from 'src/app/services/assets/asset.service';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 
 declare var $: any;
 @Component({
@@ -59,9 +60,9 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         (response: any) => {
           response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-          response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
-          response.properties.derived_properties.forEach(prop => {
-            prop.type = 'Derived Properties';
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
+          response.properties.edge_derived_properties.forEach(prop => {
+            prop.type = 'Edge Derived Properties';
             this.propertyList.push(prop);
           });
           resolve();
@@ -131,7 +132,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             widget.measured_props = false;
             if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
             widget?.properties.forEach(prop => {
-              if (prop?.property?.type === 'Derived Properties') {
+              if (prop?.property?.type === 'Edge Derived Properties') {
                 widget.derived_props = true;
               } else {
                 widget.measured_props = true;
@@ -139,14 +140,14 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             });
             } else {
               widget?.y1AxisProps.forEach(prop => {
-                if (prop?.type === 'Derived Properties') {
+                if (prop?.type === 'Edge Derived Properties') {
                   widget.derived_props = true;
                 } else {
                   widget.measured_props = true;
                 }
               });
               widget?.y2AxisProps?.forEach(prop => {
-                if (prop?.type === 'Derived Properties') {
+                if (prop?.type === 'Edge Derived Properties') {
                   widget.derived_props = true;
                 } else {
                   widget.measured_props = true;
@@ -272,7 +273,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   onSaveWidgetObj() {
     console.log(this.widgetObj);
     if (!this.widgetObj.widgetTitle || !this.widgetObj.widgetType) {
-      this.toasterService.showError('Please enter all required fields.', 'Add Widget');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Widget');
       return;
     }
     let found = true;

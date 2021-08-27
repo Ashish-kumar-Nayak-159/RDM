@@ -35,7 +35,7 @@
                                 <div class="form-group row">
                                     <label for="examplePassword" class="col-3">Type</label>
                                     <div class="col-auto">
-                                        <ui-switch size="small" class="mr-1" defaultBgColor="#f6c23e"
+                                          <ui-switch size="small" class="mr-1" defaultBgColor="#f6c23e"
                                             checkedTextColor="white" uncheckedTextColor="white"
                                             (valueChange)="onSwitchValueChange($event)" checkedLabel="Edge Rule" [disabled]="isView"
                                             uncheckedLabel="Cloud Rule" name="tpye" [(ngModel)]="ruleModel.rule_type">
@@ -161,7 +161,7 @@
                                               dropdownPosition="bottom" name="asset-dropdown" bindValue="json_key" [(ngModel)]="condition.property" required>
                                               <ng-template ng-option-tmp let-item="item">
                                                 <span [tooltip]="item.id">
-                                                  <i [ngClass]="{'icon icon-function': item.value.type === 'Derived Properties'}"></i>
+                                                  <i [ngClass]="{'icon icon-function': item.value.type === 'Edge Derived Properties'}"></i>
                                                   {{item.id}}
                                                 </span>
                                               </ng-template>

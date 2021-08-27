@@ -84,6 +84,11 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onLogin() {
     if (this.loginForm.email && this.loginForm.password) {
+      if (!CONSTANTS.EMAIL_REGEX.test(this.loginForm.email)) {
+        this.toasterService.showError('Email address is not valid',
+          'Login');
+        return;
+      }
       this.isLoginAPILoading = true;
       const app = environment.app;
       if (app) {

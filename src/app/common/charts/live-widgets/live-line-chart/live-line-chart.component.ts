@@ -235,7 +235,7 @@ export class LiveLineChartComponent implements OnInit, OnChanges, OnDestroy {
       const series = chart.series.push(new am4charts.LineSeries());
       series.units = prop.value.json_model[prop.id].units;
       series.name =  prop.name;
-      series.propType = prop.type === 'Derived Properties' ? 'D' : 'M';
+      series.propType = prop.type === 'Edge Derived Properties' ? 'D' : 'M';
       series.propKey = prop.id;
       series.yAxis = valueYAxis;
       series.dataFields.dateX = 'message_date';

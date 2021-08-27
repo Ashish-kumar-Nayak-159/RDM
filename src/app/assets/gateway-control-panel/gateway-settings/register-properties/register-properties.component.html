@@ -68,7 +68,7 @@
                 id="measured_properties" [(ngModel)]="optionsValue.measured_properties" />
             <label class="ml-1 form-label">Measured Properties</label>
             &nbsp;&nbsp;&nbsp;
-            <input type="checkbox" name="configurable_properties"
+            <!-- <input type="checkbox" name="configurable_properties"
             id="configurable_properties" [(ngModel)]="optionsValue.configurable_properties" />
             <label class="ml-1 form-label">Readable Properties</label>
             </div>
@@ -76,10 +76,10 @@
               <input type="checkbox" name="controllable_properties"
                   id="controllable_properties" [(ngModel)]="optionsValue.controllable_properties" />
               <label class="ml-1 form-label">Writable Properties</label>
-              &nbsp;&nbsp;&nbsp;
-              <input type="checkbox" name="derived_properties"
-              id="derived_properties" [(ngModel)]="optionsValue.derived_properties" />
-              <label class="ml-1 form-label">Derived Properties</label>
+              &nbsp;&nbsp;&nbsp; -->
+              <input type="checkbox" name="edge_derived_properties"
+              id="edge_derived_properties" [(ngModel)]="optionsValue.edge_derived_properties" />
+              <label class="ml-1 form-label">Edge Derived Properties</label>
               </div>
         </ng-container>
         <ng-container *ngIf="displyaMsgArr.length > 0">

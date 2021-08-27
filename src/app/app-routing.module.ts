@@ -1,4 +1,3 @@
-import { CampaignManagementComponent } from './campaign-management/campaign-management.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { RDMLoginComponent } from './rdm-login/rdm-login.component';
@@ -9,6 +8,10 @@ const routes: Routes = [
   {
     path: 'applications',
     loadChildren: () => import('./application/application.module').then(module => module.ApplicationModule)
+  },
+  {
+    path: 'applications/:applicationId/campaigns',
+    loadChildren: () => import('./campaign-management/campaign-management.module').then(module => module.CampaignManagementModule),
   },
   {
     path: 'applications/:applicationId/alerts/visualization',
@@ -34,10 +37,7 @@ const routes: Routes = [
     path: 'applications/:applicationId/assets',
     loadChildren: () => import('./assets/assets.module').then(module => module.AssetsModule),
   },
-  {
-    path: 'applications/:applicationId/campaigns',
-    component: CampaignManagementComponent
-  },
+
   {
     path: 'login',
     component: RDMLoginComponent

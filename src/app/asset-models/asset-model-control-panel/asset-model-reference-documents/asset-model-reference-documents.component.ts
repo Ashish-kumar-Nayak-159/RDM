@@ -7,6 +7,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { FileSaverService } from 'ngx-filesaver';
 import { DomSanitizer } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 
 declare var $: any;
 @Component({
@@ -239,7 +240,7 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
 
   onSaveDocumentObj() {
     if (!this.documentObj.name || (this.documentObj.name.trim()).length === 0 || !this.documentObj.type || !this.documentObj.metadata) {
-      this.toasterService.showError('Please enter all required fields', ((this.documentObj.id ? 'Edit' : 'Add') + ' Document'));
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, ((this.documentObj.id ? 'Edit' : 'Add') + ' Document'));
       return;
     }
     let flag = false;

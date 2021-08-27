@@ -279,7 +279,9 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         }
       });
       series.name =  this.getPropertyName(prop);
-      series.propType = this.getPropertyType(prop) === 'derived' ? 'D' : 'M';
+      console.log(this.getPropertyType(prop));
+      series.propType = this.getPropertyType(prop) === 'Edge Derived Properties' ? 'D' : 'M';
+      console.log(series.propType);
       series.propKey = prop;
       // series.stroke = this.commonService.getRandomColor();
       series.yAxis = valueYAxis;

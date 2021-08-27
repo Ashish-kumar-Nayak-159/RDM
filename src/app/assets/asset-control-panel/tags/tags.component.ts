@@ -261,6 +261,8 @@ export class TagsComponent implements OnInit, OnDestroy {
       }
     });
     this.asset.tags.custom_tags = tagObj;
+
+      
     const obj = {
       asset_id: this.asset.asset_id,
       display_name: this.asset.display_name,
@@ -273,6 +275,10 @@ export class TagsComponent implements OnInit, OnDestroy {
     } else {
       methodToCall = this.assetService.updateAssetTags(obj, this.contextApp.app);
     }
+    if (this.asset?.tags?.display_name === '') {
+      this.toasterService.showError('Asset display name should not be empty', 'Set Tags');
+      this.isUpdateAPILoading = false;
+    } else {
     this.subscriptions.push(methodToCall.subscribe(
       (response: any) => {
         this.toasterService.showSuccess('Asset tags updated successfully.', 'Set Tags');
@@ -286,6 +292,7 @@ export class TagsComponent implements OnInit, OnDestroy {
         this.isUpdateAPILoading = false;
       }
     ));
+    }
   }
 
   deleteCustomTag(index) {

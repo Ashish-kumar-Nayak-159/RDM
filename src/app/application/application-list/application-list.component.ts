@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 import { BlobServiceClient, AnonymousCredential, newPipeline } from '@azure/storage-blob';
 import { ToasterService } from './../../services/toaster.service';
 import { UserService } from './../../services/user.service';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 declare var $: any;
 @Component({
   selector: 'app-application-list',
@@ -96,6 +97,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
     this.isApplicationListLoading = true;
     this.tableConfig.is_table_data_loading = true;
     this.applications = [];
+    this.applicationFilterObj.environment = environment.environment;
     this.apiSubscriptions.push(this.applicationService.getApplications(this.applicationFilterObj).subscribe(
       (response: any) => {
         if (response && response.data) {
@@ -225,7 +227,7 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
       !this.applicationDetail.metadata.partition.telemetry.partition_strategy
       || !this.applicationDetail.metadata.partition.telemetry.sub_partition_strategy
     ) {
-      this.toasterService.showError('Please enter all required fields', 'Create App');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Create App');
     } else {
 
       if (this.checkDatabaseConfigOption(this.applicationDetail.metadata.app_specific_schema,
@@ -247,6 +249,9 @@ export class ApplicationListComponent implements OnInit, AfterViewInit, OnDestro
         return;
       }
       this.isCreateAPILoading = true;
+      this.applicationDetail.dashboard_config = {
+        show_live_widgets: true
+      };
       this.applicationDetail.hierarchy = {
         levels: ['App'],
         tags: {}

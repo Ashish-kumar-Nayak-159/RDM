@@ -80,12 +80,12 @@ export class BarChartComponent implements OnInit, OnDestroy {
     this.telemetryData.forEach((obj, i) => {
       const newObj: any = {};
       this.y1AxisProps.forEach(prop => {
-        if (obj[prop] !== undefined && obj[prop] !== null) {
+        if (obj[prop]) {
           newObj[prop] = obj[prop];
         }
       });
       this.y2AxisProps.forEach(prop => {
-        if (obj[prop] !== undefined && obj[prop] !== null) {
+        if (obj[prop]) {
           newObj[prop] = obj[prop];
         }
       });
@@ -274,7 +274,7 @@ export class BarChartComponent implements OnInit, OnDestroy {
         }
       });
       series.name = this.getPropertyName(prop);
-      series.propType = this.getPropertyType(prop) === 'Derived Properties' ? 'D' : 'M';
+      series.propType = this.getPropertyType(prop) === 'Edge Derived Properties' ? 'D' : 'M';
       console.log('rrrrrrrrrrrrrrr', series.propType);
       series.propKey = prop;
       series.columns.template.fillOpacity = .8;

@@ -8,6 +8,7 @@ import { Component, Input, OnInit, EventEmitter, Output, OnChanges } from '@angu
 import * as moment from 'moment';
 import { Asset } from 'src/app/models/asset.model';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 declare var $: any;
 @Component({
   selector: 'app-add-asset',
@@ -101,7 +102,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
   }
 
   onChangeOfAddAssetHierarchy(i) {
-    console.log(this.originalGateways);
     Object.keys(this.addAssetConfigureHierarchy).forEach(key => {
       if (key > i) {
         delete this.addAssetConfigureHierarchy[key];
@@ -211,7 +211,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
   onCreateAsset() {
     if (!this.assetDetail.asset_id || !this.assetDetail.tags.asset_manager || !this.assetDetail.tags.display_name ||
       !this.assetDetail.tags.protocol || !this.assetDetail.tags.cloud_connectivity || !this.assetDetail.tags.asset_model  ) {
-        this.toasterService.showError('Please enter all required fields',
+        this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED,
         'Create ' + this.componentState);
         return;
     }

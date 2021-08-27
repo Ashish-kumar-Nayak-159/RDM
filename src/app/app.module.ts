@@ -19,7 +19,6 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { LoaderComponent } from './loader/loader.component';
 import { AgmCoreModule } from '@agm/core';
-import { CampaignManagementComponent } from './campaign-management/campaign-management.component';
 import { RdmGuestLoginComponent } from './rdm-guest-login/rdm-guest-login.component';
 
 @NgModule({
@@ -32,7 +31,6 @@ import { RdmGuestLoginComponent } from './rdm-guest-login/rdm-guest-login.compon
     RDMHomeComponent,
     ResetPasswordComponent,
     LoaderComponent,
-    CampaignManagementComponent,
     RdmGuestLoginComponent
   ],
   imports: [

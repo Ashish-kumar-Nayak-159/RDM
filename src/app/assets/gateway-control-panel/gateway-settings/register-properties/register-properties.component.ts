@@ -158,7 +158,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
 
             response.properties.measured_properties = response.properties.measured_properties ?
             response.properties.measured_properties : [];
-            response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
+            response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
             response.properties.configurable_properties = response.properties.configurable_properties ?
             response.properties.configurable_properties : [];
             response.properties.controllable_properties = response.properties.controllable_properties ?
@@ -208,9 +208,9 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
       command: 'set_properties',
       measured_properties: this.optionsValue?.measured_properties ? {} : undefined,
       alerts: this.optionsValue.alerts ? {} : undefined,
-      controllable_properties: this.optionsValue.controllable_properties ? {} : undefined,
-      configurable_properties: this.optionsValue.configurable_properties ? {} : undefined,
-      derived_properties: this.optionsValue.derived_properties ? {} : undefined
+      // controllable_properties: this.optionsValue.controllable_properties ? {} : undefined,
+      // configurable_properties: this.optionsValue.configurable_properties ? {} : undefined,
+      edge_derived_properties: this.optionsValue.edge_derived_properties ? {} : undefined
     };
     if (this.optionsValue.measured_properties) {
       this.properties.measured_properties.forEach(prop => {
@@ -218,27 +218,27 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         obj.measured_properties[prop.json_key].g = prop.group;
       });
     }
-    if (this.optionsValue.configurable_properties) {
-      this.properties.configurable_properties.forEach(prop => {
-        obj.configurable_properties[prop.json_key] = prop.metadata;
-      });
-    }
+    // if (this.optionsValue.configurable_properties) {
+    //   this.properties.configurable_properties.forEach(prop => {
+    //     obj.configurable_properties[prop.json_key] = prop.metadata;
+    //   });
+    // }
     if (this.optionsValue.alerts) {
       this.alertConditions.forEach(prop => {
         obj.alerts[prop.code] = prop.metadata;
       });
     }
-    if (this.optionsValue.derived_properties) {
-      this.properties.derived_properties.forEach(prop => {
-        obj.derived_properties[prop.json_key] = prop.metadata;
-        obj.measured_properties[prop.json_key].g = prop.group;
+    if (this.optionsValue.edge_derived_properties) {
+      this.properties.edge_derived_properties.forEach(prop => {
+        obj.edge_derived_properties[prop.json_key] = prop.metadata;
+        obj.edge_derived_properties[prop.json_key].g = prop.group;
       });
     }
-    if (this.optionsValue.controllable_properties) {
-      this.properties.controllable_properties.forEach(prop => {
-        obj.controllable_properties[prop.json_key] = prop.metadata;
-      });
-    }
+    // if (this.optionsValue.controllable_properties) {
+    //   this.properties.controllable_properties.forEach(prop => {
+    //     obj.controllable_properties[prop.json_key] = prop.metadata;
+    //   });
+    // }
     this.callC2dMethod(obj);
   }
 

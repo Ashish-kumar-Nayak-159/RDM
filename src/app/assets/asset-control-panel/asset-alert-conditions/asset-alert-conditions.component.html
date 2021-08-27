@@ -306,13 +306,13 @@
 
 
                 <td colspan="6" *ngIf="viewType === 'Actions'" class="accordion-border">
-                  <div class="col-12  accordion-padding mx-2">
+                  <div class="col-12  accordion-padding m-2">
                     <h6>Actions:
                       <button type="button" class="btn btn-success btn-sm mx-1" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"
                       placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()"><i class="fa fa-save fa-sm"></i></button></h6>
                   </div>
                   <div class="col-12 my-2">
-                    <div class="form-group accordion-padding mx-3">
+                    <!-- <div class="form-group accordion-padding mx-3">
                       <input type="checkbox" class="form-check-input" id="email" name="email"[(ngModel)]="alertObj.actions.email.enabled"
                       [disabled]="decodedToken?.privileges?.indexOf('ASMM') === -1">
                       <label class="form-check-label" for="email">Email</label>
@@ -326,7 +326,157 @@
                       <input type="checkbox" class="form-check-input" id="sms" name="sms"[(ngModel)]="alertObj.actions.sms.enabled"
                       [disabled]="decodedToken?.privileges?.indexOf('ASMM') === -1">
                       <label class="form-check-label" for="sns">SMS</label>
+                    </div> -->
+                    <div class="form-group accordion-padding mx-3 ">
+                    
+                      <input type="checkbox" class="form-check-input" id="email" name="email"[(ngModel)]="alertObj.actions.email.enabled"
+                      [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
+                      <label class="form-check-label" for="email">Email</label>
+                   
+                      <div class="row" *ngIf="alertObj.actions.email.enabled" >
+                        <div class="col-auto ml-4 my-2">
+                          <input type="checkbox" class="form-check-input" id="emailcfs" name="emailcfs" [(ngModel)]="alertObj.actions.email.client_field_support_enabled"
+                          [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
+                          <label class="form-check-label" for="emailcfs">Client Field Support</label>
+                        </div>
+                      </div>
+                      <div class="row my-2" *ngIf="alertObj.actions.email.enabled" >
+                        <div class="col-auto">
+                          <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
+                            <div class="form-inline" >
+                              <ng-container>
+                              <div class="form-group" >
+                                <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="groupName.email"
+                                >
+                                  <option [ngValue]="undefined">Select  User Group</option>
+                                  <ng-container *ngFor="let group of userGroups">
+                                    <option [ngValue]="group.group_name">
+                                    {{group.group_name}}</option>
+                                  </ng-container>
+                                </select>
+                                </div>
+                                <div class="form-group" >
+                                    <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add"  (click)="addUserGroup('email')" >
+                                    <i class="fa fa-plus fa-sm"></i></button>
+                                </div>
+                            </ng-container>
+                            </div>
+                            </div>
+                            
+                            <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;" *ngIf="alertObj?.actions?.email?.recipients?.length > 0">
+                              <ng-container *ngFor="let item of alertObj.actions.email.recipients; let index = index">
+                                <span class="tag" >
+                                  <span class="tag-text">{{item}}</span>
+                                  <button class="tag-remove"  (click)="removeUserGroup(index, 'email')"
+                                  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"></button>
+                                </span>
+                              </ng-container>
+                            </div>
+                        </div>
+                      </div>
+                    
+                  </div>
+
+                  <hr> 
+
+                  <div class="form-group accordion-padding mx-3">
+                    <input type="checkbox" class="form-check-input" id="whatsapp" name="whatsapp"[(ngModel)]="alertObj.actions.whatsapp.enabled"
+                    [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
+                    <label class="form-check-label" for="whatsapp">Whatsapp</label>
+
+                    <div class="row" *ngIf="alertObj.actions.whatsapp.enabled" >
+                      <div class="col-auto ml-4 my-2">
+                        <input type="checkbox" class="form-check-input" id="whatsappcfs" name="whatsappcfs" [(ngModel)]="alertObj.actions.whatsapp.client_field_support_enabled"
+                        [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
+                        <label class="form-check-label" for="whatsappcfs">Client Field Support</label>
+                      </div>
                     </div>
+                    <div class="row my-2" *ngIf="alertObj.actions.whatsapp.enabled" >
+                      <div class="col-auto">
+                        <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
+                          <div class="form-inline" >
+                            <ng-container>
+                            <div class="form-group" >
+                              <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="groupName.whatsapp"
+                              >
+                                <option [ngValue]="undefined">Select  User Group</option>
+                                <ng-container *ngFor="let group of userGroups">
+                                  <option [ngValue]="group.group_name">
+                                  {{group.group_name}}</option>
+                                </ng-container>
+                              </select>
+                              </div>
+                              <div class="form-group" >
+                                  <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add"  (click)="addUserGroup('whatsapp')" >
+                                  <i class="fa fa-plus fa-sm"></i></button>
+                              </div>
+                          </ng-container>
+                          </div>
+                          </div>
+                          
+                          <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;" *ngIf="alertObj?.actions?.whatsapp?.recipients?.length > 0">
+                            <ng-container *ngFor="let item of alertObj.actions.whatsapp.recipients; let index = index">
+                              <span class="tag" >
+                                <span class="tag-text">{{item}}</span>
+                                <button class="tag-remove" (click)="removeUserGroup(index, 'whatsapp')"
+                                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"></button>
+                              </span>
+                            </ng-container>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <hr>
+
+                  <div class="form-group accordion-padding mx-3">
+
+                    <input type="checkbox" class="form-check-input" id="sms" name="sms"[(ngModel)]="alertObj.actions.sms.enabled"
+                    [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
+                    <label class="form-check-label" for="sms">SMS</label>
+
+                    <div class="row" *ngIf="alertObj.actions.sms.enabled" >
+                      <div class="col-auto ml-4 my-2">
+                        <input type="checkbox" class="form-check-input" id="smscfs" name="smscfs" [(ngModel)]="alertObj.actions.sms.client_field_support_enabled"
+                          [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
+                          <label class="form-check-label" for="smscfs">Client Field Support</label>
+                      </div>
+                    </div>
+                    <div class="row my-2" *ngIf="alertObj.actions.sms.enabled" >
+                      <div class="col-auto">
+                        <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
+                          <div class="form-inline" >
+                            <ng-container>
+                            <div class="form-group" >
+                              <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="groupName.sms"
+                              >
+                                <option [ngValue]="undefined">Select  User Group</option>
+                                <ng-container *ngFor="let group of userGroups">
+                                  <option [ngValue]="group.group_name">
+                                  {{group.group_name}}</option>
+                                </ng-container>
+                              </select>
+                              </div>
+                              <div class="form-group" >
+                                  <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add"  (click)="addUserGroup('sms')" >
+                                  <i class="fa fa-plus fa-sm"></i></button>
+                              </div>
+                          </ng-container>
+                          </div>
+                          </div>
+                          
+                          <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;" *ngIf="alertObj?.actions?.sms?.recipients?.length > 0">
+                            <ng-container *ngFor="let item of alertObj.actions.sms.recipients; let index = index">
+                              <span class="tag" >
+                                <span class="tag-text">{{item}}</span>
+                                <button class="tag-remove" (click)="removeUserGroup(index, 'sms')"
+                                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"></button>
+                              </span>
+                            </ng-container>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
                   </div>
                 </td>
               </tr>

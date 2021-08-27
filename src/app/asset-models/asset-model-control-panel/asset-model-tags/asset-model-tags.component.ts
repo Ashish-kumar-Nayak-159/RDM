@@ -51,14 +51,13 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
     if (!this.assetModel.tags.reserved_tags) {
       this.assetModel.tags.reserved_tags = [];
     }
-    if (this.assetModel.metadata.model_type.includes('Gateway')) {
-      this.reservedTags.forEach(item => {
-        if (item.name.includes('Asset')) {
-          item.name = item.name.replace('Asset', 'Gateway');
-        }
-      });
-    }
-
+    // if (this.assetModel.metadata.model_type.includes('Gateway')) {
+    //   this.reservedTags.forEach(item => {
+    //     if (item.name.includes('Asset')) {
+    //       item.name = item.name.replace('Asset', 'Gateway');
+    //     }
+    //   });
+    // }
     // this.processTagsData();
   }
 

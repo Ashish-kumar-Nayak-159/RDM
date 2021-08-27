@@ -364,7 +364,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onTabChange() {
     this.signalRService.disconnectFromSignalR('telemetry');
-    this.signalRService.disconnectFromSignalR('alert');
+    // this.signalRService.disconnectFromSignalR('alert');
     this.telemetryData = JSON.parse(JSON.stringify([]));
     this.telemetryObj = undefined;
     this.telemetryInterval = undefined;
@@ -403,7 +403,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             item.measured_props = false;
             item.y1axis.forEach(prop => {
               const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'Derived Properties') {
+              if (type === 'Edge Derived Properties') {
                 item.derived_props = true;
               } else {
                 item.measured_props = true;
@@ -411,7 +411,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             });
             item.y2axis.forEach(prop => {
               const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'Derived Properties') {
+              if (type === 'Edge Derived Properties') {
                 item.derived_props = true;
               } else {
                 item.measured_props = true;
@@ -453,24 +453,24 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
               widget?.properties.forEach(prop => {
                 this.addPropertyInList(prop.property);
-                if (prop?.property?.type === 'Derived Properties') {
+                if (prop?.property?.type === 'Edge Derived Properties') {
                   widget.derived_props = true;
                 } else {
                   widget.measured_props = true;
                 }
               });
               } else {
-                widget?.y1AxisProps.forEach(prop => {
+                widget?.y1AxisProps?.forEach(prop => {
                   this.addPropertyInList(prop);
-                  if (prop?.type === 'Derived Properties') {
+                  if (prop?.type === 'Edge Derived Properties') {
                     widget.derived_props = true;
                   } else {
                     widget.measured_props = true;
                   }
                 });
-                widget?.y2AxisProps.forEach(prop => {
+                widget?.y2AxisProps?.forEach(prop => {
                   this.addPropertyInList(prop);
-                  if (prop?.type === 'Derived Properties') {
+                  if (prop?.type === 'Edge Derived Properties') {
                     widget.derived_props = true;
                   } else {
                     widget.measured_props = true;
@@ -549,7 +549,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.signalRService.disconnectFromSignalR('telemetry');
     this.signalRTelemetrySubscription?.unsubscribe();
     clearInterval(this.sampleCountInterval);
-    // this.commonService.setItemInLocalStorage(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION, filterObj);
     const obj = JSON.parse(JSON.stringify(filterObj));
     let asset_model: any;
     if (obj.asset) {
@@ -570,9 +569,17 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isTelemetryDataLoading = true;
     await this.getAssetData();
     if (asset_model) {
-      await this.getAssetSignalRMode(this.filterObj.asset.asset_id);
+      if (this.contextApp?.dashboard_config?.show_live_widgets) {
+        await this.getTelemetryMode(this.filterObj.asset.asset_id);
+      }
       await this.getAssetsModelProperties(asset_model);
       console.log(this.contextApp.dashboard_config);
+      if (!this.contextApp?.dashboard_config && !this.contextApp?.dashboard_config?.show_live_widgets
+        && !this.contextApp?.dashboard_config?.show_historical_widgets) {
+          this.contextApp.dashboard_config = {
+            show_live_widgets: true
+          };
+        }
       if (this.contextApp?.dashboard_config?.show_live_widgets) {
         await this.getLiveWidgets(asset_model);
         this.getLiveWidgetTelemetryDetails(obj);
@@ -611,7 +618,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.signalRService.connectToSignalR(obj1);
     this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(
       data => {
-        if (data.type !== 'alert') {
+        // if (data.type !== 'alert') {
           if (data) {
             let obj =  JSON.parse(JSON.stringify(data));
             delete obj.m;
@@ -622,7 +629,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           this.processTelemetryData(data);
           this.isTelemetryDataLoading = false;
         }
-      }
+      // }
     );
     this.apiSubscriptions.push(this.assetService.getLastTelmetry(this.contextApp.app, obj).subscribe(
       (response: any) => {
@@ -706,7 +713,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     let measured_message_props = '';
     let derived_message_props = '';
     propArr.forEach((prop, index) => {
-      if (prop.type === 'Derived Properties') {
+      if (prop.type === 'Edge Derived Properties') {
         derived_message_props = derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
       } else {
         measured_message_props = measured_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
@@ -781,7 +788,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
       frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
       frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
-      const frequency = this.commonService.getLowestValueFromList(frequencyArr)
+      const frequency = this.commonService.getLowestValueFromList(frequencyArr);
       const records = this.commonService.calculateEstimatedRecords(frequency, filterObj.from_date, filterObj.to_date);
       if (records > 500 ) {
         this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
@@ -948,9 +955,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.apiSubscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
           (response: any) => {
             this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-            response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
-            response.properties.derived_properties.forEach(prop => {
-              prop.type = 'Derived Properties';
+            response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
+            response.properties.edge_derived_properties.forEach(prop => {
+              prop.type = 'Edge Derived Properties';
               console.log(prop);
               this.propertyList.push(prop);
             });
@@ -963,14 +970,14 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  getAssetSignalRMode(assetId) {
+  getTelemetryMode(assetId) {
     // this.signalRModeValue = true;
-    this.apiSubscriptions.push(this.assetService.getAssetSignalRMode(this.contextApp.app, assetId).subscribe(
+    this.apiSubscriptions.push(this.assetService.getTelemetryMode(this.contextApp.app, assetId).subscribe(
       (response: any) => {
         const newMode = response?.mode?.toLowerCase() === 'normal' ? true :
         (response?.mode?.toLowerCase() === 'turbo' ? false : true);
         if (this.signalRModeValue === newMode) {
-          $('#overlay').hide();
+          // $('#overlay').hide();
           this.isC2dAPILoading = false;
           this.c2dResponseMessage = [];
           this.c2dLoadingMessage = undefined;

@@ -13,4 +13,6 @@ export class Campaign {
   job_request: any;
   objective_name?: string;
   retry_required: boolean;
+  hierarchy: any;
+  hierarchyString?: string;
 }

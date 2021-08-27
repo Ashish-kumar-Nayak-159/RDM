@@ -69,7 +69,7 @@ export class AddCampaignComponent implements OnInit {
       model_type: [CONSTANTS.IP_ASSET, CONSTANTS.NON_IP_ASSET]
     }
   ];
-  propertySyncList = ['Measured Properties', 'Edge Derived Properties', 'Cloud Derived Properties', 'Alerts'];
+  propertySyncList = ['Measured Properties', 'Edge Edge Derived Properties', 'Cloud Edge Derived Properties', 'Alerts'];
   isCreateCampaignAPILoading = false;
   @Output() cancelEvent: EventEmitter<any> = new EventEmitter<any>();
   campaignObj: Campaign = new Campaign();
@@ -83,6 +83,9 @@ export class AddCampaignComponent implements OnInit {
     UPGRADE_PACKAGE: 'Upgrade Package',
     set_properties: 'Sync Properties/Alerts'
   };
+  hierarchyList: any[] = [];
+  hierarchyArr = {};
+  configureHierarchy = {};
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -96,12 +99,63 @@ export class AddCampaignComponent implements OnInit {
     this.campaignObj.objective = this.campaignObjectiveList[0].objective;
     this.campaignObj.job_request = {};
     this.onObjectiveChange(this.campaignObjectiveList[0]);
+    this.contextApp.hierarchy.levels.forEach((element, index) => {
+      this.hierarchyArr[index] = [];
+    });
+    if (this.contextApp.hierarchy.levels.length > 1) {
+      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+    }
+    if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
+      this.contextApp.hierarchy.levels.forEach((level, index) => {
+        if (index !== 0) {
+        this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+        if (this.contextApp.user.hierarchy[level]) {
+          this.onChangeOfHierarchy(index);
+        }
+        }
+      });
+    }
   }
 
   onObjectiveChange(objective) {
     this.campaignObj.objective_name = objective.name;
     this.campaignObj.communication_method = objective.communication_method;
     this.searchAssetsModels();
+  }
+
+  onChangeOfHierarchy(i) {
+    Object.keys(this.configureHierarchy).forEach(key => {
+      if (key > i) {
+        delete this.configureHierarchy[key];
+      }
+    });
+    Object.keys(this.hierarchyArr).forEach(key => {
+      if (key > i) {
+        this.hierarchyArr[key] = [];
+      }
+    });
+    let nextHierarchy = this.contextApp.hierarchy.tags;
+    Object.keys(this.configureHierarchy).forEach((key, index) => {
+      if (this.configureHierarchy[index + 1]) {
+        nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
+      }
+    });
+    if (nextHierarchy) {
+      this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
+    }
+
+    let count = 0;
+    Object.keys(this.configureHierarchy).forEach(key => {
+      if (this.configureHierarchy[key]) {
+        count ++;
+      }
+    });
+    if (count === 0) {
+      this.hierarchyArr = [];
+      if (this.contextApp.hierarchy.levels.length > 1) {
+        this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+      }
+    }
   }
 
   searchAssetsModels() {
@@ -150,6 +204,20 @@ export class AddCampaignComponent implements OnInit {
     }
   }
 
+  onPrepareHierarchy() {
+    this.campaignObj.hierarchyString = '';
+    this.campaignObj.hierarchy = {App: this.contextApp.app};
+    this.campaignObj.hierarchyString = this.contextApp.app + (Object.keys(this.configureHierarchy).length > 0 ? ' / ' : '');
+    Object.keys(this.configureHierarchy).forEach((key, index) => {
+      if (this.configureHierarchy[key]) {
+      this.campaignObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
+      this.campaignObj.hierarchyString = this.campaignObj.hierarchyString + this.configureHierarchy[key] +
+      (this.configureHierarchy[Object.keys(this.configureHierarchy)[index + 1]] ? ' / ' : '');
+      }
+    });
+    console.log(this.campaignObj.hierarchyString);
+  }
+
   getPackages() {
     this.packages = [];
     this.subscriptions.push(
@@ -189,7 +257,7 @@ export class AddCampaignComponent implements OnInit {
 
             response.properties.measured_properties = response.properties.measured_properties ?
             response.properties.measured_properties : [];
-            response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
+            response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
             this.properties = response.properties;
             resolve1();
           }, error => reject()
@@ -246,11 +314,11 @@ export class AddCampaignComponent implements OnInit {
       });
       console.log(obj);
     }
-    if (this.campaignObj.job_request.type.indexOf('Edge Derived Properties') > -1) {
-      obj['derived_properties'] = {};
-      this.properties.derived_properties.forEach(prop => {
-        obj['derived_properties'][prop.json_key] = prop.metadata;
-        obj['derived_properties'][prop.json_key].g = prop.group;
+    if (this.campaignObj.job_request.type.indexOf('Edge Edge Derived Properties') > -1) {
+      obj['edge_derived_properties'] = {};
+      this.properties.edge_derived_properties.forEach(prop => {
+        obj['edge_derived_properties'][prop.json_key] = prop.metadata;
+        obj['edge_derived_properties'][prop.json_key].g = prop.group;
       });
       console.log(obj);
     }
@@ -265,8 +333,13 @@ export class AddCampaignComponent implements OnInit {
   }
 
   async createCampaign() {
-    console.log(this.campaignObj);
     const obj = JSON.parse(JSON.stringify(this.campaignObj));
+    obj.hierarchy = {App: this.contextApp.app};
+    Object.keys(this.configureHierarchy).forEach((key) => {
+      if (this.configureHierarchy[key]) {
+        obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
+      }
+    });
     if (obj.objective === 'FOTA') {
       if (!obj.asset_model || !obj.job_request || !obj.job_request.package_obj || !obj.job_request.version || !obj.request_type) {
         this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Create Campaign');
@@ -284,6 +357,7 @@ export class AddCampaignComponent implements OnInit {
     delete obj.expected_start_date_display;
     delete obj.asset_model_obj;
     delete obj.objective_name;
+    delete obj.hierarchyString;
     obj.job_id = this.commonService.generateUUID();
     if (obj.objective === 'FOTA') {
       obj.job_request = this.prepareFOTAPayload();

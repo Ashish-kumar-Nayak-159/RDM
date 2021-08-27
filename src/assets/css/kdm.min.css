@@ -13797,16 +13797,16 @@ overflow-x: hidden;
 }
 .form-outer form .page .field{
   width: 100px;
-  height: 25px;
+  /* height: 25px; */
   margin: 45px 0;
   display: flex;
   position: relative;
 }
-form .page .field button{
+/* form .page .field button{
   width: 100%;
   height: calc(100% + 5px);
   border: none;
-  background: #89a7ff;
+
   margin-top: -20px;
   margin-left: 20px;
   border-radius: 5px;
@@ -13816,7 +13816,7 @@ form .page .field button{
   letter-spacing: 1px;
   text-transform: uppercase;
   transition: 0.5s ease;
-}
+} */
 form .page .field button:hover{
   background: #5a5c69;
 }

@@ -6,7 +6,7 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CONSTANTS } from 'src/app/app.constants';
-import { APIMESSAGES } from 'src/app/api-messages.constants';
+import { ApplicationService } from 'src/app/services/application/application.service';
 
 
 declare var $: any;
@@ -34,6 +34,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   widgetName: string;
   recommendationObj: any;
   docName: any;
+  groupName: any;
   subscriptions: Subscription[] = [];
   setupForm: FormGroup;
   constantData = CONSTANTS;
@@ -41,9 +42,11 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   slaveData: any[] = [];
   contextApp: any;
   decodedToken: any;
+  userGroups: any[] = [];
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
+    private applicationService: ApplicationService,
     private toasterService: ToasterService
   ) { }
 
@@ -54,6 +57,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.getAssetModelWidgets();
     this.onClickOfTab('Asset');
     this.getSlaveData();
+    this.getApplicationUserGroups();
   }
 
   onClickOfTab(type) {
@@ -61,6 +65,16 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.toggleRows = {};
 
     this.getAlertConditions();
+  }
+
+  getApplicationUserGroups() {
+    this.subscriptions.push(this.applicationService.getApplicationUserGroups(this.contextApp.app).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.userGroups = response.data;
+        }
+      }
+    ));
   }
 
   getAssetModelWidgets() {
@@ -119,6 +133,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response?.data) {
           this.alertConditions = response.data;
+          console.log(this.alertConditions);
           let arr = [];
           this.alertConditions.forEach(alert => {
             arr = [];
@@ -199,6 +214,26 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.docName = undefined;
   }
 
+  addUserGroup(key) {
+    console.log(this.alertObj);
+    const index = this.alertObj.actions[key].recipients.findIndex(group => group === this.groupName);
+    if (index > -1) {
+      this.toasterService.showError('Same UserGroup is already added.', 'Add UserGroup');
+      return;
+    } else if (!this.groupName) {
+      this.toasterService.showError('Please select userGroup to add', 'Add UserGroup');
+      return;
+    }
+    if (this.groupName && index === -1) {
+      this.alertObj.actions[key].recipients.splice(this.alertObj.actions[key].recipients.length, 0, this.groupName);
+    }
+    this.groupName = undefined;
+  }
+
+  removeUserGroup(index, key) {
+    this.alertObj.actions[key].recipients.splice(index, 1);
+  }
+
   editSteps() {
     this.editRecommendationStep = {};
     this.alertObj.recommendations.forEach((step, index) => {
@@ -230,19 +265,28 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     if (type === 'Actions') {
       if (!this.alertObj.actions) {
         this.alertObj.actions = {
-          email: {enabled: false},
-          whatsapp: {enabled: false},
-          sms: {enabled: false}
+          email: {enabled: false, client_field_support_enabled: false, recipients: [] },
+          whatsapp: {enabled: false, client_field_support_enabled: false, recipients: []},
+          sms: {enabled: false, client_field_support_enabled: false, recipients: []}
         };
       } else {
         if (!this.alertObj.actions.email) {
-          this.alertObj.actions.email = {enabled: false};
+          this.alertObj.actions.email = {enabled: false, client_field_support_enabled: false, recipients: [] };
+        }
+        if (!this.alertObj.actions.email.recipients) {
+          this.alertObj.actions.email.recipients = [];
         }
         if (!this.alertObj.actions.whatsapp) {
-          this.alertObj.actions.whatsapp = {enabled: false};
+          this.alertObj.actions.whatsapp = {enabled: false, client_field_support_enabled: false, recipients: [] };
+        }
+        if (!this.alertObj.actions.whatsapp.recipients) {
+          this.alertObj.actions.whatsapp.recipients = [];
         }
         if (!this.alertObj.actions.sms) {
-          this.alertObj.actions.sms = {enabled: false};
+          this.alertObj.actions.sms = {enabled: false, client_field_support_enabled: false, recipients: [] };
+        }
+        if (!this.alertObj.actions.sms.recipients) {
+          this.alertObj.actions.sms.recipients = [];
         }
       }
     }
@@ -472,6 +516,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     //   });
     // });
    // this.alertObj.reference_documents  = arr;
+    console.log(this.alertObj);
     this.subscriptions.push(this.assetModelService.updateAlertCondition(
       this.alertObj, this.assetModel.app, this.assetModel.name, this.alertObj.id)
       .subscribe((response: any) => {

@@ -594,10 +594,17 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.subscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-          response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties ?
+          response.properties.edge_derived_properties : [];
+          response.properties.cloud_derived_properties = response.properties.cloud_derived_properties ?
+          response.properties.cloud_derived_properties : [];
           response.properties.edge_derived_properties.forEach(prop => {
             prop.type = 'Edge Derived Properties';
-            this.propertyList.push(prop)
+            this.propertyList.push(prop);
+          });
+          response.properties.cloud_derived_properties.forEach(prop => {
+            prop.type = 'Cloud Derived Properties';
+            this.propertyList.push(prop);
           });
           this.propertyList.forEach(item => {
             this.dropdownPropList.push({
@@ -626,12 +633,15 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
               id: item.title,
               value: item
             });
-            item.derived_props = false;
+            item.edge_derived_props = false;
             item.measured_props = false;
+            item.cloud_derived_props = false;
             item.y1axis.forEach(prop => {
               const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
               if (type === 'Edge Derived Properties') {
-                item.derived_props = true;
+                item.edge_derived_props = true;
+              } else if (type === 'Cloud Derived Properties') {
+                item.cloud_derived_props = true;
               } else {
                 item.measured_props = true;
               }
@@ -639,7 +649,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             item.y2axis.forEach(prop => {
               const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
               if (type === 'Edge Derived Properties') {
-                item.derived_props = true;
+                item.edge_derived_props = true;
+              } else if (type === 'Cloud Derived Properties') {
+                item.cloud_derived_props = true;
               } else {
                 item.measured_props = true;
               }
@@ -780,18 +792,23 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     // this.propList.forEach((prop, index) =>
     // filterObj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
     let measured_message_props = '';
-    let derived_message_props = '';
+    let edge_derived_message_props = '';
+    let cloud_derived_message_props = '';
     propArr.forEach((prop, index) => {
       if (prop.type === 'Edge Derived Properties') {
-        derived_message_props = derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+        edge_derived_message_props = edge_derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+      } else if (prop.type === 'Cloud Derived Properties') {
+        cloud_derived_message_props = cloud_derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
       } else {
         measured_message_props = measured_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
       }
     });
     measured_message_props = measured_message_props.replace(/,\s*$/, '');
-    derived_message_props = derived_message_props.replace(/,\s*$/, '');
+    edge_derived_message_props = edge_derived_message_props.replace(/,\s*$/, '');
+    cloud_derived_message_props = cloud_derived_message_props.replace(/,\s*$/, '');
     filterObj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
-    filterObj['derived_message_props'] = derived_message_props ? derived_message_props : undefined;
+    filterObj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
+    filterObj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
     if (this.beforeInterval > 0) {
       filterObj.from_date = (this.commonService.convertDateToEpoch(
         this.selectedAlert?.message_date || this.selectedAlert.timestamp)) - (this.beforeInterval * 60);

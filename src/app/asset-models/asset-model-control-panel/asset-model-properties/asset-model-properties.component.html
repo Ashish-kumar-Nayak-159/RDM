@@ -13,7 +13,9 @@
           <span class="text-secondary">Add {{(type.includes('measured') ? 'Measured ' : (
             type.includes('controllable') ? 'Controllable ' : (
             type.includes('configurable') ? 'Configurable ' : (
-            type.includes('derived') ? 'Edge Derived ' : ''
+            type.includes('edge_derived') ? 'Edge Derived ' : (
+              type.includes('cloud_derived') ? 'Cloud Derived ' : ''
+              )
             )
             )
             ))}}
@@ -41,7 +43,9 @@
           {{(type.includes('measured') ? 'Measured ' : (
           type.includes('controllable') ? 'Controllable ' : (
           type.includes('configurable') ? 'Configurable ' : (
-          type.includes('derived') ? 'Edge Derived ' : ''
+          type.includes('edge_derived') ? 'Edge Derived ' :  (
+            type.includes('cloud_derived') ? 'Cloud Derived ' : ''
+            )
           )
           )
           ))}}
@@ -72,7 +76,7 @@
             </select>
           </div>
 
-          <div class="form-group" *ngIf="type.includes('measured') || type.includes('derived')">
+          <div class="form-group" *ngIf="type.includes('measured') || type.includes('edge_derived')">
             <label for="recipient-name" class="col-form-label required">Group:</label>
             <select class="form-control form-control-sm" id="group" name="group" [(ngModel)]="propertyObj.group">
               <option value="g1">G1</option>
@@ -420,7 +424,6 @@
                   </div>
                 </div>
               </ng-container>
-
               </form>
             </accordion-group>
           </accordion>

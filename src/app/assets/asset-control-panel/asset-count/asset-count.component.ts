@@ -142,9 +142,16 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
         (response: any) => {
           response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-          response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties ?
+          response.properties.edge_derived_properties : [];
+          response.properties.cloud_derived_properties = response.properties.cloud_derived_properties ?
+          response.properties.cloud_derived_properties : [];
           response.properties.edge_derived_properties.forEach(prop => {
             prop.type = 'Edge Derived Properties';
+            this.propertyList.push(prop);
+          });
+          response.properties.cloud_derived_properties.forEach(prop => {
+            prop.type = 'Cloud Derived Properties';
             this.propertyList.push(prop);
           });
           this.propertyList = JSON.parse(JSON.stringify(this.propertyList));
@@ -236,18 +243,23 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
       return;
     }
     let measured_message_props = '';
-    let derived_message_props = '';
+    let edge_derived_message_props = '';
+    let cloud_derived_message_props = '';
     filterObj.props.forEach((prop, index) => {
       if (prop.type === 'Edge Derived Properties') {
-        derived_message_props = derived_message_props + prop.json_key + (filterObj.props[index + 1] ? ',' : '');
+        edge_derived_message_props = edge_derived_message_props + prop.json_key + (filterObj.props[index + 1] ? ',' : '');
+      } else if (prop.type === 'Cloud Derived Properties') {
+        cloud_derived_message_props =  cloud_derived_message_props + prop.json_key + (filterObj.props[index + 1] ? ',' : '');
       } else {
         measured_message_props = measured_message_props + prop.json_key + (filterObj.props[index + 1] ? ',' : '');
       }
     });
     measured_message_props = measured_message_props.replace(/,\s*$/, '');
-    derived_message_props = derived_message_props.replace(/,\s*$/, '');
+    edge_derived_message_props = edge_derived_message_props.replace(/,\s*$/, '');
+    cloud_derived_message_props = cloud_derived_message_props.replace(/,\s*$/, '');
     obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
-    obj['derived_message_props'] = derived_message_props ? derived_message_props : undefined;
+    obj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
+    obj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
     delete obj.props;
     obj.partition_key = this.asset?.tags?.partition_key;
     if (this.asset.tags.category === CONSTANTS.IP_GATEWAY) {

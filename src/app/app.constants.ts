@@ -594,7 +594,7 @@ export class CONSTANTS {
       isTitle: true
     },
     {
-      page: 'stream_processing',
+      page: 'cloud_derived_properties',
       system_name: 'Cloud Derived Properties',
       url: '#asset_stream_processing',
       display_name: 'Cloud Derived Properties',
@@ -956,7 +956,7 @@ export class CONSTANTS {
       isTitle: true
     },
     {
-      page: 'stream_processing',
+      page: 'cloud_derived_properties',
       system_name: 'Cloud Derived Properties',
       url: '#asset_stream_processing',
       display_name: 'Cloud Derived Properties',
@@ -1426,7 +1426,7 @@ export class CONSTANTS {
       isTitle: true
     },
     {
-      page: 'stream_processing',
+      page: 'cloud_derived_properties',
       system_name: 'Cloud Derived Properties',
       url: '#asset_model_stream_processing',
       display_name: 'Cloud Derived Properties',

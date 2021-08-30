@@ -53,7 +53,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.mode = 'code';
@@ -205,10 +204,10 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       (response: any) => {
         this.properties = response.properties;
         this.properties[this.type] = this.properties[this.type] ? this.properties[this.type] : [];
-        if (this.type === 'edge_derived_properties' && this.properties['measured_properties']) {
-          this.dependentProperty = JSON.parse(JSON.stringify(this.properties['measured_properties']));
-          this.properties[this.type].forEach(prop => this.dependentProperty.push(prop));
-        }
+        // if (this.type === 'edge_derived_properties' && this.properties['measured_properties']) {
+        //   this.dependentProperty = JSON.parse(JSON.stringify(this.properties['measured_properties']));
+        //   this.properties[this.type].forEach(prop => this.dependentProperty.push(prop));
+        // }
         this.isPropertiesLoading = false;
       }
     ));
@@ -437,24 +436,24 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         return;
       }
     }
-    if (this.propertyObj.isAdd) {
-      if (this.type.includes('read')) {
-        this.properties.controllable_properties = this.properties.controllable_properties ? this.properties.controllable_properties : [];
-        const windex = this.properties.controllable_properties.findIndex(prop => prop.json_key === this.propertyObj.json_key);
-        delete this.propertyObj.isAdd;
-        if (windex === -1) {
-          this.properties.controllable_properties.push(this.propertyObj);
-        }
-      }
-      if (this.type.includes('writ')) {
-        this.properties.configurable_properties = this.properties.configurable_properties ? this.properties.configurable_properties : [];
-        const windex = this.properties.configurable_properties.findIndex(prop => prop.json_key === this.propertyObj.json_key);
-        delete this.propertyObj.isAdd;
-        if (windex === -1) {
-          this.properties.configurable_properties.push(this.propertyObj);
-        }
-      }
-    }
+    // if (this.propertyObj.isAdd) {
+    //   if (this.type.includes('read')) {
+    //     this.properties.controllable_properties = this.properties.controllable_properties ? this.properties.controllable_properties : [];
+    //     const windex = this.properties.controllable_properties.findIndex(prop => prop.json_key === this.propertyObj.json_key);
+    //     delete this.propertyObj.isAdd;
+    //     if (windex === -1) {
+    //       this.properties.controllable_properties.push(this.propertyObj);
+    //     }
+    //   }
+    //   if (this.type.includes('writ')) {
+    //     this.properties.configurable_properties = this.properties.configurable_properties ? this.properties.configurable_properties : [];
+    //     const windex = this.properties.configurable_properties.findIndex(prop => prop.json_key === this.propertyObj.json_key);
+    //     delete this.propertyObj.isAdd;
+    //     if (windex === -1) {
+    //       this.properties.configurable_properties.push(this.propertyObj);
+    //     }
+    //   }
+    // }
     this.isCreatePropertyLoading = true;
     const obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
@@ -558,11 +557,11 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         theme: 'vs-dark',
         language: 'javascript'
       };
-      if (!this.selectedProperty.derived_function) {
-        this.onPropParamAddedForFun();
-      } else {
-        this.code = this.selectedProperty.derived_function;
-      }
+      // if (!this.selectedProperty.derived_function) {
+      //   this.onPropParamAddedForFun();
+      // } else {
+      //   this.code = this.selectedProperty.derived_function;
+      // }
       // setTimeout(() => {
       //   if (this.jsEditor) {
       //     this.jsEditor.editor?.layout();

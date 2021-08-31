@@ -190,12 +190,8 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
   }
 
   closeDownloadModal() {
-    console.log('hereeeeYash');
     this.selectedDocument = undefined;
     $('#downloadDocumentModal').modal('hide');
-    setTimeout(() => {
-      $('#downloadDocumentModal').modal('toggle');
-    }, 4000);
   }
 
   onCloseAddDocModal() {

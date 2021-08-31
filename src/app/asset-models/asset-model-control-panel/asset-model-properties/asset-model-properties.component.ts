@@ -268,11 +268,28 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         a: new FormControl(false),
         p: new FormControl(2, [Validators.required]),
       });
+    } else if (this.assetModel.tags.protocol === 'AIOTInputs') {
+      this.setupForm = new FormGroup({
+        slave_id: new FormControl(null, [Validators.required]),
+        cn: new FormControl(null, [Validators.required, Validators.min(0)]),
+        a: new FormControl(false),
+        d: new FormControl(null, [Validators.required]),
+      });
     }
     console.log(this.setupForm);
     }
    // this.assetModel.tags.app = this.contextApp.app;
     $('#addPropertiesModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onAIOTTypeChange(obj = undefined) {
+    if (this.setupForm.value.d === 'a') {
+      this.setupForm.removeControl('p');
+      this.setupForm.addControl('p', new FormControl(obj?.p || null, [Validators.required, Validators.min(1), Validators.max(5)]));
+    } else {
+      this.setupForm.removeControl('p');
+      this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
+    }
   }
 
   onChangeOfSetupType(obj = undefined) {
@@ -599,12 +616,26 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
           a: new FormControl(false),
           p: new FormControl(this.propertyObj?.metadata?.mt, [Validators.required]),
         });
+      } else if (this.assetModel.tags.protocol === 'AIOTInputs') {
+        this.setupForm = new FormGroup({
+          slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
+          cn: new FormControl(this.propertyObj?.metadata?.cn, [Validators.required, Validators.min(0)]),
+          a: new FormControl(false),
+          d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),
+        });
       }
-      this.onChangeOfSetupType(this.propertyObj.metadata);
-      this.onChangeOfSetupSecondaryType(this.propertyObj.metadata);
-      this.onChangeOfSetupFunctionCode(this.propertyObj.metadata);
+      if (this.assetModel.tags.protocol === 'ModbusTCPMaster' || this.assetModel.tags.protocol === 'ModbusRTUMaster') {
+        this.onChangeOfSetupType(this.propertyObj.metadata);
+        this.onChangeOfSetupSecondaryType(this.propertyObj.metadata);
+        this.onChangeOfSetupFunctionCode(this.propertyObj.metadata);
+      }
       if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
+        this.onChangeOfSetupType(this.propertyObj.metadata);
+        this.onChangeOfSetupSecondaryType(this.propertyObj.metadata);
         this.onChageOfMemoryType(this.propertyObj.metadata);
+      }
+      if (this.assetModel.tags.protocol === 'AIOTInputs') {
+        this.onAIOTTypeChange(this.propertyObj.metadata);
       }
       }
 

@@ -325,14 +325,27 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
           a: new FormControl(true),
           p: new FormControl(alertObj?.metadata?.p, [Validators.required]),
         });
+      } else if (this.assetModel.tags.protocol === 'AIOTInputs') {
+        this.setupForm = new FormGroup({
+          slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
+          cn: new FormControl(alertObj?.metadata?.cn, [Validators.required, Validators.min(0)]),
+          a: new FormControl(false),
+          d: new FormControl(alertObj?.metadata?.d, [Validators.required]),
+        });
+
       }
-      this.onChangeOfSetupType(alertObj.metadata);
-      this.onChangeOfSetupSecondaryType(alertObj.metadata);
       if (this.assetModel.tags.protocol === 'ModbusTCPMaster' || this.assetModel.tags.protocol === 'ModbusRTUMaster') {
+        this.onChangeOfSetupType(alertObj.metadata);
+        this.onChangeOfSetupSecondaryType(alertObj.metadata);
         this.onChangeOfSetupFunctionCode(alertObj.metadata);
       }
       if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
+        this.onChangeOfSetupType(alertObj.metadata);
+        this.onChangeOfSetupSecondaryType(alertObj.metadata);
         this.onChageOfMemoryType(alertObj.metadata);
+      }
+      if (this.assetModel.tags.protocol === 'AIOTInputs') {
+        this.onAIOTTypeChange(alertObj.metadata);
       }
       }
       console.log(this.setupForm);
@@ -367,6 +380,13 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
           a: new FormControl(true),
           p: new FormControl(2, [Validators.required]),
         });
+      } else if (this.assetModel.tags.protocol === 'AIOTInputs') {
+        this.setupForm = new FormGroup({
+          slave_id: new FormControl(null, [Validators.required]),
+          cn: new FormControl(null, [Validators.required, Validators.min(0)]),
+          a: new FormControl(false),
+          d: new FormControl(null, [Validators.required]),
+        });
       }
       }
 
@@ -375,6 +395,16 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
     this.editRecommendationStep = {};
     this.editDocuments = {};
     $('#addAlertConditionModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onAIOTTypeChange(obj = undefined) {
+    if (this.setupForm.value.d === 'a') {
+      this.setupForm.removeControl('p');
+      this.setupForm.addControl('p', new FormControl(obj?.p || null, [Validators.required, Validators.min(1), Validators.max(5)]));
+    } else {
+      this.setupForm.removeControl('p');
+      this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
+    }
   }
 
   onChangeOfSetupType(obj = undefined) {

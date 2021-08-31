@@ -49,11 +49,11 @@
 
     <ng-container *ngIf="selectedTab === 'Test Connection'">
       <div class="table-responsive">
-        <div class="tableFixHead  m-3" >
-      <div class="row col-md-12 mt-1">
+        <div class="tableFixHead" >
+      <div class="row col-md-12 mt-1 py-3 pl-4">
         Check gateway is connected or not, Gateway to respond within 30 seconds, else Gateway is considered as offline.
       </div>
-      <div class="row col-md-12 mt-1">
+      <div class="row col-md-12 mt-1 pb-4 pl-4">
         <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mb-1" href="javascript:void(0)"
         (click)="testConnectionWithGateway()" [class.disabled]="isTestConnectionAPILoading">
           Test Connection</a>
@@ -63,6 +63,7 @@
         <span [ngClass]="{'alert-success': testConnectionMessage.toLowerCase().includes('success'),
         'alert-danger': testConnectionMessage.toLowerCase().includes('not connected')}"> {{testConnectionMessage}} </span>
       </div>
+      <app-c2d-jobs [asset]="asset" [filterObj]="c2dJobFilter"></app-c2d-jobs>
       </div>
       </div>
     </ng-container>
@@ -81,13 +82,14 @@
     </ng-container>
     <ng-container *ngIf="selectedTab === 'Register Rules'">
       <div class="table-responsive">
-        <div class="tableFixHead  m-3" >
-      <div class="row col-md-12 mt-1">
+        <div class="tableFixHead" >
+      <div class="row col-md-12 py-3 pl-4">
         <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mb-1" href="javascript:void(0)"
         (click)="syncRules()" [class.disabled]="isRuleSyncAPILoading || !asset.sync_rules_enabled">
           Sync Rules</a>
       </div>
       <i *ngIf="isRuleSyncAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+      <app-c2d-jobs [asset]="asset" [filterObj]="c2dJobFilter1" ></app-c2d-jobs>
       </div>
       </div>
     </ng-container>

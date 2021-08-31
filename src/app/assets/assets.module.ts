@@ -78,6 +78,7 @@ import { SlavesInfoComponent } from './asset-control-panel/slaves-info/slaves-in
 import { NonProvisionedAssetsComponent } from './non-provisioned-assets/non-provisioned-assets.component';
 import { RegisterAssetsComponent } from './gateway-control-panel/gateway-settings/register-assets/register-assets.component';
 import { AssetAlertConditionsComponent } from './asset-control-panel/asset-alert-conditions/asset-alert-conditions.component';
+import { C2dJobsComponent } from './gateway-control-panel/gateway-settings/c2d-jobs/c2d-jobs.component';
 
 @NgModule({
   declarations: [
@@ -138,6 +139,7 @@ import { AssetAlertConditionsComponent } from './asset-control-panel/asset-alert
     SlavesInfoComponent,
     NonProvisionedAssetsComponent,
     AssetAlertConditionsComponent,
+    C2dJobsComponent,
   ],
   imports: [
     CommonModule,

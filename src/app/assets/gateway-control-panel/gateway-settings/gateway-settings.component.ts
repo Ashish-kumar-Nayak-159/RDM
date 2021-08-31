@@ -27,6 +27,8 @@ export class GatewaySettingsComponent implements OnInit {
   constantData = CONSTANTS;
   isRuleSyncAPILoading = false;
   rules: any[] = [];
+  c2dJobFilter: any = {};
+  c2dJobFilter1: any = {};
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -39,7 +41,10 @@ export class GatewaySettingsComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getAssetTwinData();
     this.getAssetData();
-
+    this.c2dJobFilter.request_type = 'test_gateway_connection';
+    this.c2dJobFilter.job_type = 'DirectMethod';
+    this.c2dJobFilter1.request_type = 'set_device_rules';
+    this.c2dJobFilter1.job_type = 'Message';
   }
 
   getAssetData() {
@@ -148,9 +153,11 @@ export class GatewaySettingsComponent implements OnInit {
         this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id).subscribe(
         (response: any) => {
           this.toasterService.showSuccess(response.message, 'Sync Rules');
+          this.assetService.refreshRecentJobs.emit();
           this.isRuleSyncAPILoading = false;
         }, error => {
           this.toasterService.showError(error.message, 'Sync Rules');
+          this.assetService.refreshRecentJobs.emit();
           this.isRuleSyncAPILoading = false;
         }
       )
@@ -181,10 +188,12 @@ export class GatewaySettingsComponent implements OnInit {
         (response: any) => {
           if (response?.asset_response?.status?.toLowerCase() === 'connected') {
             this.testConnectionMessage = 'Gateway connection is successful';
+            this.assetService.refreshRecentJobs.emit();
           }
           this.isTestConnectionAPILoading = false;
         }, error => {
           this.testConnectionMessage = 'Gateway is not connected';
+          this.assetService.refreshRecentJobs.emit();
           this.isTestConnectionAPILoading = false;
         }
       )

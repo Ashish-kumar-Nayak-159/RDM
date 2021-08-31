@@ -35,6 +35,7 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
   assetModels: any[] = [];
   applications = CONSTANTS.ASSETAPPPS;
   count = 0;
+  c2dJobFilter: any = {};
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -45,6 +46,8 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getAssetsOfGateway();
+    this.c2dJobFilter.request_type = 'register_assets,deregister_assets';
+    this.c2dJobFilter.job_type = 'Message';
   }
 
 
@@ -166,7 +169,7 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
     console.log(obj);
     this.isAPILoading = true;
     this.headerMessage = type;
-    $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    // $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     const c2dObj = {
       asset_id: this.asset.asset_id,
       message: obj,
@@ -183,14 +186,17 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.assetService.sendC2DMessage(c2dObj, this.contextApp.app, this.asset.asset_id).subscribe(
         (response: any) => {
-          this.displyaMsgArr.push({
-            message: type + ' request sent to gateway.',
-            error: false
-          });
-          clearInterval(this.c2dResponseInterval);
-          this.loadC2DResponse(c2dObj);
+          this.toasterService.showSuccess('Request sent to gateway', type);
+          this.assetService.refreshRecentJobs.emit();
+          // this.displyaMsgArr.push({
+          //   message: type + ' request sent to gateway.',
+          //   error: false
+          // });
+          // clearInterval(this.c2dResponseInterval);
+          // this.loadC2DResponse(c2dObj);
         }, error => {
           this.toasterService.showError(error.message, type);
+          this.assetService.refreshRecentJobs.emit();
           this.isAPILoading = false;
           this.onModalClose();
           clearInterval(this.c2dResponseInterval);
@@ -199,44 +205,44 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
     );
   }
 
-  loadC2DResponse(c2dObj) {
-    const obj = {
-      sub_job_id: c2dObj.sub_job_id,
-      app: this.contextApp.app,
-      from_date: c2dObj.timestamp - 5,
-      to_date: moment().unix(),
-      epoch: true,
-      job_type: 'Message'
-    };
-    this.subscriptions.push(this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
-      (response: any) => {
-        // response.data = this.generateResponse();
-        if (response.data?.length > 0 && this.displyaMsgArr.length <= response.data.length) {
-          for (let i = this.displyaMsgArr.length - 1; i < response.data.length; i++) {
-            this.displyaMsgArr.push({
-              message:  response.data[i].asset_id + ': ' + response.data[i]?.payload?.message,
-              error: response.data[i]?.payload?.status === 'failure' ? true : false
-            });
-          }
-        }
-        console.log(response.data.length, '======', this.selectedAssets.length);
-        if (response?.data?.length < 1) {
-          clearInterval(this.c2dResponseInterval);
-          this.c2dResponseInterval = setInterval(
-          () => {
-            this.loadC2DResponse(c2dObj);
-          }, 5000);
-        } else {
-          clearInterval(this.c2dResponseInterval);
-          this.refreshAssetTwin.emit();
-          setTimeout(() => {
-            this.onModalClose();
-            this.isAPILoading = false;
-          }, 1000);
-        }
-      }
-      ));
-  }
+  // loadC2DResponse(c2dObj) {
+  //   const obj = {
+  //     sub_job_id: c2dObj.sub_job_id,
+  //     app: this.contextApp.app,
+  //     from_date: c2dObj.timestamp - 5,
+  //     to_date: moment().unix(),
+  //     epoch: true,
+  //     job_type: 'Message'
+  //   };
+  //   this.subscriptions.push(this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
+  //     (response: any) => {
+  //       // response.data = this.generateResponse();
+  //       if (response.data?.length > 0 && this.displyaMsgArr.length <= response.data.length) {
+  //         for (let i = this.displyaMsgArr.length - 1; i < response.data.length; i++) {
+  //           this.displyaMsgArr.push({
+  //             message:  response.data[i].asset_id + ': ' + response.data[i]?.payload?.message,
+  //             error: response.data[i]?.payload?.status === 'failure' ? true : false
+  //           });
+  //         }
+  //       }
+  //       console.log(response.data.length, '======', this.selectedAssets.length);
+  //       if (response?.data?.length < 1) {
+  //         clearInterval(this.c2dResponseInterval);
+  //         this.c2dResponseInterval = setInterval(
+  //         () => {
+  //           this.loadC2DResponse(c2dObj);
+  //         }, 5000);
+  //       } else {
+  //         clearInterval(this.c2dResponseInterval);
+  //         this.refreshAssetTwin.emit();
+  //         setTimeout(() => {
+  //           this.onModalClose();
+  //           this.isAPILoading = false;
+  //         }, 1000);
+  //       }
+  //     }
+  //     ));
+  // }
 
   generateResponse() {
     const rand = this.commonService.randomIntFromInterval(0, 1);

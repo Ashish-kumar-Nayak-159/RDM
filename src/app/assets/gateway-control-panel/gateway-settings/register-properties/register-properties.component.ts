@@ -36,6 +36,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   alertConditions: any[] = [];
   applications = CONSTANTS.ASSETAPPPS;
   assetModels: any[] = [];
+  c2dJobFilter: any = {};
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -46,6 +47,8 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     console.log(JSON.stringify(this.assetTwin));
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.c2dJobFilter.request_type = 'set_properties';
+    this.c2dJobFilter.job_type = 'Message';
     await this.getAssetsModels();
     if (this.componentstate === CONSTANTS.IP_GATEWAY) {
       this.getAssetsOfGateway();
@@ -263,14 +266,19 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
       this.assetService.sendC2DMessage(c2dObj, this.contextApp.app,
         this.componentstate !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id).subscribe(
         (response: any) => {
-          this.displyaMsgArr.push({
-            message: 'Asset properties/alert registration request sent to gateway.',
-            error: false
-          });
-          clearInterval(this.c2dResponseInterval);
-          this.loadC2DResponse(c2dObj);
+          this.toasterService.showSuccess('Asset properties/alert registration request sent to gateway', 'Register Properties/Alerts');
+          this.assetService.refreshRecentJobs.emit();
+          this.onModalClose();
+          this.isAPILoading = false;
+          // this.displyaMsgArr.push({
+          //   message: 'Asset properties/alert registration request sent to gateway.',
+          //   error: false
+          // });
+          // clearInterval(this.c2dResponseInterval);
+          // this.loadC2DResponse(c2dObj);
         }, error => {
           this.toasterService.showError(error.message, 'Register Properties/Alerts');
+          this.assetService.refreshRecentJobs.emit();
           this.isAPILoading = false;
           clearInterval(this.c2dResponseInterval);
         }
@@ -278,39 +286,40 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     );
   }
 
-  loadC2DResponse(c2dObj) {
-    const obj = {
-      sub_job_id: c2dObj.sub_job_id,
-      app: this.contextApp.app,
-      from_date: c2dObj.timestamp - 5,
-      to_date: moment().unix(),
-      epoch: true,
-      job_type: 'Message'
-    };
-    this.subscriptions.push(this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
-      (response: any) => {
-        // response.data = this.generateResponse();
-        if (response.data?.length > 0) {
-          this.displyaMsgArr.push({
-            message:  response.data[response.data.length - 1].asset_id + ': ' + response.data[response.data.length - 1]?.payload?.message,
-            error: response.data[response.data.length - 1]?.payload?.status === 'failure' ? true : false
-          });
-          clearInterval(this.c2dResponseInterval);
-          // this.refreshAssetTwin.emit();
-          setTimeout(() => {
-            this.onModalClose();
-            this.isAPILoading = false;
-          }, 1000);
-        } else {
-          clearInterval(this.c2dResponseInterval);
-          this.c2dResponseInterval = setInterval(
-          () => {
-            this.loadC2DResponse(c2dObj);
-          }, 5000);
-        }
-      }
-      ));
-  }
+  // loadC2DResponse(c2dObj) {
+  //   const obj = {
+  //     sub_job_id: c2dObj.sub_job_id,
+  //     app: this.contextApp.app,
+  //     from_date: c2dObj.timestamp - 5,
+  //     to_date: moment().unix(),
+  //     epoch: true,
+  //     job_type: 'Message'
+  //   };
+  //   this.subscriptions.push(this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
+  //     (response: any) => {
+  //       // response.data = this.generateResponse();
+  //       if (response.data?.length > 0) {
+  //         this.displyaMsgArr.push({
+  //           message:  response.data[response.data.length - 1].asset_id + ': ' + response.data[response.data.length - 1]?.payload?.message,
+  //           error: response.data[response.data.length - 1]?.payload?.status === 'failure' ? true : false
+  //         });
+  //         clearInterval(this.c2dResponseInterval);
+  //         // this.refreshAssetTwin.emit();
+  //         this.assetService.refreshRecentJobs.emit();
+  //         setTimeout(() => {
+  //           this.onModalClose();
+  //           this.isAPILoading = false;
+  //         }, 1000);
+  //       } else {
+  //         clearInterval(this.c2dResponseInterval);
+  //         this.c2dResponseInterval = setInterval(
+  //         () => {
+  //           this.loadC2DResponse(c2dObj);
+  //         }, 5000);
+  //       }
+  //     }
+  //     ));
+  // }
 
   onModalClose() {
     $('#confirmMessageModal').modal('hide');

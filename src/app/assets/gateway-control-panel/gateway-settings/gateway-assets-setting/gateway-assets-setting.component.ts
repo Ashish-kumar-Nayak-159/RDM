@@ -32,6 +32,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
   isSaveSettingAPILoading = false;
   properties: any;
   propertiesList: any;
+  c2dJobFilter: any = {};
   constantData = CONSTANTS;
   constructor(
     private commonService: CommonService,
@@ -43,6 +44,8 @@ export class GatewayAssetsSettingComponent implements OnInit {
   ngOnInit(): void {
 
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.c2dJobFilter.request_type = 'set_asset_configuration,set_properties';
+    this.c2dJobFilter.job_type = 'Message';
     if (this.componentState === CONSTANTS.IP_GATEWAY) {
       this.getAssetsOfGateway();
     } else {
@@ -213,14 +216,17 @@ export class GatewayAssetsSettingComponent implements OnInit {
       this.assetService.sendC2DMessage(c2dObj, this.contextApp.app,
         this.componentState !== CONSTANTS.NON_IP_ASSET ? this.selectedAsset.asset_id : this.selectedAsset.gateway_id).subscribe(
           (response: any) => {
-            this.displayMsgArr.push({
-              message: type + ' request sent to gateway.',
-              error: false
-            });
-            clearInterval(this.c2dResponseInterval);
-            this.loadC2DResponse(c2dObj);
+            this.toasterService.showSuccess('Request sent to gateway', type);
+            this.assetService.refreshRecentJobs.emit();
+            // this.displayMsgArr.push({
+            //   message: type + ' request sent to gateway.',
+            //   error: false
+            // });
+            // clearInterval(this.c2dResponseInterval);
+            // this.loadC2DResponse(c2dObj);
           }, error => {
             this.toasterService.showError(error.message, type);
+            this.assetService.refreshRecentJobs.emit();
             this.isAPILoading = false;
             this.onModalClose();
             clearInterval(this.c2dResponseInterval);
@@ -229,44 +235,44 @@ export class GatewayAssetsSettingComponent implements OnInit {
     );
   }
 
-  loadC2DResponse(c2dObj) {
-    const obj = {
-      sub_job_id: c2dObj.sub_job_id,
-      app: this.contextApp.app,
-      from_date: c2dObj.timestamp - 5,
-      to_date: moment().unix(),
-      epoch: true,
-      job_type: 'Message'
-    };
-    this.subscriptions.push(this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
-      (response: any) => {
-        // response.data = this.generateResponse();
-        if (response.data?.length > 0 && this.displayMsgArr.length <= response.data.length) {
-          for (let i = this.displayMsgArr.length - 1; i < response.data.length; i++) {
-            this.displayMsgArr.push({
-              message: response.data[i].asset_id + ': ' + response.data[i]?.payload?.message,
-              error: response.data[i]?.payload?.status === 'failure' ? true : false
-            });
-          }
-        }
-        if (response.data.length < 1) {
-          clearInterval(this.c2dResponseInterval);
+  // loadC2DResponse(c2dObj) {
+  //   const obj = {
+  //     sub_job_id: c2dObj.sub_job_id,
+  //     app: this.contextApp.app,
+  //     from_date: c2dObj.timestamp - 5,
+  //     to_date: moment().unix(),
+  //     epoch: true,
+  //     job_type: 'Message'
+  //   };
+  //   this.subscriptions.push(this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
+  //     (response: any) => {
+  //       // response.data = this.generateResponse();
+  //       if (response.data?.length > 0 && this.displayMsgArr.length <= response.data.length) {
+  //         for (let i = this.displayMsgArr.length - 1; i < response.data.length; i++) {
+  //           this.displayMsgArr.push({
+  //             message: response.data[i].asset_id + ': ' + response.data[i]?.payload?.message,
+  //             error: response.data[i]?.payload?.status === 'failure' ? true : false
+  //           });
+  //         }
+  //       }
+  //       if (response.data.length < 1) {
+  //         clearInterval(this.c2dResponseInterval);
 
-          this.c2dResponseInterval = setInterval(
-            () => {
-              this.loadC2DResponse(c2dObj);
-            }, 5000);
-        } else {
-          clearInterval(this.c2dResponseInterval);
-          this.refreshAssetTwin.emit();
-          setTimeout(() => {
-            this.onModalClose();
-            this.isAPILoading = false;
-          }, 1000);
-        }
-      }
-    ));
-  }
+  //         this.c2dResponseInterval = setInterval(
+  //           () => {
+  //             this.loadC2DResponse(c2dObj);
+  //           }, 5000);
+  //       } else {
+  //         clearInterval(this.c2dResponseInterval);
+  //         this.refreshAssetTwin.emit();
+  //         setTimeout(() => {
+  //           this.onModalClose();
+  //           this.isAPILoading = false;
+  //         }, 1000);
+  //       }
+  //     }
+  //   ));
+  // }
 
   onModalClose() {
     $('#confirmMessageModal').modal('hide');
@@ -289,6 +295,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
       (response: any) => {
         this.toasterService.showSuccess('Asset Settings updated successfully.', 'Asset Settings');
         this.assetService.reloadAssetInControlPanelEmitter.emit();
+        this.assetService.refreshRecentJobs.emit();
         this.isSaveSettingAPILoading = false;
       }, error => {
         this.toasterService.showError(error.message, 'Asset Settings');

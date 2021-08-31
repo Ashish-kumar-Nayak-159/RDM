@@ -17,6 +17,7 @@ export class AssetService {
   reloadAssetInControlPanelEmitter: EventEmitter<any> = new EventEmitter<any>();
   composeC2DMessageStartEmitter: EventEmitter<any> = new EventEmitter<any>();
   searchNotificationsEventEmitter: EventEmitter<any> = new EventEmitter<any>();
+  refreshRecentJobs: EventEmitter<any> = new EventEmitter<any>();
   constructor(
     private http: HttpClient,
     private commonService: CommonService
@@ -261,8 +262,9 @@ export class AssetService {
           // arr.push({...item, ...obj});
           let obj = JSON.parse(JSON.stringify(item));
           delete obj.m;
-          delete obj.d;
-          obj = { ...obj, ...item?.m, ...item?.d };
+          delete obj.ed;
+          delete obj.cd;
+          obj = { ...obj, ...item?.m, ...item?.ed, ...item?.cd };
           arr.push(obj);
         });
         data.data = JSON.parse(JSON.stringify(arr));
@@ -286,8 +288,9 @@ export class AssetService {
         data.data.forEach(item => {
           let obj = JSON.parse(JSON.stringify(item));
           delete obj.m;
-          delete obj.d;
-          obj = { ...obj, ...item?.m, ...item?.d };
+          delete obj.ed;
+          delete obj.cd;
+          obj = { ...obj, ...item?.m, ...item?.ed, ...item?.cd };
           arr.push(obj);
         });
         data.data = JSON.parse(JSON.stringify(arr));
@@ -557,8 +560,9 @@ export class AssetService {
         if (data.message) {
           let obj = JSON.parse(JSON.stringify(data.message));
           delete obj.m;
-          delete obj.d;
-          obj = { ...obj, ...data.message?.m, ...data.message?.d };
+          delete obj.ed;
+          delete obj.cd;
+          obj = { ...obj, ...data.message?.m, ...data.message?.ed, ...data.message?.cd };
           data.message = JSON.parse(JSON.stringify(obj));
         }
         return data;
@@ -580,8 +584,9 @@ export class AssetService {
         if (data.message) {
           let obj = JSON.parse(JSON.stringify(data.message));
           delete obj.m;
-          delete obj.d;
-          obj = { ...obj, ...data.message?.m, ...data.message?.d };
+          delete obj.ed;
+          delete obj.cd;
+          obj = { ...obj, ...data.message?.m, ...data.message?.ed, ...data.message?.cd};
           data.message = JSON.parse(JSON.stringify(obj));
         }
         return data;

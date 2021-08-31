@@ -128,9 +128,16 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
         (response: any) => {
           response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-          response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties ?
+          response.properties.edge_derived_properties : [];
+          response.properties.cloud_derived_properties = response.properties.cloud_derived_properties ?
+          response.properties.cloud_derived_properties : [];
           response.properties.edge_derived_properties.forEach(prop => {
             prop.type = 'Edge Derived Properties';
+            this.propertyList.push(prop);
+          });
+          response.properties.cloud_derived_properties.forEach(prop => {
+            prop.type = 'Cloud Derived Properties';
             this.propertyList.push(prop);
           });
           console.log(this.propertyList);
@@ -186,13 +193,16 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       y1axis: this.y1AxisProps,
       y2axis: this.y2AxisProps,
       xAxis: this.xAxisProps,
-      derived_props: false,
+      edge_derived_props: false,
+      cloud_derived_props: false,
       measured_props: false
     };
     obj.y1axis.forEach(prop => {
       const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
       if (type === 'Edge Derived Properties') {
-        obj.derived_props = true;
+        obj.edge_derived_props = true;
+      } else if (type === 'Cloud Derived Properties') {
+        obj.cloud_derived_props = true;
       } else {
         obj.measured_props = true;
       }
@@ -200,7 +210,9 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
     obj.y2axis.forEach(prop => {
       const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
       if (type === 'Edge Derived Properties') {
-        obj.derived_props = true;
+        obj.edge_derived_props = true;
+      } else if (type === 'Cloud Derived Properties') {
+        obj.cloud_derived_props = true;
       } else {
         obj.measured_props = true;
       }
@@ -360,12 +372,15 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
               id: item.title,
               value: item
             });
-            item.derived_props = false;
+            item.edge_derived_props = false;
             item.measured_props = false;
+            item.cloud_derived_props = false;
             item.y1axis.forEach(prop => {
               const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
               if (type === 'Edge Derived Properties') {
-                item.derived_props = true;
+                item.edge_derived_props = true;
+              } else if (type === 'Cloud Derived Properties') {
+                item.cloud_derived_props = true;
               } else {
                 item.measured_props = true;
               }
@@ -373,7 +388,9 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
             item.y2axis.forEach(prop => {
               const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
               if (type === 'Edge Derived Properties') {
-                item.derived_props = true;
+                item.edge_derived_props = true;
+              } else if (type === 'Cloud Derived Properties') {
+                item.cloud_derived_props = true;
               } else {
                 item.measured_props = true;
               }

@@ -13342,6 +13342,10 @@ overflow-x: hidden;
     background-color: #89a7ff !important;
     color: #fff;
 }
+.badge-lightblue {
+  background-color: #526499 !important;
+  color: #fff;
+}
 .border-left-blue {
     border-left: .25rem solid #60bafd!important
 }

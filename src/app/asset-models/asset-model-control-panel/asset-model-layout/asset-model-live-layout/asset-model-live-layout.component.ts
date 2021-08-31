@@ -60,9 +60,16 @@ export class AssetModelLiveLayoutComponent implements OnInit {
         (response: any) => {
           response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-          response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties ?
+          response.properties.edge_derived_properties : [];
+          response.properties.cloud_derived_properties = response.properties.cloud_derived_properties ?
+          response.properties.cloud_derived_properties : [];
           response.properties.edge_derived_properties.forEach(prop => {
             prop.type = 'Edge Derived Properties';
+            this.propertyList.push(prop);
+          });
+          response.properties.cloud_derived_properties.forEach(prop => {
+            prop.type = 'Cloud Derived Properties';
             this.propertyList.push(prop);
           });
           resolve();
@@ -128,12 +135,15 @@ export class AssetModelLiveLayoutComponent implements OnInit {
           // let count = 1;
           this.liveWidgets.forEach(widget => {
             widget.freezed = this.assetModel.freezed;
-            widget.derived_props = false;
+            widget.edge_derived_props = false;
+            widget.cloud_derived_props = false;
             widget.measured_props = false;
             if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
             widget?.properties.forEach(prop => {
               if (prop?.property?.type === 'Edge Derived Properties') {
-                widget.derived_props = true;
+                widget.edge_derived_props = true;
+              } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                widget.cloud_derived_props = true;
               } else {
                 widget.measured_props = true;
               }
@@ -141,14 +151,18 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             } else {
               widget?.y1AxisProps.forEach(prop => {
                 if (prop?.type === 'Edge Derived Properties') {
-                  widget.derived_props = true;
+                  widget.edge_derived_props = true;
+                } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                  widget.cloud_derived_props = true;
                 } else {
                   widget.measured_props = true;
                 }
               });
               widget?.y2AxisProps?.forEach(prop => {
                 if (prop?.type === 'Edge Derived Properties') {
-                  widget.derived_props = true;
+                  widget.edge_derived_props = true;
+                } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                  widget.cloud_derived_props = true;
                 } else {
                   widget.measured_props = true;
                 }

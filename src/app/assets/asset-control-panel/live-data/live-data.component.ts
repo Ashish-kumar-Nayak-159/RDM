@@ -58,10 +58,17 @@ export class LiveDataComponent implements OnInit, OnDestroy {
       this.apiSubscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
         (response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-          response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties ?
+          response.properties.edge_derived_properties : [];
+          response.properties.cloud_derived_properties = response.properties.cloud_derived_properties ?
+          response.properties.cloud_derived_properties : [];
           response.properties.edge_derived_properties.forEach(prop => {
             prop.type = 'Edge Derived Properties';
-            this.propertyList.push(prop)
+            this.propertyList.push(prop);
+          });
+          response.properties.cloud_derived_properties.forEach(prop => {
+            prop.type = 'Cloud Derived Properties';
+            this.propertyList.push(prop);
           });
           resolve();
         }
@@ -79,13 +86,16 @@ export class LiveDataComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response?.live_widgets?.length > 0) {
           response.live_widgets.forEach(widget => {
-            widget.derived_props = false;
+            widget.edge_derived_props = false;
+            widget.cloud_derived_props = false;
             widget.measured_props = false;
             if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
               widget?.properties.forEach(prop => {
                 this.addPropertyInList(prop.property);
                 if (prop?.property?.type === 'Edge Derived Properties') {
-                  widget.derived_props = true;
+                  widget.edge_derived_props = true;
+                } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                  widget.cloud_derived_props = true;
                 } else {
                   widget.measured_props = true;
                 }
@@ -94,7 +104,9 @@ export class LiveDataComponent implements OnInit, OnDestroy {
                 widget?.y1AxisProps.forEach(prop => {
                   this.addPropertyInList(prop);
                   if (prop?.type === 'Edge Derived Properties') {
-                    widget.derived_props = true;
+                    widget.edge_derived_props = true;
+                  } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                    widget.cloud_derived_props = true;
                   } else {
                     widget.measured_props = true;
                   }
@@ -102,7 +114,9 @@ export class LiveDataComponent implements OnInit, OnDestroy {
                 widget?.y2AxisProps.forEach(prop => {
                   this.addPropertyInList(prop);
                   if (prop?.type === 'Edge Derived Properties') {
-                    widget.derived_props = true;
+                    widget.edge_derived_props = true;
+                  } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                    widget.cloud_derived_props = true;
                   } else {
                     widget.measured_props = true;
                   }
@@ -149,18 +163,23 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     obj['from_date'] = midnight;
     obj['to_date'] = now;
     let measured_message_props = '';
-    let derived_message_props = '';
+    let edge_derived_message_props = '';
+    let cloud_derived_message_props = '';
     this.propertyList.forEach((prop, index) => {
       if (prop.type === 'Edge Derived Properties') {
-        derived_message_props = derived_message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : '');
+        edge_derived_message_props = edge_derived_message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : '');
+      } else if (prop.type === 'Cloud Derived Properties') {
+        cloud_derived_message_props = cloud_derived_message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : '');
       } else {
         measured_message_props = measured_message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : '');
       }
     });
     measured_message_props = measured_message_props.replace(/,\s*$/, '');
-    derived_message_props = derived_message_props.replace(/,\s*$/, '');
+    edge_derived_message_props = edge_derived_message_props.replace(/,\s*$/, '');
+    cloud_derived_message_props = cloud_derived_message_props.replace(/,\s*$/, '');
     obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
-    obj['derived_message_props'] = derived_message_props ? derived_message_props : undefined;
+    obj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
+    obj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
     // this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key
     // + (this.propertyList[index + 1] ? ',' : ''));
     // obj['message_props'] = message_props;
@@ -181,8 +200,9 @@ export class LiveDataComponent implements OnInit, OnDestroy {
           if (data) {
             let obj =  JSON.parse(JSON.stringify(data));
             delete obj.m;
-            delete obj.d;
-            obj = {...obj, ...data.m, ...data.d};
+            delete obj.ed;
+            delete obj.cd;
+            obj = {...obj, ...data.m, ...data.ed, ...data.cd};
             data = JSON.parse(JSON.stringify(obj));
           }
 

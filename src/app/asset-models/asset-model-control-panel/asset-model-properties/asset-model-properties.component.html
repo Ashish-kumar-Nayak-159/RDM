@@ -13,7 +13,9 @@
           <span class="text-secondary">Add {{(type.includes('measured') ? 'Measured ' : (
             type.includes('controllable') ? 'Controllable ' : (
             type.includes('configurable') ? 'Configurable ' : (
-            type.includes('derived') ? 'Edge Derived ' : ''
+            type.includes('edge_derived') ? 'Edge Derived ' : (
+              type.includes('cloud_derived') ? 'Cloud Derived ' : ''
+              )
             )
             )
             ))}}
@@ -41,7 +43,9 @@
           {{(type.includes('measured') ? 'Measured ' : (
           type.includes('controllable') ? 'Controllable ' : (
           type.includes('configurable') ? 'Configurable ' : (
-          type.includes('derived') ? 'Edge Derived ' : ''
+          type.includes('edge_derived') ? 'Edge Derived ' :  (
+            type.includes('cloud_derived') ? 'Cloud Derived ' : ''
+            )
           )
           )
           ))}}
@@ -72,7 +76,7 @@
             </select>
           </div>
 
-          <div class="form-group" *ngIf="type.includes('measured') || type.includes('derived')">
+          <div class="form-group" *ngIf="type.includes('measured') || type.includes('edge_derived')">
             <label for="recipient-name" class="col-form-label required">Group:</label>
             <select class="form-control form-control-sm" id="group" name="group" [(ngModel)]="propertyObj.group">
               <option value="g1">G1</option>
@@ -123,6 +127,52 @@
                     </div>
                   </div>
                   <div class="form-group" *ngIf="setupForm.get('p')">
+                    <label for="message-text" class="col-form-label required">Precision:</label>
+                    <input type="number" class="form-control form-control-sm" id="p" name="p" formControlName="p"
+                    placeholder="Enter Precision" min="1" max="5">
+                    <div *ngIf="setupForm.get('p').invalid && (setupForm.get('p').dirty || setupForm.get('p').touched)"
+                      class="alert-danger">
+                      <div *ngIf="setupForm.get('p').errors.required">
+                        Precision is required.
+                      </div>
+                      <div *ngIf="setupForm.get('p').errors.min || setupForm.get('p').errors.max">
+                        Precision value must be between 1 and 5.
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+                <ng-container  *ngIf="assetModel.tags.protocol === 'AIOTInputs'">
+                  <div class="form-group" *ngIf="setupForm.get('cn')">
+                    <label for="message-text" class="col-form-label required">Channel Number:</label>
+                    <input type="number" class="form-control form-control-sm" id="cn" name="cn" formControlName="cn"
+                    placeholder="Enter Channel Number" min="0">
+                    <div *ngIf="setupForm.get('cn').invalid && (setupForm.get('cn').dirty || setupForm.get('cn').touched)"
+                      class="alert-danger">
+                      <div *ngIf="setupForm.get('cn').errors.required">
+                        Channel Number is required.
+                      </div>
+                      <div *ngIf="setupForm.get('cn').errors.min || setupForm.get('cn').errors.max">
+                        Channel Number value must be greater than 0.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group" *ngIf="setupForm.get('d')">
+                    <label for="recipient-name" class="col-form-label required">Type:</label>
+                    <div class="input-group">
+                    <select class="form-control form-control-sm" id="datatype" name="datatype" formControlName="d"
+                    (change)="onAIOTTypeChange()"> <option [ngValue]="null">Select Type</option>
+                      <option [ngValue]="'a'" >Analog</option>
+                      <option [ngValue]="'d'" >Digital</option>
+                    </select>
+                    </div>
+                    <div *ngIf="setupForm.get('d').invalid && (setupForm.get('d').dirty || setupForm.get('d').touched)"
+                      class="alert-danger">
+                      <div *ngIf="setupForm.get('d').errors.required">
+                        Type is required.
+                      </div>
+                      </div>
+                  </div>
+                  <div class="form-group" *ngIf="setupForm.get('p') && setupForm.get('d') && setupForm.get('d').value === 'a'">
                     <label for="message-text" class="col-form-label required">Precision:</label>
                     <input type="number" class="form-control form-control-sm" id="p" name="p" formControlName="p"
                     placeholder="Enter Precision" min="1" max="5">
@@ -420,7 +470,6 @@
                   </div>
                 </div>
               </ng-container>
-
               </form>
             </accordion-group>
           </accordion>

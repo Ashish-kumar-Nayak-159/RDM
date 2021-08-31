@@ -69,7 +69,7 @@ export class AddCampaignComponent implements OnInit {
       model_type: [CONSTANTS.IP_ASSET, CONSTANTS.NON_IP_ASSET]
     }
   ];
-  propertySyncList = ['Measured Properties', 'Edge Edge Derived Properties', 'Cloud Edge Derived Properties', 'Alerts'];
+  propertySyncList = ['Measured Properties', 'Edge Derived Properties', 'Alerts'];
   isCreateCampaignAPILoading = false;
   @Output() cancelEvent: EventEmitter<any> = new EventEmitter<any>();
   campaignObj: Campaign = new Campaign();
@@ -314,7 +314,7 @@ export class AddCampaignComponent implements OnInit {
       });
       console.log(obj);
     }
-    if (this.campaignObj.job_request.type.indexOf('Edge Edge Derived Properties') > -1) {
+    if (this.campaignObj.job_request.type.indexOf('Edge Derived Properties') > -1) {
       obj['edge_derived_properties'] = {};
       this.properties.edge_derived_properties.forEach(prop => {
         obj['edge_derived_properties'][prop.json_key] = prop.metadata;

@@ -6,6 +6,7 @@ import { AssetModelService } from './../../../services/asset-model/asset-model.s
 import { Component, Input, OnInit, OnChanges, ViewChild, OnDestroy } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { JsonEditorOptions, JsonEditorComponent } from 'ang-jsoneditor';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 
 declare var $: any;
 @Component({
@@ -52,7 +53,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.mode = 'code';
@@ -204,10 +204,10 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       (response: any) => {
         this.properties = response.properties;
         this.properties[this.type] = this.properties[this.type] ? this.properties[this.type] : [];
-        if (this.type === 'derived_properties' && this.properties['measured_properties']) {
-          this.dependentProperty = JSON.parse(JSON.stringify(this.properties['measured_properties']));
-          this.properties[this.type].forEach(prop => this.dependentProperty.push(prop));
-        }
+        // if (this.type === 'edge_derived_properties' && this.properties['measured_properties']) {
+        //   this.dependentProperty = JSON.parse(JSON.stringify(this.properties['measured_properties']));
+        //   this.properties[this.type].forEach(prop => this.dependentProperty.push(prop));
+        // }
         this.isPropertiesLoading = false;
       }
     ));
@@ -268,11 +268,28 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         a: new FormControl(false),
         p: new FormControl(2, [Validators.required]),
       });
+    } else if (this.assetModel.tags.protocol === 'AIOTInputs') {
+      this.setupForm = new FormGroup({
+        slave_id: new FormControl(null, [Validators.required]),
+        cn: new FormControl(null, [Validators.required, Validators.min(0)]),
+        a: new FormControl(false),
+        d: new FormControl(null, [Validators.required]),
+      });
     }
     console.log(this.setupForm);
     }
    // this.assetModel.tags.app = this.contextApp.app;
     $('#addPropertiesModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onAIOTTypeChange(obj = undefined) {
+    if (this.setupForm.value.d === 'a') {
+      this.setupForm.removeControl('p');
+      this.setupForm.addControl('p', new FormControl(obj?.p || null, [Validators.required, Validators.min(1), Validators.max(5)]));
+    } else {
+      this.setupForm.removeControl('p');
+      this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
+    }
   }
 
   onChangeOfSetupType(obj = undefined) {
@@ -388,11 +405,11 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.propertyObj.metadata = this.setupForm?.value;
     this.propertyObj.id = this.commonService.generateUUID();
     if (!this.propertyObj.name || !this.propertyObj.json_key || !this.propertyObj.data_type ) {
-      this.toasterService.showError('Please enter all required fields', 'Add Property');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Property');
       return;
     }
     if (this.assetModel.metadata?.model_type === this.constantData.NON_IP_ASSET && Object.keys(this.propertyObj?.metadata).length === 0) {
-      this.toasterService.showError('Please enter all required fields', 'Add Property');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Property');
       return;
     }
     try {
@@ -436,24 +453,24 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         return;
       }
     }
-    if (this.propertyObj.isAdd) {
-      if (this.type.includes('read')) {
-        this.properties.controllable_properties = this.properties.controllable_properties ? this.properties.controllable_properties : [];
-        const windex = this.properties.controllable_properties.findIndex(prop => prop.json_key === this.propertyObj.json_key);
-        delete this.propertyObj.isAdd;
-        if (windex === -1) {
-          this.properties.controllable_properties.push(this.propertyObj);
-        }
-      }
-      if (this.type.includes('writ')) {
-        this.properties.configurable_properties = this.properties.configurable_properties ? this.properties.configurable_properties : [];
-        const windex = this.properties.configurable_properties.findIndex(prop => prop.json_key === this.propertyObj.json_key);
-        delete this.propertyObj.isAdd;
-        if (windex === -1) {
-          this.properties.configurable_properties.push(this.propertyObj);
-        }
-      }
-    }
+    // if (this.propertyObj.isAdd) {
+    //   if (this.type.includes('read')) {
+    //     this.properties.controllable_properties = this.properties.controllable_properties ? this.properties.controllable_properties : [];
+    //     const windex = this.properties.controllable_properties.findIndex(prop => prop.json_key === this.propertyObj.json_key);
+    //     delete this.propertyObj.isAdd;
+    //     if (windex === -1) {
+    //       this.properties.controllable_properties.push(this.propertyObj);
+    //     }
+    //   }
+    //   if (this.type.includes('writ')) {
+    //     this.properties.configurable_properties = this.properties.configurable_properties ? this.properties.configurable_properties : [];
+    //     const windex = this.properties.configurable_properties.findIndex(prop => prop.json_key === this.propertyObj.json_key);
+    //     delete this.propertyObj.isAdd;
+    //     if (windex === -1) {
+    //       this.properties.configurable_properties.push(this.propertyObj);
+    //     }
+    //   }
+    // }
     this.isCreatePropertyLoading = true;
     const obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
@@ -557,11 +574,11 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         theme: 'vs-dark',
         language: 'javascript'
       };
-      if (!this.selectedProperty.derived_function) {
-        this.onPropParamAddedForFun();
-      } else {
-        this.code = this.selectedProperty.derived_function;
-      }
+      // if (!this.selectedProperty.derived_function) {
+      //   this.onPropParamAddedForFun();
+      // } else {
+      //   this.code = this.selectedProperty.derived_function;
+      // }
       // setTimeout(() => {
       //   if (this.jsEditor) {
       //     this.jsEditor.editor?.layout();
@@ -599,12 +616,26 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
           a: new FormControl(false),
           p: new FormControl(this.propertyObj?.metadata?.mt, [Validators.required]),
         });
+      } else if (this.assetModel.tags.protocol === 'AIOTInputs') {
+        this.setupForm = new FormGroup({
+          slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
+          cn: new FormControl(this.propertyObj?.metadata?.cn, [Validators.required, Validators.min(0)]),
+          a: new FormControl(false),
+          d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),
+        });
       }
-      this.onChangeOfSetupType(this.propertyObj.metadata);
-      this.onChangeOfSetupSecondaryType(this.propertyObj.metadata);
-      this.onChangeOfSetupFunctionCode(this.propertyObj.metadata);
+      if (this.assetModel.tags.protocol === 'ModbusTCPMaster' || this.assetModel.tags.protocol === 'ModbusRTUMaster') {
+        this.onChangeOfSetupType(this.propertyObj.metadata);
+        this.onChangeOfSetupSecondaryType(this.propertyObj.metadata);
+        this.onChangeOfSetupFunctionCode(this.propertyObj.metadata);
+      }
       if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
+        this.onChangeOfSetupType(this.propertyObj.metadata);
+        this.onChangeOfSetupSecondaryType(this.propertyObj.metadata);
         this.onChageOfMemoryType(this.propertyObj.metadata);
+      }
+      if (this.assetModel.tags.protocol === 'AIOTInputs') {
+        this.onAIOTTypeChange(this.propertyObj.metadata);
       }
       }
 

@@ -19,7 +19,7 @@
     dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="prop.property" (change)="onPropertySelection(prop)"
     (clear)="onPropertyDeselect(prop)">
     <ng-template ng-option-tmp let-item="item">
-      <span > <i [ngClass]="{'icon icon-function': item.type === 'Derived Properties'}"></i> {{item.name}}</span>
+      <span > <i [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></i> {{item.name}}</span>
     </ng-template>
   </ng-select>
 
@@ -180,7 +180,7 @@
         </ul>
       </ng-template>
       <ng-template ng-option-tmp let-item="item">
-        <span [tooltip]="item.name"> <i [ngClass]="{'icon icon-function': item.type === 'Derived Properties'}"></i> {{item.name}}</span>
+        <span [tooltip]="item.name"> <i [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></i> {{item.name}}</span>
       </ng-template>
     </ng-select>
   </div>
@@ -200,7 +200,7 @@
         </ul>
       </ng-template>
       <ng-template ng-option-tmp let-item="item">
-        <span [tooltip]="item.name"> <i [ngClass]="{'icon icon-function': item.type === 'Derived Properties'}"></i> {{item.name}}</span>
+        <span [tooltip]="item.name"> <i [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></i> {{item.name}}</span>
       </ng-template>
     </ng-select>
     <!-- <angular2-multiselect [data]="dropdownProperties" id="y2AxisProperty"

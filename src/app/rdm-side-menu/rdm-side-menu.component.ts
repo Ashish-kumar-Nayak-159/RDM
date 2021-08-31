@@ -36,11 +36,11 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.route.fragment.subscribe(
-      fragment => {
-      this.activeFragment = fragment;
-      console.log('activeFragment   ', this.activeFragment);
-    });
+    // this.route.fragment.subscribe(
+    //   fragment => {
+    //   this.activeFragment = fragment;
+    //   console.log('activeFragment   ', this.activeFragment);
+    // });
 
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     // if (this.userData && !this.userData.is_super_admin) {
@@ -49,7 +49,6 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
     if (this.contextApp) {
       // alert('here');
       this.connectToSignalR();
-
       this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe(
         msg => {
           if (msg?.severity?.toLowerCase() === 'critical') {

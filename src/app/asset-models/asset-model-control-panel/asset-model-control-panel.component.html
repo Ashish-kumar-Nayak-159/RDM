@@ -105,9 +105,9 @@
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'derived_kpis'}" role="tabpanel" id="asset_model_derived_kpis">
         <app-asset-model-derived-kpis *ngIf="activeTab === 'derived_kpis' && assetModel"  [assetModel]="assetModel"></app-asset-model-derived-kpis>
       </div>
-      <div class="tab-pane" [ngClass]="{'active': activeTab === 'stream_processing'}" role="tabpanel" id="asset_model_stream_processing">
-        <app-asset-model-stream-processing *ngIf="activeTab === 'stream_processing' && assetModel"></app-asset-model-stream-processing>
-      </div>
+      <!-- <div class="tab-pane" [ngClass]="{'active': activeTab === 'cloud_derived_properties'}" role="tabpanel" id="asset_model_stream_processing">
+        <app-asset-model-stream-processing *ngIf="activeTab === 'cloud_derived_properties' && assetModel"></app-asset-model-stream-processing>
+      </div> -->
       <div class="tab-pane" [ngClass]="{'active': activeTab === 'alert_acknowledgement_reasons'}" role="tabpanel" id="asset_model_alert_acknowledgement_reasons">
         <app-asset-model-alert-acknowledgement-reasons *ngIf="activeTab === 'alert_acknowledgement_reasons' && assetModel" [assetModel]="assetModel"></app-asset-model-alert-acknowledgement-reasons>
       </div>

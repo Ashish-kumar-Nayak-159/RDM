@@ -6,6 +6,7 @@ import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { CONSTANTS } from 'src/app/app.constants';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 declare var $: any;
 @Component({
   selector: 'app-application-users',
@@ -91,7 +92,6 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
       this.addUserObj = JSON.parse(JSON.stringify(userObj));
       this.addUserObj.name = userObj.user_name;
       this.addUserObj.email = userObj.user_email;
-
       this.applicationData.hierarchy.levels.forEach((level, index) => {
         if (level !== 'App' && userObj.hierarchy[level]) {
 
@@ -142,6 +142,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
       }
     }
   }
+
   getAccessLevelHierarchy() {
     this.hierarchyList = [];
     let hierarchy = '';
@@ -179,7 +180,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
     // })
     if (!this.addUserObj.name || !this.addUserObj.email || !this.addUserObj.role ||
       Object.keys(this.addUserObj.hierarchy).length !== this.hierarchyList.length) {
-      this.toasterService.showError('Please enter all required fields', 'Create User');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Create User');
       return;
     }
     if (!CONSTANTS.EMAIL_REGEX.test(this.addUserObj.email)) {

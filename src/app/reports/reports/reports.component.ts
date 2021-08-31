@@ -372,9 +372,16 @@ export class ReportsComponent implements OnInit, OnDestroy {
         (response: any) => {
           response.properties?.measured_properties?.forEach(prop => prop.type = 'Measured Properties');
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-          response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
-          response.properties.derived_properties.forEach(prop => {
-            prop.type = 'Derived Properties';
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties ?
+          response.properties.edge_derived_properties : [];
+          response.properties.cloud_derived_properties = response.properties.cloud_derived_properties ?
+          response.properties.cloud_derived_properties : [];
+          response.properties.edge_derived_properties.forEach(prop => {
+            prop.type = 'Edge Derived Properties';
+            this.propertyList.push(prop);
+          });
+          response.properties.cloud_derived_properties.forEach(prop => {
+            prop.type = 'Cloud Derived Properties';
             this.propertyList.push(prop);
           });
           this.dropdownPropList = [];
@@ -567,18 +574,23 @@ export class ReportsComponent implements OnInit, OnDestroy {
         delete obj.aggregation_minutes;
         delete obj.aggregation_format;
         let measured_message_props = '';
-        let derived_message_props = '';
+        let edge_derived_message_props = '';
+        let cloud_derived_message_props = '';
         this.props.forEach((prop, index) => {
-          if (prop.value.type === 'Derived Properties') {
-            derived_message_props = derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+          if (prop.value.type === 'Edge Derived Properties') {
+            edge_derived_message_props = edge_derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+          } else if (prop.value.type === 'Cloud Derived Properties') {
+            cloud_derived_message_props = cloud_derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
           } else {
             measured_message_props = measured_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
           }
         });
         measured_message_props = measured_message_props.replace(/,\s*$/, '');
-        derived_message_props = derived_message_props.replace(/,\s*$/, '');
+        edge_derived_message_props = edge_derived_message_props.replace(/,\s*$/, '');
+        cloud_derived_message_props = cloud_derived_message_props.replace(/,\s*$/, '');
         obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
-        obj['derived_message_props'] = derived_message_props ? derived_message_props : undefined;
+        obj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
+        obj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
         const records = this.commonService.calculateEstimatedRecords(filterObj.sampling_time * 60, obj.from_date, obj.to_date);
         if (records > 500 ) {
           this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
@@ -593,18 +605,23 @@ export class ReportsComponent implements OnInit, OnDestroy {
         delete obj.sampling_time;
         delete obj.sampling_format;
         let measured_message_props = '';
-        let derived_message_props = '';
+        let edge_derived_message_props = '';
+        let cloud_derived_message_props = '';
         this.props.forEach((prop, index) => {
-          if (prop.value.type === 'Derived Properties') {
-            derived_message_props = derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+          if (prop.value.type === 'Edge Derived Properties') {
+            edge_derived_message_props = edge_derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+          } else if (prop.value.type === 'Cloud Derived Properties') {
+            cloud_derived_message_props = cloud_derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
           } else {
             measured_message_props = measured_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
           }
         });
         measured_message_props = measured_message_props.replace(/,\s*$/, '');
-        derived_message_props = derived_message_props.replace(/,\s*$/, '');
+        edge_derived_message_props = edge_derived_message_props.replace(/,\s*$/, '');
+        cloud_derived_message_props = cloud_derived_message_props.replace(/,\s*$/, '');
         obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
-        obj['derived_message_props'] = derived_message_props ? derived_message_props : undefined;
+        obj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
+        obj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
         const records = this.commonService.calculateEstimatedRecords
           (filterObj.aggregation_minutes * 60, obj.from_date, obj.to_date);
         if (records > 500 ) {
@@ -626,18 +643,23 @@ export class ReportsComponent implements OnInit, OnDestroy {
         // (this.props[index + 1] ? ',' : ''));
         // obj['message_props'] = message_props;
         let measured_message_props = '';
-        let derived_message_props = '';
+        let edge_derived_message_props = '';
+        let cloud_derived_message_props = '';
         this.props.forEach((prop, index) => {
-          if (prop.value.type === 'Derived Properties') {
-            derived_message_props = derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+          if (prop.value.type === 'Edge Derived Properties') {
+            edge_derived_message_props = edge_derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+          } else if (prop.value.type === 'Cloud Derived Properties') {
+            cloud_derived_message_props = cloud_derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
           } else {
             measured_message_props = measured_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
           }
         });
         measured_message_props = measured_message_props.replace(/,\s*$/, '');
-        derived_message_props = derived_message_props.replace(/,\s*$/, '');
+        edge_derived_message_props = edge_derived_message_props.replace(/,\s*$/, '');
+        cloud_derived_message_props = cloud_derived_message_props.replace(/,\s*$/, '');
         obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
-        obj['derived_message_props'] = derived_message_props ? derived_message_props : undefined;
+        obj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
+        obj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
       }
       const frequencyArr = [];
       frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);

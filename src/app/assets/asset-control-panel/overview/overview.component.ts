@@ -57,6 +57,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.decodedToken =  this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    console.log(this.decodedToken);
+    console.log(this.decodedToken?.privileges?.indexOf('ASMM'));
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.mode = 'view';
     this.editorOptions.statusBar = false;

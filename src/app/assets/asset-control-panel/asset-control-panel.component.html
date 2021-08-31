@@ -88,8 +88,16 @@
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel" id="asset_notifications">
             <app-asset-messages-wrapper *ngIf="activeTab === 'notifications' && asset" [asset]="asset"></app-asset-messages-wrapper>
           </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'logs' || activeTab === 'stream_processing' || activeTab === 'maintenance_schedule' || activeTab === 'predictions'}" role="tabpanel" id="asset_logs">
-            <app-logs *ngIf="activeTab === 'logs'  || activeTab === 'stream_processing' || activeTab === 'maintenance_schedule' || activeTab === 'predictions' && asset" [asset]="asset"></app-logs>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'logs' || activeTab === 'predictions'}" role="tabpanel" id="asset_logs">
+            <app-logs *ngIf="activeTab === 'logs'  || activeTab === 'predictions' && asset" [asset]="asset"></app-logs>
+          </div>
+          <div class="tab-pane" [ngClass]="{'active':  activeTab === 'maintenance_schedule'}" role="tabpanel" id="asset_logs">
+            <app-logs *ngIf="activeTab === 'maintenance_schedule' && asset" [asset]="asset" [messageText]="'Integration to Customer Ticket Management / Field Service Application'"
+            ></app-logs>
+          </div>
+          <div class="tab-pane" [ngClass]="{'active':  activeTab === 'cloud_derived_properties'}" role="tabpanel" id="asset_logs">
+            <app-logs *ngIf="activeTab === 'cloud_derived_properties' && asset" [asset]="asset" [messageText]="'Customer Defined Derived Properties'"
+            ></app-logs>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'derived_kpis'}" role="tabpanel" id="asset_derived_kpis">
             <app-derived-kpis *ngIf="activeTab === 'derived_kpis' && asset" [asset]="asset"></app-derived-kpis>

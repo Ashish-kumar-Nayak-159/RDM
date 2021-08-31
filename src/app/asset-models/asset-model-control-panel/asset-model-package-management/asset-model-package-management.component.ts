@@ -7,6 +7,7 @@ import { AssetModelService } from './../../../services/asset-model/asset-model.s
 import { CommonService } from './../../../services/common.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 declare var $: any;
 @Component({
   selector: 'app-asset-model-package-management',
@@ -32,6 +33,7 @@ export class AssetModelPackageManagementComponent implements OnInit {
   constantData = CONSTANTS;
   appPackages: any[] = [];
   applicationList = CONSTANTS.ASSETAPPPS;
+  decodedToken: any;
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -42,6 +44,7 @@ export class AssetModelPackageManagementComponent implements OnInit {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     if (this.assetModel.metadata.model_type !== this.constantData.NON_IP_ASSET) {
       this.setUpPackageData();
       this.getPackages();
@@ -207,7 +210,7 @@ export class AssetModelPackageManagementComponent implements OnInit {
     (this.packageObj.display_name.trim()).length === 0  || this.packageObj.metadata.major === undefined
     || this.packageObj.metadata.major === 0
     || !this.packageObj.url || this.packageObj.metadata.minor  === undefined || this.packageObj.metadata.patch  === undefined) {
-      this.toasterService.showError('Please enter all required fields', ((this.packageObj.id ? 'Edit' : 'Add') + ' Package'));
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, ((this.packageObj.id ? 'Edit' : 'Add') + ' Package'));
       return;
     }
     this.packageObj.version = this.packageObj.metadata.major + '.' + this.packageObj.metadata.minor

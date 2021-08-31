@@ -18,7 +18,9 @@ export class CONSTANTS {
     {id: 3, name: 'SiemensTCPIP', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
     is_update: true, display_name: 'Siemens TCP/IP App', metadata: {}, deleted: false, type: 'apps'},
     {id: 3, name: 'N_BlueNRG', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
-    is_update: true, display_name: 'N_BlueNRG', metadata: {}, deleted: false, type: 'apps'}
+    is_update: true, display_name: 'N_BlueNRG', metadata: {}, deleted: false, type: 'apps'},
+    {id: 8, name: 'N_AIOTInputs', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
+    is_update: true, display_name: 'N_AIOTInputs', metadata: {}, deleted: false, type: 'apps'}
   ];
 
   public static PROTOCOLS = [
@@ -29,7 +31,8 @@ export class CONSTANTS {
     {id: 5, asset_model: 'Legacy Asset', name: 'ModbusTCPMaster', display_name: 'Modbus TCP', cloud_connectivity: ['ModBus TCP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusTCPMaster'}, deleted: false},
     {id: 6, asset_model: 'Legacy Asset', name: 'ModbusRTUMaster', display_name: 'Modbus RTU', cloud_connectivity: ['ModBus RTU Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusRTUMaster'}, deleted: false},
     {id: 7, asset_model: 'Legacy Asset', name: 'SiemensTCPIP', display_name: 'Siemens TCP/IP', cloud_connectivity: ['Siemens TCP/IP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'SiemensTCPIP'}, deleted: false},
-    {id: 8, asset_model: 'Legacy Asset', name: 'BlueNRG', display_name: 'BlueNRG', cloud_connectivity: ['BLE Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'N_BlueNRG'}, deleted: false}
+    {id: 8, asset_model: 'Legacy Asset', name: 'BlueNRG', display_name: 'BlueNRG', cloud_connectivity: ['BLE Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'N_BlueNRG'}, deleted: false},
+    {id: 9, asset_model: 'Legacy Asset', name: 'AIOTInputs', display_name: 'AIOTInputs', cloud_connectivity: ['AIOT Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'N_AIOTInputs'}, deleted: false}
   ];
 
   public static DEFAULT_PRIVILEGES = {
@@ -138,25 +141,6 @@ export class CONSTANTS {
     'Reports': ['RV', 'RSM'],
     'User Management': ['UMV', 'UMM']
   };
-
-  public static NON_IP_ASSET_OPTIONS = [
-    {
-      name: 'BLE Mesh Assets',
-      protocol: 'BLE'
-    },
-    {
-      name: 'BLE Beacon Assets',
-      protocol: 'BLE'
-    },
-    {
-      name: 'LoRa Assets',
-      protocol: 'LoRa'
-    },
-    {
-      name: 'ModBus Assets',
-      protocol: 'ModBus'
-    }
-  ];
 
   public static SIDE_MENU_LIST = [
     {
@@ -613,7 +597,7 @@ export class CONSTANTS {
       isTitle: true
     },
     {
-      page: 'stream_processing',
+      page: 'cloud_derived_properties',
       system_name: 'Cloud Derived Properties',
       url: '#asset_stream_processing',
       display_name: 'Cloud Derived Properties',
@@ -975,7 +959,7 @@ export class CONSTANTS {
       isTitle: true
     },
     {
-      page: 'stream_processing',
+      page: 'cloud_derived_properties',
       system_name: 'Cloud Derived Properties',
       url: '#asset_stream_processing',
       display_name: 'Cloud Derived Properties',
@@ -1363,7 +1347,7 @@ export class CONSTANTS {
       isTitle: false
     },
     {
-      page: 'derived_properties',
+      page: 'edge_derived_properties',
       system_name: 'Edge Derived Properties',
       url: '#asset_model_properties',
       display_name: 'Edge Derived Properties',
@@ -1445,7 +1429,7 @@ export class CONSTANTS {
       isTitle: true
     },
     {
-      page: 'stream_processing',
+      page: 'cloud_derived_properties',
       system_name: 'Cloud Derived Properties',
       url: '#asset_model_stream_processing',
       display_name: 'Cloud Derived Properties',
@@ -1546,12 +1530,6 @@ export class CONSTANTS {
     }
   ];
 
-  public static ASSET_METHODS = [
-    'REBOOT',
-    'FOTA',
-    'TELEMETRY_INTERVAL_CHANGE'
-  ];
-
   public static DATE_OPTIONS = {
     'Last 5 Mins': [moment().subtract(5, 'minutes'), moment()],
     'Last 30 Mins': [moment().subtract(30, 'minutes'), moment()],
@@ -1571,8 +1549,6 @@ export class CONSTANTS {
   };
   public static USER_DETAILS = 'userData';
   public static SELECTED_APP_DATA = 'selectedAppData';
-  public static DASHBOARD_TELEMETRY_SELECTION = 'dashboardTelemetryFilterObj';
-  public static DASHBOARD_ALERT_SELECTION = 'dashboardAlertFilterObj';
   public static ASSETS_LIST = 'assets_list';
   public static ASSETS_GATEWAYS_LIST = 'assets_gateways_list';
   public static ASSET_MODELS_LIST = 'asset_models_list';
@@ -1580,15 +1556,13 @@ export class CONSTANTS {
   public static ASSET_LIST_FILTER_FOR_GATEWAY = 'assetListFilterObj';
   public static APP_USERS = 'application_users';
   public static EXPIRY_TIME = 'expiry_time';
-  public static CURRENT_BREADCRUMB_STATE = 'breadcrumbState';
-  public static NON_IP_ASSETS = 'Non IP Assets';
   public static IP_ASSET = 'IoT Asset';
   public static IP_GATEWAY = 'IoT Gateway';
   public static NON_IP_ASSET = 'Legacy Asset';
   public static NOT_ALLOWED_SPECIAL_CHARS_NAME = [' ', '.', '$', '#'];
   public static PASSWORD_REGEX = '^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,20}$';
   public static EMAIL_REGEX = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
-  public static ONLY_NOS_AND_CHARS = /^[a-zA-Z0-9]+$/;
+  public static ONLY_NOS_AND_CHARS = /^[a-zA-Z]+[a-zA-Z0-9\s]+$/;
   public static APP_ADMIN_ROLE = 'App Admin';
   public static APP_VERSION = 'version';
   public static MAIN_MENU_FILTERS = 'main_menu_filter';

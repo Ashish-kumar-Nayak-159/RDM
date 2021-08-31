@@ -229,18 +229,18 @@
         <img class="icon-display" *ngIf="selectedApp?.metadata?.header_logo?.url; else noFileUploaded" src="{{blobStorageURL + selectedApp?.metadata?.header_logo?.url + blobSASToken}}"/>
       </div>
       <hr/>
-      <div class="col-12">
+      <!-- <div class="col-12">
         <h6><b>{{selectedApp.app}} Logo</b></h6>
         <img class="icon-display" *ngIf="selectedApp?.metadata?.logo?.url; else noFileUploaded" src="{{blobStorageURL + selectedApp?.metadata?.logo?.url + blobSASToken}}"/>
       </div>
-      <hr/>
+      <hr/> -->
       <div class="col-12">
         <h6><b>{{selectedApp.app}} Icon</b></h6>
         <img class="icon-display" *ngIf="selectedApp?.metadata?.icon?.url; else noFileUploaded" src="{{blobStorageURL + selectedApp?.metadata?.icon?.url + blobSASToken}}"/>
       </div>
       <ng-template #noFileUploaded>
-        <p>No File uploaded</p>
-      </ng-template>
+        <p>No File uploaded.</p>
+    </ng-template>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary"  (click)="onCloseCreateAppModal('viewAppIconModal')">

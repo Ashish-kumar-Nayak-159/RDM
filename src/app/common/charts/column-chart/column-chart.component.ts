@@ -250,7 +250,6 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
   }
 
   createValueAxis(chart, axis) {
-
     const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
     // if (chart.yAxes.indexOf(valueYAxis) !== 0){
     //   valueYAxis.syncWithAxis = chart.yAxes.getIndex(0);
@@ -266,7 +265,10 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
         }
       });
       series.name = this.getPropertyName(prop);
-      series.propType = this.getPropertyType(prop) === 'Derived Properties' ? 'D' : 'M';
+      const proptype = this.getPropertyType(prop);
+      series.propType = (proptype === 'Edge Derived Properties' ? 'ED' : (
+        proptype === 'Cloud Derived Properties' ? 'CD' : 'M'
+      ));
       series.propKey = prop;
       series.columns.template.fillOpacity = .8;
       series.compareText = true;

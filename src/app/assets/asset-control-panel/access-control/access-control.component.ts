@@ -5,6 +5,7 @@ import { ApplicationService } from 'src/app/services/application/application.ser
 import { CommonService } from 'src/app/services/common.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { ActivatedRoute } from '@angular/router';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 declare var $: any;
 @Component({
   selector: 'app-access-control',
@@ -130,7 +131,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
 
   onAddUserAccess() {
     if (!this.selectedUser.user_email || !this.selectedUser.user_name) {
-      this.toasterService.showError('Please enter all required fields',
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED,
         'Access Control');
       return;
     }

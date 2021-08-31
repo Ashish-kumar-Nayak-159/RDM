@@ -10,7 +10,9 @@
     </div>
 
     <div class="ml-auto">
-      <div class="round-badge badge-darkblue" tooltip="Derived Property" *ngIf="chartConfig.derived_props">D</div>
+      <div class="round-badge badge-darkblue" tooltip="Edge Derived Property" *ngIf="chartConfig.edge_derived_props">ED</div>
+      <div class="round-badge badge-lightblue" tooltip="Cloud Derived Property" *ngIf="chartConfig.cloud_derived_props">CD</div>
+
       <div class="round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M</div>
 
       <a *ngIf="!asset && !chartConfig.freezed  && decodedToken?.privileges?.indexOf('ASMMM') > -1" class="" href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()"><i class="fa fa-close"></i></a>
@@ -21,7 +23,7 @@
         <div class="col-md-{{12 / chartConfig?.properties?.length}} text-center" *ngFor="let prop of chartConfig.properties; let i = index"
         [ngClass]="{'border-left': i > 0}">
           <p class="text-xs live-widget-title"  placement="bottom" [tooltip]="prop.title + ' ' + (prop.property.json_model[prop.property.json_key].units ? ('(' + prop.property.json_model[prop.property.json_key].units + ')') : '')">
-            ({{chartConfig.derived_props ? 'D' : 'M'}}) {{prop.title}}
+            ({{(prop?.property?.type === 'Edge Derived Properties' ? 'ED' : (prop?.property?.type === 'Cloud Derived Properties' ? 'CD' : 'M'))}}) {{prop.title}}
             {{prop.property.json_model[prop.property.json_key].units ? ('(' + prop.property.json_model[prop.property.json_key].units + ')') : ''}}
           </p>
           <div class="live-overlay" *ngIf="!asset">

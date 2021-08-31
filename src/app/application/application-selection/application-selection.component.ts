@@ -55,8 +55,6 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     this.isAppDataLoading = {};
     this.isAppDataLoading[index] = true;
     if (localStorageAppData && localStorageAppData.app !== app.app)  {
-      localStorage.removeItem(CONSTANTS.DASHBOARD_ALERT_SELECTION);
-      localStorage.removeItem(CONSTANTS.DASHBOARD_TELEMETRY_SELECTION);
       localStorage.removeItem(CONSTANTS.SELECTED_APP_DATA);
       localStorage.removeItem(CONSTANTS.ASSETS_LIST);
       localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
@@ -78,40 +76,6 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     this.commonService.refreshSideMenuData.emit(this.applicationData);
     this.router.navigate(['applications', this.applicationData.app]);
     this.isAppDataLoading = undefined;
-  }
-
-  getAssets(hierarchy) {
-    return new Promise((resolve) => {
-      const obj = {
-        hierarchy: JSON.stringify(hierarchy),
-        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET
-      };
-      this.apiSubscriptions.push(this.assetService.getIPAndLegacyAssets(obj, this.applicationData.app).subscribe(
-        (response: any) => {
-          if (response?.data) {
-            this.commonService.setItemInLocalStorage(CONSTANTS.ASSETS_LIST, response.data);
-          }
-          resolve();
-        }
-      ));
-    });
-  }
-
-  getAssetModels(hierarchy) {
-    return new Promise((resolve) => {
-      const obj = {
-        hierarchy: JSON.stringify(hierarchy),
-        app: this.applicationData.app
-      };
-      this.apiSubscriptions.push(this.assetModelService.getAssetsModelsList(obj).subscribe(
-        (response: any) => {
-          if (response?.data) {
-            this.commonService.setItemInLocalStorage(CONSTANTS.ASSET_MODELS_LIST, response.data);
-          }
-          resolve();
-        }
-      ));
-    });
   }
 
   getApplicationData(app) {
@@ -148,6 +112,11 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
             this.applicationData.menu_settings.model_control_panel_menu.length === 0) {
             this.applicationData.menu_settings.model_control_panel_menu =
             JSON.parse(JSON.stringify(CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST));
+          }
+          if (this.applicationData.menu_settings.gateway_control_panel_menu ||
+            this.applicationData.menu_settings.gateway_control_panel_menu.length === 0) {
+            this.applicationData.menu_settings.gateway_control_panel_menu =
+            JSON.parse(JSON.stringify(CONSTANTS.GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST));
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
           const obj = {

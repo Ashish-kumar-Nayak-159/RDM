@@ -68,7 +68,7 @@
             <label for="message-text" class="col-form-label required">Password:</label>
             <input  type="{{this.isPasswordVisible ? 'text' : 'password'}}" class="form-control form-control-sm" id="display_name" name="display_name" [(ngModel)]="password"
               placeholder="Enter Your Password">
-              <i class="fa fa-fw  field-icon toggle-password" (click)="togglePasswordVisibility()"
+              <i class="fa fa-fw  field-icon-small toggle-password" (click)="togglePasswordVisibility()"
                       [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}" ></i>
           </div>
         </form>

@@ -80,12 +80,12 @@ export class BarChartComponent implements OnInit, OnDestroy {
     this.telemetryData.forEach((obj, i) => {
       const newObj: any = {};
       this.y1AxisProps.forEach(prop => {
-        if (obj[prop] !== undefined && obj[prop] !== null) {
+        if (obj[prop]) {
           newObj[prop] = obj[prop];
         }
       });
       this.y2AxisProps.forEach(prop => {
-        if (obj[prop] !== undefined && obj[prop] !== null) {
+        if (obj[prop]) {
           newObj[prop] = obj[prop];
         }
       });
@@ -119,8 +119,8 @@ export class BarChartComponent implements OnInit, OnDestroy {
     // categoryAxis.dataFields.category = 'message_date';
     categoryAxis.renderer.grid.template.location = 0;
     categoryAxis.renderer.minGridDistance = 70;
-    categoryAxis.groupData = true;
-      categoryAxis.groupCount = 200;
+    // categoryAxis.groupData = true;
+     // categoryAxis.groupCount = 200;
   //  const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
     if (this.selectedAlert) {
       const range = categoryAxis.axisRanges.create();
@@ -140,7 +140,7 @@ export class BarChartComponent implements OnInit, OnDestroy {
     chart.exporting.menu = new am4core.ExportMenu();
     chart.exporting.getFormatOptions('xlsx').useLocale = false;
     chart.exporting.getFormatOptions('pdf').pageOrientation = 'landscape';
-    console.log(chart.data);
+    console.log(JSON.stringify(chart.data));
     if (chart.data.length > 0) {
       chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date?.toString()
       + ' to ' + chart.data[chart.data.length - 1].message_date.toString();
@@ -274,8 +274,11 @@ export class BarChartComponent implements OnInit, OnDestroy {
         }
       });
       series.name = this.getPropertyName(prop);
-      series.propType = this.getPropertyType(prop) === 'Derived Properties' ? 'D' : 'M';
-      console.log('rrrrrrrrrrrrrrr', series.propType);
+      const proptype = this.getPropertyType(prop);
+      series.propType = (proptype === 'Edge Derived Properties' ? 'ED' : (
+        proptype === 'Cloud Derived Properties' ? 'CD' : 'M'
+      ));
+      console.log('rrrrrrrrrrrrrrr', series);
       series.propKey = prop;
       series.columns.template.fillOpacity = .8;
       series.compareText = true;
@@ -285,9 +288,9 @@ export class BarChartComponent implements OnInit, OnDestroy {
           series.legendSettings.labelText = '({propType}) {name}';
         }
       if (series.units) {
-        series.columns.template.tooltipText = 'Date: {dateX} \n ({propType}) {name} ({units}): [bold]{valueY}[/]';
+        series.columns.template.tooltipText = 'Date: {dateY} \n ({propType}) {name} ({units}): [bold]{valueX}[/]';
       } else {
-        series.columns.template.tooltipText = 'Date: {dateX} \n ({propType}) {name}: [bold]{valueY}[/]';
+        series.columns.template.tooltipText = 'Date: {dateY} \n ({propType}) {name}: [bold]{valueX}[/]';
       }
       const columnTemplate = series.columns.template;
       columnTemplate.strokeWidth = 2;

@@ -87,10 +87,13 @@ export class AssetModelSettingsComponent implements OnInit {
   }
 
   saveSettings() {
-    if (this.assetModel.metadata.measurement_settings.measurement_frequency <= 0) {
+    if (this.assetModel.metadata.measurement_settings.g1_measurement_frequency_in_ms <= 0 ||
+      this.assetModel.metadata.measurement_settings.g2_measurement_frequency_in_ms <= 0 ||
+      this.assetModel.metadata.measurement_settings.g3_measurement_frequency_in_ms <= 0)  {
       this.toasterService.showError('Measurement frequency should be greater than 0', 'Model Settings');
       return;
     }
+    // to do -  key changes based on groups
     if (this.assetModel.metadata.telemetry_mode_settings.normal_mode_frequency <= 0 || this.assetModel.metadata.telemetry_mode_settings.turbo_mode_frequency <= 0 ||
       this.assetModel.metadata.telemetry_mode_settings.turbo_mode_timeout_time <= 0) {
         this.toasterService.showError('Telemtry frequency values should be greater than 0', 'Model Settings');

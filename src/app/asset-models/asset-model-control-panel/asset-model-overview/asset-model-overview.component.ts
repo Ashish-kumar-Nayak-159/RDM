@@ -5,6 +5,7 @@ import { CONSTANTS } from 'src/app/app.constants';
 import { environment } from './../../../../environments/environment';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 declare var $: any;
 @Component({
   selector: 'app-asset-model-overview',
@@ -39,7 +40,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
+    // const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     console.log(this.assetModel);
     if (!this.assetModel.metadata?.image) {
@@ -92,7 +93,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
     console.log(this.assetModel);
     if (!this.assetModel.name || !this.assetModel.tags.protocol || !this.assetModel.tags.cloud_connectivity
     || !this.assetModel.metadata.model_type) {
-      this.toasterService.showError('Please enter all required fields', 'Update Asset Model');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Update Asset Model');
       return;
     }
     if (this.assetModel.id) {

@@ -13,6 +13,7 @@ import { BarChartComponent } from 'src/app/common/charts/bar-chart/bar-chart.com
 import { PieChartComponent } from 'src/app/common/charts/pie-chart/pie-chart.component';
 import { DataTableComponent } from 'src/app/common/charts/data-table/data-table.component';
 import { ApplicationService } from 'src/app/services/application/application.service';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 declare var $: any;
 
 @Component({
@@ -127,9 +128,16 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
         (response: any) => {
           response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-          response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
-          response.properties.derived_properties.forEach(prop => {
-            prop.type = 'Derived Properties';
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties ?
+          response.properties.edge_derived_properties : [];
+          response.properties.cloud_derived_properties = response.properties.cloud_derived_properties ?
+          response.properties.cloud_derived_properties : [];
+          response.properties.edge_derived_properties.forEach(prop => {
+            prop.type = 'Edge Derived Properties';
+            this.propertyList.push(prop);
+          });
+          response.properties.cloud_derived_properties.forEach(prop => {
+            prop.type = 'Cloud Derived Properties';
             this.propertyList.push(prop);
           });
           console.log(this.propertyList);
@@ -163,7 +171,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
 
   async addChart() {
     if (!this.chartTitle || !this.selectedChartType || this.y1AxisProps.length === 0) {
-      this.toasterService.showError('Please enter all required fields', 'Add Widget');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Widget');
       return;
     }
     if (this.y1AxisProps.length + this.y2AxisProps.length > 4) {
@@ -185,21 +193,26 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       y1axis: this.y1AxisProps,
       y2axis: this.y2AxisProps,
       xAxis: this.xAxisProps,
-      derived_props: false,
+      edge_derived_props: false,
+      cloud_derived_props: false,
       measured_props: false
     };
     obj.y1axis.forEach(prop => {
       const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-      if (type === 'Derived Properties') {
-        obj.derived_props = true;
+      if (type === 'Edge Derived Properties') {
+        obj.edge_derived_props = true;
+      } else if (type === 'Cloud Derived Properties') {
+        obj.cloud_derived_props = true;
       } else {
         obj.measured_props = true;
       }
     });
     obj.y2axis.forEach(prop => {
       const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-      if (type === 'Derived Properties') {
-        obj.derived_props = true;
+      if (type === 'Edge Derived Properties') {
+        obj.edge_derived_props = true;
+      } else if (type === 'Cloud Derived Properties') {
+        obj.cloud_derived_props = true;
       } else {
         obj.measured_props = true;
       }
@@ -359,20 +372,25 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
               id: item.title,
               value: item
             });
-            item.derived_props = false;
+            item.edge_derived_props = false;
             item.measured_props = false;
+            item.cloud_derived_props = false;
             item.y1axis.forEach(prop => {
               const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'Derived Properties') {
-                item.derived_props = true;
+              if (type === 'Edge Derived Properties') {
+                item.edge_derived_props = true;
+              } else if (type === 'Cloud Derived Properties') {
+                item.cloud_derived_props = true;
               } else {
                 item.measured_props = true;
               }
             });
             item.y2axis.forEach(prop => {
               const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'Derived Properties') {
-                item.derived_props = true;
+              if (type === 'Edge Derived Properties') {
+                item.edge_derived_props = true;
+              } else if (type === 'Cloud Derived Properties') {
+                item.cloud_derived_props = true;
               } else {
                 item.measured_props = true;
               }

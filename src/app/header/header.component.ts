@@ -56,7 +56,6 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
         event.url === event.urlAfterRedirects
       ) {
         this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-        // this.breadcrumbData = this.commonService.getItemFromLocalStorage(CONSTANTS.CURRENT_BREADCRUMB_STATE);
       }
     }));
     this.apiSubscriptions.push(this.commonService.refreshSideMenuData.subscribe(list => {
@@ -68,28 +67,6 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
         };
       } else if (this.contextApp  && this.contextApp.metadata) {
         this.contextApp.metadata.header_logo = list.metadata.header_logo;
-      }
-    }));
-    this.apiSubscriptions.push(this.commonService.breadcrumbEvent.subscribe((breadcrumbs: any) => {
-      this.commonService.setItemInLocalStorage(CONSTANTS.CURRENT_BREADCRUMB_STATE, this.breadcrumbData);
-      if (breadcrumbs.type === 'replace') {
-        this.breadcrumbData = breadcrumbs.data;
-      } else if (breadcrumbs.type === 'append') {
-        if (this.breadcrumbData && this.breadcrumbData.length > 0 ) {
-          breadcrumbs.data.forEach(item => {
-            let isFound = false;
-            this.breadcrumbData.forEach(obj => {
-              if (obj.url === item.url) {
-                isFound = true;
-              }
-            });
-            if (!isFound) {
-              this.breadcrumbData.splice(this.breadcrumbData.length, 0, item);
-            }
-          });
-        } else {
-          this.breadcrumbData = breadcrumbs.data;
-        }
       }
     }));
   }

@@ -179,50 +179,60 @@
                       <div class="form-group">
                         <input type="email" class="form-control form-control-user" id="inputEmail" placeholder="Work Email" [(ngModel)]="loginForm.email" name="email">
                       </div>
-                      <div class="form-group row">
-                        <div class="col-sm-6 mb-3 mb-sm-0">
-                            <input type="text" class="form-control form-control-user" id="companyName" placeholder="Company" [(ngModel)]="loginForm.org" name="org">
-                        </div>
-                        <div class="col-sm-6">
-                          <input type="text" class="form-control form-control-user" id="designation" placeholder="Designation" [(ngModel)]="loginForm.designation" name="designation">
-                        </div>
+                      <div class="col-sm-6">
+                         <input type="phone" class="form-control form-control-user" id="phone" placeholder="Mobile Phone" [(ngModel)]="loginForm.phone" name="phone">
                       </div>
-
-                    <button type="submit"  style="background-color:#1a5a9e"
-                      class="btn btn-primary btn-user btn-block text-white "
-                      [class.disabled]="isLoginAPILoading"
-                    >
-                      Submit
-                      <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></i>
-                    </button>
-                  </form>
-                  <form class="g-user" (submit)="onSignIn()" *ngIf="otpData?.user_id">
+                    </div>
                     <div class="form-group">
                         <h3 class="text-center" style="color:#1a5a9e">Email Verification</h3>
                         <p class="pt-2 mb-1 text-center">OTP is sent to your email address.</p>
                         <p class="text-center">Keep an eye on your junk/spam folder</p>
                         <input type="text" class="form-control form-control-user" id="otp" placeholder="One Time Password" [(ngModel)]="otpForm.email_otp" name="otp">
                     </div>
-                    <button type="submit"  style="background-color:#1a5a9e"
-                      class="btn btn-primary btn-user btn-block text-white "
-                      [class.disabled]="isLoginAPILoading"
-                    >
-                    Verify
-                      <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></i>
-                    </button>
-                  </form>
-                  <hr>
-                  <div class="text-center mt-1">
-                    <a class="pointer" href="/login/">Already have an account?</a>
+                    <div class="form-group row">
+                      <div class="col-sm-6 mb-3 mb-sm-0">
+                          <input type="text" class="form-control form-control-user" id="companyName" placeholder="Organization*" [(ngModel)]="loginForm.org" name="org">
+                      </div>
+                      <div class="col-sm-6">
+                        <input type="text" class="form-control form-control-user" id="designation" placeholder="Designation" [(ngModel)]="loginForm.designation" name="designation">
+                      </div>
+                    </div>
+
+                  <button type="submit"  style="background-color:#1a5a9e"
+                    class="btn btn-primary btn-user btn-block text-white "
+                    [class.disabled]="isLoginAPILoading"
+                  >
+                    Submit
+                    <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></i>
+                  </button>
+                </form>
+                <form class="g-user" (submit)="onSignIn()" *ngIf="otpData?.user_id">
+                  <div class="form-group">
+                      <h3 class="text-center" style="color:#1a5a9e">Email Verification</h3>
+                      <p class="pt-2 mb-1 text-center">OTP is sent to your email address.</p>
+                      <p class="text-center">Keep an eye on your junk/spam folder</p>
+                      <input type="text" class="form-control form-control-user" id="otp" placeholder="One Time Password" [(ngModel)]="otpForm.email_otp" name="otp">
                   </div>
+                  <button type="submit"  style="background-color:#1a5a9e"
+                    class="btn btn-primary btn-user btn-block text-white "
+                    [class.disabled]="isLoginAPILoading"
+                  >
+                  Verify
+                    <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></i>
+                  </button>
+                </form>
+                <hr>
+                <div class="text-center mt-1">
+                  <a class="pointer" href="/login/">Already have an account?</a>
                 </div>
               </div>
             </div>
-        </div>
-        <div class="col-lg-1"></div>
-    </div>
+          </div>
+      </div>
+      <div class="col-lg-1"></div>
   </div>
+</div>
 
-  <app-reset-password [isFirstTimeLogin]="true" [isForgotPassword] = "false" (modalClose)="onResetModalClose()" [loginData]="loginForm" *ngIf="isResetPassword"></app-reset-password>
-  <app-reset-password [isFirstTimeLogin]="true" [isForgotPassword] = "true" (modalClose)="onResetModalClose()" [loginData]="loginForm" *ngIf="isForgotPassword"></app-reset-password>
+<app-reset-password [isFirstTimeLogin]="true" [isForgotPassword] = "false" (modalClose)="onResetModalClose()" [loginData]="loginForm" *ngIf="isResetPassword"></app-reset-password>
+<app-reset-password [isFirstTimeLogin]="true" [isForgotPassword] = "true" (modalClose)="onResetModalClose()" [loginData]="loginForm" *ngIf="isForgotPassword"></app-reset-password>
 

@@ -6,6 +6,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 
 declare var $: any;
 @Component({
@@ -188,7 +189,7 @@ export class SlavesInfoComponent implements OnInit {
 
   addSlaveObj() {
     if (!this.slaveObj.slave_id || !this.slaveObj?.metadata?.mac_id) {
-      this.toasterService.showError('Please enter all required fields', 'Add Slave');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Slave');
       return;
     }
     this.isAddSlaveAPILoading = true;
@@ -216,7 +217,7 @@ export class SlavesInfoComponent implements OnInit {
       metadata: slave?.metadata
     };
     if (!obj.metadata?.mac_id) {
-      this.toasterService.showError('Please enter all required fields', 'Update Slave Detail');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Update Slave Detail');
       return;
     }
     this.isAddSlaveAPILoading = true;

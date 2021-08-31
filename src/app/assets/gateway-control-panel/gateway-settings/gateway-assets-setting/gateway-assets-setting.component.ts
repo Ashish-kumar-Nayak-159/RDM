@@ -315,8 +315,8 @@ export class GatewayAssetsSettingComponent implements OnInit {
         this.propertiesList.measured_properties.forEach(prop => {
           this.properties['measured_properties'][prop.json_key] = prop.group;
         });
-        this.propertiesList.derived_properties.forEach(prop => {
-          this.properties['derived_properties'][prop.json_key] = prop.group;
+        this.propertiesList.edge_derived_properties.forEach(prop => {
+          this.properties['edge_derived_properties'][prop.json_key] = prop.group;
         });
       }
   }
@@ -331,14 +331,14 @@ export class GatewayAssetsSettingComponent implements OnInit {
       asset_id: this.selectedAsset.asset_id,
       command: 'set_properties',
       measured_properties: {},
-      derived_properties: {}
+      edge_derived_properties: {}
     };
     this.propertiesList.measured_properties.forEach(prop => {
       obj.measured_properties[prop.json_key] = prop.metadata;
       obj.measured_properties[prop.json_key]['g'] = this.properties[prop.json_key];
     });
-    this.propertiesList.derived_properties.forEach(prop => {
-      obj.derived_properties[prop.json_key] = prop.metadata;
+    this.propertiesList.edge_derived_properties.forEach(prop => {
+      obj.edge_derived_properties[prop.json_key] = prop.metadata;
       obj.measured_properties[prop.json_key]['g'] = this.properties[prop.json_key];
     });
     this.callC2dMethod(obj, 'Register Properties');
@@ -354,7 +354,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
         (response: any) => {
           response.properties.measured_properties = response.properties.measured_properties ?
             response.properties.measured_properties : [];
-          response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
           response.properties.configurable_properties = response.properties.configurable_properties ?
             response.properties.configurable_properties : [];
           response.properties.controllable_properties = response.properties.controllable_properties ?

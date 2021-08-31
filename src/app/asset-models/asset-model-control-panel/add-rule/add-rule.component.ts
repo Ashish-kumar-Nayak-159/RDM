@@ -20,7 +20,7 @@ export class AddRuleComponent implements OnInit {
   @Input() asset: any;
   @Input() name: any;
   @Input() isEdit: any;
-  @Input() isView: any;
+  @Input() isView = false;
   @Input() ruleData: any;
   @Output() onCloseRuleModel: EventEmitter<any> = new EventEmitter<any>();
   ruleModel: Rule = new Rule();
@@ -91,9 +91,16 @@ export class AddRuleComponent implements OnInit {
     this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
       response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
       this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-      response.properties.derived_properties = response.properties.derived_properties ? response.properties.derived_properties : [];
-      response.properties.derived_properties.forEach(prop => {
-        prop.type = 'Derived Properties';
+      response.properties.edge_derived_properties = response.properties.edge_derived_properties ?
+      response.properties.edge_derived_properties : [];
+      response.properties.cloud_derived_properties = response.properties.cloud_derived_properties ?
+      response.properties.cloud_derived_properties : [];
+      response.properties.edge_derived_properties.forEach(prop => {
+        prop.type = 'Edge Derived Properties';
+        this.propertyList.push(prop);
+      });
+      response.properties.cloud_derived_properties.forEach(prop => {
+        prop.type = 'Cloud Derived Properties';
         this.propertyList.push(prop);
       });
       this.dropdownPropList = [];

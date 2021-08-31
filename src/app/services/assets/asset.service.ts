@@ -262,8 +262,9 @@ export class AssetService {
           // arr.push({...item, ...obj});
           let obj = JSON.parse(JSON.stringify(item));
           delete obj.m;
-          delete obj.d;
-          obj = { ...obj, ...item?.m, ...item?.d };
+          delete obj.ed;
+          delete obj.cd;
+          obj = { ...obj, ...item?.m, ...item?.ed, ...item?.cd };
           arr.push(obj);
         });
         data.data = JSON.parse(JSON.stringify(arr));
@@ -287,8 +288,9 @@ export class AssetService {
         data.data.forEach(item => {
           let obj = JSON.parse(JSON.stringify(item));
           delete obj.m;
-          delete obj.d;
-          obj = { ...obj, ...item?.m, ...item?.d };
+          delete obj.ed;
+          delete obj.cd;
+          obj = { ...obj, ...item?.m, ...item?.ed, ...item?.cd };
           arr.push(obj);
         });
         data.data = JSON.parse(JSON.stringify(arr));
@@ -483,7 +485,7 @@ export class AssetService {
     return this.http.get(this.url + url, { params });
   }
 
-  getAssetSignalRMode(app, assetId) {
+  getTelemetryMode(app, assetId) {
     return this.http.get(this.url + String.Format(AppUrls.GET_ASSET_SIGNALR_MODE, encodeURIComponent(app), encodeURIComponent(assetId)));
   }
 
@@ -558,8 +560,9 @@ export class AssetService {
         if (data.message) {
           let obj = JSON.parse(JSON.stringify(data.message));
           delete obj.m;
-          delete obj.d;
-          obj = { ...obj, ...data.message?.m, ...data.message?.d };
+          delete obj.ed;
+          delete obj.cd;
+          obj = { ...obj, ...data.message?.m, ...data.message?.ed, ...data.message?.cd };
           data.message = JSON.parse(JSON.stringify(obj));
         }
         return data;
@@ -581,8 +584,9 @@ export class AssetService {
         if (data.message) {
           let obj = JSON.parse(JSON.stringify(data.message));
           delete obj.m;
-          delete obj.d;
-          obj = { ...obj, ...data.message?.m, ...data.message?.d };
+          delete obj.ed;
+          delete obj.cd;
+          obj = { ...obj, ...data.message?.m, ...data.message?.ed, ...data.message?.cd};
           data.message = JSON.parse(JSON.stringify(obj));
         }
         return data;

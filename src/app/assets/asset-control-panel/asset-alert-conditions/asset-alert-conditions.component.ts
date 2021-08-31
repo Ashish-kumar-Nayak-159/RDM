@@ -6,6 +6,8 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CONSTANTS } from 'src/app/app.constants';
+import { ApplicationService } from 'src/app/services/application/application.service';
+import { APIMESSAGES } from 'src/app/api-messages.constants';
 declare var $: any;
 @Component({
   selector: 'app-asset-alert-conditions',
@@ -31,6 +33,7 @@ export class AssetAlertConditionsComponent implements OnInit {
   widgetName: string;
   recommendationObj: any;
   docName: any;
+  groupName: any = {};
   subscriptions: Subscription[] = [];
   setupForm: FormGroup;
   constantData = CONSTANTS;
@@ -39,9 +42,11 @@ export class AssetAlertConditionsComponent implements OnInit {
   contextApp: any;
   loggedInUser: any;
   decodedToken: any;
+  userGroups: any[] = [];
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
+    private applicationService: ApplicationService,
     private toasterService: ToasterService
   ) { }
 
@@ -53,6 +58,7 @@ export class AssetAlertConditionsComponent implements OnInit {
     this.getAssetModelWidgets();
     this.onClickOfTab('Edge');
     this.getSlaveData();
+    this.getApplicationUserGroups();
   }
 
   onClickOfTab(type) {
@@ -75,6 +81,16 @@ export class AssetAlertConditionsComponent implements OnInit {
          }
       ));
     }
+  }
+
+  getApplicationUserGroups() {
+    this.subscriptions.push(this.applicationService.getApplicationUserGroups(this.contextApp.app).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.userGroups = response.data;
+        }
+      }
+    ));
   }
 
   getSlaveData() {
@@ -196,6 +212,26 @@ export class AssetAlertConditionsComponent implements OnInit {
     this.docName = undefined;
   }
 
+  addUserGroup(key) {
+    console.log(this.alertObj);
+    const index = this.alertObj.actions[key].recipients.findIndex(group => group === this.groupName[key]);
+    if (index > -1) {
+      this.toasterService.showError('Same User Group is already added.', 'Add User Group');
+      return;
+    } else if (!this.groupName[key]) {
+      this.toasterService.showError('Please select user Group to add', 'Add User Group');
+      return;
+    }
+    if (this.groupName[key] && index === -1) {
+      this.alertObj.actions[key].recipients.splice(this.alertObj.actions[key].recipients.length, 0, this.groupName[key]);
+    }
+    this.groupName[key] = undefined;
+  }
+
+  removeUserGroup(index, key) {
+    this.alertObj.actions[key].recipients.splice(index, 1);
+  }
+
   editSteps() {
     this.editRecommendationStep = {};
     this.alertObj.recommendations.forEach((step, index) => {
@@ -227,19 +263,40 @@ export class AssetAlertConditionsComponent implements OnInit {
     if (type === 'Actions') {
       if (!this.alertObj.actions) {
         this.alertObj.actions = {
-          email: {enabled: false},
-          whatsapp: {enabled: false},
-          sms: {enabled: false}
+          email: {enabled: false, client_field_support_enabled: false, recipients: [] },
+          whatsapp: {enabled: false, client_field_support_enabled: false, recipients: []},
+          sms: {enabled: false, client_field_support_enabled: false, recipients: []}
         };
       } else {
         if (!this.alertObj.actions.email) {
-          this.alertObj.actions.email = {enabled: false};
+          this.alertObj.actions.email = {enabled: false, client_field_support_enabled: false, recipients: [] };
+        }
+        if (!this.alertObj.actions.email.recipients) {
+          this.alertObj.actions.email.recipients = [];
+        }
+        if (!this.alertObj.actions.email.enabled) {
+          this.alertObj.actions.email.client_field_support_enabled = false;
+          this.alertObj.actions.email.recipients = [];
         }
         if (!this.alertObj.actions.whatsapp) {
-          this.alertObj.actions.whatsapp = {enabled: false};
+          this.alertObj.actions.whatsapp = {enabled: false, client_field_support_enabled: false, recipients: [] };
+        }
+        if (!this.alertObj.actions.whatsapp.recipients) {
+          this.alertObj.actions.whatsapp.recipients = [];
+        }
+        if (!this.alertObj.actions.whatsapp.enabled) {
+          this.alertObj.actions.whatsapp.client_field_support_enabled = false;
+          this.alertObj.actions.whatsapp.recipients = [];
         }
         if (!this.alertObj.actions.sms) {
-          this.alertObj.actions.sms = {enabled: false};
+          this.alertObj.actions.sms = {enabled: false, client_field_support_enabled: false, recipients: [] };
+        }
+        if (!this.alertObj.actions.sms.recipients) {
+          this.alertObj.actions.sms.recipients = [];
+        }
+        if (!this.alertObj.actions.sms.enabled) {
+          this.alertObj.actions.sms.client_field_support_enabled = false;
+          this.alertObj.actions.sms.recipients = [];
         }
       }
     }
@@ -452,7 +509,7 @@ export class AssetAlertConditionsComponent implements OnInit {
     });
     if (!this.alertObj.message || (this.alertObj.message.trim()).length === 0 ||  !this.alertObj.code
      || (this.alertObj.code.trim()).length === 0 || !this.alertObj.severity || !this.alertObj.alert_type) {
-      this.toasterService.showError('Please enter all required fields', 'Add Alert Condition');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Alert Condition');
       return;
     }
     // let distinctArray = this.alertObj.visualization_widgets.filter((n, i) => this.alertObj.visualization_widgets.indexOf(n) === i);
@@ -493,7 +550,7 @@ export class AssetAlertConditionsComponent implements OnInit {
     this.alertObj.created_by = this.loggedInUser.email;
     if (!this.alertObj.message || (this.alertObj.message.trim()).length === 0 ||  !this.alertObj.code
      || (this.alertObj.code.trim()).length === 0 || !this.alertObj.severity || !this.alertObj.alert_type) {
-      this.toasterService.showError('Please enter all required fields', 'Add Alert Condition');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Alert Condition');
       return;
     }
     this.alertObj.code = 'A_' + this.alertObj.code;

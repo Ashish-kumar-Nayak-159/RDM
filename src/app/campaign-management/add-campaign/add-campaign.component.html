@@ -1,0 +1,399 @@
+<div class="filter-bar">
+  <div class="row mx-2">
+    <nav>
+      <ol class="cd-multi-steps text-center custom-icons mb-0">
+        <li [ngClass]="{ visited: visitedSteps >= 1 }">
+          <a href="javascript:void(0)">STEP-1</a>
+        </li>
+        <li [ngClass]="{ visited: visitedSteps >= 2 }">
+          <a href="javascript:void(0)" >STEP-2</a>
+        </li>
+        <li [ngClass]="{ visited: visitedSteps >= 3 }">
+          <a href="javascript:void(0)">STEP-3</a>
+        </li>
+        <li [ngClass]="{ visited: visitedSteps >= 4 }">
+          <a href="javascript:void(0)">STEP-4</a>
+        </li>
+        <li [ngClass]="{ visited: visitedSteps >= 5 }">
+          <a href="javascript:void(0)">STEP-5</a>
+        </li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<ng-container *ngIf="visitedSteps === 1">
+  <div class="row m-3">
+    <h6>Please select objective of the campaign.</h6>
+  </div>
+
+  <div class="row mx-3 mt-3">
+    <div class="form-group">
+      <div class="form-control border-0" style="color: #000" *ngFor="let item of campaignObjectiveList">
+        <input type="radio" [value]="item.objective" [(ngModel)]="campaignObj.objective" name="objective"
+        (change)="onObjectiveChange(item)" id="{{item.objective}}"/>
+        <span class="ml-2"> {{item.name}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row mx-2 mt-2">
+    <div class="form-outer">
+      <form action="#">
+        <div class="page slide-page">
+          <div class="ml-4" >
+            <button type="button" class="btn btn-primary mr-3" (click)="visitedSteps = visitedSteps + 1"
+            [disabled]="!campaignObj.objective" id="nextBtn">
+              Next Step
+            </button>
+            <!-- <button class="firstNext" (click)="visitedSteps = visitedSteps - 1" id="previousBtn">
+              Previous Step
+            </button> -->
+            <button type="button" class="btn btn-secondary" (click)="onCloseCampaignModal()" id="CancelBtn">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="visitedSteps === 2">
+  <div class="row col-lg-12 mt-2">
+    <div class="col-lg-12 col-xl-12 col-md-12">
+      <div class="d-sm-flex align-items-center justify-content-between m-2">
+        <h6>Please select the timeline of the campaign.</h6>
+      </div>
+
+      <table class="table mx-2 mt-2">
+        <tbody>
+          <tr>
+            <td class="required">Code</td>
+            <td>
+              <input
+                class="form-control form-control-sm"
+                type="text"
+                name="expire_in_min"
+                min="1" max="6"
+                style="width: 20rem!important;"
+                [(ngModel)]="campaignObj.code"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td class="required">Start Date</td>
+            <td>
+              <div class="form-group left-inner-addon" >
+                <i class="fa fa-calendar"></i>
+                <input type="text"  class="form-control form-control-sm date-range-picker" daterangepicker name="daterangeInput" autocomplete="off"  [(ngModel)]="campaignObj.expected_start_date_display"
+                [options]="options" (selected)="selectedDate($event, 'start')" style="width: 20rem!important"
+                 placement="bottom"/>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="required">End Date</td>
+            <td>
+              <div class="form-group left-inner-addon" >
+                <i class="fa fa-calendar"></i>
+                <input type="text"  class="form-control form-control-sm date-range-picker" daterangepicker name="daterangeInput" autocomplete="off"  [(ngModel)]="campaignObj.expected_end_date_display"
+                [options]="options" (selected)="selectedDate($event, 'end')" style="width: 20rem!important"
+                 placement="bottom"/>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <div class="form-control border-0" style="color: #000">
+                <input type="checkbox" name="retry_required" id="retry_required" [(ngModel)]="campaignObj.retry_required"/> If cloud to asset command
+                expires to non-availbility of IoT Asset, let the cloud try
+                sending command again.
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row mx-2 mt-2">
+    <div class="form-outer">
+      <form action="#">
+        <div class="page slide-page">
+          <div class="ml-4">
+            <button type="button" class="btn  btn-primary mr-3" (click)="visitedSteps = visitedSteps - 1" id="previousBtn">
+              Previous Step
+            </button>
+            <button type="button" class="btn  btn-primary mr-3" (click)="visitedSteps = visitedSteps + 1"
+            [disabled]="!campaignObj.expected_start_date || !campaignObj.expected_end_date || !campaignObj.code" id="nextBtn">
+              Next Step
+            </button>
+            <button type="button" class="btn btn-secondary" (click)="onCloseCampaignModal()" id="cancelBtn">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="visitedSteps === 3">
+  <div class="row col-lg-12 mt-2">
+    <div class="col-lg-12 col-xl-12 col-md-12">
+      <div class="d-sm-flex align-items-center justify-content-between m-2">
+        <h6>Please select the assets details for which this campaign run for.</h6>
+      </div>
+
+      <table class="table table-hover table-bordered mx-2 my-3">
+        <tbody>
+          <tr *ngFor="let hierarchyItem of contextApp.hierarchy.levels; let hIndex = index">
+
+              <td>{{hierarchyItem}}</td>
+              <td>
+              <select class="form-control form-control-sm" id="hierarchy{{hIndex}}"  name="hierarchy{{hIndex}}" [(ngModel)]="configureHierarchy[hIndex]"
+              (change)="onChangeOfHierarchy(hIndex)" *ngIf="hIndex !== 0">
+                <option [ngValue]="undefined">Select {{hierarchyItem}}</option>
+                <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[hIndex]">{{tag}}</option>
+              </select>
+              <span *ngIf="hIndex === 0">{{contextApp.app}}</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Asset Model</td>
+            <td>
+              <select class="form-control form-control-sm" id="asset_model" name="asset_model"
+                        [(ngModel)]="campaignObj.asset_model_obj" (change)="onAssetModelChange()">
+                        <option [ngValue]="undefined"> Select Asset Model</option>
+                        <option *ngFor="let item of assetModels" [ngValue]="item">
+                            {{item.name}}</option>
+              </select>
+              <p *ngIf="campaignObj.asset_model_obj">There are {{campaignObj.asset_model_obj?.inherited_asset_count}} assets of this specific model, This campaign will run on all {{campaignObj.asset_model_obj?.inherited_asset_count}} assets</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row mx-2 mt-2">
+    <div class="form-outer">
+      <form action="#">
+        <div class="page slide-page">
+          <div class="ml-4">
+            <button type="button" class="btn btn-primary mr-3" [disabled]="isCreateCampaignAPILoading" (click)="visitedSteps = visitedSteps - 1" id="previousBtn">
+              Previous Step
+            </button>
+            <button type="button" class="btn btn-primary mr-3"  [disabled]="isCreateCampaignAPILoading" (click)="visitedSteps = visitedSteps + 1;onPrepareHierarchy()" id="nextBtn">
+              Next Step
+            </button>
+            <button type="button" class="btn btn-white" [disabled]="isCreateCampaignAPILoading" (click)="onCloseCampaignModal()" id="CancelBtn">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="visitedSteps === 4">
+  <div class="row col-lg-12 mt-2">
+    <div class="col-lg-12 col-xl-12 col-md-12">
+      <div class="d-sm-flex align-items-center justify-content-between m-2">
+        <h6>Please furnish further details of the campaign objective.</h6>
+      </div>
+      <p class="m-2">
+        Objective: {{campaignObj.objective_name}}
+      </p>
+
+      <table class="table table-hover table-bordered mx-2 my-3">
+        <tbody>
+          <ng-container *ngIf="campaignObj.objective === 'FOTA'">
+          <tr >
+            <td>Command</td>
+            <td>
+              <select class="form-control form-control-sm" id="asset_model" name="asset_model"
+                        [(ngModel)]="campaignObj.request_type">
+                        <option [ngValue]="undefined"> Select Command</option>
+                        <option [ngValue]="'INSTALL_PACKAGE'">Install Package</option>
+                        <option [ngValue]="'DELETE_PACKAGE'">Uninstall Package</option>
+                        <option [ngValue]="'UPGRADE_PACKAGE'">Upgrade Package</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Package</td>
+            <td>
+              <select class="form-control form-control-sm" id="asset_model" name="asset_model"
+                        [(ngModel)]="campaignObj.job_request.package_obj">
+                        <option [ngValue]="undefined"> Select Package</option>
+                        <option *ngFor="let item of packages" [ngValue]="item">
+                            {{item.name}}</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Version</td>
+            <td>
+              <select class="form-control form-control-sm" id="asset_model" name="asset_model"
+              [(ngModel)]="campaignObj.job_request.version">
+              <option [ngValue]="undefined"> Select Version</option>
+              <option *ngFor="let item of campaignObj.job_request?.package_obj?.versions" [ngValue]="item">
+                  {{item}}</option>
+            </select>
+            </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="campaignObj.objective === 'Sync Properties/Alerts'">
+          <tr >
+            <td>Sync Details</td>
+            <td>
+              <ng-select [items]="propertySyncList" class="custom-dropdown w-12 active sm"
+                  [clearable]="false" [searchable]="true" [multiple]="true" [closeOnSelect]="false"
+                  placeholder="Select Sync Detail" dropdownPosition="bottom" name="asset-dropdown"
+                  [(ngModel)]="campaignObj.job_request.type" >
+                  <ng-template ng-multi-label-tmp let-items="items">
+                    {{items.length}} values selected
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item">
+                    <span [tooltip]="item">
+                      {{item}}
+                    </span>
+                  </ng-template>
+                </ng-select>
+            </td>
+          </tr>
+        </ng-container>
+        <!-- <ng-container *ngIf="campaignObj.objective === 'Change Telemetry Frequency'">
+          <tr>
+            <td></td>
+            <td>
+              <select class="form-control form-control-sm" id="asset_model" name="asset_model"
+                        [(ngModel)]="campaignObj.asset_model_obj" (change)="onAssetModelChange()">
+                        <option [ngValue]="undefined"> Select Asset Model</option>
+                        <option *ngFor="let item of assetModels" [ngValue]="item">
+                            {{item.name}}</option>
+              </select>
+              <p *ngIf="campaignObj.asset_model_obj">There are {{campaignObj.asset_model_obj?.inherited_asset_count}} assets of this specific model, This campaign will run on all {{campaignObj.asset_model_obj?.inherited_asset_count}} assets</p>
+            </td>
+          </tr>
+        </ng-container> -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row mx-2 mt-2">
+    <div class="form-outer">
+      <form action="#">
+        <div class="page slide-page">
+          <div class="ml-4">
+            <button type="button" class="btn btn-primary mr-3" [disabled]="isCreateCampaignAPILoading" (click)="visitedSteps = visitedSteps - 1" id="previousBtn">
+              Previous Step
+            </button>
+            <!-- <button type="button" class="btn btn-primary mr-3" (click)="createCampaign()"
+             id="camopaignCReateBtn" [disabled]="isCreateCampaignAPILoading">
+              Create
+              <i  class="fa fa-fw fa-2x  fa-spin fa-spinner" *ngIf="isCreateCampaignAPILoading"></i>
+            </button> -->
+            <button type="button" class="btn btn-primary mr-3"  [disabled]="isCreateCampaignAPILoading" (click)="visitedSteps = visitedSteps + 1" id="nextBtn">
+              Next Step
+            </button>
+            <button type="button" class="btn btn-white" [disabled]="isCreateCampaignAPILoading" (click)="onCloseCampaignModal()" id="CancelBtn">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="visitedSteps === 5">
+  <div class="row col-lg-12 mt-2">
+    <div class="col-lg-12 col-xl-12 col-md-12">
+      <div class="d-sm-flex align-items-center justify-content-between m-2">
+        <h6>Please confirm campaign details.</h6>
+      </div>
+
+      <table class="table mx-2 my-3">
+        <tbody>
+          <tr >
+            <td>Objective</td>
+            <td>{{campaignObj.objective_name}}</td>
+          </tr>
+          <tr >
+            <td>Code</td>
+            <td>{{campaignObj.code}}</td>
+          </tr>
+          <tr >
+            <td>Start Date</td>
+            <td>{{campaignObj.expected_start_date_display}}</td>
+          </tr>
+          <tr >
+            <td>End Date</td>
+            <td>{{campaignObj.expected_end_date_display}}</td>
+          </tr>
+          <tr >
+            <td>Hierarchy</td>
+            <td>{{campaignObj.hierarchyString}}</td>
+          </tr>
+          <tr >
+            <td>Asset Model</td>
+            <td>{{campaignObj.asset_model}}</td>
+          </tr>
+          <ng-container *ngIf="campaignObj.objective === 'FOTA'">
+          <tr >
+            <td>Command</td>
+            <td>{{campaignObj.request_type}}</td>
+          </tr>
+          <tr>
+            <td>Package</td>
+            <td>{{campaignObj.job_request.package_obj?.name}}</td>
+          </tr>
+          <tr>
+            <td>Version</td>
+            <td>{{campaignObj.job_request.version}}</td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="campaignObj.objective === 'Sync Properties/Alerts'">
+          <tr >
+            <td>Sync Details</td>
+            <td>{{campaignObj.job_request.type}} </td>
+          </tr>
+        </ng-container>
+        <!-- <ng-container *ngIf="campaignObj.objective === 'Change Telemetry Frequency'">
+          <tr>
+            <td></td>
+            <td>
+              <select class="form-control form-control-sm" id="asset_model" name="asset_model"
+                        [(ngModel)]="campaignObj.asset_model_obj" (change)="onAssetModelChange()">
+                        <option [ngValue]="undefined"> Select Asset Model</option>
+                        <option *ngFor="let item of assetModels" [ngValue]="item">
+                            {{item.name}}</option>
+              </select>
+              <p *ngIf="campaignObj.asset_model_obj">There are {{campaignObj.asset_model_obj?.inherited_asset_count}} assets of this specific model, This campaign will run on all {{campaignObj.asset_model_obj?.inherited_asset_count}} assets</p>
+            </td>
+          </tr>
+        </ng-container> -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row mx-2 mt-2">
+    <div class="form-outer">
+      <form action="#">
+        <div class="page slide-page">
+          <div class="ml-4">
+            <button type="button" class="btn btn-primary mr-3" [disabled]="isCreateCampaignAPILoading" (click)="visitedSteps = visitedSteps - 1" id="previousBtn">
+              Previous Step
+            </button>
+            <button type="button" class="btn btn-primary mr-3" (click)="createCampaign()"
+             id="camopaignCReateBtn" [disabled]="isCreateCampaignAPILoading">
+              Create
+              <i  class="fa fa-fw fa-2x  fa-spin fa-spinner" *ngIf="isCreateCampaignAPILoading"></i>
+            </button>
+
+            <button type="button" class="btn btn-white" [disabled]="isCreateCampaignAPILoading" (click)="onCloseCampaignModal()" id="CancelBtn">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-container>

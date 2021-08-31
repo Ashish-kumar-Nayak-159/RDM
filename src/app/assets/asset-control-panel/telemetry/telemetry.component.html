@@ -34,8 +34,37 @@
 </div>
 <div class="table-responsive">
   <div class="tableFixHead">
-    <app-common-table [tableData]="telemetry"  [tableConfig]="telemetryTableConfig" [isTableFilterSelected]="isFilterSelected"
-    [isTableDataLoading]="isTelemetryLoading" (viewMessageEvent)="openTelemetryMessageModal($event)"></app-common-table>
+    <!-- <app-common-table [tableData]="telemetry"  [tableConfig]="telemetryTableConfig" [isTableFilterSelected]="isFilterSelected"
+    [isTableDataLoading]="isTelemetryLoading" (viewMessageEvent)="openTelemetryMessageModal($event)"></app-common-table> -->
+    <table  class="table table-hover" >
+      <thead>
+        <tr>
+          <th>No</th>
+          <th >Timestamp 
+            <a (click)="sortOn('local_message_date', 'asc')"><i class="fa fa-caret-up" [ngClass]="(getClass('local_message_date') === 'asc') ? 'text-primary' : (getClass('local_message_date') === 'desc'? 'text-gray' : 'text-secondary')" style="font-size:1rem"></i></a>
+            <a (click)="sortOn('local_message_date', 'desc')"><i class="fa fa-caret-down" [ngClass]="(getClass('local_message_date') === 'desc') ? 'text-primary' : (getClass('local_message_date') === 'asc'? 'text-gray' : 'text-secondary')" style="font-size:1rem"></i> </a>
+          </th>
+          <th >IOT Hub Date
+            <a (click)="sortOn('local_iothub_date', 'asc')"><i class="fa fa-caret-up" [ngClass]="(getClass('local_iothub_date') === 'asc') ? 'text-primary' : (getClass('local_iothub_date') === 'desc'? 'text-gray' : 'text-secondary')" style="font-size:1rem"></i></a>
+            <a (click)="sortOn('local_iothub_date', 'desc')"><i class="fa fa-caret-down" [ngClass]="(getClass('local_iothub_date') === 'desc') ? 'text-primary' : (getClass('local_iothub_date') === 'asc'? 'text-gray' : 'text-secondary')" style="font-size:1rem"></i> </a>
+          </th>
+          <th >Database Record Date
+            <a (click)="sortOn('local_created_date', 'asc')"><i class="fa fa-caret-up" [ngClass]="(getClass('local_created_date') === 'asc') ? 'text-primary' : (getClass('local_created_date') === 'desc'? 'text-gray' : 'text-secondary')" style="font-size:1rem"></i></a>
+            <a (click)="sortOn('local_created_date', 'desc')"><i class="fa fa-caret-down" [ngClass]="(getClass('local_created_date') === 'desc') ? 'text-primary' : (getClass('local_created_date') === 'asc'? 'text-gray' : 'text-secondary')" style="font-size:1rem"></i> </a>
+          </th>
+          <th>Message</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of telemetry; let i = index;">
+          <td>{{i+1}}</td>
+          <td>{{c.local_message_date}}</td>
+          <td>{{c.local_iothub_date}}</td>
+          <td>{{c.local_created_date}}</td>
+          <td><a (click)="openTelemetryMessageModal(c)" tooltip="View Process Parameter Message"><i class="fa fa-fw fa-eye" ></i></a></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 <div class="modal right fade" id="telemetryMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">

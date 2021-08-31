@@ -42,12 +42,41 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
   contextApp: any;
   @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   selectedDateRange: string;
+  activeColumn: string;
+  directionColumn: string;
+
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
     private route: ActivatedRoute,
     private toasterService: ToasterService
   ) { }
+
+  sortOn(key: string, directionColumn: string ) {
+    this.activeColumn = key;
+    this.directionColumn = directionColumn;
+    const isAscending = directionColumn === 'asc';
+    const sortedArray = (this.telemetry).sort((a, b) => {
+        if (a[key] > b[key]) {
+          return isAscending ? 1 : -1;
+        }
+        if (a[key] < b[key]) {
+          return isAscending ? -1 : 1;
+        }
+        return 0;
+      });
+    return sortedArray;
+  }
+
+  getClass(columnID: string) {
+    if (this.activeColumn === columnID && this.directionColumn === 'asc'){
+      return 'asc';
+    } else if (this.activeColumn === columnID && this.directionColumn === 'desc') {
+      return 'desc';
+    } else {
+      return 'default';
+    }
+  }
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -278,7 +307,6 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
             item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
             item.local_iothub_date = this.commonService.convertUTCDateToLocal(item.iothub_date);
           });
-
         }
         if (this.telemetryFilter.dateOption !== 'Custom Range') {
           this.telemetryTableConfig.dateRange = this.telemetryFilter.dateOption;
@@ -325,18 +353,18 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   openTelemetryMessageModal(obj) {
-    if (obj.type === this.telemetryTableConfig.type) {
+    // if (obj.type === this.telemetryTableConfig.type) {
       this.modalConfig = {
         jsonDisplay: true,
         isDisplaySave: false,
         isDisplayCancel: true
       };
-      this.selectedTelemetry = obj.data;
-      this.getMessageData(obj.data).then(message => {
+      this.selectedTelemetry = obj;
+      this.getMessageData(obj).then(message => {
         this.selectedTelemetry.message = message;
       });
       $('#telemetryMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
-    }
+    // }
   }
 
 
@@ -347,8 +375,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-
-  ngOnDestroy() {
+ngOnDestroy() {
     this.apiSubscriptions.forEach(subscribe => subscribe.unsubscribe());
   }
 

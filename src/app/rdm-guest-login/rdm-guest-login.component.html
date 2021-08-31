@@ -164,20 +164,13 @@
           <div class="card o-hidden border-1 my-2" style="-moz-box-shadow: 0 0 3px #9fc0ef; -webkit-box-shadow: 0 0 3px #9fc0ef; box-shadow: 0 0 3px #9fc0ef;">
                 <div class="card-body p-0">
                 <div class="p-4 bg-primary">
-                  <form class="g-user" (submit)="onSignUp()" *ngIf="!otpData?.user_id">
-                    <div class="text-center">
-                      <h1 class="h4 mb-4" style="color:#1a5a9e">Guest Login !!</h1>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-sm-6 mb-3 mb-sm-0">
-                          <input type="text" class="form-control form-control-user" id="Name" placeholder="Name" [(ngModel)]="loginForm.name" name="Name">
-                        </div>
-                        <div class="col-sm-6">
-                           <input type="phone" class="form-control form-control-user" id="phone" placeholder="Mobile Phone" [(ngModel)]="loginForm.phone" name="phone">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <input type="email" class="form-control form-control-user" id="inputEmail" placeholder="Work Email" [(ngModel)]="loginForm.email" name="email">
+<form class="g-user" (submit)="onSignUp()" *ngIf="!otpData?.user_id">
+                  <div class="text-center">
+                    <h1 class="h4 mb-4" style="color:#1a5a9e">Guest Login !!</h1>
+                  </div>
+                  <div class="form-group row">
+                      <div class="col-sm-6 mb-3 mb-sm-0">
+                        <input type="text" class="form-control form-control-user" id="Name" placeholder="Name*" [(ngModel)]="loginForm.name" name="Name">
                       </div>
                       <div class="col-sm-6">
                          <input type="phone" class="form-control form-control-user" id="phone" placeholder="Mobile Phone" [(ngModel)]="loginForm.phone" name="phone">

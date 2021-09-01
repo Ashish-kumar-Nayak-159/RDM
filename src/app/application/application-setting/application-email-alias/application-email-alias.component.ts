@@ -69,8 +69,9 @@ export class ApplicationEmailAliasComponent implements OnInit {
     if (!this.recipientemail) {
       this.toasterService.showError('Email is required', 'Add Email');
     } else {
-    this.emailObj.splice(this.emailObj.length, 0, this.recipientemail)
+    this.emailObj.splice(this.emailObj.length, 0, this.recipientemail);
     this.emailObj = [];
+    this.recipientemail = undefined;
    }
   }
 
@@ -85,6 +86,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
     } else {
     this.smsObj.splice(this.smsObj.length, 0, this.recipientsms);
     this.smsObj = [];
+    this.smsObj = undefined;
    }
   }
 
@@ -99,6 +101,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
     } else {
     this.whatsappObj.splice(this.whatsappObj.length, 0, this.recipientwhatsapp);
     this.whatsappObj = [];
+    this.whatsappObj = undefined;
    }
   }
 

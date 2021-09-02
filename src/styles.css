@@ -1,6 +1,4 @@
-@import "~@ng-select/ng-select/themes/default.theme.css";
-
-
+@import '~@ng-select/ng-select/themes/default.theme.css';
 
 /* ng-select class changes */
 .text-grey {
@@ -8,26 +6,28 @@
   font-size: 0.6rem;
 }
 
+.ruleAccordion .panel-body.card-block.card-body {
+  padding: 0;
+}
 
 .ng-select.custom .ng-select-container {
-  border:0px;
+  border: 0px;
   min-height: 30px;
   border-radius: 0;
   border-bottom: 1px solid #d1d3e2;
   color: #6e707e;
-  font-family: "Segoe UI", Nunito, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: 'Segoe UI', Nunito, -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 .ng-select.sm.active .ng-select-container {
   color: #5570da !important;
-    border-color: #89a7ff;
+  border-color: #89a7ff;
 }
 
 .ng-select.sm .ng-select-container {
-
   min-height: 30px;
   color: #6e707e;
-  font-family: "Segoe UI", Nunito, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: 'Segoe UI', Nunito, -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 .ng-select.custom.active {
@@ -53,21 +53,19 @@
 }
 
 .live-overlay {
-width: 100px;
-height: 100px;
-position: absolute;
-top: 90px;
-left: 83px;
-opacity: 3;
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  top: 90px;
+  left: 83px;
+  opacity: 3;
 }
-
-
 
 .accordion-toggle .btn:focus {
-  box-shadow: none!important;
+  box-shadow: none !important;
 }
 .required:after {
-  content: " *";
+  content: ' *';
   color: red;
 }
 
@@ -83,21 +81,20 @@ opacity: 3;
   color: blue;
 }
 .blue-font {
-  color: #4e73df!important;
+  color: #4e73df !important;
   text-decoration: underline;
   background-color: transparent;
 }
 
 a.disabled {
-  pointer-events: none!important;
-  cursor: not-allowed!important;
+  pointer-events: none !important;
+  cursor: not-allowed !important;
   opacity: 0.45;
 }
 
 .date-range-picker {
-  width: 10rem!important;
+  width: 10rem !important;
 }
-
 
 .scroll-container {
   max-height: 70vh;
@@ -105,7 +102,6 @@ a.disabled {
   overflow-x: hidden;
   overflow-y: auto;
 }
-
 
 input:invalid {
   border: 1px solid red;
@@ -120,17 +116,17 @@ input:invalid {
   max-height: 100px;
 }
 
-.panel-default>.panel-heading {
-  background-color: #eff5ff!important;
+.panel-default > .panel-heading {
+  background-color: #eff5ff !important;
 }
 
-.accordion-toggle[aria-expanded="true"]:before {
-  content: "\f139";
+.accordion-toggle[aria-expanded='true']:before {
+  content: '\f139';
   font: normal normal bold 14px/1 FontAwesome;
 }
 
-.accordion-toggle[aria-expanded="false"]:before {
-  content: "\f13a";
+.accordion-toggle[aria-expanded='false']:before {
+  content: '\f13a';
   font: normal normal bold 14px/1 FontAwesome;
 }
 
@@ -149,20 +145,20 @@ input:invalid {
   opacity: 0.7;
 }
 
-
 .filter-clear-icon {
   width: 1rem;
 }
 
-
-
-.big-checkbox {width: 23px; height: 25px;}
+.big-checkbox {
+  width: 23px;
+  height: 25px;
+}
 
 .switch.switch-medium {
-  outline:  none;
+  outline: none;
 }
 .w-10 {
-  width:  10rem!important;
+  width: 10rem !important;
 }
 
 .live-widget-title {
@@ -192,7 +188,6 @@ input:invalid {
   margin-right: 0.7rem;
 }
 
-
 .datepicker-calendar-modal {
   float: right;
   margin-top: -2.1rem;
@@ -211,7 +206,8 @@ input:invalid {
   position: absolute;
   z-index: 9999999 !important;
 }
-.cdk-global-overlay-wrapper, .cdk-overlay-container {
+.cdk-global-overlay-wrapper,
+.cdk-overlay-container {
   pointer-events: none;
   top: 0;
   left: 0;
@@ -239,19 +235,21 @@ input:invalid {
   overflow: hidden;
 }
 .derived-con-pad {
-  margin-top: 4rem;max-height: calc(100vh - 6.5rem);
+  margin-top: 4rem;
+  max-height: calc(100vh - 6.5rem);
 }
 
-
 .content-scroll-live-data {
-  max-height: calc(100vh - 11rem)!important;
+  max-height: calc(100vh - 11rem) !important;
 }
 
 .tableFixHead-assets-list {
-  max-height: calc(100vh - 12.5rem)!important;
+  max-height: calc(100vh - 12.5rem) !important;
 }
 
 .tableFixHead-asset-rules-list {
-  height: calc(100vh - 30.5rem)!important;
+  height: calc(100vh - 21rem) !important;
 }
-.pointer {cursor: pointer;}
+.pointer {
+  cursor: pointer;
+}

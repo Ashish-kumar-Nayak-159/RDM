@@ -60,13 +60,14 @@ export class DerivedKpisComponent implements OnInit {
           key: 'name',
         },
         {
+          name: 'Description',
+          key: 'description',
+        },
+        {
           name: 'JSON Key',
           key: 'kpi_json_key',
         },
-        {
-          name: 'Value',
-          key: 'kpi_result',
-        },
+
         {
           name: '',
           key: undefined,

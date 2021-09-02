@@ -632,16 +632,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         theme: 'vs-dark',
         language: 'javascript',
       };
-      // if (!this.selectedProperty.derived_function) {
-      //   this.onPropParamAddedForFun();
-      // } else {
-      //   this.code = this.selectedProperty.derived_function;
-      // }
-      // setTimeout(() => {
-      //   if (this.jsEditor) {
-      //     this.jsEditor.editor?.layout();
-      //   }
-      // }, 50);
     } else if (obj.for === 'Edit') {
       this.propertyObj = JSON.parse(JSON.stringify(obj.data));
       this.propertyObj.edit = true;

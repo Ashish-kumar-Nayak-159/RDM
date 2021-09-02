@@ -1,5 +1,5 @@
 <div class="table-responsive">
-  <div class="tableFixHead"  style="height: calc(100vh - 23rem);">
+  <div class="tableFixHead" style="height: calc(100vh - 23rem);">
     <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAssetsAPILoading"></i>
     <h6 class="m-3" *ngIf="assets.length === 0 && !isAssetsAPILoading"> No assets available.</h6>
     <accordion *ngIf="!isAssetsAPILoading" class="p-3">
@@ -33,13 +33,13 @@
             <div class="row col-md-12" *ngIf="asset?.metadata">
               <input type="radio" class="mt-1" name="visible" value="changed_props" id="visible_1"
                 [(ngModel)]="asset.metadata.data_ingestion_settings.type" />
-              <label class="form-label">&nbsp;Ingest Only Changed Properties</label>
+              <label class="form-label ml-2">&nbsp;Ingest Only Changed Properties</label>
 
             </div>
             <div class="row col-md-12 form-row" *ngIf="asset?.metadata">
               <input class="mt-1" type="radio" name="visible" value="all_props_at_fixed_interval" id="visible_2"
                 [(ngModel)]="asset.metadata.data_ingestion_settings.value" />
-              <label class="form-label">&nbsp;Ingest All Properties </label>
+              <label class="form-label ml-2">&nbsp;Ingest All Properties </label>
               <!-- <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
                     [(ngModel)]="asset.metadata.data_ingestion_settings.frequency_in_sec" name="frequency_in_sec"
                     placeholder="Frequency">
@@ -177,7 +177,7 @@
         </accordion>
       </accordion-group>
     </accordion>
-    <app-c2d-jobs [asset]="asset" [filterObj]="c2dJobFilter" ></app-c2d-jobs>
+    <app-c2d-jobs [asset]="asset" [filterObj]="c2dJobFilter"></app-c2d-jobs>
   </div>
 </div>
 
@@ -235,9 +235,9 @@
               <ng-container accordion-heading>
                 <a class="btn">
                   {{(property.key === 'measured_properties' ? 'Measured Properties' : (
-                    property.key === 'edge_derived_properties' ? 'Edge Derived Properties' : (
-                      property.key === 'cloud_derived_properties' ? 'Cloud Derived Properties' : ''
-                    )
+                  property.key === 'edge_derived_properties' ? 'Edge Derived Properties' : (
+                  property.key === 'cloud_derived_properties' ? 'Cloud Derived Properties' : ''
+                  )
                   ))}}
                 </a>
               </ng-container>

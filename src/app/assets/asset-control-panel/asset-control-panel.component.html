@@ -1,16 +1,16 @@
-<div id="wrapper" >
+<div id="wrapper">
   <div id="content-wrapper" class="d-flex flex-column m-5 py-3" *ngIf="isAssetDataLoading">
     Loading Asset Data...
-    <i class="fa fa-spinner fa-spin fa-fw fa-2x text-center"  ></i>
+    <i class="fa fa-spinner fa-spin fa-fw fa-2x text-center"></i>
   </div>
 
   <!-- Sidebar -->
   <div class="sidebar1 sidebar-light mb-3 " *ngIf="!isAssetDataLoading">
 
     <div class="sidebar1-heading sidebar1-top-heading">
-      <span >Control Panel </span>
+      <span>Control Panel </span>
       <!-- <button class="d-none d-md-inline mb-0" id="sidebar1Toggle" placement="bottom" tooltip="Minimize" (click)="onSidebarToggle()"></button> -->
-      <i class="fa fa-fw fa" >CP</i>
+      <i class="fa fa-fw fa">CP</i>
     </div>
     <div class="scrollbox scrollbox_delayed" tabindex="0">
       <ul class="navbar-nav scrollbox-content" id="controlPanelSidebar">
@@ -27,7 +27,7 @@
             <li class="nav-item" [ngClass]="{'active': activeTab === menu.page}">
               <a class="nav-link collapsed" href="{{menu.url}}" data-toggle="tab" aria-expanded="false"
                 (click)="setActiveTab(menu.page)" [tooltip]="menu.display_name" [tooltip]="menu.display_name">
-                <i class="{{menu.icon}}" placement="bottom" ></i>
+                <i class="{{menu.icon}}" placement="bottom"></i>
                 <span>{{menu.display_name}}</span></a>
             </li>
           </ng-container>
@@ -58,48 +58,58 @@
 
         <div class="">
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'overview'}" id="asset_overview" role="tabpanel">
-            <app-overview *ngIf="activeTab === 'overview' && asset" [componentState]="componentState" [tileData]="tileData" [asset]="asset"
-              [menuDetail]="getMenuDetail('overview')"></app-overview>
+            <app-overview *ngIf="activeTab === 'overview' && asset" [componentState]="componentState"
+              [tileData]="tileData" [asset]="asset" [menuDetail]="getMenuDetail('overview')"></app-overview>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'access_control'}" role="tabpanel"
             id="asset_access_control">
-            <app-access-control *ngIf="activeTab === 'access_control'  && asset" [componentState]="componentState" [asset]="asset">
+            <app-access-control *ngIf="activeTab === 'access_control'  && asset" [componentState]="componentState"
+              [asset]="asset">
             </app-access-control>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'tags'}" role="tabpanel" id="asset_asset_tags">
-            <app-tags *ngIf="activeTab === 'tags'  && asset" [componentState]="componentState" [tileData]="tileData" [asset]="asset"
-              [menuDetail]="getMenuDetail('tags')"></app-tags>
+            <app-tags *ngIf="activeTab === 'tags'  && asset" [componentState]="componentState" [tileData]="tileData"
+              [asset]="asset" [menuDetail]="getMenuDetail('tags')"></app-tags>
           </div>
           <!-- <div class="tab-pane" [ngClass]="{'active': activeTab === 'heartbeat'}" role="tabpanel" id="asset_heartbeat">
             <app-heartbeat *ngIf="activeTab === 'heartbeat' && asset" [componentState]="componentState" [asset]="asset"></app-heartbeat>
           </div> -->
 
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'telemetry'}" role="tabpanel" id="asset_telemetry">
-            <app-telemetry *ngIf="activeTab === 'telemetry' && asset"  [componentState]="componentState" [asset]="asset"></app-telemetry>
+            <app-telemetry *ngIf="activeTab === 'telemetry' && asset" [componentState]="componentState" [asset]="asset">
+            </app-telemetry>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'alerts'}" role="tabpanel" id="asset_alerts">
-            <app-alerts *ngIf="activeTab === 'alerts' && asset"  [componentState]="componentState" [asset]="asset"></app-alerts>
+            <app-alerts *ngIf="activeTab === 'alerts' && asset" [componentState]="componentState" [asset]="asset">
+            </app-alerts>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'alertendevents'}" role="tabpanel"
             id="asset_alert_end_events">
-            <app-alert-end-event *ngIf="activeTab === 'alertendevents' && asset" [componentState]="componentState" [asset]="asset">
+            <app-alert-end-event *ngIf="activeTab === 'alertendevents' && asset" [componentState]="componentState"
+              [asset]="asset">
             </app-alert-end-event>
           </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel" id="asset_notifications">
-            <app-asset-messages-wrapper *ngIf="activeTab === 'notifications' && asset" [asset]="asset"></app-asset-messages-wrapper>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel"
+            id="asset_notifications">
+            <app-asset-messages-wrapper *ngIf="activeTab === 'notifications' && asset" [asset]="asset">
+            </app-asset-messages-wrapper>
           </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'logs' || activeTab === 'predictions'}" role="tabpanel" id="asset_logs">
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'logs' || activeTab === 'predictions'}"
+            role="tabpanel" id="asset_logs">
             <app-logs *ngIf="activeTab === 'logs'  || activeTab === 'predictions' && asset" [asset]="asset"></app-logs>
           </div>
-          <div class="tab-pane" [ngClass]="{'active':  activeTab === 'maintenance_schedule'}" role="tabpanel" id="asset_logs">
-            <app-logs *ngIf="activeTab === 'maintenance_schedule' && asset" [asset]="asset" [messageText]="'Integration to Customer Ticket Management / Field Service Application'"
-            ></app-logs>
+          <div class="tab-pane" [ngClass]="{'active':  activeTab === 'maintenance_schedule'}" role="tabpanel"
+            id="asset_logs">
+            <app-logs *ngIf="activeTab === 'maintenance_schedule' && asset" [asset]="asset"
+              [messageText]="'Integration to Customer Ticket Management / Field Service Application'"></app-logs>
           </div>
-          <div class="tab-pane" [ngClass]="{'active':  activeTab === 'cloud_derived_properties'}" role="tabpanel" id="asset_logs">
-            <app-logs *ngIf="activeTab === 'cloud_derived_properties' && asset" [asset]="asset" [messageText]="'Customer Defined Derived Properties'"
-            ></app-logs>
+          <div class="tab-pane" [ngClass]="{'active':  activeTab === 'cloud_derived_properties'}" role="tabpanel"
+            id="asset_properties">
+            <app-cloud-derived-properties *ngIf="activeTab === 'cloud_derived_properties' && asset" [asset]="asset">
+            </app-cloud-derived-properties>
           </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'derived_kpis'}" role="tabpanel" id="asset_derived_kpis">
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'derived_kpis'}" role="tabpanel"
+            id="asset_derived_kpis">
             <app-derived-kpis *ngIf="activeTab === 'derived_kpis' && asset" [asset]="asset"></app-derived-kpis>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'rules'}" role="tabpanel" id="asset_rules">
@@ -118,7 +128,8 @@
             [ngClass]="{'active': activeTab === 'control_widgets'  || activeTab === 'configure_widgets'}"
             role="tabpanel" id="asset_control_widgets">
             <app-commands *ngIf="activeTab === 'control_widgets' || activeTab === 'configure_widgets' && asset"
-              [asset]="asset" [componentState]="componentState" [pageType]="activeTab" [menuDetail]="getMenuDetail('control_widgets')"></app-commands>
+              [asset]="asset" [componentState]="componentState" [pageType]="activeTab"
+              [menuDetail]="getMenuDetail('control_widgets')"></app-commands>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'predictiveMaintenance'}" role="tabpanel"
             id="asset_predictive_mainteance">
@@ -140,23 +151,29 @@
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'setup'}" role="tabpanel" id="asset_setup">
             <!-- <app-settings *ngIf="activeTab === 'settings'  && asset" [asset]="asset"></app-settings> -->
-            <app-gateway-settings *ngIf="activeTab === 'setup'  && asset" [tileData]="tileData" [asset]="asset" [componentState]="componentState">
+            <app-gateway-settings *ngIf="activeTab === 'setup'  && asset" [tileData]="tileData" [asset]="asset"
+              [componentState]="componentState">
             </app-gateway-settings>
           </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'package_management'}" role="tabpanel" id="asset_package_management">
-            <app-asset-packages *ngIf="activeTab === 'package_management' && asset" [asset]="asset"></app-asset-packages>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'package_management'}" role="tabpanel"
+            id="asset_package_management">
+            <app-asset-packages *ngIf="activeTab === 'package_management' && asset" [asset]="asset">
+            </app-asset-packages>
           </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'slave_info'}" role="tabpanel" id="asset_slave_info">
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'slave_info'}" role="tabpanel"
+            id="asset_slave_info">
             <app-slaves-info *ngIf="activeTab === 'slave_info' && asset" [asset]="asset"></app-slaves-info>
           </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'asset_life_cycle'}" role="tabpanel"
-              id="asset_life_cycle_events">
-              <app-asset-life-cycle-events *ngIf="activeTab === 'asset_life_cycle' && asset" [asset]="asset">
-              </app-asset-life-cycle-events>
-            </div>
-            <div class="tab-pane" [ngClass]="{'active': activeTab === 'alert_conditioning'}" role="tabpanel" id="asset_alert_conditioning">
-              <app-asset-alert-conditions *ngIf="activeTab === 'alert_conditioning' && asset" [asset]="asset"></app-asset-alert-conditions>
-            </div>
+            id="asset_life_cycle_events">
+            <app-asset-life-cycle-events *ngIf="activeTab === 'asset_life_cycle' && asset" [asset]="asset">
+            </app-asset-life-cycle-events>
+          </div>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'alert_conditioning'}" role="tabpanel"
+            id="asset_alert_conditioning">
+            <app-asset-alert-conditions *ngIf="activeTab === 'alert_conditioning' && asset" [asset]="asset">
+            </app-asset-alert-conditions>
+          </div>
           <!-- /.container1-fluid -->
 
         </div>

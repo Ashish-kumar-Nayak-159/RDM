@@ -79,6 +79,7 @@ import { NonProvisionedAssetsComponent } from './non-provisioned-assets/non-prov
 import { RegisterAssetsComponent } from './gateway-control-panel/gateway-settings/register-assets/register-assets.component';
 import { AssetAlertConditionsComponent } from './asset-control-panel/asset-alert-conditions/asset-alert-conditions.component';
 import { C2dJobsComponent } from './gateway-control-panel/gateway-settings/c2d-jobs/c2d-jobs.component';
+import { CloudDerivedPropertiesComponent } from './asset-control-panel/cloud-derived-properties/cloud-derived-properties.component';
 
 @NgModule({
   declarations: [
@@ -140,6 +141,7 @@ import { C2dJobsComponent } from './gateway-control-panel/gateway-settings/c2d-j
     NonProvisionedAssetsComponent,
     AssetAlertConditionsComponent,
     C2dJobsComponent,
+    CloudDerivedPropertiesComponent,
   ],
   imports: [
     CommonModule,

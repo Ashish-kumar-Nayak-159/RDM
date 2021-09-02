@@ -1,60 +1,57 @@
-
-    <form class="form-inline">
-      <div class="form-group">
-        <input type="number" min="1" id="countId"
-        name="count" class="form-control form-control-sm record-input"
-        [ngClass]="{'active': filterObj.count}"
-        [(ngModel)]="filterObj.count" name="count" *ngIf="!filterObj.countNotShow">
-      </div>
-      <div class="form-group" *ngIf="filterObj.displayJobOptions">
-        <select class="form-control form-control-sm active"
-        [ngClass]="{'active': filterObj.tableType}" id="messageType"
-        [(ngModel)]="filterObj.tableType" name="tableType">
-        <option [ngValue]="'All'">All</option>
-          <option [ngValue]="'Message'">C2D Message</option>
-          <option [ngValue]="'DirectMethod'">Direct Method</option>
-          <option [ngValue]="'Twin'">Twin Change</option>
-        </select>
-      </div>
-      <div class="form-group" *ngIf="filterObj.displayAlertOptions">
-        <select class="form-control form-control-sm active"
-        id="alertType"
-        [(ngModel)]="filterObj.source" name="alertType">
-        <option [ngValue]="undefined">All</option>
-          <option [ngValue]="'Asset'">Asset</option>
-          <option [ngValue]="'Edge'">Edge</option>
-          <option [ngValue]="'Cloud'">Cloud</option>
-        </select>
-      </div>
-      <div class="form-group" *ngIf="filterObj.displayNotificationOptions">
-        <select class="form-control form-control-sm active"
-         id="alertType"
-        [(ngModel)]="filterObj.source" name="alertType">
-        <option [ngValue]="'Notification'">Notification</option>
-          <option [ngValue]="'Error'">Error</option>
-          <option [ngValue]="'Heratbeat'">Heratbeat</option>
-          <option [ngValue]="'Battery'">Battery Messages</option>
-          <option [ngValue]="'Other'">Other</option>
-        </select>
-      </div>
-      <!-- <div class="form-group" id="reportrange">
+<form class="form-inline">
+  <div class="form-group">
+    <input type="number" min="1" id="countId" name="count" class="form-control form-control-sm record-input"
+      [ngClass]="{'active': filterObj.count}" [(ngModel)]="filterObj.count" name="count"
+      *ngIf="!filterObj.countNotShow">
+  </div>
+  <div class="form-group" *ngIf="filterObj.displayJobOptions">
+    <select class="form-control form-control-sm active" [ngClass]="{'active': filterObj.tableType}" id="messageType"
+      [(ngModel)]="filterObj.tableType" name="tableType">
+      <option [ngValue]="'All'">All</option>
+      <option [ngValue]="'Message'">C2D Message</option>
+      <option [ngValue]="'DirectMethod'">Direct Method</option>
+      <option [ngValue]="'Twin'">Twin Change</option>
+    </select>
+  </div>
+  <div class="form-group" *ngIf="filterObj.displayAlertOptions">
+    <select class="form-control form-control-sm active" id="alertType" [(ngModel)]="filterObj.source" name="alertType">
+      <option [ngValue]="undefined">All Alerts</option>
+      <option [ngValue]="'Asset'">External Alerts</option>
+      <option [ngValue]="'Edge'">Edge Alerts</option>
+      <option [ngValue]="'Cloud'">Cloud Alerts</option>
+    </select>
+  </div>
+  <div class="form-group" *ngIf="filterObj.displayNotificationOptions">
+    <select class="form-control form-control-sm active" id="alertType" [(ngModel)]="filterObj.source" name="alertType">
+      <option [ngValue]="'Notification'">Notification</option>
+      <option [ngValue]="'Error'">Error</option>
+      <option [ngValue]="'Heratbeat'">Heratbeat</option>
+      <option [ngValue]="'Battery'">Battery Messages</option>
+      <option [ngValue]="'Other'">Other</option>
+    </select>
+  </div>
+  <!-- <div class="form-group" id="reportrange">
         <div class="date-input" daterangepicker [options]="options" (selected)="selectedDate($event, daterange)">
           <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;<span></span>
           <b class="caret"></b></div></div> -->
 
-          <div class="form-group  left-inner-addon">
-          <i class="fa fa-calendar" [ngClass]="{'active': filterObj.from_date && filterObj.to_date}"></i>
-          <input type="text" class="form-control form-control-sm date-range-picker" [ngClass]="{'active': filterObj.from_date && filterObj.to_date}" daterangepicker
-          name="daterangeInput"  [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"  [(ngModel)]="selectedDateRange"
-          [tooltip]="selectedDateRange" placement="bottom"/>
-          </div>
+  <div class="form-group  left-inner-addon">
+    <i class="fa fa-calendar" [ngClass]="{'active': filterObj.from_date && filterObj.to_date}"></i>
+    <input type="text" class="form-control form-control-sm date-range-picker"
+      [ngClass]="{'active': filterObj.from_date && filterObj.to_date}" daterangepicker name="daterangeInput"
+      [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"
+      [(ngModel)]="selectedDateRange" [tooltip]="selectedDateRange" placement="bottom" />
+  </div>
 
 
-      <!-- <div class="form-group" >
+  <!-- <div class="form-group" >
         <input type="text"  class="form-control form-control-sm" [ngClass]="{'active': filterObj.from_date && filterObj.to_date}" daterangepicker
         name="daterangeInput"  [options]="options" (selected)="selectedDate($event, daterange)" />
       </div> -->
-      <div class="form-group"><button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary" (click)="search()" ><i class="fas fa-search fa-sm"></i></button></div>
-        <!-- <button type="button" class="btn btn-primary btn-sm ml-3 mr-1 my-1" tooltip="Search" ><i class="fa fa-search fa-sm"></i></button> -->
-        <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-white" placement="bottom" tooltip="Clear Filters" (click)="clear();" > <img class="filter-clear-icon" src="./assets/img/filter.svg"></button></div>
-     </form>
+  <div class="form-group"><button type="button" placement="bottom" tooltip="Search"
+      class="btn btn-sm searchBtn btn-primary" (click)="search()"><i class="fas fa-search fa-sm"></i></button></div>
+  <!-- <button type="button" class="btn btn-primary btn-sm ml-3 mr-1 my-1" tooltip="Search" ><i class="fa fa-search fa-sm"></i></button> -->
+  <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-white" placement="bottom"
+      tooltip="Clear Filters" (click)="clear();"> <img class="filter-clear-icon" src="./assets/img/filter.svg"></button>
+  </div>
+</form>

@@ -13,25 +13,24 @@
             </div>
             <div class="form-group left-inner-addon">
               <i class="fa fa-calendar active"></i>
-              <input type="text" class="form-control form-control-sm active date-range-picker" daterangepicker name="daterangeInput"
-                [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"  [(ngModel)]="selectedDateRange"
-                [tooltip]="selectedDateRange" placement="bottom"/>
+              <input type="text" class="form-control form-control-sm active date-range-picker" daterangepicker
+                name="daterangeInput" [options]="options" (selected)="selectedDate($event, daterange)"
+                autocomplete="off" [(ngModel)]="selectedDateRange" [tooltip]="selectedDateRange" placement="bottom" />
             </div>
           </ng-container>
           <ng-container *ngIf="pageType === 'live'">
             <div class="form-group">
-              <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
-              placement="bottom" [tooltip]="originalFilterObj.asset ?
+              <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown" placement="bottom" [tooltip]="originalFilterObj.asset ?
               (originalFilterObj.asset.display_name ? originalFilterObj.asset.display_name :
               originalFilterObj.asset.asset_id) :
               (hierarchyString ? hierarchyString : 'Select Asset')"
-              [ngClass]="{'active' : filterObj?.asset || (configureHierarchy && configureHierarchy[1])}"
+                [ngClass]="{'active' : filterObj?.asset || (configureHierarchy && configureHierarchy[1])}"
                 (click)="onAssetFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-fw fa-filter fa-sm button-divider"></i>
                 {{originalFilterObj.asset ?
-                  (originalFilterObj.asset.display_name ? originalFilterObj.asset.display_name :
-                  originalFilterObj.asset.asset_id) :
-                  (hierarchyString ? displayHierarchyString : 'Select Asset')}}</button>
+                (originalFilterObj.asset.display_name ? originalFilterObj.asset.display_name :
+                originalFilterObj.asset.asset_id) :
+                (hierarchyString ? displayHierarchyString : 'Select Asset')}}</button>
               <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
                 <ng-container *ngFor="
                           let level of contextApp?.hierarchy?.levels;
@@ -57,15 +56,16 @@
                   dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.asset"
                   (onSelect)="onAssetSelection()">
                   <ng-template ng-option-tmp let-asset="item">
-                    <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ? asset.display_name: asset.asset_id}}</span>
+                    <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ?
+                      asset.display_name: asset.asset_id}}</span>
                   </ng-template>
                 </ng-select>
               </div>
             </div>
           </ng-container>
           <div class="form-group">
-            <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search" (click)="getLatestAlerts()"
-              [disabled]="isAlertAPILoading"><i class="fa fa-search fa-sm"></i></button>
+            <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
+              (click)="getLatestAlerts()" [disabled]="isAlertAPILoading"><i class="fa fa-search fa-sm"></i></button>
           </div>
         </form>
       </div>
@@ -75,38 +75,46 @@
 <div class="inbox">
   <div class="row ml-0">
 
-      <ng-container *ngIf="isAlertAPILoading">
-        <div class="p-3">
+    <ng-container *ngIf="isAlertAPILoading">
+      <div class="p-3">
         <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
       </div>
-      </ng-container>
-      <ng-container *ngIf="!isAlertAPILoading && latestAlerts.length === 0">
-        <div class="col-md-12 p-3">
-        No Alerts available for <span *ngIf="pageType !== 'history'">Last 24hours.</span><span *ngIf="pageType === 'history'">{{this.originalFilterObj.dateOption}}. <p *ngIf="this.originalFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template></span>
+    </ng-container>
+    <ng-container *ngIf="!isAlertAPILoading && latestAlerts.length === 0">
+      <div class="col-md-12 p-3">
+        No Alerts available for <span *ngIf="pageType !== 'history'">Last 24hours.</span><span
+          *ngIf="pageType === 'history'">{{this.originalFilterObj.dateOption}}. <p
+            *ngIf="this.originalFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can
+            choose large time window.</p>
+          <ng-template #differentMsg>
+            <p class="pt-2">You can choose different time window.</p>
+          </ng-template>
+        </span>
       </div>
-      </ng-container>
+    </ng-container>
 
     <div class="col-sp-3 col-md-3 col-lg-3 col-xl-3 p-0" [ngClass]="{'right-border': latestAlerts.length > 0}">
-      <div class="alert-scrollbox alert-scrollbox_delayed" [ngClass]="{'alert-box-live-alerts': pageType === 'live', 'alert-box-historic-alerts': pageType === 'history'}">
-      <ul class="mail_list list-group list-unstyled alert-scrollbox-content" *ngIf="!isAlertAPILoading && latestAlerts.length > 0">
-        <!-- [ngClass]="{'active': alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id,
+      <div class="alert-scrollbox alert-scrollbox_delayed"
+        [ngClass]="{'alert-box-live-alerts': pageType === 'live', 'alert-box-historic-alerts': pageType === 'history'}">
+        <ul class="mail_list list-group list-unstyled alert-scrollbox-content"
+          *ngIf="!isAlertAPILoading && latestAlerts.length > 0">
+          <!-- [ngClass]="{'active': alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id,
         'border-left-success': alert?.source?.toLowerCase() === 'cloud', 'border-left-info': alert?.source?.toLowerCase() === 'asset',
         'border-left-warning': alert?.source?.toLowerCase() === 'edge'
       }" -->
-        <li class="list-group-item"
-        [ngClass]="{'active': alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id}"
-        *ngFor="let alert of latestAlerts"
-       >
-          <div class="media">
-            <!-- <span class="icon-circle-sm" [style.background-color]="
+          <li class="list-group-item"
+            [ngClass]="{'active': alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id}"
+            *ngFor="let alert of latestAlerts">
+            <div class="media">
+              <!-- <span class="icon-circle-sm" [style.background-color]="
                 (alert?.source?.toLowerCase() === 'gateway' ? '#89a7ff' :
                 (alert?.source?.toLowerCase() === 'asset' ? '#fb5515' :
                 (alert?.source?.toLowerCase() === 'cloud' ? '#229954' : '')))">
                 {{ alert?.source?.toLowerCase() === 'gateway' ? 'G' : alert?.source?.toLowerCase() === 'asset' ? 'A' : alert?.source?.toLowerCase() === 'cloud' ? 'C' : '' }}
                 </span> -->
-            <div class="pull-left">
-              <div class="controls">
-                <i class="fa fa-fw fa-exclamation-triangle" [style.color]="
+              <div class="pull-left">
+                <div class="controls">
+                  <i class="fa fa-fw fa-exclamation-triangle" [style.color]="
                 (alert?.severity?.toLowerCase() === 'critical' ? '#cc0000' :
                 (alert?.severity?.toLowerCase() === 'error' ? '#fb5515' :
                 (alert?.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
@@ -114,14 +122,14 @@
                 )
                 )" [tooltip]="alert?.severity"></i>
 
-              </div>
-              <div class="status-circle mt-2"
-              tooltip="{{( alert?.source?.toLowerCase() === 'edge' ? 'Generated At: Edge' : alert?.source?.toLowerCase() === 'asset' ? 'Generated At: Asset' : alert?.source?.toLowerCase() === 'cloud' ? 'Generated At: Cloud' : '' )}}"
+                </div>
+                <div class="status-circle mt-2"
+                  tooltip="{{( alert?.source?.toLowerCase() === 'edge' ? 'Generated At: Edge' : alert?.source?.toLowerCase() === 'asset' ? 'Generated At: External Sensor' : alert?.source?.toLowerCase() === 'cloud' ? 'Generated At: Cloud' : '' )}}"
                   [style.backgroundColor]="(alert?.source?.toLowerCase() === 'edge' ? '#89a7ff' :
                   (alert?.source?.toLowerCase() === 'asset' ? '#fb5515' :
                   (alert?.source?.toLowerCase() === 'cloud' ? '#229954' : '')))"></div>
-            </div>
-            <!-- <div class="pull-left">
+              </div>
+              <!-- <div class="pull-left">
               <div class='icon-container' [tooltip]="popTemplate" >
                   <div class="icon-circle-1 bg-blue" >
                     {{ alert?.source?.toLowerCase() === 'edge' ? 'E' : alert?.source?.toLowerCase() === 'asset' ? 'A' : alert?.source?.toLowerCase() === 'cloud' ? 'C' : '' }}
@@ -140,28 +148,29 @@
                   </ng-template>
               </div>
             </div> -->
-            <div class="media-body"><a  class="m-r-10">
-                <div class="media-heading">
-                  <p class="overflow" [tooltip]="alert?.message || alert.code">{{ alert?.message || alert.code}}</p>
-                  <!--<span class="badge bg-amber">Shop</span>
+              <div class="media-body"><a class="m-r-10">
+                  <div class="media-heading">
+                    <p class="overflow" [tooltip]="alert?.message || alert.code">{{ alert?.message || alert.code}}</p>
+                    <!--<span class="badge bg-amber">Shop</span>
                           <small class="float-right text-muted"><i class="fa fa-check-square fa-fw"></i> </small>-->
-                </div>
-                <p class="msg">{{ alert.asset_display_name ? alert.asset_display_name : alert.asset_id }}</p>
-                <p class="msg"><time class="hidden-sm-down">{{ alert.local_created_date }}</time> </p>
-              </a>
-            </div>
-            <div class="pull-right">
-              <div class="">
-                <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down" (click)="onClickOfViewGraph(alert)"
-                ><i class="fa fa-external-link-alt text-dark" aria-hidden="true"></i></a>
-                <!-- <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down" *ngIf="selectedAlert?.metadata?.acknowledged_date"
-                ><i class="fa  fa-check-square text-gray" aria-hidden="true"></i></a> -->
+                  </div>
+                  <p class="msg">{{ alert.asset_display_name ? alert.asset_display_name : alert.asset_id }}</p>
+                  <p class="msg"><time class="hidden-sm-down">{{ alert.local_created_date }}</time> </p>
+                </a>
               </div>
+              <div class="pull-right">
+                <div class="">
+                  <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down"
+                    (click)="onClickOfViewGraph(alert)"><i class="fa fa-external-link-alt text-dark"
+                      aria-hidden="true"></i></a>
+                  <!-- <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down" *ngIf="selectedAlert?.metadata?.acknowledged_date"
+                ><i class="fa  fa-check-square text-gray" aria-hidden="true"></i></a> -->
+                </div>
 
+              </div>
             </div>
-          </div>
-        </li>
-      </ul>
+          </li>
+        </ul>
       </div>
     </div>
     <div class="col-sm-9 col-md-9 col-lg-9 col-xl-9 pl-0" *ngIf="selectedAlert">
@@ -169,118 +178,123 @@
         <ul id="assetTab" role="tablist" class="nav alert-tabs flex-column flex-sm-row text-center border-0 ">
           <li class="nav-item flex-sm-fill">
             <a id="visualization-tab" data-toggle="tab" href="#visualization" role="tab" aria-controls="visualization"
-              aria-selected="true" class="nav-link" (click)="onTabClick('visualization')" [ngClass]="{'active': selectedTab === 'visualization'}">
+              aria-selected="true" class="nav-link" (click)="onTabClick('visualization')"
+              [ngClass]="{'active': selectedTab === 'visualization'}">
               <i class="fas fa-fw fa-chart-bar pr-2"></i> <span
                 class="d-none d-md-inline-block">Visualization</span></a>
           </li>
-          <li class="nav-item flex-sm-fill" >
+          <li class="nav-item flex-sm-fill">
             <a id="recommendation-tab" data-toggle="tab" href="#recommendation" role="tab"
-              aria-controls="recommendation" aria-selected="false" class="nav-link " [ngClass]="{'active': selectedTab === 'recommendation'}"
-              (click)="onTabClick('recommendation')"><i class="fas fa-fw fa-info pr-2"></i>
+              aria-controls="recommendation" aria-selected="false" class="nav-link "
+              [ngClass]="{'active': selectedTab === 'recommendation'}" (click)="onTabClick('recommendation')"><i
+                class="fas fa-fw fa-info pr-2"></i>
               <span class="d-none d-md-inline-block">Recommendations</span></a>
           </li>
-          <li class="nav-item flex-sm-fill" >
+          <li class="nav-item flex-sm-fill">
             <a id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents"
-              aria-selected="false" class="nav-link " (click)="onTabClick('documents')" [ngClass]="{'active': selectedTab === 'documents'}"><i
-                class="fas fa-fw fa-book pr-2"></i>
+              aria-selected="false" class="nav-link " (click)="onTabClick('documents')"
+              [ngClass]="{'active': selectedTab === 'documents'}"><i class="fas fa-fw fa-book pr-2"></i>
               <span class="d-none d-md-inline-block">Reference Documents</span></a>
           </li>
           <li class="nav-item flex-sm-fill">
-            <a id="actions-tab" data-toggle="tab" href="#actions" role="tab" aria-controls="actions" [ngClass]="{'active': selectedTab === 'actions'}"
-              aria-selected="false" class="nav-link " (click)="onTabClick('actions')"><i
-                class="fas fa-fw fa-clipboard pr-2"></i>
+            <a id="actions-tab" data-toggle="tab" href="#actions" role="tab" aria-controls="actions"
+              [ngClass]="{'active': selectedTab === 'actions'}" aria-selected="false" class="nav-link "
+              (click)="onTabClick('actions')"><i class="fas fa-fw fa-clipboard pr-2"></i>
               <span class="d-none d-md-inline-block">Actions Taken</span></a>
           </li>
         </ul>
       </div>
       <div id="assetTabContent" class="tab-content">
-        <div id="visualization" role="tabpanel" [ngClass]="{'show active': selectedTab === 'visualization'}" aria-labelledby="visualization-tab" class="tab-pane fade show"
+        <div id="visualization" role="tabpanel" [ngClass]="{'show active': selectedTab === 'visualization'}"
+          aria-labelledby="visualization-tab" class="tab-pane fade show"
           [ngClass]="{'active': selectedTab === 'visualization'}">
           <div class="">
             <div class="filter-bar d-none d-sm-block sticky-top ">
               <form class="form-inline">
-              <div class="form-group input-group">
-                <input type="number" step="1" min="0" id="beforeInterval" name="beforeInterval"
-                  class="form-control form-control-sm " [(ngModel)]="beforeInterval" (change)="onChangeTimeValue()"
-                  style="width: 4em;">
-                <div class="input-group-append"><span class="input-group-text bg-light">mins before</span>
+                <div class="form-group input-group">
+                  <input type="number" step="1" min="0" id="beforeInterval" name="beforeInterval"
+                    class="form-control form-control-sm " [(ngModel)]="beforeInterval" (change)="onChangeTimeValue()"
+                    style="width: 4em;">
+                  <div class="input-group-append"><span class="input-group-text bg-light">mins before</span>
+                  </div>
                 </div>
-              </div>
-              <div class="form-group input-group">
-                <input type="number" step="1" min="0" id="afterInterval" name="afterInterval"
-                  class="form-control form-control-sm " [(ngModel)]="afterInterval" (change)="onChangeTimeValue()"
-                  style="width: 4em;">
-                <div class="input-group-append"><span class="input-group-text bg-light">mins after</span>
+                <div class="form-group input-group">
+                  <input type="number" step="1" min="0" id="afterInterval" name="afterInterval"
+                    class="form-control form-control-sm " [(ngModel)]="afterInterval" (change)="onChangeTimeValue()"
+                    style="width: 4em;">
+                  <div class="input-group-append"><span class="input-group-text bg-light">mins after</span>
+                  </div>
                 </div>
-              </div>
-              <div class="form-group">
-                <ng-select [items]="dropdownWidgetList" class="custom-dropdown w-12 active sm" bindLabel="id"
-                  [clearable]="false" [searchable]="true" [multiple]="true" [closeOnSelect]="false"
-                  placeholder="Select Widgets" dropdownPosition="bottom" name="asset-dropdown"
-                  [(ngModel)]="selectedWidgetsForSearch" (onDeSelectAll)="onDeSelectAll($event)">
-                  <ng-template ng-multi-label-tmp let-items="items">
-                    {{items.length}} widgets selected
-                  </ng-template>
-                  <ng-template ng-header-tmp>
-                    <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-                      <li *ngIf="dropdownWidgetList.length !== selectedWidgetsForSearch.length"> <a href="javascript:void(0)" (click)="selectedWidgetsForSearch = dropdownWidgetList">Select All</a></li>
-                      <li *ngIf="dropdownWidgetList.length === selectedWidgetsForSearch.length"> <a href="javascript:void(0)" (click)="selectedWidgetsForSearch = []">Deselect All</a></li>
-                    </ul>
-                  </ng-template>
-                  <ng-template ng-option-tmp let-item="item">
-                    <span [tooltip]="item.id">
-                      {{item.id}}
-                    </span>
-                  </ng-template>
-                </ng-select>
-              </div>
-              <div class="form-group">
-                <input type="checkbox" id="checkbox" min="1" name="checkbox" class="big-checkbox"
-                  [(ngModel)]="filterObj.isTypeEditable" (change)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
+                <div class="form-group">
+                  <ng-select [items]="dropdownWidgetList" class="custom-dropdown w-12 active sm" bindLabel="id"
+                    [clearable]="false" [searchable]="true" [multiple]="true" [closeOnSelect]="false"
+                    placeholder="Select Widgets" dropdownPosition="bottom" name="asset-dropdown"
+                    [(ngModel)]="selectedWidgetsForSearch" (onDeSelectAll)="onDeSelectAll($event)">
+                    <ng-template ng-multi-label-tmp let-items="items">
+                      {{items.length}} widgets selected
+                    </ng-template>
+                    <ng-template ng-header-tmp>
+                      <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                        <li *ngIf="dropdownWidgetList.length !== selectedWidgetsForSearch.length"> <a
+                            href="javascript:void(0)" (click)="selectedWidgetsForSearch = dropdownWidgetList">Select
+                            All</a></li>
+                        <li *ngIf="dropdownWidgetList.length === selectedWidgetsForSearch.length"> <a
+                            href="javascript:void(0)" (click)="selectedWidgetsForSearch = []">Deselect All</a></li>
+                      </ul>
+                    </ng-template>
+                    <ng-template ng-option-tmp let-item="item">
+                      <span [tooltip]="item.id">
+                        {{item.id}}
+                      </span>
+                    </ng-template>
+                  </ng-select>
+                </div>
+                <div class="form-group">
+                  <input type="checkbox" id="checkbox" min="1" name="checkbox" class="big-checkbox"
+                    [(ngModel)]="filterObj.isTypeEditable" (change)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
               filterObj.sampling_format = 'minute'; filterObj.sampling_time = 1;">
-              </div>
-              <div class="form-group">
-                <fieldset [disabled]="!filterObj.isTypeEditable">
-                  <ui-switch [disabled]="!filterObj.isTypeEditable" defaultBgColor="#1a5a9e"
-                    checkedTextColor="white" uncheckedTextColor="white" checkedLabel="Sampling"
-                    (valueChange)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
+                </div>
+                <div class="form-group">
+                  <fieldset [disabled]="!filterObj.isTypeEditable">
+                    <ui-switch [disabled]="!filterObj.isTypeEditable" defaultBgColor="#1a5a9e" checkedTextColor="white"
+                      uncheckedTextColor="white" checkedLabel="Sampling" (valueChange)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
                 filterObj.sampling_format = 'minute'; filterObj.sampling_time = 1;
                 " uncheckedLabel="Aggregation" [(ngModel)]="filterObj.type" name="tpye"></ui-switch>
-                </fieldset>
-              </div>
-              <div class="form-group input-group" *ngIf="filterObj.type">
+                  </fieldset>
+                </div>
+                <div class="form-group input-group" *ngIf="filterObj.type">
 
-                <input class="form-control form-control-sm bg-light" type="number" id="minutes" min="1"
-                  name="minutes" [(ngModel)]="filterObj.sampling_time" placeholder="Sampling" disabled
-                  placement="bottom" tooltip="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development."
-                  style="width: 3em;">
-                <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
-              </div>
-              <div class="form-group input-group" *ngIf="!filterObj.type">
-                <fieldset [disabled]="!filterObj.isTypeEditable"></fieldset>
-                <input class="form-control form-control-sm bg-light" type="number" id="aggr_mins" min="1"
-                  name="aggr_mins" [(ngModel)]="filterObj.aggregation_minutes" placeholder="Sampling"
-                  (change)="onNumberChange($event, 'aggregation')" [disabled]="!filterObj.isTypeEditable"
-                  style="width: 4em;">
-                <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
-              </div>
-              <div class="form-group " *ngIf="!filterObj.type">
-                <fieldset [disabled]="!filterObj.isTypeEditable">
-                  <select class="form-control form-control-sm" id="aggregationFormat"
-                    [(ngModel)]="filterObj.aggregation_format" name="aggregationFormat"
-                    style="width: 11rem!important;">
-                    <option [ngValue]="undefined">Aggregartion Format</option>
-                    <option [ngValue]="'AVG'">Average</option>
-                    <option [ngValue]="'SUM'">Sum</option>
-                    <option [ngValue]="'MIN'">Min</option>
-                    <option [ngValue]="'MAX'">Max</option>
-                    <option [ngValue]="'COUNT'">Count</option>
-                  </select>
-                </fieldset>
-              </div>
-              <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
-                  (click)="getAssetTelemetryData()" [disabled]="isTelemetryDataLoading"><i
-                    class="fas fa-search fa-sm"></i></button></div>
+                  <input class="form-control form-control-sm bg-light" type="number" id="minutes" min="1" name="minutes"
+                    [(ngModel)]="filterObj.sampling_time" placeholder="Sampling" disabled placement="bottom"
+                    tooltip="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development."
+                    style="width: 3em;">
+                  <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
+                </div>
+                <div class="form-group input-group" *ngIf="!filterObj.type">
+                  <fieldset [disabled]="!filterObj.isTypeEditable"></fieldset>
+                  <input class="form-control form-control-sm bg-light" type="number" id="aggr_mins" min="1"
+                    name="aggr_mins" [(ngModel)]="filterObj.aggregation_minutes" placeholder="Sampling"
+                    (change)="onNumberChange($event, 'aggregation')" [disabled]="!filterObj.isTypeEditable"
+                    style="width: 4em;">
+                  <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
+                </div>
+                <div class="form-group " *ngIf="!filterObj.type">
+                  <fieldset [disabled]="!filterObj.isTypeEditable">
+                    <select class="form-control form-control-sm" id="aggregationFormat"
+                      [(ngModel)]="filterObj.aggregation_format" name="aggregationFormat"
+                      style="width: 11rem!important;">
+                      <option [ngValue]="undefined">Aggregartion Format</option>
+                      <option [ngValue]="'AVG'">Average</option>
+                      <option [ngValue]="'SUM'">Sum</option>
+                      <option [ngValue]="'MIN'">Min</option>
+                      <option [ngValue]="'MAX'">Max</option>
+                      <option [ngValue]="'COUNT'">Count</option>
+                    </select>
+                  </fieldset>
+                </div>
+                <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
+                    (click)="getAssetTelemetryData()" [disabled]="isTelemetryDataLoading"><i
+                      class="fas fa-search fa-sm"></i></button></div>
               </form>
             </div>
             <div class="row col-xl-12 col-lg-12 m-2" *ngIf="!isTelemetryDataLoading && telemetryData.length > 0">
@@ -288,117 +302,131 @@
               <div class="form-group col-md-2 pl-3 mb-0" *ngFor="let prop of propList">
                 <input type="checkbox" class="form-check-input" id="{{prop}}" name="{{prop}}"
                   (change)="toggleProperty(prop)" [checked]="selectedPropertyForChart.indexOf(prop) !== -1">
-                <label class="form-check-label text-elipsis" for="{{prop}}"
-                placement="bottom" [tooltip]="getPropertyName(prop)">{{getPropertyName(prop)}}</label>
+                <label class="form-check-label text-elipsis" for="{{prop}}" placement="bottom"
+                  [tooltip]="getPropertyName(prop)">{{getPropertyName(prop)}}</label>
               </div>
             </div>
-            <div class="content-scroll content-scroll-alert" [ngClass]="{'content-scroll-live-alert': pageType === 'live'}">
-                <ng-container *ngIf="isTelemetryDataLoading">
-                  {{loadingMessage}}
-                  <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
-                </ng-container>
-                <!-- Content Row -->
-                <div id="mainChartDiv">
+            <div class="content-scroll content-scroll-alert"
+              [ngClass]="{'content-scroll-live-alert': pageType === 'live'}">
+              <ng-container *ngIf="isTelemetryDataLoading">
+                {{loadingMessage}}
+                <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+              </ng-container>
+              <!-- Content Row -->
+              <div id="mainChartDiv">
 
-                  <div class="col-xl-12 col-lg-12 p-3" *ngIf="!isTelemetryDataLoading && telemetryData.length === 0 && selectedWidgets?.length > 0">
-                    No data found.
-                  </div>
-                  <div class="col-xl-12 col-lg-12 p-3" *ngIf="selectedWidgets?.length === 0 && !isTelemetryDataLoading">
-                    No widgets configured for this alert.
-                  </div>
-                  <div id="charts" class="px-3" *ngIf="selectedWidgets?.length > 0"></div>
+                <div class="col-xl-12 col-lg-12 p-3"
+                  *ngIf="!isTelemetryDataLoading && telemetryData.length === 0 && selectedWidgets?.length > 0">
+                  No data found.
                 </div>
+                <div class="col-xl-12 col-lg-12 p-3" *ngIf="selectedWidgets?.length === 0 && !isTelemetryDataLoading">
+                  No widgets configured for this alert.
+                </div>
+                <div id="charts" class="px-3" *ngIf="selectedWidgets?.length > 0"></div>
+              </div>
 
             </div>
           </div>
         </div>
-        <div id="recommendation" role="tabpanel" [ngClass]="{'show active': selectedTab === 'recommendation'}" aria-labelledby="recommendation-tab" class="tab-pane fade">
+        <div id="recommendation" role="tabpanel" [ngClass]="{'show active': selectedTab === 'recommendation'}"
+          aria-labelledby="recommendation-tab" class="tab-pane fade">
           <div class="ml-3 mt-3" *ngIf="alertCondition?.recommendations?.length > 0">
             <p class="ml-2">Following recommendations have been pre-configured.</p>
-            <div class="content-scroll content-scroll-alert" [style.maxHeight]="pageType === 'live' ? 'calc(100vh - 13.5rem)' : 'calc(100vh - 15rem)'">
-            <table  class="table table-hover">
-              <tbody>
-                <ng-container *ngFor="let step of alertCondition.recommendations; let i = index;">
-                  <tr *ngIf="alertCondition.recommendations.length > 0">
+            <div class="content-scroll content-scroll-alert"
+              [style.maxHeight]="pageType === 'live' ? 'calc(100vh - 13.5rem)' : 'calc(100vh - 15rem)'">
+              <table class="table table-hover">
+                <tbody>
+                  <ng-container *ngFor="let step of alertCondition.recommendations; let i = index;">
+                    <tr *ngIf="alertCondition.recommendations.length > 0">
 
-                    <ng-container>
-                      <td style="width: 10%;">Step - {{i + 1}}</td>
-                      <td style="width: 30%;">{{step.description}}</td>
-                      <td style="width: 30%;">{{step.activity}} Activity</td>
+                      <ng-container>
+                        <td style="width: 10%;">Step - {{i + 1}}</td>
+                        <td style="width: 30%;">{{step.description}}</td>
+                        <td style="width: 30%;">{{step.activity}} Activity</td>
 
-                    </ng-container>
-                  </tr>
-                  <tr *ngIf="alertCondition.recommendations.length === 0">
-                    <td colspan="4"> No Recommedation Steps added.</td>
-                  </tr>
-                </ng-container>
-              </tbody>
-            </table>
+                      </ng-container>
+                    </tr>
+                    <tr *ngIf="alertCondition.recommendations.length === 0">
+                      <td colspan="4"> No Recommedation Steps added.</td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
             </div>
           </div>
           <div class="col-xl-12 col-lg-12 p-3" *ngIf="!alertCondition || alertCondition?.recommendations?.length === 0">
             No Recommendations added yet.
           </div>
         </div>
-        <div id="documents" role="tabpanel" aria-labelledby="documents-tab" [ngClass]="{'show active': selectedTab === 'documents'}" class="tab-pane fade">
-          <div class="content-scroll content-scroll-alert p-3" [style.maxHeight]="pageType === 'live' ? 'calc(100vh - 13.5rem)' : 'calc(100vh - 15rem)'">
-          <div class="tagsinput" style="width: auto; height: auto;min-height: auto;"
-                      *ngIf="alertCondition?.reference_documents?.length > 0">
-                      <ng-container *ngFor="let item of alertCondition.reference_documents; let index = index">
-                        <span class="tag">
-                          <span class="tag-text">{{item}}</span>
-                        </span>
-                      </ng-container>
-                    </div>
-                    <div class="" *ngIf="!alertCondition || alertCondition?.reference_documents?.length === 0">
-                      No Reference documents added yet.</div>
+        <div id="documents" role="tabpanel" aria-labelledby="documents-tab"
+          [ngClass]="{'show active': selectedTab === 'documents'}" class="tab-pane fade">
+          <div class="content-scroll content-scroll-alert p-3"
+            [style.maxHeight]="pageType === 'live' ? 'calc(100vh - 13.5rem)' : 'calc(100vh - 15rem)'">
+            <div class="tagsinput" style="width: auto; height: auto;min-height: auto;"
+              *ngIf="alertCondition?.reference_documents?.length > 0">
+              <ng-container *ngFor="let item of alertCondition.reference_documents; let index = index">
+                <span class="tag">
+                  <span class="tag-text">{{item}}</span>
+                </span>
+              </ng-container>
+            </div>
+            <div class="" *ngIf="!alertCondition || alertCondition?.reference_documents?.length === 0">
+              No Reference documents added yet.</div>
           </div>
         </div>
-        <div id="actions" role="tabpanel" aria-labelledby="actions-tab" [ngClass]="{'show active': selectedTab === 'actions'}" class="tab-pane fade">
-          <div class="content-scroll content-scroll-alert pt-2" [style.maxHeight]="pageType === 'live' ? 'calc(100vh - 13.5rem)' : 'calc(100vh - 15rem)'">
-          <ul>
-             <li><h6 class="py-2 font-weight-light-bold">Action taken by Field Staff:</h6>
-                    <div class="col-xl-12 col-lg-12 ml-3"
-                      *ngIf="!selectedAlert?.metadata?.acknowledged_date; else actionTakenTemplate">
-                      <ng-container >
-                     <p > This alert is not yet acknowledged.
-                       <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down blue-font" *ngIf="!selectedAlert?.metadata?.acknowledged_date && decodedToken?.privileges?.indexOf('RMM') > -1" (click)="onClickOfAcknowledgeAlert(selectedAlert)"
-                      >Acknowledge.</a></p>
-                      <p>No Actions recorded by field staff yet. <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down blue-font" *ngIf="!selectedAlert?.metadata?.acknowledged_date && decodedToken?.privileges?.indexOf('RMM') > -1" (click)="onClickOfAcknowledgeAlert(selectedAlert)"
-                      >Take Action now</a></p>
-                    </ng-container>
+        <div id="actions" role="tabpanel" aria-labelledby="actions-tab"
+          [ngClass]="{'show active': selectedTab === 'actions'}" class="tab-pane fade">
+          <div class="content-scroll content-scroll-alert pt-2"
+            [style.maxHeight]="pageType === 'live' ? 'calc(100vh - 13.5rem)' : 'calc(100vh - 15rem)'">
+            <ul>
+              <li>
+                <h6 class="py-2 font-weight-light-bold">Action taken by Field Staff:</h6>
+                <div class="col-xl-12 col-lg-12 ml-3"
+                  *ngIf="!selectedAlert?.metadata?.acknowledged_date; else actionTakenTemplate">
+                  <ng-container>
+                    <p> This alert is not yet acknowledged.
+                      <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down blue-font"
+                        *ngIf="!selectedAlert?.metadata?.acknowledged_date && decodedToken?.privileges?.indexOf('RMM') > -1"
+                        (click)="onClickOfAcknowledgeAlert(selectedAlert)">Acknowledge.</a>
+                    </p>
+                    <p>No Actions recorded by field staff yet. <a href="javascript:void(0);"
+                        class="favourite text-muted hidden-sm-down blue-font"
+                        *ngIf="!selectedAlert?.metadata?.acknowledged_date && decodedToken?.privileges?.indexOf('RMM') > -1"
+                        (click)="onClickOfAcknowledgeAlert(selectedAlert)">Take Action now</a></p>
+                  </ng-container>
+                </div>
+                <ng-template #actionTakenTemplate>
+                  <div class="table-responsive col-xl-12 col-lg-12 ml-3">
+                    <p> Alert acknowledged by {{selectedAlert?.metadata?.user_id}} at
+                      {{selectedAlert?.metadata?.acknowledged_date}}.</p>
+                    <p>Reason: {{selectedAlert?.metadata?.reason?.reason ? selectedAlert?.metadata?.reason?.reason:
+                      'NA'}}</p>
+                    <p>Notes: {{selectedAlert?.metadata?.note ? selectedAlert?.metadata?.note : 'NA'}}</p>
+                    <p *ngIf="!selectedAlert?.metadata?.files || selectedAlert?.metadata?.files.length === 0">
+                      Documents: NA</p>
+                    <div *ngIf="selectedAlert?.metadata?.files && selectedAlert?.metadata?.files.length > 0">
+                      <ng-container *ngFor="let file of selectedAlert?.metadata?.files; let i  = index;">
+                        <p><b>{{file.data.name}}</b></p>
+                        <img *ngIf="file.type === 'Image'" class="img-fluid pr-3"
+                          [src]="blobStorageURL + file.data.url + sasToken" />
+                        <video *ngIf="file.type === 'Video'" class="img-fluid" controls>
+                          <source [src]="blobStorageURL + file.data.url + sasToken" type="video/mp4">
+                        </video>
+                        <iframe *ngIf="file.type === 'PDF'" [src]="file.data.sanitizedURL"
+                          style="width: 100%;height: 80vh"></iframe>
+                      </ng-container>
                     </div>
-                    <ng-template #actionTakenTemplate>
-                      <div class="table-responsive col-xl-12 col-lg-12 ml-3">
-                        <p> Alert acknowledged by {{selectedAlert?.metadata?.user_id}} at
-                          {{selectedAlert?.metadata?.acknowledged_date}}.</p>
-                        <p>Reason: {{selectedAlert?.metadata?.reason?.reason ? selectedAlert?.metadata?.reason?.reason:
-                          'NA'}}</p>
-                        <p>Notes: {{selectedAlert?.metadata?.note ? selectedAlert?.metadata?.note : 'NA'}}</p>
-                        <p *ngIf="!selectedAlert?.metadata?.files || selectedAlert?.metadata?.files.length === 0">
-                          Documents: NA</p>
-                        <div *ngIf="selectedAlert?.metadata?.files && selectedAlert?.metadata?.files.length > 0">
-                          <ng-container *ngFor="let file of selectedAlert?.metadata?.files; let i  = index;">
-                            <p><b>{{file.data.name}}</b></p>
-                            <img *ngIf="file.type === 'Image'" class="img-fluid pr-3"
-                              [src]="blobStorageURL + file.data.url + sasToken" />
-                            <video *ngIf="file.type === 'Video'" class="img-fluid" controls>
-                              <source [src]="blobStorageURL + file.data.url + sasToken" type="video/mp4">
-                            </video>
-                            <iframe *ngIf="file.type === 'PDF'" [src]="file.data.sanitizedURL"
-                              style="width: 100%;height: 80vh"></iframe>
-                          </ng-container>
-                        </div>
-                      </div>
-                    </ng-template>
-                </li>
-                <li><h6 class="py-2 font-weight-light-bold">Action taken by RDM:</h6>
-                    <div class="col-xl-12 col-lg-12 ml-3">
-                      No Actions recorded by RDM yet.
-                    </div>
+                  </div>
+                </ng-template>
               </li>
-          </ul>
-         </div>
+              <li>
+                <h6 class="py-2 font-weight-light-bold">Action taken by RDM:</h6>
+                <div class="col-xl-12 col-lg-12 ml-3">
+                  No Actions recorded by RDM yet.
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
 
       </div>
@@ -423,8 +451,8 @@
           <h6>Are you sure you want to acknowledge this alert?</h6>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Reason:</label>
-            <select class="form-control form-control-sm" id="alertReason" [(ngModel)]="acknowledgedAlert.metadata.reason"
-              name="alertReason">
+            <select class="form-control form-control-sm" id="alertReason"
+              [(ngModel)]="acknowledgedAlert.metadata.reason" name="alertReason">
               <option [ngValue]="undefined">Select Reason</option>
               <option [ngValue]="reason" *ngFor="let reason of reasons">{{reason.reason}}</option>
 
@@ -442,7 +470,8 @@
                   href="javascript:void(0)" (click)="addDocument()" placement="bottom" tooltip="Add Document"><i
                     class="fa fa-plus fa-sm text-white"></i></a>
               </label>
-              <select class="form-control form-control-sm" id="template_{{i}}" name="model_type_{{i}}" [(ngModel)]="file.type">
+              <select class="form-control form-control-sm" id="template_{{i}}" name="model_type_{{i}}"
+                [(ngModel)]="file.type">
                 <option [ngValue]="undefined">Select Document Type</option>
                 <option [ngValue]="'PDF'">PDF</option>
                 <option [ngValue]="'Image'">Image</option>
@@ -454,26 +483,28 @@
               <div class="form-group input-group row m-0">
                 <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
                 <div class="file-input form-control form-control-sm p-0 col-8">
-                 <input type="file" id="file_{{i}}" class="file" (change)="onDocumentFileSelected($event.target.files, i)"
-                 [disabled]="file.type === undefined" accept="{{(file.type === 'PDF' ? '.pdf' : (
+                  <input type="file" id="file_{{i}}" class="file"
+                    (change)="onDocumentFileSelected($event.target.files, i)" [disabled]="file.type === undefined"
+                    accept="{{(file.type === 'PDF' ? '.pdf' : (
               file.type === 'Image' ? '.jpeg,.png,.svg' : (
                 file.type === 'Video' ? '.mp4,' : '*'
               )
             ))}}">
 
-                 <label for="file_{{i}}" class="overflow-text" [tooltip]="acknowledgedAlert?.metadata?.files[i]?.data?.name ? acknowledgedAlert.metadata.files[i].data.name : ''">
-                   {{acknowledgedAlert?.metadata?.files[i]?.data?.name ? acknowledgedAlert.metadata.files[i].data.name : 'Choose File'}}</label>
+                  <label for="file_{{i}}" class="overflow-text"
+                    [tooltip]="acknowledgedAlert?.metadata?.files[i]?.data?.name ? acknowledgedAlert.metadata.files[i].data.name : ''">
+                    {{acknowledgedAlert?.metadata?.files[i]?.data?.name ? acknowledgedAlert.metadata.files[i].data.name
+                    : 'Choose File'}}</label>
                 </div>
                 <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
-                <input type="file" [disabled]="file.type === undefined" id="file_{{i}}" class="file"
-                accept="{{(file.type === 'PDF' ? '.pdf' : (
+                  <input type="file" [disabled]="file.type === undefined" id="file_{{i}}" class="file" accept="{{(file.type === 'PDF' ? '.pdf' : (
               file.type === 'Image' ? '.jpeg,.png,.svg' : (
                 file.type === 'Video' ? '.mp4,' : '*'
               )
             ))}}">
-                   <label for="file_{{i}}" class="bg-secondary text-white">Browse</label>
+                  <label for="file_{{i}}" class="bg-secondary text-white">Browse</label>
                 </div>
-                </div>
+              </div>
             </div>
           </ng-container>
         </form>

@@ -3,84 +3,88 @@
     <h6 class="mt-2">Recent Jobs</h6>
   </div>
   <div class="">
-        <table class="table table-hover">
-          <thead>
-            <tr >
-              <th width="11%">No</th>
-              <th width="25%">Time Stamp</th>
-              <th width="25%">Job Type</th>
-              <th width="25%">Type</th>
-              <th width="10%">Request</th>
-              <th width="10%">Response</th>
-            </tr>
-          </thead>
-    
-          <tbody>
-            <ng-container *ngIf="c2dMsgs.length > 0 && !isC2dMsgsLoading">
-            <tr *ngFor="let msg of c2dMsgs; let i = index;">
-              <td>{{i + 1}}</td>
-              <td>{{msg.local_created_date}}</td>
-              <td>{{msg.job_type}}</td>
-              <td >{{msg.request_type}}</td>
-              <td >
-                <a (click)="loadMessageDetail(msg, true)" href="javascript:void(0)" placement="bottom" tooltip="View Message">
-                  <i class="fa fa-fw fa-eye"></i></a></td>
-              <td>
-                <a (click)="loadResponseDetail(msg, true)" href="javascript:void(0)" placement="bottom" tooltip="View Response">
-                  <i class="fa fa-fw fa-eye"></i></a></td>
-            </tr>
-          </ng-container>
-        
-            <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading">
-              <tr>
-                <td colspan="6">No data available.</td>
-              </tr>
-            </ng-container>
-            <ng-container *ngIf="isC2dMsgsLoading">
-              <tr>
-                <td colspan="6">
-                  <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-                </td>
-              </tr>
-            </ng-container>
-          </tbody>
-        </table>
-    </div>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th width="11%">No</th>
+          <th width="25%">Time Stamp</th>
+          <th width="25%">Job Type</th>
+          <th width="25%">Type</th>
+          <th width="10%">Request</th>
+          <th width="10%">Response</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <ng-container *ngIf="c2dMsgs.length > 0 && !isC2dMsgsLoading">
+          <tr *ngFor="let msg of c2dMsgs; let i = index;">
+            <td>{{i + 1}}</td>
+            <td>{{msg.local_created_date}}</td>
+            <td>{{msg.job_type}}</td>
+            <td>{{msg.request_type}}</td>
+            <td>
+              <a (click)="loadMessageDetail(msg, true)" href="javascript:void(0)" placement="bottom"
+                tooltip="View Message">
+                <i class="fa fa-fw fa-eye"></i></a>
+            </td>
+            <td>
+              <a (click)="loadResponseDetail(msg, true)" href="javascript:void(0)" placement="bottom"
+                tooltip="View Response">
+                <i class="fa fa-fw fa-eye"></i></a>
+            </td>
+          </tr>
+        </ng-container>
+
+        <ng-container *ngIf="c2dMsgs.length === 0 && !isC2dMsgsLoading">
+          <tr>
+            <td colspan="6">No data available.</td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="isC2dMsgsLoading">
+          <tr>
+            <td colspan="6">
+              <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
   </div>
-  <div class="modal right fade" id="c2dmessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
-    <div class="modal-dialog" role="document">
-      <ng-container *ngIf="selectedMessage?.job_type === 'Message' || selectedMessage?.job_type === 'Twin'">
-        <app-message-modal *ngIf="c2dMessageDetail" [bodyMessage]="c2dMessageDetail.request" [headerMessage]="'Request: ' + selectedMessage?.job_id"
-        (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
-        <app-message-modal *ngIf="c2dResponseDetail" [bodyMessage]="c2dResponseDetail" [headerMessage]="'Response: ' + selectedMessage?.job_id"
-        (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-message-modal>
-      </ng-container>
-      <ng-container *ngIf="selectedMessage?.job_type === 'DirectMethod'">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">View Direct Method</h5>
-            <button type="button" class="close"  aria-label="Close" (click)="onModalEvents('close')">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <ng-container *ngIf="c2dMessageDetail">
+</div>
+<div class="modal right fade" id="c2dmessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <ng-container *ngIf="selectedMessage?.job_type === 'Message' || selectedMessage?.job_type === 'Twin'">
+      <app-message-modal *ngIf="c2dMessageDetail" [bodyMessage]="c2dMessageDetail.request"
+        [headerMessage]="'Request: ' + selectedMessage?.job_id" (modalEvents)="onModalEvents($event)"
+        [modalConfig]="modalConfig"></app-message-modal>
+      <app-message-modal *ngIf="c2dResponseDetail" [bodyMessage]="c2dResponseDetail"
+        [headerMessage]="'Response: ' + selectedMessage?.job_id" (modalEvents)="onModalEvents($event)"
+        [modalConfig]="modalConfig"></app-message-modal>
+    </ng-container>
+    <ng-container *ngIf="selectedMessage?.job_type === 'DirectMethod'">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">View Direct Method</h5>
+          <button type="button" class="close" aria-label="Close" (click)="onModalEvents('close')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <ng-container *ngIf="c2dMessageDetail">
             <h5>Reqeust: </h5>
-            <pre  class="text-sm" *ngIf="modalConfig?.jsonDisplay" [innerHTML]="c2dMessageDetail?.request | json"></pre>
-            </ng-container>
-            <ng-container *ngIf="c2dResponseDetail">
+            <pre class="text-sm" *ngIf="modalConfig?.jsonDisplay" [innerHTML]="c2dMessageDetail?.request | json"></pre>
+          </ng-container>
+          <ng-container *ngIf="c2dResponseDetail">
             <h5>Response: </h5>
             <pre class="text-sm" *ngIf="modalConfig?.jsonDisplay" [innerHTML]="selectedMessage?.metadata | json"></pre>
-            </ng-container>
-          </div>
-          <div class="modal-footer">
-            <button  type="button" class="btn btn-secondary" (click)="onModalEvents('close')">
-              Cancel
-            </button>
-          </div>
+          </ng-container>
         </div>
-  
-      </ng-container>
-    </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="onModalEvents('close')">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </ng-container>
   </div>
-   
+</div>

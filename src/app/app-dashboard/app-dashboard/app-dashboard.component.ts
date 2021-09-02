@@ -1,7 +1,17 @@
 import { ActivatedRoute } from '@angular/router';
 import { environment } from './../../../environments/environment';
 import { ChartService } from 'src/app/chart/chart.service';
-import { Component, OnDestroy, OnInit, AfterViewInit, EmbeddedViewRef, ApplicationRef, ComponentFactoryResolver, Injector, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  AfterViewInit,
+  EmbeddedViewRef,
+  ApplicationRef,
+  ComponentFactoryResolver,
+  Injector,
+  ViewChild,
+} from '@angular/core';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { CONSTANTS } from 'src/app/app.constants';
@@ -22,10 +32,9 @@ declare var $: any;
 @Component({
   selector: 'app-app-dashboard',
   templateUrl: './app-dashboard.component.html',
-  styleUrls: ['./app-dashboard.component.css']
+  styleUrls: ['./app-dashboard.component.css'],
 })
 export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
-
   defaultAppName = environment.app;
   userData: any;
   contextApp: any;
@@ -79,7 +88,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     autoUpdateInput: false,
     maxDate: moment(),
     timePicker: true,
-    ranges: CONSTANTS.DATE_OPTIONS
+    ranges: CONSTANTS.DATE_OPTIONS,
   };
   @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   selectedDateRange: string;
@@ -94,8 +103,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     private factoryResolver: ComponentFactoryResolver,
     private appRef: ApplicationRef,
     private injector: Injector,
-    private route: ActivatedRoute  ) {
-  }
+    private route: ActivatedRoute
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -122,7 +131,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getTileName() {
     let selectedItem;
-    this.contextApp.menu_settings.main_menu.forEach(item => {
+    this.contextApp.menu_settings.main_menu.forEach((item) => {
       if (item.page === 'Live Data') {
         selectedItem = item.showAccordion;
       }
@@ -147,8 +156,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     // });
   }
 
-  onSaveHierachy() {
-  }
+  onSaveHierachy() {}
 
   onClearHierarchy() {
     this.hierarchyArr = {};
@@ -159,13 +167,13 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log(this.hierarchyArr);
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
-      this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-      console.log(this.configureHierarchy);
-      console.log(level);
-      console.log(this.contextApp.user.hierarchy);
-      if (this.contextApp.user.hierarchy[level]) {
-        this.onChangeOfHierarchy(index, false);
-      }
+        this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+        console.log(this.configureHierarchy);
+        console.log(level);
+        console.log(this.contextApp.user.hierarchy);
+        if (this.contextApp.user.hierarchy[level]) {
+          this.onChangeOfHierarchy(index, false);
+        }
       } else {
         this.assets = JSON.parse(JSON.stringify(this.originalAssets));
       }
@@ -174,21 +182,22 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   loadFromCache() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
+    console.log(item);
     if (item) {
       if (item.assets) {
-      this.filterObj.asset = item.assets;
-      this.originalFilter = JSON.parse(JSON.stringify(this.filterObj));
+        this.filterObj.asset = item.assets;
+        this.originalFilter = JSON.parse(JSON.stringify(this.filterObj));
       }
       if (item.hierarchy) {
         if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
-        this.contextApp.hierarchy.levels.forEach((level, index) => {
-          if (index !== 0) {
-          this.configureHierarchy[index] = item.hierarchy[level];
-          if (item.hierarchy[level]) {
-            this.onChangeOfHierarchy(index, true, false);
-          }
-          }
-        });
+          this.contextApp.hierarchy.levels.forEach((level, index) => {
+            if (index !== 0) {
+              this.configureHierarchy[index] = item.hierarchy[level];
+              if (item.hierarchy[level]) {
+                this.onChangeOfHierarchy(index, true, false);
+              }
+            }
+          });
         }
       }
       if (this.filterObj.asset) {
@@ -209,56 +218,68 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       gateway_id: this.filterObj.asset.gateway_id ? this.filterObj.asset.gateway_id : undefined,
       message: {
         telemetry_mode: this.signalRModeValue ? 'normal' : 'turbo',
-        asset_id: this.filterObj.asset.asset_id
+        asset_id: this.filterObj.asset.asset_id,
       },
       app: this.contextApp.app,
       job_type: 'DirectMethod',
       request_type: 'change_asset_mode',
       job_id: this.filterObj.asset.asset_id + '_' + this.commonService.generateUUID(),
-      sub_job_id: null
+      sub_job_id: null,
     };
     obj.sub_job_id = obj.job_id + '_1';
-    this.apiSubscriptions.push(this.assetService.callAssetMethod(obj, this.contextApp.app,
-      this.filterObj?.asset?.gateway_id || this.filterObj?.asset?.asset_id).subscribe(
-      (response: any) => {
-        if (response?.asset_response) {
-        this.chartService.clearDashboardTelemetryList.emit([]);
-        const arr = [];
-        this.telemetryData = JSON.parse(JSON.stringify([]));
-        this.telemetryData = JSON.parse(JSON.stringify(arr));
-        this.toasterService.showSuccess(response.asset_response.message, 'Change Telemetry Mode');
-      }
-        this.isC2dAPILoading = false;
-        this.c2dLoadingMessage = undefined;
-        this.telemetryInterval = undefined;
-      }, error => {
-        this.toasterService.showError(error?.message, 'Change Telemetry Mode');
-        this.signalRModeValue = !this.signalRModeValue;
-        this.isC2dAPILoading = false;
-        this.c2dLoadingMessage = undefined;
-      }
-    ));
+    this.apiSubscriptions.push(
+      this.assetService
+        .callAssetMethod(obj, this.contextApp.app, this.filterObj?.asset?.gateway_id || this.filterObj?.asset?.asset_id)
+        .subscribe(
+          (response: any) => {
+            if (response?.asset_response) {
+              this.chartService.clearDashboardTelemetryList.emit([]);
+              const arr = [];
+              this.telemetryData = JSON.parse(JSON.stringify([]));
+              this.telemetryData = JSON.parse(JSON.stringify(arr));
+              this.toasterService.showSuccess(response.asset_response.message, 'Change Telemetry Mode');
+            }
+            this.isC2dAPILoading = false;
+            this.c2dLoadingMessage = undefined;
+            this.telemetryInterval = undefined;
+          },
+          (error) => {
+            this.toasterService.showError(error?.message, 'Change Telemetry Mode');
+            this.signalRModeValue = !this.signalRModeValue;
+            this.isC2dAPILoading = false;
+            this.c2dLoadingMessage = undefined;
+          }
+        )
+    );
   }
 
   getAssetData() {
     return new Promise<void>((resolve1) => {
-    this.assetDetailData = undefined;
+      this.assetDetailData = undefined;
 
-    this.apiSubscriptions.push(
-      this.assetService.getAssetDetailById
-      (this.contextApp.app, this.filterObj.asset.asset_id).subscribe(
-      async (response: any) => {
-        this.assetDetailData = JSON.parse(JSON.stringify(response));
-        this.normalModelInterval = (this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency ?
-          this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency : 60);
-        this.turboModeInterval = (this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency ?
-          this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency : 1);
-        this.frequencyDiffInterval = Math.abs((this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency ?
-          this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency : 60) -
-          (this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency ?
-            this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency : 1));
-        resolve1();
-      }, error => this.isTelemetryDataLoading = false));
+      this.apiSubscriptions.push(
+        this.assetService.getAssetDetailById(this.contextApp.app, this.filterObj.asset.asset_id).subscribe(
+          async (response: any) => {
+            this.assetDetailData = JSON.parse(JSON.stringify(response));
+            this.normalModelInterval = this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency
+              ? this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency
+              : 60;
+            this.turboModeInterval = this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency
+              ? this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency
+              : 1;
+            this.frequencyDiffInterval = Math.abs(
+              (this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency
+                ? this.assetDetailData?.metadata?.telemetry_mode_settings?.normal_mode_frequency
+                : 60) -
+                (this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency
+                  ? this.assetDetailData?.metadata?.telemetry_mode_settings?.turbo_mode_frequency
+                  : 1)
+            );
+            resolve1();
+          },
+          (error) => (this.isTelemetryDataLoading = false)
+        )
+      );
     });
   }
 
@@ -267,12 +288,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   async onChangeOfHierarchy(i, flag, persistAssetSelection = true) {
-    Object.keys(this.configureHierarchy).forEach(key => {
+    Object.keys(this.configureHierarchy).forEach((key) => {
       if (key > i) {
         delete this.configureHierarchy[key];
       }
     });
-    Object.keys(this.hierarchyArr).forEach(key => {
+    Object.keys(this.hierarchyArr).forEach((key) => {
       if (key > i) {
         this.hierarchyArr[key] = [];
       }
@@ -289,7 +310,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     // let hierarchy = {...this.configureHierarchy};
 
     if (flag) {
-      const hierarchyObj: any = { App: this.contextApp.app};
+      const hierarchyObj: any = { App: this.contextApp.app };
       Object.keys(this.configureHierarchy).forEach((key) => {
         if (this.configureHierarchy[key]) {
           hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
@@ -298,37 +319,37 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       if (Object.keys(hierarchyObj).length === 1) {
         this.assets = JSON.parse(JSON.stringify(this.originalAssets));
       } else {
-      const arr = [];
-      this.assets = [];
-      this.originalAssets.forEach(asset => {
-        let trueFlag = 0;
-        let flaseFlag = 0;
-        Object.keys(hierarchyObj).forEach(hierarchyKey => {
-          if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
-            trueFlag++;
-          } else {
-            flaseFlag++;
+        const arr = [];
+        this.assets = [];
+        this.originalAssets.forEach((asset) => {
+          let trueFlag = 0;
+          let flaseFlag = 0;
+          Object.keys(hierarchyObj).forEach((hierarchyKey) => {
+            if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+              trueFlag++;
+            } else {
+              flaseFlag++;
+            }
+          });
+          if (trueFlag > 0 && flaseFlag === 0) {
+            arr.push(asset);
           }
         });
-        if (trueFlag > 0 && flaseFlag === 0) {
-          arr.push(asset);
-        }
-      });
-      this.assets = JSON.parse(JSON.stringify(arr));
+        this.assets = JSON.parse(JSON.stringify(arr));
       }
       if (this.assets?.length === 1) {
         this.filterObj.asset = this.assets[0];
       }
       if (persistAssetSelection) {
-      this.filterObj.assetArr = undefined;
-      this.filterObj.asset = undefined;
+        this.filterObj.assetArr = undefined;
+        this.filterObj.asset = undefined;
       }
       // await this.getAssets(hierarchyObj);
     }
     let count = 0;
-    Object.keys(this.configureHierarchy).forEach(key => {
+    Object.keys(this.configureHierarchy).forEach((key) => {
       if (this.configureHierarchy[key]) {
-        count ++;
+        count++;
       }
     });
     if (count === 0) {
@@ -337,17 +358,16 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
       }
     }
-
   }
 
   getAssets(hierarchy) {
     return new Promise<void>((resolve1) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
-        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET
+        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
       };
-      this.apiSubscriptions.push(this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe(
-        (response: any) => {
+      this.apiSubscriptions.push(
+        this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
           if (response?.data) {
             this.assets = response.data;
             this.originalAssets = JSON.parse(JSON.stringify(this.assets));
@@ -356,10 +376,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           }
           resolve1();
-        }
-      ));
+        })
+      );
     });
-
   }
 
   onTabChange() {
@@ -389,121 +408,125 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getHistoricalWidgets(assetModel, historicalWidgetUpgrade) {
     return new Promise<void>((resolve1) => {
-    const params = {
-      app: this.contextApp.app,
-      name: assetModel
-    };
-    this.historicalWidgets = [];
-    this.apiSubscriptions.push(this.assetModelService.getAssetsModelLayout(params).subscribe(
-      async (response: any) => {
-        if (response?.historical_widgets?.length > 0) {
-          this.historicalWidgets = response.historical_widgets;
-          this.historicalWidgets.forEach((item) => {
-            item.edge_derived_props = false;
-            item.cloud_derived_props = false;
-            item.measured_props = false;
-            item.y1axis.forEach(prop => {
-              const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'Edge Derived Properties') {
-                item.edge_derived_props = true;
-              } else if (type === 'Cloud Derived Properties') {
-                item.cloud_derived_props = true;
-              } else {
-                item.measured_props = true;
+      const params = {
+        app: this.contextApp.app,
+        name: assetModel,
+      };
+      this.historicalWidgets = [];
+      this.apiSubscriptions.push(
+        this.assetModelService.getAssetsModelLayout(params).subscribe(
+          async (response: any) => {
+            if (response?.historical_widgets?.length > 0) {
+              this.historicalWidgets = response.historical_widgets;
+              this.historicalWidgets.forEach((item) => {
+                item.edge_derived_props = false;
+                item.cloud_derived_props = false;
+                item.measured_props = false;
+                item.y1axis.forEach((prop) => {
+                  const type = this.propertyList.find((propObj) => propObj.json_key === prop)?.type;
+                  if (type === 'Edge Derived Properties') {
+                    item.edge_derived_props = true;
+                  } else if (type === 'Cloud Derived Properties') {
+                    item.cloud_derived_props = true;
+                  } else {
+                    item.measured_props = true;
+                  }
+                });
+                item.y2axis.forEach((prop) => {
+                  const type = this.propertyList.find((propObj) => propObj.json_key === prop)?.type;
+                  if (type === 'Edge Derived Properties') {
+                    item.edge_derived_props = true;
+                  } else if (type === 'Cloud Derived Properties') {
+                    item.cloud_derived_props = true;
+                  } else {
+                    item.measured_props = true;
+                  }
+                });
+              });
+              if (historicalWidgetUpgrade) {
+                this.historicalDateFilter.widgets = JSON.parse(JSON.stringify(this.historicalWidgets));
               }
-            });
-            item.y2axis.forEach(prop => {
-              const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'Edge Derived Properties') {
-                item.edge_derived_props = true;
-              } else if (type === 'Cloud Derived Properties') {
-                item.cloud_derived_props = true;
-              } else {
-                item.measured_props = true;
-              }
-            });
-          });
-          if (historicalWidgetUpgrade) {
-            this.historicalDateFilter.widgets = JSON.parse(JSON.stringify(this.historicalWidgets));
+            } else {
+              this.historicalDateFilter.widgets = [];
+            }
+            this.isGetWidgetsAPILoading = false;
+            resolve1();
+          },
+          () => {
+            this.isGetWidgetsAPILoading = false;
+            this.isTelemetryDataLoading = false;
+            resolve1();
           }
-        } else {
-          this.historicalDateFilter.widgets = [];
-        }
-        this.isGetWidgetsAPILoading = false;
-        resolve1();
-      }, () => {
-        this.isGetWidgetsAPILoading = false;
-        this.isTelemetryDataLoading = false;
-        resolve1();
-      }
-    ));
+        )
+      );
     });
   }
-
 
   getLiveWidgets(assetType) {
     return new Promise<void>((resolve1) => {
-    const params = {
-      app: this.contextApp.app,
-      name: assetType
-    };
-    this.liveWidgets = [];
-    this.isGetWidgetsAPILoading = true;
-    this.apiSubscriptions.push(this.assetModelService.getAssetsModelLiveWidgets(params).subscribe(
-      async (response: any) => {
-        if (response?.live_widgets?.length > 0) {
-          response.live_widgets.forEach(widget => {
-            widget.edge_derived_props = false;
-            widget.cloud_derived_props = false;
-            widget.measured_props = false;
-            if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
-              widget?.properties.forEach(prop => {
-                this.addPropertyInList(prop.property);
-                if (prop?.property?.type === 'Edge Derived Properties') {
-                  widget.edge_derived_props = true;
-                } else if (prop?.property?.type === 'Cloud Derived Properties') {
-                  widget.cloud_derived_props = true;
+      const params = {
+        app: this.contextApp.app,
+        name: assetType,
+      };
+      this.liveWidgets = [];
+      this.isGetWidgetsAPILoading = true;
+      this.apiSubscriptions.push(
+        this.assetModelService.getAssetsModelLiveWidgets(params).subscribe(
+          async (response: any) => {
+            if (response?.live_widgets?.length > 0) {
+              response.live_widgets.forEach((widget) => {
+                widget.edge_derived_props = false;
+                widget.cloud_derived_props = false;
+                widget.measured_props = false;
+                if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
+                  widget?.properties.forEach((prop) => {
+                    this.addPropertyInList(prop.property);
+                    if (prop?.property?.type === 'Edge Derived Properties') {
+                      widget.edge_derived_props = true;
+                    } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                      widget.cloud_derived_props = true;
+                    } else {
+                      widget.measured_props = true;
+                    }
+                  });
                 } else {
-                  widget.measured_props = true;
+                  widget?.y1AxisProps?.forEach((prop) => {
+                    this.addPropertyInList(prop);
+                    if (prop?.type === 'Edge Derived Properties') {
+                      widget.edge_derived_props = true;
+                    } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                      widget.cloud_derived_props = true;
+                    } else {
+                      widget.measured_props = true;
+                    }
+                  });
+                  widget?.y2AxisProps?.forEach((prop) => {
+                    this.addPropertyInList(prop);
+                    if (prop?.type === 'Edge Derived Properties') {
+                      widget.edge_derived_props = true;
+                    } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                      widget.cloud_derived_props = true;
+                    } else {
+                      widget.measured_props = true;
+                    }
+                  });
+                }
+                if (widget.dashboardVisibility) {
+                  this.liveWidgets.push(widget);
                 }
               });
-              } else {
-                widget?.y1AxisProps?.forEach(prop => {
-                  this.addPropertyInList(prop);
-                  if (prop?.type === 'Edge Derived Properties') {
-                    widget.edge_derived_props = true;
-                  } else if (prop?.property?.type === 'Cloud Derived Properties') {
-                    widget.cloud_derived_props = true;
-                  } else {
-                    widget.measured_props = true;
-                  }
-                });
-                widget?.y2AxisProps?.forEach(prop => {
-                  this.addPropertyInList(prop);
-                  if (prop?.type === 'Edge Derived Properties') {
-                    widget.edge_derived_props = true;
-                  } else if (prop?.property?.type === 'Cloud Derived Properties') {
-                    widget.cloud_derived_props = true;
-                  } else {
-                    widget.measured_props = true;
-                  }
-                });
-              }
-            if (widget.dashboardVisibility) {
-              this.liveWidgets.push(widget);
             }
-          });
-        }
-        this.isGetWidgetsAPILoading = false;
-        resolve1();
-      }, () => {
-        this.isGetWidgetsAPILoading = false;
-        this.isTelemetryDataLoading = false;
-      }
-    ));
+            this.isGetWidgetsAPILoading = false;
+            resolve1();
+          },
+          () => {
+            this.isGetWidgetsAPILoading = false;
+            this.isTelemetryDataLoading = false;
+          }
+        )
+      );
     });
   }
-
 
   selectedDate(value: any, datepicker?: any) {
     // this.historyFilter.from_date = moment(value.start).utc().unix();
@@ -519,7 +542,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     console.log(this.historicalDateFilter);
     if (value.label === 'Custom Range') {
-      this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
+      this.selectedDateRange =
+        moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
     } else {
       this.selectedDateRange = value.label;
     }
@@ -529,7 +553,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.historicalDateFilter.isTypeEditable = false;
     }
   }
-
 
   onNumberChange(event, type) {
     if (Number(event.target.value) % 1 !== 0) {
@@ -543,10 +566,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   addPropertyInList(prop) {
-    if (this.widgetPropertyList.length === 0 ) {
+    if (this.widgetPropertyList.length === 0) {
       this.widgetPropertyList.push(prop);
     } else {
-      const index = this.widgetPropertyList.findIndex(propObj => propObj.json_key === prop.json_key);
+      const index = this.widgetPropertyList.findIndex((propObj) => propObj.json_key === prop.json_key);
       if (index === -1) {
         this.widgetPropertyList.push(prop);
       }
@@ -575,6 +598,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
       pagefilterObj['hierarchy'] = filterObj.asset.hierarchy;
       pagefilterObj['assets'] = filterObj.asset;
+      console.log(pagefilterObj);
       this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
     }
     this.originalFilter = JSON.parse(JSON.stringify(filterObj));
@@ -586,12 +610,15 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       await this.getAssetsModelProperties(asset_model);
       console.log(this.contextApp.dashboard_config);
-      if (!this.contextApp?.dashboard_config && !this.contextApp?.dashboard_config?.show_live_widgets
-        && !this.contextApp?.dashboard_config?.show_historical_widgets) {
-          this.contextApp.dashboard_config = {
-            show_live_widgets: true
-          };
-        }
+      if (
+        !this.contextApp?.dashboard_config &&
+        !this.contextApp?.dashboard_config?.show_live_widgets &&
+        !this.contextApp?.dashboard_config?.show_historical_widgets
+      ) {
+        this.contextApp.dashboard_config = {
+          show_live_widgets: true,
+        };
+      }
       if (this.contextApp?.dashboard_config?.show_live_widgets) {
         await this.getLiveWidgets(asset_model);
         this.getLiveWidgetTelemetryDetails(obj);
@@ -608,8 +635,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.lastReportedTelemetryValues = undefined;
     this.telemetryData = JSON.parse(JSON.stringify([]));
     obj.count = 1;
-    const midnight =  ((((moment().hour(0)).minute(0)).second(0)).utc()).unix();
-    const now = (moment().utc()).unix();
+    const midnight = moment().hour(0).minute(0).second(0).utc().unix();
+    const now = moment().utc().unix();
     obj.from_date = midnight;
     obj.to_date = now;
     obj.app = this.contextApp.app;
@@ -625,66 +652,70 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       asset_id: this.filterObj?.asset?.asset_id,
       type: 'telemetry',
       app: this.contextApp.app,
-
     };
     this.signalRService.connectToSignalR(obj1);
     this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(
-      data => {
+      (data) => {
         // if (data.type !== 'alert') {
-          if (data) {
-            console.log(data);
-            let obj =  JSON.parse(JSON.stringify(data));
-            delete obj.m;
-            delete obj.ed;
-            delete obj.cd;
-            obj = {...obj, ...data.m, ...data.ed, ...data.cd};
-            data = JSON.parse(JSON.stringify(obj));
-            console.log(obj);
-          }
-          this.processTelemetryData(data);
-          this.isTelemetryDataLoading = false;
+        if (data) {
+          console.log(data);
+          let obj = JSON.parse(JSON.stringify(data));
+          delete obj.m;
+          delete obj.ed;
+          delete obj.cd;
+          obj = { ...obj, ...data.m, ...data.ed, ...data.cd };
+          data = JSON.parse(JSON.stringify(obj));
+          console.log(obj);
         }
+        this.processTelemetryData(data);
+        this.isTelemetryDataLoading = false;
+      }
       // }
     );
-    this.apiSubscriptions.push(this.assetService.getLastTelmetry(this.contextApp.app, obj).subscribe(
-      (response: any) => {
-        if (response?.message) {
-          response.message.date = this.commonService.convertUTCDateToLocal(response.message_date);
-          response.message.message_date = this.commonService.convertUTCDateToLocal(response.message_date);
-          const obj = {};
-          // console.log(this.widgetPropertyList);
-          this.widgetPropertyList.forEach(prop => {
-            obj[prop?.json_key] = {
-              value: response.message[prop?.json_key],
-              date: response.message.message_date
-            };
-          });
-          this.previousProperties = [];
-          obj['previous_properties'] = [];
-          // console.log(obj);
-          this.telemetryObj = obj;
-          // this.telemetryObj = response.message;
-          // const hours = this.telemetryObj['Running Hours'].split(':');
-          // this.telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
-          // this.telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
-          if (environment.app === 'SopanCMS') {
-            this.getTimeDifference(
-              Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Hours')])),
-              Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Minutes')])));
+    this.apiSubscriptions.push(
+      this.assetService.getLastTelmetry(this.contextApp.app, obj).subscribe(
+        (response: any) => {
+          if (response?.message) {
+            response.message.date = this.commonService.convertUTCDateToLocal(response.message_date);
+            response.message.message_date = this.commonService.convertUTCDateToLocal(response.message_date);
+            const obj = {};
+            // console.log(this.widgetPropertyList);
+            this.widgetPropertyList.forEach((prop) => {
+              obj[prop?.json_key] = {
+                value: response.message[prop?.json_key],
+                date: response.message.message_date,
+              };
+            });
+            this.previousProperties = [];
+            obj['previous_properties'] = [];
+            // console.log(obj);
+            this.telemetryObj = obj;
+            // this.telemetryObj = response.message;
+            // const hours = this.telemetryObj['Running Hours'].split(':');
+            // this.telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;
+            // this.telemetryObj['Minutes'] = hours[1] ? Math.floor(Number(hours[1])) : 0;
+            if (environment.app === 'SopanCMS') {
+              this.getTimeDifference(
+                Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Hours')])),
+                Math.floor(Number(this.telemetryObj[this.getPropertyKey('Running Minutes')]))
+              );
+            }
+            this.lastReportedTelemetryValues = JSON.parse(JSON.stringify(this.telemetryObj));
+            this.telemetryData = [];
+            this.telemetryData.push(this.telemetryObj);
+            this.isTelemetryDataLoading = false;
+          } else {
+            this.isTelemetryDataLoading = false;
           }
-          this.lastReportedTelemetryValues = JSON.parse(JSON.stringify(this.telemetryObj));
-          this.telemetryData = [];
-          this.telemetryData.push(this.telemetryObj);
-          this.isTelemetryDataLoading = false;
-        } else {
-          this.isTelemetryDataLoading = false;
-        }
-        this.sampleCountInterval = setInterval(() => {
-          this.sampleCountArr.pop();
-          this.sampleCountArr.unshift(0);
-          this.sampleCountValue = this.sampleCountArr.reduce((a, b) => a + b, 0);
-        }, 1000);
-    }, error => this.isTelemetryDataLoading = false));
+          this.sampleCountInterval = setInterval(() => {
+            this.sampleCountArr.pop();
+            this.sampleCountArr.unshift(0);
+            this.sampleCountValue = this.sampleCountArr.reduce((a, b) => a + b, 0);
+          }, 1000);
+        },
+        (error) => (this.isTelemetryDataLoading = false)
+      )
+    );
   }
 
   getHistoricalWidgetTelemetryDetails() {
@@ -694,13 +725,13 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       $(child).remove();
     }
     console.log(this.historicalDateFilter);
-    this.historicalDateFilter?.widgets.forEach(widget => {
-      widget.y1axis.forEach(prop => {
+    this.historicalDateFilter?.widgets.forEach((widget) => {
+      widget.y1axis.forEach((prop) => {
         if (this.propList.indexOf(prop) === -1) {
           this.propList.push(prop);
         }
       });
-      widget.y2axis.forEach(prop => {
+      widget.y2axis.forEach((prop) => {
         if (this.propList.indexOf(prop) === -1) {
           this.propList.push(prop);
         }
@@ -716,8 +747,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     filterObj.from_date = null;
     filterObj.to_date = null;
     const propArr = [];
-    this.propertyList.forEach(propObj => {
-      this.propList.forEach(prop => {
+    this.propertyList.forEach((propObj) => {
+      this.propList.forEach((prop) => {
         if (prop === propObj.json_key) {
           propArr.push(propObj);
         }
@@ -743,7 +774,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     filterObj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
     filterObj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
     filterObj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
-    const now = (moment().utc()).unix();
+    const now = moment().utc().unix();
     if (this.historicalDateFilter.dateOption !== 'Custom Range') {
       const dateObj = this.commonService.getMomentStartEndDate(this.historicalDateFilter.dateOption);
       filterObj.from_date = dateObj.from_date;
@@ -756,11 +787,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     // filterObj.to_date = now;
     let method;
     if (filterObj.to_date - filterObj.from_date > 3600 && !this.historicalDateFilter.isTypeEditable) {
-        this.historicalDateFilter.isTypeEditable = true;
-        this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
-        return;
+      this.historicalDateFilter.isTypeEditable = true;
+      this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
+      return;
     }
-    const asset = this.assets.find(assetObj => assetObj.asset_id ===  filterObj.asset_id);
+    const asset = this.assets.find((assetObj) => assetObj.asset_id === filterObj.asset_id);
     filterObj.partition_key = asset.partition_key;
     delete filterObj.count;
     delete filterObj.asset;
@@ -769,23 +800,27 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.historicalDateFilter.isTypeEditable) {
       console.log(this.historicalDateFilter.type);
       if (this.historicalDateFilter.type) {
-        if (!this.historicalDateFilter.sampling_time || !this.historicalDateFilter.sampling_format ) {
+        if (!this.historicalDateFilter.sampling_time || !this.historicalDateFilter.sampling_format) {
           this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
           return;
         } else {
           delete filterObj.aggregation_minutes;
           delete filterObj.aggregation_format;
-          const records = this.commonService.calculateEstimatedRecords(this.historicalDateFilter.sampling_time * 60,
-            filterObj.from_date, filterObj.to_date);
-          if (records > 500 ) {
-            this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+          const records = this.commonService.calculateEstimatedRecords(
+            this.historicalDateFilter.sampling_time * 60,
+            filterObj.from_date,
+            filterObj.to_date
+          );
+          if (records > 500) {
+            this.loadingMessage =
+              'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
           }
           filterObj.sampling_time = this.historicalDateFilter.sampling_time;
           filterObj.sampling_format = this.historicalDateFilter.sampling_format;
           method = this.assetService.getAssetSamplingTelemetry(filterObj, this.contextApp.app);
         }
       } else {
-        if (!this.historicalDateFilter.aggregation_minutes || !this.historicalDateFilter.aggregation_format ) {
+        if (!this.historicalDateFilter.aggregation_minutes || !this.historicalDateFilter.aggregation_format) {
           this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
           return;
         } else {
@@ -793,9 +828,13 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           delete filterObj.sampling_format;
           filterObj.aggregation_minutes = this.historicalDateFilter.aggregation_minutes;
           filterObj.aggregation_format = this.historicalDateFilter.aggregation_format;
-          const records = this.commonService.calculateEstimatedRecords
-          (this.historicalDateFilter.aggregation_minutes * 60, filterObj.from_date, filterObj.to_date);
-          this.loadingMessage = 'Loading ' + records + ' data points.' + (records > 100 ? 'It may take some time.' : '') + 'Please wait...';
+          const records = this.commonService.calculateEstimatedRecords(
+            this.historicalDateFilter.aggregation_minutes * 60,
+            filterObj.from_date,
+            filterObj.to_date
+          );
+          this.loadingMessage =
+            'Loading ' + records + ' data points.' + (records > 100 ? 'It may take some time.' : '') + 'Please wait...';
           method = this.assetService.getAssetTelemetry(filterObj);
         }
       }
@@ -810,8 +849,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
       const frequency = this.commonService.getLowestValueFromList(frequencyArr);
       const records = this.commonService.calculateEstimatedRecords(frequency, filterObj.from_date, filterObj.to_date);
-      if (records > 500 ) {
-        this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+      if (records > 500) {
+        this.loadingMessage =
+          'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
       }
       method = this.assetService.getAssetTelemetry(filterObj);
     }
@@ -822,55 +862,53 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     // if (filterObj.message_props.charAt(filterObj.message_props.length - 1) === ',') {
     //   filterObj.message_props = filterObj.message_props.substring(0, filterObj.message_props.length - 1);
     // }
-    this.apiSubscriptions.push(method.subscribe(
-      (response: any) => {
+    this.apiSubscriptions.push(
+      method.subscribe((response: any) => {
         if (response && response.data) {
           this.telemetryData = response.data;
           const telemetryData = response.data;
-          telemetryData.forEach(item => {
+          telemetryData.forEach((item) => {
             item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
           });
           // this.loadGaugeChart(telemetryData[0]);
           // telemetryData.reverse();
-          this.isTelemetryDataLoading = false;         // this.loadLineChart(telemetryData);
+          this.isTelemetryDataLoading = false; // this.loadLineChart(telemetryData);
           if (telemetryData.length > 0) {
-          this.historicalDateFilter.widgets?.forEach(widget => {
-            let componentRef;
-            if (widget.chartType === 'LineChart' || widget.chartType === 'AreaChart') {
-              componentRef = this.factoryResolver.resolveComponentFactory(LiveChartComponent).create(this.injector);
-            } else if (widget.chartType === 'ColumnChart') {
-              componentRef = this.factoryResolver.resolveComponentFactory(ColumnChartComponent).create(this.injector);
-            } else if (widget.chartType === 'BarChart') {
-              componentRef = this.factoryResolver.resolveComponentFactory(BarChartComponent).create(this.injector);
-            } else if (widget.chartType === 'PieChart') {
-              componentRef = this.factoryResolver.resolveComponentFactory(PieChartComponent).create(this.injector);
-            } else if (widget.chartType === 'Table') {
-              componentRef = this.factoryResolver.resolveComponentFactory(DataTableComponent).create(this.injector);
-            }
-            componentRef.instance.telemetryData = JSON.parse(JSON.stringify(telemetryData));
-            componentRef.instance.propertyList = this.propertyList;
-            componentRef.instance.y1AxisProps = widget.y1axis;
-            componentRef.instance.y2AxisProps = widget.y2axis;
-            componentRef.instance.xAxisProps = widget.xAxis;
-            componentRef.instance.chartType = widget.chartType;
-            componentRef.instance.chartConfig = widget;
-            componentRef.instance.chartStartdate = filterObj.from_date;
-            componentRef.instance.chartEnddate = filterObj.to_date;
-            componentRef.instance.chartHeight = '23rem';
-            componentRef.instance.chartWidth = '100%';
-            componentRef.instance.chartTitle = widget.title;
-            componentRef.instance.chartId = widget.chart_Id;
-            this.appRef.attachView(componentRef.hostView);
-            const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
-            .rootNodes[0] as HTMLElement;
-            document.getElementById('historic_charts').prepend(domElem);
-          });
+            this.historicalDateFilter.widgets?.forEach((widget) => {
+              let componentRef;
+              if (widget.chartType === 'LineChart' || widget.chartType === 'AreaChart') {
+                componentRef = this.factoryResolver.resolveComponentFactory(LiveChartComponent).create(this.injector);
+              } else if (widget.chartType === 'ColumnChart') {
+                componentRef = this.factoryResolver.resolveComponentFactory(ColumnChartComponent).create(this.injector);
+              } else if (widget.chartType === 'BarChart') {
+                componentRef = this.factoryResolver.resolveComponentFactory(BarChartComponent).create(this.injector);
+              } else if (widget.chartType === 'PieChart') {
+                componentRef = this.factoryResolver.resolveComponentFactory(PieChartComponent).create(this.injector);
+              } else if (widget.chartType === 'Table') {
+                componentRef = this.factoryResolver.resolveComponentFactory(DataTableComponent).create(this.injector);
+              }
+              componentRef.instance.telemetryData = JSON.parse(JSON.stringify(telemetryData));
+              componentRef.instance.propertyList = this.propertyList;
+              componentRef.instance.y1AxisProps = widget.y1axis;
+              componentRef.instance.y2AxisProps = widget.y2axis;
+              componentRef.instance.xAxisProps = widget.xAxis;
+              componentRef.instance.chartType = widget.chartType;
+              componentRef.instance.chartConfig = widget;
+              componentRef.instance.chartStartdate = filterObj.from_date;
+              componentRef.instance.chartEnddate = filterObj.to_date;
+              componentRef.instance.chartHeight = '23rem';
+              componentRef.instance.chartWidth = '100%';
+              componentRef.instance.chartTitle = widget.title;
+              componentRef.instance.chartId = widget.chart_Id;
+              this.appRef.attachView(componentRef.hostView);
+              const domElem = (componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
+              document.getElementById('historic_charts').prepend(domElem);
+            });
           }
         }
-      }
-    ));
+      })
+    );
   }
-
 
   processTelemetryData(telemetryObj) {
     telemetryObj.date = this.commonService.convertUTCDateToLocal(telemetryObj.timestamp || telemetryObj.ts);
@@ -879,21 +917,24 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     if (environment.app === 'SopanCMS') {
       this.getTimeDifference(
         Math.floor(Number(telemetryObj[this.getPropertyKey('Running Hours')])),
-        Math.floor(Number(telemetryObj[this.getPropertyKey('Running Minutes')])));
+        Math.floor(Number(telemetryObj[this.getPropertyKey('Running Minutes')]))
+      );
     }
     if (this.telemetryObj) {
-      const interval = Math.round((moment(telemetryObj.message_date).diff(moment(this.telemetryObj.message_date), 'milliseconds')) / 1000);
+      const interval = Math.round(
+        moment(telemetryObj.message_date).diff(moment(this.telemetryObj.message_date), 'milliseconds') / 1000
+      );
       const diff1 = Math.abs(interval - this.normalModelInterval);
       const diff2 = Math.abs(interval - this.turboModeInterval);
       this.telemetryInterval = interval;
     }
     const obj = JSON.parse(JSON.stringify(this.telemetryObj));
     // console.log(this.widgetPropertyList);
-    this.widgetPropertyList.forEach(prop => {
+    this.widgetPropertyList.forEach((prop) => {
       if (prop?.json_key && telemetryObj[prop.json_key] !== undefined && telemetryObj[prop.json_key] !== null) {
         obj[prop?.json_key] = {
           value: telemetryObj[prop?.json_key],
-          date: telemetryObj.date
+          date: telemetryObj.date,
         };
       }
     });
@@ -901,7 +942,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     // console.log(obj);
     this.telemetryObj = obj;
     this.previousProperties = [];
-    Object.keys(this.telemetryObj).forEach(key => this.previousProperties.push(key));
+    Object.keys(this.telemetryObj).forEach((key) => this.previousProperties.push(key));
     this.lastReportedTelemetryValues = obj;
     if (this.telemetryData.length >= 15) {
       this.telemetryData.splice(0, 1);
@@ -911,43 +952,52 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getPropertyKey(name) {
-    return this.propertyList.filter(prop => prop.name === name)[0]?.json_key || name;
+    return this.propertyList.filter((prop) => prop.name === name)[0]?.json_key || name;
   }
 
   getMidNightHours(filterObj) {
     return new Promise<void>((resolve1, reject) => {
-      const obj = {...filterObj};
+      const obj = { ...filterObj };
       obj.order_dir = 'ASC';
       let message_props = '';
       this.propertyList.forEach((prop, index) => {
-        if (prop.json_key === this.getPropertyKey('Running Hours') || prop.json_key === this.getPropertyKey('Running Minutes')) {
+        if (
+          prop.json_key === this.getPropertyKey('Running Hours') ||
+          prop.json_key === this.getPropertyKey('Running Minutes')
+        ) {
           message_props = message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : '');
         }
       });
 
       obj.message_props = message_props;
       obj.partition_key = this.filterObj?.asset?.partition_key;
-      this.apiSubscriptions.push(this.assetService.getFirstTelmetry(this.contextApp.app, obj).subscribe(
-        (response: any) => {
-            this.midNightHour = response.message[this.getPropertyKey('Running Hours')] ?
-            Math.floor(Number(response.message[this.getPropertyKey('Running Hours')])) : 0;
-            this.midNightMinute = response.message[this.getPropertyKey('Running Minutes')] ?
-            Math.floor(Number(response.message[this.getPropertyKey('Running Minutes')])) : 0;
+      this.apiSubscriptions.push(
+        this.assetService.getFirstTelmetry(this.contextApp.app, obj).subscribe(
+          (response: any) => {
+            this.midNightHour = response.message[this.getPropertyKey('Running Hours')]
+              ? Math.floor(Number(response.message[this.getPropertyKey('Running Hours')]))
+              : 0;
+            this.midNightMinute = response.message[this.getPropertyKey('Running Minutes')]
+              ? Math.floor(Number(response.message[this.getPropertyKey('Running Minutes')]))
+              : 0;
             resolve1();
-        }, error => {
-          // this.isTelemetryDataLoading = false;
-          // alert('111111');
-          resolve1();
-        }));
+          },
+          (error) => {
+            // this.isTelemetryDataLoading = false;
+            // alert('111111');
+            resolve1();
+          }
+        )
+      );
     });
   }
 
   getTimeDifference(hour, minute) {
-    const midNightTime = (this.midNightHour * 60) + this.midNightMinute;
-    const currentTime = (Number(hour) * 60) + Number(minute);
+    const midNightTime = this.midNightHour * 60 + this.midNightMinute;
+    const currentTime = Number(hour) * 60 + Number(minute);
     const diff = currentTime - midNightTime;
-    this.currentHour = Math.floor((diff / 60));
-    this.currentMinute = diff - (this.currentHour * 60);
+    this.currentHour = Math.floor(diff / 60);
+    this.currentMinute = diff - this.currentHour * 60;
   }
 
   onAssetSelection() {
@@ -970,28 +1020,35 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.propertyList.length === 0) {
         const obj = {
           app: this.contextApp.app,
-          name: assetModel
+          name: assetModel,
         };
-        this.apiSubscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
-          (response: any) => {
-            this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-            response.properties.edge_derived_properties = response.properties.edge_derived_properties ?
-            response.properties.edge_derived_properties : [];
-            response.properties.cloud_derived_properties = response.properties.cloud_derived_properties ?
-            response.properties.cloud_derived_properties : [];
-            response.properties.edge_derived_properties.forEach(prop => {
-              prop.type = 'Edge Derived Properties';
-              console.log(prop);
-              this.propertyList.push(prop);
-            });
-            response.properties.cloud_derived_properties.forEach(prop => {
-              prop.type = 'Cloud Derived Properties';
-              console.log(prop);
-              this.propertyList.push(prop);
-            });
-            resolve1();
-          }, error => this.isTelemetryDataLoading = false
-        ));
+        this.apiSubscriptions.push(
+          this.assetModelService.getAssetsModelProperties(obj).subscribe(
+            (response: any) => {
+              this.propertyList = response.properties.measured_properties
+                ? response.properties.measured_properties
+                : [];
+              response.properties.edge_derived_properties = response.properties.edge_derived_properties
+                ? response.properties.edge_derived_properties
+                : [];
+              response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
+                ? response.properties.cloud_derived_properties
+                : [];
+              response.properties.edge_derived_properties.forEach((prop) => {
+                prop.type = 'Edge Derived Properties';
+                console.log(prop);
+                this.propertyList.push(prop);
+              });
+              response.properties.cloud_derived_properties.forEach((prop) => {
+                prop.type = 'Cloud Derived Properties';
+                console.log(prop);
+                this.propertyList.push(prop);
+              });
+              resolve1();
+            },
+            (error) => (this.isTelemetryDataLoading = false)
+          )
+        );
       } else {
         resolve1();
       }
@@ -1000,26 +1057,33 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getTelemetryMode(assetId) {
     // this.signalRModeValue = true;
-    this.apiSubscriptions.push(this.assetService.getTelemetryMode(this.contextApp.app, assetId).subscribe(
-      (response: any) => {
-        const newMode = response?.mode?.toLowerCase() === 'normal' ? true :
-        (response?.mode?.toLowerCase() === 'turbo' ? false : true);
-        if (this.signalRModeValue === newMode) {
-          // $('#overlay').hide();
-          this.isC2dAPILoading = false;
-          this.c2dResponseMessage = [];
-          this.c2dLoadingMessage = undefined;
-          clearInterval(this.c2dResponseInterval);
-        } else {
-          const arr = [];
-          this.telemetryData = JSON.parse(JSON.stringify([]));
-          this.chartService.clearDashboardTelemetryList.emit([]);
-          this.telemetryData = JSON.parse(JSON.stringify(arr));
-        }
-        this.signalRModeValue = newMode;
-        this.isTelemetryModeAPICalled = false;
-      }, error => this.isTelemetryDataLoading = false
-    ));
+    this.apiSubscriptions.push(
+      this.assetService.getTelemetryMode(this.contextApp.app, assetId).subscribe(
+        (response: any) => {
+          const newMode =
+            response?.mode?.toLowerCase() === 'normal'
+              ? true
+              : response?.mode?.toLowerCase() === 'turbo'
+              ? false
+              : true;
+          if (this.signalRModeValue === newMode) {
+            // $('#overlay').hide();
+            this.isC2dAPILoading = false;
+            this.c2dResponseMessage = [];
+            this.c2dLoadingMessage = undefined;
+            clearInterval(this.c2dResponseInterval);
+          } else {
+            const arr = [];
+            this.telemetryData = JSON.parse(JSON.stringify([]));
+            this.chartService.clearDashboardTelemetryList.emit([]);
+            this.telemetryData = JSON.parse(JSON.stringify(arr));
+          }
+          this.signalRModeValue = newMode;
+          this.isTelemetryModeAPICalled = false;
+        },
+        (error) => (this.isTelemetryDataLoading = false)
+      )
+    );
   }
 
   ngOnDestroy() {
@@ -1028,6 +1092,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.signalRTelemetrySubscription?.unsubscribe();
     this.signalRService.disconnectFromSignalR('telemetry');
     clearInterval(this.c2dResponseInterval);
-    this.apiSubscriptions.forEach(subscription => subscription.unsubscribe());
+    this.apiSubscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 }

@@ -11,10 +11,9 @@ import { DaterangepickerComponent } from 'ng2-daterangepicker';
 @Component({
   selector: 'app-campaign-management-list',
   templateUrl: './campaign-management-list.component.html',
-  styleUrls: ['./campaign-management-list.component.css']
+  styleUrls: ['./campaign-management-list.component.css'],
 })
 export class CampaignManagementListComponent implements OnInit, AfterViewInit {
-
   tileData: any;
   subscriptions: Subscription[] = [];
   contextApp: any;
@@ -30,7 +29,7 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
     autoUpdateInput: false,
     maxDate: moment(),
     timePicker: true,
-    ranges: CONSTANTS.DATE_OPTIONS
+    ranges: CONSTANTS.DATE_OPTIONS,
   };
   @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   selectedDateRange: string;
@@ -41,7 +40,7 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
     private campaignService: CampaignService,
     private cdr: ChangeDetectorRef,
     private toasterService: ToasterService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -59,7 +58,7 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
 
   getTileName() {
     let selectedItem;
-    this.contextApp.menu_settings.main_menu.forEach(item => {
+    this.contextApp.menu_settings.main_menu.forEach((item) => {
       if (item.system_name === 'Campaigns') {
         selectedItem = item.showAccordion;
       }
@@ -85,8 +84,10 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
       if (this.filterObj.dateOption !== 'Custom Range') {
         this.selectedDateRange = this.filterObj.dateOption;
       } else {
-        this.selectedDateRange = moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
-        moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+        this.selectedDateRange =
+          moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') +
+          ' to ' +
+          moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
       }
       this.previousFilterObj = JSON.parse(JSON.stringify(this.filterObj));
       this.getCampaignsList();
@@ -105,7 +106,7 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
     }
     const obj = {
       from_date: this.filterObj.from_date,
-      to_date: this.filterObj.to_date
+      to_date: this.filterObj.to_date,
     };
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'View Report');
@@ -114,22 +115,27 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
     this.previousFilterObj = JSON.parse(JSON.stringify(this.filterObj));
     this.campaigns = [];
     this.isGetCampaignAPILoading = true;
-    this.subscriptions.push(this.campaignService.getJobCampaigns(this.contextApp.app, obj).subscribe(
-      (response: any) => {
-        if (response?.data?.length > 0) {
-          this.campaigns = response.data;
-          this.campaigns.forEach(campaign => {
-            campaign.local_start_date = this.commonService.convertUTCDateToLocalDate(campaign.expected_start_date);
-            campaign.local_end_date = this.commonService.convertUTCDateToLocalDate(campaign.expected_end_date);
-            campaign.local_actual_start_date = this.commonService.convertUTCDateToLocalDate(campaign.actual_start_date);
-            campaign.local_actual_end_date = this.commonService.convertUTCDateToLocalDate(campaign.actual_end_date);
-          });
+    this.subscriptions.push(
+      this.campaignService.getJobCampaigns(this.contextApp.app, obj).subscribe(
+        (response: any) => {
+          if (response?.data?.length > 0) {
+            this.campaigns = response.data;
+            this.campaigns.forEach((campaign) => {
+              campaign.local_start_date = this.commonService.convertUTCDateToLocalDate(campaign.expected_start_date);
+              campaign.local_end_date = this.commonService.convertUTCDateToLocalDate(campaign.expected_end_date);
+              campaign.local_actual_start_date = this.commonService.convertUTCDateToLocalDate(
+                campaign.actual_start_date
+              );
+              campaign.local_actual_end_date = this.commonService.convertUTCDateToLocalDate(campaign.actual_end_date);
+            });
+          }
+          this.isGetCampaignAPILoading = false;
+        },
+        (error) => {
+          this.isGetCampaignAPILoading = false;
         }
-        this.isGetCampaignAPILoading = false;
-      }, error => {
-        this.isGetCampaignAPILoading = false;
-      }
-    ));
+      )
+    );
   }
 
   selectedDate(value: any, datepicker?: any) {
@@ -144,7 +150,8 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
       this.filterObj.to_date = moment(value.end).utc().unix();
     }
     if (value.label === 'Custom Range') {
-      this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
+      this.selectedDateRange =
+        moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
     } else {
       this.selectedDateRange = value.label;
     }
@@ -153,20 +160,26 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
 
   startStopCampaign(campaignObj, index, type) {
     this.isAPILoading[index] = true;
-    const method = type === 'start' ? this.campaignService.startJobCampaign(this.contextApp.app, campaignObj.job_id) :
-    this.campaignService.stopJobCampaign(this.contextApp.app, campaignObj.job_id);
-    this.subscriptions.push(method.subscribe(
-      (response: any) => {
-        this.toasterService.showSuccess(type === 'start' ? APIMESSAGES.START_CAMPAIGN_SUCCESS :
-        APIMESSAGES.STOP_CAMPAIGN_SUCCESS, type === 'start' ? 'Start Campaign' : 'Stop Campaign');
-        this.isAPILoading = {};
-        this.getCampaignsList();
-      }, error => {
-        this.toasterService.showError(type === 'start' ? APIMESSAGES.START_CAMPAIGN_SUCCESS :
-        APIMESSAGES.STOP_CAMPAIGN_SUCCESS, type === 'start' ? 'Start Campaign' : 'Stop Campaign');
-        this.isAPILoading = {};
-      }
-    ));
+    const method =
+      type === 'start'
+        ? this.campaignService.startJobCampaign(this.contextApp.app, campaignObj.job_id)
+        : this.campaignService.stopJobCampaign(this.contextApp.app, campaignObj.job_id);
+    this.subscriptions.push(
+      method.subscribe(
+        (response: any) => {
+          this.toasterService.showSuccess(
+            type === 'start' ? APIMESSAGES.START_CAMPAIGN_SUCCESS : APIMESSAGES.STOP_CAMPAIGN_SUCCESS,
+            type === 'start' ? 'Start Campaign' : 'Stop Campaign'
+          );
+          this.isAPILoading = {};
+          this.getCampaignsList();
+        },
+        (error) => {
+          this.toasterService.showError(error.message, type === 'start' ? 'Start Campaign' : 'Stop Campaign');
+          this.isAPILoading = {};
+        }
+      )
+    );
   }
 
   openCampaignCreateModal() {
@@ -177,6 +190,4 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
     this.isAddCampaignModalOpen = false;
     this.getCampaignsList();
   }
-
-
 }

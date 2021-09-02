@@ -1,6 +1,16 @@
 import { AssetModelService } from './../../../../services/asset-model/asset-model.service';
 import { Asset } from './../../../../models/asset.model';
-import { ApplicationRef, Component, ComponentFactoryResolver, EmbeddedViewRef, Injector, OnChanges, OnInit, SimpleChanges, OnDestroy } from '@angular/core';
+import {
+  ApplicationRef,
+  Component,
+  ComponentFactoryResolver,
+  EmbeddedViewRef,
+  Injector,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  OnDestroy,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Input } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
@@ -19,10 +29,9 @@ declare var $: any;
 @Component({
   selector: 'app-asset-model-history-layout',
   templateUrl: './asset-model-history-layout.component.html',
-  styleUrls: ['./asset-model-history-layout.component.css']
+  styleUrls: ['./asset-model-history-layout.component.css'],
 })
 export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDestroy {
-
   @Input() assetModel: any;
   apiSubscriptions: Subscription[] = [];
   historyData: any[] = [];
@@ -40,37 +49,46 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
   // chart selection
   chartCount = 0;
   chartTypes = ['Bar Chart', 'Column Chart', 'Line Chart', 'Area Chart', 'Pie Chart', 'Data Table'];
-  chartTypeValues = [{
-    name: 'Bar Chart',
-    value: 'BarChart',
-    icon: 'fa-bar-chart fa-rotate-90'
-  },
-  {
-    name: 'Column Chart',
-    value: 'ColumnChart',
-    icon: 'fa-bar-chart'
-  },
-  {
-    name: 'Line Chart',
-    value: 'LineChart',
-    icon: 'fa-line-chart'
-  },
-  {
-    name: 'Area Chart',
-    value: 'AreaChart',
-    icon: 'fa-area-chart'
-  },
-  {
-    name: 'Pie Chart',
-    value: 'PieChart',
-    icon: 'fa-pie-chart'
-  },
-  {
-    name: 'Data Table',
-    value: 'Table',
-    icon: 'fa-table'
-  }];
-  chartIcons = ['fa-bar-chart fa-rotate-90', 'fa-bar-chart', 'fa-line-chart', 'fa-area-chart', 'fa-pie-chart', 'fa-table'];
+  chartTypeValues = [
+    {
+      name: 'Bar Chart',
+      value: 'BarChart',
+      icon: 'fa-bar-chart fa-rotate-90',
+    },
+    {
+      name: 'Column Chart',
+      value: 'ColumnChart',
+      icon: 'fa-bar-chart',
+    },
+    {
+      name: 'Line Chart',
+      value: 'LineChart',
+      icon: 'fa-line-chart',
+    },
+    {
+      name: 'Area Chart',
+      value: 'AreaChart',
+      icon: 'fa-area-chart',
+    },
+    {
+      name: 'Pie Chart',
+      value: 'PieChart',
+      icon: 'fa-pie-chart',
+    },
+    {
+      name: 'Data Table',
+      value: 'Table',
+      icon: 'fa-table',
+    },
+  ];
+  chartIcons = [
+    'fa-bar-chart fa-rotate-90',
+    'fa-bar-chart',
+    'fa-line-chart',
+    'fa-area-chart',
+    'fa-pie-chart',
+    'fa-table',
+  ];
   public selectedChartType = 'Widget Type';
   columnNames = [];
   layoutJson = [];
@@ -95,26 +113,23 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
     private injector: Injector,
     private assetModelService: AssetModelService,
     private applicationService: ApplicationService
-  ) {
-
-  }
+  ) {}
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getAssetsModelProperties();
     if (this.propertyList) {
-      this.propertyList.forEach(item => {
+      this.propertyList.forEach((item) => {
         this.dropdownPropList.push({
           id: item.name,
-          value: item
+          value: item,
         });
       });
       console.log(this.dropdownPropList);
     }
     this.isHistoryAPILoading = true;
     this.getLayout();
-
   }
 
   getAssetsModelProperties() {
@@ -122,28 +137,30 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
     return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
-        name: this.assetModel.name
+        name: this.assetModel.name,
       };
-      this.subscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
-        (response: any) => {
-          response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
+      this.subscriptions.push(
+        this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
+          response.properties?.measured_properties.forEach((prop) => (prop.type = 'Measured Properties'));
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-          response.properties.edge_derived_properties = response.properties.edge_derived_properties ?
-          response.properties.edge_derived_properties : [];
-          response.properties.cloud_derived_properties = response.properties.cloud_derived_properties ?
-          response.properties.cloud_derived_properties : [];
-          response.properties.edge_derived_properties.forEach(prop => {
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties
+            ? response.properties.edge_derived_properties
+            : [];
+          response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
+            ? response.properties.cloud_derived_properties
+            : [];
+          response.properties.edge_derived_properties.forEach((prop) => {
             prop.type = 'Edge Derived Properties';
             this.propertyList.push(prop);
           });
-          response.properties.cloud_derived_properties.forEach(prop => {
+          response.properties.cloud_derived_properties.forEach((prop) => {
             prop.type = 'Cloud Derived Properties';
             this.propertyList.push(prop);
           });
           console.log(this.propertyList);
           resolve();
-        }
-      ));
+        })
+      );
     });
   }
 
@@ -163,7 +180,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
   }
 
   setChartType() {
-    return this.chartTypeValues.find(type => {
+    return this.chartTypeValues.find((type) => {
       console.log(type.name, '======', this.selectedChartType, '======', type);
       return type.name === this.selectedChartType;
     })?.value;
@@ -179,10 +196,10 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       return;
     }
     let arr = [];
-    this.y1AxisProps.forEach(prop => arr.push(prop.json_key));
+    this.y1AxisProps.forEach((prop) => arr.push(prop.json_key));
     this.y1AxisProps = [...arr];
     arr = [];
-    this.y2AxisProps.forEach(prop => arr.push(prop.json_key));
+    this.y2AxisProps.forEach((prop) => arr.push(prop.json_key));
     this.y2AxisProps = [...arr];
     const obj = {
       title: this.chartTitle,
@@ -195,10 +212,10 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       xAxis: this.xAxisProps,
       edge_derived_props: false,
       cloud_derived_props: false,
-      measured_props: false
+      measured_props: false,
     };
-    obj.y1axis.forEach(prop => {
-      const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
+    obj.y1axis.forEach((prop) => {
+      const type = this.propertyList.find((propObj) => propObj.json_key === prop)?.type;
       if (type === 'Edge Derived Properties') {
         obj.edge_derived_props = true;
       } else if (type === 'Cloud Derived Properties') {
@@ -207,8 +224,8 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
         obj.measured_props = true;
       }
     });
-    obj.y2axis.forEach(prop => {
-      const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
+    obj.y2axis.forEach((prop) => {
+      const type = this.propertyList.find((propObj) => propObj.json_key === prop)?.type;
       if (type === 'Edge Derived Properties') {
         obj.edge_derived_props = true;
       } else if (type === 'Cloud Derived Properties') {
@@ -217,7 +234,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
         obj.measured_props = true;
       }
     });
-    const index = this.layoutJson.findIndex(widget => widget.title.toLowerCase() === obj.title.toLowerCase());
+    const index = this.layoutJson.findIndex((widget) => widget.title.toLowerCase() === obj.title.toLowerCase());
     if (index === -1) {
       await this.plotChart(obj);
       this.clear();
@@ -237,27 +254,30 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       const currentDate = moment();
       for (let i = 0; i < 10; i++) {
         const obj = {
-          message_date: currentDate.subtract(i, 'minute').format('DD-MMM-YYYY hh:mm:ss A')
+          message_date: currentDate.subtract(i, 'minute').format('DD-MMM-YYYY hh:mm:ss A'),
         };
-        y1Axis.forEach(element => {
-          this.propertyList.forEach(prop => {
-            if ( element === prop.json_key) {
+        y1Axis.forEach((element) => {
+          this.propertyList.forEach((prop) => {
+            if (element === prop.json_key) {
               if (prop.data_type === 'Number') {
                 obj[prop.json_key] = this.commonService.randomIntFromInterval(
                   prop.json_model[prop.json_key].minValue ? prop.json_model[prop.json_key].minValue : 0,
                   prop.json_model[prop.json_key].maxValue ? prop.json_model[prop.json_key].maxValue : 100
                 );
               } else if (prop.data_type === 'Enum') {
-                obj[prop.json_key] = prop.json_model[prop.json_key].enum[this.commonService.randomIntFromInterval(
-                  0,
-                  prop.json_model[prop.json_key].enum ? prop.json_model[prop.json_key].enum.length : 0
-                )];
+                obj[prop.json_key] =
+                  prop.json_model[prop.json_key].enum[
+                    this.commonService.randomIntFromInterval(
+                      0,
+                      prop.json_model[prop.json_key].enum ? prop.json_model[prop.json_key].enum.length : 0
+                    )
+                  ];
               }
             }
           });
         });
-        y2Axis.forEach(element => {
-          this.propertyList.forEach(prop => {
+        y2Axis.forEach((element) => {
+          this.propertyList.forEach((prop) => {
             if (element === prop.json_key) {
               if (prop.data_type === 'Number') {
                 obj[prop.json_key] = this.commonService.randomIntFromInterval(
@@ -297,10 +317,9 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       componentRef.instance.chartId = layoutJson.chart_Id;
       componentRef.instance.isOverlayVisible = true;
       componentRef.instance.hideCancelButton = !this.assetModel.freezed;
-      componentRef.instance.removeWidget = id => this.removeWidget(id);
+      componentRef.instance.removeWidget = (id) => this.removeWidget(id);
       this.appRef.attachView(componentRef.hostView);
-      const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
-      .rootNodes[0] as HTMLElement;
+      const domElem = (componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
       document.getElementById('layoutWidgetContainer').prepend(domElem);
       resolve();
     });
@@ -342,81 +361,83 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
     // this.layoutJson.reverse();
     this.assetModel.historical_widgets = this.layoutJson;
     this.assetModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    this.subscriptions.push(this.assetModelService.updateAssetsModel(this.assetModel, this.contextApp.app).subscribe(
-      (response: any) => {
-        this.toasterService.showSuccess(response.message, 'Save Layout');
-        this.getLayout();
-      },
-      (err) => {
-        this.toasterService.showError(err.message, 'Save Layout');
-      }
-    ));
-
+    this.subscriptions.push(
+      this.assetModelService.updateAssetsModel(this.assetModel, this.contextApp.app).subscribe(
+        (response: any) => {
+          this.toasterService.showSuccess(response.message, 'Save Layout');
+          this.getLayout();
+        },
+        (err) => {
+          this.toasterService.showError(err.message, 'Save Layout');
+        }
+      )
+    );
   }
 
   getLayout() {
     const params = {
       app: this.contextApp.app,
-      name: this.assetModel.name
+      name: this.assetModel.name,
     };
     this.dropdownWidgetList = [];
     this.selectedWidgets = [];
     this.layoutJson = [];
-    this.subscriptions.push(this.assetModelService.getAssetsModelLayout(params).subscribe(
-      async (response: any) => {
-        if (response?.historical_widgets?.length > 0) {
-          this.layoutJson = response.historical_widgets;
-          this.storedLayout = response.historical_widgets;
-          this.layoutJson.forEach((item) => {
-            this.dropdownWidgetList.push({
-              id: item.title,
-              value: item
+    this.subscriptions.push(
+      this.assetModelService.getAssetsModelLayout(params).subscribe(
+        async (response: any) => {
+          if (response?.historical_widgets?.length > 0) {
+            this.layoutJson = response.historical_widgets;
+            this.storedLayout = response.historical_widgets;
+            this.layoutJson.forEach((item) => {
+              this.dropdownWidgetList.push({
+                id: item.title,
+                value: item,
+              });
+              item.edge_derived_props = false;
+              item.measured_props = false;
+              item.cloud_derived_props = false;
+              item.y1axis.forEach((prop) => {
+                const type = this.propertyList.find((propObj) => propObj.json_key === prop)?.type;
+                if (type === 'Edge Derived Properties') {
+                  item.edge_derived_props = true;
+                } else if (type === 'Cloud Derived Properties') {
+                  item.cloud_derived_props = true;
+                } else {
+                  item.measured_props = true;
+                }
+              });
+              item.y2axis.forEach((prop) => {
+                const type = this.propertyList.find((propObj) => propObj.json_key === prop)?.type;
+                if (type === 'Edge Derived Properties') {
+                  item.edge_derived_props = true;
+                } else if (type === 'Cloud Derived Properties') {
+                  item.cloud_derived_props = true;
+                } else {
+                  item.measured_props = true;
+                }
+              });
             });
-            item.edge_derived_props = false;
-            item.measured_props = false;
-            item.cloud_derived_props = false;
-            item.y1axis.forEach(prop => {
-              const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'Edge Derived Properties') {
-                item.edge_derived_props = true;
-              } else if (type === 'Cloud Derived Properties') {
-                item.cloud_derived_props = true;
-              } else {
-                item.measured_props = true;
-              }
-            });
-            item.y2axis.forEach(prop => {
-              const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'Edge Derived Properties') {
-                item.edge_derived_props = true;
-              } else if (type === 'Cloud Derived Properties') {
-                item.cloud_derived_props = true;
-              } else {
-                item.measured_props = true;
-              }
-            });
-          });
-          this.renderLayout();
-        }
-        this.isHistoryAPILoading = false;
-      }, () => this.isHistoryAPILoading = false
-    ));
+            this.renderLayout();
+          }
+          this.isHistoryAPILoading = false;
+        },
+        () => (this.isHistoryAPILoading = false)
+      )
+    );
   }
 
-  y1Deselect(e){
+  y1Deselect(e) {
     if (e === [] || e.length === 0) {
       this.y1AxisProps = [];
     }
   }
-  y2Deselect(e){
+  y2Deselect(e) {
     if (e === [] || e.length === 0) {
       this.y2AxisProps = [];
     }
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
-
-
 }

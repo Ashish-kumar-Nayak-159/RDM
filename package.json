@@ -7,13 +7,7 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "precommit": "run-s format:fix lint",
-    "format:fix": "pretty-quick --staged",
-    "format:check":
-      "prettier --config ./.prettierrc --list-different \"src/{app,environments,assets}/**/*{.ts,.js,.json,.css,.scss}\"",
-    "format:all":
-      "prettier --config ./.prettierrc --write \"src/{app,environments,assets}/**/*{.ts,.js,.json,.css,.scss}\"",
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {

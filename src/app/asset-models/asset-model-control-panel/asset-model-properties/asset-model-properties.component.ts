@@ -164,6 +164,13 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         headerClass: '',
         valueclass: '',
       });
+      this.propertyTableConfig.data.splice(4, 0, {
+        name: 'Source',
+        key: 'metadata.slave_id',
+        type: 'text',
+        headerClass: '',
+        valueclass: '',
+      });
     }
     if (this.type.includes('derived')) {
       // this.propertyTableConfig.data[3].btnData.splice(1, 0, {
@@ -174,26 +181,14 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       //   tooltip: 'Configure Property'
       // });
       this.propertyTableConfig.data.splice(3, 0, {
-        name: 'Condition',
+        name: 'Formula',
         key: 'condition',
         type: 'text',
         headerClass: '',
         valueclass: '',
       });
-      if (this.type.includes('edge_derived')) {
-        this.propertyTableConfig.data.splice(4, 0, {
-          name: 'Group',
-          key: 'group',
-          type: 'text',
-          headerClass: '',
-          valueclass: '',
-        });
-        this.propertyTableConfig.data[5].btnData.splice(1);
-        this.propertyTableConfig.data[5].btnData.splice(2);
-      } else {
-        this.propertyTableConfig.data[4].btnData.splice(1);
-        this.propertyTableConfig.data[4].btnData.splice(2);
-      }
+      this.propertyTableConfig.data[4].btnData.splice(1);
+      this.propertyTableConfig.data[4].btnData.splice(2);
     }
 
     this.getAssetsModelProperties();

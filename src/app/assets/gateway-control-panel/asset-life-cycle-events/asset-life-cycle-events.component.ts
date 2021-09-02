@@ -12,10 +12,9 @@ declare var $: any;
 @Component({
   selector: 'app-asset-life-cycle-events',
   templateUrl: './asset-life-cycle-events.component.html',
-  styleUrls: ['./asset-life-cycle-events.component.css']
+  styleUrls: ['./asset-life-cycle-events.component.css'],
 })
 export class AssetLifeCycleEventsComponent implements OnInit, OnDestroy {
-
   filterObj: any = {};
   lifeCycleEvents: any[] = [];
   @Input() asset: Asset = new Asset();
@@ -32,7 +31,7 @@ export class AssetLifeCycleEventsComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private route: ActivatedRoute,
     private toasterService: ToasterService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -51,8 +50,8 @@ export class AssetLifeCycleEventsComponent implements OnInit, OnDestroy {
         {
           name: 'Event',
           key: 'event_type',
-        }
-      ]
+        },
+      ],
     };
     this.loadFromCache();
     this.filterObj.epoch = true;
@@ -85,7 +84,7 @@ export class AssetLifeCycleEventsComponent implements OnInit, OnDestroy {
       filterObj.from_date = filterObj.from_date;
       filterObj.to_date = filterObj.to_date;
     }
-    const obj = {...filterObj};
+    const obj = { ...filterObj };
 
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'Get Asset Life cycle events');
@@ -102,35 +101,33 @@ export class AssetLifeCycleEventsComponent implements OnInit, OnDestroy {
     }
     delete obj.dateOption;
     this.filterObj = filterObj;
-    this.apiSubscriptions.push(this.assetService.getAssetLifeCycleEvents(obj).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.lifeCycleEvents = response.data;
-          this.lifeCycleEvents.forEach(item => {
-            const eventMsg = item.event_type.split('.');
-            eventMsg[eventMsg.length - 1] = eventMsg[eventMsg.length - 1].replace('Asset', '');
-            eventMsg[eventMsg.length - 1] = (item.category === CONSTANTS.IP_GATEWAY ? 'Gateway ' : 'Asset ' ) +
-            eventMsg[eventMsg.length - 1];
-            item.event_type = eventMsg[eventMsg.length - 1];
-            item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
-          });
-        }
-        if (this.filterObj.dateOption !== 'Custom Range') {
-          this.eventTableConfig.dateRange = this.filterObj.dateOption;
-        }
-        else {
-          this.eventTableConfig.dateRange = 'this selected range';
-        }
-        this.isLifeCycleEventsLoading = false;
-      }, error => this.isLifeCycleEventsLoading = false
-    ));
+    this.apiSubscriptions.push(
+      this.assetService.getAssetLifeCycleEvents(obj).subscribe(
+        (response: any) => {
+          if (response && response.data) {
+            this.lifeCycleEvents = response.data;
+            this.lifeCycleEvents.forEach((item) => {
+              const eventMsg = item.event_type.split('.');
+              eventMsg[eventMsg.length - 1] = eventMsg[eventMsg.length - 1].replace('Device', '');
+              eventMsg[eventMsg.length - 1] =
+                (item.category === CONSTANTS.IP_GATEWAY ? 'Gateway ' : 'Asset ') + eventMsg[eventMsg.length - 1];
+              item.event_type = eventMsg[eventMsg.length - 1];
+              item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
+            });
+          }
+          if (this.filterObj.dateOption !== 'Custom Range') {
+            this.eventTableConfig.dateRange = this.filterObj.dateOption;
+          } else {
+            this.eventTableConfig.dateRange = 'this selected range';
+          }
+          this.isLifeCycleEventsLoading = false;
+        },
+        (error) => (this.isLifeCycleEventsLoading = false)
+      )
+    );
   }
-
-
 
   ngOnDestroy() {
-    this.apiSubscriptions.forEach(subscribe => subscribe.unsubscribe());
+    this.apiSubscriptions.forEach((subscribe) => subscribe.unsubscribe());
   }
-
-
 }

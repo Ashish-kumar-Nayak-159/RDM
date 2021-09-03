@@ -11,10 +11,9 @@ declare var $: any;
 @Component({
   selector: 'app-fota',
   templateUrl: './fota.component.html',
-  styleUrls: ['./fota.component.css']
+  styleUrls: ['./fota.component.css'],
 })
 export class FotaComponent implements OnInit {
-
   @Input() assetTwin: any;
   @Input() asset: any;
   @Output() refreshAssetTwin: EventEmitter<any> = new EventEmitter<any>();
@@ -45,13 +44,13 @@ export class FotaComponent implements OnInit {
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
     private commonService: CommonService
-  ) { }
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.isGetAPILoading = true;
     this.getAssetsOfGateway();
-    this.c2dJobFilter.request_type = 'FOTA - INSTALL_PACKAGE,FOTA - UPGRADE_PACKAGE,FOTA - DELETE_PACKAGE';
+    this.c2dJobFilter.request_type = 'Install Package,Uninstall Package,Upgrade Package';
     this.c2dJobFilter.job_type = 'Twin';
     await this.getAssetModelData();
     await this.getAssetTwinData();
@@ -71,7 +70,8 @@ export class FotaComponent implements OnInit {
             this.assets = response.data;
           }
           this.isAssetsAPILoading = false;
-        }, error => this.isAssetsAPILoading = false
+        },
+        (error) => (this.isAssetsAPILoading = false)
       )
     );
   }
@@ -84,11 +84,11 @@ export class FotaComponent implements OnInit {
             if (response.data?.length > 0) {
               this.assetPackages = response.data;
               console.log('packagesssss   ', this.assetPackages);
-              this.assetPackages.forEach(packageObj => {
+              this.assetPackages.forEach((packageObj) => {
                 if (this.assetApps.indexOf(packageObj.name) === -1) {
                   this.assetApps.push(packageObj.name);
                 }
-                this.applicationList.forEach(app => {
+                this.applicationList.forEach((app) => {
                   if (packageObj.name === app.name) {
                     packageObj['is_install'] = app.is_install;
                     packageObj['is_uninstall'] = app.is_uninstall;
@@ -98,7 +98,8 @@ export class FotaComponent implements OnInit {
               });
             }
             resolve();
-          }, error => {
+          },
+          (error) => {
             resolve();
           }
         )
@@ -126,29 +127,35 @@ export class FotaComponent implements OnInit {
               this.currentAssetApps = Object.keys(this.assetTwin.twin_properties.reported.installed_packages);
             }
             if (this.currentAssetApps.length > 0) {
-            this.assetPackages.forEach(assetPackage => {
-              const index = this.currentAssetApps.findIndex(packageName => packageName === assetPackage.name);
-              if (index === -1) {
+              this.assetPackages.forEach((assetPackage) => {
+                const index = this.currentAssetApps.findIndex((packageName) => packageName === assetPackage.name);
+                if (index === -1) {
                   this.installPackages.push(assetPackage);
-              }
-              this.currentAssetApps.forEach(currentPackage => {
-                if (assetPackage.name === currentPackage &&
-                  this.assetTwin.twin_properties.reported.installed_packages[currentPackage] === assetPackage.version) {
+                }
+                this.currentAssetApps.forEach((currentPackage) => {
+                  if (
+                    assetPackage.name === currentPackage &&
+                    this.assetTwin.twin_properties.reported.installed_packages[currentPackage] === assetPackage.version
+                  ) {
                     this.uninstallPackages.push(assetPackage);
-                }
-                if (assetPackage.name === currentPackage &&
-                  this.assetTwin.twin_properties.reported.installed_packages[currentPackage] !== assetPackage.version) {
+                  }
+                  if (
+                    assetPackage.name === currentPackage &&
+                    this.assetTwin.twin_properties.reported.installed_packages[currentPackage] !== assetPackage.version
+                  ) {
                     this.updatePackages.push(assetPackage);
-                }
+                  }
+                });
               });
-            });
             } else {
               this.installPackages = JSON.parse(JSON.stringify(this.assetPackages));
             }
             this.isGetAPILoading = false;
             resolve();
-          }, error => this.isGetAPILoading = false
-        ));
+          },
+          (error) => (this.isGetAPILoading = false)
+        )
+      );
     });
   }
 
@@ -165,28 +172,28 @@ export class FotaComponent implements OnInit {
             version: this.selectedAssetPackage.version,
             url: environment.blobURL + this.selectedAssetPackage.url,
             token: environment.blobKey,
-            job_id: null
-          }
-        }
+            job_id: null,
+          },
+        },
       },
       job_id: null,
       timestamp: moment().utc().unix(),
       sub_job_id: null,
       asset_id: this.asset.asset_id,
-      request_type: 'FOTA'
+      request_type: 'FOTA',
     };
     obj.job_id = obj.desired_properties.package_management.job_id;
     obj.sub_job_id = obj.job_id + '_1';
     obj.desired_properties.package_management.package_details.job_id = obj.desired_properties.package_management.job_id;
     if (type === 'Install') {
       obj.desired_properties.package_management.command = 'INSTALL_PACKAGE';
-      obj.request_type = 'FOTA - INSTALL_PACKAGE';
+      obj.request_type = 'Install Package';
     } else if (type === 'Upgrade' || type === 'Downgrade') {
       obj.desired_properties.package_management.command = 'UPGRADE_PACKAGE';
-      obj.request_type = 'FOTA - UPGRADE_PACKAGE';
+      obj.request_type = 'Upgrade Package';
     } else if (type === 'Uninstall') {
       obj.desired_properties.package_management.command = 'DELETE_PACKAGE';
-      obj.request_type = 'FOTA - DELETE_PACKAGE';
+      obj.request_type = 'Uninstall Package';
     }
 
     this.subscriptions.push(
@@ -205,7 +212,8 @@ export class FotaComponent implements OnInit {
           // this.modalConfig.isDisplaySave = false;
           // clearInterval(this.twinResponseInterval);
           // this.loadAssetTwinChangeResponse(obj);
-        }, error => {
+        },
+        (error) => {
           clearInterval(this.twinResponseInterval);
           this.confirmBodyMessage = error.message;
           this.modalConfig.isDisplaySave = false;
@@ -294,7 +302,7 @@ export class FotaComponent implements OnInit {
       isDisplayCancel: true,
       saveBtnText: 'Yes',
       cancelBtnText: 'No',
-      stringDisplay: true
+      stringDisplay: true,
     };
     this.confirmHeaderMessage = type + ' Package';
     this.confirmBodyMessage = 'Are you sure you want to ' + type.toLowerCase() + ' this package?';
@@ -302,7 +310,7 @@ export class FotaComponent implements OnInit {
   }
 
   onModalEvents(eventType) {
-    if (eventType === 'save'){
+    if (eventType === 'save') {
       this.updateAssetTwin(this.btnClickType);
       this.btnClickType = undefined;
     } else {
@@ -324,5 +332,4 @@ export class FotaComponent implements OnInit {
       this.getAssetTwinData();
     }
   }
-
 }

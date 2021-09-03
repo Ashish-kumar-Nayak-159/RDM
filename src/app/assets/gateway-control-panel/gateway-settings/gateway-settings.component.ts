@@ -40,9 +40,9 @@ export class GatewaySettingsComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getAssetTwinData();
     this.getAssetData();
-    this.c2dJobFilter.request_type = 'test_gateway_connection';
+    this.c2dJobFilter.request_type = 'Test Gateway Connection';
     this.c2dJobFilter.job_type = 'DirectMethod';
-    this.c2dJobFilter1.request_type = 'set_device_rules';
+    this.c2dJobFilter1.request_type = 'Sync Rules';
     this.c2dJobFilter1.job_type = 'Message';
   }
 
@@ -152,7 +152,7 @@ export class GatewaySettingsComponent implements OnInit {
         (this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id) +
         '_' +
         this.commonService.generateUUID(),
-      request_type: 'set_device_rules',
+      request_type: 'Sync Rules',
       job_type: 'Message',
       sub_job_id: null,
     };
@@ -193,7 +193,7 @@ export class GatewaySettingsComponent implements OnInit {
       gateway_id: this.asset.asset_id,
       message: {},
       job_type: 'DirectMethod',
-      request_type: 'test_gateway_connection',
+      request_type: 'Test Gateway Connection',
       job_id: this.asset.asset_id + '_' + this.commonService.generateUUID(),
       sub_job_id: null,
     };

@@ -11,10 +11,9 @@ declare var $: any;
 @Component({
   selector: 'app-register-assets',
   templateUrl: './register-assets.component.html',
-  styleUrls: ['./register-assets.component.css']
+  styleUrls: ['./register-assets.component.css'],
 })
 export class RegisterAssetsComponent implements OnInit, OnDestroy {
-
   @Input() assetTwin: any;
   @Input() asset: any;
   @Output() refreshAssetTwin: EventEmitter<any> = new EventEmitter<any>();
@@ -41,15 +40,14 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
     private assetService: AssetService,
     private toasterService: ToasterService,
     private assetModelService: AssetModelService
-  ) { }
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getAssetsOfGateway();
-    this.c2dJobFilter.request_type = 'register_assets,deregister_assets';
+    this.c2dJobFilter.request_type = 'Register Asset,Deregister Asset';
     this.c2dJobFilter.job_type = 'Message';
   }
-
 
   getAssetsOfGateway() {
     this.isAssetsAPILoading = true;
@@ -63,32 +61,45 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
         (response: any) => {
           if (response.data) {
             this.assets = response.data;
-            this.assets.forEach(asset => {
+            this.assets.forEach((asset) => {
               asset.register_enabled = false;
               asset.deregister_enabled = false;
               if (asset.metadata?.package_app) {
-                asset.appObj = this.applications.find(appObj => appObj.name === asset.metadata.package_app);
-                if (this.assetTwin.twin_properties.reported && this.assetTwin.twin_properties.reported[asset.appObj.type] &&
-                  this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name]) {
-                    if (this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name].status?.toLowerCase() !== 'running') {
+                asset.appObj = this.applications.find((appObj) => appObj.name === asset.metadata.package_app);
+                if (
+                  this.assetTwin.twin_properties.reported &&
+                  this.assetTwin.twin_properties.reported[asset.appObj.type] &&
+                  this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name]
+                ) {
+                  if (
+                    this.assetTwin.twin_properties.reported[asset.appObj.type][
+                      asset.appObj.name
+                    ].status?.toLowerCase() !== 'running'
+                  ) {
+                    asset.register_enabled = false;
+                    asset.deregister_enabled = false;
+                  } else {
+                    if (
+                      this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name]
+                        .asset_configuration &&
+                      this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name].asset_configuration[
+                        asset.asset_id
+                      ]
+                    ) {
                       asset.register_enabled = false;
-                      asset.deregister_enabled = false;
+                      asset.deregister_enabled = true;
                     } else {
-                      if (this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name].asset_configuration
-                      && this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name].asset_configuration[asset.asset_id]) {
-                        asset.register_enabled = false;
-                        asset.deregister_enabled = true;
-                      } else {
-                        asset.register_enabled = true;
-                        asset.deregister_enabled = false;
-                      }
+                      asset.register_enabled = true;
+                      asset.deregister_enabled = false;
                     }
                   }
+                }
               }
             });
           }
           this.isAssetsAPILoading = false;
-        }, error => this.isAssetsAPILoading = false
+        },
+        (error) => (this.isAssetsAPILoading = false)
       )
     );
   }
@@ -97,14 +108,14 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
     if (this.selectedAssets.length === 0) {
       this.selectedAssets.push(asset);
     } else {
-      const index = this.selectedAssets.findIndex(assetObj => assetObj.asset_id === asset.asset_id);
+      const index = this.selectedAssets.findIndex((assetObj) => assetObj.asset_id === asset.asset_id);
       if (index > -1) {
         this.selectedAssets.splice(index, 1);
       } else {
         this.selectedAssets.push(asset);
       }
     }
-    const assets = this.assetApps.find(appObj => appObj.app === app)?.assets;
+    const assets = this.assetApps.find((appObj) => appObj.app === app)?.assets;
     if (this.selectedAssets.length === assets.length) {
       this.isAllAssetSelected = true;
     } else {
@@ -114,7 +125,7 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
 
   onClickOfAssetAllCheckbox(app) {
     if (this.isAllAssetSelected) {
-      const assets = this.assetApps.find(appObj => appObj.app === app)?.assets;
+      const assets = this.assetApps.find((appObj) => appObj.app === app)?.assets;
       this.selectedAssets = JSON.parse(JSON.stringify(assets));
     } else {
       this.selectedAssets = [];
@@ -122,7 +133,7 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
   }
 
   checkForAssetVisibility(asset) {
-    const index = this.selectedAssets.findIndex(assetObj => assetObj.asset_id === asset.asset_id);
+    const index = this.selectedAssets.findIndex((assetObj) => assetObj.asset_id === asset.asset_id);
     if (index > -1) {
       return true;
     }
@@ -133,7 +144,7 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
     const obj = {
       command: 'register_assets',
       app_name: asset?.metadata?.package_app,
-      assets: {}
+      assets: {},
     };
     obj.assets[asset.asset_id] = asset.metadata.setup_details;
     this.callC2dMethod(obj, 'Register Assets');
@@ -143,9 +154,7 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
     const obj = {
       command: 'deregister_assets',
       app_name: asset?.metadata?.package_app,
-      assets: [
-        asset.asset_id
-      ]
+      assets: [asset.asset_id],
     };
     this.callC2dMethod(obj, 'Deregister Assets');
   }
@@ -154,12 +163,18 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
     const obj = {
       command: 'set_change_value_state',
       app_name: this.selectedApp,
-      assets: {}
+      assets: {},
     };
     console.log(this.telemetrySettings);
-    this.selectedAssets.forEach(asset => {
-      obj.assets[asset.asset_id] = {scv: this.telemetrySettings[asset.asset_id] === 'changed' ? true :
-      (this.telemetrySettings[asset.asset_id] === 'all' ? false : undefined) };
+    this.selectedAssets.forEach((asset) => {
+      obj.assets[asset.asset_id] = {
+        scv:
+          this.telemetrySettings[asset.asset_id] === 'changed'
+            ? true
+            : this.telemetrySettings[asset.asset_id] === 'all'
+            ? false
+            : undefined,
+      };
       obj.app_name = asset?.metadata?.package_app;
     });
     this.callC2dMethod(obj, 'Change Telemtry Settings');
@@ -174,14 +189,19 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
       asset_id: this.asset.asset_id,
       message: obj,
       app: this.contextApp.app,
-      timestamp:  moment().unix(),
+      timestamp: moment().unix(),
       acknowledge: 'Full',
       expire_in_min: 2880,
       job_id: this.asset.asset_id + '_' + this.commonService.generateUUID(),
-      request_type: obj.command,
+      request_type: null,
       job_type: 'Message',
-      sub_job_id: null
+      sub_job_id: null,
     };
+    if (obj.command === 'register_assets') {
+      c2dObj.request_type = 'Register Asset';
+    } else if (obj.command === 'deregister_assets') {
+      c2dObj.request_type = 'Deregister Asset';
+    }
     c2dObj.sub_job_id = c2dObj.job_id + '_1';
     this.subscriptions.push(
       this.assetService.sendC2DMessage(c2dObj, this.contextApp.app, this.asset.asset_id).subscribe(
@@ -194,7 +214,8 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
           // });
           // clearInterval(this.c2dResponseInterval);
           // this.loadC2DResponse(c2dObj);
-        }, error => {
+        },
+        (error) => {
           this.toasterService.showError(error.message, type);
           this.assetService.refreshRecentJobs.emit();
           this.isAPILoading = false;
@@ -247,11 +268,11 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
   generateResponse() {
     const rand = this.commonService.randomIntFromInterval(0, 1);
     const arr = [];
-    for (let i = 0; i <= this.count; i++ ) {
+    for (let i = 0; i <= this.count; i++) {
       arr.push({
         asset_id: this.selectedAssets[i].asset_id,
         status: rand === 0 ? 'Success' : 'Failure',
-        message: rand === 0 ? 'Asset registered successfully.' : 'Error in asset registration'
+        message: rand === 0 ? 'Asset registered successfully.' : 'Error in asset registration',
       });
     }
     this.count++;
@@ -272,7 +293,7 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
     clearInterval(this.c2dResponseInterval);
   }
 }

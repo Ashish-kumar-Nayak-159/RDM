@@ -13,10 +13,9 @@ declare var $: any;
 @Component({
   selector: 'app-register-properties',
   templateUrl: './register-properties.component.html',
-  styleUrls: ['./register-properties.component.css']
+  styleUrls: ['./register-properties.component.css'],
 })
 export class RegisterPropertiesComponent implements OnInit, OnDestroy {
-
   @Input() assetTwin: any;
   @Input() asset: any;
   @Output() refreshAssetTwin: EventEmitter<any> = new EventEmitter<any>();
@@ -42,60 +41,71 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     private assetService: AssetService,
     private toasterService: ToasterService,
     private assetModelService: AssetModelService
-  ) { }
+  ) {}
 
   async ngOnInit(): Promise<void> {
     console.log(JSON.stringify(this.assetTwin));
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.c2dJobFilter.request_type = 'set_properties';
+    this.c2dJobFilter.request_type = 'Sync Properties/Alerts';
     this.c2dJobFilter.job_type = 'Message';
     await this.getAssetsModels();
     if (this.componentstate === CONSTANTS.IP_GATEWAY) {
       this.getAssetsOfGateway();
     } else {
-      this.assetModels.forEach(model => {
+      this.assetModels.forEach((model) => {
         if (this.asset.asset_model === model.name) {
           this.asset.model_freeze = model.freezed;
         }
       });
       this.asset.register_enabled = false;
       if (this.asset.metadata?.package_app) {
-        this.asset.appObj = this.applications.find(appObj => appObj.name === this.asset.metadata.package_app);
+        this.asset.appObj = this.applications.find((appObj) => appObj.name === this.asset.metadata.package_app);
         console.log(this.asset.appObj);
         console.log(this.assetTwin);
-        if (this.assetTwin && this.assetTwin.twin_properties.reported && this.assetTwin.twin_properties.reported[this.asset.appObj.type] &&
-          this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name]) {
-            if (this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].status?.toLowerCase() !== 'running') {
-              this.asset.register_enabled = false;
+        if (
+          this.assetTwin &&
+          this.assetTwin.twin_properties.reported &&
+          this.assetTwin.twin_properties.reported[this.asset.appObj.type] &&
+          this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name]
+        ) {
+          if (
+            this.assetTwin.twin_properties.reported[this.asset.appObj.type][
+              this.asset.appObj.name
+            ].status?.toLowerCase() !== 'running'
+          ) {
+            this.asset.register_enabled = false;
+          } else {
+            if (
+              this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name]
+                .asset_configuration &&
+              this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name]
+                .asset_configuration[this.asset.asset_id]
+            ) {
+              this.asset.register_enabled = true;
             } else {
-              if (this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration
-              && this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name].asset_configuration[this.asset.asset_id]) {
-                this.asset.register_enabled = true;
-              } else {
-                this.asset.register_enabled = false;
-              }
+              this.asset.register_enabled = false;
             }
           }
         }
+      }
       this.assets.push(this.asset);
     }
-
   }
 
   getAssetsModels() {
     return new Promise<void>((resolve1, reject) => {
-    this.assetModels = [];
-    const obj = {
-      app: this.contextApp.app,
-    };
-    this.subscriptions.push(this.assetModelService.getAssetsModelsList(obj).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.assetModels = response.data;
-        }
-        resolve1();
-      }
-    ));
+      this.assetModels = [];
+      const obj = {
+        app: this.contextApp.app,
+      };
+      this.subscriptions.push(
+        this.assetModelService.getAssetsModelsList(obj).subscribe((response: any) => {
+          if (response && response.data) {
+            this.assetModels = response.data;
+          }
+          resolve1();
+        })
+      );
     });
   }
 
@@ -111,22 +121,34 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         (response: any) => {
           if (response.data) {
             // this.assets = response.data;
-            response.data.forEach(asset => {
-              this.assetModels.forEach(model => {
-              if (asset.asset_model === model.name) {
-                asset.model_freeze = model.freezed;
-              }
+            response.data.forEach((asset) => {
+              this.assetModels.forEach((model) => {
+                if (asset.asset_model === model.name) {
+                  asset.model_freeze = model.freezed;
+                }
               });
               asset.register_enabled = false;
               if (asset.metadata?.package_app) {
-              asset.appObj = this.applications.find(appObj => appObj.name === asset.metadata.package_app);
-              if (this.assetTwin.twin_properties.reported && this.assetTwin.twin_properties.reported[asset.appObj.type] &&
-                this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name]) {
-                  if (this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name].status?.toLowerCase() !== 'running') {
+                asset.appObj = this.applications.find((appObj) => appObj.name === asset.metadata.package_app);
+                if (
+                  this.assetTwin.twin_properties.reported &&
+                  this.assetTwin.twin_properties.reported[asset.appObj.type] &&
+                  this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name]
+                ) {
+                  if (
+                    this.assetTwin.twin_properties.reported[asset.appObj.type][
+                      asset.appObj.name
+                    ].status?.toLowerCase() !== 'running'
+                  ) {
                     asset.register_enabled = false;
                   } else {
-                    if (this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name].asset_configuration
-                    && this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name].asset_configuration[asset.asset_id]) {
+                    if (
+                      this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name]
+                        .asset_configuration &&
+                      this.assetTwin.twin_properties.reported[asset.appObj.type][asset.appObj.name].asset_configuration[
+                        asset.asset_id
+                      ]
+                    ) {
                       asset.register_enabled = true;
                     } else {
                       asset.register_enabled = false;
@@ -138,7 +160,8 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
             this.assets = response.data;
           }
           this.isAssetsAPILoading = false;
-        }, error => this.isAssetsAPILoading = false
+        },
+        (error) => (this.isAssetsAPILoading = false)
       )
     );
   }
@@ -152,48 +175,57 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
 
   getAssetsModelProperties() {
     return new Promise<void>((resolve1, reject) => {
-        const obj = {
-          app: this.contextApp.app,
-          name: this.selectedAsset.asset_model || this.selectedAsset.tags?.asset_model
-        };
-        this.subscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
+      const obj = {
+        app: this.contextApp.app,
+        name: this.selectedAsset.asset_model || this.selectedAsset.tags?.asset_model,
+      };
+      this.subscriptions.push(
+        this.assetModelService.getAssetsModelProperties(obj).subscribe(
           (response: any) => {
-
-            response.properties.measured_properties = response.properties.measured_properties ?
-            response.properties.measured_properties : [];
-            response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
-            response.properties.configurable_properties = response.properties.configurable_properties ?
-            response.properties.configurable_properties : [];
-            response.properties.controllable_properties = response.properties.controllable_properties ?
-            response.properties.controllable_properties : [];
+            response.properties.measured_properties = response.properties.measured_properties
+              ? response.properties.measured_properties
+              : [];
+            response.properties.edge_derived_properties = response.properties.edge_derived_properties
+              ? response.properties.edge_derived_properties
+              : [];
+            response.properties.configurable_properties = response.properties.configurable_properties
+              ? response.properties.configurable_properties
+              : [];
+            response.properties.controllable_properties = response.properties.controllable_properties
+              ? response.properties.controllable_properties
+              : [];
             this.properties = response.properties;
             resolve1();
-          }, error => reject()
-        ));
-
+          },
+          (error) => reject()
+        )
+      );
     });
   }
 
   getAlertConditions() {
     return new Promise<void>((resolve1, reject) => {
-    const filterObj = {
-      asset_model: this.selectedAsset.asset_model || this.selectedAsset.tags?.asset_model,
-      source: 'Asset'
-    };
-    this.subscriptions.push(this.assetModelService.getAlertConditions(this.contextApp.app, filterObj).subscribe(
-      (response: any) => {
-        if (response?.data) {
-          this.alertConditions = response.data;
-          resolve1();
-        }
-      }, error => reject()
-    ));
+      const filterObj = {
+        asset_model: this.selectedAsset.asset_model || this.selectedAsset.tags?.asset_model,
+        source: 'Asset',
+      };
+      this.subscriptions.push(
+        this.assetModelService.getAlertConditions(this.contextApp.app, filterObj).subscribe(
+          (response: any) => {
+            if (response?.data) {
+              this.alertConditions = response.data;
+              resolve1();
+            }
+          },
+          (error) => reject()
+        )
+      );
     });
   }
 
   async registerProperties() {
     let count = 0;
-    Object.keys(this.optionsValue).forEach(key => {
+    Object.keys(this.optionsValue).forEach((key) => {
       if (!this.optionsValue[key]) {
         count++;
       }
@@ -213,10 +245,10 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
       alerts: this.optionsValue.alerts ? {} : undefined,
       // controllable_properties: this.optionsValue.controllable_properties ? {} : undefined,
       // configurable_properties: this.optionsValue.configurable_properties ? {} : undefined,
-      edge_derived_properties: this.optionsValue.edge_derived_properties ? {} : undefined
+      edge_derived_properties: this.optionsValue.edge_derived_properties ? {} : undefined,
     };
     if (this.optionsValue.measured_properties) {
-      this.properties.measured_properties.forEach(prop => {
+      this.properties.measured_properties.forEach((prop) => {
         obj.measured_properties[prop.json_key] = prop.metadata;
         obj.measured_properties[prop.json_key].g = prop.group;
       });
@@ -227,12 +259,12 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     //   });
     // }
     if (this.optionsValue.alerts) {
-      this.alertConditions.forEach(prop => {
+      this.alertConditions.forEach((prop) => {
         obj.alerts[prop.code] = prop.metadata;
       });
     }
     if (this.optionsValue.edge_derived_properties) {
-      this.properties.edge_derived_properties.forEach(prop => {
+      this.properties.edge_derived_properties.forEach((prop) => {
         obj.edge_derived_properties[prop.json_key] = prop.metadata;
         obj.edge_derived_properties[prop.json_key].g = prop.group;
       });
@@ -252,37 +284,48 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
       asset_id: this.componentstate !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id,
       message: obj,
       app: this.contextApp.app,
-      timestamp:  moment().unix(),
+      timestamp: moment().unix(),
       acknowledge: 'Full',
       expire_in_min: 2880,
-      job_id: (this.componentstate !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id)
-      + '_' + this.commonService.generateUUID(),
-      request_type: obj.command,
+      job_id:
+        (this.componentstate !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id) +
+        '_' +
+        this.commonService.generateUUID(),
+      request_type: 'Sync Properties/Alerts',
       job_type: 'Message',
-      sub_job_id: null
+      sub_job_id: null,
     };
     c2dObj.sub_job_id = c2dObj.job_id + '_1';
     this.subscriptions.push(
-      this.assetService.sendC2DMessage(c2dObj, this.contextApp.app,
-        this.componentstate !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id).subscribe(
-        (response: any) => {
-          this.toasterService.showSuccess('Asset properties/alert registration request sent to gateway', 'Register Properties/Alerts');
-          this.assetService.refreshRecentJobs.emit();
-          this.onModalClose();
-          this.isAPILoading = false;
-          // this.displyaMsgArr.push({
-          //   message: 'Asset properties/alert registration request sent to gateway.',
-          //   error: false
-          // });
-          // clearInterval(this.c2dResponseInterval);
-          // this.loadC2DResponse(c2dObj);
-        }, error => {
-          this.toasterService.showError(error.message, 'Register Properties/Alerts');
-          this.assetService.refreshRecentJobs.emit();
-          this.isAPILoading = false;
-          clearInterval(this.c2dResponseInterval);
-        }
-      )
+      this.assetService
+        .sendC2DMessage(
+          c2dObj,
+          this.contextApp.app,
+          this.componentstate !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id
+        )
+        .subscribe(
+          (response: any) => {
+            this.toasterService.showSuccess(
+              'Asset properties/alert registration request sent to gateway',
+              'Register Properties/Alerts'
+            );
+            this.assetService.refreshRecentJobs.emit();
+            this.onModalClose();
+            this.isAPILoading = false;
+            // this.displyaMsgArr.push({
+            //   message: 'Asset properties/alert registration request sent to gateway.',
+            //   error: false
+            // });
+            // clearInterval(this.c2dResponseInterval);
+            // this.loadC2DResponse(c2dObj);
+          },
+          (error) => {
+            this.toasterService.showError(error.message, 'Register Properties/Alerts');
+            this.assetService.refreshRecentJobs.emit();
+            this.isAPILoading = false;
+            clearInterval(this.c2dResponseInterval);
+          }
+        )
     );
   }
 
@@ -331,7 +374,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
     clearInterval(this.c2dResponseInterval);
   }
 }

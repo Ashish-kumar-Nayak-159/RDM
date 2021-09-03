@@ -1,6 +1,9 @@
 <div style="bottom:30px; position:fixed; z-index:40;">
   <div class="tab-bar" style="border-top: 1px solid #89a7ff; background-color: #e9eff9;">
-    <h6 class="mt-2">Recent Jobs</h6>
+    <h6 class="mt-2">Recent Jobs
+      <a href="javascript:void(0)" (click)="getRecentJobs()"><i class="fa fa-sync ml-2"></i>
+      </a>
+    </h6>
   </div>
   <div class="">
     <table class="table table-hover">
@@ -43,7 +46,7 @@
         <ng-container *ngIf="isC2dMsgsLoading">
           <tr>
             <td colspan="6">
-              <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+              <i class="fa fa-spinner fa-spin fa-fw"></i>
             </td>
           </tr>
         </ng-container>

@@ -10,10 +10,9 @@ import * as moment from 'moment';
 @Component({
   selector: 'app-manage-applications',
   templateUrl: './manage-applications.component.html',
-  styleUrls: ['./manage-applications.component.css']
+  styleUrls: ['./manage-applications.component.css'],
 })
 export class ManageApplicationsComponent implements OnInit {
-
   @Input() assetTwin: any;
   @Input() asset: any;
   @Output() refreshAssetTwin: EventEmitter<any> = new EventEmitter<any>();
@@ -25,11 +24,11 @@ export class ManageApplicationsComponent implements OnInit {
     private commonService: CommonService,
     private assetService: AssetService,
     private toasterService: ToasterService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.c2dJobFilter.request_type = 'START_APP,STOP_APP,RESTART_APP';
+    this.c2dJobFilter.request_type = 'Start App,Restart App,Stop App';
     this.c2dJobFilter.job_type = 'DirectMethod';
   }
 
@@ -38,14 +37,14 @@ export class ManageApplicationsComponent implements OnInit {
       asset_id: this.asset.asset_id,
       method: 'START_APP',
       message: {
-      command: 'START_APP',
-      app_name: app.name
+        command: 'START_APP',
+        app_name: app.name,
       },
       app: this.contextApp.app,
       job_type: 'DirectMethod',
-      request_type: 'START_APP',
+      request_type: 'Start App',
       job_id: this.asset.asset_id + '_' + this.commonService.generateUUID(),
-      sub_job_id: null
+      sub_job_id: null,
     };
     obj.sub_job_id = obj.job_id + '_1';
     this.callDirectMethod(obj, 'Start', index);
@@ -56,14 +55,14 @@ export class ManageApplicationsComponent implements OnInit {
       asset_id: this.asset.asset_id,
       method: 'STOP_APP',
       message: {
-      command: 'STOP_APP',
-      app_name: app.name
+        command: 'STOP_APP',
+        app_name: app.name,
       },
       app: this.contextApp.app,
       job_type: 'DirectMethod',
-      request_type: 'STOP_APP',
+      request_type: 'Stop App',
       job_id: this.asset.asset_id + '_' + this.commonService.generateUUID(),
-      sub_job_id: null
+      sub_job_id: null,
     };
     obj.sub_job_id = obj.job_id + '_1';
     this.callDirectMethod(obj, 'Stop', index);
@@ -74,14 +73,14 @@ export class ManageApplicationsComponent implements OnInit {
       asset_id: this.asset.asset_id,
       method: 'RESTART_APP',
       message: {
-      command: 'RESTART_APP',
-      app_name: app.name
+        command: 'RESTART_APP',
+        app_name: app.name,
       },
       app: this.contextApp.app,
       job_type: 'DirectMethod',
-      request_type: 'RESTART_APP',
+      request_type: 'Restart App',
       job_id: this.asset.asset_id + '_' + this.commonService.generateUUID(),
-      sub_job_id: null
+      sub_job_id: null,
     };
     obj.sub_job_id = obj.job_id + '_1';
     this.callDirectMethod(obj, 'Restart', index);
@@ -90,21 +89,22 @@ export class ManageApplicationsComponent implements OnInit {
   callDirectMethod(obj, type, index) {
     this.isAPILoading = {};
     this.isAPILoading[index] = true;
-    this.assetService.callAssetMethod(obj, this.contextApp.app,
-      this.asset?.gateway_id || this.asset.asset_id).subscribe(
-      (response: any) => {
-        this.isAPILoading[index] = false;
-        this.toasterService.showSuccess(response?.asset_response?.message, type + ' App');
-        setTimeout(() => {
-        this.refreshAssetTwin.emit();
-        }, 500);
-        this.assetService.refreshRecentJobs.emit();
-      }, error => {
-        this.isAPILoading[index] = false;
-        this.assetService.refreshRecentJobs.emit();
-        this.toasterService.showError(error?.asset_response?.message || error?.message, type + ' App');
-      }
+    this.assetService
+      .callAssetMethod(obj, this.contextApp.app, this.asset?.gateway_id || this.asset.asset_id)
+      .subscribe(
+        (response: any) => {
+          this.isAPILoading[index] = false;
+          this.toasterService.showSuccess(response?.asset_response?.message, type + ' App');
+          setTimeout(() => {
+            this.refreshAssetTwin.emit();
+          }, 500);
+          this.assetService.refreshRecentJobs.emit();
+        },
+        (error) => {
+          this.isAPILoading[index] = false;
+          this.assetService.refreshRecentJobs.emit();
+          this.toasterService.showError(error?.asset_response?.message || error?.message, type + ' App');
+        }
       );
   }
-
 }

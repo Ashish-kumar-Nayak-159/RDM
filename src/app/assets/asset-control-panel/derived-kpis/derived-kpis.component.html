@@ -19,11 +19,23 @@
       </div>
       <div class="modal-body">
 
-        <p class="m-3" *ngIf="selectedDerivedKPI?.kpi_result !== undefined && selectedDerivedKPI?.kpi_result !== null">
+        <!-- <p class="m-3" *ngIf="selectedDerivedKPI?.kpi_result !== undefined && selectedDerivedKPI?.kpi_result !== null">
           Latest Value
-          of this KPI is {{selectedDerivedKPI?.kpi_result}} </p>
+          of this KPI is {{selectedDerivedKPI?.kpi_result}} </p> -->
 
-        <p class="m-3">Historical Data: </p>
+        <!-- <p class="m-3">Historical Data: </p> -->
+        <form class="form-inline">
+          <b>Filters:</b>&nbsp;
+          <div class="form-group left-inner-addon">
+            <i class="fa fa-calendar active"></i>
+            <input type="text" class="form-control form-control-sm active date-range-picker" daterangepicker
+              name="daterangeInput" [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"
+              [(ngModel)]="selectedDateRange" [tooltip]="selectedDateRange" placement="bottom" />
+          </div>
+          <div class="form-group"><button type="button" placement="bottom" tooltip="Search"
+              class="btn btn-sm searchBtn btn-primary" (click)="getDerivedKPIsHistoricData()"><i
+                class="fas fa-search fa-sm"></i></button></div>
+        </form>
         <p class="m-3" *ngIf="derivedKPIData.length === 0 && !isDerivedKPIDataLoading"> No {{selectedDerivedKPI?.name}}
           data found.</p>
         <span *ngIf="loader"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> {{loadingMessage}}</span>
@@ -34,9 +46,7 @@
         <button type="button" class="btn btn-secondary" [disabled]="isDerivedKPIDataLoading" (click)="onCloseModal()">
           Cancel
         </button>
-
       </div>
     </div>
-
   </div>
 </div>

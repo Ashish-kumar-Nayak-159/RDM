@@ -1,6 +1,6 @@
 import { ToasterService } from './../../../services/toaster.service';
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ViewChild } from '@angular/core';
 import { Asset } from 'src/app/models/asset.model';
 import { Subscription } from 'rxjs';
 import { AssetService } from 'src/app/services/assets/asset.service';
@@ -9,6 +9,7 @@ import { CONSTANTS } from 'src/app/app.constants';
 import * as moment from 'moment';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
+import { DaterangepickerComponent } from 'ng2-daterangepicker';
 declare var $: any;
 
 @Component({
@@ -32,6 +33,18 @@ export class DerivedKpisComponent implements OnInit {
   selectedDerivedKPI: any;
   loadingMessage = 'Loading Data. Please wait...';
   chart: am4charts.XYChart;
+  daterange: any;
+  options: any = {
+    locale: { format: 'DD-MM-YYYY HH:mm' },
+    alwaysShowCalendars: false,
+    autoUpdateInput: false,
+    maxDate: moment(),
+    timePicker: true,
+    ranges: CONSTANTS.DATE_OPTIONS,
+  };
+  selectedDateRange: string;
+  @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
+  filterObj: any = {};
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -41,12 +54,6 @@ export class DerivedKpisComponent implements OnInit {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    // if (this.asset.tags.category === CONSTANTS.IP_GATEWAY) {
-    //   this.derivedKPIFilter.gateway_id = this.asset.asset_id;
-    // } else {
-    //   this.derivedKPIFilter.asset_id = this.asset.asset_id;
-    // }
-    // this.derivedKPIFilter.app = this.contextApp.app;
     this.derivedKPITableConfig = {
       type: 'Derived KPI',
       headers: ['Code', 'KPI Name', 'Description', 'Condition', 'Value'],
@@ -67,6 +74,10 @@ export class DerivedKpisComponent implements OnInit {
           name: 'JSON Key',
           key: 'kpi_json_key',
         },
+        {
+          name: 'Value',
+          key: 'kpi_result',
+        },
 
         {
           name: '',
@@ -75,12 +86,6 @@ export class DerivedKpisComponent implements OnInit {
         },
       ],
     };
-    // if (this.componentState === CONSTANTS.IP_GATEWAY) {
-    //   this.derivedKPITableConfig.data.splice(2, 0, {
-    //     name: 'Asset Name',
-    //     key: 'asset_id'
-    //   });
-    // }
     this.getderivedKPIs();
   }
 
@@ -105,21 +110,22 @@ export class DerivedKpisComponent implements OnInit {
     if (obj.type === this.derivedKPITableConfig.type) {
       this.selectedDerivedKPI = obj.data;
       console.log(this.selectedDerivedKPI);
-      this.getDerivedKPIsHistoricData(obj.data);
+      // this.getDerivedKPIsHistoricData();
       $('#derivedKPIModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      this.loadFromCache();
     }
   }
 
-  getDerivedKPIsHistoricData(asset) {
+  getDerivedKPIsHistoricData() {
     this.isDerivedKPIDataLoading = true;
     this.loader = true;
     const kpiCode = this.selectedDerivedKPI.code;
     const obj = {
-      asset_id: asset.asset_id,
+      asset_id: this.selectedDerivedKPI.asset_id,
       from_date: moment().subtract(14, 'days').utc().unix(),
       to_date: moment().utc().unix(),
       epoch: true,
-      asset_model: asset.asset_model,
+      asset_model: this.selectedDerivedKPI.asset_model,
     };
     this.derivedKPIData = [];
     this.apiSubscriptions.push(
@@ -149,6 +155,47 @@ export class DerivedKpisComponent implements OnInit {
     );
   }
 
+  loadFromCache() {
+    const item = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};
+    if (item.dateOption) {
+      this.filterObj.dateOption = item.dateOption;
+      if (item.dateOption === 'Custom Range') {
+        this.filterObj.from_date = item.from_date;
+        this.filterObj.to_date = item.to_date;
+        this.selectedDateRange =
+          moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') +
+          ' to ' +
+          moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+      } else {
+        const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
+        this.filterObj.from_date = dateObj.from_date;
+        this.filterObj.to_date = dateObj.to_date;
+        this.selectedDateRange = this.filterObj.dateOption;
+      }
+      this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
+      this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
+    }
+    this.getDerivedKPIsHistoricData();
+  }
+
+  selectedDate(value: any, datepicker?: any) {
+    this.filterObj.dateOption = value.label;
+    if (this.filterObj.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
+      this.filterObj.from_date = dateObj.from_date;
+      this.filterObj.to_date = dateObj.to_date;
+    } else {
+      this.filterObj.from_date = moment(value.start).utc().unix();
+      this.filterObj.to_date = moment(value.end).utc().unix();
+    }
+    if (value.label === 'Custom Range') {
+      this.selectedDateRange =
+        moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
+    } else {
+      this.selectedDateRange = value.label;
+    }
+  }
+
   plotChart() {
     this.loadingMessage = 'Loading Chart. Please wait...';
     am4core.options.autoDispose = true;
@@ -160,8 +207,8 @@ export class DerivedKpisComponent implements OnInit {
       const newObj: any = {};
       const date = this.commonService.convertUTCDateToLocal(obj?.start_interval);
       const endDate = this.commonService.convertUTCDateToLocal(obj?.end_interval);
-      newObj.date = new Date(date);
-      newObj.endDate = new Date(endDate);
+      // newObj.date = new Date(date);
+      newObj.date = new Date(endDate);
       newObj.spc = obj.kpi_result || null;
       console.log(newObj);
       data.splice(data.length, 0, newObj);
@@ -181,19 +228,21 @@ export class DerivedKpisComponent implements OnInit {
     // Create axes
     const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
     valueYAxis.renderer.grid.template.location = 0;
-    const series = chart.series.push(new am4charts.ColumnSeries());
+    const series = chart.series.push(new am4charts.LineSeries());
     series.name = this.selectedDerivedKPI.name;
     series.yAxis = valueYAxis;
-    series.dataFields.openDateX = 'date';
-    series.dataFields.dateX = 'endDate';
+    // series.dataFields.openDateX = 'date';
+    series.dataFields.dateX = 'date';
     // series.propType =
     series.dataFields.valueY = 'spc';
     series.strokeWidth = 2;
     series.strokeOpacity = 1;
     series.legendSettings.labelText = '{name}';
-    // series.fillOpacity = 0;
-    series.columns.template.tooltipText = 'Start Date: {openDateX} \n End Date: {dateX} \n {name}: [bold]{spc} [/]';
-
+    series.fillOpacity = 0;
+    series.tooltipText = 'Date: {dateX} \n {name}: [bold]{spc} [/]';
+    const bullet = series.bullets.push(new am4charts.CircleBullet());
+    bullet.strokeWidth = 2;
+    bullet.circle.radius = 1.5;
     // const bullet = series.bullets.push(new am4charts.CircleBullet());
     // bullet.strokeWidth = 2;
     // bullet.circle.radius = 1.5;
@@ -227,6 +276,7 @@ export class DerivedKpisComponent implements OnInit {
     this.loader = false;
     this.loadingMessage = 'Loading Data. Please wait...';
     this.derivedKPIData = [];
+    this.filterObj = {};
   }
 
   ngOnDestroy() {

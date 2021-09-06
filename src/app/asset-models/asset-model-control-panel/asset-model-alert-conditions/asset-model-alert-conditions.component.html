@@ -575,8 +575,7 @@
               <option [ngValue]="'Cloud'">Cloud Alert</option>
             </select>
           </div>
-          <accordion [closeOthers]="'true'"
-            *ngIf="assetModel.metadata?.model_type === constantData.NON_IP_ASSET && alertObj.alert_type === 'Asset'">
+          <accordion [closeOthers]="'true'" *ngIf="alertObj.alert_type === 'Asset'">
             <accordion-group heading="" [panelClass]="'customClass'">
               <ng-container accordion-heading>
                 <button class="btn" type="button">
@@ -1004,9 +1003,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button
-          *ngIf="assetModel.metadata?.model_type === constantData.NON_IP_ASSET && alertObj.alert_type === 'Asset';else noSetupFormBtn"
-          type="button" class="btn btn-primary add-row"
+        <button *ngIf="alertObj.alert_type === 'Asset';else noSetupFormBtn" type="button"
+          class="btn btn-primary add-row"
           [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreateAlertConditionLoading"
           (click)="!alertObj.id ? onCreateAlertCondition() : onUpdateAlertConditions()">Save</button>
         <ng-template #noSetupFormBtn>

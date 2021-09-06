@@ -240,11 +240,9 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       threshold: {},
     };
     console.log(this.setupForm);
-    if (this.assetModel.metadata?.model_type !== CONSTANTS.IP_GATEWAY) {
-      this.setupForm = new FormGroup({
-        slave_id: new FormControl(null, [Validators.required]),
-      });
-    }
+    this.setupForm = new FormGroup({
+      slave_id: new FormControl(null, [Validators.required]),
+    });
     if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_ASSET) {
       if (this.assetModel.tags.protocol === 'ModbusTCPMaster' || this.assetModel.tags.protocol === 'ModbusRTUMaster') {
         this.setupForm = new FormGroup({
@@ -498,24 +496,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         return;
       }
     }
-    // if (this.propertyObj.isAdd) {
-    //   if (this.type.includes('read')) {
-    //     this.properties.controllable_properties = this.properties.controllable_properties ? this.properties.controllable_properties : [];
-    //     const windex = this.properties.controllable_properties.findIndex(prop => prop.json_key === this.propertyObj.json_key);
-    //     delete this.propertyObj.isAdd;
-    //     if (windex === -1) {
-    //       this.properties.controllable_properties.push(this.propertyObj);
-    //     }
-    //   }
-    //   if (this.type.includes('writ')) {
-    //     this.properties.configurable_properties = this.properties.configurable_properties ? this.properties.configurable_properties : [];
-    //     const windex = this.properties.configurable_properties.findIndex(prop => prop.json_key === this.propertyObj.json_key);
-    //     delete this.propertyObj.isAdd;
-    //     if (windex === -1) {
-    //       this.properties.configurable_properties.push(this.propertyObj);
-    //     }
-    //   }
-    // }
     this.isCreatePropertyLoading = true;
     const obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
@@ -563,19 +543,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     $('#addPropertiesModal').modal('hide');
     this.propertyObj = undefined;
     this.selectedProperty = undefined;
-  }
-
-  onPropParamAddedForFun() {
-    let propKeys = '';
-    this.selectedProperty.dependent_properties.forEach(
-      (prop, index) => (propKeys += prop.json_key + (this.selectedProperty.dependent_properties[index + 1] ? ',' : ''))
-    );
-    this.code =
-      `function calculate (` +
-      propKeys +
-      `) {
-  return null;
-}`;
   }
 
   updatePropertyData() {
@@ -635,11 +602,9 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     } else if (obj.for === 'Edit') {
       this.propertyObj = JSON.parse(JSON.stringify(obj.data));
       this.propertyObj.edit = true;
-      if (this.assetModel.metadata?.model_type !== CONSTANTS.IP_GATEWAY) {
-        this.setupForm = new FormGroup({
-          slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
-        });
-      }
+      this.setupForm = new FormGroup({
+        slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
+      });
       if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_ASSET) {
         if (
           this.assetModel.tags.protocol === 'ModbusTCPMaster' ||

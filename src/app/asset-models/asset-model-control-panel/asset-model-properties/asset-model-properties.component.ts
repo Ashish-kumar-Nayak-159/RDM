@@ -215,25 +215,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     );
   }
 
-  onPropertyChecked(event) {
-    const propObj = event;
-    const index = this.selectedProperty.dependent_properties.findIndex((prop) => prop.json_key === propObj.json_key);
-    if (index > -1) {
-      this.selectedProperty.dependent_properties.splice(index, 1);
-    }
-    this.onPropParamAddedForFun();
-  }
-
-  selectAllProps() {
-    this.selectedProperty.dependent_properties = JSON.parse(JSON.stringify(this.dependentProperty));
-    this.onPropParamAddedForFun();
-  }
-
-  deselectAllProps() {
-    this.selectedProperty.dependent_properties = [];
-    this.onPropParamAddedForFun();
-  }
-
   openAddPropertiesModal() {
     this.propertyObj = {
       json_model: {},

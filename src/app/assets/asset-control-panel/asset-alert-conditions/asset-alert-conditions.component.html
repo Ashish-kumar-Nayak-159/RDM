@@ -356,14 +356,6 @@
                       [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
                     <label class="form-check-label" for="email">Email</label>
 
-                    <div class="row" *ngIf="alertObj.actions.email.enabled">
-                      <div class="col-auto ml-4 my-2">
-                        <input type="checkbox" class="form-check-input" id="emailcfs" name="emailcfs"
-                          [(ngModel)]="alertObj.actions.email.client_field_support_enabled"
-                          [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
-                        <label class="form-check-label" for="emailcfs">Client Field Support</label>
-                      </div>
-                    </div>
                     <div class="row my-2" *ngIf="alertObj.actions.email.enabled">
                       <div class="col-auto">
                         <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
@@ -373,6 +365,7 @@
                                 <select class="form-control form-control-sm" id="template" name="model_type"
                                   [(ngModel)]="groupName.email">
                                   <option [ngValue]="undefined">Select User Group</option>
+                                  <option value="Client Field Support"> Client Field Support</option>
                                   <ng-container *ngFor="let group of userGroups">
                                     <option [ngValue]="group.group_name">
                                       {{group.group_name}}</option>
@@ -411,14 +404,6 @@
                       [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
                     <label class="form-check-label" for="whatsapp">Whatsapp</label>
 
-                    <div class="row" *ngIf="alertObj.actions.whatsapp.enabled">
-                      <div class="col-auto ml-4 my-2">
-                        <input type="checkbox" class="form-check-input" id="whatsappcfs" name="whatsappcfs"
-                          [(ngModel)]="alertObj.actions.whatsapp.client_field_support_enabled"
-                          [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
-                        <label class="form-check-label" for="whatsappcfs">Client Field Support</label>
-                      </div>
-                    </div>
                     <div class="row my-2" *ngIf="alertObj.actions.whatsapp.enabled">
                       <div class="col-auto">
                         <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
@@ -428,6 +413,7 @@
                                 <select class="form-control form-control-sm" id="template" name="model_type"
                                   [(ngModel)]="groupName.whatsapp">
                                   <option [ngValue]="undefined">Select User Group</option>
+                                  <option value="Client Field Support"> Client Field Support</option>
                                   <ng-container *ngFor="let group of userGroups">
                                     <option [ngValue]="group.group_name">
                                       {{group.group_name}}</option>
@@ -466,14 +452,7 @@
                       [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
                     <label class="form-check-label" for="sms">SMS</label>
 
-                    <div class="row" *ngIf="alertObj.actions.sms.enabled">
-                      <div class="col-auto ml-4 my-2">
-                        <input type="checkbox" class="form-check-input" id="smscfs" name="smscfs"
-                          [(ngModel)]="alertObj.actions.sms.client_field_support_enabled"
-                          [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
-                        <label class="form-check-label" for="smscfs">Client Field Support</label>
-                      </div>
-                    </div>
+
                     <div class="row my-2" *ngIf="alertObj.actions.sms.enabled">
                       <div class="col-auto">
                         <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
@@ -483,6 +462,7 @@
                                 <select class="form-control form-control-sm" id="template" name="model_type"
                                   [(ngModel)]="groupName.sms">
                                   <option [ngValue]="undefined">Select User Group</option>
+                                  <option value="Client Field Support"> Client Field Support</option>
                                   <ng-container *ngFor="let group of userGroups">
                                     <option [ngValue]="group.group_name">
                                       {{group.group_name}}</option>

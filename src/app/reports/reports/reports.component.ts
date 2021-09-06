@@ -17,10 +17,9 @@ declare var $: any;
 @Component({
   selector: 'app-reports',
   templateUrl: './reports.component.html',
-  styleUrls: ['./reports.component.css']
+  styleUrls: ['./reports.component.css'],
 })
 export class ReportsComponent implements OnInit, OnDestroy {
-
   userData: any;
   filterObj: any = {};
   contextApp: any;
@@ -39,7 +38,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     paperSize: 'A4',
     margin: { left: '0.75cm', top: '0.60cm', right: '0.75cm', bottom: '0.60cm' },
     scale: 0.42,
-    landscape: true
+    landscape: true,
   };
   originalFilterObj: any = {};
   tabType;
@@ -50,8 +49,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
   tileData: any;
   assetFilterObj: any;
   subscriptions: Subscription[] = [];
-  @ViewChild('dtInput1', {static: false}) dtInput1: any;
-  @ViewChild('dtInput2', {static: false}) dtInput2: any;
+  @ViewChild('dtInput1', { static: false }) dtInput1: any;
+  @ViewChild('dtInput2', { static: false }) dtInput2: any;
   currentOffset = 0;
   currentLimit = 100;
   insideScrollFunFlag = false;
@@ -66,7 +65,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     autoUpdateInput: false,
     maxDate: moment(),
     timePicker: true,
-    ranges: CONSTANTS.DATE_OPTIONS
+    ranges: CONSTANTS.DATE_OPTIONS,
   };
   reportsFetchDataSubscription: Subscription;
   @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
@@ -80,7 +79,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     private assetService: AssetService,
     private toasterService: ToasterService,
     private assetModelService: AssetModelService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -89,33 +88,35 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.getTileName();
 
-    this.subscriptions.push(this.route.paramMap.subscribe(async params => {
-      if (params.get('applicationId')) {
-        this.filterObj.app = this.contextApp.app;
-       // this.filterObj.count = 10;
-      }
-      if (this.contextApp.hierarchy.levels.length > 1) {
-        this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
-      }
-      this.contextApp.hierarchy.levels.forEach((level, index) => {
-        if (index !== 0) {
-          this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-          if (this.contextApp.user.hierarchy[level]) {
-            this.onChangeOfHierarchy(index, false);
-          }
+    this.subscriptions.push(
+      this.route.paramMap.subscribe(async (params) => {
+        if (params.get('applicationId')) {
+          this.filterObj.app = this.contextApp.app;
+          // this.filterObj.count = 10;
         }
-      });
-      this.filterObj.type = true;
-      this.filterObj.sampling_format = 'minute';
-      this.filterObj.sampling_time = 1;
-      this.filterObj.aggregation_minutes = 1;
-      this.filterObj.aggregation_format = 'AVG';
-      this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
-      console.log(this.originalFilterObj.report_type);
-     // this.getLatestAlerts();
-      await this.getAssets(this.contextApp.user.hierarchy);
-     // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
-    }));
+        if (this.contextApp.hierarchy.levels.length > 1) {
+          this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+        }
+        this.contextApp.hierarchy.levels.forEach((level, index) => {
+          if (index !== 0) {
+            this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+            if (this.contextApp.user.hierarchy[level]) {
+              this.onChangeOfHierarchy(index, false);
+            }
+          }
+        });
+        this.filterObj.type = true;
+        this.filterObj.sampling_format = 'minute';
+        this.filterObj.sampling_time = 1;
+        this.filterObj.aggregation_minutes = 1;
+        this.filterObj.aggregation_format = 'AVG';
+        this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+        console.log(this.originalFilterObj.report_type);
+        // this.getLatestAlerts();
+        await this.getAssets(this.contextApp.user.hierarchy);
+        // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
+      })
+    );
     if (this.decodedToken?.privileges?.indexOf('RV') !== -1) {
       this.onTabSelect('pre-generated');
     } else if (this.decodedToken?.privileges?.indexOf('RMV') !== -1) {
@@ -127,20 +128,19 @@ export class ReportsComponent implements OnInit, OnDestroy {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     if (item) {
       if (item.assets) {
-      this.filterObj.asset = item.assets;
-
+        this.filterObj.asset = item.assets;
       }
       if (item.hierarchy) {
-      if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
-      this.contextApp.hierarchy.levels.forEach((level, index) => {
-        if (index !== 0) {
-        this.configureHierarchy[index] = item.hierarchy[level];
-        if (item.hierarchy[level]) {
-          this.onChangeOfHierarchy(index, false);
+        if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
+          this.contextApp.hierarchy.levels.forEach((level, index) => {
+            if (index !== 0) {
+              this.configureHierarchy[index] = item.hierarchy[level];
+              if (item.hierarchy[level]) {
+                this.onChangeOfHierarchy(index, false);
+              }
+            }
+          });
         }
-        }
-      });
-      }
       }
       if (item.dateOption) {
         this.filterObj.dateOption = item.dateOption;
@@ -157,8 +157,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
         if (this.filterObj.dateOption !== 'Custom Range') {
           this.selectedDateRange = this.filterObj.dateOption;
         } else {
-          this.selectedDateRange = moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
-          moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+          this.selectedDateRange =
+            moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') +
+            ' to ' +
+            moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
         }
         if (this.filterObj.to_date - this.filterObj.from_date > 3600) {
           this.filterObj.isTypeEditable = true;
@@ -178,7 +180,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   getTileName() {
     let selectedItem;
-    this.contextApp.menu_settings.main_menu.forEach(item => {
+    this.contextApp.menu_settings.main_menu.forEach((item) => {
       if (item.system_name === 'Reports') {
         selectedItem = item.showAccordion;
       }
@@ -188,8 +190,50 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   onAssetFilterBtnClick() {
-    $('.dropdown-menu').on('click.bs.dropdown', (e) => {
+    $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
       e.stopPropagation();
+    });
+    $('#dd-open').on('hide.bs.dropdown', (e: any) => {
+      if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
+        e.preventDefault();
+      }
+    });
+  }
+
+  onSaveHierachy() {
+    this.originalFilterObj = {};
+    this.originalFilterObj.asset = JSON.parse(JSON.stringify(this.filterObj.asset));
+    if (this.filterObj.asset) {
+      this.onAssetSelection();
+    }
+    console.log(this.originalFilterObj);
+  }
+
+  onClearHierarchy() {
+    this.isFilterSelected = false;
+    this.hierarchyArr = {};
+    this.originalFilterObj = {};
+    this.configureHierarchy = {};
+    this.filterObj = {};
+    this.dropdownPropList = [];
+    this.propertyList = [];
+    this.props = JSON.parse(JSON.stringify([]));
+    if (this.contextApp.hierarchy.levels.length > 1) {
+      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+    }
+    console.log(this.hierarchyArr);
+    this.contextApp.hierarchy.levels.forEach((level, index) => {
+      if (index !== 0) {
+        this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+        console.log(this.configureHierarchy);
+        console.log(level);
+        console.log(this.contextApp.user.hierarchy);
+        if (this.contextApp.user.hierarchy[level]) {
+          this.onChangeOfHierarchy(index, false);
+        }
+      } else {
+        this.assets = JSON.parse(JSON.stringify(this.originalAssets));
+      }
     });
   }
 
@@ -207,7 +251,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }
     console.log(this.filterObj);
     if (value.label === 'Custom Range') {
-      this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
+      this.selectedDateRange =
+        moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
     } else {
       this.selectedDateRange = value.label;
     }
@@ -222,35 +267,35 @@ export class ReportsComponent implements OnInit, OnDestroy {
     return new Promise<void>((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
-        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET
+        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
       };
-      this.subscriptions.push(this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe(
-        (response: any) => {
+      this.subscriptions.push(
+        this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
           if (response?.data) {
             this.assets = response.data;
-            this.assets.forEach(asset => {
+            this.assets.forEach((asset) => {
               if (!asset.display_name) {
                 asset.display_name = asset.asset_id;
               }
-            })
+            });
             this.originalAssets = JSON.parse(JSON.stringify(this.assets));
             if (this.assets?.length === 1) {
               this.filterObj.asset = this.assets[0];
             }
           }
           resolve();
-        }
-      ));
+        })
+      );
     });
   }
 
   async onChangeOfHierarchy(i, persistAssetSelection = true) {
-    Object.keys(this.configureHierarchy).forEach(key => {
+    Object.keys(this.configureHierarchy).forEach((key) => {
       if (key > i) {
         delete this.configureHierarchy[key];
       }
     });
-    Object.keys(this.hierarchyArr).forEach(key => {
+    Object.keys(this.hierarchyArr).forEach((key) => {
       if (key > i) {
         this.hierarchyArr[key] = [];
       }
@@ -265,7 +310,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
     }
     // let hierarchy = {...this.configureHierarchy};
-    const hierarchyObj: any = { App: this.contextApp.app};
+    const hierarchyObj: any = { App: this.contextApp.app };
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (this.configureHierarchy[key]) {
         hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
@@ -274,37 +319,37 @@ export class ReportsComponent implements OnInit, OnDestroy {
     if (Object.keys(hierarchyObj).length === 1) {
       this.assets = JSON.parse(JSON.stringify(this.originalAssets));
     } else {
-    const arr = [];
-    this.assets = [];
-    this.originalAssets.forEach(asset => {
-      let trueFlag = 0;
-      let flaseFlag = 0;
-      Object.keys(hierarchyObj).forEach(hierarchyKey => {
-        if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
-          trueFlag++;
-        } else {
-          flaseFlag++;
+      const arr = [];
+      this.assets = [];
+      this.originalAssets.forEach((asset) => {
+        let trueFlag = 0;
+        let flaseFlag = 0;
+        Object.keys(hierarchyObj).forEach((hierarchyKey) => {
+          if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+            trueFlag++;
+          } else {
+            flaseFlag++;
+          }
+        });
+        if (trueFlag > 0 && flaseFlag === 0) {
+          arr.push(asset);
         }
       });
-      if (trueFlag > 0 && flaseFlag === 0) {
-        arr.push(asset);
-      }
-    });
-    this.assets = JSON.parse(JSON.stringify(arr));
+      this.assets = JSON.parse(JSON.stringify(arr));
     }
     if (this.assets?.length === 1) {
       this.filterObj.asset = this.assets[0];
     }
     if (persistAssetSelection) {
-    this.filterObj.assetArr = undefined;
-    this.filterObj.asset = undefined;
+      this.filterObj.assetArr = undefined;
+      this.filterObj.asset = undefined;
     }
     this.props = [];
     this.dropdownPropList = [];
     let count = 0;
-    Object.keys(this.configureHierarchy).forEach(key => {
+    Object.keys(this.configureHierarchy).forEach((key) => {
       if (this.configureHierarchy[key]) {
-        count ++;
+        count++;
       }
     });
     if (count === 0) {
@@ -313,7 +358,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
         this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
       }
     }
-
   }
 
   onAssetDeselect() {
@@ -325,15 +369,16 @@ export class ReportsComponent implements OnInit, OnDestroy {
     // this.nonIPAssets = [];
     // this.filterObj.asset_id = this.filterObj.asset.asset_id;
     if (this.filterObj.asset) {
-    const asset_model = this.filterObj?.asset?.asset_model;
+      const asset_model = this.filterObj?.asset?.asset_model;
 
-    if (asset_model) {
-      this.getAssetsModelProperties(asset_model);
-    }
+      if (asset_model) {
+        this.getAssetsModelProperties(asset_model);
+      }
     } else {
       this.dropdownPropList = [];
       this.propertyList = [];
-      this.props = [];
+      this.props = JSON.parse(JSON.stringify([]));
+      this.filterObj.report_type = undefined;
     }
   }
 
@@ -352,11 +397,11 @@ export class ReportsComponent implements OnInit, OnDestroy {
     // this.filterObj.asset_id = this.filterObj.asset.asset_id;
     console.log(this.originalFilterObj.report_type);
     if (this.filterObj.report_type === 'Process Parameter Report') {
-    if (this.filterObj.asset) {
-      const asset_model = this.filterObj.asset.asset_model;
-      if (asset_model) {
-        this.getAssetsModelProperties(asset_model);
-      }
+      if (this.filterObj.asset) {
+        const asset_model = this.filterObj.asset.asset_model;
+        if (asset_model) {
+          this.getAssetsModelProperties(asset_model);
+        }
       }
     }
     console.log(this.originalFilterObj.report_type);
@@ -366,39 +411,41 @@ export class ReportsComponent implements OnInit, OnDestroy {
     return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
-        name: assetModel
+        name: assetModel,
       };
-      this.subscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
-        (response: any) => {
-          response.properties?.measured_properties?.forEach(prop => prop.type = 'Measured Properties');
+      this.subscriptions.push(
+        this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
+          response.properties?.measured_properties?.forEach((prop) => (prop.type = 'Measured Properties'));
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-          response.properties.edge_derived_properties = response.properties.edge_derived_properties ?
-          response.properties.edge_derived_properties : [];
-          response.properties.cloud_derived_properties = response.properties.cloud_derived_properties ?
-          response.properties.cloud_derived_properties : [];
-          response.properties.edge_derived_properties.forEach(prop => {
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties
+            ? response.properties.edge_derived_properties
+            : [];
+          response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
+            ? response.properties.cloud_derived_properties
+            : [];
+          response.properties.edge_derived_properties.forEach((prop) => {
             prop.type = 'Edge Derived Properties';
             this.propertyList.push(prop);
           });
-          response.properties.cloud_derived_properties.forEach(prop => {
+          response.properties.cloud_derived_properties.forEach((prop) => {
             prop.type = 'Cloud Derived Properties';
             this.propertyList.push(prop);
           });
           this.dropdownPropList = [];
           this.props = [];
-          this.propertyList.forEach(prop => {
+          this.propertyList.forEach((prop) => {
             this.dropdownPropList.push({
               id: prop.name,
               type: prop.type,
-              value: prop
+              value: prop,
             });
           });
           this.dropdownPropList = JSON.parse(JSON.stringify(this.dropdownPropList));
           console.log(this.dropdownPropList);
           // this.props = [...this.dropdownPropList];
           resolve();
-        }
-      ));
+        })
+      );
     });
   }
 
@@ -406,14 +453,16 @@ export class ReportsComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       $('#table-wrapper').on('scroll', () => {
         const element = document.getElementById('table-wrapper');
-        if (parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0)) >=
-        parseFloat(element.scrollHeight.toFixed(0)) && !this.insideScrollFunFlag) {
+        if (
+          parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0)) >=
+            parseFloat(element.scrollHeight.toFixed(0)) &&
+          !this.insideScrollFunFlag
+        ) {
           this.currentOffset += this.currentLimit;
           this.onFilterSelection(false, false);
         }
       });
     }, 1000);
-
   }
 
   onFilterSelection(callScrollFnFlag = false, updateFilterObj = true) {
@@ -427,7 +476,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.filterObj.from_date = this.filterObj.from_date;
       this.filterObj.to_date = this.filterObj.to_date;
     }
-    const obj = {...this.filterObj};
+    const obj = { ...this.filterObj };
     let asset_model: any;
     if (obj.asset) {
       obj.asset_id = obj.asset.asset_id;
@@ -454,7 +503,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       return;
     }
     if (updateFilterObj) {
-      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS)
+      const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS);
       pagefilterObj['hierarchy'] = this.filterObj.asset.hierarchy;
       pagefilterObj['assets'] = this.filterObj.asset;
       pagefilterObj['from_date'] = obj.from_date;
@@ -476,44 +525,44 @@ export class ReportsComponent implements OnInit, OnDestroy {
     } else if (obj.report_type === 'Alert Report') {
       this.getAlertData(obj, undefined, callScrollFnFlag);
     }
-
   }
 
   getAlertData(obj, type = undefined, callScrollFnFlag = false) {
     return new Promise<void>((resolve) => {
-    obj.offset = this.currentOffset;
-    obj.count = this.currentLimit;
-    this.loadingMessage = 'Loading data. Please wait...';
-    if (type === 'all') {
-      delete obj.count;
-    }
-    delete obj.report_type;
-    delete obj.assetArr;
-    this.reportsFetchDataSubscription = this.assetService.getAssetAlerts(obj).subscribe(
-      (response: any) => {
-        // response.data.reverse();
-        response.data.forEach(item => {
-          item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
-          item.asset_display_name = this.assets.filter(asset => asset.asset_id === item.asset_id)[0]?.display_name;
-        });
-        this.latestAlerts = [...this.latestAlerts, ...response.data];
-        this.isFilterOpen = false;
-        if (response.data.length === this.currentLimit) {
-          this.insideScrollFunFlag = false;
-        } else {
-          this.insideScrollFunFlag = true;
-        }
-        if (callScrollFnFlag) {
-          this.onScrollFn();
-        }
-        resolve();
-        if (this.filterObj.dateOption === 'Custom Range') {
-          this.originalFilterObj.dateOption = 'this selected range';
-        }
-        this.isTelemetryLoading = false;
-      }, error => this.isTelemetryLoading = false
-    );
-    this.subscriptions.push(this.reportsFetchDataSubscription);
+      obj.offset = this.currentOffset;
+      obj.count = this.currentLimit;
+      this.loadingMessage = 'Loading data. Please wait...';
+      if (type === 'all') {
+        delete obj.count;
+      }
+      delete obj.report_type;
+      delete obj.assetArr;
+      this.reportsFetchDataSubscription = this.assetService.getAssetAlerts(obj).subscribe(
+        (response: any) => {
+          // response.data.reverse();
+          response.data.forEach((item) => {
+            item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
+            item.asset_display_name = this.assets.filter((asset) => asset.asset_id === item.asset_id)[0]?.display_name;
+          });
+          this.latestAlerts = [...this.latestAlerts, ...response.data];
+          this.isFilterOpen = false;
+          if (response.data.length === this.currentLimit) {
+            this.insideScrollFunFlag = false;
+          } else {
+            this.insideScrollFunFlag = true;
+          }
+          if (callScrollFnFlag) {
+            this.onScrollFn();
+          }
+          resolve();
+          if (this.filterObj.dateOption === 'Custom Range') {
+            this.originalFilterObj.dateOption = 'this selected range';
+          }
+          this.isTelemetryLoading = false;
+        },
+        (error) => (this.isTelemetryLoading = false)
+      );
+      this.subscriptions.push(this.reportsFetchDataSubscription);
     });
   }
 
@@ -537,182 +586,203 @@ export class ReportsComponent implements OnInit, OnDestroy {
     } else {
       this.isFilterSelected = false;
     }
-
   }
 
   async getTelemetryData(filterObj, type = undefined, callScrollFnFlag = false) {
     return new Promise<void>((resolve) => {
-    const obj = JSON.parse(JSON.stringify(filterObj));
-    delete obj.dateOption;
-    delete obj.isTypeEditable;
-    delete obj.type;
-    obj.offset = this.currentOffset;
-    obj.count = this.currentLimit;
-    // obj.order_dir = 'ASC';
-    if (type === 'all') {
-      delete obj.count;
-    }
+      const obj = JSON.parse(JSON.stringify(filterObj));
+      delete obj.dateOption;
+      delete obj.isTypeEditable;
+      delete obj.type;
+      obj.offset = this.currentOffset;
+      obj.count = this.currentLimit;
+      // obj.order_dir = 'ASC';
+      if (type === 'all') {
+        delete obj.count;
+      }
 
-    delete obj.report_type;
-    delete obj.assetArr;
-    this.isTelemetryLoading = false;
-    this.isFilterSelected = false;
-    const asset = this.assets.find(assetObj => assetObj.asset_id ===  obj.asset_id);
-    obj.partition_key = asset.partition_key;
-    let method;
-    if (obj.to_date - obj.from_date > 3600 && !filterObj.isTypeEditable) {
+      delete obj.report_type;
+      delete obj.assetArr;
+      this.isTelemetryLoading = false;
+      this.isFilterSelected = false;
+      const asset = this.assets.find((assetObj) => assetObj.asset_id === obj.asset_id);
+      obj.partition_key = asset.partition_key;
+      let method;
+      if (obj.to_date - obj.from_date > 3600 && !filterObj.isTypeEditable) {
         this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
         return;
-    }
+      }
 
-    if (filterObj.isTypeEditable) {
-    if (filterObj.type) {
-      if (!filterObj.sampling_time || !filterObj.sampling_format ) {
-        this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
-        return;
+      if (filterObj.isTypeEditable) {
+        if (filterObj.type) {
+          if (!filterObj.sampling_time || !filterObj.sampling_format) {
+            this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
+            return;
+          } else {
+            delete obj.aggregation_minutes;
+            delete obj.aggregation_format;
+            let measured_message_props = '';
+            let edge_derived_message_props = '';
+            let cloud_derived_message_props = '';
+            this.props.forEach((prop, index) => {
+              if (prop.value.type === 'Edge Derived Properties') {
+                edge_derived_message_props =
+                  edge_derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+              } else if (prop.value.type === 'Cloud Derived Properties') {
+                cloud_derived_message_props =
+                  cloud_derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+              } else {
+                measured_message_props =
+                  measured_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+              }
+            });
+            measured_message_props = measured_message_props.replace(/,\s*$/, '');
+            edge_derived_message_props = edge_derived_message_props.replace(/,\s*$/, '');
+            cloud_derived_message_props = cloud_derived_message_props.replace(/,\s*$/, '');
+            obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
+            obj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
+            obj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
+            const records = this.commonService.calculateEstimatedRecords(
+              filterObj.sampling_time * 60,
+              obj.from_date,
+              obj.to_date
+            );
+            if (records > 500) {
+              this.loadingMessage =
+                'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+            }
+            method = this.assetService.getAssetSamplingTelemetry(obj, this.contextApp.app);
+          }
+        } else {
+          if (!filterObj.aggregation_minutes || !filterObj.aggregation_format) {
+            this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
+            return;
+          } else {
+            delete obj.sampling_time;
+            delete obj.sampling_format;
+            let measured_message_props = '';
+            let edge_derived_message_props = '';
+            let cloud_derived_message_props = '';
+            this.props.forEach((prop, index) => {
+              if (prop.value.type === 'Edge Derived Properties') {
+                edge_derived_message_props =
+                  edge_derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+              } else if (prop.value.type === 'Cloud Derived Properties') {
+                cloud_derived_message_props =
+                  cloud_derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+              } else {
+                measured_message_props =
+                  measured_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+              }
+            });
+            measured_message_props = measured_message_props.replace(/,\s*$/, '');
+            edge_derived_message_props = edge_derived_message_props.replace(/,\s*$/, '');
+            cloud_derived_message_props = cloud_derived_message_props.replace(/,\s*$/, '');
+            obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
+            obj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
+            obj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
+            const records = this.commonService.calculateEstimatedRecords(
+              filterObj.aggregation_minutes * 60,
+              obj.from_date,
+              obj.to_date
+            );
+            if (records > 500) {
+              this.loadingMessage =
+                'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+            }
+            method = this.assetService.getAssetTelemetry(obj);
+          }
+        }
       } else {
         delete obj.aggregation_minutes;
         delete obj.aggregation_format;
-        let measured_message_props = '';
-        let edge_derived_message_props = '';
-        let cloud_derived_message_props = '';
-        this.props.forEach((prop, index) => {
-          if (prop.value.type === 'Edge Derived Properties') {
-            edge_derived_message_props = edge_derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
-          } else if (prop.value.type === 'Cloud Derived Properties') {
-            cloud_derived_message_props = cloud_derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
-          } else {
-            measured_message_props = measured_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
-          }
-        });
-        measured_message_props = measured_message_props.replace(/,\s*$/, '');
-        edge_derived_message_props = edge_derived_message_props.replace(/,\s*$/, '');
-        cloud_derived_message_props = cloud_derived_message_props.replace(/,\s*$/, '');
-        obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
-        obj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
-        obj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
-        const records = this.commonService.calculateEstimatedRecords(filterObj.sampling_time * 60, obj.from_date, obj.to_date);
-        if (records > 500 ) {
-          this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
-        }
-        method = this.assetService.getAssetSamplingTelemetry(obj, this.contextApp.app);
-      }
-    } else {
-      if (!filterObj.aggregation_minutes || !filterObj.aggregation_format ) {
-        this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
-        return;
-      } else {
         delete obj.sampling_time;
         delete obj.sampling_format;
-        let measured_message_props = '';
-        let edge_derived_message_props = '';
-        let cloud_derived_message_props = '';
-        this.props.forEach((prop, index) => {
-          if (prop.value.type === 'Edge Derived Properties') {
-            edge_derived_message_props = edge_derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
-          } else if (prop.value.type === 'Cloud Derived Properties') {
-            cloud_derived_message_props = cloud_derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
-          } else {
-            measured_message_props = measured_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
-          }
-        });
-        measured_message_props = measured_message_props.replace(/,\s*$/, '');
-        edge_derived_message_props = edge_derived_message_props.replace(/,\s*$/, '');
-        cloud_derived_message_props = cloud_derived_message_props.replace(/,\s*$/, '');
-        obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
-        obj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
-        obj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
-        const records = this.commonService.calculateEstimatedRecords
-          (filterObj.aggregation_minutes * 60, obj.from_date, obj.to_date);
-        if (records > 500 ) {
-          this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+        if (this.props.length === this.propertyList.length && !obj.sampling_format && !obj.aggregation_format) {
+          obj['all_message_props'] = true;
+        } else {
+          // let message_props = '';
+          // this.props.forEach((prop, index) => message_props = message_props + prop.value.json_key +
+          // (this.props[index + 1] ? ',' : ''));
+          // obj['message_props'] = message_props;
+          let measured_message_props = '';
+          let edge_derived_message_props = '';
+          let cloud_derived_message_props = '';
+          this.props.forEach((prop, index) => {
+            if (prop.value.type === 'Edge Derived Properties') {
+              edge_derived_message_props =
+                edge_derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+            } else if (prop.value.type === 'Cloud Derived Properties') {
+              cloud_derived_message_props =
+                cloud_derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+            } else {
+              measured_message_props =
+                measured_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
+            }
+          });
+          measured_message_props = measured_message_props.replace(/,\s*$/, '');
+          edge_derived_message_props = edge_derived_message_props.replace(/,\s*$/, '');
+          cloud_derived_message_props = cloud_derived_message_props.replace(/,\s*$/, '');
+          obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
+          obj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
+          obj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
+        }
+        const frequencyArr = [];
+        frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+        frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+        frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+        const frequency = this.commonService.getLowestValueFromList(frequencyArr);
+        const records = this.commonService.calculateEstimatedRecords(frequency, filterObj.from_date, filterObj.to_date);
+        if (records > 500) {
+          this.loadingMessage =
+            'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
         }
         method = this.assetService.getAssetTelemetry(obj);
       }
-    }
-    } else {
-      delete obj.aggregation_minutes;
-      delete obj.aggregation_format;
-      delete obj.sampling_time;
-      delete obj.sampling_format;
-      if (this.props.length === this.propertyList.length && !obj.sampling_format && !obj.aggregation_format) {
-        obj['all_message_props'] = true;
-      } else {
-        // let message_props = '';
-        // this.props.forEach((prop, index) => message_props = message_props + prop.value.json_key +
-        // (this.props[index + 1] ? ',' : ''));
-        // obj['message_props'] = message_props;
-        let measured_message_props = '';
-        let edge_derived_message_props = '';
-        let cloud_derived_message_props = '';
-        this.props.forEach((prop, index) => {
-          if (prop.value.type === 'Edge Derived Properties') {
-            edge_derived_message_props = edge_derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
-          } else if (prop.value.type === 'Cloud Derived Properties') {
-            cloud_derived_message_props = cloud_derived_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
-          } else {
-            measured_message_props = measured_message_props + prop.value.json_key + (this.props[index + 1] ? ',' : '');
-          }
-        });
-        measured_message_props = measured_message_props.replace(/,\s*$/, '');
-        edge_derived_message_props = edge_derived_message_props.replace(/,\s*$/, '');
-        cloud_derived_message_props = cloud_derived_message_props.replace(/,\s*$/, '');
-        obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
-        obj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
-        obj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
-      }
-      const frequencyArr = [];
-      frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
-      frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
-      frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
-      const frequency = this.commonService.getLowestValueFromList(frequencyArr);
-      const records = this.commonService.calculateEstimatedRecords(frequency, filterObj.from_date, filterObj.to_date);
-      if (records > 500 ) {
-        this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
-      }
-      method = this.assetService.getAssetTelemetry(obj);
-    }
 
-    this.isTelemetryLoading = true;
-    this.isFilterSelected = true;
-    this.reportsFetchDataSubscription = method.subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          // this.telemetry = response.data;
-          response.data.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
-          this.telemetry = [...this.telemetry, ...response.data];
-          this.isFilterOpen = false;
-          if (response.data.length === this.currentLimit) {
-            this.insideScrollFunFlag = false;
-          } else {
+      this.isTelemetryLoading = true;
+      this.isFilterSelected = true;
+      this.reportsFetchDataSubscription = method.subscribe(
+        (response: any) => {
+          if (response && response.data) {
+            // this.telemetry = response.data;
+            response.data.forEach(
+              (item) => (item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date))
+            );
+            this.telemetry = [...this.telemetry, ...response.data];
+            this.isFilterOpen = false;
+            if (response.data.length === this.currentLimit) {
+              this.insideScrollFunFlag = false;
+            } else {
               this.insideScrollFunFlag = true;
+            }
+            this.loadingMessage = undefined;
+            // this.telemetry.reverse();
           }
-          this.loadingMessage = undefined;
-          // this.telemetry.reverse();
-        }
-        if (callScrollFnFlag) {
-          this.onScrollFn();
-        }
-        if (this.filterObj.dateOption === 'Custom Range') {
-          this.originalFilterObj.dateOption = 'this selected range';
-        }
-        this.isTelemetryLoading = false;
-        resolve();
-      }, error => this.isTelemetryLoading = false
-    );
-    this.subscriptions.push(this.reportsFetchDataSubscription);
+          if (callScrollFnFlag) {
+            this.onScrollFn();
+          }
+          if (this.filterObj.dateOption === 'Custom Range') {
+            this.originalFilterObj.dateOption = 'this selected range';
+          }
+          this.isTelemetryLoading = false;
+          resolve();
+        },
+        (error) => (this.isTelemetryLoading = false)
+      );
+      this.subscriptions.push(this.reportsFetchDataSubscription);
     });
   }
 
-  y1Deselect(e){
+  y1Deselect(e) {
     if (e === [] || e.length === 0) {
       this.props = [];
     }
   }
 
-  scrollToTop(){
-      $('#table-top1').animate({ scrollTop: "0px" });
-      // window.scrollTo(0, 0);
+  scrollToTop() {
+    $('#table-top1').animate({ scrollTop: '0px' });
+    // window.scrollTo(0, 0);
   }
 
   async savePDF(): Promise<void> {
@@ -733,19 +803,31 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.isFileDownloading = true;
     setTimeout(() => {
       const pdf = new jsPDF('p', 'pt', 'A3');
-      pdf.text(this.originalFilterObj.report_type + ' for ' +
-      (this.assetFilterObj.display_name ? this.assetFilterObj.display_name : this.assetFilterObj.asset_id) +
-      ' for ' + this.commonService.convertEpochToDate(this.newFilterObj.from_date) + ' to ' +
-      this.commonService.convertEpochToDate(this.newFilterObj.to_date), 20, 50);
+      pdf.text(
+        this.originalFilterObj.report_type +
+          ' for ' +
+          (this.assetFilterObj.display_name ? this.assetFilterObj.display_name : this.assetFilterObj.asset_id) +
+          ' for ' +
+          this.commonService.convertEpochToDate(this.newFilterObj.from_date) +
+          ' to ' +
+          this.commonService.convertEpochToDate(this.newFilterObj.to_date),
+        20,
+        50
+      );
       autoTable(pdf, { html: '#dataTable1', margin: { top: 70 } });
       const now = moment().utc().unix();
-      pdf.save((this.assetFilterObj.display_name ? this.assetFilterObj.display_name : this.assetFilterObj.asset_id)
-             + '_' + this.originalFilterObj.report_type + '_' + now + '.pdf');
+      pdf.save(
+        (this.assetFilterObj.display_name ? this.assetFilterObj.display_name : this.assetFilterObj.asset_id) +
+          '_' +
+          this.originalFilterObj.report_type +
+          '_' +
+          now +
+          '.pdf'
+      );
       this.isFileDownloading = false;
       this.loadingMessage = undefined;
       $('#downloadReportModal').modal('hide');
     }, 1000);
-
   }
 
   async saveExcel() {
@@ -765,32 +847,37 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.loadingMessage = 'Preparing Report.';
     setTimeout(() => {
       if (this.originalFilterObj.report_type === 'Alert Report') {
-        this.latestAlerts.forEach(alert => {
+        this.latestAlerts.forEach((alert) => {
           data.push({
-            'Asset Name': (this.assetFilterObj.display_name ? this.assetFilterObj.display_name : this.assetFilterObj.asset_id),
+            'Asset Name': this.assetFilterObj.display_name
+              ? this.assetFilterObj.display_name
+              : this.assetFilterObj.asset_id,
             Time: alert.local_created_date,
             Severity: alert.severity,
             Description: alert.message,
             Source: alert.source,
             Status: alert.metadata?.acknowledged_date ? 'Acknowledged' : 'Not Acknowledged',
-            'Acknowledged By': alert.metadata?.user_id
+            'Acknowledged By': alert.metadata?.user_id,
           });
         });
         // const element = document.getElementById('dataTable');
         ws = XLSX.utils.json_to_sheet(data);
       } else {
         data = [];
-        this.telemetry.forEach(telemetryObj => {
+        this.telemetry.forEach((telemetryObj) => {
           const obj = {
-            'Asset Name': this.originalFilterObj.non_ip_asset ?
-              (this.originalFilterObj.non_ip_asset.asset_display_name ? this.originalFilterObj.non_ip_asset?.asset_display_name
-                : this.originalFilterObj.non_ip_asset?.asset_id)
-              : (this.assetFilterObj ?
-              (this.assetFilterObj.asset_display_name ? this.assetFilterObj.asset_display_name : this.assetFilterObj.asset_id)
-              : '' ),
-            Time: telemetryObj.local_created_date
+            'Asset Name': this.originalFilterObj.non_ip_asset
+              ? this.originalFilterObj.non_ip_asset.asset_display_name
+                ? this.originalFilterObj.non_ip_asset?.asset_display_name
+                : this.originalFilterObj.non_ip_asset?.asset_id
+              : this.assetFilterObj
+              ? this.assetFilterObj.asset_display_name
+                ? this.assetFilterObj.asset_display_name
+                : this.assetFilterObj.asset_id
+              : '',
+            Time: telemetryObj.local_created_date,
           };
-          this.selectedProps.forEach(prop => {
+          this.selectedProps.forEach((prop) => {
             obj[prop.id] = telemetryObj[prop.value.json_key];
           });
           data.push(obj);
@@ -816,18 +903,24 @@ export class ReportsComponent implements OnInit, OnDestroy {
         ws[ref].z = fmt;
       }
       // width of timestamp col
-      const wscols = [
-        { wch: 10 }
-      ];
+      const wscols = [{ wch: 10 }];
       ws['!cols'] = wscols;
       /* generate workbook and add the worksheet */
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
       const now = moment().utc().unix();
       /* save to file */
-      XLSX.writeFile(wb, (this.originalFilterObj.asset.display_name ? this.originalFilterObj.asset.display_name
-        : this.originalFilterObj.asset.asset_id)
-        + '_' + this.originalFilterObj.report_type + '_' + now + '.xlsx');
+      XLSX.writeFile(
+        wb,
+        (this.originalFilterObj.asset.display_name
+          ? this.originalFilterObj.asset.display_name
+          : this.originalFilterObj.asset.asset_id) +
+          '_' +
+          this.originalFilterObj.report_type +
+          '_' +
+          now +
+          '.xlsx'
+      );
       this.loadingMessage = undefined;
       $('#downloadReportModal').modal('hide');
     }, 1000);
@@ -841,7 +934,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
-
 }

@@ -15,10 +15,9 @@ declare var $: any;
 @Component({
   selector: 'app-pre-generated-reports',
   templateUrl: './pre-generated-reports.component.html',
-  styleUrls: ['./pre-generated-reports.component.css']
+  styleUrls: ['./pre-generated-reports.component.css'],
 })
 export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDestroy {
-
   userData: any;
   filterObj: any = {};
   previousFilterObj: any = {};
@@ -36,8 +35,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   isFilterSelected = false;
   reports: any[] = [];
   isReportDataLoading = false;
-  @ViewChild('dtInput1', {static: false}) dtInput1: any;
-  @ViewChild('dtInput2', {static: false}) dtInput2: any;
+  @ViewChild('dtInput1', { static: false }) dtInput1: any;
+  @ViewChild('dtInput2', { static: false }) dtInput2: any;
   blobStorageURL = environment.blobURL;
   sasToken = environment.blobKey;
   insideScrollFunFlag = false;
@@ -50,7 +49,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     autoUpdateInput: false,
     maxDate: moment(),
     timePicker: true,
-    ranges: CONSTANTS.DATE_OPTIONS
+    ranges: CONSTANTS.DATE_OPTIONS,
   };
   @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   hierarchyString: any;
@@ -64,33 +63,38 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     private toasterService: ToasterService,
     private fileSaverService: FileSaverService,
     private cdr: ChangeDetectorRef
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
-    this.subscriptions.push(this.route.paramMap.subscribe(async params => {
-      if (params.get('applicationId')) {
-        this.filterObj.app = this.contextApp.app;
-       // this.filterObj.count = 10;
-      }
+    this.subscriptions.push(
+      this.route.paramMap.subscribe(async (params) => {
+        if (params.get('applicationId')) {
+          this.filterObj.app = this.contextApp.app;
+          // this.filterObj.count = 10;
+        }
 
-     // this.getLatestAlerts();
-      await this.getAssets(this.contextApp.user.hierarchy);
-      setTimeout(() => {
-        $('#table-wrapper').on('scroll', () => {
-          const element = document.getElementById('table-wrapper');
-          if (parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0))
-          >= parseFloat(element.scrollHeight.toFixed(0)) && !this.insideScrollFunFlag) {
-            this.currentOffset += this.currentLimit;
-            this.getReportsData(false);
-            this.insideScrollFunFlag = true;
-          }
-        });
-      }, 2000);
-     // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
-    }));
+        // this.getLatestAlerts();
+        await this.getAssets(this.contextApp.user.hierarchy);
+        setTimeout(() => {
+          $('#table-wrapper').on('scroll', () => {
+            const element = document.getElementById('table-wrapper');
+            if (
+              parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0)) >=
+                parseFloat(element.scrollHeight.toFixed(0)) &&
+              !this.insideScrollFunFlag
+            ) {
+              this.currentOffset += this.currentLimit;
+              this.getReportsData(false);
+              this.insideScrollFunFlag = true;
+            }
+          });
+        }, 2000);
+        // this.propertyList = this.appData.metadata.properties ? this.appData.metadata.properties : [];
+      })
+    );
   }
 
   ngAfterViewInit() {
@@ -104,10 +108,10 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     } else {
       this.contextApp.hierarchy.levels.forEach((level, index) => {
         if (index !== 0) {
-        this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-        if (this.contextApp.user.hierarchy[level]) {
-          this.onChangeOfHierarchy(index);
-        }
+          this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+          if (this.contextApp.user.hierarchy[level]) {
+            this.onChangeOfHierarchy(index);
+          }
         }
       });
     }
@@ -115,17 +119,17 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
 
   loadFromCache(item) {
     if (item.hierarchy) {
-    if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
-    this.contextApp.hierarchy.levels.forEach((level, index) => {
-      if (index !== 0) {
-      this.configureHierarchy[index] = item.hierarchy[level];
-      console.log(this.configureHierarchy);
-      if (item.hierarchy[level]) {
-        this.onChangeOfHierarchy(index);
+      if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
+        this.contextApp.hierarchy.levels.forEach((level, index) => {
+          if (index !== 0) {
+            this.configureHierarchy[index] = item.hierarchy[level];
+            console.log(this.configureHierarchy);
+            if (item.hierarchy[level]) {
+              this.onChangeOfHierarchy(index);
+            }
+          }
+        });
       }
-      }
-    });
-    }
     }
     console.log(item.dateOption);
     if (item.dateOption) {
@@ -143,19 +147,15 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       if (this.filterObj.dateOption !== 'Custom Range') {
         this.selectedDateRange = this.filterObj.dateOption;
       } else {
-        this.selectedDateRange = moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
-        moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+        this.selectedDateRange =
+          moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') +
+          ' to ' +
+          moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
       }
       this.previousFilterObj = JSON.parse(JSON.stringify(this.filterObj));
       this.getReportsData(false);
     }
     this.cdr.detectChanges();
-  }
-
-  onAssetFilterBtnClick() {
-    $('.dropdown-menu').on('click.bs.dropdown', (e) => {
-      e.stopPropagation();
-    });
   }
 
   onAssetFilterApply() {
@@ -164,19 +164,65 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     // });
   }
 
-  preventClose(event: MouseEvent) {
-    $('#dd-open').on('hide.bs.dropdown', function (e) {
-      if (e.clickEvent) {
+  onAssetFilterBtnClick() {
+    $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
+      e.stopPropagation();
+    });
+    $('#dd-open').on('hide.bs.dropdown', (e: any) => {
+      if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
         e.preventDefault();
       }
     });
   }
 
-  scrollToTop(){
-    $('#table-top').animate({ scrollTop: "0px" });
-    //window.scrollTo(0, 0);
+  onSaveHierachy() {
+    this.hierarchyString = this.contextApp.app;
+    this.displayHierarchyString = this.contextApp.app;
+    Object.keys(this.configureHierarchy).forEach((key) => {
+      if (this.configureHierarchy[key]) {
+        this.hierarchyString += ' > ' + this.configureHierarchy[key];
+        this.displayHierarchyString = this.configureHierarchy[key];
+      }
+    });
   }
 
+  onClearHierarchy() {
+    console.log('in clear');
+    this.hierarchyArr = {};
+    this.configureHierarchy = {};
+    // this.filterObj = {};
+    if (this.contextApp.hierarchy.levels.length > 1) {
+      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+    }
+    console.log(this.hierarchyArr);
+    this.contextApp.hierarchy.levels.forEach((level, index) => {
+      if (index !== 0) {
+        this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+        console.log(this.configureHierarchy);
+        console.log(level);
+        console.log(this.contextApp.user.hierarchy);
+        if (this.contextApp.user.hierarchy[level]) {
+          console.log('hereeeee');
+          this.onChangeOfHierarchy(index);
+        }
+      } else {
+        this.assets = JSON.parse(JSON.stringify(this.originalAssets));
+      }
+    });
+    this.hierarchyString = this.contextApp.app;
+    this.displayHierarchyString = this.contextApp.app;
+    Object.keys(this.configureHierarchy).forEach((key) => {
+      if (this.configureHierarchy[key]) {
+        this.hierarchyString += ' > ' + this.configureHierarchy[key];
+        this.displayHierarchyString = this.configureHierarchy[key];
+      }
+    });
+  }
+
+  scrollToTop() {
+    $('#table-top').animate({ scrollTop: '0px' });
+    //window.scrollTo(0, 0);
+  }
 
   selectedDate(value: any, datepicker?: any) {
     console.log(value);
@@ -190,7 +236,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       this.filterObj.to_date = moment(value.end).utc().unix();
     }
     if (value.label === 'Custom Range') {
-      this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
+      this.selectedDateRange =
+        moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
     } else {
       this.selectedDateRange = value.label;
     }
@@ -202,10 +249,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     // }
   }
 
-
   getTileName() {
     let selectedItem;
-    this.contextApp.menu_settings.main_menu.forEach(item => {
+    this.contextApp.menu_settings.main_menu.forEach((item) => {
       if (item.system_name === 'Reports') {
         selectedItem = item.showAccordion;
       }
@@ -218,27 +264,27 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     return new Promise<void>((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(hierarchy),
-        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET
+        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
       };
-      this.subscriptions.push(this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe(
-        (response: any) => {
+      this.subscriptions.push(
+        this.assetService.getIPAndLegacyAssets(obj, this.contextApp.app).subscribe((response: any) => {
           if (response?.data) {
             this.assets = response.data;
             this.originalAssets = JSON.parse(JSON.stringify(this.assets));
           }
           resolve();
-        }
-      ));
+        })
+      );
     });
   }
 
   async onChangeOfHierarchy(i) {
-    Object.keys(this.configureHierarchy).forEach(key => {
+    Object.keys(this.configureHierarchy).forEach((key) => {
       if (key > i) {
         delete this.configureHierarchy[key];
       }
     });
-    Object.keys(this.hierarchyArr).forEach(key => {
+    Object.keys(this.hierarchyArr).forEach((key) => {
       if (key > i) {
         this.hierarchyArr[key] = [];
       }
@@ -253,7 +299,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
     }
     // let hierarchy = {...this.configureHierarchy};
-    const hierarchyObj: any = { App: this.contextApp.app};
+    const hierarchyObj: any = { App: this.contextApp.app };
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (this.configureHierarchy[key]) {
         hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
@@ -263,30 +309,30 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     if (Object.keys(hierarchyObj).length === 1) {
       this.assets = JSON.parse(JSON.stringify(this.originalAssets));
     } else {
-    const arr = [];
-    this.assets = [];
-    this.originalAssets.forEach(asset => {
-      let trueFlag = 0;
-      let flaseFlag = 0;
-      Object.keys(hierarchyObj).forEach(hierarchyKey => {
-        if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
-          trueFlag++;
-        } else {
-          flaseFlag++;
+      const arr = [];
+      this.assets = [];
+      this.originalAssets.forEach((asset) => {
+        let trueFlag = 0;
+        let flaseFlag = 0;
+        Object.keys(hierarchyObj).forEach((hierarchyKey) => {
+          if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+            trueFlag++;
+          } else {
+            flaseFlag++;
+          }
+        });
+        if (trueFlag > 0 && flaseFlag === 0) {
+          arr.push(asset);
         }
       });
-      if (trueFlag > 0 && flaseFlag === 0) {
-        arr.push(asset);
-      }
-    });
-    this.assets = JSON.parse(JSON.stringify(arr));
+      this.assets = JSON.parse(JSON.stringify(arr));
     }
     this.filterObj.assetArr = undefined;
     this.filterObj.asset_id = undefined;
     let count = 0;
-    Object.keys(this.configureHierarchy).forEach(key => {
+    Object.keys(this.configureHierarchy).forEach((key) => {
       if (this.configureHierarchy[key]) {
-        count ++;
+        count++;
       }
     });
     if (count === 0) {
@@ -305,7 +351,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   onAssetSelection() {
     if (this.filterObj?.assetArr.length > 0) {
       this.filterObj.asset_id = '';
-      this.filterObj.assetArr.forEach(asset => {
+      this.filterObj.assetArr.forEach((asset) => {
         this.filterObj.asset_id += (this.filterObj.asset_id.length > 0 ? ',' : '') + asset.asset_id;
       });
     } else {
@@ -319,7 +365,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   onAllAssetSelection() {
     if (this.filterObj?.assetArr.length > 0) {
       this.filterObj.asset_id = '';
-      this.filterObj.assetArr.forEach(asset => {
+      this.filterObj.assetArr.forEach((asset) => {
         this.filterObj.asset_id += (this.filterObj.asset_id.length > 0 ? ',' : '') + asset.asset_id;
       });
     }
@@ -335,7 +381,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       this.filterObj.from_date = this.filterObj.from_date;
       this.filterObj.to_date = this.filterObj.to_date;
     }
-    const obj = {...this.filterObj};
+    const obj = { ...this.filterObj };
     // if (!obj.report_type) {
     //   this.toasterService.showError('Report Type selection is required', 'View Report');
     //   return;
@@ -343,8 +389,11 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     setTimeout(() => {
       $('#table-wrapper').on('scroll', () => {
         const element = document.getElementById('table-wrapper');
-        if (parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0))
-        >= parseFloat(element.scrollHeight.toFixed(0)) && !this.insideScrollFunFlag) {
+        if (
+          parseFloat(element.scrollTop.toFixed(0)) + parseFloat(element.clientHeight.toFixed(0)) >=
+            parseFloat(element.scrollHeight.toFixed(0)) &&
+          !this.insideScrollFunFlag
+        ) {
           this.currentOffset += this.currentLimit;
           this.getReportsData(false);
           this.insideScrollFunFlag = true;
@@ -355,28 +404,12 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       this.toasterService.showError('Date selection is requierd.', 'View Report');
       return;
     }
-    // if (obj.report_type.toLowerCase().includes('daily')) {
-    //   obj.frequency = 'daily';
-    // } else {
-    //   obj.frequency = 'weekly';
-    // }
-    // if (obj.report_type.toLowerCase().includes('raw')) {
-    //   obj.type = 'raw';
-    // } else {
-    //   obj.type = 'sampling';
-    // }
-    // console.log(obj.report_type.toLowerCase().includes('single'));
-    // if (obj.report_type.toLowerCase().includes('single')) {
-    //   obj.multiple_assets = false;
-    //   console.log(obj);
-    // } else {
-    //   obj.multiple_assets = true;
-    // }
+
     this.hierarchyString = this.contextApp.app;
     this.displayHierarchyString = this.contextApp.app;
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (this.configureHierarchy[key]) {
-        this.hierarchyString += (' > ' + this.configureHierarchy[key]);
+        this.hierarchyString += ' > ' + this.configureHierarchy[key];
         this.displayHierarchyString = this.configureHierarchy[key];
       }
     });
@@ -386,7 +419,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       pagefilterObj['from_date'] = obj.from_date;
       pagefilterObj['to_date'] = obj.to_date;
       pagefilterObj['dateOption'] = obj.dateOption;
-      pagefilterObj.hierarchy = { App: this.contextApp.app};
+      pagefilterObj.hierarchy = { App: this.contextApp.app };
       Object.keys(this.configureHierarchy).forEach((key) => {
         if (this.configureHierarchy[key]) {
           pagefilterObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
@@ -394,9 +427,13 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       });
       this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, pagefilterObj);
     }
-    if (!obj.hierarchy) {
-      obj.hierarchy =  { App: this.contextApp.app};
-    }
+    obj.hierarchy = { App: this.contextApp.app };
+    console.log(this.configureHierarchy);
+    Object.keys(this.configureHierarchy).forEach((key) => {
+      if (this.configureHierarchy[key]) {
+        obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
+      }
+    });
     obj.hierarchy = JSON.stringify(obj.hierarchy);
     this.isFilterSelected = true;
     delete obj.assetArr;
@@ -408,33 +445,35 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     this.isReportDataLoading = true;
     this.previousFilterObj = JSON.parse(JSON.stringify(this.filterObj));
     // this.reports = [];
-    this.subscriptions.push(this.assetService.getPregeneratedReports(obj, this.contextApp.app).subscribe(
-      (response: any) => {
-        if (response.data?.length > 0) {
-          // this.reports = response.data;
-          response.data.forEach(report => {
-            report.local_start_date = this.commonService.convertUTCDateToLocalDate(report.report_start_date);
-            report.local_end_date = this.commonService.convertUTCDateToLocalDate(report.report_end_date);
-          });
-          this.reports = [...this.reports, ...response.data];
-          if (response.data.length === this.currentLimit) {
-            this.insideScrollFunFlag = false;
-          } else {
-            this.insideScrollFunFlag = true;
+    this.subscriptions.push(
+      this.assetService.getPregeneratedReports(obj, this.contextApp.app).subscribe(
+        (response: any) => {
+          if (response.data?.length > 0) {
+            // this.reports = response.data;
+            response.data.forEach((report) => {
+              report.local_start_date = this.commonService.convertUTCDateToLocalDate(report.report_start_date);
+              report.local_end_date = this.commonService.convertUTCDateToLocalDate(report.report_end_date);
+            });
+            this.reports = [...this.reports, ...response.data];
+            if (response.data.length === this.currentLimit) {
+              this.insideScrollFunFlag = false;
+            } else {
+              this.insideScrollFunFlag = true;
+            }
           }
-        }
-        if (this.filterObj.dateOption === 'Custom Range') {
-          this.previousFilterObj.dateOption = 'this selected range';
-        }
-        this.isReportDataLoading = false;
-      }, error => this.isReportDataLoading = false
-    )
+          if (this.filterObj.dateOption === 'Custom Range') {
+            this.previousFilterObj.dateOption = 'this selected range';
+          }
+          this.isReportDataLoading = false;
+        },
+        (error) => (this.isReportDataLoading = false)
+      )
     );
   }
 
   getAssetNameById(assetId) {
-    const asset = this.originalAssets.find(assetObj => assetObj.asset_id === assetId);
-    return (asset?.display_name ? asset.display_name : assetId);
+    const asset = this.originalAssets.find((assetObj) => assetObj.asset_id === assetId);
+    return asset?.display_name ? asset.display_name : assetId;
   }
 
   downloadFile(reportObj) {
@@ -443,10 +482,11 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     setTimeout(() => {
       const url = this.blobStorageURL + reportObj.report_url + this.sasToken;
       this.reportDownloadSubscription = this.commonService.getFileData(url).subscribe(
-        response => {
+        (response) => {
           this.fileSaverService.save(response, reportObj.report_file_name);
           $('#downloadPreGeneratedReportReportModal').modal('hide');
-        }, error => {
+        },
+        (error) => {
           $('#downloadPreGeneratedReportReportModal').modal('hide');
         }
       );
@@ -460,10 +500,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
     this.reportDownloadSubscription?.unsubscribe();
     $('#downloadPreGeneratedReportReportModal').modal('hide');
   }
-
-
 }

@@ -146,21 +146,28 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onAssetFilterBtnClick() {
-    $('.dropdown-menu').on('click.bs.dropdown', (e) => {
+    $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
       e.stopPropagation();
     });
-    // $('#dd-open').on('hide.bs.dropdown', (e: any) => {
-    //   if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
-    //     e.preventDefault();
-    //   }
-    // });
+    $('#dd-open').on('hide.bs.dropdown', (e: any) => {
+      if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
+        e.preventDefault();
+      }
+    });
   }
 
-  onSaveHierachy() {}
+  onSaveHierachy() {
+    this.originalFilter = {};
+    this.originalFilter.asset = JSON.parse(JSON.stringify(this.filterObj.asset));
+    console.log(this.originalFilter);
+  }
 
   onClearHierarchy() {
+    this.isFilterSelected = false;
     this.hierarchyArr = {};
+    this.originalFilter = {};
     this.configureHierarchy = {};
+    this.filterObj = {};
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
     }
@@ -584,6 +591,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.signalRService.disconnectFromSignalR('telemetry');
     this.signalRTelemetrySubscription?.unsubscribe();
     clearInterval(this.sampleCountInterval);
+
     const obj = JSON.parse(JSON.stringify(filterObj));
     let asset_model: any;
     if (obj.asset) {
@@ -592,6 +600,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       delete obj.asset;
     } else {
       this.toasterService.showError('Asset selection is required', 'View Live Telemetry');
+      this.telemetryObj = undefined;
+      this.telemetryData = [];
+      this.liveWidgets = [];
+      this.historicalWidgets = [];
+      this.isFilterSelected = false;
       return;
     }
     if (updateFilterObj) {

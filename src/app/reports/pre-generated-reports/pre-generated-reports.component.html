@@ -1,21 +1,20 @@
-
 <div class="tab-bar">
   <form class="form-inline">
-    <div class="form-group" id="dd-open" >
-      <button href="#" role="button"  (click)="preventClose($event)" class="dropdown-btn" data-toggle="dropdown"
-      placement="bottom" [tooltip]="hierarchyString ? hierarchyString : 'Select Hierarchy'"
-        (click)="onAssetFilterBtnClick()" aria-haspopup="true" aria-expanded="false"
-        [ngClass]="{'active': hierarchyString}">
-        <i class="fas fa-fw fa-filter fa-sm button-divider mr-1"></i>{{hierarchyString ? displayHierarchyString : 'Select Hierarchy'}} </button>
-      <div class="dropdown-menu dropdown-filter-content"   id="liveDataSelectAssret">
+    <div class="form-group" id="dd-open">
+      <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown" placement="bottom"
+        [tooltip]="hierarchyString ? hierarchyString : 'Select Hierarchy'" (click)="onAssetFilterBtnClick()"
+        aria-haspopup="true" aria-expanded="false" [ngClass]="{'active': hierarchyString}">
+        <i class="fas fa-fw fa-filter fa-sm button-divider mr-1"></i>{{hierarchyString ? displayHierarchyString :
+        'Select Hierarchy'}} </button>
+      <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
         <ng-container *ngFor="
                     let level of contextApp?.hierarchy?.levels;
                     let index = index
                   ">
           <div class="">
             <select *ngIf="index !== 0" name="{{level}}_{{index}}" class="dropdown-form" id="{{ level }}"
-              [disabled]="contextApp?.user?.hierarchy[level]" [(ngModel)]="configureHierarchy[index]"
-              name="{{ level }}" (change)="onChangeOfHierarchy(index)">
+              [disabled]="contextApp?.user?.hierarchy[level]" [(ngModel)]="configureHierarchy[index]" name="{{ level }}"
+              (change)="onChangeOfHierarchy(index)">
               <option [ngValue]="undefined">
                 Select {{ level }}
               </option>
@@ -27,7 +26,12 @@
               disabled class="dropdown-form" />
           </div>
         </ng-container>
-
+        <div class="form-group">
+          <button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary"
+            (click)="onSaveHierachy()">Apply</button>
+          <button type="button" placement="bottom" tooltip="Clear" class="btn btn-sm searchBtn btn-white ml-1"
+            (click)="onClearHierarchy()">Clear</button>
+        </div>
         <!-- <div class="">
           <button class="btn btn-sm searchBtn btn-primary" type="button" (click)="onAssetFilterApply()">Apply</button>
         </div> -->
@@ -51,106 +55,114 @@
 
           </select>
     </div> -->
-    <div class="form-group left-inner-addon" >
+    <div class="form-group left-inner-addon">
       <i class="fa fa-calendar" [ngClass]="{'active': filterObj.from_date && filterObj?.to_date}"></i>
-      <input type="text"  class="form-control form-control-sm date-range-picker" daterangepicker name="daterangeInput" autocomplete="off"  [(ngModel)]="selectedDateRange"
-      [options]="options" (selected)="selectedDate($event, daterange)" [ngClass]="{'active': filterObj.from_date && filterObj?.to_date}"
-      [tooltip]="selectedDateRange" placement="bottom"/>
+      <input type="text" class="form-control form-control-sm date-range-picker" daterangepicker name="daterangeInput"
+        autocomplete="off" [(ngModel)]="selectedDateRange" [options]="options"
+        (selected)="selectedDate($event, daterange)" [ngClass]="{'active': filterObj.from_date && filterObj?.to_date}"
+        [tooltip]="selectedDateRange" placement="bottom" />
     </div>
     <div class="form-group">
       <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
-           (click)="reports = [];currentOffset = 0;getReportsData(true)" ><i
-            class="fa fa-search fa-sm" ></i></button>
+        (click)="reports = [];currentOffset = 0;getReportsData(true)"><i class="fa fa-search fa-sm"></i></button>
     </div>
   </form>
 </div>
 <h6 class="p-3" *ngIf="!isFilterSelected"> Please select filters to view the pre-generated reports.</h6>
 <ng-container *ngIf="isFilterSelected">
   <!-- <h5  >Pre-generated</h5> -->
-  <div class="table-responsive" >
+  <div class="table-responsive">
     <div class="tableFixHead" id="table-top">
-  <table class="table table-hover"
- >
-    <thead>
-      <tr>
-        <th>No</th>
-        <th >Asset Name</th>
-        <th >Date</th>
-        <th>Category</th>
-        <th>Type</th>
-        <th >Size</th>
-        <!-- <th>Type</th>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Asset Name</th>
+            <th>Date</th>
+            <th>Category</th>
+            <th>Type</th>
+            <th>Size</th>
+            <!-- <th>Type</th>
         <th>Frequency</th> -->
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <ng-container *ngIf="reports.length > 0">
-        <tr *ngFor="let reportObj of reports; let index = index">
-          <td>{{index + 1}}</td>
-          <td >
-            <ng-container *ngFor="let assetId of reportObj.assets">
-             {{ getAssetNameById(assetId)}}
-            </ng-container>
-          </td>
-        <td>{{ reportObj.report_frequency?.toLowerCase() === 'daily' ? (reportObj.local_start_date) : (reportObj.local_start_date + ' to ' + reportObj.local_end_date)}}</td>
-          <!-- <td>{{ reportObj.local_end_date }}</td> -->
-
-          <td>{{reportObj.report_type}}</td>
-          <td>{{reportObj?.report_category?.toLowerCase() === 'telemetry' ? 'Telemetry Report' : (reportObj?.report_category?.toLowerCase() === 'alert' ? 'Alert Report' : '')}}</td>
-          <!-- <td>{{reportObj.report_type.method | titlecase}}</td>
-          <td>{{reportObj.report_frequency | titlecase}}</td> -->
-          <td>{{reportObj.metadata?.file_size}}</td>
-          <td>
-            <a *ngIf="reportObj.process_status.toLowerCase() === 'success'" href="javascript:void(0)"  (click)="downloadFile(reportObj)" placement="bottom" tooltip="Download Excel"><i class="fa fa-sm fa-download" ></i></a>
-            <ng-container *ngIf="reportObj.process_status.toLowerCase() !== 'success'">{{reportObj.process_status}}</ng-container>
-          </td>
+            <th>Action</th>
           </tr>
-      </ng-container>
-      <ng-container *ngIf="reports.length === 0 && !isReportDataLoading">
-        <tr>
-          <td colspan="7">No reports available for {{this.previousFilterObj.dateOption}}. <p *ngIf="this.previousFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template></td>
-        </tr>
-      </ng-container>
-      <ng-container *ngIf="isReportDataLoading">
-        <tr>
-          <td colspan="7">
-            <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
-          </td>
-        </tr>
-      </ng-container>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="reports.length > 0">
+            <tr *ngFor="let reportObj of reports; let index = index">
+              <td>{{index + 1}}</td>
+              <td>
+                <ng-container *ngFor="let assetId of reportObj.assets">
+                  {{ getAssetNameById(assetId)}}
+                </ng-container>
+              </td>
+              <td>{{ reportObj.report_frequency?.toLowerCase() === 'daily' ? (reportObj.local_start_date) :
+                (reportObj.local_start_date + ' to ' + reportObj.local_end_date)}}</td>
+              <!-- <td>{{ reportObj.local_end_date }}</td> -->
 
-    </tbody>
-  </table>
-</div>
-</div>
-<span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && reports.length > 0">
-  <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;getReportsData(false);"
-  placement="bottom" tooltip="Load More Records...">Load More...</a>
-</span>
+              <td>{{reportObj.report_type}}</td>
+              <td>{{reportObj?.report_category?.toLowerCase() === 'telemetry' ? 'Telemetry Report' :
+                (reportObj?.report_category?.toLowerCase() === 'alert' ? 'Alert Report' : '')}}</td>
+              <!-- <td>{{reportObj.report_type.method | titlecase}}</td>
+          <td>{{reportObj.report_frequency | titlecase}}</td> -->
+              <td>{{reportObj.metadata?.file_size}}</td>
+              <td>
+                <a *ngIf="reportObj.process_status.toLowerCase() === 'success'" href="javascript:void(0)"
+                  (click)="downloadFile(reportObj)" placement="bottom" tooltip="Download Excel"><i
+                    class="fa fa-sm fa-download"></i></a>
+                <ng-container *ngIf="reportObj.process_status.toLowerCase() !== 'success'">{{reportObj.process_status}}
+                </ng-container>
+              </td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="reports.length === 0 && !isReportDataLoading">
+            <tr>
+              <td colspan="7">No reports available for {{this.previousFilterObj.dateOption}}. <p
+                  *ngIf="this.previousFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">
+                  You can choose large time window.</p>
+                <ng-template #differentMsg>
+                  <p class="pt-2">You can choose different time window.</p>
+                </ng-template>
+              </td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="isReportDataLoading">
+            <tr>
+              <td colspan="7">
+                <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+              </td>
+            </tr>
+          </ng-container>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && reports.length > 0">
+    <a href="javascript:void(0)" class="mr-1"
+      (click)="currentOffset = currentOffset + currentLimit;getReportsData(false);" placement="bottom"
+      tooltip="Load More Records...">Load More...</a>
+  </span>
 </ng-container>
-<div class="modal fade" id="downloadPreGeneratedReportReportModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+<div class="modal fade" id="downloadPreGeneratedReportReportModal" tabindex="-1" role="dialog"
+  aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h6 class="modal-title" id="exampleModalLabel">Download Report</h6>
-        <button type="button" class="close" (click)="cancelDownloadModal()"
-        *ngIf="isDownloadCloseOptionAvailable"
+        <button type="button" class="close" (click)="cancelDownloadModal()" *ngIf="isDownloadCloseOptionAvailable"
           aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <ng-container >
+        <ng-container>
           Downloading Report. Please wait...
-          <i
-          class="fa fa-spinner fa-spin fa-fw fa-2x"
-        ></i>
+          <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
         </ng-container>
       </div>
       <div class="modal-footer" *ngIf="isDownloadCloseOptionAvailable">
-        <button type="button" class="btn btn-secondary add-row" (click)="cancelDownloadModal()"
-        >Cancel</button>
+        <button type="button" class="btn btn-secondary add-row" (click)="cancelDownloadModal()">Cancel</button>
       </div>
     </div>
 

@@ -61,13 +61,13 @@ export class RulesComponent implements OnInit {
     this.getRules();
   }
 
-  onToggleRows(i, rule, type, isView = false) {
+  onToggleRows(i, rule, type, isView = false, isEdit = false) {
     if (this.toggleRows[this.selectedTab + '_' + type + '_' + i]) {
       this.toggleRows = {};
     } else {
       this.toggleRows = {};
       this.toggleRows[this.selectedTab + '_' + type + '_' + i] = true;
-      this.isEdit = true;
+      this.isEdit = isEdit;
       this.isView = isView;
       this.ruleData = rule;
     }

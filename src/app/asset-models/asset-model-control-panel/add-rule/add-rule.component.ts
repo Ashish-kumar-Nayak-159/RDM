@@ -203,6 +203,7 @@ export class AddRuleComponent implements OnInit {
       !this.ruleModel.escalation_time_in_sec
     ) {
       this.toasterService.showError('Please fill all required details', 'Add Rule');
+      return;
     }
     this.isUpdateApiCall = true;
     let str = '';
@@ -239,6 +240,8 @@ export class AddRuleComponent implements OnInit {
           this.onCloseRuleModel.emit({
             status: true,
           });
+          $('#addRuleModal').modal('hide');
+          this.isEdit = false;
           this.toasterService.showSuccess(response.message, this.title + 'Rule');
           this.closeRuleModal(true);
           this.isUpdateApiCall = false;

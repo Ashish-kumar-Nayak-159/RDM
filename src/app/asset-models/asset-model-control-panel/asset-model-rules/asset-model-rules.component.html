@@ -71,7 +71,7 @@
                     tooltip="View">
                     <i class="fa fa-fw fa-eye"></i>
                   </a>
-                  <a href="javascript:void(0)" (click)="onToggleRows(i, rule)" class="mr-1"
+                  <a href="javascript:void(0)" (click)="onToggleRows(i, rule, false, true)" class="mr-1"
                     *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
                     [class.disabled]="assetModel.freezed" placement="bottom" tooltip="Edit">
                     <i class="fa fa-fw fa-edit"></i>

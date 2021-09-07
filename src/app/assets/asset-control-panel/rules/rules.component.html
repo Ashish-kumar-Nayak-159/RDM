@@ -158,7 +158,7 @@
                           placement="bottom" tooltip="View">
                           <i class="fa fa-fw fa-eye"></i>
                         </a>
-                        <a href="javascript:void(0)" (click)="onToggleRows(i, rule, 'asset')" class="mr-1"
+                        <a href="javascript:void(0)" (click)="onToggleRows(i, rule, 'asset', false, true)" class="mr-1"
                           placement="bottom" tooltip="Edit" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1
                 ">
                           <i class="fa fa-fw fa-edit"></i>

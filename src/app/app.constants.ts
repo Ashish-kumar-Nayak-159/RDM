@@ -1742,6 +1742,7 @@ export class CONSTANTS {
   public static MAIN_MENU_FILTERS = 'main_menu_filter';
   public static CONTROL_PANEL_FILTERS = 'control_panel_filter';
   public static APP_TOKEN = 'app_token';
+  public static GUEST_USER = 'guest_user_details';
 
   // public static DEFAULT_APP_ICON = environment.blobContainerName + '/default_app_icon.png';
   // public static DEFAULT_APP_LOGO = environment.blobContainerName + '/default_app_logo.jpg';

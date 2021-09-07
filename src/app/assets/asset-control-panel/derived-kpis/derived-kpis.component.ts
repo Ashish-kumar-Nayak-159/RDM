@@ -112,7 +112,7 @@ export class DerivedKpisComponent implements OnInit {
       console.log(this.selectedDerivedKPI);
       // this.getDerivedKPIsHistoricData();
       $('#derivedKPIModal').modal({ backdrop: 'static', keyboard: false, show: true });
-      this.loadFromCache();
+      setTimeout(() => this.loadFromCache(), 500);
     }
   }
 
@@ -122,8 +122,8 @@ export class DerivedKpisComponent implements OnInit {
     const kpiCode = this.selectedDerivedKPI.code;
     const obj = {
       asset_id: this.selectedDerivedKPI.asset_id,
-      from_date: moment().subtract(14, 'days').utc().unix(),
-      to_date: moment().utc().unix(),
+      from_date: this.filterObj.from_date,
+      to_date: this.filterObj.to_date,
       epoch: true,
       asset_model: this.selectedDerivedKPI.asset_model,
     };
@@ -264,6 +264,8 @@ export class DerivedKpisComponent implements OnInit {
       this.loader = false;
       this.loadingMessage = 'Loading Data. Wait...';
     });
+    chart.scrollbarX = new am4core.Scrollbar();
+    chart.scrollbarX.parent = chart.bottomAxesContainer;
     // chart.scrollbarX = new am4core.Scrollbar();
     // chart.scrollbarX.parent = chart.bottomAxesContainer;
     // dateAxis.dateFormatter.dateFormat = 'W';

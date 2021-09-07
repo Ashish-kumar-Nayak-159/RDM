@@ -139,7 +139,7 @@ export class GatewaySettingsComponent implements OnInit {
   async syncRules() {
     await this.getEdgeRules();
     const obj = {
-      asset_id: this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id,
+      asset_id: this.asset.asset_id,
       message: {
         command: 'set_device_rules',
         rules: this.rules,

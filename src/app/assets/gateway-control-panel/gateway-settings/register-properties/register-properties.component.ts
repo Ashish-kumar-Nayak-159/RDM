@@ -281,7 +281,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     console.log(obj);
     this.isAPILoading = true;
     const c2dObj = {
-      asset_id: this.componentstate !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id,
+      asset_id: this.asset.asset_id,
       message: obj,
       app: this.contextApp.app,
       timestamp: moment().unix(),

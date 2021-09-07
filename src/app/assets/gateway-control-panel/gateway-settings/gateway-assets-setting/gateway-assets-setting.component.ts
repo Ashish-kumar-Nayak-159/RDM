@@ -230,8 +230,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
     this.headerMessage = type;
     $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     const c2dObj = {
-      asset_id:
-        this.componentState !== CONSTANTS.NON_IP_ASSET ? this.selectedAsset.asset_id : this.selectedAsset.gateway_id,
+      asset_id: this.selectedAsset.asset_id,
       message: obj,
       app: this.contextApp.app,
       timestamp: moment().unix(),

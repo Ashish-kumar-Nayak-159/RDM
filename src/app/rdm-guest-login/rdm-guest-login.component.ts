@@ -1,7 +1,6 @@
 import { CONSTANTS } from './../app.constants';
 import { APIMESSAGES } from './../api-messages.constants';
 import { environment } from 'src/environments/environment';
-import { CONSTANTS } from 'src/app/app.constants';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';

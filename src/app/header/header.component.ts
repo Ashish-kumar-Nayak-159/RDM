@@ -4,7 +4,6 @@ import { Component, OnInit, Inject, Input, SimpleChanges, OnChanges, OnDestroy }
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { CommonService } from '../services/common.service';
 import { DOCUMENT } from '@angular/common';
-import { CONSTANTS } from '../app.constants';
 import { filter } from 'rxjs/operators';
 import { data } from 'jquery';
 import { Subscription } from 'rxjs';

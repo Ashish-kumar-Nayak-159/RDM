@@ -253,3 +253,93 @@ input:invalid {
 .pointer {
   cursor: pointer;
 }
+
+/* custom styling for phone number */
+.iti {
+  display: block !important;
+}
+
+.iti .dropdown-menu.country-dropdown {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-color: #c7cace;
+  margin-top: -1px;
+}
+
+.iti .iti__country-list {
+  box-shadow: none;
+  font-size: 14px;
+  margin-left: 0;
+  width: 244px;
+  max-height: 170px;
+}
+
+.iti__flag-container.open + input {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.iti .search-container input {
+  font-size: 14px;
+  border-color: #c7cace;
+  border-radius: 0;
+  padding: 5px 10px;
+}
+
+.iti .search-container input:focus {
+  outline: none;
+}
+
+@media screen and (max-width: 479px) {
+  .iti .iti__country-list {
+    width: 88.3vw;
+  }
+}
+
+ngx-intl-tel-input input {
+  height: calc(1.5em + 0.5rem + 2px);
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #d1d3e2;
+  border-radius: 0.2rem;
+  color: #6e707e;
+  background-color: #fff;
+  font-size: 0.875rem;
+}
+
+ngx-intl-tel-input.ng-invalid.ng-touched input {
+  border: 1px solid #c0392b;
+}
+
+ngx-intl-tel-input input:hover {
+  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.24);
+}
+
+ngx-intl-tel-input input:focus {
+  outline: none !important;
+  border-color: #3498db;
+  box-shadow: 0 0 0 0 #000;
+}
+
+ngx-intl-tel-input input::-webkit-input-placeholder {
+  color: #bac2c7;
+}
+
+ngx-intl-tel-input input:-ms-input-placeholder {
+  color: #bac2c7;
+}
+
+ngx-intl-tel-input input::-ms-input-placeholder {
+  color: #bac2c7;
+}
+
+ngx-intl-tel-input input::placeholder {
+  color: #bac2c7;
+}
+
+ngx-intl-tel-input input[disabled] {
+  background-color: #e5eaf1;
+}
+
+/* end */

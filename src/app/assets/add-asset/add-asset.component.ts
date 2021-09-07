@@ -13,10 +13,9 @@ declare var $: any;
 @Component({
   selector: 'app-add-asset',
   templateUrl: './add-asset.component.html',
-  styleUrls: ['./add-asset.component.css']
+  styleUrls: ['./add-asset.component.css'],
 })
 export class AddAssetComponent implements OnInit, OnChanges {
-
   @Input() tileData: any;
   @Input() componentState: any;
   @Output() getAssetEmit: EventEmitter<any> = new EventEmitter<any>();
@@ -42,7 +41,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
     private assetService: AssetService,
     private assetModelService: AssetModelService,
     private applicationService: ApplicationService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -54,11 +53,10 @@ export class AddAssetComponent implements OnInit, OnChanges {
     }
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
-      this.addAssetConfigureHierarchy[index] = this.contextApp.user.hierarchy[level];
-      if (this.contextApp.user.hierarchy[level]) {
-        this.onChangeOfAddAssetHierarchy(index);
-
-      }
+        this.addAssetConfigureHierarchy[index] = this.contextApp.user.hierarchy[level];
+        if (this.contextApp.user.hierarchy[level]) {
+          this.onChangeOfAddAssetHierarchy(index);
+        }
       }
     });
     this.getAssetsModels(this.componentState);
@@ -67,15 +65,15 @@ export class AddAssetComponent implements OnInit, OnChanges {
       this.isAssetEditable = true;
       // this.setupFormData(this.assetDetail);
     } else {
-    this.assetDetail = new Asset();
-    if (!this.assetDetail.metadata) {
-    this.assetDetail.metadata = {
-      setup_details: {}
-    };
-    }
-    this.assetDetail.tags = {};
-    this.assetDetail.tags.app = this.contextApp.app;
-    this.assetDetail.tags.hierarchy_json = JSON.parse(JSON.stringify(this.contextApp.user.hierarchy));
+      this.assetDetail = new Asset();
+      if (!this.assetDetail.metadata) {
+        this.assetDetail.metadata = {
+          setup_details: {},
+        };
+      }
+      this.assetDetail.tags = {};
+      this.assetDetail.tags.app = this.contextApp.app;
+      this.assetDetail.tags.hierarchy_json = JSON.parse(JSON.stringify(this.contextApp.user.hierarchy));
     }
     $('#createAssetModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
@@ -90,24 +88,24 @@ export class AddAssetComponent implements OnInit, OnChanges {
     this.assetModels = [];
     const obj = {
       app: this.contextApp.app,
-      model_type: type
+      model_type: type,
     };
-    this.subscriptions.push(this.assetModelService.getAssetsModelsList(obj).subscribe(
-      (response: any) => {
+    this.subscriptions.push(
+      this.assetModelService.getAssetsModelsList(obj).subscribe((response: any) => {
         if (response && response.data) {
           this.assetModels = response.data;
         }
-      }
-    ));
+      })
+    );
   }
 
   onChangeOfAddAssetHierarchy(i) {
-    Object.keys(this.addAssetConfigureHierarchy).forEach(key => {
+    Object.keys(this.addAssetConfigureHierarchy).forEach((key) => {
       if (key > i) {
         delete this.addAssetConfigureHierarchy[key];
       }
     });
-    Object.keys(this.addAssetHierarchyArr).forEach(key => {
+    Object.keys(this.addAssetHierarchyArr).forEach((key) => {
       if (key > i) {
         this.addAssetHierarchyArr[key] = [];
       }
@@ -122,7 +120,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
       this.addAssetHierarchyArr[i + 1] = Object.keys(nextHierarchy);
     }
 
-    const hierarchyObj: any = { App: this.contextApp.app};
+    const hierarchyObj: any = { App: this.contextApp.app };
     Object.keys(this.addAssetConfigureHierarchy).forEach((key) => {
       if (this.addAssetConfigureHierarchy[key]) {
         hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.addAssetConfigureHierarchy[key];
@@ -133,40 +131,40 @@ export class AddAssetComponent implements OnInit, OnChanges {
     if (Object.keys(hierarchyObj).length === 1) {
       this.gateways = JSON.parse(JSON.stringify(this.originalGateways));
     } else {
-    const arr = [];
-    this.gateways = [];
-    console.log(hierarchyObj);
-    console.log(this.originalGateways);
-    this.originalGateways.forEach(asset => {
-      let trueFlag = 0;
-      let flaseFlag = 0;
+      const arr = [];
+      this.gateways = [];
+      console.log(hierarchyObj);
+      console.log(this.originalGateways);
+      this.originalGateways.forEach((asset) => {
+        let trueFlag = 0;
+        let flaseFlag = 0;
 
-      Object.keys(hierarchyObj).forEach(hierarchyKey => {
-        console.log(asset.hierarchy[hierarchyKey] , '===' , hierarchyObj[hierarchyKey]);
-        if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
-          trueFlag++;
-        } else {
-          flaseFlag++;
+        Object.keys(hierarchyObj).forEach((hierarchyKey) => {
+          console.log(asset.hierarchy[hierarchyKey], '===', hierarchyObj[hierarchyKey]);
+          if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+            trueFlag++;
+          } else {
+            flaseFlag++;
+          }
+        });
+        if (trueFlag > 0 && flaseFlag === 0) {
+          arr.push(asset);
         }
       });
-      if (trueFlag > 0 && flaseFlag === 0) {
-        arr.push(asset);
-      }
-    });
-    this.assetDetail.gateway_id = undefined;
-    this.gateways = JSON.parse(JSON.stringify(arr));
+      this.assetDetail.gateway_id = undefined;
+      this.gateways = JSON.parse(JSON.stringify(arr));
     }
-      // await this.getAssets(hierarchyObj);
+    // await this.getAssets(hierarchyObj);
   }
 
   onChangeAssetsModel() {
     if (this.assetDetail.tags.asset_model) {
-      const modelObj = this.assetModels.filter(type => type.name === this.assetDetail.tags.asset_model)[0];
+      const modelObj = this.assetModels.filter((type) => type.name === this.assetDetail.tags.asset_model)[0];
       modelObj.tags = {
         cloud_connectivity: modelObj.cloud_connectivity,
-        protocol: modelObj.protocol
+        protocol: modelObj.protocol,
       };
-      const obj = {...this.assetDetail.tags, ...modelObj.tags};
+      const obj = { ...this.assetDetail.tags, ...modelObj.tags };
       this.assetDetail.tags = obj;
     } else {
       this.assetDetail.tags.cloud_connectivity = undefined;
@@ -177,13 +175,13 @@ export class AddAssetComponent implements OnInit, OnChanges {
 
   getApplicationUsers() {
     this.appUsers = [];
-    this.subscriptions.push(this.applicationService.getApplicationUsers(this.contextApp.app).subscribe(
-      (response: any) => {
+    this.subscriptions.push(
+      this.applicationService.getApplicationUsers(this.contextApp.app).subscribe((response: any) => {
         if (response && response.data) {
           this.appUsers = response.data;
         }
-      }
-    ));
+      })
+    );
   }
 
   onEditAsset() {
@@ -192,48 +190,57 @@ export class AddAssetComponent implements OnInit, OnChanges {
     //   this.assetDetail.metadata.setup_details = this.setupForm.value;
     //   }
     const obj = {
-      app : this.contextApp.app,
-      metadata: this.assetDetail.metadata
+      app: this.contextApp.app,
+      metadata: this.assetDetail.metadata,
     };
-    this.subscriptions.push(this.assetService.updateAssetMetadata(obj, this.contextApp.app, this.assetDetail.asset_id).subscribe(
-      (response: any) => {
-        this.toasterService.showSuccess(response.message, 'Update Asset Settings');
-        this.getAssetEmit.emit();
-        this.onCloseCreateAssetModal();
-        this.isCreateAssetAPILoading = false;
-      }, error => {
-        this.toasterService.showError(error.message, 'Update Asset Settings');
-        this.isCreateAssetAPILoading = false;
-      }
-    ));
+    this.subscriptions.push(
+      this.assetService.updateAssetMetadata(obj, this.contextApp.app, this.assetDetail.asset_id).subscribe(
+        (response: any) => {
+          this.toasterService.showSuccess(response.message, 'Update Asset Settings');
+          this.getAssetEmit.emit();
+          this.onCloseCreateAssetModal();
+          this.isCreateAssetAPILoading = false;
+        },
+        (error) => {
+          this.toasterService.showError(error.message, 'Update Asset Settings');
+          this.isCreateAssetAPILoading = false;
+        }
+      )
+    );
   }
 
   onCreateAsset() {
-    if (!this.assetDetail.asset_id || !this.assetDetail.tags.asset_manager || !this.assetDetail.tags.display_name ||
-      !this.assetDetail.tags.protocol || !this.assetDetail.tags.cloud_connectivity || !this.assetDetail.tags.asset_model  ) {
-        this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED,
-        'Create ' + this.componentState);
-        return;
+    if (
+      !this.assetDetail.asset_id ||
+      !this.assetDetail.tags.asset_manager ||
+      !this.assetDetail.tags.display_name ||
+      !this.assetDetail.tags.protocol ||
+      !this.assetDetail.tags.cloud_connectivity ||
+      !this.assetDetail.tags.asset_model
+    ) {
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Create ' + this.componentState);
+      return;
     }
     if (this.componentState === CONSTANTS.NON_IP_ASSET && !this.assetDetail.gateway_id) {
-      this.toasterService.showError('Gateway Selection is compulsory.',
-        'Create ' + this.componentState);
+      this.toasterService.showError('Gateway Selection is compulsory.', 'Create ' + this.componentState);
       return;
     }
     if (!CONSTANTS.EMAIL_REGEX.test(this.assetDetail.tags.asset_manager.user_email)) {
-      this.toasterService.showError('Email address is not valid',
-        'Create ' + this.componentState);
+      this.toasterService.showError('Email address is not valid', 'Create ' + this.componentState);
       return;
     }
     if (this.componentState === CONSTANTS.NON_IP_ASSET && this.assetDetail.asset_id === this.assetDetail.gateway_id) {
-      this.toasterService.showError('Gateway and Asset name can not be the same.',
-      'Create ' + this.componentState);
+      this.toasterService.showError('Gateway and Asset name can not be the same.', 'Create ' + this.componentState);
       return;
     }
-    if (this.contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Asset ID' &&
-    !CONSTANTS.ONLY_NOS_AND_CHARS.test(this.assetDetail.tags.partition_key)) {
-      this.toasterService.showError('Partition Key only contains numbers and characters.',
-      'Create ' + (this.tileData  ? this.tileData.table_key : ''));
+    if (
+      this.contextApp.metadata?.partition?.telemetry?.partition_strategy !== 'Asset ID' &&
+      !CONSTANTS.ONLY_NOS_AND_CHARS.test(this.assetDetail.tags.partition_key)
+    ) {
+      this.toasterService.showError(
+        'Partition Key only contains numbers and characters.',
+        'Create ' + (this.tileData ? this.tileData.table_key : '')
+      );
       return;
     }
     if (this.contextApp.metadata?.partition?.telemetry?.partition_strategy === 'Asset ID') {
@@ -241,11 +248,12 @@ export class AddAssetComponent implements OnInit, OnChanges {
     }
 
     this.isCreateAssetAPILoading = true;
-    this.assetDetail.tags.hierarchy_json = { App: this.contextApp.app};
+    this.assetDetail.tags.hierarchy_json = { App: this.contextApp.app };
     Object.keys(this.addAssetConfigureHierarchy).forEach((key) => {
-      this.assetDetail.tags.hierarchy_json[this.contextApp.hierarchy.levels[key]] = this.addAssetConfigureHierarchy[key];
+      this.assetDetail.tags.hierarchy_json[this.contextApp.hierarchy.levels[key]] =
+        this.addAssetConfigureHierarchy[key];
     });
-    const modelObj = this.assetModels.filter(type => type.name === this.assetDetail.tags.asset_model)[0];
+    const modelObj = this.assetModels.filter((type) => type.name === this.assetDetail.tags.asset_model)[0];
     if (!this.assetDetail.metadata) {
       this.assetDetail.metadata = {};
     }
@@ -256,7 +264,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
       g1_ingestion_frequency_in_ms: modelObj?.telemetry_mode_settings?.g1_ingestion_frequency_in_ms || 600,
       g2_ingestion_frequency_in_ms: modelObj?.telemetry_mode_settings?.g2_ingestion_frequency_in_ms || 1200,
       g3_ingestion_frequency_in_ms: modelObj?.telemetry_mode_settings?.g3_ingestion_frequency_in_ms || 1800,
-      turbo_mode_timeout_time: modelObj?.telemetry_mode_settings?.turbo_mode_timeout_time || 120
+      turbo_mode_timeout_time: modelObj?.telemetry_mode_settings?.turbo_mode_timeout_time || 120,
     };
     this.assetDetail.metadata.data_ingestion_settings = {
       type: modelObj?.data_ingestion_settings?.type || 'all_props_at_fixed_interval',
@@ -269,67 +277,73 @@ export class AddAssetComponent implements OnInit, OnChanges {
     // if (this.componentState === CONSTANTS.NON_IP_ASSET) {
     // this.assetDetail.metadata.setup_details = this.setupForm.value;
     // }
-    const protocol = this.protocolList.find(protocolObj => protocolObj.name === this.assetDetail.tags.protocol);
+    const protocol = this.protocolList.find((protocolObj) => protocolObj.name === this.assetDetail.tags.protocol);
     this.assetDetail.metadata.package_app = protocol.metadata?.app;
-    this.assetDetail.tags.hierarchy = JSON.stringify(this.assetDetail.tags.hierarchy_json );
+    this.assetDetail.tags.hierarchy = JSON.stringify(this.assetDetail.tags.hierarchy_json);
     this.assetDetail.tags.created_by = this.userData.email + ' (' + this.userData.name + ')';
     this.assetDetail.app = this.contextApp.app;
     delete this.assetDetail.tags.reserved_tags;
-    this.assetDetail.tags.category = this.componentState === CONSTANTS.NON_IP_ASSET ?
-    null : this.componentState;
+    this.assetDetail.tags.category = this.componentState === CONSTANTS.NON_IP_ASSET ? null : this.componentState;
     // this.assetDetail.tags.created_date = moment().utc().format('M/DD/YYYY h:mm:ss A');
-    this.assetDetail.tags.asset_users = {};
-    this.assetDetail.tags.asset_users[btoa(this.assetDetail.tags.asset_manager.user_email)] = {
-      user_email: this.assetDetail.tags.asset_manager.user_email,
-      user_name: this.assetDetail.tags.asset_manager.user_name
-    };
+    this.assetDetail.tags.recipients = [];
+    this.assetDetail.tags.recipients.push({
+      email: this.assetDetail.tags.asset_manager.user_email,
+      name: this.assetDetail.tags.asset_manager.user_name,
+      sms_no: this.assetDetail.tags.asset_manager.metadata?.sms_no,
+      whatsapp_no: this.assetDetail.tags.asset_manager.metadata?.whatsapp_no,
+    });
     const obj = JSON.parse(JSON.stringify(this.assetDetail));
     obj.tags.asset_manager = this.assetDetail.tags.asset_manager.user_email;
-    obj.tags.email_recipients = obj.tags.asset_manager;
-    const methodToCall = this.componentState === CONSTANTS.NON_IP_ASSET
-    ? this.assetService.createNonIPAsset(obj, this.contextApp.app)
-    : this.assetService.createAsset(obj, this.contextApp.app);
-    this.subscriptions.push(methodToCall.subscribe(
-      (response: any) => {
-        if ( this.componentState === CONSTANTS.NON_IP_ASSET) {
-          this.updateGatewayTags(this.assetDetail);
-        } else {
-        this.isCreateAssetAPILoading = false;
-        this.toasterService.showSuccess(response.message,
-          'Create ' + (this.tileData  ? this.tileData.table_key : ''));
-        this.getAssetEmit.emit();
-        this.onCloseCreateAssetModal();
-      }
-      }, error => {
-        this.isCreateAssetAPILoading = false;
-        this.toasterService.showError(error.message,
-          'Create ' + (this.tileData  ? this.tileData.table_key : ''));
-        // this.onCloseCreateAssetModal();
-      }
-    ));
+    const methodToCall =
+      this.componentState === CONSTANTS.NON_IP_ASSET
+        ? this.assetService.createNonIPAsset(obj, this.contextApp.app)
+        : this.assetService.createAsset(obj, this.contextApp.app);
+    this.subscriptions.push(
+      methodToCall.subscribe(
+        (response: any) => {
+          if (this.componentState === CONSTANTS.NON_IP_ASSET) {
+            this.updateGatewayTags(this.assetDetail);
+          } else {
+            this.isCreateAssetAPILoading = false;
+            this.toasterService.showSuccess(
+              response.message,
+              'Create ' + (this.tileData ? this.tileData.table_key : '')
+            );
+            this.getAssetEmit.emit();
+            this.onCloseCreateAssetModal();
+          }
+        },
+        (error) => {
+          this.isCreateAssetAPILoading = false;
+          this.toasterService.showError(error.message, 'Create ' + (this.tileData ? this.tileData.table_key : ''));
+          // this.onCloseCreateAssetModal();
+        }
+      )
+    );
   }
 
   updateGatewayTags(assetObj) {
     const obj = {
       asset_id: assetObj.asset_id,
       partition_key: assetObj.tags.partition_key,
-      model_id: assetObj.tags.asset_model
+      model_id: assetObj.tags.asset_model,
     };
     // obj.partition_key[assetObj.asset_id] = assetObj.tags.partition_key;
-    this.subscriptions.push(this.assetService.attachLegacyAssetToGateway(this.contextApp.app, assetObj.gateway_id, obj).subscribe(
-      (response: any) => {
-        this.isCreateAssetAPILoading = false;
-        this.toasterService.showSuccess(response.message,
-          'Create ' + this.componentState);
-        this.getAssetEmit.emit();
-        this.onCloseCreateAssetModal();
-      }, error => {
-        this.isCreateAssetAPILoading = false;
-        this.toasterService.showError(error.message,
-          'Create ' + this.componentState);
-        // this.onCloseCreateAssetModal();
-      }
-    ));
+    this.subscriptions.push(
+      this.assetService.attachLegacyAssetToGateway(this.contextApp.app, assetObj.gateway_id, obj).subscribe(
+        (response: any) => {
+          this.isCreateAssetAPILoading = false;
+          this.toasterService.showSuccess(response.message, 'Create ' + this.componentState);
+          this.getAssetEmit.emit();
+          this.onCloseCreateAssetModal();
+        },
+        (error) => {
+          this.isCreateAssetAPILoading = false;
+          this.toasterService.showError(error.message, 'Create ' + this.componentState);
+          // this.onCloseCreateAssetModal();
+        }
+      )
+    );
   }
 
   onCloseCreateAssetModal() {
@@ -337,5 +351,4 @@ export class AddAssetComponent implements OnInit, OnChanges {
     this.cancelModal.emit();
     this.assetDetail = undefined;
   }
-
 }

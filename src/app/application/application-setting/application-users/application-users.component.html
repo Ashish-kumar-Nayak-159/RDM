@@ -1,17 +1,16 @@
-
 <div class="tab-bar">
   <div class="d-flex d-flex align-items-center">
-         <div class="h6 m-0 p-0">Users
-          <!-- <a href="javascript:void(0)" class="ml-1" (click)="openCreateUserModal()"
+    <div class="h6 m-0 p-0">Users
+      <!-- <a href="javascript:void(0)" class="ml-1" (click)="openCreateUserModal()"
           tooltip="Add User" placement="bottom"><i class="fas fa-plus"></i></a> -->
-          <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('UMM') > -1">
-          <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="openCreateUserModal()"
-      placement="bottom" tooltip="Add User"><i class="fas fa-plus fa-sm"></i></button>
-    </ng-container>
-         </div>
+      <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('UMM') > -1">
+        <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="openCreateUserModal()"
+          placement="bottom" tooltip="Add User"><i class="fas fa-plus fa-sm"></i></button>
+      </ng-container>
+    </div>
+  </div>
 </div>
-</div>
-  <div class="tableFixHead table-responsive">
+<div class="tableFixHead table-responsive">
   <table class="table table-hover">
     <thead>
       <tr>
@@ -30,118 +29,101 @@
         <td>{{ user.role }}</td>
         <td>{{ getUserHierarchy(user) }}</td>
         <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('UMM') > -1">
-          <a href="javascript:void(0)" (click)="openCreateUserModal(user)" class="mr-1"
-          placement="bottom" tooltip="Edit User">
-              <i class="fa fa-fw fa-edit" ></i>
+          <a href="javascript:void(0)" (click)="openCreateUserModal(user)" class="mr-1" placement="bottom"
+            tooltip="Edit User">
+            <i class="fa fa-fw fa-edit"></i>
           </a>
-          <a href="javascript:void(0)" (click)="openDeleteUserModal(user)" class="mr-1"
-          placement="bottom"tooltip="Edit User">
-              <i class="fa fa-fw fa-trash" ></i>
+          <a href="javascript:void(0)" (click)="openDeleteUserModal(user)" class="mr-1" placement="bottom"
+            tooltip="Edit User">
+            <i class="fa fa-fw fa-trash"></i>
           </a>
         </td>
       </tr>
     </tbody>
   </table>
-  </div>
+</div>
 
-<div
-  class="modal right fade"
-  id="createUserModal"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="ModalLabel2"
->
+<div class="modal right fade" id="createUserModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <div class="modal-content" *ngIf="addUserObj">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{addUserObj.id ? 'Edit': 'Add New'}}  User</h5>
-        <button
-          type="button"
-          class="close"
-          [disabled]="isCreateUserAPILoading"
-          (click)="onCloseCreateUserModal()"
-        >
+        <h5 class="modal-title" id="exampleModalLabel">{{addUserObj.id ? 'Edit': 'Add New'}} User</h5>
+        <button type="button" class="close" [disabled]="isCreateUserAPILoading" (click)="onCloseCreateUserModal()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <form>
+        <form [formGroup]="addUserForm">
           <div class="form-group">
             <label for="message-text" class="col-form-label required">App Name:</label>
-            <input
-              type="text"
-              class="form-control form-control-sm"
-              id="app"
-              [defaultValue]="applicationData.app"
-              disabled
-            />
+            <input type="text" class="form-control form-control-sm" id="app" [defaultValue]="applicationData.app"
+              disabled />
           </div>
           <div class="form-group">
-            <label for="message-text" class="col-form-label required"
-              >User Full Name:</label
-            >
-            <input
-              type="text"
-              class="form-control form-control-sm"
-              name="user_name"
-              id="user_name"
-              placeholder="Enter User name"
-              [(ngModel)]="addUserObj.name"
-            />
+            <label for="message-text" class="col-form-label required">User Full Name:</label>
+            <input type="text" class="form-control form-control-sm" name="user_name" id="user_name"
+              placeholder="Enter User name" formControlName="name" />
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">User Email:</label>
-            <input
-              type="email"
-              pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
-              class="form-control form-control-sm"
-              id="user_email"
-              name="user_email"
-              placeholder="Enter User Email"
-              [(ngModel)]="addUserObj.email"
-            />
+            <input type="email" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+              class="form-control form-control-sm" id="user_email" name="user_email" placeholder="Enter User Email"
+              formControlName="email" />
           </div>
+          <ng-container formGroupName="metadata">
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">User SMS No.:</label>
+              <ngx-intl-tel-input [enableAutoCountrySelect]="true" [enablePlaceholder]="true" name="user_no"
+                [searchCountryFlag]="true" [cssClass]="'custom'" [inputId]="'sms_no'" formControlName="sms_no"
+                [phoneValidation]="true" id="sms_no_control" [customPlaceholder]="'Enter User SMS No'"
+                [selectedCountryISO]="countryISO.India"
+                [searchCountryField]="[searchCountryField.Iso2, searchCountryField.Name]">
+              </ngx-intl-tel-input>
+            </div>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">User Whatsapp No.:</label>
+              <ngx-intl-tel-input [enableAutoCountrySelect]="true" [enablePlaceholder]="true" name="whatsapp_no"
+                [searchCountryFlag]="true" [cssClass]="'custom'" formControlName="whatsapp_no" [phoneValidation]="true"
+                [customPlaceholder]="'Enter User Whatsapp No'" [inputId]="'whatsapp_no'"
+                [selectedCountryISO]="countryISO.India" id="whatsapp_no_control"
+                [searchCountryField]="[searchCountryField.Iso2, searchCountryField.Name]">
+              </ngx-intl-tel-input>
+            </div>
+          </ng-container>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Role:</label>
-            <select class="form-control form-control-sm" id="role" (change)="onUserRoleChange()" name="role" [(ngModel)]="addUserObj.role">
+            <select class="form-control form-control-sm" id="role" (change)="onUserRoleChange()" name="role"
+              formControlName="role">
               <option [ngValue]="role.role" *ngFor="let role of userRoles">{{role.role}}</option>
             </select>
           </div>
           <div class="form-group">
-            <label for="message-text" class="col-form-label"
-              >Access Level:</label
-            >
-            <input
-              type="text"
-              class="form-control form-control-sm"
-              id="user_email"
-              [defaultValue]="getAccessLevelHierarchy()"
-              disabled
-            />
+            <label for="message-text" class="col-form-label">Access Level:</label>
+            <input type="text" class="form-control form-control-sm" id="user_email"
+              [defaultValue]="getAccessLevelHierarchy()" disabled />
           </div>
           <div class="form-group" *ngFor="let hierarchyItem of hierarchyList; let hIndex = index">
             <label for="message-text" class="col-form-label required">{{hierarchyItem}}:</label>
-            <select class="form-control form-control-sm" id="hierarchy{{hIndex}}"  name="hierarchy{{hIndex}}" [(ngModel)]="configureHierarchy[hIndex]"
-            (change)="onChangeOfHierarchy(hIndex)" *ngIf="hIndex !== 0">
+            <select class="form-control form-control-sm" id="hierarchy{{hIndex}}" name="hierarchy{{hIndex}}"
+              [(ngModel)]="configureHierarchy[hIndex]" (change)="onChangeOfHierarchy(hIndex)" *ngIf="hIndex !== 0"
+              [ngModelOptions]="{standalone: true}">
               <option [ngValue]="undefined">Select {{hierarchyItem}}</option>
               <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[hIndex]">{{tag}}</option>
             </select>
-            <input type="text" *ngIf="hIndex === 0"  defaultValue="{{applicationData.app}}" disabled class="form-control form-control-sm">
+            <input type="text" *ngIf="hIndex === 0" defaultValue="{{applicationData.app}}" disabled
+              class="form-control form-control-sm">
           </div>
         </form>
       </div>
       <div class="modal-footer">
 
-        <button
-          type="button"
-          class="btn btn-primary add-row"
-          (click)="onCreateUser()"
-          [disabled]="isCreateUserAPILoading"
-        >
+        <button type="button" class="btn btn-primary add-row" (click)="onCreateUser()"
+          [disabled]="isCreateUserAPILoading">
           Save
           <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateUserAPILoading"></i>
         </button>
-        <button type="button" class="btn btn-secondary" [disabled]="isCreateUserAPILoading" (click)="onCloseCreateUserModal()">
+        <button type="button" class="btn btn-secondary" [disabled]="isCreateUserAPILoading"
+          (click)="onCloseCreateUserModal()">
           Cancel
         </button>
       </div>
@@ -154,7 +136,8 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Delete User Access</h5>
-        <button type="button" class="close"  aria-label="Close" (click)="onCloseModal()" [disabled]="isDeleteUserAPILoadig">
+        <button type="button" class="close" aria-label="Close" (click)="onCloseModal()"
+          [disabled]="isDeleteUserAPILoadig">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -163,15 +146,15 @@
         <form>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Email:</label>
-            <input type="text" class="form-control form-control-sm form-control form-control-sm" id="email" name="email" [(ngModel)]="userData.email"
-              placeholder="Enter Email" disabled>
+            <input type="text" class="form-control form-control-sm form-control form-control-sm" id="email" name="email"
+              [(ngModel)]="userData.email" placeholder="Enter Email" disabled>
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Password:</label>
-            <input  type="{{this.isPasswordVisible ? 'text' : 'password'}}" class="form-control form-control-sm" id="display_name" name="display_name" [(ngModel)]="password"
-              placeholder="Enter Your Password">
-              <i class="fa fa-fw  field-icon-small toggle-password" (click)="togglePasswordVisibility()"
-                      [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}" ></i>
+            <input type="{{this.isPasswordVisible ? 'text' : 'password'}}" class="form-control form-control-sm"
+              id="display_name" name="display_name" [(ngModel)]="password" placeholder="Enter Your Password">
+            <i class="fa fa-fw  field-icon-small toggle-password" (click)="togglePasswordVisibility()"
+              [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}"></i>
           </div>
         </form>
       </div>

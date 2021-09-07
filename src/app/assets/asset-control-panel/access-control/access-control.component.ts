@@ -1,3 +1,4 @@
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { CONSTANTS } from './../../../app.constants';
 import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
@@ -6,19 +7,18 @@ import { CommonService } from 'src/app/services/common.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { ActivatedRoute } from '@angular/router';
 import { APIMESSAGES } from 'src/app/api-messages.constants';
+import { SearchCountryField, CountryISO } from 'ngx-intl-tel-input';
 declare var $: any;
 @Component({
   selector: 'app-access-control',
   templateUrl: './access-control.component.html',
-  styleUrls: ['./access-control.component.css']
+  styleUrls: ['./access-control.component.css'],
 })
 export class AccessControlComponent implements OnInit, OnChanges {
-
   contextApp: any;
   appUsers: any[] = [];
   constantData = CONSTANTS;
   apiSubscriptions: any[] = [];
-  selectedUser: any = {};
   @Input() asset: any;
   @Input() componentState: any;
   assetUsers: any[] = [];
@@ -29,13 +29,16 @@ export class AccessControlComponent implements OnInit, OnChanges {
   assetAccessUsers: any[] = [];
   selectedTab = 'Access Control';
   decodedToken: any;
+  addUserForm: FormGroup;
+  searchCountryField = SearchCountryField;
+  countryISO = CountryISO;
   constructor(
     private commonService: CommonService,
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
     private assetService: AssetService,
-    private route: ActivatedRoute,
-  ) { }
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -52,34 +55,27 @@ export class AccessControlComponent implements OnInit, OnChanges {
       this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
       await this.getApplicationUsers();
       this.assetUsers = [];
-      if (this.asset?.tags?.asset_users) {
-        Object.keys(this.asset?.tags?.asset_users).forEach(user => {
-          const appUser = this.appUsers.find(userObj => userObj.user_email === this.asset.tags.asset_users[user].user_email);
-          if (appUser) {
-            this.assetUsers.push(appUser);
-          } else {
-            this.assetUsers.push(this.asset.tags.asset_users[user]);
-          }
-        });
-        } else {
-          this.asset.tags.asset_users = {};
-        }
+      if (this.asset?.tags?.recipients) {
+        this.assetUsers = this.asset.tags.recipients;
+      } else {
+        this.asset.tags.recipients = [];
+        this.assetUsers = [];
+      }
     }
   }
 
   getAssetAccessUsers() {
     this.assetAccessUsers = [];
 
-    this.appUsers.forEach(user => {
+    this.appUsers.forEach((user) => {
       let flag = false;
-      this.contextApp.hierarchy.levels.forEach(level => {
+      this.contextApp.hierarchy.levels.forEach((level) => {
         if (user.hierarchy[level] === this.asset.tags.hierarchy_json[level] || user.hierarchy[level] === undefined) {
           flag = true;
         } else {
           flag = false;
         }
       });
-      console.log(user.name, '=====', flag);
       if (flag) {
         this.assetAccessUsers.push(user);
       }
@@ -88,40 +84,67 @@ export class AccessControlComponent implements OnInit, OnChanges {
 
   getApplicationUsers() {
     return new Promise<void>((resolve) => {
-    this.appUsers = [];
-    this.apiSubscriptions.push(this.applicationService.getApplicationUsers(this.contextApp.app).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.appUsers = response.data;
-        }
-        resolve();
-      }
-    ));
+      this.appUsers = [];
+      this.apiSubscriptions.push(
+        this.applicationService.getApplicationUsers(this.contextApp.app).subscribe((response: any) => {
+          if (response && response.data) {
+            this.appUsers = response.data;
+          }
+          resolve();
+        })
+      );
     });
   }
 
+  onUserSelectionChange() {
+    const user = this.addUserForm.value.userObj;
+    console.log(user);
+    if (user) {
+      this.addUserForm.patchValue({
+        name: user.user_name,
+        email: user.user_email,
+        sms_no: user?.metadata?.sms_no,
+        whatsapp_no: user?.metadata?.whatsapp_no,
+      });
+    } else {
+      this.addUserForm.patchValue({
+        name: null,
+        email: null,
+        sms_no: null,
+        whatsapp_no: null,
+      });
+    }
+    console.log(this.addUserForm.value);
+  }
+
   openAddUserModal() {
-    this.selectedUser = {};
+    this.addUserForm = new FormGroup({
+      userObj: new FormControl(null, []),
+      name: new FormControl(null, [Validators.required]),
+      email: new FormControl(null, [Validators.required]),
+      sms_no: new FormControl(null),
+      whatsapp_no: new FormControl(null),
+    });
     this.isAddUserModalOpen = true;
     $('#userAccessAddModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
-  openConfirmModal(user) {
-    const keys = Object.keys(this.asset?.tags?.asset_users);
-    if (keys.length === 1) {
-      this.toasterService.showError('At least one user is required', 'Access control');
+  openConfirmModal(index) {
+    const user = this.asset?.tags?.recipients[index];
+    if (this.asset?.tags?.recipients.length === 1) {
+      this.toasterService.showError('At least one recipient is required', 'Remove Recipient');
       this.onModalClose();
       return;
     } else {
-    this.assetUserForDelete = btoa(user.user_email);
-    $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      this.assetUserForDelete = index;
+      $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }
 
   onModalClose() {
     $('#userAccessAddModal').modal('hide');
     this.isAddUserModalOpen = false;
-    this.selectedUser = {};
+    this.addUserForm.reset();
   }
 
   onCloseConfirmModal() {
@@ -130,50 +153,43 @@ export class AccessControlComponent implements OnInit, OnChanges {
   }
 
   onAddUserAccess() {
-    if (!this.selectedUser.user_email || !this.selectedUser.user_name) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED,
-        'Access Control');
+    const user = this.addUserForm.value;
+    delete user.userObj;
+    if (!user.email || !user.name) {
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Recipient');
       return;
     }
-    if (!CONSTANTS.EMAIL_REGEX.test(this.selectedUser.user_email)) {
-      this.toasterService.showError('Email address is not valid',
-        'Access Control');
+    if (!CONSTANTS.EMAIL_REGEX.test(user.email)) {
+      this.toasterService.showError('Email address is not valid', 'Add Recipient');
       return;
     }
-    if (this.asset.tags.asset_users[btoa(this.selectedUser.user_email)] ) {
-      this.toasterService.showError('This user already has access of this asset',
-        'Access Control');
+    if (user.sms_no) {
+      if ($('#sms_no').is(':invalid')) {
+        this.toasterService.showError('Please enter valid sms number', 'Add Recipient');
+        return;
+      }
+      user.sms_no = user.sms_no.e164Number;
+    }
+    if (user.whatsapp_no) {
+      if ($('#whatsapp_no').is(':invalid')) {
+        this.toasterService.showError('Please enter valid whatsapp number', 'Add Recipient');
+        return;
+      }
+      user.whatsapp_no = user.whatsapp_no.e164Number;
+    }
+    const index = this.asset.tags?.recipients?.findIndex((userObj) => user.email === userObj.email);
+    if (index > -1) {
+      this.toasterService.showError('Recipient with same email address is already there.', 'Add Recipient');
       return;
     }
-    this.asset.tags.asset_users[btoa(this.selectedUser.user_email)] = {
-      user_email: this.selectedUser.user_email,
-      user_name: this.selectedUser.user_name
-    };
-    this.asset.tags.email_recipients = '';
-    const keys = (Object.keys(this.asset.tags.asset_users));
-    keys.forEach((key, index) => {
-      this.asset.tags.email_recipients += this.asset.tags.asset_users[key].user_email + (keys[index + 1] ? ',' : '');
-    });
+    this.asset.tags?.recipients.push(user);
     this.updateAssetData();
   }
 
   removeUserAccess() {
-    const keys = Object.keys(this.asset?.tags?.asset_users);
-    // if (keys.length === 1) {
-    //   this.toasterService.showError('At least one user is required', 'Access control');
-    //   this.onModalClose();
-    //   return;
-    // }
-    this.asset.tags.asset_users[this.assetUserForDelete] = null;
-    const index = keys.findIndex(key => key === this.assetUserForDelete);
-    keys.splice(index, 1);
-    this.asset.tags.email_recipients = '';
-    keys.forEach((key, i) => {
-      this.asset.tags.email_recipients += this.asset.tags.asset_users[key].user_email + (keys[i + 1] ? ',' : '');
-    });
+    this.asset.tags?.recipients?.splice(this.assetUserForDelete, 1);
     this.updateAssetData();
   }
-
 
   updateAssetData() {
     this.isUpdateAPILoading = true;
@@ -184,18 +200,20 @@ export class AccessControlComponent implements OnInit, OnChanges {
     } else {
       methodToCall = this.assetService.updateAssetTags(this.asset, this.contextApp.app);
     }
-    this.apiSubscriptions.push(methodToCall.subscribe(
-      (response: any) => {
-        this.toasterService.showSuccess('Asset Access updated successfully', 'Access Control');
-        this.assetService.reloadAssetInControlPanelEmitter.emit();
-        this.isUpdateAPILoading = false;
-        this.onModalClose();
-        this.onCloseConfirmModal();
-      }, error => {
-        this.toasterService.showError(error.message, 'Access Control');
-        this.isUpdateAPILoading = false;
-      }
-    ));
+    this.apiSubscriptions.push(
+      methodToCall.subscribe(
+        (response: any) => {
+          this.toasterService.showSuccess('Asset Access updated successfully', 'Access Control');
+          this.assetService.reloadAssetInControlPanelEmitter.emit();
+          this.isUpdateAPILoading = false;
+          this.onModalClose();
+          this.onCloseConfirmModal();
+        },
+        (error) => {
+          this.toasterService.showError(error.message, 'Access Control');
+          this.isUpdateAPILoading = false;
+        }
+      )
+    );
   }
-
 }

@@ -41,6 +41,7 @@
               "node_modules/jsoneditor/dist/jsoneditor.min.css",
               "node_modules/ngx-ui-switch/ui-switch.component.scss",
               "node_modules/font-awesome/css/font-awesome.min.css",
+              "node_modules/intl-tel-input/build/css/intlTelInput.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.css",
               "node_modules/datatables.net-dt/css/jquery.dataTables.css",
               "node_modules/ng2-daterangepicker/assets/daterangepicker.css",

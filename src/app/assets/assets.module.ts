@@ -1,3 +1,4 @@
+import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 import { AssetModelModule } from './../asset-models/asset-model.module';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TabsModule } from 'ngx-bootstrap/tabs';
@@ -9,9 +10,9 @@ import { AssetsRoutingModule } from './assets-routing.module';
 import { AssetListComponent } from './asset-list/asset-list.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule} from '@angular/material-moment-adapter';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule } from '@angular/material-moment-adapter';
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
-import {MatTableModule} from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { UiSwitchModule } from 'ngx-ui-switch';
@@ -161,21 +162,17 @@ import { CloudDerivedPropertiesComponent } from './asset-control-panel/cloud-der
     NgJsonEditorModule,
     AccordionModule.forRoot(),
     AgmCoreModule.forRoot({
-      libraries: ['places']
+      libraries: ['places'],
     }),
     AgmMarkerClustererModule,
     TabsModule,
     NgSelectModule,
     Daterangepicker,
     TooltipModule,
-    AssetModelModule
+    AssetModelModule,
+    NgxIntlTelInputModule,
   ],
-  exports: [
-    FilterComponent,
-    TableComponent
-  ],
-  providers: [
-    {provide: OWL_DATE_TIME_LOCALE, useValue: {useUtc: true}}
-  ]
+  exports: [FilterComponent, TableComponent],
+  providers: [{ provide: OWL_DATE_TIME_LOCALE, useValue: { useUtc: true } }],
 })
-export class AssetsModule { }
+export class AssetsModule {}

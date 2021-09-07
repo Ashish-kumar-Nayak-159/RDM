@@ -232,6 +232,14 @@ export class DerivedKpisComponent implements OnInit {
     chart.dateFormatter.inputDateFormat = 'x';
     chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
     const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+    let date = new Date(0);
+    date.setUTCSeconds(this.filterObj.from_date);
+    dateAxis.min = date.getTime();
+    date = new Date(0);
+    date.setUTCSeconds(this.filterObj.to_date + 60);
+    dateAxis.max = date.getTime();
+    console.log(dateAxis.min);
+    console.log(dateAxis.max);
     dateAxis.renderer.minGridDistance = 70;
     // dateAxis.baseInterval = { count: 1, timeUnit: 'day' };
     dateAxis.strictMinMax = true;

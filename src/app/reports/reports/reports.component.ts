@@ -415,6 +415,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
       };
       this.subscriptions.push(
         this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
+          response.properties.measured_properties = response.properties.measured_properties
+            ? response.properties.measured_properties
+            : [];
           response.properties?.measured_properties?.forEach((prop) => (prop.type = 'Measured Properties'));
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.edge_derived_properties = response.properties.edge_derived_properties

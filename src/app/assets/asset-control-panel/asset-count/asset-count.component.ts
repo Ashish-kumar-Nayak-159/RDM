@@ -13,15 +13,14 @@ import { DaterangepickerComponent } from 'ng2-daterangepicker';
 @Component({
   selector: 'app-asset-count',
   templateUrl: './asset-count.component.html',
-  styleUrls: ['./asset-count.component.css']
+  styleUrls: ['./asset-count.component.css'],
 })
 export class AssetCountComponent implements OnInit, AfterViewInit {
-
   @Input() asset: any;
   telemetryFilter: any;
   originalTelemetryFilter: any;
-  @ViewChild('dtInput1', {static: false}) dtInput1: any;
-  @ViewChild('dtInput2', {static: false}) dtInput2: any;
+  @ViewChild('dtInput1', { static: false }) dtInput1: any;
+  @ViewChild('dtInput2', { static: false }) dtInput2: any;
   today = new Date();
   isTelemetryLoading = false;
   apiSubscriptions: Subscription[] = [];
@@ -38,7 +37,7 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
     timePicker: true,
     autoUpdateInput: false,
     maxDate: moment(),
-    ranges: CONSTANTS.DATE_OPTIONS
+    ranges: CONSTANTS.DATE_OPTIONS,
   };
   selectedDateRange: any;
   selectedProps: any[] = [];
@@ -48,7 +47,7 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
     private assetService: AssetService,
     private commonService: CommonService,
     private assetModelService: AssetModelService
-  ) { }
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.telemetryFilter = {};
@@ -71,20 +70,19 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
           key: 'local_message_date',
           type: 'text',
           headerClass: 'w-15',
-          valueclass: ''
-        }
-      ]
+          valueclass: '',
+        },
+      ],
     };
     this.telemetryFilter.aggregation_format = 'COUNT';
     this.telemetryFilter.aggregation_minutes = 1;
 
     this.telemetryFilter.count = 10;
     this.telemetryFilter.epoch = true;
-    this.originalTelemetryFilter = {...this.telemetryFilter};
+    this.originalTelemetryFilter = { ...this.telemetryFilter };
     if (this.telemetryFilter.gateway_id) {
       this.getAssetsListByGateway();
     }
-
   }
 
   ngAfterViewInit() {
@@ -103,8 +101,10 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
       } else {
         this.telemetryFilter.from_date = item.from_date;
         this.telemetryFilter.to_date = item.to_date;
-        this.selectedDateRange = moment.unix(this.telemetryFilter.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
-        moment.unix(this.telemetryFilter.to_date).format('DD-MM-YYYY HH:mm');
+        this.selectedDateRange =
+          moment.unix(this.telemetryFilter.from_date).format('DD-MM-YYYY HH:mm') +
+          ' to ' +
+          moment.unix(this.telemetryFilter.to_date).format('DD-MM-YYYY HH:mm');
       }
       this.picker.datePicker.setStartDate(moment.unix(this.telemetryFilter.from_date));
       this.picker.datePicker.setEndDate(moment.unix(this.telemetryFilter.to_date));
@@ -116,57 +116,63 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
     this.assets = [];
     const obj = {
       gateway_id: this.telemetryFilter.gateway_id,
-      type: 'Legacy Asset'
+      type: 'Legacy Asset',
     };
-    this.apiSubscriptions.push(this.assetService.getLegacyAssets(obj, this.contextApp.app).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.assets = response.data;
-          if (this.assets.length === 1) {
-            this.telemetryFilter.asset = this.assets[0];
-            this.onSelectionOfAsset();
+    this.apiSubscriptions.push(
+      this.assetService.getLegacyAssets(obj, this.contextApp.app).subscribe(
+        (response: any) => {
+          if (response && response.data) {
+            this.assets = response.data;
+            if (this.assets.length === 1) {
+              this.telemetryFilter.asset = this.assets[0];
+              this.onSelectionOfAsset();
+            }
+            // this.assets.splice(0, 0, { asset_id: this.telemetryFilter.gateway_id});
           }
-          // this.assets.splice(0, 0, { asset_id: this.telemetryFilter.gateway_id});
-        }
-      }, errror => {}
-    ));
+        },
+        (errror) => {}
+      )
+    );
   }
 
   getAssetsModelProperties(asset) {
     return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
-        name: asset.asset_model
+        name: asset.asset_model,
       };
-      this.apiSubscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
-        (response: any) => {
-          response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
+      this.apiSubscriptions.push(
+        this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
+          response.properties.measured_properties = response.properties.measured_properties
+            ? response.properties.measured_properties
+            : [];
+          response.properties?.measured_properties.forEach((prop) => (prop.type = 'Measured Properties'));
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-          response.properties.edge_derived_properties = response.properties.edge_derived_properties ?
-          response.properties.edge_derived_properties : [];
-          response.properties.cloud_derived_properties = response.properties.cloud_derived_properties ?
-          response.properties.cloud_derived_properties : [];
-          response.properties.edge_derived_properties.forEach(prop => {
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties
+            ? response.properties.edge_derived_properties
+            : [];
+          response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
+            ? response.properties.cloud_derived_properties
+            : [];
+          response.properties.edge_derived_properties.forEach((prop) => {
             prop.type = 'Edge Derived Properties';
             this.propertyList.push(prop);
           });
-          response.properties.cloud_derived_properties.forEach(prop => {
+          response.properties.cloud_derived_properties.forEach((prop) => {
             prop.type = 'Cloud Derived Properties';
             this.propertyList.push(prop);
           });
           this.propertyList = JSON.parse(JSON.stringify(this.propertyList));
           // this.props = [...this.dropdownPropList];
           resolve();
-        }
-      ));
+        })
+      );
     });
   }
 
   onSelectionOfAsset() {
     this.getAssetsModelProperties(this.telemetryFilter.asset);
   }
-
-
 
   async searchTelemetry(filterObj, updateFilterObj = true) {
     console.log(filterObj);
@@ -179,7 +185,7 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
       filterObj.from_date = filterObj.from_date;
       filterObj.to_date = filterObj.to_date;
     }
-    const obj = {...filterObj};
+    const obj = { ...filterObj };
     delete obj.asset;
     obj.asset_id = filterObj?.asset?.asset_id;
     if (!obj.asset_id) {
@@ -205,18 +211,18 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
           key: 'local_message_date',
           type: 'text',
           headerClass: 'w-15',
-          valueclass: ''
-        }
-      ]
+          valueclass: '',
+        },
+      ],
     };
-    filterObj.props.forEach(prop => {
+    filterObj.props.forEach((prop) => {
       this.telemetryTableConfig.headers.push(prop.name);
       this.telemetryTableConfig.data.push({
         name: prop.name,
         key: prop.json_key,
         type: 'text',
         headerClass: '',
-        valueclass: ''
+        valueclass: '',
       });
     });
 
@@ -238,7 +244,7 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
     delete obj.dateOption;
     delete obj.isTypeEditable;
     let method;
-    if (!obj.aggregation_minutes || !obj.aggregation_format ) {
+    if (!obj.aggregation_minutes || !obj.aggregation_format) {
       this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
       return;
     }
@@ -247,9 +253,11 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
     let cloud_derived_message_props = '';
     filterObj.props.forEach((prop, index) => {
       if (prop.type === 'Edge Derived Properties') {
-        edge_derived_message_props = edge_derived_message_props + prop.json_key + (filterObj.props[index + 1] ? ',' : '');
+        edge_derived_message_props =
+          edge_derived_message_props + prop.json_key + (filterObj.props[index + 1] ? ',' : '');
       } else if (prop.type === 'Cloud Derived Properties') {
-        cloud_derived_message_props =  cloud_derived_message_props + prop.json_key + (filterObj.props[index + 1] ? ',' : '');
+        cloud_derived_message_props =
+          cloud_derived_message_props + prop.json_key + (filterObj.props[index + 1] ? ',' : '');
       } else {
         measured_message_props = measured_message_props + prop.json_key + (filterObj.props[index + 1] ? ',' : '');
       }
@@ -270,24 +278,25 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
     this.isTelemetryLoading = true;
 
     this.telemetryFilter = filterObj;
-    this.apiSubscriptions.push(method.subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.telemetry = response.data;
-          this.telemetry.forEach(item => {
-            item.local_message_date = this.commonService.convertUTCDateToLocal(item.message_date);
-          });
-
-        }
-        if (this.telemetryFilter.dateOption !== 'Custom Range') {
-          this.telemetryTableConfig.dateRange = this.telemetryFilter.dateOption;
-        }
-        else {
-          this.telemetryTableConfig.dateRange = 'this selected range';
-        }
-        this.isTelemetryLoading = false;
-      }, error => this.isTelemetryLoading = false
-    ));
+    this.apiSubscriptions.push(
+      method.subscribe(
+        (response: any) => {
+          if (response && response.data) {
+            this.telemetry = response.data;
+            this.telemetry.forEach((item) => {
+              item.local_message_date = this.commonService.convertUTCDateToLocal(item.message_date);
+            });
+          }
+          if (this.telemetryFilter.dateOption !== 'Custom Range') {
+            this.telemetryTableConfig.dateRange = this.telemetryFilter.dateOption;
+          } else {
+            this.telemetryTableConfig.dateRange = 'this selected range';
+          }
+          this.isTelemetryLoading = false;
+        },
+        (error) => (this.isTelemetryLoading = false)
+      )
+    );
   }
 
   onNumberChange(event, type) {
@@ -311,7 +320,8 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
     } else {
       this.telemetryFilter.from_date = moment(value.start).utc().unix();
       this.telemetryFilter.to_date = moment(value.end).utc().unix();
-      this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
+      this.selectedDateRange =
+        moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
     }
     if (this.telemetryFilter.to_date - this.telemetryFilter.from_date > 3600) {
       this.telemetryFilter.isTypeEditable = true;
@@ -326,16 +336,18 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
     // this.isFilterSelected = false;
     this.telemetryFilter = JSON.parse(JSON.stringify(this.originalTelemetryFilter));
     this.telemetryFilter.dateOption = 'Last 30 Mins';
-    if ( this.telemetryFilter.dateOption !== 'Custom Range') {
-      const dateObj = this.commonService.getMomentStartEndDate( this.telemetryFilter.dateOption);
+    if (this.telemetryFilter.dateOption !== 'Custom Range') {
+      const dateObj = this.commonService.getMomentStartEndDate(this.telemetryFilter.dateOption);
       this.telemetryFilter.from_date = dateObj.from_date;
       this.telemetryFilter.to_date = dateObj.to_date;
       this.selectedDateRange = this.telemetryFilter.dateOption;
     } else {
-      this.telemetryFilter.from_date =  this.telemetryFilter.from_date;
-      this.telemetryFilter.to_date =  this.telemetryFilter.to_date;
-      this.selectedDateRange = moment.unix(this.telemetryFilter.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
-      moment.unix(this.telemetryFilter.to_date).format('DD-MM-YYYY HH:mm');
+      this.telemetryFilter.from_date = this.telemetryFilter.from_date;
+      this.telemetryFilter.to_date = this.telemetryFilter.to_date;
+      this.selectedDateRange =
+        moment.unix(this.telemetryFilter.from_date).format('DD-MM-YYYY HH:mm') +
+        ' to ' +
+        moment.unix(this.telemetryFilter.to_date).format('DD-MM-YYYY HH:mm');
     }
     this.picker.datePicker.setStartDate(moment.unix(this.telemetryFilter.from_date));
     this.picker.datePicker.setEndDate(moment.unix(this.telemetryFilter.to_date));

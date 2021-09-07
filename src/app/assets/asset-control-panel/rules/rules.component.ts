@@ -112,7 +112,7 @@ export class RulesComponent implements OnInit {
   onCloseRuleModel(event) {
     this.isAddRule = false;
     if (event.status) {
-      this.getRules();
+      this.onTabClick('Cloud');
     }
     this.toggleRows = {};
     this.isView = false;

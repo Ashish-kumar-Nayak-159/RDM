@@ -120,37 +120,12 @@
             <label for="message-text" class="col-form-label required">Configure following
               {{(controlWidget?.metadata?.communication_technique === 'Direct Method' ? 'methods' :
               'properties')}}:</label>
-            <!-- <ng-container *ngIf="properties?.controllable_properties.length > 0">
-            <div class="form-check" *ngFor="let prop of properties?.controllable_properties;let i = index;">
-              <input class="form-check-input" type="checkbox" value="{{i}}" id="prop{{i}}" (change)="onPropertyChecked($event)">
-              <label class="form-check-label" for="prop{{i}}">
-                {{prop.name}}
-              </label>
-            </div>
-          </ng-container>
-          <ng-container  *ngIf="properties?.controllable_properties.length === 0">
-            <div> No properties added.</div>
-          </ng-container> -->
-            <!-- <angular2-multiselect [data]="(controlWidget?.metadata?.communication_technique === 'Direct Method' ? assetMethods : properties?.controllable_properties)" id="y1AxisProperty"
-          [(ngModel)]="controlWidget.properties" (onDeSelect)="onPropertyChecked($event)"
-          (onSelectAll)="selectAllProps($event)" (onDeSelectAll)="deselectAllProps($event)"
-          (onSelect)="onPropertyChecked($event)" name="property" [settings]="{
-              text: 'Select' + (controlWidget?.metadata?.communication_technique === 'Direct Method' ? ' Direct Method' : ' Property'),
-              classes: 'col-lg-2 col-xl-2 p-0 ml-2 w-100 modal-select',
-              enableSearchFilter: true,
-              badgeShowLimit: 2,
-              maxHeight: 200,
-              labelKey: 'name',
-              primaryKey: 'name'
-            }">
-          </angular2-multiselect> -->
-            <ng-select
-              [items]="(controlWidget?.metadata?.communication_technique === 'Direct Method' ? assetMethods : properties?.configurable_properties)"
-              class="custom-dropdown sm" [clearable]="false" [searchable]="true" [multiple]="true" bindLabel="name"
-              [closeOnSelect]="false"
-              placeholder="{{'Select' + (controlWidget?.metadata?.communication_technique === 'Direct Method' ? ' Direct Method' : ' Property')}}"
-              dropdownPosition="bottom" name="propArr" ngDefaultControl [(ngModel)]="controlWidget.properties"
-              (add)="onPropertyChecked($event)" (remove)="onPropertyChecked($event)">
+            <ng-select *ngIf="controlWidget.metadata.communication_technique !== 'Direct Method'"
+              [items]="properties?.configurable_properties" class="custom-dropdown sm" [clearable]="false"
+              [searchable]="true" [multiple]="true" bindLabel="name" [closeOnSelect]="false"
+              placeholder="Select Property" dropdownPosition="bottom" name="propArr" ngDefaultControl
+              [(ngModel)]="controlWidget.properties" (add)="onPropertyChecked($event)"
+              (remove)="onPropertyChecked($event)">
               <ng-template ng-option-tmp let-item="item">
                 <span [tooltip]="item.name">{{item.name}}</span>
               </ng-template>
@@ -158,26 +133,36 @@
                 {{items.length}} selected
               </ng-template>
             </ng-select>
-            <label for="message-text" class="col-form-label">OR </label>
-            <ng-container *ngFor="let param of extraParams; let i = index;">
-              <div class="form-group">
-                <label for="message-text" class="col-form-label">Extra Parameters </label>
-                <a *ngIf="i === 0" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm  ml-2 mb-1"
-                  href="javascript:void(0)" (click)="addParameter()" placement="bottom" tooltip="Add Property"><i
-                    class="fa fa-plus fa-sm text-white"></i></a>
-                <a *ngIf="i !== 0" class="d-none d-sm-inline-block btn btn-sm btn-white shadow-sm  ml-2 mb-1"
-                  href="javascript:void(0)" (click)="removeParameter(i)" placement="bottom" tooltip="Remove Property"><i
-                    class="fa fa-trash fa-sm"></i></a>
-                <input type="text" class="form-control form-control-sm" id="title{{i}}" name="title{{i}}"
-                  [(ngModel)]="param.name" (change)="onKeyChange($event, i)" placeholder="Parameter Key">
-              </div>
-              <div class="form-group">
-                <label for="recipient-name" class="col-form-label required">Data Type:</label>
-                <select class="form-control form-control-sm" id="template{{i}}" name="model_type{{i}}"
-                  [(ngModel)]="param.type" (change)="onKeyChange($event, i)">
-                  <option [ngValue]="dataType.name" *ngFor="let dataType of dataTypeList">{{dataType.name}}</option>
-                </select>
-              </div>
+            <ng-select *ngIf="controlWidget.metadata.communication_technique === 'Direct Method'" [items]="assetMethods"
+              class="custom-dropdown sm" [clearable]="false" [searchable]="true" bindLabel="name" [closeOnSelect]="true"
+              placeholder="Select Direct Method" dropdownPosition="bottom" name="propArr" ngDefaultControl
+              [(ngModel)]="controlWidget.properties" (change)="onPropertyChecked($event)">
+              <ng-template ng-option-tmp let-item="item">
+                <span [tooltip]="item.name">{{item.name}}</span>
+              </ng-template>
+            </ng-select>
+            <ng-container *ngIf="controlWidget.metadata.communication_technique !== 'Direct Method'">
+              <label for="message-text" class="col-form-label">OR </label>
+              <ng-container *ngFor="let param of extraParams; let i = index;">
+                <div class="form-group">
+                  <label for="message-text" class="col-form-label">Extra Parameters </label>
+                  <a *ngIf="i === 0" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm  ml-2 mb-1"
+                    href="javascript:void(0)" (click)="addParameter()" placement="bottom" tooltip="Add Property"><i
+                      class="fa fa-plus fa-sm text-white"></i></a>
+                  <a *ngIf="i !== 0" class="d-none d-sm-inline-block btn btn-sm btn-white shadow-sm  ml-2 mb-1"
+                    href="javascript:void(0)" (click)="removeParameter(i)" placement="bottom"
+                    tooltip="Remove Property"><i class="fa fa-trash fa-sm"></i></a>
+                  <input type="text" class="form-control form-control-sm" id="title{{i}}" name="title{{i}}"
+                    [(ngModel)]="param.name" (change)="onKeyChange($event, i)" placeholder="Parameter Key">
+                </div>
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label required">Data Type:</label>
+                  <select class="form-control form-control-sm" id="template{{i}}" name="model_type{{i}}"
+                    [(ngModel)]="param.type" (change)="onKeyChange($event, i)">
+                    <option [ngValue]="dataType.name" *ngFor="let dataType of dataTypeList">{{dataType.name}}</option>
+                  </select>
+                </div>
+              </ng-container>
             </ng-container>
           </div>
           <div class="form-group mr-3">

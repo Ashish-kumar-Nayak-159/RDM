@@ -5,7 +5,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { FileSaverModule } from 'ngx-filesaver';
-import { MonacoEditorModule } from 'ngx-monaco-editor';
 
 import { AssetModelListComponent } from './asset-model-list/asset-model-list.component';
 import { CommonCustomModule } from '../common/common.module';
@@ -34,8 +33,6 @@ import { AssetModelAlertAcknowledgementReasonsComponent } from './asset-model-co
 import { AssetModelSlaveInfoComponent } from './asset-model-control-panel/asset-model-slave-info/asset-model-slave-info.component';
 import { AddRuleComponent } from './asset-model-control-panel/add-rule/add-rule.component';
 import { UiSwitchModule } from 'ngx-ui-switch';
-
-
 
 @NgModule({
   declarations: [
@@ -72,13 +69,10 @@ import { UiSwitchModule } from 'ngx-ui-switch';
     NgJsonEditorModule,
     AngularMultiSelectModule,
     FileSaverModule,
-    MonacoEditorModule, // use forRoot() in main app
     NgSelectModule,
     TooltipModule,
-    UiSwitchModule
+    UiSwitchModule,
   ],
-  exports: [
-    AddRuleComponent
-  ]
+  exports: [AddRuleComponent],
 })
-export class AssetModelModule { }
+export class AssetModelModule {}

@@ -16,7 +16,6 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { RDMLoginComponent } from './rdm-login/rdm-login.component';
 import { RDMHomeComponent } from './rdmhome/rdmhome.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { LoaderComponent } from './loader/loader.component';
 import { AgmCoreModule } from '@agm/core';
 import { RdmGuestLoginComponent } from './rdm-guest-login/rdm-guest-login.component';
@@ -31,7 +30,7 @@ import { RdmGuestLoginComponent } from './rdm-guest-login/rdm-guest-login.compon
     RDMHomeComponent,
     ResetPasswordComponent,
     LoaderComponent,
-    RdmGuestLoginComponent
+    RdmGuestLoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -44,14 +43,12 @@ import { RdmGuestLoginComponent } from './rdm-guest-login/rdm-guest-login.compon
     NoopAnimationsModule,
     MatNativeDateModule,
     BrowserAnimationsModule,
-    MonacoEditorModule.forRoot(),
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyCGnaF9LBIEhAgc5wwktQtWOBu9pnNNfK0',
-      libraries: ['places']
-    })  ],
-  providers: [
-    HttpInterceptorProviders
+      libraries: ['places'],
+    }),
   ],
-  bootstrap: [AppComponent]
+  providers: [HttpInterceptorProviders],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

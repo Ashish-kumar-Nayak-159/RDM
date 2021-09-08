@@ -72,23 +72,25 @@
                     <i class="fa fa-fw fa-eye"></i>
                   </a>
                   <a href="javascript:void(0)" (click)="onToggleRows(i, rule, false, true)" class="mr-1"
-                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
+                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && rule.is_editable !== false"
                     [class.disabled]="assetModel.freezed" placement="bottom" tooltip="Edit">
                     <i class="fa fa-fw fa-edit"></i>
                   </a>
                   <a href="javascript:void(0)" (click)="onDeleteRule(rule)" class="mr-1"
-                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1" placement="bottom"
-                    tooltip="Delete" [class.disabled]="assetModel.freezed">
+                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && rule.is_editable !== false"
+                    placement="bottom" tooltip="Delete" [class.disabled]="assetModel.freezed">
                     <i class="fa fa-fw fa-trash"></i>
                   </a>
                   <a href="javascript:void(0)" (click)="deployRule(rule)" *ngIf="rule.type === 'Cloud' &&
               decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 &&
+              rule.is_editable !== false &&
               ( !rule.epoch_deployed_on || rule.epoch_updated_date - rule.epoch_deployed_on > 0)" placement="bottom"
                     tooltip="Deploy" [class.disabled]="assetModel.freezed">
                     <i class="fa fa-fw fa-sync"></i>
                   </a>
                   <a href="javascript:void(0)" (click)="deployRule(rule, true)" *ngIf="rule.type === 'Cloud' &&
               decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 &&
+              rule.is_editable !== false &&
                 ( rule.epoch_deployed_on && rule.epoch_updated_date - rule.epoch_deployed_on < 0)" placement="bottom"
                     tooltip="Revert" [class.disabled]="assetModel.freezed">
                     <i class="fa fa-fw fa-undo"></i>

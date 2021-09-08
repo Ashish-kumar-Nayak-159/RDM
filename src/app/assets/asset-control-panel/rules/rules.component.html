@@ -111,7 +111,7 @@
         </div>
       </div>
     </accordion-group>
-    <accordion-group heading="" [panelClass]="'customClass'">
+    <accordion-group heading="" [panelClass]="'customClass ruleAccordion'">
       <ng-container accordion-heading>
         <button class="btn" type="button" (click)="toggleRows = {}">
           Asset Level Rules
@@ -159,26 +159,27 @@
                           <i class="fa fa-fw fa-eye"></i>
                         </a>
                         <a href="javascript:void(0)" (click)="onToggleRows(i, rule, 'asset', false, true)" class="mr-1"
-                          placement="bottom" tooltip="Edit" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1
-                ">
+                          placement="bottom" tooltip="Edit"
+                          *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && rule.is_editable !== false">
                           <i class="fa fa-fw fa-edit"></i>
                         </a>
                         <a href="javascript:void(0)" (click)="onDeleteRule(rule)" class="mr-1" placement="bottom"
-                          tooltip="Delete" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1
-                ">
+                          tooltip="Delete"
+                          *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && rule.is_editable !== false">
                           <i class="fa fa-fw fa-trash"></i>
                         </a>
                         <a href="javascript:void(0)" (click)="deployRule(rule)" *ngIf="rule.type === 'Cloud' &&
-                decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 &&
-
-                ( !rule.epoch_deployed_on || rule.epoch_updated_date - rule.epoch_deployed_on > 0)" placement="bottom"
-                          tooltip="Deploy">
+                         decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 &&
+                         rule.is_editable !== false &&
+                          ( !rule.epoch_deployed_on || rule.epoch_updated_date - rule.epoch_deployed_on > 0)"
+                          placement="bottom" tooltip="Deploy">
                           <i class="fa fa-fw fa-sync"></i>
                         </a>
                         <a href="javascript:void(0)" (click)="deployRule(rule, true)" *ngIf="rule.type === 'Cloud' &&
-                decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 &&
-                  ( rule.epoch_deployed_on && rule.epoch_updated_date - rule.epoch_deployed_on < 0)" placement="bottom"
-                          tooltip="Revert">
+                        decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 &&
+                        rule.is_editable !== false &&
+                          ( rule.epoch_deployed_on && rule.epoch_updated_date - rule.epoch_deployed_on < 0)"
+                          placement="bottom" tooltip="Revert">
                           <i class="fa fa-fw fa-undo"></i>
                         </a>
                       </td>

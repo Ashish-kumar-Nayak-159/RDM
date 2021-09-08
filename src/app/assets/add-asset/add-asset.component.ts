@@ -303,6 +303,10 @@ export class AddAssetComponent implements OnInit, OnChanges {
         (response: any) => {
           if (this.componentState === CONSTANTS.NON_IP_ASSET) {
             this.updateGatewayTags(this.assetDetail);
+            this.toasterService.showSuccess(
+              response.message,
+              'Create ' + (this.tileData ? this.tileData.table_key : '')
+            );
           } else {
             this.isCreateAssetAPILoading = false;
             this.toasterService.showSuccess(
@@ -333,7 +337,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
       this.assetService.attachLegacyAssetToGateway(this.contextApp.app, assetObj.gateway_id, obj).subscribe(
         (response: any) => {
           this.isCreateAssetAPILoading = false;
-          this.toasterService.showSuccess(response.message, 'Create ' + this.componentState);
+          // this.toasterService.showSuccess(response.message, 'Create ' + this.componentState);
           this.getAssetEmit.emit();
           this.onCloseCreateAssetModal();
         },

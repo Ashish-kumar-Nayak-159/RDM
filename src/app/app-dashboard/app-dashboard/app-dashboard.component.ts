@@ -46,6 +46,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   filterObj: any = {};
   propertyList: any[] = [];
   telemetryObj: any;
+  apiTelemetryObj: any;
   telemetryData: any[] = [];
   refreshInterval: any;
   selectedTab = 'telemetry';
@@ -393,6 +394,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     // this.signalRService.disconnectFromSignalR('alert');
     this.telemetryData = JSON.parse(JSON.stringify([]));
     this.telemetryObj = undefined;
+    this.apiTelemetryObj = undefined;
     this.telemetryInterval = undefined;
     this.filterObj.asset = undefined;
     this.hierarchyArr = [];
@@ -601,6 +603,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this.toasterService.showError('Asset selection is required', 'View Live Telemetry');
       this.telemetryObj = undefined;
+      this.apiTelemetryObj = undefined;
       this.telemetryData = [];
       this.liveWidgets = [];
       this.historicalWidgets = [];
@@ -644,6 +647,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async getLiveWidgetTelemetryDetails(obj) {
     this.telemetryObj = undefined;
+    this.apiTelemetryObj = undefined;
     this.telemetryInterval = undefined;
     this.lastReportedTelemetryValues = undefined;
     this.telemetryData = JSON.parse(JSON.stringify([]));
@@ -703,6 +707,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             obj['previous_properties'] = [];
             // console.log(obj);
             this.telemetryObj = obj;
+            this.apiTelemetryObj = JSON.parse(JSON.stringify(obj));
             // this.telemetryObj = response.message;
             // const hours = this.telemetryObj['Running Hours'].split(':');
             // this.telemetryObj['Hours'] = hours[0] ? Math.floor(Number(hours[0])) : 0;

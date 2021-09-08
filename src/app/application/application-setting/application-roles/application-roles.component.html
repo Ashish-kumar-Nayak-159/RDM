@@ -1,82 +1,77 @@
 <div class="tab-bar">
   <div class="d-flex d-flex align-items-center">
     <div class="h6 m-0 p-0">
-        Roles
-        <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-        <button type="button" class="btn btn-sm searchBtn btn-primary"
-        placement="bottom" tooltip="Add Role" (click)="openCreateUserModal()"><i class="fas fa-plus fa-sm"></i></button>
+      Roles
+      <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+        <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Add Role"
+          (click)="openCreateUserModal()"><i class="fas fa-plus fa-sm"></i></button>
       </ng-container>
-     </div>
-</div>
+    </div>
+  </div>
 </div>
 <div class="tableFixHead table-responsive">
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th>Role Name </th>
-      <th>Access Level</th>
-      <th >Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <ng-container *ngFor="let item of userRoles; let configIndex = index">
-      <tr *ngIf="item.length === 0">
-        <td colspan="3">No User Roles Found</td>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Role Name </th>
+        <th>Access Level</th>
+        <th>Actions</th>
       </tr>
-      <tr [ngClass]="{ 'accordion-bg' : toggleRows[configIndex] }">
-        <td>{{item.role}}</td>
-        <td>Level: {{applicationData.hierarchy.levels[item.level]}}</td>
-        <td>
-          <a href="javascript:void(0)" (click)="onToggleRows(configIndex, 'view')" >
-            <i [ngClass]="toggleRows[configIndex] && pageType === 'view' ? 'fa fa-angle-up' : 'fa fa-eye'"></i>
-           </a>
-          <a href="javascript:void(0)" (click)="onToggleRows(configIndex, 'edit')"  class="ml-2" *ngIf="item.level !== 0 && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-           <i [ngClass]="toggleRows[configIndex] && pageType === 'edit' ? 'fa fa-angle-up' : 'fa fa-edit'"></i>
-          </a>
-          <a href="javascript:void(0)" (click)="onSaveRoles()" *ngIf="item.level !== 0 && toggleRows[configIndex] && pageType === 'edit' && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1" class="ml-2">
-            <i [ngClass]="'fa fa-save'" placement="bottom" tooltip="Save Role" ></i>
-          </a>
-          <a *ngIf="item.level !== 0 && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1" href="javascript:void(0)" class="ml-2" (click)="openDeleteUserModal(configIndex)">
-            <i class="fa fa-trash" placement="bottom" tooltip="Delete Role"></i>
-          </a>
-        </td>
-      </tr>
-      <tr *ngIf="toggleRows[configIndex]" style="background-color: #fdfeff;">
-        <td colspan="3"  class="accordion-border">
-          <div class="row m-0 mb-4">
-            <div *ngFor="let group of privilegeGroups | keyvalue" class="col-6"><h6 class="mt-4 mb-2 font-weight-light-bold">{{group.key}}</h6>
-              <div *ngFor="let privilege of group.value" class="pl-3">
-                <input type="checkbox" name="{{privilegeObj.privileges[privilege]?.display_name}}"
-                id="{{privilegeObj.privileges[privilege]?.display_name}}" [(ngModel)]="privilegeObj.privileges[privilege].enabled"
-                [disabled]="pageType == 'view'" />
-                <label for="recipient-name" class="col-form-label">&nbsp;&nbsp;{{privilegeObj.privileges[privilege]?.display_name}}</label>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let item of userRoles; let configIndex = index">
+        <tr *ngIf="item.length === 0">
+          <td colspan="3">No User Roles Found</td>
+        </tr>
+        <tr [ngClass]="{ 'accordion-bg' : toggleRows[configIndex] }">
+          <td>{{item.role}}</td>
+          <td>Level: {{applicationData.hierarchy.levels[item.level]}}</td>
+          <td>
+            <a href="javascript:void(0)" (click)="onToggleRows(configIndex, 'view')">
+              <i [ngClass]="toggleRows[configIndex] && pageType === 'view' ? 'fa fa-angle-up' : 'fa fa-eye'"></i>
+            </a>
+            <a href="javascript:void(0)" (click)="onToggleRows(configIndex, 'edit')" class="ml-2"
+              *ngIf="item.level !== 0 && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+              <i [ngClass]="toggleRows[configIndex] && pageType === 'edit' ? 'fa fa-angle-up' : 'fa fa-edit'"></i>
+            </a>
+            <a href="javascript:void(0)" (click)="onSaveRoles()"
+              *ngIf="item.level !== 0 && toggleRows[configIndex] && pageType === 'edit' && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
+              class="ml-2">
+              <i [ngClass]="'fa fa-save'" placement="bottom" tooltip="Save Role"></i>
+            </a>
+            <a *ngIf="item.level !== 0 && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
+              href="javascript:void(0)" class="ml-2" (click)="openDeleteUserModal(configIndex)">
+              <i class="fa fa-trash" placement="bottom" tooltip="Delete Role"></i>
+            </a>
+          </td>
+        </tr>
+        <tr *ngIf="toggleRows[configIndex]" style="background-color: #fdfeff;">
+          <td colspan="3" class="accordion-border">
+            <div class="row m-0 mb-4">
+              <div *ngFor="let group of privilegeGroups | keyvalue" class="col-6">
+                <h6 class="mt-4 mb-2 font-weight-light-bold">{{group.key}}</h6>
+                <div *ngFor="let privilege of group.value" class="pl-3">
+                  <input type="checkbox" name="{{privilegeObj.privileges[privilege]?.display_name}}"
+                    id="{{privilegeObj.privileges[privilege]?.display_name}}"
+                    [(ngModel)]="privilegeObj.privileges[privilege].enabled" [disabled]="pageType == 'view'" />
+                  <label for="recipient-name"
+                    class="col-form-label">&nbsp;&nbsp;{{privilegeObj.privileges[privilege]?.display_name}}</label>
+                </div>
               </div>
             </div>
-          </div>
-        </td>
-      </tr>
-    </ng-container>
-  </tbody>
-</table>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
 </div>
 
-<div
-  class="modal right fade"
-  id="createUserModal"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="ModalLabel2"
->
+<div class="modal right fade" id="createUserModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <div class="modal-content" *ngIf="privilegeObj">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{privilegeObj.id ? 'Edit': 'Add New'}} User</h5>
-        <button
-          type="button"
-          class="close"
-          [disabled]="isCreateUserAPILoading"
-          (click)="onCloseCreateUserModal()"
-        >
+        <h5 class="modal-title" id="exampleModalLabel">{{privilegeObj.id ? 'Edit': 'Add New'}} Role</h5>
+        <button type="button" class="close" [disabled]="isCreateUserAPILoading" (click)="onCloseCreateUserModal()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -84,58 +79,46 @@
         <form>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">App Name:</label>
-            <input
-              type="text"
-              class="form-control form-control-sm"
-              id="app"
-              [defaultValue]="applicationData.app"
-              disabled
-            />
+            <input type="text" class="form-control form-control-sm" id="app" [defaultValue]="applicationData.app"
+              disabled />
           </div>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Role:</label>
-            <input
-              type="text"
-              class="form-control form-control-sm"
-              id="role"
-              placeholder="Enter Role Name"
-              [(ngModel)]="privilegeObj.role"
-              name="roleName"
-              [disabled] = "privilegeObj.id"
-            />
+            <input type="text" class="form-control form-control-sm" id="role" placeholder="Enter Role Name"
+              [(ngModel)]="privilegeObj.role" name="roleName" [disabled]="privilegeObj.id" />
           </div>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Level:</label>
-            <select class="form-control form-control-sm" id="userRoleCategory" [disabled] = "privilegeObj.id"
-               [(ngModel)]="privilegeObj.level" name="userRoleCategory">
-                <option [ngValue]="i" *ngFor="let level of applicationData.hierarchy.levels; let i = index;">
-                  {{level}}
-                </option>
-             </select>
+            <select class="form-control form-control-sm" id="userRoleCategory" [disabled]="privilegeObj.id"
+              [(ngModel)]="privilegeObj.level" name="userRoleCategory">
+              <option [ngValue]="i" *ngFor="let level of applicationData.hierarchy.levels; let i = index;">
+                {{level}}
+              </option>
+            </select>
           </div>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">User Privileges:</label>
-            <div *ngFor="let group of privilegeGroups | keyvalue"><h6 class="my-3">{{group.key}}</h6>
+            <div *ngFor="let group of privilegeGroups | keyvalue">
+              <h6 class="my-3">{{group.key}}</h6>
               <div *ngFor="let privilege of group.value" class="ml-3">
                 <input type="checkbox" name="{{privilegeObj.privileges[privilege].display_name}}"
-                id="{{privilegeObj.privileges[privilege].display_name}}" [(ngModel)]="privilegeObj.privileges[privilege].enabled" />
-                <label for="recipient-name" class="col-form-label">&nbsp;&nbsp;{{privilegeObj.privileges[privilege].display_name}}</label>
+                  id="{{privilegeObj.privileges[privilege].display_name}}"
+                  [(ngModel)]="privilegeObj.privileges[privilege].enabled" />
+                <label for="recipient-name"
+                  class="col-form-label">&nbsp;&nbsp;{{privilegeObj.privileges[privilege].display_name}}</label>
               </div>
             </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-primary add-row"
-          (click)="onSaveRoles()"
-          [disabled]="isCreateUserAPILoading"
-        >
+        <button type="button" class="btn btn-primary add-row" (click)="onSaveRoles()"
+          [disabled]="isCreateUserAPILoading">
           Save
           <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateUserAPILoading"></i>
         </button>
-        <button type="button" class="btn btn-secondary" [disabled]="isCreateUserAPILoading" (click)="onCloseCreateUserModal()">
+        <button type="button" class="btn btn-secondary" [disabled]="isCreateUserAPILoading"
+          (click)="onCloseCreateUserModal()">
           Cancel
         </button>
       </div>
@@ -147,7 +130,8 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Delete User Access</h5>
-        <button type="button" class="close"  aria-label="Close" (click)="onCloseModal()" [disabled]="isDeleteUserAPILoading">
+        <button type="button" class="close" aria-label="Close" (click)="onCloseModal()"
+          [disabled]="isDeleteUserAPILoading">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -156,15 +140,15 @@
         <form>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Email:</label>
-            <input type="text" class="form-control form-control-sm form-control form-control-sm" id="email" name="email" [(ngModel)]="userData.email"
-              placeholder="Enter Email" disabled>
+            <input type="text" class="form-control form-control-sm form-control form-control-sm" id="email" name="email"
+              [(ngModel)]="userData.email" placeholder="Enter Email" disabled>
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Password:</label>
-            <input  type="{{this.isPasswordVisible ? 'text' : 'password'}}" class="form-control form-control-sm" id="display_name" name="display_name" [(ngModel)]="password"
-              placeholder="Enter Your Password">
-              <i class="fa fa-fw  field-icon-small toggle-password" (click)="togglePasswordVisibility()"
-              [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}" ></i>
+            <input type="{{this.isPasswordVisible ? 'text' : 'password'}}" class="form-control form-control-sm"
+              id="display_name" name="display_name" [(ngModel)]="password" placeholder="Enter Your Password">
+            <i class="fa fa-fw  field-icon-small toggle-password" (click)="togglePasswordVisibility()"
+              [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}"></i>
           </div>
         </form>
       </div>

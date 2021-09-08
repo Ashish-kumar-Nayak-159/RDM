@@ -59,12 +59,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.getSlaveData();
   }
 
-  onMonacoInit(editorInstance) {
-    setTimeout(() => {
-      editorInstance.layout();
-    }, 50);
-  }
-
   ngOnChanges(changes): void {
     if (changes.type) {
       this.type = changes.type.currentValue;
@@ -173,13 +167,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       });
     }
     if (this.type.includes('derived')) {
-      // this.propertyTableConfig.data[3].btnData.splice(1, 0, {
-      //   icon: 'fa fa-fw fa-cog',
-      //   text: '',
-      //   id: 'Configure Property',
-      //   valueclass: '',
-      //   tooltip: 'Configure Property'
-      // });
       this.propertyTableConfig.data.splice(3, 0, {
         name: 'Formula',
         key: 'condition',

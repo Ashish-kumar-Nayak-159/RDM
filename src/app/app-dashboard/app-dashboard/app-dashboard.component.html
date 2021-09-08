@@ -210,10 +210,12 @@
               'margin-left':'2%', 'margin-top': '2%'}">
           <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
               || widget?.widgetType === 'NumberWithImage' || widget?.widgetType === 'StringWidget'"
-            [chartConfig]="widget" [asset]="originalFilter?.asset" [telemetryObj]="telemetryObj">
+            [chartConfig]="widget" [asset]="originalFilter?.asset" [apiTelemetryObj]="apiTelemetryObj"
+            [telemetryObj]="telemetryObj">
           </app-only-number-widget>
           <app-gauge-chart [chartConfig]="widget" [asset]="originalFilter?.asset"
-            *ngIf="widget.widgetType === 'GaugeChart'" [telemetryObj]="telemetryObj"></app-gauge-chart>
+            *ngIf="widget.widgetType === 'GaugeChart'" [telemetryObj]="telemetryObj"
+            [apiTelemetryObj]="apiTelemetryObj"></app-gauge-chart>
           <app-live-line-chart [chartConfig]="widget" [asset]="originalFilter?.asset" [telemetryObj]="telemetryObj"
             *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
           </app-live-line-chart>

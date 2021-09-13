@@ -63,7 +63,7 @@
         <span [ngClass]="{'alert-success': testConnectionMessage.toLowerCase().includes('success'),
         'alert-danger': testConnectionMessage.toLowerCase().includes('not connected')}"> {{testConnectionMessage}} </span>
       </div>
-      <app-c2d-jobs [asset]="asset" [filterObj]="c2dJobFilter"></app-c2d-jobs>
+      <app-c2d-jobs class="d-none d-xl-block" [asset]="asset" [filterObj]="c2dJobFilter"></app-c2d-jobs>
       </div>
       </div>
     </ng-container>
@@ -89,7 +89,7 @@
           Sync Rules</a>
       </div>
       <i *ngIf="isRuleSyncAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-      <app-c2d-jobs [asset]="asset" [filterObj]="c2dJobFilter1" ></app-c2d-jobs>
+      <app-c2d-jobs class="d-none d-xl-block" [asset]="asset" [filterObj]="c2dJobFilter1" ></app-c2d-jobs>
       </div>
       </div>
     </ng-container>

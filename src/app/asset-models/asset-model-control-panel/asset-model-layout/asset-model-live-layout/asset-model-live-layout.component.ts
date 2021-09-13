@@ -31,7 +31,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   configureDashboardWidgets: any[] = [];
   isAllWidgestSelectedForDashboard = false;
   decodedToken: any;
-
+  derivedKPIs: any[] = [];
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -45,7 +45,23 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getAssetsModelProperties();
+    await this.getAssetModelsderivedKPIs();
     this.getLiveWidgets();
+  }
+
+  getAssetModelsderivedKPIs() {
+    return new Promise<void>((resolve) => {
+      this.subscriptions.push(
+        this.assetService.getDerivedKPIs(this.contextApp.app, this.assetModel.name).subscribe((response: any) => {
+          if (response && response.data) {
+            response.data.forEach((kpi) => kpi.type === 'Derived KPI');
+            this.derivedKPIs = response.data;
+            console.log(this.derivedKPIs);
+          }
+          resolve();
+        })
+      );
+    });
   }
 
   getAssetsModelProperties() {
@@ -145,13 +161,19 @@ export class AssetModelLiveLayoutComponent implements OnInit {
               widget.measured_props = false;
               if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
                 widget?.properties.forEach((prop) => {
-                  if (prop?.property?.type === 'Edge Derived Properties') {
+                  console.log(this.propertyList);
+                  if (prop.property) {
+                    prop.json_key = prop.property.json_key;
+                  }
+                  prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
+                  if (prop?.type === 'Edge Derived Properties') {
                     widget.edge_derived_props = true;
-                  } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                  } else if (prop?.type === 'Cloud Derived Properties') {
                     widget.cloud_derived_props = true;
                   } else {
                     widget.measured_props = true;
                   }
+                  console.log(prop);
                 });
               } else {
                 widget?.y1AxisProps.forEach((prop) => {
@@ -272,6 +294,11 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   }
 
   updateAssetModel(arr, message) {
+    arr.forEach((widget) => {
+      widget.properties.forEach((prop) => {
+        delete prop.property;
+      });
+    });
     this.assetModel.live_widgets = arr;
     this.assetModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(
@@ -299,9 +326,12 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     }
     let found = true;
     this.widgetObj.properties.forEach((prop) => {
-      console.log(prop);
       if (Object.keys(prop).length === 0) {
         found = false;
+      } else {
+        prop.json_key = prop.property?.json_key;
+        prop.type = prop.property?.type;
+        delete prop.property;
       }
     });
     if (!found && this.widgetObj.widgetType !== 'LineChart' && this.widgetObj.widgetType !== 'AreaChart') {

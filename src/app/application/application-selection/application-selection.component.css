@@ -1,7 +1,7 @@
 .card :hover {
   background-color: #c7e0f4 /*#f6c23e*/!important;
   color: #1a5a9e;
-  font-weight: 500;
+  /* font-weight: 500; */
   text-decoration: none;
 
 }

@@ -76,6 +76,8 @@
   display: none;
 }
 .dropdown-menu{
-  top: 30px !important;
-  transform: translate3d(0px, -2px, 0px) !important;
+  max-width: 90%;
+  left: 10%;
+  /*top: 30px !important;
+  transform: translate3d(0px, -2px, 0px) !important;*/
 }

@@ -72,6 +72,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   selectedDateRange: string;
   decodedToken: any;
+  isShowOpenFilter = true;
   constructor(
     private assetService: AssetService,
     private assetModelService: AssetModelService,
@@ -110,6 +111,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.getLayout();
     this.loadFromCache();
     this.historyFilter.type = true;
+    if ($(window).width() < 992) {
+      this.isShowOpenFilter = false;
+    }
   }
 
   loadFromCache() {

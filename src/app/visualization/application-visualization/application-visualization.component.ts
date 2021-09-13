@@ -103,6 +103,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   selectedDateRange: string;
   displayHierarchyString: string;
   decodedToken: any;
+  isShowOpenFilter = true;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -145,6 +146,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     await this.getAssets(this.contextApp.user.hierarchy);
 
     this.loadFromCache();
+    if ($(window).width() < 992) {
+      this.isShowOpenFilter = false;
+    }
   }
 
   loadFromCache() {
@@ -288,6 +292,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   onTabClick(type) {
     this.selectedTab = type;
+    if (!$('.responsive-tabs').hasClass('open')) {
+      $('.responsive-tabs').addClass('open');
+    }
+    else {
+      $('.responsive-tabs').removeClass('open');
+    }
   }
 
   onNumberChange(event, type) {

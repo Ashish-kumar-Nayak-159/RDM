@@ -1,10 +1,10 @@
 <div [ngClass]="{'tab-bar' : pageType === 'history', 'blue-nav-bar': pageType === 'live'}">
   <div class="d-flex align-items-center">
-    <div class="d-none d-md-block" *ngIf="pageType === 'live'">
+    <div class="" *ngIf="pageType === 'live'">
       <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}</div>
     </div>
     <div class="ml-auto align-items-center">
-      <div class="d-none d-sm-block">
+      <div class="">
         <form class="form-inline">
           <ng-container *ngIf="pageType === 'history'">
             <div class="form-group">
@@ -100,12 +100,10 @@
       </div>
     </ng-container>
 
-    <div class="col-sp-3 col-md-3 col-lg-3 col-xl-3 p-0" [ngClass]="{'right-border': latestAlerts.length > 0}">
-      <div class="alert-scrollbox alert-scrollbox_delayed"
-        [ngClass]="{'alert-box-live-alerts': pageType === 'live', 'alert-box-historic-alerts': pageType === 'history'}">
-        <ul class="mail_list list-group list-unstyled alert-scrollbox-content"
-          *ngIf="!isAlertAPILoading && latestAlerts.length > 0">
-          <!-- [ngClass]="{'active': alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id,
+    <div class="col-5 col-sm-5 col-md-4 col-lg-3 col-xl-3 p-0" [ngClass]="{'right-border': latestAlerts.length > 0}">
+      <div class="" [ngClass]="{'alert-box-live-alerts': pageType === 'live', 'alert-box-historic-alerts': pageType === 'history'}">
+      <ul class="mail_list list-group list-unstyled alert-scroll" *ngIf="!isAlertAPILoading && latestAlerts.length > 0">
+        <!-- [ngClass]="{'active': alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id,
         'border-left-success': alert?.source?.toLowerCase() === 'cloud', 'border-left-info': alert?.source?.toLowerCase() === 'asset',
         'border-left-warning': alert?.source?.toLowerCase() === 'edge'
       }" -->
@@ -180,9 +178,9 @@
         </ul>
       </div>
     </div>
-    <div class="col-sm-9 col-md-9 col-lg-9 col-xl-9 pl-0" *ngIf="selectedAlert">
-      <div class="">
-        <ul id="assetTab" role="tablist" class="nav alert-tabs flex-column flex-sm-row text-center border-0 ">
+    <div class="col-7 col-sm-7 col-md-8 col-lg-9 col-xl-9 pl-0" *ngIf="selectedAlert">
+      <div class="settings-tabs">
+        <ul id="assetTab" role="tablist" class="nav nav-tabs alert-tabs flex-column flex-sm-row text-center border-0 ">
           <li class="nav-item flex-sm-fill">
             <a id="visualization-tab" data-toggle="tab" href="#visualization" role="tab" aria-controls="visualization"
               aria-selected="true" class="nav-link" (click)="onTabClick('visualization')"
@@ -216,7 +214,9 @@
           aria-labelledby="visualization-tab" class="tab-pane fade show"
           [ngClass]="{'active': selectedTab === 'visualization'}">
           <div class="">
-            <div class="filter-bar d-none d-sm-block sticky-top ">
+            <div class="filter-bar sticky-top ">
+              <div class="form-group my-2">
+              <ng-template #filterTemplate>
               <form class="form-inline">
                 <div class="form-group input-group">
                   <input type="number" step="1" min="0" id="beforeInterval" name="beforeInterval"
@@ -303,6 +303,20 @@
                     (click)="getAssetTelemetryData()" [disabled]="isTelemetryDataLoading"><i
                       class="fas fa-search fa-sm"></i></button></div>
               </form>
+            </ng-template>
+            <ng-container *ngIf="isShowOpenFilter">
+              <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
+            </ng-container>
+            <ng-container *ngIf="!isShowOpenFilter">
+              <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown" placement="bottom" aria-haspopup="true"
+                aria-expanded="false">
+                <i class="fas fa-fw fa-filter fa-sm button-divider"></i>
+                Select Filter</button>
+              <div class="dropdown-menu dropdown-filter-content" style="position: relative !important;">
+                <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
+              </div>
+            </ng-container>
+            </div>
             </div>
             <div class="row col-xl-12 col-lg-12 m-2" *ngIf="!isTelemetryDataLoading && telemetryData.length > 0">
 

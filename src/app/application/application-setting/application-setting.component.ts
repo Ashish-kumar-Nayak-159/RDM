@@ -58,6 +58,15 @@ export class ApplicationSettingComponent implements OnInit, OnDestroy {
     }));
   }
 
+  responsiveTabs() {
+    if (!$('.responsive-tabs').hasClass('open')) {
+      $('.responsive-tabs').addClass('open');
+    }
+    else {
+      $('.responsive-tabs').removeClass('open');
+    }
+  }
+
   getApplicationData() {
     this.isApplicationDataLoading = true;
     this.applicationData = undefined;

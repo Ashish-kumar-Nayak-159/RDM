@@ -23,7 +23,7 @@
 </div>
 
 <div class="table-responsive">
-  <div class="tableFixHead" style="height: calc(100vh - 23rem);">
+  <div class="tableFixHead responsive-height" >
   <div *ngIf="isGetSlaveAPILoading">
     <i class="fa fa-spinner fa-spin fa-fw fa-2x" ></i>
   </div>
@@ -252,7 +252,7 @@
 
     </accordion-group>
   </accordion>
-  <app-c2d-jobs [asset]="asset" [filterObj]="c2dJobFilter" ></app-c2d-jobs>
+  <app-c2d-jobs class="d-none d-xl-block" [asset]="asset" [filterObj]="c2dJobFilter" ></app-c2d-jobs>
 </div>
 
 <div class="modal right fade" id="addSlaveModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >

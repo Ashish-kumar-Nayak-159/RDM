@@ -43,7 +43,7 @@ export class AddOnlyNumberWidgetComponent implements OnInit {
     if (prop?.property) {
       // prop.property = prop.propertyArr;
       prop.title = prop.property.name;
-      prop.load_value_using = 'signalr';
+      // prop.load_value_using = 'signalr';
     } else {
       prop.property = undefined;
       // prop.propertyArr = undefined;

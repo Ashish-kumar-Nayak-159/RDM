@@ -94,6 +94,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   selectedDateRange: string;
   decodedToken: any;
+  isShowOpenFilter = true;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -123,6 +124,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.historicalDateFilter.type = true;
       this.historicalDateFilter.sampling_format = 'minute';
       this.historicalDateFilter.sampling_time = 1;
+    }
+    if ($(window).width() < 992) {
+      this.isShowOpenFilter = false;
     }
 
     // if (this.selectedTab === 'telemetry') {

@@ -13850,8 +13850,8 @@ form .page .btns button.next{
 
 @media (min-width: 1270px) {
   .responsive-tabs .dropdown-arrow {
-      display: none; 
-  } 
+      display: none;
+  }
 }
 
 @media screen and (max-width: 1269px) {
@@ -13859,30 +13859,30 @@ form .page .btns button.next{
     max-width:50%;
   }
   .responsive-tabs {
-      position: relative; 
+      position: relative;
       border: 1px solid #ececec;
       background-color: #fff;
-      z-index: 10;
+      z-index: 2;
       border-top-left-radius: .35rem;
       border-top-right-radius: .35rem;
   }
   .responsive-tabs li {
-      width: 100%; 
-      margin: 0 !important; 
+      width: 100%;
+      margin: 0 !important;
   }
   .responsive-tabs li > a {
-      display: none; 
-      border: 0 !important; 
+      display: none;
+      border: 0 !important;
       border-radius: 0 !important;
       padding-right: 32px;
   }
   .responsive-tabs.open li > a, .responsive-tabs li > a.active {
       display: block;
   }
-  .responsive-tabs .dropdown-arrow { 
+  .responsive-tabs .dropdown-arrow {
       position: absolute;
       top: 12px;
-      right: 15px; 
+      right: 15px;
       border: solid black;
       border-width: 0 3px 3px 0;
       display: inline-block;
@@ -13891,13 +13891,13 @@ form .page .btns button.next{
       transform: rotate(45deg);
       -webkit-transform: rotate(45deg);
       transition: all ease .5s;
-      cursor: pointer; 
+      cursor: pointer;
   }
   .responsive-tabs.open .dropdown-arrow {
       transform: rotate(-135deg);
-      transition: all ease .5s; 
-  } 
-}  
+      transition: all ease .5s;
+  }
+}
 
 @media (min-width: 1200px) {
   .responsive-height {

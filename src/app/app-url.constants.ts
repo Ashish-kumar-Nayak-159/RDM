@@ -122,6 +122,7 @@ export class AppUrls {
   public static DELETE_ASSET_MAINTENANCE_DATA = 'apps/{0}/assets/{1}/maintenance_history/{2}';
   public static UPDATE_ASSET_MAINTENANCE_DATA = 'apps/{0}/assets/{1}/maintenance_history/{2}';
   public static UPDATE_ASSET_METADATA = 'apps/{0}/assets/{1}/metadata';
+  public static CREATE_REPORT_SUBSCRIPTION = 'apps/{0}/report_subscription';
   public static GET_PRE_GENERATED_REPORTS = 'apps/{0}/report_registry';
   public static GET_PACKAGES = 'apps/{0}/asset_models/{1}/packages';
   public static CREATE_PACKAGE = 'apps/{0}/asset_models/{1}/packages';

@@ -12,10 +12,9 @@ declare var $: any;
 @Component({
   selector: 'app-asset-model-device-methods',
   templateUrl: './asset-model-device-methods.component.html',
-  styleUrls: ['./asset-model-device-methods.component.css']
+  styleUrls: ['./asset-model-device-methods.component.css'],
 })
 export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
-
   @Input() assetModel: any;
   assetMethods: any = {};
   isAssetMethodsLoading = false;
@@ -39,7 +38,7 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
     private commonService: CommonService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -63,14 +62,14 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
           key: 'name',
           type: 'text',
           headerClass: '',
-          valueclass: ''
+          valueclass: '',
         },
         {
           name: 'Method Name',
           key: 'method_name',
           type: 'text',
           headerClass: '',
-          valueclass: ''
+          valueclass: '',
         },
         {
           name: 'Actions',
@@ -84,7 +83,7 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
               text: '',
               id: 'View JSON Model',
               valueclass: '',
-              tooltip: 'View JSON Model'
+              tooltip: 'View JSON Model',
             },
             {
               icon: 'fa fa-fw fa-edit',
@@ -95,8 +94,8 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
               privilege_key: 'ASMMM',
               disableConditions: {
                 key: 'freezed',
-                value: true
-              }
+                value: true,
+              },
             },
             {
               icon: 'fa fa-fw fa-trash',
@@ -107,12 +106,12 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
               tooltip: 'Delete',
               disableConditions: {
                 key: 'freezed',
-                value: true
-              }
-            }
-          ]
-        }
-      ]
+                value: true,
+              },
+            },
+          ],
+        },
+      ],
     };
     this.getAssetsModelAssetMethod();
   }
@@ -122,19 +121,19 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     this.isAssetMethodsLoading = true;
     const obj = {
       app: this.contextApp.app,
-      name: this.assetModel.name
+      name: this.assetModel.name,
     };
-    this.subscriptions.push(this.assetModelService.getAssetsModelAssetMethods(obj).subscribe(
-      (response: any) => {
+    this.subscriptions.push(
+      this.assetModelService.getAssetsModelAssetMethods(obj).subscribe((response: any) => {
         this.assetMethods = response.direct_methods;
         this.isAssetMethodsLoading = false;
-      }
-    ));
+      })
+    );
   }
 
   addParameter() {
     let flag = false;
-    this.assetMethodObj.json_model.params.forEach(param => {
+    this.assetMethodObj.json_model.params.forEach((param) => {
       if (!param.key || !param.data_type) {
         flag = true;
       }
@@ -151,7 +150,7 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     this.assetMethodObj.json_model.params.push({
       key: null,
       data_type: null,
-      json: null
+      json: null,
     });
     this.editor.set(this.assetMethodObj.json_model);
   }
@@ -164,17 +163,17 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
 
   openaddAssetMethodModal() {
     this.assetMethodObj = {
-      json_model : {
+      json_model: {
         params: [
           {
             key: null,
             data_type: null,
-            json: null
-          }
-        ]
+            json: null,
+          },
+        ],
       },
     };
-   // this.assetModel.tags.app = this.contextApp.app;
+    // this.assetModel.tags.app = this.contextApp.app;
     $('#addAssetMethodModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -189,8 +188,8 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     });
     const param = this.assetMethodObj.json_model.params[index];
     if (param.data_type && param.json) {
-      const validations = this.dataTypeList.find(type => type.name === param.data_type).validations;
-      validations.forEach(item => {
+      const validations = this.dataTypeList.find((type) => type.name === param.data_type).validations;
+      validations.forEach((item) => {
         if (item === 'enum') {
           obj[item] = [];
         } else if (item === 'trueValue') {
@@ -202,7 +201,7 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
         }
       });
       param.json = {};
-      param.json =  obj;
+      param.json = obj;
       param.json.type = param.data_type.toLowerCase();
     } else {
       param.json = {};
@@ -249,23 +248,10 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     this.editor.set(this.assetMethodObj.json_model);
   }
 
-
   onSaveassetMethodObj() {
     if (!this.assetMethodObj.name || !this.assetMethodObj.method_name) {
       this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Direct Method');
       return;
-    }
-    if (this.assetMethodObj.json_model.params) {
-      let flag = false;
-      this.assetMethodObj.json_model.params.forEach(param => {
-        if (!param.key || !param.data_type) {
-          flag = true;
-        }
-      });
-      if (flag) {
-        this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Direct Method');
-        return;
-      }
     }
     try {
       this.assetMethodObj.json_model = this.editor.get();
@@ -273,13 +259,22 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Invalid JSON data', 'Add Direct Method');
       return;
     }
+    if (this.assetMethodObj.json_model.params) {
+      const arr = [];
+      this.assetMethodObj.json_model.params.forEach((param) => {
+        if (param.key && param.data_type) {
+          arr.push(param);
+        }
+      });
+      this.assetMethodObj.json_model.params = arr;
+    }
     if (this.assetMethodObj.edit) {
-      const index1 = this.assetMethods.findIndex(prop => prop.method_name === this.assetMethodObj.method_name);
+      const index1 = this.assetMethods.findIndex((prop) => prop.method_name === this.assetMethodObj.method_name);
       if (index1 > -1) {
         this.assetMethods.splice(index1, 1);
       }
     }
-    const index = this.assetMethods.findIndex(prop => prop.method_name === this.assetMethodObj.method_name);
+    const index = this.assetMethods.findIndex((prop) => prop.method_name === this.assetMethodObj.method_name);
     if (index > -1) {
       this.toasterService.showError('Direct Method with same method name already exist.', 'Add Direct Method');
       return;
@@ -289,36 +284,42 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     obj.direct_methods = JSON.parse(JSON.stringify(this.assetMethods));
     obj.direct_methods.push(this.assetMethodObj);
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    this.subscriptions.push(this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
-      (response: any) => {
-        this.isCreateAssetMethodLoading = false;
-        this.onCloseAssetsAssetMethodModal();
-        this.toasterService.showSuccess(response.message, 'Add Direct Method');
-        this.getAssetsModelAssetMethod();
-      }, error => {
-        this.isCreateAssetMethodLoading = false;
-        this.toasterService.showError(error.message, 'Add Direct Method');
-      }
-    ));
+    this.subscriptions.push(
+      this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
+        (response: any) => {
+          this.isCreateAssetMethodLoading = false;
+          this.onCloseAssetsAssetMethodModal();
+          this.toasterService.showSuccess(response.message, 'Add Direct Method');
+          this.getAssetsModelAssetMethod();
+        },
+        (error) => {
+          this.isCreateAssetMethodLoading = false;
+          this.toasterService.showError(error.message, 'Add Direct Method');
+        }
+      )
+    );
   }
 
   deleteAssetMethod() {
     const obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.direct_methods = JSON.parse(JSON.stringify(this.assetMethods));
-    const index = obj.direct_methods.findIndex(prop => prop.name === this.selectedAssetMethod.name);
+    const index = obj.direct_methods.findIndex((prop) => prop.name === this.selectedAssetMethod.name);
     obj.direct_methods.splice(index, 1);
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    this.subscriptions.push(this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
-      (response: any) => {
-        this.isCreateAssetMethodLoading = false;
-        this.onCloseModal('confirmMessageModal');
-        this.toasterService.showSuccess(response.message, 'Delete Direct Method');
-        this.getAssetsModelAssetMethod();
-      }, error => {
-        this.isCreateAssetMethodLoading = false;
-        this.toasterService.showError(error.message, 'Delete Direct Method');
-      }
-    ));
+    this.subscriptions.push(
+      this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
+        (response: any) => {
+          this.isCreateAssetMethodLoading = false;
+          this.onCloseModal('confirmMessageModal');
+          this.toasterService.showSuccess(response.message, 'Delete Direct Method');
+          this.getAssetsModelAssetMethod();
+        },
+        (error) => {
+          this.isCreateAssetMethodLoading = false;
+          this.toasterService.showError(error.message, 'Delete Direct Method');
+        }
+      )
+    );
   }
 
   onCloseAssetsAssetMethodModal() {
@@ -344,8 +345,6 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
-
-
 }

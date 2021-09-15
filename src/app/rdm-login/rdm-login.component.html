@@ -152,15 +152,15 @@
  -->
 
 
- <div class="" id="intro"  style="margin-top:3.5rem">
+<div class="" id="intro" style="margin-top:3.5rem">
   <div class="row mr-0">
-      <div class="col-lg-1"></div>
-      <div class="col-lg-5 d-none d-lg-block align-self-center ">
+      <div class="col-lg-1 d-none d-lg-block"></div>
+      <div class="col-lg-5 d-none d-lg-block align-self-center">
           <div class="text-center"> <h5 class="h5 mb-3 text-white" >Azure RDM: Manage, Monitor, Control millions of IoT assets</h5></div>
           <div class="row justify-content-md-center"><img src="../../assets/img/rdm.png" ></div>
        </div>
-      <div class="col-lg-1"></div>
-      <div class="col-lg-4 ">
+      <div class="col-md-2 col-lg-1"></div>
+      <div class="col-md-8 col-lg-4">
         <div class="card o-hidden border-1 my-2" style="-moz-box-shadow: 0 0 3px #9fc0ef; -webkit-box-shadow: 0 0 3px #9fc0ef; box-shadow: 0 0 3px #9fc0ef;">
               <div class="card-body p-0">
               <div class="p-4 bg-primary">
@@ -180,45 +180,33 @@
                     </div>
                     <!-- <p class="wrapper"><input type="password" class="form-control form-control-user" id="exampleInputPassword"
                       placeholder="Password" [(ngModel)]="loginForm.password" name="password"></p> -->
-                  </div>
-                  <div class="form-group">
-                    <div class="custom-control custom-checkbox small">
-                      <input
-                        type="checkbox"
-                        class="custom-control-input"
-                        id="customCheck"
-                      />
-                      <label
-                        class="custom-control-label"
-                        for="customCheck"
-                        >Remember Me</label
-                      >
-                    </div>
-                  </div>
-                  <button type="submit"  style="background-color:#1a5a9e"
-                    class="btn btn-primary btn-user btn-block text-white "
-                    [class.disabled]="isLoginAPILoading"
-                  >
-                    Login
-                    <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></i>
-                  </button>
-                </form>
-                <hr>
-                <div class="text-center">
-                  <a class="pointer" (click)="forgotPassword();"
-                    >Forgot Password?</a
-                  >
-                  <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isForgotAPILoading"></i>
-                </div>
-
               </div>
+              <div class="form-group">
+                <div class="custom-control custom-checkbox small">
+                  <input type="checkbox" class="custom-control-input" id="customCheck" />
+                  <label class="custom-control-label" for="customCheck">Remember Me</label>
+                </div>
+              </div>
+              <button type="submit" style="background-color:#1a5a9e"
+                class="btn btn-primary btn-user btn-block text-white " [class.disabled]="isLoginAPILoading">
+                Login
+                <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></i>
+              </button>
+            </form>
+            <hr>
+            <div class="text-center">
+              <a class="pointer" (click)="forgotPassword();">Forgot Password?</a>
+              <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isForgotAPILoading"></i>
             </div>
+
           </div>
+        </div>
       </div>
-      <div class="col-lg-1"></div>
+      <div class="col-md-2 col-lg-1"></div>
   </div>
 </div>
 
-<app-reset-password [isFirstTimeLogin]="true" [isForgotPassword] = "false" (modalClose)="onResetModalClose()" [loginData]="loginForm" *ngIf="isResetPassword"></app-reset-password>
-<app-reset-password [isFirstTimeLogin]="true" [isForgotPassword] = "true" (modalClose)="onResetModalClose()" [loginData]="loginForm" *ngIf="isForgotPassword"></app-reset-password>
-
+<app-reset-password [isFirstTimeLogin]="true" [isForgotPassword]="false" (modalClose)="onResetModalClose()"
+  [loginData]="loginForm" *ngIf="isResetPassword"></app-reset-password>
+<app-reset-password [isFirstTimeLogin]="true" [isForgotPassword]="true" (modalClose)="onResetModalClose()"
+  [loginData]="loginForm" *ngIf="isForgotPassword"></app-reset-password>

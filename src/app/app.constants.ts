@@ -1,142 +1,333 @@
 import * as moment from 'moment';
 
 export class CONSTANTS {
-
   public static ASSETAPPPS = [
-    {id: 4, name: 'GatewayAgent', is_start: false, is_stop: false, is_restart: false, is_install: false, is_uninstall: false,
-    is_update: true, display_name: 'Gateway Agent', metadata: {}, deleted: false, type: 'system_apps'},
-    {id: 4, name: 'MQTTAgent', is_start: false, is_stop: false, is_restart: false, is_install: false, is_uninstall: false,
-    is_update: true, display_name: 'MQTT Agent', metadata: {}, deleted: false, type: 'system_apps'},
-    {id: 5, name: 'CachingAgent', is_start: false, is_stop: false, is_restart: false, is_install: false, is_uninstall: false,
-    is_update: true, display_name: 'Caching Agent', metadata: {}, deleted: false, type: 'system_apps'},
-    {id: 3, name: 'RuleEngine', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
-    is_update: true, display_name: 'Rule Engine', metadata: {}, deleted: false, type: 'apps'},
-    {id: 2, name: 'ModbusRTUMaster', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
-    is_update: true, display_name: 'Modbus RTU App', metadata: {}, deleted: false, type: 'apps'},
-    {id: 1, name: 'ModbusTCPMaster', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
-    is_update: true, display_name: 'Modbus TCP App', metadata: {}, deleted: false, type: 'apps'},
-    {id: 3, name: 'SiemensTCPIP', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
-    is_update: true, display_name: 'Siemens TCP/IP App', metadata: {}, deleted: false, type: 'apps'},
-    {id: 3, name: 'N_BlueNRG', is_start: true, is_stop: true, is_restart: true, is_install: true, is_uninstall: true,
-    is_update: true, display_name: 'N_BlueNRG', metadata: {}, deleted: false, type: 'apps'}
+    {
+      id: 4,
+      name: 'GatewayAgent',
+      is_start: false,
+      is_stop: false,
+      is_restart: false,
+      is_install: false,
+      is_uninstall: false,
+      is_update: true,
+      display_name: 'Gateway Agent',
+      metadata: {},
+      deleted: false,
+      type: 'system_apps',
+    },
+    {
+      id: 4,
+      name: 'MQTTAgent',
+      is_start: false,
+      is_stop: false,
+      is_restart: false,
+      is_install: false,
+      is_uninstall: false,
+      is_update: true,
+      display_name: 'MQTT Agent',
+      metadata: {},
+      deleted: false,
+      type: 'system_apps',
+    },
+    {
+      id: 5,
+      name: 'CachingAgent',
+      is_start: false,
+      is_stop: false,
+      is_restart: false,
+      is_install: false,
+      is_uninstall: false,
+      is_update: true,
+      display_name: 'Caching Agent',
+      metadata: {},
+      deleted: false,
+      type: 'system_apps',
+    },
+    {
+      id: 3,
+      name: 'RuleEngine',
+      is_start: true,
+      is_stop: true,
+      is_restart: true,
+      is_install: true,
+      is_uninstall: true,
+      is_update: true,
+      display_name: 'Rule Engine',
+      metadata: {},
+      deleted: false,
+      type: 'apps',
+    },
+    {
+      id: 2,
+      name: 'ModbusRTUMaster',
+      is_start: true,
+      is_stop: true,
+      is_restart: true,
+      is_install: true,
+      is_uninstall: true,
+      is_update: true,
+      display_name: 'Modbus RTU App',
+      metadata: {},
+      deleted: false,
+      type: 'apps',
+    },
+    {
+      id: 1,
+      name: 'ModbusTCPMaster',
+      is_start: true,
+      is_stop: true,
+      is_restart: true,
+      is_install: true,
+      is_uninstall: true,
+      is_update: true,
+      display_name: 'Modbus TCP App',
+      metadata: {},
+      deleted: false,
+      type: 'apps',
+    },
+    {
+      id: 3,
+      name: 'SiemensTCPIP',
+      is_start: true,
+      is_stop: true,
+      is_restart: true,
+      is_install: true,
+      is_uninstall: true,
+      is_update: true,
+      display_name: 'Siemens TCP/IP App',
+      metadata: {},
+      deleted: false,
+      type: 'apps',
+    },
+    {
+      id: 3,
+      name: 'N_BlueNRG',
+      is_start: true,
+      is_stop: true,
+      is_restart: true,
+      is_install: true,
+      is_uninstall: true,
+      is_update: true,
+      display_name: 'N_BlueNRG',
+      metadata: {},
+      deleted: false,
+      type: 'apps',
+    },
+    {
+      id: 8,
+      name: 'N_AIOTInputs',
+      is_start: true,
+      is_stop: true,
+      is_restart: true,
+      is_install: true,
+      is_uninstall: true,
+      is_update: true,
+      display_name: 'N_AIOTInputs',
+      metadata: {},
+      deleted: false,
+      type: 'apps',
+    },
   ];
 
   public static PROTOCOLS = [
-    {id: 1, asset_model: 'IoT Asset', name: 'IP Asset (WiFi)', display_name: 'IP Asset (WiFi)', cloud_connectivity: ['IP Asset -> Azure IOT Hub SDK -> WiFi -> Cloud', 'IP Asset -> MQTT Client -> WiFi -> Cloud'], metadata: {}, deleted: false},
-    {id: 2, asset_model: 'IoT Asset', name: 'IP Asset (SIM)', display_name: 'IP Asset (SIM)', cloud_connectivity: ['IP Asset -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Asset -> MQTT Client -> SIM -> Cloud'], metadata: {}, deleted: false},
-    {id: 3, asset_model: 'IoT Gateway', name: 'IP Gateway (WiFi)', display_name: 'IP Gateway (WiFi)', cloud_connectivity: ['IP Gateway -> Azure IOT Hub SDK -> WiFi -> Cloud', 'IP Gateway -> MQTT Client -> WiFi -> Cloud'], metadata: {}, deleted: false},
-    {id: 4, asset_model: 'IoT Gateway', name: 'IP Gateway (SIM)', display_name: 'IP Gateway (SIM)', cloud_connectivity: ['IP Gateway -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Gateway -> MQTT Client -> SIM -> Cloud'], metadata: {}, deleted: false},
-    {id: 5, asset_model: 'Legacy Asset', name: 'ModbusTCPMaster', display_name: 'Modbus TCP', cloud_connectivity: ['ModBus TCP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusTCPMaster'}, deleted: false},
-    {id: 6, asset_model: 'Legacy Asset', name: 'ModbusRTUMaster', display_name: 'Modbus RTU', cloud_connectivity: ['ModBus RTU Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'ModbusRTUMaster'}, deleted: false},
-    {id: 7, asset_model: 'Legacy Asset', name: 'SiemensTCPIP', display_name: 'Siemens TCP/IP', cloud_connectivity: ['Siemens TCP/IP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'SiemensTCPIP'}, deleted: false},
-    {id: 8, asset_model: 'Legacy Asset', name: 'BlueNRG', display_name: 'BlueNRG', cloud_connectivity: ['BLE Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'], metadata: {app: 'N_BlueNRG'}, deleted: false}
+    {
+      id: 1,
+      asset_model: 'IoT Asset',
+      name: 'IP Asset (WiFi)',
+      display_name: 'IP Asset (WiFi)',
+      cloud_connectivity: [
+        'IP Asset -> Azure IOT Hub SDK -> WiFi -> Cloud',
+        'IP Asset -> MQTT Client -> WiFi -> Cloud',
+      ],
+      metadata: {},
+      deleted: false,
+    },
+    {
+      id: 2,
+      asset_model: 'IoT Asset',
+      name: 'IP Asset (SIM)',
+      display_name: 'IP Asset (SIM)',
+      cloud_connectivity: ['IP Asset -> Azure IOT Hub SDK -> SIM -> Cloud', 'IP Asset -> MQTT Client -> SIM -> Cloud'],
+      metadata: {},
+      deleted: false,
+    },
+    {
+      id: 3,
+      asset_model: 'IoT Gateway',
+      name: 'IP Gateway (WiFi)',
+      display_name: 'IP Gateway (WiFi)',
+      cloud_connectivity: [
+        'IP Gateway -> Azure IOT Hub SDK -> WiFi -> Cloud',
+        'IP Gateway -> MQTT Client -> WiFi -> Cloud',
+      ],
+      metadata: {},
+      deleted: false,
+    },
+    {
+      id: 4,
+      asset_model: 'IoT Gateway',
+      name: 'IP Gateway (SIM)',
+      display_name: 'IP Gateway (SIM)',
+      cloud_connectivity: [
+        'IP Gateway -> Azure IOT Hub SDK -> SIM -> Cloud',
+        'IP Gateway -> MQTT Client -> SIM -> Cloud',
+      ],
+      metadata: {},
+      deleted: false,
+    },
+    {
+      id: 5,
+      asset_model: 'Legacy Asset',
+      name: 'ModbusTCPMaster',
+      display_name: 'Modbus TCP',
+      cloud_connectivity: ['ModBus TCP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'],
+      metadata: { app: 'ModbusTCPMaster' },
+      deleted: false,
+    },
+    {
+      id: 6,
+      asset_model: 'Legacy Asset',
+      name: 'ModbusRTUMaster',
+      display_name: 'Modbus RTU',
+      cloud_connectivity: ['ModBus RTU Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'],
+      metadata: { app: 'ModbusRTUMaster' },
+      deleted: false,
+    },
+    {
+      id: 7,
+      asset_model: 'Legacy Asset',
+      name: 'SiemensTCPIP',
+      display_name: 'Siemens TCP/IP',
+      cloud_connectivity: ['Siemens TCP/IP Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'],
+      metadata: { app: 'SiemensTCPIP' },
+      deleted: false,
+    },
+    {
+      id: 8,
+      asset_model: 'Legacy Asset',
+      name: 'BlueNRG',
+      display_name: 'BlueNRG',
+      cloud_connectivity: ['BLE Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'],
+      metadata: { app: 'N_BlueNRG' },
+      deleted: false,
+    },
+    {
+      id: 9,
+      asset_model: 'Legacy Asset',
+      name: 'AIOTInputs',
+      display_name: 'AIOTInputs',
+      cloud_connectivity: ['AIOT Asset -> IoT Gateway -> Azure IoT Hub SDK -> Cloud'],
+      metadata: { app: 'N_AIOTInputs' },
+      deleted: false,
+    },
   ];
 
   public static DEFAULT_PRIVILEGES = {
     APMM: {
       display_name: 'App Management - Manage',
-      enabled: true
+      enabled: true,
     },
     APMV: {
       display_name: 'App Management - View',
-      enabled: true
+      enabled: true,
     },
     ASCMM: {
       display_name: 'Asset Campaign Management - Manage',
-      enabled: true
+      enabled: true,
     },
     ASCMV: {
       display_name: 'Asset Campaign Management - View',
-      enabled: true
+      enabled: true,
     },
     ASMD: {
       display_name: 'Asset Management - Deprovision',
-      enabled: true
+      enabled: true,
     },
     ASMM: {
       display_name: 'Asset Management - Manage',
-      enabled: true
+      enabled: true,
     },
     ASMMM: {
       display_name: 'Asset Model Management - Manage',
-      enabled: true
+      enabled: true,
     },
     ASMMV: {
       display_name: 'Asset Model Management - View',
-      enabled: true
+      enabled: true,
     },
     ASMP: {
       display_name: 'Asset Management - Provision',
-      enabled: true
+      enabled: true,
     },
     ASMS: {
       display_name: 'Asset Management - Setup',
-      enabled: true
+      enabled: true,
     },
     ASMV: {
       display_name: 'Asset Management - View',
-      enabled: true
+      enabled: true,
     },
     ASMVC: {
       display_name: 'Asset Management - View Creds',
-      enabled: true
+      enabled: true,
     },
     RCC: {
       display_name: 'Remote Control - Control',
-      enabled: true
+      enabled: true,
     },
     RCP: {
       display_name: 'Remote Control - Purge',
-      enabled: true
+      enabled: true,
     },
     RCV: {
       display_name: 'Remote Control - View',
-      enabled: true
+      enabled: true,
     },
     RKPIM: {
       display_name: 'Rules & KPIs - Manage',
-      enabled: true
+      enabled: true,
     },
     RKPIV: {
       display_name: 'Rules & KPIs - View',
-      enabled: true
+      enabled: true,
     },
     RMM: {
       display_name: 'Remote Monitoring - Manage',
-      enabled: true
+      enabled: true,
     },
     RMV: {
       display_name: 'Remote Monitoring - View',
-      enabled: true
+      enabled: true,
     },
     RSM: {
       display_name: 'Reports - Subscription Management',
-      enabled: true
+      enabled: true,
     },
     RV: {
       display_name: 'Reports - View',
-      enabled: true
+      enabled: true,
     },
     UMM: {
       display_name: 'User Management - Manage',
-      enabled: true
+      enabled: true,
     },
     UMV: {
       display_name: 'User Management - View',
-      enabled: true
-    }
+      enabled: true,
+    },
   };
 
   public static PRIVILEGE_GROUPS = {
     'App Management': ['APMV', 'APMM'],
     'Asset Management': ['ASMV', 'ASMVC', 'ASMP', 'ASMD', 'ASMM', 'ASMS'],
-    'Asset Campaign Management': [ 'ASCMV', 'ASCMM'],
-    'Asset Model Management': [ 'ASMMV', 'ASMMM'],
-    'Remote Control': [ 'RCV', 'RCC', 'RCP'],
+    'Asset Campaign Management': ['ASCMV', 'ASCMM'],
+    'Asset Model Management': ['ASMMV', 'ASMMM'],
+    'Remote Control': ['RCV', 'RCC', 'RCP'],
     'Rules & KPIs': ['RKPIV', 'RKPIM'],
     'Remote Monitoring': ['RMV', 'RMM'],
-    'Reports': ['RV', 'RSM'],
-    'User Management': ['UMV', 'UMM']
+    Reports: ['RV', 'RSM'],
+    'User Management': ['UMV', 'UMM'],
   };
 
   public static SIDE_MENU_LIST = [
@@ -152,10 +343,10 @@ export class CONSTANTS {
       showAccordion: [
         {
           name: 'Title',
-          value: 'Home'
-        }
+          value: 'Home',
+        },
       ],
-      priority: 1
+      priority: 1,
     },
     {
       page: 'Live Data',
@@ -169,10 +360,10 @@ export class CONSTANTS {
       showAccordion: [
         {
           name: 'Title',
-          value: 'Live Data'
-        }
+          value: 'Live Data',
+        },
       ],
-      priority: 1
+      priority: 1,
     },
     {
       page: 'Live Alerts',
@@ -186,10 +377,10 @@ export class CONSTANTS {
       showAccordion: [
         {
           name: 'Title',
-          value: 'Live Alerts'
-        }
+          value: 'Live Alerts',
+        },
       ],
-      priority: 1
+      priority: 1,
     },
     {
       page: 'Assets',
@@ -202,19 +393,19 @@ export class CONSTANTS {
       privileges_required: ['ASMV', 'ASMMV'],
       visible: true,
       showAccordion: [
-        { name: 'Title', value: 'Assets'},
-        { name: 'Records Limit', value: 20, type: 'number'},
-        { name: 'IOT Assets', type: 'checkbox', value: true},
-        { name: 'Legacy Assets', type: 'checkbox', value: true},
-        { name: 'IOT Gateways', type: 'checkbox', value: true},
-        { name: 'IOT Assets Tab Name', value: 'IOT Assets'},
-        { name: 'IOT Assets Table Key Name', value: 'IOT Asset'},
-        { name: 'IOT Gateways Tab Name', value: 'IOT Gateways'},
-        { name: 'IOT Gateways Table Key Name', value: 'IOT Gateway'},
-        { name: 'Legacy Assets Tab Name', value: 'Legacy Assets'},
-        { name: 'Legacy Assets Table Key Name', value: 'Legacy Asset'},
+        { name: 'Title', value: 'Assets' },
+        { name: 'Records Limit', value: 20, type: 'number' },
+        { name: 'IOT Assets', type: 'checkbox', value: true },
+        { name: 'Legacy Assets', type: 'checkbox', value: true },
+        { name: 'IOT Gateways', type: 'checkbox', value: true },
+        { name: 'IOT Assets Tab Name', value: 'IOT Assets' },
+        { name: 'IOT Assets Table Key Name', value: 'Asset' },
+        { name: 'IOT Gateways Tab Name', value: 'IOT Gateways' },
+        { name: 'IOT Gateways Table Key Name', value: 'Gateway' },
+        { name: 'Legacy Assets Tab Name', value: 'Legacy Assets' },
+        { name: 'Legacy Assets Table Key Name', value: 'Asset' },
       ],
-      priority: 1
+      priority: 1,
     },
     {
       page: 'Asset Management',
@@ -225,11 +416,9 @@ export class CONSTANTS {
       exactMatch: true,
       icon: 'fa fa-fw fa-cogs',
       visible: true,
-      showAccordion: [
-        { name: 'Title', value: 'Asset Management'}
-      ],
+      showAccordion: [{ name: 'Title', value: 'Asset Management' }],
       privileges_required: ['ASMV'],
-      priority: 1
+      priority: 1,
     },
     {
       page: 'Asset Models',
@@ -240,11 +429,11 @@ export class CONSTANTS {
       icon: 'icon icon-cubes',
       visible: true,
       showAccordion: [
-        { name: 'Title', value: 'Models'},
-        { name: 'Table Key Name', value: 'Model'}
+        { name: 'Title', value: 'Models' },
+        { name: 'Table Key Name', value: 'Model' },
       ],
       privileges_required: ['ASMMV'],
-      priority: 1
+      priority: 1,
     },
     // {
     //   page: 'Asset Groups',
@@ -294,11 +483,11 @@ export class CONSTANTS {
       visible: true,
       exactMatch: true,
       showAccordion: [
-        { name: 'Title', value: 'Reports'},
-        { name: 'Records Limit', value: 100, type: 'number'}
+        { name: 'Title', value: 'Reports' },
+        { name: 'Records Limit', value: 100, type: 'number' },
       ],
       privileges_required: ['RV', 'RMV'],
-      priority: 1
+      priority: 1,
     },
 
     {
@@ -310,23 +499,19 @@ export class CONSTANTS {
       visible: true,
       exactMatch: true,
       privileges_required: ['ASCMV'],
-      showAccordion: [
-        { name: 'Title', value: 'Campaigns'}
-      ],
-      priority: 1
+      showAccordion: [{ name: 'Title', value: 'Campaigns' }],
+      priority: 1,
     },
-     {
+    {
       page: 'Non-provisioned Assets',
       system_name: 'Non-provisioned Assets',
       url: 'applications/:appName/asset/non-provisioned',
       display_name: 'Non-provisioned Assets',
       icon: 'fab fa-fw fa-mixcloud',
       visible: true,
-      showAccordion: [
-        { name: 'Title', value: 'Non-provisioned Assets'}
-      ],
-      priority: 2
-    }
+      showAccordion: [{ name: 'Title', value: 'Non-provisioned Assets' }],
+      priority: 2,
+    },
     // {
     //   page: 'Gateways',
     //   system_name: 'IoT Gateways',
@@ -351,7 +536,7 @@ export class CONSTANTS {
       display_name: 'Manage',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     {
       page: 'overview',
@@ -362,9 +547,8 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       privileges_required: [],
-      showAccordion: [
-      ],
-      accordion_value: {}
+      showAccordion: [],
+      accordion_value: {},
     },
     {
       page: 'access_control',
@@ -376,7 +560,7 @@ export class CONSTANTS {
       isTitle: false,
       showAccordion: [],
       privileges_required: ['ASMV'],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'tags',
@@ -387,10 +571,8 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       privileges_required: ['ASMV'],
-      showAccordion: [
-        { name: 'Delete all', key: 'delete'}
-      ],
-      accordion_value: { delete: true}
+      showAccordion: [{ name: 'Delete all', key: 'delete' }],
+      accordion_value: { delete: true },
     },
     {
       page: 'slave_info',
@@ -400,7 +582,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-user-secret',
       visible: true,
       privileges_required: ['ASMS'],
-      isTitle: false
+      isTitle: false,
     },
     {
       page: 'package_management',
@@ -410,7 +592,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-file',
       privileges_required: ['ASMMV'],
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     {
       page: 'setup',
@@ -422,7 +604,7 @@ export class CONSTANTS {
       isTitle: false,
       privileges_required: ['RCC'],
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'd2c',
@@ -431,7 +613,7 @@ export class CONSTANTS {
       display_name: 'Monitor (D2C)',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     // {
     //   page: 'heartbeat',
@@ -454,7 +636,7 @@ export class CONSTANTS {
       isTitle: false,
       privileges_required: ['RMV'],
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'notifications',
@@ -466,7 +648,7 @@ export class CONSTANTS {
       isTitle: false,
       privileges_required: ['RMV'],
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'alerts',
@@ -478,20 +660,20 @@ export class CONSTANTS {
       isTitle: false,
       privileges_required: ['RMV'],
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
-    {
-      page: 'alertendevents',
-      system_name: 'Alert End Events',
-      url: '#asset_alert_end_events',
-      display_name: 'Alert End Events',
-      icon: 'fa fa-fw fa-hourglass-end',
-      visible: true,
-      isTitle: false,
-      privileges_required: ['RMV'],
-      showAccordion: [],
-      accordion_value: {}
-    },
+    // {
+    //   page: 'alertendevents',
+    //   system_name: 'Alert End Events',
+    //   url: '#asset_alert_end_events',
+    //   display_name: 'Alert End Events',
+    //   icon: 'fa fa-fw fa-hourglass-end',
+    //   visible: true,
+    //   isTitle: false,
+    //   privileges_required: ['RMV'],
+    //   showAccordion: [],
+    //   accordion_value: {},
+    // },
     {
       page: 'telemetry',
       system_name: 'Telemetry',
@@ -502,7 +684,7 @@ export class CONSTANTS {
       isTitle: false,
       privileges_required: ['RMV'],
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     // {
     //   page: 'error',
@@ -536,7 +718,7 @@ export class CONSTANTS {
       privileges_required: ['RMV'],
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'alert_conditioning',
@@ -546,7 +728,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-exclamation-triangle',
       privileges_required: ['ASMV'],
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     // {
     //   page: 'other',
@@ -566,7 +748,7 @@ export class CONSTANTS {
       display_name: 'Control (C2D)',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     {
       page: 'control_widgets',
@@ -578,11 +760,11 @@ export class CONSTANTS {
       isTitle: false,
       privileges_required: ['RCV'],
       showAccordion: [
-        { name: 'Configuration', key: 'configuration'},
-        { name: 'Control', key: 'control'},
-        { name: 'Purge', key: 'purge'}
+        { name: 'Configuration', key: 'configuration' },
+        { name: 'Control', key: 'control' },
+        { name: 'Purge', key: 'purge' },
       ],
-      accordion_value: {configuration: true, control: true, purge: true}
+      accordion_value: { configuration: true, control: true, purge: true },
     },
     {
       page: 'compute',
@@ -591,10 +773,10 @@ export class CONSTANTS {
       display_name: 'Compute',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     {
-      page: 'stream_processing',
+      page: 'cloud_derived_properties',
       system_name: 'Cloud Derived Properties',
       url: '#asset_stream_processing',
       display_name: 'Cloud Derived Properties',
@@ -602,7 +784,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'derived_kpis',
@@ -614,7 +796,7 @@ export class CONSTANTS {
       isTitle: false,
       privileges_required: ['RKPIV'],
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'rules',
@@ -626,7 +808,7 @@ export class CONSTANTS {
       isTitle: false,
       privileges_required: ['RKPIV'],
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'visualize',
@@ -635,7 +817,7 @@ export class CONSTANTS {
       display_name: 'Visualize',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     {
       page: 'trend-analysis',
@@ -647,7 +829,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'alert-visualization',
@@ -659,7 +841,7 @@ export class CONSTANTS {
       isTitle: false,
       privileges_required: ['RMV', 'ASMMV'],
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'maintain',
@@ -668,7 +850,7 @@ export class CONSTANTS {
       display_name: 'Maintain',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     {
       page: 'mttr',
@@ -680,7 +862,7 @@ export class CONSTANTS {
       isTitle: false,
       privileges_required: ['RMV'],
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'mtbf',
@@ -692,7 +874,7 @@ export class CONSTANTS {
       isTitle: false,
       privileges_required: ['RMV'],
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'maintenance_schedule',
@@ -703,7 +885,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'predictions',
@@ -714,8 +896,8 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
-    }
+      accordion_value: {},
+    },
   ];
 
   public static LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST = [
@@ -726,7 +908,7 @@ export class CONSTANTS {
       display_name: 'Manage',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     {
       page: 'overview',
@@ -737,9 +919,8 @@ export class CONSTANTS {
       privileges_required: [],
       visible: true,
       isTitle: false,
-      showAccordion: [
-      ],
-      accordion_value: {}
+      showAccordion: [],
+      accordion_value: {},
     },
     {
       page: 'access_control',
@@ -751,7 +932,7 @@ export class CONSTANTS {
       isTitle: false,
       privileges_required: ['ASMV'],
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'tags',
@@ -762,10 +943,8 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       privileges_required: ['ASMV'],
-      showAccordion: [
-        { name: 'Delete all', key: 'delete'}
-      ],
-      accordion_value: {delete: true}
+      showAccordion: [{ name: 'Delete all', key: 'delete' }],
+      accordion_value: { delete: true },
     },
     {
       page: 'slave_info',
@@ -775,7 +954,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-user-secret',
       privileges_required: ['ASMS'],
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     // {
     //   page: 'package_management',
@@ -796,7 +975,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'd2c',
@@ -805,7 +984,7 @@ export class CONSTANTS {
       display_name: 'Monitor (D2C)',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     // {
     //   page: 'heartbeat',
@@ -828,7 +1007,7 @@ export class CONSTANTS {
       privileges_required: ['RMV'],
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'alerts',
@@ -840,20 +1019,20 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
-    {
-      page: 'alertendevents',
-      system_name: 'Alert End Events',
-      url: '#asset_alert_end_events',
-      display_name: 'Alert End Events',
-      icon: 'fa fa-fw fa-hourglass-end',
-      privileges_required: ['RMV'],
-      visible: true,
-      isTitle: false,
-      showAccordion: [],
-      accordion_value: {}
-    },
+    // {
+    //   page: 'alertendevents',
+    //   system_name: 'Alert End Events',
+    //   url: '#asset_alert_end_events',
+    //   display_name: 'Alert End Events',
+    //   icon: 'fa fa-fw fa-hourglass-end',
+    //   privileges_required: ['RMV'],
+    //   visible: true,
+    //   isTitle: false,
+    //   showAccordion: [],
+    //   accordion_value: {},
+    // },
     {
       page: 'telemetry',
       system_name: 'Telemetry',
@@ -864,7 +1043,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     // {
     //   page: 'error',
@@ -898,7 +1077,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'alert_conditioning',
@@ -908,7 +1087,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-exclamation-triangle',
       privileges_required: ['ASMV'],
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     // {
     //   page: 'other',
@@ -928,7 +1107,7 @@ export class CONSTANTS {
       display_name: 'Control (C2D)',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     {
       page: 'control_widgets',
@@ -940,11 +1119,11 @@ export class CONSTANTS {
       isTitle: false,
       privileges_required: ['RCV'],
       showAccordion: [
-        { name: 'Configuration', key: 'configuration'},
-        { name: 'Control', key: 'control'},
-        { name: 'Purge', key: 'purge'}
+        { name: 'Configuration', key: 'configuration' },
+        { name: 'Control', key: 'control' },
+        { name: 'Purge', key: 'purge' },
       ],
-      accordion_value: {configuration: true, purge: true, control: true}
+      accordion_value: { configuration: true, purge: true, control: true },
     },
     {
       page: 'compute',
@@ -953,10 +1132,10 @@ export class CONSTANTS {
       display_name: 'Compute',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     {
-      page: 'stream_processing',
+      page: 'cloud_derived_properties',
       system_name: 'Cloud Derived Properties',
       url: '#asset_stream_processing',
       display_name: 'Cloud Derived Properties',
@@ -964,7 +1143,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'derived_kpis',
@@ -976,7 +1155,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'rules',
@@ -988,7 +1167,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'visualization',
@@ -997,7 +1176,7 @@ export class CONSTANTS {
       display_name: 'Visualize',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     {
       page: 'trend-analysis',
@@ -1009,7 +1188,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'alert-visualization',
@@ -1021,7 +1200,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'maintain',
@@ -1030,7 +1209,7 @@ export class CONSTANTS {
       display_name: 'Maintain',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     {
       page: 'mttr',
@@ -1042,7 +1221,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'mtbf',
@@ -1054,7 +1233,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'maintenance_schedule',
@@ -1065,7 +1244,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'predictions',
@@ -1076,8 +1255,8 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
-    }
+      accordion_value: {},
+    },
   ];
 
   public static GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST = [
@@ -1088,7 +1267,7 @@ export class CONSTANTS {
       display_name: 'Manage',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     {
       page: 'overview',
@@ -1099,9 +1278,8 @@ export class CONSTANTS {
       visible: true,
       privileges_required: [],
       isTitle: false,
-      showAccordion: [
-      ],
-      accordion_value: {}
+      showAccordion: [],
+      accordion_value: {},
     },
     {
       page: 'tags',
@@ -1112,10 +1290,8 @@ export class CONSTANTS {
       privileges_required: ['ASMV'],
       visible: true,
       isTitle: false,
-      showAccordion: [
-        { name: 'Delete all', key: 'delete'}
-      ],
-      accordion_value: { delete: true}
+      showAccordion: [{ name: 'Delete all', key: 'delete' }],
+      accordion_value: { delete: true },
     },
     {
       page: 'package_management',
@@ -1125,7 +1301,7 @@ export class CONSTANTS {
       icon: 'fa fa-fw fa-file',
       privileges_required: ['ASMMV'],
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     {
       page: 'setup',
@@ -1137,7 +1313,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'd2c',
@@ -1146,7 +1322,7 @@ export class CONSTANTS {
       display_name: 'Monitor (D2C)',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     {
       page: 'current_config',
@@ -1158,7 +1334,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'config_history',
@@ -1170,7 +1346,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'notifications',
@@ -1182,7 +1358,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'asset_life_cycle',
@@ -1194,7 +1370,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'cached_alerts',
@@ -1206,7 +1382,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'cached_telemetry',
@@ -1218,7 +1394,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     {
       page: 'count',
@@ -1230,7 +1406,7 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [],
-      accordion_value: {}
+      accordion_value: {},
     },
     // {
     //   page: 'error',
@@ -1250,7 +1426,7 @@ export class CONSTANTS {
       display_name: 'Control(C2D)',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     {
       page: 'control_widgets',
@@ -1262,12 +1438,12 @@ export class CONSTANTS {
       visible: true,
       isTitle: false,
       showAccordion: [
-        { name: 'Configuration', key: 'configuration'},
-        { name: 'Control', key: 'control'},
-        { name: 'Purge', key: 'purge'}
+        { name: 'Configuration', key: 'configuration' },
+        { name: 'Control', key: 'control' },
+        { name: 'Purge', key: 'purge' },
       ],
-      accordion_value: {configuration: true, purge: true, control: true}
-    }
+      accordion_value: { configuration: true, purge: true, control: true },
+    },
   ];
 
   public static MODEL_CONTROL_PANEL_SIDE_MENU_LIST = [
@@ -1278,7 +1454,7 @@ export class CONSTANTS {
       display_name: 'Manage',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     {
       page: 'overview',
@@ -1287,7 +1463,7 @@ export class CONSTANTS {
       display_name: 'Overview',
       icon: 'fa fa-fw fa-life-ring',
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     {
       page: 'tags',
@@ -1296,7 +1472,7 @@ export class CONSTANTS {
       display_name: 'Tags',
       icon: 'fa fa-fw fa-tags',
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     {
       page: 'package_management',
@@ -1305,7 +1481,7 @@ export class CONSTANTS {
       display_name: 'Software Packages',
       icon: 'fa fa-fw fa-file',
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     {
       page: 'settings',
@@ -1314,7 +1490,7 @@ export class CONSTANTS {
       display_name: 'Setup',
       icon: 'fa fa-fw fa-cog',
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     {
       page: 'd2c',
@@ -1323,7 +1499,7 @@ export class CONSTANTS {
       display_name: 'Monitor',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     {
       page: 'slave_info',
@@ -1332,7 +1508,7 @@ export class CONSTANTS {
       display_name: 'Sensor / Source / Slave Info',
       icon: 'fa fa-fw fa-user-secret',
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     {
       page: 'measured_properties',
@@ -1341,7 +1517,7 @@ export class CONSTANTS {
       display_name: 'Measured Properties',
       icon: 'fa fa-fw fa-history',
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     {
       page: 'edge_derived_properties',
@@ -1350,7 +1526,7 @@ export class CONSTANTS {
       display_name: 'Edge Derived Properties',
       icon: 'fa fa-fw fa-retweet',
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     {
       page: 'controllable_properties',
@@ -1359,7 +1535,7 @@ export class CONSTANTS {
       display_name: 'Controllable Properties',
       icon: 'fa fa-fw fa-edit',
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     {
       page: 'configurable_properties',
@@ -1368,7 +1544,7 @@ export class CONSTANTS {
       display_name: 'Configurable Properties',
       icon: 'fa fa-fw fa-book',
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
 
     {
@@ -1378,7 +1554,7 @@ export class CONSTANTS {
       display_name: 'Alert Conditioning',
       icon: 'fa fa-fw fa-exclamation-triangle',
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     {
       page: 'c2d',
@@ -1387,7 +1563,7 @@ export class CONSTANTS {
       display_name: 'Control',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     {
       page: 'direct_methods',
@@ -1396,7 +1572,7 @@ export class CONSTANTS {
       display_name: 'Direct Methods',
       icon: 'fa fa-fw fa-archive',
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     {
       page: 'configuration_widgets',
@@ -1405,7 +1581,7 @@ export class CONSTANTS {
       display_name: 'Configuration Widgets',
       icon: 'fa fa-fw fa-cog',
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     {
       page: 'control_widgets',
@@ -1414,7 +1590,7 @@ export class CONSTANTS {
       display_name: 'Control Widgets',
       icon: 'fa fa-fw fa-angle-right',
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     {
       page: 'compute',
@@ -1423,16 +1599,16 @@ export class CONSTANTS {
       display_name: 'Compute',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     {
-      page: 'stream_processing',
+      page: 'cloud_derived_properties',
       system_name: 'Cloud Derived Properties',
       url: '#asset_model_stream_processing',
       display_name: 'Cloud Derived Properties',
       icon: 'fa fa-fw fa-microchip',
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     {
       page: 'derived_kpis',
@@ -1441,7 +1617,7 @@ export class CONSTANTS {
       display_name: 'Derived KPIs',
       icon: 'fa fa-fw fa-retweet',
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     {
       page: 'rules',
@@ -1450,7 +1626,7 @@ export class CONSTANTS {
       display_name: 'Rules',
       icon: 'fa fa-fw fa-archive',
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     // {
     //   page: 'addrules',
@@ -1468,7 +1644,7 @@ export class CONSTANTS {
       display_name: 'Visualize',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     {
       page: 'layout',
@@ -1477,7 +1653,7 @@ export class CONSTANTS {
       display_name: 'Visualization Widgets',
       icon: 'fa fa-fw fa-bar-chart',
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     {
       page: 'reference_material',
@@ -1486,7 +1662,7 @@ export class CONSTANTS {
       display_name: 'Reference Material',
       icon: null,
       visible: true,
-      isTitle: true
+      isTitle: true,
     },
     {
       page: 'reference_material',
@@ -1495,7 +1671,7 @@ export class CONSTANTS {
       display_name: 'Documents',
       icon: 'fa fa-fw fa-file',
       visible: true,
-      isTitle: false
+      isTitle: false,
     },
     {
       page: 'alert_acknowledgement_reasons',
@@ -1504,27 +1680,27 @@ export class CONSTANTS {
       display_name: 'Alert Acknowledgement Reasons',
       icon: 'fa fa-fw fa-exclamation-triangle',
       visible: true,
-      isTitle: false
-    }
+      isTitle: false,
+    },
   ];
 
   public static PROPERTY_DATA_TYPE_LIST = [
     {
       name: 'Number',
-      validations: ['minValue', 'maxValue', 'precision', 'units', 'defaultValue']
+      validations: ['minValue', 'maxValue', 'precision', 'units', 'defaultValue'],
     },
     {
       name: 'Boolean',
-      validations: ['trueValue', 'falseValue', 'defaultValue']
+      validations: ['trueValue', 'falseValue', 'defaultValue'],
     },
     {
       name: 'String',
-      validations: ['minLength', 'maxLength', 'units', 'defaultValue']
+      validations: ['minLength', 'maxLength', 'units', 'defaultValue'],
     },
     {
       name: 'Enum',
-      validations: ['enum', 'defaultValue']
-    }
+      validations: ['enum', 'defaultValue'],
+    },
   ];
 
   public static DATE_OPTIONS = {
@@ -1558,13 +1734,15 @@ export class CONSTANTS {
   public static NON_IP_ASSET = 'Legacy Asset';
   public static NOT_ALLOWED_SPECIAL_CHARS_NAME = [' ', '.', '$', '#'];
   public static PASSWORD_REGEX = '^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,20}$';
-  public static EMAIL_REGEX = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
+  public static EMAIL_REGEX =
+    /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
   public static ONLY_NOS_AND_CHARS = /^[a-zA-Z]+[a-zA-Z0-9\s]+$/;
   public static APP_ADMIN_ROLE = 'App Admin';
   public static APP_VERSION = 'version';
   public static MAIN_MENU_FILTERS = 'main_menu_filter';
   public static CONTROL_PANEL_FILTERS = 'control_panel_filter';
   public static APP_TOKEN = 'app_token';
+  public static GUEST_USER = 'guest_user_details';
 
   // public static DEFAULT_APP_ICON = environment.blobContainerName + '/default_app_icon.png';
   // public static DEFAULT_APP_LOGO = environment.blobContainerName + '/default_app_logo.jpg';
@@ -1575,5 +1753,4 @@ export class CONSTANTS {
   public static DEFAULT_APP_LOGO = 'rdm-images/default_app_logo.jpg';
   public static DEFAULT_HEADER_LOGO = 'rdm-images/app-images/header-logo/logo.png';
   public static DEFAULT_MODEL_IMAGE = 'rdm-images/asset-model-images/asset.svg';
-
 }

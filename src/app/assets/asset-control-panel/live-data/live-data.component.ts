@@ -12,11 +12,9 @@ import * as moment from 'moment';
 @Component({
   selector: 'app-live-data',
   templateUrl: './live-data.component.html',
-  styleUrls: ['./live-data.component.css']
+  styleUrls: ['./live-data.component.css'],
 })
 export class LiveDataComponent implements OnInit, OnDestroy {
-
-
   @Input() asset = new Asset();
   userData: any;
   contextApp: any;
@@ -29,23 +27,21 @@ export class LiveDataComponent implements OnInit, OnDestroy {
   signalRTelemetrySubscription: any;
   isTelemetryDataLoading = false;
   widgetPropertyList: any[] = [];
-
   telemetryObj: any;
+  apiTelemetryObj: any;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
     private assetModelService: AssetModelService,
     private signalRService: SignalRService,
     private toasterService: ToasterService
-    ) { }
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getLiveWidgets();
     await this.getAssetsModelProperties();
-
-
   }
 
   getAssetsModelProperties() {
@@ -53,19 +49,28 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       const obj = {
         app: this.contextApp.app,
-        name: this.asset.tags.asset_model
+        name: this.asset.tags.asset_model,
       };
-      this.apiSubscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
-        (response: any) => {
+      this.apiSubscriptions.push(
+        this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-          response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
-          response.properties.edge_derived_properties.forEach(prop => {
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties
+            ? response.properties.edge_derived_properties
+            : [];
+          response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
+            ? response.properties.cloud_derived_properties
+            : [];
+          response.properties.edge_derived_properties.forEach((prop) => {
             prop.type = 'Edge Derived Properties';
-            this.propertyList.push(prop)
+            this.propertyList.push(prop);
+          });
+          response.properties.cloud_derived_properties.forEach((prop) => {
+            prop.type = 'Cloud Derived Properties';
+            this.propertyList.push(prop);
           });
           resolve();
-        }
-      ));
+        })
+      );
     });
   }
 
@@ -73,57 +78,64 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     this.liveWidgets = [];
     const params = {
       app: this.contextApp.app,
-      name: this.asset.tags.asset_model
+      name: this.asset.tags.asset_model,
     };
-    this.apiSubscriptions.push(this.assetModelService.getAssetsModelLiveWidgets(params).subscribe(
-      (response: any) => {
+    this.apiSubscriptions.push(
+      this.assetModelService.getAssetsModelLiveWidgets(params).subscribe((response: any) => {
         if (response?.live_widgets?.length > 0) {
-          response.live_widgets.forEach(widget => {
-            widget.derived_props = false;
+          response.live_widgets.forEach((widget) => {
+            widget.edge_derived_props = false;
+            widget.cloud_derived_props = false;
             widget.measured_props = false;
             if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
-              widget?.properties.forEach(prop => {
+              widget?.properties.forEach((prop) => {
                 this.addPropertyInList(prop.property);
                 if (prop?.property?.type === 'Edge Derived Properties') {
-                  widget.derived_props = true;
+                  widget.edge_derived_props = true;
+                } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                  widget.cloud_derived_props = true;
                 } else {
                   widget.measured_props = true;
                 }
               });
-              } else {
-                widget?.y1AxisProps.forEach(prop => {
-                  this.addPropertyInList(prop);
-                  if (prop?.type === 'Edge Derived Properties') {
-                    widget.derived_props = true;
-                  } else {
-                    widget.measured_props = true;
-                  }
-                });
-                widget?.y2AxisProps.forEach(prop => {
-                  this.addPropertyInList(prop);
-                  if (prop?.type === 'Edge Derived Properties') {
-                    widget.derived_props = true;
-                  } else {
-                    widget.measured_props = true;
-                  }
-                });
-              }
+            } else {
+              widget?.y1AxisProps.forEach((prop) => {
+                this.addPropertyInList(prop);
+                if (prop?.type === 'Edge Derived Properties') {
+                  widget.edge_derived_props = true;
+                } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                  widget.cloud_derived_props = true;
+                } else {
+                  widget.measured_props = true;
+                }
+              });
+              widget?.y2AxisProps.forEach((prop) => {
+                this.addPropertyInList(prop);
+                if (prop?.type === 'Edge Derived Properties') {
+                  widget.edge_derived_props = true;
+                } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                  widget.cloud_derived_props = true;
+                } else {
+                  widget.measured_props = true;
+                }
+              });
+            }
             this.liveWidgets.push({
               id: widget.widgetTitle,
-              value: widget
+              value: widget,
             });
           });
           this.liveWidgets = JSON.parse(JSON.stringify(this.liveWidgets));
         }
-      }
-    ));
+      })
+    );
   }
 
   addPropertyInList(prop) {
-    if (this.widgetPropertyList.length === 0 ) {
+    if (this.widgetPropertyList.length === 0) {
       this.widgetPropertyList.push(prop);
     } else {
-      const index = this.widgetPropertyList.findIndex(propObj => propObj.json_key === prop.json_key);
+      const index = this.widgetPropertyList.findIndex((propObj) => propObj.json_key === prop.json_key);
       if (index === -1) {
         this.widgetPropertyList.push(prop);
       }
@@ -144,23 +156,30 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     obj['asset_model'] = this.asset.tags.asset_model;
     // let message_props = '';
     obj['count'] = 1;
-    const midnight =  ((((moment().hour(0)).minute(0)).second(0)).utc()).unix();
-    const now = (moment().utc()).unix();
+    const midnight = moment().hour(0).minute(0).second(0).utc().unix();
+    const now = moment().utc().unix();
     obj['from_date'] = midnight;
     obj['to_date'] = now;
     let measured_message_props = '';
-    let derived_message_props = '';
+    let edge_derived_message_props = '';
+    let cloud_derived_message_props = '';
     this.propertyList.forEach((prop, index) => {
       if (prop.type === 'Edge Derived Properties') {
-        derived_message_props = derived_message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : '');
+        edge_derived_message_props =
+          edge_derived_message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : '');
+      } else if (prop.type === 'Cloud Derived Properties') {
+        cloud_derived_message_props =
+          cloud_derived_message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : '');
       } else {
         measured_message_props = measured_message_props + prop.json_key + (this.propertyList[index + 1] ? ',' : '');
       }
     });
     measured_message_props = measured_message_props.replace(/,\s*$/, '');
-    derived_message_props = derived_message_props.replace(/,\s*$/, '');
+    edge_derived_message_props = edge_derived_message_props.replace(/,\s*$/, '');
+    cloud_derived_message_props = cloud_derived_message_props.replace(/,\s*$/, '');
     obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
-    obj['derived_message_props'] = derived_message_props ? derived_message_props : undefined;
+    obj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
+    obj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
     // this.propertyList.forEach((prop, index) => message_props = message_props + prop.json_key
     // + (this.propertyList[index + 1] ? ',' : ''));
     // obj['message_props'] = message_props;
@@ -175,69 +194,73 @@ export class LiveDataComponent implements OnInit, OnDestroy {
       app: this.contextApp.app,
     };
     this.signalRService.connectToSignalR(obj1);
-    this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe(
-      data => {
-        if (data.type !== 'alert') {
-          if (data) {
-            let obj =  JSON.parse(JSON.stringify(data));
-            delete obj.m;
-            delete obj.d;
-            obj = {...obj, ...data.m, ...data.d};
-            data = JSON.parse(JSON.stringify(obj));
-          }
+    this.signalRTelemetrySubscription = this.signalRService.signalRTelemetryData.subscribe((data) => {
+      if (data.type !== 'alert') {
+        if (data) {
+          let obj = JSON.parse(JSON.stringify(data));
+          delete obj.m;
+          delete obj.ed;
+          delete obj.cd;
+          obj = { ...obj, ...data.m, ...data.ed, ...data.cd };
+          data = JSON.parse(JSON.stringify(obj));
+        }
 
-          data.date = this.commonService.convertUTCDateToLocal(data.ts || data.timestamp);
-          data.message_date = this.commonService.convertUTCDateToLocal(data.ts || data.timestamp);
-          const obj = JSON.parse(JSON.stringify(this.telemetryObj));
-          this.telemetryObj = undefined;
-          // console.log(this.widgetPropertyList);
-          this.widgetPropertyList.forEach(prop => {
-            if (prop?.json_key && data[prop.json_key] !== undefined && data[prop.json_key] !== null) {
-              obj[prop?.json_key] = {
-                value: data[prop?.json_key],
-                date: data.date
-              };
-            }
-          });
-          // console.log(obj);
-          this.telemetryObj = obj;
-          // this.lastReportedTelemetryValues = obj;
-          // this.telemetryObj = JSON.parse(JSON.stringify(data));
-          this.isTelemetryDataLoading = false;
-        }
-      }
-    );
-    this.apiSubscriptions.push(this.assetService.getLastTelmetry(this.contextApp.app, obj).subscribe(
-      (response: any) => {
-        if (response.message) {
-          response.message.date = this.commonService.convertUTCDateToLocal(response.message_date);
-          response.message_date = this.commonService.convertUTCDateToLocal(response.message_date);
-          const obj = {};
-          // console.log(this.widgetPropertyList);
-          this.widgetPropertyList.forEach(prop => {
+        data.date = this.commonService.convertUTCDateToLocal(data.ts || data.timestamp);
+        data.message_date = this.commonService.convertUTCDateToLocal(data.ts || data.timestamp);
+        const obj = JSON.parse(JSON.stringify(this.telemetryObj));
+        this.telemetryObj = undefined;
+        // console.log(this.widgetPropertyList);
+        this.widgetPropertyList.forEach((prop) => {
+          if (prop?.json_key && data[prop.json_key] !== undefined && data[prop.json_key] !== null) {
             obj[prop?.json_key] = {
-              value: response.message[prop?.json_key],
-              date: response.message_date
+              value: data[prop?.json_key],
+              date: data.date,
             };
-          });
-          // console.log(obj);
-          this.telemetryObj = obj;
-          // this.telemetryObj = response.message;
-          // Object.keys(this.telemetryObj).forEach(key => {
-          //   if (key !== 'message_date') {
-          //     this.telemetryObj[key] = Number(this.telemetryObj[key]);
-          //   }
-          // });
-          // this.propertyList.forEach(prop => {
-          //   if (prop.data_type === 'Number') {
-          //     this.telemetryObj[prop.json_key] = Number(this.telemetryObj[prop.json_key]);
-          //   }
-          // });
-          this.isTelemetryDataLoading = false;
-        } else {
-          this.isTelemetryDataLoading = false;
-        }
-    }, error => this.isTelemetryDataLoading = false));
+          }
+        });
+        // console.log(obj);
+        this.telemetryObj = obj;
+        // this.lastReportedTelemetryValues = obj;
+        // this.telemetryObj = JSON.parse(JSON.stringify(data));
+        this.isTelemetryDataLoading = false;
+      }
+    });
+    this.apiSubscriptions.push(
+      this.assetService.getLastTelmetry(this.contextApp.app, obj).subscribe(
+        (response: any) => {
+          if (response.message) {
+            response.message.date = this.commonService.convertUTCDateToLocal(response.message_date);
+            response.message_date = this.commonService.convertUTCDateToLocal(response.message_date);
+            const obj = {};
+            // console.log(this.widgetPropertyList);
+            this.widgetPropertyList.forEach((prop) => {
+              obj[prop?.json_key] = {
+                value: response.message[prop?.json_key],
+                date: response.message_date,
+              };
+            });
+            // console.log(obj);
+            this.telemetryObj = obj;
+            this.apiTelemetryObj = JSON.parse(JSON.stringify(obj));
+            // this.telemetryObj = response.message;
+            // Object.keys(this.telemetryObj).forEach(key => {
+            //   if (key !== 'message_date') {
+            //     this.telemetryObj[key] = Number(this.telemetryObj[key]);
+            //   }
+            // });
+            // this.propertyList.forEach(prop => {
+            //   if (prop.data_type === 'Number') {
+            //     this.telemetryObj[prop.json_key] = Number(this.telemetryObj[prop.json_key]);
+            //   }
+            // });
+            this.isTelemetryDataLoading = false;
+          } else {
+            this.isTelemetryDataLoading = false;
+          }
+        },
+        (error) => (this.isTelemetryDataLoading = false)
+      )
+    );
   }
 
   onDeSelectAll() {
@@ -246,7 +269,6 @@ export class LiveDataComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
+    this.apiSubscriptions.forEach((sub) => sub.unsubscribe());
   }
-
 }

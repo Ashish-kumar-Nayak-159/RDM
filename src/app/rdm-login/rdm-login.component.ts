@@ -12,10 +12,9 @@ declare var $: any;
 @Component({
   selector: 'app-rdm-login',
   templateUrl: './rdm-login.component.html',
-  styleUrls: ['./rdm-login.component.css']
+  styleUrls: ['./rdm-login.component.css'],
 })
 export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
-
   loginForm: any = {};
   usersList: any[] = [];
   userData: any;
@@ -31,10 +30,9 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     private toasterService: ToasterService,
     private commonService: CommonService,
     private applicationService: ApplicationService
-  ) { }
+  ) {}
 
   async ngOnInit(): Promise<void> {
-
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     if (this.userData) {
       if (this.userData.is_super_admin) {
@@ -47,7 +45,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
           this.router.navigate(['applications', 'selection']);
         } else if (this.userData.apps && this.userData.apps.length === 1) {
           localStorage.removeItem(CONSTANTS.APP_TOKEN);
-          const decodedToken =  this.commonService.decodeJWTToken(this.userData.apps[0].token);
+          const decodedToken = this.commonService.decodeJWTToken(this.userData.apps[0].token);
           if (decodedToken?.privileges.indexOf('APMV') === -1) {
             this.toasterService.showError(APIMESSAGES.API_ACCESS_ERROR_MESSAGE, APIMESSAGES.CONTACT_ADMINISTRATOR);
             this.commonService.onLogOut();
@@ -75,6 +73,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onResetModalClose() {
+    this.isForgotPassword = false;
     this.loginForm.reset();
   }
 
@@ -85,8 +84,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   onLogin() {
     if (this.loginForm.email && this.loginForm.password) {
       if (!CONSTANTS.EMAIL_REGEX.test(this.loginForm.email)) {
-        this.toasterService.showError('Email address is not valid',
-          'Login');
+        this.toasterService.showError('Email address is not valid', 'Login');
         return;
       }
       this.isLoginAPILoading = true;
@@ -98,77 +96,79 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
       if (env) {
         this.loginForm.environment = env;
       }
-      this.subscriptions.push(this.commonService.loginUser(this.loginForm).subscribe(
-        async (response: any) => {
-          this.userData = response;
-          // const expiryObj = this.commonService.getItemFromLocalStorage(CONSTANTS.EXPIRY_TIME);
-          // if (!expiryObj || expiryObj.email !== this.userData.email || new Date().getTime() > expiryObj.expired_at) {
-          //   localStorage.clear();
-          // }
-          localStorage.setItem(CONSTANTS.APP_VERSION, environment.version);
-          if (response.is_super_admin) {
-            localStorage.removeItem(CONSTANTS.APP_TOKEN);
-            localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.token);
-            this.router.navigate(['applications']);
-            this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, response);
-          } else {
-            if (response.password_created_date === '') {
-              this.isResetPassword = true;
-              // $('#changePasswordModal').modal({
-              //   backdrop: 'static',
-              //   keyboard: false
-              // });
-              return;
-            }
-            if (response.apps && response.apps.length > 0) {
-              // response.apps.forEach(element => {
-              //   let hierarchy = '';
-              //   const keys = Object.keys(element.user.hierarchy);
-              //   keys.forEach((key, index) => {
-              //     hierarchy = hierarchy + element.user.hierarchy[key] + (keys[index + 1] ? ' / ' : '');
-              //   });
-              //   element.user.hierarchyString = hierarchy;
-              // });
+      this.subscriptions.push(
+        this.commonService.loginUser(this.loginForm).subscribe(
+          async (response: any) => {
+            this.userData = response;
+            // const expiryObj = this.commonService.getItemFromLocalStorage(CONSTANTS.EXPIRY_TIME);
+            // if (!expiryObj || expiryObj.email !== this.userData.email || new Date().getTime() > expiryObj.expired_at) {
+            //   localStorage.clear();
+            // }
+            localStorage.setItem(CONSTANTS.APP_VERSION, environment.version);
+            if (response.is_super_admin) {
+              localStorage.removeItem(CONSTANTS.APP_TOKEN);
+              localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.token);
+              this.router.navigate(['applications']);
+              this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, response);
+            } else {
+              if (response.password_created_date === '') {
+                this.isResetPassword = true;
+                // $('#changePasswordModal').modal({
+                //   backdrop: 'static',
+                //   keyboard: false
+                // });
+                return;
+              }
+              if (response.apps && response.apps.length > 0) {
+                // response.apps.forEach(element => {
+                //   let hierarchy = '';
+                //   const keys = Object.keys(element.user.hierarchy);
+                //   keys.forEach((key, index) => {
+                //     hierarchy = hierarchy + element.user.hierarchy[key] + (keys[index + 1] ? ' / ' : '');
+                //   });
+                //   element.user.hierarchyString = hierarchy;
+                // });
 
-              if (this.userData.apps && this.userData.apps.length > 1) {
-                this.userData.apps.forEach(app => {
-                  const decodedToken = this.commonService.decodeJWTToken(app.token);
+                if (this.userData.apps && this.userData.apps.length > 1) {
+                  this.userData.apps.forEach((app) => {
+                    const decodedToken = this.commonService.decodeJWTToken(app.token);
+                    const obj = {
+                      hierarchy: decodedToken.hierarchy,
+                      role: decodedToken.role,
+                      privileges: decodedToken.privileges,
+                    };
+                    app.user = obj;
+                  });
+                  console.log(JSON.stringify(this.userData));
+                  this.router.navigate(['applications', 'selection']);
+                } else if (this.userData.apps && this.userData.apps.length === 1) {
+                  localStorage.removeItem(CONSTANTS.APP_TOKEN);
+                  localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.apps[0].token);
+                  const decodedToken = this.commonService.decodeJWTToken(this.userData.apps[0].token);
                   const obj = {
                     hierarchy: decodedToken.hierarchy,
                     role: decodedToken.role,
-                    privileges: decodedToken.privileges
+                    privileges: decodedToken.privileges,
                   };
-                  app.user = obj;
-                });
-                console.log(JSON.stringify(this.userData));
-                this.router.navigate(['applications', 'selection']);
-              } else if (this.userData.apps && this.userData.apps.length === 1) {
-                localStorage.removeItem(CONSTANTS.APP_TOKEN);
-                localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.apps[0].token);
-                const decodedToken = this.commonService.decodeJWTToken(this.userData.apps[0].token);
-                const obj = {
-                  hierarchy: decodedToken.hierarchy,
-                  role: decodedToken.role,
-                  privileges: decodedToken.privileges
-                };
-                this.userData.apps[0].user = obj;
-                await this.getApplicationData(this.userData.apps[0]);
-                this.router.navigate(['applications', this.applicationData.app]);
+                  this.userData.apps[0].user = obj;
+                  await this.getApplicationData(this.userData.apps[0]);
+                  this.router.navigate(['applications', this.applicationData.app]);
+                }
+                this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
+              } else {
+                this.isLoginAPILoading = false;
+                this.toasterService.showError('No apps are assigned to this user', 'Contact Administrator');
+                return;
               }
-              this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
-            } else {
-              this.isLoginAPILoading = false;
-              this.toasterService.showError('No apps are assigned to this user', 'Contact Administrator');
-              return;
             }
-
+            this.isLoginAPILoading = false;
+          },
+          (error) => {
+            this.isLoginAPILoading = false;
+            this.toasterService.showError(error.message, 'Login');
           }
-          this.isLoginAPILoading = false;
-        }, error => {
-          this.isLoginAPILoading = false;
-          this.toasterService.showError(error.message, 'Login');
-        }
-      ));
+        )
+      );
     } else {
       this.isLoginAPILoading = false;
       this.toasterService.showError('Please enter username and password', 'Login');
@@ -178,11 +178,11 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   getApplicationData(app) {
     return new Promise((resolve) => {
       this.applicationData = undefined;
-      this.subscriptions.push(this.applicationService.getApplicationDetail(app.app).subscribe(
-        (response: any) => {
+      this.subscriptions.push(
+        this.applicationService.getApplicationDetail(app.app).subscribe((response: any) => {
           this.applicationData = response;
           this.applicationData.app = app.app;
-          this.userData.apps.forEach(appObj => {
+          this.userData.apps.forEach((appObj) => {
             if (app.app === appObj.app) {
               this.applicationData.user = appObj.user;
             }
@@ -193,30 +193,34 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
             this.processAppMenuData();
           }
           if (this.applicationData.menu_settings.asset_control_panel_menu.length === 0) {
-            this.applicationData.menu_settings.asset_control_panel_menu =
-              JSON.parse(JSON.stringify(CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST));
+            this.applicationData.menu_settings.asset_control_panel_menu = JSON.parse(
+              JSON.stringify(CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST)
+            );
           }
           if (this.applicationData.menu_settings.legacy_asset_control_panel_menu.length === 0) {
-            this.applicationData.menu_settings.legacy_asset_control_panel_menu =
-              JSON.parse(JSON.stringify(CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST));
+            this.applicationData.menu_settings.legacy_asset_control_panel_menu = JSON.parse(
+              JSON.stringify(CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST)
+            );
           }
           if (this.applicationData.menu_settings.model_control_panel_menu.length === 0) {
-            this.applicationData.menu_settings.model_control_panel_menu =
-              JSON.parse(JSON.stringify(CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST));
+            this.applicationData.menu_settings.model_control_panel_menu = JSON.parse(
+              JSON.stringify(CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST)
+            );
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
           // this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
           const obj = {
             hierarchy: this.applicationData.user.hierarchy,
-            dateOption: 'Last 24 Hours'
+            dateOption: 'Last 24 Hours',
           };
           this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, obj);
           const obj1 = {
-            dateOption: 'Last 30 Mins'
+            dateOption: 'Last 30 Mins',
           };
           this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, obj1);
           resolve();
-        }));
+        })
+      );
     });
   }
 
@@ -226,9 +230,9 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         const data = [];
         const arr = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
         if (this.applicationData.menu_settings?.main_menu?.length > 0) {
-          arr.forEach(config => {
+          arr.forEach((config) => {
             let found = false;
-            this.applicationData.menu_settings.main_menu.forEach(item => {
+            this.applicationData.menu_settings.main_menu.forEach((item) => {
               if (config.page === item.page) {
                 found = true;
                 config.display_name = item.display_name;
@@ -248,28 +252,29 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   forgotPassword() {
-    if(!this.loginForm.email){
+    if (!this.loginForm.email) {
       this.toasterService.showWarning('Please enter valid email', 'Forgot Password');
-      return
+      return;
     }
     let obj = {
-      'email': this.loginForm.email
-    }
+      email: this.loginForm.email,
+    };
     this.isForgotAPILoading = true;
-    this.commonService.forgotPassword(obj).subscribe((response: any) => {
-      this.isForgotPassword = true;
-      this.isForgotAPILoading = false;
-      this.toasterService.showSuccess(response.message, 'Forgot Password');
-    }, (err: HttpErrorResponse) => {
-      this.isForgotAPILoading = false;
-      this.toasterService.showError(err.message, 'Forgot Password');
-      this.isForgotPassword = true;
-
-    });
+    this.commonService.forgotPassword(obj).subscribe(
+      (response: any) => {
+        this.isForgotPassword = true;
+        this.isForgotAPILoading = false;
+        this.toasterService.showSuccess(response.message, 'Forgot Password');
+      },
+      (err: HttpErrorResponse) => {
+        this.isForgotAPILoading = false;
+        this.toasterService.showError(err.message, 'Forgot Password');
+        this.isForgotPassword = true;
+      }
+    );
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
-
 }

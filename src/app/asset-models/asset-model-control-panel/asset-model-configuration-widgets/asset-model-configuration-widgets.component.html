@@ -6,9 +6,10 @@
   <div class="">
     <ul class="nav">
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="openAddWidgetModal()" [class.disabled]="assetModel.freezed">
+        <a class="nav-link" href="javascript:void(0)" (click)="openAddWidgetModal()"
+          [class.disabled]="assetModel.freezed">
           <i class="fa fa-fw fa-plus"></i>
-          <span class="text-secondary" >Add Configuration Widget</span></a>
+          <span class="text-secondary">Add Configuration Widget</span></a>
       </li>
     </ul>
 
@@ -19,172 +20,154 @@
 
 <div class="table-responsive">
   <div class="tableFixHead">
-  <div *ngIf="isGetControlWidgetAPILoading">
-    <i class="fa fa-spinner fa-spin fa-fw fa-2x" ></i>
-  </div>
-  <accordion [closeOthers]="'true'" *ngIf="controlWidgets.length > 0 && !isGetControlWidgetAPILoading"  class="mb-2 p-3">
-    <accordion-group heading="" *ngFor="let widget of controlWidgets" [panelClass]="'customClass'" >
-      <ng-container  accordion-heading>
-        <button class="btn" type="button">
-          {{widget.name}}
-        </button>
-        <a class="float-right pull-right mt-1" href="javascript:void(0)" [class.disabled]="assetModel.freezed"
-        *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
-        (click)="openConfirmModal(widget)"><i class="fa fa-close"></i></a>
-      </ng-container>
-      <h6 *ngIf="widget?.metadata?.communication_technique">This configuration widget will process through {{widget?.metadata?.communication_technique}}.</h6>
-      <div class="row">
-
-      <div class="col-5">
-        <div class="card shadow h-100">
-          <div class="card-body">
-
-            <div class="form-check" *ngFor="let prop of widget.properties;let i = index;">
-              <input class="form-check-input" type="checkbox" value="{{i}}" id="prop{{i}}" disabled checked>
-              <label class="form-check-label" for="prop{{i}}">
-                {{prop.name}}
-              </label>
-            </div>
-
-          </div>
-        </div>
-      </div>
-      <div class="col-7">
-        <div class="card shadow">
-          <div class="card-body">
-            <textarea
-            class="form-control"
-            id="message"
-            rows="5"
-          name="message"
-            [defaultValue]="widget.json | json" disabled
-          ></textarea>
-
-          </div>
-        </div>
-      </div>
+    <div *ngIf="isGetControlWidgetAPILoading">
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
     </div>
-    </accordion-group>
-  </accordion>
-  <p class="m-3" *ngIf="controlWidgets.length === 0 && !isGetControlWidgetAPILoading">
-    No configuration widgets are added.
-  </p>
-</div>
+    <accordion [closeOthers]="'true'" *ngIf="controlWidgets.length > 0 && !isGetControlWidgetAPILoading"
+      class="mb-2 p-3">
+      <accordion-group heading="" *ngFor="let widget of controlWidgets" [panelClass]="'customClass'">
+        <ng-container accordion-heading>
+          <button class="btn" type="button">
+            {{widget.name}}
+          </button>
+          <a class="float-right pull-right mt-1" href="javascript:void(0)" [class.disabled]="assetModel.freezed"
+            *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
+            (click)="openConfirmModal(widget)"><i class="fa fa-close"></i></a>
+        </ng-container>
+        <h6 *ngIf="widget?.metadata?.communication_technique">This configuration widget will process through
+          {{widget?.metadata?.communication_technique}}.</h6>
+        <div class="row">
+
+          <div class="col-5">
+            <div class="card shadow h-100">
+              <div class="card-body">
+
+                <div class="form-check" *ngFor="let prop of widget.properties;let i = index;">
+                  <input class="form-check-input" type="checkbox" value="{{i}}" id="prop{{i}}" disabled checked>
+                  <label class="form-check-label" for="prop{{i}}">
+                    {{prop.name}}
+                  </label>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="col-7">
+            <div class="card shadow">
+              <div class="card-body">
+                <textarea class="form-control" id="message" rows="5" name="message" [defaultValue]="widget.json | json"
+                  disabled></textarea>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </accordion-group>
+    </accordion>
+    <p class="m-3" *ngIf="controlWidgets.length === 0 && !isGetControlWidgetAPILoading">
+      No configuration widgets are added.
+    </p>
+  </div>
 </div>
 
 
-<div class="modal right fade" id="createWidgetModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
+<div class="modal right fade" id="createWidgetModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-    <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">Create New Configuration Widget</h5>
-      <button type="button" class="close"   aria-label="Close" (click)="closeCreateWidgetModal()"  [disabled]="isCreateWidgetAPILoading">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body" *ngIf="viewType === 'add'">
-      <form *ngIf="viewType === 'add'">
-        <div class="form-group">
-          <label for="message-text" class="col-form-label required">Configuration Widget Name:</label>
-          <input type="text" class="form-control form-control-sm" id="name" name="name" [(ngModel)]="controlWidget.name"
-          placeholder="Enter Control Widget Name">
-        </div>
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Create New Configuration Widget</h5>
+        <button type="button" class="close" aria-label="Close" (click)="closeCreateWidgetModal()"
+          [disabled]="isCreateWidgetAPILoading">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="viewType === 'add'">
+        <form *ngIf="viewType === 'add'">
+          <div class="form-group">
+            <label for="message-text" class="col-form-label required">Configuration Widget Name:</label>
+            <input type="text" class="form-control form-control-sm" id="name" name="name"
+              [(ngModel)]="controlWidget.name" placeholder="Enter Configuration Widget Name">
+          </div>
 
-        <div class="form-group">
-          <label for="message-text" class="col-form-label">Description:</label>
-          <input type="text" class="form-control form-control-sm" id="name" name="name" [(ngModel)]="controlWidget.metadata.description"
-          placeholder="Enter Description">
-        </div>
-        <div class="form-group">
-          <label for="message-text" class="col-form-label">Widget Type:</label>
-          <select class="form-control form-control-sm" id="widget_type" name="widget_type" [(ngModel)]="controlWidget.metadata.widget_type"
-          >
-            <!-- <option [ngValue]="undefined" >Select Communication Technique</option> -->
-            <option [ngValue]="undefined" >Select Widget Type</option>
-            <option [ngValue]="'Asset'" *ngIf="assetModel?.metadata?.model_type === constantData.IP_GATEWAY">Asset</option>
-            <option [ngValue]="'Slave'" >Slave</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="message-text" class="col-form-label">Cloud to Asset Communication technique:</label>
-          <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="controlWidget.metadata.communication_technique"
-          (change)="onCommunicationTechniqueChange();">
-            <!-- <option [ngValue]="undefined" >Select Communication Technique</option> -->
-            <option [ngValue]="'C2D Message'" >C2D Message</option>
-            <option [ngValue]="'Direct Method'" >Direct Method</option>
-            <option [ngValue]="'Twin Change'" >Twin Change</option>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Description:</label>
+            <input type="text" class="form-control form-control-sm" id="name" name="name"
+              [(ngModel)]="controlWidget.metadata.description" placeholder="Enter Description">
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Widget Type:</label>
+            <select class="form-control form-control-sm" id="widget_type" name="widget_type"
+              [(ngModel)]="controlWidget.metadata.widget_type">
+              <!-- <option [ngValue]="undefined" >Select Communication Technique</option> -->
+              <option [ngValue]="undefined">Select Widget Type</option>
+              <option [ngValue]="'Asset'" *ngIf="assetModel?.metadata?.model_type === constantData.IP_GATEWAY">Asset
+              </option>
+              <option [ngValue]="'Slave'">Slave</option>
             </select>
-        </div>
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Cloud to Asset Communication technique:</label>
+            <select class="form-control form-control-sm" id="template" name="model_type"
+              [(ngModel)]="controlWidget.metadata.communication_technique" (change)="onCommunicationTechniqueChange();">
+              <!-- <option [ngValue]="undefined" >Select Communication Technique</option> -->
+              <option [ngValue]="'C2D Message'">C2D Message</option>
+              <option [ngValue]="'Direct Method'">Direct Method</option>
+              <option [ngValue]="'Twin Change'">Twin Change</option>
+            </select>
+          </div>
 
-        <div class="form-group">
-          <label for="message-text" class="col-form-label required">Configurations following {{(controlWidget?.metadata?.communication_technique === 'Direct Method' ? 'methods' : 'properties')}}:</label>
-          <!-- <ng-container *ngIf="properties?.controllable_properties.length > 0">
-            <div class="form-check" *ngFor="let prop of properties?.controllable_properties;let i = index;">
-              <input class="form-check-input" type="checkbox" value="{{i}}" id="prop{{i}}" (change)="onPropertyChecked($event)">
-              <label class="form-check-label" for="prop{{i}}">
-                {{prop.name}}
-              </label>
-            </div>
-          </ng-container>
-          <ng-container  *ngIf="properties?.controllable_properties.length === 0">
-            <div> No properties added.</div>
-          </ng-container> -->
-          <!-- <angular2-multiselect [data]="(controlWidget?.metadata?.communication_technique === 'Direct Method' ? assetMethods : properties?.controllable_properties)" id="y1AxisProperty"
-          [(ngModel)]="controlWidget.properties" (onDeSelect)="onPropertyChecked($event)"
-          (onSelectAll)="selectAllProps($event)" (onDeSelectAll)="deselectAllProps($event)"
-          (onSelect)="onPropertyChecked($event)" name="property" [settings]="{
-              text: 'Select' + (controlWidget?.metadata?.communication_technique === 'Direct Method' ? ' Direct Method' : ' Property'),
-              classes: 'col-lg-2 col-xl-2 p-0 ml-2 w-100 modal-select',
-              enableSearchFilter: true,
-              badgeShowLimit: 2,
-              maxHeight: 200,
-              labelKey: 'name',
-              primaryKey: 'name'
-            }">
-          </angular2-multiselect> -->
-          <ng-select [items]="(controlWidget?.metadata?.communication_technique === 'Direct Method' ? assetMethods : properties?.configurable_properties)"
-          class="custom-dropdown sm"  [clearable]="false"
-          [searchable]="true" [multiple]="true" bindLabel="name"
-          [closeOnSelect]="false" placeholder="{{'Select' + (controlWidget?.metadata?.communication_technique === 'Direct Method' ? ' Direct Method' : ' Property')}}"
-          dropdownPosition="bottom" name="propArr" ngDefaultControl [(ngModel)]="controlWidget.properties"
-          (add)="onPropertyChecked($event)" (remove)="onPropertyChecked($event)">
-          <ng-template ng-option-tmp let-item="item">
-            <span [tooltip]="item.name">{{item.name}}</span>
-          </ng-template>
-          <ng-template ng-multi-label-tmp let-items="items">
-            {{items.length}} selected
-          </ng-template>
-          </ng-select>
-          <label for="message-text" class="col-form-label">OR </label>
-       <ng-container *ngFor="let param of extraParams; let i = index;" >
-        <div class="form-group">
-          <label for="message-text" class="col-form-label">Extra Parameters </label>
-          <a *ngIf="i === 0"
-            class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm  ml-2 mb-1"
-            href="javascript:void(0)" (click)="addParameter()"
-            placement="bottom" tooltip="Add Property"
-            ><i class="fa fa-plus fa-sm text-white"></i></a>
-            <a *ngIf="i !== 0"
-            class="d-none d-sm-inline-block btn btn-sm btn-white shadow-sm  ml-2 mb-1"
-            href="javascript:void(0)" (click)="removeParameter(i)"
-            placement="bottom" tooltip="Remove Property"
-            ><i class="fa fa-trash fa-sm"></i></a>
-          <input type="text"  class="form-control form-control-sm" id="title{{i}}" name="title{{i}}"
-            [(ngModel)]="param.name" (change)="onKeyChange($event, i)"
-              placeholder="Parameter Key">
-        </div>
-        <div class="form-group">
-          <label for="recipient-name" class="col-form-label required">Data Type:</label>
-          <select class="form-control form-control-sm" id="template{{i}}" name="model_type{{i}}" [(ngModel)]="param.type"
-          (change)="onKeyChange($event, i)">
-            <option [ngValue]="dataType.name" *ngFor="let dataType of dataTypeList">{{dataType.name}}</option>
-          </select>
-        </div>
-        </ng-container>
-        </div>
-        <div class="form-group mr-3">
-          <label for="message-text" class="col-form-label">JSON Format:</label>
-          <!-- <textarea
+          <div class="form-group">
+            <label for="message-text" class="col-form-label required">Configure following
+              {{(controlWidget?.metadata?.communication_technique === 'Direct Method' ? 'methods' :
+              'properties')}}:</label>
+            <ng-select *ngIf="controlWidget.metadata.communication_technique !== 'Direct Method'"
+              [items]="properties?.configurable_properties" class="custom-dropdown sm" [clearable]="false"
+              [searchable]="true" [multiple]="true" bindLabel="name" [closeOnSelect]="false"
+              placeholder="Select Property" dropdownPosition="bottom" name="propArr" ngDefaultControl
+              [(ngModel)]="controlWidget.properties" (add)="onPropertyChecked($event)"
+              (remove)="onPropertyChecked($event)">
+              <ng-template ng-option-tmp let-item="item">
+                <span [tooltip]="item.name">{{item.name}}</span>
+              </ng-template>
+              <ng-template ng-multi-label-tmp let-items="items">
+                {{items.length}} selected
+              </ng-template>
+            </ng-select>
+            <ng-select *ngIf="controlWidget.metadata.communication_technique === 'Direct Method'" [items]="assetMethods"
+              class="custom-dropdown sm" [clearable]="false" [searchable]="true" bindLabel="name" [closeOnSelect]="true"
+              placeholder="Select Direct Method" dropdownPosition="bottom" name="propArr" ngDefaultControl
+              [(ngModel)]="controlWidget.properties" (change)="onPropertyChecked($event)">
+              <ng-template ng-option-tmp let-item="item">
+                <span [tooltip]="item.name">{{item.name}}</span>
+              </ng-template>
+            </ng-select>
+            <ng-container *ngIf="controlWidget.metadata.communication_technique !== 'Direct Method'">
+              <label for="message-text" class="col-form-label">OR </label>
+              <ng-container *ngFor="let param of extraParams; let i = index;">
+                <div class="form-group">
+                  <label for="message-text" class="col-form-label">Extra Parameters </label>
+                  <a *ngIf="i === 0" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm  ml-2 mb-1"
+                    href="javascript:void(0)" (click)="addParameter()" placement="bottom" tooltip="Add Property"><i
+                      class="fa fa-plus fa-sm text-white"></i></a>
+                  <a *ngIf="i !== 0" class="d-none d-sm-inline-block btn btn-sm btn-white shadow-sm  ml-2 mb-1"
+                    href="javascript:void(0)" (click)="removeParameter(i)" placement="bottom"
+                    tooltip="Remove Property"><i class="fa fa-trash fa-sm"></i></a>
+                  <input type="text" class="form-control form-control-sm" id="title{{i}}" name="title{{i}}"
+                    [(ngModel)]="param.name" (change)="onKeyChange($event, i)" placeholder="Parameter Key">
+                </div>
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label required">Data Type:</label>
+                  <select class="form-control form-control-sm" id="template{{i}}" name="model_type{{i}}"
+                    [(ngModel)]="param.type" (change)="onKeyChange($event, i)">
+                    <option [ngValue]="dataType.name" *ngFor="let dataType of dataTypeList">{{dataType.name}}</option>
+                  </select>
+                </div>
+              </ng-container>
+            </ng-container>
+          </div>
+          <div class="form-group mr-3">
+            <label for="message-text" class="col-form-label">JSON Format:</label>
+            <!-- <textarea
             class="form-control"
             id="message"
             rows="10"
@@ -192,23 +175,25 @@
             name="message"
             [defaultValue]="controlWidget.json | json" disabled
           ></textarea> -->
-          <json-editor [options]="editorOptions" name="json"  [data]="controlWidget.json">
-          </json-editor>
-          <!-- <json-editor [options]="editorOptions" name="json" [data]="controlWidget.json">
+            <json-editor [options]="editorOptions" name="json" [data]="controlWidget.json">
+            </json-editor>
+            <!-- <json-editor [options]="editorOptions" name="json" [data]="controlWidget.json">
           </json-editor> -->
-        </div>
+          </div>
 
 
-      </form>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary add-row" [disabled]="isCreateWidgetAPILoading"
+          (click)="createControlWidget()">Save</button>
+        <button type="button" class="btn btn-secondary" [disabled]="isCreateWidgetAPILoading"
+          (click)="closeCreateWidgetModal()">
+          Cancel
+        </button>
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateWidgetAPILoading"></i>
+      </div>
     </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-primary add-row" [disabled]="isCreateWidgetAPILoading" (click)="createControlWidget()">Save</button>
-      <button type="button" class="btn btn-secondary"  [disabled]="isCreateWidgetAPILoading" (click)="closeCreateWidgetModal()" >
-        Cancel
-      </button>
-      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateWidgetAPILoading"></i>
-    </div>
-  </div>
   </div>
 </div>
 
@@ -217,7 +202,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Remove Widget</h5>
-        <button type="button" class="close"  aria-label="Close" (click)="onCloseModal()">
+        <button type="button" class="close" aria-label="Close" (click)="onCloseModal()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>

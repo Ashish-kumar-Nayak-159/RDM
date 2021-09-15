@@ -13,10 +13,9 @@ declare var $: any;
 @Component({
   selector: 'app-asset-model-live-layout',
   templateUrl: './asset-model-live-layout.component.html',
-  styleUrls: ['./asset-model-live-layout.component.css']
+  styleUrls: ['./asset-model-live-layout.component.css'],
 })
 export class AssetModelLiveLayoutComponent implements OnInit {
-
   @Input() assetModel: any;
   widgetObj: any;
   isCreateWidgetAPILoading = false;
@@ -32,21 +31,37 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   configureDashboardWidgets: any[] = [];
   isAllWidgestSelectedForDashboard = false;
   decodedToken: any;
-
+  derivedKPIs: any[] = [];
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
     private signalRService: SignalRService,
     private assetService: AssetService
-  ) { }
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     await this.getAssetsModelProperties();
+    await this.getAssetModelsderivedKPIs();
     this.getLiveWidgets();
+  }
+
+  getAssetModelsderivedKPIs() {
+    return new Promise<void>((resolve) => {
+      this.subscriptions.push(
+        this.assetService.getDerivedKPIs(this.contextApp.app, this.assetModel.name).subscribe((response: any) => {
+          if (response && response.data) {
+            response.data.forEach((kpi) => kpi.type === 'Derived KPI');
+            this.derivedKPIs = response.data;
+            console.log(this.derivedKPIs);
+          }
+          resolve();
+        })
+      );
+    });
   }
 
   getAssetsModelProperties() {
@@ -54,137 +69,164 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
-        name: this.assetModel.name
+        name: this.assetModel.name,
       };
-      this.subscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
-        (response: any) => {
-          response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
+      this.subscriptions.push(
+        this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
+          response.properties.measured_properties = response.properties.measured_properties
+            ? response.properties.measured_properties
+            : [];
+          response.properties?.measured_properties.forEach((prop) => (prop.type = 'Measured Properties'));
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-          response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
-          response.properties.edge_derived_properties.forEach(prop => {
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties
+            ? response.properties.edge_derived_properties
+            : [];
+          response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
+            ? response.properties.cloud_derived_properties
+            : [];
+          response.properties.edge_derived_properties.forEach((prop) => {
             prop.type = 'Edge Derived Properties';
             this.propertyList.push(prop);
           });
+          response.properties.cloud_derived_properties.forEach((prop) => {
+            prop.type = 'Cloud Derived Properties';
+            this.propertyList.push(prop);
+          });
           resolve();
-        }
-      ));
+        })
+      );
     });
   }
 
   getTableSortable() {
     const that = this;
     setTimeout(() => {
-      const fixHelperModified = (e, tr) =>  {
+      const fixHelperModified = (e, tr) => {
         const $originals = tr.children();
         const $helper = tr.clone();
-        $helper.children().each(function(index) {
+        $helper.children().each(function (index) {
           $(this).width($originals.eq(index).width());
         });
         return $helper;
       };
-      const updateIndex =  (e, ui) => {
-        $('td.index', ui.item.parent()).each(function(i) {
+      const updateIndex = (e, ui) => {
+        $('td.index', ui.item.parent()).each(function (i) {
           $(this).html(i + 1 + '');
         });
-        $('tr.favoriteOrderId', ui.item.parent()).each(function(i) {
-        // tslint:disable-next-line: prefer-for-of
-        for (let j = 0; j < that.configureDashboardWidgets.length; j++) {
-          if ($(this).attr('id') === that.configureDashboardWidgets[j].chartId) {
-            that.configureDashboardWidgets[j].index = i + 1;
+        $('tr.favoriteOrderId', ui.item.parent()).each(function (i) {
+          // tslint:disable-next-line: prefer-for-of
+          for (let j = 0; j < that.configureDashboardWidgets.length; j++) {
+            if ($(this).attr('id') === that.configureDashboardWidgets[j].chartId) {
+              that.configureDashboardWidgets[j].index = i + 1;
+            }
           }
-        }
         });
       };
 
-      $('#myFavTable tbody').sortable({
-        helper: fixHelperModified,
-        stop: updateIndex
-      }).disableSelection();
+      $('#myFavTable tbody')
+        .sortable({
+          helper: fixHelperModified,
+          stop: updateIndex,
+        })
+        .disableSelection();
 
       $('#myFavTable tbody').sortable({
         distance: 5,
         delay: 100,
         opacity: 0.6,
         cursor: 'move',
-        update:  () => { }
+        update: () => {},
       });
-
     }, 1000);
-
   }
 
   getLiveWidgets() {
     const params = {
       app: this.contextApp.app,
-      name: this.assetModel.name
+      name: this.assetModel.name,
     };
     this.liveWidgets = [];
     this.isGetWidgetsAPILoading = true;
-    this.subscriptions.push(this.assetModelService.getAssetsModelLiveWidgets(params).subscribe(
-      async (response: any) => {
-        if (response?.live_widgets?.length > 0) {
-          // alert('hereeee');
-          this.liveWidgets = response.live_widgets;
-          // let count = 1;
-          this.liveWidgets.forEach(widget => {
-            widget.freezed = this.assetModel.freezed;
-            widget.derived_props = false;
-            widget.measured_props = false;
-            if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
-            widget?.properties.forEach(prop => {
-              if (prop?.property?.type === 'Edge Derived Properties') {
-                widget.derived_props = true;
+    this.subscriptions.push(
+      this.assetModelService.getAssetsModelLiveWidgets(params).subscribe(
+        async (response: any) => {
+          if (response?.live_widgets?.length > 0) {
+            // alert('hereeee');
+            this.liveWidgets = response.live_widgets;
+            // let count = 1;
+            this.liveWidgets.forEach((widget) => {
+              widget.freezed = this.assetModel.freezed;
+              widget.edge_derived_props = false;
+              widget.cloud_derived_props = false;
+              widget.measured_props = false;
+              if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
+                widget?.properties.forEach((prop) => {
+                  console.log(this.propertyList);
+                  if (prop.property) {
+                    prop.json_key = prop.property.json_key;
+                  }
+                  prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
+                  if (prop?.type === 'Edge Derived Properties') {
+                    widget.edge_derived_props = true;
+                  } else if (prop?.type === 'Cloud Derived Properties') {
+                    widget.cloud_derived_props = true;
+                  } else {
+                    widget.measured_props = true;
+                  }
+                  console.log(prop);
+                });
               } else {
-                widget.measured_props = true;
+                widget?.y1AxisProps.forEach((prop) => {
+                  if (prop?.type === 'Edge Derived Properties') {
+                    widget.edge_derived_props = true;
+                  } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                    widget.cloud_derived_props = true;
+                  } else {
+                    widget.measured_props = true;
+                  }
+                });
+                widget?.y2AxisProps?.forEach((prop) => {
+                  if (prop?.type === 'Edge Derived Properties') {
+                    widget.edge_derived_props = true;
+                  } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                    widget.cloud_derived_props = true;
+                  } else {
+                    widget.measured_props = true;
+                  }
+                });
               }
             });
-            } else {
-              widget?.y1AxisProps.forEach(prop => {
-                if (prop?.type === 'Edge Derived Properties') {
-                  widget.derived_props = true;
-                } else {
-                  widget.measured_props = true;
-                }
-              });
-              widget?.y2AxisProps?.forEach(prop => {
-                if (prop?.type === 'Edge Derived Properties') {
-                  widget.derived_props = true;
-                } else {
-                  widget.measured_props = true;
-                }
-              });
-            }
-          });
-          this.getTelemetryData();
-          setInterval(() =>
-          this.getTelemetryData(), 10000
-          );
-        }
-        this.isGetWidgetsAPILoading = false;
-      }, () => this.isGetWidgetsAPILoading = false
-    ));
+            this.getTelemetryData();
+            setInterval(() => this.getTelemetryData(), 10000);
+          }
+          this.isGetWidgetsAPILoading = false;
+        },
+        () => (this.isGetWidgetsAPILoading = false)
+      )
+    );
   }
 
   onWidgetTypeChange() {
     this.widgetObj.properties = [{}];
-    if (this.widgetObj.widgetType === 'NumberWithTrend' ||
-    this.widgetObj.widgetType === 'LineChart' || this.widgetObj.widgetType === 'AreaChart') {
+    if (
+      this.widgetObj.widgetType === 'NumberWithTrend' ||
+      this.widgetObj.widgetType === 'LineChart' ||
+      this.widgetObj.widgetType === 'AreaChart'
+    ) {
       this.widgetObj.noOfDataPointsForTrend = 15;
     }
   }
 
-
-
   getTelemetryData() {
     this.telemetryObj = {};
     this.telemetryObj.message_date = moment().subtract(10, 'second').format('DD-MMM-YYYY hh:mm:ss A').toString();
-    this.propertyList.forEach(prop => {
+    this.propertyList.forEach((prop) => {
       this.telemetryObj[prop.json_key] = {
-        value:  this.commonService.randomIntFromInterval(
+        value: this.commonService.randomIntFromInterval(
           prop.json_model[prop.json_key]?.minValue ? prop.json_model[prop.json_key]?.minValue : 0,
           prop.json_model[prop.json_key]?.maxValue ? prop.json_model[prop.json_key]?.maxValue : 100
         ),
-        date: this.telemetryObj.message_date
+        date: this.telemetryObj.message_date,
       };
     });
   }
@@ -194,7 +236,6 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.sortListBasedOnIndex();
     this.updateAssetModel(this.configureDashboardWidgets, 'Dashboard configured successfully');
   }
-
 
   sortListBasedOnIndex() {
     this.configureDashboardWidgets.sort((a, b) => a.index - b.index);
@@ -212,7 +253,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
 
   onOpenAddWidgetModal() {
     this.widgetObj = {
-      properties: [{}]
+      properties: [{}],
     };
     $('#addWidgetsModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
@@ -253,21 +294,28 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   }
 
   updateAssetModel(arr, message) {
+    arr.forEach((widget) => {
+      widget.properties.forEach((prop) => {
+        delete prop.property;
+      });
+    });
     this.assetModel.live_widgets = arr;
     this.assetModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    this.subscriptions.push(this.assetModelService.updateAssetsModel(this.assetModel, this.contextApp.app).subscribe(
-      (response: any) => {
-        this.toasterService.showSuccess(message, 'Live Widgets');
-        this.getLiveWidgets();
-        this.onCloseAddWidgetModal();
-        this.onCloseConfigureDashboardModal();
-        this.isCreateWidgetAPILoading = false;
-      },
-      (err) => {
-        this.isCreateWidgetAPILoading = false;
-        this.toasterService.showError(err.message, 'Add Live Widgets');
-      }
-    ));
+    this.subscriptions.push(
+      this.assetModelService.updateAssetsModel(this.assetModel, this.contextApp.app).subscribe(
+        (response: any) => {
+          this.toasterService.showSuccess(message, 'Live Widgets');
+          this.getLiveWidgets();
+          this.onCloseAddWidgetModal();
+          this.onCloseConfigureDashboardModal();
+          this.isCreateWidgetAPILoading = false;
+        },
+        (err) => {
+          this.isCreateWidgetAPILoading = false;
+          this.toasterService.showError(err.message, 'Add Live Widgets');
+        }
+      )
+    );
   }
 
   onSaveWidgetObj() {
@@ -277,15 +325,27 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       return;
     }
     let found = true;
-    this.widgetObj.properties.forEach(prop => {
-      console.log(prop);
+    this.widgetObj.properties.forEach((prop) => {
       if (Object.keys(prop).length === 0) {
         found = false;
+      } else {
+        prop.json_key = prop.property?.json_key;
+        prop.type = prop.property?.type;
+        delete prop.property;
       }
     });
     if (!found && this.widgetObj.widgetType !== 'LineChart' && this.widgetObj.widgetType !== 'AreaChart') {
       this.toasterService.showError('Please select properties details.', 'Add Widget');
       return;
+    }
+    if (this.widgetObj.widgetType === 'LineChart' || this.widgetObj.widgetType === 'AreaChart') {
+      if (!this.widgetObj.y1AxisProps || this.widgetObj.y1AxisProps.length > 0) {
+        this.toasterService.showError('Please select at least one property in y1 axis property.', 'Add Widget');
+        return;
+      }
+      if (!this.widgetObj.y2AxisProps) {
+        this.widgetObj.y2AxisProps = [];
+      }
     }
     this.isCreateWidgetAPILoading = true;
     this.widgetObj.chartId = 'chart_' + moment().utc().unix();
@@ -296,9 +356,9 @@ export class AssetModelLiveLayoutComponent implements OnInit {
 
   onClickOfCheckbox() {
     if (this.isAllWidgestSelectedForDashboard) {
-      this.configureDashboardWidgets.forEach((widget) => widget.dashboardVisibility = true);
+      this.configureDashboardWidgets.forEach((widget) => (widget.dashboardVisibility = true));
     } else {
-      this.configureDashboardWidgets.forEach((widget) => widget.dashboardVisibility = false);
+      this.configureDashboardWidgets.forEach((widget) => (widget.dashboardVisibility = false));
     }
   }
 }

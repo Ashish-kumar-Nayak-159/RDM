@@ -31,7 +31,7 @@
 <div class="table-responsive">
   <div class="tableFixHead">
     <accordion [closeOthers]="true" class="p-3">
-      <accordion-group heading=""  [panelClass]="'customClass'">
+      <accordion-group heading="" [panelClass]="'customClass'">
         <ng-container accordion-heading>
           <a class="btn">
             Data Ingestion Setting
@@ -40,13 +40,14 @@
         <div class="row col-md-12" *ngIf="asset?.metadata">
           <input type="radio" class="mt-1" name="visible" value="changed_props" [disabled]="!isSettingsEditable"
             id="visible_1" [(ngModel)]="asset.metadata.data_ingestion_settings.value" />
-            <label class="form-label">&nbsp;Ingest Only Changed Properties</label> &nbsp;
-            <input  class="mt-1" type="radio" name="visible" value="all_props_at_fixed_interval" [disabled]="!isSettingsEditable"
-            id="visible_2" [(ngModel)]="asset.metadata.data_ingestion_settings.value" />
-            <label class="form-label">&nbsp;Ingest All Properties</label> &nbsp;
+          <label class="form-label ml-2">&nbsp;Ingest Only Changed Properties</label> &nbsp;
+          <input class="mt-1" type="radio" name="visible" value="all_props_at_fixed_interval"
+            [disabled]="!isSettingsEditable" id="visible_2"
+            [(ngModel)]="asset.metadata.data_ingestion_settings.value" />
+          <label class="form-label ml-2">&nbsp;Ingest All Properties</label> &nbsp;
         </div>
       </accordion-group>
-      <accordion-group heading=""  [panelClass]="'customClass'">
+      <accordion-group heading="" [panelClass]="'customClass'">
         <ng-container accordion-heading>
           <a class="btn">
             Measurement Frequency Setting
@@ -57,15 +58,15 @@
             <tr>
               <td style="width: 50%;">Measurement Frequency (In Sec): </td>
               <td>
-                  <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
-                    [(ngModel)]="asset.metadata.measurement_settings.measurement_frequency" name="frequency_in_normal"
-                    placeholder="Frequency" [disabled]="!isSettingsEditable">
+                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                  [(ngModel)]="asset.metadata.measurement_settings.measurement_frequency" name="frequency_in_normal"
+                  placeholder="Frequency" [disabled]="!isSettingsEditable">
               </td>
             </tr>
           </tbody>
         </table>
       </accordion-group>
-      <accordion-group heading=""  [panelClass]="'customClass'">
+      <accordion-group heading="" [panelClass]="'customClass'">
         <ng-container accordion-heading>
           <a class="btn">
             Telemetry Mode Settings
@@ -76,25 +77,25 @@
             <tr>
               <td style="width: 50%;">Normal mode Frequency (In Sec): </td>
               <td>
-                  <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
-                    [(ngModel)]="asset.metadata.telemetry_mode_settings.normal_mode_frequency" name="frequency_in_normal"
-                    placeholder="Frequency" [disabled]="!isSettingsEditable">
+                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                  [(ngModel)]="asset.metadata.telemetry_mode_settings.normal_mode_frequency" name="frequency_in_normal"
+                  placeholder="Frequency" [disabled]="!isSettingsEditable">
               </td>
             </tr>
             <tr>
               <td style="width: 50%;">Turbo mode Frequency (In Sec): </td>
               <td>
                 <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
-                    [(ngModel)]="asset.metadata.telemetry_mode_settings.turbo_mode_frequency" name="frequency_in_turbo"
-                    placeholder="Frequency" [disabled]="!isSettingsEditable">
+                  [(ngModel)]="asset.metadata.telemetry_mode_settings.turbo_mode_frequency" name="frequency_in_turbo"
+                  placeholder="Frequency" [disabled]="!isSettingsEditable">
               </td>
             </tr>
             <tr>
-              <td >Turbo mode Timeout (In Sec): </td>
+              <td>Turbo mode Timeout (In Sec): </td>
               <td>
-                  <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
-                    [(ngModel)]="asset.metadata.telemetry_mode_settings.turbo_mode_timeout_time" name="timeout_in_turbo"
-                    placeholder="Timeout" [disabled]="!isSettingsEditable">
+                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                  [(ngModel)]="asset.metadata.telemetry_mode_settings.turbo_mode_timeout_time" name="timeout_in_turbo"
+                  placeholder="Timeout" [disabled]="!isSettingsEditable">
               </td>
             </tr>
           </tbody>

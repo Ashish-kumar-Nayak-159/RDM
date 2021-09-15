@@ -12,10 +12,9 @@ declare var $: any;
 @Component({
   selector: 'app-add-rule',
   templateUrl: './add-rule.component.html',
-  styleUrls: ['./add-rule.component.css']
+  styleUrls: ['./add-rule.component.css'],
 })
 export class AddRuleComponent implements OnInit {
-
   @Input() isModel: any;
   @Input() asset: any;
   @Input() name: any;
@@ -37,13 +36,14 @@ export class AddRuleComponent implements OnInit {
     { id: 'LESSOREQUAL', value: '<=' },
     { id: 'LESS', value: '<' },
     { id: 'GREATER', value: '>' },
-    { id: 'EQUAL', value: '=' }
-  ]
+    { id: 'EQUAL', value: '=' },
+  ];
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
     private assetModelService: AssetModelService,
-    private assetService: AssetService) { }
+    private assetService: AssetService
+  ) {}
 
   ngOnInit(): void {
     this.title = this.isEdit ? 'Update' : 'Create';
@@ -69,7 +69,7 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.alert_condition_code = this.ruleData.alert_condition_code;
     this.ruleModel.alert_condition_id = this.ruleData.alert_condition_id;
     this.ruleModel.condition_str = this.ruleData.metadata.condition_str;
-    if ( this.ruleData.type === 'Edge') {
+    if (this.ruleData.type === 'Edge') {
       this.ruleModel.conditions = JSON.parse(this.ruleData.metadata.conditions);
     } else {
       this.ruleModel.conditions = this.ruleData.condition;
@@ -86,23 +86,35 @@ export class AddRuleComponent implements OnInit {
   getAssetsModelProperties() {
     let obj = {
       app: this.contextApp.app,
-      name: this.asset ? this.asset.tags.asset_model : this.name
-    }
+      name: this.asset ? this.asset.tags.asset_model : this.name,
+    };
     this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
-      response.properties?.measured_properties.forEach(prop => prop.type = 'Measured Properties');
+      response.properties.measured_properties = response.properties.measured_properties
+        ? response.properties.measured_properties
+        : [];
+      response.properties?.measured_properties.forEach((prop) => (prop.type = 'Measured Properties'));
       this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-      response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
-      response.properties.edge_derived_properties.forEach(prop => {
+      response.properties.edge_derived_properties = response.properties.edge_derived_properties
+        ? response.properties.edge_derived_properties
+        : [];
+      response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
+        ? response.properties.cloud_derived_properties
+        : [];
+      response.properties.edge_derived_properties.forEach((prop) => {
         prop.type = 'Edge Derived Properties';
         this.propertyList.push(prop);
       });
+      response.properties.cloud_derived_properties.forEach((prop) => {
+        prop.type = 'Cloud Derived Properties';
+        this.propertyList.push(prop);
+      });
       this.dropdownPropList = [];
-      this.propertyList.forEach(prop => {
+      this.propertyList.forEach((prop) => {
         this.dropdownPropList.push({
           id: prop.name,
           type: prop.type,
           json_key: prop.json_key,
-          value: prop
+          value: prop,
         });
       });
       this.dropdownPropList = JSON.parse(JSON.stringify(this.dropdownPropList));
@@ -112,19 +124,19 @@ export class AddRuleComponent implements OnInit {
   getAlertConditions(alert_type) {
     let obj = {
       asset_model: this.asset ? this.asset.tags.asset_model : this.name,
-      alert_type: alert_type
-    }
+      alert_type: alert_type,
+    };
     this.assetModelService.getAlertConditions(this.contextApp.app, obj).subscribe((response: any) => {
-      response.data.forEach(element => element.type = 'Model Alert Conditions');
+      response.data.forEach((element) => (element.type = 'Model Alert Conditions'));
       this.alertConditionList = response.data;
       this.onChangeOfAssetCondition();
       if (this.asset) {
         let obj1 = {
           asset_id: this.asset.asset_id,
-          alert_type: alert_type
+          alert_type: alert_type,
         };
         this.assetService.getAlertConditions(this.contextApp.app, obj1).subscribe((response: any) => {
-          response.data.forEach(item => {
+          response.data.forEach((item) => {
             item.type = 'Asset Alert Conditions';
             this.alertConditionList.push(item);
           });
@@ -133,8 +145,6 @@ export class AddRuleComponent implements OnInit {
         });
       }
     });
-
-
   }
 
   onSwitchValueChange(event) {
@@ -143,7 +153,9 @@ export class AddRuleComponent implements OnInit {
   }
 
   onChangeOfAssetCondition() {
-    let alertCondition = this.alertConditionList.find(condition => condition.code == this.ruleModel.alert_condition_code);
+    let alertCondition = this.alertConditionList.find(
+      (condition) => condition.code == this.ruleModel.alert_condition_code
+    );
     this.selectedAlertCondition = alertCondition;
     // this.selectedAlertCondition.actions.email = alertCondition.actions.email.enabled;
     // this.selectedAlertCondition.actions.sms = alertCondition.actions.sms.enabled;
@@ -152,7 +164,7 @@ export class AddRuleComponent implements OnInit {
 
   closeRuleModal(status) {
     this.onCloseRuleModel.emit({
-      status: status
+      status: status,
     });
     $('#addRuleModal').modal('hide');
     this.isEdit = false;
@@ -171,8 +183,8 @@ export class AddRuleComponent implements OnInit {
       property: '',
       operator: '',
       threshold: 0,
-      aggregation_type: ''
-    }
+      aggregation_type: '',
+    };
     this.ruleModel.conditions.push(condition);
   }
 
@@ -182,68 +194,92 @@ export class AddRuleComponent implements OnInit {
 
   createNewRule() {
     console.log(this.ruleModel);
-    if (!this.ruleModel.alert_condition_code || !this.ruleModel.name || !this.ruleModel.description || !this.ruleModel.code
-      || !this.ruleModel.operator  || !this.ruleModel.escalation_time_in_sec ) {
-        this.toasterService.showError('Please fill all required details', 'Add Rule');
-      }
+    if (
+      !this.ruleModel.alert_condition_code ||
+      !this.ruleModel.name ||
+      !this.ruleModel.description ||
+      !this.ruleModel.code ||
+      !this.ruleModel.operator ||
+      !this.ruleModel.escalation_time_in_sec
+    ) {
+      this.toasterService.showError('Please fill all required details', 'Add Rule');
+      return;
+    }
     this.isUpdateApiCall = true;
     let str = '';
     this.ruleModel.properties = [];
-    this.ruleModel.conditions.forEach(element => {
-      str += ' %' + element.property + '% ' + this.findOperator(element.operator) + ' ' + element.threshold + ' ' + this.ruleModel.operator;
-      let prop = this.dropdownPropList.find(p => p.value.json_key == element.property);
+    this.ruleModel.conditions.forEach((element) => {
+      str +=
+        ' %' +
+        element.property +
+        '% ' +
+        this.findOperator(element.operator) +
+        ' ' +
+        element.threshold +
+        ' ' +
+        this.ruleModel.operator;
+      let prop = this.dropdownPropList.find((p) => p.value.json_key == element.property);
       this.ruleModel.properties.push({ property: prop.value.json_key, type: prop.type.charAt(0).toLowerCase() });
-    })
+    });
     this.ruleModel.condition_str = str.slice(0, -2).trim();
     this.ruleModel.created_by = this.userData.email + ' (' + this.userData.name + ')';
     if (this.isEdit) {
       this.ruleModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
       let method;
       if (!this.asset) {
-        method = !this.ruleModel.rule_type ? this.assetModelService.updateCloudModelRule(this.contextApp.app, this.name, this.ruleModel) :
-        this.assetModelService.updateEdgeModelRule(this.contextApp.app, this.name, this.ruleModel);
+        method = !this.ruleModel.rule_type
+          ? this.assetModelService.updateCloudModelRule(this.contextApp.app, this.name, this.ruleModel)
+          : this.assetModelService.updateEdgeModelRule(this.contextApp.app, this.name, this.ruleModel);
       } else {
-        method = !this.ruleModel.rule_type ? this.assetService.updateCloudAssetRule(this.contextApp.app, this.name, this.ruleModel) :
-        this.assetService.updateEdgeAssetRule(this.contextApp.app, this.name, this.ruleModel);
+        method = !this.ruleModel.rule_type
+          ? this.assetService.updateCloudAssetRule(this.contextApp.app, this.name, this.ruleModel)
+          : this.assetService.updateEdgeAssetRule(this.contextApp.app, this.name, this.ruleModel);
       }
-      method.subscribe((response: any) => {
-        this.onCloseRuleModel.emit({
-          status: true
-        });
-        this.toasterService.showSuccess(response.message, this.title + 'Rule');
-        this.closeRuleModal(true);
-        this.isUpdateApiCall = false;
-      }, (err: HttpErrorResponse) => {
-        this.isUpdateApiCall = false;
-        this.toasterService.showError(err.message, this.title + 'Rule');
-      });
+      method.subscribe(
+        (response: any) => {
+          this.onCloseRuleModel.emit({
+            status: true,
+          });
+          $('#addRuleModal').modal('hide');
+          this.isEdit = false;
+          this.toasterService.showSuccess(response.message, this.title + 'Rule');
+          this.closeRuleModal(true);
+          this.isUpdateApiCall = false;
+        },
+        (err: HttpErrorResponse) => {
+          this.isUpdateApiCall = false;
+          this.toasterService.showError(err.message, this.title + 'Rule');
+        }
+      );
     } else {
       let method;
       if (!this.asset) {
-      method = !this.ruleModel.rule_type ? this.assetModelService.createNewCloudModelRule(this.contextApp.app, this.name, this.ruleModel) :
-      this.assetModelService.createNewEdgeModelRule(this.contextApp.app, this.name, this.ruleModel);
+        method = !this.ruleModel.rule_type
+          ? this.assetModelService.createNewCloudModelRule(this.contextApp.app, this.name, this.ruleModel)
+          : this.assetModelService.createNewEdgeModelRule(this.contextApp.app, this.name, this.ruleModel);
       } else {
-        method = !this.ruleModel.rule_type ? this.assetService.createNewCloudAssetRule(this.contextApp.app, this.name, this.ruleModel) :
-      this.assetService.createNewEdgeAssetRule(this.contextApp.app, this.name, this.ruleModel);
+        method = !this.ruleModel.rule_type
+          ? this.assetService.createNewCloudAssetRule(this.contextApp.app, this.name, this.ruleModel)
+          : this.assetService.createNewEdgeAssetRule(this.contextApp.app, this.name, this.ruleModel);
       }
-      method.subscribe((response: any) => {
-        this.onCloseRuleModel.emit({
-          status: true
-        });
-        this.toasterService.showSuccess(response.message, this.title + 'Rule');
-        this.closeRuleModal(true);
-        this.isUpdateApiCall = false;
-      }, (err: HttpErrorResponse) => {
-        this.isUpdateApiCall = false;
-        this.toasterService.showError(err.message, this.title + 'Rule');
-      });
+      method.subscribe(
+        (response: any) => {
+          this.onCloseRuleModel.emit({
+            status: true,
+          });
+          this.toasterService.showSuccess(response.message, this.title + 'Rule');
+          this.closeRuleModal(true);
+          this.isUpdateApiCall = false;
+        },
+        (err: HttpErrorResponse) => {
+          this.isUpdateApiCall = false;
+          this.toasterService.showError(err.message, this.title + 'Rule');
+        }
+      );
     }
   }
 
   findOperator(id) {
-    return this.operatorList.find(optr => optr.id === id).value;
+    return this.operatorList.find((optr) => optr.id === id).value;
   }
-
-
-
 }

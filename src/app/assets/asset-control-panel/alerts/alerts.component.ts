@@ -11,10 +11,9 @@ declare var $: any;
 @Component({
   selector: 'app-alerts',
   templateUrl: './alerts.component.html',
-  styleUrls: ['./alerts.component.css']
+  styleUrls: ['./alerts.component.css'],
 })
 export class AlertsComponent implements OnInit, OnDestroy {
-
   alertFilter: any = {};
   alerts: any[] = [];
   contextApp: any;
@@ -32,7 +31,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private route: ActivatedRoute,
     private toasterService: ToasterService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -52,26 +51,30 @@ export class AlertsComponent implements OnInit, OnDestroy {
         {
           name: 'Code',
           key: 'code',
-          headerClass: 'w-5'
+          headerClass: 'w-5',
         },
         {
-          name: 'Timestamp',
+          name: 'Alert Start Time',
           key: 'local_created_date',
         },
         {
+          name: 'Alert End Time',
+          key: 'local_end_created_date',
+        },
+        {
           name: 'Source',
-          key: 'source'
+          key: 'source',
         },
         {
           name: 'Message',
-          key: 'message'
+          key: 'message',
         },
         {
           name: '',
           key: undefined,
-          headerClass: 'w-5'
-        }
-      ]
+          headerClass: 'w-5',
+        },
+      ],
     };
     // if (this.componentState === CONSTANTS.IP_GATEWAY) {
     //   // this.alertTableConfig.data.splice(1, 1);
@@ -82,7 +85,6 @@ export class AlertsComponent implements OnInit, OnDestroy {
     // }
     this.loadFromCache();
     this.alertFilter.epoch = true;
-
   }
 
   loadFromCache() {
@@ -113,7 +115,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
       filterObj.from_date = filterObj.from_date;
       filterObj.to_date = filterObj.to_date;
     }
-    const obj = {...filterObj};
+    const obj = { ...filterObj };
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'Get Alert Data');
       this.isAlertLoading = false;
@@ -129,57 +131,65 @@ export class AlertsComponent implements OnInit, OnDestroy {
     }
     delete obj.dateOption;
     this.alertFilter = filterObj;
-    this.apiSubscriptions.push(this.assetService.getAssetAlerts(obj).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.alerts = response.data;
-          this.alerts.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
-        }
-        if (this.alertFilter.dateOption !== 'Custom Range') {
-          this.alertTableConfig.dateRange = this.alertFilter.dateOption;
-        }
-        else {
-          this.alertTableConfig.dateRange = 'this selected range';
-        }
-        this.isAlertLoading = false;
-      }, error => this.isAlertLoading = false
-    ));
+    this.apiSubscriptions.push(
+      this.assetService.getAssetAlertAndAlertEndEvents(obj).subscribe(
+        (response: any) => {
+          if (response && response.data) {
+            this.alerts = response.data;
+            this.alerts.forEach((item) => {
+              item.local_created_date = this.commonService.convertUTCDateToLocal(item.start_event_message_date);
+              item.local_end_created_date = this.commonService.convertUTCDateToLocal(item.end_event_message_date);
+              if (item.source?.toLowerCase() === 'asset') {
+                item.source = 'External';
+              }
+            });
+          }
+          if (this.alertFilter.dateOption !== 'Custom Range') {
+            this.alertTableConfig.dateRange = this.alertFilter.dateOption;
+          } else {
+            this.alertTableConfig.dateRange = 'this selected range';
+          }
+          this.isAlertLoading = false;
+        },
+        (error) => (this.isAlertLoading = false)
+      )
+    );
   }
 
   getAlertMessageData(alert) {
     return new Promise((resolve) => {
       const obj = {
         app: alert.app,
-        id: alert.id,
+        id: alert.start_event_id,
         asset_id: this.asset.asset_id,
         from_date: null,
         to_date: null,
-        epoch: true
+        epoch: true,
       };
-      const epoch =  this.commonService.convertDateToEpoch(alert.message_date);
-      obj.from_date = epoch ? (epoch - 300) : null;
-      obj.to_date = (epoch ? (epoch + 300) : null);
-      this.apiSubscriptions.push(this.assetService.getAssetMessageById(obj, 'alert').subscribe(
-        (response: any) => {
+      const epoch = this.commonService.convertDateToEpoch(alert.start_event_message_date);
+      obj.from_date = epoch ? epoch - 300 : null;
+      obj.to_date = epoch ? epoch + 300 : null;
+      this.apiSubscriptions.push(
+        this.assetService.getAssetMessageById(obj, 'alert').subscribe((response: any) => {
           resolve(response.message);
-        }
-      ));
+        })
+      );
     });
   }
 
   openAlertMessageModal(obj) {
     if (obj.type === this.alertTableConfig.type) {
-    this.modalConfig = {
-      jsonDisplay: true,
-      isDisplaySave: false,
-      isDisplayCancel: true
-    };
-    this.selectedAlert = JSON.parse(JSON.stringify(obj.data));
-    this.getAlertMessageData(obj.data).then(message => {
-      this.selectedAlert.message = message;
-    });
-    // this.selectedAlert = obj.data;
-    $('#alertMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      this.modalConfig = {
+        jsonDisplay: true,
+        isDisplaySave: false,
+        isDisplayCancel: true,
+      };
+      this.selectedAlert = JSON.parse(JSON.stringify(obj.data));
+      this.getAlertMessageData(obj.data).then((message) => {
+        this.selectedAlert.message = message;
+      });
+      // this.selectedAlert = obj.data;
+      $('#alertMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }
 
@@ -191,7 +201,6 @@ export class AlertsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.apiSubscriptions.forEach(subscribe => subscribe.unsubscribe());
+    this.apiSubscriptions.forEach((subscribe) => subscribe.unsubscribe());
   }
-
 }

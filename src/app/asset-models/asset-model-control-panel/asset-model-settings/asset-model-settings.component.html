@@ -3,23 +3,26 @@
 
     <ul class="nav">
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="isSettingsEditable = true;" *ngIf="!isSettingsEditable" [class.disabled]="isSaveSettingAPILoading  || assetModel.freezed">
+        <a class="nav-link" href="javascript:void(0)" (click)="isSettingsEditable = true;" *ngIf="!isSettingsEditable"
+          [class.disabled]="isSaveSettingAPILoading  || assetModel.freezed">
           <i class="fa fa-fw fa-edit"></i>
           <span class="text-secondary">Edit</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="onCancelClick()" *ngIf="isSettingsEditable" [class.disabled]="isSaveSettingAPILoading || assetModel.freezed">
+        <a class="nav-link" href="javascript:void(0)" (click)="onCancelClick()" *ngIf="isSettingsEditable"
+          [class.disabled]="isSaveSettingAPILoading || assetModel.freezed">
           <i class="fa fa-fw fa-close"></i>
           <span class="text-secondary">Cancel</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="saveSettings()" *ngIf="isSettingsEditable" [class.disabled]="isSaveSettingAPILoading || assetModel.freezed">
+        <a class="nav-link" href="javascript:void(0)" (click)="saveSettings()" *ngIf="isSettingsEditable"
+          [class.disabled]="isSaveSettingAPILoading || assetModel.freezed">
           <i class="fa fa-fw fa-save"></i>
           <span class="text-secondary">Save</span></a>
       </li>
       <li class="nav-item" *ngIf="isSaveSettingAPILoading">
-      <a class="nav-link" href="javascript:void(0)">
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+        <a class="nav-link" href="javascript:void(0)">
+          <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
         </a>
       </li>
     </ul>
@@ -28,7 +31,7 @@
 <div class="table-responsive">
   <div class="tableFixHead">
     <accordion [closeOthers]="true" class="p-3" *ngIf="originalAssetModel?.metadata">
-      <accordion-group heading=""  [panelClass]="'customClass'">
+      <accordion-group heading="" [panelClass]="'customClass'">
         <ng-container accordion-heading>
           <a class="btn">
             Data Ingestion Setting
@@ -37,16 +40,17 @@
         <div class="row col-md-12">
           <input type="radio" class="mt-1" name="visible" value="changed_props" [disabled]="!isSettingsEditable"
             id="visible_1" [(ngModel)]="assetModel.metadata.data_ingestion_settings.value" />
-            <label class="form-label">&nbsp;Ingest Only Changed Properties</label> &nbsp;
+          <label class="form-label ml-2">&nbsp;Ingest Only Changed Properties</label> &nbsp;
 
         </div>
         <div class="row col-md-12">
-          <input  class="mt-1" type="radio" name="visible" value="all_props_at_fixed_interval" [disabled]="!isSettingsEditable"
-            id="visible_2" [(ngModel)]="assetModel.metadata.data_ingestion_settings.value" />
-            <label class="form-label">&nbsp;Ingest All Properties</label> &nbsp;
+          <input class="mt-1" type="radio" name="visible" value="all_props_at_fixed_interval"
+            [disabled]="!isSettingsEditable" id="visible_2"
+            [(ngModel)]="assetModel.metadata.data_ingestion_settings.value" />
+          <label class="form-label ml-2">&nbsp;Ingest All Properties</label> &nbsp;
         </div>
       </accordion-group>
-      <accordion-group heading=""  [panelClass]="'customClass'">
+      <accordion-group heading="" [panelClass]="'customClass'">
         <ng-container accordion-heading>
           <a class="btn">
             Measurement Frequency Setting
@@ -89,7 +93,7 @@
           </tbody>
         </table>
       </accordion-group>
-      <accordion-group heading=""  [panelClass]="'customClass'">
+      <accordion-group heading="" [panelClass]="'customClass'">
         <ng-container accordion-heading>
           <a class="btn">
             Telemetry Mode Settings
@@ -106,36 +110,19 @@
               </td>
             </tr>
             <tr>
-              <td style="width: 50%;">G2 Normal mode Frequency (In Sec): </td>
-              <td>
-                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
-                  [(ngModel)]="assetModel.metadata.measurement_settings.g2_ingestion_frequency_in_ms"
-                  name="g2_frequency_in_normal" placeholder="Frequency" [disabled]="!isSettingsEditable">
-              </td>
-            </tr>
-            <tr>
-              <td style="width: 50%;">G3 Normal mode Frequency (In Sec): </td>
-              <td>
-                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
-                  [(ngModel)]="assetModel.metadata.measurement_settings.g3_ingestion_frequency_in_ms"
-                  name="g3_frequency_in_normal" placeholder="Frequency" [disabled]="!isSettingsEditable">
-              </td>
-            </tr>
-
-            <!-- <tr>
-              <td style="width: 50%;">Turbo mode Frequency (In Sec): </td>
-              <td>
-                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
-                  [(ngModel)]="assetModel.metadata.measurement_settings.turbo_mode_frequency"
-                  name="frequency_in_turbo" placeholder="Frequency">
-              </td>
-            </tr> -->
-            <tr>
               <td style="width: 50%;">G1 Turbo mode Frequency (In Sec): </td>
               <td>
                 <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
                   [(ngModel)]="assetModel.metadata.measurement_settings.g1_turbo_mode_frequency_in_ms"
                   name="g1_frequency_in_turbo" placeholder="Frequency" [disabled]="!isSettingsEditable">
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 50%;">G2 Normal mode Frequency (In Sec): </td>
+              <td>
+                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                  [(ngModel)]="assetModel.metadata.measurement_settings.g2_ingestion_frequency_in_ms"
+                  name="g2_frequency_in_normal" placeholder="Frequency" [disabled]="!isSettingsEditable">
               </td>
             </tr>
             <tr>
@@ -147,6 +134,16 @@
               </td>
             </tr>
             <tr>
+              <td style="width: 50%;">G3 Normal mode Frequency (In Sec): </td>
+              <td>
+                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                  [(ngModel)]="assetModel.metadata.measurement_settings.g3_ingestion_frequency_in_ms"
+                  name="g3_frequency_in_normal" placeholder="Frequency" [disabled]="!isSettingsEditable">
+              </td>
+            </tr>
+
+
+            <tr>
               <td style="width: 50%;">G3 Turbo mode Frequency (In Sec): </td>
               <td>
                 <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
@@ -155,11 +152,11 @@
               </td>
             </tr>
             <tr>
-              <td >Turbo mode Timeout (In Sec): </td>
+              <td>Turbo mode Timeout (In Sec): </td>
               <td>
-                  <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
-                    [(ngModel)]="assetModel.metadata.telemetry_mode_settings.turbo_mode_timeout_time" name="timeout_in_turbo"
-                    placeholder="Timeout" [disabled]="!isSettingsEditable">
+                <input type="number" class="form-control form-control-sm bg-light border-0 small" min="0"
+                  [(ngModel)]="assetModel.metadata.telemetry_mode_settings.turbo_mode_timeout_time"
+                  name="timeout_in_turbo" placeholder="Timeout" [disabled]="!isSettingsEditable">
               </td>
             </tr>
           </tbody>

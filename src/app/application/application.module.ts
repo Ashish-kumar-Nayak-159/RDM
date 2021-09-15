@@ -27,7 +27,7 @@ import { MapViewHomeComponent } from './map-view-home/map-view-home.component';
 import { ApplicationOrgTreeComponent } from './application-setting/application-org-tree/application-org-tree.component';
 import { ApplicationDashboardConfigurationComponent } from './application-setting/application-dashboard-configuration/application-dashboard-configuration.component';
 import { ApplicationEmailAliasComponent } from './application-setting/application-email-alias/application-email-alias.component';
-
+import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 
 @NgModule({
   declarations: [
@@ -47,7 +47,7 @@ import { ApplicationEmailAliasComponent } from './application-setting/applicatio
     MapViewHomeComponent,
     ApplicationOrgTreeComponent,
     ApplicationDashboardConfigurationComponent,
-    ApplicationEmailAliasComponent
+    ApplicationEmailAliasComponent,
   ],
   imports: [
     CommonModule,
@@ -62,10 +62,9 @@ import { ApplicationEmailAliasComponent } from './application-setting/applicatio
     AgmCoreModule,
     AgmMarkerClustererModule,
     NgSelectModule,
-    TooltipModule
+    TooltipModule,
+    NgxIntlTelInputModule,
   ],
-  providers: [
-    {provide: OWL_DATE_TIME_LOCALE, useValue: {useUtc: true}}
-  ]
+  providers: [{ provide: OWL_DATE_TIME_LOCALE, useValue: { useUtc: true } }],
 })
-export class ApplicationModule { }
+export class ApplicationModule {}

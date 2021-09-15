@@ -14,7 +14,7 @@
           Edge Rules</a>
       </li>
       <li class="nav-item" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1">
-        <a class="nav-link" (click)="addRule()"  href="javascript:void(0)"  [class.disabled]="assetModel.freezed"
+        <a class="nav-link" (click)="addRule()" href="javascript:void(0)" [class.disabled]="assetModel.freezed"
           [ngClass]="{'active': isAddRule }">
           <i class="fa fa-fw fa-plus"></i>
           Add</a>
@@ -31,92 +31,94 @@
         Enter below details to create a cloud or edge rule.
       </div>
       <app-add-rule [isModel]="true" [name]="assetModel.name" [isEdit]="isEdit" [ruleData]="ruleData"
-       ></app-add-rule>
+        (onCloseRuleModel)="onCloseRuleModel($event)"></app-add-rule>
     </div>
     <div *ngIf="!isAddRule">
       <p class="tab-bar mb-0">Following rules will run on all assets of this model.</p>
 
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th></th>
-          <th>No</th>
-          <th>Name</th>
-          <th>Code</th>
-          <th>Updated On</th>
-          <th *ngIf="selectedTab === 'Cloud'">Deployed On</th>
-          <!-- <th>Description</th> -->
-          <!-- <th>Type</th> -->
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-      <ng-container *ngIf="!isRulesLaoading && rules.length > 0">
-        <ng-container  *ngFor="let rule of rules; let i = index">
+      <table class="table table-hover">
+        <thead>
           <tr>
-            <td class="pl-3">
-              <a href="javascript:void(0)" (click)="onToggleRows(i, rule, true)" class="mr-1">
-              <i [ngClass]="toggleRows[selectedTab + '_' + i] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
-              </a>
-            </td>
-            <td>{{i + 1}}</td>
-            <td>{{rule.name}}</td>
-            <td>{{rule.code}}</td>
-            <td>{{rule.local_updated_date}}</td>
-            <td *ngIf="rule.type === 'Cloud'">{{rule.local_deployed_on}}</td>
-            <!-- <td>{{rule.description}}</td> -->
-            <!-- <td>{{rule.type}}</td> -->
-            <td>
-              <a href="javascript:void(0)" (click)="onToggleRows(i, rule, true)" class="mr-1"
-               placement="bottom" tooltip="View">
-              <i class="fa fa-fw fa-eye"></i>
-              </a>
-              <a href="javascript:void(0)" (click)="onToggleRows(i, rule)" class="mr-1"
-              *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
-              [class.disabled]="assetModel.freezed" placement="bottom" tooltip="Edit">
-              <i class="fa fa-fw fa-edit"></i>
-              </a>
-              <a href="javascript:void(0)" (click)="onDeleteRule(rule)" class="mr-1"
-              *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
-              placement="bottom" tooltip="Delete" [class.disabled]="assetModel.freezed">
-                <i class="fa fa-fw fa-trash"></i>
-              </a>
-              <a href="javascript:void(0)" (click)="deployRule(rule)" *ngIf="rule.type === 'Cloud' &&
-              decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 &&
-              ( !rule.epoch_deployed_on || rule.epoch_updated_date - rule.epoch_deployed_on > 0)"
-              placement="bottom" tooltip="Deploy" [class.disabled]="assetModel.freezed" >
-                <i class="fa fa-fw fa-sync"></i>
-              </a>
-              <a href="javascript:void(0)" (click)="deployRule(rule, true)" *ngIf="rule.type === 'Cloud' &&
-              decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 &&
-                ( rule.epoch_deployed_on && rule.epoch_updated_date - rule.epoch_deployed_on < 0)"
-                placement="bottom" tooltip="Revert" [class.disabled]="assetModel.freezed" >
-                <i class="fa fa-fw fa-undo"></i>
-              </a>
-              <!-- <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isDeleteRuleLoading"></i> -->
-            </td>
+            <th></th>
+            <th>No</th>
+            <th>Name</th>
+            <th>Code</th>
+            <th>Updated On</th>
+            <th *ngIf="selectedTab === 'Cloud'">Deployed On</th>
+            <!-- <th>Description</th> -->
+            <!-- <th>Type</th> -->
+            <th>Actions</th>
           </tr>
-          <tr *ngIf="toggleRows[selectedTab + '_' + i]" style="background-color:#fdfeff;">
-            <td colspan="7"  class="accordion-border">
-              <div class="col-12  my-2 accordion-padding">
-                <app-add-rule [isModel]="true" [name]="assetModel.name" [isEdit]="isEdit" [isView]="isView" [ruleData]="ruleData"
-                ></app-add-rule>
-              </div>
-            </td>
-          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="!isRulesLaoading && rules.length > 0">
+            <ng-container *ngFor="let rule of rules; let i = index">
+              <tr>
+                <td class="pl-3">
+                  <a href="javascript:void(0)" (click)="onToggleRows(i, rule, true)" class="mr-1">
+                    <i [ngClass]="toggleRows[selectedTab + '_' + i] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
+                  </a>
+                </td>
+                <td>{{i + 1}}</td>
+                <td>{{rule.name}}</td>
+                <td>{{rule.code}}</td>
+                <td>{{rule.local_updated_date}}</td>
+                <td *ngIf="rule.type === 'Cloud'">{{rule.local_deployed_on}}</td>
+                <!-- <td>{{rule.description}}</td> -->
+                <!-- <td>{{rule.type}}</td> -->
+                <td>
+                  <a href="javascript:void(0)" (click)="onToggleRows(i, rule, true)" class="mr-1" placement="bottom"
+                    tooltip="View">
+                    <i class="fa fa-fw fa-eye"></i>
+                  </a>
+                  <a href="javascript:void(0)" (click)="onToggleRows(i, rule, false, true)" class="mr-1"
+                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && rule.is_editable !== false"
+                    [class.disabled]="assetModel.freezed" placement="bottom" tooltip="Edit">
+                    <i class="fa fa-fw fa-edit"></i>
+                  </a>
+                  <a href="javascript:void(0)" (click)="onDeleteRule(rule)" class="mr-1"
+                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && rule.is_editable !== false"
+                    placement="bottom" tooltip="Delete" [class.disabled]="assetModel.freezed">
+                    <i class="fa fa-fw fa-trash"></i>
+                  </a>
+                  <a href="javascript:void(0)" (click)="deployRule(rule)" *ngIf="rule.type === 'Cloud' &&
+              decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 &&
+              rule.is_editable !== false &&
+              ( !rule.epoch_deployed_on || rule.epoch_updated_date - rule.epoch_deployed_on > 0)" placement="bottom"
+                    tooltip="Deploy" [class.disabled]="assetModel.freezed">
+                    <i class="fa fa-fw fa-sync"></i>
+                  </a>
+                  <a href="javascript:void(0)" (click)="deployRule(rule, true)" *ngIf="rule.type === 'Cloud' &&
+              decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 &&
+              rule.is_editable !== false &&
+                ( rule.epoch_deployed_on && rule.epoch_updated_date - rule.epoch_deployed_on < 0)" placement="bottom"
+                    tooltip="Revert" [class.disabled]="assetModel.freezed">
+                    <i class="fa fa-fw fa-undo"></i>
+                  </a>
+                  <!-- <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isDeleteRuleLoading"></i> -->
+                </td>
+              </tr>
+              <tr *ngIf="toggleRows[selectedTab + '_' + i]" style="background-color:#fdfeff;">
+                <td colspan="7" class="accordion-border">
+                  <div class="col-12  my-2 accordion-padding">
+                    <app-add-rule [isModel]="true" [name]="assetModel.name" [isEdit]="isEdit" [isView]="isView"
+                      [ruleData]="ruleData" (onCloseRuleModel)="onCloseRuleModel($event)"></app-add-rule>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
           </ng-container>
-        </ng-container>
-        <tr  *ngIf="isRulesLaoading">
-          <td colspan="7">
-            <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-          </td>
-        </tr>
-      <tr *ngIf="!isRulesLaoading && rules.length === 0">
-        <td colspan="7">No Rules available.</td>
-      </tr>
-      </tbody>
-    </table>
-   </div>
+          <tr *ngIf="isRulesLaoading">
+            <td colspan="7">
+              <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+            </td>
+          </tr>
+          <tr *ngIf="!isRulesLaoading && rules.length === 0">
+            <td colspan="7">No Rules available.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 

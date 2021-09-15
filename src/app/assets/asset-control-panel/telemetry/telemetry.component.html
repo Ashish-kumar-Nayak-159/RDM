@@ -1,41 +1,106 @@
-
 <div class="tab-bar">
   <div class="">
 
     <form class="form-inline">
       <div class="form-group">
-        <input type="number" min="1" id="countId"
-        name="count" class="form-control form-control-sm active record-input"
-        [(ngModel)]="telemetryFilter.count" name="count" >
+        <input type="number" min="1" id="countId" name="count" class="form-control form-control-sm active record-input"
+          [(ngModel)]="telemetryFilter.count" name="count">
       </div>
 
-      <div class="form-group left-inner-addon" >
+      <div class="form-group left-inner-addon">
         <i class="fa fa-calendar active"></i>
-        <input type="text"  class="form-control form-control-sm active date-range-picker" daterangepicker name="daterangeInput"
-        [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"  [(ngModel)]="selectedDateRange"
-        [tooltip]="selectedDateRange" placement="bottom"/>
+        <input type="text" class="form-control form-control-sm active date-range-picker" daterangepicker
+          name="daterangeInput" [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"
+          [(ngModel)]="selectedDateRange" [tooltip]="selectedDateRange" placement="bottom" />
       </div>
 
       <div class="form-group">
         <input type="checkbox" id="checkbox" min="1" name="checkbox" class="big-checkbox"
-        [(ngModel)]="telemetryFilter.isTypeEditable" (change)="telemetryFilter.aggregation_format = undefined; telemetryFilter.aggregation_minutes = undefined;">&nbsp;Sampling:
-        </div>
-			<div class="form-group input-group">
-        <input class="form-control form-control-sm bg-light" type="number" id="minutes" min="1"
-        name="minutes" [(ngModel)]="telemetryFilter.sampling_time" placeholder="Sampling" disabled
-        placement="bottom" tooltip="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development." style="width: 3em;" >
-        <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div></div>
-      <div class="form-group"><button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary" (click)="searchTelemetry(telemetryFilter)" ><i class="fas fa-search fa-sm"></i></button></div>
-        <div class="form-group"><button type="button"  class="btn btn-sm searchBtn btn-white" placement="bottom" tooltip="Clear Filters" (click)="clear();" > <img class="filter-clear-icon" src="./assets/img/filter.svg"></button></div>
-     </form>
+          [(ngModel)]="telemetryFilter.isTypeEditable"
+          (change)="telemetryFilter.aggregation_format = undefined; telemetryFilter.aggregation_minutes = undefined;">&nbsp;Sampling:
+      </div>
+      <div class="form-group input-group">
+        <input class="form-control form-control-sm bg-light" type="number" id="minutes" min="1" name="minutes"
+          [(ngModel)]="telemetryFilter.sampling_time" placeholder="Sampling" disabled placement="bottom"
+          tooltip="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development."
+          style="width: 3em;">
+        <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
+      </div>
+      <div class="form-group"><button type="button" placement="bottom" tooltip="Search"
+          class="btn btn-sm searchBtn btn-primary" (click)="searchTelemetry(telemetryFilter)"><i
+            class="fas fa-search fa-sm"></i></button></div>
+      <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-white" placement="bottom"
+          tooltip="Clear Filters" (click)="clear();"> <img class="filter-clear-icon"
+            src="./assets/img/filter.svg"></button></div>
+    </form>
 
 
   </div>
 </div>
 <div class="table-responsive">
   <div class="tableFixHead">
-    <app-common-table [tableData]="telemetry"  [tableConfig]="telemetryTableConfig" [isTableFilterSelected]="isFilterSelected"
-    [isTableDataLoading]="isTelemetryLoading" (viewMessageEvent)="openTelemetryMessageModal($event)"></app-common-table>
+    <!-- <app-common-table [tableData]="telemetry"  [tableConfig]="telemetryTableConfig" [isTableFilterSelected]="isFilterSelected"
+    [isTableDataLoading]="isTelemetryLoading" (viewMessageEvent)="openTelemetryMessageModal($event)"></app-common-table> -->
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Timestamp
+            <a (click)="sortOn('local_message_date', 'asc')"><i class="fa fa-caret-up"
+                [ngClass]="(getClass('local_message_date') === 'asc') ? 'text-primary' : (getClass('local_message_date') === 'desc'? 'text-gray' : 'text-secondary')"
+                style="font-size:1rem"></i></a>
+            <a (click)="sortOn('local_message_date', 'desc')"><i class="fa fa-caret-down"
+                [ngClass]="(getClass('local_message_date') === 'desc') ? 'text-primary' : (getClass('local_message_date') === 'asc'? 'text-gray' : 'text-secondary')"
+                style="font-size:1rem"></i> </a>
+          </th>
+          <th>IOT Hub Date
+            <a (click)="sortOn('local_iothub_date', 'asc')"><i class="fa fa-caret-up"
+                [ngClass]="(getClass('local_iothub_date') === 'asc') ? 'text-primary' : (getClass('local_iothub_date') === 'desc'? 'text-gray' : 'text-secondary')"
+                style="font-size:1rem"></i></a>
+            <a (click)="sortOn('local_iothub_date', 'desc')"><i class="fa fa-caret-down"
+                [ngClass]="(getClass('local_iothub_date') === 'desc') ? 'text-primary' : (getClass('local_iothub_date') === 'asc'? 'text-gray' : 'text-secondary')"
+                style="font-size:1rem"></i> </a>
+          </th>
+          <th>Database Record Date
+            <a (click)="sortOn('local_created_date', 'asc')"><i class="fa fa-caret-up"
+                [ngClass]="(getClass('local_created_date') === 'asc') ? 'text-primary' : (getClass('local_created_date') === 'desc'? 'text-gray' : 'text-secondary')"
+                style="font-size:1rem"></i></a>
+            <a (click)="sortOn('local_created_date', 'desc')"><i class="fa fa-caret-down"
+                [ngClass]="(getClass('local_created_date') === 'desc') ? 'text-primary' : (getClass('local_created_date') === 'asc'? 'text-gray' : 'text-secondary')"
+                style="font-size:1rem"></i> </a>
+          </th>
+          <th>Message</th>
+        </tr>
+
+      </thead>
+      <tbody>
+        <ng-container *ngIf="telemetry.length > 0 && !isTelemetryLoading && isFilterSelected">
+          <tr *ngFor="let c of telemetry; let i = index;">
+            <td>{{i+1}}</td>
+            <td>{{c.local_message_date}}</td>
+            <td>{{c.local_iothub_date}}</td>
+            <td>{{c.local_created_date}}</td>
+            <td><a (click)="openTelemetryMessageModal(c)" tooltip="View Process Parameter Message"><i
+                  class="fa fa-fw fa-eye"></i></a></td>
+          </tr>
+        </ng-container>
+        <tr *ngIf="telemetry.length === 0 && !isTelemetryLoading && isFilterSelected">
+          <td colspan="5">No telemetry data found for {{telemetryTableConfig.dateRange}}.
+            <p *ngIf="telemetryTableConfig.dateRange !== 'this selected range'; else differentMsg" class="pt-2">You can
+              choose large time window.</p>
+            <ng-template #differentMsg>
+              <p class="pt-2">You can choose different time window.</p>
+            </ng-template>
+          </td>
+        </tr>
+        <tr *ngIf="telemetry.length === 0 && !isTelemetryLoading && !isFilterSelected">
+          <td colspan="5"> Select filter and press search button to load the {{telemetryTableConfig.type}} data.</td>
+        </tr>
+        <tr *ngIf="isTelemetryLoading">
+          <td colspan="5"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 <div class="modal right fade" id="telemetryMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">

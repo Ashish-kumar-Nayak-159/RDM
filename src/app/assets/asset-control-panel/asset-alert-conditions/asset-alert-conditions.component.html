@@ -1,201 +1,214 @@
 <div class="tab-bar">
-    <div class="">
-      <ul class="nav">
-        <!-- <li class="nav-item">
+  <div class="">
+    <ul class="nav">
+      <!-- <li class="nav-item">
           <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Asset')"
           [ngClass]="{'active': selectedTab === 'Asset'}">
             <i class="fa fa-fw fa-laptop"></i>
             <span class="text-secondary">Asset Alerts
             </span></a>
           </li> -->
-          <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Edge')"
-             [ngClass]="{'active': selectedTab === 'Edge'}">
-              <i class="fab fa-fw fa-edge"></i>
-              <span class="text-secondary">Edge Alerts
-              </span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Cloud')"
-              [ngClass]="{'active': selectedTab === 'Cloud'}">
-                <i class="fa fa-fw fa-cloud"></i>
-                <span class="text-secondary">Cloud Alerts
-                </span></a>
-              </li>
-              <li class="nav-item"  *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
-          <a class="nav-link" href="javascript:void(0)" (click)="openAddAlertConditionModal()"
-          >
-            <i class="fa fa-fw fa-plus"></i>
-            <span class="text-secondary">Add Alert Condition
-            </span></a>
-        </li>
-      </ul>
-    </div>
+      <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Edge')"
+          [ngClass]="{'active': selectedTab === 'Edge'}">
+          <i class="fab fa-fw fa-edge"></i>
+          <span class="text-secondary">Edge Alerts
+          </span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Cloud')"
+          [ngClass]="{'active': selectedTab === 'Cloud'}">
+          <i class="fa fa-fw fa-cloud"></i>
+          <span class="text-secondary">Cloud Alerts
+          </span></a>
+      </li>
+      <li class="nav-item" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
+        <a class="nav-link" href="javascript:void(0)" (click)="openAddAlertConditionModal()">
+          <i class="fa fa-fw fa-plus"></i>
+          <span class="text-secondary">Add Alert Condition
+          </span></a>
+      </li>
+    </ul>
   </div>
+</div>
 
-  <div class="table-responsive">
-      <!-- <p class="tab-bar mb-0" *ngIf="selectedTab === 'Asset'"> Following alerts are read from PLC/Modbus registers...</p> -->
-      <p class="tab-bar mb-0" *ngIf="selectedTab === 'Edge'">These are the additional alerts conditions created by the user. Following alerts are possible by executing rules on Gateways...</p>
-      <p class="tab-bar mb-0" *ngIf="selectedTab === 'Cloud'">These are the additional alerts conditions created by the user. Following alerts are possible by executing rules on Cloud...</p>
+<div class="table-responsive">
+  <!-- <p class="tab-bar mb-0" *ngIf="selectedTab === 'Asset'"> Following alerts are read from PLC/Modbus registers...</p> -->
+  <p class="tab-bar mb-0" *ngIf="selectedTab === 'Edge'">These are the additional alerts conditions created by the user.
+    Following alerts are possible by executing rules on Gateways...</p>
+  <p class="tab-bar mb-0" *ngIf="selectedTab === 'Cloud'">These are the additional alerts conditions created by the
+    user. Following alerts are possible by executing rules on Cloud...</p>
 
-    <div class="tableFixHead table-fix-head-alert-conditions">
+  <div class="tableFixHead table-fix-head-alert-conditions">
 
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th></th>
-            <th></th>
-            <th>Alert Code</th>
-            <th>Alert Message</th>
-            <th>Actions</th>
-            <th *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <ng-container *ngIf="!isAlertConditionsLoading && alertConditions.length > 0">
-            <ng-container  *ngFor="let alert of alertConditions; let i = index">
-              <tr >
-                <td>
-                  <a href="javascript:void(0)" (click)="onToggleRows(i)">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th></th>
+          <th></th>
+          <th>Alert Code</th>
+          <th>Alert Message</th>
+          <th>Actions</th>
+          <th *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="!isAlertConditionsLoading && alertConditions.length > 0">
+          <ng-container *ngFor="let alert of alertConditions; let i = index">
+            <tr>
+              <td>
+                <a href="javascript:void(0)" (click)="onToggleRows(i)">
                   <i [ngClass]="toggleRows[selectedTab + '_' + i] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
-                  </a>
-                </td>
-                <td>{{i + 1}}</td>
-                <td><i placement="bottom" [tooltip]="alert.severity"  [style.color]="
+                </a>
+              </td>
+              <td>{{i + 1}}</td>
+              <td><i placement="bottom" [tooltip]="alert.severity" [style.color]="
                   (alert?.severity?.toLowerCase() === 'critical' ? '#cc0000' :
                   (alert?.severity?.toLowerCase() === 'error' ? '#fb5515' :
                   (alert?.severity?.toLowerCase() === 'warning' ? '#f6c23e' :
                   (alert?.severity?.toLowerCase() === 'informational' ? '#229954' : ''))
                   )
                   )" class="fa fa-exclamation-triangle"></i>
-                  {{alert.code}}</td>
-                <td>{{alert.message}}</td>
-                <td>
-                  <a href="javascript:void(0)" class="mr-2" placement="bottom" tooltip="Visualization" (click)="onClickOfViewActionIcon('Visualization', i)">
-                    <img class="img-icon" src="../../../../assets/img/visualization.png">
-                  </a>
-                  <a href="javascript:void(0)" class="mr-2" placement="bottom" tooltip="Recommendations" (click)="onClickOfViewActionIcon('Recommendations', i)"
-                  >
-                    <img class="img-icon" src="../../../../assets/img/recommendation.png">
-                  </a>
-                  <a href="javascript:void(0)" class="mr-2" placement="bottom" tooltip="Attachments" (click)="onClickOfViewActionIcon('Attachments', i)"
-                  >
-                    <i class="fa fa-paperclip"></i>
-                  </a>
+                {{alert.code}}</td>
+              <td>{{alert.message}}</td>
+              <td>
+                <a href="javascript:void(0)" class="mr-2" placement="bottom" tooltip="Visualization"
+                  (click)="onClickOfViewActionIcon('Visualization', i)">
+                  <img class="img-icon" src="../../../../assets/img/visualization.png">
+                </a>
+                <a href="javascript:void(0)" class="mr-2" placement="bottom" tooltip="Recommendations"
+                  (click)="onClickOfViewActionIcon('Recommendations', i)">
+                  <img class="img-icon" src="../../../../assets/img/recommendation.png">
+                </a>
+                <a href="javascript:void(0)" class="mr-2" placement="bottom" tooltip="Attachments"
+                  (click)="onClickOfViewActionIcon('Attachments', i)">
+                  <i class="fa fa-paperclip"></i>
+                </a>
 
-                  <a href="javascript:void(0)" placement="bottom" tooltip="Actions" (click)="onClickOfViewActionIcon('Actions', i)"
-                  >
-                    <i class="fa fa-tasks"></i>
-                  </a>
-                </td>
-                <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
-                  <a href="javascript:void(0)" (click)="openAddAlertConditionModal(alert)" class="mr-1"
-                  placement="bottom" tooltip="Edit">
-                    <i class="fa fa-fw fa-edit" ></i>
-                  </a>
-                  <a href="javascript:void(0)" (click)="openConfirmModal('confirmMessageModal', alert)"
-                  placement="bottom" tooltip="Delete Alert Condition" >
-                    <i class="fa fa-fw fa-trash"></i>
-                  </a>
-                </td>
-              </tr>
-              <tr *ngIf="toggleRows[selectedTab + '_' + i]" style="background-color:#fdfeff;">
-                <td colspan="6"  class="accordion-border" *ngIf="viewType === 'Visualization'">
-                  <div class="col-12  my-2 accordion-padding">
-                    <p *ngIf="alertObj?.visualization_widgets?.length === 0"> No Visualization widgets defined yet.</p>
-                    <p *ngIf="alertObj?.visualization_widgets?.length > 0"> Following widgets have been defined so far. You can define more.
+                <a href="javascript:void(0)" placement="bottom" tooltip="Actions"
+                  (click)="onClickOfViewActionIcon('Actions', i)">
+                  <i class="fa fa-tasks"></i>
+                </a>
+              </td>
+              <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
+                <a href="javascript:void(0)" (click)="openAddAlertConditionModal(alert)" class="mr-1" placement="bottom"
+                  tooltip="Edit">
+                  <i class="fa fa-fw fa-edit"></i>
+                </a>
+                <a href="javascript:void(0)" (click)="openConfirmModal('confirmMessageModal', alert)" placement="bottom"
+                  tooltip="Delete Alert Condition">
+                  <i class="fa fa-fw fa-trash"></i>
+                </a>
+              </td>
+            </tr>
+            <tr *ngIf="toggleRows[selectedTab + '_' + i]" style="background-color:#fdfeff;">
+              <td colspan="6" class="accordion-border" *ngIf="viewType === 'Visualization'">
+                <div class="col-12  my-2 accordion-padding">
+                  <p *ngIf="alertObj?.visualization_widgets?.length === 0"> No Visualization widgets defined yet.</p>
+                  <p *ngIf="alertObj?.visualization_widgets?.length > 0"> Following widgets have been defined so far.
+                    You can define more.
 
-                      <!-- <button type="button" class="btn btn-primary btn-sm mx-1 mt-n2" [disabled]="isCreateAlertConditionLoading"
+                    <!-- <button type="button" class="btn btn-primary btn-sm mx-1 mt-n2" [disabled]="isCreateAlertConditionLoading"
                       placement="bottom" tooltip="Add" (click)="addVisualizationWidget()" ><i class="fa fa-plus fa-sm"></i></button> -->
-                      <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
+                    <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
                       [disabled]="alertObj?.visualization_widgets?.length === 0 || isCreateAlertConditionLoading" placement="bottom" tooltip="Edit"
                       (click)="editWidgets()"><i class="fa fa-edit fa-sm"></i></button> -->
-                      <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" [disabled]="isCreateAlertConditionLoading"
-                      *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"
-                      placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()" ><i class="fa fa-save fa-sm"></i></button>
-                      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></i>
-                    </p>
-                  </div>
+                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                      [disabled]="isCreateAlertConditionLoading" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"
+                      placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()"><i
+                        class="fa fa-save fa-sm"></i></button>
+                    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></i>
+                  </p>
+                </div>
 
-                  <div class="col-12  my-2 accordion-padding" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
-                    <div class="form-inline" >
-                      <ng-container>
+                <div class="col-12  my-2 accordion-padding" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
+                  <div class="form-inline">
+                    <ng-container>
                       <div class="form-group">
                         <select class="form-control form-control-sm" id="template" name="model_type"
-                        [(ngModel)]="widgetName"
-                        >
+                          [(ngModel)]="widgetName">
                           <option [ngValue]="undefined">Select Widgets</option>
                           <ng-container *ngFor="let widget of widgets">
                             <option [ngValue]="widget.title">
-                            {{widget.title}}</option>
+                              {{widget.title}}</option>
                           </ng-container>
-                        </select></div>
-                        <div class="form-group">
+                        </select>
+                      </div>
+                      <div class="form-group">
                         <!-- <a href="javascript:void(0)" class="mx-1" (click)="addVisualizationWidget()">
                           <i class="fa fa-plus fa-sm"></i> </a> -->
-                          <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add" (click)="addVisualizationWidget()" >
-                            <i class="fa fa-plus fa-sm"></i></button>
-                        </div>
+                        <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
+                          (click)="addVisualizationWidget()">
+                          <i class="fa fa-plus fa-sm"></i></button>
+                      </div>
                     </ng-container>
-                    </div>
                   </div>
-                  <div class="col-12 my-2 accordion-padding" *ngIf="alertObj?.visualization_widgets?.length > 0">
-                    <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
-                      <ng-container *ngFor="let item of alertObj.visualization_widgets; let index = index">
-                        <span class="tag" >
-                          <span class="tag-text">{{item}}</span>
-                          <button class="tag-remove" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1" (click)="removeVisualizationWidget(index)" ></button>
-                        </span>
-                      </ng-container>
-                    </div>
+                </div>
+                <div class="col-12 my-2 accordion-padding" *ngIf="alertObj?.visualization_widgets?.length > 0">
+                  <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
+                    <ng-container *ngFor="let item of alertObj.visualization_widgets; let index = index">
+                      <span class="tag">
+                        <span class="tag-text">{{item}}</span>
+                        <button class="tag-remove" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"
+                          (click)="removeVisualizationWidget(index)"></button>
+                      </span>
+                    </ng-container>
                   </div>
+                </div>
 
-                </td>
-                <td colspan="6" class="accordion-border" *ngIf="viewType === 'Recommendations'">
+              </td>
+              <td colspan="6" class="accordion-border" *ngIf="viewType === 'Recommendations'">
 
-                  <div class="col-12 my-3 accordion-padding">Following recommendations have been pre-configured. You can configure more.
+                <div class="col-12 my-3 accordion-padding">Following recommendations have been pre-configured. You can
+                  configure more.
 
-                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"
-                    placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()" ><i class="fa fa-save fa-sm"></i></button></div>
-                    <div class="col-12 my-2 accordion-padding">
-                    <h6 >Debugging Steps: </h6>
-                    <!-- <a  class=" mx-1" href="javascript:void(0)"
+                  <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                    *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1" placement="bottom" tooltip="Save"
+                    (click)="onUpdateAlertConditions()"><i class="fa fa-save fa-sm"></i></button>
+                </div>
+                <div class="col-12 my-2 accordion-padding">
+                  <h6>Debugging Steps: </h6>
+                  <!-- <a  class=" mx-1" href="javascript:void(0)"
                     placement="bottom" tooltip="Add" (click)="addRecommendationStep()" ><i class="fa fa-plus fa-sm"></i></a> -->
-                     <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
+                  <!-- <button type="button" class="btn btn-danger btn-sm mx-1 mt-n2"
                      placement="bottom" tooltip="Edit" (click)="editSteps()"><i class="fa fa-edit fa-sm"></i></button> -->
-                     <div class="">
-                      <table id="mytable" width="100%" class="">
+                  <div class="">
+                    <table id="mytable" width="100%" class="">
                       <tbody>
-                        <ng-container  >
-                        <tr *ngFor="let step of alertObj.recommendations; let i = index;" style="background-color:transparent">
-                        <ng-container >
-                          <td style="width: 15%;">Step - {{i + 1}}</td>
-                          <td style="width: 30%;">{{step.description}}</td>
-                          <td style="width: 30%;">{{step.activity}} Activity</td>
+                        <ng-container>
+                          <tr *ngFor="let step of alertObj.recommendations; let i = index;"
+                            style="background-color:transparent">
+                            <ng-container>
+                              <td style="width: 15%;">Step - {{i + 1}}</td>
+                              <td style="width: 30%;">{{step.description}}</td>
+                              <td style="width: 30%;">{{step.activity}} Activity</td>
 
-                          <td style="width: 10%;" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
-                              <a href="javascript:void(0)" class="ml-2" (click)="removeRecommendationStep(i)" placement="bottom" tooltip="Remove"
-                              >
-                                <i class="fa fa-trash fa-sm"></i> </a>
-                          </td>
-                        </ng-container>
-                        </tr>
-                        <tr *ngIf="recommendationObj && decodedToken?.privileges?.indexOf('ASMM') > -1" style="background-color:transparent">
-                          <ng-container >
-                            <td style="width: 15%;">
-                              Step - {{alertObj.recommendations.length + 1}}
-                            </td>
-                            <td style="width: 30%;">
-                              <input type="text"  id="description" name="description" size="20" class="form-control form-control-sm"
-                              [(ngModel)]="recommendationObj.description">
-                            </td>
-                            <td style="width: 30%;">
-                              <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="recommendationObj.activity">
-                                <option [ngValue]="undefined">Select Activity</option>
-                                <option [ngValue]="'Auto'">Auto Activity</option>
-                                <option [ngValue]="'Manual'">Manual Activity</option>
-                              </select></td>
-                            <!-- <td style="width: 30%;" >
+                              <td style="width: 10%;" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
+                                <a href="javascript:void(0)" class="ml-2" (click)="removeRecommendationStep(i)"
+                                  placement="bottom" tooltip="Remove">
+                                  <i class="fa fa-trash fa-sm"></i> </a>
+                              </td>
+                            </ng-container>
+                          </tr>
+                          <tr *ngIf="recommendationObj && decodedToken?.privileges?.indexOf('ASMM') > -1"
+                            style="background-color:transparent">
+                            <ng-container>
+                              <td style="width: 15%;">
+                                Step - {{alertObj.recommendations.length + 1}}
+                              </td>
+                              <td style="width: 30%;">
+                                <input type="text" id="description" name="description" size="20"
+                                  class="form-control form-control-sm" [(ngModel)]="recommendationObj.description">
+                              </td>
+                              <td style="width: 30%;">
+                                <select class="form-control form-control-sm" id="template" name="model_type"
+                                  [(ngModel)]="recommendationObj.activity">
+                                  <option [ngValue]="undefined">Select Activity</option>
+                                  <option [ngValue]="'Auto'">Auto Activity</option>
+                                  <option [ngValue]="'Manual'">Manual Activity</option>
+                                </select>
+                              </td>
+                              <!-- <td style="width: 30%;" >
                               <select *ngIf="recommendationObj.activity === 'Auto'" class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="recommendationObj.command">
                                 <option [ngValue]="undefined">Select Command</option>
                                 <ng-container *ngFor="let method of assetMethods">
@@ -205,14 +218,15 @@
                               </select>
                               </td> -->
                               <td>
-                                <a href="javascript:void(0)" class="ml-2"  (click)="addRecommendationStep()" placement="bottom" tooltip="Add">
+                                <a href="javascript:void(0)" class="ml-2" (click)="addRecommendationStep()"
+                                  placement="bottom" tooltip="Add">
                                   <i class="fa fa-plus fa-sm"></i> </a>
                                 <!-- <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add" (click)="addRecommendationStep()" >
                                   <i class="fa fa-plus fa-sm"></i></button> -->
                               </td>
 
                             </ng-container>
-                        </tr>
+                          </tr>
                         </ng-container>
                       </tbody>
                     </table>
@@ -251,15 +265,17 @@
                       </span>
                     </ng-container>
                   </div> -->
-                  </div>
-                </td>
-                <td colspan="6"  class="accordion-border" *ngIf="viewType === 'Attachments'">
+                </div>
+              </td>
+              <td colspan="6" class="accordion-border" *ngIf="viewType === 'Attachments'">
 
-                  <div class="col-12 accordion-padding my-2">Following attachments have been added. You can add more.
+                <div class="col-12 accordion-padding my-2">Following attachments have been added. You can add more.
 
-                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"
-                    placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()"><i class="fa fa-save fa-sm"></i></button></div>
-                  <div class="col-12 my-3 accordion-padding ">
+                  <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                    *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1" placement="bottom" tooltip="Save"
+                    (click)="onUpdateAlertConditions()"><i class="fa fa-save fa-sm"></i></button>
+                </div>
+                <div class="col-12 my-3 accordion-padding ">
 
                   <div class="">
                     <h6>Email / Whatsapp Attachments: </h6>
@@ -270,49 +286,55 @@
                   </div>
 
                   <div class="" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
-                    <div class="form-inline" >
+                    <div class="form-inline">
                       <ng-container>
-                      <div class="form-group" >
-                        <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="docName"
-                        >
-                          <option [ngValue]="undefined">Select Document</option>
-                          <ng-container *ngFor="let document of documents">
-                            <option [ngValue]="document.name">
-                            {{document.name}}</option>
-                          </ng-container>
-                        </select>
-                        </div><div class="form-group" >
-                        <!-- <a href="javascript:void(0)" class="mx-1" (click)="addReferenceDocument()">
+                        <div class="form-group">
+                          <select class="form-control form-control-sm" id="template" name="model_type"
+                            [(ngModel)]="docName">
+                            <option [ngValue]="undefined">Select Document</option>
+                            <ng-container *ngFor="let document of documents">
+                              <option [ngValue]="document.name">
+                                {{document.name}}</option>
+                            </ng-container>
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <!-- <a href="javascript:void(0)" class="mx-1" (click)="addReferenceDocument()">
                           <i class="fa fa-plus fa-sm"></i> </a> -->
-                          <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add"  (click)="addReferenceDocument()" >
+                          <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add"
+                            (click)="addReferenceDocument()">
                             <i class="fa fa-plus fa-sm"></i></button>
-                      </div>
+                        </div>
 
-                    </ng-container>
+                      </ng-container>
                     </div>
                   </div>
                   <!-- <h6 class="mt-1" *ngIf="alertObj?.reference_documents?.length === 0"> No Attachments added yet.</h6> -->
 
-                  <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;" *ngIf="alertObj?.reference_documents?.length > 0">
+                  <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;"
+                    *ngIf="alertObj?.reference_documents?.length > 0">
                     <ng-container *ngFor="let item of alertObj.reference_documents; let index = index">
-                      <span class="tag" >
+                      <span class="tag">
                         <span class="tag-text">{{item}}</span>
-                        <button class="tag-remove" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1" (click)="removeDocument(index)"></button>
+                        <button class="tag-remove" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"
+                          (click)="removeDocument(index)"></button>
                       </span>
                     </ng-container>
                   </div>
-                  </div>
-                </td>
+                </div>
+              </td>
 
 
-                <td colspan="6" *ngIf="viewType === 'Actions'" class="accordion-border">
-                  <div class="col-12  accordion-padding m-2">
-                    <h6>Actions:
-                      <button type="button" class="btn btn-success btn-sm mx-1" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1"
-                      placement="bottom" tooltip="Save" (click)="onUpdateAlertConditions()"><i class="fa fa-save fa-sm"></i></button></h6>
-                  </div>
-                  <div class="col-12 my-2">
-                    <!-- <div class="form-group accordion-padding mx-3">
+              <td colspan="6" *ngIf="viewType === 'Actions'" class="accordion-border">
+                <div class="col-12  accordion-padding m-2">
+                  <h6>Actions:
+                    <button type="button" class="btn btn-success btn-sm mx-1"
+                      *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1" placement="bottom" tooltip="Save"
+                      (click)="onUpdateAlertConditions()"><i class="fa fa-save fa-sm"></i></button>
+                  </h6>
+                </div>
+                <div class="col-12 my-2">
+                  <!-- <div class="form-group accordion-padding mx-3">
                       <input type="checkbox" class="form-check-input" id="email" name="email"[(ngModel)]="alertObj.actions.email.enabled"
                       [disabled]="decodedToken?.privileges?.indexOf('ASMM') === -1">
                       <label class="form-check-label" for="email">Email</label>
@@ -327,102 +349,96 @@
                       [disabled]="decodedToken?.privileges?.indexOf('ASMM') === -1">
                       <label class="form-check-label" for="sns">SMS</label>
                     </div> -->
-                    <div class="form-group accordion-padding mx-3 ">
-                    
-                      <input type="checkbox" class="form-check-input" id="email" name="email"[(ngModel)]="alertObj.actions.email.enabled"
+                  <div class="form-group accordion-padding mx-3 ">
+
+                    <input type="checkbox" class="form-check-input" id="email" name="email"
+                      [(ngModel)]="alertObj.actions.email.enabled"
                       [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
-                      <label class="form-check-label" for="email">Email</label>
-                   
-                      <div class="row" *ngIf="alertObj.actions.email.enabled" >
-                        <div class="col-auto ml-4 my-2">
-                          <input type="checkbox" class="form-check-input" id="emailcfs" name="emailcfs" [(ngModel)]="alertObj.actions.email.client_field_support_enabled"
-                          [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
-                          <label class="form-check-label" for="emailcfs">Client Field Support</label>
-                        </div>
-                      </div>
-                      <div class="row my-2" *ngIf="alertObj.actions.email.enabled" >
-                        <div class="col-auto">
-                          <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
-                            <div class="form-inline" >
-                              <ng-container>
-                              <div class="form-group" >
-                                <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="groupName.email"
-                                >
-                                  <option [ngValue]="undefined">Select  User Group</option>
-                                  <ng-container *ngFor="let group of userGroups">
-                                    <option [ngValue]="group.group_name">
-                                    {{group.group_name}}</option>
-                                  </ng-container>
-                                </select>
-                                </div>
-                                <div class="form-group" >
-                                    <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add"  (click)="addUserGroup('email')" >
-                                    <i class="fa fa-plus fa-sm"></i></button>
-                                </div>
-                            </ng-container>
-                            </div>
-                            </div>
-                            
-                            <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;" *ngIf="alertObj?.actions?.email?.recipients?.length > 0">
-                              <ng-container *ngFor="let item of alertObj.actions.email.recipients; let index = index">
-                                <span class="tag" >
-                                  <span class="tag-text">{{item}}</span>
-                                  <button class="tag-remove"  (click)="removeUserGroup(index, 'email')"
-                                  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"></button>
-                                </span>
-                              </ng-container>
-                            </div>
-                        </div>
-                      </div>
-                    
-                  </div>
+                    <label class="form-check-label" for="email">Email</label>
 
-                  <hr> 
-
-                  <div class="form-group accordion-padding mx-3">
-                    <input type="checkbox" class="form-check-input" id="whatsapp" name="whatsapp"[(ngModel)]="alertObj.actions.whatsapp.enabled"
-                    [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
-                    <label class="form-check-label" for="whatsapp">Whatsapp</label>
-
-                    <div class="row" *ngIf="alertObj.actions.whatsapp.enabled" >
-                      <div class="col-auto ml-4 my-2">
-                        <input type="checkbox" class="form-check-input" id="whatsappcfs" name="whatsappcfs" [(ngModel)]="alertObj.actions.whatsapp.client_field_support_enabled"
-                        [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
-                        <label class="form-check-label" for="whatsappcfs">Client Field Support</label>
-                      </div>
-                    </div>
-                    <div class="row my-2" *ngIf="alertObj.actions.whatsapp.enabled" >
+                    <div class="row my-2" *ngIf="alertObj.actions.email.enabled">
                       <div class="col-auto">
                         <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
-                          <div class="form-inline" >
+                          <div class="form-inline">
                             <ng-container>
-                            <div class="form-group" >
-                              <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="groupName.whatsapp"
-                              >
-                                <option [ngValue]="undefined">Select  User Group</option>
-                                <ng-container *ngFor="let group of userGroups">
-                                  <option [ngValue]="group.group_name">
-                                  {{group.group_name}}</option>
-                                </ng-container>
-                              </select>
+                              <div class="form-group">
+                                <select class="form-control form-control-sm" id="template" name="model_type"
+                                  [(ngModel)]="groupName.email">
+                                  <option [ngValue]="undefined">Select User Group</option>
+                                  <option value="Client Field Support"> Client Field Support</option>
+                                  <ng-container *ngFor="let group of userGroups">
+                                    <option [ngValue]="group.group_name">
+                                      {{group.group_name}}</option>
+                                  </ng-container>
+                                </select>
                               </div>
-                              <div class="form-group" >
-                                  <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add"  (click)="addUserGroup('whatsapp')" >
+                              <div class="form-group">
+                                <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom"
+                                  tooltip="Add" (click)="addUserGroup('email')">
                                   <i class="fa fa-plus fa-sm"></i></button>
                               </div>
-                          </ng-container>
-                          </div>
-                          </div>
-                          
-                          <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;" *ngIf="alertObj?.actions?.whatsapp?.recipients?.length > 0">
-                            <ng-container *ngFor="let item of alertObj.actions.whatsapp.recipients; let index = index">
-                              <span class="tag" >
-                                <span class="tag-text">{{item}}</span>
-                                <button class="tag-remove" (click)="removeUserGroup(index, 'whatsapp')"
-                                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"></button>
-                              </span>
                             </ng-container>
                           </div>
+                        </div>
+
+                        <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;"
+                          *ngIf="alertObj?.actions?.email?.recipients?.length > 0">
+                          <ng-container *ngFor="let item of alertObj.actions.email.recipients; let index = index">
+                            <span class="tag">
+                              <span class="tag-text">{{item}}</span>
+                              <button class="tag-remove" (click)="removeUserGroup(index, 'email')"
+                                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"></button>
+                            </span>
+                          </ng-container>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <hr>
+
+                  <div class="form-group accordion-padding mx-3">
+                    <input type="checkbox" class="form-check-input" id="whatsapp" name="whatsapp"
+                      [(ngModel)]="alertObj.actions.whatsapp.enabled"
+                      [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
+                    <label class="form-check-label" for="whatsapp">Whatsapp</label>
+
+                    <div class="row my-2" *ngIf="alertObj.actions.whatsapp.enabled">
+                      <div class="col-auto">
+                        <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
+                          <div class="form-inline">
+                            <ng-container>
+                              <div class="form-group">
+                                <select class="form-control form-control-sm" id="template" name="model_type"
+                                  [(ngModel)]="groupName.whatsapp">
+                                  <option [ngValue]="undefined">Select User Group</option>
+                                  <option value="Client Field Support"> Client Field Support</option>
+                                  <ng-container *ngFor="let group of userGroups">
+                                    <option [ngValue]="group.group_name">
+                                      {{group.group_name}}</option>
+                                  </ng-container>
+                                </select>
+                              </div>
+                              <div class="form-group">
+                                <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom"
+                                  tooltip="Add" (click)="addUserGroup('whatsapp')">
+                                  <i class="fa fa-plus fa-sm"></i></button>
+                              </div>
+                            </ng-container>
+                          </div>
+                        </div>
+
+                        <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;"
+                          *ngIf="alertObj?.actions?.whatsapp?.recipients?.length > 0">
+                          <ng-container *ngFor="let item of alertObj.actions.whatsapp.recipients; let index = index">
+                            <span class="tag">
+                              <span class="tag-text">{{item}}</span>
+                              <button class="tag-remove" (click)="removeUserGroup(index, 'whatsapp')"
+                                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"></button>
+                            </span>
+                          </ng-container>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -431,79 +447,78 @@
 
                   <div class="form-group accordion-padding mx-3">
 
-                    <input type="checkbox" class="form-check-input" id="sms" name="sms"[(ngModel)]="alertObj.actions.sms.enabled"
-                    [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
+                    <input type="checkbox" class="form-check-input" id="sms" name="sms"
+                      [(ngModel)]="alertObj.actions.sms.enabled"
+                      [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
                     <label class="form-check-label" for="sms">SMS</label>
 
-                    <div class="row" *ngIf="alertObj.actions.sms.enabled" >
-                      <div class="col-auto ml-4 my-2">
-                        <input type="checkbox" class="form-check-input" id="smscfs" name="smscfs" [(ngModel)]="alertObj.actions.sms.client_field_support_enabled"
-                          [disabled]="decodedToken?.privileges?.indexOf('ASMMM') === -1">
-                          <label class="form-check-label" for="smscfs">Client Field Support</label>
-                      </div>
-                    </div>
-                    <div class="row my-2" *ngIf="alertObj.actions.sms.enabled" >
+
+                    <div class="row my-2" *ngIf="alertObj.actions.sms.enabled">
                       <div class="col-auto">
                         <div class="" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
-                          <div class="form-inline" >
+                          <div class="form-inline">
                             <ng-container>
-                            <div class="form-group" >
-                              <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="groupName.sms"
-                              >
-                                <option [ngValue]="undefined">Select  User Group</option>
-                                <ng-container *ngFor="let group of userGroups">
-                                  <option [ngValue]="group.group_name">
-                                  {{group.group_name}}</option>
-                                </ng-container>
-                              </select>
+                              <div class="form-group">
+                                <select class="form-control form-control-sm" id="template" name="model_type"
+                                  [(ngModel)]="groupName.sms">
+                                  <option [ngValue]="undefined">Select User Group</option>
+                                  <option value="Client Field Support"> Client Field Support</option>
+                                  <ng-container *ngFor="let group of userGroups">
+                                    <option [ngValue]="group.group_name">
+                                      {{group.group_name}}</option>
+                                  </ng-container>
+                                </select>
                               </div>
-                              <div class="form-group" >
-                                  <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom" tooltip="Add"  (click)="addUserGroup('sms')" >
+                              <div class="form-group">
+                                <button type="button" class="btn btn-primary btn-sm mx-1" placement="bottom"
+                                  tooltip="Add" (click)="addUserGroup('sms')">
                                   <i class="fa fa-plus fa-sm"></i></button>
                               </div>
-                          </ng-container>
-                          </div>
-                          </div>
-                          
-                          <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;" *ngIf="alertObj?.actions?.sms?.recipients?.length > 0">
-                            <ng-container *ngFor="let item of alertObj.actions.sms.recipients; let index = index">
-                              <span class="tag" >
-                                <span class="tag-text">{{item}}</span>
-                                <button class="tag-remove" (click)="removeUserGroup(index, 'sms')"
-                                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"></button>
-                              </span>
                             </ng-container>
                           </div>
+                        </div>
+
+                        <div class="tagsinput my-2" style="width: auto; height: auto;min-height: auto;"
+                          *ngIf="alertObj?.actions?.sms?.recipients?.length > 0">
+                          <ng-container *ngFor="let item of alertObj.actions.sms.recipients; let index = index">
+                            <span class="tag">
+                              <span class="tag-text">{{item}}</span>
+                              <button class="tag-remove" (click)="removeUserGroup(index, 'sms')"
+                                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"></button>
+                            </span>
+                          </ng-container>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  </div>
-                </td>
-              </tr>
-           </ng-container>
-          </ng-container>
-          <ng-container *ngIf="isAlertConditionsLoading">
-            <tr>
-              <td colspan="6"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></td>
+                </div>
+              </td>
             </tr>
           </ng-container>
-          <ng-container *ngIf="!isAlertConditionsLoading && alertConditions.length === 0">
-            <tr>
-              <td colspan="6"> No {{selectedTab}} Alerts added.</td>
-            </tr>
-          </ng-container>
-        </tbody>
-      </table>
-    </div>
+        </ng-container>
+        <ng-container *ngIf="isAlertConditionsLoading">
+          <tr>
+            <td colspan="6"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="!isAlertConditionsLoading && alertConditions.length === 0">
+          <tr>
+            <td colspan="6"> No {{selectedTab}} Alerts added.</td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
   </div>
+</div>
 
-  <div class="modal right fade" id="addAlertConditionModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
-    <div class="modal-dialog" role="document">
-      <div class="modal-content" *ngIf="alertObj">
+<div class="modal right fade" id="addAlertConditionModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" *ngIf="alertObj">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">{{ !alertObj.id ? 'Add' : 'Edit'}} Alert Condition
-          </h5>
-        <button type="button" class="close" [disabled]="isCreateAlertConditionLoading" (click)="onCloseAlertConditionModal()" aria-label="Close">
+        </h5>
+        <button type="button" class="close" [disabled]="isCreateAlertConditionLoading"
+          (click)="onCloseAlertConditionModal()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -511,281 +526,77 @@
         <form>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Alert Message:</label>
-            <input type="text" class="form-control form-control-sm" id="message" name="message" [(ngModel)]="alertObj.message"
-          placeholder="Enter Alert Message">
+            <input type="text" class="form-control form-control-sm" id="message" name="message"
+              [(ngModel)]="alertObj.message" placeholder="Enter Alert Message">
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Alert Code:</label>
             <input type="text" class="form-control form-control-sm" id="code" name="code" [(ngModel)]="alertObj.code"
-          placeholder="Enter Alert Code">
+              placeholder="Enter Alert Code">
           </div>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label required">Severity:</label>
-            <select class="form-control form-control-sm" id="template" name="model_type" [(ngModel)]="alertObj.severity">
-              <option [ngValue]="undefined" >Select Severity</option>
-              <option [ngValue]="'Critical'" >Critical</option>
-              <option [ngValue]="'Error'" >Error</option>
-              <option [ngValue]="'Warning'" >Warning</option>
-              <option [ngValue]="'Informational'" >Informational</option>
+            <select class="form-control form-control-sm" id="template" name="model_type"
+              [(ngModel)]="alertObj.severity">
+              <option [ngValue]="undefined">Select Severity</option>
+              <option [ngValue]="'Critical'">Critical</option>
+              <option [ngValue]="'Error'">Error</option>
+              <option [ngValue]="'Warning'">Warning</option>
+              <option [ngValue]="'Informational'">Informational</option>
             </select>
           </div>
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label required">Alert Type:</label>
-            <select class="form-control form-control-sm" id="alert_type" name="alert_type" [(ngModel)]="alertObj.alert_type">
-              <option [ngValue]="undefined" >Select Alert Type</option>
+            <label for="recipient-name" class="col-form-label required">Alert Source:</label>
+            <select class="form-control form-control-sm" id="alert_type" name="alert_type"
+              [(ngModel)]="alertObj.alert_type">
+              <option [ngValue]="undefined">Select Alert Source</option>
               <!-- <option [ngValue]="'Asset'" >Asset</option> -->
-              <option [ngValue]="'Edge'" >Edge</option>
-              <option [ngValue]="'Cloud'" >Cloud</option>
+              <option [ngValue]="'Edge'">Edge</option>
+              <option [ngValue]="'Cloud'">Cloud</option>
             </select>
           </div>
-          <!-- <accordion [closeOthers]="'true'" *ngIf="asset?.type === constantData.NON_IP_ASSET && alertObj.alert_type === 'Asset'" >
-            <accordion-group heading="" [panelClass]="'customClass'" >
-              <ng-container  accordion-heading>
-                <button class="btn" type="button">
-                  Alert Register Details
-                </button>
-              </ng-container>
-              <form *ngIf="setupForm" [formGroup]="setupForm">
-                <div class="form-group" *ngIf="setupForm.get('slave_id')">
-                  <label for="recipient-name" class="col-form-label">Slave:</label>
-                  <div class="input-group">
-                  <select class="form-control form-control-sm" id="slave_id" name="slave_id" formControlName="slave_id"
-                  > <option [ngValue]="null">Select Slave</option>
-                    <option [ngValue]="slave.slave_id" *ngFor="let slave of slaveData">{{slave.slave_name}}</option>
-                    
-                  </select>
-                  </div>
-                  <div *ngIf="setupForm.get('slave_id').invalid && (setupForm.get('slave_id').dirty || setupForm.get('slave_id').touched)"
-                    class="alert-danger">
-                    <div *ngIf="setupForm.get('slave_id').errors.required">
-                      Slave is required.
-                    </div>
-                    </div>
-                </div>
-                <div class="form-group" *ngIf="setupForm.get('d')">
-                  <label for="recipient-name" class="col-form-label required">Type:</label>
-                  <div class="input-group">
-                  <select class="form-control form-control-sm" id="datatype" name="datatype" formControlName="d"
-                  (change)="onChangeOfSetupType()"> <option [ngValue]="null">Select Type</option>
-                    <option [ngValue]="'a'" >Analog</option>
-                    <option [ngValue]="'d'" >Digital</option>
-                    <option [ngValue]="'s'" >String</option>
-                  </select>
-                  </div>
-                  <div *ngIf="setupForm.get('d').invalid && (setupForm.get('d').dirty || setupForm.get('d').touched)"
-                    class="alert-danger">
-                    <div *ngIf="setupForm.get('d').errors.required">
-                      Type is required.
-                    </div>
-                    </div>
-                </div>
-                <div class="form-group" *ngIf="setupForm.get('d') && setupForm.get('sd') && setupForm.get('d').value === 'a'">
-                  <label for="recipient-name" class="col-form-label required">Secondary Type:</label>
-                  <div class="input-group">
-                  <select class="form-control form-control-sm" id="sd" name="sd" formControlName="sd"
-                  (change)="onChangeOfSetupSecondaryType()"> <option [ngValue]="null">Select Secondary Type</option>
-                    <option [ngValue]="1" >SIGNED_16_INT</option>
-                    <option [ngValue]="2" >UNSIGNED_16_INT</option>
-                    <option [ngValue]="7">SIGNED_64_INT </option>
-                    <option [ngValue]="8">UNSIGNED_64_INT </option>
-                    <option [ngValue]="3" >LONG</option>
-                    <option [ngValue]="4" >LONG_REVERSE</option>
-                    <option [ngValue]="5" >FLOAT</option>
-                    <option [ngValue]="6" >FLOAT_REVERSE</option>
-                    <option [ngValue]="9" >BYTE</option>
-                  </select>
-                  </div>
-                  <div *ngIf="setupForm.get('sd')?.invalid && (setupForm.get('sd')?.dirty || setupForm.get('sd')?.touched)"
-                    class="alert-danger">
-                    <div *ngIf="setupForm.get('sd')?.errors.required">
-                     Secondary Type is required.
-                    </div>
-                    </div>
-                </div>
-                <div class="form-group" *ngIf="setupForm.get('sa')">
-                  <label for="message-text" class="col-form-label required">PLC Register Address:</label>
-                  <input type="number" class="form-control form-control-sm" id="sa" name="sa" formControlName="sa"
-                  placeholder="Enter PLC Register Address" min="0" max="99999">
-                  <div *ngIf="setupForm.get('sa').invalid && (setupForm.get('sa').dirty || setupForm.get('sa').touched)"
-                    class="alert-danger">
-                    <div *ngIf="setupForm.get('sa').errors.required">
-                      PLC Register Address is required.
-                    </div>
-                    <div *ngIf="setupForm.get('sa').errors.min || setupForm.get('sa').errors.max">
-                      PLC Register Address value must be between 0 and 99999.
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group" *ngIf="setupForm.get('d') && setupForm.get('la') && setupForm.get('d').value === 's'">
-                  <label for="message-text" class="col-form-label required">String Length:</label>
-                  <input type="number" class="form-control form-control-sm" id="la" name="la" formControlName="la"
-                  placeholder="Enter String Length" min="1" max="99999">
-                  <div *ngIf="setupForm.get('la').invalid && (setupForm.get('la').dirty || setupForm.get('la').touched)"
-                    class="alert-danger">
-                    <div *ngIf="setupForm.get('la').errors.required">
-                      String Length is required.
-                    </div>
-                    <div *ngIf="setupForm.get('la').errors.min || setupForm.get('la').errors.max">
-                      String Length value must be between 1 and 99999.
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group" *ngIf="setupForm.get('sd') && setupForm.get('p') && (setupForm.get('sd')?.value === 5 ||setupForm.get('sd')?.value === 6 )
-                && setupForm.get('d').value === 'a'">
-                  <label for="message-text" class="col-form-label required">Precision:</label>
-                  <input type="number" class="form-control form-control-sm" id="p" name="p" formControlName="p"
-                  placeholder="Enter Precision" min="1" max="5">
-                  <div *ngIf="setupForm.get('p').invalid && (setupForm.get('p').dirty || setupForm.get('p').touched)"
-                    class="alert-danger">
-                    <div *ngIf="setupForm.get('p').errors.required">
-                      Precision is required.
-                    </div>
-                    <div *ngIf="setupForm.get('p').errors.min || setupForm.get('p').errors.max">
-                      Precision value must be between 1 and 5.
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group" *ngIf="setupForm.get('sd') && setupForm.get('bytn') && setupForm.get('sd')?.value === 9
-                  && setupForm.get('d').value === 'a'">
-                    <label for="message-text" class="col-form-label required">Byte Number:</label>
-                    <select class="form-control form-control-sm" id="bytn" name="bytn" formControlName="bytn"
-                    > <option [ngValue]="null">Select Byte Number</option>
-                      <option [ngValue]="0" >LSB</option>
-                      <option [ngValue]="1" >MSB</option>
-                    </select>
-                    <div *ngIf="setupForm.get('bytn').invalid && (setupForm.get('bytn').dirty || setupForm.get('bytn').touched)"
-                      class="alert-danger">
-                      <div *ngIf="setupForm.get('bytn').errors.required">
-                        Byte Number is required.
-                      </div>
-
-                    </div>
-                  </div>
-                <ng-container  *ngIf="asset.tags.protocol === 'ModbusTCPMaster' || asset.tags.protocol === 'ModbusRTUMaster'">
-                <div class="form-group" *ngIf="asset.tags.protocol === 'ModbusTCPMaster' || asset.tags.protocol === 'ModbusRTUMaster'">
-                  <label for="recipient-name" class="col-form-label required">Function Code:</label>
-                  <div class="input-group">
-                  <select class="form-control form-control-sm" id="fc" name="fc" formControlName="fc"
-                  (change)="onChangeOfSetupFunctionCode()"> <option [ngValue]="null">Select Function Code</option>
-                    <option [ngValue]="1" >Read Coil (DIGITAL)</option>
-                    <option [ngValue]="2" >Read Discrete Input (DIGITAL)</option>
-                    <option [ngValue]="3" *ngIf="setupForm.get('d').value === 'a' || setupForm.get('d').value === 's'">Read Holding Registers (ANALOG)</option>
-                      <option [ngValue]="4" *ngIf="setupForm.get('d').value === 'a' || setupForm.get('d').value === 's'">Read Input Registers (ANALOG)</option>
-                  </select>
-                  </div>
-                  <div *ngIf="setupForm.get('fc').invalid && (setupForm.get('fc').dirty || setupForm.get('fc').touched)"
-                    class="alert-danger">
-                    <div *ngIf="setupForm.get('fc').errors.required">
-                      Function Code is required.
-                    </div>
-                    </div>
-                </div>
-                <div class="form-group" *ngIf="setupForm.get('d').value === 'd' && (setupForm.get('fc').value === 3 || setupForm.get('fc').value === 4)">
-                  <label for="message-text" class="col-form-label required">Bit Number:</label>
-                  <input type="number" class="form-control form-control-sm" id="bn" name="bn" formControlName="bn"
-                  placeholder="Enter Bit Number" min="0" max="15">
-                  <div *ngIf="setupForm.get('bn').invalid && (setupForm.get('bn').dirty || setupForm.get('bn').touched)"
-                    class="alert-danger">
-                    <div *ngIf="setupForm.get('bn').errors.required">
-                      Bit Number is required.
-                    </div>
-                    <div *ngIf="setupForm.get('bn').errors.min || setupForm.get('bn').errors.max">
-                      Bit Number value must be between 0 and 15.
-                    </div>
-                  </div>
-                </div>
-                </ng-container>
-                <ng-container  *ngIf="asset.tags.protocol === 'SiemensTCPIP'">
-                <div class="form-group">
-                  <label for="recipient-name" class="col-form-label required">Memory Type:</label>
-                  <div class="input-group">
-                  <select class="form-control form-control-sm" id="mt" name="mt" formControlName="mt"
-                  (change)="onChageOfMemoryType()"> <option [ngValue]="null">Select Memory Type</option>
-                    <option [ngValue]="'DB'" >DB</option>
-                    <option [ngValue]="'PE'" >PE</option>
-                    <option [ngValue]="'PA'" >PA</option>
-                    <option [ngValue]="'MK'" >MK</option>
-                    <option [ngValue]="'CT'" >CT</option>
-                    <option [ngValue]="'TM'" >TM</option>
-                  </select>
-                  </div>
-                  <div *ngIf="setupForm.get('mt').invalid && (setupForm.get('mt').dirty || setupForm.get('mt').touched)"
-                    class="alert-danger">
-                    <div *ngIf="setupForm.get('mt').errors.required">
-                      Memory Type is required.
-                    </div>
-                    </div>
-                </div>
-                <div class="form-group" *ngIf="setupForm.get('mt').value === 'DB'">
-                  <label for="message-text" class="col-form-label required">DB Number:</label>
-                  <input type="number" class="form-control form-control-sm" id="dbn" name="dbn" formControlName="dbn"
-                  placeholder="Enter DB Number" min="0">
-                  <div *ngIf="setupForm.get('dbn').invalid && (setupForm.get('dbn').dirty || setupForm.get('dbn').touched)"
-                    class="alert-danger">
-                    <div *ngIf="setupForm.get('dbn').errors.required">
-                      DB Number is required.
-                    </div>
-                    <div *ngIf="setupForm.get('dbn').errors.min || setupForm.get('dbn').errors.max">
-                      DB Number value must be greater than 0.
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group" *ngIf="setupForm.get('d').value === 'd'">
-                  <label for="message-text" class="col-form-label required">Bit Number:</label>
-                  <input type="number" class="form-control form-control-sm" id="bn" name="bn" formControlName="bn"
-                  placeholder="Enter Bit Number" min="0" max="15">
-                  <div *ngIf="setupForm.get('bn').invalid && (setupForm.get('bn').dirty || setupForm.get('bn').touched)"
-                    class="alert-danger">
-                    <div *ngIf="setupForm.get('bn').errors.required">
-                      Bit Number is required.
-                    </div>
-                    <div *ngIf="setupForm.get('bn').errors.min || setupForm.get('bn').errors.max">
-                      Bit Number value must be between 0 and 15.
-                    </div>
-                  </div>
-                </div>
-              </ng-container>
-              </form>
-            </accordion-group>
-          </accordion> -->
         </form>
       </div>
       <div class="modal-footer">
-        <button *ngIf="asset?.type === constantData.NON_IP_ASSET && alertObj.alert_type === 'Asset';else noSetupFormBtn"  type="button" class="btn btn-primary add-row" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreateAlertConditionLoading" (click)="!alertObj.id ? onCreateAlertCondition() : onUpdateAlertConditions()">Save</button>
+        <button *ngIf="asset?.type === constantData.NON_IP_ASSET && alertObj.alert_type === 'Asset';else noSetupFormBtn"
+          type="button" class="btn btn-primary add-row"
+          [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreateAlertConditionLoading"
+          (click)="!alertObj.id ? onCreateAlertCondition() : onUpdateAlertConditions()">Save</button>
         <ng-template #noSetupFormBtn>
-        <!-- <button *ngIf="assetModel.metadata?.model_type === constantData.NON_IP_ASSET && alertObj.alert_type === 'Asset';else noSetupFormBtn"  type="button" class="btn btn-primary add-row" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreateAlertConditionLoading" (click)="!alertObj.id ? onCreateAlertCondition() : onUpdateAlertConditions()">Save</button>
+          <!-- <button *ngIf="assetModel.metadata?.model_type === constantData.NON_IP_ASSET && alertObj.alert_type === 'Asset';else noSetupFormBtn"  type="button" class="btn btn-primary add-row" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreateAlertConditionLoading" (click)="!alertObj.id ? onCreateAlertCondition() : onUpdateAlertConditions()">Save</button>
         <ng-template #noSetupFormBtn> -->
-        <button  type="button" class="btn btn-primary add-row" [disabled]="isCreateAlertConditionLoading" (click)="!alertObj.id ? onCreateAlertCondition() : onUpdateAlertConditions()">Save</button>
+          <button type="button" class="btn btn-primary add-row" [disabled]="isCreateAlertConditionLoading"
+            (click)="!alertObj.id ? onCreateAlertCondition() : onUpdateAlertConditions()">Save</button>
         </ng-template>
-        <button type="button" class="btn btn-white" [disabled]="isCreateAlertConditionLoading" (click)="onCloseAlertConditionModal()">Cancel</button>
+        <button type="button" class="btn btn-white" [disabled]="isCreateAlertConditionLoading"
+          (click)="onCloseAlertConditionModal()">Cancel</button>
         <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></i>
       </div>
     </div>
-    </div>
   </div>
+</div>
 
 
-  <div class="modal fade" id="confirmMessageModal" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Remove Alert Condition</h5>
-          <button type="button" class="close"  aria-label="Close" (click)="onCloseModal('confirmMessageModal')">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          Are you sure you want to remove this alert condition?
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" (click)="onClickOfRemoveCondition()">
-            Ok</button>
-          <button type="button" class="btn btn-secondary" (click)="onCloseModal('confirmMessageModal')">
-            Cancel
-          </button>
-        </div>
+<div class="modal fade" id="confirmMessageModal" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Remove Alert Condition</h5>
+        <button type="button" class="close" aria-label="Close" (click)="onCloseModal('confirmMessageModal')">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
-
+      <div class="modal-body">
+        Are you sure you want to remove this alert condition?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="onClickOfRemoveCondition()">
+          Ok</button>
+        <button type="button" class="btn btn-secondary" (click)="onCloseModal('confirmMessageModal')">
+          Cancel
+        </button>
+      </div>
     </div>
-  </div>
 
+  </div>
+</div>

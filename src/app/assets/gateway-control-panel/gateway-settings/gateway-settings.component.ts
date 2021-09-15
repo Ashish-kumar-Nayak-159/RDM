@@ -9,10 +9,9 @@ import * as moment from 'moment';
 @Component({
   selector: 'app-gateway-settings',
   templateUrl: './gateway-settings.component.html',
-  styleUrls: ['./gateway-settings.component.css']
+  styleUrls: ['./gateway-settings.component.css'],
 })
 export class GatewaySettingsComponent implements OnInit {
-
   @Input() asset: any;
   @Input() tileData: any;
   @Input() componentState: any;
@@ -27,11 +26,13 @@ export class GatewaySettingsComponent implements OnInit {
   constantData = CONSTANTS;
   isRuleSyncAPILoading = false;
   rules: any[] = [];
+  c2dJobFilter: any = {};
+  c2dJobFilter1: any = {};
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
     private toasterService: ToasterService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.asset = JSON.parse(JSON.stringify(this.asset));
@@ -39,50 +40,58 @@ export class GatewaySettingsComponent implements OnInit {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getAssetTwinData();
     this.getAssetData();
-
+    this.c2dJobFilter.request_type = 'Test Gateway Connection';
+    this.c2dJobFilter.job_type = 'DirectMethod';
+    this.c2dJobFilter1.request_type = 'Sync Rules';
+    this.c2dJobFilter1.job_type = 'Message';
   }
 
   getAssetData() {
     this.subscriptions.push(
-      this.assetService.getAssetDetailById(this.contextApp.app, this.asset.asset_id).subscribe(
-      async (response: any) => {
-        this.asset = JSON.parse(JSON.stringify(response));
-        if (!this.asset.tags.settings) {
-          this.asset.tags.settings = {
-            normal_mode: {
-              frequency: 60
-            },
-            turbo_mode: {
+      this.assetService
+        .getAssetDetailById(this.contextApp.app, this.asset.asset_id)
+        .subscribe(async (response: any) => {
+          this.asset = JSON.parse(JSON.stringify(response));
+          if (!this.asset.tags.settings) {
+            this.asset.tags.settings = {
+              normal_mode: {
+                frequency: 60,
+              },
+              turbo_mode: {
+                frequency: 1,
+                timeout_time: 120,
+              },
+            };
+          }
+          if (!this.asset.tags.settings.normal_mode) {
+            this.asset.tags.settings.normal_mode = {
+              frequency: 60,
+            };
+          }
+          if (!this.asset.tags.settings.turbo_mode) {
+            this.asset.tags.settings.turbo_mode = {
               frequency: 1,
-              timeout_time: 120
-            }
-          };
-        }
-        if (!this.asset.tags.settings.normal_mode) {
-          this.asset.tags.settings.normal_mode = {
-            frequency: 60
-        };
-        }
-        if (!this.asset.tags.settings.turbo_mode) {
-          this.asset.tags.settings.turbo_mode = {
-            frequency: 1,
-            timeout_time: 120
-          };
-        }
-        if (this.componentState === this.constantData.NON_IP_ASSET) {
-          this.onClickOfTab('Register Properties');
-        } else {
-          this.onClickOfTab('Test Connection');
-        }
-      }));
+              timeout_time: 120,
+            };
+          }
+          if (this.componentState === this.constantData.NON_IP_ASSET) {
+            this.onClickOfTab('Register Properties');
+          } else {
+            this.onClickOfTab('Test Connection');
+          }
+        })
+    );
   }
 
   getAssetTwinData() {
     return new Promise<void>((resolve) => {
       this.subscriptions.push(
-        this.assetService.getAssetTwin(this.contextApp.app,
-          this.componentState === this.constantData.NON_IP_ASSET ? this.asset.gateway_id : this.asset.asset_id).subscribe(
-          (response) => {
+        this.assetService
+          .getAssetTwin(
+            this.contextApp.app,
+            this.componentState === this.constantData.NON_IP_ASSET ? this.asset.gateway_id : this.asset.asset_id
+          )
+          .subscribe((response) => {
             this.assetTwin = response;
             if (!this.assetTwin.twin_properties) {
               this.assetTwin.twin_properties = {};
@@ -100,64 +109,78 @@ export class GatewaySettingsComponent implements OnInit {
               this.assetTwin.twin_properties.reported.system_apps = {};
             }
             resolve();
-          }
-        ));
+          })
+      );
     });
   }
 
   getEdgeRules() {
     return new Promise<void>((resolve1, reject) => {
-    this.rules = [];
-    this.isRuleSyncAPILoading = true;
-    const obj = {
-      type: 'Edge'
-    };
-    this.subscriptions.push(this.assetService.getRules(this.contextApp.app, this.asset.asset_id, obj).subscribe(
-      (response: any) => {
-        if (response?.data) {
-          this.rules = response.data;
-          console.log(this.rules);
-        }
-        resolve1();
-      }, error => this.isRuleSyncAPILoading = false
-    ));
+      this.rules = [];
+      this.isRuleSyncAPILoading = true;
+      const obj = {
+        type: 'Edge',
+      };
+      this.subscriptions.push(
+        this.assetService.getRules(this.contextApp.app, this.asset.asset_id, obj).subscribe(
+          (response: any) => {
+            if (response?.data) {
+              this.rules = response.data;
+              console.log(this.rules);
+            }
+            resolve1();
+          },
+          (error) => (this.isRuleSyncAPILoading = false)
+        )
+      );
     });
   }
 
   async syncRules() {
     await this.getEdgeRules();
     const obj = {
-      asset_id: this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id,
+      asset_id: this.asset.asset_id,
       message: {
-        command: "set_device_rules",
-        rules: this.rules
+        command: 'set_device_rules',
+        rules: this.rules,
       },
       app: this.contextApp.app,
-      timestamp:  moment().unix(),
+      timestamp: moment().unix(),
       acknowledge: 'Full',
       expire_in_min: 2880,
-      job_id: (this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id)
-      + '_' + this.commonService.generateUUID(),
-      request_type: "set_device_rules",
+      job_id:
+        (this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id) +
+        '_' +
+        this.commonService.generateUUID(),
+      request_type: 'Sync Rules',
       job_type: 'Message',
-      sub_job_id: null
+      sub_job_id: null,
     };
     obj.sub_job_id = obj.job_id + '_1';
     this.subscriptions.push(
-      this.assetService.sendC2DMessage(obj, this.contextApp.app,
-        this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id).subscribe(
-        (response: any) => {
-          this.toasterService.showSuccess(response.message, 'Sync Rules');
-          this.isRuleSyncAPILoading = false;
-        }, error => {
-          this.toasterService.showError(error.message, 'Sync Rules');
-          this.isRuleSyncAPILoading = false;
-        }
-      )
+      this.assetService
+        .sendC2DMessage(
+          obj,
+          this.contextApp.app,
+          this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id
+        )
+        .subscribe(
+          (response: any) => {
+            this.toasterService.showSuccess(response.message, 'Sync Rules');
+            this.assetService.refreshRecentJobs.emit();
+            this.isRuleSyncAPILoading = false;
+          },
+          (error) => {
+            this.toasterService.showError(error.message, 'Sync Rules');
+            this.assetService.refreshRecentJobs.emit();
+            this.isRuleSyncAPILoading = false;
+          }
+        )
     );
   }
 
-  onClickOfTab(type) {
+  async onClickOfTab(type) {
+    await this.getAssetTwinData();
     this.selectedTab = type;
   }
 
@@ -170,21 +193,23 @@ export class GatewaySettingsComponent implements OnInit {
       gateway_id: this.asset.asset_id,
       message: {},
       job_type: 'DirectMethod',
-      request_type: 'test_gateway_connection',
+      request_type: 'Test Gateway Connection',
       job_id: this.asset.asset_id + '_' + this.commonService.generateUUID(),
-      sub_job_id: null
+      sub_job_id: null,
     };
     obj.sub_job_id = obj.job_id + '_1';
     this.subscriptions.push(
-      this.assetService.callAssetMethod(obj, obj.app,
-        this.asset?.gateway_id || this.asset.asset_id).subscribe(
+      this.assetService.callAssetMethod(obj, obj.app, this.asset?.gateway_id || this.asset.asset_id).subscribe(
         (response: any) => {
           if (response?.asset_response?.status?.toLowerCase() === 'connected') {
             this.testConnectionMessage = 'Gateway connection is successful';
+            this.assetService.refreshRecentJobs.emit();
           }
           this.isTestConnectionAPILoading = false;
-        }, error => {
+        },
+        (error) => {
           this.testConnectionMessage = 'Gateway is not connected';
+          this.assetService.refreshRecentJobs.emit();
           this.isTestConnectionAPILoading = false;
         }
       )

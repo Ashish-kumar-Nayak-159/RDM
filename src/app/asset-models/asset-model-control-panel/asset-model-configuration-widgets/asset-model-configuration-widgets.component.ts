@@ -10,10 +10,9 @@ declare var $: any;
 @Component({
   selector: 'app-asset-model-configuration-widgets',
   templateUrl: './asset-model-configuration-widgets.component.html',
-  styleUrls: ['./asset-model-configuration-widgets.component.css']
+  styleUrls: ['./asset-model-configuration-widgets.component.css'],
 })
 export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestroy {
-
   @Input() assetModel: any;
   viewType: string;
   controlWidget: any;
@@ -35,7 +34,7 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
     private commonService: CommonService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -47,26 +46,25 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
     this.getControlWidgets();
   }
 
-
   getAssetsModelProperties() {
     // this.properties = {};
     const obj = {
       app: this.assetModel.app,
-      name: this.assetModel.name
+      name: this.assetModel.name,
     };
-    this.subscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
-      (response: any) => {
+    this.subscriptions.push(
+      this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
         this.properties = response.properties;
-      }
-    ));
+      })
+    );
   }
 
   onCommunicationTechniqueChange() {
     this.controlWidget.properties = [];
     this.controlWidget.json = {
       timestamp: {
-        type: 'string'
-      }
+        type: 'string',
+      },
     };
   }
 
@@ -75,30 +73,32 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
     this.assetMethods = [];
     const obj = {
       app: this.assetModel.app,
-      name: this.assetModel.name
+      name: this.assetModel.name,
     };
-    this.subscriptions.push(this.assetModelService.getAssetsModelAssetMethods(obj).subscribe(
-      (response: any) => {
+    this.subscriptions.push(
+      this.assetModelService.getAssetsModelAssetMethods(obj).subscribe((response: any) => {
         this.assetMethods = response.direct_methods;
-      }
-    ));
+      })
+    );
   }
-
 
   getControlWidgets() {
     this.isGetControlWidgetAPILoading = true;
     const obj = {
       app: this.assetModel.app,
-      asset_model: this.assetModel.name
+      asset_model: this.assetModel.name,
     };
-    this.subscriptions.push(this.assetModelService.getAssetsModelConfigurationWidgets(obj).subscribe(
-      (response: any) => {
-        if (response?.data) {
-          this.controlWidgets = response.data;
-        }
-        this.isGetControlWidgetAPILoading = false;
-      }, error => this.isGetControlWidgetAPILoading = false
-    ));
+    this.subscriptions.push(
+      this.assetModelService.getAssetsModelConfigurationWidgets(obj).subscribe(
+        (response: any) => {
+          if (response?.data) {
+            this.controlWidgets = response.data;
+          }
+          this.isGetControlWidgetAPILoading = false;
+        },
+        (error) => (this.isGetControlWidgetAPILoading = false)
+      )
+    );
   }
 
   openAddWidgetModal() {
@@ -106,13 +106,13 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
       properties: [],
       metadata: {
         communication_technique: 'C2D Message',
-        widget_type: undefined
+        widget_type: undefined,
       },
       json: {
         timestamp: {
-          type: 'string'
-        }
-      }
+          type: 'string',
+        },
+      },
     };
     this.addParameter();
     this.viewType = 'add';
@@ -122,7 +122,7 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
   addParameter() {
     this.extraParams.push({
       name: undefined,
-      type: undefined
+      type: undefined,
     });
     this.originalExtraParams = JSON.parse(JSON.stringify(this.extraParams));
   }
@@ -154,8 +154,8 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
       } else {
         const propObj = {};
         propObj['type'] = obj.type.toLowerCase();
-        const validations = this.dataTypeList.find(type => type.name === obj.type).validations;
-        validations.forEach(item => {
+        const validations = this.dataTypeList.find((type) => type.name === obj.type).validations;
+        validations.forEach((item) => {
           if (item === 'enum') {
             propObj[item] = [];
           } else if (item === 'trueValue') {
@@ -183,20 +183,24 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
         // const index =  this.controlWidget.properties.findIndex(prop => prop.name === propObj.name);
         // this.controlWidget.properties.splice(index, 1);
       } else {
+        this.controlWidget.json = {
+          timestamp: {
+            type: 'string',
+          },
+        };
         this.controlWidget.json[propObj.method_name] = propObj.json_model;
         // this.controlWidget.properties.push(propObj);
       }
     } else {
-    const propObj = event.value || event;
-    if (this.controlWidget.json[propObj.json_key]) {
-      delete this.controlWidget.json[propObj.json_key];
-      const index =  this.controlWidget.properties.findIndex(prop => prop.json_key === propObj.json_key);
-      // this.controlWidget.properties.splice(index, 1);
-    } else {
-      this.controlWidget.json[propObj.json_key] =
-      propObj.json_model[propObj.json_key];
-      // this.controlWidget.properties.push(propObj);
-    }
+      const propObj = event.value || event;
+      if (this.controlWidget.json[propObj.json_key]) {
+        delete this.controlWidget.json[propObj.json_key];
+        const index = this.controlWidget.properties.findIndex((prop) => prop.json_key === propObj.json_key);
+        // this.controlWidget.properties.splice(index, 1);
+      } else {
+        this.controlWidget.json[propObj.json_key] = propObj.json_model[propObj.json_key];
+        // this.controlWidget.properties.push(propObj);
+      }
     }
     this.editor.set(this.controlWidget.json);
   }
@@ -204,18 +208,17 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
   selectAllProps(event) {
     this.controlWidget.json = {
       timestamp: {
-        type: 'string'
-      }
+        type: 'string',
+      },
     };
     if (this.controlWidget?.metadata?.communication_technique === 'Direct Method') {
-      this.controlWidget.properties.forEach(propObj => {
+      this.controlWidget.properties.forEach((propObj) => {
         this.controlWidget.json[propObj.method_name] = propObj.json_model;
       });
     } else {
-    this.controlWidget.properties.forEach(propObj => {
-      this.controlWidget.json[propObj.json_key] =
-      propObj.json_model[propObj.json_key];
-    });
+      this.controlWidget.properties.forEach((propObj) => {
+        this.controlWidget.json[propObj.json_key] = propObj.json_model[propObj.json_key];
+      });
     }
     this.editor.set(this.controlWidget.json);
   }
@@ -223,8 +226,8 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
   deselectAllProps(event) {
     this.controlWidget.json = {
       timestamp: {
-        type: 'string'
-      }
+        type: 'string',
+      },
     };
     this.editor.set(this.controlWidget.json);
   }
@@ -240,6 +243,10 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
       this.toasterService.showError('Invalid JSON data', 'Create Configuration Widget');
       return;
     }
+    if (this.controlWidget.metadata.communication_technique === 'Direct Method') {
+      const prop = JSON.parse(JSON.stringify(this.controlWidget.properties));
+      this.controlWidget.properties = [prop];
+    }
     if (Object.keys(this.controlWidget.json).length < 2) {
       this.toasterService.showError('Please select at least one property/parameter', 'Create Control Widget');
       return;
@@ -247,37 +254,42 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
     this.isCreateWidgetAPILoading = true;
     this.controlWidget.app = this.assetModel.app;
     this.controlWidget.asset_model = this.assetModel.name;
-    this.subscriptions.push(this.assetModelService.createAssetsModelConfigurationWidget(this.controlWidget).subscribe(
-      (response: any) => {
-        this.isCreateWidgetAPILoading = false;
-        this.toasterService.showSuccess(response.message, 'Create Configuration Widget');
-        this.closeCreateWidgetModal();
-        this.getControlWidgets();
-      }, error => {
-        this.isCreateWidgetAPILoading = false;
-        this.toasterService.showError(error.message, 'Create Configuration Widget');
-      }
-    ));
+    this.subscriptions.push(
+      this.assetModelService.createAssetsModelConfigurationWidget(this.controlWidget).subscribe(
+        (response: any) => {
+          this.isCreateWidgetAPILoading = false;
+          this.toasterService.showSuccess(response.message, 'Create Configuration Widget');
+          this.closeCreateWidgetModal();
+          this.getControlWidgets();
+        },
+        (error) => {
+          this.isCreateWidgetAPILoading = false;
+          this.toasterService.showError(error.message, 'Create Configuration Widget');
+        }
+      )
+    );
   }
-
 
   deleteControlWidget() {
     const obj = {
       app: this.assetModel.app,
       id: this.selectedWidget.id,
-      asset_model: this.assetModel.id
+      asset_model: this.assetModel.id,
     };
-    this.subscriptions.push(this.assetModelService.deleteAssetsModelConfigurationWidget(obj).subscribe(
-      (response: any) => {
-        this.isCreateWidgetAPILoading = false;
-        this.toasterService.showSuccess(response.message, 'Delete Configuration Widget');
-        this.onCloseModal();
-        this.getControlWidgets();
-      }, error => {
-        this.isCreateWidgetAPILoading = false;
-        this.toasterService.showError(error.message, 'Delete Configuration Widget');
-      }
-    ));
+    this.subscriptions.push(
+      this.assetModelService.deleteAssetsModelConfigurationWidget(obj).subscribe(
+        (response: any) => {
+          this.isCreateWidgetAPILoading = false;
+          this.toasterService.showSuccess(response.message, 'Delete Configuration Widget');
+          this.onCloseModal();
+          this.getControlWidgets();
+        },
+        (error) => {
+          this.isCreateWidgetAPILoading = false;
+          this.toasterService.showError(error.message, 'Delete Configuration Widget');
+        }
+      )
+    );
   }
 
   openConfirmModal(widget) {
@@ -299,7 +311,6 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
-
 }

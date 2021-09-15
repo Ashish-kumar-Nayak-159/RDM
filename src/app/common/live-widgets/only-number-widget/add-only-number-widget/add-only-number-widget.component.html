@@ -1,157 +1,166 @@
 <ng-container *ngIf="widgetObj.widgetType !== 'LineChart'
 && widgetObj.widgetType !== 'AreaChart'; else singleChartTemplate">
-<ng-container *ngFor="let prop of widgetObj.properties; let i = index;" >
-<div class="form-group">
-  <label for="message-text" class="col-form-label required">Property </label>
-  <a *ngIf="i === 0"
-  class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2 mb-1"
-  href="javascript:void(0)" (click)="addProperty()"
-  placement="bottom" tooltip="Add Property"
-  ><i class="fa fa-plus fa-sm text-white"></i></a>
-  <a *ngIf="i !== 0"
-  class="d-none d-sm-inline-block btn btn-sm btn-white shadow-sm ml-2 mb-1"
-  href="javascript:void(0)" (click)="removeProperty(i)"
-  placement="bottom" tooltip="Remove Property"
-  ><i class="fa fa-trash fa-sm"></i></a>
+  <ng-container *ngFor="let prop of widgetObj.properties; let i = index;">
+    <div class="form-group">
+      <label for="message-text" class="col-form-label required">Property </label>
+      <a *ngIf="i === 0" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2 mb-1"
+        href="javascript:void(0)" (click)="addProperty()" placement="bottom" tooltip="Add Property"><i
+          class="fa fa-plus fa-sm text-white"></i></a>
+      <a *ngIf="i !== 0" class="d-none d-sm-inline-block btn btn-sm btn-white shadow-sm ml-2 mb-1"
+        href="javascript:void(0)" (click)="removeProperty(i)" placement="bottom" tooltip="Remove Property"><i
+          class="fa fa-trash fa-sm"></i></a>
 
-  <ng-select [items]="propertyList" class="custom-dropdown sm" bindLabel="name" [clearable]="false"
-    [searchable]="true" [closeOnSelect]="true" placeholder="Select Property" groupBy="type"
-    dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="prop.property" (change)="onPropertySelection(prop)"
-    (clear)="onPropertyDeselect(prop)">
-    <ng-template ng-option-tmp let-item="item">
-      <span > <i [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties'}"></i> {{item.name}}</span>
-    </ng-template>
-  </ng-select>
+      <ng-select [items]="propertyList" class="custom-dropdown sm" bindLabel="name" [clearable]="false"
+        [searchable]="true" [closeOnSelect]="true" placeholder="Select Property" groupBy="type"
+        dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="prop.property" (change)="onPropertySelection(prop)"
+        (clear)="onPropertyDeselect(prop)">
+        <ng-template ng-option-tmp let-item="item">
+          <span> <i
+              [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></i>
+            {{item.name}}</span>
+        </ng-template>
+      </ng-select>
 
-</div>
-<div class="form-group" >
-  <label for="message-text" class="col-form-label ">Property Title:</label>
-  <input type="text"  class="form-control form-control-sm" id="title" name="title"
-  [(ngModel)]="prop.title"
-    placeholder="Property Title">
-</div>
-<div class="form-group" *ngIf="prop?.property?.data_type === 'Number'">
-  <label for="message-text" class="col-form-label ">Digits after Decimal:</label>
-  <input type="number" min="0" class="form-control form-control-sm" id="digitsAfterDecimals" name="digitsAfterDecimals" [(ngModel)]="prop.digitsAfterDecimals"
-    placeholder="Digits after Decimal">
-</div>
-<!-- <div class="form-group" *ngIf="widgetObj.widgetType === 'NumberWithImage'">
+    </div>
+    <div class="form-group">
+      <label for="message-text" class="col-form-label ">Property Title:</label>
+      <input type="text" class="form-control form-control-sm" id="title" name="title" [(ngModel)]="prop.title"
+        placeholder="Property Title">
+    </div>
+    <div class="form-group" *ngIf="prop?.property?.data_type === 'Number'">
+      <label for="message-text" class="col-form-label ">Digits after Decimal:</label>
+      <input type="number" min="0" class="form-control form-control-sm" id="digitsAfterDecimals"
+        name="digitsAfterDecimals" [(ngModel)]="prop.digitsAfterDecimals" placeholder="Digits after Decimal">
+    </div>
+    <!-- <div class="row col-md-12">
+      <label for="message-text" class="col-form-label">Load property data using:</label>
+    </div>
+    <div class="row col-md-12">
+      <input class="mt-1" type="radio" name="visible_{{i}}" value="signalr" id="signalr_{{i}}"
+        [(ngModel)]="prop.load_value_using" />
+      <label class="form-label ml-2">&nbsp;SignalR</label> &nbsp;
+    </div>
+    <div class="row col-md-12">
+      <input type="radio" class="mt-1" name="visible_{{i}}" value="api" id="api{{i}}"
+        [(ngModel)]="prop.load_value_using" />
+      <label class="form-label ml-2">&nbsp;HTTP API Call</label> &nbsp;
+    </div> -->
+    <!-- <div class="form-group" *ngIf="widgetObj.widgetType === 'NumberWithImage'">
   <label for="message-text" class="col-form-label ">Image
     <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isFileUploading"></i>:</label>
   <input type="file" [disabled]="isFileUploading"
           #typeLogoFileInput (change)="onLogoFileSelected($event.target.files, i)"
            class="form-control" id="app_logo" name="app_logo" >
 </div> -->
-<div class="form-group" *ngIf="widgetObj.widgetType === 'NumberWithImage'">
-  <label for="recipient-name" class="col-form-label required">Image:</label>
-  <div class="form-group input-group row m-0">
-    <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
-    <div class="file-input form-control form-control-sm p-0 col-8">
-     <input type="file" id="file_{{i}}" accept=".jpeg,.png,.svg,.jpg" class="file" [disabled]="isFileUploading" (change)="onLogoFileSelected($event.target.files, i)">
+    <div class="form-group" *ngIf="widgetObj.widgetType === 'NumberWithImage'">
+      <label for="recipient-name" class="col-form-label required">Image:</label>
+      <div class="form-group input-group row m-0">
+        <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
+        <div class="file-input form-control form-control-sm p-0 col-8">
+          <input type="file" id="file_{{i}}" accept=".jpeg,.png,.svg,.jpg" class="file" [disabled]="isFileUploading"
+            (change)="onLogoFileSelected($event.target.files, i)">
 
-     <label for="file_{{i}}" class="overflow-text" [tooltip]="(widgetObj?.properties[i]?.image) ? (widgetObj.properties[i].image.name) : ''">
-       {{(widgetObj?.properties[i]?.image) ? (widgetObj.properties[i].image.name) : 'Choose File'}}</label>
+          <label for="file_{{i}}" class="overflow-text"
+            [tooltip]="(widgetObj?.properties[i]?.image) ? (widgetObj.properties[i].image.name) : ''">
+            {{(widgetObj?.properties[i]?.image) ? (widgetObj.properties[i].image.name) : 'Choose File'}}</label>
+        </div>
+        <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+          <input type="file" accept=".jpeg,.png,.svg,.jpg" id="file_{{i}}" class="file" [disabled]="isFileUploading">
+          <label for="file_{{i}}" class="bg-secondary text-white">Browse</label>
+        </div>
+      </div>
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isFileUploading"></i>
     </div>
-    <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
-    <input type="file" accept=".jpeg,.png,.svg,.jpg" id="file_{{i}}" class="file" [disabled]="isFileUploading">
-       <label for="file_{{i}}" class="bg-secondary text-white">Browse</label>
+    <ng-container *ngIf="widgetObj.widgetType === 'GaugeChart'">
+      <div class="form-group">
+        <label for="message-text" class="col-form-label ">Min Range:</label>
+        <input type="number" class="form-control form-control-sm" id="minRangeValue" name="minRangeValue"
+          [(ngModel)]="prop.minRangeValue" placeholder="Enter minimum range">
+      </div>
+      <div class="form-group">
+        <label for="message-text" class="col-form-label ">Max Range:</label>
+        <input type="number" class="form-control form-control-sm" id="maxRangeValue" name="maxRangeValue"
+          [(ngModel)]="prop.maxRangeValue" placeholder="Enter maxtimum range">
+      </div>
+      <div class="row col-12">
+        <label for="recipient-name" class="col-form-label">Low Threshold Range:</label>
+      </div>
+      <div class="row">
+        <div class="form-group col-5">
+          <!-- <label for="recipient-name" class="col-form-label required">L1:</label> -->
+          <input type="number" class="form-control form-control-sm" id="l1" name="l1" [(ngModel)]="prop.low_min"
+            placeholder="Low Threshold min Value">
+        </div>
+        <div class="form-group col-5">
+          <!-- <label for="recipient-name" class="col-form-label required">H1:</label> -->
+          <input type="number" class="form-control form-control-sm" id="h1" name="h1" [(ngModel)]="prop.low_max"
+            placeholder="Low Threshold max Value">
+        </div>
+        <div class="form-group col-1">
+          <span [(colorPicker)]="prop.low_color" placement="bottom" tooltip="Pick Color">
+            <i class="fa fa-paint-brush"></i>
+          </span>
+        </div>
+        <div class="form-group col-1">
+          <input [style.background]="prop.low_color" style="width: 1rem;" />
+        </div>
+      </div>
+      <div class="row col-12">
+        <label for="recipient-name" class="col-form-label">Normal Range:</label>
+      </div>
+      <div class="row">
+        <div class="form-group col-5">
+          <!-- <label for="recipient-name" class="col-form-label required">L1:</label> -->
+          <input type="number" class="form-control form-control-sm" id="l1" name="l1" [(ngModel)]="prop.normal_min"
+            placeholder="Normal min Value">
+        </div>
+        <div class="form-group col-5">
+          <!-- <label for="recipient-name" class="col-form-label required">H1:</label> -->
+          <input type="number" class="form-control form-control-sm" id="h1" name="h1" [(ngModel)]="prop.normal_max"
+            placeholder="Normal max Value">
+        </div>
+        <div class="form-group col-1">
+          <span [(colorPicker)]="prop.normal_color" placement="bottom" tooltip="Pick Color">
+            <i class="fa fa-paint-brush"></i>
+          </span>
+        </div>
+        <div class="form-group col-1">
+          <input [style.background]="prop.normal_color" style="width: 1rem;" />
+        </div>
+      </div>
+      <div class="row col-12">
+        <label for="recipient-name" class="col-form-label">High Threshold Range:</label>
+      </div>
+      <div class="row">
+        <div class="form-group col-5">
+          <!-- <label for="recipient-name" class="col-form-label required">L1:</label> -->
+          <input type="number" class="form-control form-control-sm" id="l1" name="l1" [(ngModel)]="prop.high_min"
+            placeholder="High Threshold min Value">
+        </div>
+        <div class="form-group col-5">
+          <!-- <label for="recipient-name" class="col-form-label required">H1:</label> -->
+          <input type="number" class="form-control form-control-sm" id="h1" name="h1" [(ngModel)]="prop.high_max"
+            placeholder="High Threshold max Value">
+        </div>
+        <div class="form-group col-1">
+          <span [(colorPicker)]="prop.high_color" placement="bottom" tooltip="Pick Color">
+            <i class="fa fa-paint-brush"></i>
+          </span>
+        </div>
+        <div class="form-group col-1">
+          <input [style.background]="prop.high_color" style="width: 1rem;" />
+        </div>
+      </div>
+    </ng-container>
+    <div class="row">
+      <div class="col-lg-12">
+        <hr class="solid">
+      </div>
     </div>
-    </div>
-    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isFileUploading"></i>
-</div>
-<ng-container *ngIf="widgetObj.widgetType === 'GaugeChart'">
-  <div class="form-group" >
-    <label for="message-text" class="col-form-label ">Min Range:</label>
-    <input type="number" class="form-control form-control-sm" id="minRangeValue" name="minRangeValue" [(ngModel)]="prop.minRangeValue"
-      placeholder="Enter minimum range">
-  </div>
-  <div class="form-group" >
-    <label for="message-text" class="col-form-label ">Max Range:</label>
-    <input type="number" class="form-control form-control-sm" id="maxRangeValue" name="maxRangeValue" [(ngModel)]="prop.maxRangeValue"
-      placeholder="Enter maxtimum range">
-  </div>
-  <div class="row col-12" >
-    <label for="recipient-name" class="col-form-label">Low Threshold Range:</label>
-  </div>
-  <div class="row">
-    <div class="form-group col-5">
-      <!-- <label for="recipient-name" class="col-form-label required">L1:</label> -->
-      <input type="number" class="form-control form-control-sm" id="l1" name="l1" [(ngModel)]="prop.low_min"
-      placeholder="Low Threshold min Value" >
-    </div>
-    <div class="form-group col-5">
-      <!-- <label for="recipient-name" class="col-form-label required">H1:</label> -->
-      <input type="number" class="form-control form-control-sm" id="h1" name="h1" [(ngModel)]="prop.low_max"
-      placeholder="Low Threshold max Value" >
-    </div>
-    <div class="form-group col-1">
-      <span [(colorPicker)]="prop.low_color"
-      placement="bottom" tooltip="Pick Color">
-       <i class="fa fa-paint-brush"></i>
-    </span>
-    </div>
-    <div class="form-group col-1">
-      <input [style.background]="prop.low_color" style="width: 1rem;"/>
-    </div>
-  </div>
-  <div class="row col-12" >
-    <label for="recipient-name" class="col-form-label">Normal Range:</label>
-  </div>
-  <div class="row">
-    <div class="form-group col-5">
-      <!-- <label for="recipient-name" class="col-form-label required">L1:</label> -->
-      <input type="number" class="form-control form-control-sm" id="l1" name="l1" [(ngModel)]="prop.normal_min"
-      placeholder="Normal min Value" >
-    </div>
-    <div class="form-group col-5">
-      <!-- <label for="recipient-name" class="col-form-label required">H1:</label> -->
-      <input type="number" class="form-control form-control-sm" id="h1" name="h1" [(ngModel)]="prop.normal_max"
-      placeholder="Normal max Value" >
-    </div>
-    <div class="form-group col-1">
-      <span [(colorPicker)]="prop.normal_color"
-      placement="bottom" tooltip="Pick Color">
-       <i class="fa fa-paint-brush"></i>
-    </span>
-    </div>
-    <div class="form-group col-1">
-      <input [style.background]="prop.normal_color" style="width: 1rem;"/>
-    </div>
-  </div>
-  <div class="row col-12" >
-    <label for="recipient-name" class="col-form-label">High Threshold Range:</label>
-  </div>
-  <div class="row">
-    <div class="form-group col-5">
-      <!-- <label for="recipient-name" class="col-form-label required">L1:</label> -->
-      <input type="number" class="form-control form-control-sm" id="l1" name="l1" [(ngModel)]="prop.high_min"
-      placeholder="High Threshold min Value" >
-    </div>
-    <div class="form-group col-5">
-      <!-- <label for="recipient-name" class="col-form-label required">H1:</label> -->
-      <input type="number" class="form-control form-control-sm" id="h1" name="h1" [(ngModel)]="prop.high_max"
-      placeholder="High Threshold max Value" >
-    </div>
-    <div class="form-group col-1">
-      <span [(colorPicker)]="prop.high_color"
-      placement="bottom" tooltip="Pick Color">
-       <i class="fa fa-paint-brush"></i>
-    </span>
-    </div>
-    <div class="form-group col-1">
-      <input [style.background]="prop.high_color" style="width: 1rem;"/>
-    </div>
-  </div>
-</ng-container>
-<div class="row" >
-  <div class="col-lg-12">
-    <hr class="solid">
-  </div>
-</div>
-</ng-container>
+  </ng-container>
 </ng-container>
 <ng-template #singleChartTemplate>
-  <div class="form-group" >
+  <div class="form-group">
     <label for="message-text" class="col-form-label ">Y1 Axis Property:</label>
     <!-- <angular2-multiselect [data]="dropdownProperties" id="y1AxisProperty"
               [(ngModel)]="widgetObj.y1AxisProps" name="y1AxisProperty" [settings]="{
@@ -166,41 +175,47 @@
               }"
               (onDeSelectAll)="y1Deselect($event)">
             </angular2-multiselect> -->
-      <ng-select [items]="dropdownProperties" class="custom-dropdown w-12 sm"
-      [searchable]="true" placeholder="Y1 Axis Props" [multiple]="true"
-      [closeOnSelect]="false" groupBy="type" bindLabel="name"
+    <ng-select [items]="dropdownProperties" class="custom-dropdown w-12 sm" [searchable]="true"
+      placeholder="Y1 Axis Props" [multiple]="true" [closeOnSelect]="false" groupBy="type" bindLabel="name"
       dropdownPosition="bottom" name="widget-dropdown1" [(ngModel)]="widgetObj.y1AxisProps">
       <ng-template ng-multi-label-tmp let-items="items">
-      {{items.length}} properties selected
+        {{items.length}} properties selected
       </ng-template>
       <ng-template ng-header-tmp>
         <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-          <li *ngIf="widgetObj.y1AxisProps?.length !== dropdownProperties.length"> <a  href="javascript:void(0)" (click)="widgetObj.y1AxisProps = dropdownProperties">Select All</a></li>
-          <li *ngIf="widgetObj.y1AxisProps?.length === dropdownProperties.length"> <a  href="javascript:void(0)" (click)="widgetObj.y1AxisProps = []">Deselect All</a></li>
+          <li *ngIf="widgetObj.y1AxisProps?.length !== dropdownProperties.length"> <a href="javascript:void(0)"
+              (click)="widgetObj.y1AxisProps = dropdownProperties">Select All</a></li>
+          <li *ngIf="widgetObj.y1AxisProps?.length === dropdownProperties.length"> <a href="javascript:void(0)"
+              (click)="widgetObj.y1AxisProps = []">Deselect All</a></li>
         </ul>
       </ng-template>
       <ng-template ng-option-tmp let-item="item">
-        <span [tooltip]="item.name"> <i [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties'}"></i> {{item.name}}</span>
+        <span [tooltip]="item.name"> <i
+            [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></i>
+          {{item.name}}</span>
       </ng-template>
     </ng-select>
   </div>
-  <div class="form-group" >
+  <div class="form-group">
     <label for="message-text" class="col-form-label ">Y2 Axis Property:</label>
-    <ng-select [items]="dropdownProperties" class="custom-dropdown w-12 sm"
-      [searchable]="true" placeholder="Y1 Axis Props" [multiple]="true"
-      [closeOnSelect]="false" groupBy="type" bindLabel="name"
+    <ng-select [items]="dropdownProperties" class="custom-dropdown w-12 sm" [searchable]="true"
+      placeholder="Y1 Axis Props" [multiple]="true" [closeOnSelect]="false" groupBy="type" bindLabel="name"
       dropdownPosition="bottom" name="widget-dropdown1" [(ngModel)]="widgetObj.y2AxisProps">
       <ng-template ng-multi-label-tmp let-items="items">
-      {{items.length}} properties selected
+        {{items.length}} properties selected
       </ng-template>
       <ng-template ng-header-tmp>
         <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-          <li *ngIf="widgetObj.y2AxisProps?.length !== dropdownProperties.length"> <a  href="javascript:void(0)" (click)="widgetObj.y2AxisProps = dropdownProperties">Select All</a></li>
-          <li *ngIf="widgetObj.y2AxisProps?.length === dropdownProperties.length"> <a  href="javascript:void(0)" (click)="widgetObj.y2AxisProps = []">Deselect All</a></li>
+          <li *ngIf="widgetObj.y2AxisProps?.length !== dropdownProperties.length"> <a href="javascript:void(0)"
+              (click)="widgetObj.y2AxisProps = dropdownProperties">Select All</a></li>
+          <li *ngIf="widgetObj.y2AxisProps?.length === dropdownProperties.length"> <a href="javascript:void(0)"
+              (click)="widgetObj.y2AxisProps = []">Deselect All</a></li>
         </ul>
       </ng-template>
       <ng-template ng-option-tmp let-item="item">
-        <span [tooltip]="item.name"> <i [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties'}"></i> {{item.name}}</span>
+        <span [tooltip]="item.name"> <i
+            [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></i>
+          {{item.name}}</span>
       </ng-template>
     </ng-select>
     <!-- <angular2-multiselect [data]="dropdownProperties" id="y2AxisProperty"
@@ -217,7 +232,7 @@
               (onDeSelectAll)="y2Deselect($event)">
             </angular2-multiselect> -->
   </div>
-  <div class="row col-12" >
+  <div class="row col-12">
     <label for="recipient-name" class="col-form-label">Color:</label>
   </div>
   <div class="row" *ngFor="let prop of widgetObj.y1AxisProps">
@@ -225,27 +240,25 @@
       <label for="recipient-name" class="col-form-label">{{prop.name}}:</label>
     </div>
     <div class="form-group col-1">
-      <span [(colorPicker)]="prop.color"
-      placement="bottom" tooltip="Pick Color">
-       <i class="fa fa-paint-brush"></i>
-    </span>
+      <span [(colorPicker)]="prop.color" placement="bottom" tooltip="Pick Color">
+        <i class="fa fa-paint-brush"></i>
+      </span>
     </div>
     <div class="form-group col-3">
-      <input [style.background]="prop.color" style="width: 3rem;"/>
+      <input [style.background]="prop.color" style="width: 3rem;" />
     </div>
+  </div>
+  <div class="row" *ngFor="let prop of widgetObj.y2AxisProps">
+    <div class="form-group col-5">
+      <label for="recipient-name" class="col-form-label">{{prop.name}}:</label>
     </div>
-    <div class="row" *ngFor="let prop of widgetObj.y2AxisProps">
-      <div class="form-group col-5">
-        <label for="recipient-name" class="col-form-label">{{prop.name}}:</label>
-      </div>
-      <div class="form-group col-1">
-        <span [(colorPicker)]="prop.color"
-        placement="bottom" tooltip="Pick Color">
-         <i class="fa fa-paint-brush"></i>
+    <div class="form-group col-1">
+      <span [(colorPicker)]="prop.color" placement="bottom" tooltip="Pick Color">
+        <i class="fa fa-paint-brush"></i>
       </span>
-      </div>
-      <div class="form-group col-3">
-        <input [style.background]="prop.color" style="width: 3rem;"/>
-      </div>
-      </div>
+    </div>
+    <div class="form-group col-3">
+      <input [style.background]="prop.color" style="width: 3rem;" />
+    </div>
+  </div>
 </ng-template>

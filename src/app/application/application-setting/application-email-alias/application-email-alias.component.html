@@ -1,153 +1,185 @@
 <div class="table-responsive">
-  <div class="tableFixHead" >
-  <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
-  <h6 class="m-3" *ngIf="userGroups.length === 0 && !isUserGroupsAPILoading"> No User Groups available.</h6>
-  <accordion *ngIf="userGroups.length > 0" [closeOthers]="true" class="p-3">
-    <accordion-group heading=""  [panelClass]="'customClass'"  *ngFor="let userGroup of userGroups;let i = index" (click)="openAccordion(i)">
-         <ng-container  accordion-heading>
-            <button class="btn" type="button">{{userGroup.group_name}}</button>
-         </ng-container>
-         <accordion [closeOthers]="true" class="p-3" id="ac2">
-            <accordion-group heading=""  [panelClass]="'customClass1'">
-              <ng-container accordion-heading>
-                <a class="btn">
-                  Email Recipients
-                </a>
-              </ng-container>
-              <div class="row col-md-12">
-                <div class="col-12  my-2 accordion-padding">
-                  <p *ngIf="userGroup?.recipients?.emails?.length === 0" class="mb-0"> No Email Recipients added yet.
-                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
-                    placement="bottom" tooltip="Save" (click)="onUpdateUserGroups()" ><i class="fa fa-save fa-sm"></i></button>
-                    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
-                  </p>
-                  <p *ngIf="userGroup?.recipients?.emails?.length > 0;" class="mb-0"> Following Email Recipients have been added so far. You can add more.
-                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
-                    placement="bottom" tooltip="Save" (click)="onUpdateUserGroups()" ><i class="fa fa-save fa-sm"></i></button>
-                    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
-                  </p>
-                </div>
-                <div class="col-12  my-2 accordion-padding"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-                  <div class="form-inline" >
-                    <ng-container>
-                      <div class="form-group">
-                      <input type="email" class="form-control form-control-sm bg-light small" min="0"
-                           name="Email"
-                          placeholder="Email ID" [(ngModel)]="recipientemail">
-                      </div>
-                      <div class="form-group">
-                        <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"  (click)="addEmailRecipient(i)">
-                          <i class="fa fa-plus fa-sm"></i></button>
-                      </div>
-                  </ng-container>
-                  </div>
-                </div>
-                <div class="col-12 my-2 accordion-padding" *ngIf="userGroup?.recipients?.emails?.length > 0">
-                  <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
-                    <ng-container *ngFor="let user of userGroup?.recipients?.emails; let index = index">
-                      <span class="tag" >
-                        <span class="tag-text">{{user}}</span>
-                        <button class="tag-remove"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1" (click)="removeEmailRecipient(index)"></button>
-                      </span>
-                    </ng-container>
-                  </div>
-                </div>
+  <div class="tableFixHead">
+    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
+    <h6 class="m-3" *ngIf="userGroups.length === 0 && !isUserGroupsAPILoading"> No User Groups available.</h6>
+    <accordion *ngIf="userGroups.length > 0" [closeOthers]="true" class="p-3">
+      <accordion-group heading="" [panelClass]="'customClass'" *ngFor="let userGroup of userGroups;let i = index"
+        (click)="openAccordion(i)">
+        <ng-container accordion-heading>
+          <button class="btn" type="button">{{userGroup.group_name}}</button>
+        </ng-container>
+        <accordion [closeOthers]="true" class="p-3" id="ac2">
+          <accordion-group heading="" [panelClass]="'customClass1'">
+            <ng-container accordion-heading>
+              <a class="btn">
+                Email Recipients
+              </a>
+            </ng-container>
+            <div class="row col-md-12">
+              <div class="col-12  my-2 accordion-padding">
+                <p *ngIf="userGroup?.recipients?.emails?.length === 0" class="mb-0"> No Email Recipients added yet.
+                  <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1" placement="bottom"
+                    tooltip="Save" (click)="onUpdateUserGroups()"><i class="fa fa-save fa-sm"></i></button>
+                  <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
+                </p>
+                <p *ngIf="userGroup?.recipients?.emails?.length > 0;" class="mb-0"> Following Email Recipients have been
+                  added so far. You can add more.
+                  <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1" placement="bottom"
+                    tooltip="Save" (click)="onUpdateUserGroups()"><i class="fa fa-save fa-sm"></i></button>
+                  <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
+                </p>
               </div>
-            </accordion-group>
-            <accordion-group heading=""  [panelClass]="'customClass1'">
-              <ng-container accordion-heading>
-                <a class="btn">
-                  SMS Recipients
-                </a>
-              </ng-container>
-              <div class="row col-md-12">
-                <div class="col-12  my-2 accordion-padding">
-                  <p *ngIf="userGroup?.recipients?.sms?.length === 0 || !userGroup?.recipients?.sms" class="mb-0"> No SMS Recipients added yet.
-                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
-                    placement="bottom" tooltip="Save" (click)="onUpdateUserGroups()" ><i class="fa fa-save fa-sm"></i></button>
-                    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
-                  </p>
-                  <p *ngIf="userGroup?.recipients?.sms?.length > 0" class="mb-0"> Following SMS Recipients have been added so far. You can add more.
-                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
-                    placement="bottom" tooltip="Save" (click)="onUpdateUserGroups()"><i class="fa fa-save fa-sm"></i></button>
-                    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
-                  </p>
-                </div>
-                <div class="col-12  my-2 accordion-padding"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-                  <div class="form-inline" >
-                    <ng-container>
+              <div class="col-12  my-2 accordion-padding"
+                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+                <div class="form-inline">
+                  <ng-container>
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-sm bg-light small" min="0"
-                           name="SMS"
-                          placeholder="Phone No" [(ngModel)]="recipientsms">
-                      </div>
-                      <div class="form-group">
-                        <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"  (click)="addSMSRecipient(i)">
-                          <i class="fa fa-plus fa-sm"></i></button>
-                      </div>
-                  </ng-container>
-                  </div>
-                </div>
-                <div class="col-12 my-2 accordion-padding" *ngIf="userGroup?.recipients?.sms?.length > 0">
-                  <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
-                    <ng-container *ngFor="let user of userGroup?.recipients?.sms; let index = index">
-                      <span class="tag" >
-                        <span class="tag-text">{{user}}</span>
-                        <button class="tag-remove"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1" (click)="removeSMSRecipient(index)"></button>
-                      </span>
-                    </ng-container>
-                  </div>
-                </div>
-              </div>
-            </accordion-group>
-            <accordion-group heading=""  [panelClass]="'customClass1'">
-              <ng-container accordion-heading>
-                <a class="btn">
-                  Whatsapp Recipients
-                </a>
-              </ng-container>
-              <div class="row col-md-12">
-                <div class="col-12  my-2 accordion-padding">
-                  <p *ngIf="userGroup?.recipients?.whatsapp?.length === 0 || !userGroup?.recipients?.whatsapp" class="mb-0"> No Whatsapp Recipients added yet.
-                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
-                    placement="bottom" tooltip="Save" (click)="onUpdateUserGroups()" ><i class="fa fa-save fa-sm"></i></button>
-                    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
-                  </p>
-                  <p *ngIf="userGroup?.recipients?.whatsapp?.length > 0" class="mb-0"> Following Whatsapp Recipients have been added so far. You can add more.
-                    <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
-                    placement="bottom" tooltip="Save" (click)="onUpdateUserGroups()"><i class="fa fa-save fa-sm"></i></button>
-                    <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
-                  </p>
-                </div>
-                <div class="col-12  my-2 accordion-padding"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-                  <div class="form-inline" >
-                    <ng-container>
+                      <input type="email" class="form-control form-control-sm bg-light small" min="0" name="Email"
+                        placeholder="Email ID" [(ngModel)]="recipientemail">
+                    </div>
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-sm bg-light small" min="0"
-                           name="whatsapp"
-                          placeholder="whatsapp Number" [(ngModel)]="recipientwhatsapp">
-                      </div>
-                      <div class="form-group">
-                        <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"  (click)="addWhatsappRecipient(i)">
-                          <i class="fa fa-plus fa-sm"></i></button>
-                      </div>
+                      <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
+                        (click)="addEmailRecipient(i)">
+                        <i class="fa fa-plus fa-sm"></i></button>
+                    </div>
                   </ng-container>
-                  </div>
-                </div>
-                <div class="col-12 my-2 accordion-padding" *ngIf="userGroup?.recipients?.whatsapp?.length > 0">
-                  <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
-                    <ng-container *ngFor="let user of userGroup?.recipients?.whatsapp; let index = index">
-                      <span class="tag" >
-                        <span class="tag-text">{{user}}</span>
-                        <button class="tag-remove"  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1" (click)="removeWhatsappRecipient(index)"></button>
-                      </span>
-                    </ng-container>
-                  </div>
                 </div>
               </div>
-            </accordion-group>
-          </accordion>
-    </accordion-group>
-  </accordion>
+              <div class="col-12 my-2 accordion-padding" *ngIf="userGroup?.recipients?.emails?.length > 0">
+                <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
+                  <ng-container *ngFor="let user of userGroup?.recipients?.emails; let index = index">
+                    <span class="tag">
+                      <span class="tag-text">{{user}}</span>
+                      <button class="tag-remove"
+                        *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
+                        (click)="removeEmailRecipient(index)"></button>
+                    </span>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </accordion-group>
+          <accordion-group heading="" [panelClass]="'customClass1'">
+            <ng-container accordion-heading>
+              <a class="btn">
+                SMS Recipients
+              </a>
+            </ng-container>
+            <div class="row col-md-12">
+              <div class="col-12  my-2 accordion-padding">
+                <p *ngIf="userGroup?.recipients?.sms?.length === 0 || !userGroup?.recipients?.sms" class="mb-0"> No SMS
+                  Recipients added yet.
+                  <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1" placement="bottom"
+                    tooltip="Save" (click)="onUpdateUserGroups()"><i class="fa fa-save fa-sm"></i></button>
+                  <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
+                </p>
+                <p *ngIf="userGroup?.recipients?.sms?.length > 0" class="mb-0"> Following SMS Recipients have been added
+                  so far. You can add more.
+                  <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1" placement="bottom"
+                    tooltip="Save" (click)="onUpdateUserGroups()"><i class="fa fa-save fa-sm"></i></button>
+                  <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
+                </p>
+              </div>
+              <div class="col-12  my-2 accordion-padding"
+                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+                <div class="form-inline">
+                  <ng-container>
+                    <div class="form-group">
+                      <ngx-intl-tel-input [enableAutoCountrySelect]="true" id="sms_{{i}}" [enablePlaceholder]="true"
+                        name="user_no" [searchCountryFlag]="true" [cssClass]="'custom'" [(ngModel)]="recipientsms[i]"
+                        [phoneValidation]="true" [inputId]="'recipientsms_' + i" [customPlaceholder]="'Enter SMS No'"
+                        [selectedCountryISO]="countryISO.India"
+                        [searchCountryField]="[searchCountryField.Iso2, searchCountryField.Name]">
+                      </ngx-intl-tel-input>
+                    </div>
+                    <div class="form-group">
+                      <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
+                        (click)="addSMSRecipient(i)">
+                        <i class="fa fa-plus fa-sm"></i></button>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+              <div class="col-12 my-2 accordion-padding" *ngIf="userGroup?.recipients?.sms?.length > 0">
+                <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
+                  <ng-container *ngFor="let user of userGroup?.recipients?.sms; let index = index">
+                    <span class="tag">
+                      <span class="tag-text">{{user}}</span>
+                      <button class="tag-remove"
+                        *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
+                        (click)="removeSMSRecipient(index)"></button>
+                    </span>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </accordion-group>
+          <accordion-group heading="" [panelClass]="'customClass1'">
+            <ng-container accordion-heading>
+              <a class="btn">
+                Whatsapp Recipients
+              </a>
+            </ng-container>
+            <div class="row col-md-12">
+              <div class="col-12  my-2 accordion-padding">
+                <p *ngIf="userGroup?.recipients?.whatsapp?.length === 0 || !userGroup?.recipients?.whatsapp"
+                  class="mb-0"> No Whatsapp Recipients added yet.
+                  <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1" placement="bottom"
+                    tooltip="Save" (click)="onUpdateUserGroups()"><i class="fa fa-save fa-sm"></i></button>
+                  <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
+                </p>
+                <p *ngIf="userGroup?.recipients?.whatsapp?.length > 0" class="mb-0"> Following Whatsapp Recipients have
+                  been added so far. You can add more.
+                  <button type="button" class="btn btn-success btn-sm mx-1 mt-n2"
+                    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1" placement="bottom"
+                    tooltip="Save" (click)="onUpdateUserGroups()"><i class="fa fa-save fa-sm"></i></button>
+                  <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
+                </p>
+              </div>
+              <div class="col-12  my-2 accordion-padding"
+                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+                <div class="form-inline">
+                  <ng-container>
+                    <div class="form-group">
+                      <!-- <input type="text" class="form-control form-control-sm bg-light small" min="0" name="whatsapp"
+                        placeholder="whatsapp Number" [(ngModel)]="recipientwhatsapp"> -->
+                      <ngx-intl-tel-input [enableAutoCountrySelect]="true" id="whatsapp_{{i}}"
+                        [enablePlaceholder]="true" name="user_no" [searchCountryFlag]="true" [cssClass]="'custom'"
+                        [(ngModel)]="recipientwhatsapp[i]" [phoneValidation]="true" [inputId]="'recipientwhatsapp_' + i"
+                        [customPlaceholder]="'Enter Whatsapp No'" [selectedCountryISO]="countryISO.India"
+                        [phoneValidation]="true"
+                        [searchCountryField]="[searchCountryField.Iso2, searchCountryField.Name]">
+                      </ngx-intl-tel-input>
+                    </div>
+                    <div class="form-group">
+                      <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
+                        (click)="addWhatsappRecipient(i)">
+                        <i class="fa fa-plus fa-sm"></i></button>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+              <div class="col-12 my-2 accordion-padding" *ngIf="userGroup?.recipients?.whatsapp?.length > 0">
+                <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
+                  <ng-container *ngFor="let user of userGroup?.recipients?.whatsapp; let index = index">
+                    <span class="tag">
+                      <span class="tag-text">{{user}}</span>
+                      <button class="tag-remove"
+                        *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
+                        (click)="removeWhatsappRecipient(index)"></button>
+                    </span>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </accordion-group>
+        </accordion>
+      </accordion-group>
+    </accordion>
   </div>
-  </div>
+</div>

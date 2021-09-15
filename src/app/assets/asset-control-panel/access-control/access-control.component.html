@@ -3,60 +3,68 @@
     <ul class="nav">
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Access Control')"
-        [ngClass]="{'active': selectedTab === 'Access Control'}">
+          [ngClass]="{'active': selectedTab === 'Access Control'}">
           <i class="fa fa-fw fa-users"></i>
           <span class="text-secondary">Access Control</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Email Recipients')"
-        [ngClass]="{'active': selectedTab === 'Email Recipients'}">
+        <a class="nav-link" href="javascript:void(0)" (click)="onClickOfTab('Recipients')"
+          [ngClass]="{'active': selectedTab === 'Recipients'}">
           <i class="fa fa-fw fa-envelope"></i>
-          <span class="text-secondary">Email Recipients</span></a>
+          <span class="text-secondary">Recipients</span></a>
       </li>
       <li class="nav-item" *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
         <a class="nav-link" href="javascript:void(0)" (click)="openAddUserModal()">
           <i class="fa fa-fw fa-plus"></i>
-          <span class="text-secondary">Add Email Recipient</span></a>
+          <span class="text-secondary">Add Recipient</span></a>
       </li>
-       </ul>
-</div>
+    </ul>
+  </div>
 </div>
 
 <div class="table-responsive">
-  <div class="tableFixHead" >
-    <ng-container *ngIf="selectedTab === 'Email Recipients'">
-    <table class="table table-hover" cellspacing="0" width="100%" >
-      <thead >
-        <tr>
-          <th class="sticky-top">No</th>
-          <th>Email</th>
-          <th>Name</th>
-          <th>Role</th>
-          <th *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let user of assetUsers;let i = index">
-          <td>{{i + 1}}</td>
-          <td>{{user.user_email}}</td>
-          <td>{{user.user_name}}</td>
-          <td>{{user?.role || 'NA'}}</td>
-          <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
-            <a href="javascript:void(0)" (click)="openConfirmModal(user)" class="mr-1"
-              placement="bottom" tooltip="Delete User Access">
-                <i class="fa fa-fw fa-trash" ></i>
-            </a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="tableFixHead">
+    <ng-container *ngIf="selectedTab === 'Recipients'">
+      <div class="tab-bar">Following users will get notifications when alerts generated.</div>
+      <table class="table table-hover" cellspacing="0" width="100%">
+        <thead>
+          <tr>
+            <th class="sticky-top">No</th>
+            <th>Email</th>
+            <th>SMS No</th>
+            <th>Whatsapp No</th>
+            <th>Name</th>
+            <th *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="assetUsers.length > 0">
+            <tr *ngFor="let user of assetUsers;let i = index">
+              <td>{{i + 1}}</td>
+              <td>{{user.email}}</td>
+              <td>{{user.sms_no}}</td>
+              <td>{{user.whatsapp_no}}</td>
+              <td>{{user.name}}</td>
+              <td *ngIf="decodedToken?.privileges?.indexOf('ASMM') > -1">
+                <a href="javascript:void(0)" (click)="openConfirmModal(i)" class="mr-1" placement="bottom"
+                  tooltip="Delete User Access">
+                  <i class="fa fa-fw fa-trash"></i>
+                </a>
+              </td>
+            </tr>
+          </ng-container>
+          <tr *ngIf="assetUsers.length === 0">
+            <td colspan="6">No recipients added.</td>
+          </tr>
+        </tbody>
+      </table>
     </ng-container>
     <ng-container *ngIf="selectedTab === 'Access Control'">
       <div class="tab-bar">Following users are having access of this asset.</div>
       <div class="">
 
-        <table class="table table-hover" cellspacing="0" width="100%" >
-          <thead >
+        <table class="table table-hover" cellspacing="0" width="100%">
+          <thead>
             <tr>
               <th class="sticky-top">No</th>
               <th>Email</th>
@@ -67,18 +75,18 @@
           </thead>
           <tbody>
             <ng-container *ngIf="assetAccessUsers.length > 0">
-            <tr *ngFor="let user of assetAccessUsers;let i = index">
-              <td>{{i + 1}}</td>
-              <td>{{user.user_email}}</td>
-              <td>{{user.user_name}}</td>
-              <td>{{user?.role || 'NA'}}</td>
-              <!-- <td>
+              <tr *ngFor="let user of assetAccessUsers;let i = index">
+                <td>{{i + 1}}</td>
+                <td>{{user.user_email}}</td>
+                <td>{{user.user_name}}</td>
+                <td>{{user?.role || 'NA'}}</td>
+                <!-- <td>
                 <a href="javascript:void(0)" (click)="openConfirmModal(user)" class="mr-1"
                   placement="bottom" tooltip="Delete User Access">
                     <i class="fa fa-fw fa-trash" ></i>
                 </a>
               </td> -->
-            </tr>
+              </tr>
             </ng-container>
             <tr *ngIf="assetAccessUsers.length === 0">
               <td colspan="4">No users have access of this asset.</td>
@@ -87,44 +95,67 @@
         </table>
       </div>
     </ng-container>
-</div>
+  </div>
 </div>
 
-<div class="modal right fade" id="userAccessAddModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
+<div class="modal right fade" id="userAccessAddModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <div class="modal-content" *ngIf="isAddUserModalOpen">
-    <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">Access Control</h5>
-      <button type="button" class="close" (click)="onModalClose()" aria-label="Close" [disabled]="isUpdateAPILoading">
-        <span aria-hidden="true">&times;</span>
-      </button>
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Recipient</h5>
+        <button type="button" class="close" (click)="onModalClose()" aria-label="Close" [disabled]="isUpdateAPILoading">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="addUserForm">
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">User:</label>
+            <select class="form-control form-control-sm" id="user" name="user" formControlName="userObj"
+              (change)="onUserSelectionChange()">
+              <option [ngValue]="null">Select User</option>
+              <option *ngFor="let user of appUsers" [ngValue]="user">{{user.user_name}} ({{user.user_email}})</option>
+            </select>
+          </div>
+          <label for="or">OR</label>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">User Name:</label>
+            <input type="text" class="form-control form-control-sm" id="name" name="name" formControlName="name"
+              placeholder="Enter user name">
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">User Email:</label>
+            <input type="text" class="form-control form-control-sm" id="email" name="email" formControlName="email"
+              placeholder="Enter email address">
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">User SMS No:</label>
+            <ngx-intl-tel-input [enableAutoCountrySelect]="true" [enablePlaceholder]="true" name="user_no"
+              [searchCountryFlag]="true" [cssClass]="'custom'" [inputId]="'sms_no'" formControlName="sms_no"
+              [phoneValidation]="true" id="sms_no_control" [customPlaceholder]="'Enter User SMS No'"
+              [selectedCountryISO]="countryISO.India"
+              [searchCountryField]="[searchCountryField.Iso2, searchCountryField.Name]">
+            </ngx-intl-tel-input>
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">User Whatsapp No:</label>
+            <ngx-intl-tel-input [enableAutoCountrySelect]="true" [enablePlaceholder]="true" name="whatsapp_no"
+              [searchCountryFlag]="true" [cssClass]="'custom'" formControlName="whatsapp_no" [phoneValidation]="true"
+              [customPlaceholder]="'Enter User Whatsapp No'" [inputId]="'whatsapp_no'"
+              [selectedCountryISO]="countryISO.India" id="whatsapp_no_control"
+              [searchCountryField]="[searchCountryField.Iso2, searchCountryField.Name]">
+            </ngx-intl-tel-input>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary add-row" [disabled]="isUpdateAPILoading"
+          (click)="onAddUserAccess()">Save</button>
+        <button type="button" class="btn btn-secondary" [disabled]="isUpdateAPILoading"
+          (click)="onModalClose()">Cancel</button>
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUpdateAPILoading"></i>
+      </div>
     </div>
-    <div class="modal-body">
-      <form>
-        <div class="form-group">
-          <label for="recipient-name" class="col-form-label">User:</label>
-          <select class="form-control form-control-sm" id="user" name="user" [(ngModel)]="selectedUser">
-            <option [ngValue]="{}">Select User</option>
-            <option *ngFor="let user of appUsers" [ngValue]="user">{{user.user_name}} ({{user.user_email}})</option>
-          </select>
-        </div>
-        <label for="or" >OR</label>
-        <div class="form-group">
-          <label for="message-text" class="col-form-label">User Name:</label>
-          <input type="text" class="form-control form-control-sm" id="name"  name="name" [(ngModel)]="selectedUser.user_name" placeholder="Enter user name">
-        </div>
-        <div class="form-group">
-          <label for="message-text" class="col-form-label">User Email:</label>
-          <input type="text" class="form-control form-control-sm" id="email" name="email" [(ngModel)]="selectedUser.user_email" placeholder="Enter email address">
-        </div>
-      </form>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-primary add-row" [disabled]="isUpdateAPILoading" (click)="onAddUserAccess()">Save</button>
-      <button type="button" class="btn btn-secondary" [disabled]="isUpdateAPILoading" (click)="onModalClose()">Cancel</button>
-      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUpdateAPILoading"></i>
-    </div>
-  </div>
   </div>
 </div>
 
@@ -133,7 +164,8 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Remove User Access</h5>
-        <button type="button" class="close"  aria-label="Close" [disabled]="isUpdateAPILoading" (click)="onCloseConfirmModal()">
+        <button type="button" class="close" aria-label="Close" [disabled]="isUpdateAPILoading"
+          (click)="onCloseConfirmModal()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>

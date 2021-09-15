@@ -12,10 +12,9 @@ declare var $: any;
 @Component({
   selector: 'app-asset-model-properties',
   templateUrl: './asset-model-properties.component.html',
-  styleUrls: ['./asset-model-properties.component.css']
+  styleUrls: ['./asset-model-properties.component.css'],
 })
 export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestroy {
-
   @Input() assetModel: any;
   @Input() type: any;
   properties: any = {};
@@ -34,7 +33,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   editorOptions: JsonEditorOptions;
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   subscriptions: Subscription[] = [];
-  @ViewChild('jsEditor', {static: false}) jsEditor: any;
+  @ViewChild('jsEditor', { static: false }) jsEditor: any;
   constantData = CONSTANTS;
   code = `function calculate () {
   return null;
@@ -48,23 +47,16 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
     private commonService: CommonService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.mode = 'code';
     this.editorOptions.statusBar = false;
     this.getSlaveData();
-  }
-
-  onMonacoInit(editorInstance) {
-    setTimeout(() => {
-      editorInstance.layout();
-    }, 50);
   }
 
   ngOnChanges(changes): void {
@@ -77,12 +69,14 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   getSlaveData() {
     this.slaveData = [];
     const filterObj = {};
-    this.subscriptions.push(this.assetModelService.getModelSlaveDetails(this.contextApp.app, this.assetModel.name, filterObj)
-    .subscribe((response: any) => {
-      if (response?.data) {
-        this.slaveData = response.data;
-      }
-    })
+    this.subscriptions.push(
+      this.assetModelService
+        .getModelSlaveDetails(this.contextApp.app, this.assetModel.name, filterObj)
+        .subscribe((response: any) => {
+          if (response?.data) {
+            this.slaveData = response.data;
+          }
+        })
     );
   }
 
@@ -98,14 +92,14 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
           key: 'name',
           type: 'text',
           headerClass: '',
-          valueclass: ''
+          valueclass: '',
         },
         {
           name: 'JSON Key',
           key: 'json_key',
           type: 'text',
           headerClass: 'w-15',
-          valueclass: ''
+          valueclass: '',
         },
 
         {
@@ -113,7 +107,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
           key: 'data_type',
           type: 'text',
           headerClass: 'w-15',
-          valueclass: ''
+          valueclass: '',
         },
         {
           name: 'Actions',
@@ -126,7 +120,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
               text: '',
               id: 'View JSON Model',
               valueclass: '',
-              tooltip: 'View JSON Model'
+              tooltip: 'View JSON Model',
             },
             {
               icon: 'fa fa-fw fa-edit',
@@ -137,8 +131,8 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
               privilege_key: 'ASMMM',
               disableConditions: {
                 key: 'freezed',
-                value: true
-              }
+                value: true,
+              },
             },
             {
               icon: 'fa fa-fw fa-trash',
@@ -149,12 +143,12 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
               tooltip: 'Delete',
               disableConditions: {
                 key: 'freezed',
-                value: true
-              }
-            }
-          ]
-        }
-      ]
+                value: true,
+              },
+            },
+          ],
+        },
+      ],
     };
     if (this.type.includes('measured')) {
       this.propertyTableConfig.data.splice(3, 0, {
@@ -162,34 +156,28 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         key: 'group',
         type: 'text',
         headerClass: '',
-        valueclass: ''
+        valueclass: '',
+      });
+      this.propertyTableConfig.data.splice(4, 0, {
+        name: 'Source',
+        key: 'metadata.slave_id',
+        type: 'text',
+        headerClass: '',
+        valueclass: '',
       });
     }
     if (this.type.includes('derived')) {
-      // this.propertyTableConfig.data[3].btnData.splice(1, 0, {
-      //   icon: 'fa fa-fw fa-cog',
-      //   text: '',
-      //   id: 'Configure Property',
-      //   valueclass: '',
-      //   tooltip: 'Configure Property'
-      // });
       this.propertyTableConfig.data.splice(3, 0, {
-        name: 'Condition',
+        name: 'Formula',
         key: 'condition',
         type: 'text',
         headerClass: '',
-        valueclass: ''
+        valueclass: '',
       });
-      this.propertyTableConfig.data.splice(4, 0, {
-        name: 'Group',
-        key: 'group',
-        type: 'text',
-        headerClass: '',
-        valueclass: ''
-      });
-      this.propertyTableConfig.data[5]. btnData.splice(1);
-      this.propertyTableConfig.data[5].btnData.splice(2);
+      this.propertyTableConfig.data[4].btnData.splice(1);
+      this.propertyTableConfig.data[4].btnData.splice(2);
     }
+
     this.getAssetsModelProperties();
   }
 
@@ -199,81 +187,79 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.isPropertiesLoading = true;
     const obj = {
       app: this.assetModel.app,
-      name: this.assetModel.name
+      name: this.assetModel.name,
     };
-    this.subscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
-      (response: any) => {
+    this.subscriptions.push(
+      this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
         this.properties = response.properties;
         this.properties[this.type] = this.properties[this.type] ? this.properties[this.type] : [];
-        if (this.type === 'edge_derived_properties' && this.properties['measured_properties']) {
-          this.dependentProperty = JSON.parse(JSON.stringify(this.properties['measured_properties']));
-          this.properties[this.type].forEach(prop => this.dependentProperty.push(prop));
-        }
+        // if (this.type === 'edge_derived_properties' && this.properties['measured_properties']) {
+        //   this.dependentProperty = JSON.parse(JSON.stringify(this.properties['measured_properties']));
+        //   this.properties[this.type].forEach(prop => this.dependentProperty.push(prop));
+        // }
         this.isPropertiesLoading = false;
-      }
-    ));
-  }
-
-
-  onPropertyChecked(event) {
-    const propObj = event;
-    const index = this.selectedProperty.dependent_properties.findIndex(prop => prop.json_key === propObj.json_key);
-    if (index > -1) {
-      this.selectedProperty.dependent_properties.splice(index, 1);
-    }
-    this.onPropParamAddedForFun();
-  }
-
-  selectAllProps() {
-    this.selectedProperty.dependent_properties = JSON.parse(JSON.stringify(this.dependentProperty));
-    this.onPropParamAddedForFun();
-  }
-
-  deselectAllProps() {
-    this.selectedProperty.dependent_properties = [];
-    this.onPropParamAddedForFun();
+      })
+    );
   }
 
   openAddPropertiesModal() {
     this.propertyObj = {
-      json_model : {},
-      threshold: {}
+      json_model: {},
+      threshold: {},
     };
     console.log(this.setupForm);
-    if (this.assetModel.metadata?.model_type !== CONSTANTS.IP_GATEWAY) {
-      this.setupForm = new FormGroup({
-        slave_id: new FormControl(null, [Validators.required]),
-      });
-    }
+    this.setupForm = new FormGroup({
+      slave_id: new FormControl(null, [Validators.required]),
+    });
     if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_ASSET) {
-    if (this.assetModel.tags.protocol === 'ModbusTCPMaster' || this.assetModel.tags.protocol === 'ModbusRTUMaster') {
-      this.setupForm = new FormGroup({
-        slave_id: new FormControl(null, [Validators.required]),
-        d: new FormControl(null, [Validators.required]),
-        sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
-        a: new FormControl(false),
-        fc: new FormControl(null, [Validators.required]),
-      });
-    } else if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
-      this.setupForm = new FormGroup({
-        slave_id: new FormControl(null, [Validators.required]),
-        d: new FormControl(null, [Validators.required]),
-        sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
-        a: new FormControl(false),
-        mt: new FormControl(null, [Validators.required]),
-      });
-    } else if (this.assetModel.tags.protocol === 'BlueNRG') {
-      this.setupForm = new FormGroup({
-        slave_id: new FormControl(null, [Validators.required]),
-        sa: new FormControl(null, [Validators.required, Validators.min(1), Validators.max(99999)]),
-        a: new FormControl(false),
-        p: new FormControl(2, [Validators.required]),
-      });
+      if (this.assetModel.tags.protocol === 'ModbusTCPMaster' || this.assetModel.tags.protocol === 'ModbusRTUMaster') {
+        this.setupForm = new FormGroup({
+          slave_id: new FormControl(null, [Validators.required]),
+          d: new FormControl(null, [Validators.required]),
+          sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
+          a: new FormControl(false),
+          fc: new FormControl(null, [Validators.required]),
+        });
+      } else if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
+        this.setupForm = new FormGroup({
+          slave_id: new FormControl(null, [Validators.required]),
+          d: new FormControl(null, [Validators.required]),
+          sa: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(99999)]),
+          a: new FormControl(false),
+          mt: new FormControl(null, [Validators.required]),
+        });
+      } else if (this.assetModel.tags.protocol === 'BlueNRG') {
+        this.setupForm = new FormGroup({
+          slave_id: new FormControl(null, [Validators.required]),
+          sa: new FormControl(null, [Validators.required, Validators.min(1), Validators.max(99999)]),
+          a: new FormControl(false),
+          p: new FormControl(2, [Validators.required]),
+        });
+      } else if (this.assetModel.tags.protocol === 'AIOTInputs') {
+        this.setupForm = new FormGroup({
+          slave_id: new FormControl(null, [Validators.required]),
+          cn: new FormControl(null, [Validators.required, Validators.min(0)]),
+          a: new FormControl(false),
+          d: new FormControl(null, [Validators.required]),
+        });
+      }
+      console.log(this.setupForm);
     }
-    console.log(this.setupForm);
-    }
-   // this.assetModel.tags.app = this.contextApp.app;
+    // this.assetModel.tags.app = this.contextApp.app;
     $('#addPropertiesModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onAIOTTypeChange(obj = undefined) {
+    if (this.setupForm.value.d === 'a') {
+      this.setupForm.removeControl('p');
+      this.setupForm.addControl(
+        'p',
+        new FormControl(obj?.p || null, [Validators.required, Validators.min(1), Validators.max(5)])
+      );
+    } else {
+      this.setupForm.removeControl('p');
+      this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
+    }
   }
 
   onChangeOfSetupType(obj = undefined) {
@@ -285,35 +271,44 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     if (this.setupForm.value.d !== 's') {
       this.setupForm.removeControl('la');
     } else {
-      this.setupForm.addControl('la', new FormControl(obj?.la || null, [Validators.required, Validators.min(1), Validators.max(99999)]));
+      this.setupForm.addControl(
+        'la',
+        new FormControl(obj?.la || null, [Validators.required, Validators.min(1), Validators.max(99999)])
+      );
     }
-    if (this.setupForm.value.d === 'a' &&
-    (this.setupForm.value.sd === 5 || this.setupForm.value.sd === 6)) {
+    if (this.setupForm.value.d === 'a' && (this.setupForm.value.sd === 5 || this.setupForm.value.sd === 6)) {
       this.setupForm.removeControl('p');
-      this.setupForm.addControl('p', new FormControl(obj?.p || null, [Validators.required, Validators.min(1), Validators.max(5)]));
+      this.setupForm.addControl(
+        'p',
+        new FormControl(obj?.p || null, [Validators.required, Validators.min(1), Validators.max(5)])
+      );
     } else {
       this.setupForm.removeControl('p');
       this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
     }
     if (this.assetModel.tags.protocol === 'SiemensTCPIP' && this.setupForm.value.d === 'd') {
       this.setupForm.removeControl('bn');
-      this.setupForm.addControl('bn', new FormControl(obj?.bn || null, [Validators.required, Validators.min(0), Validators.max(15)]));
+      this.setupForm.addControl(
+        'bn',
+        new FormControl(obj?.bn || null, [Validators.required, Validators.min(0), Validators.max(15)])
+      );
     } else {
       this.setupForm.removeControl('bn');
     }
   }
 
   onChangeOfSetupSecondaryType(obj = undefined) {
-    if (this.setupForm.value.d === 'a' &&
-    (this.setupForm.value.sd === 5 || this.setupForm.value.sd === 6)) {
+    if (this.setupForm.value.d === 'a' && (this.setupForm.value.sd === 5 || this.setupForm.value.sd === 6)) {
       this.setupForm.removeControl('p');
-      this.setupForm.addControl('p', new FormControl(obj?.p || null, [Validators.required, Validators.min(1), Validators.max(5)]));
+      this.setupForm.addControl(
+        'p',
+        new FormControl(obj?.p || null, [Validators.required, Validators.min(1), Validators.max(5)])
+      );
     } else {
       this.setupForm.removeControl('p');
       this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
     }
-    if (this.setupForm.value.d === 'a' &&
-    this.setupForm.value.sd === 9) {
+    if (this.setupForm.value.d === 'a' && this.setupForm.value.sd === 9) {
       this.setupForm.removeControl('bytn');
       this.setupForm.addControl('bytn', new FormControl(obj?.bytn || null, [Validators.required]));
     } else {
@@ -332,7 +327,10 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   onChangeOfSetupFunctionCode(obj = undefined) {
     if (this.setupForm.value.d === 'd' && (this.setupForm.value.fc === 3 || this.setupForm.value.fc === 4)) {
       this.setupForm.removeControl('bn');
-      this.setupForm.addControl('bn', new FormControl(obj?.bn || null, [Validators.required, Validators.min(0), Validators.max(15)]));
+      this.setupForm.addControl(
+        'bn',
+        new FormControl(obj?.bn || null, [Validators.required, Validators.min(0), Validators.max(15)])
+      );
     } else {
       this.setupForm.removeControl('bn');
       this.setupForm.addControl('bn', new FormControl(-1, [Validators.required]));
@@ -362,8 +360,8 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   onDataTypeChange() {
     const obj = {};
     if (this.propertyObj.data_type && this.propertyObj.json_key) {
-      const validations = this.dataTypeList.find(type => type.name === this.propertyObj.data_type).validations;
-      validations.forEach(item => {
+      const validations = this.dataTypeList.find((type) => type.name === this.propertyObj.data_type).validations;
+      validations.forEach((item) => {
         if (item === 'enum') {
           obj[item] = [];
         } else if (item === 'trueValue') {
@@ -375,7 +373,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         }
       });
       this.propertyObj.json_model = {};
-      this.propertyObj.json_model[this.propertyObj.json_key] =  obj;
+      this.propertyObj.json_model[this.propertyObj.json_key] = obj;
       this.propertyObj.json_model[this.propertyObj.json_key].type = this.propertyObj.data_type.toLowerCase();
     } else {
       this.propertyObj.json_model = {};
@@ -383,16 +381,17 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     this.editor.set(this.propertyObj.json_model);
   }
 
-
-
   onSavePropertyObj() {
     this.propertyObj.metadata = this.setupForm?.value;
     this.propertyObj.id = this.commonService.generateUUID();
-    if (!this.propertyObj.name || !this.propertyObj.json_key || !this.propertyObj.data_type ) {
+    if (!this.propertyObj.name || !this.propertyObj.json_key || !this.propertyObj.data_type) {
       this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Property');
       return;
     }
-    if (this.assetModel.metadata?.model_type === this.constantData.NON_IP_ASSET && Object.keys(this.propertyObj?.metadata).length === 0) {
+    if (
+      this.assetModel.metadata?.model_type === this.constantData.NON_IP_ASSET &&
+      Object.keys(this.propertyObj?.metadata).length === 0
+    ) {
       this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Property');
       return;
     }
@@ -402,57 +401,67 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.toasterService.showError('Invalid JSON data', 'Add Property');
       return;
     }
-    const index = this.properties[this.type].findIndex(prop => prop.json_key === this.propertyObj.json_key);
+    const index = this.properties[this.type].findIndex((prop) => prop.json_key === this.propertyObj.json_key);
     if (index > -1) {
       this.toasterService.showError('Property with same name already exist.', 'Add Property');
       return;
     }
     if (this.propertyObj.threshold && this.type === 'measured_properties') {
-      if (this.propertyObj.threshold.l1 && this.propertyObj.threshold.h1 && this.propertyObj.threshold.h1 < this.propertyObj.threshold.l1) {
+      if (
+        this.propertyObj.threshold.l1 &&
+        this.propertyObj.threshold.h1 &&
+        this.propertyObj.threshold.h1 < this.propertyObj.threshold.l1
+      ) {
         this.toasterService.showError('H1 must be greater than L1', 'Add Property');
         return;
       }
-      if (this.propertyObj.threshold.l2 && this.propertyObj.threshold.h2 && this.propertyObj.threshold.h2 < this.propertyObj.threshold.l2) {
+      if (
+        this.propertyObj.threshold.l2 &&
+        this.propertyObj.threshold.h2 &&
+        this.propertyObj.threshold.h2 < this.propertyObj.threshold.l2
+      ) {
         this.toasterService.showError('H2 must be greater than L2', 'Add Property');
         return;
       }
-      if (this.propertyObj.threshold.l3 && this.propertyObj.threshold.h3 && this.propertyObj.threshold.h3 < this.propertyObj.threshold.l3) {
+      if (
+        this.propertyObj.threshold.l3 &&
+        this.propertyObj.threshold.h3 &&
+        this.propertyObj.threshold.h3 < this.propertyObj.threshold.l3
+      ) {
         this.toasterService.showError('H3 must be greater than L3', 'Add Property');
         return;
       }
-      if (this.propertyObj.threshold.l1 && this.propertyObj.threshold.l2 && this.propertyObj.threshold.l1 < this.propertyObj.threshold.l2) {
+      if (
+        this.propertyObj.threshold.l1 &&
+        this.propertyObj.threshold.l2 &&
+        this.propertyObj.threshold.l1 < this.propertyObj.threshold.l2
+      ) {
         this.toasterService.showError('L1 must be greater than L2', 'Add Property');
         return;
       }
-      if (this.propertyObj.threshold.l2 && this.propertyObj.threshold.l3 && this.propertyObj.threshold.l2 < this.propertyObj.threshold.l3) {
+      if (
+        this.propertyObj.threshold.l2 &&
+        this.propertyObj.threshold.l3 &&
+        this.propertyObj.threshold.l2 < this.propertyObj.threshold.l3
+      ) {
         this.toasterService.showError('L2 must be greater than L3', 'Add Property');
         return;
       }
-      if (this.propertyObj.threshold.h1 && this.propertyObj.threshold.h2 && this.propertyObj.threshold.h1 > this.propertyObj.threshold.h2) {
+      if (
+        this.propertyObj.threshold.h1 &&
+        this.propertyObj.threshold.h2 &&
+        this.propertyObj.threshold.h1 > this.propertyObj.threshold.h2
+      ) {
         this.toasterService.showError('H2 must be greater than H1', 'Add Property');
         return;
       }
-      if (this.propertyObj.threshold.h2 && this.propertyObj.threshold.h3 && this.propertyObj.threshold.h3 < this.propertyObj.threshold.h2) {
+      if (
+        this.propertyObj.threshold.h2 &&
+        this.propertyObj.threshold.h3 &&
+        this.propertyObj.threshold.h3 < this.propertyObj.threshold.h2
+      ) {
         this.toasterService.showError('H3 must be greater than H2', 'Add Property');
         return;
-      }
-    }
-    if (this.propertyObj.isAdd) {
-      if (this.type.includes('read')) {
-        this.properties.controllable_properties = this.properties.controllable_properties ? this.properties.controllable_properties : [];
-        const windex = this.properties.controllable_properties.findIndex(prop => prop.json_key === this.propertyObj.json_key);
-        delete this.propertyObj.isAdd;
-        if (windex === -1) {
-          this.properties.controllable_properties.push(this.propertyObj);
-        }
-      }
-      if (this.type.includes('writ')) {
-        this.properties.configurable_properties = this.properties.configurable_properties ? this.properties.configurable_properties : [];
-        const windex = this.properties.configurable_properties.findIndex(prop => prop.json_key === this.propertyObj.json_key);
-        delete this.propertyObj.isAdd;
-        if (windex === -1) {
-          this.properties.configurable_properties.push(this.propertyObj);
-        }
       }
     }
     this.isCreatePropertyLoading = true;
@@ -460,51 +469,48 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     obj.properties = JSON.parse(JSON.stringify(this.properties));
     obj.properties[this.type].push(this.propertyObj);
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    this.subscriptions.push(this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
-      (response: any) => {
-        this.isCreatePropertyLoading = false;
-        this.onCloseAssetsPropertyModal();
-        this.toasterService.showSuccess(response.message, 'Add Property');
-        this.getAssetsModelProperties();
-      }, error => {
-        this.isCreatePropertyLoading = false;
-        this.toasterService.showError(error.message, 'Add Property');
-      }
-    ));
+    this.subscriptions.push(
+      this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
+        (response: any) => {
+          this.isCreatePropertyLoading = false;
+          this.onCloseAssetsPropertyModal();
+          this.toasterService.showSuccess(response.message, 'Add Property');
+          this.getAssetsModelProperties();
+        },
+        (error) => {
+          this.isCreatePropertyLoading = false;
+          this.toasterService.showError(error.message, 'Add Property');
+        }
+      )
+    );
   }
 
   deleteProperty() {
     const obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
-    const index = obj.properties[this.type].findIndex(prop => prop.json_key === this.selectedProperty.json_key);
+    const index = obj.properties[this.type].findIndex((prop) => prop.json_key === this.selectedProperty.json_key);
     obj.properties[this.type].splice(index, 1);
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    this.subscriptions.push(this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
-      (response: any) => {
-        this.isCreatePropertyLoading = false;
-        this.onCloseModal('confirmMessageModal');
-        this.toasterService.showSuccess(response.message, 'Delete Property');
-        this.getAssetsModelProperties();
-      }, error => {
-        this.isCreatePropertyLoading = false;
-        this.toasterService.showError(error.message, 'Delete Property');
-      }
-    ));
+    this.subscriptions.push(
+      this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
+        (response: any) => {
+          this.isCreatePropertyLoading = false;
+          this.onCloseModal('confirmMessageModal');
+          this.toasterService.showSuccess(response.message, 'Delete Property');
+          this.getAssetsModelProperties();
+        },
+        (error) => {
+          this.isCreatePropertyLoading = false;
+          this.toasterService.showError(error.message, 'Delete Property');
+        }
+      )
+    );
   }
 
   onCloseAssetsPropertyModal() {
     $('#addPropertiesModal').modal('hide');
     this.propertyObj = undefined;
     this.selectedProperty = undefined;
-  }
-
-  onPropParamAddedForFun() {
-    let propKeys = '';
-    this.selectedProperty.dependent_properties.forEach((prop, index) =>
-      propKeys += (prop.json_key + (this.selectedProperty.dependent_properties[index + 1] ? ',' : '')));
-    this.code =   `function calculate (` + propKeys + `) {
-  return null;
-}`;
   }
 
   updatePropertyData() {
@@ -518,7 +524,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       return;
     }
     this.propertyObj.metadata = this.setupForm?.value;
-    const index = this.properties[this.type].findIndex(prop => prop.json_key === this.selectedProperty.json_key);
+    const index = this.properties[this.type].findIndex((prop) => prop.json_key === this.selectedProperty.json_key);
     this.properties[this.type].splice(index, 1);
 
     if (this.propertyObj?.edit) {
@@ -532,18 +538,21 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     const obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.properties = JSON.parse(JSON.stringify(this.properties));
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    this.subscriptions.push(this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
-      (response: any) => {
-        this.isCreatePropertyLoading = false;
-        this.onCloseModal('configureDerivedPropModal');
-        this.onCloseAssetsPropertyModal();
-        this.toasterService.showSuccess(response.message, 'Edit Property');
-        this.getAssetsModelProperties();
-      }, error => {
-        this.isCreatePropertyLoading = false;
-        this.toasterService.showError(error.message, 'Edit Property');
-      }
-    ));
+    this.subscriptions.push(
+      this.assetModelService.updateAssetsModel(obj, this.assetModel.app).subscribe(
+        (response: any) => {
+          this.isCreatePropertyLoading = false;
+          this.onCloseModal('configureDerivedPropModal');
+          this.onCloseAssetsPropertyModal();
+          this.toasterService.showSuccess(response.message, 'Edit Property');
+          this.getAssetsModelProperties();
+        },
+        (error) => {
+          this.isCreatePropertyLoading = false;
+          this.toasterService.showError(error.message, 'Edit Property');
+        }
+      )
+    );
   }
 
   onTableFunctionCall(obj) {
@@ -556,62 +565,82 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       $('#configureDerivedPropModal').modal({ backdrop: 'static', keyboard: false, show: true });
       this.options = {
         theme: 'vs-dark',
-        language: 'javascript'
+        language: 'javascript',
       };
-      if (!this.selectedProperty.derived_function) {
-        this.onPropParamAddedForFun();
-      } else {
-        this.code = this.selectedProperty.derived_function;
-      }
-      // setTimeout(() => {
-      //   if (this.jsEditor) {
-      //     this.jsEditor.editor?.layout();
-      //   }
-      // }, 50);
     } else if (obj.for === 'Edit') {
       this.propertyObj = JSON.parse(JSON.stringify(obj.data));
       this.propertyObj.edit = true;
-      if (this.assetModel.metadata?.model_type !== CONSTANTS.IP_GATEWAY) {
-        this.setupForm = new FormGroup({
-          slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
-        });
-      }
+      this.setupForm = new FormGroup({
+        slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
+      });
       if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_ASSET) {
-      if (this.assetModel.tags.protocol === 'ModbusTCPMaster' || this.assetModel.tags.protocol === 'ModbusRTUMaster') {
-        this.setupForm = new FormGroup({
-          slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
-          d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),
-          sa: new FormControl(this.propertyObj?.metadata?.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
-          a: new FormControl(false),
-          fc: new FormControl(this.propertyObj?.metadata?.fc, [Validators.required]),
-        });
-      } else if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
-        this.setupForm = new FormGroup({
-          slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
-          d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),
-          sa: new FormControl(this.propertyObj?.metadata?.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
-          a: new FormControl(false),
-          mt: new FormControl(this.propertyObj?.metadata?.mt, [Validators.required]),
-        });
-      } else if (this.assetModel.tags.protocol === 'BlueNRG') {
-        this.setupForm = new FormGroup({
-          slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
-          sa: new FormControl(this.propertyObj?.metadata?.sa, [Validators.required, Validators.min(0), Validators.max(99999)]),
-          a: new FormControl(false),
-          p: new FormControl(this.propertyObj?.metadata?.mt, [Validators.required]),
-        });
-      }
-      this.onChangeOfSetupType(this.propertyObj.metadata);
-      this.onChangeOfSetupSecondaryType(this.propertyObj.metadata);
-      this.onChangeOfSetupFunctionCode(this.propertyObj.metadata);
-      if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
-        this.onChageOfMemoryType(this.propertyObj.metadata);
-      }
+        if (
+          this.assetModel.tags.protocol === 'ModbusTCPMaster' ||
+          this.assetModel.tags.protocol === 'ModbusRTUMaster'
+        ) {
+          this.setupForm = new FormGroup({
+            slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
+            d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),
+            sa: new FormControl(this.propertyObj?.metadata?.sa, [
+              Validators.required,
+              Validators.min(0),
+              Validators.max(99999),
+            ]),
+            a: new FormControl(false),
+            fc: new FormControl(this.propertyObj?.metadata?.fc, [Validators.required]),
+          });
+        } else if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
+          this.setupForm = new FormGroup({
+            slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
+            d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),
+            sa: new FormControl(this.propertyObj?.metadata?.sa, [
+              Validators.required,
+              Validators.min(0),
+              Validators.max(99999),
+            ]),
+            a: new FormControl(false),
+            mt: new FormControl(this.propertyObj?.metadata?.mt, [Validators.required]),
+          });
+        } else if (this.assetModel.tags.protocol === 'BlueNRG') {
+          this.setupForm = new FormGroup({
+            slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
+            sa: new FormControl(this.propertyObj?.metadata?.sa, [
+              Validators.required,
+              Validators.min(0),
+              Validators.max(99999),
+            ]),
+            a: new FormControl(false),
+            p: new FormControl(this.propertyObj?.metadata?.mt, [Validators.required]),
+          });
+        } else if (this.assetModel.tags.protocol === 'AIOTInputs') {
+          this.setupForm = new FormGroup({
+            slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
+            cn: new FormControl(this.propertyObj?.metadata?.cn, [Validators.required, Validators.min(0)]),
+            a: new FormControl(false),
+            d: new FormControl(this.propertyObj?.metadata?.d, [Validators.required]),
+          });
+        }
+        if (
+          this.assetModel.tags.protocol === 'ModbusTCPMaster' ||
+          this.assetModel.tags.protocol === 'ModbusRTUMaster'
+        ) {
+          this.onChangeOfSetupType(this.propertyObj.metadata);
+          this.onChangeOfSetupSecondaryType(this.propertyObj.metadata);
+          this.onChangeOfSetupFunctionCode(this.propertyObj.metadata);
+        }
+        if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
+          this.onChangeOfSetupType(this.propertyObj.metadata);
+          this.onChangeOfSetupSecondaryType(this.propertyObj.metadata);
+          this.onChageOfMemoryType(this.propertyObj.metadata);
+        }
+        if (this.assetModel.tags.protocol === 'AIOTInputs') {
+          this.onAIOTTypeChange(this.propertyObj.metadata);
+        }
       }
 
       $('#addPropertiesModal').modal({ backdrop: 'static', keyboard: false, show: true });
       setTimeout(() => {
-      this.editor.set(this.propertyObj.json_model);
+        this.editor.set(this.propertyObj.json_model);
       }, 1000);
     }
   }
@@ -624,7 +653,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
-
 }

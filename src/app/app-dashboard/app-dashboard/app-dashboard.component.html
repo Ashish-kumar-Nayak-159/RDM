@@ -2,13 +2,14 @@
   <div class="d-flex align-items-center">
     <div class="d-flex align-items-center">
       <div class="main-heading ">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}</div>
-      <div class="ml-2 pt-15" *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1 && signalRModeValue !== undefined && selectedTab === 'telemetry' && contextApp?.dashboard_config?.show_live_widgets">
+      <div class="ml-2 pt-15"
+        *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1 && signalRModeValue !== undefined && selectedTab === 'telemetry' && contextApp?.dashboard_config?.show_live_widgets">
         Turbo Mode:</div>
-        <div class="ml-1 pt-15" *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1 && signalRModeValue !== undefined && selectedTab === 'telemetry' && contextApp?.dashboard_config?.show_live_widgets">
-        <ui-switch size="small" class="mr-1"
-          [disabled]="isC2dAPILoading" defaultBgColor="#c80815" checkedTextColor="white" uncheckedTextColor="white"
-          checkedLabel="OFF" uncheckedLabel="ON" name="tpye" [(ngModel)]="signalRModeValue"
-          (valueChange)="onSwitchValueChange($event)"></ui-switch>
+      <div class="ml-1 pt-15"
+        *ngIf="decodedToken?.privileges?.indexOf('RCC') > -1 && signalRModeValue !== undefined && selectedTab === 'telemetry' && contextApp?.dashboard_config?.show_live_widgets">
+        <ui-switch size="small" class="mr-1" [disabled]="isC2dAPILoading" defaultBgColor="#c80815"
+          checkedTextColor="white" uncheckedTextColor="white" checkedLabel="OFF" uncheckedLabel="ON" name="tpye"
+          [(ngModel)]="signalRModeValue" (valueChange)="onSwitchValueChange($event)"></ui-switch>
       </div>
     </div>
     <div class="ml-auto">
@@ -16,15 +17,14 @@
         <form class="form-inline">
           <div class="form-group" id="dd-open">
             <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
-              [ngClass]="{'active' : originalFilter?.asset}" placement="bottom"
-              [tooltip]="originalFilter?.asset ?
+              [ngClass]="{'active' : originalFilter?.asset}" placement="bottom" [tooltip]="originalFilter?.asset ?
               (originalFilter.asset.display_name ? originalFilter.asset.display_name :
-              originalFilter.asset.asset_id) : 'Select Asset'"
-              (click)="onAssetFilterBtnClick()" aria-haspopup="true" aria-expanded="false">
+              originalFilter.asset.asset_id) : 'Select Asset'" (click)="onAssetFilterBtnClick()" aria-haspopup="true"
+              aria-expanded="false">
               <i class="fas fa-fw fa-filter fa-sm button-divider"></i>
               {{originalFilter?.asset ?
-                (originalFilter.asset.display_name ? originalFilter.asset.display_name :
-                originalFilter.asset.asset_id) : 'Select Asset'}}
+              (originalFilter.asset.display_name ? originalFilter.asset.display_name :
+              originalFilter.asset.asset_id) : 'Select Asset'}}
             </button>
             <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
               <ng-container *ngFor="
@@ -32,9 +32,10 @@
                           let index = index
                         ">
                 <div class="">
-                  <select *ngIf="index !== 0" name="{{level}}_{{index}}" class="dropdown-form" id="{{ level }}"
-                    [disabled]="contextApp?.user?.hierarchy[level]" [(ngModel)]="configureHierarchy[index]"
-                    name="{{ level }}" (change)="onChangeOfHierarchy(index, true)">
+                  <select *ngIf="index !== 0" name="{{level}}_{{index}}" class="dropdown-form dropdown-open"
+                    id="{{ level }}" [disabled]="contextApp?.user?.hierarchy[level]"
+                    [(ngModel)]="configureHierarchy[index]" name="{{ level }}"
+                    (change)="onChangeOfHierarchy(index, true)">
                     <option [ngValue]="undefined">
                       Select {{ level }}
                     </option>
@@ -43,26 +44,30 @@
                     </option>
                   </select>
                   <input type="text" *ngIf="index === 0" name="{{level}}_{{index}}" defaultValue="{{ contextApp.app }}"
-                    disabled class="dropdown-form" />
+                    disabled class="dropdown-form dropdown-open" />
                 </div>
               </ng-container>
-              <ng-select [items]="assets" class="custom" bindLabel="display_name" [clearable]="false"
+              <ng-select [items]="assets" class="custom dropdown-open" bindLabel="display_name" [clearable]="false"
                 [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
                 dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.asset">
                 <ng-template ng-option-tmp let-asset="item">
-                  <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ? asset.display_name: asset.asset_id}}</span>
+                  <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ?
+                    asset.display_name: asset.asset_id}}</span>
                 </ng-template>
               </ng-select>
-              <!-- <div class="form-group" >
-                <button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary" (click)="onSaveHierachy()">Apply</button>
-                <button type="button" placement="bottom" tooltip="Clear" class="btn btn-sm searchBtn btn-white ml-1" (click)="onClearHierarchy()" >Clear</button></div> -->
+              <div class="form-group">
+                <button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary"
+                  (click)="onSaveHierachy()">Apply</button>
+                <button type="button" placement="bottom" tooltip="Clear" class="btn btn-sm searchBtn btn-white ml-1"
+                  (click)="onClearHierarchy()">Clear</button>
+              </div>
               <!-- <div class="">
                 <button class="btn btn-sm searchBtn btn-primary" type="button">Apply</button>
               </div> -->
             </div>
           </div>
           <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
-              (click)="onFilterSelection(this.filterObj, false, true)" [disabled]="isTelemetryDataLoading"><i
+              (click)="onFilterSelection(this.filterObj, true, true)" [disabled]="isTelemetryDataLoading"><i
                 class="fas fa-search fa-sm"></i></button></div>
         </form>
       </div>
@@ -70,7 +75,7 @@
   </div>
 </div>
 <div class="tab-bar">
-  <ng-container >
+  <ng-container>
     <div class=""
       *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.asset && liveWidgets.length > 0">
       <div class="">Welcome to {{originalFilter.asset?.display_name ? originalFilter.asset?.display_name :
@@ -82,143 +87,172 @@
       </div>
       <div class="ml-1" *ngIf="liveWidgets.length === 0 && isFilterSelected
           ">
-      No widgets configured for this asset. Please contact administrator.
-    </div>
-    <div class="ml-auto"
-      *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.asset && liveWidgets.length > 0">
-      <div class="">*{{sampleCountValue}} samples in last 1 minute
+        No widgets configured for this asset. Please contact administrator.
       </div>
-    </div>
+      <div class="ml-auto"
+        *ngIf="!isTelemetryDataLoading && telemetryObj && isFilterSelected && originalFilter?.asset && liveWidgets.length > 0">
+        <div class="">*{{sampleCountValue}} samples in last 1 minute
+        </div>
+      </div>
     </ng-container>
-    <ng-container *ngIf="contextApp?.dashboard_config?.show_hostorical_widgets">
-      <div class="ml-1" *ngIf="historicalWidgets.length === 0 && isFilterSelected
-      ">
-  No widgets configured for this asset. Please contact administrator.
-</div>
-    </ng-container>
+
     <div class="" *ngIf="isTelemetryDataLoading">
       <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
     </div>
 
-    <div class="" *ngIf="!isFilterSelected && !originalFilter?.asset">
-      Please select asset to view the data.
+    <div class="" *ngIf="!isFilterSelected">
+      Please select an asset and click on search to view the data.
     </div>
 
 
   </ng-container>
-  <form class="form-inline" *ngIf="isFilterSelected && contextApp?.dashboard_config?.show_historical_widgets">
-    <div class="form-group">
-      <ng-select [items]="historicalWidgets" class="custom-dropdown w-12 active sm" bindLabel="chart_Id"
-        [clearable]="false" [searchable]="true" [multiple]="true" [closeOnSelect]="false"
-        placeholder="Select Widgets" dropdownPosition="bottom" name="asset-dropdown"
-        [(ngModel)]="historicalDateFilter.widgets" (onDeSelectAll)="onDeSelectAll($event)">
-        <ng-template ng-multi-label-tmp let-items="items">
-          {{items.length}} widgets selected
-        </ng-template>
-        <ng-template ng-header-tmp>
-          <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-            <li *ngIf="historicalWidgets.length !== historicalDateFilter?.widgets.length"> <a href="javascript:void(0)" (click)="historicalDateFilter.widgets = historicalWidgets">Select All</a></li>
-            <li *ngIf="historicalWidgets.length === historicalDateFilter?.widgets.length"> <a href="javascript:void(0)" (click)="historicalDateFilter.widgets = []">Deselect All</a></li>
-          </ul>
-        </ng-template>
-        <ng-template ng-option-tmp let-item="item">
-          <span [tooltip]="item.title">
-            {{item.title}}
-          </span>
-        </ng-template>
-      </ng-select>
-    </div>
-    <div class="form-group left-inner-addon" >
-      <i class="fa fa-calendar active"></i>
-      <input type="text"  class="form-control form-control-sm active date-range-picker" daterangepicker name="daterangeInput"
-       [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"  [(ngModel)]="selectedDateRange"
-       [tooltip]="selectedDateRange" placement="bottom"/>
-    </div>
-    <div class="form-group">
-      <input type="checkbox" id="checkbox" min="1" name="checkbox" class="big-checkbox"
-      [(ngModel)]="historicalDateFilter.isTypeEditable" (change)="historicalDateFilter.aggregation_format = 'AVG'; historicalDateFilter.aggregation_minutes = 1;
-      historicalDateFilter.sampling_format = 'minute'; historicalDateFilter.sampling_time = 1;"
-      >
-    </div>
-    <div class="form-group">
-      <fieldset [disabled]="!historicalDateFilter.isTypeEditable">
-        <ui-switch  [disabled]="!historicalDateFilter.isTypeEditable"
-        defaultBgColor="#1a5a9e" checkedTextColor="white" uncheckedTextColor="white"
-        checkedLabel="Sampling" (valueChange)="historicalDateFilter.aggregation_format = 'AVG'; historicalDateFilter.aggregation_minutes = 1;
-        historicalDateFilter.sampling_format = 'minute'; historicalDateFilter.sampling_time = 1;
-        " uncheckedLabel="Aggregation" [(ngModel)]="historicalDateFilter.type" name="tpye"></ui-switch>
-      </fieldset>
-    </div>
-    <div class="form-group input-group" *ngIf="historicalDateFilter.type">
+  <div class="form-group mb-0">
+    <ng-template #filterTemplate>
+      <form class="form-inline">
+        <div class="form-group">
+          <ng-select [items]="historicalWidgets" class="custom-dropdown w-12 active sm" bindLabel="chart_Id"
+            [clearable]="false" [searchable]="true" [multiple]="true" [closeOnSelect]="false"
+            placeholder="Select Widgets" dropdownPosition="bottom" name="asset-dropdown"
+            [(ngModel)]="historicalDateFilter.widgets" (onDeSelectAll)="onDeSelectAll($event)">
+            <ng-template ng-multi-label-tmp let-items="items">
+              {{items.length}} widgets selected
+            </ng-template>
+            <ng-template ng-header-tmp>
+              <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                <li *ngIf="historicalWidgets.length !== historicalDateFilter?.widgets.length"> <a href="javascript:void(0)" (click)="historicalDateFilter.widgets = historicalWidgets">Select All</a></li>
+                <li *ngIf="historicalWidgets.length === historicalDateFilter?.widgets.length"> <a href="javascript:void(0)" (click)="historicalDateFilter.widgets = []">Deselect All</a></li>
+              </ul>
+            </ng-template>
+            <ng-template ng-option-tmp let-item="item">
+              <span [tooltip]="item.title">
+                {{item.title}}
+              </span>
+            </ng-template>
+          </ng-select>
+        </div>
+        <div class="form-group left-inner-addon" >
+          <i class="fa fa-calendar active"></i>
+          <input type="text"  class="form-control form-control-sm active date-range-picker" daterangepicker name="daterangeInput"
+          [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"  [(ngModel)]="selectedDateRange"
+          [tooltip]="selectedDateRange" placement="bottom"/>
+        </div>
+        <div class="form-group">
+          <input type="checkbox" id="checkbox" min="1" name="checkbox" class="big-checkbox"
+          [(ngModel)]="historicalDateFilter.isTypeEditable" (change)="historicalDateFilter.aggregation_format = 'AVG'; historicalDateFilter.aggregation_minutes = 1;
+          historicalDateFilter.sampling_format = 'minute'; historicalDateFilter.sampling_time = 1;"
+          >
+        </div>
+        <div class="form-group">
+          <fieldset [disabled]="!historicalDateFilter.isTypeEditable">
+            <ui-switch  [disabled]="!historicalDateFilter.isTypeEditable"
+            defaultBgColor="#1a5a9e" checkedTextColor="white" uncheckedTextColor="white"
+            checkedLabel="Sampling" (valueChange)="historicalDateFilter.aggregation_format = 'AVG'; historicalDateFilter.aggregation_minutes = 1;
+            historicalDateFilter.sampling_format = 'minute'; historicalDateFilter.sampling_time = 1;
+            " uncheckedLabel="Aggregation" [(ngModel)]="historicalDateFilter.type" name="tpye"></ui-switch>
+          </fieldset>
+        </div>
+        <div class="form-group input-group" *ngIf="historicalDateFilter.type">
 
-      <input class="form-control form-control-sm bg-light" type="number" id="minutes" min="1"
-      name="minutes" [(ngModel)]="historicalDateFilter.sampling_time" placeholder="Sampling" disabled
-      placement="bottom" tooltip="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development." style="width: 3em;" >
+      <input class="form-control form-control-sm bg-light" type="number" id="minutes" min="1" name="minutes"
+        [(ngModel)]="historicalDateFilter.sampling_time" placeholder="Sampling" disabled placement="bottom"
+        tooltip="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development."
+        style="width: 3em;">
       <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
     </div>
-      <div class="form-group input-group" *ngIf="!historicalDateFilter.type">
-        <fieldset [disabled]="!historicalDateFilter.isTypeEditable"></fieldset>
-        <input class="form-control form-control-sm bg-light" type="number" id="aggr_mins" min="1"
-        name="aggr_mins" [(ngModel)]="historicalDateFilter.aggregation_minutes" placeholder="Sampling"
+    <div class="form-group input-group" *ngIf="!historicalDateFilter.type">
+      <fieldset [disabled]="!historicalDateFilter.isTypeEditable"></fieldset>
+      <input class="form-control form-control-sm bg-light" type="number" id="aggr_mins" min="1" name="aggr_mins"
+        [(ngModel)]="historicalDateFilter.aggregation_minutes" placeholder="Sampling"
         (change)="onNumberChange($event, 'aggregation')" [disabled]="!historicalDateFilter.isTypeEditable"
-         style="width: 4em;" >
-        <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
-      </div>
-      <div class="form-group " *ngIf="!historicalDateFilter.type">
-        <fieldset [disabled]="!historicalDateFilter.isTypeEditable">
-      <select class="form-control form-control-sm" id="aggregationFormat" [(ngModel)]="historicalDateFilter.aggregation_format"
-      name="aggregationFormat" style="width: 11rem!important;">
-      <option [ngValue]="undefined">Aggregartion Format</option>
-      <option [ngValue]="'AVG'">Average</option>
-      <option [ngValue]="'SUM'">Sum</option>
-      <option [ngValue]="'MIN'">Min</option>
-      <option [ngValue]="'MAX'">Max</option>
-      <option [ngValue]="'COUNT'">Count</option>
-      </select>
-      </fieldset>
+        style="width: 4em;">
+      <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
     </div>
+    <div class="form-group " *ngIf="!historicalDateFilter.type">
+      <fieldset [disabled]="!historicalDateFilter.isTypeEditable">
+        <select class="form-control form-control-sm" id="aggregationFormat"
+          [(ngModel)]="historicalDateFilter.aggregation_format" name="aggregationFormat"
+          style="width: 11rem!important;">
+          <option [ngValue]="undefined">Aggregartion Format</option>
+          <option [ngValue]="'AVG'">Average</option>
+          <option [ngValue]="'SUM'">Sum</option>
+          <option [ngValue]="'MIN'">Min</option>
+          <option [ngValue]="'MAX'">Max</option>
+          <option [ngValue]="'COUNT'">Count</option>
+          </select>
+          </fieldset>
+        </div>
 
-      <div class="form-group">
-      <button
-      type="button"
-      class="btn btn-sm searchBtn btn-primary"
-      placement="bottom" tooltip="Search"
-      (click)="onFilterSelection(this.filterObj)"
-    >
-      <i class="fa fa-search fa-sm"></i>
-    </button>
-    </div>
-  </form>
+          <div class="form-group">
+          <button
+          type="button"
+          class="btn btn-sm searchBtn btn-primary"
+          placement="bottom" tooltip="Search"
+          (click)="onFilterSelection(this.filterObj)"
+        >
+          <i class="fa fa-search fa-sm"></i>
+        </button>
+        </div>
+      </form>
+    </ng-template>
+
+    <ng-container *ngIf="isShowOpenFilter && isFilterSelected && contextApp?.dashboard_config?.show_historical_widgets">
+      <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
+    </ng-container>
+    <ng-container *ngIf="!isShowOpenFilter && isFilterSelected && contextApp?.dashboard_config?.show_historical_widgets">
+      <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown" placement="bottom" aria-haspopup="true"
+        aria-expanded="false">
+        <i class="fas fa-fw fa-filter fa-sm button-divider"></i>
+        Select Filter</button>
+      <div class="dropdown-menu dropdown-filter-content" style="position: relative !important;">
+        <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
+      </div>
+    </ng-container>
+  </div>
 </div>
 <ng-container>
   <div class="content-scroll content-scroll-live-data">
+    <ng-container *ngIf="contextApp?.dashboard_config?.show_historical_widgets">
+      <div class="m-3" *ngIf="historicalWidgets.length === 0 && isFilterSelected
+      ">
+        No widgets configured for this asset. Please contact administrator.
+      </div>
+      <div class="m-3" *ngIf="historicalWidgets.length > 0 && !isTelemetryDataLoading && telemetryData.length === 0 && isFilterSelected
+      ">
+        No telemetry data found for selected interval.
+      </div>
+    </ng-container>
     <ng-container *ngIf="(!contextApp || !contextApp.metadata || !contextApp.dashboard_config) && isFilterSelected">
       <div class="ml-1">No dashboard configuration added for this application.</div>
     </ng-container>
-    <div class="row col-md-12 mt-n2" *ngIf="telemetryObj && liveWidgets.length > 0 && contextApp?.dashboard_config?.show_live_widgets">
+    <div class="row col-md-12 mt-n2"
+      *ngIf="telemetryObj && liveWidgets.length > 0 && contextApp?.dashboard_config?.show_live_widgets">
       <ng-container *ngFor="let widget of liveWidgets; let i = index;">
         <div [style]="{ 'width': widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
               || widget?.widgetType === 'NumberWithImage' || widget.widgetType === 'GaugeChart' || widget.widgetType === 'StringWidget'? (23 * widget.properties.length + (widget.properties.length > 1 ? (2 * (widget.properties.length - 1)) : 0) +'%') : '48%',
               'margin-left':'2%', 'margin-top': '2%'}">
           <app-only-number-widget *ngIf="widget?.widgetType === 'OnlyNumber' || widget?.widgetType === 'NumberWithTrend'
               || widget?.widgetType === 'NumberWithImage' || widget?.widgetType === 'StringWidget'"
-            [chartConfig]="widget" [asset]="originalFilter?.asset" [telemetryObj]="telemetryObj">
+            [chartConfig]="widget" [asset]="originalFilter?.asset" [apiTelemetryObj]="apiTelemetryObj"
+            [telemetryObj]="telemetryObj">
           </app-only-number-widget>
           <app-gauge-chart [chartConfig]="widget" [asset]="originalFilter?.asset"
-            *ngIf="widget.widgetType === 'GaugeChart'" [telemetryObj]="telemetryObj"></app-gauge-chart>
+            *ngIf="widget.widgetType === 'GaugeChart'" [telemetryObj]="telemetryObj"
+            [apiTelemetryObj]="apiTelemetryObj"></app-gauge-chart>
           <app-live-line-chart [chartConfig]="widget" [asset]="originalFilter?.asset" [telemetryObj]="telemetryObj"
             *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">
           </app-live-line-chart>
         </div>
       </ng-container>
-      <ng-container  *ngIf="defaultAppName === 'SopanCMS'">
+      <ng-container *ngIf="defaultAppName === 'SopanCMS'">
         <div style="width:23%;margin-left:2%;margin-top: 2%">
           <div class="mt-1">
             <div class="card">
               <div class="card-header d-flex px-2">
-                <div><h6 class="my-0 live-widget-title" >
-                  Since Beginning
-                </h6></div>
+                <div>
+                  <h6 class="my-0 live-widget-title">
+                    Since Beginning
+                  </h6>
+                </div>
                 <div class="ml-auto">
                   <div class="round-badge badge-blue" tooltip="Measured Property">M</div>
                 </div>
@@ -235,9 +269,9 @@
                       </span>
                     </div>
                     <div>
-                      <span class="text-darkblue display-5" >
+                      <span class="text-darkblue display-5">
                         {{telemetryObj.date}}
-                       </span>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -249,9 +283,11 @@
           <div class="mt-1">
             <div class="card">
               <div class="card-header d-flex px-2">
-                <div><h6 class=" my-0  live-widget-title ">
-                  Since Mid-Night
-                </h6></div>
+                <div>
+                  <h6 class=" my-0  live-widget-title ">
+                    Since Mid-Night
+                  </h6>
+                </div>
                 <div class="ml-auto">
 
                   <div class="round-badge badge-blue" tooltip="Measured Property">M</div>
@@ -263,7 +299,7 @@
                     <span class="text-xs">(M) HH:MM</span>
                     <div class="mt-4">
                       <span class="text-darkblue display-5 font-weight-bold" style="font-size: 2rem;"
-                      *ngIf="currentHour && currentMinute">
+                        *ngIf="currentHour && currentMinute">
                         <!-- {{telemetryObj[prop.property.json_key]}} -->
                         {{currentHour}}:{{currentMinute}}
                       </span>
@@ -271,7 +307,7 @@
                     <div>
                       <span class="text-darkblue display-5" *ngIf="currentHour && currentMinute">
                         {{telemetryObj.date}}
-                       </span>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -281,7 +317,8 @@
         </div>
       </ng-container>
     </div>
-    <div class="row col-md-12" *ngIf="historicalWidgets.length > 0 && contextApp?.dashboard_config?.show_historical_widgets" id="mainChartDiv">
+    <div class="row col-md-12"
+      *ngIf="historicalWidgets.length > 0 && contextApp?.dashboard_config?.show_historical_widgets" id="mainChartDiv">
       <div id="historic_charts" class="pl-3 pt-3 w-100">
 
       </div>

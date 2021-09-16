@@ -716,12 +716,6 @@ export class AssetService {
     );
   }
 
-  createReportSubscription(app, obj) {
-    return this.http.post(
-      this.url +
-        String.Format(AppUrls.CREATE_REPORT_SUBSCRIPTION, encodeURIComponent(app)), obj);
-  }
-
   getPregeneratedReports(filterObj, app) {
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {

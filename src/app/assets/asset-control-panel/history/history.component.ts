@@ -267,7 +267,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   getHistoricalWidgetsDrivedKPIDetails() {
-    this.propList = [];
+    // this.propList = [];
     let kpiCodes = '';
     this.layoutJson.forEach((widget) => {
       widget.y1axis.forEach((prop) => {

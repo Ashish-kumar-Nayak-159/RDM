@@ -12,10 +12,9 @@ import { ToasterService } from 'src/app/services/toaster.service';
 @Component({
   selector: 'app-specific-direct-method',
   templateUrl: './specific-direct-method.component.html',
-  styleUrls: ['./specific-direct-method.component.css']
+  styleUrls: ['./specific-direct-method.component.css'],
 })
 export class SpecificDirectMethodComponent implements OnInit {
-
   @Input() pageType: any;
   @Input() componentState: any;
   @Input() asset: Asset = new Asset();
@@ -33,34 +32,42 @@ export class SpecificDirectMethodComponent implements OnInit {
   selectedAssetValue: any;
   slaves = [];
   assets: any[] = [];
+  directMethodData: any = {};
   constructor(
-
     private commonService: CommonService,
     private route: ActivatedRoute,
     private assetModelService: AssetModelService,
     private assetService: AssetService,
     private toasterService: ToasterService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.displayType = 'compose';
+    this.directMethodData = {
+      asset_id: this.asset.asset_id,
+      gateway_id: this.asset.gateway_id || this.asset.tags.gateway_id,
+      app: this.contextApp.app,
+      job_id: this.asset.asset_id + '_' + this.commonService.generateUUID(),
+      sub_job_id: undefined,
+    };
+    this.directMethodData.sub_job_id = this.directMethodData.job_id + '_1';
     this.jsonModelKeys = [];
     if (this.selectedWidget) {
       this.selectedWidget.response_timeout_in_sec = 30;
       this.selectedWidget.connection_timeout_in_sec = 30;
       const keys = Object.keys(this.selectedWidget.json);
-      const index = keys.findIndex(key => key.toLowerCase() === 'timestamp');
+      const index = keys.findIndex((key) => key.toLowerCase() === 'timestamp');
       if (index > -1) {
         keys.splice(index, 1);
       }
       this.selectedWidget.method_name = keys[0];
-      this.selectedWidget?.json[keys[0]]?.params?.forEach(obj => {
+      this.selectedWidget?.json[keys[0]]?.params?.forEach((obj) => {
         if (obj.key) {
-        obj.name = obj.key;
-        obj.value = obj?.json?.defaultValue;
-        this.jsonModelKeys.splice(this.jsonModelKeys.length, 0, obj);
+          obj.name = obj.key;
+          obj.value = obj?.json?.defaultValue;
+          this.jsonModelKeys.splice(this.jsonModelKeys.length, 0, obj);
         }
       });
       if (this.selectedWidget?.metadata?.widget_type === 'Slave') {
@@ -82,40 +89,42 @@ export class SpecificDirectMethodComponent implements OnInit {
     this.assets = [];
     const obj = {
       gateway_id: this.asset.asset_id,
-      type: 'Legacy Asset'
+      type: 'Legacy Asset',
     };
-    this.apiSubscriptions.push(this.assetService.getLegacyAssets(obj, this.contextApp.app).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.assets = response.data;
-          // this.assets.splice(0, 0, { asset_id: this.telemetryFilter.gateway_id});
-        }
-      }, errror => {}
-    ));
+    this.apiSubscriptions.push(
+      this.assetService.getLegacyAssets(obj, this.contextApp.app).subscribe(
+        (response: any) => {
+          if (response && response.data) {
+            this.assets = response.data;
+            // this.assets.splice(0, 0, { asset_id: this.telemetryFilter.gateway_id});
+          }
+        },
+        (errror) => {}
+      )
+    );
   }
-
 
   getSlaveData() {
     this.slaves = [];
-    this.assetService.getAssetSlaveDetails(this.contextApp.app, this.asset.asset_id, {}).subscribe(
-      (response: any) => {
-        this.slaves = response.data;
-      }
-    );
+    this.assetService.getAssetSlaveDetails(this.contextApp.app, this.asset.asset_id, {}).subscribe((response: any) => {
+      this.slaves = response.data;
+    });
   }
 
   getControlWidgets() {
     const obj = {
       app: this.contextApp.app,
-      asset_model: this.asset.tags?.asset_model
+      asset_model: this.asset.tags?.asset_model,
     };
-    this.apiSubscriptions.push(this.assetModelService.getAssetsModelControlWidgets(obj).subscribe(
-      (response: any) => {
+    this.apiSubscriptions.push(
+      this.assetModelService.getAssetsModelControlWidgets(obj).subscribe((response: any) => {
         if (response?.data) {
-          this.controlWidgets = response.data.filter(widget => widget.metadata.communication_technique === 'Direct Method');
+          this.controlWidgets = response.data.filter(
+            (widget) => widget.metadata.communication_technique === 'Direct Method'
+          );
         }
-      }
-    ));
+      })
+    );
   }
 
   onWidgetSelection() {
@@ -124,12 +133,12 @@ export class SpecificDirectMethodComponent implements OnInit {
       this.selectedWidget.response_timeout_in_sec = 30;
       this.selectedWidget.connection_timeout_in_sec = 30;
       const keys = Object.keys(this.selectedWidget.json);
-      const index = keys.findIndex(key => key.toLowerCase() === 'timestamp');
+      const index = keys.findIndex((key) => key.toLowerCase() === 'timestamp');
       if (index > -1) {
         keys.splice(index, 1);
       }
       this.selectedWidget.method_name = keys[0];
-      this.selectedWidget.json[keys[0]].params.forEach(obj => {
+      this.selectedWidget.json[keys[0]].params.forEach((obj) => {
         obj.name = obj.key;
         obj.value = obj.json.defaultValue;
         this.jsonModelKeys.splice(this.jsonModelKeys.length, 0, obj);
@@ -140,15 +149,17 @@ export class SpecificDirectMethodComponent implements OnInit {
   getConfigureWidgets() {
     const obj = {
       app: this.contextApp.app,
-      asset_model: this.asset.tags?.asset_model
+      asset_model: this.asset.tags?.asset_model,
     };
-    this.apiSubscriptions.push(this.assetModelService.getAssetsModelConfigurationWidgets(obj).subscribe(
-      (response: any) => {
+    this.apiSubscriptions.push(
+      this.assetModelService.getAssetsModelConfigurationWidgets(obj).subscribe((response: any) => {
         if (response?.data) {
-          this.controlWidgets = response.data.filter(widget => widget.metadata.communication_technique === 'Direct Method');
+          this.controlWidgets = response.data.filter(
+            (widget) => widget.metadata.communication_technique === 'Direct Method'
+          );
         }
-      }
-    ));
+      })
+    );
   }
 
   invokeDirectMethod() {
@@ -161,25 +172,17 @@ export class SpecificDirectMethodComponent implements OnInit {
       return;
     }
     this.responseMessage = undefined;
-    const obj: any = {};
+    const obj: any = JSON.parse(JSON.stringify(this.directMethodData));
     obj.method = this.selectedWidget.method_name;
-    obj.app = this.asset.app;
+    // obj.app = this.asset.app;
     obj.request_type = this.selectedWidget.name;
     obj.job_type = 'DirectMethod';
-    obj.job_id = this.asset.asset_id + '_' + this.commonService.generateUUID();
-    obj.sub_job_id = obj.job_id + '_1';
-    if (this.componentState === CONSTANTS.IP_GATEWAY) {
-      obj.gateway_id = this.asset.asset_id;
-    } else {
-      obj.asset_id = this.asset.asset_id;
-      obj.gateway_id = this.asset.gateway_id;
-    }
     obj.response_timeout_in_sec = this.selectedWidget.response_timeout_in_sec;
     obj.connection_timeout_in_sec = this.selectedWidget.connection_timeout_in_sec;
     obj.message = {};
     obj.message['slave_id'] = this.selectedSlaveValue;
     obj.message['asset_id'] = this.selectedAssetValue;
-    this.jsonModelKeys.forEach(item => {
+    this.jsonModelKeys.forEach((item) => {
       if (item.value !== null || item.value !== undefined) {
         if (item.json.type === 'boolean') {
           obj.message[item.key] = item.value ? item.json.trueValue : item.json.falseValue;
@@ -190,18 +193,19 @@ export class SpecificDirectMethodComponent implements OnInit {
     });
     // obj.message['timestamp'] = timestamp;
     this.isInvokeDirectMethod = true;
-    this.apiSubscriptions.push(this.assetService.callAssetMethod(obj, obj.app,
-      this.asset?.gateway_id || this.asset.asset_id).subscribe(
-      (response: any) => {
-        this.toasterService.showSuccess(response.message, 'Invoke Direct Method');
-        this.isInvokeDirectMethod = false;
-        this.responseMessage = response;
-      }, error => {
-        this.toasterService.showError(error.message, 'Invoke Direct Method');
-        this.isInvokeDirectMethod = false;
-        this.responseMessage = error;
-      }
-    ));
+    this.apiSubscriptions.push(
+      this.assetService.callAssetMethod(obj, obj.app, this.asset?.gateway_id || this.asset.asset_id).subscribe(
+        (response: any) => {
+          this.toasterService.showSuccess(response.message, 'Invoke Direct Method');
+          this.isInvokeDirectMethod = false;
+          this.responseMessage = response;
+        },
+        (error) => {
+          this.toasterService.showError(error.message, 'Invoke Direct Method');
+          this.isInvokeDirectMethod = false;
+          this.responseMessage = error;
+        }
+      )
+    );
   }
-
 }

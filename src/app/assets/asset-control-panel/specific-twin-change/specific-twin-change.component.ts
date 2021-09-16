@@ -44,7 +44,6 @@ export class SpecificTwinChangeComponent implements OnInit {
   selectedAssetValue: any;
   slaves = [];
   selectedLevel = 0;
-  iscalledTwinChangeMethod = false;
   constructor(
     private toasterService: ToasterService,
     private assetService: AssetService,

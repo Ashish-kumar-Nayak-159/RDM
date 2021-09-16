@@ -24,6 +24,7 @@ import { PieChartComponent } from 'src/app/common/charts/pie-chart/pie-chart.com
 import { DataTableComponent } from 'src/app/common/charts/data-table/data-table.component';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { APIMESSAGES } from 'src/app/api-messages.constants';
+import { kill } from 'process';
 declare var $: any;
 
 @Component({
@@ -40,7 +41,6 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
   userData: any;
   isFilterSelected = false;
   propertyList: any[] = [];
-  dropdownPropList = [];
   y1AxisProps = [];
   y2AxisProps = [];
   // y1AxisProps = "";
@@ -104,7 +104,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
   toDate: any;
   subscriptions: Subscription[] = [];
   decodedToken: any;
-
+  derivedKPIs: any[] = [];
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -118,18 +118,27 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    await this.getAssetModelsderivedKPIs();
     await this.getAssetsModelProperties();
-    if (this.propertyList) {
-      this.propertyList.forEach((item) => {
-        this.dropdownPropList.push({
-          id: item.name,
-          value: item,
-        });
-      });
-      console.log(this.dropdownPropList);
-    }
     this.isHistoryAPILoading = true;
     this.getLayout();
+  }
+
+  getAssetModelsderivedKPIs() {
+    return new Promise<void>((resolve) => {
+      this.subscriptions.push(
+        this.assetModelService.getDerivedKPIs(this.contextApp.app, this.assetModel.name).subscribe((response: any) => {
+          if (response && response.data) {
+            this.derivedKPIs = response.data;
+            console.log(this.derivedKPIs);
+          } else if (response?.derived_kpis) {
+            this.derivedKPIs = response.derived_kpis;
+          }
+          this.derivedKPIs.forEach((kpi) => kpi.type === 'Derived KPI');
+          resolve();
+        })
+      );
+    });
   }
 
   getAssetsModelProperties() {
@@ -159,6 +168,18 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
           response.properties.cloud_derived_properties.forEach((prop) => {
             prop.type = 'Cloud Derived Properties';
             this.propertyList.push(prop);
+          });
+          this.derivedKPIs.forEach((kpi) => {
+            const obj: any = {};
+            obj.type = 'Derived KPIs';
+            obj.name = kpi.name;
+            obj.json_key = kpi.kpi_json_key;
+            obj.json_model = {};
+            obj.data_type = kpi?.metadata?.data_type || 'Number';
+            obj.json_model[obj.json_key] = {
+              unit: kpi.unit,
+            };
+            this.propertyList.push(obj);
           });
           console.log(this.propertyList);
           resolve();
@@ -199,10 +220,20 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       return;
     }
     let arr = [];
-    this.y1AxisProps.forEach((prop) => arr.push(prop.json_key));
+    this.y1AxisProps.forEach((prop) =>
+      arr.push({
+        json_key: prop.json_key,
+        type: prop.type,
+      })
+    );
     this.y1AxisProps = [...arr];
     arr = [];
-    this.y2AxisProps.forEach((prop) => arr.push(prop.json_key));
+    this.y2AxisProps.forEach((prop) =>
+      arr.push({
+        json_key: prop.json_key,
+        type: prop.type,
+      })
+    );
     this.y2AxisProps = [...arr];
     const obj = {
       title: this.chartTitle,
@@ -216,22 +247,25 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       edge_derived_props: false,
       cloud_derived_props: false,
       measured_props: false,
+      derived_kpis: false,
     };
     obj.y1axis.forEach((prop) => {
-      const type = this.propertyList.find((propObj) => propObj.json_key === prop)?.type;
-      if (type === 'Edge Derived Properties') {
+      if (prop.type === 'Derived KPIs') {
+        obj.derived_kpis = true;
+      } else if (prop.type === 'Edge Derived Properties') {
         obj.edge_derived_props = true;
-      } else if (type === 'Cloud Derived Properties') {
+      } else if (prop.type === 'Cloud Derived Properties') {
         obj.cloud_derived_props = true;
       } else {
         obj.measured_props = true;
       }
     });
     obj.y2axis.forEach((prop) => {
-      const type = this.propertyList.find((propObj) => propObj.json_key === prop)?.type;
-      if (type === 'Edge Derived Properties') {
+      if (prop.type === 'Derived KPIs') {
+        obj.derived_kpis = true;
+      } else if (prop.type === 'Edge Derived Properties') {
         obj.edge_derived_props = true;
-      } else if (type === 'Cloud Derived Properties') {
+      } else if (prop.type === 'Cloud Derived Properties') {
         obj.cloud_derived_props = true;
       } else {
         obj.measured_props = true;
@@ -261,7 +295,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
         };
         y1Axis.forEach((element) => {
           this.propertyList.forEach((prop) => {
-            if (element === prop.json_key) {
+            if (element.json_key === prop.json_key) {
               if (prop.data_type === 'Number') {
                 obj[prop.json_key] = this.commonService.randomIntFromInterval(
                   prop.json_model[prop.json_key].minValue ? prop.json_model[prop.json_key].minValue : 0,
@@ -281,12 +315,20 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
         });
         y2Axis.forEach((element) => {
           this.propertyList.forEach((prop) => {
-            if (element === prop.json_key) {
+            if (element.json_key === prop.json_key) {
               if (prop.data_type === 'Number') {
                 obj[prop.json_key] = this.commonService.randomIntFromInterval(
                   prop.json_model[prop.json_key].minValue ? prop.json_model[prop.json_key].minValue : 0,
                   prop.json_model[prop.json_key].maxValue ? prop.json_model[prop.json_key].maxValue : 100
                 );
+              } else if (prop.data_type === 'Enum') {
+                obj[prop.json_key] =
+                  prop.json_model[prop.json_key].enum[
+                    this.commonService.randomIntFromInterval(
+                      0,
+                      prop.json_model[prop.json_key].enum ? prop.json_model[prop.json_key].enum.length : 0
+                    )
+                  ];
               }
             }
           });

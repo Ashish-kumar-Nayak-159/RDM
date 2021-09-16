@@ -142,6 +142,7 @@ export class AppUrls {
   public static GET_ASSET_MODEL_DERIVED_KPIS = 'apps/{0}/asset_models/{1}/derived_kpis';
   public static GET_DERIVED_KPI_LATEST_DATA = 'apps/{0}/derived_kpis/{1}/asset_wise_latest_data';
   public static GET_DERIVED_KPI_HISTORICAL_DATA = 'apps/{0}/derived_kpis/{1}/processing_history';
+  public static GET_DERIVED_KPIS_HISTORICAL_DATA = 'apps/{0}/kpi_processing_history';
   public static GET_MODEL_SLAVE_DETAILS = 'apps/{0}/asset_models/{1}/slaves';
   public static CREATE_MODEL_SLAVE_DETAILS = 'apps/{0}/asset_models/{1}/slaves';
   public static UPDATE_MODEL_SLAVE_DETAILS = 'apps/{0}/asset_models/{1}/slaves/{2}';

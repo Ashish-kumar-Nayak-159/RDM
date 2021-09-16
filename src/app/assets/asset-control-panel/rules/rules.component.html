@@ -160,23 +160,23 @@
                         </a>
                         <a href="javascript:void(0)" (click)="onToggleRows(i, rule, 'asset', false, true)" class="mr-1"
                           placement="bottom" tooltip="Edit"
-                          *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && rule.is_editable !== false">
+                          *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 && rule.is_editable !== false">
                           <i class="fa fa-fw fa-edit"></i>
                         </a>
                         <a href="javascript:void(0)" (click)="onDeleteRule(rule)" class="mr-1" placement="bottom"
                           tooltip="Delete"
-                          *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 && rule.is_editable !== false">
+                          *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 && rule.is_editable !== false">
                           <i class="fa fa-fw fa-trash"></i>
                         </a>
                         <a href="javascript:void(0)" (click)="deployRule(rule)" *ngIf="rule.type === 'Cloud' &&
-                         decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 &&
+                         decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
                          rule.is_editable !== false &&
                           ( !rule.epoch_deployed_on || rule.epoch_updated_date - rule.epoch_deployed_on > 0)"
                           placement="bottom" tooltip="Deploy">
                           <i class="fa fa-fw fa-sync"></i>
                         </a>
                         <a href="javascript:void(0)" (click)="deployRule(rule, true)" *ngIf="rule.type === 'Cloud' &&
-                        decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1 &&
+                        decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
                         rule.is_editable !== false &&
                           ( rule.epoch_deployed_on && rule.epoch_updated_date - rule.epoch_deployed_on < 0)"
                           placement="bottom" tooltip="Revert">

@@ -95,6 +95,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedDateRange: string;
   decodedToken: any;
   isShowOpenFilter = true;
+  derivedKPIs: any[] = [];
+  derivedKPIHistoricData: any[] = [];
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -435,21 +437,25 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 item.edge_derived_props = false;
                 item.cloud_derived_props = false;
                 item.measured_props = false;
+                item.derived_kpis = false;
                 item.y1axis.forEach((prop) => {
-                  const type = this.propertyList.find((propObj) => propObj.json_key === prop)?.type;
-                  if (type === 'Edge Derived Properties') {
+                  // const type = this.propertyList.find((propObj) => propObj.json_key === prop.json_key)?.type;
+                  if (prop.type === 'Derived KPIs') {
+                    item.derived_kpis = true;
+                  } else if (prop?.type === 'Edge Derived Properties') {
                     item.edge_derived_props = true;
-                  } else if (type === 'Cloud Derived Properties') {
+                  } else if (prop?.type === 'Cloud Derived Properties') {
                     item.cloud_derived_props = true;
                   } else {
                     item.measured_props = true;
                   }
                 });
                 item.y2axis.forEach((prop) => {
-                  const type = this.propertyList.find((propObj) => propObj.json_key === prop)?.type;
-                  if (type === 'Edge Derived Properties') {
+                  if (prop.type === 'Derived KPIs') {
+                    item.derived_kpis = true;
+                  } else if (prop?.type === 'Edge Derived Properties') {
                     item.edge_derived_props = true;
-                  } else if (type === 'Cloud Derived Properties') {
+                  } else if (prop?.type === 'Cloud Derived Properties') {
                     item.cloud_derived_props = true;
                   } else {
                     item.measured_props = true;
@@ -490,13 +496,23 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
               response.live_widgets.forEach((widget) => {
                 widget.edge_derived_props = false;
                 widget.cloud_derived_props = false;
+                widget.derived_kpis = false;
                 widget.measured_props = false;
                 if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
+                  console.log(widget);
                   widget?.properties.forEach((prop) => {
+                    if (prop.property) {
+                      prop.json_key = prop.property.json_key;
+                    }
+                    prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
+                    prop.type = prop.property.type;
+                    console.log(prop);
                     this.addPropertyInList(prop.property);
-                    if (prop?.property?.type === 'Edge Derived Properties') {
+                    if (prop?.type === 'Derived KPIs') {
+                      widget.derived_kpis = true;
+                    } else if (prop?.type === 'Edge Derived Properties') {
                       widget.edge_derived_props = true;
-                    } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                    } else if (prop?.type === 'Cloud Derived Properties') {
                       widget.cloud_derived_props = true;
                     } else {
                       widget.measured_props = true;
@@ -504,8 +520,17 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                   });
                 } else {
                   widget?.y1AxisProps?.forEach((prop) => {
+                    if (prop.id) {
+                      prop.json_key = prop.id;
+                    }
+                    prop.property = this.propertyList.find(
+                      (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
+                    );
+                    console.log(prop);
                     this.addPropertyInList(prop);
-                    if (prop?.type === 'Edge Derived Properties') {
+                    if (prop?.type === 'Derived KPIs') {
+                      widget.derived_kpis = true;
+                    } else if (prop?.type === 'Edge Derived Properties') {
                       widget.edge_derived_props = true;
                     } else if (prop?.property?.type === 'Cloud Derived Properties') {
                       widget.cloud_derived_props = true;
@@ -514,8 +539,17 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
                   });
                   widget?.y2AxisProps?.forEach((prop) => {
+                    if (prop.id) {
+                      prop.json_key = prop.id;
+                    }
+                    prop.property = this.propertyList.find(
+                      (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
+                    );
+                    console.log(prop);
                     this.addPropertyInList(prop);
-                    if (prop?.type === 'Edge Derived Properties') {
+                    if (prop?.type === 'Derived KPIs') {
+                      widget.derived_kpis = true;
+                    } else if (prop?.type === 'Edge Derived Properties') {
                       widget.edge_derived_props = true;
                     } else if (prop?.property?.type === 'Cloud Derived Properties') {
                       widget.cloud_derived_props = true;
@@ -628,6 +662,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.contextApp?.dashboard_config?.show_live_widgets) {
         await this.getTelemetryMode(this.filterObj.asset.asset_id);
       }
+      await this.getAssetderivedKPIs(this.filterObj.asset.asset_id);
       await this.getAssetsModelProperties(asset_model);
       console.log(this.contextApp.dashboard_config);
       if (
@@ -644,8 +679,63 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.getLiveWidgetTelemetryDetails(obj);
       } else if (this.contextApp?.dashboard_config?.show_historical_widgets) {
         await this.getHistoricalWidgets(asset_model, historicalWidgetUpgrade);
+        await this.getHistoricalWidgetsDrivedKPIDetails();
         this.getHistoricalWidgetTelemetryDetails();
       }
+    }
+  }
+
+  getHistoricalWidgetsDrivedKPIDetails() {
+    this.propList = [];
+    let kpiCodes = '';
+    this.historicalWidgets.forEach((widget) => {
+      widget.y1axis.forEach((prop) => {
+        if (this.propList.indexOf(prop.json_key) === -1 && prop.type === 'Derived KPIs') {
+          this.propList.push(prop.json_key);
+          const kpiObj = this.derivedKPIs.find((kpi) => kpi.kpi_json_key === prop.json_key);
+          kpiCodes += kpiObj.code + ',';
+        }
+      });
+      widget.y2axis.forEach((prop) => {
+        if (this.propList.indexOf(prop.json_key) === -1 && prop.type === 'Derived KPIs') {
+          this.propList.push(prop.json_key);
+          const kpiObj = this.derivedKPIs.find((kpi) => kpi.kpi_json_key === prop.json_key);
+          kpiCodes += kpiObj.code + ',';
+        }
+      });
+    });
+    kpiCodes = kpiCodes.replace(/,\s*$/, '');
+    if (kpiCodes.length > 0) {
+      return new Promise<void>((resolve1) => {
+        this.isTelemetryDataLoading = true;
+        this.isFilterSelected = true;
+        const obj = {
+          kpi_codes: kpiCodes,
+          from_date: undefined,
+          to_date: undefined,
+        };
+        const now = moment().utc().unix();
+        if (this.historicalDateFilter.dateOption !== 'Custom Range') {
+          const dateObj = this.commonService.getMomentStartEndDate(this.historicalDateFilter.dateOption);
+          obj.from_date = dateObj.from_date;
+          obj.to_date = dateObj.to_date;
+        } else {
+          obj.from_date = this.historicalDateFilter.from_date;
+          obj.to_date = this.historicalDateFilter.to_date;
+        }
+        this.assetService.getDerivedKPISHistoricalData(this.contextApp.app, obj).subscribe((response: any) => {
+          response.data.forEach((item) => {
+            const itemobj = {
+              message_date: item.metadata.process_end_time,
+            };
+            itemobj[item.kpi_code] = item.kpi_result;
+            this.derivedKPIHistoricData.push(itemobj);
+            // this.derivedKPIHistoricData.reverse();
+          });
+          // this.derivedKPIHistoricData = response.data;
+          resolve1();
+        });
+      });
     }
   }
 
@@ -679,14 +769,13 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       (data) => {
         // if (data.type !== 'alert') {
         if (data) {
-          console.log(data);
           let obj = JSON.parse(JSON.stringify(data));
           delete obj.m;
           delete obj.ed;
           delete obj.cd;
-          obj = { ...obj, ...data.m, ...data.ed, ...data.cd };
+          delete obj.dkpi;
+          obj = { ...obj, ...data.m, ...data.ed, ...data.cd, ...data.dkpi };
           data = JSON.parse(JSON.stringify(obj));
-          console.log(obj);
         }
         this.processTelemetryData(data);
         this.isTelemetryDataLoading = false;
@@ -702,10 +791,18 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             const obj = {};
             // console.log(this.widgetPropertyList);
             this.widgetPropertyList.forEach((prop) => {
-              obj[prop?.json_key] = {
-                value: response.message[prop?.json_key],
-                date: response.message.message_date,
-              };
+              if (prop.type !== 'Derived KPIs') {
+                obj[prop?.json_key] = {
+                  value: response.message[prop?.json_key],
+                  date: response.message.message_date,
+                };
+              } else {
+                const kpiObj = this.derivedKPIs.find((kpi) => kpi.kpi_json_key === prop.json_key);
+                obj[prop?.json_key] = {
+                  value: kpiObj.kpi_result,
+                  date: this.commonService.convertUTCDateToLocal(kpiObj.process_end_time),
+                };
+              }
             });
             this.previousProperties = [];
             obj['previous_properties'] = [];
@@ -741,7 +838,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getHistoricalWidgetTelemetryDetails() {
-    this.propList = [];
     const children = $('#historic_charts').children();
     for (const child of children) {
       $(child).remove();
@@ -749,13 +845,13 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log(this.historicalDateFilter);
     this.historicalDateFilter?.widgets.forEach((widget) => {
       widget.y1axis.forEach((prop) => {
-        if (this.propList.indexOf(prop) === -1) {
-          this.propList.push(prop);
+        if (this.propList.indexOf(prop.json_key) === -1 && prop.type !== 'Derived KPIs') {
+          this.propList.push(prop.json_key);
         }
       });
       widget.y2axis.forEach((prop) => {
-        if (this.propList.indexOf(prop) === -1) {
-          this.propList.push(prop);
+        if (this.propList.indexOf(prop.json_key) === -1 && prop.type !== 'Derived KPIs') {
+          this.propList.push(prop.json_key);
         }
       });
     });
@@ -771,7 +867,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     const propArr = [];
     this.propertyList.forEach((propObj) => {
       this.propList.forEach((prop) => {
-        if (prop === propObj.json_key) {
+        if (prop === propObj.json_key && propObj.type !== 'Derived KPIs') {
           propArr.push(propObj);
         }
       });
@@ -811,6 +907,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     if (filterObj.to_date - filterObj.from_date > 3600 && !this.historicalDateFilter.isTypeEditable) {
       this.historicalDateFilter.isTypeEditable = true;
       this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
+      this.isTelemetryDataLoading = false;
+      this.isFilterSelected = false;
       return;
     }
     const asset = this.assets.find((assetObj) => assetObj.asset_id === filterObj.asset_id);
@@ -824,6 +922,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.historicalDateFilter.type) {
         if (!this.historicalDateFilter.sampling_time || !this.historicalDateFilter.sampling_format) {
           this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
+          this.isTelemetryDataLoading = false;
+          this.isFilterSelected = false;
           return;
         } else {
           delete filterObj.aggregation_minutes;
@@ -844,6 +944,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       } else {
         if (!this.historicalDateFilter.aggregation_minutes || !this.historicalDateFilter.aggregation_format) {
           this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
+          this.isTelemetryDataLoading = false;
+          this.isFilterSelected = false;
           return;
         } else {
           delete filterObj.sampling_time;
@@ -888,10 +990,15 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       method.subscribe((response: any) => {
         if (response && response.data) {
           this.telemetryData = response.data;
-          const telemetryData = response.data;
+          console.log(JSON.stringify(this.derivedKPIHistoricData));
+          this.telemetryData = this.telemetryData.concat(this.derivedKPIHistoricData);
+          // console.log(JSON.stringify(this.telemetryData));
+          console.log(this.telemetryData.length);
+          let telemetryData = this.telemetryData;
           telemetryData.forEach((item) => {
             item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
           });
+          telemetryData = this.commonService.sortDataBaseOnTime(telemetryData, 'message_date');
           // this.loadGaugeChart(telemetryData[0]);
           // telemetryData.reverse();
           this.isTelemetryDataLoading = false; // this.loadLineChart(telemetryData);
@@ -1037,6 +1144,23 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.filterObj.assetArr = undefined;
   }
 
+  getAssetderivedKPIs(assetId) {
+    return new Promise<void>((resolve) => {
+      this.apiSubscriptions.push(
+        this.assetService.getDerivedKPIs(this.contextApp.app, assetId).subscribe((response: any) => {
+          if (response && response.data) {
+            this.derivedKPIs = response.data;
+            console.log(this.derivedKPIs);
+          } else if (response?.derived_kpis) {
+            this.derivedKPIs = response.derived_kpis;
+          }
+          this.derivedKPIs.forEach((kpi) => kpi.type === 'Derived KPI');
+          resolve();
+        })
+      );
+    });
+  }
+
   getAssetsModelProperties(assetModel) {
     return new Promise<void>((resolve1) => {
       if (this.propertyList.length === 0) {
@@ -1065,6 +1189,15 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 prop.type = 'Cloud Derived Properties';
                 console.log(prop);
                 this.propertyList.push(prop);
+              });
+              this.derivedKPIs.forEach((kpi) => {
+                const obj: any = {};
+                obj.type = 'Derived KPIs';
+                obj.name = kpi.name;
+                obj.json_key = kpi.kpi_json_key;
+                obj.json_model = {};
+                obj.json_model[obj.json_key] = {};
+                this.propertyList.push(obj);
               });
               resolve1();
             },

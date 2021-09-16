@@ -44,20 +44,22 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-    await this.getAssetsModelProperties();
     await this.getAssetModelsderivedKPIs();
+    await this.getAssetsModelProperties();
     this.getLiveWidgets();
   }
 
   getAssetModelsderivedKPIs() {
     return new Promise<void>((resolve) => {
       this.subscriptions.push(
-        this.assetService.getDerivedKPIs(this.contextApp.app, this.assetModel.name).subscribe((response: any) => {
+        this.assetModelService.getDerivedKPIs(this.contextApp.app, this.assetModel.name).subscribe((response: any) => {
           if (response && response.data) {
-            response.data.forEach((kpi) => kpi.type === 'Derived KPI');
             this.derivedKPIs = response.data;
             console.log(this.derivedKPIs);
+          } else if (response?.derived_kpis) {
+            this.derivedKPIs = response.derived_kpis;
           }
+          this.derivedKPIs.forEach((kpi) => kpi.type === 'Derived KPI');
           resolve();
         })
       );
@@ -91,6 +93,15 @@ export class AssetModelLiveLayoutComponent implements OnInit {
           response.properties.cloud_derived_properties.forEach((prop) => {
             prop.type = 'Cloud Derived Properties';
             this.propertyList.push(prop);
+          });
+          this.derivedKPIs.forEach((kpi) => {
+            const obj: any = {};
+            obj.type = 'Derived KPIs';
+            obj.name = kpi.name;
+            obj.json_key = kpi.kpi_json_key;
+            obj.json_model = {};
+            obj.json_model[obj.json_key] = {};
+            this.propertyList.push(obj);
           });
           resolve();
         })
@@ -159,6 +170,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
               widget.edge_derived_props = false;
               widget.cloud_derived_props = false;
               widget.measured_props = false;
+              widget.derived_kpis = false;
               if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
                 widget?.properties.forEach((prop) => {
                   console.log(this.propertyList);
@@ -166,7 +178,10 @@ export class AssetModelLiveLayoutComponent implements OnInit {
                     prop.json_key = prop.property.json_key;
                   }
                   prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
-                  if (prop?.type === 'Edge Derived Properties') {
+                  prop.type = prop.property.type;
+                  if (prop?.type === 'Derived KPIs') {
+                    widget.derived_kpis = true;
+                  } else if (prop?.type === 'Edge Derived Properties') {
                     widget.edge_derived_props = true;
                   } else if (prop?.type === 'Cloud Derived Properties') {
                     widget.cloud_derived_props = true;
@@ -177,7 +192,15 @@ export class AssetModelLiveLayoutComponent implements OnInit {
                 });
               } else {
                 widget?.y1AxisProps.forEach((prop) => {
-                  if (prop?.type === 'Edge Derived Properties') {
+                  if (prop.id) {
+                    prop.json_key = prop.id;
+                  }
+                  prop.property = this.propertyList.find(
+                    (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
+                  );
+                  if (prop?.type === 'Derived KPIs') {
+                    widget.derived_kpis = true;
+                  } else if (prop?.type === 'Edge Derived Properties') {
                     widget.edge_derived_props = true;
                   } else if (prop?.property?.type === 'Cloud Derived Properties') {
                     widget.cloud_derived_props = true;
@@ -186,7 +209,15 @@ export class AssetModelLiveLayoutComponent implements OnInit {
                   }
                 });
                 widget?.y2AxisProps?.forEach((prop) => {
-                  if (prop?.type === 'Edge Derived Properties') {
+                  if (prop.id) {
+                    prop.json_key = prop.id;
+                  }
+                  prop.property = this.propertyList.find(
+                    (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
+                  );
+                  if (prop?.type === 'Derived KPIs') {
+                    widget.derived_kpis = true;
+                  } else if (prop?.type === 'Edge Derived Properties') {
                     widget.edge_derived_props = true;
                   } else if (prop?.property?.type === 'Cloud Derived Properties') {
                     widget.cloud_derived_props = true;
@@ -219,7 +250,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
 
   getTelemetryData() {
     this.telemetryObj = {};
-    this.telemetryObj.message_date = moment().subtract(10, 'second').format('DD-MMM-YYYY hh:mm:ss A').toString();
+    this.telemetryObj.message_date = moment().format('DD-MMM-YYYY hh:mm:ss A').toString();
     this.propertyList.forEach((prop) => {
       this.telemetryObj[prop.json_key] = {
         value: this.commonService.randomIntFromInterval(
@@ -295,9 +326,18 @@ export class AssetModelLiveLayoutComponent implements OnInit {
 
   updateAssetModel(arr, message) {
     arr.forEach((widget) => {
-      widget.properties.forEach((prop) => {
-        delete prop.property;
-      });
+      if (widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart') {
+        widget.y1AxisProps.forEach((prop) => {
+          delete prop.property;
+        });
+        widget.y2AxisProps.forEach((prop) => {
+          delete prop.property;
+        });
+      } else {
+        widget.properties.forEach((prop) => {
+          delete prop.property;
+        });
+      }
     });
     this.assetModel.live_widgets = arr;
     this.assetModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
@@ -339,12 +379,35 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       return;
     }
     if (this.widgetObj.widgetType === 'LineChart' || this.widgetObj.widgetType === 'AreaChart') {
-      if (!this.widgetObj.y1AxisProps || this.widgetObj.y1AxisProps.length > 0) {
+      console.log(this.widgetObj);
+      if (!this.widgetObj.y1AxisProps || this.widgetObj.y1AxisProps.length === 0) {
         this.toasterService.showError('Please select at least one property in y1 axis property.', 'Add Widget');
         return;
+      } else {
+        const arr = [];
+        this.widgetObj.y1AxisProps.forEach((prop) => {
+          const obj = {
+            name: prop.name,
+            type: prop.type,
+            json_key: prop.value.json_key,
+          };
+          arr.push(obj);
+        });
+        this.widgetObj.y1AxisProps = JSON.parse(JSON.stringify(arr));
       }
       if (!this.widgetObj.y2AxisProps) {
         this.widgetObj.y2AxisProps = [];
+      } else {
+        const arr = [];
+        this.widgetObj.y2AxisProps.forEach((prop) => {
+          const obj = {
+            name: prop.name,
+            type: prop.type,
+            json_key: prop.value.json_key,
+          };
+          arr.push(obj);
+        });
+        this.widgetObj.y2AxisProps = JSON.parse(JSON.stringify(arr));
       }
     }
     this.isCreateWidgetAPILoading = true;

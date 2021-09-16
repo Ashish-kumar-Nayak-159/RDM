@@ -1,7 +1,17 @@
 import { ColumnChartComponent } from 'src/app/common/charts/column-chart/column-chart.component';
 import { ChartService } from './../../../chart/chart.service';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
-import { Component, OnInit, Input, ComponentFactoryResolver, ApplicationRef, Injector, EmbeddedViewRef, ViewChild, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  ComponentFactoryResolver,
+  ApplicationRef,
+  Injector,
+  EmbeddedViewRef,
+  ViewChild,
+  OnDestroy,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AssetService } from './../../../services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
@@ -18,10 +28,9 @@ declare var $: any;
 @Component({
   selector: 'app-history',
   templateUrl: './history.component.html',
-  styleUrls: ['./history.component.css']
+  styleUrls: ['./history.component.css'],
 })
 export class HistoryComponent implements OnInit, OnDestroy {
-
   historyFilter: any = {};
   apiSubscriptions: Subscription[] = [];
   historyData: any[] = [];
@@ -35,17 +44,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
   dropdownPropList = [];
   y1AxisProps = [];
   y2AxisProp = [];
+  derivedKPIs: any[] = [];
+  derivedKPIHistoricData: any[] = [];
   // y1AxisProps = "";
   // y2AxisProp = "";
   xAxisProps = '';
-  @ViewChild('dtInput1', {static: false}) dtInput1: any;
-  @ViewChild('dtInput2', {static: false}) dtInput2: any;
+  @ViewChild('dtInput1', { static: false }) dtInput1: any;
+  @ViewChild('dtInput2', { static: false }) dtInput2: any;
 
   // chart selection
   chartCount = 0;
   columnNames = [];
   layoutJson = [];
-  storedLayout = {};
   chartTitle = '';
   showDataTable = false;
   selectedHierarchy = '';
@@ -67,7 +77,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     autoUpdateInput: false,
     maxDate: moment(),
     timePicker: true,
-    ranges: CONSTANTS.DATE_OPTIONS
+    ranges: CONSTANTS.DATE_OPTIONS,
   };
   @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   selectedDateRange: string;
@@ -81,12 +91,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
     private factoryResolver: ComponentFactoryResolver,
     private appRef: ApplicationRef,
     private injector: Injector,
-    private chartService: ChartService  ) {
-  }
+    private chartService: ChartService
+  ) {}
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    await this.getAssetderivedKPIs(this.asset.asset_id);
     await this.getAssetsModelProperties();
     this.historyFilter.app = this.contextApp.app;
     this.historyFilter.epoch = true;
@@ -101,9 +112,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.historyFilter.aggregation_format = 'AVG';
     this.historyFilter.type = true;
     if (this.propertyList) {
-      this.propertyList.forEach(item => {
+      this.propertyList.forEach((item) => {
         this.dropdownPropList.push({
-          id: item.json_key
+          id: item.json_key,
         });
       });
     }
@@ -133,8 +144,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (this.historyFilter.dateOption !== 'Custom Range') {
         this.selectedDateRange = this.historyFilter.dateOption;
       } else {
-        this.selectedDateRange = moment.unix(this.historyFilter.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
-        moment.unix(this.historyFilter.to_date).format('DD-MM-YYYY HH:mm');
+        this.selectedDateRange =
+          moment.unix(this.historyFilter.from_date).format('DD-MM-YYYY HH:mm') +
+          ' to ' +
+          moment.unix(this.historyFilter.to_date).format('DD-MM-YYYY HH:mm');
       }
       if (this.historyFilter.to_date - this.historyFilter.from_date > 3600) {
         this.historyFilter.isTypeEditable = true;
@@ -157,31 +170,59 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
+  getAssetderivedKPIs(assetId) {
+    return new Promise<void>((resolve) => {
+      this.apiSubscriptions.push(
+        this.assetService.getDerivedKPIs(this.contextApp.app, assetId).subscribe((response: any) => {
+          if (response && response.data) {
+            this.derivedKPIs = response.data;
+            console.log(this.derivedKPIs);
+          } else if (response?.derived_kpis) {
+            this.derivedKPIs = response.derived_kpis;
+          }
+          this.derivedKPIs.forEach((kpi) => kpi.type === 'Derived KPI');
+          resolve();
+        })
+      );
+    });
+  }
+
   getAssetsModelProperties() {
     // this.properties = {};
     return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
-        name: this.asset.tags.asset_model
+        name: this.asset.tags.asset_model,
       };
-      this.apiSubscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
-        (response: any) => {
+      this.apiSubscriptions.push(
+        this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
-          response.properties.edge_derived_properties = response.properties.edge_derived_properties ?
-          response.properties.edge_derived_properties : [];
-          response.properties.cloud_derived_properties = response.properties.cloud_derived_properties ?
-          response.properties.cloud_derived_properties : [];
-          response.properties.edge_derived_properties.forEach(prop => {
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties
+            ? response.properties.edge_derived_properties
+            : [];
+          response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
+            ? response.properties.cloud_derived_properties
+            : [];
+          response.properties.edge_derived_properties.forEach((prop) => {
             prop.type = 'Edge Derived Properties';
             this.propertyList.push(prop);
           });
-          response.properties.cloud_derived_properties.forEach(prop => {
+          response.properties.cloud_derived_properties.forEach((prop) => {
             prop.type = 'Cloud Derived Properties';
             this.propertyList.push(prop);
           });
+          this.derivedKPIs.forEach((kpi) => {
+            const obj: any = {};
+            obj.type = 'Derived KPIs';
+            obj.name = kpi.name;
+            obj.json_key = kpi.kpi_json_key;
+            obj.json_model = {};
+            obj.json_model[obj.json_key] = {};
+            this.propertyList.push(obj);
+          });
           resolve();
-        }
-      ));
+        })
+      );
     });
   }
 
@@ -213,7 +254,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     console.log(this.historyFilter);
     if (value.label === 'Custom Range') {
-      this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
+      this.selectedDateRange =
+        moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
     } else {
       this.selectedDateRange = value.label;
     }
@@ -224,9 +266,61 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
+  getHistoricalWidgetsDrivedKPIDetails() {
+    this.propList = [];
+    let kpiCodes = '';
+    this.layoutJson.forEach((widget) => {
+      widget.y1axis.forEach((prop) => {
+        if (this.propList.indexOf(prop.json_key) === -1 && prop.type === 'Derived KPIs') {
+          this.propList.push(prop.json_key);
+          const kpiObj = this.derivedKPIs.find((kpi) => kpi.kpi_json_key === prop.json_key);
+          kpiCodes += kpiObj.code + ',';
+        }
+      });
+      widget.y2axis.forEach((prop) => {
+        if (this.propList.indexOf(prop.json_key) === -1 && prop.type === 'Derived KPIs') {
+          this.propList.push(prop.json_key);
+          const kpiObj = this.derivedKPIs.find((kpi) => kpi.kpi_json_key === prop.json_key);
+          kpiCodes += kpiObj.code + ',';
+        }
+      });
+    });
+    kpiCodes = kpiCodes.replace(/,\s*$/, '');
+    if (kpiCodes.length > 0) {
+      return new Promise<void>((resolve1) => {
+        this.isHistoryAPILoading = true;
+        const obj = {
+          kpi_codes: kpiCodes,
+          from_date: undefined,
+          to_date: undefined,
+        };
+        const now = moment().utc().unix();
+        if (this.historyFilter.dateOption !== 'Custom Range') {
+          const dateObj = this.commonService.getMomentStartEndDate(this.historyFilter.dateOption);
+          obj.from_date = dateObj.from_date;
+          obj.to_date = dateObj.to_date;
+        } else {
+          obj.from_date = this.historyFilter.from_date;
+          obj.to_date = this.historyFilter.to_date;
+        }
+        this.assetService.getDerivedKPISHistoricalData(this.contextApp.app, obj).subscribe((response: any) => {
+          response.data.forEach((item) => {
+            const itemobj = {
+              message_date: item.metadata.process_end_time,
+            };
+            itemobj[item.kpi_code] = item.kpi_result;
+            this.derivedKPIHistoricData.push(itemobj);
+            // this.derivedKPIHistoricData.reverse();
+          });
+          // this.derivedKPIHistoricData = response.data;
+          resolve1();
+        });
+      });
+    }
+  }
 
   searchHistory() {
-    return new Promise<void>((resolve) => {
+    return new Promise<void>(async (resolve) => {
       const children = $('#widgetContainer').children();
       for (const child of children) {
         $(child).remove();
@@ -238,15 +332,15 @@ export class HistoryComponent implements OnInit, OnDestroy {
         return;
       }
 
-      this.selectedWidgets.forEach(widget => {
-        widget.y1axis.forEach(prop => {
-          if (this.propList.indexOf(prop) === -1) {
-            this.propList.push(prop);
+      this.selectedWidgets.forEach((widget) => {
+        widget.y1axis.forEach((prop) => {
+          if (this.propList.indexOf(prop.json_key) === -1) {
+            this.propList.push(prop.json_key);
           }
         });
-        widget.y2axis.forEach(prop => {
-          if (this.propList.indexOf(prop) === -1) {
-            this.propList.push(prop);
+        widget.y2axis.forEach((prop) => {
+          if (this.propList.indexOf(prop.json_key) === -1) {
+            this.propList.push(prop.json_key);
           }
         });
       });
@@ -258,14 +352,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.historyFilter.app = this.contextApp.app;
       const currentHistoryFilter = { ...this.historyFilter };
 
-      // if (currentHistoryFilter.aggregation_format && !currentHistoryFilter.aggregation_minutes) {
-      //   this.toasterService.showError('If Aggregation Format is set, Aggregation Time is required.', 'View Visualization');
-      //   return;
-      // }
-      // if (currentHistoryFilter.aggregation_minutes && !currentHistoryFilter.aggregation_format) {
-      //   this.toasterService.showError('If Aggregation Time is set, Aggregation Format is required.', 'View Visualization');
-      //   return;
-      // }
       currentHistoryFilter.to_date = this.historyFilter.to_date;
       currentHistoryFilter.from_date = this.historyFilter.from_date;
 
@@ -282,8 +368,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       delete obj.dateOption;
       obj.order_dir = 'ASC';
       const propArr = [];
-      this.propertyList.forEach(propObj => {
-        this.propList.forEach(prop => {
+      this.propertyList.forEach((propObj) => {
+        this.propList.forEach((prop) => {
           if (prop === propObj.json_key) {
             propArr.push(propObj);
           }
@@ -295,79 +381,92 @@ export class HistoryComponent implements OnInit, OnDestroy {
         return;
       }
       if (obj.to_date - obj.from_date > 3600 && !this.historyFilter.isTypeEditable) {
-          this.historyFilter.isTypeEditable = true;
-          this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
-          return;
+        this.historyFilter.isTypeEditable = true;
+        this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
+        return;
       }
       if (this.historyFilter.isTypeEditable) {
-      if (this.historyFilter.type) {
-        if (!this.historyFilter.sampling_time || !this.historyFilter.sampling_format ) {
-          this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
-          return;
-        } else {
-          delete obj.aggregation_minutes;
-          delete obj.aggregation_format;
-          // obj.message_props = '';
-          // this.propList.forEach((prop, index) =>
-          // obj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
-          let measured_message_props = '';
-          let edge_derived_message_props = '';
-          let cloud_derived_message_props = '';
+        if (this.historyFilter.type) {
+          if (!this.historyFilter.sampling_time || !this.historyFilter.sampling_format) {
+            this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
+            return;
+          } else {
+            delete obj.aggregation_minutes;
+            delete obj.aggregation_format;
+            // obj.message_props = '';
+            // this.propList.forEach((prop, index) =>
+            // obj.message_props += prop + (index !== (this.propList.length - 1) ? ',' : ''));
+            let measured_message_props = '';
+            let edge_derived_message_props = '';
+            let cloud_derived_message_props = '';
 
-          propArr.forEach((prop, index) => {
-            if (prop.type === 'Edge Derived Properties') {
-              edge_derived_message_props = edge_derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
-            } else if (prop.type === 'Cloud Derived Properties') {
-              cloud_derived_message_props = cloud_derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
-            } else {
-              measured_message_props = measured_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+            propArr.forEach((prop, index) => {
+              if (prop.type === 'Edge Derived Properties') {
+                edge_derived_message_props =
+                  edge_derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+              } else if (prop.type === 'Cloud Derived Properties') {
+                cloud_derived_message_props =
+                  cloud_derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+              } else {
+                measured_message_props = measured_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+              }
+            });
+            measured_message_props = measured_message_props.replace(/,\s*$/, '');
+            edge_derived_message_props = edge_derived_message_props.replace(/,\s*$/, '');
+            cloud_derived_message_props = cloud_derived_message_props.replace(/,\s*$/, '');
+            obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
+            obj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
+            obj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
+            const records = this.commonService.calculateEstimatedRecords(
+              this.historyFilter.sampling_time * 60,
+              obj.from_date,
+              obj.to_date
+            );
+            if (records > 500) {
+              this.loadingMessage =
+                'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
             }
-          });
-          measured_message_props = measured_message_props.replace(/,\s*$/, '');
-          edge_derived_message_props = edge_derived_message_props.replace(/,\s*$/, '');
-          cloud_derived_message_props = cloud_derived_message_props.replace(/,\s*$/, '');
-          obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
-          obj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
-          obj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
-          const records = this.commonService.calculateEstimatedRecords(this.historyFilter.sampling_time * 60, obj.from_date, obj.to_date);
-          if (records > 500 ) {
-            this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+            method = this.assetService.getAssetSamplingTelemetry(obj, this.contextApp.app);
           }
-          method = this.assetService.getAssetSamplingTelemetry(obj, this.contextApp.app);
-        }
-      } else {
-        if (!this.historyFilter.aggregation_minutes || !this.historyFilter.aggregation_format ) {
-          this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
-          return;
         } else {
-          delete obj.sampling_time;
-          delete obj.sampling_format;
-          let measured_message_props = '';
-          let edge_derived_message_props = '';
-          let cloud_derived_message_props = '';
-          propArr.forEach((prop, index) => {
-            if (prop.type === 'Edge Derived Properties') {
-              edge_derived_message_props = edge_derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
-            } else if (prop.type === 'Cloud Derived Properties') {
-              cloud_derived_message_props = cloud_derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
-            } else {
-              measured_message_props = measured_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+          if (!this.historyFilter.aggregation_minutes || !this.historyFilter.aggregation_format) {
+            this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
+            return;
+          } else {
+            delete obj.sampling_time;
+            delete obj.sampling_format;
+            let measured_message_props = '';
+            let edge_derived_message_props = '';
+            let cloud_derived_message_props = '';
+            propArr.forEach((prop, index) => {
+              if (prop.type === 'Edge Derived Properties') {
+                edge_derived_message_props =
+                  edge_derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+              } else if (prop.type === 'Cloud Derived Properties') {
+                cloud_derived_message_props =
+                  cloud_derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+              } else {
+                measured_message_props = measured_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+              }
+            });
+            measured_message_props = measured_message_props.replace(/,\s*$/, '');
+            edge_derived_message_props = edge_derived_message_props.replace(/,\s*$/, '');
+            cloud_derived_message_props = cloud_derived_message_props.replace(/,\s*$/, '');
+            obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
+            obj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
+            obj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
+            const records = this.commonService.calculateEstimatedRecords(
+              this.historyFilter.aggregation_minutes * 60,
+              obj.from_date,
+              obj.to_date
+            );
+            if (records > 500) {
+              this.loadingMessage =
+                'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
             }
-          });
-          measured_message_props = measured_message_props.replace(/,\s*$/, '');
-          edge_derived_message_props = edge_derived_message_props.replace(/,\s*$/, '');
-          cloud_derived_message_props = cloud_derived_message_props.replace(/,\s*$/, '');
-          obj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
-          obj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
-          obj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
-          const records = this.commonService.calculateEstimatedRecords
-          (this.historyFilter.aggregation_minutes * 60, obj.from_date, obj.to_date);
-          if (records > 500 ) {
-            this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+            method = this.assetService.getAssetTelemetry(obj);
           }
-          method = this.assetService.getAssetTelemetry(obj);
         }
-      }
       } else {
         delete obj.aggregation_minutes;
         delete obj.aggregation_format;
@@ -383,7 +482,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
             if (prop.type === 'Edge Derived Properties') {
               edge_derived_message_props = edge_derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
             } else if (prop.type === 'Cloud Derived Properties') {
-              cloud_derived_message_props = cloud_derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
+              cloud_derived_message_props =
+                cloud_derived_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
             } else {
               measured_message_props = measured_message_props + prop.json_key + (propArr[index + 1] ? ',' : '');
             }
@@ -400,39 +500,44 @@ export class HistoryComponent implements OnInit, OnDestroy {
         frequencyArr.push(this.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
         frequencyArr.push(this.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
         const frequency = this.commonService.getLowestValueFromList(frequencyArr);
-        const records = this.commonService.calculateEstimatedRecords(frequency,obj.from_date, obj.to_date);
-        if (records > 500 ) {
-          this.loadingMessage = 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
+        const records = this.commonService.calculateEstimatedRecords(frequency, obj.from_date, obj.to_date);
+        if (records > 500) {
+          this.loadingMessage =
+            'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
         }
         method = this.assetService.getAssetTelemetry(obj);
       }
+      this.historyData = [];
+      await this.getHistoricalWidgetsDrivedKPIDetails();
       this.fromDate = obj.from_date;
       this.toDate = obj.to_date;
       this.isHistoryAPILoading = true;
-      this.apiSubscriptions.push(method.subscribe(
-        (response: any) => {
-          this.isFilterSelected = true;
-          if (response && response.data) {
-            let historyData = [];
-            historyData = response.data;
-            this.historyData = historyData;
-            this.isHistoryAPILoading = false;
-            // historyData.reverse();
-            resolve();
-          }
-          if (this.historyFilter.dateOption !== 'Custom Range') {
-            this.dateRange = this.historyFilter.dateOption;
-          }
-          else {
-            this.dateRange = 'this selected range';
-          }
-        }, () => this.isHistoryAPILoading = false
-      ));
+      this.apiSubscriptions.push(
+        method.subscribe(
+          (response: any) => {
+            this.isFilterSelected = true;
+            if (response && response.data) {
+              this.historyData = response.data;
+              this.historyData = this.historyData.concat(this.derivedKPIHistoricData);
+              this.historyData = this.commonService.sortDataBaseOnTime(this.historyData, 'message_date');
+              this.isHistoryAPILoading = false;
+              // historyData.reverse();
+              resolve();
+            }
+            if (this.historyFilter.dateOption !== 'Custom Range') {
+              this.dateRange = this.historyFilter.dateOption;
+            } else {
+              this.dateRange = 'this selected range';
+            }
+          },
+          () => (this.isHistoryAPILoading = false)
+        )
+      );
     });
   }
 
   getPropertyName(key) {
-    return this.propertyList.filter(prop => prop.json_key === key)[0]?.name || key;
+    return this.propertyList.filter((prop) => prop.json_key === key)[0]?.name || key;
   }
 
   onDeSelectAll(event) {
@@ -463,9 +568,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.historyFilter.from_date = dateObj.from_date;
       this.historyFilter.to_date = dateObj.to_date;
     } else {
-
-      this.selectedDateRange = moment.unix(this.historyFilter.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
-      moment.unix(this.historyFilter.to_date).format('DD-MM-YYYY HH:mm');
+      this.selectedDateRange =
+        moment.unix(this.historyFilter.from_date).format('DD-MM-YYYY HH:mm') +
+        ' to ' +
+        moment.unix(this.historyFilter.to_date).format('DD-MM-YYYY HH:mm');
     }
     this.picker.datePicker.setStartDate(moment.unix(this.historyFilter.from_date));
     this.picker.datePicker.setEndDate(moment.unix(this.historyFilter.to_date));
@@ -497,7 +603,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   setChartType() {
-   // this.selectedChartType = this.chartTypeValues[chartTypeIndex];
+    // this.selectedChartType = this.chartTypeValues[chartTypeIndex];
     // if (this.selectedChartType.indexOf('Pie') >= 0) {
     //   document.getElementById("y1AxisProperty")['disabled'] = true
     //   document.getElementById("y2AxisProperty")['disabled'] = true
@@ -510,17 +616,20 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   addChart() {
-    this.plotChart(null).then((chart: any) => {
-      if (!chart.y1axis) {
-        chart.y1axis = [];
+    this.plotChart(null).then(
+      (chart: any) => {
+        if (!chart.y1axis) {
+          chart.y1axis = [];
+        }
+        if (!chart.y2axis) {
+          chart.y2axis = [];
+        }
+        this.layoutJson.push(chart);
+      },
+      (err) => {
+        this.toasterService.showError(err, 'Load Chart');
       }
-      if (!chart.y2axis) {
-        chart.y2axis = [];
-      }
-      this.layoutJson.push(chart);
-    }, (err) => {
-      this.toasterService.showError(err, 'Load Chart');
-    });
+    );
   }
 
   plotChart(layoutJson) {
@@ -530,16 +639,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
       const y1Axis = layoutJson.y1axis;
       const y2Axis = layoutJson.y2axis;
       const data = [];
-      this.historyData.forEach(item => {
+      this.historyData.forEach((item) => {
         const obj = {
-          message_date: this.commonService.convertUTCDateToLocal(item.message_date)
+          message_date: this.commonService.convertUTCDateToLocal(item.message_date),
         };
-        y1Axis.forEach(element =>
-          obj[element] = item[element]
-        );
-        y2Axis.forEach(element =>
-          obj[element] = item[element]
-        );
+        y1Axis.forEach((element) => (obj[element.json_key] = item[element.json_key]));
+        y2Axis.forEach((element) => (obj[element.json_key] = item[element.json_key]));
         data.splice(data.length, 0, obj);
       });
       let componentRef;
@@ -569,13 +674,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
       componentRef.instance.chartTitle = layoutJson.title;
       componentRef.instance.chartId = layoutJson.chart_Id;
       this.appRef.attachView(componentRef.hostView);
-      const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
-      .rootNodes[0] as HTMLElement;
+      const domElem = (componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
       document.getElementById('widgetContainer').prepend(domElem);
       resolve();
     });
   }
-
 
   async renderLayout() {
     this.chartService.disposeChartEvent.emit();
@@ -599,8 +702,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         currentChart['chartCount'] = this.renderCount;
         await this.plotChart(currentChart);
       });
-    }
-    else {
+    } else {
       if (this.layoutJson.length === 0) {
         this.toasterService.showError('Layout not defined', 'Historical Widgets');
         return;
@@ -615,45 +717,36 @@ export class HistoryComponent implements OnInit, OnDestroy {
   getLayout() {
     const params = {
       app: this.contextApp.app,
-      name: this.asset?.tags?.asset_model
+      name: this.asset?.tags?.asset_model,
     };
-    this.dropdownWidgetList = [];
     this.selectedWidgets = [];
     this.layoutJson = [];
-    this.apiSubscriptions.push(this.assetModelService.getAssetsModelLayout(params).subscribe(
-      async (response: any) => {
+    this.apiSubscriptions.push(
+      this.assetModelService.getAssetsModelLayout(params).subscribe(async (response: any) => {
         if (response?.historical_widgets?.length > 0) {
           this.layoutJson = response.historical_widgets;
-          this.storedLayout = response.historical_widgets[0];
-          // this.layoutJson.forEach((item) => {
-          //   this.dropdownWidgetList.push({
-          //     id: item.title,
-          //     value: item
-          //   });
-          // });
           this.layoutJson.forEach((item) => {
-            this.dropdownWidgetList.push({
-              id: item.title,
-              value: item
-            });
             item.edge_derived_props = false;
             item.measured_props = false;
             item.cloud_derived_props = false;
-            item.y1axis.forEach(prop => {
-              const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'Edge Derived Properties') {
+            item.derived_kpis = false;
+            item.y1axis.forEach((prop) => {
+              if (prop.type === 'Derived KPIs') {
+                item.derived_kpis = true;
+              } else if (prop.type === 'Edge Derived Properties') {
                 item.edge_derived_props = true;
-              } else if (type === 'Cloud Derived Properties') {
+              } else if (prop.type === 'Cloud Derived Properties') {
                 item.cloud_derived_props = true;
               } else {
                 item.measured_props = true;
               }
             });
-            item.y2axis.forEach(prop => {
-              const type = this.propertyList.find(propObj => propObj.json_key === prop)?.type;
-              if (type === 'Edge Derived Properties') {
+            item.y2axis.forEach((prop) => {
+              if (prop.type === 'Derived KPIs') {
+                item.derived_kpis = true;
+              } else if (prop.type === 'Edge Derived Properties') {
                 item.edge_derived_props = true;
-              } else if (type === 'Cloud Derived Properties') {
+              } else if (prop.type === 'Cloud Derived Properties') {
                 item.cloud_derived_props = true;
               } else {
                 item.measured_props = true;
@@ -662,22 +755,22 @@ export class HistoryComponent implements OnInit, OnDestroy {
           });
         }
         this.isHistoryAPILoading = false;
-      }
-    ));
+      })
+    );
   }
 
-  y1Deselect(e){
+  y1Deselect(e) {
     if (e === [] || e.length === 0) {
       this.y1AxisProps = [];
     }
   }
-  y2Deselect(e){
+  y2Deselect(e) {
     if (e === [] || e.length === 0) {
       this.y2AxisProp = [];
     }
   }
 
   ngOnDestroy() {
-    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
+    this.apiSubscriptions.forEach((sub) => sub.unsubscribe());
   }
 }

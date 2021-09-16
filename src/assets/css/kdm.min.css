@@ -13347,6 +13347,10 @@ overflow-x: hidden;
     background-color: #60bafd !important;
     color: #fff;
 }
+.badge-navyblue {
+  background-color: #4382b1!important;
+  color: #fff;
+}
 .badge-darkblue {
     background-color: #89a7ff !important;
     color: #fff;
@@ -13355,6 +13359,7 @@ overflow-x: hidden;
   background-color: #526499 !important;
   color: #fff;
 }
+
 .border-left-blue {
     border-left: .25rem solid #60bafd!important
 }
@@ -13904,3 +13909,5 @@ form .page .btns button.next{
       height: calc(100vh - 23rem);
   }
 }
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-optgroup.ng-option-disabled { color: #1a5aa9; }

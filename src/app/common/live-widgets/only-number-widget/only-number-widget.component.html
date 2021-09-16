@@ -8,6 +8,7 @@
         </h6>
       </div>
       <div class="ml-auto">
+        <div class="round-badge badge-navyblue" tooltip="Derived KPI" *ngIf="chartConfig.derived_kpis">DK</div>
         <div class="round-badge badge-darkblue" tooltip="Edge Derived Property" *ngIf="chartConfig.edge_derived_props">
           ED</div>
         <div class="round-badge badge-lightblue" tooltip="Cloud Derived Property"
@@ -29,8 +30,10 @@
           <p class="text-xs live-widget-title" placement="bottom" [tooltip]="prop.title + ' ' + (prop.property?.json_model[prop.property?.json_key]?.units ?
             ('(' + prop.property?.json_model[prop.property?.json_key]?.units + ')') : '')">
 
-            ({{(prop?.property?.type === 'Edge Derived Properties' ? 'ED' : (prop?.property?.type ===
-            'Cloud Derived Properties' ? 'CD' : 'M'))}}) {{prop.title}}
+            ({{(prop?.type === 'Edge Derived Properties' ? 'ED' : (prop?.type ===
+            'Cloud Derived Properties' ? 'CD' : (
+            prop?.type === 'Derived KPIs' ? 'DK' : 'M'
+            )))}}) {{prop.title}}
             {{prop.property?.json_model[prop.property?.json_key]?.units ? ('(' +
             prop.property?.json_model[prop.property?.json_key]?.units + ')') : ''}}
           </p>

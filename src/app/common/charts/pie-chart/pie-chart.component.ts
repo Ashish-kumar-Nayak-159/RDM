@@ -8,10 +8,9 @@ declare var $: any;
 @Component({
   selector: 'app-pie-chart',
   templateUrl: './pie-chart.component.html',
-  styleUrls: ['./pie-chart.component.css']
+  styleUrls: ['./pie-chart.component.css'],
 })
 export class PieChartComponent implements OnInit, OnDestroy {
-
   private chart: am4charts.PieChart;
   telemetryData: any[] = [];
   selectedAlert: any;
@@ -34,9 +33,7 @@ export class PieChartComponent implements OnInit, OnDestroy {
   hideCancelButton = false;
   asset: any;
   decodedToken: any;
-  constructor(
-    private commonService: CommonService
-  ) { }
+  constructor(private commonService: CommonService) {}
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -66,7 +63,6 @@ export class PieChartComponent implements OnInit, OnDestroy {
     });
     chart.data = data;
 
-
     // Add and configure Series
     const pieSeries = chart.series.push(new am4charts.PieSeries());
     pieSeries.dataFields.value = 'value';
@@ -86,25 +82,29 @@ export class PieChartComponent implements OnInit, OnDestroy {
     chart.exporting.getFormatOptions('xlsx').useLocale = false;
     chart.exporting.getFormatOptions('pdf').pageOrientation = 'landscape';
     if (chart.data.length > 0) {
-      chart.exporting.title = this.chartTitle + ' from ' + chart.data[0].message_date?.toString()
-      + ' to ' + chart.data[chart.data.length - 1].message_date?.toString();
+      chart.exporting.title =
+        this.chartTitle +
+        ' from ' +
+        chart.data[0].message_date?.toString() +
+        ' to ' +
+        chart.data[chart.data.length - 1].message_date?.toString();
     }
     const obj = {
-      message_date: 'Timestamp'
+      message_date: 'Timestamp',
     };
-    this.y1AxisProps.forEach(prop => {
-      this.propertyList.forEach(propObj => {
-        if (prop === propObj.json_key) {
+    this.y1AxisProps.forEach((prop) => {
+      this.propertyList.forEach((propObj) => {
+        if (prop.json_key === propObj.json_key) {
           const units = propObj.json_model[propObj.json_key].units;
-          obj[prop] = propObj.name + (units ? (' (' + units + ')') : '');
+          obj[prop.json_key] = propObj.name + (units ? ' (' + units + ')' : '');
         }
       });
     });
-    this.y2AxisProps.forEach(prop => {
-      this.propertyList.forEach(propObj => {
-        if (prop === propObj.json_key) {
+    this.y2AxisProps.forEach((prop) => {
+      this.propertyList.forEach((propObj) => {
+        if (prop.json_key === propObj.json_key) {
           const units = propObj.json_model[propObj.json_key].units;
-          obj[prop] = propObj.name + (units ? (' (' + units + ')') : '');
+          obj[prop.json_key] = propObj.name + (units ? ' (' + units + ')' : '');
         }
       });
     });
@@ -115,15 +115,19 @@ export class PieChartComponent implements OnInit, OnDestroy {
     chart.exporting.getFormatOptions('pdf').addURL = false;
     chart.exporting.dateFormat = 'dd-MM-yyyy HH:mm:ss.nnn';
     if (chart.data.length > 0) {
-    if (this.selectedAlert) {
-      chart.exporting.filePrefix = this.selectedAlert.asset_id + '_Alert_' + this.selectedAlert.local_created_date;
-    } else if (this.asset?.asset_id) {
-      chart.exporting.filePrefix = this.asset.asset_id + '_' + chart.data[0].message_date?.toString()
-      + '_' + chart.data[chart.data.length - 1].message_date?.toString();
-    } else {
-      chart.exporting.filePrefix = chart.data[0].message_date?.toString()
-      + '_' + chart.data[chart.data.length - 1].message_date?.toString();
-    }
+      if (this.selectedAlert) {
+        chart.exporting.filePrefix = this.selectedAlert.asset_id + '_Alert_' + this.selectedAlert.local_created_date;
+      } else if (this.asset?.asset_id) {
+        chart.exporting.filePrefix =
+          this.asset.asset_id +
+          '_' +
+          chart.data[0].message_date?.toString() +
+          '_' +
+          chart.data[chart.data.length - 1].message_date?.toString();
+      } else {
+        chart.exporting.filePrefix =
+          chart.data[0].message_date?.toString() + '_' + chart.data[chart.data.length - 1].message_date?.toString();
+      }
     }
     this.chart = chart;
   }
@@ -132,7 +136,7 @@ export class PieChartComponent implements OnInit, OnDestroy {
     this.modalConfig = {
       stringDisplay: true,
       isDisplaySave: true,
-      isDisplayCancel: true
+      isDisplayCancel: true,
     };
     this.bodyMessage = 'Are you sure you want to remove this ' + this.chartTitle + ' widget?';
     this.headerMessage = 'Remove Widget';
@@ -148,14 +152,11 @@ export class PieChartComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeWidget(chartId) {
-
-  }
+  removeWidget(chartId) {}
 
   ngOnDestroy(): void {
-      if (this.chart) {
-        this.chart.dispose();
-      }
+    if (this.chart) {
+      this.chart.dispose();
+    }
   }
-
 }

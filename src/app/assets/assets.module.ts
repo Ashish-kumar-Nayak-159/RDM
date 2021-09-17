@@ -81,8 +81,6 @@ import { RegisterAssetsComponent } from './gateway-control-panel/gateway-setting
 import { AssetAlertConditionsComponent } from './asset-control-panel/asset-alert-conditions/asset-alert-conditions.component';
 import { C2dJobsComponent } from './gateway-control-panel/gateway-settings/c2d-jobs/c2d-jobs.component';
 import { CloudDerivedPropertiesComponent } from './asset-control-panel/cloud-derived-properties/cloud-derived-properties.component';
-import { RegisterRulesComponent } from './gateway-control-panel/gateway-settings/register-rules/register-rules.component';
-import { RegisterSlavesComponent } from './gateway-control-panel/gateway-settings/register-slaves/register-slaves.component';
 
 @NgModule({
   declarations: [

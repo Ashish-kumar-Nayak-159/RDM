@@ -46,6 +46,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   y2AxisProp = [];
   derivedKPIs: any[] = [];
   derivedKPIHistoricData: any[] = [];
+nullValueArr = [];
   // y1AxisProps = "";
   // y2AxisProp = "";
   xAxisProps = '';
@@ -512,12 +513,37 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.fromDate = obj.from_date;
       this.toDate = obj.to_date;
       this.isHistoryAPILoading = true;
+      this.nullValueArr = [];
       this.apiSubscriptions.push(
         method.subscribe(
           (response: any) => {
             this.isFilterSelected = true;
             if (response && response.data) {
-              this.historyData = response.data;
+
+
+
+		let historyData = [];
+              this.nullValueArr = [];
+              propArr.forEach((prop) => {
+                let flag = false;
+                for (let i = 0; i < response.data.length; i++) {
+                  if (
+                    response.data[i][prop.json_key] !== null &&
+                    response.data[i][prop.json_key] !== undefined
+                  ) {
+                    flag = false;
+                    break;
+                  } else {
+                    flag = true;
+                  }
+                }
+                if (flag) {
+                  this.nullValueArr.push(prop.json_key);
+                }
+              });
+              historyData = response.data;
+              this.historyData = historyData;              
+this.historyData = response.data;
               this.historyData = this.historyData.concat(this.derivedKPIHistoricData);
               this.historyData = this.commonService.sortDataBaseOnTime(this.historyData, 'message_date');
               this.isHistoryAPILoading = false;
@@ -639,6 +665,19 @@ export class HistoryComponent implements OnInit, OnDestroy {
       const y1Axis = layoutJson.y1axis;
       const y2Axis = layoutJson.y2axis;
       const data = [];
+      let noDataFlag = true;
+      y1Axis?.forEach((prop, index) => {
+        if (this.nullValueArr.indexOf(prop) === -1) {
+          noDataFlag = false;
+        }
+      });
+      if (noDataFlag) {
+        y2Axis?.forEach((prop, index) => {
+          if (this.nullValueArr.indexOf(prop) === -1) {
+            noDataFlag = false;
+          }
+        });
+      }
       this.historyData.forEach((item) => {
         const obj = {
           message_date: this.commonService.convertUTCDateToLocal(item.message_date),
@@ -659,7 +698,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
       } else if (layoutJson.chartType === 'Table') {
         componentRef = this.factoryResolver.resolveComponentFactory(DataTableComponent).create(this.injector);
       }
-      componentRef.instance.telemetryData = JSON.parse(JSON.stringify(data));
+      componentRef.instance.telemetryData = noDataFlag
+        ? []
+        : JSON.parse(JSON.stringify(data));
       componentRef.instance.propertyList = this.propertyList;
       componentRef.instance.y1AxisProps = layoutJson.y1axis;
       componentRef.instance.y2AxisProps = layoutJson.y2axis;

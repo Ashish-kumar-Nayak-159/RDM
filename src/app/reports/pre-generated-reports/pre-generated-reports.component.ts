@@ -1,6 +1,7 @@
 import { FileSaverService } from 'ngx-filesaver';
 import { ToasterService } from './../../services/toaster.service';
 import { AssetService } from './../../services/assets/asset.service';
+import { AssetModelService } from './../../services/asset-model/asset-model.service';
 import { Subscription } from 'rxjs';
 import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -55,11 +56,19 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   hierarchyString: any;
   displayHierarchyString: string;
   selectedDateRange: string;
-
+  isCreateReportAPILoading = false;
+  propertyList: any[] = [];
+  dropdownPropList: any[] = [];
+  props: any[] = [];
+  selectedProps: any[] = [];
+  reportsObj: any = {};
+  assetModels: any[] = [];
+  selectedAssets: any[] = [];
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
     private assetService: AssetService,
+    private assetModelService: AssetModelService,
     private toasterService: ToasterService,
     private fileSaverService: FileSaverService,
     private cdr: ChangeDetectorRef
@@ -69,6 +78,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.getTileName();
+    this.getAssetsModels();
     this.subscriptions.push(
       this.route.paramMap.subscribe(async (params) => {
         if (params.get('applicationId')) {
@@ -110,7 +120,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         if (index !== 0) {
           this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
           if (this.contextApp.user.hierarchy[level]) {
-            this.onChangeOfHierarchy(index);
+            this.onChangeOfHierarchy(index, 'PG');
           }
         }
       });
@@ -125,7 +135,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
             this.configureHierarchy[index] = item.hierarchy[level];
             console.log(this.configureHierarchy);
             if (item.hierarchy[level]) {
-              this.onChangeOfHierarchy(index);
+              this.onChangeOfHierarchy(index, 'PG');
             }
           }
         });
@@ -156,6 +166,168 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       this.getReportsData(false);
     }
     this.cdr.detectChanges();
+  }
+
+  onOpenConfigurePGRModal() {
+    $('#configurePGRModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onCloseConfigurePGRModal() {
+    $('#configurePGRModal').modal('hide');
+  }
+
+  onCreateNewPGReports(){
+    console.log(this.reportsObj);
+    this.isCreateReportAPILoading = true;
+    if (!this.reportsObj.report_name || !this.reportsObj.report_category ||
+      !this.reportsObj.report_frequency || !this.reportsObj.report_type) {
+      this.toasterService.showError('Please fill all required details', 'Add Report');
+      return;
+    }
+    const obj = {};
+    const measured_message_props = [];
+    const edge_derived_message_props = [];
+    const cloud_derived_message_props = [];
+    this.props.forEach((prop, index) => {
+              if (prop.value.type === 'Edge Derived Properties') {
+                edge_derived_message_props.push(prop.value.json_key);
+              } else if (prop.value.type === 'Cloud Derived Properties') {
+                cloud_derived_message_props.push(prop.value.json_key);
+              } else {
+                measured_message_props.push(prop.value.json_key);
+              }
+            });
+    obj['m'] = measured_message_props ? measured_message_props : undefined;
+    obj['ed'] = edge_derived_message_props ? edge_derived_message_props : undefined;
+    obj['cd'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
+    console.log(obj);
+    this.reportsObj.properties = { ...obj };
+    const assets = [];
+    if (this.reportsObj?.asset.length > 0) {
+      this.reportsObj.asset.forEach((asset) => {
+        assets.push(asset.asset_id);
+      }
+    )};
+    if (!this.reportsObj.hierarchy) {
+      this.reportsObj.hierarchy = { App: this.contextApp.app };
+    }
+    this.reportsObj.assets = assets;
+    delete this.reportsObj.asset;
+    delete this.reportsObj.asset_model;
+    console.log(this.reportsObj);
+    this.subscriptions.push(
+      this.assetService.createReportSubscription(this.contextApp.app, this.reportsObj).subscribe((response: any) => {
+       console.log(response);
+       this.toasterService.showSuccess('New Report Created', 'Create Report');
+       this.reportsObj = {};
+       this.reportsObj = undefined;
+       this.isCreateReportAPILoading = false;
+       $('#configurePGRModal').modal('hide');
+      },
+      (error) => {
+        this.isCreateReportAPILoading = false;
+        this.toasterService.showError('error.message', 'Create Report');
+      })
+    );
+  }
+
+  onReportChange() {
+    if (this.reportsObj.report_category === 'Process Parameter Report') {
+      // console.log(this.reportsObj.asset);
+      // if (this.reportsObj.asset) {
+      //  const asset_model = this.reportsObj.asset_model;
+        if (this.reportsObj.asset_model) {
+          this.getAssetsModelProperties(this.reportsObj.asset_model);
+        }
+      // }
+    }
+  }
+
+  getAssetsModels() {
+    this.assetModels = [];
+    const obj = {
+      app: this.contextApp.app,
+      // model_type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.NON_IP_ASSET,
+    };
+    this.subscriptions.push(
+      this.assetModelService.getAssetsModelsList(obj).subscribe((response: any) => {
+        if (response && response.data) {
+          response.data.forEach((model) => {
+            if (model.model_type !== CONSTANTS.IP_GATEWAY) {
+              this.assetModels.push(model);
+            }
+          });
+          // this.assetModels = response.data;
+        }
+      })
+    );
+  }
+
+  onChangeAssetsModel() {
+    if (this.reportsObj.asset_model) {
+      const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.reportsObj.asset_model);
+      this.selectedAssets = [ ...asset ];
+      console.log(this.selectedAssets);
+    } else {
+
+    }
+  }
+
+  getAssetsModelProperties(assetModel) {
+    return new Promise<void>((resolve) => {
+      const obj = {
+        app: this.contextApp.app,
+        name: assetModel,
+      };
+      this.subscriptions.push(
+        this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
+          response.properties.measured_properties = response.properties.measured_properties
+            ? response.properties.measured_properties
+            : [];
+          response.properties?.measured_properties?.forEach((prop) => (prop.type = 'Measured Properties'));
+          this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
+          response.properties.edge_derived_properties = response.properties.edge_derived_properties
+            ? response.properties.edge_derived_properties
+            : [];
+          response.properties.cloud_derived_properties = response.properties.cloud_derived_properties
+            ? response.properties.cloud_derived_properties
+            : [];
+          response.properties.edge_derived_properties.forEach((prop) => {
+            prop.type = 'Edge Derived Properties';
+            this.propertyList.push(prop);
+          });
+          response.properties.cloud_derived_properties.forEach((prop) => {
+            prop.type = 'Cloud Derived Properties';
+            this.propertyList.push(prop);
+          });
+          this.dropdownPropList = [];
+          this.props = [];
+          this.propertyList.forEach((prop) => {
+            this.dropdownPropList.push({
+              id: prop.name,
+              type: prop.type,
+              value: prop,
+            });
+          });
+          this.dropdownPropList = JSON.parse(JSON.stringify(this.dropdownPropList));
+          console.log(this.dropdownPropList);
+          // this.props = [...this.dropdownPropList];
+          resolve();
+        })
+      );
+    });
+  }
+
+  y1Deselect(e) {
+    if (e === [] || e.length === 0) {
+      this.props = [];
+    }
+  }
+
+  Deselect(e) {
+    if (e === [] || e.length === 0) {
+      this.reportsObj.asset = [];
+    }
   }
 
   onAssetFilterApply() {
@@ -203,7 +375,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         console.log(this.contextApp.user.hierarchy);
         if (this.contextApp.user.hierarchy[level]) {
           console.log('hereeeee');
-          this.onChangeOfHierarchy(index);
+          this.onChangeOfHierarchy(index, 'PG');
         }
       } else {
         this.assets = JSON.parse(JSON.stringify(this.originalAssets));
@@ -278,7 +450,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     });
   }
 
-  async onChangeOfHierarchy(i) {
+  async onChangeOfHierarchy(i, e) {
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (key > i) {
         delete this.configureHierarchy[key];
@@ -305,27 +477,52 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
       }
     });
-    this.filterObj.hierarchy = JSON.parse(JSON.stringify(hierarchyObj));
-    if (Object.keys(hierarchyObj).length === 1) {
-      this.assets = JSON.parse(JSON.stringify(this.originalAssets));
-    } else {
-      const arr = [];
-      this.assets = [];
-      this.originalAssets.forEach((asset) => {
-        let trueFlag = 0;
-        let flaseFlag = 0;
-        Object.keys(hierarchyObj).forEach((hierarchyKey) => {
-          if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
-            trueFlag++;
-          } else {
-            flaseFlag++;
+    if (e === 'PG') {
+      this.filterObj.hierarchy = JSON.parse(JSON.stringify(hierarchyObj));
+      if (Object.keys(hierarchyObj).length === 1) {
+        this.assets = JSON.parse(JSON.stringify(this.originalAssets));
+      } else {
+        const arr = [];
+        this.assets = [];
+        this.originalAssets.forEach((asset) => {
+          let trueFlag = 0;
+          let flaseFlag = 0;
+          Object.keys(hierarchyObj).forEach((hierarchyKey) => {
+            if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+              trueFlag++;
+            } else {
+              flaseFlag++;
+            }
+          });
+          if (trueFlag > 0 && flaseFlag === 0) {
+            arr.push(asset);
           }
         });
-        if (trueFlag > 0 && flaseFlag === 0) {
-          arr.push(asset);
-        }
-      });
-      this.assets = JSON.parse(JSON.stringify(arr));
+        this.assets = JSON.parse(JSON.stringify(arr));
+      }
+    } else {
+      this.reportsObj.hierarchy = JSON.parse(JSON.stringify(hierarchyObj));
+      if (Object.keys(hierarchyObj).length === 1) {
+        this.assets = JSON.parse(JSON.stringify(this.selectedAssets));
+      } else {
+        const arr = [];
+        this.assets = [];
+        this.selectedAssets.forEach((asset) => {
+          let trueFlag = 0;
+          let flaseFlag = 0;
+          Object.keys(hierarchyObj).forEach((hierarchyKey) => {
+            if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+              trueFlag++;
+            } else {
+              flaseFlag++;
+            }
+          });
+          if (trueFlag > 0 && flaseFlag === 0) {
+            arr.push(asset);
+          }
+        });
+        this.assets = JSON.parse(JSON.stringify(arr));
+      }
     }
     this.filterObj.assetArr = undefined;
     this.filterObj.asset_id = undefined;

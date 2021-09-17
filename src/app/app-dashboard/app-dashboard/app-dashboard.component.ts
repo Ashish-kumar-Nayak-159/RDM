@@ -25,7 +25,7 @@ import { ColumnChartComponent } from 'src/app/common/charts/column-chart/column-
 import { DataTableComponent } from 'src/app/common/charts/data-table/data-table.component';
 import { LiveChartComponent } from 'src/app/common/charts/live-data/live-data.component';
 import { PieChartComponent } from 'src/app/common/charts/pie-chart/pie-chart.component';
-import { resolveCname } from 'dns';
+
 import { DaterangepickerComponent } from 'ng2-daterangepicker';
 
 declare var $: any;
@@ -989,6 +989,25 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.apiSubscriptions.push(
       method.subscribe((response: any) => {
         if (response && response.data) {
+          const nullValueArr = [];
+          propArr.forEach((prop) => {
+            let flag = false;
+            for (let i = 0; i < response.data.length; i++) {
+              if (
+                response.data[i][prop.json_key] !== null &&
+                response.data[i][prop.json_key] !== undefined
+              ) {
+                flag = false;
+                break;
+              } else {
+                flag = true;
+              }
+            }
+            if (flag) {
+              nullValueArr.push(prop.json_key);
+            }
+          });
+          console.log(nullValueArr);
           this.telemetryData = response.data;
           console.log(JSON.stringify(this.derivedKPIHistoricData));
           this.telemetryData = this.telemetryData.concat(this.derivedKPIHistoricData);
@@ -1004,6 +1023,20 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           this.isTelemetryDataLoading = false; // this.loadLineChart(telemetryData);
           if (telemetryData.length > 0) {
             this.historicalDateFilter.widgets?.forEach((widget) => {
+              let noDataFlag = true;
+              widget.y1axis?.forEach((prop, index) => {
+                if (nullValueArr.indexOf(prop) === -1) {
+                  noDataFlag = false;
+                }
+              });
+              if (noDataFlag) {
+                widget.y2axis?.forEach((prop, index) => {
+                  if (nullValueArr.indexOf(prop) === -1) {
+                    noDataFlag = false;
+                  }
+                });
+              }
+              console.log(widget, '=======', noDataFlag);
               let componentRef;
               if (widget.chartType === 'LineChart' || widget.chartType === 'AreaChart') {
                 componentRef = this.factoryResolver.resolveComponentFactory(LiveChartComponent).create(this.injector);
@@ -1016,7 +1049,9 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
               } else if (widget.chartType === 'Table') {
                 componentRef = this.factoryResolver.resolveComponentFactory(DataTableComponent).create(this.injector);
               }
-              componentRef.instance.telemetryData = JSON.parse(JSON.stringify(telemetryData));
+              componentRef.instance.telemetryData = noDataFlag
+                ? []
+                : JSON.parse(JSON.stringify(telemetryData));
               componentRef.instance.propertyList = this.propertyList;
               componentRef.instance.y1AxisProps = widget.y1axis;
               componentRef.instance.y2AxisProps = widget.y2axis;

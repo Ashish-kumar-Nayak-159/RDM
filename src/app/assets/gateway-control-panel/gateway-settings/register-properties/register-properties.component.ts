@@ -18,6 +18,7 @@ declare var $: any;
 export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   @Input() assetTwin: any;
   @Input() asset: any;
+  @Input() pageType: any;
   @Output() refreshAssetTwin: EventEmitter<any> = new EventEmitter<any>();
   @Input() componentstate: any;
   assets: any[] = [];
@@ -36,6 +37,8 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   applications = CONSTANTS.ASSETAPPPS;
   assetModels: any[] = [];
   c2dJobFilter: any = {};
+  rules: any[] = [];
+  slaveData: any[] = [];
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -46,9 +49,16 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     console.log(JSON.stringify(this.assetTwin));
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.c2dJobFilter.request_type = 'Sync Properties/Alerts';
+
     this.c2dJobFilter.job_type = 'Message';
-    await this.getAssetsModels();
+    if (this.pageType === 'Register Properties') {
+      this.c2dJobFilter.request_type = 'Sync Properties/Alerts';
+      await this.getAssetsModels();
+    } else if (this.pageType === 'Register Rules') {
+      this.c2dJobFilter.request_type = 'Sync Rules';
+    } else if (this.pageType === 'Register Slaves') {
+      this.c2dJobFilter.request_type = 'Sync Slaves';
+    }
     if (this.componentstate === CONSTANTS.IP_GATEWAY) {
       this.getAssetsOfGateway();
     } else {
@@ -166,6 +176,17 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     );
   }
 
+  onRegisterBtnClick(asset) {
+    if (this.pageType === 'Register Properties') {
+      this.openRegisterPropModal(asset);
+    } else if (this.pageType === 'Register Rules') {
+      this.registerRules(asset);
+    } else if (this.pageType === 'Register Slaves') {
+      console.log('aaaaaaaaaaaaaaaaaaaaaaaa');
+      this.syncSlaves();
+    }
+  }
+
   openRegisterPropModal(asset) {
     this.selectedAsset = asset;
     this.showPropOptions = true;
@@ -223,6 +244,137 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     });
   }
 
+  getEdgeRules() {
+    return new Promise<void>((resolve1, reject) => {
+      this.rules = [];
+      this.isAPILoading = true;
+      const obj = {
+        type: 'Edge',
+      };
+      this.subscriptions.push(
+        this.assetService.getRules(this.contextApp.app, this.asset.asset_id, obj).subscribe(
+          (response: any) => {
+            if (response?.data) {
+              this.rules = response.data;
+              console.log(this.rules);
+            }
+            resolve1();
+          },
+          (error) => (this.isAPILoading = false)
+        )
+      );
+    });
+  }
+
+  async registerRules(asset) {
+    await this.getEdgeRules();
+    const obj = {
+      asset_id: asset.asset_id,
+      message: {
+        command: 'set_device_rules',
+        rules: this.rules,
+      },
+      app: this.contextApp.app,
+      timestamp: moment().unix(),
+      acknowledge: 'Full',
+      expire_in_min: 2880,
+      job_id:
+        (this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id) +
+        '_' +
+        this.commonService.generateUUID(),
+      request_type: 'Sync Rules',
+      job_type: 'Message',
+      sub_job_id: null,
+    };
+    obj.sub_job_id = obj.job_id + '_1';
+    this.subscriptions.push(
+      this.assetService
+        .sendC2DMessage(
+          obj,
+          this.contextApp.app,
+          this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id
+        )
+        .subscribe(
+          (response: any) => {
+            this.toasterService.showSuccess(response.message, 'Sync Rules');
+            this.assetService.refreshRecentJobs.emit();
+            this.isAPILoading = false;
+          },
+          (error) => {
+            this.toasterService.showError(error.message, 'Sync Rules');
+            this.assetService.refreshRecentJobs.emit();
+            this.isAPILoading = false;
+          }
+        )
+    );
+  }
+
+  getSlaveData() {
+    return new Promise<void>((resolve1, reject) => {
+      this.slaveData = [];
+      const obj = {};
+      this.subscriptions.push(
+        this.assetService.getAssetSlaveDetails(this.contextApp.app, this.asset.asset_id, obj).subscribe(
+          (response: any) => {
+            if (response.data) {
+              this.slaveData = response.data;
+            }
+            resolve1();
+          },
+          (error) => resolve1()
+        )
+      );
+    });
+  }
+
+  async syncSlaves() {
+    this.isAPILoading = true;
+    await this.getSlaveData();
+    const c2dObj = {
+      asset_id: this.asset.asset_id,
+      job_id:
+        (this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id) +
+        '_' +
+        this.commonService.generateUUID(),
+      request_type: 'Sync Slaves',
+      job_type: 'Message',
+      sub_job_id: null,
+      message: null,
+    };
+    const obj = {
+      command: 'register_slaves',
+      slaves: {},
+    };
+    this.slaveData.forEach((slave) => {
+      obj.slaves[slave.slave_id] = {
+        mac_id: slave.metadata?.mac_id,
+        category: slave.slave_category?.slave_category,
+      };
+    });
+    c2dObj.message = obj;
+    c2dObj.sub_job_id = c2dObj.job_id + '_1';
+    this.subscriptions.push(
+      this.assetService
+        .sendC2DMessage(
+          c2dObj,
+          this.contextApp.app,
+          this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id
+        )
+        .subscribe(
+          (response: any) => {
+            this.toasterService.showSuccess(response.message, 'Sync Slaves');
+            this.assetService.refreshRecentJobs.emit();
+            this.isAPILoading = false;
+          },
+          (error) => {
+            this.toasterService.showError(error.message, 'Sync Slaves');
+            this.assetService.refreshRecentJobs.emit();
+            this.isAPILoading = false;
+          }
+        )
+    );
+  }
+
   async registerProperties() {
     let count = 0;
     Object.keys(this.optionsValue).forEach((key) => {
@@ -230,14 +382,18 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         count++;
       }
     });
-    if (count === 4) {
+    if (count === 2) {
       this.toasterService.showError('Please select options to register', 'Register Properties/Alerts');
       return;
     }
     this.isAPILoading = true;
     this.showPropOptions = false;
-    await this.getAssetsModelProperties();
-    await this.getAlertConditions();
+    if (this.optionsValue?.measured_properties || this.optionsValue.edge_derived_properties) {
+      await this.getAssetsModelProperties();
+    }
+    if (this.optionsValue.alerts) {
+      await this.getAlertConditions();
+    }
     const obj = {
       asset_id: this.selectedAsset.asset_id,
       command: 'set_properties',

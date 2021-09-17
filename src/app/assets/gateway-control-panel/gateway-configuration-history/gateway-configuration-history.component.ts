@@ -12,10 +12,9 @@ declare var $: any;
 @Component({
   selector: 'app-gateway-configuration-history',
   templateUrl: './gateway-configuration-history.component.html',
-  styleUrls: ['./gateway-configuration-history.component.css']
+  styleUrls: ['./gateway-configuration-history.component.css'],
 })
 export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
-
   filterObj: any = {};
   confighistory: any[] = [];
   @Input() asset: Asset = new Asset();
@@ -32,11 +31,15 @@ export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private route: ActivatedRoute,
     private toasterService: ToasterService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.filterObj.gateway_id = this.asset.asset_id;
+    if (this.asset.type === CONSTANTS.IP_GATEWAY) {
+      this.filterObj.gateway_id = this.asset.asset_id;
+    } else {
+      this.filterObj.asset_id = this.asset.asset_id;
+    }
     this.filterObj.app = this.contextApp.app;
     this.filterObj.count = 10;
     this.configHistoryTableConfig = {
@@ -44,7 +47,6 @@ export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
       dateRange: '',
       headers: ['Timestamp', 'Asset Name', 'File Name', 'Process Status', 'View'],
       data: [
-
         {
           name: 'Timestamp',
           key: 'local_created_date',
@@ -56,12 +58,11 @@ export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
         {
           name: 'Configuration',
           key: undefined,
-        }
-      ]
+        },
+      ],
     };
     this.loadFromCache();
     this.filterObj.epoch = true;
-
   }
 
   loadFromCache() {
@@ -91,7 +92,7 @@ export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
       filterObj.from_date = filterObj.from_date;
       filterObj.to_date = filterObj.to_date;
     }
-    const obj = {...filterObj};
+    const obj = { ...filterObj };
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'Get Alert Data');
       this.isConfigHistoryLoading = false;
@@ -107,23 +108,25 @@ export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
     }
     delete obj.dateOption;
     this.filterObj = filterObj;
-    this.apiSubscriptions.push(this.assetService.getAssetConfigurationHistory(obj).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.confighistory = response.data;
-          this.confighistory.forEach(item => {
-            item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
-          });
-        }
-        if (this.filterObj.dateOption !== 'Custom Range') {
-          this.configHistoryTableConfig.dateRange = this.filterObj.dateOption;
-        }
-        else {
-          this.configHistoryTableConfig.dateRange = 'this selected range';
-        }
-        this.isConfigHistoryLoading = false;
-      }, error => this.isConfigHistoryLoading = false
-    ));
+    this.apiSubscriptions.push(
+      this.assetService.getAssetConfigurationHistory(obj).subscribe(
+        (response: any) => {
+          if (response && response.data) {
+            this.confighistory = response.data;
+            this.confighistory.forEach((item) => {
+              item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
+            });
+          }
+          if (this.filterObj.dateOption !== 'Custom Range') {
+            this.configHistoryTableConfig.dateRange = this.filterObj.dateOption;
+          } else {
+            this.configHistoryTableConfig.dateRange = 'this selected range';
+          }
+          this.isConfigHistoryLoading = false;
+        },
+        (error) => (this.isConfigHistoryLoading = false)
+      )
+    );
   }
 
   getMessageData(dataobj) {
@@ -138,15 +141,14 @@ export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
       this.modalConfig = {
         jsonDisplay: true,
         isDisplaySave: false,
-        isDisplayCancel: true
+        isDisplayCancel: true,
       };
-      this.getMessageData(obj.data).then(message => {
+      this.getMessageData(obj.data).then((message) => {
         this.selectedConfigHistory.configuration = message;
       });
       $('#configHistoryMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }
-
 
   onModalEvents(eventType) {
     if (eventType === 'close') {
@@ -155,12 +157,7 @@ export class GatewayConfigurationHistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-
-
   ngOnDestroy() {
-    this.apiSubscriptions.forEach(subscribe => subscribe.unsubscribe());
+    this.apiSubscriptions.forEach((subscribe) => subscribe.unsubscribe());
   }
-
-
-
 }

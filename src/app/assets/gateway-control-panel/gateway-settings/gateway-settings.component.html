@@ -3,43 +3,49 @@
     <ul class="nav">
       <li class="nav-item" *ngIf="componentState !== constantData.NON_IP_ASSET">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Test Connection'}" href="javascript:void(0)"
-        (click)="onClickOfTab('Test Connection')" [class.disabled]="isSaveSettingAPILoading">
+          (click)="onClickOfTab('Test Connection')" [class.disabled]="isSaveSettingAPILoading">
           <i class="fa fa-fw fa-plug"></i>
           <span class="text-secondary">Test Connection</span></a>
       </li>
-      <li class="nav-item"  *ngIf="componentState !== constantData.NON_IP_ASSET">
+      <li class="nav-item" *ngIf="componentState !== constantData.NON_IP_ASSET">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'FOTA'}" href="javascript:void(0)"
-        (click)="onClickOfTab('FOTA')" [class.disabled]="isSaveSettingAPILoading">
+          (click)="onClickOfTab('FOTA')" [class.disabled]="isSaveSettingAPILoading">
           <i class="fa fa-fw fa-image"></i>
           <span class="text-secondary">FOTA</span></a>
       </li>
-      <li class="nav-item"  *ngIf="componentState !== constantData.NON_IP_ASSET">
+      <li class="nav-item" *ngIf="componentState !== constantData.NON_IP_ASSET">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Manage Applications'}" href="javascript:void(0)"
-        (click)="onClickOfTab('Manage Applications')" [class.disabled]="isSaveSettingAPILoading">
+          (click)="onClickOfTab('Manage Applications')" [class.disabled]="isSaveSettingAPILoading">
           <i class="fa fa-fw fa-microchip"></i>
           <span class="text-secondary">Manage Applications</span></a>
       </li>
-      <li class="nav-item"  *ngIf="componentState === constantData.IP_GATEWAY">
+      <li class="nav-item" *ngIf="componentState === constantData.IP_GATEWAY">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Manage Assets'}" href="javascript:void(0)"
-        (click)="onClickOfTab('Manage Assets')" [class.disabled]="isSaveSettingAPILoading">
+          (click)="onClickOfTab('Manage Assets')" [class.disabled]="isSaveSettingAPILoading">
           <i class="fa fa-fw fa-laptop"></i>
           <span class="text-secondary">Manage Assets</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Register Properties'}" href="javascript:void(0)"
-        (click)="onClickOfTab('Register Properties')" [class.disabled]="isSaveSettingAPILoading">
+          (click)="onClickOfTab('Register Properties')" [class.disabled]="isSaveSettingAPILoading">
           <i class="fa fa-fw fa-building"></i>
           <span class="text-secondary">Sync Properties</span></a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" [ngClass]="{'active': selectedTab === 'Register Slaves'}" href="javascript:void(0)"
+          (click)="onClickOfTab('Register Slaves')" [class.disabled]="isSaveSettingAPILoading">
+          <i class="fa fa-fw fa-building"></i>
+          <span class="text-secondary">Sync Slaves</span></a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Register Rules'}" href="javascript:void(0)"
-        (click)="onClickOfTab('Register Rules')" [class.disabled]="isSaveSettingAPILoading">
+          (click)="onClickOfTab('Register Rules')" [class.disabled]="isSaveSettingAPILoading">
           <i class="fa fa-fw fa-building"></i>
           <span class="text-secondary">Sync Rules</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Settings'}" href="javascript:void(0)"
-        (click)="onClickOfTab('Settings')" [class.disabled]="isSaveSettingAPILoading">
+          (click)="onClickOfTab('Settings')" [class.disabled]="isSaveSettingAPILoading">
           <i class="fa fa-fw fa-cog"></i>
           <span class="text-secondary">Settings</span></a>
       </li>
@@ -47,41 +53,45 @@
   </div>
 </div>
 
-    <ng-container *ngIf="selectedTab === 'Test Connection'">
-      <div class="table-responsive">
-        <div class="tableFixHead" >
+<ng-container *ngIf="selectedTab === 'Test Connection'">
+  <div class="table-responsive">
+    <div class="tableFixHead">
       <div class="row col-md-12 mt-1 py-3 pl-4">
         Check gateway is connected or not, Gateway to respond within 30 seconds, else Gateway is considered as offline.
       </div>
       <div class="row col-md-12 mt-1 pb-4 pl-4">
         <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mb-1" href="javascript:void(0)"
-        (click)="testConnectionWithGateway()" [class.disabled]="isTestConnectionAPILoading">
+          (click)="testConnectionWithGateway()" [class.disabled]="isTestConnectionAPILoading">
           Test Connection</a>
       </div>
       <i *ngIf="isTestConnectionAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
       <div class="row mt-1 col-md-12 pl-3" *ngIf="testConnectionMessage">
         <span [ngClass]="{'alert-success': testConnectionMessage.toLowerCase().includes('success'),
-        'alert-danger': testConnectionMessage.toLowerCase().includes('not connected')}"> {{testConnectionMessage}} </span>
+        'alert-danger': testConnectionMessage.toLowerCase().includes('not connected')}"> {{testConnectionMessage}}
+        </span>
       </div>
       <app-c2d-jobs class="d-none d-xl-block" [asset]="asset" [filterObj]="c2dJobFilter"></app-c2d-jobs>
-      </div>
-      </div>
-    </ng-container>
-    <ng-container *ngIf="selectedTab === 'FOTA'">
-      <app-fota [asset]="asset" [assetTwin]="assetTwin" (refreshAssetTwin)="getAssetTwinData()"></app-fota>
-    </ng-container>
-    <ng-container *ngIf="selectedTab === 'Manage Applications'">
-      <app-manage-applications [asset]="asset" [assetTwin]="assetTwin" (refreshAssetTwin)="getAssetTwinData()"></app-manage-applications>
-    </ng-container>
-    <ng-container *ngIf="selectedTab === 'Manage Assets'">
-      <app-register-assets [asset]="asset" [assetTwin]="assetTwin" (refreshAssetTwin)="getAssetTwinData()" [pageType]="'register-assets'"></app-register-assets>
-    </ng-container>
-    <ng-container *ngIf="selectedTab === 'Register Properties'">
-      <app-register-properties [asset]="asset" [assetTwin]="assetTwin" (refreshAssetTwin)="getAssetTwinData()"
-      [componentstate]="componentState"></app-register-properties>
-    </ng-container>
-    <ng-container *ngIf="selectedTab === 'Register Rules'">
-      <div class="table-responsive">
+    </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="selectedTab === 'FOTA'">
+  <app-fota [asset]="asset" [assetTwin]="assetTwin" (refreshAssetTwin)="getAssetTwinData()"></app-fota>
+</ng-container>
+<ng-container *ngIf="selectedTab === 'Manage Applications'">
+  <app-manage-applications [asset]="asset" [assetTwin]="assetTwin" (refreshAssetTwin)="getAssetTwinData()">
+  </app-manage-applications>
+</ng-container>
+<ng-container *ngIf="selectedTab === 'Manage Assets'">
+  <app-register-assets [asset]="asset" [assetTwin]="assetTwin" (refreshAssetTwin)="getAssetTwinData()"
+    [pageType]="'register-assets'"></app-register-assets>
+</ng-container>
+<ng-container
+  *ngIf="selectedTab === 'Register Properties' || selectedTab === 'Register Rules' || selectedTab === 'Register Slaves'">
+  <app-register-properties [asset]="asset" [assetTwin]="assetTwin" (refreshAssetTwin)="getAssetTwinData()"
+    [componentstate]="componentState" [pageType]="selectedTab"></app-register-properties>
+</ng-container>
+
+<!-- <div class="table-responsive">
         <div class="tableFixHead" >
       <div class="row col-md-12 py-3 pl-4">
         <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mb-1" href="javascript:void(0)"
@@ -91,10 +101,8 @@
       <i *ngIf="isRuleSyncAPILoading" class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
       <app-c2d-jobs class="d-none d-xl-block" [asset]="asset" [filterObj]="c2dJobFilter1" ></app-c2d-jobs>
       </div>
-      </div>
-    </ng-container>
-    <ng-container *ngIf="selectedTab === 'Settings'">
-      <app-gateway-assets-setting [asset]="asset" [assetTwin]="assetTwin" (refreshAssetTwin)="getAssetTwinData()"
-      [componentState]="componentState"></app-gateway-assets-setting>
-    </ng-container>
-
+      </div> -->
+<ng-container *ngIf="selectedTab === 'Settings'">
+  <app-gateway-assets-setting [asset]="asset" [assetTwin]="assetTwin" (refreshAssetTwin)="getAssetTwinData()"
+    [componentState]="componentState"></app-gateway-assets-setting>
+</ng-container>

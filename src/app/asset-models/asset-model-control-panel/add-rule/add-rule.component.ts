@@ -7,6 +7,8 @@ import { AssetModelService } from 'src/app/services/asset-model/asset-model.serv
 import { CommonService } from 'src/app/services/common.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { AlertCondition, Conditions, Rule } from './add-rule.model';
+import { ApplicationService } from 'src/app/services/application/application.service';
+import { Subscription } from 'rxjs';
 declare var $: any;
 
 @Component({
@@ -38,25 +40,64 @@ export class AddRuleComponent implements OnInit {
     { id: 'GREATER', value: '>' },
     { id: 'EQUAL', value: '=' },
   ];
+  userGroups: any[] = [];
+  subscriptions: Subscription[] = [];
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
     private assetModelService: AssetModelService,
-    private assetService: AssetService
+    private assetService: AssetService,
+    private applicationService: ApplicationService
   ) {}
 
   ngOnInit(): void {
     this.title = this.isEdit ? 'Update' : 'Create';
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    if (!this.ruleModel.actions) {
+      this.ruleModel.actions = {
+        alert_management: { enabled: false, alert_condition_code: '' },
+        notification: { enabled: false, email: { subject: '', body: '', groups: [] } },
+        asset_control: { disable: false },
+      };
+    }
+    if (!this.ruleModel.actions.alert_management) {
+        this.ruleModel.actions.alert_management = { enabled: false, alert_condition_code: '' };
+    }
+    if (!this.ruleModel.actions.alert_management.alert_condition_code) {
+        this.ruleModel.actions.alert_management.alert_condition_code = '';
+    }
+    if (!this.ruleModel.actions.notification) {
+        this.ruleModel.actions.notification = { enabled: false, email: { subject: '', body: '', groups: [] } };
+    }
+    if (!this.ruleModel.actions.notification.email) {
+        this.ruleModel.actions.notification.email =  { subject: '', body: '', groups: [] };
+    }
+    if (!this.ruleModel.actions.notification.email.groups) {
+        this.ruleModel.actions.notification.email.groups = [];
+    }
+    if (!this.ruleModel.actions.asset_control) {
+        this.ruleModel.actions.asset_control = { disable : false};
+    }
     $('#addRuleModal').modal({ backdrop: 'static', keyboard: false, show: true });
     this.addNewCondition();
     this.getAssetsModelProperties();
-    if (this.isEdit) {
+    if (this.isEdit || this.isView) {
       this.configureData();
     } else {
       this.getAlertConditions('Cloud');
     }
+    this.getApplicationUserGroups();
+  }
+
+  getApplicationUserGroups() {
+    this.subscriptions.push(
+      this.applicationService.getApplicationUserGroups(this.contextApp.app).subscribe((response: any) => {
+        if (response && response.data) {
+          this.userGroups = response.data;
+        }
+      })
+    );
   }
 
   configureData() {
@@ -66,7 +107,6 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.code = this.ruleData.code;
     this.ruleModel.description = this.ruleData.description;
     this.ruleModel.aggregation_window_in_sec = this.ruleData.aggregation_window_in_sec;
-    this.ruleModel.alert_condition_code = this.ruleData.alert_condition_code;
     this.ruleModel.alert_condition_id = this.ruleData.alert_condition_id;
     this.ruleModel.condition_str = this.ruleData.metadata.condition_str;
     if (this.ruleData.type === 'Edge') {
@@ -81,6 +121,16 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.updated_by = this.ruleData.updated_by;
     this.ruleModel.rule_type = this.ruleData.type === 'Edge' ? true : false;
     this.getAlertConditions(this.ruleData.type);
+    if (!this.ruleData.actions || this.ruleData.actions === null) {
+      this.ruleModel.actions = {
+        alert_management: { enabled: false, alert_condition_code: '' },
+        notification: { enabled: false, email: { subject: '', body: '', groups: [] } },
+        asset_control: { disable: false },
+      };
+    }
+    else {
+      this.ruleModel.actions = this.ruleData.actions;
+    }
   }
 
   getAssetsModelProperties() {
@@ -154,7 +204,7 @@ export class AddRuleComponent implements OnInit {
 
   onChangeOfAssetCondition() {
     let alertCondition = this.alertConditionList.find(
-      (condition) => condition.code == this.ruleModel.alert_condition_code
+      (condition) => condition.code === this.ruleModel.actions.alert_management.alert_condition_code
     );
     this.selectedAlertCondition = alertCondition;
     // this.selectedAlertCondition.actions.email = alertCondition.actions.email.enabled;
@@ -195,7 +245,7 @@ export class AddRuleComponent implements OnInit {
   createNewRule() {
     console.log(this.ruleModel);
     if (
-      !this.ruleModel.alert_condition_code ||
+      // !this.ruleModel.actions.alert_management.alert_condition_code ||
       !this.ruleModel.name ||
       !this.ruleModel.description ||
       !this.ruleModel.code ||
@@ -206,6 +256,16 @@ export class AddRuleComponent implements OnInit {
       return;
     }
     this.isUpdateApiCall = true;
+
+    // const groups = [];
+    // if (this.ruleModel?.actions.notification.email.groups.length > 0) {
+    //   this.ruleModel?.actions.notification.email.groups.forEach((group) => {
+    //     groups.push(group.group_name);
+    //   }
+    // )};
+    // this.ruleModel.actions.notification.email.groups = [];
+    // this.ruleModel.actions.notification.email.groups = groups;
+
     let str = '';
     this.ruleModel.properties = [];
     this.ruleModel.conditions.forEach((element) => {

@@ -14,7 +14,7 @@
           <div class="">
             <select *ngIf="index !== 0" name="{{level}}_{{index}}" class="dropdown-form" id="{{ level }}"
               [disabled]="contextApp?.user?.hierarchy[level]" [(ngModel)]="configureHierarchy[index]" name="{{ level }}"
-              (change)="onChangeOfHierarchy(index)">
+              (change)="onChangeOfHierarchy(index, 'PG')">
               <option [ngValue]="undefined">
                 Select {{ level }}
               </option>
@@ -65,6 +65,10 @@
     <div class="form-group">
       <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
         (click)="reports = [];currentOffset = 0;getReportsData(true)"><i class="fa fa-search fa-sm"></i></button>
+    </div>
+    <div class="form-group">
+      <button class="btn btn-sm searchBtn btn-success" (click)="onOpenConfigurePGRModal()" placement="bottom" tooltip="Configure New PreGenerated Report"><i
+          class="fa fa-cog fa-sm text-white"></i></button>
     </div>
   </form>
 </div>
@@ -172,3 +176,143 @@
 <a class="scroll-to-top rounded" (click)="scrollToTop()">
   <i class="fas fa-angle-up"></i>
 </a>
+<div class="modal right fade" id="configurePGRModal" tabindex="-1" role="dialog"
+  aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" *ngIf="isAddReport">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Configure New Report</h5>
+        <button type="button" class="close" [disabled]="isCreateReportAPILoading"
+          (click)="onCloseConfigurePGRModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="col-12">
+          <form class="">
+            <div class="form-group">
+              <label for="message-text" class="col-form-label required">Report Name:</label>
+              <input type="text" class="form-control form-control-sm" id="report_name" name="report_name" [(ngModel)]="reportsObj.report_name"
+              placeholder="Enter Report Name">
+            </div>
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label required">Asset Model:</label>
+              <select class="custom-select custom-select-sm" id="asset_model" name="asset_model"
+                [(ngModel)]="reportsObj.asset_model" (change)="onChangeAssetsModel()">
+                <option [ngValue]="undefined"> Select Model</option>
+                <option *ngFor="let item of assetModels" [ngValue]="item.name">
+                  {{item.name}}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label required">Asset:</label>
+              <ng-container *ngFor="let level of contextApp?.hierarchy?.levels; let index = index">
+                <div class="my-1">
+                  <!-- <label for="message-text" class="col-form-label">{{level}}:</label> -->
+                  <select  *ngIf="index !== 0" class="custom-select custom-select-sm" id="{{ level }}" name="{{level}}_{{index}}"
+                    [(ngModel)]="configureHierarchy[index]" [disabled]="contextApp.user.hierarchy[level]"
+                    (change)="onChangeOfHierarchy(index, 'RS')">
+                    <option [ngValue]="undefined"> Select {{level}}</option>
+                    <option [ngValue]="tag" *ngFor="let tag of hierarchyArr[index]">{{tag}}</option>
+                  </select>
+                  <input type="text" *ngIf="index === 0" class="form-control form-control-sm" name="{{level}}_{{index}}"
+                  defaultValue="{{ contextApp.app }}" disabled  />
+                </div>
+              </ng-container>
+              <!-- <ng-select [items]="selectedAssets" class="" bindLabel="display_name" [clearable]="false"
+                  [searchable]="true" [multiple]="true" [closeOnSelect]="true" placeholder="Select Asset"
+                  dropdownPosition="bottom" name="report-asset-dropdown" [(ngModel)]="reportsObj.asset">
+                  <ng-template ng-option-tmp let-asset="item">
+                    <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ?
+                      asset.display_name: asset.asset_id}}</span>
+                  </ng-template>
+              </ng-select> -->
+              <ng-select [items]="selectedAssets" class="custom-dropdown w-12 sm" [clearable]="false"
+              [searchable]="true" [multiple]="true" bindLabel="display_name" 
+              [closeOnSelect]="false" placeholder="Select Asset" dropdownPosition="bottom"
+              name="report-asset-dropdown" [(ngModel)]="reportsObj.asset" (onDeSelectAll)="Deselect($event)">
+              <ng-template ng-header-tmp>
+                <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                  <li *ngIf="reportsObj.asset.length !== selectedAssets.length"> <a href="javascript:void(0)"
+                      (click)="reportsObj.asset = selectedAssets">Select All</a></li>
+                  <li *ngIf="reportsObj.asset.length === selectedAssets.length"> <a href="javascript:void(0)"
+                      (click)="reportsObj.asset = []">Deselect All</a></li>
+                </ul>
+              </ng-template> 
+              <ng-template ng-multi-label-tmp let-items="items">
+                {{items.length}} Assets selected
+              </ng-template>
+              <ng-template ng-option-tmp let-asset="item">
+                <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ?
+                  asset.display_name: asset.asset_id}}</span>
+              </ng-template> 
+            </ng-select>
+            </div>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label required">Report Category:</label>
+              <select class="custom-select custom-select-sm" id="report_category" [(ngModel)]="reportsObj.report_category"
+                name="report_category" (change)="onReportChange()" #reportType="ngModel">
+                <option [ngValue]="undefined">Report Category</option>
+                <option [ngValue]="'Process Parameter Report'">Process Parameter Report</option>
+                <option [ngValue]="'Alert Report'">Alert Report</option>
+              </select>
+            </div>
+            <ng-container *ngIf="reportsObj.report_category === 'Process Parameter Report'">
+              <div class="form-group">
+                <label for="message-text" class="col-form-label required">Properties:</label>
+               <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" [clearable]="false"
+                  [searchable]="true" [multiple]="true" bindLabel="id" 
+                  [closeOnSelect]="false" placeholder="Select Properties" groupBy="type" dropdownPosition="bottom"
+                  name="asset-dropdown" [(ngModel)]="props" (onDeSelectAll)="y1Deselect($event)">
+                  <ng-template ng-header-tmp>
+                    <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                      <li *ngIf="props.length !== dropdownPropList.length"> <a href="javascript:void(0)"
+                          (click)="props = dropdownPropList">Select All</a></li>
+                      <li *ngIf="props.length === dropdownPropList.length"> <a href="javascript:void(0)"
+                          (click)="props = []">Deselect All</a></li>
+                    </ul>
+                  </ng-template>
+                  <ng-template ng-multi-label-tmp let-items="items">
+                    {{items.length}} properties selected
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item">
+                    <span [tooltip]="item.id">
+                      <i
+                        [ngClass]="{'icon icon-function': item.value.type === 'Edge Derived Properties' || item.value.type === 'Cloud Derived Properties'}"></i>
+                      {{item.id}}
+                    </span>
+                  </ng-template> 
+                </ng-select>
+              </div>       
+            </ng-container>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label required">Report Type:</label>
+              <select class="custom-select custom-select-sm" id="report_type" [(ngModel)]="reportsObj.report_type"
+                name="report_type" >
+                <option [ngValue]="undefined">Select Report Type</option>
+                <option [ngValue]="'Raw'">RAW</option>
+                <option [ngValue]="'Sampling'">Sampling</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label required">Report Frequency:</label>
+              <select class="custom-select custom-select-sm" id="report_frequency" [(ngModel)]="reportsObj.report_frequency"
+                name="report_frequency" >
+                <option [ngValue]="undefined">Select Report Frequency</option>
+                <option [ngValue]="'Daily'">Daily</option>
+                <option [ngValue]="'Weekly'">Weekly</option>
+              </select>
+            </div>            
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary add-row" [disabled]="isCreateReportAPILoading"
+          (click)="onCreateNewPGReports()">Save</button>
+        <button type="button" class="btn btn-secondary" [disabled]="isCreateReportAPILoading"
+          (click)="onCloseConfigurePGRModal()">Cancel</button>
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateReportAPILoading"></i>
+      </div>
+    </div>
+  </div>
+</div>

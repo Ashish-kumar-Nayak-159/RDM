@@ -109,13 +109,22 @@ export class ApplicationService {
       }));
     }
   }
-getApplicationUserGroups(app) {
+  getApplicationUserGroups(app) {
     return this.http.get(this.url + String.Format(AppUrls.GET_APP_USERGROUPS, encodeURIComponent(app)));
+  }
+
+  createApplicationUserGroups(appObj, app) {
+    return this.http.post(this.url + String.Format(AppUrls.GET_APP_USERGROUPS, encodeURIComponent(app)), appObj);
   }
 
   updateApplicationUserGroups(appObj, app, group_name) {
     return this.http.put(this.url + String.Format(AppUrls.UPDATE_APP_USERGROUPS, encodeURIComponent(app),
     encodeURIComponent(group_name)), appObj);
+  }
+
+  deleteApplicationUserGroups(app, group_name) {
+    return this.http.delete(this.url + String.Format(AppUrls.UPDATE_APP_USERGROUPS, encodeURIComponent(app),
+    encodeURIComponent(group_name)));
   }
 
 

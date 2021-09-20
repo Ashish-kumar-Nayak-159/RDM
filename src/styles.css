@@ -6,8 +6,12 @@
   font-size: 0.6rem;
 }
 
-.ruleAccordion .panel-body.card-block.card-body {
+.assetRuleAccordion .panel-body.card-block.card-body {
   padding: 0;
+}
+
+.modelRuleAccordion .panel-body.card-block.card-body {
+  padding: 1.5rem;
 }
 
 .ng-select.custom .ng-select-container {

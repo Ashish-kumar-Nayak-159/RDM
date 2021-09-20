@@ -4,6 +4,7 @@ import { DataTableComponent } from './../../common/charts/data-table/data-table.
 import { PieChartComponent } from './../../common/charts/pie-chart/pie-chart.component';
 import { AssetModelService } from './../../services/asset-model/asset-model.service';
 import { ToasterService } from './../../services/toaster.service';
+import { FileSaverService } from 'ngx-filesaver';
 import {
   Component,
   OnInit,
@@ -29,6 +30,7 @@ import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DaterangepickerComponent } from 'ng2-daterangepicker';
+import { CoordinatesModule } from 'ngx-color';
 declare var $: any;
 @Component({
   selector: 'app-application-visualization',
@@ -103,12 +105,14 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   selectedDateRange: string;
   displayHierarchyString: string;
   decodedToken: any;
+  selectedDocument: any;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
     private chartService: ChartService,
+    private fileSaverService: FileSaverService,
     private factoryResolver: ComponentFactoryResolver,
     private appRef: ApplicationRef,
     private injector: Injector,
@@ -623,7 +627,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
               this.alertCondition.reference_documents.forEach((refDoc) => {
                 this.documents.forEach((doc) => {
                   if (doc.id.toString() === refDoc.toString()) {
-                    arr.push(doc.name);
+                    arr.push(doc);
                   }
                 });
               });
@@ -634,6 +638,33 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         })
       );
     });
+  }
+
+  viewDocument(obj) {
+    this.openModal('viewDocModal');
+    this.selectedDocument = obj;
+    this.selectedDocument.sanitizedURL = this.sanitizeURL(this.selectedDocument.metadata.url);
+  }
+
+  downloadDocument(obj) {
+    this.downloadFile(obj.metadata);
+  }
+
+  downloadFile(fileObj) {
+    this.openModal('downloadDocumentModal');
+    const url = this.blobStorageURL + fileObj.url + this.sasToken;
+    setTimeout(() => {
+    this.subscriptions.push(this.commonService.getFileData(url).subscribe(
+      response => {
+        this.fileSaverService.save(response, fileObj.name);
+        this.closeModal('downloadDocumentModal');
+      }
+    ));
+    }, 500);
+  }
+
+  openModal(id) {
+    $('#' + id).modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
   onChangeTimeValue() {
@@ -750,7 +781,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   closeModal(id) {
     $('#' + id).modal('hide');
-    this.selectedAlert = undefined;
+    this.selectedDocument = undefined;
   }
 
   async onClickOfViewGraph(alert) {

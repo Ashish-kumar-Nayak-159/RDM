@@ -1,3 +1,13 @@
+<div class="tab-bar">
+  <div class="d-flex d-flex align-items-center">
+    <div class="h6 m-0 p-0">User Groups
+      <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('UMM') > -1">
+        <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="openCreateUserGroupModal()"
+          placement="bottom" tooltip="Add User Group"><i class="fas fa-plus fa-sm"></i></button>
+      </ng-container>
+    </div>
+  </div>
+</div>
 <div class="table-responsive">
   <div class="tableFixHead">
     <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserGroupsAPILoading"></i>
@@ -7,6 +17,9 @@
         (click)="openAccordion(i)">
         <ng-container accordion-heading>
           <button class="btn" type="button">{{userGroup.group_name}}</button>
+          <a class="float-right pull-right mt-1" href="javascript:void(0)" 
+          *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
+          (click)="openConfirmModal(userGroup)"><i class="fa fa-close"></i></a>
         </ng-container>
         <accordion [closeOthers]="true" class="p-3" id="ac2">
           <accordion-group heading="" [panelClass]="'customClass1'">
@@ -181,5 +194,163 @@
         </accordion>
       </accordion-group>
     </accordion>
+  </div>
+</div>
+
+<div class="modal right fade" id="createUserGroupModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" *ngIf="isAddUserGroup">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add UserGroup</h5>
+        <button type="button" class="close" [disabled]="isCreateUserGroupAPILoading" (click)="onCloseCreateUserGroupModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="form-group">
+            <label for="message-text" class="col-form-label required">User Group Name:</label>
+            <input type="text" class="form-control form-control-sm" name="user_group_name" id="user_group_name"
+              placeholder="Enter User Group name"  [(ngModel)]="groupObj.group_name"  />
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label required">Email Recipients:</label>
+            <div class=""
+              *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+              <div class="form-inline">
+                <ng-container>
+                  <div class="form-group col-11">
+                    <input type="email" class="form-control form-control-sm bg-light small" min="0" name="Email"
+                      placeholder="Email ID" [(ngModel)]="recipientemail">
+                  </div>
+                  <div class="form-group col-1">
+                    <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
+                      (click)="addEmailRecipient('add')">
+                      <i class="fa fa-plus fa-sm"></i></button>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+            <div class="my-2" *ngIf="groupObj?.recipients?.emails?.length > 0">
+              <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
+                <ng-container *ngFor="let user of groupObj?.recipients?.emails; let index = index">
+                  <span class="tag">
+                    <span class="tag-text">{{user}}</span>
+                    <button class="tag-remove"
+                      *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
+                      (click)="removeEmailRecipient(index)"></button>
+                  </span>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label required">SMS Recipients:</label>
+            <div class=""
+              *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+              <div class="form-inline">
+                <ng-container>
+                  <div class="form-group col-11">
+                    <ngx-intl-tel-input [enableAutoCountrySelect]="true" id="sms_add" [enablePlaceholder]="true"
+                      name="user_no" [searchCountryFlag]="true" [cssClass]="'custom'" [(ngModel)]="recipientsms['add']"
+                      [phoneValidation]="true" [inputId]="'recipientsms_' + 'add'" [customPlaceholder]="'Enter SMS No'"
+                      [selectedCountryISO]="countryISO.India"
+                      [searchCountryField]="[searchCountryField.Iso2, searchCountryField.Name]" style="width:100%">
+                    </ngx-intl-tel-input>
+                  </div>
+                  <div class="form-group col-1">
+                    <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
+                      (click)="addSMSRecipient('add')">
+                      <i class="fa fa-plus fa-sm"></i></button>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+            <div class="my-2" *ngIf="groupObj?.recipients?.sms?.length > 0">
+              <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
+                <ng-container *ngFor="let user of groupObj?.recipients?.sms; let index = index">
+                  <span class="tag">
+                    <span class="tag-text">{{user}}</span>
+                    <button class="tag-remove"
+                      *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
+                      (click)="removeSMSRecipient(index)"></button>
+                  </span>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label required">Whatsapp Recipients:</label>
+            <div class=""
+              *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+              <div class="form-inline">
+                <ng-container>
+                  <div class="form-group col-11">
+                    
+                    <ngx-intl-tel-input [enableAutoCountrySelect]="true" id="whatsapp_add"
+                      [enablePlaceholder]="true" name="user_no" [searchCountryFlag]="true" [cssClass]="'custom'"
+                      [(ngModel)]="recipientwhatsapp['add']" [phoneValidation]="true" [inputId]="'recipientwhatsapp_' + 'add'"
+                      [customPlaceholder]="'Enter Whatsapp No'" [selectedCountryISO]="countryISO.India"
+                      [phoneValidation]="true"
+                      [searchCountryField]="[searchCountryField.Iso2, searchCountryField.Name]" style="width:100%">
+                    </ngx-intl-tel-input>
+                  </div>
+                  <div class="form-group col-1">
+                    <button type="button" class="btn btn-primary btn-sm mx-2" placement="bottom" tooltip="Add"
+                      (click)="addWhatsappRecipient('add')">
+                      <i class="fa fa-plus fa-sm"></i></button>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+            <div class="my-2" *ngIf="groupObj?.recipients?.whatsapp?.length > 0">
+              <div class="tagsinput" style="width: auto; height: auto;min-height: auto;">
+                <ng-container *ngFor="let user of groupObj?.recipients?.whatsapp; let index = index">
+                  <span class="tag">
+                    <span class="tag-text">{{user}}</span>
+                    <button class="tag-remove"
+                      *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
+                      (click)="removeWhatsappRecipient(index)"></button>
+                  </span>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary add-row" (click)="onCreateUserGroup()"
+          [disabled]="isCreateUserGroupAPILoading">
+          Save
+          <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateUserGroupAPILoading"></i>
+        </button>
+        <button type="button" class="btn btn-secondary" [disabled]="isCreateUserGroupAPILoading"
+          (click)="onCloseCreateUserGroupModal()">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="confirmMessageModal" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Remove UserGroup</h5>
+        <button type="button" class="close" aria-label="Close" (click)="onCloseModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to remove this user group?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="deleteUserGroup()">
+          Ok</button>
+        <button type="button" class="btn btn-secondary" (click)="onCloseModal()">
+          Cancel
+        </button>
+      </div>
+    </div>
+
   </div>
 </div>

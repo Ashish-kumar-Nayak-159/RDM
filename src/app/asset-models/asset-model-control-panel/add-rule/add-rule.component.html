@@ -4,7 +4,7 @@
   <p *ngIf="ruleData.deployed_on">This rule is last deployed on {{ruleData.local_deployed_on}} by
     {{ruleData.deployed_by}}.</p>
   <accordion class="mb-2" [closeOthers]="'true'">
-    <accordion-group heading="" [panelClass]="'customClass'">
+    <accordion-group heading="" [panelClass]="'customClass modelRuleAccordion'">
       <ng-container accordion-heading>
         <a class="btn">
           Metadata
@@ -46,7 +46,7 @@
         </form>
       </div>
     </accordion-group>
-    <accordion-group heading="" [panelClass]="'customClass'">
+    <accordion-group heading="" [panelClass]="'customClass modelRuleAccordion'">
       <ng-container accordion-heading>
         <a class="btn">
           Conditions
@@ -208,96 +208,136 @@
       </div>
 
     </accordion-group>
-    <accordion-group heading="" [panelClass]="'customClass'">
+    <accordion-group heading="" [panelClass]="'customClass modelRuleAccordion'">
       <ng-container accordion-heading>
         <a class="btn">
           Actions
         </a>
       </ng-container>
       <div class="">
-        <div class="col-12">
+        <div class="">
           <div class="mb-3">Choose what action your rule should take.
           </div>
         </div>
-        <div class="row">
+        <div class="">
           <div class="col-lg-12 col-xl-12">
             <form #form4="ngForm">
-              <!-- <div class="col-auto">
-                                        <label for="examplePassword" class="mb-2 w-auto">Aggregation Type</label>
-                                        <select placeholder="Aggregation Type" name="aggregation_type_{{i}}"
-                                            class="form-control form-control-sm" required [disabled]="isView"
-                                            [(ngModel)]="condition.aggregation_type">
-                                            <option [ngValue]="''">Aggregartion Type</option>
-                                            <option [ngValue]="'AVG'">Average</option>
-                                            <option [ngValue]="'SUM'">Sum</option>
-                                            <option [ngValue]="'MIN'">Min</option>
-                                            <option [ngValue]="'MAX'">Max</option>
-                                            <option [ngValue]="'COUNT'">Count</option>
-                                        </select>
-                                    </div> -->
 
-              <div class="form-group row mb-0">
-                <div class="col-auto">
+              <div class="form-group row">
+                <div class="">
                   <label for="exampleEmail">Action Type</label>
                 </div>
               </div>
-              <div class="form-group">
 
-                <select name="aggregation_type" class="form-control form-control-sm  w-25" [disabled]="isView">
-                  <option [ngValue]="undefined">Action Type</option>
-                  <option [ngValue]="'Integrate with existing Alert Management Module'" selected>Integrate with existing
-                    Alert
-                    Management Module</option>
-                  <option [ngValue]="'Send SMS / Email / Whatspp'">Send SMS / Email / Whatspp</option>
-                  <option [ngValue]="'Create Ticket'">Create Ticket</option>
-                </select>
-                <!-- </div> -->
-              </div>
-              <div class="form-group row mb-0">
-                <div class="col-auto">
-                  <label for="exampleEmail" class="required">Alert Code</label>
-                </div>
-              </div>
-              <div class="form-group">
+              <!-- <div class="form-group">
+                 <select name="aggregation_type" class="form-control form-control-sm  w-25" [disabled]="isView" multiple>
+                    <option [ngValue]="undefined">Action Type</option>
+                    <option [ngValue]="'Integrate with existing Alert Management Module'" selected>Integrate with existing
+                      Alert
+                      Management Module</option>
+                    <option [ngValue]="'Send SMS / Email / Whatspp'">Send SMS / Email / Whatspp</option>
+                    <option [ngValue]="'Create Ticket'">Create Ticket</option>
+                    </select>      
+              </div>-->  
+              
+              <div class="form-group mx-3">
+                  <input type="checkbox" class="form-check-input" id="alert_management" name="alert_management"
+                    [(ngModel)]="ruleModel.actions.alert_management.enabled" [disabled]="isView" >
+                  <label class="form-check-label" for="email">Send Alert</label>
 
-                <ng-select [items]="alertConditionList" class="custom-dropdown w-25 sm" name="alertCondition"
-                  [clearable]="false" [searchable]="true" bindLabel="message" [disabled]="isView" [closeOnSelect]="true"
-                  placeholder="Select Alert Condition" groupBy="type" (change)="onChangeOfAssetCondition()"
-                  dropdownPosition="bottom" name="asset-dropdown" bindValue="code"
-                  [(ngModel)]="ruleModel.alert_condition_code" required>
-                  <ng-template ng-option-tmp let-item="item">
-                    <span [tooltip]="item.code + ' - ' + item.message">
-                      {{item.code}} - {{item.message}}
-                    </span>
-                  </ng-template>
-                </ng-select>
-                <!-- </div> -->
+                  <div *ngIf="ruleModel.actions.alert_management.enabled || isView">
+                    <div>
+                      <label for="exampleEmail" class="mt-3 required">Alert Code</label>
+                        <div class="form-group">
+                        <ng-select [items]="alertConditionList" class="custom-dropdown w-25 sm" name="alertCondition"
+                          [clearable]="false" [searchable]="true" bindLabel="message" [disabled]="isView" [closeOnSelect]="true"
+                          placeholder="Select Alert Condition" groupBy="type" (change)="onChangeOfAssetCondition()"
+                          dropdownPosition="bottom" name="asset-dropdown" bindValue="code"
+                          [(ngModel)]="ruleModel.actions.alert_management.alert_condition_code" required>
+                          <ng-template ng-option-tmp let-item="item">
+                            <span [tooltip]="item.code + ' - ' + item.message">
+                              {{item.code}} - {{item.message}}
+                            </span>
+                          </ng-template>
+                        </ng-select>
+                      </div>
+                    </div>
+                    <!-- <div *ngIf="selectedAlertCondition">
+                      <div class="mb-3">Action your rule should take</div>
+                      <ul>
+                        <div class="col-12 accordion-padding my-2">
+            
+                          <div class="form-group accordion-padding mx-4">
+                            <input type="checkbox" class="form-check-input" id="email" name="email"
+                              [checked]="selectedAlertCondition?.actions?.email?.enabled" disabled>
+                            <label class="form-check-label" for="email">Email</label>
+                          </div>
+                          <div class="form-group accordion-padding mx-4">
+                            <input type="checkbox" class="form-check-input" id="whatsapp" name="whatsapp"
+                              [checked]="selectedAlertCondition?.actions?.whatsapp?.enabled" disabled>
+                            <label class="form-check-label" for="whatsapp">Whatsapp</label>
+                          </div>
+                          <div class="form-group accordion-padding mx-4">
+                            <input type="checkbox" class="form-check-input" id="sms" name="sms"
+                              [checked]="selectedAlertCondition?.actions?.sms?.enabled" disabled>
+                            <label class="form-check-label" for="sms">SMS</label>
+                          </div>
+                        </div>
+                      </ul>
+                    </div> -->
+                  </div>
               </div>
+
+              <hr>
+
+              <div class="form-group mx-3">
+                  <input type="checkbox" class="form-check-input" id="notification" name="notification"
+                      [(ngModel)]="ruleModel.actions.notification.enabled" [disabled]="isView" >
+                  <label class="form-check-label" for="notification">Send Email to User Groups</label>
+                  <div class="col-12 my-3" *ngIf="ruleModel.actions.notification.enabled || isView">
+                      <div class="">
+                          <div class="form-group row">
+                            <label for="exampleEmail" class="col-2 required">UserGroup</label>
+                            <div class="col-6">
+                              <ng-select [items]="userGroups" [multiple]="true" class="custom-dropdown w-12" [clearable]="false"
+                                [searchable]="true" [closeOnSelect]="true" placeholder="Select Group" [disabled]="isView" bindLabel="group_name" bindValue="group_name"
+                                dropdownPosition="bottom" name="group-dropdown" [(ngModel)]="ruleModel.actions.notification.email.groups" required>
+                                <ng-template ng-option-tmp let-item="item">
+                                  <span>
+                                    {{item.group_name}}
+                                  </span>
+                                </ng-template>
+                              </ng-select>
+                            </div> 
+                          </div>
+                          <div class="form-group row">
+                            <label for="exampleEmail" class="col-2 required">Subject</label>
+                            <div class="col-6">
+                              <input type="text" class="form-control form-control-sm" name="subject" [(ngModel)]="ruleModel.actions.notification.email.subject"
+                                placeholder="Enter Subject" [disabled]="isView">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label for="exampleEmail" class="col-2 required">Body</label>
+                            <div class="col-6">
+                              <textarea rows="3" class="form-control form-control-sm" name="body" [disabled]="isView"
+                                [(ngModel)]="ruleModel.actions.notification.email.body" placeholder="Enter Message" required></textarea>
+                            </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+              <hr>
+
+              <div class="form-group mx-3">
+                <input type="checkbox" class="form-check-input" id="asset_control" name="asset_control"
+                [(ngModel)]="ruleModel.actions.asset_control.disable" [disabled]="isView" >
+                <label class="form-check-label" for="asset_control">Disable Asset</label>
+              </div>
+
             </form>
           </div>
-        </div>
-        <div *ngIf="selectedAlertCondition">
-          <div class="mb-3">Action your rule should take</div>
-          <ul>
-            <div class="col-12 accordion-padding my-2">
-
-              <div class="form-group accordion-padding mx-4">
-                <input type="checkbox" class="form-check-input" id="email" name="email"
-                  [checked]="selectedAlertCondition?.actions?.email?.enabled" disabled>
-                <label class="form-check-label" for="email">Email</label>
-              </div>
-              <div class="form-group accordion-padding mx-4">
-                <input type="checkbox" class="form-check-input" id="whatsapp" name="whatsapp"
-                  [checked]="selectedAlertCondition?.actions?.whatsapp?.enabled" disabled>
-                <label class="form-check-label" for="whatsapp">Whatsapp</label>
-              </div>
-              <div class="form-group accordion-padding mx-4">
-                <input type="checkbox" class="form-check-input" id="sms" name="sms"
-                  [checked]="selectedAlertCondition?.actions?.sms?.enabled" disabled>
-                <label class="form-check-label" for="sms">SMS</label>
-              </div>
-            </div>
-          </ul>
         </div>
       </div>
     </accordion-group>

@@ -1,23 +1,27 @@
 <accordion class="mb-2" id="{{chartId}}_{{chartId}}">
   <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="true">
     <ng-container accordion-heading>
-      <a class="btn" >
+      <a class="btn">
         {{chartTitle}}
       </a>
       <div class="float-right pull-right mt-1">
-        <div class="round-badge badge-darkblue" tooltip="Edge Derived Property" *ngIf="chartConfig.edge_derived_props">ED</div>
-        <div class="round-badge badge-lightblue" tooltip="Cloud Derived Property" *ngIf="chartConfig.cloud_derived_props">CD</div>
-      <div class=" round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M</div>
-      <a *ngIf="hideCancelButton && decodedToken?.privileges?.indexOf('ASMMM') > -1" class="float-right pull-right mt-1" href="javascript:void(0)"
-      (click)="openConfirmRemoveWidgetModal()" placement="bottom" tooltip="Remove Widget">
-        <i class="fa fa-close"></i></a>
+        <div class="round-badge badge-navyblue" tooltip="Derived KPI" *ngIf="chartConfig.derived_kpis">DK</div>
+        <div class="round-badge badge-darkblue" tooltip="Edge Derived Property" *ngIf="chartConfig.edge_derived_props">
+          ED</div>
+        <div class="round-badge badge-lightblue" tooltip="Cloud Derived Property"
+          *ngIf="chartConfig.cloud_derived_props">CD</div>
+        <div class=" round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M</div>
+        <a *ngIf="hideCancelButton && decodedToken?.privileges?.indexOf('ASMMM') > -1"
+          class="float-right pull-right mt-1" href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()"
+          placement="bottom" tooltip="Remove Widget">
+          <i class="fa fa-close"></i></a>
       </div>
     </ng-container>
     <div class="row">
       <div class="col-12">
         <div class="card shadow h-100">
           <div class="card-body1" style="max-height: 27rem; overflow-y: auto;">
-            <span  *ngIf="loader"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> {{loaderMessage}}</span>
+            <span *ngIf="loader"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> {{loaderMessage}}</span>
             <div id="{{ chartId }}" [ngStyle]="{'width': chartWidth, 'height': chartHeight}"></div>
             <div class="overlay" *ngIf="isOverlayVisible">
               <div style="font-family:'Arial Black'; font-size: 40px;">Sample Chart</div>
@@ -29,10 +33,10 @@
   </accordion-group>
 </accordion>
 
-<div class="modal fade" id="confirmRemoveWidgetModal_{{chartId}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+<div class="modal fade" id="confirmRemoveWidgetModal_{{chartId}}" tabindex="-1" role="dialog"
+  aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
-    <app-confirm-modal *ngIf="modalConfig" [bodyMessage]="bodyMessage"
-    [headerMessage]="headerMessage"
-    (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-confirm-modal>
+    <app-confirm-modal *ngIf="modalConfig" [bodyMessage]="bodyMessage" [headerMessage]="headerMessage"
+      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-confirm-modal>
   </div>
 </div>

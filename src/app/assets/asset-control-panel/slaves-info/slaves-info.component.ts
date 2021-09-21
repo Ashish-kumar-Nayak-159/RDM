@@ -33,7 +33,6 @@ export class SlavesInfoComponent implements OnInit {
   assetTwin: any;
   applications = CONSTANTS.ASSETAPPPS;
   slaveProvisionedStatus: any = {};
-  c2dJobFilter: any = {};
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -45,8 +44,6 @@ export class SlavesInfoComponent implements OnInit {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.c2dJobFilter.request_type = 'Sync Slaves';
-    this.c2dJobFilter.job_type = 'Message';
     this.getAssetTwinData();
     this.getModelSlaveData();
     this.getSlaveData();

@@ -85,21 +85,29 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
   onSidebarToggle() {
     $('body').toggleClass('sidebar-toggled');
     $('.sidebar').toggleClass('toggled');
-    if ($(window).width() > 768 && $('.sidebar').hasClass('toggled')) {
+    if (($(window).width() > 992) && $('.sidebar').hasClass('toggled')) {
       $('.container-fluid').addClass('sb-toggle');
       $('.container-fluid').removeClass('sb-notoggle');
     }
-    if ($(window).width() > 768 && !$('.sidebar').hasClass('toggled')) {
+    if (($(window).width() > 992) && !$('.sidebar').hasClass('toggled')) {
       $('.container-fluid').removeClass('sb-toggle');
       $('.container-fluid').addClass('sb-notoggle');
     }
-    if ($(window).width() < 768 && $('.sidebar').hasClass('toggled')) {
-      $('.container-fluid').removeClass('sb-toggle');
-      $('.container-fluid').addClass('sb-collapse');
+    if (($(window).width() > 480 && $(window).width() < 992) && $('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').removeClass( 'sb-notoggle' );
+      $('.container-fluid').removeClass( 'sb-toggle' );
     }
-    if ($(window).width() < 768 && !$('.sidebar').hasClass('toggled')) {
-      $('.container-fluid').addClass('sb-toggle');
-      $('.container-fluid').removeClass('sb-collapse');
+    if (($(window).width() > 480 && $(window).width() < 992) && !$('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').addClass( 'sb-toggle' );
+      $('.container-fluid').removeClass( 'sb-notoggle' );
+    }
+    if (($(window).width() < 480) && $('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').addClass( 'sb-collapse' );
+      $('.container-fluid').removeClass( 'sb-toggle' );
+    }
+    if (($(window).width() < 480) && !$('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').removeClass( 'sb-collapse' );
+      $('.container-fluid').addClass( 'sb-toggle' );
     }
   }
 

@@ -56,6 +56,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
   iotGatewaysTab: any;
   tabData: any;
   decodedToken: any;
+  selectedAsset: any;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -151,6 +152,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     obj.app = this.contextApp.app;
     obj.offset = this.currentOffset;
     obj.count = this.currentLimit;
+    obj.provision_status = 'Pending,Completed';
     if (this.contextApp) {
       obj.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
     }
@@ -202,10 +204,11 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     );
   }
 
-  openAssetCreateModal() {
+  openAssetCreateModal(asset = undefined) {
     if (this.type === CONSTANTS.NON_IP_ASSET) {
       this.getGatewayList();
     }
+    this.selectedAsset = asset;
     this.isOpenAssetCreateModal = true;
   }
 

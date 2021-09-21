@@ -24,8 +24,6 @@ export class GatewaySettingsComponent implements OnInit {
   testConnectionMessage: string;
   assetTwin: any;
   constantData = CONSTANTS;
-  isRuleSyncAPILoading = false;
-  rules: any[] = [];
   c2dJobFilter: any = {};
   c2dJobFilter1: any = {};
   constructor(
@@ -42,8 +40,8 @@ export class GatewaySettingsComponent implements OnInit {
     this.getAssetData();
     this.c2dJobFilter.request_type = 'Test Gateway Connection';
     this.c2dJobFilter.job_type = 'DirectMethod';
-    this.c2dJobFilter1.request_type = 'Sync Rules';
-    this.c2dJobFilter1.job_type = 'Message';
+    // this.c2dJobFilter1.request_type = 'Sync Rules';
+    // this.c2dJobFilter1.job_type = 'Message';
   }
 
   getAssetData() {
@@ -114,72 +112,8 @@ export class GatewaySettingsComponent implements OnInit {
     });
   }
 
-  getEdgeRules() {
-    return new Promise<void>((resolve1, reject) => {
-      this.rules = [];
-      this.isRuleSyncAPILoading = true;
-      const obj = {
-        type: 'Edge',
-      };
-      this.subscriptions.push(
-        this.assetService.getRules(this.contextApp.app, this.asset.asset_id, obj).subscribe(
-          (response: any) => {
-            if (response?.data) {
-              this.rules = response.data;
-              console.log(this.rules);
-            }
-            resolve1();
-          },
-          (error) => (this.isRuleSyncAPILoading = false)
-        )
-      );
-    });
-  }
-
-  async syncRules() {
-    await this.getEdgeRules();
-    const obj = {
-      asset_id: this.asset.asset_id,
-      message: {
-        command: 'set_device_rules',
-        rules: this.rules,
-      },
-      app: this.contextApp.app,
-      timestamp: moment().unix(),
-      acknowledge: 'Full',
-      expire_in_min: 2880,
-      job_id:
-        (this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id) +
-        '_' +
-        this.commonService.generateUUID(),
-      request_type: 'Sync Rules',
-      job_type: 'Message',
-      sub_job_id: null,
-    };
-    obj.sub_job_id = obj.job_id + '_1';
-    this.subscriptions.push(
-      this.assetService
-        .sendC2DMessage(
-          obj,
-          this.contextApp.app,
-          this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id
-        )
-        .subscribe(
-          (response: any) => {
-            this.toasterService.showSuccess(response.message, 'Sync Rules');
-            this.assetService.refreshRecentJobs.emit();
-            this.isRuleSyncAPILoading = false;
-          },
-          (error) => {
-            this.toasterService.showError(error.message, 'Sync Rules');
-            this.assetService.refreshRecentJobs.emit();
-            this.isRuleSyncAPILoading = false;
-          }
-        )
-    );
-  }
-
   async onClickOfTab(type) {
+    this.selectedTab = undefined;
     await this.getAssetTwinData();
     this.selectedTab = type;
   }

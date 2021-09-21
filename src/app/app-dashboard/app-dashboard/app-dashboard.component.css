@@ -20,3 +20,8 @@
   padding: 0.5rem;
   background-color: green;
 }
+
+.dropdown-menu {
+  max-width: 90%;
+  left: 10%;
+}

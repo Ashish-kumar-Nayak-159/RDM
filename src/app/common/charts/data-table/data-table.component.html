@@ -1,5 +1,3 @@
-
-
 <accordion class="mb-2" id="{{chartId}}_{{chartId}}">
   <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="true">
     <ng-container accordion-heading>
@@ -7,35 +5,44 @@
         {{chartTitle}}
       </a>
       <div class="float-right pull-right mt-1">
-        <div class="round-badge badge-darkblue" tooltip="Edge Derived Property" *ngIf="chartConfig.edge_derived_props">ED</div>
-        <div class="round-badge badge-lightblue" tooltip="Cloud Derived Property" *ngIf="chartConfig.cloud_derived_props">CD</div>
-      <div class=" round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M</div>
-      <a *ngIf="hideCancelButton  && decodedToken?.privileges?.indexOf('ASMMM') > -1" (click)="openConfirmRemoveWidgetModal()"
-      placement="bottom" tooltip="Remove Widget" class="float-right pull-right mt-1" href="javascript:void(0)"><i class="fa fa-close"></i></a>
+        <div class="round-badge badge-navyblue" tooltip="Derived KPI" *ngIf="chartConfig.derived_kpis">DK</div>
+        <div class="round-badge badge-darkblue" tooltip="Edge Derived Property" *ngIf="chartConfig.edge_derived_props">
+          ED</div>
+        <div class="round-badge badge-lightblue" tooltip="Cloud Derived Property"
+          *ngIf="chartConfig.cloud_derived_props">CD</div>
+        <div class=" round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M</div>
+        <a *ngIf="hideCancelButton  && decodedToken?.privileges?.indexOf('ASMMM') > -1"
+          (click)="openConfirmRemoveWidgetModal()" placement="bottom" tooltip="Remove Widget"
+          class="float-right pull-right mt-1" href="javascript:void(0)"><i class="fa fa-close"></i></a>
       </div>
     </ng-container>
     <div class="row">
       <div class="col-12">
         <div class="card shadow h-100">
           <div class="card-body1" style="max-height: 25rem; overflow-y: auto;">
-            <div class="table-responsive tableFixHead"  id="{{ chartId }}"
+            <div class="table-responsive tableFixHead" id="{{ chartId }}"
               [ngStyle]="{'width': chartWidth, 'height': chartHeight, 'max-height': chartHeight}">
               <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                   <tr>
                     <th>Date</th>
                     <th *ngFor="let item of y1AxisProps">
-                      <i class="icon icon-function" *ngIf="getPropertyType(item) === 'Edge Derived Properties' || getPropertyType(item) === 'Cloud Derived Properties'">&nbsp;</i>{{getPropertyName(item)}}</th>
+                      <i class="icon icon-function"
+                        *ngIf="getPropertyType(item.json_key) === 'Edge Derived Properties' || getPropertyType(item.json_key) === 'Cloud Derived Properties'">&nbsp;</i>{{getPropertyName(item.json_key)}}
+                    </th>
                     <th *ngFor="let item of y2AxisProps">
-                      <i class="icon icon-function" *ngIf="getPropertyType(item) === 'Edge Derived Properties' || getPropertyType(item) === 'Cloud Derived Properties'">&nbsp;</i> {{getPropertyName(item)}}</th>
+                      <i class="icon icon-function"
+                        *ngIf="getPropertyType(item.json_key) === 'Edge Derived Properties' || getPropertyType(item.json_key) === 'Cloud Derived Properties'">&nbsp;</i>
+                      {{getPropertyName(item.json_key)}}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   <ng-container>
                     <tr *ngFor="let obj of telemetryData">
                       <td>{{ obj.message_date }}</td>
-                      <td *ngFor="let item of y1AxisProps">{{ obj[item] }}</td>
-                      <td *ngFor="let item of y2AxisProps">{{ obj[item] }}</td>
+                      <td *ngFor="let item of y1AxisProps">{{ obj[item.json_key] }}</td>
+                      <td *ngFor="let item of y2AxisProps">{{ obj[item.json_key] }}</td>
                     </tr>
                   </ng-container>
                   <ng-container *ngIf="telemetryData.length === 0">
@@ -57,10 +64,10 @@
   </accordion-group>
 </accordion>
 
-<div class="modal fade" id="confirmRemoveWidgetModal{{chartId}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+<div class="modal fade" id="confirmRemoveWidgetModal{{chartId}}" tabindex="-1" role="dialog"
+  aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
-    <app-confirm-modal *ngIf="modalConfig" [bodyMessage]="bodyMessage"
-    [headerMessage]="headerMessage"
-    (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-confirm-modal>
+    <app-confirm-modal *ngIf="modalConfig" [bodyMessage]="bodyMessage" [headerMessage]="headerMessage"
+      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-confirm-modal>
   </div>
 </div>

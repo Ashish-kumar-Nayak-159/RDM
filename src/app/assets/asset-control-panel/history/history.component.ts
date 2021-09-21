@@ -24,6 +24,7 @@ import { BarChartComponent } from 'src/app/common/charts/bar-chart/bar-chart.com
 import { PieChartComponent } from 'src/app/common/charts/pie-chart/pie-chart.component';
 import { DataTableComponent } from 'src/app/common/charts/data-table/data-table.component';
 import { DaterangepickerComponent } from 'ng2-daterangepicker';
+import { DamagePlotChartComponent } from 'src/app/common/charts/damage-plot-chart/damage-plot-chart.component';
 declare var $: any;
 @Component({
   selector: 'app-history',
@@ -46,7 +47,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   y2AxisProp = [];
   derivedKPIs: any[] = [];
   derivedKPIHistoricData: any[] = [];
-nullValueArr = [];
+  nullValueArr = [];
   // y1AxisProps = "";
   // y2AxisProp = "";
   xAxisProps = '';
@@ -309,7 +310,7 @@ nullValueArr = [];
             const itemobj = {
               message_date: item.metadata.process_end_time,
             };
-            itemobj[item.kpi_code] = item.kpi_result;
+            itemobj[item.kpi_json_key] = item.kpi_result;
             this.derivedKPIHistoricData.push(itemobj);
             // this.derivedKPIHistoricData.reverse();
           });
@@ -335,12 +336,12 @@ nullValueArr = [];
 
       this.selectedWidgets.forEach((widget) => {
         widget.y1axis.forEach((prop) => {
-          if (this.propList.indexOf(prop.json_key) === -1) {
+          if (this.propList.indexOf(prop.json_key) === -1 && prop.type !== 'Derived KPIs') {
             this.propList.push(prop.json_key);
           }
         });
         widget.y2axis.forEach((prop) => {
-          if (this.propList.indexOf(prop.json_key) === -1) {
+          if (this.propList.indexOf(prop.json_key) === -1 && prop.type !== 'Derived KPIs') {
             this.propList.push(prop.json_key);
           }
         });
@@ -519,18 +520,16 @@ nullValueArr = [];
           (response: any) => {
             this.isFilterSelected = true;
             if (response && response.data) {
-
-
-
-		let historyData = [];
+              let historyData = [];
+              historyData = response.data;
+              this.historyData = historyData;
+              this.historyData = response.data;
+              this.historyData = this.historyData.concat(this.derivedKPIHistoricData);
               this.nullValueArr = [];
               propArr.forEach((prop) => {
                 let flag = false;
-                for (let i = 0; i < response.data.length; i++) {
-                  if (
-                    response.data[i][prop.json_key] !== null &&
-                    response.data[i][prop.json_key] !== undefined
-                  ) {
+                for (let i = 0; i < this.historyData.length; i++) {
+                  if (this.historyData[i][prop.json_key] !== null && this.historyData[i][prop.json_key] !== undefined) {
                     flag = false;
                     break;
                   } else {
@@ -541,10 +540,7 @@ nullValueArr = [];
                   this.nullValueArr.push(prop.json_key);
                 }
               });
-              historyData = response.data;
-              this.historyData = historyData;              
-this.historyData = response.data;
-              this.historyData = this.historyData.concat(this.derivedKPIHistoricData);
+              console.log(this.nullValueArr);
               this.historyData = this.commonService.sortDataBaseOnTime(this.historyData, 'message_date');
               this.isHistoryAPILoading = false;
               // historyData.reverse();
@@ -667,25 +663,25 @@ this.historyData = response.data;
       const data = [];
       let noDataFlag = true;
       y1Axis?.forEach((prop, index) => {
-        if (this.nullValueArr.indexOf(prop) === -1) {
+        if (this.nullValueArr.indexOf(prop.json_key) === -1) {
           noDataFlag = false;
         }
       });
       if (noDataFlag) {
         y2Axis?.forEach((prop, index) => {
-          if (this.nullValueArr.indexOf(prop) === -1) {
+          if (this.nullValueArr.indexOf(prop.json_key) === -1) {
             noDataFlag = false;
           }
         });
       }
-      this.historyData.forEach((item) => {
-        const obj = {
-          message_date: this.commonService.convertUTCDateToLocal(item.message_date),
-        };
-        y1Axis.forEach((element) => (obj[element.json_key] = item[element.json_key]));
-        y2Axis.forEach((element) => (obj[element.json_key] = item[element.json_key]));
-        data.splice(data.length, 0, obj);
-      });
+      // this.historyData.forEach((item) => {
+      //   const obj = {
+      //     message_date: this.commonService.convertUTCDateToLocal(item.message_date),
+      //   };
+      //   y1Axis.forEach((element) => (obj[element.json_key] = item[element.json_key]));
+      //   y2Axis.forEach((element) => (obj[element.json_key] = item[element.json_key]));
+      //   data.splice(data.length, 0, obj);
+      // });
       let componentRef;
       if (layoutJson.chartType === 'LineChart' || layoutJson.chartType === 'AreaChart') {
         componentRef = this.factoryResolver.resolveComponentFactory(LiveChartComponent).create(this.injector);
@@ -697,10 +693,11 @@ this.historyData = response.data;
         componentRef = this.factoryResolver.resolveComponentFactory(PieChartComponent).create(this.injector);
       } else if (layoutJson.chartType === 'Table') {
         componentRef = this.factoryResolver.resolveComponentFactory(DataTableComponent).create(this.injector);
+      } else if (layoutJson.chartType === 'VibrationDamagePlot') {
+        componentRef = this.factoryResolver.resolveComponentFactory(DamagePlotChartComponent).create(this.injector);
       }
-      componentRef.instance.telemetryData = noDataFlag
-        ? []
-        : JSON.parse(JSON.stringify(data));
+      console.log(noDataFlag, '======', this.historyData);
+      componentRef.instance.telemetryData = noDataFlag ? [] : JSON.parse(JSON.stringify(this.historyData));
       componentRef.instance.propertyList = this.propertyList;
       componentRef.instance.y1AxisProps = layoutJson.y1axis;
       componentRef.instance.y2AxisProps = layoutJson.y2axis;

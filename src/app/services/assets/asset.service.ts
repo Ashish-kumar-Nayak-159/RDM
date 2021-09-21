@@ -717,9 +717,7 @@ export class AssetService {
   }
 
   createReportSubscription(app, obj) {
-    return this.http.post(
-      this.url +
-        String.Format(AppUrls.CREATE_REPORT_SUBSCRIPTION, encodeURIComponent(app)), obj);
+    return this.http.post(this.url + String.Format(AppUrls.CREATE_REPORT_SUBSCRIPTION, encodeURIComponent(app)), obj);
   }
 
   getPregeneratedReports(filterObj, app) {
@@ -1238,6 +1236,26 @@ export class AssetService {
           encodeURIComponent(ruleModelId)
         ),
       {},
+      { params }
+    );
+  }
+
+  deployAssetEdgeRule(app, assetId, ruleId, bodyObj, filterObj) {
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.post(
+      this.url +
+        String.Format(
+          AppUrls.DEPLOY_EDGE_RULE,
+          encodeURIComponent(app),
+          encodeURIComponent(assetId),
+          encodeURIComponent(ruleId)
+        ),
+      bodyObj,
       { params }
     );
   }

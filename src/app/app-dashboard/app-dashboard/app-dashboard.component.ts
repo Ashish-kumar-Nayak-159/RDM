@@ -27,6 +27,7 @@ import { LiveChartComponent } from 'src/app/common/charts/live-data/live-data.co
 import { PieChartComponent } from 'src/app/common/charts/pie-chart/pie-chart.component';
 
 import { DaterangepickerComponent } from 'ng2-daterangepicker';
+import { DamagePlotChartComponent } from 'src/app/common/charts/damage-plot-chart/damage-plot-chart.component';
 
 declare var $: any;
 @Component({
@@ -728,7 +729,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             const itemobj = {
               message_date: item.metadata.process_end_time,
             };
-            itemobj[item.kpi_code] = item.kpi_result;
+            itemobj[item.kpi_json_key] = item.kpi_result;
             this.derivedKPIHistoricData.push(itemobj);
             // this.derivedKPIHistoricData.reverse();
           });
@@ -993,10 +994,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           propArr.forEach((prop) => {
             let flag = false;
             for (let i = 0; i < response.data.length; i++) {
-              if (
-                response.data[i][prop.json_key] !== null &&
-                response.data[i][prop.json_key] !== undefined
-              ) {
+              if (response.data[i][prop.json_key] !== null && response.data[i][prop.json_key] !== undefined) {
                 flag = false;
                 break;
               } else {
@@ -1009,7 +1007,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           });
           console.log(nullValueArr);
           this.telemetryData = response.data;
-          console.log(JSON.stringify(this.derivedKPIHistoricData));
           this.telemetryData = this.telemetryData.concat(this.derivedKPIHistoricData);
           // console.log(JSON.stringify(this.telemetryData));
           console.log(this.telemetryData.length);
@@ -1048,10 +1045,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 componentRef = this.factoryResolver.resolveComponentFactory(PieChartComponent).create(this.injector);
               } else if (widget.chartType === 'Table') {
                 componentRef = this.factoryResolver.resolveComponentFactory(DataTableComponent).create(this.injector);
+              } else if (widget.chartType === 'VibrationDamagePlot') {
+                componentRef = this.factoryResolver
+                  .resolveComponentFactory(DamagePlotChartComponent)
+                  .create(this.injector);
               }
-              componentRef.instance.telemetryData = noDataFlag
-                ? []
-                : JSON.parse(JSON.stringify(telemetryData));
+              componentRef.instance.telemetryData = noDataFlag ? [] : JSON.parse(JSON.stringify(telemetryData));
               componentRef.instance.propertyList = this.propertyList;
               componentRef.instance.y1AxisProps = widget.y1axis;
               componentRef.instance.y2AxisProps = widget.y2axis;

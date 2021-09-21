@@ -133,6 +133,7 @@
                 <!-- <th>Source</th> -->
                 <th>Updated On</th>
                 <th *ngIf="selectedTab === 'Cloud'">Deployed On</th>
+                <th *ngIf="selectedTab === 'Edge'">Synced On</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -153,6 +154,7 @@
                       <!-- <td>{{rule.source}}</td> -->
                       <td>{{rule.local_updated_date}}</td>
                       <td *ngIf="rule.type === 'Cloud'">{{rule.local_deployed_on}}</td>
+                      <td *ngIf="rule.type === 'Edge'">{{rule.local_synced_on}}</td>
                       <td>
                         <a href="javascript:void(0)" (click)="onToggleRows(i, rule, 'asset', true)" class="mr-1"
                           placement="bottom" tooltip="View">
@@ -168,20 +170,38 @@
                           *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 && rule.is_editable !== false">
                           <i class="fa fa-fw fa-trash"></i>
                         </a>
-                        <a href="javascript:void(0)" (click)="deployRule(rule)" *ngIf="rule.type === 'Cloud' &&
+                        <ng-container *ngIf="rule.type === 'Cloud'">
+                          <a href="javascript:void(0)" (click)="deployRule(rule)" *ngIf="
                          decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
                          rule.is_editable !== false &&
                           ( !rule.epoch_deployed_on || rule.epoch_updated_date - rule.epoch_deployed_on > 0)"
-                          placement="bottom" tooltip="Deploy">
-                          <i class="fa fa-fw fa-sync"></i>
-                        </a>
-                        <a href="javascript:void(0)" (click)="deployRule(rule, true)" *ngIf="rule.type === 'Cloud' &&
+                            placement="bottom" tooltip="Deploy">
+                            <i class="fa fa-fw fa-sync"></i>
+                          </a>
+                          <a href="javascript:void(0)" (click)="deployRule(rule, true)" *ngIf="
                         decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
                         rule.is_editable !== false &&
                           ( rule.epoch_deployed_on && rule.epoch_updated_date - rule.epoch_deployed_on < 0)"
-                          placement="bottom" tooltip="Revert">
-                          <i class="fa fa-fw fa-undo"></i>
-                        </a>
+                            placement="bottom" tooltip="Revert">
+                            <i class="fa fa-fw fa-undo"></i>
+                          </a>
+                        </ng-container>
+                        <ng-container *ngIf="rule.type === 'Edge'">
+                          <a href="javascript:void(0)" (click)="deployEdgeRule(rule)" *ngIf="
+                         decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
+                         rule.is_editable !== false &&
+                          ( !rule.epoch_synced_on || rule.epoch_updated_date - rule.epoch_synced_on > 0)"
+                            placement="bottom" tooltip="Sync">
+                            <i class="fa fa-fw fa-sync"></i>
+                          </a>
+                          <a href="javascript:void(0)" (click)="deployEdgeRule(rule, true)" *ngIf="
+                        decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
+                        rule.is_editable !== false &&
+                          ( rule.epoch_synced_on && rule.epoch_updated_date - rule.epoch_synced_on < 0)"
+                            placement="bottom" tooltip="Revert">
+                            <i class="fa fa-fw fa-undo"></i>
+                          </a>
+                        </ng-container>
                       </td>
                     </tr>
                     <tr *ngIf="toggleRows[selectedTab + '_asset_' + i]" style="background-color:#fdfeff;">

@@ -135,9 +135,9 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
                 {
                   icon: 'fa fa-fw fa-table',
                   text: '',
-                  id: 'View Definition Panel',
+                  id: 'View Model Panel',
                   valueclass: '',
-                  tooltip: 'View Definition Panel',
+                  tooltip: 'View Model Panel',
                 },
               ],
             },
@@ -239,7 +239,7 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
   }
 
   onTableFunctionCall(obj) {
-    if (obj.for === 'View Definition Panel') {
+    if (obj.for === 'View Model Panel') {
       this.router.navigate(['applications', this.contextApp.app, 'assets', 'model', obj.data.name, 'control-panel']);
     } else if (obj.for === 'View Assets') {
       let data = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);

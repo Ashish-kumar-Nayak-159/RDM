@@ -101,7 +101,8 @@
             <input type="number" class="form-control form-control-sm" id="end_angle" name="end_angle"
               [(ngModel)]="widgetObj.endAngle" placeholder="Gauge End Angle">
           </div>
-          <app-add-only-number-widget [assetModel]="assetModel" [widgetObj]="widgetObj" [propertyList]="propertyList">
+          <app-add-only-number-widget [assetModel]="assetModel" [widgetObj]="widgetObj"
+            [propertyList]="filteredPropList">
           </app-add-only-number-widget>
         </form>
       </div>

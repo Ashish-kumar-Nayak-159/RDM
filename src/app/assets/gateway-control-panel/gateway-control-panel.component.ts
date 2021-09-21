@@ -13,10 +13,9 @@ import { AssetService } from 'src/app/services/assets/asset.service';
 @Component({
   selector: 'app-gateway-control-panel',
   templateUrl: './gateway-control-panel.component.html',
-  styleUrls: ['./gateway-control-panel.component.css']
+  styleUrls: ['./gateway-control-panel.component.css'],
 })
 export class GatewayControlPanelComponent implements OnInit, OnDestroy {
-
   activeTab: string;
   asset: Asset;
   isAssetDataLoading = false;
@@ -41,35 +40,37 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private commonService: CommonService,
     private toasterService: ToasterService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.subscriptions.push(this.route.paramMap.subscribe(
-      async params => {
+    this.subscriptions.push(
+      this.route.paramMap.subscribe(async (params) => {
         if (this.contextApp?.menu_settings?.gateway_control_panel_menu.length > 0) {
           this.menuItems = this.contextApp.menu_settings.gateway_control_panel_menu;
           let titleObj;
           let count;
           const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
-          const decodedToken =  this.commonService.decodeJWTToken(token);
+          const decodedToken = this.commonService.decodeJWTToken(token);
           this.menuItems.forEach((menu, index) => {
-            let trueCount = 0;
-            let falseCount = 0;
-            menu?.privileges_required?.forEach(privilege => {
-              if (decodedToken?.privileges?.indexOf(privilege) !== -1) {
-                trueCount++;
+            if (menu.visible) {
+              let trueCount = 0;
+              let falseCount = 0;
+              menu?.privileges_required?.forEach((privilege) => {
+                if (decodedToken?.privileges?.indexOf(privilege) !== -1) {
+                  trueCount++;
+                } else {
+                  falseCount++;
+                }
+              });
+              console.log(menu.page, '=====true===', trueCount, '===== false====', falseCount);
+              if (trueCount > 0) {
+                menu.visible = true;
               } else {
-                falseCount++;
-              }
-            });
-            console.log(menu.page, '=====true===', trueCount, '===== false====', falseCount);
-            if (trueCount > 0) {
-              menu.visible = true;
-            } else {
-              if (falseCount > 0 ) {
-                menu.visible = false;
+                if (falseCount > 0) {
+                  menu.visible = false;
+                }
               }
             }
             // if (menu.for_admin_only && this.contextApp?.user.role !== CONSTANTS.APP_ADMIN_ROLE) {
@@ -121,67 +122,69 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
           this.asset = new Asset();
           this.asset.asset_id = params.get('assetId');
           this.getAssetDetail();
-
         }
-      }
-    ));
-    this.subscriptions.push(this.route.fragment.subscribe(
-      fragment => {
+      })
+    );
+    this.subscriptions.push(
+      this.route.fragment.subscribe((fragment) => {
         if (fragment) {
           this.activeTab = fragment;
         } else {
-          const menu = this.contextApp.menu_settings.gateway_control_panel_menu.length > 0 ?
-          this.contextApp.menu_settings.gateway_control_panel_menu :
-          JSON.parse(JSON.stringify(CONSTANTS.GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST));
-          menu.forEach(menuObj => {
-            if ( !this.activeTab && menuObj.visible && !menuObj.isTitle) {
+          const menu =
+            this.contextApp.menu_settings.gateway_control_panel_menu.length > 0
+              ? this.contextApp.menu_settings.gateway_control_panel_menu
+              : JSON.parse(JSON.stringify(CONSTANTS.GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST));
+          menu.forEach((menuObj) => {
+            if (!this.activeTab && menuObj.visible && !menuObj.isTitle) {
               this.activeTab = menuObj.page;
               return;
             }
           });
           if (!this.activeTab) {
-            this.toasterService.showError('All the menu items visibility are off. Please contact administrator', 'App Selection');
+            this.toasterService.showError(
+              'All the menu items visibility are off. Please contact administrator',
+              'App Selection'
+            );
             return;
           }
         }
-      }
-    ));
-    this.subscriptions.push(this.assetService.reloadAssetInControlPanelEmitter.subscribe(
-      () => {
+      })
+    );
+    this.subscriptions.push(
+      this.assetService.reloadAssetInControlPanelEmitter.subscribe(() => {
         this.getAssetDetail(true);
-      }
-    ));
+      })
+    );
   }
 
   getMenuDetail(pageType) {
-    return this.menuItems.find(menu => menu.page === pageType);
+    return this.menuItems.find((menu) => menu.page === pageType);
   }
 
   getTileName() {
     let selectedItem;
-    this.contextApp.menu_settings.main_menu.forEach(item => {
+    this.contextApp.menu_settings.main_menu.forEach((item) => {
       if (item.page === 'Assets') {
         selectedItem = item.showAccordion;
       }
     });
     this.tileData = {};
-    selectedItem.forEach(item => {
+    selectedItem.forEach((item) => {
       this.tileData[item.name] = item.value;
     });
     this.iotAssetsTab = {
       tab_name: this.tileData['IOT Assets Tab Name'],
-      table_key: this.tileData['IOT Assets Table Key Name']
+      table_key: this.tileData['IOT Assets Table Key Name'],
     };
     this.legacyAssetsTab = {
       tab_name: this.tileData['Legacy Assets Tab Name'],
-      table_key: this.tileData['Legacy Assets Table Key Name']
+      table_key: this.tileData['Legacy Assets Table Key Name'],
     };
     this.iotGatewaysTab = {
       tab_name: this.tileData['IOT Gateways Tab Name'],
-      table_key: this.tileData['IOT Gateways Table Key Name']
+      table_key: this.tileData['IOT Gateways Table Key Name'],
     };
   }
-
 
   setToggleClassForMenu() {
     if (!$('.sidebar').hasClass('toggled')) {
@@ -189,45 +192,45 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
       $('.sidebar').addClass('toggled');
       // $('.sidebar .collapse').collapse('hide');
     }
-    if (($(window).width() > 992) && $('.sidebar').hasClass('toggled')) {
+    if ($(window).width() > 992 && $('.sidebar').hasClass('toggled')) {
       $('.container-fluid').addClass('sb-toggle');
       $('.container-fluid').removeClass('sb-notoggle');
     }
-    if (($(window).width() > 992) && !$('.sidebar').hasClass('toggled')) {
+    if ($(window).width() > 992 && !$('.sidebar').hasClass('toggled')) {
       $('.container-fluid').removeClass('sb-toggle');
       $('.container-fluid').addClass('sb-notoggle');
     }
-    if (($(window).width() > 480 && $(window).width() < 992) && $('.sidebar').hasClass('toggled')) {
-      $('.container-fluid').removeClass( 'sb-notoggle' );
-      $('.container-fluid').removeClass( 'sb-toggle' );
+    if ($(window).width() > 480 && $(window).width() < 992 && $('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').removeClass('sb-notoggle');
+      $('.container-fluid').removeClass('sb-toggle');
     }
-    if (($(window).width() > 480 && $(window).width() < 992) && !$('.sidebar').hasClass('toggled')) {
-      $('.container-fluid').addClass( 'sb-toggle' );
-      $('.container-fluid').removeClass( 'sb-notoggle' );
+    if ($(window).width() > 480 && $(window).width() < 992 && !$('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').addClass('sb-toggle');
+      $('.container-fluid').removeClass('sb-notoggle');
     }
-    if (($(window).width() < 480) && $('.sidebar').hasClass('toggled')) {
-      $('.container-fluid').addClass( 'sb-collapse' );
-      $('.container-fluid').removeClass( 'sb-toggle' );
+    if ($(window).width() < 480 && $('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').addClass('sb-collapse');
+      $('.container-fluid').removeClass('sb-toggle');
     }
-    if (($(window).width() < 480) && !$('.sidebar').hasClass('toggled')) {
-      $('.container-fluid').removeClass( 'sb-collapse' );
-      $('.container-fluid').addClass( 'sb-toggle' );
+    if ($(window).width() < 480 && !$('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').removeClass('sb-collapse');
+      $('.container-fluid').addClass('sb-toggle');
     }
-    if (($(window).width() > 992) && $('.sidebar1').hasClass('toggled')) {
-      $('.container1-fluid').removeClass( 'sb1-notoggle' );
-      $('.container1-fluid').addClass( 'sb1-toggle' );
+    if ($(window).width() > 992 && $('.sidebar1').hasClass('toggled')) {
+      $('.container1-fluid').removeClass('sb1-notoggle');
+      $('.container1-fluid').addClass('sb1-toggle');
     }
-    if (($(window).width() > 992) && !$('.sidebar1').hasClass('toggled')) {
-      $('.container1-fluid').addClass( 'sb1-notoggle' );
-      $('.container1-fluid').removeClass( 'sb1-toggle' );
+    if ($(window).width() > 992 && !$('.sidebar1').hasClass('toggled')) {
+      $('.container1-fluid').addClass('sb1-notoggle');
+      $('.container1-fluid').removeClass('sb1-toggle');
     }
-    if (($(window).width() < 992) && $('.sidebar1').hasClass('toggled')) {
-      $('.container1-fluid').removeClass( 'sb1-notoggle' );
-      $('.container1-fluid').removeClass( 'sb1-toggle' );
+    if ($(window).width() < 992 && $('.sidebar1').hasClass('toggled')) {
+      $('.container1-fluid').removeClass('sb1-notoggle');
+      $('.container1-fluid').removeClass('sb1-toggle');
     }
-    if (($(window).width() < 992) && !$('.sidebar1').hasClass('toggled')) {
-      $('.container1-fluid').addClass( 'sb1-toggle' );
-      $('.container1-fluid').removeClass( 'sb1-notoggle' );
+    if ($(window).width() < 992 && !$('.sidebar1').hasClass('toggled')) {
+      $('.container1-fluid').addClass('sb1-toggle');
+      $('.container1-fluid').removeClass('sb1-notoggle');
     }
   }
 
@@ -270,26 +273,27 @@ export class GatewayControlPanelComponent implements OnInit, OnDestroy {
     }
     let methodToCall;
     methodToCall = this.assetService.getAssetDetailById(this.contextApp.app, this.asset.asset_id);
-    this.subscriptions.push(methodToCall.subscribe(
-      (response: any) => {
-        this.asset = response;
-        this.componentState = this.asset.type;
-        // this.asset.gateway_id = this.asset.metadata?.gateway_id;
-        this.getTileName();
-        this.isAssetDataLoading = false;
-        if (!callFromMenu) {
-          setTimeout(
-            () => {
+    this.subscriptions.push(
+      methodToCall.subscribe(
+        (response: any) => {
+          this.asset = response;
+          this.componentState = this.asset.type;
+          // this.asset.gateway_id = this.asset.metadata?.gateway_id;
+          this.getTileName();
+          this.isAssetDataLoading = false;
+          if (!callFromMenu) {
+            setTimeout(() => {
               this.setToggleClassForMenu();
-            }, 50
-          );
-        }
-      }, () => this.isAssetDataLoading = false
-    ));
+            }, 50);
+          }
+        },
+        () => (this.isAssetDataLoading = false)
+      )
+    );
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
     $('.sidebar').addClass('toggled');
     $('body').removeClass('sidebar-toggled');
     $('.sidebar').removeClass('toggled');

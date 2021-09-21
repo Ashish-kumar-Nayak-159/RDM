@@ -917,4 +917,23 @@ export class AssetModelService {
       { params }
     );
   }
+  deployModelEdgeRule(app, assetModelId, ruleId, bodyObj, filterObj) {
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.post(
+      this.url +
+        String.Format(
+          AppUrls.DEPLOY_EDGE_RULE,
+          encodeURIComponent(app),
+          encodeURIComponent(assetModelId),
+          encodeURIComponent(ruleId)
+        ),
+      bodyObj,
+      { params }
+    );
+  }
 }

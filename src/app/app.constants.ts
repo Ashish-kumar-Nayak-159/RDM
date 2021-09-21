@@ -1674,6 +1674,7 @@ export class CONSTANTS {
       display_name: 'Rules',
       icon: 'fa fa-fw fa-archive',
       visible: true,
+      privileges_required: ['RKPIV'],
       isTitle: false,
     },
     // {
@@ -1748,6 +1749,10 @@ export class CONSTANTS {
     {
       name: 'Enum',
       validations: ['enum', 'defaultValue'],
+    },
+    {
+      name: 'Array',
+      validations: ['defaultValue'],
     },
   ];
 

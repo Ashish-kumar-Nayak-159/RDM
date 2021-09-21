@@ -315,7 +315,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   // tslint:disable-next-line: no-unnecessary-initializer
   openAddAlertConditionModal(alertObj = undefined) {
     if (alertObj) {
-      this.alertObj = alertObj;
+      this.alertObj = JSON.parse(JSON.stringify(alertObj));
       this.setupForm = new FormGroup({
         slave_id: new FormControl(alertObj?.metadata?.slave_id),
       });

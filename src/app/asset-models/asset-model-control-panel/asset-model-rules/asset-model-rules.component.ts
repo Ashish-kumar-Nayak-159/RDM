@@ -5,6 +5,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import * as moment from 'moment';
 declare var $: any;
 @Component({
   selector: 'app-asset-model-rules',
@@ -87,6 +88,10 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
                 rule.local_deployed_on = this.commonService.convertUTCDateToLocal(rule.deployed_on);
                 rule.epoch_deployed_on = this.commonService.convertDateToEpoch(rule.deployed_on);
               }
+              if (rule.synced_on) {
+                rule.local_synced_on = this.commonService.convertUTCDateToLocal(rule.synced_on);
+                rule.epoch_synced_on = this.commonService.convertDateToEpoch(rule.synced_on);
+              }
             });
           }
           this.isRulesLaoading = false;
@@ -115,6 +120,53 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
           this.toasterService.showSuccess(
             isRevert ? 'Rule reverted successfully' : response.message,
             isRevert ? 'Revert Rule' : 'Deploy Rule'
+          );
+        },
+        (err: HttpErrorResponse) => {
+          this.isDeleteRuleLoading = false;
+          this.toasterService.showSuccess(err.message, isRevert ? 'Revert Rule' : 'Deploy Rule');
+          this.onCloseDeleteModal();
+        }
+      );
+  }
+
+  deployEdgeRule(rule, isRevert = false) {
+    this.ruleData = rule;
+    this.isDeleteRuleLoading = true;
+    const obj = {
+      is_revert: isRevert,
+    };
+    const bodyObj = {
+      message: {
+        command: 'set_asset_rules',
+        rules: [],
+      },
+      app: this.contextApp.app,
+      timestamp: moment().unix(),
+      acknowledge: 'Full',
+      expire_in_min: 2880,
+      job_id: this.commonService.generateUUID(),
+      request_type: 'Sync Rules',
+      job_type: 'Message',
+      sub_job_id: null,
+      type: 'model',
+    };
+    bodyObj.sub_job_id = bodyObj.job_id + '_1';
+    if (isRevert) {
+      bodyObj.message.rules = [rule.rule_id];
+    } else {
+      bodyObj.message.rules = [rule];
+    }
+    this.assetModelService
+      .deployModelEdgeRule(this.contextApp.app, this.assetModel.name, rule.rule_id, bodyObj, obj)
+      .subscribe(
+        (response: any) => {
+          this.onCloseDeleteModal();
+          this.getRules();
+          this.isDeleteRuleLoading = false;
+          this.toasterService.showSuccess(
+            isRevert ? 'Rule reverted successfully' : response.message,
+            isRevert ? 'Revert Rule' : 'Sync Rule'
           );
         },
         (err: HttpErrorResponse) => {

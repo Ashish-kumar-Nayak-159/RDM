@@ -10,7 +10,6 @@ import { MatTableModule } from '@angular/material/table';
 import { CommonTableComponent } from './common-table/common-table.component';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { ColorPickerModule } from 'ngx-color-picker';
-
 import { LiveChartComponent } from './charts/live-data/live-data.component';
 import { BarChartComponent } from './charts/bar-chart/bar-chart.component';
 import { PieChartComponent } from './charts/pie-chart/pie-chart.component';
@@ -26,6 +25,7 @@ import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import { CommonDataTableComponent } from './table/common-data-table/common-data-table.component';
 import { DataTablesModule } from 'angular-datatables';
 import { CommonTableFilterComponent } from './table/common-table-filter/common-table-filter.component';
+import { DamagePlotChartComponent } from './charts/damage-plot-chart/damage-plot-chart.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +45,8 @@ import { CommonTableFilterComponent } from './table/common-table-filter/common-t
     LiveLineChartComponent,
     CommonDataTableComponent,
     CommonTableFilterComponent,
-    ],
+    DamagePlotChartComponent,
+  ],
   imports: [
     CommonModule,
     MatDatepickerModule,
@@ -58,7 +59,7 @@ import { CommonTableFilterComponent } from './table/common-table-filter/common-t
     AngularMultiSelectModule,
     DataTablesModule,
     TooltipModule,
-    NgSelectModule
+    NgSelectModule,
   ],
   exports: [
     // FilterComponent,
@@ -75,9 +76,8 @@ import { CommonTableFilterComponent } from './table/common-table-filter/common-t
     AddOnlyNumberWidgetComponent,
     LiveLineChartComponent,
     CommonDataTableComponent,
+    DamagePlotChartComponent,
   ],
-  providers: [
-    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}
-  ]
+  providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }],
 })
-export class CommonCustomModule { }
+export class CommonCustomModule {}

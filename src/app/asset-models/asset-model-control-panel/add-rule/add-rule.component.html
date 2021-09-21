@@ -3,6 +3,8 @@
     {{ruleData.updated_by}}.</p>
   <p *ngIf="ruleData.deployed_on">This rule is last deployed on {{ruleData.local_deployed_on}} by
     {{ruleData.deployed_by}}.</p>
+  <p *ngIf="ruleData.synced_on">This rule is last deployed on {{ruleData.local_synced_on}} by
+    {{ruleData.synced_by}}.</p>
   <accordion class="mb-2" [closeOthers]="'true'">
     <accordion-group heading="" [panelClass]="'customClass'">
       <ng-container accordion-heading>

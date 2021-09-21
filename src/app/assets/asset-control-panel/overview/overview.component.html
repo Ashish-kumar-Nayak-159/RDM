@@ -1,55 +1,67 @@
 <div class="table-responsive">
-  <div class="tableFixHead" >
-<div class="p-3">
-  <div class="d-flex">
-      <div class="pl-3">
-        <!-- contextApp?.user?.role === constantData.APP_ADMIN_ROLE -->
+  <div class="tableFixHead">
+    <div class="p-3">
+      <div class="d-flex">
+        <div class="pl-3">
+          <!-- contextApp?.user?.role === constantData.APP_ADMIN_ROLE -->
           <div class="row" *ngIf="environmentApp !== 'Indygo'">
             <h6>This Asset is of {{componentState}} type.</h6>
-         </div>
+          </div>
           <div class="row" *ngIf="componentState === constantData.NON_IP_ASSET">
-              <h6>This Asset is managed by an IP Gateway
-                <a  href="javascript:void(0)" class="blue-font" (click)="onRedirectToGateway(asset)">({{asset.gateway_id}})</a></h6>
+            <h6>This Asset is managed by an IP Gateway
+              <a href="javascript:void(0)" class="blue-font"
+                (click)="onRedirectToGateway(asset)">({{asset.gateway_id}})</a>
+            </h6>
           </div>
           <div class="row">
             <h6>Asset Id is {{asset?.asset_id}}</h6>
           </div>
           <div class="row" *ngIf="environmentApp !== 'Indygo'">
             <h6>This asset is inherited from asset model
-              <a  href="javascript:void(0)" class="blue-font" (click)="onRedirectToModel(asset)">({{asset?.tags?.asset_model}})</a>
+              <a href="javascript:void(0)" class="blue-font"
+                (click)="onRedirectToModel(asset)">({{asset?.tags?.asset_model}})</a>
             </h6>
           </div>
-          <div class="row"  *ngIf="componentState === constantData.IP_GATEWAY">
+          <div class="row" *ngIf="componentState === constantData.IP_GATEWAY">
             <h6>This is the gateway of type ({{asset.tags.asset_model}}) managing
-              <a class="blue-font"  href="javascript:void(0)" (click)="onRedirectToAssets()">
-                {{assetCount}} {{assetCount === 1 ? 'asset' : 'assets'}}</a>.</h6>
+              <a class="blue-font" href="javascript:void(0)" (click)="onRedirectToAssets()">
+                {{assetCount}} {{assetCount === 1 ? 'asset' : 'assets'}}</a>.
+            </h6>
           </div>
           <div class="row">
-            <h6 *ngIf="asset?.status?.toLowerCase() === 'enabled' && asset?.connection_state?.toLowerCase() === 'connected'">
+            <h6
+              *ngIf="asset?.status?.toLowerCase() === 'enabled' && asset?.connection_state?.toLowerCase() === 'connected'">
               Currently, {{constantData.IP_GATEWAY ? 'gateway' : 'asset'}} is
               <span class="enabled-font">
                 {{asset?.status}} & Online.</span>
             </h6>
-            <h6 *ngIf="asset?.status?.toLowerCase() === 'enabled' && asset?.connection_state?.toLowerCase() === 'disconnected'">
+            <h6
+              *ngIf="asset?.status?.toLowerCase() === 'enabled' && asset?.connection_state?.toLowerCase() === 'disconnected'">
               Currently, {{constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
               <span class="enabled-font">
                 {{asset?.status}}</span>, but it is
-                <span class="disabled-font">
-                  Offline.</span>
+              <span class="disabled-font">
+                Offline.</span>
             </h6>
-            <h6 *ngIf="asset?.status?.toLowerCase() === 'disabled' && asset?.connection_state?.toLowerCase() === 'disconnected'">
+            <h6
+              *ngIf="asset?.status?.toLowerCase() === 'disabled' && asset?.connection_state?.toLowerCase() === 'disconnected'">
               Currently, {{constantData.IP_GATEWAY ? 'gateways' : 'assets'}} is
               <span class="disabled-font">
                 {{asset?.status}} & Offline.</span>
             </h6>
           </div>
-          <div *ngIf="assetCredentials && environmentApp !== 'Indygo' && decodedToken?.privileges?.indexOf('ASMVC') > -1" class="row">
-            <h6 ><ng-container *ngIf="componentState === constantData.NON_IP_ASSET">Gateway</ng-container>
+          <div *ngIf="assetCredentials && decodedToken?.privileges?.indexOf('ASMVC') > -1" class="row">
+            <h6>
+              <ng-container *ngIf="componentState === constantData.NON_IP_ASSET">Gateway</ng-container>
               Connection String:
-              <a class="blue-font ml-2" href="javascript:void(0)" (click)="isViewClicked ? hideConnectionString() : viewonnectionString()">{{isViewClicked ? 'Hide' : 'View'}}</a>
-              <a class="blue-font ml-2" href="javascript:void(0)" (click)="copyConnectionString()">{{isCopyClicked ? 'Copied' : 'Copy'}}</a>
+              <a class="blue-font ml-2" href="javascript:void(0)"
+                (click)="isViewClicked ? hideConnectionString() : viewonnectionString()">{{isViewClicked ? 'Hide' :
+                'View'}}</a>
+              <a class="blue-font ml-2" href="javascript:void(0)" (click)="copyConnectionString()">{{isCopyClicked ?
+                'Copied' : 'Copy'}}</a>
             </h6>
-            <h6  class="row col-12" *ngIf="isViewClicked">{{assetCredentials.primary_connection_string || assetCredentials.connection_string}}</h6>
+            <h6 class="row col-12" *ngIf="isViewClicked">{{assetCredentials.primary_connection_string ||
+              assetCredentials.connection_string}}</h6>
           </div>
           <div *ngIf="componentState !== constantData.NON_IP_ASSET && environmentApp !== 'Indygo'" class="row">
             <h6>
@@ -57,26 +69,28 @@
               <a class="blue-font ml-2" href="javascript:void(0)" (click)="viewAssetTwin()"> View</a>
             </h6>
           </div>
-      </div>
-      <div class="ml-auto">
-        <!-- <a
+        </div>
+        <div class="ml-auto">
+          <!-- <a
     class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm pull-right mr-2"
     href="javascript:void(0)"
     placement="bottom" tooltip="Sync with cache"
     (click)="syncWithCache()" [class.disabled]="isSyncAPILoading"
     >Sync with cache <i class="fa fa-refresh fa-sm text-white" *ngIf="!isSyncAPILoading"></i>
     <i class="fa fa-spinner fa-spin fa-fw fa-sm" *ngIf="isSyncAPILoading"></i></a> -->
-    <button type="button" class="btn btn-primary btn-sm add-row" placement="bottom" tooltip="Sync with cache" (click)="syncWithCache()" [class.disabled]="isSyncAPILoading"
-    *ngIf="!isSyncAPILoading && decodedToken?.privileges?.indexOf('ASMM') > -1">Sync with cache <i class="fa fa-refresh fa-sm text-white" ></i>
-    <i class="fa fa-spinner fa-spin fa-fw fa-sm" *ngIf="isSyncAPILoading"></i></button>
+          <button type="button" class="btn btn-primary btn-sm add-row" placement="bottom" tooltip="Sync with cache"
+            (click)="syncWithCache()" [class.disabled]="isSyncAPILoading"
+            *ngIf="!isSyncAPILoading && decodedToken?.privileges?.indexOf('ASMM') > -1">Sync with cache <i
+              class="fa fa-refresh fa-sm text-white"></i>
+            <i class="fa fa-spinner fa-spin fa-fw fa-sm" *ngIf="isSyncAPILoading"></i></button>
+        </div>
       </div>
+      <div class="text-center py-5">
+        <img class="img-fluid px-3 px-sm-2 mb-4"
+          src="{{(blobStorageURL + assetModel?.metadata?.image?.url + blobSASToken)}}" alt="" style="width:15rem;">
+      </div>
+    </div>
   </div>
-  <div class="text-center py-5">
-    <img class="img-fluid px-3 px-sm-2 mb-4"
-    src="{{(blobStorageURL + assetModel?.metadata?.image?.url + blobSASToken)}}" alt="" style="width:15rem;">
-  </div>
-</div>
-</div>
 </div>
 
 <div class="modal right fade" id="assetTwinModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
@@ -84,15 +98,16 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">View Asset Twin</h5>
-        <button type="button" class="close"  aria-label="Close" (click)="onModalClose()">
+        <button type="button" class="close" aria-label="Close" (click)="onModalClose()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <!-- <pre [innerHTML]="fileData | json" ></pre> -->
-        <json-editor *ngIf="!isAssetTwinLoading" [options]="editorOptions" style="min-height: 40rem;" name="json"  [data]="assetTwin">
+        <json-editor *ngIf="!isAssetTwinLoading" [options]="editorOptions" style="min-height: 40rem;" name="json"
+          [data]="assetTwin">
         </json-editor>
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x"  *ngIf="isAssetTwinLoading"></i>
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAssetTwinLoading"></i>
         <!-- <iframe *ngIf="selectedTelemetry.type === 'PDF'"  [src]="sanitizeURL()" style="width: 100%;height: 80vh"></iframe> -->
       </div>
       <div class="modal-footer">
@@ -104,4 +119,3 @@
 
   </div>
 </div>
-

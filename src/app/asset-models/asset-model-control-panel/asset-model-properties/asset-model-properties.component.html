@@ -141,6 +141,40 @@
                         </div>
                       </div>
                     </div>
+                    <div class="form-group" *ngIf="setupForm.get('t')">
+                      <label for="message-text" class="col-form-label required">Value Type:</label>
+                      <select class="form-control form-control-sm" id="valueType" name="valueType" formControlName="t"
+                        (change)="onChangeOfBlueNRGValueType()">
+                        <option [ngValue]="null">Select Value Type</option>
+                        <option [ngValue]="1">Sensor Reading</option>
+                        <option [ngValue]="2">Vibration Plotting</option>
+                      </select>
+                      <div
+                        *ngIf="setupForm.get('t').invalid && (setupForm.get('t').dirty || setupForm.get('t').touched)"
+                        class="alert-danger">
+                        <div *ngIf="setupForm.get('t').errors.required">
+                          Value Type is required.
+                        </div>
+
+                      </div>
+                    </div>
+                    <div class="form-group" *ngIf="setupForm.get('t') && setupForm.get('t').value === 2">
+                      <label for="message-text" class="col-form-label required">Plot Type:</label>
+                      <select class="form-control form-control-sm" id="plotType" name="plotType" formControlName="pt">
+                        <option [ngValue]="null">Select Plot Type</option>
+                        <option [ngValue]="1">Inner Body</option>
+                        <option [ngValue]="2">Outer Body</option>
+                        <option [ngValue]="3">Rolling Body</option>
+                      </select>
+                      <div
+                        *ngIf="setupForm.get('pt').invalid && (setupForm.get('pt').dirty || setupForm.get('pt').touched)"
+                        class="alert-danger">
+                        <div *ngIf="setupForm.get('pt').errors.required">
+                          Plot Type is required.
+                        </div>
+
+                      </div>
+                    </div>
                   </ng-container>
                   <ng-container *ngIf="assetModel.tags.protocol === 'AIOTInputs'">
                     <div class="form-group" *ngIf="setupForm.get('cn')">

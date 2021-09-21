@@ -7,6 +7,7 @@ import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/app.constants';
 import { HttpErrorResponse } from '@angular/common/http';
+import * as moment from 'moment';
 declare var $: any;
 
 @Component({
@@ -139,6 +140,55 @@ export class RulesComponent implements OnInit {
           this.toasterService.showSuccess(
             isRevert ? 'Rule reverted successfully' : response.message,
             isRevert ? 'Revert Rule' : 'Deploy Rule'
+          );
+        },
+        (err: HttpErrorResponse) => {
+          this.isDeleteRuleLoading = false;
+          this.toasterService.showSuccess(err.message, isRevert ? 'Revert Rule' : 'Deploy Rule');
+          this.onCloseDeleteModal();
+        }
+      );
+  }
+
+  deployEdgeRule(rule, isRevert = false) {
+    this.ruleData = rule;
+    console.log(this.ruleData);
+    this.isDeleteRuleLoading = true;
+    const obj = {
+      is_revert: isRevert,
+    };
+    const bodyObj = {
+      asset_id: this.asset.asset_id,
+      message: {
+        command: 'set_asset_rules',
+        rules: [],
+      },
+      app: this.contextApp.app,
+      timestamp: moment().unix(),
+      acknowledge: 'Full',
+      expire_in_min: 2880,
+      job_id: this.asset.asset_id + '_' + this.commonService.generateUUID(),
+      request_type: 'Sync Rules',
+      job_type: 'Message',
+      sub_job_id: null,
+      type: 'asset',
+    };
+    bodyObj.sub_job_id = bodyObj.job_id + '_1';
+    if (isRevert) {
+      bodyObj.message.rules = [rule.rule_id];
+    } else {
+      bodyObj.message.rules = [rule];
+    }
+    this.assetService
+      .deployAssetEdgeRule(this.contextApp.app, this.asset.asset_id, rule.rule_id, bodyObj, obj)
+      .subscribe(
+        (response: any) => {
+          this.onCloseDeleteModal();
+          this.getRules();
+          this.isDeleteRuleLoading = false;
+          this.toasterService.showSuccess(
+            isRevert ? 'Rule reverted successfully' : response.message,
+            isRevert ? 'Revert Rule' : 'Sync Rule'
           );
         },
         (err: HttpErrorResponse) => {

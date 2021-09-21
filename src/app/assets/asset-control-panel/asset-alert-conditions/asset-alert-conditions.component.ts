@@ -332,7 +332,7 @@ export class AssetAlertConditionsComponent implements OnInit {
   // tslint:disable-next-line: no-unnecessary-initializer
   openAddAlertConditionModal(alertObj = undefined) {
     if (alertObj) {
-      this.alertObj = alertObj;
+      this.alertObj = JSON.parse(JSON.stringify(alertObj));
       console.log(this.setupForm);
     } else {
       this.alertObj = {};

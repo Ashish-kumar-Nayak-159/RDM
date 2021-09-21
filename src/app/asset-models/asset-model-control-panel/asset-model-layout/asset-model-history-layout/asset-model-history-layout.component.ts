@@ -1,3 +1,4 @@
+import { DamagePlotChartComponent } from './../../../../common/charts/damage-plot-chart/damage-plot-chart.component';
 import { AssetModelService } from './../../../../services/asset-model/asset-model.service';
 import { Asset } from './../../../../models/asset.model';
 import {
@@ -25,6 +26,7 @@ import { DataTableComponent } from 'src/app/common/charts/data-table/data-table.
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { APIMESSAGES } from 'src/app/api-messages.constants';
 import { kill } from 'process';
+import { type } from '@amcharts/amcharts4/core';
 declare var $: any;
 
 @Component({
@@ -48,7 +50,15 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
   xAxisProps = '';
   // chart selection
   chartCount = 0;
-  chartTypes = ['Bar Chart', 'Column Chart', 'Line Chart', 'Area Chart', 'Pie Chart', 'Data Table'];
+  chartTypes = [
+    'Bar Chart',
+    'Column Chart',
+    'Line Chart',
+    'Area Chart',
+    'Vibration Damage Plot',
+    'Pie Chart',
+    'Data Table',
+  ];
   chartTypeValues = [
     {
       name: 'Bar Chart',
@@ -71,6 +81,11 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       icon: 'fa-area-chart',
     },
     {
+      name: 'Vibration Damage Plot',
+      value: 'VibrationDamagePlot',
+      icon: 'fa-line-chart',
+    },
+    {
       name: 'Pie Chart',
       value: 'PieChart',
       icon: 'fa-pie-chart',
@@ -86,6 +101,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
     'fa-bar-chart',
     'fa-line-chart',
     'fa-area-chart',
+    'fa-line-chart',
     'fa-pie-chart',
     'fa-table',
   ];
@@ -105,6 +121,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
   subscriptions: Subscription[] = [];
   decodedToken: any;
   derivedKPIs: any[] = [];
+  filteredPropList: any[] = [];
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -139,6 +156,20 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
         })
       );
     });
+  }
+
+  onWidgetTypeChange() {
+    if (this.selectedChartType === 'Vibration Damage Plot') {
+      this.filteredPropList = this.propertyList.filter(
+        (prop) => prop.data_type === 'Object' && prop.data_type !== 'Array'
+      );
+    } else {
+      this.filteredPropList = this.propertyList.filter(
+        (prop) => prop.data_type !== 'Object' && prop.data_type !== 'Array'
+      );
+    }
+    this.y1AxisProps = [];
+    this.y2AxisProps = [];
   }
 
   getAssetsModelProperties() {
@@ -215,26 +246,61 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Widget');
       return;
     }
-    if (this.y1AxisProps.length + this.y2AxisProps.length > 4) {
-      this.toasterService.showError('Max 4 properties are allowed in a widget', 'Add Widget');
-      return;
+    if (this.selectedChartType === 'Vibration Damage Plot') {
+      let flag = false;
+      const arr = [];
+      this.y1AxisProps.forEach((prop) => {
+        console.log(prop);
+        if (prop.data_type === 'Object') {
+          arr.push({
+            json_key: prop.json_key,
+            type: type,
+          });
+        } else {
+          flag = true;
+        }
+      });
+      this.y1AxisProps = [...arr];
+      if (this.y1AxisProps.length > 1 || this.y1AxisProps.length === 0) {
+        this.toasterService.showError('Damage Plot can have only 1 property as y1 axis property', 'Add Chart');
+        return;
+      }
+      if (this.y2AxisProps.length > 0) {
+        this.toasterService.showError('Damage Plot will not contain any y2 axis property', 'Add Chart');
+        return;
+      }
+    } else {
+      if (this.y1AxisProps.length + this.y2AxisProps.length > 4) {
+        this.toasterService.showError('Max 4 properties are allowed in a widget', 'Add Widget');
+        return;
+      }
+      let arr = [];
+
+      this.y1AxisProps.forEach((prop) => {
+        console.log(prop);
+        if (prop.data_type !== 'Object') {
+          arr.push({
+            json_key: prop.json_key,
+            type: prop.type,
+          });
+        }
+      });
+      this.y1AxisProps = [...arr];
+      arr = [];
+      this.y2AxisProps.forEach((prop) => {
+        if (prop.data_type !== 'Object') {
+          arr.push({
+            json_key: prop.json_key,
+            type: prop.type,
+          });
+        }
+      });
+      this.y2AxisProps = [...arr];
+      if (this.y1AxisProps.length === 0) {
+        this.toasterService.showError('Please select at least one non-object type property.', 'Add Chart');
+        return;
+      }
     }
-    let arr = [];
-    this.y1AxisProps.forEach((prop) =>
-      arr.push({
-        json_key: prop.json_key,
-        type: prop.type,
-      })
-    );
-    this.y1AxisProps = [...arr];
-    arr = [];
-    this.y2AxisProps.forEach((prop) =>
-      arr.push({
-        json_key: prop.json_key,
-        type: prop.type,
-      })
-    );
-    this.y2AxisProps = [...arr];
     const obj = {
       title: this.chartTitle,
       chartType: this.setChartType(),
@@ -346,6 +412,8 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
         componentRef = this.factoryResolver.resolveComponentFactory(PieChartComponent).create(this.injector);
       } else if (layoutJson.chartType === 'Table') {
         componentRef = this.factoryResolver.resolveComponentFactory(DataTableComponent).create(this.injector);
+      } else if (layoutJson.chartType === 'VibrationDamagePlot') {
+        componentRef = this.factoryResolver.resolveComponentFactory(DamagePlotChartComponent).create(this.injector);
       }
       componentRef.instance.telemetryData = JSON.parse(JSON.stringify(data));
       componentRef.instance.propertyList = this.propertyList;

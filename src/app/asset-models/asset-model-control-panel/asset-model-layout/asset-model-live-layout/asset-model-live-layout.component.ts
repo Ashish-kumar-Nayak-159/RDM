@@ -32,6 +32,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   isAllWidgestSelectedForDashboard = false;
   decodedToken: any;
   derivedKPIs: any[] = [];
+  filteredPropList: any[] = [];
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -102,6 +103,11 @@ export class AssetModelLiveLayoutComponent implements OnInit {
             obj.json_model = {};
             obj.json_model[obj.json_key] = {};
             this.propertyList.push(obj);
+          });
+          this.propertyList.forEach((prop) => {
+            if (prop.data_type !== 'Object' && prop.data_type !== 'Array') {
+              this.filteredPropList.push(prop);
+            }
           });
           resolve();
         })

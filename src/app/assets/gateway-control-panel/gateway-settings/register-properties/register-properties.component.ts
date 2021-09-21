@@ -183,7 +183,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
       this.registerRules(asset);
     } else if (this.pageType === 'Register Slaves') {
       console.log('aaaaaaaaaaaaaaaaaaaaaaaa');
-      this.syncSlaves();
+      this.syncSlaves(asset);
     }
   }
 
@@ -271,17 +271,14 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     const obj = {
       asset_id: asset.asset_id,
       message: {
-        command: 'set_device_rules',
+        command: 'set_asset_rules',
         rules: this.rules,
       },
       app: this.contextApp.app,
       timestamp: moment().unix(),
       acknowledge: 'Full',
       expire_in_min: 2880,
-      job_id:
-        (this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id) +
-        '_' +
-        this.commonService.generateUUID(),
+      job_id: asset.asset_id + '_' + this.commonService.generateUUID(),
       request_type: 'Sync Rules',
       job_type: 'Message',
       sub_job_id: null,
@@ -292,7 +289,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         .sendC2DMessage(
           obj,
           this.contextApp.app,
-          this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id
+          asset.type !== CONSTANTS.NON_IP_ASSET ? asset.asset_id : asset.gateway_id
         )
         .subscribe(
           (response: any) => {
@@ -309,12 +306,12 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     );
   }
 
-  getSlaveData() {
+  getSlaveData(asset) {
     return new Promise<void>((resolve1, reject) => {
       this.slaveData = [];
       const obj = {};
       this.subscriptions.push(
-        this.assetService.getAssetSlaveDetails(this.contextApp.app, this.asset.asset_id, obj).subscribe(
+        this.assetService.getAssetSlaveDetails(this.contextApp.app, asset.asset_id, obj).subscribe(
           (response: any) => {
             if (response.data) {
               this.slaveData = response.data;
@@ -327,15 +324,12 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     });
   }
 
-  async syncSlaves() {
+  async syncSlaves(asset) {
     this.isAPILoading = true;
-    await this.getSlaveData();
+    await this.getSlaveData(asset);
     const c2dObj = {
-      asset_id: this.asset.asset_id,
-      job_id:
-        (this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id) +
-        '_' +
-        this.commonService.generateUUID(),
+      asset_id: asset.asset_id,
+      job_id: asset.asset_id + '_' + this.commonService.generateUUID(),
       request_type: 'Sync Slaves',
       job_type: 'Message',
       sub_job_id: null,
@@ -358,7 +352,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         .sendC2DMessage(
           c2dObj,
           this.contextApp.app,
-          this.asset.type !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id
+          asset.type !== CONSTANTS.NON_IP_ASSET ? asset.asset_id : asset.gateway_id
         )
         .subscribe(
           (response: any) => {
@@ -437,16 +431,13 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     console.log(obj);
     this.isAPILoading = true;
     const c2dObj = {
-      asset_id: this.asset.asset_id,
+      asset_id: this.selectedAsset.asset_id,
       message: obj,
       app: this.contextApp.app,
       timestamp: moment().unix(),
       acknowledge: 'Full',
       expire_in_min: 2880,
-      job_id:
-        (this.componentstate !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id) +
-        '_' +
-        this.commonService.generateUUID(),
+      job_id: this.selectedAsset.asset_id + '_' + this.commonService.generateUUID(),
       request_type: 'Sync Properties/Alerts',
       job_type: 'Message',
       sub_job_id: null,
@@ -457,7 +448,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         .sendC2DMessage(
           c2dObj,
           this.contextApp.app,
-          this.componentstate !== CONSTANTS.NON_IP_ASSET ? this.asset.asset_id : this.asset.gateway_id
+          this.componentstate !== CONSTANTS.NON_IP_ASSET ? this.selectedAsset.asset_id : this.selectedAsset.gateway_id
         )
         .subscribe(
           (response: any) => {

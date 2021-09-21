@@ -45,6 +45,7 @@
             <th>Code</th>
             <th>Updated On</th>
             <th *ngIf="selectedTab === 'Cloud'">Deployed On</th>
+            <th *ngIf="selectedTab === 'Edge'">Synced On</th>
             <!-- <th>Description</th> -->
             <!-- <th>Type</th> -->
             <th>Actions</th>
@@ -64,6 +65,7 @@
                 <td>{{rule.code}}</td>
                 <td>{{rule.local_updated_date}}</td>
                 <td *ngIf="rule.type === 'Cloud'">{{rule.local_deployed_on}}</td>
+                <td *ngIf="rule.type === 'Edge'">{{rule.local_synced_on}}</td>
                 <!-- <td>{{rule.description}}</td> -->
                 <!-- <td>{{rule.type}}</td> -->
                 <td>
@@ -81,20 +83,38 @@
                     placement="bottom" tooltip="Delete" [class.disabled]="assetModel.freezed">
                     <i class="fa fa-fw fa-trash"></i>
                   </a>
-                  <a href="javascript:void(0)" (click)="deployRule(rule)" *ngIf="rule.type === 'Cloud' &&
+                  <ng-container *ngIf="rule.type === 'Cloud' ">
+                    <a href="javascript:void(0)" (click)="deployRule(rule)" *ngIf="
               decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
               rule.is_editable !== false &&
               ( !rule.epoch_deployed_on || rule.epoch_updated_date - rule.epoch_deployed_on > 0)" placement="bottom"
-                    tooltip="Deploy" [class.disabled]="assetModel.freezed">
-                    <i class="fa fa-fw fa-sync"></i>
-                  </a>
-                  <a href="javascript:void(0)" (click)="deployRule(rule, true)" *ngIf="rule.type === 'Cloud' &&
+                      tooltip="Deploy" [class.disabled]="assetModel.freezed">
+                      <i class="fa fa-fw fa-sync"></i>
+                    </a>
+                    <a href="javascript:void(0)" (click)="deployRule(rule, true)" *ngIf="
               decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
               rule.is_editable !== false &&
                 ( rule.epoch_deployed_on && rule.epoch_updated_date - rule.epoch_deployed_on < 0)" placement="bottom"
-                    tooltip="Revert" [class.disabled]="assetModel.freezed">
-                    <i class="fa fa-fw fa-undo"></i>
-                  </a>
+                      tooltip="Revert" [class.disabled]="assetModel.freezed">
+                      <i class="fa fa-fw fa-undo"></i>
+                    </a>
+                  </ng-container>
+                  <ng-container *ngIf="rule.type === 'Edge' ">
+                    <a href="javascript:void(0)" (click)="deployEdgeRule(rule)" *ngIf="
+                  decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
+                  rule.is_editable !== false &&
+                  ( !rule.epoch_synced_on || rule.epoch_updated_date - rule.epoch_synced_on > 0)" placement="bottom"
+                      tooltip="Sync" [class.disabled]="assetModel.freezed">
+                      <i class="fa fa-fw fa-sync"></i>
+                    </a>
+                    <a href="javascript:void(0)" (click)="deployEdgeRule(rule, true)" *ngIf="
+                  decodedToken?.privileges && decodedToken.privileges.indexOf('RKPIM') > -1 &&
+                  rule.is_editable !== false &&
+                    ( rule.epoch_synced_on && rule.epoch_updated_date - rule.epoch_synced_on < 0)" placement="bottom"
+                      tooltip="Revert" [class.disabled]="assetModel.freezed">
+                      <i class="fa fa-fw fa-undo"></i>
+                    </a>
+                  </ng-container>
                   <!-- <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isDeleteRuleLoading"></i> -->
                 </td>
               </tr>

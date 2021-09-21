@@ -37,7 +37,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   constantData = CONSTANTS;
   code = `function calculate () {
   return null;
-}`;
+  }`;
   slaveData: any[] = [];
   contextApp: any;
   options: any;
@@ -234,6 +234,8 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
           sa: new FormControl(null, [Validators.required, Validators.min(1), Validators.max(99999)]),
           a: new FormControl(false),
           p: new FormControl(2, [Validators.required]),
+          t: new FormControl(null, [Validators.required]),
+          pt: new FormControl(null, [Validators.required]),
         });
       } else if (this.assetModel.tags.protocol === 'AIOTInputs') {
         this.setupForm = new FormGroup({
@@ -321,6 +323,14 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.setupForm.addControl('dbn', new FormControl(obj?.dbn || null, [Validators.required, Validators.min(1)]));
     } else {
       this.setupForm.removeControl('dbn');
+    }
+  }
+
+  onChangeOfBlueNRGValueType(obj = undefined) {
+    if (this.setupForm.value.t === 2) {
+      this.setupForm.addControl('pt', new FormControl(obj?.pt || null, [Validators.required, Validators.min(1)]));
+    } else {
+      this.setupForm.removeControl('pt');
     }
   }
 
@@ -610,7 +620,8 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
               Validators.max(99999),
             ]),
             a: new FormControl(false),
-            p: new FormControl(this.propertyObj?.metadata?.mt, [Validators.required]),
+            p: new FormControl(this.propertyObj?.metadata?.p, [Validators.required]),
+            t: new FormControl(this.propertyObj?.metadata?.t, [Validators.required]),
           });
         } else if (this.assetModel.tags.protocol === 'AIOTInputs') {
           this.setupForm = new FormGroup({
@@ -635,6 +646,9 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         }
         if (this.assetModel.tags.protocol === 'AIOTInputs') {
           this.onAIOTTypeChange(this.propertyObj.metadata);
+        }
+        if (this.assetModel.tags.protocol === 'BlueNRG') {
+          this.onChangeOfBlueNRGValueType(this.propertyObj.metadata);
         }
       }
 

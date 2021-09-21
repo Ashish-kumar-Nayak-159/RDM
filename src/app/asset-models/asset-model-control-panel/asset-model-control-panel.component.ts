@@ -11,10 +11,9 @@ declare var $: any;
 @Component({
   selector: 'app-asset-model-control-panel',
   templateUrl: './asset-model-control-panel.component.html',
-  styleUrls: ['./asset-model-control-panel.component.css']
+  styleUrls: ['./asset-model-control-panel.component.css'],
 })
 export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
-
   assetModel: any;
   isAssetModelDataLoading = false;
   activeTab: string;
@@ -31,76 +30,84 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
     private assetModelService: AssetModelService,
     private commonService: CommonService,
     private toasterService: ToasterService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-    this.subscriptions.push(this.route.paramMap.subscribe(async params => {
-      if (this.contextApp?.menu_settings?.model_control_panel_menu?.length > 0) {
-        this.menuItems = this.contextApp.menu_settings.model_control_panel_menu;
-        let titleObj;
-        let count;
-        this.menuItems.forEach(menu => {
-          let trueCount = 0;
-          let falseCount = 0;
-          menu?.privileges_required?.forEach(privilege => {
-            if (this.decodedToken?.privileges?.indexOf(privilege) !== -1) {
-              trueCount++;
+    this.subscriptions.push(
+      this.route.paramMap.subscribe(async (params) => {
+        if (this.contextApp?.menu_settings?.model_control_panel_menu?.length > 0) {
+          this.menuItems = this.contextApp.menu_settings.model_control_panel_menu;
+          let titleObj;
+          let count;
+          this.menuItems.forEach((menu) => {
+            if (menu.visible) {
+              let trueCount = 0;
+              let falseCount = 0;
+              menu?.privileges_required?.forEach((privilege) => {
+                if (this.decodedToken?.privileges?.indexOf(privilege) !== -1) {
+                  trueCount++;
+                } else {
+                  falseCount++;
+                }
+              });
+              if (trueCount > 0) {
+                menu.visible = true;
+              } else {
+                if (falseCount > 0) {
+                  menu.visible = false;
+                }
+              }
+            }
+            if (menu.isTitle) {
+              if (titleObj) {
+                titleObj.isDisplay = count > 0 ? true : false;
+              }
+              count = 0;
+              titleObj = menu;
             } else {
-              falseCount++;
+              if (menu.visible) {
+                count++;
+              }
             }
           });
-          if (trueCount > 0) {
-            menu.visible = true;
-          } else {
-            if (falseCount > 0 ) {
-              menu.visible = false;
-            }
-          }
-          if (menu.isTitle) {
-            if (titleObj) {
-              titleObj.isDisplay = count > 0 ? true : false;
-            }
-            count = 0;
-            titleObj = menu;
-          } else {
-            if (menu.visible) {
-              count++;
-            }
-          }
-        });
-      }
-      this.getAssetModelData(params.get('assetModelId'));
-    }));
-    this.subscriptions.push(this.assetModelService.assetModelRefreshData.subscribe(
-      name => {
+        }
+        this.getAssetModelData(params.get('assetModelId'));
+      })
+    );
+    this.subscriptions.push(
+      this.assetModelService.assetModelRefreshData.subscribe((name) => {
         this.getAssetModelData(name);
-      }
-    ));
-    this.subscriptions.push(this.route.fragment.subscribe(
-      fragment => {
+      })
+    );
+    this.subscriptions.push(
+      this.route.fragment.subscribe((fragment) => {
         if (fragment) {
           this.activeTab = fragment;
         } else {
-          const menu = this.contextApp.menu_settings.model_control_panel_menu.length > 0 ?
-          this.contextApp.menu_settings.model_control_panel_menu :
-          JSON.parse(JSON.stringify(CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST));
-          menu.forEach(menuObj => {
-            if ( !this.activeTab && menuObj.visible && !menuObj.isTitle) {
+          const menu =
+            this.contextApp.menu_settings.model_control_panel_menu.length > 0
+              ? this.contextApp.menu_settings.model_control_panel_menu
+              : JSON.parse(JSON.stringify(CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST));
+          menu.forEach((menuObj) => {
+            if (!this.activeTab && menuObj.visible && !menuObj.isTitle) {
               this.activeTab = menuObj.page;
               return;
             }
           });
           if (!this.activeTab) {
-            this.toasterService.showError('All the menu items visibility are off. Please contact administrator', 'Model Definition Panel');
+            this.toasterService.showError(
+              'All the menu items visibility are off. Please contact administrator',
+              'Model Definition Panel'
+            );
             return;
           }
         }
-      }
-    ));
+      })
+    );
   }
 
   setActiveTab(tab) {
@@ -142,45 +149,45 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
       $('.sidebar').addClass('toggled');
       // $('.sidebar .collapse').collapse('hide');
     }
-    if (($(window).width() > 992) && $('.sidebar').hasClass('toggled')) {
+    if ($(window).width() > 992 && $('.sidebar').hasClass('toggled')) {
       $('.container-fluid').addClass('sb-toggle');
       $('.container-fluid').removeClass('sb-notoggle');
     }
-    if (($(window).width() > 992) && !$('.sidebar').hasClass('toggled')) {
+    if ($(window).width() > 992 && !$('.sidebar').hasClass('toggled')) {
       $('.container-fluid').removeClass('sb-toggle');
       $('.container-fluid').addClass('sb-notoggle');
     }
-    if (($(window).width() > 480 && $(window).width() < 992) && $('.sidebar').hasClass('toggled')) {
-      $('.container-fluid').removeClass( 'sb-notoggle' );
-      $('.container-fluid').removeClass( 'sb-toggle' );
+    if ($(window).width() > 480 && $(window).width() < 992 && $('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').removeClass('sb-notoggle');
+      $('.container-fluid').removeClass('sb-toggle');
     }
-    if (($(window).width() > 480 && $(window).width() < 992) && !$('.sidebar').hasClass('toggled')) {
-      $('.container-fluid').addClass( 'sb-toggle' );
-      $('.container-fluid').removeClass( 'sb-notoggle' );
+    if ($(window).width() > 480 && $(window).width() < 992 && !$('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').addClass('sb-toggle');
+      $('.container-fluid').removeClass('sb-notoggle');
     }
-    if (($(window).width() < 480) && $('.sidebar').hasClass('toggled')) {
-      $('.container-fluid').addClass( 'sb-collapse' );
-      $('.container-fluid').removeClass( 'sb-toggle' );
+    if ($(window).width() < 480 && $('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').addClass('sb-collapse');
+      $('.container-fluid').removeClass('sb-toggle');
     }
-    if (($(window).width() < 480) && !$('.sidebar').hasClass('toggled')) {
-      $('.container-fluid').removeClass( 'sb-collapse' );
-      $('.container-fluid').addClass( 'sb-toggle' );
+    if ($(window).width() < 480 && !$('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').removeClass('sb-collapse');
+      $('.container-fluid').addClass('sb-toggle');
     }
-    if (($(window).width() > 992) && $('.sidebar1').hasClass('toggled')) {
-      $('.container1-fluid').removeClass( 'sb1-notoggle' );
-      $('.container1-fluid').addClass( 'sb1-toggle' );
+    if ($(window).width() > 992 && $('.sidebar1').hasClass('toggled')) {
+      $('.container1-fluid').removeClass('sb1-notoggle');
+      $('.container1-fluid').addClass('sb1-toggle');
     }
-    if (($(window).width() > 992) && !$('.sidebar1').hasClass('toggled')) {
-      $('.container1-fluid').addClass( 'sb1-notoggle' );
-      $('.container1-fluid').removeClass( 'sb1-toggle' );
+    if ($(window).width() > 992 && !$('.sidebar1').hasClass('toggled')) {
+      $('.container1-fluid').addClass('sb1-notoggle');
+      $('.container1-fluid').removeClass('sb1-toggle');
     }
-    if (($(window).width() < 992) && $('.sidebar1').hasClass('toggled')) {
-      $('.container1-fluid').removeClass( 'sb1-notoggle' );
-      $('.container1-fluid').removeClass( 'sb1-toggle' );
+    if ($(window).width() < 992 && $('.sidebar1').hasClass('toggled')) {
+      $('.container1-fluid').removeClass('sb1-notoggle');
+      $('.container1-fluid').removeClass('sb1-toggle');
     }
-    if (($(window).width() < 992) && !$('.sidebar1').hasClass('toggled')) {
-      $('.container1-fluid').addClass( 'sb1-toggle' );
-      $('.container1-fluid').removeClass( 'sb1-notoggle' );
+    if ($(window).width() < 992 && !$('.sidebar1').hasClass('toggled')) {
+      $('.container1-fluid').addClass('sb1-toggle');
+      $('.container1-fluid').removeClass('sb1-notoggle');
     }
   }
 
@@ -189,10 +196,10 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
     this.isAssetModelDataLoading = true;
     const obj = {
       name: assetModelId,
-      app: this.contextApp.app
+      app: this.contextApp.app,
     };
-    this.subscriptions.push(this.assetModelService.getAssetsModelDetails(obj.app, obj.name).subscribe(
-      (response: any) => {
+    this.subscriptions.push(
+      this.assetModelService.getAssetsModelDetails(obj.app, obj.name).subscribe((response: any) => {
         if (response) {
           this.assetModel = response;
           this.assetModel.name = obj.name;
@@ -202,8 +209,8 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
           setTimeout(() => this.setToggleClassForMenu(), 50);
         }
         this.isAssetModelDataLoading = false;
-      }
-    ));
+      })
+    );
   }
 
   togglePasswordVisibility() {
@@ -213,18 +220,21 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
   freezeModel() {
     this.isModelFreezeUnfreezeAPILoading = true;
     const obj = {
-      updated_by: this.userData.email + ' (' + this.userData.name + ')'
+      updated_by: this.userData.email + ' (' + this.userData.name + ')',
     };
-    this.subscriptions.push(this.assetModelService.freezeAssetModel(this.contextApp.app, this.assetModel.name, obj).subscribe(
-      (response: any) => {
-        this.toasterService.showSuccess(response.message, 'Freeze Model');
-        this.isModelFreezeUnfreezeAPILoading = false;
-        this.getAssetModelData(this.assetModel.name);
-      }, error => {
-        this.toasterService.showError(error.message, 'Freeze Model');
-        this.isModelFreezeUnfreezeAPILoading = false;
-      }
-    ));
+    this.subscriptions.push(
+      this.assetModelService.freezeAssetModel(this.contextApp.app, this.assetModel.name, obj).subscribe(
+        (response: any) => {
+          this.toasterService.showSuccess(response.message, 'Freeze Model');
+          this.isModelFreezeUnfreezeAPILoading = false;
+          this.getAssetModelData(this.assetModel.name);
+        },
+        (error) => {
+          this.toasterService.showError(error.message, 'Freeze Model');
+          this.isModelFreezeUnfreezeAPILoading = false;
+        }
+      )
+    );
   }
 
   onCloseModal(id) {
@@ -245,23 +255,26 @@ export class AssetModelControlPanelComponent implements OnInit, OnDestroy {
     const obj = {
       email: this.userData.email,
       password: this.password,
-      updated_by: this.userData.email + ' (' + this.userData.name + ')'
+      updated_by: this.userData.email + ' (' + this.userData.name + ')',
     };
-    this.subscriptions.push(this.assetModelService.unfreezeAssetModel(this.contextApp.app, this.assetModel.name, obj).subscribe(
-      (response: any) => {
-        this.toasterService.showSuccess(response.message, 'Unfreeze Model');
-        this.isModelFreezeUnfreezeAPILoading = false;
-        this.getAssetModelData(this.assetModel.name);
-        this.onCloseModal('passwordCheckModal');
-      }, error => {
-        this.toasterService.showError(error.message, 'Unfreeze Model');
-        this.isModelFreezeUnfreezeAPILoading = false;
-      }
-    ));
+    this.subscriptions.push(
+      this.assetModelService.unfreezeAssetModel(this.contextApp.app, this.assetModel.name, obj).subscribe(
+        (response: any) => {
+          this.toasterService.showSuccess(response.message, 'Unfreeze Model');
+          this.isModelFreezeUnfreezeAPILoading = false;
+          this.getAssetModelData(this.assetModel.name);
+          this.onCloseModal('passwordCheckModal');
+        },
+        (error) => {
+          this.toasterService.showError(error.message, 'Unfreeze Model');
+          this.isModelFreezeUnfreezeAPILoading = false;
+        }
+      )
+    );
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
     $('.sidebar').addClass('toggled');
     $('body').removeClass('sidebar-toggled');
     $('.sidebar').removeClass('toggled');

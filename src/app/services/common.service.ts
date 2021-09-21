@@ -141,6 +141,16 @@ export class CommonService {
     });
   }
 
+  sortObjectBasedOnKey(obj) {
+    const newObj = {};
+    const keys = Object.keys(obj).sort((a, b) => Number(a) - Number(b));
+    keys.forEach((key) => {
+      newObj[key] = obj[key];
+    });
+    console.log(newObj);
+    return newObj;
+  }
+
   encryptJSON(data) {
     if (data) {
       return CryptoJS.AES.encrypt(JSON.stringify(data), this.privateEncryptionString).toString();

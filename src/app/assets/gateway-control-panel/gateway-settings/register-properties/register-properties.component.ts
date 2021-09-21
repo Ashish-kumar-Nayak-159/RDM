@@ -244,7 +244,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     });
   }
 
-  getEdgeRules() {
+  getEdgeRules(asset) {
     return new Promise<void>((resolve1, reject) => {
       this.rules = [];
       this.isAPILoading = true;
@@ -252,7 +252,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         type: 'Edge',
       };
       this.subscriptions.push(
-        this.assetService.getRules(this.contextApp.app, this.asset.asset_id, obj).subscribe(
+        this.assetService.getRules(this.contextApp.app, asset.asset_id, obj).subscribe(
           (response: any) => {
             if (response?.data) {
               this.rules = response.data;
@@ -267,7 +267,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   }
 
   async registerRules(asset) {
-    await this.getEdgeRules();
+    await this.getEdgeRules(asset);
     const obj = {
       asset_id: asset.asset_id,
       message: {
@@ -448,7 +448,9 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         .sendC2DMessage(
           c2dObj,
           this.contextApp.app,
-          this.componentstate !== CONSTANTS.NON_IP_ASSET ? this.selectedAsset.asset_id : this.selectedAsset.gateway_id
+          this.selectedAsset.type !== CONSTANTS.NON_IP_ASSET
+            ? this.selectedAsset.asset_id
+            : this.selectedAsset.gateway_id
         )
         .subscribe(
           (response: any) => {

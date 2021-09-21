@@ -13,11 +13,11 @@
         <div class="row d-flex px-3 pb-1">
           <div class="ml-auto">
             <a class="d-none d-sm-inline-block btn btn-sm btn-primary text-white shadow-sm mr-3"
-              [class.disabled]="isSaveSettingAPILoading || !asset.settings_enabled" (click)="openGroupPropertyModel()">
+              (click)="openGroupPropertyModel()">
               <i class="fa fa-fw fa-cog"></i>
               Configure Properties</a>
             <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="javascript:void(0)"
-              (click)="saveGatewaySettings()" [class.disabled]="isSaveSettingAPILoading || !asset.settings_enabled">
+              (click)="saveGatewaySettings()">
               <i class="fa fa-fw fa-save"></i>
               Save</a>
             <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isSaveSettingAPILoading"></i>
@@ -177,7 +177,7 @@
         </accordion>
       </accordion-group>
     </accordion>
-    <app-c2d-jobs class="d-none d-xl-block" [asset]="asset" [filterObj]="c2dJobFilter" ></app-c2d-jobs>
+    <app-c2d-jobs class="d-none d-xl-block" [asset]="asset" [filterObj]="c2dJobFilter"></app-c2d-jobs>
   </div>
 </div>
 

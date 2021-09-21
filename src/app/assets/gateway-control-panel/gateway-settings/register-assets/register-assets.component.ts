@@ -18,6 +18,7 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
   @Input() asset: any;
   @Output() refreshAssetTwin: EventEmitter<any> = new EventEmitter<any>();
   @Input() pageType: any;
+  @Input() componentstate: any;
   assets: any[] = [];
   contextApp: any;
   subscriptions: Subscription[] = [];
@@ -43,10 +44,50 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit(): Promise<void> {
+    console.log(this.componentstate);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.getAssetsOfGateway();
+
     this.c2dJobFilter.request_type = 'Register Asset,Deregister Asset';
     this.c2dJobFilter.job_type = 'Message';
+    if (this.componentstate === CONSTANTS.IP_GATEWAY) {
+      this.getAssetsOfGateway();
+    } else {
+      this.asset.register_enabled = false;
+      this.asset.deregister_enabled = false;
+      if (this.asset.metadata?.package_app) {
+        this.asset.appObj = this.applications.find((appObj) => appObj.name === this.asset.metadata.package_app);
+        if (
+          this.assetTwin.twin_properties.reported &&
+          this.assetTwin.twin_properties.reported[this.asset.appObj.type] &&
+          this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name]
+        ) {
+          if (
+            this.assetTwin.twin_properties.reported[this.asset.appObj.type][
+              this.asset.appObj.name
+            ].status?.toLowerCase() !== 'running'
+          ) {
+            this.asset.register_enabled = false;
+            this.asset.deregister_enabled = false;
+          } else {
+            if (
+              this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name]
+                .asset_configuration &&
+              this.assetTwin.twin_properties.reported[this.asset.appObj.type][this.asset.appObj.name]
+                .asset_configuration[this.asset.asset_id]
+            ) {
+              this.asset.register_enabled = false;
+              this.asset.deregister_enabled = true;
+            } else {
+              this.asset.register_enabled = true;
+              this.asset.deregister_enabled = false;
+            }
+          }
+        }
+      }
+      console.log(this.asset);
+      this.asset.display_name = this.asset.tags.display_name;
+      this.assets.push(this.asset);
+    }
   }
 
   getAssetsOfGateway() {
@@ -146,8 +187,8 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
       app_name: asset?.metadata?.package_app,
       assets: {},
     };
-    obj.assets[asset.asset_id] = asset.metadata.setup_details;
-    this.callC2dMethod(obj, 'Register Assets');
+    obj.assets[asset.asset_id] = asset?.metadata?.setup_details || {};
+    this.callC2dMethod(obj, asset, 'Register Assets');
   }
 
   deregisterAssets(asset) {
@@ -156,43 +197,22 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
       app_name: asset?.metadata?.package_app,
       assets: [asset.asset_id],
     };
-    this.callC2dMethod(obj, 'Deregister Assets');
+    this.callC2dMethod(obj, asset, 'Deregister Assets');
   }
 
-  changeTelemetrySetting() {
-    const obj = {
-      command: 'set_change_value_state',
-      app_name: this.selectedApp,
-      assets: {},
-    };
-    console.log(this.telemetrySettings);
-    this.selectedAssets.forEach((asset) => {
-      obj.assets[asset.asset_id] = {
-        scv:
-          this.telemetrySettings[asset.asset_id] === 'changed'
-            ? true
-            : this.telemetrySettings[asset.asset_id] === 'all'
-            ? false
-            : undefined,
-      };
-      obj.app_name = asset?.metadata?.package_app;
-    });
-    this.callC2dMethod(obj, 'Change Telemtry Settings');
-  }
-
-  callC2dMethod(obj, type) {
+  callC2dMethod(obj, asset, type) {
     console.log(obj);
     this.isAPILoading = true;
     this.headerMessage = type;
     // $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     const c2dObj = {
-      asset_id: this.asset.asset_id,
+      asset_id: this.componentstate !== CONSTANTS.IP_GATEWAY ? asset.asset_id : asset.gateway_id,
       message: obj,
       app: this.contextApp.app,
       timestamp: moment().unix(),
       acknowledge: 'Full',
       expire_in_min: 2880,
-      job_id: this.asset.asset_id + '_' + this.commonService.generateUUID(),
+      job_id: asset.asset_id + '_' + this.commonService.generateUUID(),
       request_type: null,
       job_type: 'Message',
       sub_job_id: null,
@@ -204,25 +224,31 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
     }
     c2dObj.sub_job_id = c2dObj.job_id + '_1';
     this.subscriptions.push(
-      this.assetService.sendC2DMessage(c2dObj, this.contextApp.app, this.asset.asset_id).subscribe(
-        (response: any) => {
-          this.toasterService.showSuccess('Request sent to gateway', type);
-          this.assetService.refreshRecentJobs.emit();
-          // this.displyaMsgArr.push({
-          //   message: type + ' request sent to gateway.',
-          //   error: false
-          // });
-          // clearInterval(this.c2dResponseInterval);
-          // this.loadC2DResponse(c2dObj);
-        },
-        (error) => {
-          this.toasterService.showError(error.message, type);
-          this.assetService.refreshRecentJobs.emit();
-          this.isAPILoading = false;
-          this.onModalClose();
-          clearInterval(this.c2dResponseInterval);
-        }
-      )
+      this.assetService
+        .sendC2DMessage(
+          c2dObj,
+          this.contextApp.app,
+          asset.type !== CONSTANTS.NON_IP_ASSET ? asset.asset_id : asset.gateway_id
+        )
+        .subscribe(
+          (response: any) => {
+            this.toasterService.showSuccess('Request sent to gateway', type);
+            this.assetService.refreshRecentJobs.emit();
+            // this.displyaMsgArr.push({
+            //   message: type + ' request sent to gateway.',
+            //   error: false
+            // });
+            // clearInterval(this.c2dResponseInterval);
+            // this.loadC2DResponse(c2dObj);
+          },
+          (error) => {
+            this.toasterService.showError(error.message, type);
+            this.assetService.refreshRecentJobs.emit();
+            this.isAPILoading = false;
+            this.onModalClose();
+            clearInterval(this.c2dResponseInterval);
+          }
+        )
     );
   }
 

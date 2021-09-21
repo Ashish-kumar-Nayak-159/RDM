@@ -41,7 +41,11 @@ export class C2dJobsComponent implements OnInit {
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    this.c2dJobFilter.asset_id = this.asset.asset_id;
+    if (this.asset.type === CONSTANTS.IP_GATEWAY) {
+      this.c2dJobFilter.iot_asset_id = this.asset.asset_id;
+    } else {
+      this.c2dJobFilter.asset_id = this.asset.asset_id;
+    }
     this.c2dJobFilter.epoch = true;
     this.c2dJobFilter.app = this.contextApp.app;
     this.c2dJobFilter.count = 3;

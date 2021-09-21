@@ -73,7 +73,7 @@ export class GatewaySettingsComponent implements OnInit {
             };
           }
           if (this.componentState === this.constantData.NON_IP_ASSET) {
-            this.onClickOfTab('Register Properties');
+            this.onClickOfTab('Manage Assets');
           } else {
             this.onClickOfTab('Test Connection');
           }

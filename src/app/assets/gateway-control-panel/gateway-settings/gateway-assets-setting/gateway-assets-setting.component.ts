@@ -107,6 +107,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
         }
       }
       this.assets.push(this.asset);
+      this.selectedAsset = this.asset;
     }
   }
 
@@ -122,6 +123,9 @@ export class GatewayAssetsSettingComponent implements OnInit {
         (response: any) => {
           if (response.data) {
             this.assets = response.data;
+            if (this.assets.length > 0) {
+              this.selectedAsset = this.assets[0];
+            }
             this.assets.forEach((asset) => {
               if (!asset.metadata) {
                 asset.metadata = {};
@@ -187,7 +191,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
     );
   }
 
-  changeTelemetrySetting() {
+  async changeTelemetrySetting() {
     console.log(this.selectedAsset);
     const obj = {
       command: 'set_asset_configuration',
@@ -221,99 +225,65 @@ export class GatewayAssetsSettingComponent implements OnInit {
       g3_ingestion_frequency_in_ms:
         this.selectedAsset.metadata.telemetry_mode_settings.g3_ingestion_frequency_in_ms * 1000,
     };
-    this.callC2dMethod(obj, 'Change Asset Settings');
+    await this.callC2dMethod(obj, 'Change Asset Settings');
   }
 
   callC2dMethod(obj, type) {
-    console.log(this.selectedAsset);
-    this.isAPILoading = true;
-    this.headerMessage = type;
-    $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
-    const c2dObj = {
-      asset_id: this.selectedAsset.asset_id,
-      message: obj,
-      app: this.contextApp.app,
-      timestamp: moment().unix(),
-      acknowledge: 'Full',
-      expire_in_min: 2880,
-      job_id: this.asset.asset_id + '_' + this.commonService.generateUUID(),
-      request_type: obj.command,
-      job_type: 'Message',
-      sub_job_id: null,
-    };
-    if (obj.request_type === 'set_asset_configuration') {
-      obj.request_type = 'Sync Configuration';
-    } else if (obj.request_type === 'set_properties') {
-      obj.request_type = 'Sync Properties/Alerts';
-    }
-    c2dObj.sub_job_id = c2dObj.job_id + '_1';
-    this.subscriptions.push(
-      this.assetService
-        .sendC2DMessage(
-          c2dObj,
-          this.contextApp.app,
-          this.componentState !== CONSTANTS.NON_IP_ASSET ? this.selectedAsset.asset_id : this.selectedAsset.gateway_id
-        )
-        .subscribe(
-          (response: any) => {
-            this.toasterService.showSuccess('Request sent to gateway', type);
-            this.assetService.refreshRecentJobs.emit();
-            // this.displayMsgArr.push({
-            //   message: type + ' request sent to gateway.',
-            //   error: false
-            // });
-            // clearInterval(this.c2dResponseInterval);
-            // this.loadC2DResponse(c2dObj);
-          },
-          (error) => {
-            this.toasterService.showError(error.message, type);
-            this.assetService.refreshRecentJobs.emit();
-            this.isAPILoading = false;
-            this.onModalClose();
-            clearInterval(this.c2dResponseInterval);
-          }
-        )
-    );
+    return new Promise<void>((resolve1, reject) => {
+      console.log(this.selectedAsset);
+      this.isAPILoading = true;
+      this.headerMessage = type;
+      $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      const c2dObj = {
+        asset_id: this.selectedAsset.asset_id,
+        message: obj,
+        app: this.contextApp.app,
+        timestamp: moment().unix(),
+        acknowledge: 'Full',
+        expire_in_min: 2880,
+        job_id: this.asset.asset_id + '_' + this.commonService.generateUUID(),
+        request_type: obj.command === 'set_asset_configuration' ? 'Sync Configuration' : 'Sync Properties/Alerts',
+        job_type: 'Message',
+        sub_job_id: null,
+      };
+      // if (obj.request_type === 'set_asset_configuration') {
+      //   obj.request_type = 'Sync Configuration';
+      // } else if (obj.request_type === 'set_properties') {
+      //   obj.request_type = 'Sync Properties/Alerts';
+      // }
+      c2dObj.sub_job_id = c2dObj.job_id + '_1';
+      this.subscriptions.push(
+        this.assetService
+          .sendC2DMessage(
+            c2dObj,
+            this.contextApp.app,
+            this.selectedAsset.type !== CONSTANTS.NON_IP_ASSET
+              ? this.selectedAsset.asset_id
+              : this.selectedAsset.gateway_id
+          )
+          .subscribe(
+            (response: any) => {
+              this.toasterService.showSuccess('Request sent to gateway', type);
+              this.assetService.refreshRecentJobs.emit();
+              resolve1();
+              // this.displayMsgArr.push({
+              //   message: type + ' request sent to gateway.',
+              //   error: false
+              // });
+              // clearInterval(this.c2dResponseInterval);
+              // this.loadC2DResponse(c2dObj);
+            },
+            (error) => {
+              this.toasterService.showError(error.message, type);
+              this.assetService.refreshRecentJobs.emit();
+              this.isAPILoading = false;
+              this.onModalClose();
+              clearInterval(this.c2dResponseInterval);
+            }
+          )
+      );
+    });
   }
-
-  // loadC2DResponse(c2dObj) {
-  //   const obj = {
-  //     sub_job_id: c2dObj.sub_job_id,
-  //     app: this.contextApp.app,
-  //     from_date: c2dObj.timestamp - 5,
-  //     to_date: moment().unix(),
-  //     epoch: true,
-  //     job_type: 'Message'
-  //   };
-  //   this.subscriptions.push(this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
-  //     (response: any) => {
-  //       // response.data = this.generateResponse();
-  //       if (response.data?.length > 0 && this.displayMsgArr.length <= response.data.length) {
-  //         for (let i = this.displayMsgArr.length - 1; i < response.data.length; i++) {
-  //           this.displayMsgArr.push({
-  //             message: response.data[i].asset_id + ': ' + response.data[i]?.payload?.message,
-  //             error: response.data[i]?.payload?.status === 'failure' ? true : false
-  //           });
-  //         }
-  //       }
-  //       if (response.data.length < 1) {
-  //         clearInterval(this.c2dResponseInterval);
-
-  //         this.c2dResponseInterval = setInterval(
-  //           () => {
-  //             this.loadC2DResponse(c2dObj);
-  //           }, 5000);
-  //       } else {
-  //         clearInterval(this.c2dResponseInterval);
-  //         this.refreshAssetTwin.emit();
-  //         setTimeout(() => {
-  //           this.onModalClose();
-  //           this.isAPILoading = false;
-  //         }, 1000);
-  //       }
-  //     }
-  //   ));
-  // }
 
   onModalClose() {
     $('#confirmMessageModal').modal('hide');
@@ -324,8 +294,8 @@ export class GatewayAssetsSettingComponent implements OnInit {
     this.headerMessage = undefined;
   }
 
-  saveGatewaySettings() {
-    this.changeTelemetrySetting();
+  async saveGatewaySettings() {
+    await this.changeTelemetrySetting();
     // this.registerProperties();
     this.isSaveSettingAPILoading = true;
     const obj = {
@@ -339,6 +309,7 @@ export class GatewayAssetsSettingComponent implements OnInit {
           this.assetService.reloadAssetInControlPanelEmitter.emit();
           this.assetService.refreshRecentJobs.emit();
           this.isSaveSettingAPILoading = false;
+          this.onModalClose();
         },
         (error) => {
           this.toasterService.showError(error.message, 'Asset Settings');

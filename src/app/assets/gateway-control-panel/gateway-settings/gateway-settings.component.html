@@ -19,7 +19,7 @@
           <i class="fa fa-fw fa-microchip"></i>
           <span class="text-secondary">Manage Applications</span></a>
       </li>
-      <li class="nav-item" *ngIf="componentState === constantData.IP_GATEWAY">
+      <li class="nav-item" *ngIf="componentState !== constantData.IP_ASSET">
         <a class="nav-link" [ngClass]="{'active': selectedTab === 'Manage Assets'}" href="javascript:void(0)"
           (click)="onClickOfTab('Manage Assets')" [class.disabled]="isSaveSettingAPILoading">
           <i class="fa fa-fw fa-laptop"></i>
@@ -83,7 +83,7 @@
 </ng-container>
 <ng-container *ngIf="selectedTab === 'Manage Assets'">
   <app-register-assets [asset]="asset" [assetTwin]="assetTwin" (refreshAssetTwin)="getAssetTwinData()"
-    [pageType]="'register-assets'"></app-register-assets>
+    [pageType]="'register-assets'" [componentstate]="componentState"></app-register-assets>
 </ng-container>
 <ng-container
   *ngIf="selectedTab === 'Register Properties' || selectedTab === 'Register Rules' || selectedTab === 'Register Slaves'">

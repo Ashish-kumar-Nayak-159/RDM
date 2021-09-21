@@ -294,8 +294,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.selectedTab = type;
     if (!$('.responsive-tabs').hasClass('open')) {
       $('.responsive-tabs').addClass('open');
-    }
-    else {
+    } else {
       $('.responsive-tabs').removeClass('open');
     }
   }
@@ -575,39 +574,49 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   getAlertConditions() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const filterObj = {
         app: this.contextApp.app,
         asset_id: this.selectedAlert.asset_id,
         asset_model: this.selectedAsset.asset_model,
         legacy: !(this.selectedAlert.asset_id === this.selectedAlert.gateway_id),
       };
+      this.alertCondition = undefined;
       if (this.selectedAlert.code) {
         filterObj['code'] = this.selectedAlert.code;
-      } else if (this.selectedAlert.message) {
-        filterObj['message'] = this.selectedAlert.message;
-      }
-      this.alertCondition = undefined;
-      this.subscriptions.push(
-        this.assetModelService.getAlertConditions(this.contextApp.app, filterObj).subscribe(
-          (response: any) => {
-            if (response?.data) {
-              this.alertCondition = response.data[0];
-              if (this.alertCondition && !this.alertCondition.visualization_widgets) {
-                this.alertCondition.visualization_widgets = [];
+        let method;
+        if (this.selectedAlert.code.includes('M_')) {
+          method = this.assetModelService.getAlertConditions(this.contextApp.app, filterObj);
+        } else if (this.selectedAlert.code.includes('A_')) {
+          method = this.assetService.getAlertConditions(this.contextApp.app, filterObj);
+        }
+        if (method) {
+          this.subscriptions.push(
+            method.subscribe(
+              (response: any) => {
+                if (response?.data) {
+                  this.alertCondition = response.data[0];
+                  if (this.alertCondition && !this.alertCondition.visualization_widgets) {
+                    this.alertCondition.visualization_widgets = [];
+                  }
+                  resolve();
+                }
+                if (response.data.length === 0) {
+                  this.isTelemetryDataLoading = false;
+                }
+              },
+              () => {
+                reject();
+                this.isTelemetryDataLoading = false;
               }
-              resolve();
-            }
-            if (response.data.length === 0) {
-              this.isTelemetryDataLoading = false;
-            }
-          },
-          () => {
-            reject();
-            this.isTelemetryDataLoading = false;
-          }
-        )
-      );
+            )
+          );
+        } else {
+          resolve();
+        }
+      } else {
+        resolve();
+      }
     });
   }
 
@@ -808,7 +817,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   getModelReasons() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
         name: this.alertCondition?.asset_model || this.selectedAsset?.tags?.asset_model,

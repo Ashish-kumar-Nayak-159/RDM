@@ -252,6 +252,10 @@ export class SlavesInfoComponent implements OnInit {
       this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Slave');
       return;
     }
+    if (!CONSTANTS.MAC_ADDRESS_REGEX.test(this.slaveObj?.metadata?.mac_id)) {
+      this.toasterService.showError('MAC address is not valid', 'Add Sensor Detail');
+      return;
+    }
     this.isAddSlaveAPILoading = true;
     this.slaveObj.created_by = this.userData.email + ' (' + this.userData.name + ')';
     this.slaveObj.asset_model = this.asset?.tags?.asset_model || this.asset?.asset_model;
@@ -280,23 +284,29 @@ export class SlavesInfoComponent implements OnInit {
       metadata: slave?.metadata,
     };
     if (!obj.metadata?.mac_id) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Update Slave Detail');
+      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Update Sensor Detail');
+      return;
+    }
+
+    const macID = obj.metadata.mac_id;
+    console.log(CONSTANTS.MAC_ADDRESS_REGEX.test(macID));
+    if (!CONSTANTS.MAC_ADDRESS_REGEX.test(macID)) {
+      this.toasterService.showError('MAC address is not valid', 'Update Sensor Detail');
       return;
     }
     this.isAddSlaveAPILoading = true;
-    const macID = obj.metadata.mac_id;
     obj.metadata = this.setupForm?.value || {};
     obj.metadata.mac_id = macID;
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
     this.subscriptions.push(
       this.assetService.updateAssetSlaveDetail(this.contextApp.app, this.asset.asset_id, slave.id, obj).subscribe(
         (response: any) => {
-          this.toasterService.showSuccess(response.message, 'Update Slave Detail');
+          this.toasterService.showSuccess(response.message, 'Update Sensor Detail');
           this.isAddSlaveAPILoading = false;
           this.getSlaveData();
         },
         (error) => {
-          this.toasterService.showError(error.message, 'Update Slave Detail');
+          this.toasterService.showError(error.message, 'Update Sensor Detail');
           this.isAddSlaveAPILoading = false;
         }
       )

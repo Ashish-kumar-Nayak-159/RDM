@@ -22,7 +22,7 @@
 </div>
 
 <div class="table-responsive">
-  <div class="tableFixHead responsive-height">
+  <div class="tableFixHead">
     <div *ngIf="isGetSlaveAPILoading">
       <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
     </div>
@@ -35,7 +35,7 @@
           <button class="btn" type="button" (click)="onClickOfSlaveAccordion(slave)">
             {{slave.slave_name}}
           </button>
-          <div class="float-right ">
+          <div class="float-right mt-1">
             <!-- <div tooltip="Provisioned" *ngIf="slaveProvisionedStatus[slave.slave_id]?.toLowerCase() === 'provisioned'">
             <i class="fa fa-check" style="color: green;"></i>
           </div> -->

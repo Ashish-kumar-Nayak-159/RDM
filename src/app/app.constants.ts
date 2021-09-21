@@ -1789,6 +1789,7 @@ export class CONSTANTS {
   public static PASSWORD_REGEX = '^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,20}$';
   public static EMAIL_REGEX =
     /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
+  public static MAC_ADDRESS_REGEX = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/;
   public static ONLY_NOS_AND_CHARS = /^[a-zA-Z]+[a-zA-Z0-9\s]+$/;
   public static APP_ADMIN_ROLE = 'App Admin';
   public static APP_VERSION = 'version';

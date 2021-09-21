@@ -1,46 +1,48 @@
-
 <!-- Page Heading -->
 <div class="table-responsive">
-  <div class="tableFixHead" >
+  <div class="tableFixHead">
     <div class="p-3">
       <div class="d-flex">
-          <div class="">
-    <div class="row">
-      <h6 class="p-3" *ngIf="assetModel.freezed && contextApp.user.role === appAdminRole">
-      This model is freezed. <br/>
-      You can't add, modify, delete any attribute of this model.<br/>
-      Please Unfreeze, if you want to add, modify, delete any.
-      <a href="javascript:void(0)" (click)="openUnfreezeModal()" [class.disabled]="isModelFreezeUnfreezeAPILoading"
-      *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
-      class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2">Unfreeze It <i class="fa fa-unlock"></i></a>
-      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></i>
-      </h6>
+        <div class="">
+          <div class="row">
+            <h6 class="p-3" *ngIf="assetModel.freezed">
+              This model is freezed. <br />
+              You can't add, modify, delete any attribute of this model.<br />
+              Please Unfreeze, if you want to add, modify, delete any.
+              <a href="javascript:void(0)" (click)="openUnfreezeModal()"
+                [class.disabled]="isModelFreezeUnfreezeAPILoading"
+                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
+                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2">Unfreeze It <i
+                  class="fa fa-unlock"></i></a>
+              <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></i>
+            </h6>
+          </div>
+          <div class="row">
+            <h6 class="p-3" *ngIf="!assetModel.freezed">
+              This model is not freezed.<br />
+              Once you complete modifications (add, edit, delete), Please freeze it for better performance.
+              <a href="javascript:void(0)" (click)="freezeModel()" [class.disabled]="isModelFreezeUnfreezeAPILoading"
+                *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
+                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2">Freeze It <i
+                  class="fa fa-lock"></i></a>
+              <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></i>
+            </h6>
+          </div>
+          <div class="row" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
+            <h6 class="pl-3">Asset Model Image:
+              <a href="javascript:void(0)" (click)="openCreateAssetModelModal()"
+                class="d-none d-sm-inline-block shadow-sm ml-2"><i class="fa fa-edit"></i></a>
+            </h6>
+          </div>
+        </div>
       </div>
-      <div class="row">
-      <h6 class="p-3" *ngIf="!assetModel.freezed && contextApp.user.role === appAdminRole">
-      This model is not freezed.<br/>
-      Once you complete modifications (add, edit, delete), Please freeze it for better performance.
-      <a href="javascript:void(0)" (click)="freezeModel()" [class.disabled]="isModelFreezeUnfreezeAPILoading"
-      *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1"
-      class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2">Freeze It <i class="fa fa-lock"></i></a>
-      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></i>
-      </h6>
-  </div>
-  <div class="row" *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
-    <h6 class="pl-3">Asset Model Image:
-      <a href="javascript:void(0)" (click)="openCreateAssetModelModal()"
-      class="d-none d-sm-inline-block shadow-sm ml-2"><i class="fa fa-edit"></i></a>
-    </h6>
-  </div>
-  </div>
-  </div>
 
-  <div class="text-center py-5">
+      <div class="text-center py-5">
 
-    <img class="img-fluid px-3 px-sm-2 mb-4"
-    src="{{blobStorageURL + (assetModel?.metadata?.image?.url + blobSASToken)}}" alt="" style="width:15rem;">
-  </div>
-  </div>
+        <img class="img-fluid px-3 px-sm-2 mb-4"
+          src="{{blobStorageURL + (assetModel?.metadata?.image?.url + blobSASToken)}}" alt="" style="width:15rem;">
+      </div>
+    </div>
 
   </div>
 </div>
@@ -52,7 +54,8 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Unfreeze Model</h5>
-        <button type="button" class="close"  aria-label="Close" (click)="onCloseModal('passwordCheckModal')" [disabled]="isModelFreezeUnfreezeAPILoading">
+        <button type="button" class="close" aria-label="Close" (click)="onCloseModal('passwordCheckModal')"
+          [disabled]="isModelFreezeUnfreezeAPILoading">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -66,17 +69,19 @@
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label required">Password:</label>
-            <input  type="{{this.isPasswordVisible ? 'text' : 'password'}}" class="form-control form-control-sm" id="display_name" name="display_name" [(ngModel)]="password"
-              placeholder="Enter Your Password">
-              <i class="fa fa-fw  field-icon-small toggle-password" (click)="togglePasswordVisibility()"
-                      [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}" ></i>
+            <input type="{{this.isPasswordVisible ? 'text' : 'password'}}" class="form-control form-control-sm"
+              id="display_name" name="display_name" [(ngModel)]="password" placeholder="Enter Your Password">
+            <i class="fa fa-fw  field-icon-small toggle-password" (click)="togglePasswordVisibility()"
+              [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}"></i>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="unfreezeModel()" [disabled]="isModelFreezeUnfreezeAPILoading">
+        <button type="button" class="btn btn-primary" (click)="unfreezeModel()"
+          [disabled]="isModelFreezeUnfreezeAPILoading">
           Unfreeze</button>
-        <button type="button" class="btn btn-white" (click)="onCloseModal('passwordCheckModal')" [disabled]="isModelFreezeUnfreezeAPILoading">
+        <button type="button" class="btn btn-white" (click)="onCloseModal('passwordCheckModal')"
+          [disabled]="isModelFreezeUnfreezeAPILoading">
           Cancel
         </button>
         <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isModelFreezeUnfreezeAPILoading"></i>
@@ -86,19 +91,20 @@
   </div>
 </div>
 
-<div class="modal right fade" id="createAssetModelModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
+<div class="modal right fade" id="createAssetModelModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-    <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">Change Model Image</h5>
-      <button type="button" class="close"  (click)="onCloseAssetsModelModal()" aria-label="Close" [disabled]="isUpdateAssetsModelAPILoading">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body" *ngIf="updatedAssetModel">
-      <form name="createAssetsModelForm">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Change Model Image</h5>
+        <button type="button" class="close" (click)="onCloseAssetsModelModal()" aria-label="Close"
+          [disabled]="isUpdateAssetsModelAPILoading">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="updatedAssetModel">
+        <form name="createAssetsModelForm">
 
-        <!-- <div class="form-group">
+          <!-- <div class="form-group">
           <label for="message-text" class="col-form-label">Upload Image: </label>
           {{assetModel.metadata?.image?.name ? assetModel.metadata.image.name : 'Not yet uploaded'}}
           <input type="file"
@@ -106,38 +112,44 @@
            class="form-control" id="app_logo" name="app_logo" >
         </div> -->
 
-        <div class="form-group">
-          <label for="recipient-name" class="col-form-label">Upload Image:</label>
-          <div class="form-group input-group row m-0">
-            <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
-            <div class="file-input form-control form-control-sm p-0 col-8">
-             <input type="file" accept=".jpeg,.png,.svg,.jpg" id="file" class="file" (change)="onLogoFileSelected($event.target.files)">
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Upload Image:</label>
+            <div class="form-group input-group row m-0">
+              <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
+              <div class="file-input form-control form-control-sm p-0 col-8">
+                <input type="file" accept=".jpeg,.png,.svg,.jpg" id="file" class="file"
+                  (change)="onLogoFileSelected($event.target.files)">
 
-             <label for="file" class="overflow-text" [tooltip]="(updatedAssetModel && updatedAssetModel.metadata && updatedAssetModel.metadata.image && updatedAssetModel.metadata.image.name) ? (updatedAssetModel.metadata.image.name) : ''">
-               {{(updatedAssetModel && updatedAssetModel.metadata && updatedAssetModel.metadata.image && updatedAssetModel.metadata.image.name) ? (updatedAssetModel.metadata.image.name) : 'Choose File'}}</label>
+                <label for="file" class="overflow-text"
+                  [tooltip]="(updatedAssetModel && updatedAssetModel.metadata && updatedAssetModel.metadata.image && updatedAssetModel.metadata.image.name) ? (updatedAssetModel.metadata.image.name) : ''">
+                  {{(updatedAssetModel && updatedAssetModel.metadata && updatedAssetModel.metadata.image &&
+                  updatedAssetModel.metadata.image.name) ? (updatedAssetModel.metadata.image.name) : 'Choose
+                  File'}}</label>
+              </div>
+              <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+                <input type="file" accept=".jpeg,.png,.svg,.jpg" id="file" class="file">
+                <label for="file" class="bg-secondary text-white">Browse</label>
+              </div>
             </div>
-            <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
-            <input type="file" accept=".jpeg,.png,.svg,.jpg" id="file" class="file" >
-               <label for="file" class="bg-secondary text-white">Browse</label>
-            </div>
-            </div>
-        </div>
+          </div>
 
-        <!-- <div class="form-group">
+          <!-- <div class="form-group">
           <label for="message-text" class="col-form-label">Manufactured By:</label>
           <input type="text" class="form-control" id="manufactured_by" name="manufacturer"
           placeholder="Enter Manufacturer" [(ngModel)]="assetModel.tags.manufacturer">
         </div> -->
 
-      </form>
+        </form>
+      </div>
+      <div class="modal-footer" *ngIf="updatedAssetModel">
+        <button type="button" class="btn btn-primary add-row"
+          [disabled]="isUpdateAssetsModelAPILoading || isFileUploading" (click)="updateAssetsModel()">Save</button>
+        <button type="button" class="btn btn-white" [disabled]="isUpdateAssetsModelAPILoading || isFileUploading"
+          (click)="onCloseAssetsModelModal()">
+          Cancel
+        </button>
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUpdateAssetsModelAPILoading || isFileUploading"></i>
+      </div>
     </div>
-    <div class="modal-footer" *ngIf="updatedAssetModel">
-      <button type="button" class="btn btn-primary add-row" [disabled]="isUpdateAssetsModelAPILoading || isFileUploading" (click)="updateAssetsModel()">Save</button>
-      <button type="button" class="btn btn-white" [disabled]="isUpdateAssetsModelAPILoading || isFileUploading" (click)="onCloseAssetsModelModal()">
-        Cancel
-      </button>
-      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUpdateAssetsModelAPILoading || isFileUploading"></i>
-    </div>
-  </div>
   </div>
 </div>

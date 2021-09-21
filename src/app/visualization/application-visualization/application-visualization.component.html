@@ -101,9 +101,11 @@
     </ng-container>
 
     <div class="col-5 col-sm-5 col-md-4 col-lg-3 col-xl-3 p-0" [ngClass]="{'right-border': latestAlerts.length > 0}">
-      <div class="" [ngClass]="{'alert-box-live-alerts': pageType === 'live', 'alert-box-historic-alerts': pageType === 'history'}">
-      <ul class="mail_list list-group list-unstyled alert-scroll" *ngIf="!isAlertAPILoading && latestAlerts.length > 0">
-        <!-- [ngClass]="{'active': alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id,
+      <div class=""
+        [ngClass]="{'alert-box-live-alerts': pageType === 'live', 'alert-box-historic-alerts': pageType === 'history'}">
+        <ul class="mail_list list-group list-unstyled alert-scroll"
+          *ngIf="!isAlertAPILoading && latestAlerts.length > 0">
+          <!-- [ngClass]="{'active': alert.id ? alert.id === selectedAlert?.id : alert.alert_id === selectedAlert?.alert_id,
         'border-left-success': alert?.source?.toLowerCase() === 'cloud', 'border-left-info': alert?.source?.toLowerCase() === 'asset',
         'border-left-warning': alert?.source?.toLowerCase() === 'edge'
       }" -->
@@ -216,107 +218,108 @@
           <div class="">
             <div class="filter-bar sticky-top ">
               <div class="form-group my-2">
-              <ng-template #filterTemplate>
-              <form class="form-inline">
-                <div class="form-group input-group">
-                  <input type="number" step="1" min="0" id="beforeInterval" name="beforeInterval"
-                    class="form-control form-control-sm " [(ngModel)]="beforeInterval" (change)="onChangeTimeValue()"
-                    style="width: 4em;">
-                  <div class="input-group-append"><span class="input-group-text bg-light">mins before</span>
-                  </div>
-                </div>
-                <div class="form-group input-group">
-                  <input type="number" step="1" min="0" id="afterInterval" name="afterInterval"
-                    class="form-control form-control-sm " [(ngModel)]="afterInterval" (change)="onChangeTimeValue()"
-                    style="width: 4em;">
-                  <div class="input-group-append"><span class="input-group-text bg-light">mins after</span>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <ng-select [items]="dropdownWidgetList" class="custom-dropdown w-12 active sm" bindLabel="id"
-                    [clearable]="false" [searchable]="true" [multiple]="true" [closeOnSelect]="false"
-                    placeholder="Select Widgets" dropdownPosition="bottom" name="asset-dropdown"
-                    [(ngModel)]="selectedWidgetsForSearch" (onDeSelectAll)="onDeSelectAll($event)">
-                    <ng-template ng-multi-label-tmp let-items="items">
-                      {{items.length}} widgets selected
-                    </ng-template>
-                    <ng-template ng-header-tmp>
-                      <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-                        <li *ngIf="dropdownWidgetList.length !== selectedWidgetsForSearch.length"> <a
-                            href="javascript:void(0)" (click)="selectedWidgetsForSearch = dropdownWidgetList">Select
-                            All</a></li>
-                        <li *ngIf="dropdownWidgetList.length === selectedWidgetsForSearch.length"> <a
-                            href="javascript:void(0)" (click)="selectedWidgetsForSearch = []">Deselect All</a></li>
-                      </ul>
-                    </ng-template>
-                    <ng-template ng-option-tmp let-item="item">
-                      <span [tooltip]="item.id">
-                        {{item.id}}
-                      </span>
-                    </ng-template>
-                  </ng-select>
-                </div>
-                <div class="form-group">
-                  <input type="checkbox" id="checkbox" min="1" name="checkbox" class="big-checkbox"
-                    [(ngModel)]="filterObj.isTypeEditable" (change)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
+                <ng-template #filterTemplate>
+                  <form class="form-inline">
+                    <div class="form-group input-group">
+                      <input type="number" step="1" min="0" id="beforeInterval" name="beforeInterval"
+                        class="form-control form-control-sm " [(ngModel)]="beforeInterval"
+                        (change)="onChangeTimeValue()" style="width: 4em;">
+                      <div class="input-group-append"><span class="input-group-text bg-light">mins before</span>
+                      </div>
+                    </div>
+                    <div class="form-group input-group">
+                      <input type="number" step="1" min="0" id="afterInterval" name="afterInterval"
+                        class="form-control form-control-sm " [(ngModel)]="afterInterval" (change)="onChangeTimeValue()"
+                        style="width: 4em;">
+                      <div class="input-group-append"><span class="input-group-text bg-light">mins after</span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <ng-select [items]="dropdownWidgetList" class="custom-dropdown w-12 active sm" bindLabel="id"
+                        [clearable]="false" [searchable]="true" [multiple]="true" [closeOnSelect]="false"
+                        placeholder="Select Widgets" dropdownPosition="bottom" name="asset-dropdown"
+                        [(ngModel)]="selectedWidgetsForSearch" (onDeSelectAll)="onDeSelectAll($event)">
+                        <ng-template ng-multi-label-tmp let-items="items">
+                          {{items.length}} widgets selected
+                        </ng-template>
+                        <ng-template ng-header-tmp>
+                          <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                            <li *ngIf="dropdownWidgetList.length !== selectedWidgetsForSearch.length"> <a
+                                href="javascript:void(0)" (click)="selectedWidgetsForSearch = dropdownWidgetList">Select
+                                All</a></li>
+                            <li *ngIf="dropdownWidgetList.length === selectedWidgetsForSearch.length"> <a
+                                href="javascript:void(0)" (click)="selectedWidgetsForSearch = []">Deselect All</a></li>
+                          </ul>
+                        </ng-template>
+                        <ng-template ng-option-tmp let-item="item">
+                          <span [tooltip]="item.id">
+                            {{item.id}}
+                          </span>
+                        </ng-template>
+                      </ng-select>
+                    </div>
+                    <div class="form-group">
+                      <input type="checkbox" id="checkbox" min="1" name="checkbox" class="big-checkbox"
+                        [(ngModel)]="filterObj.isTypeEditable" (change)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
               filterObj.sampling_format = 'minute'; filterObj.sampling_time = 1;">
-                </div>
-                <div class="form-group">
-                  <fieldset [disabled]="!filterObj.isTypeEditable">
-                    <ui-switch [disabled]="!filterObj.isTypeEditable" defaultBgColor="#1a5a9e" checkedTextColor="white"
-                      uncheckedTextColor="white" checkedLabel="Sampling" (valueChange)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
+                    </div>
+                    <div class="form-group">
+                      <fieldset [disabled]="!filterObj.isTypeEditable">
+                        <ui-switch [disabled]="!filterObj.isTypeEditable" defaultBgColor="#1a5a9e"
+                          checkedTextColor="white" uncheckedTextColor="white" checkedLabel="Sampling" (valueChange)="filterObj.aggregation_format = 'AVG'; filterObj.aggregation_minutes = 1;
                 filterObj.sampling_format = 'minute'; filterObj.sampling_time = 1;
                 " uncheckedLabel="Aggregation" [(ngModel)]="filterObj.type" name="tpye"></ui-switch>
-                  </fieldset>
-                </div>
-                <div class="form-group input-group" *ngIf="filterObj.type">
+                      </fieldset>
+                    </div>
+                    <div class="form-group input-group" *ngIf="filterObj.type">
 
-                  <input class="form-control form-control-sm bg-light" type="number" id="minutes" min="1" name="minutes"
-                    [(ngModel)]="filterObj.sampling_time" placeholder="Sampling" disabled placement="bottom"
-                    tooltip="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development."
-                    style="width: 3em;">
-                  <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
-                </div>
-                <div class="form-group input-group" *ngIf="!filterObj.type">
-                  <fieldset [disabled]="!filterObj.isTypeEditable"></fieldset>
-                  <input class="form-control form-control-sm bg-light" type="number" id="aggr_mins" min="1"
-                    name="aggr_mins" [(ngModel)]="filterObj.aggregation_minutes" placeholder="Sampling"
-                    (change)="onNumberChange($event, 'aggregation')" [disabled]="!filterObj.isTypeEditable"
-                    style="width: 4em;">
-                  <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
-                </div>
-                <div class="form-group " *ngIf="!filterObj.type">
-                  <fieldset [disabled]="!filterObj.isTypeEditable">
-                    <select class="form-control form-control-sm" id="aggregationFormat"
-                      [(ngModel)]="filterObj.aggregation_format" name="aggregationFormat"
-                      style="width: 11rem!important;">
-                      <option [ngValue]="undefined">Aggregartion Format</option>
-                      <option [ngValue]="'AVG'">Average</option>
-                      <option [ngValue]="'SUM'">Sum</option>
-                      <option [ngValue]="'MIN'">Min</option>
-                      <option [ngValue]="'MAX'">Max</option>
-                      <option [ngValue]="'COUNT'">Count</option>
-                    </select>
-                  </fieldset>
-                </div>
-                <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
-                    (click)="getAssetTelemetryData()" [disabled]="isTelemetryDataLoading"><i
-                      class="fas fa-search fa-sm"></i></button></div>
-              </form>
-            </ng-template>
-            <ng-container *ngIf="isShowOpenFilter">
-              <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
-            </ng-container>
-            <ng-container *ngIf="!isShowOpenFilter">
-              <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown" placement="bottom" aria-haspopup="true"
-                aria-expanded="false">
-                <i class="fas fa-fw fa-filter fa-sm button-divider"></i>
-                Select Filter</button>
-              <div class="dropdown-menu dropdown-filter-content" style="position: relative !important;">
-                <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
+                      <input class="form-control form-control-sm bg-light" type="number" id="minutes" min="1"
+                        name="minutes" [(ngModel)]="filterObj.sampling_time" placeholder="Sampling" disabled
+                        placement="bottom"
+                        tooltip="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development."
+                        style="width: 3em;">
+                      <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
+                    </div>
+                    <div class="form-group input-group" *ngIf="!filterObj.type">
+                      <fieldset [disabled]="!filterObj.isTypeEditable"></fieldset>
+                      <input class="form-control form-control-sm bg-light" type="number" id="aggr_mins" min="1"
+                        name="aggr_mins" [(ngModel)]="filterObj.aggregation_minutes" placeholder="Sampling"
+                        (change)="onNumberChange($event, 'aggregation')" [disabled]="!filterObj.isTypeEditable"
+                        style="width: 4em;">
+                      <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
+                    </div>
+                    <div class="form-group " *ngIf="!filterObj.type">
+                      <fieldset [disabled]="!filterObj.isTypeEditable">
+                        <select class="form-control form-control-sm" id="aggregationFormat"
+                          [(ngModel)]="filterObj.aggregation_format" name="aggregationFormat"
+                          style="width: 11rem!important;">
+                          <option [ngValue]="undefined">Aggregartion Format</option>
+                          <option [ngValue]="'AVG'">Average</option>
+                          <option [ngValue]="'SUM'">Sum</option>
+                          <option [ngValue]="'MIN'">Min</option>
+                          <option [ngValue]="'MAX'">Max</option>
+                          <option [ngValue]="'COUNT'">Count</option>
+                        </select>
+                      </fieldset>
+                    </div>
+                    <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
+                        (click)="getAssetTelemetryData()" [disabled]="isTelemetryDataLoading"><i
+                          class="fas fa-search fa-sm"></i></button></div>
+                  </form>
+                </ng-template>
+                <ng-container *ngIf="isShowOpenFilter">
+                  <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
+                </ng-container>
+                <ng-container *ngIf="!isShowOpenFilter">
+                  <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown" placement="bottom"
+                    aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-fw fa-filter fa-sm button-divider"></i>
+                    Select Filter</button>
+                  <div class="dropdown-menu dropdown-filter-content" style="position: relative !important;">
+                    <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
+                  </div>
+                </ng-container>
               </div>
-            </ng-container>
-            </div>
             </div>
             <div class="row col-xl-12 col-lg-12 m-2" *ngIf="!isTelemetryDataLoading && telemetryData.length > 0">
 
@@ -407,12 +410,12 @@
                   <ng-container>
                     <p> This alert is not yet acknowledged.
                       <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down blue-font"
-                        *ngIf="!selectedAlert?.metadata?.acknowledged_date && decodedToken?.privileges?.indexOf('RMM') > -1"
+                        *ngIf="!selectedAlert?.metadata?.acknowledged_date && decodedToken?.privileges?.indexOf('RMM') > -1 && decodedToken?.privileges?.indexOf('ASMMV') > -1"
                         (click)="onClickOfAcknowledgeAlert(selectedAlert)">Acknowledge.</a>
                     </p>
                     <p>No Actions recorded by field staff yet. <a href="javascript:void(0);"
                         class="favourite text-muted hidden-sm-down blue-font"
-                        *ngIf="!selectedAlert?.metadata?.acknowledged_date && decodedToken?.privileges?.indexOf('RMM') > -1"
+                        *ngIf="!selectedAlert?.metadata?.acknowledged_date && decodedToken?.privileges?.indexOf('RMM') > -1 && decodedToken?.privileges?.indexOf('ASMMV') > -1"
                         (click)="onClickOfAcknowledgeAlert(selectedAlert)">Take Action now</a></p>
                   </ng-container>
                 </div>

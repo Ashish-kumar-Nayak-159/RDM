@@ -95,6 +95,10 @@ export class RulesComponent implements OnInit {
                 rule.local_deployed_on = this.commonService.convertUTCDateToLocal(rule.deployed_on);
                 rule.epoch_deployed_on = this.commonService.convertDateToEpoch(rule.deployed_on);
               }
+              if (rule.synced_on) {
+                rule.local_synced_on = this.commonService.convertUTCDateToLocal(rule.synced_on);
+                rule.epoch_synced_on = this.commonService.convertDateToEpoch(rule.synced_on);
+              }
               if (rule.source === 'Model') {
                 this.modelrules.push(rule);
               } else {
@@ -152,22 +156,20 @@ export class RulesComponent implements OnInit {
 
   deployEdgeRule(rule, isRevert = false) {
     this.ruleData = rule;
-    console.log(this.ruleData);
     this.isDeleteRuleLoading = true;
-    const obj = {
-      is_revert: isRevert,
-    };
+    const obj = {};
     const bodyObj = {
-      asset_id: this.asset.asset_id,
       message: {
-        command: 'set_asset_rules',
+        asset_id: this.asset.asset_id,
+        command: isRevert ? 'delete_asset_rules' : 'set_asset_rules',
         rules: [],
       },
+      asset_id: this.asset.asset_id,
       app: this.contextApp.app,
       timestamp: moment().unix(),
       acknowledge: 'Full',
       expire_in_min: 2880,
-      job_id: this.asset.asset_id + '_' + this.commonService.generateUUID(),
+      job_id: this.commonService.generateUUID(),
       request_type: 'Sync Rules',
       job_type: 'Message',
       sub_job_id: null,

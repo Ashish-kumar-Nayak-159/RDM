@@ -133,12 +133,10 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
   deployEdgeRule(rule, isRevert = false) {
     this.ruleData = rule;
     this.isDeleteRuleLoading = true;
-    const obj = {
-      is_revert: isRevert,
-    };
+    const obj = {};
     const bodyObj = {
       message: {
-        command: 'set_asset_rules',
+        command: isRevert ? 'delete_asset_rules' : 'set_asset_rules',
         rules: [],
       },
       app: this.contextApp.app,

@@ -51,7 +51,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.addAssetHierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
     }
-
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
         if (this.assetDetail) {
@@ -186,7 +185,9 @@ export class AddAssetComponent implements OnInit, OnChanges {
           arr.push(asset);
         }
       });
-      this.assetDetail.gateway_id = undefined;
+      if (this.assetDetail) {
+        this.assetDetail.gateway_id = undefined;
+      }
       this.gateways = JSON.parse(JSON.stringify(arr));
     }
     // await this.getAssets(hierarchyObj);

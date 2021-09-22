@@ -243,7 +243,6 @@ export class AddRuleComponent implements OnInit {
   }
 
   createNewRule() {
-    console.log(this.ruleModel);
     if (
       !this.ruleModel.name ||
       !this.ruleModel.description ||

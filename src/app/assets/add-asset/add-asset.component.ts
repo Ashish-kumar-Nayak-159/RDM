@@ -43,27 +43,59 @@ export class AddAssetComponent implements OnInit, OnChanges {
     private applicationService: ApplicationService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.originalGateways = JSON.parse(JSON.stringify(this.gateways));
-    this.getApplicationUsers();
+    await this.getApplicationUsers();
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.addAssetHierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
     }
+
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
-        this.addAssetConfigureHierarchy[index] = this.contextApp.user.hierarchy[level];
-        if (this.contextApp.user.hierarchy[level]) {
-          this.onChangeOfAddAssetHierarchy(index);
+        if (this.assetDetail) {
+          this.addAssetConfigureHierarchy[index] = this.assetDetail.hierarchy[level];
+        } else {
+          this.addAssetConfigureHierarchy[index] = this.contextApp.user.hierarchy[level];
+          if (this.contextApp.user.hierarchy[level]) {
+            this.onChangeOfAddAssetHierarchy(index);
+          }
         }
       }
     });
-    this.getAssetsModels(this.componentState);
+
+    await this.getAssetsModels(this.componentState);
     if (this.assetDetail) {
-      console.log(this.assetDetail);
-      this.isAssetEditable = true;
-      // this.setupFormData(this.assetDetail);
+      this.assetDetail.tags = {};
+      if (!this.assetDetail.display_name) {
+        this.assetDetail.tags.display_name = this.assetDetail.asset_id;
+      } else {
+        this.assetDetail.tags.display_name = this.assetDetail.display_name;
+      }
+      if (!this.assetDetail.asset_manager) {
+        this.assetDetail.tags.asset_manager = { user_name: '', user_email: '' };
+      } else {
+        const userObj = this.appUsers.filter((type) => type.user_email === this.assetDetail.asset_manager)[0];
+        userObj.tags = {
+          user_name: userObj.user_name,
+          user_email: userObj.user_email,
+        };
+        this.assetDetail.tags.asset_manager = { ...userObj.tags };
+      }
+      if (!this.assetDetail.asset_model) {
+        this.assetDetail.tags.asset_model = '';
+      } else {
+        this.assetDetail.tags.asset_model = this.assetDetail.asset_model;
+        const modelObj = this.assetModels.filter((type) => type.name === this.assetDetail.tags.asset_model)[0];
+        modelObj.tags = {
+          cloud_connectivity: modelObj.cloud_connectivity,
+          protocol: modelObj.protocol,
+        };
+        const obj = { ...this.assetDetail.tags, ...modelObj.tags };
+        this.assetDetail.tags = obj;
+      }
+      this.assetDetail.tags.type = this.assetDetail.type;
     } else {
       this.assetDetail = new Asset();
       if (!this.assetDetail.metadata) {
@@ -85,18 +117,21 @@ export class AddAssetComponent implements OnInit, OnChanges {
   }
 
   getAssetsModels(type) {
-    this.assetModels = [];
-    const obj = {
-      app: this.contextApp.app,
-      model_type: type,
-    };
-    this.subscriptions.push(
-      this.assetModelService.getAssetsModelsList(obj).subscribe((response: any) => {
-        if (response && response.data) {
-          this.assetModels = response.data;
-        }
-      })
-    );
+    return new Promise<void>((resolve, reject) => {
+      this.assetModels = [];
+      const obj = {
+        app: this.contextApp.app,
+        model_type: type,
+      };
+      this.subscriptions.push(
+        this.assetModelService.getAssetsModelsList(obj).subscribe((response: any) => {
+          if (response && response.data) {
+            this.assetModels = response.data;
+          }
+          resolve();
+        })
+      );
+    });
   }
 
   onChangeOfAddAssetHierarchy(i) {
@@ -174,14 +209,17 @@ export class AddAssetComponent implements OnInit, OnChanges {
   }
 
   getApplicationUsers() {
-    this.appUsers = [];
-    this.subscriptions.push(
-      this.applicationService.getApplicationUsers(this.contextApp.app).subscribe((response: any) => {
-        if (response && response.data) {
-          this.appUsers = response.data;
-        }
-      })
-    );
+    return new Promise<void>((resolve1, reject) => {
+      this.appUsers = [];
+      this.subscriptions.push(
+        this.applicationService.getApplicationUsers(this.contextApp.app).subscribe((response: any) => {
+          if (response && response.data) {
+            this.appUsers = response.data;
+          }
+          resolve1();
+        })
+      );
+    });
   }
 
   onEditAsset() {
@@ -206,6 +244,39 @@ export class AddAssetComponent implements OnInit, OnChanges {
           this.isCreateAssetAPILoading = false;
         }
       )
+    );
+  }
+
+  onUpdateAsset() {
+    this.isCreateAssetAPILoading = true;
+    console.log(this.assetDetail);
+    this.assetDetail.tags.app = this.contextApp.app;
+    this.assetDetail.tags.asset_manager = this.assetDetail.tags.asset_manager.user_email;
+    if (this.assetDetail.tags.created_by === '') {
+      this.assetDetail.tags.created_by = this.userData.email + ' (' + this.userData.name + ')';
+    }
+    this.assetDetail.tags.hierarchy_json = { App: this.contextApp.app };
+    Object.keys(this.addAssetConfigureHierarchy).forEach((key) => {
+      this.assetDetail.tags.hierarchy_json[this.contextApp.hierarchy.levels[key]] =
+        this.addAssetConfigureHierarchy[key];
+    });
+    this.assetDetail.tags.hierarchy = JSON.stringify(this.assetDetail.tags.hierarchy_json);
+    const tags = {
+      tags: this.assetDetail.tags,
+    };
+    console.log(tags);
+    this.assetService.updateNonProvisionedAsset(this.contextApp.app, this.assetDetail.asset_id, tags).subscribe(
+      (response: any) => {
+        this.toasterService.showSuccess(response.message, 'Update Asset');
+        this.isCreateAssetAPILoading = false;
+        this.getAssetEmit.emit();
+        this.onCloseCreateAssetModal();
+      },
+      (error) => {
+        this.isCreateAssetAPILoading = false;
+        this.toasterService.showError(error.message, 'Non-provisioned Assets');
+        this.onCloseCreateAssetModal();
+      }
     );
   }
 

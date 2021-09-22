@@ -11,28 +11,28 @@ import { CONSTANTS } from 'src/app/app.constants';
 import { AnonymousCredential, BlobServiceClient, newPipeline } from '@azure/storage-blob';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CommonService {
-
   url = environment.appServerURL;
   breadcrumbEvent: EventEmitter<any> = new EventEmitter<any>();
   refreshSideMenuData: EventEmitter<any> = new EventEmitter<any>();
   resetPassword: EventEmitter<any> = new EventEmitter<any>();
   flag = false;
   privateEncryptionString = environment.storgageSecretKey;
-  constructor(
-    private http: HttpClient,
-    private router: Router,
-    private signalRService: SignalRService
-  ) {
-  }
+  constructor(private http: HttpClient, private router: Router, private signalRService: SignalRService) {}
 
   convertUTCDateToLocal(utcDate) {
     if (utcDate) {
       const options = {
-        year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit',
-        minute: '2-digit', second: '2-digit', fractionalSecondDigits: 3, hour12: true
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        fractionalSecondDigits: 3,
+        hour12: true,
       };
       if (utcDate.includes('T') && utcDate.includes('Z')) {
         // 2011-06-29T16:52:48.000Z
@@ -67,7 +67,7 @@ export class CommonService {
 
   convertDateToEpoch(date: string) {
     if (date) {
-      return (moment.utc(date)).unix();
+      return moment.utc(date).unix();
     }
     return 0;
   }
@@ -88,7 +88,7 @@ export class CommonService {
 
   getFileData(url) {
     return this.http.get(url, {
-      responseType: 'blob'
+      responseType: 'blob',
     });
   }
 
@@ -133,6 +133,12 @@ export class CommonService {
       params = params.set('app', app);
     }
     return this.http.post(this.url + AppUrls.RESET_PASSWORD, obj, { params });
+  }
+
+  sortDataBaseOnTime(arr, key) {
+    return arr.sort((a, b) => {
+      return new Date(a[key]).getTime() - new Date(b[key]).getTime();
+    });
   }
 
   encryptJSON(data) {
@@ -240,9 +246,9 @@ export class CommonService {
   generateUUID() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
       // tslint:disable-next-line: no-bitwise
-      const r = Math.random() * 16 | 0;
+      const r = (Math.random() * 16) | 0;
       // tslint:disable-next-line: no-bitwise
-      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
       return v.toString(16);
     });
   }
@@ -259,8 +265,8 @@ export class CommonService {
     const pipeline = newPipeline(new AnonymousCredential(), {
       retryOptions: { maxTries: 2 }, // Retry options
       keepAliveOptions: {
-        enable: false
-      }
+        enable: false,
+      },
     });
     const blobServiceClient = new BlobServiceClient(environment.blobURL + environment.blobKey, pipeline);
     const containerClient = blobServiceClient.getContainerClient(containerName);
@@ -272,12 +278,12 @@ export class CommonService {
     const response = await client.uploadBrowserData(file, {
       blockSize: 4 * 1024 * 1024, // 4MB block size
       concurrency: 20, // 20 concurrency
-      blobHTTPHeaders: { blobContentType: file.type }
+      blobHTTPHeaders: { blobContentType: file.type },
     });
     if (response._response.status === 201) {
       return {
         url: containerName + '/' + folderName + '/' + fileName,
-        name: file.name
+        name: file.name,
       };
     }
     return null;
@@ -298,8 +304,8 @@ export class CommonService {
     for (const coord of coords) {
       if (coord.latitude && coord.longitude) {
         total = total + 1;
-        const latitude = coord.latitude * Math.PI / 180;
-        const longitude = coord.longitude * Math.PI / 180;
+        const latitude = (coord.latitude * Math.PI) / 180;
+        const longitude = (coord.longitude * Math.PI) / 180;
         x += Math.cos(latitude) * Math.cos(longitude);
         y += Math.cos(latitude) * Math.sin(longitude);
         z += Math.sin(latitude);
@@ -312,8 +318,8 @@ export class CommonService {
     const centralSquareRoot = Math.sqrt(x * x + y * y);
     const centralLatitude = Math.atan2(z, centralSquareRoot);
     return {
-      latitude: centralLatitude * 180 / Math.PI,
-      longitude: centralLongitude * 180 / Math.PI
+      latitude: (centralLatitude * 180) / Math.PI,
+      longitude: (centralLongitude * 180) / Math.PI,
     };
   }
 
@@ -336,13 +342,12 @@ export class CommonService {
     this.router.navigate(['']).then(() => {
       location.reload();
     });
-
   }
 
   getLowestValueFromList(arr) {
     let lowest = 60;
-    for (let i= arr.length-1; i >= 0; i--) {
-        if (arr[i] < lowest) lowest = arr[i];
+    for (let i = arr.length - 1; i >= 0; i--) {
+      if (arr[i] < lowest) lowest = arr[i];
     }
     return lowest || 60;
   }

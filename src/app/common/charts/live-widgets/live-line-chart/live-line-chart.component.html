@@ -1,23 +1,26 @@
-
 <div class="mt-1">
   <div class="card">
     <div class="card-header d-flex px-2">
-      <div  style="min-width: 0; flex:1">
-      <h6 class="my-0 live-widget-title" [ngClass]="{'w-11': !asset  && !chartConfig.freezed}"
-      placement="bottom" [tooltip]="chartConfig.widgetTitle">
-        {{chartConfig.widgetTitle}}
-      </h6>
-    </div>
-    <div class="ml-auto">
-      <div class="round-badge badge-darkblue" tooltip="Edge Derived Property" *ngIf="chartConfig.edge_derived_props">ED</div>
-      <div class="round-badge badge-lightblue" tooltip="Cloud Derived Property" *ngIf="chartConfig.cloud_derived_props">CD</div>
+      <div style="min-width: 0; flex:1">
+        <h6 class="my-0 live-widget-title" [ngClass]="{'w-11': !asset  && !chartConfig.freezed}" placement="bottom"
+          [tooltip]="chartConfig.widgetTitle">
+          {{chartConfig.widgetTitle}}
+        </h6>
+      </div>
+      <div class="ml-auto">
+        <div class="round-badge badge-navyblue" tooltip="Derived KPI" *ngIf="chartConfig.derived_kpis">DK</div>
+        <div class="round-badge badge-darkblue" tooltip="Edge Derived Property" *ngIf="chartConfig.edge_derived_props">
+          ED</div>
+        <div class="round-badge badge-lightblue" tooltip="Cloud Derived Property"
+          *ngIf="chartConfig.cloud_derived_props">CD</div>
 
-      <div class="round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M</div>
-      <a *ngIf="!asset && !chartConfig.freezed && decodedToken?.privileges?.indexOf('ASMMM') > -1" href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()"
-      placement="bottom" tooltip="Remove Widget"><i class="fa fa-close"></i></a>
+        <div class="round-badge badge-blue" tooltip="Measured Property" *ngIf="chartConfig.measured_props">M</div>
+        <a *ngIf="!asset && !chartConfig.freezed && decodedToken?.privileges?.indexOf('ASMMM') > -1"
+          href="javascript:void(0)" (click)="openConfirmRemoveWidgetModal()" placement="bottom"
+          tooltip="Remove Widget"><i class="fa fa-close"></i></a>
       </div>
     </div>
-    <div class="card-body1"  style="height: 12rem;">
+    <div class="card-body1" style="height: 12rem;">
       <div class="row text-center " *ngIf="telemetryObj">
         <div id="{{ chartConfig.chartId }}" [ngStyle]="{'width': '95%', 'height': '11.5rem'}"></div>
       </div>
@@ -26,12 +29,12 @@
       </div>
     </div>
   </div>
-  </div>
+</div>
 
-  <div class="modal fade" id="confirmRemoveWidgetModal{{chartConfig.chartId}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
-    <div class="modal-dialog" role="document">
-      <app-confirm-modal *ngIf="modalConfig" [bodyMessage]="bodyMessage"
-      [headerMessage]="headerMessage"
+<div class="modal fade" id="confirmRemoveWidgetModal{{chartConfig.chartId}}" tabindex="-1" role="dialog"
+  aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <app-confirm-modal *ngIf="modalConfig" [bodyMessage]="bodyMessage" [headerMessage]="headerMessage"
       (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig"></app-confirm-modal>
-    </div>
   </div>
+</div>

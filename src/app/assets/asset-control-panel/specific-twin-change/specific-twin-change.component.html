@@ -1,23 +1,123 @@
-<div class="row ml-1" >
+<div class="table-responsive table-fixHead mt-2">
+  <div class="col-lg-12" *ngIf="selectedWidget">
 
-  <div class="col-lg-12 col-xl-12 align-self-center">
-
-    <div class="form-group row">
-      <label for="inputPassword" class="col-4 col-form-label">Select {{pageType.includes('configure') ? 'Configuration ' : 'Control '}} Widget:</label>
-      <div class="">
-        <select class="form-control form-control-sm" id="widget" name="acknowledge" [(ngModel)]="selectedWidget"
-           style="width: 15rem!important;">
-          <option [ngValue]="undefined"> Select {{pageType.includes('configure') ? 'Configuration ' : 'Control '}} Widget</option>
-          <option [ngValue]="widget" *ngFor="let widget of controlWidgets">{{widget.name}}</option>
-        </select>
+    <div class="col-lg-6 col-xl-6 align-self-center">
+      <div class="row">
+        <!-- <div><a href="javascript:void(0)" [class.disabled]="sentMessageData || !selectedWidget" (click)="validateMessage()" ><button type="button" class="btn btn-primary contact-form" > 1. Validate</button></a></div>
+    <div class='px-1'><hr></div> -->
+        <div><a href="javascript:void(0)" [class.disabled]="!selectedWidget && !iscalledTwinChangeMethod"
+            (click)="callTwinChange()">
+            <button type="button" class="btn btn-sm btn-primary"> Twin Change
+              <i class="fa fa-spinner fa-spin fa-fw " *ngIf="iscalledTwinChangeMethod"></i>
+            </button>
+          </a></div>
       </div>
     </div>
   </div>
+  <div class="content-scroll content-scroll-control-c2d">
+    <div class="row col-lg-12">
+      <div class="col-lg-12 col-xl-12 col-md-12">
+        <div class="d-sm-flex align-items-center justify-content-between my-2">
+          <h6 class="h6 mb-0">Meta Data:</h6>
+        </div>
+        <table class="table table-hover table-bordered">
+          <tbody>
+            <tr>
+              <td>Asset ID</td>
+              <td>{{c2dMessageData.asset_id}}
+              </td>
+            </tr>
+            <tr *ngIf="componentState === constantData.NON_IP_ASSET">
+              <td>Gateway ID</td>
+              <td>{{c2dMessageData.gateway_id}}</td>
+            </tr>
+            <tr>
+              <td>Job ID</td>
+              <td>{{c2dMessageData.job_id}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-
-</div>
-<div class="row">
-  <div class="col-lg-12">
-    <hr class="solid">
+      <div class="col-lg-12 col-xl-12">
+        <!-- Page Heading -->
+        <div class="d-sm-flex align-items-center justify-content-between my-2">
+          <h6 class="h6 mb-0">Message Body / Message JSON:</h6>
+        </div>
+        <table class="table table-hover table-bordered">
+          <tbody>
+            <tr *ngIf="selectedWidget?.metadata?.widget_type === 'Asset'">
+              <td>Asset</td>
+              <td>
+                <select class="form-control form-control-sm" id="asset" name="asset" [(ngModel)]="selectedAssetValue">
+                  <option [ngValue]="undefined">Select Asset</option>
+                  <option [ngValue]="asset.asset_id" *ngFor="let asset of assets;">{{asset.asset_id}}</option>
+                </select>
+              </td>
+            </tr>
+            <tr *ngIf="selectedWidget?.metadata?.widget_type === 'Slave'">
+              <td>Slave/Sensor</td>
+              <td>
+                <select class="form-control form-control-sm" id="slave" name="slave" [(ngModel)]="selectedSlaveValue">
+                  <!-- <option [ngValue]="undefined" >Select Communication Technique</option> -->
+                  <option [ngValue]="undefined">Select Slave/Sensor</option>
+                  <option [ngValue]="slave.slave_id" *ngFor="let slave of slaves;">{{slave.slave_name}}</option>
+                </select>
+              </td>
+            </tr>
+            <ng-container *ngFor="let item of jsonModelKeys; let i = index;">
+              <tr>
+                <td>
+                  <label for="inputPassword" class="col-form-label">{{item.name}}:</label>
+                </td>
+                <td>
+                  <div>
+                    <ng-container *ngIf="item.json.type === 'string'">
+                      <input type="text" class="form-control form-control-sm" name="{{item.name}}"
+                        [(ngModel)]="item.value" minlength="{{item.json.minLength ? item.json.minLength : 1}}"
+                        maxLength="{{item.json.maxLength ? item.json.maxLength : 50}}">
+                    </ng-container>
+                    <ng-container *ngIf="item.json.type === 'number'">
+                      <input type="number" class="form-control form-control-sm" name="{{item.name}}"
+                        [(ngModel)]="item.value" min="{{item.json.minValue ? item.json.minValue : 1}}"
+                        max="{{item.json.maxValue ? item.json.maxValue : 1000}}">
+                    </ng-container>
+                    <ng-container *ngIf="item.json.type === 'boolean'">
+                      <div class="btn-group" name="booleandata">
+                        <ui-switch checkedLabel="{{item.json.trueValue}}" uncheckedLabel="{{item.json.falseValue}}"
+                          size="small" [(ngModel)]="item.value" id="{{item.name}}" name="{{item.name}}"
+                          uncheckedTextColor="red" defaultBgColor="red" checkedTextColor="white"
+                          uncheckedTextColor="white"></ui-switch>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngIf="item.json.type === 'enum'">
+                      <select class="form-control form-control-sm" id="widget" name="acknowledge"
+                        [(ngModel)]="item.value">
+                        <option [ngValue]="val" *ngFor="let val of item.json.enum">{{val}}</option>
+                      </select>
+                    </ng-container>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="jsonModelKeys.length === 0">
+              <tr>
+                <td colspan="2">No {{pageType?.includes('control') ? 'control' : 'configure'}} parameters available.
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div *ngIf="displayType === 'feedback'">
+      <app-c2d-message [asset]="asset" [type]="displayType" [message]="sentMessageData"></app-c2d-message>
+    </div>
+    <div *ngIf="displayType === 'response'">
+      <app-c2d-message [asset]="asset" [type]="displayType" [message]="sentMessageData"></app-c2d-message>
+    </div>
   </div>
 </div>
+<!-- <div class="" style="position:fixed; bottom:1.5rem;">
+  <div class="form-group px-3"><button type="button" placement="bottom" class="btn btn-sm searchBtn btn-primary" onclick="changeClass()">Next</button></div>
+</div> -->

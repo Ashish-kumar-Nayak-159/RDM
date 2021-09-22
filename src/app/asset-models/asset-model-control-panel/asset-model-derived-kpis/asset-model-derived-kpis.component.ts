@@ -7,20 +7,16 @@ import { AssetModelService } from 'src/app/services/asset-model/asset-model.serv
 @Component({
   selector: 'app-asset-model-derived-kpis',
   templateUrl: './asset-model-derived-kpis.component.html',
-  styleUrls: ['./asset-model-derived-kpis.component.css']
+  styleUrls: ['./asset-model-derived-kpis.component.css'],
 })
 export class AssetModelDerivedKpisComponent implements OnInit {
-
   @Input() assetModel: any;
   derivedKPIs: any[] = [];
   derivedKPIsTableConfig: any;
   isDerivedKPIsLaoading = false;
   contextApp: any;
   subscriptions: Subscription[] = [];
-  constructor(
-    private assetModelService: AssetModelService,
-    private commonService: CommonService
-    ) { }
+  constructor(private assetModelService: AssetModelService, private commonService: CommonService) {}
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -34,30 +30,30 @@ export class AssetModelDerivedKpisComponent implements OnInit {
           key: 'code',
           type: 'text',
           headerClass: '',
-          valueclass: ''
+          valueclass: '',
         },
         {
           name: 'Name',
           key: 'name',
           type: 'text',
           headerClass: 'w-15',
-          valueclass: ''
+          valueclass: '',
         },
         {
           name: 'Description',
           key: 'description',
           type: 'text',
           headerClass: '',
-          valueclass: ''
+          valueclass: '',
         },
         {
           name: 'JSON Key',
           key: 'kpi_json_key',
           type: 'text',
           headerClass: '',
-          valueclass: ''
-        }
-      ]
+          valueclass: '',
+        },
+      ],
     };
     this.getDerivedKPIs();
   }
@@ -65,14 +61,19 @@ export class AssetModelDerivedKpisComponent implements OnInit {
   getDerivedKPIs() {
     this.derivedKPIs = [];
     this.isDerivedKPIsLaoading = true;
-    this.subscriptions.push(this.assetModelService.getDerivedKPIs(this.contextApp.app, this.assetModel.name).subscribe(
-      (response: any) => {
-        if (response?.data) {
-          this.derivedKPIs = response.data;
-        }
-        this.isDerivedKPIsLaoading = false;
-      }, error => this.isDerivedKPIsLaoading = false
-    ));
+    this.subscriptions.push(
+      this.assetModelService.getDerivedKPIs(this.contextApp.app, this.assetModel.name).subscribe(
+        (response: any) => {
+          console.log(response);
+          if (response?.data) {
+            this.derivedKPIs = response.data;
+          } else if (response?.derived_kpis) {
+            this.derivedKPIs = response.derived_kpis;
+          }
+          this.isDerivedKPIsLaoading = false;
+        },
+        (error) => (this.isDerivedKPIsLaoading = false)
+      )
+    );
   }
-
 }

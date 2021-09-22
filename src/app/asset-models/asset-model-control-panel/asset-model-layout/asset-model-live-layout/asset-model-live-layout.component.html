@@ -35,8 +35,6 @@
             <app-gauge-chart [chartConfig]="widget" *ngIf="widget.widgetType === 'GaugeChart'"
               (removeWidget)="removeWidget($event)" [telemetryObj]="telemetryObj">
             </app-gauge-chart>
-
-
             <app-live-line-chart [chartConfig]="widget" [telemetryObj]="telemetryObj"
               (removeWidget)="removeWidget($event)"
               *ngIf="widget.widgetType === 'LineChart' || widget.widgetType === 'AreaChart'">

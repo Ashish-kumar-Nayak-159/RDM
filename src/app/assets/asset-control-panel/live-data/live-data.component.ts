@@ -29,6 +29,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
   widgetPropertyList: any[] = [];
   telemetryObj: any;
   apiTelemetryObj: any;
+  derivedKPIs: any[] = [];
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -40,13 +41,31 @@ export class LiveDataComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.getLiveWidgets();
+    await this.getAssetderivedKPIs(this.asset.asset_id);
     await this.getAssetsModelProperties();
+    this.getLiveWidgets();
+  }
+
+  getAssetderivedKPIs(assetId) {
+    return new Promise<void>((resolve) => {
+      this.apiSubscriptions.push(
+        this.assetService.getDerivedKPIs(this.contextApp.app, assetId).subscribe((response: any) => {
+          if (response && response.data) {
+            this.derivedKPIs = response.data;
+            console.log(this.derivedKPIs);
+          } else if (response?.derived_kpis) {
+            this.derivedKPIs = response.derived_kpis;
+          }
+          this.derivedKPIs.forEach((kpi) => kpi.type === 'Derived KPI');
+          resolve();
+        })
+      );
+    });
   }
 
   getAssetsModelProperties() {
     // this.properties = {};
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
         name: this.asset.tags.asset_model,
@@ -68,6 +87,17 @@ export class LiveDataComponent implements OnInit, OnDestroy {
             prop.type = 'Cloud Derived Properties';
             this.propertyList.push(prop);
           });
+          this.derivedKPIs.forEach((kpi) => {
+            const obj: any = {};
+            obj.type = 'Derived KPIs';
+            obj.name = kpi.name;
+            obj.json_key = kpi.kpi_json_key;
+            obj.json_model = {};
+            obj.json_model[obj.json_key] = {};
+            obj.data_type = kpi.metadata?.data_type || 'Number';
+            obj.json_model[obj.json_key].unit = kpi.units;
+            this.propertyList.push(obj);
+          });
           resolve();
         })
       );
@@ -87,12 +117,23 @@ export class LiveDataComponent implements OnInit, OnDestroy {
             widget.edge_derived_props = false;
             widget.cloud_derived_props = false;
             widget.measured_props = false;
+            widget.derived_kpis = false;
             if (widget.widgetType !== 'LineChart' && widget.widgetType !== 'AreaChart') {
               widget?.properties.forEach((prop) => {
+                if (prop.property) {
+                  prop.json_key = prop.property.json_key;
+                }
+                console.log(prop.json_key);
+                console.log(this.propertyList);
+                prop.property = this.propertyList.find((propObj) => propObj.json_key === prop.json_key);
+                prop.type = prop.property?.type || prop.type;
+                console.log(prop);
                 this.addPropertyInList(prop.property);
-                if (prop?.property?.type === 'Edge Derived Properties') {
+                if (prop?.type === 'Derived KPIs') {
+                  widget.derived_kpis = true;
+                } else if (prop?.type === 'Edge Derived Properties') {
                   widget.edge_derived_props = true;
-                } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                } else if (prop?.type === 'Cloud Derived Properties') {
                   widget.cloud_derived_props = true;
                 } else {
                   widget.measured_props = true;
@@ -100,20 +141,38 @@ export class LiveDataComponent implements OnInit, OnDestroy {
               });
             } else {
               widget?.y1AxisProps.forEach((prop) => {
+                if (prop.id) {
+                  prop.json_key = prop.id;
+                }
+                prop.property = this.propertyList.find(
+                  (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
+                );
+                console.log(prop);
                 this.addPropertyInList(prop);
-                if (prop?.type === 'Edge Derived Properties') {
+                if (prop?.type === 'Derived KPIs') {
+                  widget.derived_kpis = true;
+                } else if (prop?.type === 'Edge Derived Properties') {
                   widget.edge_derived_props = true;
-                } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                } else if (prop?.type === 'Cloud Derived Properties') {
                   widget.cloud_derived_props = true;
                 } else {
                   widget.measured_props = true;
                 }
               });
               widget?.y2AxisProps.forEach((prop) => {
+                if (prop.id) {
+                  prop.json_key = prop.id;
+                }
+                prop.property = this.propertyList.find(
+                  (propObj) => propObj.json_key === prop.json_key || propObj.id === prop.id
+                );
+                console.log(prop);
                 this.addPropertyInList(prop);
-                if (prop?.type === 'Edge Derived Properties') {
+                if (prop?.type === 'Derived KPIs') {
+                  widget.derived_kpis = true;
+                } else if (prop?.type === 'Edge Derived Properties') {
                   widget.edge_derived_props = true;
-                } else if (prop?.property?.type === 'Cloud Derived Properties') {
+                } else if (prop?.type === 'Cloud Derived Properties') {
                   widget.cloud_derived_props = true;
                 } else {
                   widget.measured_props = true;
@@ -132,6 +191,7 @@ export class LiveDataComponent implements OnInit, OnDestroy {
   }
 
   addPropertyInList(prop) {
+    console.log(prop);
     if (this.widgetPropertyList.length === 0) {
       this.widgetPropertyList.push(prop);
     } else {
@@ -201,13 +261,17 @@ export class LiveDataComponent implements OnInit, OnDestroy {
           delete obj.m;
           delete obj.ed;
           delete obj.cd;
-          obj = { ...obj, ...data.m, ...data.ed, ...data.cd };
+          delete obj.dkpi;
+          obj = { ...obj, ...data.m, ...data.ed, ...data.cd, ...data.dkpi };
           data = JSON.parse(JSON.stringify(obj));
         }
 
         data.date = this.commonService.convertUTCDateToLocal(data.ts || data.timestamp);
         data.message_date = this.commonService.convertUTCDateToLocal(data.ts || data.timestamp);
-        const obj = JSON.parse(JSON.stringify(this.telemetryObj));
+        let obj = {};
+        if (this.telemetryObj) {
+          obj = JSON.parse(JSON.stringify(this.telemetryObj));
+        }
         this.telemetryObj = undefined;
         // console.log(this.widgetPropertyList);
         this.widgetPropertyList.forEach((prop) => {
@@ -218,7 +282,6 @@ export class LiveDataComponent implements OnInit, OnDestroy {
             };
           }
         });
-        // console.log(obj);
         this.telemetryObj = obj;
         // this.lastReportedTelemetryValues = obj;
         // this.telemetryObj = JSON.parse(JSON.stringify(data));
@@ -234,10 +297,18 @@ export class LiveDataComponent implements OnInit, OnDestroy {
             const obj = {};
             // console.log(this.widgetPropertyList);
             this.widgetPropertyList.forEach((prop) => {
-              obj[prop?.json_key] = {
-                value: response.message[prop?.json_key],
-                date: response.message_date,
-              };
+              if (prop.type !== 'Derived KPIs') {
+                obj[prop?.json_key] = {
+                  value: response.message[prop?.json_key],
+                  date: response.message_date,
+                };
+              } else {
+                const kpiObj = this.derivedKPIs.find((kpi) => kpi.kpi_json_key === prop.json_key);
+                obj[prop?.json_key] = {
+                  value: kpiObj.kpi_result,
+                  date: this.commonService.convertUTCDateToLocal(kpiObj.process_end_time),
+                };
+              }
             });
             // console.log(obj);
             this.telemetryObj = obj;

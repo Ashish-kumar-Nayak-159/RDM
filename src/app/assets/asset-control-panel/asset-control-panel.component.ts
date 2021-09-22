@@ -114,44 +114,47 @@ export class AssetControlPanelComponent implements OnInit, AfterViewInit, OnDest
     if (!$('.sidebar').hasClass('toggled')) {
       $('body').addClass('sidebar-toggled');
       $('.sidebar').addClass('toggled');
-      // $('.sidebar .collapse').collapse('hide');
     }
-    if (($(window).width() > 768) && $('.sidebar').hasClass('toggled')) {
-      $('.container-fluid').removeClass( 'sb-collapse' );
-      $('.container-fluid').removeClass( 'sb-notoggle' );
-      $('.container-fluid').addClass( 'sb-toggle' );
-      }
-    if (($(window).width() > 768) && !$('.sidebar').hasClass('toggled')) {
-      $('.container-fluid').removeClass( 'sb-collapse' );
-      $('.container-fluid').removeClass( 'sb-toggle' );
-      $('.container-fluid').addClass( 'sb-notoggle' );
-      }
-    if (($(window).width() < 768) && $('.sidebar').hasClass('toggled')) {
-      $('.container-fluid').removeClass( 'sb-collapse' );
+    if (($(window).width() > 992) && $('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').addClass('sb-toggle');
+      $('.container-fluid').removeClass('sb-notoggle');
+    }
+    if (($(window).width() > 992) && !$('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').removeClass('sb-toggle');
+      $('.container-fluid').addClass('sb-notoggle');
+    }
+    if (($(window).width() > 480 && $(window).width() < 992) && $('.sidebar').hasClass('toggled')) {
       $('.container-fluid').removeClass( 'sb-notoggle' );
       $('.container-fluid').removeClass( 'sb-toggle' );
-      }
-    if (($(window).width() < 768) && !$('.sidebar').hasClass('toggled')) {
-      $('.container-fluid').removeClass( 'sb-collapse' );
+    }
+    if (($(window).width() > 480 && $(window).width() < 992) && !$('.sidebar').hasClass('toggled')) {
       $('.container-fluid').addClass( 'sb-toggle' );
       $('.container-fluid').removeClass( 'sb-notoggle' );
-      }
-    if (($(window).width() > 768) && $('.sidebar1').hasClass('toggled')) {
+    }
+    if (($(window).width() < 480) && $('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').addClass( 'sb-collapse' );
+      $('.container-fluid').removeClass( 'sb-toggle' );
+    }
+    if (($(window).width() < 480) && !$('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').removeClass( 'sb-collapse' );
+      $('.container-fluid').addClass( 'sb-toggle' );
+    }
+    if (($(window).width() > 992) && $('.sidebar1').hasClass('toggled')) {
       $('.container1-fluid').removeClass( 'sb1-notoggle' );
       $('.container1-fluid').addClass( 'sb1-toggle' );
-      }
-    if (($(window).width() > 768) && !$('.sidebar1').hasClass('toggled')) {
+    }
+    if (($(window).width() > 992) && !$('.sidebar1').hasClass('toggled')) {
       $('.container1-fluid').addClass( 'sb1-notoggle' );
       $('.container1-fluid').removeClass( 'sb1-toggle' );
-      }
-    if (($(window).width() < 768) && $('.sidebar1').hasClass('toggled')) {
+    }
+    if (($(window).width() < 992) && $('.sidebar1').hasClass('toggled')) {
       $('.container1-fluid').removeClass( 'sb1-notoggle' );
       $('.container1-fluid').removeClass( 'sb1-toggle' );
-      }
-    if (($(window).width() < 768) && !$('.sidebar1').hasClass('toggled')) {
+    }
+    if (($(window).width() < 992) && !$('.sidebar1').hasClass('toggled')) {
       $('.container1-fluid').addClass( 'sb1-toggle' );
       $('.container1-fluid').removeClass( 'sb1-notoggle' );
-      }
+    }
   }
 
   setActiveTab(tab) {

@@ -765,10 +765,22 @@ export class AssetService {
     );
   }
 
-  getDerivedKPIs(app, assetId) {
+  getDerivedKPIs(app, assetModelName) {
     return this.http.get(
-      this.url + String.Format(AppUrls.GET_DERIVEDKPI_LIST, encodeURIComponent(app), encodeURIComponent(assetId))
+      this.url + String.Format(AppUrls.GET_DERIVEDKPI_LIST, encodeURIComponent(app), encodeURIComponent(assetModelName))
     );
+  }
+
+  getDerivedKPISHistoricalData(app, filterObj) {
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_DERIVED_KPIS_HISTORICAL_DATA, encodeURIComponent(app)), {
+      params,
+    });
   }
 
   getRules(app, assetModel, filterObj) {

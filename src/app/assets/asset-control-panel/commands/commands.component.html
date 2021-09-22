@@ -2,36 +2,43 @@
   <div class="">
     <ul class="nav">
       <!-- Nav Item - Tables -->
-      <li class="nav-item" >
-        <a class="nav-link" [ngClass]="{'active': displayMode === 'view'}" href="javascript:void(0)" (click)="displayMode = 'view'; timerObj = undefined;">
+      <li class="nav-item">
+        <a class="nav-link" [ngClass]="{'active': displayMode === 'view'}" href="javascript:void(0)"
+          (click)="displayMode = 'view'; timerObj = undefined;">
           <i class="fa fa-fw fa-eye"></i>
           <span>View</span></a>
       </li>
-      <li class="nav-item" *ngIf="menuDetail?.accordion_value?.configuration && decodedToken?.privileges?.indexOf('RCC') > -1" >
-        <a class="nav-link" [ngClass]="{'active': displayMode === 'configure_specific_commands'}" href="javascript:void(0)" (click)="onClickOfSpecificCommands('configure')">
+      <li class="nav-item"
+        *ngIf="menuDetail?.accordion_value?.configuration && decodedToken?.privileges?.indexOf('RCC') > -1">
+        <a class="nav-link" [ngClass]="{'active': displayMode === 'configure_specific_commands'}"
+          href="javascript:void(0)" (click)="onClickOfSpecificCommands('configure')">
           <i class="fa fa-fw fa-cog"></i>
           <span>Configuration</span></a>
       </li>
-    <!-- Nav Item - Charts -->
-    <li class="nav-item" *ngIf="menuDetail?.accordion_value?.control && decodedToken?.privileges?.indexOf('RCC') > -1" >
-      <a class="nav-link" [ngClass]="{'active': displayMode === 'control_specific_commands'}" href="javascript:void(0)" (click)="onClickOfSpecificCommands('control')">
-        <i class="fa fa-fw fa-angle-right"></i>
-        <span>Control</span></a>
-    </li>
-    <!-- <li class="nav-item" *ngIf="callingPage !== 'gateway'" [ngClass]="{'active': displayMode === 'general_commands'}">
+      <!-- Nav Item - Charts -->
+      <li class="nav-item"
+        *ngIf="menuDetail?.accordion_value?.control && decodedToken?.privileges?.indexOf('RCC') > -1">
+        <a class="nav-link" [ngClass]="{'active': displayMode === 'control_specific_commands'}"
+          href="javascript:void(0)" (click)="onClickOfSpecificCommands('control')">
+          <i class="fa fa-fw fa-angle-right"></i>
+          <span>Control</span></a>
+      </li>
+      <!-- <li class="nav-item" *ngIf="callingPage !== 'gateway'" [ngClass]="{'active': displayMode === 'general_commands'}">
       <a class="nav-link" href="javascript:void(0)" (click)="onClickOfGeneralCommands()">
         <i class="fa fa-fw fa-edit"></i>
         <span>Send General Command</span></a>
     </li> -->
-    <li class="nav-item" *ngIf="menuDetail?.accordion_value?.purge && decodedToken?.privileges?.indexOf('RCP') > -1" >
-      <a class="nav-link" [ngClass]="{'active': displayMode === 'purge'}" href="javascript:void(0)" (click)="displayMode = 'purge'; timerObj = undefined;">
-        <i class="fa fa-fw fa-trash"></i>
-        <span>Purge</span></a>
-    </li>
-  </ul></div>
+      <li class="nav-item" *ngIf="menuDetail?.accordion_value?.purge && decodedToken?.privileges?.indexOf('RCP') > -1">
+        <a class="nav-link" [ngClass]="{'active': displayMode === 'purge'}" href="javascript:void(0)"
+          (click)="displayMode = 'purge'; timerObj = undefined;">
+          <i class="fa fa-fw fa-trash"></i>
+          <span>Purge</span></a>
+      </li>
+    </ul>
   </div>
+</div>
 <ng-container *ngIf="displayMode === 'view'">
-<app-c2d-message [asset]="asset" [pageType]="pageType"></app-c2d-message>
+  <app-c2d-message [asset]="asset" [pageType]="pageType"></app-c2d-message>
 </ng-container>
 <ng-container *ngIf="displayMode === 'configure_specific_commands' || displayMode === 'control_specific_commands'">
   <!-- <div class="tab-bar">
@@ -57,47 +64,58 @@
   </form>
   </div>
   </div> -->
-  <p class="m-3" *ngIf="allControlWidgets.length === 0"> No {{displayMode?.includes('control') ? 'control' : 'configure'}} widgets available.</p>
+  <p class="m-3" *ngIf="allControlWidgets.length === 0"> No {{displayMode?.includes('control') ? 'control' :
+    'configure'}} widgets available.</p>
   <div class="inbox" *ngIf="allControlWidgets.length > 0">
     <div class="row">
-      <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3 pr-0 right-border">
-        <ul class="mail_list list-group list-unstyled alert-scroll" >
+      <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 pr-0 right-border">
+        <ul class="mail_list list-group list-unstyled alert-scroll">
           <li class="list-group-item" [ngClass]="{'active': selectedWidget?.id === widget.id}"
-           *ngFor="let widget of allControlWidgets; let i = index;">
+            *ngFor="let widget of allControlWidgets; let i = index;">
             <div class="media">
               <!-- <div class="pull-left">
                 <div class="controls"><i class="fa fa-fw fa-exclamation-triangle" ></i></div>
               </div> -->
               <div class="media-body">
                 <a class="m-r-10">
-                  <div class="media-heading"><p class="overflow" aria-describedby="tooltip-320">{{widget.name}}</p></div>
+                  <div class="media-heading">
+                    <p class="overflow" aria-describedby="tooltip-320">{{widget.name}}</p>
+                  </div>
                   <p class="msg"><time class="hidden-sm-down">{{widget?.metadata.description || 'NA'}}</time></p>
                 </a>
               </div>
               <div class="pull-right">
                 <div>
-                  <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down" (click)="onChangeOfDropdownData(widget)"
-                  ><i aria-hidden="true" class="fa fa-external-link-alt text-dark"></i></a>
+                  <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down"
+                    (click)="onChangeOfDropdownData(widget)"><i aria-hidden="true"
+                      class="fa fa-external-link-alt text-dark"></i></a>
                 </div>
               </div>
             </div>
           </li>
         </ul>
       </div>
-      <div class="col-sm-9 col-md-9 col-lg-9 col-xl-9 pl-0 " *ngIf="selectedWidget">
-        <app-specific-c2d-message [asset]="asset" [pageType]="displayMode" [componentState]="componentState" [selectedWidget]="selectedWidget" [jsonModelKeys]="jsonModelKeys" *ngIf="selectedWidget?.metadata?.communication_technique === 'C2D Message' && selectedWidget"></app-specific-c2d-message>
-        <app-specific-direct-method [asset]="asset" [pageType]="displayMode"  [componentState]="componentState" [selectedWidget]="selectedWidget" [jsonModelKeys]="jsonModelKeys" *ngIf="selectedWidget?.metadata?.communication_technique === 'Direct Method' && selectedWidget"></app-specific-direct-method>
-        <app-specific-twin-change [asset]="asset" [pageType]="displayMode" *ngIf="selectedWidget?.metadata?.communication_technique === 'Twin Change' && selectedWidget"></app-specific-twin-change>
-        </div>
+      <div class="col-9 col-sm-9 col-md-9 col-lg-9 col-xl-9 pl-0 " *ngIf="selectedWidget">
+        <app-specific-c2d-message [asset]="asset" [pageType]="displayMode" [componentState]="componentState"
+          [selectedWidget]="selectedWidget" [jsonModelKeys]="jsonModelKeys"
+          *ngIf="selectedWidget?.metadata?.communication_technique === 'C2D Message' && selectedWidget">
+        </app-specific-c2d-message>
+        <app-specific-direct-method [asset]="asset" [pageType]="displayMode" [componentState]="componentState"
+          [selectedWidget]="selectedWidget" [jsonModelKeys]="jsonModelKeys"
+          *ngIf="selectedWidget?.metadata?.communication_technique === 'Direct Method' && selectedWidget">
+        </app-specific-direct-method>
+        <app-specific-twin-change [asset]="asset" [pageType]="displayMode" [componentState]="componentState"
+          [selectedWidget]="selectedWidget" [jsonModelKeys]="jsonModelKeys"
+          *ngIf="selectedWidget?.metadata?.communication_technique === 'Twin Change' && selectedWidget">
+        </app-specific-twin-change>
+      </div>
     </div>
-    </div>
+  </div>
 </ng-container>
 
 <ng-container *ngIf="displayMode === 'general_commands'">
-<app-compose-c2d-message [asset]="asset" ></app-compose-c2d-message>
+  <app-compose-c2d-message [asset]="asset"></app-compose-c2d-message>
 </ng-container>
 <ng-container *ngIf="displayMode === 'purge'">
   <app-c2d-purge [asset]="asset" [componentState]="componentState"></app-c2d-purge>
-  </ng-container>
-
-
+</ng-container>

@@ -27,6 +27,8 @@ export class GaugeChartComponent implements OnInit, OnChanges, AfterViewInit {
   constructor(private commonService: CommonService) {}
 
   ngOnInit(): void {
+    console.log(JSON.stringify(this.chartConfig));
+    console.log(this.telemetryObj);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
   }
 
@@ -36,43 +38,21 @@ export class GaugeChartComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngOnChanges(changes) {
     if (this.chart && changes.telemetryObj) {
+      console.log(this.telemetryObj);
       //  this.label.text = changes.value.currentValue;
       this.chartConfig.properties.forEach((prop, index) => {
-        if (this.hand[index] && this.chart[index] && prop.load_value_using !== 'api') {
-          console.log('aaaaaaaaaaaaaaaaaa');
-          this.hand[index].value = Number(this.telemetryObj[prop.property.json_key]?.value || '0');
-        }
-
-        if (
-          this.chart[index] &&
-          !this.hand[index] &&
-          this.telemetryObj[prop.property.json_key]?.value !== undefined &&
-          this.telemetryObj[prop.property.json_key]?.value !== null &&
-          prop.load_value_using !== 'api'
-        ) {
-          const hand = this.chart[index].hands.push(new am4charts.ClockHand());
-          hand.radius = am4core.percent(97);
-          hand.value = Number(this.telemetryObj[prop.property.json_key]?.value || '0');
-          this.hand.splice(index, 0, hand);
-        }
-      });
-    }
-    if (this.chart && changes.apiTelemetryObj) {
-      //  this.label.text = changes.value.currentValue;
-      this.chartConfig.properties.forEach((prop, index) => {
-        if (this.hand[index] && this.chart[index] && prop.load_value_using === 'api') {
-          this.hand[index].value = Number(this.apiTelemetryObj[prop.property.json_key]?.value || '0');
+        if (this.hand[index] && this.chart[index]) {
+          this.hand[index].value = Number(this.telemetryObj[prop.property?.json_key]?.value || '0');
         }
         if (
           this.chart[index] &&
           !this.hand[index] &&
-          this.apiTelemetryObj[prop.property.json_key]?.value !== undefined &&
-          this.apiTelemetryObj[prop.property.json_key]?.value !== null &&
-          prop.load_value_using === 'api'
+          this.telemetryObj[prop.property?.json_key]?.value !== undefined &&
+          this.telemetryObj[prop.property?.json_key]?.value !== null
         ) {
           const hand = this.chart[index].hands.push(new am4charts.ClockHand());
           hand.radius = am4core.percent(97);
-          hand.value = Number(this.apiTelemetryObj[prop.property.json_key]?.value || '0');
+          hand.value = Number(this.telemetryObj[prop.property?.json_key]?.value || '0');
           this.hand.splice(index, 0, hand);
         }
       });
@@ -123,24 +103,14 @@ export class GaugeChartComponent implements OnInit, OnChanges, AfterViewInit {
       range2.axisFill.fillOpacity = 1;
       range2.axisFill.fill = am4core.color(prop.high_color || '#c80815');
       range2.axisFill.zIndex = -1;
+
       if (
-        prop.load_value_using !== 'api' &&
-        this.telemetryObj[prop.property.json_key]?.value !== undefined &&
-        this.telemetryObj[prop.property.json_key]?.value !== null
+        this.telemetryObj[prop.property?.json_key]?.value !== undefined &&
+        this.telemetryObj[prop.property?.json_key]?.value !== null
       ) {
         const hand = chart.hands.push(new am4charts.ClockHand());
         hand.radius = am4core.percent(97);
-        hand.value = Number(this.telemetryObj[prop.property.json_key]?.value || '0');
-        this.hand.splice(index, 0, hand);
-      }
-      if (
-        prop.load_value_using === 'api' &&
-        this.apiTelemetryObj[prop.property.json_key]?.value !== undefined &&
-        this.apiTelemetryObj[prop.property.json_key]?.value !== null
-      ) {
-        const hand = chart.hands.push(new am4charts.ClockHand());
-        hand.radius = am4core.percent(97);
-        hand.value = Number(this.apiTelemetryObj[prop.property.json_key]?.value || '0');
+        hand.value = Number(this.telemetryObj[prop.property?.json_key]?.value || '0');
         this.hand.splice(index, 0, hand);
       }
       this.chart.splice(index, 0, chart);

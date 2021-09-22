@@ -5,9 +5,61 @@
       <div class="main-heading">App Settings</div>
   </div>
 
-  <div class="ml-auto" >
-    <div class="asset-nav-tabs">
-      <nav>
+  <div class="ml-auto width-50" >
+    <div class="asset-nav-tabs" >
+      <div class="settings-tabs" >
+      <!-- <section class="tabs-area"> -->
+        <ul class="nav nav-tabs " role="tablist"  (click)="responsiveTabs()">
+          <li class="nav-item">
+            <a class="nav-link border-0" id="nav-home-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'meta-data'}"
+            href="#app-meta-data" role="tab" aria-controls="nav-home" aria-selected="true" (click)="setActiveTab('meta-data')">
+            Metadata</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link border-0" id="nav-home-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'database-configuration'}"
+            href="#app-database-configuration" role="tab" aria-controls="nav-home" aria-selected="true" (click)="setActiveTab('database-configuration')">
+            Database Configuration</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link border-0" id="nav-home-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'dashboard-configuration'}"
+            href="#app-dashboard-configuration" role="tab" aria-controls="nav-home" aria-selected="true" (click)="setActiveTab('dashboard-configuration')">
+            Dashboard Configuration</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'menu-settings'}"
+            href="#app-menu-settings" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('menu-settings')">
+            Menu Settings</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'org-tree'}"
+            href="#app-org-tree" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('org-tree')">
+            Org Tree</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-item nav-link border-0" id="nav-profile-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'asset-hierarchy'}"
+            href="#app-asset-hierarchy" role="tab" aria-controls="nav-profile" aria-selected="false" (click)="setActiveTab('asset-hierarchy')">
+            Hierarchy</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-item nav-link border-0" id="nav-contact-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'roles'}"
+            href="#app-roles" role="tab" aria-controls="nav-contact" aria-selected="false" (click)="setActiveTab('roles')">
+            Roles</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'users'}"
+            href="#app-users" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('users')"
+            *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('UMV') > -1">
+            Users</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'email-alias'}"
+            href="#app-email-alias" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('email-alias')">
+            User Groups</a>
+          </li>
+        </ul>
+      <!-- </section> -->
+      </div>
+      <!-- <nav>
         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
           <a class="nav-item nav-link border-0" id="nav-home-tab" data-toggle="tab" [ngClass]="{'active': activeTab === 'meta-data'}"
           href="#app-meta-data" role="tab" aria-controls="nav-home" aria-selected="true" (click)="setActiveTab('meta-data')">
@@ -39,7 +91,7 @@
           href="#app-email-alias" role="tab" aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('email-alias')">
           User Groups</a>
         </div>
-      </nav>
+      </nav> -->
     </div>
   </div>
   </div>

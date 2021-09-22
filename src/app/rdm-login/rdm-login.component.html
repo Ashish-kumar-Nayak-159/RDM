@@ -154,37 +154,31 @@
 
 <div class="" id="intro" style="margin-top:3.5rem">
   <div class="row mr-0">
-    <div class="col-lg-1"></div>
-    <div class="col-lg-5 d-none d-lg-block align-self-center ">
-      <div class="text-center">
-        <h5 class="h5 mb-3 text-white">Azure RDM: Manage, Monitor, Control millions of IoT assets</h5>
-      </div>
-      <div class="row justify-content-md-center"><img src="../../assets/img/rdm.png"></div>
-    </div>
-    <div class="col-lg-1"></div>
-    <div class="col-lg-4 ">
-      <div class="card o-hidden border-1 my-2"
-        style="-moz-box-shadow: 0 0 3px #9fc0ef; -webkit-box-shadow: 0 0 3px #9fc0ef; box-shadow: 0 0 3px #9fc0ef;">
-        <div class="card-body p-0">
-          <div class="p-4 bg-primary ">
-            <div class="text-center">
-              <h1 class="h4 mb-4" style="color:#1a5a9e">Welcome !!</h1>
-            </div>
-            <form class="user" (submit)="onLogin()">
-              <div class="form-group">
-                <input type="email" class="form-control form-control-user bg-white" id="exampleInputEmail"
-                  aria-describedby="emailHelp" placeholder="Enter Email Address" [(ngModel)]="loginForm.email"
-                  name="email">
-              </div>
-              <div class="row form-group">
-                <div class="col-md-12">
-                  <input id="exampleInputPassword" type="{{this.isPasswordVisible ? 'text' : 'password'}}"
-                    class="form-control form-control-user  bg-white" name="exampleInputPassword" placeholder="Password"
-                    [(ngModel)]="loginForm.password">
-                  <i class="fa fa-fw  field-icon toggle-password" (click)="togglePasswordVisibility()"
-                    [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}"></i>
+      <div class="col-lg-1 d-none d-lg-block"></div>
+      <div class="col-lg-5 d-none d-lg-block align-self-center">
+          <div class="text-center"> <h5 class="h5 mb-3 text-white" >Azure RDM: Manage, Monitor, Control millions of IoT assets</h5></div>
+          <div class="row justify-content-md-center"><img src="../../assets/img/rdm.png" ></div>
+       </div>
+      <div class="col-md-2 col-lg-1"></div>
+      <div class="col-md-8 col-lg-4">
+        <div class="card o-hidden border-1 my-2" style="-moz-box-shadow: 0 0 3px #9fc0ef; -webkit-box-shadow: 0 0 3px #9fc0ef; box-shadow: 0 0 3px #9fc0ef;">
+              <div class="card-body p-0">
+              <div class="p-4 bg-primary">
+                <div class="text-center">
+                  <h1 class="h4 mb-4" style="color:#1a5a9e">Welcome !!</h1>
                 </div>
-                <!-- <p class="wrapper"><input type="password" class="form-control form-control-user" id="exampleInputPassword"
+                <form class="user" (submit)="onLogin()">
+                  <div class="form-group">
+                    <input type="email" class="form-control form-control-user bg-white" id="exampleInputEmail"
+                      aria-describedby="emailHelp" placeholder="Enter Email Address" [(ngModel)]="loginForm.email" name="email">
+                  </div>
+                  <div class="row form-group">
+                    <div class="col-md-12">
+                      <input id="exampleInputPassword" type="{{this.isPasswordVisible ? 'text' : 'password'}}" class="form-control form-control-user  bg-white" name="exampleInputPassword" placeholder="Password" [(ngModel)]="loginForm.password">
+                      <i class="fa fa-fw  field-icon toggle-password" (click)="togglePasswordVisibility()"
+                      [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}" ></i>
+                    </div>
+                    <!-- <p class="wrapper"><input type="password" class="form-control form-control-user" id="exampleInputPassword"
                       placeholder="Password" [(ngModel)]="loginForm.password" name="password"></p> -->
               </div>
               <div class="form-group">
@@ -208,8 +202,7 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="col-lg-1"></div>
+      <div class="col-md-2 col-lg-1"></div>
   </div>
 </div>
 

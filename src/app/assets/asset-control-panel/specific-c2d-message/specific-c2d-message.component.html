@@ -1,37 +1,44 @@
-
-<div class="filter-bar" >
+<div class="filter-bar">
   <div class="col-lg-6 col-xl-6 align-self-center">
     <div class="row">
       <nav>
         <ol class="cd-multi-steps text-top count mb-0">
           <li class="" [ngClass]="{'visited': selectedLevel === 1 || selectedLevel > 1}">
-            <a  href="javascript:void(0)" [class.disabled]="sentMessageData || !selectedWidget"
-            (click)="sentC2DMessage()">Send
-            <i class="fa fa-spinner fa-spin fa-fw " *ngIf="isSendC2DMessageAPILoading"></i></a></li>
+            <a href="javascript:void(0)" [class.disabled]="sentMessageData || !selectedWidget"
+              (click)="sentC2DMessage()">Send
+              <i class="fa fa-spinner fa-spin fa-fw " *ngIf="isSendC2DMessageAPILoading"></i></a>
+          </li>
           <!-- <li class="" ><a href="#">Compose</a></li> -->
-          <li class=""  [ngClass]="{'visited': selectedLevel === 2 || selectedLevel > 2}">
+          <li class="" [ngClass]="{'visited': selectedLevel === 2 || selectedLevel > 2}">
             <a href="javascript:void(0)" [class.disabled]="!sentMessageData  || !selectedWidget"
-            (click)="onClickOfFeedback()">Feedback</a></li>
-          <li  [ngClass]="{'visited': selectedLevel === 3}">
+              (click)="onClickOfFeedback()">Feedback</a>
+          </li>
+          <li [ngClass]="{'visited': selectedLevel === 3}">
             <a href="javascript:void(0)" [class.disabled]="!sentMessageData  || !selectedWidget"
-            (click)="onClickOfResponse()">Response</a></li>
+              (click)="onClickOfResponse()">Response</a>
+          </li>
         </ol>
       </nav>
     </div>
   </div>
   <div class="col-lg-6 col-xl-6 border">
     <div class="row">
-      <div class="bg-light px-1 py-1" style="writing-mode: tb-rl; transform: rotate(-180deg); font-size:0.75rem; color:black;">STATUS</div>
+      <div class="bg-light px-1 py-1"
+        style="writing-mode: tb-rl; transform: rotate(-180deg); font-size:0.75rem; color:black;">STATUS</div>
       <div class="justify-content-center align-self-center px-2 red-font" *ngIf="isMessageValidated === 'invalid'">
-        <i class="fa fa-times"></i> Please verify JSON.</div>
+        <i class="fa fa-times"></i> Please verify JSON.
+      </div>
       <div class="justify-content-center align-self-center px-2 green-font" *ngIf="isMessageValidated === 'valid'">
-        <i class="fa fa-check"></i> Successfully Validated.</div>
+        <i class="fa fa-check"></i> Successfully Validated.
+      </div>
       <div class="justify-content-center align-self-center px-2" *ngIf="sendMessageStatus && sendMessageResponse"
         [ngClass]="{'green-font': sendMessageStatus === 'success', 'red-font': sendMessageStatus === 'error'}">
         <i class="fa"
           [ngClass]="{'fa-check': sendMessageStatus === 'success', 'fa-times': sendMessageStatus === 'error'}"></i>
-        {{sendMessageResponse}}</div>
-      <div class="bg-light px-1 py-1" *ngIf="timerObj" style="writing-mode: tb-rl; transform: rotate(-180deg); font-size:0.75rem; color:black;">&nbsp;TIMER</div>
+        {{sendMessageResponse}}
+      </div>
+      <div class="bg-light px-1 py-1" *ngIf="timerObj"
+        style="writing-mode: tb-rl; transform: rotate(-180deg); font-size:0.75rem; color:black;">&nbsp;TIMER</div>
       <div class="justify-content-center align-self-center px-3">
         <div class="timer" *ngIf="timerObj">
           <div>
@@ -54,7 +61,7 @@
 </div>
 
 <div class="content-scroll content-scroll-control-c2d">
-<!-- <div class="row col-lg-12 mt-2">
+  <!-- <div class="row col-lg-12 mt-2">
 
   <div class="col-lg-6 col-xl-6 align-self-center">
     <div class="row col-lg-12">
@@ -82,25 +89,24 @@
 
 </div> -->
 
-<!-- <div class="" *ngIf="!sentMessageData">
+  <!-- <div class="" *ngIf="!sentMessageData">
   <div class="col-lg-12">
     <hr class="solid" /></div>
 </div> -->
 
-<div class="row col-lg-12" *ngIf="displayType === 'compose'">
-  <div class="col-lg-12 col-xl-12 col-md-12">
-    <div class="d-sm-flex align-items-center justify-content-between my-2">
-      <h6 class="h6 mb-0">Meta Data:</h6>
-    </div>
+  <div class="row col-lg-12" *ngIf="displayType === 'compose'">
+    <div class="col-lg-12 col-xl-12 col-md-12">
+      <div class="d-sm-flex align-items-center justify-content-between my-2">
+        <h6 class="h6 mb-0">Meta Data:</h6>
+      </div>
 
-
-      <table class="table table-hover table-bordered" >
+      <table class="table table-hover table-bordered">
         <tbody>
           <tr>
             <td>Asset ID</td>
-            <td *ngIf="componentState !== constantData.IP_GATEWAY">{{c2dMessageData.asset_id}}
+            <td>{{c2dMessageData.asset_id}}
             </td>
-            <td *ngIf="componentState === constantData.IP_GATEWAY">
+            <!-- <td *ngIf="componentState === constantData.IP_GATEWAY">
               <select class="custom-select" id="asset_id" name="asset_id" [(ngModel)]="c2dMessageData.asset_id">
 
                 <option *ngFor="let asset of assets" [ngValue]="asset.asset_id">
@@ -108,7 +114,7 @@
                 </option>
                 <option [ngValue]="asset.asset_id"> {{asset.asset_id}}</option>
               </select>
-            </td>
+            </td> -->
           </tr>
           <tr *ngIf="componentState === constantData.NON_IP_ASSET">
             <td>Gateway ID</td>
@@ -139,86 +145,84 @@
           </tr>
         </tbody>
       </table>
-  </div>
-
-  <div class="col-lg-12 col-xl-12">
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between my-2">
-      <h6 class="h6 mb-0">Message Body / Message JSON:</h6>
     </div>
-        <table class="table table-hover table-bordered">
-          <tbody>
-            <tr *ngIf="selectedWidget?.metadata?.widget_type === 'Asset'">
-              <td>Asset</td>
-              <td>
-                <select class="form-control form-control-sm" id="asset" name="asset" [(ngModel)]="selectedAssetValue"
-                >
-                  <option [ngValue]="undefined" >Select Asset</option>
-                  <option [ngValue]="asset.asset_id" *ngFor="let asset of assets;">{{asset.asset_id}}</option>
-                </select>
-              </td>
-            </tr>
-            <tr *ngIf="selectedWidget?.metadata?.widget_type === 'Slave'">
-              <td>Slave/Sensor</td>
-              <td>
-                <select class="form-control form-control-sm" id="slave" name="slave" [(ngModel)]="selectedSlaveValue"
-                >
-                  <!-- <option [ngValue]="undefined" >Select Communication Technique</option> -->
-                  <option [ngValue]="undefined" >Select Slave/Sensor</option>
-                  <option [ngValue]="slave.slave_id" *ngFor="let slave of slaves;">{{slave.slave_name}}</option>
-                </select>
-              </td>
-            </tr>
-        <ng-container *ngFor="let item of jsonModelKeys; let i = index;">
-          <tr>
-          <td >
-          <label for="inputPassword" class="col-form-label">{{item.name}}:</label>
-          </td>
-          <td>
-          <div >
-          <ng-container *ngIf="item.json.type === 'string'">
-            <input type="text" class="form-control form-control-sm" name="{{item.name}}"
-            [(ngModel)]="item.value" minlength="{{item.json.minLength ? item.json.minLength : 1}}"
-            maxLength="{{item.json.maxLength ? item.json.maxLength : 50}}">
-          </ng-container>
-          <ng-container *ngIf="item.json.type === 'number'">
-            <input type="number" class="form-control form-control-sm" name="{{item.name}}"
-            [(ngModel)]="item.value" min="{{item.json.minValue ? item.json.minValue : 1}}"
-            max="{{item.json.maxValue ? item.json.maxValue : 1000}}" >
-          </ng-container>
-          <ng-container *ngIf="item.json.type === 'boolean'">
-            <div class="btn-group"  name="booleandata">
-              <ui-switch checkedLabel="{{item.json.trueValue}}"
-              uncheckedLabel="{{item.json.falseValue}}" size="small"
-              [(ngModel)]="item.value" id="{{item.name}}" name="{{item.name}}"
-              uncheckedTextColor="red" defaultBgColor="red" checkedTextColor="white" uncheckedTextColor="white"></ui-switch>
-            </div>
-          </ng-container>
-          <ng-container *ngIf="item.json.type === 'enum'">
-            <select class="form-control form-control-sm" id="widget" name="acknowledge" [(ngModel)]="item.value"
-            >
-            <option [ngValue]="val" *ngFor="let val of item.json.enum">{{val}}</option>
-            </select>
-          </ng-container>
-          </div>
-        </td>
-      </tr>
-        </ng-container>
-        <ng-container *ngIf="jsonModelKeys.length === 0">
-          <tr>
-            <td colspan="2">No {{pageType?.includes('control') ? 'control' : 'configure'}} parameters available.</td>
+
+    <div class="col-lg-12 col-xl-12">
+      <!-- Page Heading -->
+      <div class="d-sm-flex align-items-center justify-content-between my-2">
+        <h6 class="h6 mb-0">Message Body / Message JSON:</h6>
+      </div>
+      <table class="table table-hover table-bordered">
+        <tbody>
+          <tr *ngIf="selectedWidget?.metadata?.widget_type === 'Asset'">
+            <td>Asset</td>
+            <td>
+              <select class="form-control form-control-sm" id="asset" name="asset" [(ngModel)]="selectedAssetValue">
+                <option [ngValue]="undefined">Select Asset</option>
+                <option [ngValue]="asset.asset_id" *ngFor="let asset of assets;">{{asset.asset_id}}</option>
+              </select>
+            </td>
           </tr>
-        </ng-container>
-      </tbody>
-        </table>
+          <tr *ngIf="selectedWidget?.metadata?.widget_type === 'Slave'">
+            <td>Slave/Sensor</td>
+            <td>
+              <select class="form-control form-control-sm" id="slave" name="slave" [(ngModel)]="selectedSlaveValue">
+                <!-- <option [ngValue]="undefined" >Select Communication Technique</option> -->
+                <option [ngValue]="undefined">Select Slave/Sensor</option>
+                <option [ngValue]="slave.slave_id" *ngFor="let slave of slaves;">{{slave.slave_name}}</option>
+              </select>
+            </td>
+          </tr>
+          <ng-container *ngFor="let item of jsonModelKeys; let i = index;">
+            <tr>
+              <td>
+                <label for="inputPassword" class="col-form-label">{{item.name}}:</label>
+              </td>
+              <td>
+                <div>
+                  <ng-container *ngIf="item.json.type === 'string'">
+                    <input type="text" class="form-control form-control-sm" name="{{item.name}}"
+                      [(ngModel)]="item.value" minlength="{{item.json.minLength ? item.json.minLength : 1}}"
+                      maxLength="{{item.json.maxLength ? item.json.maxLength : 50}}">
+                  </ng-container>
+                  <ng-container *ngIf="item.json.type === 'number'">
+                    <input type="number" class="form-control form-control-sm" name="{{item.name}}"
+                      [(ngModel)]="item.value" min="{{item.json.minValue ? item.json.minValue : 1}}"
+                      max="{{item.json.maxValue ? item.json.maxValue : 1000}}">
+                  </ng-container>
+                  <ng-container *ngIf="item.json.type === 'boolean'">
+                    <div class="btn-group" name="booleandata">
+                      <ui-switch checkedLabel="{{item.json.trueValue}}" uncheckedLabel="{{item.json.falseValue}}"
+                        size="small" [(ngModel)]="item.value" id="{{item.name}}" name="{{item.name}}"
+                        uncheckedTextColor="red" defaultBgColor="red" checkedTextColor="white"
+                        uncheckedTextColor="white"></ui-switch>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="item.json.type === 'enum'">
+                    <select class="form-control form-control-sm" id="widget" name="acknowledge"
+                      [(ngModel)]="item.value">
+                      <option [ngValue]="val" *ngFor="let val of item.json.enum">{{val}}</option>
+                    </select>
+                  </ng-container>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="jsonModelKeys.length === 0">
+            <tr>
+              <td colspan="2">No {{pageType?.includes('control') ? 'control' : 'configure'}} parameters available.</td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
-<div *ngIf="displayType === 'feedback'">
-  <app-c2d-message [asset]="asset" [type]="displayType" [message]="sentMessageData"></app-c2d-message>
-</div>
-<div *ngIf="displayType === 'response'">
-  <app-c2d-message [asset]="asset" [type]="displayType" [message]="sentMessageData"></app-c2d-message>
-</div>
+  <div *ngIf="displayType === 'feedback'">
+    <app-c2d-message [asset]="asset" [type]="displayType" [message]="sentMessageData"></app-c2d-message>
+  </div>
+  <div *ngIf="displayType === 'response'">
+    <app-c2d-message [asset]="asset" [type]="displayType" [message]="sentMessageData"></app-c2d-message>
+  </div>
 </div>
 <!-- <div class="" style="position:fixed; bottom:1.5rem;">
   <div class="form-group px-3"><button type="button" placement="bottom" class="btn btn-sm searchBtn btn-primary" onclick="changeClass()">Next</button></div>

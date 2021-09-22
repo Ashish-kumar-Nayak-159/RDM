@@ -16,8 +16,8 @@
       <ul class="navbar-nav scrollbox-content" id="controlPanelSidebar">
         <ng-container *ngFor="let menu of menuItems">
           <ng-container *ngIf="menu.isTitle && menu.isDisplay">
-            <div class="sidebar1-heading ">
-              {{menu.display_name}}
+            <div class="sidebar1-heading">
+              <span>{{menu.display_name}}</span>
             </div>
             <!-- Divider -->
             <hr class="sidebar1-divider">
@@ -173,6 +173,26 @@
             id="asset_alert_conditioning">
             <app-asset-alert-conditions *ngIf="activeTab === 'alert_conditioning' && asset" [asset]="asset">
             </app-asset-alert-conditions>
+          </div>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'cached_telemetry'}" role="tabpanel"
+            id="asset_cached_telemetry">
+            <app-gateway-cached-telemetry *ngIf="activeTab === 'cached_telemetry' && asset" [asset]="asset">
+            </app-gateway-cached-telemetry>
+          </div>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'config_history'}" role="tabpanel"
+            id="asset_config_history">
+            <app-gateway-configuration-history *ngIf="activeTab === 'config_history' && asset" [asset]="asset">
+            </app-gateway-configuration-history>
+          </div>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'current_config'}" role="tabpanel"
+            id="asset_current_config">
+            <app-gateway-current-configuration *ngIf="activeTab === 'current_config' && asset" [asset]="asset">
+            </app-gateway-current-configuration>
+          </div>
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'cached_alerts'}" role="tabpanel"
+            id="asset_cached_alerts">
+            <app-gateway-cached-alerts *ngIf="activeTab === 'cached_alerts' && asset" [asset]="asset">
+            </app-gateway-cached-alerts>
           </div>
           <!-- /.container1-fluid -->
 

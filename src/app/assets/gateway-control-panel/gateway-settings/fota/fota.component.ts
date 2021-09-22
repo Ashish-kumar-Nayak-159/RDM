@@ -204,14 +204,6 @@ export class FotaComponent implements OnInit {
           this.isAPILoading = false;
           this.toasterService.showSuccess('Request sent to Asset', type);
           this.assetService.refreshRecentJobs.emit();
-          // this.confirmBodyMessage = response.message;
-          // this.displyaMsgArr.push({
-          //   message: 'Firmware ' + type.toLowerCase() + ' request sent to Asset.',
-          //   error: false
-          // });
-          // this.modalConfig.isDisplaySave = false;
-          // clearInterval(this.twinResponseInterval);
-          // this.loadAssetTwinChangeResponse(obj);
         },
         (error) => {
           clearInterval(this.twinResponseInterval);

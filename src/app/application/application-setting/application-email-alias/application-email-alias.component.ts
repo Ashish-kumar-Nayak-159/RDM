@@ -14,8 +14,8 @@ declare var $: any;
 })
 export class ApplicationEmailAliasComponent implements OnInit {
   @Input() applicationData: any;
-  appObj: { group_name: string; recipients?: any[]; emails?: any[]; sms?: any[]; whatsapp?: any[] };
-  groupObj: { group_name: string; created_by: string; recipients?: {}; emails?: any[]; sms?: any[]; whatsapp?: any[] };
+  appObj: { group_name?: string; recipients?: any[]; emails?: any[]; sms?: any[]; whatsapp?: any[] };
+  groupObj: { group_name?: string; recipients?: {}; emails?: any[]; sms?: any[]; whatsapp?: any[] };
   userGroups: any[] = [];
   isUserGroupsAPILoading = false;
   isUpdateUserGroupsLoading = false;
@@ -23,14 +23,10 @@ export class ApplicationEmailAliasComponent implements OnInit {
   recipientemail: string;
   recipientsms: any = {};
   recipientwhatsapp: any = {};
-  // emailObj: any;
-  // smsObj: any;
-  // whatsappObj: any;
   decodedToken: any;
   searchCountryField = SearchCountryField;
   countryISO = CountryISO;
   isCreateUserGroupAPILoading = false;
-  userData: any;
   selectedUserGroup: any;
   isAddUserGroup = false;
   constructor(
@@ -42,9 +38,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.applicationData = JSON.parse(JSON.stringify(this.applicationData));
-    this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.getApplicationUserGroups();
-    this.groupObj = { group_name: '',  created_by: '', recipients: { emails: [], sms: [], whatsapp: [] } };
   }
 
   getApplicationUserGroups() {
@@ -78,7 +72,6 @@ export class ApplicationEmailAliasComponent implements OnInit {
   }
 
   addEmailRecipient(index) {
-    // this.emailObj = this.userGroups[index].recipients['emails'];
     if (!this.recipientemail) {
       this.toasterService.showError('Email is required', 'Add Email');
     } else {
@@ -178,17 +171,20 @@ export class ApplicationEmailAliasComponent implements OnInit {
 
   openCreateUserGroupModal() {
     this.isAddUserGroup = true;
+    this.groupObj = { group_name: null, recipients: { emails: [], sms: [], whatsapp: [] } };
+    this.recipientemail = undefined;
+    this.recipientsms = {};
+    this.recipientwhatsapp = {};
     $('#createUserGroupModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
   onCloseCreateUserGroupModal() {
     $('#createUserGroupModal').modal('hide');
     this.groupObj = undefined;
+    this.isAddUserGroup = false;
   }
 
   onCreateUserGroup() {
-    this.groupObj.created_by = this.userData.email;
-    console.log(this.groupObj);
     this.isCreateUserGroupAPILoading = true;
     this.apiSubscriptions.push(
       this.applicationService
@@ -199,8 +195,6 @@ export class ApplicationEmailAliasComponent implements OnInit {
             this.toasterService.showSuccess(response.message, 'Create User Group');
             this.onCloseCreateUserGroupModal();
             this.getApplicationUserGroups();
-            this.isAddUserGroup = false;
-            // this.groupObj = undefined;
           },
           (error) => {
             this.isCreateUserGroupAPILoading = false;

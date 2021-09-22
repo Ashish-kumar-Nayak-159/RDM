@@ -56,22 +56,22 @@ export class AddRuleComponent implements OnInit {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     if (!this.ruleModel.actions) {
       this.ruleModel.actions = {
-        alert_management: { enabled: false, alert_condition_code: '' },
-        notification: { enabled: false, email: { subject: '', body: '', groups: [] } },
+        alert_management: { enabled: false, alert_condition_code: null },
+        notification: { enabled: false, email: { subject: null, body: null, groups: [] } },
         asset_control: { disable: false },
       };
     }
     if (!this.ruleModel.actions.alert_management) {
-        this.ruleModel.actions.alert_management = { enabled: false, alert_condition_code: '' };
+        this.ruleModel.actions.alert_management = { enabled: false, alert_condition_code: null };
     }
     if (!this.ruleModel.actions.alert_management.alert_condition_code) {
-        this.ruleModel.actions.alert_management.alert_condition_code = '';
+        this.ruleModel.actions.alert_management.alert_condition_code = null;
     }
     if (!this.ruleModel.actions.notification) {
-        this.ruleModel.actions.notification = { enabled: false, email: { subject: '', body: '', groups: [] } };
+        this.ruleModel.actions.notification = { enabled: false, email: { subject: null, body: null, groups: [] } };
     }
     if (!this.ruleModel.actions.notification.email) {
-        this.ruleModel.actions.notification.email =  { subject: '', body: '', groups: [] };
+        this.ruleModel.actions.notification.email =  { subject: null, body: null, groups: [] };
     }
     if (!this.ruleModel.actions.notification.email.groups) {
         this.ruleModel.actions.notification.email.groups = [];
@@ -245,7 +245,6 @@ export class AddRuleComponent implements OnInit {
   createNewRule() {
     console.log(this.ruleModel);
     if (
-      // !this.ruleModel.actions.alert_management.alert_condition_code ||
       !this.ruleModel.name ||
       !this.ruleModel.description ||
       !this.ruleModel.code ||
@@ -255,17 +254,15 @@ export class AddRuleComponent implements OnInit {
       this.toasterService.showError('Please fill all required details', 'Add Rule');
       return;
     }
+    else if (
+      !this.ruleModel.actions.alert_management.enabled &&
+      !this.ruleModel.actions.notification.enabled &&
+      !this.ruleModel.actions.asset_control.disable
+    ) {
+      this.toasterService.showError('Please select any one of the actions', 'Add Rule');
+      return;
+    }
     this.isUpdateApiCall = true;
-
-    // const groups = [];
-    // if (this.ruleModel?.actions.notification.email.groups.length > 0) {
-    //   this.ruleModel?.actions.notification.email.groups.forEach((group) => {
-    //     groups.push(group.group_name);
-    //   }
-    // )};
-    // this.ruleModel.actions.notification.email.groups = [];
-    // this.ruleModel.actions.notification.email.groups = groups;
-
     let str = '';
     this.ruleModel.properties = [];
     this.ruleModel.conditions.forEach((element) => {

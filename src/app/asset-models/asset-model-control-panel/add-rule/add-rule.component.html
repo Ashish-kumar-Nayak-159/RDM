@@ -245,7 +245,7 @@
                     [(ngModel)]="ruleModel.actions.alert_management.enabled" [disabled]="isView" >
                   <label class="form-check-label" for="email">Send Alert</label>
 
-                  <div *ngIf="ruleModel.actions.alert_management.enabled || isView">
+                  <div *ngIf="ruleModel.actions.alert_management.enabled">
                     <div>
                       <label for="exampleEmail" class="mt-3 required">Alert Code</label>
                         <div class="form-group">
@@ -294,7 +294,7 @@
                   <input type="checkbox" class="form-check-input" id="notification" name="notification"
                       [(ngModel)]="ruleModel.actions.notification.enabled" [disabled]="isView" >
                   <label class="form-check-label" for="notification">Send Email to User Groups</label>
-                  <div class="col-12 my-3" *ngIf="ruleModel.actions.notification.enabled || isView">
+                  <div class="col-12 my-3" *ngIf="ruleModel.actions.notification.enabled">
                       <div class="">
                           <div class="form-group row">
                             <label for="exampleEmail" class="col-2 required">UserGroup</label>

@@ -1,7 +1,7 @@
 <div class="tab-bar">
   <div class="d-flex d-flex align-items-center">
     <div class="h6 m-0 p-0">User Groups
-      <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('UMM') > -1">
+      <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
         <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="openCreateUserGroupModal()"
           placement="bottom" tooltip="Add User Group"><i class="fas fa-plus fa-sm"></i></button>
       </ng-container>
@@ -201,7 +201,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content" *ngIf="isAddUserGroup">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add UserGroup</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Add User Group</h5>
         <button type="button" class="close" [disabled]="isCreateUserGroupAPILoading" (click)="onCloseCreateUserGroupModal()">
           <span aria-hidden="true">&times;</span>
         </button>

@@ -1,66 +1,64 @@
-<ul class="navbar-nav bg-primary sidebar sidebar-lightblue fixed-top accordion" id="accordionSidebar"  *ngIf="userData">
+<ul class="navbar-nav bg-primary sidebar sidebar-lightblue fixed-top accordion" id="accordionSidebar" *ngIf="userData">
   <!-- side menu HTML for super admin start-->
-  <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngIf="userData?.is_super_admin">
-      <a class="nav-link collapsed" [routerLink]="['applications']"  >
-        <i class="fa fa-fw fa-th-large"  tooltip="Applications"></i>
-        <span>Apps</span></a>
+  <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+    *ngIf="userData?.is_super_admin">
+    <a class="nav-link collapsed" [routerLink]="['applications']">
+      <i class="fa fa-fw fa-th-large" tooltip="Applications" placement="top"></i>
+      <span>Apps</span></a>
   </li>
   <!-- side menu HTML for super admin end-->
   <!-- side menu HTML for other user -->
   <ng-container *ngFor="let item of displayMenuList">
     <ng-container *ngIf="!item.children && item.visible && item?.priority === 1">
-      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: item.exactMatch}"  *ngIf="!userData?.is_super_admin && item.url && !item.fragment"
-      >
+      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: item.exactMatch}"
+        *ngIf="!userData?.is_super_admin && item.url && !item.fragment">
         <a class="nav-link" [routerLink]="getURL(item.url)" [fragment]="item.fragment"
-        [tooltip]="item.display_name ? item.display_name : item.system_name" >
-          <i class="{{item.icon}}"  ></i>
+          [tooltip]="item.display_name ? item.display_name : item.system_name" placement="top">
+          <i class="{{item.icon}}"></i>
           <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
       </li>
       <li class="nav-item" *ngIf="!userData?.is_super_admin && item.url && item.fragment"
-      [class.active]="item.fragment && (activeFragment) === item.fragment"
-      >
+        [class.active]="item.fragment && (activeFragment) === item.fragment">
         <a class="nav-link" [routerLink]="getURL(item.url)" [fragment]="item.fragment"
-        [tooltip]="item.display_name ? item.display_name : item.system_name"  >
-          <i class="{{item.icon}}" ></i>
+          [tooltip]="item.display_name ? item.display_name : item.system_name" placement="top">
+          <i class="{{item.icon}}"></i>
           <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
       </li>
-      <li class="nav-item" *ngIf="!userData?.is_super_admin && !item.url"
-      >
-      <a class="nav-link" [tooltip]="item.display_name ? item.display_name : item.system_name" >
-        <i class="{{item.icon}}"  ></i>
-        <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
-        </li>
+      <li class="nav-item" *ngIf="!userData?.is_super_admin && !item.url">
+        <a class="nav-link" [tooltip]="item.display_name ? item.display_name : item.system_name" placement="top">
+          <i class="{{item.icon}}"></i>
+          <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
+      </li>
     </ng-container>
     <ng-container *ngIf="!item.children && item.visible && item?.priority === 2">
-      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"  *ngIf="!userData?.is_super_admin && item.url"
-      >
+      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+        *ngIf="!userData?.is_super_admin && item.url">
         <a class="nav-link" [routerLink]="getURL(item.url)"
-         [tooltip]="item.display_name ? item.display_name : item.system_name">
-          <i class="{{item.icon}}" ></i>
+          [tooltip]="item.display_name ? item.display_name : item.system_name" placement="top">
+          <i class="{{item.icon}}"></i>
           <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
 
       </li>
-      <li class="nav-item" *ngIf="!userData?.is_super_admin && !item.url"
-      >
-      <a class="nav-link"   [tooltip]="item.display_name ? item.display_name : item.system_name">
-        <i class="{{item.icon}}" ></i>
-        <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
-        </li>
+      <li class="nav-item" *ngIf="!userData?.is_super_admin && !item.url">
+        <a class="nav-link" [tooltip]="item.display_name ? item.display_name : item.system_name" placement="top">
+          <i class="{{item.icon}}"></i>
+          <span>{{item.display_name ? item.display_name : item.system_name}}</span></a>
+      </li>
     </ng-container>
     <ng-container *ngIf="item.children && item.children.length > 0  && item.visible">
-      <li class="nav-item" >
-        <a class="nav-link collapsed" href="#asset-groups" data-toggle="collapse"
-        aria-expanded="true"   [tooltip]="item.display_name ? item.display_name : item.system_name">
-          <i class="{{item.icon}}" ></i>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#asset-groups" data-toggle="collapse" aria-expanded="true"
+          [tooltip]="item.display_name ? item.display_name : item.system_name" placement="top">
+          <i class="{{item.icon}}"></i>
           <span>{{item.display_name ? item.display_name : item.system_name}}</span>
         </a>
         <div id="asset-groups" class="collapse" aria-labelledby="headingPages">
           <div class="bg-white py-2 collapse-inner rounded">
-            <ng-container  *ngFor="let child of item.children">
-            <a class="collapse-item" href="javascript:void(0)" *ngIf="child.visible">
-              {{child.display_name ? child.display_name : child.system_name}}
-            </a>
-          </ng-container>
+            <ng-container *ngFor="let child of item.children">
+              <a class="collapse-item" href="javascript:void(0)" *ngIf="child.visible">
+                {{child.display_name ? child.display_name : child.system_name}}
+              </a>
+            </ng-container>
           </div>
         </div>
       </li>

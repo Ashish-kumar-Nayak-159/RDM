@@ -101,6 +101,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     maxDate: moment(),
     ranges: CONSTANTS.DATE_OPTIONS,
   };
+  isShowOpenFilter = true;
   @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   selectedDateRange: string;
   displayHierarchyString: string;
@@ -672,12 +673,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.openModal('downloadDocumentModal');
     const url = this.blobStorageURL + fileObj.url + this.sasToken;
     setTimeout(() => {
-    this.subscriptions.push(this.commonService.getFileData(url).subscribe(
-      response => {
-        this.fileSaverService.save(response, fileObj.name);
-        this.closeModal('downloadDocumentModal');
-      }
-    ));
+      this.subscriptions.push(
+        this.commonService.getFileData(url).subscribe((response) => {
+          this.fileSaverService.save(response, fileObj.name);
+          this.closeModal('downloadDocumentModal');
+        })
+      );
     }, 500);
   }
 

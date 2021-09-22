@@ -128,6 +128,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.historicalDateFilter.sampling_format = 'minute';
       this.historicalDateFilter.sampling_time = 1;
     }
+
     if ($(window).width() < 992) {
       this.isShowOpenFilter = false;
     }
@@ -1008,6 +1009,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           });
           console.log(nullValueArr);
+
 
           // console.log(JSON.stringify(this.telemetryData));
           console.log(this.telemetryData.length);

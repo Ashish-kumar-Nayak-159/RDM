@@ -399,7 +399,6 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
 
   onAssetFilterBtnClick() {
     $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
-      console.log('aaaaaaaaaa');
       e.stopPropagation();
     });
     $('#dd-open').on('hide.bs.dropdown', (e: any) => {

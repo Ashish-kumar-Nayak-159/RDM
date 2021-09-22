@@ -48,30 +48,35 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   constructor(private commonService: CommonService, private chartService: ChartService, private zone: NgZone) {}
 
   ngOnInit(): void {
-    console.log(JSON.stringify(this.telemetryData));
-    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-    this.loader = true;
-    setTimeout(() => {
-      this.plotChart();
-    }, 200);
-    this.subscriptions.push(
-      this.chartService.toggleThresholdEvent.subscribe((ev) => {
-        this.showThreshold = ev;
-        this.toggleThreshold(ev);
-      })
+    this.decodedToken = this.commonService.decodeJWTToken(
+      localStorage.getItem(CONSTANTS.APP_TOKEN)
     );
-    this.subscriptions.push(
-      this.chartService.togglePropertyEvent.subscribe((property) => this.toggleProperty(property))
-    );
-    this.subscriptions.push(
-      this.chartService.disposeChartEvent.subscribe(() => {
-        if (this.chart) {
-          // alert('5888');
-          this.chart.dispose();
-        }
-        this.subscriptions.forEach((sub) => sub.unsubscribe());
-      })
-    );
+    if (this.telemetryData.length > 0) {
+      this.loader = true;
+      setTimeout(() => {
+        this.plotChart();
+      }, 200);
+      this.subscriptions.push(
+        this.chartService.toggleThresholdEvent.subscribe((ev) => {
+          this.showThreshold = ev;
+          this.toggleThreshold(ev);
+        })
+      );
+      this.subscriptions.push(
+        this.chartService.togglePropertyEvent.subscribe((property) =>
+          this.toggleProperty(property)
+        )
+      );
+      this.subscriptions.push(
+        this.chartService.disposeChartEvent.subscribe(() => {
+          if (this.chart) {
+            // alert('5888');
+            this.chart.dispose();
+          }
+          this.subscriptions.forEach((sub) => sub.unsubscribe());
+        })
+      );
+    }
   }
 
   plotChart() {
@@ -197,9 +202,9 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       });
       this.y2AxisProps.forEach((prop) => {
         this.propertyList.forEach((propObj) => {
-          if (prop === propObj.json_key) {
+          if (prop.json_key === propObj.json_key) {
             const units = propObj.json_model[propObj.json_key].units;
-            this.chartDataFields[prop] = propObj.name + (units ? ' (' + units + ')' : '');
+            this.chartDataFields[prop.json_key] = propObj.name + (units ? ' (' + units + ')' : '');
           }
         });
       });

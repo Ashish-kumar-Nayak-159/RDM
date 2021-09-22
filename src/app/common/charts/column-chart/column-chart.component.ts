@@ -43,27 +43,33 @@ export class ColumnChartComponent implements OnInit, OnDestroy {
   constructor(private zone: NgZone, private chartService: ChartService, private commonService: CommonService) {}
 
   ngOnInit(): void {
-    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-    this.loader = true;
-    setTimeout(() => this.plotChart(), 200);
-    this.subscriptions.push(
-      this.chartService.toggleThresholdEvent.subscribe((ev) => {
-        this.showThreshold = ev;
-        this.toggleThreshold(ev);
-      })
+    this.decodedToken = this.commonService.decodeJWTToken(
+      localStorage.getItem(CONSTANTS.APP_TOKEN)
     );
-    this.subscriptions.push(
-      this.chartService.togglePropertyEvent.subscribe((property) => this.toggleProperty(property))
-    );
-    this.subscriptions.push(
-      this.chartService.disposeChartEvent.subscribe(() => {
-        if (this.chart) {
-          // alert('5888');
-          this.chart.dispose();
-        }
-        this.subscriptions.forEach((sub) => sub.unsubscribe());
-      })
-    );
+    if (this.telemetryData.length > 0) {
+      this.loader = true;
+      setTimeout(() => this.plotChart(), 200);
+      this.subscriptions.push(
+        this.chartService.toggleThresholdEvent.subscribe((ev) => {
+          this.showThreshold = ev;
+          this.toggleThreshold(ev);
+        })
+      );
+      this.subscriptions.push(
+        this.chartService.togglePropertyEvent.subscribe((property) =>
+          this.toggleProperty(property)
+        )
+      );
+      this.subscriptions.push(
+        this.chartService.disposeChartEvent.subscribe(() => {
+          if (this.chart) {
+            // alert('5888');
+            this.chart.dispose();
+          }
+          this.subscriptions.forEach((sub) => sub.unsubscribe());
+        })
+      );
+    }
   }
 
   plotChart() {

@@ -919,20 +919,19 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     kpiCodes = kpiCodes.replace(/,\s*$/, '');
     if (kpiCodes.length > 0) {
       return new Promise<void>((resolve1) => {
-        this.isHistoryAPILoading = true;
         const obj = {
           kpi_codes: kpiCodes,
           from_date: undefined,
           to_date: undefined,
         };
         const now = moment().utc().unix();
-        if (this.historyFilter.dateOption !== 'Custom Range') {
-          const dateObj = this.commonService.getMomentStartEndDate(this.historyFilter.dateOption);
+        if (this.filterObj.dateOption !== 'Custom Range') {
+          const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
           obj.from_date = dateObj.from_date;
           obj.to_date = dateObj.to_date;
         } else {
-          obj.from_date = this.historyFilter.from_date;
-          obj.to_date = this.historyFilter.to_date;
+          obj.from_date = this.filterObj.from_date;
+          obj.to_date = this.filterObj.to_date;
         }
         this.assetService.getDerivedKPISHistoricalData(this.contextApp.app, obj).subscribe((response: any) => {
           response.data.forEach((item) => {

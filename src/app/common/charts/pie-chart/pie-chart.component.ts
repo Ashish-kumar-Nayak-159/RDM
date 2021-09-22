@@ -36,8 +36,12 @@ export class PieChartComponent implements OnInit, OnDestroy {
   constructor(private commonService: CommonService) {}
 
   ngOnInit(): void {
-    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-    setTimeout(() => this.plotChart(), 200);
+    this.decodedToken = this.commonService.decodeJWTToken(
+      localStorage.getItem(CONSTANTS.APP_TOKEN)
+    );
+    if (this.telemetryData.length > 0) {
+      setTimeout(() => this.plotChart(), 200);
+    }
   }
 
   plotChart() {

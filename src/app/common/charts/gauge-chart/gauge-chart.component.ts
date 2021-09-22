@@ -27,8 +27,6 @@ export class GaugeChartComponent implements OnInit, OnChanges, AfterViewInit {
   constructor(private commonService: CommonService) {}
 
   ngOnInit(): void {
-    console.log(JSON.stringify(this.chartConfig));
-    console.log(this.telemetryObj);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
   }
 

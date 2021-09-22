@@ -1,14 +1,14 @@
 export const environment = {
   production: true,
-  appServerURL: 'https://indygo-rdm.azurewebsites.net/api/',
-  blobAccountName: 'indygo',
+  appServerURL: 'https://kemsysrdmfuntionapp.azurewebsites.net/api/',
+  blobAccountName: 'storageaccountkemsy96a3',
   blobContainerName: 'rdm-images',
-  blobKey: '?sv=2020-02-10&ss=bf&srt=sco&sp=rwacx&se=2050-06-30T17:10:17Z&st=2021-06-30T09:10:17Z&spr=https,http&sig=WSFpbc01fVyAoys6UdFCH2DCC6B7Nt4BeZ2AIBJ79Do%3D',
-  blobURL: 'https://indygo.blob.core.windows.net/',
+  blobKey: '?sv=2019-12-12&ss=bfqt&srt=co&sp=rwdlacupx&se=2050-08-24T01:36:54Z&st=2020-08-23T17:36:54Z&spr=https,http&sig=RQIjWkLDMqo6bxn5QtZrBLBQ7qYDn2q2dPZyckV%2FGJc%3D',
+  blobURL: 'https://storageaccountkemsy96a3.blob.core.windows.net/',
   cachedTelemetryContainer: 'telemetry',
   app: 'Indygo',
   environment: 'TEST',
-  version: '8.0',
+  version: '10.0',
   storgageSecretKey: 'kEm$Y$*RdM',
   packageManagementContainer: 'packages'
 };

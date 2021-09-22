@@ -44,27 +44,37 @@ export class BarChartComponent implements OnInit, OnDestroy {
   constructor(private commonService: CommonService, private chartService: ChartService, private zone: NgZone) {}
 
   ngOnInit(): void {
-    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-    this.loader = true;
-    setTimeout(() => this.plotChart(), 200);
-    this.subscriptions.push(
-      this.chartService.toggleThresholdEvent.subscribe((ev) => {
-        this.showThreshold = ev;
-        this.toggleThreshold(ev);
-      })
+    this.decodedToken = this.commonService.decodeJWTToken(
+      localStorage.getItem(CONSTANTS.APP_TOKEN)
     );
-    this.subscriptions.push(
-      this.chartService.togglePropertyEvent.subscribe((property) => this.toggleProperty(property))
-    );
-    this.subscriptions.push(
-      this.chartService.disposeChartEvent.subscribe(() => {
-        if (this.chart) {
-          // alert('5888');
-          this.chart.dispose();
-        }
-        this.subscriptions.forEach((sub) => sub.unsubscribe());
-      })
-    );
+
+
+
+
+    if (this.telemetryData.length > 0) {
+      this.loader = true;
+      setTimeout(() => this.plotChart(), 200);
+      this.subscriptions.push(
+        this.chartService.toggleThresholdEvent.subscribe((ev) => {
+          this.showThreshold = ev;
+          this.toggleThreshold(ev);
+        })
+      );
+      this.subscriptions.push(
+        this.chartService.togglePropertyEvent.subscribe((property) =>
+          this.toggleProperty(property)
+        )
+      );
+      this.subscriptions.push(
+        this.chartService.disposeChartEvent.subscribe(() => {
+          if (this.chart) {
+            // alert('5888');
+            this.chart.dispose();
+          }
+          this.subscriptions.forEach((sub) => sub.unsubscribe());
+        })
+      );
+    }
   }
 
   plotChart() {
@@ -112,7 +122,8 @@ export class BarChartComponent implements OnInit, OnDestroy {
         date.setUTCSeconds(this.chartStartdate);
         categoryAxis.min = date.getTime();
       }
-
+      categoryAxis.renderer.grid.template.location = 0;
+      categoryAxis.renderer.labels.template.location = 0.0001;
       if (this.chartEnddate) {
         const date = new Date(0);
         date.setUTCSeconds(this.chartEnddate);
@@ -197,6 +208,10 @@ export class BarChartComponent implements OnInit, OnDestroy {
         this.loader = false;
         this.loaderMessage = 'Loading Data. Wait...';
       });
+      setTimeout(() => {
+        this.loader = false;
+        this.loaderMessage = 'Loading Data. Wait...';
+      }, 1500);
       this.chart = chart;
       // // Create series
       this.createValueAxis(chart, 0);

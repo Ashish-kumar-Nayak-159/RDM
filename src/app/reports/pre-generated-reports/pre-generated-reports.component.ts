@@ -64,6 +64,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   reportsObj: any = {};
   assetModels: any[] = [];
   selectedAssets: any[] = [];
+  isAddReport = false;
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -169,11 +170,14 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   onOpenConfigurePGRModal() {
+    this.isAddReport = true;
     $('#configurePGRModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
   onCloseConfigurePGRModal() {
     $('#configurePGRModal').modal('hide');
+    // this.reportsObj = undefined;
+    this.isAddReport = false;
   }
 
   onCreateNewPGReports(){
@@ -217,12 +221,11 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     console.log(this.reportsObj);
     this.subscriptions.push(
       this.assetService.createReportSubscription(this.contextApp.app, this.reportsObj).subscribe((response: any) => {
-       console.log(response);
-       this.toasterService.showSuccess('New Report Created', 'Create Report');
-       this.reportsObj = {};
-       this.reportsObj = undefined;
        this.isCreateReportAPILoading = false;
-       $('#configurePGRModal').modal('hide');
+       this.toasterService.showSuccess('New Report Created', 'Create Report');
+       this.onCloseConfigurePGRModal();
+       console.log(response);
+       this.reportsObj = undefined;
       },
       (error) => {
         this.isCreateReportAPILoading = false;

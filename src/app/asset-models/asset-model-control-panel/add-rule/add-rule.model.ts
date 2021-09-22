@@ -5,7 +5,7 @@ export class Rule {
     escalation_time_in_sec: any;
     description: string;
     alert_condition_id: any;
-    alert_condition_code: string = 'model';
+    // alert_condition_code: string = 'model';
     operator: string;
     properties: Array<Properties>;
     conditions: Array<Conditions>;
@@ -16,6 +16,7 @@ export class Rule {
     created_by: string;
     rule_type?: boolean;
     type?: string;
+    actions?: any;
 
     constructor() {
         this.properties = [];

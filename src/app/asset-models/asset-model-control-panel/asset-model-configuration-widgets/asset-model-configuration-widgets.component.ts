@@ -61,11 +61,7 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
 
   onCommunicationTechniqueChange() {
     this.controlWidget.properties = [];
-    this.controlWidget.json = {
-      timestamp: {
-        type: 'string',
-      },
-    };
+    this.controlWidget.json = {};
   }
 
   getAssetsModelAssetMethod() {
@@ -183,11 +179,7 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
         // const index =  this.controlWidget.properties.findIndex(prop => prop.name === propObj.name);
         // this.controlWidget.properties.splice(index, 1);
       } else {
-        this.controlWidget.json = {
-          timestamp: {
-            type: 'string',
-          },
-        };
+        this.controlWidget.json = {};
         this.controlWidget.json[propObj.method_name] = propObj.json_model;
         // this.controlWidget.properties.push(propObj);
       }
@@ -206,11 +198,7 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
   }
 
   selectAllProps(event) {
-    this.controlWidget.json = {
-      timestamp: {
-        type: 'string',
-      },
-    };
+    this.controlWidget.json = {};
     if (this.controlWidget?.metadata?.communication_technique === 'Direct Method') {
       this.controlWidget.properties.forEach((propObj) => {
         this.controlWidget.json[propObj.method_name] = propObj.json_model;
@@ -224,11 +212,7 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
   }
 
   deselectAllProps(event) {
-    this.controlWidget.json = {
-      timestamp: {
-        type: 'string',
-      },
-    };
+    this.controlWidget.json = {};
     this.editor.set(this.controlWidget.json);
   }
 
@@ -247,7 +231,7 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
       const prop = JSON.parse(JSON.stringify(this.controlWidget.properties));
       this.controlWidget.properties = [prop];
     }
-    if (Object.keys(this.controlWidget.json).length < 2) {
+    if (Object.keys(this.controlWidget.json).length < 1) {
       this.toasterService.showError('Please select at least one property/parameter', 'Create Control Widget');
       return;
     }

@@ -7,14 +7,12 @@ import { Subscription } from 'rxjs';
 import { AssetService } from 'src/app/services/assets/asset.service';
 declare var $: any;
 
-
 @Component({
   selector: 'app-commands',
   templateUrl: './commands.component.html',
-  styleUrls: ['./commands.component.css']
+  styleUrls: ['./commands.component.css'],
 })
 export class CommandsComponent implements OnInit, OnDestroy {
-
   @Input() pageType;
   @Input() componentState;
   @Input() asset: Asset = new Asset();
@@ -35,18 +33,20 @@ export class CommandsComponent implements OnInit, OnDestroy {
     private assetService: AssetService,
     private assetModelService: AssetModelService,
     private commonService: CommonService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-    this.subscriptions.push(this.assetService.composeC2DMessageStartEmitter.subscribe(data => {
-      this.timerObj = {
-        hours: data.hours,
-        minutes: data.minutes,
-        seconds: data.seconds
-      };
-    }));
+    this.subscriptions.push(
+      this.assetService.composeC2DMessageStartEmitter.subscribe((data) => {
+        this.timerObj = {
+          hours: data.hours,
+          minutes: data.minutes,
+          seconds: data.seconds,
+        };
+      })
+    );
     this.displayMode = 'view';
     this.timerObj = undefined;
   }
@@ -77,10 +77,10 @@ export class CommandsComponent implements OnInit, OnDestroy {
   getControlWidgets() {
     const obj = {
       app: this.contextApp.app,
-      asset_model: this.asset.tags?.asset_model
+      asset_model: this.asset.tags?.asset_model,
     };
-    this.subscriptions.push(this.assetModelService.getAssetsModelControlWidgets(obj).subscribe(
-      (response: any) => {
+    this.subscriptions.push(
+      this.assetModelService.getAssetsModelControlWidgets(obj).subscribe((response: any) => {
         if (response?.data) {
           this.allControlWidgets = response.data;
           if (this.allControlWidgets.length > 0) {
@@ -88,8 +88,8 @@ export class CommandsComponent implements OnInit, OnDestroy {
             this.onChangeOfDropdownData(this.selectedWidget);
           }
         }
-      }
-    ));
+      })
+    );
   }
 
   // onChangeOfTechnique() {
@@ -101,10 +101,10 @@ export class CommandsComponent implements OnInit, OnDestroy {
   getConfigureWidgets() {
     const obj = {
       app: this.contextApp.app,
-      asset_model: this.asset.tags?.asset_model
+      asset_model: this.asset.tags?.asset_model,
     };
-    this.subscriptions.push(this.assetModelService.getAssetsModelConfigurationWidgets(obj).subscribe(
-      (response: any) => {
+    this.subscriptions.push(
+      this.assetModelService.getAssetsModelConfigurationWidgets(obj).subscribe((response: any) => {
         if (response?.data) {
           this.allControlWidgets = response.data;
           if (this.allControlWidgets.length > 0) {
@@ -112,8 +112,8 @@ export class CommandsComponent implements OnInit, OnDestroy {
             this.onChangeOfDropdownData(this.selectedWidget);
           }
         }
-      }
-    ));
+      })
+    );
   }
 
   onChangeOfDropdownData(widget) {
@@ -121,18 +121,18 @@ export class CommandsComponent implements OnInit, OnDestroy {
     this.jsonModelKeys = [];
     setTimeout(() => {
       this.selectedWidget = widget;
-      const keys =  Object.keys(this.selectedWidget.json);
-      const index = keys.findIndex(key => key === 'timestamp');
-      keys.splice(index, 1);
-      keys.forEach(key => {
+      const keys = Object.keys(this.selectedWidget.json);
+      // const index = keys.findIndex(key => key === 'timestamp');
+      // keys.splice(index, 1);
+      keys.forEach((key) => {
         const obj = {
           key,
           json: {},
           name: null,
-          value: null
+          value: null,
         };
         let flag = false;
-        this.selectedWidget.properties.forEach(prop => {
+        this.selectedWidget.properties.forEach((prop) => {
           if (prop.json_key === key) {
             flag = true;
             obj.name = prop.name;
@@ -157,11 +157,9 @@ export class CommandsComponent implements OnInit, OnDestroy {
         console.log(this.jsonModelKeys);
       });
     }, 500);
-
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
-
 }

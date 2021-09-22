@@ -107,6 +107,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   displayHierarchyString: string;
   decodedToken: any;
   selectedDocument: any;
+  derivedKPIs: any;
+  derivedKPIHistoricData: any;
+  nullValueArr: any[];
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -558,7 +561,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   getAssetData(assetId) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
         asset_id: assetId,
@@ -629,7 +632,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   getDocuments() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       this.documents = [];
       const obj = {
         app: this.contextApp.app,
@@ -696,8 +699,24 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
   }
 
+  getAssetderivedKPIs(assetId) {
+    return new Promise<void>((resolve) => {
+      this.subscriptions.push(
+        this.assetService.getDerivedKPIs(this.contextApp.app, assetId).subscribe((response: any) => {
+          if (response && response.data) {
+            this.derivedKPIs = response.data;
+          } else if (response?.derived_kpis) {
+            this.derivedKPIs = response.derived_kpis;
+          }
+          this.derivedKPIs.forEach((kpi) => kpi.type === 'Derived KPI');
+          resolve();
+        })
+      );
+    });
+  }
+
   getAssetsModelProperties() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const obj = {
         app: this.contextApp.app,
         name: this.alertCondition?.asset_model ? this.alertCondition.asset_model : this.selectedAsset.asset_model,
@@ -724,6 +743,15 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
               id: item.json_key,
             });
           });
+          this.derivedKPIs.forEach((kpi) => {
+            const obj: any = {};
+            obj.type = 'Derived KPIs';
+            obj.name = kpi.name;
+            obj.json_key = kpi.kpi_json_key;
+            obj.json_model = {};
+            obj.json_model[obj.json_key] = {};
+            this.propertyList.push(obj);
+          });
           resolve();
         })
       );
@@ -731,7 +759,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   getLayout() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const params = {
         app: this.contextApp.app,
         name: this.alertCondition?.asset_model ? this.alertCondition.asset_model : this.selectedAsset.asset_model,
@@ -837,6 +865,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.selectedAsset = this.originalAssets.find((asset) => asset.asset_id === this.selectedAlert.asset_id);
     // await this.getAssetData(this.selectedAlert.asset_id);
     await this.getAlertConditions();
+    await this.getAssetderivedKPIs(
+      this.alertCondition?.asset_id ? this.alertCondition.asset_id : this.selectedAsset.asset_id
+    );
     await this.getAssetsModelProperties();
     await this.getDocuments();
     await this.getLayout();
@@ -866,19 +897,72 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     return this.propertyList.filter((prop) => prop.json_key === key)[0]?.name || key;
   }
 
-  getAssetTelemetryData() {
+  getHistoricalWidgetsDrivedKPIDetails() {
+    // this.propList = [];
+    let kpiCodes = '';
+    this.selectedWidgets.forEach((widget) => {
+      widget.value.y1axis.forEach((prop) => {
+        if (this.propList.indexOf(prop.json_key) === -1 && prop.type === 'Derived KPIs') {
+          this.propList.push(prop.json_key);
+          const kpiObj = this.derivedKPIs.find((kpi) => kpi.kpi_json_key === prop.json_key);
+          kpiCodes += kpiObj.code + ',';
+        }
+      });
+      widget.value.y2axis.forEach((prop) => {
+        if (this.propList.indexOf(prop.json_key) === -1 && prop.type === 'Derived KPIs') {
+          this.propList.push(prop.json_key);
+          const kpiObj = this.derivedKPIs.find((kpi) => kpi.kpi_json_key === prop.json_key);
+          kpiCodes += kpiObj.code + ',';
+        }
+      });
+    });
+    kpiCodes = kpiCodes.replace(/,\s*$/, '');
+    if (kpiCodes.length > 0) {
+      return new Promise<void>((resolve1) => {
+        this.isHistoryAPILoading = true;
+        const obj = {
+          kpi_codes: kpiCodes,
+          from_date: undefined,
+          to_date: undefined,
+        };
+        const now = moment().utc().unix();
+        if (this.historyFilter.dateOption !== 'Custom Range') {
+          const dateObj = this.commonService.getMomentStartEndDate(this.historyFilter.dateOption);
+          obj.from_date = dateObj.from_date;
+          obj.to_date = dateObj.to_date;
+        } else {
+          obj.from_date = this.historyFilter.from_date;
+          obj.to_date = this.historyFilter.to_date;
+        }
+        this.assetService.getDerivedKPISHistoricalData(this.contextApp.app, obj).subscribe((response: any) => {
+          response.data.forEach((item) => {
+            const itemobj = {
+              message_date: item.metadata.process_end_time,
+            };
+            itemobj[item.kpi_json_key] = item.kpi_result;
+            this.derivedKPIHistoricData.push(itemobj);
+            // this.derivedKPIHistoricData.reverse();
+          });
+          // this.derivedKPIHistoricData = response.data;
+          resolve1();
+        });
+      });
+    }
+  }
+
+  async getAssetTelemetryData() {
     this.isChartViewOpen = false;
     this.propList = [];
     this.selectedWidgets = JSON.parse(JSON.stringify(this.selectedWidgetsForSearch));
     this.selectedWidgets.forEach((widget) => {
       widget.value.y1axis.forEach((prop) => {
-        if (this.propList.indexOf(prop) === -1) {
-          this.propList.push(prop);
+        if (this.propList.indexOf(prop.json_key) === -1 && prop.type !== 'Derived KPIs') {
+          this.propList.push(prop.json_key);
         }
       });
       widget.value.y2axis.forEach((prop) => {
-        if (this.propList.indexOf(prop) === -1) {
-          this.propList.push(prop);
+        if (this.propList.indexOf(prop.json_key) === -1 && prop.type !== 'Derived KPIs') {
+          this.propList.push(prop.json_key);
         }
       });
     });
@@ -1021,7 +1105,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     this.isOpen = false;
     this.isTelemetryFilterSelected = true;
     this.isTelemetryDataLoading = true;
-
+    await this.getHistoricalWidgetsDrivedKPIDetails();
     // this.y2AxisProps.forEach((prop, index) =>
     // filterObj.message_props += prop.id + (index !== (this.y2AxisProps.length - 1) ? ',' : ''));
     // if (filterObj.message_props.charAt(filterObj.message_props.length - 1) === ',') {
@@ -1031,6 +1115,23 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       method.subscribe((response: any) => {
         if (response && response.data) {
           this.telemetryData = response.data;
+          this.telemetryData = this.telemetryData.concat(this.derivedKPIHistoricData);
+          this.nullValueArr = [];
+          propArr.forEach((prop) => {
+            let flag = false;
+            for (let i = 0; i < this.telemetryData.length; i++) {
+              if (this.telemetryData[i][prop.json_key] !== null && this.telemetryData[i][prop.json_key] !== undefined) {
+                flag = false;
+                break;
+              } else {
+                flag = true;
+              }
+            }
+            if (flag) {
+              this.nullValueArr.push(prop.json_key);
+            }
+          });
+          console.log(this.nullValueArr);
           const telemetryData = response.data;
           this.isChartViewOpen = true;
           telemetryData.forEach((item) => {
@@ -1039,9 +1140,24 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           // this.loadGaugeChart(telemetryData[0]);
           // telemetryData.reverse();
           this.isTelemetryDataLoading = false;
+
           // this.loadLineChart(telemetryData);
           if (telemetryData.length > 0) {
             this.selectedWidgets.forEach((widget) => {
+              let noDataFlag = true;
+              widget.value.y1axis?.forEach((prop, index) => {
+                if (this.nullValueArr.indexOf(prop.json_key) === -1) {
+                  noDataFlag = false;
+                }
+              });
+              if (noDataFlag) {
+                widget.value.y2axis?.forEach((prop, index) => {
+                  if (this.nullValueArr.indexOf(prop.json_key) === -1) {
+                    noDataFlag = false;
+                  }
+                });
+              }
+              console.log(noDataFlag, '======', widget);
               let componentRef;
               if (widget.value.chartType === 'LineChart' || widget.value.chartType === 'AreaChart') {
                 componentRef = this.factoryResolver.resolveComponentFactory(LiveChartComponent).create(this.injector);
@@ -1054,7 +1170,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
               } else if (widget.value.chartType === 'Table') {
                 componentRef = this.factoryResolver.resolveComponentFactory(DataTableComponent).create(this.injector);
               }
-              componentRef.instance.telemetryData = JSON.parse(JSON.stringify(telemetryData));
+              componentRef.instance.telemetryData = noDataFlag ? [] : JSON.parse(JSON.stringify(telemetryData));
               componentRef.instance.selectedAlert = JSON.parse(JSON.stringify(this.selectedAlert));
               componentRef.instance.propertyList = this.propertyList;
               componentRef.instance.y1AxisProps = widget.value.y1axis;

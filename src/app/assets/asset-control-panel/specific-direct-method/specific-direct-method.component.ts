@@ -58,10 +58,10 @@ export class SpecificDirectMethodComponent implements OnInit {
       this.selectedWidget.response_timeout_in_sec = 30;
       this.selectedWidget.connection_timeout_in_sec = 30;
       const keys = Object.keys(this.selectedWidget.json);
-      const index = keys.findIndex((key) => key.toLowerCase() === 'timestamp');
-      if (index > -1) {
-        keys.splice(index, 1);
-      }
+      // const index = keys.findIndex((key) => key.toLowerCase() === 'timestamp');
+      // if (index > -1) {
+      //   keys.splice(index, 1);
+      // }
       this.selectedWidget.method_name = keys[0];
       this.selectedWidget?.json[keys[0]]?.params?.forEach((obj) => {
         if (obj.key) {
@@ -133,10 +133,10 @@ export class SpecificDirectMethodComponent implements OnInit {
       this.selectedWidget.response_timeout_in_sec = 30;
       this.selectedWidget.connection_timeout_in_sec = 30;
       const keys = Object.keys(this.selectedWidget.json);
-      const index = keys.findIndex((key) => key.toLowerCase() === 'timestamp');
-      if (index > -1) {
-        keys.splice(index, 1);
-      }
+      // const index = keys.findIndex((key) => key.toLowerCase() === 'timestamp');
+      // if (index > -1) {
+      //   keys.splice(index, 1);
+      // }
       this.selectedWidget.method_name = keys[0];
       this.selectedWidget.json[keys[0]].params.forEach((obj) => {
         obj.name = obj.key;

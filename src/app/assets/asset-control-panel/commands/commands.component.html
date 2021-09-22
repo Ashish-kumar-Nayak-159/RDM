@@ -6,7 +6,7 @@
         <a class="nav-link" [ngClass]="{'active': displayMode === 'view'}" href="javascript:void(0)"
           (click)="displayMode = 'view'; timerObj = undefined;">
           <i class="fa fa-fw fa-eye"></i>
-          <span>View</span></a>
+          <span>Jobs</span></a>
       </li>
       <li class="nav-item"
         *ngIf="menuDetail?.accordion_value?.configuration && decodedToken?.privileges?.indexOf('RCC') > -1">

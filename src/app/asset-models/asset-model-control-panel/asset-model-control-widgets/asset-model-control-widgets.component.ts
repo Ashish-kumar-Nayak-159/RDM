@@ -100,11 +100,7 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
         communication_technique: 'C2D Message',
         widget_type: undefined,
       },
-      json: {
-        timestamp: {
-          type: 'string',
-        },
-      },
+      json: {},
     };
     this.addParameter();
     this.viewType = 'add';
@@ -113,11 +109,7 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
 
   onCommunicationTechniqueChange() {
     this.controlWidget.properties = [];
-    this.controlWidget.json = {
-      timestamp: {
-        type: 'string',
-      },
-    };
+    this.controlWidget.json = {};
   }
 
   onPropertyChecked(event) {
@@ -129,11 +121,7 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
         const index = this.controlWidget.properties.findIndex((prop) => prop.name === propObj.name);
         // this.controlWidget.properties.splice(index, 1);
       } else {
-        this.controlWidget.json = {
-          timestamp: {
-            type: 'string',
-          },
-        };
+        this.controlWidget.json = {};
         this.controlWidget.json[propObj.method_name] = propObj.json_model;
         // this.controlWidget.properties.push(propObj);
       }
@@ -206,11 +194,7 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
   }
 
   selectAllProps(event) {
-    this.controlWidget.json = {
-      timestamp: {
-        type: 'string',
-      },
-    };
+    this.controlWidget.json = {};
     if (this.controlWidget?.metadata?.communication_technique === 'Direct Method') {
       this.controlWidget.properties.forEach((propObj) => {
         this.controlWidget.json[propObj.method_name] = propObj.json_model;
@@ -224,11 +208,7 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
   }
 
   deselectAllProps(event) {
-    this.controlWidget.json = {
-      timestamp: {
-        type: 'string',
-      },
-    };
+    this.controlWidget.json = {};
     this.editor.set(this.controlWidget.json);
   }
 
@@ -253,7 +233,7 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
     }
     console.log(this.controlWidget);
     console.log(Object.keys(this.controlWidget.json).length);
-    if (Object.keys(this.controlWidget.json).length < 2) {
+    if (Object.keys(this.controlWidget.json).length < 1) {
       this.toasterService.showError('Please select at least one property/parameter', 'Create Control Widget');
       return;
     }

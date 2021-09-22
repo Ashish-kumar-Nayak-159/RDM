@@ -19,7 +19,8 @@
     <div class="row">
       <div class="col-12">
         <div class="card shadow h-100">
-          <div class="card-body1" style="max-height: 25rem; overflow-y: auto;">
+          <div class="card-body1" style="max-height: 25rem; overflow-y: auto;"
+            *ngIf="telemetryData.length > 0 else noData;">
             <div class="table-responsive tableFixHead" id="{{ chartId }}"
               [ngStyle]="{'width': chartWidth, 'height': chartHeight, 'max-height': chartHeight}">
               <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
@@ -45,11 +46,7 @@
                       <td *ngFor="let item of y2AxisProps">{{ obj[item.json_key] }}</td>
                     </tr>
                   </ng-container>
-                  <ng-container *ngIf="telemetryData.length === 0">
-                    <tr>
-                      <td colspan="2">No data available.</td>
-                    </tr>
-                  </ng-container>
+
 
                 </tbody>
               </table>
@@ -58,6 +55,9 @@
               </div>
             </div>
           </div>
+          <ng-template #noData>
+            <p>No data found selected time interval.</p>
+          </ng-template>
         </div>
       </div>
     </div>

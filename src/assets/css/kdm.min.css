@@ -12893,6 +12893,9 @@ table.display tbody tr:hover > .sorting_1 { background-color: #eff8fc !important
 .daterangepicker td.active, .daterangepicker td.active:hover { background-color: #67afed !important/*#357ebd*/; }
 .daterangepicker .ranges li.active { background-color: #89a7ff !important/*08c*/; }
 
+@media (max-width: 1200px) {
+  .daterangepicker { max-height: 40% !important; }
+}
 
 .button-divider {
   border-right: 1px solid #e3e6f0;
@@ -13448,6 +13451,10 @@ overflow-x: hidden;
   visibility: visible;
   overflow-y: auto;
 }
+.scrollbox:focus, .scrollbox:active {
+  outline: 0 !important;
+}
+
 /*.scrollbox_delayed {
   transition: visibility 0.2s;
 }

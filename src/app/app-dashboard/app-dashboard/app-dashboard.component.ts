@@ -990,10 +990,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.apiSubscriptions.push(
       method.subscribe((response: any) => {
         if (response && response.data) {
+          this.telemetryData = response.data;
+          this.telemetryData = this.telemetryData.concat(this.derivedKPIHistoricData);
           const nullValueArr = [];
           propArr.forEach((prop) => {
             let flag = false;
-            for (let i = 0; i < response.data.length; i++) {
+            for (let i = 0; i < this.telemetryData.length; i++) {
               if (response.data[i][prop.json_key] !== null && response.data[i][prop.json_key] !== undefined) {
                 flag = false;
                 break;
@@ -1006,14 +1008,13 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           });
           console.log(nullValueArr);
-          this.telemetryData = response.data;
-          this.telemetryData = this.telemetryData.concat(this.derivedKPIHistoricData);
+
           // console.log(JSON.stringify(this.telemetryData));
           console.log(this.telemetryData.length);
           let telemetryData = this.telemetryData;
-          telemetryData.forEach((item) => {
-            item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
-          });
+          // telemetryData.forEach((item) => {
+          //   item.message_date = this.commonService.convertUTCDateToLocal(item.message_date);
+          // });
           telemetryData = this.commonService.sortDataBaseOnTime(telemetryData, 'message_date');
           // this.loadGaugeChart(telemetryData[0]);
           // telemetryData.reverse();
@@ -1022,13 +1023,14 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.historicalDateFilter.widgets?.forEach((widget) => {
               let noDataFlag = true;
               widget.y1axis?.forEach((prop, index) => {
-                if (nullValueArr.indexOf(prop) === -1) {
+                console.log(nullValueArr.indexOf(prop));
+                if (nullValueArr.indexOf(prop.json_key) === -1) {
                   noDataFlag = false;
                 }
               });
               if (noDataFlag) {
                 widget.y2axis?.forEach((prop, index) => {
-                  if (nullValueArr.indexOf(prop) === -1) {
+                  if (nullValueArr.indexOf(prop.json_key) === -1) {
                     noDataFlag = false;
                   }
                 });

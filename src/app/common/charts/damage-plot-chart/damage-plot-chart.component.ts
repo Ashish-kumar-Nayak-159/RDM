@@ -86,11 +86,13 @@ export class DamagePlotChartComponent implements OnInit {
       const chart = am4core.create(this.chartId, am4charts.XYChart);
       chart.paddingRight = 20;
       const data = [];
+      const arr = [];
       this.telemetryData.forEach((obj, i) => {
         this.y1AxisProps.forEach((prop) => {
           if (obj[prop.json_key] !== undefined && obj[prop.json_key] !== null) {
-            const sortedObj = this.commonService.sortObjectBasedOnKey(obj[prop.json_key]);
-            Object.keys(sortedObj).forEach((key, index) => {
+            arr.push(obj);
+            const keys = this.commonService.sortObjectBasedOnKey(obj[prop.json_key]);
+            keys.forEach((key, index) => {
               const newObj: any = {};
               if (obj[prop.json_key][key] !== null && obj[prop.json_key][key] !== undefined) {
                 newObj['frequency' + i] = Number(key);
@@ -107,9 +109,11 @@ export class DamagePlotChartComponent implements OnInit {
         });
       });
 
+      // this.telemetryData = JSON.parse(JSON.stringify(arr));
       chart.data = data;
       // console.log(data.length);
-      console.log(JSON.stringify(chart.data));
+      // console.log(JSON.stringify(chart.data));
+      // console.log(this.telemetryData);
       this.loaderMessage = 'Loading Chart. Wait...';
       chart.dateFormatter.inputDateFormat = 'x';
       chart.dateFormatter.dateFormat = 'dd-MMM-yyyy HH:mm:ss.nnn';
@@ -121,6 +125,7 @@ export class DamagePlotChartComponent implements OnInit {
       // categoryAxis.renderer.minGridDistance = 70;
       categoryAxis.renderer.grid.template.location = 0.5;
       categoryAxis.renderer.labels.template.location = 0.5;
+      categoryAxis.title.text = 'Frequnecy (Hz)';
       // chart.cursor = new am4charts.XYCursor();
       // chart.cursor.xAxis = categoryAxis;
       this.createValueAxis(chart, categoryAxis);
@@ -231,61 +236,69 @@ export class DamagePlotChartComponent implements OnInit {
 
   createValueAxis(chart, axis) {
     const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
-
+    const prop = this.y1AxisProps[0];
+    let unit;
+    this.propertyList.forEach((propobj) => {
+      if (propobj.json_key === this.y1AxisProps[0].json_key) {
+        unit = propobj.json_model[propobj.json_key].units;
+      }
+    });
+    valueYAxis.title.text = this.getPropertyName(prop.json_key) + (unit ? ' (' + unit + ')' : '');
     // const arr = this.y1AxisProps;
-    console.log(this.telemetryData.length);
     this.telemetryData.forEach((data, index) => {
-      const series = chart.series.push(new am4charts.LineSeries());
-      // series.dataFields.dateX = 'message_date';
-      const prop = this.y1AxisProps[0];
-      // this.propertyList.forEach((propObj) => {
-      //   if (propObj.json_key === this.y1AxisProps[0].json_key) {
-      //     series.units = propObj.json_model[propObj.json_key].units;
-      //   }
-      // });
-      series.name = this.getPropertyName(prop.json_key);
-      // series.xAxis = axis;
-      // console.log(this.getPropertyType(prop.json_key));
-      const proptype = this.getPropertyType(prop.json_key);
-      series.propType =
-        proptype === 'Edge Derived Properties'
-          ? 'ED'
-          : proptype === 'Cloud Derived Properties'
-          ? 'CD'
-          : proptype === 'Derived KPIs'
-          ? 'DK'
-          : 'M';
-      console.log(series.propType);
-      series.propKey = prop.json_key;
-      // series.xAxis = axis;
-      // series.stroke = this.commonService.getRandomColor();
-      series.yAxis = chart.yAxes.getIndex(0);
-      series.dataFields.valueX = 'frequency' + index;
-      series.dataFields.valueY = 'value' + index;
-      // series.groupFields.valueY = 'value';
-      series.compareText = true;
-      series.strokeWidth = 2;
-      series.time = data.message_date;
+      if (data[prop.json_key] !== null && data[prop.json_key] !== undefined) {
+        const series = chart.series.push(new am4charts.LineSeries());
+        // series.dataFields.dateX = 'message_date';
 
-      // series.connect = false;
-      // series.connect = (this.getPropertyName(prop) === 'Total Mass Discharge' ||
-      // this.getPropertyName(prop) === 'Total Mass Suction' ? true : false);
-      // series.tensionX = 0.77;
-      // series.strokeOpacity = 1;
+        // this.propertyList.forEach((propObj) => {
+        //   if (propObj.json_key === this.y1AxisProps[0].json_key) {
+        //     series.units = propObj.json_model[propObj.json_key].units;
+        //   }
+        // });
+        series.units = unit;
+        series.name = this.getPropertyName(prop.json_key);
+        // series.xAxis = axis;
+        // console.log(this.getPropertyType(prop.json_key));
+        const proptype = this.getPropertyType(prop.json_key);
+        series.propType =
+          proptype === 'Edge Derived Properties'
+            ? 'ED'
+            : proptype === 'Cloud Derived Properties'
+            ? 'CD'
+            : proptype === 'Derived KPIs'
+            ? 'DK'
+            : 'M';
+        series.propKey = prop.json_key;
+        // series.xAxis = axis;
+        // series.stroke = this.commonService.getRandomColor();
+        series.yAxis = chart.yAxes.getIndex(0);
+        series.dataFields.valueX = 'frequency' + index;
+        series.dataFields.valueY = 'value' + index;
+        // series.groupFields.valueY = 'value';
+        series.compareText = true;
+        series.strokeWidth = 2;
+        const time = this.commonService.convertUTCDateToLocal(data.message_date);
+        series.time = time;
 
-      series.legendSettings.labelText = '{time}';
-      // series.fillOpacity = this.chartType.includes('Area') ? 0.3 : 0;
+        // series.connect = false;
+        // series.connect = (this.getPropertyName(prop) === 'Total Mass Discharge' ||
+        // this.getPropertyName(prop) === 'Total Mass Suction' ? true : false);
+        // series.tensionX = 0.77;
+        // series.strokeOpacity = 1;
 
-      // series.tooltipText = 'Date: {time} \n Frequency: [bold]{valueX} Hz \n ({propType}) {name}: [bold]{valueY}[/]';
-      const bullet = series.bullets.push(new am4charts.CircleBullet());
-      bullet.strokeWidth = 2;
-      bullet.circle.radius = 1.5;
-      bullet.tooltipText = 'Date: {time} \n Frequency: [bold]{valueX} Hz \n ({propType}) {name}: [bold]{valueY}[/]';
+        series.legendSettings.labelText = '{time}';
+        // series.fillOpacity = this.chartType.includes('Area') ? 0.3 : 0;
 
-      // chart.cursor.snapToSeries = series;
-      console.log(series);
-      // chart.cursor.snapToSeries = series;
-      this.seriesArr.push(series);
+        // series.tooltipText = 'Date: {time} \n Frequency: [bold]{valueX} Hz \n ({propType}) {name}: [bold]{valueY}[/]';
+        const bullet = series.bullets.push(new am4charts.CircleBullet());
+        bullet.strokeWidth = 2;
+        bullet.circle.radius = 1.5;
+        bullet.tooltipText =
+          'Date: {time} \n Frequency: [bold]{valueX} Hz \n ({propType}) {name}: [bold]{valueY} {units}[/]';
+        // chart.cursor.snapToSeries = series;
+        // chart.cursor.snapToSeries = series;
+        this.seriesArr.push(series);
+      }
     });
     valueYAxis.tooltip.disabled = true;
     valueYAxis.renderer.labels.template.fill = am4core.color('gray');

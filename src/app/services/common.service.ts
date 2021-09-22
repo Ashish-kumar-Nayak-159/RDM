@@ -142,13 +142,17 @@ export class CommonService {
   }
 
   sortObjectBasedOnKey(obj) {
-    const newObj = {};
+    // const newObj = {};
     const keys = Object.keys(obj).sort((a, b) => Number(a) - Number(b));
-    keys.forEach((key) => {
-      newObj[key] = obj[key];
-    });
-    console.log(newObj);
-    return newObj;
+    // console.log(keys);
+    // keys.forEach((key) => {
+    //   newObj[key] = obj[key];
+    // });
+    // const newObj = Object.entries(obj)
+    //   .sort(([, a], [, b]) => Number(a) - Number(b))
+    //   .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+    // console.log(JSON.stringify(newObj));
+    return keys;
   }
 
   encryptJSON(data) {

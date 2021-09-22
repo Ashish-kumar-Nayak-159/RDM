@@ -1,7 +1,7 @@
 <accordion class="mb-2" id="{{chartId}}_{{chartId}}">
   <accordion-group heading="" [panelClass]="'customClass'" [isOpen]="true">
     <ng-container accordion-heading>
-      <a class="btn" type="button">
+      <a class="btn border-0 rounded-0" type="button">
         {{chartTitle}}
       </a>
       <div class="float-right pull-right mt-1">
@@ -20,7 +20,7 @@
     <div class="row">
       <div class="col-12">
         <div class="">
-          <div class="" style="max-height: 27rem; overflow-y: auto;">
+          <div class="" style="max-height: 27rem; overflow-y: auto;" *ngIf="telemetryData.length > 0 else noData;">
             <span *ngIf="loader"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> {{loaderMessage}}</span>
             <div id="{{ chartId }}" [ngStyle]="{'width': chartWidth, 'height': chartHeight}"></div>
             <div class="overlay" *ngIf="isOverlayVisible">
@@ -28,6 +28,9 @@
             </div>
 
           </div>
+          <ng-template #noData>
+            <p>No data found selected time interval.</p>
+          </ng-template>
         </div>
       </div>
     </div>

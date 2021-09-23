@@ -280,7 +280,7 @@ export class AddRuleComponent implements OnInit {
     });
     this.ruleModel.condition_str = str.slice(0, -2).trim();
     this.ruleModel.created_by = this.userData.email + ' (' + this.userData.name + ')';
-    if (this.isEdit) {
+    if (this.ruleModel.rule_id) {
       this.ruleModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
       let method;
       if (!this.asset) {
@@ -294,12 +294,13 @@ export class AddRuleComponent implements OnInit {
       }
       method.subscribe(
         (response: any) => {
-          this.onCloseRuleModel.emit({
-            status: true,
-          });
-          $('#addRuleModal').modal('hide');
-          this.isEdit = false;
+          // this.onCloseRuleModel.emit({
+          //   status: true,
+          // });
+          // $('#addRuleModal').modal('hide');
+          // this.isEdit = false;
           this.toasterService.showSuccess(response.message, this.title + 'Rule');
+          console.log('aaaaaaaa');
           this.closeRuleModal(true);
           this.isUpdateApiCall = false;
         },
@@ -321,9 +322,9 @@ export class AddRuleComponent implements OnInit {
       }
       method.subscribe(
         (response: any) => {
-          this.onCloseRuleModel.emit({
-            status: true,
-          });
+          // this.onCloseRuleModel.emit({
+          //   status: true,
+          // });
           this.toasterService.showSuccess(response.message, this.title + 'Rule');
           this.closeRuleModal(true);
           this.isUpdateApiCall = false;

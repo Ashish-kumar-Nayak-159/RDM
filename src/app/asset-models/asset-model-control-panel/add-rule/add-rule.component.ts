@@ -62,22 +62,22 @@ export class AddRuleComponent implements OnInit {
       };
     }
     if (!this.ruleModel.actions.alert_management) {
-        this.ruleModel.actions.alert_management = { enabled: false, alert_condition_code: null };
+      this.ruleModel.actions.alert_management = { enabled: false, alert_condition_code: null };
     }
     if (!this.ruleModel.actions.alert_management.alert_condition_code) {
-        this.ruleModel.actions.alert_management.alert_condition_code = null;
+      this.ruleModel.actions.alert_management.alert_condition_code = null;
     }
     if (!this.ruleModel.actions.notification) {
-        this.ruleModel.actions.notification = { enabled: false, email: { subject: null, body: null, groups: [] } };
+      this.ruleModel.actions.notification = { enabled: false, email: { subject: null, body: null, groups: [] } };
     }
     if (!this.ruleModel.actions.notification.email) {
-        this.ruleModel.actions.notification.email =  { subject: null, body: null, groups: [] };
+      this.ruleModel.actions.notification.email = { subject: null, body: null, groups: [] };
     }
     if (!this.ruleModel.actions.notification.email.groups) {
-        this.ruleModel.actions.notification.email.groups = [];
+      this.ruleModel.actions.notification.email.groups = [];
     }
     if (!this.ruleModel.actions.asset_control) {
-        this.ruleModel.actions.asset_control = { disable : false};
+      this.ruleModel.actions.asset_control = { disable: false };
     }
     $('#addRuleModal').modal({ backdrop: 'static', keyboard: false, show: true });
     this.addNewCondition();
@@ -127,8 +127,7 @@ export class AddRuleComponent implements OnInit {
         notification: { enabled: false, email: { subject: '', body: '', groups: [] } },
         asset_control: { disable: false },
       };
-    }
-    else {
+    } else {
       this.ruleModel.actions = this.ruleData.actions;
     }
   }
@@ -230,7 +229,7 @@ export class AddRuleComponent implements OnInit {
 
   addNewCondition() {
     let condition = {
-      property: '',
+      property: null,
       operator: '',
       threshold: 0,
       aggregation_type: '',
@@ -252,8 +251,7 @@ export class AddRuleComponent implements OnInit {
     ) {
       this.toasterService.showError('Please fill all required details', 'Add Rule');
       return;
-    }
-    else if (
+    } else if (
       !this.ruleModel.actions.alert_management.enabled &&
       !this.ruleModel.actions.notification.enabled &&
       !this.ruleModel.actions.asset_control.disable
@@ -275,7 +273,10 @@ export class AddRuleComponent implements OnInit {
         ' ' +
         this.ruleModel.operator;
       let prop = this.dropdownPropList.find((p) => p.value.json_key == element.property);
-      this.ruleModel.properties.push({ property: prop.value.json_key, type: prop.type.charAt(0).toLowerCase() });
+      this.ruleModel.properties.push({
+        property: prop.value.json_key,
+        type: prop.type === 'Cloud Derived Properties' ? 'cd' : prop.type === 'Edge Derived Properties' ? 'ed' : 'm',
+      });
     });
     this.ruleModel.condition_str = str.slice(0, -2).trim();
     this.ruleModel.created_by = this.userData.email + ' (' + this.userData.name + ')';

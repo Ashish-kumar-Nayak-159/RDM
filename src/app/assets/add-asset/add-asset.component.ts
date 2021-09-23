@@ -190,6 +190,18 @@ export class AddAssetComponent implements OnInit, OnChanges {
       }
       this.gateways = JSON.parse(JSON.stringify(arr));
     }
+    let count = 0;
+    Object.keys(this.addAssetConfigureHierarchy).forEach((key) => {
+      if (this.addAssetConfigureHierarchy[key]) {
+        count++;
+      }
+    });
+    if (count === 0) {
+      this.addAssetHierarchyArr = [];
+      if (this.contextApp.hierarchy.levels.length > 1) {
+        this.addAssetHierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+      }
+    }
     // await this.getAssets(hierarchyObj);
   }
 

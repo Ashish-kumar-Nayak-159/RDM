@@ -31,6 +31,7 @@ import { environment } from 'src/environments/environment';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DaterangepickerComponent } from 'ng2-daterangepicker';
 import { CoordinatesModule } from 'ngx-color';
+import { DamagePlotChartComponent } from 'src/app/common/charts/damage-plot-chart/damage-plot-chart.component';
 declare var $: any;
 @Component({
   selector: 'app-application-visualization',
@@ -1168,6 +1169,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
                 componentRef = this.factoryResolver.resolveComponentFactory(PieChartComponent).create(this.injector);
               } else if (widget.value.chartType === 'Table') {
                 componentRef = this.factoryResolver.resolveComponentFactory(DataTableComponent).create(this.injector);
+              } else if (widget.value.chartType === 'VibrationDamagePlot') {
+                componentRef = this.factoryResolver
+                  .resolveComponentFactory(DamagePlotChartComponent)
+                  .create(this.injector);
               }
               componentRef.instance.telemetryData = noDataFlag ? [] : JSON.parse(JSON.stringify(telemetryData));
               componentRef.instance.selectedAlert = JSON.parse(JSON.stringify(this.selectedAlert));

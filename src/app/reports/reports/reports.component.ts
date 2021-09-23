@@ -162,10 +162,22 @@ export class ReportsComponent implements OnInit, OnDestroy {
             ' to ' +
             moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
         }
-        if (this.filterObj.to_date - this.filterObj.from_date > 3600) {
-          this.filterObj.isTypeEditable = true;
+        // if (this.filterObj.to_date - this.filterObj.from_date > 3600) {
+        //   this.filterObj.isTypeEditable = true;
+        // } else {
+        //   this.filterObj.isTypeEditable = false;
+        // }
+        // const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
+        const frequencyArr = [];
+        frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+        frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+        frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+        const frequency = this.commonService.getLowestValueFromList(frequencyArr);
+        const records = this.commonService.calculateEstimatedRecords(frequency, this.filterObj.from_date, this.filterObj.to_date);
+        if (records > CONSTANTS.NO_OF_RECORDS) {
+            this.filterObj.isTypeEditable = true;
         } else {
-          this.filterObj.isTypeEditable = false;
+            this.filterObj.isTypeEditable = false;
         }
       }
       console.log(this.originalFilterObj);
@@ -256,10 +268,22 @@ export class ReportsComponent implements OnInit, OnDestroy {
     } else {
       this.selectedDateRange = value.label;
     }
-    if (this.filterObj.to_date - this.filterObj.from_date > 3600) {
-      this.filterObj.isTypeEditable = true;
+    // if (this.filterObj.to_date - this.filterObj.from_date > 3600) {
+    //   this.filterObj.isTypeEditable = true;
+    // } else {
+    //   this.filterObj.isTypeEditable = false;
+    // }
+    // const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
+    const frequencyArr = [];
+    frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+    frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+    frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+    const frequency = this.commonService.getLowestValueFromList(frequencyArr);
+    const records = this.commonService.calculateEstimatedRecords(frequency, this.filterObj.from_date, this.filterObj.to_date);
+    if (records > CONSTANTS.NO_OF_RECORDS) {
+        this.filterObj.isTypeEditable = true;
     } else {
-      this.filterObj.isTypeEditable = false;
+        this.filterObj.isTypeEditable = false;
     }
   }
 
@@ -611,7 +635,17 @@ export class ReportsComponent implements OnInit, OnDestroy {
       const asset = this.assets.find((assetObj) => assetObj.asset_id === obj.asset_id);
       obj.partition_key = asset.partition_key;
       let method;
-      if (obj.to_date - obj.from_date > 3600 && !filterObj.isTypeEditable) {
+      // if (obj.to_date - obj.from_date > 3600 && !filterObj.isTypeEditable) {
+      //   this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
+      //   return;
+      // }
+      const frequencyArray = [];
+      frequencyArray.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+      frequencyArray.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+      frequencyArray.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+      const S_frequency = this.commonService.getLowestValueFromList(frequencyArray);
+      const record = this.commonService.calculateEstimatedRecords(S_frequency, obj.from_date, obj.to_date);
+      if (record > CONSTANTS.NO_OF_RECORDS && !filterObj.isTypeEditable) {
         this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
         return;
       }

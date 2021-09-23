@@ -290,10 +290,21 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     } else {
       this.selectedDateRange = value.label;
     }
-    if (this.filterObj.to_date - this.filterObj.from_date > 3600) {
-      this.filterObj.isTypeEditable = true;
+    // if (this.filterObj.to_date - this.filterObj.from_date > 3600) {
+    //   this.filterObj.isTypeEditable = true;
+    // } else {
+    //   this.filterObj.isTypeEditable = false;
+    // }
+    const frequencyArr = [];
+    frequencyArr.push(this.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+    frequencyArr.push(this.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+    frequencyArr.push(this.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+    const frequency = this.commonService.getLowestValueFromList(frequencyArr);
+    const records = this.commonService.calculateEstimatedRecords(frequency, this.filterObj.from_date, this.filterObj.to_date);
+    if (records > CONSTANTS.NO_OF_RECORDS) {
+        this.filterObj.isTypeEditable = true;
     } else {
-      this.filterObj.isTypeEditable = false;
+        this.filterObj.isTypeEditable = false;
     }
   }
 
@@ -691,7 +702,40 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   onChangeTimeValue() {
     if (this.beforeInterval && this.afterInterval) {
-      if (this.beforeInterval + this.afterInterval > 60) {
+      // if (this.beforeInterval + this.afterInterval > 60) {
+      //   this.filterObj.isTypeEditable = true;
+      // } else {
+      //   this.filterObj.isTypeEditable = false;
+      // }
+      if (this.beforeInterval > 0) {
+        this.filterObj.from_date =
+          this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp) -
+          this.beforeInterval * 60;
+      } else {
+        this.toasterService.showError(
+          'Minutes Before Alert value must be greater than 0 and less than 30.',
+          'View Visualization'
+        );
+        return;
+      }
+      if (this.afterInterval > 0) {
+        this.filterObj.to_date =
+          this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp) +
+          this.afterInterval * 60;
+      } else {
+        this.toasterService.showError(
+          'Minutes After Alert value must be greater than 0 and less than 30.',
+          'View Visualization'
+        );
+        return;
+      }
+      const frequencyArr = [];
+      frequencyArr.push(this.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+      frequencyArr.push(this.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+      frequencyArr.push(this.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+      const frequency = this.commonService.getLowestValueFromList(frequencyArr);
+      const record = this.commonService.calculateEstimatedRecords(frequency, this.filterObj.from_date, this.filterObj.to_date);
+      if (record > CONSTANTS.NO_OF_RECORDS && (this.beforeInterval + this.afterInterval > 60)) {
         this.filterObj.isTypeEditable = true;
       } else {
         this.filterObj.isTypeEditable = false;
@@ -1030,12 +1074,24 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       return;
     }
     let method;
-    if (filterObj.to_date - filterObj.from_date > 3600 && !this.filterObj.isTypeEditable) {
+    const asset = this.assets.find((assetObj) => assetObj.asset_id === filterObj.asset_id);
+    // if (filterObj.to_date - filterObj.from_date > 3600 && !this.filterObj.isTypeEditable) {
+    //   this.filterObj.isTypeEditable = true;
+    //   this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
+    //   return;
+    // }
+    const frequencyArray = [];
+    frequencyArray.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+    frequencyArray.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+    frequencyArray.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+    const S_frequency = this.commonService.getLowestValueFromList(frequencyArray);
+    const record = this.commonService.calculateEstimatedRecords(S_frequency, this.filterObj.from_date, this.filterObj.to_date);
+    if (record > CONSTANTS.NO_OF_RECORDS && !this.filterObj.isTypeEditable) {
       this.filterObj.isTypeEditable = true;
       this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
       return;
     }
-    const asset = this.assets.find((assetObj) => assetObj.asset_id === filterObj.asset_id);
+
     filterObj.partition_key = asset.partition_key;
     delete filterObj.count;
     delete filterObj.asset;

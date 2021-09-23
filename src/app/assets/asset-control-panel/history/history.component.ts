@@ -85,6 +85,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
   selectedDateRange: string;
   decodedToken: any;
   isShowOpenFilter = true;
+  frequencyArr: any;
+  frequency: any;
   constructor(
     private assetService: AssetService,
     private assetModelService: AssetModelService,
@@ -127,6 +129,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if ($(window).width() < 992) {
       this.isShowOpenFilter = false;
     }
+    this.frequencyArr = [];
+    this.frequencyArr.push(this.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+    this.frequencyArr.push(this.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+    this.frequencyArr.push(this.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+    this.frequency = this.commonService.getLowestValueFromList(this.frequencyArr);
   }
 
   loadFromCache() {
@@ -151,7 +158,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
           ' to ' +
           moment.unix(this.historyFilter.to_date).format('DD-MM-YYYY HH:mm');
       }
-      if (this.historyFilter.to_date - this.historyFilter.from_date > 3600) {
+      // if (this.historyFilter.to_date - this.historyFilter.from_date > 3600) {
+      //   this.historyFilter.isTypeEditable = true;
+      // } else {
+      //   this.historyFilter.isTypeEditable = false;
+      // }
+      const records = this.commonService.calculateEstimatedRecords(this.frequency, this.historyFilter.from_date, this.historyFilter.to_date);
+      if (records > CONSTANTS.NO_OF_RECORDS) {
         this.historyFilter.isTypeEditable = true;
       } else {
         this.historyFilter.isTypeEditable = false;
@@ -261,10 +274,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
     } else {
       this.selectedDateRange = value.label;
     }
-    if (this.historyFilter.to_date - this.historyFilter.from_date > 3600) {
-      this.historyFilter.isTypeEditable = true;
+    // if (this.historyFilter.to_date - this.historyFilter.from_date > 3600) {
+    //   this.historyFilter.isTypeEditable = true;
+    // } else {
+    //   this.historyFilter.isTypeEditable = false;
+    // }
+    const records = this.commonService.calculateEstimatedRecords(this.frequency, this.historyFilter.from_date, this.historyFilter.to_date);
+    if (records > CONSTANTS.NO_OF_RECORDS) {
+        this.historyFilter.isTypeEditable = true;
     } else {
-      this.historyFilter.isTypeEditable = false;
+        this.historyFilter.isTypeEditable = false;
     }
   }
 
@@ -382,10 +401,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.toasterService.showError('Date Selection is required', 'View Trend Analysis');
         return;
       }
-      if (obj.to_date - obj.from_date > 3600 && !this.historyFilter.isTypeEditable) {
-        this.historyFilter.isTypeEditable = true;
-        this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
-        return;
+      // if (obj.to_date - obj.from_date > 3600 && !this.historyFilter.isTypeEditable) {
+      //   this.historyFilter.isTypeEditable = true;
+      //   this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
+      //   return;
+      // }
+      const record = this.commonService.calculateEstimatedRecords(this.frequency, obj.from_date, obj.to_date);
+      if (record > CONSTANTS.NO_OF_RECORDS && !this.historyFilter.isTypeEditable) {
+          this.historyFilter.isTypeEditable = true;
+          this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
+          return;
       }
       if (this.historyFilter.isTypeEditable) {
         if (this.historyFilter.type) {
@@ -598,10 +623,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.picker.datePicker.setStartDate(moment.unix(this.historyFilter.from_date));
     this.picker.datePicker.setEndDate(moment.unix(this.historyFilter.to_date));
 
-    if (this.historyFilter.to_date - this.historyFilter.from_date > 3600) {
-      this.historyFilter.isTypeEditable = true;
+    // if (this.historyFilter.to_date - this.historyFilter.from_date > 3600) {
+    //   this.historyFilter.isTypeEditable = true;
+    // } else {
+    //   this.historyFilter.isTypeEditable = false;
+    // }
+    const records = this.commonService.calculateEstimatedRecords(this.frequency, this.historyFilter.from_date, this.historyFilter.to_date);
+    if (records > CONSTANTS.NO_OF_RECORDS) {
+        this.historyFilter.isTypeEditable = true;
     } else {
-      this.historyFilter.isTypeEditable = false;
+        this.historyFilter.isTypeEditable = false;
     }
   }
 
@@ -616,11 +647,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     const from = this.historyFilter.from_date.unix();
     const to = this.historyFilter.to_date.unix();
-    if (to - from > 3600) {
-      this.historyFilter.isTypeEditable = true;
+    // if (to - from > 3600) {
+    //   this.historyFilter.isTypeEditable = true;
+    // } else {
+    //   this.historyFilter.type = true;
+    //   this.historyFilter.isTypeEditable = false;
+    // }
+    const records = this.commonService.calculateEstimatedRecords(this.frequency, from, to);
+    if (records > CONSTANTS.NO_OF_RECORDS) {
+        this.historyFilter.isTypeEditable = true;
     } else {
-      this.historyFilter.type = true;
-      this.historyFilter.isTypeEditable = false;
+        this.historyFilter.type = true;
+        this.historyFilter.isTypeEditable = false;
     }
   }
 

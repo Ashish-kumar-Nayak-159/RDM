@@ -596,10 +596,21 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this.selectedDateRange = value.label;
     }
-    if (this.historicalDateFilter.to_date - this.historicalDateFilter.from_date > 3600) {
-      this.historicalDateFilter.isTypeEditable = true;
+    // if (this.historicalDateFilter.to_date - this.historicalDateFilter.from_date > 3600) {
+    //   this.historicalDateFilter.isTypeEditable = true;
+    // } else {
+    //   this.historicalDateFilter.isTypeEditable = false;
+    // }
+    const frequencyArr = [];
+    frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+    frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+    frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+    const frequency = this.commonService.getLowestValueFromList(frequencyArr);
+    const records = this.commonService.calculateEstimatedRecords(frequency, this.historicalDateFilter.from_date, this.historicalDateFilter.to_date);
+    if (records > CONSTANTS.NO_OF_RECORDS) {
+        this.historicalDateFilter.isTypeEditable = true;
     } else {
-      this.historicalDateFilter.isTypeEditable = false;
+        this.historicalDateFilter.isTypeEditable = false;
     }
   }
 
@@ -906,7 +917,20 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     // filterObj.from_date = moment().subtract(30, 'minutes').utc().unix();
     // filterObj.to_date = now;
     let method;
-    if (filterObj.to_date - filterObj.from_date > 3600 && !this.historicalDateFilter.isTypeEditable) {
+    // if (filterObj.to_date - filterObj.from_date > 3600 && !this.historicalDateFilter.isTypeEditable) {
+    //   this.historicalDateFilter.isTypeEditable = true;
+    //   this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
+    //   this.isTelemetryDataLoading = false;
+    //   this.isFilterSelected = false;
+    //   return;
+    // }
+    const frequencyArray = [];
+    frequencyArray.push(this.filterObj.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+    frequencyArray.push(this.filterObj.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+    frequencyArray.push(this.filterObj.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+    const S_frequency = this.commonService.getLowestValueFromList(frequencyArray);
+    const record = this.commonService.calculateEstimatedRecords(S_frequency, this.filterObj.from_date, this.filterObj.to_date);
+    if (record > CONSTANTS.NO_OF_RECORDS && !this.historicalDateFilter.isTypeEditable) {
       this.historicalDateFilter.isTypeEditable = true;
       this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
       this.isTelemetryDataLoading = false;

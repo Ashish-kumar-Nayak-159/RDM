@@ -207,7 +207,8 @@
                       <th></th>
                       <th class="w-10">Asset Name</th>
                       <th class="w-17">Time</th>
-                      <th *ngFor="let property of selectedProps"> <i class="icon icon-function"
+                      <th class="report-td" *ngFor="let property of selectedProps" [tooltip]="property.id"> <i
+                          class="icon icon-function"
                           *ngIf="property.value.type === 'Edge Derived Properties' || property.value.type === 'Cloud Derived Properties'"></i>
                         {{property.id}}</th>
                     </tr>
@@ -220,7 +221,8 @@
                           (assetFilterObj.display_name ? assetFilterObj.display_name : assetFilterObj.asset_id)
                           : '' )}}</td>
                         <td>{{ telemetryObj.local_created_date }}</td>
-                        <td *ngFor="let prop of selectedProps">
+                        <td class="report-td" *ngFor="let prop of selectedProps" [tooltip]="telemetryObj[prop.value.json_key] === undefined || telemetryObj[prop.value.json_key] ===
+                        null ? 'NA' : telemetryObj[prop.value.json_key]">
                           {{telemetryObj[prop.value.json_key] === undefined || telemetryObj[prop.value.json_key] ===
                           null ? 'NA' : telemetryObj[prop.value.json_key]}}</td>
                       </tr>

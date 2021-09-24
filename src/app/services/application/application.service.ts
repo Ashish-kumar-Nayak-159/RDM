@@ -9,35 +9,44 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApplicationService {
-
   url = environment.appServerURL;
   refreshAppData: EventEmitter<any> = new EventEmitter<any>();
-  constructor(
-    private http: HttpClient,
-    private commonService: CommonService
-  ) { }
+  constructor(private http: HttpClient, private commonService: CommonService) {}
 
-  getApplicationDashboardSnapshot(filterObj, app) {
+  getApplicationOfUser(filterObj) {
     let params = new HttpParams();
-    (Object.keys(filterObj)).forEach(key => {
+    Object.keys(filterObj).forEach((key) => {
       if (filterObj[key]) {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + String.Format(AppUrls.GET_APPLICATION_DASHBOARD_SNAPSHOT, encodeURIComponent(app)), {params});
+    return this.http.get(this.url + AppUrls.GET_USERS_APPLICATION, { params });
+  }
+
+  getApplicationDashboardSnapshot(filterObj, app) {
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(
+      this.url + String.Format(AppUrls.GET_APPLICATION_DASHBOARD_SNAPSHOT, encodeURIComponent(app)),
+      { params }
+    );
   }
 
   getApplications(filterObj) {
     let params = new HttpParams();
-    (Object.keys(filterObj)).forEach(key => {
+    Object.keys(filterObj).forEach((key) => {
       if (filterObj[key]) {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + AppUrls.GET_APPLICATIONS_LIST, {params});
+    return this.http.get(this.url + AppUrls.GET_APPLICATIONS_LIST, { params });
   }
 
   getApplicationDetail(app) {
@@ -54,7 +63,10 @@ export class ApplicationService {
 
   updateAppHierarchy(appObj) {
     localStorage.removeItem(CONSTANTS.APP_USERS);
-    return this.http.put(this.url + String.Format(AppUrls.UPDATE_APP_HIERARCHY, encodeURIComponent(appObj.app)), appObj);
+    return this.http.put(
+      this.url + String.Format(AppUrls.UPDATE_APP_HIERARCHY, encodeURIComponent(appObj.app)),
+      appObj
+    );
   }
 
   updateAppRoles(appObj) {
@@ -64,7 +76,7 @@ export class ApplicationService {
 
   getLastAlerts(filterObj: any) {
     let params = new HttpParams();
-    (Object.keys(filterObj)).forEach(key => {
+    Object.keys(filterObj).forEach((key) => {
       if (filterObj[key]) {
         params = params.set(key, filterObj[key]);
       }
@@ -74,7 +86,7 @@ export class ApplicationService {
 
   getLastNotifications(filterObj: any) {
     let params = new HttpParams();
-    (Object.keys(filterObj)).forEach(key => {
+    Object.keys(filterObj).forEach((key) => {
       if (filterObj[key]) {
         params = params.set(key, filterObj[key]);
       }
@@ -84,7 +96,7 @@ export class ApplicationService {
 
   getAssetLifeCycleEvents(filterObj: any) {
     let params = new HttpParams();
-    (Object.keys(filterObj)).forEach(key => {
+    Object.keys(filterObj).forEach((key) => {
       if (filterObj[key]) {
         params = params.set(key, filterObj[key]);
       }
@@ -97,16 +109,19 @@ export class ApplicationService {
     if (users) {
       return new Observable((observer) => {
         observer.next({
-          data: users
+          data: users,
         });
       });
     } else {
-      return this.http.get(this.url + String.Format(AppUrls.GET_APP_USERS, encodeURIComponent(app))).pipe( map((data: any) => {
-        this.commonService.setItemInLocalStorage(CONSTANTS.APP_USERS, data.data);
-        return data;
-      }), catchError( error => {
-        return throwError( error);
-      }));
+      return this.http.get(this.url + String.Format(AppUrls.GET_APP_USERS, encodeURIComponent(app))).pipe(
+        map((data: any) => {
+          this.commonService.setItemInLocalStorage(CONSTANTS.APP_USERS, data.data);
+          return data;
+        }),
+        catchError((error) => {
+          return throwError(error);
+        })
+      );
     }
   }
   getApplicationUserGroups(app) {
@@ -118,18 +133,17 @@ export class ApplicationService {
   }
 
   updateApplicationUserGroups(appObj, app, group_name) {
-    return this.http.put(this.url + String.Format(AppUrls.UPDATE_APP_USERGROUPS, encodeURIComponent(app),
-    encodeURIComponent(group_name)), appObj);
+    return this.http.put(
+      this.url + String.Format(AppUrls.UPDATE_APP_USERGROUPS, encodeURIComponent(app), encodeURIComponent(group_name)),
+      appObj
+    );
   }
 
   deleteApplicationUserGroups(app, group_name) {
-    return this.http.delete(this.url + String.Format(AppUrls.UPDATE_APP_USERGROUPS, encodeURIComponent(app),
-    encodeURIComponent(group_name)));
+    return this.http.delete(
+      this.url + String.Format(AppUrls.UPDATE_APP_USERGROUPS, encodeURIComponent(app), encodeURIComponent(group_name))
+    );
   }
-
-
-
-
 
   getApplicationUserRoles(app) {
     return this.http.get(this.url + String.Format(AppUrls.GET_APP_USERROLES, encodeURIComponent(app)));
@@ -140,25 +154,30 @@ export class ApplicationService {
   }
 
   updateUserRoles(app, obj) {
-    return this.http.put(this.url + String.Format(AppUrls.UPDATE_APP_USERROLES, encodeURIComponent(app),
-    encodeURIComponent(obj.id)), obj);
+    return this.http.put(
+      this.url + String.Format(AppUrls.UPDATE_APP_USERROLES, encodeURIComponent(app), encodeURIComponent(obj.id)),
+      obj
+    );
   }
 
   deleteUserRoles(app, filterObj) {
     let params = new HttpParams();
-    (Object.keys(filterObj)).forEach(key => {
+    Object.keys(filterObj).forEach((key) => {
       if (filterObj[key]) {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.delete(this.url + String.Format(AppUrls.DELETE_APP_USERROLES, encodeURIComponent(app),
-    encodeURIComponent(filterObj.id), filterObj.role), {params});
+    return this.http.delete(
+      this.url +
+        String.Format(
+          AppUrls.DELETE_APP_USERROLES,
+          encodeURIComponent(app),
+          encodeURIComponent(filterObj.id),
+          filterObj.role
+        ),
+      { params }
+    );
     // return this.http.delete(this.url + String.Format(AppUrls.DELETE_APP_USERROLES, encodeURIComponent(app),
     // encodeURIComponent(obj.id)), obj);
   }
-
 }
-
-
-
-

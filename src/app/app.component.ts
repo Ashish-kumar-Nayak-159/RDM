@@ -1,7 +1,15 @@
 import { Subscription } from 'rxjs';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { Component, Inject, HostListener, NgZone, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
-import { Router, NavigationEnd, ActivatedRoute, RouterEvent, NavigationCancel, NavigationError, NavigationStart } from '@angular/router';
+import {
+  Router,
+  NavigationEnd,
+  ActivatedRoute,
+  RouterEvent,
+  NavigationCancel,
+  NavigationError,
+  NavigationStart,
+} from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from './app.constants';
@@ -13,7 +21,7 @@ declare var $: any;
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   title = 'RDM';
@@ -33,10 +41,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
     private singalRService: SignalRService
-  ) {
-  }
+  ) {}
   ngAfterViewInit(): void {
-
     setTimeout(() => {
       if (!this.isLoginRoute && !this.isHomeRoute) {
         const node = document.createElement('script');
@@ -46,9 +52,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         document.getElementsByTagName('head')[0].appendChild(node);
       }
     }, 500);
-
   }
-
 
   ngOnInit(): void {
     // setInterval(() => {
@@ -57,103 +61,43 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.applicationData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.url = this.router.url;
-    this.apiSubscriptions.push(this.router.events.subscribe(async event => {
-      this.navigationInterceptor(event);
-      if (event instanceof NavigationEnd) {
-        this.url = event.url;
-        if (!this.applicationData) {
-        if (this.userData ) {
-          if (this.userData.is_super_admin) {
-            localStorage.removeItem(CONSTANTS.APP_TOKEN);
-            localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.token);
-            this.router.navigate(['applications']);
-          } else {
-            if (this.userData.apps && this.userData.apps.length > 1) {
-              this.router.navigate(['applications', 'selection']);
-            } else if (this.userData.apps && this.userData.apps.length === 1) {
-              const decodedToken =  this.commonService.decodeJWTToken(this.userData.apps[0].token);
-              if (decodedToken?.privileges.indexOf('APMV') === -1) {
-                this.toasterService.showError(APIMESSAGES.API_ACCESS_ERROR_MESSAGE, APIMESSAGES.CONTACT_ADMINISTRATOR);
-                this.commonService.onLogOut();
-                return;
-              }
-              await this.getApplicationData(this.userData.apps[0]);
-              const menu = this.applicationData.menu_settings.main_menu.length > 0 ?
-              this.applicationData.menu_settings.main_menu : JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
-              let i = 0;
-              menu.forEach(menuObj => {
-                if ( i === 0 && menuObj.visible) {
-                  i++;
-                  const url = menuObj.url;
-                  if (menuObj.url?.includes(':appName')) {
-                    menuObj.url = menuObj.url.replace(':appName', this.applicationData.app);
-                    this.router.navigateByUrl(menuObj.url);
-                  }
-                }
-              });
+    this.apiSubscriptions.push(
+      this.router.events.subscribe(async (event) => {
+        this.navigationInterceptor(event);
+        if (event instanceof NavigationEnd) {
+          this.url = event.url;
+          // if (!this.userData || !this.applicationData) {
+          //   this.commonService.onLogOut();
+          // }
+          if (event.url.includes('login')) {
+            this.isLoginRoute = true;
+            this.isHomeRoute = false;
+            if (!this.document.body.classList.contains('bg-white')) {
+              this.document.body.classList.add('bg-white');
             }
-          }
-        }
-        }
-        if (event.url.includes('login')) {
-          this.isLoginRoute = true;
-          this.isHomeRoute = false;
-          if (!this.document.body.classList.contains('bg-white')) {
-            this.document.body.classList.add('bg-white');
-          }
-        } else if (event.url === '/') {
-          this.isHomeRoute = true;
-          this.isLoginRoute = false;
-        } else if (event.url.includes('applications/selection')) {
-          this.isHomeRoute = false;
-          this.isLoginRoute = true;
-        } else {
-          this.isLoginRoute = false;
-          this.isHomeRoute = false;
-          if (this.document.body.classList.contains('bg-white')) {
-            this.document.body.classList.remove('bg-white');
-          }
-          setTimeout(() => {
-            const node = document.createElement('script');
-            node.src = './assets/js/kdm.min.js';
-            node.type = 'text/javascript';
-            node.async = false;
-            document.getElementsByTagName('head')[0].appendChild(node);
+          } else if (event.url === '/') {
+            this.isHomeRoute = true;
+            this.isLoginRoute = false;
+          } else if (event.url.includes('applications/selection')) {
+            this.isHomeRoute = false;
+            this.isLoginRoute = true;
+          } else {
+            this.isLoginRoute = false;
+            this.isHomeRoute = false;
+            if (this.document.body.classList.contains('bg-white')) {
+              this.document.body.classList.remove('bg-white');
+            }
+            setTimeout(() => {
+              const node = document.createElement('script');
+              node.src = './assets/js/kdm.min.js';
+              node.type = 'text/javascript';
+              node.async = false;
+              document.getElementsByTagName('head')[0].appendChild(node);
             }, 500);
+          }
         }
-      }
-    }));
-
-  }
-
-
-  getApplicationData(app) {
-    return new Promise<void>((resolve) => {
-    this.applicationData = undefined;
-    this.apiSubscriptions.push(this.applicationService.getApplicationDetail(app.app).subscribe(
-      (response: any) => {
-          this.applicationData = response;
-          this.applicationData.app = app.app;
-          this.applicationData.user = app.user;
-          if (this.applicationData.menu_settings.main_menu.length === 0) {
-            this.applicationData.menu_settings.main_menu = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
-          }
-          if (this.applicationData.menu_settings.asset_control_panel_menu.length === 0) {
-            this.applicationData.menu_settings.asset_control_panel_menu =
-            JSON.parse(JSON.stringify(CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST));
-          }
-          if (this.applicationData.menu_settings.legacy_asset_control_panel_menu.length === 0) {
-            this.applicationData.menu_settings.legacy_asset_control_panel_menu =
-            JSON.parse(JSON.stringify(CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST));
-          }
-          if (this.applicationData.menu_settings.model_control_panel_menu.length === 0) {
-            this.applicationData.menu_settings.model_control_panel_menu =
-            JSON.parse(JSON.stringify(CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST));
-          }
-          this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
-          resolve();
-      }));
-    });
+      })
+    );
   }
 
   navigationInterceptor(event): void {
@@ -161,12 +105,11 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       this.showLoader = true;
     }
     if (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) {
-      setTimeout(() => this.showLoader = false, 500);
+      setTimeout(() => (this.showLoader = false), 500);
     }
   }
 
   ngOnDestroy() {
-    this.apiSubscriptions.forEach(subscription => subscription.unsubscribe());
+    this.apiSubscriptions.forEach((subscription) => subscription.unsubscribe());
   }
-
 }

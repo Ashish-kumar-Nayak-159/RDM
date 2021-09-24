@@ -13,6 +13,7 @@
           <th>Time Stamp</th>
           <th>Job Type</th>
           <th>Type</th>
+          <th> Requested By</th>
           <th style="width:7%">Request</th>
           <th style="width:7%">Response</th>
         </tr>
@@ -26,6 +27,7 @@
             <td>{{msg.job_type === 'Message' ? 'C2D Message' : (msg.job_type === 'DirectMethod' ? 'Direct Method' :
               (msg.job_type === 'Twin' ? 'Twin Change' : ''))}}</td>
             <td>{{msg.request_type}}</td>
+            <td>{{msg.requested_by}}</td>
             <td>
               <a (click)="loadMessageDetail(msg, true)" href="javascript:void(0)" placement="bottom"
                 tooltip="View Message">

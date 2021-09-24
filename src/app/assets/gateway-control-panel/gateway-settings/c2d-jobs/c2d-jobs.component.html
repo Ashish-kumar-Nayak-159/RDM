@@ -11,10 +11,11 @@
         <tr>
           <th width="11%">No</th>
           <th width="25%">Time Stamp</th>
-          <th width="25%">Job Type</th>
-          <th width="25%">Type</th>
-          <th width="10%">Request</th>
-          <th width="10%">Response</th>
+          <th width="14%">Job Type</th>
+          <th width="18%">Type</th>
+          <th width="18%"> Requested By</th>
+          <th width="8%">Request</th>
+          <th width="8%">Response</th>
         </tr>
       </thead>
 
@@ -25,6 +26,7 @@
             <td>{{msg.local_created_date}}</td>
             <td>{{msg.job_type}}</td>
             <td>{{msg.request_type}}</td>
+            <td>{{msg.requested_by}}</td>
             <td>
               <a (click)="loadMessageDetail(msg, true)" href="javascript:void(0)" placement="bottom"
                 tooltip="View Message">

@@ -213,6 +213,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       if (item.assets) {
         this.filterObj.asset = item.assets;
         this.originalFilter = JSON.parse(JSON.stringify(this.filterObj));
+        this.onChangeOfAsset(this.filterObj.asset);
       }
       if (item.hierarchy) {
         if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
@@ -611,17 +612,14 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     // } else {
     //   this.historicalDateFilter.isTypeEditable = false;
     // }
-    // const frequencyArr = [];
-    // frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
-    // frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
-    // frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
-    // const frequency = this.commonService.getLowestValueFromList(frequencyArr);
-    const records = this.commonService.calculateEstimatedRecords(this.frequency, this.historicalDateFilter.from_date, this.historicalDateFilter.to_date);
-    if (records > CONSTANTS.NO_OF_RECORDS) {
-        this.historicalDateFilter.isTypeEditable = true;
-    } else {
-        this.historicalDateFilter.isTypeEditable = false;
-    }
+    if (this.filterObj.asset) {
+        const records = this.commonService.calculateEstimatedRecords(this.frequency, this.historicalDateFilter.from_date, this.historicalDateFilter.to_date);
+        if (records > CONSTANTS.NO_OF_RECORDS) {
+            this.historicalDateFilter.isTypeEditable = true;
+        } else {
+            this.historicalDateFilter.isTypeEditable = false;
+        }
+      }
   }
 
   onNumberChange(event, type) {
@@ -934,11 +932,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     //   this.isFilterSelected = false;
     //   return;
     // }
-    // const frequencyArray = [];
-    // frequencyArray.push(this.filterObj.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
-    // frequencyArray.push(this.filterObj.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
-    // frequencyArray.push(this.filterObj.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
-    // const S_frequency = this.commonService.getLowestValueFromList(frequencyArray);
     const record = this.commonService.calculateEstimatedRecords(this.frequency, this.filterObj.from_date, this.filterObj.to_date);
     if (record > CONSTANTS.NO_OF_RECORDS && !this.historicalDateFilter.isTypeEditable) {
       this.historicalDateFilter.isTypeEditable = true;
@@ -1003,11 +996,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       delete filterObj.aggregation_format;
       delete filterObj.sampling_time;
       delete filterObj.sampling_format;
-      // const frequencyArr = [];
-      // frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
-      // frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
-      // frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
-      // const frequency = this.commonService.getLowestValueFromList(frequencyArr);
       const records = this.commonService.calculateEstimatedRecords(this.frequency, filterObj.from_date, filterObj.to_date);
       if (records > 500) {
         this.loadingMessage =

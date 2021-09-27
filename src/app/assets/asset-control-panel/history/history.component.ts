@@ -122,17 +122,17 @@ export class HistoryComponent implements OnInit, OnDestroy {
       });
     }
     this.isHistoryAPILoading = true;
+    const frequencyArr = [];
+    frequencyArr.push(this.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+    frequencyArr.push(this.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+    frequencyArr.push(this.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+    this.frequency = this.commonService.getLowestValueFromList(frequencyArr);
     this.getLayout();
     this.loadFromCache();
     this.historyFilter.type = true;
     if ($(window).width() < 992) {
       this.isShowOpenFilter = false;
     }
-    const frequencyArr = [];
-    frequencyArr.push(this.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
-    frequencyArr.push(this.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
-    frequencyArr.push(this.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
-    this.frequency = this.commonService.getLowestValueFromList(frequencyArr);
   }
 
   loadFromCache() {

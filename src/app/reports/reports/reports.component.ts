@@ -129,6 +129,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     if (item) {
       if (item.assets) {
         this.filterObj.asset = item.assets;
+        this.onChangeOfAsset(this.filterObj.asset);
       }
       if (item.hierarchy) {
         if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
@@ -167,17 +168,14 @@ export class ReportsComponent implements OnInit, OnDestroy {
         // } else {
         //   this.filterObj.isTypeEditable = false;
         // }
-        // const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
-        // const frequencyArr = [];
-        // frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
-        // frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
-        // frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
-        // const frequency = this.commonService.getLowestValueFromList(frequencyArr);
-        const records = this.commonService.calculateEstimatedRecords(this.frequency, this.filterObj.from_date, this.filterObj.to_date);
-        if (records > CONSTANTS.NO_OF_RECORDS) {
-            this.filterObj.isTypeEditable = true;
-        } else {
-            this.filterObj.isTypeEditable = false;
+        if (this.filterObj.asset) {
+          // this.onChangeOfAsset(this.filterObj.asset);
+          const records = this.commonService.calculateEstimatedRecords(this.frequency, this.filterObj.from_date, this.filterObj.to_date);
+          if (records > CONSTANTS.NO_OF_RECORDS) {
+              this.filterObj.isTypeEditable = true;
+          } else {
+              this.filterObj.isTypeEditable = false;
+          }
         }
       }
       console.log(this.originalFilterObj);
@@ -273,17 +271,14 @@ export class ReportsComponent implements OnInit, OnDestroy {
     // } else {
     //   this.filterObj.isTypeEditable = false;
     // }
-    // const asset = this.assets.find((assetObj) => assetObj.asset_id === this.filterObj.asset.asset_id);
-    // const frequencyArr = [];
-    // frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
-    // frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
-    // frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
-    // const frequency = this.commonService.getLowestValueFromList(frequencyArr);
-    const records = this.commonService.calculateEstimatedRecords(this.frequency, this.filterObj.from_date, this.filterObj.to_date);
-    if (records > CONSTANTS.NO_OF_RECORDS) {
-        this.filterObj.isTypeEditable = true;
-    } else {
-        this.filterObj.isTypeEditable = false;
+    if (this.filterObj.asset) {
+      // this.onChangeOfAsset(this.filterObj.asset);
+      const records = this.commonService.calculateEstimatedRecords(this.frequency, this.filterObj.from_date, this.filterObj.to_date);
+      if (records > CONSTANTS.NO_OF_RECORDS) {
+          this.filterObj.isTypeEditable = true;
+      } else {
+          this.filterObj.isTypeEditable = false;
+      }
     }
   }
 
@@ -648,11 +643,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       //   this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
       //   return;
       // }
-      // const frequencyArray = [];
-      // frequencyArray.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
-      // frequencyArray.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
-      // frequencyArray.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
-      // const S_frequency = this.commonService.getLowestValueFromList(frequencyArray);
+      // this.onChangeOfAsset(obj.asset_id);
       const record = this.commonService.calculateEstimatedRecords(this.frequency, obj.from_date, obj.to_date);
       if (record > CONSTANTS.NO_OF_RECORDS && !filterObj.isTypeEditable) {
         this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
@@ -773,11 +764,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
           obj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
           obj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
         }
-        // const frequencyArr = [];
-        // frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
-        // frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
-        // frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
-        // const frequency = this.commonService.getLowestValueFromList(frequencyArr);
         const records = this.commonService.calculateEstimatedRecords(this.frequency, filterObj.from_date, filterObj.to_date);
         if (records > 500) {
           this.loadingMessage =

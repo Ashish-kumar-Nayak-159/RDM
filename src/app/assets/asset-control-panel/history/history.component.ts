@@ -85,7 +85,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   selectedDateRange: string;
   decodedToken: any;
   isShowOpenFilter = true;
-  frequencyArr: any;
   frequency: any;
   constructor(
     private assetService: AssetService,
@@ -129,11 +128,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if ($(window).width() < 992) {
       this.isShowOpenFilter = false;
     }
-    this.frequencyArr = [];
-    this.frequencyArr.push(this.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
-    this.frequencyArr.push(this.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
-    this.frequencyArr.push(this.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
-    this.frequency = this.commonService.getLowestValueFromList(this.frequencyArr);
+    const frequencyArr = [];
+    frequencyArr.push(this.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+    frequencyArr.push(this.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+    frequencyArr.push(this.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+    this.frequency = this.commonService.getLowestValueFromList(frequencyArr);
   }
 
   loadFromCache() {

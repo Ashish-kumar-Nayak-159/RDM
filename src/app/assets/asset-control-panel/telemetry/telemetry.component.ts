@@ -44,7 +44,6 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedDateRange: string;
   activeColumn: string;
   directionColumn: string;
-  frequencyArr: any;
   frequency: any;
   constructor(
     private assetService: AssetService,
@@ -86,11 +85,11 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this.telemetryFilter.asset_id = this.asset.asset_id;
     }
-    this.frequencyArr = [];
-    this.frequencyArr.push(this.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
-    this.frequencyArr.push(this.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
-    this.frequencyArr.push(this.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
-    this.frequency = this.commonService.getLowestValueFromList(this.frequencyArr);
+    const frequencyArr = [];
+    frequencyArr.push(this.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+    frequencyArr.push(this.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+    frequencyArr.push(this.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+    this.frequency = this.commonService.getLowestValueFromList(frequencyArr);
     this.telemetryTableConfig = {
       type: 'process parameter',
       tableHeight: 'calc(100vh - 13.5rem)',

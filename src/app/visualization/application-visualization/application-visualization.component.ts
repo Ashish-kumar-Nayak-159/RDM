@@ -296,9 +296,17 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     //   this.filterObj.isTypeEditable = false;
     // }
     const frequencyArr = [];
-    frequencyArr.push(this.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
-    frequencyArr.push(this.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
-    frequencyArr.push(this.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+    if (!this.asset) {
+      console.log('filterObj', this.filterObj.asset);
+      frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+      frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+      frequencyArr.push(this.filterObj.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+    } else {
+      console.log('asset', this.asset);
+      frequencyArr.push(this.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+      frequencyArr.push(this.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+      frequencyArr.push(this.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+    }
     const frequency = this.commonService.getLowestValueFromList(frequencyArr);
     const records = this.commonService.calculateEstimatedRecords(frequency, this.filterObj.from_date, this.filterObj.to_date);
     if (records > CONSTANTS.NO_OF_RECORDS) {
@@ -707,32 +715,17 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       // } else {
       //   this.filterObj.isTypeEditable = false;
       // }
-      if (this.beforeInterval > 0) {
-        this.filterObj.from_date =
+      this.filterObj.from_date =
           this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp) -
           this.beforeInterval * 60;
-      } else {
-        this.toasterService.showError(
-          'Minutes Before Alert value must be greater than 0 and less than 30.',
-          'View Visualization'
-        );
-        return;
-      }
-      if (this.afterInterval > 0) {
-        this.filterObj.to_date =
+      this.filterObj.to_date =
           this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp) +
           this.afterInterval * 60;
-      } else {
-        this.toasterService.showError(
-          'Minutes After Alert value must be greater than 0 and less than 30.',
-          'View Visualization'
-        );
-        return;
-      }
+      const asset = this.assets.find((assetObj) => assetObj.asset_id === this.selectedAlert.asset_id);
       const frequencyArr = [];
-      frequencyArr.push(this.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
-      frequencyArr.push(this.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
-      frequencyArr.push(this.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+      frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+      frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+      frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
       const frequency = this.commonService.getLowestValueFromList(frequencyArr);
       const record = this.commonService.calculateEstimatedRecords(frequency, this.filterObj.from_date, this.filterObj.to_date);
       if (record > CONSTANTS.NO_OF_RECORDS && (this.beforeInterval + this.afterInterval > 60)) {

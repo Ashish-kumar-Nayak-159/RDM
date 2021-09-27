@@ -187,4 +187,6 @@ export class AppUrls {
   public static CREATE_JOB_CAMPAIGN = 'apps/{0}/job_campaigns';
   public static START_JOB_CAMPAIGN = 'apps/{0}/job_campaigns/{1}/start';
   public static STOP_JOB_CAMPAIGN = 'apps/{0}/job_campaigns/{1}/end';
+
+  public static GET_USERS_APPLICATION = 'user_apps';
 }

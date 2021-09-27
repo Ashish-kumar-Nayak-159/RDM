@@ -778,9 +778,15 @@ export class ReportsComponent implements OnInit, OnDestroy {
         (response: any) => {
           if (response && response.data) {
             // this.telemetry = response.data;
-            response.data.forEach(
-              (item) => (item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date))
-            );
+            response.data.forEach((item) => {
+              item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
+              this.propertyList.forEach((prop) => {
+                if (item[prop.json_key] !== null && item[prop.json_key] !== undefined) {
+                  item[prop.json_key] = JSON.stringify(item[prop.json_key]);
+                  item[prop.name] = JSON.stringify(item[prop.json_key]);
+                }
+              });
+            });
             this.telemetry = [...this.telemetry, ...response.data];
             this.isFilterOpen = false;
             if (response.data.length === this.currentLimit) {
@@ -914,6 +920,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
           });
           data.push(obj);
         });
+        console.log(JSON.stringify(data));
         ws = XLSX.utils.json_to_sheet(data);
       }
       const colA = XLSX.utils.decode_col('B'); // timestamp is in first column

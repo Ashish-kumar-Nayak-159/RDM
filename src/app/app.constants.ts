@@ -1752,7 +1752,7 @@ export class CONSTANTS {
     },
     {
       name: 'Array',
-      validations: ['defaultValue'],
+      validations: [],
     },
   ];
 
@@ -1797,7 +1797,7 @@ export class CONSTANTS {
   public static CONTROL_PANEL_FILTERS = 'control_panel_filter';
   public static APP_TOKEN = 'app_token';
   public static GUEST_USER = 'guest_user_details';
-  public static NO_OF_RECORDS = 500;
+  public static SYSTEM_RESERVED_KEYWORDS = ['asset_id', 'slave_id'];
 
   // public static DEFAULT_APP_ICON = environment.blobContainerName + '/default_app_icon.png';
   // public static DEFAULT_APP_LOGO = environment.blobContainerName + '/default_app_logo.jpg';

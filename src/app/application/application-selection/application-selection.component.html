@@ -1,32 +1,33 @@
 <div class="selection-page-scroll">
-<div class="container"  style="padding-top:5rem">
-  <div class="col-12">
-    <h3>Welcome {{userData?.name}}</h3>
-    <p>Please select which app you want to login...</p>
-  </div>
-  <div class="row col-12">
-    <div class="col-lg-3 col-md-4 col-sm-6 mb-4" *ngFor="let app of userData?.apps; let index = index">
-      <div class="card shadow h-100">
-        <div class="card-body">
-          <a href="javascript:void(0)" [class.disabled]="isAppDataLoading" (click)="redirectToApp(app, index)"
-            ><div class="text-center">
-              <img
-                class="img-fluid px-2 mt-2 mb-3 img-szsm"
-                src="{{ blobStorageURL + (
+  <div class="container" style="padding-top:5rem">
+    <div class="col-12">
+      <h3>Welcome {{userData?.name}}</h3>
+      <p>Please select which app you want to login...</p>
+    </div>
+    <div class="row col-12">
+      <ng-container *ngIf="!isUserApplicationLoading && userData?.apps.length > 0">
+
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4" *ngFor="let app of userData?.apps; let index = index">
+          <div class="card shadow h-100">
+            <div class="card-body">
+              <a href="javascript:void(0)" [class.disabled]="isAppDataLoading" (click)="redirectToApp(app, index)">
+                <div class="text-center">
+                  <img class="img-fluid px-2 mt-2 mb-3 img-szsm" src="{{ blobStorageURL + (
                   app?.metadata?.icon?.url
                     ? app?.metadata?.icon?.url + blobToken
                     : constantData.DEFAULT_APP_ICON  + blobToken)
-                }}"
-
-                alt=""
-              />
+                }}" alt="" />
+                </div>
+                <div class="text-black-50 text-center small">
+                  <h6>{{app.app}} <i class="fa fa-spinner fa-spin fa-fw fa-2x"
+                      *ngIf="isAppDataLoading && isAppDataLoading[index]"></i></h6>
+                </div>
+              </a>
             </div>
-            <div class="text-black-50 text-center small">
-              <h6>{{app.app}} <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAppDataLoading && isAppDataLoading[index]"></i></h6></div
-          ></a>
+          </div>
         </div>
-      </div>
+      </ng-container>
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserApplicationLoading"></i>
     </div>
   </div>
-</div>
 </div>

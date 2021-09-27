@@ -45,6 +45,7 @@ export class DerivedKpisComponent implements OnInit {
   selectedDateRange: string;
   @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   filterObj: any = {};
+  toggleRows: any = {};
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -54,38 +55,6 @@ export class DerivedKpisComponent implements OnInit {
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.derivedKPITableConfig = {
-      type: 'Derived KPI',
-      headers: ['Code', 'KPI Name', 'Description', 'Condition', 'Value'],
-      data: [
-        {
-          name: 'Code',
-          key: 'code',
-        },
-        {
-          name: 'KPI Name',
-          key: 'name',
-        },
-        {
-          name: 'Description',
-          key: 'description',
-        },
-        {
-          name: 'JSON Key',
-          key: 'kpi_json_key',
-        },
-        {
-          name: 'Value',
-          key: 'kpi_result',
-        },
-
-        {
-          name: '',
-          key: undefined,
-          headerClass: 'w-5',
-        },
-      ],
-    };
     this.getderivedKPIs();
   }
 
@@ -106,14 +75,28 @@ export class DerivedKpisComponent implements OnInit {
     );
   }
 
-  openHistoricKPIData(obj) {
-    if (obj.type === this.derivedKPITableConfig.type) {
-      this.selectedDerivedKPI = obj.data;
-      console.log(this.selectedDerivedKPI);
-      // this.getDerivedKPIsHistoricData();
-      $('#derivedKPIModal').modal({ backdrop: 'static', keyboard: false, show: true });
-      setTimeout(() => this.loadFromCache(), 500);
+  onToggleRows(index) {
+    this.isDerivedKPIDataLoading = false;
+    this.loader = false;
+    this.toggleRows = {};
+    this.derivedKPIData = [];
+    if (this.toggleRows[index]) {
+      this.toggleRows = {};
+
+      this.selectedDerivedKPI = undefined;
+    } else {
+      this.toggleRows = {};
+      this.toggleRows[index] = true;
+      this.openHistoricKPIData(this.derivedKPIs[index]);
     }
+  }
+
+  openHistoricKPIData(obj) {
+    this.selectedDerivedKPI = obj;
+    console.log(this.selectedDerivedKPI);
+    // this.getDerivedKPIsHistoricData();
+    // $('#derivedKPIModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    setTimeout(() => this.loadFromCache(), 500);
   }
 
   getDerivedKPIsHistoricData() {
@@ -213,7 +196,7 @@ export class DerivedKpisComponent implements OnInit {
   plotChart() {
     this.loadingMessage = 'Loading Chart. Please wait...';
     am4core.options.autoDispose = true;
-    const chart = am4core.create('derivedKPIChart', am4charts.XYChart);
+    const chart = am4core.create('derivedKPIChart_' + this.selectedDerivedKPI.kpi_json_key, am4charts.XYChart);
     const data = [];
     this.derivedKPIData.reverse();
     console.log(this.derivedKPIData);

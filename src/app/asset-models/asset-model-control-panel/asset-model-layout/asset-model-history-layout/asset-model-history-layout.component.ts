@@ -261,10 +261,10 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
         }
       });
       this.y1AxisProps = [...arr];
-      if (this.y1AxisProps.length > 1 || this.y1AxisProps.length === 0) {
-        this.toasterService.showError('Damage Plot can have only 1 property as y1 axis property', 'Add Chart');
-        return;
-      }
+      // if (this.y1AxisProps.length > 1 || this.y1AxisProps.length === 0) {
+      //   this.toasterService.showError('Damage Plot can have only 1 property as y1 axis property', 'Add Chart');
+      //   return;
+      // }
       if (this.y2AxisProps.length > 0) {
         this.toasterService.showError('Damage Plot will not contain any y2 axis property', 'Add Chart');
         return;

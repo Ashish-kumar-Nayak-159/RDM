@@ -1,9 +1,77 @@
 <div class="table-responsive">
-  <div class="tableFixHead">
+  <!-- <div class="tableFixHead">
     <app-table [tableData]="derivedKPIs" [tableConfig]="derivedKPITableConfig"
       [isTableFilterSelected]="isFilterSelected" [isTableDataLoading]="isderivedKPILoading"
       (viewMessageEvent)="openHistoricKPIData($event)"></app-table>
-    <!-- <h6 class="m-3">Customer Defined Business KPIs</h6> -->
+  </div> -->
+  <div class="tableFixHead">
+
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th style="width: 3%;"></th>
+          <th></th>
+          <th>Code</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>JSON Key</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="!isderivedKPILoading && derivedKPIs.length > 0">
+          <ng-container *ngFor="let kpi of derivedKPIs; let i = index">
+            <tr>
+              <td>
+                <a href="javascript:void(0)" (click)="onToggleRows(i)">
+                  <i [ngClass]="toggleRows[i] ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
+                </a>
+              </td>
+              <td>{{i + 1}}</td>
+              <td>{{kpi.code}}</td>
+              <td>{{kpi.name}}</td>
+              <td>{{kpi.description}}</td>
+              <td>{{kpi.kpi_json_key}}</td>
+              <td>{{kpi.kpi_result}}</td>
+            </tr>
+            <tr *ngIf="toggleRows[i]" style="background-color:#fdfeff;">
+              <td colspan="7">
+                <form class="form-inline">
+                  <!-- <b>Filters:</b>&nbsp; -->
+                  <div class="form-group left-inner-addon">
+                    <i class="fa fa-calendar active"></i>
+                    <input type="text" class="form-control form-control-sm active date-range-picker" daterangepicker
+                      name="daterangeInput" [options]="options" (selected)="selectedDate($event, daterange)"
+                      autocomplete="off" [(ngModel)]="selectedDateRange" [tooltip]="selectedDateRange"
+                      placement="bottom" />
+                  </div>
+                  <div class="form-group"><button type="button" placement="bottom" tooltip="Search"
+                      class="btn btn-sm searchBtn btn-primary" (click)="getDerivedKPIsHistoricData()"><i
+                        class="fas fa-search fa-sm"></i></button></div>
+                </form>
+                <p class="m-3" *ngIf="derivedKPIData.length === 0 && !isDerivedKPIDataLoading && !loader"> No
+                  {{selectedDerivedKPI?.name}}
+                  data found.</p>
+                <span *ngIf="loader"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> {{loadingMessage}}</span>
+                <div id="derivedKPIChart_{{kpi.kpi_json_key}}" class="mt-2"
+                  *ngIf="!isDerivedKPIDataLoading && derivedKPIData.length > 0"
+                  [ngStyle]="{'width': '100%', 'height': '25rem'}"></div>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="isderivedKPILoading">
+          <tr>
+            <td colspan="6"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i></td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="!isderivedKPILoading && derivedKPIs.length === 0">
+          <tr>
+            <td colspan="6"> No Derived KPIs added.</td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
   </div>
 </div>
 

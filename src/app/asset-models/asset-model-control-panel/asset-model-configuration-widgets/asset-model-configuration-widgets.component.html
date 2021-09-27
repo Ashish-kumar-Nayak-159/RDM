@@ -153,35 +153,30 @@
                     href="javascript:void(0)" (click)="removeParameter(i)" placement="bottom"
                     tooltip="Remove Property"><i class="fa fa-trash fa-sm"></i></a>
                   <input type="text" class="form-control form-control-sm" id="title{{i}}" name="title{{i}}"
-                    [(ngModel)]="param.name" (change)="onKeyChange($event, i)" placeholder="Parameter Key">
+                    [(ngModel)]="param.name" placeholder="Parameter Display Name">
+                </div>
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Parameter Key:</label>
+                  <input type="text" class="form-control form-control-sm" id="key{{i}}" name="key{{i}}"
+                    [(ngModel)]="param.key" (change)="onParamKeyChange(i)" placeholder="Parameter Key">
                 </div>
                 <div class="form-group">
                   <label for="recipient-name" class="col-form-label required">Data Type:</label>
                   <select class="form-control form-control-sm" id="template{{i}}" name="model_type{{i}}"
-                    [(ngModel)]="param.type" (change)="onKeyChange($event, i)">
+                    [(ngModel)]="param.data_type" (change)="onDataTypeChange(i)">
                     <option [ngValue]="dataType.name" *ngFor="let dataType of dataTypeList">{{dataType.name}}</option>
                   </select>
                 </div>
+                <app-data-type-fields [obj]="param.json" *ngIf="param?.key && param?.data_type && param?.json">
+                </app-data-type-fields>
               </ng-container>
             </ng-container>
           </div>
-          <div class="form-group mr-3">
+          <!-- <div class="form-group mr-3">
             <label for="message-text" class="col-form-label">JSON Format:</label>
-            <!-- <textarea
-            class="form-control"
-            id="message"
-            rows="10"
-            placeholder="Please type your JSON here.."
-            name="message"
-            [defaultValue]="controlWidget.json | json" disabled
-          ></textarea> -->
             <json-editor [options]="editorOptions" name="json" [data]="controlWidget.json">
             </json-editor>
-            <!-- <json-editor [options]="editorOptions" name="json" [data]="controlWidget.json">
-          </json-editor> -->
-          </div>
-
-
+          </div> -->
         </form>
       </div>
       <div class="modal-footer">

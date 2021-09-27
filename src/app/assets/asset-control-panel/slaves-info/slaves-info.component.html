@@ -33,7 +33,7 @@
       <accordion-group heading="" *ngFor="let slave of slaveData" [panelClass]="'customClass'">
         <ng-container accordion-heading>
           <button class="btn" type="button" (click)="onClickOfSlaveAccordion(slave)">
-            {{slave.slave_name}}
+            {{slave.slave_name}}&nbsp; ({{slave.slave_id}})
           </button>
           <div class="float-right mt-1">
             <!-- <div tooltip="Provisioned" *ngIf="slaveProvisionedStatus[slave.slave_id]?.toLowerCase() === 'provisioned'">

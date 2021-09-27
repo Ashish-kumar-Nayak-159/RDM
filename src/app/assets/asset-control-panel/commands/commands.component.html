@@ -67,7 +67,7 @@
   <p class="m-3" *ngIf="allControlWidgets.length === 0"> No {{displayMode?.includes('control') ? 'control' :
     'configure'}} widgets available.</p>
   <div class="inbox" *ngIf="allControlWidgets.length > 0">
-    <div class="row -0">
+    <div class="row m-0">
       <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 p-0 right-border">
         <ul class="mail_list list-group list-unstyled alert-scroll">
           <li class="list-group-item" [ngClass]="{'active': selectedWidget?.id === widget.id}"

@@ -63,6 +63,11 @@
                 href="javascript:void(0)" (click)="removeParameter(i)" placement="bottom" tooltip="Remove Property"><i
                   class="fa fa-trash fa-sm"></i></a>
               <input type="text" class="form-control form-control-sm" id="title{{i}}" name="title{{i}}"
+                [(ngModel)]="param.name" placeholder="Parameter Display Name">
+            </div>
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Parameter Key:</label>
+              <input type="text" class="form-control form-control-sm" id="key{{i}}" name="key{{i}}"
                 [(ngModel)]="param.key" (change)="onParamKeyChange(i)" placeholder="Parameter Key">
             </div>
             <div class="form-group">
@@ -72,21 +77,15 @@
                 <option [ngValue]="dataType.name" *ngFor="let dataType of dataTypeList">{{dataType.name}}</option>
               </select>
             </div>
+            <app-data-type-fields [obj]="param.json" *ngIf="param?.key && param?.data_type && param?.json">
+            </app-data-type-fields>
+            <hr>
           </ng-container>
-          <div class="form-group mr-3">
+          <!-- <div class="form-group mr-3">
             <label for="message-text" class="col-form-label">JSON Model:</label>
-            <!-- <textarea
-              class="form-control"
-              id="message"
-              rows="10"
-              placeholder="Please type your JSON here.."
-              name="message"
-              [defaultValue]="assetMethodObj.json_model | json"
-              disbaled
-            ></textarea> -->
             <json-editor [options]="editorOptions" name="json" [data]="assetMethodObj.json_model">
             </json-editor>
-          </div>
+          </div> -->
         </form>
       </div>
       <div class="modal-footer">

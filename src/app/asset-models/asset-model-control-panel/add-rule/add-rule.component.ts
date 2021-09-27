@@ -58,26 +58,26 @@ export class AddRuleComponent implements OnInit {
       this.ruleModel.actions = {
         alert_management: { enabled: false, alert_condition_code: null },
         notification: { enabled: false, email: { subject: null, body: null, groups: [] } },
-        asset_control: { disable: false },
+        asset_control: { enabled: false, disable: false },
       };
     }
     if (!this.ruleModel.actions.alert_management) {
-        this.ruleModel.actions.alert_management = { enabled: false, alert_condition_code: null };
+      this.ruleModel.actions.alert_management = { enabled: false, alert_condition_code: null };
     }
     if (!this.ruleModel.actions.alert_management.alert_condition_code) {
-        this.ruleModel.actions.alert_management.alert_condition_code = null;
+      this.ruleModel.actions.alert_management.alert_condition_code = null;
     }
     if (!this.ruleModel.actions.notification) {
-        this.ruleModel.actions.notification = { enabled: false, email: { subject: null, body: null, groups: [] } };
+      this.ruleModel.actions.notification = { enabled: false, email: { subject: null, body: null, groups: [] } };
     }
     if (!this.ruleModel.actions.notification.email) {
-        this.ruleModel.actions.notification.email =  { subject: null, body: null, groups: [] };
+      this.ruleModel.actions.notification.email = { subject: null, body: null, groups: [] };
     }
     if (!this.ruleModel.actions.notification.email.groups) {
-        this.ruleModel.actions.notification.email.groups = [];
+      this.ruleModel.actions.notification.email.groups = [];
     }
     if (!this.ruleModel.actions.asset_control) {
-        this.ruleModel.actions.asset_control = { disable : false};
+      this.ruleModel.actions.asset_control = { enabled: false, disable: false };
     }
     $('#addRuleModal').modal({ backdrop: 'static', keyboard: false, show: true });
     this.addNewCondition();
@@ -121,15 +121,32 @@ export class AddRuleComponent implements OnInit {
     this.ruleModel.updated_by = this.ruleData.updated_by;
     this.ruleModel.rule_type = this.ruleData.type === 'Edge' ? true : false;
     this.getAlertConditions(this.ruleData.type);
-    if (!this.ruleData.actions || this.ruleData.actions === null) {
+    if (!this.ruleData.actions || Object.keys(this.ruleData.actions).length === 0) {
       this.ruleModel.actions = {
         alert_management: { enabled: false, alert_condition_code: '' },
         notification: { enabled: false, email: { subject: '', body: '', groups: [] } },
-        asset_control: { disable: false },
+        asset_control: { enabled: false, disable: false },
       };
-    }
-    else {
+    } else {
       this.ruleModel.actions = this.ruleData.actions;
+    }
+    if (!this.ruleModel.actions.alert_management) {
+      this.ruleModel.actions.alert_management = { enabled: false, alert_condition_code: null };
+    }
+    if (!this.ruleModel.actions.alert_management.alert_condition_code) {
+      this.ruleModel.actions.alert_management.alert_condition_code = null;
+    }
+    if (!this.ruleModel.actions.notification) {
+      this.ruleModel.actions.notification = { enabled: false, email: { subject: null, body: null, groups: [] } };
+    }
+    if (!this.ruleModel.actions.notification.email) {
+      this.ruleModel.actions.notification.email = { subject: null, body: null, groups: [] };
+    }
+    if (!this.ruleModel.actions.notification.email.groups) {
+      this.ruleModel.actions.notification.email.groups = [];
+    }
+    if (!this.ruleModel.actions.asset_control) {
+      this.ruleModel.actions.asset_control = { enabled: false, disable: false };
     }
   }
 
@@ -197,6 +214,24 @@ export class AddRuleComponent implements OnInit {
     });
   }
 
+  onChangeOfSendAlertCheckbox() {
+    this.ruleModel.actions.alert_management.alert_condition_code = null;
+  }
+
+  onChangeOfSendEmailCheckbox() {
+    this.ruleModel.actions.notification.email.groups = [];
+    this.ruleModel.actions.notification.email.subject = null;
+    this.ruleModel.actions.notification.email.body = null;
+  }
+
+  onChangeOfDisableAssetCheckbox() {
+    if (this.ruleModel.actions.asset_control.enabled) {
+      this.ruleModel.actions.asset_control.disable = true;
+    } else {
+      this.ruleModel.actions.asset_control.disable = false;
+    }
+  }
+
   onSwitchValueChange(event) {
     this.getAlertConditions(event ? 'Edge' : 'Cloud');
     this.ruleModel.rule_type = event;
@@ -222,7 +257,7 @@ export class AddRuleComponent implements OnInit {
 
   onChangeTimeAggregation(event) {
     if (!event) {
-      this.ruleModel.aggregation_window_in_sec = undefined;
+      this.ruleModel.aggregation_window_in_sec = null;
     } else {
       this.ruleModel.aggregation_window_in_sec = '300';
     }
@@ -230,10 +265,10 @@ export class AddRuleComponent implements OnInit {
 
   addNewCondition() {
     let condition = {
-      property: '',
+      property: null,
       operator: '',
       threshold: 0,
-      aggregation_type: '',
+      aggregation_type: null,
     };
     this.ruleModel.conditions.push(condition);
   }
@@ -252,8 +287,7 @@ export class AddRuleComponent implements OnInit {
     ) {
       this.toasterService.showError('Please fill all required details', 'Add Rule');
       return;
-    }
-    else if (
+    } else if (
       !this.ruleModel.actions.alert_management.enabled &&
       !this.ruleModel.actions.notification.enabled &&
       !this.ruleModel.actions.asset_control.disable
@@ -275,11 +309,14 @@ export class AddRuleComponent implements OnInit {
         ' ' +
         this.ruleModel.operator;
       let prop = this.dropdownPropList.find((p) => p.value.json_key == element.property);
-      this.ruleModel.properties.push({ property: prop.value.json_key, type: prop.type.charAt(0).toLowerCase() });
+      this.ruleModel.properties.push({
+        property: prop.value.json_key,
+        type: prop.type === 'Cloud Derived Properties' ? 'cd' : prop.type === 'Edge Derived Properties' ? 'ed' : 'm',
+      });
     });
     this.ruleModel.condition_str = str.slice(0, -2).trim();
     this.ruleModel.created_by = this.userData.email + ' (' + this.userData.name + ')';
-    if (this.isEdit) {
+    if (this.ruleModel.rule_id) {
       this.ruleModel.updated_by = this.userData.email + ' (' + this.userData.name + ')';
       let method;
       if (!this.asset) {
@@ -293,11 +330,11 @@ export class AddRuleComponent implements OnInit {
       }
       method.subscribe(
         (response: any) => {
-          this.onCloseRuleModel.emit({
-            status: true,
-          });
-          $('#addRuleModal').modal('hide');
-          this.isEdit = false;
+          // this.onCloseRuleModel.emit({
+          //   status: true,
+          // });
+          // $('#addRuleModal').modal('hide');
+          // this.isEdit = false;
           this.toasterService.showSuccess(response.message, this.title + 'Rule');
           this.closeRuleModal(true);
           this.isUpdateApiCall = false;
@@ -320,9 +357,9 @@ export class AddRuleComponent implements OnInit {
       }
       method.subscribe(
         (response: any) => {
-          this.onCloseRuleModel.emit({
-            status: true,
-          });
+          // this.onCloseRuleModel.emit({
+          //   status: true,
+          // });
           this.toasterService.showSuccess(response.message, this.title + 'Rule');
           this.closeRuleModal(true);
           this.isUpdateApiCall = false;

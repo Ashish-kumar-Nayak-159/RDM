@@ -4,69 +4,73 @@
       <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Edit Tags" *ngIf="!isMetadataEditable"
       (click)="isMetadataEditable = true;"><i class="fa fa-edit"></i></a> -->
       <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-      <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="isMetadataEditable = true;" *ngIf="!isMetadataEditable"
-
-      placement="bottom" tooltip="Edit Tags"><i class="fas fa-edit fa-sm"></i></button>
-      <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isMetadataEditable"
+        <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="isMetadataEditable = true;"
+          *ngIf="!isMetadataEditable" placement="bottom" tooltip="Edit Tags"><i class="fas fa-edit fa-sm"></i></button>
+        <!-- <a href="javascript:void(0)" placement="bottom" tooltip="Cancel" *ngIf="isMetadataEditable"
       (click)="onCancelClick();"><i class="fa fa-times"></i></a> -->
-      <button type="button" class="btn btn-sm searchBtn btn-secondary" (click)="onCancelClick()" *ngIf="isMetadataEditable"
-      placement="bottom" tooltip="Cancel"><i class="fas fa-times fa-sm"></i></button>
-    </ng-container>
+        <button type="button" class="btn btn-sm searchBtn btn-secondary" (click)="onCancelClick()"
+          *ngIf="isMetadataEditable" placement="bottom" tooltip="Cancel"><i class="fas fa-times fa-sm"></i></button>
+      </ng-container>
     </div>
-</div>
+  </div>
 </div>
 
-<div class="tableFixHead table-responsive" >
+<div class="tableFixHead table-responsive">
   <table class="table table-hover">
-  <!--<thead>
+    <!--<thead>
     <tr>
       <th>Project Name</th>
       <th>Employer</th>
       <th>Awards</th>
     </tr>
   </thead>-->
-  <tfoot  *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
-    <tr >
-      <th colspan="3" >
-        <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="onSaveMetadata()"
-        [disabled]="saveMetadataAPILoading || isFileUploading || !isMetadataEditable">SAVE <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMetadataAPILoading || isFileUploading"></i></button>
-        <button type="button" class="btn btn-sm searchBtn btn-white ml-1"
-        (click)="onCancelClick();" [disabled]="!isMetadataEditable">
-        CANCEL</button>
-      </th>
-
-    </tr>
-    </tfoot>
-  <tbody>
+    <tfoot *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
       <tr>
-      <td>App Name</td>
-      <td>{{applicationData?.app}}</td>
-    </tr>
-    <tr class="bg-white">
+        <th colspan="3">
+          <button type="button" class="btn btn-sm searchBtn btn-primary" (click)="onSaveMetadata()"
+            [disabled]="saveMetadataAPILoading || isFileUploading || !isMetadataEditable">SAVE <i
+              class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="saveMetadataAPILoading || isFileUploading"></i></button>
+          <button type="button" class="btn btn-sm searchBtn btn-white ml-1" (click)="onCancelClick();"
+            [disabled]="!isMetadataEditable">
+            CANCEL</button>
+        </th>
+
+      </tr>
+    </tfoot>
+    <tbody>
+      <tr>
+        <td>App Name</td>
+        <td>{{applicationData?.app}}</td>
+      </tr>
+      <!-- <tr class="bg-white">
       <td>App Admin</td>
       <td>{{applicationData?.admin_email + ' (' + applicationData?.admin_name + ')'}}</td>
-    </tr>
-    <tr>
+    </tr> -->
+      <tr>
 
-      <td>Header Logo</td>
-      <td>
-        <ng-container *ngIf="!isMetadataEditable">{{applicationData?.metadata?.header_logo ? applicationData?.metadata?.header_logo.name : 'Not yet uploaded'}}</ng-container>
-        <!-- <input *ngIf="isMetadataEditable" type="file"  (change)="onHeaderLogoFileSelected($event.target.files)" #headerFileInput
+        <td>Header Logo</td>
+        <td>
+          <ng-container *ngIf="!isMetadataEditable">{{applicationData?.metadata?.header_logo ?
+            applicationData?.metadata?.header_logo.name : 'Not yet uploaded'}}</ng-container>
+          <!-- <input *ngIf="isMetadataEditable" type="file"  (change)="onHeaderLogoFileSelected($event.target.files)" #headerFileInput
         class="form-control" id="app_logo" name="app_logo" accept=".jpeg,.png,.svg,.jpg"> -->
           <div class="form-group input-group row col-4 m-0" *ngIf="isMetadataEditable">
             <div class="file-input form-control form-control-sm p-0 col-8">
-             <input type="file" accept=".jpeg,.png,.svg,.jpg" id="header_logo" class="file" (change)="onHeaderLogoFileSelected($event.target.files)">
-             <label for="header_logo"  class="overflow-text" [tooltip]="applicationData?.metadata?.header_logo?.name ? applicationData?.metadata?.header_logo.name : ''">
-               {{applicationData?.metadata?.header_logo?.name ? applicationData?.metadata?.header_logo.name : 'Choose File'}}</label>
+              <input type="file" accept=".jpeg,.png,.svg,.jpg" id="header_logo" class="file"
+                (change)="onHeaderLogoFileSelected($event.target.files)">
+              <label for="header_logo" class="overflow-text"
+                [tooltip]="applicationData?.metadata?.header_logo?.name ? applicationData?.metadata?.header_logo.name : ''">
+                {{applicationData?.metadata?.header_logo?.name ? applicationData?.metadata?.header_logo.name : 'Choose
+                File'}}</label>
             </div>
             <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
-            <input type="file" accept=".jpeg,.png,.svg,.jpg" id="header_logo" class="file" >
-               <label for="header_logo" class="bg-secondary text-white">Browse</label>
+              <input type="file" accept=".jpeg,.png,.svg,.jpg" id="header_logo" class="file">
+              <label for="header_logo" class="bg-secondary text-white">Browse</label>
             </div>
-            </div>
-      </td>
-    </tr>
-    <!-- <tr>
+          </div>
+        </td>
+      </tr>
+      <!-- <tr>
       <td>App Logo</td>
       <td>
         <ng-container *ngIf="!isMetadataEditable">{{applicationData?.metadata?.logo ? applicationData?.metadata?.logo.name : 'Not yet uploaded'}}</ng-container>
@@ -84,27 +88,30 @@
           </div>
       </td>
     </tr> -->
-    <tr>
-      <!--<td><a href="#">Work 3</a></td>-->
-      <td>App Icon</td>
-      <td>
-        <ng-container *ngIf="!isMetadataEditable">{{applicationData?.metadata?.icon ? applicationData?.metadata?.icon.name : 'Not yet uploaded'}}</ng-container>
-        <!-- <input  *ngIf="isMetadataEditable"  type="file"  (change)="onIconFileSelected($event.target.files)" #iconFileInput
+      <tr>
+        <!--<td><a href="#">Work 3</a></td>-->
+        <td>App Icon</td>
+        <td>
+          <ng-container *ngIf="!isMetadataEditable">{{applicationData?.metadata?.icon ?
+            applicationData?.metadata?.icon.name : 'Not yet uploaded'}}</ng-container>
+          <!-- <input  *ngIf="isMetadataEditable"  type="file"  (change)="onIconFileSelected($event.target.files)" #iconFileInput
         class="form-control" id="app_logo" name="app_logo" accept=".jpeg,.png,.svg,.jpg"> -->
-        <div class="form-group input-group row col-4 m-0" *ngIf="isMetadataEditable">
-          <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
-          <div class="file-input form-control form-control-sm p-0 col-8">
-           <input type="file" accept=".jpeg,.png,.svg,.jpg" id="icon" class="file" (change)="onIconFileSelected($event.target.files)">
-           <label for="icon"  class="overflow-text" [tooltip]="applicationData?.metadata?.icon?.name ? applicationData?.metadata?.icon.name : ''">
-             {{applicationData?.metadata?.icon?.name ? applicationData?.metadata?.icon.name : 'Choose File'}}</label>
+          <div class="form-group input-group row col-4 m-0" *ngIf="isMetadataEditable">
+            <!-- <label for="recipient-name" class="col-form-label required">Document:</label> -->
+            <div class="file-input form-control form-control-sm p-0 col-8">
+              <input type="file" accept=".jpeg,.png,.svg,.jpg" id="icon" class="file"
+                (change)="onIconFileSelected($event.target.files)">
+              <label for="icon" class="overflow-text"
+                [tooltip]="applicationData?.metadata?.icon?.name ? applicationData?.metadata?.icon.name : ''">
+                {{applicationData?.metadata?.icon?.name ? applicationData?.metadata?.icon.name : 'Choose File'}}</label>
+            </div>
+            <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
+              <input type="file" accept=".jpeg,.png,.svg,.jpg" id="icon" class="file">
+              <label for="icon" class="bg-secondary text-white">Browse</label>
+            </div>
           </div>
-          <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
-          <input type="file" accept=".jpeg,.png,.svg,.jpg" id="icon" class="file" >
-             <label for="icon" class="bg-secondary text-white">Browse</label>
-          </div>
-          </div>
-      </td>
-    </tr>
-  </tbody>
-</table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>

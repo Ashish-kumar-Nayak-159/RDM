@@ -142,7 +142,7 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
       this.toasterService.showError('Please fill the previous parameters correctly', 'Add Parameter');
       return;
     }
-    const data = this.editor.get() as any;
+    const data = this.assetMethodObj.json_model;
     const list = data?.params || [];
     list.forEach((item, i) => {
       this.assetMethodObj.json_model.params[i] = item;
@@ -152,13 +152,13 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
       data_type: null,
       json: null,
     });
-    this.editor.set(this.assetMethodObj.json_model);
+    // this.editor.set(this.assetMethodObj.json_model);
   }
 
   removeParameter(index) {
     console.log(index);
     this.assetMethodObj.json_model.params.splice(index, 1);
-    this.editor.set(this.assetMethodObj.json_model);
+    // this.editor.set(this.assetMethodObj.json_model);
   }
 
   openaddAssetMethodModal() {
@@ -179,15 +179,8 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
 
   onDataTypeChange(index) {
     const obj = {};
-    const data = this.editor.get() as any;
-    const list = data?.params || [];
-    list.forEach((item, i) => {
-      if (i !== index) {
-        this.assetMethodObj.json_model.params[i] = item;
-      }
-    });
     const param = this.assetMethodObj.json_model.params[index];
-    if (param.data_type && param.json) {
+    if (param.data_type) {
       const validations = this.dataTypeList.find((type) => type.name === param.data_type).validations;
       validations.forEach((item) => {
         if (item === 'enum') {
@@ -206,36 +199,44 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     } else {
       param.json = {};
     }
-    this.editor.set(this.assetMethodObj.json_model);
+    // this.editor.set(this.assetMethodObj.json_model);
   }
 
   onParamKeyChange(index) {
-    const data = this.editor.get() as any;
+    const param = this.assetMethodObj.json_model.params[index];
+    const data = this.assetMethodObj.json_model;
     const list = data?.params || [];
+    let flag = false;
+
     list.forEach((item, i) => {
-      if (i !== index) {
-        this.assetMethodObj.json_model.params[i] = item;
+      if (i !== index && (param.key === item.key || param.name === item.name)) {
+        flag = true;
       }
     });
+    if (flag) {
+      this.toasterService.showError('Parameter with same key or name already exists.', 'Add Parameter');
+      // this.assetMethodObj.json_model.params.splice(index, 1);
+      param.name = null;
+      param.key = null;
+      param.json = {};
+      param.data_type = null;
+      return;
+    }
     // this.assetMethodObj.json_model = this.editor.get();
-    const param = this.assetMethodObj.json_model.params[index];
     if (param.json) {
       const keys = Object.keys(param.json);
-      let obj: any = {};
-      if (keys && keys.length > 0) {
-        obj.key = param.json[keys[0]];
-      } else {
-        param.json = {};
-        obj = {};
+      if (!keys || keys.length === 0) {
+        if (param.data_type) {
+          this.onDataTypeChange(index);
+        } else {
+          param.json = {};
+        }
       }
-      if (param.data_type) {
-        this.onDataTypeChange(index);
-      }
-      param.json = obj;
     } else {
       param.json = {};
     }
-    this.editor.set(this.assetMethodObj.json_model);
+    console.log(JSON.stringify(this.assetMethodObj));
+    // this.editor.set(this.assetMethodObj.json_model);
   }
 
   onJSONKeyChange() {
@@ -245,7 +246,7 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     } else {
       delete this.assetMethodObj.json_model.method;
     }
-    this.editor.set(this.assetMethodObj.json_model);
+    // this.editor.set(this.assetMethodObj.json_model);
   }
 
   onSaveassetMethodObj() {
@@ -253,12 +254,12 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
       this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Direct Method');
       return;
     }
-    try {
-      this.assetMethodObj.json_model = this.editor.get();
-    } catch (e) {
-      this.toasterService.showError('Invalid JSON data', 'Add Direct Method');
-      return;
-    }
+    // try {
+    //   this.assetMethodObj.json_model = this.editor.get();
+    // } catch (e) {
+    //   this.toasterService.showError('Invalid JSON data', 'Add Direct Method');
+    //   return;
+    // }
     if (this.assetMethodObj.json_model.params) {
       const arr = [];
       this.assetMethodObj.json_model.params.forEach((param) => {

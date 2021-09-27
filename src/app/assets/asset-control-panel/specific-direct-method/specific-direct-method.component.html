@@ -5,7 +5,7 @@
       <div class="row">
         <!-- <div><a href="javascript:void(0)" [class.disabled]="sentMessageData || !selectedWidget" (click)="validateMessage()" ><button type="button" class="btn btn-primary contact-form" > 1. Validate</button></a></div>
     <div class='px-1'><hr></div> -->
-        <div><a href="javascript:void(0)" [class.disabled]="!selectedWidget && !isInvokeDirectMethod"
+        <div><a href="javascript:void(0)" [class.disabled]="!selectedWidget && !isInvokeDirectMethod || responseMessage"
             (click)="invokeDirectMethod()">
             <button type="button" class="btn btn-sm btn-primary"> Invoke Method
               <i class="fa fa-spinner fa-spin fa-fw " *ngIf="isInvokeDirectMethod"></i>
@@ -80,7 +80,7 @@
             <tbody>
               <tr>
                 <td>Name</td>
-                <td>{{selectedWidget.method_name}}
+                <td>{{selectedWidget.json.method_name}}
                 </td>
               </tr>
               <tr *ngIf="selectedWidget?.metadata?.widget_type === 'Asset'">
@@ -116,8 +116,10 @@
                       </ng-container>
                       <ng-container *ngIf="item?.json?.type === 'number'">
                         <input type="number" class="form-control form-control-sm" name="{{item.name}}"
-                          [(ngModel)]="item.value" min="{{item.json.minValue ? item.json.minValue : 1}}"
-                          max="{{item.json.maxValue ? item.json.maxValue : 1000}}">
+                          [(ngModel)]="item.value"
+                          min="{{item.json.minValue !== undefined || item.json.minValue !== null ? item.json.minValue : null}}"
+                          max="{{item.json.maxValue !== undefined || item.json.maxValue !== null  ? item.json.maxValue : null}}"
+                          step="any">
                       </ng-container>
                       <ng-container *ngIf="item?.json?.type === 'boolean'">
                         <div class="btn-group" name="booleandata">
@@ -132,7 +134,7 @@
                       <ng-container *ngIf="item.json.type === 'enum'">
                         <select class="form-control form-control-sm custom-select" id="widget" name="acknowledge"
                           [(ngModel)]="item.value">
-                          <option [ngValue]="val" *ngFor="let val of item.json.enum">{{val}}</option>
+                          <option [ngValue]="val.value" *ngFor="let val of item.json.enum">{{val.label}}</option>
                         </select>
                       </ng-container>
                     </div>

@@ -14,10 +14,9 @@ import { APIMESSAGES } from 'src/app/api-messages.constants';
 @Component({
   selector: 'app-application-selection',
   templateUrl: './application-selection.component.html',
-  styleUrls: ['./application-selection.component.css']
+  styleUrls: ['./application-selection.component.css'],
 })
 export class ApplicationSelectionComponent implements OnInit, OnDestroy {
-
   userData: any;
   constantData = CONSTANTS;
   blobToken = environment.blobKey;
@@ -26,7 +25,8 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
   apiSubscriptions: Subscription[] = [];
   isAppDataLoading;
   decodedToken: any;
-
+  userApplications: any[] = [];
+  isUserApplicationLoading = false;
   constructor(
     private commonService: CommonService,
     private router: Router,
@@ -35,26 +35,60 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
     private signalRService: SignalRService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
+    const appToken = localStorage.getItem(CONSTANTS.APP_TOKEN);
+    if (appToken) {
+      this.getUserApplications();
+    } else {
+      this.userApplications = this.userData?.apps || [];
+    }
     // if ($('.container-fluid').hasClass('sb-notoggle')) {
     //   $('.container-fluid').removeClass('sb-notoggle');
     // }
     // else if ($('.container-fluid').hasClass('sb-toggle')) {
     //   $('.container-fluid').removeClass('sb-toggle');
     // }
+    // if ()
+  }
 
+  getUserApplications() {
+    this.isUserApplicationLoading = true;
+    this.userApplications = [];
+    const obj = {
+      environment: environment.environment,
+    };
+    this.applicationService.getApplicationOfUser(obj).subscribe((response: any) => {
+      if (response?.data) {
+        response.data.forEach((app) => {
+          const decodedToken = this.commonService.decodeJWTToken(app.token);
+          const obj = {
+            hierarchy: decodedToken.hierarchy,
+            role: decodedToken.role,
+            privileges: decodedToken.privileges,
+          };
+          app.user = obj;
+        });
+        this.userData.apps = response.data;
+        this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
+      }
+      if (this.userData.apps.length === 0) {
+        this.toasterService.showError('No apps are assigned to this user', 'Contact Administrator');
+        this.commonService.onLogOut();
+      }
+      this.isUserApplicationLoading = false;
+    });
   }
 
   async redirectToApp(app, index) {
-    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
+    this.apiSubscriptions.forEach((sub) => sub.unsubscribe());
     this.signalRService.disconnectFromSignalR('all');
     const localStorageAppData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.isAppDataLoading = {};
     this.isAppDataLoading[index] = true;
-    if (localStorageAppData && localStorageAppData.app !== app.app)  {
+    if (localStorageAppData && localStorageAppData.app !== app.app) {
       localStorage.removeItem(CONSTANTS.SELECTED_APP_DATA);
       localStorage.removeItem(CONSTANTS.ASSETS_LIST);
       localStorage.removeItem(CONSTANTS.ASSET_MODELS_LIST);
@@ -65,7 +99,7 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
       localStorage.removeItem(CONSTANTS.MAIN_MENU_FILTERS);
       localStorage.removeItem(CONSTANTS.APP_TOKEN);
     }
-    const decodedToken =  this.commonService.decodeJWTToken(app.token);
+    const decodedToken = this.commonService.decodeJWTToken(app.token);
     if (decodedToken.privileges.indexOf('APMV') === -1) {
       this.toasterService.showError(APIMESSAGES.API_ACCESS_ERROR_MESSAGE, APIMESSAGES.CONTACT_ADMINISTRATOR);
       this.commonService.onLogOut();
@@ -80,89 +114,103 @@ export class ApplicationSelectionComponent implements OnInit, OnDestroy {
 
   getApplicationData(app) {
     return new Promise<void>((resolve) => {
-    this.applicationData = undefined;
-    this.apiSubscriptions.push(this.applicationService.getApplicationDetail(app.app).subscribe(
-      (response: any) => {
+      this.applicationData = undefined;
+      this.apiSubscriptions.push(
+        this.applicationService.getApplicationDetail(app.app).subscribe((response: any) => {
           this.applicationData = response;
           this.applicationData.app = app.app;
 
-          this.userData.apps.forEach(appObj => {
+          this.userData.apps.forEach((appObj) => {
             if (app.app === appObj.app) {
               console.log(appObj);
               console.log(appObj.user);
               this.applicationData.user = appObj.user;
             }
           });
-          if (!this.applicationData.menu_settings.main_menu || this.applicationData.menu_settings.main_menu.length === 0) {
+          if (
+            !this.applicationData.menu_settings.main_menu ||
+            this.applicationData.menu_settings.main_menu.length === 0
+          ) {
             this.applicationData.menu_settings.main_menu = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
           } else {
             this.processAppMenuData();
           }
-          if (!this.applicationData.menu_settings.asset_control_panel_menu ||
-            this.applicationData.menu_settings.asset_control_panel_menu.length === 0) {
-            this.applicationData.menu_settings.asset_control_panel_menu =
-            JSON.parse(JSON.stringify(CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST));
+          if (
+            !this.applicationData.menu_settings.asset_control_panel_menu ||
+            this.applicationData.menu_settings.asset_control_panel_menu.length === 0
+          ) {
+            this.applicationData.menu_settings.asset_control_panel_menu = JSON.parse(
+              JSON.stringify(CONSTANTS.ASSET_CONTROL_PANEL_SIDE_MENU_LIST)
+            );
           }
-          if (!this.applicationData.menu_settings.legacy_asset_control_panel_menu ||
-            this.applicationData.menu_settings.legacy_asset_control_panel_menu.length === 0) {
-            this.applicationData.menu_settings.legacy_asset_control_panel_menu =
-            JSON.parse(JSON.stringify(CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST));
+          if (
+            !this.applicationData.menu_settings.legacy_asset_control_panel_menu ||
+            this.applicationData.menu_settings.legacy_asset_control_panel_menu.length === 0
+          ) {
+            this.applicationData.menu_settings.legacy_asset_control_panel_menu = JSON.parse(
+              JSON.stringify(CONSTANTS.LEGACY_ASSET_CONTROL_PANEL_SIDE_MENU_LIST)
+            );
           }
-          if (this.applicationData.menu_settings.model_control_panel_menu ||
-            this.applicationData.menu_settings.model_control_panel_menu.length === 0) {
-            this.applicationData.menu_settings.model_control_panel_menu =
-            JSON.parse(JSON.stringify(CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST));
+          if (
+            this.applicationData.menu_settings.model_control_panel_menu ||
+            this.applicationData.menu_settings.model_control_panel_menu.length === 0
+          ) {
+            this.applicationData.menu_settings.model_control_panel_menu = JSON.parse(
+              JSON.stringify(CONSTANTS.MODEL_CONTROL_PANEL_SIDE_MENU_LIST)
+            );
           }
-          if (this.applicationData.menu_settings.gateway_control_panel_menu ||
-            this.applicationData.menu_settings.gateway_control_panel_menu.length === 0) {
-            this.applicationData.menu_settings.gateway_control_panel_menu =
-            JSON.parse(JSON.stringify(CONSTANTS.GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST));
+          if (
+            this.applicationData.menu_settings.gateway_control_panel_menu ||
+            this.applicationData.menu_settings.gateway_control_panel_menu.length === 0
+          ) {
+            this.applicationData.menu_settings.gateway_control_panel_menu = JSON.parse(
+              JSON.stringify(CONSTANTS.GATEWAY_DIAGNOSIS_PANEL_SIDE_MENU_LIST)
+            );
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
           const obj = {
-            hierarchy : this.applicationData?.user?.hierarchy,
-            dateOption : 'Last 24 Hours'
+            hierarchy: this.applicationData?.user?.hierarchy,
+            dateOption: 'Last 24 Hours',
           };
           this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, obj);
           const obj1 = {
-            dateOption : 'Last 30 Mins'
+            dateOption: 'Last 30 Mins',
           };
           this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, obj1);
           resolve();
-      }));
+        })
+      );
     });
   }
-
 
   processAppMenuData() {
     if (this.applicationData?.app) {
       if (!this.userData?.is_super_admin) {
-      const data = [];
-      const arr = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
-      if (this.applicationData.menu_settings?.main_menu?.length > 0) {
-        arr.forEach(config => {
-          let found = false;
-          this.applicationData.menu_settings.main_menu.forEach(item => {
-            if (config.page === item.page) {
-              found = true;
-              config.display_name = item.display_name;
-              config.visible = item.visible;
-              config.showAccordion = item.showAccordion;
+        const data = [];
+        const arr = JSON.parse(JSON.stringify(CONSTANTS.SIDE_MENU_LIST));
+        if (this.applicationData.menu_settings?.main_menu?.length > 0) {
+          arr.forEach((config) => {
+            let found = false;
+            this.applicationData.menu_settings.main_menu.forEach((item) => {
+              if (config.page === item.page) {
+                found = true;
+                config.display_name = item.display_name;
+                config.visible = item.visible;
+                config.showAccordion = item.showAccordion;
+                data.push(config);
+              }
+            });
+            if (!found) {
               data.push(config);
             }
           });
-          if (!found) {
-            data.push(config);
-          }
-        });
+        }
+        this.applicationData.menu_settings.main_menu = JSON.parse(JSON.stringify(data));
       }
-      this.applicationData.menu_settings.main_menu = JSON.parse(JSON.stringify(data));
-      }
-      }
+    }
   }
 
-
   ngOnDestroy() {
-    this.apiSubscriptions.forEach(sub => sub.unsubscribe());
+    this.apiSubscriptions.forEach((sub) => sub.unsubscribe());
   }
 }

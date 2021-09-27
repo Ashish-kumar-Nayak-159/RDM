@@ -1,5 +1,6 @@
 .record-input {
-    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="90" height="30"><text x="5" y="19" style="font-size: .875rem; font-family: Roboto, Helvetica Neue, sans-serif;" fill="%23858796">N Records:</text></svg>') no-repeat;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="90" height="30"><text x="5" y="19" style="font-size: .875rem; font-family: Roboto, Helvetica Neue, sans-serif;" fill="%23858796">N Records:</text></svg>')
+    no-repeat;
 
   box-sizing: border-box;
   padding-left: 5rem;
@@ -11,34 +12,33 @@ select.form-control {
 }
 
 .w-12 {
-  width:  12rem!important;
+  width: 12rem !important;
 }
 
 .w-15 {
-  width:  15rem!important;
+  width: 15rem !important;
 }
 .w-16 {
   width: 16rem;
 }
 
 .w-22 {
-  width:  22rem!important;
+  width: 22rem !important;
 }
 .w-20 {
-  width: 20rem!important;
+  width: 20rem !important;
 }
 .w-17 {
-  min-width: 13rem!important;
+  min-width: 13rem !important;
 }
-#dateRow input
-{
+#dateRow input {
   border: 0;
   border-bottom: 1px solid #ccc;
   outline: 0;
   background-color: transparent;
 }
 #dateRow select {
-  background-color: transparent!important;
+  background-color: transparent !important;
   background: url('../../../assets/img/arrow-down.png') no-repeat right #ddd;
   background-position: 98%;
   padding: 2px 20px 2px 8px;
@@ -52,11 +52,11 @@ select.form-control {
 }
 
 .w-7 {
-  width: 7rem!important;
+  width: 7rem !important;
 }
 
 .bg-dateRow {
-  background-color: #F8F9Fc;
+  background-color: #f8f9fc;
 }
 
 .contain-pad-report {
@@ -69,10 +69,13 @@ select.form-control {
   padding-bottom: 1.5rem;
 }
 
-
 .report-table {
-  height: calc(100vh - 14.5rem)
+  height: calc(100vh - 14.5rem);
 }
 
-
-
+.report-td {
+  max-width: 10rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

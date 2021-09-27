@@ -79,8 +79,10 @@
                     </ng-container>
                     <ng-container *ngIf="item.json.type === 'number'">
                       <input type="number" class="form-control form-control-sm" name="{{item.name}}"
-                        [(ngModel)]="item.value" min="{{item.json.minValue ? item.json.minValue : 1}}"
-                        max="{{item.json.maxValue ? item.json.maxValue : 1000}}">
+                        [(ngModel)]="item.value"
+                        min="{{item.json.minValue !== undefined || item.json.minValue !== null ? item.json.minValue : null}}"
+                        max="{{item.json.maxValue !== undefined || item.json.maxValue !== null  ? item.json.maxValue : null}}"
+                        step="any">
                     </ng-container>
                     <ng-container *ngIf="item.json.type === 'boolean'">
                       <div class="btn-group" name="booleandata">
@@ -93,7 +95,7 @@
                     <ng-container *ngIf="item.json.type === 'enum'">
                       <select class="form-control form-control-sm" id="widget" name="acknowledge"
                         [(ngModel)]="item.value">
-                        <option [ngValue]="val" *ngFor="let val of item.json.enum">{{val}}</option>
+                        <option [ngValue]="val.value" *ngFor="let val of item.json.enum">{{val.label}}</option>
                       </select>
                     </ng-container>
                   </div>

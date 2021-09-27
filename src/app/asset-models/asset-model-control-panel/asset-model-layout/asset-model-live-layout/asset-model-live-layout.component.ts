@@ -372,7 +372,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
     }
     let found = true;
     this.widgetObj.properties.forEach((prop) => {
-      if (Object.keys(prop).length === 0) {
+      if (!prop.property) {
         found = false;
       } else {
         prop.json_key = prop.property?.json_key;

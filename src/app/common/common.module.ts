@@ -26,6 +26,7 @@ import { CommonDataTableComponent } from './table/common-data-table/common-data-
 import { DataTablesModule } from 'angular-datatables';
 import { CommonTableFilterComponent } from './table/common-table-filter/common-table-filter.component';
 import { DamagePlotChartComponent } from './charts/damage-plot-chart/damage-plot-chart.component';
+import { DataTypeFieldsComponent } from './data-type-fieds/data-type-fieds.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { DamagePlotChartComponent } from './charts/damage-plot-chart/damage-plot
     CommonDataTableComponent,
     CommonTableFilterComponent,
     DamagePlotChartComponent,
+    DataTypeFieldsComponent,
   ],
   imports: [
     CommonModule,
@@ -77,6 +79,7 @@ import { DamagePlotChartComponent } from './charts/damage-plot-chart/damage-plot
     LiveLineChartComponent,
     CommonDataTableComponent,
     DamagePlotChartComponent,
+    DataTypeFieldsComponent,
   ],
   providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }],
 })

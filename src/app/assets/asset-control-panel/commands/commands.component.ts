@@ -121,39 +121,19 @@ export class CommandsComponent implements OnInit, OnDestroy {
     this.jsonModelKeys = [];
     setTimeout(() => {
       this.selectedWidget = widget;
-      const keys = Object.keys(this.selectedWidget.json);
+      // const keys = Object.keys(this.selectedWidget.json?.params || []);
       // const index = keys.findIndex(key => key === 'timestamp');
       // keys.splice(index, 1);
-      keys.forEach((key) => {
-        const obj = {
-          key,
-          json: {},
-          name: null,
-          value: null,
-        };
-        let flag = false;
-        this.selectedWidget.properties.forEach((prop) => {
-          if (prop.json_key === key) {
-            flag = true;
-            obj.name = prop.name;
-            obj.json = this.selectedWidget.json[key];
-            if (obj.json['type'] === 'boolean') {
-              obj.value = obj.json['defaultValue'] === obj.json['trueValue'] ? true : false;
-            } else {
-              obj.value = this.selectedWidget.json[key].defaultValue;
-            }
-          }
-        });
-        if (!flag) {
-          obj.name = key;
-          obj.json = this.selectedWidget.json[key];
-          if (obj.json['type'] === 'boolean') {
-            obj.value = obj.json['defaultValue'] === obj.json['trueValue'] ? true : false;
-          } else {
-            obj.value = this.selectedWidget.json[key].defaultValue;
-          }
-        }
-        this.jsonModelKeys.push(obj);
+      this.selectedWidget.json?.params?.forEach((param) => {
+        // const obj = {
+        //   key: param.key,
+        //   data_type: param.data_type
+        //   json: para,
+        //   name: param.name,
+        //   value: null,
+        // };
+        param.value = param?.json?.defaultValue || null;
+        this.jsonModelKeys.push(param);
         console.log(this.jsonModelKeys);
       });
     }, 500);

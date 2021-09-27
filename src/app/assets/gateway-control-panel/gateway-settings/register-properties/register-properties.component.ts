@@ -49,7 +49,6 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     console.log(JSON.stringify(this.assetTwin));
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-
     this.c2dJobFilter.job_type = 'Message';
     if (this.pageType === 'Register Properties') {
       this.c2dJobFilter.request_type = 'Sync Properties/Alerts';

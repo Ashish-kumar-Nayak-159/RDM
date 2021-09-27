@@ -57,18 +57,15 @@ export class SpecificDirectMethodComponent implements OnInit {
     if (this.selectedWidget) {
       this.selectedWidget.response_timeout_in_sec = 30;
       this.selectedWidget.connection_timeout_in_sec = 30;
-      const keys = Object.keys(this.selectedWidget.json);
+      // const keys = Object.keys(this.selectedWidget.json);
       // const index = keys.findIndex((key) => key.toLowerCase() === 'timestamp');
       // if (index > -1) {
       //   keys.splice(index, 1);
       // }
-      this.selectedWidget.method_name = keys[0];
-      this.selectedWidget?.json[keys[0]]?.params?.forEach((obj) => {
-        if (obj.key) {
-          obj.name = obj.key;
-          obj.value = obj?.json?.defaultValue;
-          this.jsonModelKeys.splice(this.jsonModelKeys.length, 0, obj);
-        }
+      // this.selectedWidget.method_name = keys[0];
+      this.selectedWidget?.json?.params?.forEach((obj) => {
+        obj.value = obj?.json?.defaultValue;
+        this.jsonModelKeys.splice(this.jsonModelKeys.length, 0, obj);
       });
       if (this.selectedWidget?.metadata?.widget_type === 'Slave') {
         this.getSlaveData();
@@ -137,7 +134,7 @@ export class SpecificDirectMethodComponent implements OnInit {
       // if (index > -1) {
       //   keys.splice(index, 1);
       // }
-      this.selectedWidget.method_name = keys[0];
+      // this.selectedWidget.method_name = keys[0];
       this.selectedWidget.json[keys[0]].params.forEach((obj) => {
         obj.name = obj.key;
         obj.value = obj.json.defaultValue;
@@ -173,7 +170,7 @@ export class SpecificDirectMethodComponent implements OnInit {
     }
     this.responseMessage = undefined;
     const obj: any = JSON.parse(JSON.stringify(this.directMethodData));
-    obj.method = this.selectedWidget.method_name;
+    obj.method = this.selectedWidget.json.method_name;
     // obj.app = this.asset.app;
     obj.request_type = this.selectedWidget.name;
     obj.job_type = 'DirectMethod';

@@ -100,7 +100,9 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
         communication_technique: 'C2D Message',
         widget_type: undefined,
       },
-      json: {},
+      json: {
+        params: [],
+      },
     };
     this.addParameter();
     this.viewType = 'add';
@@ -109,107 +111,120 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
 
   onCommunicationTechniqueChange() {
     this.controlWidget.properties = [];
-    this.controlWidget.json = {};
+    this.controlWidget.json = {
+      params: [],
+    };
+    this.extraParams = [];
   }
 
   onPropertyChecked(event) {
     if (this.controlWidget?.metadata?.communication_technique === 'Direct Method') {
       const propObj = event.value || event;
       console.log(propObj);
-      if (this.controlWidget.json[propObj.method_name]) {
-        delete this.controlWidget.json[propObj.method_name];
-        const index = this.controlWidget.properties.findIndex((prop) => prop.name === propObj.name);
-        // this.controlWidget.properties.splice(index, 1);
-      } else {
-        this.controlWidget.json = {};
-        this.controlWidget.json[propObj.method_name] = propObj.json_model;
-        // this.controlWidget.properties.push(propObj);
-      }
+      this.controlWidget.json = {
+        method_name: propObj.method_name,
+        params: propObj?.json_model?.params || [],
+      };
+      // if (this.controlWidget.json[propObj.method_name]) {
+      //   delete this.controlWidget.json[propObj.method_name];
+      //   const index = this.controlWidget.properties.findIndex((prop) => prop.name === propObj.name);
+      //   // this.controlWidget.properties.splice(index, 1);
+      // } else {
+      //   this.controlWidget.json = {};
+      //   this.controlWidget.json[propObj.method_name] = propObj.json_model;
+      //   // this.controlWidget.properties.push(propObj);
+      // }
     } else {
       const propObj = event.value || event;
-      if (this.controlWidget.json[propObj.json_key]) {
-        delete this.controlWidget.json[propObj.json_key];
-        const index = this.controlWidget.properties.findIndex((prop) => prop.json_key === propObj.json_key);
-        // this.controlWidget.properties.splice(index, 1);
+      const index = this.controlWidget.json.params.forEach((param) => param.key === propObj.json_key);
+      if (index > -1) {
+        this.controlWidget.json.params.splice(index, 1);
       } else {
-        this.controlWidget.json[propObj.json_key] = propObj.json_model[propObj.json_key];
+        this.controlWidget.json.params.push({
+          id: propObj.id,
+          name: propObj.name,
+          key: propObj.json_key,
+          json: propObj.json_model[propObj.json_key],
+          data_type: propObj.data_type,
+        });
         // this.controlWidget.properties.push(propObj);
       }
     }
-    this.editor.set(this.controlWidget.json);
+    // this.editor.set(this.controlWidget.json);
   }
 
   addParameter() {
     this.extraParams.push({
       name: undefined,
-      type: undefined,
+      key: undefined,
+      data_type: undefined,
     });
     this.originalExtraParams = JSON.parse(JSON.stringify(this.extraParams));
   }
 
   removeParameter(index) {
-    const obj = this.extraParams[index];
-    delete this.controlWidget.json[obj.name];
+    // const obj = this.extraParams[index];
+    // delete this.controlWidget.json[obj.name];
     this.extraParams.splice(index, 1);
-    this.editor.set(this.controlWidget.json);
-    this.originalExtraParams = JSON.parse(JSON.stringify(this.extraParams));
+    // this.editor.set(this.controlWidget.json);
+    // this.originalExtraParams = JSON.parse(JSON.stringify(this.extraParams));
   }
 
-  onKeyChange(event, i) {
-    this.controlWidget.json = this.editor.get();
-    console.log(event);
-    const obj = this.extraParams[i];
-    const originalObj = this.originalExtraParams[i];
-    console.log(obj);
-    console.log(originalObj);
-    let valueObj;
-    if (originalObj.name && originalObj.type && originalObj.name !== obj.name) {
-      valueObj = JSON.parse(JSON.stringify(this.controlWidget.json[originalObj.name]));
-      console.log(valueObj);
-      delete this.controlWidget.json[originalObj.name];
-    }
-    if (obj.name && obj.type) {
-      if (valueObj) {
-        this.controlWidget.json[obj.name] = valueObj;
-      } else {
-        const propObj = {};
-        propObj['type'] = obj.type.toLowerCase();
-        const validations = this.dataTypeList.find((type) => type.name === obj.type).validations;
-        validations.forEach((item) => {
-          if (item === 'enum') {
-            propObj[item] = [];
-          } else if (item === 'trueValue') {
-            propObj[item] = true;
-          } else if (item === 'falseValue') {
-            propObj[item] = false;
-          } else {
-            propObj[item] = null;
-          }
-        });
-        this.controlWidget.json[obj.name] = propObj;
-      }
-    }
-    this.originalExtraParams = JSON.parse(JSON.stringify(this.extraParams));
-    this.editor.set(this.controlWidget.json);
-  }
-
-  selectAllProps(event) {
-    this.controlWidget.json = {};
-    if (this.controlWidget?.metadata?.communication_technique === 'Direct Method') {
-      this.controlWidget.properties.forEach((propObj) => {
-        this.controlWidget.json[propObj.method_name] = propObj.json_model;
+  onDataTypeChange(index) {
+    const obj = {};
+    const param = this.extraParams[index];
+    if (param.data_type) {
+      const validations = this.dataTypeList.find((type) => type.name === param.data_type).validations;
+      validations.forEach((item) => {
+        if (item === 'enum') {
+          obj[item] = [];
+        } else if (item === 'trueValue') {
+          obj[item] = true;
+        } else if (item === 'falseValue') {
+          obj[item] = false;
+        } else {
+          obj[item] = null;
+        }
       });
+      param.json = {};
+      param.json = obj;
+      param.json.type = param.data_type.toLowerCase();
     } else {
-      this.controlWidget.properties.forEach((propObj) => {
-        this.controlWidget.json[propObj.json_key] = propObj.json_model[propObj.json_key];
-      });
+      param.json = {};
     }
-    this.editor.set(this.controlWidget.json);
   }
 
-  deselectAllProps(event) {
-    this.controlWidget.json = {};
-    this.editor.set(this.controlWidget.json);
+  onParamKeyChange(index) {
+    const param = this.extraParams[index];
+    let flag = false;
+
+    this.extraParams.forEach((item, i) => {
+      if (i !== index && (param.key === item.key || param.name === item.name)) {
+        flag = true;
+      }
+    });
+    if (flag) {
+      this.toasterService.showError('Parameter with same key or name already exists.', 'Add Parameter');
+      param.name = null;
+      param.key = null;
+      param.json = {};
+      param.data_type = null;
+      return;
+    }
+    if (param.json) {
+      const keys = Object.keys(param.json);
+      if (!keys || keys.length === 0) {
+        if (param.data_type) {
+          this.onDataTypeChange(index);
+        } else {
+          param.json = {};
+        }
+      }
+    } else {
+      param.json = {};
+    }
+    console.log(JSON.stringify(this.extraParams));
+    // this.editor.set(this.assetMethodObj.json_model);
   }
 
   createControlWidget() {
@@ -221,19 +236,20 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
       this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Create Control Widget');
       return;
     }
-    try {
-      this.controlWidget.json = this.editor.get();
-    } catch (e) {
-      this.toasterService.showError('Invalid JSON data', 'Create Control Widget');
-      return;
-    }
+    // try {
+    //   this.controlWidget.json = this.editor.get();
+    // } catch (e) {
+    //   this.toasterService.showError('Invalid JSON data', 'Create Control Widget');
+    //   return;
+    // }
+    this.extraParams.forEach((param) => this.controlWidget.json.params.push(param));
     if (this.controlWidget.metadata.communication_technique === 'Direct Method') {
       const prop = JSON.parse(JSON.stringify(this.controlWidget.properties));
       this.controlWidget.properties = [prop];
     }
     console.log(this.controlWidget);
     console.log(Object.keys(this.controlWidget.json).length);
-    if (Object.keys(this.controlWidget.json).length < 1) {
+    if (this.controlWidget.json.params?.length < 1) {
       this.toasterService.showError('Please select at least one property/parameter', 'Create Control Widget');
       return;
     }

@@ -223,6 +223,19 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
     frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
     this.frequency = this.commonService.getLowestValueFromList(frequencyArr);
+    if (this.filterObj.from_date && this.filterObj.to_date) {
+      // this.onChangeOfAsset(this.filterObj.asset);
+      const records = this.commonService.calculateEstimatedRecords(
+        this.frequency,
+        this.filterObj.from_date,
+        this.filterObj.to_date
+      );
+      if (records > CONSTANTS.NO_OF_RECORDS) {
+        this.filterObj.isTypeEditable = true;
+      } else {
+        this.filterObj.isTypeEditable = false;
+      }
+    }
   }
 
   onAssetFilterBtnClick() {
@@ -309,11 +322,15 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     // }
     if (this.filterObj.asset) {
       // this.onChangeOfAsset(this.filterObj.asset);
-      const records = this.commonService.calculateEstimatedRecords(this.frequency, this.filterObj.from_date, this.filterObj.to_date);
+      const records = this.commonService.calculateEstimatedRecords(
+        this.frequency,
+        this.filterObj.from_date,
+        this.filterObj.to_date
+      );
       if (records > CONSTANTS.NO_OF_RECORDS) {
-          this.filterObj.isTypeEditable = true;
+        this.filterObj.isTypeEditable = true;
       } else {
-          this.filterObj.isTypeEditable = false;
+        this.filterObj.isTypeEditable = false;
       }
     }
   }
@@ -718,14 +735,18 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       //   this.filterObj.isTypeEditable = false;
       // }
       this.filterObj.from_date =
-          this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp) -
-          this.beforeInterval * 60;
+        this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp) -
+        this.beforeInterval * 60;
       this.filterObj.to_date =
-          this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp) +
-          this.afterInterval * 60;
+        this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp) +
+        this.afterInterval * 60;
       this.onChangeOfAsset(this.selectedAlert.asset_id);
-      const records = this.commonService.calculateEstimatedRecords(this.frequency, this.filterObj.from_date, this.filterObj.to_date);
-      if (records > CONSTANTS.NO_OF_RECORDS && (this.beforeInterval + this.afterInterval > 60)) {
+      const records = this.commonService.calculateEstimatedRecords(
+        this.frequency,
+        this.filterObj.from_date,
+        this.filterObj.to_date
+      );
+      if (records > CONSTANTS.NO_OF_RECORDS && this.beforeInterval + this.afterInterval > 60) {
         this.filterObj.isTypeEditable = true;
       } else {
         this.filterObj.isTypeEditable = false;
@@ -1065,7 +1086,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
     let method;
     // this.onChangeOfAsset(filterObj.asset_id);
-    const record = this.commonService.calculateEstimatedRecords(this.frequency, this.filterObj.from_date, this.filterObj.to_date);
+    const record = this.commonService.calculateEstimatedRecords(
+      this.frequency,
+      this.filterObj.from_date,
+      this.filterObj.to_date
+    );
     if (record > CONSTANTS.NO_OF_RECORDS && !this.filterObj.isTypeEditable) {
       this.filterObj.isTypeEditable = true;
       this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
@@ -1090,7 +1115,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             filterObj.from_date,
             filterObj.to_date
           );
-          if (records > 500) {
+          if (records > CONSTANTS.NO_OF_RECORDS) {
             this.loadingMessage =
               'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
           }
@@ -1119,8 +1144,12 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       delete filterObj.sampling_time;
       delete filterObj.sampling_format;
       // this.onChangeOfAsset(this.asset);
-      const records = this.commonService.calculateEstimatedRecords(this.frequency, filterObj.from_date, filterObj.to_date);
-      if (records > 500) {
+      const records = this.commonService.calculateEstimatedRecords(
+        this.frequency,
+        filterObj.from_date,
+        filterObj.to_date
+      );
+      if (records > CONSTANTS.NO_OF_RECORDS) {
         this.loadingMessage =
           'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
       }

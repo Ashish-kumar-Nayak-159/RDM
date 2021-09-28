@@ -170,11 +170,15 @@ export class ReportsComponent implements OnInit, OnDestroy {
         // }
         if (this.filterObj.asset) {
           // this.onChangeOfAsset(this.filterObj.asset);
-          const records = this.commonService.calculateEstimatedRecords(this.frequency, this.filterObj.from_date, this.filterObj.to_date);
+          const records = this.commonService.calculateEstimatedRecords(
+            this.frequency,
+            this.filterObj.from_date,
+            this.filterObj.to_date
+          );
           if (records > CONSTANTS.NO_OF_RECORDS) {
-              this.filterObj.isTypeEditable = true;
+            this.filterObj.isTypeEditable = true;
           } else {
-              this.filterObj.isTypeEditable = false;
+            this.filterObj.isTypeEditable = false;
           }
         }
       }
@@ -273,12 +277,17 @@ export class ReportsComponent implements OnInit, OnDestroy {
     // }
     if (this.filterObj.asset) {
       // this.onChangeOfAsset(this.filterObj.asset);
-      const records = this.commonService.calculateEstimatedRecords(this.frequency, this.filterObj.from_date, this.filterObj.to_date);
+      const records = this.commonService.calculateEstimatedRecords(
+        this.frequency,
+        this.filterObj.from_date,
+        this.filterObj.to_date
+      );
       if (records > CONSTANTS.NO_OF_RECORDS) {
-          this.filterObj.isTypeEditable = true;
+        this.filterObj.isTypeEditable = true;
       } else {
-          this.filterObj.isTypeEditable = false;
+        this.filterObj.isTypeEditable = false;
       }
+      console.log(records);
     }
   }
 
@@ -310,11 +319,27 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   onChangeOfAsset(event) {
     const asset = this.assets.find((assetObj) => assetObj.asset_id === event.asset_id);
+    console.log(asset.metadata);
     const frequencyArr = [];
     frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
     frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
     frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+    console.log(frequencyArr);
     this.frequency = this.commonService.getLowestValueFromList(frequencyArr);
+    console.log(this.frequency);
+    if (this.filterObj.from_date && this.filterObj.to_date) {
+      // this.onChangeOfAsset(this.filterObj.asset);
+      const records = this.commonService.calculateEstimatedRecords(
+        this.frequency,
+        this.filterObj.from_date,
+        this.filterObj.to_date
+      );
+      if (records > CONSTANTS.NO_OF_RECORDS) {
+        this.filterObj.isTypeEditable = true;
+      } else {
+        this.filterObj.isTypeEditable = false;
+      }
+    }
   }
 
   async onChangeOfHierarchy(i, persistAssetSelection = true) {
@@ -684,7 +709,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
               obj.from_date,
               obj.to_date
             );
-            if (records > 500) {
+            if (records > CONSTANTS.NO_OF_RECORDS) {
               this.loadingMessage =
                 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
             }
@@ -723,7 +748,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
               obj.from_date,
               obj.to_date
             );
-            if (records > 500) {
+            if (records > CONSTANTS.NO_OF_RECORDS) {
               this.loadingMessage =
                 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
             }
@@ -764,8 +789,12 @@ export class ReportsComponent implements OnInit, OnDestroy {
           obj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
           obj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
         }
-        const records = this.commonService.calculateEstimatedRecords(this.frequency, filterObj.from_date, filterObj.to_date);
-        if (records > 500) {
+        const records = this.commonService.calculateEstimatedRecords(
+          this.frequency,
+          filterObj.from_date,
+          filterObj.to_date
+        );
+        if (records > CONSTANTS.NO_OF_RECORDS) {
           this.loadingMessage =
             'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
         }

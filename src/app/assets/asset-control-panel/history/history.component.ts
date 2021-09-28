@@ -162,7 +162,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
       // } else {
       //   this.historyFilter.isTypeEditable = false;
       // }
-      const records = this.commonService.calculateEstimatedRecords(this.frequency, this.historyFilter.from_date, this.historyFilter.to_date);
+      const records = this.commonService.calculateEstimatedRecords(
+        this.frequency,
+        this.historyFilter.from_date,
+        this.historyFilter.to_date
+      );
       if (records > CONSTANTS.NO_OF_RECORDS) {
         this.historyFilter.isTypeEditable = true;
       } else {
@@ -278,11 +282,15 @@ export class HistoryComponent implements OnInit, OnDestroy {
     // } else {
     //   this.historyFilter.isTypeEditable = false;
     // }
-    const records = this.commonService.calculateEstimatedRecords(this.frequency, this.historyFilter.from_date, this.historyFilter.to_date);
+    const records = this.commonService.calculateEstimatedRecords(
+      this.frequency,
+      this.historyFilter.from_date,
+      this.historyFilter.to_date
+    );
     if (records > CONSTANTS.NO_OF_RECORDS) {
-        this.historyFilter.isTypeEditable = true;
+      this.historyFilter.isTypeEditable = true;
     } else {
-        this.historyFilter.isTypeEditable = false;
+      this.historyFilter.isTypeEditable = false;
     }
   }
 
@@ -407,9 +415,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
       // }
       const record = this.commonService.calculateEstimatedRecords(this.frequency, obj.from_date, obj.to_date);
       if (record > CONSTANTS.NO_OF_RECORDS && !this.historyFilter.isTypeEditable) {
-          this.historyFilter.isTypeEditable = true;
-          this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
-          return;
+        this.historyFilter.isTypeEditable = true;
+        this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
+        return;
       }
       if (this.historyFilter.isTypeEditable) {
         if (this.historyFilter.type) {
@@ -448,7 +456,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
               obj.from_date,
               obj.to_date
             );
-            if (records > 500) {
+            if (records > CONSTANTS.NO_OF_RECORDS) {
               this.loadingMessage =
                 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
             }
@@ -486,7 +494,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
               obj.from_date,
               obj.to_date
             );
-            if (records > 500) {
+            if (records > CONSTANTS.NO_OF_RECORDS) {
               this.loadingMessage =
                 'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
             }
@@ -527,7 +535,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         frequencyArr.push(this.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
         const frequency = this.commonService.getLowestValueFromList(frequencyArr);
         const records = this.commonService.calculateEstimatedRecords(frequency, obj.from_date, obj.to_date);
-        if (records > 500) {
+        if (records > CONSTANTS.NO_OF_RECORDS) {
           this.loadingMessage =
             'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
         }
@@ -627,11 +635,15 @@ export class HistoryComponent implements OnInit, OnDestroy {
     // } else {
     //   this.historyFilter.isTypeEditable = false;
     // }
-    const records = this.commonService.calculateEstimatedRecords(this.frequency, this.historyFilter.from_date, this.historyFilter.to_date);
+    const records = this.commonService.calculateEstimatedRecords(
+      this.frequency,
+      this.historyFilter.from_date,
+      this.historyFilter.to_date
+    );
     if (records > CONSTANTS.NO_OF_RECORDS) {
-        this.historyFilter.isTypeEditable = true;
+      this.historyFilter.isTypeEditable = true;
     } else {
-        this.historyFilter.isTypeEditable = false;
+      this.historyFilter.isTypeEditable = false;
     }
   }
 
@@ -654,10 +666,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
     // }
     const records = this.commonService.calculateEstimatedRecords(this.frequency, from, to);
     if (records > CONSTANTS.NO_OF_RECORDS) {
-        this.historyFilter.isTypeEditable = true;
+      this.historyFilter.isTypeEditable = true;
     } else {
-        this.historyFilter.type = true;
-        this.historyFilter.isTypeEditable = false;
+      this.historyFilter.type = true;
+      this.historyFilter.isTypeEditable = false;
     }
   }
 

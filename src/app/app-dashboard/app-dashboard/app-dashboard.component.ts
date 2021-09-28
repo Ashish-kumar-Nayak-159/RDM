@@ -204,6 +204,19 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
     frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
     this.frequency = this.commonService.getLowestValueFromList(frequencyArr);
+    if (this.filterObj.from_date && this.filterObj.to_date) {
+      // this.onChangeOfAsset(this.filterObj.asset);
+      const records = this.commonService.calculateEstimatedRecords(
+        this.frequency,
+        this.filterObj.from_date,
+        this.filterObj.to_date
+      );
+      if (records > CONSTANTS.NO_OF_RECORDS) {
+        this.filterObj.isTypeEditable = true;
+      } else {
+        this.filterObj.isTypeEditable = false;
+      }
+    }
   }
 
   loadFromCache() {
@@ -613,13 +626,17 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     //   this.historicalDateFilter.isTypeEditable = false;
     // }
     if (this.filterObj.asset) {
-        const records = this.commonService.calculateEstimatedRecords(this.frequency, this.historicalDateFilter.from_date, this.historicalDateFilter.to_date);
-        if (records > CONSTANTS.NO_OF_RECORDS) {
-            this.historicalDateFilter.isTypeEditable = true;
-        } else {
-            this.historicalDateFilter.isTypeEditable = false;
-        }
+      const records = this.commonService.calculateEstimatedRecords(
+        this.frequency,
+        this.historicalDateFilter.from_date,
+        this.historicalDateFilter.to_date
+      );
+      if (records > CONSTANTS.NO_OF_RECORDS) {
+        this.historicalDateFilter.isTypeEditable = true;
+      } else {
+        this.historicalDateFilter.isTypeEditable = false;
       }
+    }
   }
 
   onNumberChange(event, type) {
@@ -932,7 +949,11 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     //   this.isFilterSelected = false;
     //   return;
     // }
-    const record = this.commonService.calculateEstimatedRecords(this.frequency, this.filterObj.from_date, this.filterObj.to_date);
+    const record = this.commonService.calculateEstimatedRecords(
+      this.frequency,
+      this.filterObj.from_date,
+      this.filterObj.to_date
+    );
     if (record > CONSTANTS.NO_OF_RECORDS && !this.historicalDateFilter.isTypeEditable) {
       this.historicalDateFilter.isTypeEditable = true;
       this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
@@ -962,7 +983,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             filterObj.from_date,
             filterObj.to_date
           );
-          if (records > 500) {
+          if (records > CONSTANTS.NO_OF_RECORDS) {
             this.loadingMessage =
               'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
           }
@@ -996,8 +1017,12 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       delete filterObj.aggregation_format;
       delete filterObj.sampling_time;
       delete filterObj.sampling_format;
-      const records = this.commonService.calculateEstimatedRecords(this.frequency, filterObj.from_date, filterObj.to_date);
-      if (records > 500) {
+      const records = this.commonService.calculateEstimatedRecords(
+        this.frequency,
+        filterObj.from_date,
+        filterObj.to_date
+      );
+      if (records > CONSTANTS.NO_OF_RECORDS) {
         this.loadingMessage =
           'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';
       }
@@ -1031,7 +1056,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           });
           console.log(nullValueArr);
-
 
           // console.log(JSON.stringify(this.telemetryData));
           console.log(this.telemetryData.length);

@@ -1798,7 +1798,7 @@ export class CONSTANTS {
   public static APP_TOKEN = 'app_token';
   public static GUEST_USER = 'guest_user_details';
   public static SYSTEM_RESERVED_KEYWORDS = ['asset_id', 'slave_id'];
-
+  public static NO_OF_RECORDS = 500;
   // public static DEFAULT_APP_ICON = environment.blobContainerName + '/default_app_icon.png';
   // public static DEFAULT_APP_LOGO = environment.blobContainerName + '/default_app_logo.jpg';
   // public static DEFAULT_HEADER_LOGO = environment.blobContainerName + '/app-media/logo.png';

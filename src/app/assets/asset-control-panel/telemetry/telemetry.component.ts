@@ -44,7 +44,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedDateRange: string;
   activeColumn: string;
   directionColumn: string;
-
+  frequency: any;
   constructor(
     private assetService: AssetService,
     private commonService: CommonService,
@@ -85,6 +85,11 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this.telemetryFilter.asset_id = this.asset.asset_id;
     }
+    const frequencyArr = [];
+    frequencyArr.push(this.asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+    frequencyArr.push(this.asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+    frequencyArr.push(this.asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+    this.frequency = this.commonService.getLowestValueFromList(frequencyArr);
     this.telemetryTableConfig = {
       type: 'process parameter',
       tableHeight: 'calc(100vh - 13.5rem)',
@@ -167,7 +172,13 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       this.picker.datePicker.setStartDate(moment.unix(this.telemetryFilter.from_date));
       this.picker.datePicker.setEndDate(moment.unix(this.telemetryFilter.to_date));
-      if (this.telemetryFilter.to_date - this.telemetryFilter.from_date > 3600) {
+      // if (this.telemetryFilter.to_date - this.telemetryFilter.from_date > 3600) {
+      //   this.telemetryFilter.isTypeEditable = true;
+      // } else {
+      //   this.telemetryFilter.isTypeEditable = false;
+      // }
+      const records = this.commonService.calculateEstimatedRecords(this.frequency, this.telemetryFilter.from_date, this.telemetryFilter.to_date);
+      if (records > CONSTANTS.NO_OF_RECORDS) {
         this.telemetryFilter.isTypeEditable = true;
       } else {
         this.telemetryFilter.isTypeEditable = false;
@@ -212,11 +223,17 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this.selectedDateRange = value.label;
     }
-    if (this.telemetryFilter.to_date - this.telemetryFilter.from_date > 3600) {
-      this.telemetryFilter.isTypeEditable = true;
-    } else {
-      this.telemetryFilter.isTypeEditable = false;
-    }
+    // if (this.telemetryFilter.to_date - this.telemetryFilter.from_date > 3600) {
+    //   this.telemetryFilter.isTypeEditable = true;
+    // } else {
+    //   this.telemetryFilter.isTypeEditable = false;
+    // }
+    const records = this.commonService.calculateEstimatedRecords(this.frequency, this.telemetryFilter.from_date, this.telemetryFilter.to_date);
+    if (records > CONSTANTS.NO_OF_RECORDS) {
+        this.telemetryFilter.isTypeEditable = true;
+     } else {
+        this.telemetryFilter.isTypeEditable = false;
+     }
   }
 
   clear() {
@@ -239,10 +256,16 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.picker.datePicker.setStartDate(moment.unix(this.telemetryFilter.from_date));
     this.picker.datePicker.setEndDate(moment.unix(this.telemetryFilter.to_date));
 
-    if (this.telemetryFilter.to_date - this.telemetryFilter.from_date > 3600) {
-      this.telemetryFilter.isTypeEditable = true;
+    // if (this.telemetryFilter.to_date - this.telemetryFilter.from_date > 3600) {
+    //   this.telemetryFilter.isTypeEditable = true;
+    // } else {
+    //   this.telemetryFilter.isTypeEditable = false;
+    // }
+    const records = this.commonService.calculateEstimatedRecords(this.frequency, this.telemetryFilter.from_date, this.telemetryFilter.to_date);
+    if (records > CONSTANTS.NO_OF_RECORDS) {
+        this.telemetryFilter.isTypeEditable = true;
     } else {
-      this.telemetryFilter.isTypeEditable = false;
+        this.telemetryFilter.isTypeEditable = false;
     }
     console.log(this.telemetryFilter);
   }
@@ -269,9 +292,14 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     obj.app = this.contextApp.app;
     delete obj.isTypeEditable;
     let method;
-    if (obj.to_date - obj.from_date > 3600 && !this.telemetryFilter.isTypeEditable) {
-        this.toasterService.showError('Please select sampling filters.', 'View Telemetry');
-        return;
+    // if (obj.to_date - obj.from_date > 3600 && !this.telemetryFilter.isTypeEditable) {
+    //     this.toasterService.showError('Please select sampling filters.', 'View Telemetry');
+    //     return;
+    // }
+    const records = this.commonService.calculateEstimatedRecords(this.frequency, obj.from_date, obj.to_date);
+    if (records > CONSTANTS.NO_OF_RECORDS && !this.telemetryFilter.isTypeEditable) {
+      this.toasterService.showError('Please select sampling filters.', 'View Telemetry');
+      return;
     }
     if (updateFilterObj) {
       const pagefilterObj = this.commonService.getItemFromLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS) || {};

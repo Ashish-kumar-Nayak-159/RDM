@@ -53,7 +53,7 @@
                 </ng-container>
                 <ng-select [items]="assets" class="custom" bindLabel="display_name" [clearable]="false"
                   [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
-                  dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.asset"
+                  dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.asset"  (change)="onChangeOfAsset($event)"
                   (onSelect)="onAssetSelection()">
                   <ng-template ng-option-tmp let-asset="item">
                     <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ?

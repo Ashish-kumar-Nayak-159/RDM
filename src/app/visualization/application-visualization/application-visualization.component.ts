@@ -111,6 +111,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   derivedKPIs: any;
   derivedKPIHistoricData: any;
   nullValueArr: any[];
+  frequency: any;
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -171,6 +172,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         if (item.assets) {
           this.filterObj.asset = item.assets;
           this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+          this.onChangeOfAsset(this.filterObj.asset);
         }
         // this.filterObj = JSON.parse(JSON.stringify(item));
         if (item.hierarchy) {
@@ -212,6 +214,15 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         }
       }
     }
+  }
+
+  onChangeOfAsset(event) {
+    const asset = this.assets.find((assetObj) => assetObj.asset_id === event.asset_id);
+    const frequencyArr = [];
+    frequencyArr.push(asset.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
+    frequencyArr.push(asset.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
+    frequencyArr.push(asset.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
+    this.frequency = this.commonService.getLowestValueFromList(frequencyArr);
   }
 
   onAssetFilterBtnClick() {
@@ -291,10 +302,19 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     } else {
       this.selectedDateRange = value.label;
     }
-    if (this.filterObj.to_date - this.filterObj.from_date > 3600) {
-      this.filterObj.isTypeEditable = true;
-    } else {
-      this.filterObj.isTypeEditable = false;
+    // if (this.filterObj.to_date - this.filterObj.from_date > 3600) {
+    //   this.filterObj.isTypeEditable = true;
+    // } else {
+    //   this.filterObj.isTypeEditable = false;
+    // }
+    if (this.filterObj.asset) {
+      // this.onChangeOfAsset(this.filterObj.asset);
+      const records = this.commonService.calculateEstimatedRecords(this.frequency, this.filterObj.from_date, this.filterObj.to_date);
+      if (records > CONSTANTS.NO_OF_RECORDS) {
+          this.filterObj.isTypeEditable = true;
+      } else {
+          this.filterObj.isTypeEditable = false;
+      }
     }
   }
 
@@ -692,7 +712,20 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
 
   onChangeTimeValue() {
     if (this.beforeInterval && this.afterInterval) {
-      if (this.beforeInterval + this.afterInterval > 60) {
+      // if (this.beforeInterval + this.afterInterval > 60) {
+      //   this.filterObj.isTypeEditable = true;
+      // } else {
+      //   this.filterObj.isTypeEditable = false;
+      // }
+      this.filterObj.from_date =
+          this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp) -
+          this.beforeInterval * 60;
+      this.filterObj.to_date =
+          this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp) +
+          this.afterInterval * 60;
+      this.onChangeOfAsset(this.selectedAlert.asset_id);
+      const records = this.commonService.calculateEstimatedRecords(this.frequency, this.filterObj.from_date, this.filterObj.to_date);
+      if (records > CONSTANTS.NO_OF_RECORDS && (this.beforeInterval + this.afterInterval > 60)) {
         this.filterObj.isTypeEditable = true;
       } else {
         this.filterObj.isTypeEditable = false;
@@ -1031,7 +1064,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       return;
     }
     let method;
-    if (filterObj.to_date - filterObj.from_date > 3600 && !this.filterObj.isTypeEditable) {
+    // this.onChangeOfAsset(filterObj.asset_id);
+    const record = this.commonService.calculateEstimatedRecords(this.frequency, this.filterObj.from_date, this.filterObj.to_date);
+    if (record > CONSTANTS.NO_OF_RECORDS && !this.filterObj.isTypeEditable) {
       this.filterObj.isTypeEditable = true;
       this.toasterService.showError('Please select sampling or aggregation filters.', 'View Telemetry');
       return;
@@ -1083,12 +1118,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       delete filterObj.aggregation_format;
       delete filterObj.sampling_time;
       delete filterObj.sampling_format;
-      const frequencyArr = [];
-      frequencyArr.push(this.asset?.metadata?.measurement_settings?.g1_measurement_frequency_in_ms || 60);
-      frequencyArr.push(this.asset?.metadata?.measurement_settings?.g2_measurement_frequency_in_ms || 120);
-      frequencyArr.push(this.asset?.metadata?.measurement_settings?.g3_measurement_frequency_in_ms || 180);
-      const frequency = this.commonService.getLowestValueFromList(frequencyArr);
-      const records = this.commonService.calculateEstimatedRecords(frequency, filterObj.from_date, filterObj.to_date);
+      // this.onChangeOfAsset(this.asset);
+      const records = this.commonService.calculateEstimatedRecords(this.frequency, filterObj.from_date, filterObj.to_date);
       if (records > 500) {
         this.loadingMessage =
           'Loading approximate ' + records + ' data points.' + ' It may take some time.' + ' Please wait...';

@@ -543,7 +543,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
     console.log(obj);
     this.subscriptions.push(
-      this.assetService.getAssetAlerts(obj).subscribe(
+      this.assetService.getAssetAlertAndAlertEndEvents(obj).subscribe(
         (response: any) => {
           this.latestAlerts = response.data;
           if (this.latestAlerts.length > 0) {
@@ -556,7 +556,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           }
           this.latestAlerts.forEach((item, i) => {
             item.alert_id = 'alert_' + this.commonService.generateUUID();
-            item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
+            item.local_created_date = this.commonService.convertUTCDateToLocal(item.start_event_message_date);
+            item.local_end_created_date = this.commonService.convertUTCDateToLocal(item.end_event_message_date);
             item.asset_display_name = this.assets.filter((asset) => asset.asset_id === item.asset_id)[0]?.display_name;
           });
           if (this.filterObj.dateOption === 'Custom Range') {
@@ -592,10 +593,18 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   }
 
   getLiveAlerts(obj) {
-    obj.local_created_date = this.commonService.convertUTCDateToLocal(obj.timestamp);
-    obj.message_date = obj.timestamp;
-    obj.alert_id = 'alert_' + this.latestAlerts.length;
-    this.latestAlerts.splice(0, 0, obj);
+    console.log(obj);
+    if (obj.type === 'alert') {
+      obj.local_created_date = this.commonService.convertUTCDateToLocal(obj?.timestamp || obj?.ts);
+      obj.start_event_message_date = obj?.timestamp || obj.ts;
+      obj.message_date = obj.timestamp;
+      obj.alert_id = 'alert_' + this.latestAlerts.length;
+      this.latestAlerts.splice(0, 0, obj);
+    } else if (obj.type === 'alertendevent') {
+      obj.end_event_message_date = obj?.timestamp || obj.ts;
+      const alertObj = this.latestAlerts.find((alert) => alert.message_id === obj.message_id);
+      alertObj.local_end_created_date = this.commonService.convertUTCDateToLocal(obj?.timestamp || obj?.ts);
+    }
   }
 
   getAssetData(assetId) {
@@ -735,10 +744,14 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       //   this.filterObj.isTypeEditable = false;
       // }
       this.filterObj.from_date =
-        this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp) -
+        this.commonService.convertDateToEpoch(
+          this.selectedAlert?.start_event_message_date || this.selectedAlert.timestamp
+        ) -
         this.beforeInterval * 60;
       this.filterObj.to_date =
-        this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp) +
+        this.commonService.convertDateToEpoch(
+          this.selectedAlert?.start_event_message_date || this.selectedAlert.timestamp
+        ) +
         this.afterInterval * 60;
       this.onChangeOfAsset(this.selectedAlert.asset_id);
       const records = this.commonService.calculateEstimatedRecords(
@@ -988,13 +1001,16 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           obj.from_date = this.filterObj.from_date;
           obj.to_date = this.filterObj.to_date;
         }
+        this.derivedKPIHistoricData = [];
         this.assetService.getDerivedKPISHistoricalData(this.contextApp.app, obj).subscribe((response: any) => {
           response.data.forEach((item) => {
             const itemobj = {
               message_date: item.metadata.process_end_time,
             };
             itemobj[item.kpi_json_key] = item.kpi_result;
-            this.derivedKPIHistoricData.push(itemobj);
+            if (itemobj && Object.keys(itemobj).length > 1) {
+              this.derivedKPIHistoricData.push(itemobj);
+            }
             // this.derivedKPIHistoricData.reverse();
           });
           // this.derivedKPIHistoricData = response.data;
@@ -1064,8 +1080,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     filterObj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
     if (this.beforeInterval > 0) {
       filterObj.from_date =
-        this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp) -
-        this.beforeInterval * 60;
+        this.commonService.convertDateToEpoch(this.selectedAlert?.start_event_message_date) - this.beforeInterval * 60;
     } else {
       this.toasterService.showError(
         'Minutes Before Alert value must be greater than 0 and less than 30.',
@@ -1075,7 +1090,9 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
     if (this.afterInterval > 0) {
       filterObj.to_date =
-        this.commonService.convertDateToEpoch(this.selectedAlert?.message_date || this.selectedAlert.timestamp) +
+        this.commonService.convertDateToEpoch(
+          this.selectedAlert?.start_event_message_date || this.selectedAlert.timestamp
+        ) +
         this.afterInterval * 60;
     } else {
       this.toasterService.showError(
@@ -1175,7 +1192,10 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       method.subscribe((response: any) => {
         if (response && response.data) {
           this.telemetryData = response.data;
-          this.telemetryData = this.telemetryData.concat(this.derivedKPIHistoricData);
+          if (this.derivedKPIHistoricData && this.derivedKPIHistoricData.length > 0) {
+            this.telemetryData = this.telemetryData.concat(this.derivedKPIHistoricData);
+          }
+          console.log(this.telemetryData);
           this.nullValueArr = [];
           propArr.forEach((prop) => {
             let flag = false;
@@ -1350,7 +1370,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       app: this.contextApp.app,
       asset_id: this.acknowledgedAlert.asset_id,
       message_id: this.acknowledgedAlert.message_id,
-      message_date: this.acknowledgedAlert.message_date,
+      start_event_message_date: this.acknowledgedAlert.start_event_message_date,
       code: this.acknowledgedAlert.code,
       message: this.acknowledgedAlert.message,
       metadata: this.acknowledgedAlert.metadata,
@@ -1358,7 +1378,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       to_date: null,
       epoch: true,
     };
-    const epoch = this.commonService.convertDateToEpoch(this.acknowledgedAlert.message_date);
+    const epoch = this.commonService.convertDateToEpoch(this.acknowledgedAlert.start_event_message_date);
     obj.from_date = epoch ? epoch - 300 : null;
     obj.to_date = epoch ? epoch + 300 : null;
     obj.metadata['user_id'] = this.userData.email;

@@ -48,9 +48,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
   constructor(private commonService: CommonService, private chartService: ChartService, private zone: NgZone) {}
 
   ngOnInit(): void {
-    this.decodedToken = this.commonService.decodeJWTToken(
-      localStorage.getItem(CONSTANTS.APP_TOKEN)
-    );
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     if (this.telemetryData.length > 0) {
       this.loader = true;
       setTimeout(() => {
@@ -63,9 +61,7 @@ export class LiveChartComponent implements OnInit, OnDestroy {
         })
       );
       this.subscriptions.push(
-        this.chartService.togglePropertyEvent.subscribe((property) =>
-          this.toggleProperty(property)
-        )
+        this.chartService.togglePropertyEvent.subscribe((property) => this.toggleProperty(property))
       );
       this.subscriptions.push(
         this.chartService.disposeChartEvent.subscribe(() => {
@@ -160,7 +156,18 @@ export class LiveChartComponent implements OnInit, OnDestroy {
       chart.legend.labels.template.truncate = true;
       chart.cursor = new am4charts.XYCursor();
 
-      if (this.selectedAlert) {
+      if (this.selectedAlert?.local_created_date && this.selectedAlert?.local_end_created_date) {
+        const range = dateAxis.axisRanges.create();
+        range.date = new Date(this.selectedAlert.local_created_date);
+        range.endDate = new Date(this.selectedAlert.local_end_created_date);
+        range.axisFill.fillOpacity = 0.2;
+        range.grid.strokeOpacity = 0;
+        range.axisFill.fill = am4core.color('red');
+        range.axisFill.tooltip = new am4core.Tooltip();
+        range.axisFill.tooltipText = 'Alert Start Time: [bold]{date}[/]\n Alert End Time: [bold]{endDate}[/]';
+        range.axisFill.interactionsEnabled = true;
+        range.axisFill.isMeasured = true;
+      } else if (this.selectedAlert?.local_created_date) {
         const range = dateAxis.axisRanges.create();
         range.date = new Date(this.selectedAlert.local_created_date);
         range.grid.stroke = am4core.color('red');

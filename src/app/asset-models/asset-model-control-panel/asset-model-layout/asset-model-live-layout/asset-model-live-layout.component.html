@@ -85,6 +85,10 @@
             <option [ngValue]="'BarChart'" >Bar Chart</option> -->
             </select>
           </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label mr-2">Dashboard Visibility:</label>
+            <input type="checkbox" name="visible" id="visible" [(ngModel)]="widgetObj.dashboardVisibility" />
+          </div>
           <div class="form-group" *ngIf="widgetObj.widgetType === 'NumberWithTrend' || widgetObj.widgetType === 'LineChart' || widgetObj.widgetType === 'AreaChart'
         ">
             <label for="message-text" class="col-form-label">Data points in Chart:</label>
@@ -104,6 +108,8 @@
           <app-add-only-number-widget [assetModel]="assetModel" [widgetObj]="widgetObj"
             [propertyList]="filteredPropList">
           </app-add-only-number-widget>
+
+
         </form>
       </div>
       <div class="modal-footer">

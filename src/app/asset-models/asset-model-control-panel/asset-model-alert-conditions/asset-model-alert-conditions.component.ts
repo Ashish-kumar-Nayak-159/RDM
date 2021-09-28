@@ -316,81 +316,74 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   openAddAlertConditionModal(alertObj = undefined) {
     if (alertObj) {
       this.alertObj = JSON.parse(JSON.stringify(alertObj));
-      this.setupForm = new FormGroup({
-        slave_id: new FormControl(alertObj?.metadata?.slave_id),
-      });
-      if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_ASSET) {
-        if (
-          this.assetModel.tags.protocol === 'ModbusTCPMaster' ||
-          this.assetModel.tags.protocol === 'ModbusRTUMaster'
-        ) {
-          this.setupForm = new FormGroup({
-            slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
-            d: new FormControl(alertObj?.metadata?.d, [Validators.required]),
-            sa: new FormControl(alertObj?.metadata?.sa, [
-              Validators.required,
-              Validators.min(0),
-              Validators.max(99999),
-            ]),
-            a: new FormControl(true),
-            fc: new FormControl(alertObj?.metadata?.fc, [Validators.required]),
-          });
-        } else if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
-          this.setupForm = new FormGroup({
-            slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
-            d: new FormControl(alertObj?.metadata?.d, [Validators.required]),
-            sa: new FormControl(alertObj?.metadata?.sa, [
-              Validators.required,
-              Validators.min(0),
-              Validators.max(99999),
-            ]),
-            a: new FormControl(true),
-            mt: new FormControl(alertObj?.metadata?.mt, [Validators.required]),
-          });
-        } else if (this.assetModel.tags.protocol === 'BlueNRG') {
-          this.setupForm = new FormGroup({
-            slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
-            sa: new FormControl(alertObj?.metadata?.sa, [
-              Validators.required,
-              Validators.min(1),
-              Validators.max(99999),
-            ]),
-            a: new FormControl(true),
-            p: new FormControl(alertObj?.metadata?.p, [Validators.required]),
-          });
-        } else if (this.assetModel.tags.protocol === 'AIOTInputs') {
-          this.setupForm = new FormGroup({
-            slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
-            cn: new FormControl(alertObj?.metadata?.cn, [Validators.required, Validators.min(0)]),
-            a: new FormControl(false),
-            d: new FormControl(alertObj?.metadata?.d, [Validators.required]),
-          });
-        }
-        if (
-          this.assetModel.tags.protocol === 'ModbusTCPMaster' ||
-          this.assetModel.tags.protocol === 'ModbusRTUMaster'
-        ) {
-          this.onChangeOfSetupType(alertObj.metadata);
-          this.onChangeOfSetupSecondaryType(alertObj.metadata);
-          this.onChangeOfSetupFunctionCode(alertObj.metadata);
-        }
-        if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
-          this.onChangeOfSetupType(alertObj.metadata);
-          this.onChangeOfSetupSecondaryType(alertObj.metadata);
-          this.onChageOfMemoryType(alertObj.metadata);
-        }
-        if (this.assetModel.tags.protocol === 'AIOTInputs') {
-          this.onAIOTTypeChange(alertObj.metadata);
+      if (this.alertObj.alert_type === 'Asset') {
+        this.setupForm = new FormGroup({
+          slave_id: new FormControl(alertObj?.metadata?.slave_id),
+        });
+        if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_ASSET) {
+          if (
+            this.assetModel.tags.protocol === 'ModbusTCPMaster' ||
+            this.assetModel.tags.protocol === 'ModbusRTUMaster'
+          ) {
+            this.setupForm = new FormGroup({
+              slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
+              d: new FormControl(alertObj?.metadata?.d, [Validators.required]),
+              sa: new FormControl(alertObj?.metadata?.sa, [
+                Validators.required,
+                Validators.min(0),
+                Validators.max(99999),
+              ]),
+              a: new FormControl(true),
+              fc: new FormControl(alertObj?.metadata?.fc, [Validators.required]),
+            });
+          } else if (this.assetModel.tags.protocol === 'SiemensTCPIP') {
+            this.setupForm = new FormGroup({
+              slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
+              d: new FormControl(alertObj?.metadata?.d, [Validators.required]),
+              sa: new FormControl(alertObj?.metadata?.sa, [
+                Validators.required,
+                Validators.min(0),
+                Validators.max(99999),
+              ]),
+              a: new FormControl(true),
+              mt: new FormControl(alertObj?.metadata?.mt, [Validators.required]),
+            });
+          } else if (this.assetModel.tags.protocol === 'BlueNRG') {
+            this.setupForm = new FormGroup({
+              slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
+              sa: new FormControl(alertObj?.metadata?.sa, [
+                Validators.required,
+                Validators.min(1),
+                Validators.max(99999),
+              ]),
+              a: new FormControl(true),
+              p: new FormControl(alertObj?.metadata?.p, [Validators.required]),
+            });
+          } else if (this.assetModel.tags.protocol === 'AIOTInputs') {
+            this.setupForm = new FormGroup({
+              slave_id: new FormControl(alertObj?.metadata?.slave_id, [Validators.required]),
+              cn: new FormControl(alertObj?.metadata?.cn, [Validators.required, Validators.min(0)]),
+              a: new FormControl(false),
+              d: new FormControl(alertObj?.metadata?.d, [Validators.required]),
+            });
+          }
         }
       }
       console.log(this.setupForm);
     } else {
       this.alertObj = {};
-      if (this.assetModel.metadata?.model_type !== CONSTANTS.IP_GATEWAY) {
-        this.setupForm = new FormGroup({
-          slave_id: new FormControl(alertObj?.metadata?.slave_id),
-        });
-      }
+    }
+    this.toggleRows = {};
+    this.editRecommendationStep = {};
+    this.editDocuments = {};
+    $('#addAlertConditionModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onChangeOfAlertSource() {
+    if (this.alertObj.alert_type === 'Asset') {
+      this.setupForm = new FormGroup({
+        slave_id: new FormControl(null),
+      });
       if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_ASSET) {
         if (
           this.assetModel.tags.protocol === 'ModbusTCPMaster' ||
@@ -427,99 +420,8 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
           });
         }
       }
-    }
-    this.toggleRows = {};
-    this.editRecommendationStep = {};
-    this.editDocuments = {};
-    $('#addAlertConditionModal').modal({ backdrop: 'static', keyboard: false, show: true });
-  }
-
-  onAIOTTypeChange(obj = undefined) {
-    if (this.setupForm.value.d === 'a') {
-      this.setupForm.removeControl('p');
-      this.setupForm.addControl(
-        'p',
-        new FormControl(obj?.p || null, [Validators.required, Validators.min(1), Validators.max(5)])
-      );
     } else {
-      this.setupForm.removeControl('p');
-      this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
-    }
-  }
-
-  onChangeOfSetupType(obj = undefined) {
-    console.log(obj);
-    if (this.setupForm.value.d !== 'a') {
-      this.setupForm.removeControl('sd');
-    } else {
-      this.setupForm.addControl('sd', new FormControl(obj?.sd || null, [Validators.required]));
-    }
-    if (this.setupForm.value.d !== 's') {
-      this.setupForm.removeControl('la');
-    } else {
-      this.setupForm.addControl(
-        'la',
-        new FormControl(obj?.la || null, [Validators.required, Validators.min(1), Validators.max(99999)])
-      );
-    }
-    if (this.setupForm.value.d === 'a' && (this.setupForm.value.sd === 5 || this.setupForm.value.sd === 6)) {
-      this.setupForm.removeControl('p');
-      this.setupForm.addControl(
-        'p',
-        new FormControl(obj?.p || null, [Validators.required, Validators.min(1), Validators.max(5)])
-      );
-    } else {
-      this.setupForm.removeControl('p');
-      this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
-    }
-    if (this.assetModel.tags.protocol === 'SiemensTCPIP' && this.setupForm.value.d === 'd') {
-      this.setupForm.removeControl('bn');
-      this.setupForm.addControl(
-        'bn',
-        new FormControl(obj?.bn || null, [Validators.required, Validators.min(0), Validators.max(15)])
-      );
-    } else {
-      this.setupForm.removeControl('bn');
-    }
-  }
-
-  onChangeOfSetupSecondaryType(obj = undefined) {
-    if (this.setupForm.value.d === 'a' && (this.setupForm.value.sd === 5 || this.setupForm.value.sd === 6)) {
-      this.setupForm.removeControl('p');
-      this.setupForm.addControl(
-        'p',
-        new FormControl(obj?.p || null, [Validators.required, Validators.min(1), Validators.max(5)])
-      );
-    } else {
-      this.setupForm.removeControl('p');
-      this.setupForm.addControl('p', new FormControl(0, [Validators.required]));
-    }
-    if (this.setupForm.value.d === 'a' && this.setupForm.value.sd === 9) {
-      this.setupForm.removeControl('bytn');
-      this.setupForm.addControl('bytn', new FormControl(obj?.bytn || null, [Validators.required]));
-    } else {
-      this.setupForm.removeControl('bytn');
-    }
-  }
-
-  onChageOfMemoryType(obj = undefined) {
-    if (this.setupForm.value.mt === 'DB') {
-      this.setupForm.addControl('dbn', new FormControl(obj?.dbn || null, [Validators.required, Validators.min(1)]));
-    } else {
-      this.setupForm.removeControl('dbn');
-    }
-  }
-
-  onChangeOfSetupFunctionCode(obj = undefined) {
-    if (this.setupForm.value.d === 'd' && (this.setupForm.value.fc === 3 || this.setupForm.value.fc === 4)) {
-      this.setupForm.removeControl('bn');
-      this.setupForm.addControl(
-        'bn',
-        new FormControl(obj?.bn || null, [Validators.required, Validators.min(0), Validators.max(15)])
-      );
-    } else {
-      this.setupForm.removeControl('bn');
-      this.setupForm.addControl('bn', new FormControl(-1, [Validators.required]));
+      this.setupForm = undefined;
     }
   }
 

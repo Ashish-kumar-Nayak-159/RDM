@@ -558,16 +558,11 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button *ngIf="asset?.type === constantData.NON_IP_ASSET && alertObj.alert_type === 'Asset';else noSetupFormBtn"
-          type="button" class="btn btn-primary add-row"
-          [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreateAlertConditionLoading"
-          (click)="!alertObj.id ? onCreateAlertCondition() : onUpdateAlertConditions()">Save</button>
-        <ng-template #noSetupFormBtn>
-          <!-- <button *ngIf="assetModel.metadata?.model_type === constantData.NON_IP_ASSET && alertObj.alert_type === 'Asset';else noSetupFormBtn"  type="button" class="btn btn-primary add-row" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreateAlertConditionLoading" (click)="!alertObj.id ? onCreateAlertCondition() : onUpdateAlertConditions()">Save</button>
+
+        <!-- <button *ngIf="assetModel.metadata?.model_type === constantData.NON_IP_ASSET && alertObj.alert_type === 'Asset';else noSetupFormBtn"  type="button" class="btn btn-primary add-row" [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreateAlertConditionLoading" (click)="!alertObj.id ? onCreateAlertCondition() : onUpdateAlertConditions()">Save</button>
         <ng-template #noSetupFormBtn> -->
-          <button type="button" class="btn btn-primary add-row" [disabled]="isCreateAlertConditionLoading"
-            (click)="!alertObj.id ? onCreateAlertCondition() : onUpdateAlertConditions()">Save</button>
-        </ng-template>
+        <button type="button" class="btn btn-primary add-row" [disabled]="isCreateAlertConditionLoading"
+          (click)="!alertObj.id ? onCreateAlertCondition() : onUpdateAlertConditions()">Save</button>
         <button type="button" class="btn btn-white" [disabled]="isCreateAlertConditionLoading"
           (click)="onCloseAlertConditionModal()">Cancel</button>
         <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAlertConditionLoading"></i>

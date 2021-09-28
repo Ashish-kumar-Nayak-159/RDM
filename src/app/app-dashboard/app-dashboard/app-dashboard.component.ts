@@ -1141,7 +1141,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       const diff2 = Math.abs(interval - this.turboModeInterval);
       this.telemetryInterval = interval;
     }
-    const obj = JSON.parse(JSON.stringify(this.telemetryObj));
+    const obj = this.telemetryObj ? JSON.parse(JSON.stringify(this.telemetryObj)) : {};
     // console.log(this.widgetPropertyList);
     this.widgetPropertyList.forEach((prop) => {
       if (prop?.json_key && telemetryObj[prop.json_key] !== undefined && telemetryObj[prop.json_key] !== null) {

@@ -402,11 +402,6 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         obj.measured_properties[prop.json_key].g = prop.group;
       });
     }
-    // if (this.optionsValue.configurable_properties) {
-    //   this.properties.configurable_properties.forEach(prop => {
-    //     obj.configurable_properties[prop.json_key] = prop.metadata;
-    //   });
-    // }
     if (this.optionsValue.alerts) {
       this.alertConditions.forEach((prop) => {
         obj.alerts[prop.code] = prop.metadata;
@@ -476,41 +471,6 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         )
     );
   }
-
-  // loadC2DResponse(c2dObj) {
-  //   const obj = {
-  //     sub_job_id: c2dObj.sub_job_id,
-  //     app: this.contextApp.app,
-  //     from_date: c2dObj.timestamp - 5,
-  //     to_date: moment().unix(),
-  //     epoch: true,
-  //     job_type: 'Message'
-  //   };
-  //   this.subscriptions.push(this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
-  //     (response: any) => {
-  //       // response.data = this.generateResponse();
-  //       if (response.data?.length > 0) {
-  //         this.displyaMsgArr.push({
-  //           message:  response.data[response.data.length - 1].asset_id + ': ' + response.data[response.data.length - 1]?.payload?.message,
-  //           error: response.data[response.data.length - 1]?.payload?.status === 'failure' ? true : false
-  //         });
-  //         clearInterval(this.c2dResponseInterval);
-  //         // this.refreshAssetTwin.emit();
-  //         this.assetService.refreshRecentJobs.emit();
-  //         setTimeout(() => {
-  //           this.onModalClose();
-  //           this.isAPILoading = false;
-  //         }, 1000);
-  //       } else {
-  //         clearInterval(this.c2dResponseInterval);
-  //         this.c2dResponseInterval = setInterval(
-  //         () => {
-  //           this.loadC2DResponse(c2dObj);
-  //         }, 5000);
-  //       }
-  //     }
-  //     ));
-  // }
 
   onModalClose() {
     $('#confirmMessageModal').modal('hide');

@@ -333,7 +333,6 @@ export class AssetAlertConditionsComponent implements OnInit {
   openAddAlertConditionModal(alertObj = undefined) {
     if (alertObj) {
       this.alertObj = JSON.parse(JSON.stringify(alertObj));
-      console.log(this.setupForm);
     } else {
       this.alertObj = {};
     }
@@ -374,7 +373,6 @@ export class AssetAlertConditionsComponent implements OnInit {
 
   onUpdateAlertConditions() {
     this.isCreateAlertConditionLoading = true;
-    this.alertObj.metadata = this.setupForm?.value;
     let arr = [];
     arr = this.alertObj.recommendations;
     arr.forEach((step, i) => {
@@ -451,7 +449,6 @@ export class AssetAlertConditionsComponent implements OnInit {
   }
 
   onCreateAlertCondition() {
-    this.alertObj.metadata = this.setupForm?.value;
     this.alertObj.created_by = this.loggedInUser.email;
     if (
       !this.alertObj.message ||

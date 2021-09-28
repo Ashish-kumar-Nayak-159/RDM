@@ -1,6 +1,6 @@
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -27,6 +27,7 @@ import { DataTablesModule } from 'angular-datatables';
 import { CommonTableFilterComponent } from './table/common-table-filter/common-table-filter.component';
 import { DamagePlotChartComponent } from './charts/damage-plot-chart/damage-plot-chart.component';
 import { DataTypeFieldsComponent } from './data-type-fieds/data-type-fieds.component';
+import { ModelProtocolSpecificDetailsComponent } from './model-protocol-specific-details/model-protocol-specific-details.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { DataTypeFieldsComponent } from './data-type-fieds/data-type-fieds.compo
     CommonTableFilterComponent,
     DamagePlotChartComponent,
     DataTypeFieldsComponent,
+    ModelProtocolSpecificDetailsComponent,
   ],
   imports: [
     CommonModule,
@@ -62,6 +64,7 @@ import { DataTypeFieldsComponent } from './data-type-fieds/data-type-fieds.compo
     DataTablesModule,
     TooltipModule,
     NgSelectModule,
+    ReactiveFormsModule,
   ],
   exports: [
     // FilterComponent,
@@ -80,6 +83,7 @@ import { DataTypeFieldsComponent } from './data-type-fieds/data-type-fieds.compo
     CommonDataTableComponent,
     DamagePlotChartComponent,
     DataTypeFieldsComponent,
+    ModelProtocolSpecificDetailsComponent,
   ],
   providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }],
 })

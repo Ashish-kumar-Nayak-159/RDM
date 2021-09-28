@@ -1,3 +1,12 @@
-
-<h6 class="m-3">{{messageText}}</h6>
+    <div class="tab-bar">
+      <div class="">  
+        <app-filter [filterObj]="filterObj" (filterSearch)="searchLogs($event)"></app-filter>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <div class="tableFixHead" >
+        <app-common-table [tableData]="LogList" [tableConfig]="LogTableConfig" [isTableFilterSelected]="isFilterSelected"
+        [isTableDataLoading]="isLogLoading" (viewMessageEvent)="openLogMessageModal($event)"></app-common-table>
+      </div>
+    </div>
 

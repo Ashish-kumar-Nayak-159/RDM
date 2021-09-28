@@ -565,6 +565,16 @@ export class AssetService {
     return this.http.get(this.url + AppUrls.GET_CACHED_ALERTS, { params });
   }
 
+  getLogs(filterObj) {
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + AppUrls.GET_LOGS, { params });
+  }
+
   getAssetLifeCycleEvents(filterObj: any) {
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {

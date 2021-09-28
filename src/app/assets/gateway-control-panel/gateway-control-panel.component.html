@@ -92,6 +92,10 @@
               <app-asset-life-cycle-events *ngIf="activeTab === 'asset_life_cycle' && asset" [asset]="asset">
               </app-asset-life-cycle-events>
             </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'logs'}"
+              role="tabpanel" id="asset_logs">
+              <app-logs *ngIf="activeTab === 'logs' && asset" [asset]="asset"></app-logs>
+            </div>
             <div class="tab-pane" [ngClass]="{'active': activeTab === 'config_history'}" role="tabpanel"
               id="asset_config_history">
               <app-gateway-configuration-history *ngIf="activeTab === 'config_history' && asset" [asset]="asset">

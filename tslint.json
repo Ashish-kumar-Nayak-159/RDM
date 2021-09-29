@@ -12,6 +12,10 @@
     "component-class-suffix": true,
     "contextual-lifecycle": true,
     "directive-class-suffix": true,
+    "curly": true,
+    "deprecation": {
+      "severity": "warning"
+    },
     "no-unused-expression": true,
     "directive-selector": [
       true,
@@ -19,12 +23,19 @@
       "app",
       "camelCase"
     ],
+    "eofline": true,
     "component-selector": [
       true,
       "element",
       "app",
       "kebab-case"
     ],
+    "import-spacing": true,
+    "indent": {
+      "options": [
+        "spaces"
+      ]
+    },
     "import-blacklist": [
       true,
       "rxjs/Rx"
@@ -95,9 +106,32 @@
     "no-input-rename": true,
     "no-inputs-metadata-property": true,
     "no-output-native": true,
+    "semicolon": {
+      "options": [
+        "always"
+      ]
+    },
     "no-output-on-prefix": true,
     "no-output-rename": true,
     "no-outputs-metadata-property": true,
+    "typedef-whitespace": {
+      "options": [
+        {
+          "call-signature": "nospace",
+          "index-signature": "nospace",
+          "parameter": "nospace",
+          "property-declaration": "nospace",
+          "variable-declaration": "nospace"
+        },
+        {
+          "call-signature": "onespace",
+          "index-signature": "onespace",
+          "parameter": "onespace",
+          "property-declaration": "onespace",
+          "variable-declaration": "onespace"
+        }
+      ]
+    },
     "template-banana-in-box": true,
     "template-no-negated-async": true,
     "use-lifecycle-interface": true,

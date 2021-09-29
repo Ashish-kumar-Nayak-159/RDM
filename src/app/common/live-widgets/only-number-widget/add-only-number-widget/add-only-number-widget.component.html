@@ -162,19 +162,6 @@
 <ng-template #singleChartTemplate>
   <div class="form-group">
     <label for="message-text" class="col-form-label ">Y1 Axis Property:</label>
-    <!-- <angular2-multiselect [data]="dropdownProperties" id="y1AxisProperty"
-              [(ngModel)]="widgetObj.y1AxisProps" name="y1AxisProperty" [settings]="{
-                text: 'Select Y1 Axis',
-                selectAllText: 'Select All',
-                unSelectAllText: 'UnSelect All',
-                classes: 'col-lg-2 col-xl-2 p-0 ml-2',
-                enableSearchFilter: true,
-                badgeShowLimit: 1,
-                maxHeight: 200,
-                labelKey: 'name'
-              }"
-              (onDeSelectAll)="y1Deselect($event)">
-            </angular2-multiselect> -->
     <ng-select [items]="dropdownProperties" class="custom-dropdown w-12 sm" [searchable]="true"
       placeholder="Y1 Axis Props" [multiple]="true" [closeOnSelect]="false" groupBy="type" bindLabel="name"
       dropdownPosition="bottom" name="widget-dropdown1" [(ngModel)]="widgetObj.y1AxisProps">
@@ -218,19 +205,6 @@
           {{item.name}}</span>
       </ng-template>
     </ng-select>
-    <!-- <angular2-multiselect [data]="dropdownProperties" id="y2AxisProperty"
-              [(ngModel)]="widgetObj.y2AxisProps" name="y2AxisProperty" [settings]="{
-                text: 'Select Y2 Axis',
-                selectAllText: 'Select All',
-                unSelectAllText: 'UnSelect All',
-                classes: 'col-lg-2 col-xl-2 p-0 ml-2',
-                enableSearchFilter: true,
-                badgeShowLimit: 1,
-                maxHeight: 200,
-                labelKey: 'name'
-              }"
-              (onDeSelectAll)="y2Deselect($event)">
-            </angular2-multiselect> -->
   </div>
   <div class="row col-12">
     <label for="recipient-name" class="col-form-label">Color:</label>

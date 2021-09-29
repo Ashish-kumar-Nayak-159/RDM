@@ -1,15 +1,11 @@
-import { CONSTANTS } from 'src/app/app.constants';
 import { CONSTANTS } from './../app.constants';
-import { APIMESSAGES } from './../api-messages.constants';
 import { environment } from 'src/environments/environment';
 import { Subscription } from 'rxjs';
 import { ApplicationService } from 'src/app/services/application/application.service';
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
-import { Route, Router, ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ToasterService } from '../services/toaster.service';
 import { CommonService } from 'src/app/services/common.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { decode } from 'punycode';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 declare var $: any;
 

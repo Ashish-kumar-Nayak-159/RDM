@@ -9,10 +9,8 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { AppDashboardRoutingModule } from './app-dashboard-routing.module';
 import { AppDashboardComponent } from './app-dashboard/app-dashboard.component';
 import { UiSwitchModule } from 'ngx-ui-switch';
-import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { Daterangepicker } from 'ng2-daterangepicker';
-
 
 @NgModule({
   declarations: [AppDashboardComponent],
@@ -28,6 +26,6 @@ import { Daterangepicker } from 'ng2-daterangepicker';
     NgSelectModule,
     TooltipModule,
     Daterangepicker,
-  ]
+  ],
 })
-export class AppDashboardModule { }
+export class AppDashboardModule {}

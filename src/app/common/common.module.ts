@@ -21,9 +21,7 @@ import { LineChartWithoutAxisComponent } from './charts/line-chart-without-axis/
 import { OnlyNumberWidgetComponent } from './live-widgets/only-number-widget/only-number-widget.component';
 import { AddOnlyNumberWidgetComponent } from './live-widgets/only-number-widget/add-only-number-widget/add-only-number-widget.component';
 import { LiveLineChartComponent } from './charts/live-widgets/live-line-chart/live-line-chart.component';
-import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import { CommonDataTableComponent } from './table/common-data-table/common-data-table.component';
-import { DataTablesModule } from 'angular-datatables';
 import { CommonTableFilterComponent } from './table/common-table-filter/common-table-filter.component';
 import { DamagePlotChartComponent } from './charts/damage-plot-chart/damage-plot-chart.component';
 import { DataTypeFieldsComponent } from './data-type-fieds/data-type-fieds.component';
@@ -60,8 +58,6 @@ import { ModelProtocolSpecificDetailsComponent } from './model-protocol-specific
     AccordionModule.forRoot(),
     FormsModule,
     ColorPickerModule,
-    AngularMultiSelectModule,
-    DataTablesModule,
     TooltipModule,
     NgSelectModule,
     ReactiveFormsModule,

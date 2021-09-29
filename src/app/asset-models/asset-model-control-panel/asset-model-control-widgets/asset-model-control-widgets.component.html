@@ -117,19 +117,7 @@
             <label for="message-text" class="col-form-label required">Controls following
               {{(controlWidget?.metadata?.communication_technique === 'Direct Method' ? 'methods' :
               'properties')}}:</label>
-            <!-- <angular2-multiselect [data]="(controlWidget?.metadata?.communication_technique === 'Direct Method' ? assetMethods : properties?.controllable_properties)" id="y1AxisProperty"
-          [(ngModel)]="controlWidget.properties" (onDeSelect)="onPropertyChecked($event)"
-          (onSelectAll)="selectAllProps($event)" (onDeSelectAll)="deselectAllProps($event)"
-          (onSelect)="onPropertyChecked($event)" name="property" [settings]="{
-              text: 'Select' + (controlWidget?.metadata?.communication_technique === 'Direct Method' ? ' Direct Method' : ' Property'),
-              classes: 'col-lg-2 col-xl-2 p-0 ml-2 w-100 modal-select',
-              enableSearchFilter: true,
-              badgeShowLimit: 2,
-              maxHeight: 200,
-              labelKey: 'name',
-              primaryKey: 'name'
-            }">
-          </angular2-multiselect> -->
+
             <ng-select *ngIf="controlWidget.metadata.communication_technique !== 'Direct Method'"
               [items]="properties?.controllable_properties" class="custom-dropdown sm" [clearable]="false"
               [searchable]="true" [multiple]="true" bindLabel="name" [closeOnSelect]="false"

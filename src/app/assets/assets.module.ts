@@ -11,7 +11,6 @@ import { AssetListComponent } from './asset-list/asset-list.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule } from '@angular/material-moment-adapter';
-import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import { MatTableModule } from '@angular/material/table';
 import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 import { GoogleMapsModule } from '@angular/google-maps';
@@ -152,7 +151,6 @@ import { CloudDerivedPropertiesComponent } from './asset-control-panel/cloud-der
     MatDatepickerModule,
     MatMomentDateModule,
     MatTableModule,
-    AngularMultiSelectModule,
     CommonCustomModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,

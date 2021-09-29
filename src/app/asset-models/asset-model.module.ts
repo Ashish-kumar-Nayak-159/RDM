@@ -17,7 +17,6 @@ import { AssetModelPropertiesComponent } from './asset-model-control-panel/asset
 import { AssetModelJsonPacketFormatComponent } from './asset-model-control-panel/asset-model-json-packet-format/asset-model-json-packet-format.component';
 import { AssetModelControlWidgetsComponent } from './asset-model-control-panel/asset-model-control-widgets/asset-model-control-widgets.component';
 import { AssetModelDeviceMethodsComponent } from './asset-model-control-panel/asset-model-device-methods/asset-model-device-methods.component';
-import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import { AssetModelLayoutComponent } from './asset-model-control-panel/asset-model-layout/asset-model-layout.component';
 import { AssetModelHistoryLayoutComponent } from './asset-model-control-panel/asset-model-layout/asset-model-history-layout/asset-model-history-layout.component';
 import { AssetModelLiveLayoutComponent } from './asset-model-control-panel/asset-model-layout/asset-model-live-layout/asset-model-live-layout.component';
@@ -67,7 +66,6 @@ import { UiSwitchModule } from 'ngx-ui-switch';
     CommonCustomModule,
     AccordionModule.forRoot(),
     NgJsonEditorModule,
-    AngularMultiSelectModule,
     FileSaverModule,
     NgSelectModule,
     TooltipModule,

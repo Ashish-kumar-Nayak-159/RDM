@@ -1,51 +1,22 @@
+<!-- Header for Normal routes except login app selection -->
 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top" *ngIf="!isLoginRoute && userData">
-
   <button id="sidebarToggleTop" class="btn btn-link rounded-square mr-3" (click)="onSidebarToggle()">
     <i class="fa fa-bars"></i>
   </button>
-
-
-  <!-- Sidebar - Brand -->
-  <a class="d-flex align-items-center" *ngIf="!userData?.is_super_admin"
-   href="javascript:void(0)" (click)="redirectToFirstMenu()">
-    <img src="{{blobStorageURL + contextApp?.metadata?.header_logo?.url + blobToken}}" class="d-block img-fluid img-logo">
+  <a class="d-flex align-items-center" *ngIf="!userData?.is_super_admin" href="javascript:void(0)"
+    (click)="redirectToFirstMenu()">
+    <img src="{{blobStorageURL + contextApp?.metadata?.header_logo?.url + blobToken}}"
+      class="d-block img-fluid img-logo">
   </a>
-  <a class="d-flex align-items-center" *ngIf="userData?.is_super_admin"
-  [routerLink]="['applications']">
+  <a class="d-flex align-items-center" *ngIf="userData?.is_super_admin" [routerLink]="['applications']">
     <img src="../../assets/img/KemPaas-Logo-Blue.png" style="width: 60%;" class="d-block img-fluid img-logo">
   </a>
 
   <ul class="navbar-nav ml-auto">
-
-    <!-- <div class="topbar-divider d-none d-sm-block"></div>
-
-     <li class="nav-item mx-1">
-      <a class="nav-link" href="javascript:void(0)" tooltip="Telemetry" (click)="navigateToDashboard('telemetry')" id="messagesDropdown" aria-expanded="false">
-        <i class="fa fa-globe fa-fw  text-dark"></i>
-      </a>
-
-    </li>
-
     <div class="topbar-divider d-none d-sm-block"></div>
-
-    <li class="nav-item no-arrow mx-1">
-      <a class="nav-link" href="javascript:void(0)" tooltip="Alert" (click)="navigateToDashboard('alert')" id="alertsDropdown" aria-expanded="false">
-        <i class="fa fa-bell fa-fw   text-dark"></i>
-      </a>
-
-    </li> -->
-
-
-    <div class="topbar-divider d-none d-sm-block"></div>
-
-    <!-- Nav Item - User Information -->
     <li class="nav-item dropdown no-arrow">
       <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
-        <!-- <span>{{contextApp?.user.role}}</span>
-        <br/>
-        <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{userData?.name}}</span> -->
-        <!-- <span class="mr-2 d-none d-lg-block"> -->
         <img class="img-profile rounded-circle mr-3" src="../../assets/img/user.png">
         <span class="d-block">
 
@@ -53,10 +24,7 @@
           <span class="d-block text-grey small">{{contextApp?.app}}</span>
           <small class="d-block text-grey ">{{contextApp?.user?.role}}</small>
         </span>
-
-        <!-- <img class="img-profile rounded-circle" src="../../assets/img/user.jpg"> -->
       </a>
-      <!-- Dropdown - User Information -->
       <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
         <a class="dropdown-item" href="javascript:void(0)">
           <i class="fa fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -97,8 +65,9 @@
   </ul>
 
 </nav>
-<!-- End of Topbar -->
+<!-- End of Header -->
 
+<!-- Logout modal -->
 <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -117,7 +86,9 @@
     </div>
   </div>
 </div>
+<!-- End of Logout modal -->
 
+<!-- Header for Login route -->
 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top" style="height:5rem !important"
   *ngIf="isLoginRoute  && url.includes('login')">
   <ng-container *ngIf="defaultAppName !== 'SopanCMS'">
@@ -131,42 +102,26 @@
     </div>
   </ng-container>
 </nav>
+<!--End of Header for Login route -->
 
+<!-- Header for App selection route -->
 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top"
   *ngIf="isLoginRoute && !url.includes('login')">
   <div class="container">
-    <!-- Sidebar - Brand-->
     <ng-container *ngIf="defaultAppName !== 'SopanCMS'">
       <a class="d-flex align-items-center justify-content-center">
         <img src="../../assets/img/KemPaas-Logo-Blue.png" style="width: 60%;" class="d-block img-fluid">
       </a>
     </ng-container>
-    <!-- Sidebar - Brand -->
-    <!-- <a class="d-flex justify-content-end" style="margin-right:7rem;">
-        <img src="../../assets/img/kaynes-logo.png" class="d-none d-md-block img-fluid">
-        </a> -->
-
-    <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto" *ngIf="!url.includes('login')">
-
-      <!-- Nav Item - User Information -->
       <li class="nav-item dropdown no-arrow">
         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
-          <!-- <span>{{contextApp?.user.role}}</span>
-              <br/>
-              <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{userData?.name}}</span> -->
-          <!-- <span class="mr-2 d-none d-lg-block">
-                <span class="text-gray-600">{{userData?.name}}</span>
-              </span> -->
           <img class="img-profile rounded-circle mr-3" src="../../assets/img/user.png">
           <span class="d-none d-md-block">
             <span class="text-gray-600">{{userData?.name}}</span>
           </span>
-
-          <!-- <img class="img-profile rounded-circle" src="../../assets/img/user.png"> -->
         </a>
-        <!-- Dropdown - User Information -->
         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
           <a class="dropdown-item" href="javascript:void(0)">
             <i class="fa fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -176,34 +131,17 @@
             <i class="fa fa-key fa-sm fa-fw mr-2 text-gray-400"></i>
             Change Password
           </a>
-          <!-- <a class="dropdown-item" href="#">
-                <i class="fa fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                Settings
-              </a>
-              <a class="dropdown-item" href="#">
-                <i class="fa fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                Activity Log
-              </a> -->
-
-          <!-- <ng-container  *ngIf="userData?.apps.length > 1">
-
-              <a class="dropdown-item"
-              [routerLink]="['applications', 'selection']" routerLinkActive="active" >
-                <i class="fa fa-th-large fa-sm fa-fw mr-2 text-gray-400"></i>
-                Change Application
-              </a>
-              <div class="dropdown-divider"></div>
-              </ng-container> -->
           <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
             <i class="fa fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
             Logout
           </a>
         </div>
       </li>
-
     </ul>
   </div>
 </nav>
+<!-- End of Header for app selection route -->
 
+<!-- Change Password component -->
 <app-reset-password [isFirstTimeLogin]="false" [loginData]="userData" (modalClose)="onModalClose()"
   *ngIf="isResetPassword"></app-reset-password>

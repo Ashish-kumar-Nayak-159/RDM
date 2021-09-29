@@ -435,45 +435,6 @@ export class CONSTANTS {
       privileges_required: ['ASMMV'],
       priority: 1,
     },
-    // {
-    //   page: 'Asset Groups',
-    //   system_name: 'Asset Groups',
-    //   url: null,
-    //   display_name: 'Asset Groups',
-    //   icon: 'fa fa-fw fa-table',
-    //   visible: true,
-    //   children: [
-    //     {
-    //       page: 'Group Jobs',
-    //       system_name: 'Group Jobs',
-    //       url: null,
-    //       display_name: 'Group Jobs',
-    //       visible: true,
-    //       showAccordion: []
-    //     },
-    //     {
-    //       page: 'Group Type',
-    //       system_name: 'Group Type',
-    //       url: null,
-    //       display_name: 'Group Type',
-    //       visible: true,
-    //       showAccordion: []
-    //     }
-    //   ],
-    //   priority: 1
-    // },
-    // {
-    //   page: 'Alert Visualization',
-    //   system_name: 'Alert Visualization',
-    //   url: 'applications/:appName/data/visualization',
-    //   display_name: 'Alert Visualization',
-    //   icon: 'fa fa-fw fa-bar-chart',
-    //   visible: true,
-    //   showAccordion: [
-    //     { name: 'Title', value: 'Alerts'},
-    //   ],
-    //   priority: 1
-    // },
     {
       page: 'Reports',
       system_name: 'Reports',
@@ -502,30 +463,6 @@ export class CONSTANTS {
       showAccordion: [{ name: 'Title', value: 'Campaigns' }],
       priority: 1,
     },
-    // {
-    //   page: 'Non-provisioned Assets',
-    //   system_name: 'Non-provisioned Assets',
-    //   url: 'applications/:appName/asset/non-provisioned',
-    //   display_name: 'Non-provisioned Assets',
-    //   icon: 'fab fa-fw fa-mixcloud',
-    //   visible: true,
-    //   showAccordion: [{ name: 'Title', value: 'Non-provisioned Assets' }],
-    //   priority: 2,
-    // },
-    // {
-    //   page: 'Gateways',
-    //   system_name: 'IoT Gateways',
-    //   url: 'applications/:appName/gateways',
-    //   display_name: 'IoT Gateways',
-    //   icon: 'fa fa-fw fa-desktop',
-    //   visible: true,
-    //   showAccordion: [
-    //     { name: 'Title', value: 'Gateways'},
-    //     { name: 'Table Key Name', value: 'Gateway'},
-    //     { name: 'Records Limit', value: 20, type: 'number'},
-    //   ],
-    //   priority: 2
-    // }
   ];
 
   public static ASSET_CONTROL_PANEL_SIDE_MENU_LIST = [
@@ -1791,7 +1728,7 @@ export class CONSTANTS {
     /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
   public static MAC_ADDRESS_REGEX = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/;
   public static ONLY_NOS_AND_CHARS = /^[a-zA-Z]+[a-zA-Z0-9\s]+$/;
-  public static APP_NAME_REGEX = /^[A-Za-z][A-Za-z0-9]*(?: [A-Za-z0-9]+)$/;
+  public static APP_NAME_REGEX = /^([a-zA-Z]+([a-zA-Z0-9]*[\s]?[a-zA-Z0-9]+)*){3,}$/;
   public static APP_ADMIN_ROLE = 'App Admin';
   public static APP_VERSION = 'version';
   public static MAIN_MENU_FILTERS = 'main_menu_filter';

@@ -1,11 +1,8 @@
 import { CONSTANTS } from 'src/app/app.constants';
 import { environment } from './../../environments/environment';
-import { Component, OnInit, Inject, Input, SimpleChanges, OnChanges, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { Component, OnInit, Input, SimpleChanges, OnChanges, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonService } from '../services/common.service';
-import { DOCUMENT } from '@angular/common';
-import { filter } from 'rxjs/operators';
-import { data } from 'jquery';
 import { Subscription } from 'rxjs';
 declare var $: any;
 
@@ -28,18 +25,12 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
   defaultAppName = environment.app;
   decodedToken: any;
   isGuestUser: string;
-  constructor(
-    private router: Router,
-    private commonService: CommonService,
-    private route: ActivatedRoute,
-    @Inject(DOCUMENT) private document: Document
-  ) {}
+  constructor(private router: Router, private commonService: CommonService) {}
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.isGuestUser = localStorage.getItem(CONSTANTS.GUEST_USER);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
-    // this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     if (this.contextApp && this.userData) {
       if (this.contextApp.metadata && !this.contextApp.metadata.header_logo) {
         this.contextApp.metadata.header_logo = {
@@ -48,21 +39,13 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
     this.apiSubscriptions.push(
-      this.router.events.pipe(filter((rs): rs is NavigationEnd => rs instanceof NavigationEnd)).subscribe((event) => {
-        if (event.id === 1 && event.url === event.urlAfterRedirects) {
-          this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-        }
-      })
-    );
-    this.apiSubscriptions.push(
       this.commonService.refreshSideMenuData.subscribe((list) => {
+        console.log(list);
         this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-        if (this.contextApp?.metadata && !this.contextApp.metadata.header_logo) {
+        if (this.contextApp.metadata && !this.contextApp.metadata.header_logo) {
           this.contextApp.metadata.header_logo = {
             url: CONSTANTS.DEFAULT_HEADER_LOGO,
           };
-        } else if (this.contextApp && this.contextApp.metadata) {
-          this.contextApp.metadata.header_logo = list.metadata.header_logo;
         }
       })
     );
@@ -72,7 +55,6 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     if (changes && this.userData) {
-      // this.appName = changes.appName.currentValue;
       this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
       if (this.contextApp && this.contextApp.metadata && !this.contextApp.metadata.header_logo) {
         this.contextApp.metadata.header_logo = {
@@ -85,39 +67,29 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
   onSidebarToggle() {
     $('body').toggleClass('sidebar-toggled');
     $('.sidebar').toggleClass('toggled');
-    if (($(window).width() > 992) && $('.sidebar').hasClass('toggled')) {
+    if ($(window).width() > 992 && $('.sidebar').hasClass('toggled')) {
       $('.container-fluid').addClass('sb-toggle');
       $('.container-fluid').removeClass('sb-notoggle');
     }
-    if (($(window).width() > 992) && !$('.sidebar').hasClass('toggled')) {
+    if ($(window).width() > 992 && !$('.sidebar').hasClass('toggled')) {
       $('.container-fluid').removeClass('sb-toggle');
       $('.container-fluid').addClass('sb-notoggle');
     }
-    if (($(window).width() > 480 && $(window).width() < 992) && $('.sidebar').hasClass('toggled')) {
-      $('.container-fluid').removeClass( 'sb-notoggle' );
-      $('.container-fluid').removeClass( 'sb-toggle' );
+    if ($(window).width() > 480 && $(window).width() < 992 && $('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').removeClass('sb-notoggle');
+      $('.container-fluid').removeClass('sb-toggle');
     }
-    if (($(window).width() > 480 && $(window).width() < 992) && !$('.sidebar').hasClass('toggled')) {
-      $('.container-fluid').addClass( 'sb-toggle' );
-      $('.container-fluid').removeClass( 'sb-notoggle' );
+    if ($(window).width() > 480 && $(window).width() < 992 && !$('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').addClass('sb-toggle');
+      $('.container-fluid').removeClass('sb-notoggle');
     }
-    if (($(window).width() < 480) && $('.sidebar').hasClass('toggled')) {
-      $('.container-fluid').addClass( 'sb-collapse' );
-      $('.container-fluid').removeClass( 'sb-toggle' );
+    if ($(window).width() < 480 && $('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').addClass('sb-collapse');
+      $('.container-fluid').removeClass('sb-toggle');
     }
-    if (($(window).width() < 480) && !$('.sidebar').hasClass('toggled')) {
-      $('.container-fluid').removeClass( 'sb-collapse' );
-      $('.container-fluid').addClass( 'sb-toggle' );
-    }
-  }
-
-  navigateToDashboard(type) {
-    if (type === 'telemetry') {
-      const url = 'applications/' + this.contextApp.app + '/dashboard';
-      this.router.navigateByUrl(url);
-    } else if (type === 'alert') {
-      const url = 'applications/' + this.contextApp.app + '/alerts/visualization';
-      this.router.navigateByUrl(url);
+    if ($(window).width() < 480 && !$('.sidebar').hasClass('toggled')) {
+      $('.container-fluid').removeClass('sb-collapse');
+      $('.container-fluid').addClass('sb-toggle');
     }
   }
 
@@ -130,10 +102,6 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
 
   openChangePasswordModal() {
     this.isResetPassword = true;
-    // $('#changePasswordModal').modal({
-    //   backdrop: 'static',
-    //   keyboard: false
-    // });
   }
 
   redirectToFirstMenu() {
@@ -145,7 +113,6 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
     menu.forEach((menuObj) => {
       if (i === 0 && menuObj.visible) {
         i++;
-        const url = menuObj.url;
         if (menuObj.url?.includes(':appName')) {
           menuObj.url = menuObj.url.replace(':appName', this.contextApp.app);
           this.router.navigateByUrl(menuObj.url);
@@ -154,23 +121,7 @@ export class HeaderComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  onClickOfBreadcrumbItem(obj, index) {
-    const arr = JSON.parse(JSON.stringify(this.breadcrumbData));
-    for (let i = this.breadcrumbData.length - 1; i >= index; i--) {
-      arr.splice(i, 1);
-    }
-
-    this.breadcrumbData = JSON.parse(JSON.stringify(arr));
-    this.router.navigate([obj.url], { queryParams: obj.queryParams ? obj.queryParams : undefined });
-  }
-
-  decode(item) {
-    return decodeURIComponent(item);
-  }
-
   onModalClose() {
-    // alert('here');
-    // $('#changePasswordModal').modal('hide');
     this.isResetPassword = false;
   }
 

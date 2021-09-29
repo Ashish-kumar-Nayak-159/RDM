@@ -1,17 +1,17 @@
-<div id="{{isLoginRoute || isHomeRoute  ? '' : 'wrapper'}}" >
+<div id="{{isLoginRoute || isHomeRoute  ? '' : 'wrapper'}}">
   <app-loader *ngIf="showLoader"></app-loader>
   <app-rdm-side-menu *ngIf="!isLoginRoute && !isHomeRoute"></app-rdm-side-menu>
   <!-- Content Wrapper -->
   <div id="{{isHomeRoute ? '' : 'content-wrapper'}}" [ngClass]="{'d-flex flex-column': !isHomeRoute}">
     <!-- Main Content -->
     <div id="{{isHomeRoute ? '' : 'content'}}">
-      <app-header *ngIf="!isHomeRoute" [isLoginRoute]="isLoginRoute" [url]="url" [contextApp]="applicationData"></app-header>
+      <app-header *ngIf="!isHomeRoute" [isLoginRoute]="isLoginRoute" [url]="url" [contextApp]="applicationData">
+      </app-header>
       <!-- Begin Page Content -->
-      <div [ngClass]="{'container-fluid': !isLoginRoute && !isHomeRoute}">
+      <div id="routeWrapperDiv" [ngClass]="{'container-fluid': !isLoginRoute && !isHomeRoute}">
         <router-outlet></router-outlet>
-        <!-- <app-push-notification></app-push-notification> -->
       </div>
-  </div>
+    </div>
     <app-footer *ngIf="!isHomeRoute" [isLoginRoute]="isLoginRoute"></app-footer>
-</div>
+  </div>
 </div>

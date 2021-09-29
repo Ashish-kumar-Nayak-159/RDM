@@ -1,29 +1,16 @@
 import { Subscription } from 'rxjs';
-import { ToasterService } from 'src/app/services/toaster.service';
-import { Component, Inject, HostListener, NgZone, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
-import {
-  Router,
-  NavigationEnd,
-  ActivatedRoute,
-  RouterEvent,
-  NavigationCancel,
-  NavigationError,
-  NavigationStart,
-} from '@angular/router';
+import { Component, Inject, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Router, NavigationEnd, NavigationCancel, NavigationError, NavigationStart } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from './app.constants';
-import { ApplicationService } from './services/application/application.service';
-import { SignalRService } from './services/signalR/signal-r.service';
-import { APIMESSAGES } from './api-messages.constants';
-declare var $: any;
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'RDM';
   isLoginRoute = false;
   isHomeRoute = false;
@@ -35,29 +22,11 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   apiSubscriptions: Subscription[] = [];
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private commonService: CommonService,
-    @Inject(DOCUMENT) private document: Document,
-    private applicationService: ApplicationService,
-    private toasterService: ToasterService,
-    private singalRService: SignalRService
+    @Inject(DOCUMENT) private document: Document
   ) {}
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      if (!this.isLoginRoute && !this.isHomeRoute) {
-        const node = document.createElement('script');
-        node.src = './assets/js/kdm.min.js';
-        node.type = 'text/javascript';
-        node.async = false;
-        document.getElementsByTagName('head')[0].appendChild(node);
-      }
-    }, 500);
-  }
 
   ngOnInit(): void {
-    // setInterval(() => {
-    //   this.toasterService.showCriticalAlert('Critical Alert', 'Pump pressure is high', 'toast-bottom-right', 1000);
-    // }, 10000);
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.applicationData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
     this.url = this.router.url;
@@ -66,14 +35,14 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         this.navigationInterceptor(event);
         if (event instanceof NavigationEnd) {
           this.url = event.url;
-          // if (!this.userData || !this.applicationData) {
-          //   this.commonService.onLogOut();
-          // }
           if (event.url.includes('login')) {
             this.isLoginRoute = true;
             this.isHomeRoute = false;
             if (!this.document.body.classList.contains('bg-white')) {
               this.document.body.classList.add('bg-white');
+            }
+            if ($('#routeWrapperDiv').hasClass('sb-notoggle')) {
+              $('#routeWrapperDiv').removeClass('sb-notoggle');
             }
           } else if (event.url === '/') {
             this.isHomeRoute = true;
@@ -81,6 +50,9 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
           } else if (event.url.includes('applications/selection')) {
             this.isHomeRoute = false;
             this.isLoginRoute = true;
+            if ($('#routeWrapperDiv').hasClass('sb-notoggle')) {
+              $('#routeWrapperDiv').removeClass('sb-notoggle');
+            }
           } else {
             this.isLoginRoute = false;
             this.isHomeRoute = false;
@@ -105,7 +77,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       this.showLoader = true;
     }
     if (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) {
-      setTimeout(() => (this.showLoader = false), 500);
+      setTimeout(() => (this.showLoader = false), 300);
     }
   }
 

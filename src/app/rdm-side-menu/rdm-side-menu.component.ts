@@ -1,10 +1,6 @@
 import { ToasterService } from './../services/toaster.service';
 import { SignalRService } from './../services/signalR/signal-r.service';
-import { element } from 'protractor';
-import { ApplicationService } from 'src/app/services/application/application.service';
-import { filter } from 'rxjs/operators';
-import { Component, OnInit, Inject, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { Component, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CONSTANTS } from 'src/app/app.constants';
@@ -25,7 +21,6 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   activeFragment: any;
   currentURL: string;
   constructor(
-    @Inject(DOCUMENT) private document: Document,
     private commonService: CommonService,
     private router: Router,
     private toasterService: ToasterService,
@@ -35,21 +30,11 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    // this.route.fragment.subscribe(
-    //   fragment => {
-    //   this.activeFragment = fragment;
-    //   console.log('activeFragment   ', this.activeFragment);
-    // });
-
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    // if (this.userData && !this.userData.is_super_admin) {
-    //   this.appName = this.userData.apps[0].app;
-    // }
     if (this.contextApp) {
-      // alert('here');
       this.connectToSignalR();
       this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe((msg) => {
-        if (msg?.severity?.toLowerCase() === 'critical') {
+        if (msg.type === 'alert' && msg?.severity?.toLowerCase() === 'critical') {
           this.toasterService.showCriticalAlert(
             msg.message,
             msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
@@ -60,16 +45,6 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
       });
     }
     this.processAppMenuData();
-    let i = 0;
-    this.apiSubscriptions.push(
-      this.router.events.subscribe(async (event) => {
-        this.currentURL = this.router.url;
-        if (event instanceof NavigationEnd && i === 0) {
-          i++;
-          this.processAppMenuData();
-        }
-      })
-    );
 
     this.apiSubscriptions.push(
       this.commonService.refreshSideMenuData.subscribe((list) => {
@@ -128,6 +103,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
             );
           }
         });
+        this.processAppMenuData();
       }
     }
   }
@@ -145,7 +121,6 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   processSideMenuData(data, list) {
-    // alert('here');
     const arr = JSON.parse(JSON.stringify(data));
     const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     const decodedToken = this.commonService.decodeJWTToken(token);
@@ -160,7 +135,6 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
             falseCount++;
           }
         });
-        console.log(element1.page, '=====true===', trueCount, '===== false====', falseCount);
         if (trueCount > 0) {
           element1.visible = true;
         } else {
@@ -174,11 +148,6 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getURL(url) {
-    // if ($('.sidebar').hasClass('toggled')) {
-    //   $('body').removeClass('sidebar-toggled');
-    //   $('.sidebar').removeClass('toggled');
-    //   $('.sidebar .collapse').collapse('show');
-    // }
     return url ? url.replace(':appName', this.decode(this.contextApp.app)) : url;
   }
 

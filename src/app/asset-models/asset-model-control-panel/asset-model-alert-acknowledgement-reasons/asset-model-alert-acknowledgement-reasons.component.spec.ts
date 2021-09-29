@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AssetModelAlertAcknowledgementReasonsComponent } from './asset-model-alert-acknowledgement-reasons.component';
 
@@ -6,7 +6,7 @@ describe('AssetModelAlertAcknowledgementReasonsComponent', () => {
   let component: AssetModelAlertAcknowledgementReasonsComponent;
   let fixture: ComponentFixture<AssetModelAlertAcknowledgementReasonsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AssetModelAlertAcknowledgementReasonsComponent ]
     })

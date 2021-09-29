@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ApplicationNotificationsComponent } from './application-notifications.component';
 
@@ -6,7 +6,7 @@ describe('ApplicationNotificationsComponent', () => {
   let component: ApplicationNotificationsComponent;
   let fixture: ComponentFixture<ApplicationNotificationsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ApplicationNotificationsComponent ]
     })

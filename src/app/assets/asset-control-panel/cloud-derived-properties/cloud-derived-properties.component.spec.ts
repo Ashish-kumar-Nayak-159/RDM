@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CloudDerivedPropertiesComponent } from './cloud-derived-properties.component';
 
@@ -6,7 +6,7 @@ describe('CloudDerivedPropertiesComponent', () => {
   let component: CloudDerivedPropertiesComponent;
   let fixture: ComponentFixture<CloudDerivedPropertiesComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ CloudDerivedPropertiesComponent ]
     })

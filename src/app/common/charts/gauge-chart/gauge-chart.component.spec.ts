@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { GaugeChartComponent } from './gauge-chart.component';
 
@@ -6,7 +6,7 @@ describe('GaugeChartComponent', () => {
   let component: GaugeChartComponent;
   let fixture: ComponentFixture<GaugeChartComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ GaugeChartComponent ]
     })

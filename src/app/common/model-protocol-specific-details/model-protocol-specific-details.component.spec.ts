@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ModelProtocolSpecificDetailsComponent } from './model-protocol-specific-details.component';
 
@@ -6,7 +6,7 @@ describe('ModelProtocolSpecificDetailsComponent', () => {
   let component: ModelProtocolSpecificDetailsComponent;
   let fixture: ComponentFixture<ModelProtocolSpecificDetailsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ModelProtocolSpecificDetailsComponent ]
     })

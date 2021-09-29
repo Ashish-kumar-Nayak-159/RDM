@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AssetModelDerivedKpisComponent } from './asset-model-derived-kpis.component';
 
@@ -6,7 +6,7 @@ describe('AssetModelDerivedKpisComponent', () => {
   let component: AssetModelDerivedKpisComponent;
   let fixture: ComponentFixture<AssetModelDerivedKpisComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AssetModelDerivedKpisComponent ]
     })

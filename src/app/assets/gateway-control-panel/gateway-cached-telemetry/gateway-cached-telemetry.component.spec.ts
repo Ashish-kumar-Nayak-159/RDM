@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { GatewayCachedTelemetryComponent } from './gateway-cached-telemetry.component';
 
@@ -6,7 +6,7 @@ describe('GatewayCachedTelemetryComponent', () => {
   let component: GatewayCachedTelemetryComponent;
   let fixture: ComponentFixture<GatewayCachedTelemetryComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ GatewayCachedTelemetryComponent ]
     })

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AssetModelHistoryLayoutComponent } from './asset-model-history-layout.component';
 
@@ -6,7 +6,7 @@ describe('AssetModelHistoryLayoutComponent', () => {
   let component: AssetModelHistoryLayoutComponent;
   let fixture: ComponentFixture<AssetModelHistoryLayoutComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AssetModelHistoryLayoutComponent ]
     })

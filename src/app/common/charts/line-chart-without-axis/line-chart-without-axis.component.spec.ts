@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LineChartWithoutAxisComponent } from './line-chart-without-axis.component';
 
@@ -6,7 +6,7 @@ describe('LineChartWithoutAxisComponent', () => {
   let component: LineChartWithoutAxisComponent;
   let fixture: ComponentFixture<LineChartWithoutAxisComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ LineChartWithoutAxisComponent ]
     })

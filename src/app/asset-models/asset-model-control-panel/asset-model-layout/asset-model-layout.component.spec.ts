@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AssetModelLayoutComponent } from './asset-model-layout.component';
 
@@ -6,7 +6,7 @@ describe('AssetModelLayoutComponent', () => {
   let component: AssetModelLayoutComponent;
   let fixture: ComponentFixture<AssetModelLayoutComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AssetModelLayoutComponent ]
     })

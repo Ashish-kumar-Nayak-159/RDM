@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ApplicationAssetHierarchyComponent } from './application-asset-hierarchy.component';
 
@@ -6,7 +6,7 @@ describe('ApplicationAssetHierarchyComponent', () => {
   let component: ApplicationAssetHierarchyComponent;
   let fixture: ComponentFixture<ApplicationAssetHierarchyComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ApplicationAssetHierarchyComponent ]
     })

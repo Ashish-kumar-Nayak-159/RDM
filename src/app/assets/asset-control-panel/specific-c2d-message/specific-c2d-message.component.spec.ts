@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SpecificC2dMessageComponent } from './specific-c2d-message.component';
 
@@ -6,7 +6,7 @@ describe('SpecificC2dMessageComponent', () => {
   let component: SpecificC2dMessageComponent;
   let fixture: ComponentFixture<SpecificC2dMessageComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SpecificC2dMessageComponent ]
     })

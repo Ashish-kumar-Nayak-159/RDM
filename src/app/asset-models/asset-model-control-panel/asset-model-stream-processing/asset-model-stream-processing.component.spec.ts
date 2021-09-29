@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AssetModelStreamProcessingComponent } from './asset-model-stream-processing.component';
 
@@ -6,7 +6,7 @@ describe('AssetModelStreamProcessingComponent', () => {
   let component: AssetModelStreamProcessingComponent;
   let fixture: ComponentFixture<AssetModelStreamProcessingComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AssetModelStreamProcessingComponent ]
     })

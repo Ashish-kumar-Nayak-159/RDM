@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { LiveChartComponent } from './live-data.component';
 
 describe('LiveChartComponent', () => {
   let component: LiveChartComponent;
   let fixture: ComponentFixture<LiveChartComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ LiveChartComponent ]
     })

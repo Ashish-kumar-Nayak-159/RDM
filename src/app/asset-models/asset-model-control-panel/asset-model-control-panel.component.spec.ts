@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AssetModelControlPanelComponent } from './asset-model-control-panel.component';
 
@@ -6,7 +6,7 @@ describe('AssetModelControlPanelComponent', () => {
   let component: AssetModelControlPanelComponent;
   let fixture: ComponentFixture<AssetModelControlPanelComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AssetModelControlPanelComponent ]
     })

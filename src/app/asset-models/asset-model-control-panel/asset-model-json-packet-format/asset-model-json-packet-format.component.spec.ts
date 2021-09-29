@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AssetModelJsonPacketFormatComponent } from './asset-model-json-packet-format.component';
 
@@ -6,7 +6,7 @@ describe('AssetModelJsonPacketFormatComponent', () => {
   let component: AssetModelJsonPacketFormatComponent;
   let fixture: ComponentFixture<AssetModelJsonPacketFormatComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AssetModelJsonPacketFormatComponent ]
     })

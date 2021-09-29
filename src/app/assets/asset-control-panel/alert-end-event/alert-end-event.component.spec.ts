@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AlertEndEventComponent } from './alert-end-event.component';
 
@@ -6,7 +6,7 @@ describe('AlertEndEventComponent', () => {
   let component: AlertEndEventComponent;
   let fixture: ComponentFixture<AlertEndEventComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AlertEndEventComponent ]
     })

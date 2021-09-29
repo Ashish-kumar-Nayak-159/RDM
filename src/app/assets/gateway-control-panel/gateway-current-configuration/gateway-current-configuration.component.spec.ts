@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { GatewayCurrentConfigurationComponent } from './gateway-current-configuration.component';
 
@@ -6,7 +6,7 @@ describe('GatewayCurrentConfigurationComponent', () => {
   let component: GatewayCurrentConfigurationComponent;
   let fixture: ComponentFixture<GatewayCurrentConfigurationComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ GatewayCurrentConfigurationComponent ]
     })

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ComposeC2DMessageComponent } from './compose-c2d-message.component';
 
@@ -6,7 +6,7 @@ describe('ComposeC2DMessageComponent', () => {
   let component: ComposeC2DMessageComponent;
   let fixture: ComponentFixture<ComposeC2DMessageComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ComposeC2DMessageComponent ]
     })

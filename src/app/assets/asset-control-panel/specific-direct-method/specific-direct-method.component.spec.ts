@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SpecificDirectMethodComponent } from './specific-direct-method.component';
 
@@ -6,7 +6,7 @@ describe('SpecificDirectMethodComponent', () => {
   let component: SpecificDirectMethodComponent;
   let fixture: ComponentFixture<SpecificDirectMethodComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SpecificDirectMethodComponent ]
     })

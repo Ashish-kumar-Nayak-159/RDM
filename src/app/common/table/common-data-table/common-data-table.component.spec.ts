@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CommonDataTableComponent } from './common-data-table.component';
 
@@ -6,7 +6,7 @@ describe('CommonDataTableComponent', () => {
   let component: CommonDataTableComponent;
   let fixture: ComponentFixture<CommonDataTableComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ CommonDataTableComponent ]
     })

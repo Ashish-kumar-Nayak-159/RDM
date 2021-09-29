@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DerivedKpisComponent } from './derived-kpis.component';
 
@@ -6,7 +6,7 @@ describe('DerivedKpisComponent', () => {
   let component: DerivedKpisComponent;
   let fixture: ComponentFixture<DerivedKpisComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ DerivedKpisComponent ]
     })

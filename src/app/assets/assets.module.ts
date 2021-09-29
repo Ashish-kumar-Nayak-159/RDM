@@ -12,7 +12,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatTableModule } from '@angular/material/table';
-import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { UiSwitchModule } from 'ngx-ui-switch';
 import { Daterangepicker } from 'ng2-daterangepicker';
@@ -152,8 +151,6 @@ import { CloudDerivedPropertiesComponent } from './asset-control-panel/cloud-der
     MatMomentDateModule,
     MatTableModule,
     CommonCustomModule,
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule,
     GoogleMapsModule,
     UiSwitchModule,
     VisualizationModule,
@@ -171,6 +168,5 @@ import { CloudDerivedPropertiesComponent } from './asset-control-panel/cloud-der
     NgxIntlTelInputModule,
   ],
   exports: [FilterComponent, TableComponent],
-  providers: [{ provide: OWL_DATE_TIME_LOCALE, useValue: { useUtc: true } }],
 })
 export class AssetsModule {}

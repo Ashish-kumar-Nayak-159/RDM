@@ -9,7 +9,6 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 
 import { ReportsRoutingModule } from './reports-routing.module';
 import { ReportsComponent } from './reports/reports.component';
-import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 import { PreGeneratedReportsComponent } from './pre-generated-reports/pre-generated-reports.component';
 import { Daterangepicker } from 'ng2-daterangepicker';
 
@@ -19,15 +18,12 @@ import { Daterangepicker } from 'ng2-daterangepicker';
     CommonModule,
     ReportsRoutingModule,
     FormsModule,
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule,
     UiSwitchModule,
     AccordionModule,
     TabsModule,
     NgSelectModule,
     TooltipModule,
     Daterangepicker,
-  ],
-  providers: [{ provide: OWL_DATE_TIME_LOCALE, useValue: { useUtc: true } }],
-})
+  ]
+  })
 export class ReportsModule {}

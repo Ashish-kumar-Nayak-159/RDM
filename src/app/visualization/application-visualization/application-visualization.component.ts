@@ -639,11 +639,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       if (this.selectedAlert.code) {
         filterObj['code'] = this.selectedAlert.code;
         let method;
-        if (this.selectedAlert.code.includes('M_')) {
-          method = this.assetModelService.getAlertConditions(this.contextApp.app, filterObj);
-        } else if (this.selectedAlert.code.includes('A_')) {
+        if (this.selectedAlert.code.includes('A_')) {
           method = this.assetService.getAlertConditions(this.contextApp.app, filterObj);
-        }
+        } else {
+          method = this.assetModelService.getAlertConditions(this.contextApp.app, filterObj);
+        } 
         if (method) {
           this.subscriptions.push(
             method.subscribe(

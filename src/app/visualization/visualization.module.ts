@@ -8,7 +8,6 @@ import { CommonModule } from '@angular/common';
 
 import { VisualizationRoutingModule } from './visualization-routing.module';
 import { ApplicationVisualizationComponent } from './application-visualization/application-visualization.component';
-import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { CommonCustomModule } from '../common/common.module';
 
@@ -18,8 +17,6 @@ import { CommonCustomModule } from '../common/common.module';
     CommonModule,
     VisualizationRoutingModule,
     FormsModule,
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule,
     AccordionModule.forRoot(),
     CommonCustomModule,
     UiSwitchModule,
@@ -27,7 +24,6 @@ import { CommonCustomModule } from '../common/common.module';
     Daterangepicker,
     TooltipModule,
   ],
-  providers: [{ provide: OWL_DATE_TIME_LOCALE, useValue: { useUtc: true } }],
   exports: [ApplicationVisualizationComponent],
 })
 export class VisualizationModule {}

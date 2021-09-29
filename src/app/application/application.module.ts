@@ -20,7 +20,6 @@ import { AssetsModule } from '../assets/assets.module';
 import { ApplicationNotificationsComponent } from './application-notifications/application-notifications.component';
 import { ApplicationAlertsComponent } from './application-alerts/application-alerts.component';
 import { ApplicationEventsComponent } from './application-events/application-events.component';
-import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 import { AgmMarkerClustererModule } from '@agm/markerclusterer';
 import { ApplicationDatabaseConfigurationComponent } from './application-setting/application-database-configuration/application-database-configuration.component';
 import { MapViewHomeComponent } from './map-view-home/map-view-home.component';
@@ -56,8 +55,6 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
     ReactiveFormsModule,
     AssetsModule,
     AccordionModule,
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule,
     CommonCustomModule,
     AgmCoreModule,
     AgmMarkerClustererModule,
@@ -65,6 +62,5 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
     TooltipModule,
     NgxIntlTelInputModule,
   ],
-  providers: [{ provide: OWL_DATE_TIME_LOCALE, useValue: { useUtc: true } }],
 })
 export class ApplicationModule {}

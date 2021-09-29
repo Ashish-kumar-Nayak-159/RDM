@@ -94,7 +94,7 @@ export class RDMHomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getApplicationData(app) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       this.applicationData = undefined;
       this.subscriptions.push(
         this.applicationService.getApplicationDetail(app.app).subscribe((response: any) => {

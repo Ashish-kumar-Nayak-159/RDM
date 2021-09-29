@@ -33,7 +33,7 @@ export class CommonService {
         second: '2-digit',
         fractionalSecondDigits: 3,
         hour12: true,
-      };
+      } as const;
       if (utcDate.includes('T') && utcDate.includes('Z')) {
         // 2011-06-29T16:52:48.000Z
         return new Date(utcDate).toLocaleString('en-GB', options);
@@ -50,7 +50,7 @@ export class CommonService {
 
   convertUTCDateToLocalDate(utcDate) {
     if (utcDate) {
-      const options = { year: 'numeric', month: 'short', day: '2-digit' };
+      const options = { year: 'numeric', month: 'short', day: '2-digit' } as const;
       if (utcDate.includes('T') && utcDate.includes('Z')) {
         // 2011-06-29T16:52:48.000Z
         return new Date(utcDate).toLocaleString('en-GB', options);

@@ -176,7 +176,7 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
   }
 
   getAssetModelDetail() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const obj = {
         name: this.assetModel.name,
         app: this.contextApp.app

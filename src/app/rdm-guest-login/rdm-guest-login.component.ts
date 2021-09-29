@@ -1,3 +1,4 @@
+import { CONSTANTS } from 'src/app/app.constants';
 import { CONSTANTS } from './../app.constants';
 import { APIMESSAGES } from './../api-messages.constants';
 import { environment } from 'src/environments/environment';
@@ -9,6 +10,7 @@ import { ToasterService } from '../services/toaster.service';
 import { CommonService } from 'src/app/services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { decode } from 'punycode';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 declare var $: any;
 
 @Component({
@@ -17,7 +19,7 @@ declare var $: any;
   styleUrls: ['./rdm-guest-login.component.css'],
 })
 export class RdmGuestLoginComponent implements OnInit {
-  loginForm: any = {};
+  loginForm: FormGroup;
   otpForm: any = {};
   usersList: any[] = [];
   userData: any;
@@ -39,40 +41,18 @@ export class RdmGuestLoginComponent implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    // this.subscriptions.push(this.commonService.resetPassword.subscribe((resetPassword: boolean) => {
-    //   if (!resetPassword) {
-    //     // $('#changePasswordModal').modal('hide');
-    //     this.loginForm.reset();
-    //   }
-    // }));
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
-    if (this.userData) {
-      if (this.userData.is_super_admin) {
-        localStorage.removeItem(CONSTANTS.APP_TOKEN);
-        console.log(this.userData.token);
-        localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.token);
-        this.router.navigate(['applications']);
-      } else {
-        if (this.userData.apps && this.userData.apps.length > 1) {
-          this.router.navigate(['applications', 'selection']);
-        } else if (this.userData.apps && this.userData.apps.length === 1) {
-          localStorage.removeItem(CONSTANTS.APP_TOKEN);
-          const decodedToken = this.commonService.decodeJWTToken(this.userData.apps[0].token);
-          if (decodedToken?.privileges.indexOf('APMV') === -1) {
-            this.toasterService.showError(APIMESSAGES.API_ACCESS_ERROR_MESSAGE, APIMESSAGES.CONTACT_ADMINISTRATOR);
-            this.commonService.onLogOut();
-            return;
-          }
-          localStorage.setItem(CONSTANTS.APP_TOKEN, this.userData.apps[0].token);
-          await this.getApplicationData(this.userData.apps[0]);
-          this.router.navigate(['applications', this.userData.apps[0].app]);
-        }
-      }
-    }
     this.route.paramMap.subscribe((paramMap) => {
       if (paramMap.get('tenantId')) {
         this.tenantId = paramMap.get('tenantId');
       }
+    });
+    this.loginForm = new FormGroup({
+      name: new FormControl(null, [Validators.required]),
+      phone: new FormControl(null),
+      email: new FormControl(null, [Validators.required, Validators.pattern(CONSTANTS.EMAIL_REGEX)]),
+      org: new FormControl(null, Validators.required),
+      designation: new FormControl(null),
     });
   }
 
@@ -87,16 +67,7 @@ export class RdmGuestLoginComponent implements OnInit {
       console.log('in sb-notoggle');
       $('.container-fluid').removeClass('sb-notoggle');
     }
-    // $('.container2').addClass('right-panel-active');
   }
-
-  // signin() {
-  //   $('.container2').addClass('right-panel-active');
-  // }
-
-  // signup() {
-  //   $('.container2').removeClass('right-panel-active');
-  // }
 
   onResetModalClose() {
     this.loginForm.reset();
@@ -118,22 +89,15 @@ export class RdmGuestLoginComponent implements OnInit {
         this.otpForm.environment = env;
       }
       this.otpForm.user_id = this.otpData.user_id;
-      console.log(this.otpForm);
       this.subscriptions.push(
         this.commonService.userSignIn(this.otpForm).subscribe(
           async (response: any) => {
             this.userData = response;
-            console.log(this.userData);
             localStorage.setItem(CONSTANTS.APP_VERSION, environment.version);
             localStorage.setItem(CONSTANTS.GUEST_USER, 'true');
             if (response.apps && response.apps.length > 0) {
               response.apps.forEach((element) => {
                 let hierarchy = '';
-                // const keys = Object.keys(element.user.hierarchy);
-                // keys.forEach((key, index) => {
-                //   hierarchy = hierarchy + element.user.hierarchy[key] + (keys[index + 1] ? ' / ' : '');
-                // });
-                // element.user.hierarchyString = hierarchy;
                 const decodedToken = this.commonService.decodeJWTToken(element.token);
                 const keys = Object.keys(decodedToken.hierarchy);
                 keys.forEach((key, index) => {
@@ -155,16 +119,12 @@ export class RdmGuestLoginComponent implements OnInit {
               this.userData.apps[0].user = obj;
               await this.getApplicationData(this.userData.apps[0]);
               this.router.navigate(['applications', this.applicationData.app]);
-            } else {
-              this.isLoginAPILoading = false;
-              this.toasterService.showError('No apps are assigned to this user', 'Contact Administrator');
-              return;
             }
             this.isLoginAPILoading = false;
           },
           (error) => {
             this.isLoginAPILoading = false;
-            this.toasterService.showError(error.message, 'Login');
+            this.toasterService.showError(error.message, 'Guest Login');
           }
         )
       );
@@ -175,38 +135,26 @@ export class RdmGuestLoginComponent implements OnInit {
   }
 
   onSignUp() {
-    if (this.loginForm.email && this.loginForm.name && this.loginForm.org) {
-      if (!CONSTANTS.EMAIL_REGEX.test(this.loginForm.email)) {
-        this.toasterService.showError('Email address is not valid', 'Guest Login');
-        return;
-      }
-      this.isLoginAPILoading = true;
-      this.loginForm.app = this.tenantId;
-      // const env = environment.environment;
-      // if (env) {
-      //   this.loginForm.environment = env;
-      // }
-      this.subscriptions.push(
-        this.commonService.userSignUp(this.loginForm).subscribe(
-          async (response: any) => {
-            this.otpData = response;
-            console.log(this.otpData);
-            this.isLoginAPILoading = false;
-          },
-          (error) => {
-            this.isLoginAPILoading = false;
-            this.toasterService.showError(error.message, 'Login');
-          }
-        )
-      );
-    } else {
-      this.isLoginAPILoading = false;
-      this.toasterService.showError('Please enter name, email and organization', 'Login');
-    }
+    const loginObj = this.loginForm.value;
+    this.isLoginAPILoading = true;
+    loginObj.app = this.tenantId;
+    this.subscriptions.push(
+      this.commonService.userSignUp(loginObj).subscribe(
+        async (response: any) => {
+          this.otpData = response;
+          console.log(this.otpData);
+          this.isLoginAPILoading = false;
+        },
+        (error) => {
+          this.isLoginAPILoading = false;
+          this.toasterService.showError(error.message, 'Guest Login');
+        }
+      )
+    );
   }
 
   getApplicationData(app) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       this.applicationData = undefined;
       this.subscriptions.push(
         this.applicationService.getApplicationDetail(app.app).subscribe((response: any) => {
@@ -276,27 +224,6 @@ export class RdmGuestLoginComponent implements OnInit {
       }
     }
   }
-
-  // forgotPassword() {
-  //   if(!this.loginForm.email){
-  //     this.toasterService.showWarning('Please enter valid email', 'Forgot Password');
-  //     return
-  //   }
-  //   let obj = {
-  //     'email': this.loginForm.email
-  //   }
-  //   this.isForgotAPILoading = true;
-  //   this.commonService.forgotPassword(obj).subscribe((response: any) => {
-  //     this.isForgotPassword = true;
-  //     this.isForgotAPILoading = false;
-  //     this.toasterService.showSuccess(response.message, 'Forgot Password');
-  //   }, (err: HttpErrorResponse) => {
-  //     this.isForgotAPILoading = false;
-  //     this.toasterService.showError(err.message, 'Forgot Password');
-  //     this.isForgotPassword = true;
-
-  //   });
-  // }
 
   ngOnDestroy() {
     this.subscriptions.forEach((sub) => sub.unsubscribe());

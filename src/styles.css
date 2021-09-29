@@ -106,10 +106,10 @@ a.disabled {
   overflow-x: hidden;
   overflow-y: auto;
 }
-
+/*
 input:invalid {
   border: 1px solid red;
-}
+} */
 
 .compose-c2d-button-line {
   max-width: 2%;

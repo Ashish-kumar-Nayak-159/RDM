@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { ToasterService } from '../services/toaster.service';
 import { CommonService } from 'src/app/services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 declare var $: any;
 @Component({
   selector: 'app-rdm-login',
@@ -15,7 +16,7 @@ declare var $: any;
   styleUrls: ['./rdm-login.component.css'],
 })
 export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
-  loginForm: any = {};
+  loginForm: FormGroup;
   usersList: any[] = [];
   userData: any;
   isResetPassword = false;
@@ -37,6 +38,10 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.userData) {
       await this.processUserData(this.userData);
     }
+    this.loginForm = new FormGroup({
+      email: new FormControl(null, [Validators.required, Validators.pattern(CONSTANTS.EMAIL_REGEX)]),
+      password: new FormControl(null, [Validators.required]),
+    });
   }
 
   ngAfterViewInit(): void {
@@ -62,38 +67,31 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onLogin() {
-    if (this.loginForm.email && this.loginForm.password) {
-      if (!CONSTANTS.EMAIL_REGEX.test(this.loginForm.email)) {
-        this.toasterService.showError('Email address is not valid', 'Login');
-        return;
-      }
-      this.isLoginAPILoading = true;
-      const app = environment.app;
-      if (app) {
-        this.loginForm.app = app;
-      }
-      const env = environment.environment;
-      if (env) {
-        this.loginForm.environment = env;
-      }
-      this.subscriptions.push(
-        this.commonService.loginUser(this.loginForm).subscribe(
-          async (response: any) => {
-            this.userData = response;
-            localStorage.setItem(CONSTANTS.APP_VERSION, environment.version);
-            await this.processUserData(response);
-            this.isLoginAPILoading = false;
-          },
-          (error) => {
-            this.isLoginAPILoading = false;
-            this.toasterService.showError(error.message, 'Login');
-          }
-        )
-      );
-    } else {
-      this.isLoginAPILoading = false;
-      this.toasterService.showError('Please enter username and password', 'Login');
+    const loginObj = this.loginForm.value;
+    this.isLoginAPILoading = true;
+    const app = environment.app;
+    if (app) {
+      loginObj.app = app;
     }
+    const env = environment.environment;
+    if (env) {
+      loginObj.environment = env;
+    }
+    this.subscriptions.push(
+      this.commonService.loginUser(loginObj).subscribe(
+        async (response: any) => {
+          this.userData = response;
+          localStorage.setItem(CONSTANTS.APP_VERSION, environment.version);
+          this.loginForm.reset();
+          await this.processUserData(response);
+          this.isLoginAPILoading = false;
+        },
+        (error) => {
+          this.isLoginAPILoading = false;
+          this.toasterService.showError(error.message, 'Login');
+        }
+      )
+    );
   }
 
   async processUserData(data) {
@@ -184,7 +182,6 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
             );
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
-          // this.commonService.setItemInLocalStorage(CONSTANTS.SELECTED_APP_DATA, this.applicationData);
           const obj = {
             hierarchy: this.applicationData.user.hierarchy,
             dateOption: 'Last 24 Hours',
@@ -228,12 +225,13 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   forgotPassword() {
-    if (!this.loginForm.email) {
-      this.toasterService.showWarning('Please enter valid email', 'Forgot Password');
+    const loginObj = this.loginForm.value;
+    if (!loginObj.email) {
+      this.toasterService.showError('Please enter valid email', 'Forgot Password');
       return;
     }
     let obj = {
-      email: this.loginForm.email,
+      email: loginObj.email,
     };
     this.isForgotAPILoading = true;
     this.commonService.forgotPassword(obj).subscribe(

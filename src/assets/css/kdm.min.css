@@ -9299,14 +9299,14 @@ a:focus {
 .scroll-to-top {
   position: fixed;
   right: 1rem;
-  bottom: 1rem;
+  bottom: 3rem;
   display: none;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 2.3rem;
+  height: 2.3rem;
   text-align: center;
   color: #fff;
   background: rgba(90, 92, 105, .5);
-  line-height: 46px
+  line-height: 35px;
 }
 
 .scroll-to-top:focus, .scroll-to-top:hover {
@@ -13918,3 +13918,7 @@ form .page .btns button.next{
 }
 
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-optgroup.ng-option-disabled { color: #1a5aa9; }
+
+.app-list-tableFixHead {
+  height: calc(100vh - 8rem)!important;
+}

@@ -2,253 +2,214 @@
   <div class="d-flex align-items-center">
     <div class="main-heading">App Management&nbsp;
     </div>
-    <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCreateAppModal()"
-    placement="bottom" tooltip="Add App"><i class="fas fa-plus fa-sm"></i></button>
-   </div>
-</div>
-<div class="table-responsive">
-  <div class="tableFixHead" >
-    <app-common-data-table [tableData]="applications"
-      [tableConfig]="tableConfig" (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
+    <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCreateAppModal()" placement="bottom"
+      tooltip="Add App"><i class="fas fa-plus fa-sm"></i></button>
   </div>
 </div>
-<div class="modal right fade" id="createAppModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2" >
+
+<app-common-data-table [tableData]="applications" [tableConfig]="tableConfig"
+  (btnClickEvent)="onTableFunctionCall($event)"></app-common-data-table>
+
+<div class="modal right fade" id="createAppModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-    <div class="modal-header">
-      <h5 class="modal-title" >{{appModalType}} {{appModalType === 'Create' ? 'New' : ''}} App {{appModalType === 'Edit' ? ('- ' + applicationDetail?.app) : ''}}</h5>
-      <button type="button" class="close"  (click)="onCloseCreateAppModal('createAppModal')" aria-label="Close" [disabled]="isCreateAPILoading">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body" *ngIf="applicationDetail">
-      <form>
-        <div class="form-group">
-          <label for="message-text" class="col-form-label">App name:</label>
-          <input type="text" class="form-control form-control-sm" id="app_name" name='app_name' [(ngModel)]="applicationDetail.app"
-          placeholder="Enter App name">
-        </div>
-        <div class="form-group">
-          <label for="message-text" class="col-form-label">App Admin Full Name:</label>
-          <input type="text" class="form-control form-control-sm"
-          id="admin_name" name="admin_name" [(ngModel)]="applicationDetail.admin_name"
-          placeholder="Enter App Admin">
-        </div>
-        <div class="form-group">
-          <label for="message-text" class="col-form-label">App Admin Email:</label>
-          <input type="email" class="form-control form-control-sm" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
-          id="app_admin" name="app_admin" [(ngModel)]="applicationDetail.admin_email"
-          placeholder="Enter App Admin Email">
-        </div>
-        <!-- <div class="form-check">
-          <input type="checkbox" class="form-check-input" id="contains-gateway"
-          name="contains-gateway" [(ngModel)]="applicationDetail.metadata.contain_gateways"
-          (ngModelChange)="applicationDetail.metadata.contain_assets = false;">
-          <label class="form-check-label" for="contains-gateway">Contains Gateways</label>
-        </div>
-        <div class="form-check">
-          <input type="checkbox" class="form-check-input" id="contains-assets"
-          name="contains-asset" [(ngModel)]="applicationDetail.metadata.contain_assets"
-          (ngModelChange)="applicationDetail.metadata.contain_gateways = false;">
-          <label class="form-check-label" for="contains-assets">Contains Assets</label>
-        </div> -->
-        <div class="form-group">
-          <label for="message-text" class="col-form-label">Customer Name:</label>
-          <input type="text" class="form-control form-control-sm"
-          id="customer_name" name="customer_name" [(ngModel)]="applicationDetail.metadata.customer.name"
-          placeholder="Enter Customer Name">
-        </div>
-        <div class="form-group">
-          <label for="message-text" class="col-form-label">Customer Address:</label>
-          <textarea type="text" rows="3" class="form-control form-control-sm" id="customer_address" name="customer_address" [(ngModel)]="applicationDetail.metadata.customer.address"
-          placeholder="Enter Customer Address"></textarea>
-        </div>
-
-        <!-- <div class="form-group">
-          <label for="message-text" class="col-form-label">Header Logo: {{appModalType === 'Edit' ? applicationDetail?.metadata?.header_logo?.name : ''}}</label>
-          <input type="file"
-          #appHeaderLogoFileInput (change)="onHeaderLogoFileSelected($event.target.files)"
-           class="form-control form-control-sm" id="app_logo" name="app_logo" >
-        </div> -->
-        <!-- <div class="form-group">
-          <label for="recipient-name" class="col-form-label required">Header Logo:</label>
-          <div class="form-group input-group row m-0">
-            <div class="file-input form-control form-control-sm  p-0 col-8">
-             <input type="file" id="header_logo" accept=".jpeg,.png,.svg,.jpg"  class="file" (change)="onHeaderLogoFileSelected($event.target.files)">
-
-             <label for="header_logo" class="overflow-text" [tooltip]="applicationDetail?.metadata?.header_logo?.name ? applicationDetail?.metadata?.header_logo?.name : ''"
-             >{{applicationDetail?.metadata?.header_logo?.name ? applicationDetail?.metadata?.header_logo?.name : 'Choose File'}}</label>
-            </div>
-            <div class="file-input form-control form-control-sm p-0 col-4" style="background-color:#ccc !important">
-            <input type="file" accept=".jpeg,.png,.svg,.jpg"   id="header_logo" class="file" >
-               <label for="header_logo" class="bg-secondary text-white">Browse</label>
-            </div>
-            </div>
-        </div> -->
-        <!-- <div class="form-group">
-          <label for="message-text" class="col-form-label">App Logo: {{appModalType === 'Edit' ? applicationDetail?.metadata?.logo?.name : ''}}</label>
-          <input type="file"
-          #appLogoFileInput (change)="onLogoFileSelected($event.target.files)"
-           class="form-control form-control-sm" id="app_logo" name="app_logo" >
-        </div> -->
-        <!-- <div class="form-group">
-          <label for="recipient-name" class="col-form-label required">App Logo:</label>
-          <div class="form-group input-group row m-0">
-            <div class="file-input form-control form-control-sm  p-0 col-8">
-             <input type="file" id="logo" accept=".jpeg,.png,.svg,.jpg"  class="file" (change)="onLogoFileSelected($event.target.files)">
-
-             <label for="logo" class="overflow-text" [tooltip]="applicationDetail?.metadata?.logo?.name ? applicationDetail?.metadata?.logo?.name : ''">
-               {{applicationDetail?.metadata?.logo?.name ? applicationDetail?.metadata?.logo?.name : 'Choose File'}}</label>
-            </div>
-            <div class="file-input form-control form-control-sm  p-0 col-4" style="background-color:#ccc !important">
-            <input type="file" accept=".jpeg,.png,.svg,.jpg"   id="logo" class="file" >
-               <label for="logo" class="bg-secondary text-white">Browse</label>
-            </div>
-            </div>
-        </div> -->
-        <!-- <div class="form-group">
-          <label for="message-text" class="col-form-label">App Icon: {{appModalType === 'Edit' ? applicationDetail?.metadata?.icon?.name : ''}}</label>
-          <input type="file" #appIconFileInput (change)="onIconFileSelected($event.target.files)"
-           class="form-control form-control-sm" id="app_icon" name="app_icon" >
-        </div> -->
-        <!-- <div class="form-group">
-          <label for="recipient-name" class="col-form-label required">App Icon:</label>
-          <div class="form-group input-group row m-0">
-            <div class="file-input form-control form-control-sm  p-0 col-8">
-             <input type="file" id="icon" accept=".jpeg,.png,.svg,.jpg"  class="file" (change)="onIconFileSelected($event.target.files)">
-
-             <label for="icon" class="overflow-text" [tooltip]="applicationDetail?.metadata?.icon?.name ? applicationDetail?.metadata?.icon?.name : ''">
-               {{applicationDetail?.metadata?.icon?.name ? applicationDetail?.metadata?.icon?.name : 'Choose File'}}</label>
-            </div>
-            <div class="file-input form-control form-control-sm  p-0 col-4" style="background-color:#ccc !important">
-            <input type="file" accept=".jpeg,.png,.svg,.jpg"   id="icon" class="file" >
-               <label for="icon" class="bg-secondary text-white">Browse</label>
-            </div>
-            </div>
-        </div> -->
-        <accordion class="mb-2"  [closeOthers]="'true'">
-          <accordion-group heading="" [panelClass]="'customClass'">
-            <ng-container accordion-heading>
-              <a class="btn" >
-                Database Configuration
-              </a>
-            </ng-container>
-            <div class="row">
-              <div class="col-12">
-                <div class="form-check">
-                  <input type="checkbox" class="form-check-input" id="contains-db"
-                  name="contains-db" [(ngModel)]="applicationDetail.metadata.app_specific_db"
-                  (change)="onCheckboxValueChange()">
-                  <label class="form-check-label" for="contains-gateway">Separate Database Required?</label>
-                </div>
-              <ng-container *ngIf="applicationDetail.metadata.app_specific_db">
-                  <div class="form-group">
-                    <label for="message-text" class="col-form-label">Host name:</label>
-                    <input type="text" class="form-control form-control-sm" id="host_name" name='host_name' [(ngModel)]="applicationDetail.metadata.database_settings.host_name"
-                    placeholder="Enter Host name">
-                  </div>
-                  <div class="form-group">
-                    <label for="message-text" class="col-form-label">User name:</label>
-                    <input type="text" class="form-control form-control-sm" id="user_name" name='user_name' [(ngModel)]="applicationDetail.metadata.database_settings.user_name"
-                    placeholder="Enter User name">
-                  </div>
-                  <div class="form-group">
-                    <label for="message-text" class="col-form-label">Database name:</label>
-                    <input type="text" class="form-control form-control-sm" id="database_name" name='database_name' [(ngModel)]="applicationDetail.metadata.database_settings.database_name"
-                    placeholder="Enter Database name">
-                  </div>
-                  <div class="form-group">
-                    <label for="message-text" class="col-form-label">Port:</label>
-                    <input type="number" class="form-control form-control-sm" id="port" name='port' [(ngModel)]="applicationDetail.metadata.database_settings.port"
-                    placeholder="Enter Port">
-                  </div>
-                </ng-container>
-                <div class="form-check">
-                  <input type="checkbox" class="form-check-input" id="contains-app-schema"
-                  name="contains-app-schema" [(ngModel)]="applicationDetail.metadata.app_specific_schema"
-                  (change)="onCheckboxValueChange()">
-                  <label class="form-check-label" for="contains-app-schema">Separate App specific schema required?</label>
-                </div>
-                <div class="form-check">
-                  <input type="checkbox" class="form-check-input" id="contains-app-telemetry-schema"
-                  name="contains-app-telemetry-schema" [(ngModel)]="applicationDetail.metadata.app_telemetry_specific_schema"
-                  (change)="onCheckboxValueChange()">
-                  <label class="form-check-label" for="contains-app-telemetry-schema">Separate App telemetry specific schema required?
-                  </label>
-                </div>
-                <div class="form-group" *ngIf="applicationDetail.metadata.app_specific_schema || applicationDetail.metadata.app_specific_db || applicationDetail.metadata.app_telemetry_specific_schema">
-                  <label for="recipient-name" class="col-form-label">Telemetry Partition Technique:</label>
-                  <select class="form-control form-control-sm" id="alertReason" [(ngModel)]="applicationDetail.metadata.partition.telemetry.partition_strategy"
-                    name="alertReason">
-                    <option [ngValue]="undefined">Select Partition Technique</option>
-                    <option [ngValue]="'Asset ID'">Asset ID</option>
-                    <option [ngValue]="'Partition Key'">Partition Key</option>
-                  </select>
-                </div>
-                <div class="form-group" *ngIf="applicationDetail.metadata.app_specific_schema || applicationDetail.metadata.app_specific_db || applicationDetail.metadata.app_telemetry_specific_schema">
-                  <label for="recipient-name" class="col-form-label">Telemetry Sub-Partition Technique:</label>
-                  <select class="form-control form-control-sm" id="alertReason" [(ngModel)]="applicationDetail.metadata.partition.telemetry.sub_partition_strategy"
-                    name="alertReason">
-                    <option [ngValue]="undefined">Select Sub-Partition Technique</option>
-                    <option [ngValue]="'Daily'">Daily</option>
-                    <option [ngValue]="'Weekly'">Weekly</option>
-                    <option [ngValue]="'Monthly'">Monthly</option>
-                  </select>
-                </div>
+      <div class="modal-header">
+        <h5 class="modal-title">Create App </h5>
+        <button type="button" class="close" (click)="onCloseCreateAppModal('createAppModal')" aria-label="Close"
+          [disabled]="isCreateAPILoading">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="createApplicationForm">
+        <form [formGroup]="createApplicationForm">
+          <div class="form-group">
+            <label for="message-text" class="col-form-label required">App name:</label>
+            <input type="text" class="form-control form-control-sm" id="app" name="app" formControlName="app"
+              placeholder="Enter App name">
+            <div
+              *ngIf="createApplicationForm.get('app').invalid && (createApplicationForm.get('app').dirty || createApplicationForm.get('app').touched)"
+              class="alert-danger">
+              <div *ngIf="createApplicationForm.get('app').errors.required">
+                App Name is required.
+              </div>
+              <div *ngIf="createApplicationForm.get('app').errors.pattern">
+                App Name will only contains numbers, characters and spaces and starts with characters.
               </div>
             </div>
-          </accordion-group>
-        </accordion>
-      </form>
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label required">App Admin Full Name:</label>
+            <input type="text" class="form-control form-control-sm" id="admin_name" name="admin_name"
+              placeholder="Enter App Admin" formControlName="admin_name">
+            <div
+              *ngIf="createApplicationForm.get('admin_name').invalid && (createApplicationForm.get('admin_name').dirty || createApplicationForm.get('admin_name').touched)"
+              class="alert-danger">
+              <div *ngIf="createApplicationForm.get('admin_name').errors.required">
+                Admin Name is required.
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label required">App Admin Email:</label>
+            <input type="email" class="form-control form-control-sm" id="app_admin" name="app_admin"
+              placeholder="Enter App Admin Email" formControlName="admin_email">
+            <div
+              *ngIf="createApplicationForm.get('admin_email').invalid && (createApplicationForm.get('admin_email').dirty || createApplicationForm.get('admin_email').touched)"
+              class="alert-danger">
+              <div *ngIf="createApplicationForm.get('admin_email').errors.required">
+                Admin Email is required.
+              </div>
+              <div *ngIf="createApplicationForm.get('admin_email').errors.pattern">
+                Admin Email is not valid.
+              </div>
+            </div>
+          </div>
+          <ng-container formGroupName="metadata">
+            <ng-container formGroupName="customer">
+              <div class="form-group">
+                <label for="message-text" class="col-form-label">Customer Name:</label>
+                <input type="text" class="form-control form-control-sm" id="customer_name" name="customer_name"
+                  formControlName="name" placeholder="Enter Customer Name">
+              </div>
+              <div class="form-group">
+                <label for="message-text" class="col-form-label">Customer Address:</label>
+                <textarea type="text" rows="3" class="form-control form-control-sm" id="customer_address"
+                  name="customer_address" formControlName="address" placeholder="Enter Customer Address"></textarea>
+              </div>
+            </ng-container>
+            <accordion class="mb-2" [closeOthers]="'true'">
+              <accordion-group heading="" [panelClass]="'customClass'">
+                <ng-container accordion-heading>
+                  <a class="btn">
+                    Database Configuration
+                  </a>
+                </ng-container>
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-check">
+                      <input type="checkbox" class="form-check-input" id="contains-db" name="contains-db"
+                        formControlName="app_specific_db" (change)="onCheckboxValueChange()">
+                      <label class="form-check-label" for="contains-gateway">Separate Database Required?</label>
+                    </div>
+                    <ng-container *ngIf="createApplicationForm.get('metadata').get('app_specific_db').value">
+                      <ng-container formGroupName="database_settings">
+                        <div class="form-group">
+                          <label for="message-text" class="col-form-label">Host name:</label>
+                          <input type="text" class="form-control form-control-sm" id="host_name" name='host_name'
+                            formControlName="host_name" placeholder="Enter Host name">
+                        </div>
+                        <div class="form-group">
+                          <label for="message-text" class="col-form-label">User name:</label>
+                          <input type="text" class="form-control form-control-sm" id="user_name" name='user_name'
+                            formControlName="user_name" placeholder="Enter User name">
+                        </div>
+                        <div class="form-group">
+                          <label for="message-text" class="col-form-label">Database name:</label>
+                          <input type="text" class="form-control form-control-sm" id="database_name"
+                            name='database_name' formControlName="database_name" placeholder="Enter Database name">
+                        </div>
+                        <div class="form-group">
+                          <label for="message-text" class="col-form-label">Port:</label>
+                          <input type="number" class="form-control form-control-sm" id="port" name='port'
+                            formControlName="port" placeholder="Enter Port">
+                        </div>
+                      </ng-container>
+                    </ng-container>
+                    <div class="form-check">
+                      <input type="checkbox" class="form-check-input" id="contains-app-schema"
+                        name="contains-app-schema" formControlName="app_specific_schema"
+                        (change)="onCheckboxValueChange()">
+                      <label class="form-check-label" for="contains-app-schema">Separate App specific schema
+                        required?</label>
+                    </div>
+                    <div class="form-check">
+                      <input type="checkbox" class="form-check-input" id="contains-app-telemetry-schema"
+                        name="contains-app-telemetry-schema" formControlName="app_telemetry_specific_schema"
+                        (change)="onCheckboxValueChange()">
+                      <label class="form-check-label" for="contains-app-telemetry-schema">Separate App telemetry
+                        specific
+                        schema required?
+                      </label>
+                    </div>
+                    <ng-container
+                      *ngIf="createApplicationForm.get('metadata').get('app_specific_schema').value || createApplicationForm.get('metadata').get('app_specific_db').value || createApplicationForm.get('metadata').get('app_telemetry_specific_schema').value">
+                      <ng-container formGroupName="partition">
+                        <ng-container formGroupName="telemetry">
+                          <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Telemetry Partition Technique:</label>
+                            <select class="form-control form-control-sm" id="alertReason"
+                              formControlName="partition_strategy" name="alertReason">
+                              <option [ngValue]="null">Select Partition Technique</option>
+                              <option [ngValue]="'Asset ID'">Asset ID</option>
+                              <option [ngValue]="'Partition Key'">Partition Key</option>
+                            </select>
+                          </div>
+                          <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Telemetry Sub-Partition
+                              Technique:</label>
+                            <select class="form-control form-control-sm" id="alertReason"
+                              formControlName="sub_partition_strategy" name="alertReason">
+                              <option [ngValue]="null">Select Sub-Partition Technique</option>
+                              <option [ngValue]="'Daily'">Daily</option>
+                              <option [ngValue]="'Weekly'">Weekly</option>
+                              <option [ngValue]="'Monthly'">Monthly</option>
+                            </select>
+                          </div>
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </div>
+                </div>
+              </accordion-group>
+            </accordion>
+          </ng-container>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary add-row"
+          [disabled]="(!createApplicationForm?.valid && (createApplicationForm?.touched || !createApplicationForm?.touched)) || isCreateAPILoading"
+          (click)="createApp()">Save</button>
+        <button type="button" class="btn btn-secondary" [disabled]="isCreateAPILoading"
+          (click)="onCloseCreateAppModal('createAppModal')">
+          Cancel
+        </button>
+        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAPILoading"></i>
+      </div>
     </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-primary add-row" [disabled]="isCreateAPILoading || isFileUploading" (click)="createApp()"
-      >Save</button>
-      <button type="button" class="btn btn-secondary" [disabled]="isCreateAPILoading" (click)="onCloseCreateAppModal('createAppModal')">
-        Cancel
-      </button>
-      <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isCreateAPILoading"></i>
-    </div>
-  </div>
   </div>
 </div>
 
 
-<div class="modal right fade" id="viewAppIconModal" role="dialog" aria-labelledby="ModalLabel1" >
-  <div class="modal-dialog" role="document" >
+<div class="modal right fade" id="viewAppIconModal" role="dialog" aria-labelledby="ModalLabel1">
+  <div class="modal-dialog" role="document">
     <div class="modal-content" *ngIf="selectedApp">
-    <div class="modal-header">
-      <h5 class="modal-title">View App Icons: {{selectedApp.app}}</h5>
-      <button type="button" class="close"  (click)="onCloseCreateAppModal('viewAppIconModal')">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div class="col-12">
-        <h6><b>{{selectedApp.app}} header Logo</b></h6>
-        <img class="icon-display" *ngIf="selectedApp?.metadata?.header_logo?.url; else noFileUploaded" src="{{blobStorageURL + selectedApp?.metadata?.header_logo?.url + blobSASToken}}"/>
+      <div class="modal-header">
+        <h5 class="modal-title">View App Icons: {{selectedApp.app}}</h5>
+        <button type="button" class="close" (click)="onCloseCreateAppModal('viewAppIconModal')">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
-      <hr/>
-      <!-- <div class="col-12">
-        <h6><b>{{selectedApp.app}} Logo</b></h6>
-        <img class="icon-display" *ngIf="selectedApp?.metadata?.logo?.url; else noFileUploaded" src="{{blobStorageURL + selectedApp?.metadata?.logo?.url + blobSASToken}}"/>
+      <div class="modal-body">
+        <div class="col-12">
+          <h6><b>{{selectedApp.app}} header Logo</b></h6>
+          <img class="icon-display" *ngIf="selectedApp?.metadata?.header_logo?.url; else noFileUploaded"
+            src="{{blobStorageURL + selectedApp?.metadata?.header_logo?.url + blobSASToken}}" />
+        </div>
+        <hr />
+        <div class="col-12">
+          <h6><b>{{selectedApp.app}} Icon</b></h6>
+          <img class="icon-display" *ngIf="selectedApp?.metadata?.icon?.url; else noFileUploaded"
+            src="{{blobStorageURL + selectedApp?.metadata?.icon?.url + blobSASToken}}" />
+        </div>
+        <ng-template #noFileUploaded>
+          <p>No File uploaded.</p>
+        </ng-template>
       </div>
-      <hr/> -->
-      <div class="col-12">
-        <h6><b>{{selectedApp.app}} Icon</b></h6>
-        <img class="icon-display" *ngIf="selectedApp?.metadata?.icon?.url; else noFileUploaded" src="{{blobStorageURL + selectedApp?.metadata?.icon?.url + blobSASToken}}"/>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onCloseCreateAppModal('viewAppIconModal')">
+          Close
+        </button>
       </div>
-      <ng-template #noFileUploaded>
-        <p>No File uploaded.</p>
-    </ng-template>
     </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary"  (click)="onCloseCreateAppModal('viewAppIconModal')">
-        Close
-      </button>
-    </div>
-  </div>
   </div>
 </div>
-
-

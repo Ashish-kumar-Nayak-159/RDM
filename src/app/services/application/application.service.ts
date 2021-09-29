@@ -46,7 +46,18 @@ export class ApplicationService {
         params = params.set(key, filterObj[key]);
       }
     });
-    return this.http.get(this.url + AppUrls.GET_APPLICATIONS_LIST, { params });
+    return this.http.get(this.url + AppUrls.GET_APPLICATIONS_LIST, { params }).pipe(
+      map((data: any) => {
+        data.data.forEach((item) => {
+          item.local_created_date = this.commonService.convertUTCDateToLocalDate(item.created_date);
+          item.local_updated_date = this.commonService.convertUTCDateToLocalDate(item.updated_date);
+        });
+        return data;
+      }),
+      catchError((error) => {
+        return throwError(error);
+      })
+    );
   }
 
   getApplicationDetail(app) {

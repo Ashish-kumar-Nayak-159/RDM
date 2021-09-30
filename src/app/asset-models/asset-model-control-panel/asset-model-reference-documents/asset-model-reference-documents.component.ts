@@ -13,10 +13,9 @@ declare var $: any;
 @Component({
   selector: 'app-asset-model-reference-documents',
   templateUrl: './asset-model-reference-documents.component.html',
-  styleUrls: ['./asset-model-reference-documents.component.css']
+  styleUrls: ['./asset-model-reference-documents.component.css'],
 })
 export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy {
-
   @Input() assetModel: any;
   documents: any[] = [];
   docTableConfig: any;
@@ -36,7 +35,7 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
     private fileSaverService: FileSaverService,
     private sanitizer: DomSanitizer,
     private assetModelService: AssetModelService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
@@ -56,14 +55,14 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
           key: 'name',
           type: 'text',
           headerClass: '',
-          valueclass: ''
+          valueclass: '',
         },
         {
           name: 'Type',
           key: 'type',
           type: 'text',
           headerClass: '',
-          valueclass: ''
+          valueclass: '',
         },
         {
           name: 'Actions',
@@ -76,14 +75,14 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
               text: '',
               id: 'Download',
               valueclass: '',
-              tooltip: 'Download'
+              tooltip: 'Download',
             },
             {
               icon: 'fa fa-fw fa-eye',
               text: '',
               id: 'View Document',
               valueclass: '',
-              tooltip: 'View Document'
+              tooltip: 'View Document',
             },
             {
               icon: 'fa fa-fw fa-edit',
@@ -94,8 +93,8 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
               privilege_key: 'ASMMM',
               disableConditions: {
                 key: 'freezed',
-                value: true
-              }
+                value: true,
+              },
             },
             {
               icon: 'fa fa-fw fa-trash',
@@ -106,12 +105,12 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
               privilege_key: 'ASMMM',
               disableConditions: {
                 key: 'freezed',
-                value: true
-              }
-            }
-          ]
-        }
-      ]
+                value: true,
+              },
+            },
+          ],
+        },
+      ],
     };
   }
 
@@ -120,23 +119,23 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
     this.isDocumentsLoading = true;
     const obj = {
       app: this.assetModel.app,
-      asset_model: this.assetModel.name
+      asset_model: this.assetModel.name,
     };
-    this.subscriptions.push(this.assetModelService.getAssetsModelDocuments(obj).subscribe(
-      (response: any) => {
+    this.subscriptions.push(
+      this.assetModelService.getAssetsModelDocuments(obj).subscribe((response: any) => {
         if (response?.data) {
           this.documents = response.data;
         }
         this.isDocumentsLoading = false;
-      }
-    ));
+      })
+    );
   }
 
   openAddDocumentModal(obj = undefined) {
     if (!obj) {
-    this.documentObj = {
-      metadata: {}
-    };
+      this.documentObj = {
+        metadata: {},
+      };
     } else {
       this.documentObj = JSON.parse(JSON.stringify(obj));
     }
@@ -162,12 +161,17 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
     this.openModal('downloadDocumentModal');
     const url = this.blobStorageURL + fileObj.url + this.sasToken;
     setTimeout(() => {
-    this.subscriptions.push(this.commonService.getFileData(url).subscribe(
-      response => {
-        this.fileSaverService.save(response, fileObj.name);
-        this.closeDownloadModal();
-      }
-    ));
+      this.subscriptions.push(
+        this.commonService.getFileData(url).subscribe(
+          (response) => {
+            this.fileSaverService.save(response, fileObj.name);
+            this.closeDownloadModal();
+          },
+          (error) => {
+            this.closeDownloadModal();
+          }
+        )
+      );
     }, 500);
     // $('#downloadDocumentModal').modal('toggle');
     // setTimeout(() => {
@@ -176,7 +180,9 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
   }
 
   sanitizeURL() {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(this.blobStorageURL + this.selectedDocument.metadata.url + this.sasToken);
+    return this.sanitizer.bypassSecurityTrustResourceUrl(
+      this.blobStorageURL + this.selectedDocument.metadata.url + this.sasToken
+    );
   }
 
   openModal(id) {
@@ -206,8 +212,10 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
       return;
     }
     this.isFileUploading = true;
-    const data = await this.commonService.uploadImageToBlob(files.item(0),
-    this.contextApp.app + '/models/' + this.assetModel.name + '/reference-material');
+    const data = await this.commonService.uploadImageToBlob(
+      files.item(0),
+      this.contextApp.app + '/models/' + this.assetModel.name + '/reference-material'
+    );
     if (data) {
       this.documentObj.metadata = data;
     } else {
@@ -218,16 +226,21 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
   }
 
   deleteDocument() {
-    this.subscriptions.push(this.assetModelService.deleteAssetsModelDocument
-      (this.selectedDocument.id, this.assetModel.app, this.assetModel.name).
-      subscribe((response: any) => {
-        this.toasterService.showSuccess(response.message, 'Remove Document');
-        this.closeModal('confirmMessageModal');
-        this.getDocuments();
-      }, error => {
-        this.toasterService.showError(error.message, 'Remove Document');
-        this.closeModal('confirmMessageModal');
-      }));
+    this.subscriptions.push(
+      this.assetModelService
+        .deleteAssetsModelDocument(this.selectedDocument.id, this.assetModel.app, this.assetModel.name)
+        .subscribe(
+          (response: any) => {
+            this.toasterService.showSuccess(response.message, 'Remove Document');
+            this.closeModal('confirmMessageModal');
+            this.getDocuments();
+          },
+          (error) => {
+            this.toasterService.showError(error.message, 'Remove Document');
+            this.closeModal('confirmMessageModal');
+          }
+        )
+    );
   }
 
   onDocumentTypeChange() {
@@ -235,39 +248,57 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
   }
 
   onSaveDocumentObj() {
-    if (!this.documentObj.name || (this.documentObj.name.trim()).length === 0 || !this.documentObj.type || !this.documentObj.metadata) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, ((this.documentObj.id ? 'Edit' : 'Add') + ' Document'));
+    if (
+      !this.documentObj.name ||
+      this.documentObj.name.trim().length === 0 ||
+      !this.documentObj.type ||
+      !this.documentObj.metadata
+    ) {
+      this.toasterService.showError(
+        APIMESSAGES.ALL_FIELDS_REQUIRED,
+        (this.documentObj.id ? 'Edit' : 'Add') + ' Document'
+      );
       return;
     }
     let flag = false;
-    this.documents.forEach(doc => {
-      if (this.documentObj.name === doc.name && this.documentObj.id !== undefined &&  this.documentObj.id !== doc.id) {
+    this.documents.forEach((doc) => {
+      if (this.documentObj.name === doc.name && this.documentObj.id !== undefined && this.documentObj.id !== doc.id) {
         flag = true;
       }
     });
     if (flag) {
-      this.toasterService.showError('Document with same name is already exists', ((this.documentObj.id ? 'Edit' : 'Add') + ' Document'));
+      this.toasterService.showError(
+        'Document with same name is already exists',
+        (this.documentObj.id ? 'Edit' : 'Add') + ' Document'
+      );
       return;
     }
     this.isCreateDocumentLoading = true;
-    const method = this.documentObj.id ? this.assetModelService.updateAssetsModelDocument(this.documentObj, this.assetModel.app,
-      this.assetModel.name, this.documentObj.id) : this.assetModelService.createAssetsModelDocument(this.documentObj,
-        this.assetModel.app, this.assetModel.name);
-    this.subscriptions.push(method.subscribe(
+    const method = this.documentObj.id
+      ? this.assetModelService.updateAssetsModelDocument(
+          this.documentObj,
+          this.assetModel.app,
+          this.assetModel.name,
+          this.documentObj.id
+        )
+      : this.assetModelService.createAssetsModelDocument(this.documentObj, this.assetModel.app, this.assetModel.name);
+    this.subscriptions.push(
+      method.subscribe(
         (response: any) => {
-          this.toasterService.showSuccess(response.message, ((this.documentObj.id ? 'Edit' : 'Add') + ' Document'));
+          this.toasterService.showSuccess(response.message, (this.documentObj.id ? 'Edit' : 'Add') + ' Document');
           this.isCreateDocumentLoading = false;
           this.onCloseAddDocModal();
           this.getDocuments();
-        }, error => {
-          this.toasterService.showError(error.message, ((this.documentObj.id ? 'Edit' : 'Add') + ' Document'));
+        },
+        (error) => {
+          this.toasterService.showError(error.message, (this.documentObj.id ? 'Edit' : 'Add') + ' Document');
           this.isCreateDocumentLoading = false;
         }
-    ));
+      )
+    );
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
-
 }

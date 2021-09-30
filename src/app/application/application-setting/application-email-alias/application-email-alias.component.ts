@@ -75,6 +75,10 @@ export class ApplicationEmailAliasComponent implements OnInit {
     if (!this.recipientemail) {
       this.toasterService.showError('Email is required', 'Add Email');
     } else {
+      if (!CONSTANTS.EMAIL_REGEX.test(this.recipientemail)) {
+        this.toasterService.showError('Email address is not valid', 'Add Email');
+        return;
+      }
       if (!this.isAddUserGroup) {
         this.userGroups[index].recipients['emails'].splice(
           this.userGroups[index].recipients['emails'].length,
@@ -82,11 +86,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
           this.recipientemail
         );
       } else {
-        this.groupObj.recipients['emails'].splice(
-          this.groupObj.recipients['emails'].length,
-          0,
-          this.recipientemail
-        );
+        this.groupObj.recipients['emails'].splice(this.groupObj.recipients['emails'].length, 0, this.recipientemail);
       }
       this.recipientemail = undefined;
     }
@@ -95,8 +95,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
   removeEmailRecipient(index) {
     if (!this.isAddUserGroup) {
       this.appObj.recipients['emails'].splice(index, 1);
-    }
-    else {
+    } else {
       this.groupObj.recipients['emails'].splice(index, 1);
     }
   }
@@ -129,8 +128,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
   removeSMSRecipient(index) {
     if (!this.isAddUserGroup) {
       this.appObj.recipients['sms'].splice(index, 1);
-    }
-    else {
+    } else {
       this.groupObj.recipients['sms'].splice(index, 1);
     }
   }
@@ -163,8 +161,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
   removeWhatsappRecipient(index) {
     if (!this.isAddUserGroup) {
       this.appObj.recipients['whatsapp'].splice(index, 1);
-    }
-    else {
+    } else {
       this.groupObj.recipients['whatsapp'].splice(index, 1);
     }
   }
@@ -187,20 +184,18 @@ export class ApplicationEmailAliasComponent implements OnInit {
   onCreateUserGroup() {
     this.isCreateUserGroupAPILoading = true;
     this.apiSubscriptions.push(
-      this.applicationService
-        .createApplicationUserGroups(this.groupObj, this.applicationData.app)
-        .subscribe(
-          (response: any) => {
-            this.isCreateUserGroupAPILoading = false;
-            this.toasterService.showSuccess(response.message, 'Create User Group');
-            this.onCloseCreateUserGroupModal();
-            this.getApplicationUserGroups();
-          },
-          (error) => {
-            this.isCreateUserGroupAPILoading = false;
-            this.toasterService.showError(error.message, 'Create User Group');
-          }
-        )
+      this.applicationService.createApplicationUserGroups(this.groupObj, this.applicationData.app).subscribe(
+        (response: any) => {
+          this.isCreateUserGroupAPILoading = false;
+          this.toasterService.showSuccess(response.message, 'Create User Group');
+          this.onCloseCreateUserGroupModal();
+          this.getApplicationUserGroups();
+        },
+        (error) => {
+          this.isCreateUserGroupAPILoading = false;
+          this.toasterService.showError(error.message, 'Create User Group');
+        }
+      )
     );
   }
 
@@ -228,21 +223,18 @@ export class ApplicationEmailAliasComponent implements OnInit {
       group_name: this.selectedUserGroup.group_name,
     };
     this.apiSubscriptions.push(
-      this.applicationService
-        .deleteApplicationUserGroups(this.applicationData.app, obj.group_name)
-        .subscribe(
-          (response: any) => {
-            this.toasterService.showSuccess(response.message, 'Delete User Group');
-            this.onCloseModal();
-            this.getApplicationUserGroups();
-          },
-          (error) => {
-            this.toasterService.showError(error.message, 'Delete User Group');
-          }
-        )
+      this.applicationService.deleteApplicationUserGroups(this.applicationData.app, obj.group_name).subscribe(
+        (response: any) => {
+          this.toasterService.showSuccess(response.message, 'Delete User Group');
+          this.onCloseModal();
+          this.getApplicationUserGroups();
+        },
+        (error) => {
+          this.toasterService.showError(error.message, 'Delete User Group');
+        }
+      )
     );
   }
-
 
   openConfirmModal(userGroup) {
     $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });

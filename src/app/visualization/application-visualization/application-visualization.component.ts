@@ -643,7 +643,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           method = this.assetService.getAlertConditions(this.contextApp.app, filterObj);
         } else {
           method = this.assetModelService.getAlertConditions(this.contextApp.app, filterObj);
-        } 
+        }
         if (method) {
           this.subscriptions.push(
             method.subscribe(
@@ -724,10 +724,15 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     const url = this.blobStorageURL + fileObj.url + this.sasToken;
     setTimeout(() => {
       this.subscriptions.push(
-        this.commonService.getFileData(url).subscribe((response) => {
-          this.fileSaverService.save(response, fileObj.name);
-          this.closeModal('downloadDocumentModal');
-        })
+        this.commonService.getFileData(url).subscribe(
+          (response) => {
+            this.fileSaverService.save(response, fileObj.name);
+            this.closeModal('downloadDocumentModal');
+          },
+          (error) => {
+            this.closeModal('downloadDocumentModal');
+          }
+        )
       );
     }, 500);
   }

@@ -12,10 +12,9 @@ declare var $: any;
 @Component({
   selector: 'app-asset-model-package-management',
   templateUrl: './asset-model-package-management.component.html',
-  styleUrls: ['./asset-model-package-management.component.css']
+  styleUrls: ['./asset-model-package-management.component.css'],
 })
 export class AssetModelPackageManagementComponent implements OnInit {
-
   @Input() assetModel: any;
   packages: any[] = [];
   isPackagesAPILoading = false;
@@ -40,7 +39,7 @@ export class AssetModelPackageManagementComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private toasterService: ToasterService,
     private fileSaverService: FileSaverService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -62,21 +61,21 @@ export class AssetModelPackageManagementComponent implements OnInit {
           key: 'name',
           type: 'text',
           headerClass: '',
-          valueclass: ''
+          valueclass: '',
         },
         {
           name: 'Display Name',
           key: 'display_name',
           type: 'text',
           headerClass: '',
-          valueclass: ''
+          valueclass: '',
         },
         {
           name: 'Version',
           key: 'version',
           type: 'text',
           headerClass: '',
-          valueclass: ''
+          valueclass: '',
         },
         {
           name: 'Actions',
@@ -89,12 +88,11 @@ export class AssetModelPackageManagementComponent implements OnInit {
               text: '',
               id: 'Download',
               valueclass: '',
-              tooltip: 'Download'
+              tooltip: 'Download',
             },
-
-          ]
-        }
-      ]
+          ],
+        },
+      ],
     };
   }
 
@@ -125,31 +123,30 @@ export class AssetModelPackageManagementComponent implements OnInit {
     this.packages = [];
     this.isPackagesAPILoading = true;
     this.subscriptions.push(
-      this.assetModelService.getPackages(this.contextApp.app, this.assetModel.name, {}).subscribe(
-        (response: any) => {
-          if (response.data?.length > 0) {
-            this.packages = response.data;
-          }
-          this.isPackagesAPILoading = false;
+      this.assetModelService.getPackages(this.contextApp.app, this.assetModel.name, {}).subscribe((response: any) => {
+        if (response.data?.length > 0) {
+          this.packages = response.data;
         }
-      )
+        this.isPackagesAPILoading = false;
+      })
     );
-
   }
 
   openAddPackageModal(obj = undefined) {
     if (!obj) {
       this.packageObj = {
-        metadata: {}
+        metadata: {},
       };
     } else {
-        this.packageObj = JSON.parse(JSON.stringify(obj));
+      this.packageObj = JSON.parse(JSON.stringify(obj));
     }
     $('#addPackageModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
   sanitizeURL() {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(this.blobStorageURL + this.selectedPackage.url + this.sasToken);
+    return this.sanitizer.bypassSecurityTrustResourceUrl(
+      this.blobStorageURL + this.selectedPackage.url + this.sasToken
+    );
   }
 
   onAppChange() {
@@ -190,8 +187,11 @@ export class AssetModelPackageManagementComponent implements OnInit {
       return;
     }
     this.isFileUploading = true;
-    const data = await this.commonService.uploadImageToBlob(files.item(0),
-    this.contextApp.app + '/models/' + this.assetModel.name + '/packages', environment.packageManagementContainer);
+    const data = await this.commonService.uploadImageToBlob(
+      files.item(0),
+      this.contextApp.app + '/models/' + this.assetModel.name + '/packages',
+      environment.packageManagementContainer
+    );
     if (data) {
       this.packageObj.url = data.url;
       if (!this.packageObj.metadata) {
@@ -206,42 +206,65 @@ export class AssetModelPackageManagementComponent implements OnInit {
   }
 
   onSavePackageObj() {
-    if (!this.packageObj.name || (this.packageObj.name.trim()).length === 0 || !this.packageObj.display_name ||
-    (this.packageObj.display_name.trim()).length === 0  || this.packageObj.metadata.major === undefined
-    || this.packageObj.metadata.major === 0
-    || !this.packageObj.url || this.packageObj.metadata.minor  === undefined || this.packageObj.metadata.patch  === undefined) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, ((this.packageObj.id ? 'Edit' : 'Add') + ' Package'));
+    if (
+      !this.packageObj.name ||
+      this.packageObj.name.trim().length === 0 ||
+      !this.packageObj.display_name ||
+      this.packageObj.display_name.trim().length === 0 ||
+      this.packageObj.metadata.major === undefined ||
+      this.packageObj.metadata.major === 0 ||
+      !this.packageObj.url ||
+      this.packageObj.metadata.minor === undefined ||
+      this.packageObj.metadata.patch === undefined
+    ) {
+      this.toasterService.showError(
+        APIMESSAGES.ALL_FIELDS_REQUIRED,
+        (this.packageObj.id ? 'Edit' : 'Add') + ' Package'
+      );
       return;
     }
-    this.packageObj.version = this.packageObj.metadata.major + '.' + this.packageObj.metadata.minor
-    + '.' + this.packageObj.metadata.patch;
+    this.packageObj.version =
+      this.packageObj.metadata.major + '.' + this.packageObj.metadata.minor + '.' + this.packageObj.metadata.patch;
     this.isCreatePackageAPILoading = true;
-    const method = this.packageObj.id ? this.assetModelService.updatePackage(this.assetModel.app,
-      this.assetModel.name, this.packageObj.id, this.packageObj) : this.assetModelService.createPackage(
-        this.assetModel.app, this.assetModel.name, this.packageObj);
-    this.subscriptions.push(method.subscribe(
+    const method = this.packageObj.id
+      ? this.assetModelService.updatePackage(
+          this.assetModel.app,
+          this.assetModel.name,
+          this.packageObj.id,
+          this.packageObj
+        )
+      : this.assetModelService.createPackage(this.assetModel.app, this.assetModel.name, this.packageObj);
+    this.subscriptions.push(
+      method.subscribe(
         (response: any) => {
-          this.toasterService.showSuccess(response.message, ((this.packageObj.id ? 'Edit' : 'Add') + ' Package'));
+          this.toasterService.showSuccess(response.message, (this.packageObj.id ? 'Edit' : 'Add') + ' Package');
           this.isCreatePackageAPILoading = false;
           this.onCloseAddPackageModal();
           this.getPackages();
-        }, error => {
-          this.toasterService.showError(error.message, ((this.packageObj.id ? 'Edit' : 'Add') + ' Package'));
+        },
+        (error) => {
+          this.toasterService.showError(error.message, (this.packageObj.id ? 'Edit' : 'Add') + ' Package');
           this.isCreatePackageAPILoading = false;
         }
-    ));
+      )
+    );
   }
 
   downloadFile(packageObj) {
     this.openModal('confirmMessageModal');
     setTimeout(() => {
       const url = this.blobStorageURL + packageObj.url + this.sasToken;
-      this.subscriptions.push(this.commonService.getFileData(url).subscribe(
-        response => {
-          this.fileSaverService.save(response, packageObj.metadata.file_name);
-          this.closeConfirmModal();
-        }
-      ));
+      this.subscriptions.push(
+        this.commonService.getFileData(url).subscribe(
+          (response) => {
+            this.fileSaverService.save(response, packageObj.metadata.file_name);
+            this.closeConfirmModal();
+          },
+          (error) => {
+            this.closeConfirmModal();
+          }
+        )
+      );
     }, 1000);
   }
 
@@ -253,18 +276,22 @@ export class AssetModelPackageManagementComponent implements OnInit {
 
   deletePackage() {
     this.isCreatePackageAPILoading = true;
-    this.subscriptions.push(this.assetModelService.deletePackage
-      (this.assetModel.app, this.assetModel.name, this.selectedPackage.id).
-      subscribe((response: any) => {
-        this.toasterService.showSuccess(response.message, 'Remove Document');
-        this.closeConfirmModal();
-        this.getPackages();
-        this.isCreatePackageAPILoading = false;
-      }, error => {
-        this.toasterService.showError(error.message, 'Remove Document');
-        this.closeConfirmModal();
-        this.isCreatePackageAPILoading = false;
-      }));
+    this.subscriptions.push(
+      this.assetModelService
+        .deletePackage(this.assetModel.app, this.assetModel.name, this.selectedPackage.id)
+        .subscribe(
+          (response: any) => {
+            this.toasterService.showSuccess(response.message, 'Remove Document');
+            this.closeConfirmModal();
+            this.getPackages();
+            this.isCreatePackageAPILoading = false;
+          },
+          (error) => {
+            this.toasterService.showError(error.message, 'Remove Document');
+            this.closeConfirmModal();
+            this.isCreatePackageAPILoading = false;
+          }
+        )
+    );
   }
-
 }

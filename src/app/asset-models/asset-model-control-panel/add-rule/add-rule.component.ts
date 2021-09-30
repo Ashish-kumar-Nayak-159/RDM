@@ -256,11 +256,10 @@ export class AddRuleComponent implements OnInit {
   }
 
   onChangeTimeAggregation(event) {
-    if (!event) {
-      this.ruleModel.aggregation_window_in_sec = null;
-    } else {
-      this.ruleModel.aggregation_window_in_sec = '300';
-    }
+    this.ruleModel.aggregation_window_in_sec = null;
+    this.ruleModel.conditions.forEach((condition) => {
+      condition.aggregation_type = null;
+    });
   }
 
   addNewCondition() {

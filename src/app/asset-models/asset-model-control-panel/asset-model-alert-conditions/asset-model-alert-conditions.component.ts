@@ -318,7 +318,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
       this.alertObj = JSON.parse(JSON.stringify(alertObj));
       if (this.alertObj.alert_type === 'Asset') {
         this.setupForm = new FormGroup({
-          slave_id: new FormControl(alertObj?.metadata?.slave_id),
+          slave_id: new FormControl(alertObj?.metadata?.slave_id, Validators.required),
         });
         if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_ASSET) {
           if (
@@ -382,7 +382,7 @@ export class AssetModelAlertConditionsComponent implements OnInit, OnDestroy {
   onChangeOfAlertSource() {
     if (this.alertObj.alert_type === 'Asset') {
       this.setupForm = new FormGroup({
-        slave_id: new FormControl(null),
+        slave_id: new FormControl(null, Validators.required),
       });
       if (this.assetModel.metadata?.model_type === CONSTANTS.NON_IP_ASSET) {
         if (

@@ -53,8 +53,11 @@ export class AddAssetComponent implements OnInit, OnChanges {
     }
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
-        if (this.assetDetail.hierarchy) {
+        if (this.assetDetail?.hierarchy) {
             this.addAssetConfigureHierarchy[index] = this.assetDetail.hierarchy[level];
+            if (this.assetDetail.hierarchy[level]) {
+              this.onChangeOfAddAssetHierarchy(index);
+            }
         } else {
           this.addAssetConfigureHierarchy[index] = this.contextApp.user.hierarchy[level];
           if (this.contextApp.user.hierarchy[level]) {
@@ -74,14 +77,14 @@ export class AddAssetComponent implements OnInit, OnChanges {
         this.assetDetail.tags.display_name = this.assetDetail.display_name;
       }
       if (!this.assetDetail.asset_manager) {
-        this.assetDetail.tags.asset_manager = {  user_name: null, user_email: null  };
+        this.assetDetail.tags.asset_manager = undefined;
       } else {
-        const userObj = this.appUsers.filter((type) => type.user_email === this.assetDetail.asset_manager)[0];
+        const userObj = this.appUsers.find((type) => type.user_email === this.assetDetail.asset_manager);
         userObj.tags = {
           user_name: userObj.user_name,
           user_email: userObj.user_email,
         };
-        this.assetDetail.tags.asset_manager = { ...userObj.tags };
+        this.assetDetail.tags.asset_manager = userObj.tags;
       }
       if (!this.assetDetail.asset_model) {
         this.assetDetail.tags.asset_model = null;
@@ -106,6 +109,10 @@ export class AddAssetComponent implements OnInit, OnChanges {
       this.assetDetail.tags = {};
       this.assetDetail.tags.app = this.contextApp.app;
       this.assetDetail.tags.hierarchy_json = JSON.parse(JSON.stringify(this.contextApp.user.hierarchy));
+      this.assetDetail.tags.asset_manager = {
+        user_name: undefined,
+        user_email: undefined,
+      };
     }
     $('#createAssetModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
@@ -370,6 +377,8 @@ export class AddAssetComponent implements OnInit, OnChanges {
     delete this.assetDetail.tags.reserved_tags;
     this.assetDetail.tags.category = this.componentState === CONSTANTS.NON_IP_ASSET ? null : this.componentState;
     // this.assetDetail.tags.created_date = moment().utc().format('M/DD/YYYY h:mm:ss A');
+    const userObj = this.appUsers.find((type) => type.user_email === this.assetDetail.tags.asset_manager.user_email);
+    this.assetDetail.tags.asset_manager.user_name = userObj.user_name;
     this.assetDetail.tags.recipients = [];
     this.assetDetail.tags.recipients.push({
       email: this.assetDetail.tags.asset_manager.user_email,
@@ -438,7 +447,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
   onCloseCreateAssetModal() {
     $('#createAssetModal').modal('hide');
     this.cancelModal.emit();
-    this.assetDetail.tags = {};
+    // this.assetDetail.tags = {};
     // this.assetDetail = undefined;
   }
 }

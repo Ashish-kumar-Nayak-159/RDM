@@ -108,7 +108,7 @@ export class AppUrls {
   public static GET_CACHED_TELEMETRY = 'cached_telemetry_analysis';
   public static GET_CACHED_ALERTS = 'cached_alert_analysis';
   public static GET_CACHED_ALERT_BY_ID = 'cached_alert_analysis/{0}';
-  public static GET_LOGS = 'log_registry';
+  public static GET_LOGS = 'apps/{0}/d2c/log_registry';
   public static GET_ASSET_CONFIGURATION_HISTORY = 'apps/{0}/d2c/configuration_history';
   public static GET_ASSET_DETAIL = 'apps/{0}/assets/{1}';
   public static GET_LIVE_WIDGETS_FOR_MODEL = 'apps/{0}/asset_models/{1}/live_widgets';

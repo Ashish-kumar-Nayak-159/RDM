@@ -19,16 +19,15 @@ declare var $: any;
 export class LogsComponent implements OnInit {
 
   @Input() asset = new Asset();
-  @Input() messageText = 'Work in Progress';
   filterObj: any = {};
-  LogList: any[] = [];
+  logList: any[] = [];
   isLogLoading = false;
   apiSubscriptions: Subscription[] = [];
   selectedLog: any;
   isFilterSelected = false;
   modalConfig: any;
   pageType: string;
-  LogTableConfig: any = {};
+  logTableConfig: any = {};
   sasToken = environment.blobKey;
   fileData: any;
   isFileDataLoading: boolean;
@@ -50,10 +49,10 @@ export class LogsComponent implements OnInit {
     } else {
       this.filterObj.asset_id = this.asset.asset_id;
     }
-    this.filterObj.app = this.contextApp.app;
+    // this.filterObj.app = this.contextApp.app;
     this.filterObj.count = 10;
     this.assets = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSETS_LIST);
-    this.LogTableConfig = {
+    this.logTableConfig = {
       type: 'Logs',
       dateRange: '',
       data: [
@@ -144,25 +143,19 @@ export class LogsComponent implements OnInit {
     delete obj.dateOption;
     this.filterObj = filterObj;
     this.apiSubscriptions.push(
-      this.assetService.getLogs(obj).subscribe(
+      this.assetService.getLogs(this.contextApp.app, obj).subscribe(
         (response: any) => {
           if (response && response.data) {
-            this.LogList = response.data;
-            this.LogList.forEach((item) => {
+            this.logList = response.data;
+            this.logList.forEach((item) => {
               item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
               item.local_upload_date = this.commonService.convertUTCDateToLocal(item.upload_date);
-              if (this.assets?.length > 0 && item.asset) {
-                const assetObj = this.assets.find((asset) => asset.asset_id === item.asset_id);
-                item.display_name = assetObj?.display_name || item.asset_id;
-              } else {
-                item.display_name = item.asset_id;
-              }
             });
           }
           if (this.filterObj.dateOption !== 'Custom Range') {
-            this.LogTableConfig.dateRange = this.filterObj.dateOption;
+            this.logTableConfig.dateRange = this.filterObj.dateOption;
           } else {
-            this.LogTableConfig.dateRange = 'this selected range';
+            this.logTableConfig.dateRange = 'this selected range';
           }
           this.isLogLoading = false;
         },

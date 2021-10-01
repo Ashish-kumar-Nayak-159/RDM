@@ -1382,6 +1382,18 @@ export class CONSTANTS {
       accordion_value: {},
     },
     {
+      page: 'logs',
+      system_name: 'Logs',
+      url: '#asset_logs',
+      display_name: 'Logs',
+      icon: 'fa fa-fw fa-file',
+      visible: true,
+      privileges_required: ['RMV'],
+      isTitle: false,
+      showAccordion: [],
+      accordion_value: {},
+    },
+    {
       page: 'count',
       system_name: 'Telemetry Count',
       url: '#asset_count',

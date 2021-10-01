@@ -77,6 +77,16 @@ export class AssetService {
     }
   }
 
+  getNonProvisionedAsset(filterObj, app) {
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.NON_PROVISIONED_ASSETS, encodeURIComponent(app)), { params });
+  }
+
   getIPAssetsAndGateways(filterObj, app) {
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {
@@ -563,6 +573,17 @@ export class AssetService {
       }
     });
     return this.http.get(this.url + AppUrls.GET_CACHED_ALERTS, { params });
+  }
+
+  getLogs(app, filterObj) {
+    let params = new HttpParams();
+    Object.keys(filterObj).forEach((key) => {
+      if (filterObj[key]) {
+        params = params.set(key, filterObj[key]);
+      }
+    });
+    return this.http.get(this.url + String.Format(AppUrls.GET_LOGS, encodeURIComponent(app)), { params });
+    // return this.http.get(this.url + AppUrls.GET_LOGS, { params });
   }
 
   getAssetLifeCycleEvents(filterObj: any) {
@@ -1136,7 +1157,7 @@ export class AssetService {
   }
 
   // Non Provisioned Assets
-
+  
   getNonProvisionedAssets(app) {
     return this.http.get(this.url + String.Format(AppUrls.NON_PROVISIONED_ASSETS, encodeURIComponent(app)));
   }

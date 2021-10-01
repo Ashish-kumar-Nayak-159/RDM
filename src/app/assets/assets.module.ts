@@ -79,6 +79,7 @@ import { RegisterAssetsComponent } from './gateway-control-panel/gateway-setting
 import { AssetAlertConditionsComponent } from './asset-control-panel/asset-alert-conditions/asset-alert-conditions.component';
 import { C2dJobsComponent } from './gateway-control-panel/gateway-settings/c2d-jobs/c2d-jobs.component';
 import { CloudDerivedPropertiesComponent } from './asset-control-panel/cloud-derived-properties/cloud-derived-properties.component';
+import { WorkProgressComponent } from './asset-control-panel/work-progress/work-progress.component';
 
 @NgModule({
   declarations: [
@@ -141,6 +142,7 @@ import { CloudDerivedPropertiesComponent } from './asset-control-panel/cloud-der
     AssetAlertConditionsComponent,
     C2dJobsComponent,
     CloudDerivedPropertiesComponent,
+    WorkProgressComponent,
   ],
   imports: [
     CommonModule,

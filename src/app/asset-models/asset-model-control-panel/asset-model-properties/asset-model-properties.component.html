@@ -4,7 +4,7 @@
 </div> -->
 
 <div class="tab-bar"
-  *ngIf="!type.includes('derived') && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
+  *ngIf="!type.includes('cloud_derived') && decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
   <div class="">
     <ul class="nav">
       <li class="nav-item">
@@ -85,7 +85,7 @@
               <option value="g3">G3</option>
             </select>
           </div>
-          <ng-container *ngIf="type !== 'edge_derived_properties' || type !== 'cloud_derived_properties'">
+          <ng-container *ngIf="type !== 'edge_derived_properties' && type !== 'cloud_derived_properties'">
             <accordion [closeOthers]="'true'">
               <accordion-group heading="" [panelClass]="'customClass'">
                 <ng-container accordion-heading>
@@ -100,53 +100,68 @@
               </accordion-group>
             </accordion>
           </ng-container>
-          <!-- <ng-container
-            *ngIf="type === 'measured_properties' || type === 'edge_derived_properties' || type === 'cloud_derived_properties'">
-            <div class="row col-12">
-              <label for="recipient-name" class="col-form-label">Thresholds:</label>
+          <ng-container *ngIf="type !== 'edge_derived_properties'">
+            <div class="form-group mr-3">
+              <label for="recipient-name" class="col-form-label">JSON Model:</label>
+              <json-editor [options]="editorOptions" name="json" [data]="propertyObj.json">
+              </json-editor>
             </div>
-            <div class="row col-12">
-
-              <div class="form-group col-6">
-                <input type="number" class="form-control form-control-sm" id="l1" name="l1"
-                  [(ngModel)]="propertyObj.threshold.l1" placeholder="Enter L1 Value">
-              </div>
-              <div class="form-group col-6">
-                <input type="number" class="form-control form-control-sm" id="h1" name="h1"
-                  [(ngModel)]="propertyObj.threshold.h1" placeholder="Enter H1 Value">
+          </ng-container>
+          <ng-container *ngIf="type == 'edge_derived_properties'">
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label required">Conditions: </label>
+              <button id="delete" class="btn btn-sm btn-light m-2 cursor-pointer" (click)="addPropertyToCondtion()"><i
+                  class="fas fa fa-plus"></i>
+              </button>
+              <div class="bg-light p-3">
+                <ng-container
+                  *ngFor="let propObj of propertyObj.metadata.properties; let propIndex = index; last as isLast">
+                  <div class="form-group row">
+                    <div class="col-5">
+                      <ng-select [items]="dependentProperties" class="custom-dropdown sm" bindLabel="name"
+                        [clearable]="false" [searchable]="true" [closeOnSelect]="true" placeholder="Select Property"
+                        groupBy="type" dropdownPosition="bottom" name="asset-dropdown{{propIndex}}"
+                        [(ngModel)]="propObj.property">
+                        <ng-template ng-option-tmp let-item="item">
+                          <span> <i
+                              [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties' || item.type === 'Cloud Derived Properties'}"></i>
+                            {{item.name}}</span>
+                        </ng-template>
+                      </ng-select>
+                    </div>
+                    <div class="col-2 justify-center">
+                      <label for="operator" class="h4 col-form-label ">OR</label>
+                    </div>
+                    <div class="col-5">
+                      <input type="number" class="form-control form-control-sm" id="constant{{propIndex}}"
+                        name="constant{{propIndex}}" placeholder="Enter Value/Constant" [(ngModel)]="propObj.value">
+                    </div>
+                  </div>
+                  <div class="form-group row" *ngIf="!isLast">
+                    <div class="col-3">
+                    </div>
+                    <div class="col-6">
+                      <select class="form-control form-control-sm" id="operator{{propIndex}}"
+                        name="operator{{propIndex}}" [(ngModel)]="propObj.operator">
+                        <option [ngValue]="undefined">Select Operator</option>
+                        <option [ngValue]="'+'">Add</option>
+                        <option [ngValue]="'-'">Minus</option>
+                        <option [ngValue]="'*'">Multiply</option>
+                        <option [ngValue]="'/'">Divide</option>
+                      </select>
+                    </div>
+                    <div class="col-2">
+                    </div>
+                  </div>
+                </ng-container>
               </div>
             </div>
-            <div class="row col-12">
-              <div class="form-group col-6">
-                <input type="number" class="form-control form-control-sm" id="l2" name="l2"
-                  [(ngModel)]="propertyObj.threshold.l2" placeholder="Enter L2 Value">
-              </div>
-              <div class="form-group col-6">
-                <input type="number" class="form-control form-control-sm" id="h2" name="h2"
-                  [(ngModel)]="propertyObj.threshold.h2" placeholder="Enter H2 Value">
-              </div>
-            </div>
-            <div class="row col-12">
-              <div class="form-group col-6">
-                <input type="number" class="form-control form-control-sm" id="l3" name="l3"
-                  [(ngModel)]="propertyObj.threshold.l3" placeholder="Enter L3 Value">
-              </div>
-              <div class="form-group col-6">
-                <input type="number" class="form-control form-control-sm" id="h3" name="h3"
-                  [(ngModel)]="propertyObj.threshold.h3" placeholder="Enter H3 Value">
-              </div>
-            </div>
-          </ng-container> -->
-          <!-- <div class="form-group mr-3">
-            <label for="recipient-name" class="col-form-label">JSON Model:</label>
-            <json-editor [options]="editorOptions" name="json" [data]="propertyObj.json">
-            </json-editor>
-          </div> -->
+          </ng-container>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary "
-          *ngIf="type !== 'edge_derived_properties' || type !== 'cloud_derived_properties'"
+          *ngIf="type !== 'edge_derived_properties' && type !== 'cloud_derived_properties'"
           [disabled]="(!setupForm?.valid && (setupForm?.touched || !setupForm?.touched)) || isCreatePropertyLoading"
           (click)="selectedProperty ? updatePropertyData() : onSavePropertyObj()">Save</button>
         <button type="button" class="btn btn-primary"
@@ -175,9 +190,7 @@
         <label *ngIf="assetModel.metadata?.model_type === constantData.NON_IP_ASSET">Metadata: </label>
         <pre class="text-sm" *ngIf="assetModel.metadata?.model_type === constantData.NON_IP_ASSET"
           [innerHTML]="selectedProperty.metadata ? (selectedProperty.metadata | json) : ({} | json)"></pre>
-        <!-- <label *ngIf="type === 'measured_properties'">Thresholds: </label>
-        <pre class="text-sm" *ngIf="type === 'measured_properties'"
-          [innerHTML]="selectedProperty.threshold ? (selectedProperty.threshold | json) : ({} | json)"></pre> -->
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="onCloseModal('PropJSONModal')">

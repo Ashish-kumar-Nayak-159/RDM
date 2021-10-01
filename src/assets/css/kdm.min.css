@@ -13443,7 +13443,7 @@ body {
   margin-top: 6px;
   background: rgba(229, 235, 236, 0.8);
   border-radius: 100%/70px;
-  border-bottom: 3px solid #000;
+  /* border-bottom: 3px solid #000; */
   /*border-top: 0px solid #000;
 	border-left: 0px solid #000;
 	border-right: 0px solid #000;*/
@@ -15704,4 +15704,90 @@ form .page .btns button.next {
 
 .app-list-tableFixHead {
   height: calc(100vh - 8rem) !important;
+}
+/* rectangular and cylindrical widget */
+.rec-tank {
+  /*position: relative;*/
+  position: absolute;
+  width: 350px;
+  height: 250px;
+  padding-top: 0px;
+  margin: 0 auto;
+  margin-left: 0px;
+  margin-top: 25px;
+  background: rgba(229, 235, 236, 0.8);
+  border-radius: 0;
+  /*border: 1px solid #000;
+  border-top: 0px solid #000;
+  border-left: 0px solid #000;
+  border-right: 0px solid #000;*/
+  text-align: center;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.rec-tank-fill {
+  position: absolute;
+  background: #00acff;
+  width: 100%;
+  height: 0;
+  bottom: 0;
+  /* border-radius: 100%/40px; */
+  /* border-bottom: 2px solid #000; */
+}
+
+.tank-text {
+  display: block;
+  position: absolute;
+  top: 45%;
+  left: 43%;
+  z-index: 1;
+  color: #000;
+}
+
+.water-tank {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 350px;
+  height: 250px;
+  background-color: #b3e5fc;
+  overflow: hidden;
+  position: absolute;
+  margin-top: 25px;
+}
+
+.water {
+  width: 100%;
+  height: 0;
+  bottom: 0;
+  animation-name: swell;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  fill: #4fc3f7;
+}
+
+.water-text {
+  display: block;
+  position: absolute;
+  top: 45%;
+  left: 43%;
+  z-index: 1;
+  color: #000;
+}
+
+.Wave {
+  width: 3000px;
+  fill: #4fc3f7;
+}
+
+@keyframes swell {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
 }

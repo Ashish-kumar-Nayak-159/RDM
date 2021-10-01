@@ -35,14 +35,12 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   subscriptions: Subscription[] = [];
   @ViewChild('jsEditor', { static: false }) jsEditor: any;
   constantData = CONSTANTS;
-  code = `function calculate () {
-  return null;
-  }`;
   slaveData: any[] = [];
   contextApp: any;
   options: any;
   userData: any;
   decodedToken: any;
+  dependentProperties: any[] = [];
   constructor(
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
@@ -174,8 +172,10 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
         headerClass: '',
         valueclass: '',
       });
-      this.propertyTableConfig.data[4].btnData.splice(1);
-      this.propertyTableConfig.data[4].btnData.splice(2);
+      if (this.type.includes('cloud_derived')) {
+        this.propertyTableConfig.data[4].btnData.splice(1);
+        this.propertyTableConfig.data[4].btnData.splice(2);
+      }
     }
 
     this.getAssetsModelProperties();
@@ -193,14 +193,29 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.assetModelService.getAssetsModelProperties(obj).subscribe((response: any) => {
         this.properties = response.properties;
         this.properties[this.type] = this.properties[this.type] ? this.properties[this.type] : [];
-        if (this.type.includes('derived')) {
-          this.properties[this.type] = this.properties[this.type].filter(
-            (prop) => (prop.condition = '(' + prop.condition + ')')
-          );
+        if (this.type.includes('edge_derived')) {
+          response.properties?.measured_properties.forEach((prop) => (prop.type = 'Measured Properties'));
+          this.dependentProperties = response.properties?.measured_properties
+            ? response.properties?.measured_properties
+            : [];
         }
+        // if (this.type.includes('derived')) {
+        //   this.properties[this.type] = this.properties[this.type].filter(
+        //     (prop) => (prop.condition = '(' + prop.condition + ')')
+        //   );
+        // }
         this.isPropertiesLoading = false;
       })
     );
+  }
+
+  addPropertyToCondtion() {
+    this.propertyObj.metadata.properties.push({
+      property: null,
+      value: null,
+      operator: null,
+      index: this.propertyObj.metadata.properties.length + 1,
+    });
   }
 
   openAddPropertiesModal() {
@@ -208,8 +223,25 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       json_model: {},
       threshold: {},
     };
-    console.log(this.setupForm);
-    if (this.type !== 'edge_derived_properties' || this.type !== 'cloud_derived_properties') {
+    if (this.type === 'edge_derived_properties') {
+      this.propertyObj.metadata = {
+        properties: [
+          {
+            property: null,
+            value: null,
+            operator: null,
+            index: 1,
+          },
+          {
+            property: null,
+            value: null,
+            operator: null,
+            index: 2,
+          },
+        ],
+      };
+    }
+    if (this.type !== 'edge_derived_properties' && this.type !== 'cloud_derived_properties') {
       this.setupForm = new FormGroup({
         slave_id: new FormControl(null, [Validators.required]),
       });
@@ -312,7 +344,10 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   }
 
   onSavePropertyObj() {
-    this.propertyObj.metadata = this.setupForm?.value;
+    console.log(this.propertyObj.metadata);
+    if (this.type !== 'edge_derived_properties' && this.type !== 'cloud_derived_properties') {
+      this.propertyObj.metadata = this.setupForm?.value;
+    }
     this.propertyObj.id = this.commonService.generateUUID();
     if (!this.propertyObj.name || !this.propertyObj.json_key || !this.propertyObj.data_type) {
       this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Property');
@@ -330,6 +365,49 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
       this.toasterService.showError('Property with same name already exist.', 'Add Property');
       return;
     }
+    if (this.type === 'edge_derived_properties') {
+      let flag = false;
+      for (let i = 0; i < this.propertyObj.metadata.properties.length; i++) {
+        const prop = this.propertyObj.metadata.properties[i];
+        if (!prop.property && (prop.value === null || prop.value === undefined)) {
+          this.toasterService.showError(
+            'Please select property or add value in condition',
+            'Add Edge Derived Properity'
+          );
+          flag = true;
+          break;
+        }
+        if (this.propertyObj.metadata.properties[i + 1] && !prop.operator) {
+          this.toasterService.showError('Please select operator in condition', 'Add Edge Derived Properity');
+          flag = true;
+          break;
+        }
+      }
+      if (flag) {
+        return;
+      }
+      this.propertyObj.metadata.condition = '';
+      this.propertyObj.metadata.props = [];
+      this.propertyObj.condition = '';
+      this.propertyObj.metadata.properties.forEach((prop) => {
+        if (prop.property) {
+          const index = this.propertyObj.metadata.props.findIndex((prop1) => prop1 === prop.property.json_key);
+          if (index === -1) {
+            this.propertyObj.metadata.props.push(prop.property.json_key);
+            this.propertyObj.metadata.condition +=
+              '%' + this.propertyObj.metadata.props.length + '% ' + (prop.operator ? prop.operator + ' ' : '');
+          } else {
+            this.propertyObj.metadata.condition +=
+              '%' + (index + 1) + '% ' + (prop.operator ? prop.operator + ' ' : '');
+          }
+          this.propertyObj.condition += prop.property.json_key + (prop.operator ? prop.operator + ' ' : '');
+        } else if (prop.value !== null && prop.value !== undefined) {
+          this.propertyObj.metadata.condition += prop.value + ' ' + (prop.operator ? prop.operator + ' ' : '');
+          this.propertyObj.condition += prop.value + (prop.operator ? prop.operator + ' ' : '');
+        }
+      });
+    }
+    console.log(JSON.stringify(this.propertyObj.metadata));
     if (this.propertyObj.threshold && this.type === 'measured_properties') {
       if (
         this.propertyObj.threshold.l1 &&
@@ -441,13 +519,52 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     if (!this.propertyObj.id) {
       this.propertyObj.id = this.commonService.generateUUID();
     }
-    // try {
-    //   this.propertyObj.json_model = this.editor.get();
-    // } catch (e) {
-    //   this.toasterService.showError('Invalid JSON data', 'Edit Property');
-    //   return;
-    // }
-    this.propertyObj.metadata = this.setupForm?.value;
+    if (this.type !== 'edge_derived_properties' && this.type !== 'cloud_derived_properties') {
+      this.propertyObj.metadata = this.setupForm?.value;
+    }
+    if (this.type === 'edge_derived_properties') {
+      let flag = false;
+      for (let i = 0; i < this.propertyObj.metadata.properties.length; i++) {
+        const prop = this.propertyObj.metadata.properties[i];
+        if (!prop.property && (prop.value === null || prop.value === undefined)) {
+          this.toasterService.showError(
+            'Please select property or add value in condition',
+            'Add Edge Derived Properity'
+          );
+          flag = true;
+          break;
+        }
+        if (this.propertyObj.metadata.properties[i + 1] && !prop.operator) {
+          this.toasterService.showError('Please select operator in condition', 'Add Edge Derived Properity');
+          flag = true;
+          break;
+        }
+      }
+      if (flag) {
+        return;
+      }
+      this.propertyObj.metadata.condition = '';
+      this.propertyObj.metadata.props = [];
+      this.propertyObj.condition = '';
+      this.propertyObj.metadata.properties.forEach((prop) => {
+        if (prop.property) {
+          const index = this.propertyObj.metadata.props.findIndex((prop1) => prop1 === prop.property.json_key);
+          if (index === -1) {
+            this.propertyObj.metadata.props.push(prop.property.json_key);
+            this.propertyObj.metadata.condition +=
+              '%' + this.propertyObj.metadata.props.length + '% ' + (prop.operator ? prop.operator + ' ' : '');
+          } else {
+            this.propertyObj.metadata.condition +=
+              '%' + (index + 1) + '% ' + (prop.operator ? prop.operator + ' ' : '');
+          }
+          this.propertyObj.condition += prop.property.json_key + (prop.operator ? prop.operator + ' ' : '');
+        } else if (prop.value !== null && prop.value !== undefined) {
+          this.propertyObj.metadata.condition += prop.value + ' ' + (prop.operator ? prop.operator + ' ' : '');
+          this.propertyObj.condition += prop.value + (prop.operator ? prop.operator + ' ' : '');
+        }
+      });
+    }
+    console.log(JSON.stringify(this.propertyObj.metadata));
     const index = this.properties[this.type].findIndex((prop) => prop.json_key === this.selectedProperty.json_key);
     this.properties[this.type].splice(index, 1);
 
@@ -490,7 +607,7 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     } else if (obj.for === 'Edit') {
       this.propertyObj = JSON.parse(JSON.stringify(obj.data));
       this.propertyObj.edit = true;
-      if (this.type !== 'edge_derived_properties' || this.type !== 'cloud_derived_properties') {
+      if (this.type !== 'edge_derived_properties' && this.type !== 'cloud_derived_properties') {
         this.setupForm = new FormGroup({
           slave_id: new FormControl(this.propertyObj?.metadata?.slave_id, [Validators.required]),
         });
@@ -555,7 +672,6 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     $('#' + id).modal('hide');
     this.selectedProperty = undefined;
     this.options = undefined;
-    this.code = undefined;
   }
 
   ngOnDestroy() {

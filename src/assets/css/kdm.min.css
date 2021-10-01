@@ -12970,7 +12970,7 @@ border-radius: 5px;
   margin-right: 0.25rem;
 }
 
-.selection-page-scroll { height:calc(100vh - 3.5rem); overflow-y:auto; }
+.selection-page-scroll { margin-top: 3.5rem; height:calc(100vh - 5.2rem); overflow-y:auto; overflow-x: hidden; }
 /*
 .icon::before {
   display: inline-block;

@@ -53,8 +53,8 @@ export class AddAssetComponent implements OnInit, OnChanges {
     }
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
-        if (this.assetDetail) {
-          this.addAssetConfigureHierarchy[index] = this.assetDetail.hierarchy[level];
+        if (this.assetDetail.hierarchy) {
+            this.addAssetConfigureHierarchy[index] = this.assetDetail.hierarchy[level];
         } else {
           this.addAssetConfigureHierarchy[index] = this.contextApp.user.hierarchy[level];
           if (this.contextApp.user.hierarchy[level]) {
@@ -66,6 +66,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
 
     await this.getAssetsModels(this.componentState);
     if (this.assetDetail) {
+      this.isAssetEditable = true;
       this.assetDetail.tags = {};
       if (!this.assetDetail.display_name) {
         this.assetDetail.tags.display_name = this.assetDetail.asset_id;
@@ -73,7 +74,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
         this.assetDetail.tags.display_name = this.assetDetail.display_name;
       }
       if (!this.assetDetail.asset_manager) {
-        this.assetDetail.tags.asset_manager = { user_name: '', user_email: '' };
+        this.assetDetail.tags.asset_manager = {  user_name: null, user_email: null  };
       } else {
         const userObj = this.appUsers.filter((type) => type.user_email === this.assetDetail.asset_manager)[0];
         userObj.tags = {
@@ -83,7 +84,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
         this.assetDetail.tags.asset_manager = { ...userObj.tags };
       }
       if (!this.assetDetail.asset_model) {
-        this.assetDetail.tags.asset_model = '';
+        this.assetDetail.tags.asset_model = null;
       } else {
         this.assetDetail.tags.asset_model = this.assetDetail.asset_model;
         const modelObj = this.assetModels.filter((type) => type.name === this.assetDetail.tags.asset_model)[0];
@@ -437,6 +438,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
   onCloseCreateAssetModal() {
     $('#createAssetModal').modal('hide');
     this.cancelModal.emit();
-    this.assetDetail = undefined;
+    this.assetDetail.tags = {};
+    // this.assetDetail = undefined;
   }
 }

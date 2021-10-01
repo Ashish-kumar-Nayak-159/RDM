@@ -182,8 +182,8 @@ export class DerivedKpisComponent implements OnInit {
       this.filterObj.from_date = dateObj.from_date;
       this.filterObj.to_date = dateObj.to_date;
     } else {
-      this.filterObj.from_date = moment(value.start).utc().unix();
-      this.filterObj.to_date = moment(value.end).utc().unix();
+      this.filterObj.from_date = moment(value.start).utc().valueOf;
+      this.filterObj.to_date = moment(value.end).utc().valueOf;
     }
     if (value.label === 'Custom Range') {
       this.selectedDateRange =

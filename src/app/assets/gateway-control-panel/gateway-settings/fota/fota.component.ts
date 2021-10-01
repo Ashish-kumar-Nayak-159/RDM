@@ -177,7 +177,7 @@ export class FotaComponent implements OnInit {
         },
       },
       job_id: null,
-      timestamp: moment().utc().unix(),
+      timestamp: moment().utc().valueOf,
       sub_job_id: null,
       asset_id: this.asset.asset_id,
       request_type: 'FOTA',
@@ -229,7 +229,7 @@ export class FotaComponent implements OnInit {
   //   const obj = {
   //     sub_job_id: requestObj.sub_job_id,
   //     from_date: requestObj.timestamp - 5,
-  //     to_date: moment().utc().unix(),
+  //     to_date: moment().utc().valueOf,
   //     epoch: true,
   //     job_type: 'Twin'
   //   };

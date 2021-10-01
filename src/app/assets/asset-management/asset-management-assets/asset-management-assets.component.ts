@@ -565,7 +565,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
         },
       },
       job_id: null,
-      timestamp: moment().utc().unix(),
+      timestamp: moment().utc().valueOf,
       sub_job_id: null,
       asset_id: this.selectedAssets[0].asset_id,
       request_type: 'FOTA',
@@ -619,7 +619,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     const obj = {
       sub_job_id: requestObj.sub_job_id,
       from_date: requestObj.timestamp - 5,
-      to_date: moment().utc().unix(),
+      to_date: moment().utc().valueOf,
       epoch: true,
       job_type: 'Twin',
     };

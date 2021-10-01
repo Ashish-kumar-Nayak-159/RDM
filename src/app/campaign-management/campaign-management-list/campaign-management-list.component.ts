@@ -96,10 +96,14 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
   }
 
   getCampaignsList() {
+    console.log('getttt   ', moment().utc().valueOf);
+    console.log('gettttttt', new Date().getTime());
     if (this.filterObj.dateOption !== 'Custom Range') {
       const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
+      console.log(dateObj.to_date);
       this.filterObj.from_date = dateObj.from_date;
       this.filterObj.to_date = dateObj.to_date + 1;
+      console.log(this.filterObj.to_date);
     } else {
       this.filterObj.from_date = this.filterObj.from_date;
       this.filterObj.to_date = this.filterObj.to_date + 1;
@@ -146,8 +150,8 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
       this.filterObj.from_date = dateObj.from_date;
       this.filterObj.to_date = dateObj.to_date;
     } else {
-      this.filterObj.from_date = moment(value.start).utc().unix();
-      this.filterObj.to_date = moment(value.end).utc().unix();
+      this.filterObj.from_date = moment(value.start).utc().valueOf;
+      this.filterObj.to_date = moment(value.end).utc().valueOf;
     }
     if (value.label === 'Custom Range') {
       this.selectedDateRange =

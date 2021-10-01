@@ -259,16 +259,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   selectedDate(value: any, datepicker?: any) {
-    // this.historyFilter.from_date = moment(value.start).utc().unix();
-    // this.historyFilter.to_date = moment(value.end).utc().unix();
+    // this.historyFilter.from_date = moment(value.start).utc().valueOf;
+    // this.historyFilter.to_date = moment(value.end).utc().valueOf;
     this.historyFilter.dateOption = value.label;
     if (this.historyFilter.dateOption !== 'Custom Range') {
       const dateObj = this.commonService.getMomentStartEndDate(this.historyFilter.dateOption);
       this.historyFilter.from_date = dateObj.from_date;
       this.historyFilter.to_date = dateObj.to_date;
     } else {
-      this.historyFilter.from_date = moment(value.start).utc().unix();
-      this.historyFilter.to_date = moment(value.end).utc().unix();
+      this.historyFilter.from_date = moment(value.start).utc().valueOf;
+      this.historyFilter.to_date = moment(value.end).utc().valueOf;
     }
     console.log(this.historyFilter);
     if (value.label === 'Custom Range') {
@@ -322,7 +322,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           from_date: undefined,
           to_date: undefined,
         };
-        const now = moment().utc().unix();
+        const now = moment().utc().valueOf;
         if (this.historyFilter.dateOption !== 'Custom Range') {
           const dateObj = this.commonService.getMomentStartEndDate(this.historyFilter.dateOption);
           obj.from_date = dateObj.from_date;
@@ -656,8 +656,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (this.historyFilter.dateOption !== 'date range') {
       this.historyFilter.dateOption = undefined;
     }
-    const from = this.historyFilter.from_date.unix();
-    const to = this.historyFilter.to_date.unix();
+    const from = this.historyFilter.from_date.valueOf;
+    const to = this.historyFilter.to_date.valueOf;
     // if (to - from > 3600) {
     //   this.historyFilter.isTypeEditable = true;
     // } else {

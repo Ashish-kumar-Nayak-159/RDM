@@ -20,7 +20,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
     let userToken;
     userToken = this.commonService.getToken();
     const decodedUserToken: any = this.commonService.decodeJWTToken(userToken);
-    const now = moment().utc().unix();
+    const now = moment().utc().valueOf;
     if (decodedUserToken && decodedUserToken.exp <= now) {
       this.toasterService.showError('Please login again', 'Session Expired');
       this.commonService.onLogOut();

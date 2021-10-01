@@ -209,7 +209,7 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
       asset_id: this.componentstate !== CONSTANTS.IP_GATEWAY ? asset.asset_id : asset.gateway_id,
       message: obj,
       app: this.contextApp.app,
-      timestamp: moment().unix(),
+      timestamp: moment().valueOf,
       acknowledge: 'Full',
       expire_in_min: 2880,
       job_id: asset.asset_id + '_' + this.commonService.generateUUID(),
@@ -257,7 +257,7 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
   //     sub_job_id: c2dObj.sub_job_id,
   //     app: this.contextApp.app,
   //     from_date: c2dObj.timestamp - 5,
-  //     to_date: moment().unix(),
+  //     to_date: moment().valueOf,
   //     epoch: true,
   //     job_type: 'Message'
   //   };

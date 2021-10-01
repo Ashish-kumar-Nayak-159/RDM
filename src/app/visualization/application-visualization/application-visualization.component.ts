@@ -305,8 +305,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
       this.filterObj.from_date = dateObj.from_date;
       this.filterObj.to_date = dateObj.to_date;
     } else {
-      this.filterObj.from_date = moment(value.start).utc().unix();
-      this.filterObj.to_date = moment(value.end).utc().unix();
+      this.filterObj.from_date = moment(value.start).utc().valueOf;
+      this.filterObj.to_date = moment(value.end).utc().valueOf;
     }
     console.log(this.filterObj);
     if (value.label === 'Custom Range') {
@@ -507,8 +507,8 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     }
     delete obj.assetArr;
     if (this.pageType === 'live') {
-      const now = moment().utc().unix();
-      obj.from_date = moment().subtract(24, 'hour').utc().unix();
+      const now = moment().utc().valueOf;
+      obj.from_date = moment().subtract(24, 'hour').utc().valueOf;
       obj.to_date = now;
     } else {
       if (!obj.from_date || !obj.to_date) {
@@ -997,7 +997,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           from_date: undefined,
           to_date: undefined,
         };
-        const now = moment().utc().unix();
+        const now = moment().utc().valueOf;
         if (this.filterObj.dateOption !== 'Custom Range') {
           const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
           obj.from_date = dateObj.from_date;

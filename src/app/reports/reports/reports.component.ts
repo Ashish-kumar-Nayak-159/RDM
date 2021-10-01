@@ -252,16 +252,16 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   selectedDate(value: any, datepicker?: any) {
-    // this.filterObj.from_date = moment(value.start).utc().unix();
-    // this.filterObj.to_date = moment(value.end).utc().unix();
+    // this.filterObj.from_date = moment(value.start).utc().valueOf;
+    // this.filterObj.to_date = moment(value.end).utc().valueOf;
     this.filterObj.dateOption = value.label;
     if (this.filterObj.dateOption !== 'Custom Range') {
       const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
       this.filterObj.from_date = dateObj.from_date;
       this.filterObj.to_date = dateObj.to_date;
     } else {
-      this.filterObj.from_date = moment(value.start).utc().unix();
-      this.filterObj.to_date = moment(value.end).utc().unix();
+      this.filterObj.from_date = moment(value.start).utc().valueOf;
+      this.filterObj.to_date = moment(value.end).utc().valueOf;
     }
     console.log(this.filterObj);
     if (value.label === 'Custom Range') {
@@ -882,7 +882,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         50
       );
       autoTable(pdf, { html: '#dataTable1', margin: { top: 70 } });
-      const now = moment().utc().unix();
+      const now = moment().utc().valueOf;
       pdf.save(
         (this.assetFilterObj.display_name ? this.assetFilterObj.display_name : this.assetFilterObj.asset_id) +
           '_' +
@@ -976,7 +976,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       /* generate workbook and add the worksheet */
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-      const now = moment().utc().unix();
+      const now = moment().utc().valueOf;
       /* save to file */
       XLSX.writeFile(
         wb,

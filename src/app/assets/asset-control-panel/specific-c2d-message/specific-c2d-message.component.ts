@@ -59,7 +59,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
     this.c2dMessageData = {
       asset_id: this.asset.asset_id,
       gateway_id: this.asset.gateway_id || this.asset.tags.gateway_id,
-      timestamp: moment().unix(),
+      timestamp: moment().valueOf,
       message: null,
       job_id: this.asset.asset_id + '_' + this.commonService.generateUUID(),
       acknowledge: 'Full',
@@ -73,7 +73,7 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
       this.getSlaveData();
     }
     // this.messageIdInterval = setInterval(() => {
-    //   this.c2dMessageData.message_id = this.asset.asset_id + '_' + moment().unix();
+    //   this.c2dMessageData.message_id = this.asset.asset_id + '_' + moment().valueOf;
     // }, 1000);
   }
 
@@ -160,13 +160,13 @@ export class SpecificC2dMessageComponent implements OnInit, OnDestroy {
       }
     });
     // obj.request_type = 'Custom';
-    // obj.message['timestamp'] = moment().unix();
+    // obj.message['timestamp'] = moment().valueOf;
     if (!obj.message) {
       this.toasterService.showError('Please type JSON in given box', 'Validate Message Detail');
       return;
     }
     try {
-      obj.timestamp = moment().unix();
+      obj.timestamp = moment().valueOf;
       this.sentMessageData = JSON.parse(JSON.stringify(obj));
       // this.sentMessageData.message = JSON.parse(this.sentMessageData.message);
     } catch (e) {

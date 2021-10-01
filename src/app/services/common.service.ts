@@ -67,7 +67,7 @@ export class CommonService {
 
   convertDateToEpoch(date: string) {
     if (date) {
-      return moment.utc(date).unix();
+      return moment.utc(date).valueOf;
     }
     return 0;
   }
@@ -197,62 +197,62 @@ export class CommonService {
   getMomentStartEndDate(label) {
     const obj: any = {};
     if (label === 'Last 5 Mins') {
-      obj.from_date = moment().subtract(5, 'minutes').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = moment().subtract(5, 'minutes').utc().valueOf;
+      obj.to_date = moment().utc().valueOf;
     } else if (label === 'Last 30 Mins') {
-      obj.from_date = moment().subtract(30, 'minutes').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = moment().subtract(30, 'minutes').utc().valueOf;
+      obj.to_date = moment().utc().valueOf;
     } else if (label === 'Last 1 Hour') {
-      obj.from_date = moment().subtract(1, 'hour').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = moment().subtract(1, 'hour').utc().valueOf;
+      obj.to_date = moment().utc().valueOf;
     } else if (label === 'Last 3 Hours') {
-      obj.from_date = moment().subtract(3, 'hours').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = moment().subtract(3, 'hours').utc().valueOf;
+      obj.to_date = moment().utc().valueOf;
     } else if (label === 'Last 6 Hours') {
-      obj.from_date = moment().subtract(6, 'hours').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = moment().subtract(6, 'hours').utc().valueOf;
+      obj.to_date = moment().utc().valueOf;
     } else if (label === 'Last 12 Hours') {
-      obj.from_date = moment().subtract(12, 'hours').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = moment().subtract(12, 'hours').utc().valueOf;
+      obj.to_date = moment().utc().valueOf;
     } else if (label === 'Last 24 Hours') {
-      obj.from_date = moment().subtract(24, 'hours').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = moment().subtract(24, 'hours').utc().valueOf;
+      obj.to_date = moment().utc().valueOf();
     } else if (label === 'Last 7 Days') {
-      obj.from_date = moment().subtract(6, 'days').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = moment().subtract(6, 'days').utc().valueOf;
+      obj.to_date = moment().utc().valueOf;
     } else if (label === 'This Week') {
-      obj.from_date = moment().startOf('isoWeek').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = moment().startOf('isoWeek').utc().valueOf;
+      obj.to_date = moment().utc().valueOf;
     } else if (label === 'Last 4 Weeks') {
-      obj.from_date = moment().subtract(4, 'weeks').startOf('isoWeek').utc().unix();
-      obj.to_date = moment().subtract(1, 'weeks').endOf('isoWeek').utc().unix();
+      obj.from_date = moment().subtract(4, 'weeks').startOf('isoWeek').utc().valueOf;
+      obj.to_date = moment().subtract(1, 'weeks').endOf('isoWeek').utc().valueOf;
     } else if (label === 'Last 30 Days') {
-      obj.from_date = moment().subtract(29, 'days').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = moment().subtract(29, 'days').utc().valueOf;
+      obj.to_date = moment().utc().valueOf;
     } else if (label === 'This Month') {
-      obj.from_date = moment().startOf('month').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = moment().startOf('month').utc().valueOf;
+      obj.to_date = moment().utc().valueOf;
     } else if (label === 'Last Month') {
-      obj.from_date = moment().subtract(1, 'month').startOf('month').utc().unix();
-      obj.to_date = moment().subtract(1, 'month').endOf('month').utc().unix();
+      obj.from_date = moment().subtract(1, 'month').startOf('month').utc().valueOf;
+      obj.to_date = moment().subtract(1, 'month').endOf('month').utc().valueOf;
     } else if (label === 'Last 3 Months') {
-      obj.from_date = moment().subtract(3, 'month').startOf('month').utc().unix();
-      obj.to_date = moment().subtract(1, 'month').endOf('month').utc().unix();
+      obj.from_date = moment().subtract(3, 'month').startOf('month').utc().valueOf;
+      obj.to_date = moment().subtract(1, 'month').endOf('month').utc().valueOf;
     } else if (label === 'Last 6 Months') {
-      obj.from_date = moment().subtract(6, 'month').startOf('month').utc().unix();
-      obj.to_date = moment().subtract(1, 'month').endOf('month').utc().unix();
+      obj.from_date = moment().subtract(6, 'month').startOf('month').utc().valueOf;
+      obj.to_date = moment().subtract(1, 'month').endOf('month').utc().valueOf;
     } else if (label === 'Last 12 Months') {
-      obj.from_date = moment().subtract(12, 'month').startOf('month').utc().unix();
-      obj.to_date = moment().subtract(1, 'month').endOf('month').utc().unix();
+      obj.from_date = moment().subtract(12, 'month').startOf('month').utc().valueOf;
+      obj.to_date = moment().subtract(1, 'month').endOf('month').utc().valueOf;
     } else if (label === 'Today') {
-      obj.from_date = moment().startOf('day').utc().unix();
-      obj.to_date = moment().utc().unix();
+      obj.from_date = moment().startOf('day').utc().valueOf;
+      obj.to_date = moment().utc().valueOf;
     } else if (label === 'Yesterday') {
-      obj.from_date = moment().subtract(1, 'days').startOf('day').utc().unix();
-      obj.to_date = moment().subtract(1, 'days').endOf('day').utc().unix();
+      obj.from_date = moment().subtract(1, 'days').startOf('day').utc().valueOf;
+      obj.to_date = moment().subtract(1, 'days').endOf('day').utc().valueOf;
     } else if (label === 'Last Week') {
-      obj.from_date = moment().subtract(1, 'week').startOf('week').utc().unix();
-      obj.to_date = moment().subtract(1, 'week').endOf('week').utc().unix();
+      obj.from_date = moment().subtract(1, 'week').startOf('week').utc().valueOf;
+      obj.to_date = moment().subtract(1, 'week').endOf('week').utc().valueOf;
     }
     return obj;
   }
@@ -271,7 +271,7 @@ export class CommonService {
     if (!containerName) {
       containerName = environment.blobContainerName;
     }
-    const epoch = moment().utc().unix();
+    const epoch = moment().utc().valueOf;
     const fileNameArr = file.name.split('.');
     const fileExtension = fileNameArr[fileNameArr.length - 1];
     fileNameArr.pop();

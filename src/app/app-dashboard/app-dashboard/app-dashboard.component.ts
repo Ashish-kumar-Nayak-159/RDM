@@ -121,8 +121,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.onTabChange();
     if (this.contextApp?.dashboard_config?.show_historical_widgets) {
       this.historicalDateFilter.dateOption = 'Last 30 Mins';
-      this.historicalDateFilter.from_date = moment().subtract(30, 'minutes').utc().unix();
-      this.historicalDateFilter.to_date = moment().utc().unix();
+      this.historicalDateFilter.from_date = moment().subtract(30, 'minutes').utc().valueOf;
+      this.historicalDateFilter.to_date = moment().utc().valueOf;
       this.historicalDateFilter.widgets = [];
       this.selectedDateRange = this.historicalDateFilter.dateOption;
       this.historicalDateFilter.type = true;
@@ -602,16 +602,16 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   selectedDate(value: any, datepicker?: any) {
-    // this.historyFilter.from_date = moment(value.start).utc().unix();
-    // this.historyFilter.to_date = moment(value.end).utc().unix();
+    // this.historyFilter.from_date = moment(value.start).utc().valueOf;
+    // this.historyFilter.to_date = moment(value.end).utc().valueOf;
     this.historicalDateFilter.dateOption = value.label;
     if (this.historicalDateFilter.dateOption !== 'Custom Range') {
       const dateObj = this.commonService.getMomentStartEndDate(this.historicalDateFilter.dateOption);
       this.historicalDateFilter.from_date = dateObj.from_date;
       this.historicalDateFilter.to_date = dateObj.to_date;
     } else {
-      this.historicalDateFilter.from_date = moment(value.start).utc().unix();
-      this.historicalDateFilter.to_date = moment(value.end).utc().unix();
+      this.historicalDateFilter.from_date = moment(value.start).utc().valueOf;
+      this.historicalDateFilter.to_date = moment(value.end).utc().valueOf;
     }
     console.log(this.historicalDateFilter);
     if (value.label === 'Custom Range') {
@@ -752,7 +752,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           from_date: undefined,
           to_date: undefined,
         };
-        const now = moment().utc().unix();
+        const now = moment().utc().valueOf;
         if (this.historicalDateFilter.dateOption !== 'Custom Range') {
           const dateObj = this.commonService.getMomentStartEndDate(this.historicalDateFilter.dateOption);
           obj.from_date = dateObj.from_date;
@@ -784,8 +784,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.lastReportedTelemetryValues = undefined;
     this.telemetryData = JSON.parse(JSON.stringify([]));
     obj.count = 1;
-    const midnight = moment().hour(0).minute(0).second(0).utc().unix();
-    const now = moment().utc().unix();
+    const midnight = moment().hour(0).minute(0).second(0).utc().valueOf;
+    const now = moment().utc().valueOf;
     obj.from_date = midnight;
     obj.to_date = now;
     obj.app = this.contextApp.app;
@@ -930,7 +930,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     filterObj['measured_message_props'] = measured_message_props ? measured_message_props : undefined;
     filterObj['edge_derived_message_props'] = edge_derived_message_props ? edge_derived_message_props : undefined;
     filterObj['cloud_derived_message_props'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
-    const now = moment().utc().unix();
+    const now = moment().utc().valueOf;
     if (this.historicalDateFilter.dateOption !== 'Custom Range') {
       const dateObj = this.commonService.getMomentStartEndDate(this.historicalDateFilter.dateOption);
       filterObj.from_date = dateObj.from_date;
@@ -939,7 +939,7 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       filterObj.from_date = this.historicalDateFilter.from_date;
       filterObj.to_date = this.historicalDateFilter.to_date;
     }
-    // filterObj.from_date = moment().subtract(30, 'minutes').utc().unix();
+    // filterObj.from_date = moment().subtract(30, 'minutes').utc().valueOf;
     // filterObj.to_date = now;
     let method;
     // if (filterObj.to_date - filterObj.from_date > 3600 && !this.historicalDateFilter.isTypeEditable) {

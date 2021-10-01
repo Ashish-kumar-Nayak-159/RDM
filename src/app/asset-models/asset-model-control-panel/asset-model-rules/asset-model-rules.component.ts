@@ -140,7 +140,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
         rules: [],
       },
       app: this.contextApp.app,
-      timestamp: moment().unix(),
+      timestamp: moment().valueOf,
       acknowledge: 'Full',
       expire_in_min: 2880,
       job_id: this.commonService.generateUUID(),

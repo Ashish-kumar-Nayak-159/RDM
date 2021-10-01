@@ -216,8 +216,8 @@ export class LiveDataComponent implements OnInit, OnDestroy {
     obj['asset_model'] = this.asset.tags.asset_model;
     // let message_props = '';
     obj['count'] = 1;
-    const midnight = moment().hour(0).minute(0).second(0).utc().unix();
-    const now = moment().utc().unix();
+    const midnight = moment().hour(0).minute(0).second(0).utc().valueOf;
+    const now = moment().utc().valueOf;
     obj['from_date'] = midnight;
     obj['to_date'] = now;
     let measured_message_props = '';

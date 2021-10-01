@@ -274,7 +274,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         rules: this.rules,
       },
       app: this.contextApp.app,
-      timestamp: moment().unix(),
+      timestamp: moment().valueOf,
       acknowledge: 'Full',
       expire_in_min: 2880,
       job_id: asset.asset_id + '_' + this.commonService.generateUUID(),
@@ -398,7 +398,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     };
     if (this.optionsValue.measured_properties) {
       this.properties.measured_properties.forEach((prop) => {
-        obj.measured_properties[prop.json_key] = prop.metadata;
+        obj.measured_properties[prop.json_key] = prop?.metadata || {};
         obj.measured_properties[prop.json_key].g = prop.group;
       });
     }
@@ -409,7 +409,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     }
     if (this.optionsValue.edge_derived_properties) {
       this.properties.edge_derived_properties.forEach((prop) => {
-        obj.edge_derived_properties[prop.json_key] = prop.metadata;
+        obj.edge_derived_properties[prop.json_key] = prop?.metadata || {};
         obj.edge_derived_properties[prop.json_key].g = prop.group;
       });
     }
@@ -428,7 +428,7 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
       asset_id: this.selectedAsset.asset_id,
       message: obj,
       app: this.contextApp.app,
-      timestamp: moment().unix(),
+      timestamp: moment().valueOf,
       acknowledge: 'Full',
       expire_in_min: 2880,
       job_id: this.selectedAsset.asset_id + '_' + this.commonService.generateUUID(),

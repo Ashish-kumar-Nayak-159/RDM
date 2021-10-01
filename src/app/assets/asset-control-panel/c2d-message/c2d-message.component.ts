@@ -12,10 +12,9 @@ declare var $: any;
 @Component({
   selector: 'app-c2d-message',
   templateUrl: './c2d-message.component.html',
-  styleUrls: ['./c2d-message.component.css']
+  styleUrls: ['./c2d-message.component.css'],
 })
 export class C2dMessageComponent implements OnInit, OnDestroy {
-
   c2dMsgFilter: any = {};
   previousMsgFilter: any = {};
   c2dMsgs: any[] = [];
@@ -38,7 +37,7 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private route: ActivatedRoute,
     private toasterService: ToasterService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -91,7 +90,7 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
       filterObj.from_date = filterObj.from_date;
       filterObj.to_date = filterObj.to_date;
     }
-    const obj = {...filterObj};
+    const obj = { ...filterObj };
     delete obj.displayOptions;
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'View ' + obj.tableType);
@@ -120,20 +119,24 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
     this.c2dMsgs = [];
     delete filterObj.tableType;
     delete filterObj.displayJobOptions;
-    this.apiSubscriptions.push(this.assetService.getAssetC2DMessages(filterObj).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.c2dMsgs = response.data;
-          this.c2dMsgs.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.request_date));
-        }
-        if (this.c2dMsgFilter.dateOption === 'Custom Range') {
-              this.previousMsgFilter.dateOption = 'this selected range';
-        }
-        this.isC2dMsgsLoading = false;
-      }, error => this.isC2dMsgsLoading = false
-    ));
+    this.apiSubscriptions.push(
+      this.assetService.getAssetC2DMessages(filterObj).subscribe(
+        (response: any) => {
+          if (response && response.data) {
+            this.c2dMsgs = response.data;
+            this.c2dMsgs.forEach(
+              (item) => (item.local_created_date = this.commonService.convertUTCDateToLocal(item.request_date))
+            );
+          }
+          if (this.c2dMsgFilter.dateOption === 'Custom Range') {
+            this.previousMsgFilter.dateOption = 'this selected range';
+          }
+          this.isC2dMsgsLoading = false;
+        },
+        (error) => (this.isC2dMsgsLoading = false)
+      )
+    );
   }
-
 
   loadMessageDetail(message, openModalFlag) {
     if (!openModalFlag) {
@@ -145,31 +148,37 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
       from_date: null,
       to_date: null,
       epoch: true,
-      job_type: message.job_type
+      job_type: message.job_type,
     };
     if (message.job_type === 'Message') {
-      const epoch =  message.request_date ? this.commonService.convertDateToEpoch(message.request_date) : message.timestamp;
-      obj.from_date = epoch ? (epoch - 5) : null;
-      obj.to_date = (epoch ? (epoch + (message?.metadata?.expire_in_min ? message.metadata.expire_in_min * 60 : 300)) : null) + 5;
+      const epoch = message.request_date
+        ? this.commonService.convertDateToEpoch(message.request_date)
+        : message.timestamp;
+      obj.from_date = epoch ? epoch - 5 : null;
+      obj.to_date =
+        (epoch ? epoch + (message?.metadata?.expire_in_min ? message.metadata.expire_in_min * 60 : 300) : null) + 5;
     } else {
-      const epoch =  this.commonService.convertDateToEpoch(message.request_date);
-      obj.from_date = epoch ? (epoch - 300) : null;
-      obj.to_date = (epoch ? (epoch + 300) : null);
+      const epoch = this.commonService.convertDateToEpoch(message.request_date);
+      obj.from_date = epoch ? epoch - 300 : null;
+      obj.to_date = epoch ? epoch + 300 : null;
     }
-    this.apiSubscriptions.push(this.assetService.getMessageRequestDetails(message.id, this.contextApp.app, obj).subscribe(
-      (response: any) => {
-        if (openModalFlag) {
-        this.c2dMessageDetail = response;
-        this.openC2DMessageModal();
-        } else {
-          const arr = [];
-          response.local_created_date = this.commonService.convertUTCDateToLocal(response.request_date);
-          arr.push(response);
-          this.c2dMsgs = arr;
-          this.isC2dMsgsLoading = false;
-        }
-      }, error => this.isC2dMsgsLoading = false
-    ));
+    this.apiSubscriptions.push(
+      this.assetService.getMessageRequestDetails(message.id, this.contextApp.app, obj).subscribe(
+        (response: any) => {
+          if (openModalFlag) {
+            this.c2dMessageDetail = response;
+            this.openC2DMessageModal();
+          } else {
+            const arr = [];
+            response.local_created_date = this.commonService.convertUTCDateToLocal(response.request_date);
+            arr.push(response);
+            this.c2dMsgs = arr;
+            this.isC2dMsgsLoading = false;
+          }
+        },
+        (error) => (this.isC2dMsgsLoading = false)
+      )
+    );
   }
 
   loadResponseDetail(message, openModalFlag) {
@@ -184,26 +193,33 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
         sub_job_id: message.sub_job_id,
         from_date: null,
         to_date: null,
-        epoch: true
+        epoch: true,
       };
-      const epoch =  message.request_date ? this.commonService.convertDateToEpoch(message.request_date) : message.timestamp;
-      obj.from_date = epoch ? (epoch - 5) : null;
-      obj.to_date = (moment().utc()).unix();
-      this.apiSubscriptions.push(this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
-        (response: any) => {
-          if (response.data) {
-            if (openModalFlag) {
-              this.c2dResponseDetail = response.data;
-              this.openC2DMessageModal();
-            } else {
-              this.c2dMsgs = response.data;
-              this.c2dMsgs.forEach(item => item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date));
-              this.isC2dMsgsLoading = false;
+      const epoch = message.request_date
+        ? this.commonService.convertDateToEpoch(message.request_date)
+        : message.timestamp;
+      obj.from_date = epoch ? epoch - 5 : null;
+      obj.to_date = moment().utc().valueOf;
+      this.apiSubscriptions.push(
+        this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
+          (response: any) => {
+            if (response.data) {
+              if (openModalFlag) {
+                this.c2dResponseDetail = response.data;
+                this.openC2DMessageModal();
+              } else {
+                this.c2dMsgs = response.data;
+                this.c2dMsgs.forEach(
+                  (item) => (item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date))
+                );
+                this.isC2dMsgsLoading = false;
+              }
             }
-          }
-        }, error => this.isC2dMsgsLoading = false
-      ));
-    } else if ((this.type === 'response' && openModalFlag) || message.job_type === 'DirectMethod'){
+          },
+          (error) => (this.isC2dMsgsLoading = false)
+        )
+      );
+    } else if ((this.type === 'response' && openModalFlag) || message.job_type === 'DirectMethod') {
       this.c2dResponseDetail = message;
       this.openC2DMessageModal();
     }
@@ -214,7 +230,7 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
     this.modalConfig = {
       jsonDisplay: true,
       isDisplaySave: false,
-      isDisplayCancel: true
+      isDisplayCancel: true,
     };
   }
 
@@ -228,6 +244,6 @@ export class C2dMessageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.apiSubscriptions.forEach(subscribe => subscribe.unsubscribe());
+    this.apiSubscriptions.forEach((subscribe) => subscribe.unsubscribe());
   }
 }

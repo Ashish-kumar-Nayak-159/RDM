@@ -11,13 +11,14 @@ declare var $: any;
 @Component({
   selector: 'app-application-alerts',
   templateUrl: './application-alerts.component.html',
-  styleUrls: ['./application-alerts.component.css'],
+  styleUrls: ['./application-alerts.component.css']
 })
 export class ApplicationAlertsComponent implements OnInit, OnDestroy {
+
   contextApp: any;
   filterObj: any = {};
-  @ViewChild('dtInput1', { static: false }) dtInput1: any;
-  @ViewChild('dtInput2', { static: false }) dtInput2: any;
+  @ViewChild('dtInput1', {static: false}) dtInput1: any;
+  @ViewChild('dtInput2', {static: false}) dtInput2: any;
   apiSubscriptions: Subscription[] = [];
   assets: any[] = [];
   originalAssets: any[] = [];
@@ -27,14 +28,14 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
   hierarchyArr: any = {};
   configureHierarchy: any = {};
   isFilterSelected = false;
-  modalConfig: { jsonDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
+  modalConfig: { jsonDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean; };
   selectedAlert: any;
   today = new Date();
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
     private toasterService: ToasterService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -44,13 +45,13 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
       data: [
         {
           title: this.contextApp.user.hierarchyString,
-          url: 'applications/' + this.contextApp.app,
+          url: 'applications/' + this.contextApp.app
         },
-        {
-          title: 'Alerts',
-          url: 'applications/' + this.contextApp.app + '/alerts',
-        },
-      ],
+          {
+            title: 'Alerts',
+            url: 'applications/' + this.contextApp.app + '/alerts'
+          }
+      ]
     });
     this.filterObj.count = 10;
     this.filterObj.app = this.contextApp.app;
@@ -63,68 +64,69 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
           key: 'code',
           type: 'text',
           headerClass: '',
-          valueclass: '',
+          valueclass: ''
         },
         {
           name: 'Timestamp',
           key: 'local_created_date',
           type: 'text',
           headerClass: '',
-          valueclass: '',
+          valueclass: ''
         },
         {
           name: 'Asset',
           key: 'display_name',
           type: 'text',
           headerClass: '',
-          valueclass: '',
+          valueclass: ''
         },
         {
           name: 'Message',
           key: 'message',
           type: 'text',
           headerClass: '',
-          valueclass: '',
+          valueclass: ''
         },
         {
           name: '',
           key: undefined,
           type: 'button',
-          headerClass: '',
-          btnData: [
-            {
-              icon: 'fa fa-fw fa-eye',
-              text: '',
-              id: 'View',
-              valueclass: '',
-              tooltip: 'View',
-            },
-          ],
-        },
-      ],
+            headerClass: '',
+            btnData: [
+              {
+                icon: 'fa fa-fw fa-eye',
+                text: '',
+                id: 'View',
+                valueclass: '',
+                tooltip: 'View'
+              }
+            ]
+        }
+      ]
     };
     await this.getAllAssets();
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
     }
 
+
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
-        this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-        if (this.contextApp.user.hierarchy[level]) {
-          this.onChangeOfHierarchy(index, false);
-        }
+      this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+      if (this.contextApp.user.hierarchy[level]) {
+        this.onChangeOfHierarchy(index, false);
+      }
       }
     });
   }
 
   async onChangeOfHierarchy(i, flag = true) {
-    Object.keys(this.configureHierarchy).forEach((key) => {
+    Object.keys(this.configureHierarchy).forEach(key => {
       if (key > i) {
         delete this.configureHierarchy[key];
       }
     });
-    Object.keys(this.hierarchyArr).forEach((key) => {
+    Object.keys(this.hierarchyArr).forEach(key => {
       if (key > i) {
         this.hierarchyArr[key] = [];
       }
@@ -141,7 +143,7 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
     // let hierarchy = {...this.configureHierarchy};
 
     if (flag) {
-      const hierarchyObj: any = { App: this.contextApp.app };
+      const hierarchyObj: any = { App: this.contextApp.app};
       Object.keys(this.configureHierarchy).forEach((key) => {
         if (this.configureHierarchy[key]) {
           hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
@@ -150,23 +152,23 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
       if (Object.keys(hierarchyObj).length === 1) {
         this.assets = JSON.parse(JSON.stringify(this.originalAssets));
       } else {
-        const arr = [];
-        this.assets = [];
-        this.originalAssets.forEach((asset) => {
-          let trueFlag = 0;
-          let flaseFlag = 0;
-          Object.keys(hierarchyObj).forEach((hierarchyKey) => {
-            if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
-              trueFlag++;
-            } else {
-              flaseFlag++;
-            }
-          });
-          if (trueFlag > 0 && flaseFlag === 0) {
-            arr.push(asset);
+      const arr = [];
+      this.assets = [];
+      this.originalAssets.forEach(asset => {
+        let trueFlag = 0;
+        let flaseFlag = 0;
+        Object.keys(hierarchyObj).forEach(hierarchyKey => {
+          if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+            trueFlag++;
+          } else {
+            flaseFlag++;
           }
         });
-        this.assets = JSON.parse(JSON.stringify(arr));
+        if (trueFlag > 0 && flaseFlag === 0) {
+          arr.push(asset);
+        }
+      });
+      this.assets = JSON.parse(JSON.stringify(arr));
       }
       if (this.assets?.length === 1) {
         this.filterObj.asset = this.assets[0];
@@ -174,9 +176,9 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
       // await this.getAssets(hierarchyObj);
     }
     let count = 0;
-    Object.keys(this.configureHierarchy).forEach((key) => {
+    Object.keys(this.configureHierarchy).forEach(key => {
       if (this.configureHierarchy[key]) {
-        count++;
+        count ++;
       }
     });
     if (count === 0) {
@@ -185,6 +187,7 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
         this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
       }
     }
+
   }
 
   compareFn(c1, c2): boolean {
@@ -194,17 +197,17 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
   getAllAssets() {
     return new Promise<void>((resolve) => {
       const obj = {
-        hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
+        hierarchy: JSON.stringify(this.contextApp.user.hierarchy)
       };
-      this.apiSubscriptions.push(
-        this.assetService.getAllGatewaysAndAssetsList(obj, this.contextApp.app).subscribe((response: any) => {
+      this.apiSubscriptions.push(this.assetService.getAllGatewaysAndAssetsList(obj, this.contextApp.app).subscribe(
+        (response: any) => {
           if (response?.data) {
             this.assets = response.data;
             this.originalAssets = JSON.parse(JSON.stringify(this.assets));
           }
           resolve();
-        })
-      );
+        }
+      ));
     });
   }
 
@@ -234,9 +237,9 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
 
   onSingleDateChange(event) {
     this.filterObj.from_date = moment(event.value).utc();
-    this.filterObj.to_date = moment(event.value).add(23, 'hours').add(59, 'minute').utc();
-    const to = this.filterObj.to_date.valueOf;
-    const current = moment().utc().valueOf;
+    this.filterObj.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
+    const to = this.filterObj.to_date.unix();
+    const current = (moment().utc()).unix();
     if (current < to) {
       this.filterObj.to_date = moment().utc();
     }
@@ -251,26 +254,26 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
   searchAlerts() {
     this.isFilterSelected = true;
     this.isAlertLoading = true;
-    const obj = { ...this.filterObj };
+    const obj = {...this.filterObj};
     const now = moment().utc();
     if (this.filterObj.dateOption === '5 mins') {
-      obj.to_date = now.valueOf;
-      obj.from_date = now.subtract(5, 'minute').valueOf;
+      obj.to_date = now.unix();
+      obj.from_date = (now.subtract(5, 'minute')).unix();
     } else if (this.filterObj.dateOption === '30 mins') {
-      obj.to_date = now.valueOf;
-      obj.from_date = now.subtract(30, 'minute').valueOf;
+      obj.to_date = now.unix();
+      obj.from_date = (now.subtract(30, 'minute')).unix();
     } else if (this.filterObj.dateOption === '1 hour') {
-      obj.to_date = now.valueOf;
-      obj.from_date = now.subtract(1, 'hour').valueOf;
+      obj.to_date = now.unix();
+      obj.from_date = (now.subtract(1, 'hour')).unix();
     } else if (this.filterObj.dateOption === '24 hour') {
-      obj.to_date = now.valueOf;
-      obj.from_date = now.subtract(24, 'hour').valueOf;
+      obj.to_date = now.unix();
+      obj.from_date = (now.subtract(24, 'hour')).unix();
     } else {
       if (this.filterObj.from_date) {
-        obj.from_date = this.filterObj.from_date.valueOf;
+        obj.from_date = (this.filterObj.from_date.unix());
       }
       if (this.filterObj.to_date) {
-        obj.to_date = this.filterObj.to_date.valueOf;
+        obj.to_date = this.filterObj.to_date.unix();
       }
     }
     if (!obj.from_date || !obj.to_date) {
@@ -279,7 +282,7 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
       this.isFilterSelected = false;
       return;
     }
-    obj.hierarchy = { App: this.contextApp.app };
+    obj.hierarchy = { App: this.contextApp.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (this.configureHierarchy[key]) {
         obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
@@ -289,22 +292,19 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
     obj.asset_id = obj.asset?.asset_id;
     delete obj.asset;
     delete obj.dateOption;
-    this.apiSubscriptions.push(
-      this.assetService.getAssetAlerts(obj).subscribe(
-        (response: any) => {
-          if (response && response.data) {
-            this.alerts = response.data;
-            this.alerts.forEach((item) => {
-              item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
-              const name = this.originalAssets.filter((asset) => asset.asset_id === item.asset_id)[0].display_name;
-              item.display_name = name ? name : item.asset_id;
-            });
-          }
-          this.isAlertLoading = false;
-        },
-        (error) => (this.isAlertLoading = false)
-      )
-    );
+    this.apiSubscriptions.push(this.assetService.getAssetAlerts(obj).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.alerts = response.data;
+          this.alerts.forEach(item => {
+            item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
+            const name = this.originalAssets.filter(asset => asset.asset_id === item.asset_id)[0].display_name;
+            item.display_name = name ? name : item.asset_id;
+          });
+        }
+        this.isAlertLoading = false;
+      }, error => this.isAlertLoading = false
+    ));
   }
 
   openAlertMessageModal(obj) {
@@ -312,14 +312,14 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
       this.modalConfig = {
         jsonDisplay: true,
         isDisplaySave: false,
-        isDisplayCancel: true,
+        isDisplayCancel: true
       };
       this.selectedAlert = JSON.parse(JSON.stringify(obj.data));
-      this.getMessageData(obj.data).then((message) => {
+      this.getMessageData(obj.data).then(message => {
         this.selectedAlert.messageObj = message;
       });
       $('#alertMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
-    }
+      }
   }
 
   getMessageData(alert) {
@@ -329,16 +329,16 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
         id: alert.id,
         from_date: null,
         to_date: null,
-        epoch: true,
+        epoch: true
       };
-      const epoch = this.commonService.convertDateToEpoch(alert.message_date);
-      obj.from_date = epoch ? epoch - 300 : null;
-      obj.to_date = epoch ? epoch + 300 : null;
-      this.apiSubscriptions.push(
-        this.assetService.getAssetMessageById(obj, 'alert').subscribe((response: any) => {
+      const epoch =  this.commonService.convertDateToEpoch(alert.message_date);
+      obj.from_date = epoch ? (epoch - 300) : null;
+      obj.to_date = (epoch ? (epoch + 300) : null);
+      this.apiSubscriptions.push(this.assetService.getAssetMessageById(obj, 'alert').subscribe(
+        (response: any) => {
           resolve(response.message);
-        })
-      );
+        }
+      ));
     });
   }
 
@@ -363,6 +363,8 @@ export class ApplicationAlertsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.apiSubscriptions.forEach((subscribe) => subscribe.unsubscribe());
+    this.apiSubscriptions.forEach(subscribe => subscribe.unsubscribe());
   }
+
+
 }

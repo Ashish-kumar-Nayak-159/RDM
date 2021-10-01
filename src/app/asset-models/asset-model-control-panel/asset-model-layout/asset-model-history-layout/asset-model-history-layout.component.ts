@@ -305,7 +305,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
       title: this.chartTitle,
       chartType: this.setChartType(),
       chartCount: this.chartCount,
-      chart_Id: 'chart_' + moment().utc().valueOf,
+      chart_Id: 'chart_' + moment().utc().unix(),
       showDataTable: this.showDataTable,
       y1axis: this.y1AxisProps,
       y2axis: this.y2AxisProps,

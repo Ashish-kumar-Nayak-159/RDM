@@ -417,7 +417,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
       }
     }
     this.isCreateWidgetAPILoading = true;
-    this.widgetObj.chartId = 'chart_' + moment().utc().valueOf;
+    this.widgetObj.chartId = 'chart_' + moment().utc().unix();
     const arr = this.liveWidgets;
     arr.push(this.widgetObj);
     this.updateAssetModel(arr, 'Widget added successfully.');

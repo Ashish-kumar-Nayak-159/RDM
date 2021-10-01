@@ -13,9 +13,10 @@ declare var $: any;
 @Component({
   selector: 'app-add-campaign',
   templateUrl: './add-campaign.component.html',
-  styleUrls: ['./add-campaign.component.css'],
+  styleUrls: ['./add-campaign.component.css']
 })
 export class AddCampaignComponent implements OnInit {
+
   isCampaignAPILoading = false;
   contextApp: any;
   userData: any;
@@ -26,7 +27,7 @@ export class AddCampaignComponent implements OnInit {
     autoUpdateInput: false,
     singleDatePicker: true,
     autoApply: true,
-    minDate: moment(),
+    minDate: moment()
   };
   daterange: any = {};
   assetModels: any[] = [];
@@ -35,38 +36,38 @@ export class AddCampaignComponent implements OnInit {
       name: 'Firmware Upgrade of Field loT Assets over the Air',
       objective: 'FOTA',
       communication_method: 'Twin',
-      model_type: [CONSTANTS.IP_GATEWAY, CONSTANTS.IP_ASSET],
+      model_type: [CONSTANTS.IP_GATEWAY, CONSTANTS.IP_ASSET]
     },
     {
       name: 'Sync Updated Model Properties with Field loT Assets',
       objective: 'Sync Properties/Alerts',
       communication_method: 'Message',
-      model_type: [CONSTANTS.IP_ASSET, CONSTANTS.NON_IP_ASSET],
+      model_type: [CONSTANTS.IP_ASSET, CONSTANTS.NON_IP_ASSET]
     },
     {
       name: 'Updating Measurement Frequency / Telemetry Frequency of Field loT Assets',
       objective: 'Change Telemetry Frequency',
       communication_method: 'Message',
-      model_type: [CONSTANTS.IP_ASSET, CONSTANTS.NON_IP_ASSET],
+      model_type: [CONSTANTS.IP_ASSET, CONSTANTS.NON_IP_ASSET]
     },
     {
       name: 'Updating Telemetry Ingestion Settings of Field loT Assets',
       objective: 'Change Ingestion Frequency',
       communication_method: 'Message',
-      model_type: [CONSTANTS.IP_ASSET, CONSTANTS.NON_IP_ASSET],
+      model_type: [CONSTANTS.IP_ASSET, CONSTANTS.NON_IP_ASSET]
     },
     {
       name: 'Updating Turbo Mode settings of Field loT Assets',
       objective: 'Change Telemetry Mode',
       communication_method: 'Message',
-      model_type: [CONSTANTS.IP_ASSET, CONSTANTS.NON_IP_ASSET],
+      model_type: [CONSTANTS.IP_ASSET, CONSTANTS.NON_IP_ASSET]
     },
     {
       name: 'Deploying Edge Rules in Field loT Assets',
       objective: 'Sync Rules',
       communication_method: 'Message',
-      model_type: [CONSTANTS.IP_ASSET, CONSTANTS.NON_IP_ASSET],
-    },
+      model_type: [CONSTANTS.IP_ASSET, CONSTANTS.NON_IP_ASSET]
+    }
   ];
   propertySyncList = ['Measured Properties', 'Edge Derived Properties', 'Alerts'];
   isCreateCampaignAPILoading = false;
@@ -80,7 +81,7 @@ export class AddCampaignComponent implements OnInit {
     INSTALL_PACKAGE: 'Install Package',
     DELETE_PACKAGE: 'Uninstall Package',
     UPGRADE_PACKAGE: 'Upgrade Package',
-    set_properties: 'Sync Properties/Alerts',
+    set_properties: 'Sync Properties/Alerts'
   };
   hierarchyList: any[] = [];
   hierarchyArr = {};
@@ -90,7 +91,7 @@ export class AddCampaignComponent implements OnInit {
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
     private campaignService: CampaignService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -107,10 +108,10 @@ export class AddCampaignComponent implements OnInit {
     if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
       this.contextApp.hierarchy.levels.forEach((level, index) => {
         if (index !== 0) {
-          this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-          if (this.contextApp.user.hierarchy[level]) {
-            this.onChangeOfHierarchy(index);
-          }
+        this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+        if (this.contextApp.user.hierarchy[level]) {
+          this.onChangeOfHierarchy(index);
+        }
         }
       });
     }
@@ -123,12 +124,12 @@ export class AddCampaignComponent implements OnInit {
   }
 
   onChangeOfHierarchy(i) {
-    Object.keys(this.configureHierarchy).forEach((key) => {
+    Object.keys(this.configureHierarchy).forEach(key => {
       if (key > i) {
         delete this.configureHierarchy[key];
       }
     });
-    Object.keys(this.hierarchyArr).forEach((key) => {
+    Object.keys(this.hierarchyArr).forEach(key => {
       if (key > i) {
         this.hierarchyArr[key] = [];
       }
@@ -144,9 +145,9 @@ export class AddCampaignComponent implements OnInit {
     }
 
     let count = 0;
-    Object.keys(this.configureHierarchy).forEach((key) => {
+    Object.keys(this.configureHierarchy).forEach(key => {
       if (this.configureHierarchy[key]) {
-        count++;
+        count ++;
       }
     });
     if (count === 0) {
@@ -159,39 +160,35 @@ export class AddCampaignComponent implements OnInit {
 
   searchAssetsModels() {
     this.assetModels = [];
-    const type = this.campaignObjectiveList.find((campaign) => campaign.objective === this.campaignObj.objective);
+    const type = this.campaignObjectiveList.find(campaign => campaign.objective === this.campaignObj.objective);
     const obj = {
-      app: this.contextApp.app,
+      app: this.contextApp.app
     };
-    this.subscriptions.push(
-      this.assetModelService.getAssetsModelsList(obj).subscribe((response: any) => {
+    this.subscriptions.push(this.assetModelService.getAssetsModelsList(obj).subscribe(
+      (response: any) => {
         if (response && response.data) {
-          response.data.forEach((model) => {
-            type.model_type.forEach((typeModel) => {
+          response.data.forEach(model => {
+            type.model_type.forEach(typeModel => {
               if (model.model_type === typeModel) {
                 this.assetModels.push(model);
               }
             });
           });
         }
-      })
-    );
+      }
+    ));
   }
 
   selectedDate(value: any, type) {
     console.log(value);
     console.log(this.campaignObj);
     if (type === 'start') {
-      this.campaignObj.expected_start_date = moment(value.start).utc().valueOf;
-      this.campaignObj.expected_start_date_display = this.commonService.convertEpochToOnlyDate(
-        this.campaignObj.expected_start_date
-      );
+      this.campaignObj.expected_start_date = moment(value.start).utc().unix();
+      this.campaignObj.expected_start_date_display = this.commonService.convertEpochToOnlyDate(this.campaignObj.expected_start_date);
     }
     if (type === 'end') {
-      this.campaignObj.expected_end_date = moment(value.start).utc().valueOf;
-      this.campaignObj.expected_end_date_display = this.commonService.convertEpochToOnlyDate(
-        this.campaignObj.expected_end_date
-      );
+      this.campaignObj.expected_end_date = moment(value.start).utc().unix();
+      this.campaignObj.expected_end_date_display = this.commonService.convertEpochToOnlyDate(this.campaignObj.expected_end_date);
     }
   }
 
@@ -209,16 +206,13 @@ export class AddCampaignComponent implements OnInit {
 
   onPrepareHierarchy() {
     this.campaignObj.hierarchyString = '';
-    this.campaignObj.hierarchy = { App: this.contextApp.app };
-    this.campaignObj.hierarchyString =
-      this.contextApp.app + (Object.keys(this.configureHierarchy).length > 0 ? ' / ' : '');
+    this.campaignObj.hierarchy = {App: this.contextApp.app};
+    this.campaignObj.hierarchyString = this.contextApp.app + (Object.keys(this.configureHierarchy).length > 0 ? ' / ' : '');
     Object.keys(this.configureHierarchy).forEach((key, index) => {
       if (this.configureHierarchy[key]) {
-        this.campaignObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
-        this.campaignObj.hierarchyString =
-          this.campaignObj.hierarchyString +
-          this.configureHierarchy[key] +
-          (this.configureHierarchy[Object.keys(this.configureHierarchy)[index + 1]] ? ' / ' : '');
+      this.campaignObj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
+      this.campaignObj.hierarchyString = this.campaignObj.hierarchyString + this.configureHierarchy[key] +
+      (this.configureHierarchy[Object.keys(this.configureHierarchy)[index + 1]] ? ' / ' : '');
       }
     });
     console.log(this.campaignObj.hierarchyString);
@@ -227,14 +221,13 @@ export class AddCampaignComponent implements OnInit {
   getPackages() {
     this.packages = [];
     this.subscriptions.push(
-      this.assetModelService
-        .getPackages(this.contextApp.app, this.campaignObj.asset_model_obj.name, {})
-        .subscribe((response: any) => {
+      this.assetModelService.getPackages(this.contextApp.app, this.campaignObj.asset_model_obj.name, {}).subscribe(
+        (response: any) => {
           if (response.data?.length > 0) {
             const arr = [];
-            response.data.forEach((packageObj) => {
+            response.data.forEach(packageObj => {
               let flag = false;
-              arr.forEach((item) => {
+              arr.forEach(item => {
                 item.versions = item.versions ? item.versions : [];
                 if (packageObj.name === item.name) {
                   flag = true;
@@ -242,60 +235,55 @@ export class AddCampaignComponent implements OnInit {
                 }
               });
               if (!flag) {
-                packageObj.versions = [packageObj.version];
+                packageObj.versions = [packageObj.version]
                 arr.push(packageObj);
               }
             });
             this.packages = JSON.parse(JSON.stringify(arr));
           }
-        })
+        }
+      )
     );
   }
 
   getAssetsModelProperties() {
     return new Promise<void>((resolve1, reject) => {
-      const obj = {
-        app: this.contextApp.app,
-        name: this.campaignObj.asset_model,
-      };
-      this.subscriptions.push(
-        this.assetModelService.getAssetsModelProperties(obj).subscribe(
+        const obj = {
+          app: this.contextApp.app,
+          name: this.campaignObj.asset_model
+        };
+        this.subscriptions.push(this.assetModelService.getAssetsModelProperties(obj).subscribe(
           (response: any) => {
-            response.properties.measured_properties = response.properties.measured_properties
-              ? response.properties.measured_properties
-              : [];
-            response.properties.edge_derived_properties = response.properties.edge_derived_properties
-              ? response.properties.edge_derived_properties
-              : [];
+
+            response.properties.measured_properties = response.properties.measured_properties ?
+            response.properties.measured_properties : [];
+            response.properties.edge_derived_properties = response.properties.edge_derived_properties ? response.properties.edge_derived_properties : [];
             this.properties = response.properties;
             resolve1();
-          },
-          (error) => reject()
-        )
-      );
+          }, error => reject()
+        ));
+
     });
   }
 
   getAlertConditions() {
     return new Promise<void>((resolve1, reject) => {
-      const filterObj = {
-        asset_model: this.campaignObj.asset_model,
-      };
-      this.subscriptions.push(
-        this.assetModelService.getAlertConditions(this.contextApp.app, filterObj).subscribe(
-          (response: any) => {
-            if (response?.data) {
-              this.alertConditions = response.data;
-              resolve1();
-            }
-          },
-          (error) => reject()
-        )
-      );
+    const filterObj = {
+      asset_model: this.campaignObj.asset_model,
+    };
+    this.subscriptions.push(this.assetModelService.getAlertConditions(this.contextApp.app, filterObj).subscribe(
+      (response: any) => {
+        if (response?.data) {
+          this.alertConditions = response.data;
+          resolve1();
+        }
+      }, error => reject()
+    ));
     });
   }
 
   prepareFOTAPayload() {
+
     const obj = {
       desired_properties: {
         package_management: {
@@ -304,10 +292,10 @@ export class AddCampaignComponent implements OnInit {
             app_name: this.campaignObj.job_request.package_obj.name,
             version: this.campaignObj.job_request.version,
             url: environment.blobURL + this.campaignObj.job_request.package_obj.url,
-            token: environment.blobKey,
-          },
-        },
-      },
+            token: environment.blobKey
+          }
+        }
+      }
     };
     return obj;
   }
@@ -316,27 +304,27 @@ export class AddCampaignComponent implements OnInit {
     await this.getAssetsModelProperties();
     await this.getAlertConditions();
     const obj = {
-      command: 'set_properties',
+      command: 'set_properties'
     };
     if (this.campaignObj.job_request.type.indexOf('Measured Properties') > -1) {
       obj['measured_properties'] = {};
-      this.properties.measured_properties.forEach((prop) => {
-        obj['measured_properties'][prop.json_key] = prop?.metadata || {};
+      this.properties.measured_properties.forEach(prop => {
+        obj['measured_properties'][prop.json_key] = prop.metadata;
         obj['measured_properties'][prop.json_key].g = prop.group;
       });
       console.log(obj);
     }
     if (this.campaignObj.job_request.type.indexOf('Edge Derived Properties') > -1) {
       obj['edge_derived_properties'] = {};
-      this.properties.edge_derived_properties.forEach((prop) => {
-        obj['edge_derived_properties'][prop.json_key] = prop?.metadata || {};
+      this.properties.edge_derived_properties.forEach(prop => {
+        obj['edge_derived_properties'][prop.json_key] = prop.metadata;
         obj['edge_derived_properties'][prop.json_key].g = prop.group;
       });
       console.log(obj);
     }
     if (this.campaignObj.job_request.type.indexOf('Alerts') > -1) {
       obj['alerts'] = {};
-      this.alertConditions.forEach((prop) => {
+      this.alertConditions.forEach(prop => {
         obj['alerts'][prop.code] = prop.metadata;
       });
       console.log(obj);
@@ -346,20 +334,14 @@ export class AddCampaignComponent implements OnInit {
 
   async createCampaign() {
     const obj = JSON.parse(JSON.stringify(this.campaignObj));
-    obj.hierarchy = { App: this.contextApp.app };
+    obj.hierarchy = {App: this.contextApp.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (this.configureHierarchy[key]) {
         obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
       }
     });
     if (obj.objective === 'FOTA') {
-      if (
-        !obj.asset_model ||
-        !obj.job_request ||
-        !obj.job_request.package_obj ||
-        !obj.job_request.version ||
-        !obj.request_type
-      ) {
+      if (!obj.asset_model || !obj.job_request || !obj.job_request.package_obj || !obj.job_request.version || !obj.request_type) {
         this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Create Campaign');
         return;
       }
@@ -384,25 +366,22 @@ export class AddCampaignComponent implements OnInit {
       obj.job_request = await this.prepareSyncPropertiesPayload();
       obj.request_type = this.requestTypeData[obj.job_request.command];
     }
-    this.subscriptions.push(
-      this.campaignService.createCampaign(this.contextApp.app, obj).subscribe(
-        (response: any) => {
-          console.log(moment().utc().valueOf);
-          console.log(new Date().getTime());
-          this.toasterService.showSuccess(APIMESSAGES.CREATE_CAMPAIGN_SUCCESS, 'Create Campaign');
-          this.isCreateCampaignAPILoading = false;
-          this.onCloseCampaignModal();
-        },
-        (error) => {
-          this.toasterService.showError(error.message, 'Create Campaign');
-          this.isCreateCampaignAPILoading = false;
-        }
-      )
-    );
+    this.subscriptions.push(this.campaignService.createCampaign(this.contextApp.app, obj).subscribe(
+      (response: any) => {
+        this.toasterService.showSuccess(APIMESSAGES.CREATE_CAMPAIGN_SUCCESS, 'Create Campaign');
+        this.isCreateCampaignAPILoading = false;
+        this.onCloseCampaignModal();
+      }, error => {
+        this.toasterService.showError(error.message, 'Create Campaign');
+        this.isCreateCampaignAPILoading = false;
+      }
+    ));
   }
 
   onCloseCampaignModal() {
     console.log(this.campaignObj);
     this.cancelEvent.emit();
+
   }
+
 }

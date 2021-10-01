@@ -71,7 +71,7 @@ export class SpecificTwinChangeComponent implements OnInit {
       this.getSlaveData();
     }
     // this.messageIdInterval = setInterval(() => {
-    //   this.c2dMessageData.message_id = this.asset.asset_id + '_' + moment().valueOf;
+    //   this.c2dMessageData.message_id = this.asset.asset_id + '_' + moment().unix();
     // }, 1000);
   }
 

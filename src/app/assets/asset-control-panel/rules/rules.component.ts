@@ -167,7 +167,7 @@ export class RulesComponent implements OnInit {
       },
       asset_id: this.asset.asset_id,
       app: this.contextApp.app,
-      timestamp: moment().valueOf,
+      timestamp: moment().unix(),
       acknowledge: 'Full',
       expire_in_min: 2880,
       job_id: this.commonService.generateUUID(),

@@ -318,8 +318,8 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
       this.telemetryFilter.to_date = dateObj.to_date;
       this.selectedDateRange = value.label;
     } else {
-      this.telemetryFilter.from_date = moment(value.start).utc().valueOf;
-      this.telemetryFilter.to_date = moment(value.end).utc().valueOf;
+      this.telemetryFilter.from_date = moment(value.start).utc().unix();
+      this.telemetryFilter.to_date = moment(value.end).utc().unix();
       this.selectedDateRange =
         moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
     }

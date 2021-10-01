@@ -10,12 +10,14 @@ import { Subscription, interval } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { HttpParams } from '@angular/common/http';
 
+
 @Component({
   selector: 'app-compose-c2d-message',
   templateUrl: './compose-c2d-message.component.html',
-  styleUrls: ['./compose-c2d-message.component.css'],
+  styleUrls: ['./compose-c2d-message.component.css']
 })
 export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
+
   @Input() asset: Asset = new Asset();
   c2dMessageData: any = {};
   userData: any;
@@ -39,32 +41,30 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
     private assetService: AssetService,
     private commonService: CommonService,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.displayType = 'compose';
-    this.subscriptions.push(
-      this.route.paramMap.subscribe((params) => {
-        this.appName = params.get('applicationId');
-        this.listName = params.get('listName');
-        this.listName = this.listName.slice(0, -1);
-        this.c2dMessageData = {
-          asset_id: this.asset.asset_id,
-          gateway_id: this.asset.gateway_id,
-          app: this.appName,
-          timestamp: moment().valueOf,
-          message: null,
-          acknowledge: 'Full',
-          expire_in_min: 1,
-        };
-        if (this.listName === 'gateway') {
-          this.getAssetsListByGateway();
-        }
-      })
-    );
+    this.subscriptions.push(this.route.paramMap.subscribe(params => {
+      this.appName = params.get('applicationId');
+      this.listName = params.get('listName');
+      this.listName = this.listName.slice(0, -1);
+      this.c2dMessageData = {
+        asset_id: this.asset.asset_id,
+        gateway_id: this.asset.gateway_id,
+        app: this.appName,
+        timestamp:  moment().unix(),
+        message: null,
+        acknowledge: 'Full',
+        expire_in_min: 1
+      };
+      if (this.listName === 'gateway') {
+        this.getAssetsListByGateway();
+      }
+    }));
     // this.messageIdInterval = setInterval(() => {
-    //   this.c2dMessageData.message_id = this.asset.asset_id + '_' + moment().valueOf;
+    //   this.c2dMessageData.message_id = this.asset.asset_id + '_' + moment().unix();
     // }, 1000);
   }
 
@@ -73,19 +73,16 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
     const obj = {
       gateway_id: this.asset.asset_id,
       app: this.appName,
-      type: CONSTANTS.NON_IP_ASSET,
+      type: CONSTANTS.NON_IP_ASSET
     };
-    this.subscriptions.push(
-      this.assetService.getIPAssetsAndGateways(obj, this.appName).subscribe(
-        (response: any) => {
-          if (response && response.data) {
-            this.assets = response.data;
-            this.c2dMessageData.asset_id = this.assets.length > 0 ? this.assets[0].asset_id : undefined;
-          }
-        },
-        (errror) => {}
-      )
-    );
+    this.subscriptions.push(this.assetService.getIPAssetsAndGateways(obj, this.appName).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.assets = response.data;
+          this.c2dMessageData.asset_id = this.assets.length > 0 ? this.assets[0].asset_id : undefined;
+        }
+      }, errror => {}
+    ));
   }
 
   validateMessage() {
@@ -128,65 +125,51 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
       return;
     }
     this.isSendC2DMessageAPILoading = true;
-    this.subscriptions.push(
-      this.assetService
-        .sendC2DMessage(this.sentMessageData, this.appName, this.asset?.gateway_id || this.asset.asset_id)
-        .subscribe(
-          (response: any) => {
-            this.isMessageValidated = undefined;
-            this.sendMessageResponse = 'Successfully sent.';
-            this.sendMessageStatus = 'success';
-            this.toasterService.showSuccess('C2D message sent successfully', 'Send C2D Message');
-            this.isSendC2DMessageAPILoading = false;
-            const expiryDate = moment().add(this.sentMessageData.expire_in_min, 'minutes').toDate();
-            this.timerInterval = setInterval(() => {
-              const time = Math.floor((expiryDate.getTime() - new Date().getTime()) / 1000);
-              this.timerObj = this.dhms(time);
-            }, 1000);
-          },
-          (error) => {
-            this.sendMessageResponse =
-              error.message && error.message.includes('Queue') ? 'Asset Queue size exceeded.' : 'Not Successful';
-            this.sendMessageStatus = 'error';
-            this.toasterService.showError(error.message, 'Send C2D Message');
-            this.isSendC2DMessageAPILoading = false;
-            this.sentMessageData = undefined;
-          }
-        )
-    );
+    this.subscriptions.push(this.assetService.sendC2DMessage(this.sentMessageData, this.appName,
+      this.asset?.gateway_id || this.asset.asset_id).subscribe(
+      (response: any) => {
+        this.isMessageValidated = undefined;
+        this.sendMessageResponse = 'Successfully sent.';
+        this.sendMessageStatus = 'success';
+        this.toasterService.showSuccess('C2D message sent successfully', 'Send C2D Message');
+        this.isSendC2DMessageAPILoading = false;
+        const expiryDate = moment().add(this.sentMessageData.expire_in_min, 'minutes').toDate();
+        this.timerInterval = setInterval(() => {
+          const time = Math.floor((expiryDate.getTime() - new Date().getTime()) / 1000);
+          this.timerObj = this.dhms(time);
+        }, 1000);
+      }, error => {
+        this.sendMessageResponse = error.message && error.message.includes('Queue') ? 'Asset Queue size exceeded.' : 'Not Successful';
+        this.sendMessageStatus = 'error';
+        this.toasterService.showError(error.message, 'Send C2D Message');
+        this.isSendC2DMessageAPILoading = false;
+        this.sentMessageData = undefined;
+      }
+    ));
   }
 
   verifyQueueMessages() {
     this.noOfMessageInQueue = null;
     let params = new HttpParams();
-    params = params.set(
-      this.asset.tags.category === CONSTANTS.IP_GATEWAY ? 'gateway_id' : 'asset_id',
-      this.asset.asset_id
-    );
+    params = params.set(this.asset.tags.category === CONSTANTS.IP_GATEWAY ? 'gateway_id' : 'asset_id', this.asset.asset_id);
     // params = params.set('app', this.appName);
-    this.subscriptions.push(
-      this.assetService.getQueueMessagesCount(params, this.appName).subscribe((response: any) => {
+    this.subscriptions.push(this.assetService.getQueueMessagesCount(params, this.appName).subscribe(
+      (response: any) => {
         this.noOfMessageInQueue = response.count;
-      })
-    );
+      }
+    ));
   }
 
   purgeQueueMessages() {
     let params = new HttpParams();
-    params = params.set(
-      this.asset.tags.category === CONSTANTS.IP_GATEWAY ? 'gateway_id' : 'asset_id',
-      this.asset.asset_id
-    );
+    params = params.set(this.asset.tags.category === CONSTANTS.IP_GATEWAY ? 'gateway_id' : 'asset_id', this.asset.asset_id);
     // params = params.set('app', this.appName);
-    this.subscriptions.push(
-      this.assetService.purgeQueueMessages(params, this.appName).subscribe(
-        (response) => {
-          this.toasterService.showSuccess('Messages purged successfully', 'Purge Messages');
-          this.verifyQueueMessages();
-        },
-        (error) => this.toasterService.showError('Error in purging messages', 'Purge messages')
-      )
-    );
+    this.subscriptions.push(this.assetService.purgeQueueMessages(params, this.appName).subscribe(
+      response => {
+        this.toasterService.showSuccess('Messages purged successfully', 'Purge Messages');
+        this.verifyQueueMessages();
+      }, error => this.toasterService.showError('Error in purging messages', 'Purge messages')
+    ));
   }
 
   onClickOfFeedback() {
@@ -209,7 +192,7 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
       return;
     }
     setTimeout(() => {
-      this.displayType = 'response';
+    this.displayType = 'response';
     }, 500);
   }
 
@@ -228,19 +211,20 @@ export class ComposeC2DMessageComponent implements OnInit, OnDestroy {
       return {
         hours,
         minutes,
-        seconds,
+        seconds
       };
     }
     return {
       hours,
       minutes,
-      seconds,
+      seconds
     };
-  }
+}
 
   ngOnDestroy() {
     clearInterval(this.messageIdInterval);
     clearInterval(this.timerInterval);
-    this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
+
 }

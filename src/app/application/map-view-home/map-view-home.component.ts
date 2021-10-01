@@ -350,8 +350,8 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     return new Promise<void>((resolve) => {
       const derivedKPICode = 'SPCD';
       const obj = {
-        from_date: moment().subtract(24, 'hours').utc().valueOf,
-        to_date: moment().utc().valueOf,
+        from_date: moment().subtract(24, 'hours').utc().unix(),
+        to_date: moment().utc().unix(),
         epoch: true,
       };
       this.apiSubscriptions.push(

@@ -11,13 +11,14 @@ declare var $: any;
 @Component({
   selector: 'app-application-events',
   templateUrl: './application-events.component.html',
-  styleUrls: ['./application-events.component.css'],
+  styleUrls: ['./application-events.component.css']
 })
 export class ApplicationEventsComponent implements OnInit {
+
   contextApp: any;
   filterObj: any = {};
-  @ViewChild('dtInput1', { static: false }) dtInput1: any;
-  @ViewChild('dtInput2', { static: false }) dtInput2: any;
+  @ViewChild('dtInput1', {static: false}) dtInput1: any;
+  @ViewChild('dtInput2', {static: false}) dtInput2: any;
   apiSubscriptions: Subscription[] = [];
   assets: any[] = [];
   originalAssets: any[] = [];
@@ -27,14 +28,14 @@ export class ApplicationEventsComponent implements OnInit {
   hierarchyArr: any = {};
   configureHierarchy: any = {};
   isFilterSelected = false;
-  modalConfig: { jsonDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
+  modalConfig: { jsonDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean; };
   selectedEvent: any;
   today = new Date();
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
     private toasterService: ToasterService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -43,13 +44,13 @@ export class ApplicationEventsComponent implements OnInit {
       data: [
         {
           title: this.contextApp.user.hierarchyString,
-          url: 'applications/' + this.contextApp.app,
+          url: 'applications/' + this.contextApp.app
         },
-        {
-          title: 'Events',
-          url: 'applications/' + this.contextApp.app + '/events',
-        },
-      ],
+          {
+            title: 'Events',
+            url: 'applications/' + this.contextApp.app + '/events'
+          }
+      ]
     });
     this.filterObj.count = 10;
     this.filterObj.app = this.contextApp.app;
@@ -62,46 +63,47 @@ export class ApplicationEventsComponent implements OnInit {
           key: 'local_created_date',
           type: 'text',
           headerClass: '',
-          valueclass: '',
+          valueclass: ''
         },
         {
           name: 'Asset',
           key: 'display_name',
           type: 'text',
           headerClass: '',
-          valueclass: '',
+          valueclass: ''
         },
         {
           name: 'Event',
           key: 'event_type',
           type: 'text',
           headerClass: '',
-          valueclass: '',
-        },
-      ],
+          valueclass: ''
+        }
+      ]
     };
     await this.getAllAssets();
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
     }
 
+
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
-        this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-        if (this.contextApp.user.hierarchy[level]) {
-          this.onChangeOfHierarchy(index, false);
-        }
+      this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+      if (this.contextApp.user.hierarchy[level]) {
+        this.onChangeOfHierarchy(index, false);
+      }
       }
     });
   }
 
   async onChangeOfHierarchy(i, flag = true) {
-    Object.keys(this.configureHierarchy).forEach((key) => {
+    Object.keys(this.configureHierarchy).forEach(key => {
       if (key > i) {
         delete this.configureHierarchy[key];
       }
     });
-    Object.keys(this.hierarchyArr).forEach((key) => {
+    Object.keys(this.hierarchyArr).forEach(key => {
       if (key > i) {
         this.hierarchyArr[key] = [];
       }
@@ -118,7 +120,7 @@ export class ApplicationEventsComponent implements OnInit {
     // let hierarchy = {...this.configureHierarchy};
 
     if (flag) {
-      const hierarchyObj: any = { App: this.contextApp.app };
+      const hierarchyObj: any = { App: this.contextApp.app};
       Object.keys(this.configureHierarchy).forEach((key) => {
         if (this.configureHierarchy[key]) {
           hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
@@ -127,23 +129,23 @@ export class ApplicationEventsComponent implements OnInit {
       if (Object.keys(hierarchyObj).length === 1) {
         this.assets = JSON.parse(JSON.stringify(this.originalAssets));
       } else {
-        const arr = [];
-        this.assets = [];
-        this.originalAssets.forEach((asset) => {
-          let trueFlag = 0;
-          let flaseFlag = 0;
-          Object.keys(hierarchyObj).forEach((hierarchyKey) => {
-            if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
-              trueFlag++;
-            } else {
-              flaseFlag++;
-            }
-          });
-          if (trueFlag > 0 && flaseFlag === 0) {
-            arr.push(asset);
+      const arr = [];
+      this.assets = [];
+      this.originalAssets.forEach(asset => {
+        let trueFlag = 0;
+        let flaseFlag = 0;
+        Object.keys(hierarchyObj).forEach(hierarchyKey => {
+          if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
+            trueFlag++;
+          } else {
+            flaseFlag++;
           }
         });
-        this.assets = JSON.parse(JSON.stringify(arr));
+        if (trueFlag > 0 && flaseFlag === 0) {
+          arr.push(asset);
+        }
+      });
+      this.assets = JSON.parse(JSON.stringify(arr));
       }
       if (this.assets?.length === 1) {
         this.filterObj.asset = this.assets[0];
@@ -151,9 +153,9 @@ export class ApplicationEventsComponent implements OnInit {
       // await this.getAssets(hierarchyObj);
     }
     let count = 0;
-    Object.keys(this.configureHierarchy).forEach((key) => {
+    Object.keys(this.configureHierarchy).forEach(key => {
       if (this.configureHierarchy[key]) {
-        count++;
+        count ++;
       }
     });
     if (count === 0) {
@@ -162,6 +164,7 @@ export class ApplicationEventsComponent implements OnInit {
         this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
       }
     }
+
   }
 
   compareFn(c1, c2): boolean {
@@ -172,17 +175,17 @@ export class ApplicationEventsComponent implements OnInit {
     return new Promise<void>((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
-        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.IP_GATEWAY,
+        type: CONSTANTS.IP_ASSET + ',' + CONSTANTS.IP_GATEWAY
       };
-      this.apiSubscriptions.push(
-        this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app).subscribe((response: any) => {
+      this.apiSubscriptions.push(this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app).subscribe(
+        (response: any) => {
           if (response?.data) {
             this.assets = response.data;
             this.originalAssets = JSON.parse(JSON.stringify(this.assets));
           }
           resolve();
-        })
-      );
+        }
+      ));
     });
   }
 
@@ -212,9 +215,9 @@ export class ApplicationEventsComponent implements OnInit {
 
   onSingleDateChange(event) {
     this.filterObj.from_date = moment(event.value).utc();
-    this.filterObj.to_date = moment(event.value).add(23, 'hours').add(59, 'minute').utc();
-    const to = this.filterObj.to_date.valueOf;
-    const current = moment().utc().valueOf;
+    this.filterObj.to_date = ((moment(event.value).add(23, 'hours')).add(59, 'minute')).utc();
+    const to = this.filterObj.to_date.unix();
+    const current = (moment().utc()).unix();
     if (current < to) {
       this.filterObj.to_date = moment().utc();
     }
@@ -229,26 +232,26 @@ export class ApplicationEventsComponent implements OnInit {
   searchEvents() {
     this.isFilterSelected = true;
     this.isEventLoading = true;
-    const obj = { ...this.filterObj };
+    const obj = {...this.filterObj};
     const now = moment().utc();
     if (this.filterObj.dateOption === '5 mins') {
-      obj.to_date = now.valueOf;
-      obj.from_date = now.subtract(5, 'minute').valueOf;
+      obj.to_date = now.unix();
+      obj.from_date = (now.subtract(5, 'minute')).unix();
     } else if (this.filterObj.dateOption === '30 mins') {
-      obj.to_date = now.valueOf;
-      obj.from_date = now.subtract(30, 'minute').valueOf;
+      obj.to_date = now.unix();
+      obj.from_date = (now.subtract(30, 'minute')).unix();
     } else if (this.filterObj.dateOption === '1 hour') {
-      obj.to_date = now.valueOf;
-      obj.from_date = now.subtract(1, 'hour').valueOf;
+      obj.to_date = now.unix();
+      obj.from_date = (now.subtract(1, 'hour')).unix();
     } else if (this.filterObj.dateOption === '24 hour') {
-      obj.to_date = now.valueOf;
-      obj.from_date = now.subtract(24, 'hour').valueOf;
+      obj.to_date = now.unix();
+      obj.from_date = (now.subtract(24, 'hour')).unix();
     } else {
       if (this.filterObj.from_date) {
-        obj.from_date = this.filterObj.from_date.valueOf;
+        obj.from_date = (this.filterObj.from_date.unix());
       }
       if (this.filterObj.to_date) {
-        obj.to_date = this.filterObj.to_date.valueOf;
+        obj.to_date = this.filterObj.to_date.unix();
       }
     }
     if (!obj.from_date || !obj.to_date) {
@@ -257,7 +260,7 @@ export class ApplicationEventsComponent implements OnInit {
       this.isFilterSelected = false;
       return;
     }
-    obj.hierarchy = { App: this.contextApp.app };
+    obj.hierarchy = { App: this.contextApp.app};
     Object.keys(this.configureHierarchy).forEach((key) => {
       if (this.configureHierarchy[key]) {
         obj.hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
@@ -267,28 +270,26 @@ export class ApplicationEventsComponent implements OnInit {
     obj.asset_id = obj.asset?.asset_id;
     delete obj.asset;
     delete obj.dateOption;
-    this.apiSubscriptions.push(
-      this.assetService.getAssetLifeCycleEvents(obj).subscribe(
-        (response: any) => {
-          if (response && response.data) {
-            this.events = response.data;
-            this.events.forEach((item) => {
-              const eventMsg = item.event_type.split('.');
-              eventMsg[eventMsg.length - 1] = eventMsg[eventMsg.length - 1].replace('Asset', '');
-              eventMsg[eventMsg.length - 1] =
-                (item.category === CONSTANTS.IP_GATEWAY ? 'Gateway ' : 'Asset ') + eventMsg[eventMsg.length - 1];
-              item.event_type = eventMsg[eventMsg.length - 1];
-              item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
-            });
-          }
-          this.isEventLoading = false;
-        },
-        (error) => (this.isEventLoading = false)
-      )
-    );
+    this.apiSubscriptions.push(this.assetService.getAssetLifeCycleEvents(obj).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.events = response.data;
+          this.events.forEach(item => {
+            const eventMsg = item.event_type.split('.');
+            eventMsg[eventMsg.length - 1] = eventMsg[eventMsg.length - 1].replace('Asset', '');
+            eventMsg[eventMsg.length - 1] = (item.category === CONSTANTS.IP_GATEWAY ? 'Gateway ' : 'Asset ' ) +
+            eventMsg[eventMsg.length - 1];
+            item.event_type = eventMsg[eventMsg.length - 1];
+            item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
+          });
+        }
+        this.isEventLoading = false;
+      }, error => this.isEventLoading = false
+    ));
   }
 
   ngOnDestroy() {
-    this.apiSubscriptions.forEach((subscribe) => subscribe.unsubscribe());
+    this.apiSubscriptions.forEach(subscribe => subscribe.unsubscribe());
   }
+
 }

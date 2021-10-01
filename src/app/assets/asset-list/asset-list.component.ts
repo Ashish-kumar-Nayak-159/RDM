@@ -386,8 +386,8 @@ export class AssetListComponent implements OnInit, OnDestroy {
       this.tableConfig.is_table_data_loading = true;
       const derivedKPICode = 'SPCD';
       const obj = {
-        from_date: moment().subtract(24, 'hours').utc().valueOf,
-        to_date: moment().utc().valueOf,
+        from_date: moment().subtract(24, 'hours').utc().unix(),
+        to_date: moment().utc().unix(),
         epoch: true,
         asset_model: 'Hydraulic Booster Compressor 1.2',
       };

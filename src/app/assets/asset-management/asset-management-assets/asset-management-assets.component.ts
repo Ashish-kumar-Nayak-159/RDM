@@ -269,6 +269,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
 
   onCreateAssetCancelModal() {
     this.isOpenAssetCreateModal = false;
+    this.selectedAsset = undefined;
   }
 
   onAssetSelection(asset) {

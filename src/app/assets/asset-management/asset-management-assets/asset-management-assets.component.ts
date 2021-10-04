@@ -146,13 +146,14 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     this.currentLimit = this.tileData && this.tileData[2] ? Number(this.tileData[2]?.value) : 20;
   }
 
-  getAssets() {
+  async getAssets(): Promise<void> {
     this.isAssetListLoading = true;
+    await this.getNonProvisionedAssets();
     const obj: any = {};
     obj.app = this.contextApp.app;
     obj.offset = this.currentOffset;
     obj.count = this.currentLimit;
-    obj.provision_status = 'Pending,Completed';
+    // obj.provision_status = 'Pending,Completed';
     if (this.contextApp) {
       obj.hierarchy = JSON.stringify(this.contextApp.user.hierarchy);
     }
@@ -204,6 +205,51 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     );
   }
 
+  getNonProvisionedAssets() {
+    return new Promise<void>((resolve1) => {
+    this.isAssetListLoading = true;
+    const obj: any = {};
+    obj.type = this.type; 
+    this.subscriptions.push(
+      this.assetService.getNonProvisionedAsset(obj, this.contextApp.app).subscribe(
+        (response: any) => {
+          if (response.data) {
+            response.data.forEach((item) => {
+              if (!item.display_name) {
+                item.display_name = item.asset_id;
+              }
+              if (item.hierarchy) {
+                item.hierarchyString = '';
+                const keys = Object.keys(item.hierarchy);
+                this.contextApp.hierarchy.levels.forEach((key, index) => {
+                  item.hierarchyString += item.hierarchy[key]
+                    ? item.hierarchy[key] + (keys[index + 1] ? ' / ' : '')
+                    : '';
+                });
+              }
+              if (!item.provision_status) {
+                item.provision_status = 'Pending';
+              }
+            });
+            this.assetsList = [...this.assetsList, ...response.data];
+          }
+          resolve1();
+          // if (response.data.length === this.currentLimit) {
+          //   this.insideScrollFunFlag = false;
+          // } else {
+          //   this.insideScrollFunFlag = true;
+          // }
+          this.isAssetListLoading = false;
+        },
+        (error) => {
+          this.isAssetListLoading = false;
+          // this.insideScrollFunFlag = false;
+        }
+      )
+     );
+    });
+  }
+
   openAssetCreateModal(asset = undefined) {
     if (this.type === CONSTANTS.NON_IP_ASSET) {
       this.getGatewayList();
@@ -222,6 +268,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
 
   onCreateAssetCancelModal() {
     this.isOpenAssetCreateModal = false;
+    this.selectedAsset = undefined;
   }
 
   onAssetSelection(asset) {

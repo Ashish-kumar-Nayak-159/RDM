@@ -53,8 +53,11 @@ export class AddAssetComponent implements OnInit, OnChanges {
     }
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
-        if (this.assetDetail.hierarchy) {
-          this.addAssetConfigureHierarchy[index] = this.assetDetail.hierarchy[level];
+        if (this.assetDetail?.hierarchy) {
+            this.addAssetConfigureHierarchy[index] = this.assetDetail.hierarchy[level];
+            if (this.assetDetail.hierarchy[level]) {
+              this.onChangeOfAddAssetHierarchy(index);
+            }
         } else {
           this.addAssetConfigureHierarchy[index] = this.contextApp.user.hierarchy[level];
           if (this.contextApp.user.hierarchy[level]) {
@@ -450,6 +453,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
   onCloseCreateAssetModal() {
     $('#createAssetModal').modal('hide');
     this.cancelModal.emit();
+    // this.assetDetail.tags = {};
     // this.assetDetail = undefined;
   }
 }

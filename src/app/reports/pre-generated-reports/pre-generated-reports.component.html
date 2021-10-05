@@ -253,11 +253,11 @@
                 [(ngModel)]="reportsObj.report_category" name="report_category" (change)="onReportChange()"
                 #reportType="ngModel">
                 <option [ngValue]="undefined">Report Category</option>
-                <option [ngValue]="'Telemetry Report'">Telemetry Report</option>
-                <option [ngValue]="'Alert Report'">Alert Report</option>
+                <option [ngValue]="'telemetry'">Telemetry Report</option>
+                <option [ngValue]="'alert'">Alert Report</option>
               </select>
             </div>
-            <ng-container *ngIf="reportsObj.report_category === 'Telemetry Report'">
+            <ng-container *ngIf="reportsObj.report_category === 'telemetry'">
               <div class="form-group">
                 <label for="message-text" class="col-form-label required">Properties:</label>
                 <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" [clearable]="false"

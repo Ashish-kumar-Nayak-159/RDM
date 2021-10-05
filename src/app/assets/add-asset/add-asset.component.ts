@@ -53,11 +53,16 @@ export class AddAssetComponent implements OnInit, OnChanges {
     }
     this.contextApp.hierarchy.levels.forEach((level, index) => {
       if (index !== 0) {
+<<<<<<< HEAD
         if (this.assetDetail?.hierarchy) {
             this.addAssetConfigureHierarchy[index] = this.assetDetail.hierarchy[level];
             if (this.assetDetail.hierarchy[level]) {
               this.onChangeOfAddAssetHierarchy(index);
             }
+=======
+        if (this.assetDetail.hierarchy) {
+            this.addAssetConfigureHierarchy[index] = this.assetDetail.hierarchy[level];
+>>>>>>> 55ecbfce... bug fix app selection, pregenerated report, non provision asset
         } else {
           this.addAssetConfigureHierarchy[index] = this.contextApp.user.hierarchy[level];
           if (this.contextApp.user.hierarchy[level]) {
@@ -77,7 +82,11 @@ export class AddAssetComponent implements OnInit, OnChanges {
         this.assetDetail.tags.display_name = this.assetDetail.display_name;
       }
       if (!this.assetDetail.asset_manager) {
+<<<<<<< HEAD
         this.assetDetail.tags.asset_manager = undefined;
+=======
+        this.assetDetail.tags.asset_manager = {  user_name: null, user_email: null  };
+>>>>>>> 55ecbfce... bug fix app selection, pregenerated report, non provision asset
       } else {
         const userObj = this.appUsers.find((type) => type.user_email === this.assetDetail.asset_manager);
         userObj.tags = {
@@ -447,7 +456,11 @@ export class AddAssetComponent implements OnInit, OnChanges {
   onCloseCreateAssetModal() {
     $('#createAssetModal').modal('hide');
     this.cancelModal.emit();
+<<<<<<< HEAD
     // this.assetDetail.tags = {};
+=======
+    this.assetDetail.tags = {};
+>>>>>>> 55ecbfce... bug fix app selection, pregenerated report, non provision asset
     // this.assetDetail = undefined;
   }
 }

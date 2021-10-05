@@ -240,7 +240,11 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   onReportChange() {
+<<<<<<< HEAD
     if (this.reportsObj.report_category === 'telemetry') {
+=======
+    if (this.reportsObj.report_category === 'Telemetry Report') {
+>>>>>>> 55ecbfce... bug fix app selection, pregenerated report, non provision asset
       // console.log(this.reportsObj.asset);
       // if (this.reportsObj.asset) {
       //  const asset_model = this.reportsObj.asset_model;

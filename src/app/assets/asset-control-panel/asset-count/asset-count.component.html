@@ -3,31 +3,30 @@
 
     <form class="form-inline">
       <div class="form-group">
-        <input type="number" min="1" id="countId"
-        name="count" class="form-control form-control-sm active record-input"
-        [(ngModel)]="telemetryFilter.count" name="count" >
+        <input type="number" min="1" id="countId" name="count" class="form-control form-control-sm active record-input"
+          [(ngModel)]="telemetryFilter.count" name="count">
       </div>
-      <div class="form-group left-inner-addon" >
+      <div class="form-group left-inner-addon">
         <i class="fa fa-calendar active"></i>
-        <input type="text"  class="form-control form-control-sm active date-range-picker" daterangepicker [(ngModel)]="selectedDateRange"
-        name="daterangeInput"  [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"  [(ngModel)]="selectedDateRange"
-        [tooltip]="selectedDateRange" placement="bottom"/>
+        <input type="text" readonly class="form-control form-control-sm active date-range-picker" daterangepicker
+          [(ngModel)]="selectedDateRange" name="daterangeInput" [options]="options"
+          (selected)="selectedDate($event, daterange)" autocomplete="off" [(ngModel)]="selectedDateRange"
+          [tooltip]="selectedDateRange" placement="bottom" />
       </div>
       <div class="form-group">
         <select class="form-control form-control-sm" style="width: 10em;" id="assetCategory"
-        (change)="onSelectionOfAsset()"
-             [(ngModel)]="telemetryFilter.asset" name="assetCategory">
-              <option [ngValue]="undefined">Select Asset</option>
-              <option [ngValue]="asset" *ngFor="let asset of assets">
-                {{asset?.display_name ? asset.display_name: asset.asset_id}}
-              </option>
-            </select>
+          (change)="onSelectionOfAsset()" [(ngModel)]="telemetryFilter.asset" name="assetCategory">
+          <option [ngValue]="undefined">Select Asset</option>
+          <option [ngValue]="asset" *ngFor="let asset of assets">
+            {{asset?.display_name ? asset.display_name: asset.asset_id}}
+          </option>
+        </select>
       </div>
       <div class="form-group">
         <ng-select [items]="propertyList" class="custom-dropdown w-12 sm" bindLabel="name" [clearable]="false"
-          [searchable]="true"  [multiple]="true" [ngClass]="{'active': telemetryFilter.props?.length > 0}"
-          [closeOnSelect]="false" placeholder="Select Properties" groupBy="type"
-          dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="telemetryFilter.props">
+          [searchable]="true" [multiple]="true" [ngClass]="{'active': telemetryFilter.props?.length > 0}"
+          [closeOnSelect]="false" placeholder="Select Properties" groupBy="type" dropdownPosition="bottom"
+          name="asset-dropdown" [(ngModel)]="telemetryFilter.props">
           <ng-template ng-option-tmp let-item="item">
             <span [tooltip]="item.name">{{item.name}}</span>
           </ng-template>
@@ -36,21 +35,25 @@
           </ng-template>
           <ng-template ng-header-tmp>
             <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-              <li *ngIf="telemetryFilter.props?.length !== propertyList.length"> <a  href="javascript:void(0)" (click)="telemetryFilter.props = propertyList">Select All</a></li>
-              <li *ngIf="telemetryFilter.props?.length === propertyList.length"> <a  href="javascript:void(0)" (click)="telemetryFilter.props = []">Deselect All</a></li>
+              <li *ngIf="telemetryFilter.props?.length !== propertyList.length"> <a href="javascript:void(0)"
+                  (click)="telemetryFilter.props = propertyList">Select All</a></li>
+              <li *ngIf="telemetryFilter.props?.length === propertyList.length"> <a href="javascript:void(0)"
+                  (click)="telemetryFilter.props = []">Deselect All</a></li>
             </ul>
           </ng-template>
           <ng-template ng-option-tmp let-item="item">
-            <span > <i [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties'}"></i> {{item.name}}</span>
+            <span> <i [ngClass]="{'icon icon-function': item.type === 'Edge Derived Properties'}"></i>
+              {{item.name}}</span>
           </ng-template>
         </ng-select>
       </div>
       <label class="">Aggreagtion: &nbsp;</label>
-			<div class="form-group input-group">
-        <input class="form-control form-control-sm bg-light" type="number" id="minutes" min="1"
-        name="minutes" [(ngModel)]="telemetryFilter.aggregation_minutes" placeholder="Agreegation Time"
-        (change)="onNumberChange($event, 'aggregation')" style="width: 4em;" >
-        <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div></div>
+      <div class="form-group input-group">
+        <input class="form-control form-control-sm bg-light" type="number" id="minutes" min="1" name="minutes"
+          [(ngModel)]="telemetryFilter.aggregation_minutes" placeholder="Agreegation Time"
+          (change)="onNumberChange($event, 'aggregation')" style="width: 4em;">
+        <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
+      </div>
       <!-- <div class="form-group">
         <select class="form-control form-control-sm" id="aggregationFormat" [(ngModel)]="telemetryFilter.aggregation_format"
             name="aggregationFormat" disabled>
@@ -62,17 +65,21 @@
             <option [ngValue]="'COUNT'">Count</option>
             </select>
       </div> -->
-      <div class="form-group"><button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary" (click)="searchTelemetry(telemetryFilter)" ><i class="fas fa-search fa-sm"></i></button></div>
-        <!-- <button type="button" class="btn btn-primary btn-sm ml-3 mr-1 my-1" placement="bottom" tooltip="Search" ><i class="fa fa-search fa-sm"></i></button> -->
-        <div class="form-group"><button type="button"  class="btn btn-sm searchBtn btn-white" placement="bottom" tooltip="Clear Filters" (click)="clear();" > <img class="filter-clear-icon" src="./assets/img/filter.svg"></button></div>
-     </form>
+      <div class="form-group"><button type="button" placement="bottom" tooltip="Search"
+          class="btn btn-sm searchBtn btn-primary" (click)="searchTelemetry(telemetryFilter)"><i
+            class="fas fa-search fa-sm"></i></button></div>
+      <!-- <button type="button" class="btn btn-primary btn-sm ml-3 mr-1 my-1" placement="bottom" tooltip="Search" ><i class="fa fa-search fa-sm"></i></button> -->
+      <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-white" placement="bottom"
+          tooltip="Clear Filters" (click)="clear();"> <img class="filter-clear-icon"
+            src="./assets/img/filter.svg"></button></div>
+    </form>
 
-    </div>
-    </div>
+  </div>
+</div>
+<div class="table-responsive">
+  <div class="tableFixHead">
     <div class="table-responsive">
-      <div class="tableFixHead" >
-    <div class="table-responsive">
-      <app-common-table [tableData]="telemetry" [tableConfig]="telemetryTableConfig" [isTableFilterSelected]="isFilterSelected"
-      [isTableDataLoading]="isTelemetryLoading" ></app-common-table>
+      <app-common-table [tableData]="telemetry" [tableConfig]="telemetryTableConfig"
+        [isTableFilterSelected]="isFilterSelected" [isTableDataLoading]="isTelemetryLoading"></app-common-table>
     </div>
   </div>

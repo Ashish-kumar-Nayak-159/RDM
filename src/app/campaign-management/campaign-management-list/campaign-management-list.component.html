@@ -3,89 +3,92 @@
     <div class="main-heading">{{(tileData && tileData[0] ? tileData[0]?.value : '')}}&nbsp;
     </div>
     <button type="submit" class="btn btn-sm searchBtn btn-primary" (click)="openCampaignCreateModal()"
-    *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASCMM') > -1"
-    placement="bottom" tooltip="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"><i class="fas fa-plus fa-sm"></i></button>
-   </div>
+      *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASCMM') > -1" placement="bottom"
+      tooltip="Add {{(tileData && tileData[1] ? tileData[1]?.value : '')}}"><i class="fas fa-plus fa-sm"></i></button>
+  </div>
 </div>
 
 <div class="tab-bar" *ngIf="!isAddCampaignModalOpen">
   <form class="form-inline">
-    <div class="form-group left-inner-addon" >
+    <div class="form-group left-inner-addon">
       <i class="fa fa-calendar" [ngClass]="{'active': filterObj.from_date && filterObj?.to_date}"></i>
-      <input type="text"  class="form-control form-control-sm date-range-picker" daterangepicker name="daterangeInput" autocomplete="off"  [(ngModel)]="selectedDateRange"
-      [options]="options" (selected)="selectedDate($event, daterange)" [ngClass]="{'active': filterObj.from_date && filterObj?.to_date}"
-      [tooltip]="selectedDateRange" placement="bottom"/>
+      <input type="text" readonly class="form-control form-control-sm date-range-picker" daterangepicker
+        name="daterangeInput" autocomplete="off" [(ngModel)]="selectedDateRange" [options]="options"
+        (selected)="selectedDate($event, daterange)" [ngClass]="{'active': filterObj.from_date && filterObj?.to_date}"
+        [tooltip]="selectedDateRange" placement="bottom" />
     </div>
     <div class="form-group">
       <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
-           (click)="getCampaignsList()" ><i
-            class="fa fa-search fa-sm" ></i></button>
+        (click)="getCampaignsList()"><i class="fa fa-search fa-sm"></i></button>
     </div>
   </form>
 </div>
 
-<div class="table-responsive" >
+<div class="table-responsive">
   <div class="tableFixHead" id="table-top" [ngClass]="{'tableFixHead-campaign-create': isAddCampaignModalOpen}">
-<table class="table table-hover" *ngIf="!isAddCampaignModalOpen">
-  <thead>
-    <tr>
-      <th>No</th>
-      <th >Code</th>
-      <th >Start Date</th>
-      <th>End Date</th>
-      <th>Actual End Date</th>
-      <th>Objective</th>
-      <th>Status</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <ng-container *ngIf="campaigns.length > 0">
-      <tr *ngFor="let item of campaigns; let index = index">
-        <td>{{index + 1}}</td>
-        <td >
-          {{item.code}}
-        </td>
-        <td>{{item.local_start_date}}</td>
-        <td>{{item.local_end_date}}</td>
-        <td>{{item.local_actual_end_date}}</td>
-        <td>{{item.objective}}</td>
-        <td>{{item.status}}</td>
-        <td>
-          <a  href="javascript:void(0)"  placement="bottom" tooltip="Explore" class="mr-2"><i class="fa fa-sm fa-eye" ></i></a>
-          <a
-            class="d-none d-sm-inline-block btn btn-sm shadow-sm mt-n1"
-            href="javascript:void(0)"  [class.disabled]="isAPILoading[index] || item.status?.toLowerCase() === 'running' || item.status?.toLowerCase() === 'completed'"
-            (click)="startStopCampaign(item, index, 'start')" placement="bottom" tooltip="Start Campaign"
-            ><img style="width: 10px;" src="./assets/img/start.svg"/></a>
-            <a
-            class="d-none d-sm-inline-block btn btn-sm shadow-sm mt-n1"
-            href="javascript:void(0)"  [class.disabled]="isAPILoading[index] || item.status?.toLowerCase() === 'completed' || item.status?.toLowerCase() === 'pending'"
-            (click)="startStopCampaign(item, index, 'end')" placement="bottom" tooltip="End Campaign"
-            ><img style="width: 10px;" src="./assets/img/stop.svg"/></a>
-            <i  class="fa fa-fw fa-spin fa-spinner" *ngIf="isAPILoading[index]"></i>
-        </td>
+    <table class="table table-hover" *ngIf="!isAddCampaignModalOpen">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Code</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Actual End Date</th>
+          <th>Objective</th>
+          <th>Status</th>
+          <th>Action</th>
         </tr>
-    </ng-container>
-    <ng-container *ngIf="campaigns.length === 0 && !isGetCampaignAPILoading">
-      <tr>
-        <td colspan="8">No campaigns available for {{this.previousFilterObj.dateOption}}. <p *ngIf="this.previousFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template></td>
-      </tr>
-    </ng-container>
-    <ng-container *ngIf="isGetCampaignAPILoading">
-      <tr>
-        <td colspan="8">
-          <i  class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
-        </td>
-      </tr>
-    </ng-container>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="campaigns.length > 0">
+          <tr *ngFor="let item of campaigns; let index = index">
+            <td>{{index + 1}}</td>
+            <td>
+              {{item.code}}
+            </td>
+            <td>{{item.local_start_date}}</td>
+            <td>{{item.local_end_date}}</td>
+            <td>{{item.local_actual_end_date}}</td>
+            <td>{{item.objective}}</td>
+            <td>{{item.status}}</td>
+            <td>
+              <a href="javascript:void(0)" placement="bottom" tooltip="Explore" class="mr-2"><i
+                  class="fa fa-sm fa-eye"></i></a>
+              <a class="d-none d-sm-inline-block btn btn-sm shadow-sm mt-n1" href="javascript:void(0)"
+                [class.disabled]="isAPILoading[index] || item.status?.toLowerCase() === 'running' || item.status?.toLowerCase() === 'completed'"
+                (click)="startStopCampaign(item, index, 'start')" placement="bottom" tooltip="Start Campaign"><img
+                  style="width: 10px;" src="./assets/img/start.svg" /></a>
+              <a class="d-none d-sm-inline-block btn btn-sm shadow-sm mt-n1" href="javascript:void(0)"
+                [class.disabled]="isAPILoading[index] || item.status?.toLowerCase() === 'completed' || item.status?.toLowerCase() === 'pending'"
+                (click)="startStopCampaign(item, index, 'end')" placement="bottom" tooltip="End Campaign"><img
+                  style="width: 10px;" src="./assets/img/stop.svg" /></a>
+              <i class="fa fa-fw fa-spin fa-spinner" *ngIf="isAPILoading[index]"></i>
+            </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="campaigns.length === 0 && !isGetCampaignAPILoading">
+          <tr>
+            <td colspan="8">No campaigns available for {{this.previousFilterObj.dateOption}}. <p
+                *ngIf="this.previousFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You
+                can choose large time window.</p>
+              <ng-template #differentMsg>
+                <p class="pt-2">You can choose different time window.</p>
+              </ng-template>
+            </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="isGetCampaignAPILoading">
+          <tr>
+            <td colspan="8">
+              <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+            </td>
+          </tr>
+        </ng-container>
 
-  </tbody>
-</table>
-  <app-add-campaign (cancelEvent)="closeCampaignModal()" *ngIf="isAddCampaignModalOpen"></app-add-campaign>
+      </tbody>
+    </table>
+    <app-add-campaign (cancelEvent)="closeCampaignModal()" *ngIf="isAddCampaignModalOpen"></app-add-campaign>
+
+  </div>
 
 </div>
-
-</div>
-
-

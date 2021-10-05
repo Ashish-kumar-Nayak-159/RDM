@@ -346,4 +346,7 @@ ngx-intl-tel-input input[disabled] {
   background-color: #e5eaf1;
 }
 
+.date-range-picker[readonly] {
+  background-color: white !important;
+}
 /* end */

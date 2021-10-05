@@ -1,18 +1,18 @@
 <div class="selection-page-scroll">
-<div class="container p-0">
-  <div class="col-12 pt-3">
-    <h3>Welcome {{userData?.name}}</h3>
-    <p>Please select which app you want to login...</p>
-  </div>
-  <div class="row pl-3">
-    <div class="col-lg-3 col-md-4 col-sm-6 mb-4" *ngFor="let app of userData?.apps; let index = index">
-      <div class="card shadow h-100">
-        <div class="card-body">
-          <a href="javascript:void(0)" [class.disabled]="isAppDataLoading" (click)="redirectToApp(app, index)"
-            ><div class="text-center">
-              <img
-                class="img-fluid px-2 mt-2 mb-3 img-szsm"
-                src="{{ blobStorageURL + (
+  <div class="container p-0">
+    <div class="col-12 pt-3">
+
+      <h3>Welcome {{userData?.name}}</h3>
+      <p>Please select which app you want to login...</p>
+    </div>
+    <div class="row pl-3">
+      <ng-container *ngIf="!isUserApplicationLoading && userData?.apps.length > 0">
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4" *ngFor="let app of userData?.apps; let index = index">
+          <div class="card shadow h-100">
+            <div class="card-body">
+              <a href="javascript:void(0)" [class.disabled]="isAppDataLoading" (click)="redirectToApp(app, index)">
+                <div class="text-center">
+                  <img class="img-fluid px-2 mt-2 mb-3 img-szsm" src="{{ blobStorageURL + (
                   app?.metadata?.icon?.url
                     ? app?.metadata?.icon?.url + blobToken
                     : constantData.DEFAULT_APP_ICON  + blobToken)

@@ -9,7 +9,7 @@
 
       <div class="form-group left-inner-addon">
         <i class="fa fa-calendar active"></i>
-        <input type="text" class="form-control form-control-sm active date-range-picker" daterangepicker
+        <input type="text" readonly class="form-control form-control-sm active date-range-picker" daterangepicker
           name="daterangeInput" [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"
           [(ngModel)]="selectedDateRange" [tooltip]="selectedDateRange" placement="bottom" />
       </div>

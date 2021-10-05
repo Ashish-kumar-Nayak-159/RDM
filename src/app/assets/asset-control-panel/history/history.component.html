@@ -24,7 +24,7 @@
         </div>
         <div class="form-group left-inner-addon">
           <i class="fa fa-calendar active"></i>
-          <input type="text" class="form-control form-control-sm active date-range-picker" daterangepicker
+          <input type="text" readonly class="form-control form-control-sm active date-range-picker" daterangepicker
             name="daterangeInput" [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"
             [(ngModel)]="selectedDateRange" [tooltip]="selectedDateRange" placement="bottom" />
         </div>
@@ -51,25 +51,25 @@
         </div>
         <div class="form-group input-group" *ngIf="!historyFilter.type">
           <fieldset [disabled]="!historyFilter.isTypeEditable"></fieldset>
-          <input class="form-control form-control-sm bg-light" type="number" id="aggr_mins" min="1"
-          name="aggr_mins" [(ngModel)]="historyFilter.aggregation_minutes" placeholder="Sampling"
-          (change)="onNumberChange($event, 'aggregation')" [disabled]="!historyFilter.isTypeEditable"
-           style="width: 4em;" >
+          <input class="form-control form-control-sm bg-light" type="number" id="aggr_mins" min="1" name="aggr_mins"
+            [(ngModel)]="historyFilter.aggregation_minutes" placeholder="Sampling"
+            (change)="onNumberChange($event, 'aggregation')" [disabled]="!historyFilter.isTypeEditable"
+            style="width: 4em;">
           <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
         </div>
         <div class="form-group " *ngIf="!historyFilter.type">
           <fieldset [disabled]="!historyFilter.isTypeEditable">
-        <select class="form-control form-control-sm" id="aggregationFormat" [(ngModel)]="historyFilter.aggregation_format"
-        name="aggregationFormat" style="width: 11rem!important;">
-        <option [ngValue]="undefined">Aggregartion Format</option>
-        <option [ngValue]="'AVG'">Average</option>
-        <option [ngValue]="'SUM'">Sum</option>
-        <option [ngValue]="'MIN'">Min</option>
-        <option [ngValue]="'MAX'">Max</option>
-        <option [ngValue]="'COUNT'">Count</option>
-        </select>
-        </fieldset>
-      </div>
+            <select class="form-control form-control-sm" id="aggregationFormat"
+              [(ngModel)]="historyFilter.aggregation_format" name="aggregationFormat" style="width: 11rem!important;">
+              <option [ngValue]="undefined">Aggregartion Format</option>
+              <option [ngValue]="'AVG'">Average</option>
+              <option [ngValue]="'SUM'">Sum</option>
+              <option [ngValue]="'MIN'">Min</option>
+              <option [ngValue]="'MAX'">Max</option>
+              <option [ngValue]="'COUNT'">Count</option>
+            </select>
+          </fieldset>
+        </div>
 
         <div class="form-group">
           <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
@@ -102,21 +102,24 @@
 </div>
 <div class="row col-xl-12 col-lg-12 m-2" *ngIf="historyData.length > 0 && isFilterSelected && !isHistoryAPILoading">
 
-      <div class="form-group col-md-2 pl-3 mb-0" *ngFor="let prop of propList">
-        <input type="checkbox" class="form-check-input" id="{{prop}}" name="{{prop}}"
-          (change)="toggleProperty(prop)" [checked]="selectedPropertyForChart.indexOf(prop) !== -1">
-        <label class="form-check-label text-elipsis" for="{{prop}}"
-        placement="bottom" [tooltip]="getPropertyName(prop)">{{getPropertyName(prop)}}</label>
-      </div>
-    </div>
-    <div class="table-responsive">
-      <div class="tableFixHead history-table-fix-head" id="mainChartDiv">
-        <p class="m-3"
-       *ngIf="
+  <div class="form-group col-md-2 pl-3 mb-0" *ngFor="let prop of propList">
+    <input type="checkbox" class="form-check-input" id="{{prop}}" name="{{prop}}" (change)="toggleProperty(prop)"
+      [checked]="selectedPropertyForChart.indexOf(prop) !== -1">
+    <label class="form-check-label text-elipsis" for="{{prop}}" placement="bottom"
+      [tooltip]="getPropertyName(prop)">{{getPropertyName(prop)}}</label>
+  </div>
+</div>
+<div class="table-responsive">
+  <div class="tableFixHead history-table-fix-head" id="mainChartDiv">
+    <p class="m-3" *ngIf="
         historyData.length === 0 && isFilterSelected && !isHistoryAPILoading
-      "
-    >
-      No data found for {{this.dateRange}}. <span *ngIf="this.dateRange !== 'this selected range'; else differentMsg"><p class="pt-2">You can choose large time window.</p></span><ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template>
+      ">
+      No data found for {{this.dateRange}}. <span *ngIf="this.dateRange !== 'this selected range'; else differentMsg">
+        <p class="pt-2">You can choose large time window.</p>
+      </span>
+      <ng-template #differentMsg>
+        <p class="pt-2">You can choose different time window.</p>
+      </ng-template>
     </p>
     <p class="m-3" *ngIf="!isFilterSelected && !isHistoryAPILoading">
       Please select widget to load the data.
@@ -126,13 +129,10 @@
     </p>
     <p class="m-3" *ngIf="isHistoryAPILoading">
       {{loadingMessage}}
-      <i
-      class="fa fa-spinner fa-spin fa-fw fa-2x"
-    ></i>
+      <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
     </p>
 
 
     <div id="widgetContainer" class="showLayout p-3"></div>
-        </div>
-        </div>
-
+  </div>
+</div>

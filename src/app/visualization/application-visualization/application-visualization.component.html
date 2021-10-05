@@ -13,7 +13,7 @@
             </div>
             <div class="form-group left-inner-addon">
               <i class="fa fa-calendar active"></i>
-              <input type="text" class="form-control form-control-sm active date-range-picker" daterangepicker
+              <input type="text" readonly class="form-control form-control-sm active date-range-picker" daterangepicker
                 name="daterangeInput" [options]="options" (selected)="selectedDate($event, daterange)"
                 autocomplete="off" [(ngModel)]="selectedDateRange" [tooltip]="selectedDateRange" placement="bottom" />
             </div>
@@ -53,8 +53,8 @@
                 </ng-container>
                 <ng-select [items]="assets" class="custom" bindLabel="display_name" [clearable]="false"
                   [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
-                  dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.asset"  (change)="onChangeOfAsset($event)"
-                  (onSelect)="onAssetSelection()">
+                  dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.asset"
+                  (change)="onChangeOfAsset($event)" (onSelect)="onAssetSelection()">
                   <ng-template ng-option-tmp let-asset="item">
                     <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ?
                       asset.display_name: asset.asset_id}}</span>

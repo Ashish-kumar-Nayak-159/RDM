@@ -49,7 +49,8 @@
               </ng-container>
               <ng-select [items]="assets" class="custom dropdown-open" bindLabel="display_name" [clearable]="false"
                 [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
-                dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.asset" (change)="onChangeOfAsset($event)">
+                dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.asset"
+                (change)="onChangeOfAsset($event)">
                 <ng-template ng-option-tmp let-asset="item">
                   <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ?
                     asset.display_name: asset.asset_id}}</span>
@@ -119,8 +120,11 @@
             </ng-template>
             <ng-template ng-header-tmp>
               <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-                <li *ngIf="historicalWidgets.length !== historicalDateFilter?.widgets.length"> <a href="javascript:void(0)" (click)="historicalDateFilter.widgets = historicalWidgets">Select All</a></li>
-                <li *ngIf="historicalWidgets.length === historicalDateFilter?.widgets.length"> <a href="javascript:void(0)" (click)="historicalDateFilter.widgets = []">Deselect All</a></li>
+                <li *ngIf="historicalWidgets.length !== historicalDateFilter?.widgets.length"> <a
+                    href="javascript:void(0)" (click)="historicalDateFilter.widgets = historicalWidgets">Select All</a>
+                </li>
+                <li *ngIf="historicalWidgets.length === historicalDateFilter?.widgets.length"> <a
+                    href="javascript:void(0)" (click)="historicalDateFilter.widgets = []">Deselect All</a></li>
               </ul>
             </ng-template>
             <ng-template ng-option-tmp let-item="item">
@@ -130,67 +134,61 @@
             </ng-template>
           </ng-select>
         </div>
-        <div class="form-group left-inner-addon" >
+        <div class="form-group left-inner-addon">
           <i class="fa fa-calendar active"></i>
-          <input type="text"  class="form-control form-control-sm active date-range-picker" daterangepicker name="daterangeInput"
-          [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"  [(ngModel)]="selectedDateRange"
-          [tooltip]="selectedDateRange" placement="bottom"/>
+          <input type="text" readonly class="form-control form-control-sm active date-range-picker" daterangepicker
+            name="daterangeInput" [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"
+            [(ngModel)]="selectedDateRange" [tooltip]="selectedDateRange" placement="bottom" />
         </div>
         <div class="form-group">
           <input type="checkbox" id="checkbox" min="1" name="checkbox" class="big-checkbox"
-          [(ngModel)]="historicalDateFilter.isTypeEditable" (change)="historicalDateFilter.aggregation_format = 'AVG'; historicalDateFilter.aggregation_minutes = 1;
-          historicalDateFilter.sampling_format = 'minute'; historicalDateFilter.sampling_time = 1;"
-          >
+            [(ngModel)]="historicalDateFilter.isTypeEditable" (change)="historicalDateFilter.aggregation_format = 'AVG'; historicalDateFilter.aggregation_minutes = 1;
+          historicalDateFilter.sampling_format = 'minute'; historicalDateFilter.sampling_time = 1;">
         </div>
         <div class="form-group">
           <fieldset [disabled]="!historicalDateFilter.isTypeEditable">
-            <ui-switch  [disabled]="!historicalDateFilter.isTypeEditable"
-            defaultBgColor="#1a5a9e" checkedTextColor="white" uncheckedTextColor="white"
-            checkedLabel="Sampling" (valueChange)="historicalDateFilter.aggregation_format = 'AVG'; historicalDateFilter.aggregation_minutes = 1;
+            <ui-switch [disabled]="!historicalDateFilter.isTypeEditable" defaultBgColor="#1a5a9e"
+              checkedTextColor="white" uncheckedTextColor="white" checkedLabel="Sampling" (valueChange)="historicalDateFilter.aggregation_format = 'AVG'; historicalDateFilter.aggregation_minutes = 1;
             historicalDateFilter.sampling_format = 'minute'; historicalDateFilter.sampling_time = 1;
             " uncheckedLabel="Aggregation" [(ngModel)]="historicalDateFilter.type" name="tpye"></ui-switch>
           </fieldset>
         </div>
         <div class="form-group input-group" *ngIf="historicalDateFilter.type">
 
-      <input class="form-control form-control-sm bg-light" type="number" id="minutes" min="1" name="minutes"
-        [(ngModel)]="historicalDateFilter.sampling_time" placeholder="Sampling" disabled placement="bottom"
-        tooltip="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development."
-        style="width: 3em;">
-      <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
-    </div>
-    <div class="form-group input-group" *ngIf="!historicalDateFilter.type">
-      <fieldset [disabled]="!historicalDateFilter.isTypeEditable"></fieldset>
-      <input class="form-control form-control-sm bg-light" type="number" id="aggr_mins" min="1" name="aggr_mins"
-        [(ngModel)]="historicalDateFilter.aggregation_minutes" placeholder="Sampling"
-        (change)="onNumberChange($event, 'aggregation')" [disabled]="!historicalDateFilter.isTypeEditable"
-        style="width: 4em;">
-      <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
-    </div>
-    <div class="form-group " *ngIf="!historicalDateFilter.type">
-      <fieldset [disabled]="!historicalDateFilter.isTypeEditable">
-        <select class="form-control form-control-sm" id="aggregationFormat"
-          [(ngModel)]="historicalDateFilter.aggregation_format" name="aggregationFormat"
-          style="width: 11rem!important;">
-          <option [ngValue]="undefined">Aggregartion Format</option>
-          <option [ngValue]="'AVG'">Average</option>
-          <option [ngValue]="'SUM'">Sum</option>
-          <option [ngValue]="'MIN'">Min</option>
-          <option [ngValue]="'MAX'">Max</option>
-          <option [ngValue]="'COUNT'">Count</option>
-          </select>
+          <input class="form-control form-control-sm bg-light" type="number" id="minutes" min="1" name="minutes"
+            [(ngModel)]="historicalDateFilter.sampling_time" placeholder="Sampling" disabled placement="bottom"
+            tooltip="By default this is 1 minute. Right now this field is disabled. Dynamic selection of sampling frequency is under development."
+            style="width: 3em;">
+          <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
+        </div>
+        <div class="form-group input-group" *ngIf="!historicalDateFilter.type">
+          <fieldset [disabled]="!historicalDateFilter.isTypeEditable"></fieldset>
+          <input class="form-control form-control-sm bg-light" type="number" id="aggr_mins" min="1" name="aggr_mins"
+            [(ngModel)]="historicalDateFilter.aggregation_minutes" placeholder="Sampling"
+            (change)="onNumberChange($event, 'aggregation')" [disabled]="!historicalDateFilter.isTypeEditable"
+            style="width: 4em;">
+          <div class="input-group-append"><span class="input-group-text bg-light">mins</span></div>
+        </div>
+        <div class="form-group " *ngIf="!historicalDateFilter.type">
+          <fieldset [disabled]="!historicalDateFilter.isTypeEditable">
+            <select class="form-control form-control-sm" id="aggregationFormat"
+              [(ngModel)]="historicalDateFilter.aggregation_format" name="aggregationFormat"
+              style="width: 11rem!important;">
+              <option [ngValue]="undefined">Aggregartion Format</option>
+              <option [ngValue]="'AVG'">Average</option>
+              <option [ngValue]="'SUM'">Sum</option>
+              <option [ngValue]="'MIN'">Min</option>
+              <option [ngValue]="'MAX'">Max</option>
+              <option [ngValue]="'COUNT'">Count</option>
+            </select>
           </fieldset>
         </div>
 
-          <div class="form-group">
-          <button
-          type="button"
-          class="btn btn-sm searchBtn btn-primary"
-          placement="bottom" tooltip="Search"
-          (click)="onFilterSelection(this.filterObj)"
-        >
-          <i class="fa fa-search fa-sm"></i>
-        </button>
+        <div class="form-group">
+          <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
+            (click)="onFilterSelection(this.filterObj)">
+            <i class="fa fa-search fa-sm"></i>
+          </button>
         </div>
       </form>
     </ng-template>
@@ -198,7 +196,8 @@
     <ng-container *ngIf="isShowOpenFilter && isFilterSelected && contextApp?.dashboard_config?.show_historical_widgets">
       <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
     </ng-container>
-    <ng-container *ngIf="!isShowOpenFilter && isFilterSelected && contextApp?.dashboard_config?.show_historical_widgets">
+    <ng-container
+      *ngIf="!isShowOpenFilter && isFilterSelected && contextApp?.dashboard_config?.show_historical_widgets">
       <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown" placement="bottom" aria-haspopup="true"
         aria-expanded="false">
         <i class="fas fa-fw fa-filter fa-sm button-divider"></i>

@@ -44,9 +44,6 @@
               [disabled]="!campaignObj.objective" id="nextBtn">
               Next Step
             </button>
-            <!-- <button class="firstNext" (click)="visitedSteps = visitedSteps - 1" id="previousBtn">
-              Previous Step
-            </button> -->
             <button type="button" class="btn btn-secondary" (click)="onCloseCampaignModal()" id="CancelBtn">
               Cancel
             </button>
@@ -77,7 +74,7 @@
             <td>
               <div class="form-group left-inner-addon">
                 <i class="fa fa-calendar"></i>
-                <input type="text" class="form-control form-control-sm date-range-picker" daterangepicker
+                <input readonly type="text" class="form-control form-control-sm date-range-picker" daterangepicker
                   name="daterangeInput" autocomplete="off" [(ngModel)]="campaignObj.expected_start_date_display"
                   [options]="options" (selected)="selectedDate($event, 'start')" style="width: 20rem!important"
                   placement="bottom" />
@@ -89,7 +86,7 @@
             <td>
               <div class="form-group left-inner-addon">
                 <i class="fa fa-calendar"></i>
-                <input type="text" class="form-control form-control-sm date-range-picker" daterangepicker
+                <input readonly type="text" class="form-control form-control-sm date-range-picker" daterangepicker
                   name="daterangeInput" autocomplete="off" [(ngModel)]="campaignObj.expected_end_date_display"
                   [options]="options" (selected)="selectedDate($event, 'end')" style="width: 20rem!important"
                   placement="bottom" />

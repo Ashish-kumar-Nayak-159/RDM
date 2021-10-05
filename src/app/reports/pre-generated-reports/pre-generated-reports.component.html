@@ -198,7 +198,7 @@
             <div class="form-group">
               <label for="recipient-name" class="col-form-label required">Asset Model:</label>
               <select class="custom-select custom-select-sm" id="asset_model" name="asset_model"
-                [(ngModel)]="asset_model" (change)="onChangeAssetsModel()">
+                [(ngModel)]="reportsObj.asset_model" (change)="onChangeAssetsModel()">
                 <option [ngValue]="undefined"> Select Model</option>
                 <option *ngFor="let item of assetModels" [ngValue]="item.name">
                   {{item.name}}</option>
@@ -228,15 +228,15 @@
                   </ng-template>
               </ng-select> -->
               <ng-select [items]="selectedAssets" class="custom-dropdown w-12 sm" [clearable]="false"
-              [searchable]="true" [multiple]="true" bindLabel="display_name" 
+              [searchable]="true" [multiple]="true" bindLabel="display_name" bindValue="asset_id" 
               [closeOnSelect]="false" placeholder="Select Asset" dropdownPosition="bottom"
-              name="report-asset-dropdown" [(ngModel)]="assetList" (onDeSelectAll)="Deselect($event)">
+              name="report-asset-dropdown" [(ngModel)]="reportsObj.assets" (onDeSelectAll)="Deselect($event)">
               <ng-template ng-header-tmp>
                 <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-                  <li *ngIf="assetList.length !== selectedAssets.length"> <a href="javascript:void(0)"
-                      (click)="assetList = selectedAssets">Select All</a></li>
-                  <li *ngIf="assetList.length === selectedAssets.length"> <a href="javascript:void(0)"
-                      (click)="assetList = []">Deselect All</a></li>
+                  <li *ngIf="reportsObj.assets.length !== selectedAssets.length"> <a href="javascript:void(0)"
+                      (click)="reportsObj.assets = selectedAssets">Select All</a></li>
+                  <li *ngIf="reportsObj.assets.length === selectedAssets.length"> <a href="javascript:void(0)"
+                      (click)="reportsObj.assets = []">Deselect All</a></li>
                 </ul>
               </ng-template> 
               <ng-template ng-multi-label-tmp let-items="items">

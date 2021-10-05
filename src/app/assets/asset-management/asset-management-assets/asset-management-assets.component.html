@@ -88,7 +88,7 @@
     </table>
   </div>
   <span class="pull-right mt-1 mr-1" *ngIf="!insideScrollFunFlag && assetsList.length > 0">
-    <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;getAssets();"
+    <a href="javascript:void(0)" class="mr-1" (click)="currentOffset = currentOffset + currentLimit;getAssets(false);"
       placement="bottom" tooltip="Load More Records...">Load More...</a>
   </span>
   <!-- <app-common-table *ngIf="tableConfig" [tableData]="assetsList" [tableConfig]="tableConfig" [isTableFilterSelected]="isFilterSelected"
@@ -96,7 +96,7 @@
 </div>
 
 <app-add-asset *ngIf="isOpenAssetCreateModal" [gateways]="gateways" [assetDetail]="selectedAsset"
-  (getAssetEmit)="assetsList = [];getAssets()" [componentState]="type" [tileData]="tabData"
+  (getAssetEmit)="assetsList = [];getAssets(true);" [componentState]="type" [tileData]="tabData"
   (cancelModal)="onCreateAssetCancelModal()"></app-add-asset>
 
 <!-- <div class="modal right fade" id="editAssetModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">

@@ -70,7 +70,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.getTileName();
     this.assetsList = [];
-    this.getAssets();
+    this.getAssets(true);
     // if (this.type === 'legacy-assets') {
     //   this.componentState = CONSTANTS.NON_IP_ASSET;
     // } else if (this.type === 'iot-assets') {
@@ -87,7 +87,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
           !this.insideScrollFunFlag
         ) {
           this.currentOffset += this.currentLimit;
-          this.getAssets();
+          this.getAssets(true);
           this.insideScrollFunFlag = true;
         }
       });
@@ -146,9 +146,11 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     this.currentLimit = this.tileData && this.tileData[2] ? Number(this.tileData[2]?.value) : 20;
   }
 
-  async getAssets(): Promise<void> {
+  async getAssets(flag): Promise<void> {
     this.isAssetListLoading = true;
-    await this.getNonProvisionedAssets();
+    if (flag) {
+      await this.getNonProvisionedAssets();
+    }
     const obj: any = {};
     obj.app = this.contextApp.app;
     obj.offset = this.currentOffset;
@@ -429,7 +431,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
           this.assetsList = [];
           this.selectedAssets = [];
           this.isAllAssetSelected = false;
-          this.getAssets();
+          this.getAssets(true);
           $('#confirmMessageModal').modal('hide');
         },
         (error) => {
@@ -458,7 +460,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
           this.assetsList = [];
           this.selectedAssets = [];
           this.isAllAssetSelected = false;
-          this.getAssets();
+          this.getAssets(true);
           $('#confirmMessageModal').modal('hide');
         },
         (error) => {
@@ -491,7 +493,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
             delete item.asset;
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, item);
-          this.getAssets();
+          this.getAssets(true);
           $('#confirmMessageModal').modal('hide');
         },
         (error) => {

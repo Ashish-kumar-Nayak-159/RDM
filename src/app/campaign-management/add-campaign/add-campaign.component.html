@@ -246,8 +246,9 @@
               <td class="required">Sync Details</td>
               <td>
                 <ng-select [items]="propertySyncList" class="custom-dropdown w-12 active sm" [clearable]="false"
-                  [searchable]="true" [multiple]="true" [closeOnSelect]="false" placeholder="Select Sync Detail"
-                  dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="campaignObj.job_request.type">
+                  [searchable]="true" clearSearchOnAdd="true" [multiple]="true" [closeOnSelect]="false"
+                  placeholder="Select Sync Detail" dropdownPosition="bottom" name="asset-dropdown"
+                  [(ngModel)]="campaignObj.job_request.type">
                   <ng-template ng-multi-label-tmp let-items="items">
                     {{items.length}} values selected
                   </ng-template>

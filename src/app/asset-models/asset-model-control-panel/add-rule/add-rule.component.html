@@ -280,10 +280,11 @@
                     <div class="form-group row">
                       <label for="exampleEmail" class="col-2 required">UserGroup</label>
                       <div class="col-6">
-                        <ng-select [items]="userGroups" [multiple]="true" class="custom-dropdown w-12 sm"
-                          [clearable]="false" [searchable]="true"  placeholder="Select Group"
-                          [disabled]="isView" bindLabel="group_name" bindValue="group_name" dropdownPosition="bottom"
-                          name="group-dropdown" [(ngModel)]="ruleModel.actions.notification.email.groups" required>
+                        <ng-select [items]="userGroups" clearSearchOnAdd="true" [multiple]="true"
+                          class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true"
+                          placeholder="Select Group" [disabled]="isView" bindLabel="group_name" bindValue="group_name"
+                          dropdownPosition="bottom" name="group-dropdown"
+                          [(ngModel)]="ruleModel.actions.notification.email.groups" required>
                           <ng-template ng-option-tmp let-item="item">
                             <span>
                               {{item.group_name}}

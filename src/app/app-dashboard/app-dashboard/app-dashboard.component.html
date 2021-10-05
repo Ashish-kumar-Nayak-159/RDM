@@ -112,7 +112,7 @@
       <form class="form-inline">
         <div class="form-group">
           <ng-select [items]="historicalWidgets" class="custom-dropdown w-12 active sm" bindLabel="chart_Id"
-            [clearable]="false" [searchable]="true" [multiple]="true" [closeOnSelect]="false"
+            [clearable]="false" [searchable]="true" clearSearchOnAdd="true" [multiple]="true" [closeOnSelect]="false"
             placeholder="Select Widgets" dropdownPosition="bottom" name="asset-dropdown"
             [(ngModel)]="historicalDateFilter.widgets" (onDeSelectAll)="onDeSelectAll($event)">
             <ng-template ng-multi-label-tmp let-items="items">

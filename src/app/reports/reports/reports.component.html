@@ -110,9 +110,10 @@
             <ng-container *ngIf=" filterObj.report_type === 'Process Parameter Report'">
               <div class="form-group">
                 <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" [clearable]="false"
-                  [searchable]="true" [multiple]="true" bindLabel="id" [ngClass]="{'active': props.length > 0}"
-                  [closeOnSelect]="false" placeholder="Select Properties" groupBy="type" dropdownPosition="bottom"
-                  name="asset-dropdown" [(ngModel)]="props" (onDeSelectAll)="y1Deselect($event)">
+                  [searchable]="true" clearSearchOnAdd="true" [multiple]="true" bindLabel="id"
+                  [ngClass]="{'active': props.length > 0}" [closeOnSelect]="false" placeholder="Select Properties"
+                  groupBy="type" dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="props"
+                  (onDeSelectAll)="y1Deselect($event)">
                   <ng-template ng-header-tmp>
                     <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
                       <li *ngIf="props.length !== dropdownPropList.length"> <a href="javascript:void(0)"

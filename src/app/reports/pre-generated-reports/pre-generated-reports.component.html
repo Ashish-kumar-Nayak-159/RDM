@@ -219,7 +219,7 @@
                 </div>
               </ng-container>
               <!-- <ng-select [items]="selectedAssets" class="" bindLabel="display_name" [clearable]="false"
-                  [searchable]="true" [multiple]="true" [closeOnSelect]="true" placeholder="Select Asset"
+                  [searchable]="true" clearSearchOnAdd="true" [multiple]="true" [closeOnSelect]="true" placeholder="Select Asset"
                   dropdownPosition="bottom" name="report-asset-dropdown" [(ngModel)]="reportsObj.asset">
                   <ng-template ng-option-tmp let-asset="item">
                     <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ?
@@ -227,9 +227,9 @@
                   </ng-template>
               </ng-select> -->
               <ng-select [items]="selectedAssets" class="custom-dropdown w-12 sm" [clearable]="false"
-                [searchable]="true" [multiple]="true" bindLabel="display_name" [closeOnSelect]="false"
-                placeholder="Select Asset" dropdownPosition="bottom" name="report-asset-dropdown"
-                [(ngModel)]="assetList" (onDeSelectAll)="Deselect($event)">
+                [searchable]="true" clearSearchOnAdd="true" [multiple]="true" bindLabel="display_name"
+                [closeOnSelect]="false" placeholder="Select Asset" dropdownPosition="bottom"
+                name="report-asset-dropdown" [(ngModel)]="assetList" (onDeSelectAll)="Deselect($event)">
                 <ng-template ng-header-tmp>
                   <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
                     <li *ngIf="assetList.length !== selectedAssets.length"> <a href="javascript:void(0)"
@@ -261,7 +261,7 @@
               <div class="form-group">
                 <label for="message-text" class="col-form-label required">Properties:</label>
                 <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" [clearable]="false"
-                  [searchable]="true" [multiple]="true" bindLabel="id" [closeOnSelect]="false"
+                  [searchable]="true" clearSearchOnAdd="true" [multiple]="true" bindLabel="id" [closeOnSelect]="false"
                   placeholder="Select Properties" groupBy="type" dropdownPosition="bottom" name="asset-dropdown"
                   [(ngModel)]="props" (onDeSelectAll)="y1Deselect($event)">
                   <ng-template ng-header-tmp>

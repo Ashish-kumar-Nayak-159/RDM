@@ -185,11 +185,15 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     this.isAddReport = false;
   }
 
-  onCreateNewPGReports(){
+  onCreateNewPGReports() {
     console.log(this.reportsObj);
     this.isCreateReportAPILoading = true;
-    if (!this.reportsObj.report_name || !this.reportsObj.report_category ||
-      !this.reportsObj.report_frequency || !this.reportsObj.report_type) {
+    if (
+      !this.reportsObj.report_name ||
+      !this.reportsObj.report_category ||
+      !this.reportsObj.report_frequency ||
+      !this.reportsObj.report_type
+    ) {
       this.toasterService.showError('Please fill all required details', 'Add Report');
       this.isCreateReportAPILoading = false;
       return;
@@ -199,14 +203,14 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     const edge_derived_message_props = [];
     const cloud_derived_message_props = [];
     this.props.forEach((prop, index) => {
-              if (prop.value.type === 'Edge Derived Properties') {
-                edge_derived_message_props.push(prop.value.json_key);
-              } else if (prop.value.type === 'Cloud Derived Properties') {
-                cloud_derived_message_props.push(prop.value.json_key);
-              } else {
-                measured_message_props.push(prop.value.json_key);
-              }
-            });
+      if (prop.value.type === 'Edge Derived Properties') {
+        edge_derived_message_props.push(prop.value.json_key);
+      } else if (prop.value.type === 'Cloud Derived Properties') {
+        cloud_derived_message_props.push(prop.value.json_key);
+      } else {
+        measured_message_props.push(prop.value.json_key);
+      }
+    });
     obj['m'] = measured_message_props ? measured_message_props : undefined;
     obj['ed'] = edge_derived_message_props ? edge_derived_message_props : undefined;
     obj['cd'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
@@ -216,8 +220,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     if (this.assetList.length > 0) {
       this.assetList.forEach((asset) => {
         assets.push(asset.asset_id);
-      }
-    )};
+      });
+    }
     if (!this.reportsObj.hierarchy) {
       this.reportsObj.hierarchy = { App: this.contextApp.app };
     }
@@ -226,31 +230,29 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     // delete this.reportsObj.asset_model;
     console.log(this.reportsObj);
     this.subscriptions.push(
-      this.assetService.createReportSubscription(this.contextApp.app, this.reportsObj).subscribe((response: any) => {
-       this.isCreateReportAPILoading = false;
-       this.toasterService.showSuccess('New Report Created', 'Create Report');
-       this.onCloseConfigurePGRModal();
-       console.log(response);
-      },
-      (error) => {
-        this.isCreateReportAPILoading = false;
-        this.toasterService.showError(error.message, 'Create Report');
-      })
+      this.assetService.createReportSubscription(this.contextApp.app, this.reportsObj).subscribe(
+        (response: any) => {
+          this.isCreateReportAPILoading = false;
+          this.toasterService.showSuccess('New Report Created', 'Create Report');
+          this.onCloseConfigurePGRModal();
+          console.log(response);
+        },
+        (error) => {
+          this.isCreateReportAPILoading = false;
+          this.toasterService.showError(error.message, 'Create Report');
+        }
+      )
     );
   }
 
   onReportChange() {
-<<<<<<< HEAD
-    if (this.reportsObj.report_category === 'telemetry') {
-=======
     if (this.reportsObj.report_category === 'Telemetry Report') {
->>>>>>> 55ecbfce... bug fix app selection, pregenerated report, non provision asset
       // console.log(this.reportsObj.asset);
       // if (this.reportsObj.asset) {
       //  const asset_model = this.reportsObj.asset_model;
-        if (this.asset_model) {
-          this.getAssetsModelProperties(this.asset_model);
-        }
+      if (this.asset_model) {
+        this.getAssetsModelProperties(this.asset_model);
+      }
       // }
     }
   }
@@ -278,10 +280,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   onChangeAssetsModel() {
     if (this.asset_model) {
       const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.asset_model);
-      this.selectedAssets = [ ...asset ];
+      this.selectedAssets = [...asset];
       console.log(this.selectedAssets);
     } else {
-
     }
   }
 

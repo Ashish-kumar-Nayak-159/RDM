@@ -143,7 +143,8 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
         table_key: this.tileData['IOT Gateways Table Key Name'],
       };
     }
-    this.currentLimit = this.tileData && this.tileData[2] ? Number(this.tileData[2]?.value) : 20;
+    console.log(this.tileData);
+    this.currentLimit = this.tileData && this.tileData['Records Limit'] ? Number(this.tileData['Records Limit']) : 20;
   }
 
   getAssets() {
@@ -382,6 +383,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
           this.assetsList = [];
           this.selectedAssets = [];
           this.isAllAssetSelected = false;
+          this.currentOffset = 0;
           this.getAssets();
           $('#confirmMessageModal').modal('hide');
         },
@@ -410,6 +412,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
           this.isAPILoading = false;
           this.assetsList = [];
           this.selectedAssets = [];
+          this.currentOffset = 0;
           this.isAllAssetSelected = false;
           this.getAssets();
           $('#confirmMessageModal').modal('hide');
@@ -438,6 +441,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
           this.isAPILoading = false;
           this.assetsList = [];
           this.selectedAssets = [];
+          this.currentOffset = 0;
           this.isAllAssetSelected = false;
           const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
           if (item) {

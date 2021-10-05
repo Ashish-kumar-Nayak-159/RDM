@@ -457,3 +457,4 @@ export class AddAssetComponent implements OnInit, OnChanges {
     // this.assetDetail = undefined;
   }
 }
+

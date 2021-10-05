@@ -710,3 +710,4 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     $('#downloadPreGeneratedReportReportModal').modal('hide');
   }
 }
+

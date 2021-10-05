@@ -728,3 +728,4 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 }
+

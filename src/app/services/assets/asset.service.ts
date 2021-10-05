@@ -86,7 +86,6 @@ export class AssetService {
     });
     return this.http.get(this.url + String.Format(AppUrls.NON_PROVISIONED_ASSETS, encodeURIComponent(app)), { params });
   }
-
   getIPAssetsAndGateways(filterObj, app) {
     let params = new HttpParams();
     Object.keys(filterObj).forEach((key) => {

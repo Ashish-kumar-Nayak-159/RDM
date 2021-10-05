@@ -63,6 +63,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   selectedProps: any[] = [];
   reportsObj: any = {};
   assetModels: any[] = [];
+  assetList: any[] = [];
+  asset_model: any;
   selectedAssets: any[] = [];
   isAddReport = false;
   constructor(
@@ -171,12 +173,15 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
 
   onOpenConfigurePGRModal() {
     this.isAddReport = true;
+    this.reportsObj = {};
+    this.assetList = [];
     $('#configurePGRModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
   onCloseConfigurePGRModal() {
     $('#configurePGRModal').modal('hide');
-    // this.reportsObj = undefined;
+    this.reportsObj = undefined;
+    this.asset_model = undefined;
     this.isAddReport = false;
   }
 
@@ -186,6 +191,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     if (!this.reportsObj.report_name || !this.reportsObj.report_category ||
       !this.reportsObj.report_frequency || !this.reportsObj.report_type) {
       this.toasterService.showError('Please fill all required details', 'Add Report');
+      this.isCreateReportAPILoading = false;
       return;
     }
     const obj = {};
@@ -207,8 +213,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     console.log(obj);
     this.reportsObj.properties = { ...obj };
     const assets = [];
-    if (this.reportsObj?.asset.length > 0) {
-      this.reportsObj.asset.forEach((asset) => {
+    if (this.assetList.length > 0) {
+      this.assetList.forEach((asset) => {
         assets.push(asset.asset_id);
       }
     )};
@@ -216,8 +222,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       this.reportsObj.hierarchy = { App: this.contextApp.app };
     }
     this.reportsObj.assets = assets;
-    delete this.reportsObj.asset;
-    delete this.reportsObj.asset_model;
+    // delete this.reportsObj.asset;
+    // delete this.reportsObj.asset_model;
     console.log(this.reportsObj);
     this.subscriptions.push(
       this.assetService.createReportSubscription(this.contextApp.app, this.reportsObj).subscribe((response: any) => {
@@ -225,22 +231,21 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
        this.toasterService.showSuccess('New Report Created', 'Create Report');
        this.onCloseConfigurePGRModal();
        console.log(response);
-       this.reportsObj = undefined;
       },
       (error) => {
         this.isCreateReportAPILoading = false;
-        this.toasterService.showError('error.message', 'Create Report');
+        this.toasterService.showError(error.message, 'Create Report');
       })
     );
   }
 
   onReportChange() {
-    if (this.reportsObj.report_category === 'Process Parameter Report') {
+    if (this.reportsObj.report_category === 'telemetry') {
       // console.log(this.reportsObj.asset);
       // if (this.reportsObj.asset) {
       //  const asset_model = this.reportsObj.asset_model;
-        if (this.reportsObj.asset_model) {
-          this.getAssetsModelProperties(this.reportsObj.asset_model);
+        if (this.asset_model) {
+          this.getAssetsModelProperties(this.asset_model);
         }
       // }
     }
@@ -267,8 +272,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   onChangeAssetsModel() {
-    if (this.reportsObj.asset_model) {
-      const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.reportsObj.asset_model);
+    if (this.asset_model) {
+      const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.asset_model);
       this.selectedAssets = [ ...asset ];
       console.log(this.selectedAssets);
     } else {
@@ -329,7 +334,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
 
   Deselect(e) {
     if (e === [] || e.length === 0) {
-      this.reportsObj.asset = [];
+      this.assetList = [];
     }
   }
 

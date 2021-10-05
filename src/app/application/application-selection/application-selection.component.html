@@ -5,6 +5,7 @@
     <p>Please select which app you want to login...</p>
   </div>
   <div class="row pl-3">
+    <ng-container *ngIf="!isUserApplicationLoading && userData?.apps.length > 0">
     <div class="col-lg-3 col-md-4 col-sm-6 mb-4" *ngFor="let app of userData?.apps; let index = index">
       <div class="card shadow h-100">
         <div class="card-body">
@@ -26,6 +27,7 @@
             </div>
           </div>
         </div>
+      </ng-container>
       <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUserApplicationLoading"></i>
     </div>
   </div>

@@ -193,6 +193,16 @@ export class AddCampaignComponent implements OnInit {
         this.campaignObj.expected_end_date
       );
     }
+    if (
+      this.campaignObj.expected_start_date &&
+      this.campaignObj.expected_end_date &&
+      this.campaignObj.expected_end_date < this.campaignObj.expected_start_date
+    ) {
+      this.toasterService.showError('End date should be greater than Start date', 'Create Campaign');
+      this.campaignObj.expected_end_date = null;
+      this.campaignObj.expected_end_date_display = null;
+      return;
+    }
   }
 
   onAssetModelChange() {

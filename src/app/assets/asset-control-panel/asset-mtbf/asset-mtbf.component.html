@@ -2,12 +2,14 @@
   <div class="">
     <ul class="nav">
       <li class="nav-item">
-        <a class="nav-link"  [ngClass]="{'active': displayMode === 'events'}" href="javascript:void(0)" (click)="onTabChange('events');">
+        <a class="nav-link" [ngClass]="{'active': displayMode === 'events'}" href="javascript:void(0)"
+          (click)="onTabChange('events');">
           <i class="fa fa-fw fa-angle-right"></i>
           <span>TBF Events</span></a>
       </li>
-      <li class="nav-item" >
-        <a class="nav-link" [ngClass]="{'active': displayMode === 'history'}" href="javascript:void(0)" (click)="onTabChange('history');">
+      <li class="nav-item">
+        <a class="nav-link" [ngClass]="{'active': displayMode === 'history'}" href="javascript:void(0)"
+          (click)="onTabChange('history');">
           <i class="fa fa-fw fa-eye"></i>
           <span>Historical MTBF</span></a>
       </li>
@@ -20,26 +22,26 @@
     <form class="form-inline">
       <div class="form-group  left-inner-addon">
         <i class="fa fa-calendar" [ngClass]="{'active': filterObj.from_date && filterObj.to_date}"></i>
-        <input type="text" class="form-control form-control-sm date-range-picker"
-        daterangepicker name="daterangeInput" [ngClass]="{'active': filterObj.from_date && filterObj.to_date}"
-          [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"  [(ngModel)]="selectedDateRange"
-          [tooltip]="selectedDateRange" placement="bottom"/>
+        <input type="text" readonly class="form-control form-control-sm date-range-picker" daterangepicker
+          name="daterangeInput" [ngClass]="{'active': filterObj.from_date && filterObj.to_date}" [options]="options"
+          (selected)="selectedDate($event, daterange)" autocomplete="off" [(ngModel)]="selectedDateRange"
+          [tooltip]="selectedDateRange" placement="bottom" />
       </div>
       <div class="form-group">
         <select class="form-control form-control-sm " id="date_frequency"
-        [ngClass]="{'active': filterObj.date_frequency}"
-              [(ngModel)]="filterObj.date_frequency" name="date_frequency" >
-                <option [ngValue]="undefined">Frequency </option>
-                <option [ngValue]="'daily'">Daily</option>
-                <option [ngValue]="'weekly'">Weekly</option>
-              </select>
+          [ngClass]="{'active': filterObj.date_frequency}" [(ngModel)]="filterObj.date_frequency" name="date_frequency">
+          <option [ngValue]="undefined">Frequency </option>
+          <option [ngValue]="'daily'">Daily</option>
+          <option [ngValue]="'weekly'">Weekly</option>
+        </select>
       </div>
       <div class="form-group">
         <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
           (click)="searchMTBFEvents(this.filterObj)"><i class="fa fa-search fa-sm"></i></button>
       </div>
       <div class="form-group">
-        <button type="button" class="btn btn-sm searchBtn btn-white" placement="bottom" tooltip="Clear Filters" (click)="clear();">
+        <button type="button" class="btn btn-sm searchBtn btn-white" placement="bottom" tooltip="Clear Filters"
+          (click)="clear();">
           <img class="filter-clear-icon" src="./assets/img/filter.svg"></button>
       </div>
       <h6 class="pull-right" *ngIf="avrgMTBF && avrgMTBF > 0 && isFilterSelected"><b> MTBF: {{avrgMTBFString}}</b></h6>
@@ -79,7 +81,12 @@
           <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected">
             <tr>
               <td colspan="4">
-                No TBF data found for {{this.originalFilterObj.dateOption}}. <p *ngIf="this.originalFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template>
+                No TBF data found for {{this.originalFilterObj.dateOption}}. <p
+                  *ngIf="this.originalFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">
+                  You can choose large time window.</p>
+                <ng-template #differentMsg>
+                  <p class="pt-2">You can choose different time window.</p>
+                </ng-template>
               </td>
             </tr>
           </ng-container>
@@ -99,13 +106,22 @@
       </table>
     </ng-container>
     <ng-container *ngIf="displayMode === 'history'">
-      <span  *ngIf="loader"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> {{loadingMessage}}</span>
-      <p class="m-3" *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">Select filter
+      <span *ngIf="loader"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> {{loadingMessage}}</span>
+      <p class="m-3" *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">Select
+        filter
         and press search button to load the TBF data.</p>
-      <p  class="m-3" *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected"> No MTBF Data
-        found for {{this.originalFilterObj.dateOption}}. <span *ngIf="this.originalFilterObj.dateOption !== 'this selected range'; else differentMsg"><p class="pt-2">You can choose large time window.</p></span> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template></p>
+      <p class="m-3" *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected"> No MTBF
+        Data
+        found for {{this.originalFilterObj.dateOption}}. <span
+          *ngIf="this.originalFilterObj.dateOption !== 'this selected range'; else differentMsg">
+          <p class="pt-2">You can choose large time window.</p>
+        </span>
+        <ng-template #differentMsg>
+          <p class="pt-2">You can choose different time window.</p>
+        </ng-template>
+      </p>
       <div id="mtbfChart" class="mt-2" *ngIf="!isLifeCycleEventsLoading && lifeCycleEvents.length > 0"
-      [ngStyle]="{'width': '100%', 'height': '25rem'}"></div>
+        [ngStyle]="{'width': '100%', 'height': '25rem'}"></div>
     </ng-container>
 
 

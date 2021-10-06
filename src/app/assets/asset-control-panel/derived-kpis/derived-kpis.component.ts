@@ -108,9 +108,8 @@ export class DerivedKpisComponent implements OnInit {
       this.filterObj.from_date = dateObj.from_date;
       this.filterObj.to_date = dateObj.to_date;
     } else {
-      const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
-      this.filterObj.from_date = dateObj.from_date;
-      this.filterObj.to_date = dateObj.to_date;
+      this.filterObj.from_date = this.filterObj.from_date;
+      this.filterObj.to_date = this.filterObj.to_date;
       this.selectedDateRange =
         moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') +
         ' to ' +
@@ -177,6 +176,7 @@ export class DerivedKpisComponent implements OnInit {
 
   selectedDate(value: any, datepicker?: any) {
     this.filterObj.dateOption = value.label;
+    console.log(value);
     if (this.filterObj.dateOption !== 'Custom Range') {
       const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
       this.filterObj.from_date = dateObj.from_date;
@@ -185,7 +185,11 @@ export class DerivedKpisComponent implements OnInit {
       this.filterObj.from_date = moment(value.start).utc().unix();
       this.filterObj.to_date = moment(value.end).utc().unix();
     }
+    console.log(this.filterObj.from_date);
+    console.log(this.filterObj.to_date);
     if (value.label === 'Custom Range') {
+      console.log(moment(value.start));
+      console.log(moment(value.start).format('DD-MM-YYYY HH:mm'));
       this.selectedDateRange =
         moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
     } else {

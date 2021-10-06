@@ -3,123 +3,144 @@
     <ul class="nav">
       <!-- Nav Item - Tables -->
       <li class="nav-item">
-        <a class="nav-link"  [ngClass]="{'active': displayMode === 'network_failure'}" href="javascript:void(0)" (click)="onTabChange('network_failure');displayMode = 'network_failure'">
+        <a class="nav-link" [ngClass]="{'active': displayMode === 'network_failure'}" href="javascript:void(0)"
+          (click)="onTabChange('network_failure');displayMode = 'network_failure'">
           <i class="fa fa-fw fa-angle-right"></i>
           <span>Network Failure Events</span></a>
       </li>
-      <li class="nav-item" >
-        <a class="nav-link"  [ngClass]="{'active': displayMode === 'machine_failure'}" href="javascript:void(0)" (click)="onTabChange('machine_failure');displayMode = 'machine_failure'">
+      <li class="nav-item">
+        <a class="nav-link" [ngClass]="{'active': displayMode === 'machine_failure'}" href="javascript:void(0)"
+          (click)="onTabChange('machine_failure');displayMode = 'machine_failure'">
           <i class="fa fa-fw fa-cog"></i>
           <span>Machine Failure Events</span></a>
       </li>
-    <!-- Nav Item - Charts -->
-    <li class="nav-item" >
-      <a class="nav-link" [ngClass]="{'active': displayMode === 'history'}" href="javascript:void(0)" (click)="onTabChange('history');displayMode = 'history'">
-        <i class="fa fa-fw fa-eye"></i>
-        <span>Historical MTTR</span></a>
-    </li>
-  </ul>
-    </div>
-    </div>
+      <!-- Nav Item - Charts -->
+      <li class="nav-item">
+        <a class="nav-link" [ngClass]="{'active': displayMode === 'history'}" href="javascript:void(0)"
+          (click)="onTabChange('history');displayMode = 'history'">
+          <i class="fa fa-fw fa-eye"></i>
+          <span>Historical MTTR</span></a>
+      </li>
+    </ul>
+  </div>
+</div>
 
-<div class="tab-bar"  *ngIf="displayMode">
+<div class="tab-bar" *ngIf="displayMode">
   <div class="">
     <form class="form-inline">
       <div class="form-group" *ngIf="displayMode !== 'history'">
-        <input type="number" min="1" id="countId"
-        name="count" class="form-control form-control-sm active record-input"
-        [(ngModel)]="filterObj.count" name="count">
+        <input type="number" min="1" id="countId" name="count" class="form-control form-control-sm active record-input"
+          [(ngModel)]="filterObj.count" name="count">
       </div>
-      <div class="form-group left-inner-addon" >
+      <div class="form-group left-inner-addon">
         <i class="fa fa-calendar" [ngClass]="{'active': filterObj.from_date && filterObj.to_date}"></i>
-        <input type="text"  class="form-control form-control-sm date-range-picker" [ngClass]="{'active': filterObj.from_date && filterObj.to_date}"
-         daterangepicker name="daterangeInput"  [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"  [(ngModel)]="selectedDateRange"
-         [tooltip]="selectedDateRange" placement="bottom"/>
+        <input type="text" readonly class="form-control form-control-sm date-range-picker"
+          [ngClass]="{'active': filterObj.from_date && filterObj.to_date}" daterangepicker name="daterangeInput"
+          [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"
+          [(ngModel)]="selectedDateRange" [tooltip]="selectedDateRange" placement="bottom" />
       </div>
       <div class="form-group" *ngIf="displayMode === 'history'">
         <select class="form-control form-control-sm " id="date_frequency"
-        [ngClass]="{'active': filterObj.date_frequency}"
-              [(ngModel)]="filterObj.date_frequency" name="date_frequency" >
-                <option [ngValue]="undefined">Frequency </option>
-                <option [ngValue]="'daily'">Daily</option>
-                <option [ngValue]="'weekly'">Weekly</option>
-              </select>
+          [ngClass]="{'active': filterObj.date_frequency}" [(ngModel)]="filterObj.date_frequency" name="date_frequency">
+          <option [ngValue]="undefined">Frequency </option>
+          <option [ngValue]="'daily'">Daily</option>
+          <option [ngValue]="'weekly'">Weekly</option>
+        </select>
       </div>
-      <div class="form-group" >
-      <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search" (click)="searchEvents(this.filterObj)" ><i class="fa fa-search fa-sm"></i></button>
+      <div class="form-group">
+        <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
+          (click)="searchEvents(this.filterObj)"><i class="fa fa-search fa-sm"></i></button>
       </div>
-      <div class="form-group" >
-      <button type="button" class="btn btn-sm searchBtn btn-white" placement="bottom" tooltip="Clear Filters" (click)="clear();">
-        <img class="filter-clear-icon" src="./assets/img/filter.svg"></button>
+      <div class="form-group">
+        <button type="button" class="btn btn-sm searchBtn btn-white" placement="bottom" tooltip="Clear Filters"
+          (click)="clear();">
+          <img class="filter-clear-icon" src="./assets/img/filter.svg"></button>
       </div>
-      <h6 class="flex-end" *ngIf="displayMode === 'machine_failure' && averageMTTR && averageMTTR > 0 && isFilterSelected"><b> MTTR: {{averageMTTRString}}</b></h6>
-     </form>
-    </div>
-    </div>
+      <h6 class="flex-end"
+        *ngIf="displayMode === 'machine_failure' && averageMTTR && averageMTTR > 0 && isFilterSelected"><b> MTTR:
+          {{averageMTTRString}}</b></h6>
+    </form>
+  </div>
+</div>
 
-    <div class="table-responsive">
-      <div class="tableFixHead" style="max-height: calc(100vh - 13.5rem);">
-  <ng-container *ngIf="displayMode === 'network_failure' || displayMode === 'machine_failure' ">
-        <table class="table table-hover " >
-          <thead>
-            <th></th>
-            <th>Event Start Time</th>
-            <th>Event End Time</th>
-            <th >{{displayMode === 'machine_failure' ? 'Machine Downtime' : 'Network Offtime'}}</th>
-            <th *ngIf="decodedToken?.privileges?.indexOf('RMM') > -1"> Action</th>
-          </thead>
-          <!-- <tfoot *ngIf="averageMTTR && averageMTTR > 0 && isFilterSelected">
+<div class="table-responsive">
+  <div class="tableFixHead" style="max-height: calc(100vh - 13.5rem);">
+    <ng-container *ngIf="displayMode === 'network_failure' || displayMode === 'machine_failure' ">
+      <table class="table table-hover ">
+        <thead>
+          <th></th>
+          <th>Event Start Time</th>
+          <th>Event End Time</th>
+          <th>{{displayMode === 'machine_failure' ? 'Machine Downtime' : 'Network Offtime'}}</th>
+          <th *ngIf="decodedToken?.privileges?.indexOf('RMM') > -1"> Action</th>
+        </thead>
+        <!-- <tfoot *ngIf="averageMTTR && averageMTTR > 0 && isFilterSelected">
             <tr>
               <td colspan="3" class="text-right">MTTR</td>
               <td colspan="2"> {{averageMTTRString}}</td>
             </tr>
           </tfoot> -->
-          <tbody>
-            <ng-container *ngIf="lifeCycleEvents.length > 0 && isFilterSelected">
-              <tr *ngFor="let event of lifeCycleEvents; let i = index">
-                <td>{{i + 1}}</td>
-                <td>{{event.local_event_start_time}}</td>
-                <td>{{event.local_event_end_time}}</td>
-                <td>{{event.mttrString}}</td>
-                <td *ngIf="decodedToken?.privileges?.indexOf('RMM') > -1">
-                  <a href="javascript:void(0)" (click)="openModal(event)">
-                    <i class="fa fa-edit"></i>
-                  </a>
-                </td>
-              </tr>
-            </ng-container>
-            <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected">
-              <tr>
-                <td colspan="5">
-                  No {{displayMode === 'network_failure' ? 'Network Failure Events' : 'Machine Failure Events'}} data found for {{this.originalFilterObj.dateOption}}. <p *ngIf="this.originalFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">You can choose large time window.</p> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template>
-                </td>
-              </tr>
-            </ng-container>
-            <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">
-              <tr>
-                <td colspan="5">Select filter and press search button to load the TTR data.</td>
-              </tr>
-            </ng-container>
-            <ng-container *ngIf="isLifeCycleEventsLoading">
-              <tr>
-                <td colspan="5">
-                  <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-                </td>
-              </tr>
-            </ng-container>
-          </tbody>
-        </table>
-  </ng-container>
-  <ng-container *ngIf="displayMode === 'history'">
+        <tbody>
+          <ng-container *ngIf="lifeCycleEvents.length > 0 && isFilterSelected">
+            <tr *ngFor="let event of lifeCycleEvents; let i = index">
+              <td>{{i + 1}}</td>
+              <td>{{event.local_event_start_time}}</td>
+              <td>{{event.local_event_end_time}}</td>
+              <td>{{event.mttrString}}</td>
+              <td *ngIf="decodedToken?.privileges?.indexOf('RMM') > -1">
+                <a href="javascript:void(0)" (click)="openModal(event)">
+                  <i class="fa fa-edit"></i>
+                </a>
+              </td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected">
+            <tr>
+              <td colspan="5">
+                No {{displayMode === 'network_failure' ? 'Network Failure Events' : 'Machine Failure Events'}} data
+                found for {{this.originalFilterObj.dateOption}}. <p
+                  *ngIf="this.originalFilterObj.dateOption !== 'this selected range'; else differentMsg" class="pt-2">
+                  You can choose large time window.</p>
+                <ng-template #differentMsg>
+                  <p class="pt-2">You can choose different time window.</p>
+                </ng-template>
+              </td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">
+            <tr>
+              <td colspan="5">Select filter and press search button to load the TTR data.</td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="isLifeCycleEventsLoading">
+            <tr>
+              <td colspan="5">
+                <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </ng-container>
+    <ng-container *ngIf="displayMode === 'history'">
 
-      <p class="m-3" *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">Select filter and press search button to load the TTR data.</p>
-      <p class="m-3" *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected"> No MTTR Data found for {{this.originalFilterObj.dateOption}}. <span *ngIf="this.originalFilterObj.dateOption !== 'this selected range'; else differentMsg"><p class="pt-2">You can choose large time window.</p></span> <ng-template #differentMsg><p class="pt-2">You can choose different time window.</p></ng-template></p>
-      <span  *ngIf="loader"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> {{loadingMessage}}</span>
+      <p class="m-3" *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading && !isFilterSelected">Select
+        filter and press search button to load the TTR data.</p>
+      <p class="m-3" *ngIf="lifeCycleEvents.length === 0 && !isLifeCycleEventsLoading  && isFilterSelected"> No MTTR
+        Data found for {{this.originalFilterObj.dateOption}}. <span
+          *ngIf="this.originalFilterObj.dateOption !== 'this selected range'; else differentMsg">
+          <p class="pt-2">You can choose large time window.</p>
+        </span>
+        <ng-template #differentMsg>
+          <p class="pt-2">You can choose different time window.</p>
+        </ng-template>
+      </p>
+      <span *ngIf="loader"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> {{loadingMessage}}</span>
       <div id="mttrChart" class="mt-2" *ngIf="!isLifeCycleEventsLoading && lifeCycleEvents.length > 0"
-      [ngStyle]="{'width': '100%', 'height': '25rem'}"></div>
+        [ngStyle]="{'width': '100%', 'height': '25rem'}"></div>
 
-  </ng-container>
-</div>
+    </ng-container>
+  </div>
 </div>
 
 
@@ -128,7 +149,7 @@
     <div class="modal-content" *ngIf="selectedEvent">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Acknowledge Event</h5>
-        <button type="button" class="close" (click)="closeModal()"  aria-label="Close">
+        <button type="button" class="close" (click)="closeModal()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -137,16 +158,15 @@
           <h6>Are you sure you want to acknowledge this event?</h6>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Reason:</label>
-            <select class="custom-select" id="alertReason" [(ngModel)]="selectedEvent.event_reason"
-              name="alertReason">
+            <select class="custom-select" id="alertReason" [(ngModel)]="selectedEvent.event_reason" name="alertReason">
               <option [ngValue]="null">Select Reason</option>
-              <option [ngValue]="'Network Failure'" >Network Failure</option>
-              <option [ngValue]="'Machine Failure'" >Machine Failure</option>
+              <option [ngValue]="'Network Failure'">Network Failure</option>
+              <option [ngValue]="'Machine Failure'">Machine Failure</option>
             </select>
           </div>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Notes:</label>
-            <input type="text"  class="form-control form-control-sm mr-1 my-1" id="inputEmail4" placeholder="Notes"
+            <input type="text" class="form-control form-control-sm mr-1 my-1" id="inputEmail4" placeholder="Notes"
               [(ngModel)]="selectedEvent.event_metadata.note" name="count">
           </div>
         </form>

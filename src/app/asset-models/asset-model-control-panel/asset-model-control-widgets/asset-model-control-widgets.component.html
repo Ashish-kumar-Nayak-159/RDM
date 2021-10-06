@@ -120,7 +120,7 @@
 
             <ng-select *ngIf="controlWidget.metadata.communication_technique !== 'Direct Method'"
               [items]="properties?.controllable_properties" class="custom-dropdown sm" [clearable]="false"
-              [searchable]="true" [multiple]="true" bindLabel="name" [closeOnSelect]="false"
+              [searchable]="true" clearSearchOnAdd="true" [multiple]="true" bindLabel="name" [closeOnSelect]="false"
               placeholder="Select Property" dropdownPosition="bottom" name="propArr" ngDefaultControl
               [(ngModel)]="controlWidget.properties" (add)="onPropertyChecked($event)"
               (remove)="onPropertyChecked($event)">

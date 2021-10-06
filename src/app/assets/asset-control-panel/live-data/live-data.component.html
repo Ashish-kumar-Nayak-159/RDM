@@ -3,9 +3,9 @@
     <form class="form-inline">
       <div class="form-group">
         <ng-select [items]="liveWidgets" class="custom-dropdown w-12 active sm" bindLabel="id"
-          (onDeSelectAll)="onDeSelectAll()" [searchable]="true" placeholder="Select Widgets" [multiple]="true"
-          [selectableGroup]="true" [closeOnSelect]="false" dropdownPosition="bottom" name="widget-dropdown"
-          [(ngModel)]="selectedWidgetsForSearch">
+          (onDeSelectAll)="onDeSelectAll()" [searchable]="true" placeholder="Select Widgets" clearSearchOnAdd="true"
+          [multiple]="true" [selectableGroup]="true" [closeOnSelect]="false" dropdownPosition="bottom"
+          name="widget-dropdown" [(ngModel)]="selectedWidgetsForSearch">
           <ng-template ng-multi-label-tmp let-items="items">
             {{items.length}} widgets selected
           </ng-template>

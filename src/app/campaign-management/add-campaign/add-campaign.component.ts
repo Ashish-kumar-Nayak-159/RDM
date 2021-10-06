@@ -1,3 +1,4 @@
+import { AssetService } from 'src/app/services/assets/asset.service';
 import { CampaignService } from './../../services/campaigns/campaign.service';
 import { APIMESSAGES } from 'src/app/api-messages.constants';
 import { ToasterService } from 'src/app/services/toaster.service';
@@ -30,6 +31,7 @@ export class AddCampaignComponent implements OnInit {
   };
   daterange: any = {};
   assetModels: any[] = [];
+  campaignAssets: any[] = [];
   campaignObjectiveList = [
     {
       name: 'Firmware Upgrade of Field loT Assets over the Air',
@@ -85,11 +87,13 @@ export class AddCampaignComponent implements OnInit {
   hierarchyList: any[] = [];
   hierarchyArr = {};
   configureHierarchy = {};
+  isGetCampaignAssetAPILoading = false;
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
-    private campaignService: CampaignService
+    private campaignService: CampaignService,
+    private assetService: AssetService
   ) {}
 
   ngOnInit(): void {
@@ -215,6 +219,33 @@ export class AddCampaignComponent implements OnInit {
       this.campaignObj.request_type = undefined;
       this.packages = [];
     }
+    this.campaignAssets = [];
+  }
+
+  getAssetsForCampaign() {
+    $('#viewCampaignAssetModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    this.campaignAssets = [];
+    this.isGetCampaignAssetAPILoading = true;
+    const hierarchy = { App: this.contextApp.app };
+    Object.keys(this.configureHierarchy).forEach((key, index) => {
+      if (this.configureHierarchy[key]) {
+        hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
+      }
+    });
+    const obj = {
+      hierarchy: JSON.stringify(hierarchy),
+      asset_model: this.campaignObj.asset_model_obj.name,
+      type: this.campaignObj.asset_model_obj.model_type,
+    };
+    this.assetService.getLegacyAssets(obj, this.contextApp.app).subscribe(
+      (response: any) => {
+        if (response?.data) {
+          this.campaignAssets = response.data;
+          this.isGetCampaignAssetAPILoading = false;
+        }
+      },
+      (error) => (this.isGetCampaignAssetAPILoading = false)
+    );
   }
 
   onPrepareHierarchy() {
@@ -413,6 +444,10 @@ export class AddCampaignComponent implements OnInit {
         }
       )
     );
+  }
+
+  closeCampaignAssetModal() {
+    $('#viewCampaignAssetModal').modal('hide');
   }
 
   onCloseCampaignModal() {

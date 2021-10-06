@@ -160,10 +160,19 @@
                 <option *ngFor="let item of assetModels" [ngValue]="item">
                   {{item.name}}</option>
               </select>
-              <p *ngIf="campaignObj.asset_model_obj">There are {{campaignObj.asset_model_obj?.inherited_asset_count}}
+              <!-- <p *ngIf="campaignObj.asset_model_obj">There are {{campaignObj.asset_model_obj?.inherited_asset_count}}
                 assets of this specific model, This campaign will run on all
-                {{campaignObj.asset_model_obj?.inherited_asset_count}} assets</p>
+                {{campaignObj.asset_model_obj?.inherited_asset_count}} assets</p> -->
             </td>
+          </tr>
+          <tr>
+            <td>Assets</td>
+            <td *ngIf="campaignObj.asset_model_obj">
+              <a href="javascript:void(0)" class="blue-font" id="userDropdown1" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false" (click)="getAssetsForCampaign()">View Assets</a>
+            </td>
+            <td *ngIf="!campaignObj.asset_model_obj"> Please select asset model to view the assets on which this
+              campaign will run.</td>
           </tr>
         </tbody>
       </table>
@@ -329,6 +338,13 @@
             <td>Asset Model</td>
             <td>{{campaignObj.asset_model}}</td>
           </tr>
+          <tr>
+            <td>Assets</td>
+            <td>
+              <a href="javascript:void(0)" class="blue-font" id="userDropdown1" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false" (click)="getAssetsForCampaign()">View Assets</a>
+            </td>
+          </tr>
           <ng-container *ngIf="campaignObj.objective === 'FOTA'">
             <tr>
               <td>Command</td>
@@ -392,3 +408,56 @@
     </div>
   </div>
 </ng-container>
+
+<div class="modal fade" id="viewCampaignAssetModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="exampleModalLabel">View Assets</h6>
+        <button type="button" class="close" (click)="closeCampaignAssetModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Asset Name</th>
+              <th>Asset ID</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="campaignAssets.length > 0 && !isGetCampaignAssetAPILoading">
+              <tr *ngFor="let item of campaignAssets; let index = index">
+                <td>{{index + 1}}</td>
+                <td>
+                  {{item.display_name}}
+                </td>
+                <td>{{item.asset_id}}</td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="campaignAssets.length === 0 && !isGetCampaignAssetAPILoading">
+              <tr>
+                <td colspan="3">No assets available for selected model and hierarchy.
+                </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="isGetCampaignAssetAPILoading">
+              <tr>
+                <td colspan="3">
+                  <i class="fa fa-fw fa-2x  fa-spin fa-spinner"></i>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary add-row" (click)="closeCampaignAssetModal()">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>

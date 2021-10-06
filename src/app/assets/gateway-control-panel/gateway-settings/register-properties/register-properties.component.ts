@@ -472,6 +472,9 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
     );
   }
 
+
+
+
   onModalClose() {
     $('#confirmMessageModal').modal('hide');
     this.selectedAsset = undefined;

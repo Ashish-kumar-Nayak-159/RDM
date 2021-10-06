@@ -1156,7 +1156,6 @@ export class AssetService {
   }
 
   // Non Provisioned Assets
-  
   getNonProvisionedAssets(app) {
     return this.http.get(this.url + String.Format(AppUrls.NON_PROVISIONED_ASSETS, encodeURIComponent(app)));
   }

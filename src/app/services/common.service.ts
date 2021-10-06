@@ -32,7 +32,7 @@ export class CommonService {
         minute: '2-digit',
         second: '2-digit',
         fractionalSecondDigits: 3,
-        hour12: true,
+        hour12: false,
       } as const;
       if (utcDate.includes('T') && utcDate.includes('Z')) {
         // 2011-06-29T16:52:48.000Z

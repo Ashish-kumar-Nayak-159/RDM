@@ -96,7 +96,7 @@
 </div>
 
 <app-add-asset *ngIf="isOpenAssetCreateModal" [gateways]="gateways" [assetDetail]="selectedAsset"
-  (getAssetEmit)="assetsList = [];getAssets(true);" [componentState]="type" [tileData]="tabData"
+  (getAssetEmit)="assetsList = [];getAssets();" [componentState]="type" [tileData]="tabData"
   (cancelModal)="onCreateAssetCancelModal()"></app-add-asset>
 
 <!-- <div class="modal right fade" id="editAssetModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">

@@ -82,14 +82,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
       else {
         this.assetDetail.tags.asset_manager = this.assetDetail.asset_manager;
       }
-      // else {
-      //   const userObj = this.appUsers.find((type) => type.user_email === this.assetDetail.asset_manager.user_email);
-      //   userObj.tags = {
-      //     user_name: userObj.user_name,
-      //     user_email: userObj.user_email,
-      //   };
-      //   this.assetDetail.tags.asset_manager = userObj.tags;
-      // }
       if (!this.assetDetail.asset_model) {
         this.assetDetail.tags.asset_model = null;
       } else {
@@ -113,11 +105,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
       this.assetDetail.tags = {};
       this.assetDetail.tags.app = this.contextApp.app;
       this.assetDetail.tags.hierarchy_json = JSON.parse(JSON.stringify(this.contextApp.user.hierarchy));
-      // this.assetDetail.tags.asset_manager = undefined;
-      // this.assetDetail.tags.asset_manager = {
-      //   user_name: undefined,
-      //   user_email: undefined,
-      // };
     }
     $('#createAssetModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
@@ -277,7 +264,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
     this.isCreateAssetAPILoading = true;
     console.log(this.assetDetail);
     this.assetDetail.tags.app = this.contextApp.app;
-    // this.assetDetail.tags.asset_manager = this.assetDetail.tags.asset_manager.user_email;
     if (this.assetDetail.tags.created_by === '') {
       this.assetDetail.tags.created_by = this.userData.email + ' (' + this.userData.name + ')';
     }
@@ -383,7 +369,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
     this.assetDetail.tags.category = this.componentState === CONSTANTS.NON_IP_ASSET ? null : this.componentState;
     // this.assetDetail.tags.created_date = moment().utc().format('M/DD/YYYY h:mm:ss A');
     const userObj = this.appUsers.find((type) => type.user_email === this.assetDetail.tags.asset_manager);
-    // this.assetDetail.tags.asset_manager.user_name = userObj.user_name;
     this.assetDetail.tags.recipients = [];
     this.assetDetail.tags.recipients.push({
       email: this.assetDetail.tags.asset_manager,
@@ -392,7 +377,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
       whatsapp_no: this.assetDetail.tags.asset_manager.metadata?.whatsapp_no,
     });
     const obj = JSON.parse(JSON.stringify(this.assetDetail));
-    // obj.tags.asset_manager = this.assetDetail.tags.asset_manager;
     console.log(this.assetDetail);
     const methodToCall =
       this.componentState === CONSTANTS.NON_IP_ASSET
@@ -453,8 +437,6 @@ export class AddAssetComponent implements OnInit, OnChanges {
   onCloseCreateAssetModal() {
     $('#createAssetModal').modal('hide');
     this.cancelModal.emit();
-    // this.assetDetail.tags = {};
-    // this.assetDetail = undefined;
   }
 }
 

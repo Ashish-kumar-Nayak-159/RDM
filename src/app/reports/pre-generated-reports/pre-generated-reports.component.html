@@ -218,14 +218,6 @@
                     defaultValue="{{ contextApp.app }}" disabled />
                 </div>
               </ng-container>
-              <!-- <ng-select [items]="assets" class="" bindLabel="display_name" [clearable]="false"
-                  [searchable]="true" [multiple]="true" [closeOnSelect]="true" placeholder="Select Asset"
-                  dropdownPosition="bottom" name="report-asset-dropdown" [(ngModel)]="reportsObj.asset">
-                  <ng-template ng-option-tmp let-asset="item">
-                    <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ?
-                      asset.display_name: asset.asset_id}}</span>
-                  </ng-template>
-              </ng-select> -->
               <ng-select [items]="assets" class="custom-dropdown w-12 sm" [clearable]="false"
               [searchable]="true" [multiple]="true" bindLabel="display_name" bindValue="asset_id" 
               [closeOnSelect]="false" placeholder="Select Asset" dropdownPosition="bottom"

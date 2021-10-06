@@ -64,7 +64,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   reportsObj: any = {};
   assetModels: any[] = [];
   selectedAssets: any[] = [];
-  // selectedAssetOnModel: any[] = [];
   isAddReport = false;
   constructor(
     private commonService: CommonService,
@@ -189,6 +188,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   onCreateNewPGReports(){
     this.isCreateReportAPILoading = true;
     if (
+      !this.reportsObj.asset_model ||
+      // !this.reportsObj.assets ||
+      this.reportsObj.assets.length === 0 ||
       !this.reportsObj.report_name ||
       !this.reportsObj.report_category ||
       !this.reportsObj.report_frequency ||
@@ -226,7 +228,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     //   }
     // )};
     // this.reportsObj.assets = assets;
-    // delete this.reportsObj.asset;
     const asset_model = this.reportsObj.asset_model;
     delete this.reportsObj.asset_model;
     console.log(this.reportsObj);
@@ -249,13 +250,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
 
   onReportChange() {
     if (this.reportsObj.report_category === 'telemetry') {
-      // console.log(this.reportsObj.asset);
-      // if (this.reportsObj.asset) {
-      //  const asset_model = this.reportsObj.asset_model;
         if (this.reportsObj.asset_model) {
           this.getAssetsModelProperties(this.reportsObj.asset_model);
         }
-      // }
     }
   }
 
@@ -535,7 +532,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       console.log(this.reportsObj.hierarchy);
       if (Object.keys(hierarchyObj).length === 1) {
         this.assets = JSON.parse(JSON.stringify(this.selectedAssets));
-        console.log(this.assets);
       } else {
         const arr = [];
         this.assets = [];
@@ -555,7 +551,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
           }
         });
         this.assets = JSON.parse(JSON.stringify(arr));
-        console.log(this.assets);
       }
     }
     this.filterObj.assetArr = undefined;

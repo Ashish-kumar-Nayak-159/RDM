@@ -70,7 +70,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.getTileName();
     this.assetsList = [];
-    this.getAssets(true);
+    this.getAssets();
     // if (this.type === 'legacy-assets') {
     //   this.componentState = CONSTANTS.NON_IP_ASSET;
     // } else if (this.type === 'iot-assets') {
@@ -87,7 +87,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
           !this.insideScrollFunFlag
         ) {
           this.currentOffset += this.currentLimit;
-          this.getAssets(true);
+          this.getAssets();
           this.insideScrollFunFlag = true;
         }
       });
@@ -146,7 +146,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     this.currentLimit = this.tileData && this.tileData[2] ? Number(this.tileData[2]?.value) : 20;
   }
 
-  async getAssets(flag): Promise<void> {
+  async getAssets(flag = true): Promise<void> {
     this.isAssetListLoading = true;
     if (flag) {
       await this.getNonProvisionedAssets();
@@ -236,16 +236,10 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
             this.assetsList = [...this.assetsList, ...response.data];
           }
           resolve1();
-          // if (response.data.length === this.currentLimit) {
-          //   this.insideScrollFunFlag = false;
-          // } else {
-          //   this.insideScrollFunFlag = true;
-          // }
           this.isAssetListLoading = false;
         },
         (error) => {
           this.isAssetListLoading = false;
-          // this.insideScrollFunFlag = false;
         }
       )
      );
@@ -431,7 +425,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
           this.assetsList = [];
           this.selectedAssets = [];
           this.isAllAssetSelected = false;
-          this.getAssets(true);
+          this.getAssets();
           $('#confirmMessageModal').modal('hide');
         },
         (error) => {
@@ -460,7 +454,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
           this.assetsList = [];
           this.selectedAssets = [];
           this.isAllAssetSelected = false;
-          this.getAssets(true);
+          this.getAssets();
           $('#confirmMessageModal').modal('hide');
         },
         (error) => {
@@ -493,7 +487,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
             delete item.asset;
           }
           this.commonService.setItemInLocalStorage(CONSTANTS.MAIN_MENU_FILTERS, item);
-          this.getAssets(true);
+          this.getAssets();
           $('#confirmMessageModal').modal('hide');
         },
         (error) => {

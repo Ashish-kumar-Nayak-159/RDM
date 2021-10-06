@@ -113,7 +113,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
       this.assetDetail.tags = {};
       this.assetDetail.tags.app = this.contextApp.app;
       this.assetDetail.tags.hierarchy_json = JSON.parse(JSON.stringify(this.contextApp.user.hierarchy));
-      this.assetDetail.tags.asset_manager = undefined;
+      // this.assetDetail.tags.asset_manager = undefined;
       // this.assetDetail.tags.asset_manager = {
       //   user_name: undefined,
       //   user_email: undefined,
@@ -392,7 +392,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
       whatsapp_no: this.assetDetail.tags.asset_manager.metadata?.whatsapp_no,
     });
     const obj = JSON.parse(JSON.stringify(this.assetDetail));
-    obj.tags.asset_manager = this.assetDetail.tags.asset_manager;
+    // obj.tags.asset_manager = this.assetDetail.tags.asset_manager;
     console.log(this.assetDetail);
     const methodToCall =
       this.componentState === CONSTANTS.NON_IP_ASSET

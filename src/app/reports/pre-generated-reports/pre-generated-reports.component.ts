@@ -64,7 +64,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   reportsObj: any = {};
   assetModels: any[] = [];
   selectedAssets: any[] = [];
-  selectedAssetOnModel: any[] = [];
+  // selectedAssetOnModel: any[] = [];
   isAddReport = false;
   constructor(
     private commonService: CommonService,
@@ -173,6 +173,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   onOpenConfigurePGRModal() {
     this.isAddReport = true;
     this.reportsObj = { assets: [] };
+    this.assets = this.originalAssets;
+    this.selectedAssets = this.originalAssets;
     $('#configurePGRModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
@@ -180,6 +182,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     $('#configurePGRModal').modal('hide');
     this.reportsObj = undefined;
     this.isAddReport = false;
+    this.assets = [];
+    this.selectedAssets = [];
   }
 
   onCreateNewPGReports(){
@@ -223,6 +227,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     // )};
     // this.reportsObj.assets = assets;
     // delete this.reportsObj.asset;
+    const asset_model = this.reportsObj.asset_model;
     delete this.reportsObj.asset_model;
     console.log(this.reportsObj);
     this.subscriptions.push(
@@ -235,6 +240,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         },
         (error) => {
           this.isCreateReportAPILoading = false;
+          this.reportsObj.asset_model = asset_model;
           this.toasterService.showError(error.message, 'Create Report');
         }
       )
@@ -274,15 +280,25 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   onChangeAssetsModel() {
-    this.selectedAssets = [];
+    this.assets = [];
     this.reportsObj.assets = [];
-    this.configureHierarchy = {};
     if (this.reportsObj.asset_model) {
       const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.reportsObj.asset_model);
-      this.selectedAssets = [ ...asset ];
-      this.selectedAssetOnModel = this.selectedAssets;
-      console.log(this.selectedAssets);
+      this.assets = [ ...asset ];
+      this.selectedAssets = this.assets;
+      this.contextApp.hierarchy.levels.forEach((level, index) => {
+            if (index !== 0) {
+                this.onChangeOfHierarchy(index, 'RS');
+            }
+      });
     } else {
+      this.assets = this.originalAssets;
+      this.selectedAssets = this.assets;
+      this.contextApp.hierarchy.levels.forEach((level, index) => {
+            if (index !== 0) {
+                this.onChangeOfHierarchy(index, 'RS');
+            }
+      });
     }
   }
 
@@ -514,13 +530,17 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         this.assets = JSON.parse(JSON.stringify(arr));
       }
     } else {
+      this.reportsObj.assets = [];
       this.reportsObj.hierarchy = JSON.parse(JSON.stringify(hierarchyObj));
+      console.log(this.reportsObj.hierarchy);
       if (Object.keys(hierarchyObj).length === 1) {
-        this.selectedAssets = JSON.parse(JSON.stringify(this.selectedAssetOnModel));
+        this.assets = JSON.parse(JSON.stringify(this.selectedAssets));
+        console.log(this.assets);
       } else {
         const arr = [];
-        this.selectedAssets = [];
-        this.selectedAssetOnModel.forEach((asset) => {
+        this.assets = [];
+        this.reportsObj.assets = [];
+        this.selectedAssets.forEach((asset) => {
           let trueFlag = 0;
           let flaseFlag = 0;
           Object.keys(hierarchyObj).forEach((hierarchyKey) => {
@@ -534,7 +554,8 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
             arr.push(asset);
           }
         });
-        this.selectedAssets = JSON.parse(JSON.stringify(arr));
+        this.assets = JSON.parse(JSON.stringify(arr));
+        console.log(this.assets);
       }
     }
     this.filterObj.assetArr = undefined;

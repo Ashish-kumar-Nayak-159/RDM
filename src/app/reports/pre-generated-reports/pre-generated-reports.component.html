@@ -57,8 +57,8 @@
     </div> -->
     <div class="form-group left-inner-addon">
       <i class="fa fa-calendar" [ngClass]="{'active': filterObj.from_date && filterObj?.to_date}"></i>
-      <input type="text" class="form-control form-control-sm date-range-picker" daterangepicker name="daterangeInput"
-        autocomplete="off" [(ngModel)]="selectedDateRange" [options]="options"
+      <input type="text" readonly class="form-control form-control-sm date-range-picker" daterangepicker
+        name="daterangeInput" autocomplete="off" [(ngModel)]="selectedDateRange" [options]="options"
         (selected)="selectedDate($event, daterange)" [ngClass]="{'active': filterObj.from_date && filterObj?.to_date}"
         [tooltip]="selectedDateRange" placement="bottom" />
     </div>
@@ -261,7 +261,7 @@
               <div class="form-group">
                 <label for="message-text" class="col-form-label required">Properties:</label>
                 <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" [clearable]="false"
-                  [searchable]="true" [multiple]="true" bindLabel="id" [closeOnSelect]="false"
+                  [searchable]="true" clearSearchOnAdd="true" [multiple]="true" bindLabel="id" [closeOnSelect]="false"
                   placeholder="Select Properties" groupBy="type" dropdownPosition="bottom" name="asset-dropdown"
                   [(ngModel)]="props" (onDeSelectAll)="y1Deselect($event)">
                   <ng-template ng-header-tmp>

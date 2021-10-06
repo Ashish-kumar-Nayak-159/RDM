@@ -37,7 +37,7 @@
 
   <div class="form-group  left-inner-addon">
     <i class="fa fa-calendar" [ngClass]="{'active': filterObj.from_date && filterObj.to_date}"></i>
-    <input type="text" class="form-control form-control-sm date-range-picker"
+    <input type="text" readonly class="form-control form-control-sm date-range-picker"
       [ngClass]="{'active': filterObj.from_date && filterObj.to_date}" daterangepicker name="daterangeInput"
       [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"
       [(ngModel)]="selectedDateRange" [tooltip]="selectedDateRange" placement="bottom" />

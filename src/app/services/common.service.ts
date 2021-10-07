@@ -353,9 +353,15 @@ export class CommonService {
     // }
     localStorage.clear();
     this.signalRService.disconnectFromSignalR('all');
-    this.router.navigate(['']).then(() => {
-      location.reload();
-    });
+    if (environment.app === 'Indygo') {
+      this.router.navigate(['login']).then(() => {
+        location.reload();
+      });
+    } else {
+      this.router.navigate(['']).then(() => {
+        location.reload();
+      });
+    }
   }
 
   getLowestValueFromList(arr) {

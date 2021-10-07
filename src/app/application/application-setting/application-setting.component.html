@@ -60,12 +60,11 @@
             </li>
             <li class="nav-item">
               <a class="nav-item nav-link border-0" id="nav-about-tab" data-toggle="tab"
-                [ngClass]="{'active': activeTab === 'email-alias'}" href="#app-email-alias" role="tab"
-                aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('email-alias')">
+                [ngClass]="{'active': activeTab === 'user-groups'}" href="#app-user-groups" role="tab"
+                aria-controls="nav-about" aria-selected="false" (click)="setActiveTab('user-groups')">
                 User Groups</a>
             </li>
           </ul>
-          <!-- </section> -->
         </div>
       </div>
     </div>
@@ -90,9 +89,9 @@
       <app-application-database-configuration *ngIf="activeTab === 'database-configuration' && applicationData"
         [applicationData]="applicationData"></app-application-database-configuration>
     </div>
-    <div class="tab-pane" id="app-email-alias" role="tabpanel" aria-labelledby="nav-home-tab"
-      [ngClass]="{'active': activeTab === 'email-alias'}">
-      <app-application-email-alias *ngIf="activeTab === 'email-alias' && applicationData"
+    <div class="tab-pane" id="app-user-groups" role="tabpanel" aria-labelledby="nav-home-tab"
+      [ngClass]="{'active': activeTab === 'user-groups'}">
+      <app-application-email-alias *ngIf="activeTab === 'user-groups' && applicationData"
         [applicationData]="applicationData"></app-application-email-alias>
     </div>
     <div class="tab-pane" id="app-org-tree" role="tabpanel" aria-labelledby="nav-home-tab"

@@ -56,7 +56,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    if (this.contextApp.app === 'CMS_Dev') {
+    if (this.environmentApp === 'SopanCMS') {
       await this.getLatestDerivedKPIData();
     }
     await this.getAllAssets();
@@ -156,9 +156,9 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     return new Promise<void>((resolve) => {
       const obj = {
         hierarchy: JSON.stringify(this.contextApp.user.hierarchy),
-        type: this.contextApp.app === 'CMS_Dev' ? CONSTANTS.NON_IP_ASSET : undefined,
+        type: this.environmentApp === 'SopanCMS' ? CONSTANTS.NON_IP_ASSET : undefined,
       };
-      if (this.contextApp.app === 'CMS_Dev') {
+      if (this.environmentApp === 'SopanCMS') {
         this.healthyAssetCount = 0;
         this.unhealthyAssetCount = 0;
       }
@@ -174,7 +174,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
                 asset.gas = '0.4%';
                 asset.power = '45 SCMH';
               }
-              if (this.contextApp.app === 'CMS_Dev') {
+              if (this.environmentApp === 'SopanCMS') {
                 this.derivedKPILatestData.forEach((kpiObj) => {
                   if (asset.asset_id === kpiObj.asset_id) {
                     asset.kpiValue = kpiObj?.metadata?.healthy;
@@ -415,7 +415,7 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     console.log(this.configureHierarchy);
     this.activeCircle = 'all';
     this.mapAssets = JSON.parse(JSON.stringify(this.assets));
-    if (this.contextApp.app === 'CMS_Dev') {
+    if (this.environmentApp === 'SopanCMS') {
       this.healthyAssetCount = 0;
       this.unhealthyAssetCount = 0;
       this.assets.forEach((assetObj) => {

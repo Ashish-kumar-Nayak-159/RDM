@@ -100,13 +100,13 @@
               </accordion-group>
             </accordion>
           </ng-container>
-          <ng-container *ngIf="type !== 'edge_derived_properties'">
+          <!-- <ng-container *ngIf="type !== 'edge_derived_properties'">
             <div class="form-group mr-3">
               <label for="recipient-name" class="col-form-label">JSON Model:</label>
               <json-editor [options]="editorOptions" name="json" [data]="propertyObj.json">
               </json-editor>
             </div>
-          </ng-container>
+          </ng-container> -->
           <ng-container *ngIf="type == 'edge_derived_properties'">
             <div class="form-group">
               <label for="recipient-name" class="col-form-label required">Conditions: </label>

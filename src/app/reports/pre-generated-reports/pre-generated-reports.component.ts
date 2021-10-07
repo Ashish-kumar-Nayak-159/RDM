@@ -63,8 +63,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   selectedProps: any[] = [];
   reportsObj: any = {};
   assetModels: any[] = [];
-  assetList: any[] = [];
-  asset_model: any;
   selectedAssets: any[] = [];
   isAddReport = false;
   constructor(
@@ -173,22 +171,26 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
 
   onOpenConfigurePGRModal() {
     this.isAddReport = true;
-    this.reportsObj = {};
-    this.assetList = [];
+    this.reportsObj = { assets: [] };
+    this.assets = this.originalAssets;
+    this.selectedAssets = this.originalAssets;
     $('#configurePGRModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 
   onCloseConfigurePGRModal() {
     $('#configurePGRModal').modal('hide');
     this.reportsObj = undefined;
-    this.asset_model = undefined;
     this.isAddReport = false;
+    this.assets = [];
+    this.selectedAssets = [];
   }
 
-  onCreateNewPGReports() {
-    console.log(this.reportsObj);
+  onCreateNewPGReports(){
     this.isCreateReportAPILoading = true;
     if (
+      !this.reportsObj.asset_model ||
+      // !this.reportsObj.assets ||
+      this.reportsObj.assets.length === 0 ||
       !this.reportsObj.report_name ||
       !this.reportsObj.report_category ||
       !this.reportsObj.report_frequency ||
@@ -197,6 +199,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
       this.toasterService.showError('Please fill all required details', 'Add Report');
       this.isCreateReportAPILoading = false;
       return;
+    }
+    if (!this.reportsObj.hierarchy) {
+      this.reportsObj.hierarchy = { App: this.contextApp.app };
     }
     const obj = {};
     const measured_message_props = [];
@@ -216,18 +221,15 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     obj['cd'] = cloud_derived_message_props ? cloud_derived_message_props : undefined;
     console.log(obj);
     this.reportsObj.properties = { ...obj };
-    const assets = [];
-    if (this.assetList.length > 0) {
-      this.assetList.forEach((asset) => {
-        assets.push(asset.asset_id);
-      });
-    }
-    if (!this.reportsObj.hierarchy) {
-      this.reportsObj.hierarchy = { App: this.contextApp.app };
-    }
-    this.reportsObj.assets = assets;
-    // delete this.reportsObj.asset;
-    // delete this.reportsObj.asset_model;
+    // const assets = [];
+    // if (this.reportsObj.asset.length > 0) {
+    //   this.reportsObj.asset.forEach((asset) => {
+    //     assets.push(asset.asset_id);
+    //   }
+    // )};
+    // this.reportsObj.assets = assets;
+    const asset_model = this.reportsObj.asset_model;
+    delete this.reportsObj.asset_model;
     console.log(this.reportsObj);
     this.subscriptions.push(
       this.assetService.createReportSubscription(this.contextApp.app, this.reportsObj).subscribe(
@@ -239,6 +241,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         },
         (error) => {
           this.isCreateReportAPILoading = false;
+          this.reportsObj.asset_model = asset_model;
           this.toasterService.showError(error.message, 'Create Report');
         }
       )
@@ -246,14 +249,10 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   onReportChange() {
-    if (this.reportsObj.report_category === 'Telemetry Report') {
-      // console.log(this.reportsObj.asset);
-      // if (this.reportsObj.asset) {
-      //  const asset_model = this.reportsObj.asset_model;
-      if (this.asset_model) {
-        this.getAssetsModelProperties(this.asset_model);
-      }
-      // }
+    if (this.reportsObj.report_category === 'telemetry') {
+        if (this.reportsObj.asset_model) {
+          this.getAssetsModelProperties(this.reportsObj.asset_model);
+        }
     }
   }
 
@@ -278,11 +277,25 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   onChangeAssetsModel() {
-    if (this.asset_model) {
-      const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.asset_model);
-      this.selectedAssets = [...asset];
-      console.log(this.selectedAssets);
+    this.assets = [];
+    this.reportsObj.assets = [];
+    if (this.reportsObj.asset_model) {
+      const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.reportsObj.asset_model);
+      this.assets = [ ...asset ];
+      this.selectedAssets = this.assets;
+      this.contextApp.hierarchy.levels.forEach((level, index) => {
+            if (index !== 0) {
+                this.onChangeOfHierarchy(index, 'RS');
+            }
+      });
     } else {
+      this.assets = this.originalAssets;
+      this.selectedAssets = this.assets;
+      this.contextApp.hierarchy.levels.forEach((level, index) => {
+            if (index !== 0) {
+                this.onChangeOfHierarchy(index, 'RS');
+            }
+      });
     }
   }
 
@@ -339,7 +352,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
 
   Deselect(e) {
     if (e === [] || e.length === 0) {
-      this.assetList = [];
+      this.reportsObj.assets = [];
     }
   }
 
@@ -514,12 +527,15 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         this.assets = JSON.parse(JSON.stringify(arr));
       }
     } else {
+      this.reportsObj.assets = [];
       this.reportsObj.hierarchy = JSON.parse(JSON.stringify(hierarchyObj));
+      console.log(this.reportsObj.hierarchy);
       if (Object.keys(hierarchyObj).length === 1) {
         this.assets = JSON.parse(JSON.stringify(this.selectedAssets));
       } else {
         const arr = [];
         this.assets = [];
+        this.reportsObj.assets = [];
         this.selectedAssets.forEach((asset) => {
           let trueFlag = 0;
           let flaseFlag = 0;
@@ -715,3 +731,4 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     $('#downloadPreGeneratedReportReportModal').modal('hide');
   }
 }
+

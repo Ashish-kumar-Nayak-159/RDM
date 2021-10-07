@@ -197,7 +197,7 @@
             <div class="form-group">
               <label for="recipient-name" class="col-form-label required">Asset Model:</label>
               <select class="custom-select custom-select-sm" id="asset_model" name="asset_model"
-                [(ngModel)]="asset_model" (change)="onChangeAssetsModel()">
+                [(ngModel)]="reportsObj.asset_model" (change)="onChangeAssetsModel()">
                 <option [ngValue]="undefined"> Select Model</option>
                 <option *ngFor="let item of assetModels" [ngValue]="item.name">
                   {{item.name}}</option>
@@ -218,34 +218,26 @@
                     defaultValue="{{ contextApp.app }}" disabled />
                 </div>
               </ng-container>
-              <!-- <ng-select [items]="selectedAssets" class="" bindLabel="display_name" [clearable]="false"
-                  [searchable]="true" clearSearchOnAdd="true" [multiple]="true" [closeOnSelect]="true" placeholder="Select Asset"
-                  dropdownPosition="bottom" name="report-asset-dropdown" [(ngModel)]="reportsObj.asset">
-                  <ng-template ng-option-tmp let-asset="item">
-                    <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ?
-                      asset.display_name: asset.asset_id}}</span>
-                  </ng-template>
-              </ng-select> -->
-              <ng-select [items]="selectedAssets" class="custom-dropdown w-12 sm" [clearable]="false"
-                [searchable]="true" clearSearchOnAdd="true" [multiple]="true" bindLabel="display_name"
-                [closeOnSelect]="false" placeholder="Select Asset" dropdownPosition="bottom"
-                name="report-asset-dropdown" [(ngModel)]="assetList" (onDeSelectAll)="Deselect($event)">
-                <ng-template ng-header-tmp>
-                  <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-                    <li *ngIf="assetList.length !== selectedAssets.length"> <a href="javascript:void(0)"
-                        (click)="assetList = selectedAssets">Select All</a></li>
-                    <li *ngIf="assetList.length === selectedAssets.length"> <a href="javascript:void(0)"
-                        (click)="assetList = []">Deselect All</a></li>
-                  </ul>
-                </ng-template>
-                <ng-template ng-multi-label-tmp let-items="items">
-                  {{items.length}} Assets selected
-                </ng-template>
-                <ng-template ng-option-tmp let-asset="item">
-                  <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ?
-                    asset.display_name: asset.asset_id}}</span>
-                </ng-template>
-              </ng-select>
+              <ng-select [items]="assets" class="custom-dropdown w-12 sm" [clearable]="false"
+              [searchable]="true" [multiple]="true" bindLabel="display_name" bindValue="asset_id" 
+              [closeOnSelect]="false" placeholder="Select Asset" dropdownPosition="bottom"
+              name="report-asset-dropdown" [(ngModel)]="reportsObj.assets" (onDeSelectAll)="Deselect($event)">
+              <ng-template ng-header-tmp>
+                <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                  <li *ngIf="reportsObj.assets.length !== assets.length"> <a href="javascript:void(0)"
+                      (click)="reportsObj.assets = assets">Select All</a></li>
+                  <li *ngIf="reportsObj.assets.length === assets.length"> <a href="javascript:void(0)"
+                      (click)="reportsObj.assets = []">Deselect All</a></li>
+                </ul>
+              </ng-template> 
+              <ng-template ng-multi-label-tmp let-items="items">
+                {{items.length}} Assets selected
+              </ng-template>
+              <ng-template ng-option-tmp let-asset="item">
+                <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ?
+                  asset.display_name: asset.asset_id}}</span>
+              </ng-template> 
+            </ng-select>
             </div>
             <div class="form-group">
               <label for="message-text" class="col-form-label required">Report Category:</label>
@@ -253,11 +245,11 @@
                 [(ngModel)]="reportsObj.report_category" name="report_category" (change)="onReportChange()"
                 #reportType="ngModel">
                 <option [ngValue]="undefined">Report Category</option>
-                <option [ngValue]="'Telemetry Report'">Telemetry Report</option>
-                <option [ngValue]="'Alert Report'">Alert Report</option>
+                <option [ngValue]="'telemetry'">Telemetry Report</option>
+                <option [ngValue]="'alert'">Alert Report</option>
               </select>
             </div>
-            <ng-container *ngIf="reportsObj.report_category === 'Telemetry Report'">
+            <ng-container *ngIf="reportsObj.report_category === 'telemetry'">
               <div class="form-group">
                 <label for="message-text" class="col-form-label required">Properties:</label>
                 <ng-select [items]="dropdownPropList" class="custom-dropdown w-12 sm" [clearable]="false"
@@ -316,3 +308,4 @@
     </div>
   </div>
 </div>
+

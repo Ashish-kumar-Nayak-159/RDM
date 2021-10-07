@@ -146,9 +146,11 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     this.currentLimit = this.tileData && this.tileData[2] ? Number(this.tileData[2]?.value) : 20;
   }
 
-  async getAssets(): Promise<void> {
+  async getAssets(flag = true): Promise<void> {
     this.isAssetListLoading = true;
-    await this.getNonProvisionedAssets();
+    if (flag) {
+      await this.getNonProvisionedAssets();
+    }
     const obj: any = {};
     obj.app = this.contextApp.app;
     obj.offset = this.currentOffset;
@@ -234,16 +236,10 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
             this.assetsList = [...this.assetsList, ...response.data];
           }
           resolve1();
-          // if (response.data.length === this.currentLimit) {
-          //   this.insideScrollFunFlag = false;
-          // } else {
-          //   this.insideScrollFunFlag = true;
-          // }
           this.isAssetListLoading = false;
         },
         (error) => {
           this.isAssetListLoading = false;
-          // this.insideScrollFunFlag = false;
         }
       )
      );
@@ -726,3 +722,4 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 }
+

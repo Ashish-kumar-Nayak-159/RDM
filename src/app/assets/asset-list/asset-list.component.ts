@@ -85,6 +85,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
   loadingMessage = 'Loading Data. Please wait...';
   chart: am4charts.XYChart;
   environmentApp = environment.app;
+  originalAssetsList: any[] = [];
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -146,8 +147,13 @@ export class AssetListComponent implements OnInit, OnDestroy {
   }
 
   onAssetFilterBtnClick() {
-    $('.dropdown-menu').on('click.bs.dropdown', (e) => {
+    $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
       e.stopPropagation();
+    });
+    $('#dd-open').on('hide.bs.dropdown', (e: any) => {
+      if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
+        e.preventDefault();
+      }
     });
   }
 
@@ -249,8 +255,6 @@ export class AssetListComponent implements OnInit, OnDestroy {
       this.getGatewayList();
     }
     this.componentState = type;
-    // if (environment.app === 'SopanCMS') {
-
     if (this.componentState === CONSTANTS.NON_IP_ASSET) {
       this.assetFilterObj.type = undefined;
     } else {
@@ -288,7 +292,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
       no_data_message: '',
       table_class: 'tableFixHead-assets-list',
       border_left_key:
-        this.contextApp.app === 'CMS_Dev' && this.componentState === CONSTANTS.NON_IP_ASSET ? 'kpiValue' : undefined,
+        this.environmentApp === 'SopanCMS' && this.componentState === CONSTANTS.NON_IP_ASSET ? 'kpiValue' : undefined,
       data: [
         {
           header_name: (obj.table_key || '') + ' Name',
@@ -359,7 +363,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
         tooltip: 'View Diagnosis panel',
       });
     }
-    if (this.contextApp.app === 'CMS_Dev' && this.componentState === CONSTANTS.NON_IP_ASSET) {
+    if (this.environmentApp === 'SopanCMS' && this.componentState === CONSTANTS.NON_IP_ASSET) {
       await this.getLatestDerivedKPIData();
     }
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS);
@@ -586,7 +590,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
               item.gas = '0.4%';
               item.power = '45 SCMH';
             }
-            if (this.contextApp.app === 'CMS_Dev') {
+            if (this.environmentApp === 'SopanCMS') {
               this.derivedKPILatestData.forEach((kpiObj) => {
                 if (item.asset_id === kpiObj.asset_id) {
                   item.kpiValue = kpiObj?.metadata?.healthy;
@@ -717,6 +721,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
             console.log(item.asset_id, '=====', item.icon);
           });
           this.assetsList = [...this.assetsList, ...response.data];
+          this.originalAssetsList = JSON.parse(JSON.stringify(this.assetsList));
           if (this.assetsList.length === 0) {
             this.mapFitBounds = false;
             const center = this.commonService.averageGeolocation(this.assetsList);
@@ -742,6 +747,43 @@ export class AssetListComponent implements OnInit, OnDestroy {
         this.insideScrollFunFlag = false;
       }
     );
+  }
+
+  onSaveHierachy() {
+    this.hierarchyString = this.contextApp.app;
+    this.displayHierarchyString = this.contextApp.app;
+    Object.keys(this.configureHierarchy).forEach((key) => {
+      if (this.configureHierarchy[key]) {
+        this.hierarchyString += ' > ' + this.configureHierarchy[key];
+        this.displayHierarchyString = this.configureHierarchy[key];
+      }
+    });
+  }
+
+  onClearHierarchy() {
+    this.hierarchyArr = {};
+    this.configureHierarchy = {};
+    if (this.contextApp.hierarchy.levels.length > 1) {
+      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
+    }
+    this.contextApp.hierarchy.levels.forEach((level, index) => {
+      if (index !== 0) {
+        this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
+        if (this.contextApp.user.hierarchy[level]) {
+          this.onChangeOfHierarchy(index);
+        }
+      } else {
+        this.assetsList = JSON.parse(JSON.stringify(this.originalAssetsList));
+      }
+    });
+    this.hierarchyString = this.contextApp.app;
+    this.displayHierarchyString = this.contextApp.app;
+    Object.keys(this.configureHierarchy).forEach((key) => {
+      if (this.configureHierarchy[key]) {
+        this.hierarchyString += ' > ' + this.configureHierarchy[key];
+        this.displayHierarchyString = this.configureHierarchy[key];
+      }
+    });
   }
 
   clearFilter() {

@@ -223,7 +223,7 @@ export class AddCampaignComponent implements OnInit {
   }
 
   openAssetsViewModal() {
-    // this.getAssetsForCampaign();
+    this.getAssetsForCampaign();
     $('#viewCampaignAssetModal').modal({ backdrop: 'static', keyboard: false, show: true });
   }
 

@@ -263,9 +263,17 @@ export class AddAssetComponent implements OnInit, OnChanges {
   onUpdateAsset() {
     this.isCreateAssetAPILoading = true;
     console.log(this.assetDetail);
+    if (
+      !this.assetDetail.tags.asset_manager ||
+      !this.assetDetail.tags.display_name ||
+      !this.assetDetail.tags.asset_model
+    ) {
+      this.toasterService.showError('All fields are required', 'Non-provisioned Assets');
+      return;
+    }
     this.assetDetail.tags.app = this.contextApp.app;
-    if (this.assetDetail.tags.created_by === '') {
-      this.assetDetail.tags.created_by = this.userData.email + ' (' + this.userData.name + ')';
+    if (!this.assetDetail.tags.created_by) {
+      this.assetDetail.tags.created_by = this.userData.email;
     }
     this.assetDetail.tags.hierarchy_json = { App: this.contextApp.app };
     Object.keys(this.addAssetConfigureHierarchy).forEach((key) => {

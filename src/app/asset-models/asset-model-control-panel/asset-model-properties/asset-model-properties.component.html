@@ -77,7 +77,7 @@
           <app-data-type-fields [obj]="propertyObj.json_model[propertyObj.json_key]"
             *ngIf="propertyObj.json_key && propertyObj.data_type && propertyObj?.json_model[propertyObj.json_key]">
           </app-data-type-fields>
-          <div class="form-group" *ngIf="type.includes('measured') || type.includes('edge_derived')">
+          <div class="form-group" *ngIf="type.includes('measured')">
             <label for="recipient-name" class="col-form-label required">Group:</label>
             <select class="form-control form-control-sm" id="group" name="group" [(ngModel)]="propertyObj.group">
               <option value="g1">G1</option>

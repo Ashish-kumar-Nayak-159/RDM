@@ -79,7 +79,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
           response.properties.measured_properties = response.properties.measured_properties
             ? response.properties.measured_properties
             : [];
-          response.properties?.measured_properties.forEach((prop) => (prop.type = 'Measured Properties'));
+          response.properties?.measured_properties?.forEach((prop) => (prop.type = 'Measured Properties'));
           this.propertyList = response.properties.measured_properties ? response.properties.measured_properties : [];
           response.properties.edge_derived_properties = response.properties.edge_derived_properties
             ? response.properties.edge_derived_properties

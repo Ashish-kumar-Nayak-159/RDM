@@ -169,7 +169,7 @@
             <td>Assets</td>
             <td *ngIf="campaignObj.asset_model_obj">
               <a href="javascript:void(0)" class="blue-font" id="userDropdown1" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false" (click)="getAssetsForCampaign()">View Assets</a>
+                aria-haspopup="true" aria-expanded="false" (click)="openAssetsViewModal()">View Assets</a>
             </td>
             <td *ngIf="!campaignObj.asset_model_obj"> Please select asset model to view the assets on which this
               campaign will run.</td>
@@ -291,7 +291,7 @@
             <button type="button" class="btn btn-primary mr-3"
               *ngIf="campaignObj.objective === 'Sync Properties/Alerts'"
               [disabled]="!campaignObj.job_request.type || campaignObj.job_request.type?.length === 0"
-              (click)="visitedSteps = visitedSteps + 1" id="nextBtn">
+              (click)="visitedSteps = visitedSteps + 1;getAssetsForCampaign()" id="nextBtn">
               Next Step
             </button>
             <button type="button" class="btn btn-white" [disabled]="isCreateCampaignAPILoading"
@@ -342,7 +342,7 @@
             <td>Assets</td>
             <td>
               <a href="javascript:void(0)" class="blue-font" id="userDropdown1" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false" (click)="getAssetsForCampaign()">View Assets</a>
+                aria-haspopup="true" aria-expanded="false" (click)="openAssetsViewModal()">View Assets</a>
             </td>
           </tr>
           <ng-container *ngIf="campaignObj.objective === 'FOTA'">
@@ -393,7 +393,7 @@
               Previous Step
             </button>
             <button type="button" class="btn btn-primary mr-3" (click)="createCampaign()" id="camopaignCReateBtn"
-              [disabled]="isCreateCampaignAPILoading">
+              [disabled]="isCreateCampaignAPILoading || campaignAssets.length === 0">
               Create
               <i class="fa fa-fw fa-2x  fa-spin fa-spinner" *ngIf="isCreateCampaignAPILoading"></i>
             </button>
@@ -419,7 +419,6 @@
         </button>
       </div>
       <div class="modal-body">
-
         <table class="table table-hover">
           <thead>
             <tr>

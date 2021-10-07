@@ -222,12 +222,17 @@ export class AddCampaignComponent implements OnInit {
     this.campaignAssets = [];
   }
 
-  getAssetsForCampaign() {
+  openAssetsViewModal() {
+    // this.getAssetsForCampaign();
     $('#viewCampaignAssetModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  getAssetsForCampaign() {
     this.campaignAssets = [];
     this.isGetCampaignAssetAPILoading = true;
     const hierarchy = { App: this.contextApp.app };
-    Object.keys(this.configureHierarchy).forEach((key, index) => {
+    console.log(this.configureHierarchy);
+    Object.keys(this.configureHierarchy).forEach((key) => {
       if (this.configureHierarchy[key]) {
         hierarchy[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
       }

@@ -82,8 +82,8 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         async (response: any) => {
           this.userData = response;
           localStorage.setItem(CONSTANTS.APP_VERSION, environment.version);
-          this.loginForm.reset();
           await this.processUserData(response);
+          // this.loginForm.reset();
           this.isLoginAPILoading = false;
         },
         (error) => {

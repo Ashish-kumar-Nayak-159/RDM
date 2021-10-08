@@ -175,52 +175,20 @@
   </div>
 </div>
 
+
 <div class="modal right fade" id="PropJSONModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
-    <div class="modal-content" *ngIf="selectedProperty">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">View JSON Model</h5>
-        <button type="button" class="close" aria-label="Close" (click)="onCloseModal('PropJSONModal')">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <label>JSON Model: </label>
-        <pre class="text-sm" [innerHTML]="selectedProperty.json_model | json"></pre>
-        <label *ngIf="assetModel.metadata?.model_type === constantData.NON_IP_ASSET">Metadata: </label>
-        <pre class="text-sm" *ngIf="assetModel.metadata?.model_type === constantData.NON_IP_ASSET"
-          [innerHTML]="selectedProperty.metadata ? (selectedProperty.metadata | json) : ({} | json)"></pre>
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="onCloseModal('PropJSONModal')">
-          Cancel
-        </button>
-      </div>
-    </div>
-
+    <app-message-modal *ngIf="modalConfig" [bodyMessage]="selectedProperty" [headerMessage]="'View JSON Model'"
+      (modalEvents)="onJSONModalEvents($event)" [modalConfig]="modalConfig">
+    </app-message-modal>
   </div>
 </div>
 
-<div class="modal fade" id="confirmMessageModal" role="dialog">
+
+<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Remove Property</h5>
-        <button type="button" class="close" aria-label="Close" (click)="onCloseModal('confirmMessageModal')">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        Are you sure you want to remove this property?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="deleteProperty()">
-          Ok</button>
-        <button type="button" class="btn btn-secondary" (click)="onCloseModal('confirmMessageModal')">
-          Cancel
-        </button>
-      </div>
-    </div>
+    <app-confirm-modal *ngIf="modalConfig" [bodyMessage]="'Are you sure you want to remove this property?'"
+      [headerMessage]="'Remove Property'" (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig">
+    </app-confirm-modal>
   </div>
 </div>

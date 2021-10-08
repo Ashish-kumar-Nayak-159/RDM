@@ -509,6 +509,20 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     );
   }
 
+  onModalEvents(eventType) {
+    if (eventType === 'close') {
+      this.onCloseModal('confirmMessageModal');
+    } else if (eventType === 'save') {
+      this.deleteProperty();
+    }
+  }
+
+  onJSONModalEvents(eventType) {
+    if (eventType === 'close') {
+      this.onCloseModal('PropJSONModal');
+    }
+  }
+
   onCloseAssetsPropertyModal() {
     $('#addPropertiesModal').modal('hide');
     this.propertyObj = undefined;
@@ -599,8 +613,18 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
   onTableFunctionCall(obj) {
     this.selectedProperty = obj.data;
     if (obj.for === 'View JSON Model') {
+      this.modalConfig = {
+        jsonDisplay: true,
+        isDisplaySave: false,
+        isDisplayCancel: true,
+      };
       $('#PropJSONModal').modal({ backdrop: 'static', keyboard: false, show: true });
     } else if (obj.for === 'Delete') {
+      this.modalConfig = {
+        stringDisplay: true,
+        isDisplaySave: true,
+        isDisplayCancel: true,
+      };
       $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     } else if (obj.for === 'Configure Property') {
       $('#configureDerivedPropModal').modal({ backdrop: 'static', keyboard: false, show: true });

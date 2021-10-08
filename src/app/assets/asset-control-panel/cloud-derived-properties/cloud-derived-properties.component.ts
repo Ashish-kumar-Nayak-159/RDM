@@ -19,6 +19,7 @@ export class CloudDerivedPropertiesComponent implements OnInit, OnDestroy {
   properties = {};
   selectedProperty: any;
   constantData = CONSTANTS;
+  modalConfig: { jsonDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(private commonService: CommonService, private assetModelService: AssetModelService) {}
 
   ngOnInit(): void {
@@ -99,7 +100,18 @@ export class CloudDerivedPropertiesComponent implements OnInit, OnDestroy {
   onTableFunctionCall(obj) {
     this.selectedProperty = obj.data;
     if (obj.for === 'View JSON Model') {
+      this.modalConfig = {
+        jsonDisplay: true,
+        isDisplaySave: false,
+        isDisplayCancel: true,
+      };
       $('#PropJSONModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    }
+  }
+
+  onJSONModalEvents(eventType) {
+    if (eventType === 'close') {
+      this.onCloseModal('PropJSONModal');
     }
   }
 

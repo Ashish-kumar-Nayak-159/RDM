@@ -10,17 +10,23 @@ declare var $: any;
 @Component({
   selector: 'app-asset-model-tags',
   templateUrl: './asset-model-tags.component.html',
-  styleUrls: ['./asset-model-tags.component.css']
+  styleUrls: ['./asset-model-tags.component.css'],
 })
 export class AssetModelTagsComponent implements OnInit, OnDestroy {
-
   @Input() assetModel: any;
   isReservedTagsEditable = false;
   reservedTags: any[] = [];
-  tagsListToNotDelete = ['app', 'created_date', 'created_by', 'asset_manager', 'manufacturer',
-    , 'protocol', 'cloud_connectivity'];
-  tagsListToNotEdit = ['app', 'created_date', 'created_by', 'manufacturer',
-    , 'protocol', 'cloud_connectivity'];
+  tagsListToNotDelete = [
+    'app',
+    'created_date',
+    'created_by',
+    'asset_manager',
+    'manufacturer',
+    ,
+    'protocol',
+    'cloud_connectivity',
+  ];
+  tagsListToNotEdit = ['app', 'created_date', 'created_by', 'manufacturer', , 'protocol', 'cloud_connectivity'];
   originalAssetModel: any;
   reservedTagsBasedOnProtocol: any[] = [];
   assetModelCustomTags: any[] = [];
@@ -34,13 +40,14 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
   message: string;
   deleteTagIndex: any;
   decodedToken: any;
+  modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
     private route: ActivatedRoute,
     private commonService: CommonService,
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
     private applicationService: ApplicationService
-  ) { }
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
@@ -68,7 +75,7 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
         return true;
       }
       let flag = false;
-      CONSTANTS.NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach(char => {
+      CONSTANTS.NOT_ALLOWED_SPECIAL_CHARS_NAME.forEach((char) => {
         if (this.tagObj.key.includes(char)) {
           flag = true;
         }
@@ -78,7 +85,7 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
         return true;
       }
       flag = false;
-      this.assetModel.tags.reserved_tags.forEach(tag => {
+      this.assetModel.tags.reserved_tags.forEach((tag) => {
         if (tag.key === this.tagObj.key.trim()) {
           flag = true;
         }
@@ -91,7 +98,6 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
     }
     this.firstTagAdded = true;
     this.tagObj = {};
-
   }
 
   removeTag() {
@@ -112,19 +118,21 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
     obj.tags = this.assetModel.tags;
     obj.app = this.contextApp.app;
     obj.updated_by = this.userData.email + ' (' + this.userData.name + ')';
-    this.subscriptions.push(this.assetModelService.updateAssetsModel(obj, this.contextApp.app).subscribe(
-      (response: any) => {
-
-        this.tagObj = undefined;
-        this.toasterService.showSuccess(response.message, 'Set Tags');
-        this.getAssetModelDetail();
-        this.firstTagAdded = false;
-        this.isUpdateTagsAPILoading = false;
-      }, error => {
-        this.toasterService.showError(error.message, 'Set Tags');
-        this.isUpdateTagsAPILoading = false;
-      }
-    ));
+    this.subscriptions.push(
+      this.assetModelService.updateAssetsModel(obj, this.contextApp.app).subscribe(
+        (response: any) => {
+          this.tagObj = undefined;
+          this.toasterService.showSuccess(response.message, 'Set Tags');
+          this.getAssetModelDetail();
+          this.firstTagAdded = false;
+          this.isUpdateTagsAPILoading = false;
+        },
+        (error) => {
+          this.toasterService.showError(error.message, 'Set Tags');
+          this.isUpdateTagsAPILoading = false;
+        }
+      )
+    );
   }
 
   deleteAllAssetModelTags() {
@@ -136,14 +144,14 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
       name: 'Protocol',
       key: 'protocol',
       defaultValue: this.assetModel.tags.protocol,
-      nonEditable: true
+      nonEditable: true,
     });
     console.log(this.assetModel.tags);
     this.assetModel.tags.reserved_tags.push({
       name: 'Cloud Connectivity',
       key: 'cloud_connectivity',
       defaultValue: this.assetModel.tags.cloud_connectivity,
-      nonEditable: true
+      nonEditable: true,
     });
     obj.app = this.contextApp.app;
     this.closeModal('confirmMessageModal');
@@ -153,11 +161,33 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
     if (type === 'reset') {
       this.message = 'All the unsaved changes will removed. Are you sure you want to reset the tags?';
     } else {
-      this.message = 'All the assets with this model will get affected. Are you sure you want to remove ' +
-        (type === 'all' ? 'all tags?' : (this.assetModel?.tags?.reserved_tags[index]?.name + ' tag?'));
+      this.message =
+        'All the assets with this model will get affected. Are you sure you want to remove ' +
+        (type === 'all' ? 'all tags?' : this.assetModel?.tags?.reserved_tags[index]?.name + ' tag?');
     }
+    this.modalConfig = {
+      stringDisplay: true,
+      isDisplaySave: true,
+      isDisplayCancel: true,
+    };
     this.deleteTagIndex = index;
     $('#' + id).modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onModalEvents(eventType) {
+    if (eventType === 'close') {
+      this.closeModal('confirmMessageModal');
+    } else if (eventType === 'save') {
+      if (this.message.includes('reset')) {
+        this.resetAssetModelTags();
+      } else {
+        if (this.deleteTagIndex !== undefined) {
+          this.removeTag();
+        } else {
+          this.deleteAllAssetModelTags();
+        }
+      }
+    }
   }
 
   closeModal(id) {
@@ -179,10 +209,10 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
     return new Promise<void>((resolve) => {
       const obj = {
         name: this.assetModel.name,
-        app: this.contextApp.app
+        app: this.contextApp.app,
       };
-      this.subscriptions.push(this.assetModelService.getAssetsModelDetails(obj.app, obj.name).subscribe(
-        (response: any) => {
+      this.subscriptions.push(
+        this.assetModelService.getAssetsModelDetails(obj.app, obj.name).subscribe((response: any) => {
           if (response) {
             this.assetModel = response;
             this.assetModel.name = obj.name;
@@ -192,13 +222,12 @@ export class AssetModelTagsComponent implements OnInit, OnDestroy {
             }
           }
           resolve();
-        }
-      ));
+        })
+      );
     });
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
-
 }

@@ -10,10 +10,9 @@ declare var $: any;
 @Component({
   selector: 'app-asset-model-alert-acknowledgement-reasons',
   templateUrl: './asset-model-alert-acknowledgement-reasons.component.html',
-  styleUrls: ['./asset-model-alert-acknowledgement-reasons.component.css']
+  styleUrls: ['./asset-model-alert-acknowledgement-reasons.component.css'],
 })
 export class AssetModelAlertAcknowledgementReasonsComponent implements OnInit {
-
   @Input() assetModel: any;
   ackReasons: any[] = [];
   isAckReasonsLoading = false;
@@ -29,12 +28,13 @@ export class AssetModelAlertAcknowledgementReasonsComponent implements OnInit {
   selectedid: any;
   subscriptions: Subscription[] = [];
   decodedToken: any;
+  modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
     private route: ActivatedRoute,
     private commonService: CommonService,
     private assetModelService: AssetModelService,
-    private toasterService: ToasterService,
-  ) { }
+    private toasterService: ToasterService
+  ) {}
 
   ngOnInit(): void {
     this.assetModel = JSON.parse(JSON.stringify(this.assetModel));
@@ -49,22 +49,24 @@ export class AssetModelAlertAcknowledgementReasonsComponent implements OnInit {
     this.isAckReasonsLoading = true;
     const modelObj = {
       app: this.contextApp.app,
-      name: this.assetModel.name
+      name: this.assetModel.name,
     };
-    this.subscriptions.push(this.assetModelService.getAssetsModelAckReasons(modelObj).subscribe(
-      (response: any) => {
-        if (response?.data) {
-          this.ackReasons = response.data;
+    this.subscriptions.push(
+      this.assetModelService.getAssetsModelAckReasons(modelObj).subscribe(
+        (response: any) => {
+          if (response?.data) {
+            this.ackReasons = response.data;
+          }
+          this.isAckReasonsLoading = false;
+        },
+        (error) => {
+          this.isAckReasonsLoading = false;
         }
-        this.isAckReasonsLoading = false;
-      }, error => {
-        this.isAckReasonsLoading = false;
-      }
-    ));
+      )
+    );
   }
 
   addReason() {
-
     if (this.reasonObj) {
       if (!this.reasonObj.reason) {
         this.toasterService.showError('Please add reason', 'Add Reason');
@@ -80,8 +82,7 @@ export class AssetModelAlertAcknowledgementReasonsComponent implements OnInit {
   }
 
   async updateReason() {
-
-    const flag =  await this.addReason();
+    const flag = await this.addReason();
     if (!flag) {
       return;
     }
@@ -89,24 +90,27 @@ export class AssetModelAlertAcknowledgementReasonsComponent implements OnInit {
     // const obj = JSON.parse(JSON.stringify(this.ackReasons));
     let obj = {};
     if (this.originalReasonObj) {
-    obj = JSON.parse(JSON.stringify(this.originalReasonObj));
+      obj = JSON.parse(JSON.stringify(this.originalReasonObj));
     }
     const modelObj = {
       app: this.contextApp.app,
-      name: this.assetModel.name
+      name: this.assetModel.name,
     };
-    this.subscriptions.push(this.assetModelService.createAssetsModelAckReasons(obj, modelObj).subscribe(
-      (response: any) => {
-        this.reasonObj = undefined;
-        this.toasterService.showSuccess(response.message, 'Add Reasons');
-        this.getAckReasons();
-        this.firstReasonAdded = false;
-        this.isUpdateReasonsAPILoading = false;
-      }, error => {
-        this.toasterService.showError(error.message, 'Add Reasons');
-        this.isUpdateReasonsAPILoading = false;
-      }
-    ));
+    this.subscriptions.push(
+      this.assetModelService.createAssetsModelAckReasons(obj, modelObj).subscribe(
+        (response: any) => {
+          this.reasonObj = undefined;
+          this.toasterService.showSuccess(response.message, 'Add Reasons');
+          this.getAckReasons();
+          this.firstReasonAdded = false;
+          this.isUpdateReasonsAPILoading = false;
+        },
+        (error) => {
+          this.toasterService.showError(error.message, 'Add Reasons');
+          this.isUpdateReasonsAPILoading = false;
+        }
+      )
+    );
     this.ReasonBtnClicked = false;
   }
 
@@ -126,20 +130,23 @@ export class AssetModelAlertAcknowledgementReasonsComponent implements OnInit {
     const obj = { reason: r };
     const modelObj = {
       app: this.contextApp.app,
-      name: this.assetModel.name
+      name: this.assetModel.name,
     };
-    this.subscriptions.push(this.assetModelService.updateAssetsModelAckReasons(id, obj, modelObj).subscribe(
-      (response: any) => {
-        this.toasterService.showSuccess(response.message, 'Update Reasons');
-        this.getAckReasons();
-        this.isUpdateReasonsAPILoading = false;
-        this.isEnableEdit[i] = false;
-      }, error => {
-        this.toasterService.showError(error.message, 'Update Reasons');
-        this.isUpdateReasonsAPILoading = false;
-        this.isEnableEdit[i] = false;
-      }
-    ));
+    this.subscriptions.push(
+      this.assetModelService.updateAssetsModelAckReasons(id, obj, modelObj).subscribe(
+        (response: any) => {
+          this.toasterService.showSuccess(response.message, 'Update Reasons');
+          this.getAckReasons();
+          this.isUpdateReasonsAPILoading = false;
+          this.isEnableEdit[i] = false;
+        },
+        (error) => {
+          this.toasterService.showError(error.message, 'Update Reasons');
+          this.isUpdateReasonsAPILoading = false;
+          this.isEnableEdit[i] = false;
+        }
+      )
+    );
   }
 
   deleteReason() {
@@ -147,24 +154,40 @@ export class AssetModelAlertAcknowledgementReasonsComponent implements OnInit {
     const id = this.selectedid;
     const modelObj = {
       app: this.contextApp.app,
-      name: this.assetModel.name
+      name: this.assetModel.name,
     };
-    this.subscriptions.push(this.assetModelService.deleteAssetsModelAckReasons
-      (id, modelObj).
-      subscribe((response: any) => {
-        this.toasterService.showSuccess(response.message, 'Remove Reason');
-        this.closeModal('confirmMessageModal');
-        this.getAckReasons();
-      }, error => {
-        this.toasterService.showError(error.message, 'Remove Reason');
-        this.closeModal('confirmMessageModal');
-      }));
+    this.subscriptions.push(
+      this.assetModelService.deleteAssetsModelAckReasons(id, modelObj).subscribe(
+        (response: any) => {
+          this.toasterService.showSuccess(response.message, 'Remove Reason');
+          this.closeModal('confirmMessageModal');
+          this.getAckReasons();
+        },
+        (error) => {
+          this.toasterService.showError(error.message, 'Remove Reason');
+          this.closeModal('confirmMessageModal');
+        }
+      )
+    );
   }
 
   openModal(id, e, i) {
-    this.deleteTagIndex =  i;
+    this.modalConfig = {
+      stringDisplay: true,
+      isDisplaySave: true,
+      isDisplayCancel: true,
+    };
+    this.deleteTagIndex = i;
     this.selectedid = e;
     $('#' + id).modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onModalEvents(eventType) {
+    if (eventType === 'close') {
+      this.closeModal('confirmMessageModal');
+    } else if (eventType === 'save') {
+      this.deleteReason();
+    }
   }
 
   closeModal(id) {
@@ -173,7 +196,6 @@ export class AssetModelAlertAcknowledgementReasonsComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
-
 }

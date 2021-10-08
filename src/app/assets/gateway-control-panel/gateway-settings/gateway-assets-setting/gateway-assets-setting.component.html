@@ -13,14 +13,14 @@
         <div class="row d-flex px-3 pb-1">
           <div class="ml-auto">
             <a class="d-none d-sm-inline-block btn btn-sm btn-primary text-white shadow-sm mr-3"
-              (click)="openGroupPropertyModel()">
+              (click)="openGroupPropertyModel()" [class.disabled]="isSaveSettingAPILoading || isAPILoading">
               <i class="fa fa-fw fa-cog"></i>
               Configure Properties</a>
             <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="javascript:void(0)"
-              (click)="saveGatewaySettings()">
+              (click)="saveGatewaySettings()" [class.disabled]="isSaveSettingAPILoading || isAPILoading">
               <i class="fa fa-fw fa-save"></i>
               Save</a>
-            <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isSaveSettingAPILoading"></i>
+            <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isSaveSettingAPILoading || isAPILoading"></i>
           </div>
         </div>
         <accordion [closeOthers]="'true'" *ngIf="!isAssetsAPILoading" id="ac2">
@@ -178,42 +178,6 @@
       </accordion-group>
     </accordion>
     <app-c2d-jobs class="d-none d-xl-block" [asset]="asset" [filterObj]="c2dJobFilter"></app-c2d-jobs>
-  </div>
-</div>
-
-
-<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2"
-  style="z-index: 1400;">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{headerMessage}}</h5>
-        <button type="button" class="close" aria-label="Close" (click)="onModalClose()">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div>
-          <ng-container *ngIf="displayMsgArr.length > 0">
-            <ul>
-              <li *ngFor="let msg of displayMsgArr; let last = last;">
-                {{msg.message}}
-                <i class="fa fa-check" style="color: green;" *ngIf="!msg.error"></i>
-                <i class="fa fa-times" style="color: red;" *ngIf="msg.error"></i>
-              </li>
-            </ul>
-          </ng-container>
-          <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isAPILoading"></i>
-        </div>
-      </div>
-      <div class="modal-footer">
-
-        <button type="button" class="btn btn-secondary" (click)="onModalClose()">
-          Close
-        </button>
-      </div>
-    </div>
-
   </div>
 </div>
 

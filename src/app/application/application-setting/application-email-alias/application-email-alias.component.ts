@@ -29,6 +29,7 @@ export class ApplicationEmailAliasComponent implements OnInit {
   isCreateUserGroupAPILoading = false;
   selectedUserGroup: any;
   isAddUserGroup = false;
+  modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
     private applicationService: ApplicationService,
     private toasterService: ToasterService,
@@ -237,8 +238,22 @@ export class ApplicationEmailAliasComponent implements OnInit {
   }
 
   openConfirmModal(userGroup) {
+    this.modalConfig = {
+      stringDisplay: true,
+      isDisplaySave: true,
+      isDisplayCancel: true,
+    };
     $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     this.selectedUserGroup = userGroup;
+  }
+
+  onModalEvents(eventType) {
+    if (eventType === 'close') {
+      this.selectedUserGroup = undefined;
+      $('#confirmMessageModal').modal('hide');
+    } else if (eventType === 'save') {
+      this.deleteUserGroup();
+    }
   }
 
   onCloseModal() {

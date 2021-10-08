@@ -32,6 +32,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
   addUserForm: FormGroup;
   searchCountryField = SearchCountryField;
   countryISO = CountryISO;
+  modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
     private commonService: CommonService,
     private applicationService: ApplicationService,
@@ -137,6 +138,11 @@ export class AccessControlComponent implements OnInit, OnChanges {
       return;
     } else {
       this.assetUserForDelete = index;
+      this.modalConfig = {
+        stringDisplay: true,
+        isDisplaySave: true,
+        isDisplayCancel: true,
+      };
       $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
   }
@@ -150,6 +156,14 @@ export class AccessControlComponent implements OnInit, OnChanges {
   onCloseConfirmModal() {
     $('#confirmMessageModal').modal('hide');
     this.assetUserForDelete = undefined;
+  }
+
+  onModalEvents(eventType) {
+    if (eventType === 'close') {
+      this.onCloseConfirmModal();
+    } else if (eventType === 'save') {
+      this.removeUserAccess();
+    }
   }
 
   onAddUserAccess() {

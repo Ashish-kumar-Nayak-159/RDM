@@ -46,9 +46,6 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
   selectedAssetApp: any;
   selectedAssetPackage: any;
   twinResponseInterval: any;
-  installPackages: any[] = [];
-  updatePackages: any[] = [];
-  uninstallPackages: any[] = [];
   displyaMsgArr = [];
   applicationList: any[] = CONSTANTS.ASSETAPPPS;
   iotAssetsTab: any;
@@ -209,40 +206,40 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
 
   getNonProvisionedAssets() {
     return new Promise<void>((resolve1) => {
-    this.isAssetListLoading = true;
-    const obj: any = {};
-    obj.type = this.type; 
-    this.subscriptions.push(
-      this.assetService.getNonProvisionedAsset(obj, this.contextApp.app).subscribe(
-        (response: any) => {
-          if (response.data) {
-            response.data.forEach((item) => {
-              if (!item.display_name) {
-                item.display_name = item.asset_id;
-              }
-              if (item.hierarchy) {
-                item.hierarchyString = '';
-                const keys = Object.keys(item.hierarchy);
-                this.contextApp.hierarchy.levels.forEach((key, index) => {
-                  item.hierarchyString += item.hierarchy[key]
-                    ? item.hierarchy[key] + (keys[index + 1] ? ' / ' : '')
-                    : '';
-                });
-              }
-              if (!item.provision_status) {
-                item.provision_status = 'Pending';
-              }
-            });
-            this.assetsList = [...this.assetsList, ...response.data];
+      this.isAssetListLoading = true;
+      const obj: any = {};
+      obj.type = this.type;
+      this.subscriptions.push(
+        this.assetService.getNonProvisionedAsset(obj, this.contextApp.app).subscribe(
+          (response: any) => {
+            if (response.data) {
+              response.data.forEach((item) => {
+                if (!item.display_name) {
+                  item.display_name = item.asset_id;
+                }
+                if (item.hierarchy) {
+                  item.hierarchyString = '';
+                  const keys = Object.keys(item.hierarchy);
+                  this.contextApp.hierarchy.levels.forEach((key, index) => {
+                    item.hierarchyString += item.hierarchy[key]
+                      ? item.hierarchy[key] + (keys[index + 1] ? ' / ' : '')
+                      : '';
+                  });
+                }
+                if (!item.provision_status) {
+                  item.provision_status = 'Pending';
+                }
+              });
+              this.assetsList = [...this.assetsList, ...response.data];
+            }
+            resolve1();
+            this.isAssetListLoading = false;
+          },
+          (error) => {
+            this.isAssetListLoading = false;
           }
-          resolve1();
-          this.isAssetListLoading = false;
-        },
-        (error) => {
-          this.isAssetListLoading = false;
-        }
-      )
-     );
+        )
+      );
     });
   }
 
@@ -314,8 +311,6 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
 
     if (type === 'Deprovision' || type === 'Enable' || type === 'Disable') {
       this.openConfirmDialog(type);
-    } else if (type === 'Package Management') {
-      this.openPackageManagementModal();
     }
   }
 
@@ -380,22 +375,11 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
         this.disableAsset();
       } else if (this.btnClickType === 'Deprovision') {
         this.deleteAsset();
-      } else if (
-        this.btnClickType === 'Install' ||
-        this.btnClickType === 'Uninstall' ||
-        this.btnClickType === 'Upgrade' ||
-        this.btnClickType === 'Downgrade'
-      ) {
-        this.updateAssetTwin(this.btnClickType);
       }
       this.btnClickType = undefined;
     } else {
       $('#confirmMessageModal').modal('hide');
-      $('#packageManagementModal').modal('hide');
       clearInterval(this.twinResponseInterval);
-      this.installPackages = [];
-      this.updatePackages = [];
-      this.uninstallPackages = [];
       this.selectedAssets = [];
       this.assetPackages = [];
       this.currentAssetApps = [];
@@ -498,157 +482,6 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     );
   }
 
-  async openPackageManagementModal() {
-    if (this.selectedAssets?.length === 0) {
-      this.toasterService.showError(
-        'To perform any operations, please select at least one asset',
-        'Package Management'
-      );
-      return;
-    }
-    if (this.selectedAssets.length > 1) {
-      this.toasterService.showError('To perform single operations, please select only one asset', 'Package Management');
-      return;
-    }
-    $('#packageManagementModal').modal({ backdrop: 'static', keyboard: false, show: true });
-    await this.getAssetModelData();
-    await this.getAssetTwinData();
-  }
-
-  getAssetModelData() {
-    return new Promise<void>((resolve) => {
-      this.subscriptions.push(
-        this.assetModelService
-          .getPackages(this.contextApp.app, this.selectedAssets[0].asset_model, {})
-          .subscribe((response: any) => {
-            if (response.data?.length > 0) {
-              this.assetPackages = response.data;
-              this.assetPackages.forEach((packageObj) => {
-                if (this.assetApps.indexOf(packageObj.name) === -1) {
-                  this.assetApps.push(packageObj.name);
-                }
-                this.applicationList.forEach((app) => {
-                  if (packageObj.name === app.name) {
-                    packageObj['is_install'] = app.is_install;
-                    packageObj['is_uninstall'] = app.is_uninstall;
-                    packageObj['is_update'] = app.is_update;
-                  }
-                });
-              });
-            }
-            resolve();
-          })
-      );
-    });
-  }
-
-  getAssetTwinData() {
-    return new Promise<void>((resolve) => {
-      const asset = this.selectedAssets[0];
-      this.subscriptions.push(
-        this.assetService.getAssetTwin(this.contextApp.app, asset.asset_id).subscribe((response) => {
-          this.assetTwin = response;
-          if (!this.assetTwin.twin_properties) {
-            this.assetTwin.twin_properties = {};
-          }
-          if (!this.assetTwin.twin_properties.reported) {
-            this.assetTwin.twin_properties.reported = {};
-          }
-          if (!this.assetTwin.twin_properties.reported.installed_packages) {
-            this.assetTwin.twin_properties.reported.installed_packages = {};
-          }
-          if (this.assetTwin.twin_properties?.reported?.installed_packages) {
-            this.currentAssetApps = Object.keys(this.assetTwin.twin_properties.reported.installed_packages);
-          }
-          if (this.currentAssetApps.length > 0) {
-            this.assetPackages.forEach((assetPackage) => {
-              const index = this.currentAssetApps.findIndex((packageName) => packageName === assetPackage.name);
-              if (index === -1) {
-                this.installPackages.push(assetPackage);
-              }
-              this.currentAssetApps.forEach((currentPackage) => {
-                if (
-                  assetPackage.name === currentPackage &&
-                  this.assetTwin.twin_properties.reported.installed_packages[currentPackage] === assetPackage.version
-                ) {
-                  this.uninstallPackages.push(assetPackage);
-                }
-                if (
-                  assetPackage.name === currentPackage &&
-                  this.assetTwin.twin_properties.reported.installed_packages[currentPackage] !== assetPackage.version
-                ) {
-                  this.updatePackages.push(assetPackage);
-                }
-              });
-            });
-          } else {
-            this.installPackages = JSON.parse(JSON.stringify(this.assetPackages));
-          }
-          resolve();
-        })
-      );
-    });
-  }
-
-  updateAssetTwin(type) {
-    this.isAPILoading = true;
-    this.displyaMsgArr = [];
-    const obj = {
-      desired_properties: {
-        package_management: {
-          job_id: this.selectedAssets[0].asset_id + '_' + this.commonService.generateUUID(),
-          command: null,
-          package_details: {
-            app_name: this.selectedAssetPackage.name,
-            version: this.selectedAssetPackage.version,
-            url: environment.blobURL + this.selectedAssetPackage.url,
-            token: environment.blobKey,
-            job_id: null,
-          },
-        },
-      },
-      job_id: null,
-      timestamp: moment().utc().unix(),
-      sub_job_id: null,
-      asset_id: this.selectedAssets[0].asset_id,
-      request_type: 'FOTA',
-    };
-    obj.job_id = obj.desired_properties.package_management.job_id;
-    obj.sub_job_id = obj.job_id + '_1';
-    obj.desired_properties.package_management.package_details.job_id = obj.desired_properties.package_management.job_id;
-    if (type === 'Install') {
-      obj.desired_properties.package_management.command = 'INSTALL_PACKAGE';
-      obj.request_type = 'Install Package';
-    } else if (type === 'Upgrade' || type === 'Downgrade') {
-      obj.desired_properties.package_management.command = 'UPGRADE_PACKAGE';
-      obj.request_type = 'Upgrade Package';
-    } else if (type === 'Uninstall') {
-      obj.desired_properties.package_management.command = 'DELETE_PACKAGE';
-      obj.request_type = 'Uninstall Package';
-    }
-
-    this.subscriptions.push(
-      this.assetService.updateAssetTwin(this.contextApp.app, this.selectedAssets[0].asset_id, obj).subscribe(
-        (response: any) => {
-          // this.confirmBodyMessage = response.message;
-          this.displyaMsgArr.push({
-            message: 'Firmware ' + type.toLowerCase() + ' request sent to Asset.',
-            error: false,
-          });
-          this.modalConfig.isDisplaySave = false;
-          clearInterval(this.twinResponseInterval);
-          this.loadAssetTwinChangeResponse(obj);
-        },
-        (error) => {
-          clearInterval(this.twinResponseInterval);
-          this.confirmBodyMessage = error.message;
-          this.modalConfig.isDisplaySave = false;
-          this.isAPILoading = false;
-        }
-      )
-    );
-  }
-
   onCheckboxChange(event, packageObj) {
     if (event.target.checked) {
       this.selectedAssetPackage = packageObj;
@@ -657,69 +490,7 @@ export class AssetManagementAssetsComponent implements OnInit, OnDestroy {
     }
   }
 
-  loadAssetTwinChangeResponse(requestObj) {
-    clearInterval(this.twinResponseInterval);
-    const obj = {
-      sub_job_id: requestObj.sub_job_id,
-      from_date: requestObj.timestamp - 5,
-      to_date: moment().utc().unix(),
-      epoch: true,
-      job_type: 'Twin',
-    };
-    this.subscriptions.push(
-      this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
-        (response: any) => {
-          response.data.reverse();
-          if (response.data.length > 0) {
-            this.displyaMsgArr.length = 1;
-            response.data.forEach((item) => {
-              if (item.payload?.reported && item.payload?.reported[this.selectedAssetPackage.name]) {
-                this.displyaMsgArr.push({
-                  message: item.payload.reported[this.selectedAssetPackage.name].fw_update_sub_status,
-                  error: false,
-                });
-                this.modalConfig.isDisplaySave = false;
-                if (item.payload.reported[this.selectedAssetPackage.name].fw_pending_version) {
-                  clearInterval(this.twinResponseInterval);
-                  this.twinResponseInterval = setInterval(() => {
-                    this.loadAssetTwinChangeResponse(requestObj);
-                  }, 5000);
-                } else {
-                  clearInterval(this.twinResponseInterval);
-                  setTimeout(() => {
-                    this.onModalEvents('close');
-                    this.isAPILoading = false;
-                  }, 1000);
-                }
-              } else {
-                clearInterval(this.twinResponseInterval);
-                this.twinResponseInterval = setInterval(() => {
-                  this.loadAssetTwinChangeResponse(requestObj);
-                }, 5000);
-              }
-            });
-          } else {
-            clearInterval(this.twinResponseInterval);
-            this.twinResponseInterval = setInterval(() => {
-              this.loadAssetTwinChangeResponse(requestObj);
-            }, 5000);
-          }
-        },
-        (error) => {
-          this.displyaMsgArr.push({
-            message: error.message,
-            error: true,
-          });
-          this.isAPILoading = false;
-          this.modalConfig.isDisplaySave = false;
-          clearInterval(this.twinResponseInterval);
-        }
-      )
-    );
-  }
-
   ngOnDestroy() {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 }
-

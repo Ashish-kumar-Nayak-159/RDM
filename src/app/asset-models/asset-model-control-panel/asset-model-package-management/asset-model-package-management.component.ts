@@ -33,6 +33,9 @@ export class AssetModelPackageManagementComponent implements OnInit {
   appPackages: any[] = [];
   applicationList = CONSTANTS.ASSETAPPPS;
   decodedToken: any;
+  headerMessage: string;
+  bodyMessage: string;
+  modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
     private commonService: CommonService,
     private assetModelService: AssetModelService,
@@ -162,6 +165,13 @@ export class AssetModelPackageManagementComponent implements OnInit {
       this.downloadFile(obj.data);
       this.modalType = 'download';
     } else if (obj.for === 'Delete') {
+      this.headerMessage = 'Delete Package';
+      this.bodyMessage = 'Are you sure you want to remove this package?';
+      this.modalConfig = {
+        stringDisplay: true,
+        isDisplaySave: true,
+        isDisplayCancel: true,
+      };
       this.openModal('confirmMessageModal');
       this.modalType = 'delete';
       this.selectedPackage = obj.data;
@@ -251,6 +261,13 @@ export class AssetModelPackageManagementComponent implements OnInit {
   }
 
   downloadFile(packageObj) {
+    this.headerMessage = 'Download Package';
+    this.bodyMessage = 'Downloading Package. Please wait...';
+    this.modalConfig = {
+      stringDisplay: true,
+      isDisplaySave: false,
+      isDisplayCancel: false,
+    };
     this.openModal('confirmMessageModal');
     setTimeout(() => {
       const url = this.blobStorageURL + packageObj.url + this.sasToken;
@@ -272,6 +289,14 @@ export class AssetModelPackageManagementComponent implements OnInit {
     $('#confirmMessageModal').modal('hide');
     this.selectedPackage = undefined;
     this.modalType = undefined;
+  }
+
+  onModalEvents(eventType) {
+    if (eventType === 'close') {
+      this.closeConfirmModal();
+    } else if (eventType === 'save') {
+      this.deletePackage();
+    }
   }
 
   deletePackage() {

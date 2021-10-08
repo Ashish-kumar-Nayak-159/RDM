@@ -31,10 +31,8 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
   isAPILoading = false;
   headerMessage: any;
   c2dResponseInterval: any;
-  telemetrySettings: any = {};
   assetModels: any[] = [];
   applications = CONSTANTS.ASSETAPPPS;
-  count = 0;
   c2dJobFilter: any = {};
   constructor(
     private commonService: CommonService,
@@ -204,7 +202,6 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
     console.log(obj);
     this.isAPILoading = true;
     this.headerMessage = type;
-    // $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     const c2dObj = {
       asset_id: this.componentstate !== CONSTANTS.IP_GATEWAY ? asset.asset_id : asset.gateway_id,
       message: obj,
@@ -234,12 +231,6 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
           (response: any) => {
             this.toasterService.showSuccess('Request sent to gateway', type);
             this.assetService.refreshRecentJobs.emit();
-            // this.displyaMsgArr.push({
-            //   message: type + ' request sent to gateway.',
-            //   error: false
-            // });
-            // clearInterval(this.c2dResponseInterval);
-            // this.loadC2DResponse(c2dObj);
           },
           (error) => {
             this.toasterService.showError(error.message, type);
@@ -252,70 +243,10 @@ export class RegisterAssetsComponent implements OnInit, OnDestroy {
     );
   }
 
-  // loadC2DResponse(c2dObj) {
-  //   const obj = {
-  //     sub_job_id: c2dObj.sub_job_id,
-  //     app: this.contextApp.app,
-  //     from_date: c2dObj.timestamp - 5,
-  //     to_date: moment().unix(),
-  //     epoch: true,
-  //     job_type: 'Message'
-  //   };
-  //   this.subscriptions.push(this.assetService.getMessageResponseDetails(this.contextApp.app, obj).subscribe(
-  //     (response: any) => {
-  //       // response.data = this.generateResponse();
-  //       if (response.data?.length > 0 && this.displyaMsgArr.length <= response.data.length) {
-  //         for (let i = this.displyaMsgArr.length - 1; i < response.data.length; i++) {
-  //           this.displyaMsgArr.push({
-  //             message:  response.data[i].asset_id + ': ' + response.data[i]?.payload?.message,
-  //             error: response.data[i]?.payload?.status === 'failure' ? true : false
-  //           });
-  //         }
-  //       }
-  //       console.log(response.data.length, '======', this.selectedAssets.length);
-  //       if (response?.data?.length < 1) {
-  //         clearInterval(this.c2dResponseInterval);
-  //         this.c2dResponseInterval = setInterval(
-  //         () => {
-  //           this.loadC2DResponse(c2dObj);
-  //         }, 5000);
-  //       } else {
-  //         clearInterval(this.c2dResponseInterval);
-  //         this.refreshAssetTwin.emit();
-  //         setTimeout(() => {
-  //           this.onModalClose();
-  //           this.isAPILoading = false;
-  //         }, 1000);
-  //       }
-  //     }
-  //     ));
-  // }
-
-  generateResponse() {
-    const rand = this.commonService.randomIntFromInterval(0, 1);
-    const arr = [];
-    for (let i = 0; i <= this.count; i++) {
-      arr.push({
-        asset_id: this.selectedAssets[i].asset_id,
-        status: rand === 0 ? 'Success' : 'Failure',
-        message: rand === 0 ? 'Asset registered successfully.' : 'Error in asset registration',
-      });
-    }
-    this.count++;
-    console.log(arr);
-    return arr;
-  }
-
   onModalClose() {
-    $('#confirmMessageModal').modal('hide');
     this.selectedAssets = [];
     this.isAPILoading = false;
-    this.count = 0;
     this.isAllAssetSelected = false;
-    clearInterval(this.c2dResponseInterval);
-    this.telemetrySettings = {};
-    this.displyaMsgArr = [];
-    this.headerMessage = undefined;
   }
 
   ngOnDestroy() {

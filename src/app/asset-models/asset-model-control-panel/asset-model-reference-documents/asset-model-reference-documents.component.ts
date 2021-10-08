@@ -29,6 +29,9 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
   subscriptions: Subscription[] = [];
   contextApp: any;
   decodedToken: any;
+  modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
+  headerMessage: string;
+  bodyMessage: string;
   constructor(
     private commonService: CommonService,
     private toasterService: ToasterService,
@@ -144,8 +147,22 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
 
   onTableFunctionCall(obj) {
     if (obj.for === 'Download') {
+      this.headerMessage = 'Download Document';
+      this.bodyMessage = 'Downloading Document...';
+      this.modalConfig = {
+        stringDisplay: true,
+        isDisplaySave: false,
+        isDisplayCancel: false,
+      };
       this.downloadFile(obj.data.metadata);
     } else if (obj.for === 'Delete') {
+      this.headerMessage = 'Remove Document';
+      this.bodyMessage = 'Are you sure you want to remove this document?';
+      this.modalConfig = {
+        stringDisplay: true,
+        isDisplaySave: true,
+        isDisplayCancel: true,
+      };
       this.openModal('confirmMessageModal');
       this.selectedDocument = obj.data;
     } else if (obj.for === 'View Document') {
@@ -157,8 +174,16 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
     }
   }
 
+  onModalEvents(eventType) {
+    if (eventType === 'close') {
+      this.closeModal('confirmMessageModal');
+    } else if (eventType === 'save') {
+      this.deleteDocument();
+    }
+  }
+
   downloadFile(fileObj) {
-    this.openModal('downloadDocumentModal');
+    this.openModal('confirmMessageModal');
     const url = this.blobStorageURL + fileObj.url + this.sasToken;
     setTimeout(() => {
       this.subscriptions.push(
@@ -197,7 +222,7 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
 
   closeDownloadModal() {
     this.selectedDocument = undefined;
-    $('#downloadDocumentModal').modal('hide');
+    $('#confirmMessageModal').modal('hide');
   }
 
   onCloseAddDocModal() {

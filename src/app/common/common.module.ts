@@ -28,6 +28,7 @@ import { DamagePlotChartComponent } from './charts/damage-plot-chart/damage-plot
 import { DataTypeFieldsComponent } from './data-type-fieds/data-type-fieds.component';
 import { ModelProtocolSpecificDetailsComponent } from './model-protocol-specific-details/model-protocol-specific-details.component';
 import { DateRangePickerComponent } from './date-range-picker/date-range-picker.component';
+import { MessageModalComponent } from './message-modal/message-modal.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { DateRangePickerComponent } from './date-range-picker/date-range-picker.
     DataTypeFieldsComponent,
     ModelProtocolSpecificDetailsComponent,
     DateRangePickerComponent,
+    MessageModalComponent,
   ],
   imports: [
     CommonModule,
@@ -85,6 +87,7 @@ import { DateRangePickerComponent } from './date-range-picker/date-range-picker.
     DataTypeFieldsComponent,
     ModelProtocolSpecificDetailsComponent,
     DateRangePickerComponent,
+    MessageModalComponent,
   ],
   providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }],
 })

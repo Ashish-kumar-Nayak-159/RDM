@@ -159,28 +159,10 @@
   </div>
 </div>
 
-<div class="modal fade" id="confirmMessageModal" role="dialog">
+<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Remove User Access</h5>
-        <button type="button" class="close" aria-label="Close" [disabled]="isUpdateAPILoading"
-          (click)="onCloseConfirmModal()">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        Are you sure you want to remove this user's access?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" [disabled]="isUpdateAPILoading" (click)="removeUserAccess()">
-          Ok</button>
-        <button type="button" class="btn btn-secondary" [disabled]="isUpdateAPILoading" (click)="onCloseConfirmModal()">
-          Cancel
-        </button>
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isUpdateAPILoading"></i>
-      </div>
-    </div>
-
+    <app-confirm-modal *ngIf="modalConfig" [bodyMessage]="'Are you sure you want to remove this user access?'"
+      [headerMessage]="'Remove User Access'" (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig">
+    </app-confirm-modal>
   </div>
 </div>

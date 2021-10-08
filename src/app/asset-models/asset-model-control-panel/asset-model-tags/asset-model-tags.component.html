@@ -7,30 +7,34 @@
           <span class="text-secondary">View</span></a>
       </li> -->
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)"  (click)="addTagObject()" [class.disabled]="isUpdateTagsAPILoading || assetModel.freezed">
+        <a class="nav-link" href="javascript:void(0)" (click)="addTagObject()"
+          [class.disabled]="isUpdateTagsAPILoading || assetModel.freezed">
           <i class="fa fa-fw fa-plus"></i>
           <span class="text-secondary">Add</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="updateAssetModelTags()" [class.disabled]="isUpdateTagsAPILoading || assetModel.freezed">
+        <a class="nav-link" href="javascript:void(0)" (click)="updateAssetModelTags()"
+          [class.disabled]="isUpdateTagsAPILoading || assetModel.freezed">
           <i class="fa fa-fw fa-save"></i>
           <span class="text-secondary">Save</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="openModal('confirmMessageModal', 'all', undefined)" [class.disabled]="isUpdateTagsAPILoading || assetModel.freezed">
+        <a class="nav-link" href="javascript:void(0)" (click)="openModal('confirmMessageModal', 'all', undefined)"
+          [class.disabled]="isUpdateTagsAPILoading || assetModel.freezed">
           <i class="fa fa-fw fa-trash"></i>
           <span class="text-secondary">Delete all</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)" (click)="openModal('confirmMessageModal', 'reset', undefined)" [class.disabled]="isUpdateTagsAPILoading || assetModel.freezed">
+        <a class="nav-link" href="javascript:void(0)" (click)="openModal('confirmMessageModal', 'reset', undefined)"
+          [class.disabled]="isUpdateTagsAPILoading || assetModel.freezed">
           <i class="fa fa-fw fa-undo"></i>
           <span class="text-secondary delete-row">Revert Changes</span></a>
       </li>
       <li class="nav-item" *ngIf="isUpdateTagsAPILoading">
         <a class="nav-link" href="javascript:void(0)">
           <i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>
-          </a>
-        </li>
+        </a>
+      </li>
     </ul>
   </div>
 </div>
@@ -43,8 +47,8 @@
 
 <div class="table-responsive">
   <div class="tableFixHead">
-      <!-- Page Heading -->
-      <!-- <p class="mb-3 text-secondary-800">
+    <!-- Page Heading -->
+    <!-- <p class="mb-3 text-secondary-800">
         Following tags will be added when asset is instantiated with this model.
         <button type="button" class="btn btn-primary btn-sm mx-2 my-1"  [disabled]="assetModel.freezed"
         placement="bottom" tooltip="Add Tag" (click)="addTagObject()" >
@@ -52,43 +56,44 @@
       </p>
       <hr> -->
 
-        <table class="table table-hover">
-          <thead>
-            <tr >
-              <th>No</th>
-              <th>Name</th>
-              <th>Key</th>
-              <th>Default Value</th>
-              <th *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <ng-container *ngIf="assetModel?.tags?.reserved_tags?.length > 0">
-            <tr *ngFor="let tag of assetModel?.tags?.reserved_tags; let i = index;">
-              <td>{{i + 1}}</td>
-              <td >{{tag.name}}</td>
-              <td>{{tag.key}}</td>
-              <td>{{tag.defaultValue}}</td>
-              <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
-                <a *ngIf="!tag.nonEditable" href="javascript:void(0)" class="mx-1" placement="bottom" tooltip="Delete" (click)="openModal('confirmMessageModal', 'single', i)"
-                [class.disabled]="assetModel.freezed">
-                <i class="fa fa-trash fa-sm"></i> </a></td>
-            </tr>
-          </ng-container>
-            <tr *ngIf="tagObj">
-              <td></td>
-              <td><input type="text"  class="form-control form-control-sm mx-2 my-1" id="name" placeholder="Tag Name"
-                [(ngModel)]="tagObj.name" name="name"></td>
-              <td><input type="text"  class="form-control form-control-sm mx-2 my-1" id="key" placeholder="Tag Key"
-                [(ngModel)]="tagObj.key" name="key"></td>
-              <td><input type="text"  class="form-control form-control-sm mx-2 my-1" id="defaultValue" placeholder="Default Value"
-                [(ngModel)]="tagObj.defaultValue" name="defaultValue"></td>
-              <td></td>
-            </tr>
-            <tr *ngIf="assetModel?.tags?.reserved_tags?.length === 0 && !firstTagAdded">
-              <td colspan="5">No Tags added.</td>
-            </tr>
-            <!-- <tr *ngFor="let tag of reservedTagsBasedOnProtocol">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Name</th>
+          <th>Key</th>
+          <th>Default Value</th>
+          <th *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="assetModel?.tags?.reserved_tags?.length > 0">
+          <tr *ngFor="let tag of assetModel?.tags?.reserved_tags; let i = index;">
+            <td>{{i + 1}}</td>
+            <td>{{tag.name}}</td>
+            <td>{{tag.key}}</td>
+            <td>{{tag.defaultValue}}</td>
+            <td *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('ASMMM') > -1">
+              <a *ngIf="!tag.nonEditable" href="javascript:void(0)" class="mx-1" placement="bottom" tooltip="Delete"
+                (click)="openModal('confirmMessageModal', 'single', i)" [class.disabled]="assetModel.freezed">
+                <i class="fa fa-trash fa-sm"></i> </a>
+            </td>
+          </tr>
+        </ng-container>
+        <tr *ngIf="tagObj">
+          <td></td>
+          <td><input type="text" class="form-control form-control-sm mx-2 my-1" id="name" placeholder="Tag Name"
+              [(ngModel)]="tagObj.name" name="name"></td>
+          <td><input type="text" class="form-control form-control-sm mx-2 my-1" id="key" placeholder="Tag Key"
+              [(ngModel)]="tagObj.key" name="key"></td>
+          <td><input type="text" class="form-control form-control-sm mx-2 my-1" id="defaultValue"
+              placeholder="Default Value" [(ngModel)]="tagObj.defaultValue" name="defaultValue"></td>
+          <td></td>
+        </tr>
+        <tr *ngIf="assetModel?.tags?.reserved_tags?.length === 0 && !firstTagAdded">
+          <td colspan="5">No Tags added.</td>
+        </tr>
+        <!-- <tr *ngFor="let tag of reservedTagsBasedOnProtocol">
               <td>{{tag.name}}</td>
               <td>
                 <ng-container *ngIf="isReservedTagsEditable">
@@ -100,31 +105,15 @@
                 </ng-container>
               </td>
             </tr> -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-  <div class="modal fade" id="confirmMessageModal" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Remove Tags</h5>
-          <button type="button" class="close"  aria-label="Close" (click)="closeModal('confirmMessageModal')">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          {{message}}
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" (click)="message.includes('reset') ? resetAssetModelTags() : ( deleteTagIndex !== undefined ? removeTag() : deleteAllAssetModelTags())">
-            Ok</button>
-          <button type="button" class="btn btn-white" (click)="closeModal('confirmMessageModal')">
-            Cancel
-          </button>
-        </div>
-      </div>
-
-    </div>
+      </tbody>
+    </table>
   </div>
+</div>
+
+<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
+  <div class="modal-dialog" role="document">
+    <app-confirm-modal *ngIf="modalConfig" [bodyMessage]="message" [headerMessage]="'Remove Tags'"
+      (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig">
+    </app-confirm-modal>
+  </div>
+</div>

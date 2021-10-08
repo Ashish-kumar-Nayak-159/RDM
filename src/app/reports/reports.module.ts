@@ -10,7 +10,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ReportsRoutingModule } from './reports-routing.module';
 import { ReportsComponent } from './reports/reports.component';
 import { PreGeneratedReportsComponent } from './pre-generated-reports/pre-generated-reports.component';
-import { Daterangepicker } from 'ng2-daterangepicker';
+import { CommonCustomModule } from '../common/common.module';
 
 @NgModule({
   declarations: [ReportsComponent, PreGeneratedReportsComponent],
@@ -23,7 +23,7 @@ import { Daterangepicker } from 'ng2-daterangepicker';
     TabsModule,
     NgSelectModule,
     TooltipModule,
-    Daterangepicker,
-  ]
-  })
+    CommonCustomModule,
+  ],
+})
 export class ReportsModule {}

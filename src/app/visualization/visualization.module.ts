@@ -1,5 +1,4 @@
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { Daterangepicker } from 'ng2-daterangepicker';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { UiSwitchModule } from 'ngx-ui-switch';
 import { FormsModule } from '@angular/forms';
@@ -21,7 +20,6 @@ import { CommonCustomModule } from '../common/common.module';
     CommonCustomModule,
     UiSwitchModule,
     NgSelectModule,
-    Daterangepicker,
     TooltipModule,
   ],
   exports: [ApplicationVisualizationComponent],

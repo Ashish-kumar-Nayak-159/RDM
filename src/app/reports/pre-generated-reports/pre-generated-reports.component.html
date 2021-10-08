@@ -32,36 +32,11 @@
           <button type="button" placement="bottom" tooltip="Clear" class="btn btn-sm searchBtn btn-white ml-1"
             (click)="onClearHierarchy()">Clear</button>
         </div>
-        <!-- <div class="">
-          <button class="btn btn-sm searchBtn btn-primary" type="button" (click)="onAssetFilterApply()">Apply</button>
-        </div> -->
-
-        <!-- <ng-select [items]="assets" class="custom-dropdown w-12" bindLabel="display_name" [clearable]="false"
-          [searchable]="true" [closeOnSelect]="true" appendTo="#liveDataSelectAssret" placeholder="Select Asset"
-          dropdownPosition="bottom" name="asset-dropdown" [(ngModel)]="filterObj.asset" (onSelect)="onAssetSelection()">
-        </ng-select> -->
       </div>
     </div>
-    <!-- <div class="form-group">
-      <select class="custom-select custom-select-sm" id="report_type" [(ngModel)]="filterObj.report_type"
-          name="report_type" #reportType="ngModel">
-          <option [ngValue]="undefined">Select Report Type</option>
-          <option [ngValue]="'Daily Single Asset Raw Telemetry Report'">Daily Single Asset Raw Telemetry Report</option>
-          <option [ngValue]="'Daily Multiple Asset Raw Telemetry Report'">Daily Multiple Asset Raw Telemetry Report</option>
-          <option [ngValue]="'Daily Single Asset Sampling Telemetry Report'">Daily Single Asset Sampling Telemetry Report</option>
-          <option [ngValue]="'Daily Multiple Asset Sampling Telemetry Report'">Daily Multiple Asset Sampling Telemetry Report</option>
-          <option [ngValue]="'Weekly Single Asset Raw Telemetry Report'">Weekly Single Asset Raw Telemetry Report</option>
-          <option [ngValue]="'Weekly Single Asset Sampling Telemetry Report'">Weekly Single Asset Sampling Telemetry Report</option>
-
-          </select>
-    </div> -->
-    <div class="form-group left-inner-addon">
-      <i class="fa fa-calendar" [ngClass]="{'active': filterObj.from_date && filterObj?.to_date}"></i>
-      <input type="text" readonly class="form-control form-control-sm date-range-picker" daterangepicker
-        name="daterangeInput" autocomplete="off" [(ngModel)]="selectedDateRange" [options]="options"
-        (selected)="selectedDate($event, daterange)" [ngClass]="{'active': filterObj.from_date && filterObj?.to_date}"
-        [tooltip]="selectedDateRange" placement="bottom" />
-    </div>
+    <app-date-range-picker *ngIf="filterObj.from_date && filterObj.to_date" [filterObj]="filterObj"
+      (selectedDateApplyEmitter)="selectedDate($event)" [selectedDateRange]="selectedDateRange">
+    </app-date-range-picker>
     <div class="form-group">
       <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
         (click)="reports = [];currentOffset = 0;getReportsData(true)"><i class="fa fa-search fa-sm"></i></button>
@@ -218,26 +193,26 @@
                     defaultValue="{{ contextApp.app }}" disabled />
                 </div>
               </ng-container>
-              <ng-select [items]="assets" class="custom-dropdown w-12 sm" [clearable]="false"
-              [searchable]="true" [multiple]="true" bindLabel="display_name" bindValue="asset_id" 
-              [closeOnSelect]="false" placeholder="Select Asset" dropdownPosition="bottom"
-              name="report-asset-dropdown" [(ngModel)]="reportsObj.assets" (onDeSelectAll)="Deselect($event)">
-              <ng-template ng-header-tmp>
-                <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
-                  <li *ngIf="reportsObj.assets.length !== assets.length"> <a href="javascript:void(0)"
-                      (click)="reportsObj.assets = assets">Select All</a></li>
-                  <li *ngIf="reportsObj.assets.length === assets.length"> <a href="javascript:void(0)"
-                      (click)="reportsObj.assets = []">Deselect All</a></li>
-                </ul>
-              </ng-template> 
-              <ng-template ng-multi-label-tmp let-items="items">
-                {{items.length}} Assets selected
-              </ng-template>
-              <ng-template ng-option-tmp let-asset="item">
-                <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ?
-                  asset.display_name: asset.asset_id}}</span>
-              </ng-template> 
-            </ng-select>
+              <ng-select [items]="assets" class="custom-dropdown w-12 sm" [clearable]="false" [searchable]="true"
+                [multiple]="true" bindLabel="display_name" bindValue="asset_id" [closeOnSelect]="false"
+                placeholder="Select Asset" dropdownPosition="bottom" name="report-asset-dropdown"
+                [(ngModel)]="reportsObj.assets" (onDeSelectAll)="Deselect($event)">
+                <ng-template ng-header-tmp>
+                  <ul style="list-style-type:none;line-height: 1.5rem;" class="m-0 p-0">
+                    <li *ngIf="reportsObj.assets.length !== assets.length"> <a href="javascript:void(0)"
+                        (click)="reportsObj.assets = assets">Select All</a></li>
+                    <li *ngIf="reportsObj.assets.length === assets.length"> <a href="javascript:void(0)"
+                        (click)="reportsObj.assets = []">Deselect All</a></li>
+                  </ul>
+                </ng-template>
+                <ng-template ng-multi-label-tmp let-items="items">
+                  {{items.length}} Assets selected
+                </ng-template>
+                <ng-template ng-option-tmp let-asset="item">
+                  <span [tooltip]="asset.display_name ? asset.display_name: asset.asset_id"> {{asset.display_name ?
+                    asset.display_name: asset.asset_id}}</span>
+                </ng-template>
+              </ng-select>
             </div>
             <div class="form-group">
               <label for="message-text" class="col-form-label required">Report Category:</label>
@@ -308,4 +283,3 @@
     </div>
   </div>
 </div>
-

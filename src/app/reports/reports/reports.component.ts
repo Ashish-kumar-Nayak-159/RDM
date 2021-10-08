@@ -12,7 +12,6 @@ import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Subscription } from 'rxjs';
-import { DaterangepickerComponent } from 'ng2-daterangepicker';
 declare var $: any;
 @Component({
   selector: 'app-reports',
@@ -58,17 +57,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   today = new Date();
   activeTab = 'pre_generated_reports';
   loadingMessage: any;
-  daterange: any = {};
-  options: any = {
-    locale: { format: 'DD-MM-YYYY HH:mm' },
-    alwaysShowCalendars: false,
-    autoUpdateInput: false,
-    maxDate: moment(),
-    timePicker: true,
-    ranges: CONSTANTS.DATE_OPTIONS,
-  };
   reportsFetchDataSubscription: Subscription;
-  @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   selectedDateRange: string;
   decodedToken: any;
   frequency: any;
@@ -87,7 +76,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
     const token = localStorage.getItem(CONSTANTS.APP_TOKEN);
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     this.getTileName();
-
     this.subscriptions.push(
       this.route.paramMap.subscribe(async (params) => {
         if (params.get('applicationId')) {
@@ -153,8 +141,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
           this.filterObj.from_date = item.from_date;
           this.filterObj.to_date = item.to_date;
         }
-        this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
-        this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
+        // this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
+        // this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
         if (this.filterObj.dateOption !== 'Custom Range') {
           this.selectedDateRange = this.filterObj.dateOption;
         } else {
@@ -185,7 +173,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       console.log(this.originalFilterObj);
 
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
-      console.log(this.originalFilterObj.report_type);
+      console.log(this.originalFilterObj);
       // if (this.filterObj.asset) {
       //   this.onFilterSelection(false, false);
       // }
@@ -251,32 +239,11 @@ export class ReportsComponent implements OnInit, OnDestroy {
     });
   }
 
-  selectedDate(value: any, datepicker?: any) {
-    // this.filterObj.from_date = moment(value.start).utc().unix();
-    // this.filterObj.to_date = moment(value.end).utc().unix();
-    this.filterObj.dateOption = value.label;
-    if (this.filterObj.dateOption !== 'Custom Range') {
-      const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
-      this.filterObj.from_date = dateObj.from_date;
-      this.filterObj.to_date = dateObj.to_date;
-    } else {
-      this.filterObj.from_date = moment(value.start).utc().unix();
-      this.filterObj.to_date = moment(value.end).utc().unix();
-    }
-    console.log(this.filterObj);
-    if (value.label === 'Custom Range') {
-      this.selectedDateRange =
-        moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
-    } else {
-      this.selectedDateRange = value.label;
-    }
-    // if (this.filterObj.to_date - this.filterObj.from_date > 3600) {
-    //   this.filterObj.isTypeEditable = true;
-    // } else {
-    //   this.filterObj.isTypeEditable = false;
-    // }
+  selectedDate(filterObj) {
+    this.filterObj.from_date = this.originalFilterObj.from_date = filterObj.from_date;
+    this.filterObj.to_date = this.originalFilterObj.to_date = filterObj.to_date;
+    this.filterObj.dateOption = this.originalFilterObj.dateOption = filterObj.dateOption;
     if (this.filterObj.asset) {
-      // this.onChangeOfAsset(this.filterObj.asset);
       const records = this.commonService.calculateEstimatedRecords(
         this.frequency,
         this.filterObj.from_date,
@@ -287,7 +254,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
       } else {
         this.filterObj.isTypeEditable = false;
       }
-      console.log(records);
     }
   }
 
@@ -532,6 +498,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.filterObj.from_date = this.filterObj.from_date;
       this.filterObj.to_date = this.filterObj.to_date;
     }
+    console.log(this.filterObj);
     const obj = { ...this.filterObj };
     let asset_model: any;
     if (obj.asset) {

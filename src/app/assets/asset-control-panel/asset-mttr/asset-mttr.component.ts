@@ -10,16 +10,14 @@ import { CommonService } from 'src/app/services/common.service';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
-import { DaterangepickerComponent } from 'ng2-daterangepicker';
 
 declare var $: any;
 @Component({
   selector: 'app-asset-mttr',
   templateUrl: './asset-mttr.component.html',
-  styleUrls: ['./asset-mttr.component.css']
+  styleUrls: ['./asset-mttr.component.css'],
 })
 export class AssetMttrComponent implements OnInit, OnDestroy {
-
   filterObj: any = {};
   lifeCycleEvents: any[] = [];
   @Input() asset: Asset = new Asset();
@@ -37,7 +35,6 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
   averageMTTRString: any;
   originalFilterObj: any = {};
   chart: any;
-  daterange: any = {};
   options: any = {
     locale: { format: 'DD-MM-YYYY HH:mm' },
     alwaysShowCalendars: false,
@@ -48,15 +45,17 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
       'Last 24 Hours': [moment().subtract(24, 'hours'), moment()],
       'Last 7 Days': [moment().subtract(6, 'days'), moment()],
       'This Week': [moment().startOf('isoWeek'), moment()],
-      'Last 4 Weeks': [moment().subtract(4, 'weeks').startOf('isoWeek'), moment().subtract(1, 'weeks').endOf('isoWeek')],
+      'Last 4 Weeks': [
+        moment().subtract(4, 'weeks').startOf('isoWeek'),
+        moment().subtract(1, 'weeks').endOf('isoWeek'),
+      ],
       'This Month': [moment().startOf('month'), moment().endOf('month')],
-      'Last Month': [ moment().subtract(1, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
+      'Last Month': [moment().subtract(1, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
       'Last 3 Months': [moment().subtract(3, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
       'Last 6 Months': [moment().subtract(6, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
-      'Last 12 Months': [moment().subtract(12, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')]
-    }
+      'Last 12 Months': [moment().subtract(12, 'month').endOf('month'), moment().subtract(1, 'month').startOf('month')],
+    },
   };
-  @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   today = new Date();
   selectedDateRange: string;
   loader = false;
@@ -68,13 +67,12 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private toasterService: ToasterService,
     private zone: NgZone
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     // this.filterObj.count = 50;
     this.filterObj.epoch = true;
-
   }
 
   onTabChange(type) {
@@ -93,8 +91,10 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
     if (this.filterObj.dateOption !== 'Custom Range') {
       this.selectedDateRange = this.filterObj.dateOption;
     } else {
-      this.selectedDateRange = moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
-      moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+      this.selectedDateRange =
+        moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') +
+        ' to ' +
+        moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
     }
     if (type === 'history') {
       this.filterObj.countNotShow = true;
@@ -104,29 +104,12 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
     if (type === 'history' && this.chart) {
       this.chart.dispose();
     }
-    setTimeout(() => {
-      this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
-      this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
-    }, 1000);
   }
 
-  selectedDate(value: any, datepicker?: any) {
-
-    this.filterObj.dateOption = value.label;
-    if (this.filterObj.dateOption !== 'Custom Range') {
-      const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
-      this.filterObj.from_date = dateObj.from_date;
-      this.filterObj.to_date = dateObj.to_date;
-    } else {
-      this.filterObj.from_date = moment(value.start).utc().unix();
-      this.filterObj.to_date = moment(value.end).utc().unix();
-    }
-    console.log(this.filterObj);
-    if (value.label === 'Custom Range') {
-      this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
-    } else {
-      this.selectedDateRange = value.label;
-    }
+  selectedDate(filterObj: any) {
+    this.filterObj.from_date = filterObj.from_date;
+    this.filterObj.to_date = filterObj.to_date;
+    this.filterObj.dateOption = filterObj.dateOption;
   }
 
   clear() {
@@ -146,11 +129,12 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
       this.filterObj.to_date = dateObj.to_date;
       this.selectedDateRange = this.filterObj.dateOption;
     } else {
-      this.selectedDateRange = moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
-      moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
+      this.selectedDateRange =
+        moment.unix(this.filterObj.from_date).format('DD-MM-YYYY HH:mm') +
+        ' to ' +
+        moment.unix(this.filterObj.to_date).format('DD-MM-YYYY HH:mm');
     }
-    this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
-    this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
+    console.log(this.filterObj);
   }
 
   searchEvents(filterObj) {
@@ -165,7 +149,7 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
       filterObj.from_date = filterObj.from_date;
       filterObj.to_date = filterObj.to_date;
     }
-    const obj = {...filterObj};
+    const obj = { ...filterObj };
     if (!obj.from_date || !obj.to_date) {
       this.isLifeCycleEventsLoading = false;
       this.toasterService.showError('Date Time selection is required', 'View MTTR Data');
@@ -198,49 +182,52 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
       // obj.date_frequency = 'weekly';
       method = this.assetService.getHistoricalMTTRData(this.asset.app, this.asset.asset_id, obj);
     }
-    this.apiSubscriptions.push(method.subscribe(
-      (response: any) => {
-        if (response?.data) {
-          this.lifeCycleEvents = response.data;
-          if (this.displayMode === 'machine_failure') {
-            this.averageMTTR = response.mttr;
-            this.averageMTTRString = this.splitTime(response.mttr);
-          }
-          this.lifeCycleEvents .forEach((item, index) => {
-            item.local_event_start_time = this.commonService.convertUTCDateToLocal(item.event_start_time);
-            item.local_event_end_time = this.commonService.convertUTCDateToLocal(item.event_end_time);
-            item.mttrString = this.splitTime(item.event_timespan_in_sec);
-            if (this.displayMode === 'history') {
-              item.mttrString = this.splitTime(item.mttr);
+    this.apiSubscriptions.push(
+      method.subscribe(
+        (response: any) => {
+          if (response?.data) {
+            this.lifeCycleEvents = response.data;
+            if (this.displayMode === 'machine_failure') {
+              this.averageMTTR = response.mttr;
+              this.averageMTTRString = this.splitTime(response.mttr);
             }
-          });
-          if (this.displayMode === 'history' && this.lifeCycleEvents.length > 0) {
-            setTimeout(() =>  this.plotChart(), 500);
+            this.lifeCycleEvents.forEach((item, index) => {
+              item.local_event_start_time = this.commonService.convertUTCDateToLocal(item.event_start_time);
+              item.local_event_end_time = this.commonService.convertUTCDateToLocal(item.event_end_time);
+              item.mttrString = this.splitTime(item.event_timespan_in_sec);
+              if (this.displayMode === 'history') {
+                item.mttrString = this.splitTime(item.mttr);
+              }
+            });
+            if (this.displayMode === 'history' && this.lifeCycleEvents.length > 0) {
+              setTimeout(() => this.plotChart(), 500);
+            }
           }
-        }
-        if (this.filterObj.dateOption == 'Custom Range') {
-          this.originalFilterObj.dateOption = 'this selected range';
-        }
-        this.isLifeCycleEventsLoading = false;
-        if (this.lifeCycleEvents.length === 0) {
+          if (this.filterObj.dateOption == 'Custom Range') {
+            this.originalFilterObj.dateOption = 'this selected range';
+          }
+          this.isLifeCycleEventsLoading = false;
+          if (this.lifeCycleEvents.length === 0) {
+            this.loader = false;
+          }
+        },
+        (error) => {
+          this.isLifeCycleEventsLoading = false;
           this.loader = false;
         }
-      }, error => {
-        this.isLifeCycleEventsLoading = false;
-        this.loader = false;
-      }
-    ));
+      )
+    );
   }
 
-  splitTime(num){
-    let d = Math.floor(num / (3600*24));
-    let h = Math.floor(num % (3600*24) / 3600);
-    let m = Math.floor(num % 3600 / 60);
+  splitTime(num) {
+    let d = Math.floor(num / (3600 * 24));
+    let h = Math.floor((num % (3600 * 24)) / 3600);
+    let m = Math.floor((num % 3600) / 60);
     let s = Math.floor(num % 60);
-    let dDisplay = d > 0 ? (d + (d == 1 ? " Day, " : " Days, ")) : "";
-    let hDisplay = h > 0 ? (h + (h == 1 ? " Hr, " : " Hrs, ")) : "";
-    let mDisplay = m > 0 ? (m + (m == 1 ? " Min, " : " Minutes, ")) : "";
-    let sDisplay = s > 0 ? (s + (s == 1 ? " Second" : " Seconds")) : "";
+    let dDisplay = d > 0 ? d + (d == 1 ? ' Day, ' : ' Days, ') : '';
+    let hDisplay = h > 0 ? h + (h == 1 ? ' Hr, ' : ' Hrs, ') : '';
+    let mDisplay = m > 0 ? m + (m == 1 ? ' Min, ' : ' Minutes, ') : '';
+    let sDisplay = s > 0 ? s + (s == 1 ? ' Second' : ' Seconds') : '';
     return dDisplay + hDisplay + mDisplay + sDisplay;
   }
 
@@ -263,18 +250,21 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
       return;
     }
     this.isEventAcknowledgeAPILoading = true;
-    this.assetService.updateAssetMTTRData(this.asset.app, this.asset.asset_id, this.selectedEvent.id, this.selectedEvent).
-    subscribe((response: any) => {
-      this.toasterService.showSuccess(response.message, 'Acknowledge Event');
-      this.isEventAcknowledgeAPILoading = false;
-      this.closeModal();
-      this.searchEvents(this.filterObj);
-    }, error => {
-      this.toasterService.showError(error.message, 'Acknowledge Event');
-      this.isEventAcknowledgeAPILoading = false;
-    });
+    this.assetService
+      .updateAssetMTTRData(this.asset.app, this.asset.asset_id, this.selectedEvent.id, this.selectedEvent)
+      .subscribe(
+        (response: any) => {
+          this.toasterService.showSuccess(response.message, 'Acknowledge Event');
+          this.isEventAcknowledgeAPILoading = false;
+          this.closeModal();
+          this.searchEvents(this.filterObj);
+        },
+        (error) => {
+          this.toasterService.showError(error.message, 'Acknowledge Event');
+          this.isEventAcknowledgeAPILoading = false;
+        }
+      );
   }
-
 
   plotChart() {
     this.loadingMessage = 'Loading Chart. Please wait...';
@@ -283,7 +273,7 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
     const data = [];
     // this.lifeCycleEvents.reverse();
     this.lifeCycleEvents.forEach((obj, i) => {
-      const newObj = {...obj};
+      const newObj = { ...obj };
       const date = this.commonService.convertUTCDateToLocal(obj.start_time);
       const endDate = this.commonService.convertUTCDateToLocal(obj.end_time);
       newObj.date = new Date(date);
@@ -308,18 +298,19 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
     const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
     valueYAxis.renderer.grid.template.location = 0;
     const series = chart.series.push(new am4charts.ColumnSeries());
-    series.name =  'MTTR';
+    series.name = 'MTTR';
     series.yAxis = valueYAxis;
     series.dataFields.openDateX = 'date';
     series.dataFields.dateX = 'endDate';
-    series.dataFields.valueY =  'mttrHr';
+    series.dataFields.valueY = 'mttrHr';
     series['mttrString'] = 'mttrString';
     series.strokeWidth = 2;
     series.strokeOpacity = 1;
     series.legendSettings.labelText = '{name} (Hrs)';
     // series.fillOpacity = 0;
     if (this.originalFilterObj.date_frequency === 'weekly') {
-      series.columns.template.tooltipText = 'Start Date: {openDateX} \n End Date: {dateX} \n {name}: [bold]{mttrString} [/]';
+      series.columns.template.tooltipText =
+        'Start Date: {openDateX} \n End Date: {dateX} \n {name}: [bold]{mttrString} [/]';
     } else {
       series.columns.template.tooltipText = 'Date: {openDateX} \n {name}: [bold]{mttrString} [/]';
     }
@@ -337,7 +328,7 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
     chart.legend.scrollable = true;
     chart.legend.labels.template.maxWidth = 30;
     chart.legend.labels.template.truncate = true;
-   //  chart.cursor = new am4charts.XYCursor();
+    //  chart.cursor = new am4charts.XYCursor();
     chart.legend.itemContainers.template.togglable = false;
     dateAxis.dateFormatter = new am4core.DateFormatter();
     chart.events.on('ready', (ev) => {
@@ -351,7 +342,7 @@ export class AssetMttrComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.apiSubscriptions.forEach(subscribe => subscribe.unsubscribe());
+    this.apiSubscriptions.forEach((subscribe) => subscribe.unsubscribe());
     this.chart?.dispose();
   }
 }

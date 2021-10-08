@@ -1,3 +1,4 @@
+import { Daterangepicker } from 'ng2-daterangepicker';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -26,6 +27,7 @@ import { CommonTableFilterComponent } from './table/common-table-filter/common-t
 import { DamagePlotChartComponent } from './charts/damage-plot-chart/damage-plot-chart.component';
 import { DataTypeFieldsComponent } from './data-type-fieds/data-type-fieds.component';
 import { ModelProtocolSpecificDetailsComponent } from './model-protocol-specific-details/model-protocol-specific-details.component';
+import { DateRangePickerComponent } from './date-range-picker/date-range-picker.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +50,7 @@ import { ModelProtocolSpecificDetailsComponent } from './model-protocol-specific
     DamagePlotChartComponent,
     DataTypeFieldsComponent,
     ModelProtocolSpecificDetailsComponent,
+    DateRangePickerComponent,
   ],
   imports: [
     CommonModule,
@@ -61,6 +64,7 @@ import { ModelProtocolSpecificDetailsComponent } from './model-protocol-specific
     TooltipModule,
     NgSelectModule,
     ReactiveFormsModule,
+    Daterangepicker,
   ],
   exports: [
     // FilterComponent,
@@ -80,6 +84,7 @@ import { ModelProtocolSpecificDetailsComponent } from './model-protocol-specific
     DamagePlotChartComponent,
     DataTypeFieldsComponent,
     ModelProtocolSpecificDetailsComponent,
+    DateRangePickerComponent,
   ],
   providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }],
 })

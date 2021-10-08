@@ -23,12 +23,10 @@
             </ng-template>
           </ng-select>
         </div>
-        <div class="form-group left-inner-addon">
-          <i class="fa fa-calendar active"></i>
-          <input type="text" readonly class="form-control form-control-sm active date-range-picker" daterangepicker
-            name="daterangeInput" [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"
-            [(ngModel)]="selectedDateRange" [tooltip]="selectedDateRange" placement="bottom" />
-        </div>
+        <app-date-range-picker *ngIf="historyFilter.from_date && historyFilter.to_date" [filterObj]="historyFilter"
+          (selectedDateApplyEmitter)="selectedDate($event)" [selectedDateRange]="selectedDateRange">
+        </app-date-range-picker>
+
         <div class="form-group">
           <input type="checkbox" id="checkbox" min="1" name="checkbox" class="big-checkbox"
             [(ngModel)]="historyFilter.isTypeEditable" (change)="historyFilter.aggregation_format = 'AVG'; historyFilter.aggregation_minutes = 1;

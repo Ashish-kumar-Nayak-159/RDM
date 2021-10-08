@@ -132,8 +132,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.historyFilter.from_date = item.from_date;
         this.historyFilter.to_date = item.to_date;
       }
-      this.picker.datePicker.setStartDate(moment.unix(this.historyFilter.from_date));
-      this.picker.datePicker.setEndDate(moment.unix(this.historyFilter.to_date));
       if (this.historyFilter.dateOption !== 'Custom Range') {
         this.selectedDateRange = this.historyFilter.dateOption;
       } else {
@@ -592,8 +590,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
         ' to ' +
         moment.unix(this.historyFilter.to_date).format('DD-MM-YYYY HH:mm');
     }
-    this.picker.datePicker.setStartDate(moment.unix(this.historyFilter.from_date));
-    this.picker.datePicker.setEndDate(moment.unix(this.historyFilter.to_date));
 
     // if (this.historyFilter.to_date - this.historyFilter.from_date > 3600) {
     //   this.historyFilter.isTypeEditable = true;
@@ -615,9 +611,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   onDateChange(event) {
     this.historyFilter.from_date = moment(event.value[0]).utc();
     this.historyFilter.to_date = moment(event.value[1]).utc();
-    if (this.dtInput2) {
-      this.dtInput2.value = null;
-    }
     if (this.historyFilter.dateOption !== 'date range') {
       this.historyFilter.dateOption = undefined;
     }

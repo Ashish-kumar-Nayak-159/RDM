@@ -7,15 +7,13 @@ import { AssetService } from 'src/app/services/assets/asset.service';
 import * as moment from 'moment';
 import { CommonService } from 'src/app/services/common.service';
 import { CONSTANTS } from 'src/app/app.constants';
-import { DaterangepickerComponent } from 'ng2-daterangepicker';
 declare var $: any;
 @Component({
   selector: 'app-telemetry',
   templateUrl: './telemetry.component.html',
-  styleUrls: ['./telemetry.component.css']
+  styleUrls: ['./telemetry.component.css'],
 })
 export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
-
   telemetryFilter: any = {};
   telemetry: any[] = [];
   @Input() asset: Asset = new Asset();
@@ -29,18 +27,8 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
   pageType: string;
   assets: any[] = [];
   originalTelemetryFilter: any;
-  daterange: any;
-  options: any = {
-    locale: { format: 'DD-MM-YYYY HH:mm' },
-    alwaysShowCalendars: false,
-    autoUpdateInput: false,
-    maxDate: moment(),
-    timePicker: true,
-    ranges: CONSTANTS.DATE_OPTIONS
-  };
   today = new Date();
   contextApp: any;
-  @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   selectedDateRange: string;
   activeColumn: string;
   directionColumn: string;
@@ -50,26 +38,26 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     private commonService: CommonService,
     private route: ActivatedRoute,
     private toasterService: ToasterService
-  ) { }
+  ) {}
 
-  sortOn(key: string, directionColumn: string ) {
+  sortOn(key: string, directionColumn: string) {
     this.activeColumn = key;
     this.directionColumn = directionColumn;
     const isAscending = directionColumn === 'asc';
-    const sortedArray = (this.telemetry).sort((a, b) => {
-        if (a[key] > b[key]) {
-          return isAscending ? 1 : -1;
-        }
-        if (a[key] < b[key]) {
-          return isAscending ? -1 : 1;
-        }
-        return 0;
-      });
+    const sortedArray = this.telemetry.sort((a, b) => {
+      if (a[key] > b[key]) {
+        return isAscending ? 1 : -1;
+      }
+      if (a[key] < b[key]) {
+        return isAscending ? -1 : 1;
+      }
+      return 0;
+    });
     return sortedArray;
   }
 
   getClass(columnID: string) {
-    if (this.activeColumn === columnID && this.directionColumn === 'asc'){
+    if (this.activeColumn === columnID && this.directionColumn === 'asc') {
       return 'asc';
     } else if (this.activeColumn === columnID && this.directionColumn === 'desc') {
       return 'desc';
@@ -101,7 +89,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
           key: 'local_message_date',
           type: 'text',
           headerClass: 'w-15',
-          valueclass: ''
+          valueclass: '',
         },
         // {
         //   name: 'Message ID',
@@ -112,14 +100,14 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
           key: 'local_iothub_date',
           type: 'text',
           headerClass: 'w-15',
-          valueclass: ''
+          valueclass: '',
         },
         {
           name: 'Database Record Date',
           key: 'local_created_date',
           type: 'text',
           headerClass: 'w-15',
-          valueclass: ''
+          valueclass: '',
         },
         {
           name: 'Message',
@@ -131,11 +119,11 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
               text: '',
               id: 'View Process Parameter Message',
               valueclass: '',
-              tooltip: 'View Process Parameter Message'
-            }
-          ]
-        }
-      ]
+              tooltip: 'View Process Parameter Message',
+            },
+          ],
+        },
+      ],
     };
 
     if (this.telemetryFilter.gateway_id) {
@@ -148,7 +136,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.telemetryFilter.count = 10;
     this.telemetryFilter.app = this.contextApp.app;
     this.telemetryFilter.epoch = true;
-    this.originalTelemetryFilter = {...this.telemetryFilter};
+    this.originalTelemetryFilter = { ...this.telemetryFilter };
   }
 
   ngAfterViewInit() {
@@ -162,22 +150,26 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
       if (item.dateOption === 'Custom Range') {
         this.telemetryFilter.from_date = item.from_date;
         this.telemetryFilter.to_date = item.to_date;
-        this.selectedDateRange = moment.unix(this.telemetryFilter.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
-        moment.unix(this.telemetryFilter.to_date).format('DD-MM-YYYY HH:mm');
+        this.selectedDateRange =
+          moment.unix(this.telemetryFilter.from_date).format('DD-MM-YYYY HH:mm') +
+          ' to ' +
+          moment.unix(this.telemetryFilter.to_date).format('DD-MM-YYYY HH:mm');
       } else {
         const dateObj = this.commonService.getMomentStartEndDate(this.telemetryFilter.dateOption);
         this.telemetryFilter.from_date = dateObj.from_date;
         this.telemetryFilter.to_date = dateObj.to_date;
         this.selectedDateRange = this.telemetryFilter.dateOption;
       }
-      this.picker.datePicker.setStartDate(moment.unix(this.telemetryFilter.from_date));
-      this.picker.datePicker.setEndDate(moment.unix(this.telemetryFilter.to_date));
       // if (this.telemetryFilter.to_date - this.telemetryFilter.from_date > 3600) {
       //   this.telemetryFilter.isTypeEditable = true;
       // } else {
       //   this.telemetryFilter.isTypeEditable = false;
       // }
-      const records = this.commonService.calculateEstimatedRecords(this.frequency, this.telemetryFilter.from_date, this.telemetryFilter.to_date);
+      const records = this.commonService.calculateEstimatedRecords(
+        this.frequency,
+        this.telemetryFilter.from_date,
+        this.telemetryFilter.to_date
+      );
       if (records > CONSTANTS.NO_OF_RECORDS) {
         this.telemetryFilter.isTypeEditable = true;
       } else {
@@ -193,47 +185,35 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     const obj = {
       gateway_id: this.telemetryFilter.gateway_id,
       app: this.asset?.tags?.app,
-      type: CONSTANTS.NON_IP_ASSET
+      type: CONSTANTS.NON_IP_ASSET,
     };
-    this.apiSubscriptions.push(this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.assets = response.data;
-          this.assets.splice(0, 0, { asset_id: this.telemetryFilter.gateway_id});
-        }
-      }, errror => {}
-    ));
+    this.apiSubscriptions.push(
+      this.assetService.getIPAssetsAndGateways(obj, this.contextApp.app).subscribe(
+        (response: any) => {
+          if (response && response.data) {
+            this.assets = response.data;
+            this.assets.splice(0, 0, { asset_id: this.telemetryFilter.gateway_id });
+          }
+        },
+        (errror) => {}
+      )
+    );
   }
 
-  selectedDate(value: any, datepicker?: any) {
-    // this.telemetryFilter.from_date = moment(value.start).utc().unix();
-    // this.telemetryFilter.to_date = moment(value.end).utc().unix();
-    this.telemetryFilter.dateOption = value.label;
-    if (this.telemetryFilter.dateOption !== 'Custom Range') {
-      const dateObj = this.commonService.getMomentStartEndDate(this.telemetryFilter.dateOption);
-      this.telemetryFilter.from_date = dateObj.from_date;
-      this.telemetryFilter.to_date = dateObj.to_date;
-    } else {
-      this.telemetryFilter.from_date = moment(value.start).utc().unix();
-      this.telemetryFilter.to_date = moment(value.end).utc().unix();
-    }
-
-    if (value.label === 'Custom Range') {
-      this.selectedDateRange = moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
-    } else {
-      this.selectedDateRange = value.label;
-    }
-    // if (this.telemetryFilter.to_date - this.telemetryFilter.from_date > 3600) {
-    //   this.telemetryFilter.isTypeEditable = true;
-    // } else {
-    //   this.telemetryFilter.isTypeEditable = false;
-    // }
-    const records = this.commonService.calculateEstimatedRecords(this.frequency, this.telemetryFilter.from_date, this.telemetryFilter.to_date);
+  selectedDate(filterObj) {
+    this.telemetryFilter.from_date = filterObj.from_date;
+    this.telemetryFilter.to_date = filterObj.to_date;
+    this.telemetryFilter.dateOption = filterObj.dateOption;
+    const records = this.commonService.calculateEstimatedRecords(
+      this.frequency,
+      this.telemetryFilter.from_date,
+      this.telemetryFilter.to_date
+    );
     if (records > CONSTANTS.NO_OF_RECORDS) {
-        this.telemetryFilter.isTypeEditable = true;
-     } else {
-        this.telemetryFilter.isTypeEditable = false;
-     }
+      this.telemetryFilter.isTypeEditable = true;
+    } else {
+      this.telemetryFilter.isTypeEditable = false;
+    }
   }
 
   clear() {
@@ -250,22 +230,26 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
       const dateObj = this.commonService.getMomentStartEndDate(this.telemetryFilter.dateOption);
       this.telemetryFilter.from_date = dateObj.from_date;
       this.telemetryFilter.to_date = dateObj.to_date;
-      this.selectedDateRange = moment.unix(this.telemetryFilter.from_date).format('DD-MM-YYYY HH:mm') + ' to ' +
-      moment.unix(this.telemetryFilter.to_date).format('DD-MM-YYYY HH:mm');
+      this.selectedDateRange =
+        moment.unix(this.telemetryFilter.from_date).format('DD-MM-YYYY HH:mm') +
+        ' to ' +
+        moment.unix(this.telemetryFilter.to_date).format('DD-MM-YYYY HH:mm');
     }
-    this.picker.datePicker.setStartDate(moment.unix(this.telemetryFilter.from_date));
-    this.picker.datePicker.setEndDate(moment.unix(this.telemetryFilter.to_date));
 
     // if (this.telemetryFilter.to_date - this.telemetryFilter.from_date > 3600) {
     //   this.telemetryFilter.isTypeEditable = true;
     // } else {
     //   this.telemetryFilter.isTypeEditable = false;
     // }
-    const records = this.commonService.calculateEstimatedRecords(this.frequency, this.telemetryFilter.from_date, this.telemetryFilter.to_date);
+    const records = this.commonService.calculateEstimatedRecords(
+      this.frequency,
+      this.telemetryFilter.from_date,
+      this.telemetryFilter.to_date
+    );
     if (records > CONSTANTS.NO_OF_RECORDS) {
-        this.telemetryFilter.isTypeEditable = true;
+      this.telemetryFilter.isTypeEditable = true;
     } else {
-        this.telemetryFilter.isTypeEditable = false;
+      this.telemetryFilter.isTypeEditable = false;
     }
     console.log(this.telemetryFilter);
   }
@@ -280,7 +264,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
       filterObj.from_date = filterObj.from_date;
       filterObj.to_date = filterObj.to_date;
     }
-    const obj = {...filterObj};
+    const obj = { ...filterObj };
     obj.partition_key = this.asset?.tags?.partition_key;
 
     if (!obj.from_date || !obj.to_date) {
@@ -309,14 +293,12 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
       this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, pagefilterObj);
     }
     if (this.telemetryFilter.isTypeEditable) {
-
-      if (!this.telemetryFilter.sampling_time || !this.telemetryFilter.sampling_format ) {
+      if (!this.telemetryFilter.sampling_time || !this.telemetryFilter.sampling_format) {
         this.toasterService.showError('Sampling time and format is required.', 'View Telemetry');
         return;
       } else {
         method = this.assetService.getAssetSamplingTelemetry(obj, this.asset?.tags?.app);
       }
-
     } else {
       delete obj.sampling_time;
       delete obj.sampling_format;
@@ -326,25 +308,27 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isTelemetryLoading = true;
     this.telemetryFilter = filterObj;
 
-    this.apiSubscriptions.push(method.subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.telemetry = response.data;
-          this.telemetry.forEach(item => {
-            item.local_message_date = this.commonService.convertUTCDateToLocal(item.message_date);
-            item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
-            item.local_iothub_date = this.commonService.convertUTCDateToLocal(item.iothub_date);
-          });
-        }
-        if (this.telemetryFilter.dateOption !== 'Custom Range') {
-          this.telemetryTableConfig.dateRange = this.telemetryFilter.dateOption;
-        }
-        else {
-          this.telemetryTableConfig.dateRange = 'this selected range';
-        }
-        this.isTelemetryLoading = false;
-      }, error => this.isTelemetryLoading = false
-    ));
+    this.apiSubscriptions.push(
+      method.subscribe(
+        (response: any) => {
+          if (response && response.data) {
+            this.telemetry = response.data;
+            this.telemetry.forEach((item) => {
+              item.local_message_date = this.commonService.convertUTCDateToLocal(item.message_date);
+              item.local_created_date = this.commonService.convertUTCDateToLocal(item.created_date);
+              item.local_iothub_date = this.commonService.convertUTCDateToLocal(item.iothub_date);
+            });
+          }
+          if (this.telemetryFilter.dateOption !== 'Custom Range') {
+            this.telemetryTableConfig.dateRange = this.telemetryFilter.dateOption;
+          } else {
+            this.telemetryTableConfig.dateRange = 'this selected range';
+          }
+          this.isTelemetryLoading = false;
+        },
+        (error) => (this.isTelemetryLoading = false)
+      )
+    );
   }
 
   getMessageData(dataobj) {
@@ -356,16 +340,16 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
         from_date: null,
         to_date: null,
         epoch: true,
-        partition_key: this.asset?.tags?.partition_key
+        partition_key: this.asset?.tags?.partition_key,
       };
-      const epoch =  this.commonService.convertDateToEpoch(dataobj.message_date);
-      obj.from_date = epoch ? (epoch - 300) : null;
-      obj.to_date = (epoch ? (epoch + 300) : null);
-      this.apiSubscriptions.push(this.assetService.getAssetMessageById(obj, 'telemetry').subscribe(
-        (response: any) => {
+      const epoch = this.commonService.convertDateToEpoch(dataobj.message_date);
+      obj.from_date = epoch ? epoch - 300 : null;
+      obj.to_date = epoch ? epoch + 300 : null;
+      this.apiSubscriptions.push(
+        this.assetService.getAssetMessageById(obj, 'telemetry').subscribe((response: any) => {
           resolve(response.message);
-        }
-      ));
+        })
+      );
     });
   }
 
@@ -382,19 +366,18 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   openTelemetryMessageModal(obj) {
     // if (obj.type === this.telemetryTableConfig.type) {
-      this.modalConfig = {
-        jsonDisplay: true,
-        isDisplaySave: false,
-        isDisplayCancel: true
-      };
-      this.selectedTelemetry = obj;
-      this.getMessageData(obj).then(message => {
-        this.selectedTelemetry.message = message;
-      });
-      $('#telemetryMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+    this.modalConfig = {
+      jsonDisplay: true,
+      isDisplaySave: false,
+      isDisplayCancel: true,
+    };
+    this.selectedTelemetry = obj;
+    this.getMessageData(obj).then((message) => {
+      this.selectedTelemetry.message = message;
+    });
+    $('#telemetryMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     // }
   }
-
 
   onModalEvents(eventType) {
     if (eventType === 'close') {
@@ -403,8 +386,7 @@ export class TelemetryComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-ngOnDestroy() {
-    this.apiSubscriptions.forEach(subscribe => subscribe.unsubscribe());
+  ngOnDestroy() {
+    this.apiSubscriptions.forEach((subscribe) => subscribe.unsubscribe());
   }
-
 }

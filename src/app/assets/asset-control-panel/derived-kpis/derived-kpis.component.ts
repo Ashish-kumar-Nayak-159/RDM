@@ -9,7 +9,6 @@ import { CONSTANTS } from 'src/app/app.constants';
 import * as moment from 'moment';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
-import { DaterangepickerComponent } from 'ng2-daterangepicker';
 declare var $: any;
 
 @Component({
@@ -33,17 +32,7 @@ export class DerivedKpisComponent implements OnInit {
   selectedDerivedKPI: any;
   loadingMessage = 'Loading Data. Please wait...';
   chart: am4charts.XYChart;
-  daterange: any;
-  options: any = {
-    locale: { format: 'DD-MM-YYYY HH:mm' },
-    alwaysShowCalendars: false,
-    autoUpdateInput: false,
-    maxDate: moment(),
-    timePicker: true,
-    ranges: CONSTANTS.DATE_OPTIONS,
-  };
   selectedDateRange: string;
-  @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   filterObj: any = {};
   toggleRows: any = {};
   constructor(
@@ -168,33 +157,14 @@ export class DerivedKpisComponent implements OnInit {
         this.filterObj.to_date = dateObj.to_date;
         this.selectedDateRange = this.filterObj.dateOption;
       }
-      this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
-      this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
     }
     this.getDerivedKPIsHistoricData();
   }
 
-  selectedDate(value: any, datepicker?: any) {
-    this.filterObj.dateOption = value.label;
-    console.log(value);
-    if (this.filterObj.dateOption !== 'Custom Range') {
-      const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
-      this.filterObj.from_date = dateObj.from_date;
-      this.filterObj.to_date = dateObj.to_date;
-    } else {
-      this.filterObj.from_date = moment(value.start).utc().unix();
-      this.filterObj.to_date = moment(value.end).utc().unix();
-    }
-    console.log(this.filterObj.from_date);
-    console.log(this.filterObj.to_date);
-    if (value.label === 'Custom Range') {
-      console.log(moment(value.start));
-      console.log(moment(value.start).format('DD-MM-YYYY HH:mm'));
-      this.selectedDateRange =
-        moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
-    } else {
-      this.selectedDateRange = value.label;
-    }
+  selectedDate(filterObj: any) {
+    this.filterObj.from_date = filterObj.from_date;
+    this.filterObj.to_date = filterObj.to_date;
+    this.filterObj.dateOption = filterObj.dateOption;
   }
 
   plotChart() {
@@ -211,7 +181,6 @@ export class DerivedKpisComponent implements OnInit {
       // newObj.date = new Date(date);
       newObj.date = new Date(endDate);
       newObj.spc = obj.kpi_result || null;
-      console.log(newObj);
       data.splice(data.length, 0, newObj);
     });
     console.log(data);

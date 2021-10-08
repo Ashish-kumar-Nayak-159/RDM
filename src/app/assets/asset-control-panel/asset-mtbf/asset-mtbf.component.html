@@ -20,13 +20,9 @@
 <div class="tab-bar" *ngIf="displayMode === 'events' || displayMode === 'history'">
   <div class="">
     <form class="form-inline">
-      <div class="form-group  left-inner-addon">
-        <i class="fa fa-calendar" [ngClass]="{'active': filterObj.from_date && filterObj.to_date}"></i>
-        <input type="text" readonly class="form-control form-control-sm date-range-picker" daterangepicker
-          name="daterangeInput" [ngClass]="{'active': filterObj.from_date && filterObj.to_date}" [options]="options"
-          (selected)="selectedDate($event, daterange)" autocomplete="off" [(ngModel)]="selectedDateRange"
-          [tooltip]="selectedDateRange" placement="bottom" />
-      </div>
+      <app-date-range-picker *ngIf="filterObj.from_date && filterObj.to_date" [filterObj]="filterObj"
+        (selectedDateApplyEmitter)="selectedDate($event)" [selectedDateRange]="selectedDateRange" [options]="options">
+      </app-date-range-picker>
       <div class="form-group">
         <select class="form-control form-control-sm " id="date_frequency"
           [ngClass]="{'active': filterObj.date_frequency}" [(ngModel)]="filterObj.date_frequency" name="date_frequency">

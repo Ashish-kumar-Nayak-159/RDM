@@ -14,7 +14,6 @@ import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule } from '@angular/m
 import { MatTableModule } from '@angular/material/table';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { UiSwitchModule } from 'ngx-ui-switch';
-import { Daterangepicker } from 'ng2-daterangepicker';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 import { AssetControlPanelComponent } from './asset-control-panel/asset-control-panel.component';
@@ -164,7 +163,6 @@ import { WorkProgressComponent } from './asset-control-panel/work-progress/work-
     AgmMarkerClustererModule,
     TabsModule,
     NgSelectModule,
-    Daterangepicker,
     TooltipModule,
     AssetModelModule,
     NgxIntlTelInputModule,

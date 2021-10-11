@@ -725,16 +725,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
         ) +
         this.afterInterval * 60;
       this.onChangeOfAsset(this.selectedAlert);
-      const records = this.commonService.calculateEstimatedRecords(
-        this.frequency,
-        this.filterObj.from_date,
-        this.filterObj.to_date
-      );
-      if (records > CONSTANTS.NO_OF_RECORDS && this.beforeInterval + this.afterInterval > 60) {
-        this.filterObj.isTypeEditable = true;
-      } else {
-        this.filterObj.isTypeEditable = false;
-      }
     }
   }
 

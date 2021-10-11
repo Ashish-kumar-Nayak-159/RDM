@@ -54,6 +54,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   assetModels: any[] = [];
   selectedAssets: any[] = [];
   isAddReport = false;
+  contextAppUserHierarchyLength = 0;
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -67,6 +68,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    if (this.contextApp?.user?.hierarchy) {
+      this.contextAppUserHierarchyLength = Object.keys(this.contextApp.user.hierarchy).length;
+    }
     this.getTileName();
     this.getAssetsModels();
     this.subscriptions.push(
@@ -353,11 +357,16 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
       e.stopPropagation();
     });
-    $('#dd-open').on('hide.bs.dropdown', (e: any) => {
-      if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
-        e.preventDefault();
-      }
-    });
+    if (
+      this.contextApp?.hierarchy?.levels?.length > 1 &&
+      this.contextAppUserHierarchyLength !== this.contextApp?.hierarchy?.levels?.length
+    ) {
+      $('#dd-open').on('hide.bs.dropdown', (e: any) => {
+        if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
+          e.preventDefault();
+        }
+      });
+    }
   }
 
   onSaveHierachy() {

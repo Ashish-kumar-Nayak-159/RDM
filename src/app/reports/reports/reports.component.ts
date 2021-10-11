@@ -204,8 +204,11 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   onSaveHierachy() {
     this.originalFilterObj = {};
-    this.originalFilterObj.asset = JSON.parse(JSON.stringify(this.filterObj.asset));
+    this.originalFilterObj.from_date = this.filterObj.from_date;
+    this.originalFilterObj.to_date = this.filterObj.to_date;
+    this.originalFilterObj.dateOption = this.filterObj.dateOption;
     if (this.filterObj.asset) {
+      this.originalFilterObj.asset = JSON.parse(JSON.stringify(this.filterObj.asset));
       this.onAssetSelection();
     }
     console.log(this.originalFilterObj);
@@ -214,9 +217,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
   onClearHierarchy() {
     this.isFilterSelected = false;
     this.hierarchyArr = {};
-    this.originalFilterObj = {};
+    // this.originalFilterObj = {};
     this.configureHierarchy = {};
-    this.filterObj = {};
+    // this.filterObj = {};
     this.dropdownPropList = [];
     this.propertyList = [];
     this.props = JSON.parse(JSON.stringify([]));

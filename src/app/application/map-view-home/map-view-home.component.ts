@@ -405,7 +405,10 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
       e.stopPropagation();
     });
-    if (this.contextApp?.hierarchy?.levels?.length > 1) {
+    if (
+      this.contextApp?.hierarchy?.levels?.length > 1 &&
+      this.contextAppUserHierarchyLength !== this.contextApp?.hierarchy?.levels?.length
+    ) {
       $('#dd-open').on('hide.bs.dropdown', (e: any) => {
         console.log('bbbbbb');
         if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {

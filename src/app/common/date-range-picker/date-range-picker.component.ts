@@ -44,8 +44,10 @@ export class DateRangePickerComponent implements OnInit, AfterViewInit, OnChange
       } else {
         this.selectedDateRange = this.filterObj.dateOption;
       }
-      this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
-      this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
+      if (this.picker) {
+        this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
+        this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
+      }
     }
   }
 

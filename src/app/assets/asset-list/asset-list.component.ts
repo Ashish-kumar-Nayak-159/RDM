@@ -86,6 +86,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
   chart: am4charts.XYChart;
   environmentApp = environment.app;
   originalAssetsList: any[] = [];
+  contextAppUserHierarchyLength = 0;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -99,6 +100,9 @@ export class AssetListComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    if (this.contextApp?.user?.hierarchy) {
+      this.contextAppUserHierarchyLength = Object.keys(this.contextApp.user.hierarchy).length;
+    }
     this.assetsList = [];
     await this.getTileName();
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);
@@ -150,11 +154,16 @@ export class AssetListComponent implements OnInit, OnDestroy {
     $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
       e.stopPropagation();
     });
-    $('#dd-open').on('hide.bs.dropdown', (e: any) => {
-      if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
-        e.preventDefault();
-      }
-    });
+    if (
+      this.contextApp?.hierarchy?.levels?.length > 1 &&
+      this.contextAppUserHierarchyLength !== this.contextApp?.hierarchy?.levels?.length
+    ) {
+      $('#dd-open').on('hide.bs.dropdown', (e: any) => {
+        if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
+          e.preventDefault();
+        }
+      });
+    }
   }
 
   onChangeOfHierarchy(i) {

@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { Component, Input, NgZone, OnChanges, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
-import { ChartService } from 'src/app/chart/chart.service';
+import { ChartService } from 'src/app/services/chart/chart.service';
 import { CONSTANTS } from 'src/app/app.constants';
 declare var $: any;
 

@@ -27,7 +27,6 @@ import { TelemetryComponent } from './asset-control-panel/telemetry/telemetry.co
 import { CommandsComponent } from './asset-control-panel/commands/commands.component';
 import { C2dPurgeComponent } from './asset-control-panel/c2d-purge/c2d-purge.component';
 import { FilterComponent } from './asset-control-panel/filter/filter.component';
-import { SettingsComponent } from './asset-control-panel/settings/settings.component';
 import { LiveDataComponent } from './asset-control-panel/live-data/live-data.component';
 import { RDMAssetControlPanelErrorComponent } from './asset-control-panel/rdmasset-control-panel-error/rdmasset-control-panel-error.component';
 import { TableComponent } from './asset-control-panel/table/table.component';
@@ -40,8 +39,6 @@ import { C2dMessageComponent } from './asset-control-panel/c2d-message/c2d-messa
 import { BatteryMessagesComponent } from './asset-control-panel/battery-messages/battery-messages.component';
 import { CommonCustomModule } from './../common/common.module';
 import { SpecificC2dMessageComponent } from './asset-control-panel/specific-c2d-message/specific-c2d-message.component';
-import { PredictiveMaintenanceComponent } from './asset-control-panel/predictive-maintenance/predictive-maintenance.component';
-import { AlertEndEventComponent } from './asset-control-panel/alert-end-event/alert-end-event.component';
 import { GatewayControlPanelComponent } from './gateway-control-panel/gateway-control-panel.component';
 import { ControlPanelComponent } from './control-panel/control-panel.component';
 import { GatewayCachedTelemetryComponent } from './gateway-control-panel/gateway-cached-telemetry/gateway-cached-telemetry.component';
@@ -53,7 +50,6 @@ import { GatewayCurrentConfigurationComponent } from './gateway-control-panel/ga
 import { GatewaySettingsComponent } from './gateway-control-panel/gateway-settings/gateway-settings.component';
 import { SpecificDirectMethodComponent } from './asset-control-panel/specific-direct-method/specific-direct-method.component';
 import { SpecificTwinChangeComponent } from './asset-control-panel/specific-twin-change/specific-twin-change.component';
-import { AssetMaintenanceComponent } from './asset-control-panel/asset-maintenance/asset-maintenance.component';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { AssetCountComponent } from './asset-control-panel/asset-count/asset-count.component';
 import { AssetManagementComponent } from './asset-management/asset-management.component';
@@ -62,7 +58,6 @@ import { AddAssetComponent } from './add-asset/add-asset.component';
 import { AssetMttrComponent } from './asset-control-panel/asset-mttr/asset-mttr.component';
 import { AssetMtbfComponent } from './asset-control-panel/asset-mtbf/asset-mtbf.component';
 import { AgmCoreModule } from '@agm/core';
-import { RuleEngineComponent } from './asset-control-panel/rule-engine/rule-engine.component';
 import { RegisterPropertiesComponent } from './gateway-control-panel/gateway-settings/register-properties/register-properties.component';
 import { ManageApplicationsComponent } from './gateway-control-panel/gateway-settings/manage-applications/manage-applications.component';
 import { GatewayAssetsSettingComponent } from './gateway-control-panel/gateway-settings/gateway-assets-setting/gateway-assets-setting.component';
@@ -72,7 +67,6 @@ import { FotaComponent } from './gateway-control-panel/gateway-settings/fota/fot
 import { DerivedKpisComponent } from './asset-control-panel/derived-kpis/derived-kpis.component';
 import { RulesComponent } from './asset-control-panel/rules/rules.component';
 import { SlavesInfoComponent } from './asset-control-panel/slaves-info/slaves-info.component';
-import { NonProvisionedAssetsComponent } from './non-provisioned-assets/non-provisioned-assets.component';
 import { RegisterAssetsComponent } from './gateway-control-panel/gateway-settings/register-assets/register-assets.component';
 import { AssetAlertConditionsComponent } from './asset-control-panel/asset-alert-conditions/asset-alert-conditions.component';
 import { C2dJobsComponent } from './gateway-control-panel/gateway-settings/c2d-jobs/c2d-jobs.component';
@@ -93,7 +87,6 @@ import { WorkProgressComponent } from './asset-control-panel/work-progress/work-
     CommandsComponent,
     C2dPurgeComponent,
     FilterComponent,
-    SettingsComponent,
     LiveDataComponent,
     RDMAssetControlPanelErrorComponent,
     TableComponent,
@@ -105,8 +98,6 @@ import { WorkProgressComponent } from './asset-control-panel/work-progress/work-
     C2dMessageComponent,
     BatteryMessagesComponent,
     SpecificC2dMessageComponent,
-    PredictiveMaintenanceComponent,
-    AlertEndEventComponent,
     GatewayControlPanelComponent,
     ControlPanelComponent,
     GatewayCachedTelemetryComponent,
@@ -117,14 +108,12 @@ import { WorkProgressComponent } from './asset-control-panel/work-progress/work-
     GatewaySettingsComponent,
     SpecificDirectMethodComponent,
     SpecificTwinChangeComponent,
-    AssetMaintenanceComponent,
     AssetCountComponent,
     AssetManagementComponent,
     AssetManagementAssetsComponent,
     AddAssetComponent,
     AssetMttrComponent,
     AssetMtbfComponent,
-    RuleEngineComponent,
     RegisterAssetsComponent,
     RegisterPropertiesComponent,
     ManageApplicationsComponent,
@@ -135,7 +124,6 @@ import { WorkProgressComponent } from './asset-control-panel/work-progress/work-
     DerivedKpisComponent,
     RulesComponent,
     SlavesInfoComponent,
-    NonProvisionedAssetsComponent,
     AssetAlertConditionsComponent,
     C2dJobsComponent,
     CloudDerivedPropertiesComponent,

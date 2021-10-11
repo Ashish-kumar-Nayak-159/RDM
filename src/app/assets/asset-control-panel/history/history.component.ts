@@ -1,5 +1,5 @@
 import { ColumnChartComponent } from 'src/app/common/charts/column-chart/column-chart.component';
-import { ChartService } from './../../../chart/chart.service';
+import { ChartService } from 'src/app/services/chart/chart.service';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import {
   Component,

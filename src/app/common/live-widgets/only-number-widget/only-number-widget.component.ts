@@ -1,6 +1,6 @@
 import { CommonService } from './../../../services/common.service';
 import { Subscription } from 'rxjs';
-import { ChartService } from 'src/app/chart/chart.service';
+import { ChartService } from 'src/app/services/chart/chart.service';
 import { Component, Input, OnChanges, OnInit, EventEmitter, Output, OnDestroy } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { CONSTANTS } from 'src/app/app.constants';

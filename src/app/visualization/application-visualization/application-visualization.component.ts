@@ -24,7 +24,7 @@ import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import { LiveChartComponent } from 'src/app/common/charts/live-data/live-data.component';
 import { BarChartComponent } from 'src/app/common/charts/bar-chart/bar-chart.component';
-import { ChartService } from 'src/app/chart/chart.service';
+import { ChartService } from 'src/app/services/chart/chart.service';
 import { SignalRService } from 'src/app/services/signalR/signal-r.service';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';

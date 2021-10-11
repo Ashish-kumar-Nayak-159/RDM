@@ -1,6 +1,5 @@
 import { ActivatedRoute } from '@angular/router';
 import { environment } from './../../../environments/environment';
-import { ChartService } from 'src/app/chart/chart.service';
 import {
   Component,
   OnDestroy,
@@ -26,6 +25,7 @@ import { DataTableComponent } from 'src/app/common/charts/data-table/data-table.
 import { LiveChartComponent } from 'src/app/common/charts/live-data/live-data.component';
 import { PieChartComponent } from 'src/app/common/charts/pie-chart/pie-chart.component';
 import { DamagePlotChartComponent } from 'src/app/common/charts/damage-plot-chart/damage-plot-chart.component';
+import { ChartService } from 'src/app/services/chart/chart.service';
 
 declare var $: any;
 @Component({

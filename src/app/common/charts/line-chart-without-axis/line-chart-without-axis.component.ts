@@ -1,6 +1,6 @@
 import { Subscription } from 'rxjs';
 import { Component, Input, NgZone, OnInit, OnDestroy, OnChanges, AfterViewInit } from '@angular/core';
-import { ChartService } from 'src/app/chart/chart.service';
+import { ChartService } from 'src/app/services/chart/chart.service';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 
@@ -8,10 +8,9 @@ declare var $: any;
 @Component({
   selector: 'app-line-chart-without-axis',
   templateUrl: './line-chart-without-axis.component.html',
-  styleUrls: ['./line-chart-without-axis.component.css']
+  styleUrls: ['./line-chart-without-axis.component.css'],
 })
 export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
-
   @Input() chartId: string;
   @Input() telemetryData: any[] = [];
   @Input() property: string;
@@ -25,19 +24,18 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
   valueAxis: any;
   subscriptions: Subscription[] = [];
 
-  constructor(
-    private chartService: ChartService,
-    private zone: NgZone
-  ) { }
+  constructor(private chartService: ChartService, private zone: NgZone) {}
 
   ngOnInit(): void {
-    this.subscriptions.push(this.chartService.clearDashboardTelemetryList.subscribe(arr => {
-      this.telemetryData = JSON.parse(JSON.stringify([]));
-      if (this.chart) {
-        this.chart.data = JSON.parse(JSON.stringify([]));
-        this.chart.invalidateData();
-      }
-    }));
+    this.subscriptions.push(
+      this.chartService.clearDashboardTelemetryList.subscribe((arr) => {
+        this.telemetryData = JSON.parse(JSON.stringify([]));
+        if (this.chart) {
+          this.chart.data = JSON.parse(JSON.stringify([]));
+          this.chart.invalidateData();
+        }
+      })
+    );
   }
 
   ngAfterViewInit() {
@@ -46,13 +44,12 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
 
   ngOnChanges(changes) {
     if (changes.telemetryData && this.chart) {
-
       const data = [];
       const valueArr = [];
       const dateArr = [];
       this.telemetryData.forEach((obj, i) => {
         const newObj = {
-          message_date: new Date(obj[this.property]?.date)
+          message_date: new Date(obj[this.property]?.date),
         };
         newObj[this.property] = obj[this.property]?.value;
         data.splice(data.length, 0, newObj);
@@ -75,15 +72,13 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
         this.range0.label.text = this.min.toString();
         this.range1.label.text = this.max.toString();
         this.range2.label.text = this.average.toString();
-        this.range1.grid.disabled = (this.min === this.max);
-        this.range2.grid.disabled = ((this.min + this.max) === (this.average * 2));
+        this.range1.grid.disabled = this.min === this.max;
+        this.range2.grid.disabled = this.min + this.max === this.average * 2;
       }
       this.chart.data = data;
       this.chart.validateData();
     }
   }
-
-
 
   plotChart() {
     this.zone.runOutsideAngular(() => {
@@ -93,7 +88,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
       const valueArr = [];
       this.telemetryData.forEach((obj, i) => {
         const newObj = {
-          message_date: new Date(obj[this.property]?.date)
+          message_date: new Date(obj[this.property]?.date),
         };
         newObj[this.property] = obj[this.property]?.value;
         data.splice(data.length, 0, newObj);
@@ -117,7 +112,7 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
       dateAxis.hidden = true;
       chart.events.on('beforedatavalidated', (ev) => {
         chart.data.sort((a, b) => {
-          return ((a.message_date)) - ((b.message_date));
+          return a.message_date - b.message_date;
         });
       });
       this.createValueAxis(chart, 0);
@@ -125,12 +120,9 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
     });
   }
 
-
-
   createValueAxis(chart, axis) {
-
     const valueYAxis = chart.yAxes.push(new am4charts.ValueAxis());
-    if (chart.yAxes.indexOf(valueYAxis) !== 0){
+    if (chart.yAxes.indexOf(valueYAxis) !== 0) {
       valueYAxis.syncWithAxis = chart.yAxes.getIndex(0);
     }
     valueYAxis.renderer.grid.template.disabled = true;
@@ -164,10 +156,10 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
 
     const series = chart.series.push(new am4charts.LineSeries());
     series.dataFields.dateX = 'message_date';
-    series.name =  this.property;
+    series.name = this.property;
     series.stroke = '#1A5A9E';
     series.yAxis = valueYAxis;
-    series.dataFields.valueY =  this.property;
+    series.dataFields.valueY = this.property;
     series.compareText = true;
     series.strokeWidth = 1.5;
     series.strokeOpacity = 1;
@@ -181,15 +173,12 @@ export class LineChartWithoutAxisComponent implements OnInit, OnDestroy, OnChang
 
     valueYAxis.renderer.labels.template.fill = am4core.color('gray');
     this.valueAxis = valueYAxis;
-
   }
-
 
   ngOnDestroy(): void {
-      if (this.chart) {
-        this.chart.dispose();
-      }
-      this.subscriptions.forEach(sub => sub.unsubscribe());
+    if (this.chart) {
+      this.chart.dispose();
+    }
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
-
 }

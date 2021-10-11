@@ -1,4 +1,3 @@
-import { NonProvisionedAssetsComponent } from './non-provisioned-assets/non-provisioned-assets.component';
 import { AssetManagementComponent } from './asset-management/asset-management.component';
 import { ControlPanelComponent } from './control-panel/control-panel.component';
 import { NgModule } from '@angular/core';
@@ -10,28 +9,22 @@ const routes: Routes = [
   {
     path: '',
     component: AssetListComponent,
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuardService],
   },
   {
     path: 'management',
     component: AssetManagementComponent,
-    canActivate: [AuthGuardService]
-  },
-  {
-    path: 'non-provisioned',
-    component: NonProvisionedAssetsComponent,
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuardService],
   },
   {
     path: ':assetId/control-panel',
     component: ControlPanelComponent,
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuardService],
   },
-
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AssetsRoutingModule { }
+export class AssetsRoutingModule {}

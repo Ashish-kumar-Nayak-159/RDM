@@ -83,29 +83,22 @@
             <app-alerts *ngIf="activeTab === 'alerts' && asset" [componentState]="componentState" [asset]="asset">
             </app-alerts>
           </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'alertendevents'}" role="tabpanel"
-            id="asset_alert_end_events">
-            <app-alert-end-event *ngIf="activeTab === 'alertendevents' && asset" [componentState]="componentState"
-              [asset]="asset">
-            </app-alert-end-event>
-          </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'notifications'}" role="tabpanel"
             id="asset_notifications">
             <app-asset-messages-wrapper *ngIf="activeTab === 'notifications' && asset" [asset]="asset">
             </app-asset-messages-wrapper>
           </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'logs'}"
-            role="tabpanel" id="asset_logs">
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'logs'}" role="tabpanel" id="asset_logs">
             <app-logs *ngIf="activeTab === 'logs' && asset" [asset]="asset"></app-logs>
           </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'predictions'}"
-            role="tabpanel" id="asset_progress">
+          <div class="tab-pane" [ngClass]="{'active': activeTab === 'predictions'}" role="tabpanel" id="asset_progress">
             <app-work-progress *ngIf="activeTab === 'predictions' && asset" [asset]="asset"></app-work-progress>
           </div>
           <div class="tab-pane" [ngClass]="{'active':  activeTab === 'maintenance_schedule'}" role="tabpanel"
             id="asset_progress">
             <app-work-progress *ngIf="activeTab === 'maintenance_schedule' && asset" [asset]="asset"
-              [messageText]="'Integration to Customer Ticket Management / Field Service Application'"></app-work-progress>
+              [messageText]="'Integration to Customer Ticket Management / Field Service Application'">
+            </app-work-progress>
           </div>
           <div class="tab-pane" [ngClass]="{'active':  activeTab === 'cloud_derived_properties'}" role="tabpanel"
             id="asset_properties">
@@ -135,11 +128,6 @@
               [asset]="asset" [componentState]="componentState" [pageType]="activeTab"
               [menuDetail]="getMenuDetail('control_widgets')"></app-commands>
           </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'predictiveMaintenance'}" role="tabpanel"
-            id="asset_predictive_mainteance">
-            <app-predictive-maintenance *ngIf="activeTab === 'predictiveMaintenance' && asset" [asset]="asset">
-            </app-predictive-maintenance>
-          </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'mttr'}" role="tabpanel" id="asset_mttr">
             <app-asset-mttr *ngIf="activeTab === 'mttr' && asset" [asset]="asset" [componentState]="componentState">
             </app-asset-mttr>
@@ -148,13 +136,7 @@
             <app-asset-mtbf *ngIf="activeTab === 'mtbf' && asset" [asset]="asset" [componentState]="componentState">
             </app-asset-mtbf>
           </div>
-          <div class="tab-pane" [ngClass]="{'active': activeTab === 'maintenance_data'}" role="tabpanel"
-            id="asset_mainteance">
-            <app-asset-maintenance *ngIf="activeTab === 'maintenance_data' && asset" [asset]="asset">
-            </app-asset-maintenance>
-          </div>
           <div class="tab-pane" [ngClass]="{'active': activeTab === 'setup'}" role="tabpanel" id="asset_setup">
-            <!-- <app-settings *ngIf="activeTab === 'settings'  && asset" [asset]="asset"></app-settings> -->
             <app-gateway-settings *ngIf="activeTab === 'setup'  && asset" [tileData]="tileData" [asset]="asset"
               [componentState]="componentState">
             </app-gateway-settings>

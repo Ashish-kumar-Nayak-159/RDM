@@ -4,7 +4,7 @@ import { CommonService } from './../../../services/common.service';
 import { Component, NgZone, OnInit } from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
-import { ChartService } from 'src/app/chart/chart.service';
+import { ChartService } from 'src/app/services/chart/chart.service';
 declare var $: any;
 import { CONSTANTS } from 'src/app/app.constants';
 

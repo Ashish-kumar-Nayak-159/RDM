@@ -27,7 +27,6 @@ import { AssetModelSettingsComponent } from './asset-model-control-panel/asset-m
 import { AssetModelPackageManagementComponent } from './asset-model-control-panel/asset-model-package-management/asset-model-package-management.component';
 import { AssetModelRulesComponent } from './asset-model-control-panel/asset-model-rules/asset-model-rules.component';
 import { AssetModelDerivedKpisComponent } from './asset-model-control-panel/asset-model-derived-kpis/asset-model-derived-kpis.component';
-import { AssetModelStreamProcessingComponent } from './asset-model-control-panel/asset-model-stream-processing/asset-model-stream-processing.component';
 import { AssetModelAlertAcknowledgementReasonsComponent } from './asset-model-control-panel/asset-model-alert-acknowledgement-reasons/asset-model-alert-acknowledgement-reasons.component';
 import { AssetModelSlaveInfoComponent } from './asset-model-control-panel/asset-model-slave-info/asset-model-slave-info.component';
 import { AddRuleComponent } from './asset-model-control-panel/add-rule/add-rule.component';
@@ -53,7 +52,6 @@ import { UiSwitchModule } from 'ngx-ui-switch';
     AssetModelPackageManagementComponent,
     AssetModelRulesComponent,
     AssetModelDerivedKpisComponent,
-    AssetModelStreamProcessingComponent,
     AssetModelAlertAcknowledgementReasonsComponent,
     AssetModelSlaveInfoComponent,
     AddRuleComponent,

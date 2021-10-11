@@ -1,5 +1,5 @@
 import { Subscription } from 'rxjs';
-import { ChartService } from './../../../chart/chart.service';
+import { ChartService } from 'src/app/services/chart/chart.service';
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';

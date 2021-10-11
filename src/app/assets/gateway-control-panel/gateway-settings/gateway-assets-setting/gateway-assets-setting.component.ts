@@ -233,7 +233,6 @@ export class GatewayAssetsSettingComponent implements OnInit {
       console.log(this.selectedAsset);
       this.isAPILoading = true;
       this.headerMessage = type;
-      $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
       const c2dObj = {
         asset_id: this.selectedAsset.asset_id,
         message: obj,
@@ -246,11 +245,6 @@ export class GatewayAssetsSettingComponent implements OnInit {
         job_type: 'Message',
         sub_job_id: null,
       };
-      // if (obj.request_type === 'set_asset_configuration') {
-      //   obj.request_type = 'Sync Configuration';
-      // } else if (obj.request_type === 'set_properties') {
-      //   obj.request_type = 'Sync Properties/Alerts';
-      // }
       c2dObj.sub_job_id = c2dObj.job_id + '_1';
       this.subscriptions.push(
         this.assetService
@@ -266,18 +260,11 @@ export class GatewayAssetsSettingComponent implements OnInit {
               this.toasterService.showSuccess('Request sent to gateway', type);
               this.assetService.refreshRecentJobs.emit();
               resolve1();
-              // this.displayMsgArr.push({
-              //   message: type + ' request sent to gateway.',
-              //   error: false
-              // });
-              // clearInterval(this.c2dResponseInterval);
-              // this.loadC2DResponse(c2dObj);
             },
             (error) => {
               this.toasterService.showError(error.message, type);
               this.assetService.refreshRecentJobs.emit();
               this.isAPILoading = false;
-              this.onModalClose();
               clearInterval(this.c2dResponseInterval);
             }
           )
@@ -305,11 +292,11 @@ export class GatewayAssetsSettingComponent implements OnInit {
     this.subscriptions.push(
       this.assetService.updateAssetMetadata(obj, this.contextApp.app, this.selectedAsset.asset_id).subscribe(
         (response: any) => {
-          this.toasterService.showSuccess('Asset Settings updated successfully.', 'Asset Settings');
+          // this.toasterService.showSuccess('Asset Settings updated successfully.', 'Asset Settings');
           this.assetService.reloadAssetInControlPanelEmitter.emit();
           this.assetService.refreshRecentJobs.emit();
           this.isSaveSettingAPILoading = false;
-          this.onModalClose();
+          this.isAPILoading = false;
         },
         (error) => {
           this.toasterService.showError(error.message, 'Asset Settings');

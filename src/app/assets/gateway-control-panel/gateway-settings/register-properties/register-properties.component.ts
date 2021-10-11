@@ -455,12 +455,6 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
             this.assetService.refreshRecentJobs.emit();
             this.onModalClose();
             this.isAPILoading = false;
-            // this.displyaMsgArr.push({
-            //   message: 'Asset properties/alert registration request sent to gateway.',
-            //   error: false
-            // });
-            // clearInterval(this.c2dResponseInterval);
-            // this.loadC2DResponse(c2dObj);
           },
           (error) => {
             this.toasterService.showError(error.message, 'Register Properties/Alerts');
@@ -471,9 +465,6 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
         )
     );
   }
-
-
-
 
   onModalClose() {
     $('#confirmMessageModal').modal('hide');

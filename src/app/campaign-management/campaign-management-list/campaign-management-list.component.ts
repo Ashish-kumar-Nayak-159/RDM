@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { APIMESSAGES } from 'src/app/api-messages.constants';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { CampaignService } from './../../services/campaigns/campaign.service';
@@ -6,7 +7,6 @@ import { CommonService } from 'src/app/services/common.service';
 import { ChangeDetectorRef, Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
-import { DaterangepickerComponent } from 'ng2-daterangepicker';
 
 @Component({
   selector: 'app-campaign-management-list',
@@ -22,16 +22,6 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
   isGetCampaignAPILoading = false;
   filterObj: any = {};
   previousFilterObj: any = {};
-  daterange: any = {};
-  options: any = {
-    locale: { format: 'DD-MM-YYYY HH:mm' },
-    alwaysShowCalendars: false,
-    autoUpdateInput: false,
-    maxDate: moment(),
-    timePicker: true,
-    ranges: CONSTANTS.DATE_OPTIONS,
-  };
-  @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   selectedDateRange: string;
   isAPILoading = {};
   isAddCampaignModalOpen = false;
@@ -79,8 +69,6 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
         this.filterObj.from_date = item.from_date;
         this.filterObj.to_date = item.to_date;
       }
-      this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
-      this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
       if (this.filterObj.dateOption !== 'Custom Range') {
         this.selectedDateRange = this.filterObj.dateOption;
       } else {
@@ -138,24 +126,10 @@ export class CampaignManagementListComponent implements OnInit, AfterViewInit {
     );
   }
 
-  selectedDate(value: any, datepicker?: any) {
-    console.log(value);
-    this.filterObj.dateOption = value.label;
-    if (this.filterObj.dateOption !== 'Custom Range') {
-      const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
-      this.filterObj.from_date = dateObj.from_date;
-      this.filterObj.to_date = dateObj.to_date;
-    } else {
-      this.filterObj.from_date = moment(value.start).utc().unix();
-      this.filterObj.to_date = moment(value.end).utc().unix();
-    }
-    if (value.label === 'Custom Range') {
-      this.selectedDateRange =
-        moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
-    } else {
-      this.selectedDateRange = value.label;
-    }
-    console.log(this.filterObj);
+  selectedDate(filterObj) {
+    this.filterObj.from_date = filterObj.from_date;
+    this.filterObj.to_date = filterObj.to_date;
+    this.filterObj.dateOption = filterObj.dateOption;
   }
 
   startStopCampaign(campaignObj, index, type) {

@@ -8,7 +8,6 @@ import { ViewChild, AfterViewInit } from '@angular/core';
 import { Component, Input, OnInit } from '@angular/core';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
-import { DaterangepickerComponent } from 'ng2-daterangepicker';
 
 @Component({
   selector: 'app-asset-count',
@@ -19,8 +18,6 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
   @Input() asset: any;
   telemetryFilter: any;
   originalTelemetryFilter: any;
-  @ViewChild('dtInput1', { static: false }) dtInput1: any;
-  @ViewChild('dtInput2', { static: false }) dtInput2: any;
   today = new Date();
   isTelemetryLoading = false;
   apiSubscriptions: Subscription[] = [];
@@ -30,18 +27,8 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
   propertyList: any[] = [];
   telemetryTableConfig: any;
   assets: any[] = [];
-  daterange: any;
-  options: any = {
-    locale: { format: 'DD-MM-YYYY HH:mm' },
-    alwaysShowCalendars: false,
-    timePicker: true,
-    autoUpdateInput: false,
-    maxDate: moment(),
-    ranges: CONSTANTS.DATE_OPTIONS,
-  };
   selectedDateRange: any;
   selectedProps: any[] = [];
-  @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   constructor(
     private toasterService: ToasterService,
     private assetService: AssetService,
@@ -106,8 +93,6 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
           ' to ' +
           moment.unix(this.telemetryFilter.to_date).format('DD-MM-YYYY HH:mm');
       }
-      this.picker.datePicker.setStartDate(moment.unix(this.telemetryFilter.from_date));
-      this.picker.datePicker.setEndDate(moment.unix(this.telemetryFilter.to_date));
     }
     // this.searchTelemetry(this.telemetryFilter, false);
   }
@@ -242,7 +227,6 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
       this.commonService.setItemInLocalStorage(CONSTANTS.CONTROL_PANEL_FILTERS, pagefilterObj);
     }
     delete obj.dateOption;
-    delete obj.isTypeEditable;
     let method;
     if (!obj.aggregation_minutes || !obj.aggregation_format) {
       this.toasterService.showError('Aggregation time and format is required.', 'View Telemetry');
@@ -310,24 +294,10 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
     }
   }
 
-  selectedDate(value: any, datepicker?: any) {
-    this.telemetryFilter.dateOption = value.label;
-    if (this.telemetryFilter.dateOption !== 'Custom Range') {
-      const dateObj = this.commonService.getMomentStartEndDate(this.telemetryFilter.dateOption);
-      this.telemetryFilter.from_date = dateObj.from_date;
-      this.telemetryFilter.to_date = dateObj.to_date;
-      this.selectedDateRange = value.label;
-    } else {
-      this.telemetryFilter.from_date = moment(value.start).utc().unix();
-      this.telemetryFilter.to_date = moment(value.end).utc().unix();
-      this.selectedDateRange =
-        moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
-    }
-    if (this.telemetryFilter.to_date - this.telemetryFilter.from_date > 3600) {
-      this.telemetryFilter.isTypeEditable = true;
-    } else {
-      this.telemetryFilter.isTypeEditable = false;
-    }
+  selectedDate(filterObj) {
+    this.telemetryFilter.from_date = filterObj.from_date;
+    this.telemetryFilter.to_date = filterObj.to_date;
+    this.telemetryFilter.dateOption = filterObj.dateOption;
   }
 
   clear() {
@@ -349,7 +319,5 @@ export class AssetCountComponent implements OnInit, AfterViewInit {
         ' to ' +
         moment.unix(this.telemetryFilter.to_date).format('DD-MM-YYYY HH:mm');
     }
-    this.picker.datePicker.setStartDate(moment.unix(this.telemetryFilter.from_date));
-    this.picker.datePicker.setEndDate(moment.unix(this.telemetryFilter.to_date));
   }
 }

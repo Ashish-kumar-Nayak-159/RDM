@@ -33,6 +33,7 @@ export class SlavesInfoComponent implements OnInit {
   assetTwin: any;
   applications = CONSTANTS.ASSETAPPPS;
   slaveProvisionedStatus: any = {};
+  modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -242,7 +243,20 @@ export class SlavesInfoComponent implements OnInit {
     this.setupFormData(slave);
   }
 
+  onModalEvents(eventType) {
+    if (eventType === 'close') {
+      this.onCloseModal('confirmMessageModal');
+    } else if (eventType === 'save') {
+      this.deleteSlave();
+    }
+  }
+
   removeSlaveFromAsset(slave) {
+    this.modalConfig = {
+      stringDisplay: true,
+      isDisplaySave: true,
+      isDisplayCancel: true,
+    };
     this.openModal('confirmMessageModal');
     this.deleteSlaveObj = JSON.parse(JSON.stringify(slave));
   }

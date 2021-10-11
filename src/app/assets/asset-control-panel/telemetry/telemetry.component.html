@@ -6,14 +6,9 @@
         <input type="number" min="1" id="countId" name="count" class="form-control form-control-sm active record-input"
           [(ngModel)]="telemetryFilter.count" name="count">
       </div>
-
-      <div class="form-group left-inner-addon">
-        <i class="fa fa-calendar active"></i>
-        <input type="text" readonly class="form-control form-control-sm active date-range-picker" daterangepicker
-          name="daterangeInput" [options]="options" (selected)="selectedDate($event, daterange)" autocomplete="off"
-          [(ngModel)]="selectedDateRange" [tooltip]="selectedDateRange" placement="bottom" />
-      </div>
-
+      <app-date-range-picker *ngIf="telemetryFilter.from_date && telemetryFilter.to_date" [filterObj]="telemetryFilter"
+        (selectedDateApplyEmitter)="selectedDate($event)" [selectedDateRange]="selectedDateRange">
+      </app-date-range-picker>
       <div class="form-group">
         <input type="checkbox" id="checkbox" min="1" name="checkbox" class="big-checkbox"
           [(ngModel)]="telemetryFilter.isTypeEditable"

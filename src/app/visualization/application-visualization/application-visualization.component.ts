@@ -29,7 +29,6 @@ import { SignalRService } from 'src/app/services/signalR/signal-r.service';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { DomSanitizer } from '@angular/platform-browser';
-import { DaterangepickerComponent } from 'ng2-daterangepicker';
 import { CoordinatesModule } from 'ngx-color';
 import { DamagePlotChartComponent } from 'src/app/common/charts/damage-plot-chart/damage-plot-chart.component';
 declare var $: any;
@@ -83,8 +82,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   sasToken = environment.blobKey;
   blobStorageURL = environment.blobURL;
   acknowledgedAlertIndex: number = undefined;
-  @ViewChild('dtInput1', { static: false }) dtInput1: any;
-  @ViewChild('dtInput2', { static: false }) dtInput2: any;
   toDate: any;
   fromDate: any;
   subscriptions: Subscription[] = [];
@@ -93,17 +90,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
   loadingMessage: string;
   selectedTab: any;
   hierarchyString: any;
-  daterange: any = {};
-  options: any = {
-    locale: { format: 'DD-MM-YYYY HH:mm' },
-    alwaysShowCalendars: false,
-    timePicker: true,
-    autoUpdateInput: false,
-    maxDate: moment(),
-    ranges: CONSTANTS.DATE_OPTIONS,
-  };
   isShowOpenFilter = true;
-  @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   selectedDateRange: string;
   displayHierarchyString: string;
   decodedToken: any;
@@ -199,8 +186,6 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
             this.filterObj.from_date = item.from_date;
             this.filterObj.to_date = item.to_date;
           }
-          this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
-          this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
           if (this.filterObj.dateOption !== 'Custom Range') {
             this.selectedDateRange = this.filterObj.dateOption;
           } else {
@@ -298,30 +283,11 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
     });
   }
 
-  selectedDate(value: any, datepicker?: any) {
-    this.filterObj.dateOption = value.label;
-    if (this.filterObj.dateOption !== 'Custom Range') {
-      const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
-      this.filterObj.from_date = dateObj.from_date;
-      this.filterObj.to_date = dateObj.to_date;
-    } else {
-      this.filterObj.from_date = moment(value.start).utc().unix();
-      this.filterObj.to_date = moment(value.end).utc().unix();
-    }
-    console.log(this.filterObj);
-    if (value.label === 'Custom Range') {
-      this.selectedDateRange =
-        moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
-    } else {
-      this.selectedDateRange = value.label;
-    }
-    // if (this.filterObj.to_date - this.filterObj.from_date > 3600) {
-    //   this.filterObj.isTypeEditable = true;
-    // } else {
-    //   this.filterObj.isTypeEditable = false;
-    // }
+  selectedDate(filterObj) {
+    this.filterObj.from_date = filterObj.from_date;
+    this.filterObj.to_date = filterObj.to_date;
+    this.filterObj.dateOption = filterObj.dateOption;
     if (this.filterObj.asset) {
-      // this.onChangeOfAsset(this.filterObj.asset);
       const records = this.commonService.calculateEstimatedRecords(
         this.frequency,
         this.filterObj.from_date,

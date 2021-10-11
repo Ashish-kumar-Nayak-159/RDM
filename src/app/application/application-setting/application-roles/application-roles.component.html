@@ -31,15 +31,15 @@
               <i [ngClass]="toggleRows[configIndex] && pageType === 'view' ? 'fa fa-angle-up' : 'fa fa-eye'"></i>
             </a>
             <a href="javascript:void(0)" (click)="onToggleRows(configIndex, 'edit')" class="ml-2"
-              *ngIf="item.level !== 0 && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
+              *ngIf="item.role !== constantData.APP_ADMIN_ROLE && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1">
               <i [ngClass]="toggleRows[configIndex] && pageType === 'edit' ? 'fa fa-angle-up' : 'fa fa-edit'"></i>
             </a>
             <a href="javascript:void(0)" (click)="onSaveRoles()"
-              *ngIf="item.level !== 0 && toggleRows[configIndex] && pageType === 'edit' && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
+              *ngIf="item.role !== constantData.APP_ADMIN_ROLE && toggleRows[configIndex] && pageType === 'edit' && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
               class="ml-2">
               <i [ngClass]="'fa fa-save'" placement="bottom" tooltip="Save Role"></i>
             </a>
-            <a *ngIf="item.level !== 0 && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
+            <a *ngIf="item.role !== constantData.APP_ADMIN_ROLE && decodedToken?.privileges && decodedToken.privileges.indexOf('APMM') > -1"
               href="javascript:void(0)" class="ml-2" (click)="openDeleteUserModal(configIndex)">
               <i class="fa fa-trash" placement="bottom" tooltip="Delete Role"></i>
             </a>
@@ -125,41 +125,12 @@
     </div>
   </div>
 </div>
-<div class="modal fade" id="deleteUserModal" role="dialog">
+
+
+<div class="modal fade" id="confirmMessageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel2">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Delete User Access</h5>
-        <button type="button" class="close" aria-label="Close" (click)="onCloseModal()"
-          [disabled]="isDeleteUserAPILoading">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <h6>Please Enter your password to remove this user access.</h6>
-        <form>
-          <div class="form-group">
-            <label for="message-text" class="col-form-label required">Email:</label>
-            <input type="text" class="form-control form-control-sm form-control form-control-sm" id="email" name="email"
-              [(ngModel)]="userData.email" placeholder="Enter Email" disabled>
-          </div>
-          <div class="form-group">
-            <label for="message-text" class="col-form-label required">Password:</label>
-            <input type="{{this.isPasswordVisible ? 'text' : 'password'}}" class="form-control form-control-sm"
-              id="display_name" name="display_name" [(ngModel)]="password" placeholder="Enter Your Password">
-            <i class="fa fa-fw  field-icon-small toggle-password" (click)="togglePasswordVisibility()"
-              [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}"></i>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="deleteUser()" [disabled]="isDeleteUserAPILoading">
-          Delete</button>
-        <button type="button" class="btn btn-secondary" (click)="onCloseModal()" [disabled]="isDeleteUserAPILoading">
-          Cancel
-        </button>
-        <i class="fa fa-spinner fa-spin fa-fw fa-2x" *ngIf="isDeleteUserAPILoading"></i>
-      </div>
-    </div>
+    <app-confirm-modal *ngIf="modalConfig" [bodyMessage]="'Are you sure you want to remove this role?'"
+      [headerMessage]="'Delete Role'" (modalEvents)="onModalEvents($event)" [modalConfig]="modalConfig">
+    </app-confirm-modal>
   </div>
 </div>

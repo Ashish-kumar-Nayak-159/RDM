@@ -30,6 +30,7 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
   dataTypeList = CONSTANTS.PROPERTY_DATA_TYPE_LIST;
   decodedToken: any;
   constantData = CONSTANTS;
+  modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
     private assetModelService: AssetModelService,
     private toasterService: ToasterService,
@@ -65,6 +66,12 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
       params: [],
     };
     this.extraParams = [];
+    if (
+      this.controlWidget.metadata?.communication_technique === 'C2D Message' ||
+      this.controlWidget.metadata?.communication_technique === 'Twin Change'
+    ) {
+      this.addParameter();
+    }
   }
 
   getAssetsModelAssetMethod() {
@@ -286,7 +293,20 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
     );
   }
 
+  onModalEvents(eventType) {
+    if (eventType === 'close') {
+      this.onCloseModal();
+    } else if (eventType === 'save') {
+      this.deleteControlWidget();
+    }
+  }
+
   openConfirmModal(widget) {
+    this.modalConfig = {
+      stringDisplay: true,
+      isDisplaySave: true,
+      isDisplayCancel: true,
+    };
     $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     this.selectedWidget = widget;
   }

@@ -25,8 +25,6 @@ import { ColumnChartComponent } from 'src/app/common/charts/column-chart/column-
 import { DataTableComponent } from 'src/app/common/charts/data-table/data-table.component';
 import { LiveChartComponent } from 'src/app/common/charts/live-data/live-data.component';
 import { PieChartComponent } from 'src/app/common/charts/pie-chart/pie-chart.component';
-
-import { DaterangepickerComponent } from 'ng2-daterangepicker';
 import { DamagePlotChartComponent } from 'src/app/common/charts/damage-plot-chart/damage-plot-chart.component';
 
 declare var $: any;
@@ -83,16 +81,6 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   loadingMessage: string;
   propList: any[];
   historicalDateFilter: any = {};
-  daterange: any = {};
-  options: any = {
-    locale: { format: 'DD-MM-YYYY HH:mm' },
-    alwaysShowCalendars: false,
-    autoUpdateInput: false,
-    maxDate: moment(),
-    timePicker: true,
-    ranges: CONSTANTS.DATE_OPTIONS,
-  };
-  @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   selectedDateRange: string;
   decodedToken: any;
   isShowOpenFilter = true;
@@ -601,30 +589,10 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  selectedDate(value: any, datepicker?: any) {
-    // this.historyFilter.from_date = moment(value.start).utc().unix();
-    // this.historyFilter.to_date = moment(value.end).utc().unix();
-    this.historicalDateFilter.dateOption = value.label;
-    if (this.historicalDateFilter.dateOption !== 'Custom Range') {
-      const dateObj = this.commonService.getMomentStartEndDate(this.historicalDateFilter.dateOption);
-      this.historicalDateFilter.from_date = dateObj.from_date;
-      this.historicalDateFilter.to_date = dateObj.to_date;
-    } else {
-      this.historicalDateFilter.from_date = moment(value.start).utc().unix();
-      this.historicalDateFilter.to_date = moment(value.end).utc().unix();
-    }
-    console.log(this.historicalDateFilter);
-    if (value.label === 'Custom Range') {
-      this.selectedDateRange =
-        moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
-    } else {
-      this.selectedDateRange = value.label;
-    }
-    // if (this.historicalDateFilter.to_date - this.historicalDateFilter.from_date > 3600) {
-    //   this.historicalDateFilter.isTypeEditable = true;
-    // } else {
-    //   this.historicalDateFilter.isTypeEditable = false;
-    // }
+  selectedDate(filterObj) {
+    this.historicalDateFilter.from_date = filterObj.from_date;
+    this.historicalDateFilter.to_date = filterObj.to_date;
+    this.historicalDateFilter.dateOption = filterObj.dateOption;
     if (this.filterObj.asset) {
       const records = this.commonService.calculateEstimatedRecords(
         this.frequency,

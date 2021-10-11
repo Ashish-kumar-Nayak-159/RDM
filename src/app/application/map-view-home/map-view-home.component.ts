@@ -50,12 +50,16 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     },
   ];
   tileData: any;
+  contextAppUserHierarchyLength = 0;
 
   constructor(private assetService: AssetService, private router: Router, private commonService: CommonService) {}
 
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    if (this.contextApp?.user?.hierarchy) {
+      this.contextAppUserHierarchyLength = Object.keys(this.contextApp.user.hierarchy).length;
+    }
     if (this.environmentApp === 'SopanCMS') {
       await this.getLatestDerivedKPIData();
     }
@@ -401,13 +405,18 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
       e.stopPropagation();
     });
-    $('#dd-open').on('hide.bs.dropdown', (e: any) => {
-      console.log('bbbbbb');
-      if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
-        console.log('cccccccccc');
-        e.preventDefault();
-      }
-    });
+    if (
+      this.contextApp?.hierarchy?.levels?.length > 1 &&
+      this.contextAppUserHierarchyLength !== this.contextApp?.hierarchy?.levels?.length
+    ) {
+      $('#dd-open').on('hide.bs.dropdown', (e: any) => {
+        console.log('bbbbbb');
+        if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
+          console.log('cccccccccc');
+          e.preventDefault();
+        }
+      });
+    }
   }
 
   onAssetFilterApply(updateFilterObj = true) {

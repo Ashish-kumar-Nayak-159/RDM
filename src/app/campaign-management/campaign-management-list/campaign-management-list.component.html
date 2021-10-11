@@ -10,13 +10,9 @@
 
 <div class="tab-bar" *ngIf="!isAddCampaignModalOpen">
   <form class="form-inline">
-    <div class="form-group left-inner-addon">
-      <i class="fa fa-calendar" [ngClass]="{'active': filterObj.from_date && filterObj?.to_date}"></i>
-      <input type="text" readonly class="form-control form-control-sm date-range-picker" daterangepicker
-        name="daterangeInput" autocomplete="off" [(ngModel)]="selectedDateRange" [options]="options"
-        (selected)="selectedDate($event, daterange)" [ngClass]="{'active': filterObj.from_date && filterObj?.to_date}"
-        [tooltip]="selectedDateRange" placement="bottom" />
-    </div>
+    <app-date-range-picker *ngIf="filterObj.from_date && filterObj.to_date" [filterObj]="filterObj"
+      (selectedDateApplyEmitter)="selectedDate($event)" [selectedDateRange]="selectedDateRange">
+    </app-date-range-picker>
     <div class="form-group">
       <button type="button" class="btn btn-sm searchBtn btn-primary" placement="bottom" tooltip="Search"
         (click)="getCampaignsList()"><i class="fa fa-search fa-sm"></i></button>

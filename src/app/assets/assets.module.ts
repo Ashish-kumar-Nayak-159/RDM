@@ -14,7 +14,6 @@ import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule } from '@angular/m
 import { MatTableModule } from '@angular/material/table';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { UiSwitchModule } from 'ngx-ui-switch';
-import { Daterangepicker } from 'ng2-daterangepicker';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 import { AssetControlPanelComponent } from './asset-control-panel/asset-control-panel.component';
@@ -28,7 +27,6 @@ import { TelemetryComponent } from './asset-control-panel/telemetry/telemetry.co
 import { CommandsComponent } from './asset-control-panel/commands/commands.component';
 import { C2dPurgeComponent } from './asset-control-panel/c2d-purge/c2d-purge.component';
 import { FilterComponent } from './asset-control-panel/filter/filter.component';
-import { MessageModalComponent } from './asset-control-panel/message-modal/message-modal.component';
 import { SettingsComponent } from './asset-control-panel/settings/settings.component';
 import { LiveDataComponent } from './asset-control-panel/live-data/live-data.component';
 import { RDMAssetControlPanelErrorComponent } from './asset-control-panel/rdmasset-control-panel-error/rdmasset-control-panel-error.component';
@@ -95,7 +93,6 @@ import { WorkProgressComponent } from './asset-control-panel/work-progress/work-
     CommandsComponent,
     C2dPurgeComponent,
     FilterComponent,
-    MessageModalComponent,
     SettingsComponent,
     LiveDataComponent,
     RDMAssetControlPanelErrorComponent,
@@ -164,7 +161,6 @@ import { WorkProgressComponent } from './asset-control-panel/work-progress/work-
     AgmMarkerClustererModule,
     TabsModule,
     NgSelectModule,
-    Daterangepicker,
     TooltipModule,
     AssetModelModule,
     NgxIntlTelInputModule,

@@ -11,7 +11,6 @@ import { CommonService } from 'src/app/services/common.service';
 import * as moment from 'moment';
 import { environment } from 'src/environments/environment';
 import { NgTranscludeDirective } from 'ngx-bootstrap/tabs';
-import { DaterangepickerComponent } from 'ng2-daterangepicker';
 declare var $: any;
 @Component({
   selector: 'app-pre-generated-reports',
@@ -43,16 +42,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   insideScrollFunFlag = false;
   currentOffset = 0;
   currentLimit = 20;
-  daterange: any = {};
-  options: any = {
-    locale: { format: 'DD-MM-YYYY HH:mm' },
-    alwaysShowCalendars: false,
-    autoUpdateInput: false,
-    maxDate: moment(),
-    timePicker: true,
-    ranges: CONSTANTS.DATE_OPTIONS,
-  };
-  @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   hierarchyString: any;
   displayHierarchyString: string;
   selectedDateRange: string;
@@ -65,6 +54,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   assetModels: any[] = [];
   selectedAssets: any[] = [];
   isAddReport = false;
+  contextAppUserHierarchyLength = 0;
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -78,6 +68,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
   ngOnInit(): void {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    if (this.contextApp?.user?.hierarchy) {
+      this.contextAppUserHierarchyLength = Object.keys(this.contextApp.user.hierarchy).length;
+    }
     this.getTileName();
     this.getAssetsModels();
     this.subscriptions.push(
@@ -153,8 +146,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         this.filterObj.from_date = item.from_date;
         this.filterObj.to_date = item.to_date;
       }
-      this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
-      this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
       if (this.filterObj.dateOption !== 'Custom Range') {
         this.selectedDateRange = this.filterObj.dateOption;
       } else {
@@ -185,7 +176,7 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     this.selectedAssets = [];
   }
 
-  onCreateNewPGReports(){
+  onCreateNewPGReports() {
     this.isCreateReportAPILoading = true;
     if (
       !this.reportsObj.asset_model ||
@@ -249,9 +240,9 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
 
   onReportChange() {
     if (this.reportsObj.report_category === 'telemetry') {
-        if (this.reportsObj.asset_model) {
-          this.getAssetsModelProperties(this.reportsObj.asset_model);
-        }
+      if (this.reportsObj.asset_model) {
+        this.getAssetsModelProperties(this.reportsObj.asset_model);
+      }
     }
   }
 
@@ -280,20 +271,20 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     this.reportsObj.assets = [];
     if (this.reportsObj.asset_model) {
       const asset = this.originalAssets.filter((assetObj) => assetObj.asset_model === this.reportsObj.asset_model);
-      this.assets = [ ...asset ];
+      this.assets = [...asset];
       this.selectedAssets = this.assets;
       this.contextApp.hierarchy.levels.forEach((level, index) => {
-            if (index !== 0) {
-                this.onChangeOfHierarchy(index, 'RS');
-            }
+        if (index !== 0) {
+          this.onChangeOfHierarchy(index, 'RS');
+        }
       });
     } else {
       this.assets = this.originalAssets;
       this.selectedAssets = this.assets;
       this.contextApp.hierarchy.levels.forEach((level, index) => {
-            if (index !== 0) {
-                this.onChangeOfHierarchy(index, 'RS');
-            }
+        if (index !== 0) {
+          this.onChangeOfHierarchy(index, 'RS');
+        }
       });
     }
   }
@@ -365,11 +356,16 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
       e.stopPropagation();
     });
-    $('#dd-open').on('hide.bs.dropdown', (e: any) => {
-      if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
-        e.preventDefault();
-      }
-    });
+    if (
+      this.contextApp?.hierarchy?.levels?.length > 1 &&
+      this.contextAppUserHierarchyLength !== this.contextApp?.hierarchy?.levels?.length
+    ) {
+      $('#dd-open').on('hide.bs.dropdown', (e: any) => {
+        if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
+          e.preventDefault();
+        }
+      });
+    }
   }
 
   onSaveHierachy() {
@@ -421,29 +417,10 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     //window.scrollTo(0, 0);
   }
 
-  selectedDate(value: any, datepicker?: any) {
-    console.log(value);
-    this.filterObj.dateOption = value.label;
-    if (this.filterObj.dateOption !== 'Custom Range') {
-      const dateObj = this.commonService.getMomentStartEndDate(this.filterObj.dateOption);
-      this.filterObj.from_date = dateObj.from_date;
-      this.filterObj.to_date = dateObj.to_date;
-    } else {
-      this.filterObj.from_date = moment(value.start).utc().unix();
-      this.filterObj.to_date = moment(value.end).utc().unix();
-    }
-    if (value.label === 'Custom Range') {
-      this.selectedDateRange =
-        moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
-    } else {
-      this.selectedDateRange = value.label;
-    }
-    console.log(this.filterObj);
-    // if (this.filterObj.to_date - this.filterObj.from_date > 3600) {
-    //   this.filterObj.isTypeEditable = true;
-    // } else {
-    //   this.filterObj.isTypeEditable = false;
-    // }
+  selectedDate(filterObj) {
+    this.filterObj.from_date = filterObj.from_date;
+    this.filterObj.to_date = filterObj.to_date;
+    this.filterObj.dateOption = filterObj.dateOption;
   }
 
   getTileName() {
@@ -730,4 +707,3 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     $('#downloadPreGeneratedReportReportModal').modal('hide');
   }
 }
-

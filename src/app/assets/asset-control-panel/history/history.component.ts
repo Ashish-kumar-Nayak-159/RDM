@@ -23,7 +23,6 @@ import { LiveChartComponent } from 'src/app/common/charts/live-data/live-data.co
 import { BarChartComponent } from 'src/app/common/charts/bar-chart/bar-chart.component';
 import { PieChartComponent } from 'src/app/common/charts/pie-chart/pie-chart.component';
 import { DataTableComponent } from 'src/app/common/charts/data-table/data-table.component';
-import { DaterangepickerComponent } from 'ng2-daterangepicker';
 import { DamagePlotChartComponent } from 'src/app/common/charts/damage-plot-chart/damage-plot-chart.component';
 declare var $: any;
 @Component({
@@ -48,11 +47,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   derivedKPIs: any[] = [];
   derivedKPIHistoricData: any[] = [];
   nullValueArr = [];
-  // y1AxisProps = "";
-  // y2AxisProp = "";
   xAxisProps = '';
-  @ViewChild('dtInput1', { static: false }) dtInput1: any;
-  @ViewChild('dtInput2', { static: false }) dtInput2: any;
 
   // chart selection
   chartCount = 0;
@@ -71,17 +66,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   fromDate: any;
   toDate: any;
   today = new Date();
-  daterange: any = {};
   dateRange: string;
-  options: any = {
-    locale: { format: 'DD-MM-YYYY HH:mm' },
-    alwaysShowCalendars: false,
-    autoUpdateInput: false,
-    maxDate: moment(),
-    timePicker: true,
-    ranges: CONSTANTS.DATE_OPTIONS,
-  };
-  @ViewChild(DaterangepickerComponent) private picker: DaterangepickerComponent;
   selectedDateRange: string;
   decodedToken: any;
   isShowOpenFilter = true;
@@ -147,8 +132,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.historyFilter.from_date = item.from_date;
         this.historyFilter.to_date = item.to_date;
       }
-      this.picker.datePicker.setStartDate(moment.unix(this.historyFilter.from_date));
-      this.picker.datePicker.setEndDate(moment.unix(this.historyFilter.to_date));
       if (this.historyFilter.dateOption !== 'Custom Range') {
         this.selectedDateRange = this.historyFilter.dateOption;
       } else {
@@ -258,30 +241,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.chartService.toggleThresholdEvent.emit(this.showThreshold);
   }
 
-  selectedDate(value: any, datepicker?: any) {
-    // this.historyFilter.from_date = moment(value.start).utc().unix();
-    // this.historyFilter.to_date = moment(value.end).utc().unix();
-    this.historyFilter.dateOption = value.label;
-    if (this.historyFilter.dateOption !== 'Custom Range') {
-      const dateObj = this.commonService.getMomentStartEndDate(this.historyFilter.dateOption);
-      this.historyFilter.from_date = dateObj.from_date;
-      this.historyFilter.to_date = dateObj.to_date;
-    } else {
-      this.historyFilter.from_date = moment(value.start).utc().unix();
-      this.historyFilter.to_date = moment(value.end).utc().unix();
-    }
-    console.log(this.historyFilter);
-    if (value.label === 'Custom Range') {
-      this.selectedDateRange =
-        moment(value.start).format('DD-MM-YYYY HH:mm') + ' to ' + moment(value.end).format('DD-MM-YYYY HH:mm');
-    } else {
-      this.selectedDateRange = value.label;
-    }
-    // if (this.historyFilter.to_date - this.historyFilter.from_date > 3600) {
-    //   this.historyFilter.isTypeEditable = true;
-    // } else {
-    //   this.historyFilter.isTypeEditable = false;
-    // }
+  selectedDate(filterObj: any) {
+    this.historyFilter.from_date = filterObj.from_date;
+    this.historyFilter.to_date = filterObj.to_date;
+    this.historyFilter.dateOption = filterObj.dateOption;
     const records = this.commonService.calculateEstimatedRecords(
       this.frequency,
       this.historyFilter.from_date,
@@ -627,8 +590,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
         ' to ' +
         moment.unix(this.historyFilter.to_date).format('DD-MM-YYYY HH:mm');
     }
-    this.picker.datePicker.setStartDate(moment.unix(this.historyFilter.from_date));
-    this.picker.datePicker.setEndDate(moment.unix(this.historyFilter.to_date));
 
     // if (this.historyFilter.to_date - this.historyFilter.from_date > 3600) {
     //   this.historyFilter.isTypeEditable = true;
@@ -650,9 +611,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   onDateChange(event) {
     this.historyFilter.from_date = moment(event.value[0]).utc();
     this.historyFilter.to_date = moment(event.value[1]).utc();
-    if (this.dtInput2) {
-      this.dtInput2.value = null;
-    }
     if (this.historyFilter.dateOption !== 'date range') {
       this.historyFilter.dateOption = undefined;
     }

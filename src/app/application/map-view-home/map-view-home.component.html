@@ -52,13 +52,13 @@
                     disabled class="dropdown-form dropdown-open" />
                 </div>
               </ng-container>
-              <div class="form-group">
+              <div class="form-group"
+                *ngIf="contextApp?.hierarchy?.levels?.length > 1 && contextAppUserHierarchyLength !== contextApp?.hierarchy?.levels?.length">
                 <button type="button" placement="bottom" tooltip="Search" class="btn btn-sm searchBtn btn-primary"
                   (click)="onSaveHierachy()">Apply</button>
                 <button type="button" placement="bottom" tooltip="Clear" class="btn btn-sm searchBtn btn-white ml-1"
                   (click)="onClearHierarchy()">Clear</button>
               </div>
-
             </div>
           </div>
           <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"

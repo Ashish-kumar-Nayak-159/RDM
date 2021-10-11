@@ -29,6 +29,7 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
   toggleRows = {};
   selectedrule: any;
   isView = false;
+  modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
     private assetModelService: AssetModelService,
     private commonService: CommonService,
@@ -176,8 +177,21 @@ export class AssetModelRulesComponent implements OnInit, OnDestroy {
   }
 
   onDeleteRule(rule) {
+    this.modalConfig = {
+      stringDisplay: true,
+      isDisplaySave: true,
+      isDisplayCancel: true,
+    };
     this.selectedrule = rule;
     $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+  }
+
+  onModalEvents(eventType) {
+    if (eventType === 'close') {
+      this.onCloseDeleteModal();
+    } else if (eventType === 'save') {
+      this.deleteRule();
+    }
   }
 
   deleteRule() {

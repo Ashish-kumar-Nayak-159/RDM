@@ -48,7 +48,7 @@ export class AppUrls {
   public static UPDATE_APP_USERGROUPS = 'apps/{0}/user_groups/{1}';
   public static DELETE_APP_USERGROUPS = 'apps/{0}/user_groups/{1}';
   public static GET_APP_USERROLES = 'apps/{0}/roles';
-  public static ADD_APP_USERROLES = 'apps/{0}/roles/';
+  public static ADD_APP_USERROLES = 'apps/{0}/roles';
   public static UPDATE_APP_USERROLES = 'apps/{0}/roles/{1}/privileges';
   public static DELETE_APP_USERROLES = 'apps/{0}/roles/{1}';
   public static CREATE_LAYOUT = 'layout';

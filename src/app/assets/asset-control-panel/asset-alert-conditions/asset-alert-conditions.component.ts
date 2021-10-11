@@ -64,6 +64,7 @@ export class AssetAlertConditionsComponent implements OnInit {
   loggedInUser: any;
   decodedToken: any;
   userGroups: any[] = [];
+  modalConfig: { stringDisplay: boolean; isDisplaySave: boolean; isDisplayCancel: boolean };
   constructor(
     private commonService: CommonService,
     private assetService: AssetService,
@@ -343,8 +344,21 @@ export class AssetAlertConditionsComponent implements OnInit {
   }
 
   openConfirmModal(id, alertObj) {
+    this.modalConfig = {
+      stringDisplay: true,
+      isDisplaySave: true,
+      isDisplayCancel: true,
+    };
     $('#' + id).modal({ backdrop: 'static', keyboard: false, show: true });
     this.alertObj = alertObj;
+  }
+
+  onModalEvents(eventType) {
+    if (eventType === 'close') {
+      this.onCloseModal('confirmMessageModal');
+    } else if (eventType === 'save') {
+      this.onClickOfRemoveCondition();
+    }
   }
 
   onClickOfRemoveCondition() {

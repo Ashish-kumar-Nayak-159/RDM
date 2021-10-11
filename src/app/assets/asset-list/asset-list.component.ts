@@ -86,6 +86,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
   chart: am4charts.XYChart;
   environmentApp = environment.app;
   originalAssetsList: any[] = [];
+  contextAppUserHierarchyLength = 0;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -99,6 +100,9 @@ export class AssetListComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
+    if (this.contextApp?.user?.hierarchy) {
+      this.contextAppUserHierarchyLength = Object.keys(this.contextApp.user.hierarchy).length;
+    }
     this.assetsList = [];
     await this.getTileName();
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.ASSET_LIST_FILTER_FOR_GATEWAY);
@@ -150,11 +154,16 @@ export class AssetListComponent implements OnInit, OnDestroy {
     $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
       e.stopPropagation();
     });
-    $('#dd-open').on('hide.bs.dropdown', (e: any) => {
-      if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
-        e.preventDefault();
-      }
-    });
+    if (
+      this.contextApp?.hierarchy?.levels?.length > 1 &&
+      this.contextAppUserHierarchyLength !== this.contextApp?.hierarchy?.levels?.length
+    ) {
+      $('#dd-open').on('hide.bs.dropdown', (e: any) => {
+        if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
+          e.preventDefault();
+        }
+      });
+    }
   }
 
   onChangeOfHierarchy(i) {
@@ -309,8 +318,17 @@ export class AssetListComponent implements OnInit, OnDestroy {
           value_type: 'string',
           is_sort_required: true,
           fixed_value_list: [],
-          data_type: 'list',
-          data_key: 'asset_manager_users',
+          data_type: 'text',
+          data_key: 'asset_manager',
+        },
+        {
+          header_name: 'Status',
+          is_display_filter: false,
+          value_type: 'string',
+          is_sort_required: true,
+          fixed_value_list: [],
+          data_type: 'text',
+          data_key: 'connection_state',
         },
         {
           header_name: 'Hierarchy',
@@ -338,6 +356,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
       ],
     };
     if (this.componentState === CONSTANTS.NON_IP_ASSET) {
+      this.tableConfig.data.splice(2, 1);
       this.tableConfig.data.splice(this.tableConfig.data.length - 2, 0, {
         header_name: 'Reporting Via GW',
         is_display_filter: true,
@@ -579,7 +598,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
             if (!item.display_name) {
               item.display_name = item.asset_id;
             }
-            item.asset_manager_users = item.asset_manager?.split(',');
+            // item.asset_manager_users = item.asset_manager?.split(',');
             if (this.componentState === CONSTANTS.NON_IP_ASSET) {
               const name = this.gateways.filter((gateway) => gateway.asset_id === item.gateway_id)[0]?.display_name;
               item.gateway_display_name = name ? name : item.gateway_id;

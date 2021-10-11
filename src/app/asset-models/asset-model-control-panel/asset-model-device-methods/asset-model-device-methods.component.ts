@@ -301,7 +301,7 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     );
   }
 
-  deleteAssetMethod() {
+  deleteDirectMethod() {
     const obj = JSON.parse(JSON.stringify(this.assetModel));
     obj.direct_methods = JSON.parse(JSON.stringify(this.assetMethods));
     const index = obj.direct_methods.findIndex((prop) => prop.name === this.selectedAssetMethod.name);
@@ -328,11 +328,35 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
     this.assetMethodObj = undefined;
   }
 
+  onModalEvents(eventType) {
+    if (eventType === 'close') {
+      this.onCloseModal('confirmMessageModal');
+    } else if (eventType === 'save') {
+      this.deleteDirectMethod();
+    }
+  }
+
+  onJSONModalEvents(eventType) {
+    if (eventType === 'close') {
+      this.onCloseModal('PropJSONModal');
+    }
+  }
+
   onTableFunctionCall(obj) {
     this.selectedAssetMethod = obj.data;
     if (obj.for === 'View JSON Model') {
+      this.modalConfig = {
+        jsonDisplay: true,
+        isDisplaySave: false,
+        isDisplayCancel: true,
+      };
       $('#PropJSONModal').modal({ backdrop: 'static', keyboard: false, show: true });
     } else if (obj.for === 'Delete') {
+      this.modalConfig = {
+        stringDisplay: true,
+        isDisplaySave: true,
+        isDisplayCancel: true,
+      };
       $('#confirmMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     } else if (obj.for === 'Edit') {
       this.assetMethodObj = JSON.parse(JSON.stringify(obj.data));

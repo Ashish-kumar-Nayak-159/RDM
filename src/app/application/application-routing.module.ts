@@ -1,6 +1,3 @@
-import { ApplicationEventsComponent } from './application-events/application-events.component';
-import { ApplicationAlertsComponent } from './application-alerts/application-alerts.component';
-import { ApplicationNotificationsComponent } from './application-notifications/application-notifications.component';
 import { ApplicationSettingComponent } from './application-setting/application-setting.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -12,46 +9,30 @@ import { ApplicationSelectionComponent } from './application-selection/applicati
 import { MapViewHomeComponent } from './map-view-home/map-view-home.component';
 
 const routes: Routes = [
-
   {
     path: 'selection',
     component: ApplicationSelectionComponent,
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuardService],
   },
   {
     path: ':applicationId',
     component: MapViewHomeComponent,
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuardService],
   },
   {
     path: ':applicationId/settings',
     component: ApplicationSettingComponent,
-    canActivate: [AuthGuardService]
-  },
-  {
-    path: ':applicationId/notifications',
-    component: ApplicationNotificationsComponent,
-    canActivate: [AuthGuardService]
-  },
-  {
-    path: ':applicationId/alerts',
-    component: ApplicationAlertsComponent,
-    canActivate: [AuthGuardService]
-  },
-  {
-    path: ':applicationId/events',
-    component: ApplicationEventsComponent,
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuardService],
   },
   {
     path: '',
     component: ApplicationListComponent,
-    canActivate: [AuthGuardService]
-  }
+    canActivate: [AuthGuardService],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class ApplicationRoutingModule { }
+export class ApplicationRoutingModule {}

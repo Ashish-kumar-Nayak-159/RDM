@@ -680,6 +680,8 @@ export class AppDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           show_live_widgets: true,
         };
       }
+      this.sampleCountArr = Array(60).fill(0);
+      this.sampleCountValue = 0;
       if (this.contextApp?.dashboard_config?.show_live_widgets) {
         await this.getLiveWidgets(asset_model);
         this.getLiveWidgetTelemetryDetails(obj);

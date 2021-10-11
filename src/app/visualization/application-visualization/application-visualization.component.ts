@@ -758,7 +758,7 @@ export class ApplicationVisualizationComponent implements OnInit, OnDestroy {
           this.selectedAlert?.start_event_message_date || this.selectedAlert.timestamp
         ) +
         this.afterInterval * 60;
-      this.onChangeOfAsset(this.selectedAlert.asset_id);
+      this.onChangeOfAsset(this.selectedAlert);
       const records = this.commonService.calculateEstimatedRecords(
         this.frequency,
         this.filterObj.from_date,

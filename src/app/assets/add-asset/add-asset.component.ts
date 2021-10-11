@@ -269,6 +269,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
       !this.assetDetail.tags.asset_model
     ) {
       this.toasterService.showError('All fields are required', 'Non-provisioned Assets');
+      this.isCreateAssetAPILoading = false;
       return;
     }
     this.assetDetail.tags.app = this.contextApp.app;

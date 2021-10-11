@@ -69,7 +69,7 @@
   <div class="inbox" *ngIf="allControlWidgets.length > 0">
     <div class="row m-0">
       <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 p-0 right-border">
-        <ul class="mail_list list-group list-unstyled alert-scroll">
+        <ul class="mail_list list-group list-unstyled alert-scroll" style="max-height: calc(100vh - 10.5rem);">
           <li class="list-group-item" [ngClass]="{'active': selectedWidget?.id === widget.id}"
             *ngFor="let widget of allControlWidgets; let i = index;">
             <div class="media">

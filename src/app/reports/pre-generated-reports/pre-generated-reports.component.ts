@@ -228,11 +228,11 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
     //   }
     // )};
     // this.reportsObj.assets = assets;
-    const asset_model = this.reportsObj.asset_model;
-    delete this.reportsObj.asset_model;
     console.log(this.reportsObj);
+    const reportObj = { ...this.reportsObj };
+    delete reportObj.asset_model;
     this.subscriptions.push(
-      this.assetService.createReportSubscription(this.contextApp.app, this.reportsObj).subscribe(
+      this.assetService.createReportSubscription(this.contextApp.app, reportObj).subscribe(
         (response: any) => {
           this.isCreateReportAPILoading = false;
           this.toasterService.showSuccess('New Report Created', 'Create Report');
@@ -241,7 +241,6 @@ export class PreGeneratedReportsComponent implements OnInit, AfterViewInit, OnDe
         },
         (error) => {
           this.isCreateReportAPILoading = false;
-          this.reportsObj.asset_model = asset_model;
           this.toasterService.showError(error.message, 'Create Report');
         }
       )

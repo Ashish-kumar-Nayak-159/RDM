@@ -116,6 +116,12 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
       params: [],
     };
     this.extraParams = [];
+    if (
+      this.controlWidget.metadata?.communication_technique === 'C2D Message' ||
+      this.controlWidget.metadata?.communication_technique === 'Twin Change'
+    ) {
+      this.addParameter();
+    }
   }
 
   onPropertyChecked(event) {

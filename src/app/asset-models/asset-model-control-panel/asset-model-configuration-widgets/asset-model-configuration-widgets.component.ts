@@ -66,6 +66,12 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
       params: [],
     };
     this.extraParams = [];
+    if (
+      this.controlWidget.metadata?.communication_technique === 'C2D Message' ||
+      this.controlWidget.metadata?.communication_technique === 'Twin Change'
+    ) {
+      this.addParameter();
+    }
   }
 
   getAssetsModelAssetMethod() {

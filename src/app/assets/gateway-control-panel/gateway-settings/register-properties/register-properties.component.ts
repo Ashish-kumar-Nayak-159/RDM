@@ -339,10 +339,8 @@ export class RegisterPropertiesComponent implements OnInit, OnDestroy {
       slaves: {},
     };
     this.slaveData.forEach((slave) => {
-      obj.slaves[slave.slave_id] = {
-        mac_id: slave.metadata?.mac_id,
-        category: slave.slave_category?.slave_category,
-      };
+      obj.slaves[slave.slave_id] = slave.metadata;
+      obj.slaves[slave.slave_id]['category'] = slave.slave_category?.slave_category;
     });
     c2dObj.message = obj;
     c2dObj.sub_job_id = c2dObj.job_id + '_1';

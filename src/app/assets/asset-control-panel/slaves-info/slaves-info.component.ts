@@ -262,14 +262,25 @@ export class SlavesInfoComponent implements OnInit {
   }
 
   addSlaveObj() {
-    if (!this.slaveObj.slave_id || !this.slaveObj?.metadata?.mac_id) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Slave');
+    if (!this.slaveObj.slave_id) {
+      this.toasterService.showError('Slave ID is required', 'Add Slave');
       return;
     }
-    if (!CONSTANTS.MAC_ADDRESS_REGEX.test(this.slaveObj?.metadata?.mac_id)) {
-      this.toasterService.showError('MAC address is not valid', 'Add Sensor Detail');
-      return;
+    if (
+      this.asset.tags.protocol !== 'ModbusTCPMaster' &&
+      this.asset.tags.protocol !== 'SiemensTCPIP' &&
+      this.asset.tags.protocol !== 'ModbusRTUMaster'
+    ) {
+      if (!this.slaveObj?.metadata?.mac_id) {
+        this.toasterService.showError('MAC Address is required', 'Add Slave');
+        return;
+      }
+      if (!CONSTANTS.MAC_ADDRESS_REGEX.test(this.slaveObj?.metadata?.mac_id)) {
+        this.toasterService.showError('MAC address is not valid', 'Add Sensor Detail');
+        return;
+      }
     }
+
     this.isAddSlaveAPILoading = true;
     this.slaveObj.created_by = this.userData.email + ' (' + this.userData.name + ')';
     this.slaveObj.asset_model = this.asset?.tags?.asset_model || this.asset?.asset_model;
@@ -297,17 +308,22 @@ export class SlavesInfoComponent implements OnInit {
     const obj: any = {
       metadata: slave?.metadata,
     };
-    if (!obj.metadata?.mac_id) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Update Sensor Detail');
-      return;
+    if (
+      this.asset.tags.protocol !== 'ModbusTCPMaster' &&
+      this.asset.tags.protocol !== 'SiemensTCPIP' &&
+      this.asset.tags.protocol !== 'ModbusRTUMaster'
+    ) {
+      if (!obj?.metadata?.mac_id) {
+        this.toasterService.showError('MAC Address is required', 'Add Slave');
+        return;
+      }
+      if (!CONSTANTS.MAC_ADDRESS_REGEX.test(obj?.metadata?.mac_id)) {
+        this.toasterService.showError('MAC address is not valid', 'Add Sensor Detail');
+        return;
+      }
     }
 
     const macID = obj.metadata.mac_id;
-    console.log(CONSTANTS.MAC_ADDRESS_REGEX.test(macID));
-    if (!CONSTANTS.MAC_ADDRESS_REGEX.test(macID)) {
-      this.toasterService.showError('MAC address is not valid', 'Update Sensor Detail');
-      return;
-    }
     this.isAddSlaveAPILoading = true;
     obj.metadata = this.setupForm?.value || {};
     obj.metadata.mac_id = macID;

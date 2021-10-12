@@ -256,7 +256,10 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
     }
     console.log(this.controlWidget);
     console.log(Object.keys(this.controlWidget.json).length);
-    if (this.controlWidget.json.params?.length < 1) {
+    if (
+      this.controlWidget.metadata.communication_technique !== 'Direct Method' &&
+      this.controlWidget.json.params?.length < 1
+    ) {
       this.toasterService.showError('Please select at least one property/parameter', 'Create Control Widget');
       return;
     }

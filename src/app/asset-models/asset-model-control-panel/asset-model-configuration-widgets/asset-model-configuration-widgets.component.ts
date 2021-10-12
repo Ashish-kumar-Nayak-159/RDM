@@ -244,11 +244,15 @@ export class AssetModelConfigurationWidgetsComponent implements OnInit, OnDestro
     // }
 
     this.extraParams.forEach((param) => this.controlWidget.json.params.push(param));
+    console.log(this.controlWidget);
     if (this.controlWidget.metadata.communication_technique === 'Direct Method') {
       const prop = JSON.parse(JSON.stringify(this.controlWidget.properties));
       this.controlWidget.properties = [prop];
     }
-    if (this.controlWidget.json.params?.length < 1) {
+    if (
+      this.controlWidget.metadata.communication_technique !== 'Direct Method' &&
+      this.controlWidget.json.params?.length < 1
+    ) {
       this.toasterService.showError('Please select at least one property/parameter', 'Create Configuration Widget');
       return;
     }

@@ -32,17 +32,17 @@ export class CommonService {
         minute: '2-digit',
         second: '2-digit',
         fractionalSecondDigits: 3,
-        hour12: false,
+        hour12: true,
       } as const;
       if (utcDate.includes('T') && utcDate.includes('Z')) {
         // 2011-06-29T16:52:48.000Z
-        return new Date(utcDate).toLocaleString('en-GB', options);
+        return new Date(utcDate).toLocaleString('en-US', options);
       } else if (utcDate.includes('T') && !utcDate.includes('Z')) {
         // 2011-06-29T16:52:48.000
-        return new Date(utcDate + 'Z').toLocaleString('en-GB', options);
+        return new Date(utcDate + 'Z').toLocaleString('en-US', options);
       } else {
         // 1/20/2021 10:47:59 AM
-        return new Date(utcDate + ' UTC').toLocaleString('en-GB', options);
+        return new Date(utcDate + ' UTC').toLocaleString('en-US', options);
       }
     }
     return null;
@@ -53,13 +53,13 @@ export class CommonService {
       const options = { year: 'numeric', month: 'short', day: '2-digit' } as const;
       if (utcDate.includes('T') && utcDate.includes('Z')) {
         // 2011-06-29T16:52:48.000Z
-        return new Date(utcDate).toLocaleString('en-GB', options);
+        return new Date(utcDate).toLocaleString('en-US', options);
       } else if (utcDate.includes('T') && !utcDate.includes('Z')) {
         // 2011-06-29T16:52:48.000
-        return new Date(utcDate + 'Z').toLocaleString('en-GB', options);
+        return new Date(utcDate + 'Z').toLocaleString('en-US', options);
       } else {
         // 1/20/2021 10:47:59 AM
-        return new Date(utcDate + ' UTC').toLocaleString('en-GB', options);
+        return new Date(utcDate + ' UTC').toLocaleString('en-US', options);
       }
     }
     return null;

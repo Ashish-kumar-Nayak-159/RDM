@@ -7,12 +7,12 @@
           <i class="fa fa-fw fa-cloud"></i>
           Cloud Rules</a>
       </li>
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)" (click)="onTabClick('Edge')"
           [ngClass]="{'active': selectedTab === 'Edge'}">
           <i class="fab fa-fw fa-edge"></i>
           Edge Rules</a>
-      </li>
+      </li> -->
       <li class="nav-item" *ngIf="decodedToken?.privileges?.indexOf('RKPIM') > -1">
         <a class="nav-link" (click)="addRule()" href="javascript:void(0)" [ngClass]="{'active': isAddRule }">
           <i class="fa fa-fw fa-plus"></i>

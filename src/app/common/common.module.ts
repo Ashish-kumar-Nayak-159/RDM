@@ -29,6 +29,7 @@ import { DataTypeFieldsComponent } from './data-type-fieds/data-type-fieds.compo
 import { ModelProtocolSpecificDetailsComponent } from './model-protocol-specific-details/model-protocol-specific-details.component';
 import { DateRangePickerComponent } from './date-range-picker/date-range-picker.component';
 import { MessageModalComponent } from './message-modal/message-modal.component';
+import { RectangleWidgetComponent } from './charts/rectangle-widget/rectangle-widget.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { MessageModalComponent } from './message-modal/message-modal.component';
     ModelProtocolSpecificDetailsComponent,
     DateRangePickerComponent,
     MessageModalComponent,
+    RectangleWidgetComponent,
   ],
   imports: [
     CommonModule,
@@ -88,6 +90,7 @@ import { MessageModalComponent } from './message-modal/message-modal.component';
     ModelProtocolSpecificDetailsComponent,
     DateRangePickerComponent,
     MessageModalComponent,
+    RectangleWidgetComponent,
   ],
   providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }],
 })

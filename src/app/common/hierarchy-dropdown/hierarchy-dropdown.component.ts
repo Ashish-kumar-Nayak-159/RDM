@@ -31,6 +31,8 @@ export class HierarchyDropdownComponent implements OnInit {
     if (this.contextApp?.user?.hierarchy) {
       this.contextAppUserHierarchyLength = Object.keys(this.contextApp.user.hierarchy).length;
     }
+    this.hierarchyString = this.contextApp.app;
+    this.displayHierarchyString = this.contextApp.app;
     this.originalAssets = JSON.parse(JSON.stringify(this.assets));
     if (this.contextApp.hierarchy.levels.length > 1) {
       this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
@@ -204,7 +206,7 @@ export class HierarchyDropdownComponent implements OnInit {
         });
       }
     }
-    if (hierarchyObj.assets) {
+    if (hierarchyObj.assets && this.showAsset) {
       this.filterObj.asset = hierarchyObj.assets;
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
     }
@@ -217,6 +219,8 @@ export class HierarchyDropdownComponent implements OnInit {
           this.displayHierarchyString = this.configureHierarchy[key];
         }
       });
+      console.log(this.hierarchyString);
+      console.log(this.displayHierarchyString);
     }
   }
 }

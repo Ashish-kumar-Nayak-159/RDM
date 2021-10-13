@@ -48,7 +48,6 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
     },
   ];
   tileData: any;
-  contextAppUserHierarchyLength = 0;
   configuredHierarchy: any = {};
   @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   constructor(private assetService: AssetService, private router: Router, private commonService: CommonService) {}
@@ -56,9 +55,6 @@ export class MapViewHomeComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    if (this.contextApp?.user?.hierarchy) {
-      this.contextAppUserHierarchyLength = Object.keys(this.contextApp.user.hierarchy).length;
-    }
     if (this.environmentApp === 'SopanCMS') {
       await this.getLatestDerivedKPIData();
     }

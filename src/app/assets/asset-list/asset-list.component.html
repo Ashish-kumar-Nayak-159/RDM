@@ -52,7 +52,7 @@
     <div class="tab-pane fade show active">
       <div class="tab-bar">
         <form class="form-inline">
-          <div class="form-group" id="dd-open">
+          <!-- <div class="form-group" id="dd-open">
             <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
               [ngClass]="{'active': hierarchyString}" placement="bottom"
               [tooltip]="hierarchyString ? hierarchyString : 'Select Hierarchy'" (click)="onAssetFilterBtnClick()"
@@ -87,7 +87,10 @@
                   (click)="onClearHierarchy()">Clear</button>
               </div>
             </div>
-          </div>
+          </div> -->
+          <app-hierarchy-dropdown #hierarchyDropdown [showAsset]="false" (saveHierarchyEvent)="onSaveHierachy($event)"
+            (clearHierarchyEvent)="onClearHierarchy($event)">
+          </app-hierarchy-dropdown>
           <div class="form-group"><button type="button" class="btn btn-sm searchBtn btn-primary"
               (click)="currentOffset = 0;assetsList = [];searchAssets()" [disabled]="isAssetListLoading"><i
                 class="fas fa-search fa-sm"></i></button></div>

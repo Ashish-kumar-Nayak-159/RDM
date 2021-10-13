@@ -12,7 +12,8 @@
   <button href="#" *ngIf="!showAsset" role="button" class="dropdown-btn" data-toggle="dropdown"
     [ngClass]="{'active': hierarchyString}" [tooltip]="hierarchyString ? hierarchyString : 'Select Hierarchy'"
     (click)="onHierarchyDropdownClick()" aria-haspopup="true" aria-expanded="false">
-    <i class="fas fa-fw fa-filter fa-sm button-divider"></i> {{hierarchyString ? displayHierarchyString :
+    <i class="fas fa-fw fa-filter fa-sm button-divider"></i> {{hierarchyString ?
+    displayHierarchyString :
     'Select Hierarchy'}}</button>
   <div class="dropdown-menu dropdown-filter-content" id="liveDataSelectAssret">
     <ng-container *ngFor="
@@ -50,8 +51,5 @@
       <button type="button" placement="bottom" tooltip="Clear" class="btn btn-sm searchBtn btn-white ml-1"
         (click)="onClearHierarchy()">Clear</button>
     </div>
-    <!-- <div class="">
-      <button class="btn btn-sm searchBtn btn-primary" type="button">Apply</button>
-    </div> -->
   </div>
 </div>

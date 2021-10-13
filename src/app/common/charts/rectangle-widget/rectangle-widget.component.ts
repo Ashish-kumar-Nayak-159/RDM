@@ -74,6 +74,7 @@ export class RectangleWidgetComponent implements OnInit, OnChanges, AfterViewIni
       const chart = am4core.create(this.chartConfig.chartId + '_chart_' + index, am4charts.XYChart3D);
       chart.hiddenState.properties.opacity = 0;
       chart.logo.disabled = true;
+      chart.angle = 50;
 
       const categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
       categoryAxis.dataFields.category = "category";

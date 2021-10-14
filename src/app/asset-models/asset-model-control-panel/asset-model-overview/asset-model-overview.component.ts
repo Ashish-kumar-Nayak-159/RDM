@@ -100,7 +100,7 @@ export class AssetModelOverviewComponent implements OnInit, OnDestroy {
       !this.assetModel.tags.cloud_connectivity ||
       !this.assetModel.metadata.model_type
     ) {
-      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Update Asset Model');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Update Asset Model');
       return;
     }
     if (this.assetModel.id) {

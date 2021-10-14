@@ -424,7 +424,7 @@ export class AssetAlertConditionsComponent implements OnInit {
       !this.alertObj.severity ||
       !this.alertObj.alert_type
     ) {
-      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Alert Condition');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Alert Condition');
       return;
     }
     // let distinctArray = this.alertObj.visualization_widgets.filter((n, i) => this.alertObj.visualization_widgets.indexOf(n) === i);
@@ -473,7 +473,7 @@ export class AssetAlertConditionsComponent implements OnInit {
       !this.alertObj.severity ||
       !this.alertObj.alert_type
     ) {
-      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Alert Condition');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Alert Condition');
       return;
     }
     this.alertObj.code = 'A_' + this.alertObj.code;

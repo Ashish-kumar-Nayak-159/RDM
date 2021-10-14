@@ -310,7 +310,7 @@ export class AddAssetComponent implements OnInit, OnChanges {
       !this.assetDetail.tags.cloud_connectivity ||
       !this.assetDetail.tags.asset_model
     ) {
-      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Create ' + this.componentState);
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Create ' + this.componentState);
       return;
     }
     if (this.componentState === CONSTANTS.NON_IP_ASSET && !this.assetDetail.gateway_id) {

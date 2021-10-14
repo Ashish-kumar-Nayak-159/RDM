@@ -319,7 +319,7 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
       !this.assetModel.tags.cloud_connectivity ||
       !this.assetModel.metadata.model_type
     ) {
-      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Create Asset Model');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Create Asset Model');
       return;
     }
     this.assetModel.metadata.telemetry_mode_settings = {

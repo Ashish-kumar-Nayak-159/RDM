@@ -202,7 +202,7 @@ export class ApplicationUsersComponent implements OnInit, OnDestroy {
       !this.addUserObj.role ||
       Object.keys(this.addUserObj.hierarchy).length !== this.hierarchyList.length
     ) {
-      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Create User');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Create User');
       return;
     }
     if (!CONSTANTS.EMAIL_REGEX.test(this.addUserObj.email)) {

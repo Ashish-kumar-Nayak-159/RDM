@@ -35,6 +35,7 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
       this.connectToSignalR();
       this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe((msg) => {
         if (msg.type === 'alert' && msg?.severity?.toLowerCase() === 'critical') {
+          console.log(msg);
           this.toasterService.showCriticalAlert(
             msg.message,
             msg.asset_display_name ? msg.asset_display_name : msg.asset_id,
@@ -94,7 +95,8 @@ export class RDMSideMenuComponent implements OnInit, OnChanges, OnDestroy {
         // alert('here');
         this.connectToSignalR();
         this.signalRAlertSubscription = this.signalRService.signalROverlayAlertData.subscribe((msg) => {
-          if (msg?.severity?.toLowerCase() === 'critical') {
+          if (msg.type === 'alert' && msg?.severity?.toLowerCase() === 'critical') {
+            console.log(msg);
             this.toasterService.showCriticalAlert(
               msg.message,
               msg.asset_display_name ? msg.asset_display_name : msg.asset_id,

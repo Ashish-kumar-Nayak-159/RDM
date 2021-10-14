@@ -413,12 +413,12 @@ export class AddCampaignComponent implements OnInit {
         !obj.job_request.version ||
         !obj.request_type
       ) {
-        this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Create Campaign');
+        this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Create Campaign');
         return;
       }
     } else if (obj.objective === 'Sync Properties/Alerts') {
       if (!obj.asset_model || !obj.job_request || !obj.job_request.type) {
-        this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Create Campaign');
+        this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Create Campaign');
         return;
       }
     }

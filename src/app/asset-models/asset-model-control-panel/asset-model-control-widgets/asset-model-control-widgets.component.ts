@@ -241,7 +241,7 @@ export class AssetModelControlWidgetsComponent implements OnInit, OnDestroy {
       !this.controlWidget.metadata ||
       !this.controlWidget.metadata?.communication_technique
     ) {
-      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Create Control Widget');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Create Control Widget');
       return;
     }
     // try {

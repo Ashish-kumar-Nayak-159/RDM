@@ -351,14 +351,14 @@ export class AssetModelPropertiesComponent implements OnInit, OnChanges, OnDestr
     }
     this.propertyObj.id = this.commonService.generateUUID();
     if (!this.propertyObj.name || !this.propertyObj.json_key || !this.propertyObj.data_type) {
-      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Property');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Property');
       return;
     }
     if (
       this.assetModel.metadata?.model_type === this.constantData.NON_IP_ASSET &&
       Object.keys(this.propertyObj?.metadata).length === 0
     ) {
-      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Property');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Property');
       return;
     }
     const index = this.properties[this.type].findIndex((prop) => prop.json_key === this.propertyObj.json_key);

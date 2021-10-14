@@ -213,7 +213,10 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         applicationDetail.metadata.app_telemetry_specific_schema
       )
     ) {
-      this.toasterService.showWarning(UIMESSAGES.APP_CREATE_DB_CONFIG_WARNING, UIMESSAGES.APP_CREATE_DB_CONFIG);
+      this.toasterService.showWarning(
+        UIMESSAGES.MESSAGES.APP_CREATE_DB_CONFIG_WARNING,
+        UIMESSAGES.MESSAGES.APP_CREATE_DB_CONFIG
+      );
     }
     this.isCreateAPILoading = true;
     applicationDetail.dashboard_config = {

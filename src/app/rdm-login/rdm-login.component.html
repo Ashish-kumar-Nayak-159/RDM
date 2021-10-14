@@ -3,7 +3,7 @@
     <div class="col-lg-1 d-none d-lg-block"></div>
     <div class="col-lg-5 d-none d-lg-block align-self-center">
       <div class="text-center">
-        <h5 class="h5 mb-3 text-white">Azure RDM: Manage, Monitor, Control millions of IoT assets</h5>
+        <h5 class="h5 mb-3 text-white">{{uiMessages.LOGIN_TITLE}}</h5>
       </div>
       <div class="row justify-content-md-center"><img src="../../assets/img/rdm.png"></div>
     </div>
@@ -14,35 +14,36 @@
         <div class="card-body p-0">
           <div class="p-4 bg-primary">
             <div class="text-center">
-              <h1 class="h4 mb-4" style="color:#1a5a9e">Welcome !!</h1>
+              <h1 class="h4 mb-4" style="color:#1a5a9e">{{uiMessages.WELCOME}}!!</h1>
             </div>
             <form class="user" [formGroup]="loginForm" (submit)="onLogin()">
               <div class="form-group">
                 <input type="email" class="form-control form-control-user bg-white" id="exampleInputEmail"
-                  aria-describedby="emailHelp" placeholder="Enter Email Address" formControlName="email" name="email">
+                  aria-describedby="emailHelp" placeholder="{{uiMessages.EMAIL_PLACEHOLDER}}" formControlName="email"
+                  name="email">
                 <div
                   *ngIf="loginForm.get('email').invalid && (loginForm.get('email').dirty || loginForm.get('email').touched)"
                   class="alert-danger">
                   <div *ngIf="loginForm.get('email').errors.required">
-                    Email is required.
+                    {{uiMessages.EMAIL_LABEL}} {{uiMessages.IS_REQUIRED}}
                   </div>
                   <div *ngIf="loginForm.get('email').errors.pattern">
-                    Email is not valid.
+                    {{uiMessages.EMAIL_LABEL}} {{uiMessages.IS_INVALID}}
                   </div>
                 </div>
               </div>
               <div class="row form-group">
                 <div class="col-md-12">
                   <input id="exampleInputPassword" type="{{this.isPasswordVisible ? 'text' : 'password'}}"
-                    class="form-control form-control-user  bg-white" name="exampleInputPassword" placeholder="Password"
-                    formControlName="password">
+                    class="form-control form-control-user  bg-white" name="exampleInputPassword"
+                    placeholder="{{uiMessages.PASSWORD_PLACEHOLDER}}" formControlName="password">
                   <i class="fa fa-fw  field-icon toggle-password" (click)="togglePasswordVisibility()"
                     [ngClass]="{'fa-eye' : !this.isPasswordVisible, 'fa-eye-slash': this.isPasswordVisible}"></i>
                   <div
                     *ngIf="loginForm.get('password').invalid && (loginForm.get('password').dirty || loginForm.get('password').touched)"
                     class="alert-danger">
                     <div *ngIf="loginForm.get('password').errors.required">
-                      Password is required.
+                      {{uiMessages.PASSWORD_LABEL}} {{uiMessages.IS_REQUIRED}}
                     </div>
                   </div>
                 </div>
@@ -50,19 +51,19 @@
               <div class="form-group">
                 <div class="custom-control custom-checkbox small">
                   <input type="checkbox" class="custom-control-input" id="customCheck" />
-                  <label class="custom-control-label" for="customCheck">Remember Me</label>
+                  <label class="custom-control-label" for="customCheck">{{uiMessages.REMEMBER_ME}}</label>
                 </div>
               </div>
               <button type="submit" style="background-color:#1a5a9e"
                 class="btn btn-primary btn-user btn-block text-white "
                 [disabled]="(!loginForm?.valid) || isLoginAPILoading">
-                Login
+                {{uiMessages.LOGIN_LABEL}}
                 <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isLoginAPILoading"></i>
               </button>
             </form>
             <hr>
             <div class="text-center">
-              <a class="pointer" (click)="forgotPassword();">Forgot Password?</a>
+              <a class="pointer" (click)="forgotPassword();">{{uiMessages.FORGOT_PASSWORD_LABEL}}?</a>
               <i class="fa fa-fw fa-spinner fa-spin" *ngIf="isForgotAPILoading"></i>
             </div>
           </div>

@@ -244,7 +244,7 @@ export class AssetModelHistoryLayoutComponent implements OnInit, OnChanges, OnDe
 
   async addChart() {
     if (!this.chartTitle || !this.selectedChartType || this.y1AxisProps.length === 0) {
-      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Widget');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Widget');
       return;
     }
     if (this.selectedChartType === 'Vibration Damage Plot') {

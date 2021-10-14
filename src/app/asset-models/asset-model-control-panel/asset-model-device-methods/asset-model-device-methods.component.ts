@@ -252,7 +252,7 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
 
   onSaveassetMethodObj() {
     if (!this.assetMethodObj.name || !this.assetMethodObj.method_name) {
-      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Direct Method');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Direct Method');
       return;
     }
     // try {

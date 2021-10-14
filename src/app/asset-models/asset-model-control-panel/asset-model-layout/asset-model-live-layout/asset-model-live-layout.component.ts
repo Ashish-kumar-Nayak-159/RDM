@@ -368,7 +368,7 @@ export class AssetModelLiveLayoutComponent implements OnInit {
   onSaveWidgetObj() {
     console.log(this.widgetObj);
     if (!this.widgetObj.widgetTitle || !this.widgetObj.widgetType) {
-      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Widget');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Widget');
       return;
     }
     let found = true;

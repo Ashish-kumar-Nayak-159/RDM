@@ -1,3 +1,4 @@
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 import { environment } from 'src/environments/environment';
 import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Subscription } from 'rxjs';
@@ -25,6 +26,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   isPasswordVisible = false;
   isForgotPassword = false;
   isForgotAPILoading = false;
+  uiMessages = UIMESSAGES.MESSAGES;
   constructor(
     private router: Router,
     private toasterService: ToasterService,
@@ -82,7 +84,6 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
           this.userData = response;
           localStorage.setItem(CONSTANTS.APP_VERSION, environment.version);
           await this.processUserData(response);
-          // this.loginForm.reset();
           this.isLoginAPILoading = false;
         },
         (error) => {
@@ -137,7 +138,7 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         this.commonService.setItemInLocalStorage(CONSTANTS.USER_DETAILS, this.userData);
       } else {
         this.isLoginAPILoading = false;
-        this.toasterService.showError('No apps are assigned to this user', 'Contact Administrator');
+        this.toasterService.showError(this.uiMessages.NO_APPS_ASSIGNED_MESSAGE, this.uiMessages.CONTACT_ADMINISTRATOR);
         return;
       }
     }
@@ -226,7 +227,10 @@ export class RDMLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   forgotPassword() {
     const loginObj = this.loginForm.value;
     if (!loginObj.email) {
-      this.toasterService.showError('Please enter valid email', 'Forgot Password');
+      this.toasterService.showError(
+        this.uiMessages.EMAIL_LABEL + this.uiMessages.IS_INVALID,
+        this.uiMessages.FORGOT_PASSWORD_LABEL
+      );
       return;
     }
     let obj = {

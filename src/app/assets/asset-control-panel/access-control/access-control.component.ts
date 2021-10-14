@@ -171,7 +171,7 @@ export class AccessControlComponent implements OnInit, OnChanges {
     const user = this.addUserForm.value;
     delete user.userObj;
     if (!user.email || !user.name) {
-      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Recipient');
+      this.toasterService.showError(UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED, 'Add Recipient');
       return;
     }
     if (!CONSTANTS.EMAIL_REGEX.test(user.email)) {

@@ -281,7 +281,7 @@ export class AssetModelReferenceDocumentsComponent implements OnInit, OnDestroy 
       !this.documentObj.metadata
     ) {
       this.toasterService.showError(
-        UIMESSAGES.ALL_FIELDS_REQUIRED,
+        UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED,
         (this.documentObj.id ? 'Edit' : 'Add') + ' Document'
       );
       return;

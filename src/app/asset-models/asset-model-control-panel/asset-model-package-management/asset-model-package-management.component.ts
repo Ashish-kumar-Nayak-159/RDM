@@ -228,7 +228,10 @@ export class AssetModelPackageManagementComponent implements OnInit {
       this.packageObj.metadata.minor === undefined ||
       this.packageObj.metadata.patch === undefined
     ) {
-      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, (this.packageObj.id ? 'Edit' : 'Add') + ' Package');
+      this.toasterService.showError(
+        UIMESSAGES.MESSAGES.ALL_FIELDS_REQUIRED,
+        (this.packageObj.id ? 'Edit' : 'Add') + ' Package'
+      );
       return;
     }
     this.packageObj.version =

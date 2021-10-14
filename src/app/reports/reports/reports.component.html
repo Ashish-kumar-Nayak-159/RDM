@@ -43,7 +43,7 @@
       <ng-container *ngIf="decodedToken?.privileges && decodedToken.privileges.indexOf('RMV') > -1">
         <div class="tab-bar">
           <form class="form-inline">
-            <div class="form-group" id="dd-open">
+            <!-- <div class="form-group" id="dd-open">
               <button href="#" role="button" class="dropdown-btn" data-toggle="dropdown"
                 [ngClass]="{'active' : filterObj?.asset}" placement="bottom" [tooltip]="filterObj?.asset ?
               (filterObj.asset.display_name ? filterObj.asset.display_name :
@@ -89,7 +89,10 @@
                     (click)="onClearHierarchy()">Clear</button>
                 </div>
               </div>
-            </div>
+            </div> -->
+            <app-hierarchy-dropdown #hierarchyDropdown *ngIf="filterObj" [showAsset]="true" [filterObj]="filterObj"
+              [assets]="assets" (saveHierarchyEvent)="onSaveHierachy()" (clearHierarchyEvent)="onClearHierarchy()">
+            </app-hierarchy-dropdown>
             <div class="form-group">
               <select class="custom-select custom-select-sm" id="report_type" [(ngModel)]="filterObj.report_type"
                 name="report_type" (change)="onNonIPAssetChange()" #reportType="ngModel"

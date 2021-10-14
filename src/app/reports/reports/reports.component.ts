@@ -12,6 +12,7 @@ import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Subscription } from 'rxjs';
+import { HierarchyDropdownComponent } from 'src/app/common/hierarchy-dropdown/hierarchy-dropdown.component';
 declare var $: any;
 @Component({
   selector: 'app-reports',
@@ -22,8 +23,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
   userData: any;
   filterObj: any = {};
   contextApp: any;
-  hierarchyArr: any = {};
-  configureHierarchy: any = {};
   assets: any[] = [];
   nonIPAssets: any[] = [];
   originalAssets: any[] = [];
@@ -48,8 +47,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
   tileData: any;
   assetFilterObj: any;
   subscriptions: Subscription[] = [];
-  @ViewChild('dtInput1', { static: false }) dtInput1: any;
-  @ViewChild('dtInput2', { static: false }) dtInput2: any;
   currentOffset = 0;
   currentLimit = 100;
   insideScrollFunFlag = false;
@@ -61,6 +58,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   selectedDateRange: string;
   decodedToken: any;
   frequency: any;
+  @ViewChild('hierarchyDropdown') hierarchyDropdown: HierarchyDropdownComponent;
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
@@ -82,17 +80,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
           this.filterObj.app = this.contextApp.app;
           // this.filterObj.count = 10;
         }
-        if (this.contextApp.hierarchy.levels.length > 1) {
-          this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
-        }
-        this.contextApp.hierarchy.levels.forEach((level, index) => {
-          if (index !== 0) {
-            this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-            if (this.contextApp.user.hierarchy[level]) {
-              this.onChangeOfHierarchy(index, false);
-            }
-          }
-        });
+
         this.filterObj.type = true;
         this.filterObj.sampling_format = 'minute';
         this.filterObj.sampling_time = 1;
@@ -115,22 +103,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   loadFromCache() {
     const item = this.commonService.getItemFromLocalStorage(CONSTANTS.MAIN_MENU_FILTERS) || {};
     if (item) {
-      if (item.assets) {
-        this.filterObj.asset = item.assets;
-        this.onChangeOfAsset(this.filterObj.asset);
-      }
-      if (item.hierarchy) {
-        if (Object.keys(this.contextApp.hierarchy.tags).length > 0) {
-          this.contextApp.hierarchy.levels.forEach((level, index) => {
-            if (index !== 0) {
-              this.configureHierarchy[index] = item.hierarchy[level];
-              if (item.hierarchy[level]) {
-                this.onChangeOfHierarchy(index, false);
-              }
-            }
-          });
-        }
-      }
+      this.hierarchyDropdown.updateHierarchyDetail(item);
       if (item.dateOption) {
         this.filterObj.dateOption = item.dateOption;
         if (item.dateOption !== 'Custom Range') {
@@ -141,8 +114,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
           this.filterObj.from_date = item.from_date;
           this.filterObj.to_date = item.to_date;
         }
-        // this.picker.datePicker.setStartDate(moment.unix(this.filterObj.from_date));
-        // this.picker.datePicker.setEndDate(moment.unix(this.filterObj.to_date));
         if (this.filterObj.dateOption !== 'Custom Range') {
           this.selectedDateRange = this.filterObj.dateOption;
         } else {
@@ -177,6 +148,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
       // if (this.filterObj.asset) {
       //   this.onFilterSelection(false, false);
       // }
+    } else {
+      this.hierarchyDropdown.updateHierarchyDetail(this.contextApp.user);
     }
   }
 
@@ -191,55 +164,21 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.currentLimit = Number(this.tileData[1]?.value) || 100;
   }
 
-  onAssetFilterBtnClick() {
-    $('.dropdown-menu .dropdown-open').on('click.bs.dropdown', (e) => {
-      e.stopPropagation();
-    });
-    $('#dd-open').on('hide.bs.dropdown', (e: any) => {
-      if (e.clickEvent && !e.clickEvent.target.className?.includes('searchBtn')) {
-        e.preventDefault();
-      }
-    });
-  }
-
   onSaveHierachy() {
-    this.originalFilterObj = {};
-    this.originalFilterObj.from_date = this.filterObj.from_date;
-    this.originalFilterObj.to_date = this.filterObj.to_date;
-    this.originalFilterObj.dateOption = this.filterObj.dateOption;
-    if (this.filterObj.asset) {
-      this.originalFilterObj.asset = JSON.parse(JSON.stringify(this.filterObj.asset));
-      this.onAssetSelection();
+    // this.originalFilterObj = {};
+    if (this.filterObj?.asset) {
+      this.originalFilterObj.asset = JSON.parse(JSON.stringify(this.filterObj?.asset));
     }
+    this.onAssetSelection();
+
     console.log(this.originalFilterObj);
   }
 
   onClearHierarchy() {
     this.isFilterSelected = false;
-    this.hierarchyArr = {};
-    // this.originalFilterObj = {};
-    this.configureHierarchy = {};
-    // this.filterObj = {};
-    this.dropdownPropList = [];
-    this.propertyList = [];
-    this.props = JSON.parse(JSON.stringify([]));
-    if (this.contextApp.hierarchy.levels.length > 1) {
-      this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
-    }
-    console.log(this.hierarchyArr);
-    this.contextApp.hierarchy.levels.forEach((level, index) => {
-      if (index !== 0) {
-        this.configureHierarchy[index] = this.contextApp.user.hierarchy[level];
-        console.log(this.configureHierarchy);
-        console.log(level);
-        console.log(this.contextApp.user.hierarchy);
-        if (this.contextApp.user.hierarchy[level]) {
-          this.onChangeOfHierarchy(index, false);
-        }
-      } else {
-        this.assets = JSON.parse(JSON.stringify(this.originalAssets));
-      }
-    });
+    this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
+    this.frequency = undefined;
+    this.onAssetSelection();
   }
 
   selectedDate(filterObj) {
@@ -311,85 +250,12 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }
   }
 
-  async onChangeOfHierarchy(i, persistAssetSelection = true) {
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (key > i) {
-        delete this.configureHierarchy[key];
-      }
-    });
-    Object.keys(this.hierarchyArr).forEach((key) => {
-      if (key > i) {
-        this.hierarchyArr[key] = [];
-      }
-    });
-    let nextHierarchy = this.contextApp.hierarchy.tags;
-    Object.keys(this.configureHierarchy).forEach((key, index) => {
-      if (this.configureHierarchy[index + 1]) {
-        nextHierarchy = nextHierarchy[this.configureHierarchy[index + 1]];
-      }
-    });
-    if (nextHierarchy) {
-      this.hierarchyArr[i + 1] = Object.keys(nextHierarchy);
-    }
-    // let hierarchy = {...this.configureHierarchy};
-    const hierarchyObj: any = { App: this.contextApp.app };
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (this.configureHierarchy[key]) {
-        hierarchyObj[this.contextApp.hierarchy.levels[key]] = this.configureHierarchy[key];
-      }
-    });
-    if (Object.keys(hierarchyObj).length === 1) {
-      this.assets = JSON.parse(JSON.stringify(this.originalAssets));
-    } else {
-      const arr = [];
-      this.assets = [];
-      this.originalAssets.forEach((asset) => {
-        let trueFlag = 0;
-        let flaseFlag = 0;
-        Object.keys(hierarchyObj).forEach((hierarchyKey) => {
-          if (asset.hierarchy[hierarchyKey] && asset.hierarchy[hierarchyKey] === hierarchyObj[hierarchyKey]) {
-            trueFlag++;
-          } else {
-            flaseFlag++;
-          }
-        });
-        if (trueFlag > 0 && flaseFlag === 0) {
-          arr.push(asset);
-        }
-      });
-      this.assets = JSON.parse(JSON.stringify(arr));
-    }
-    if (this.assets?.length === 1) {
-      this.filterObj.asset = this.assets[0];
-    }
-    if (persistAssetSelection) {
-      this.filterObj.assetArr = undefined;
-      this.filterObj.asset = undefined;
-    }
-    this.props = [];
-    this.dropdownPropList = [];
-    let count = 0;
-    Object.keys(this.configureHierarchy).forEach((key) => {
-      if (this.configureHierarchy[key]) {
-        count++;
-      }
-    });
-    if (count === 0) {
-      this.hierarchyArr = [];
-      if (this.contextApp.hierarchy.levels.length > 1) {
-        this.hierarchyArr[1] = Object.keys(this.contextApp.hierarchy.tags);
-      }
-    }
-  }
-
   onAssetDeselect() {
     this.filterObj.asset = undefined;
     this.filterObj.assetArr = undefined;
   }
 
   onAssetSelection() {
-    // this.nonIPAssets = [];
-    // this.filterObj.asset_id = this.filterObj.asset.asset_id;
     if (this.filterObj.asset) {
       const asset_model = this.filterObj?.asset?.asset_model;
 
@@ -400,7 +266,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.dropdownPropList = [];
       this.propertyList = [];
       this.props = JSON.parse(JSON.stringify([]));
-      this.filterObj.report_type = undefined;
+      // this.filterObj.report_type = undefined;
     }
   }
 

@@ -210,6 +210,7 @@ export class HierarchyDropdownComponent implements OnInit {
       this.filterObj.asset = hierarchyObj.assets;
       this.originalFilterObj = JSON.parse(JSON.stringify(this.filterObj));
     }
+    console.log(this.filterObj);
     if (!this.showAsset) {
       this.hierarchyString = this.contextApp.app;
       this.displayHierarchyString = this.contextApp.app;

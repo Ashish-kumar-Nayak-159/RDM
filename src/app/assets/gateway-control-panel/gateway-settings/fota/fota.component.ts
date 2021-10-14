@@ -1,4 +1,4 @@
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { ToasterService } from 'src/app/services/toaster.service';

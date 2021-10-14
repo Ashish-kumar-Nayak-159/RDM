@@ -2,11 +2,12 @@ import { CommonService } from 'src/app/services/common.service';
 import { Subscription } from 'rxjs';
 import { MatNativeDateModule } from '@angular/material/core';
 import { Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { JsonEditorOptions, JsonEditorComponent } from 'ang-jsoneditor';
-import { APIMESSAGES } from 'src/app/api-messages.constants';
+import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 
 declare var $: any;
 @Component({
@@ -251,7 +252,7 @@ export class AssetModelDeviceMethodsComponent implements OnInit, OnDestroy {
 
   onSaveassetMethodObj() {
     if (!this.assetMethodObj.name || !this.assetMethodObj.method_name) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Direct Method');
+      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Add Direct Method');
       return;
     }
     // try {

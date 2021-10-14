@@ -1,12 +1,13 @@
 import { Subscription } from 'rxjs';
 import { ToasterService } from './../../services/toaster.service';
-import { CONSTANTS } from './../../app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { AssetModelService } from './../../services/asset-model/asset-model.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { ApplicationService } from 'src/app/services/application/application.service';
-import { APIMESSAGES } from 'src/app/api-messages.constants';
+import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 
 declare var $: any;
 @Component({
@@ -318,7 +319,7 @@ export class AssetModelListComponent implements OnInit, OnDestroy {
       !this.assetModel.tags.cloud_connectivity ||
       !this.assetModel.metadata.model_type
     ) {
-      this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Create Asset Model');
+      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Create Asset Model');
       return;
     }
     this.assetModel.metadata.telemetry_mode_settings = {

@@ -1,4 +1,4 @@
-import { CONSTANTS } from './../../../../app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { ToasterService } from './../../../../services/toaster.service';
 import { CommonService } from './../../../../services/common.service';
 import { Component, Input, OnInit } from '@angular/core';

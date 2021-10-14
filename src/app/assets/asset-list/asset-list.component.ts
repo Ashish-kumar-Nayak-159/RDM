@@ -8,7 +8,7 @@ import { AssetListFilter, Asset } from 'src/app/models/asset.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AssetService } from './../../services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { ToasterService } from './../../services/toaster.service';
 import * as moment from 'moment';
 import * as am4core from '@amcharts/amcharts4/core';

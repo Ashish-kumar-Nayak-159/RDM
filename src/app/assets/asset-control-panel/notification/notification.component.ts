@@ -6,15 +6,14 @@ import { Subscription } from 'rxjs';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import * as moment from 'moment';
 import { CommonService } from 'src/app/services/common.service';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 declare var $: any;
 @Component({
   selector: 'app-notification',
   templateUrl: './notification.component.html',
-  styleUrls: ['./notification.component.css']
+  styleUrls: ['./notification.component.css'],
 })
 export class NotificationComponent implements OnInit, OnDestroy {
-
   @Input() notificationFilter: any = {};
   notifications: any[] = [];
   @Input() asset: Asset = new Asset();
@@ -32,12 +31,15 @@ export class NotificationComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private route: ActivatedRoute,
     private toasterService: ToasterService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
-    this.apiSubscriptions.push(this.assetService.searchNotificationsEventEmitter.subscribe(
-      () => this.searchNotifications(this.notificationFilter)));
+    this.apiSubscriptions.push(
+      this.assetService.searchNotificationsEventEmitter.subscribe(() =>
+        this.searchNotifications(this.notificationFilter)
+      )
+    );
     // this.notificationFilter.asset_id = this.asset.asset_id;
     // this.notificationFilter.count = 10;
     // this.notificationFilter.app = this.contextApp.app;
@@ -57,12 +59,11 @@ export class NotificationComponent implements OnInit, OnDestroy {
         {
           name: '',
           key: undefined,
-        }
-      ]
+        },
+      ],
     };
     // this.searchNotifications(this.notificationFilter, false);
     this.notificationFilter.epoch = true;
-
   }
 
   // loadFromCache() {
@@ -92,7 +93,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
       filterObj.from_date = filterObj.from_date;
       filterObj.to_date = filterObj.to_date;
     }
-    const obj = {...filterObj};
+    const obj = { ...filterObj };
 
     if (!obj.from_date || !obj.to_date) {
       this.toasterService.showError('Date selection is requierd.', 'View Notifications');
@@ -109,24 +110,26 @@ export class NotificationComponent implements OnInit, OnDestroy {
     }
     delete obj.dateOption;
     this.notificationFilter = filterObj;
-    this.apiSubscriptions.push(this.assetService.getAssetNotifications(obj).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.notifications = response.data;
-          this.notifications.forEach(item => {
-            item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
-            item.message_text = item.message;
-          });
-        }
-        if (this.notificationFilter.dateOption !== 'Custom Range') {
-          this.notificationTableConfig.dateRange = this.notificationFilter.dateOption;
-        }
-        else {
-          this.notificationTableConfig.dateRange = 'this selected range';
-        }
-        this.isNotificationLoading = false;
-      }, error => this.isNotificationLoading = false
-    ));
+    this.apiSubscriptions.push(
+      this.assetService.getAssetNotifications(obj).subscribe(
+        (response: any) => {
+          if (response && response.data) {
+            this.notifications = response.data;
+            this.notifications.forEach((item) => {
+              item.local_created_date = this.commonService.convertUTCDateToLocal(item.message_date);
+              item.message_text = item.message;
+            });
+          }
+          if (this.notificationFilter.dateOption !== 'Custom Range') {
+            this.notificationTableConfig.dateRange = this.notificationFilter.dateOption;
+          } else {
+            this.notificationTableConfig.dateRange = 'this selected range';
+          }
+          this.isNotificationLoading = false;
+        },
+        (error) => (this.isNotificationLoading = false)
+      )
+    );
   }
 
   getMessageData(dataobj) {
@@ -137,33 +140,32 @@ export class NotificationComponent implements OnInit, OnDestroy {
         asset_id: this.asset.asset_id,
         from_date: null,
         to_date: null,
-        epoch: true
+        epoch: true,
       };
-      const epoch =  this.commonService.convertDateToEpoch(dataobj.message_date);
-      obj.from_date = epoch ? (epoch - 300) : null;
-      obj.to_date = (epoch ? (epoch + 300) : null);
-      this.apiSubscriptions.push(this.assetService.getAssetMessageById(obj, 'notification').subscribe(
-        (response: any) => {
+      const epoch = this.commonService.convertDateToEpoch(dataobj.message_date);
+      obj.from_date = epoch ? epoch - 300 : null;
+      obj.to_date = epoch ? epoch + 300 : null;
+      this.apiSubscriptions.push(
+        this.assetService.getAssetMessageById(obj, 'notification').subscribe((response: any) => {
           resolve(response.message);
-        }
-      ));
+        })
+      );
     });
   }
 
   openNotificationMessageModal(obj) {
     if (obj.type === this.notificationTableConfig.type) {
-    this.modalConfig = {
-      jsonDisplay: true,
-      isDisplaySave: false,
-      isDisplayCancel: true
-    };
-    this.selectedNotification = obj.data;
-    this.getMessageData(obj.data).then(message => {
-      this.selectedNotification.message = message;
-    });
-    $('#notificationMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
+      this.modalConfig = {
+        jsonDisplay: true,
+        isDisplaySave: false,
+        isDisplayCancel: true,
+      };
+      this.selectedNotification = obj.data;
+      this.getMessageData(obj.data).then((message) => {
+        this.selectedNotification.message = message;
+      });
+      $('#notificationMessageModal').modal({ backdrop: 'static', keyboard: false, show: true });
     }
-
   }
 
   onModalEvents(eventType) {
@@ -174,7 +176,6 @@ export class NotificationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.apiSubscriptions.forEach(subscribe => subscribe.unsubscribe());
+    this.apiSubscriptions.forEach((subscribe) => subscribe.unsubscribe());
   }
-
 }

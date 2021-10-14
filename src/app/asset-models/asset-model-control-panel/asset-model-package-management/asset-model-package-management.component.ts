@@ -1,13 +1,14 @@
 import { FileSaverService } from 'ngx-filesaver';
 import { ToasterService } from './../../../services/toaster.service';
 import { DomSanitizer } from '@angular/platform-browser';
-import { CONSTANTS } from './../../../app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Subscription } from 'rxjs';
 import { AssetModelService } from './../../../services/asset-model/asset-model.service';
 import { CommonService } from './../../../services/common.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { APIMESSAGES } from 'src/app/api-messages.constants';
+import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 declare var $: any;
 @Component({
   selector: 'app-asset-model-package-management',
@@ -227,10 +228,7 @@ export class AssetModelPackageManagementComponent implements OnInit {
       this.packageObj.metadata.minor === undefined ||
       this.packageObj.metadata.patch === undefined
     ) {
-      this.toasterService.showError(
-        APIMESSAGES.ALL_FIELDS_REQUIRED,
-        (this.packageObj.id ? 'Edit' : 'Add') + ' Package'
-      );
+      this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, (this.packageObj.id ? 'Edit' : 'Add') + ' Package');
       return;
     }
     this.packageObj.version =

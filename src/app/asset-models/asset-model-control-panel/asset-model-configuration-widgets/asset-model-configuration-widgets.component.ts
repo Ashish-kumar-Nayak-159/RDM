@@ -2,7 +2,7 @@ import { CommonService } from './../../../services/common.service';
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { JsonEditorOptions, JsonEditorComponent } from 'ang-jsoneditor';
 import { Subscription } from 'rxjs';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 

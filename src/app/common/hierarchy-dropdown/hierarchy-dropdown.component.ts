@@ -1,5 +1,5 @@
 import { ToasterService } from 'src/app/services/toaster.service';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 

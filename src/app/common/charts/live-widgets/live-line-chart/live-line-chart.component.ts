@@ -5,7 +5,7 @@ import { Component, Input, NgZone, OnChanges, OnInit, OnDestroy, EventEmitter, O
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import { ChartService } from 'src/app/services/chart/chart.service';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 declare var $: any;
 
 @Component({

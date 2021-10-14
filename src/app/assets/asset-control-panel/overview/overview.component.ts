@@ -1,4 +1,4 @@
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Subscription } from 'rxjs';
 import { AssetModelService } from './../../../services/asset-model/asset-model.service';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
@@ -15,10 +15,9 @@ declare var $: any;
 @Component({
   selector: 'app-overview',
   templateUrl: './overview.component.html',
-  styleUrls: ['./overview.component.css']
+  styleUrls: ['./overview.component.css'],
 })
 export class OverviewComponent implements OnInit, OnDestroy {
-
   @Input() asset: Asset = new Asset();
   assetCredentials: any;
   assetConnectionStatus: any;
@@ -52,11 +51,11 @@ export class OverviewComponent implements OnInit, OnDestroy {
     private router: Router,
     private assetModelService: AssetModelService,
     private assetService: AssetService,
-    private toasterService: ToasterService,
-  ) { }
+    private toasterService: ToasterService
+  ) {}
 
   ngOnInit(): void {
-    this.decodedToken =  this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
+    this.decodedToken = this.commonService.decodeJWTToken(localStorage.getItem(CONSTANTS.APP_TOKEN));
     console.log(this.decodedToken);
     console.log(this.decodedToken?.privileges?.indexOf('ASMM'));
     this.editorOptions = new JsonEditorOptions();
@@ -65,27 +64,28 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
 
-    this.subscriptions.push(this.route.paramMap.subscribe(params => {
-      if (this.decodedToken?.privileges?.indexOf('ASMVC') > -1) {
-      this.getAssetCredentials();
-      }
-      this.getAssetModelDetail();
-      if (this.componentState === CONSTANTS.IP_GATEWAY) {
-        this.getAssetCount();
-      }
-    }));
+    this.subscriptions.push(
+      this.route.paramMap.subscribe((params) => {
+        if (this.decodedToken?.privileges?.indexOf('ASMVC') > -1) {
+          this.getAssetCredentials();
+        }
+        this.getAssetModelDetail();
+        if (this.componentState === CONSTANTS.IP_GATEWAY) {
+          this.getAssetCount();
+        }
+      })
+    );
   }
-
 
   getAssetCredentials() {
     this.assetCredentials = undefined;
     console.log(this.asset);
-    const id = (this.componentState === CONSTANTS.NON_IP_ASSET) ? this.asset.gateway_id : this.asset.asset_id;
-    this.subscriptions.push(this.assetService.getAssetCredentials(id, this.contextApp.app).subscribe(
-      response => {
+    const id = this.componentState === CONSTANTS.NON_IP_ASSET ? this.asset.gateway_id : this.asset.asset_id;
+    this.subscriptions.push(
+      this.assetService.getAssetCredentials(id, this.contextApp.app).subscribe((response) => {
         this.assetCredentials = response;
-      }
-    ));
+      })
+    );
   }
 
   getAssetModelDetail() {
@@ -93,23 +93,23 @@ export class OverviewComponent implements OnInit, OnDestroy {
       const obj = {
         hierarchy: JSON.stringify(this.asset.tags.hierarchy_json),
         name: this.asset.tags.asset_model,
-        app: this.contextApp.app
+        app: this.contextApp.app,
       };
-      this.subscriptions.push(this.assetModelService.getAssetsModelDetails(obj.app, obj.name).subscribe(
-        (response: any) => {
+      this.subscriptions.push(
+        this.assetModelService.getAssetsModelDetails(obj.app, obj.name).subscribe((response: any) => {
           if (response) {
             this.assetModel = response;
             this.assetModel.name = obj.name;
             this.assetModel.app = obj.app;
             if (!this.assetModel.metadata?.image) {
               this.assetModel.metadata.image = {
-                url: CONSTANTS.DEFAULT_MODEL_IMAGE
+                url: CONSTANTS.DEFAULT_MODEL_IMAGE,
               };
             }
           }
           resolve();
-        }
-      ));
+        })
+      );
     });
   }
 
@@ -129,41 +129,54 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   onRedirectToModel(asset) {
-    this.router.navigate(['applications', this.contextApp.app, 'assets', 'model', asset?.tags?.asset_model, 'control-panel']);
+    this.router.navigate([
+      'applications',
+      this.contextApp.app,
+      'assets',
+      'model',
+      asset?.tags?.asset_model,
+      'control-panel',
+    ]);
   }
 
   getAssetCount() {
     this.assetCount = null;
     const obj = {
       app: this.contextApp.app,
-      gateway_id: this.asset.asset_id
+      gateway_id: this.asset.asset_id,
     };
-    this.subscriptions.push(this.assetService.getNonIPAssetCount(obj).subscribe(
-      (response: any) => {
+    this.subscriptions.push(
+      this.assetService.getNonIPAssetCount(obj).subscribe((response: any) => {
         this.assetCount = response.count;
-      }
-    ));
+      })
+    );
   }
 
   syncWithCache() {
     this.isSyncAPILoading = true;
     const obj = {
-      asset_id: this.asset.asset_id
+      asset_id: this.asset.asset_id,
     };
-    this.subscriptions.push(this.assetService.syncAssetCache(this.assetModel.app, obj)
-    .subscribe((response: any) => {
-      this.toasterService.showSuccess(response.message, 'Sync Asset Data');
-      this.isSyncAPILoading = false;
-    }, error => {
-      this.toasterService.showError(error.message, 'Sync Asset Data');
-      this.isSyncAPILoading = false;
-    }));
+    this.subscriptions.push(
+      this.assetService.syncAssetCache(this.assetModel.app, obj).subscribe(
+        (response: any) => {
+          this.toasterService.showSuccess(response.message, 'Sync Asset Data');
+          this.isSyncAPILoading = false;
+        },
+        (error) => {
+          this.toasterService.showError(error.message, 'Sync Asset Data');
+          this.isSyncAPILoading = false;
+        }
+      )
+    );
   }
 
   copyConnectionString() {
     this.isCopyClicked = true;
-    navigator.clipboard.writeText(this.assetCredentials.primary_connection_string || this.assetCredentials.connection_string);
-    setTimeout(() => this.isCopyClicked = false, 1000);
+    navigator.clipboard.writeText(
+      this.assetCredentials.primary_connection_string || this.assetCredentials.connection_string
+    );
+    setTimeout(() => (this.isCopyClicked = false), 1000);
   }
 
   viewonnectionString() {
@@ -177,12 +190,15 @@ export class OverviewComponent implements OnInit, OnDestroy {
   viewAssetTwin() {
     $('#assetTwinModal').modal({ backdrop: 'static', keyboard: false, show: true });
     this.isAssetTwinLoading = true;
-    this.subscriptions.push( this.assetService.getAssetTwin(this.contextApp.app, this.asset.asset_id).subscribe(
-      response => {
-        this.assetTwin = response;
-        this.isAssetTwinLoading = false;
-      }, error => this.isAssetTwinLoading = false
-    ));
+    this.subscriptions.push(
+      this.assetService.getAssetTwin(this.contextApp.app, this.asset.asset_id).subscribe(
+        (response) => {
+          this.assetTwin = response;
+          this.isAssetTwinLoading = false;
+        },
+        (error) => (this.isAssetTwinLoading = false)
+      )
+    );
   }
 
   onModalClose() {
@@ -192,7 +208,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
-
 }

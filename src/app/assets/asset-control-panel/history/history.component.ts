@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs';
 import { AssetService } from './../../../services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
 import { Asset } from 'src/app/models/asset.model';
-import { CONSTANTS } from './../../../app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import * as moment from 'moment';
 import { ToasterService } from './../../../services/toaster.service';
 import { LiveChartComponent } from 'src/app/common/charts/live-data/live-data.component';

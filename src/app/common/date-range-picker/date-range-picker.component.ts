@@ -1,7 +1,7 @@
 import { CommonService } from 'src/app/services/common.service';
 import { Component, Input, OnInit, Output, EventEmitter, ViewChild, AfterViewInit, OnChanges } from '@angular/core';
 import * as moment from 'moment';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { DaterangepickerComponent } from 'ng2-daterangepicker';
 
 @Component({

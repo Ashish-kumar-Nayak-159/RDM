@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import * as moment from 'moment';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { ActivatedRoute } from '@angular/router';
 declare var $: any;
 

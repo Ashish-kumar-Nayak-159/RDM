@@ -5,7 +5,7 @@ import { Asset } from 'src/app/models/asset.model';
 import { Subscription } from 'rxjs';
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { CommonService } from 'src/app/services/common.service';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { HttpErrorResponse } from '@angular/common/http';
 import * as moment from 'moment';
 declare var $: any;

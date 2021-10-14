@@ -1,4 +1,4 @@
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from 'src/app/services/common.service';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { Subscription } from 'rxjs';
@@ -7,10 +7,9 @@ import { Component, Input, OnInit } from '@angular/core';
 @Component({
   selector: 'app-asset-packages',
   templateUrl: './asset-packages.component.html',
-  styleUrls: ['./asset-packages.component.css']
+  styleUrls: ['./asset-packages.component.css'],
 })
 export class AssetPackagesComponent implements OnInit {
-
   @Input() asset: any;
   packages: any[] = [];
   isPackagesAPILoading = false;
@@ -18,10 +17,7 @@ export class AssetPackagesComponent implements OnInit {
   contextApp: any;
   constantData = CONSTANTS;
   packageTableConfig: any;
-  constructor(
-    private assetModelService: AssetModelService,
-    private commonService: CommonService
-  ) { }
+  constructor(private assetModelService: AssetModelService, private commonService: CommonService) {}
 
   ngOnInit(): void {
     this.contextApp = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -39,21 +35,21 @@ export class AssetPackagesComponent implements OnInit {
           key: 'name',
           type: 'text',
           headerClass: '',
-          valueclass: ''
+          valueclass: '',
         },
         {
           name: 'Display Name',
           key: 'display_name',
           type: 'text',
           headerClass: '',
-          valueclass: ''
+          valueclass: '',
         },
         {
           name: 'Version',
           key: 'version',
           type: 'text',
           headerClass: '',
-          valueclass: ''
+          valueclass: '',
         },
         {
           name: 'Actions',
@@ -66,12 +62,11 @@ export class AssetPackagesComponent implements OnInit {
               text: '',
               id: 'Download',
               valueclass: '',
-              tooltip: 'Download'
+              tooltip: 'Download',
             },
-
-          ]
-        }
-      ]
+          ],
+        },
+      ],
     };
   }
 
@@ -79,16 +74,14 @@ export class AssetPackagesComponent implements OnInit {
     this.packages = [];
     this.isPackagesAPILoading = true;
     this.subscriptions.push(
-      this.assetModelService.getPackages(this.contextApp.app, this.asset.tags.asset_model, {}).subscribe(
-        (response: any) => {
+      this.assetModelService
+        .getPackages(this.contextApp.app, this.asset.tags.asset_model, {})
+        .subscribe((response: any) => {
           if (response.data?.length > 0) {
             this.packages = response.data;
           }
           this.isPackagesAPILoading = false;
-        }
-      )
+        })
     );
-
   }
-
 }

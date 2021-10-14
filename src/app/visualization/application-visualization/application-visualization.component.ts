@@ -16,7 +16,7 @@ import {
   Input,
   ViewChild,
 } from '@angular/core';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { CommonService } from './../../services/common.service';
 import { AssetService } from './../../services/assets/asset.service';
 import * as moment from 'moment';

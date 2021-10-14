@@ -3,11 +3,11 @@ import { Injectable, EventEmitter } from '@angular/core';
 import * as moment from 'moment';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { AppUrls } from '../app-url.constants';
+import { AppUrls } from 'src/app/constants/app-url.constants';
 import { Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js';
 import jwt_decode from 'jwt-decode';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { AnonymousCredential, BlobServiceClient, newPipeline } from '@azure/storage-blob';
 
 @Injectable({

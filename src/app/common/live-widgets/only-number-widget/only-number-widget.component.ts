@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { ChartService } from 'src/app/services/chart/chart.service';
 import { Component, Input, OnChanges, OnInit, EventEmitter, Output, OnDestroy } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 declare var $: any;
 @Component({
   selector: 'app-only-number-widget',

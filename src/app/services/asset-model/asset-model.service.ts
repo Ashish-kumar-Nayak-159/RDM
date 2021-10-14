@@ -1,8 +1,8 @@
 import { CommonService } from 'src/app/services/common.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { EventEmitter, Injectable } from '@angular/core';
-import { AppUrls } from 'src/app/app-url.constants';
-import { CONSTANTS } from 'src/app/app.constants';
+import { AppUrls } from 'src/app/constants/app-url.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { environment } from 'src/environments/environment';
 import { String } from 'typescript-string-operations';
 import { Observable, throwError } from 'rxjs';

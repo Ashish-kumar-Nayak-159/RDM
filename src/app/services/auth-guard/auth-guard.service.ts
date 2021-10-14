@@ -1,19 +1,15 @@
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { environment } from 'src/environments/environment';
 import { Injectable } from '@angular/core';
 import { Router, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 import { CommonService } from 'src/app/services/common.service';
-import { APIMESSAGES } from 'src/app/api-messages.constants';
+import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthGuardService {
-
-  constructor(
-    public router: Router,
-    private commonService: CommonService
-  ) {}
+  constructor(public router: Router, private commonService: CommonService) {}
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const userData = this.commonService.getItemFromLocalStorage(CONSTANTS.USER_DETAILS);
     const appData = this.commonService.getItemFromLocalStorage(CONSTANTS.SELECTED_APP_DATA);
@@ -57,8 +53,6 @@ export class AuthGuardService {
   }
 
   getResolvedUrl(route: ActivatedRouteSnapshot): string {
-    return route.pathFromRoot
-        .map(v => v.url.map(segment => segment.toString()).join('/'))
-        .join('/');
+    return route.pathFromRoot.map((v) => v.url.map((segment) => segment.toString()).join('/')).join('/');
   }
 }

@@ -1,15 +1,16 @@
 import { AssetService } from 'src/app/services/assets/asset.service';
 import { CampaignService } from './../../services/campaigns/campaign.service';
-import { APIMESSAGES } from 'src/app/api-messages.constants';
+import { APIMESSAGES } from 'src/app/constants/api-messages.constants';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { Subscription } from 'rxjs';
 import { AssetModelService } from 'src/app/services/asset-model/asset-model.service';
 import { CommonService } from 'src/app/services/common.service';
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import { Campaign } from './campaign.model';
 import * as moment from 'moment';
 import { environment } from 'src/environments/environment';
+import { UIMESSAGES } from 'src/app/constants/ui-messages.constants';
 declare var $: any;
 @Component({
   selector: 'app-add-campaign',
@@ -412,12 +413,12 @@ export class AddCampaignComponent implements OnInit {
         !obj.job_request.version ||
         !obj.request_type
       ) {
-        this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Create Campaign');
+        this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Create Campaign');
         return;
       }
     } else if (obj.objective === 'Sync Properties/Alerts') {
       if (!obj.asset_model || !obj.job_request || !obj.job_request.type) {
-        this.toasterService.showError(APIMESSAGES.ALL_FIELDS_REQUIRED, 'Create Campaign');
+        this.toasterService.showError(UIMESSAGES.ALL_FIELDS_REQUIRED, 'Create Campaign');
         return;
       }
     }

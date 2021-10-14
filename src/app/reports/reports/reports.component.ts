@@ -6,7 +6,7 @@ import { ApplicationService } from './../../services/application/application.ser
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonService } from './../../services/common.service';
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';

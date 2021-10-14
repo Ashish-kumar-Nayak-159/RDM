@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, EventEmitter } from '@angular/core';
 import * as SignalR from '@microsoft/signalr';
-import { AppUrls } from 'src/app/app-url.constants';
+import { AppUrls } from 'src/app/constants/app-url.constants';
 import { environment } from 'src/environments/environment';
 
 @Injectable({

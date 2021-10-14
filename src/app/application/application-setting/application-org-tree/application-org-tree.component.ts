@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { ApplicationService } from './../../../services/application/application.service';
 import { ToasterService } from './../../../services/toaster.service';
 import { Component, Input, OnInit } from '@angular/core';
-import { CONSTANTS } from 'src/app/app.constants';
+import { CONSTANTS } from 'src/app/constants/app.constants';
 
 declare var $: any;
 @Component({
